@@ -1050,6 +1050,7 @@
   - type: Access
     groups:
     - AllAccess
+    - TypanAccess
     - Silicon
     tags:
     - CentralCommand

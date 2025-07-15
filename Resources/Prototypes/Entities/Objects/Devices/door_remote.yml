@@ -200,6 +200,7 @@
   - type: Access
     groups:
     - AllAccess
+    - TypanAccess
     tags:
     - CentralCommand
     - NuclearOperative

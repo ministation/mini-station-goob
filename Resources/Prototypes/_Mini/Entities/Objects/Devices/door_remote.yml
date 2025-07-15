@@ -1,7 +1,7 @@
 - type: entity
   parent: [DoorRemoteDefault, BaseSyndicateContraband]
-  id: TypanDoorRemote
-  name: пульт от шлюзов тайпана
+  id: DoorRemoteSyndie
+  name: syndicate door remote
   components:
   - type: Sprite
     layers:

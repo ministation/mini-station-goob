@@ -1,3 +1,9 @@
+# Typan goals
+- type: stationGoal
+  id: SyndicateMaid
+  text: station-goal-syndicate-maid
+  stampid: RubberStampSyndicate
+
 # General goals
 - type: stationGoal
   id: Singularity
