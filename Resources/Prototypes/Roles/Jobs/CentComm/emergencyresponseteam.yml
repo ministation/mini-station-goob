@@ -169,7 +169,9 @@
     - CrowbarRed
     - ERTSecurityUndeterminedWeapon
     # - MagazineMagnum - No need
-
+    - ADTBaseUplinkBOBERT
+    #- ADTertMechUplink
+    - PinpointerNuclear
 - type: startingGear
   id: ERTLeaderGearEVA
   equipment:
@@ -194,15 +196,38 @@
     - CrowbarRed
     - ERTSecurityUndeterminedWeapon
     # Goobstation - MagazineMagnum
-
-- type: chameleonOutfit
-  id: ERTLeaderChameleonOutfit
-  job: ERTLeader
-  hasMindShield: true
+    - MagazineMagnum
+    - ADTBaseUplinkBOBERT
+    #- WeaponLauncherMGL
+    #- ADTertMechUplink
+- type: startingGear
+  id: ERTLeaderGearEVALecter
   equipment:
-    head: ClothingHeadHelmetHardsuitERTLeader
-    neck: ClothingNeckBronzeheart
-
+    jumpsuit: ClothingUniformJumpsuitERTLeader
+    back: ClothingBackpackERTLeader
+    shoes: ClothingShoesBootsMagAdv
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesGlassesSecurity
+    neck: ClothingNeckMantleERTLeader # Corvax-Clothing
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitERTLeader
+    id: ERTLeaderPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltSecurityFilled
+    pocket1: MagazineRifle
+    pocket2: MagazineRifle
+  inhand:
+  - WeaponRifleLecter
+  storage:
+    back:
+    - WeaponDisabler
+    - MedicatedSuture
+    - RegenerativeMesh
+    - PinpointerNuclear
+    - CrowbarRed
+    - MagazineMagnum
+    - ADTBaseUplinkBOBERT
+    #- ADTertMechUplink
 # Chaplain
 - type: job
   id: ERTChaplain
@@ -661,3 +686,11 @@
     head: ClothingHeadHelmetHardsuitERTJanitor
     neck: ClothingNeckScarfStripedPurple
     eyes: ClothingEyesGlassesSunglasses
+
+- type: chameleonOutfit
+  id: ERTLeaderChameleonOutfit
+  job: ERTLeader
+  hasMindShield: true
+  equipment:
+    head: ClothingHeadHelmetHardsuitERTLeader
+    neck: ClothingNeckBronzeheart

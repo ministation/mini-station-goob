@@ -260,3 +260,12 @@
   abstract: true
   components:
     - type: StationEventEligible # For when someone makes this more granular in the future.
+
+- type: entity
+  id: BaseStationERTCall
+  abstract: true
+  components:
+    - type: ERTCall
+      ertTeamPrototype: stationERTTeams
+      timeToApprove: 300 # 5 min
+      timeToAnotherSpawn: 600 # 10 min
