@@ -13,3 +13,6 @@ job-supervisors-security = офицерам, смотрителю и главе 
 job-supervisors-science = учёным и научному руководителю
 job-supervisors-hire = своим нанимателям
 job-supervisors-everyone = вообще всем
+job-supervisors-typan-syndicate = командованию Синдиката
+job-supervisors-typan-telecommunications-officer = командиру Синдиката
+job-supervisors-typan-rd = научруку Синдиката
