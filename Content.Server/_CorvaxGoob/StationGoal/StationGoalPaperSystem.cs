@@ -88,15 +88,12 @@ namespace Content.Server._CorvaxGoob.StationGoal
 			}
 
 			var entProto = _proto.Index<EntityPrototype>(stampId);
-
-			foreach (var kv in entProto.Components)
-
-			var compKey = "Stamp";
-			if (!entProto.Components.TryGetValue(compKey, out var entry))
+			
+			if (!entProto.Components.TryGetValue("Stamp", out var entry))
 			{
 				return false;
 			}
-
+			
 			if (entry.Component is not StampComponent stampProto)
 			{
 				return false;
