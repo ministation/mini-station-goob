@@ -3,6 +3,7 @@ using Content.Server.Station.Systems;
 using Content.Shared._CorvaxGoob.CCCVars;
 using Content.Shared.Fax.Components;
 using Content.Shared.GameTicking;
+using Content.Shared.Paper;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
@@ -76,13 +77,42 @@ namespace Content.Server._CorvaxGoob.StationGoal
         /// <returns>True if at least one fax received paper</returns>
         public bool SendStationGoal(EntityUid ent, StationGoalPrototype goal)
         {
-            var printout = new FaxPrintout(
-                Loc.GetString(goal.Text, ("station", MetaData(ent).EntityName)),
-                Loc.GetString("station-goal-fax-paper-name"),
-                null,
-                null,
-                "paper_stamp-centcom",
-                [new() { StampedName = Loc.GetString("stamp-component-stamped-name-centcom"), StampedColor = Color.FromHex("#006600") }]
+			var stampId = string.IsNullOrEmpty(goal.Stamp)
+				? "RubberStampCentcom"
+				: goal.Stamp;
+
+			if (!_proto.HasIndex<EntityPrototype>(stampId))
+			{
+				Log.Info($"SendStationGoal: stamp prototype '{stampId}' не найден — fallback to RubberStampCentcom");
+				stampId = "RubberStampCentcom";
+			}
+
+			var entProto = _proto.Index<EntityPrototype>(stampId);
+
+			foreach (var kv in entProto.Components)
+
+			var compKey = "Stamp";
+			if (!entProto.Components.TryGetValue(compKey, out var entry))
+			{
+				return false;
+			}
+
+			if (entry.Component is not StampComponent stampProto)
+			{
+				return false;
+			}
+
+			var stampedName = stampProto.StampedName;
+			var stampedColor = stampProto.StampedColor;
+			var stampState = stampProto.StampState;
+
+			var printout = new FaxPrintout(
+				Loc.GetString(goal.Text, ("station", MetaData(ent).EntityName)),
+				Loc.GetString("station-goal-fax-paper-name"),
+				null,
+				null,
+				stampState,
+                [new() { StampedName = stampedName, StampedColor = stampedColor }]
             );
 
             var wasSent = false;

@@ -2,7 +2,7 @@
 - type: stationGoal
   id: SyndicateMaid
   text: station-goal-syndicate-maid
-  stampid: RubberStampSyndicate
+  stamp: RubberStampSyndicate
 
 # General goals
 - type: stationGoal

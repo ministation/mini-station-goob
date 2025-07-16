@@ -18,7 +18,7 @@ namespace Content.Server._CorvaxGoob.StationGoal
         public int? MaxPlayers;
 		
 		[DataField]
-		public string? StampID;
+		public string? Stamp;
 
         /// <summary>
         /// Goal may require certain items to complete. These items will appear near the receving fax machine at the start of the round.
