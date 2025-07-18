@@ -95,10 +95,10 @@ public sealed class MiniCCVars
     /// Default volume setting of TTS sound
     /// </summary>
     public static readonly CVarDef<float> TTSVolume =
-        CVarDef.Create("tts.volume", 0.50f, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("tts.volume", 2.0f, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<float> TTSRadioVolume =
-        CVarDef.Create("tts.radio_volume", 0.50f, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("tts.radio_volume", 1f, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<string> TTSRadioEffect =
         CVarDef.Create("tts.radio_effect", "radio", CVar.SERVERONLY | CVar.ARCHIVE);
