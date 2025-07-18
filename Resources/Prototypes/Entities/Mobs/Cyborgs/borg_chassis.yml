@@ -249,6 +249,9 @@
       interactFailureString: petting-failure-syndicate-cyborg
       interactSuccessSound:
         path: /Audio/Ambience/Objects/periodic_beep.ogg
+    - type: Mimicry
+    - type: PointLight
+      color: "#FFFFFFFF"
 
 - type: entity
   id: BorgChassisDerelict
