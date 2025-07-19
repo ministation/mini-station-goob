@@ -1,0 +1,12 @@
+
+# Back
+- type: loadout
+  id: SyndiBackpack
+  equipment:
+    back: ClothingBackpackSyndicate
+
+- type: loadout
+  id: SyndiDuffel
+  equipment:
+    back: ClothingBackpackDuffelSyndicate
+

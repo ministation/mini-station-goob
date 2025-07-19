@@ -1674,6 +1674,19 @@
   - GreenBoxingGloves
   - YellowBoxingGloves
 
+- type: loadoutGroup
+  id: SyndicateBackpack
+  name: Синдикат, спина
+  loadouts:
+  - SyndiBackpack
+  - SyndiDuffel
+
+- type: loadoutGroup
+  id: SyndicateCoat
+  name: Синдикат, верхняя одежда
+  loadouts:
+  - SyndiWintercoat
+
 # Other
 - type: loadoutGroup
   id: SurvivalSyndicate
