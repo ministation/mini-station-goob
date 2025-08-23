@@ -1,5 +1,4 @@
-ent-Changeling = { ent-BaseGameRule }
-    .desc = { ent-BaseGameRule.desc }
+
 ent-CorporateAgent = { ent-BaseTraitorRule }
     .desc = { ent-BaseTraitorRule.desc }
 ent-CalmTraitor = { ent-BaseTraitorRule }
