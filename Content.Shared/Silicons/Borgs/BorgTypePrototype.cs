@@ -163,6 +163,14 @@ public sealed partial class BorgTypePrototype : IPrototype
     [DataField]
     public SoundSpecifier FootstepCollection { get; set; } = new SoundCollectionSpecifier(DefaultFootsteps);
 
+    // Corvax-TTS-start
+    /// <summary>
+    /// TTS voice.
+    /// </summary>
+    [DataField]
+    public string? VoicePrototypeId { get; set; } = "TrainingRobot";
+    // Corvax-TTS-end
+
     /// <summary>
     /// DeltaV: Lawset to use instead of crewsimov.
     /// If the chassis is emagged or ion stormed this is ignored.
