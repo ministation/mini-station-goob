@@ -28,3 +28,5 @@ ent-ClothingHeadHatBeretSeniorBotanist = ботанический берет
     .desc = Зелёный берет с маленьким синим цветком для опытных ботаников.
 ent-ClothingHeadSanabi = фуражка генерала бригадира
     .desc = Пахнет сталью.
+ent-ClothingHeadHatJanitorCap = janitorial cap
+    .desc = An extravagant purple cap for only the BEST of janitorial workers.

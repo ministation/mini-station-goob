@@ -37,3 +37,7 @@ ent-SiikMaasTranslator = переводчик (Сиик'маас)
     .desc = Переводит речь между Сиик'маас и Тау-Кит. Позволяет общаться с Таярами!
 ent-MarishTranslator = переводчик (Мариш)
     .desc = Переводит речь между Мариш и Тау-Кит. Позволяет общаться с Шэдоукинами!
+ent-NewKinPidginTranslator = Ka'rakk translator
+    .desc = Interprets speech for, colloquially, Vox Pidgin. It almost sounds... Alive, inside. Atleast it takes batteries!
+ent-SchechiTranslator = Schechi translator
+    .desc = Interprets the birdsong known as Schechi and translates it to Galactic Common. Primarily spoken by Resomi.

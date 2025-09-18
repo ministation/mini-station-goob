@@ -45,3 +45,5 @@ trait-painnumbness-name = Невосприимчивость к боли
 trait-dementia-name = Деменция
 trait-dementia-desc = Я... э-э, о чем это я? Ах да! Ты иногда многое забываешь
 trait-painnumbness-desc = Вы не чувствуете боли и не осознаёте, насколько вы ранены.
+trait-british-name = British accent
+trait-british-desc = You speak proper, unlike those bloody yanks.

@@ -28,3 +28,7 @@ ent-SiikMaasTranslatorImplant = имплант "переводчик Сиик'м
     .desc = Имплант, дающий возможность понимать и говорить на Сиик'маасе.
 ent-MarishTranslatorImplant = имплант "переводчик Мариш"
     .desc = Имплант, дающий возможность понимать и говорить на Маришеы.
+ent-SchechiTranslatorImplant = schechi translator implant
+    .desc = An implant giving the ability to understand and speak Schechi.
+ent-NewKinPidginTranslatorImplant = ka'rakk translator implant
+    .desc = An implant giving the ability to understand and speak Ka'rakk.

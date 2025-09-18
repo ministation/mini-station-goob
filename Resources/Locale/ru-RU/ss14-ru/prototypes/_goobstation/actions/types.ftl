@@ -16,3 +16,5 @@ ent-ActionToggleLeftMantisBlade = Переключить левый клинок
     .desc = Выдвинуть или убрать клинок богомола на левой руке.
 ent-ActionToggleSandevistan = Переключить Сандевистан
     .desc = Включить или отключить улучшенные рефлексы, предоставляемые Сандевистаном.
+ent-ActionShowStationMap = Station Map Interface
+    .desc = View a Station Map Interface.

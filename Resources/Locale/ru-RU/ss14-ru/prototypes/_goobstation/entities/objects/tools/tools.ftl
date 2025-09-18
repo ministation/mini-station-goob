@@ -16,3 +16,6 @@ ent-MultitoolBorg = мультитул борга
 ent-RPDRecharging = экспериментальный РФУ
     .desc = Усовершенствованное блюспейс устройство для быстрой транспортировки по трубопроводу, которое пассивно генерирует собственное сжатое вещество.
     .suffix = Автозарядка
+ent-RCDRechargingCE = experimental RCD
+    .desc = Rapid Construction Device which creates compressed matter on the fly using an internal fabricator.
+    .suffix = AutoRecharge
