@@ -1,5 +1,5 @@
 ent-XenomorphEgg = яйцо ксеноморфа
-   .desc = Большое пятнистое яйцо.
+    .desc = Большое пятнистое яйцо.
 ent-XenomorphEggGrown = { ent-XenomorphEgg }
     .suffix = Выросшее
     .desc = { ent-XenomorphEgg.desc }
