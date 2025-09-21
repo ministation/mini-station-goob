@@ -1,6 +1,6 @@
-ent-ActionLegSweep = Leg Sweep
-    .desc = Sweeps the legs out from under a target to knock them down for a few seconds.
-ent-ActionNeckChop = Neck Chop
-    .desc = A hard swing with the side of your hand deals some damage and disables the target's ability to speak for twenty seconds
-ent-ActionLungPunch = Lung Punch
-    .desc = Deals 30 stamina damage and prevents breathing for ten seconds. Four of those will incapacitate a target less-than-lethally, but beware of the loss of breath you cause.
+ent-ActionLegSweep = Подсечка
+    .desc = Выбивает ноги из-под цели, чтобы сбить её с ног на несколько секунд.
+ent-ActionNeckChop = Удар по шее
+    .desc = Сильный удар ребром ладони, наносит урон и лишает цель возможности говорить на двадцать секунд.
+ent-ActionLungPunch = Удар в лёгкие
+    .desc = Наносит 30 урона выносливости и мешает дышать в течение десяти секунд. Четыре таких удара могут вывести цель из строя неубийственным способом, но будьте осторожны — вы сами потеряете дыхание.

@@ -227,8 +227,8 @@ uplink-reverse-bear-trap-desc = Изощрённое орудие казни, н
 
 # Deception
 
-uplink-carpcaller-name = Space Carp Caller
-uplink-carpcaller-desc = A device exploiting carp psychology that, when anchored, powered, and exposed to open space, will attract wild space carp. Keep in mind you're not their friend.
+uplink-carpcaller-name = Телепорт космокарпа
+uplink-carpcaller-desc = Устройство, использующее инстинкты карпов, которое при закреплении, подключении к питанию и выходе в открытый космос, привлечёт диких космических карпов. Помни, что ты им не друг.
 uplink-clothing-explosive-gloves-name = Взрывчатые изолированные перчатки
 uplink-clothing-explosive-gloves-desc = Перчатки, выглядящие как обычные изолированные, но взрывающиеся через секунду после удара током, выводя из строя руки владельца.
 

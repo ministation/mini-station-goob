@@ -1,3 +1,3 @@
 ent-GlassBoxLamarrFilled = { ent-GlassBox }
-    .suffix = Lamarr, Filled
+    .suffix = Ламар, Заполненный
     .desc = { ent-GlassBox.desc }

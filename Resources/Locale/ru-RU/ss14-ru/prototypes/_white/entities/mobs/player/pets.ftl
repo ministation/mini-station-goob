@@ -1,2 +1,2 @@
-ent-MobXenomorphFaceHuggerLamarr = Lamarr
-    .desc = A former nightmare candidate, now an exemplary pet.
+ent-MobXenomorphFaceHuggerLamarr = Ламар
+    .desc = Бывший рекордсмен по кошмарам, теперь образцовый питомец.

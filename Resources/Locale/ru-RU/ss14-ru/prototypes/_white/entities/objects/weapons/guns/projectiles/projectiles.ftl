@@ -1,2 +1,2 @@
-ent-BulletNeurotoxin = neurotoxin spit
+ent-BulletNeurotoxin = плевок нейротоксина
     .desc = { ent-BulletAcid.desc }

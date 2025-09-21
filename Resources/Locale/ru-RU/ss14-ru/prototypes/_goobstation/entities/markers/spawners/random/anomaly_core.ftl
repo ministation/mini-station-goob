@@ -1,4 +1,4 @@
-ent-RandomAnomalyCoreSpawner = random anomaly core spawner
+ent-RandomAnomalyCoreSpawner = случайный спавнер ядро аномалии
     .desc = { ent-MarkerBase.desc }
-ent-RandomAnomalyCoreInertSpawner = random inert anomaly core spawner
+ent-RandomAnomalyCoreInertSpawner = случайный спавнер неактивное ядро аномалии
     .desc = { ent-MarkerBase.desc }

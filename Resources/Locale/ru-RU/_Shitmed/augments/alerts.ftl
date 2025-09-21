@@ -1,2 +1,2 @@
-alerts-augment-battery-name = Augment Battery
-alerts-augment-battery-desc = If your internal battery depletes, you will be unable to use your augments. Click this alert to check its charge and power usage.
+alerts-augment-battery-name = Имплантированная батарея
+alerts-augment-battery-desc = Если ваша внутренняя батарея разрядится, вы не сможете использовать имплантированную. Нажмите на это уведомление, чтобы проверить заряд и энергопотребление.

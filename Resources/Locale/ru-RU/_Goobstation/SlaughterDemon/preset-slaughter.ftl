@@ -1,25 +1,25 @@
-objective-condition-slaughter-devour-title = DEVOUR
-objective-condition-slaughter-devour-desc = Devour { $count } crewmembers.
-objective-condition-kill-wizard-first = [color=#FF0000]FIRST,[/color]
-objective-condition-kill-everyone-else = [color=#FF0000]SECOND,[/color]
-objective-condition-kill-wizard-title = KILL THE WIZARD WHO SUMMONED YOU
-objective-condition-kill-everyone-else-title = KILL EVERYONE ELSE
-objective-condition-hug-and-tickle-title = HUG THEM ALL
-objective-condition-hug-and-tickle-desc = The crew love it so much they spread ketchup everywhere! Good thing you love ketchup! Yupeee!
+objective-condition-slaughter-devour-title = ПОГЛОЩАЙТЕ
+objective-condition-slaughter-devour-desc = Поглотите { $count } членов экипажа.
+objective-condition-kill-wizard-first = [color=#FF0000]ПЕРВОЕ,[/color]
+objective-condition-kill-everyone-else = [color=#FF0000]ВТОРОЕ,[/color]
+objective-condition-kill-wizard-title = УБЕЙТЕ МАГА, КОТОРЫЙ ВАС ПРИЗВАЛ
+objective-condition-kill-everyone-else-title = УБЕЙТЕ ВСЕХ ОСТАЛЬНЫХ
+objective-condition-hug-and-tickle-title = ОБНИМИТЕ ИХ ВСЕХ
+objective-condition-hug-and-tickle-desc = Экипаж так в восторге, что разбрызгивает вишнёвое варенье повсюду! Хорошо, что вы обожаете варенье! Ура!
 objective-kill-wizard-desc =
-    The one who dared summon you must pay the ultimate price.
-    Their arcane blood calls to you, find them, hunt them, and send their soul screaming into the void.
-    Their magic ends here.
+    Тот, кто осмелился призвать вас, заплатит высокую цену.
+    Арканическая кровь зовёт вас — найдите их, охотьтесь и отправляйте их души вопя в пустоту.
+    Их магия кончается здесь.
 objective-kill-everyone-desc =
-    This realm reeks of mortal flesh.
-    Paint these halls crimson, let every heartbeat be silenced.
-    Leave nothing but echoes of terror and rivers of blood.
+    Это место смердит смертной плотью.
+    Окропите эти коридоры багровым цветом, заставьте их сердца замирать от каждого вашего удара.
+    Не оставьте ничего, кроме эха ужаса и рек крови.
 # true fluff
-objective-annihilate-janitors-title = Annihilate all Janitors and their robotic replacements.
-objective-spare-crew-title = Spare a few of the crew to make them bleed before the final strike.
-objective-hunt-for-brave-title = Hunt for the brave that try to hunt for you first.
-objective-hunt-the-cowards-title = Hunt the cowards who are fleeing from you.
+objective-annihilate-janitors-title = Уничтожьте всех уборщиков и их роботизированных заменителей.
+objective-spare-crew-title = Пощадите нескольких членов экипажа, чтобы они кровоточили перед финальным ударом.
+objective-hunt-for-brave-title = Охотьтесь на смельчаков, которые первыми попытаются напасть на вас.
+objective-hunt-the-cowards-title = Охотьтесь на трусов, убегающих от вас.
 # almost fluff
-objective-spread-blood = Spread blood across { $area }.
-objective-show-power-title = Show { $targetName } the true power of blood.
-objective-drive-insane-title = Drive { $targetName } insane with your demonic whispers.
+objective-spread-blood = Разбросайте кровь по { $area }.
+objective-show-power-title = Покажите { $targetName } истинную силу.
+objective-drive-insane-title = Обезумьте { $targetName } своим демоническим шёпотам.

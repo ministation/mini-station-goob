@@ -1,2 +1,2 @@
-ent-OrganSlaughterHeart = demonic heart
+ent-OrganSlaughterHeart = демоническое сердце
     .desc = { ent-OrganAnimalHeart.desc }

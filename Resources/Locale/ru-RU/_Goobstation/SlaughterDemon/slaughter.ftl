@@ -1,22 +1,22 @@
-slaughter-round-end-agent-name = slaughter demon
-laughter-round-end-agent-name = laughter demon
-lesser-slaughter-round-end-agent-name = lesser slaughter demon
-objective-issuer-slaughter-satan = [color=#FF0000]Satan[/color]
-objective-issuer-slaughter-bubblegum = [color=#9F2B68]Bubblegum[/color]
-objective-issuer-slaughter-devil = [color=#FFC0CB]Devil[/color]
+slaughter-round-end-agent-name = демон резни
+laughter-round-end-agent-name = демон смеха
+lesser-slaughter-round-end-agent-name = низший демон резни
+objective-issuer-slaughter-satan = [color=#FF0000]Сатана[/color]
+objective-issuer-slaughter-bubblegum = [color=#9F2B68]Король демонов[/color]
+objective-issuer-slaughter-devil = [color=#FFC0CB]Дьявол[/color]
 slaughter-role-greeting =
-    You are the Slaughter Demon, a terrible creature from another existence. You have a single desire: to kill.
-    You may use the blood crawl icon when on blood pools to travel through them, appearing and disappearing from the station at will.
-    Pulling a dead or critical mob while you enter a pool will pull them in with you, allowing you to feast.
-    You move quickly upon leaving a pool of blood, but the material world will soon sap your strength and leave you sluggish.
+    Вы — демон резни, ужасное создание иного бытия. У вас одно желание: убивать.
+    Вы можете использовать значок «ползти по крови», находясь на кровавых лужах, чтобы перемещаться через них, появляясь и исчезая на станции по своему желанию.
+    Таща за собой мёртвого или при смерти, когда вы входите в лужу, вы утянете их внутрь, что позволит вам насладиться трапезой.
+    Вы двигаетесь быстро, выходя из лужи крови, но материальный мир вскоре высосет из вас все силы и превратит в вялого.
 laughter-role-greeting =
-    You are the Laughter Demon, an adorable creature from another existence. You have a single desire: to hug and tickle.
-    You may use the blood crawl icon when on blood pools to travel through them, appearing and disappearing from the station at will.
-    Pulling a dead or critical mob while you enter a pool will pull them in with you, allowing you to hug them.
-    You move quickly upon leaving a pool of blood, but the material world will soon sap your strength and leave you sluggish.
+    Вы — демон смеха, очаровательное создание иного бытия. У вас есть одно желание: обнимать и щекотать.
+    Вы можете использовать значок «ползти по крови», находясь на кровавых лужах, чтобы перемещаться через них, появляясь и исчезая на станции по своему желанию.
+    Таща за собой мёртвого или при смерти, когда вы входите в лужу, вы утянете их внутрь, что позволит вам их обнять.
+    Вы двигаетесь быстро, выходя из лужи крови, но материальный мир вскоре высосет из вас все силы и превратит в вялого.
 # actions
-demonic-whisper-title = Demonic Whisper
-demonic-whisper-popup = Suddenly a strange, demonic voice resonates in your head...
-demonic-whisper-whisper = You whisper to { $name }: { $message }
+demonic-whisper-title = Демонический шёпот
+demonic-whisper-popup = Вдруг в вашей голове раздаётся странный демонический голос...
+demonic-whisper-whisper = Вы шепчете { $name }: { $message }
 # metadata
-name-format-slaughter = { $part1 }, the { $part0 }
+name-format-slaughter = { $part1 }, { $part0 }

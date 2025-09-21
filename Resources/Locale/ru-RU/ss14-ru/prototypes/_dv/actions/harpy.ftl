@@ -1,6 +1,6 @@
-ent-ActionHarpyPlayMidi = Play MIDI
-    .desc = Sing your heart out! Right click yourself to set an instrument.
-ent-ActionSyrinxChangeVoiceMask = Set name
-    .desc = Change the name others hear to something else.
-ent-ActionToggleFlight = Fly
-    .desc = Make use of your wings to fly. Beat the flightless bird allegations.
+ent-ActionHarpyPlayMidi = Проиграть MIDI
+    .desc = Пой от души! Щелкни по себе правой кнопкой, чтобы выбрать инструмент.
+ent-ActionSyrinxChangeVoiceMask = Установить имя
+    .desc = Измени имя, которое слышат другие, на что-то другое.
+ent-ActionToggleFlight = Полёт
+    .desc = Используй свои крылья, чтобы летать. Опровергни обвинения в том, что ты нелетающая птица.

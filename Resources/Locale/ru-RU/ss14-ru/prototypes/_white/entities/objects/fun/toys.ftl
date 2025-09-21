@@ -1,3 +1,3 @@
-ent-FaceHuggerToys = xenomorph facehugger
-    .desc = A toy often used to play pranks on other crew members by putting it in their beds. It takes a bit to recharge after latching onto something.
-    .suffix = Toys
+ent-FaceHuggerToys = ксеноморф лицехват
+    .desc = Игрушка, которую часто используют, чтобы подшутить над другими членами экипажа, подкладывая её им в кровати. После того, как она зацепится за что-нибудь, ей требуется некоторое время для перезарядки.
+    .suffix = Игрушка

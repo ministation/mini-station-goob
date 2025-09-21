@@ -1,2 +1,2 @@
-ent-MangoSeeds = packet of mango seeds
+ent-MangoSeeds = пакет семян (манго)
     .desc = { ent-SeedBase.desc }

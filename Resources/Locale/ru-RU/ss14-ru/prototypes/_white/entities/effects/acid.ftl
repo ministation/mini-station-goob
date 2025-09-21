@@ -1,2 +1,2 @@
-ent-XenomorphAcid = corrosive acid
-    .desc = Burbling corrosive stuff. I wouldn't want to touch it.
+ent-XenomorphAcid = разъедающая кислота
+    .desc = Пузырящаяся едкая субстанция. Я бы её не трогал.

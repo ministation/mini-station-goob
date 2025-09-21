@@ -1,9 +1,9 @@
 ent-CrateFunClownCarUplink = ящик с клоунской машиной
     .desc = Содержит одну машину, клоун не входит в комплект.
-    .suffix = Улинк-объект
-ent-CrateFunClownCarNukieUplink = clown car crate
-    .desc = Contains one car, Clown not included
-    .suffix = Uplink item
+    .suffix = Аплинк
+ent-CrateFunClownCarNukieUplink = ящик с клоунской машиной
+    .desc = Содержит одну машину, клоун не входит в комплект
+    .suffix = Аплинк
 ent-CrateFunClownCarCargo = ящик с клоунской машиной
     .desc = Содержит одну машину, клоун не входит в комплект.
     .suffix = Заказ грузом

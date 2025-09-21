@@ -63,20 +63,20 @@ spellbook-magical-lamp-desc =
     После призыва стража вы не сможете сменить расу в волшебном зеркале.
     Можно купить только один раз.
     Не подлежит возврату.
-spellbook-bottle-blood-name = Bottle of Blood
+spellbook-bottle-blood-name = Склянка крови
 spellbook-bottle-blood-desc =
-    A bottle of magically infused blood, the smell of which will attract extradimensional beings when broken.
+    Склянка магически насыщенной крови, запах которой привлекает неведомых сущностей после разбития.
     
-    Be careful though, these creatures, called Slaughter Demons, are indiscriminate in their killing,
-    and you yourself may become a victim.
+    Будьте осторожны, эти существа, называемые демонами резни, не различают жертв,
+    и вы сами можете ей стать.
     
-    You need to 'use' the bottle to unleash the slaughter demon.
-spellbook-bottle-tickles-name = Bottle of Tickles
+    Для призыва демона резни необходимо 'использовать' склянку.
+spellbook-bottle-tickles-name = Склянка щекотки
 spellbook-bottle-tickles-desc =
-    A bottle of magically infused fun, the smell of which will attract adorable extradimensional beings when broken.
+    Склянка магически насыщенного веселья, запах которого привлекает милых неведомых сущностей после разбития.
     
-    These beings are similar to slaughter demons, but instead put their victims in an extradimensional hugspace,
-    reviving them after the demon dies. Chaotic, but not ultimately damaging.
-    The crew's reaction on the other hand could be very destructive.
+    Эти существа похожи на демонов резни, но вместо убийства помещают жертву в неведомое пространство объятий,
+    возвращая её к жизни после смерти демона. Хаотично, но не причиняет прямого ущерба.
+    Реакция экипажа, однако, может быть весьма негативной.
     
-    You need to 'use' the bottle to unleash the laughter demon.
+    Для призыва демона смеха необходимо 'использовать' склянку.

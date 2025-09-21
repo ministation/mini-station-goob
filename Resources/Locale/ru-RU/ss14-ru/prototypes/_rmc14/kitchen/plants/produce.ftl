@@ -1,2 +1,2 @@
-ent-FoodMango = mango
-    .desc = MANGO MANGO MANGO
+ent-FoodMango = манго
+    .desc = МАНГО! МАНГО! МАНГО!

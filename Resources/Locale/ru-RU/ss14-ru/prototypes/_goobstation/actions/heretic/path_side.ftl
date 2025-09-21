@@ -1,6 +1,6 @@
-ent-ActionHereticIceSpear = Mysteries of Creation
-    .desc = Activate to create the Glacier Spear or summon already existing spear.
-ent-ActionHereticCleave = Cleave
-    .desc = Causes severe bleeding on a target and several targets around them.
-ent-ActionHereticRustCharge = Rust Charge
-    .desc = A charge that must be started on a rusted tile and will destroy any rusted objects you come into contact with, will deal high damage to others and rust around you during the charge. As it is the rust that empowers you with this ability, no focus is needed.
+ent-ActionHereticIceSpear = Тайны Созидания
+    .desc = Активируйте, чтобы создать Ледяное Копьё или призвать уже существующее копьё.
+ent-ActionHereticCleave = Расчленение
+    .desc = Вызывает сильное кровотечение у цели и нескольких врагов вокруг неё.
+ent-ActionHereticRustCharge = Ржавый Рывок
+    .desc = Рывок, который должен начинаться на ржавой плитке и уничтожит любые ржавые объекты на вашем пути, нанесёт сильный урон другим и распространит ржавчину вокруг вас во время рывка. Поскольку именно ржавчина даёт вам эту силу, фокус не требуется.

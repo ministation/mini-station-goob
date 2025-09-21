@@ -1,7 +1,7 @@
 # GENERAL
 
-food-sequence-content-mango = mango
+food-sequence-content-mango = манго
 
 # BURGERS
 
-food-sequence-burger-content-mango = mango
+food-sequence-burger-content-mango = манго

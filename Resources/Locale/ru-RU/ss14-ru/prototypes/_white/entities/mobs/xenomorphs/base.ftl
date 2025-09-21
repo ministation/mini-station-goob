@@ -3,5 +3,5 @@ ent-BaseMobXenomorph = { ent-BaseMob }
 ent-BaseMobXenomorphAdult = { ent-BaseMobXenomorph }
     .desc = { ent-BaseMobXenomorph.desc }
 ent-BaseMobXenomorphDungeon = { "" }
-    .suffix = Dungeon
+    .suffix = Подземелье
     .desc = { "" }

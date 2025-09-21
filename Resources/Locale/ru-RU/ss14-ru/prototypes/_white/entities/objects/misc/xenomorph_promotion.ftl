@@ -1,2 +1,2 @@
-ent-XenomorphPromotion = royal parasite
-    .desc = Inject this into one of your grown children to promote her to a Praetorian!
+ent-XenomorphPromotion = королевский паразит
+    .desc = Введите это в одну из своих взрослых дочерей, чтобы повысить её до преторианца!

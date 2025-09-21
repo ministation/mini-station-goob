@@ -75,8 +75,8 @@ spellbook-hammer-mjollnir-name = Мьёльнир
 spellbook-hammer-mjollnir-description = В ваших руках мощь ГРОЗЫ. Отправляйте врагов в полет с помощью мощного взмаха или броска прямо в них!
 spellbook-hammer-singularity-name = Молот сингулярности
 spellbook-hammer-singularity-description = Вы когда-нибудь задумывались, каково это - быть сингулярностью? Размахивайте этим молотом, чтобы притянуть всё вокруг, даже если вы промахнетесь!
-spellbook-crate-of-enchanting-name = Crate of Enchanting
+spellbook-crate-of-enchanting-name = ящик зачарования
 spellbook-crate-of-enchanting-description =
-    A crate of stolen anomaly cores, summoned by arcane power.
-    Used for enchanting your gear to be even more powerful!
-    The selection is random and may be effectively useless. No refunds!
+    Ящик с украденными аномальными ядрами, призванный магической силы.
+    Используется для зачаровывания вашего снаряжения, делая его ещё мощнее!
+    Вариации чар случайны, и могут оказаться бесполезными. Не подлежит возврату!

@@ -1,5 +1,5 @@
-ent-BaseMobXenomorphLarva = xenomorph larva
-    .desc = An early stage of development characterized by small size, a worm-like body shape, and the absence of distinct limbs.
+ent-BaseMobXenomorphLarva = ксеноморф плевальщик
+    .desc = Специализированная особь, предназначенная для поражения целей на расстоянии. Особенно опасен в узких коридорах и замкнутых пространствах.
 ent-MobXenomorphLarva = { ent-BaseMobXenomorphLarva }
     .desc = { ent-BaseMobXenomorphLarva.desc }
 ent-MobXenomorphLarvaDungeon = { ent-BaseMobXenomorphDungeon }

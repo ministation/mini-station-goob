@@ -1,2 +1,2 @@
-ent-ActionRunebreak = Rune Break
-    .desc = Destroys all runes carved by this blade.
+ent-ActionRunebreak = разрушитель рун
+    .desc = Уничтожает все руны, вырезанные этим клинком.

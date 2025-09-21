@@ -1,2 +1,2 @@
-ent-BatteryDisposable = disposable battery
-    .desc = Robots eat these, right?
+ent-BatteryDisposable = одноразовая батарейка
+    .desc = Роботы же их едят, верно?

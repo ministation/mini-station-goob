@@ -1,2 +1,2 @@
-ent-CarpCaller = carp caller
-    .desc = A syndicate device that seems interesting to wild space carp.
+ent-CarpCaller = приманка космических карпов
+    .desc = Устройство синдиката, которое привлекает диких космических карпов.

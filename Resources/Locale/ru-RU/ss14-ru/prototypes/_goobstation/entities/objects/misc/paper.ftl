@@ -1,2 +1,2 @@
-ent-NanoRepStationReport = station report paper
-    .desc = The document is made out of gold, but somehow you are still able to write on it.
+ent-NanoRepStationReport = станционный отчёт
+    .desc = Документ создан из золота, но каким-то образом вы всё-равно можете на нём писать.

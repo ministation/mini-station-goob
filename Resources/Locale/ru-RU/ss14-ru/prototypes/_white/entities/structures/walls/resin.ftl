@@ -1,2 +1,2 @@
-ent-WallResin = resin wall
-    .desc = Thick resin solidified into a wall.
+ent-WallResin = смоляная стена
+    .desc = Густая смола, застывшая в виде стены.
