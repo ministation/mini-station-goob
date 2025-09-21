@@ -331,8 +331,8 @@
 - type: entity
   parent: BaseStringInstrument
   id: DoubleGuitarInstrument
-  name: DoubleGuitarInstrument
-  description: DoubleGuitarInstrumentDiscription
+  name: Double-Guitar-Instrument
+  description: Double-Guitar-Instrument-desc
   components:
   - type: Instrument
     program: 120
