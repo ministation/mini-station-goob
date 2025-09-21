@@ -1,6 +1,7 @@
-ent-BaseMobXenomorphLarva = ксеноморф плевальщик
-    .desc = Специализированная особь, предназначенная для поражения целей на расстоянии. Особенно опасен в узких коридорах и замкнутых пространствах.
+ent-BaseMobXenomorphLarva = личинка ксеноморфа
+    .desc = Ранняя стадия развития, характеризующаяся небольшими размерами, червеобразной формой тела и отсутствием выраженных конечностей.
 ent-MobXenomorphLarva = { ent-BaseMobXenomorphLarva }
     .desc = { ent-BaseMobXenomorphLarva.desc }
-ent-MobXenomorphLarvaDungeon = { ent-BaseMobXenomorphDungeon }
-    .desc = { ent-BaseMobXenomorphDungeon.desc }
+ent-MobXenomorphLarvaDungeon = { ent-BaseMobXenomorphLarva }
+    .suffix = Подземелье
+    .desc = { ent-BaseMobXenomorphLarva.desc }
