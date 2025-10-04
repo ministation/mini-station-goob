@@ -160,6 +160,8 @@ uplink-high-caliber-shotgun-box-flash-slug-name = Коробка со свето
 uplink-high-caliber-shotgun-box-flash-slug-desc = 16 светошумовых патронов 8 калибра для боевого дробовика. Не оглушает тех, у кого есть средства защиты слуха.
 uplink-high-caliber-shotgun-box-sarin-name = Коробка с патронами с газом зарин 8 калибра
 uplink-high-caliber-shotgun-box-sarin-desc = 16 патронов 8 калибра с газом зарин для боевого дробовика, выпускающих небольшой плюс-образный облак газа.
+uplink-estoc-ammo-name = Магазин для винтовки (.20)
+uplink-estoc-ammo-desc = 25 патронов .20 калибра. Для Эсток.
 
 # Grenades
 
@@ -227,6 +229,8 @@ uplink-reverse-bear-trap-desc = Изощрённое орудие казни, н
 
 # Deception
 
+uplink-carpcaller-name = Телепорт космокарпа
+uplink-carpcaller-desc = Устройство, использующее инстинкты карпов, которое при закреплении, подключении к питанию и выходе в открытый космос, привлечёт диких космических карпов. Помни, что ты им не друг.
 uplink-clothing-explosive-gloves-name = Взрывчатые изолированные перчатки
 uplink-clothing-explosive-gloves-desc = Перчатки, выглядящие как обычные изолированные, но взрывающиеся через секунду после удара током, выводя из строя руки владельца.
 
