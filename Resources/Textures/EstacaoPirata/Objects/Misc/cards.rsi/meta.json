@@ -607,7 +607,7 @@
     {
         "name": "nanotrasen_box"
     },
-        {
+    {
         "name": "nanotrasen_box_open"
     },
     {
@@ -807,6 +807,8 @@
     },
     {
       "name": "kotahi_box_open"
+    },
+    {
       "name": "EvacPod_profession_box"
     },
     {
