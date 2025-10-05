@@ -119,8 +119,8 @@ public sealed partial class TTSSystem : EntitySystem
         var originalSoundData = await GenerateTTS(message, speaker);
         var obfuscatedSoundData = await GenerateTTS(obfMessage, speaker);
 
-        if (TryComp<TTSComponent>(uid, out var tts))
-            _dynamicSound.DoDynamicTTSChecks((uid, tts)); // checks sound environment and applies effects if it's required
+        //if (TryComp<TTSComponent>(uid, out var tts))
+            //dynamicSound.DoDynamicTTSChecks((uid, tts)); // checks sound environment and applies effects if it's required
 
         foreach (var pvsSession in Filter.Pvs(uid).Recipients)
         {

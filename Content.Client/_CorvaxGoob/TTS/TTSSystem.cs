@@ -97,8 +97,8 @@ public sealed partial class TTSSystem : EntitySystem
             var sourceUid = GetEntity(ev.SourceUid.Value);
             var audio = _audio.PlayEntity(audioResource.AudioStream, sourceUid, soundSpecifier, audioParams);
 
-            if (audio.HasValue)
-                _dynamicAudio.ApplyAudioEffect(audio.Value, sourceUid); // applies environment effects to audio
+            // if (audio.HasValue)
+                // _dynamicAudio.ApplyAudioEffect(audio.Value, sourceUid); // applies environment effects to audio
         }
         else
         {
