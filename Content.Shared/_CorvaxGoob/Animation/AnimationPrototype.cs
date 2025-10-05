@@ -13,6 +13,9 @@ public sealed partial class AnimationPrototype : IPrototype
     [DataField(required: true)]
     public List<AnimationTrackData> Tracks = new();
 
+    /// <summary>
+    ///     Total animation length in seconds. Will fully stop animation on ends.
+    /// </summary>
     [DataField(required: true)]
     public float Length = 0;
 }

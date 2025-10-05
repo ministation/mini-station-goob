@@ -89,6 +89,9 @@ public sealed partial class EmotePrototype : IPrototype
     public object? Event = null;
 
     // CorvaxGoob-PrototypedAnimations
+    /// <summary>
+    ///     Alternative way to execute an animation with emote via prototyped animations system.
+    /// </summary>
     [DataField]
     public List<BaseTargetEvent>? TargetEvents;
 }

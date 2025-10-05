@@ -30,6 +30,9 @@ public sealed class PrototypedAnimationPlayerSystem : EntitySystem
             PlayAnimation(GetEntity(ev.AnimatedEntity), animation);
     }
 
+    /// <summary>
+    /// Plays prototyped animation on given entity.
+    /// </summary>
     public void PlayAnimation(EntityUid entityUid, AnimationPrototype animationPrototype)
     {
         if (!entityUid.Valid)

@@ -8,4 +8,3 @@ chat-emote-name-danc = Танцевать
 chat-emote-msg-dance-1 = танцует!
 chat-emote-msg-dance-2 = пускается в пляс!
 chat-emote-msg-dance-3 = отжигает!
-

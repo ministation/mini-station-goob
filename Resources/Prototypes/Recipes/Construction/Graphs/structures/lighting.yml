@@ -39,7 +39,7 @@
             - material: Steel
               amount: 1
               doAfter: 2.0
-        - to: floorLight
+        - to: floorLight # CorvaxGoob-Start
           steps:
             - material: Steel
               amount: 3
@@ -66,7 +66,7 @@
               doAfter: 1
             - material: Steel
               amount: 3
-              doAfter: 1.0
+              doAfter: 1.0 # CorvaxGoob-End
         - to: emergencyLight
           steps:
             - material: Steel
@@ -105,7 +105,7 @@
               prototype: SheetSteel1
               amount: 1
             - !type:DeleteEntity {}
-    - node: floorLight
+    - node: floorLight # CorvaxGoob-Start
       entity: EmptyPoweredFloorTileLight
       edges:
         - to: start
@@ -118,7 +118,7 @@
           completed:
             - !type:SpawnPrototype
               prototype: SheetSteel1
-              amount: 1
+              amount: 3
             - !type:DeleteEntity {}
     - node: floorLightRGB
       entity: EmptyPoweredFloorTileLightRGB
@@ -133,8 +133,8 @@
           completed:
             - !type:SpawnPrototype
               prototype: SheetSteel1
-              amount: 1
-            - !type:DeleteEntity {}
+              amount: 3
+            - !type:DeleteEntity {} # CorvaxGoob-End
     - node: groundLight
       entity: PoweredLightPostSmallEmpty
       edges:
