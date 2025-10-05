@@ -207,6 +207,9 @@ uplink-high-caliber-shotgun-box-flash-slug-desc = 16 shells of 8 Gauge flashbang
 uplink-high-caliber-shotgun-box-sarin-name = 8 Gauge sarin gas shell box
 uplink-high-caliber-shotgun-box-sarin-desc = 16 shells of 8 Gauge sarin shells for the combat shotgun, which release a small plus-shaped cloud of sarin gas.
 
+uplink-estoc-ammo-name = Rifle Magazine (.20 rifle)
+uplink-estoc-ammo-desc = Rifle magazine with 25 rounds. Compatable with the Estoc.
+
 # Grenades
 
 uplink-sarin-gas-grenade-name = Sarin Gas Grenade
@@ -293,6 +296,9 @@ uplink-clothing-explosive-gloves-desc = Gloves that look just like normal insula
 
 uplink-syndicate-weapon-module-advanced-name = Advanced Weapons Module
 uplink-syndicate-weapon-module-advanced-desc = Upgrades a cyborg with an energy sword and an anaconda pistol.
+
+uplink-carpcaller-name = Space Carp Caller
+uplink-carpcaller-desc = A device exploiting carp psychology that, when anchored, powered, and exposed to open space, will attract wild space carp. Keep in mind you're not their friend.
 
 # Martial Arts
 
