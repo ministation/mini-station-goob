@@ -26,7 +26,7 @@ public sealed class DynamicAudioSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<AudioComponent, MoveEvent>(OnMove);
+        // SubscribeLocalEvent<AudioComponent, MoveEvent>(OnMove);
 
         Subs.CVar(_cfg, CCCVars.SoundBarotraumaMoles, value => _soundBarotraumaMoles = value);
     }
@@ -47,6 +47,8 @@ public sealed class DynamicAudioSystem : EntitySystem
     /// </summary>
     public void DoDynamicTTSChecks(Entity<TTSComponent> entity)
     {
+        return;
+
         var mixture = _atmos.GetTileMixture((entity, Transform(entity)));
 
         entity.Comp.InBarotrauma = mixture is null || mixture.TotalMoles < _soundBarotraumaMoles;
@@ -59,6 +61,8 @@ public sealed class DynamicAudioSystem : EntitySystem
     /// </summary>
     public void DoDynamicChecks(EntityUid entityUid)
     {
+        return;
+
         if (TerminatingOrDeleted(entityUid) || Paused(entityUid))
             return;
 
@@ -74,6 +78,7 @@ public sealed class DynamicAudioSystem : EntitySystem
     {
         base.Update(frameTime);
 
+        return;
         if (_timing.CurTime < _nextPlayersBarotraumaCheck)
             return;
 

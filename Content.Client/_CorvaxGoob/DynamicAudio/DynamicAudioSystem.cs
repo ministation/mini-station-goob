@@ -14,8 +14,8 @@ public sealed class DynamicAudioSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<AudioComponent, ComponentAdd>(OnAudioAdd);
-        SubscribeLocalEvent<DynamicAudioComponent, ComponentStartup>(OnEffectedAudioStartup, after: [typeof(SharedAudioSystem)]);
+        // SubscribeLocalEvent<AudioComponent, ComponentAdd>(OnAudioAdd);
+        // SubscribeLocalEvent<DynamicAudioComponent, ComponentStartup>(OnEffectedAudioStartup, after: [typeof(SharedAudioSystem)]);
     }
 
     private void OnAudioAdd(Entity<AudioComponent> ent, ref ComponentAdd args)
