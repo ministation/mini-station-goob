@@ -3,18 +3,21 @@ using Content.Server.Explosion.EntitySystems;
 
 namespace Content.Server._CorvaxGoob.Events.EntitySystems;
 
-public sealed class ExecuteTargetEventOnTriggerSystem : EntitySystem
+public sealed class ExecuteTargetEventsOnTriggerSystem : EntitySystem
 {
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<ExecuteTargetEventOnTriggerComponent, TriggerEvent>(OnTrigger);
+        SubscribeLocalEvent<ExecuteTargetEventsOnTriggerComponent, TriggerEvent>(OnTrigger);
     }
 
-    private void OnTrigger(Entity<ExecuteTargetEventOnTriggerComponent> entity, ref TriggerEvent ev)
+    private void OnTrigger(Entity<ExecuteTargetEventsOnTriggerComponent> entity, ref TriggerEvent ev)
     {
         foreach (var targetEvent in entity.Comp.Events)
+        {
+            targetEvent.Target = entity;
             RaiseLocalEvent(entity, (object) targetEvent, true);
+        }
     }
 }

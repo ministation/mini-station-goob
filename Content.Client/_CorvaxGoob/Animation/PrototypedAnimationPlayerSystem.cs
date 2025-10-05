@@ -2,6 +2,7 @@ using Content.Shared._CorvaxGoob.Animation;
 using Content.Shared._CorvaxGoob.Animation.API;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -12,6 +13,9 @@ public sealed class PrototypedAnimationPlayerSystem : EntitySystem
     [Dependency] private readonly IComponentFactory _component = default!;
     [Dependency] private readonly AnimationPlayerSystem _anim = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
+
+    private const string AnimationKey = "prototyped-animation";
 
     public override void Initialize()
     {
@@ -31,46 +35,70 @@ public sealed class PrototypedAnimationPlayerSystem : EntitySystem
         if (!entityUid.Valid)
             return;
 
-        if (_anim.HasRunningAnimation(entityUid, animationPrototype.ID))
+        if (_anim.HasRunningAnimation(entityUid, AnimationKey))
             return;
 
         var animation = new Robust.Client.Animations.Animation();
 
         foreach (var track in animationPrototype.Tracks)
         {
-            var trackData = new AnimationTrackComponentProperty();
-
-            _component.TryGetRegistration(track.ComponentType, out var registration, true);
-            if (registration is null)
-                return;
-
-            var comp = _component.GetComponent(registration.Idx);
-
-            trackData.ComponentType = comp.GetType();
-            if (trackData.ComponentType is null)
-                continue;
-
-            trackData.Property = track.Property;
-            trackData.InterpolationMode = track.InterpolationMode;
-
-            foreach (var keyFrame in track.KeyFrames)
+            if (track is AnimationTrackComponentPropertyData)
             {
-                object result = keyFrame.Type.ToLower() switch
+                var instance = (AnimationTrackComponentPropertyData) track;
+                var trackData = new AnimationTrackComponentProperty();
+
+                _component.TryGetRegistration(instance.ComponentType, out var registration, true);
+                if (registration is null)
+                    return;
+
+                var comp = _component.GetComponent(registration.Idx);
+
+                trackData.ComponentType = comp.GetType();
+                if (trackData.ComponentType is null)
+                    continue;
+
+                trackData.Property = instance.Property;
+                trackData.InterpolationMode = instance.InterpolationMode;
+
+                foreach (var keyFrame in track.KeyFrames)
                 {
-                    "int" => int.Parse(keyFrame.Value),
-                    "float" => float.Parse(keyFrame.Value),
-                    "vector2" => YamlHelpers.AsVector2(keyFrame.Value),
-                    "angle" => Angle.FromDegrees(float.Parse(keyFrame.Value)),
-                    _ => 0
-                };
+                    if (keyFrame is not KeyFrameComponentPropertyData)
+                        continue;
 
-                trackData.KeyFrames.Add(new AnimationTrackProperty.KeyFrame(result, keyFrame.Keyframe));
+                    var keyFrameInstance = (KeyFrameComponentPropertyData) keyFrame;
+
+                    object result = keyFrameInstance.Type.ToLower() switch
+                    {
+                        "int" => int.Parse(keyFrameInstance.Value),
+                        "float" => float.Parse(keyFrameInstance.Value),
+                        "vector2" => YamlHelpers.AsVector2(keyFrameInstance.Value),
+                        "angle" => Angle.FromDegrees(float.Parse(keyFrameInstance.Value)),
+                        _ => 0
+                    };
+
+                    trackData.KeyFrames.Add(new AnimationTrackProperty.KeyFrame(result, keyFrame.Keyframe));
+                }
+
+                animation.AnimationTracks.Add(trackData);
             }
+            else if (track is AnimationTrackPlaySoundData)
+            {
+                var instance = (AnimationTrackPlaySoundData) track;
+                var trackData = new AnimationTrackPlaySound();
 
-            animation.AnimationTracks.Add(trackData);
+                foreach (var keyFrame in track.KeyFrames)
+                {
+                    if (keyFrame is not KeyFrameSoundData)
+                        continue;
+
+                    trackData.KeyFrames.Add(new AnimationTrackPlaySound.KeyFrame(_audio.ResolveSound(((KeyFrameSoundData) keyFrame).Sound), keyFrame.Keyframe));
+                }
+
+                animation.AnimationTracks.Add(trackData);
+            }
         }
         animation.Length = TimeSpan.FromSeconds(animationPrototype.Length);
 
-        _anim.Play(entityUid, animation, animationPrototype.ID);
+        _anim.Play(entityUid, animation, AnimationKey);
     }
 }

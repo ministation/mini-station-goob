@@ -15,5 +15,4 @@ public sealed partial class AnimationPrototype : IPrototype
 
     [DataField(required: true)]
     public float Length = 0;
-
 }
