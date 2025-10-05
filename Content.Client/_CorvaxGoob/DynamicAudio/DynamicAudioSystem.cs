@@ -1,4 +1,3 @@
-using Content.Client.Atmos.Components;
 using Content.Shared._CorvaxGoob.DynamicAudio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
@@ -21,13 +20,9 @@ public sealed class DynamicAudioSystem : EntitySystem
 
     private void OnAudioAdd(Entity<AudioComponent> ent, ref ComponentAdd args)
     {
-        if (!_playerManager.LocalEntity.HasValue)
-            return;
-
-        if (!TryComp<EyeComponent>(_playerManager.LocalEntity.Value, out var eye))
-            return;
-
-        if (!eye.DrawFov)
+        if (!_playerManager.LocalEntity.HasValue
+            || !TryComp<EyeComponent>(_playerManager.LocalEntity.Value, out var eye)
+            || !eye.DrawFov)
             return;
 
         EnsureComp<DynamicAudioComponent>(ent);
@@ -35,10 +30,10 @@ public sealed class DynamicAudioSystem : EntitySystem
 
     private void OnEffectedAudioStartup(Entity<DynamicAudioComponent> ent, ref ComponentStartup args)
     {
-        if (!TryComp<AudioComponent>(ent.Owner, out var audio))
-            return;
-
-        if (TerminatingOrDeleted(ent) || Paused(ent) || audio.Global)
+        if (!TryComp<AudioComponent>(ent.Owner, out var audio) ||
+            TerminatingOrDeleted(ent)
+            || Paused(ent)
+            || audio.Global)
             return;
 
         _dynamicAudio.ApplyAudioEffect((ent, audio));
