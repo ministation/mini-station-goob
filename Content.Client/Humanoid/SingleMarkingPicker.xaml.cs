@@ -15,6 +15,7 @@ using Robust.Client.GameObjects;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Client.Utility;
+using static Content.Client.Corvax.SponsorOnlyHelpers; // Corvax-Sponsors
 
 namespace Content.Client.Humanoid;
 
@@ -26,7 +27,7 @@ public sealed partial class SingleMarkingPicker : BoxContainer
     private ISharedSponsorsManager? _sponsorsManager; // CorvaxGoob-Sponsors
 
     private readonly SpriteSystem _sprite;
-    
+
     /// <summary>
     ///     What happens if a marking is selected.
     ///     It will send the 'slot' (marking index)
@@ -209,7 +210,10 @@ public sealed partial class SingleMarkingPicker : BoxContainer
             item.Metadata = marking.ID;
             // CorvaxGoob-Sponsors-Start
             if (marking.SponsorOnly && _sponsorsManager != null)
+            {
+                item.Text += GetSponsorOnlySuffix();
                 item.Disabled = !_sponsorsManager.GetClientPrototypes().Contains(marking.ID);
+            }
             // CorvaxGoob-Sponsors-End
 
             if (_markings[Slot].MarkingId == id)

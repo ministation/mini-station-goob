@@ -156,6 +156,7 @@
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Content.Client._CorvaxGoob.TTS;
 using Content.Client.Humanoid;
 using Content.Client.Lobby.UI.Loadouts;
 using Content.Client.Lobby.UI.Roles;
@@ -187,11 +188,12 @@ using Robust.Client.Utility;
 using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Enums;
-using Robust.Shared.Physics;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Physics.Systems;
 using Robust.Shared.Utility;
 using Direction = Robust.Shared.Maths.Direction;
+using static Content.Client.Corvax.SponsorOnlyHelpers; // Corvax-Sponsors
+
+// Corvax-TTS
 
 namespace Content.Client.Lobby.UI
 {
@@ -220,6 +222,8 @@ namespace Content.Client.Lobby.UI
 
         // One at a time.
         private LoadoutWindow? _loadoutWindow;
+
+        private TTSTab? _ttsTab; // Corvax-TTS
 
         private bool _exporting;
         private bool _imaging;
@@ -380,18 +384,6 @@ namespace Content.Client.Lobby.UI
 
             #endregion Gender
 
-            // CorvaxGoob-TTS-Start
-            #region Voice
-
-            if (configurationManager.GetCVar(CCCVars.TTSEnabled))
-            {
-                TTSContainer.Visible = true;
-                InitializeVoice();
-            }
-
-            #endregion
-            // CorvaxGoob-TTS-End
-
             RefreshSpecies();
 
             SpeciesButton.OnItemSelected += args =>
@@ -400,36 +392,7 @@ namespace Content.Client.Lobby.UI
                 SetSpecies(_species[args.Id].ID);
                 UpdateHairPickers();
                 OnSkinColorOnValueChanged();
-                // UpdateHeightWidthSliders(); // Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
             };
-
-            /*// begin Goobstation: port EE height/width sliders
-            #region Height and Width
-
-            var prototype = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-
-            UpdateHeightWidthSliders(); // CorvaxGoob-Clearing
-            UpdateDimensions(SliderUpdate.Both);
-
-            HeightSlider.OnValueChanged += _ => UpdateDimensions(SliderUpdate.Height);
-            WidthSlider.OnValueChanged += _ => UpdateDimensions(SliderUpdate.Width);
-
-            HeightReset.OnPressed += _ =>
-            {
-                var prototype = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-                HeightSlider.Value = prototype.DefaultHeight;
-                UpdateDimensions(SliderUpdate.Height);
-            };
-
-            WidthReset.OnPressed += _ =>
-            {
-                var prototype = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-                WidthSlider.Value = prototype.DefaultWidth;
-                UpdateDimensions(SliderUpdate.Width);
-            };
-
-            #endregion Height and Width
-            // end Goobstation: port EE height/width sliders*/
 
             #region Skin
 
@@ -510,7 +473,7 @@ namespace Content.Client.Lobby.UI
                 ReloadPreview();
             };
 
-            HairStylePicker.OnSlotAdd += delegate ()
+            HairStylePicker.OnSlotAdd += delegate()
             {
                 if (Profile is null)
                     return;
@@ -530,7 +493,7 @@ namespace Content.Client.Lobby.UI
                 ReloadPreview();
             };
 
-            FacialHairPicker.OnSlotAdd += delegate ()
+            FacialHairPicker.OnSlotAdd += delegate()
             {
                 if (Profile is null)
                     return;
@@ -626,6 +589,8 @@ namespace Content.Client.Lobby.UI
 
             RefreshFlavorText();
 
+            RefreshVoiceTab(); // Corvax-TTS
+
             #region Dummy
 
             SpriteRotateLeft.OnPressed += _ =>
@@ -684,6 +649,56 @@ namespace Content.Client.Lobby.UI
                 _flavorText = null;
             }
         }
+
+        // Corvax-TTS-Start
+        #region Voice
+
+        private void RefreshVoiceTab()
+        {
+            if (!_cfgManager.GetCVar(CCCVars.TTSEnabled))
+                return;
+
+            _ttsTab = new TTSTab();
+            var children = new List<Control>();
+            foreach (var child in TabContainer.Children)
+                children.Add(child);
+
+            TabContainer.RemoveAllChildren();
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                if (i == 1) // Set the tab to the 2nd place.
+                {
+                    TabContainer.AddChild(_ttsTab);
+                }
+                TabContainer.AddChild(children[i]);
+            }
+
+            TabContainer.SetTabTitle(1, Loc.GetString("humanoid-profile-editor-voice-tab"));
+
+            _ttsTab.OnVoiceSelected += voiceId =>
+            {
+                SetVoice(voiceId);
+                _ttsTab.SetSelectedVoice(voiceId);
+            };
+
+            _ttsTab.OnPreviewRequested += voiceId =>
+            {
+                _entManager.System<TTSSystem>().RequestPreviewTTS(voiceId);
+            };
+        }
+
+        private void UpdateTTSVoicesControls()
+        {
+            if (Profile is null || _ttsTab is null)
+                return;
+
+            _ttsTab.UpdateControls(Profile, Profile.Sex);
+            _ttsTab.SetSelectedVoice(Profile.Voice);
+        }
+
+        #endregion
+        // Corvax-TTS-End
 
         /// <summary>
         /// Refreshes traits selector
@@ -812,8 +827,8 @@ namespace Content.Client.Lobby.UI
             {
                 var name = Loc.GetString(_species[i].Name);
 
-                if (_species[i].SponsorOnly) // CorvaxGoob-Sponsors
-                    name += " " + Loc.GetString("sponsor-only-text");
+                if (_species[i].SponsorOnly) // Corvax-Sponsors
+                    name += GetSponsorOnlySuffix();
 
                 SpeciesButton.AddItem(name, i);
 
@@ -866,7 +881,7 @@ namespace Content.Client.Lobby.UI
                 selector.Select(Profile?.AntagPreferences.Contains(antag.ID) == true ? 0 : 1);
 
                 var requirements = _entManager.System<SharedRoleSystem>().GetAntagRequirement(antag);
-                if (!_requirements.CheckRoleRequirements(requirements, (HumanoidCharacterProfile?) _preferencesManager.Preferences?.SelectedCharacter, out var reason))
+                if (!_requirements.CheckRoleRequirements(requirements, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason))
                 {
                     selector.LockRequirements(reason);
                     Profile = Profile?.WithAntagPreference(antag.ID, false);
@@ -974,8 +989,6 @@ namespace Content.Client.Lobby.UI
             UpdateHairPickers();
             UpdateCMarkingsHair();
             UpdateCMarkingsFacialHair();
-            // UpdateHeightWidthSliders(); // Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
-            // UpdateWeight(); // Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
 
             RefreshAntags();
             RefreshJobs();
@@ -1129,7 +1142,7 @@ namespace Content.Client.Lobby.UI
                     icon.Texture = _sprite.Frame0(jobIcon.Icon);
                     selector.Setup(items, job.LocalizedName, 200, job.LocalizedDescription, icon, job.Guides);
 
-                    if (!_requirements.IsAllowed(job, (HumanoidCharacterProfile?) _preferencesManager.Preferences?.SelectedCharacter, out var reason))
+                    if (!_requirements.IsAllowed(job, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason))
                     {
                         selector.LockRequirements(reason);
                     }
@@ -1156,7 +1169,7 @@ namespace Content.Client.Lobby.UI
                                 continue;
 
                             // Lower any other high priorities to medium.
-                            other.Select((int) JobPriority.Medium);
+                            other.Select((int)JobPriority.Medium);
                             Profile = Profile?.WithJobPriority(jobId, JobPriority.Medium);
                         }
 
@@ -1228,7 +1241,7 @@ namespace Content.Client.Lobby.UI
 
             _loadoutWindow = new LoadoutWindow(Profile, roleLoadout, roleLoadoutProto, _playerManager.LocalSession, collection)
             {
-                Title = jobProto?.ID + "-loadout",
+                Title = Loc.GetString("loadout-window-title-loadout", ("job", $"{jobProto?.LocalizedName}")), //TODO: check
             };
 
             // Refresh the buttons etc.
@@ -1300,88 +1313,88 @@ namespace Content.Client.Lobby.UI
             switch (skin)
             {
                 case HumanoidSkinColor.HumanToned:
+                {
+                    if (!Skin.Visible)
                     {
-                        if (!Skin.Visible)
-                        {
-                            Skin.Visible = true;
-                            RgbSkinColorContainer.Visible = false;
-                        }
-
-                        var color = SkinColor.HumanSkinTone((int) Skin.Value);
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));//
-                        break;
+                        Skin.Visible = true;
+                        RgbSkinColorContainer.Visible = false;
                     }
+
+                    var color = SkinColor.HumanSkinTone((int) Skin.Value);
+
+                    Markings.CurrentSkinColor = color;
+                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));//
+                    break;
+                }
                 case HumanoidSkinColor.Hues:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        Markings.CurrentSkinColor = _rgbSkinColorSelector.Color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(_rgbSkinColorSelector.Color));
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    Markings.CurrentSkinColor = _rgbSkinColorSelector.Color;
+                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(_rgbSkinColorSelector.Color));
+                    break;
+                }
                 case HumanoidSkinColor.TintedHues:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        var color = SkinColor.TintedHues(_rgbSkinColorSelector.Color);
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    var color = SkinColor.TintedHues(_rgbSkinColorSelector.Color);
+
+                    Markings.CurrentSkinColor = color;
+                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                    break;
+                }
                 case HumanoidSkinColor.VoxFeathers:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        var color = SkinColor.ClosestVoxColor(_rgbSkinColorSelector.Color);
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    var color = SkinColor.ClosestVoxColor(_rgbSkinColorSelector.Color);
+
+                    Markings.CurrentSkinColor = color;
+                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                    break;
+                }
                 case HumanoidSkinColor.NoColor:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        var color = Color.FromName("White");
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    var color = Color.FromName("White");
+
+                    Markings.CurrentSkinColor = color;
+                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                    break;
+                }
                 // Goobstation Section Start - Tajaran
                 case HumanoidSkinColor.AnimalFur: // Goobstation - Tajaran
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        var color = SkinColor.ClosestAnimalFurColor(_rgbSkinColorSelector.Color);
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    var color = SkinColor.ClosestAnimalFurColor(_rgbSkinColorSelector.Color);
+
+                    Markings.CurrentSkinColor = color;
+                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                    break;
+                }
                 // Goobstation Section End - Tajaran
             }
 
@@ -1466,12 +1479,6 @@ namespace Content.Client.Lobby.UI
             UpdateSexControls(); // update sex for new species
             UpdateSpeciesGuidebookIcon();
             ReloadPreview();
-            /*
-            // begin Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
-            // Changing species provides inaccurate sliders without these
-            UpdateHeightWidthSliders();
-            UpdateWeight();
-            // end Goobstation: port EE height/width sliders */
         }
 
         private void SetName(string newName)
@@ -1490,22 +1497,6 @@ namespace Content.Client.Lobby.UI
             Profile = Profile?.WithSpawnPriorityPreference(newSpawnPriority);
             SetDirty();
         }
-
-        /*// begin Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
-        private void SetProfileHeight(float height)
-        {
-            Profile = Profile?.WithHeight(height);
-            ReloadProfilePreview();
-            IsDirty = true;
-        }
-
-        private void SetProfileWidth(float width)
-        {
-            Profile = Profile?.WithWidth(width);
-            ReloadProfilePreview();
-            IsDirty = true;
-        }
-        // end Goobstation: port EE height/width sliders*/
 
         public bool IsDirty
         {
@@ -1594,80 +1585,79 @@ namespace Content.Client.Lobby.UI
             switch (skin)
             {
                 case HumanoidSkinColor.HumanToned:
+                {
+                    if (!Skin.Visible)
                     {
-                        if (!Skin.Visible)
-                        {
-                            Skin.Visible = true;
-                            RgbSkinColorContainer.Visible = false;
-                        }
-
-                        Skin.Value = SkinColor.HumanSkinToneFromColor(Profile.Appearance.SkinColor);
-
-                        break;
+                        Skin.Visible = true;
+                        RgbSkinColorContainer.Visible = false;
                     }
+
+                    Skin.Value = SkinColor.HumanSkinToneFromColor(Profile.Appearance.SkinColor);
+
+                    break;
+                }
                 case HumanoidSkinColor.Hues:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        // set the RGB values to the direct values otherwise
-                        _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    // set the RGB values to the direct values otherwise
+                    _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
+                    break;
+                }
                 case HumanoidSkinColor.TintedHues:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        // set the RGB values to the direct values otherwise
-                        _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    // set the RGB values to the direct values otherwise
+                    _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
+                    break;
+                }
                 case HumanoidSkinColor.VoxFeathers:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        _rgbSkinColorSelector.Color = SkinColor.ClosestVoxColor(Profile.Appearance.SkinColor);
-
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    _rgbSkinColorSelector.Color = SkinColor.ClosestVoxColor(Profile.Appearance.SkinColor);
+
+                    break;
+                }
                 case HumanoidSkinColor.NoColor:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        _rgbSkinColorSelector.Color = Color.FromName("White");
-
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    _rgbSkinColorSelector.Color = Color.FromName("White");
+
+                    break;
+                }
                 // Goobstation Section Start - Tajaran
                 case HumanoidSkinColor.AnimalFur: // Goobstation - Tajaran
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            Skin.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        _rgbSkinColorSelector.Color = SkinColor.ClosestAnimalFurColor(Profile.Appearance.SkinColor);
-                        break;
+                        Skin.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
+
+                    _rgbSkinColorSelector.Color = SkinColor.ClosestAnimalFurColor(Profile.Appearance.SkinColor);
+                    break;
+                }
                 // Goobstation Section End - Tajaran
             }
-
         }
 
         public void UpdateSpeciesGuidebookIcon()
@@ -1720,107 +1710,6 @@ namespace Content.Client.Lobby.UI
 
             SpawnPriorityButton.SelectId((int) Profile.SpawnPriority);
         }
-
-        /*// begin Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
-        private void UpdateHeightWidthSliders()
-        {
-            if (Profile is null)
-                return;
-
-            var species = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-
-            // we increase the min/max values of the sliders before we set their value, just so that we don't accidentally clamp down on a value loaded from a profile when we shouldn't
-            HeightSlider.MinValue = 0;
-            HeightSlider.MaxValue = 2;
-            HeightSlider.SetValueWithoutEvent(Profile?.Height ?? species.DefaultHeight);
-            HeightSlider.MinValue = species.MinHeight;
-            HeightSlider.MaxValue = species.MaxHeight;
-
-            WidthSlider.MinValue = 0;
-            WidthSlider.MaxValue = 2;
-            WidthSlider.SetValueWithoutEvent(Profile?.Width ?? species.DefaultWidth);
-            WidthSlider.MinValue = species.MinWidth;
-            WidthSlider.MaxValue = species.MaxWidth;
-
-            var height = MathF.Round(species.AverageHeight * HeightSlider.Value);
-            HeightLabel.Text = Loc.GetString("humanoid-profile-editor-height-label", ("height", (int) height));
-
-            var width = MathF.Round(species.AverageWidth * WidthSlider.Value);
-            WidthLabel.Text = Loc.GetString("humanoid-profile-editor-width-label", ("width", (int) width));
-
-            UpdateDimensions(SliderUpdate.Both);
-        }
-
-        private enum SliderUpdate
-        {
-            Height,
-            Width,
-            Both
-        }
-
-        private void UpdateDimensions(SliderUpdate updateType)
-        {
-            if (Profile == null)
-                return;
-
-            var species = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-
-            var heightValue = Math.Clamp(HeightSlider.Value, species.MinHeight, species.MaxHeight);
-            var widthValue = Math.Clamp(WidthSlider.Value, species.MinWidth, species.MaxWidth);
-            var sizeRatio = species.SizeRatio;
-            var ratio = heightValue / widthValue;
-
-            if (updateType == SliderUpdate.Height || updateType == SliderUpdate.Both)
-                if (ratio < 1 / sizeRatio || ratio > sizeRatio)
-                    widthValue = heightValue / (ratio < 1 / sizeRatio ? (1 / sizeRatio) : sizeRatio);
-
-            if (updateType == SliderUpdate.Width || updateType == SliderUpdate.Both)
-                if (ratio < 1 / sizeRatio || ratio > sizeRatio)
-                    heightValue = widthValue * (ratio < 1 / sizeRatio ? (1 / sizeRatio) : sizeRatio);
-
-            heightValue = Math.Clamp(heightValue, species.MinHeight, species.MaxHeight);
-            widthValue = Math.Clamp(widthValue, species.MinWidth, species.MaxWidth);
-
-            HeightSlider.SetValueWithoutEvent(heightValue);
-            WidthSlider.SetValueWithoutEvent(widthValue);
-
-            SetProfileHeight(heightValue);
-            SetProfileWidth(widthValue);
-
-            var height = MathF.Round(species.AverageHeight * HeightSlider.Value);
-            HeightLabel.Text = Loc.GetString("humanoid-profile-editor-height-label", ("height", (int) height));
-
-            var width = MathF.Round(species.AverageWidth * WidthSlider.Value);
-            WidthLabel.Text = Loc.GetString("humanoid-profile-editor-width-label", ("width", (int) width));
-
-            UpdateWeight();
-        }
-
-        private void UpdateWeight()
-        {
-            if (Profile == null)
-                return;
-
-            var species = _species.Find(x => x.ID == Profile.Species) ?? _species.First();
-            //  TODO: Remove obsolete method
-            _prototypeManager.Index(species.Prototype).TryGetComponent<FixturesComponent>(out var fixture, _entManager.ComponentFactory);
-
-            if (fixture != null)
-            {
-                var avg = (Profile.Width + Profile.Height) / 2;
-                var weight = FixtureSystem.GetMassData(fixture.Fixtures["fix1"].Shape, fixture.Fixtures["fix1"].Density).Mass * avg;
-                WeightLabel.Text = Loc.GetString("humanoid-profile-editor-weight-label", ("weight", (int) weight));
-            }
-            else // Whelp, the fixture doesn't exist, guesstimate it instead
-                WeightLabel.Text = Loc.GetString("humanoid-profile-editor-weight-label", ("weight", (int) 71));
-
-            // SpriteViewS.InvalidateMeasure();
-            // SpriteViewN.InvalidateMeasure();
-            // SpriteViewE.InvalidateMeasure();
-            // SpriteViewW.InvalidateMeasure();
-            SpriteView.InvalidateMeasure();
-        }
-        // end Goobstation: port EE height/width sliders*/
 
         private void UpdateHairPickers()
         {

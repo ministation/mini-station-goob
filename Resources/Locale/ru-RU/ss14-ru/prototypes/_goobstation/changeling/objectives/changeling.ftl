@@ -1,9 +1,7 @@
-ent-BaseChangelingObjective = { ent-BaseObjective }
-    .desc = { ent-BaseObjective.desc }
+
 ent-BaseChangelingSyndicateObjective = { ent-BaseObjective }
     .desc = { ent-BaseObjective.desc }
-ent-ChangelingSurviveObjective = Выжить
-    .desc = Я должен выжить любой ценой.
+
 ent-ChangelingAbsorbObjective = { ent-BaseChangelingObjective }
     .desc = { ent-BaseChangelingObjective.desc }
 ent-ChangelingAbsorbOtherObjective = { ent-BaseChangelingObjective }

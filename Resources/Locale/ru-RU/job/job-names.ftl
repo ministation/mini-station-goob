@@ -4,7 +4,7 @@ job-name-cadet = кадет СБ
 job-name-hos = глава службы безопасности
 job-name-detective = детектив
 job-name-brigmedic = бригмедик
-job-name-borg = борг
+job-name-borg = киборг
 job-name-scientist = учёный
 job-name-research-assistant = научный ассистент
 job-name-rd = научный руководитель
@@ -49,6 +49,7 @@ job-name-ertjanitor = уборщик ОБР
 job-name-boxer = боксёр
 job-name-zookeeper = зоотехник
 job-name-visitor = посетитель
+job-name-cluwne = клувень
 # unused jobs
 # these are required for the agent ID job icon tooltips
 # I am keeping them for roleplaying opportunities
@@ -67,7 +68,7 @@ job-title-universal = универсальная
 # Role timers - Make these alphabetical or I cut you
 JobAtmosphericTechnician = атмосферный техник
 JobBartender = бармен
-JobBorg = борг
+JobBorg = киборг
 JobBotanist = ботаник
 JobBoxer = боксёр
 JobCaptain = капитан

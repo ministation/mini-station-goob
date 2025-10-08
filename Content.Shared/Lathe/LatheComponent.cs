@@ -147,6 +147,34 @@ namespace Content.Shared.Lathe
         }
     }
 
+    [Serializable]
+    public sealed partial class LatheRecipeBatch
+    {
+        public ProtoId<LatheRecipePrototype> Recipe;
+        public int ItemsPrinted;
+        public int ItemsRequested;
+
+        public LatheRecipeBatch(ProtoId<LatheRecipePrototype> recipe, int itemsPrinted, int itemsRequested)
+        {
+            Recipe = recipe;
+            ItemsPrinted = itemsPrinted;
+            ItemsRequested = itemsRequested;
+        }
+    }
+
+    //Corvax
+    [Serializable]
+    public sealed partial class LatheGetResultEvent : EntityEventArgs
+    {
+        public readonly EntityUid ResultItem;
+
+        public LatheGetResultEvent(EntityUid result)
+        {
+            ResultItem = result;
+        }
+    }
+    //Corvax
+
     /// <summary>
     /// Event raised on a lathe when it starts producing a recipe.
     /// </summary>
