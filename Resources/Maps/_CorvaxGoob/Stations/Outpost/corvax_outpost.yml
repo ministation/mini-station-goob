@@ -21611,7 +21611,6 @@ entities:
       devices:
       - 7606
       - 7634
-      - 382
       - 9701
       - 9814
   - uid: 62
@@ -24123,14 +24122,6 @@ entities:
     - type: Transform
       pos: 19.5,-44.5
       parent: 2
-  - uid: 382
-    components:
-    - type: Transform
-      pos: 7.5,0.5
-      parent: 2
-    - type: DeviceNetwork
-      deviceLists:
-      - 61
   - uid: 383
     components:
     - type: Transform
