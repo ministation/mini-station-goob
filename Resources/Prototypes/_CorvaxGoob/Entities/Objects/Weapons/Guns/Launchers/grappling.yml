@@ -1,0 +1,37 @@
+- type: entity
+  parent: BaseItem
+  id: WeaponGrapplingGunHunter
+  name: hunter grappling gun
+  description: A specialized grappling gun that hooks onto living targets and reels them in.
+  components:
+    - type: AmmoCounter
+    - type: GrapplingGunHunter
+      maxRange: 12
+      requireWieldedHands: true
+    - type: Gun
+      soundGunshot: /Audio/Weapons/Guns/Gunshots/harpoon.ogg
+      fireRate: 0.5
+      clumsyProof: true
+    - type: Wieldable
+      unwieldOnUse: false
+    - type: GunRequiresWield
+    - type: BasicEntityAmmoProvider
+      proto: GrapplingHookHunter
+      capacity: 1
+    - type: Sprite
+      sprite: _CorvaxGoob/Objects/Weapons/Guns/Launchers/grappling_gun.rsi
+      layers:
+        - state: base
+        - state: base-unshaded
+          map: [ "unshaded" ]
+          visible: true
+    - type: UseDelay
+      delay: 1.5
+    - type: Appearance
+    - type: GenericVisualizer
+      visuals:
+        enum.TetherVisualsStatus.Key:
+          unshaded:
+            True: { state: base-unshaded }
+            False: { state: base-unshaded-off }
+    - type: PacifismAllowedGun
