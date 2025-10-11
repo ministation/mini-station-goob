@@ -71,7 +71,6 @@
   recipes:
   - SynthesizerInstrument
   - PushHorn
-  - DoubleGuitarInstrument
 
 - type: latheRecipePack
   id: ServiceBoards

@@ -21,5 +21,3 @@ ent-ViolaInstrument = виола
     .desc = Как скрипка, только хуже.
 ent-CelloInstrument = виолончель
     .desc = Пижоны называют такие chell'ями.
-ent-FierGuitarInstrument = Огненная рок-гитара!
-    .desc = Сожги эту сцену!
