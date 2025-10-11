@@ -142,8 +142,8 @@ namespace Content.Client.Lobby
 
             var chatController = _userInterfaceManager.GetUIController<ChatUIController>();
             _gameTicker = _entityManager.System<ClientGameTicker>();
-            _contentAudioSystem = _entityManager.System<ContentAudioSystem>();
-            _contentAudioSystem.LobbySoundtrackChanged += UpdateLobbySoundtrackInfo;
+            //_contentAudioSystem = _entityManager.System<ContentAudioSystem>();
+            //_contentAudioSystem.LobbySoundtrackChanged += UpdateLobbySoundtrackInfo;
             _sawmill = Logger.GetSawmill("lobby");
 
             chatController.SetMainChat(true);
@@ -154,9 +154,9 @@ namespace Content.Client.Lobby
             var lobbyNameCvar = _cfg.GetCVar(CCVars.ServerLobbyName);
             var serverName = _baseClient.GameInfo?.ServerName ?? string.Empty;
 
-            Lobby.ServerName.Text = string.IsNullOrEmpty(lobbyNameCvar)
-                ? Loc.GetString("ui-lobby-title", ("serverName", serverName))
-                : lobbyNameCvar;
+            // Lobby.ServerName.Text = string.IsNullOrEmpty(lobbyNameCvar)
+            //     ? Loc.GetString("ui-lobby-title", ("serverName", serverName))
+            //     : lobbyNameCvar;
 
             var width = _cfg.GetCVar(CCVars.ServerLobbyRightPanelWidth);
             Lobby.RightSide.SetWidth = width;
@@ -182,7 +182,7 @@ namespace Content.Client.Lobby
             _gameTicker.InfoBlobUpdated -= UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated -= LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated -= LobbyLateJoinStatusUpdated;
-            _contentAudioSystem.LobbySoundtrackChanged -= UpdateLobbySoundtrackInfo;
+            //_contentAudioSystem.LobbySoundtrackChanged -= UpdateLobbySoundtrackInfo;
             // _serverCur.BalanceChange -= UpdatePlayerBalance; // Goobstation - Goob Coin
 
             _voteManager.ClearPopupContainer();
@@ -274,7 +274,6 @@ namespace Content.Client.Lobby
 
         private void LobbyStatusUpdated()
         {
-            UpdateLobbyBackground();
             UpdateLobbyUi();
         }
 
@@ -332,64 +331,64 @@ namespace Content.Client.Lobby
                 Lobby!.PlaytimeComment.Visible = false;
         }
 
-        private void UpdateLobbySoundtrackInfo(LobbySoundtrackChangedEvent ev)
-        {
-            if (ev.SoundtrackFilename == null)
-            {
-                Lobby!.LobbySong.SetMarkup(Loc.GetString("lobby-state-song-no-song-text"));
-            }
-            else if (
-                ev.SoundtrackFilename != null
-                && _resourceCache.TryGetResource<AudioResource>(ev.SoundtrackFilename, out var lobbySongResource)
-                )
-            {
-                var lobbyStream = lobbySongResource.AudioStream;
+        // private void UpdateLobbySoundtrackInfo(LobbySoundtrackChangedEvent ev)
+        // {
+        //     if (ev.SoundtrackFilename == null)
+        //     {
+        //         Lobby!.LobbySong.SetMarkup(Loc.GetString("lobby-state-song-no-song-text"));
+        //     }
+        //     else if (
+        //         ev.SoundtrackFilename != null
+        //         && _resourceCache.TryGetResource<AudioResource>(ev.SoundtrackFilename, out var lobbySongResource)
+        //         )
+        //     {
+        //         var lobbyStream = lobbySongResource.AudioStream;
 
-                var title = string.IsNullOrEmpty(lobbyStream.Title)
-                    ? Loc.GetString("lobby-state-song-unknown-title")
-                    : lobbyStream.Title;
+        //         var title = string.IsNullOrEmpty(lobbyStream.Title)
+        //             ? Loc.GetString("lobby-state-song-unknown-title")
+        //             : lobbyStream.Title;
 
-                var artist = string.IsNullOrEmpty(lobbyStream.Artist)
-                    ? Loc.GetString("lobby-state-song-unknown-artist")
-                    : lobbyStream.Artist;
+        //         var artist = string.IsNullOrEmpty(lobbyStream.Artist)
+        //             ? Loc.GetString("lobby-state-song-unknown-artist")
+        //             : lobbyStream.Artist;
 
-                var markup = Loc.GetString("lobby-state-song-text",
-                    ("songTitle", title),
-                    ("songArtist", artist));
+        //         var markup = Loc.GetString("lobby-state-song-text",
+        //             ("songTitle", title),
+        //             ("songArtist", artist));
 
-                Lobby!.LobbySong.SetMarkup(markup);
-            }
-        }
+        //         Lobby!.LobbySong.SetMarkup(markup);
+        //     }
+        // }
 
         // Goobstation - heavily modified to add credits for lobby backgrounds
-        private void UpdateLobbyBackground()
-        {
-            if (_gameTicker.LobbyBackground != null)
-            {
-                var lobbyBackground = _protoMan.Index(_gameTicker.LobbyBackground.Value);
-                Lobby!.Background.Texture = _resourceCache.GetResource<TextureResource>(lobbyBackground.Background);
+        // private void UpdateLobbyBackground()
+        // {
+        //     if (_gameTicker.LobbyBackground != null)
+        //     {
+        //         var lobbyBackground = _protoMan.Index(_gameTicker.LobbyBackground.Value);
+        //         Lobby!.Background.Texture = _resourceCache.GetResource<TextureResource>(lobbyBackground.Background);
 
-                var name = string.IsNullOrEmpty(lobbyBackground.Name)
-                    ? Loc.GetString("lobby-state-background-unknown-title")
-                    : lobbyBackground.Name;
+        //         var name = string.IsNullOrEmpty(lobbyBackground.Name)
+        //             ? Loc.GetString("lobby-state-background-unknown-title")
+        //             : lobbyBackground.Name;
 
-                var artist = string.IsNullOrEmpty(lobbyBackground.Artist)
-                    ? Loc.GetString("lobby-state-background-unknown-artist")
-                    : lobbyBackground.Artist;
+        //         var artist = string.IsNullOrEmpty(lobbyBackground.Artist)
+        //             ? Loc.GetString("lobby-state-background-unknown-artist")
+        //             : lobbyBackground.Artist;
 
-                var markup = Loc.GetString("lobby-state-background-text",
-                    ("backgroundName", name),
-                    ("backgroundArtist", artist));
+        //         var markup = Loc.GetString("lobby-state-background-text",
+        //             ("backgroundName", name),
+        //             ("backgroundArtist", artist));
 
-                Lobby!.LobbyBackground.SetMarkup(markup);
+        //         Lobby!.LobbyBackground.SetMarkup(markup);
 
-                return;
-            }
+        //         return;
+        // //     }
 
-            _sawmill.Warning("_gameTicker.LobbyBackground was null! No lobby background selected.");
-            Lobby!.Background.Texture = null;
-            Lobby!.LobbyBackground.SetMarkup(Loc.GetString("lobby-state-background-no-background-text"));
-        }
+        //     _sawmill.Warning("_gameTicker.LobbyBackground was null! No lobby background selected.");
+        //     Lobby!.Background.Texture = null;
+        //     Lobby!.LobbyBackground.SetMarkup(Loc.GetString("lobby-state-background-no-background-text"));
+        // }
 
         private void SetReady(bool newReady)
         {
