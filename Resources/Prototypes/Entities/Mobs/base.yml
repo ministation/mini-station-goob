@@ -139,6 +139,8 @@
     penetrateDamage: 15 # Kill million mices
     damagePenalty: 0.05
   - type: StunVisuals
+  - type: RCDDeconstructable # CorvaxGoob-RCD-update
+    deconstructable: false
 
 - type: entity
   save: false
