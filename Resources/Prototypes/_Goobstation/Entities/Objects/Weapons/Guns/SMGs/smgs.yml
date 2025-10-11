@@ -24,10 +24,10 @@
     shape:
     - 0,0,2,1
   - type: Gun
-    fireRate: 15
-    projectileSpeed: 20 # half regular bullet speed
-    minAngle: 23
-    maxAngle: 66
+    fireRate: 12.5 # Reduced fireRate and increased projectileSpeed
+    projectileSpeed: 30
+    minAngle: 15 # More controlled than before
+    maxAngle: 55
     angleDecay: -8 # Intentionally negative, loses accuracy while not shooting
     angleIncrease: -1.15 # Intentionally negative, gains accuracy while shooting
     availableModes:
@@ -39,7 +39,7 @@
   - type: ItemSlots
     slots:
       gun_magazine:
-        name: Magazine
+        # name: Magazine # CorvaxGoob-Loc-in-UI
         startingItem: MagazineLowCaliberM7S
         insertSound: /Audio/Weapons/Guns/MagIn/smg_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/smg_magout.ogg
@@ -49,7 +49,7 @@
           - MagazineLowCaliberM7S
         whitelistFailPopup: gun-magazine-whitelist-fail
       gun_chamber:
-        name: Chamber
+        # name: Chamber # CorvaxGoob-Loc-in-UI
         startingItem: CartridgeLowCaliber
         priority: 1
         whitelist:

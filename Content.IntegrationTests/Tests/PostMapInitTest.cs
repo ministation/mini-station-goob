@@ -100,6 +100,7 @@
 // SPDX-FileCopyrightText: 2025 Tayrtahn <tayrtahn@gmail.com>
 // SPDX-FileCopyrightText: 2025 Ted Lukin <66275205+pheenty@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 TheBorzoiMustConsume <197824988+TheBorzoiMustConsume@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 TytosB <dunlaintytos@yahoo.com>
 // SPDX-FileCopyrightText: 2025 Unisol <1929445+Unisol@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Unlumination <144041835+Unlumy@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 Vortebo <64214314+Vortebo@users.noreply.github.com>
@@ -202,60 +203,63 @@ namespace Content.IntegrationTests.Tests
             "Fland",
             "Meta",
             "Packed",
-            "Cluster", // Goobstation - Readds Cluster
+            //"Cluster", // Goobstation - Readds Cluster // Corvax-Goob-Maps-deleted
             "Omega",
             "Bagel",
             "CentComm",
             "Box",
-            "Europa", // Goobstation - Readds Europa
-            "Atlas", // Goobstation - Readds Atlas
+            //"Europa", // Goobstation - Readds Europa // Corvax-Goob-Maps-deleted
+            //"Atlas", // Goobstation - Readds Atlas // Corvax-Goob-Maps-deleted
             "Core",
             "Marathon",
             "MeteorArena",
             "Saltern",
             "Reach",
-            "Origin", // Goobstation - Readds Origin
+            //"Origin", // Goobstation - Readds Origin // Corvax-Goob-Maps-deleted
             "Train",
             "Oasis",
             "Cog", // Goobstation - Readd Cog
-            "FlandHighPop", // Goobstation - add highpop maps
+            //"FlandHighPop", // Goobstation - add highpop maps // Corvax-Goob-Maps-deleted
             "OriginHighPop",
             "OasisHighPop",
-            "Barratry", // Goobstation - add Barratry
-            "Kettle", // Goobstation - add Kettle
-            "Submarine", // Goobstation - add Submarine
-            "Lambda", // Goobstation - add Lambda
-            "Leonid", // Goobstation - add Leonid
+            //"Barratry", // Goobstation - add Barratry // Corvax-Goob-Maps-deleted
+            //"Kettle", // Goobstation - add Kettle // Corvax-Goob-Maps-deleted
+            //"Submarine", // Goobstation - add Submarine // Corvax-Goob-Maps-deleted
+            //"Lambda", // Goobstation - add Lambda // Corvax-Goob-Maps-deleted
+            //"Leonid", // Goobstation - add Leonid // Corvax-Goob-Maps-deleted
             "Amber",
-            "Gate", // Goobstation - goob changes
+            //"Gate", // Goobstation - goob changes // Corvax-Goob-Maps-deleted
             "Lavatest", // Lavaland Change
             "Loop",
-            "Delta", // Goobstation - add Delta
+            //"Delta", // Goobstation - add Delta // Corvax-Goob-Maps-deleted
             "dm01-entryway",
-            "Chloris", // Goobstation
+            //"Chloris", // Goobstation // Corvax-Goob-Maps-deleted
             // Corvax-Goob-Maps-start
             "CorvaxAstra",
             "CorvaxBox",
-            "CorvaxDelta",
+            //"CorvaxDelta",
             "CorvaxGlacier",
             "CorvaxPilgrim",
             "CorvaxAmber",
             "CorvaxBagel",
-            "CorvaxMarathon",
+            //"CorvaxMarathon",
             "CorvaxOutpost",
             "CorvaxPaper",
-            "CorvaxPearl",
+            //"CorvaxPearl",
             "CorvaxVoid",
             "CorvaxMaus",
             "CorvaxOmega",
             "CorvaxPacked",
             "CorvaxTushkan",
-            "CorvaxAvrite",
+            //"CorvaxAvrite",
             "CorvaxAwesome",
             "CorvaxChloris",
             "CorvaxSilly",
             // Corvax-Goob-Maps-end
+            //"Serpentcrest", // Goobstation // Corvax-Goob-Maps-deleted
         };
+
+        private static readonly ProtoId<EntityCategoryPrototype> DoNotMapCategory = "DoNotMap";
 
         /// <summary>
         /// Asserts that specific files have been saved as grids and not maps.
@@ -450,7 +454,7 @@ namespace Content.IntegrationTests.Tests
                 return;
 
             var yamlEntities = node["entities"];
-            if (!protoManager.TryIndex<EntityCategoryPrototype>("DoNotMap", out var dnmCategory))
+            if (!protoManager.TryIndex(DoNotMapCategory, out var dnmCategory))
                 return;
 
             Assert.Multiple(() =>

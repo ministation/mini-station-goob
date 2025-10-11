@@ -195,6 +195,7 @@
     canShuttle: false
     title: comms-console-announcement-title-station-ai
     color: "#5ed7aa"
+    sound: /Audio/_CorvaxGoob/Announcements/aiannounce.ogg # CorvaxGoob-Announcements
   - type: ShowJobIcons
   - type: ShowHealthIcons #Goobstation
   - type: ShowHealthBars #Goobstation
@@ -321,6 +322,7 @@
         acts: [ "Destruction" ]
   - type: ApcPowerReceiver
     powerLoad: 1000
+    needsPower: false
   - type: StationAiCore
   - type: StationAiVision
   - type: InteractionOutline
@@ -349,7 +351,6 @@
     listeningRange: 0
     speakerVolume: Speak
     unlistedNumber: true
-    requiresPower: false
   - type: Holopad
   - type: StationAiWhitelist
   - type: UserInterface

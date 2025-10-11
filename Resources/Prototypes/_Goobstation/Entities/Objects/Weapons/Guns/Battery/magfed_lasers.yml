@@ -27,7 +27,7 @@
   - type: ItemSlots
     slots:
       gun_magazine:
-        name: Magazine
+        # name: Magazine # CorvaxGoob-Loc-in-UI
         whitelist:
           tags:
           - MilitaryPowerCellSMG
@@ -44,8 +44,6 @@
     magState: mag
     steps: 5
     zeroVisible: true
-  - type: Multishot
-    spreadMultiplier: 1.2
   - type: PhysicalComposition
     materialComposition:
       Steel: 500
@@ -86,7 +84,7 @@
   - type: ItemSlots
     slots:
       gun_magazine:
-        name: Magazine
+        # name: Magazine # CorvaxGoob-Loc-in-UI
         whitelist:
           tags:
           - MilitaryPowerCellSniper
@@ -153,7 +151,7 @@
   - type: ItemSlots
     slots:
       gun_magazine:
-        name: Magazine
+        # name: Magazine # CorvaxGoob-Loc-in-UI
         whitelist:
           tags:
           - MilitaryPowerCellRevolver
@@ -168,8 +166,6 @@
       map: ["enum.GunVisualLayers.Mag"]
     - state: off
       map: ["base"]
-  - type: Multishot
-    spreadMultiplier: 1.2
   - type: PhysicalComposition
     materialComposition:
       Steel: 250
@@ -243,8 +239,6 @@
     price: 500
   - type: UseDelay
     delay: 1
-  - type: Multishot
-    spreadMultiplier: 1.4
   - type: Appearance
   - type: Cautery
     speed: 0.9

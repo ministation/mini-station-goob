@@ -25,7 +25,6 @@ namespace Content.Shared.Silicons.Borgs;
 [Prototype]
 public sealed partial class BorgTypePrototype : IPrototype
 {
-    [ValidatePrototypeId<SoundCollectionPrototype>]
     private static readonly ProtoId<SoundCollectionPrototype> DefaultFootsteps = new("FootstepBorg");
 
     [IdDataField]
@@ -169,4 +168,12 @@ public sealed partial class BorgTypePrototype : IPrototype
     /// </summary>
     [DataField]
     public ProtoId<SiliconLawsetPrototype>? Lawset;
+
+    // CorvaxGoob-TTS-start
+    /// <summary>
+    /// TTS voice.
+    /// </summary>
+    [DataField]
+    public string? VoicePrototypeId { get; set; } = "TrainingRobot";
+    // CorvaxGoob-TTS-end
 }

@@ -10,7 +10,6 @@
   id: IPC
   name: species-name-ipc
   roundStart: true
-  sponsorOnly: true # CorvaxGoob-Sponsors
   prototype: MobIPC
   sprites: MobIPCSprites
   markingLimits: MobIPCMarkingLimits
@@ -61,6 +60,9 @@
       points: 1
       required: true
       defaultMarkings: [ MobIPCHeadDefault ]
+    Hair:
+      points: 1
+      required: false
     Face:
       points: 1
       required: false
