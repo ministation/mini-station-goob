@@ -20,14 +20,38 @@
       "name": "light_overlay"
     },
     {
-      "name": "pda-blueshield"
+      "name": "pda-blueshield",
+      "delays": [
+        [
+          0.3,
+          0.3,
+          0.3,
+          0.3
+        ]
+      ]
     },
-	{
-	  "name": "pda-deathsquad"
-	},
-	{
-	  "name": "pda-highcommand"
-	},
+        {
+      "name": "pda-highcommand",
+      "delays": [
+        [
+          0.3,
+          0.3,
+          0.3,
+          0.3
+        ]
+      ]
+    },
+    {
+      "name": "pda-deathsquad",
+      "delays": [
+        [
+          0.3,
+          0.3,
+          0.3,
+          0.3
+        ]
+      ]
+    },
     {
       "name": "pda",
       "_comment": "YAML linter appeasement regarding chameleon PDA, removal TODO. Refer to /Resources/Textures/Objects/Devices/pda.rsi/meta.json for licensing information"
