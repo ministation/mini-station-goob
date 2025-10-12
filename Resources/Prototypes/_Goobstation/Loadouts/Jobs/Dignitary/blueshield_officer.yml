@@ -172,3 +172,15 @@
   id: SnowjacksBso
   equipment:
     shoes: ClothingShoesBootsWinterSnowjackBso
+
+
+# Belt
+- type: loadout
+  id: MilitaryWebbingBlueShield
+  equipment:
+    belt: ClothingBeltMilitaryWebbingBlueShieldFilled
+
+- type: loadout
+  id: BeltAssault
+  equipment:
+    belt: ClothingBeltAssaultFilled

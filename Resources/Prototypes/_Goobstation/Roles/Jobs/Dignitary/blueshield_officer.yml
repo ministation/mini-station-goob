@@ -80,7 +80,12 @@
         soulOwnedNotDevil: true
       - type: Skills # CorvaxGoob-Skills
         skills:
+        - ShuttleControl
         - Shooting
+        - AdvancedBuilding
+        - Surgery
+        - MedicalEquipment
+        - Butchering
   - !type:AddObjectiveSpecial
     objectives:
     - BlueshieldRandomCommandAliveObjective
@@ -92,7 +97,7 @@
     #gloves: ClothingHandsGlovesCombat - Goobstation, moved to loadouts
     id: BlueshieldPDA
     ears: ClothingHeadsetAltBlueshield
-    belt: ClothingBeltAssaultFilled
+    #belt: ClothingBeltAssaultFilled - Goobstation, moved to loadouts
     pocket1: UniqueBlueshieldOfficerLockerTeleporter
   storage:
     back:
