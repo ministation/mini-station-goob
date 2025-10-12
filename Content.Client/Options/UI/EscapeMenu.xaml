@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
     <BoxContainer Orientation="Vertical" SeparationOverride="4" MinWidth="150">
         <!-- CorvaxGoob-Coins-start
-        <Button Access="Public" Name="PatronPerksButton" Text="{Loc 'rmc-ui-patron-perks'}" StyleClasses="Caution" Visible="False" /> 
+        <Button Access="Public" Name="PatronPerksButton" Text="{Loc 'rmc-ui-patron-perks'}" StyleClasses="Caution" Visible="False" />
         CorvaxGoob-Coins-end -->
         <changelog:ChangelogButton Access="Public" Name="ChangelogButton"/>
         <ui:VoteCallMenuButton />
@@ -32,8 +32,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <Button Access="Public" Name="GuidebookButton" Text="{Loc 'ui-escape-guidebook'}" />
         <Button Access="Public" Name="WikiButton" Text="{Loc 'ui-escape-wiki'}" />
         <PanelContainer StyleClasses="LowDivider" Margin="0 2.5 0 2.5" />
-        <Button Access="Public" Name="OptionsButton" Text="{Loc 'ui-escape-options'}" />
+        <Button Name="Boosty" Text="Бусти"/>
+        <Button Name="Discord" Text="Дискорд"/>
+        <Button Name="Telegram" Text="Телеграм"/>
+        <Button Name="AuthorizationDiscordButton" Access="Public" Text="Авторизация"/>
         <PanelContainer StyleClasses="LowDivider" Margin="0 2.5 0 2.5" />
+        <Button Access="Public" Name="OptionsButton" Text="{Loc 'ui-escape-options'}" />
         <Button Access="Public" Name="DisconnectButton" Text="{Loc 'ui-escape-disconnect'}" />
         <Button Access="Public" Name="QuitButton" Text="{Loc 'ui-escape-quit'}" StyleClasses="ButtonColorRed" />
     </BoxContainer>
