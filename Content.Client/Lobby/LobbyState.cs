@@ -158,12 +158,12 @@ namespace Content.Client.Lobby
             //     ? Loc.GetString("ui-lobby-title", ("serverName", serverName))
             //     : lobbyNameCvar;
 
-            var width = _cfg.GetCVar(CCVars.ServerLobbyRightPanelWidth);
-            Lobby.RightSide.SetWidth = width;
+            //var width = _cfg.GetCVar(CCVars.ServerLobbyRightPanelWidth);
+            //Lobby.RightSide.SetWidth = width;
 
             UpdateLobbyUi();
 
-            Lobby.CharacterPreview.CharacterSetupButton.OnPressed += OnSetupPressed;
+            // Lobby.CharacterPreview.CharacterSetupButton.OnPressed += OnSetupPressed;
             //Lobby.CharacterPreview.PatronPerks.OnPressed += OnPatronPerksPressed; CorvaxGoob-Coins
             Lobby.ReadyButton.OnPressed += OnReadyPressed;
             Lobby.ReadyButton.OnToggled += OnReadyToggled;
@@ -187,7 +187,7 @@ namespace Content.Client.Lobby
 
             _voteManager.ClearPopupContainer();
 
-            Lobby!.CharacterPreview.CharacterSetupButton.OnPressed -= OnSetupPressed;
+            //Lobby!.CharacterPreview.CharacterSetupButton.OnPressed -= OnSetupPressed;
             //Lobby.CharacterPreview.PatronPerks.OnPressed -= OnPatronPerksPressed; CorvaxGoob-Coins
             Lobby!.ReadyButton.OnPressed -= OnReadyPressed;
             Lobby!.ReadyButton.OnToggled -= OnReadyToggled;
@@ -200,19 +200,6 @@ namespace Content.Client.Lobby
             // Yeah I hate this but LobbyState contains all the badness for now.
             Lobby?.SwitchState(state);
         }
-
-        private void OnSetupPressed(BaseButton.ButtonEventArgs args)
-        {
-            SetReady(false);
-            Lobby?.SwitchState(LobbyGui.LobbyGuiState.CharacterSetup);
-        }
-
-        /* CorvaxGoob-Coins-start
-        private void OnPatronPerksPressed(BaseButton.ButtonEventArgs obj)
-        {
-            _userInterfaceManager.GetUIController<LinkAccountUIController>().TogglePatronPerksWindow();
-        }
-        CorvaxGoob-Coins-end */
 
         private void OnReadyPressed(BaseButton.ButtonEventArgs args)
         {
@@ -296,7 +283,7 @@ namespace Content.Client.Lobby
             else
             {
                 Lobby!.StartTime.Text = string.Empty;
-                Lobby!.ReadyButton.Text = Loc.GetString(Lobby!.ReadyButton.Pressed ? "lobby-state-player-status-ready": "lobby-state-player-status-not-ready");
+                Lobby!.ReadyButton.Text = Loc.GetString(Lobby!.ReadyButton.Pressed ? "lobby-state-player-status-ready" : "lobby-state-player-status-not-ready");
                 Lobby!.ReadyButton.ToggleMode = true;
                 Lobby!.ReadyButton.Disabled = false;
                 Lobby!.ReadyButton.Pressed = _gameTicker.AreWeReady;
@@ -307,29 +294,30 @@ namespace Content.Client.Lobby
             {
                 Lobby!.ServerInfo.SetInfoBlob(_gameTicker.ServerInfoBlob);
             }
+        }
 
             // UpdatePlayerBalance(); // Goobstation - Goob Coin
 
-            var minutesToday = _playtimeTracking.PlaytimeMinutesToday;
-            if (minutesToday > 60)
-            {
-                Lobby!.PlaytimeComment.Visible = true;
+        //     var minutesToday = _playtimeTracking.PlaytimeMinutesToday;
+        //     if (minutesToday > 60)
+        //     {
+        //         Lobby!.PlaytimeComment.Visible = true;
 
-                var hoursToday = Math.Round(minutesToday / 60f, 1);
+        //         var hoursToday = Math.Round(minutesToday / 60f, 1);
 
-                var chosenString = minutesToday switch
-                {
-                    < 180 => "lobby-state-playtime-comment-normal",
-                    < 360 => "lobby-state-playtime-comment-concerning",
-                    < 720 => "lobby-state-playtime-comment-grasstouchless",
-                    _ => "lobby-state-playtime-comment-selfdestructive"
-                };
+        //         var chosenString = minutesToday switch
+        //         {
+        //             < 180 => "lobby-state-playtime-comment-normal",
+        //             < 360 => "lobby-state-playtime-comment-concerning",
+        //             < 720 => "lobby-state-playtime-comment-grasstouchless",
+        //             _ => "lobby-state-playtime-comment-selfdestructive"
+        //         };
 
-                Lobby.PlaytimeComment.SetMarkup(Loc.GetString(chosenString, ("hours", hoursToday)));
-            }
-            else
-                Lobby!.PlaytimeComment.Visible = false;
-        }
+        //         Lobby.PlaytimeComment.SetMarkup(Loc.GetString(chosenString, ("hours", hoursToday)));
+        //     }
+        //     else
+        //         Lobby!.PlaytimeComment.Visible = false;
+        // }
 
         // private void UpdateLobbySoundtrackInfo(LobbySoundtrackChangedEvent ev)
         // {
@@ -360,35 +348,20 @@ namespace Content.Client.Lobby
         //     }
         // }
 
-        // Goobstation - heavily modified to add credits for lobby backgrounds
-        // private void UpdateLobbyBackground()
-        // {
-        //     if (_gameTicker.LobbyBackground != null)
-        //     {
-        //         var lobbyBackground = _protoMan.Index(_gameTicker.LobbyBackground.Value);
-        //         Lobby!.Background.Texture = _resourceCache.GetResource<TextureResource>(lobbyBackground.Background);
 
-        //         var name = string.IsNullOrEmpty(lobbyBackground.Name)
-        //             ? Loc.GetString("lobby-state-background-unknown-title")
-        //             : lobbyBackground.Name;
+        private void UpdateLobbyBackground()
+        {
+            if (_gameTicker.LobbyBackground != null)
+            {
+                Lobby!.Background.SetRSI(_resourceCache.GetResource<RSIResource>(_gameTicker.LobbyBackground).RSI);
+            }
+            else
+            {
+                Lobby!.Background.Texture = null;
+            }
 
-        //         var artist = string.IsNullOrEmpty(lobbyBackground.Artist)
-        //             ? Loc.GetString("lobby-state-background-unknown-artist")
-        //             : lobbyBackground.Artist;
+        }
 
-        //         var markup = Loc.GetString("lobby-state-background-text",
-        //             ("backgroundName", name),
-        //             ("backgroundArtist", artist));
-
-        //         Lobby!.LobbyBackground.SetMarkup(markup);
-
-        //         return;
-        // //     }
-
-        //     _sawmill.Warning("_gameTicker.LobbyBackground was null! No lobby background selected.");
-        //     Lobby!.Background.Texture = null;
-        //     Lobby!.LobbyBackground.SetMarkup(Loc.GetString("lobby-state-background-no-background-text"));
-        // }
 
         private void SetReady(bool newReady)
         {
