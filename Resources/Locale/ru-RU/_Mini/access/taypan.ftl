@@ -1,0 +1,15 @@
+id-card-access-taypan-armory = Оружейная
+id-card-access-taypan-atmospherics = Атмосферный
+id-card-access-taypan-cargo = Снабжение
+id-card-access-taypan-command = Командование
+id-card-access-taypan-comm-ofc = ОТК
+id-card-access-taypan-engineering = Инженерный
+id-card-access-taypan-maint = Технический
+id-card-access-taypan-medical = Медицинский
+id-card-access-taypan-security = Охрана
+id-card-access-taypan-rd = НР
+id-card-access-taypan-science = Научный
+id-card-access-taypan-service = Сервисный
+id-card-access-taypan-tos = РТ
+id-card-access-taypan-vault = Хранилище
+id-card-access-taypan-external = Внешний

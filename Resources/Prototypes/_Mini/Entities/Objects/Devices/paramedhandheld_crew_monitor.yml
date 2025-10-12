@@ -1,0 +1,29 @@
+- type: entity
+  name: handheld paramedic monitor
+  categories: [ DoNotMap ]
+  parent: [ BaseHandheldComputer ]
+  # Нет уж, я ваши зелёные буковки читать не буду!
+  id: HandheldCrewMonitorParamed
+  description: This is a separate branch of development, a portable crew monitor that works exactly like the original. In fact, it's a cheap commodity, but it performs its function well.
+  components:
+  - type: Item
+    heldPrefix: paramedscanner
+  - type: Sprite
+    sprite: _Mini/Objects/Devices/paramedheld.rsi
+    state: paramedscanner
+  - type: ActivatableUI
+    key: enum.CrewMonitoringUIKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.CrewMonitoringUIKey.Key:
+        type: CrewMonitoringBoundUserInterface
+  - type: CrewMonitoringConsole
+  - type: DeviceNetwork
+    deviceNetId: Wireless
+    receiveFrequencyId: CrewMonitor
+  - type: WirelessNetworkConnection
+    range: 500
+  - type: StationLimitedNetwork
+  - type: StaticPrice
+    price: 500
+

@@ -1,0 +1,82 @@
+- type: entity
+  parent: [ClothingOuterHardsuitBase, BaseEngineeringContraband]
+  id: ClothingOuterHardsuitAtmosSindi
+  name: Скафандр Атмос Техника
+  description: Специальный костюм для работ в самых "горячих" зонах отдела Атмоса Синдиката
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Hardsuits/atmospherics.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Hardsuits/atmospherics.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.02
+    lowPressureMultiplier: 1000
+  - type: TemperatureProtection
+    heatingCoefficient: 0.001
+    coolingCoefficient: 0.001
+  - type: FireProtection
+    reduction: 0.8
+  - type: ExplosionResistance
+    damageCoefficient: 0.5
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.8
+        Radiation: 0.5
+  - type: ClothingSpeedModifier
+    walkModifier: 0.85
+    sprintModifier: 0.85
+  - type: HeldSpeedModifier
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHelmetHardsuitAtmosSindi
+
+- type: entity
+  parent: [ ClothingHeadHardsuitBase]
+  id: ClothingHeadHelmetHardsuitAtmosSindi
+  name: Шлем Атмос Техника
+  description: Специальный костюм для работ в самых "горячих" зонах отдела Атмоса Синдиката
+  components:
+  - type: Sprite
+    sprite: Clothing/Head/Hardsuits/atmospherics.rsi
+    layers:
+    - state: icon
+    - state: icon-unshaded
+      shader: unshaded
+    - state: light-overlay
+      visible: false
+      shader: unshaded
+      map: [ "light" ]
+  - type: HandheldLight
+    addPrefix: false
+  - type: ToggleableLightVisuals
+    spriteLayer: light
+    clothingVisuals:
+      head:
+      - state: equipped-head-light
+        shader: unshaded
+      head-vox:
+      - state: equipped-head-light-vox
+        shader: unshaded
+  - type: Clothing
+    clothingVisuals:
+      head:
+      - state: equipped-head
+      - state: equipped-head-unshaded
+        shader: unshaded
+      head-vox:
+      - state: equipped-head-vox
+      - state: equipped-head-unshaded-vox
+        shader: unshaded
+  - type: PointLight
+    color: "#adffe6"
+  - type: PressureProtection
+    highPressureMultiplier: 0.08
+    lowPressureMultiplier: 1000
+  - type: TemperatureProtection
+    heatingCoefficient: 0.005
+    coolingCoefficient: 0.005
+  - type: FireProtection
+    reduction: 0.2

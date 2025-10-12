@@ -1,0 +1,181 @@
+- type: entity
+  abstract: true
+  parent: BasePDA
+  id: BaseTypanPDA
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Devices/typan_pda.rsi
+  - type: Icon
+    sprite: _Mini/Objects/Devices/typan_pda.rsi
+
+- type: entity
+  parent: BaseTypanPDA
+  id: SyndiPDARD
+  name: syndicate research director PDA
+  description: A concentration of the worst technologies! It smells like cheap plastic...
+  components:
+  - type: Pda
+    id: TypanIDCardRd
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-science
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-science
+
+- type: entity
+  parent: BaseTypanPDA
+  id: SyndiPDAScience
+  name: syndicate scientist PDA
+  description: It looks like this PDA was hacked.
+  components:
+  - type: Pda
+    id: TypanIDCardScience
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-science
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-science
+
+- type: entity
+  parent: BaseTypanPDA
+  id: SyndiPDABotan
+  name: syndicate botanist PDA
+  description: It's completely corroded by plant-based poisons.
+  components:
+  - type: Pda
+    id: TypanIDCardBotanist
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-botan
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-botan
+
+- type: entity
+  parent: BaseTypanPDA
+  id: MedicalPDASyndi
+  name: syndicate medic PDA
+  description: There are legends that it displays the pulse of the head of the NT.
+  components:
+  - type: Pda
+    id: TypanIDCardMed
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-med
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-med
+  - type: CartridgeLoader
+    uiKey: enum.PdaUiKey.Key
+    preinstalled:
+      - CrewManifestCartridge
+      - NotekeeperCartridge
+      - NewsReaderCartridge
+      - MedTekCartridge
+  - type: GuideHelp
+    guides:
+    - Medical Doctor
+
+- type: entity
+  parent: BaseTypanPDA
+  id: SyndiPDAEng
+  name: syndicate atmospheric technician PDA
+  description: A sturdy all-in-one PDA.
+  components:
+  - type: Pda
+    id: TypanIDCardEng
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-eng
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-eng
+
+- type: entity
+  parent: BaseTypanPDA
+  id: SyndiPDACom
+  name: syndicate telecommunications officer PDA
+  description: Equipped with all the means and capabilities to receive the most terrible orders.
+  components:
+  - type: Pda
+    id: TypanIDCardCom
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-com
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-com
+
+- type: entity
+  parent: BaseTypanPDA
+  id: SyndiPDACargo
+  name: syndicate cargo technician PDA
+  description: A sharkminnow's tooth is stuck in the pen slot.
+  components:
+  - type: Pda
+    id: TypanIDCardCargo
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-cargo
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-cargo
+
+- type: entity
+  parent: BaseTypanPDA
+  id: SyndiPDAChef
+  name: syndicate chef PDA
+  description: So how will it be? With or without the guts?
+  components:
+  - type: Pda
+    id: TypanIDCardChef
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-chef
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-chef
+
+- type: entity
+  parent: BaseTypanPDA
+  id: SyndiPDAOff
+  name: КПК патрульного Синдиката
+  description: Оснащён всеми средствами и возможностями для получения наизлейших приказов.
+  components:
+  - type: Pda
+    id: TypanIDCardOff
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-com
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-com

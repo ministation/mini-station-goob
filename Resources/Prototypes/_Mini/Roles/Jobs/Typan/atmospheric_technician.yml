@@ -1,0 +1,33 @@
+- type: job
+  id: TypanAtmosTech
+  name: job-name-typan-atmos-tech
+  playTimeTracker: TypanAtmosTech
+  description: job-description-typan-atmos-tech
+  startingGear: TypanAtmosTech
+  icon: "JobIconSyndicateAtmos"
+  supervisors: job-supervisors-typan-telecommunications-officer
+  canBeAntag: false
+  requirements:
+    - !type:DepartmentTimeRequirement
+      department: Engineering
+      time: 7200
+  access:
+  - TypanEngineering
+  - TypanAtmospherics
+  - TypanMaint
+  - SyndicateAgent
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: Skills # Corvax-Next-Skills
+        skills:
+        - ShuttleControl
+        - AdvancedBuilding
+
+- type: startingGear
+  id: TypanAtmosTech
+  equipment:
+    ears: ClothingHeadsetAltSyndicate
+    jumpsuit: ClothingUniformJumpsuitChiefEngineerSyndie
+    shoes: ClothingShoesBootsTypan
+    id: SyndiPDAEng

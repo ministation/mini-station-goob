@@ -1,0 +1,44 @@
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackWinRar
+  name: winrar backpack
+  description: They say the station is archived in this backpack, but the password to the archive has long been forgotten...
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Backpacks/backpackWinRar.rsi
+    state: icon
+  - type: Item
+    size: Huge
+  - type: Storage
+    maxItemSize: Huge
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackSeniorSalvage
+  name: senior salvage specialist's backpack
+  description: Senior salvage specialist's modified backpack with RIG function
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/seniorsalvage.rsi
+  - type: Storage
+    grid:
+    - 0,0,7,5
+  - type: ClothingSpeedModifier
+    walkModifier: 1
+    sprintModifier: 1
+  - type: ToggleableClothing
+    clothingPrototype: ClothingOuterHardsuitSeniorSalvage
+    requiredSlot: BACK
+    slot: outerClothing
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}
+      storagebase: !type:Container
+        ents: []
+  - type: StorageFill
+    contents:
+      - id: BoxSurvival
+      - id: MiningDrill
+      - id: MiningVoucher
+  - type: ExplosionResistance
+    damageCoefficient: 0.6

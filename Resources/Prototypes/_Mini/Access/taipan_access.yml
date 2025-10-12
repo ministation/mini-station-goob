@@ -1,0 +1,78 @@
+- type: accessGroup
+  id: TypanAccess
+  tags:
+  - TypanArmory
+  - TypanAtmospherics
+  - TypanCargo
+  - TypanCommand
+  - TypanCommunicationsOfficer
+  - TypanEngineering
+  - TypanMaint
+  - TypanMedical
+  - TypanProtection
+  - TypanResearchDirector
+  - TypanScience
+  - TypanService
+  - TypanTechnicalOperationsSupervisor
+  - TypanVault
+  - TypanExternal
+
+- type: accessLevel
+  id: TypanArmory
+  name: id-card-access-taypan-armory
+
+- type: accessLevel
+  id: TypanAtmospherics
+  name: id-card-access-taypan-atmospherics
+
+- type: accessLevel
+  id: TypanCargo
+  name: id-card-access-taypan-cargo
+
+- type: accessLevel
+  id: TypanCommand
+  name: id-card-access-taypan-command
+
+- type: accessLevel
+  id: TypanCommunicationsOfficer
+  name: id-card-access-taypan-comm-ofc
+
+- type: accessLevel
+  id: TypanEngineering
+  name: id-card-access-taypan-engineering
+
+- type: accessLevel
+  id: TypanMaint
+  name: id-card-access-taypan-maint
+
+- type: accessLevel
+  id: TypanMedical
+  name: id-card-access-taypan-medical
+
+- type: accessLevel
+  id: TypanProtection
+  name: id-card-access-taypan-security
+
+- type: accessLevel
+  id: TypanResearchDirector
+  name: id-card-access-taypan-rd
+
+- type: accessLevel
+  id: TypanScience
+  name: id-card-access-taypan-science
+
+- type: accessLevel
+  id: TypanService
+  name: id-card-access-taypan-service
+
+- type: accessLevel
+  id: TypanTechnicalOperationsSupervisor
+  name: id-card-access-taypan-tos
+
+- type: accessLevel
+  id: TypanVault
+  name: id-card-access-taypan-vault
+
+- type: accessLevel
+  id: TypanExternal
+  name: id-card-access-taypan-external

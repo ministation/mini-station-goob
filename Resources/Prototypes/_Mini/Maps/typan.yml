@@ -1,0 +1,34 @@
+﻿- type: gameMap
+  id: Typan
+  mapName: 'Станция синдиката'
+  mapPath: /Maps/typan.yml
+  minPlayers: 0
+  stations:
+    Typan:
+      stationProto: StandardTypanStation
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'НИКК Тайпан'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: StationJobs
+          availableJobs:
+            TypanAtmosTech: [ 2, 2 ]
+            TypanBotanist: [ 1, 1 ]
+            TypanCargotech: [ 2, 2 ]
+            TypanChef: [ 1, 1 ]
+            TypanMedic: [ 3, 3 ]
+            TypanRD: [ 1, 1 ]
+            TypanScience: [ 3, 3 ]
+            TypanOfficer: [ 2, 2 ]
+            TypanBorg: [ 2, 2 ]
+            TypanBorgMedic: [ 1, 1 ]
+            TypanCommander: [ 1, 1 ]
+        - type: StationCargoShuttle
+          path: Maps/Shuttles/typan_cargo_shuttle.yml
+        # - type: StationGoal
+        #   goals:
+        #   - SyndicateAi
+        #   - SyndicateCargo
+        #   - SyndicateMaid

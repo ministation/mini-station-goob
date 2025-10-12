@@ -1,0 +1,34 @@
+- type: entity
+  name: Archangel
+  parent: [BaseWeaponRevolver, BaseSecurityCommandContraband]
+  id: WeaponRevolverSilver
+  description: A revolver for fighting otherworldly forces. It fires silver bullets that severely wound distorted flesh.
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Weapons/Guns/Revolvers/silver.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-unshaded-3
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: Gun
+    fireRate: 2
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/revolver.ogg
+  - type: RevolverAmmoProvider
+    capacity: 6
+    chambers: [ True, True, True, True, True, True ]
+    ammoSlots: [ null, null, null, null, null, null ]
+    whitelist:
+      tags:
+        - CartridgeSilverSaint
+    proto: CartridgeRifleSaint
+  - type: MagazineVisuals
+    magState: mag
+    steps: 4
+    zeroVisible: true
+  - type: Appearance
+  - type: StaticPrice
+    price: 1500
+  - type: ItemSlots

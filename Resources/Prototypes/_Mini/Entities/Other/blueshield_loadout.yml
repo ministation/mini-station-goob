@@ -1,0 +1,209 @@
+# - type: entity
+#   parent: BaseItem
+#   id: BaseERTloadoutPrimary
+#   abstract: true
+#   name: undetermined case
+#   description: A sturdy military case for weapons.
+#   components:
+#   - type: Item
+#     size: Large
+#   - type: Sprite
+#     sprite: _Mini/Other/ertcases.rsi
+#     state: amber
+#   - type: ThiefUndeterminedBackpack
+#     maxSelectedSets: 1
+#     possibleSets:
+#     - MinigunSet
+#   - type: ActivatableUI
+#     key: enum.ThiefBackpackUIKey.Key
+#   - type: UserInterface
+#     interfaces:
+#       enum.ThiefBackpackUIKey.Key:
+#         type: ThiefBackpackBoundUserInterface
+
+# - type: entity
+#   parent: BaseItem
+#   id: BaseERTloadoutSecondary
+#   abstract: true
+#   name: undetermined box
+#   description: A box with a weapon.
+#   components:
+#   - type: Item
+#     size: Large
+#     shape:
+#     - 0,0,2,1
+#   - type: Sprite
+#     sprite: _Mini/Other/ertboxes.rsi
+#     state: amber
+#   - type: ThiefUndeterminedBackpack
+#     maxSelectedSets: 1
+#     possibleSets:
+#     - MinigunSet
+#   - type: ActivatableUI
+#     key: enum.ThiefBackpackUIKey.Key
+#   - type: UserInterface
+#     interfaces:
+#       enum.ThiefBackpackUIKey.Key:
+#         type: ThiefBackpackBoundUserInterface
+
+# - type: entity
+#   id: BlueShieldCase
+#   name: bluespace case
+#   description: Case, containing weapon of blueshield officer.
+#   suffix: BSO
+#   parent: BaseERTloadoutPrimary
+#   components:
+#     - type: Sprite
+#       state: amber
+#     - type: ThiefUndeterminedBackpack
+#       possibleSets:
+#         - PistolSet
+#         - MinigunSet
+#         - LaserSwordSet
+#     - type: ActivatableUI
+#       key: enum.ThiefBackpackUIKey.Key
+#     - type: UserInterface
+#       interfaces:
+#         enum.ThiefBackpackUIKey.Key:
+#           type: ThiefBackpackBoundUserInterface
+
+# - type: entity
+#   id: AssistantGizmo
+#   name: box of assistant things
+#   description: Before you left, you put some precious items in this box. All you have to do is remember which ones!
+#   suffix: Assistant
+#   parent: BaseERTloadoutSecondary
+#   components:
+#     - type: Sprite
+#       state: assistant
+#     - type: Item
+#       size: Normal
+#     - type: ThiefUndeterminedBackpack
+#       possibleSets:
+#         - AssistantRich
+#         - AssistantWelder
+#         - AssistantFan
+#         - AssistantPirate
+#         - AssistantCasino
+#     - type: ActivatableUI
+#       key: enum.ThiefBackpackUIKey.Key
+#     - type: UserInterface
+#       interfaces:
+#         enum.ThiefBackpackUIKey.Key:
+#           type: ThiefBackpackBoundUserInterface
+
+# - type: thiefBackpackSet
+#   id: PistolSet
+#   name: bso-set-selector-pistol
+#   description: bso-set-selector-pistol-desc
+#   sprite:
+#     sprite: Adventure/Roles/blueshield/Weapons/DualphasBH.rsi
+#     state: base
+#   content:
+#   - WeaponX2DualphaseEnergyLaserGun
+
+# - type: thiefBackpackSet
+#   id: MinigunSet
+#   name: bso-set-selector-minigun
+#   description: bso-set-selector-minigun-desc
+#   sprite:
+#     sprite: _Mini/Objects/Weapons/Guns/LMGs/krio_gun.rsi
+#     state: icon
+#   content:
+#   - WeaponMiniMachineGun
+
+# - type: thiefBackpackSet
+#   id: LaserSwordSet
+#   name: bso-set-selector-laser-sword
+#   description: bso-set-selector-laser-sword-desc
+#   sprite:
+#     sprite: ADT/Objects/Weapons/Guns/Saber_revolvers/energy.rsi
+#     state: icon
+#   content:
+#   - ADTWeaponSaberRevBlueshield
+
+# - type: thiefBackpackSet
+#   id: AssistantRich
+#   name: assistant-set-selector-rich
+#   description: assistant-set-selector-rich-desc
+#   sprite:
+#     sprite: Objects/Economy/cash.rsi
+#     state: cash_500
+#   content:
+#   - Cane
+#   - ClothingHeadHatTophat
+#   - CigarGold
+#   - FlippoEngravedLighter
+#   - WristwatchGold
+#   - ClothingUniformJumpsuitLawyerBlack
+#   - ClothingShoesBootsLaceup
+
+# - type: thiefBackpackSet
+#   id: AssistantWelder
+#   name: assistant-set-selector-welder
+#   description: assistant-set-selector-welder-desc
+#   sprite:
+#     sprite: Clothing/Head/Welding/welding.rsi
+#     state: icon
+#   content:
+#   - ClothingHeadHatWelding
+#   - ClothingUniformJumpsuitTacticool
+#   - ClothingOuterVestTank
+#   - ClothingShoesColorBlack
+#   - ClothingBeltUtilityFilled
+#   - ClothingNeckVitezstviPin
+
+# - type: thiefBackpackSet
+#   id: AssistantFan
+#   name: assistant-set-selector-syndi
+#   description: assistant-set-selector-syndi-desc
+#   sprite:
+#     sprite: Objects/Fun/toys.rsi
+#     state: synb
+#   content:
+#   - BalloonSyn
+#   - SyndicateBusinessCard
+#   - ToyFigurineNukie
+#   - ClothingEyesGlassesCheapSunglasses
+#   - ClothingHeadHatSyndie
+#   - ClothingNeckSyndicakePin
+#   - ClothingHandsGlovesFingerless
+
+# - type: thiefBackpackSet
+#   id: AssistantPirate
+#   name: assistant-set-selector-pirate
+#   description: assistant-set-selector-pirate-desc
+#   sprite:
+#     sprite: Objects/Weapons/Melee/captain_sabre.rsi
+#     state: icon
+#   content:
+#   - ClothingHeadHatPirateTricord
+#   - ClothingEyesGlassesCheapSunglasses
+#   - MobParrotSmart
+#   - ClothingUniformJumpsuitPirate
+#   - ClothingOuterCoatGentle
+#   - ClothingHandsGlovesFingerless
+#   - ClothingShoesBootsLaceup
+#   - ClothingBeltUtility
+#   - FoamCutlass
+
+# - type: thiefBackpackSet
+#   id: AssistantCasino
+#   name: assistant-set-selector-gambling
+#   description: assistant-set-selector-gambling-desc
+#   sprite:
+#     sprite: _CorvaxNext/Objects/Misc/cards.rsi
+#     state: sc_Jack_of_Spades_black
+#   content:
+#   - ClothingHeadHatBowlerHat
+#   - ClothingEyesGlasses
+#   - ClothingNeckTieRed
+#   - ClothingUniformJumpsuitSecBlue
+#   - ClothingOuterVest
+#   - ClothingShoesBootsLaceup
+#   - WristwatchLeather
+#   - TreasureCoinGold
+#   - TreasureCoinGold
+#   - DiceBag
+#   - SpaceCash500
+#   - CardBoxBlack

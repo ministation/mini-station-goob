@@ -1060,6 +1060,22 @@
     # Goobstation
     - NanotrasenRepresentative
     - BlueshieldOfficer
+    # Ministation
+    - TypanArmory
+    - TypanAtmospherics
+    - TypanCargo
+    - TypanCommand
+    - TypanCommunicationsOfficer
+    - TypanEngineering
+    - TypanMaint
+    - TypanMedical
+    - TypanProtection
+    - TypanResearchDirector
+    - TypanScience
+    - TypanService
+    - TypanTechnicalOperationsSupervisor
+    - TypanVault
+    - TypanExternal
   - type: NanoChatCard # DeltaV
     notificationsMuted: true
     listNumber: false

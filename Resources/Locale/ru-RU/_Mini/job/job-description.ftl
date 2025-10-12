@@ -1,0 +1,9 @@
+job-description-typan-atmos-tech = Атмосферный инженер из далёкого космоса.
+job-description-typan-botanist = Ботаник из далёкого космоса.
+job-description-typan-cargotech = Карготехник из далёкого космоса.
+job-description-typan-chef = Повар из далёкого космоса.
+job-description-typan-medic = Медик из далёкого космоса.
+job-description-typan-rd = Директор исследований из далёкого космоса.
+job-description-typan-science = Учёный из далёкого космоса.
+job-description-typan-officer = Офицер из далёкого космоса.
+job-description-typan-command = Командир из далёкого космоса.

@@ -1,0 +1,24 @@
+- type: department
+  id: Typan
+  name: department-Typan
+  description: department-Typan-description
+  color: "#9b2d30"
+  roles:
+  - TypanCommander
+  - TypanRD
+  - TypanOfficer
+  - TypanAtmosTech
+  - TypanBotanist
+  - TypanCargotech
+  - TypanChef
+  - TypanMedic
+  - TypanScience
+
+- type: department
+  id: Typan2
+  name: department-Typan2
+  description: department-Typan-Synt-description
+  color: "#9b2d30"
+  roles:
+  - TypanBorg
+  - TypanBorgMedic

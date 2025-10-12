@@ -1,0 +1,64 @@
+- type: loadout
+  id: TypanBackpack
+  equipment:
+    back: ClothingBackpackSyndicate
+
+- type: loadout
+  id: TypanDuffel
+  equipment:
+    back: ClothingBackpackDuffelSyndicate
+
+- type: loadout
+  id: TypanMedicJumpsuitStandard
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitParamedicSyndie
+
+- type: loadout
+  id: TypanMedicJumpsuitPajama
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitPyjamaSyndicateRed
+
+- type: loadout
+  id: TypanMedicBootsCombat
+  equipment:
+    shoes: ClothingShoesBootsCombat
+
+- type: loadout
+  id: TypanMedicBootsWinter
+  equipment:
+    shoes: ClothingShoesBootsWinterSyndicate
+
+- type: loadout
+  id: TypanMedicNeckScarfGreen
+  equipment:
+    neck: ClothingNeckScarfStripedSyndieGreen
+
+- type: loadout
+  id: TypanMedicNeckCloak
+  equipment:
+    neck: ClothingNeckCloakSyndicateAdmiral
+
+- type: loadout
+  id: TypanMedicGasMask
+  equipment:
+    mask: ClothingMaskGasSyndicate
+
+- type: loadout
+  id: TypanMedicSurvivalOxygen
+  equipment:
+    survival: DoubleEmergencyOxygenTankFilled
+
+- type: loadout
+  id: TypanMedicSurvivalNitrogen
+  equipment:
+    survival: DoubleEmergencyNitrogenTankFilled
+
+- type: loadout
+  id: TypanMedicTrinketAI
+  equipment:
+    trinket: SyndicatePersonalAI
+
+- type: loadout
+  id: TypanMedicTrinketCigarettes
+  equipment:
+    trinket: CigPackSyndicate

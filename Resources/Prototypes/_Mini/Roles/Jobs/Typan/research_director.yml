@@ -1,0 +1,42 @@
+- type: job
+  id: TypanRD
+  name: job-name-typan-rd
+  playTimeTracker: TypanRD
+  description: job-description-typan-rd
+  startingGear: TypanRD
+  icon: "JobIconSyndicateRD"
+  supervisors: job-supervisors-typan-syndicate
+  canBeAntag: false
+  requirements:
+    - !type:DepartmentTimeRequirement
+      department: Science
+      time: 50400
+    - !type:OverallPlaytimeRequirement
+      time: 21600
+    - !type:AgeRequirement
+      requiredAge: 24
+  access:
+  - TypanResearchDirector
+  - TypanScience
+  - SyndicateAgent
+  - TypanCommand
+  - TypanVault
+  - TypanExternal
+  - TypanEngineering
+  - TypanMaint
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: Skills # Corvax-Next-Skills
+        skills:
+        - AdvancedBuilding
+
+- type: startingGear
+  id: TypanRD
+  equipment:
+    eyes: ClothingEyesGlassesHiddenSecurity
+    ears: ClothingHeadsetAltSyndicate
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsRDTypan
+    id: SyndiPDARD
+    jumpsuit: ClothingUniformJumpsuitSyndieFormal

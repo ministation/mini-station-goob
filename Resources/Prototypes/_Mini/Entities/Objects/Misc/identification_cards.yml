@@ -1,0 +1,173 @@
+# Typan
+- type: entity
+  parent: IDCardStandard
+  id: TypanIDCardCargo
+  name: ID-card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typancargo.rsi
+    layers:
+    - state: typancardcargo
+  - type: PresetIdCard
+    job: TypanCargotech
+  - type: Access
+    tags:
+    - TypanCargo
+    - TypanMaint
+    - SyndicateAgent
+    - TypanExternal
+
+
+- type: entity
+  parent: IDCardStandard
+  id: TypanIDCardCom
+  name: ID-card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typansec.rsi
+    layers:
+    - state: typancardcom
+  - type: Access
+    tags:
+    - TypanArmory
+    - TypanAtmospherics
+    - TypanCargo
+    - TypanCommand
+    - TypanCommunicationsOfficer
+    - TypanEngineering
+    - TypanMaint
+    - TypanMedical
+    - TypanProtection
+    - TypanResearchDirector
+    - TypanScience
+    - TypanService
+    - TypanTechnicalOperationsSupervisor
+    - TypanVault
+    - TypanExternal
+    - NuclearOperative
+
+- type: entity
+  parent: IDCardStandard
+  id: TypanIDCardEng
+  name: ID-card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typaneng.rsi
+    layers:
+    - state: typancardeng
+  - type: Access
+    tags:
+    - TypanEngineering
+    - TypanAtmospherics
+    - TypanMaint
+    - SyndicateAgent
+
+- type: entity
+  parent: IDCardStandard
+  id: TypanIDCardMed
+  name: ID-card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typanmed.rsi
+    layers:
+    - state: typancardmed
+  - type: Access
+    tags:
+    - TypanMedical
+    - SyndicateAgent
+    - TypanMaint
+
+- type: entity
+  parent: IDCardStandard
+  id: TypanIDCardRd
+  name: ID-card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typanrd.rsi
+    layers:
+    - state: typancardrd
+  - type: PresetIdCard
+    job: TypanRD
+  - type: Access
+    tags:
+    - TypanResearchDirector
+    - TypanScience
+    - SyndicateAgent
+    - TypanCommand
+    - TypanVault
+    - TypanExternal
+    - TypanEngineering
+    - TypanMaint
+
+- type: entity
+  parent: IDCardStandard
+  id: TypanIDCardScience
+  name: ID-card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typanscien.rsi
+    layers:
+    - state: typancardscience
+  - type: PresetIdCard
+    job: TypanScience
+  - type: Access
+    tags:
+    - TypanScience
+    - SyndicateAgent
+    - TypanMaint
+
+- type: entity
+  parent: IDCardStandard
+  id: TypanIDCardBotanist
+  name: ID-card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typanbotan.rsi
+    layers:
+    - state: typancardbotanist
+  - type: PresetIdCard
+    job: TypanBotanist
+  - type: Access
+    tags:
+    - TypanService
+    - SyndicateAgent
+
+- type: entity
+  parent: IDCardStandard
+  id: TypanIDCardChef
+  name: ID-card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typanchef.rsi
+    layers:
+    - state: typancardchef
+  - type: PresetIdCard
+    job: TypanChef
+  - type: Access
+    tags:
+    - TypanService
+    - SyndicateAgent
+    - TypanMaint
+
+- type: entity
+  parent: IDCardStandard
+  id: TypanIDCardOff
+  name: ID-карта
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typansec.rsi
+    layers:
+    - state: typancardcom
+  - type: Access
+    tags:
+    - TypanArmory
+    - TypanCommand
+    - TypanCommunicationsOfficer
+    - TypanEngineering
+    - TypanMaint
+    - TypanProtection
+    - TypanScience
+    - TypanService
+    - TypanVault
+    - TypanExternal
+    - SyndicateAgent

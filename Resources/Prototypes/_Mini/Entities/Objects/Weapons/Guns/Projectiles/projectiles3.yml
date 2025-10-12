@@ -1,0 +1,50 @@
+- type: entity
+  id: SaintSilvershot
+  name: silver bullet
+  categories: [ HideSpawnMenu ]
+  parent: BaseBullet
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    state: saintbullet
+  - type: Projectile
+    damage:
+      types:
+        Holy: 20
+        Piercing: 30
+  - type: SolutionContainerManager
+    solutions:
+      ammo:
+        maxVol: 1
+  - type: RefillableSolution
+    solution: ammo
+  - type: DrainableSolution
+    solution: ammo
+  - type: SolutionInjectOnProjectileHit
+    transferAmount: 1
+    solution: ammo
+  - type: InjectableSolution
+    solution: ammo
+  - type: SingularityDistortion
+    intensity: +3
+    falloffPower: 1.5
+
+- type: entity
+  id: CartridgeSilverSaint
+  name: cartridge (.45 silver)
+  parent: [ BaseCartridgeMagnum, BaseSecurityContraband ]
+  components:
+    - type: Tag
+      tags:
+      - CartridgeSilverSaint
+    - type: CartridgeAmmo
+      proto: SaintSilvershot
+    - type: SolutionContainerManager
+      solutions:
+        ammo:
+          reagents:
+          - ReagentId: Holywater
+            Quantity: 1
+    - type: SolutionTransfer
+      maxTransferAmount: 1
+    - type: ChemicalAmmo

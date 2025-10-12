@@ -1,0 +1,9 @@
+- type: entity
+  name: anomal activity pinpointer
+  description: Indicates the presence of evil spirits and abnormal activity. Please restart before use!
+  id: PinpointerCult
+  parent: [PinpointerBase, BaseCommandContraband]
+  components:
+  - type: Pinpointer
+    component: Monument
+    targetName: монумент культистов

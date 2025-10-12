@@ -1,0 +1,32 @@
+- type: Tag
+  id: MagazineMiniMachineGunBox
+
+- type: Tag
+  id: CartridgeMinigun
+
+- type: Tag
+  id: ADT40mmGrenade
+
+- type: Tag
+  id: ADTMagazineRifleBibisSoftBig
+
+- type: Tag
+  id: ADTMagazineRifleBibisSoft
+
+- type: Tag
+  id: ADTMagazineRifleBibis
+
+- type: Tag
+  id: MagazineRifleSaint
+
+- type: Tag
+  id: CartridgeRifleSaint
+
+- type: Tag
+  id: CartridgeMagnumAntimaterial
+
+- type: Tag
+  id: MagazineMagnumAntimaterial
+
+- type: Tag
+  id: CartridgeSilverSaint

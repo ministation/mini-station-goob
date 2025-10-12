@@ -1,0 +1,110 @@
+- type: roleLoadout
+  id: TypanBotanist
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - SindieJumpsuit
+  - SindieBackpack
+  - SindieNeck
+  - SindieFace
+  - TBotanistOuterClothing
+  - SurvivalSyndicate
+  - SindieTrinkets
+
+- type: roleLoadout
+  id: TypanAtmosTech
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - TAtmosJumpsuit
+  - SindieBackpack
+  - SindieNeck
+  - SindieFace
+  - TAtmosOuterClothing
+  - SindiShoes
+  - Glasses
+  - SurvivalSyndicate
+  - SindieTrinkets
+
+- type: roleLoadout
+  id: TypanCargotech
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - SindieJumpsuit
+  - SindieBackpack
+  - SindieNeck
+  - SindieFace
+  - TCargoOuterClothing
+  - SindiShoes
+  - Glasses
+  - SurvivalSyndicate
+  - SindieTrinkets
+
+- type: roleLoadout
+  id: TypanChef
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - SindieJumpsuit
+  - SindieBackpack
+  - SindieNeck
+  - SindieFace
+  - TChefOuterClothing
+  - SindiShoes
+  - Glasses
+  - SurvivalSyndicate
+  - SindieTrinkets
+
+- type: roleLoadout
+  id: TypanMedic
+  groups:
+  - Inventory
+
+
+
+- type: roleLoadout
+  id: TypanRD
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - SindieComjumpsuit
+  - SindieBackpack
+  - SindieNeck
+  - SindieFace
+  - SindieComOuterClothing
+  - SindiShoes
+  - Glasses
+  - SurvivalSyndicate
+  - SindieTrinkets
+
+- type: roleLoadout
+  id: TypanScience
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - SindieJumpsuit
+  - SindieBackpack
+  - SindieNeck
+  - SindieFace
+  - TScienceOuterClothing
+  - SindiShoes
+  - Glasses
+  - SurvivalSyndicate
+  - SindieTrinkets
+
+- type: roleLoadout
+  id: TypanCommander
+  groups:
+    - Inventory
+    - GroupTankHarness
+    #- SindieComjumpsuit
+    - SindieBackpack
+    #- SindieNeck
+    #- SindieFace
+    #- SindieComOuterClothing
+    #- SindiShoes
+    - SurvivalSyndicate
+    #- SindieTrinkets
+  whitelist:
+    - TypanCommander

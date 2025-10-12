@@ -1,0 +1,18 @@
+- type: entity
+  parent: [DoorRemoteDefault, BaseSyndicateContraband]
+  id: TypanDoorRemote
+  name: пульт от шлюзов тайпана
+  components:
+  - type: Sprite
+    layers:
+    - state: door_remotebase
+    - state: door_remotelightscolour
+      color: "#b50f1d"
+    - state: door_remotescreencolour
+      color: "#2681a5"
+  - type: Access
+    groups:
+    - TypanAccess
+    tags:
+    - NuclearOperative
+    - SyndicateAgent
