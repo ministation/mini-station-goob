@@ -13,6 +13,9 @@ using Content.Shared.GameTicking.Prototypes;
 using Robust.Shared.Random;
 using System.Linq;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
+using System.Linq;
+using Content.Shared._OS;
 
 namespace Content.Server.GameTicking;
 
@@ -23,27 +26,19 @@ public sealed partial class GameTicker
     public ProtoId<LobbyBackgroundPrototype>? LobbyBackground { get; private set; }
 
     [ViewVariables]
-    private List<ProtoId<LobbyBackgroundPrototype>> _lobbyBackgrounds = [];
-
-    private static readonly string[] WhitelistedBackgroundExtensions = new string[] {"png", "jpg", "jpeg", "webp"};
+    private List<string>? _lobbyBackgrounds; // OpenSpace edit
 
     private void InitializeLobbyBackground()
     {
-        foreach (var prototype in _prototypeManager.EnumeratePrototypes<LobbyBackgroundPrototype>())
-        {
-            if (!WhitelistedBackgroundExtensions.Contains(prototype.Background.Extension))
-            {
-                _sawmill.Warning($"Lobby background '{prototype.ID}' has an invalid extension '{prototype.Background.Extension}' and will be ignored.");
-                continue;
-            }
-
-            _lobbyBackgrounds.Add(prototype.ID);
-        }
+        _lobbyBackgrounds = _prototypeManager.EnumeratePrototypes<AnimatedLobbyScreenPrototype>() // OpenSpace edit
+            .Select(x => x.Path) // OpenSpace edit
+            .ToList();
 
         RandomizeLobbyBackground();
     }
 
-    private void RandomizeLobbyBackground() {
-        LobbyBackground = _lobbyBackgrounds.Any() ? _robustRandom.Pick(_lobbyBackgrounds) : (ProtoId<LobbyBackgroundPrototype>?) null;
+    private void RandomizeLobbyBackground()
+    {
+        LobbyBackground = _lobbyBackgrounds!.Any() ? _robustRandom.Pick(_lobbyBackgrounds!) : null; // OpenSpace edit
     }
 }
