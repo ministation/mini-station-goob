@@ -1,0 +1,27 @@
+- type: job
+  id: TypanBotanist
+  name: job-name-typan-botanist
+  playTimeTracker: TypanBotanist
+  description: job-description-typan-botanist
+  startingGear: SyndicateBotanist
+  icon: "JobIconTypanBotanist"
+  supervisors: job-supervisors-typan-telecommunications-officer
+  canBeAntag: false
+  requirements:
+    - !type:DepartmentTimeRequirement
+      department: Civilian
+      time: 6000
+  access:
+  - TypanService
+  - SyndicateAgent
+
+
+- type: startingGear
+  id: SyndicateBotanist
+  equipment:
+    ears: ClothingHeadsetAltSyndicate
+    jumpsuit: ClothingUniformJumpsuitTypanBotanist
+    shoes: ClothingShoesColorBlack
+    id: SyndiPDABotan
+    outerClothing: ClothingOuterApronTypanBotanist
+    belt: TypanPlantBag

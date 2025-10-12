@@ -1,0 +1,187 @@
+- type: entity
+  name: latejoin syndicate atmostech
+  id: SpawnPointLatejoinTypanAtmos
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanAtmosTech
+    spawn_type: LateJoin
+
+- type: entity
+  name: latejoin syndicate botanist
+  id: SpawnPointLatejoinTypanBotanist
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanBotanist
+    spawn_type: LateJoin
+
+- type: entity
+  name: latejoin syndicate cargo technician
+  id: SpawnPointLatejoinTypanCargotech
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanCargotech
+    spawn_type: LateJoin
+
+- type: entity
+  name: latejoin syndicate syndicate chef
+  id: SpawnPointLatejoinTypanChef
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanChef
+    spawn_type: LateJoin
+
+- type: entity
+  name: latejoin syndicate medic
+  id: SpawnPointLatejoinTypanMedic
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanMedic
+    spawn_type: LateJoin
+
+- type: entity
+  name: latejoin syndicate research director
+  id: SpawnPointLatejoinTypanRD
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanRD
+    spawn_type: LateJoin
+
+- type: entity
+  name: latejoin syndicate scientist
+  id: SpawnPointLatejoinTypanScience
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanScience
+    spawn_type: LateJoin
+
+- type: entity
+  name: latejoin syndicate telecommunications officer
+  id: SpawnPointLatejoinTypanOfficer
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanCommander
+    spawn_type: Job
+
+
+- type: entity
+  name: latejoin syndicate atmostech
+  id: SpawnTypanAtmos
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanAtmosTech
+    spawn_type: Job
+
+- type: entity
+  name: latejoin syndicate botanist
+  id: SpawnTypanBotanist
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanBotanist
+    spawn_type: Job
+
+- type: entity
+  name: latejoin syndicate cargo technician
+  id: SpawnTypanCargotech
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanCargotech
+    spawn_type: Job
+
+- type: entity
+  name: latejoin syndicate syndicate chef
+  id: SpawnTypanChef
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanChef
+    spawn_type: Job
+
+- type: entity
+  name: latejoin syndicate medic
+  id: SpawnTypanMedic
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanMedic
+    spawn_type: Job
+
+- type: entity
+  name: latejoin syndicate research director
+  id: SpawnTypanRD
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanRD
+    spawn_type: Job
+
+- type: entity
+  name: latejoin syndicate scientist
+  id: SpawnTypanScience
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanScience
+    spawn_type: Job
+
+- type: entity
+  name: latejoin syndicate commander
+  id: SpawnTypanCommander
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanCommander
+    spawn_type: Job
+
+- type: entity
+  name: latejoin syndicate officer
+  id: SpawnTypanOfficer
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanOfficer
+    spawn_type: Job

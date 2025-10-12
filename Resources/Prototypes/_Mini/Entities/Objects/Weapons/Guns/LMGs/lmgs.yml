@@ -1,0 +1,151 @@
+- type: entity
+  name: Defender
+  id: WeaponMiniMachineGun
+  parent: [BaseWeaponBattery, BaseGunWieldable, BaseSecurityContraband]
+  description: Advanced energy weapon with extended ammunition. has a weak self-reload.
+  components:
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,2
+  - type: Clothing
+    sprite: /Textures/_Mini/Objects/Weapons/Guns/LMGs/krio_gun.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: Gun
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    minAngle: 20
+    maxAngle: 21
+    angleIncrease: 4
+    angleDecay: 16
+    fireRate: 6
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
+  - type: Sprite
+    sprite: /Textures/_Mini/Objects/Weapons/Guns/LMGs/krio_gun.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-unshaded-4
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: ProjectileBatteryAmmoProvider
+    proto: BulletLaserMini
+    fireCost: 40
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 15
+  - type: MagazineVisuals
+    magState: mag
+    steps: 5
+    zeroVisible: true
+  - type: Appearance
+  - type: StaticPrice
+    price: 5000
+  - type: Battery
+    maxCharge: 4000
+    startingCharge: 4000
+
+
+- type: entity
+  id: WeaponSaintGun
+  name: Seraphim
+  description: A special weapon for fighting otherworldly forces. Our Father, who art in heaven! Let thy name be holy, let thy kingdom come, let thy will be done, both in heaven and on earth...
+  parent: [WeaponRifleAk, BaseSecurityContraband]
+  components:
+    - type: Item
+      size: Huge
+      shape:
+      - 0,0,4,3
+    - type: Gun
+      fireRate: 9
+      minAngle: 0
+      maxAngle: 25
+      angleDecay: 15
+      angleIncreasePerShot: 1
+      angleIncreasePerSecond: 4
+      soundGunshot:
+        path: /Audio/_Mini/LMGs/gunshotsaint.ogg
+    - type: Sprite
+      sprite: _Mini/Objects/Weapons/Guns/LMGs/saint_gun.rsi
+      layers:
+      - state: base
+        map: ["enum.GunVisualLayers.Base"]
+      - state: mag-3
+        map: ["enum.GunVisualLayers.Mag"]
+    - type: Clothing
+      sprite: _Mini/Objects/Weapons/Guns/LMGs/saint_gun.rsi
+    - type: ItemSlots
+      slots:
+        gun_magazine:
+          name: Magazine
+          startingItem: MagazineRifleSaint
+          insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+          ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+          priority: 2
+          whitelist:
+            tags:
+              - MagazineRifleSaint
+          whitelistFailPopup: gun-magazine-whitelist-fail
+        gun_chamber:
+          name: Chamber
+          startingItem: CartridgeRifleSaint
+          priority: 1
+          whitelist:
+            tags:
+              - CartridgeRifleSaint
+    - type: MagazineVisuals
+      magState: mag
+      steps: 4
+      zeroVisible: true
+    - type: SpeedModifiedOnWield
+      walkModifier: 0.9
+      sprintModifier: 0.9
+    - type: GunRequiresWield
+
+- type: entity
+  name: L2-PK
+  id: WeaponLightMachineGunL2RPK
+  parent: BaseWeaponLightMachineGun
+  description: The L2-PK is a light machine gun from the TechnicLogistic family, developed based on the well-known L6. This machine gun is known for its increased accuracy and low production costs. However, its design has made it quite bulky.
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Weapons/Guns/LMGs/L2RPK.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-3
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _Mini/Objects/Weapons/Guns/LMGs/L2RPK.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: MagazineVisuals
+    magState: mag
+    steps: 4
+    zeroVisible: true
+  - type: Appearance
+  - type: ClothingSpeedModifier
+    walkModifier: 0.85
+    sprintModifier: 0.85
+  - type: Gun
+    projectileSpeed: 30
+    minAngle: 18
+    maxAngle: 38
+    angleIncrease: 3
+    angleDecay: 14
+    fireRate: 6
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95
+        Heat: 0.95
+        Caustic: 0.95

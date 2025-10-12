@@ -1,0 +1,30 @@
+- type: AirlockGroup
+  id: TypanStandard
+  iconPriority: 60
+  stylePaths:
+    базовый тёмный:      _Mini/Structures/Doors/Airlocks/Typan.rsi
+    атмосферный тёмный:  _Mini/Structures/Doors/Airlocks/Typan_atmospherics.rsi
+    снабжение тёмный:    _Mini/Structures/Doors/Airlocks/Typan_cargo.rsi
+    командование тёмный: _Mini/Structures/Doors/Airlocks/Typan_command.rsi
+    инженерный тёмный:   _Mini/Structures/Doors/Airlocks/Typan_engineering.rsi
+    морозильник тёмный:  _Mini/Structures/Doors/Airlocks/Typan_freezer.rsi
+    технический тёмный:  _Mini/Structures/Doors/Airlocks/Typan_maint.rsi
+    медицинский тёмный:  _Mini/Structures/Doors/Airlocks/Typan_medical.rsi
+    научный тёмный:      _Mini/Structures/Doors/Airlocks/Typan_science.rsi
+    сервисный тёмный:    _Mini/Structures/Doors/Airlocks/Typan_service.rsi
+    вирусология тёмный:  _Mini/Structures/Doors/Airlocks/Typan_virology.rsi
+
+- type: AirlockGroup
+  id: TypanGlass
+  iconPriority: 50
+  stylePaths:
+    базовый тёмный:      _Mini/Structures/Doors/Airlocks/Typan_glass.rsi
+    атмосферный тёмный:  _Mini/Structures/Doors/Airlocks/Typan_glass_atmospherics.rsi
+    снабжение тёмный:    _Mini/Structures/Doors/Airlocks/Typan_glass_cargo.rsi
+    командование тёмный: _Mini/Structures/Doors/Airlocks/Typan_glass_command.rsi
+    инженерный тёмный:   _Mini/Structures/Doors/Airlocks/Typan_glass_engineering.rsi
+    технический тёмный:  _Mini/Structures/Doors/Airlocks/Typan_glass_maint.rsi
+    медицинский тёмный:  _Mini/Structures/Doors/Airlocks/Typan_glass_medical.rsi
+    научный тёмный:      _Mini/Structures/Doors/Airlocks/Typan_glass_science.rsi
+    сервисный тёмный:    _Mini/Structures/Doors/Airlocks/Typan_glass_service.rsi
+    вирусология тёмный:  _Mini/Structures/Doors/Airlocks/Typan_glass_virology.rsi

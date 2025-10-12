@@ -1,3 +1,21 @@
+# Typan goals
+- type: stationGoal
+  id: SyndicateMaid
+  text: station-goal-syndicate-maid
+  stamp: RubberStampSyndicate
+  minPlayers: 10
+
+- type: stationGoal
+  id: SyndicateAi
+  text: station-goal-syndicate-ai
+  stamp: RubberStampSyndicate
+  minPlayers: 10
+
+- type: stationGoal
+  id: SyndicateCargo
+  text: station-goal-syndicate-cargo
+  stamp: RubberStampSyndicate
+
 # General goals
 - type: stationGoal
   id: Singularity

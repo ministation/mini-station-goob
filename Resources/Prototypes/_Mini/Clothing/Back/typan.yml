@@ -1,0 +1,51 @@
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackSatchelTypan
+  name: syndicate satchel
+  description: A fashionable red and black bag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/bag.rsi
+  - type: Storage
+    grid:
+    - 0,0,1,3
+    - 3,0,6,3
+    - 8,0,9,3
+
+- type: entity
+  name: syndicate plant bag
+  id: TypanPlantBag
+  parent: BaseStorageItem
+  description: A bag for botanists to easily carry their huge harvests.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/plant_bag.rsi
+    state: icon
+  - type: Item
+    storedRotation: -90
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - belt
+  - type: Storage
+    grid:
+    - 0,0,7,4
+    maxItemSize: Small
+    quickInsert: true
+    areaInsert: true
+    whitelist:
+      components:
+        - Produce
+        - Seed
+  - type: Dumpable
+
+- type: entity
+  parent: ClothingOuterStorageBase
+  id: ClothingOuterApronTypanBotanist
+  name: syndicate botanist's apron
+  description: A thick apron, perfect for protecting your delicate flesh from stains, dirt, and blood.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/apron_botanist.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/apron_botanist.rsi

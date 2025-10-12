@@ -1,0 +1,44 @@
+- type: job
+  id: TypanBorg
+  name: киборг синдиката
+  description: job-description-borg
+  playTimeTracker: JobBorgTypan
+  requirements:
+    - !type:OverallPlaytimeRequirement
+      time: 14400 # 4 hrs
+  canBeAntag: false
+  icon: JobIconTypanBorg
+  supervisors: job-supervisors-typan-syndicate
+  jobEntity: PlayerBorgSyndicateSaboteurBattery
+  applyTraits: false
+  access:
+  - TypanArmory
+  - TypanAtmospherics
+  - TypanCargo
+  - TypanCommand
+  - TypanCommunicationsOfficer
+  - TypanEngineering
+  - TypanMaint
+  - TypanMedical
+  - TypanProtection
+  - TypanResearchDirector
+  - TypanScience
+  - TypanService
+  - TypanTechnicalOperationsSupervisor
+  - TypanVault
+  - TypanExternal
+  - SyndicateAgent
+
+- type: job
+  id: TypanBorgMedic
+  name: медкиборг синдиката
+  description: job-description-borg
+  playTimeTracker: JobBorgTypanMedic
+  requirements:
+    - !type:OverallPlaytimeRequirement
+      time: 14400 # 4 hrs
+  canBeAntag: false
+  icon: JobIconTypanBorg
+  supervisors: job-supervisors-typan-syndicate
+  jobEntity: PlayerBorgSyndicateMedicalBattery
+  applyTraits: false

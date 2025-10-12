@@ -1,0 +1,26 @@
+- type: entity
+  parent: [ClothingEyesBase, ShowSecurityIcons]
+  id: ClothingEyesHudSyndicateAgentTypan
+  name: syndicate medic hud
+  description: A hud used by medics on Syndicate secure stations.
+  components:
+  - type: Sprite
+    sprite: Clothing/Eyes/Hud/syndagent.rsi
+  - type: Clothing
+    sprite: Clothing/Eyes/Hud/syndagent.rsi
+  - type: ShowSyndicateIcons
+  - type: ShowHealthBars
+    damageContainers:
+    - Biological
+
+- type: entity
+  parent: [ClothingEyesBase, ShowSecurityIcons]
+  id: ClothingEyesHudTypan
+  name: syndicate hud
+  description: A convenient hud with a built-in recognition system.
+  components:
+  - type: Sprite
+    sprite: Clothing/Eyes/Hud/synd.rsi
+  - type: Clothing
+    sprite: Clothing/Eyes/Hud/synd.rsi
+  - type: ShowSyndicateIcons

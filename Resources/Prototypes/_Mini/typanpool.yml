@@ -1,0 +1,129 @@
+  - type: additionalMap
+    id: Saltern
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Atlas
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Amber
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Bagel
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Box
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Cluster
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Fland
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Loop
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Marathon
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Meta
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Oasis
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Omega
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Origin
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Saltern
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Packed
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Reach
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: FlandHighPop
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: OasisHighPop
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Barratry
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Kettle
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Submarine
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Leonid
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Delta
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Chloris
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Cog
+    maps:
+    - Typan
+
+  - type: additionalMap
+    id: Serpentcrest
+    maps:
+    - Typan

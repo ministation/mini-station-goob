@@ -1,0 +1,34 @@
+#Empty bs
+- type: entity
+  id: JetpackBlueShieldEmpty
+  parent: [BaseJetpack, BaseSecurityContraband]
+  name: blueshield officer's jetpack
+  description: This is a jetpack. It holds 5 liters of gas. It belongs to a blueshield officer.
+  suffix: Empty
+  components:
+  - type: Item
+    sprite: _Mini/Objects/Tanks/Jetpacks/blueshield.rsi
+  - type: Sprite
+    sprite: _Mini/Objects/Tanks/Jetpacks/blueshield.rsi
+  - type: Clothing
+    sprite: _Mini/Objects/Tanks/Jetpacks/blueshield.rsi
+    slots:
+      - Back
+      - suitStorage
+      - Belt
+
+# Filled bs
+- type: entity
+  id: JetpackBlueShieldFilled
+  parent: JetpackBlueShieldEmpty
+  suffix: Filled
+  components:
+  - type: GasTank
+    outputPressure: 42.6
+    air:
+      # 13 minutes of thrust
+      volume: 5
+      temperature: 293.15
+      moles:
+        - 1.025689525 # oxygen
+        - 1.025689525 # nitrogen

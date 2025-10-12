@@ -1,0 +1,32 @@
+- type: job
+  id: TypanChef
+  name: job-name-typan-chef
+  playTimeTracker: TypanChef
+  description: job-description-typan-chef
+  startingGear: TypanChef
+  icon: "JobIconTypanChef"
+  supervisors: job-supervisors-typan-telecommunications-officer
+  canBeAntag: false
+  requirements:
+    - !type:DepartmentTimeRequirement
+      department: Civilian
+      time: 6000
+  access:
+  - TypanService
+  - SyndicateAgent
+  - TypanMaint
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: Skills # Corvax-Next-Skills
+        skills:
+        - Butchering
+
+- type: startingGear
+  id: TypanChef
+  equipment:
+    ears: ClothingHeadsetAltSyndicate
+    jumpsuit: ClothingUniformJumpsuitTypanChef
+    outerClothing: ClothingOuterApronTypanChef
+    shoes: ClothingShoesColorBlack
+    id: SyndiPDAChef

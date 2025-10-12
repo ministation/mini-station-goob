@@ -1,0 +1,28 @@
+- type: entity
+  parent: ClothingHandsGlovesSyntheticBase
+  id: ClothingHandsRDTypan
+  name: syndicate research director's gloves
+  description: Tactical gloves that protect the wearer from unwanted contact.
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/tacticalmaidgloves.rsi
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/tacticalmaidgloves.rsi
+  - type: Insulated
+  - type: Fiber
+    fiberColor: fibers-black
+
+- type: entity
+  parent: ClothingHandsButcherable
+  id: ClothingHandsScienceTypan
+  name: syndicate scientist's gloves
+  description: Comfortable gloves for carrying out various experiments.
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/robohands.rsi
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/robohands.rsi
+  - type: Fiber
+    fiberMaterial: fibers-leather
+    fiberColor: fibers-black
+  - type: FingerprintMask

@@ -252,7 +252,7 @@ namespace Content.Client.Stylesheets
         public const string StyleClassPopupMessageMediumCaution = "PopupMessageMediumCaution";
         public const string StyleClassPopupMessageLarge = "PopupMessageLarge";
         public const string StyleClassPopupMessageLargeCaution = "PopupMessageLargeCaution";
-
+        public const string StyleClassLobbyBackground = "LobbyBackground";
         public static readonly Color PanelDark = Color.FromHex("#1E1E22");
 
         public static readonly Color NanoGold = Color.FromHex("#A88B5E");
@@ -1194,6 +1194,14 @@ namespace Content.Client.Stylesheets
                 new StyleRule(new SelectorElement(typeof(PanelContainer), new[] {"speechBox", "whisperBox"}, null, null), new[]
                 {
                     new StyleProperty(PanelContainer.StylePropertyPanel, whisperBox)
+                }),
+
+                new StyleRule(new SelectorChild(
+                    new SelectorElement(typeof(PanelContainer), new[] {"speechBox", "whisperBox"}, null, null),
+                    new SelectorElement(typeof(RichTextLabel), new[] {"bubbleContent"}, null, null)),
+                    new[]
+                {
+                    new StyleProperty("font", notoSansItalic12),
                 }),
 
                 new StyleRule(new SelectorChild(

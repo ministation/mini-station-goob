@@ -1,0 +1,75 @@
+- type: entity
+  parent: BaseItem
+  id: ProduceBaseCropilo
+  abstract: true
+  components:
+  - type: SolutionContainerManager
+  - type: Sprite
+    state: produce
+  - type: Produce
+  - type: PotencyVisuals
+  - type: Appearance
+    grindableSolutionName: food
+
+- type: entity
+  name: sprinkler
+  description: A fluffy brush for sprinkling with holy water. Even in the darkest of deeds, there is always room for divine purification.
+  id: Cropilo
+  parent: ProduceBaseCropilo
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Weapons/Melee/cropilo.rsi
+    state: cropilo
+  - type: Item
+    size: Normal
+    sprite: _Mini/Objects/Weapons/Melee/cropilo.rsi
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 0.8
+    damage:
+      types:
+        Blunt: 0
+        Holy: 25
+    soundHit:
+        path: /Audio/Weapons/cropilo1.ogg
+  - type: MeleeChemicalInjector
+    transferAmount: 5
+    solution: food
+    pierceArmor: true
+  - type: UseDelay
+    delay: 5.0
+  - type: Bible
+    damage:
+      groups:
+        Brute: -5
+        Burn: -5
+        Airloss: -5
+        Genetic: -3
+        Toxin: -3
+    damageOnFail:
+      groups:
+        Brute: 5
+        Airloss: 15
+    damageOnUntrainedUse: ## What a non-chaplain takes when attempting to heal someone
+      groups:
+        Burn: 10
+  - type: ExaminableSolution
+    solution: pen
+  - type: ReactionMixer
+    mixMessage: "bible-mixing-success"
+    reactionTypes:
+    - Holy
+  - type: PointLight
+    radius: 2
+    energy: 2
+    netsync: false
+  - type: Clothing
+    slots:
+    - Belt
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10000
+        reagents:
+        - ReagentId: Holywater
+          Quantity: 10000

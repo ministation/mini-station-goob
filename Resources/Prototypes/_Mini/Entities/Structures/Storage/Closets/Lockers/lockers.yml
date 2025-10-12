@@ -1,0 +1,119 @@
+- type: entity
+  id: LockerSyndicateAtmos
+  name: syndicate atmospheric technician's locker
+  parent: LockerAtmospherics
+  description: A standard-issue Syndicate storage unit.
+  components:
+    - type: Appearance
+    - type: EntityStorageVisuals
+      stateBaseClosed: typanatm
+      stateDoorOpen: tac_open
+      stateDoorClosed: typanatm_door
+    - type: StorageFill
+      contents:
+        - id: ClothingMaskGasAtmos
+        - id: ClothingOuterSuitAtmosFire
+        - id: ClothingHeadHelmetAtmosFire
+        - id: GasAnalyzer
+        - id: MedkitOxygenFilled
+        - id: HolofanProjector
+        - id: RCDAmmo
+        - id: RPDsindi
+        - id: SindiRCD
+    - type: AccessReader
+      access: [["TypanAtmospherics"]]
+
+- type: entity
+  id: LockerSyndicateCap
+  name: syndicate captain's locker
+  parent: LockerAtmospherics
+  description: A standard-issue Syndicate storage unit.
+  components:
+    - type: Appearance
+    - type: EntityStorageVisuals
+      stateBaseClosed: tac
+      stateDoorOpen: tac_open
+      stateDoorClosed: tac_door
+    - type: StorageFill
+      contents:
+        - id: WeaponRevolverPython
+    - type: AccessReader
+      access: [["TypanAtmospherics"]]
+
+- type: entity
+  id: LockerSyndicateCargo
+  name: syndicate cargo technician's locker
+  parent: LockerSalvageSpecialist
+  description: A standard-issue Syndicate storage unit.
+  components:
+    - type: Appearance
+    - type: EntityStorageVisuals
+      stateBaseClosed: typancargo
+      stateDoorOpen: tac_open
+      stateDoorClosed: typancargo_door
+    - type: AccessReader
+      access: [["TypanCargo"]]
+    - type: EntityTableContainerFill
+      containers:
+        entity_storage: !type:NestedSelector
+          tableId: LockerFillSalvageSpecialistSyndie
+
+- type: entity
+  id: LockerSyndicateMed
+  name: medical locker
+  parent: LockerMedicineFilled
+  description: A standard-issue Syndicate storage unit.
+  components:
+    - type: Appearance
+    - type: EntityStorageVisuals
+      stateBaseClosed: typanmed
+      stateDoorOpen: tac_open
+      stateDoorClosed: typanmed_door
+    - type: AccessReader
+      access: [["TypanMedical"]]
+
+- type: entityTable
+  id: LockerFillSalvageSpecialistSyndie
+  table: !type:AllSelector
+    children:
+      - id: ClothingBeltUtilityFilled
+      - id: SurvivalKnife
+      - id: HandheldGPSBasic
+      - id: RadioHandheld
+      - id: AppraisalTool
+      - id: FireExtinguisher
+      # Lavaland Change Start
+      - id: WeaponProtoKineticAccelerator
+      - id: OreBag
+      - id: Pickaxe
+      - id: MineralScanner
+      - id: ClothingEyesGlassesMeson
+      - id: SeismicCharge
+
+- type: entity
+  id: LockerSyndicateSci
+  name: шкаф учёного
+  parent: LockerScienceFilled
+  description: Хранилище вещей учёного.
+  components:
+    - type: Appearance
+    - type: EntityStorageVisuals
+      stateBaseClosed: typan_sci
+      stateDoorOpen: tac_open
+      stateDoorClosed: typan_sci_door
+    - type: AccessReader
+      access: [["TypanScience"]]
+
+- type: entity
+  id: LockerSyndicateBot
+  name: шкаф ботаника
+  parent: LockerBotanistFilled
+  description: Хранилище вещей ботаника.
+  components:
+    - type: Appearance
+    - type: EntityStorageVisuals
+      stateBaseClosed: typanbot
+      stateDoorOpen: tac_open
+      stateDoorClosed: typanbot_door
+    - type: AccessReader
+      access: [["TypanService"]]

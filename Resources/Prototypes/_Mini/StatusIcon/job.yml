@@ -1,0 +1,87 @@
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSyndicateAtmos
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: atmospheric_technician
+  jobName: job-name-typan-atmos-tech
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconTypanBotanist
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: botanist
+  jobName: job-name-typan-botanist
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconTypanCargotech
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: cargo_technician
+  jobName: job-name-typan-cargotech
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconTypanChef
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: chef
+  jobName: job-name-typan-chef
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSyndicateParamedic
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: medical_doctor
+  jobName: job-name-typan-medic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSyndicateRD
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: research_director
+  jobName: job-name-typan-rd
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSyndicateScience
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: scientist
+  jobName: job-name-typan-science
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSyndicateFormal
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: commander
+  jobName: job-name-typan-telecommunications-officer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSyndicateOfficer
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: security_officer
+  jobName: патрульный синдиката
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconTypanBorg
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: borg
+  jobName: job-name-borg
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconTypanBorgMedic
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: borg
+  jobName: job-name-borg

@@ -1,0 +1,79 @@
+- type: entity
+  id: Saintshot
+  name: saint bullet
+  categories: [ HideSpawnMenu ]
+  parent: BaseBullet
+  components:
+  - type: StaminaDamageOnCollide
+    damage: 11
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    state: saintbullet
+  - type: Projectile
+    damage:
+      types:
+        Holy: 20
+  - type: SolutionContainerManager
+    solutions:
+      ammo:
+        maxVol: 0.8
+  - type: RefillableSolution
+    solution: ammo
+  - type: DrainableSolution
+    solution: ammo
+  - type: SolutionInjectOnProjectileHit
+    transferAmount: 0.8
+    solution: ammo
+  - type: InjectableSolution
+    solution: ammo
+  - type: SingularityDistortion
+    intensity: +3
+    falloffPower: 1.5
+
+- type: entity
+  id: CartridgeRifleSaint
+  name: cartridge (saint)
+  parent: [ BaseCartridgeLightRifle, BaseSecurityContraband ]
+  components:
+    - type: Tag
+      tags:
+      - CartridgeRifleSaint
+      - MagazineRifleSaint
+    - type: CartridgeAmmo
+      proto: Saintshot
+    - type: SolutionContainerManager
+      solutions:
+        ammo:
+          reagents:
+          - ReagentId: Holywater
+            Quantity: 0.8
+    - type: SolutionTransfer
+      maxTransferAmount: 0.8
+    - type: ChemicalAmmo
+
+- type: entity
+  id: MagazineRifleSaint
+  name: magazine (saint)
+  parent: BaseMagazineLightRifle
+  components:
+    - type: Tag
+      tags:
+      - MagazineRifleSaint
+    - type: BallisticAmmoProvider
+      proto: CartridgeRifleSaint
+      capacity: 120
+      mayTransfer: true
+      whitelist:
+        tags:
+          - CartridgeRifleSaint
+    - type: Sprite
+      sprite: _Mini/Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/saint_rifle_mag.rsi
+      layers:
+      - state: base
+        map: ["enum.GunVisualLayers.Base"]
+      - state: mag-1
+        map: ["enum.GunVisualLayers.Mag"]
+    - type: MagazineVisuals
+      magState: mag
+      steps: 2
+      zeroVisible: false

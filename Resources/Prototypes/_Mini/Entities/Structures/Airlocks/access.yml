@@ -1,0 +1,219 @@
+- type: entity
+  parent: AirlockTypanService
+  id: AirlockTypanServiceLocked
+  suffix: Typan, Service, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanService ]
+  - type: Wires
+    layoutId: AirlockService
+
+- type: entity
+  parent: AirlockTypanAtmospherics
+  id: AirlockTypanAtmosphericsLocked
+  suffix: Typan, Atmospherics, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanAtmospherics ]
+
+- type: entity
+  parent: AirlockTypanCargo
+  id: AirlockTypanCargoLocked
+  suffix: Typan, Cargo, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanCargo ]
+
+- type: entity
+  parent: AirlockTypanCommand
+  id: AirlockTypanCommandLocked
+  suffix: Typan, Command, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanCommand ]
+
+- type: entity
+  parent: AirlockTypanEngineering
+  id: AirlockTypanEngineeringLocked
+  suffix: Typan, Engineering, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanEngineering ]
+
+- type: entity
+  parent: AirlockTypanMaint
+  id: AirlockTypanMaintLocked
+  suffix: Typan, Maint, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanMaintenance ]
+
+- type: entity
+  parent: AirlockTypanMedical
+  id: AirlockTypanMedicalLocked
+  suffix: Typan, Medical, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanMedical ]
+
+- type: entity
+  parent: AirlockTypanScience
+  id: AirlockTypanScienceLocked
+  suffix: Typan, Science, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanScience ]
+
+- type: entity
+  parent: AirlockTypanVirology
+  id: AirlockTypanVirologyLocked
+  suffix: Typan, Virology, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanMedical ]
+
+- type: entity
+  parent: AirlockTypanCommand
+  id: AirlockTypanTechnicalOperationsSupervisorLocked
+  suffix: Typan, Technical Operations Supervisor, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanTechnicalOperationsSupervisor ]
+
+- type: entity
+  parent: AirlockTypanGlassService
+  id: AirlockTypanGlassServiceLocked
+  suffix: Typan, Service, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanService ]
+  - type: Wires
+    layoutId: AirlockService
+
+- type: entity
+  parent: AirlockTypanGlassAtmospherics
+  id: AirlockTypanGlassAtmosphericsLocked
+  suffix: Typan, Atmospherics, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanAtmospherics ]
+
+- type: entity
+  parent: AirlockTypanGlassCargo
+  id: AirlockTypanGlassCargoLocked
+  suffix: Typan, Cargo, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanCargo ]
+
+- type: entity
+  parent: AirlockTypanGlassCommand
+  id: AirlockTypanGlassCommandLocked
+  suffix: Typan, Command, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanCommand ]
+
+- type: entity
+  parent: AirlockTypanGlassEngineering
+  id: AirlockTypanGlassEngineeringLocked
+  suffix: Typan, Engineering, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanEngineering ]
+
+- type: entity
+  parent: AirlockTypanGlassMaint
+  id: AirlockTypanGlassMaintLocked
+  suffix: Typan, Maint, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanMaintenance ]
+
+- type: entity
+  parent: AirlockTypanGlassMedical
+  id: AirlockTypanGlassMedicalLocked
+  suffix: Typan, Medical, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanMedical ]
+
+- type: entity
+  parent: AirlockTypanGlassVirology
+  id: AirlockTypanGlassVirologyLocked
+  suffix: Typan, Virology, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanMedical ]
+
+- type: entity
+  parent: AirlockTypanGlassScience
+  id: AirlockTypanGlassScienceLocked
+  suffix: Typan, Science, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanScience ]
+
+- type: entity
+  parent: AirlockTypanGlassCommand
+  id: AirlockTypanGlassTechnicalOperationsSupervisorLocked
+  suffix: Typan, Technical Operations Supervisor, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanTechnicalOperationsSupervisor ]
+
+- type: entity
+  parent: AirlockTypanFreezer
+  id: AirlockTypanFreezerLocked
+  suffix: Typan, Freezer, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanService ]
+
+- type: entity
+  parent: HighSecDoorTypan
+  id: HighSecDoorTypanLocked
+  suffix: Typan, Vault, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanVault ]
+
+- type: entity
+  parent: AirlockHatchTypan
+  id: AirlockHatchTypanLocked
+  suffix: Typan, External, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanExternal ]
+
+- type: entity
+  parent: AirlockHatchGlassTypan
+  id: AirlockHatchGlassTypanLocked
+  suffix: Typan, External, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanExternal ]

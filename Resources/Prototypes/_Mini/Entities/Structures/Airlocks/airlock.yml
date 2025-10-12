@@ -1,0 +1,324 @@
+- type: entity
+  id: AirlockTypan
+  parent: Airlock
+  name: шлюз
+  description: Он открывается, он закрывается, и он может вас раздавить.
+  suffix: Тайпан
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan.rsi
+    snapCardinals: true
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+    - state: closed_unlit
+      shader: unshaded
+      map: ["enum.DoorVisualLayers.BaseUnlit"]
+      visible: false
+    - state: welded
+      map: ["enum.WeldableLayers.BaseWelded"]
+    - state: bolted_unlit
+      shader: unshaded
+      map: ["enum.DoorVisualLayers.BaseBolted"]
+    - state: emergency_unlit
+      map: ["enum.DoorVisualLayers.BaseEmergencyAccess"]
+      shader: unshaded
+    - state: panel_open
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+    - state: electrified_ai
+      sprite: Interface/Misc/ai_hud.rsi
+      shader: unshaded
+      visible: false
+      map: ["enum.ElectrifiedLayers.HUD"]
+    - state: electrified
+      sprite: Effects/electricity.rsi
+      shader: unshaded
+      visible: false
+      map: ["enum.ElectrifiedLayers.Sparks"]
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypan ]
+  # - type: PaintableAirlock
+  #   group: TypanStandard
+
+- type: entity
+  id: AirlockTypanGlass
+  parent: AirlockGlass
+  name: стеклянный шлюз
+  description: Он открывается, он закрывается, и он может вас раздавить.
+  suffix: Тайпан
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass.rsi
+  # - type: PaintableAirlock
+  #   group: TypanGlass
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypan ]
+
+- type: entity
+  id: HighSecDoorTypan
+  parent: HighSecDoor
+  name: бронированная дверь
+  description: Удерживает плохих снаружи, а хороших внутри.
+  suffix: Тайпан
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_highsec.rsi
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+    - state: closed_unlit
+      shader: unshaded
+      map: ["enum.DoorVisualLayers.BaseUnlit"]
+      visible: false
+    - state: welded
+      map: ["enum.WeldableLayers.BaseWelded"]
+    - state: bolted_unlit
+      shader: unshaded
+      map: ["enum.DoorVisualLayers.BaseBolted"]
+    - state: emergency_unlit
+      map: ["enum.DoorVisualLayers.BaseEmergencyAccess"]
+      shader: unshaded
+    - state: panel_open
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+    - state: electrified_ai
+      sprite: Interface/Misc/ai_hud.rsi
+      shader: unshaded
+      visible: false
+      map: ["enum.ElectrifiedLayers.HUD"]
+    - state: electrified
+      sprite: Effects/electricity.rsi
+      shader: unshaded
+      visible: false
+      map: ["enum.ElectrifiedLayers.Sparks"]
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypan ]
+
+- type: entity
+  parent: AirlockHatch
+  id: AirlockHatchTypan
+  name: герметичный люк
+  description: Он открывается, он закрывается, он может раздавить вас, а за ним лишь космос.
+  suffix: Тайпан, Внешний
+  components:
+  - type: Door
+    crushDamage:
+      types:
+        Blunt: 15
+    openSound:
+      path: /Audio/Machines/airlock_ext_open.ogg
+    closeSound:
+      path: /Audio/Machines/airlock_ext_close.ogg
+    denySound:
+      path: /Audio/Machines/airlock_deny.ogg
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_hatch.rsi
+  - type: Wires
+    layoutId: AirlockExternal
+
+- type: entity
+  parent: AirlockHatchTypan
+  id: AirlockHatchGlassTypan
+  suffix: Тайпан, Внешний
+  components:
+  - type: Door
+    occludes: false
+  - type: Occluder
+    enabled: false
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_hatch.rsi
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.49,0.49,0.49"
+        density: 100
+        mask:
+        - FullTileMask
+        layer:
+        - GlassAirlockLayer
+
+- type: entity
+  parent: AirlockTypan
+  id: AirlockTypanService
+  suffix: Тайпан, Сервисный
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_service.rsi
+  - type: Wires
+    layoutId: AirlockService
+
+- type: entity
+  parent: AirlockTypan
+  id: AirlockTypanFreezer
+  suffix: Тайпан, Холодильник
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_freezer.rsi
+  - type: Wires
+    layoutId: AirlockService
+
+- type: entity
+  parent: AirlockTypan
+  id: AirlockTypanEngineering
+  suffix: Тайпан, Инженерный
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_engineering.rsi
+  - type: Wires
+    layoutId: AirlockEngineering
+
+- type: entity
+  parent: AirlockTypanEngineering
+  id: AirlockTypanAtmospherics
+  suffix: Тайпан, Атмосферный
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_atmospherics.rsi
+
+- type: entity
+  parent: AirlockTypan
+  id: AirlockTypanCargo
+  suffix: Тайпан, Снабжение
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_cargo.rsi
+  - type: Wires
+    layoutId: AirlockCargo
+
+- type: entity
+  parent: AirlockTypan
+  id: AirlockTypanMaint
+  suffix: Тайпан, Технический
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_maint.rsi
+
+- type: entity
+  parent: AirlockTypan
+  id: AirlockTypanMedical
+  suffix: Тайпан, Медицинский
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_medical.rsi
+  - type: Wires
+    layoutId: AirlockMedical
+
+- type: entity
+  parent: AirlockTypanMedical
+  id: AirlockTypanVirology
+  suffix: Тайпан, Вирусология
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_virology.rsi
+
+- type: entity
+  parent: AirlockTypan
+  id: AirlockTypanScience
+  suffix: Тайпан, Научный
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_science.rsi
+  - type: Wires
+    layoutId: AirlockScience
+
+- type: entity
+  parent: AirlockTypan
+  id: AirlockTypanCommand
+  suffix: Тайпан, Командование
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_command.rsi
+  - type: WiresPanelSecurity
+    securityLevel: medSecurity
+  - type: Wires
+    layoutId: AirlockCommand
+
+- type: entity
+  parent: AirlockTypanGlass
+  id: AirlockTypanGlassService
+  suffix: Тайпан, Сервисный
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_service.rsi
+  - type: Wires
+    layoutId: AirlockService
+
+- type: entity
+  parent: AirlockTypanGlass
+  id: AirlockTypanGlassEngineering
+  suffix: Тайпан, Инженерный
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_engineering.rsi
+  - type: Wires
+    layoutId: AirlockEngineering
+
+- type: entity
+  parent: AirlockTypanGlass
+  id: AirlockTypanGlassMaint
+  suffix: Тайпан, Технический
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_maint.rsi
+
+- type: entity
+  parent: AirlockTypanGlassEngineering
+  id: AirlockTypanGlassAtmospherics
+  suffix: Тайпан, Атмосферный
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_atmospherics.rsi
+
+- type: entity
+  parent: AirlockTypanGlass
+  id: AirlockTypanGlassCargo
+  suffix: Тайпан, Снабжение
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_cargo.rsi
+  - type: Wires
+    layoutId: AirlockCargo
+
+- type: entity
+  parent: AirlockTypanGlass
+  id: AirlockTypanGlassMedical
+  suffix: Тайпан, Медицинский
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_medical.rsi
+  - type: Wires
+    layoutId: AirlockMedical
+
+- type: entity
+  parent: AirlockTypanGlassMedical
+  id: AirlockTypanGlassVirology
+  suffix: Тайпан, Вирусология
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_virology.rsi
+
+- type: entity
+  parent: AirlockTypanGlass
+  id: AirlockTypanGlassScience
+  suffix: Тайпан, Научный
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_science.rsi
+  - type: Wires
+    layoutId: AirlockScience
+
+- type: entity
+  parent: AirlockTypanGlass
+  id: AirlockTypanGlassCommand
+  suffix: Тайпан, Командование
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Doors/Airlocks/typan_glass_command.rsi
+  - type: WiresPanelSecurity
+    securityLevel: medSecurity
+  - type: Wires
+    layoutId: AirlockCommand

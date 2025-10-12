@@ -1,0 +1,28 @@
+- type: entity
+  name: cyborg carbine
+  parent: BaseWeaponBattery
+  id: WeaponLaserCarbineBorg
+  description: Pew-pew. It's all fun and games, of course. But can we stop killing the clown?
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Battery/laser_gun.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-unshaded-4
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: Clothing
+    sprite: Objects/Weapons/Guns/Battery/laser_gun.rsi
+  - type: Gun
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+  - type: HitscanBatteryAmmoProvider
+    proto: RedLaser
+    fireCost: 62.5
+  - type: StaticPrice
+    price: 300
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 10

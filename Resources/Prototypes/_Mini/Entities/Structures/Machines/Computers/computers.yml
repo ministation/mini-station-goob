@@ -1,0 +1,239 @@
+- type: entity
+  parent: BaseComputer
+  id: MiniSyndieComputerId
+  name: Консоль ID карт
+  description: Консоль для кодирования пропускных карт агентов Синдиката.
+  components:
+  - type: IdCardConsole
+    privilegedIdSlot:
+      name: id-card-console-privileged-id
+      ejectSound: /Audio/Machines/id_swipe.ogg
+      insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+      ejectOnBreak: true
+      swap: false
+      whitelist:
+        components:
+        - IdCard
+    targetIdSlot:
+      name: id-card-console-target-id
+      ejectSound: /Audio/Machines/id_swipe.ogg
+      insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+      ejectOnBreak: true
+      swap: false
+      whitelist:
+        components:
+        - IdCard
+    accessLevels: [
+      "TypanArmory",
+      "TypanAtmospherics",
+      "TypanCargo",
+      "TypanCommand",
+      "TypanCommunicationsOfficer",
+      "TypanEngineering",
+      "TypanMaint",
+      "TypanMedical",
+      "TypanProtection",
+      "TypanResearchDirector",
+      "TypanScience",
+      "TypanService",
+      "TypanTechnicalOperationsSupervisor",
+      "TypanVault",
+      "TypanExternal",
+      "SyndicateAgent",
+      "NuclearOperative",]
+
+  - type: ActivatableUI
+    key: enum.IdCardConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.IdCardConsoleUiKey.Key:
+        type: IdCardConsoleBoundUserInterface
+  - type: CrewManifestViewer
+    ownerKey: enum.IdCardConsoleUiKey.Key
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: id
+    - map: ["computerLayerKeys"]
+      state: syndie_key
+  - type: Computer
+    board: IDComputerCircuitboard
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#D3D3D3"
+  - type: Tag
+    tags:
+    - EmagImmune
+  - type: ItemSlots
+  - type: ContainerContainer
+    containers:
+      board: !type:Container
+      IdCardConsole-privilegedId: !type:ContainerSlot
+      IdCardConsole-targetId: !type:ContainerSlot
+
+- type: entity
+  parent: BaseComputer
+  id: MiniConverterComputer
+  name: консоль инверсивной дематериализации "Омниверс-7"
+  description: Данное устройство реализует протокол Σ-трансмутации, применяя контролируемый обратный коллапс Шрёдингеровской информационной матрицы, запечатлённой в дисках исследований. При активации запускается нелинейная дематериализация по схеме. Проще говоря превращает диски исследований в телекристаллы.
+  components:
+  - type: Converter
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer_uplink
+    - map: ["computerLayerScreen"]
+      state: comm_syndie
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+
+- type: entity
+  parent: [BaseComputer, StorePresetUplinkTypan, BaseSyndicateContraband]
+  id: UplinkConsole
+  name: консоль заказов Синдиката
+  description:
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer_uplink
+    - map: ["computerLayerScreen"]
+      state: comm_cargo
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StoreUiKey.Key
+  - type: Store
+    balance:
+      Telecrystal: 1
+  - type: Anchorable
+    flags: None
+
+- type: entity
+  parent: ComputerResearchAndDevelopment
+  id: MiniComputerResearchAndDevelopment
+  name: исследовательская консоль
+  description: Компьютер, используемый для взаимодействия с оборудованием для РнД.
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer_uplink
+    - map: ["computerLayerScreen"]
+      state: comm_rnd
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: ResearchClient
+  - type: ResearchConsole
+  - type: ActiveRadio
+    channels:
+    - Science
+  - type: TechnologyDatabase
+  - type: ActivatableUI
+    key: enum.ResearchConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.ResearchConsoleUiKey.Key:
+        type: ResearchConsoleBoundUserInterface
+      enum.ResearchClientUiKey.Key:
+        type: ResearchClientBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: ApcPowerReceiver
+    powerLoad: 1000
+  - type: Computer
+    board: ResearchComputerCircuitboard
+  - type: AccessReader
+    access: [["TypanScience"]]
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#b53ca1"
+  - type: GuideHelp
+    guides:
+    - Science
+
+- type: entity
+  parent: ComputerAnalysisConsole
+  id: MiniComputerAnalysisConsole
+  name: аналитическая консоль
+  description: Компьютер, используемый для взаимодействия с анализатором артефактов.
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer_uplink
+    - map: ["computerLayerScreen"]
+      state: artifact
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+  - type: ResearchClient
+  - type: AnalysisConsole
+  - type: DeviceList
+  - type: DeviceNetwork
+    deviceNetId: Wired
+  - type: DeviceLinkSource
+    range: 5
+    ports:
+      - ArtifactAnalyzerSender
+  - type: ActivatableUI
+    key: enum.ArtifactAnalyzerUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.ArtifactAnalyzerUiKey.Key:
+        type: AnalysisConsoleBoundUserInterface
+      enum.ResearchClientUiKey.Key:
+        type: ResearchClientBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: ApcPowerReceiver
+    powerLoad: 1000
+  - type: Computer
+    board: AnalysisComputerCircuitboard
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#b53ca1"
+  - type: GuideHelp
+    guides:
+    - Xenoarchaeology
+
+- type: entity
+  parent: ComputerShuttleCargo
+  id: MiniComputerShuttleCargo
+  name: консоль управления грузовым шаттлом
+  description: Используется для пилотирования грузового шаттла.
+  suffix: Тайпан
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer_uplink
+    - map: ["computerLayerScreen"]
+      state: comm_cargo
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: DroneConsole
+    components:
+      - type: CargoShuttle
+  - type: RadarConsole
+    maxRange: 256
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#43ccb5"
+  - type: Computer
+    board: CargoShuttleConsoleCircuitboard

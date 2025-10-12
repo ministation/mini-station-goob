@@ -1,0 +1,90 @@
+- type: entity
+  id: StorePresetUplinkTypan
+  abstract: true
+  components:
+  - type: Store
+    name: store-preset-name-uplink
+    categories:
+    - TypanUplinkWeaponry
+    - TypanUplinkAmmo
+    - TypanUplinkExplosives
+    - TypanUplinkChemicals
+    - TypanUplinkDeception
+    - TypanUplinkDisruption
+    - TypanUplinkImplants
+    - TypanUplinkAllies
+    - TypanUplinkWearables
+    - TypanUplinkJob
+    - TypanUplinkSilicon
+    - TypanUplinkPointless
+    - TypanUplinkMaterials
+    currencyWhitelist:
+    - Telecrystal
+    balance:
+      Telecrystal: 0
+
+- type: storeCategory
+  id: TypanUplinkWeaponry
+  name: store-category-weapons
+  priority: 6
+
+- type: storeCategory
+  id: TypanUplinkAmmo
+  name: store-category-ammo
+  priority: 1
+
+- type: storeCategory
+  id: TypanUplinkExplosives
+  name: store-category-explosives
+  priority: 2
+
+- type: storeCategory
+  id: TypanUplinkWearables
+  name: store-category-wearables
+  priority: 3
+
+- type: storeCategory
+  id: TypanUplinkChemicals
+  name: store-category-chemicals
+  priority: 4
+
+- type: storeCategory
+  id: TypanUplinkDeception
+  name: store-category-deception
+  priority: 5
+
+- type: storeCategory
+  id: TypanUplinkDisruption
+  name: store-category-disruption
+  priority: 12
+
+- type: storeCategory
+  id: TypanUplinkImplants
+  name: store-category-implants
+  priority: 7
+
+- type: storeCategory
+  id: TypanUplinkAllies
+  name: store-category-allies
+  priority: 8
+
+- type: storeCategory
+  id: TypanUplinkJob
+  name: store-category-job
+  priority: 9
+
+- type: storeCategory
+  id: TypanUplinkSilicon
+  name: store-category-silicon #СДЕЛАТЬ
+  priority: 11 #ADT_Tweak
+
+- type: storeCategory
+  id: TypanUplinkMaterials
+  name: Материалы
+  priority: 0 #ADT_Tweak
+
+
+- type: storeCategory
+  id: TypanUplinkPointless
+  name: store-category-pointless
+  priority: 13 #ADT_Tweak

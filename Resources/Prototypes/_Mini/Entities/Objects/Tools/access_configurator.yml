@@ -1,0 +1,42 @@
+- type: entity
+  parent: AccessConfigurator
+  id: AccessConfiguratorTypan
+  suffix: Typan
+  components:
+    - type: Sprite
+      sprite: _Mini/Objects/Tools/access_configurator.rsi
+      state: icon
+    - type: Clothing
+      sprite: _Mini/Objects/Tools/access_configurator.rsi
+      quickEquip: false
+      slots:
+        - Belt
+    - type: AccessOverrider
+      accessLevels:
+      - TypanArmory
+      - TypanAtmospherics
+      - TypanCargo
+      - TypanCommand
+      - TypanCommunicationsOfficer
+      - TypanEngineering
+      - TypanMaint
+      - TypanMedical
+      - TypanProtection
+      - TypanResearchDirector
+      - TypanScience
+      - TypanService
+      - TypanTechnicalOperationsSupervisor
+      - TypanVault
+      - TypanExternal
+      privilegedIdSlot:
+        name: id-card-console-privileged-id
+        ejectSound: /Audio/Machines/id_swipe.ogg
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectOnBreak: true
+        swap: false
+        whitelist:
+          components:
+          - IdCard
+      denialSound:
+        path: /Audio/Machines/custom_deny.ogg
+      doAfter: 0.5

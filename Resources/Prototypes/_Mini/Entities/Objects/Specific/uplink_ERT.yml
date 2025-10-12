@@ -1,0 +1,63 @@
+- type: entity
+  parent: [BaseItem,  StorePresetUplinkERT]
+  id: BaseUplinkBOBERT
+  name: holy store
+  description: Store of Emergency Response Team, powered with bluespace.
+  suffix: 30 PU
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Specific/bobert.rsi
+    layers:
+    - state: icon
+  - type: Item
+    sprite: _Mini/Objects/Specific/bobert.rsi
+    heldPrefix: icon
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StoreUiKey.Key
+  - type: Store
+    balance:
+      Productunit: 30
+
+- type: entity
+  id: StorePresetUplinkERT
+  abstract: true
+  components:
+  - type: Store
+    name: store-preset-name-uplink
+    categories:
+    - UplinkERTWeapon
+    - UplinkERTMisc
+    - UplinkERTAmmo
+    - UplinkERTBomb
+    - UplinkERTMed
+    currencyWhitelist:
+    - Productunit
+
+- type: storeCategory
+  id: UplinkERTWeapon
+  name: store-category-weapon-ert
+  priority: 1
+
+- type: storeCategory
+  id: UplinkERTMisc
+  name: store-category-misc-ert
+  priority: 5
+
+- type: storeCategory
+  id: UplinkERTAmmo
+  name: store-category-ammo-ert
+  priority: 3
+
+- type: storeCategory
+  id: UplinkERTBomb
+  name: store-category-bomb-ert
+  priority: 2
+
+- type: storeCategory
+  id: UplinkERTMed
+  name: store-category-med-ert
+  priority: 4

@@ -1,0 +1,33 @@
+- type: job
+  id: TypanScience
+  name: job-name-typan-science
+  playTimeTracker: TypanScience
+  description: job-description-typan-science
+  startingGear: TypanScience
+  icon: "JobIconSyndicateScience"
+  supervisors: job-supervisors-typan-rd
+  canBeAntag: false
+  requirements:
+    - !type:DepartmentTimeRequirement
+      department: Science
+      time: 6000
+  access:
+  - TypanScience
+  - SyndicateAgent
+  - TypanMaint
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: Skills # Corvax-Next-Skills
+        skills:
+        - AdvancedBuilding
+
+- type: startingGear
+  id: TypanScience
+  equipment:
+    ears: ClothingHeadsetAltSyndicate
+    jumpsuit: ClothingUniformScienceTypan
+    outerClothing: ClothingOuterCoatLabOpened
+    gloves: ClothingHandsScienceTypan
+    shoes: ClothingShoesBootsCombat
+    id: SyndiPDAScience
