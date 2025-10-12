@@ -42,9 +42,9 @@ namespace Content.Client.Options.UI
     [GenerateTypedNameReferences]
     public sealed partial class EscapeMenu : DefaultWindow
     {
-    [Dependency] private readonly IUriOpener _uriOpener = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+        [Dependency] private readonly IUriOpener _uriOpener = default!;
+        [Dependency] private readonly IPlayerManager _playerManager = default!;
+        [Dependency] private readonly IConfigurationManager _cfg = default!;
         public EscapeMenu()
         {
             RobustXamlLoader.Load(this);
