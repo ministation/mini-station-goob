@@ -998,6 +998,13 @@
   - BlueshieldOfficerInnerBlueshieldShirt
 
 - type: loadoutGroup
+  id: BlueshieldOfficerBelt
+  name: loadout-group-bso-belt
+  loadouts:
+  - BeltAssault
+  - MilitaryWebbingBlueShield
+
+- type: loadoutGroup
   id: BlueshieldOfficerOuter
   name: loadout-group-bso-outer
   loadouts:
