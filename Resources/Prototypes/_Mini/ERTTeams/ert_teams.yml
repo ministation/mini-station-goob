@@ -13,7 +13,7 @@
         RandomHumanoidSpawnerERTJanitor: 1
         RandomHumanoidSpawnerERTEngineer: 1
       mustApproveAdmin: false
-      requiredRoundDuration: 1 # min
+      requiredRoundDuration: 10 # min
     red:
       name: ert-team-name-red
       announcementAfterCall: ert-call-announcement-red
@@ -26,7 +26,7 @@
         RandomHumanoidSpawnerERTJanitorEVA: 1
         RandomHumanoidSpawnerERTEngineerEVA: 1
       mustApproveAdmin: true
-      requiredRoundDuration: 1 # min
+      requiredRoundDuration: 15 # min
     gamma:
       name: ert-team-name-gamma
       announcementAfterCall: ert-call-announcement-gamma
@@ -39,7 +39,7 @@
         RandomHumanoidSpawnerERTJanitorEVA: 1
         RandomHumanoidSpawnerERTEngineerEVA: 1
       mustApproveAdmin: true
-      requiredRoundDuration: 1 # min
+      requiredRoundDuration: 15 # min
     saint:
       name: ert-team-name-saint
       announcementAfterCall: ert-call-announcement-saint
@@ -49,7 +49,7 @@
         RandomHumanoidSpawnerERTChaplainEVA: 4
         RandomHumanoidSpawnerERTSecurityEVA: 1
       mustApproveAdmin: true
-      requiredRoundDuration: 1 # min
+      requiredRoundDuration: 15 # min
     cburn:
       name: ert-team-name-cburn
       announcementAfterCall: ert-call-announcement-cburn
@@ -58,4 +58,4 @@
       humansList:
         RandomHumanoidSpawnerCBURNUnit: 8
       mustApproveAdmin: true
-      requiredRoundDuration: 1 # min
+      requiredRoundDuration: 10 # min
