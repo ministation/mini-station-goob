@@ -1,7 +1,7 @@
 # Shell description
-accept-ert-command-description = Принимает запрос на спавн ОБР. Не одобренные запросы на вызов отрядов помимо "Эмбер" будут автоматически отклонены.
+accept-ert-command-description = Не одобренные запросы на вызов отрядов помимо "Синий" будут автоматически отклонены.
 accept-ert-command-help-text = Использование: { $command }
-fake-accept-ert-command-description = Отменяет спавн ОБР с сообщением о якобы успешном спавне. Используйте если вы хотите заспавнить свой ОБР.
+fake-accept-ert-command-description = Отменяет спавн ОБР с сообщением о якобы успешном спавне. Используйте если хотите заспавнить свой ОБР.
 fake-accept-ert-command-help-text = Использование: { $command }
 refuse-ert-command-description = Досрочно отказывает в запросе на спавн любого ОБР.
 refuse-ert-command-help-text = Использование: { $command }
