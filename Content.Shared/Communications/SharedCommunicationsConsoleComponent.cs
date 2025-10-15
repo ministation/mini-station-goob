@@ -21,6 +21,8 @@ namespace Content.Shared.Communications
     [Virtual]
     public partial class SharedCommunicationsConsoleComponent : Component
     {
+        public const string FirstPrivilegedSlotId = "CommunicationsConsole-firstId";
+        public const string SecondPrivilegedSlotId = "CommunicationsConsole-secondId";
     }
 
     [Serializable, NetSerializable]
@@ -35,7 +37,33 @@ namespace Content.Shared.Communications
         public string CurrentAlert;
         public float CurrentAlertDelay;
 
-        public CommunicationsConsoleInterfaceState(bool canAnnounce, bool canCall, List<string>? alertLevels, string currentAlert, float currentAlertDelay, TimeSpan? expectedCountdownEnd = null)
+        public readonly bool ERTCanCall;
+        public List<string>? ERTList;
+        public readonly TimeSpan? ERTCountdownTime;
+        public readonly bool ERTCountdownStarted;
+
+        public readonly bool IsFirstPrivilegedIdPresent;
+        public readonly bool IsSecondPrivilegedIdPresent;
+        public readonly bool IsFirstPrivilegedIdValid;
+        public readonly bool IsSecondPrivilegedIdValid;
+
+        public CommunicationsConsoleInterfaceState(
+            bool canAnnounce,
+            bool canCall,
+            List<string>? alertLevels,
+            string currentAlert,
+            float currentAlertDelay,
+
+            TimeSpan? expectedCountdownEnd = null,
+
+            bool ertCanCall = false,
+            List<string>? ertList = null,
+            TimeSpan? ertCountdownTipe = null,
+
+            bool isFirstPrivilegedIdPresent = false,
+            bool isSecondPrivilegedIdPresent = false,
+            bool isFirstPrivilegedIdValid = false,
+            bool isSecondPrivilegedIdValid = false)
         {
             CanAnnounce = canAnnounce;
             CanCall = canCall;
@@ -44,15 +72,30 @@ namespace Content.Shared.Communications
             AlertLevels = alertLevels;
             CurrentAlert = currentAlert;
             CurrentAlertDelay = currentAlertDelay;
+
+            ERTCanCall = ertCanCall;
+            ERTList = ertList;
+            ERTCountdownTime = ertCountdownTipe;
+            ERTCountdownStarted = ertCountdownTipe != null;
+
+            IsFirstPrivilegedIdPresent = isFirstPrivilegedIdPresent;
+            IsSecondPrivilegedIdPresent = isSecondPrivilegedIdPresent;
+            IsFirstPrivilegedIdValid = isFirstPrivilegedIdValid;
+            IsSecondPrivilegedIdValid = isSecondPrivilegedIdValid;
         }
     }
 
     [Serializable, NetSerializable]
     public sealed class CommunicationsConsoleSelectAlertLevelMessage : BoundUserInterfaceMessage
     {
+    }
+
+    [Serializable, NetSerializable]
+    public sealed class CommunicationsConsoleSetAlertLevelMessage : BoundUserInterfaceMessage
+    {
         public readonly string Level;
 
-        public CommunicationsConsoleSelectAlertLevelMessage(string level)
+        public CommunicationsConsoleSetAlertLevelMessage(string level)
         {
             Level = level;
         }
@@ -86,6 +129,29 @@ namespace Content.Shared.Communications
 
     [Serializable, NetSerializable]
     public sealed class CommunicationsConsoleRecallEmergencyShuttleMessage : BoundUserInterfaceMessage
+    {
+    }
+
+    [Serializable, NetSerializable]
+    public sealed class CommunicationsConsoleCallERTMessage : BoundUserInterfaceMessage
+    {
+        public readonly string ERTTeam;
+        public readonly string Message;
+
+        public CommunicationsConsoleCallERTMessage(string ertTeam, string message)
+        {
+            ERTTeam = ertTeam;
+            Message = message;
+        }
+    }
+
+    [Serializable, NetSerializable]
+    public sealed class CommunicationsConsoleRecallERTMessage : BoundUserInterfaceMessage
+    {
+    }
+
+    [Serializable, NetSerializable]
+    public sealed class CommunicationsConsoleSelectERTMessage : BoundUserInterfaceMessage
     {
     }
 

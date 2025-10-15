@@ -178,6 +178,13 @@ namespace Content.Server.RoundEnd
             return _countdownTokenSource != null;
         }
 
+        public EntityUid? GetCentcommGridEntity()
+        {
+            AllEntityQuery<StationCentcommComponent>().MoveNext(out var centcomm);
+
+            return centcomm == null ? null : centcomm.Entity;
+        }
+
         public void RequestRoundEnd(EntityUid? requester = null, bool checkCooldown = true, string text = "round-end-system-shuttle-called-announcement", string name = "round-end-system-shuttle-sender-announcement")
         {
             var duration = DefaultCountdownDuration;

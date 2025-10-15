@@ -254,6 +254,9 @@ namespace Content.Client.Entry
             _prototypeManager.RegisterIgnore("story"); // Goobstation
             _prototypeManager.RegisterIgnore("storyBeat"); // Goobstation
 
+            _prototypeManager.RegisterIgnore("sponsorGroup"); // Sponsor think
+            _prototypeManager.RegisterIgnore("ertTeams"); // mini ERT Teams
+            _prototypeManager.RegisterIgnore("ertShuttle"); // mini ERT Shuttles
             _componentFactory.GenerateNetIds();
             _adminManager.Initialize();
             _screenshotHook.Initialize();

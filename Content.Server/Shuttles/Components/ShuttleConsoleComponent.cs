@@ -19,6 +19,8 @@ using Content.Shared._NF.Shuttles.Events;
 using Content.Shared.DeviceLinking;
 using Content.Shared.Shuttles.Components;
 using Robust.Shared.Prototypes;
+using Content.Shared.DeviceLinking;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Server.Shuttles.Components
 {
@@ -53,5 +55,7 @@ namespace Content.Server.Shuttles.Components
             "SignalShuttleConsole4"
         };
         // End Frontier
+        [DataField(customTypeSerializer: typeof(PrototypeIdSerializer<SourcePortPrototype>))]
+        public string LinkingPort = "ShuttleConsoleSender";
     }
 }

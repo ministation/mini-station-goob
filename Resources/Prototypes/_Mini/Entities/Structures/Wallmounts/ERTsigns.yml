@@ -1,8 +1,8 @@
 - type: entity
   parent: BaseSign
   id: SignERTember
-  name: ОБР "ЭМБЕР"
-  description: Стальной знак с эмблемой ОБР "ЭМБЕР"
+  name: ОБР "СИНИЙ"
+  description: Стальной знак с эмблемой ОБР "СИНИЙ"
   components:
   - type: Sprite
     sprite: _Mini/Structures/Wallmounts/ert.rsi
@@ -13,7 +13,7 @@
   parent: SignERTember
   id: SignERTemberDocking
   suffix: Стыковка
-  description: Зона стыковки шаттла ОБР "ЭМБЕР"
+  description: Зона стыковки шаттла ОБР "СИНИЙ
 
 - type: entity
   parent: BaseSign

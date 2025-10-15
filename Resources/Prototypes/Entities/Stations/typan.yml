@@ -13,6 +13,7 @@
     - BaseStationSiliconLawNTDefault # Corvax-NTDefault
     - BaseStationAllEventsEligible
     # - BaseStationSOGCall
+    - BaseStationERTCall
   categories: [ HideSpawnMenu ]
   components:
     - type: Transform

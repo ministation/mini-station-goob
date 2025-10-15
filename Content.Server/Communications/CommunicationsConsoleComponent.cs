@@ -34,6 +34,7 @@
 
 using Content.Shared.Communications;
 using Robust.Shared.Audio;
+using Content.Shared.Containers.ItemSlots;
 
 namespace Content.Server.Communications
 {
@@ -53,6 +54,10 @@ namespace Content.Server.Communications
         [DataField]
         public float BroadcastCooldownRemaining;
 
+        [ViewVariables]
+        [DataField]
+        public float CallERTCooldownRemaining;
+
         /// <summary>
         /// Fluent ID for the announcement title
         /// If a Fluent ID isn't found, just uses the raw string
@@ -64,7 +69,7 @@ namespace Content.Server.Communications
         /// <summary>
         /// Announcement color
         /// </summary>
-        [ViewVariables]
+        [ViewVariables(VVAccess.ReadWrite)]
         [DataField]
         public Color Color = Color.Gold;
 
@@ -73,7 +78,11 @@ namespace Content.Server.Communications
         /// </summary>
         [ViewVariables]
         [DataField]
-        public int Delay = 90;
+        public int DelayBetweenAnnouncements = 60;
+
+        [ViewVariables]
+        [DataField]
+        public int DelayBetweenERTCall = 30;
 
         /// <summary>
         /// Time in seconds of announcement cooldown when a new console is created on a per-console basis
@@ -87,7 +96,14 @@ namespace Content.Server.Communications
         /// </summary>
         [ViewVariables]
         [DataField]
-        public bool CanShuttle = true;
+        public bool CanCallShuttle = true;
+
+        /// <summary>
+        /// Can call or recall the ERT
+        /// </summary>
+        [ViewVariables]
+        [DataField]
+        public bool CanCallERT = true;
 
         /// <summary>
         /// Announce on all grids (for nukies)
@@ -107,5 +123,24 @@ namespace Content.Server.Communications
         /// </summary>
         [DataField]
         public bool AnnounceSentBy = true;
+        public SoundSpecifier AnnouncementSound = new SoundPathSpecifier("/Audio/_Mini/Announcements/announce.ogg");
+
+        /// <summary>
+        /// Accesses of IDs required to open interactions with the console
+        /// </summary>
+        [ViewVariables(VVAccess.ReadWrite)]
+        [DataField("firstPrivilegedIdAcces")]
+        public string FirstPrivilegedIdTargetAccess = "Captain";
+        [ViewVariables(VVAccess.ReadWrite)]
+        [DataField("secondPrivilegedIdAcces")]
+        public string SecondPrivilegedIdTargetAccess = "HeadOfSecurity";
+
+        /// <summary>
+        /// Slots for two ID cards
+        /// </summary>
+        [DataField("firstPrivilegedIdSlot")]
+        public ItemSlot FirstPrivilegedIdSlot = new();
+        [DataField("secondPrivilegedIdSlot")]
+        public ItemSlot SecondPrivilegedIdSlot = new();
     }
 }
