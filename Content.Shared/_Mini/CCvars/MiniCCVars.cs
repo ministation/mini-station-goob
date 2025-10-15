@@ -91,12 +91,6 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> TTSClientQueueEnabled =
         CVarDef.Create("tts.queue_enabled", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
-    /// <summary>
-    /// Default volume setting of TTS sound
-    /// </summary>
-    public static readonly CVarDef<float> TTSVolume =
-        CVarDef.Create("tts.volume", 2.0f, CVar.CLIENTONLY | CVar.ARCHIVE);
-
     public static readonly CVarDef<float> TTSRadioVolume =
         CVarDef.Create("tts.radio_volume", 1f, CVar.CLIENTONLY | CVar.ARCHIVE);
 
