@@ -379,15 +379,12 @@
     - SignalShuttleConsole2
     - SignalShuttleConsole3
     - SignalShuttleConsole4
+    - ShuttleConsoleSender
     range: 90
   # Frontier edit end
   - type: DeviceNetwork
     deviceNetId: Wired
   - type: DeviceList
-  - type: DeviceLinkSource
-    range: 30
-    ports:
-      - ShuttleConsoleSender
 
 
 

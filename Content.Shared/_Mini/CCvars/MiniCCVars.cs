@@ -66,15 +66,9 @@ public sealed class MiniCCVars
     public static readonly CVarDef<string> Background =
         CVarDef.Create("ui.background", "Image", CVar.CLIENTONLY | CVar.ARCHIVE);
 
-        /**
+    /**
      * TTS (Text-To-Speech)
      */
-
-    /// <summary>
-    /// Amount of seconds before timeout for API
-    /// </summary>
-    public static readonly CVarDef<int> TTSApiTimeout =
-        CVarDef.Create("tts.api_timeout", 10, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Option to disable TTS events for client
@@ -135,14 +129,6 @@ public sealed class MiniCCVars
 
     public static readonly CVarDef<bool> GodModeRoundEnd =
         CVarDef.Create("game.godmode_end", false, CVar.SERVERONLY);
-
-    /*
-     * Queue
-     */
-
-    public static readonly CVarDef<bool>
-        QueueEnabled = CVarDef.Create("queue.enabled", false, CVar.SERVERONLY);
-
     /*
      *  Sponsor API
      */

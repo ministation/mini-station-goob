@@ -267,5 +267,5 @@
   components:
     - type: ERTCall
       ertTeamPrototype: stationERTTeams
-      timeToApprove: 300 # 5 min
-      timeToAnotherSpawn: 600 # 10 min
+      timeToApprove: 10 # 5 min
+      timeToAnotherSpawn: 20 # 10 min

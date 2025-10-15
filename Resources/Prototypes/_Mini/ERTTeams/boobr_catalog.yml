@@ -1,0 +1,237 @@
+- type: listing
+  id: ADTBoberM90
+  name: М-90
+  description: boobr-m90-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/carbine.rsi, state: base }
+  productEntity: WeaponRifleM90GrenadeLauncher
+  cost:
+    Productunit: 12
+  categories:
+  - ADTUplinkERTWeapon
+
+# - type: listing
+#   id: ADTBoberM90GrenadeLauncher
+#   name: boobr-m90-grenadelauncher-name
+#   description: boobr-m90-grenadelauncher-desc
+#   icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/carbine.rsi, state: base }
+#   productEntity: WeaponCaseNTM90GrenadeLauncherAttachment
+#   cost:
+#     Productunit: 8
+#   categories:
+#   - ADTUplinkERTAttachments
+
+
+- type: listing
+  id: ADTBoberLecter
+  name: Лектер
+  description: boobr-lecter-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/lecter.rsi, state: icon }
+  productEntity: WeaponRifleLecter
+  cost:
+    Productunit: 10
+  categories:
+  - ADTUplinkERTWeapon
+
+- type: listing
+  id: ADTBoberPulse
+  name: Импульсный карабин
+  description: boobr-pulse-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Battery/pulse_carbine.rsi, state: icon }
+  productEntity: WeaponPulseCarbine
+  cost:
+    Productunit: 20
+  categories:
+  - ADTUplinkERTWeapon
+
+- type: listing
+  id: ADTBoberMateba
+  name: Матеба
+  description: boobr-mateba-desc
+  icon: { sprite: /Textures/ADT/Objects/Weapons/Guns/Revolvers/mateba.rsi, state: icon }
+  productEntity: WeaponRevolverMateba
+  cost:
+    Productunit: 6
+  categories:
+  - ADTUplinkERTWeapon
+
+- type: listing
+  id: ADTBoberDrozd
+  name: boobr-drozd-name
+  description: boobr-drozd-desc
+  icon: { sprite: Objects/Weapons/Guns/SMGs/drozd.rsi, state: base }
+  productEntity: WeaponSubMachineGunDrozd
+  cost:
+    Productunit: 10
+  categories:
+  - ADTUplinkERTWeapon
+
+
+
+# misc
+
+- type: listing
+  id: ADTBoberJawOfLife
+  name: Челюсти жизни
+  description: boobr-JawsOfLife-desc
+  productEntity: JawsOfLife
+  cost:
+    Productunit: 4
+  categories:
+  - ADTUplinkERTMisc
+
+- type: listing
+  id: ADTBoberGrenadeShrapnel
+  name: Разрывная граната
+  description: Граната для подавления лёгкобронированного противника
+  productEntity: GrenadeShrapnel
+  cost:
+    Productunit: 1
+  categories:
+  - ADTUplinkERTBomb
+
+- type: listing
+  id: ADTBoberc4
+  name: boobr-c4-name
+  productEntity: C4
+  description: boobr-c4-desc
+  cost:
+    Productunit: 1
+  categories:
+  - ADTUplinkERTBomb
+
+- type: listing
+  id: ADTBoberJetPack
+  name: Джетпак
+  productEntity: JetpackVoidFilled
+  description:  boobr-jetpack-desc
+  cost:
+    Productunit: 2
+  categories:
+  - ADTUplinkERTMisc
+
+#- type: listing
+#  id: ADTBoberGrapplingGun
+#  name: boobr-grappling-gun-name
+#  productEntity: WeaponGrapplingGun
+#  description:  boobr-grappling-gun-desc
+#  cost:
+#    Productunit: 1
+#  categories:
+#  - ADTUplinkERTMisc
+
+- type: listing
+  id: ADTBoberMediKit
+  name: boobr-medikit-name
+  productEntity: MedkitAdvancedFilled
+  description:  boobr-medikit-desc
+  cost:
+    Productunit: 2
+  categories:
+  - ADTUplinkERTmed
+
+- type: listing
+  id: ADTBoberMedipen
+  name: Боевой медипен
+  productEntity: CombatMedipen
+  description:  Одноразовый медипен, содержащий химические вещества, восстанавливающие большинство видов повреждений.
+  cost:
+    Productunit: 1
+  categories:
+  - ADTUplinkERTmed
+
+- type: listing
+  id: ADTBoberMedipenPunct
+  name: Автоинъектор пунктураза
+  productEntity: PunctAutoInjector
+  description:  Одноразовый медипен, содержащий химические вещества, восстанавливающие колотые раны.
+  cost:
+    Productunit: 1
+  categories:
+  - ADTUplinkERTmed
+
+- type: listing
+  id: ADTBoberIpcKit
+  name: Продвинутый сварочный аппарат
+  productEntity: WelderIndustrialAdvanced
+  description:  На случай если вы КПБ)
+  cost:
+    Productunit: 2
+  categories:
+  - ADTUplinkERTmed
+
+- type: listing
+  id: ADTBoberPortableRecharger
+  name: boobr-portable-recharger-name
+  description:  boobr-portable-recharger-desc
+  productEntity: PortableRecharger
+  cost:
+    Productunit: 4
+  categories:
+  - ADTUplinkERTAmmo
+
+- type: listing
+  id: ADTBoberNightVision
+  name: uplink-night-vision-name
+  description:  uplink-night-vision-desc
+  productEntity: ClothingEyesNightVisionGoggles
+  cost:
+    Productunit: 4
+  categories:
+  - ADTUplinkERTMisc
+
+- type: listing
+  id: BoberOxtank1
+  name: Двойной кислородный баллон
+  productEntity: DoubleEmergencyOxygenTank
+  description: Высококлассный двухбаллонный резервуар аварийного жизнеобеспечения. Вмещает 2,5 Л газа.
+  cost:
+    Productunit: 1
+  categories:
+  - ADTUplinkERTMisc
+
+- type: listing
+  id: BoberNitank1
+  name: Двойной азотный баллон
+  productEntity: DoubleEmergencyNitrogenTank
+  description: Высококлассный двухбаллонный резервуар аварийного жизнеобеспечения. Вмещает 2,5 Л газа.
+  cost:
+    Productunit: 1
+  categories:
+  - ADTUplinkERTMisc
+
+  #ammo
+
+- type: listing
+  id: ADTBoberDrozdAmmo
+  name: Магазин 35.авто
+  description: Магазин для пистолета-пулемёта Дрозд
+  icon: { sprite: Objects/Weapons/Guns/Ammunition/Magazine/Pistol/smg_mag.rsi, state: red }
+  productEntity: MagazinePistolSubMachineGun
+  cost:
+    Productunit: 1
+  categories:
+  - ADTUplinkERTAmmo
+
+- type: listing
+  id: ADTBoberLecterAmmo
+  name: Магазин 20.винтовочный
+  description: Магазин для Лектера и М-90
+  icon: { sprite: Objects/Weapons/Guns/Ammunition/Magazine/Rifle/rifle_mag.rsi, state: red }
+  productEntity: MagazineRifle
+  cost:
+    Productunit: 1
+  categories:
+  - ADTUplinkERTAmmo
+
+- type: listing
+  id: ADTBoberMatebaAmmo
+  name: Спидлоадер 45.магнум
+  description: Спидлоадер 45.магнум для револьвера Матеба
+  icon: { sprite: Objects/Weapons/Guns/Ammunition/SpeedLoaders/Magnum/magnum_speed_loader.rsi, state: icon }
+  productEntity: SpeedLoaderMagnum
+  cost:
+    Productunit: 1
+  categories:
+  - ADTUplinkERTAmmo
+
+

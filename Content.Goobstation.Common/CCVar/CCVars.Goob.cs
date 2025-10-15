@@ -496,7 +496,7 @@ public sealed partial class GoobCVars
     ///     If enabled plyaers will be added to a queue instead of being kicked after SoftMaxPlayers is reached
     /// </summary>
     public static readonly CVarDef<bool> QueueEnabled =
-        CVarDef.Create("queue.enabled", false, CVar.SERVERONLY);
+        CVarDef.Create("queue.enabled", true, CVar.SERVERONLY);
 
     /// <summary>
     ///     If enabled patrons will be sent to the front of the queue.

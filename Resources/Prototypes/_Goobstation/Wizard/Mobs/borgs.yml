@@ -70,46 +70,5 @@
         name: power-cell-slot-component-slot-name-default
         startingItem: PowerCellHyper
 
-- type: entity
-  id: PlayerBorgSyndicateMedicalBattery
-  name: медицинский киборг синдиката
-  description: Бывший военврач, добровольно (или не совсем) превращённый в высокотехнологичную машину для спасения (или утилизации) личного состава Синдиката. Оснащён передовыми (и крайне болезненными) медицинскими модулями, способными как вернуть бойца в строй за секунды, так и превратить его в подопытный образец, если того потребует миссия.
-  parent: BorgChassisSyndicateMedical
-  suffix: Battery, Module, Operative
-  components:
-  - type: NukeOperative
-  - type: ContainerFill
-    containers:
-      borg_brain:
-        - PositronicBrain
-      borg_module:
-        - BorgModuleOperative
-        - BorgModuleAdvancedSurgery
-        - BorgModuleChemical
-        - BorgModuleRescue
-        - BorgModuleTopicals
-  - type: ItemSlots
-    slots:
-      cell_slot:
-        name: power-cell-slot-component-slot-name-default
-        startingItem: PowerCellHyper
-  - type: Access
-    access:
-      - TypanArmory
-      - TypanAtmospherics
-      - TypanCargo
-      - TypanCommand
-      - TypanCommunicationsOfficer
-      - TypanEngineering
-      - TypanMaint
-      - TypanMedical
-      - TypanProtection
-      - TypanResearchDirector
-      - TypanScience
-      - TypanService
-      - TypanTechnicalOperationsSupervisor
-      - TypanVault
-      - TypanExternal
-      - SyndicateAgent
-    accessOverride: true
+
 
