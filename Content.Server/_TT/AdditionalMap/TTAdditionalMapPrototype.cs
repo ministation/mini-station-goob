@@ -9,7 +9,7 @@ using Robust.Shared.Prototypes;
 namespace Content.Server._TT.AdditionalMap;
 
 [Prototype("additionalMap")]
-public sealed class TTAdditionalMapPrototype : IPrototype
+public sealed class AdditionalMapPrototype : IPrototype
 {
     [IdDataField]
     public string ID { get; } = string.Empty;
