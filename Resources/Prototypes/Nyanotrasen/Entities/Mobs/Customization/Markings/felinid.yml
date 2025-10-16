@@ -15,7 +15,7 @@
   bodyPart: HeadTop
   markingCategory: HeadTop
   speciesRestriction: [Felinid, Human]
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_ears.rsi
     state: basic_outer
@@ -27,7 +27,7 @@
   bodyPart: HeadTop
   markingCategory: HeadTop
   speciesRestriction: [Felinid]
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_ears.rsi
     state: curled_outer
@@ -39,7 +39,7 @@
   bodyPart: HeadTop
   markingCategory: HeadTop
   speciesRestriction: [Felinid]
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_ears.rsi
     state: droopy_outer
@@ -51,7 +51,7 @@
   bodyPart: HeadTop
   markingCategory: HeadTop
   speciesRestriction: [Felinid]
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_ears.rsi
     state: basic_outer
@@ -63,7 +63,7 @@
   bodyPart: HeadTop
   markingCategory: HeadTop
   speciesRestriction: [Felinid]
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_ears.rsi
     state: stubby_outer
@@ -75,7 +75,7 @@
   bodyPart: HeadTop
   markingCategory: HeadTop
   speciesRestriction: [Felinid]
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_ears.rsi
     state: tall_outer
@@ -89,7 +89,7 @@
   bodyPart: HeadTop
   markingCategory: HeadTop
   speciesRestriction: [Felinid]
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_ears.rsi
     state: torn_outer
@@ -101,7 +101,7 @@
   bodyPart: HeadTop
   markingCategory: HeadTop
   speciesRestriction: [Felinid]
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_ears.rsi
     state: wide_outer
@@ -115,7 +115,7 @@
   id: FelinidTailBasic
   bodyPart: Tail
   markingCategory: Tail
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   speciesRestriction: [Felinid, Tajaran, Human] # Goobstation - Tajaran
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_tails.rsi
@@ -129,7 +129,7 @@
   id: FelinidTailBasicWithBow
   bodyPart: Tail
   markingCategory: Tail
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   speciesRestriction: [Felinid, Tajaran] # Goobstation - Tajaran
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_tails.rsi
@@ -160,7 +160,7 @@
   id: FelinidTailBasicWithBowAndBell
   bodyPart: Tail
   markingCategory: Tail
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   speciesRestriction: [Felinid, Tajaran] # Goobstation - Tajaran
   sprites:
   - sprite: Nyanotrasen/Mobs/Customization/felinid_tails.rsi

@@ -8,7 +8,7 @@
   id: RobotAntennaTv
   bodyPart: HeadTop
   markingCategory: HeadTop
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
     - sprite: _EinsteinEngines/Mobs/Customization/ipc_antenna.rsi
       state: ipc_antenna_tv
@@ -18,7 +18,7 @@
   id: RobotAntennaTesla
   bodyPart: HeadTop
   markingCategory: HeadTop
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
     - sprite: _EinsteinEngines/Mobs/Customization/ipc_antenna.rsi
       state: ipc_antenna_tesla
@@ -46,7 +46,7 @@
   id: RobotAntennaCyberhead
   bodyPart: HeadTop
   markingCategory: HeadTop
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
     - sprite: _EinsteinEngines/Mobs/Customization/ipc_antenna.rsi
       state: ipc_antenna_cyberhead
@@ -65,7 +65,7 @@
   id: RobotAntennaAntlers
   bodyPart: HeadTop
   markingCategory: HeadTop
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
     - sprite: _EinsteinEngines/Mobs/Customization/ipc_antenna.rsi
       state: ipc_antenna_antlers
@@ -75,7 +75,7 @@
   id: RobotAntennaDroneeyes
   bodyPart: HeadTop
   markingCategory: HeadTop
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
     - sprite: _EinsteinEngines/Mobs/Customization/ipc_antenna.rsi
       state: ipc_antenna_droneeyes
@@ -85,7 +85,7 @@
   id: RobotAntennaCrowned
   bodyPart: HeadTop
   markingCategory: HeadTop
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
     - sprite: _EinsteinEngines/Mobs/Customization/ipc_antenna.rsi
       state: ipc_antenna_crowned
@@ -95,7 +95,7 @@
   id: RobotAntennaTowers
   bodyPart: HeadTop
   markingCategory: HeadTop
-  sponsorOnly: true # CorvaxGoob-Sponsors
+  sponsorOnly: false # CorvaxGoob-Sponsors
   sprites:
     - sprite: _EinsteinEngines/Mobs/Customization/ipc_antenna.rsi
       state: ipc_antenna_towers
