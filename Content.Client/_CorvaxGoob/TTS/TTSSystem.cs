@@ -33,12 +33,12 @@ public sealed partial class TTSSystem : EntitySystem
     /// <summary>
     /// Reducing the volume of the TTS when whispering. Will be converted to logarithm.
     /// </summary>
-    private const float WhisperFade = 4f;
+    private const float WhisperFade = 2f;
 
     /// <summary>
     /// The volume at which the TTS sound will not be heard.
     /// </summary>
-    private const float MinimalVolume = -10f;
+    private const float MinimalVolume = -5f;
 
     private float _volume = 0.0f;
     private int _fileIdx = 0;
