@@ -127,14 +127,13 @@
   inventoryTemplateId: borgTall
   spriteBodyState: miner
   spriteBodyMovementState: miner_moving
-  spriteHasMindState: miner_e
-  spriteNoMindState: miner_e_r
-  spriteToggleLightState: miner_l
+  spriteHasMindState: engineer_e
+  spriteNoMindState: engineer_e_r
+  spriteToggleLightState: engineer_l
 
   # Pet
   petSuccessString: petting-success-salvage-cyborg
   petFailureString: petting-failure-salvage-cyborg
-
 
 # Janitor borg
 - type: borgType

@@ -4,7 +4,7 @@
     - cosmic
   name: cosmiccult-title
   description: cosmiccult-description
-  showInVote: false
+  showInVote: true
   #cooldown: 1
   rules:
     - CosmicCult

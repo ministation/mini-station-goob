@@ -55,6 +55,9 @@
             "name": "rock_copper"
         },
         {
+            "name": "rock_bluespace_crystal"
+        },
+        {
             "name": "rock_diamond",
             "delays": [
               [

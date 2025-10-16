@@ -30,8 +30,9 @@
     walkModifier: 0.9
     sprintModifier: 0.9
   - type: HeldSpeedModifier
-  - type: ToggleableClothing
-    clothingPrototype: ClothingHeadHelmetHardsuitRDSindi
+  - type: ToggleableClothing # Goobstation - Modsuits change
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitRDSindi
 
 - type: entity
   parent: [ ClothingHeadHardsuitBase]

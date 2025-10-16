@@ -859,7 +859,7 @@ public sealed partial class ShuttleSystem
         EntityUid shuttleUid,
         EntityCoordinates targetCoordinates,
         out EntityCoordinates coordinates, out Angle angle,
-        float minOffset = 0f, float maxOffset = 64f,
+        float minOffset = 0f, float maxOffset = 32f,
         TransformComponent? xform = null, TransformComponent? targetXform = null)
     {
         DebugTools.Assert(minOffset < maxOffset);

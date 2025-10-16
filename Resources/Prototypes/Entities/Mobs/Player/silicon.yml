@@ -548,6 +548,23 @@
       cell_slot:
         name: power-cell-slot-component-slot-name-default
         startingItem: PowerCellHyper
+# - type: Mimicry
+  - type: PointLight
+    color: "#FFFFFFFF"
+
+- type: entity
+  id: Mimicry
+  name: action-name-mimicry
+  description: action-description-mimicry
+  noSpawn: true
+  components:
+  - type: InstantAction
+    itemIconStyle: NoItem
+    icon:
+      sprite: _Mini/Interface/Actions/borgs.rsi
+      state: mimicry
+    event: !type:MimicryEvent
+    useDelay: 4
 
 - type: entity
   id: PlayerBorgSyndicateSaboteurGhostRole

@@ -1,9 +1,4 @@
   - type: additionalMap
-    id: Saltern
-    maps:
-    - Typan
-
-  - type: additionalMap
     id: Atlas
     maps:
     - Typan

@@ -218,25 +218,6 @@
     notifyAdmins: true
   - type: Emagged
     emagType: Interaction
-    
-- type: entity
-  parent: FaxMachineBase
-  id: FaxMachineTypan
-  name: syndicate long range fax machine
-  suffix: Syndicate
-  components:
-  - type: Sprite
-    layers:
-      - state: icon
-        map: [ "base" ]
-        color: "#a3a3a3"
-  - type: FaxMachine
-    name: "РўР°Р№РїР°РЅ"
-    receiveStationGoal: true
-    responsePings: false
-    notifyAdmins: true
-  - type: Emagged
-    emagType: Interaction
 
 - type: entity
   parent: FaxMachineBase

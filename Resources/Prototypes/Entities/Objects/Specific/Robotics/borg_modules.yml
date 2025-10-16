@@ -636,6 +636,8 @@
     # - Shovel # Goobstation
     - MineralScannerUnpowered
     - BorgOreBag
+    - WeaponProtoKineticAccelerator
+    - RadioHandheld
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: mining-module }
 
@@ -685,6 +687,7 @@
     - BorgHandheldGPSBasic
     # - HandHeldMassScannerBorg # goob - no mass scanners
     - LavalandJaunterRecharging # Goobstation
+    - Crowbar
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: grappling-module }
 
@@ -1265,6 +1268,8 @@
       whitelist:
         components:
         - BodyPart
+        - AugmentPowerCellSlot # CorvaxGoob-Cybernetic-items
+        - AugmentCharger # CorvaxGoob-Cybernetic-items
         tags:
         - Organ
     # End Frontier: droppable borg items
@@ -1295,6 +1300,8 @@
       whitelist:
         components:
         - BodyPart
+        - AugmentPowerCellSlot # CorvaxGoob-Cybernetic-items
+        - AugmentCharger # CorvaxGoob-Cybernetic-items
         tags:
         - Organ
     # End Frontier: droppable borg items

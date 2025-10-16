@@ -129,6 +129,9 @@
     - id: Multitool # Goobstation
     - id: Wrench # Goobstation
     - id: ContrabandDetectorFlatpack # Goobstation
+    - id: WeaponSniperVulture
+    - id: MagazineMagnumAntimaterial
+    - id: MagazineMagnumAntimaterial
 
 - type: entityTable
   id: FillLockerWardenHarduit

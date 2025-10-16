@@ -12,6 +12,9 @@
             "directions": 4
         },
         {
+            "name": "rock_bluespace_crystal"
+        },
+        {
             "name": "rock_1",
             "directions": 4
         },
@@ -84,6 +87,9 @@
         },
         {
             "name": "rock_marble"
+        },
+        {
+            "name": "gibtonite_inactive"
         },
         {
             "name": "rock_painite"

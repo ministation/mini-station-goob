@@ -7,7 +7,7 @@ using Robust.Shared.Prototypes;
 // Author: by TornadoTech
 namespace Content.Server._TT.AdditionalMap;
 
-public sealed class TTAdditionalMapLoaderSystem : EntitySystem
+public sealed class AdditionalMapLoaderSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly MapSystem _map = default!;
@@ -23,7 +23,7 @@ public sealed class TTAdditionalMapLoaderSystem : EntitySystem
     private void OnGetMaps(LoadingMapsEvent args)
     {
         var firstMap = args.Maps[0];
-        if (!_prototype.TryIndex<TTAdditionalMapPrototype>(firstMap.ID, out var proto))
+        if (!_prototype.TryIndex<AdditionalMapPrototype>(firstMap.ID, out var proto))
             return;
 
         foreach (var mapProtoId in proto.MapProtoIds)
