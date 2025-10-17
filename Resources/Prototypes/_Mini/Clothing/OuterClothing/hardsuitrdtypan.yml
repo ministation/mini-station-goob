@@ -35,7 +35,7 @@
       head: ClothingHeadHelmetHardsuitRDSindi
 
 - type: entity
-  parent: [ ClothingHeadHardsuitBase]
+  parent: [ClothingHeadHardsuitBase]
   id: ClothingHeadHelmetHardsuitRDSindi
   name: шлем скафандра научного руководителя синдиката
   description: Лёгкий шлем для скафандра, который не сковывает движения головы.
@@ -56,3 +56,30 @@
         Slash: 0.9
         Piercing: 0.9
         Heat: 0.9
+
+- type: entity
+  parent: ClothingHeadHardsuitWithLightBase
+  id: ClothingHeadHelmetHardsuitRDSindi
+  name: шлем скафандра научного руководителя синдиката
+  description: Лёгкий шлем для скафандра, который не сковывает движения головы.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Head/hardsuitsHelmets/syndicate.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Head/hardsuitsHelmets/syndicate.rsi
+  - type: PointLight
+    color: "#5ad65a"
+  - type: PressureProtection
+    highPressureMultiplier: 0.60
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+  - type: Tag
+    tags:
+    - CorgiWearable
+    - WhitelistChameleon
