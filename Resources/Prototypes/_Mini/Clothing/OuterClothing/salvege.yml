@@ -31,8 +31,9 @@
     walkModifier: 0.85
     sprintModifier: 0.85
   - type: HeldSpeedModifier
-  - type: ToggleableClothing
-    clothingPrototype: ClothingHeadHelmetHardsuitSalvageSindi
+  - type: ToggleableClothing # Goobstation - Modsuits change
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitSalvageSindi
   - type: Tag
     tags:
     - Hardsuit
@@ -40,18 +41,28 @@
     - ADTHardsuitSalvage  # ADT tweak
 
 - type: entity
-  parent: [ ClothingHeadHardsuitBase]
+  parent: ClothingHeadHardsuitWithLightBase
   id: ClothingHeadHelmetHardsuitSalvageSindi
-  name: шлем скафандра карготехника Синдиката
-  description: Специальный скафандр для специальных космических работ!
+  name: шлем скафандра научного руководителя синдиката
+  description: Лёгкий шлем для скафандра, который не сковывает движения головы.
   components:
   - type: Sprite
     sprite: _Mini/Clothing/Head/hardsuitsHelmets/salvage.rsi
   - type: Clothing
-    sprite: _Mini/Clothing/Head/hardsuitsHelmets/salvage.rsi
-  - type: PressureProtection
-    highPressureMultiplier: 0.525
-    lowPressureMultiplier: 1000
+    sprite: __Mini/Clothing/Head/hardsuitsHelmets/salvage.rsi
   - type: PointLight
-    radius: 7
-    energy: 3
+    color: "#5ad65a"
+  - type: PressureProtection
+    highPressureMultiplier: 0.60
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+  - type: Tag
+    tags:
+    - CorgiWearable
+    - WhitelistChameleon

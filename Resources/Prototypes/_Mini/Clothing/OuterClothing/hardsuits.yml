@@ -136,7 +136,7 @@
       head: ClothingHeadHelmetHardsuitCapSindi
 
 - type: entity
-  parent: [ ClothingHeadHardsuitBase]
+  parent: [ClothingHeadHardsuitBase]
   id: ClothingHeadHelmetHardsuitCapSindi
   name: шлем скафандра службы безопасности синдиката
   description: Специальный костюм для работ в самых "горячих" баталиях.
