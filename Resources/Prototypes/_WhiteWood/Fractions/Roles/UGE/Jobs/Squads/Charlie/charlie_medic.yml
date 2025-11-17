@@ -1,0 +1,22 @@
+- type: job
+  id: CharlieMedic
+  name: Медик отряда "Чарли"
+  description: job-description-charliemedic
+  playTimeTracker: JobCharlieMedic
+  startingGear: CharlieMedicGearUGE
+  icon: "JobIconCharlieMedic"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  accessGroups:
+  - SquadCharlie
+  - MedicalUGE
+
+- type: startingGear
+  id: CharlieMedicGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitMarineCharlie
+    id: CMedicIDCard
+    pocket1: EmergencyMedipen

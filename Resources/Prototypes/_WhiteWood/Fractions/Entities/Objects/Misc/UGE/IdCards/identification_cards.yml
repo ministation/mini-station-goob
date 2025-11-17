@@ -1,0 +1,481 @@
+- type: entity
+  parent: Clothing
+  id: IDCardMarine
+  name: жетон
+  abstract: true
+  description: Стандартный жетон морпеха.
+  noSpawn: true
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Misc/UGE/id_cards.rsi
+  - type: Clothing
+    slots:
+    - idcard
+    sprite: _WhiteWood/Fractions/Objects/Misc/UGE/id_cards.rsi
+  - type: Item
+    heldPrefix: default
+  - type: Access
+  - type: IdCard
+  - type: StationRecordKeyStorage
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+
+#Commander_Marine--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: ACommanderIDCard
+  name: жетон командира Альфа
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconAlfaCommander
+  - type: PresetIdCard
+    job: AlfaCommander
+
+- type: entity
+  parent: IDCardMarine
+  id: BCommanderIDCard
+  name: жетон командира Браво
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconBravoCommander
+  - type: PresetIdCard
+    job: BravoCommander
+
+- type: entity
+  parent: IDCardMarine
+  id: CCommanderIDCard
+  name: жетон командира Чарли
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconCharlieCommander
+  - type: PresetIdCard
+    job: CharlieCommander
+
+- type: entity
+  parent: IDCardMarine
+  id: DCommanderIDCard
+  name: жетон командира Дельта
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconDeltaCommander
+  - type: PresetIdCard
+    job: DeltaCommander
+#Specialists_Marine--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: ASpecialistsIDCard
+  name: жетон специалиста Альфа
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconAlfaSpecialist
+  - type: PresetIdCard
+    job: AlfaSpecialist
+
+- type: entity
+  parent: IDCardMarine
+  id: BSpecialistsIDCard
+  name: жетон специалиста Браво
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconBravoSpecialist
+  - type: PresetIdCard
+    job: BravoSpecialist
+
+- type: entity
+  parent: IDCardMarine
+  id: CSpecialistsIDCard
+  name: жетон специалиста Чарли
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconCharlieSpecialist
+  - type: PresetIdCard
+    job: CharlieSpecialist
+
+- type: entity
+  parent: IDCardMarine
+  id: DSpecialistsIDCard
+  name: жетон специалиста Дельта
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconDeltaSpecialist
+  - type: PresetIdCard
+    job: DeltaSpecialist
+#Medic_Marine--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: AMedicIDCard
+  name: жетон медика Альфа
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconAlfaMedic
+  - type: PresetIdCard
+    job: AlfaMedic
+
+- type: entity
+  parent: IDCardMarine
+  id: BMedicIDCard
+  name: жетон медика Браво
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconBravoMedic
+  - type: PresetIdCard
+    job: BravoMedic
+
+- type: entity
+  parent: IDCardMarine
+  id: CMedicIDCard
+  name: жетон медика Чарли
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconCharlieMedic
+  - type: PresetIdCard
+    job: CharlieMedic
+
+- type: entity
+  parent: IDCardMarine
+  id: DMedicIDCard
+  name: жетон медика Дельта
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconDeltaMedic
+  - type: PresetIdCard
+    job: DeltaMedic
+#Engineers_Marine--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: AEngineerIDCard
+  name: жетон инженера Альфа
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconAlfaEngineer
+  - type: PresetIdCard
+    job: AlfaEngineer
+
+- type: entity
+  parent: IDCardMarine
+  id: BEngineerIDCard
+  name: жетон инженера Браво
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconBravoEngineer
+  - type: PresetIdCard
+    job: BravoEngineer
+
+- type: entity
+  parent: IDCardMarine
+  id: CEngineerIDCard
+  name: жетон инженера Чарли
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconCharlieEngineer
+  - type: PresetIdCard
+    job: CharlieEngineer
+
+- type: entity
+  parent: IDCardMarine
+  id: DEngineerIDCard
+  name: жетон инженера Дельта
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconDeltaEngineer
+  - type: PresetIdCard
+    job: DeltaEngineer
+
+# Rifleman_Marine--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: ARiflemanIDCard
+  name: жетон морпеха Альфа
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconAlfaMarine
+  - type: PresetIdCard
+    job: AlfaMarine
+
+- type: entity
+  parent: IDCardMarine
+  id: BRiflemanIDCard
+  name: жетон морпеха Браво
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconBravoMarine
+  - type: PresetIdCard
+    job: BravoMarine
+
+- type: entity
+  parent: IDCardMarine
+  id: CRiflemanIDCard
+  name: жетон морпеха Чарли
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconCharlieMarine
+  - type: PresetIdCard
+    job: CharlieMarine
+
+- type: entity
+  parent: IDCardMarine
+  id: DRiflemanIDCard
+  name: жетон морпеха Дельта
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconDeltaMarine
+  - type: PresetIdCard
+    job: DeltaMarine
+
+# MilitaryPolice --------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: PolicemanIDCard
+  name: жетон военного полицейского
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconMilitaryPoliceman
+  - type: PresetIdCard
+    job: MilitaryPoliceman
+
+- type: entity
+  parent: IDCardMarine
+  id: PoliceOfficerIDCard
+  name: жетон офицера военной полиции
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconMilitaryPoliceOfficer
+  - type: PresetIdCard
+    job: MilitaryPoliceOfficer
+
+# LogisticsSupport --------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: SupplyOfficerIDCard
+  name: жетон офицера тылового обеспечения
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconSupplyOfficer
+  - type: PresetIdCard
+    job: SupplyOfficer
+
+- type: entity
+  parent: IDCardMarine
+  id: RiggerIDCard
+  name: жетон грузчика
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconRigger
+  - type: PresetIdCard
+    job: Rigger
+#MilitaryScientist--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: MilitaryScientistIDCard
+  name: жетон учёного
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconMilitaryScientist
+  - type: PresetIdCard
+    job: MilitaryScientist
+#MedicalUnit--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: MilitaryMainMedicIDCard
+  name: жетон медика
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconMilitaryMainMedic
+  - type: PresetIdCard
+    job: MilitaryMainMedic
+
+- type: entity
+  parent: IDCardMarine
+  id: MilitaryMedicIDCard
+  name: жетон военного медика
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconMilitaryMedic
+  - type: PresetIdCard
+    job: MilitaryMedic
+#ConstructionBattalion--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: ChiefShipsEngineerIDCard
+  name: жетон главного корабельного инженера
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconChiefShipsEngineer
+  - type: PresetIdCard
+    job: ChiefShipsEngineer
+
+- type: entity
+  parent: IDCardMarine
+  id: ShipsEngineerIDCard
+  name: жетон корабельного инженера
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconShipsEngineer
+  - type: PresetIdCard
+    job: ShipsEngineer
+#Command--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: HeadOperationsIDCard
+  name: жетон главнокомандующего операцией
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconHeadComm
+  - type: PresetIdCard
+    job: HeadOperations
+
+- type: entity
+  parent: IDCardMarine
+  id: FieldCommanderIDCard
+  name: жетон полевого командира
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconFieldCommander
+  - type: PresetIdCard
+    job: FieldCommander
+
+- type: entity
+  parent: IDCardMarine
+  id: StaffOfficerIDCard
+  name: жетон штаб-офицера
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+    - type: IdCard
+    jobIcon: JobIconStaffOficer
+  - type: PresetIdCard
+    job: StaffOfficer
+#Pilots--------------------------------
+- type: entity
+  parent: IDCardMarine
+  id: PilotNormandyIDCard
+  name: жетон пилота нормандии
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconPilotOfficer
+  - type: PresetIdCard
+    job: PilotNormandy
+
+- type: entity
+  parent: IDCardMarine
+  id: PilotRaptorIDCard
+  name: жетон пилота раптора
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconPilotRaptor
+  - type: PresetIdCard
+    job: PilotRaptor
+
+- type: entity
+  parent: IDCardMarine
+  id: PilotMechIDCard
+  name: жетон пилота меха
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconPilotMech
+  - type: PresetIdCard
+    job: PilotMech

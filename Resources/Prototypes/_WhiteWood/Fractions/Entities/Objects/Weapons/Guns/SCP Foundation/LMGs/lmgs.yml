@@ -1,0 +1,71 @@
+- type: entity
+  name: Logicer
+  parent: BaseWeaponLightMachineGun
+  id: WeaponLightMachineGunLogicer
+  suffix: Пулемёт
+  description: Мощный ручной пулемет (LMG), выпускаемый повстанцами в небольших количествах. Благодаря замечательной способности вести подавляющий огонь, этот пулемет .30-го калибра может стать ценным приобретением для отряда повстанцев.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/LMGs/logicer/big.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-3
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/LMGs/logicer/tiny.rsi
+  - type: Item
+    size: Ginormous
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/LMGs/logicer/tiny.rsi
+  - type: GunWieldBonus
+    minAngle: -35
+    maxAngle: -60
+  - type: Gun
+    minAngle: 40
+    maxAngle: 70
+    fireRate: 7.5
+    soundGunshot:
+      path: /Audio/_WhiteWood/Fractions/Weapons/Guns/LMGs/shot.ogg
+      params:
+        volume: 1
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazineLightRiflePkBox
+        insertSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/LMGs/reload.ogg
+        ejectSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/LMGs/unload.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineLightRifleBox
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgeLightRifle
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgeLightRifle
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 4
+    zeroVisible: true
+  - type: Appearance
+  - type: Wieldable
+  - type: UseDelay
+    delay: 0.5
+  - type: GunRequiresWield
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/_WhiteWood/Fractions/Weapons/Guns/LMGs/cocked.ogg
+  - type: SpeedModifiedOnWield
+    walkModifier: 0.5
+    sprintModifier: 0.5
+  - type: CursorOffsetRequiresWield
+  - type: EyeCursorOffset
+    maxOffset: 3
+    pvsIncrease: 0.3

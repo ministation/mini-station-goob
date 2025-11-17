@@ -1,0 +1,237 @@
+# Повстанцы хаоса
+
+- type: entity
+  parent: AirlockSquadAlphaGlass
+  id: AirSCPNGCommanderGlass
+  name: стеклянная дверь капитана ПХ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: ПХ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPNGCommander ]
+
+- type: entity
+  parent: AirlockSquadAlphaGlass
+  id: AirSCPNGLieutenantGlass
+  name: стеклянная дверь лейтенанта ПХ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: ПХ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPNGLieutenant ]
+
+- type: entity
+  parent: AirlockSquadAlphaGlass
+  id: AirSCPNGSergeantGlass
+  name: стеклянная дверь сержанта ПХ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: ПХ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPNGSergeant ]
+
+- type: entity
+  parent: AirlockSquadAlphaGlass
+  id: AirSCPNGMedicGlass
+  name: стеклянная дверь медика ПХ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: ПХ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPNGMedic ]
+
+- type: entity
+  parent: AirlockSquadAlphaGlass
+  id: AirSCPNGEngineerGlass
+  name: стеклянная дверь инженера ПХ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: ПХ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPNGEngineer ]
+
+- type: entity
+  parent: AirlockSquadAlphaGlass
+  id: AirSCPNGOperativeGlass
+  name: стеклянная дверь ПХ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: ПХ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPNGOperative ]
+
+
+# МОГ
+
+- type: entity
+  parent: AirlockSquadDeltaGlass
+  id: AirlockSCPMTFCommanderGlass
+  name: стеклянная дверь капитана МОГ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: МОГ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPMTFCommander ]
+
+- type: entity
+  parent: AirlockSquadDeltaGlass
+  id: AirlockSCPMTFLieutenantGlass
+  name: стеклянная дверь лейтенанта МОГ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: МОГ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPMTFLieutenant ]
+
+- type: entity
+  parent: AirlockSquadDeltaGlass
+  id: AirlockSCPMTFSergeantGlass
+  name: стеклянная дверь сержанта МОГ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: МОГ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPMTFSergeant ]
+
+- type: entity
+  parent: AirlockSquadDeltaGlass
+  id: AirlockSCPMTFMedicGlass
+  name: стеклянная дверь медика МОГ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: МОГ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPMTFMedic ]
+
+- type: entity
+  parent: AirlockSquadDeltaGlass
+  id: AirlockSCPMTFEngineerGlass
+  name: стеклянная дверь инженера МОГ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: МОГ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPMTFEngineer ]
+
+- type: entity
+  parent: AirlockSquadDeltaGlass
+  id: AirlockSCPMTFOperativeGlass
+  name: стеклянная дверь МОГ
+  description: Эта дверь рассчитана на сдерживании опасных и до зубов вооруженных солдат. По крайней мере, отсрочит вашу неминуемую гибель.
+  suffix: МОГ
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSCPMTFOperative ]
+
+# Повстанцы хаоса (Доступы)
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPNGCommander
+  suffix: ПХ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPNGCommander"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPNGLieutenant
+  suffix: ПХ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPNGLieutenant"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPNGSergeant
+  suffix: ПХ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPNGSergeant"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPNGMedic
+  suffix: ПХ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPNGMedic"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPNGEngineer
+  suffix: ПХ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPNGEngineer"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPNGOperative
+  suffix: ПХ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPNGOperative"]]
+
+
+# Мобильная оперативная группа (Доступы)
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPMTFCommander
+  suffix: МОГ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPMTFCommander"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPMTFLieutenant
+  suffix: МОГ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPMTFLieutenant"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPMTFSergeant
+  suffix: МОГ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPMTFSergeant"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPMTFMedic
+  suffix: МОГ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPMTFMedic"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPMTFEngineer
+  suffix: МОГ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPMTFEngineer"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSCPMTFOperative
+  suffix: МОГ, Locked
+  components:
+  - type: AccessReader
+    access: [["SCPMTFOperative"]]

@@ -1,0 +1,97 @@
+- type: entity
+  parent: AccessConfigurator
+  id: AccessConfiguratorSCP 
+  name: universal access configurator
+  suffix: SCP, Admin
+  description: A modified access configurator used only by the mythical Administrator.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/universal_access_configurator.rsi
+  - type: Clothing
+    sprite: Objects/Tools/universal_access_configurator.rsi
+  - type: AccessOverrider
+    accessLevels:
+    - SCPMTFCommander
+    - SCPMTFLieutenant
+    - SCPMTFSergeant
+    - SCPMTFMedic
+    - SCPMTFEngineer
+    - SCPMTFOperative
+    - SCPNGCommander
+    - SCPNGLieutenant
+    - SCPNGSergeant
+    - SCPNGMedic
+    - SCPNGEngineer
+    - SCPNGOperative
+    - SCPHOS
+    - SCPWarden
+    - SCPSecuritySergeant
+    - SCPSecurity
+    - SCPManager
+    - SCPHead_of_the_zone
+    - SCPEngineer
+    - SCPSenior_scientist
+    - SCPScientist
+    - SCPJanitor
+    privilegedIdSlot:
+      name: id-card-console-privileged-id
+      ejectSound: /Audio/Machines/id_swipe.ogg
+      insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+      ejectOnBreak: true
+      swap: false
+      startingItem: SCPIDCardO5
+      whitelist:
+        components:
+        - IdCard
+    denialSound:
+      path: /Audio/Machines/custom_deny.ogg
+    doAfter: 0.5
+
+- type: entity
+  parent: AccessConfigurator
+  id: AccessConfiguratorUGE
+  name: universal access configurator
+  suffix: ОПЗ, Admin
+  description: A modified access configurator used only by the mythical Administrator.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/universal_access_configurator.rsi
+  - type: Clothing
+    sprite: Objects/Tools/universal_access_configurator.rsi
+  - type: AccessOverrider
+    accessLevels:
+    - SeniorOfficerUGE
+    - OfficerUGE
+    - MilitaryPoliceOfficer
+    - ChiefMedicalOfficer
+    - SupplyofficerUGE
+    - MilitaryPolice
+    - SquadLeader
+    - PilotUGE
+    - SquadSpecialist
+    - SupplyUGE
+    - Maintenance
+    - SquadAlpha
+    - SquadBravo
+    - SquadCharlie
+    - SquadDelta
+    - Atmospherics
+    - Engineering
+    - ChiefEngineer
+    - СommonUGE
+    - Medical
+    - Chemistry
+    - СommonUGE
+    privilegedIdSlot:
+      name: id-card-console-privileged-id
+      ejectSound: /Audio/Machines/id_swipe.ogg
+      insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+      ejectOnBreak: true
+      swap: false
+      startingItem: HeadOperationsIDCard
+      whitelist:
+        components:
+        - IdCard
+    denialSound:
+      path: /Audio/Machines/custom_deny.ogg
+    doAfter: 0.5

@@ -1,0 +1,23 @@
+- type: job
+  id: DeltaEngineer
+  name: Инженер отряда "Дельта"
+  description: Держаться поближе к отряду, поддерживать укреплениями морпехов. Открывать двери и шлюзы, строить оборонительные пункты.
+  playTimeTracker: JobDeltaEngineer
+  startingGear: DeltaEngineerGearUGE
+  icon: "JobIconDeltaEngineer"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  access:
+  - Engineering
+  accessGroups:
+  - SquadDelta
+
+- type: startingGear
+  id: DeltaEngineerGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitEngineer
+    id: DEngineerIDCard
+    pocket1: EmergencyMedipen

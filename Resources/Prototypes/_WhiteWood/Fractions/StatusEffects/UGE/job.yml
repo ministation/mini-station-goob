@@ -1,0 +1,286 @@
+# Marine ------------------------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconAlfaMarine
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: AlfaMarine
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSurvivalMarine
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: Visitor
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconDeltaMarine
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: DeltaMarine
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconBravoMarine
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: BravoMarine
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCharlieMarine
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: CharlieMarine
+# Medic ---------------------------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconAlfaMedic
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: AlfaMedic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconDeltaMedic
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: DeltaMedic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconBravoMedic
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: BravoMedic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCharlieMedic
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: CharlieMedic
+# Engineer ----------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconAlfaEngineer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: AlfaEngineer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconDeltaEngineer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: DeltaEngineer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconBravoEngineer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: BravoEngineer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCharlieEngineer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: CharlieEngineer
+# Commander Garrisons ------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconAlfaCommander
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: AlfaCommander
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconDeltaCommander
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: DeltaCommander
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconBravoCommander
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: BravoCommander
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCharlieCommander
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: CharlieCommander
+# Specialist ----------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconAlfaSpecialist
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: AlfaSpecialist
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconDeltaSpecialist
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: DeltaSpecialist
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconBravoSpecialist
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: BravoSpecialist
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCharlieSpecialist
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: CharlieSpecialist
+# Police --------------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMilitaryPoliceman
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: Warden
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMilitaryPoliceOfficer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: Polyce
+# Scientist -----------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMilitaryScientist
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: MilitaryScientist
+# Cargo --------------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSupplyOfficer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: SupplyOfficer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconRigger
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: Rigger
+# Medic --------------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMilitaryMainMedic
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: MilitaryMainMedic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMilitaryMedic
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: MilitaryMedic
+# Engineer --------------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconChiefShipsEngineer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: ChiefShipsEngineer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconShipsEngineer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: ShipsEngineer
+# Command --------------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconHeadComm
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: Head
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconFieldCommander
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: FieldCommander
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconStaffOfficer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: StaffOfficer
+# Pilots --------------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconPilotOfficer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: PilotOfficer
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconPilotRaptor
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: PilotOfficerRaptor
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconPilotMech
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: PilotMech
+# Xeno ----------------------------------------
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconKseno
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: Kseno
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconRuni
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: Runi
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconQuinn
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: Quinn
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconPretor
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: Pretor
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconKing
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/UGE.rsi
+    state: King

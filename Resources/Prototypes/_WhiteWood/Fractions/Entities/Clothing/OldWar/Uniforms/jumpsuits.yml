@@ -1,0 +1,134 @@
+# German -----------------------------------------------------
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitGeneralBlack
+  name: немецкая черная генеральская форма
+  suffix: OldWar
+  description: Черная немецкая генеральская форма. На петлицах изображены 3 золотых дубовых листа, а погоны выполнены из плетеного шнура, внутренний ряд которого серебристый, а боковые - золотистые.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/general_black.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/general_black.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: CClothingUniformGeneralGreen
+  name: немецкая полевая генеральская форма
+  suffix: OldWar
+  description: Полевая немецкая генеральская форма. Петлицы богато орнаментированы золотыми, вышитыми на суконном клапане алого цвета с стилизованным дубовым листом. Вот так! И запомните, что голова у солдата, чтобы думать, а мозги чтобы соображать.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/general_green.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/general_green.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformOfficerBlack
+  name: немецкая черная офицерская форма
+  suffix: OldWar
+  description: Черная немецкая офицерская форма. На правой руке виднееться шеврон в форме буквы V. Не думай о секундах свысока...
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/officer_black.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/officer_black.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformOfficerGreen
+  name: немецкая полевая офицерская форма
+  suffix: OldWar
+  description: Полевая немецкая офицерская форма. Запомните, ботинки надо чистить с вечера, а утром надевать на свежую голову.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/officer_green.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/officer_green.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformOfficerGrey
+  name: немецкая серая офицерская форма
+  suffix: OldWar
+  description: Серая немецкая офицерская форма. Над обшлагом левого рукава виднееться шеврон SD. Подобную форму носят сотрудники службы безопасности и разведки.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/officer_grey.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/officer_grey.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformSschutzeBlack
+  name: немецкая черная форма
+  suffix: OldWar
+  description: Черная немецкая форма. На петлицах виднеются 2 руны «зиг».
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/schutze_black.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/schutze_black.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformSschutzeGreen
+  name: немецкая солдатская форма
+  suffix: OldWar
+  description: Солдатская немецкая форма. Так точно, Гер майор!
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/schutze_green.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/German/schutze_green.rsi
+
+# USSR -----------------------------------------------------
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitUSSRGeneral
+  name: Генеральская форма красной армии
+  suffix: OldWar
+  description: форма офицерского состава Советской армии. Окантовка по белому - золотая, по воротнику и разрезу вставки — красная. Нужно делать не как лучше, а как положено.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/USSR/general.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/USSR/general.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitUSSROfficer
+  name: офицерская форма красной армии
+  suffix: OldWar
+  description: Полевая форма офицерского состава Советской армии. На погонах виднеются золотые звезды. Молчать! Или я сейчас буду зверствовать!
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/USSR/officer.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/USSR/officer.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitUSSRSergeant
+  name: сержантская форма красной армии
+  suffix: OldWar
+  description: Полевая форма сержантского состава Советской армии. На погонах виднеются золотые лычки. Все в окопы, остальные за мной!
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/USSR/sergeant.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/USSR/sergeant.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitUSSRSoldier
+  name: солдатская форма красной армии
+  suffix: OldWar
+  description: Полевая форма рядового состава Советской армии. На ней не видно погон, но на воротнике расположены алые петлицы.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/USSR/soldier.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Uniforms/Jumpsuit/USSR/soldier.rsi

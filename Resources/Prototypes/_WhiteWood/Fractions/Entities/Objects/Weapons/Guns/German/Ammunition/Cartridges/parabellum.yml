@@ -1,0 +1,36 @@
+- type: entity
+  id: BaseCartridgeParabellum
+  name: cartridge (.45 magnum)
+  parent: [ BaseCartridge, BaseSecurityContraband ]
+  abstract: true
+  components:
+  - type: Tag
+    tags:
+      - Cartridge
+      - CartridgeParabellum
+      - Cartridge9x19
+  - type: CartridgeAmmo
+    proto: BulletMagnum
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+    - state: base
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Appearance
+  - type: SpentAmmoVisuals
+
+- type: entity
+  id: CartridgeParabellum
+  name: патрон (Парабеллум)
+  parent: BaseCartridgeMagnum
+  components:
+  - type: Tag
+    tags:
+      - Cartridge
+      - CartridgeParabellum
+      - Cartridge9x19
+  - type: CartridgeAmmo
+    proto: BulletMagnum
+
+- type: Tag
+  id: CartridgeParabellum

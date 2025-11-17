@@ -1,0 +1,31 @@
+- type: job
+  id: MilitaryScientist
+  name: Исследователь
+  description: Исследует технологии, ксеносов, жадничает свои ресурсы, хвастаются своим образованием.
+  playTimeTracker: JobMilitaryScientist
+  startingGear: MilitaryScientistGearUGE
+  icon: "JobIconMilitaryScientist"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-head-operations
+  canBeAntag: false
+  access:
+    - Research
+    - Maintenance
+    - Medical
+    - Chemistry
+    - OfficerUGE
+  special:
+  - !type:AddComponentSpecial
+
+
+- type: startingGear
+  id: MilitaryScientistGearUGE
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitMilitaryScientist
+    back: ClothingBackpackScience
+    eyes: ClothingEyesGlassesMeson
+    id: MilitaryScientistIDCard
+    ears: ClothingHeadsetAltScience
+    belt: ClothingBeltUtilityEngineering
+    shoes: ClothingShoesColorBrown
+    pocket1: EmergencyMedipen

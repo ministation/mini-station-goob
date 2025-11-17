@@ -1,0 +1,99 @@
+- type: entity
+  id: BaseMagazinePistolParabellum
+  name: пистолетный магазин (Парабеллум)
+  parent: BaseItem
+  abstract: true
+  components:
+  - type: Tag
+    tags:
+      - MagazinePistolParabellum
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    whitelist:
+      tags:
+        - CartridgeParabellum
+    capacity: 8
+  - type: Item
+    size: Small
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/German/Ammunition/Magazines/p-08_mag.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 6
+    zeroVisible: false
+  - type: Appearance
+
+- type: entity
+  id: MagazinePistolP08
+  name: пистолетный магазин (Парабеллум)
+  parent: BaseMagazinePistolParabellum
+  components:
+  - type: BallisticAmmoProvider
+    proto: CartridgeParabellum
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+
+- type: Tag
+  id: MagazinePistolParabellum
+
+- type: entity
+  id: BaseMagazinePistol19x17
+  name: пистолетный магазин (19x17)
+  parent: BaseItem
+  abstract: true
+  components:
+  - type: Tag
+    tags:
+      - MagazinePistolWalther19x17
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    whitelist:
+      tags:
+        - Cartridge19x17
+    capacity: 7
+  - type: Item
+    size: Small
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/German/Ammunition/Magazines/9x17_mag.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 6
+    zeroVisible: false
+  - type: Appearance
+
+- type: entity
+  id: MagazinePistol19x17
+  name: пистолетный магазин (19x17)
+  parent: BaseMagazinePistol19x17
+  components:
+  - type: BallisticAmmoProvider
+    proto: Cartridge19x17
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+
+- type: Tag
+  id: MagazinePistolWalther19x17

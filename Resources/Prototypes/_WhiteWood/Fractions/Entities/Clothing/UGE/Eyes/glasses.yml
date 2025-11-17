@@ -1,0 +1,47 @@
+- type: entity
+  parent: ClothingEyesBase
+  id: RMCGogglesBallistic
+  name: баллистические защитные очки
+  suffix: ОПЗ
+  description: Защитные очки стандартного выпуска UNMC. Хотя их обычно надевают поверх шлемов модели M10, они также способны предотвращать попадание насекомых, пыли и других предметов в глаза. Имеют встроенную биометрическую систему распознавания.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Glasses/ballistic_goggles.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Glasses/ballistic_goggles.rsi
+    slots:
+    - EYES
+  - type: ShowJobIcons
+
+- type: entity
+  parent: ClothingEyesBase
+  id: ClothingEyesGlassesRPG
+  name: командирские очки
+  suffix: ОПЗ
+  description: Очки сержантского и офицерского состава, предназначенные для защиты глаз от опасного для глаз излучения, пыли, осколков. Имеют встроенную биометрическую систему распознавания.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Glasses/marinerpgglasses.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Glasses/marinerpgglasses.rsi
+    slots:
+    - EYES
+  - type: ShowJobIcons
+  - type: EyeProtection
+  - type: FlashImmunity
+
+- type: entity
+  parent: ClothingEyesBase
+  id: ClothingEyesGlassesWelding
+  name: сварочные очки
+  suffix: ОПЗ
+  description: Защитные очки с тонировкой, изготовленные из запатентованного полимера, который обеспечивает защиту от любых повреждений глаз.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Glasses/weldinggoggles.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Glasses/weldinggoggles.rsi
+    slots:
+    - EYES
+  - type: EyeProtection
+  - type: FlashImmunity

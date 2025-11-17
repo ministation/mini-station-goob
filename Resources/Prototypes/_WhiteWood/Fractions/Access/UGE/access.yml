@@ -1,0 +1,199 @@
+# Сommon
+- type: accessLevel
+  id: СommonUGE
+  name: Военный ОПЗ
+
+# Squads
+- type: accessLevel
+  id: SquadAlpha
+  name: Отряд Альфа
+
+- type: accessLevel
+  id: SquadBravo
+  name: Отряд Браво
+
+- type: accessLevel
+  id: SquadCharlie
+  name: Отряд Чарли
+
+- type: accessLevel
+  id: SquadDelta
+  name: Отряд Дельта
+
+# Squad specialist
+- type: accessLevel
+  id: SquadSpecialist
+  name: Специалист Отряда
+
+# Squad leaders
+- type: accessLevel
+  id: SquadLeader
+  name: Командир отряда
+
+# Pilots
+- type: accessLevel
+  id: PilotUGE
+  name: Пилот
+
+# Officers
+
+- type: accessLevel
+  id: OfficerUGE
+  name: Офицер
+
+- type: accessLevel
+  id: SeniorOfficerUGE
+  name: Старший офицер
+
+# Military police
+
+- type: accessLevel
+  id: MilitaryPolice
+  name: Военный полицейский
+
+- type: accessLevel
+  id: MilitaryPoliceOfficer
+  name: Офицер военной полиции
+
+# Rear
+- type: accessLevel
+  id: SupplyofficerUGE
+  name: Офицер тылового обеспечения
+
+- type: accessLevel
+  id: SupplyUGE
+  name: Такелажник
+
+
+
+
+# Офицеры ОПЗ -------------------------------
+- type: accessGroup
+  id: HeadOperationsUGE
+  tags:
+  - SeniorOfficerUGE
+  - OfficerUGE
+  - MilitaryPoliceOfficer
+  - ChiefMedicalOfficer
+  - SupplyofficerUGE
+  - MilitaryPolice
+  - SquadLeader
+  - PilotUGE
+  - SquadSpecialist
+  - SupplyUGE
+  - Maintenance
+  - SquadAlpha
+  - SquadBravo
+  - SquadCharlie
+  - SquadDelta
+  - Atmospherics
+  - Engineering
+  - ChiefEngineer
+  - СommonUGE
+  - Maintenance
+  - Medical
+  - Chemistry
+  - СommonUGE
+
+- type: accessGroup
+  id: StaffOfficerUGE
+  tags:
+  - SeniorOfficerUGE
+  - OfficerUGE
+  - MilitaryPoliceOfficer
+  - MilitaryPolice
+  - SquadLeader
+  - PilotUGE
+  - SquadSpecialist
+  - Maintenance
+  - Atmospherics
+  - Engineering
+  - SquadAlpha
+  - SquadBravo
+  - SquadCharlie
+  - SquadDelta
+  - СommonUGE
+  - Maintenance
+  - Medical
+  - Chemistry
+
+# Военная полиция
+
+- type: accessGroup
+  id: MilitaryPoliceOfficerUGE
+  tags:
+  - OfficerUGE
+  - MilitaryPoliceOfficer
+  - MilitaryPolice
+  - SquadLeader
+  - PilotUGE
+  - SquadSpecialist
+  - Maintenance
+  - Atmospherics
+  - Engineering
+  - SquadAlpha
+  - SquadBravo
+  - SquadCharlie
+  - SquadDelta
+  - СommonUGE
+  - Maintenance
+  - Medical
+  - Chemistry
+
+- type: accessGroup
+  id: PoliceOfficerUGE
+  tags:
+  - MilitaryPolice
+  - SquadLeader
+  - PilotUGE
+  - SquadSpecialist
+  - Maintenance
+  - SquadAlpha
+  - Atmospherics
+  - Engineering
+  - SquadBravo
+  - SquadCharlie
+  - SquadDelta
+  - Maintenance
+  - Medical
+  - СommonUGE
+
+#  Отряды ОПЗ
+
+- type: accessGroup
+  id: SquadAlpha
+  tags:
+  - Maintenance
+  - SquadAlpha
+  - СommonUGE
+
+- type: accessGroup
+  id: SquadBravo
+  tags:
+  - Maintenance
+  - SquadBravo
+  - СommonUGE
+
+- type: accessGroup
+  id: SquadCharlie
+  tags:
+  - Maintenance
+  - SquadCharlie
+  - СommonUGE
+
+- type: accessGroup
+  id: SquadDelta
+  tags:
+  - Maintenance
+  - SquadDelta
+  - СommonUGE
+
+# Медики ОПЗ
+
+- type: accessGroup
+  id: MedicalUGE
+  tags:
+  - Maintenance
+  - Medical
+  - Chemistry
+  - СommonUGE

@@ -1,0 +1,15 @@
+
+# Boxes
+- type: entity
+  parent: BaseMagazineBoxPistol
+  id: MagazineBoxPistolParabellum
+  name: коробка патронов (Парабеллум)
+  components:
+  - type: BallisticAmmoProvider
+    proto: CartridgeParabellum
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]

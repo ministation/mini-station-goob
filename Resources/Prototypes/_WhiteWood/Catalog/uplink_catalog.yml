@@ -1,0 +1,407 @@
+- type: listing
+  id: M90
+  name: М-90
+  description: Карабин старой модели, выполненный по схеме булл-пап, с подствольным гранатомётом. Использует патроны калибра .20 винтовочный.
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/carbine.rsi, state: base }
+  productEntity: ClothingBackpackDuffelMilitaryFilledM90GrenadeLauncher
+  cost:
+    Productunit: 15
+  categories:
+  - UplinkERTWeapon
+
+- type: listing
+  id: Lecter
+  name: Лектер
+  description: Первоклассная армейская штурмовая винтовка. Использует патроны калибра .20 винтовочный.
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/lecter.rsi, state: icon }
+  productEntity: ClothingBackpackDuffelMilitaryFilledLecter
+  cost:
+    Productunit: 10
+  categories:
+  - UplinkERTWeapon
+
+- type: listing
+  id: TemperatureGun
+  name: Термопушка
+  description: Продвинутое оружие, стреляющее лучами, способными изменять температуру тела. Вероятно, считается в некоторым роде военным преступлением.
+  productEntity: WeaponTemperatureGun
+  cost:
+    Productunit: 10
+  categories:
+  - UplinkERTWeapon
+
+- type: listing
+  id: MiniPulse
+  name: Импульсный пистолет
+  description: Высокотехнологичный энергетический пистолет, который предпочитают носить как "вторичку".
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Battery/pulse_Pistol.rsi, state: icon }
+  productEntity: WeaponPulsePistol
+  cost:
+    Productunit: 20
+  categories:
+  - UplinkERTWeapon
+
+- type: listing
+  id: Pulse
+  name: Импульсный карабин
+  description: Высокотехнологичный энергетический карабин, который предпочитают оперативники ОБР Nanotrasen.
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Battery/pulse_carbine.rsi, state: icon }
+  productEntity: WeaponPulseCarbine
+  cost:
+    Productunit: 30
+  categories:
+  - UplinkERTWeapon
+
+- type: listing
+  id: Drozd
+  name: Дрозд
+  description: Превосходный полностью автоматический тяжёлый пистолет-пулемёт. Использует патроны калибра .35 авто.
+  icon: { sprite: Objects/Weapons/Guns/SMGs/drozd.rsi, state: base }
+  productEntity: ClothingBackpackDuffelMilitaryFilledMachineGun
+  cost:
+    Productunit: 8
+  categories:
+  - UplinkERTWeapon
+
+  
+
+# misc
+
+- type: listing
+  id: MagBoots
+  name: продвинутые магнитные сапоги
+  description: Новейшие магнитные сапоги, которые не замедляют движения своего владельца.
+  productEntity: ClothingShoesBootsMagAdv
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTMisc
+
+- type: listing
+  id: JawOfLife
+  name: Челюсти жизни
+  description: Челюсти жизни — мощный гидравлический инструмент для быстрого и безопасного вскрытия дверей и преград при аварийно-спасательных работах.
+  productEntity: JawsOfLife
+  cost:
+    Productunit: 4
+  categories:
+  - UplinkERTMisc
+
+- type: listing
+  id: JetPack
+  name: Мини Джетпак
+  productEntity: JetpackMiniFilled
+  description:  Это реактивный ранец — джетпак. Вмещает 1,5 Л газа.
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTMisc
+
+- type: listing
+  id: JetPacks
+  name: Джетпак
+  productEntity: JetpackBlackFilled
+  description:  Это реактивный ранец — джетпак. Вмещает 5 Л газа.
+  cost:
+    Productunit: 3
+  categories:
+  - UplinkERTMisc
+
+- type: listing
+  id: Oxtank1
+  name: Двойной кислородный баллон
+  productEntity: DoubleEmergencyOxygenTank
+  description: Высококлассный двухбаллонный резервуар аварийного жизнеобеспечения. Продается пустым.
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTMisc
+
+  #Med
+- type: listing
+  id: Defibrillator
+  name: дефибриллятор
+  productEntity: Defibrillator
+  description: ЧИСТО! РАЗРЯД!
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTMed 
+
+- type: listing
+  id: AirMediKit
+  name: Кислородная аптечка
+  productEntity: MedkitOxygenFilled
+  description: Кислородная аптечка — это портативный набор для неотложной подачи кислорода при недостатке дыхания.
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTMed 
+
+- type: listing
+  id: MediKit
+  name: Аптечка первой помощи
+  productEntity: MedkitFilled
+  description: Аптечка первой помощи — набор базовых средств для быстрой помощи при травмах и болезнях до приезда врачей.
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTMed 
+
+- type: listing
+  id: MediKitAdvanced
+  name: Продвинутая аптечка
+  productEntity: MedkitAdvancedFilled
+  description: Продвинутая аптечка — поможет быстро остановить кровь, снять боль и защитить от инфекции, когда рядом нет врачей. 
+  cost:
+    Productunit: 4
+  categories:
+  - UplinkERTMed 
+
+- type: listing
+  id: MediKitcombat
+  name: Боевая аптечка
+  productEntity: MedkitCombatFilled
+  description: Боевая аптечка — компактный набор для быстрой помощи при ранениях и остановке кровотечения в условиях боя.
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTMed 
+
+  #Med+
+
+- type: listing
+  id: Medipen
+  name: Боевой медипен
+  productEntity: CombatMedipen
+  description:  Одноразовый медипен, содержащий химические вещества, восстанавливающие большинство видов повреждений.
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTmedics
+
+- type: listing
+  id: MedipenPunct
+  name: Автоинъектор пунктураза
+  productEntity: PunctAutoInjector
+  description:  Одноразовый медипен, содержащий химические вещества, восстанавливающие колотые раны.
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTmedics 
+
+- type: listing
+  id: MedipenMech
+  name: автоинъектор мех-повреждений
+  productEntity: BruteAutoInjector
+  description:  Экспресс-доза бикаридина и транексамовой кислоты, предназначенная для применения в боевых условиях.
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTmedics 
+
+- type: listing
+  id: MedipenRad
+  name: автоинъектор рад-повреждений
+  productEntity: RadAutoInjector
+  description: Экспресс-доза антирадиационного препарата. Содержит аритразин и бикаридин.
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTmedics 
+
+- type: listing
+  id: DefibrillatorCompact
+  name: компактный дефибриллятор
+  productEntity: DefibrillatorCompact
+  description:  Теперь и в весёлом размере!
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTmedics
+  
+  #ammo 
+
+- type: listing
+  id: DrozdAmmo
+  name: Набор магазин "35.авто"
+  description: 5 Магазинов для пистолета-пулемёта Дрозд
+  productEntity: ClothingBackpackDuffelMilitaryFilledMachine
+  cost:
+    Productunit: 4
+  categories:
+  - UplinkERTAmmo
+
+- type: listing
+  id: LecterAmmo
+  name: Набор магазинов "20.винтовочный"
+  description: 5 Магазинов для Лектера и М-90
+  icon: { sprite: /Textures/_WhiteWood/Objects/Specific/magazins.rsi, state: red-icon }
+  productEntity: ClothingBackpackDuffelMilitaryFilledAMMO
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTAmmo
+
+- type: listing
+  id: PortableRechargerer
+  name: переносной зарядник
+  description:  Высокотехнологичное зарядное устройство, адаптированное для мобильности.
+  productEntity: PortableRecharger
+  cost:
+    Productunit: 8
+  categories:
+  - UplinkERTAmmo
+
+#armor Security
+
+- type: listing
+  id: ERTLightSecurity
+  name: Тактический скафандр сотрудника безопасности обр
+  description:  Лёгкий и незаметный комплект для сотрудников безопасности, обеспечивающий минимальный уровень защиты и максимальную мобильность в малозначимых операциях.
+  productEntity: ClothingOuterHardsuitERTLightSecurity
+  cost:
+    Productunit: 8
+  categories:
+  - UplinkERTArmorSecurity 
+
+- type: listing
+  id: ERTSecurity
+  name: скафандр офицера безопасности ОБР
+  description:  Защитный скафандр, используемый офицерами безопасности отряда быстрого реагирования.
+  productEntity: ClothingOuterHardsuitERTSecurity
+  cost:
+    Productunit: 12
+  categories:
+  - UplinkERTArmorSecurity 
+
+- type: listing
+  id: ERTHeavySecurity
+  name: Тяжёлый скафандр офицера безопасности ОБР
+  description:  Высокозащищённый бронекостюм, способный выдерживать серьёзные угрозы, однако в состоянии, заметно снижающем гибкость и подвижность носителя.
+  productEntity: ClothingOuterHardsuitERTHeavySecurity
+  cost:
+    Productunit: 20
+  categories:
+  - UplinkERTArmorSecurity 
+
+#armor Lider
+
+- type: listing
+  id: ERTLightLeader
+  name: Тактический скафандр лидера обр
+  description: Символ статуса и функциональности, оптимизирован для управления командой в условиях пониженного риска с сохранением комфорта.
+  productEntity: ClothingOuterHardsuitERTLightLeader
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTArmorLider
+
+- type: listing
+  id: ERTLeader
+  name: скафандр лидера ОБР
+  description: Защитный скафандр, используемый лидерами отряда быстрого реагирования.
+  productEntity: ClothingOuterHardsuitERTLeader
+  cost:
+    Productunit: 10
+  categories:
+  - UplinkERTArmorLider
+
+- type: listing
+  id: PortableRecharger
+  name: Тяжёлый скафандр лидера обр
+  description: Максимально защищённый и функциональный комплект, предоставляющий высокую безопасность, но существенно ограничивающий мобильность и скорость перемещения.
+  productEntity: ClothingOuterHardsuitERTHeavyLeader
+  cost:
+    Productunit: 20
+  categories:
+  - UplinkERTArmorLider 
+
+#armor medic
+
+- type: listing
+  id: ERTLightMedical
+  name: Тактический скафандр медика обр
+  description: Обеспечивает мобильность и базовую защиту в условиях экстренной медицинской помощи, позволяя быстро реагировать на угрозы средней степени.
+  productEntity: ClothingOuterHardsuitERTLightMedical
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTArmorMedic
+
+- type: listing
+  id: ERTMedical
+  name: скафандр медика ОБР
+  description: Защитный скафандр, используемый медиками отряда быстрого реагирования.
+  productEntity: ClothingOuterHardsuitERTMedical
+  cost:
+    Productunit: 10
+  categories:
+  - UplinkERTArmorMedic
+
+#Janitor 
+
+- type: listing
+  id: Gidra
+  name: Набор "Гидра"
+  description: гранатомёт и 10 запасных зарядов для уборки! Отличный подход к уборке это "БАХ, БАХ, ГРЯЗЬ! ОУ ЩИТ, ААХХ, МИКРОБЫ СДОХЛИ!!!".
+  icon: { sprite: Objects/Weapons/Guns/Launchers/hydra_launcher.rsi, state: icon }
+  productEntity: ClothingBackpackDuffelMilitaryFilledGidra
+  cost:
+    Productunit: 5
+  categories:
+  - Janitor
+
+- type: listing
+  id: Gidras
+  name: чистящая граната
+  description: пшшшшш...
+  productEntity: CleanerGrenade
+  cost:
+    Productunit: 1
+  categories:
+  - Janitor
+
+#armor engineer
+
+- type: listing
+  id: ERTLightEngineer
+  name: Тактический скафандр инженера обр
+  description: Минималистичный скафандр для оперативного технического обслуживания в безопасных зонах, обеспечивающий свободу движения и базовую защиту.
+  productEntity: ClothingOuterHardsuitERTLightEngineer
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTArmorengineer
+
+- type: listing
+  id: ERTEngineer
+  name: скафандр инженера ОБР
+  description: Защитный скафандр, используемый инженерами отряда быстрого реагирования.
+  productEntity: ClothingOuterHardsuitERTEngineer
+  cost:
+    Productunit: 10
+  categories:
+  - UplinkERTArmorengineer
+
+#armor Janitor
+
+- type: listing
+  id: ERTLightJanitor
+  name: Тактический скафандр уборщика обр
+  description: Простой и удобный комплект, обеспечивающий свободу движений и базовую защиту при выполнении рутинных задач в безопасной среде.
+  productEntity: ClothingOuterHardsuitERTLightJanitor
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTArmorJanitor
+
+- type: listing
+  id: ERTJanitor
+  name: скафандр уборщика ОБР
+  description: Защитный скафандр, используемый уборщиками отряда быстрого реагирования.
+  productEntity: ClothingOuterHardsuitERTJanitor
+  cost:
+    Productunit: 10
+  categories:
+  - UplinkERTArmorJanitor

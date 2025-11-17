@@ -1,0 +1,123 @@
+- type: entity
+  id: BulletShotGun24Gauge
+  name: bullet (24 Gauge)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    state: buckshot
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 18
+
+- type: entity
+  id: BulletShotGun8Gauge
+  name: bullet (8 Gauge)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    state: buckshot
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 30
+
+- type: entity
+  id: BulletLiberator
+  name: bullet (8 Gauge)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    state: buckshot
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 20
+
+- type: entity
+  id: BulletPunisher
+  name: bullet (8 Gauge)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    state: buckshot
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 20
+
+- type: entity
+  id: BulletEnforcer
+  name: bullet (8 Gauge)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    state: buckshot
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 15
+
+
+- type: entity
+  id: FenixBullet
+  name: BaseBullet
+  description: If you can see this you're probably dead!
+  suffix: "Marines Gear"
+  noSpawn: true
+  components:
+  - type: Sprite
+    sprite: /Textures/_WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Ammunition/TGMSArsenal/Textures/fenixbullet.rsi
+    state: slug
+  - type: Reflective
+  - type: FlyBySound
+  - type: Clickable
+  - type: Physics
+    bodyType: Dynamic
+    linearDamping: 0
+    angularDamping: 0
+  - type: Fixtures
+    fixtures:
+      projectile:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.1,-0.1,0.1,0.1"
+        hard: false
+        mask:
+        - Impassable
+        - BulletImpassable
+      fly-by: &flybyfixture
+        shape:
+          !type:PhysShapeCircle
+          radius: 1.5
+        layer:
+        - Impassable
+        - MidImpassable
+        - HighImpassable
+        - LowImpassable
+        hard: False
+  - type: Projectile
+    impactEffect: BulletImpactEffect
+    damage:
+      types:
+        Piercing: 20
+        Blunt: 20
+  - type: TimedDespawn
+    lifetime: 10
+  - type: PointLight
+    enabled: true
+    color: "#f24e2c"
+    radius: 2.0
+    energy: 7.0
+  - type: IgniteOnCollide
+    fireStacks: 2

@@ -1,0 +1,34 @@
+- type: entity
+  id: BaseCartridge19x17
+  name: cartridge (19x17)
+  parent: [ BaseCartridge, BaseSecurityContraband ]
+  abstract: true
+  components:
+  - type: Tag
+    tags:
+      - Cartridge
+      - Cartridge19x17
+  - type: CartridgeAmmo
+    proto: BulletMagnum
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+    - state: base
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Appearance
+  - type: SpentAmmoVisuals
+
+- type: entity
+  id: Cartridge19x17
+  name: патрон (19x17)
+  parent: BaseCartridge19x17
+  components:
+  - type: Tag
+    tags:
+      - Cartridge
+      - Cartridge19x17
+  - type: CartridgeAmmo
+    proto: BulletMagnum
+
+- type: Tag
+  id: Cartridge19x17

@@ -1,0 +1,41 @@
+- type: entity
+  parent: [ClothingBeltBase, ClothingSlotBase]
+  id: RapierBeltSheath
+  name: рапирные ножны
+  description: Богато украшенные ножны, предназначенные для хранения офицерского клинка.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Clothing/Belt/sheath.rsi
+    state: sheath
+  - type: Clothing
+    sprite: _WhiteWood/Clothing/Belt/sheath.rsi
+  - type: Item
+    size: Ginormous
+  - type: ItemSlots
+    slots:
+      item:
+        name: Rapier
+        insertVerbText: sheath-insert-verb
+        ejectVerbText: sheath-eject-verb
+        insertSound: /Audio/Items/sheath.ogg
+        ejectSound: /Audio/Items/unsheath.ogg
+        whitelist:
+          tags:
+          - Rapier
+  - type: ItemMapper
+    mapLayers:
+      sheath-sabre:
+        whitelist:
+          tags:
+          - Rapier
+  - type: Appearance
+
+- type: entity
+  id: RapierBeltSheathFilled
+  suffix: Заполненный
+  parent: RapierBeltSheath
+  components:
+  - type: ItemSlots
+    slots:
+      item:
+        startingItem: Rapier

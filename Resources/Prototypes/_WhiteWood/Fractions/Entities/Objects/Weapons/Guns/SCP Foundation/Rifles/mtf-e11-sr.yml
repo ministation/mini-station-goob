@@ -1,0 +1,173 @@
+#- type: entity
+#  name: E11
+#  parent: [BaseWeaponRifle, BaseRestrictedContraband]
+#  id: WeaponRifleMTF-E11-SROLD
+#  suffix: Автомат
+#  description: В основном используется мобильными оперативными группами. Использует винтовочные патроны 20-го калибра.
+#  components:
+#  - type: Sprite
+#    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Rifles/mtf-e11-sr.rsi
+#    layers:
+#      - state: base
+#        map: ["enum.GunVisualLayers.Base"]
+#      - state: mag-0
+#        map: ["enum.GunVisualLayers.Mag"]
+#  - type: Clothing
+#    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Rifles/mtf-e11-sr.rsi
+#  - type: Gun
+#    soundGunshot:
+#      path: /Audio/_WhiteWood/Fractions/Weapons/Guns/Gunshots/mtf-e11-sr.ogg
+#  - type: ItemSlots
+#    slots:
+#      gun_magazine:
+#        name: Magazine
+#        startingItem: MagazineRifle
+#        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+#        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+#        priority: 2
+#        whitelist:
+#          tags:
+#            - MagazineRifle
+#        whitelistFailPopup: gun-magazine-whitelist-fail
+#      gun_chamber:
+#        name: Chamber
+#        startingItem: CartridgeRifle
+#        priority: 1
+#        whitelist:
+#          tags:
+#            - CartridgeRifle
+#  - type: ContainerContainer
+#    containers:
+#      gun_magazine: !type:ContainerSlot
+#      gun_chamber: !type:ContainerSlot
+#  - type: MagazineVisuals
+#    magState: mag
+#    steps: 1
+#    zeroVisible: true
+#  - type: Appearance
+
+- type: entity
+  name: MTF-E11-SR
+  parent: BaseWeaponRifle
+  id: WeaponRifleMTF-E11-SR
+  suffix: Автомат
+  description: Стандартная винтовка для оперативников мобильных оперативных групп. Легкое, легко стреляющее и очень модульное оружие было разработано специально для нужд вооруженных сил, которые им пользуются.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Rifles/mtf-e11-sr/big.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Rifles/mtf-e11-sr/tiny.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,2
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Rifles/mtf-e11-sr/tiny.rsi
+  - type: GunWieldBonus
+    minAngle: -19
+    maxAngle: -34
+  - type: Gun
+    minAngle: 25
+    maxAngle: 45
+    fireRate: 5
+    soundGunshot:
+      path: /Audio/_WhiteWood/Fractions/Weapons/Guns/Gunshots/mtf-e11-sr.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazineRifle
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineRifle
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgeRifle  # 556
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgeRifle  # 556
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+  - type: Wieldable
+  - type: UseDelay
+    delay: 0.5
+
+- type: entity
+  name: MTF-E11-SL
+  parent: BaseWeaponRifle
+  id: WeaponRifleMTF-E11-SL
+  suffix: Автомат
+  description: Снайперская винтовка для оперативников мобильных оперативных групп. Легкое, легко стреляющее и очень модульное оружие было разработано специально для нужд вооруженных сил, которые им пользуются.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Rifles/mtf-e11-sr/snapper_big.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Rifles/mtf-e11-sr/snapper_tiny.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,2
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Rifles/mtf-e11-sr/snapper_tiny.rsi
+  - type: GunWieldBonus
+    minAngle: -19
+    maxAngle: -34
+  - type: Gun
+    minAngle: 25
+    maxAngle: 45
+    fireRate: 5
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/silenced.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazineRifle
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineRifle
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgeRifle  # 556
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgeRifle  # 556
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+  - type: Wieldable
+  - type: UseDelay
+    delay: 0.5
+  - type: CursorOffsetRequiresWield
+  - type: EyeCursorOffset
+    maxOffset: 5
+    pvsIncrease: 0.4

@@ -1,0 +1,23 @@
+- type: job
+  id: BravoEngineer
+  name: Инженер отряда "Браво"
+  description: Держаться поближе к отряду, поддерживать укреплениями морпехов. Открывать двери и шлюзы, строить оборонительные пункты.
+  playTimeTracker: JobBravoEngineer
+  startingGear: BravoEngineerGearUGE
+  icon: "JobIconBravoEngineer"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  access:
+  - Engineering
+  accessGroups:
+  - SquadBravo
+
+- type: startingGear
+  id: BravoEngineerGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitEngineer
+    id: BEngineerIDCard
+    pocket1: EmergencyMedipen

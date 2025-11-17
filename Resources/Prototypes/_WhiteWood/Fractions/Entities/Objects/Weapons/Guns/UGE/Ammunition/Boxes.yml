@@ -1,0 +1,80 @@
+- type: entity
+  parent: BaseMagazineBoxRifle
+  id: BoxBig_10x24
+  name: ящик патронов (10x24)
+  suffix: ОПЗ, Большой
+  components:
+  - type: BallisticAmmoProvider
+    capacity: 200
+    proto: CartridgeRifle1024
+  - type: Sprite
+    layers:
+    - state: base-b
+      map: ["enum.GunVisualLayers.Base"]
+    - state: magb-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: magb
+    steps: 4
+    zeroVisible: false
+  - type: Appearance
+
+- type: entity
+  parent: BaseMagazineBoxRifle
+  id: BoxBig_12.5x60R
+  name: ящик патронов (12.5x60R)
+  suffix: ОПЗ, Большой
+  components:
+  - type: BallisticAmmoProvider
+    capacity: 200
+    proto: CartridgeRifle125x60R
+  - type: Sprite
+    layers:
+    - state: base-b
+      map: ["enum.GunVisualLayers.Base"]
+    - state: magb-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: magb
+    steps: 4
+    zeroVisible: false
+  - type: Appearance
+
+
+- type: entity
+  id: Box45GAP
+  parent: BaseBoxCM
+  name: Box (45GAP)
+  components:
+  - type: BallisticAmmoProvider
+    capacity: 50
+    whitelist:
+      tags:
+        - CartridgePistol45GAP
+    proto: CartridgePistol45GAP
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/pistol.rsi
+
+- type: entity
+  parent: BaseBoxCM
+  id: Box44_40
+  name: Box (44.40)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+        - CartridgePistol4440
+    capacity: 50
+    proto: CartridgePistol4440
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/pistol.rsi

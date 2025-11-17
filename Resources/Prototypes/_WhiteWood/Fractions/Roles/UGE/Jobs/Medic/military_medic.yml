@@ -1,0 +1,27 @@
+- type: job
+  id: MilitaryMedic
+  name: Военный врач
+  description: Проведение сложных операций, клонирование или реанимация убитых морпехов, лечение и реабилитация раненых, варка лекарств и стимуляторов.
+  playTimeTracker: JobMilitaryMedic
+  startingGear: MilitaryMedicGearUGE
+  icon: "JobIconMilitaryMedic"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-main-medic
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  accessGroups:
+  - MedicalUGE
+
+
+- type: startingGear
+  id: MilitaryMedicGearUGE
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    back: ClothingBackpackMedicalFilled
+    shoes: ClothingShoesColorWhite
+    outerClothing: ClothingOuterCoatLab
+    ears: ClothingHeadsetMedical
+    belt: ClothingBeltMedicalFilled
+    id: MilitaryMedicIDCard
+    pocket1: EmergencyMedipen

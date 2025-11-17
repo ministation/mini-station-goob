@@ -1,0 +1,410 @@
+# New
+- type: entity
+  parent: AirlockSquadAlphaGlass
+  id: AirlockSquadAlphaGlassLocked
+  name: стеклянная дверь отряда альфа
+  suffix: Отряд Альфа, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadAlpha ]
+
+
+- type: entity
+  parent: AirlockSquadBarvoGlass
+  id: AirlockSquadBravoGlassLocked
+  name: стеклянная дверь отряда браво
+  suffix: Отряд Браво, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadBravo ]
+
+
+- type: entity
+  parent: AirlockSquadCharlieGlass
+  id: AirlockSquadCharlieGlassLocked
+  name: стеклянная дверь отряда чарли
+  suffix: Отряд Чарли, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadCharlie ]
+
+
+- type: entity
+  parent: AirlockSquadDeltaGlass
+  id: AirlockSquadDeltaGlassLocked
+  name: стеклянная дверь отряда дельта
+  suffix: Отряд Дельта, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadDelta ]
+
+
+- type: entity
+  parent: AirlockSquadAlphaSpecialistGlass
+  id: AirlockSquadSpecialistAlphaGlassLocked
+  name: стеклянная дверь специалиста отряда
+  suffix: Специалист Отряда Альфа, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadAlphaSquadSpecialist ]
+
+
+- type: entity
+  parent: AirlockSquadBarvoSpecialistGlass
+  id: AirlockSquadSpecialistBravoGlassLocked
+  name: стеклянная дверь специалиста отряда
+  suffix: Специалист Отряда Браво, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadBravoSquadSpecialist ]
+
+
+- type: entity
+  parent: AirlockSquadCharlieSpecialistGlass
+  id: AirlockSquadSpecialistCharlieGlassLocked
+  name: стеклянная дверь специалиста отряда
+  suffix: Специалист Отряда Чарли, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadCharlieSquadSpecialist ]
+
+
+- type: entity
+  parent: AirlockSquadDeltaSpecialistGlass
+  id: AirlockSquadSpecialistDeltaGlassLocked
+  name: стеклянная дверь специалиста отряда
+  suffix: Специалист Отряда Дельта, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadDeltaSquadSpecialist ]
+
+
+- type: entity
+  parent: AirlockSquadAlphaGlass
+  id: AirlockSquadLeaderAlphaGlassLocked
+  name: стеклянная дверь командира отряда
+  suffix: Командир отряда Альфа, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadAlphaSquadLeader ]
+
+
+- type: entity
+  parent: AirlockSquadBarvoGlass
+  id: AirlockSquadLeaderBravoGlassLocked
+  name: стеклянная дверь командира отряда
+  suffix: Командир отряда Браво, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadBravoSquadLeader ]
+
+
+- type: entity
+  parent: AirlockSquadCharlieGlass
+  id: AirlockSquadLeaderCharlieGlassLocked
+  name: стеклянная дверь командира отряда
+  suffix: Командир отряда Чарли, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadCharlieSquadLeader ]
+
+
+- type: entity
+  parent: AirlockSquadDeltaGlass
+  id: AirlockSquadLeaderDeltaGlassLocked
+  name: стеклянная дверь командира отряда
+  suffix: Командир отряда Дельта, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsSquadDeltaSquadLeader ]
+
+
+
+
+- type: entity
+  parent: AirlockCommand
+  id: AirlockExternalSeniorOfficerUGE
+  name: шлюз ОПЗ
+  suffix: Каюта старшего офицера ОПЗ, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockExternalSeniorOfficerUGE ]
+  - type: Wires
+    layoutId: AirlockCommand
+
+- type: entity
+  parent: AirlockCommandGlass
+  id: AirlockExternalCommandOfficerUGE
+  name: шлюз ОПЗ
+  suffix: Штаб ОПЗ, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockExternalCommandOfficerUGE ]
+  - type: Wires
+    layoutId: AirlockCommand
+
+- type: entity
+  parent: AirlockCommand
+  id: AirlockExternalMilitaryPoliceOfficerUGE
+  name: шлюз ОПЗ
+  suffix: Офицер военной полиции, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockExternalMilitaryPoliceOfficerUGE ]
+  - type: Wires
+    layoutId: AirlockCommand
+
+- type: entity
+  parent: AirlockCommand
+  id: AirlockExternalSupplyofficerUGE
+  name: шлюз ОПЗ
+  suffix: Офицер тылового обеспечения, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockExternalSupplyofficerUGE ]
+  - type: Wires
+    layoutId: AirlockCommand
+
+- type: entity
+  parent: AirlockCargo
+  id: AirlockExternalSupplyUGE
+  name: шлюз ОПЗ
+  suffix: Тыловое обеспечение, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockExternalSupplyUGE ]
+  - type: Wires
+    layoutId: AirlockCommand
+
+- type: entity
+  parent: AirlockCommand
+  id: AirlockExternalMilitaryMainMedicUGE
+  name: шлюз ОПЗ
+  suffix: Старший военный врач, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockExternalMilitaryMainMedicUGE ]
+  - type: Wires
+    layoutId: AirlockCommand
+
+- type: entity
+  parent: AirlockSecurity
+  id: AirlockSecurityLockedUGE
+  name: шлюз ОПЗ
+  suffix: Военная полиция, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockSecurityLockedUGE ]
+
+- type: entity
+  parent: AirlockEngineering
+  id: AirlockEngineeringLockedUGE
+  name: шлюз ОПЗ
+  suffix: Инженерния, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockEngineeringLockedUGE ]
+
+- type: entity
+  parent: AirlockMedical
+  id: AirlockMedicalLockedUGE
+  name: шлюз ОПЗ
+  suffix: Медицинский, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockMedicalLockedUGE ]
+
+- type: entity
+  parent: AirlockExternal
+  id: AirlockExternalSyndicateLockedUGE
+  name: шлюз ОПЗ
+  suffix: Внешний, Закрыто
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsAirlockExternalSyndicateLockedUGE ]
+  - type: Wires
+    layoutId: AirlockSecurity
+
+
+
+
+
+# New
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadAlpha
+  components:
+  - type: AccessReader
+    access: [["SquadAlpha"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadBravo
+  components:
+  - type: AccessReader
+    access: [["SquadBravo"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadCharlie
+  components:
+  - type: AccessReader
+    access: [["SquadCharlie"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadDelta
+  components:
+  - type: AccessReader
+    access: [["SquadDelta"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadAlphaSquadSpecialist
+  components:
+  - type: AccessReader
+    access: [["SquadAlpha", "SquadSpecialist"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadBravoSquadSpecialist
+  components:
+  - type: AccessReader
+    access: [["SquadBravo", "SquadSpecialist"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadCharlieSquadSpecialist
+  components:
+  - type: AccessReader
+    access: [["SquadCharlie", "SquadSpecialist"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadDeltaSquadSpecialist
+  components:
+  - type: AccessReader
+    access: [["SquadDelta", "SquadSpecialist"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadAlphaSquadLeader
+  components:
+  - type: AccessReader
+    access: [["SquadAlpha", "SquadLeader"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadBravoSquadLeader
+  components:
+  - type: AccessReader
+    access: [["SquadBravo", "SquadLeader"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadCharlieSquadLeader
+  components:
+  - type: AccessReader
+    access: [["SquadCharlie", "SquadLeader"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsSquadDeltaSquadLeader
+  components:
+  - type: AccessReader
+    access: [["SquadDelta", "SquadLeader"]]
+
+
+
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockExternalSeniorOfficerUGE
+  components:
+  - type: AccessReader
+    access: [["SeniorOfficerUGE", "OfficerUGE", "СommonUGE"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockExternalCommandOfficerUGE
+  components:
+  - type: AccessReader
+    access: [["OfficerUGE", "СommonUGE"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockExternalMilitaryPoliceOfficerUGE
+  components:
+  - type: AccessReader
+    access: [["MilitaryPoliceOfficer", "MilitaryPolice", "СommonUGE"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockExternalSupplyofficerUGE
+  components:
+  - type: AccessReader
+    access: [["SupplyofficerUGE", "SupplyUGE", "СommonUGE"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockExternalSupplyUGE
+  components:
+  - type: AccessReader
+    access: [["SupplyUGE", "СommonUGE"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockExternalMilitaryMainMedicUGE
+  components:
+  - type: AccessReader
+    access: [["ChiefMedicalOfficer", "СommonUGE"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockSecurityLockedUGE
+  components:
+  - type: AccessReader
+    access: [["MilitaryPolice", "СommonUGE"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockEngineeringLockedUGE
+  components:
+  - type: AccessReader
+    access: [["Engineering", "СommonUGE"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockMedicalLockedUGE
+  components:
+  - type: AccessReader
+    access: [["Medical", "СommonUGE"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsAirlockExternalSyndicateLockedUGE
+  components:
+  - type: AccessReader
+    access: [["СommonUGE"]]

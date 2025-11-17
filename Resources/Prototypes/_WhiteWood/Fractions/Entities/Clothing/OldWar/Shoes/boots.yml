@@ -1,0 +1,23 @@
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesBootsOldАrmySlip
+  name: старые военные сапоги
+  suffix: Нескользящие
+  description: Маршевые сапоги. Сапоги из качественной коровьей кожи покрашенной в черный цвет. Ныне носятся военными старой закалки, сержантами, старшинами, офицерами и генералами. «Не венценосец ты в Петровом славном граде, а деспот и капрал на плац-параде».
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Shoes/army_black.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Shoes/army_black.rsi
+    - type: NoSlip
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesBootsOldАrmy
+  name: старые военные сапоги
+  description: Маршевые сапоги. Сапоги из качественной коровьей кожи покрашенной в черный цвет. Ныне носятся военными старой закалки, сержантами, старшинами, офицерами и генералами. «Не венценосец ты в Петровом славном граде, а деспот и капрал на плац-параде».
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Shoes/army_black.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Shoes/army_black.rsi

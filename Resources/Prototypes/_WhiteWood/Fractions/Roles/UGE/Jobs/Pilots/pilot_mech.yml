@@ -1,0 +1,33 @@
+- type: job
+  id: PilotMech
+  name: Пилот Меха
+  description: Убивать ксено на передовой в крутом меха-роботе
+  playTimeTracker: JobPilotMech
+  startingGear: MechPilotGearUGE
+  icon: "JobIconPilotMech"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-staff-officer
+  canBeAntag: false
+  access:
+  - OfficerUGE
+  - PilotUGE
+  - Maintenance
+  - SquadAlpha
+  - SquadBravo
+  - SquadCharlie
+  - SquadDelta
+  - СommonUGE
+  special:
+  - !type:AddComponentSpecial
+
+
+- type: startingGear
+  id: MechPilotGearUGE
+  equipment:
+    head: ClothingHeadCapService
+    jumpsuit: UGEJumpsuitPilotOperation
+    gloves: ClothingHandsField
+    shoes: CMBootsBlack
+    eyes: ClothingEyesGlassesRPG
+    id: PilotMechIDCard
+    pocket1: EmergencyMedipen

@@ -1,0 +1,30 @@
+- type: job
+  id: HeadOperations
+  name: Главнокомандующий операцией
+  description: Планировать операцию, которая, скорее всего, закончится провалом.
+  playTimeTracker: JobHeadOperations
+  startingGear: HeadOperationsGearUGE
+  icon: "JobIconHeadComm"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-uge
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  accessGroups:
+  - HeadOperationsUGE
+
+- type: startingGear
+  id: HeadOperationsGearUGE
+  equipment:
+    head: ClothingHeadCapOfficerGeneral
+    outerClothing: CMCoatGeneral
+    gloves: ClothingHandsField
+    jumpsuit: UGEJumpsuitGeneral
+    eyes: ClothingEyesGlassesRPG
+    id: HeadOperationsIDCard
+    ears: ClothingHeadsetAltCommand
+    back: ClothingBackpackMilitarySatchel
+    belt: RapierBeltSheathFilled
+    shoes: CMBootsBlack
+    pocket1: RMCPouchLargeDrop
+    pocket2: RMCPouchСommand

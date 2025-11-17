@@ -1,0 +1,379 @@
+- type: entity
+  id: SCPHighSecDoor
+  suffix: Неразрушимый, SCP
+  parent: BaseStructure
+  name: тяжёлая дверь
+  description: Эта дверь рассчитана на сдерживании опасных SCP обьектов. По крайней мере, отсрочит вашу неминуемую гибель.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: StationAiWhitelist
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/highsec.rsi
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+    - state: closed_unlit
+      shader: unshaded
+      map: ["enum.DoorVisualLayers.BaseUnlit"]
+      visible: false
+    - state: welded
+      map: ["enum.WeldableLayers.BaseWelded"]
+    - state: bolted_unlit
+      shader: unshaded
+      map: ["enum.DoorVisualLayers.BaseBolted"]
+    - state: emergency_unlit
+      map: ["enum.DoorVisualLayers.BaseEmergencyAccess"]
+      shader: unshaded
+    - state: panel_open
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+    - state: electrified_ai
+      sprite: Interface/Misc/ai_hud.rsi
+      shader: unshaded
+      visible: false
+      map: ["enum.ElectrifiedLayers.HUD"]
+    - state: electrified
+      sprite: Effects/electricity.rsi
+      shader: unshaded
+      visible: false
+      map: ["enum.ElectrifiedLayers.Sparks"]
+  - type: AnimationPlayer
+  - type: Physics
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.49,0.49,0.49" # don't want this colliding with walls or they won't close
+        density: 100
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronics ]
+  - type: ContainerContainer
+    containers:
+      board: !type:Container
+  - type: Door
+    crushDamage:
+      types:
+        Blunt: 50
+    openSound:
+      path: /Audio/Machines/airlock_open.ogg
+    closeSound:
+      path: /Audio/Machines/airlock_close.ogg
+    denySound:
+      path: /Audio/Machines/airlock_deny.ogg
+  - type: Weldable
+    fuel: 10
+    time: 10
+  - type: Airlock
+    openUnlitVisible: true # Corvax-Resprite-Airlocks
+  - type: NavMapDoor
+  - type: DoorBolt
+  - type: AccessReader
+    containerAccessProvider: board
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ElectrifiedVisuals.ShowSparks:
+        enum.ElectrifiedLayers.Sparks:
+          True: { visible: True }
+          False: { visible: False }
+  - type: WiresVisuals
+  - type: ElectrocutionHUDVisuals
+  - type: ApcPowerReceiver
+    powerLoad: 20
+  - type: ExtensionCableReceiver
+  - type: Electrified
+    enabled: false
+    usesApcPower: true
+  - type: WiresPanel
+  - type: WiresPanelSecurity
+    securityLevel: maxSecurity
+  - type: Wires
+    boardName: wires-board-name-highsec
+    layoutId: HighSec
+    alwaysRandomize: true
+  - type: UserInterface
+    interfaces:
+      enum.AiUi.Key:
+        type: StationAiBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Airtight
+  - type: Occluder
+  - type: IconSmooth
+    key: walls
+    mode: NoSprite
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StrongMetallic
+
+- type: entity
+  parent: AirlockGlass
+  id: SCPAirlockMaint
+  suffix: SCP
+  name: стеклянная дверь
+  description: Эта дверь рассчитана на сдерживании опасных офисных работников SCP фонда. По крайней мере, отсрочит вашу неминуемую гибель.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/glass.rsi
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
+- type: entity
+  id: SCPBaseShutter
+  parent: BaseStructure
+  name: shutter
+  abstract: true
+  description: One shudders to think about what might be behind this shutter.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: StationAiWhitelist
+  - type: Sprite
+    sprite: Structures/Doors/Shutters/shutters.rsi
+    drawdepth: BlastDoors
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+  - type: AnimationPlayer
+  - type: Physics
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.49,0.49,0.49" # don't want this colliding with walls or they won't close
+        density: 100
+        mask:
+        - FullTileMask
+        layer:
+        - AirlockLayer
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronics ]
+  - type: ContainerContainer
+    containers:
+      board: !type:Container
+  - type: NavMapDoor
+  - type: Tag
+    tags:
+    - ForceNoFixRotations # Don't want the fixrotations command to target these
+  - type: Door
+    openDrawDepth: BlastDoors
+    closedDrawDepth: BlastDoors
+    bumpOpen: false
+    clickOpen: false
+    closeTimeOne: 0.2
+    closeTimeTwo: 1.2
+    openTimeOne: 1.2
+    openTimeTwo: 0.2
+    openingAnimationTime: 1.4
+    closingAnimationTime: 1.4
+    crushDamage:
+      types:
+        Blunt: 5 # getting shutters closed on you probably doesn't hurt that much
+    openSound:
+      path: /Audio/Machines/shutter.ogg
+    closeSound:
+      path: /Audio/Machines/shutter.ogg
+  - type: Weldable
+    time: 3
+  - type: Appearance
+  - type: UserInterface
+    interfaces:
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Airtight
+  - type: RadiationBlocker
+    resistance: 2
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallic
+  - type: IconSmooth
+    key: walls
+    mode: NoSprite
+  - type: DoorSignalControl
+  - type: DeviceNetwork
+    deviceNetId: Wireless
+    receiveFrequencyId: BasicDevice
+  - type: WirelessNetworkConnection
+    range: 200
+  - type: DeviceLinkSink
+    ports:
+      - Open
+      - Close
+      - Toggle
+  - type: DeviceLinkSource
+    ports:
+    - DoorStatus
+    lastSignals:
+      DoorStatus: false
+  - type: InteractionPopup
+    interactSuccessString: shutter-rattle
+    messagePerceivedByOthers: shutter-rattle
+    interactSuccessSound:
+      collection: FenceRattle
+  - type: BlockWeather
+
+
+- type: entity
+  id: SCPBlastDoorOLD
+  parent: SCPBaseShutter
+  suffix: Неразрушимый, SCP
+  name: blast door
+  description: This one says 'BLAST DONGER'.
+  components:
+  - type: AccessReader
+    containerAccessProvider: board
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/blastdoor_old.rsi
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+  - type: Door
+    closeTimeOne: 0.4
+    closeTimeTwo: 0.4
+    openTimeOne: 0.4
+    openTimeTwo: 0.4
+    openingAnimationTime: 1.0
+    closingAnimationTime: 1.0
+    canPry: false
+    crushDamage:
+      types:
+        Blunt: 25 # yowch
+    openSound:
+      path: /Audio/Machines/blastdoor.ogg
+    closeSound:
+      path: /Audio/Machines/blastdoor.ogg
+  - type: Occluder
+  - type: Appearance
+  - type: RadiationBlocker
+    resistance: 8
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StrongMetallic
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronics ]
+  - type: Construction
+    graph: BlastDoor
+    node: blastdoor
+    containers:
+    - board
+  - type: StaticPrice
+    price: 500
+  - type: InteractionPopup
+    interactSuccessString: comp-window-knock
+    messagePerceivedByOthers: comp-window-knock
+    interactSuccessSound:
+      path: /Audio/Effects/glass_knock.ogg
+
+
+- type: entity
+  id: SCPBlastDoor
+  parent: SCPBaseShutter
+  suffix: Неразрушимый, SCP, Левая
+  name: гермозатвор
+  description: Эта дверь рассчитана на сдерживании опасных SCP обьектов. По крайней мере, отсрочит вашу неминуемую гибель.
+  components:
+  - type: AccessReader
+    containerAccessProvider: board
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/blastdoor.rsi
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+  - type: Door
+    closeTimeOne: 0.4
+    closeTimeTwo: 0.4
+    openTimeOne: 0.4
+    openTimeTwo: 0.4
+    openingAnimationTime: 1.0
+    closingAnimationTime: 1.0
+    canPry: false
+    crushDamage:
+      types:
+        Blunt: 25 # yowch
+    openSound:
+      path: /Audio/Machines/blastdoor.ogg
+    closeSound:
+      path: /Audio/Machines/blastdoor.ogg
+  - type: Occluder
+  - type: Appearance
+  - type: RadiationBlocker
+    resistance: 8
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StrongMetallic
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronics ]
+  - type: Construction
+    graph: BlastDoor
+    node: blastdoor
+    containers:
+    - board
+  - type: StaticPrice
+    price: 500
+  - type: InteractionPopup
+    interactSuccessString: comp-window-knock
+    messagePerceivedByOthers: comp-window-knock
+    interactSuccessSound:
+      path: /Audio/Effects/glass_knock.ogg
+
+- type: entity
+  id: SCPBlastDoorRight
+  parent: SCPBaseShutter
+  suffix: Неразрушимый, SCP, Правая
+  name: гермозатвор
+  description: Эта дверь рассчитана на сдерживании опасных SCP обьектов. По крайней мере, отсрочит вашу неминуемую гибель.
+  components:
+  - type: AccessReader
+    containerAccessProvider: board
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/blastdoor_righthand.rsi
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+  - type: Door
+    closeTimeOne: 0.4
+    closeTimeTwo: 0.4
+    openTimeOne: 0.4
+    openTimeTwo: 0.4
+    openingAnimationTime: 1.0
+    closingAnimationTime: 1.0
+    canPry: false
+    crushDamage:
+      types:
+        Blunt: 25 # yowch
+    openSound:
+      path: /Audio/Machines/blastdoor.ogg
+    closeSound:
+      path: /Audio/Machines/blastdoor.ogg
+  - type: Occluder
+  - type: Appearance
+  - type: RadiationBlocker
+    resistance: 8
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StrongMetallic
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronics ]
+  - type: Construction
+    graph: BlastDoor
+    node: blastdoor
+    containers:
+    - board
+  - type: StaticPrice
+    price: 500
+  - type: InteractionPopup
+    interactSuccessString: comp-window-knock
+    messagePerceivedByOthers: comp-window-knock
+    interactSuccessSound:
+      path: /Audio/Effects/glass_knock.ogg

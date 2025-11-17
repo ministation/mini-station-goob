@@ -1,0 +1,32 @@
+- type: job
+  id: SupplyOfficer
+  name: Офицер Тылового Обеспечения
+  description: Выполнять обязанности по Снабжению, координировать отдел.
+  playTimeTracker: JobSupplyOfficer
+  startingGear: SupplyOfficerGearUGE
+  icon: "JobIconSupplyOfficer"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-staff-officer
+  canBeAntag: false
+  access:
+  - СommonUGE
+  - OfficerUGE
+  - Maintenance
+  - SupplyofficerUGE
+  - SupplyUGE
+  special:
+  - !type:AddComponentSpecial
+
+
+- type: startingGear
+  id: SupplyOfficerGearUGE
+  equipment:
+    head: ClothingHeadHatQMsoft
+    jumpsuit: ClothingUniformJumpsuitQM
+    back: ClothingBackpackQuartermasterFilled
+    shoes: ClothingShoesColorBrown
+    ears: ClothingHeadsetQM
+    belt: BoxFolderClipboard
+    pocket1: AppraisalTool
+    pocket2: EmergencyMedipen
+    id: SupplyOfficerIDCard

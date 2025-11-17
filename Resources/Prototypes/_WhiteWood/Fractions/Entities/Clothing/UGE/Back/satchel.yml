@@ -1,0 +1,37 @@
+- type: entity
+  parent: [Clothing, ContentsExplosionResistanceBase]
+  id: ClothingBackpackSatchelMarine
+  name: Ранец ОПЗ
+  suffix: ОПЗ
+  description: Тяжелый ранец, который носили некоторые солдаты ОПЗ и вспомогательный персонал.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Back/Satchels/marinesatch.rsi
+    state: icon
+  - type: Item
+    size: Large
+  - type: ClothingSpeedModifier
+    walkModifier: 1
+    sprintModifier: 0.92
+  - type: HeldSpeedModifier
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - back
+  - type: ExplosionResistance
+    damageCoefficient: 0
+  - type: Storage
+    quickInsert: true
+    grid:
+    - 0,0,5,3
+    maxItemSize: Huge
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: UseDelay
+    delay: 0.5

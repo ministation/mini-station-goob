@@ -1,0 +1,22 @@
+- type: job
+  id: AlfaMarine
+  name: Морпех отряда "Альфа"
+  description: Следовать приказам, забывать код от ядерной боеголовки, бесславно помирать от дружественного огня
+  playTimeTracker: JobAlfaMarine
+  startingGear: AlfaMarineGearUGE
+  icon: "JobIconAlfaMarine"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  accessGroups:
+  - SquadAlpha
+
+
+- type: startingGear
+  id: AlfaMarineGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitMarineAlpha
+    id: ARiflemanIDCard
+    pocket1: EmergencyMedipen

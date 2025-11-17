@@ -1,0 +1,23 @@
+- type: job
+  id: DeltaSpecialist
+  name: Специалист отряда "Дельта"
+  description: Использовать тяжелое вооружение, чтобы сохранить свой отряд в целости и добить ксеноморфов.
+  playTimeTracker: JobDeltaSpecialist
+  startingGear: DeltaSpecialistGearUGE
+  icon: "JobIconDeltaSpecialist"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  access:
+  - SquadSpecialist
+  accessGroups:
+  - SquadDelta
+
+- type: startingGear
+  id: DeltaSpecialistGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitMarineDelta
+    id: DSpecialistsIDCard
+    pocket1: EmergencyMedipen

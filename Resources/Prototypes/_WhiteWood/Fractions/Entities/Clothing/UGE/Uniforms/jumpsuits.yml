@@ -1,0 +1,293 @@
+#Форма Слов
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitSquadLeader
+  suffix: ОПЗ
+  name: комбинезон командира отделения
+  description: Униформа сержантов морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/squad_leader.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/squad_leader.rsi
+
+
+#Форма Морпехов
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitMarine
+  suffix: ОПЗ
+  name: комбинезон
+  description: Униформа морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/standard.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/standard.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitEngineer
+  suffix: ОПЗ
+  name: комбинезон инженера
+  description: Униформа морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/eng.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/eng.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitMedical
+  suffix: ОПЗ
+  name: комбинезон медика
+  description: Униформа морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/med.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/med.rsi
+
+
+#Форма Военной полиции
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitMilitaryPolice
+  suffix: ОПЗ
+  name: комбинезон военной полиции
+  description: Униформа военной полиции морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/military_police/military_policeman.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/military_police/military_policeman.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitOfficerMilitaryPolice
+  suffix: ОПЗ
+  name: комбинезон офицера военной полиции
+  description: Униформа военной полиции морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/military_police/military_police_officer.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/military_police/military_police_officer.rsi
+
+
+#Оперативная форма
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitOfficerOperation
+  suffix: ОПЗ
+  name: офицерская полевая форма
+  description: Офицерская полевая форма. Корпус гордится своей формой. В ней есть элементы из легкого кевлара, которые защищают от колющего оружия и пуль.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/operations.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/operations.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitPilotOperation
+  suffix: ОПЗ
+  name: комбинезон пилота
+  description: Оперативная форма. Корпус гордится своей формой. В ней есть элементы из легкого кевлара, которые защищают от колющего оружия и пуль.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/pilot.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/pilot.rsi
+
+
+#Форма Офицеров
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitOfficer
+  suffix: ОПЗ
+  name: офицерская форма
+  description: Стандартная форма офицерского состава.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/service.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/service.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitSeniorOfficer
+  suffix: ОПЗ
+  name: офицерская форма
+  description: Стандартная форма старшего офицерского состава.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/officer.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/officer.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitOfficerWhite
+  suffix: ОПЗ
+  name: офицерская парадная форма
+  description: Парадная форма офицерского состава.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/officer_white.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/officer_white.rsi
+
+
+#Форма Командования
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitFieldСommander
+  suffix: ОПЗ
+  name: комбинезон полевого командира
+  description: униформа офицеров морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/field_commander.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/field_commander.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitGeneral
+  suffix: ОПЗ
+  name: генеральская форма
+  description: Форма, которую носит генерал. Она выполнена в темно-черном цвете с легким мерцанием. Ткань на вид достаточно прочная, чтобы обеспечить легкую защиту.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/general.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/general.rsi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Форма Отделений
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitSquadLeaderAlpha
+  suffix: ОПЗ
+  name: комбинезон командира отделения Альфы
+  description: униформа сержантов морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/Alpha.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/Alpha.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitSquadLeaderBravo
+
+  suffix: ОПЗ
+  name: комбинезон командира отделения Браво
+  description: униформа сержантов морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/Bravo.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/Bravo.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitSquadLeaderDelta
+  suffix: ОПЗ
+  name: комбинезон командира отделения Дельты
+  description: униформа сержантов морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/Delta.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/Delta.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitSquadLeaderCharlie
+  suffix: ОПЗ
+  name: комбинезон командира отделения Чарли
+  description: униформа сержантов морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/Charlie.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/squad_leader/Charlie.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitMarineAlpha
+  suffix: ОПЗ
+  name: комбинезон отделения Альфы
+  description: Униформа морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/Alpha.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/Alpha.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitMarineBravo
+  suffix: ОПЗ
+  name: комбинезон отделения Браво
+  description: Униформа морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/Bravo.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/Bravo.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitMarineDelta
+  suffix: ОПЗ
+  name: комбинезон отделения Дельты
+  description: Униформа морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/Delta.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/Delta.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: UGEJumpsuitMarineCharlie
+  suffix: ОПЗ
+  name: комбинезон отделения Чарли
+  description: Униформа морской пехоты с кевларовым переплетением, испытанная химическими веществами и усиленная электромагнитным излучением.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/Charlie.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Uniforms/Jumpsuit/standard/Charlie.rsi

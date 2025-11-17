@@ -1,0 +1,29 @@
+- type: job
+  id: Rigger
+  name: Такелажник
+  description: Выполнять обязанности по Снабжению, отправлять ящики патрон.
+  playTimeTracker: JobRigger
+  startingGear: RiggerGear
+  icon: "JobIconRigger"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-supply-officer
+  canBeAntag: false
+  access:
+  - СommonUGE
+  - Maintenance
+  - SupplyUGE
+  special:
+  - !type:AddComponentSpecial
+
+
+- type: startingGear
+  id: RiggerGear
+  equipment:
+    head: ClothingHeadHatCargosoft
+    jumpsuit: ClothingUniformJumpsuitCargo
+    back: ClothingBackpackCargoFilled
+    shoes: ClothingShoesColorBlack
+    ears: ClothingHeadsetCargo
+    pocket1: AppraisalTool
+    id: RiggerIDCard
+    pocket2: EmergencyMedipen

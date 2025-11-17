@@ -1,0 +1,12 @@
+# German -----------------------------------------------------
+- type: entity
+  parent: ClothingHeadHelmetBase
+  id: ClothingHeadHelmetGermanBlack
+  name: немецкий пехотный шлем
+  suffix: OldWar
+  description: Пехотная каска Штальхельм, используется всеми родами войск.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Helmets/German/stahlhelm_black.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Helmets/German/stahlhelm_black.rsi

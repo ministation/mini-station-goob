@@ -1,0 +1,206 @@
+- type: entity
+  parent: ClothingMaskPullableBase
+  id: RMCBaseScarfMask
+  abstract: true
+  components:
+  - type: Appearance
+  - type: Foldable
+    canFoldInsideContainer: true
+  - type: FoldableClothing
+    foldedEquippedPrefix: flipped
+    foldedHeldPrefix: flipped
+  - type: Sprite
+    layers:
+    - state: icon
+      map: [ "unfoldedLayer" ]
+    - state: icon
+      map: ["foldedLayer"]
+      visible: false
+
+- type: entity
+  parent: RMCBaseScarfMask
+  id: RMCBaseScarfDown
+  suffix: down
+  abstract: true
+  components:
+  - type: Foldable
+    folded: true
+  - type: Clothing
+    equippedPrefix: down
+  - type: Item
+    heldPrefix: down
+  - type: Sprite
+    layers:
+    - state: icon
+      map: [ "unfoldedLayer" ]
+      visible: false
+    - state: icon
+      map: ["foldedLayer"]
+      visible: true
+
+# SQUADS
+
+- type: entity
+  parent: RMCBaseScarfMask
+  id: RMCMaskScarfAlpha
+  name: альфа тактический шарф
+  description: A tactical wrap used by soldiers to conceal their face.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/alpha.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/alpha.rsi
+  - type: IdentityBlocker
+    coverage: MOUTH
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfAlpha]
+  id: RMCMaskScarfAlphaDown
+  name: альфа тактический шарф
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfBravo
+  name: браво тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/bravo.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/bravo.rsi
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfBravo]
+  id: RMCMaskScarfBravoDown
+  name: браво тактический шарф
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfCharlie
+  name: чарли тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/charlie.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/charlie.rsi
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfCharlie]
+  id: RMCMaskScarfCharlieDown
+  name: чарли тактический шарф
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfDelta
+  name: дельта тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/delta.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/delta.rsi
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfDelta]
+  id: RMCMaskScarfDeltaDown
+  name: дельта тактический шарф
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfEcho
+  name: echo тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/echo.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/echo.rsi
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfEcho]
+  id: RMCMaskScarfEchoDown
+  name: echo тактический шарф
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfFoxtrot
+  name: foxtrot тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/foxtrot.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/foxtrot.rsi
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfFoxtrot]
+  id: RMCMaskScarfFoxtrotDown
+  name: foxtrot тактический шарф
+
+# COLOURS
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfRed
+  name: красный тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/alpha.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/alpha.rsi
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfRed]
+  id: RMCMaskScarfRedDown
+  name: красный тактический шарф
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfBlack
+  name: черный тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/black.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/black.rsi
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfBlack]
+  id: RMCMaskScarfBlackDown
+  name: черный тактический шарф
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfGray
+  name: серый тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/gray.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/gray.rsi
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfGray]
+  id: RMCMaskScarfGrayDown
+  name: серый тактический шарф
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfGreen
+  name: зеленый тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/green.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/green.rsi
+
+- type: entity
+  parent: [RMCBaseScarfDown, RMCMaskScarfGreen]
+  id: RMCMaskScarfGreenDown
+  name: зеленый тактический шарф
+
+- type: entity
+  parent: RMCMaskScarfAlpha
+  id: RMCMaskScarfTan
+  name:  камуфляжно белый тактический шарф
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/tan.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Scarfs/tan.rsi

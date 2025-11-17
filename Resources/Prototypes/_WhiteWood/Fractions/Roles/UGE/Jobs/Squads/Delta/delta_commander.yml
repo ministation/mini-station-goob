@@ -1,0 +1,26 @@
+- type: job
+  id: DeltaCommander
+  name: Командир отряда "Дельта"
+  description: Поддерживать сплоченность отряда, выполнять приказы командования. Вызывать припасы и орбитальные бомбардировки, когда они нужны вашему отряду.
+  playTimeTracker: JobDeltaCommander
+  startingGear: DeltaCommanderGearUGE
+  icon: "JobIconDeltaCommander"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-field-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  access:
+  - SquadSpecialist
+  - SquadLeader
+  accessGroups:
+  - SquadDelta
+
+- type: startingGear
+  id: DeltaCommanderGearUGE
+  equipment:
+    eyes: ClothingEyesGlassesRPG
+    jumpsuit: UGEJumpsuitSquadLeaderDelta
+    id: DCommanderIDCard
+    pocket1: EmergencyMedipen
+    shoes: CMBootsBlack

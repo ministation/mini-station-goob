@@ -1,0 +1,90 @@
+- type: entity
+  parent: [BaseWeaponPistol, BaseSecurityContraband]
+  id: WeaponPistolP08
+  name: Люгер P08
+  suffix: Пистолет
+  description: Легендарный самозарядный пистолет. Известен как привередливое оружие. Его конструкция отличаеться сложностью, механизм чувствителен к загрязнениям и износу. 
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/German/Pistols/P-08.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/German/Pistols/P-08.rsi
+  - type: Gun
+    minAngle: 1
+    maxAngle: 20
+    angleIncrease: 8
+    angleDecay: 9
+    fireRate: 4
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/mk58.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistolP08
+        insertSound: /Audio/Weapons/Guns/MagIn/pistol_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/pistol_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - MagazinePistolParabellum
+        whitelistFailPopup: gun-magazine-whitelist-fail
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgeParabellum
+        priority: 1
+        whitelist:
+          tags:
+            - CartridgeParabellum
+
+- type: entity
+  name: Вальтер ППК
+  parent: BaseWeaponPistol
+  id: WeaponPistolWalther
+  suffix: Пистолет
+  description: Непритязательный пистолет. Он компактный, надежный. Неплохое оружие. Использует патроны 19x17.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/German/Pistols/Walther.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/German/Pistols/Walther.rsi
+  - type: Gun
+    minAngle: 3
+    fireRate: 4
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/mk58.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistol19x17
+        insertSound: /Audio/Weapons/Guns/MagIn/pistol_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/pistol_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - MagazinePistolWalther19x17
+        whitelistFailPopup: gun-magazine-whitelist-fail
+      gun_chamber:
+        name: Chamber
+        startingItem: Cartridge19x17
+        priority: 1
+        whitelist:
+          tags:
+            - Cartridge19x17
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/mk58.ogg

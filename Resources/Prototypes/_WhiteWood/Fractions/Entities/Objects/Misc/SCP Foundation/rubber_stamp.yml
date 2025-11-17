@@ -1,0 +1,25 @@
+- type: entity
+  name: печать менеджера комплекса
+  parent: RubberStampBase
+  id: RubberStampManager
+  categories: [ DoNotMap ]
+  components:
+  - type: Stamp
+    stampedName: Менеджер Комплекса
+    stampedColor: "#233D57"
+    stampState: "paper_stamp-lawyer"
+  - type: Sprite
+    state: stamp-lawyer
+
+- type: entity
+  name: печать менеджера зон
+  parent: [RubberStampBase, BaseCommandContraband]
+  id: RubberStampHead_of_the_zone
+  categories: [ DoNotMap ]
+  components:
+  - type: Stamp
+    stampedName: Менеджер Зон
+    stampedColor: "#6ec0ea"
+    stampState: "paper_stamp-hop"
+  - type: Sprite
+    state: stamp-hop

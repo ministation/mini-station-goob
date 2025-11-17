@@ -1,0 +1,15 @@
+- type: entity
+  name: Револьвер
+  parent: BaseWeaponRevolver
+  id: WeaponRevolverSCP
+  suffix: Револьвер
+  description: Крупнокалиберный револьвер, который иногда используется штурмовыми отрядами и офицерами, а также гражданскими правоохранительными органами. Из него застрелился не один боевой офицер. Использует патроны "магнум" 45-го калибра.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Revolvers/Revolver.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Revolvers/Revolver.rsi
+  - type: RevolverAmmoProvider
+    capacity: 6
+    chambers: [ True, True, True, True, True, True ]
+    ammoSlots: [ null, null, null, null, null, null ]

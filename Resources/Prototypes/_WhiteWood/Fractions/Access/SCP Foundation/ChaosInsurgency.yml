@@ -1,0 +1,33 @@
+- type: accessLevel
+  id: SCPNGCommander
+  name: Командир ПХ
+
+- type: accessLevel
+  id: SCPNGLieutenant
+  name: Лейтенант ПХ
+
+- type: accessLevel
+  id: SCPNGSergeant
+  name: Сержант ПХ
+
+- type: accessLevel
+  id: SCPNGMedic
+  name: Медик ПХ
+
+- type: accessLevel
+  id: SCPNGEngineer
+  name: Инженер ПХ
+
+- type: accessLevel
+  id: SCPNGOperative
+  name: Оперативник ПХ
+
+- type: accessGroup
+  id: ChaosInsurgency
+  tags:
+  - SCPNGCommander
+  - SCPNGLieutenant
+  - SCPNGSergeant
+  - SCPNGMedic
+  - SCPNGEngineer
+  - SCPNGOperative

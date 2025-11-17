@@ -1,0 +1,11 @@
+- type: entity
+  id: BulletMagnumVP-60x2
+  name: bullet (.500SW)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 30
+    ignoreResistances: true

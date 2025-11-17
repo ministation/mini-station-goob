@@ -1,0 +1,97 @@
+# German -----------------------------------------------------
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCapGeneralBlack
+  suffix: OldWar
+  name: немецкая черная генеральская фуражка
+  description: Черная немецкая генеральская фуражка. Король превосходит своих подданных только на высоту своей короны...
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/general_black.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/general_black.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCapGeneralGreen
+  suffix: OldWar
+  name: немецкая полевая генеральская фуражка
+  description: Полевая немецкая генеральская фуражка. Король превосходит своих подданных только на высоту своей короны...
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/general_green.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/general_green.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCapOfficerBlack
+  suffix: OldWar
+  name: немецкая черная офицерская фуражка
+  description: Черная немецкая офицерская фуражка. Штирлиц, а вас я попрошу остаться!
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/officer_black.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/officer_black.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCapOfficerGreen
+  suffix: OldWar
+  name: немецкая полевая офицерская фуражка
+  description: Полевая немецкая офицерская фуражка. Эта фуражка пережила не один блицкриг...
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/officer_green.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/officer_green.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCapOfficerGrey
+  suffix: OldWar
+  name: немецкая серая офицерская фуражка
+  description: Серая немецкая офицерская фуражка. Подобную фуражку носят сотрудники службы безопасности и разведки.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/officer_grey.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/officer_grey.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCapSschutze
+  suffix: OldWar
+  name: немецкая полевая пилотка
+  description: Основной полевой головной убор немецких солдат и офицеров. Подобную пилотку обычно носят военнослужащие унтер-офицерских рангов.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/schutze_green.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/German/schutze_green.rsi
+
+# USSR -------------------------------------------------------
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCapUSSR
+  name: фуражка красной армии
+  suffix: OldWar
+  description: Полевая фуражка РККА. Король превосходит своих подданных только на высоту своей короны...
+  components:
+    - type: Sprite
+      sprite:  _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/USSR/garrison_officer_cap.rsi
+    - type: Clothing
+      sprite:  _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/USSR/garrison_officer_cap.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCapSoldierUSSR
+  name: пилотка красной армии
+  suffix: OldWar
+  description: Основной полевой головной убор немецких солдат и офицеров. Подобную пилотку обычно носят военнослужащие унтер-офицерских рангов.
+  components:
+    - type: Sprite
+      sprite:  _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/USSR/garrison_cap.rsi
+    - type: Clothing
+      sprite:  _WhiteWood/Fractions/Clothing/OldWar/Head/Hats/USSR/garrison_cap.rsi

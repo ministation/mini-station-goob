@@ -1,0 +1,81 @@
+- type: entity
+  name: Пистолет VP78
+  parent: BaseWeaponPistol
+  id: WeaponPistol88M4
+  suffix: ОПЗ, Пистолет
+  description: Стандартное огнестрельное оружие. Стреляет пулями 35-го калибра, пробивающими броню, и может стрелять в автоматическом режиме.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Pistols/m77.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Pistols/m77.rsi
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/mk58.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistol88M4
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - MagazinePistol88M4
+        whitelistFailPopup: gun-magazine-whitelist-fail
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgePistol45GAP
+        priority: 1
+        whitelist:
+          tags:
+            - CartridgePistol45GAP
+
+- type: entity
+  name: Служебный пистолет M4A3
+  parent: BaseWeaponPistol
+  id: WeaponPistolArmatM5Y3
+  suffix: ОПЗ,Пистолет
+  description: Служебный пистолет M4A3, который когда-то был стандартным оружием морской пехоты, но недавно был заменён на боевой пистолет 88 M4. Использует автоматические патроны 45GAP.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Pistols/m4a3.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Pistols/m4a3.rsi
+  - type: Gun
+    fireRate: 2.5
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/mk58.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistolAramatM5Y3
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - MagazinePistolAramatM5Y3
+        whitelistFailPopup: gun-magazine-whitelist-fail
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgePistol4440
+        priority: 1
+        whitelist:
+          tags:
+            - CartridgePistol4440

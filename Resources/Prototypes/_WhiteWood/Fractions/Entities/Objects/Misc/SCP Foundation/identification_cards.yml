@@ -1,0 +1,268 @@
+- type: entity
+  parent: Clothing
+  id: SCPIDCard
+  abstract: true
+  name: Карта Доступа ???
+  description: Уровень допуска сотрудника Фонда соответствует максимальному уровню секретности информации, к которой он может получить доступ.
+  noSpawn: true
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Misc/SCP Foundation/id_cards.rsi
+  - type: Clothing
+    slots:
+    - idcard
+    sprite: Fractions/Objects/Misc/SCP Foundation/id_cards.rsi
+  - type: Item
+    heldPrefix: default
+  - type: Access
+  - type: IdCard
+  - type: StationRecordKeyStorage
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+
+# O5 ------------------------------------------------
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardO5
+  name: Карта Доступа О5
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: O5
+  - type: IdCard
+    jobIcon: JobIconSCPO5
+  - type: PresetIdCard
+    job: SCPO5Job
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardJanitor
+  name: Карта Доступа Уборщика
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconSCPJanitor
+  - type: PresetIdCard
+    job: SCPJanitor
+
+# MTF ------------------------------------------------
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardMTF_Commander
+  name: Карта Доступа Капитана МОГ
+  suffix: SCP, МОГ
+  components:
+  - type: Sprite
+    layers:
+    - state: MTF_Commander
+  - type: IdCard
+    jobIcon: JobIconSCPMTFCommander
+  - type: PresetIdCard
+    job: SCPMTFCommander
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardMTF_Lieutenant
+  name: Карта Доступа Лейтенанта МОГ
+  suffix: SCP, МОГ
+  components:
+  - type: Sprite
+    layers:
+    - state: MTF_Operative
+  - type: IdCard
+    jobIcon: JobIconSCPMTFLieutenant
+  - type: PresetIdCard
+    job: SCPMTFLieutenant
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardMTF_Sergeant
+  name: Карта Доступа Сержанта МОГ
+  suffix: SCP, МОГ
+  components:
+  - type: Sprite
+    layers:
+    - state: MTF_Operative
+  - type: IdCard
+    jobIcon: JobIconSCPMTFSpecialist
+  - type: PresetIdCard
+    job: SCPMTFSergeant
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardMTF_Operative
+  name: Карта Доступа Оперативника МОГ
+  suffix: SCP, МОГ
+  components:
+  - type: Sprite
+    layers:
+    - state: MTF_Operative
+  - type: IdCard
+    jobIcon: JobIconSCPMTFOperative
+  - type: PresetIdCard
+    job: SCPMTFOperative
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardMTF_Medic
+  name: Карта Доступа Медика МОГ
+  suffix: SCP, МОГ
+  components:
+  - type: Sprite
+    layers:
+    - state: MTF_Operative
+  - type: IdCard
+    jobIcon: JobIconSCPMTFMedic
+  - type: PresetIdCard
+    job: SCPMTFMedic
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardMTF_Engineer
+  name: Карта Доступа Инженера МОГ
+  suffix: SCP, МОГ
+  components:
+  - type: Sprite
+    layers:
+    - state: MTF_Operative
+  - type: IdCard
+    jobIcon: JobIconSCPMTFEngineer
+  - type: PresetIdCard
+    job: SCPMTFEngineer
+
+# Security ------------------------------------------------
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardHOS
+  name: Карта Доступа Начальника Охраны
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: Security_HOS
+  - type: IdCard
+    jobIcon: JobIconSCPHSecurity
+  - type: PresetIdCard
+    job: SCPHOS
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardWarden
+  name: Карта Доступа Надзирателя
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: Security
+  - type: IdCard
+    jobIcon: JobIconSCPWarden
+  - type: PresetIdCard
+    job: SCPWarden
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardSecuritySergeant
+  name: Карта Доступа Сержанта Охраны
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: Security
+  - type: IdCard
+    jobIcon: JobIconSCPSecuritySergeant
+  - type: PresetIdCard
+    job: SCPSecuritySergeant
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardSecurity
+  name: Карта Доступа Охраны
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: Security
+  - type: IdCard
+    jobIcon: JobIconSCPSecurity
+  - type: PresetIdCard
+    job: SCPSecurity
+
+# Персонал ------------------------------------------------
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardManager
+  name: Карта Доступа Менеджера Комплекса
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: manager
+  - type: IdCard
+    jobIcon: JobIconSCPManager
+  - type: PresetIdCard
+    job: SCPManager
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardHead_of_the_zone
+  name: Карта Доступа Менеджера Зоны
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: head_of_the_zone
+  - type: IdCard
+    jobIcon: JobIconSCPHead_of_the_zone
+  - type: PresetIdCard
+    job: SCPHead_of_the_zone
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardEngineer
+  name: Карта Доступа Инженера Камер Содержаний
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: engineer
+  - type: IdCard
+    jobIcon: JobIconSCPEngineer
+  - type: PresetIdCard
+    job: SCPEngineer
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardSenior_scientist
+  name: Карта Доступа Научного Руководителя
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: senior_scientist
+  - type: IdCard
+    jobIcon: JobIconSCPSenior_scientist
+  - type: PresetIdCard
+    job: SCPSenior_scientist
+
+- type: entity
+  parent: SCPIDCard
+  id: SCPIDCardScientist
+  name: Карта Доступа Учёного
+  suffix: SCP
+  components:
+  - type: Sprite
+    layers:
+    - state: scientist
+  - type: IdCard
+    jobIcon: JobIconSCPScientist
+  - type: PresetIdCard
+    job: SCPScientist

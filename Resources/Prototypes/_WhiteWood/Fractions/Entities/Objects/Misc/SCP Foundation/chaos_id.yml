@@ -1,0 +1,106 @@
+- type: entity
+  parent: Clothing
+  id: SCPIDTokenChaos
+  name: жетон ???
+  abstract: true
+  description: Боевой жетон повстанцев хаоса.
+  noSpawn: true
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Misc/SCP Foundation/id_token.rsi
+  - type: Clothing
+    slots:
+    - idcard
+    sprite: _WhiteWood/Fractions/Objects/Misc/SCP Foundation/id_token.rsi
+  - type: Item
+    heldPrefix: default
+  - type: Access
+  - type: IdCard
+  - type: StationRecordKeyStorage
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+
+- type: entity
+  parent: SCPIDTokenChaos
+  id: SCPIDTokenChaosNG_Commander
+  name: жетон капитана
+  suffix: ПХ
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconSCPNGCommander
+  - type: PresetIdCard
+    job: SCPNGCommander
+
+- type: entity
+  parent: SCPIDTokenChaos
+  id: SCPIDTokenChaosNG_Lieutenant
+  name: жетон лейтенанта
+  suffix: ПХ
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconSCPNGLieutenant
+  - type: PresetIdCard
+    job: SCPNGLieutenant
+
+- type: entity
+  parent: SCPIDTokenChaos
+  id: SCPIDTokenChaosNG_Sergeant
+  name: жетон сержанта
+  suffix: ПХ
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconSCPNGSpecialist
+  - type: PresetIdCard
+    job: SCPNGSergeant
+
+- type: entity
+  parent: SCPIDTokenChaos
+  id: SCPIDTokenChaosNG_Operative
+  name: жетон оперативника
+  suffix: ПХ
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconSCPNGOperative
+  - type: PresetIdCard
+    job: SCPNGOperative
+
+- type: entity
+  parent: SCPIDTokenChaos
+  id: SCPIDTokenChaosNG_Medic
+  name: жетон медика
+  suffix: ПХ
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconSCPNGMedic
+  - type: PresetIdCard
+    job: SCPNGMedic
+
+- type: entity
+  parent: SCPIDTokenChaos
+  id: SCPIDTokenChaosNG_Engineer
+  suffix: ПХ
+  name: жетон инженера 
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+  - type: IdCard
+    jobIcon: JobIconSCPNGEngineer
+  - type: PresetIdCard
+    job: SCPNGEngineer

@@ -193,3 +193,15 @@
   id: CaptainWintercoat
   equipment:
     outerClothing: ClothingOuterWinterCapArmored # Goob edit
+
+# Shoes
+
+- type: loadout
+  id: OldАrmy
+  equipment:
+    shoes: ClothingShoesBootsOldАrmy
+
+- type: loadout
+  id: Laceup
+  equipment:
+    shoes: ClothingShoesBootsLaceup

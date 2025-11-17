@@ -1,0 +1,33 @@
+- type: accessLevel
+  id: SCPMTFCommander
+  name: Командир МОГ
+
+- type: accessLevel
+  id: SCPMTFLieutenant
+  name: Лейтенант МОГ
+
+- type: accessLevel
+  id: SCPMTFSergeant
+  name: Сержант МОГ
+
+- type: accessLevel
+  id: SCPMTFMedic
+  name: Медик МОГ
+
+- type: accessLevel
+  id: SCPMTFEngineer
+  name: Инженер МОГ
+
+- type: accessLevel
+  id: SCPMTFOperative
+  name: Оперативник МОГ
+
+- type: accessGroup
+  id: SCPFoundationMTF
+  tags:
+  - SCPMTFCommander
+  - SCPMTFLieutenant
+  - SCPMTFSergeant
+  - SCPMTFMedic
+  - SCPMTFEngineer
+  - SCPMTFOperative

@@ -1,0 +1,32 @@
+- type: job
+  id: ShipsEngineer
+  name: Корабельный инженер
+  description: Ремонт и обслуживание корабля, строительство, превращение инженерного отсека в крепость "на всякий случай".
+  playTimeTracker: JobShipsEngineer
+  startingGear: ShipsEngineerGearUGE
+  icon: "JobIconShipsEngineer"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-centcom
+  canBeAntag: false
+  access:
+    - Maintenance
+    - Atmospherics
+    - Engineering
+    - СommonUGE
+  special:
+  - !type:AddComponentSpecial
+
+
+- type: startingGear
+  id: ShipsEngineerGearUGE
+  equipment:
+    head: ClothingHeadHatHardhatYellow
+    jumpsuit: ClothingUniformJumpsuitEngineering
+    back: ClothingBackpackEngineeringFilled
+    shoes: ClothingShoesBootsWork
+    outerClothing: ClothingOuterVestHazard
+    eyes: ClothingEyesGlassesMeson
+    belt: ClothingBeltUtilityEngineering
+    ears: ClothingHeadsetEngineering
+    id: ShipsEngineerIDCard
+    pocket1: EmergencyMedipen

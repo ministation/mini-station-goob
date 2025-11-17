@@ -1,0 +1,31 @@
+- type: entity
+  parent: Clothing
+  id: ClothingBackpackMarine
+  suffix: ОПЗ
+  name: легкий рюкзак
+  description: Стандартный набор для вооруженных сил ОПЗ. Предназначен для переноски снаряжения на поле боя.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Back/Backpacks/marinepack.rsi
+    state: icon
+  - type: Item
+    size: Large
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - back
+  - type: Storage
+    quickInsert: true
+    grid:
+    - 0,0,8,4 # TODO: Change this
+    maxItemSize: Huge
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: UseDelay
+    delay: 0.5

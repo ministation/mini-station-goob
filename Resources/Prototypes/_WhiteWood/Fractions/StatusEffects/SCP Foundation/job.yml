@@ -1,0 +1,125 @@
+# O5 ------------------------------------------------
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPO5
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: O5
+
+# MTF ------------------------------------------------
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPMTFCommander
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: MTF_Commander
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPMTFLieutenant
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: MTF_Lieutenant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPMTFMedic
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: MTF_Medic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPMTFEngineer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: MTF_Engineer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPMTFSpecialist
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: MTF_Specialist
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPMTFOperative
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: MTF_Operative
+
+# Security ------------------------------------------------
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPHSecurity
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: Security_HOS
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPWarden
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: Warden
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPSecuritySergeant
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: Security_Sergeant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPSecurity
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: Security
+
+# Персонал ------------------------------------------------
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPManager
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: Manager
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPHead_of_the_zone
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: Head_of_the_zone
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPEngineer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: ShipsEngineer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPSenior_scientist
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: Senior_scientist
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPScientist
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: Scientist
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPJanitor
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi
+    state: Janitor

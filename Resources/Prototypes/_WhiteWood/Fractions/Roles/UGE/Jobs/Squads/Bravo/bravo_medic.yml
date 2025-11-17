@@ -1,0 +1,22 @@
+- type: job
+  id: BravoMedic
+  name: Командир отряда "Браво"
+  description: job-description-bravomedic
+  playTimeTracker: JobBravoMedic
+  startingGear: BravoMedicGearUGE
+  icon: "JobIconBravoMedic"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  accessGroups:
+  - SquadBravo
+  - MedicalUGE
+
+- type: startingGear
+  id: BravoMedicGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitMarineBravo
+    id: BMedicIDCard
+    pocket1: EmergencyMedipen

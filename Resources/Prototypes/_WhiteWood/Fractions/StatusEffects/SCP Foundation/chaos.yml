@@ -1,0 +1,41 @@
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPNGCommander
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi/Сhaos.rsi
+    state: NG_Commander
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPNGLieutenant
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi/Сhaos.rsi
+    state: NG_Lieutenant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPNGMedic
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi/Сhaos.rsi
+    state: NG_Medic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPNGEngineer
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi/Сhaos.rsi
+    state: NG_Engineer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPNGSpecialist
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi/Сhaos.rsi
+    state: NG_Specialist
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSCPNGOperative
+  icon:
+    sprite: /Textures/_WhiteWood/Fractions/Interface/Misc/job_icons/SCP Foundation.rsi/Сhaos.rsi
+    state: NG_Operative

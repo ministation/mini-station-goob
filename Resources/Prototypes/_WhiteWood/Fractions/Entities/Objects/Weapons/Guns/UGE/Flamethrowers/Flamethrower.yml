@@ -1,0 +1,195 @@
+- type: entity
+  name: BaseWeaponHeavyMachineGun
+  parent: BaseItem
+  id: BaseWeaponHeavyMachineGunFlamethrower
+  description: Spray and pray
+  abstract: true
+  components:
+  - type: Sprite
+  - type: Item
+    size: Ginormous
+  - type: Gun
+    fireRate: 20
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/lmg.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  name: M240
+  id: WeaponFlamethrower
+  parent: BaseWeaponHeavyMachineGunFlamethrower
+  description: И под тяжёлым огнемётом гудит спина моя...
+  suffix: Огнемёт, ОПЗ
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Flamethrowers/flamethrower.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Item
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Flamethrowers/flamethrower.rsi
+    size: Large
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Flamethrowers/flamethrower.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: Wieldable
+  - type: GunWieldBonus
+    minAngle: -20
+    maxAngle: -30
+  - type: Gun
+    projectileSpeed: 9
+    minAngle: 24
+    maxAngle: 45
+    angleIncrease: 4
+    angleDecay: 16
+    fireRate: 8
+    soundGunshot:
+      path: /Audio/Effects/extinguish.ogg
+  - type: ChamberMagazineAmmoProvider
+  - type: AmmoCounter
+  - type: Appearance
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: FuelTankFlamethrower
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - TankFlamethrower
+      gun_chamber:
+        name: Chamber
+        priority: 1
+        whitelist:
+          tags:
+            - CartridgeFlamethrower
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+
+
+- type: Tag
+  id: CartridgeFlamethrower
+
+- type: Tag
+  id: TankFlamethrower
+
+- type: Tag
+  id: Napalm
+
+- type: entity
+  id: FuelTankFlamethrower
+  name: топливный бак огнемёта
+  parent: BaseItem
+  suffix: ОПЗ
+  components:
+  - type: Tag
+    tags:
+      - TankFlamethrower
+  - type: Item
+    size: Normal
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    capacity: 300
+    proto: CartridgeFlamethrower
+    whitelist:
+      tags:
+        - Napalm
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Flamethrowers/flamethrower-magazine.rsi
+    state: base
+
+- type: entity
+  parent: BaseCartridge
+  id: CartridgeFlamethrower
+  suffix: MarinesGear
+  name: напалм
+  components:
+  - type: Tag
+    tags:
+    - Cartridge
+    - Napalm
+  - type: CartridgeAmmo
+    proto: FlamethrowerProjectile
+    deleteOnSpawn: true
+  - type: Sprite
+    sprite: Objects/Tanks/plasma.rsi
+    state: icon
+    scale: 0.7, 0.7
+
+- type: entity
+  id: FlamethrowerProjectile
+  name: Огненная струя
+  description: Вау!Горячая!
+  noSpawn: true
+  components:
+  - type: FlyBySound
+  - type: Clickable
+  - type: Sprite
+    netsync: false
+    noRot: false
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: fireball
+      shader: unshaded
+  - type: Physics
+    bodyType: Dynamic
+    linearDamping: 0
+    angularDamping: 0
+  - type: Fixtures
+    fixtures:
+      projectile:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.1,-0.1,0.1,0.1"
+        hard: false
+        mask:
+        - Impassable
+        - BulletImpassable
+      fly-by: &flybyfixture
+        shape: !type:PhysShapeCircle
+          radius: 1.5
+        layer:
+        - Impassable
+        - MidImpassable
+        - HighImpassable
+        - LowImpassable
+        hard: False
+  - type: PointLight
+    enabled: true
+    color: "#FF8080"
+    radius: 5.0
+    energy: 5.0
+  - type: Projectile
+    impactEffect: BulletImpactEffect
+    damage:
+      types:
+        Heat: 25
+        Structural: 45
+    soundHit:
+      path: "/Audio/Weapons/Guns/Hits/energy_meat1.ogg"
+  - type: TimedDespawn
+    lifetime: 0.5
+  - type: IgniteOnCollide
+    fireStacks: 1

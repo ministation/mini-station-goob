@@ -1,0 +1,185 @@
+# BaseWall
+- type: entity
+  abstract: true
+  parent: BaseStructure
+  id: CMBaseWall
+  suffix: CM, Неразрушимый
+  description: A huge chunk of metal used to separate rooms.
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Sprite
+    drawdepth: Walls
+  - type: Icon
+    state: full
+  - type: PlacementReplacement
+    key: walls
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Occluder
+  - type: Airtight
+  - type: RadiationBlocker
+    resistance: 2
+  - type: StaticPrice
+    price: 75
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 1000
+
+
+# Standart СM
+- type: entity
+  parent: CMBaseWall
+  id: CMWallMetal
+  name: стена
+  suffix: CM, Неразрушимый
+  description: Огромный кусок металла, используемый для разделения комнат.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/metal.rsi
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/metal.rsi
+  - type: Tag
+    tags:
+      - Wall
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviours:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          CMGirder:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: IconSmooth
+    key: walls
+    base: metal
+
+- type: entity
+  parent: CMWallMetal
+  id: CMWallMetalAlmayer
+  name: стена
+  suffix: CM, Неразрушимый
+  description: Огромный кусок металла, используемый для разделения комнат.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/almayer_black.rsi
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/almayer_black.rsi
+    state: wall
+  - type: IconSmooth
+    key: walls
+    base: wall
+
+- type: entity
+  parent: CMWallMetal
+  id: CMWallMetalAlmayerWhite
+  name: стена
+  suffix: CM, Неразрушимый
+  description: Огромный кусок металла, используемый для разделения комнат.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/almayer_white.rsi
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/almayer_white.rsi
+    state: wall
+  - type: IconSmooth
+    key: walls
+    base: wall
+
+- type: entity
+  parent: CMBaseWall
+  id: CMWallMetalReinforced
+  name: стена
+  suffix: CM, Неразрушимый
+  description: Огромный кусок металла, используемый для разделения комнат.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/rwall.rsi
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/rwall.rsi
+  - type: Tag
+    tags:
+      - Wall
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviours:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          CMGirder:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: IconSmooth
+    key: walls
+    base: rwall
+  - type: StaticPrice
+    price: 150
+
+# Indestructible
+- type: entity
+  parent: CMBaseWall
+  id: CMWallReinforcedHeavy
+  suffix: CM, Неразрушимый
+  name: heavy reinforced wall
+  description: A huge chunk of ultra-reinforced metal used to separate rooms. Looks virtually indestructible.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/rwall.rsi
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/rwall.rsi
+  - type: Tag
+    tags:
+      - Wall
+  - type: IconSmooth
+    key: walls
+    base: rwall
+
+- type: entity
+  parent: CMWallReinforcedHeavy
+  id: CMWallReinforcedHeavyAlmayer
+  suffix: CM, Неразрушимый
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/almayer_black.rsi
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/almayer_black.rsi
+    state: hull
+  - type: IconSmooth
+    key: walls
+    base: wall
+
+- type: entity
+  parent: CMWallReinforcedHeavy
+  id: CMWallReinforcedHeavyAlmayerWhite
+  suffix: CM, Неразрушимый
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/almayer_white.rsi
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Walls/UGE/almayer_white.rsi
+    state: hull
+  - type: IconSmooth
+    key: walls
+    base: wall

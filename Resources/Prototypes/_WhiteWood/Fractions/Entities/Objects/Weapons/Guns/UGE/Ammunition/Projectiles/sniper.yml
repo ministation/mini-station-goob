@@ -1,0 +1,35 @@
+- type: entity
+  id: BulletSniper10x99
+  parent: BaseBullet
+  name: bullet (7.62x54)
+  suffix: CM
+  deleteOnSpawn: false
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 350
+
+- type: entity
+  id: BulletSniper10x99AP
+  parent: BaseBullet
+  name: bullet (7.62x54 armor-piercing)
+  suffix: CM
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 350
+    ignoreResistances: true
+
+- type: entity
+  id: BulletSniper10x99Uranium
+  parent: BaseBullet
+  name: bullet (7.62x54 uranium)
+  suffix: CM
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Radiation: 100
+        Piercing: 350

@@ -1,0 +1,23 @@
+- type: job
+  id: CharlieEngineer
+  name: Инженер отряда "Чарли"
+  description: Держаться поближе к отряду, поддерживать укреплениями морпехов. Открывать двери и шлюзы, строить оборонительные пункты.
+  playTimeTracker: JobCharlieEngineer
+  startingGear: CharlieEngineerGearUGE
+  icon: "JobIconCharlieEngineer"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  access:
+  - Engineering
+  accessGroups:
+  - SquadCharlie
+
+- type: startingGear
+  id: CharlieEngineerGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitEngineer
+    id: CEngineerIDCard
+    pocket1: EmergencyMedipen

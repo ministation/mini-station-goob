@@ -1,0 +1,31 @@
+- type: entity
+  parent: [ClothingOuterStorageBase, ClothingOuterArmorHoS]
+  id: CMCoatGeneral
+  name: генеральский тренч
+  suffix: ОПЗ
+  description: Черный плащ-тренч с золотой металлической отделкой. Броский, хорошо защищающий от непогоды. Подойдет королю или, в данном случае, генералу. Имеет довольно много карманов.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Coats/general.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Coats/general.rsi
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.5
+        Caustic: 0.5
+  - type: Food
+    requiresSpecialDigestion: true
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 20
+        reagents:
+        - ReagentId: Fiber
+          Quantity: 20

@@ -1,0 +1,39 @@
+- type: entity
+  name: прототип молекулярного разрушителя
+  parent: [BaseWeaponBattery, BaseGunWieldable]
+  id: WeaponPulseRifleSCP
+  description: Прототип штурмового трёхкратного молекулярныого разрушителя. Достижение лучших оружейников Фонда SCP. Он способен генерировать заряд без сторонних источников питания. 
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Battery/pulse_rifle/big.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-unshaded-4
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: MagazineVisuals
+    magState: mag
+    steps: 5
+    zeroVisible: false
+  - type: Appearance
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Battery/pulse_rifle/tiny.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,2
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/Battery/pulse_rifle/tiny.rsi
+  - type: Gun
+    fireRate: 1
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
+  - type: HitscanBatteryAmmoProvider
+    proto: Pulse
+    fireCost: 100
+  - type: Battery
+    maxCharge: 800
+    startingCharge: 800
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 30

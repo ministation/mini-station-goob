@@ -1,0 +1,111 @@
+- type: entity
+  abstract: true
+  parent: BaseStructure
+  id: IndestructibleBaseWindow # TODO CM14 this needs to be 2 separate entities eventually
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    drawdepth: Walls
+  - type: PlacementReplacement
+    key: walls
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Airtight
+  - type: RadiationBlocker
+    resistance: 2
+  - type: StaticPrice
+    price: 75
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 1000
+
+# Colonial Marines
+
+- type: entity
+  parent: IndestructibleBaseWindow
+  id: CMWindowReinforcedAlmayerHull
+  name: hull window
+  description: A glass window with a special rod matrix inside a wall frame. This one was made out of exotic materials to prevent hull breaches. No way to get through here.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Windows/UGE/almayer_window.rsi
+    state: alm_rwindow0
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Windows/UGE/almayer_window.rsi
+    state: alm_rwindow0
+  - type: IconSmooth
+    key: walls
+    base: alm_rwindow
+    mode: CardinalFlags
+
+# SCP Foundation
+
+- type: entity
+  parent: IndestructibleBaseWindow
+  id: SCPWindowExitZone
+  name: окно
+  suffix: СМ
+  description: Окна улицы комплекса фонда SCP. Неужели это выход? На улицу не похоже...
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Windows/SCP Foundation/exit_zone.rsi
+    state: col_window0
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Windows/SCP Foundation/exit_zone.rsi
+    state: col_window0
+  - type: IconSmooth
+    key: walls
+    base: col_window
+    mode: CardinalFlags
+
+- type: entity
+  parent: IndestructibleBaseWindow
+  id: SCPWindowHeavyZone
+  name: окно
+  suffix: SCP, Неразрушимый, Зона
+  description: Огромный кусок стекла, используемый для наблюдения за обстановкой, оставаясь в относительной безопасности.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Windows/SCP Foundation/heavy_zone.rsi
+    state: alm_rwindow0
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Windows/SCP Foundation/heavy_zone.rsi
+    state: alm_rwindow0
+  - type: IconSmooth
+    key: walls
+    base: alm_rwindow
+    mode: CardinalFlags
+
+- type: entity
+  parent: IndestructibleBaseWindow
+  id: SCPWindowLightZone
+  name: окно
+  suffix: SCP, Неразрушимый, Зона
+  description: Окно легкой зоны содержания фонда SCP. Вы на самом дне или скорее днище комплеса! если вы хотели найти укромное место, то вы его определённо нашли.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Windows/SCP Foundation/light_zone.rsi
+    state: white_rwindow0
+  - type: Icon
+    sprite: _WhiteWood/Fractions/Structures/Windows/SCP Foundation/light_zone.rsi
+    state: white_rwindow0
+  - type: IconSmooth
+    key: walls
+    base: white_rwindow
+    mode: CardinalFlags

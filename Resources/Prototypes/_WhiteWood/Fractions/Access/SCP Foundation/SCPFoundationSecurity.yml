@@ -1,0 +1,24 @@
+- type: accessLevel
+  id: SCPHOS
+  name: Начальник охраны комплекса
+
+- type: accessLevel
+  id: SCPWarden
+  name: Надзиратель
+
+- type: accessLevel
+  id: SCPSecuritySergeant
+  name: Сержант охраны комплекса
+
+- type: accessLevel
+  id: SCPSecurity
+  name: Часовой охраны комплекса
+
+
+- type: accessGroup
+  id: SCPFoundationSecurity
+  tags:
+  - SCPHOS
+  - SCPWarden
+  - SCPSecuritySergeant
+  - SCPSecurity

@@ -1,0 +1,33 @@
+- type: accessLevel
+  id: SCPManager
+  name: Менеджер Комплекса
+
+- type: accessLevel
+  id: SCPHead_of_the_zone
+  name: Менеджер Зон
+
+- type: accessLevel
+  id: SCPEngineer
+  name: Инженер Камер Содержания
+
+- type: accessLevel
+  id: SCPSenior_scientist
+  name: Старший научный сотрудник
+
+- type: accessLevel
+  id: SCPScientist
+  name: Научный сотрудник
+
+- type: accessLevel
+  id: SCPJanitor
+  name: Уборщик
+
+- type: accessGroup
+  id: SCPFoundationStaff
+  tags:
+  - SCPManager
+  - SCPHead_of_the_zone
+  - SCPEngineer
+  - SCPSenior_scientist
+  - SCPScientist
+  - SCPJanitor

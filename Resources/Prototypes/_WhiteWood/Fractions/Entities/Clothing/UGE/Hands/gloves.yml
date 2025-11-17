@@ -1,0 +1,43 @@
+- type: entity
+  parent: ClothingHandsGlovesColorBlack
+  id: ClothingHandsBlackMarine
+  name: боевые перчатки
+  suffix: ОПЗ
+  description: Стандартные тактические перчатки морской пехоты.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Hands/Gloves/black.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Hands/Gloves/black.rsi
+  - type: Fiber
+    fiberMaterial: fibers-insulative
+
+- type: entity
+  parent: ClothingHandsGlovesColorBlack
+  id: ClothingHandsField
+  name: офицерские перчатки
+  suffix: ОПЗ
+  description: Нестандартные перчатки из кевлонового волокна. Они изолированы и имеют сильную броню. Многим могут нравиться эти перчатки, но немногие их недостойны.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Hands/Gloves/field_commander.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Hands/Gloves/field_commander.rsi
+  - type: Insulated
+  - type: Fiber
+    fiberMaterial: fibers-insulative
+
+- type: entity
+  parent: ClothingHandsGlovesColorBlack
+  id: ClothingHandsLongFighting
+  name: изоляционные перчатки
+  suffix: ОПЗ
+  description:  Удлиненные перчатки повышенной прочности. Они изолированы и имеют сильную броню. Поговаривают, что во время носки могут слипнуться с кожей намертво.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Hands/Gloves/long_fighting.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Hands/Gloves/long_fighting.rsi
+  - type: Insulated
+  - type: Fiber
+    fiberMaterial: fibers-insulative

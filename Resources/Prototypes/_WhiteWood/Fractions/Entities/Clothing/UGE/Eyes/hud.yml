@@ -1,0 +1,39 @@
+- type: entity
+  parent: [ClothingEyesBase, ShowSecurityIcons, ShowMedicalIcons, BaseSecurityCommandContraband]
+  id: ClothingEyesHudSpecialist
+  name: медицинские очки HUD
+  suffix: ОПЗ
+  description: Интерактивный дисплей, который сканирует находящихся в поле зрения гуманоидов и выдает точные данные о состоянии их здоровья.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/medicalhud.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/medicalhud.rsi
+  - type: Construction
+    graph: HudMedSec
+    node: medsecHud
+
+- type: entity
+  parent: ClothingEyesBase
+  id: ClothingEyesHudSpecial
+  name: очки
+  description: Особые очки, оснащенные специальным индикатором, который сканирует гуманоидов в поле зрения и предоставляет точные данные о состоянии их здоровья, также имеют полимерное покрытие защищающее от вспышек.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Hud/cmo_hud.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Hud/cmo_hud.rsi
+  - type: ShowHealthBars
+    damageContainers:
+    - Biological
+    - Inorganic
+    - Silicon
+  - type: ShowHealthIcons
+    damageContainers:
+    - Biological
+  - type: Tag
+    tags:
+    - HudMedical
+    - HighRiskItem
+  - type: FlashImmunity
+  - type: SolutionScanner

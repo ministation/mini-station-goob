@@ -1,0 +1,33 @@
+- type: entity
+  id: BulletRifle1024
+  name: bullet (10x24 бронебойный)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 27
+
+- type: entity
+  id: BulletRifleAP1024
+  name: bullet (10x24 бронебойный)
+  parent: BaseBulletAP
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 13
+    ignoreResistances: true
+
+- type: entity
+  id: BulletRifle125x60R
+  name: bullet (12.5x60R винтовочный)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 35

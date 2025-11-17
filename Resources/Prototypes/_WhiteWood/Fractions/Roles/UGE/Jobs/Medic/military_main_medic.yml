@@ -1,0 +1,31 @@
+- type: job
+  id: MilitaryMainMedic
+  name: Старший военный врач
+  description: Проведение сложных операций, клонирование или реанимация убитых морпехов, лечение и реабилитация раненых, варка лекарств и стимуляторов.
+  playTimeTracker: JobMilitaryMainMedic
+  startingGear: MilitaryMainMedicGearUGE
+  icon: "JobIconMilitaryMainMedic"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-staff-officer
+  canBeAntag: false
+  access:
+  - OfficerUGE
+  - ChiefMedicalOfficer
+  - MilitaryPolice
+  accessGroups:
+    - MedicalUGE
+  special:
+  - !type:AddComponentSpecial
+
+
+- type: startingGear
+  id: MilitaryMainMedicGearUGE
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCMO
+    back: ClothingBackpackCMOFilled
+    shoes: ClothingShoesColorBrown
+    outerClothing: ClothingOuterCoatLabCmo
+    ears: ClothingHeadsetCMO
+    id: MilitaryMainMedicIDCard
+    belt: ClothingBeltMedicalFilled
+    pocket1: EmergencyMedipen

@@ -1,0 +1,91 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "size": {
+        "x": 8,
+        "y": 8
+    },
+    "states": [
+        {
+            "name": "chief_health_officer"
+        },
+        {
+            "name": "chief_petty_officer"
+        },
+        {
+            "name": "cmo"
+        },
+        {
+            "name": "doctor"
+        },
+        {
+            "name": "enisgn"
+        },
+        {
+            "name": "first_sergaent"
+        },
+        {
+            "name": "lance_corporal"
+        },
+        {
+            "name": "major"
+        },
+        {
+            "name": "medical_doctor"
+        },
+        {
+            "name": "medical_resident"
+        },
+        {
+            "name": "officer"
+        },
+        {
+            "name": "petty_officer_first_class"
+        },
+        {
+            "name": "petty_officer_second_class"
+        },
+        {
+            "name": "petty_officer_third_class"
+        },
+        {
+            "name": "private"
+        },
+        {
+            "name": "private_first_class"
+        },
+        {
+            "name": "proffesor"
+        },
+        {
+            "name": "comm"
+        },
+        {
+            "name": "commander"
+        },
+        {
+            "name": "commander_sergeant"
+        },
+        {
+            "name": "coporal"
+        },
+        {
+            "name": "second_lieuntenant"
+        },
+        {
+            "name": "sergeant"
+        },
+        {
+            "name": "sergeant_major"
+        },
+        {
+            "name": "staff_sergeant"
+        },
+        {
+            "name": "vice_admiral"
+        },
+        {
+            "name": "waltuh"    
+        }
+    ]
+}

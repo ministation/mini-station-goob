@@ -1,0 +1,21 @@
+- type: job
+  id: DeltaMarine
+  name: Морпех отряда "Дельта"
+  description: Следовать приказам, забывать код от ядерной боеголовки, бесславно помирать от дружественного огня
+  playTimeTracker: JobDeltaMarine
+  startingGear: DeltaMarineGearUGE
+  icon: "JobIconDeltaMarine"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  accessGroups:
+  - SquadDelta
+
+- type: startingGear
+  id: DeltaMarineGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitMarineDelta
+    id: DRiflemanIDCard
+    pocket1: EmergencyMedipen

@@ -1,0 +1,35 @@
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMTFCaptain
+  name: Накидка капитана ОПЗ
+  suffix: ОПЗ
+  description: Удобная и шикарная мантия, подобающая только капитану.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Neck/Mantles/Captain.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Neck/Mantles/Captain.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMTFLieutenant
+  name: накидка лейтенанта ОПЗ
+  suffix: SCP, МОГ
+  description: Легкое, бархатистое, непринужденное в движениях, на одном плече, оно как бы говорит о вашем ненадежном командирском положении.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Neck/Mantles/Lieutenant.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Neck/Mantles/Lieutenant.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckElite
+  name: накидка элиты
+  suffix: ОПЗ
+  description: Легкое, бархатистое, непринужденное в движениях, на одном плече, оно как бы говорит о вашем ненадежном командирском положении.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Neck/Mantles/Elite.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Neck/Mantles/Elite.rsi

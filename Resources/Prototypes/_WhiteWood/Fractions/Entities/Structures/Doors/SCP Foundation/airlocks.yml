@@ -1,0 +1,63 @@
+- type: entity
+  parent: [AirlockGlass, CMBaseDoor]
+  id: AirlockSquadAlphaGlass
+  suffix: CM, Alpha, Glass
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/Glass/squad_alpha.rsi
+
+- type: entity
+  parent: [AirlockGlass, CMBaseDoor]
+  id: AirlockSquadBarvoGlass
+  suffix: CM, Barvo, Glass
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/Glass/squad_bravo.rsi
+
+- type: entity
+  parent: [AirlockGlass, CMBaseDoor]
+  id: AirlockSquadCharlieGlass
+  suffix: CM, Charlie, Glass
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/Glass/squad_charlie.rsi
+
+- type: entity
+  parent: [AirlockGlass, CMBaseDoor]
+  id: AirlockSquadDeltaGlass
+  suffix: CM, Delta, Glass
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/Glass/squad_delta.rsi
+
+- type: entity
+  parent: [AirlockGlass, CMBaseDoor]
+  id: AirlockSquadAlphaSpecialistGlass
+  suffix: CM, Alpha specialist, Glass
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/Glass/squad_alpha_spec.rsi
+
+- type: entity
+  parent: [AirlockGlass, CMBaseDoor]
+  id: AirlockSquadBarvoSpecialistGlass
+  suffix: CM, Barvo specialist, Glass
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/Glass/squad_bravo_spec.rsi
+
+- type: entity
+  parent: [AirlockGlass, CMBaseDoor]
+  id: AirlockSquadCharlieSpecialistGlass
+  suffix: CM, Charlie specialist, Glass
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/Glass/squad_charlie_spec.rsi
+
+- type: entity
+  parent: [AirlockGlass, CMBaseDoor]
+  id: AirlockSquadDeltaSpecialistGlass
+  suffix: CM, Delta specialist, Glass
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Doors/SCP Foundation/Glass/squad_delta_spec.rsi

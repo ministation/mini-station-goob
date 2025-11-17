@@ -1,0 +1,19 @@
+- type: entity
+  id: BannerSCPFoundation
+  parent: BannerBase
+  name: знамя Фонда SCP
+  description: Обезопасить, Удержать, Сохранить!
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Decoration/banner/SCP Foundation.rsi
+    state: banner_scp
+
+- type: entity
+  id: BannerSCPFoundationNu-7
+  parent: BannerBase
+  name: знамя Мобильной оперативной группы Ню-7 «Удар молота»
+  description: Быстрое реагирование на инциденты, включающие потерю связи с основными учреждениями Фонда в условиях масштабного нарушения ОУС, вторжения противника или подозрения на другое катастрофическое событие!
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Decoration/banner/SCP Foundation.rsi
+    state: banner_Nu-7

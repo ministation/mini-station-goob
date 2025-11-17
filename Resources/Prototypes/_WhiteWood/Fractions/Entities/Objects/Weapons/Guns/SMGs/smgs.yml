@@ -1,0 +1,177 @@
+- type: entity
+  name: FSP
+  parent: [ BaseWeaponSubMachineGun, BaseRestrictedContraband ]
+  id: WeaponSubMachineGunFSP9
+  suffix: Пистолет-пулемёт
+  description: Отличный пистолет пулемет, произведенный подразделением стрелкового оружия FSP Technology Inc. Использует автоматические патроны 35-го калибра.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SMGs/FSP-9.rsi
+    layers:
+      - state: base
+        map: ["enum.GunVisualLayers.Base"]
+      - state: base-unshaded
+        map: ["enum.GunVisualLayers.BaseUnshaded"]
+        shader: unshaded
+      - state: mag-0
+        map: ["enum.GunVisualLayers.Mag"]
+      - state: mag-unshaded-0
+        map: ["enum.GunVisualLayers.MagUnshaded"]
+        shader: unshaded
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SMGs/FSP-9.rsi
+  - type: ChamberMagazineAmmoProvider
+    boltClosed: null
+  - type: Gun
+    fireRate: 5.5
+    minAngle: 1
+    maxAngle: 6
+    angleIncrease: 1.5
+    angleDecay: 6
+    selectedMode: FullAuto
+    shotsPerBurst: 5
+    burstCooldown: 0.2
+    burstFireRate: 7
+    availableModes:
+    - Burst
+    - FullAuto
+    - SemiAuto
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistolSubMachineGunTopMounted
+        insertSound: /Audio/Weapons/Guns/MagIn/smg_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/smg_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - MagazinePistolSubMachineGunTopMounted
+        whitelistFailPopup: gun-magazine-whitelist-fail
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgePistol
+        priority: 1
+        whitelist:
+          tags:
+            - CartridgePistol
+  - type: MagazineVisuals
+    magState: mag
+    steps: 6
+    zeroVisible: true
+  - type: Appearance
+
+- type: entity
+  name: MP-5
+  parent: BaseWeaponSubMachineGun
+  id: WeaponSubMachineGunMP5
+  suffix: Пистолет-пулемёт
+  description: An excellent SMG. Uses .35 auto ammo.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SMGs/mp5/big.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SMGs/mp5/tiny.rsi
+  - type: Item
+    size: Large
+    shape:
+    - 0,0,2,1
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SMGs/mp5/tiny.rsi
+  - type: GunWieldBonus
+    minAngle: -19
+    maxAngle: -16
+  - type: Gun
+    minAngle: 21
+    maxAngle: 32
+    fireRate: 6
+    soundGunshot:
+      path: /Audio/_WhiteWood/Fractions/Weapons/Guns/SMGs/mp38/mp38_shot.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistolSubMachineGun
+        insertSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/SMGs/mp5/mp5_reload.ogg
+        ejectSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/SMGs/mp5/mp5_unload.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazinePistolSubMachineGun
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgePistol
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgePistol
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+  - type: Wieldable
+  - type: UseDelay
+    delay: 0.5
+
+- type: entity
+  name: KRISS Vector
+  parent: BaseWeaponSubMachineGun
+  id: WeaponSubMachineGunNewVector
+  suffix: Пистолет-пулемёт
+  description: An excellent SMG. Uses .35 auto ammo.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SMGs/vector/big.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SMGs/vector/tiny.rsi
+  - type: Item
+    size: Large
+    shape:
+    - 0,0,2,1
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SMGs/vector/tiny.rsi
+  - type: GunWieldBonus
+    minAngle: -30
+    maxAngle: -40
+  - type: Gun
+    minAngle: 35
+    maxAngle: 50
+    fireRate: 6.5
+    soundGunshot:
+      path: /Audio/_WhiteWood/Fractions/Weapons/Guns/SMGs/new_vector/vector_shot.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistolSubMachineGun
+        insertSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/SMGs/new_vector/new_vector_reload.ogg
+        ejectSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/SMGs/new_vector/new_vector_unload.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazinePistolSubMachineGun
+          - MagazinePistolHighCapacity
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgePistol  # 57x28
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgePistol  # 57x28
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+  - type: Wieldable
+  - type: UseDelay
+    delay: 0.5

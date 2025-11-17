@@ -1,0 +1,21 @@
+- type: entity
+  id: BulletPistol45GAP
+  name: bullet (45GAP)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 12
+
+- type: entity
+  id: BulletPistol4440
+  name: bullet (44.40)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 20

@@ -1,0 +1,130 @@
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: RMClothingBeltHolster
+  suffix: ОПЗ
+  name: тактический ремень
+  description: Ремень предназначенный для ведения боевых действий в полевых условиях.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Belt/golden_assault_belt.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Belt/golden_assault_belt.rsi
+  - type: Storage
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+      components:
+        - Stunbaton
+        - FlashOnTrigger
+        - SmokeOnTrigger
+        - Flash
+        - Handcuff
+        - BallisticAmmoProvider
+        - Ammo
+  - type: ItemMapper
+    mapLayers:
+      flashbang:
+        whitelist:
+          components:
+          - FlashOnTrigger
+      stunbaton:
+        whitelist:
+          components:
+          - Stunbaton
+      tear_gas_grenade:
+        whitelist:
+          components:
+          - SmokeOnTrigger
+    sprite: Clothing/Belt/belt_overlay.rsi
+  - type: Appearance
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: RMCFieldBeltHolster
+  suffix: ОПЗ
+  name: полевая портупея M276
+  description: M276 входит в стандартную комплектацию. Он состоит из модульного ремня с различными зажимами. Эта версия универсальна и подходит для различных револьверов и пистолетов, а также шести небольших подсумков для быстрого заряжания. Он слегка пахнет сеном.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Belt/field_holster.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Belt/field_holster.rsi
+  - type: Storage
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+      components:
+        - Stunbaton
+        - FlashOnTrigger
+        - SmokeOnTrigger
+        - Flash
+        - Handcuff
+        - BallisticAmmoProvider
+        - CartridgeAmmo
+        - DoorRemote
+        - Whistle
+        - BalloonPopper
+        - Ammo
+    maxItemSize: Normal
+    grid:
+    - 0,0,6,1
+  - type: ItemSlots
+    slots:
+      item:
+        name: Holster
+        whitelist:
+          tags:
+          - Sidearm
+  - type: ItemMapper
+    mapLayers:
+      stunbaton:
+        whitelist:
+          components:
+          - Stunbaton
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: RMCBeltHolsterRevolver
+  suffix: ОПЗ
+  name: портупея M276
+  description: M276 входит в стандартную комплектацию. Он состоит из модульного ремня с различными зажимами. Эта версия универсальна и подходит для различных револьверов и пистолетов, а также шести небольших подсумков для быстрого заряжания. Он слегка пахнет сеном.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Belt/holster_revolver.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Belt/holster_revolver.rsi
+  - type: Storage
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+      components:
+        - Stunbaton
+        - FlashOnTrigger
+        - SmokeOnTrigger
+        - Flash
+        - Handcuff
+        - BallisticAmmoProvider
+        - CartridgeAmmo
+        - DoorRemote
+        - Whistle
+        - BalloonPopper
+        - Ammo
+    maxItemSize: Normal
+    grid:
+    - 0,0,6,1
+  - type: ItemSlots
+    slots:
+      item:
+        name: Holster
+        whitelist:
+          tags:
+          - Sidearm
+  - type: ItemMapper
+    mapLayers:
+      stunbaton:
+        whitelist:
+          components:
+          - Stunbaton

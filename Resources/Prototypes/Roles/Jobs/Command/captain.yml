@@ -185,7 +185,6 @@
 - type: startingGear
   id: CaptainGear
   equipment:
-    shoes: ClothingShoesBootsLaceup
     eyes: ClothingEyesGlassesSunglasses
     #gloves: ClothingHandsGlovesCaptain - Goobstation, moved to loadouts
     id: CaptainPDA
@@ -201,6 +200,7 @@
   job: Captain
   hasMindShield: true
   equipment:
+    shoes: ClothingShoesBootsOldАrmy
     head: ClothingHeadHatCapcap
     eyes: ClothingEyesGlassesCommand
     mask: ClothingMaskGasCaptain

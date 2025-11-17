@@ -1,0 +1,160 @@
+- type: entity
+  parent: ClothingMaskPullableBase
+  id: CMMaskGas
+  name: противогаз
+  suffix: ОПЗ
+  description: Закрывающая лицо маска, которую можно подключить к системе подачи воздуха. Очищает воздух от вредных газов.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/gas.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/gas.rsi
+  - type: BreathMask
+  - type: IngestionBlocker
+  - type: IdentityBlocker
+  - type: Tag
+    tags:
+    - HamsterWearable
+    - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Snout
+    hideOnToggle: true
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95
+        Heat: 0.95
+
+- type: entity
+  parent: ClothingMaskPullableBase
+  id: CMMaskGasFieldСommander
+  name: противогаз полевого командира
+  suffix: ОПЗ
+  description: Закрывающая лицо маска, которую можно подключить к системе подачи воздуха. Очищает воздух от вредных газов.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/field_commander.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/field_commander.rsi
+  - type: BreathMask
+  - type: IngestionBlocker
+  - type: IdentityBlocker
+  - type: Tag
+    tags:
+    - HamsterWearable
+    - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Snout
+    hideOnToggle: true
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.93
+        Slash: 0.93
+        Piercing: 0.93
+        Heat: 0.93
+
+- type: entity
+  parent: ClothingMaskPullableBase
+  id: RMCMaskRebreather
+  name: респиратор
+  suffix: ОПЗ
+  description: Плотно прилегающее устройство, которое мгновенно нагревает или охлаждает воздух при вдохе, чтобы не повредить ваши легкие.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/rebreather.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/rebreather.rsi
+  - type: BreathMask
+  - type: IngestionBlocker
+  - type: IdentityBlocker
+  - type: Tag
+    tags:
+    - HamsterWearable
+    - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Snout
+    hideOnToggle: true
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95
+        Heat: 0.95
+
+- type: entity
+  parent: ClothingMaskPullableBase
+  id: RMCMaskBalaclava
+  name: балаклава
+  description: Обычная балаклава с одним отверстием для глаз, которую можно приобрести практически в каждом магазине спортивных товаров, товаров для активного отдыха или военного снаряжения, защищает ваше лицо от холода почти так же хорошо, как и скрывает его. Эта модель стандартного черного цвета.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/balaclava.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/balaclava.rsi
+  - type: BreathMask
+  - type: IngestionBlocker
+  - type: IdentityBlocker
+  - type: Tag
+    tags:
+    - HamsterWearable
+    - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Snout
+    hideOnToggle: true
+
+- type: entity
+  parent: ClothingMaskGas
+  id: ClothingMaskGasFieldleMasksSCP
+  name: элитный защитный противогаз
+  suffix: ОПЗ
+  description: Улучшенная модификация, изготовленная по последним требованиям. Прибор отличается усиленной защитой и высокой эффективностью.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Elite.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/Elite.rsi
+  - type: FlashImmunity
+  - type: EyeProtection
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95
+        Heat: 0.95
+
+- type: entity
+  parent: ClothingMaskGas
+  id: ClothingMaskGasChaosIns
+  name: защитный противогаз
+  suffix: ПХ
+  description: Улучшенная модификация, изготовленная по последним требованиям. Прибор отличается усиленной защитой и высокой эффективностью.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/gaschaosins.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Masks/gaschaosins.rsi
+  - type: FlashImmunity
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - HamsterWearable
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.90
+        Slash: 0.90
+        Piercing: 0.95
+        Heat: 0.95
+  - type: HideLayerClothing
+    slots:
+    - Snout
+    hideOnToggle: true

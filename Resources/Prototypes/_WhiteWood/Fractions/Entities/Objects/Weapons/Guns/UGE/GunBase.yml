@@ -1,0 +1,269 @@
+- type: entity
+  name: BaseWeaponCM
+  parent: BaseItem
+  id: BaseWeaponCM
+  description: A rooty tooty point and shooty.
+  abstract: true
+  components:
+  - type: Sprite
+  - type: Item
+  - type: Clothing
+  - type: Gun
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/lmg.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: AmmoCounter
+  - type: ItemSlots
+  - type: ContainerContainer
+  - type: Appearance
+  - type: StaticPrice
+    price: 0
+
+- type: entity
+  name: BaseWeaponRifleCM
+  parent: BaseWeaponCM
+  id: BaseWeaponRifleCM
+  description: A rooty tooty point and shooty.
+  abstract: true
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Item
+    size: Huge
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: Gun
+    selectedMode: FullAuto
+    availableModes:
+      - FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/lmg.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/lmg_cock.ogg
+  - type: Wieldable
+  - type: GunWieldBonus
+    minAngle: -5
+    maxAngle: -7
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        priority: 2
+      gun_chamber:
+        name: Chamber
+        priority: 1
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: StaticPrice
+    price: 0
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+
+- type: entity
+  name: BaseWeaponSMGCM
+  parent: BaseWeaponCM
+  id: BaseWeaponSMGCM
+  description: A rooty tooty point and shooty.
+  abstract: true
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Item
+    size: Huge
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: Gun
+    selectedMode: FullAuto
+    availableModes:
+      - FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/c-20r.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/lmg_cock.ogg
+    autoEject: true
+  - type: Wieldable
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/smg_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/smg_magout.ogg
+        priority: 2
+      gun_chamber:
+        name: Chamber
+        priority: 1
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: StaticPrice
+    price: 0
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+
+
+- type: entity
+  name: BaseWeaponShotgunMagCM
+  parent: BaseWeaponRifleCM
+  id: BaseWeaponShotgunMagCM
+  abstract: true
+  description: It's a magazine-fed shotgun designed for close quarters combat. Uses .50 shotgun shells.
+  components:
+  - type: Item
+    size: Huge
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: GunWieldBonus
+    minAngle: 0
+    maxAngle: 0
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_CM/Weapons/UA571shot.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+
+- type: entity
+  name: BaseWeaponShotgunCM
+  parent: BaseWeaponCM
+  id: BaseWeaponShotgunCM
+  abstract: true
+  description: It's a shotgun designed for close quarters combat. Uses .50 shotgun shells.
+  components:
+  - type: Sprite
+    layers:
+      - state: icon
+        map: [ "enum.GunVisualLayers.Base" ]
+  - type: Item
+    size: Normal
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+    - belt
+  - type: AmmoCounter
+  - type: Wieldable
+  - type: GunWieldBonus
+    minAngle: -5
+    maxAngle: -5
+  - type: Gun
+    minAngle: 10
+    maxAngle: 20
+    fireRate: 0.5
+    angleIncrease: 3
+    angleDecay: 16
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/shotgun.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BallisticAmmoProvider
+    soundInsert:
+      path: /Audio/Weapons/Guns/MagIn/shotgun_insert.ogg
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+        ents: []
+  - type: StaticPrice
+    price: 0
+
+
+- type: entity
+  name: BaseWeaponPistolCM
+  parent: BaseWeaponCM
+  id: BaseWeaponPistolCM
+  description: A rooty tooty point and shooty.
+  abstract: true
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Item
+    shape:
+    - 0,0,1,0
+    - 0,1,0,1
+    size: Small
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+    - belt
+  - type: Gun
+    #fireRate: 4
+    selectedMode: SemiAuto
+    availableModes:
+      - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/mk58.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/lmg_cock.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+      gun_chamber:
+        name: Chamber
+        priority: 1
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: StaticPrice
+    price: 0
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true

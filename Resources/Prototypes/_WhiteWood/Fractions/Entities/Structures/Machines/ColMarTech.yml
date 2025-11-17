@@ -1,0 +1,269 @@
+- type: entity
+  parent: ColMarTechBase
+  id: VendingMachineMarineWeapons
+  name: ColMarTech automated weapons rack
+  description: An automated weapon rack hooked up to a big storage of standard-issue weapons.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Machines/VendingMachines/ColMarTech/ColMarTech/guns.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "base"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+  - type: CMAutomatedVendor
+    sections:
+    - name: Штурмовые Винтовки
+      entries:
+      - id: WeaponRifleM4SPR
+        amount: 8
+      - id: CMWeaponM41A
+        amount: 8
+      - id: MagazineRifleM4RA
+        amount: 32
+      - id: MagazineRifleM41A
+        amount: 32
+      - id: MagazineBoxLightRifleBig
+        amount: 9
+      - id: MagazineBoxRifleBig
+        amount: 9
+    - name: Пистолеты-Пулемёты
+      entries:
+      - id: WeaponSubMachineGunP90
+        amount: 2
+      - id: MagazinePistolSubMachineGun
+        amount: 12
+      - id: MagazineBoxPistol
+        amount: 9
+    - name: Дробовики
+      entries:
+      - id: WeaponShotgunZauer
+        amount: 3
+      - id: WeaponXM1014
+        amount: 3
+      - id: WeaponShotgunPaladin12
+        amount: 3
+      - id: MagazineShotgun
+        amount: 6
+      - id: MagazineShotgunSlug
+        amount: 6
+      - id: BoxLethalshot
+        amount: 25
+      - id: BoxShotgunSlug
+        amount: 9
+    - name: Пистолеты
+      entries:
+      - id: WeaponRevolverM44
+        amount: 10
+      - id: WeaponPistolArmatM5Y3
+        amount: 10
+      - id: WeaponPistol88M4
+        amount: 5
+      - id: SpeedLoaderMagnum
+        amount: 25
+      - id: MagazinePistol
+        amount: 30
+    - name: Утилиты
+      entries:
+      - id: MacheteMarine
+        amount: 4
+      - id: SmokeGrenade
+        amount: 16
+    - name: Взрывчатка
+      entries:
+      - id: ExGrenade
+        amount: 2
+      - id: C4
+        amount: 2
+
+- type: entity
+  abstract: true
+  parent: BaseMachinePowered
+  id: ColMarTechBase
+  name: ColMarTech vendor
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Machines/VendingMachines/ColMarTech/colmartechweapons.rsi
+  - type: UserInterface
+    interfaces:
+      enum.CMAutomatedVendorUI.Key:
+        type: CMAutomatedVendorBui
+  - type: AmbientOnPowered
+  - type: AmbientSound
+    volume: -9
+    range: 3
+    enabled: false
+    sound:
+      path: /Audio/Ambience/Objects/vending_machine_hum.ogg
+  - type: Physics
+    bodyType: Static
+  - type: Transform
+    noRot: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.45,0.25,0.45"
+        mask:
+          - MachineMask
+        layer:
+          - MachineLayer
+        density: 200
+  - type: ActivatableUI
+    key: enum.CMAutomatedVendorUI.Key
+  - type: ActivatableUIRequiresPower
+
+- type: entity
+  parent: ColMarTechBase
+  id: VendingMachineMarineEngineer
+  name: ColMarTech Automated Engineer Rack
+  description: An automated Engineer rack hooked up to a big storage of standard-issue weapons.
+  suffix: CM
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Machines/VendingMachines/ColMarTech/eng_gear.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "normal"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+  - type: CMAutomatedVendor
+    sections:
+    - name: Взрывчатка
+      entries:
+      - id: C4
+        amount: 10
+
+- type: entity
+  parent: ColMarTechBase
+  id: VendingMachineMarineFood
+  suffix: CM
+  name: ColMarTech Automated Marine Equipment Rack
+  description: An automated rack hooked up to a colossal storage of Marine Rifleman standard-issue equipment.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Machines/VendingMachines/ColMarTech/marine_food.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "normal"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+  - type: CMAutomatedVendor
+    sections:
+    - name: Готовое питание
+      entries:
+      - id: BoxMRE
+        amount: 30
+
+- type: entity
+  parent: ColMarTechBase
+  id: VendingMachineMarineUniform
+  name: ColMarTech automated marine equipment rack
+  description: An automated rack hooked up to a colossal storage of Marine Rifleman standard-issue equipment.
+  components:
+  - type: VendingMachine
+    pack: UniformVendInventory
+    offState: off
+    brokenState: broken
+    normalState: normal
+    ejectDelay: 0.5
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Structures/Machines/VendingMachines/ColMarTech/ColMarTech/equipment.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "base"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+  - type: CMAutomatedVendor
+    sections:
+    - name: Броня
+      entries:
+      - id: ClothingOuterArmorMarineLight
+        amount: 4
+      - id: ClothingOuterArmorMarineMedium
+        amount: 4
+      - id: ClothingOuterArmorMarineHeavy
+        amount: 4
+      - id: ClothingOuterPrototypeC
+        amount: 1
+      - id: ClothingOuterArmorMarineLightCaustic
+        amount: 1
+      - id: ClothingOuterArmorMarineMediumCaustic
+        amount: 1
+      - id: ClothingOuterArmorMarineHeavyCaustic
+        amount: 1
+    - name: Одежда
+      entries:
+      - id: ClothingUniformJumpsuitMarine
+        amount: 10
+      - id: ClothingHandsGlovesMarine
+        amount: 10
+      - id: ClothingShoesBootsMarine
+        amount: 10
+      - id: ClothingHeadHelmetMarine
+        amount: 5
+      - id: ClothingHeadHelmetMarineCaustic
+        amount: 2
+    - name: Очки
+      entries:
+      - id: ClothingEyesGlassesBallistic
+        amount: 5
+      - id: ClothingEyesGlassesPrescriptionBallistic
+        amount: 5
+      - id: ClothingEyesGlassesRPG
+        amount: 2
+    - name: Рюкзаки
+      entries:
+      - id: ClothingBackpackMarine
+        amount: 2
+      - id: ClothingMilitaryBackpack
+        amount: 2
+      - id: ClothingBackpackMilitarySatchel
+        amount: 2
+      - id: ClothingBackpackMerc
+        amount: 2
+      - id: ClothingBackpackSatchelMarine
+        amount: 2
+      - id: ClothingBackpackDuffelMilitary
+        amount: 2
+    - name: Ременно-плечевые системы
+      entries:
+      - id: ClothingBeltMilitaryWebbing
+        amount: 2
+      - id: ClothingBeltMercWebbing
+        amount: 2
+    - name: Маски
+      entries:
+      - id: ClothingMaskGasMarine
+        amount: 4
+      - id: ClothingMaskGasRebreather
+        amount: 4
+      - id: ClothingMaskCoif
+        amount: 6
+    - name: Утилиты
+      entries:
+      - id: BoxMRPFilled
+        amount: 10
+      - id: FlashlightLantern
+        amount: 30
+      - id: FireExtinguisher
+        amount: 5
+      - id: FlareMarine
+        amount: 20
+    - name: Подсумки
+      entries:
+      - id: CMPouchMagazine
+        amount: 4
+      - id: CMPouchShotgun
+        amount: 4
+      - id: CMPouchFlare
+        amount: 4
+      - id: CMPouchFirstAid
+        amount: 4
+      - id: CMPouchGeneral
+        amount: 4
+      - id: CMPouchGeneralMedium
+        amount: 4
+      - id: CMPouchGeneralLarge
+        amount: 4

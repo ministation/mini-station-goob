@@ -1,0 +1,27 @@
+- type: job
+  id: AlfaCommander
+  name: Командир отряда "Альфа"
+  description: Поддерживать сплоченность отряда, выполнять приказы командования. Вызывать припасы и орбитальные бомбардировки, когда они нужны вашему отряду.
+  playTimeTracker: JobAlfaCommander
+  startingGear: AlfaCommanderGearUGE
+  icon: "JobIconAlfaCommander"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-field-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  access:
+  - SquadSpecialist
+  - SquadLeader
+  accessGroups:
+  - SquadAlpha
+
+
+- type: startingGear
+  id: AlfaCommanderGearUGE
+  equipment:
+    eyes: ClothingEyesGlassesRPG
+    jumpsuit: UGEJumpsuitSquadLeaderAlpha
+    id: ACommanderIDCard
+    pocket1: EmergencyMedipen
+    shoes: CMBootsBlack

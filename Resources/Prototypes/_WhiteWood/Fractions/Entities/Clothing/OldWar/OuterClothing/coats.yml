@@ -1,0 +1,194 @@
+# German -----------------------------------------------------
+- type: entity
+  parent: [ClothingOuterStorageBase, ClothingOuterArmorHoS]
+  id: ClothingOuterCoatGermanSschutzeGreen
+  name: немецкая солдатская шинель
+  suffix: OldWar
+  description: Немецкая солдатская двубортная шинель из серо-зелёной шерстяной ткани. Поможет не замерзнуть насмерть.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/schutze_green.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/schutze_green.rsi
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 0.5
+        Caustic: 0.5
+  - type: Food
+    requiresSpecialDigestion: true
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 20
+        reagents:
+        - ReagentId: Fiber
+          Quantity: 20
+
+- type: entity
+  parent: [ClothingOuterStorageBase, ClothingOuterArmorHoS]
+  id: ClothingOuterCoatGermanOfficerGreen
+  name: немецкая офицерская шинель
+  suffix: OldWar
+  description: Немецкая офицерская двубортная шинель из серо-зелёной шерстяной ткани. Поможет не замерзнуть насмерть.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/officer_green.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/officer_green.rsi
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.5
+        Caustic: 0.5
+  - type: Food
+    requiresSpecialDigestion: true
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 20
+        reagents:
+        - ReagentId: Fiber
+          Quantity: 20
+
+- type: entity
+  parent: [ClothingOuterStorageBase, ClothingOuterArmorHoS]
+  id: ClothingOuterCoatGermanGeneralGreen
+  name: немецкая генеральская шинель
+  suffix: OldWar
+  description: Немецкая генеральская двубортная шинель из серо-зелёной шерстяной ткани. Поможет не замерзнуть насмерть.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/general_green.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/general_green.rsi
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.5
+        Caustic: 0.5
+  - type: Food
+    requiresSpecialDigestion: true
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 20
+        reagents:
+        - ReagentId: Fiber
+          Quantity: 20
+
+- type: entity
+  parent: [ClothingOuterStorageBase, ClothingOuterArmorHoS]
+  id: ClothingOuterCoatGermanGeneralBlack
+  name: немецкая черная генеральская шинель
+  suffix: OldWar
+  description: Немецкая генеральская двубортная шинель из чёрной шерстяной ткани. Поможет не замерзнуть насмерть.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/general_black.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/general_black.rsi
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.5
+        Caustic: 0.5
+  - type: Food
+    requiresSpecialDigestion: true
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 20
+        reagents:
+        - ReagentId: Fiber
+          Quantity: 20
+
+- type: entity
+  parent: [ClothingOuterStorageBase, ClothingOuterArmorHoS]
+  id: ClothingOuterCoatGermanOfficerBlack
+  name: немецкая черная офицерская шинель
+  suffix: OldWar
+  description: Немецкая офицерская двубортная шинель из чёрной шерстяной ткани. Поможет не замерзнуть насмерть.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/officer_black.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/German/officer_black.rsi
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.5
+        Caustic: 0.5
+  - type: Food
+    requiresSpecialDigestion: true
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 20
+        reagents:
+        - ReagentId: Fiber
+          Quantity: 20
+
+# USSR -----------------------------------------------------
+
+- type: entity
+  parent: [ClothingOuterStorageBase, ClothingOuterArmorHoS]
+  id: ClothingOuterCoatQuilted
+  name: стёганая телогрейка
+  suffix: OldWar
+  description: солдатская стёганая телогрейка из серо-зелёной шерстяной ткани. Поможет не замерзнуть насмерть.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/USSR/quilted_jacket.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/OuterClothing/Coats/USSR/quilted_jacket.rsi
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 0.5
+        Caustic: 0.5
+  - type: Food
+    requiresSpecialDigestion: true
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 20
+        reagents:
+        - ReagentId: Fiber
+          Quantity: 20

@@ -1,0 +1,23 @@
+- type: entity
+  parent: [ClothingNeckBase, BaseCommandContraband]
+  id: RMCloakOfficer
+  name:  Парадный плащ офицера
+  suffix: ОПЗ
+  description: Роскошный плащ с украшениями надевают только по особым случаям.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Neck/Cloaks/officer.rsi
+  - type: StealTarget
+    stealGroup: HeadCloak
+
+- type: entity
+  parent: [ClothingNeckBase, BaseCommandContraband]
+  id: RMCloakGeneral
+  name: Парадный плащ генерала
+  suffix: ОПЗ
+  description: Роскошный плащ с украшениями надевают только по особым случаям.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Neck/Cloaks/general.rsi
+  - type: StealTarget
+    stealGroup: HeadCloak

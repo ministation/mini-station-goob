@@ -1,0 +1,26 @@
+- type: job
+  id: CharlieCommander
+  name: Командир отряда "Чарли"
+  description: Поддерживать сплоченность отряда, выполнять приказы командования. Вызывать припасы и орбитальные бомбардировки, когда они нужны вашему отряду.
+  playTimeTracker: JobCharlieCommander
+  startingGear: CharlieCommanderGearUGE
+  icon: "JobIconCharlieCommander"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-field-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  access:
+  - SquadSpecialist
+  - SquadLeader
+  accessGroups:
+  - SquadCharlie
+
+- type: startingGear
+  id: CharlieCommanderGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitSquadLeaderCharlie
+    id: CCommanderIDCard
+    eyes: ClothingEyesGlassesRPG
+    pocket1: EmergencyMedipen
+    shoes: CMBootsBlack

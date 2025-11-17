@@ -1,0 +1,87 @@
+#- type: entity
+#  parent: ClothingEyesBase
+#  id: ClothingEyesPNV
+#  name: прибор ночного видения
+#  description: Браво-6, рубим свет. Традиционный тип ПНВ в котором используется зелёное фосфорицирующее покрытие экрана.
+#  suffix: ПНВ
+#  components:
+#  - type: Sprite
+#    sprite: _WhiteWood/Fractions/Clothing/SCP Foundation/Eyes/Hud/pnv.rsi
+#    scale: 0.7, 0.7 # bad practice, don't do it
+#  - type: Clothing
+#    sprite: _WhiteWood/Fractions/Clothing/SCP Foundation/Eyes/Hud/pnv.rsi
+#  - type: NightVisionClothing
+#    color: "#41af0e"
+
+#- type: latheRecipe
+#  id: ClothingEyesPNV
+#  result: ClothingEyesPNV
+#  completetime: 5
+#  materials:
+#    Steel: 500
+#    Glass: 500
+#    Silver: 100
+
+#- type: entity
+#  parent: [ClothingEyesBase, ShowSecurityIcons]
+#  id: ClothingEyesPNVAdv
+#  name: продвинутый прибор ночного видения
+#  description: Браво-6, рубим свет. Продвинутый тип ПНВ в котором используется белое фосфорицирующее покрытие экрана дающие монохромное изображение. Данный тип ПНВ так же имеет встроенный визор службы безопасности.
+#  suffix: ПНВ, Продвинутый
+#  components:
+#  - type: Sprite
+#    sprite: _WhiteWood/Fractions/Clothing/SCP Foundation/Eyes/Hud/pnv-adv.rsi
+#    scale: 0.7, 0.7 # bad practice, don't do it
+#  - type: Clothing
+#    sprite: _WhiteWood/Fractions/Clothing/SCP Foundation/Eyes/Hud/pnv-adv.rsi
+#  - type: NightVisionClothing
+#    color: "#ffffff"
+
+#- type: entity
+#  parent: [ClothingEyesBase, ShowSecurityIcons, BaseSyndicateContraband]
+#  id: ClothingEyesPNVAdvSyndicate
+#  name: прибор ночного видения оперативника
+#  description: Браво-6, рубим свет. Продвинутый тип ПНВ в котором используется белое фосфорицирующее покрытие экрана дающие монохромное изображение. Собственность Cybersun Industries.
+#  suffix: ПНВ, Синдикат
+#  components:
+#  - type: Sprite
+#    sprite: _WhiteWood/Fractions/Clothing/SCP Foundation/Eyes/Hud/pnv-synd.rsi
+#    scale: 0.7, 0.7 # bad practice, don't do it
+#  - type: Clothing
+#    sprite: _WhiteWood/Fractions/Clothing/SCP Foundation/Eyes/Hud/pnv-synd.rsi
+#  - type: NightVisionClothing
+#    color: "#ffffff"
+#  - type: ShowSyndicateIcons
+#  - type: ShowHealthBars
+
+- type: entity
+  parent: ClothingEyesBase
+  id: ClothingEyesPNV
+  suffix: ПНВ
+  name: прибор ночного видения
+  description: Традиционный тип ПНВ в котором используется зелёное фосфорицирующее покрытие экрана.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Hud/pnv.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Hud/pnv.rsi
+  - type: ClothingGrantComponent
+    component:
+    - type: NightVision
+
+- type: entity
+  parent: [ClothingEyesBase, ShowSecurityIcons]
+  id: ClothingEyesPNVAdv
+  suffix: ПНВ, Продвинутый
+  name: продвинутый прибор ночного видения
+  description: Браво-6, рубим свет. Продвинутый тип ПНВ в котором используется белое фосфорицирующее покрытие экрана дающие монохромное изображение. Данный тип ПНВ так же имеет встроенный визор службы безопасности.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Hud/pnv-adv.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Eyes/Hud/pnv-adv.rsi
+  - type: ClothingGrantComponent
+    component:
+    - type: NightVision
+  - type: ShowSyndicateIcons
+  - type: ShowHealthBars

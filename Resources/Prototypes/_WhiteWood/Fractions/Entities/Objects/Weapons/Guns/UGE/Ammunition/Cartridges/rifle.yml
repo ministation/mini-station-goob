@@ -1,0 +1,39 @@
+- type: entity
+  id: CartridgeRifle1024
+  name: патрон (10x24 винтовочный)
+  parent: BaseCartridgeCM
+  components:
+  - type: Tag
+    tags:
+      - CartridgeRifle1024
+  - type: CartridgeAmmo
+    proto: BulletRifle1024
+  - type: Sprite
+    sprite: /Textures/_WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Ammunition/TGMSArsenal/Textures/cartrige10x24mm.rsi
+
+- type: Tag
+  id: CartridgeRifle1024
+
+- type: entity
+  id: CartridgeRifle1024AP
+  name: патрон (10x24 винтовочный бронебойный)
+  parent: CartridgeRifle1024
+  components:
+  - type: CartridgeAmmo
+    proto: BulletRifleAP1024
+
+- type: entity
+  id: CartridgeRifle125x60R
+  parent: BaseCartridgeCM
+  name: патрон (12.5x60R винтовочный)
+  components:
+  - type: Tag
+    tags:
+      - CartridgeRifle125x60R
+  - type: CartridgeAmmo
+    proto: BulletRifle125x60R
+  - type: Sprite
+    sprite: /Textures/_WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Ammunition/TGMSArsenal/Textures/cartrige10x24mm.rsi
+
+- type: Tag
+  id: CartridgeRifle125x60R

@@ -1,0 +1,24 @@
+﻿- files: ["scp173.ogg"]
+  license: "Custom"
+  copyright: "The song for SCP-173! Glenn Leroi"
+  source: "https://www.youtube.com/watch?v=ccyyTHwjNds"
+
+- files: ["main.ogg"]
+  license: "Custom"
+  copyright: "SCP:SL Retro Main Menu remixed by Terranhawk"
+  source: "https://www.youtube.com/watch?v=2SwKjxUl1HQ"
+
+- files: ["nine_tailed_fox.ogg"]
+  license: "Custom"
+  copyright: "The song for the nine tailed fox! Glenn Leroi"
+  source: "https://www.youtube.com/watch?v=2SwKjxUl1HQ"
+
+- files: ["xplo.ogg"]
+  license: "Custom"
+  copyright: "Vangers ost - Xplo"
+  source: "https://store.steampowered.com/app/264080/Vangers/"
+
+- files: ["title2.ogg"]
+  license: "Custom"
+  copyright: "Частушки-Фондовушки | SCP Foundation. Stardust project"
+  source: "https://www.youtube.com/watch?v=zDd2vlkjTFc"

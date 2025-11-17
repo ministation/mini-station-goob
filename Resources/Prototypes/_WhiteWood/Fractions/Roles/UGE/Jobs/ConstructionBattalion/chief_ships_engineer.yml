@@ -1,0 +1,34 @@
+- type: job
+  id: ChiefShipsEngineer
+  name: Главный корабельный инженер
+  description: Возглавлять инженерную бригаду, беспробудно пить.
+  playTimeTracker: JobChiefShipsEngineer
+  startingGear: ChiefShipsEngineerGearUGE
+  icon: "JobIconChiefShipsEngineer"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-centcom
+  canBeAntag: false
+  access:
+  - Atmospherics
+  - Engineering
+  - ChiefEngineer
+  - СommonUGE
+  - OfficerUGE
+  - Maintenance
+  - SupplyUGE
+  special:
+  - !type:AddComponentSpecial
+
+
+- type: startingGear
+  id: ChiefShipsEngineerGearUGE
+  equipment:
+    head: ClothingHeadHatHardhatWhite
+    jumpsuit: ClothingUniformJumpsuitChiefEngineer
+    back: ClothingBackpackChiefEngineerFilled
+    shoes: ClothingShoesColorBrown
+    eyes: ClothingEyesGlassesMeson
+    ears: ClothingHeadsetCE
+    belt: ClothingBeltUtilityEngineering
+    id: ChiefShipsEngineerIDCard
+    pocket1: EmergencyMedipen

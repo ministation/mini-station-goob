@@ -1,0 +1,41 @@
+- type: Tag
+  id: MagazinePistol88M4
+
+- type: Tag
+  id: MagazinePistolAramatM5Y3
+
+- type: entity
+  id: MagazinePistol88M4
+  name: "88M4 магазин (45GAP)"
+  parent: BaseMagazineCM
+  components:
+  - type: Tag
+    tags:
+      - MagazinePistol88M4
+  - type: BallisticAmmoProvider
+    proto: CartridgePistol45GAP
+    whitelist:
+      tags:
+        - CartridgePistol45GAP
+    capacity: 16
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Ammunition/Magazines/Pistol/88m4.rsi
+
+
+- type: entity
+  id: MagazinePistolAramatM5Y3
+  name: "M5Y3 магазин (44.40)"
+  parent: BaseMagazineCM
+  components:
+  - type: Tag
+    tags:
+      - MagazinePistolAramatM5Y3
+  - type: BallisticAmmoProvider
+    proto: CartridgePistol4440
+    whitelist:
+      tags:
+        - CartridgePistol4440
+    capacity: 8
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Ammunition/Magazines/Pistol/m4a3.rsi
+

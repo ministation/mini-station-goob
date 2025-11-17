@@ -1,0 +1,141 @@
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: FractionsClothingOldАrmyBeltOfficerBlack
+  name: черная портупея с кобурой
+  suffix: OldWar
+  description: На пряжке ремня выгравирована надпись "Gott mit uns", что означает "С нами Бог".
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Belt/officer_belt_black.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Belt/officer_belt_black.rsi
+  - type: Storage
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+      components:
+        - BallisticAmmoProvider
+        - Ammo
+    maxItemSize: Normal
+    grid:
+    - 0,0,5,1
+  - type: ItemSlots
+    slots:
+      item:
+        name: Holster
+        whitelist:
+          tags:
+          - Sidearm
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: FractionsClothingOldАrmyBeltOfficerGreen
+  name: полевая портупея с кобурой
+  suffix: OldWar
+  description: На пряжке ремня выгравирована надпись "Gott mit uns", что означает "С нами Бог".
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Belt/officer_belt_green.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Belt/officer_belt_green.rsi
+  - type: Storage
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+      components:
+        - BallisticAmmoProvider
+        - Ammo
+    maxItemSize: Normal
+    grid:
+    - 0,0,5,1
+  - type: ItemSlots
+    slots:
+      item:
+        name: Holster
+        whitelist:
+          tags:
+          - Sidearm
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: FractionsClothingOldАrmyBeltSolderBlack
+  name: солдатский ремень
+  suffix: OldWar
+  description: На пряжке ремня выгравирована надпись "Gott mit uns", что означает "С нами Бог"
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Belt/solder_black.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Belt/solder_black.rsi
+  - type: Storage
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+      components:
+        - Stunbaton
+        - FlashOnTrigger
+        - SmokeOnTrigger
+        - Flash
+        - Handcuff
+        - BallisticAmmoProvider
+        - Ammo
+  - type: ItemMapper
+    mapLayers:
+      flashbang:
+        whitelist:
+          components:
+          - FlashOnTrigger
+      stunbaton:
+        whitelist:
+          components:
+          - Stunbaton
+      tear_gas_grenade:
+        whitelist:
+          components:
+          - SmokeOnTrigger
+    sprite: Clothing/Belt/belt_overlay.rsi
+  - type: Appearance
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: FractionsClothingOldАrmyBeltSolderGreen
+  name: солдатский ремень
+  suffix: OldWar
+  description: На пряжке ремня выгравирована надпись "Gott mit uns", что означает "С нами Бог"
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Belt/solder_green.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/OldWar/Belt/solder_green.rsi
+  - type: Storage
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+      components:
+        - Stunbaton
+        - FlashOnTrigger
+        - SmokeOnTrigger
+        - Flash
+        - Handcuff
+        - BallisticAmmoProvider
+        - Ammo
+  - type: ItemMapper
+    mapLayers:
+      flashbang:
+        whitelist:
+          components:
+          - FlashOnTrigger
+      stunbaton:
+        whitelist:
+          components:
+          - Stunbaton
+      tear_gas_grenade:
+        whitelist:
+          components:
+          - SmokeOnTrigger
+    sprite: Clothing/Belt/belt_overlay.rsi
+  - type: Appearance

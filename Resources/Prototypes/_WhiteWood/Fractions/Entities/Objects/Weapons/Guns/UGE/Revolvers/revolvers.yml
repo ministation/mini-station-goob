@@ -1,0 +1,15 @@
+- type: entity
+  name: M44
+  parent: BaseWeaponRevolver
+  id: WeaponRevolverM44
+  suffix: Револьвер, ОПЗ
+  description: Крупнокалиберный револьвер, который иногда используется штурмовыми отрядами и офицерами морской пехоты, а также гражданскими правоохранительными органами. Это оружие большую популярность среди офицеров ОПЗ. Из него застрелился не один боевой офицер. Использует патроны "магнум" 45-го калибра.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Revolvers/m44.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Revolvers/m44.rsi
+  - type: RevolverAmmoProvider
+    capacity: 6
+    chambers: [ True, True, True, True, True, True ]
+    ammoSlots: [ null, null, null, null, null, null ]

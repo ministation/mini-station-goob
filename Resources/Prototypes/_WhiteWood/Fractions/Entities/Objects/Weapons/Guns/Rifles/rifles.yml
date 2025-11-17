@@ -1,0 +1,122 @@
+- type: entity
+  name: АК
+  parent: BaseWeaponRifle
+  id: WeaponRifleAKM
+  description: Культовое оружие всех войн. Использует патроны калибра .30 винтовочный.
+  suffix: Автомат
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/Rifles/akms/big.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/Rifles/akms/tiny.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,2
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/Rifles/akms/tiny.rsi
+  - type: GunWieldBonus
+    minAngle: -15
+    maxAngle: -35
+  - type: Gun
+    minAngle: 24
+    maxAngle: 45
+    fireRate: 5  # 10 в секунду - реалистично. 5, так как сс14
+    soundGunshot:
+      path: /Audio/_WhiteWood/Fractions/Weapons/Guns/Gunshots/mtf-e11-sr.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazineLightRifle
+        insertSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/Rifles/AK/ak_reload.ogg
+        ejectSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/Rifles/AK/ak_unload.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - MagazineLightRifle
+        whitelistFailPopup: gun-magazine-whitelist-fail
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgeLightRifle
+        priority: 1
+        whitelist:
+          tags:
+            - CartridgeLightRifle
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+  - type: Wieldable
+  - type: UseDelay
+    delay: 0.5
+
+- type: entity
+  name: M16A4
+  parent: BaseWeaponRifle
+  id: WeaponRifleM16A4
+  description: Первоклассная армейская штурмовая винтовка. Использует патроны калибра .20 винтовочный.
+  suffix: Автомат
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/Rifles/m16a4/big.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/Rifles/m16a4/tiny.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,2
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/Rifles/m16a4/tiny.rsi
+  - type: GunWieldBonus
+    minAngle: -23
+    maxAngle: -42
+  - type: Gun
+    minAngle: 25
+    maxAngle: 45
+    fireRate: 5
+    soundGunshot:
+      path: /Audio/_WhiteWood/Fractions/Weapons/Guns/Rifles/m16a4/m16a4_shot.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazineRifle
+        insertSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/Rifles/AK/ak_reload.ogg
+        ejectSound: /Audio/_WhiteWood/Fractions/Weapons/Guns/Rifles/AK/ak_unload.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineRifle
+      gun_chamber:
+        name: Chamber
+        startingItem: CartridgeRifle  # 556
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgeRifle  # 556
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+  - type: Wieldable
+  - type: UseDelay
+    delay: 0.5

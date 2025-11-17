@@ -1,0 +1,46 @@
+{
+    "version": 1,
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "license": "CC-BY-SA-3.0",
+    "copyright": "...",
+    "states": [
+        {
+            "name": "full"
+        },
+        {
+            "name": "hull_evac0",
+            "directions": 4
+        },
+        {
+            "name": "hull_evac1",
+            "directions": 4
+        },
+        {
+            "name": "hull_evac2",
+            "directions": 4
+        },
+        {
+            "name": "hull_evac3",
+            "directions": 4
+        },
+        {
+            "name": "hull_evac4",
+            "directions": 4
+        },
+        {
+            "name": "hull_evac5",
+            "directions": 4
+        },
+        {
+            "name": "hull_evac6",
+            "directions": 4
+        },
+        {
+            "name": "hull_evac7",
+            "directions": 4
+        }
+    ]
+}

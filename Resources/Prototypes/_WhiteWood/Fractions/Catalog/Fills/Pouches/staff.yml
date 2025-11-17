@@ -1,0 +1,177 @@
+
+# ПЕРСОНАЛ КОМПЛЕКСА
+
+- type: entityTable
+  id: TableFilledManagerRMCPouchСommand
+  table: !type:AllSelector
+    children:
+    - id: WeaponPistolWalther
+    - id: MagazinePistol19x17
+    - id: BoxFolderRed
+    - id: NukeDisk
+    - id: LuxuryPen
+    - id: SmokeGrenade
+    - id: ClothingMaskGas
+    - id: RubberStampManager
+
+- type: entityTable
+  id: TableFilledHead_of_the_zoneRMCPouchСommand
+  table: !type:AllSelector
+    children:
+    - id: BoxFolderRed
+    - id: LuxuryPen
+    - id: ClothingMaskGas
+    - id: SmokeGrenade
+    - id: Flash
+    - id: RubberStampHead_of_the_zone
+
+- type: entityTable
+  id: TableFilledHOSRMCPouchСommand
+  table: !type:AllSelector
+    children:
+    - id: WeaponPistolCom-18
+    - id: MagazinePistol
+    - id: BoxFolderRed
+    - id: SmokeGrenade
+    - id: LuxuryPen
+
+- type: entityTable
+  id: TableFilledRMCPouchLargeDropFilled
+  table: !type:AllSelector
+    children:
+    - id: DrinkMREFlask
+    - id: FoodSnackNutribrick
+    - id: EmergencyOxygenTankFilled
+    - id: EmergencyMedipen
+    - id: Flare
+
+- type: entityTable
+  id: TableFilledSCPBeltSECHOS
+  table: !type:AllSelector
+    children:
+    - id: Stunbaton
+    - id: Handcuffs
+    - id: Handcuffs
+    - id: Zipties
+    - id: GrenadeFlashBang
+    - id: MagazinePistol
+    - id: MagazinePistol
+    - id: Zipties
+
+- type: entityTable
+  id: TableFilledSCPBeltSEC
+  table: !type:AllSelector
+    children:
+    - id: Stunbaton
+    - id: Handcuffs
+    - id: Handcuffs
+    - id: Zipties
+    - id: GrenadeFlashBang
+    - id: MagazinePistol
+    - id: MagazinePistolSubMachineGun
+    - id: Zipties
+
+- type: entityTable
+  id: TableFilledSCPRMCPouchMagazine
+  table: !type:AllSelector
+    children:
+    - id: MagazineRifle
+    - id: MagazineRifle
+    - id: MagazineRifle
+    - id: MagazineRifle
+    - id: MagazineRifle
+    - id: MagazineRifle
+    - id: MagazineRifle
+
+- type: entityTable
+  id: TableFilledSCPRMCPouchMagazineLarge
+  table: !type:AllSelector
+    children:
+    - id: MagazinePistolSubMachineGun
+    - id: MagazinePistolSubMachineGun
+    - id: MagazinePistolSubMachineGun
+    - id: MagazinePistolSubMachineGun
+
+- type: entity
+  id: PouchСommandManagerFilled
+  parent: RMCPouchСommand
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:NestedSelector
+        tableId: TableFilledManagerRMCPouchСommand
+
+- type: entity
+  id: PouchСommandHead_of_the_zoneFilled
+  parent: RMCPouchСommand
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:NestedSelector
+        tableId: TableFilledHead_of_the_zoneRMCPouchСommand
+
+- type: entity
+  id: PouchСommandHOSFilled
+  parent: RMCPouchСommand
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:NestedSelector
+        tableId: TableFilledHOSRMCPouchСommand
+
+- type: entity
+  id: RMCPouchLargeDropFilled
+  parent: RMCPouchLargeDrop
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:NestedSelector
+        tableId: TableFilledRMCPouchLargeDropFilled
+
+- type: entity
+  id: RMCBeltPouchMagazineFilled
+  parent: RMCPouchMagazine
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:NestedSelector
+        tableId: TableFilledSCPRMCPouchMagazine
+
+- type: entity
+  id: RMCBeltPouchMagazineLargeFilled
+  parent: RMCPouchMagazineLarge
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:NestedSelector
+        tableId: TableFilledSCPRMCPouchMagazineLarge
+
+- type: entity
+  id: RMCBeltHolsterBeltSECFilled
+  name: пояс охраны
+  description: Может вмещать различное снаряжение службы безопасности, такое как наручники и вспышки.
+  parent: ClothingBeltSecurity
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:NestedSelector
+        tableId: TableFilledSCPBeltSEC
+
+- type: entity
+  id: RMCBeltHolsterBeltHOSFilled
+  name: пояс охраны
+  description: Может вмещать различное снаряжение службы безопасности, такое как наручники и вспышки.
+  parent: ClothingBeltSecurity
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:NestedSelector
+        tableId: TableFilledSCPBeltSECHOS

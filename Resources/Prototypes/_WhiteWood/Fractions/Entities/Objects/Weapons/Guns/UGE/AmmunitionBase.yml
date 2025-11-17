@@ -1,0 +1,82 @@
+# Базовый магазин
+- type: entity
+  id: BaseMagazineCM
+  name: BaseMagazineCM
+  parent: BaseItem
+  abstract: true
+  suffix: ОПЗ
+  components:
+  - type: Tag
+  - type: Item
+    size: Small
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    soundRack:
+      path: /Audio/Corvax/Weapons/Guns/Cock/shotgun_cock.ogg # Corvax-Guns
+    #capacity: 10
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 2
+    zeroVisible: false
+  - type: Appearance
+
+# Базовая коробка
+- type: entity
+  abstract: true
+  parent: BaseItem
+  id: BaseBoxCM
+  name: Box
+  suffix: ОПЗ
+  components:
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    #whitelist:
+    #  tags:
+    #    - CartridgePistol
+    #proto: Cartrige9mm
+    #capacity: 60
+  - type: Item
+    size: Normal
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/rifle.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 2
+    zeroVisible: false
+  - type: Appearance
+
+# Базовый патрон
+- type: entity
+  id: BaseCartridgeCM
+  name: BaseCartridgeCM
+  parent: BaseCartridge
+  abstract: true
+  components:
+  - type: CartridgeAmmo
+    #proto: BulletRifle1024
+    deleteOnSpawn: true
+  - type: StaticPrice
+    price: 0
+  - type: Appearance
+  - type: SpentAmmoVisuals
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.AmmoVisualLayers.Base"]

@@ -1,0 +1,24 @@
+- type: job
+  id: AlfaSpecialist
+  name: Специалист отряда "Альфа"
+  description: Использовать тяжелое вооружение, чтобы сохранить свой отряд в целости и добить ксеноморфов.
+  playTimeTracker: JobAlfaSpecialist
+  startingGear: AlfaSpecialistGearUGE
+  icon: "JobIconAlfaSpecialist"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  access:
+  - SquadSpecialist
+  accessGroups:
+  - SquadAlpha
+
+
+- type: startingGear
+  id: AlfaSpecialistGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitMarineAlpha
+    id: ASpecialistsIDCard
+    pocket1: EmergencyMedipen

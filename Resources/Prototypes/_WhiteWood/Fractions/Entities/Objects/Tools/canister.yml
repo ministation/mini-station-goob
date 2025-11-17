@@ -1,0 +1,56 @@
+- type: entity
+  parent: BaseItem
+  id: WeldingFuelCanister
+  name: топливная канистра
+  suffix: Empty
+  description: Старая классика, проверенная не одной войной. Поговаривают, что если приложить ухо, то можно услышать Эрвина Роммеля.
+  components:
+  - type: Clickable
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Tools/canister.rsi
+    layers:
+    - state: icon
+  - type: Item
+    size: Normal
+  - type: SolutionContainerManager
+    solutions:
+      bucket:
+        maxVol: 250
+  - type: SolutionTransfer
+    transferAmount: 100
+    maxTransferAmount: 100
+    minTransferAmount: 10
+    canChangeTransferAmount: true
+  - type: ReagentTank
+    tankType: Fuel
+  - type: UserInterface
+    interfaces:
+      enum.TransferAmountUiKey.Key:
+        type: TransferAmountBoundUserInterface
+  - type: DrawableSolution
+    solution: bucket
+  - type: RefillableSolution
+    solution: bucket
+  - type: DrainableSolution
+    solution: bucket
+  - type: ExaminableSolution
+    solution: bucket
+  - type: Tag
+    tags:
+      - Bucket
+  - type: PhysicalComposition
+    materialComposition:
+      Plastic: 50
+
+- type: entity
+  parent: WeldingFuelCanister
+  id: WeldingFuelCanisterFull
+  name: топливная канистра
+  suffix: Full
+  components:
+    - type: SolutionContainerManager
+      solutions:
+        bucket:
+          reagents:
+          - ReagentId: WeldingFuel
+            Quantity: 250

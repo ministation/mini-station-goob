@@ -1,0 +1,29 @@
+- type: job
+  id: MilitaryPoliceOfficer
+  name: Офицер военной полиции
+  description: Поддерживать исполнение военного закона.
+  playTimeTracker: JobMilitaryPoliceOfficer
+  startingGear: MilitaryPoliceOfficerGearUGE
+  icon: "JobIconMilitaryPoliceOfficer"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-staff-officer
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  accessGroups:
+  - MilitaryPoliceOfficerUGE
+
+- type: startingGear
+  id: MilitaryPoliceOfficerGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitOfficerMilitaryPolice
+    back: ClothingBackpackHOSFilled
+    shoes: ClothingShoesBootsOldАrmy # Corvax-Resprite
+    outerClothing: ClothingOuterCoatHoSTrench
+    eyes: ClothingEyesGlassesSecurity
+    head: ClothingHeadHatBeretHoS
+    gloves: ClothingHandsGlovesCombat
+    belt: RMCFieldBeltHolster
+    id: PoliceOfficerIDCard
+    ears: ClothingHeadsetSecurity
+    pocket1: EmergencyMedipen

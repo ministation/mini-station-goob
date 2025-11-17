@@ -1,0 +1,280 @@
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorLight
+  name: легкая броня M3
+  suffix: ОПЗ
+  description: Облегченная, урезанная версия стандартной брони модели M3. Она жертвует прочностью ради большей скорости.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/light.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/light.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.80
+        Slash: 0.60
+        Piercing: 0.90
+        Heat: 0.60
+        Caustic: 0.70
+  - type: ExplosionResistance
+    damageCoefficient: 0.90
+  - type: ClothingSpeedModifier # light armor speed
+    walkModifier: .800
+    sprintModifier: .800
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorMedium
+  name: средняя броня M3
+  suffix: ОПЗ
+  description: Нагрудник стандартного образца M3. Защищает грудь от баллистических пуль, предметов с холодным оружием и несчастных случаев.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/medium.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/medium.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.40
+        Slash: 0.40
+        Piercing: 0.40
+        Heat: 0.45
+        Caustic: 0.40
+  - type: ExplosionResistance
+    damageCoefficient: 0.50
+  - type: ClothingSpeedModifier
+    walkModifier: 0.760
+    sprintModifier: 0.760
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorHeavy
+  name: тяжелая броня M3
+  suffix: ОПЗ
+  description: Являясь более тяжелой версией стандартной брони модели M3, эта броня в первую очередь предназначена для защиты от баллистических, взрывных и внутренних повреждений, однако ее недостатком является увеличенный объем и, следовательно, сниженная скорость передвижения, а также дополнительная защита от стандартных ударов тупым предметом и биологических угроз.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/heavy.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/heavy.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.25
+        Slash: 0.25
+        Piercing: 0.25
+        Heat: 0.50
+        Caustic: 0.25
+  - type: ExplosionResistance
+    damageCoefficient: 0.40
+  - type: ClothingSpeedModifier
+    walkModifier: 0.699
+    sprintModifier: 0.699
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorM3SPEC
+  name: броня M3-SPEC
+  suffix: ОПЗ
+  description: Серьезная модификация стандартной брони M3. Выполнен в приятных зеленых тонах. Защищает грудь от баллистических пуль, предметов с холодным оружием и несчастных случаев. До краев наполненный прокладками, покрытием и всеми видами баллистической защиты.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/spec.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/spec.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.33
+        Slash: 0.33
+        Piercing: 0.33
+        Heat: 0.45
+        Caustic: 0.33
+  - type: ExplosionResistance
+    damageCoefficient: 0.40
+  - type: ClothingSpeedModifier
+    walkModifier: 0.760
+    sprintModifier: 0.760
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorGhilleM45
+  name: камуфляжная броня M-45
+  suffix: ОПЗ
+  description: Легкий маскировочный костюм ghillie, используемый снайперами UNCONC в разведывательных миссиях. Очень легкий, но практически не защищает.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/ghille.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/ghille.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.60
+        Slash: 0.40
+        Piercing: 0.60
+        Heat: 0.50
+        Caustic: 0.60
+  - type: ExplosionResistance
+    damageCoefficient: 0.80
+  - type: ClothingSpeedModifier
+    walkModifier: .790
+    sprintModifier: .790
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorM4
+  name: броня M4
+  suffix: ОПЗ
+  description: Изготовленный на заказ комплект брони и тщательно продуманный гибрид брони. Прочный, но в то же время маневренный.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/m4.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/m4.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.38
+        Slash: 0.38
+        Piercing: 0.38
+        Heat: 0.46
+        Caustic: 0.38
+  - type: ExplosionResistance
+    damageCoefficient: 0.40
+  - type: ClothingSpeedModifier
+    walkModifier: 0.760
+    sprintModifier: 0.760
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorOfficer
+  name: офицерская броня M3
+  suffix: ОПЗ
+  description: Хорошо сделанный бронекостюм модели M3, который обычно находится в руках офицеров. Полезен для того, чтобы ваши люди знали, кто главный в бою.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/officer.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/officer.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.35
+        Slash: 0.35
+        Piercing: 0.35
+        Heat: 0.42
+        Caustic: 0.35
+  - type: ExplosionResistance
+    damageCoefficient: 0.45
+  - type: ClothingSpeedModifier
+    walkModifier: 0.760
+    sprintModifier: 0.760
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorOfficerBlack
+  name: офицерская броня M3
+  suffix: ОПЗ
+  description: Хорошо сделанный бронекостюм модели M3, который обычно находится в руках офицеров более высокого ранга. Полезен для того, чтобы ваши люди знали, кто главный в бою.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/officer_black.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/officer_black.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.35
+        Slash: 0.35
+        Piercing: 0.35
+        Heat: 0.42
+        Caustic: 0.35
+  - type: ExplosionResistance
+    damageCoefficient: 0.45
+  - type: ClothingSpeedModifier
+    walkModifier: 0.780
+    sprintModifier: 0.780
+
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorField_commander
+  name: броня полевого командира
+  suffix: ОПЗ
+  description: Изготовленный на заказ комплект специальный комплект брони. Разработан специально для высокопоставленных офицеров, сотрудников службы безопасности и корпоративных наемников. Этот костюм выглядит так, как будто принадлежит офицеру высокого ранга.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/armor_field_commander.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/armor_field_commander.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.20
+        Slash: 0.20
+        Piercing: 0.20
+        Heat: 0.40
+        Caustic: 0.30
+  - type: ExplosionResistance
+    damageCoefficient: 0.40
+  - type: ClothingSpeedModifier
+    walkModifier: .790
+    sprintModifier: .790
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorLightЕxoskeletonVA
+  name: прототип экзоскелета версии А
+  suffix: ОПЗ
+  description: Обладает низким уровнем защиты. Этот комплект помечен как "Легкий Стрелковый". Используется теми, кто отдает предпочтение более быстрому передвижению, а не защите, например скаутами или разведчиками.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/exoskeleton_v1.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/exoskeleton_v1.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Slash: 0.60
+        Piercing: 0.90
+        Heat: 0.60
+        Caustic: 0.70
+  - type: ExplosionResistance
+    damageCoefficient: 0.90
+  - type: SpeedModifierContactCapClothing # Corvax-MRP
+    maxContactSprintSlowdown: 0.9
+    maxContactWalkSlowdown: 0.9
+  - type: ClothingSpeedModifier
+    walkModifier: 1.5
+    sprintModifier: 1.5
+
+- type: entity
+  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  id: CMArmorLightЕxoskeletonVC
+  name: прототип экзоскелета версии С
+  suffix: ОПЗ
+  description: Обладает низким уровнем защиты. Этот комплект помечен как "Тыловой". Используется теми, кто отдает предпочтение более быстрому передвижению, а не защите, например штаб-офицерами.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/exoskeleton_v2.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/OuterClothing/Armor/exoskeleton_v2.rsi
+  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    modifiers:
+      coefficients:
+        Blunt: 0.80
+        Slash: 0.60
+        Piercing: 0.99
+        Heat: 0.70
+        Caustic: 0.70
+  - type: ExplosionResistance
+    damageCoefficient: 0.90
+  - type: SpeedModifierContactCapClothing # Corvax-MRP
+    maxContactSprintSlowdown: 0.9
+    maxContactWalkSlowdown: 0.9
+  - type: ClothingSpeedModifier
+    walkModifier: 1.7
+    sprintModifier: 1.7

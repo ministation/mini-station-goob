@@ -1,0 +1,21 @@
+- type: job
+  id: BravoMarine
+  name: Медик отряда "Браво"
+  description: Следовать приказам, забывать код от ядерной боеголовки, бесславно помирать от дружественного огня
+  playTimeTracker: JobBravoMarine
+  startingGear: BravoMarineGearUGE
+  icon: "JobIconBravoMarine"
+  overrideConsoleVisibility: false
+  supervisors: job-supervisors-commander
+  canBeAntag: false
+  special:
+  - !type:AddComponentSpecial
+  accessGroups:
+  - SquadBravo
+
+- type: startingGear
+  id: BravoMarineGearUGE
+  equipment:
+    jumpsuit: UGEJumpsuitMarineBravo
+    id: BRiflemanIDCard
+    pocket1: EmergencyMedipen

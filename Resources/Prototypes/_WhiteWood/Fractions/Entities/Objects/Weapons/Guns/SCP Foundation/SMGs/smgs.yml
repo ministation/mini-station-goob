@@ -1,0 +1,39 @@
+- type: entity
+  name: P-90
+  parent: BaseWeaponSMGCM
+  id: WeaponSubMachineGunP90
+  suffix: Пистолет-пулемёт
+  description: Используется в вооружённых силах, подразделениях специального назначения и правоохранительных структурах. Использует патроны калибра .35 "авто".
+  components:
+  - type: Item
+    size: Normal
+    shape:
+    - 0,0,3,2
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/SMGs/FNP90.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Objects/Weapons/Guns/SCP Foundation/SMGs/FNP90.rsi
+  - type: GunWieldBonus
+    minAngle: -5
+    maxAngle: -5
+  - type: Gun
+    minAngle: 15
+    maxAngle: 25
+    fireRate: 8
+    angleIncrease: 3
+    angleDecay: 16
+    soundGunshot:
+      path: /Audio/_CM/Weapons/SMP98shot.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        startingItem: MagazinePistolSubMachineGun
+        whitelist:
+          tags:
+            - MagazinePistolSubMachineGun
+      gun_chamber:
+        whitelist:
+          tags:
+            - CartridgePistol
+
+

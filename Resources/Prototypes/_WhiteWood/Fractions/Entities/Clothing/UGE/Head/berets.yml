@@ -1,0 +1,80 @@
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadBeretAlpha
+  name: красный берет
+  description: Красный берет с кокардой.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/beret_alpha.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/beret_alpha.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadBeretBravo
+  name: желтый берет
+  description: Желтый берет с кокардой.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/beret_bravo.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/beret_bravo.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadBeretDelta
+  name: голубой берет
+  description: Голубой берет с кокардой.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/beret_delta.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/beret_delta.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadBeretCharlie
+  name: фиолетовый берет
+  description: Фиолетовый берет с кокардой.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/beret_charlie.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/beret_charlie.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCapFieldCommander
+  name: берет полевого командира
+  suffix: ОПЗ
+  description: Темно-синий берет с офицерской кокардой. Синий цвет берета символизирует верность, уверенность и политическую позицию - основные качества настоящего полевого командира.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/field_commander.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/field_commander.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadBeretOfficerWhite
+  name: офицерский парадный берет
+  suffix: ОПЗ
+  description: Белый берет офицерской кокардой. Его ослепительно белый цвет подчеркивает силу и класс.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/officer_white.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/officer_white.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadBereOfficer
+  name: офицерский берет
+  suffix: ОПЗ
+  description: Чёрный берет офицерской кокардой. Его элегантный черный цвет подчеркивает силу и класс.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/officer.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Head/Hats/berets/officer.rsi
+

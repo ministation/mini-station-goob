@@ -1,0 +1,44 @@
+- type: entity
+  parent: EncryptionKey
+  id: EncryptionKeyO4
+  name: central command encryption key
+  description: An encryption key used by captain's bosses.
+  components:
+  - type: EncryptionKey
+    channels:
+    - O4_chat_radio
+    defaultChannel: O4_chat_radio
+  - type: Sprite
+    layers:
+    - state: crypt_gold
+    - state: hop_label
+
+- type: entity
+  parent: EncryptionKey
+  id: EncryptionKeyMTF
+  name: central command encryption key
+  description: An encryption key used by captain's bosses.
+  components:
+  - type: EncryptionKey
+    channels:
+    - MTF_chat_radio
+    defaultChannel: MTF_chat_radio
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: com_label
+
+- type: entity
+  parent: EncryptionKey
+  id: EncryptionKeyChaos
+  name: blood-red encryption key
+  description: An encryption key used by... wait... Who is the owner of this chip?
+  components:
+  - type: EncryptionKey
+    channels:
+    - Chaos_chat_radio
+    defaultChannel: Chaos_chat_radio
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: synd_label

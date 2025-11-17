@@ -1,0 +1,136 @@
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: RMCPouchMedkit
+  name: подсумок для медицины
+  description: Он специально сделан для хранения медицинских принадлежностей.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Pouches/medkit.rsi
+  - type: Clothing
+    slots:
+    - pocket
+  - type: Storage
+    maxItemSize: Normal
+    whitelist:
+      tags:
+        - Wrench
+        - Bottle
+        - Spray
+        - Brutepack
+        - Gauze
+        - Ointment
+        - CigPack
+        - Pill
+        - PillCanister
+        - Radio
+      components:
+        - Hypospray
+        - Injector
+  - type: Appearance
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: RMCPouchLargeDrop
+  name: подсумок общего назначения
+  description: Сумка общего назначения, используемая для переноски большего количества предметов разного размера.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Pouches/large_drop.rsi
+  - type: Clothing
+    slots:
+    - pocket
+  - type: Storage
+    maxItemSize: Normal
+    grid:
+    - 0,0,3,1 #4 slots
+  - type: ItemMapper
+    mapLayers:
+      flashbang:
+        whitelist:
+          components:
+          - FlashOnTrigger
+      stunbaton:
+        whitelist:
+          components:
+          - Stunbaton
+      tear_gas_grenade:
+        whitelist:
+          components:
+          - SmokeOnTrigger
+    sprite: Clothing/Belt/belt_overlay.rsi
+  - type: Appearance
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: RMCPouchСommand
+  name: командирский подсумок
+  description: Специальная прочная сумка, выдаваемая командирам. В ней можно хранить оружие, командирский планшет и бинокль.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Pouches/command.rsi
+  - type: Clothing
+    slots:
+    - pocket
+  - type: Storage
+    maxItemSize: Normal
+    grid:
+    - 0,0,4,3 #4 slots
+  - type: Appearance
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: RMCPouchMagazineLarge
+  name: подсумок для магазинов
+  description: В нем может поместиться много обойм.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Pouches/medium_ammo_mag.rsi
+  - type: Clothing
+    slots:
+    - pocket
+  - type: Storage
+    maxItemSize: Normal
+    grid:
+    - 0,0,3,1 #4 slots
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+      components:
+        - Stunbaton
+        - FlashOnTrigger
+        - SmokeOnTrigger
+        - Flash
+        - Handcuff
+        - BallisticAmmoProvider
+        - Ammo
+  - type: Appearance
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: RMCPouchMagazine
+  name: большой подсумок для магазинов
+  description: В нем может поместиться много обойм.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Pouches/large_ammo_mag.rsi
+  - type: Clothing
+    slots:
+    - pocket
+  - type: Storage
+    maxItemSize: Normal
+    grid:
+    - 0,0,6,1 #7 slots
+    whitelist:
+      tags:
+        - CigPack
+        - Taser
+      components:
+        - Stunbaton
+        - FlashOnTrigger
+        - SmokeOnTrigger
+        - Flash
+        - Handcuff
+        - BallisticAmmoProvider
+        - Ammo
+  - type: Appearance

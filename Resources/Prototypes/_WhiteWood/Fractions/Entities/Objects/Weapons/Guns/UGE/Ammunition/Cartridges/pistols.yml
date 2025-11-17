@@ -1,0 +1,31 @@
+- type: entity
+  id: CartridgePistol45GAP
+  name: патрон (45GAP)
+  parent: BaseCartridgeCM
+  components:
+  - type: Tag
+    tags:
+      - CartridgePistol45GAP
+  - type: CartridgeAmmo
+    proto: BulletPistol45GAP
+  - type: Sprite
+    sprite: /Textures/_WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Ammunition/TGMSArsenal/Textures/cartrige357.rsi
+
+- type: Tag
+  id: CartridgePistol45GAP
+
+- type: entity
+  id: CartridgePistol4440
+  name: патрон (44.40)
+  parent: BaseCartridgeCM
+  components:
+  - type: Tag
+    tags:
+      - CartridgePistol4440
+  - type: CartridgeAmmo
+    proto: BulletPistol4440
+  - type: Sprite
+    sprite: /Textures/_WhiteWood/Fractions/Objects/Weapons/Guns/UGE/Ammunition/TGMSArsenal/Textures/cartrige9mm.rsi
+
+- type: Tag
+  id: CartridgePistol4440

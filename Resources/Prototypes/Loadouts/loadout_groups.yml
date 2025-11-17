@@ -365,6 +365,13 @@
   - CaptainJacket # Goobstation
 
 - type: loadoutGroup
+  id: CaptainShoes
+  name: Капитан, обувь
+  loadouts:
+  - OldАrmy
+  - Laceup
+
+- type: loadoutGroup
   id: HoPHead
   name: loadout-group-hop-head
   minLimit: 0

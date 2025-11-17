@@ -1,0 +1,21 @@
+- type: entity
+  id: BulletSmg458Socom
+  name: bullet (458 Socom)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 12
+
+- type: entity
+  id: BulletSmg450Brushmaster
+  name: bullet (450 Brushmaster)
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 15

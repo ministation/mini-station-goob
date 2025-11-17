@@ -1,0 +1,47 @@
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: CMBootsBlack
+  name: боевые ботинки
+  suffix: ОПЗ
+  description: Модифицированная пара армейских ботинок, в том числе с несколькими урезанными участками и подкладкой из ткани и какой-то разновидности кожи.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Shoes/rmc.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Shoes/rmc.rsi
+    - type: ClothingSlowOnDamageModifier
+      modifier: 0.4
+    - type: NoSlip
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: CMBootsJackboots
+  name: боевые ботинки морской пехоты
+  suffix: ОПЗ
+  description: Армейские ботинки для боевых действий. Они предназначены для использования в любых боевых ситуациях. По камням, по льду, сквозь солнце и песок, грязь и снег, в бушующую воду и голодное болото - они никогда вас не подведут.
+  components:
+    - type: Sprite
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Shoes/rmc1.rsi
+    - type: Clothing
+      sprite: _WhiteWood/Fractions/Clothing/UGE/Shoes/rmc1.rsi
+    - type: ClothingSlowOnDamageModifier
+      modifier: 0.5
+
+- type: entity
+  parent: ClothingShoesBootsMag
+  id: ClothingShoesBootsMagSec
+  name: боевые магнитные ботинки
+  suffix: ОПЗ
+  description: Защитные магнитные ботинки. Помогают бойцам МОГ оставаться в вертикальном положении и выполнять боевые задачи в любых условиях.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Shoes/magboots-sec.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WhiteWood/Fractions/Clothing/UGE/Shoes/magboots-sec.rsi
+  - type: Magboots
+  - type: ClothingSpeedModifier
+    walkModifier: 0.75
+    sprintModifier: 0.7
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.75

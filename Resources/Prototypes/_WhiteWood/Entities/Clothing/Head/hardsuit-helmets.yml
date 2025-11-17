@@ -1,0 +1,40 @@
+#ERT Leader Hardsuit WhiteWood
+- type: entity
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieCommander ]
+  id: ClothingHeadHelmetHardsuitERTHeavyLeader
+  name: Тяжелый шлем обр
+  description: Специальный шлем для тяжелой брони.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
+  - type: PointLight 
+    color: cyan
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+#ERT Security Hardsuit WhiteWood
+- type: entity
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieCommander ]
+  id: ClothingHeadHelmetHardsuitERTHeavySecurity
+  name: Тяжелый шелм обр
+  description: Специальный шлем для тяжелой брони.
+  components:
+  - type: Sprite
+    sprite: _WhiteWood/Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
+  - type: Clothing
+    sprite: _WhiteWood/Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
+  - type: PointLight
+    color: cyan
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9       
