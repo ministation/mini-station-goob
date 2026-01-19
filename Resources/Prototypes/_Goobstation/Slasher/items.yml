@@ -32,7 +32,7 @@
     pryPowered: True
     speedModifier: 1.5
   - type: ThrowingAngle
-    angle: 225
+    angle: 217
 
 - type: entity
   parent: WeldingMaskBase
