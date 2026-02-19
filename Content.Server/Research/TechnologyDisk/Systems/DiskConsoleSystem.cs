@@ -9,16 +9,13 @@
 
 using System;
 using System.Collections.Generic;
-using Content.Server.Power.EntitySystems;
 using Content.Server.Research.Systems;
 using Content.Server.Research.TechnologyDisk.Components;
-using Content.Server.Stack;
 using Content.Shared._Mini.Converter;
-using Content.Shared.Power;
+using Content.Shared.UserInterface;
 using Content.Shared.Research;
 using Content.Shared.Research.Components;
 using Content.Shared.Research.TechnologyDisk.Components;
-using Content.Shared.UserInterface;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
@@ -32,7 +29,6 @@ public sealed class DiskConsoleSystem : EntitySystem
     [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly ResearchSystem _research = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly StackSystem _stack = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
     /// <inheritdoc/>
@@ -119,9 +115,6 @@ public sealed class DiskConsoleSystem : EntitySystem
         if (HasComp<DiskConsolePrintingComponent>(uid))
             return false;
 
-        if (!this.IsPowered(uid, EntityManager))
-            return false;
-
         if (!_research.TryGetClientServer(uid, out var server, out var serverComp))
             return false;
 
@@ -158,12 +151,6 @@ public sealed class DiskConsoleSystem : EntitySystem
         if (!TryFindNearestConverter(xform, console.AdjacentConverterRange, out var converterUid, out var converter))
             return false;
 
-        if (converter.PointsPerTelecrystal <= 0)
-            return false;
-
-        if (!this.IsPowered(converterUid, EntityManager))
-            return false;
-
         var value = diskComp.TierWeightPrototype == "RareTechDiskTierWeights"
             ? converter.RareTechnologyDiskPoints
             : converter.TechnologyDiskPoints;
@@ -181,9 +168,10 @@ public sealed class DiskConsoleSystem : EntitySystem
             return true;
 
         var coords = Transform(converterUid).Coordinates;
-        var telecrystalStack = Spawn("Telecrystal1", coords);
-        _stack.SetCount(telecrystalStack, payout);
-        _stack.TryMergeToContacts(telecrystalStack);
+        for (var i = 0; i < payout; i++)
+        {
+            Spawn("Telecrystal1", coords);
+        }
 
         return true;
     }
@@ -223,14 +211,6 @@ public sealed class DiskConsoleSystem : EntitySystem
     private void OnRegistrationChanged(EntityUid uid, DiskConsoleComponent component, ref ResearchRegistrationChangedEvent args)
     {
         TryStartAutoPrint(uid, component);
-        UpdateUserInterface(uid, component);
-    }
-
-    private void OnPowerChanged(EntityUid uid, DiskConsoleComponent component, ref PowerChangedEvent args)
-    {
-        if (args.Powered)
-            TryStartAutoPrint(uid, component);
-
         UpdateUserInterface(uid, component);
     }
 

@@ -10,8 +10,6 @@ using Content.Shared.Research.Components;
 using Content.Shared.Research.Prototypes;
 using Content.Shared.Research.Systems;
 using Content.Shared.Research.TechnologyDisk.Components;
-using Content.Shared.Power.EntitySystems;
-using Content.Shared.Stacks;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Network;
@@ -77,25 +75,6 @@ public sealed class TechnologyDiskSystem : EntitySystem
             if (!_net.IsServer)
                 return;
 
-            if (converter.PointsPerTelecrystal <= 0)
-            {
-                _popup.PopupClient(Loc.GetString("mini-converter-examine-disabled"), target, args.User);
-                return;
-            }
-
-            if (!_powerReceiver.IsPowered(target))
-            {
-                _popup.PopupClient(Loc.GetString("tech-disk-converter-no-power-popup"), target, args.User);
-                return;
-            }
-
-            if (TryComp<AccessReaderComponent>(target, out var reader) &&
-                !_accessReader.IsAllowed(args.User, target, reader))
-            {
-                _popup.PopupClient(Loc.GetString("tech-disk-converter-no-access-popup"), target, args.User);
-                return;
-            }
-
             var value = ent.Comp.TierWeightPrototype == "RareTechDiskTierWeights"
                 ? converter.RareTechnologyDiskPoints
                 : converter.TechnologyDiskPoints;
@@ -114,9 +93,10 @@ public sealed class TechnologyDiskSystem : EntitySystem
 
             if (payout > 0)
             {
-                var telecrystalStack = Spawn("Telecrystal1", Transform(target).Coordinates);
-                _stack.SetCount(telecrystalStack, payout);
-                _stack.TryMergeToContacts(telecrystalStack);
+                for (var i = 0; i < payout; i++)
+                {
+                    Spawn("Telecrystal1", Transform(target).Coordinates);
+                }
 
                 _popup.PopupClient(Loc.GetString("tech-disk-exchanged-yield",
                         ("amount", payout),
