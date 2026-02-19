@@ -91,6 +91,24 @@ public sealed partial class IdCardConsoleComponent : Component
         "CentralCommand" //Corvax-Goob
     };
 
+    /// <summary>
+    /// Shows quick preset button that applies all accesses available on the privileged ID.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool ShowFullAccessButton = false;
+
+    /// <summary>
+    /// Shows quick preset button that applies broad access minus <see cref="ExtendedAccessExclusions"/>.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool ShowExtendedAccessButton = false;
+
+    /// <summary>
+    /// Accesses excluded from the "extended" preset.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public List<ProtoId<AccessLevelPrototype>> ExtendedAccessExclusions = new();
+
     [Serializable, NetSerializable]
     public sealed class IdCardConsoleBoundUserInterfaceState : BoundUserInterfaceState
     {

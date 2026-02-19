@@ -13,6 +13,7 @@
   - TypanResearchDirector
   - TypanScience
   - TypanService
+  - TypanTechnicalOperationsSupervisor
   - TypanVault
   - TypanExternal
 
@@ -63,6 +64,10 @@
 - type: accessLevel
   id: TypanService
   name: id-card-access-taypan-service
+
+- type: accessLevel
+  id: TypanTechnicalOperationsSupervisor
+  name: id-card-access-taypan-tech-supervisor
 
 - type: accessLevel
   id: TypanVault

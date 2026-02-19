@@ -29,6 +29,6 @@
           path: Maps/Shuttles/typan_cargo_shuttle.yml
         - type: StationGoal
           goals:
-          - SyndicateAi
-          - SyndicateCargo
-          - SyndicateMaid
+          - TypanSilentResearch
+          - TypanGhostLogistics
+          - TypanDeepCover

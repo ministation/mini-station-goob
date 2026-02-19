@@ -83,6 +83,31 @@
 
 - type: entity
   parent: IDCardStandard
+  id: TypanIDCardTechnicalOperationsSupervisor
+  suffix: Тайпан
+  name: ID-card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typaneng.rsi
+    layers:
+    - state: typancardeng
+  - type: PresetIdCard
+    job: TypanTechnicalOperationsSupervisor
+  - type: Access
+    tags:
+    - TypanAtmospherics
+    - TypanCargo
+    - TypanCommand
+    - TypanEngineering
+    - TypanMaint
+    - TypanMedical
+    - TypanScience
+    - TypanService
+    - TypanTechnicalOperationsSupervisor
+    - TypanExternal
+
+- type: entity
+  parent: IDCardStandard
   id: TypanIDCardRd
   name: ID-card
   suffix: Тайпан

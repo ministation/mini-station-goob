@@ -256,15 +256,35 @@ namespace Content.Server.Communications
 
         private bool CanCallOrRecall(CommunicationsConsoleComponent comp)
         {
+            return _roundEndSystem.ExpectedCountdownEnd is null
+                ? CanCallShuttle(comp)
+                : CanRecallShuttle(comp);
+        }
+
+        private bool CanCallShuttle(CommunicationsConsoleComponent comp)
+        {
             // Defer to what the round end system thinks we should be able to do.
             if (_emergency.EmergencyShuttleArrived || !_roundEndSystem.CanCallOrRecall())
                 return false;
 
-            // Calling shuttle checks
-            if (_roundEndSystem.ExpectedCountdownEnd is null)
-                return comp.CanCallShuttle;
+            if (_roundEndSystem.ExpectedCountdownEnd is not null)
+                return false;
 
-            // Recalling shuttle checks
+            return comp.CanCallShuttle;
+        }
+
+        private bool CanRecallShuttle(CommunicationsConsoleComponent comp)
+        {
+            // Defer to what the round end system thinks we should be able to do.
+            if (_emergency.EmergencyShuttleArrived || !_roundEndSystem.CanCallOrRecall())
+                return false;
+
+            if (_roundEndSystem.ExpectedCountdownEnd is null)
+                return false;
+
+            if (!comp.CanRecallShuttle)
+                return false;
+
             var recallThreshold = _cfg.GetCVar(CCVars.EmergencyRecallTurningPoint);
 
             // shouldn't really be happening if we got here
@@ -371,7 +391,7 @@ namespace Content.Server.Communications
 
         private void OnCallShuttleMessage(EntityUid uid, CommunicationsConsoleComponent comp, CommunicationsConsoleCallEmergencyShuttleMessage message)
         {
-            if (!CanCallOrRecall(comp))
+            if (!CanCallShuttle(comp))
                 return;
 
             var mob = message.Actor;
@@ -396,7 +416,7 @@ namespace Content.Server.Communications
 
         private void OnRecallShuttleMessage(EntityUid uid, CommunicationsConsoleComponent comp, CommunicationsConsoleRecallEmergencyShuttleMessage message)
         {
-            if (!CanCallOrRecall(comp))
+            if (!CanRecallShuttle(comp))
                 return;
 
             if (!CanUse(message.Actor, uid))

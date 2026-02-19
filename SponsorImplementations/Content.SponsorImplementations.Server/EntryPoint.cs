@@ -7,7 +7,7 @@ using Robust.Shared.Sandboxing;
 
 namespace Content.SponsorImplementations.Server;
 
-public sealed class EntryPoint: GameShared
+public sealed class EntryPoint: GameServer
 {
     [Dependency] private readonly IReflectionManager _reflectionManager = default!;
     [Dependency] private readonly ISandboxHelper _sandbox = default!;

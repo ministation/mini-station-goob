@@ -5,6 +5,7 @@
   description: Консоль для кодирования пропускных карт агентов Синдиката.
   components:
   - type: IdCardConsole
+    showFullAccessButton: true
     privilegedIdSlot:
       name: id-card-console-privileged-id
       ejectSound: /Audio/Machines/id_swipe.ogg
@@ -261,7 +262,8 @@
       path: /Audio/_Mini/Announcements/announce_typan.ogg
       params:
         volume: -2
-    canShuttle: False
+    canCallShuttle: False
+    canRecallShuttle: False
 #    canCallERT: False
 #    canCallShuttle: False
     color: "#5c0006"

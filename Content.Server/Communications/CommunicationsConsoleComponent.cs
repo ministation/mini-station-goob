@@ -96,6 +96,13 @@ namespace Content.Server.Communications
         public bool CanCallShuttle = true;
 
         /// <summary>
+        /// Can recall the shuttle after it has already been called.
+        /// </summary>
+        [ViewVariables]
+        [DataField]
+        public bool CanRecallShuttle = true;
+
+        /// <summary>
         /// Can call or recall the ERT
         /// </summary>
 

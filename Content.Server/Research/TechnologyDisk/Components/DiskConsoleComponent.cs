@@ -36,4 +36,22 @@ public sealed partial class DiskConsoleComponent : Component
     /// </summary>
     [DataField("printSound")]
     public SoundSpecifier PrintSound = new SoundPathSpecifier("/Audio/Machines/printer.ogg");
+
+    /// <summary>
+    /// Whether the console should continuously print disks while enough points are available.
+    /// </summary>
+    [DataField("autoPrint"), ViewVariables(VVAccess.ReadWrite)]
+    public bool AutoPrint = false;
+
+    /// <summary>
+    /// Whether printed technology disks should be auto-fed into a nearby converter instead of spawning as items.
+    /// </summary>
+    [DataField("autoFeedAdjacentConverter"), ViewVariables(VVAccess.ReadWrite)]
+    public bool AutoFeedAdjacentConverter = false;
+
+    /// <summary>
+    /// Maximum local distance to search for a converter when <see cref="AutoFeedAdjacentConverter"/> is enabled.
+    /// </summary>
+    [DataField("adjacentConverterRange"), ViewVariables(VVAccess.ReadWrite)]
+    public float AdjacentConverterRange = 1.5f;
 }

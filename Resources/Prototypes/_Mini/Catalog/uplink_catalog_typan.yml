@@ -1214,7 +1214,7 @@
   cost:
     Telecrystal: 8
   categories:
-  - UplinkWearables
+  - TypanUplinkWearables
 
 - type: listing
   id: TypanUplinkHardsuitSyndie

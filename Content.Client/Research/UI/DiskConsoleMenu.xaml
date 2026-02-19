@@ -30,6 +30,16 @@ SPDX-License-Identifier: MIT
                        HorizontalAlignment="Center">
                 </Label>
                 <BoxContainer MinHeight="20"></BoxContainer>
+                <CheckBox
+                    Name="AutoPrintCheck"
+                    Text="{Loc 'tech-disk-ui-auto-print'}"
+                    HorizontalAlignment="Center"
+                    Margin="0 0 0 8" />
+                <CheckBox
+                    Name="AutoFeedAdjacentConverterCheck"
+                    Text="{Loc 'tech-disk-ui-auto-feed-adjacent-converter'}"
+                    HorizontalAlignment="Center"
+                    Margin="0 0 0 8" />
                 <Button
                     Name="PrintButton"
                     Text="{Loc 'tech-disk-ui-print-button'}"

@@ -7,7 +7,7 @@ using Robust.Shared.Network;
 
 namespace Content.SponsorImplementations.Client;
 
-public sealed class EntryPoint : GameShared
+public sealed class EntryPoint : GameClient
 {
     public override void PreInit()
     {

@@ -128,6 +128,24 @@
 
 - type: entity
   parent: BaseTypanPDA
+  id: TypanTechnicalOperationsSupervisorPDA
+  name: syndicate technical operations supervisor PDA
+  description: A sturdy PDA for coordinating Typan technical operations.
+  components:
+  - type: Pda
+    id: TypanIDCardTechnicalOperationsSupervisor
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-syndi-eng
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-syndi-eng
+
+- type: entity
+  parent: BaseTypanPDA
   id: SyndiPDACargo
   name: syndicate cargo technician PDA
   description: A sharkminnow's tooth is stuck in the pen slot.

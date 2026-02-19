@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 12/19/2025 17:45:32
-  entityCount: 7740
+  entityCount: 7741
 maps:
 - 1
 grids:
@@ -79,6 +79,8 @@ entities:
     - type: OccluderTree
     - type: Parallax
       parallax: DeltaStation
+    - type: FTLDestination
+      requireCoordinateDisk: true
   - uid: 2
     components:
     - type: MetaData
@@ -22227,6 +22229,15 @@ entities:
     - type: Transform
       pos: 3.5,4.5
       parent: 5000
+- proto: CoordinatesDisk
+  entities:
+  - uid: 900000
+    components:
+    - type: Transform
+      pos: 0.5,10.5
+      parent: 5000
+    - type: ShuttleDestinationCoordinates
+      destination: 1
 - proto: ComputerStationRecords
   entities:
   - uid: 2215

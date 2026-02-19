@@ -30,3 +30,24 @@
 
 - type: Tag
   id: CartridgeSilverSaint
+ #Freak Start
+- type: Tag
+  id: TypanBorgLArm
+
+- type: Tag
+  id: TypanBorgRArm
+
+- type: Tag
+  id: TypanBorgLLeg
+
+- type: Tag
+  id: TypanBorgRLeg
+
+- type: Tag
+  id: TypanBorgHead
+
+- type: Tag
+  id: TypanBorgTorso
+ #Freak Endха
+- type: Tag
+  id: TypanRole

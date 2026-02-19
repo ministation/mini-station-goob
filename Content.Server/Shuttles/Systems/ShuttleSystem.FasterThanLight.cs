@@ -187,13 +187,27 @@ public sealed partial class ShuttleSystem
 
     private void OnStationPostInit(ref StationPostInitEvent ev)
     {
-        // Add all grid maps as ftl destinations that anyone can FTL to.
+        // Add all station maps as FTL destinations, preserving any map-authored restrictions.
         foreach (var gridUid in ev.Station.Comp.Grids)
         {
             var gridXform = _xformQuery.GetComponent(gridUid);
 
             if (gridXform.MapUid == null)
             {
+                continue;
+            }
+
+            // Keep map-authored destination settings (e.g. required coordinate disk / beacons-only),
+            // only forcing the destination to be enabled for station maps.
+            if (TryComp<FTLDestinationComponent>(gridXform.MapUid, out var destination))
+            {
+                if (!destination.Enabled)
+                {
+                    destination.Enabled = true;
+                    _console.RefreshShuttleConsoles();
+                    Dirty(gridXform.MapUid.Value, destination);
+                }
+
                 continue;
             }
 

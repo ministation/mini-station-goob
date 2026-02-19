@@ -36,6 +36,14 @@ namespace Content.Client.Research.UI
             {
                 SendMessage(new DiskConsolePrintDiskMessage());
             };
+            _menu.OnAutoPrintPressed += enabled =>
+            {
+                SendMessage(new DiskConsoleSetAutoPrintMessage(enabled));
+            };
+            _menu.OnAutoFeedAdjacentConverterPressed += enabled =>
+            {
+                SendMessage(new DiskConsoleSetAutoFeedAdjacentConverterMessage(enabled));
+            };
         }
 
         protected override void UpdateState(BoundUserInterfaceState state)

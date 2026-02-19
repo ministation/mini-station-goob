@@ -40,10 +40,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <Button Name="JobTitleSaveButton" Text="{Loc 'id-card-console-window-save-button'}" Disabled="True" />
         </GridContainer>
         <Control MinSize="0 8" />
-        <GridContainer Columns="2">
+        <GridContainer Columns="3" HSeparationOverride="4">
             <Label Text="{Loc 'id-card-console-window-job-selection-label'}" />
             <OptionButton Name="JobPresetOptionButton" />
+            <Button Name="ApplyJobAccessButton" Text="{Loc 'id-card-console-window-apply-job-access-button'}" Disabled="True" />
         </GridContainer>
+        <Control MinSize="0 6" />
+        <BoxContainer Name="AccessPresetButtonsContainer"
+                      Orientation="Horizontal"
+                      SeparationOverride="6"
+                      HorizontalAlignment="Center"
+                      Visible="False">
+            <Button Name="ExtendedAccessButton" Text="{Loc 'id-card-console-window-extended-access-button'}" Disabled="True" />
+            <Button Name="FullAccessButton" Text="{Loc 'id-card-console-window-full-access-button'}" Disabled="True" />
+        </BoxContainer>
         <!-- Goobstation Start -->
         <GridContainer Columns="3">
             <Label Text="{Loc 'id-card-console-window-job-search-label'}" />

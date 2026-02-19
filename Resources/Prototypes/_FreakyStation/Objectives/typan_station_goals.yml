@@ -1,0 +1,16 @@
+# FreakyStation Typan goals (low-conflict custom pool)
+- type: stationGoal
+  id: TypanGhostLogistics
+  text: station-goal-typan-ghost-logistics
+  stamp: RubberStampSyndicate
+
+- type: stationGoal
+  id: TypanSilentResearch
+  text: station-goal-typan-silent-research
+  stamp: RubberStampSyndicate
+
+- type: stationGoal
+  id: TypanDeepCover
+  text: station-goal-typan-deep-cover
+  stamp: RubberStampSyndicate
+  minPlayers: 10

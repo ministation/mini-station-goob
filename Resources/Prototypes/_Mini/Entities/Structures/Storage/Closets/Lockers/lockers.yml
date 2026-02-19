@@ -380,7 +380,7 @@
     stateDoorOpen: med_open
     stateDoorClosed: chemical_door
   - type: AccessReader
-    access: [["TypanMedical"], ["TypanResearch"]]
+    access: [["TypanMedical"], ["TypanScience"]]
 
 # Research Director
 - type: entity
@@ -406,7 +406,7 @@
     stateDoorOpen: door_open
     stateDoorClosed: science_door
   - type: AccessReader
-    access: [["TypanResearch"]]
+    access: [["TypanScience"]]
 
 # Communications Officer
 - type: entity
