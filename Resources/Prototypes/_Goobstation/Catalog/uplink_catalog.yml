@@ -913,7 +913,7 @@
   icon: { sprite: _Goobstation/Objects/Misc/bookmime.rsi, state: icon }
   productEntity: BoxAdvMimery
   cost:
-    Telecrystal: 12
+    Telecrystal: 10
   categories:
   - UplinkJob
   conditions:
