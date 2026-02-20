@@ -175,15 +175,15 @@
 
 - type: listing
   id: TypanUplinkL2Bundle
-  name: пулемёт Л2-ПК
-  description: Л2-ПК - это ручной пулемёт из семейства TechnicLogistic, разработанный на основе хорошо известного L6. Этот пулемёт отличается повышенной точностью и низкой себестоимостью производства. Однако особенности его конструкции сделали его весьма громоздким.
+  name: uplink-typan-l2-bundle-name
+  description: uplink-typan-l2-bundle-desc
   icon: { sprite: _Mini/Objects/Weapons/Guns/LMGs/L2RPK.rsi, state: icon }
   productEntity: WeaponLightMachineGunL2RPK
   discountCategory: veryRareDiscounts
   discountDownTo:
     Telecrystal: 24
   cost:
-    Telecrystal: 40
+    Telecrystal: 30
   categories:
   - TypanUplinkWeaponry
 
@@ -412,7 +412,7 @@
   icon: { sprite: /Textures/Structures/Wallmounts/signs.rsi, state: bio }
   productEntity: ClothingBackpackDuffelZombieBundle
   cost:
-    Telecrystal: 100
+    Telecrystal: 60
   categories:
   - TypanUplinkChemicals
   conditions:
@@ -508,7 +508,7 @@
   discountDownTo:
     Telecrystal: 20
   cost:
-    Telecrystal: 40
+    Telecrystal: 28
   categories:
   - TypanUplinkChemicals
   conditions:
@@ -528,7 +528,7 @@
   discountDownTo:
     Telecrystal: 1
   cost:
-    Telecrystal: 4
+    Telecrystal: 3
   categories:
   - TypanUplinkDeception
 
@@ -541,7 +541,7 @@
   discountDownTo:
     Telecrystal: 2
   cost:
-    Telecrystal: 20
+    Telecrystal: 12
   categories:
   - TypanUplinkDeception
 
@@ -554,7 +554,7 @@
   discountDownTo:
     Telecrystal: 4
   cost:
-    Telecrystal: 20
+    Telecrystal: 12
   categories:
   - TypanUplinkDeception
 
@@ -568,7 +568,7 @@
   discountDownTo:
     Telecrystal: 1
   cost:
-    Telecrystal: 10
+    Telecrystal: 6
   categories:
   - TypanUplinkDeception
 
@@ -579,7 +579,7 @@
   icon: { sprite: /Textures/Objects/Devices/encryption_keys.rsi, state: ai_label }
   productEntity: EncryptionKeyBinarySyndicate
   cost:
-    Telecrystal: 5
+    Telecrystal: 3
   categories:
   - TypanUplinkDeception
 
@@ -675,9 +675,9 @@
   productEntity: AccessBreaker
   discountCategory: rareDiscounts
   discountDownTo:
-    Telecrystal: 2
+    Telecrystal: 8
   cost:
-    Telecrystal: 25
+    Telecrystal: 14
   categories:
   - TypanUplinkDisruption
 
@@ -688,9 +688,9 @@
   productEntity: Emag
   discountCategory: veryRareDiscounts
   discountDownTo:
-    Telecrystal: 3
+    Telecrystal: 9
   cost:
-    Telecrystal: 20
+    Telecrystal: 16
   categories:
   - TypanUplinkDisruption
 
@@ -814,18 +814,18 @@
         components:
           - SurplusBundle
 
-- type: listing
-  id: TypanUplinkAntimovCircuitBoard
-  name: uplink-antimov-law-name
-  description: uplink-antimov-law-desc
-  productEntity: AntimovCircuitBoard
-  discountCategory: usualDiscounts
-  discountDownTo:
-    Telecrystal: 10
-  cost:
-    Telecrystal: 15
-  categories:
-  - TypanUplinkDisruption
+# - type: listing
+#   id: TypanUplinkAntimovCircuitBoard
+#   name: uplink-antimov-law-name
+#   description: uplink-antimov-law-desc
+#   productEntity: AntimovCircuitBoard
+#   discountCategory: usualDiscounts
+#   discountDownTo:
+#     Telecrystal: 10
+#   cost:
+#     Telecrystal: 15
+#   categories:
+#   - TypanUplinkDisruption
 
 - type: listing
   id: TypanUplinkNukieAntimovCircuitBoard
@@ -836,7 +836,7 @@
   discountDownTo:
     Telecrystal: 20
   cost:
-    Telecrystal: 24
+    Telecrystal: 22
   categories:
   - TypanUplinkDisruption
 
@@ -855,20 +855,20 @@
 #       components:
 #       - SurplusBundle
 
-- type: listing
-  id: TypanUplinkSuperSurplusBundle
-  name: uplink-super-surplus-bundle-name
-  description: uplink-super-surplus-bundle-desc
-  productEntity: CrateSyndicateSuperSurplusBundle
-  cost:
-    Telecrystal: 100
-  categories:
-  - TypanUplinkDisruption
-  conditions:
-  - !type:BuyerWhitelistCondition
-    blacklist:
-      components:
-      - SurplusBundle
+# - type: listing
+#   id: TypanUplinkSuperSurplusBundle
+#   name: uplink-super-surplus-bundle-name
+#   description: uplink-super-surplus-bundle-desc
+#   productEntity: CrateSyndicateSuperSurplusBundle
+#   cost:
+#     Telecrystal: 65
+#   categories:
+#   - TypanUplinkDisruption
+#   conditions:
+#   - !type:BuyerWhitelistCondition
+#     blacklist:
+#       components:
+#       - SurplusBundle
 
 - type: listing
   id: TypanUplinkSingarityBeacon
@@ -905,7 +905,7 @@
   discountDownTo:
     Telecrystal: 8
   cost:
-    Telecrystal: 50
+    Telecrystal: 35
   categories:
   - TypanUplinkAllies
 
@@ -916,7 +916,7 @@
   productEntity: ReinforcementRadioSyndicateCyborgAssault
   icon: { sprite: Objects/Devices/communication.rsi, state: old-radio-borg-assault }
   cost:
-    Telecrystal: 120
+    Telecrystal: 50
   categories:
     - TypanUplinkAllies
 
@@ -1053,9 +1053,9 @@
   icon: { sprite: Interface/Actions/actions_fakemindshield.rsi, state: icon-on }
   productEntity: FakeMindShieldImplanter
   discountDownTo:
-    Telecrystal: 2
+    Telecrystal: 3
   cost:
-    Telecrystal: 20
+    Telecrystal: 4
   categories:
   - TypanUplinkImplants
 
@@ -1204,8 +1204,8 @@
 
 - type: listing
   id: TypanUplinkMagbootsAdv
-  name: Кроваво-чёрные магнитные ботинки
-  description: Современные магнитные ботинки, которые немного ускоряют своего владельца. Сделано горлаксом для горлакса. Имеют увеличенный обьем.
+  name: uplink-typan-magboots-adv-name
+  description: uplink-typan-magboots-adv-desc
   icon: { sprite: /Textures/_Mini/Clothing/Shoes/Boots/advanced.rsi, state: icon }
   productEntity: ClothingShoesBootsMagAdvSynd
   discountCategory: rareDiscounts
@@ -1218,15 +1218,15 @@
 
 - type: listing
   id: TypanUplinkHardsuitSyndie
-  name: Скафандр патрульного Синдиката
-  description: Специальный костюм для работ в самых "горячих" баталиях.
+  name: uplink-typan-hardsuit-patrol-name
+  description: uplink-typan-hardsuit-patrol-desc
   icon: { sprite: _Mini/Clothing/OuterClothing/Hardsuits/typan_patrol.rsi, state: icon }
   productEntity: ClothingOuterHardsuitTypanPatrol
   discountCategory: veryRareDiscounts
   discountDownTo:
-    Telecrystal: 4
+    Telecrystal: 9
   cost:
-    Telecrystal: 8
+    Telecrystal: 14
   categories:
   - TypanUplinkWearables
 
@@ -1249,9 +1249,9 @@
   productEntity: ClothingBackpackDuffelSyndicateEliteHardsuitBundle
   discountCategory: rareDiscounts
   discountDownTo:
-    Telecrystal: 7
+    Telecrystal: 12
   cost:
-    Telecrystal: 16
+    Telecrystal: 18
   categories:
   - TypanUplinkWearables
 
@@ -1263,9 +1263,9 @@
   productEntity: CrateCybersunJuggernautBundle
   discountCategory: veryRareDiscounts
   discountDownTo:
-    Telecrystal: 15
+    Telecrystal: 20
   cost:
-    Telecrystal: 80
+    Telecrystal: 35
   categories:
   - TypanUplinkWearables
 
@@ -1353,7 +1353,7 @@
   description: uplink-cat-ears-desc
   productEntity: ClothingHeadHatCatEars
   cost:
-    Telecrystal: 26
+    Telecrystal: 8
   categories:
   - TypanUplinkPointless
 
@@ -1433,7 +1433,7 @@
   description: uplink-balloon-desc
   productEntity: BalloonSyn
   cost:
-    Telecrystal: 20
+    Telecrystal: 2
   categories:
   - TypanUplinkPointless
 
@@ -1570,7 +1570,7 @@
   discountDownTo:
     Telecrystal: 6
   cost:
-    Telecrystal: 40
+    Telecrystal: 24
   categories:
   - TypanUplinkJob
   conditions:
@@ -1671,7 +1671,7 @@
   discountDownTo:
     Telecrystal: 1
   cost:
-    Telecrystal: 2
+    Telecrystal: 1
   categories:
   - TypanUplinkDeception
 
@@ -1679,132 +1679,158 @@
 
 - type: listing
   id: TypanUplinkXenoArtifact
-  name: Случайный артефакт
-  description: Случайный артефакт на случай, если ваши внезапно кончились.
+  name: uplink-typan-xeno-artifact-name
+  description: uplink-typan-xeno-artifact-desc
   productEntity: ComplexXenoArtifact
   discountCategory: usualDiscounts
   discountDownTo:
-    Telecrystal: 8
+    Telecrystal: 4
   cost:
-    Telecrystal: 10
+    Telecrystal: 6
   categories:
   - TypanUplinkMaterials
 
 - type: listing
   id: TypanUplinkSheetSteel
-  name: Стопка стали
-  description: Просто сталь. Ничего необычного.
+  name: uplink-typan-sheet-steel-name
+  description: uplink-typan-sheet-steel-desc
   productEntity: SheetSteel
   discountCategory: usualDiscounts
   discountDownTo:
-    Telecrystal: 8
+    Telecrystal: 1
   cost:
-    Telecrystal: 6
+    Telecrystal: 4
   categories:
   - TypanUplinkMaterials
 
 - type: listing
   id: TypanUplinkSheetPlastic
-  name: Стопка пластика
-  description: Универсальный современный конструкционный материал. Его всегда мало.
+  name: uplink-typan-sheet-plastic-name
+  description: uplink-typan-sheet-plastic-desc
   productEntity: SheetPlastic
   discountCategory: usualDiscounts
   discountDownTo:
-    Telecrystal: 4
+    Telecrystal: 1
   cost:
-    Telecrystal: 6
+    Telecrystal: 4
   categories:
   - TypanUplinkMaterials
 
 - type: listing
   id: TypanUplinkSheetGlass
-  name: Стопка стекла
-  description: Старое доброе стекло. Его всегда мало.
+  name: uplink-typan-sheet-glass-name
+  description: uplink-typan-sheet-glass-desc
   productEntity: SheetGlass
   discountCategory: usualDiscounts
   discountDownTo:
-    Telecrystal: 4
+    Telecrystal: 1
   cost:
-    Telecrystal: 6
+    Telecrystal: 4
   categories:
   - TypanUplinkMaterials
 
 - type: listing
   id: TypanUplinkAtreides
-  name: Пистолет-пулемёт Атрейдес
-  description: Пле-ке-ке-ке-ке! Использует патроны калибра .35 авто.
+  name: uplink-typan-atreides-name
+  description: uplink-typan-atreides-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/SMGs/atreides.rsi, state: icon }
   productEntity: WeaponSubMachineGunAtreides
   discountCategory: veryRareDiscounts
   discountDownTo:
     Telecrystal: 12
   cost:
-    Telecrystal: 30
+    Telecrystal: 22
   categories:
   - TypanUplinkWeaponry
 
 - type: listing
   id: TypanUplinkPlasma
-  name: Листы плазмы
-  description: Купите плазму! сделайте из неё бургер, и дайте его сотрудникам НТ!
+  name: uplink-typan-plasma-name
+  description: uplink-typan-plasma-desc
   productEntity: SheetPlasma
   discountCategory: usualDiscounts
   discountDownTo:
-    Telecrystal: 4
+    Telecrystal: 2
   cost:
-    Telecrystal: 10
+    Telecrystal: 6
   categories:
   - TypanUplinkMaterials
 
 - type: listing
   id: TypanUplinkPlasteel
-  name: Листы пластали
-  description: Купите пласталь! создайте мехов для уничтожения НТ!
+  name: uplink-typan-plasteel-name
+  description: uplink-typan-plasteel-desc
   productEntity: SheetPlasteel
   discountCategory: usualDiscounts
   discountDownTo:
-    Telecrystal: 3
+    Telecrystal: 2
   cost:
-    Telecrystal: 8
+    Telecrystal: 4
   categories:
   - TypanUplinkMaterials
 
 - type: listing
   id: TypanUplinkGold
-  name: Слитки золота
-  description: Купите золото! Оно так красиво переливается!
+  name: uplink-typan-gold-name
+  description: uplink-typan-gold-desc
   productEntity: IngotGold
   discountCategory: usualDiscounts
   discountDownTo:
     Telecrystal: 3
   cost:
-    Telecrystal: 12
+    Telecrystal: 8
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkSilver
+  name: uplink-typan-silver-name
+  description: uplink-typan-silver-desc
+  productEntity: IngotSilver
+  discountCategory: usualDiscounts
+  discountDownTo:
+    Telecrystal: 2
+  cost:
+    Telecrystal: 6
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkDiamond
+  name: uplink-typan-diamond-name
+  description: uplink-typan-diamond-desc
+  productEntity: MaterialDiamond1
+  discountCategory: usualDiscounts
+  discountDownTo:
+    Telecrystal: 1
+  cost:
+    Telecrystal: 4
   categories:
   - TypanUplinkMaterials
 
 - type: listing
   id: TypanUplinkUranium
-  name: Стопка урана
-  description: Кажется, что вы потихоньку мутируете!
+  name: uplink-typan-uranium-name
+  description: uplink-typan-uranium-desc
   productEntity: SheetUranium
   discountCategory: usualDiscounts
   discountDownTo:
     Telecrystal: 3
   cost:
-    Telecrystal: 12
+    Telecrystal: 8
   categories:
   - TypanUplinkMaterials
 
 - type: listing
   id: TypanUplinkFuel
-  name: Антиматериальное топливо
-  description: Используется для заправки ДАМа.
+  name: uplink-typan-fuel-name
+  description: uplink-typan-fuel-desc
   productEntity: AmeJar
   discountCategory: usualDiscounts
   discountDownTo:
-    Telecrystal: 3
+    Telecrystal: 2
   cost:
-    Telecrystal: 8
+    Telecrystal: 4
   categories:
   - TypanUplinkMaterials
 
@@ -1819,32 +1845,30 @@
 #   - UplinkWeaponry
 
 - type: listing
-  id: UplinkMagazineRifleAK
-  name: магазин (.30 винтовочные)
-  description:  uplink-light-rifle-magazine-ak-desc
+  id: TypanUplinkMagazineRifleAK
+  name: uplink-typan-ak-magazine-name
+  description: uplink-typan-ak-magazine-desc
   icon: { sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi, state: base }
   productEntity: MagazineLightRifle
   cost:
-    Telecrystal: 1
+    Telecrystal: 2
   categories:
-  - UplinkAmmo
+  - TypanUplinkAmmo
 
 - type: listing
-  id: UplinkRifleAKBundle
-  name: АКМС
-  description: Культовое оружие всех войн. Использует патроны калибра .30 винтовочный
+  id: TypanUplinkRifleAKBundle
+  name: uplink-typan-ak-bundle-name
+  description: uplink-typan-ak-bundle-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/ak.rsi, state: icon }
   productEntity: ClothingBackpackDuffelSyndicateFilledAK
   cost:
-    Telecrystal: 12
+    Telecrystal: 18
   categories:
-  - UplinkWeaponry
+  - TypanUplinkWeaponry
 
 - type: entity
   parent: ClothingBackpackDuffelSyndicateBundle
   id: ClothingBackpackDuffelSyndicateFilledAK
-  name: Набор АКМС
-  description: "Набор, содержащий АКМС и три магазина к нему"
   components:
   - type: StorageFill
     contents:
@@ -1853,24 +1877,13 @@
         amount: 3
 
 - type: listing
-  id: UplinkC20RBundle
-  name: uplink-c20r-bundle-name
-  description: uplink-c20r-bundle-desc
-  icon: { sprite: /Textures/Objects/Weapons/Guns/SMGs/c20r.rsi, state: icon }
-  productEntity: ClothingBackpackDuffelSyndicateFilledSMG
-  cost:
-    Telecrystal: 12
-  categories:
-  - UplinkWeaponry
-
-- type: listing
   id: TypanUplinkHardsuitCybersunStealth
   name: uplink-hardsuit-cybersun-stealth-name
   description: uplink-hardsuit-cybersun-stealth-desc
   icon: { sprite: /Textures/_Goobstation/Clothing/OuterClothing/Hardsuits/cybersunstealth.rsi, state: icon }
   productEntity: ClothingBackpackDuffelSyndicateStealthHardsuitBundle
   cost:
-    Telecrystal: 14
+    Telecrystal: 16
   categories:
   - TypanUplinkWearables
 
@@ -1891,7 +1904,7 @@
   icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Rifles/burner.rsi, state: icon }
   productEntity: WeaponRifleBurner
   cost:
-    Telecrystal: 32
+    Telecrystal: 24
   categories:
   - TypanUplinkWeaponry
 
