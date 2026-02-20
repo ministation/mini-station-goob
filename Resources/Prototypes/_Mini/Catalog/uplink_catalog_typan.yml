@@ -675,9 +675,9 @@
   productEntity: AccessBreaker
   discountCategory: rareDiscounts
   discountDownTo:
-    Telecrystal: 8
+    Telecrystal: 3
   cost:
-    Telecrystal: 14
+    Telecrystal: 4
   categories:
   - TypanUplinkDisruption
 
@@ -688,9 +688,9 @@
   productEntity: Emag
   discountCategory: veryRareDiscounts
   discountDownTo:
-    Telecrystal: 9
+    Telecrystal: 3
   cost:
-    Telecrystal: 16
+    Telecrystal: 4
   categories:
   - TypanUplinkDisruption
 
