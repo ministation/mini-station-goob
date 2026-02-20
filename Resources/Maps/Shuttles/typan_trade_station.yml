@@ -4264,7 +4264,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -1.5,-1.5
       parent: 2
-- proto: Rack
+- proto: ClothingBackpackDuffelSyndicateCatMaidBundle
   entities:
   - uid: 35
     components:
@@ -4970,25 +4970,6 @@ entities:
     components:
     - type: Transform
       pos: 9.5,-17.5
-      parent: 2
-- proto: Telecrystal1
-  entities:
-  - uid: 34
-    components:
-    - type: Transform
-      pos: 5.2661295,-10.50391
-      parent: 2
-  - uid: 288
-    components:
-    - type: Transform
-      pos: 5.4411297,-10.30391
-      parent: 2
-- proto: Telecrystal10
-  entities:
-  - uid: 32
-    components:
-    - type: Transform
-      pos: 5.553629,-10.52891
       parent: 2
 - proto: UplinkConsole
   entities:

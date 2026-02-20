@@ -116,7 +116,7 @@
     key: enum.StoreUiKey.Key
   - type: Store
     balance:
-      Telecrystal: 1
+      Telecrystal: 0
   - type: Anchorable
     flags: None
 
