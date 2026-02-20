@@ -106,9 +106,13 @@
       state: unshaded
   - type: DiskConsole
   - type: ResearchClient
+  - type: AccessReader
+    access: [["TypanScience"]]
   - type: ActivatableUI
     key: enum.DiskConsoleUiKey.Key
   - type: ActivatableUIRequiresPower
+  - type: ActivatableUIRequiresAccess
+    popupMessage: research-console-no-access-popup
   - type: UserInterface
     interfaces:
       enum.DiskConsoleUiKey.Key:

@@ -1,3 +1,5 @@
+using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Lathe;
@@ -8,6 +10,8 @@ using Content.Shared.Research.Components;
 using Content.Shared.Research.Prototypes;
 using Content.Shared.Research.Systems;
 using Content.Shared.Research.TechnologyDisk.Components;
+using Content.Shared.Power.EntitySystems;
+using Content.Shared.Stacks;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Network;
@@ -18,12 +22,15 @@ namespace Content.Shared.Research.TechnologyDisk.Systems;
 
 public sealed class TechnologyDiskSystem : EntitySystem
 {
+    [Dependency] private readonly AccessReaderSystem _accessReader = default!;
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly IPrototypeManager _protoMan = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly SharedPowerReceiverSystem _powerReceiver = default!;
     [Dependency] private readonly SharedResearchSystem _research = default!;
     [Dependency] private readonly SharedLatheSystem _lathe = default!;
+    [Dependency] private readonly SharedStackSystem _stack = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
 
     public override void Initialize()
@@ -70,6 +77,25 @@ public sealed class TechnologyDiskSystem : EntitySystem
             if (!_net.IsServer)
                 return;
 
+            if (converter.PointsPerTelecrystal <= 0)
+            {
+                _popup.PopupClient(Loc.GetString("mini-converter-examine-disabled"), target, args.User);
+                return;
+            }
+
+            if (!_powerReceiver.IsPowered(target))
+            {
+                _popup.PopupClient(Loc.GetString("tech-disk-converter-no-power-popup"), target, args.User);
+                return;
+            }
+
+            if (TryComp<AccessReaderComponent>(target, out var reader) &&
+                !_accessReader.IsAllowed(args.User, target, reader))
+            {
+                _popup.PopupClient(Loc.GetString("tech-disk-converter-no-access-popup"), target, args.User);
+                return;
+            }
+
             var value = ent.Comp.TierWeightPrototype == "RareTechDiskTierWeights"
                 ? converter.RareTechnologyDiskPoints
                 : converter.TechnologyDiskPoints;
@@ -88,10 +114,9 @@ public sealed class TechnologyDiskSystem : EntitySystem
 
             if (payout > 0)
             {
-                for (var i = 0; i < payout; i++)
-                {
-                    Spawn("Telecrystal1", Transform(target).Coordinates);
-                }
+                var telecrystalStack = Spawn("Telecrystal1", Transform(target).Coordinates);
+                _stack.SetCount(telecrystalStack, payout);
+                _stack.TryMergeToContacts(telecrystalStack);
 
                 _popup.PopupClient(Loc.GetString("tech-disk-exchanged-yield",
                         ("amount", payout),

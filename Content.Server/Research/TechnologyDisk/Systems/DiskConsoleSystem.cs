@@ -9,13 +9,16 @@
 
 using System;
 using System.Collections.Generic;
+using Content.Server.Power.EntitySystems;
 using Content.Server.Research.Systems;
 using Content.Server.Research.TechnologyDisk.Components;
+using Content.Server.Stack;
 using Content.Shared._Mini.Converter;
-using Content.Shared.UserInterface;
+using Content.Shared.Power;
 using Content.Shared.Research;
 using Content.Shared.Research.Components;
 using Content.Shared.Research.TechnologyDisk.Components;
+using Content.Shared.UserInterface;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
@@ -29,6 +32,7 @@ public sealed class DiskConsoleSystem : EntitySystem
     [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly ResearchSystem _research = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private readonly StackSystem _stack = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
     /// <inheritdoc/>
@@ -40,6 +44,7 @@ public sealed class DiskConsoleSystem : EntitySystem
         SubscribeLocalEvent<DiskConsoleComponent, DiskConsoleSetAutoFeedAdjacentConverterMessage>(OnSetAutoFeedAdjacentConverter);
         SubscribeLocalEvent<DiskConsoleComponent, ResearchServerPointsChangedEvent>(OnPointsChanged);
         SubscribeLocalEvent<DiskConsoleComponent, ResearchRegistrationChangedEvent>(OnRegistrationChanged);
+        SubscribeLocalEvent<DiskConsoleComponent, PowerChangedEvent>(OnPowerChanged);
         SubscribeLocalEvent<DiskConsoleComponent, BeforeActivatableUIOpenEvent>(OnBeforeUiOpen);
 
         SubscribeLocalEvent<DiskConsolePrintingComponent, ComponentShutdown>(OnShutdown);
@@ -54,7 +59,7 @@ public sealed class DiskConsoleSystem : EntitySystem
         var query = EntityQueryEnumerator<DiskConsolePrintingComponent, DiskConsoleComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var printing, out var console, out var xform))
         {
-            if (printing.FinishTime > _timing.CurTime)
+            if (printing.FinishTime > _timing.CurTime || !this.IsPowered(uid, EntityManager))
                 continue;
 
             RemComp(uid, printing);
@@ -114,6 +119,9 @@ public sealed class DiskConsoleSystem : EntitySystem
         if (HasComp<DiskConsolePrintingComponent>(uid))
             return false;
 
+        if (!this.IsPowered(uid, EntityManager))
+            return false;
+
         if (!_research.TryGetClientServer(uid, out var server, out var serverComp))
             return false;
 
@@ -150,6 +158,12 @@ public sealed class DiskConsoleSystem : EntitySystem
         if (!TryFindNearestConverter(xform, console.AdjacentConverterRange, out var converterUid, out var converter))
             return false;
 
+        if (converter.PointsPerTelecrystal <= 0)
+            return false;
+
+        if (!this.IsPowered(converterUid, EntityManager))
+            return false;
+
         var value = diskComp.TierWeightPrototype == "RareTechDiskTierWeights"
             ? converter.RareTechnologyDiskPoints
             : converter.TechnologyDiskPoints;
@@ -167,10 +181,9 @@ public sealed class DiskConsoleSystem : EntitySystem
             return true;
 
         var coords = Transform(converterUid).Coordinates;
-        for (var i = 0; i < payout; i++)
-        {
-            Spawn("Telecrystal1", coords);
-        }
+        var telecrystalStack = Spawn("Telecrystal1", coords);
+        _stack.SetCount(telecrystalStack, payout);
+        _stack.TryMergeToContacts(telecrystalStack);
 
         return true;
     }
@@ -213,6 +226,14 @@ public sealed class DiskConsoleSystem : EntitySystem
         UpdateUserInterface(uid, component);
     }
 
+    private void OnPowerChanged(EntityUid uid, DiskConsoleComponent component, ref PowerChangedEvent args)
+    {
+        if (args.Powered)
+            TryStartAutoPrint(uid, component);
+
+        UpdateUserInterface(uid, component);
+    }
+
     private void OnBeforeUiOpen(EntityUid uid, DiskConsoleComponent component, BeforeActivatableUIOpenEvent args)
     {
         UpdateUserInterface(uid, component);
@@ -229,7 +250,9 @@ public sealed class DiskConsoleSystem : EntitySystem
             totalPoints = server.Points;
         }
 
+        var powered = this.IsPowered(uid, EntityManager);
         var canPrint = !(TryComp<DiskConsolePrintingComponent>(uid, out var printing) && printing.FinishTime >= _timing.CurTime) &&
+                       powered &&
                        totalPoints >= component.PricePerDisk;
 
         var state = new DiskConsoleBoundUserInterfaceState(

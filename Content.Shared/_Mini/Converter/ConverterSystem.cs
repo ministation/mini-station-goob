@@ -5,6 +5,10 @@ namespace Content.Shared._Mini.Converter;
 
 public sealed class ConverterSystem : EntitySystem
 {
+    private const string LowProgressColor = "#D65C5C";
+    private const string MediumProgressColor = "#E0B844";
+    private const string HighProgressColor = "#6BBE4D";
+
     public override void Initialize()
     {
         base.Initialize();
@@ -33,11 +37,27 @@ public sealed class ConverterSystem : EntitySystem
             ? (int) Math.Ceiling(remaining / (double) ent.Comp.RareTechnologyDiskPoints)
             : 0;
 
-        args.PushMarkup(Loc.GetString("mini-converter-examine-progress",
-            ("current", progress),
-            ("needed", required)));
+        var color = GetProgressColor(progress, required);
+        var progressValue = $"[color={color}]{progress}/{required}[/color]";
+        args.PushMarkup($"{Loc.GetString("mini-converter-examine-progress-prefix")} {progressValue}.");
         args.PushMarkup(Loc.GetString("mini-converter-examine-disks",
             ("regular", regular),
             ("rare", rare)));
+    }
+
+    private static string GetProgressColor(int progress, int required)
+    {
+        if (required <= 0)
+            return LowProgressColor;
+
+        var ratio = progress / (float) required;
+
+        if (ratio >= 0.80f)
+            return HighProgressColor;
+
+        if (ratio >= 0.40f)
+            return MediumProgressColor;
+
+        return LowProgressColor;
     }
 }

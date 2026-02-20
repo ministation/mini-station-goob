@@ -11,3 +11,5 @@ tech-disk-ui-cost-label = Печать каждого диска стоит { $a
 tech-disk-ui-print-button = Напечать диск
 tech-disk-ui-auto-print = Автопечать
 tech-disk-ui-auto-feed-adjacent-converter = Автоподача в соседний конвертер
+tech-disk-converter-no-access-popup = Нет доступа!
+tech-disk-converter-no-power-popup = Конвертер отключен.

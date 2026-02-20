@@ -7,6 +7,8 @@
 tech-disk-inserted = You insert the disk, adding a new recipe to the server.
 tech-disk-exchanged = You process the disk: +{$value} charge ({$progress}/{$needed}).
 tech-disk-exchanged-yield = You process the disk and get {$amount} telecrystal(s) ({$progress}/{$needed}).
+tech-disk-converter-no-access-popup = No access!
+tech-disk-converter-no-power-popup = Converter is offline.
 tech-disk-examine-none = The label is blank.
 tech-disk-examine = The label has a small dot matrix printed image depicting a {$result}.
 tech-disk-examine-more = There are more images printed, but they're too small to discern.
