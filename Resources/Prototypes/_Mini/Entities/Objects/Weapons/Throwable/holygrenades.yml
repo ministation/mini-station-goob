@@ -10,7 +10,7 @@
   - type: SmokeOnTrigger
     duration: 30
     spreadAmount: 50
-  - type: SoundOnTrigger
+  - type: EmitSoundOnTrigger
     sound: /Audio/Items/smoke_grenade_smoke.ogg
   - type: DeleteOnTrigger
   - type: TimerTriggerVisuals
@@ -39,5 +39,5 @@
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/Weapons/holysmoke.ogg
-  - type: OnUseTimerTrigger
+  - type: TimerTrigger
     delay: 4.5

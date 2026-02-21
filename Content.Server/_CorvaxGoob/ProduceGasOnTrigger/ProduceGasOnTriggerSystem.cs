@@ -1,6 +1,7 @@
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Explosion.EntitySystems;
 using Content.Shared.Atmos;
+using Content.Shared.Trigger;
 
 namespace Content.Server._CorvaxGoob.ProduceGasOnTrigger;
 

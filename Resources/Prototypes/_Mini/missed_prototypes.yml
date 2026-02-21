@@ -233,15 +233,6 @@
     - state: active
 
 - type: entity
-  id: SmartFridgeMedical
-  name: fridge
-  components:
-  - type: Sprite
-    sprite: Mobs/Ghosts/revenant.rsi
-    layers:
-    - state: active
-
-- type: entity
   id: SpawnMobMukhtar
   name: spawner
   components:

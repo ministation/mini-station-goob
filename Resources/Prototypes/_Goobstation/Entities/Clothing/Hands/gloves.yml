@@ -450,6 +450,8 @@
     sprite: _Goobstation/Clothing/Hands/Gloves/guerrilla.rsi
   - type: Clothing
     sprite: _Goobstation/Clothing/Hands/Gloves/guerrilla.rsi
+    equipDelay: 2 #sadly this has to exist for telegraphing reasons
+    unequipDelay: 2
   - type: Item
     inhandVisuals:
       left:

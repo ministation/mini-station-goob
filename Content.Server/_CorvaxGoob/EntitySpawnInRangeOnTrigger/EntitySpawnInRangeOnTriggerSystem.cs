@@ -1,5 +1,6 @@
 using Content.Server.Explosion.EntitySystems;
 using Content.Shared.Physics;
+using Content.Shared.Trigger;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;

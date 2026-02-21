@@ -39,7 +39,8 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Content.Goobstation.Common.NTR.Scan; // Goobstation
+using Content.Goobstation.Common.NTR.Scan;
+using Content.Server.EntityEffects; // Goobstation
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.EntityEffects;
@@ -59,7 +60,7 @@ public sealed partial class BotanySystem : EntitySystem
     [Dependency] private readonly FixtureSystem _fixtureSystem = default!;
     [Dependency] private readonly RandomHelperSystem _randomHelper = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
-    [Dependency] private readonly EntityEffectSystem _effect = default!; // goob edit
+    [Dependency] private readonly SharedEntityEffectSystem _effect = default!; // goob edit
 
     public override void Initialize()
     {
@@ -218,6 +219,7 @@ public sealed partial class BotanySystem : EntitySystem
         return !proto.Ligneous || proto.Ligneous && held != null && HasComp<SharpComponent>(held);
     }
 
+    // CorvaxGoob-Plant-Analyzer-Start
     public static int CalculateTotalYield(int yield, int yieldMod)
     {
         var totalYield = 0;
@@ -232,6 +234,7 @@ public sealed partial class BotanySystem : EntitySystem
         }
         return totalYield;
     }
+    // CorvaxGoob-Plant-Analyzer-End
 
     #endregion
 }

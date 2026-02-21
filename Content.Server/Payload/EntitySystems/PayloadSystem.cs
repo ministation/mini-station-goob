@@ -16,12 +16,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server.Administration.Logs;
-using Content.Server.Explosion.EntitySystems;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Database;
 using Content.Shared.Examine;
 using Content.Shared.Payload.Components;
 using Content.Shared.Tag;
+using Content.Shared.Trigger;
 using Content.Shared.Chemistry.EntitySystems;
 using Robust.Shared.Containers;
 using Robust.Shared.Serialization.Manager;
@@ -77,6 +77,8 @@ public sealed class PayloadSystem : EntitySystem
 
     private void OnCaseTriggered(EntityUid uid, PayloadCaseComponent component, TriggerEvent args)
     {
+        // TODO: Adjust to the new trigger system
+
         if (!TryComp(uid, out ContainerManagerComponent? contMan))
             return;
 
@@ -105,12 +107,14 @@ public sealed class PayloadSystem : EntitySystem
             }
             // CorvaxGoob-AnomalyGrenade-End
 
-            RaiseLocalEvent(ent, args, false);
+            RaiseLocalEvent(ent, ref args, false);
         }
     }
 
     private void OnTriggerTriggered(EntityUid uid, PayloadTriggerComponent component, TriggerEvent args)
     {
+        // TODO: Adjust to the new trigger system
+
         if (!component.Active)
             return;
 
@@ -120,7 +124,7 @@ public sealed class PayloadSystem : EntitySystem
         // Ensure we don't enter a trigger-loop
         DebugTools.Assert(!_tagSystem.HasTag(uid, PayloadTag));
 
-        RaiseLocalEvent(parent, args, false);
+        RaiseLocalEvent(parent, ref args);
     }
 
     private void OnEntityInserted(EntityUid uid, PayloadCaseComponent _, EntInsertedIntoContainerMessage args)
@@ -191,6 +195,7 @@ public sealed class PayloadSystem : EntitySystem
 
     private void HandleChemicalPayloadTrigger(Entity<ChemicalPayloadComponent> entity, ref TriggerEvent args)
     {
+        // TODO: Adjust to the new trigger system
         if (entity.Comp.BeakerSlotA.Item is not EntityUid beakerA
             || entity.Comp.BeakerSlotB.Item is not EntityUid beakerB
             || !TryComp(beakerA, out FitsInDispenserComponent? compA)
