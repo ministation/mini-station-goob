@@ -9,7 +9,8 @@ public sealed class ChatIconsHelpersSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototype = default!;
 
-    public const string NoIdIconPath = "/Textures/Interface/Misc/job_icons.rsi/NoId.png";
+    public const string JobIconsRsiPath = "/Textures/Interface/Misc/job_icons.rsi";
+    public const string NoIdIconState = "NoId";
 
     /// <summary>
     /// Собирает и возвращает иконку для переданной работы
@@ -17,33 +18,33 @@ public sealed class ChatIconsHelpersSystem : EntitySystem
     [PublicAPI]
     public string GetJobIcon(ProtoId<JobPrototype>? job, int scale = 1)
     {
-        var iconPath = _prototype.TryIndex(job, out var jobPrototype)
-            ? GetJobIconPath(jobPrototype)
-            : NoIdIconPath;
-
-        var jobIcon = Loc.GetString("texture-tag",
-            ("path", iconPath),
-            ("scale", scale)
-        );
-
-        return jobIcon;
-    }
-
-    /// <summary>
-    /// Возвращает путь к иконке работы, используя переданный прототип работы
-    /// </summary>
-    [PublicAPI]
-    public string GetJobIconPath(JobPrototype job)
-    {
-        var icon = _prototype.Index(job.Icon);
-
-        var sprite = icon.Icon switch
+        if (!_prototype.TryIndex(job, out var jobPrototype))
         {
-            SpriteSpecifier.Texture tex => tex.TexturePath.CanonPath,
-            SpriteSpecifier.Rsi rsi => rsi.RsiPath.CanonPath + '/' + rsi.RsiState + ".png",
-            _ => NoIdIconPath,
-        };
+            return Loc.GetString("texture-tag-rsi",
+                ("path", JobIconsRsiPath),
+                ("state", NoIdIconState),
+                ("scale", scale)
+            );
+        }
 
-        return sprite;
+        var icon = _prototype.Index(jobPrototype.Icon);
+
+        return icon.Icon switch
+        {
+            SpriteSpecifier.Texture tex => Loc.GetString("texture-tag",
+                ("path", tex.TexturePath.CanonPath),
+                ("scale", scale)
+            ),
+            SpriteSpecifier.Rsi rsi => Loc.GetString("texture-tag-rsi",
+                ("path", rsi.RsiPath.CanonPath),
+                ("state", rsi.RsiState),
+                ("scale", scale)
+            ),
+            _ => Loc.GetString("texture-tag-rsi",
+                ("path", JobIconsRsiPath),
+                ("state", NoIdIconState),
+                ("scale", scale)
+            ),
+        };
     }
 }
