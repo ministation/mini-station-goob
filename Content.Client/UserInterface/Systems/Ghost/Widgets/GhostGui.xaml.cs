@@ -21,6 +21,7 @@ public sealed partial class GhostGui : UIWidget
     public event Action? ReturnToBodyPressed;
     public event Action? GhostRolesPressed;
     public event Action? GhostBarPressed; // CorvaxGoob-GhostBar
+    public event Action? ReturnToRoundPressed; // FREAKY EDIT
     private int _prevNumberRoles;
 
     public GhostGui()
@@ -40,7 +41,7 @@ public sealed partial class GhostGui : UIWidget
         ReturnToBodyButton.OnPressed += _ => ReturnToBodyPressed?.Invoke();
         GhostRolesButton.OnPressed += _ => GhostRolesPressed?.Invoke();
         GhostRolesButton.OnPressed += _ => GhostRolesButton.StyleClasses.Remove(StyleBase.ButtonCaution);
-        GhostBarButton.OnPressed += _ => GhostBarPressed?.Invoke(); // CorvaxGoob-GhostBar
+        ReturnToRound.OnPressed += _ => ReturnToRoundPressed?.Invoke(); // FREAKY EDIT
     }
 
     public void Hide()
@@ -54,7 +55,6 @@ public sealed partial class GhostGui : UIWidget
     public void Update(int? roles, bool? canReturnToBody, bool? canEnterGhostBar = true, bool? canTakeGhostRoles = true)
     {
         ReturnToBodyButton.Disabled = !canReturnToBody ?? true;
-        GhostBarButton.Disabled = !canEnterGhostBar ?? true; // CorvaxGoob-GhostBar
         // Goobstation start
         GhostRolesButton.Disabled = !canTakeGhostRoles ?? true;
         // Goobstation end
@@ -81,7 +81,7 @@ public sealed partial class GhostGui : UIWidget
         if (disposing)
         {
             TargetWindow.Dispose();
-            GhostBarWindow.Dispose(); // CorvaxGoob-GhostBar
+            ReturnToRound.Dispose(); // FREAKY EDIT
         }
     }
 }

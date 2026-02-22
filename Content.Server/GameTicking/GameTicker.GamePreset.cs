@@ -65,6 +65,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Content.Server._White.Ghost;
 using Content.Server.GameTicking.Presets;
 using Content.Server.Maps;
 using Content.Shared.CCVar;
@@ -76,6 +77,7 @@ namespace Content.Server.GameTicking;
 public sealed partial class GameTicker
 {
     public const float PresetFailedCooldownIncrease = 30f;
+    [Dependency] private readonly GhostReturnToRoundSystem _ghostReturnToRound = default!; // FREAKY EDIT
 
     /// <summary>
     /// The selected preset that will be used at the start of the next round.
