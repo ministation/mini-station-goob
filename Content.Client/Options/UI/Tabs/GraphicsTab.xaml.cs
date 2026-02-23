@@ -98,6 +98,10 @@ public sealed partial class GraphicsTab : Control
                 new OptionDropDownCVar<float>.ValueOption(2.00f, Loc.GetString("ui-options-scale-200")),
             ]);
 
+        Control.AddOptionSlider(CCVars.InterfaceAccentRed, InterfaceAccentRedSlider, 0, 255);
+        Control.AddOptionSlider(CCVars.InterfaceAccentGreen, InterfaceAccentGreenSlider, 0, 255);
+        Control.AddOptionSlider(CCVars.InterfaceAccentBlue, InterfaceAccentBlueSlider, 0, 255);
+
         Control.AddOptionDropDown(
             CCVars.ViewportScalingFilterMode,
             DropDownFilterMode,

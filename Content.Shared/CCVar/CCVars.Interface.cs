@@ -30,6 +30,24 @@ public sealed partial class CCVars
         CVarDef.Create("ui.layout", "Default", CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
+    /// Interface accent red channel (0-255) for glass styling.
+    /// </summary>
+    public static readonly CVarDef<int> InterfaceAccentRed =
+        CVarDef.Create("ui.interface_accent_red", 127, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Interface accent green channel (0-255) for glass styling.
+    /// </summary>
+    public static readonly CVarDef<int> InterfaceAccentGreen =
+        CVarDef.Create("ui.interface_accent_green", 183, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Interface accent blue channel (0-255) for glass styling.
+    /// </summary>
+    public static readonly CVarDef<int> InterfaceAccentBlue =
+        CVarDef.Create("ui.interface_accent_blue", 255, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
     /// The dimensions for the chat window in Default UI mode
     /// </summary>
     public static readonly CVarDef<string> DefaultScreenChatSize =

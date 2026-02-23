@@ -18,6 +18,8 @@ using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.Maths;
 using static Robust.Client.UserInterface.StylesheetHelpers;
 
 namespace Content.Client.Stylesheets
@@ -38,8 +40,22 @@ namespace Content.Client.Stylesheets
 
         public override Stylesheet Stylesheet { get; }
 
-        public StyleSpace(IResourceCache resCache) : base(resCache)
+        public StyleSpace(IResourceCache resCache, Color? accentColor = null) : base(resCache)
         {
+            var accent = accentColor ?? Color.FromHex("#7FB7FF");
+            var accentGray = (byte) (accent.R * 0.299f + accent.G * 0.587f + accent.B * 0.114f);
+            var neutralAccent = new Color(accentGray, accentGray, accentGray);
+            var tonedAccent = Color.InterpolateBetween(accent, neutralAccent, 0.35f);
+            Color Accent(string baseHex, float mix)
+            {
+                var original = Color.FromHex(baseHex);
+                var alpha = original.A < 0.92f ? 0.92f : original.A;
+                var tonedMix = mix * 0.85f;
+                if (tonedMix > 0.75f)
+                    tonedMix = 0.75f;
+                return Color.InterpolateBetween(original, tonedAccent, tonedMix).WithAlpha(alpha);
+            }
+
             var notoSans10 = resCache.GetFont
             (
                 new []
@@ -82,6 +98,42 @@ namespace Content.Client.Stylesheets
             tabContainerBoxActive.SetContentMarginOverride(StyleBox.Margin.Horizontal, 5);
             var tabContainerBoxInactive = new StyleBoxFlat {BackgroundColor = new Color(32, 32, 32)};
             tabContainerBoxInactive.SetContentMarginOverride(StyleBox.Margin.Horizontal, 5);
+
+            var glassWindowPanel = new StyleBoxFlat
+            {
+                BackgroundColor = Accent("#162235CC", 0.22f),
+                BorderColor = Accent("#9FBCE766", 0.50f),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(2),
+                ContentMarginLeftOverride = 6,
+                ContentMarginTopOverride = 6,
+                ContentMarginRightOverride = 6,
+                ContentMarginBottomOverride = 6,
+            };
+
+            var glassWindowHeader = new StyleBoxFlat
+            {
+                BackgroundColor = Accent("#274765D9", 0.46f),
+                BorderColor = Accent("#C0D8FF7F", 0.55f),
+                BorderThickness = new Thickness(0, 0, 0, 1),
+                Padding = new Thickness(2),
+                ContentMarginLeftOverride = 3,
+                ContentMarginTopOverride = 1,
+                ContentMarginRightOverride = 3,
+                ContentMarginBottomOverride = 1,
+            };
+
+            var glassLineEdit = new StyleBoxFlat
+            {
+                BackgroundColor = Accent("#101B2ACF", 0.20f),
+                BorderColor = Accent("#A4C2EA66", 0.55f),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(2),
+                ContentMarginLeftOverride = 6,
+                ContentMarginTopOverride = 2,
+                ContentMarginRightOverride = 6,
+                ContentMarginBottomOverride = 2,
+            };
 
             Stylesheet = new Stylesheet(BaseRules.Concat(new StyleRule[]
             {
@@ -208,6 +260,24 @@ namespace Content.Client.Stylesheets
                         new StyleProperty(TabContainer.StylePropertyTabStyleBox, tabContainerBoxActive),
                         new StyleProperty(TabContainer.StylePropertyTabStyleBoxInactive, tabContainerBoxInactive),
                     }),
+
+                // Keep SheetSpace windows visually aligned with the global liquid-glass pass.
+                new StyleRule(
+                    new SelectorElement(null, new[] {DefaultWindow.StyleClassWindowPanel}, null, null),
+                    new[]
+                    {
+                        new StyleProperty(PanelContainer.StylePropertyPanel, glassWindowPanel),
+                    }),
+
+                new StyleRule(
+                    new SelectorElement(null, new[] {DefaultWindow.StyleClassWindowHeader}, null, null),
+                    new[]
+                    {
+                        new StyleProperty(PanelContainer.StylePropertyPanel, glassWindowHeader),
+                    }),
+
+                Element<LineEdit>()
+                    .Prop(LineEdit.StylePropertyStyleBox, glassLineEdit),
 
             }).ToList());
         }

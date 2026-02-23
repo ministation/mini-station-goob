@@ -37,6 +37,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 <!-- Interface -->
                 <Label Text="{Loc 'ui-options-interface-label'}" StyleClasses="LabelKeyText"/>
                 <ui:OptionDropDown Name="DropDownUIScale" Title="{Loc 'ui-options-scale-label'}" />
+                <ui:OptionSlider Name="InterfaceAccentRedSlider" Title="{Loc 'ui-options-interface-accent-red'}" />
+                <ui:OptionSlider Name="InterfaceAccentGreenSlider" Title="{Loc 'ui-options-interface-accent-green'}" />
+                <ui:OptionSlider Name="InterfaceAccentBlueSlider" Title="{Loc 'ui-options-interface-accent-blue'}" />
                 <CheckBox Name="ViewportStretchCheckBox" Text="{Loc 'ui-options-vp-stretch'}" />
                 <ui:OptionSlider Name="ViewportScaleSlider" Title="{Loc ui-options-vp-scale}" />
                 <ui:OptionSlider Name="ViewportWidthSlider" Title="{Loc ui-options-vp-width}" />

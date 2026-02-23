@@ -8,12 +8,15 @@
 
 using System.Linq;
 using System.Numerics;
+using Content.Shared.CCVar;
 using Content.Shared.Input;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.Configuration;
 using Robust.Shared.Input;
+using Robust.Shared.IoC;
 
 namespace Content.Client.UserInterface.Controls;
 
@@ -414,10 +417,11 @@ public class RadialMenuTextureButtonWithSector : RadialMenuTextureButton, IRadia
     private bool _isWholeCircle;
     private Vector2? _parentCenter;
 
-    private Color _backgroundColorSrgb = Color.ToSrgb(new Color(70, 73, 102, 128));
-    private Color _hoverBackgroundColorSrgb = Color.ToSrgb(new Color(87, 91, 127, 128));
-    private Color _borderColorSrgb = Color.ToSrgb(new Color(173, 216, 230, 70));
-    private Color _hoverBorderColorSrgb = Color.ToSrgb(new Color(87, 91, 127, 128));
+    // Muted glass defaults for sector-based radial menus.
+    private Color _backgroundColorSrgb = Color.ToSrgb(new Color(28, 36, 52, 170));
+    private Color _hoverBackgroundColorSrgb = Color.ToSrgb(new Color(50, 70, 96, 196));
+    private Color _borderColorSrgb = Color.ToSrgb(new Color(154, 184, 214, 92));
+    private Color _hoverBorderColorSrgb = Color.ToSrgb(new Color(180, 206, 230, 128));
 
     /// <summary>
     /// Marker, that controls if border of segment should be rendered. Is false by default.
@@ -473,7 +477,7 @@ public class RadialMenuTextureButtonWithSector : RadialMenuTextureButton, IRadia
     /// Color of separator lines.
     /// Separator lines are used to visually separate sector of radial menu items.
     /// </summary>
-    public Color SeparatorColor { get; set; } = new Color(128, 128, 128, 128);
+    public Color SeparatorColor { get; set; } = new Color(146, 164, 186, 115);
 
     /// <inheritdoc />
     float IRadialMenuItemWithSector.AngleSectorFrom
@@ -512,6 +516,29 @@ public class RadialMenuTextureButtonWithSector : RadialMenuTextureButton, IRadia
     /// </summary>
     public RadialMenuTextureButtonWithSector()
     {
+        try
+        {
+            var cfg = IoCManager.Resolve<IConfigurationManager>();
+            var accent = new Color(
+                (byte) cfg.GetCVar(CCVars.InterfaceAccentRed),
+                (byte) cfg.GetCVar(CCVars.InterfaceAccentGreen),
+                (byte) cfg.GetCVar(CCVars.InterfaceAccentBlue));
+
+            // Keep user accent influence, but tone it down to avoid neon radial sectors.
+            var accentGray = (byte) (accent.R * 0.299f + accent.G * 0.587f + accent.B * 0.114f);
+            var neutralAccent = new Color(accentGray, accentGray, accentGray);
+            var tonedAccent = Color.InterpolateBetween(accent, neutralAccent, 0.35f);
+
+            BackgroundColor = Color.InterpolateBetween(new Color(28, 36, 52, 170), tonedAccent.WithAlpha(170), 0.24f);
+            HoverBackgroundColor = Color.InterpolateBetween(new Color(50, 70, 96, 196), tonedAccent.WithAlpha(196), 0.32f);
+            BorderColor = Color.InterpolateBetween(new Color(154, 184, 214, 92), tonedAccent.WithAlpha(92), 0.28f);
+            HoverBorderColor = Color.InterpolateBetween(new Color(180, 206, 230, 128), tonedAccent.WithAlpha(128), 0.34f);
+            SeparatorColor = Color.InterpolateBetween(new Color(146, 164, 186, 115), tonedAccent.WithAlpha(115), 0.22f);
+        }
+        catch
+        {
+            // Keep defaults if UI configuration is unavailable (e.g. isolated tests).
+        }
     }
 
     /// <inheritdoc />

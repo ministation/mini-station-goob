@@ -9,6 +9,9 @@
 
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
+using Robust.Shared.Configuration;
+using Robust.Shared.Maths;
+using Content.Shared.CCVar;
 
 namespace Content.Client.Stylesheets
 {
@@ -16,15 +19,26 @@ namespace Content.Client.Stylesheets
     {
         [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
         [Dependency] private readonly IResourceCache _resourceCache = default!;
+        [Dependency] private readonly IConfigurationManager _configurationManager = default!;
 
         public Stylesheet SheetNano { get; private set; } = default!;
         public Stylesheet SheetSpace { get; private set; } = default!;
 
         public void Initialize()
         {
-            SheetNano = new StyleNano(_resourceCache).Stylesheet;
-            SheetSpace = new StyleSpace(_resourceCache).Stylesheet;
+            _configurationManager.OnValueChanged(CCVars.InterfaceAccentRed, _ => UpdateAccentStyles(), true);
+            _configurationManager.OnValueChanged(CCVars.InterfaceAccentGreen, _ => UpdateAccentStyles(), true);
+            _configurationManager.OnValueChanged(CCVars.InterfaceAccentBlue, _ => UpdateAccentStyles(), true);
+        }
 
+        private void UpdateAccentStyles()
+        {
+            var accent = new Color(
+                (byte) _configurationManager.GetCVar(CCVars.InterfaceAccentRed),
+                (byte) _configurationManager.GetCVar(CCVars.InterfaceAccentGreen),
+                (byte) _configurationManager.GetCVar(CCVars.InterfaceAccentBlue));
+            SheetNano = new StyleNano(_resourceCache, accent).Stylesheet;
+            SheetSpace = new StyleSpace(_resourceCache, accent).Stylesheet;
             _userInterfaceManager.Stylesheet = SheetNano;
         }
     }
