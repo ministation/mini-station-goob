@@ -150,7 +150,7 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         Gui.RequestWarpsPressed += RequestWarps;
         Gui.ReturnToBodyPressed += ReturnToBody;
         Gui.GhostRolesPressed += GhostRolesPressed;
-        //Gui.GhostBarPressed += GhostBarPressed; // CorvaxGoob-GhostBar
+        Gui.GhostBarPressed += GhostBarPressed; // CorvaxGoob-GhostBar
         Gui.GhostBarWindow.SpawnButtonPressed += GhostBarSpawnPressed; // CorvaxGoob-GhostBar
         Gui.TargetWindow.WarpClicked += OnWarpClicked;
         Gui.ReturnToRoundPressed += ReturnToRound; // FREAKY EDIT
@@ -167,8 +167,10 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         Gui.RequestWarpsPressed -= RequestWarps;
         Gui.ReturnToBodyPressed -= ReturnToBody;
         Gui.GhostRolesPressed -= GhostRolesPressed;
+        Gui.GhostBarPressed -= GhostBarPressed; // CorvaxGoob-GhostBar
+        Gui.GhostBarWindow.SpawnButtonPressed -= GhostBarSpawnPressed; // CorvaxGoob-GhostBar
         Gui.TargetWindow.WarpClicked -= OnWarpClicked;
-        Gui.ReturnToRoundPressed += ReturnToRound; // FREAKY EDIT
+        Gui.ReturnToRoundPressed -= ReturnToRound; // FREAKY EDIT
 
         Gui.Hide();
     }
