@@ -38,6 +38,12 @@ public static class BoundKeyHelper
 
     public static bool TryGetShortKeyName(BoundKeyFunction keyFunction, [NotNullWhen(true)] out string? name)
     {
+        if (string.IsNullOrEmpty(keyFunction.FunctionName))
+        {
+            name = null;
+            return false;
+        }
+
         if (IoCManager.Resolve<IInputManager>().TryGetKeyBinding(keyFunction, out var binding))
         {
             // can't possibly fit a modifier key in the top button, so omit it

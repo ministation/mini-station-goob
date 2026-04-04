@@ -49,7 +49,7 @@ public sealed class MenuButton : ContainerButton
         set
         {
             _function = value;
-            _buttonLabel!.Text = BoundKeyHelper.ShortKeyName(value);
+            UpdateBoundKeyLabel();
         }
     }
 
@@ -105,12 +105,19 @@ public sealed class MenuButton : ContainerButton
 
     private void OnKeyBindingChanged(IKeyBinding obj)
     {
-        _buttonLabel!.Text = BoundKeyHelper.ShortKeyName(_function);
+        UpdateBoundKeyLabel();
     }
 
     private void OnKeyBindingChanged()
     {
-        _buttonLabel!.Text = BoundKeyHelper.ShortKeyName(_function);
+        UpdateBoundKeyLabel();
+    }
+
+    private void UpdateBoundKeyLabel()
+    {
+        _buttonLabel!.Text = !string.IsNullOrEmpty(_function.FunctionName)
+            ? BoundKeyHelper.ShortKeyName(_function)
+            : " ";
     }
 
     protected override void StylePropertiesChanged()
