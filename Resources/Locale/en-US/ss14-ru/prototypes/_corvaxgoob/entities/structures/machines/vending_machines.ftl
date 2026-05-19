@@ -1,5 +1,3 @@
-ent-CaptainDrobe = CaptainDrobe
-    .desc = Stylish uniform, for a strong leader!
 ent-VendingMachineDiscountMidpop = { ent-VendingMachineDiscount }
     .desc = { ent-VendingMachineDiscount.desc }
 ent-VendingMachineSnackMidpop = { ent-VendingMachineSnack }
