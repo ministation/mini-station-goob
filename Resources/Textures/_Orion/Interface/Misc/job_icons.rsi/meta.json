@@ -1,0 +1,90 @@
+﻿{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Taken from TG Station | Reshaded by PuroSlavKing (Github) | InteQ-icons sprited by PuroSlavKing (Github)",
+    "size": {
+        "x": 8,
+        "y": 8
+    },
+    "states": [
+        {
+            "name": "InteQ"
+        },
+        {
+            "name": "InteQ-Leader"
+        },
+        {
+            "name": "SalvageSpecialist"
+        },
+        {
+            "name": "Earth"
+        },
+        {
+            "name": "union"
+        },
+        {
+            "name": "smartgunner"
+        },
+        {
+            "name": "private"
+        },
+        {
+            "name": "medic"
+        },
+        {
+            "name": "serg"
+        },
+        {
+            "name": "commander"
+        },
+        {
+            "name": "commander_gold"
+        },
+        {
+            "name": "leitenant"
+        },
+        {
+            "name": "mvd"
+        },
+        {
+            "name": "shtab"
+        },
+        {
+            "name": "spets"
+        },
+        {
+            "name": "DeathSquad"
+        },
+        {
+            "name": "ERT-Leader"
+        },
+        {
+            "name": "ERT-Janitor"
+        },
+        {
+            "name": "ERT-Officer"
+        },
+        {
+            "name": "ERT-Chaplain"
+        },
+        {
+            "name": "ERT-Engineer"
+        },
+        {
+            "name": "ERT-Medical"
+        },
+        {
+            "name": "Shrambled",
+            "delays":
+            [
+                [0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2]
+            ]
+        },
+        {
+            "name": "Bitrunner"
+        },
+        {
+            "name": "Bitrun-Avatar"
+        }
+    ]
+}
