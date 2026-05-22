@@ -71,3 +71,5 @@ ent-PlushieHuman = human plushie
     .desc = This is a felt plush of a human. All craftsmanship is of the lowest quality. The human is naked. The human is crying. The human is screaming.
 ent-PlushieMoth = moth plushie
     .desc = Cute and fluffy moth plushie. Enjoy, bz!
+ent-PlushieEreb = Erebus Epiolos
+    .desc = It looks insignificant and disgusting!
