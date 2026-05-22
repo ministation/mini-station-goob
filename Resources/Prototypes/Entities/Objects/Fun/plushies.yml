@@ -1258,3 +1258,27 @@
   - type: FoodSequenceElement
     entries:
       CottonBurger: MothPlushie
+- type: entity
+  parent: BasePlushie
+  id: PlushieEreb
+  name: Erebus
+  description: It looks insignificant and disgusting!
+  components:
+  - type: Sprite
+    sprite: Objects/Fun/Plushies/Erebus.rsi
+    state: icon
+  - type: Clothing
+    quickEquip: false
+    sprite: Objects/Fun/Plushies/Erebus.rsi
+    slots:
+    - HEAD
+    clothingVisuals:
+      head:
+      - state: equipped-HELMET
+        offset: "0, 0.03"
+  - type: FoodSequenceElement
+    entries:
+      CottonBurger: NukiePlushie
+  - type: EmitSoundOnUse
+    sound:
+      path: /Audio/Items/Toys/Erebus.ogg
