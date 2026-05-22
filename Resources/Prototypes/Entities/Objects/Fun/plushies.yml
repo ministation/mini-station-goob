@@ -1261,7 +1261,7 @@
 - type: entity
   parent: BasePlushie
   id: PlushieEreb
-  name: Erebus
+  name: Erebus Epiolos
   description: It looks insignificant and disgusting!
   components:
   - type: Sprite
