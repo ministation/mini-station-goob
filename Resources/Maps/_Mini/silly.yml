@@ -48723,13 +48723,6 @@ entities:
     - type: Transform
       pos: -23.487305,8.623594
       parent: 2
-- proto: RMCOverheadBillboardWallmount7
-  entities:
-  - uid: 9268
-    components:
-    - type: Transform
-      pos: -7.5,27.5
-      parent: 2
 - proto: RMCStreetlight
   entities:
   - uid: 2791
@@ -66693,7 +66686,7 @@ entities:
       pos: -13.5,-2.5
       parent: 8546
   - uid: 8768
-    components:
+    components:А
     - type: Transform
       pos: -7.5,0.5
       parent: 8546
