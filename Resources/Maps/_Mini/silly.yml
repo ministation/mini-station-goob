@@ -4,8 +4,8 @@ meta:
   engineVersion: 266.0.0
   forkId: ""
   forkVersion: ""
-  time: 05/22/2026 17:43:31
-  entityCount: 9455
+  time: 05/25/2026 18:03:18
+  entityCount: 9449
 maps:
 - 1
 grids:
@@ -9264,12 +9264,6 @@ entities:
     - type: Transform
       pos: 0.5,-5.5
       parent: 2
-    - type: Door
-      secondsUntilStateChange: -50674.496
-      state: Opening
-    - type: DeviceLinkSource
-      lastSignals:
-        DoorStatus: True
   - uid: 54
     components:
     - type: Transform
@@ -9346,21 +9340,15 @@ entities:
     - type: Transform
       pos: 12.5,1.5
       parent: 2
-  - uid: 58
-    components:
-    - type: Transform
-      pos: 18.5,2.5
-      parent: 2
-    - type: Door
-      secondsUntilStateChange: -48568.375
-      state: Opening
-    - type: DeviceLinkSource
-      lastSignals:
-        DoorStatus: True
   - uid: 59
     components:
     - type: Transform
       pos: 28.5,-1.5
+      parent: 2
+  - uid: 99
+    components:
+    - type: Transform
+      pos: 18.5,2.5
       parent: 2
 - proto: AirlockExternalEngineeringLocked
   entities:
@@ -9702,6 +9690,13 @@ entities:
     - type: Transform
       pos: 13.5,27.5
       parent: 2
+- proto: AirlockScience
+  entities:
+  - uid: 98
+    components:
+    - type: Transform
+      pos: 12.5,-5.5
+      parent: 2
 - proto: AirlockScienceGlassLocked
   entities:
   - uid: 39
@@ -9728,28 +9723,11 @@ entities:
       parent: 2
 - proto: AirlockScienceLocked
   entities:
-  - uid: 98
-    components:
-    - type: Transform
-      pos: 12.5,-5.5
-      parent: 2
-    - type: Door
-      secondsUntilStateChange: -27225.637
-      state: Opening
-    - type: DeviceLinkSource
-      lastSignals:
-        DoorStatus: True
-  - uid: 99
+  - uid: 58
     components:
     - type: Transform
       pos: 17.5,-5.5
       parent: 2
-    - type: Door
-      secondsUntilStateChange: -30563
-      state: Opening
-    - type: DeviceLinkSource
-      lastSignals:
-        DoorStatus: True
   - uid: 100
     components:
     - type: Transform
@@ -9860,7 +9838,7 @@ entities:
       pos: -15.5,5.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -21528.965
+      secondsUntilStateChange: -21790.662
       state: Opening
     - type: DeviceLinkSource
       lastSignals:
@@ -10487,11 +10465,6 @@ entities:
       parent: 2
 - proto: AtmosFixAirMarker
   entities:
-  - uid: 220
-    components:
-    - type: Transform
-      pos: -40.5,-5.5
-      parent: 2
   - uid: 9353
     components:
     - type: Transform
@@ -18319,10 +18292,10 @@ entities:
       parent: 2
 - proto: CableApcStack10
   entities:
-  - uid: 1158
+  - uid: 220
     components:
     - type: Transform
-      pos: 23.57246,-7.552832
+      pos: 23.306942,-7.1580524
       parent: 2
   - uid: 6721
     components:
@@ -25567,10 +25540,10 @@ entities:
     - type: InsideEntityStorage
 - proto: ClothingBeltUtilityEngineering
   entities:
-  - uid: 2261
+  - uid: 1158
     components:
     - type: Transform
-      pos: 23.427187,-7.249175
+      pos: 19.436874,-7.392428
       parent: 2
   - uid: 2422
     components:
@@ -25946,11 +25919,6 @@ entities:
       parent: 6509
 - proto: ClothingShoesBootsMag
   entities:
-  - uid: 2317
-    components:
-    - type: Transform
-      pos: 19.589207,-7.5983195
-      parent: 2
   - uid: 2318
     components:
     - type: Transform
@@ -25965,6 +25933,11 @@ entities:
     components:
     - type: Transform
       pos: 7.5973926,-18.508629
+      parent: 2
+  - uid: 2817
+    components:
+    - type: Transform
+      pos: 19.952883,-7.5096154
       parent: 2
 - proto: ClothingShoesBootsMagSyndie
   entities:
@@ -27081,7 +27054,7 @@ entities:
       pos: -5.5,7.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -14587.136
+      secondsUntilStateChange: -14848.833
       state: Opening
 - proto: CurtainsOrangeOpen
   entities:
@@ -29745,11 +29718,6 @@ entities:
     components:
     - type: Transform
       pos: 25.260023,-11.281002
-      parent: 2
-  - uid: 2817
-    components:
-    - type: Transform
-      pos: 23.744146,-6.998329
       parent: 2
   - uid: 2818
     components:
@@ -32957,18 +32925,6 @@ entities:
       parent: 2
     - type: AtmosPipeColor
       color: '#947507FF'
-  - uid: 9106
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -44.5,-3.5
-      parent: 2
-  - uid: 9326
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: -47.5,-5.5
-      parent: 2
 - proto: GasPipeBend
   entities:
   - uid: 7
@@ -40213,7 +40169,7 @@ entities:
       pos: -1.5,-3.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -25178.838
+      secondsUntilStateChange: -25440.535
       state: Opening
 - proto: HighSecDoor
   entities:
@@ -40273,7 +40229,7 @@ entities:
       pos: -17.5,9.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -22545.697
+      secondsUntilStateChange: -22807.395
       state: Opening
 - proto: HospitalCurtainsOpen
   entities:
@@ -42680,13 +42636,6 @@ entities:
         - 0
         - 0
         - 0
-- proto: Multitool
-  entities:
-  - uid: 4047
-    components:
-    - type: Transform
-      pos: 20.41013,-7.4576945
-      parent: 2
 - proto: Netpod
   entities:
   - uid: 2724
@@ -49170,17 +49119,17 @@ entities:
   - uid: 4821
     components:
     - type: Transform
-      pos: 16.4697,-1.8326946
-      parent: 2
-  - uid: 4822
-    components:
-    - type: Transform
-      pos: 16.581373,-2.42628
+      pos: 16.674322,-2.4226813
       parent: 2
   - uid: 4824
     components:
     - type: Transform
       pos: 16.524038,2.762176
+      parent: 2
+  - uid: 4831
+    components:
+    - type: Transform
+      pos: 16.64305,-2.3914313
       parent: 2
   - uid: 7204
     components:
@@ -49196,10 +49145,10 @@ entities:
       parent: 2
 - proto: SheetPlasma
   entities:
-  - uid: 4827
+  - uid: 2317
     components:
     - type: Transform
-      pos: 16.51661,-1.9967571
+      pos: 16.64305,-1.8758065
       parent: 2
 - proto: SheetPlasteel
   entities:
@@ -49220,18 +49169,28 @@ entities:
       parent: 2
 - proto: SheetPlastic
   entities:
-  - uid: 4831
+  - uid: 4822
     components:
     - type: Transform
-      pos: 16.422789,-1.6920696
+      pos: 16.17395,-2.5008063
+      parent: 2
+  - uid: 4827
+    components:
+    - type: Transform
+      pos: 16.111403,-2.4695563
+      parent: 2
+- proto: SheetSteel
+  entities:
+  - uid: 4047
+    components:
+    - type: Transform
+      pos: 16.17395,-1.8758065
       parent: 2
   - uid: 4832
     components:
     - type: Transform
-      pos: 16.680794,-1.9030071
+      pos: 16.17395,-1.8758065
       parent: 2
-- proto: SheetSteel
-  entities:
   - uid: 4834
     components:
     - type: Transform
@@ -49246,16 +49205,6 @@ entities:
     components:
     - type: Transform
       pos: -15.75447,1.6674187
-      parent: 2
-  - uid: 4837
-    components:
-    - type: Transform
-      pos: 16.487623,-2.410655
-      parent: 2
-  - uid: 4838
-    components:
-    - type: Transform
-      pos: 16.487623,-2.410655
       parent: 2
   - uid: 4839
     components:
@@ -54007,6 +53956,11 @@ entities:
       parent: 2
 - proto: VariantCubeBox
   entities:
+  - uid: 2261
+    components:
+    - type: Transform
+      pos: 20.328163,-7.392428
+      parent: 2
   - uid: 5272
     components:
     - type: Transform
@@ -54058,11 +54012,6 @@ entities:
           - 5408
           - 5417
           - 5423
-  - uid: 5380
-    components:
-    - type: Transform
-      pos: 19.659573,-7.1764445
-      parent: 2
   - uid: 5381
     components:
     - type: Transform
@@ -65238,13 +65187,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 0.5,6.5
       parent: 6509
-- proto: WelderIndustrial
-  entities:
-  - uid: 6332
-    components:
-    - type: Transform
-      pos: 20.385881,-7.2462807
-      parent: 2
 - proto: WeldingFuelTankFull
   entities:
   - uid: 3773
@@ -65317,7 +65259,7 @@ entities:
       lastSignals:
         DoorStatus: True
     - type: Door
-      secondsUntilStateChange: -23068.695
+      secondsUntilStateChange: -23330.393
       state: Opening
     - type: Airlock
       autoClose: False
@@ -65404,7 +65346,7 @@ entities:
       lastSignals:
         DoorStatus: True
     - type: Door
-      secondsUntilStateChange: -11528.039
+      secondsUntilStateChange: -11789.736
       state: Opening
     - type: Airlock
       autoClose: False
