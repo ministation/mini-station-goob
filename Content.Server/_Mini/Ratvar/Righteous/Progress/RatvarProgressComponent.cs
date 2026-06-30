@@ -1,7 +1,6 @@
 ﻿using System;
 using Robust.Shared.GameObjects;
-using Robust.Shared.Serialization.Manager.Attributes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations;
+using Robust.Shared.ViewVariables;
 
 namespace Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress;
 
@@ -11,19 +10,19 @@ public sealed partial class RatvarProgressComponent : Component
     [DataField]
     public int CurrentPower;
 
-    [DataField]
+    [ViewVariables]
     public EntityUid RatvarBeaconsObjective = EntityUid.Invalid;
 
-    [DataField]
+    [ViewVariables]
     public EntityUid RatvarConvertObjective = EntityUid.Invalid;
 
-    [DataField]
+    [ViewVariables]
     public EntityUid RatvarPowerObjective = EntityUid.Invalid;
 
-    [DataField]
+    [ViewVariables]
     public EntityUid RatvarSummonObjective = EntityUid.Invalid;
 
-    [DataField(customTypeSerializer: typeof(TimespanSerializer))]
+    [ViewVariables]
     public TimeSpan NextObjectivesCheckTick;
 
     [DataField]

@@ -877,12 +877,9 @@ namespace Content.Server.Administration.Systems
                     }
                 }
 
-                _sawmill.Info($"DEBUG ICON: adminPrefix='{adminPrefix}', iconPath='{iconPath}', adminPrefix.Length={adminPrefix.Length}");
-
                 if (iconPath != null && adminPrefix.Length > 0)
                 {
-                    adminPrefix = adminPrefix.Replace("[/bold] ", $"[/bold] [icon={iconPath}] ");
-                    _sawmill.Info($"DEBUG ICON: updated adminPrefix='{adminPrefix}'");
+                    adminPrefix = adminPrefix.Replace("[/bold] ", $"[/bold] [icon=\"{iconPath}\"] ");
                 }
             }
 

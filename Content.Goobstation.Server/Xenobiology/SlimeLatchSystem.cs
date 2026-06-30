@@ -10,6 +10,7 @@ using Content.Goobstation.Shared.Nutrition.EntitySystems;
 using Content.Goobstation.Shared.Xenobiology;
 using Content.Goobstation.Shared.Xenobiology.Components;
 using Content.Goobstation.Shared.Xenobiology.Components.Equipment;
+using Content.Server.NPC.HTN;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Damage;
@@ -32,6 +33,7 @@ using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Throwing;
 using System.Numerics;
 
 namespace Content.Goobstation.Server.Xenobiology;
@@ -52,6 +54,10 @@ public sealed partial class SlimeLatchSystem : EntitySystem
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
     [Dependency] private readonly StomachSystem _stomach = default!;
     [Dependency] private readonly GoobHungerSystem _goobHunger = default!;
+    [Dependency] private readonly SharedContainerSystem _container = default!;
+    [Dependency] private readonly HTNSystem _htn = default!;
+
+    public const float XenoVacuumReleaseLatchBlockSeconds = 4f;
 
     public override void Initialize()
     {
@@ -68,15 +74,6 @@ public sealed partial class SlimeLatchSystem : EntitySystem
         SubscribeLocalEvent<SlimeComponent, EntGotInsertedIntoContainerMessage>(OnEntGotInsertedIntoContainer);
         SubscribeLocalEvent<SlimeComponent, SlimeMitosisEvent>(OnSlimeMitosis);
         SubscribeLocalEvent<SlimeComponent, SlimeTamedEvent>(OnSlimeTamed);
-    }
-
-    private void OnSlimeContained(Entity<SlimeComponent> ent, ref EntInsertedIntoContainerMessage args)
-    {
-        if (!HasComp<XenoVacuumTankComponent>(args.Container.Owner))
-            return;
-
-        if (IsLatched(ent))
-            Unlatch(ent);
     }
 
     public override void Update(float frameTime)
@@ -176,6 +173,12 @@ public sealed partial class SlimeLatchSystem : EntitySystem
     private void OnEntGotInsertedIntoContainer(Entity<SlimeComponent> ent, ref EntGotInsertedIntoContainerMessage args)
     {
         Unlatch(ent);
+
+        if (!HasComp<XenoVacuumTankComponent>(args.Container.Owner))
+            return;
+
+        if (TryComp<HTNComponent>(ent, out _))
+            _htn.SetHTNEnabled(ent, false);
     }
 
     private void OnSlimeMitosis(Entity<SlimeComponent> ent, ref SlimeMitosisEvent args)
@@ -214,6 +217,15 @@ public sealed partial class SlimeLatchSystem : EntitySystem
             _popup.PopupEntity(failMessage, ent, ent);
             return;
         }
+
+        if (SlimeClusterHelper.IsMergedCluster(args.Performer, EntityManager))
+        {
+            _popup.PopupEntity(Loc.GetString("slime-latch-fail-cluster"), ent, ent);
+            return;
+        }
+
+        if (IsVacuumLatchBlocked(args.Performer))
+            return;
 
         if (CanLatch((args.Performer, slime), args.Target))
         {
@@ -256,6 +268,9 @@ public sealed partial class SlimeLatchSystem : EntitySystem
             return false;
         }
 
+        var attemptPopup = Loc.GetString("slime-latch-attempt", ("slime", ent), ("ent", target));
+        _popup.PopupEntity(attemptPopup, target, PopupType.LargeCaution);
+
         var doAfterArgs = new DoAfterArgs(EntityManager, ent, ent.Comp.LatchDoAfterDuration, new SlimeLatchDoAfterEvent(), ent, target)
         {
             BreakOnDamage = true,
@@ -277,6 +292,12 @@ public sealed partial class SlimeLatchSystem : EntitySystem
 
     private void OnDoAfterAttempt(EntityUid uid, SlimeComponent comp, ref DoAfterAttemptEvent<SlimeLatchDoAfterEvent> args)
     {
+        if (IsVacuumLatchBlocked(uid))
+        {
+            args.Cancel();
+            return;
+        }
+
         if (args.Event.Target is not { } target)
             return;
 
@@ -346,8 +367,42 @@ public sealed partial class SlimeLatchSystem : EntitySystem
     public bool IsLatchAttemptInProgress(Entity<SlimeComponent> ent, EntityUid target)
         => IsLatchAttemptInProgress(ent) && ent.Comp.PendingLatchTarget == target;
 
+    public bool IsVacuumLatchBlocked(EntityUid uid)
+    {
+        if (_container.TryGetContainingContainer(uid, out var container)
+            && HasComp<XenoVacuumTankComponent>(container.Owner))
+            return true;
+
+        if (HasComp<ThrownItemComponent>(uid))
+            return true;
+
+        if (TryComp<SlimeXenoVacuumReleasedComponent>(uid, out var released)
+            && _gameTiming.CurTime < released.BlockLatchUntil)
+            return true;
+
+        return false;
+    }
+
+    public void MarkXenoVacuumReleased(EntityUid uid)
+    {
+        var released = EnsureComp<SlimeXenoVacuumReleasedComponent>(uid);
+        released.BlockLatchUntil = _gameTiming.CurTime + TimeSpan.FromSeconds(XenoVacuumReleaseLatchBlockSeconds);
+    }
+
+    public void CancelLatchIfSlime(EntityUid uid)
+    {
+        if (TryComp<SlimeComponent>(uid, out var slime))
+            CancelLatchAttempt((uid, slime));
+    }
+
     public bool CanLatch(Entity<SlimeComponent> ent, EntityUid target, bool ignoreBeingLatched = false)
     {
+        if (SlimeClusterHelper.IsMergedCluster(ent.Owner, EntityManager))
+            return false;
+
+        if (IsVacuumLatchBlocked(ent.Owner))
+            return false;
+
         return TryValidateLatchTarget(ent, target, out _)
             && !(IsLatched(ent)
             || _mobState.IsDead(target)

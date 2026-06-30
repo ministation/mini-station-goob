@@ -8,6 +8,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Content.Server.Station.Components;
 using Content.Shared.Tag;
+using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress.Events;
 
 namespace Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress.Objectives.Summon;
 
@@ -26,6 +27,8 @@ public sealed class RatvarSummonObjectiveSystem : EntitySystem
         SubscribeLocalEvent<RatvarSummonObjectiveComponent, ObjectiveAssignedEvent>(OnAssigned);
         SubscribeLocalEvent<RatvarSummonObjectiveComponent, ObjectiveAfterAssignEvent>(OnAfterAssigned);
         SubscribeLocalEvent<RatvarSummonObjectiveComponent, ObjectiveGetProgressEvent>(OnGetProgress);
+
+        SubscribeLocalEvent<RatvarSpawnedEvent>(OnRatvarSpawned);
     }
 
     public override void Update(float frameTime)
@@ -51,6 +54,15 @@ public sealed class RatvarSummonObjectiveSystem : EntitySystem
 
             _metaData.SetEntityName(uid, title, meta);
             component.UpdateCoordinatesTime = time + component.UpdateCoordinatesPeriod;
+        }
+    }
+
+    private void OnRatvarSpawned(ref RatvarSpawnedEvent ev)
+    {
+        var query = EntityQueryEnumerator<RatvarSummonObjectiveComponent>();
+        while (query.MoveNext(out _, out var component))
+        {
+            component.IsCompleted = true;
         }
     }
 

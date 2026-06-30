@@ -112,16 +112,19 @@ public partial class XenobiologySystem
             if (_random.Prob(ent.Comp.MutationChance) && ent.Comp.PotentialMutations.Count > 0)
                 selectedBreed = _random.Pick(ent.Comp.PotentialMutations);
 
-            var sl = SpawnNextToOrDrop(selectedBreed, ent.Owner);
-            if (TryComp(sl, out SlimeComponent? newComp))
-            {
-                // carries over generations. type shit.
-                newComp.Tamer = ent.Comp.Tamer;
-                newComp.MutationChance = ent.Comp.MutationChance;
-                newComp.MaxOffspring = ent.Comp.MaxOffspring;
-                newComp.ExtractsProduced = ent.Comp.ExtractsProduced;
-                slimes.Add(sl);
-            }
+            if (!_proto.TryIndex(selectedBreed, out var breedProto))
+                continue;
+
+            var sl = SpawnNextToOrDrop(ent.Comp.DefaultSlimeProto, ent.Owner, null, breedProto.Components);
+            if (!TryComp(sl, out SlimeComponent? newComp))
+                continue;
+
+            newComp.Tamer = ent.Comp.Tamer;
+            newComp.MutationChance = ent.Comp.MutationChance;
+            newComp.MaxOffspring = ent.Comp.MaxOffspring;
+            newComp.ExtractsProduced = ent.Comp.ExtractsProduced;
+            _metaData.SetEntityName(sl, XenobiologyLoc.GetBreedName(breedProto));
+            slimes.Add(sl);
         }
 
         // transfer chem bloodstream and stomach chemicals to children evenly

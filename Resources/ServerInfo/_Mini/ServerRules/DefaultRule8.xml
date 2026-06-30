@@ -2,14 +2,13 @@
   <ColorBox Color="#392a3aff" OutlineColor="#5a4a59ff" OutlineThickness="2" Margin="1">
     <Box Orientation="Vertical">
       <Box Orientation="Horizontal" HorizontalAlignment="Center">
-        Правило 8: Эротический контент
+        Правило 8: Адекватность
       </Box>
       <Box Orientation="Vertical" Margin="10">
-        ERP (Erotic Role Play) — всё, что серьёзнее поцелуев и обнимашек,      нельзя.
-
-       - [textlink="8.1 Эротическое содержание" link="DefaultRule81"]
-       - [textlink="8.2 Высказывания" link="DefaultRule82"]
-       - [textlink="8.3 Граничные случаи" link="DefaultRule83"]
+    Для игры на сервере вам требуется быть в адекватном и осознанном состоянии.
+    Неадекватность по отношению к игрокам и администрации в OOC чаты будет воспринят как нарушение этого правила.
+    Чрезмерные безосновательные оскорбления IC конкретного персонажа подпадают под это правило.
+    Тотальная безграмотность подпадает под нарушение этого правила.
       </Box>
     </Box>
   </ColorBox>

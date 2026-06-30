@@ -1,7 +1,6 @@
-﻿- type: entity
+- type: entity
   id: RatvarHammer
   parent: Sledgehammer
-  name: ent-RatvarHammer
   suffix: Ratvar
   components:
   - type: Sharp
@@ -45,8 +44,6 @@
 - type: entity
   parent: BaseAction
   id: RatvarHammmerKnockOff
-  name: ent-RatvarHammmerKnockOff
-  description: ent-RatvarHammmerKnockOff.desc
   components:
   - type: Action
     itemIconStyle: BigItem

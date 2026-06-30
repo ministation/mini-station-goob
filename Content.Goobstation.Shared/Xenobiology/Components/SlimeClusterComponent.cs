@@ -27,4 +27,10 @@ public sealed partial class SlimeClusterComponent : Component
 
     [DataField]
     public TimeSpan PeelDelay = TimeSpan.FromSeconds(2);
+
+    [DataField]
+    public float MergedWalkSpeedModifier = 0.5f;
+
+    [DataField]
+    public float MergedSprintSpeedModifier = 0.375f;
 }

@@ -1,8 +1,6 @@
-﻿- type: entity
+- type: entity
   id: ClothingShoesRatvar
   parent: ClothingShoesBase
-  name: ent-ClothingShoesRatvar
-  description: ent-ClothingShoesRatvar.desc
   suffix: Ratvar
   components:
   - type: Sprite

@@ -1,7 +1,6 @@
-﻿- type: entity
+- type: entity
   id: RatvarShield
   parent: BaseShield
-  name: ent-RatvarShield
   suffix: Ratvar
   components:
   - type: Sprite

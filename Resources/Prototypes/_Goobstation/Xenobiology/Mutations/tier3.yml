@@ -1,5 +1,5 @@
 - type: breed
-  breedName: красный слизень
+  breedName: xenobio-breed-red
   id: RedMutation
   producedExtract: RedSlimeExtract
   components:
@@ -13,7 +13,7 @@
     - OilMutation
 
 - type: breed
-  breedName: зелёный слизень
+  breedName: xenobio-breed-green
   id: GreenMutation
   producedExtract: GreenSlimeExtract
   components:
@@ -27,7 +27,7 @@
     - BlackMutation
 
 - type: breed
-  breedName: розовый слизень
+  breedName: xenobio-breed-pink
   id: PinkMutation
   producedExtract: PinkSlimeExtract
   components:
@@ -41,7 +41,7 @@
     - LightPinkMutation
 
 - type: breed
-  breedName: золотой слизень
+  breedName: xenobio-breed-gold
   id: GoldMutation
   producedExtract: GoldSlimeExtract
   components:

@@ -1,7 +1,6 @@
 - type: entity
   id: RatvarWorkshop
   parent: BaseRatvarStructure
-  name: ent-RatvarWorkshop
   suffix: Ratvar
   components:
   - type: Anchorable

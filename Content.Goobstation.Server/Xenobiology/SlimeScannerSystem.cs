@@ -1,3 +1,4 @@
+using Content.Goobstation.Shared.Xenobiology;
 using Content.Goobstation.Shared.Xenobiology.Components;
 using Content.Goobstation.Shared.Xenobiology.Components.Equipment;
 using Content.Shared.Chemistry.Reaction;
@@ -57,21 +58,21 @@ public sealed partial class SlimeScannerSystem : EntitySystem
 
         var sb = new StringBuilder();
 
-        sb.AppendLine(Loc.GetString("slime-scanner-examine-slime-description", ("color", ent.Comp.SlimeColor.ToHex()), ("name", _prot.Index(ent.Comp.Breed).BreedName)));
+        sb.AppendLine(Loc.GetString("slime-scanner-examine-slime-description", ("color", ent.Comp.SlimeColor.ToHex()), ("name", GetBreedName(ent.Comp.Breed))));
 
         // all this shit for a good looking examine text. imagine.
         sb.Append($"{Loc.GetString("slime-scanner-examine-slime-mutations", ("chance", mutationChance))} ");
         var mutations = ent.Comp.PotentialMutations.ToList();
         for (int i = 0; i < mutations.Count; i++)
         {
-            var info = _prot.Index(mutations[i]);
+            if (!_prot.TryIndex(mutations[i], out var info))
+                continue;
 
             var color = "white";
-            // todo make the colors work
             if (info.Components.TryGetComponent(nameof(SlimeComponent), out var sc))
                 color = ((SlimeComponent) sc!).SlimeColor.ToHex();
 
-            sb.Append($"[color={color}]{info.BreedName}[/color]");
+            sb.Append($"[color={color}]{XenobiologyLoc.GetBreedName(info)}[/color]");
 
             if (i == mutations.Count - 1) sb.AppendLine(".");
             else sb.Append(", ");
@@ -80,6 +81,13 @@ public sealed partial class SlimeScannerSystem : EntitySystem
         sb.AppendLine(Loc.GetString("slime-scanner-examine-slime-extracts", ("num", ent.Comp.ExtractsProduced)));
 
         return sb.ToString();
+    }
+
+    private string GetBreedName(ProtoId<BreedPrototype> breed)
+    {
+        return _prot.TryIndex(breed, out var info)
+            ? XenobiologyLoc.GetBreedName(info)
+            : Loc.GetString("slime-scanner-examine-slime-unknown-breed");
     }
 
     private string GenerateExtractMarkup(Entity<SlimeExtractComponent> ent)

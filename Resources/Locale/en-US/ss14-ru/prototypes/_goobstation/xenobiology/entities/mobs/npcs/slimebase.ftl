@@ -7,4 +7,4 @@ ent-MobSlimeXenobioAdult = slime
     .desc = It looks so much like jelly. I wonder what it tastes like?
     .suffix = Adult
 ent-MobSlimeXenobioBabyPending = undetermined slime
-    .desc = { ent-MarkerBase.desc }
+    .desc = { ent-MobSlimeXenobioBaby.desc }

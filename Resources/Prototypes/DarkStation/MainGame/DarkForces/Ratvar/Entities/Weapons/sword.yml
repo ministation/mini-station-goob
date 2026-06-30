@@ -1,7 +1,6 @@
-﻿- type: entity
+- type: entity
   id: RatvarSword
   parent: BaseItem
-  name: ent-RatvarSword
   suffix: Ratvar
   components:
   - type: Sharp
@@ -53,8 +52,6 @@
 - type: entity
   parent: BaseAction
   id: RatvarSwordsSwordsman
-  name: ent-RatvarSwordsSwordsman
-  description: ent-RatvarSwordsSwordsman.desc
   components:
   - type: Action
     itemIconStyle: BigItem
@@ -65,8 +62,6 @@
 - type: entity
   parent: BaseAction
   id: RatvarSwordBloodshed
-  name: ent-RatvarSwordBloodshed
-  description: ent-RatvarSwordBloodshed.desc
   components:
   - type: Action
     itemIconStyle: BigItem

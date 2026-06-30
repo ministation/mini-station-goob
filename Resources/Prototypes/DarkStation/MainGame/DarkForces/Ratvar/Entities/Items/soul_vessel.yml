@@ -1,8 +1,6 @@
-﻿- type: entity
+- type: entity
   parent: BaseItem
   id: RatvarSoulVessel
-  name: ent-RatvarSoulVessel
-  description: ent-RatvarSoulVessel.desc
   suffix: Ratvar
   components:
   - type: Transform

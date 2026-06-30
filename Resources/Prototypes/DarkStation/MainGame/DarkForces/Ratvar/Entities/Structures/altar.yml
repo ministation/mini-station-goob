@@ -1,8 +1,6 @@
 - type: entity
   id: RatvarAltar
   parent: BaseRatvarStructure
-  name: ent-RatvarAltar
-  description: ent-RatvarAltar.desc
   suffix: Ratvar
   components:
   - type: Anchorable
@@ -29,11 +27,11 @@
     position: Down
     rotation: -90
   - type: PointLight
+    enabled: false
     radius: 4
     energy: 4
     color: "#dfc477"
   - type: RatvarAltar
-  - type: RatvarStructure
   - type: Construction
     graph: RatvarAltarGraph
     node: altar

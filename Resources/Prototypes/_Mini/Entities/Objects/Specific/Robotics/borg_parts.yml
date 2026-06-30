@@ -50,7 +50,7 @@
   - type: Construction
     graph: TypanCyborg
     node: start
-    defaultTarget: cyborg
+    defaultTarget: typan_cyborg
     containers:
     - part-container
     - cell_slot

@@ -6,6 +6,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Goobstation.Shared.Xenobiology.Components;
 using Content.Goobstation.Shared.Xenobiology.Components.Equipment;
 using Content.Server.NPC.HTN;
 using Content.Server.Storage.EntitySystems;
@@ -45,9 +46,11 @@ public sealed partial class XenoVacuumSystem : EntitySystem
     [Dependency] private readonly HTNSystem _htn = default!;
     [Dependency] private readonly UseDelaySystem _useDelay = default!;
     [Dependency] private readonly EntityStorageSystem _entStorage = default!;
+    [Dependency] private readonly SlimeLatchSystem _latch = default!;
 
     private const string ReleaseDelayId = "release";
     private const string SuctionDelayId = "suction";
+    private const float ReleaseParalyzeSeconds = 3f;
 
     public override void Initialize()
     {
@@ -55,6 +58,7 @@ public sealed partial class XenoVacuumSystem : EntitySystem
         SubscribeLocalEvent<XenoVacuumTankComponent, MapInitEvent>(OnTankInit);
         SubscribeLocalEvent<XenoVacuumTankComponent, ExaminedEvent>(OnTankExamined);
         SubscribeLocalEvent<XenoVacuumTankComponent, DestructionEventArgs>(OnDestruction);
+        SubscribeLocalEvent<XenoVacuumTankComponent, EntInsertedIntoContainerMessage>(OnTankEntityInserted);
 
         SubscribeLocalEvent<XenoVacuumComponent, GotEquippedHandEvent>(OnEquippedHand);
         SubscribeLocalEvent<XenoVacuumComponent, GotUnequippedHandEvent>(OnUnequippedHand);
@@ -64,6 +68,25 @@ public sealed partial class XenoVacuumSystem : EntitySystem
     private void OnTankInit(Entity<XenoVacuumTankComponent> ent, ref MapInitEvent args)
     {
         ent.Comp.StorageTank = _containerSystem.EnsureContainer<Container>(ent, ent.Comp.TankContainerName);
+
+        foreach (var contained in ent.Comp.StorageTank.ContainedEntities)
+            OnSlimeStored(contained);
+    }
+
+    private void OnTankEntityInserted(Entity<XenoVacuumTankComponent> ent, ref EntInsertedIntoContainerMessage args)
+    {
+        if (args.Container.ID != ent.Comp.TankContainerName)
+            return;
+
+        OnSlimeStored(args.Entity);
+    }
+
+    private void OnSlimeStored(EntityUid slime)
+    {
+        _latch.CancelLatchIfSlime(slime);
+
+        if (TryComp<HTNComponent>(slime, out _))
+            _htn.SetHTNEnabled(slime, false);
     }
 
     private void OnTankExamined(Entity<XenoVacuumTankComponent> ent, ref ExaminedEvent args)
@@ -131,12 +154,15 @@ public sealed partial class XenoVacuumSystem : EntitySystem
             var popup = Loc.GetString("xeno-vacuum-clear-popup", ("ent", removedEnt));
             _popup.PopupEntity(popup, ent, args.User);
 
+            _latch.CancelLatchIfSlime(removedEnt);
+            _latch.MarkXenoVacuumReleased(removedEnt);
+
             if (args.Target is { } thrown)
                 _throw.TryThrow(removedEnt, thrown.ToCoordinates());
             else
                 _throw.TryThrow(removedEnt, args.ClickLocation);
-            _stun.TryUpdateParalyzeDuration(removedEnt, TimeSpan.FromSeconds(2));
-            _htn.SetHTNEnabled(removedEnt, true,2f);
+            _stun.TryUpdateParalyzeDuration(removedEnt, TimeSpan.FromSeconds(ReleaseParalyzeSeconds));
+            _htn.SetHTNEnabled(removedEnt, true, SlimeLatchSystem.XenoVacuumReleaseLatchBlockSeconds);
         }
 
         if (ud != null) _useDelay.TryResetDelay((ent, ud), false, ReleaseDelayId);
@@ -207,6 +233,7 @@ public sealed partial class XenoVacuumSystem : EntitySystem
             return false;
         }
 
+        _latch.CancelLatchIfSlime(target);
         _htn.SetHTNEnabled(target, false);
 
         if (!_containerSystem.Insert(target, tankComp.StorageTank))

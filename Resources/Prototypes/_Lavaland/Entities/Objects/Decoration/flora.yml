@@ -57,6 +57,10 @@
   #      - id: FoodSpaceshroom
 
 - type: entity
+  parent: FloraAshBush
+  id: AshBush
+
+- type: entity
   name: gray sprouts
   id: FloraAshSprouts
   parent: BaseLavalandFlora

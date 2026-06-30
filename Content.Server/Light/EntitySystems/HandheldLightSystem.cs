@@ -29,6 +29,7 @@ using Content.Server.Popups;
 using Content.Server.Power.EntitySystems;
 using Content.Server.PowerCell;
 using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Light;
@@ -116,8 +117,35 @@ namespace Content.Server.Light.EntitySystems
         private void OnMapInit(Entity<HandheldLightComponent> ent, ref MapInitEvent args)
         {
             var component = ent.Comp;
+
+            SanitizeActionReference(ent, ref component.ToggleActionEntity);
+            SanitizeActionReference(ent, ref component.SelfToggleActionEntity);
+
             _actionContainer.EnsureAction(ent, ref component.ToggleActionEntity, component.ToggleAction);
             _actions.AddAction(ent, ref component.SelfToggleActionEntity, component.ToggleAction);
+        }
+
+        /// <summary>
+        /// Map files can contain stale action entity links on lights; drop invalid references
+        /// and let the action systems recreate them on map init.
+        /// </summary>
+        private void SanitizeActionReference(EntityUid owner, ref EntityUid? actionUid)
+        {
+            if (actionUid is not { } action)
+                return;
+
+            if (TerminatingOrDeleted(action) || !TryComp(action, out ActionComponent? actionComp))
+            {
+                actionUid = null;
+                return;
+            }
+
+            if (!TryComp(owner, out ActionsContainerComponent? containerComp)
+                || actionComp.Container != owner
+                || !containerComp.Container.Contains(action))
+            {
+                actionUid = null;
+            }
         }
 
         private void OnShutdown(EntityUid uid, HandheldLightComponent component, ComponentShutdown args)

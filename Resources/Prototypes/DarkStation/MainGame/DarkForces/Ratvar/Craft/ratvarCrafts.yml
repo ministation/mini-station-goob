@@ -1,4 +1,4 @@
-﻿#weapons
+#weapons
 - type: ratvarCraftCategory
   id: Weapon
   name: craft-category-RatvarWeapon
@@ -10,7 +10,7 @@
 
 - type: ratvarCraft
   id: RatvarSlab
-  name: ent-MidasTouchClockworkSlab
+  name: craft-recipe-RatvarSlab
   brassCost: 500
   powerCost: 0
   craftingTime: 3
@@ -21,7 +21,7 @@
 
 - type: ratvarCraft
   id: RatvarSpear
-  name: ent-RatvarSpear
+  name: craft-recipe-RatvarSpear
   brassCost: 1500
   powerCost: 400
   craftingTime: 10
@@ -32,7 +32,7 @@
 
 - type: ratvarCraft
   id: RatvarHammer
-  name: ent-RatvarHammer
+  name: craft-recipe-RatvarHammer
   brassCost: 1500
   powerCost: 400
   craftingTime: 10
@@ -43,7 +43,7 @@
 
 - type: ratvarCraft
   id: RatvarSword
-  name: ent-RatvarSword
+  name: craft-recipe-RatvarSword
   brassCost: 1500
   powerCost: 200
   craftingTime: 4
@@ -66,7 +66,7 @@
 
 - type: ratvarCraft
   id: RatvarShield
-  name: ent-RatvarShield
+  name: craft-recipe-RatvarShield
   brassCost: 1500
   powerCost: 200
   craftingTime: 4
@@ -77,7 +77,7 @@
 
 - type: ratvarCraft
   id: RatvarClockRobe
-  name: ent-ClothingOuterRobesRatvar
+  name: craft-recipe-RatvarClockRobe
   brassCost: 800
   powerCost: 80
   craftingTime: 10
@@ -88,7 +88,7 @@
 
 - type: ratvarCraft
   id: RatvarCuirass
-  name: ent-ClothingOuterCuirassRatvar
+  name: craft-recipe-RatvarCuirass
   brassCost: 1500
   powerCost: 400
   craftingTime: 20
@@ -99,7 +99,7 @@
 
 - type: ratvarCraft
   id: RatvarGauntlets
-  name: ent-ClothingHandsRatvar
+  name: craft-recipe-RatvarGauntlets
   brassCost: 500
   powerCost: 200
   craftingTime: 5
@@ -110,7 +110,7 @@
 
 - type: ratvarCraft
   id: RatvarTreads
-  name: ent-ClothingShoesRatvar
+  name: craft-recipe-RatvarTreads
   brassCost: 250
   powerCost: 50
   craftingTime: 5
@@ -121,7 +121,7 @@
 
 - type: ratvarCraft
   id: RatvarHelmet
-  name: ent-ClothingHeadHelmetRatvar
+  name: craft-recipe-RatvarHelmet
   brassCost: 500
   powerCost: 100
   craftingTime: 5
@@ -142,7 +142,7 @@
 
 - type: ratvarCraft
   id: RatvarIntegrationCog
-  name: ent-RatvarIntegrationCog
+  name: craft-recipe-RatvarIntegrationCog
   brassCost: 250
   powerCost: 0
   craftingTime: 3
@@ -153,7 +153,7 @@
 
 - type: ratvarCraft
   id: RatvarSoulVessel
-  name: ent-RatvarSoulVessel
+  name: craft-recipe-RatvarSoulVessel
   brassCost: 250
   powerCost: 100
   craftingTime: 5
@@ -164,7 +164,7 @@
 
 - type: ratvarCraft
   id: RatvarMarauder
-  name: ent-MobRatvarMarauder
+  name: craft-recipe-RatvarMarauder
   brassCost: 3000
   powerCost: 300
   craftingTime: 20
@@ -175,7 +175,7 @@
 
 - type: ratvarCraft
   id: RatvarStrangeShard
-  name: ent-RatvarShard
+  name: craft-recipe-RatvarStrangeShard
   brassCost: 400
   powerCost: 600
   craftingTime: 15

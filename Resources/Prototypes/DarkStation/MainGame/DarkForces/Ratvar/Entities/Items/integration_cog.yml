@@ -1,8 +1,6 @@
-﻿- type: entity
+- type: entity
   id: RatvarIntegrationCog
   parent: BaseItem
-  name: ent-RatvarIntegrationCog
-  description: ent-RatvarIntegrationCog.desc
   suffix: Ratvar
   components:
   - type: Sprite

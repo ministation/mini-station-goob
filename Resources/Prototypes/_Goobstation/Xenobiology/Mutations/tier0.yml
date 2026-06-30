@@ -1,6 +1,6 @@
 # Literally the first base
 - type: breed
-  breedName: серый слизень
+  breedName: xenobio-breed-grey
   id: GreyMutation
   producedExtract: GreySlimeExtract
   components:

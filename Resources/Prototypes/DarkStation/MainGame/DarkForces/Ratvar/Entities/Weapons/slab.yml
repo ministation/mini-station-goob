@@ -1,8 +1,6 @@
 - type: entity
   id: RatvarSlab
   parent: BaseItem
-  name: ent-RatvarSlab
-  description: ent-RatvarSlab.desc
   suffix: Ratvar
   components:
   - type: Sprite
@@ -70,8 +68,6 @@
 - type: entity
   parent: BaseAction
   id: ActionRatvarSlabStun
-  name: action-name-RatvarSlabStun
-  description: action-desc-RatvarSlabStun
   components:
   - type: Action
     itemIconStyle: BigItem
@@ -90,8 +86,6 @@
 - type: entity
   parent: BaseAction
   id: ActionRatvarSlabDoors
-  name: action-name-RatvarSlabDoors
-  description: action-desc-RatvarSlabDoors
   components:
   - type: Action
     itemIconStyle: BigItem
@@ -110,8 +104,6 @@
 - type: entity
   parent: BaseAction
   id: ActionRatvarSlabWalls
-  name: action-name-RatvarSlabWalls
-  description: action-desc-RatvarSlabWalls
   components:
   - type: Action
     itemIconStyle: BigItem
@@ -130,8 +122,6 @@
 - type: entity
   parent: BaseAction
   id: ActionRatvarSlabTeleport
-  name: action-name-RatvarSlabTeleport
-  description: action-desc-RatvarSlabTeleport
   components:
   - type: Action
     itemIconStyle: BigItem
@@ -144,8 +134,6 @@
 - type: entity
   parent: BaseAction
   id: ActionRatvarSlabHidings
-  name: action-name-RatvarSlabHidings
-  description: action-desc-RatvarSlabHidings
   components:
   - type: Action
     itemIconStyle: BigItem

@@ -1,307 +1,252 @@
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyGrey
-  name: серый слизень
   components:
   - type: Slime
-    breed: MobSlimeXenobioBabyGrey
-    breedName: xenobio-breed-grey
-    producedExtract: GreySlimeExtract
+    breed: GreyMutation
     slimeColor: "#828282"
     potentialMutations:
-    - MobSlimeXenobioBabyOrange
-    - MobSlimeXenobioBabyPurple
-    - MobSlimeXenobioBabyBlue
-    - MobSlimeXenobioBabyMetal
+    - OrangeMutation
+    - PurpleMutation
+    - BlueMutation
+    - MetalMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyOrange
-  name: оранжевый слизень
   components:
   - type: Slime
     slimeColor: "#ff9f1a"
-    breed: MobSlimeXenobioBabyOrange
-    breedName: xenobio-breed-orange
-    producedExtract: OrangeSlimeExtract
+    breed: OrangeMutation
     potentialMutations:
-    - MobSlimeXenobioBabyGrey
-    - MobSlimeXenobioBabyYellow
-    - MobSlimeXenobioBabyDarkPurple
-    - MobSlimeXenobioBabyRed
+    - GreyMutation
+    - YellowMutation
+    - DarkPurpleMutation
+    - RedMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyPurple
-  name: фиолетовый слизень
   components:
   - type: Slime
     slimeColor: "#BF77F6"
-    breed: MobSlimeXenobioBabyPurple
-    breedName: xenobio-breed-purple
-    producedExtract: PurpleSlimeExtract
+    breed: PurpleMutation
     potentialMutations:
-    - MobSlimeXenobioBabyGrey
-    - MobSlimeXenobioBabyDarkPurple
-    - MobSlimeXenobioBabyDarkBlue
-    - MobSlimeXenobioBabyGreen
+    - GreyMutation
+    - DarkPurpleMutation
+    - DarkBlueMutation
+    - GreenMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyBlue
-  name: синий слизень
   components:
   - type: Slime
     slimeColor: "#79F6FC"
-    breed: MobSlimeXenobioBabyBlue
-    breedName: xenobio-breed-blue
-    producedExtract: BlueSlimeExtract
+    breed: BlueMutation
     potentialMutations:
-    - MobSlimeXenobioBabyGrey
-    - MobSlimeXenobioBabyDarkBlue
-    - MobSlimeXenobioBabySilver
-    - MobSlimeXenobioBabyPink
+    - GreyMutation
+    - DarkBlueMutation
+    - SilverMutation
+    - PinkMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyMetal
-  name: металлический слизень
   components:
   - type: Slime
     slimeColor: "#595959"
-    breed: MobSlimeXenobioBabyMetal
-    breedName: xenobio-breed-metal
-    producedExtract: MetalSlimeExtract
+    breed: MetalMutation
+    shouldHaveShader: true
     shader: XenoMetallic
     potentialMutations:
-    - MobSlimeXenobioBabyGrey
-    - MobSlimeXenobioBabySilver
-    - MobSlimeXenobioBabyYellow
-    - MobSlimeXenobioBabyGold
+    - GreyMutation
+    - SilverMutation
+    - YellowMutation
+    - GoldMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyYellow
-  name: жёлтый слизень
   components:
   - type: Slime
     slimeColor: "#ffff1a"
-    breed: MobSlimeXenobioBabyYellow
-    breedName: xenobio-breed-yellow
-    producedExtract: YellowSlimeExtract
+    breed: YellowMutation
     potentialMutations:
-    - MobSlimeXenobioBabyOrange
-    - MobSlimeXenobioBabyMetal
-    - MobSlimeXenobioBabyBluespace
+    - OrangeMutation
+    - MetalMutation
+    - BluespaceMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyDarkPurple
-  name: тёмно-фиолетовый слизень
   components:
   - type: Slime
     slimeColor: "#8e0ff0"
-    breed: MobSlimeXenobioBabyDarkPurple
-    breedName: xenobio-breed-dark-purple
-    producedExtract: DarkPurpleSlimeExtract
+    breed: DarkPurpleMutation
     potentialMutations:
-    - MobSlimeXenobioBabyPurple
-    - MobSlimeXenobioBabyOrange
-    - MobSlimeXenobioBabySepia
+    - PurpleMutation
+    - OrangeMutation
+    - SepiaMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyDarkBlue
-  name: тёмно-синий слизень
   components:
   - type: Slime
     slimeColor: "#1e8cfa"
-    breed: MobSlimeXenobioBabyDarkBlue
-    breedName: xenobio-breed-dark-blue
-    producedExtract: DarkBlueSlimeExtract
+    breed: DarkBlueMutation
     potentialMutations:
-    - MobSlimeXenobioBabyBlue
-    - MobSlimeXenobioBabyPurple
-    - MobSlimeXenobioBabyCerulean
+    - BlueMutation
+    - PurpleMutation
+    - CeruleanMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabySilver
-  name: серебряный слизень
   components:
   - type: Slime
     slimeColor: "#c4c4c4"
+    shouldHaveShader: true
     shader: XenoMetallic
-    breed: MobSlimeXenobioBabySilver
-    breedName: xenobio-breed-silver
-    producedExtract: SilverSlimeExtract
+    breed: SilverMutation
     potentialMutations:
-    - MobSlimeXenobioBabyBlue
-    - MobSlimeXenobioBabyPyrite
-    - MobSlimeXenobioBabyMetal
+    - BlueMutation
+    - MetalMutation
+    - PyriteMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyBluespace
-  name: блюспейс слизень
   components:
   - type: Slime
     slimeColor: "#f0f8ff"
+    shouldHaveShader: true
     shader: XenoBluespace
-    breed: MobSlimeXenobioBabyBluespace
-    breedName: xenobio-breed-bluespace
-    producedExtract: BluespaceSlimeExtract
+    breed: BluespaceMutation
     potentialMutations:
-    - MobSlimeXenobioBabyBluespace
+    - BluespaceMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabySepia
-  name: сепиевый слизень
   components:
   - type: Slime
     slimeColor: "#704214"
+    shouldHaveShader: true
     shader: XenoSepia
-    breed: MobSlimeXenobioBabySepia
-    breedName: xenobio-breed-sepia
-    producedExtract: SepiaSlimeExtract
+    breed: SepiaMutation
     potentialMutations:
-    - MobSlimeXenobioBabySepia
+    - SepiaMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyCerulean
-  name: лазурный слизень
   components:
   - type: Slime
     slimeColor: "#2A52BE"
-    breed: MobSlimeXenobioBabyCerulean
-    breedName: xenobio-breed-cerulean
-    producedExtract: CeruleanSlimeExtract
+    breed: CeruleanMutation
     potentialMutations:
-    - MobSlimeXenobioBabyCerulean
+    - CeruleanMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyPyrite
-  name: пиритовый слизень
   components:
   - type: Slime
     slimeColor: "#dcaa4f"
+    shouldHaveShader: true
     shader: XenoMetallic
-    breed: MobSlimeXenobioBabyPyrite
-    breedName: xenobio-breed-pyrite
-    producedExtract: PyriteSlimeExtract
+    breed: PyriteMutation
     potentialMutations:
-    - MobSlimeXenobioBabyPyrite
+    - PyriteMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyRed
-  name: красный слизень
   components:
   - type: Slime
     slimeColor: "#ff3333"
-    breed: MobSlimeXenobioBabyRed
-    breedName: xenobio-breed-red
-    producedExtract: RedSlimeExtract
+    breed: RedMutation
     potentialMutations:
-    - MobSlimeXenobioBabyRed
-    - MobSlimeXenobioBabyOil
+    - RedMutation
+    - OilMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyGreen
-  name: зелёный слизень
   components:
   - type: Slime
     slimeColor: "#4dff4d"
-    breed: MobSlimeXenobioBabyGreen
-    breedName: xenobio-breed-green
-    producedExtract: GreenSlimeExtract
+    breed: GreenMutation
     potentialMutations:
-    - MobSlimeXenobioBabyGreen
-    - MobSlimeXenobioBabyBlack
+    - GreenMutation
+    - BlackMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyPink
-  name: розовый слизень
   components:
   - type: Slime
     slimeColor: "#ff33cc"
-    breed: MobSlimeXenobioBabyPink
-    breedName: xenobio-breed-pink
-    producedExtract: PinkSlimeExtract
+    breed: PinkMutation
     potentialMutations:
-    - MobSlimeXenobioBabyPink
-    - MobSlimeXenobioBabyLightPink
+    - PinkMutation
+    - LightPinkMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyGold
-  name: золотой слизень
   components:
   - type: Slime
     slimeColor: "#e8b923"
+    shouldHaveShader: true
     shader: XenoMetallic
-    breed: MobSlimeXenobioBabyGold
-    breedName: xenobio-breed-gold
-    producedExtract: GoldSlimeExtract
+    breed: GoldMutation
     potentialMutations:
-    - MobSlimeXenobioBabyGold
-    - MobSlimeXenobioBabyAdamantine
+    - GoldMutation
+    - AdamantineMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyOil
-  name: нефтяной слизень
   components:
   - type: Slime
     slimeColor: "#383936"
+    shouldHaveShader: true
     shader: XenoMetallic
-    breed: MobSlimeXenobioBabyOil
-    breedName: xenobio-breed-oil
-    producedExtract: OilSlimeExtract
+    breed: OilMutation
     potentialMutations:
-    - MobSlimeXenobioBabyOil
+    - OilMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyLightPink
-  name: светло-розовый слизень
   components:
   - type: Slime
     slimeColor: "#ffb3ec"
-    breed: MobSlimeXenobioBabyLightPink
-    breedName: xenobio-breed-light-pink
-    producedExtract: LightPinkSlimeExtract
+    breed: LightPinkMutation
     potentialMutations:
-    - MobSlimeXenobioBabyLightPink
+    - LightPinkMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyBlack
-  name: чёрный слизень
   components:
   - type: Slime
     slimeColor: "#000000"
-    breed: MobSlimeXenobioBabyBlack
-    breedName: xenobio-breed-black
-    producedExtract: BlackSlimeExtract
+    breed: BlackMutation
     potentialMutations:
-    - MobSlimeXenobioBabyBlack
+    - BlackMutation
 
 - type: entity
   parent: MobSlimeXenobioBaby
   id: MobSlimeXenobioBabyAdamantine
-  name: адамантитовый слизень
   components:
   - type: Slime
     slimeColor: "#005c33"
+    shouldHaveShader: true
     shader: XenoMetallic
-    breed: MobSlimeXenobioBabyAdamantine
-    breedName: xenobio-breed-adamantine
-    producedExtract: AdamantineSlimeExtract
+    breed: AdamantineMutation
     potentialMutations:
-    - MobSlimeXenobioBabyAdamantine
+    - AdamantineMutation

@@ -14,11 +14,13 @@ using Content.Shared.DoAfter;
 using Content.Shared.Inventory;
 using Content.Shared.Mindshield.Components;
 using Content.Shared.Popups;
+using Content.Shared._White.ListViewSelector;
 using Content.Shared._White.RadialSelector;
 using Content.Shared.Speech.Muting;
 using Content.Shared.StatusEffect;
 using Content.Shared.WhiteDream.BloodCult.Spells;
 using Robust.Server.GameObjects;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -89,6 +91,8 @@ public sealed class BloodCultSpellsSystem : EntitySystem
 
     private void OnComponentStartup(Entity<BloodCultSpellsHolderComponent> cultist, ref ComponentStartup args)
     {
+        EnsureCultUi(cultist);
+
         cultist.Comp.MaxSpells = cultist.Comp.DefaultMaxSpells;
 
         foreach (var actionId in cultist.Comp.ManagementActions)
@@ -358,6 +362,12 @@ public sealed class BloodCultSpellsSystem : EntitySystem
 
         _ui.SetUiState(cultist.Owner, RadialSelectorUiKey.Key, state);
         _ui.TryToggleUi(cultist.Owner, RadialSelectorUiKey.Key, cultist.Owner);
+    }
+
+    private void EnsureCultUi(EntityUid uid)
+    {
+        _ui.SetUi(uid, RadialSelectorUiKey.Key, new InterfaceData("RadialSelectorMenuBUI"));
+        _ui.SetUi(uid, ListViewSelectorUiKey.Key, new InterfaceData("ListViewSelectorBUI"));
     }
 
     private void CloseSpellSelector(Entity<BloodCultSpellsHolderComponent> cultist)

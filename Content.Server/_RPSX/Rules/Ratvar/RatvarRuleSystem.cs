@@ -7,8 +7,11 @@ using Content.Server.AlertLevel;
 using Content.Server.Antag;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking.Rules;
+using Content.Server.GameTicking;
 using Content.Server.RoundEnd;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.RPSX.DarkForces.Ratvar.Righteous.Roles;
+using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Structures.Beacon;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
@@ -62,6 +65,29 @@ public sealed class RatvarRuleSystem : GameRuleSystem<RatvarRuleComponent>
         }
     }
 
+    protected override void AppendRoundEndText(EntityUid uid, RatvarRuleComponent component,
+        GameRuleComponent gameRule, ref RoundEndTextAppendEvent args)
+    {
+        base.AppendRoundEndText(uid, component, gameRule, ref args);
+
+        var righteousCount = EntityQuery<RatvarRighteousComponent>().Count();
+        var beaconCount = EntityQuery<RatvarBeaconComponent>().Count();
+        var power = _progressSystem.GetCurrentPower();
+        var winState = component.WinState;
+
+        if (winState == WinState.RighteousWon)
+        {
+            args.AddLine(Loc.GetString("ratvar-roundend-win"));
+        }
+        else
+        {
+            args.AddLine(Loc.GetString("ratvar-roundend-loss"));
+        }
+
+        args.AddLine(Loc.GetString("ratvar-roundend-stats-1", ("righteousCount", righteousCount)));
+        args.AddLine(Loc.GetString("ratvar-roundend-stats-2", ("beaconCount", beaconCount)));
+        args.AddLine(Loc.GetString("ratvar-roundend-stats-3", ("power", power)));
+    }
     private void OnRatvarSpawnedEvent(ref RatvarSpawnedEvent ev)
     {
         var rule = EntityQuery<RatvarRuleComponent>().FirstOrDefault();
@@ -71,9 +97,10 @@ public sealed class RatvarRuleSystem : GameRuleSystem<RatvarRuleComponent>
 
         rule.WinState = WinState.RighteousWon;
 
+        var position = CoordinatesHelper.GetEntityMapPosition(EntityManager, ev.Ratvar);
         _chatSystem.DispatchStationAnnouncement(
             ev.Ratvar,
-            Loc.GetString("ratvar-spawn-end"),
+            Loc.GetString("ratvar-spawn-end", ("position", position)),
             Loc.GetString("ratvar-name"),
             false,
             null,

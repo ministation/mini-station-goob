@@ -1,7 +1,5 @@
-﻿- type: entity
+- type: entity
   id: RatvarMidasTouch
-  name: action-name-ratvar-midas-touch
-  description: action-desc-ratvar-midas-touch
   components:
   - type: Action
     itemIconStyle: NoItem
@@ -21,8 +19,6 @@
 
 - type: entity
   id: RatvarClockMagic
-  name: action-name-ratvar-clock-magic
-  description: action-desc-ratvar-clock-magic
   components:
   - type: Action
     itemIconStyle: NoItem

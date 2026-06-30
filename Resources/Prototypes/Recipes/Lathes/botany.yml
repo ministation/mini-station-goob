@@ -55,6 +55,7 @@
   parent: BaseHydroToolRecipe
   id: HydroponicsToolClippers
   result: HydroponicsToolClippers
+
 - type: latheRecipe
   parent: HandheldHealthAnalyzer
   id: PlantAnalyzer

@@ -1,3 +1,4 @@
+slime-scanner-examine-slime-unknown-breed = unknown breed
 slime-scanner-examine-slime-description = Это [color={$color}]{$name}[/color].
 
 slime-scanner-examine-slime-mutations = Его шанс мутации при митозе — [color=yellow]{$chance}%[/color]. Возможные мутации:

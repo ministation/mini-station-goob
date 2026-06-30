@@ -1,5 +1,6 @@
 using Content.Server.Destructible;
 using Content.Server.DeviceNetwork.Systems;
+using Content.Server.NPC.Components;
 using Content.Server.NPC.HTN;
 using Content.Server.NPC.HTN.PrimitiveTasks.Operators.Combat.Ranged;
 using Content.Server.Power.Components;
@@ -62,6 +63,8 @@ public sealed partial class DeployableTurretSystem : SharedDeployableTurretSyste
 
     private void OnBroken(Entity<DeployableTurretComponent> ent, ref BreakageEventArgs args)
     {
+        StopCombat(ent);
+
         if (TryComp<AppearanceComponent>(ent, out var appearance))
             _appearance.SetData(ent, DeployableTurretVisuals.Broken, true, appearance);
 
@@ -143,25 +146,32 @@ public sealed partial class DeployableTurretSystem : SharedDeployableTurretSyste
 
     protected override void SetState(Entity<DeployableTurretComponent> ent, bool enabled, EntityUid? user = null)
     {
+        if (!enabled)
+            StopCombat(ent);
+
         if (ent.Comp.Enabled == enabled)
             return;
 
         base.SetState(ent, enabled, user);
         DirtyField(ent, ent.Comp, nameof(DeployableTurretComponent.Enabled));
 
-        // Determine how much time is remaining in the current animation and the one next in queue
         var animTimeRemaining = MathF.Max((float)(ent.Comp.AnimationCompletionTime - _timing.CurTime).TotalSeconds, 0f);
-        var animTimeNext = ent.Comp.Enabled ? ent.Comp.DeploymentLength : ent.Comp.RetractionLength;
+        var animTimeNext = enabled ? ent.Comp.DeploymentLength : ent.Comp.RetractionLength;
 
-        // End/restart any tasks the NPC was doing
-        // Delay the resumption of any tasks based on the total animation length (plus a buffer)
         var planCooldown = animTimeRemaining + animTimeNext + 0.5f;
 
-        if (TryComp<HTNComponent>(ent, out var htn))
-            _htn.SetHTNEnabled((ent, htn), ent.Comp.Enabled, planCooldown);
+        if (enabled && TryComp<HTNComponent>(ent, out var htn))
+            _htn.SetHTNEnabled((ent, htn), true, planCooldown);
 
-        // Play audio
-        _audio.PlayPvs(ent.Comp.Enabled ? ent.Comp.DeploymentSound : ent.Comp.RetractionSound, ent, new AudioParams { Volume = -10f });
+        _audio.PlayPvs(enabled ? ent.Comp.DeploymentSound : ent.Comp.RetractionSound, ent, new AudioParams { Volume = -10f });
+    }
+
+    private void StopCombat(Entity<DeployableTurretComponent> ent)
+    {
+        if (TryComp<HTNComponent>(ent, out var htn))
+            _htn.SetHTNEnabled((ent, htn), false);
+
+        RemComp<NPCRangedCombatComponent>(ent.Owner);
     }
 
     private void UpdateAmmoStatus(Entity<DeployableTurretComponent> ent)
@@ -177,16 +187,24 @@ public sealed partial class DeployableTurretSystem : SharedDeployableTurretSyste
         if (destructable?.IsBroken == true)
             return DeployableTurretState.Broken;
 
-        if (htn == null || !HasAmmo(ent))
+        if (!ent.Comp.Enabled)
+        {
+            if (ent.Comp.AnimationCompletionTime > _timing.CurTime)
+                return DeployableTurretState.Retracting;
+
+            return DeployableTurretState.Retracted;
+        }
+
+        if (htn == null || !htn.Enabled || !HasAmmo(ent))
             return DeployableTurretState.Disabled;
 
         if (htn.Plan?.CurrentTask.Operator is GunOperator)
             return DeployableTurretState.Firing;
 
         if (ent.Comp.AnimationCompletionTime > _timing.CurTime)
-            return ent.Comp.Enabled ? DeployableTurretState.Deploying : DeployableTurretState.Retracting;
+            return DeployableTurretState.Deploying;
 
-        return ent.Comp.Enabled ? DeployableTurretState.Deployed : DeployableTurretState.Retracted;
+        return DeployableTurretState.Deployed;
     }
 
     public override void Update(float frameTime)
@@ -196,6 +214,9 @@ public sealed partial class DeployableTurretSystem : SharedDeployableTurretSyste
         var query = EntityQueryEnumerator<DeployableTurretComponent, DestructibleComponent, HTNComponent>();
         while (query.MoveNext(out var uid, out var deployableTurret, out var destructible, out var htn))
         {
+            if ((!deployableTurret.Enabled || destructible.IsBroken) && HasComp<NPCRangedCombatComponent>(uid))
+                RemComp<NPCRangedCombatComponent>(uid);
+
             // Check if the turret state has changed since the last update,
             // and if it has, inform the device network
             var ent = new Entity<DeployableTurretComponent>(uid, deployableTurret);

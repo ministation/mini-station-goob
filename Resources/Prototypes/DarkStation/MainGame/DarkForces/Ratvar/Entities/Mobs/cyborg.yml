@@ -1,8 +1,6 @@
-﻿- type: entity
+- type: entity
   id: MobRatvarCyborg
   parent: BaseMob
-  name: ent-MobRatvarCyborg
-  description: ent-MobRatvarCyborg.desc
   suffix: Ratvar
   components:
   - type: Reactive
@@ -124,6 +122,7 @@
   - type: PowerCellDraw
     drawRate: 0.6
   - type: Body
+    bodyType: Simple
   - type: StatusEffects
     allowed:
     - Stun
@@ -220,7 +219,6 @@
 - type: entity
   id: RatvarBorgWeaponModule
   parent: [ BaseBorgModule, BaseProviderBorgModule ]
-  name: ent-RatvarBorgWeaponModule
   components:
   - type: Sprite
     layers:

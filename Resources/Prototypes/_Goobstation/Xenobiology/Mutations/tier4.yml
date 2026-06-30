@@ -1,5 +1,5 @@
 - type: breed
-  breedName: нефтяной слизень
+  breedName: xenobio-breed-oil
   id: OilMutation
   producedExtract: OilSlimeExtract
   components:
@@ -14,7 +14,7 @@
     - OilMutation
 
 - type: breed
-  breedName: светло-розовый слизень
+  breedName: xenobio-breed-light-pink
   id: LightPinkMutation
   producedExtract: LightPinkSlimeExtract
   components:
@@ -27,7 +27,7 @@
     - LightPinkMutation
 
 - type: breed
-  breedName: чёрный слизень
+  breedName: xenobio-breed-black
   id: BlackMutation
   producedExtract: BlackSlimeExtract
   components:
@@ -40,7 +40,7 @@
     - BlackMutation
 
 - type: breed
-  breedName: адамантитовый слизень
+  breedName: xenobio-breed-adamantine
   id: AdamantineMutation
   producedExtract: AdamantineSlimeExtract
   components:

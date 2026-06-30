@@ -4,6 +4,14 @@
   graph:
     - node: start
       edges:
+        - to: clockGirder
+          completed:
+            - !type:SnapToGrid
+              southRotation: true
+          steps:
+            - material: Brass
+              amount: 2
+              doAfter: 1
         - to: clockworkWall
           completed:
             - !type:SnapToGrid
@@ -12,6 +20,26 @@
             - material: Brass
               amount: 1
               doAfter: 1
+
+    - node: clockGirder
+      entity: ClockworkGirder
+      edges:
+        - to: clockworkWall
+          completed:
+            - !type:SnapToGrid
+              southRotation: true
+          steps:
+            - material: Brass
+              amount: 1
+              doAfter: 1
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: SheetBrass1
+              amount: 2
+          steps:
+            - tool: Welding
+              doAfter: 2
 
     - node: clockworkWall
       entity: WallClock

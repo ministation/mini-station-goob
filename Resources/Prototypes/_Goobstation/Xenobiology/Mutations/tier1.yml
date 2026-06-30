@@ -1,5 +1,5 @@
 - type: breed
-  breedName: оранжевый слизень
+  breedName: xenobio-breed-orange
   id: OrangeMutation
   producedExtract: OrangeSlimeExtract
   components:
@@ -15,7 +15,7 @@
     - RedMutation
 
 - type: breed
-  breedName: фиолетовый слизень
+  breedName: xenobio-breed-purple
   id: PurpleMutation
   producedExtract: PurpleSlimeExtract
   components:
@@ -31,7 +31,7 @@
     - GreenMutation
 
 - type: breed
-  breedName: синий слизень
+  breedName: xenobio-breed-blue
   id: BlueMutation
   producedExtract: BlueSlimeExtract
   components:
@@ -47,7 +47,7 @@
     - PinkMutation
 
 - type: breed
-  breedName: металлический слизень
+  breedName: xenobio-breed-metal
   id: MetalMutation
   producedExtract: MetalSlimeExtract
   components:

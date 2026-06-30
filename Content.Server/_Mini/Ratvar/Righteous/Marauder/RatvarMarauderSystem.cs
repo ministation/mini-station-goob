@@ -21,8 +21,6 @@ public sealed class RatvarMarauderSystem : EntitySystem
         SubscribeLocalEvent<RatvarMarauderShellComponent, MindAddedMessage>(OnMindAdded);
         SubscribeLocalEvent<RatvarMarauderShellComponent, MindRemovedMessage>(OnMindRemoved);
         SubscribeLocalEvent<RatvarMarauderShellComponent, ContainerIsInsertingAttemptEvent>(OnSoulVesselInsertAttempt);
-        SubscribeLocalEvent<RatvarMarauderShellComponent, ComponentInit>(OnMarauderInit);
-        SubscribeLocalEvent<RatvarMarauderShellComponent, ComponentShutdown>(OnMarauderShutdown);
     }
 
     private void OnMindRemoved(EntityUid uid, RatvarMarauderShellComponent component, MindRemovedMessage args)
@@ -51,15 +49,5 @@ public sealed class RatvarMarauderSystem : EntitySystem
         _slotsSystem.SetLock(uid, component.SoulVesselSlotId, true);
 
         QueueDel(args.EntityUid);
-    }
-
-    private void OnMarauderInit(EntityUid uid, RatvarMarauderShellComponent component, ComponentInit args)
-    {
-        _slotsSystem.AddItemSlot(uid, component.SoulVesselSlotId, component.SoulVesselSlot);
-    }
-
-    private void OnMarauderShutdown(EntityUid uid, RatvarMarauderShellComponent component, ComponentShutdown args)
-    {
-        _slotsSystem.RemoveItemSlot(uid, component.SoulVesselSlot);
     }
 }

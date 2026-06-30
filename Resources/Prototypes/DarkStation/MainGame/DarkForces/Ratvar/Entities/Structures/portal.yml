@@ -1,7 +1,5 @@
-﻿- type: entity
+- type: entity
   id: RatvarPortal
-  name: ent-RatvarPortal
-  description: ent-RatvarPortal.desc
   suffix: Ratvar
   components:
   - type: Transform
@@ -13,7 +11,7 @@
     layers:
     - state: spatial_gateway
   - type: Physics
-    bodyType: Dynamic
+    bodyType: Static
   - type: Fixtures
     fixtures:
       fix1:
@@ -23,7 +21,6 @@
         density: 100
         mask:
         - TableMask
-  - type: MovedByPressure
   - type: InteractionOutline
   - type: Damageable
   - type: Destructible

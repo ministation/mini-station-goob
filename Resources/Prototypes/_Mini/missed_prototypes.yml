@@ -542,6 +542,14 @@
     board: ADTSalvageShuttleConsoleCircuitboard
 
 - type: entity
+  parent: ClothingNeckCloakWhiteCe
+  id: ClothingNeckCloakCe
+
+- type: entity
+  parent: ClothingNeckMantleWhiteCE
+  id: ClothingNeckMantleCE
+
+- type: entity
   parent: BaseComputer
   id: ADTComputerSecShuttle
   name: computer

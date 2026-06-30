@@ -5,7 +5,10 @@ ratvar-spawn-start =
     Праведники Ратвара вот-вот освободят его из заточения
     Недопустите этого любой ценой!
     Судя по данным это происходит по координатам { $position }
-ratvar-spawn-end = Подать мне Нар'Си!
+ratvar-spawn-end =
+    Праведники Ратвара освободили его из заточения!
+    Они вызвали его в этот мир, и теперь он будет править им!
+    Судя по данным это произошло по координатам { $position }
 ratvar-name = Ратвар
 ratvar-winstate-idle = [color=green]Праведники Ратвара не смогли вызволить его из заточения![/color]
 ratvar-winstate-summoning = [color=yellow]Праведники Ратвара не успели вызволить его заточения, до эвакуации![/color]
@@ -25,6 +28,12 @@ tool-quality-ratvar-anchoring-name = Закрепление Ратвара
 tool-quality-ratvar-anchoring-tool-name = Инструмент закрепления Ратвара
 fibers-brass = латунное волокно
 objective-issuer-ratvar = Ратвар
+
+ratvar-roundend-win = Культ Ратвара одержал победу! Ратвар восстаёт из глубин!
+ratvar-roundend-loss = Культ Ратвара потерпел неудачу. Тьма отступает.
+ratvar-roundend-stats-1 = Было { $righteousCount } [color=#b87333]Праведников Ратвара[/color]
+ratvar-roundend-stats-2 = [color=#b87333]Праведники[/color] установили { $beaconCount } маяков
+ratvar-roundend-stats-3 = [color=#b87333]Праведники[/color] накопили { $power } единиц энергии
 
 # Weapons
 ent-RatvarSword = Нержавеющий меч
@@ -121,20 +130,6 @@ ent-RatvarBeacon = Маяк Вестника
 ent-RatvarAltar = Алтарь из шестереней
     .desc = Странная латунная платформа из вращающихся шестерней. Она требует что-то в обмен на...
 
-# Construction
-construction-recipe-clockwork-wall = Стена часовых
-construction-recipe-clockwork-wall-desc = Построить стену из латуни. Требуется приверженность Ратвару.
-construction-recipe-pinion-airlock = Шестерёнчатый шлюз
-construction-recipe-pinion-airlock-desc = Построить дверь из латуни. Требуется приверженность Ратвару.
-construction-recipe-pinion-airlock-glass = Стеклянный шестерёнчатый шлюз
-construction-recipe-pinion-airlock-glass-desc = Построить стеклянную дверь из латуни. Требуется приверженность Ратвару.
-construction-recipe-ratvar-beacon = Маяк Вестника
-construction-recipe-ratvar-beacon-desc = Построить маяк, который генерирует энергию, лечит праведников и конвертирует окружение.
-construction-recipe-ratvar-altar = Алтарь Ратвара
-construction-recipe-ratvar-altar-desc = Построить алтарь для конвертации заблудших и призыва Ратвара.
-construction-recipe-ratvar-workshop = Мастерская Ратвара
-construction-recipe-ratvar-workshop-desc = Построить мастерскую для создания оружия и брони праведников.
-
 # Craft
 craft-category-RatvarWeapon = Оружие
 craft-category-RatvarArmor = Броня
@@ -161,6 +156,22 @@ ent-MidasTouchClockworkSlab = Заводная плита
 ent-MidasTouchBrass = Шестерня интеграции
 
 # Actions (from actions.yml)
+ent-RatvarMidasTouch = Рука Мидаса
+    .desc = Рука Мидаса — первое и главное заклинание. Превращает сталь в латунь для обрядов.
+ent-RatvarClockMagic = Зачаровать предмет
+    .desc = Позволяет выбрать зачарование для оружия праведников.
+ent-ActionRatvarSlabStun = Оглушение
+    .desc = Оглушает цель
+ent-ActionRatvarSlabDoors = Создать проход
+    .desc = Открывает двери и шкафчики
+ent-ActionRatvarSlabWalls = Терраформирование
+    .desc = При использовании на ОБЫЧНОЙ стене превращает её в фальшстену.
+ent-ActionRatvarSlabTeleport = Телепорт
+    .desc = Телепортирует к алтарю или в видимую область
+ent-ActionRatvarSlabHidings = Скрыть механизмы
+    .desc = Маскирует конструкции Ратвара под кусты и шкафчики
+
+# Actions (legacy keys)
 action-name-ratvar-midas-touch = Рука Мидаса
 action-desc-ratvar-midas-touch = Рука Мидаса — первое и главное заклинание. Превращает сталь в латунь для обрядов.
 action-name-ratvar-clock-magic = Зачаровать предмет
@@ -181,6 +192,7 @@ antag-name-RatvarRighteous = Праведник Ратвара
 antag-objective-RatvarRighteous = Освободите Ратвара из заточения
 
 # Mind roles
+ent-MindRoleRatvar = Праведник Ратвара
 mind-role-name-ratvar = Праведник Ратвара
 
 # Enchantments table labels

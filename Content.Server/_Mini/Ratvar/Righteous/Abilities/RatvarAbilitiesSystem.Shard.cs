@@ -10,6 +10,7 @@ using Content.Shared.Maps;
 using Content.Shared.RPSX.DarkForces.Ratvar.Righteous.Abilities;
 using Content.Shared.RPSX.DarkForces.Ratvar.Righteous.Items;
 using Content.Shared.RPSX.DarkForces.Ratvar.UI;
+using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Structures.Portal;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Tag;
 using Robust.Shared.GameObjects;
@@ -31,6 +32,7 @@ public sealed partial class RatvarAbilitiesSystem
     [Dependency] private readonly TileSystem _tile = default!;
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly RatvarProgressSystem _progressSystem = default!;
+    [Dependency] private readonly RatvarPortalSystem _portalSystem = default!;
 
     [ValidatePrototypeId<EntityPrototype>]
     private const string TileConvertEffect = "RatvarTileSpawnEffect";
@@ -61,7 +63,8 @@ public sealed partial class RatvarAbilitiesSystem
             return;
 
         var transform = Transform(uid);
-        Spawn("RatvarPortal", transform.Coordinates);
+        var portal = Spawn("RatvarPortal", transform.Coordinates);
+        _portalSystem.BeginSpawnCountdown(portal);
 
         QueueDel(args.Target);
         QueueDel(uid);

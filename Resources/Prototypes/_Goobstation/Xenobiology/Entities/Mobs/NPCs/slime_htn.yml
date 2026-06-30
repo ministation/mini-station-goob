@@ -9,13 +9,18 @@
   - preconditions:
     - !type:HasActiveDoAfterPrecondition
       invert: true
+    - !type:SlimeNotMergedClusterPrecondition
     tasks:
     - !type:HTNCompoundTask
       task: XenoSlimeFoodCompound
-  - tasks:
+  - preconditions:
+    - !type:SlimeNotMergedClusterPrecondition
+    tasks:
     - !type:HTNCompoundTask
       task: LatchCompound
-  - tasks:
+  - preconditions:
+    - !type:SlimeNotMergedClusterPrecondition
+    tasks:
     - !type:HTNCompoundTask
       task: EatCorpseCompound
   - tasks:

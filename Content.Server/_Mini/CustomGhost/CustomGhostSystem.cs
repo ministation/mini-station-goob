@@ -33,10 +33,34 @@ public sealed class CustomGhostSystem : EntitySystem
         if (!_playerManager.TryGetSessionByEntity(uid, out var session))
             return;
 
-        await ApplyOwnedTheme(uid, session.UserId);
+        if (!await ApplyOwnedTheme(uid, session.UserId))
+            TrySetCkeySprite(uid, GetCkey(session));
     }
 
-    private async Task ApplyOwnedTheme(EntityUid ghostUid, NetUserId userId)
+    private static string GetCkey(ICommonSession session)
+    {
+        var playerName = session.Name;
+
+        if (playerName.StartsWith("localhost@"))
+            return playerName["localhost@".Length..];
+
+        return playerName;
+    }
+
+    private void TrySetCkeySprite(EntityUid ghostUid, string ckey)
+    {
+        foreach (var proto in _prototypeManager.EnumeratePrototypes<CustomGhostPrototype>())
+        {
+            if (string.IsNullOrEmpty(proto.Ckey)
+                || !string.Equals(proto.Ckey, ckey, StringComparison.CurrentCultureIgnoreCase))
+                continue;
+
+            ApplyTheme(ghostUid, proto.ID);
+            return;
+        }
+    }
+
+    private async Task<bool> ApplyOwnedTheme(EntityUid ghostUid, NetUserId userId)
     {
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
 
@@ -60,9 +84,10 @@ public sealed class CustomGhostSystem : EntitySystem
         }
 
         if (selectedThemeId == null)
-            return;
+            return false;
 
         ApplyTheme(ghostUid, selectedThemeId);
+        return true;
     }
 
     private void ApplyTheme(EntityUid ghostUid, string themeId)
@@ -99,7 +124,8 @@ public sealed class CustomGhostSystem : EntitySystem
     {
         var userId = args.SenderSession.UserId;
 
-        if (!_prototypeManager.TryIndex<CustomGhostPrototype>(msg.ThemeId, out var proto))
+        if (!_prototypeManager.TryIndex<CustomGhostPrototype>(msg.ThemeId, out var proto)
+            || !string.IsNullOrEmpty(proto.Ckey))
         {
             SendShopState(args.SenderSession);
             return;
@@ -208,7 +234,7 @@ public sealed class CustomGhostSystem : EntitySystem
     private void SendShopState(ICommonSession session, int balance, List<string>? ownedThemes = null, string? selectedTheme = null)
     {
         var themes = _prototypeManager.EnumeratePrototypes<CustomGhostPrototype>()
-            .Where(p => p.Price >= 0)
+            .Where(p => p.Price >= 0 && string.IsNullOrEmpty(p.Ckey))
             .OrderBy(p => p.Order)
             .Select(proto =>
             {

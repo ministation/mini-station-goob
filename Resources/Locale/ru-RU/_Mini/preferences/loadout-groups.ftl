@@ -26,6 +26,10 @@ loadout-group-typan-commander-neck = Командир, шея
 loadout-group-typan-medic-uniform = Медик, комбинезон
 loadout-group-typan-medic-shoes = Медик, обувь
 loadout-group-typan-medic-outerclothing = Медик, верхняя одежда
+# Paramedic
+loadout-group-typan-paramedic-uniform = Парамедик, комбинезон
+# Technician
+loadout-group-typan-technician-uniform = Техник, комбинезон
 # Patrol
 loadout-group-typan-patrol-uniform = Патрульный, комбинезон
 loadout-group-typan-patrol-shoes = Патрульный, обувь

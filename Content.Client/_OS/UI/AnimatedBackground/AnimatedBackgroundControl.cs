@@ -13,7 +13,7 @@ public sealed class AnimatedBackgroundControl : TextureRect
     [Dependency] private readonly IResourceCache _resourceCache = default!;
     [Dependency] private readonly IClyde _clyde = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    private string _rsiPath = "/Textures/_OS/Lobby/space-hole.rsi";
+    private string _rsiPath = "/Textures/_OS/Lobby/evening_sun7.rsi";
     public RSI? _RSI;
     private const int States = 1;
     private IRenderTexture? _buffer;

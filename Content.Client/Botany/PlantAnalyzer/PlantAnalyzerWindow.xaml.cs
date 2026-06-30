@@ -117,6 +117,50 @@ public sealed partial class PlantAnalyzerWindow : FancyWindow
 
     public void Populate(PlantAnalyzerScannedUserMessage msg)
     {
+        var SpriteView = this.FindControl<SpriteView>("SpriteView");
+        var NoDataIcon = this.FindControl<TextureRect>("NoDataIcon");
+        var ScanModeLabel = this.FindControl<Label>("ScanModeLabel");
+        var SeedLabel = this.FindControl<RichTextLabel>("SeedLabel");
+        var ContainerLabel = this.FindControl<Label>("ContainerLabel");
+        var Health = this.FindControl<Label>("Health");
+        var Endurance = this.FindControl<Label>("Endurance");
+        var Age = this.FindControl<Label>("Age");
+        var Lifespan = this.FindControl<Label>("Lifespan");
+        var Dead = this.FindControl<RichTextLabel>("Dead");
+        var Alive = this.FindControl<RichTextLabel>("Alive");
+        var Unviable = this.FindControl<RichTextLabel>("Unviable");
+        var Mutating = this.FindControl<RichTextLabel>("Mutating");
+        var Kudzu = this.FindControl<RichTextLabel>("Kudzu");
+        var PlantDataGrid = this.FindControl<GridContainer>("PlantDataGrid");
+        var PlantDataTags = this.FindControl<BoxContainer>("PlantDataTags");
+        var PlantDataDivider = this.FindControl<PanelContainer>("PlantDataDivider");
+        var WaterLevelLabel = this.FindControl<Label>("WaterLevelLabel");
+        var NutritionLevelLabel = this.FindControl<Label>("NutritionLevelLabel");
+        var ToxinsLabel = this.FindControl<Label>("ToxinsLabel");
+        var PestLevelLabel = this.FindControl<Label>("PestLevelLabel");
+        var WeedLevelLabel = this.FindControl<Label>("WeedLevelLabel");
+        var GtFieldIfTolerances1 = this.FindControl<Label>("GtFieldIfTolerances1");
+        var LtFieldIfTolerances1 = this.FindControl<Label>("LtFieldIfTolerances1");
+        var WaterConsumptionLabel = this.FindControl<Label>("WaterConsumptionLabel");
+        var NutritionConsumptionLabel = this.FindControl<Label>("NutritionConsumptionLabel");
+        var ToxinsResistanceLabel = this.FindControl<Label>("ToxinsResistanceLabel");
+        var PestResistanceLabel = this.FindControl<Label>("PestResistanceLabel");
+        var WeedResistanceLabel = this.FindControl<Label>("WeedResistanceLabel");
+        var GtFieldIfTolerances2 = this.FindControl<Label>("GtFieldIfTolerances2");
+        var LtFieldIfTolerances2 = this.FindControl<Label>("LtFieldIfTolerances2");
+        var LtFieldIfTolerances3 = this.FindControl<Label>("LtFieldIfTolerances3");
+        var ContainerGrid = this.FindControl<GridContainer>("ContainerGrid");
+        var ContainerDivider = this.FindControl<PanelContainer>("ContainerDivider");
+        var ChemicalsInWaterLabel = this.FindControl<RichTextLabel>("ChemicalsInWaterLabel");
+        var ChemicalsInWaterBox = this.FindControl<BoxContainer>("ChemicalsInWaterBox");
+        var ChemicalsInWaterDivider = this.FindControl<PanelContainer>("ChemicalsInWaterDivider");
+        var EnvironmentLabel = this.FindControl<RichTextLabel>("EnvironmentLabel");
+        var EnvironmentBox = this.FindControl<BoxContainer>("EnvironmentBox");
+        var EnvironmentDivider = this.FindControl<PanelContainer>("EnvironmentDivider");
+        var ProduceLabel = this.FindControl<RichTextLabel>("ProduceLabel");
+        var ProduceBox = this.FindControl<BoxContainer>("ProduceBox");
+        var ProduceDivider = this.FindControl<PanelContainer>("ProduceDivider");
+
         Print.Disabled = !msg.ScanMode.GetValueOrDefault(false)
             || msg.PrintReadyAt.GetValueOrDefault(TimeSpan.MaxValue) > _gameTiming.CurTime
             || msg.PlantData is null;

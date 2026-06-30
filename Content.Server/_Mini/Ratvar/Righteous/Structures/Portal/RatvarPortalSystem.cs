@@ -11,11 +11,20 @@ public sealed class RatvarPortalSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _gameTiming = default!;
 
+    private static readonly TimeSpan DefaultSpawnDelay = TimeSpan.FromMinutes(3);
+
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<RatvarPortalComponent, ComponentInit>(OnComponentInit);
         SubscribeLocalEvent<RatvarPortalComponent, DestructionEventArgs>(OnDestroy);
+    }
+
+    public void BeginSpawnCountdown(EntityUid uid, TimeSpan? delay = null)
+    {
+        var component = Comp<RatvarPortalComponent>(uid);
+        component.RatvarSpawnTick = _gameTiming.CurTime + (delay ?? DefaultSpawnDelay);
+        var ev = new RatvarSpawnStartedEvent(uid);
+        RaiseLocalEvent(ref ev);
     }
 
     public override void Update(float frameTime)
@@ -25,21 +34,14 @@ public sealed class RatvarPortalSystem : EntitySystem
         var query = EntityQueryEnumerator<RatvarPortalComponent>();
         while (query.MoveNext(out var uid, out var component))
         {
-            if (component.RatvarSpawnTick > curTime)
+            if (component.RatvarSpawnTick == TimeSpan.Zero || component.RatvarSpawnTick > curTime)
                 continue;
 
-            var ratvar = Spawn("MobRatvarDark", Transform(uid).Coordinates);
+            var ratvar = Spawn("MobRatvarSpawn", Transform(uid).Coordinates);
             var ev = new RatvarSpawnedEvent(ratvar);
             RaiseLocalEvent(ref ev);
             QueueDel(uid);
         }
-    }
-
-    private void OnComponentInit(EntityUid uid, RatvarPortalComponent component, ComponentInit args)
-    {
-        component.RatvarSpawnTick = _gameTiming.CurTime + TimeSpan.FromMinutes(3);
-        var ev = new RatvarSpawnStartedEvent(uid);
-        RaiseLocalEvent(ref ev);
     }
 
     private void OnDestroy(EntityUid uid, RatvarPortalComponent component, DestructionEventArgs args)

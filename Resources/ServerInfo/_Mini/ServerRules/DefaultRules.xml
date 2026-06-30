@@ -1,12 +1,12 @@
 <Document>
-  <ColorBox Color="#3a3a3a" OutlineColor="#5a5a5a" OutlineThickness="2" Margin="1">
+  <ColorBox Color="#3a3a3a" OutlineColor="#584356c4" OutlineThickness="2" Margin="1">
     <Box Orientation="Vertical">
       <Box Orientation="Horizontal" HorizontalAlignment="Center">
 
-        [color=#DAA520][head=2]Мини-станция[/head][/color]
+        [color=#8b00ff][head=2]Оазис[/head][/color]
       </Box>
       <Box Orientation="Vertical" Margin="10">
-      Здесь вас ждут увлекательные смены, живой игровой процесс, робаст, захватывающие механики и множество возможностей для для исследования Космической станции 14. Присоединяйтесь и проводите своё время в удовольствие!
+      Здесь вас ждут увлекательные смены, живой ролевой отыгрыш, общение, новые знакомства и множество возможностей для для исследования Космической станции 14. Присоединяйтесь и проводите своё время в удовольствие!
       </Box>
     </Box>
   </ColorBox>
@@ -15,16 +15,16 @@
     <Box Orientation="Vertical">
      <Box Orientation="Horizontal" HorizontalAlignment="Center">
 
-      [head=2]Правила сервера Мини-станция[/head]
+      [head=2]Правила сервера Оазис[/head]
       </Box>
       <Box Orientation="Vertical" Margin="10">
-       [color=red]Незнание правил не освобождает от ответственности![/color]                                                                    
+       [color=red]Незнание правил не освобождает от ответственности![/color]
       </Box>
-      - [textlink="0. Нулевое правило" link="DefaultRule0"]                                                              
+      - [textlink="0. Нулевое правило" link="DefaultRule0"]
       - [textlink="1. Гриф" link="DefaultRule1"]
       - [textlink="2. Убийство и неоправданное нападение" link="DefaultRule2"]
       - [textlink="3. Нарушение игровой атмосферы" link="DefaultRule3"]
-      - [textlink="4. Логика персонажей" link="DefaultRule4"]
+      - [textlink="4. Логика персонажей и НРП" link="DefaultRule4"]
       - [textlink="5. Ответственная игра за антагониста" link="DefaultRule5"]
       - [textlink="6. Самоантагонизм" link="DefaultRule6"]
       - [textlink="7. Валидхант" link="DefaultRule7"]

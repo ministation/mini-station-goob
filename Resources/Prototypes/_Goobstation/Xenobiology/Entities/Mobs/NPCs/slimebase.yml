@@ -192,10 +192,14 @@
         sprite: _Goobstation/Xenobiology/Mobs/slimesAdult.rsi
         displayName: adult
   - type: Slime
-    breed: MobSlimeXenobioBaby
-    breedName: xenobio-breed-undetermined
+    breed: GreyMutation
     maxOffspring: 4
     mutationChance: 0.45
+    potentialMutations:
+    - OrangeMutation
+    - PurpleMutation
+    - BlueMutation
+    - MetalMutation
   - type: RandomSlimeChange
 
 #- type: entity

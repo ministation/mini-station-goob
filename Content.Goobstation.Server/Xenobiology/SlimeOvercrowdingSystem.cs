@@ -23,6 +23,7 @@ using Content.Shared.Physics;
 using Content.Shared.Popups;
 using Content.Shared.Interaction;
 using Content.Shared.Movement.Components;
+using Content.Shared.Movement.Systems;
 using Content.Shared.Prototypes;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -58,6 +59,7 @@ public sealed class SlimeOvercrowdingSystem : EntitySystem
     [Dependency] private readonly MindSystem _mind = default!;
     [Dependency] private readonly SharedMindSystem _sharedMind = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
+    [Dependency] private readonly MovementSpeedModifierSystem _movementSpeed = default!;
 
     private EntityQuery<SlimeComponent> _slimeQuery;
     private EntityQuery<SlimeClusterComponent> _clusterQuery;
@@ -83,6 +85,15 @@ public sealed class SlimeOvercrowdingSystem : EntitySystem
         SubscribeLocalEvent<SlimeClusterComponent, ExaminedEvent>(OnClusterExamined);
         SubscribeLocalEvent<SlimeClusterComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<SlimeClusterComponent, SlimeClusterPeelDoAfterEvent>(OnPeelDoAfter);
+        SubscribeLocalEvent<SlimeClusterComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshClusterSpeed);
+    }
+
+    private void OnRefreshClusterSpeed(Entity<SlimeClusterComponent> ent, ref RefreshMovementSpeedModifiersEvent args)
+    {
+        if (ent.Comp.Count <= 1)
+            return;
+
+        args.ModifySpeed(ent.Comp.MergedWalkSpeedModifier, ent.Comp.MergedSprintSpeedModifier);
     }
 
     public override void Update(float frameTime)
@@ -398,7 +409,7 @@ public sealed class SlimeOvercrowdingSystem : EntitySystem
         UpdateClusterScale(anchor, cluster.Count);
         UpdateClusterName(anchor, breed);
 
-        if (!IsPlayerControlled(anchor))
+        if (cluster.Count > 1 && TryComp<HTNComponent>(anchor, out _))
         {
             EnsureComp<SlimeOvercrowdedComponent>(anchor);
             _htn.SetHTNEnabled(anchor, false);
@@ -437,7 +448,7 @@ public sealed class SlimeOvercrowdingSystem : EntitySystem
         if (!_proto.TryIndex(breed, out var breedProto))
             return;
 
-        _meta.SetEntityName(uid, Loc.GetString("slime-cluster-name", ("breed", breedProto.BreedName)));
+        _meta.SetEntityName(uid, Loc.GetString("slime-cluster-name", ("breed", XenobiologyLoc.GetBreedName(breedProto))));
     }
 
     private List<EntityUid> BuildSpatialGroup(EntityUid start, HashSet<EntityUid> visited)
@@ -605,6 +616,7 @@ public sealed class SlimeOvercrowdingSystem : EntitySystem
     public void UpdateClusterScale(EntityUid uid, int count)
     {
         SetClusterVisualScale(uid, GetScaleForCount(count));
+        _movementSpeed.RefreshMovementSpeedModifiers(uid);
     }
 
     private void SetClusterVisualScale(EntityUid uid, float scale)
@@ -667,7 +679,7 @@ public sealed class SlimeOvercrowdingSystem : EntitySystem
             _appearance.SetData(spawned, XenoSlimeVisuals.Shader, newSlime.Shader);
 
         _appearance.SetData(spawned, XenoSlimeVisuals.Color, newSlime.SlimeColor);
-        _meta.SetEntityName(spawned, breed.BreedName);
+        _meta.SetEntityName(spawned, XenobiologyLoc.GetBreedName(breed));
 
         ent.Comp.Count--;
         Dirty(ent);
@@ -679,7 +691,7 @@ public sealed class SlimeOvercrowdingSystem : EntitySystem
             RemComp<SlimeClusterComponent>(ent);
             UpdateClusterScale(ent, 1);
             RemComp<SlimeOvercrowdedComponent>(ent);
-            _meta.SetEntityName(ent, breed.BreedName);
+            _meta.SetEntityName(ent, XenobiologyLoc.GetBreedName(breed));
 
             if (!IsPlayerControlled(ent))
                 _htn.SetHTNEnabled(ent, true, 2f);
@@ -688,6 +700,9 @@ public sealed class SlimeOvercrowdingSystem : EntitySystem
         }
 
         UpdateClusterScale(ent, ent.Comp.Count);
+
+        if (ent.Comp.Count <= 1 && !IsPlayerControlled(ent) && TryComp<HTNComponent>(ent, out _))
+            _htn.SetHTNEnabled(ent, true, 2f);
     }
 
     private static void CopySlimeState(SlimeComponent source, SlimeComponent target)

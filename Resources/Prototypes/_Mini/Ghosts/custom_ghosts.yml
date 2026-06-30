@@ -117,3 +117,80 @@
   order: 12
   sprite: _Mini/Ghosts/blazeit.rsi
   ghostName: "Огненный"
+
+# Ckey-призраки (не в магазине, price: -1)
+- type: customGhost
+  id: PuroSlavKing-ghost
+  ckey: PuroSlavKing
+  price: -1
+  sprite: _Europa/Ghosts/PuroSlavKing.rsi
+  alpha: 0.8
+  ghostDescription: Hello World!
+
+- type: customGhost
+  id: no_mad-ghost
+  ckey: no_mad
+  price: -1
+  sprite: _Europa/Ghosts/no_mad.rsi
+  alpha: 0.8
+
+- type: customGhost
+  id: OkTiFE-ghost
+  ckey: OkTiFE
+  price: -1
+  sprite: _Europa/Ghosts/no_mad.rsi
+  alpha: 0.8
+
+- type: customGhost
+  id: wendor-ghost
+  ckey: wendor
+  price: -1
+  sprite: _Europa/Ghosts/wendor.rsi
+  alpha: 0.8
+
+- type: customGhost
+  id: yourmommy-ghost
+  ckey: yourmommy
+  price: -1
+  sprite: _Europa/Ghosts/yourmommy.rsi
+  alpha: 0.9
+
+- type: customGhost
+  id: GodFace-ghost
+  ckey: GodFace
+  price: -1
+  sprite: _Europa/Ghosts/GodFace.rsi
+  alpha: 1
+
+- type: customGhost
+  id: LIZARDWIZARD-ghost
+  ckey: LIZARDWIZARD
+  price: -1
+  sprite: _Europa/Ghosts/LIZARDWIZARD.rsi
+
+- type: customGhost
+  id: Vetochka-ghost
+  ckey: Vetochka
+  price: -1
+  sprite: _Europa/Ghosts/Vetochka.rsi
+
+- type: customGhost
+  id: kreses-ghost
+  ckey: kreses
+  price: -1
+  sprite: _Europa/Ghosts/kreses.rsi
+  alpha: 0.7
+
+- type: customGhost
+  id: scituzer2-ghost
+  ckey: scituzer2
+  price: -1
+  sprite: _Europa/Ghosts/scituzer2.rsi
+  alpha: 0.8
+
+- type: customGhost
+  id: trest100-ghost
+  ckey: trest100
+  price: -1
+  sprite: _Europa/Ghosts/trest100.rsi
+  alpha: 0.8

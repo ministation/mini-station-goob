@@ -33,6 +33,7 @@ public class SponsorColor
         return color;
     }
 
+
     // public static string GetColorForText(int DonateLvl)
     // {
     //     string color = "#aa00ff";

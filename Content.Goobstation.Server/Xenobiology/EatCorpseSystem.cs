@@ -51,6 +51,9 @@ public sealed partial class EatCorpseSystem : EntitySystem
             || !Resolve(targetUid, ref targetState, ref targetBody))
             return false;
 
+        if (SlimeClusterHelper.IsMergedCluster(eaterUid, EntityManager))
+            return false;
+
         if (!_mobState.IsDead(targetUid))
             return false;
 
@@ -70,6 +73,12 @@ public sealed partial class EatCorpseSystem : EntitySystem
         if (!Resolve(eaterUid, ref eater)
             || !Resolve(targetUid, ref targetState, ref targetBody))
             return false;
+
+        if (SlimeClusterHelper.IsMergedCluster(eaterUid, EntityManager))
+        {
+            _popup.PopupEntity(Loc.GetString("slime-eat-corpse-fail-cluster"), eaterUid, eaterUid);
+            return false;
+        }
 
         if (!_body.TryGetRootPart(targetUid, out var rootPart, targetBody))
             return false;

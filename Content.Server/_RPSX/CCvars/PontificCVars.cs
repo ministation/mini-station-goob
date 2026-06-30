@@ -7,7 +7,7 @@ namespace Content.Server.RPSX.CCvars;
 public sealed class PontificCVars : CVars
 {
     public static readonly CVarDef<int> PontificFelProduceTime =
-        CVarDef.Create("pontific_fel_radius_produce_time", 120);
+        CVarDef.Create("pontific.fel_radius_produce_time", 120);
 
     public static readonly CVarDef<float> PontificFelRadiusDamage =
         CVarDef.Create("pontific.fel_radius_damage", 10f);

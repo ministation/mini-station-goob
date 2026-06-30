@@ -13,22 +13,115 @@
   graph:
   - node: start
     edges:
+    - to: assembly
+      completed:
+      - !type:SetAnchor
+        value: false
+      steps:
+      - material: Brass
+        amount: 2
+        doAfter: 1
+
+  - node: assembly
+    entity: PinionAirlockAssembly
+    actions:
+    - !type:SnapToGrid {}
+    - !type:SetAnchor {}
+    edges:
+    - to: wired
+      conditions:
+      - !type:EntityAnchored {}
+      steps:
+      - material: Cable
+        amount: 5
+        doAfter: 2.5
+    - to: start
+      conditions:
+      - !type:EntityAnchored
+        anchored: false
+      completed:
+      - !type:SpawnPrototype
+        prototype: SheetBrass1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Welding
+        doAfter: 3
+
+  - node: wired
+    entity: PinionAirlockAssembly
+    edges:
+    - to: electronics
+      conditions:
+      - !type:EntityAnchored {}
+      steps:
+      - component: DoorElectronics
+        store: board
+        name: construction-graph-component-door-electronics-circuit-board
+        icon:
+          sprite: "Objects/Misc/module.rsi"
+          state: "door_electronics"
+        doAfter: 3
+    - to: assembly
+      completed:
+      - !type:SpawnPrototype
+        prototype: CableApcStack1
+        amount: 5
+      steps:
+      - tool: Cutting
+        doAfter: 2.5
+
+  - node: electronics
+    edges:
     - to: airlock
-      completed:
-      - !type:SnapToGrid
-        southRotation: true
+      conditions:
+      - !type:EntityAnchored {}
       steps:
-      - material: Brass
-        amount: 2
-        doAfter: 1
+      - tool: Screwing
+        doAfter: 2.5
+    - to: glassElectronics
+      conditions:
+      - !type:EntityAnchored {}
+      steps:
+      - material: ReinforcedGlass
+        amount: 1
+        doAfter: 2
+    - to: wired
+      conditions:
+      - !type:EntityAnchored {}
+      completed:
+      - !type:EmptyAllContainers
+        pickup: true
+        emptyAtUser: true
+      steps:
+      - tool: Prying
+        doAfter: 5
+
+  - node: glassElectronics
+    entity: PinionAirlockAssembly
+    edges:
     - to: glassAirlock
-      completed:
-      - !type:SnapToGrid
-        southRotation: true
+      conditions:
+      - !type:EntityAnchored {}
       steps:
-      - material: Brass
-        amount: 2
-        doAfter: 1
+      - material: ReinforcedGlass
+        amount: 1
+        doAfter: 2
+      - tool: Screwing
+        doAfter: 2.5
+    - to: wired
+      conditions:
+      - !type:EntityAnchored {}
+      completed:
+      - !type:EmptyAllContainers
+        pickup: true
+        emptyAtUser: true
+      - !type:SpawnPrototype
+        prototype: SheetRGlass1
+        amount: 1
+      steps:
+      - tool: Prying
+        doAfter: 5
 
   - node: airlock
     entity: PinionAirlock

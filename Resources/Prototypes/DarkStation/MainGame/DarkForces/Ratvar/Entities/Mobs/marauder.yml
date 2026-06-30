@@ -1,7 +1,5 @@
-﻿- type: entity
+- type: entity
   id: MobRatvarMarauder
-  name: ent-MobRatvarMarauder
-  description: ent-MobRatvarMarauder.desc
   suffix: Ratvar
   components:
   - type: Actions
@@ -91,6 +89,13 @@
       whitelist:
         components:
         - RatvarSoulVessel
+  - type: ItemSlots
+    slots:
+      SoulVessel:
+        ejectOnBreak: true
+        whitelist:
+          components:
+          - RatvarSoulVessel
   - type: ContainerContainer
     containers:
       SoulVessel: !type:ContainerSlot

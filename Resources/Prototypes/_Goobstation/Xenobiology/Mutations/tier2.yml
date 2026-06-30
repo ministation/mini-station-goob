@@ -1,5 +1,5 @@
 - type: breed
-  breedName: жёлтый слизень
+  breedName: xenobio-breed-yellow
   id: YellowMutation
   producedExtract: YellowSlimeExtract
   components:
@@ -14,7 +14,7 @@
     - BluespaceMutation
 
 - type: breed
-  breedName: тёмно-фиолетовый слизень
+  breedName: xenobio-breed-dark-purple
   id: DarkPurpleMutation
   producedExtract: DarkPurpleSlimeExtract
   components:
@@ -29,7 +29,7 @@
     - SepiaMutation
 
 - type: breed
-  breedName: тёмно-синий слизень
+  breedName: xenobio-breed-dark-blue
   id: DarkBlueMutation
   producedExtract: DarkBlueSlimeExtract
   components:
@@ -44,7 +44,7 @@
     - CeruleanMutation
 
 - type: breed
-  breedName: серебряный слизень
+  breedName: xenobio-breed-silver
   id: SilverMutation
   producedExtract: SilverSlimeExtract
   components:
@@ -62,7 +62,7 @@
 
 # Эти больше не улучшаются, так что можно считать их уровнем 2.5
 - type: breed
-  breedName: блюспейс слизень
+  breedName: xenobio-breed-bluespace
   id: BluespaceMutation
   producedExtract: BluespaceSlimeExtract
   components:
@@ -77,7 +77,7 @@
     - BluespaceMutation
 
 - type: breed
-  breedName: сепиевый слизень
+  breedName: xenobio-breed-sepia
   id: SepiaMutation
   producedExtract: SepiaSlimeExtract
   components:
@@ -92,7 +92,7 @@
     - SepiaMutation
 
 - type: breed
-  breedName: лазурный слизень
+  breedName: xenobio-breed-cerulean
   id: CeruleanMutation
   producedExtract: CeruleanSlimeExtract
   components:
@@ -105,7 +105,7 @@
     - CeruleanMutation
 
 - type: breed
-  breedName: пиритовый слизень
+  breedName: xenobio-breed-pyrite
   id: PyriteMutation
   producedExtract: PyriteSlimeExtract
   components:

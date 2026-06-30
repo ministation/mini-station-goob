@@ -29,6 +29,12 @@ tool-quality-ratvar-anchoring-tool-name = Ratvar Anchoring Tool
 fibers-brass = brass fibers
 objective-issuer-ratvar = Ratvar
 
+ratvar-roundend-win = The Cult of Ratvar has triumphed! Ratvar rises from the depths!
+ratvar-roundend-loss = The Cult of Ratvar has failed. The darkness recedes.
+ratvar-roundend-stats-1 = There were { $righteousCount } [color=#b87333]Righteous of Ratvar[/color]
+ratvar-roundend-stats-2 = [color=#b87333]Righteous[/color] placed { $beaconCount } beacons
+ratvar-roundend-stats-3 = [color=#b87333]Righteous[/color] accumulated { $power } units of power
+
 # Weapons
 ent-RatvarSword = Rustless Sword
 ent-RatvarSpear = Ratvar's Spear
@@ -149,6 +155,21 @@ ent-MidasTouchClockworkSlab = Clockwork Slab
 ent-MidasTouchBrass = Integration Cog
 
 # Actions (from actions.yml)
+ent-RatvarMidasTouch = Midas' Hand
+    .desc = Midas' Hand is the first and foremost spell granted by the Lightbearer to the righteous.
+ent-RatvarClockMagic = Enchant Item
+    .desc = Allows you to choose an enchantment for an item.
+ent-ActionRatvarSlabStun = Stun
+    .desc = Stuns the target
+ent-ActionRatvarSlabDoors = Create Passage
+    .desc = Opens doors and lockers
+ent-ActionRatvarSlabWalls = Terraform
+    .desc = When used on a NORMAL wall, turns it into a false wall.
+ent-ActionRatvarSlabTeleport = Teleport
+    .desc = Teleport to the altar or a visible area
+ent-ActionRatvarSlabHidings = Hide Machinery
+    .desc = Masks Ratvarian constructions as bushes and lockers
+
 action-name-ratvar-midas-touch = Midas' Hand
 action-desc-ratvar-midas-touch = Midas' Hand is the first and foremost spell granted by the Lightbearer to the righteous.
 action-name-ratvar-clock-magic = Enchant Item
@@ -165,6 +186,7 @@ antag-name-RatvarRighteous = Ratvar Righteous
 antag-objective-RatvarRighteous = Free Ratvar from imprisonment.
 
 # Mind roles
+ent-MindRoleRatvar = Ratvar Cultist Role
 mind-role-name-ratvar = Ratvar Cultist Role
 
 # Enchantments table labels

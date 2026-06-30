@@ -26,6 +26,10 @@ loadout-group-typan-commander-neck = Commander Neckwear
 loadout-group-typan-medic-uniform = Medic Uniform
 loadout-group-typan-medic-shoes = Medic Shoes
 loadout-group-typan-medic-outerclothing = Medic Outer Clothing
+# Paramedic
+loadout-group-typan-paramedic-uniform = Paramedic Uniform
+# Technician
+loadout-group-typan-technician-uniform = Technician Uniform
 # Patrol
 loadout-group-typan-patrol-uniform = Patrol Uniform
 loadout-group-typan-patrol-shoes = Patrol Shoes

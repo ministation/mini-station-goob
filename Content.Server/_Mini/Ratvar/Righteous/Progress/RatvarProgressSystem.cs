@@ -43,18 +43,38 @@ public sealed partial class RatvarProgressSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
-        SubscribeLocalEvent<RatvarProgressComponent, ComponentInit>(OnProgressInit);
+        SubscribeLocalEvent<RatvarProgressComponent, ComponentShutdown>(OnProgressShutdown);
 
         InitializeStructuresAndItems();
     }
 
-    private void OnProgressInit(EntityUid uid, RatvarProgressComponent component, ComponentInit args)
+    private void InitializeProgress(EntityUid uid, RatvarProgressComponent component)
     {
         CreateObjective(BeaconsObjectivePrototype, ref component.RatvarBeaconsObjective);
         CreateObjective(ConvertObjectivePrototype, ref component.RatvarConvertObjective);
         CreateObjective(PowerObjectivePrototype, ref component.RatvarPowerObjective);
 
         component.NextObjectivesCheckTick = _timing.CurTime + component.ObjectivesCheckPeriod;
+    }
+
+    private void OnProgressShutdown(EntityUid uid, RatvarProgressComponent component, ComponentShutdown args)
+    {
+        DeleteObjective(ref component.RatvarBeaconsObjective);
+        DeleteObjective(ref component.RatvarConvertObjective);
+        DeleteObjective(ref component.RatvarPowerObjective);
+        DeleteObjective(ref component.RatvarSummonObjective);
+
+        if (_progressEntity?.Owner == uid)
+            _progressEntity = null;
+    }
+
+    private void DeleteObjective(ref EntityUid objective)
+    {
+        if (objective == EntityUid.Invalid)
+            return;
+
+        QueueDel(objective);
+        objective = EntityUid.Invalid;
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
@@ -91,7 +111,9 @@ public sealed partial class RatvarProgressSystem : EntitySystem
     public void CreateProgress()
     {
         var progress = Spawn(ProgressPrototype);
-        _progressEntity = (progress, Comp<RatvarProgressComponent>(progress));
+        var component = Comp<RatvarProgressComponent>(progress);
+        InitializeProgress(progress, component);
+        _progressEntity = (progress, component);
     }
 
     private void AddObjectivesToRighteouses(params EntityUid[] objectiveEntities)

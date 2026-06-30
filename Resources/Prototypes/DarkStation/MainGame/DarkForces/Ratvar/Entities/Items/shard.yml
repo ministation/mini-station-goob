@@ -1,8 +1,6 @@
-﻿- type: entity
+- type: entity
   id: RatvarShard
   parent: BaseItem
-  name: ent-RatvarShard
-  description: ent-RatvarShard.desc
   suffix: Ratvar
   components:
   - type: Sprite
@@ -42,8 +40,6 @@
 - type: entity
   parent: BaseAction
   id: RatvarShardReconstruct
-  name: ent-RatvarShardReconstruct
-  description: ent-RatvarShardReconstruct.desc
   components:
   - type: Action
     itemIconStyle: BigItem
@@ -54,8 +50,6 @@
 - type: entity
   parent: BaseAction 
   id: RatvarShardEmp
-  name: ent-RatvarShardEmp
-  description: ent-RatvarShardEmp.desc
   components:
   - type: Action
     itemIconStyle: BigItem

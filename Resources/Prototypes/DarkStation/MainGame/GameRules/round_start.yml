@@ -39,7 +39,6 @@
 - type: entity
   parent: BaseMindRoleAntag
   id: MindRoleRatvar
-  name: mind-role-name-ratvar
   #  description: mind-role-thief-description
   components:
   - type: MindRole

@@ -24,3 +24,20 @@
       - state: green
       - sprite: _Orion/Mobs/Aliens/cortical_borer.rsi
         state: cortical_borer
+
+- type: entity
+  parent: MarkerBase
+  id: SpawnPointSkeletonPirate
+  name: skeleton pirate cryo capsule
+  suffix: Spawner, Ghost Role
+  categories: [ Spawner ]
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    layers:
+      - state: green
+      - sprite: Mobs/Species/Skeleton/parts.rsi
+        state: skull_icon
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSkeletonPirateBitrun
