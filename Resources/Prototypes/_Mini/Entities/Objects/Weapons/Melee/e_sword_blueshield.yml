@@ -45,7 +45,6 @@
     damage:
       types:
         Piercing: 17
-    armorPenetration: 0.15
     soundHit:
         path: /Audio/Weapons/bladeslice.ogg
   - type: SolutionContainerManager
