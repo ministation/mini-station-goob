@@ -1,6 +1,8 @@
 - type: entity
   parent: ClothingBlueshieldArmourVest
   id: ClothingOuterArmorBlueShieldAlt
+  name: бронежилет офицера "Синий Щит"
+  description: Бронированный жилет с символикой корпуса "Синий Щит".
   components:
   - type: Sprite
     sprite: _Mini/Clothing/OuterClothing/blueshield_vest_alt.rsi
