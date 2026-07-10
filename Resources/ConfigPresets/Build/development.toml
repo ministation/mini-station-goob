@@ -14,7 +14,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 [build]
-fork_id = "Orion"
+fork_id = "ministation"
 
 [game]
 # Straight in-game baby
