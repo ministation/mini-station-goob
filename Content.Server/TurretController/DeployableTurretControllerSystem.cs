@@ -137,16 +137,8 @@ public sealed partial class DeployableTurretControllerSystem : SharedDeployableT
 
     private void UpdateUIState(Entity<DeployableTurretControllerComponent> ent)
     {
-        var turretStates = new Dictionary<string, string>();
-
-        foreach (var (address, state) in ent.Comp.LinkedTurrets)
-        {
-            var stateName = state.ToString().ToLower();
-            var stateDesc = Loc.GetString("turret-controls-window-turret-" + stateName);
-            turretStates.Add(address, stateDesc);
-        }
-
-        var uiState = new DeployableTurretControllerBoundInterfaceState(turretStates);
+        var uiState = new DeployableTurretControllerBoundInterfaceState(
+            new Dictionary<string, DeployableTurretState>(ent.Comp.LinkedTurrets));
         _userInterfaceSystem.SetUiState(ent.Owner, DeployableTurretControllerUiKey.Key, uiState);
     }
 }
