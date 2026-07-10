@@ -6,7 +6,9 @@ using Content.Goobstation.Shared.Xenobiology.Components;
 using Content.Server.NPC;
 using Content.Server.NPC.HTN.PrimitiveTasks;
 using Content.Server.NPC.Pathfinding;
+using Content.Shared.Body.Components;
 using Content.Shared.Humanoid;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC.Systems;
 using Content.Shared.Nutrition.Components;
@@ -67,6 +69,9 @@ public sealed partial class PickCorpseEaterTargetOperator : HTNOperator
 
         foreach (var entity in _factions.GetNearbyHostiles(owner, range))
         {
+            if (!_ent.HasComponent<BodyComponent>(entity) || !_ent.HasComponent<MobStateComponent>(entity))
+                continue;
+
             if (!_eatCorpse.CanEatCorpse(owner, entity, eaterComp))
                 continue;
 

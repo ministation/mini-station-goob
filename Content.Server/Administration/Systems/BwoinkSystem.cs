@@ -204,9 +204,9 @@ namespace Content.Server.Administration.Systems
         private const ushort MessageLengthCap = 3000;
 
         // Mini-Ahelp-Antispam-Start
-        private readonly TimeSpan _messageCooldown = TimeSpan.FromSeconds(2);
+        private float _messageCooldownSeconds = 0.5f;
 
-        private readonly Queue<(NetUserId Channel, string Text, TimeSpan Timestamp)> _recentMessages = new();
+        private readonly Queue<(NetUserId Channel, NetUserId Sender, string Text, TimeSpan Timestamp)> _recentMessages = new();
         private const int MaxRecentMessages = 10;
         private const int SpamCheckMessageCount = 3;
         // Mini-Ahelp-Antispam-End
@@ -228,6 +228,7 @@ namespace Content.Server.Administration.Systems
             Subs.CVar(_config, CCVars.DiscordAHelpAvatar, OnAvatarChanged, true);
             Subs.CVar(_config, CVars.GameHostName, OnServerNameChanged, true);
             Subs.CVar(_config, CCVars.AdminAhelpOverrideClientName, OnOverrideChanged, true);
+            Subs.CVar(_config, CCVars.AhelpMessageCooldown, value => _messageCooldownSeconds = value, true);
             _sawmill = IoCManager.Resolve<ILogManager>().GetSawmill("AHELP");
 
             var defaultParams = new AHelpMessageParams(
@@ -809,13 +810,13 @@ namespace Content.Server.Administration.Systems
 
             var currentTime = _timing.RealTime;
 
-            if (IsOnCooldown(message.UserId, currentTime))
+            if (!senderAHelpAdmin && IsOnCooldown(senderSession.UserId, message.UserId, currentTime))
                 return;
 
             if (IsSpam(message.UserId, message.Text))
                 _banManager.CreateServerBan(senderSession.UserId, senderSession.Name, null, null, null, 180, NoteSeverity.High, Loc.GetString("ahelp-antispam-ban-reason"));
 
-            AddToRecentMessages(message.UserId, message.Text, currentTime);
+            AddToRecentMessages(message.UserId, senderSession.UserId, message.Text, currentTime);
             // Ahelp-Antispam-End
 
             if (_rateLimit.CountAction(eventArgs.SenderSession, RateLimitKey) != RateLimitStatus.Allowed)
@@ -1168,9 +1169,9 @@ namespace Content.Server.Administration.Systems
         }
 
         // Mini-Ahelp-Antispam-Start
-        private void AddToRecentMessages(NetUserId channelId, string text, TimeSpan timestamp)
+        private void AddToRecentMessages(NetUserId channelId, NetUserId senderId, string text, TimeSpan timestamp)
         {
-            _recentMessages.Enqueue((channelId, text, timestamp));
+            _recentMessages.Enqueue((channelId, senderId, text, timestamp));
 
             if (_recentMessages.Count > MaxRecentMessages)
             {
@@ -1178,14 +1179,18 @@ namespace Content.Server.Administration.Systems
             }
         }
 
-        private bool IsOnCooldown(NetUserId channelId, TimeSpan currentTime)
+        private bool IsOnCooldown(NetUserId senderId, NetUserId channelId, TimeSpan currentTime)
         {
+            var cooldown = TimeSpan.FromSeconds(_messageCooldownSeconds);
+            if (cooldown <= TimeSpan.Zero)
+                return false;
+
             var lastMessage = _recentMessages
-                .Where(msg => msg.Channel == channelId)
+                .Where(msg => msg.Channel == channelId && msg.Sender == senderId)
                 .OrderByDescending(msg => msg.Timestamp)
                 .FirstOrDefault();
 
-            return lastMessage != default && (currentTime - lastMessage.Timestamp) < _messageCooldown;
+            return lastMessage != default && (currentTime - lastMessage.Timestamp) < cooldown;
         }
 
         private bool IsSpam(NetUserId channelId, string text)
@@ -1198,7 +1203,7 @@ namespace Content.Server.Administration.Systems
             return recentMessages.All(msg => msg.Text == text) && recentMessages.Count() >= 5;
         }
 
-        public IEnumerable<(NetUserId Channel, string Text, TimeSpan Timestamp)> GetRecentMessages()
+        public IEnumerable<(NetUserId Channel, NetUserId Sender, string Text, TimeSpan Timestamp)> GetRecentMessages()
         {
             return _recentMessages;
         }

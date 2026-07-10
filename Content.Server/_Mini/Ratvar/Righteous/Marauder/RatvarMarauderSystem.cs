@@ -1,4 +1,5 @@
 ﻿using Content.Server.Mind;
+using Content.Server.Speech.EntitySystems;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Mind.Components;
 using Content.Shared.RPSX.DarkForces.Ratvar.Righteous.Items;
@@ -14,6 +15,7 @@ public sealed class RatvarMarauderSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] private readonly MindSystem _mindSystem = default!;
     [Dependency] private readonly ItemSlotsSystem _slotsSystem = default!;
+    [Dependency] private readonly RatvarianLanguageSystem _ratvarianLanguage = default!;
 
     public override void Initialize()
     {
@@ -31,6 +33,8 @@ public sealed class RatvarMarauderSystem : EntitySystem
     private void OnMindAdded(EntityUid uid, RatvarMarauderShellComponent component, MindAddedMessage args)
     {
         _appearanceSystem.SetData(uid, RatvarSoulVesselVisualState.State, true);
+        EnsureComp<RatvarRighteousComponent>(uid);
+        _ratvarianLanguage.DoRatvarian(uid, TimeSpan.FromDays(365), true);
     }
 
     private void OnSoulVesselInsertAttempt(EntityUid uid, RatvarMarauderShellComponent component,

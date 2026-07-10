@@ -106,6 +106,9 @@ public sealed class StationAiVisionSystem : EntitySystem
             if (!seed.Comp.Enabled)
                 continue;
 
+            if (!Exists(seed) || !TryComp<TransformComponent>(seed, out _))
+                continue;
+
             if (seed.Comp.NeedsPower && !_power.IsPowered(seed.Owner))
                 continue;
 
@@ -115,7 +118,7 @@ public sealed class StationAiVisionSystem : EntitySystem
             _job.Data.Add(seed);
         }
 
-        if (_seeds.Count == 0)
+        if (_job.Data.Count == 0)
             return false;
 
         // Skip occluders step if we're just doing range checks.
@@ -193,6 +196,9 @@ public sealed class StationAiVisionSystem : EntitySystem
             if (!seed.Comp.Enabled)
                 continue;
 
+            if (!Exists(seed) || !TryComp<TransformComponent>(seed, out _))
+                continue;
+
             if (seed.Comp.NeedsPower && !_power.IsPowered(seed.Owner))
                 continue;
 
@@ -202,7 +208,7 @@ public sealed class StationAiVisionSystem : EntitySystem
             _job.Data.Add(seed);
         }
 
-        if (_seeds.Count == 0)
+        if (_job.Data.Count == 0)
             return;
 
         // Get viewport tiles
@@ -347,7 +353,9 @@ public sealed class StationAiVisionSystem : EntitySystem
         public void Execute(int index)
         {
             var seed = Data[index];
-            var seedXform = EntManager.GetComponent<TransformComponent>(seed);
+
+            if (!EntManager.EntityExists(seed) || !EntManager.TryGetComponent(seed, out TransformComponent? seedXform))
+                return;
 
             // Fastpath just get tiles in range.
             // Either xray-vision or system is doing a quick-and-dirty check.

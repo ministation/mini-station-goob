@@ -184,6 +184,7 @@ ratvar-summon-objective-location = Установите алтарь в райо
 # Antags
 antag-name-RatvarRighteous = Праведник Ратвара
 antag-objective-RatvarRighteous = Освободите Ратвара из заточения
+ratvar-friendly-fire-blocked = Вы не можете навредить своим сокультистам.
 
 # Mind roles
 ent-MindRoleRatvar = Праведник Ратвара

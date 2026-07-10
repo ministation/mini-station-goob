@@ -139,7 +139,7 @@ public sealed partial class TurretControllerWindow : BaseWindow
         RefreshLinkedTurrets(state.TurretStateByAddress);
     }
 
-    public void RefreshLinkedTurrets(Dictionary<string, string> turretStates)
+    public void RefreshLinkedTurrets(Dictionary<string, DeployableTurretState> turretStates)
     {
         var turretCount = turretStates.Count;
         var hasTurrets = turretCount > 0;
@@ -154,7 +154,7 @@ public sealed partial class TurretControllerWindow : BaseWindow
             var text = Loc.GetString(
                 "turret-controls-window-turret-status",
                 ("device", address),
-                ("status", Loc.GetString(state))
+                ("status", Loc.GetString(GetTurretStateLocaleId(state)))
             );
 
             var label = new Label
@@ -172,6 +172,11 @@ public sealed partial class TurretControllerWindow : BaseWindow
         }
 
         TurretStatusHeader.Text = Loc.GetString("turret-controls-window-turret-status-label", ("count", turretCount));
+    }
+
+    private static string GetTurretStateLocaleId(DeployableTurretState state)
+    {
+        return "turret-controls-window-turret-" + state.ToString().ToLower();
     }
 
     public void RefreshAccessControls(HashSet<ProtoId<AccessLevelPrototype>> exemptAccessLevels)

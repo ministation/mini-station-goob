@@ -25,6 +25,12 @@ public sealed partial class CCVars
         CVarDef.Create("ahelp.rate_limit_count", 10, CVar.SERVERONLY);
 
     /// <summary>
+    ///     Minimum delay between ahelp messages from the same non-admin sender (seconds).
+    /// </summary>
+    public static readonly CVarDef<float> AhelpMessageCooldown =
+        CVarDef.Create("ahelp.message_cooldown", 0.5f, CVar.SERVERONLY);
+
+    /// <summary>
     ///     Should the administrator's position be displayed in ahelp.
     ///     If it is is false, only the admin's ckey will be displayed in the ahelp.
     /// </summary>

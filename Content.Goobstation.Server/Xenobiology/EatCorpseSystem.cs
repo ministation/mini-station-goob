@@ -47,8 +47,11 @@ public sealed partial class EatCorpseSystem : EntitySystem
         BodyComponent? targetBody = null,
         MobStateComponent? targetState = null)
     {
-        if (!Resolve(eaterUid, ref eater)
-            || !Resolve(targetUid, ref targetState, ref targetBody))
+        if (!Resolve(eaterUid, ref eater))
+            return false;
+
+        if (!TryComp<MobStateComponent>(targetUid, out targetState)
+            || !TryComp<BodyComponent>(targetUid, out targetBody))
             return false;
 
         if (SlimeClusterHelper.IsMergedCluster(eaterUid, EntityManager))
@@ -70,8 +73,11 @@ public sealed partial class EatCorpseSystem : EntitySystem
         BodyComponent? targetBody = null,
         MobStateComponent? targetState = null)
     {
-        if (!Resolve(eaterUid, ref eater)
-            || !Resolve(targetUid, ref targetState, ref targetBody))
+        if (!Resolve(eaterUid, ref eater))
+            return false;
+
+        if (!TryComp<MobStateComponent>(targetUid, out targetState)
+            || !TryComp<BodyComponent>(targetUid, out targetBody))
             return false;
 
         if (SlimeClusterHelper.IsMergedCluster(eaterUid, EntityManager))
