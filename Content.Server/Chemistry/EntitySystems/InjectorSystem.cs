@@ -45,6 +45,7 @@ using Content.Server._CorvaxGoob.Skills;
 using Robust.Shared.Timing; // Goobstation
 using System.Linq; // Goobstation
 using Content.Shared.Chemistry.Reagent; // Goobstation
+using Content.Shared._Mini.DailyQuests;
 
 namespace Content.Server.Chemistry.EntitySystems;
 
@@ -292,7 +293,7 @@ public sealed class InjectorSystem : SharedInjectorSystem
             ("target", Identity.Entity(target, EntityManager))), injector.Owner, user);
 
         Dirty(injector);
-        AfterInject(injector, target);
+        AfterInject(injector, target, user);
         return true;
     }
 
@@ -338,11 +339,11 @@ public sealed class InjectorSystem : SharedInjectorSystem
             ("target", Identity.Entity(targetEntity, EntityManager))), injector.Owner, user);
 
         Dirty(injector);
-        AfterInject(injector, targetEntity);
+        AfterInject(injector, targetEntity, user);
         return true;
     }
 
-    private void AfterInject(Entity<InjectorComponent> injector, EntityUid target)
+    private void AfterInject(Entity<InjectorComponent> injector, EntityUid target, EntityUid user)
     {
         // Automatically set syringe to draw after completely draining it.
         if (SolutionContainers.TryGetSolution(injector.Owner, injector.Comp.SolutionName, out _,
@@ -354,6 +355,12 @@ public sealed class InjectorSystem : SharedInjectorSystem
         // Leave some DNA from the injectee on it
         var ev = new TransferDnaEvent { Donor = target, Recipient = injector };
         RaiseLocalEvent(target, ref ev);
+
+        if (user != target)
+        {
+            var questEv = new HyposprayPatientInjectedEvent(user, target);
+            RaiseLocalEvent(ref questEv);
+        }
     }
 
     private void AfterDraw(Entity<InjectorComponent> injector, EntityUid target)

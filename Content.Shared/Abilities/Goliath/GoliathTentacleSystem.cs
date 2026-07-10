@@ -5,6 +5,7 @@
 
 using Content.Shared.Directions;
 using Content.Shared.Maps;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Physics;
 using Content.Shared.Popups;
 using Content.Shared.Stunnable;
@@ -24,6 +25,7 @@ public sealed class GoliathTentacleSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TurfSystem _turf = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -34,6 +36,9 @@ public sealed class GoliathTentacleSystem : EntitySystem
     private void OnSummonAction(GoliathSummonTentacleAction args)
     {
         if (args.Handled)
+            return;
+
+        if (_mobState.IsDead(args.Performer) || _mobState.IsIncapacitated(args.Performer))
             return;
 
         // TODO: animation

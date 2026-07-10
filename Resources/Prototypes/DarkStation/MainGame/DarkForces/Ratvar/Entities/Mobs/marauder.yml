@@ -114,6 +114,10 @@
     - DoorBumpOpener
     - FootstepSound
   - type: IntrinsicRadioReceiver
+  - type: Speech
+    speechVerb: Robotic
+  - type: Emoting
+  - type: StatusEffects
   - type: IntrinsicRadioTransmitter
     channels:
     - Ratvar

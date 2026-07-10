@@ -232,7 +232,8 @@ public sealed class RespiratorSystem : EntitySystem
                     _chat.TryEmoteWithChat(uid,
                         respirator.GaspEmote,
                         ChatTransmitRange.HideChat,
-                        ignoreActionBlocker: true);
+                        ignoreActionBlocker: true,
+                        forceEmote: true);
                 }
 
                 TakeSuffocationDamage((uid, respirator));

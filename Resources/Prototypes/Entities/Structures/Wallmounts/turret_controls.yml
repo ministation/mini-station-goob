@@ -185,10 +185,48 @@
     - Borg
   - type: DeployableTurretController
     accessGroups:
+    - Cargo
+    - Command
+    - Engineering
+    - General
+    - Medical
+    - Research
+    - Security
+    - Service
     - Silicon
     accessLevels:
+    - Armory
+    - Atmospherics
+    - Bar
     - BasicSilicon
     - Borg
+    - Brig
+    - Detective
+    - Captain
+    - Cargo
+    - Chapel
+    - Chemistry
+    - ChiefEngineer
+    - ChiefMedicalOfficer
+    - Command
+    - Cryogenics
+    - Engineering
+    - External
+    - HeadOfPersonnel
+    - HeadOfSecurity
+    - Hydroponics
+    - Janitor
+    - Kitchen
+    - Lawyer
+    - Maintenance
+    - Medical
+    - Quartermaster
+    - Research
+    - ResearchDirector
+    - Salvage
+    - Security
+    - Service
+    - Theatre
 
 - type: entity
   parent: WeaponEnergyTurretStationControlPanelBase

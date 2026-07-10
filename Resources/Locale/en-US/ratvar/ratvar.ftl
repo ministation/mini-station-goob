@@ -189,6 +189,7 @@ ratvar-summon-objective-location = Anchor an altar near { $location } and use a 
 # Antags
 antag-name-RatvarRighteous = Ratvar Righteous
 antag-objective-RatvarRighteous = Free Ratvar from imprisonment.
+ratvar-friendly-fire-blocked = You cannot harm your fellow cultists.
 
 # Mind roles
 ent-MindRoleRatvar = Ratvar Cultist Role
