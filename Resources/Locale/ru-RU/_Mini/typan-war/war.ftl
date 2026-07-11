@@ -4,7 +4,7 @@ typan-war-objective-issuer = Война станций
 
 
 
-typan-war-sender = Центральное командование
+typan-war-sender = Штаб станционной войны
 
 
 
@@ -38,7 +38,24 @@ typan-war-end-warning = До окончания войны станций ост
 
 typan-war-event-supply = [color=#F0D890]Война станций:[/color] снабжение развёрнуто на обеих станциях — проверьте военные склады.
 
-typan-war-event-intel = [color=#A8C8FF]Разведка NT:[/color] {$nt} боеспособных. [color=#FFB0B0]Синдикат:[/color] {$typan} боеспособных.
+typan-war-event-intel = [color=#A8C8FF]Очки NT:[/color] {$nt}. [color=#FFB0B0]Синдикат:[/color] {$typan}.
+
+typan-war-capture-zones-active-header = Внимание, бойцы Нанотрайзен и Синдиката! Обозначены стратегически важные зоны захвата:
+typan-war-capture-zones-active-line = Зона {$label} — {$location}
+typan-war-capture-zone-named = Зона {$label} ({$location})
+typan-war-capture-location-station = {$station} — {$area}
+typan-war-capture-location-trade-nt = Торговый аванпост Нанотрайзен
+typan-war-capture-location-trade-typan = Торговый аванпост Синдиката
+typan-war-hud-zone-line = Зона {$label}: {$location}
+typan-war-capture-nt = Нанотрайзен захватил {$zone}.
+typan-war-capture-typan = Синдикат захватил {$zone}.
+typan-war-capture-neutral = {$zone} стала нейтральной.
+typan-war-capture-loot-nt = [color=#A8C8FF]Нанотрайзен[/color] получил снабжение за удержание {$zone}.
+typan-war-capture-loot-typan = [color=#FFB0B0]Синдикат[/color] получил снабжение за удержание {$zone}.
+typan-war-hud-zone-inactive = неактивна
+typan-war-hud-zone-owner-neutral = нейтральная
+typan-war-hud-zone-owner-nanotrasen = NT
+typan-war-hud-zone-owner-typan = Синдикат
 
 
 
@@ -64,7 +81,24 @@ typan-war-ff-enabled = Защита союзников включена — вы
 
 typan-war-ff-disabled = Защита союзников выключена.
 
+typan-war-respawn-title = Запрос подкрепления
+typan-war-respawn-timer = Подкрепление через {$seconds} с
+typan-war-respawn-ready = Выберите точку высадки
+typan-war-respawn-zone = Зона {$label} — {$location}
+typan-war-respawn-zone-desc = Высадка на захваченной точке вашей фракции.
+typan-war-respawn-base = Спавн должности
+typan-war-respawn-base-desc = Возврат на исходную точку спавна.
+typan-war-respawn-no-options = Нет доступных точек высадки.
+typan-war-respawn-no-profile = Не удалось загрузить профиль персонажа.
+typan-war-respawn-failed = Высадка не удалась — попробуйте другую точку.
 
+typan-war-minimap-action-name = Карта войны
+typan-war-minimap-action-desc = Открыть карту войны: станции, шаттлы, зоны захвата и союзники.
+typan-war-minimap-title = Карта войны
+typan-war-minimap-legend = NT {$nt} / Синдикат {$typan} — победа при {$win}
+typan-war-minimap-map-legend = Силуэты = станции и шаттлы · треугольники = союзники · буквы = зоны захвата
+typan-war-minimap-controls = Колёсико — масштаб · перетаскивание — перемещение
+typan-war-ghost-thunderdome-blocked = Thunderdome недоступен во время войны станций.
 
 typan-war-ftl-blocked = Блюспейс-прыжки заблокированы до начала боевых действий.
 

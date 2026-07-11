@@ -1,0 +1,762 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using Content.Client.Resources;
+using Content.Shared._Mini.TypanWar;
+using Content.Shared.Atmos;
+using Content.Shared.Maps;
+using Robust.Client.GameObjects;
+using Robust.Client.Graphics;
+using Robust.Client.Input;
+using Robust.Client.Player;
+using Robust.Client.ResourceManagement;
+using Robust.Client.UserInterface;
+using Robust.Client.UserInterface.Controls;
+using Robust.Shared.GameObjects;
+using Robust.Shared.Input;
+using Robust.Shared.IoC;
+using Robust.Shared.Map.Components;
+using Robust.Shared.Maths;
+using Robust.Shared.Timing;
+
+namespace Content.Client._Mini.TypanWar;
+
+public sealed class TypanWarMinimapControl : Control
+{
+    private const float MinZoom = 0.5f;
+    private const float MaxZoom = 4f;
+    private const float ZoomStep = 0.12f;
+    private const float BlipSize = 11f;
+    private const float SelfBlipSize = 13f;
+
+    private static readonly Color Background = Color.FromHex("#0A0A10").WithAlpha(0.95f);
+    private static readonly Color Border = Color.FromHex("#5A5670").WithAlpha(0.7f);
+
+    private static readonly Color NtStationFill = Color.FromHex("#1A2848").WithAlpha(0.88f);
+    private static readonly Color NtStationEdge = Color.FromHex("#5A9FFF");
+    private static readonly Color TypanStationFill = Color.FromHex("#421E1E").WithAlpha(0.88f);
+    private static readonly Color TypanStationEdge = Color.FromHex("#FF6666");
+    private static readonly Color TradeFill = Color.FromHex("#423818").WithAlpha(0.88f);
+    private static readonly Color TradeEdge = Color.FromHex("#D8C860");
+    private static readonly Color NtShuttleFill = Color.FromHex("#1A2848").WithAlpha(0.9f);
+    private static readonly Color NtShuttleEdge = Color.FromHex("#5A9FFF");
+    private static readonly Color TypanShuttleFill = Color.FromHex("#3A1818").WithAlpha(0.9f);
+    private static readonly Color TypanShuttleEdge = Color.FromHex("#E85050");
+
+    private static readonly Color NtBlip = Color.FromHex("#5A9FFF");
+    private static readonly Color TypanBlip = Color.FromHex("#FF6060");
+    private static readonly Color NtAllyBlip = Color.FromHex("#8CC4FF");
+    private static readonly Color TypanAllyBlip = Color.FromHex("#FF9090");
+    private static readonly Color SelfBlip = Color.FromHex("#66FF66");
+
+    [Dependency] private readonly IEntityManager _ent = default!;
+    [Dependency] private readonly IPlayerManager _players = default!;
+    [Dependency] private readonly IResourceCache _cache = default!;
+
+    private SharedMapSystem? _map;
+    private TurfSystem? _turf;
+    private TransformSystem? _xform;
+    private VectorFont? _font;
+
+    private TypanWarMinimapGrid[] _grids = [];
+    private TypanWarCaptureZoneStatus[] _zones = [];
+    private TypanWarAllyBlip[] _allies = [];
+
+    private readonly List<CachedGridShape> _cachedShapes = new();
+    private readonly List<Vector2> _screenVerts = new();
+    private readonly HashSet<Vector2i> _tileSet = new();
+    private readonly List<Vector2i> _tileList = new();
+    private readonly List<(Vector2 Start, Vector2 End)> _edges = new();
+    private readonly (DirectionFlag Dir, Vector2i Offset)[] _neighborDirections = new (DirectionFlag, Vector2i)[4];
+    private NetEntity[] _cachedGridIds = [];
+
+    private float _zoom = 1f;
+    private Vector2 _pan;
+    private bool _dragging;
+    private Vector2 _dragStart;
+    private Vector2 _panStart;
+
+    public TypanWarMinimapControl()
+    {
+        IoCManager.InjectDependencies(this);
+
+        for (var i = 0; i < 4; i++)
+        {
+            var dir = (DirectionFlag) Math.Pow(2, i);
+            _neighborDirections[i] = (dir, dir.AsDir().ToIntVec());
+        }
+
+        MouseFilter = MouseFilterMode.Stop;
+    }
+
+    public void Update(TypanWarMinimapGrid[] grids, TypanWarCaptureZoneStatus[] zones, TypanWarAllyBlip[] allies)
+    {
+        _grids = grids;
+        _zones = zones;
+        _allies = allies;
+        RebuildShapeCacheIfNeeded();
+    }
+
+    protected override void KeyBindDown(GUIBoundKeyEventArgs args)
+    {
+        base.KeyBindDown(args);
+
+        if (args.Function != EngineKeyFunctions.Use)
+            return;
+
+        _dragging = true;
+        _dragStart = args.RelativePixelPosition;
+        _panStart = _pan;
+    }
+
+    protected override void KeyBindUp(GUIBoundKeyEventArgs args)
+    {
+        base.KeyBindUp(args);
+
+        if (args.Function == EngineKeyFunctions.Use)
+            _dragging = false;
+    }
+
+    protected override void MouseMove(GUIMouseMoveEventArgs args)
+    {
+        base.MouseMove(args);
+
+        if (!_dragging)
+            return;
+
+        _pan = _panStart + (args.RelativePixelPosition - _dragStart);
+    }
+
+    protected override void MouseWheel(GUIMouseWheelEventArgs args)
+    {
+        base.MouseWheel(args);
+
+        if (args.Delta.Y == 0)
+            return;
+
+        var oldZoom = _zoom;
+        var factor = 1f + ZoomStep * args.Delta.Y;
+        _zoom = Math.Clamp(_zoom * factor, MinZoom, MaxZoom);
+
+        if (Math.Abs(_zoom - oldZoom) < 0.0001f)
+            return;
+
+        var cursor = args.RelativePixelPosition;
+        var center = PixelSize / 2f;
+        _pan = cursor - (cursor - center - _pan) * (_zoom / oldZoom) - center;
+    }
+
+    protected override void Draw(DrawingHandleScreen handle)
+    {
+        base.Draw(handle);
+
+        _font ??= new VectorFont(_cache.GetResource<FontResource>(MiniFonts.Bold), 12);
+        _xform ??= _ent.System<TransformSystem>();
+
+        var box = PixelSizeBox;
+        if (box.Width <= 1 || box.Height <= 1)
+            return;
+
+        handle.DrawRect(box, Background);
+        handle.DrawRect(box, Border, false);
+
+        if (!TryBuildTransform(box, out var map))
+            return;
+
+        foreach (var shape in _cachedShapes)
+        {
+            DrawCachedShape(handle, map, shape);
+
+            if (!shape.IsShuttle)
+                continue;
+
+            var center = map.WorldToScreen(shape.CenterWorld.X, shape.CenterWorld.Y);
+            var blipColor = shape.Kind == TypanWarMinimapGridKind.NtShuttle ? NtBlip : TypanBlip;
+            DrawMassScannerBlip(handle, center, blipColor, BlipSize);
+
+            if (!string.IsNullOrEmpty(shape.Label))
+                DrawEntityLabel(handle, center, shape.Label, blipColor);
+        }
+
+        foreach (var zone in _zones.Where(z => z.Active))
+            DrawZoneMarker(handle, map, zone);
+
+        var localSide = GetLocalSide();
+        var localPos = GetLocalWorldPosition();
+
+        foreach (var ally in _allies)
+        {
+            if (localSide != null && ally.Side != localSide)
+                continue;
+
+            if (localPos != null && IsSamePosition(ally.WorldX, ally.WorldY, localPos.Value.X, localPos.Value.Y))
+                continue;
+
+            var color = ally.Side == TypanWarSide.Nanotrasen ? NtAllyBlip : TypanAllyBlip;
+            DrawMassScannerBlip(handle, map.WorldToScreen(ally.WorldX, ally.WorldY), color, BlipSize);
+        }
+
+        if (localPos is { } self)
+            DrawMassScannerBlip(handle, map.WorldToScreen(self.X, self.Y), SelfBlip, SelfBlipSize);
+
+        var hint = Loc.GetString("typan-war-minimap-controls");
+        handle.DrawString(_font, new Vector2(box.Left + 6f, box.Bottom - 16f), hint, Color.FromHex("#787488"));
+    }
+
+    private void RebuildShapeCacheIfNeeded()
+    {
+        _map ??= _ent.System<SharedMapSystem>();
+        _turf ??= _ent.System<TurfSystem>();
+        _xform ??= _ent.System<TransformSystem>();
+
+        if (_grids.Length == 0)
+        {
+            if (_cachedShapes.Count == 0)
+                return;
+
+            _cachedShapes.Clear();
+            _cachedGridIds = [];
+            return;
+        }
+
+        var gridIds = _grids.Select(g => g.Grid).ToArray();
+
+        if (gridIds.SequenceEqual(_cachedGridIds) && !IsAnyGridStale())
+            return;
+
+        var newShapes = new List<CachedGridShape>(_grids.Length);
+
+        foreach (var grid in _grids)
+        {
+            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
+                continue;
+
+            if (!_ent.TryGetComponent(uid, out MapGridComponent? mapGrid))
+                continue;
+
+            CachedGridShape? existingShape = null;
+            foreach (var cached in _cachedShapes)
+            {
+                if (cached.GridUid != uid)
+                    continue;
+
+                existingShape = cached;
+                break;
+            }
+
+            if (existingShape is { } existing && existing.LastBuild >= mapGrid.LastTileModifiedTick)
+            {
+                newShapes.Add(existing);
+                continue;
+            }
+
+            var (fill, edge) = grid.Kind switch
+            {
+                TypanWarMinimapGridKind.NtStation => (NtStationFill, NtStationEdge),
+                TypanWarMinimapGridKind.TypanStation => (TypanStationFill, TypanStationEdge),
+                TypanWarMinimapGridKind.NtShuttle => (NtShuttleFill, NtShuttleEdge),
+                TypanWarMinimapGridKind.TypanShuttle => (TypanShuttleFill, TypanShuttleEdge),
+                _ => (TradeFill, TradeEdge),
+            };
+
+            if (TryBuildGridShape(uid, mapGrid, grid, fill, edge, out var shape))
+                newShapes.Add(shape);
+            else if (existingShape is { } fallback)
+                newShapes.Add(fallback);
+        }
+
+        if (newShapes.Count == 0 && _cachedShapes.Count > 0)
+            return;
+
+        _cachedGridIds = gridIds;
+        _cachedShapes.Clear();
+        _cachedShapes.AddRange(newShapes);
+    }
+
+    private bool IsAnyGridStale()
+    {
+        foreach (var grid in _grids)
+        {
+            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
+            {
+                if (!_cachedGridIds.Contains(grid.Grid))
+                    return true;
+
+                continue;
+            }
+
+            if (!_ent.TryGetComponent(uid, out MapGridComponent? mapGrid))
+                continue;
+
+            var cached = _cachedShapes.FirstOrDefault(s => s.GridUid == uid);
+            if (cached.GridUid != uid || cached.LastBuild < mapGrid.LastTileModifiedTick)
+                return true;
+        }
+
+        foreach (var grid in _grids)
+        {
+            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
+                continue;
+
+            if (_cachedShapes.All(s => s.GridUid != uid))
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool TryBuildGridShape(
+        EntityUid gridUid,
+        MapGridComponent mapGrid,
+        TypanWarMinimapGrid gridInfo,
+        Color fill,
+        Color edge,
+        out CachedGridShape shape)
+    {
+        shape = default;
+
+        _tileSet.Clear();
+        _tileList.Clear();
+
+        var tileSize = mapGrid.TileSize;
+        var worldMatrix = _xform!.GetWorldMatrix(gridUid);
+        var minWorld = new Vector2(float.MaxValue, float.MaxValue);
+        var maxWorld = new Vector2(float.MinValue, float.MinValue);
+
+        void IncludeWorld(Vector2 world)
+        {
+            minWorld = Vector2.Min(minWorld, world);
+            maxWorld = Vector2.Max(maxWorld, world);
+        }
+
+        foreach (var tileRef in _map!.GetAllTiles(gridUid, mapGrid))
+        {
+            if (tileRef.Tile.IsEmpty || _turf!.IsSpace(tileRef))
+                continue;
+
+            var def = _turf.GetContentTileDefinition(tileRef);
+            if (def.MapAtmosphere)
+                continue;
+
+            var index = tileRef.GridIndices;
+            _tileSet.Add(index);
+            _tileList.Add(index);
+        }
+
+        if (_tileSet.Count == 0)
+            return false;
+
+        var fillTris = new List<Vector2>();
+        var edgeLines = new List<Vector2>();
+
+        foreach (var (rectMin, rectMax) in MergeTilesToRects(_tileSet))
+        {
+            var bl = _map.TileToVector((gridUid, mapGrid), rectMin);
+            var tr = _map.TileToVector((gridUid, mapGrid), rectMax) + new Vector2(tileSize, tileSize);
+
+            IncludeWorld(Vector2.Transform(bl, worldMatrix));
+            IncludeWorld(Vector2.Transform(tr, worldMatrix));
+
+            AddWorldTri(fillTris, worldMatrix, bl, new Vector2(tr.X, bl.Y), new Vector2(bl.X, tr.Y));
+            AddWorldTri(fillTris, worldMatrix, new Vector2(tr.X, bl.Y), tr, new Vector2(bl.X, tr.Y));
+        }
+
+        _edges.Clear();
+
+        foreach (var index in _tileList)
+        {
+            var bl = _map.TileToVector((gridUid, mapGrid), index);
+            var br = bl + new Vector2(tileSize, 0f);
+            var tr = bl + new Vector2(tileSize, tileSize);
+            var tl = bl + new Vector2(0f, tileSize);
+
+            foreach (var (dir, dirVec) in _neighborDirections)
+            {
+                if (_tileSet.Contains(index + dirVec))
+                    continue;
+
+                var (start, end) = dir switch
+                {
+                    DirectionFlag.South => (bl, br),
+                    DirectionFlag.East => (br, tr),
+                    DirectionFlag.North => (tr, tl),
+                    DirectionFlag.West => (tl, bl),
+                    _ => throw new NotImplementedException(),
+                };
+
+                _edges.Add((start, end));
+            }
+        }
+
+        MergeCollinearEdges();
+
+        foreach (var (start, end) in _edges)
+        {
+            edgeLines.Add(Vector2.Transform(start, worldMatrix));
+            edgeLines.Add(Vector2.Transform(end, worldMatrix));
+        }
+
+        var centerWorld = minWorld.X <= maxWorld.X
+            ? (minWorld + maxWorld) * 0.5f
+            : new Vector2((gridInfo.MinX + gridInfo.MaxX) * 0.5f, (gridInfo.MinY + gridInfo.MaxY) * 0.5f);
+
+        shape = new CachedGridShape(
+            gridUid,
+            mapGrid.LastTileModifiedTick,
+            fillTris.ToArray(),
+            edgeLines.ToArray(),
+            fill,
+            edge,
+            IsShuttleKind(gridInfo.Kind),
+            gridInfo.Kind,
+            gridInfo.Name,
+            centerWorld);
+        return true;
+    }
+
+    private void MergeCollinearEdges()
+    {
+        var merged = true;
+
+        while (merged)
+        {
+            merged = false;
+
+            for (var i = 0; i < _edges.Count; i++)
+            {
+                var (start, end) = _edges[i];
+
+                for (var j = i + 1; j < _edges.Count; j++)
+                {
+                    var (neighborStart, neighborEnd) = _edges[j];
+
+                    if (!end.Equals(neighborStart))
+                        continue;
+
+                    if (!IsCollinear(start, end, neighborEnd))
+                        continue;
+
+                    _edges[i] = (start, neighborEnd);
+                    _edges.RemoveAt(j);
+                    merged = true;
+                    break;
+                }
+
+                if (merged)
+                    break;
+            }
+        }
+    }
+
+    private static List<(Vector2i Min, Vector2i Max)> MergeTilesToRects(HashSet<Vector2i> tiles)
+    {
+        if (tiles.Count == 0)
+            return [];
+
+        var minX = tiles.Min(t => t.X);
+        var maxX = tiles.Max(t => t.X);
+        var minY = tiles.Min(t => t.Y);
+        var maxY = tiles.Max(t => t.Y);
+
+        var rows = maxX - minX + 1;
+        var cols = maxY - minY + 1;
+        var matrix = new int[rows, cols];
+
+        foreach (var tile in tiles)
+            matrix[tile.X - minX, tile.Y - minY] = 1;
+
+        var output = new List<(Vector2i, Vector2i)>();
+        var offset = new Vector2i(minX, minY);
+
+        while (!IsMatrixEmpty(matrix))
+        {
+            var rowsLen = matrix.GetLength(0);
+            var colsLen = matrix.GetLength(1);
+            var dp = new int[rowsLen, colsLen];
+            var maxArea = 0;
+            var coords = (new Vector2i(), new Vector2i());
+
+            for (var j = 0; j < colsLen; j++)
+                dp[0, j] = matrix[0, j];
+
+            for (var i = 1; i < rowsLen; i++)
+            {
+                for (var j = 0; j < colsLen; j++)
+                    dp[i, j] = matrix[i, j] == 1 ? dp[i - 1, j] + 1 : 0;
+            }
+
+            for (var i = 0; i < rowsLen; i++)
+            {
+                for (var j = 0; j < colsLen; j++)
+                {
+                    var minWidth = dp[i, j];
+
+                    for (var k = j; k >= 0; k--)
+                    {
+                        if (dp[i, k] <= 0)
+                            break;
+
+                        minWidth = Math.Min(minWidth, dp[i, k]);
+                        var currArea = minWidth * (j - k + 1);
+
+                        if (currArea > maxArea)
+                        {
+                            maxArea = currArea;
+                            coords = (new Vector2i(i - minWidth + 1, k), new Vector2i(i, j));
+                        }
+                    }
+                }
+            }
+
+            output.Add((coords.Item1 + offset, coords.Item2 + offset));
+
+            for (var i = coords.Item1.X; i <= coords.Item2.X; i++)
+            {
+                for (var j = coords.Item1.Y; j <= coords.Item2.Y; j++)
+                    matrix[i, j] = 0;
+            }
+        }
+
+        return output;
+    }
+
+    private static bool IsMatrixEmpty(int[,] matrix)
+    {
+        for (var i = 0; i < matrix.GetLength(0); i++)
+        {
+            for (var j = 0; j < matrix.GetLength(1); j++)
+            {
+                if (matrix[i, j] == 1)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool IsCollinear(Vector2 a, Vector2 b, Vector2 c)
+    {
+        var ab = b - a;
+        var bc = c - b;
+        var cross = ab.X * bc.Y - ab.Y * bc.X;
+        return Math.Abs(cross) <= 10f * float.Epsilon;
+    }
+
+    private static void AddWorldTri(List<Vector2> tris, Matrix3x2 worldMatrix, Vector2 a, Vector2 b, Vector2 c)
+    {
+        tris.Add(Vector2.Transform(a, worldMatrix));
+        tris.Add(Vector2.Transform(b, worldMatrix));
+        tris.Add(Vector2.Transform(c, worldMatrix));
+    }
+
+    private void DrawCachedShape(DrawingHandleScreen handle, MapTransform map, CachedGridShape shape)
+    {
+        if (shape.FillTris.Length > 0)
+        {
+            _screenVerts.Clear();
+            foreach (var vert in shape.FillTris)
+                _screenVerts.Add(map.WorldToScreen(vert.X, vert.Y));
+
+            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, _screenVerts, shape.Fill);
+        }
+
+        if (shape.EdgeLines.Length > 0)
+        {
+            _screenVerts.Clear();
+            foreach (var vert in shape.EdgeLines)
+                _screenVerts.Add(map.WorldToScreen(vert.X, vert.Y));
+
+            handle.DrawPrimitives(DrawPrimitiveTopology.LineList, _screenVerts, shape.Edge);
+        }
+    }
+
+    private static bool IsShuttleKind(TypanWarMinimapGridKind kind) =>
+        kind is TypanWarMinimapGridKind.NtShuttle or TypanWarMinimapGridKind.TypanShuttle;
+
+    private static void DrawMassScannerBlip(DrawingHandleScreen handle, Vector2 center, Color color, float size)
+    {
+        var points = new Vector2[]
+        {
+            center + new Vector2(0f, -size),
+            center + new Vector2(size, size * 0.55f),
+            center + new Vector2(-size, size * 0.55f),
+        };
+
+        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, points, color.WithAlpha(0.95f));
+    }
+
+    private void DrawEntityLabel(DrawingHandleScreen handle, Vector2 anchor, string label, Color color)
+    {
+        if (_font == null || string.IsNullOrWhiteSpace(label))
+            return;
+
+        var textPos = anchor + new Vector2(0f, BlipSize + 4f);
+        var dims = handle.GetDimensions(_font, label, 1f);
+        var box = new UIBox2(
+            textPos - new Vector2(dims.X * 0.5f + 3f, 1f),
+            textPos + new Vector2(dims.X * 0.5f + 3f, dims.Y + 1f));
+
+        handle.DrawRect(box, Background.WithAlpha(0.85f));
+        handle.DrawString(_font, textPos - new Vector2(dims.X * 0.5f, 0f), label, color);
+    }
+
+    private TypanWarSide? GetLocalSide()
+    {
+        if (_players.LocalEntity is not { } local || !_ent.TryGetComponent<TypanWarFactionComponent>(local, out var faction))
+            return null;
+
+        return faction.Side;
+    }
+
+    private Vector2? GetLocalWorldPosition()
+    {
+        if (_players.LocalEntity is not { } local)
+            return null;
+
+        return _xform!.GetWorldPosition(local);
+    }
+
+    private static bool IsSamePosition(float ax, float ay, float bx, float by, float epsilon = 0.35f)
+    {
+        return Math.Abs(ax - bx) <= epsilon && Math.Abs(ay - by) <= epsilon;
+    }
+
+    private void DrawZoneMarker(DrawingHandleScreen handle, MapTransform map, TypanWarCaptureZoneStatus zone)
+    {
+        var color = zone.Owner switch
+        {
+            TypanWarCaptureOwner.Nanotrasen => Color.FromHex("#4A7FD4"),
+            TypanWarCaptureOwner.Typan => Color.FromHex("#C84848"),
+            _ => Color.FromHex("#D8D8D8"),
+        };
+
+        var center = map.WorldToScreen(zone.WorldX, zone.WorldY);
+        handle.DrawCircle(center, 11f, Color.FromHex("#101018").WithAlpha(0.85f));
+        handle.DrawCircle(center, 9f, color.WithAlpha(0.9f));
+
+        var label = string.IsNullOrEmpty(zone.ZoneLabel) ? "?" : zone.ZoneLabel;
+        handle.DrawString(_font!, center - new Vector2(4f, 6f), label, Color.FromHex("#101018"));
+    }
+
+    private bool TryBuildTransform(UIBox2 box, out MapTransform map)
+    {
+        map = default;
+
+        var hasData = false;
+        var minX = float.MaxValue;
+        var maxX = float.MinValue;
+        var minY = float.MaxValue;
+        var maxY = float.MinValue;
+
+        void Include(float x, float y)
+        {
+            hasData = true;
+            minX = Math.Min(minX, x);
+            maxX = Math.Max(maxX, x);
+            minY = Math.Min(minY, y);
+            maxY = Math.Max(maxY, y);
+        }
+
+        foreach (var grid in _grids)
+        {
+            Include(grid.MinX, grid.MinY);
+            Include(grid.MaxX, grid.MaxY);
+        }
+
+        foreach (var shape in _cachedShapes)
+        {
+            for (var i = 0; i < shape.FillTris.Length; i++)
+            {
+                var vert = shape.FillTris[i];
+                Include(vert.X, vert.Y);
+            }
+        }
+
+        foreach (var zone in _zones)
+            Include(zone.WorldX, zone.WorldY);
+
+        foreach (var ally in _allies)
+            Include(ally.WorldX, ally.WorldY);
+
+        if (_players.LocalEntity is { } local)
+        {
+            var pos = _xform!.GetWorldPosition(local);
+            Include(pos.X, pos.Y);
+        }
+
+        if (!hasData)
+            return false;
+
+        const float padWorld = 8f;
+        minX -= padWorld;
+        maxX += padWorld;
+        minY -= padWorld;
+        maxY += padWorld;
+
+        const float padScreen = 12f;
+        var inner = new UIBox2(
+            box.Left + padScreen,
+            box.Top + padScreen,
+            box.Right - padScreen,
+            box.Bottom - padScreen);
+
+        var rangeX = Math.Max(maxX - minX, 1f);
+        var rangeY = Math.Max(maxY - minY, 1f);
+        var baseScale = Math.Min(inner.Width / rangeX, inner.Height / rangeY);
+        var scale = baseScale * _zoom;
+        var drawW = rangeX * scale;
+        var drawH = rangeY * scale;
+        var offsetX = inner.Left + (inner.Width - drawW) * 0.5f + _pan.X;
+        var offsetY = inner.Top + (inner.Height - drawH) * 0.5f + _pan.Y;
+
+        map = new MapTransform(minX, minY, maxX, maxY, scale, offsetX, offsetY);
+        return true;
+    }
+
+    private readonly record struct CachedGridShape(
+        EntityUid GridUid,
+        GameTick LastBuild,
+        Vector2[] FillTris,
+        Vector2[] EdgeLines,
+        Color Fill,
+        Color Edge,
+        bool IsShuttle,
+        TypanWarMinimapGridKind Kind,
+        string Label,
+        Vector2 CenterWorld);
+
+    private readonly struct MapTransform
+    {
+        public readonly float MinX;
+        public readonly float MinY;
+        public readonly float Scale;
+        public readonly float OffsetX;
+        public readonly float OffsetY;
+        public readonly float DrawHeight;
+
+        public MapTransform(
+            float minX,
+            float minY,
+            float maxX,
+            float maxY,
+            float scale,
+            float offsetX,
+            float offsetY)
+        {
+            MinX = minX;
+            MinY = minY;
+            Scale = scale;
+            OffsetX = offsetX;
+            OffsetY = offsetY;
+            DrawHeight = (maxY - minY) * scale;
+        }
+
+        public Vector2 WorldToScreen(float worldX, float worldY)
+        {
+            var nx = (worldX - MinX) * Scale;
+            var ny = (worldY - MinY) * Scale;
+            return new Vector2(OffsetX + nx, OffsetY + DrawHeight - ny);
+        }
+    }
+}

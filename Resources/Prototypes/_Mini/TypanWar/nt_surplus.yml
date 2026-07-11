@@ -1,0 +1,8 @@
+- type: entity
+  id: CrateNtSurplusBundle
+  parent: [ CrateSecure, StorePresetUplinkERT ]
+  name: NT surplus crate
+  description: Emergency Response surplus gear. Contents are randomized from the ERT uplink catalog.
+  components:
+  - type: SurplusBundle
+    totalPrice: 50

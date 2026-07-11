@@ -85,8 +85,9 @@ public sealed class TypanWarHudController : UIController,
         hud.Update(
             showEnded ? TypanWarPhase.Ended : _war.Phase,
             _war.Winner,
-            _war.NtAlive,
-            _war.TypanAlive,
+            _war.NtCapturePoints,
+            _war.TypanCapturePoints,
+            _war.CapturePointsToWin,
             _war.TimeRemainingSeconds);
     }
 

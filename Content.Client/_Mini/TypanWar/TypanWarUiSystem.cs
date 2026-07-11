@@ -12,7 +12,13 @@ public sealed class TypanWarUiSystem : EntitySystem
     public TypanWarWinner Winner { get; private set; } = TypanWarWinner.None;
     public int NtAlive { get; private set; }
     public int TypanAlive { get; private set; }
+    public float NtCapturePoints { get; private set; }
+    public float TypanCapturePoints { get; private set; }
+    public int CapturePointsToWin { get; private set; } = 100;
     public float TimeRemainingSeconds { get; private set; }
+    public TypanWarCaptureZoneStatus[] CaptureZones { get; private set; } = Array.Empty<TypanWarCaptureZoneStatus>();
+    public TypanWarAllyBlip[] AllyBlips { get; private set; } = Array.Empty<TypanWarAllyBlip>();
+    public TypanWarMinimapGrid[] MinimapGrids { get; private set; } = Array.Empty<TypanWarMinimapGrid>();
 
     public bool BalanceActive { get; private set; }
     public bool AllowNanotrasen { get; private set; } = true;
@@ -53,7 +59,13 @@ public sealed class TypanWarUiSystem : EntitySystem
         Winner = ev.Winner;
         NtAlive = ev.NtAlive;
         TypanAlive = ev.TypanAlive;
+        NtCapturePoints = ev.NtCapturePoints;
+        TypanCapturePoints = ev.TypanCapturePoints;
+        CapturePointsToWin = ev.CapturePointsToWin;
         TimeRemainingSeconds = ev.TimeRemainingSeconds;
+        CaptureZones = ev.CaptureZones;
+        AllyBlips = ev.AllyBlips;
+        MinimapGrids = ev.MinimapGrids;
         StatusUpdated?.Invoke();
     }
 
@@ -73,7 +85,13 @@ public sealed class TypanWarUiSystem : EntitySystem
         Winner = TypanWarWinner.None;
         NtAlive = 0;
         TypanAlive = 0;
+        NtCapturePoints = 0;
+        TypanCapturePoints = 0;
+        CapturePointsToWin = 100;
         TimeRemainingSeconds = 0;
+        CaptureZones = Array.Empty<TypanWarCaptureZoneStatus>();
+        AllyBlips = Array.Empty<TypanWarAllyBlip>();
+        MinimapGrids = Array.Empty<TypanWarMinimapGrid>();
         StatusUpdated?.Invoke();
     }
 

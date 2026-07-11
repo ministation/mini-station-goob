@@ -1,7 +1,7 @@
 typan-station-goal-objective-issuer = Typan Station
 typan-war-objective-issuer = Station War
 
-typan-war-sender = Central Command
+typan-war-sender = Station War Command
 
 typan-war-declaration = A war has been declared between the NanoTrasen station and Typan. All personnel must arm themselves immediately and follow combat readiness protocols.
 
@@ -18,7 +18,24 @@ typan-war-hud-winner-typan = Syndicate Victory
 
 typan-war-end-warning = One minute remains until the station war ends.
 typan-war-event-supply = [color=#F0D890]Station War:[/color] supply caches unlocked on both stations — check war armories.
-typan-war-event-intel = [color=#A8C8FF]NT intel:[/color] {$nt} combat-ready. [color=#FFB0B0]Syndicate:[/color] {$typan} combat-ready.
+typan-war-event-intel = [color=#A8C8FF]NT score:[/color] {$nt} pts. [color=#FFB0B0]Syndicate:[/color] {$typan} pts.
+
+typan-war-capture-zones-active-header = Attention NanoTrasen and Syndicate forces! Strategically important capture zones have been marked:
+typan-war-capture-zones-active-line = Zone {$label} — {$location}
+typan-war-capture-zone-named = Zone {$label} ({$location})
+typan-war-capture-location-station = {$station} — {$area}
+typan-war-capture-location-trade-nt = NanoTrasen trade outpost
+typan-war-capture-location-trade-typan = Syndicate trade outpost
+typan-war-hud-zone-line = Zone {$label}: {$location}
+typan-war-capture-nt = NanoTrasen captured {$zone}.
+typan-war-capture-typan = Syndicate captured {$zone}.
+typan-war-capture-neutral = {$zone} is now neutral.
+typan-war-capture-loot-nt = [color=#A8C8FF]NanoTrasen[/color] received supply for holding {$zone}.
+typan-war-capture-loot-typan = [color=#FFB0B0]Syndicate[/color] received supply for holding {$zone}.
+typan-war-hud-zone-inactive = inactive
+typan-war-hud-zone-owner-neutral = neutral
+typan-war-hud-zone-owner-nanotrasen = NT
+typan-war-hud-zone-owner-typan = Syndicate
 
 typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Console bluespace jumps are blocked until hostilities begin. Follow combat readiness protocols — hostilities begin in five minutes.
 
@@ -31,6 +48,25 @@ typan-war-manifest =
 
 typan-war-ff-enabled = Ally protection enabled — you will not hit allies.
 typan-war-ff-disabled = Ally protection disabled.
+
+typan-war-respawn-title = Reinforcement Request
+typan-war-respawn-timer = Reinforcements available in {$seconds} s
+typan-war-respawn-ready = Select a deployment point
+typan-war-respawn-zone = Zone {$label} — {$location}
+typan-war-respawn-zone-desc = Deploy at a captured zone held by your faction.
+typan-war-respawn-base = Duty spawn
+typan-war-respawn-base-desc = Return to your original spawn location.
+typan-war-respawn-no-options = No deployment points available.
+typan-war-respawn-no-profile = Could not load your character profile.
+typan-war-respawn-failed = Deployment failed — try another point.
+
+typan-war-minimap-action-name = War map
+typan-war-minimap-action-desc = Open the war map showing stations, shuttles, capture zones, and allies.
+typan-war-minimap-title = War map
+typan-war-minimap-legend = NT {$nt} / Syndicate {$typan} — win at {$win}
+typan-war-minimap-map-legend = Silhouettes = stations & shuttles (named) · triangles = allies · letters = capture zones
+typan-war-minimap-controls = Scroll — zoom · drag — pan
+typan-war-ghost-thunderdome-blocked = Thunderdome is disabled during station war.
 
 typan-war-ftl-blocked = Bluespace jumps are blocked until hostilities begin.
 

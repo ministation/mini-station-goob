@@ -35,6 +35,7 @@ public sealed class TypanWarBalanceSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedJobSystem _jobs = default!;
     [Dependency] private readonly TTStationHandleJobSystem _typanJobs = default!;
+    [Dependency] private readonly TypanWarRespawnSystem _respawn = default!;
 
     public override void Initialize()
     {
@@ -176,6 +177,7 @@ public sealed class TypanWarBalanceSystem : EntitySystem
         }
 
         BroadcastStatus();
+        _respawn.HandleGhostMindAdded(uid, args);
     }
 
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs e)

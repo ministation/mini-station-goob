@@ -3,21 +3,27 @@
   parent: BaseGameRule
   components:
   - type: GameRule
-    minPlayers: 20
+    minPlayers: 0
     chaosScore: 900
   - type: Tag
     tags:
     - LoneRunRule
   - type: TypanStationWarRule
-    announcementDelaySeconds: 15
-    warStartDelaySeconds: 30
+    announcementDelaySeconds: 5
+    warStartDelaySeconds: 5
     warDurationSeconds: 1800
     warMusicDelaySeconds: 90
     warMusicDurationSeconds: 90
     roundEndDelaySeconds: 120
     minNtAlive: 0
     minTypanAlive: 0
-    maxFactionRatio: 2
+    maxFactionRatio: 999
+    captureZoneActivationDelaySeconds: 0
+    capturePointsToWin: 100
+    capturePointIntervalSeconds: 20
+    minRespawnSeconds: 10
+    maxRespawnSeconds: 60
+    stationSeparationTiles: 300
     dropShuttlePath: /Maps/_Mini/Shuttles/typan_drop_shuttle.yml
     ntDropShuttlePath: /Maps/_Mini/Shuttles/nt_drop_shuttle.yml
 
@@ -28,7 +34,7 @@
   - typan-station-war
   name: game-presets-typan-station-war
   showInVote: true
-  minPlayers: 20
+  minPlayers: 0
   description: game-presets-typan-station-war-description
   rules:
   - TypanStationWar

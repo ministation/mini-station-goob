@@ -21,9 +21,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Client.Ghost;
+using Content.Client._Mini.TypanWar;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Client.UserInterface.Systems.Ghost.Widgets;
 using Content.Goobstation.Shared.MisandryBox.Thunderdome;
+using Content.Shared._Mini.TypanWar;
 using Content.Shared.Ghost;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
@@ -95,6 +97,9 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
 
         Gui.Visible = _system?.IsGhost ?? false;
         Gui.Update(_system?.AvailableGhostRoleCount, _system?.Player?.CanReturnToBody, _system?.Player?.CanEnterGhostBar, _system?.Player?.CanTakeGhostRoles); // CorvaxGoob-GhostBar edit
+
+        var war = EntityManager.System<TypanWarUiSystem>();
+        Gui.SetWarModeRestrictions(war.Phase is TypanWarPhase.Pending or TypanWarPhase.Active);
     }
 
     private void OnPlayerRemoved(GhostComponent component)

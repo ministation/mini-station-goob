@@ -17,23 +17,22 @@ namespace Content.Client._Mini.TypanWar;
 public sealed class TypanWarHudControl : PanelContainer
 {
     public const float PreferredWidth = 580f;
-    private const float BarWidth = 240f;
-    private const int LowCountPulseThreshold = 5;
+    private const float BarWidth = 280f;
 
     private static readonly Color PanelBackground = Color.FromHex("#14141C").WithAlpha(0.72f);
 
     private readonly Label _titleLabel;
-    private readonly Label _ntCountLabel;
-    private readonly Label _typanCountLabel;
+    private readonly Label _ntScoreLabel;
+    private readonly Label _typanScoreLabel;
     private readonly Label _timerLabel;
-    private readonly TypanWarScrollBarControl _bar;
+    private readonly TypanWarApexScoreBarControl _bar;
 
     public TypanWarHudControl()
     {
         IoCManager.InjectDependencies(this);
 
         MinHeight = 42;
-        MaxHeight = 42;
+        MaxHeight = 64;
         HorizontalAlignment = HAlignment.Center;
         MouseFilter = MouseFilterMode.Ignore;
         PanelOverride = new StyleBoxFlat
@@ -47,13 +46,21 @@ public sealed class TypanWarHudControl : PanelContainer
             ContentMarginBottomOverride = 6,
         };
 
+        var column = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            VerticalAlignment = VAlignment.Center,
+            SeparationOverride = 4,
+        };
+        AddChild(column);
+
         var row = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
             SeparationOverride = 10,
             VerticalAlignment = VAlignment.Center,
         };
-        AddChild(row);
+        column.AddChild(row);
 
         _titleLabel = new Label
         {
@@ -62,24 +69,24 @@ public sealed class TypanWarHudControl : PanelContainer
             MaxWidth = 88,
         };
 
-        _ntCountLabel = new Label
+        _ntScoreLabel = new Label
         {
             FontColorOverride = Color.FromHex("#A8C8FF"),
-            MinWidth = 56,
-            MaxWidth = 56,
+            MinWidth = 44,
+            MaxWidth = 44,
             Align = Label.AlignMode.Right,
         };
 
-        _bar = new TypanWarScrollBarControl(BarWidth)
+        _bar = new TypanWarApexScoreBarControl(BarWidth)
         {
             VerticalAlignment = VAlignment.Center,
         };
 
-        _typanCountLabel = new Label
+        _typanScoreLabel = new Label
         {
             FontColorOverride = Color.FromHex("#FFB0B0"),
-            MinWidth = 72,
-            MaxWidth = 72,
+            MinWidth = 44,
+            MaxWidth = 44,
         };
 
         _timerLabel = new Label
@@ -92,9 +99,9 @@ public sealed class TypanWarHudControl : PanelContainer
         };
 
         row.AddChild(_titleLabel);
-        row.AddChild(_ntCountLabel);
+        row.AddChild(_ntScoreLabel);
         row.AddChild(_bar);
-        row.AddChild(_typanCountLabel);
+        row.AddChild(_typanScoreLabel);
         row.AddChild(_timerLabel);
 
         Visible = false;
@@ -103,8 +110,9 @@ public sealed class TypanWarHudControl : PanelContainer
     public void Update(
         TypanWarPhase phase,
         TypanWarWinner winner,
-        int ntAlive,
-        int typanAlive,
+        float ntPoints,
+        float typanPoints,
+        int pointsToWin,
         float timeRemainingSeconds)
     {
         Visible = phase is TypanWarPhase.Pending or TypanWarPhase.Active or TypanWarPhase.Ended;
@@ -132,53 +140,46 @@ public sealed class TypanWarHudControl : PanelContainer
             }
             : Color.FromHex("#E8E6F0");
 
-        var ntLabel = Loc.GetString("typan-war-hud-nt");
-        var syndicateLabel = Loc.GetString("typan-war-hud-typan");
-
         if (phase == TypanWarPhase.Pending)
         {
-            _ntCountLabel.Text = ntLabel;
-            _typanCountLabel.Text = syndicateLabel;
-            _bar.SetCounts(1, 1);
+            _ntScoreLabel.Text = "0";
+            _typanScoreLabel.Text = "0";
+            _bar.SetPoints(0, 0, pointsToWin);
         }
         else
         {
-            _ntCountLabel.Text = ntLabel + " " + ntAlive;
-            _typanCountLabel.Text = typanAlive + " " + syndicateLabel;
-            _bar.SetCounts(ntAlive, typanAlive);
+            _ntScoreLabel.Text = ((int) ntPoints).ToString();
+            _typanScoreLabel.Text = ((int) typanPoints).ToString();
+            _bar.SetPoints(ntPoints, typanPoints, pointsToWin);
         }
 
         var span = TimeSpan.FromSeconds(Math.Max(0, timeRemainingSeconds));
         _timerLabel.Text = $"{(int) span.TotalMinutes:00}:{(int) (span.TotalSeconds % 60):00}";
         _timerLabel.Visible = phase != TypanWarPhase.Ended;
-
-        _bar.SetLowCountPulse(
-            phase == TypanWarPhase.Active
-            && (ntAlive < LowCountPulseThreshold || typanAlive < LowCountPulseThreshold));
     }
 }
 
 /// <summary>
-/// Dual-faction bar using long_white_scroll_line.png.
+/// Apex-style score bar: both factions grow toward the center from opposite sides.
 /// </summary>
-public sealed class TypanWarScrollBarControl : Control
+public sealed class TypanWarApexScoreBarControl : Control
 {
     private const float BarScale = 2f;
 
-    private static readonly Color NtColor = Color.FromHex("#4A7FD4").WithAlpha(0.85f);
-    private static readonly Color TypanColor = Color.FromHex("#C84848").WithAlpha(0.85f);
+    private static readonly Color NtColor = Color.FromHex("#4A7FD4").WithAlpha(0.9f);
+    private static readonly Color TypanColor = Color.FromHex("#C84848").WithAlpha(0.9f);
     private static readonly Color EmptyModulate = Color.FromHex("#252530").WithAlpha(0.55f);
+    private static readonly Color CenterLineColor = Color.FromHex("#E8E6F0").WithAlpha(0.35f);
 
     [Dependency] private readonly IResourceCache _cache = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
 
     private readonly StyleBoxTexture _trackStyle;
     private readonly float _width;
-    private int _ntCount = 1;
-    private int _typanCount = 1;
-    private bool _lowCountPulse;
+    private float _ntPoints;
+    private float _typanPoints;
+    private int _pointsToWin = 100;
 
-    public TypanWarScrollBarControl(float width)
+    public TypanWarApexScoreBarControl(float width)
     {
         _width = width;
         IoCManager.InjectDependencies(this);
@@ -192,15 +193,11 @@ public sealed class TypanWarScrollBarControl : Control
         _trackStyle = MiniSliderStyles.CreateLongTrackBox(tex, BarScale);
     }
 
-    public void SetCounts(int nt, int typan)
+    public void SetPoints(float ntPoints, float typanPoints, int pointsToWin)
     {
-        _ntCount = Math.Max(0, nt);
-        _typanCount = Math.Max(0, typan);
-    }
-
-    public void SetLowCountPulse(bool enabled)
-    {
-        _lowCountPulse = enabled;
+        _ntPoints = Math.Max(0, ntPoints);
+        _typanPoints = Math.Max(0, typanPoints);
+        _pointsToWin = Math.Max(1, pointsToWin);
     }
 
     protected override void Draw(DrawingHandleScreen handle)
@@ -211,26 +208,28 @@ public sealed class TypanWarScrollBarControl : Control
         if (box.Width <= 0 || box.Height <= 0)
             return;
 
-        var pulse = _lowCountPulse ? 0.75f + 0.25f * (float) Math.Sin(_timing.RealTime.TotalSeconds * 6) : 1f;
-
         var empty = new StyleBoxTexture(_trackStyle) { Modulate = EmptyModulate };
         empty.Draw(handle, box, UIScale);
 
-        var total = _ntCount + _typanCount;
-        if (total <= 0)
-            return;
+        var centerX = box.Left + box.Width * 0.5f;
+        handle.DrawLine(new Vector2(centerX, box.Top), new Vector2(centerX, box.Bottom), CenterLineColor);
 
-        var ntWidth = box.Width * (_ntCount / (float) total);
+        var ntFrac = Math.Min(_ntPoints / _pointsToWin, 1f);
+        var typanFrac = Math.Min(_typanPoints / _pointsToWin, 1f);
+        var halfWidth = box.Width * 0.5f;
+
+        var ntWidth = halfWidth * ntFrac;
         if (ntWidth > 0.5f)
         {
-            var fill = new StyleBoxTexture(_trackStyle) { Modulate = NtColor.WithAlpha(NtColor.A * pulse) };
+            var fill = new StyleBoxTexture(_trackStyle) { Modulate = NtColor };
             fill.Draw(handle, UIBox2.FromDimensions(box.Left, box.Top, ntWidth, box.Height), UIScale);
         }
 
-        if (box.Width - ntWidth > 0.5f)
+        var typanWidth = halfWidth * typanFrac;
+        if (typanWidth > 0.5f)
         {
-            var fill = new StyleBoxTexture(_trackStyle) { Modulate = TypanColor.WithAlpha(TypanColor.A * pulse) };
-            fill.Draw(handle, UIBox2.FromDimensions(box.Left + ntWidth, box.Top, box.Width - ntWidth, box.Height), UIScale);
+            var fill = new StyleBoxTexture(_trackStyle) { Modulate = TypanColor };
+            fill.Draw(handle, UIBox2.FromDimensions(box.Right - typanWidth, box.Top, typanWidth, box.Height), UIScale);
         }
     }
 

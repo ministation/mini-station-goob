@@ -1,0 +1,101 @@
+- type: entity
+  id: TypanWarCaptureFlag
+  name: war capture flag
+  description: Neutral capture point flag. Passable and indestructible during station war.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    drawdepth: Overdoors
+    sprite: Structures/Decoration/banner.rsi
+    state: banner-white
+    noRot: true
+  - type: TypanWarCaptureFlag
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      sensor:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        mask:
+        - MobMask
+        layer: []
+        density: 0
+        hard: false
+  - type: PointLight
+    enabled: true
+    radius: 1.5
+    power: 1.5
+    color: "#E8E8E8"
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds: []
+
+- type: entity
+  id: TypanWarCaptureZone
+  name: war capture zone
+  categories: [ HideSpawnMenu ]
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: TypanWarCaptureZone
+    captureTimeSeconds: 35
+    lootIntervalSeconds: 120
+
+# Legacy mapper markers (optional — zones are spawned automatically at T+10).
+- type: entity
+  parent: MarkerBase
+  id: TypanWarCaptureZoneBase
+  name: war capture zone
+  abstract: true
+  suffix: War, Manual
+  components:
+  - type: TypanWarCaptureZone
+    captureTimeSeconds: 35
+    lootIntervalSeconds: 120
+
+- type: entity
+  parent: TypanWarCaptureZoneBase
+  id: TypanWarCaptureZoneNt
+  name: war capture zone
+  suffix: NT, War, Manual
+  components:
+  - type: Sprite
+    layers:
+    - state: blue
+  - type: TypanWarCaptureZone
+    homeFaction: Nanotrasen
+    zoneLocaleKey: nt
+
+- type: entity
+  parent: TypanWarCaptureZoneBase
+  id: TypanWarCaptureZoneTypan
+  name: war capture zone
+  suffix: Typan, War, Manual
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+  - type: TypanWarCaptureZone
+    homeFaction: Typan
+    zoneLocaleKey: typan
+
+- type: entity
+  parent: TypanWarCaptureZoneBase
+  id: TypanWarCaptureZoneNeutral
+  name: war capture zone
+  suffix: Neutral, War, Manual
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+  - type: TypanWarCaptureZone
+    homeFaction: Neutral
+    zoneLocaleKey: trade

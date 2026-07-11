@@ -32,12 +32,15 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
+        SubscribeLocalEvent<TypanWarLayoutReadyEvent>(OnLayoutReady);
     }
 
-    private void OnWarStarted(TypanWarStartedEvent ev)
+    private void OnLayoutReady(TypanWarLayoutReadyEvent ev)
     {
         if (!TryComp<TypanStationWarRuleComponent>(ev.Rule, out var rule))
+            return;
+
+        if (rule.DropShuttlePath == default && rule.NtDropShuttlePath == default)
             return;
 
         if (rule.DropShuttlePath != default)

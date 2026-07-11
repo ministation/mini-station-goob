@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Content.Server._Mini.TypanWar;
 
-[RegisterComponent, Access(typeof(TypanStationWarRuleSystem), typeof(TypanWarBalanceSystem))]
+[RegisterComponent, Access(typeof(TypanStationWarRuleSystem), typeof(TypanWarBalanceSystem), typeof(TypanStationWarLayoutSystem), typeof(TypanWarRespawnSystem), typeof(TypanWarCaptureZoneSystem))]
 public sealed partial class TypanStationWarRuleComponent : Component
 {
     [DataField]
@@ -45,15 +45,36 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public float WarIntelEventDelaySeconds = 900f;
 
     [DataField]
-    public float WarSupplyEventDelaySeconds = 600f;
+    public float CaptureZoneActivationDelaySeconds = 0f;
 
-    /// <summary>Shuttle map spawned and docked to Typan when combat begins.</summary>
     [DataField]
-    public ResPath DropShuttlePath = new("/Maps/_Mini/Shuttles/typan_drop_shuttle.yml");
+    public int CapturePointsToWin = 100;
 
-    /// <summary>Shuttle map spawned and docked to NanoTrasen when combat begins.</summary>
     [DataField]
-    public ResPath NtDropShuttlePath = new("/Maps/_Mini/Shuttles/nt_drop_shuttle.yml");
+    public float CapturePointIntervalSeconds = 20f;
+
+    [DataField]
+    public float MinRespawnSeconds = 10f;
+
+    [DataField]
+    public float MaxRespawnSeconds = 60f;
+
+    [DataField]
+    public float NtCapturePoints;
+
+    [DataField]
+    public float TypanCapturePoints;
+
+    [DataField]
+    public int StationSeparationTiles = 300;
+
+    /// <summary>Shuttle map spawned and docked to Typan when combat begins. Disabled for capture-zone war mode.</summary>
+    [DataField]
+    public ResPath DropShuttlePath;
+
+    /// <summary>Shuttle map spawned and docked to NanoTrasen when combat begins. Disabled for capture-zone war mode.</summary>
+    [DataField]
+    public ResPath NtDropShuttlePath;
 
     [DataField]
     public float WarEndWarningSeconds = 60f;
@@ -110,7 +131,10 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public bool WarIntelEventSent;
 
     [DataField]
-    public bool WarSupplyEventSent;
+    public bool CaptureZonesActivated;
+
+    [DataField]
+    public bool LayoutApplied;
 
     [DataField]
     public float PrepInsufficientCheckAccumulator;

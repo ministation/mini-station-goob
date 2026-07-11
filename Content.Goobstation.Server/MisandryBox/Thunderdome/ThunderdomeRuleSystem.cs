@@ -15,6 +15,7 @@ using Content.Server.Spawners.Components;
 using Content.Server.Station.Systems;
 using Content.Server.Weapons.Ranged.Systems;
 using Content.Server.Chat.Managers;
+using Content.Server._Mini.TypanWar;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Content.Shared.Fluids.Components;
@@ -271,6 +272,12 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
     private void OnJoinRequest(ThunderdomeJoinRequestEvent ev, EntitySessionEventArgs args)
     {
         var session = args.SenderSession;
+
+        if (TypanStationWarRuleSystem.IsModeActive)
+        {
+            _chatManager.DispatchServerMessage(session, Loc.GetString("typan-war-ghost-thunderdome-blocked"));
+            return;
+        }
 
         if (!_cfg.GetCVar(ThunderdomeCVars.ThunderdomeEnabled))
             return;
