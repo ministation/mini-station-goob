@@ -92,8 +92,6 @@ typan-war-respawn-no-options = Нет доступных точек высадк
 typan-war-respawn-no-profile = Не удалось загрузить профиль персонажа.
 typan-war-respawn-failed = Высадка не удалась — попробуйте другую точку.
 
-typan-war-minimap-action-name = Карта войны
-typan-war-minimap-action-desc = Открыть карту войны: станции, шаттлы, зоны захвата и союзники.
 typan-war-minimap-title = Карта войны
 typan-war-minimap-legend = NT {$nt} / Синдикат {$typan} — победа при {$win}
 typan-war-minimap-map-legend = Силуэты = станции и шаттлы · треугольники = союзники · буквы = зоны захвата

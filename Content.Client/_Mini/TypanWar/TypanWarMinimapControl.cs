@@ -28,7 +28,6 @@ public sealed class TypanWarMinimapControl : Control
     private const float MaxZoom = 4f;
     private const float ZoomStep = 0.12f;
     private const float BlipSize = 11f;
-    private const float SelfBlipSize = 13f;
 
     private static readonly Color Background = Color.FromHex("#0A0A10").WithAlpha(0.95f);
     private static readonly Color Border = Color.FromHex("#5A5670").WithAlpha(0.7f);
@@ -69,13 +68,18 @@ public sealed class TypanWarMinimapControl : Control
     private readonly List<Vector2i> _tileList = new();
     private readonly List<(Vector2 Start, Vector2 End)> _edges = new();
     private readonly (DirectionFlag Dir, Vector2i Offset)[] _neighborDirections = new (DirectionFlag, Vector2i)[4];
-    private NetEntity[] _cachedGridIds = [];
 
     private float _zoom = 1f;
     private Vector2 _pan;
     private bool _dragging;
     private Vector2 _dragStart;
     private Vector2 _panStart;
+
+    private bool _hasViewBounds;
+    private float _viewMinX;
+    private float _viewMaxX;
+    private float _viewMinY;
+    private float _viewMaxY;
 
     public TypanWarMinimapControl()
     {
@@ -95,6 +99,10 @@ public sealed class TypanWarMinimapControl : Control
         _grids = grids;
         _zones = zones;
         _allies = allies;
+
+        if (grids.Length > 0)
+            UpdateViewBounds();
+
         RebuildShapeCacheIfNeeded();
     }
 
@@ -187,21 +195,18 @@ public sealed class TypanWarMinimapControl : Control
 
         foreach (var ally in _allies)
         {
-            if (localSide != null && ally.Side != localSide)
+            if (localSide == null || ally.Side != localSide)
                 continue;
 
-            if (localPos != null && IsSamePosition(ally.WorldX, ally.WorldY, localPos.Value.X, localPos.Value.Y))
+            if (localPos != null && IsSamePosition(ally.WorldX, ally.WorldY, localPos.Value.X, localPos.Value.Y, 2f))
                 continue;
 
             var color = ally.Side == TypanWarSide.Nanotrasen ? NtAllyBlip : TypanAllyBlip;
-            DrawMassScannerBlip(handle, map.WorldToScreen(ally.WorldX, ally.WorldY), color, BlipSize);
+            DrawCircleBlip(handle, map.WorldToScreen(ally.WorldX, ally.WorldY), color, 5f);
         }
 
         if (localPos is { } self)
-            DrawMassScannerBlip(handle, map.WorldToScreen(self.X, self.Y), SelfBlip, SelfBlipSize);
-
-        var hint = Loc.GetString("typan-war-minimap-controls");
-        handle.DrawString(_font, new Vector2(box.Left + 6f, box.Bottom - 16f), hint, Color.FromHex("#787488"));
+            DrawCircleBlip(handle, map.WorldToScreen(self.X, self.Y), SelfBlip, 6f);
     }
 
     private void RebuildShapeCacheIfNeeded()
@@ -211,21 +216,9 @@ public sealed class TypanWarMinimapControl : Control
         _xform ??= _ent.System<TransformSystem>();
 
         if (_grids.Length == 0)
-        {
-            if (_cachedShapes.Count == 0)
-                return;
-
-            _cachedShapes.Clear();
-            _cachedGridIds = [];
-            return;
-        }
-
-        var gridIds = _grids.Select(g => g.Grid).ToArray();
-
-        if (gridIds.SequenceEqual(_cachedGridIds) && !IsAnyGridStale())
             return;
 
-        var newShapes = new List<CachedGridShape>(_grids.Length);
+        var gridIdSet = _grids.Select(g => g.Grid).ToHashSet();
 
         foreach (var grid in _grids)
         {
@@ -235,20 +228,16 @@ public sealed class TypanWarMinimapControl : Control
             if (!_ent.TryGetComponent(uid, out MapGridComponent? mapGrid))
                 continue;
 
-            CachedGridShape? existingShape = null;
-            foreach (var cached in _cachedShapes)
+            var existingIndex = _cachedShapes.FindIndex(s => s.GridUid == uid);
+            CachedGridShape? previous = existingIndex >= 0 ? _cachedShapes[existingIndex] : null;
+
+            if (existingIndex >= 0)
             {
-                if (cached.GridUid != uid)
+                var existing = _cachedShapes[existingIndex];
+                if (existing.LastBuild >= mapGrid.LastTileModifiedTick)
                     continue;
 
-                existingShape = cached;
-                break;
-            }
-
-            if (existingShape is { } existing && existing.LastBuild >= mapGrid.LastTileModifiedTick)
-            {
-                newShapes.Add(existing);
-                continue;
+                _cachedShapes.RemoveAt(existingIndex);
             }
 
             var (fill, edge) = grid.Kind switch
@@ -261,49 +250,51 @@ public sealed class TypanWarMinimapControl : Control
             };
 
             if (TryBuildGridShape(uid, mapGrid, grid, fill, edge, out var shape))
-                newShapes.Add(shape);
-            else if (existingShape is { } fallback)
-                newShapes.Add(fallback);
+                _cachedShapes.Add(shape);
+            else if (previous is { } fallback)
+                _cachedShapes.Add(fallback);
         }
 
-        if (newShapes.Count == 0 && _cachedShapes.Count > 0)
-            return;
-
-        _cachedGridIds = gridIds;
-        _cachedShapes.Clear();
-        _cachedShapes.AddRange(newShapes);
+        _cachedShapes.RemoveAll(s => !gridIdSet.Contains(_ent.GetNetEntity(s.GridUid)));
     }
 
-    private bool IsAnyGridStale()
+    private void UpdateViewBounds()
     {
-        foreach (var grid in _grids)
-        {
-            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
-            {
-                if (!_cachedGridIds.Contains(grid.Grid))
-                    return true;
-
-                continue;
-            }
-
-            if (!_ent.TryGetComponent(uid, out MapGridComponent? mapGrid))
-                continue;
-
-            var cached = _cachedShapes.FirstOrDefault(s => s.GridUid == uid);
-            if (cached.GridUid != uid || cached.LastBuild < mapGrid.LastTileModifiedTick)
-                return true;
-        }
+        if (_hasViewBounds)
+            return;
+        var minX = float.MaxValue;
+        var maxX = float.MinValue;
+        var minY = float.MaxValue;
+        var maxY = float.MinValue;
+        var hasData = false;
 
         foreach (var grid in _grids)
         {
-            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
-                continue;
-
-            if (_cachedShapes.All(s => s.GridUid != uid))
-                return true;
+            hasData = true;
+            minX = Math.Min(minX, grid.MinX);
+            maxX = Math.Max(maxX, grid.MaxX);
+            minY = Math.Min(minY, grid.MinY);
+            maxY = Math.Max(maxY, grid.MaxY);
         }
 
-        return false;
+        foreach (var zone in _zones)
+        {
+            hasData = true;
+            minX = Math.Min(minX, zone.WorldX);
+            maxX = Math.Max(maxX, zone.WorldX);
+            minY = Math.Min(minY, zone.WorldY);
+            maxY = Math.Max(maxY, zone.WorldY);
+        }
+
+        if (!hasData)
+            return;
+
+        const float pad = 8f;
+        _viewMinX = minX - pad;
+        _viewMaxX = maxX + pad;
+        _viewMinY = minY - pad;
+        _viewMaxY = maxY + pad;
+        _hasViewBounds = true;
     }
 
     private bool TryBuildGridShape(
@@ -574,6 +565,12 @@ public sealed class TypanWarMinimapControl : Control
     private static bool IsShuttleKind(TypanWarMinimapGridKind kind) =>
         kind is TypanWarMinimapGridKind.NtShuttle or TypanWarMinimapGridKind.TypanShuttle;
 
+    private static void DrawCircleBlip(DrawingHandleScreen handle, Vector2 center, Color color, float radius)
+    {
+        handle.DrawCircle(center, radius + 1.5f, Color.FromHex("#101018").WithAlpha(0.85f));
+        handle.DrawCircle(center, radius, color.WithAlpha(0.95f));
+    }
+
     private static void DrawMassScannerBlip(DrawingHandleScreen handle, Vector2 center, Color color, float size)
     {
         var points = new Vector2[]
@@ -636,63 +633,16 @@ public sealed class TypanWarMinimapControl : Control
         handle.DrawCircle(center, 9f, color.WithAlpha(0.9f));
 
         var label = string.IsNullOrEmpty(zone.ZoneLabel) ? "?" : zone.ZoneLabel;
-        handle.DrawString(_font!, center - new Vector2(4f, 6f), label, Color.FromHex("#101018"));
+        var dims = handle.GetDimensions(_font!, label, 1f);
+        handle.DrawString(_font!, center - dims * 0.5f, label, Color.FromHex("#101018"));
     }
 
     private bool TryBuildTransform(UIBox2 box, out MapTransform map)
     {
         map = default;
 
-        var hasData = false;
-        var minX = float.MaxValue;
-        var maxX = float.MinValue;
-        var minY = float.MaxValue;
-        var maxY = float.MinValue;
-
-        void Include(float x, float y)
-        {
-            hasData = true;
-            minX = Math.Min(minX, x);
-            maxX = Math.Max(maxX, x);
-            minY = Math.Min(minY, y);
-            maxY = Math.Max(maxY, y);
-        }
-
-        foreach (var grid in _grids)
-        {
-            Include(grid.MinX, grid.MinY);
-            Include(grid.MaxX, grid.MaxY);
-        }
-
-        foreach (var shape in _cachedShapes)
-        {
-            for (var i = 0; i < shape.FillTris.Length; i++)
-            {
-                var vert = shape.FillTris[i];
-                Include(vert.X, vert.Y);
-            }
-        }
-
-        foreach (var zone in _zones)
-            Include(zone.WorldX, zone.WorldY);
-
-        foreach (var ally in _allies)
-            Include(ally.WorldX, ally.WorldY);
-
-        if (_players.LocalEntity is { } local)
-        {
-            var pos = _xform!.GetWorldPosition(local);
-            Include(pos.X, pos.Y);
-        }
-
-        if (!hasData)
+        if (!_hasViewBounds)
             return false;
-
-        const float padWorld = 8f;
-        minX -= padWorld;
-        maxX += padWorld;
-        minY -= padWorld;
-        maxY += padWorld;
 
         const float padScreen = 12f;
         var inner = new UIBox2(
@@ -701,8 +651,8 @@ public sealed class TypanWarMinimapControl : Control
             box.Right - padScreen,
             box.Bottom - padScreen);
 
-        var rangeX = Math.Max(maxX - minX, 1f);
-        var rangeY = Math.Max(maxY - minY, 1f);
+        var rangeX = Math.Max(_viewMaxX - _viewMinX, 1f);
+        var rangeY = Math.Max(_viewMaxY - _viewMinY, 1f);
         var baseScale = Math.Min(inner.Width / rangeX, inner.Height / rangeY);
         var scale = baseScale * _zoom;
         var drawW = rangeX * scale;
@@ -710,7 +660,7 @@ public sealed class TypanWarMinimapControl : Control
         var offsetX = inner.Left + (inner.Width - drawW) * 0.5f + _pan.X;
         var offsetY = inner.Top + (inner.Height - drawH) * 0.5f + _pan.Y;
 
-        map = new MapTransform(minX, minY, maxX, maxY, scale, offsetX, offsetY);
+        map = new MapTransform(_viewMinX, _viewMinY, _viewMaxX, _viewMaxY, scale, offsetX, offsetY);
         return true;
     }
 

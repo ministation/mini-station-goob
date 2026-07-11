@@ -60,8 +60,6 @@ typan-war-respawn-no-options = No deployment points available.
 typan-war-respawn-no-profile = Could not load your character profile.
 typan-war-respawn-failed = Deployment failed — try another point.
 
-typan-war-minimap-action-name = War map
-typan-war-minimap-action-desc = Open the war map showing stations, shuttles, capture zones, and allies.
 typan-war-minimap-title = War map
 typan-war-minimap-legend = NT {$nt} / Syndicate {$typan} — win at {$win}
 typan-war-minimap-map-legend = Silhouettes = stations & shuttles (named) · triangles = allies · letters = capture zones
