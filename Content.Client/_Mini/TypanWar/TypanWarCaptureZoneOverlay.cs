@@ -50,7 +50,19 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
         if (_war.Phase != TypanWarPhase.Active)
             return;
 
-        var handle = args.WorldHandle;
+        switch (args.Space)
+        {
+            case OverlaySpace.WorldSpaceBelowEntities:
+                DrawWorldZones(args.WorldHandle);
+                break;
+            case OverlaySpace.ScreenSpace:
+                DrawScreenProgress(args);
+                break;
+        }
+    }
+
+    private void DrawWorldZones(DrawingHandleWorld handle)
+    {
         var query = _ent.AllEntityQueryEnumerator<TypanWarCaptureZoneComponent, TransformComponent>();
 
         while (query.MoveNext(out _, out var zone, out var xform))
@@ -58,22 +70,24 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
             if (!zone.Active)
                 continue;
 
-            if (args.Space == OverlaySpace.WorldSpaceBelowEntities)
-                DrawZoneHighlight(handle, zone, xform);
+            DrawZoneHighlight(handle, zone, xform);
         }
+    }
 
-        if (args.Space != OverlaySpace.ScreenSpace || args.ViewportControl == null)
+    private void DrawScreenProgress(in OverlayDrawArgs args)
+    {
+        if (args.ViewportControl == null)
             return;
 
-        var screenHandle = args.ScreenHandle;
-        query = _ent.AllEntityQueryEnumerator<TypanWarCaptureZoneComponent, TransformComponent>();
+        var handle = args.ScreenHandle;
+        var query = _ent.AllEntityQueryEnumerator<TypanWarCaptureZoneComponent, TransformComponent>();
 
         while (query.MoveNext(out _, out var zone, out var xform))
         {
             if (!zone.Active)
                 continue;
 
-            DrawCaptureProgress(screenHandle, zone, xform);
+            DrawCaptureProgress(handle, zone, xform);
         }
     }
 

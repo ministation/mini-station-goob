@@ -47,7 +47,7 @@
     anchored: true
   - type: TypanWarCaptureZone
     captureTimeSeconds: 35
-    lootIntervalSeconds: 120
+    lootIntervalSeconds: 30
 
 # Legacy mapper markers (optional — zones are spawned automatically at T+10).
 - type: entity
@@ -59,7 +59,7 @@
   components:
   - type: TypanWarCaptureZone
     captureTimeSeconds: 35
-    lootIntervalSeconds: 120
+    lootIntervalSeconds: 30
 
 - type: entity
   parent: TypanWarCaptureZoneBase

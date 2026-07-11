@@ -151,6 +151,7 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
             station,
             Loc.GetString(announcementKey, ("direction", direction), ("location", location)),
             sender,
+            announcementSound: TypanWarSounds.HeadquartersAlert,
             colorOverride: factionColor);
     }
 

@@ -40,7 +40,7 @@ public sealed partial class TypanWarCaptureZoneComponent : Component
     public float ContestDecayMultiplier = 2f;
 
     [DataField]
-    public float LootIntervalSeconds = 120f;
+    public float LootIntervalSeconds = 30f;
 
     /// <summary>Locale key suffix for announcements, e.g. nt / typan / trade.</summary>
     [DataField]
@@ -58,7 +58,7 @@ public sealed partial class TypanWarCaptureZoneComponent : Component
     public EntProtoId NtLootCrate = "CrateNtSurplusBundle";
 
     [DataField]
-    public EntProtoId TypanLootCrate = "CrateSyndicateSurplusBundle";
+    public EntProtoId TypanLootCrate = "CrateTypanSurplusBundle";
 
     [DataField]
     public EntityUid? FlagEntity;

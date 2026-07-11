@@ -50,8 +50,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
     /// <summary>True while the Typan station war gamemode rule is running (prep + combat).</summary>
     public static bool IsModeActive { get; private set; }
 
-    private static readonly SoundPathSpecifier WarDeclarationSound =
-        new("/Audio/_Mini/TypanWar/war_declaration.ogg");
+    private static readonly SoundPathSpecifier WarDeclarationSound = TypanWarSounds.WarDeclaration;
 
     [Dependency] private readonly AlertLevelSystem _alertLevel = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
@@ -466,6 +465,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         _chat.DispatchGlobalAnnouncement(
             Loc.GetString("typan-war-prep-announce"),
             Loc.GetString("typan-war-sender"),
+            announcementSound: TypanWarSounds.HeadquartersAlert,
             colorOverride: TypanWarColors.Neutral);
         BroadcastStatus(component);
     }
@@ -514,7 +514,11 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             _alertLevel.SetLevel(typan, "omega", true, true, true, locked: true);
 
         var announcement = Loc.GetString("typan-war-declaration");
-        _chat.DispatchGlobalAnnouncement(announcement, Loc.GetString("typan-war-sender"), colorOverride: TypanWarColors.Neutral);
+        _chat.DispatchGlobalAnnouncement(
+            announcement,
+            Loc.GetString("typan-war-sender"),
+            playSound: false,
+            colorOverride: TypanWarColors.Neutral);
         _audio.PlayGlobal(WarDeclarationSound, Filter.Broadcast(), false, AudioParams.Default.WithVolume(-2f));
 
         AssignWarObjectives(component);
@@ -543,6 +547,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                 ("typan", typanAlive),
                 ("typanMin", component.MinTypanAlive)),
             Loc.GetString("typan-war-sender"),
+            announcementSound: TypanWarSounds.HeadquartersAlert,
             colorOverride: TypanWarColors.Neutral);
         BroadcastStatus(component);
         _warBalance.NotifyCombatPhaseEnded();
@@ -608,6 +613,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         _chat.DispatchGlobalAnnouncement(
             Loc.GetString("typan-war-end-warning"),
             Loc.GetString("typan-war-sender"),
+            announcementSound: TypanWarSounds.HeadquartersAlert,
             colorOverride: TypanWarColors.Neutral);
     }
 

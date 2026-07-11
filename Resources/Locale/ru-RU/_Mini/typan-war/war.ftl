@@ -52,30 +52,38 @@ typan-war-hud-zone-line = Зона {$label}: {$location}
 typan-war-capture-nt = Нанотрайзен захватил {$zone}.
 typan-war-capture-typan = Синдикат захватил {$zone}.
 typan-war-capture-neutral = {$zone} стала нейтральной.
-typan-war-capture-loot-nt = [color=#A8C8FF]Нанотрайзен[/color] получил снабжение за удержание {$zone}.
-typan-war-capture-loot-typan = [color=#FFB0B0]Синдикат[/color] получил снабжение за удержание {$zone}.
+typan-war-capture-loot-nt = На {$zone} сброшен ящик [color=#A8C8FF]снабжения Нанотрайзен[/color].
+typan-war-capture-loot-typan = На {$zone} сброшен ящик [color=#FFB0B0]снабжения Синдиката[/color].
+
+typan-war-surplus-nt-crate-name = ящик снабжения NT
+typan-war-surplus-nt-crate-desc = Командный ящик снабжения Нанотрайзен. Случайное снаряжение службы безопасности — оружие, патроны, скафандры, аптечки и раскладные лазерные турели.
+typan-war-surplus-typan-crate-name = ящик снабжения Синдиката
+typan-war-surplus-typan-crate-desc = Полевой ящик снабжения Синдиката. Случайное боевое снаряжение — оружие, патроны, скафандры, аптечки и раскладные лазерные турели.
+
 typan-war-hud-zone-inactive = неактивна
 typan-war-hud-zone-owner-neutral = нейтральная
 typan-war-hud-zone-owner-nanotrasen = NT
 typan-war-hud-zone-owner-typan = Синдикат
 
-
-
 typan-war-prep-announce = Объявлена война между станциями Нанотрайзен и Тайпан. Блюспейс-прыжки с консоли заблокированы до начала боевых действий. Следуйте протоколам боевой готовности — через пять минут начнутся боевые действия.
 
-
-
 typan-war-manifest =
-
-    {"[font size=16][color=#C8C4D8][bold]Манифест войны станций[/bold][/color][/font]"}
-
-    {"[color=#C8C4D8]Корпорация [color=#A8C8FF][bold]Нанотрайзен[/bold][/color] ведёт открытые боевые действия против сил [color=#FFB0B0][bold]Синдиката[/bold][/color] на объекте [color=#FFB0B0][bold]Тайпан[/bold][/color].[/color]"}
-
-    {"[color=#A8C8FF]▸[/color] [color=#A8C8FF][bold]Нанотрайзен[/bold][/color]: уничтожить все боеспособные силы [color=#FFB0B0]Синдиката[/color]."}
-
-    {"[color=#FFB0B0]▸[/color] [color=#FFB0B0][bold]Синдикат[/bold][/color]: уничтожить все боеспособные силы [color=#A8C8FF]Нанотрайзен[/color]."}
-
-    {"[color=#C8C4D8]▸[/color] Системы наведения настроены [bold]не поражать союзников[/bold] из [bold]дальнобойного[/bold] оружия. Используйте действие [bold]«Защита союзников»[/bold]."}
+    {"[font size=18][color=#C8C4D8][bold]ВОЙНА СТАНЦИЙ — БОЕВАЯ СВОДКА[/bold][/color][/font]"}
+    {"[color=#888898]────────────────────────────────[/color]"}
+    {"[color=#C8C4D8]Силы [color=#A8C8FF][bold]Нанотрайзен[/bold][/color] и [color=#FFB0B0][bold]Синдиката (Тайпан)[/bold][/color] ведут открытые боевые действия на общем поле боя.[/color]"}
+    {" "}
+    {"[color=#C8C4D8][bold]Главные задачи[/bold][/color]"}
+    {"[color=#A8C8FF]▸ NT:[/color] уничтожить боеспособные силы Синдиката и удерживать зоны захвата."}
+    {"[color=#FFB0B0]▸ Синдикат:[/color] уничтожить боеспособные силы NT и удерживать зоны захвата."}
+    {" "}
+    {"[color=#C8C4D8][bold]Зоны захвата[/bold][/color] [color=#888898](A / B / C)[/color]"}
+    {"[color=#C8C4D8]▸[/color] Три зоны 3×3 появляются с началом боя — станция NT, станция Тайпан и торговый аванпост."}
+    {"[color=#C8C4D8]▸[/color] Удержание зоны даёт очки захвата и периодически сбрасывает [bold]ящики снабжения[/bold]."}
+    {"[color=#C8C4D8]▸[/color] Зоны NT — [color=#A8C8FF]снабжение NT[/color]; зоны Синдиката — [color=#FFB0B0]снабжение Синдиката[/color]."}
+    {" "}
+    {"[color=#C8C4D8][bold]Правила боя[/bold][/color]"}
+    {"[color=#C8C4D8]▸[/color] Дальнобойное оружие [bold]не бьёт по союзникам[/bold] — при необходимости включите [bold]«Защиту союзников»[/bold]."}
+    {"[color=#C8C4D8]▸[/color] Подкрепления возрождаются на захваченных зонах или на спавне должности."}
 
 
 

@@ -1,0 +1,7 @@
+- files: ["hq_transmission.wav"]
+  license: "Custom"
+  copyright: "Generated for Typan Station War mode (Scripts/generate_hq_transmission.py)"
+
+- files: ["war_declaration.ogg", "station_war.ogg", "desolation.ogg"]
+  license: "Custom"
+  copyright: "Typan Station War mode"

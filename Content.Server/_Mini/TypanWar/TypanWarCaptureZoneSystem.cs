@@ -15,6 +15,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Server._Mini.TypanWar;
 
@@ -23,7 +24,9 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly GameTicker _ticker = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedJobSystem _jobs = default!;
+    [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TypanWarCaptureZoneSpawnSystem _spawn = default!;
     [Dependency] private readonly TypanWarCaptureZoneProtectionSystem _zoneProtection = default!;
@@ -35,6 +38,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
     private sealed class ZoneRuntimeState
     {
         public float PointAccumulator;
+        public float LootAccumulator;
         public TypanWarCaptureOwner? CapturingToward;
     }
 
@@ -153,7 +157,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             + "\n"
             + string.Join("\n", lines);
 
-        _chat.DispatchGlobalAnnouncement(body, Loc.GetString("typan-war-sender"), colorOverride: TypanWarColors.Neutral);
+        _chat.DispatchGlobalAnnouncement(body, Loc.GetString("typan-war-sender"), announcementSound: TypanWarSounds.HeadquartersAlert, colorOverride: TypanWarColors.Neutral);
     }
 
     public TypanWarCaptureZoneStatus[] GetZoneStatuses()
@@ -231,6 +235,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             }
 
             TryAwardCapturePoints(uid, zone, runtime, frameTime);
+            TrySpawnLootCrate(uid, zone, runtime, frameTime);
             return;
         }
 
@@ -241,6 +246,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             runtime.CapturingToward = null;
             Dirty(uid, zone);
             TryAwardCapturePoints(uid, zone, runtime, frameTime);
+            TrySpawnLootCrate(uid, zone, runtime, frameTime);
             return;
         }
 
@@ -269,6 +275,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         zone.CapturingOwner = null;
         runtime.CapturingToward = null;
         runtime.PointAccumulator = 0f;
+        runtime.LootAccumulator = 0f;
         Dirty(uid, zone);
 
         UpdateFlagVisual(uid, zone);
@@ -289,6 +296,87 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
 
         runtime.PointAccumulator = 0f;
         _warRule.AddCapturePoints(zone.CaptureOwner, 1f);
+    }
+
+    private void TrySpawnLootCrate(EntityUid uid, TypanWarCaptureZoneComponent zone, ZoneRuntimeState runtime, float frameTime)
+    {
+        if (zone.CaptureOwner == TypanWarCaptureOwner.Neutral)
+            return;
+
+        runtime.LootAccumulator += frameTime;
+        if (runtime.LootAccumulator < zone.LootIntervalSeconds)
+            return;
+
+        runtime.LootAccumulator = 0f;
+
+        if (!TryPickLootSpawnCoordinates(uid, zone, out var spawnCoords))
+            return;
+
+        var crateProto = zone.CaptureOwner switch
+        {
+            TypanWarCaptureOwner.Nanotrasen => zone.NtLootCrate,
+            TypanWarCaptureOwner.Typan => zone.TypanLootCrate,
+            _ => default(EntProtoId?),
+        };
+
+        if (crateProto == null)
+            return;
+
+        Spawn(crateProto.Value, spawnCoords);
+
+        var zoneName = FormatZoneName(zone);
+        switch (zone.CaptureOwner)
+        {
+            case TypanWarCaptureOwner.Nanotrasen:
+                _chat.DispatchGlobalAnnouncement(
+                    Loc.GetString("typan-war-capture-loot-nt", ("zone", zoneName)),
+                    Loc.GetString(TypanWarColors.SenderLocId(TypanWarCaptureOwner.Nanotrasen)),
+                    announcementSound: TypanWarSounds.HeadquartersAlert,
+                    colorOverride: TypanWarColors.ForCaptureOwner(TypanWarCaptureOwner.Nanotrasen));
+                break;
+            case TypanWarCaptureOwner.Typan:
+                _chat.DispatchGlobalAnnouncement(
+                    Loc.GetString("typan-war-capture-loot-typan", ("zone", zoneName)),
+                    Loc.GetString(TypanWarColors.SenderLocId(TypanWarCaptureOwner.Typan)),
+                    announcementSound: TypanWarSounds.HeadquartersAlert,
+                    colorOverride: TypanWarColors.ForCaptureOwner(TypanWarCaptureOwner.Typan));
+                break;
+        }
+    }
+
+    private bool TryPickLootSpawnCoordinates(
+        EntityUid uid,
+        TypanWarCaptureZoneComponent zone,
+        out EntityCoordinates spawnCoords)
+    {
+        spawnCoords = EntityCoordinates.Invalid;
+
+        if (!TryGetZoneTiles(uid, zone, out var gridUid, out var grid, out var centerTile))
+            return false;
+
+        var candidates = new List<Vector2i> { centerTile };
+        for (var dx = -zone.ZoneHalfExtents.X; dx <= zone.ZoneHalfExtents.X; dx++)
+        {
+            for (var dy = -zone.ZoneHalfExtents.Y; dy <= zone.ZoneHalfExtents.Y; dy++)
+            {
+                var tile = centerTile + new Vector2i(dx, dy);
+                if (tile != centerTile)
+                    candidates.Add(tile);
+            }
+        }
+
+        _random.Shuffle(candidates);
+
+        foreach (var tile in candidates)
+        {
+            if (!_map.TryGetTileRef(gridUid, grid, tile, out var tileRef) || tileRef.Tile.IsEmpty)
+                continue;
+
+            spawnCoords = _map.GridTileToLocal(gridUid, grid, tile);
+            return true;
+        }
+
+        return false;
     }
 
     private string FormatZoneName(TypanWarCaptureZoneComponent zone)
@@ -313,6 +401,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         _chat.DispatchGlobalAnnouncement(
             message,
             Loc.GetString(TypanWarColors.SenderLocId(owner)),
+            announcementSound: TypanWarSounds.HeadquartersAlert,
             colorOverride: TypanWarColors.ForCaptureOwner(owner));
     }
 

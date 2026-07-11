@@ -1,8 +1,21 @@
 - type: entity
   id: CrateNtSurplusBundle
-  parent: [ CrateSecure, StorePresetUplinkERT ]
-  name: NT surplus crate
-  description: Emergency Response surplus gear. Contents are randomized from the ERT uplink catalog.
+  parent: [ CrateGeneric, StorePresetTypanWarNtSurplus ]
+  name: typan-war-surplus-nt-crate-name
+  description: typan-war-surplus-nt-crate-desc
   components:
+  - type: Icon
+    sprite: Structures/Storage/Crates/command_unlocked.rsi
+    state: icon
+  - type: Sprite
+    sprite: Structures/Storage/Crates/command_unlocked.rsi
+    layers:
+    - state: base
+    - state: closed
+      map: ["enum.StorageVisualLayers.Door"]
+    - state: paper
+      sprite: Structures/Storage/Crates/labels.rsi
+      offset: "-0.5,0"
+      map: ["enum.PaperLabelVisuals.Layer"]
   - type: SurplusBundle
-    totalPrice: 50
+    totalPrice: 55

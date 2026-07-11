@@ -1,0 +1,79 @@
+- type: entity
+  id: StorePresetTypanWarNtSurplus
+  abstract: true
+  components:
+  - type: Store
+    name: store-preset-name-uplink
+    categories:
+    - TypanWarNtSurplusWeapon
+    - TypanWarNtSurplusAmmo
+    - TypanWarNtSurplusArmor
+    - TypanWarNtSurplusMed
+    - TypanWarNtSurplusGear
+    currencyWhitelist:
+    - Productunit
+
+- type: entity
+  id: StorePresetTypanWarTypanSurplus
+  abstract: true
+  components:
+  - type: Store
+    name: store-preset-name-uplink
+    categories:
+    - TypanWarTypanSurplusWeapon
+    - TypanWarTypanSurplusAmmo
+    - TypanWarTypanSurplusArmor
+    - TypanWarTypanSurplusMed
+    - TypanWarTypanSurplusGear
+    currencyWhitelist:
+    - Telecrystal
+
+- type: storeCategory
+  id: TypanWarNtSurplusWeapon
+  name: store-category-weapons
+  priority: 5
+
+- type: storeCategory
+  id: TypanWarNtSurplusAmmo
+  name: store-category-ammo
+  priority: 4
+
+- type: storeCategory
+  id: TypanWarNtSurplusArmor
+  name: store-category-wearables
+  priority: 3
+
+- type: storeCategory
+  id: TypanWarNtSurplusMed
+  name: store-category-medical
+  priority: 2
+
+- type: storeCategory
+  id: TypanWarNtSurplusGear
+  name: store-category-misc
+  priority: 1
+
+- type: storeCategory
+  id: TypanWarTypanSurplusWeapon
+  name: store-category-weapons
+  priority: 5
+
+- type: storeCategory
+  id: TypanWarTypanSurplusAmmo
+  name: store-category-ammo
+  priority: 4
+
+- type: storeCategory
+  id: TypanWarTypanSurplusArmor
+  name: store-category-wearables
+  priority: 3
+
+- type: storeCategory
+  id: TypanWarTypanSurplusMed
+  name: store-category-medical
+  priority: 2
+
+- type: storeCategory
+  id: TypanWarTypanSurplusGear
+  name: store-category-misc
+  priority: 1

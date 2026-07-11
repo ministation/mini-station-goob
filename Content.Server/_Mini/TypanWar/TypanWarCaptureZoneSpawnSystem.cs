@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Numerics;
-using Content.Server._TT.StationHandleJob;
 using Content.Server.Cargo.Components;
 using Content.Server.Pinpointer;
 using Content.Server.Station.Systems;
@@ -35,6 +34,8 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
     private const int MaxRandomAttempts = 500;
     private static readonly EntProtoId ZoneProto = "TypanWarCaptureZone";
     private static readonly EntProtoId FlagProto = "TypanWarCaptureFlag";
+
+    private static readonly EntProtoId IndestructibleWallProto = "WallPlastitaniumIndestructible";
 
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly NavMapSystem _navMap = default!;
@@ -77,8 +78,14 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
             return false;
         }
 
-        var typanTrade = FindTypanTradeGrid(typanStation, typanData, typanGrid.Value);
-        var ntTrade = FindTradeGrid(ntStation, ntData, ntGrid.Value, requireTypanStation: false);
+        var typanTrade = FindTradeGridForStation(typanStation, typanGrid.Value);
+        var ntTrade = FindTradeGridForStation(ntStation, ntGrid.Value);
+
+        var tradeCandidates = new List<(EntityUid Grid, EntityUid Station, bool IsTypanTrade)>();
+        if (ntTrade != null)
+            tradeCandidates.Add((ntTrade.Value, ntStation, false));
+        if (typanTrade != null)
+            tradeCandidates.Add((typanTrade.Value, typanStation, true));
 
         var targets = new List<SpawnTarget>
         {
@@ -96,19 +103,16 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
             },
         };
 
-        if (typanTrade != null || ntTrade != null)
+        if (tradeCandidates.Count > 0)
         {
-            var useTypanTrade = typanTrade != null && (ntTrade == null || _random.Prob(0.5f));
-            var tradeGrid = useTypanTrade ? typanTrade!.Value : ntTrade!.Value;
-            var tradeStation = useTypanTrade ? typanStation : ntStation;
-
+            var pick = _random.Pick(tradeCandidates);
             targets.Add(new SpawnTarget
             {
-                Grid = tradeGrid,
-                Station = tradeStation,
+                Grid = pick.Grid,
+                Station = pick.Station,
                 HomeFaction = TypanWarCaptureOwner.Neutral,
                 IsTradePost = true,
-                IsTypanTrade = useTypanTrade,
+                IsTypanTrade = pick.IsTypanTrade,
             });
         }
         else
@@ -145,62 +149,27 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
             Del(uid);
     }
 
-    private EntityUid? FindTypanTradeGrid(EntityUid typanStation, StationDataComponent typanData, EntityUid mainGrid)
+    private EntityUid? FindTradeGridForStation(EntityUid station, EntityUid mainGrid)
     {
-        var fromStation = FindTradeGrid(typanStation, typanData, mainGrid, requireTypanStation: true);
-        if (fromStation != null)
-            return fromStation;
-
-        var query = EntityQueryEnumerator<TradeStationComponent, TransformComponent>();
-        while (query.MoveNext(out var gridUid, out _, out _))
+        if (TryComp<StationDataComponent>(station, out var stationData))
         {
-            if (gridUid == mainGrid)
-                continue;
+            foreach (var gridUid in stationData.Grids)
+            {
+                if (gridUid == mainGrid || !HasComp<TradeStationComponent>(gridUid))
+                    continue;
 
-            var owner = _station.GetOwningStation(gridUid);
-            if (owner != typanStation)
-                continue;
-
-            if (HasComp<TTStationHandleJobComponent>(typanStation))
                 return gridUid;
+            }
         }
 
-        return null;
-    }
-
-    private EntityUid? FindTradeGrid(
-        EntityUid station,
-        StationDataComponent stationData,
-        EntityUid mainGrid,
-        bool requireTypanStation)
-    {
-        foreach (var gridUid in stationData.Grids)
+        var query = EntityQueryEnumerator<TradeStationComponent>();
+        while (query.MoveNext(out var gridUid, out _))
         {
             if (gridUid == mainGrid)
                 continue;
 
-            if (!HasComp<TradeStationComponent>(gridUid))
-                continue;
-
-            if (requireTypanStation && !HasComp<TTStationHandleJobComponent>(station))
-                continue;
-
-            return gridUid;
-        }
-
-        var query = EntityQueryEnumerator<TradeStationComponent, TransformComponent>();
-        while (query.MoveNext(out var gridUid, out _, out _))
-        {
-            if (gridUid == mainGrid)
-                continue;
-
-            if (_station.GetOwningStation(gridUid) != station)
-                continue;
-
-            if (requireTypanStation && !HasComp<TTStationHandleJobComponent>(station))
-                continue;
-
-            return gridUid;
+            if (_station.GetOwningStation(gridUid) == station)
+                return gridUid;
         }
 
         return null;
@@ -356,7 +325,34 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
             }
         }
 
+        if (IsNearIndestructibleWall(gridUid, grid, center, halfExtents))
+            return false;
+
         return true;
+    }
+
+    /// <summary>
+    /// Indestructible plastitanium barriers mark off-limits areas — zones must stay reachable.
+    /// </summary>
+    private bool IsNearIndestructibleWall(EntityUid gridUid, MapGridComponent grid, Vector2i center, Vector2i halfExtents)
+    {
+        const int margin = 1;
+
+        for (var dx = -halfExtents.X - margin; dx <= halfExtents.X + margin; dx++)
+        {
+            for (var dy = -halfExtents.Y - margin; dy <= halfExtents.Y + margin; dy++)
+            {
+                var indices = center + new Vector2i(dx, dy);
+
+                foreach (var ent in _map.GetAnchoredEntities(gridUid, grid, indices))
+                {
+                    if (MetaData(ent).EntityPrototype?.ID == IndestructibleWallProto.Id)
+                        return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private string BuildLocationName(SpawnTarget target, Vector2i centerTile)

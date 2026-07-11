@@ -32,21 +32,37 @@ typan-war-hud-zone-line = Zone {$label}: {$location}
 typan-war-capture-nt = NanoTrasen captured {$zone}.
 typan-war-capture-typan = Syndicate captured {$zone}.
 typan-war-capture-neutral = {$zone} is now neutral.
-typan-war-capture-loot-nt = [color=#A8C8FF]NanoTrasen[/color] received supply for holding {$zone}.
-typan-war-capture-loot-typan = [color=#FFB0B0]Syndicate[/color] received supply for holding {$zone}.
+typan-war-capture-loot-nt = [color=#A8C8FF]NanoTrasen[/color] supply crate dropped at {$zone}.
+typan-war-capture-loot-typan = [color=#FFB0B0]Syndicate[/color] supply crate dropped at {$zone}.
 typan-war-hud-zone-inactive = inactive
 typan-war-hud-zone-owner-neutral = neutral
 typan-war-hud-zone-owner-nanotrasen = NT
 typan-war-hud-zone-owner-typan = Syndicate
 
+typan-war-surplus-nt-crate-name = NT surplus crate
+typan-war-surplus-nt-crate-desc = A command-marked NanoTrasen supply crate. Random security gear — weapons, ammo, hardsuits, medkits, and deployable laser turrets.
+typan-war-surplus-typan-crate-name = Syndicate surplus crate
+typan-war-surplus-typan-crate-desc = A Syndicate-marked field supply crate. Random combat gear — weapons, ammo, hardsuits, medkits, and deployable laser turrets.
+
 typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Console bluespace jumps are blocked until hostilities begin. Follow combat readiness protocols — hostilities begin in five minutes.
 
 typan-war-manifest =
-    {"[font size=16][color=#C8C4D8][bold]Station War Manifest[/bold][/color][/font]"}
-    {"[color=#C8C4D8][color=#A8C8FF][bold]NanoTrasen[/bold][/color] is engaged in open hostilities against [color=#FFB0B0][bold]Syndicate[/bold][/color] forces at [color=#FFB0B0][bold]Typan Station[/bold][/color].[/color]"}
-    {"[color=#A8C8FF]▸[/color] [color=#A8C8FF][bold]NanoTrasen[/bold][/color]: eliminate all combat-capable [color=#FFB0B0]Syndicate[/color] forces."}
-    {"[color=#FFB0B0]▸[/color] [color=#FFB0B0][bold]Syndicate[/bold][/color]: eliminate all combat-capable [color=#A8C8FF]NanoTrasen[/color] forces."}
-    {"[color=#C8C4D8]▸[/color] Targeting systems are configured [bold]not to harm allies[/bold] with [bold]ranged[/bold] weapons. Use [bold]Ally Protection[/bold] when needed."}
+    {"[font size=18][color=#C8C4D8][bold]STATION WAR — OPERATIONAL BRIEF[/bold][/color][/font]"}
+    {"[color=#888898]────────────────────────────────[/color]"}
+    {"[color=#C8C4D8][color=#A8C8FF][bold]NanoTrasen[/bold][/color] and [color=#FFB0B0][bold]Syndicate (Typan)[/bold][/color] forces are engaged in open combat on a shared battlefield.[/color]"}
+    {" "}
+    {"[color=#C8C4D8][bold]Primary objectives[/bold][/color]"}
+    {"[color=#A8C8FF]▸ NT:[/color] eliminate combat-capable Syndicate forces and hold capture zones."}
+    {"[color=#FFB0B0]▸ Syndicate:[/color] eliminate combat-capable NT forces and hold capture zones."}
+    {" "}
+    {"[color=#C8C4D8][bold]Capture zones[/bold][/color] [color=#888898](A / B / C)[/color]"}
+    {"[color=#C8C4D8]▸[/color] Three 3×3 zones appear when combat begins — NT station, Typan station, and a trade outpost."}
+    {"[color=#C8C4D8]▸[/color] Hold a zone to earn capture points and receive [bold]faction supply crates[/bold] on a timer."}
+    {"[color=#C8C4D8]▸[/color] NT-held zones drop [color=#A8C8FF]NT surplus[/color]; Syndicate-held zones drop [color=#FFB0B0]Syndicate surplus[/color]."}
+    {" "}
+    {"[color=#C8C4D8][bold]Combat rules[/bold][/color]"}
+    {"[color=#C8C4D8]▸[/color] Ranged weapons are configured [bold]not to harm allies[/bold] — toggle [bold]Ally Protection[/bold] if needed."}
+    {"[color=#C8C4D8]▸[/color] Reinforcements respawn at captured zones or your duty spawn."}
 
 typan-war-ff-enabled = Ally protection enabled — you will not hit allies.
 typan-war-ff-disabled = Ally protection disabled.
