@@ -16,6 +16,12 @@
     probability: 0.22
   - item: WeaponRifleLecter
     probability: 0.07
+  - item: WeaponRifleAnnie
+    probability: 0.08
+  - item: WeaponPulseRifle
+    probability: 0.06
+  - item: WeaponPulsePistol
+    probability: 0.14
   - item: WeaponShotgunEnforcer
     probability: 0.18
   - item: Stunbaton
@@ -46,6 +52,12 @@
     probability: 0.7
   - item: ClothingOuterHardsuitERTSecurity
     probability: 0.05
+  - item: ClothingOuterHardsuitERTLeader
+    probability: 0.02
+  - item: ClothingOuterHardsuitERTJuggernaut
+    probability: 0.02
+  - item: ClothingOuterHardsuitSecurityRed
+    probability: 0.12
   - item: ClothingOuterArmorBasic
     probability: 0.62
   - item: ClothingOuterArmorBasicSlim
@@ -73,7 +85,9 @@
     probability: 0.32
   # Gear
   - item: ToolboxElectricalTurretNanotrasen
-    probability: 0.07
+    probability: 0.1
+  - item: PortableRecharger
+    probability: 0.16
   - item: GrenadeFlashBang
     probability: 0.42
   - item: DoubleEmergencyOxygenTankFilled

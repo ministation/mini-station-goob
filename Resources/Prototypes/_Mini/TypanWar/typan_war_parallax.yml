@@ -24,7 +24,7 @@
       tiled: false
     - texture:
         !type:ImageParallaxTextureSource
-        path: "/Textures/Parallaxes/DeltaParallaxNeb.png"
+        path: "/Textures/_CorvaxGoob/Parallaxes/DeltaParallaxNeb.png"
       slowness: 0.972046875
       scale: "0.95, 0.95"
       tiled: false

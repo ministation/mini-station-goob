@@ -1,0 +1,48 @@
+- type: entity
+  parent: ClothingOuterHardsuitBase
+  id: ClothingOuterHardsuitERTJuggernaut
+  name: Костюм Джаггернаута НаноТрайзен
+  description: Высокопрочный и тяжело бронированный костюм, предназначенный для использования в боевых условиях, преимущественно стратегических операциях. Произвёдён NT для боевой элиты ЦК.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/jaggernaut_suit.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/jaggernaut_suit.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.02
+    lowPressureMultiplier: 1000
+  - type: ExplosionResistance
+    damageCoefficient: 0.2
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.3
+        Heat: 0.3
+        Caustic: 0.1
+        Cold: 0.1
+        Shock: 0.1
+        Radiation: 0.1
+  - type: ClothingSpeedModifier
+    walkModifier: 0.90
+    sprintModifier: 0.65
+  - type: HeldSpeedModifier
+  - type: ToggleableClothing
+    clothingPrototypes:
+     head: ClothingHeadHelmetHardsuitERTJuggernaut
+  - type: StaticPrice
+    price: 0
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitSyndie
+  id: ClothingHeadHelmetHardsuitERTJuggernaut
+  name: Шлем костюма Джаггернаута НаноТрайзен
+  description: Сверхпрочный шлем НаноТрайзен, от костюма Джаггернаута. Ходят слухи, что может помочь пережить ядерный взрыв.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Head/Hardsuits/jaggernaut_helmet.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Head/Hardsuits/jaggernaut_helmet.rsi
+  - type: PointLight
+    color: cyan

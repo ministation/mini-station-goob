@@ -18,6 +18,14 @@
     probability: 0.12
   - item: EnergyDaggerBox
     probability: 0.28
+  - item: WeaponRifleBurner
+    probability: 0.06
+  - item: WeaponSubMachineGunM7S
+    probability: 0.12
+  - item: WeaponLightMachineGunL2RPK
+    probability: 0.04
+  - item: MiniatureEnergyCrossbow
+    probability: 0.03
   - item: CombatKnife
     probability: 0.4
   - item: ThrowingKnivesKit
@@ -46,6 +54,10 @@
     probability: 0.7
   - item: ClothingOuterHardsuitSyndie
     probability: 0.05
+  - item: ClothingOuterHardsuitJuggernaut
+    probability: 0.01
+  - item: ClothingOuterHardsuitSyndieElite
+    probability: 0.08
   - item: ClothingOuterVestWeb
     probability: 0.62
   - item: ClothingOuterVestWebElite
@@ -71,7 +83,9 @@
     probability: 0.3
   # Gear
   - item: ToolboxElectricalTurretTypan
-    probability: 0.07
+    probability: 0.1
+  - item: EnergyShield
+    probability: 0.04
   - item: GrenadeShrapnel
     probability: 0.38
   - item: GrenadeFlashBang

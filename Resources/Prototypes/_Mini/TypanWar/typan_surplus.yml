@@ -1,8 +1,8 @@
 - type: entity
   id: CrateTypanSurplusBundle
   parent: [ CrateSyndicate, BaseSyndicateContraband ]
-  name: typan-war-surplus-typan-crate-name
-  description: typan-war-surplus-typan-crate-desc
+  name: Syndicate surplus crate
+  description: A Syndicate-marked field supply crate with independent rolls per item.
   components:
   - type: TypanWarSurplusBundle
     lootTable: TypanWarTypanSurplusLoot

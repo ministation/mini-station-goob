@@ -1,8 +1,8 @@
 - type: entity
   id: CrateNtSurplusBundle
   parent: CrateGeneric
-  name: typan-war-surplus-nt-crate-name
-  description: typan-war-surplus-nt-crate-desc
+  name: NT surplus crate
+  description: A command-marked NanoTrasen supply crate with independent rolls per item.
   components:
   - type: Icon
     sprite: Structures/Storage/Crates/command_unlocked.rsi

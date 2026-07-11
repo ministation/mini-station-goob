@@ -25,6 +25,9 @@ typan-war-event-intel = [color=#A8C8FF]NT score:[/color] {$nt} pts. [color=#FFB0
 typan-war-capture-zones-active-header = Attention NanoTrasen and Syndicate forces! Strategically important capture zones have been marked:
 typan-war-capture-zones-active-line = Zone {$label} — {$location}
 typan-war-capture-zone-named = Zone {$label} ({$location})
+typan-war-capture-zone-nt = NT capture zone
+typan-war-capture-zone-typan = Syndicate capture zone
+typan-war-capture-zone-trade = trade outpost capture zone
 typan-war-capture-location-station = {$station} — {$area}
 typan-war-capture-location-trade-nt = NanoTrasen trade outpost
 typan-war-capture-location-trade-typan = Syndicate trade outpost
@@ -32,17 +35,12 @@ typan-war-hud-zone-line = Zone {$label}: {$location}
 typan-war-capture-nt = NanoTrasen captured {$zone}.
 typan-war-capture-typan = Syndicate captured {$zone}.
 typan-war-capture-neutral = {$zone} is now neutral.
-typan-war-capture-loot-nt = [color=#A8C8FF]NanoTrasen[/color] supply crate dropped at {$zone}.
-typan-war-capture-loot-typan = [color=#FFB0B0]Syndicate[/color] supply crate dropped at {$zone}.
+typan-war-capture-loot-nt = A [color=#A8C8FF]NanoTrasen surplus crate[/color] has been delivered to {$zone}.
+typan-war-capture-loot-typan = A [color=#FFB0B0]Syndicate surplus crate[/color] has been delivered to {$zone}.
 typan-war-hud-zone-inactive = inactive
 typan-war-hud-zone-owner-neutral = neutral
 typan-war-hud-zone-owner-nanotrasen = NT
 typan-war-hud-zone-owner-typan = Syndicate
-
-typan-war-surplus-nt-crate-name = NT surplus crate
-typan-war-surplus-nt-crate-desc = A command-marked NanoTrasen supply crate. Each listed item is rolled independently — Drozd ~50%, security hardsuit ~70%, OBR hardsuit ~5%, medkits and ammo at their own odds.
-typan-war-surplus-typan-crate-name = Syndicate surplus crate
-typan-war-surplus-typan-crate-desc = A Syndicate-marked field supply crate. Each listed item is rolled independently — C-20r ~50%, patrol hardsuit ~70%, blood-red hardsuit ~5%, medkits and ammo at their own odds.
 
 typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Console bluespace jumps are blocked until hostilities begin. Follow combat readiness protocols — hostilities begin in five minutes.
 

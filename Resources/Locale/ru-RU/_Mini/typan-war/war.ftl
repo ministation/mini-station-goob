@@ -45,6 +45,9 @@ typan-war-event-intel = [color=#A8C8FF]Очки NT:[/color] {$nt}. [color=#FFB0B
 typan-war-capture-zones-active-header = Внимание, бойцы Нанотрайзен и Синдиката! Обозначены стратегически важные зоны захвата:
 typan-war-capture-zones-active-line = Зона {$label} — {$location}
 typan-war-capture-zone-named = Зона {$label} ({$location})
+typan-war-capture-zone-nt = зона захвата NT
+typan-war-capture-zone-typan = зона захвата Синдиката
+typan-war-capture-zone-trade = зона захвата торгового аванпоста
 typan-war-capture-location-station = {$station} — {$area}
 typan-war-capture-location-trade-nt = Торговый аванпост Нанотрайзен
 typan-war-capture-location-trade-typan = Торговый аванпост Синдиката
@@ -52,13 +55,8 @@ typan-war-hud-zone-line = Зона {$label}: {$location}
 typan-war-capture-nt = Нанотрайзен захватил {$zone}.
 typan-war-capture-typan = Синдикат захватил {$zone}.
 typan-war-capture-neutral = {$zone} стала нейтральной.
-typan-war-capture-loot-nt = На {$zone} сброшен ящик [color=#A8C8FF]снабжения Нанотрайзен[/color].
-typan-war-capture-loot-typan = На {$zone} сброшен ящик [color=#FFB0B0]снабжения Синдиката[/color].
-
-typan-war-surplus-nt-crate-name = ящик снабжения NT
-typan-war-surplus-nt-crate-desc = Командный ящик снабжения Нанотрайзен. Каждая позиция проверяется отдельно — Drozd ~50%, скафандр СБ ~70%, ОБР ~5%, аптечки и патроны со своими шансами.
-typan-war-surplus-typan-crate-name = ящик снабжения Синдиката
-typan-war-surplus-typan-crate-desc = Полевой ящик снабжения Синдиката. Каждая позиция проверяется отдельно — C-20r ~50%, патрульный скафандр ~70%, кроваво-красный ~5%, аптечки и патроны со своими шансами.
+typan-war-capture-loot-nt = На {$zone} доставлен [color=#A8C8FF]ящик снабжения Нанотрайзен[/color].
+typan-war-capture-loot-typan = На {$zone} доставлен [color=#FFB0B0]ящик снабжения Синдиката[/color].
 
 typan-war-hud-zone-inactive = неактивна
 typan-war-hud-zone-owner-neutral = нейтральная
