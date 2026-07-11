@@ -3,7 +3,7 @@ using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototy
 
 namespace Content.Shared._Mini.TypanWar;
 
-[Prototype("typanWarSurplusLoot")]
+[Prototype]
 public sealed partial class TypanWarSurplusLootPrototype : IPrototype
 {
     [IdDataField]

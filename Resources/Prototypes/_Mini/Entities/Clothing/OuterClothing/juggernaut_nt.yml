@@ -1,8 +1,8 @@
 - type: entity
   parent: ClothingOuterHardsuitBase
   id: ClothingOuterHardsuitERTJuggernaut
-  name: Костюм Джаггернаута НаноТрайзен
-  description: Высокопрочный и тяжело бронированный костюм, предназначенный для использования в боевых условиях, преимущественно стратегических операциях. Произвёдён NT для боевой элиты ЦК.
+  name: NanoTrasen juggernaut hardsuit
+  description: A heavy, heavily armored hardsuit built for frontline combat and strategic operations. Manufactured by NanoTrasen for Central Command elite forces.
   components:
   - type: Sprite
     sprite: _Mini/Clothing/OuterClothing/Hardsuits/jaggernaut_suit.rsi
@@ -37,8 +37,8 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitSyndie
   id: ClothingHeadHelmetHardsuitERTJuggernaut
-  name: Шлем костюма Джаггернаута НаноТрайзен
-  description: Сверхпрочный шлем НаноТрайзен, от костюма Джаггернаута. Ходят слухи, что может помочь пережить ядерный взрыв.
+  name: NanoTrasen juggernaut hardsuit helmet
+  description: An ultra-durable NanoTrasen helmet from the juggernaut hardsuit. Rumor says it can help you survive a nuclear blast.
   components:
   - type: Sprite
     sprite: _Mini/Clothing/Head/Hardsuits/jaggernaut_helmet.rsi
