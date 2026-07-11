@@ -84,22 +84,20 @@ public sealed class TypanWarMinimapSystem : EntitySystem
         _pendingOpen = false;
         _window = new TypanWarMinimapWindow();
         _window.OnClose += CloseWindow;
-        RefreshWindow();
         _window.PrepareForDisplay();
-
-        // Wait one frame so layout assigns pixel size before the window becomes visible.
-        Robust.Shared.Timing.Timer.Spawn(TimeSpan.Zero, () =>
-        {
-            if (_window == null)
-                return;
-
-            _window.OpenCentered();
-        });
+        _window.Refresh(
+            _war.MinimapGrids,
+            _war.CaptureZones,
+            _war.AllyBlips,
+            _war.NtCapturePoints,
+            _war.TypanCapturePoints,
+            _war.CapturePointsToWin);
+        _window.OpenCentered();
     }
 
     private void RefreshWindow()
     {
-        _window?.Update(
+        _window?.Refresh(
             _war.MinimapGrids,
             _war.CaptureZones,
             _war.AllyBlips,

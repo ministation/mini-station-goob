@@ -50,8 +50,9 @@ typan-war-manifest =
     {"[color=#C8C4D8][color=#A8C8FF][bold]NanoTrasen[/bold][/color] and [color=#FFB0B0][bold]Syndicate (Typan)[/bold][/color] forces are engaged in open combat on a shared battlefield.[/color]"}
     {" "}
     {"[color=#C8C4D8][bold]Primary objectives[/bold][/color]"}
-    {"[color=#A8C8FF]▸ NT:[/color] eliminate combat-capable Syndicate forces and hold capture zones."}
-    {"[color=#FFB0B0]▸ Syndicate:[/color] eliminate combat-capable NT forces and hold capture zones."}
+    {"[color=#A8C8FF]▸ NanoTrasen:[/color] hold capture zones and reach [bold]100 points[/bold]."}
+    {"[color=#FFB0B0]▸ Syndicate:[/color] hold capture zones and reach [bold]100 points[/bold]."}
+    {"[color=#C8C4D8]▸[/color] If time runs out first, the faction with more points wins."}
     {" "}
     {"[color=#C8C4D8][bold]Capture zones[/bold][/color] [color=#888898](A / B / C)[/color]"}
     {"[color=#C8C4D8]▸[/color] Three 3×3 zones appear when combat begins — NT station, Typan station, and a trade outpost."}
@@ -61,6 +62,8 @@ typan-war-manifest =
     {"[color=#C8C4D8][bold]Combat rules[/bold][/color]"}
     {"[color=#C8C4D8]▸[/color] Ranged weapons are configured [bold]not to harm allies[/bold] — toggle [bold]Ally Protection[/bold] if needed."}
     {"[color=#C8C4D8]▸[/color] Reinforcements respawn at captured zones or your duty spawn."}
+
+typan-war-manifest-score = {"[color=#C8C4D8][bold]Final score:[/bold][/color] NanoTrasen [color=#A8C8FF]{$nt}[/color] / Syndicate [color=#FFB0B0]{$typan}[/color] points (win at {$win})"}
 
 typan-war-ff-enabled = Ally protection enabled — you will not hit allies.
 typan-war-ff-disabled = Ally protection disabled.
@@ -98,16 +101,20 @@ typan-war-start-cancelled = Station war cancelled — insufficient combat-ready 
 typan-war-start-cancelled-nt = Station war cancelled — NT has only {$nt} combat-ready personnel ({$ntMin} required).
 typan-war-start-cancelled-typan = Station war cancelled — Typan has only {$typan} combat-ready personnel ({$typanMin} required).
 
-typan-war-end-announce-nt = The station war has ended. [color=#A8C8FF]NanoTrasen[/color] wins with fewer relative losses.
-typan-war-end-announce-typan = The station war has ended. [color=#FFB0B0]Syndicate[/color] wins with fewer relative losses.
-typan-war-end-announce-nt-elimination = The station war has ended. [color=#A8C8FF]NanoTrasen[/color] wins — all [color=#FFB0B0]Syndicate[/color] forces eliminated.
-typan-war-end-announce-typan-elimination = The station war has ended. [color=#FFB0B0]Syndicate[/color] wins — all [color=#A8C8FF]NanoTrasen[/color] forces eliminated.
-typan-war-end-announce-stalemate = The station war has ended in a stalemate.
+typan-war-end-announce-nt = The station war has ended. [color=#A8C8FF]NanoTrasen[/color] wins with {$nt} capture points (Syndicate {$typan}).
+
+typan-war-end-announce-typan = The station war has ended. [color=#FFB0B0]Syndicate[/color] wins with {$typan} capture points (NanoTrasen {$nt}).
+
+typan-war-end-announce-nt-elimination = The station war has ended. [color=#A8C8FF]NanoTrasen[/color] wins with {$nt} capture points.
+
+typan-war-end-announce-typan-elimination = The station war has ended. [color=#FFB0B0]Syndicate[/color] wins with {$typan} capture points.
+
+typan-war-end-announce-stalemate = The station war has ended in a stalemate — {$nt} points for NanoTrasen and {$typan} for Syndicate.
 
 typan-war-round-end-header = [color=#C8C4D8][bold]Station War[/bold][/color]
-typan-war-round-end-initial = Total deployed: NT {$nt}, Typan {$typan}
-typan-war-round-end-final = Survivors: NT {$nt}, Typan {$typan}
-typan-war-round-end-losses = Losses: NT {$ntLoss}%, Typan {$typanLoss}%
+typan-war-round-end-initial = Deployed: NanoTrasen {$nt}, Typan {$typan}
+typan-war-round-end-final = Capture points: NanoTrasen {$ntPoints}, Typan {$typanPoints} (win at {$win})
+typan-war-round-end-losses = Survivors: NanoTrasen {$nt}, Typan {$typan}
 typan-war-round-end-nt-goal = NT station goal: {$goal}
 typan-war-round-end-typan-goal = Typan station goal: {$goal}
 typan-war-round-end-winner-nt = Winner: NanoTrasen
@@ -115,4 +122,4 @@ typan-war-round-end-winner-typan = Winner: Typan
 typan-war-round-end-stalemate = Result: stalemate
 
 game-presets-typan-station-war = Station War
-game-presets-typan-station-war-description = Conflict between NanoTrasen and Typan. Eliminate the enemy side or win by fewer losses when time runs out.
+game-presets-typan-station-war-description = Conflict between NanoTrasen and Typan. Hold capture zones and reach 100 points before the enemy.

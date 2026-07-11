@@ -579,6 +579,18 @@ public sealed class RCDSystem : EntitySystem
 
                 return false;
             }
+
+            // Mini Station - war capture zones protect floor tiles from RCD deconstruction.
+            var floorEv = new FloorTileAttemptEvent(tile.GridIndices);
+            RaiseLocalEvent(tile.GridUid, ref floorEv);
+
+            if (floorEv.Cancelled)
+            {
+                if (popMsgs)
+                    _popup.PopupClient(Loc.GetString("rcd-component-tile-indestructible-message"), uid, user);
+
+                return false;
+            }
         }
 
         // Attempt to deconstruct an object

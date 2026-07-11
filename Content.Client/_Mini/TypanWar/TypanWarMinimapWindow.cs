@@ -33,6 +33,17 @@ public sealed class TypanWarMinimapWindow : FancyWindow
 
     public void PrepareForDisplay() => _map.PrepareForDisplay();
 
+    public void Refresh(
+        TypanWarMinimapGrid[] grids,
+        TypanWarCaptureZoneStatus[] zones,
+        TypanWarAllyBlip[] allies,
+        float ntPoints,
+        float typanPoints,
+        int toWin)
+    {
+        _map.Update(grids, zones, allies);
+    }
+
     public void Update(
         TypanWarMinimapGrid[] grids,
         TypanWarCaptureZoneStatus[] zones,

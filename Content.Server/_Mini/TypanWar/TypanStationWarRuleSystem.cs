@@ -2,6 +2,7 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using Content.Server._Mini.Typan.StationGoal;
+using Content.Server._CorvaxGoob.Skills;
 using Robust.Shared.Prototypes;
 using Content.Server._TT.StationHandleJob;
 using Content.Server.AlertLevel;
@@ -124,6 +125,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         while (query.MoveNext(out _, out var component))
             StopWarMusic(component);
 
+        ClearWarModeEffectsFromAllPlayers();
         BroadcastInactiveStatus();
     }
 
@@ -163,6 +165,8 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         if (TryGetRunningWarRule(out var component)
             && component.Phase is TypanWarPhase.Pending or TypanWarPhase.Active)
         {
+            EnsureWarModePlayerEffects(args.Mob);
+
             if (_mind.TryGetMind(args.Mob, out var mindId, out var mind))
                 RecordFactionJoin(component, (mindId, mind));
             else if (args.JobId is { } jobId)
@@ -318,6 +322,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         IsModeActive = true;
         SeedJoinedRoster(component);
         SetupWarFactionMarkers();
+        ApplyWarModeEffectsToAllPlayers();
         BroadcastStatus(component);
     }
 
@@ -329,6 +334,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         IsModeActive = false;
         component.Phase = TypanWarPhase.Inactive;
         StopWarMusic(component);
+        ClearWarModeEffectsFromAllPlayers();
         ClearWarCombatants();
         _warBalance.NotifyCombatPhaseEnded();
         BroadcastStatus(component);
@@ -414,9 +420,6 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         if (component.Phase == TypanWarPhase.Inactive)
             return;
 
-        var ntAlive = CountNtAlive();
-        var typanAlive = CountTypanAlive();
-
         args.AddLine(Loc.GetString("typan-war-round-end-header"));
         var ntJoined = component.NtJoinedUsers.Count;
         var typanJoined = component.TypanJoinedUsers.Count;
@@ -425,18 +428,9 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             ("nt", ntJoined),
             ("typan", typanJoined)));
         args.AddLine(Loc.GetString("typan-war-round-end-final",
-            ("nt", ntAlive),
-            ("typan", typanAlive)));
-
-        var ntLossPct = ntJoined > 0
-            ? (int) Math.Round((ntJoined - ntAlive) * 100f / ntJoined)
-            : 0;
-        var typanLossPct = typanJoined > 0
-            ? (int) Math.Round((typanJoined - typanAlive) * 100f / typanJoined)
-            : 0;
-        args.AddLine(Loc.GetString("typan-war-round-end-losses",
-            ("ntLoss", ntLossPct),
-            ("typanLoss", typanLossPct)));
+            ("ntPoints", (int) component.NtCapturePoints),
+            ("typanPoints", (int) component.TypanCapturePoints),
+            ("win", component.CapturePointsToWin)));
 
         if (component.NtStation is { } ntStation
             && _ntGoals.TryGetActiveGoalTitle(ntStation, out var ntGoal))
@@ -473,9 +467,20 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         BroadcastStatus(component);
     }
 
-    private void SendManifestAnnouncement()
+    private void SendManifestAnnouncement(TypanStationWarRuleComponent? component = null)
     {
-        SendMarkupGlobalAnnouncement(Loc.GetString("typan-war-manifest"));
+        var message = Loc.GetString("typan-war-manifest");
+
+        if (component != null)
+        {
+            message += "\n"
+                + Loc.GetString("typan-war-manifest-score",
+                    ("nt", (int) component.NtCapturePoints),
+                    ("typan", (int) component.TypanCapturePoints),
+                    ("win", component.CapturePointsToWin));
+        }
+
+        SendMarkupGlobalAnnouncement(message);
     }
 
     private void SendMarkupGlobalAnnouncement(string message, Color? colorOverride = null)
@@ -554,6 +559,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             colorOverride: TypanWarColors.Neutral);
         BroadcastStatus(component);
         _warBalance.NotifyCombatPhaseEnded();
+        ClearWarModeEffectsFromAllPlayers();
         ForceEndSelf(ruleUid);
     }
 
@@ -645,6 +651,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         IsWarActive = false;
         IsModeActive = false;
         StopWarMusic(component);
+        ClearWarModeEffectsFromAllPlayers();
         ClearWarCombatants();
 
         if (component.Winner == TypanWarWinner.None)
@@ -657,8 +664,12 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             _ => "typan-war-end-announce-stalemate",
         };
 
-        SendManifestAnnouncement();
-        SendMarkupGlobalAnnouncement(Loc.GetString(winnerKey), TypanWarColors.ForWinner(component.Winner));
+        SendManifestAnnouncement(component);
+        SendMarkupGlobalAnnouncement(
+            Loc.GetString(winnerKey,
+                ("nt", (int) component.NtCapturePoints),
+                ("typan", (int) component.TypanCapturePoints)),
+            TypanWarColors.ForWinner(component.Winner));
 
         BroadcastStatus(component);
         _warBalance.NotifyCombatPhaseEnded();
@@ -800,6 +811,40 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         var minimap = EntityQueryEnumerator<TypanWarMinimapComponent>();
         while (minimap.MoveNext(out var uid, out _))
             _minimap.RemoveMinimapAction(uid);
+    }
+
+    private void EnsureWarModePlayerEffects(EntityUid mob)
+    {
+        EnsureComp<IgnoreSkillsComponent>(mob);
+    }
+
+    private void ClearWarModePlayerEffects(EntityUid mob)
+    {
+        RemComp<IgnoreSkillsComponent>(mob);
+    }
+
+    private void ApplyWarModeEffectsToAllPlayers()
+    {
+        var minds = EntityQueryEnumerator<MindComponent>();
+        while (minds.MoveNext(out _, out var mind))
+        {
+            if (!IsMindAlive(mind) || mind.CurrentEntity is not { } mob)
+                continue;
+
+            EnsureWarModePlayerEffects(mob);
+        }
+    }
+
+    private void ClearWarModeEffectsFromAllPlayers()
+    {
+        var minds = EntityQueryEnumerator<MindComponent>();
+        while (minds.MoveNext(out _, out var mind))
+        {
+            if (mind.CurrentEntity is not { } mob)
+                continue;
+
+            ClearWarModePlayerEffects(mob);
+        }
     }
 
     public bool TryGetWarSide(Entity<MindComponent> mind, out TypanWarSide side) => TryGetWarSideInternal(mind, out side);
