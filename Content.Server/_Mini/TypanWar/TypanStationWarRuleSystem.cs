@@ -53,9 +53,6 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
     private static readonly SoundPathSpecifier WarDeclarationSound =
         new("/Audio/_Mini/TypanWar/war_declaration.ogg");
 
-    private static readonly SoundPathSpecifier StationWarMusic =
-        new("/Audio/_Mini/TypanWar/station_war.ogg");
-
     [Dependency] private readonly AlertLevelSystem _alertLevel = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
@@ -469,7 +466,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         _chat.DispatchGlobalAnnouncement(
             Loc.GetString("typan-war-prep-announce"),
             Loc.GetString("typan-war-sender"),
-            colorOverride: Color.OrangeRed);
+            colorOverride: TypanWarColors.Neutral);
         BroadcastStatus(component);
     }
 
@@ -478,13 +475,20 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         SendMarkupGlobalAnnouncement(Loc.GetString("typan-war-manifest"));
     }
 
-    private void SendMarkupGlobalAnnouncement(string message)
+    private void SendMarkupGlobalAnnouncement(string message, Color? colorOverride = null)
     {
         var wrappedMessage = Loc.GetString(
             "chat-manager-sender-announcement-wrap-message",
             ("sender", Loc.GetString("typan-war-sender")),
             ("message", message));
-        _chatManager.ChatMessageToAll(ChatChannel.Radio, message, wrappedMessage, default, false, true, Color.Gold);
+        _chatManager.ChatMessageToAll(
+            ChatChannel.Radio,
+            message,
+            wrappedMessage,
+            default,
+            false,
+            true,
+            colorOverride ?? TypanWarColors.Neutral);
     }
 
     private void StartWar(EntityUid ruleUid, TypanStationWarRuleComponent component)
@@ -510,7 +514,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             _alertLevel.SetLevel(typan, "omega", true, true, true, locked: true);
 
         var announcement = Loc.GetString("typan-war-declaration");
-        _chat.DispatchGlobalAnnouncement(announcement, Loc.GetString("typan-war-sender"), colorOverride: Color.OrangeRed);
+        _chat.DispatchGlobalAnnouncement(announcement, Loc.GetString("typan-war-sender"), colorOverride: TypanWarColors.Neutral);
         _audio.PlayGlobal(WarDeclarationSound, Filter.Broadcast(), false, AudioParams.Default.WithVolume(-2f));
 
         AssignWarObjectives(component);
@@ -539,7 +543,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                 ("typan", typanAlive),
                 ("typanMin", component.MinTypanAlive)),
             Loc.GetString("typan-war-sender"),
-            colorOverride: Color.Orange);
+            colorOverride: TypanWarColors.Neutral);
         BroadcastStatus(component);
         _warBalance.NotifyCombatPhaseEnded();
         ForceEndSelf(ruleUid);
@@ -604,7 +608,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         _chat.DispatchGlobalAnnouncement(
             Loc.GetString("typan-war-end-warning"),
             Loc.GetString("typan-war-sender"),
-            colorOverride: Color.OrangeRed);
+            colorOverride: TypanWarColors.Neutral);
     }
 
     private void TryRunWarEvents(TypanStationWarRuleComponent component)
@@ -645,7 +649,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         };
 
         SendManifestAnnouncement();
-        SendMarkupGlobalAnnouncement(Loc.GetString(winnerKey));
+        SendMarkupGlobalAnnouncement(Loc.GetString(winnerKey), TypanWarColors.ForWinner(component.Winner));
 
         BroadcastStatus(component);
         _warBalance.NotifyCombatPhaseEnded();
@@ -666,11 +670,17 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
     private void PlayWarMusicCycle(TypanStationWarRuleComponent component)
     {
-        if (component.Phase != TypanWarPhase.Active)
+        if (component.Phase != TypanWarPhase.Active || component.WarMusicTracks.Count == 0)
             return;
 
+        var trackIndex = component.WarMusicTrackIndex % component.WarMusicTracks.Count;
+        var trackPath = component.WarMusicTracks[trackIndex];
+        var duration = trackIndex < component.WarMusicTrackDurations.Count
+            ? component.WarMusicTrackDurations[trackIndex]
+            : component.WarMusicDurationSeconds;
+
         var result = _audio.PlayGlobal(
-            StationWarMusic,
+            new SoundPathSpecifier(trackPath),
             Filter.Broadcast(),
             false,
             AudioParams.Default.WithVolume(-4f));
@@ -678,11 +688,13 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         if (result != null)
             component.WarMusicAudio = result.Value.Entity;
 
+        component.WarMusicTrackIndex = (trackIndex + 1) % component.WarMusicTracks.Count;
+
         component.WarMusicLoopCancel?.Cancel();
         component.WarMusicLoopCancel = new CancellationTokenSource();
         var token = component.WarMusicLoopCancel.Token;
 
-        Robust.Shared.Timing.Timer.Spawn(TimeSpan.FromSeconds(component.WarMusicDurationSeconds), () =>
+        Robust.Shared.Timing.Timer.Spawn(TimeSpan.FromSeconds(duration), () =>
         {
             if (token.IsCancellationRequested || component.Phase != TypanWarPhase.Active)
                 return;

@@ -61,6 +61,7 @@ public sealed class TypanWarMinimapControl : Control
     private TypanWarMinimapGrid[] _grids = [];
     private TypanWarCaptureZoneStatus[] _zones = [];
     private TypanWarAllyBlip[] _allies = [];
+    private NetEntity[] _cachedGridKeys = [];
 
     private readonly List<CachedGridShape> _cachedShapes = new();
     private readonly List<Vector2> _screenVerts = new();
@@ -69,7 +70,7 @@ public sealed class TypanWarMinimapControl : Control
     private readonly List<(Vector2 Start, Vector2 End)> _edges = new();
     private readonly (DirectionFlag Dir, Vector2i Offset)[] _neighborDirections = new (DirectionFlag, Vector2i)[4];
 
-    private float _zoom = 1f;
+    private float _zoom = 1.15f;
     private Vector2 _pan;
     private bool _dragging;
     private Vector2 _dragStart;
@@ -80,6 +81,7 @@ public sealed class TypanWarMinimapControl : Control
     private float _viewMaxX;
     private float _viewMinY;
     private float _viewMaxY;
+    private bool _displayReady;
 
     public TypanWarMinimapControl()
     {
@@ -96,14 +98,34 @@ public sealed class TypanWarMinimapControl : Control
 
     public void Update(TypanWarMinimapGrid[] grids, TypanWarCaptureZoneStatus[] zones, TypanWarAllyBlip[] allies)
     {
+        var gridsChanged = !GridKeysEqual(_cachedGridKeys, grids);
+
         _grids = grids;
         _zones = zones;
         _allies = allies;
 
-        if (grids.Length > 0)
+        if (gridsChanged)
+        {
+            _hasViewBounds = false;
+            _displayReady = false;
+            _cachedGridKeys = grids.Select(g => g.Grid).ToArray();
+            RebuildShapeCache(force: true);
+        }
+
+        if (_grids.Length > 0)
+            UpdateViewBounds();
+    }
+
+    /// <summary>
+    /// Warm up bounds and tile mesh before the window becomes visible.
+    /// </summary>
+    public void PrepareForDisplay()
+    {
+        if (_grids.Length > 0)
             UpdateViewBounds();
 
-        RebuildShapeCacheIfNeeded();
+        RebuildShapeCache(force: true);
+        _displayReady = _grids.Length == 0 || _cachedShapes.Count > 0;
     }
 
     protected override void KeyBindDown(GUIBoundKeyEventArgs args)
@@ -169,6 +191,15 @@ public sealed class TypanWarMinimapControl : Control
         handle.DrawRect(box, Background);
         handle.DrawRect(box, Border, false);
 
+        if (!_displayReady)
+            return;
+
+        if (!_hasViewBounds && _grids.Length > 0)
+            UpdateViewBounds();
+
+        if (_cachedShapes.Count == 0 && _grids.Length > 0)
+            RebuildShapeCache(force: false);
+
         if (!TryBuildTransform(box, out var map))
             return;
 
@@ -209,16 +240,21 @@ public sealed class TypanWarMinimapControl : Control
             DrawCircleBlip(handle, map.WorldToScreen(self.X, self.Y), SelfBlip, 6f);
     }
 
-    private void RebuildShapeCacheIfNeeded()
+    private void RebuildShapeCache(bool force)
     {
         _map ??= _ent.System<SharedMapSystem>();
         _turf ??= _ent.System<TurfSystem>();
         _xform ??= _ent.System<TransformSystem>();
 
         if (_grids.Length == 0)
+        {
+            _cachedShapes.Clear();
+            _displayReady = false;
             return;
+        }
 
         var gridIdSet = _grids.Select(g => g.Grid).ToHashSet();
+        var nextShapes = new List<CachedGridShape>();
 
         foreach (var grid in _grids)
         {
@@ -231,13 +267,10 @@ public sealed class TypanWarMinimapControl : Control
             var existingIndex = _cachedShapes.FindIndex(s => s.GridUid == uid);
             CachedGridShape? previous = existingIndex >= 0 ? _cachedShapes[existingIndex] : null;
 
-            if (existingIndex >= 0)
+            if (existingIndex >= 0 && !force && _cachedShapes[existingIndex].LastBuild >= mapGrid.LastTileModifiedTick)
             {
-                var existing = _cachedShapes[existingIndex];
-                if (existing.LastBuild >= mapGrid.LastTileModifiedTick)
-                    continue;
-
-                _cachedShapes.RemoveAt(existingIndex);
+                nextShapes.Add(_cachedShapes[existingIndex]);
+                continue;
             }
 
             var (fill, edge) = grid.Kind switch
@@ -250,12 +283,29 @@ public sealed class TypanWarMinimapControl : Control
             };
 
             if (TryBuildGridShape(uid, mapGrid, grid, fill, edge, out var shape))
-                _cachedShapes.Add(shape);
+                nextShapes.Add(shape);
             else if (previous is { } fallback)
-                _cachedShapes.Add(fallback);
+                nextShapes.Add(fallback);
         }
 
+        _cachedShapes.Clear();
+        _cachedShapes.AddRange(nextShapes);
         _cachedShapes.RemoveAll(s => !gridIdSet.Contains(_ent.GetNetEntity(s.GridUid)));
+        _displayReady = _cachedShapes.Count > 0;
+    }
+
+    private static bool GridKeysEqual(NetEntity[] cached, TypanWarMinimapGrid[] grids)
+    {
+        if (cached.Length != grids.Length)
+            return false;
+
+        for (var i = 0; i < cached.Length; i++)
+        {
+            if (cached[i] != grids[i].Grid)
+                return false;
+        }
+
+        return true;
     }
 
     private void UpdateViewBounds()
@@ -644,7 +694,7 @@ public sealed class TypanWarMinimapControl : Control
         if (!_hasViewBounds)
             return false;
 
-        const float padScreen = 12f;
+        const float padScreen = 6f;
         var inner = new UIBox2(
             box.Left + padScreen,
             box.Top + padScreen,

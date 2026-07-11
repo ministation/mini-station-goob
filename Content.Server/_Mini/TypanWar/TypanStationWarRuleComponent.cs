@@ -2,6 +2,7 @@ using Content.Shared._Mini.TypanWar;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 using Robust.Shared.Utility;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Content.Server._Mini.TypanWar;
@@ -21,9 +22,22 @@ public sealed partial class TypanStationWarRuleComponent : Component
     [DataField]
     public float WarMusicDelaySeconds = 90f;
 
-    /// <summary>Length of station_war.ogg — used to restart the track when it ends.</summary>
+    /// <summary>Fallback track length when <see cref="WarMusicTrackDurations"/> is shorter than the playlist.</summary>
     [DataField]
     public float WarMusicDurationSeconds = 90f;
+
+    [DataField]
+    public List<ResPath> WarMusicTracks =
+    [
+        new("/Audio/_Mini/TypanWar/station_war.ogg"),
+        new("/Audio/_Mini/TypanWar/desolation.ogg"),
+    ];
+
+    [DataField]
+    public List<float> WarMusicTrackDurations = [90f, 90f];
+
+    /// <summary>Next playlist index (runtime).</summary>
+    public int WarMusicTrackIndex;
 
     [DataField]
     public float RoundEndDelaySeconds = 120f;

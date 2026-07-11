@@ -153,7 +153,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             + "\n"
             + string.Join("\n", lines);
 
-        _chat.DispatchGlobalAnnouncement(body, Loc.GetString("typan-war-sender"), colorOverride: Color.Gold);
+        _chat.DispatchGlobalAnnouncement(body, Loc.GetString("typan-war-sender"), colorOverride: TypanWarColors.Neutral);
     }
 
     public TypanWarCaptureZoneStatus[] GetZoneStatuses()
@@ -310,7 +310,10 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         };
 
         var message = Loc.GetString(key, ("zone", zoneName));
-        _chat.DispatchGlobalAnnouncement(message, Loc.GetString("typan-war-sender"), colorOverride: Color.Gold);
+        _chat.DispatchGlobalAnnouncement(
+            message,
+            Loc.GetString(TypanWarColors.SenderLocId(owner)),
+            colorOverride: TypanWarColors.ForCaptureOwner(owner));
     }
 
     private bool TryGetActiveRule([NotNullWhen(true)] out TypanStationWarRuleComponent? rule)

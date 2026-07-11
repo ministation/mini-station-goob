@@ -143,10 +143,15 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
         var direction = ContentLocalizationManager.FormatDirection(angle.GetDir());
         var location = GetStationDockLocation(config, targetGrid);
 
+        var isNt = announcementKey == "typan-war-drop-shuttle-docked-nt";
+        var factionColor = isNt ? TypanWarColors.Nanotrasen : TypanWarColors.Typan;
+        var sender = Loc.GetString(isNt ? "typan-war-sender-nt" : "typan-war-sender-typan");
+
         _chat.DispatchStationAnnouncement(
             station,
             Loc.GetString(announcementKey, ("direction", direction), ("location", location)),
-            Loc.GetString("typan-war-sender"));
+            sender,
+            colorOverride: factionColor);
     }
 
     private string GetStationDockLocation(DockingConfig config, EntityUid stationGrid)

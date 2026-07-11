@@ -30,7 +30,7 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
     private SpriteSystem? _sprite;
     private RSI.State? _areaState;
 
-    public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowEntities | OverlaySpace.WorldSpace;
+    public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowEntities | OverlaySpace.ScreenSpace;
 
     public TypanWarCaptureZoneOverlay()
     {
@@ -60,8 +60,20 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
 
             if (args.Space == OverlaySpace.WorldSpaceBelowEntities)
                 DrawZoneHighlight(handle, zone, xform);
-            else if (args.Space == OverlaySpace.WorldSpace)
-                DrawCaptureProgress(handle, zone, xform);
+        }
+
+        if (args.Space != OverlaySpace.ScreenSpace || args.ViewportControl == null)
+            return;
+
+        var screenHandle = args.ScreenHandle;
+        query = _ent.AllEntityQueryEnumerator<TypanWarCaptureZoneComponent, TransformComponent>();
+
+        while (query.MoveNext(out _, out var zone, out var xform))
+        {
+            if (!zone.Active)
+                continue;
+
+            DrawCaptureProgress(screenHandle, zone, xform);
         }
     }
 
@@ -122,7 +134,7 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
 
         handle.SetTransform(Matrix3x2.Identity);
     }
-    private void DrawCaptureProgress(DrawingHandleWorld handle, TypanWarCaptureZoneComponent zone, TransformComponent xform)
+    private void DrawCaptureProgress(DrawingHandleScreen handle, TypanWarCaptureZoneComponent zone, TransformComponent xform)
     {
         if (zone.CaptureProgress <= 0f || xform.GridUid is not { } gridUid || !_ent.TryGetComponent(gridUid, out MapGridComponent? grid))
             return;
@@ -135,28 +147,27 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
         };
 
         var worldMatrix = _xform!.GetWorldMatrix(gridUid);
-        handle.SetTransform(worldMatrix);
-
         var centerTile = _map!.TileIndicesFor(gridUid, grid, xform.Coordinates);
-        var center = _lookup!.GetLocalBounds(centerTile, grid.TileSize).Center;
-        center += new Vector2(0f, grid.TileSize * 0.55f);
+        var localCenter = _lookup!.GetLocalBounds(centerTile, grid.TileSize).Center;
+        localCenter += new Vector2(0f, grid.TileSize * 0.55f);
+        var worldCenter = Vector2.Transform(localCenter, worldMatrix);
+        var screenCenter = _eye.WorldToScreen(worldCenter);
 
-        const float barHalfW = 0.75f;
-        const float barHalfH = 0.08f;
-        var box = new Box2(
-            center - new Vector2(barHalfW, barHalfH),
-            center + new Vector2(barHalfW, barHalfH));
-
+        const float barHalfW = 36f;
+        const float barHalfH = 4f;
         var back = Color.FromHex("#252530").WithAlpha(0.55f);
+
+        var box = new UIBox2(
+            screenCenter - new Vector2(barHalfW, barHalfH),
+            screenCenter + new Vector2(barHalfW, barHalfH));
+
         handle.DrawRect(box, back);
 
         var fillWidth = box.Width * Math.Clamp(zone.CaptureProgress, 0f, 1f);
         if (fillWidth > 0f)
         {
-            var fillBox = new Box2(box.Left, box.Bottom, box.Left + fillWidth, box.Top);
+            var fillBox = new UIBox2(box.Left, box.Bottom, box.Left + fillWidth, box.Top);
             handle.DrawRect(fillBox, fillColor);
         }
-
-        handle.SetTransform(Matrix3x2.Identity);
     }
 }

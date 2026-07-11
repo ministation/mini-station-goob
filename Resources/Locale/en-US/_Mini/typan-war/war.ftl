@@ -2,6 +2,8 @@ typan-station-goal-objective-issuer = Typan Station
 typan-war-objective-issuer = Station War
 
 typan-war-sender = Station War Command
+typan-war-sender-nt = Station War Command (NanoTrasen)
+typan-war-sender-typan = Station War Command (Syndicate)
 
 typan-war-declaration = A war has been declared between the NanoTrasen station and Typan. All personnel must arm themselves immediately and follow combat readiness protocols.
 
@@ -17,7 +19,7 @@ typan-war-hud-winner-nt = NT Victory
 typan-war-hud-winner-typan = Syndicate Victory
 
 typan-war-end-warning = One minute remains until the station war ends.
-typan-war-event-supply = [color=#F0D890]Station War:[/color] supply caches unlocked on both stations — check war armories.
+typan-war-event-supply = [color=#C8C4D8]Station War:[/color] supply caches unlocked on both stations — check war armories.
 typan-war-event-intel = [color=#A8C8FF]NT score:[/color] {$nt} pts. [color=#FFB0B0]Syndicate:[/color] {$typan} pts.
 
 typan-war-capture-zones-active-header = Attention NanoTrasen and Syndicate forces! Strategically important capture zones have been marked:
@@ -40,11 +42,11 @@ typan-war-hud-zone-owner-typan = Syndicate
 typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Console bluespace jumps are blocked until hostilities begin. Follow combat readiness protocols — hostilities begin in five minutes.
 
 typan-war-manifest =
-    {"[font size=16][color=#F0D890][bold]Station War Manifest[/bold][/color][/font]"}
+    {"[font size=16][color=#C8C4D8][bold]Station War Manifest[/bold][/color][/font]"}
     {"[color=#C8C4D8][color=#A8C8FF][bold]NanoTrasen[/bold][/color] is engaged in open hostilities against [color=#FFB0B0][bold]Syndicate[/bold][/color] forces at [color=#FFB0B0][bold]Typan Station[/bold][/color].[/color]"}
     {"[color=#A8C8FF]▸[/color] [color=#A8C8FF][bold]NanoTrasen[/bold][/color]: eliminate all combat-capable [color=#FFB0B0]Syndicate[/color] forces."}
     {"[color=#FFB0B0]▸[/color] [color=#FFB0B0][bold]Syndicate[/bold][/color]: eliminate all combat-capable [color=#A8C8FF]NanoTrasen[/color] forces."}
-    {"[color=#85C97A]▸[/color] Targeting systems are configured [bold]not to harm allies[/bold] with [bold]ranged[/bold] weapons. Use [color=#F0D890]Ally Protection[/color] when needed."}
+    {"[color=#C8C4D8]▸[/color] Targeting systems are configured [bold]not to harm allies[/bold] with [bold]ranged[/bold] weapons. Use [bold]Ally Protection[/bold] when needed."}
 
 typan-war-ff-enabled = Ally protection enabled — you will not hit allies.
 typan-war-ff-disabled = Ally protection disabled.
@@ -88,7 +90,7 @@ typan-war-end-announce-nt-elimination = The station war has ended. [color=#A8C8F
 typan-war-end-announce-typan-elimination = The station war has ended. [color=#FFB0B0]Syndicate[/color] wins — all [color=#A8C8FF]NanoTrasen[/color] forces eliminated.
 typan-war-end-announce-stalemate = The station war has ended in a stalemate.
 
-typan-war-round-end-header = [color=#F0D890][bold]Station War[/bold][/color]
+typan-war-round-end-header = [color=#C8C4D8][bold]Station War[/bold][/color]
 typan-war-round-end-initial = Total deployed: NT {$nt}, Typan {$typan}
 typan-war-round-end-final = Survivors: NT {$nt}, Typan {$typan}
 typan-war-round-end-losses = Losses: NT {$ntLoss}%, Typan {$typanLoss}%

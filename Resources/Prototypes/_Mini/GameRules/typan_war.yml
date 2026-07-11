@@ -14,6 +14,12 @@
     warDurationSeconds: 1800
     warMusicDelaySeconds: 90
     warMusicDurationSeconds: 90
+    warMusicTracks:
+    - /Audio/_Mini/TypanWar/station_war.ogg
+    - /Audio/_Mini/TypanWar/desolation.ogg
+    warMusicTrackDurations:
+    - 90
+    - 90
     roundEndDelaySeconds: 120
     minNtAlive: 0
     minTypanAlive: 0

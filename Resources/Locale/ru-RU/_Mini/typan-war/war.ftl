@@ -5,6 +5,8 @@ typan-war-objective-issuer = Война станций
 
 
 typan-war-sender = Штаб станционной войны
+typan-war-sender-nt = Штаб станционной войны (Нанотрайзен)
+typan-war-sender-typan = Штаб станционной войны (Синдикат)
 
 
 
@@ -36,7 +38,7 @@ typan-war-hud-winner-typan = Победа Синдиката
 
 typan-war-end-warning = До окончания войны станций осталась одна минута.
 
-typan-war-event-supply = [color=#F0D890]Война станций:[/color] снабжение развёрнуто на обеих станциях — проверьте военные склады.
+typan-war-event-supply = [color=#C8C4D8]Война станций:[/color] снабжение развёрнуто на обеих станциях — проверьте военные склады.
 
 typan-war-event-intel = [color=#A8C8FF]Очки NT:[/color] {$nt}. [color=#FFB0B0]Синдикат:[/color] {$typan}.
 
@@ -65,7 +67,7 @@ typan-war-prep-announce = Объявлена война между станци�
 
 typan-war-manifest =
 
-    {"[font size=16][color=#F0D890][bold]Манифест войны станций[/bold][/color][/font]"}
+    {"[font size=16][color=#C8C4D8][bold]Манифест войны станций[/bold][/color][/font]"}
 
     {"[color=#C8C4D8]Корпорация [color=#A8C8FF][bold]Нанотрайзен[/bold][/color] ведёт открытые боевые действия против сил [color=#FFB0B0][bold]Синдиката[/bold][/color] на объекте [color=#FFB0B0][bold]Тайпан[/bold][/color].[/color]"}
 
@@ -73,7 +75,7 @@ typan-war-manifest =
 
     {"[color=#FFB0B0]▸[/color] [color=#FFB0B0][bold]Синдикат[/bold][/color]: уничтожить все боеспособные силы [color=#A8C8FF]Нанотрайзен[/color]."}
 
-    {"[color=#85C97A]▸[/color] Системы наведения настроены [bold]не поражать союзников[/bold] из [bold]дальнобойного[/bold] оружия. Используйте действие [color=#F0D890]«Защита союзников»[/color]."}
+    {"[color=#C8C4D8]▸[/color] Системы наведения настроены [bold]не поражать союзников[/bold] из [bold]дальнобойного[/bold] оружия. Используйте действие [bold]«Защита союзников»[/bold]."}
 
 
 
@@ -130,7 +132,7 @@ typan-war-end-announce-stalemate = Война станций завершена.
 
 
 
-typan-war-round-end-header = [color=#F0D890][bold]Война станций[/bold][/color]
+typan-war-round-end-header = [color=#C8C4D8][bold]Война станций[/bold][/color]
 
 typan-war-round-end-initial = Численность армий: NT {$nt}, Тайпан {$typan}
 

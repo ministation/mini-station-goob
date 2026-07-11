@@ -14,18 +14,21 @@ public sealed class TypanWarMinimapWindow : FancyWindow
         IoCManager.InjectDependencies(this);
 
         Title = Loc.GetString("typan-war-minimap-title");
-        MinWidth = 420;
-        MinHeight = 440;
+        MinWidth = 680;
+        MinHeight = 680;
+        SetSize = new System.Numerics.Vector2(720, 720);
 
         _map = new TypanWarMinimapControl
         {
             VerticalExpand = true,
             HorizontalExpand = true,
-            MinSize = new System.Numerics.Vector2(400, 400),
-            Margin = new Thickness(4),
+            MinSize = new System.Numerics.Vector2(660, 660),
+            Margin = new Thickness(2),
         };
         ContentsContainer.AddChild(_map);
     }
+
+    public void PrepareForDisplay() => _map.PrepareForDisplay();
 
     public void Update(
         TypanWarMinimapGrid[] grids,
