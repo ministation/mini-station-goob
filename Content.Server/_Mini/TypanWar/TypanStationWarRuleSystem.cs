@@ -262,7 +262,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
     }
 
     /// <summary>
-    /// Bluespace travel is blocked during the prep phase only.
+    /// Bluespace travel is blocked for the whole station war (prep and combat), except arrivals shuttles.
     /// </summary>
     private bool ShouldBlockFtl()
     {
@@ -272,7 +272,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             if (!GameTicker.IsGameRuleActive(uid, gameRule))
                 continue;
 
-            return component.Phase == TypanWarPhase.Pending;
+            return component.Phase is TypanWarPhase.Pending or TypanWarPhase.Active;
         }
 
         return false;

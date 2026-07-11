@@ -6,7 +6,7 @@ using Robust.Shared.Prototypes;
 namespace Content.Shared._Mini.TypanWar;
 
 /// <summary>
-/// Apex-style capture zone (3×3 open field with a flag in the center). Spawned procedurally at T+10.
+/// Apex-style capture zone (3×3 open field with a flag in the center). Spawned when combat begins.
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 [Access(typeof(SharedTypanWarCaptureZoneSystem))]

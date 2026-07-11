@@ -63,7 +63,7 @@ typan-war-hud-zone-owner-neutral = нейтральная
 typan-war-hud-zone-owner-nanotrasen = NT
 typan-war-hud-zone-owner-typan = Синдикат
 
-typan-war-prep-announce = Объявлена война между станциями Нанотрайзен и Тайпан. Блюспейс-прыжки с консоли заблокированы до начала боевых действий. Следуйте протоколам боевой готовности — через пять минут начнутся боевые действия.
+typan-war-prep-announce = Объявлена война между станциями Нанотрайзен и Тайпан. Блюспейс-прыжки заблокированы на всё время войны. Следуйте протоколам боевой готовности — через пять минут начнутся боевые действия.
 
 typan-war-manifest =
     {"[font size=18][color=#C8C4D8][bold]ВОЙНА СТАНЦИЙ — БОЕВАЯ СВОДКА[/bold][/color][/font]"}
@@ -106,7 +106,7 @@ typan-war-minimap-map-legend = Силуэты = станции и шаттлы �
 typan-war-minimap-controls = Колёсико — масштаб · перетаскивание — перемещение
 typan-war-ghost-thunderdome-blocked = Thunderdome недоступен во время войны станций.
 
-typan-war-ftl-blocked = Блюспейс-прыжки заблокированы до начала боевых действий.
+typan-war-ftl-blocked = Блюспейс-прыжки заблокированы на время войны станций.
 
 typan-war-drop-shuttle-docked-nt = Шаттл подкрепления Нанотрайзен пристыковался к станции с {$direction}, локация: {$location}.
 typan-war-drop-shuttle-docked-typan = Шаттл подкрепления Синдиката пристыковался к станции с {$direction}, локация: {$location}.

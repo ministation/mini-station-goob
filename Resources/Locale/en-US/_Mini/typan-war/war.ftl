@@ -42,7 +42,7 @@ typan-war-hud-zone-owner-neutral = neutral
 typan-war-hud-zone-owner-nanotrasen = NT
 typan-war-hud-zone-owner-typan = Syndicate
 
-typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Console bluespace jumps are blocked until hostilities begin. Follow combat readiness protocols — hostilities begin in five minutes.
+typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Bluespace jumps are blocked for the duration of the war. Follow combat readiness protocols — hostilities begin in five minutes.
 
 typan-war-manifest =
     {"[font size=18][color=#C8C4D8][bold]STATION WAR — OPERATIONAL BRIEF[/bold][/color][/font]"}
@@ -82,7 +82,7 @@ typan-war-minimap-map-legend = Silhouettes = stations & shuttles (named) · tria
 typan-war-minimap-controls = Scroll — zoom · drag — pan
 typan-war-ghost-thunderdome-blocked = Thunderdome is disabled during station war.
 
-typan-war-ftl-blocked = Bluespace jumps are blocked until hostilities begin.
+typan-war-ftl-blocked = Bluespace jumps are blocked during station war.
 
 typan-war-drop-shuttle-docked-nt = A NanoTrasen reinforcement shuttle has docked {$direction} of the station at {$location}.
 typan-war-drop-shuttle-docked-typan = A Syndicate reinforcement shuttle has docked {$direction} of the station at {$location}.

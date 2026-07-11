@@ -49,7 +49,7 @@
     captureTimeSeconds: 35
     lootIntervalSeconds: 300
 
-# Legacy mapper markers (optional — zones are spawned automatically at T+10).
+# Legacy mapper markers (optional — zones are spawned automatically when combat begins).
 - type: entity
   parent: MarkerBase
   id: TypanWarCaptureZoneBase
