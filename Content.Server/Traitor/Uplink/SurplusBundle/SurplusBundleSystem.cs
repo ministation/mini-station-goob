@@ -84,12 +84,42 @@ public sealed class SurplusBundleSystem : EntitySystem
             }
 
             // Select random listing and add into crate
-            var randomIndex = _random.Next(index, listings.Count);
-            var randomItem = listings[randomIndex];
+            var randomItem = ent.Comp1.CostWeightedSelection
+                ? PickCostWeightedListing(listings, index, ent.Comp1.CostWeightExponent)
+                : listings[_random.Next(index, listings.Count)];
             ret.Add(randomItem);
             totalCost += randomItem.Cost.Values.Sum();
         }
 
         return ret;
+    }
+
+    /// <summary>
+    /// Picks a listing with weight inversely proportional to cost — expensive items are possible but rare.
+    /// </summary>
+    private ListingData PickCostWeightedListing(List<ListingData> listings, int startIndex, float exponent)
+    {
+        var totalWeight = 0f;
+        Span<float> weights = stackalloc float[listings.Count - startIndex];
+
+        for (var i = startIndex; i < listings.Count; i++)
+        {
+            var cost = MathF.Max((float) listings[i].Cost.Values.Sum(), 1f);
+            var weight = 1f / MathF.Pow(cost, exponent);
+            weights[i - startIndex] = weight;
+            totalWeight += weight;
+        }
+
+        var roll = _random.NextFloat() * totalWeight;
+        var accumulated = 0f;
+
+        for (var i = 0; i < weights.Length; i++)
+        {
+            accumulated += weights[i];
+            if (roll <= accumulated)
+                return listings[startIndex + i];
+        }
+
+        return listings[^1];
     }
 }

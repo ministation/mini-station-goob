@@ -18,4 +18,16 @@ public sealed partial class SurplusBundleComponent : Component
     /// </summary>
     [DataField]
     public int TotalPrice = 20;
+
+    /// <summary>
+    ///     When set, cheaper listings are rolled more often (weight = 1 / cost^exponent).
+    /// </summary>
+    [DataField]
+    public bool CostWeightedSelection;
+
+    /// <summary>
+    ///     Exponent for <see cref="CostWeightedSelection"/>; higher values bias harder toward cheap loot.
+    /// </summary>
+    [DataField]
+    public float CostWeightExponent = 2f;
 }

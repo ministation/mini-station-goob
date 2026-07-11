@@ -1,6 +1,6 @@
 - type: entity
   id: CrateNtSurplusBundle
-  parent: [ CrateGeneric, StorePresetTypanWarNtSurplus ]
+  parent: CrateGeneric
   name: typan-war-surplus-nt-crate-name
   description: typan-war-surplus-nt-crate-desc
   components:
@@ -17,5 +17,5 @@
       sprite: Structures/Storage/Crates/labels.rsi
       offset: "-0.5,0"
       map: ["enum.PaperLabelVisuals.Layer"]
-  - type: SurplusBundle
-    totalPrice: 55
+  - type: TypanWarSurplusBundle
+    lootTable: TypanWarNtSurplusLoot

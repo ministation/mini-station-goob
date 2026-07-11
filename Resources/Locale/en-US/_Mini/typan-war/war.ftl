@@ -40,9 +40,9 @@ typan-war-hud-zone-owner-nanotrasen = NT
 typan-war-hud-zone-owner-typan = Syndicate
 
 typan-war-surplus-nt-crate-name = NT surplus crate
-typan-war-surplus-nt-crate-desc = A command-marked NanoTrasen supply crate. Random security gear — weapons, ammo, hardsuits, medkits, and deployable laser turrets.
+typan-war-surplus-nt-crate-desc = A command-marked NanoTrasen supply crate. Each listed item is rolled independently — Drozd ~50%, security hardsuit ~70%, OBR hardsuit ~5%, medkits and ammo at their own odds.
 typan-war-surplus-typan-crate-name = Syndicate surplus crate
-typan-war-surplus-typan-crate-desc = A Syndicate-marked field supply crate. Random combat gear — weapons, ammo, hardsuits, medkits, and deployable laser turrets.
+typan-war-surplus-typan-crate-desc = A Syndicate-marked field supply crate. Each listed item is rolled independently — C-20r ~50%, patrol hardsuit ~70%, blood-red hardsuit ~5%, medkits and ammo at their own odds.
 
 typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Console bluespace jumps are blocked until hostilities begin. Follow combat readiness protocols — hostilities begin in five minutes.
 
