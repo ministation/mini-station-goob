@@ -64,8 +64,6 @@
     probability: 0.58
   - item: ClothingOuterArmorBulletproof
     probability: 0.32
-  - item: ClothingHeadHelmetSecurity
-    probability: 0.42
   # Medical
   - item: MedkitFilled
     probability: 0.9
