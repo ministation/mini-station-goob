@@ -82,6 +82,13 @@ public sealed partial class TypanStationWarRuleComponent : Component
     [DataField]
     public int StationSeparationTiles = 300;
 
+    /// <summary>Max distance (tiles / meters) from a station anchor when repositioning trade posts for war.</summary>
+    [DataField]
+    public float TradePostMaxDistanceTiles = 500f;
+
+    [DataField]
+    public string WarParallax = "TypanWarParallax";
+
     /// <summary>Shuttle map spawned and docked to Typan when combat begins. Disabled for capture-zone war mode.</summary>
     [DataField]
     public ResPath DropShuttlePath;

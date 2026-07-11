@@ -57,6 +57,7 @@ public sealed class TypanWarMinimapControl : Control
     private TurfSystem? _turf;
     private TransformSystem? _xform;
     private VectorFont? _font;
+    private VectorFont? _zoneFont;
 
     private TypanWarMinimapGrid[] _grids = [];
     private TypanWarCaptureZoneStatus[] _zones = [];
@@ -182,6 +183,7 @@ public sealed class TypanWarMinimapControl : Control
         base.Draw(handle);
 
         _font ??= new VectorFont(_cache.GetResource<FontResource>(MiniFonts.Bold), 12);
+        _zoneFont ??= new VectorFont(_cache.GetResource<FontResource>(MiniFonts.Bold), 17);
         _xform ??= _ent.System<TransformSystem>();
 
         var box = PixelSizeBox;
@@ -679,12 +681,15 @@ public sealed class TypanWarMinimapControl : Control
         };
 
         var center = map.WorldToScreen(zone.WorldX, zone.WorldY);
-        handle.DrawCircle(center, 11f, Color.FromHex("#101018").WithAlpha(0.85f));
-        handle.DrawCircle(center, 9f, color.WithAlpha(0.9f));
+        handle.DrawCircle(center, 16f, Color.FromHex("#101018").WithAlpha(0.92f));
+        handle.DrawCircle(center, 13f, color.WithAlpha(0.95f));
 
         var label = string.IsNullOrEmpty(zone.ZoneLabel) ? "?" : zone.ZoneLabel;
-        var dims = handle.GetDimensions(_font!, label, 1f);
-        handle.DrawString(_font!, center - dims * 0.5f, label, Color.FromHex("#101018"));
+        var font = _zoneFont ?? _font!;
+        var dims = handle.GetDimensions(font, label, 1f);
+        var textPos = center - dims * 0.5f;
+        handle.DrawString(font, textPos + new Vector2(1f, 1f), label, Color.FromHex("#101018"));
+        handle.DrawString(font, textPos, label, Color.White);
     }
 
     private bool TryBuildTransform(UIBox2 box, out MapTransform map)

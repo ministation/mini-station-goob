@@ -1,0 +1,48 @@
+- type: parallax
+  id: TypanWarParallax
+  layers:
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/_CorvaxGoob/Parallaxes/VoidParallax.png"
+      slowness: 0.998046875
+      scale: "1, 1"
+    - texture:
+        !type:GeneratedParallaxTextureSource
+        id: "hq_wizard_stars"
+        configPath: "/Prototypes/Parallaxes/parallax_config_stars.toml"
+      slowness: 0.996625
+    - texture:
+        !type:GeneratedParallaxTextureSource
+        id: "hq_wizard_stars_dim"
+        configPath: "/Prototypes/Parallaxes/parallax_config_stars_dim.toml"
+      slowness: 0.989375
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/Parallaxes/XenoParallaxNeb.png"
+      slowness: 0.978046875
+      scale: "1.15, 1.15"
+      tiled: false
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/Parallaxes/DeltaParallaxNeb.png"
+      slowness: 0.972046875
+      scale: "0.95, 0.95"
+      tiled: false
+    - texture:
+        !type:GeneratedParallaxTextureSource
+        id: "hq_wizard_stars_faster"
+        configPath: "/Prototypes/Parallaxes/parallax_config_stars-2.toml"
+      slowness: 0.965265625
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/Parallaxes/debris_small.png"
+      slowness: 0.955
+      scrolling: "0.012, 0.006"
+      scale: "1.4, 1.4"
+  layersLQ:
+    - texture:
+        !type:GeneratedParallaxTextureSource
+        id: ""
+        configPath: "/Prototypes/Parallaxes/parallax_config.toml"
+      slowness: 0.875
+  layersLQUseHQ: false

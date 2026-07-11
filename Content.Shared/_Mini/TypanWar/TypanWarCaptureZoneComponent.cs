@@ -40,7 +40,7 @@ public sealed partial class TypanWarCaptureZoneComponent : Component
     public float ContestDecayMultiplier = 2f;
 
     [DataField]
-    public float LootIntervalSeconds = 30f;
+    public float LootIntervalSeconds = 300f;
 
     /// <summary>Locale key suffix for announcements, e.g. nt / typan / trade.</summary>
     [DataField]
