@@ -52,7 +52,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawnComplete);
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
-        SubscribeLocalEvent<GhostComponent, PlayerAttachedEvent>(OnGhostPlayerAttached);
+        SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
 
         Subs.BuiEvents<GhostComponent>(TypanWarRespawnUiKey.Key, subs =>
         {
@@ -94,10 +94,12 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         }
     }
 
-    private void OnGhostPlayerAttached(EntityUid uid, GhostComponent component, PlayerAttachedEvent args)
+    private void OnPlayerAttached(PlayerAttachedEvent args)
     {
-        if (!TypanStationWarRuleSystem.IsWarActive)
+        if (!TypanStationWarRuleSystem.IsWarActive || !HasComp<GhostComponent>(args.Entity))
             return;
+
+        var uid = args.Entity;
 
         if (!TryGetCombatMindFromGhost(uid, out var mindId, out var combat))
             return;
