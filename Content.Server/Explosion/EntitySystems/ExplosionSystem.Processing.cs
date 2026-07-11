@@ -139,6 +139,7 @@ using Content.Shared.Body.Components;
 using Content.Server.Destructible;
 using Content.Server.Destructible.Thresholds.Triggers;
 using System.Linq;
+using Content.Server._Mini.TypanWar;
 
 namespace Content.Server.Explosion.EntitySystems;
 
@@ -638,6 +639,10 @@ public sealed partial class ExplosionSystem
     {
         if (_tileDefinitionManager[tileRef.Tile.TypeId] is not ContentTileDefinition tileDef
             || tileDef.Indestructible)
+            return;
+
+        if (TypanStationWarRuleSystem.IsWarActive
+            && _typanWarZoneProtection.IsIndestructible(tileRef.GridUid, tileRef.GridIndices))
             return;
 
         if (!CanCreateVacuum)

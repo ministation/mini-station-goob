@@ -67,6 +67,13 @@ public sealed partial class GhostGui : UIWidget
         TargetWindow.Populate();
     }
 
+    public void SetWarModeRestrictions(bool active)
+    {
+        GhostRolesButton.Visible = !active;
+        AntagTokensButton.Visible = !active;
+        ThunderdomeButton.Visible = !active;
+    }
+
     // Goobstation - Thunderdome
     public void UpdateThunderdome(int playerCount)
     {

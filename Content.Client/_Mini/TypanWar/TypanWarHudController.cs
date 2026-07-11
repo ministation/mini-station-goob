@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Egorik1
+// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+
 using Content.Client.Gameplay;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Shared._Mini.TypanWar;
@@ -85,8 +88,9 @@ public sealed class TypanWarHudController : UIController,
         hud.Update(
             showEnded ? TypanWarPhase.Ended : _war.Phase,
             _war.Winner,
-            _war.NtAlive,
-            _war.TypanAlive,
+            _war.NtCapturePoints,
+            _war.TypanCapturePoints,
+            _war.CapturePointsToWin,
             _war.TimeRemainingSeconds);
     }
 

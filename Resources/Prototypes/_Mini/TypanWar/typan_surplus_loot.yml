@@ -1,0 +1,104 @@
+- type: typanWarSurplusLoot
+  id: TypanWarTypanSurplusLoot
+  entries:
+  # Weapons
+  - item: WeaponSubMachineGunC20r
+    probability: 0.5
+  - item: WeaponPistolViper
+    probability: 0.44
+  - item: WeaponPistolCobra
+    probability: 0.32
+  - item: WeaponSniperMosin
+    probability: 0.38
+  - item: WeaponSubMachineGunAtreides
+    probability: 0.14
+  - item: WeaponRifleWSPR
+    probability: 0.07
+  - item: WeaponRevolverPythonAP
+    probability: 0.12
+  - item: EnergyDaggerBox
+    probability: 0.28
+  - item: WeaponRifleBurner
+    probability: 0.06
+  - item: WeaponSubMachineGunM7S
+    probability: 0.12
+  - item: WeaponLightMachineGunL2RPK
+    probability: 0.04
+  - item: MiniatureEnergyCrossbow
+    probability: 0.03
+  - item: CombatKnife
+    probability: 0.4
+  - item: ThrowingKnivesKit
+    probability: 0.15
+  # Ammo
+  - item: MagazinePistolSubMachineGun
+    probability: 0.58
+  - item: MagazinePistolCaselessRifle
+    probability: 0.35
+  - item: MagazineLightRifle
+    probability: 0.4
+  - item: MagazineBoxLightRifle
+    probability: 0.22
+  - item: MagazineBoxMagnum
+    probability: 0.25
+  - item: SpeedLoaderMagnum
+    probability: 0.45
+  - item: MagazineHighCaliber
+    probability: 0.1
+  - item: MagazineBoxAntiMateriel
+    probability: 0.06
+  - item: MagazinePistol
+    probability: 0.3
+  # Armor
+  - item: ClothingOuterHardsuitTypanPatrol
+    probability: 0.7
+  - item: ClothingOuterHardsuitSyndie
+    probability: 0.05
+  - item: ClothingOuterHardsuitJuggernaut
+    probability: 0.01
+  - item: ClothingOuterHardsuitSyndieElite
+    probability: 0.08
+  - item: ClothingOuterVestWeb
+    probability: 0.62
+  - item: ClothingOuterVestWebElite
+    probability: 0.12
+  - item: ClothingOuterArmorBasic
+    probability: 0.55
+  - item: ClothingHeadHelmetSwatSyndicate
+    probability: 0.18
+  # Medical
+  - item: MedkitFilled
+    probability: 0.9
+  - item: MedkitCombatFilled
+    probability: 0.2
+  - item: MedkitBruteFilled
+    probability: 0.5
+  - item: MedkitBurnFilled
+    probability: 0.5
+  - item: MedkitAdvancedFilled
+    probability: 0.2
+  - item: BruteAutoInjector
+    probability: 0.36
+  - item: AirlossAutoInjector
+    probability: 0.3
+  # Gear
+  - item: ToolboxElectricalTurretTypan
+    probability: 0.1
+  - item: EnergyShield
+    probability: 0.04
+  - item: GrenadeShrapnel
+    probability: 0.38
+  - item: GrenadeFlashBang
+    probability: 0.25
+  - item: C4
+    probability: 0.08
+  - item: DoubleEmergencyOxygenTankFilled
+    probability: 0.52
+  - item: ClothingHandsGlovesCombat
+    probability: 0.42
+  - item: ClothingMaskGasSyndicate
+    probability: 0.48
+  - item: BoxSurvivalSyndicate
+    probability: 0.15
+  - item: Stunbaton
+    probability: 0.25

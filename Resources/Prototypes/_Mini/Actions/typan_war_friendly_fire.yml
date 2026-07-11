@@ -16,3 +16,19 @@
       state: on
   - type: InstantAction
     event: !type:ToggleActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionTypanWarMinimap
+  name: War map
+  description: Open the war map showing stations, shuttles, capture zones, and allies.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -9
+    useDelay: 0.25
+    icon:
+      sprite: _Mini/Interface/Actions/map.rsi
+      state: map
+  - type: InstantAction
+    event: !type:TypanWarMinimapActionEvent

@@ -1,19 +1,23 @@
+// SPDX-FileCopyrightText: 2026 Egorik1
+// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+
 using Content.Shared._Mini.TypanWar;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 using Robust.Shared.Utility;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Content.Server._Mini.TypanWar;
 
-[RegisterComponent, Access(typeof(TypanStationWarRuleSystem), typeof(TypanWarBalanceSystem))]
+[RegisterComponent, Access(typeof(TypanStationWarRuleSystem), typeof(TypanWarBalanceSystem), typeof(TypanStationWarLayoutSystem), typeof(TypanWarRespawnSystem), typeof(TypanWarCaptureZoneSystem))]
 public sealed partial class TypanStationWarRuleComponent : Component
 {
     [DataField]
     public float AnnouncementDelaySeconds = 15f;
 
     [DataField]
-    public float WarStartDelaySeconds = 30f;
+    public float WarStartDelaySeconds = 300f;
 
     [DataField]
     public float WarDurationSeconds = 1800f;
@@ -21,9 +25,22 @@ public sealed partial class TypanStationWarRuleComponent : Component
     [DataField]
     public float WarMusicDelaySeconds = 90f;
 
-    /// <summary>Length of station_war.ogg — used to restart the track when it ends.</summary>
+    /// <summary>Fallback track length when <see cref="WarMusicTrackDurations"/> is shorter than the playlist.</summary>
     [DataField]
     public float WarMusicDurationSeconds = 90f;
+
+    [DataField]
+    public List<ResPath> WarMusicTracks =
+    [
+        new("/Audio/_Mini/TypanWar/station_war.ogg"),
+        new("/Audio/_Mini/TypanWar/desolation.ogg"),
+    ];
+
+    [DataField]
+    public List<float> WarMusicTrackDurations = [90f, 90f];
+
+    /// <summary>Next playlist index (runtime).</summary>
+    public int WarMusicTrackIndex;
 
     [DataField]
     public float RoundEndDelaySeconds = 120f;
@@ -45,15 +62,43 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public float WarIntelEventDelaySeconds = 900f;
 
     [DataField]
-    public float WarSupplyEventDelaySeconds = 600f;
+    public float CaptureZoneActivationDelaySeconds = 0f;
 
-    /// <summary>Shuttle map spawned and docked to Typan when combat begins.</summary>
     [DataField]
-    public ResPath DropShuttlePath = new("/Maps/_Mini/Shuttles/typan_drop_shuttle.yml");
+    public int CapturePointsToWin = 100;
 
-    /// <summary>Shuttle map spawned and docked to NanoTrasen when combat begins.</summary>
     [DataField]
-    public ResPath NtDropShuttlePath = new("/Maps/_Mini/Shuttles/nt_drop_shuttle.yml");
+    public float CapturePointIntervalSeconds = 20f;
+
+    [DataField]
+    public float MinRespawnSeconds = 10f;
+
+    [DataField]
+    public float MaxRespawnSeconds = 60f;
+
+    [DataField]
+    public float NtCapturePoints;
+
+    [DataField]
+    public float TypanCapturePoints;
+
+    [DataField]
+    public int StationSeparationTiles = 300;
+
+    /// <summary>Max distance (tiles / meters) from a station anchor when repositioning trade posts for war.</summary>
+    [DataField]
+    public float TradePostMaxDistanceTiles = 500f;
+
+    [DataField]
+    public string WarParallax = "TypanWarParallax";
+
+    /// <summary>Shuttle map spawned and docked to Typan when combat begins. Disabled for capture-zone war mode.</summary>
+    [DataField]
+    public ResPath DropShuttlePath;
+
+    /// <summary>Shuttle map spawned and docked to NanoTrasen when combat begins. Disabled for capture-zone war mode.</summary>
+    [DataField]
+    public ResPath NtDropShuttlePath;
 
     [DataField]
     public float WarEndWarningSeconds = 60f;
@@ -110,7 +155,10 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public bool WarIntelEventSent;
 
     [DataField]
-    public bool WarSupplyEventSent;
+    public bool CaptureZonesActivated;
+
+    [DataField]
+    public bool LayoutApplied;
 
     [DataField]
     public float PrepInsufficientCheckAccumulator;

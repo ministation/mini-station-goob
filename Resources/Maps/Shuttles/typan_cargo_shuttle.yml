@@ -30,7 +30,7 @@ entities:
   - uid: 173
     components:
     - type: MetaData
-      name: Sindi shuttle
+      name: Cargo shuttle
     - type: Transform
       pos: 2.2710133,-2.4148211
       parent: invalid

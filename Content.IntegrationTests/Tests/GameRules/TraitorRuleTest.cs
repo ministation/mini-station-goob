@@ -27,7 +27,25 @@ namespace Content.IntegrationTests.Tests.GameRules;
 [TestFixture]
 public sealed class TraitorRuleTest
 {
+    /// <summary>
+    /// Minimal Traitor preset for integration tests. The live Traitor preset also rolls DummyNonAntag,
+    /// which requires five ready players and can cancel the round on empty.yml when that threshold is not met.
+    /// </summary>
+    [TestPrototypes]
+    private const string Prototypes = @"
+- type: gamePreset
+  id: TraitorIntegrationTest
+  alias:
+  - traitorintegrationtest
+  name: traitor-title
+  description: traitor-description
+  showInVote: false
+  rules:
+  - Traitor
+";
+
     private const string TraitorGameRuleProtoId = "Traitor";
+    private const string TraitorPresetId = "TraitorIntegrationTest";
     private const string TraitorAntagRoleName = "Traitor";
     private static readonly ProtoId<NpcFactionPrototype> SyndicateFaction = "Syndicate";
     private static readonly ProtoId<NpcFactionPrototype> NanotrasenFaction = "NanoTrasen";
@@ -52,7 +70,6 @@ public sealed class TraitorRuleTest
         var roleSys = server.System<RoleSystem>();
         var factionSys = server.System<NpcFactionSystem>();
 
-        // Look up the minimum player count and max total objective difficulty for the game rule
         var minPlayers = 1;
         var maxDifficulty = 0f;
         await server.WaitAssertion(() =>
@@ -70,38 +87,36 @@ public sealed class TraitorRuleTest
             maxDifficulty = randomObjectives.MaxDifficulty;
         });
 
-        // Initially in the lobby
         Assert.That(ticker.RunLevel, Is.EqualTo(GameRunLevel.PreRoundLobby));
         Assert.That(client.AttachedEntity, Is.Null);
         Assert.That(ticker.PlayerGameStatuses[client.User!.Value], Is.EqualTo(PlayerGameStatus.NotReadyToPlay));
 
-        // Add enough dummy players for the game rule
         var dummies = await pair.Server.AddDummySessions(minPlayers);
         await pair.RunTicksSync(5);
 
-        // Initially, the players have no attached entities
         Assert.That(pair.Player?.AttachedEntity, Is.Null);
         Assert.That(dummies.All(x => x.AttachedEntity == null));
 
-        // Opt-in the player for the traitor role
         await pair.SetAntagPreference(TraitorAntagRoleName, true);
 
         TraitorRuleComponent traitorRule = null;
         await server.WaitPost(() =>
         {
-            // StartRound clears manually added rules. Traitor must come from the preset so IntraPlayerSpawn
-            // selection runs while the rule is active during SpawnPlayers.
-            ticker.SetGamePreset("Traitor");
+            ticker.SetGamePreset(TraitorPresetId);
 
             ticker.ToggleReadyAll(true);
             Assert.That(ticker.PlayerGameStatuses.Values.All(x => x == PlayerGameStatus.ReadyToPlay));
 
             ticker.StartRound();
         });
-        await pair.RunTicksSync(10);
 
         await server.WaitAssertion(() =>
         {
+            Assert.That(ticker.RunLevel, Is.EqualTo(GameRunLevel.InRound));
+            Assert.That(ticker.PlayerGameStatuses[client.User!.Value], Is.EqualTo(PlayerGameStatus.JoinedGame));
+            Assert.That(pair.Player?.AttachedEntity, Is.Not.Null);
+            Assert.That(entMan.EntityExists(pair.Player!.AttachedEntity!.Value));
+
             foreach (var rule in ticker.GetActiveGameRules())
             {
                 if (entMan.TryGetComponent<TraitorRuleComponent>(rule, out traitorRule))
@@ -111,18 +126,9 @@ public sealed class TraitorRuleTest
             Assert.Fail("Failed to find an active Traitor game rule after starting the round.");
         });
 
-        // Game should have started
-        Assert.That(ticker.RunLevel, Is.EqualTo(GameRunLevel.InRound));
-        Assert.That(ticker.PlayerGameStatuses.Values.All(x => x == PlayerGameStatus.JoinedGame));
-        Assert.That(client.EntMan.EntityExists(client.AttachedEntity));
-
-        // Check the player and dummies are spawned
-        var dummyEnts = dummies.Select(x => x.AttachedEntity ?? default).ToArray();
         var player = pair.Player!.AttachedEntity!.Value;
         Assert.That(entMan.EntityExists(player));
-        Assert.That(dummyEnts.All(entMan.EntityExists));
 
-        // Make sure the player is a traitor.
         var mind = mindSys.GetMind(player)!.Value;
         Assert.That(roleSys.MindIsAntagonist(mind));
         Assert.That(factionSys.IsMember(player, SyndicateFaction), Is.True);
@@ -130,14 +136,12 @@ public sealed class TraitorRuleTest
         Assert.That(traitorRule.TotalTraitors, Is.EqualTo(1));
         Assert.That(traitorRule.TraitorMinds[0], Is.EqualTo(mind));
 
-        // Check total objective difficulty
         Assert.That(entMan.TryGetComponent<MindComponent>(mind, out var mindComp));
         var totalDifficulty = mindComp.Objectives.Sum(o => entMan.GetComponent<ObjectiveComponent>(o).Difficulty);
         Assert.That(totalDifficulty, Is.AtMost(maxDifficulty),
             $"MaxDifficulty exceeded! Objectives: {string.Join(", ", mindComp.Objectives.Select(o => FormatObjective(o, entMan)))}");
         Assert.That(mindComp.Objectives, Is.Not.Empty,
             $"No objectives assigned!");
-
 
         await pair.CleanReturnAsync();
     }

@@ -10,14 +10,28 @@
     - LoneRunRule
   - type: TypanStationWarRule
     announcementDelaySeconds: 15
-    warStartDelaySeconds: 30
+    warStartDelaySeconds: 300
     warDurationSeconds: 1800
     warMusicDelaySeconds: 90
     warMusicDurationSeconds: 90
+    warMusicTracks:
+    - /Audio/_Mini/TypanWar/station_war.ogg
+    - /Audio/_Mini/TypanWar/desolation.ogg
+    warMusicTrackDurations:
+    - 90
+    - 90
     roundEndDelaySeconds: 120
-    minNtAlive: 0
-    minTypanAlive: 0
+    minNtAlive: 5
+    minTypanAlive: 5
     maxFactionRatio: 2
+    captureZoneActivationDelaySeconds: 0
+    capturePointsToWin: 100
+    capturePointIntervalSeconds: 20
+    minRespawnSeconds: 10
+    maxRespawnSeconds: 60
+    stationSeparationTiles: 300
+    tradePostMaxDistanceTiles: 500
+    warParallax: TypanWarParallax
     dropShuttlePath: /Maps/_Mini/Shuttles/typan_drop_shuttle.yml
     ntDropShuttlePath: /Maps/_Mini/Shuttles/nt_drop_shuttle.yml
 

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Egorik1
+// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server._TT.StationHandleJob;
@@ -35,6 +38,7 @@ public sealed class TypanWarBalanceSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedJobSystem _jobs = default!;
     [Dependency] private readonly TTStationHandleJobSystem _typanJobs = default!;
+    [Dependency] private readonly TypanWarRespawnSystem _respawn = default!;
 
     public override void Initialize()
     {
@@ -176,6 +180,7 @@ public sealed class TypanWarBalanceSystem : EntitySystem
         }
 
         BroadcastStatus();
+        _respawn.HandleGhostMindAdded(uid, args);
     }
 
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs e)

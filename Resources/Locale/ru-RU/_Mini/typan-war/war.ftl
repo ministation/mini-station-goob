@@ -4,7 +4,9 @@ typan-war-objective-issuer = Война станций
 
 
 
-typan-war-sender = Центральное командование
+typan-war-sender = Штаб станционной войны
+typan-war-sender-nt = Штаб станционной войны (Нанотрайзен)
+typan-war-sender-typan = Штаб станционной войны (Синдикат)
 
 
 
@@ -36,27 +38,50 @@ typan-war-hud-winner-typan = Победа Синдиката
 
 typan-war-end-warning = До окончания войны станций осталась одна минута.
 
-typan-war-event-supply = [color=#F0D890]Война станций:[/color] снабжение развёрнуто на обеих станциях — проверьте военные склады.
+typan-war-event-supply = [color=#C8C4D8]Война станций:[/color] снабжение развёрнуто на обеих станциях — проверьте военные склады.
 
-typan-war-event-intel = [color=#A8C8FF]Разведка NT:[/color] {$nt} боеспособных. [color=#FFB0B0]Синдикат:[/color] {$typan} боеспособных.
+typan-war-event-intel = [color=#A8C8FF]Очки NT:[/color] {$nt}. [color=#FFB0B0]Синдикат:[/color] {$typan}.
 
+typan-war-capture-zones-active-header = Внимание, бойцы Нанотрайзен и Синдиката! Обозначены стратегически важные зоны захвата:
+typan-war-capture-zones-active-line = Зона {$label} — {$location}
+typan-war-capture-zone-named = Зона {$label} ({$location})
+typan-war-capture-zone-nt = зона захвата NT
+typan-war-capture-zone-typan = зона захвата Синдиката
+typan-war-capture-zone-trade = зона захвата торгового аванпоста
+typan-war-capture-location-station = {$station} — {$area}
+typan-war-capture-location-trade-nt = Торговый аванпост Нанотрайзен
+typan-war-capture-location-trade-typan = Торговый аванпост Синдиката
+typan-war-hud-zone-line = Зона {$label}: {$location}
+typan-war-capture-nt = Нанотрайзен захватил {$zone}.
+typan-war-capture-typan = Синдикат захватил {$zone}.
+typan-war-capture-neutral = {$zone} стала нейтральной.
+typan-war-capture-loot-nt = На {$zone} доставлен [color=#A8C8FF]ящик снабжения Нанотрайзен[/color].
+typan-war-capture-loot-typan = На {$zone} доставлен [color=#FFB0B0]ящик снабжения Синдиката[/color].
 
+typan-war-hud-zone-inactive = неактивна
+typan-war-hud-zone-owner-neutral = нейтральная
+typan-war-hud-zone-owner-nanotrasen = NT
+typan-war-hud-zone-owner-typan = Синдикат
 
-typan-war-prep-announce = Объявлена война между станциями Нанотрайзен и Тайпан. Блюспейс-прыжки с консоли заблокированы до начала боевых действий. Следуйте протоколам боевой готовности — через пять минут начнутся боевые действия.
-
-
+typan-war-prep-announce = Объявлена война между станциями Нанотрайзен и Тайпан. Блюспейс-прыжки заблокированы на всё время войны. Следуйте протоколам боевой готовности — через пять минут начнутся боевые действия.
 
 typan-war-manifest =
-
-    {"[font size=16][color=#F0D890][bold]Манифест войны станций[/bold][/color][/font]"}
-
-    {"[color=#C8C4D8]Корпорация [color=#A8C8FF][bold]Нанотрайзен[/bold][/color] ведёт открытые боевые действия против сил [color=#FFB0B0][bold]Синдиката[/bold][/color] на объекте [color=#FFB0B0][bold]Тайпан[/bold][/color].[/color]"}
-
-    {"[color=#A8C8FF]▸[/color] [color=#A8C8FF][bold]Нанотрайзен[/bold][/color]: уничтожить все боеспособные силы [color=#FFB0B0]Синдиката[/color]."}
-
-    {"[color=#FFB0B0]▸[/color] [color=#FFB0B0][bold]Синдикат[/bold][/color]: уничтожить все боеспособные силы [color=#A8C8FF]Нанотрайзен[/color]."}
-
-    {"[color=#85C97A]▸[/color] Системы наведения настроены [bold]не поражать союзников[/bold] из [bold]дальнобойного[/bold] оружия. Используйте действие [color=#F0D890]«Защита союзников»[/color]."}
+    {"[font size=18][color=#C8C4D8][bold]ВОЙНА СТАНЦИЙ — БОЕВАЯ СВОДКА[/bold][/color][/font]"}
+    {"[color=#888898]────────────────────────────────[/color]"}
+    {"[color=#C8C4D8]Силы [color=#A8C8FF][bold]Нанотрайзен[/bold][/color] и [color=#FFB0B0][bold]Синдиката (Тайпан)[/bold][/color] ведут открытые боевые действия на общем поле боя.[/color]"}
+    {" "}
+    {"[color=#C8C4D8][bold]Главные задачи[/bold][/color]"}
+    {"[color=#A8C8FF]▸ NT:[/color] уничтожить боеспособные силы Синдиката и удерживать зоны захвата."}
+    {"[color=#FFB0B0]▸ Синдикат:[/color] уничтожить боеспособные силы NT и удерживать зоны захвата."}
+    {" "}
+    {"[color=#C8C4D8][bold]Зоны захвата[/bold][/color] [color=#888898](A / B / C)[/color]"}
+    {"[color=#C8C4D8]▸[/color] Три зоны 3×3 появляются с началом боя — станция NT, станция Тайпан и торговый аванпост."}
+    {"[color=#C8C4D8]▸[/color] Удержание зоны даёт очки захвата и периодически сбрасывает [bold]ящики снабжения[/bold]."}
+    {"[color=#C8C4D8]▸[/color] Зоны NT — [color=#A8C8FF]снабжение NT[/color]; зоны Синдиката — [color=#FFB0B0]снабжение Синдиката[/color]."}
+    {" "}
+    {"[color=#C8C4D8][bold]Правила боя[/bold][/color]"}
+    {"[color=#C8C4D8]▸[/color] Дальнобойное оружие [bold]не бьёт по союзникам[/bold] — при необходимости включите [bold]«Защиту союзников»[/bold]."}
+    {"[color=#C8C4D8]▸[/color] Подкрепления возрождаются на захваченных зонах или на спавне должности."}
 
 
 
@@ -64,9 +89,24 @@ typan-war-ff-enabled = Защита союзников включена — вы
 
 typan-war-ff-disabled = Защита союзников выключена.
 
+typan-war-respawn-title = Запрос подкрепления
+typan-war-respawn-timer = Подкрепление через {$seconds} с
+typan-war-respawn-ready = Выберите точку высадки
+typan-war-respawn-zone = Зона {$label} — {$location}
+typan-war-respawn-zone-desc = Высадка на захваченной точке вашей фракции.
+typan-war-respawn-base = Спавн должности
+typan-war-respawn-base-desc = Возврат на исходную точку спавна.
+typan-war-respawn-no-options = Нет доступных точек высадки.
+typan-war-respawn-no-profile = Не удалось загрузить профиль персонажа.
+typan-war-respawn-failed = Высадка не удалась — попробуйте другую точку.
 
+typan-war-minimap-title = Карта войны
+typan-war-minimap-legend = NT {$nt} / Синдикат {$typan} — победа при {$win}
+typan-war-minimap-map-legend = Силуэты = станции и шаттлы · треугольники = союзники · буквы = зоны захвата
+typan-war-minimap-controls = Колёсико — масштаб · перетаскивание — перемещение
+typan-war-ghost-thunderdome-blocked = Thunderdome недоступен во время войны станций.
 
-typan-war-ftl-blocked = Блюспейс-прыжки заблокированы до начала боевых действий.
+typan-war-ftl-blocked = Блюспейс-прыжки заблокированы на время войны станций.
 
 typan-war-drop-shuttle-docked-nt = Шаттл подкрепления Нанотрайзен пристыковался к станции с {$direction}, локация: {$location}.
 typan-war-drop-shuttle-docked-typan = Шаттл подкрепления Синдиката пристыковался к станции с {$direction}, локация: {$location}.
@@ -98,7 +138,7 @@ typan-war-end-announce-stalemate = Война станций завершена.
 
 
 
-typan-war-round-end-header = [color=#F0D890][bold]Война станций[/bold][/color]
+typan-war-round-end-header = [color=#C8C4D8][bold]Война станций[/bold][/color]
 
 typan-war-round-end-initial = Численность армий: NT {$nt}, Тайпан {$typan}
 

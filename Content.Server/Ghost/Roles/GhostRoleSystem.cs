@@ -43,6 +43,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server._CorvaxGoob.Skills;
+using Content.Server._Mini.TypanWar;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.EUI;
@@ -549,6 +550,9 @@ public sealed class GhostRoleSystem : EntitySystem
     /// <param name="identifier">ID of the ghost role.</param>
     public void Request(ICommonSession player, uint identifier)
     {
+        if (TypanStationWarRuleSystem.IsModeActive)
+            return;
+
         if (player.AttachedEntity is not { Valid: true } attached) // Goobstation
             return;
 

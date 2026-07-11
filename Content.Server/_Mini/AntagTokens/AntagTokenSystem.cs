@@ -1235,6 +1235,9 @@ public sealed class AntagTokenSystem : EntitySystem
 
     private bool IsSessionEligibleForGhostRolePurchase(ICommonSession session)
     {
+        if (TypanStationWarRuleSystem.IsModeActive)
+            return false;
+
         if (session.AttachedEntity is not { Valid: true } attached)
             return false;
 

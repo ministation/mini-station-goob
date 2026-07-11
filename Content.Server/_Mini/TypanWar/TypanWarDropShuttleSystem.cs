@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Egorik1
+// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Chat.Systems;
@@ -32,12 +35,15 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
+        SubscribeLocalEvent<TypanWarLayoutReadyEvent>(OnLayoutReady);
     }
 
-    private void OnWarStarted(TypanWarStartedEvent ev)
+    private void OnLayoutReady(TypanWarLayoutReadyEvent ev)
     {
         if (!TryComp<TypanStationWarRuleComponent>(ev.Rule, out var rule))
+            return;
+
+        if (rule.DropShuttlePath == default && rule.NtDropShuttlePath == default)
             return;
 
         if (rule.DropShuttlePath != default)
@@ -140,10 +146,16 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
         var direction = ContentLocalizationManager.FormatDirection(angle.GetDir());
         var location = GetStationDockLocation(config, targetGrid);
 
+        var isNt = announcementKey == "typan-war-drop-shuttle-docked-nt";
+        var factionColor = isNt ? TypanWarColors.Nanotrasen : TypanWarColors.Typan;
+        var sender = Loc.GetString(isNt ? "typan-war-sender-nt" : "typan-war-sender-typan");
+
         _chat.DispatchStationAnnouncement(
             station,
             Loc.GetString(announcementKey, ("direction", direction), ("location", location)),
-            Loc.GetString("typan-war-sender"));
+            sender,
+            announcementSound: TypanWarSounds.HeadquartersAlert,
+            colorOverride: factionColor);
     }
 
     private string GetStationDockLocation(DockingConfig config, EntityUid stationGrid)
