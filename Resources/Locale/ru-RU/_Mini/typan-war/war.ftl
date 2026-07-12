@@ -55,8 +55,8 @@ typan-war-hud-zone-line = Зона {$label}: {$location}
 typan-war-capture-nt = Нанотрайзен захватил {$zone}.
 typan-war-capture-typan = Синдикат захватил {$zone}.
 typan-war-capture-neutral = {$zone} стала нейтральной.
-typan-war-capture-loot-nt = На точке {$label} — {$location} доставлен [color=#A8C8FF]ящик снабжения Нанотрайзен[/color].
-typan-war-capture-loot-typan = На точке {$label} — {$location} доставлен [color=#FFB0B0]ящик снабжения Синдиката[/color].
+typan-war-capture-loot-nt = На точке {$label} — {$location} доставлен ящик снабжения Нанотрайзен.
+typan-war-capture-loot-typan = На точке {$label} — {$location} доставлен ящик снабжения Синдиката.
 typan-war-capture-trade-zone-swapped = Зона {$label} перенесена на {$location} для баланса сил.
 
 typan-war-hud-zone-inactive = неактивна
@@ -111,6 +111,8 @@ typan-war-minimap-forces-nt = Нанотрайзен: {$count} бойцов
 typan-war-minimap-forces-typan = Синдикат: {$count} бойцов
 typan-war-minimap-map-legend = Силуэты = станции и шаттлы · треугольники = союзники · буквы = зоны захвата
 typan-war-minimap-controls = Колёсико — масштаб · перетаскивание — перемещение
+typan-war-minimap-loading = Загрузка карты…
+typan-war-layout-failed = Война станций прервана: не удалось объединить станции на поле боя.
 typan-war-ghost-thunderdome-blocked = Thunderdome недоступен во время войны станций.
 
 typan-war-ftl-blocked = Блюспейс-прыжки заблокированы на время войны станций.

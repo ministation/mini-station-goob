@@ -43,7 +43,8 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
         if (!TryComp<StationDataComponent>(ev.NtStation, out var ntData) ||
             !TryComp<StationDataComponent>(ev.TypanStation, out var typanData))
         {
-            Log.Warning("Typan station war layout: missing station data.");
+            Log.Error("Typan station war layout: missing station data.");
+            RaiseLocalEvent(new TypanWarLayoutFailedEvent(ev.Rule));
             return;
         }
 
@@ -52,13 +53,15 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
 
         if (ntGrid == null || typanGrid == null)
         {
-            Log.Warning("Typan station war layout: could not resolve largest station grids.");
+            Log.Error("Typan station war layout: could not resolve largest station grids.");
+            RaiseLocalEvent(new TypanWarLayoutFailedEvent(ev.Rule));
             return;
         }
 
         if (!TryComp<TransformComponent>(ntGrid, out var ntXform) || ntXform.MapID == MapId.Nullspace)
         {
-            Log.Warning("Typan station war layout: NT grid has no map.");
+            Log.Error("Typan station war layout: NT grid has no map.");
+            RaiseLocalEvent(new TypanWarLayoutFailedEvent(ev.Rule));
             return;
         }
 

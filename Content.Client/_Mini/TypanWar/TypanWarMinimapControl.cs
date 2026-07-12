@@ -156,7 +156,7 @@ public sealed class TypanWarMinimapControl : Control
 
     public static void ClearShapeCache() => ShapeCache.Clear();
 
-    public bool AreShapesReady()
+    private bool HasPendingShapes()
     {
         if (_grids.Length == 0)
             return false;
@@ -164,13 +164,13 @@ public sealed class TypanWarMinimapControl : Control
         foreach (var grid in _grids)
         {
             if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
-                return false;
+                continue;
 
             if (!ShapeCache.ContainsKey(uid))
-                return false;
+                return true;
         }
 
-        return true;
+        return false;
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
@@ -249,8 +249,15 @@ public sealed class TypanWarMinimapControl : Control
 
         DrawForcesLegend(handle, box);
 
-        if (!AreShapesReady())
-            return;
+        if (HasPendingShapes() && _font != null)
+        {
+            var loading = Loc.GetString("typan-war-minimap-loading");
+            var dims = handle.GetDimensions(_font, loading, 1f);
+            var pos = new Vector2(
+                box.Left + (box.Width - dims.X) * 0.5f,
+                box.Top + (box.Height - dims.Y) * 0.5f);
+            handle.DrawString(_font, pos, loading, Color.FromHex("#A8A8B8"));
+        }
 
         if (!_hasViewBounds && _grids.Length > 0)
             UpdateViewBounds();

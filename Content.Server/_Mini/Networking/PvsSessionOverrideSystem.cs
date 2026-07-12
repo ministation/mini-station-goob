@@ -3,6 +3,7 @@
 
 using Content.Server._Mini.TypanWar;
 using Content.Server.Station.Components;
+using Content.Server.Station.Systems;
 using Content.Shared._Goobstation.Silo;
 using Content.Shared._Mini.TypanWar;
 using Content.Shared.Points;
@@ -32,6 +33,8 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
         SubscribeLocalEvent<ActorComponent, EntParentChangedMessage>(OnActorParentChanged);
         SubscribeLocalEvent<ActorComponent, GridUidChangedEvent>(OnActorGridChanged);
         SubscribeLocalEvent<TypanWarLayoutReadyEvent>(OnWarLayoutReady);
+        SubscribeLocalEvent<StationGridAddedEvent>(OnStationGridAdded);
+        SubscribeLocalEvent<TypanWarFactionComponent, ComponentStartup>(OnFactionStartup);
         _player.PlayerStatusChanged += OnPlayerStatusChanged;
     }
 
@@ -75,6 +78,25 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
     private void OnWarLayoutReady(TypanWarLayoutReadyEvent ev)
     {
         RefreshAllPlayers();
+    }
+
+    private void OnStationGridAdded(StationGridAddedEvent ev)
+    {
+        if (!TypanStationWarRuleSystem.IsWarActive)
+            return;
+
+        RefreshAllPlayers();
+    }
+
+    private void OnFactionStartup(EntityUid uid, TypanWarFactionComponent component, ComponentStartup args)
+    {
+        if (!TypanStationWarRuleSystem.IsWarActive)
+            return;
+
+        if (!TryComp<ActorComponent>(uid, out var actor) || actor.PlayerSession == null)
+            return;
+
+        RefreshPlayer(actor.PlayerSession, uid);
     }
 
     public void RefreshAllPlayers()
@@ -126,6 +148,18 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
                 _pvs.AddSessionOverride(uid, session);
             else
                 _pvs.RemoveSessionOverride(uid, session);
+        }
+
+        // Station entities are not parents of their grids — replicate each grid explicitly.
+        var gridQuery = EntityQueryEnumerator<StationMemberComponent>();
+        while (gridQuery.MoveNext(out var gridUid, out var member))
+        {
+            if (warStations != null && warStations.Contains(member.Station))
+                _pvs.AddSessionOverride(gridUid, session);
+            else if (member.Station == station)
+                _pvs.AddSessionOverride(gridUid, session);
+            else
+                _pvs.RemoveSessionOverride(gridUid, session);
         }
     }
 

@@ -35,8 +35,8 @@ typan-war-hud-zone-line = Zone {$label}: {$location}
 typan-war-capture-nt = NanoTrasen captured {$zone}.
 typan-war-capture-typan = Syndicate captured {$zone}.
 typan-war-capture-neutral = {$zone} is now neutral.
-typan-war-capture-loot-nt = A [color=#A8C8FF]NanoTrasen surplus crate[/color] has been delivered to zone {$label} — {$location}.
-typan-war-capture-loot-typan = A [color=#FFB0B0]Syndicate surplus crate[/color] has been delivered to zone {$label} — {$location}.
+typan-war-capture-loot-nt = A NanoTrasen surplus crate has been delivered to zone {$label} — {$location}.
+typan-war-capture-loot-typan = A Syndicate surplus crate has been delivered to zone {$label} — {$location}.
 typan-war-capture-trade-zone-swapped = Zone {$label} has been relocated to {$location} to balance the fight.
 typan-war-hud-zone-inactive = inactive
 typan-war-hud-zone-owner-neutral = neutral
@@ -87,6 +87,8 @@ typan-war-minimap-forces-nt = NanoTrasen: {$count} fighters
 typan-war-minimap-forces-typan = Syndicate: {$count} fighters
 typan-war-minimap-map-legend = Silhouettes = stations & shuttles (named) · triangles = allies · letters = capture zones
 typan-war-minimap-controls = Scroll — zoom · drag — pan
+typan-war-minimap-loading = Loading map…
+typan-war-layout-failed = Station war aborted: failed to merge stations onto the battlefield.
 typan-war-ghost-thunderdome-blocked = Thunderdome is disabled during station war.
 
 typan-war-ftl-blocked = Bluespace jumps are blocked during station war.

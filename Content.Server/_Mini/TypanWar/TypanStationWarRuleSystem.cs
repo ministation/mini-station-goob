@@ -93,6 +93,8 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         SubscribeLocalEvent<ShuttleFTLAttemptEvent>(OnShuttleFtlAttempt);
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawnComplete);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<TypanWarLayoutReadyEvent>(OnLayoutReady);
+        SubscribeLocalEvent<TypanWarLayoutFailedEvent>(OnLayoutFailed);
 
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
     }
@@ -194,6 +196,37 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         _minimap.EnsureMinimapAction(args.Mob);
 
         SetupCombatMind((combatMindId, combatMind), args, side);
+
+        if (args.Player != null)
+            _pvsSession.RefreshPlayer(args.Player, args.Mob);
+    }
+
+    private void OnLayoutReady(TypanWarLayoutReadyEvent ev)
+    {
+        if (!TryComp<TypanStationWarRuleComponent>(ev.Rule, out var component))
+            return;
+
+        BroadcastStatus(component);
+    }
+
+    private void OnLayoutFailed(TypanWarLayoutFailedEvent ev)
+    {
+        if (!TryComp<TypanStationWarRuleComponent>(ev.Rule, out var component))
+            return;
+
+        if (component.Phase == TypanWarPhase.Ended)
+            return;
+
+        Log.Error("Typan station war: layout failed — ending war.");
+
+        _chat.DispatchGlobalAnnouncement(
+            Loc.GetString("typan-war-layout-failed"),
+            Loc.GetString("typan-war-sender"),
+            announcementSound: TypanWarSounds.HeadquartersAlert,
+            colorOverride: TypanWarColors.Neutral);
+
+        component.Winner = TypanWarWinner.Stalemate;
+        EndWar(ev.Rule, component);
     }
 
     private void SetupCombatMind(Entity<MindComponent> mind, PlayerSpawnCompleteEvent args, TypanWarSide side)
@@ -204,7 +237,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         if (args.JobId != null)
             combat.Job = new ProtoId<JobPrototype>(args.JobId);
         combat.AllowBaseSpawn = args.JobId is "SecurityOfficer" or "TypanPatrol";
-        if (combat.BaseSpawn == default)
+        if (combat.AllowBaseSpawn && combat.BaseSpawn == default)
             combat.BaseSpawn = Transform(args.Mob).Coordinates;
         combat.RespawnAvailableAt = null;
         combat.RespawnUiOpen = false;

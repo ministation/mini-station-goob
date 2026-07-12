@@ -19,6 +19,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
 namespace Content.Server._Mini.TypanWar;
@@ -36,6 +37,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
     [Dependency] private readonly TypanWarCaptureZoneProtectionSystem _zoneProtection = default!;
     [Dependency] private readonly TypanStationWarRuleSystem _warRule = default!;
     [Dependency] private readonly TTStationHandleJobSystem _typanJobs = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     private readonly HashSet<EntityUid> _lookupEnts = new();
 
@@ -57,11 +59,22 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
 
     private void OnLayoutReady(TypanWarLayoutReadyEvent ev)
     {
-        if (!TryComp<TypanStationWarRuleComponent>(ev.Rule, out var rule) || rule.CaptureZonesActivated)
+        if (!TryComp<TypanStationWarRuleComponent>(ev.Rule, out var rule) || rule.CaptureZonesSpawned)
             return;
 
-        rule.CaptureZonesActivated = true;
-        ActivateAllZones(ev.NtStation, ev.TypanStation);
+        if (!TrySpawnWarCaptureZones(ev.NtStation, ev.TypanStation, out var zones) || zones.Count == 0)
+        {
+            Log.Error("Typan station war: failed to spawn capture zones.");
+            RaiseLocalEvent(new TypanWarLayoutFailedEvent(ev.Rule));
+            return;
+        }
+
+        rule.CaptureZonesSpawned = true;
+
+        if (rule.CaptureZoneActivationDelaySeconds <= 0f)
+            ActivateSpawnedCaptureZones(rule, zones);
+        else
+            rule.CaptureZonesActivateAt = _timing.CurTime + TimeSpan.FromSeconds(rule.CaptureZoneActivationDelaySeconds);
     }
 
     private void OnZoneStartup(EntityUid uid, TypanWarCaptureZoneComponent component, ComponentStartup args)
@@ -82,6 +95,8 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
     {
         base.Update(frameTime);
 
+        TryActivatePendingCaptureZones();
+
         if (!TypanStationWarRuleSystem.IsWarActive)
             return;
 
@@ -91,7 +106,29 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             if (!zone.Active)
                 continue;
 
+            if (!TypanStationWarRuleSystem.IsWarActive)
+                break;
+
             UpdateZone(uid, zone, frameTime);
+        }
+    }
+
+    private void TryActivatePendingCaptureZones()
+    {
+        var query = EntityQueryEnumerator<TypanStationWarRuleComponent, GameRuleComponent>();
+        while (query.MoveNext(out var ruleUid, out var rule, out var gameRule))
+        {
+            if (!_ticker.IsGameRuleActive(ruleUid, gameRule) || rule.Phase != TypanWarPhase.Active)
+                continue;
+
+            if (rule.CaptureZonesActivated || !rule.CaptureZonesSpawned || rule.CaptureZonesActivateAt == null)
+                continue;
+
+            if (_timing.CurTime < rule.CaptureZonesActivateAt)
+                continue;
+
+            ActivateExistingCaptureZones(rule);
+            break;
         }
     }
 
@@ -128,13 +165,31 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
 
     public void ActivateAllZones(EntityUid ntStation, EntityUid typanStation)
     {
-        if (!_spawn.TrySpawnWarZones(ntStation, typanStation, out var zones) || zones.Count == 0)
+        if (!TrySpawnWarCaptureZones(ntStation, typanStation, out var zones) || zones.Count == 0)
+            return;
+
+        var query = EntityQueryEnumerator<TypanStationWarRuleComponent, GameRuleComponent>();
+        while (query.MoveNext(out var ruleUid, out var rule, out var gameRule))
         {
-            Log.Warning("Typan station war: failed to spawn capture zones.");
+            if (!_ticker.IsGameRuleActive(ruleUid, gameRule) || rule.Phase != TypanWarPhase.Active)
+                continue;
+
+            rule.CaptureZonesSpawned = true;
+            ActivateSpawnedCaptureZones(rule, zones);
             return;
         }
+    }
 
-        var lines = new List<string>();
+    private bool TrySpawnWarCaptureZones(
+        EntityUid ntStation,
+        EntityUid typanStation,
+        out List<SpawnedCaptureZone> zones)
+    {
+        zones = new List<SpawnedCaptureZone>();
+
+        if (!_spawn.TrySpawnWarZones(ntStation, typanStation, out zones) || zones.Count == 0)
+            return false;
+
         foreach (var spawned in zones.OrderBy(z => z.Label))
         {
             InitializeSpawnedZone(
@@ -145,7 +200,48 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
                 spawned.FlagUid,
                 spawned.IsTradePost,
                 spawned.IsTypanTradePost);
+        }
 
+        return true;
+    }
+
+    private void ActivateExistingCaptureZones(TypanStationWarRuleComponent rule)
+    {
+        var zones = new List<SpawnedCaptureZone>();
+        var query = EntityQueryEnumerator<TypanWarCaptureZoneComponent>();
+        while (query.MoveNext(out var uid, out var zone))
+        {
+            if (zone.FlagEntity is not { } flag)
+                continue;
+
+            zones.Add(new SpawnedCaptureZone
+            {
+                ZoneUid = uid,
+                FlagUid = flag,
+                Label = zone.ZoneLabel,
+                DisplayName = zone.ZoneDisplayName,
+                HomeFaction = zone.HomeFaction,
+                IsTradePost = zone.IsTradePostZone,
+                IsTypanTradePost = zone.IsTypanTradePost,
+            });
+        }
+
+        ActivateSpawnedCaptureZones(rule, zones);
+    }
+
+    private void ActivateSpawnedCaptureZones(
+        TypanStationWarRuleComponent rule,
+        List<SpawnedCaptureZone> zones)
+    {
+        if (rule.CaptureZonesActivated)
+            return;
+
+        rule.CaptureZonesActivated = true;
+        rule.CaptureZonesActivateAt = null;
+
+        var lines = new List<string>();
+        foreach (var spawned in zones.OrderBy(z => z.Label))
+        {
             if (!TryComp<TypanWarCaptureZoneComponent>(spawned.ZoneUid, out var zone))
                 continue;
 
@@ -162,6 +258,9 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         }
 
         _zoneProtection.RefreshAllZoneProtection();
+
+        if (lines.Count == 0)
+            return;
 
         var body = Loc.GetString("typan-war-capture-zones-active-header")
             + "\n"
@@ -249,7 +348,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         }
     }
 
-    public IEnumerable<(EntityCoordinates Coordinates, string Label, string DisplayName)> GetOwnedZoneCoordinates(
+    public IEnumerable<(EntityUid Zone, EntityCoordinates Coordinates, string Label, string DisplayName)> GetOwnedZoneCoordinates(
         TypanWarCaptureOwner owner)
     {
         var query = EntityQueryEnumerator<TypanWarCaptureZoneComponent, TransformComponent>();
@@ -258,7 +357,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             if (!zone.Active || zone.CaptureOwner != owner)
                 continue;
 
-            yield return (xform.Coordinates, zone.ZoneLabel, zone.ZoneDisplayName);
+            yield return (uid, xform.Coordinates, zone.ZoneLabel, zone.ZoneDisplayName);
         }
     }
 
@@ -351,6 +450,9 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
 
     private void TryAwardCapturePoints(EntityUid uid, TypanWarCaptureZoneComponent zone, ZoneRuntimeState runtime, float frameTime)
     {
+        if (!TypanStationWarRuleSystem.IsWarActive)
+            return;
+
         if (zone.CaptureOwner == TypanWarCaptureOwner.Neutral)
             return;
 

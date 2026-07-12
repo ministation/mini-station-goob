@@ -190,7 +190,8 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
         if (!TryFindShuttleConsole(shuttleUid, out var consoleUid))
         {
             Log.Warning($"War drop shuttle: no pilot console found on {shuttlePath}.");
-            return true;
+            Del(shuttleUid);
+            return false;
         }
 
         RegisterDropShuttle(ruleUid, rule, side, shuttleUid, consoleUid);
