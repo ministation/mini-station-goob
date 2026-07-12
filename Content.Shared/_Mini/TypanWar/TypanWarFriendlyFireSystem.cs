@@ -7,11 +7,14 @@ using Content.Shared.Popups;
 using Content.Shared.Projectiles;
 using Content.Shared.Toggleable;
 using Robust.Shared.Physics.Events;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Mini.TypanWar;
 
 public sealed class TypanWarFriendlyFireSystem : EntitySystem
 {
+    private static readonly EntProtoId FriendlyFireAction = "ActionTypanWarFriendlyFire";
+
     [Dependency] private readonly SharedActionsSystem _actions = default!;
 
     [Dependency] private readonly SharedPopupSystem _popup = default!;
@@ -40,7 +43,7 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
         ff.Enabled = enabled;
 
         if (ff.ActionEntity == null || !Exists(ff.ActionEntity))
-            _actions.AddAction(uid, ref ff.ActionEntity, "ActionTypanWarFriendlyFire");
+            _actions.AddAction(uid, ref ff.ActionEntity, FriendlyFireAction);
 
         if (ff.ActionEntity is { } action)
             _actions.SetToggled(action, ff.Enabled);

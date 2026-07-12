@@ -47,8 +47,11 @@ public sealed partial class NewFrontierLateJoinJobButton : Button
         var jobIcon = _prototypeManager.Index(prototype.Icon);
         JobIcon.Texture = jobIcon.Icon.Frame0();
 
-        JobText.Text = $"{prototype.LocalizedName} ({obj[_station][_jobId]?.ToString() ?? "Unlimited"})";
+        var count = obj[_station][_jobId];
+        JobText.Text = count != null
+            ? Loc.GetString("late-join-gui-job-slot-capped", ("jobName", prototype.LocalizedName), ("amount", count.Value))
+            : Loc.GetString("late-join-gui-job-slot-uncapped", ("jobName", prototype.LocalizedName));
 
-        Disabled = obj[_station][_jobId] == 0;
+        Disabled = count == 0;
     }
 }

@@ -73,7 +73,7 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
 
         foreach (var grid in typanData.Grids.ToList())
         {
-            if (!TryComp<TransformComponent>(grid, out var gridXform))
+            if (!TryComp(grid, out TransformComponent? gridXform))
                 continue;
 
             var worldPos = _transform.GetWorldPosition(gridXform);
@@ -116,8 +116,8 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
 
     private bool TryPlaceTradeGridNearStation(EntityUid tradeGrid, EntityUid anchorGrid, float maxDistance)
     {
-        if (!TryComp<MapGridComponent>(tradeGrid, out var tradeMapGrid) ||
-            !TryComp<TransformComponent>(anchorGrid, out var anchorXform))
+        if (!TryComp(tradeGrid, out MapGridComponent? tradeMapGrid) ||
+            !TryComp(anchorGrid, out TransformComponent? anchorXform))
         {
             return false;
         }

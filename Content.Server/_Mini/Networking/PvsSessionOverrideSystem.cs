@@ -208,7 +208,7 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
 
         foreach (var grid in data.Grids)
         {
-            if (TryComp<TransformComponent>(grid, out var xform) && xform.MapID == mapId)
+            if (TryComp(grid, out TransformComponent? xform) && xform.MapID == mapId)
                 return true;
         }
 

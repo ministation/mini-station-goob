@@ -9,3 +9,4 @@ late-join-gui-job-slot-capped =
        *[other] доступно
     })
 late-join-gui-job-slot-uncapped = { $jobName } (Без ограничений)
+late-join-gui-job-slot-full = Нет свободных слотов для этой роли.
