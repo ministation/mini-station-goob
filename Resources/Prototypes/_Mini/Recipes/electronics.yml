@@ -81,6 +81,11 @@
 
 - type: latheRecipe
   parent: BaseCircuitboardRecipe
+  id: RadarConsoleCircuitboardTypan
+  result: RadarConsoleCircuitboardTypan
+
+- type: latheRecipe
+  parent: BaseCircuitboardRecipe
   id: SurveillanceCameraMonitorCircuitboardTypan
   result: SurveillanceCameraMonitorCircuitboardTypan
 

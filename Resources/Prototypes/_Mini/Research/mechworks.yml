@@ -10,7 +10,7 @@
   tier: 1
   cost: 7500
   recipeUnlocks:
-  - RadarConsoleCircuitboard
+  - RadarConsoleCircuitboardTypan
   - HandHeldMassScanner
   # Goobstation R&D Console rework start
   position: 20,-3
