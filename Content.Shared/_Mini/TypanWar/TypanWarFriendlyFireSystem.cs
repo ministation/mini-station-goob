@@ -6,7 +6,6 @@ using Content.Shared.Actions;
 using Content.Shared.Popups;
 using Content.Shared.Projectiles;
 using Content.Shared.Toggleable;
-using Robust.Shared.Physics.Events;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Mini.TypanWar;
@@ -25,7 +24,6 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
 
         SubscribeLocalEvent<TypanWarFriendlyFireComponent, ToggleActionEvent>(OnToggle);
         SubscribeLocalEvent<TypanWarFriendlyFireComponent, AmmoShotUserEvent>(OnAmmoShot);
-        SubscribeLocalEvent<ProjectileComponent, PreventCollideEvent>(OnProjectilePreventCollide);
     }
 
     public void SetFaction(EntityUid uid, TypanWarSide side)
@@ -102,17 +100,6 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
             ? Loc.GetString("typan-war-ff-enabled")
             : Loc.GetString("typan-war-ff-disabled");
         _popup.PopupClient(msg, ent, args.Performer);
-    }
-
-    private void OnProjectilePreventCollide(EntityUid uid, ProjectileComponent component, ref PreventCollideEvent args)
-    {
-        if (args.Cancelled || component.Shooter is not { } shooter)
-            return;
-
-        if (!ShouldPassThrough(shooter, args.OtherEntity))
-            return;
-
-        args.Cancelled = true;
     }
 
     private void OnAmmoShot(Entity<TypanWarFriendlyFireComponent> ent, ref AmmoShotUserEvent args)

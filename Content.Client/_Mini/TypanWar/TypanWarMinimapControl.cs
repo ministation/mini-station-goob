@@ -166,7 +166,8 @@ public sealed class TypanWarMinimapControl : Control
             if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
                 continue;
 
-            if (!ShapeCache.ContainsKey(uid))
+            if (!ShapeCache.ContainsKey(uid) &&
+                _ent.TryGetComponent(uid, out MapGridComponent? mapGrid))
                 return true;
         }
 
@@ -267,11 +268,12 @@ public sealed class TypanWarMinimapControl : Control
 
         foreach (var grid in _grids)
         {
-            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
+            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid ||
+                !ShapeCache.TryGetValue(uid, out var shape))
+            {
+                DrawBoundsFallback(handle, map, grid);
                 continue;
-
-            if (!ShapeCache.TryGetValue(uid, out var shape))
-                continue;
+            }
 
             DrawCachedShape(handle, map, shape);
 
@@ -619,6 +621,27 @@ public sealed class TypanWarMinimapControl : Control
         _viewMinY = minY - pad;
         _viewMaxY = maxY + pad;
         _hasViewBounds = true;
+    }
+
+    private void DrawBoundsFallback(DrawingHandleScreen handle, MapTransform map, TypanWarMinimapGrid grid)
+    {
+        if (grid.MaxX <= grid.MinX || grid.MaxY <= grid.MinY)
+            return;
+
+        var (fill, edge) = grid.Kind switch
+        {
+            TypanWarMinimapGridKind.NtStation => (NtStationFill, NtStationEdge),
+            TypanWarMinimapGridKind.TypanStation => (TypanStationFill, TypanStationEdge),
+            TypanWarMinimapGridKind.NtShuttle => (NtShuttleFill, NtShuttleEdge),
+            TypanWarMinimapGridKind.TypanShuttle => (TypanShuttleFill, TypanShuttleEdge),
+            _ => (TradeFill, TradeEdge),
+        };
+
+        var topLeft = map.WorldToScreen(grid.MinX, grid.MaxY);
+        var bottomRight = map.WorldToScreen(grid.MaxX, grid.MinY);
+        var box = new UIBox2(topLeft.X, topLeft.Y, bottomRight.X, bottomRight.Y);
+        handle.DrawRect(box, fill);
+        handle.DrawRect(box, edge, false);
     }
 
     private void DrawCachedShape(DrawingHandleScreen handle, MapTransform map, CachedGridShape shape)

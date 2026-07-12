@@ -6,6 +6,7 @@ using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Shared._Goobstation.Silo;
 using Content.Shared._Mini.TypanWar;
+using Content.Shared.GameTicking;
 using Content.Shared.Points;
 using Content.Shared.Station.Components;
 using Robust.Server.GameStates;
@@ -26,15 +27,20 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
     [Dependency] private readonly PvsOverrideSystem _pvs = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
 
+    private readonly HashSet<EntityUid> _dropShuttleGrids = new();
+
     public override void Initialize()
     {
         SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
         SubscribeLocalEvent<PlayerDetachedEvent>(OnPlayerDetached);
+        SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawnComplete);
         SubscribeLocalEvent<ActorComponent, EntParentChangedMessage>(OnActorParentChanged);
         SubscribeLocalEvent<ActorComponent, GridUidChangedEvent>(OnActorGridChanged);
         SubscribeLocalEvent<TypanWarLayoutReadyEvent>(OnWarLayoutReady);
         SubscribeLocalEvent<StationGridAddedEvent>(OnStationGridAdded);
         SubscribeLocalEvent<TypanWarFactionComponent, ComponentStartup>(OnFactionStartup);
+        SubscribeLocalEvent<TypanWarDropShuttleComponent, ComponentStartup>(OnDropShuttleStartup);
+        SubscribeLocalEvent<TypanWarDropShuttleComponent, ComponentShutdown>(OnDropShuttleShutdown);
         _player.PlayerStatusChanged += OnPlayerStatusChanged;
     }
 
@@ -46,7 +52,12 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs e)
     {
         if (e.NewStatus == SessionStatus.InGame)
-            RefreshPlayer(e.Session);
+            RefreshPlayer(e.Session, e.Session.AttachedEntity);
+    }
+
+    private void OnPlayerSpawnComplete(PlayerSpawnCompleteEvent args)
+    {
+        RefreshPlayer(args.Player, args.Mob);
     }
 
     private void OnPlayerAttached(PlayerAttachedEvent args)
@@ -77,6 +88,7 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
 
     private void OnWarLayoutReady(TypanWarLayoutReadyEvent ev)
     {
+        SyncDropShuttleGrids();
         RefreshAllPlayers();
     }
 
@@ -99,12 +111,34 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
         RefreshPlayer(actor.PlayerSession, uid);
     }
 
+    private void OnDropShuttleStartup(EntityUid uid, TypanWarDropShuttleComponent component, ComponentStartup args)
+    {
+        _dropShuttleGrids.Add(uid);
+        RefreshAllPlayers();
+    }
+
+    private void OnDropShuttleShutdown(EntityUid uid, TypanWarDropShuttleComponent component, ComponentShutdown args)
+    {
+        _dropShuttleGrids.Remove(uid);
+    }
+
     public void RefreshAllPlayers()
     {
+        SyncDropShuttleGrids();
+
         foreach (var session in _player.Sessions)
         {
             RefreshPlayer(session);
         }
+    }
+
+    private void SyncDropShuttleGrids()
+    {
+        _dropShuttleGrids.Clear();
+
+        var query = EntityQueryEnumerator<TypanWarDropShuttleComponent>();
+        while (query.MoveNext(out var uid, out _))
+            _dropShuttleGrids.Add(uid);
     }
 
     public void RefreshPlayer(ICommonSession session, EntityUid? player = null)
@@ -125,38 +159,39 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
 
         player ??= session.AttachedEntity;
         EntityUid? station = null;
-        MapId? playerMap = null;
 
-        if (player != null && TryComp<TransformComponent>(player, out var xform))
+        if (player != null && TryComp(player, out TransformComponent? xform))
         {
-            playerMap = xform.MapID;
-
-            if (xform.GridUid != null && TryComp<StationMemberComponent>(xform.GridUid, out var member))
+            if (xform.GridUid != null && TryComp(xform.GridUid, out StationMemberComponent? member))
                 station = member.Station;
         }
 
-        var warStations = TypanStationWarRuleSystem.IsWarActive && playerMap != null
-            ? GetWarStationsOnMap(playerMap.Value)
-            : null;
+        var warActive = TypanStationWarRuleSystem.IsWarActive;
 
         var query = EntityQueryEnumerator<StationDataComponent>();
         while (query.MoveNext(out var uid, out _))
         {
-            if (warStations != null && warStations.Contains(uid))
-                _pvs.AddSessionOverride(uid, session);
-            else if (uid == station)
+            if (uid == station)
                 _pvs.AddSessionOverride(uid, session);
             else
                 _pvs.RemoveSessionOverride(uid, session);
         }
 
-        // Station entities are not parents of their grids — replicate each grid explicitly.
+        // Replicating every station grid ignores PVS range and floods clients on join.
+        // Only do this during station war where players cross grid boundaries constantly.
         var gridQuery = EntityQueryEnumerator<StationMemberComponent>();
         while (gridQuery.MoveNext(out var gridUid, out var member))
         {
-            if (warStations != null && warStations.Contains(member.Station))
-                _pvs.AddSessionOverride(gridUid, session);
-            else if (member.Station == station)
+            if (!warActive)
+            {
+                _pvs.RemoveSessionOverride(gridUid, session);
+                continue;
+            }
+
+            var isOwnStation = station != null && member.Station == station;
+            var isDropShuttle = _dropShuttleGrids.Contains(gridUid);
+
+            if (isOwnStation || isDropShuttle)
                 _pvs.AddSessionOverride(gridUid, session);
             else
                 _pvs.RemoveSessionOverride(gridUid, session);
@@ -182,39 +217,6 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
             _pvs.RemoveSessionOverride(player.Value, session);
     }
 
-    private HashSet<EntityUid> GetWarStationsOnMap(MapId mapId)
-    {
-        var stations = new HashSet<EntityUid>();
-        var query = EntityQueryEnumerator<TypanStationWarRuleComponent>();
-        while (query.MoveNext(out var ruleUid, out var rule))
-        {
-            if (rule.Phase != TypanWarPhase.Active)
-                continue;
-
-            if (rule.NtStation is { } nt && StationOnMap(nt, mapId))
-                stations.Add(nt);
-
-            if (rule.TypanStation is { } typan && StationOnMap(typan, mapId))
-                stations.Add(typan);
-        }
-
-        return stations;
-    }
-
-    private bool StationOnMap(EntityUid station, MapId mapId)
-    {
-        if (!TryComp<StationDataComponent>(station, out var data) || data.Grids.Count == 0)
-            return false;
-
-        foreach (var grid in data.Grids)
-        {
-            if (TryComp(grid, out TransformComponent? xform) && xform.MapID == mapId)
-                return true;
-        }
-
-        return false;
-    }
-
     public void RefreshPointManagerOverrides(ICommonSession? session = null, EntityUid? player = null)
     {
         var sessions = session != null ? new[] { session } : _player.Sessions;
@@ -227,7 +229,7 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
             var attached = player ?? targetSession.AttachedEntity;
             MapId? playerMap = null;
 
-            if (attached != null && TryComp<TransformComponent>(attached, out var xform))
+            if (attached != null && TryComp(attached, out TransformComponent? xform))
                 playerMap = xform.MapID;
 
             var query = EntityQueryEnumerator<PointManagerComponent, TransformComponent>();
@@ -253,7 +255,7 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
             var attached = player ?? targetSession.AttachedEntity;
             EntityUid? playerGrid = null;
 
-            if (attached != null && TryComp<TransformComponent>(attached, out var xform))
+            if (attached != null && TryComp(attached, out TransformComponent? xform))
                 playerGrid = xform.GridUid;
 
             var query = EntityQueryEnumerator<SiloComponent, TransformComponent>();

@@ -187,6 +187,7 @@
   cost: 15000
   recipeUnlocks:
   - ShuttleConsoleCircuitboardTypan
+  - ShuttlePilotConsoleCircuitboardTypan
   - IFFConsoleCircuitboardTypan
   - ThrusterMachineCircuitboard
   - GyroscopeMachineCircuitboard

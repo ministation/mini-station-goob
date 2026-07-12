@@ -70,6 +70,16 @@
   result: ShuttleConsoleCircuitboardTypan
 
 - type: latheRecipe
+  parent: BaseGoldCircuitboardRecipe
+  id: ShuttlePilotConsoleCircuitboardTypan
+  result: ShuttlePilotConsoleCircuitboardTypan
+
+- type: latheRecipe
+  parent: [ BaseCircuitboardRecipe, BaseResearchComputerRecipeCategory ]
+  id: XenobiologyBountyComputerCircuitboardTypan
+  result: XenobiologyBountyComputerCircuitboardTypan
+
+- type: latheRecipe
   parent: BaseCircuitboardRecipe
   id: SurveillanceCameraMonitorCircuitboardTypan
   result: SurveillanceCameraMonitorCircuitboardTypan

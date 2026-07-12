@@ -341,3 +341,51 @@
       state: generic_panel_open
   - type: Computer
     board: RoboticsConsoleCircuitboardTypan
+
+- type: entity
+  parent: ComputerScienceXenobiologyBounty
+  id: SyndicateComputerXenobiologyBounty
+  name: консоль ксенобиологии
+  description: Используется для управления текущими активными заказами на ксенобиологические товары.
+  suffix: Тайпан
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer_uplink
+    - map: ["computerLayerScreen"]
+      state: typanxeno
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: Computer
+    board: XenobiologyBountyComputerCircuitboardTypan
+  - type: AccessReader
+    access: [["TypanScience"]]
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#b53ca1"
+
+- type: entity
+  parent: ComputerShuttleSyndie
+  id: SyndicateComputerShuttle
+  name: консоль управления шаттлом
+  description: Используется для пилотирования шаттла.
+  suffix: Тайпан
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer_uplink
+    - map: ["computerLayerScreen"]
+      state: syndishuttle
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: Computer
+    board: ShuttlePilotConsoleCircuitboardTypan
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#c94242"

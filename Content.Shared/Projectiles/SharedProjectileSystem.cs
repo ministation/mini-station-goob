@@ -40,6 +40,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Inventory;
 using Content.Shared.Mobs.Components;
+using Content.Shared._Mini.TypanWar;
 using Content.Shared.Tag;
 using Content.Shared.Throwing;
 using Content.Shared.Weapons.Ranged.Components;
@@ -67,6 +68,7 @@ public abstract partial class SharedProjectileSystem : EntitySystem
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TagSystem _tag = default!;
+    [Dependency] private readonly TypanWarFriendlyFireSystem _typanWarFf = default!;
 
     private static readonly ProtoId<TagPrototype> GunCanAimShooterTag = "GunCanAimShooter";
 
@@ -246,6 +248,12 @@ public abstract partial class SharedProjectileSystem : EntitySystem
             return;
 
         if (component.IgnoredEntities.Contains(args.OtherEntity))
+        {
+            args.Cancelled = true;
+            return;
+        }
+
+        if (component.Shooter is { } shooter && _typanWarFf.ShouldPassThrough(shooter, args.OtherEntity))
         {
             args.Cancelled = true;
             return;
