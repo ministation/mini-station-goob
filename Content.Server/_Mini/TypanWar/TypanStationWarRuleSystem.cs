@@ -229,6 +229,17 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                     break;
             }
 
+            if (!component.TradeZoneSwapped &&
+                component.TradeZoneSwapScoreThreshold > 0 &&
+                (component.NtCapturePoints >= component.TradeZoneSwapScoreThreshold ||
+                 component.TypanCapturePoints >= component.TradeZoneSwapScoreThreshold) &&
+                component.NtStation is { } ntStation &&
+                component.TypanStation is { } typanStation)
+            {
+                component.TradeZoneSwapped = true;
+                _captureZones.TrySwapTradeZone(ntStation, typanStation);
+            }
+
             if (component.NtCapturePoints >= component.CapturePointsToWin)
             {
                 component.Winner = TypanWarWinner.Nanotrasen;

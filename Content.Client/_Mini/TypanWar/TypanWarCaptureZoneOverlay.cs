@@ -176,10 +176,10 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
         };
 
         var screenCenter = viewport.WorldToScreen(worldPos);
-        screenCenter.Y -= 42f;
+        screenCenter.Y -= 35f;
 
-        const float barHalfW = 50f;
-        const float barHalfH = 6f;
+        const float barHalfW = 44f;
+        const float barHalfH = 5f;
         var back = Color.FromHex("#252530").WithAlpha(0.55f);
 
         var box = new UIBox2(

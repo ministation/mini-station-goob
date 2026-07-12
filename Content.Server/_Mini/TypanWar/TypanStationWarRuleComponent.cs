@@ -82,6 +82,12 @@ public sealed partial class TypanStationWarRuleComponent : Component
     [DataField]
     public float TypanCapturePoints;
 
+    /// <summary>When either faction reaches this score, trade zone C swaps to the other trade post.</summary>
+    [DataField]
+    public float TradeZoneSwapScoreThreshold = 50f;
+
+    public bool TradeZoneSwapped;
+
     [DataField]
     public int StationSeparationTiles = 300;
 

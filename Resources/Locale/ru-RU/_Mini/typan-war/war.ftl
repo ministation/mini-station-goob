@@ -57,6 +57,7 @@ typan-war-capture-typan = Синдикат захватил {$zone}.
 typan-war-capture-neutral = {$zone} стала нейтральной.
 typan-war-capture-loot-nt = На точке {$label} — {$location} доставлен [color=#A8C8FF]ящик снабжения Нанотрайзен[/color].
 typan-war-capture-loot-typan = На точке {$label} — {$location} доставлен [color=#FFB0B0]ящик снабжения Синдиката[/color].
+typan-war-capture-trade-zone-swapped = Зона {$label} перенесена на {$location} для баланса сил.
 
 typan-war-hud-zone-inactive = неактивна
 typan-war-hud-zone-owner-neutral = нейтральная

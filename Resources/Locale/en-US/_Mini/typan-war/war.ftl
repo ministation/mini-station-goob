@@ -37,6 +37,7 @@ typan-war-capture-typan = Syndicate captured {$zone}.
 typan-war-capture-neutral = {$zone} is now neutral.
 typan-war-capture-loot-nt = A [color=#A8C8FF]NanoTrasen surplus crate[/color] has been delivered to zone {$label} — {$location}.
 typan-war-capture-loot-typan = A [color=#FFB0B0]Syndicate surplus crate[/color] has been delivered to zone {$label} — {$location}.
+typan-war-capture-trade-zone-swapped = Zone {$label} has been relocated to {$location} to balance the fight.
 typan-war-hud-zone-inactive = inactive
 typan-war-hud-zone-owner-neutral = neutral
 typan-war-hud-zone-owner-nanotrasen = NT
