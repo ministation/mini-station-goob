@@ -38,6 +38,8 @@ public sealed class TypanWarMinimapSystem : EntitySystem
         if (_players.LocalEntity == null)
             return;
 
+        ev.Handled = true;
+
         if (IsWindowOpen() || _pendingOpen)
         {
             _pendingOpen = false;
@@ -87,9 +89,8 @@ public sealed class TypanWarMinimapSystem : EntitySystem
             _war.MinimapGrids,
             _war.CaptureZones,
             _war.AllyBlips,
-            _war.NtCapturePoints,
-            _war.TypanCapturePoints,
-            _war.CapturePointsToWin);
+            _war.NtAlive,
+            _war.TypanAlive);
         _window.OpenPrepared();
     }
 
@@ -102,9 +103,8 @@ public sealed class TypanWarMinimapSystem : EntitySystem
             _war.MinimapGrids,
             _war.CaptureZones,
             _war.AllyBlips,
-            _war.NtCapturePoints,
-            _war.TypanCapturePoints,
-            _war.CapturePointsToWin);
+            _war.NtAlive,
+            _war.TypanAlive);
     }
 
     private bool IsWindowOpen() => _window is { IsOpen: true };

@@ -19,6 +19,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Utility;
 
 namespace Content.Server._Mini.TypanWar;
 
@@ -327,19 +328,19 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
 
         Spawn(crateProto.Value, spawnCoords);
 
-        var zoneName = FormatZoneName(zone);
+        var location = FormattedMessage.RemoveMarkupPermissive(zone.ZoneDisplayName);
         switch (zone.CaptureOwner)
         {
             case TypanWarCaptureOwner.Nanotrasen:
                 _chat.DispatchGlobalAnnouncement(
-                    Loc.GetString("typan-war-capture-loot-nt", ("zone", zoneName)),
+                    Loc.GetString("typan-war-capture-loot-nt", ("label", zone.ZoneLabel), ("location", location)),
                     Loc.GetString(TypanWarColors.SenderLocId(TypanWarCaptureOwner.Nanotrasen)),
                     announcementSound: TypanWarSounds.HeadquartersAlert,
                     colorOverride: TypanWarColors.ForCaptureOwner(TypanWarCaptureOwner.Nanotrasen));
                 break;
             case TypanWarCaptureOwner.Typan:
                 _chat.DispatchGlobalAnnouncement(
-                    Loc.GetString("typan-war-capture-loot-typan", ("zone", zoneName)),
+                    Loc.GetString("typan-war-capture-loot-typan", ("label", zone.ZoneLabel), ("location", location)),
                     Loc.GetString(TypanWarColors.SenderLocId(TypanWarCaptureOwner.Typan)),
                     announcementSound: TypanWarSounds.HeadquartersAlert,
                     colorOverride: TypanWarColors.ForCaptureOwner(TypanWarCaptureOwner.Typan));

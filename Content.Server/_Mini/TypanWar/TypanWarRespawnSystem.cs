@@ -8,6 +8,7 @@ using Content.Server.GameTicking.Rules;
 using Content.Server.Mind;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Systems;
+using Robust.Shared.Containers;
 using Content.Shared._Mini.TypanWar;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
@@ -33,6 +34,7 @@ namespace Content.Server._Mini.TypanWar;
 public sealed class TypanWarRespawnSystem : EntitySystem
 {
     [Dependency] private readonly GameTicker _gameTicker = default!;
+    [Dependency] private readonly SharedContainerSystem _containers = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly MindSystem _mind = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
@@ -161,7 +163,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
     private void OnMobStateChanged(MobStateChangedEvent ev)
     {
-        if (ev.NewMobState != MobState.Dead || !TypanStationWarRuleSystem.IsWarActive)
+        if (!TypanStationWarRuleSystem.IsWarActive)
             return;
 
         if (!TryComp<MindContainerComponent>(ev.Target, out var mindContainer) || mindContainer.Mind == null)
@@ -170,12 +172,23 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         if (!TryComp<TypanWarCombatMindComponent>(mindContainer.Mind, out var combat))
             return;
 
-        if (!TryGetActiveRule(out var rule))
-            return;
+        if (ev.NewMobState == MobState.Dead)
+        {
+            if (!TryGetActiveRule(out var rule))
+                return;
 
-        var delay = CalculateRespawnDelay(rule);
-        combat.RespawnAvailableAt = _timing.CurTime + TimeSpan.FromSeconds(delay);
-        Dirty(mindContainer.Mind.Value, combat);
+            combat.PendingCorpse = ev.Target;
+            var delay = CalculateRespawnDelay(rule);
+            combat.RespawnAvailableAt = _timing.CurTime + TimeSpan.FromSeconds(delay);
+            Dirty(mindContainer.Mind.Value, combat);
+            return;
+        }
+
+        if (ev.OldMobState == MobState.Dead && ev.NewMobState != MobState.Dead)
+        {
+            combat.PendingCorpse = null;
+            Dirty(mindContainer.Mind.Value, combat);
+        }
     }
 
     public void HandleGhostMindAdded(EntityUid ghostUid, MindAddedMessage args)
@@ -267,9 +280,12 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
         _ui.CloseUi(uid, TypanWarRespawnUiKey.Key, args.Actor);
 
+        var pendingCorpse = combat.PendingCorpse;
         _mind.TransferTo(mindId.Value, mob, mind: mind);
         Del(uid);
 
+        CleanupCorpseAfterRespawn(pendingCorpse);
+        combat.PendingCorpse = null;
         combat.RespawnAvailableAt = null;
         combat.RespawnUiOpen = false;
         Dirty(mindId.Value, combat);
@@ -467,6 +483,25 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
         combat = comp;
         return true;
+    }
+
+    private void CleanupCorpseAfterRespawn(EntityUid? corpse)
+    {
+        if (corpse == null || !Exists(corpse))
+            return;
+
+        if (TryComp<MindContainerComponent>(corpse, out var mindContainer) && mindContainer.HasMind)
+            return;
+
+        var coords = Transform(corpse.Value).Coordinates;
+
+        if (TryComp<ContainerManagerComponent>(corpse, out var containerManager))
+        {
+            foreach (var container in _containers.GetAllContainers(corpse.Value, containerManager))
+                _containers.EmptyContainer(container, force: true, destination: coords, reparent: true);
+        }
+
+        Del(corpse.Value);
     }
 
     private readonly record struct RespawnOptionData(bool IsBase, EntityCoordinates Coordinates, string Label, string Description);

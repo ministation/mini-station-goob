@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Content.Server._Mini.TypanWar;
 
-[RegisterComponent, Access(typeof(TypanStationWarRuleSystem), typeof(TypanWarBalanceSystem), typeof(TypanStationWarLayoutSystem), typeof(TypanWarRespawnSystem), typeof(TypanWarCaptureZoneSystem))]
+[RegisterComponent, Access(typeof(TypanStationWarRuleSystem), typeof(TypanWarBalanceSystem), typeof(TypanStationWarLayoutSystem), typeof(TypanWarRespawnSystem), typeof(TypanWarCaptureZoneSystem), typeof(TypanWarDropShuttleSystem))]
 public sealed partial class TypanStationWarRuleComponent : Component
 {
     [DataField]
@@ -20,7 +20,7 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public float WarStartDelaySeconds = 300f;
 
     [DataField]
-    public float WarDurationSeconds = 1800f;
+    public float WarDurationSeconds = 3600f;
 
     [DataField]
     public float WarMusicDelaySeconds = 90f;
@@ -68,7 +68,7 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public int CapturePointsToWin = 100;
 
     [DataField]
-    public float CapturePointIntervalSeconds = 20f;
+    public float CapturePointIntervalSeconds = 30f;
 
     [DataField]
     public float MinRespawnSeconds = 10f;
@@ -99,6 +99,20 @@ public sealed partial class TypanStationWarRuleComponent : Component
     /// <summary>Shuttle map spawned and docked to NanoTrasen when combat begins. Disabled for capture-zone war mode.</summary>
     [DataField]
     public ResPath NtDropShuttlePath;
+
+    /// <summary>Delay before docking a replacement drop shuttle after its console is lost.</summary>
+    [DataField]
+    public float DropShuttleRespawnDelaySeconds = 120f;
+
+    /// <summary>Tracked NT reinforcement shuttle with a working console.</summary>
+    public EntityUid? NtDropShuttle;
+
+    /// <summary>Tracked Typan reinforcement shuttle with a working console.</summary>
+    public EntityUid? TypanDropShuttle;
+
+    public TimeSpan? NtDropShuttleRespawnAt;
+
+    public TimeSpan? TypanDropShuttleRespawnAt;
 
     [DataField]
     public float WarEndWarningSeconds = 60f;

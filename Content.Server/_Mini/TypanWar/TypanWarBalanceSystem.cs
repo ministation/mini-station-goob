@@ -78,7 +78,7 @@ public sealed class TypanWarBalanceSystem : EntitySystem
         if (!TryGetActiveRule(out var rule) || rule.MaxFactionRatio <= 0)
             return;
 
-        var ratio = Math.Max(rule.MaxFactionRatio, 1);
+        var ratio = rule.MaxFactionRatio;
         var ntCount = 0;
         var typanCount = 0;
 

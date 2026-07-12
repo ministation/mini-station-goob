@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
+using Content.Server._Mini.Networking;
 using Content.Server._Mini.Typan.StationGoal;
 using Content.Server._CorvaxGoob.Skills;
 using Robust.Shared.Prototypes;
@@ -74,6 +75,8 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly TypanWarCaptureZoneSystem _captureZones = default!;
     [Dependency] private readonly TypanWarMinimapSystem _minimap = default!;
+    [Dependency] private readonly TypanWarDropShuttleSystem _dropShuttles = default!;
+    [Dependency] private readonly PvsSessionOverrideSystem _pvsSession = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
@@ -336,6 +339,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         StopWarMusic(component);
         ClearWarModeEffectsFromAllPlayers();
         ClearWarCombatants();
+        _dropShuttles.ClearDropShuttleState(component);
         _warBalance.NotifyCombatPhaseEnded();
         BroadcastStatus(component);
     }
@@ -531,6 +535,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
         AssignWarObjectives(component);
         SetupWarCombatants();
+        _pvsSession.RefreshAllPlayers();
         BroadcastStatus(component);
 
         if (component.NtStation is { } ntStation && component.TypanStation is { } typanStation)
@@ -653,6 +658,8 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         StopWarMusic(component);
         ClearWarModeEffectsFromAllPlayers();
         ClearWarCombatants();
+        _dropShuttles.ClearDropShuttleState(component);
+        _pvsSession.RefreshAllPlayers();
 
         if (component.Winner == TypanWarWinner.None)
             component.Winner = DetermineWinner(component);
