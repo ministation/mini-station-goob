@@ -1,19 +1,18 @@
-# Временные тестовые значения — вернуть продакшн-лимиты перед релизом.
 - type: entity
   id: TypanStationWar
   parent: BaseGameRule
   components:
   - type: GameRule
-    minPlayers: 0
+    minPlayers: 20
     chaosScore: 900
   - type: Tag
     tags:
     - LoneRunRule
   - type: TypanStationWarRule
-    announcementDelaySeconds: 5
-    warStartDelaySeconds: 10
-    warDurationSeconds: 300
-    warMusicDelaySeconds: 30
+    announcementDelaySeconds: 15
+    warStartDelaySeconds: 300
+    warDurationSeconds: 3600
+    warMusicDelaySeconds: 90
     warMusicDurationSeconds: 90
     warMusicTracks:
     - /Audio/_Mini/TypanWar/station_war.ogg
@@ -21,18 +20,19 @@
     warMusicTrackDurations:
     - 90
     - 90
-    roundEndDelaySeconds: 30
-    minNtAlive: 0
-    minTypanAlive: 0
-    maxFactionRatio: 0
-    prepInsufficientCheckIntervalSeconds: 10
-    warIntelEventDelaySeconds: 120
+    roundEndDelaySeconds: 120
+    minNtAlive: 5
+    minTypanAlive: 5
+    maxFactionRatio: 2
+    prepInsufficientCheckIntervalSeconds: 30
+    warIntelEventDelaySeconds: 900
     captureZoneActivationDelaySeconds: 0
-    capturePointsToWin: 30
+    capturePointsToWin: 100
     capturePointIntervalSeconds: 30
-    minRespawnSeconds: 5
-    maxRespawnSeconds: 15
-    dropShuttleRespawnDelaySeconds: 60
+    tradeZoneSwapScoreThreshold: 50
+    minRespawnSeconds: 10
+    maxRespawnSeconds: 60
+    dropShuttleRespawnDelaySeconds: 120
     stationSeparationTiles: 300
     tradePostMaxDistanceTiles: 500
     warParallax: TypanWarParallax
@@ -46,7 +46,7 @@
   - typan-station-war
   name: game-presets-typan-station-war
   showInVote: true
-  minPlayers: 0
+  minPlayers: 20
   description: game-presets-typan-station-war-description
   rules:
   - TypanStationWar

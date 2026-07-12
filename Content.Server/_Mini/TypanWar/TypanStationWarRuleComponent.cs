@@ -46,10 +46,10 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public float RoundEndDelaySeconds = 120f;
 
     [DataField]
-    public int MinNtAlive = 0;
+    public int MinNtAlive = 5;
 
     [DataField]
-    public int MinTypanAlive = 0;
+    public int MinTypanAlive = 5;
 
     /// <summary>Max allowed faction headcount ratio (e.g. 2 means at most 2× players on one side).</summary>
     [DataField]

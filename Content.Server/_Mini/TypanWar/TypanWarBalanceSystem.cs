@@ -75,7 +75,7 @@ public sealed class TypanWarBalanceSystem : EntitySystem
     /// </summary>
     public void BalanceRoundstartAssignments(ref Dictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> assignedJobs)
     {
-        if (!TryGetActiveRule(out var rule) || rule.MaxFactionRatio <= 0)
+        if (!TryGetActiveRule(out var rule) || rule.MaxFactionRatio < 1)
             return;
 
         var ratio = rule.MaxFactionRatio;
@@ -127,7 +127,7 @@ public sealed class TypanWarBalanceSystem : EntitySystem
         if (ev.Cancelled || ev.Jobs is not { } jobs)
             return;
 
-        if (!TryGetActiveRule(out var rule) || rule.MaxFactionRatio <= 0)
+        if (!TryGetActiveRule(out var rule) || rule.MaxFactionRatio < 1)
             return;
 
         var ratio = rule.MaxFactionRatio;
@@ -240,8 +240,8 @@ public sealed class TypanWarBalanceSystem : EntitySystem
         var ratio = Math.Max(rule.MaxFactionRatio, 1);
         return new TypanWarBalanceStatusEvent(
             active: true,
-            allowNanotrasen: rule.MaxFactionRatio <= 0 || CanJoinSide(TypanWarSide.Nanotrasen, nt, typan, ratio),
-            allowTypan: rule.MaxFactionRatio <= 0 || CanJoinSide(TypanWarSide.Typan, nt, typan, ratio),
+            allowNanotrasen: CanJoinSide(TypanWarSide.Nanotrasen, nt, typan, ratio),
+            allowTypan: CanJoinSide(TypanWarSide.Typan, nt, typan, ratio),
             ntJoined: nt,
             typanJoined: typan);
     }
