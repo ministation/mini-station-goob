@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Egorik1
+﻿// SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System;
@@ -69,6 +69,8 @@ public sealed class TypanWarMinimapControl : Control
     private TypanWarMinimapGrid[] _grids = [];
     private TypanWarCaptureZoneStatus[] _zones = [];
     private TypanWarAllyBlip[] _allies = [];
+    private int _ntAlive;
+    private int _typanAlive;
     private NetEntity[] _cachedGridKeys = [];
 
     private static readonly Dictionary<EntityUid, CachedGridShape> ShapeCache = new();
@@ -112,13 +114,15 @@ public sealed class TypanWarMinimapControl : Control
         MouseFilter = MouseFilterMode.Stop;
     }
 
-    public void Update(TypanWarMinimapGrid[] grids, TypanWarCaptureZoneStatus[] zones, TypanWarAllyBlip[] allies)
+    public void Update(TypanWarMinimapGrid[] grids, TypanWarCaptureZoneStatus[] zones, TypanWarAllyBlip[] allies, int ntAlive, int typanAlive)
     {
         var gridsChanged = !GridKeysEqual(_cachedGridKeys, grids);
 
         _grids = grids;
         _zones = zones;
         _allies = allies;
+        _ntAlive = ntAlive;
+        _typanAlive = typanAlive;
 
         if (gridsChanged)
         {
@@ -136,6 +140,9 @@ public sealed class TypanWarMinimapControl : Control
     /// </summary>
     public void PrepareForDisplay()
     {
+        _zoom = 1.15f;
+        _pan = Vector2.Zero;
+
         if (_grids.Length > 0)
             UpdateViewBounds();
 
@@ -240,6 +247,8 @@ public sealed class TypanWarMinimapControl : Control
         handle.DrawRect(box, Background);
         handle.DrawRect(box, Border, false);
 
+        DrawForcesLegend(handle, box);
+
         if (!AreShapesReady())
             return;
 
@@ -295,6 +304,33 @@ public sealed class TypanWarMinimapControl : Control
 
         if (localPos is { } self)
             DrawCircleBlip(handle, map.WorldToScreen(self.X, self.Y), SelfBlip, 6f);
+    }
+
+    private void DrawForcesLegend(DrawingHandleScreen handle, UIBox2 box)
+    {
+        if (_font == null)
+            return;
+
+        var ntText = Loc.GetString("typan-war-minimap-forces-nt", ("count", _ntAlive));
+        var typanText = Loc.GetString("typan-war-minimap-forces-typan", ("count", _typanAlive));
+        var lineHeight = _font.GetLineHeight(1f) + 2f;
+        var pad = 8f;
+        var maxWidth = Math.Max(
+            handle.GetDimensions(_font, ntText, 1f).X,
+            handle.GetDimensions(_font, typanText, 1f).X);
+        var legendBox = new UIBox2(
+            box.Left + pad,
+            box.Top + pad,
+            box.Left + pad + maxWidth + 12f,
+            box.Top + pad + lineHeight * 2f + 8f);
+
+        handle.DrawRect(legendBox, Background.WithAlpha(0.9f));
+        handle.DrawRect(legendBox, Border, false);
+
+        var textX = legendBox.Left + 6f;
+        var textY = legendBox.Top + 4f;
+        handle.DrawString(_font, new Vector2(textX, textY), ntText, NtBlip);
+        handle.DrawString(_font, new Vector2(textX, textY + lineHeight), typanText, TypanBlip);
     }
 
     private void QueueShapeRebuild()
@@ -527,13 +563,15 @@ public sealed class TypanWarMinimapControl : Control
         if (cached.Length != grids.Length)
             return false;
 
-        for (var i = 0; i < cached.Length; i++)
+        var remaining = new HashSet<NetEntity>(cached);
+
+        foreach (var grid in grids)
         {
-            if (cached[i] != grids[i].Grid)
+            if (!remaining.Remove(grid.Grid))
                 return false;
         }
 
-        return true;
+        return remaining.Count == 0;
     }
 
     private void UpdateViewBounds()

@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: 2025 Mini Station
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Server._Mini.TypanWar;
 using Content.Server.Station.Components;
 using Content.Shared._Goobstation.Silo;
+using Content.Shared._Mini.TypanWar;
 using Content.Shared.Points;
 using Content.Shared.Station.Components;
 using Robust.Server.GameStates;
@@ -28,6 +30,8 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
         SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
         SubscribeLocalEvent<PlayerDetachedEvent>(OnPlayerDetached);
         SubscribeLocalEvent<ActorComponent, EntParentChangedMessage>(OnActorParentChanged);
+        SubscribeLocalEvent<ActorComponent, GridUidChangedEvent>(OnActorGridChanged);
+        SubscribeLocalEvent<TypanWarLayoutReadyEvent>(OnWarLayoutReady);
         _player.PlayerStatusChanged += OnPlayerStatusChanged;
     }
 
@@ -60,6 +64,19 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
         RefreshPlayer(component.PlayerSession, uid);
     }
 
+    private void OnActorGridChanged(EntityUid uid, ActorComponent component, ref GridUidChangedEvent args)
+    {
+        if (component.PlayerSession == null)
+            return;
+
+        RefreshPlayer(component.PlayerSession, uid);
+    }
+
+    private void OnWarLayoutReady(TypanWarLayoutReadyEvent ev)
+    {
+        RefreshAllPlayers();
+    }
+
     public void RefreshAllPlayers()
     {
         foreach (var session in _player.Sessions)
@@ -74,6 +91,7 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
             return;
 
         RefreshStationOverrides(session, player);
+        RefreshWarPlayerOverride(session, player);
         RefreshPointManagerOverrides(session, player);
         RefreshSiloOverrides(session, player);
     }
@@ -85,21 +103,82 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
 
         player ??= session.AttachedEntity;
         EntityUid? station = null;
+        MapId? playerMap = null;
 
         if (player != null && TryComp<TransformComponent>(player, out var xform))
         {
+            playerMap = xform.MapID;
+
             if (xform.GridUid != null && TryComp<StationMemberComponent>(xform.GridUid, out var member))
                 station = member.Station;
         }
 
+        var warStations = TypanStationWarRuleSystem.IsWarActive && playerMap != null
+            ? GetWarStationsOnMap(playerMap.Value)
+            : null;
+
         var query = EntityQueryEnumerator<StationDataComponent>();
         while (query.MoveNext(out var uid, out _))
         {
-            if (uid == station)
+            if (warStations != null && warStations.Contains(uid))
+                _pvs.AddSessionOverride(uid, session);
+            else if (uid == station)
                 _pvs.AddSessionOverride(uid, session);
             else
                 _pvs.RemoveSessionOverride(uid, session);
         }
+    }
+
+    /// <summary>
+    /// Keeps the player's own inventory replicated when crossing grid boundaries during station war.
+    /// </summary>
+    private void RefreshWarPlayerOverride(ICommonSession session, EntityUid? player)
+    {
+        if (session.Status != SessionStatus.InGame)
+            return;
+
+        player ??= session.AttachedEntity;
+
+        if (player == null)
+            return;
+
+        if (TypanStationWarRuleSystem.IsWarActive && HasComp<TypanWarFactionComponent>(player.Value))
+            _pvs.AddSessionOverride(player.Value, session);
+        else
+            _pvs.RemoveSessionOverride(player.Value, session);
+    }
+
+    private HashSet<EntityUid> GetWarStationsOnMap(MapId mapId)
+    {
+        var stations = new HashSet<EntityUid>();
+        var query = EntityQueryEnumerator<TypanStationWarRuleComponent>();
+        while (query.MoveNext(out var ruleUid, out var rule))
+        {
+            if (rule.Phase != TypanWarPhase.Active)
+                continue;
+
+            if (rule.NtStation is { } nt && StationOnMap(nt, mapId))
+                stations.Add(nt);
+
+            if (rule.TypanStation is { } typan && StationOnMap(typan, mapId))
+                stations.Add(typan);
+        }
+
+        return stations;
+    }
+
+    private bool StationOnMap(EntityUid station, MapId mapId)
+    {
+        if (!TryComp<StationDataComponent>(station, out var data) || data.Grids.Count == 0)
+            return false;
+
+        foreach (var grid in data.Grids)
+        {
+            if (TryComp<TransformComponent>(grid, out var xform) && xform.MapID == mapId)
+                return true;
+        }
+
+        return false;
     }
 
     public void RefreshPointManagerOverrides(ICommonSession? session = null, EntityUid? player = null)

@@ -30,4 +30,7 @@ public sealed partial class TypanWarCombatMindComponent : Component
     public TimeSpan? RespawnAvailableAt;
 
     public bool RespawnUiOpen;
+
+    /// <summary>Corpse to clean up after the next successful war respawn.</summary>
+    public EntityUid? PendingCorpse;
 }

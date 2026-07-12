@@ -35,8 +35,9 @@ typan-war-hud-zone-line = Zone {$label}: {$location}
 typan-war-capture-nt = NanoTrasen captured {$zone}.
 typan-war-capture-typan = Syndicate captured {$zone}.
 typan-war-capture-neutral = {$zone} is now neutral.
-typan-war-capture-loot-nt = A [color=#A8C8FF]NanoTrasen surplus crate[/color] has been delivered to {$zone}.
-typan-war-capture-loot-typan = A [color=#FFB0B0]Syndicate surplus crate[/color] has been delivered to {$zone}.
+typan-war-capture-loot-nt = A [color=#A8C8FF]NanoTrasen surplus crate[/color] has been delivered to zone {$label} — {$location}.
+typan-war-capture-loot-typan = A [color=#FFB0B0]Syndicate surplus crate[/color] has been delivered to zone {$label} — {$location}.
+typan-war-capture-trade-zone-swapped = Zone {$label} has been relocated to {$location} to balance the fight.
 typan-war-hud-zone-inactive = inactive
 typan-war-hud-zone-owner-neutral = neutral
 typan-war-hud-zone-owner-nanotrasen = NT
@@ -53,6 +54,7 @@ typan-war-manifest =
     {"[color=#A8C8FF]▸ NanoTrasen:[/color] hold capture zones and reach [bold]100 points[/bold]."}
     {"[color=#FFB0B0]▸ Syndicate:[/color] hold capture zones and reach [bold]100 points[/bold]."}
     {"[color=#C8C4D8]▸[/color] If time runs out first, the faction with more points wins."}
+    {"[color=#C8C4D8]▸[/color] Active combat lasts [bold]60 minutes[/bold]."}
     {" "}
     {"[color=#C8C4D8][bold]Capture zones[/bold][/color] [color=#888898](A / B / C)[/color]"}
     {"[color=#C8C4D8]▸[/color] Three 3×3 zones appear when combat begins — NT station, Typan station, and a trade outpost."}
@@ -81,6 +83,8 @@ typan-war-respawn-failed = Deployment failed — try another point.
 
 typan-war-minimap-title = War map
 typan-war-minimap-legend = NT {$nt} / Syndicate {$typan} — win at {$win}
+typan-war-minimap-forces-nt = NanoTrasen: {$count} fighters
+typan-war-minimap-forces-typan = Syndicate: {$count} fighters
 typan-war-minimap-map-legend = Silhouettes = stations & shuttles (named) · triangles = allies · letters = capture zones
 typan-war-minimap-controls = Scroll — zoom · drag — pan
 typan-war-ghost-thunderdome-blocked = Thunderdome is disabled during station war.
@@ -89,6 +93,8 @@ typan-war-ftl-blocked = Bluespace jumps are blocked during station war.
 
 typan-war-drop-shuttle-docked-nt = A NanoTrasen reinforcement shuttle has docked {$direction} of the station at {$location}.
 typan-war-drop-shuttle-docked-typan = A Syndicate reinforcement shuttle has docked {$direction} of the station at {$location}.
+typan-war-drop-shuttle-lost-nt = The NanoTrasen reinforcement shuttle has been disabled — a replacement is being prepared.
+typan-war-drop-shuttle-lost-typan = The Syndicate reinforcement shuttle has been disabled — a replacement is being prepared.
 
 typan-war-balance-lobby-wait = Station war: NT is overpopulated. You remain in the lobby — late join on the Typan station instead.
 typan-war-balance-lobby-wait-typan = Station war: Typan is overpopulated. You remain in the lobby — late join on the NT station instead.

@@ -5,6 +5,7 @@ using System.Numerics;
 using Content.Shared._Mini.TypanWar;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
+using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Graphics;
@@ -83,14 +84,15 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
             return;
 
         var handle = args.ScreenHandle;
+        var viewport = args.ViewportControl;
         var query = _ent.AllEntityQueryEnumerator<TypanWarCaptureZoneComponent, TransformComponent>();
 
-        while (query.MoveNext(out _, out var zone, out var xform))
+        while (query.MoveNext(out var uid, out var zone, out var xform))
         {
             if (!zone.Active)
                 continue;
 
-            DrawCaptureProgress(handle, zone, xform);
+            DrawCaptureProgress(handle, viewport, uid, zone);
         }
     }
 
@@ -151,10 +153,20 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
 
         handle.SetTransform(Matrix3x2.Identity);
     }
-    private void DrawCaptureProgress(DrawingHandleScreen handle, TypanWarCaptureZoneComponent zone, TransformComponent xform)
+    private void DrawCaptureProgress(
+        DrawingHandleScreen handle,
+        IViewportControl viewport,
+        EntityUid zoneUid,
+        TypanWarCaptureZoneComponent zone)
     {
-        if (zone.CaptureProgress <= 0f || xform.GridUid is not { } gridUid || !_ent.TryGetComponent(gridUid, out MapGridComponent? grid))
+        if (zone.CaptureProgress <= 0f)
             return;
+
+        var anchor = zoneUid;
+        if (zone.FlagEntity is { } flag && _ent.EntityExists(flag))
+            anchor = flag;
+
+        var worldPos = _xform!.GetWorldPosition(anchor);
 
         var fillColor = zone.CapturingOwner switch
         {
@@ -163,15 +175,11 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
             _ => Color.FromHex("#E8E8E8").WithAlpha(0.9f),
         };
 
-        var worldMatrix = _xform!.GetWorldMatrix(gridUid);
-        var centerTile = _map!.TileIndicesFor(gridUid, grid, xform.Coordinates);
-        var localCenter = _lookup!.GetLocalBounds(centerTile, grid.TileSize).Center;
-        localCenter += new Vector2(0f, grid.TileSize * 0.55f);
-        var worldCenter = Vector2.Transform(localCenter, worldMatrix);
-        var screenCenter = _eye.WorldToScreen(worldCenter);
+        var screenCenter = viewport.WorldToScreen(worldPos);
+        screenCenter.Y -= 35f;
 
-        const float barHalfW = 36f;
-        const float barHalfH = 4f;
+        const float barHalfW = 44f;
+        const float barHalfH = 5f;
         var back = Color.FromHex("#252530").WithAlpha(0.55f);
 
         var box = new UIBox2(

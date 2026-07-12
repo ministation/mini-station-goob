@@ -55,8 +55,9 @@ typan-war-hud-zone-line = Зона {$label}: {$location}
 typan-war-capture-nt = Нанотрайзен захватил {$zone}.
 typan-war-capture-typan = Синдикат захватил {$zone}.
 typan-war-capture-neutral = {$zone} стала нейтральной.
-typan-war-capture-loot-nt = На {$zone} доставлен [color=#A8C8FF]ящик снабжения Нанотрайзен[/color].
-typan-war-capture-loot-typan = На {$zone} доставлен [color=#FFB0B0]ящик снабжения Синдиката[/color].
+typan-war-capture-loot-nt = На точке {$label} — {$location} доставлен [color=#A8C8FF]ящик снабжения Нанотрайзен[/color].
+typan-war-capture-loot-typan = На точке {$label} — {$location} доставлен [color=#FFB0B0]ящик снабжения Синдиката[/color].
+typan-war-capture-trade-zone-swapped = Зона {$label} перенесена на {$location} для баланса сил.
 
 typan-war-hud-zone-inactive = неактивна
 typan-war-hud-zone-owner-neutral = нейтральная
@@ -74,6 +75,7 @@ typan-war-manifest =
     {"[color=#A8C8FF]▸ Нанотрайзен:[/color] удерживать зоны захвата и набрать [bold]100 очков[/bold]."}
     {"[color=#FFB0B0]▸ Синдикат:[/color] удерживать зоны захвата и набрать [bold]100 очков[/bold]."}
     {"[color=#C8C4D8]▸[/color] Если таймер истечёт раньше — побеждает сторона с большим числом очков."}
+    {"[color=#C8C4D8]▸[/color] Активная фаза боя — [bold]60 минут[/bold]."}
     {" "}
     {"[color=#C8C4D8][bold]Зоны захвата[/bold][/color] [color=#888898](A / B / C)[/color]"}
     {"[color=#C8C4D8]▸[/color] Три зоны 3×3 появляются с началом боя — станция NT, станция Тайпан и торговый аванпост."}
@@ -105,6 +107,8 @@ typan-war-respawn-failed = Высадка не удалась — попробу
 
 typan-war-minimap-title = Карта войны
 typan-war-minimap-legend = NT {$nt} / Синдикат {$typan} — победа при {$win}
+typan-war-minimap-forces-nt = Нанотрайзен: {$count} бойцов
+typan-war-minimap-forces-typan = Синдикат: {$count} бойцов
 typan-war-minimap-map-legend = Силуэты = станции и шаттлы · треугольники = союзники · буквы = зоны захвата
 typan-war-minimap-controls = Колёсико — масштаб · перетаскивание — перемещение
 typan-war-ghost-thunderdome-blocked = Thunderdome недоступен во время войны станций.
@@ -113,6 +117,8 @@ typan-war-ftl-blocked = Блюспейс-прыжки заблокированы
 
 typan-war-drop-shuttle-docked-nt = Шаттл подкрепления Нанотрайзен пристыковался к станции с {$direction}, локация: {$location}.
 typan-war-drop-shuttle-docked-typan = Шаттл подкрепления Синдиката пристыковался к станции с {$direction}, локация: {$location}.
+typan-war-drop-shuttle-lost-nt = Шаттл подкрепления Нанотрайзен выведен из строя — запрошена замена.
+typan-war-drop-shuttle-lost-typan = Шаттл подкрепления Синдиката выведен из строя — запрошена замена.
 
 typan-war-balance-lobby-wait = Война станций: на стороне NT слишком много игроков. Вы остались в лобби — зайдите через позднее присоединение на станцию Тайпан.
 typan-war-balance-lobby-wait-typan = Война станций: на стороне Тайпан слишком много игроков. Вы остались в лобби — зайдите через позднее присоединение на станцию NT.

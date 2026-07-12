@@ -334,12 +334,30 @@
         - SlaughterHugAndTickleObjective
 
 - type: entity
-  parent: SlasherSpawn
+  parent: BaseGameRule
   id: TokenSlasherSpawn
   components:
+    - type: StationEvent
+      isSelectable: false
+      minimumPlayers: 0
+    - type: GameRule
+      chaosScore: 600
+    - type: AntagLoadProfileRule
+      speciesOverride: Human
+      speciesOverrideBlacklist:
+        - Yowie
+        - IPC
+        - Diona
+        - Harpy
+        - Plasmaman
+      forceMaxSize: true
+    - type: AntagObjectives
+      objectives:
+        - SlasherSurviveObjective
+        - SlasherAbsorbSoulsObjective
     - type: AntagSelection
       selectionTime: PostPlayerSpawn
-      agentName: slasher-round-end-agent-name # Change later
+      agentName: slasher-round-end-agent-name
       definitions:
         - spawnerPrototype: SpawnPointGhostSlasherToken
           min: 1
@@ -360,18 +378,30 @@
             - type: Slasher
             - type: SlasherSummonMachete
             - type: SlasherStaggerArea
+            - type: SlasherRelentlessGrab
             - type: SlasherRegenerate
             - type: SlasherPossession
             - type: SlasherBloodTrail
             - type: SlasherIncorporeal
             - type: SlasherSoulSteal
             - type: SlasherSummonMeatSpike
+            - type: NightVision
+              color: "#FF0000"
+              toggleAction: ActionSlasherNightVision
+              activateSound: !type:SoundCollectionSpecifier
+                collection: EyeOpen
+              deactivateSound: !type:SoundCollectionSpecifier
+                collection: EyeClose
+            - type: GrabIntent
+              grabThrownSpeed: 10
+              throwingDistance: 8
+              softGrabSpeedModifier: 1
+              hardGrabSpeedModifier: 1
+              chokeGrabSpeedModifier: 1
             - type: BreathingImmunity
             - type: GunBlocked
+              popupText: slasher-cannot-use-guns
             - type: WeakToHoly
-            - type: NightVision
-              activateSound: null
-              deactivateSound: null
             - type: Hunger
               baseDecayRate: 0
             - type: Thirst

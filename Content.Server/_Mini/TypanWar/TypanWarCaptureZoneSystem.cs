@@ -19,6 +19,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Utility;
 
 namespace Content.Server._Mini.TypanWar;
 
@@ -99,12 +100,16 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         TypanWarCaptureOwner homeFaction,
         string label,
         string displayName,
-        EntityUid flagEntity)
+        EntityUid flagEntity,
+        bool isTradePost = false,
+        bool isTypanTradePost = false)
     {
         var zone = Comp<TypanWarCaptureZoneComponent>(zoneUid);
         zone.HomeFaction = homeFaction;
         zone.ZoneLabel = label;
         zone.ZoneDisplayName = displayName;
+        zone.IsTradePostZone = isTradePost;
+        zone.IsTypanTradePost = isTypanTradePost;
         zone.ZoneLocaleKey = homeFaction switch
         {
             TypanWarCaptureOwner.Nanotrasen => "nt",
@@ -137,7 +142,9 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
                 spawned.HomeFaction,
                 spawned.Label,
                 spawned.DisplayName,
-                spawned.FlagUid);
+                spawned.FlagUid,
+                spawned.IsTradePost,
+                spawned.IsTypanTradePost);
 
             if (!TryComp<TypanWarCaptureZoneComponent>(spawned.ZoneUid, out var zone))
                 continue;
@@ -183,6 +190,63 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         }
 
         return list.OrderBy(z => z.ZoneLabel).ToArray();
+    }
+
+    /// <summary>
+    /// When a faction hits the score threshold, move zone C to the other trade post once per round.
+    /// </summary>
+    public void TrySwapTradeZone(EntityUid ntStation, EntityUid typanStation)
+    {
+        var query = EntityQueryEnumerator<TypanWarCaptureZoneComponent>();
+        while (query.MoveNext(out var uid, out var zone))
+        {
+            if (zone.ZoneLabel != "C" || !zone.IsTradePostZone)
+                continue;
+
+            if (zone.FlagEntity is not { } flag)
+                return;
+
+            if (!_spawn.TryRelocateTradeZoneToOppositeTradePost(
+                    uid,
+                    flag,
+                    ntStation,
+                    typanStation,
+                    zone.IsTypanTradePost,
+                    out var newDisplayName) ||
+                newDisplayName == null)
+            {
+                Log.Warning("Typan station war: failed to relocate trade zone C.");
+                return;
+            }
+
+            zone.IsTypanTradePost = !zone.IsTypanTradePost;
+            zone.ZoneDisplayName = newDisplayName;
+            zone.CaptureProgress = 0f;
+            zone.CapturingOwner = null;
+            Dirty(uid, zone);
+
+            if (_runtime.TryGetValue(uid, out var runtime))
+            {
+                runtime.CapturingToward = null;
+                runtime.PointAccumulator = 0f;
+                runtime.LootAccumulator = 0f;
+            }
+
+            _zoneProtection.RefreshAllZoneProtection();
+
+            var locationKey = zone.IsTypanTradePost
+                ? "typan-war-capture-location-trade-typan"
+                : "typan-war-capture-location-trade-nt";
+
+            _chat.DispatchGlobalAnnouncement(
+                Loc.GetString("typan-war-capture-trade-zone-swapped",
+                    ("label", zone.ZoneLabel),
+                    ("location", Loc.GetString(locationKey))),
+                Loc.GetString("typan-war-sender"),
+                announcementSound: TypanWarSounds.HeadquartersAlert,
+                colorOverride: TypanWarColors.Neutral);
+            return;
+        }
     }
 
     public IEnumerable<(EntityCoordinates Coordinates, string Label, string DisplayName)> GetOwnedZoneCoordinates(
@@ -327,19 +391,19 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
 
         Spawn(crateProto.Value, spawnCoords);
 
-        var zoneName = FormatZoneName(zone);
+        var location = FormattedMessage.RemoveMarkupPermissive(zone.ZoneDisplayName);
         switch (zone.CaptureOwner)
         {
             case TypanWarCaptureOwner.Nanotrasen:
                 _chat.DispatchGlobalAnnouncement(
-                    Loc.GetString("typan-war-capture-loot-nt", ("zone", zoneName)),
+                    Loc.GetString("typan-war-capture-loot-nt", ("label", zone.ZoneLabel), ("location", location)),
                     Loc.GetString(TypanWarColors.SenderLocId(TypanWarCaptureOwner.Nanotrasen)),
                     announcementSound: TypanWarSounds.HeadquartersAlert,
                     colorOverride: TypanWarColors.ForCaptureOwner(TypanWarCaptureOwner.Nanotrasen));
                 break;
             case TypanWarCaptureOwner.Typan:
                 _chat.DispatchGlobalAnnouncement(
-                    Loc.GetString("typan-war-capture-loot-typan", ("zone", zoneName)),
+                    Loc.GetString("typan-war-capture-loot-typan", ("label", zone.ZoneLabel), ("location", location)),
                     Loc.GetString(TypanWarColors.SenderLocId(TypanWarCaptureOwner.Typan)),
                     announcementSound: TypanWarSounds.HeadquartersAlert,
                     colorOverride: TypanWarColors.ForCaptureOwner(TypanWarCaptureOwner.Typan));

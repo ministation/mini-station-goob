@@ -27,6 +27,8 @@ public sealed class SpawnedCaptureZone
     public required string Label;
     public required string DisplayName;
     public required TypanWarCaptureOwner HomeFaction;
+    public bool IsTradePost;
+    public bool IsTypanTradePost;
 }
 
 /// <summary>
@@ -145,6 +147,61 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
         return spawnedZones.Count > 0;
     }
 
+    /// <summary>
+    /// Moves trade zone C to the opposite faction trade post (balance swap at 50 points).
+    /// </summary>
+    public bool TryRelocateTradeZoneToOppositeTradePost(
+        EntityUid zoneUid,
+        EntityUid flagUid,
+        EntityUid ntStation,
+        EntityUid typanStation,
+        bool currentlyTypanTrade,
+        out string? newDisplayName)
+    {
+        newDisplayName = null;
+
+        if (!TryComp<StationDataComponent>(ntStation, out var ntData) ||
+            !TryComp<StationDataComponent>(typanStation, out var typanData))
+            return false;
+
+        var ntGrid = _station.GetLargestGrid((ntStation, ntData));
+        var typanGrid = _station.GetLargestGrid((typanStation, typanData));
+
+        if (ntGrid == null || typanGrid == null)
+            return false;
+
+        var targetStation = currentlyTypanTrade ? ntStation : typanStation;
+        var mainGrid = currentlyTypanTrade ? ntGrid.Value : typanGrid.Value;
+        var tradeGrid = FindTradeGridForStation(targetStation, mainGrid);
+
+        if (tradeGrid == null)
+            return false;
+
+        if (!TryComp<MapGridComponent>(tradeGrid.Value, out var grid))
+            return false;
+
+        var target = new SpawnTarget
+        {
+            Grid = tradeGrid.Value,
+            Station = targetStation,
+            HomeFaction = TypanWarCaptureOwner.Neutral,
+            IsTradePost = true,
+            IsTypanTrade = !currentlyTypanTrade,
+        };
+
+        if (!TryPickCenterTile(target, grid, out var centerTile))
+            return false;
+
+        var coords = _map.GridTileToLocal(tradeGrid.Value, grid, centerTile);
+        _transform.SetCoordinates(zoneUid, coords);
+
+        if (Exists(flagUid))
+            _transform.SetCoordinates(flagUid, coords);
+
+        newDisplayName = BuildLocationName(target, centerTile);
+        return true;
+    }
+
     private void ClearExistingZones()
     {
         var query = EntityQueryEnumerator<TypanWarCaptureZoneComponent>();
@@ -207,6 +264,8 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
             Label = label,
             DisplayName = BuildLocationName(target, centerTile),
             HomeFaction = target.HomeFaction,
+            IsTradePost = target.IsTradePost,
+            IsTypanTradePost = target.IsTypanTrade,
         };
 
         return true;

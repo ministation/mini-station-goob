@@ -57,6 +57,14 @@ public sealed partial class TypanWarCaptureZoneComponent : Component
     [DataField, AutoNetworkedField]
     public string ZoneDisplayName = "";
 
+    /// <summary>Zone C on a trade outpost grid (not a main station).</summary>
+    [DataField, AutoNetworkedField]
+    public bool IsTradePostZone;
+
+    /// <summary>Trade zone currently on the Typan trade post (false = NT trade post).</summary>
+    [DataField, AutoNetworkedField]
+    public bool IsTypanTradePost;
+
     [DataField]
     public EntProtoId NtLootCrate = "CrateNtSurplusBundle";
 

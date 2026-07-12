@@ -11,7 +11,7 @@
   - type: TypanStationWarRule
     announcementDelaySeconds: 15
     warStartDelaySeconds: 300
-    warDurationSeconds: 1800
+    warDurationSeconds: 3600
     warMusicDelaySeconds: 90
     warMusicDurationSeconds: 90
     warMusicTracks:
@@ -24,11 +24,15 @@
     minNtAlive: 5
     minTypanAlive: 5
     maxFactionRatio: 2
+    prepInsufficientCheckIntervalSeconds: 30
+    warIntelEventDelaySeconds: 900
     captureZoneActivationDelaySeconds: 0
     capturePointsToWin: 100
-    capturePointIntervalSeconds: 20
+    capturePointIntervalSeconds: 30
+    tradeZoneSwapScoreThreshold: 50
     minRespawnSeconds: 10
     maxRespawnSeconds: 60
+    dropShuttleRespawnDelaySeconds: 120
     stationSeparationTiles: 300
     tradePostMaxDistanceTiles: 500
     warParallax: TypanWarParallax

@@ -25,4 +25,11 @@ public sealed partial class TypanWarSurplusLootEntry
     /// <summary>Independent roll chance per crate open (0–1).</summary>
     [DataField(required: true)]
     public float Probability;
+
+    /// <summary>
+    /// When set, the roll chance lerps from <see cref="Probability"/> at war start
+    /// to this value at war end (used for rare late-round rewards).
+    /// </summary>
+    [DataField]
+    public float? LateRoundProbability;
 }

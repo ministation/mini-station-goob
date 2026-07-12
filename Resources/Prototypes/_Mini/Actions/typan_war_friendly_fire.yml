@@ -25,6 +25,7 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
+    clientExclusive: true
     priority: -9
     useDelay: 0.25
     icon:

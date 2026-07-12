@@ -44,10 +44,9 @@ public sealed class TypanWarMinimapWindow : FancyWindow
         TypanWarMinimapGrid[] grids,
         TypanWarCaptureZoneStatus[] zones,
         TypanWarAllyBlip[] allies,
-        float ntPoints,
-        float typanPoints,
-        int toWin)
+        int ntAlive,
+        int typanAlive)
     {
-        _map.Update(grids, zones, allies);
+        _map.Update(grids, zones, allies, ntAlive, typanAlive);
     }
 }

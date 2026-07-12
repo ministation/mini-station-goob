@@ -14,18 +14,22 @@
     probability: 0.14
   - item: WeaponRifleWSPR
     probability: 0.07
+    lateRoundProbability: 0.14
   - item: WeaponRevolverPythonAP
     probability: 0.12
   - item: EnergyDaggerBox
     probability: 0.28
   - item: WeaponRifleBurner
     probability: 0.06
+    lateRoundProbability: 0.12
   - item: WeaponSubMachineGunM7S
     probability: 0.12
   - item: WeaponLightMachineGunL2RPK
     probability: 0.04
+    lateRoundProbability: 0.1
   - item: MiniatureEnergyCrossbow
     probability: 0.03
+    lateRoundProbability: 0.08
   - item: CombatKnife
     probability: 0.4
   - item: ThrowingKnivesKit
@@ -55,7 +59,8 @@
   - item: ClothingOuterHardsuitSyndie
     probability: 0.05
   - item: ClothingOuterHardsuitJuggernaut
-    probability: 0.01
+    probability: 0.02
+    lateRoundProbability: 0.08
   - item: ClothingOuterHardsuitSyndieElite
     probability: 0.08
   - item: ClothingOuterVestWeb
