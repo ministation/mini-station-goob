@@ -71,7 +71,7 @@ public sealed class TypanWarMinimapControl : Control
     private TypanWarAllyBlip[] _allies = [];
     private NetEntity[] _cachedGridKeys = [];
 
-    private readonly Dictionary<EntityUid, CachedGridShape> _shapeCache = new();
+    private static readonly Dictionary<EntityUid, CachedGridShape> ShapeCache = new();
     private readonly List<TypanWarMinimapGrid> _buildQueue = new();
     private readonly List<Vector2> _screenVerts = new();
     private readonly HashSet<Vector2i> _tileSet = new();
@@ -140,12 +140,39 @@ public sealed class TypanWarMinimapControl : Control
             UpdateViewBounds();
 
         QueueShapeRebuild();
+
+        if (_buildQueue.Count == 0)
+            return;
+
         ProcessBuildQueue(int.MaxValue);
+    }
+
+    public static void ClearShapeCache() => ShapeCache.Clear();
+
+    public bool AreShapesReady()
+    {
+        if (_grids.Length == 0)
+            return false;
+
+        foreach (var grid in _grids)
+        {
+            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
+                return false;
+
+            if (!ShapeCache.ContainsKey(uid))
+                return false;
+        }
+
+        return true;
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
+
+        if (_buildQueue.Count == 0)
+            return;
+
         ProcessBuildQueue(maxGrids: 1);
     }
 
@@ -213,6 +240,9 @@ public sealed class TypanWarMinimapControl : Control
         handle.DrawRect(box, Background);
         handle.DrawRect(box, Border, false);
 
+        if (!AreShapesReady())
+            return;
+
         if (!_hasViewBounds && _grids.Length > 0)
             UpdateViewBounds();
 
@@ -224,7 +254,7 @@ public sealed class TypanWarMinimapControl : Control
             if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
                 continue;
 
-            if (!_shapeCache.TryGetValue(uid, out var shape))
+            if (!ShapeCache.TryGetValue(uid, out var shape))
                 continue;
 
             DrawCachedShape(handle, map, shape);
@@ -276,14 +306,13 @@ public sealed class TypanWarMinimapControl : Control
             if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
                 continue;
 
-            if (_ent.TryGetComponent(uid, out MapGridComponent? mapGrid) &&
-                _shapeCache.TryGetValue(uid, out var cached) &&
-                cached.LastBuild >= mapGrid.LastTileModifiedTick)
+            if (!_ent.TryGetComponent(uid, out MapGridComponent? mapGrid) ||
+                !ShapeCache.TryGetValue(uid, out var cached) ||
+                cached.LastBuild < mapGrid.LastTileModifiedTick)
             {
+                _buildQueue.Add(grid);
                 continue;
             }
-
-            _buildQueue.Add(grid);
         }
 
         var activeIds = _grids
@@ -292,10 +321,10 @@ public sealed class TypanWarMinimapControl : Control
             .Select(net => _ent.GetEntity(net))
             .ToHashSet();
 
-        foreach (var uid in _shapeCache.Keys.ToArray())
+        foreach (var uid in ShapeCache.Keys.ToArray())
         {
             if (!activeIds.Contains(uid))
-                _shapeCache.Remove(uid);
+                ShapeCache.Remove(uid);
         }
     }
 
@@ -321,7 +350,7 @@ public sealed class TypanWarMinimapControl : Control
             if (!_ent.TryGetComponent(uid, out MapGridComponent? mapGrid))
                 continue;
 
-            if (_shapeCache.TryGetValue(uid, out var cached) && cached.LastBuild >= mapGrid.LastTileModifiedTick)
+            if (ShapeCache.TryGetValue(uid, out var cached) && cached.LastBuild >= mapGrid.LastTileModifiedTick)
                 continue;
 
             var (fill, edge) = gridInfo.Kind switch
@@ -334,9 +363,9 @@ public sealed class TypanWarMinimapControl : Control
             };
 
             if (TryBuildGridShape(uid, mapGrid, gridInfo, fill, edge, out var shape))
-                _shapeCache[uid] = shape;
-            else if (_shapeCache.TryGetValue(uid, out var fallback))
-                _shapeCache[uid] = fallback;
+                ShapeCache[uid] = shape;
+            else if (ShapeCache.TryGetValue(uid, out var fallback))
+                ShapeCache[uid] = fallback;
 
             built++;
         }

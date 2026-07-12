@@ -4,7 +4,6 @@
 using Content.Shared._Mini.TypanWar;
 using Content.Shared.GameTicking;
 using Robust.Client.Player;
-using Robust.Shared.Timing;
 
 namespace Content.Client._Mini.TypanWar;
 
@@ -29,17 +28,17 @@ public sealed class TypanWarMinimapSystem : EntitySystem
     {
         base.Shutdown();
         _war.StatusUpdated -= OnStatusUpdated;
-        CloseWindow();
+        DisposeWindow();
     }
 
-    private void OnRoundRestart(RoundRestartCleanupEvent ev) => CloseWindow();
+    private void OnRoundRestart(RoundRestartCleanupEvent ev) => DisposeWindow();
 
     private void OnMinimapAction(TypanWarMinimapActionEvent ev)
     {
         if (_players.LocalEntity == null)
             return;
 
-        if (_window != null || _pendingOpen)
+        if (IsWindowOpen() || _pendingOpen)
         {
             _pendingOpen = false;
             CloseWindow();
@@ -67,7 +66,7 @@ public sealed class TypanWarMinimapSystem : EntitySystem
             return;
         }
 
-        if (_window == null)
+        if (!IsWindowOpen())
             return;
 
         if (_war.Phase != TypanWarPhase.Active)
@@ -82,9 +81,8 @@ public sealed class TypanWarMinimapSystem : EntitySystem
     private void OpenMinimapWindow()
     {
         _pendingOpen = false;
-        _window = new TypanWarMinimapWindow();
-        _window.OnClose += CloseWindow;
-        _window.PrepareForDisplay();
+        _window ??= new TypanWarMinimapWindow();
+
         _window.Refresh(
             _war.MinimapGrids,
             _war.CaptureZones,
@@ -92,12 +90,15 @@ public sealed class TypanWarMinimapSystem : EntitySystem
             _war.NtCapturePoints,
             _war.TypanCapturePoints,
             _war.CapturePointsToWin);
-        _window.OpenCentered();
+        _window.OpenPrepared();
     }
 
     private void RefreshWindow()
     {
-        _window?.Refresh(
+        if (!IsWindowOpen())
+            return;
+
+        _window!.Refresh(
             _war.MinimapGrids,
             _war.CaptureZones,
             _war.AllyBlips,
@@ -106,15 +107,27 @@ public sealed class TypanWarMinimapSystem : EntitySystem
             _war.CapturePointsToWin);
     }
 
+    private bool IsWindowOpen() => _window is { IsOpen: true };
+
     private void CloseWindow()
+    {
+        _pendingOpen = false;
+        _window?.Close();
+    }
+
+    private void DisposeWindow()
     {
         _pendingOpen = false;
 
         if (_window == null)
+        {
+            TypanWarMinimapControl.ClearShapeCache();
             return;
+        }
 
-        _window.OnClose -= CloseWindow;
         _window.Close();
+        _window.Dispose();
         _window = null;
+        TypanWarMinimapControl.ClearShapeCache();
     }
 }

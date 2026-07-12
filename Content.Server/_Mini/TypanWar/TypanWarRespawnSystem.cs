@@ -56,6 +56,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
+        SubscribeLocalEvent<PlayerDetachedEvent>(OnPlayerDetachedFromGhost);
 
         Subs.BuiEvents<GhostComponent>(TypanWarRespawnUiKey.Key, subs =>
         {
@@ -75,6 +76,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             return;
 
         _uiUpdateAccumulator = 0f;
+        ClearStaleRespawnUiFlags();
         UpdateOpenRespawnUis();
         TryOpenPendingRespawnUis();
     }
@@ -110,13 +112,32 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         if (!TryComp<MindComponent>(mindId.Value, out var mind) || mind.UserId != args.Player.UserId)
             return;
 
-        if (combat.RespawnUiOpen)
+        OpenRespawnUi(uid, mindId.Value, combat, args.Player);
+    }
+
+    private void OnPlayerDetachedFromGhost(PlayerDetachedEvent args)
+    {
+        if (!TypanStationWarRuleSystem.IsWarActive || !HasComp<GhostComponent>(args.Entity))
+            return;
+
+        var uid = args.Entity;
+
+        if (!TryGetCombatMindFromGhost(uid, out var mindId, out var combat))
         {
-            PushRespawnUiState(uid, combat);
+            var minds = EntityQueryEnumerator<TypanWarCombatMindComponent, MindComponent>();
+            while (minds.MoveNext(out var queryMindId, out var queryCombat, out var mind))
+            {
+                if (mind.UserId != args.Player.UserId || !queryCombat.RespawnUiOpen)
+                    continue;
+
+                CloseRespawnUi(uid, queryMindId, queryCombat, args.Player);
+                return;
+            }
+
             return;
         }
 
-        OpenRespawnUi(uid, mindId.Value, combat, args.Player);
+        CloseRespawnUi(uid, mindId.Value, combat, args.Player);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
@@ -176,12 +197,6 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
         if (args.Mind.Comp.UserId is not { } userId || !_players.TryGetSessionById(userId, out var session))
             return;
-
-        if (combat.RespawnUiOpen)
-        {
-            PushRespawnUiState(ghostUid, combat);
-            return;
-        }
 
         OpenRespawnUi(ghostUid, args.Mind.Owner, combat, session);
     }
@@ -272,6 +287,40 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             new InterfaceData("TypanWarRespawnBoundUserInterface", interactionRange: 0f, requireInputValidation: false));
         _ui.OpenUi(ghostUid, TypanWarRespawnUiKey.Key, session);
         PushRespawnUiState(ghostUid, combat);
+    }
+
+    private void CloseRespawnUi(
+        EntityUid ghostUid,
+        EntityUid mindId,
+        TypanWarCombatMindComponent combat,
+        ICommonSession? session = null)
+    {
+        if (!combat.RespawnUiOpen)
+            return;
+
+        combat.RespawnUiOpen = false;
+        Dirty(mindId, combat);
+
+        session ??= TryComp<MindComponent>(mindId, out var mind) && mind.UserId is { } userId
+            && _players.TryGetSessionById(userId, out var resolvedSession)
+            ? resolvedSession
+            : null;
+
+        if (session != null)
+            _ui.CloseUi(ghostUid, TypanWarRespawnUiKey.Key, session);
+    }
+
+    private void ClearStaleRespawnUiFlags()
+    {
+        var minds = EntityQueryEnumerator<TypanWarCombatMindComponent, MindComponent>();
+        while (minds.MoveNext(out var mindId, out var combat, out var mind))
+        {
+            if (!combat.RespawnUiOpen || GetGhostEntity(mind) != null)
+                continue;
+
+            combat.RespawnUiOpen = false;
+            Dirty(mindId, combat);
+        }
     }
 
     private void UpdateOpenRespawnUis()
