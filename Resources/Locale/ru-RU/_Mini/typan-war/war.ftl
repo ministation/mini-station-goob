@@ -71,8 +71,9 @@ typan-war-manifest =
     {"[color=#C8C4D8]Силы [color=#A8C8FF][bold]Нанотрайзен[/bold][/color] и [color=#FFB0B0][bold]Синдиката (Тайпан)[/bold][/color] ведут открытые боевые действия на общем поле боя.[/color]"}
     {" "}
     {"[color=#C8C4D8][bold]Главные задачи[/bold][/color]"}
-    {"[color=#A8C8FF]▸ NT:[/color] уничтожить боеспособные силы Синдиката и удерживать зоны захвата."}
-    {"[color=#FFB0B0]▸ Синдикат:[/color] уничтожить боеспособные силы NT и удерживать зоны захвата."}
+    {"[color=#A8C8FF]▸ Нанотрайзен:[/color] удерживать зоны захвата и набрать [bold]100 очков[/bold]."}
+    {"[color=#FFB0B0]▸ Синдикат:[/color] удерживать зоны захвата и набрать [bold]100 очков[/bold]."}
+    {"[color=#C8C4D8]▸[/color] Если таймер истечёт раньше — побеждает сторона с большим числом очков."}
     {" "}
     {"[color=#C8C4D8][bold]Зоны захвата[/bold][/color] [color=#888898](A / B / C)[/color]"}
     {"[color=#C8C4D8]▸[/color] Три зоны 3×3 появляются с началом боя — станция NT, станция Тайпан и торговый аванпост."}
@@ -82,6 +83,8 @@ typan-war-manifest =
     {"[color=#C8C4D8][bold]Правила боя[/bold][/color]"}
     {"[color=#C8C4D8]▸[/color] Дальнобойное оружие [bold]не бьёт по союзникам[/bold] — при необходимости включите [bold]«Защиту союзников»[/bold]."}
     {"[color=#C8C4D8]▸[/color] Подкрепления возрождаются на захваченных зонах или на спавне должности."}
+
+typan-war-manifest-score = {"[color=#C8C4D8][bold]Итог:[/bold][/color] Нанотрайзен [color=#A8C8FF]{$nt}[/color] / Синдикат [color=#FFB0B0]{$typan}[/color] очков (победа при {$win})"}
 
 
 
@@ -126,25 +129,25 @@ typan-war-start-cancelled-typan = Война станций отменена —
 
 
 
-typan-war-end-announce-nt = Война станций завершена. Победа [color=#A8C8FF]Нанотрайзен[/color] — меньшие относительные потери.
+typan-war-end-announce-nt = Война станций завершена. Победа [color=#A8C8FF]Нанотрайзен[/color] — {$nt} очков захвата (у Синдиката {$typan}).
 
-typan-war-end-announce-typan = Война станций завершена. Победа [color=#FFB0B0]Синдиката[/color] — меньшие относительные потери.
+typan-war-end-announce-typan = Война станций завершена. Победа [color=#FFB0B0]Синдиката[/color] — {$typan} очков захвата (у Нанотрайзен {$nt}).
 
-typan-war-end-announce-nt-elimination = Война станций завершена. Победа [color=#A8C8FF]Нанотрайзен[/color] — все силы [color=#FFB0B0]Синдиката[/color] уничтожены.
+typan-war-end-announce-nt-elimination = Война станций завершена. Победа [color=#A8C8FF]Нанотрайзен[/color] — {$nt} очков захвата.
 
-typan-war-end-announce-typan-elimination = Война станций завершена. Победа [color=#FFB0B0]Синдиката[/color] — все силы [color=#A8C8FF]Нанотрайзен[/color] уничтожены.
+typan-war-end-announce-typan-elimination = Война станций завершена. Победа [color=#FFB0B0]Синдиката[/color] — {$typan} очков захвата.
 
-typan-war-end-announce-stalemate = Война станций завершена. Ничья — обе стороны понесли равные потери.
+typan-war-end-announce-stalemate = Война станций завершена. Ничья — {$nt} очков у Нанотрайзен и {$typan} у Синдиката.
 
 
 
 typan-war-round-end-header = [color=#C8C4D8][bold]Война станций[/bold][/color]
 
-typan-war-round-end-initial = Численность армий: NT {$nt}, Тайпан {$typan}
+typan-war-round-end-initial = Участвовало: Нанотрайзен {$nt}, Тайпан {$typan}
 
-typan-war-round-end-final = Выжило: NT {$nt}, Тайпан {$typan}
+typan-war-round-end-final = Очки захвата: Нанотрайзен {$ntPoints}, Тайпан {$typanPoints} (победа при {$win})
 
-typan-war-round-end-losses = Потери: NT {$ntLoss}%, Тайпан {$typanLoss}%
+typan-war-round-end-losses = Выжило: Нанотрайзен {$nt}, Тайпан {$typan}
 
 typan-war-round-end-nt-goal = Станционная цель NT: {$goal}
 
@@ -160,5 +163,5 @@ typan-war-round-end-stalemate = Результат: ничья
 
 game-presets-typan-station-war = Война станций
 
-game-presets-typan-station-war-description = Конфликт между станцией Нанотрайзен и станцией Тайпан. Уничтожьте врага или победите по меньшим потерям к концу таймера.
+game-presets-typan-station-war-description = Конфликт между станцией Нанотрайзен и станцией Тайпан. Захватывайте зоны и наберите 100 очков раньше врага.
 

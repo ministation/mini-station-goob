@@ -41,7 +41,7 @@ public sealed class TypanWarCaptureZoneProtectionSystem : EntitySystem
         if (!TypanStationWarRuleSystem.IsWarActive)
             return;
 
-        if (IsBuildBlocked(uid, args.GridIndices))
+        if (IsIndestructible(uid, args.GridIndices) || IsBuildBlocked(uid, args.GridIndices))
             args.Cancelled = true;
     }
 

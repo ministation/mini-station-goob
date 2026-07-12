@@ -75,7 +75,7 @@ public sealed class TypanWarBalanceSystem : EntitySystem
     /// </summary>
     public void BalanceRoundstartAssignments(ref Dictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> assignedJobs)
     {
-        if (!TryGetActiveRule(out var rule))
+        if (!TryGetActiveRule(out var rule) || rule.MaxFactionRatio <= 0)
             return;
 
         var ratio = Math.Max(rule.MaxFactionRatio, 1);
@@ -127,10 +127,10 @@ public sealed class TypanWarBalanceSystem : EntitySystem
         if (ev.Cancelled || ev.Jobs is not { } jobs)
             return;
 
-        if (!TryGetActiveRule(out var rule))
+        if (!TryGetActiveRule(out var rule) || rule.MaxFactionRatio <= 0)
             return;
 
-        var ratio = Math.Max(rule.MaxFactionRatio, 1);
+        var ratio = rule.MaxFactionRatio;
         var (nt, typan) = CountAlive();
 
         foreach (var job in jobs)
@@ -240,8 +240,8 @@ public sealed class TypanWarBalanceSystem : EntitySystem
         var ratio = Math.Max(rule.MaxFactionRatio, 1);
         return new TypanWarBalanceStatusEvent(
             active: true,
-            allowNanotrasen: CanJoinSide(TypanWarSide.Nanotrasen, nt, typan, ratio),
-            allowTypan: CanJoinSide(TypanWarSide.Typan, nt, typan, ratio),
+            allowNanotrasen: rule.MaxFactionRatio <= 0 || CanJoinSide(TypanWarSide.Nanotrasen, nt, typan, ratio),
+            allowTypan: rule.MaxFactionRatio <= 0 || CanJoinSide(TypanWarSide.Typan, nt, typan, ratio),
             ntJoined: nt,
             typanJoined: typan);
     }
