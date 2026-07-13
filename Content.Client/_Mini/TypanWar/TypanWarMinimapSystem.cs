@@ -9,11 +9,14 @@ namespace Content.Client._Mini.TypanWar;
 
 public sealed class TypanWarMinimapSystem : EntitySystem
 {
+    private const float OpenPollIntervalSeconds = 1.5f;
+
     [Dependency] private readonly IPlayerManager _players = default!;
     [Dependency] private readonly TypanWarUiSystem _war = default!;
 
     private TypanWarMinimapWindow? _window;
     private bool _pendingOpen;
+    private float _openPollAccumulator;
 
     public override void Initialize()
     {
@@ -22,6 +25,24 @@ public sealed class TypanWarMinimapSystem : EntitySystem
         SubscribeLocalEvent<TypanWarMinimapActionEvent>(OnMinimapAction);
         _war.StatusUpdated += OnStatusUpdated;
         SubscribeNetworkEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (!IsWindowOpen())
+        {
+            _openPollAccumulator = 0f;
+            return;
+        }
+
+        _openPollAccumulator += frameTime;
+        if (_openPollAccumulator < OpenPollIntervalSeconds)
+            return;
+
+        _openPollAccumulator = 0f;
+        _war.RequestStatus();
     }
 
     public override void Shutdown()

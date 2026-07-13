@@ -65,6 +65,20 @@ public sealed class NtStationGoalObjectiveSystem : EntitySystem
         return false;
     }
 
+    /// <summary>
+    /// Re-assigns the active NT station goal to command staff (e.g. after reconnect/latejoin).
+    /// </summary>
+    public void TryAssignActiveGoalToMind(EntityUid mindId, MindComponent mind, EntityUid station)
+    {
+        if (!_activeGoals.TryGetValue(station, out var goal))
+            return;
+
+        if (!_jobs.MindTryGetJobId(mindId, out var jobId) || jobId == null || !CommandJobs.Contains(jobId.Value))
+            return;
+
+        TryAssignGoal(mindId, mind, goal.Id, goal.Title, goal.Description);
+    }
+
     private void OnWarStarted(TypanWarStartedEvent ev)
     {
         if (!_activeGoals.TryGetValue(ev.NtStation, out var goal))

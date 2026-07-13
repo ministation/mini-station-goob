@@ -22,6 +22,12 @@ public sealed class TypanWarStatusEvent : EntityEventArgs
     public TypanWarAllyBlip[] AllyBlips;
     public TypanWarMinimapGrid[] MinimapGrids;
 
+    /// <summary>
+    /// When false, clients keep their previous minimap payload (zones/allies/grids).
+    /// Periodic HUD broadcasts omit minimap data to avoid flooding every client each second.
+    /// </summary>
+    public bool IncludeMinimapData;
+
     public TypanWarStatusEvent(
         TypanWarPhase phase,
         int ntAlive,
@@ -33,7 +39,8 @@ public sealed class TypanWarStatusEvent : EntityEventArgs
         TypanWarWinner winner = TypanWarWinner.None,
         TypanWarCaptureZoneStatus[]? captureZones = null,
         TypanWarAllyBlip[]? allyBlips = null,
-        TypanWarMinimapGrid[]? minimapGrids = null)
+        TypanWarMinimapGrid[]? minimapGrids = null,
+        bool includeMinimapData = true)
     {
         Phase = phase;
         NtAlive = ntAlive;
@@ -43,8 +50,15 @@ public sealed class TypanWarStatusEvent : EntityEventArgs
         CapturePointsToWin = capturePointsToWin;
         TimeRemainingSeconds = timeRemainingSeconds;
         Winner = winner;
-        CaptureZones = captureZones ?? Array.Empty<TypanWarCaptureZoneStatus>();
-        AllyBlips = allyBlips ?? Array.Empty<TypanWarAllyBlip>();
-        MinimapGrids = minimapGrids ?? Array.Empty<TypanWarMinimapGrid>();
+        IncludeMinimapData = includeMinimapData;
+        CaptureZones = includeMinimapData
+            ? captureZones ?? Array.Empty<TypanWarCaptureZoneStatus>()
+            : Array.Empty<TypanWarCaptureZoneStatus>();
+        AllyBlips = includeMinimapData
+            ? allyBlips ?? Array.Empty<TypanWarAllyBlip>()
+            : Array.Empty<TypanWarAllyBlip>();
+        MinimapGrids = includeMinimapData
+            ? minimapGrids ?? Array.Empty<TypanWarMinimapGrid>()
+            : Array.Empty<TypanWarMinimapGrid>();
     }
 }

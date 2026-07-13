@@ -197,6 +197,21 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
         SetupCombatMind((combatMindId, combatMind), args, side);
 
+        // Ensure war / station goal objectives survive reconnect & latejoin.
+        if (warComponent.Phase == TypanWarPhase.Active)
+        {
+            var objectiveProto = side == TypanWarSide.Typan ? "TypanWarObjective" : "NtWarObjective";
+            var objectiveText = side == TypanWarSide.Typan
+                ? Loc.GetString("typan-war-objective-typan")
+                : Loc.GetString("typan-war-objective-nt");
+            TryAddObjective(combatMindId, combatMind, objectiveProto, objectiveText);
+
+            if (side == TypanWarSide.Nanotrasen && warComponent.NtStation is { } ntStation)
+                _ntGoals.TryAssignActiveGoalToMind(combatMindId, combatMind, ntStation);
+            else if (side == TypanWarSide.Typan && warComponent.TypanStation is { } typanStation)
+                _typanGoals.TryAssignActiveGoalToMind(combatMindId, combatMind, typanStation);
+        }
+
         if (args.Player != null)
             _pvsSession.RefreshPlayer(args.Player, args.Mob);
     }
@@ -456,7 +471,8 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             if (_statusBroadcastAccumulator >= 1f)
             {
                 _statusBroadcastAccumulator = 0f;
-                BroadcastStatus(component);
+                // HUD-only: skip ally positions + grid AABBs (those go out on request / phase changes).
+                BroadcastStatus(component, includeMinimap: false);
             }
         }
     }
@@ -975,7 +991,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         return true;
     }
 
-    private void BroadcastStatus(TypanStationWarRuleComponent component)
+    private void BroadcastStatus(TypanStationWarRuleComponent component, bool includeMinimap = true)
     {
         var phase = component.Phase;
         var ntAlive = phase >= TypanWarPhase.Active ? CountNtAlive() : 0;
@@ -998,9 +1014,10 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             component.CapturePointsToWin,
             remaining,
             component.Winner,
-            _captureZones.GetZoneStatuses(),
-            CollectAllyBlips(),
-            CollectMinimapGrids(component)), Filter.Broadcast());
+            includeMinimap ? _captureZones.GetZoneStatuses() : null,
+            includeMinimap ? CollectAllyBlips() : null,
+            includeMinimap ? CollectMinimapGrids(component) : null,
+            includeMinimapData: includeMinimap), Filter.Broadcast());
     }
 
     private TypanWarMinimapGrid[] CollectMinimapGrids(TypanStationWarRuleComponent rule)
@@ -1106,13 +1123,14 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                     component.Winner,
                     _captureZones.GetZoneStatuses(),
                     CollectAllyBlips(),
-                    CollectMinimapGrids(component)),
+                    CollectMinimapGrids(component),
+                    includeMinimapData: true),
                 session);
             return;
         }
 
         RaiseNetworkEvent(
-            new TypanWarStatusEvent(TypanWarPhase.Inactive, 0, 0, 0, 0, 100, 0),
+            new TypanWarStatusEvent(TypanWarPhase.Inactive, 0, 0, 0, 0, 100, 0, includeMinimapData: true),
             session);
     }
 

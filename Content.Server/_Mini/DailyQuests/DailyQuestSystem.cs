@@ -395,7 +395,10 @@ public sealed class DailyQuestSystem : EntitySystem
         }
 
         if (_states.TryGetValue(player.UserId, out var existing) && existing.LoadedFromDb)
+        {
+            RestoreRoundTracker(player.UserId, existing);
             return;
+        }
 
         _states[player.UserId] = PlayerDailyQuestState.FromDb(progress, player.UserId.UserId, weekStart);
         DeduplicateSlots(_states[player.UserId]);
@@ -425,9 +428,8 @@ public sealed class DailyQuestSystem : EntitySystem
             state.Round.ActiveEntity = null;
             _roundTrackers[player.UserId] = CloneRoundTracker(state.Round, persistEntityReference: false);
             Persist(player.UserId);
+            // Keep in-memory state across reconnect so progress isn't lost if DB upsert is still in-flight.
         }
-
-        _states.Remove(player.UserId);
     }
 
     private void OnPlayerSpawnComplete(PlayerSpawnCompleteEvent ev)

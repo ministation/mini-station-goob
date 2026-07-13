@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2025 Mini Station
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Linq;
 using Content.Server._Mini.TypanWar;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
@@ -24,10 +25,14 @@ namespace Content.Server._Mini.Networking;
 /// </summary>
 public sealed class PvsSessionOverrideSystem : EntitySystem
 {
+    private const float RefreshDebounceSeconds = 0.25f;
+
     [Dependency] private readonly PvsOverrideSystem _pvs = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
 
     private readonly HashSet<EntityUid> _dropShuttleGrids = new();
+    private readonly Dictionary<ICommonSession, EntityUid?> _pendingRefresh = new();
+    private float _pendingRefreshAccumulator;
 
     public override void Initialize()
     {
@@ -47,6 +52,41 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
     public override void Shutdown()
     {
         _player.PlayerStatusChanged -= OnPlayerStatusChanged;
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_pendingRefresh.Count == 0)
+            return;
+
+        _pendingRefreshAccumulator += frameTime;
+        if (_pendingRefreshAccumulator < RefreshDebounceSeconds)
+            return;
+
+        _pendingRefreshAccumulator = 0f;
+        FlushPendingRefreshes();
+    }
+
+    private void QueueRefresh(ICommonSession session, EntityUid? player = null)
+    {
+        if (session == null)
+            return;
+
+        _pendingRefresh[session] = player ?? session.AttachedEntity;
+    }
+
+    private void FlushPendingRefreshes()
+    {
+        if (_pendingRefresh.Count == 0)
+            return;
+
+        var pending = _pendingRefresh.ToArray();
+        _pendingRefresh.Clear();
+
+        foreach (var (session, player) in pending)
+            RefreshPlayer(session, player);
     }
 
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs e)
@@ -75,7 +115,8 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
         if (component.PlayerSession == null)
             return;
 
-        RefreshPlayer(component.PlayerSession, uid);
+        // Parent thrashing during war (FTL/arrivals reparent) must be coalesced.
+        QueueRefresh(component.PlayerSession, uid);
     }
 
     private void OnActorGridChanged(EntityUid uid, ActorComponent component, ref GridUidChangedEvent args)
@@ -83,7 +124,7 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
         if (component.PlayerSession == null)
             return;
 
-        RefreshPlayer(component.PlayerSession, uid);
+        QueueRefresh(component.PlayerSession, uid);
     }
 
     private void OnWarLayoutReady(TypanWarLayoutReadyEvent ev)

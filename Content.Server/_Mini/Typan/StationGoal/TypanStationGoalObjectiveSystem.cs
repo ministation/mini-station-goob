@@ -55,6 +55,17 @@ public sealed class TypanStationGoalObjectiveSystem : EntitySystem
         return false;
     }
 
+    /// <summary>
+    /// Re-assigns the active Typan station goal after reconnect/latejoin/respawn.
+    /// </summary>
+    public void TryAssignActiveGoalToMind(EntityUid mindId, MindComponent mind, EntityUid station)
+    {
+        if (!_activeGoals.TryGetValue(station, out var goal))
+            return;
+
+        TryAssignGoal(mindId, mind, goal.Id, goal.Title, goal.Description);
+    }
+
     private void OnPlayerSpawnComplete(PlayerSpawnCompleteEvent args)
     {
         if (args.JobId == null)

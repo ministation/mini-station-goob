@@ -66,9 +66,14 @@ public sealed class TypanWarUiSystem : EntitySystem
         TypanCapturePoints = ev.TypanCapturePoints;
         CapturePointsToWin = ev.CapturePointsToWin;
         TimeRemainingSeconds = ev.TimeRemainingSeconds;
-        CaptureZones = ev.CaptureZones;
-        AllyBlips = ev.AllyBlips;
-        MinimapGrids = ev.MinimapGrids;
+
+        if (ev.IncludeMinimapData)
+        {
+            CaptureZones = ev.CaptureZones;
+            AllyBlips = ev.AllyBlips;
+            MinimapGrids = ev.MinimapGrids;
+        }
+
         StatusUpdated?.Invoke();
     }
 
