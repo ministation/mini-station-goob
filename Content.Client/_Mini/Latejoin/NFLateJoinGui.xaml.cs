@@ -250,8 +250,26 @@ public sealed partial class NFLateJoinGui : FancyWindow
             }
         }
 
+        if (IsJobSlotFull(jobId))
+        {
+            button.Disabled = true;
+            button.ToolTip = Loc.GetString("late-join-gui-job-slot-full");
+            return;
+        }
+
         button.Disabled = false;
         button.ToolTip = null;
+    }
+
+    private bool IsJobSlotFull(ProtoId<JobPrototype> jobId)
+    {
+        if (!_gameTicker.JobsAvailable.TryGetValue(_lastSelection, out var jobs))
+            return true;
+
+        if (!jobs.TryGetValue(jobId, out var count))
+            return true;
+
+        return count == 0;
     }
 
     private bool IsTypanJob(ProtoId<JobPrototype> jobId)

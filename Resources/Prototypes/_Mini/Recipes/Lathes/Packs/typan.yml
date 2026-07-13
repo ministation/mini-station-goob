@@ -122,6 +122,7 @@
   - PowerCageRechargerCircuitboard
   - ADTBotanicalSeedDNAManipulatorCircuitboard
   - AnalysisComputerCircuitboardTypan
+  - XenobiologyBountyComputerCircuitboardTypan
   - AnomalyVesselCircuitboardTypan
   - AnomalyVesselExperimentalCircuitboardTypan
   - AnomalySynchronizerCircuitboard
@@ -412,8 +413,9 @@
   id: TypanShuttleBoards
   recipes:
   - ShuttleConsoleCircuitboardTypan
+  - ShuttlePilotConsoleCircuitboardTypan
   - IFFConsoleCircuitboardTypan
-  - RadarConsoleCircuitboard
+  - RadarConsoleCircuitboardTypan
   - ThrusterMachineCircuitboard
   - GyroscopeMachineCircuitboard
   - MiniGravityGeneratorCircuitboard

@@ -71,7 +71,7 @@
   description: Позволяет управлять параметрами системы опознавания судна.
   components:
   - type: ComputerBoard
-    prototype: MiniComputerIFF
+    prototype: SyndicateComputerIFF
 
 - type: entity
   parent: BaseComputerCircuitboardTypan
@@ -94,11 +94,38 @@
 - type: entity
   parent: BaseComputerCircuitboardTypan
   id: ShuttleConsoleCircuitboardTypan
+  name: консоль управления грузовым шаттлом (консольная плата)
+  description: Консольная плата для консоли управления грузовым шаттлом.
+  components:
+  - type: ComputerBoard
+    prototype: MiniComputerShuttleCargo
+
+- type: entity
+  parent: BaseComputerCircuitboardTypan
+  id: ShuttlePilotConsoleCircuitboardTypan
   name: консоль управления шаттлом (консольная плата)
   description: Консольная плата для консоли управления шаттлом.
   components:
   - type: ComputerBoard
-    prototype: MiniComputerShuttleCargo
+    prototype: SyndicateComputerShuttle
+
+- type: entity
+  parent: BaseComputerCircuitboardTypan
+  id: XenobiologyBountyComputerCircuitboardTypan
+  name: консоль ксенобиологии (консольная плата)
+  description: Консольная плата для консоли ксенобиологии.
+  components:
+  - type: ComputerBoard
+    prototype: SyndicateComputerXenobiologyBounty
+
+- type: entity
+  parent: BaseComputerCircuitboardTypan
+  id: RadarConsoleCircuitboardTypan
+  name: консоль масс-сканера (консольная плата)
+  description: Консольная плата для консоли масс-сканера.
+  components:
+  - type: ComputerBoard
+    prototype: SyndicateComputerRadar
 
 - type: entity
   parent: BaseComputerCircuitboardTypan

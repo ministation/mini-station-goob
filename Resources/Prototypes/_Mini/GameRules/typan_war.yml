@@ -28,7 +28,7 @@
     warIntelEventDelaySeconds: 900
     captureZoneActivationDelaySeconds: 0
     capturePointsToWin: 100
-    capturePointIntervalSeconds: 30
+    capturePointIntervalSeconds: 45
     tradeZoneSwapScoreThreshold: 50
     minRespawnSeconds: 10
     maxRespawnSeconds: 60

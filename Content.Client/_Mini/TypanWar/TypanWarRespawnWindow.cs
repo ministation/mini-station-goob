@@ -70,8 +70,9 @@ public sealed class TypanWarRespawnWindow : FancyWindow
                 ToolTip = option.Description,
                 Disabled = !state.CanRespawn,
             };
-            var index = option.Index;
-            button.OnPressed += _ => _bui.SendRespawnRequest(index);
+            var isBase = option.IsBase;
+            var zone = option.Zone;
+            button.OnPressed += _ => _bui.SendRespawnRequest(isBase, zone);
             _optionsContainer.AddChild(button);
         }
 

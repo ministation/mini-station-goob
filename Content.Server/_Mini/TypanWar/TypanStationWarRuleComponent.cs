@@ -68,7 +68,7 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public int CapturePointsToWin = 100;
 
     [DataField]
-    public float CapturePointIntervalSeconds = 30f;
+    public float CapturePointIntervalSeconds = 45f;
 
     [DataField]
     public float MinRespawnSeconds = 10f;
@@ -176,6 +176,11 @@ public sealed partial class TypanStationWarRuleComponent : Component
 
     [DataField]
     public bool CaptureZonesActivated;
+
+    [DataField]
+    public bool CaptureZonesSpawned;
+
+    public TimeSpan? CaptureZonesActivateAt;
 
     [DataField]
     public bool LayoutApplied;

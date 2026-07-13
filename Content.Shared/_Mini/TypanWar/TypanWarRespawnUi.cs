@@ -18,7 +18,8 @@ public sealed class TypanWarRespawnOption
 {
     public string Label = "";
     public string Description = "";
-    public int Index;
+    public bool IsBase;
+    public NetEntity Zone = NetEntity.Invalid;
 }
 
 [Serializable, NetSerializable]
@@ -39,10 +40,12 @@ public sealed class TypanWarRespawnBoundUserInterfaceState : BoundUserInterfaceS
 [Serializable, NetSerializable]
 public sealed class TypanWarRespawnRequestMessage : BoundUserInterfaceMessage
 {
-    public int OptionIndex;
+    public bool IsBase;
+    public NetEntity Zone = NetEntity.Invalid;
 
-    public TypanWarRespawnRequestMessage(int optionIndex)
+    public TypanWarRespawnRequestMessage(bool isBase, NetEntity zone)
     {
-        OptionIndex = optionIndex;
+        IsBase = isBase;
+        Zone = zone;
     }
 }

@@ -202,20 +202,20 @@
       autoRecharge: true
       autoRechargeRate: 80
     - type: Gun
-      fireRate: 1.5
+      fireRate: 1
       selectedMode: FullAuto
       availableModes:
         - FullAuto
       soundGunshot: /Audio/Weapons/Guns/Gunshots/laser.ogg
     - type: HitscanBatteryAmmoProvider
-      proto: RedHeavyLaser
-      fireCost: 100
+      proto: RedLaser
+      fireCost: 120
     - type: Battery
       maxCharge: 2000
       startingCharge: 2000
     - type: HTN
       rootTask:
-        task: TurretCompound
+        task: EnergyTurretCompound
       blackboard:
         RotateSpeed: !type:Single
           3.141

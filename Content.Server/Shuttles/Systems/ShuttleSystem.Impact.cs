@@ -64,7 +64,6 @@ using Robust.Shared.Physics.Dynamics;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
-using System.Numerics;
 
 namespace Content.Server.Shuttles.Systems;
 
@@ -103,6 +102,8 @@ public sealed partial class ShuttleSystem
 
     private HashSet<EntityUid> _countedEnts = new();
     private HashSet<EntityUid> _intersecting = new();
+    private readonly List<EntityUid> _throwCandidates = new();
+    private readonly List<Entity<TransformComponent>> _tileEntities = new();
     // for _adminLogSpacing
     private Dictionary<EntityUid, TimeSpan> _impactedAt = new();
 
@@ -275,21 +276,26 @@ public sealed partial class ShuttleSystem
         var knockdownTime = TimeSpan.FromSeconds(5);
 
         var minsq = _minThrowVelocity * _minThrowVelocity;
-        // iterate all entities on the grid
-        // TODO: only iterate non-static entities
+        _throwCandidates.Clear();
+
         var childEnumerator = xform.ChildEnumerator;
         while (childEnumerator.MoveNext(out var uid))
         {
-            // don't throw static bodies
             if (!_physicsQuery.TryGetComponent(uid, out var physics) || (physics.BodyType & BodyType.Static) != 0)
                 continue;
 
-            // don't throw if buckled
             if (_buckle.IsBuckled(uid, _buckleQuery.CompOrNull(uid)))
                 continue;
 
-            // don't throw them if they have magboots
             if (movedByPressureQuery.TryComp(uid, out var moved) && !moved.Enabled)
+                continue;
+
+            _throwCandidates.Add(uid);
+        }
+
+        foreach (var uid in _throwCandidates)
+        {
+            if (!_physicsQuery.TryGetComponent(uid, out var physics))
                 continue;
 
             if (direction.LengthSquared() > minsq)
@@ -402,8 +408,11 @@ public sealed partial class ShuttleSystem
             entitiesOnTile.Clear();
             _lookup.GetLocalEntitiesIntersecting(uid, tileData.Tile, entitiesOnTile, gridComp: grid);
 
-            // this loop is a hotspot so tell if you know how to optimise it
+            _tileEntities.Clear();
             foreach (var localEnt in entitiesOnTile)
+                _tileEntities.Add(localEnt);
+
+            foreach (var localEnt in _tileEntities)
             {
                 // the query can ocassionally return entities barely touching this tile so check for that
                 var toCenter = tileData.Tile + tileCenter - localEnt.Comp.Coordinates.Position;

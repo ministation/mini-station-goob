@@ -8,6 +8,7 @@ using Content.Server.GameTicking.Rules;
 using Content.Server.Mind;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Systems;
+using Content.Server._Mini.Networking;
 using Robust.Shared.Containers;
 using Content.Shared._Mini.TypanWar;
 using Content.Shared.GameTicking;
@@ -44,6 +45,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
     [Dependency] private readonly TypanWarCaptureZoneSystem _captureZones = default!;
     [Dependency] private readonly TypanWarFriendlyFireSystem _friendlyFire = default!;
     [Dependency] private readonly TypanWarMinimapSystem _minimap = default!;
+    [Dependency] private readonly PvsSessionOverrideSystem _pvsSession = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
 
@@ -132,7 +134,14 @@ public sealed class TypanWarRespawnSystem : EntitySystem
                 if (mind.UserId != args.Player.UserId || !queryCombat.RespawnUiOpen)
                     continue;
 
-                CloseRespawnUi(uid, queryMindId, queryCombat, args.Player);
+                if (GetGhostEntity(mind) is not { } ghost)
+                {
+                    queryCombat.RespawnUiOpen = false;
+                    Dirty(queryMindId, queryCombat);
+                    return;
+                }
+
+                CloseRespawnUi(ghost, queryMindId, queryCombat, args.Player);
                 return;
             }
 
@@ -255,11 +264,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             return;
         }
 
-        if (args.OptionIndex < 0 || args.OptionIndex >= options.Length)
-            return;
-
-        var option = options[args.OptionIndex];
-        if (option.IsBase && combat.BaseSpawn == default)
+        if (!TryResolveRespawnOption(combat, args.IsBase, args.Zone, out var option))
             return;
 
         if (!_profiles.TryGetValue(mindId.Value, out var profile) && !TryGetStoredProfile(mind, out profile))
@@ -273,7 +278,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         var mob = _spawning.SpawnPlayerMob(coords, job, profile, combat.Station);
         if (mob == EntityUid.Invalid)
         {
-            Log.Warning($"Typan war respawn failed for mind {mindId} at option {args.OptionIndex}.");
+            Log.Warning($"Typan war respawn failed for mind {mindId} at {(option.IsBase ? "base" : option.Zone)}.");
             _popup.PopupEntity(Loc.GetString("typan-war-respawn-failed"), uid, args.Actor);
             return;
         }
@@ -292,6 +297,9 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
         _friendlyFire.SetupCombatant(mob, combat.Side);
         _minimap.EnsureMinimapAction(mob);
+
+        if (_players.TryGetSessionByEntity(args.Actor, out var session))
+            _pvsSession.RefreshPlayer(session, mob);
     }
 
     private void OpenRespawnUi(EntityUid ghostUid, EntityUid mindId, TypanWarCombatMindComponent combat, ICommonSession session)
@@ -362,9 +370,10 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
         var canRespawn = remaining <= 0f;
         var options = BuildRespawnOptions(combat);
-        var uiOptions = options.Select((o, i) => new TypanWarRespawnOption
+        var uiOptions = options.Select(o => new TypanWarRespawnOption
         {
-            Index = i,
+            IsBase = o.IsBase,
+            Zone = o.IsBase ? NetEntity.Invalid : GetNetEntity(o.Zone),
             Label = o.Label,
             Description = o.Description,
         }).ToArray();
@@ -394,10 +403,11 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             _ => TypanWarCaptureOwner.Typan,
         };
 
-        if (combat.BaseSpawn != default)
+        if (combat.AllowBaseSpawn && combat.BaseSpawn != default)
         {
             options.Add(new RespawnOptionData(
                 true,
+                EntityUid.Invalid,
                 combat.BaseSpawn,
                 Loc.GetString("typan-war-respawn-base"),
                 Loc.GetString("typan-war-respawn-base-desc")));
@@ -407,12 +417,60 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         {
             options.Add(new RespawnOptionData(
                 false,
+                zone.Zone,
                 zone.Coordinates,
                 Loc.GetString("typan-war-respawn-zone", ("label", zone.Label), ("location", zone.DisplayName)),
                 Loc.GetString("typan-war-respawn-zone-desc")));
         }
 
         return options.ToArray();
+    }
+
+    private bool TryResolveRespawnOption(
+        TypanWarCombatMindComponent combat,
+        bool isBase,
+        NetEntity zoneNet,
+        out RespawnOptionData option)
+    {
+        option = default;
+
+        if (isBase)
+        {
+            if (!combat.AllowBaseSpawn || combat.BaseSpawn == default)
+                return false;
+
+            option = new RespawnOptionData(
+                true,
+                EntityUid.Invalid,
+                combat.BaseSpawn,
+                Loc.GetString("typan-war-respawn-base"),
+                Loc.GetString("typan-war-respawn-base-desc"));
+            return true;
+        }
+
+        if (!TryGetEntity(zoneNet, out var zoneUid) || zoneUid is not { } resolvedZone ||
+            !TryComp(resolvedZone, out TypanWarCaptureZoneComponent? zone) ||
+            !zone.Active)
+        {
+            return false;
+        }
+
+        var owner = combat.Side switch
+        {
+            TypanWarSide.Nanotrasen => TypanWarCaptureOwner.Nanotrasen,
+            _ => TypanWarCaptureOwner.Typan,
+        };
+
+        if (zone.CaptureOwner != owner)
+            return false;
+
+        option = new RespawnOptionData(
+            false,
+            resolvedZone,
+            Transform(resolvedZone).Coordinates,
+            Loc.GetString("typan-war-respawn-zone", ("label", zone.ZoneLabel), ("location", zone.ZoneDisplayName)),
+            Loc.GetString("typan-war-respawn-zone-desc"));
+        return true;
     }
 
     private bool TryGetStoredProfile(MindComponent mind, [NotNullWhen(true)] out HumanoidCharacterProfile? profile)
@@ -504,5 +562,5 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         Del(corpse.Value);
     }
 
-    private readonly record struct RespawnOptionData(bool IsBase, EntityCoordinates Coordinates, string Label, string Description);
+    private readonly record struct RespawnOptionData(bool IsBase, EntityUid Zone, EntityCoordinates Coordinates, string Label, string Description);
 }

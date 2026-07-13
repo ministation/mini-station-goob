@@ -4,6 +4,7 @@
 using Content.Shared._Mini.TypanWar;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.GameObjects;
 
 namespace Content.Client._Mini.TypanWar;
 
@@ -35,9 +36,9 @@ public sealed class TypanWarRespawnBoundUserInterface : BoundUserInterface
             _window.UpdateState(cast);
     }
 
-    public void SendRespawnRequest(int optionIndex)
+    public void SendRespawnRequest(bool isBase, NetEntity zone)
     {
-        SendMessage(new TypanWarRespawnRequestMessage(optionIndex));
+        SendMessage(new TypanWarRespawnRequestMessage(isBase, zone));
     }
 
     protected override void Dispose(bool disposing)

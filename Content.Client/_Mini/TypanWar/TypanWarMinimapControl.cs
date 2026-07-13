@@ -156,7 +156,7 @@ public sealed class TypanWarMinimapControl : Control
 
     public static void ClearShapeCache() => ShapeCache.Clear();
 
-    public bool AreShapesReady()
+    private bool HasPendingShapes()
     {
         if (_grids.Length == 0)
             return false;
@@ -164,13 +164,14 @@ public sealed class TypanWarMinimapControl : Control
         foreach (var grid in _grids)
         {
             if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
-                return false;
+                continue;
 
-            if (!ShapeCache.ContainsKey(uid))
-                return false;
+            if (!ShapeCache.ContainsKey(uid) &&
+                _ent.TryGetComponent(uid, out MapGridComponent? mapGrid))
+                return true;
         }
 
-        return true;
+        return false;
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
@@ -249,8 +250,15 @@ public sealed class TypanWarMinimapControl : Control
 
         DrawForcesLegend(handle, box);
 
-        if (!AreShapesReady())
-            return;
+        if (HasPendingShapes() && _font != null)
+        {
+            var loading = Loc.GetString("typan-war-minimap-loading");
+            var dims = handle.GetDimensions(_font, loading, 1f);
+            var pos = new Vector2(
+                box.Left + (box.Width - dims.X) * 0.5f,
+                box.Top + (box.Height - dims.Y) * 0.5f);
+            handle.DrawString(_font, pos, loading, Color.FromHex("#A8A8B8"));
+        }
 
         if (!_hasViewBounds && _grids.Length > 0)
             UpdateViewBounds();
@@ -260,11 +268,12 @@ public sealed class TypanWarMinimapControl : Control
 
         foreach (var grid in _grids)
         {
-            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
+            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid ||
+                !ShapeCache.TryGetValue(uid, out var shape))
+            {
+                DrawBoundsFallback(handle, map, grid);
                 continue;
-
-            if (!ShapeCache.TryGetValue(uid, out var shape))
-                continue;
+            }
 
             DrawCachedShape(handle, map, shape);
 
@@ -612,6 +621,27 @@ public sealed class TypanWarMinimapControl : Control
         _viewMinY = minY - pad;
         _viewMaxY = maxY + pad;
         _hasViewBounds = true;
+    }
+
+    private void DrawBoundsFallback(DrawingHandleScreen handle, MapTransform map, TypanWarMinimapGrid grid)
+    {
+        if (grid.MaxX <= grid.MinX || grid.MaxY <= grid.MinY)
+            return;
+
+        var (fill, edge) = grid.Kind switch
+        {
+            TypanWarMinimapGridKind.NtStation => (NtStationFill, NtStationEdge),
+            TypanWarMinimapGridKind.TypanStation => (TypanStationFill, TypanStationEdge),
+            TypanWarMinimapGridKind.NtShuttle => (NtShuttleFill, NtShuttleEdge),
+            TypanWarMinimapGridKind.TypanShuttle => (TypanShuttleFill, TypanShuttleEdge),
+            _ => (TradeFill, TradeEdge),
+        };
+
+        var topLeft = map.WorldToScreen(grid.MinX, grid.MaxY);
+        var bottomRight = map.WorldToScreen(grid.MaxX, grid.MinY);
+        var box = new UIBox2(topLeft.X, topLeft.Y, bottomRight.X, bottomRight.Y);
+        handle.DrawRect(box, fill);
+        handle.DrawRect(box, edge, false);
     }
 
     private void DrawCachedShape(DrawingHandleScreen handle, MapTransform map, CachedGridShape shape)

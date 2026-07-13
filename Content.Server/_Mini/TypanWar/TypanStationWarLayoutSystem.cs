@@ -43,7 +43,8 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
         if (!TryComp<StationDataComponent>(ev.NtStation, out var ntData) ||
             !TryComp<StationDataComponent>(ev.TypanStation, out var typanData))
         {
-            Log.Warning("Typan station war layout: missing station data.");
+            Log.Error("Typan station war layout: missing station data.");
+            RaiseLocalEvent(new TypanWarLayoutFailedEvent(ev.Rule));
             return;
         }
 
@@ -52,13 +53,15 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
 
         if (ntGrid == null || typanGrid == null)
         {
-            Log.Warning("Typan station war layout: could not resolve largest station grids.");
+            Log.Error("Typan station war layout: could not resolve largest station grids.");
+            RaiseLocalEvent(new TypanWarLayoutFailedEvent(ev.Rule));
             return;
         }
 
         if (!TryComp<TransformComponent>(ntGrid, out var ntXform) || ntXform.MapID == MapId.Nullspace)
         {
-            Log.Warning("Typan station war layout: NT grid has no map.");
+            Log.Error("Typan station war layout: NT grid has no map.");
+            RaiseLocalEvent(new TypanWarLayoutFailedEvent(ev.Rule));
             return;
         }
 
@@ -70,7 +73,7 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
 
         foreach (var grid in typanData.Grids.ToList())
         {
-            if (!TryComp<TransformComponent>(grid, out var gridXform))
+            if (!TryComp(grid, out TransformComponent? gridXform))
                 continue;
 
             var worldPos = _transform.GetWorldPosition(gridXform);
@@ -113,8 +116,8 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
 
     private bool TryPlaceTradeGridNearStation(EntityUid tradeGrid, EntityUid anchorGrid, float maxDistance)
     {
-        if (!TryComp<MapGridComponent>(tradeGrid, out var tradeMapGrid) ||
-            !TryComp<TransformComponent>(anchorGrid, out var anchorXform))
+        if (!TryComp(tradeGrid, out MapGridComponent? tradeMapGrid) ||
+            !TryComp(anchorGrid, out TransformComponent? anchorXform))
         {
             return false;
         }
