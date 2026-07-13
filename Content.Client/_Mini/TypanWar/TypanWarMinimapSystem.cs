@@ -27,9 +27,10 @@ public sealed class TypanWarMinimapSystem : EntitySystem
         SubscribeNetworkEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
-    public override void Update(float frameTime)
+    // FrameUpdate runs once per render frame — unlike Update, it is not re-run during prediction.
+    public override void FrameUpdate(float frameTime)
     {
-        base.Update(frameTime);
+        base.FrameUpdate(frameTime);
 
         if (!IsWindowOpen())
         {

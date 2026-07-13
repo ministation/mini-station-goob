@@ -3,6 +3,7 @@
 
 using Content.Shared._Mini.TypanWar;
 using Content.Shared.GameTicking;
+using Robust.Shared.Timing;
 
 namespace Content.Client._Mini.TypanWar;
 
@@ -11,6 +12,8 @@ namespace Content.Client._Mini.TypanWar;
 /// </summary>
 public sealed class TypanWarUiSystem : EntitySystem
 {
+    [Dependency] private readonly IGameTiming _timing = default!;
+
     public TypanWarPhase Phase { get; private set; } = TypanWarPhase.Inactive;
     public TypanWarWinner Winner { get; private set; } = TypanWarWinner.None;
     public int NtAlive { get; private set; }
@@ -42,11 +45,18 @@ public sealed class TypanWarUiSystem : EntitySystem
 
     public void RequestStatus()
     {
+        // Avoid sending during prediction replays — those stamp past ticks and spam late MsgEntity.
+        if (!_timing.IsFirstTimePredicted)
+            return;
+
         RaiseNetworkEvent(new TypanWarStatusRequestEvent());
     }
 
     public void RequestBalanceStatus()
     {
+        if (!_timing.IsFirstTimePredicted)
+            return;
+
         RaiseNetworkEvent(new TypanWarBalanceStatusRequestEvent());
     }
 
