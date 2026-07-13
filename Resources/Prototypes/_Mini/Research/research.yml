@@ -45,6 +45,7 @@
   - NodeScanner
   - AnalysisComputerCircuitboardTypan
   - ArtifactAnalyzerMachineCircuitboard
+  - XenobiologyBountyComputerCircuitboardTypan
   position: 19,1
   technologyPrerequisites:
   - TypanBasicRobotics

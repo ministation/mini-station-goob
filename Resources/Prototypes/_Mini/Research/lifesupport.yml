@@ -51,7 +51,6 @@
   - FatExtractorMachineCircuitboard
   - BiofabricatorMachineCircuitboardTypan
   - BiomassReclaimerMachineCircuitboard
-  - XenobiologyBountyComputerCircuitboardTypan
     # Goobstation R&D Console rework start
   position: 17,5
   # technologyPrerequisites:
