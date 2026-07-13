@@ -35,7 +35,7 @@
     walkModifier: 0.65
     sprintModifier: 0.65
   - type: HeldSpeedModifier
-  - type: ToggleableClothing # Goobstation - Modsuits change
+  - type: ToggleableClothing
     clothingPrototypes:
       head: ClothingHeadHelmetHardsuitERTJuggernaut
   - type: ModifyDelayedKnockdown # Goobstation
@@ -51,7 +51,7 @@
     price: 0
 
 - type: entity
-  parent: ClothingHeadHardsuitBase
+  parent: ClothingHeadHelmetHardsuitSyndie
   id: ClothingHeadHelmetHardsuitERTJuggernaut
   name: NanoTrasen juggernaut hardsuit helmet
   description: An ultra-durable NanoTrasen helmet from the juggernaut hardsuit. Rumor says it can help you survive a nuclear blast.

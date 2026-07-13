@@ -46,6 +46,10 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         public float PointAccumulator;
         public float LootAccumulator;
         public TypanWarCaptureOwner? CapturingToward;
+        public float LastNetworkedProgress;
+        public TypanWarCaptureOwner? LastNetworkedCapturingOwner;
+        public TypanWarCaptureOwner LastNetworkedCaptureOwner;
+        public bool HasNetworkSnapshot;
     }
 
     private readonly Dictionary<EntityUid, ZoneRuntimeState> _runtime = new();
@@ -380,7 +384,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             {
                 zone.CaptureProgress = Math.Max(0f,
                     zone.CaptureProgress - frameTime / (zone.CaptureTimeSeconds * zone.ContestDecayMultiplier));
-                Dirty(uid, zone);
+                DirtyZoneIfNeeded(uid, zone, runtime);
             }
 
             return;
@@ -397,7 +401,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             if (zone.CaptureProgress > 0f && zone.CaptureOwner != TypanWarCaptureOwner.Neutral)
             {
                 zone.CaptureProgress = Math.Max(0f, zone.CaptureProgress - frameTime / zone.CaptureTimeSeconds);
-                Dirty(uid, zone);
+                DirtyZoneIfNeeded(uid, zone, runtime);
             }
 
             TryAwardCapturePoints(uid, zone, runtime, frameTime);
@@ -410,7 +414,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             zone.CaptureProgress = 0f;
             zone.CapturingOwner = null;
             runtime.CapturingToward = null;
-            Dirty(uid, zone);
+            DirtyZoneIfNeeded(uid, zone, runtime);
             TryAwardCapturePoints(uid, zone, runtime, frameTime);
             TrySpawnLootCrate(uid, zone, runtime, frameTime);
             return;
@@ -422,7 +426,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         runtime.CapturingToward = capturing;
         zone.CapturingOwner = capturing;
         zone.CaptureProgress += frameTime / zone.CaptureTimeSeconds;
-        Dirty(uid, zone);
+        DirtyZoneIfNeeded(uid, zone, runtime);
 
         if (zone.CaptureProgress < 1f)
             return;
@@ -442,7 +446,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         runtime.CapturingToward = null;
         runtime.PointAccumulator = 0f;
         runtime.LootAccumulator = 0f;
-        Dirty(uid, zone);
+        DirtyZoneIfNeeded(uid, zone, runtime, force: true);
 
         UpdateFlagVisual(uid, zone);
         AnnounceCapture(uid, zone, newOwner);
@@ -601,30 +605,49 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         ntCount = 0;
         typanCount = 0;
 
-        for (var dx = -halfExtents.X; dx <= halfExtents.X; dx++)
+        var minTile = centerTile - halfExtents;
+        var maxTile = centerTile + halfExtents;
+        var bottomLeft = _lookup.GetLocalBounds(minTile, grid.TileSize);
+        var topRight = _lookup.GetLocalBounds(maxTile, grid.TileSize);
+        var localAabb = new Box2(bottomLeft.Left, bottomLeft.Bottom, topRight.Right, topRight.Top);
+
+        _lookupEnts.Clear();
+        _lookup.GetLocalEntitiesIntersecting(gridUid, localAabb, _lookupEnts);
+
+        foreach (var ent in _lookupEnts)
         {
-            for (var dy = -halfExtents.Y; dy <= halfExtents.Y; dy++)
-            {
-                var tile = centerTile + new Vector2i(dx, dy);
-                _lookupEnts.Clear();
-                _lookup.GetLocalEntitiesIntersecting(gridUid, tile, _lookupEnts, 0f);
+            if (!TryComp<MindContainerComponent>(ent, out var mindContainer) || mindContainer.Mind == null)
+                continue;
 
-                foreach (var ent in _lookupEnts)
-                {
-                    if (!TryComp<MindContainerComponent>(ent, out var mindContainer) || mindContainer.Mind == null)
-                        continue;
+            if (!TryComp<MindComponent>(mindContainer.Mind, out var mind) || !IsMindAlive(mind))
+                continue;
 
-                    if (!TryComp<MindComponent>(mindContainer.Mind, out var mind) || !IsMindAlive(mind))
-                        continue;
-
-                    if (_typanJobs.MindHasHandledJob(mindContainer.Mind.Value))
-                        typanCount++;
-                    else if (_jobs.MindTryGetJobId(mindContainer.Mind.Value, out var jobId) && jobId != null
-                             && !_typanJobs.IsHandledJob(jobId.Value))
-                        ntCount++;
-                }
-            }
+            if (_typanJobs.MindHasHandledJob(mindContainer.Mind.Value))
+                typanCount++;
+            else if (_jobs.MindTryGetJobId(mindContainer.Mind.Value, out var jobId) && jobId != null
+                     && !_typanJobs.IsHandledJob(jobId.Value))
+                ntCount++;
         }
+    }
+
+    private void DirtyZoneIfNeeded(EntityUid uid, TypanWarCaptureZoneComponent zone, ZoneRuntimeState runtime, bool force = false)
+    {
+        const float progressStep = 0.04f;
+
+        if (!force && runtime.HasNetworkSnapshot
+            && zone.CaptureOwner == runtime.LastNetworkedCaptureOwner
+            && zone.CapturingOwner == runtime.LastNetworkedCapturingOwner
+            && Math.Abs(zone.CaptureProgress - runtime.LastNetworkedProgress) < progressStep
+            && zone.CaptureProgress is > 0f and < 1f)
+        {
+            return;
+        }
+
+        runtime.HasNetworkSnapshot = true;
+        runtime.LastNetworkedProgress = zone.CaptureProgress;
+        runtime.LastNetworkedCapturingOwner = zone.CapturingOwner;
+        runtime.LastNetworkedCaptureOwner = zone.CaptureOwner;
+        Dirty(uid, zone);
     }
 
     private bool IsMindAlive(MindComponent mind)
