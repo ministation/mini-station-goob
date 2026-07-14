@@ -314,9 +314,10 @@
         Piercing: 0.6
         Heat: 0.6
         Radiation: 0.5
+        Caustic: 0.2
   - type: ClothingSpeedModifier
-    walkModifier: 1.1
-    sprintModifier: 1.1
+    walkModifier: 1
+    sprintModifier: 1
 
 - type: entity
   parent: ClothingOuterHardsuitSecurityRed
