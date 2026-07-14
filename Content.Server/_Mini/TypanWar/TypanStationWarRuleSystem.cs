@@ -9,7 +9,6 @@ using Content.Server._TT.StationHandleJob;
 using Content.Server.AlertLevel;
 using Content.Server.Antag.Components;
 using Content.Server.Audio;
-using Content.Server.Cargo.Components;
 using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
@@ -25,11 +24,11 @@ using Content.Shared._Mini.TypanWar;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
-using Content.Server.Station.Systems;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared._EinsteinEngines.Silicon.Components;
 using Content.Shared.Station.Components;
@@ -37,13 +36,10 @@ using Robust.Server.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Enums;
-using Robust.Shared.Map.Components;
-using Robust.Shared.Maths;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 using System.Threading;
 
 namespace Content.Server._Mini.TypanWar;
@@ -71,7 +67,6 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
     [Dependency] private readonly TypanStationGoalObjectiveSystem _typanGoals = default!;
     [Dependency] private readonly NtStationGoalObjectiveSystem _ntGoals = default!;
     [Dependency] private readonly TypanStationWarMapEnsureSystem _mapEnsure = default!;
-    [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly TypanWarCaptureZoneSystem _captureZones = default!;
     [Dependency] private readonly TypanWarMinimapSystem _minimap = default!;
@@ -79,9 +74,12 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
     [Dependency] private readonly PvsSessionOverrideSystem _pvsSession = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
+
+    private const float HudBroadcastIntervalSeconds = 1f;
+    private const float MinimapBroadcastIntervalSeconds = 2f;
 
     private float _statusBroadcastAccumulator;
+    private float _minimapBroadcastAccumulator;
 
     public override void Initialize()
     {
@@ -468,10 +466,22 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             }
 
             _statusBroadcastAccumulator += frameTime;
-            if (_statusBroadcastAccumulator >= 1f)
+            _minimapBroadcastAccumulator += frameTime;
+
+            var minimapDue = component.Phase == TypanWarPhase.Active
+                && _minimapBroadcastAccumulator >= MinimapBroadcastIntervalSeconds;
+            var hudDue = _statusBroadcastAccumulator >= HudBroadcastIntervalSeconds;
+
+            if (minimapDue)
+            {
+                _minimapBroadcastAccumulator = 0f;
+                _statusBroadcastAccumulator = 0f;
+                // Full payload covers HUD fields too — shapes only when tiles changed.
+                BroadcastStatus(component, includeMinimap: true, forceShapes: false);
+            }
+            else if (hudDue)
             {
                 _statusBroadcastAccumulator = 0f;
-                // HUD-only: skip ally positions + grid AABBs (those go out on request / phase changes).
                 BroadcastStatus(component, includeMinimap: false);
             }
         }
@@ -938,31 +948,27 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
     /// <summary>
     /// Living faction headcounts used by war logic and late-join balance (includes silicons).
     /// </summary>
-    public (int Nt, int Typan) CountFactionAlive() => (CountNtAlive(), CountTypanAlive());
+    public (int Nt, int Typan) CountFactionAlive() => CountFactionAliveInternal();
 
-    private int CountTypanAlive()
+    private int CountTypanAlive() => CountFactionAliveInternal().Typan;
+
+    private int CountNtAlive() => CountFactionAliveInternal().Nt;
+
+    private (int Nt, int Typan) CountFactionAliveInternal()
     {
-        var count = 0;
-        var minds = EntityQueryEnumerator<MindComponent>();
-        while (minds.MoveNext(out var mindId, out var mind))
-        {
-            if (!IsMindAlive(mind) || !_typanJobs.MindHasHandledJob(mindId))
-                continue;
-
-            count++;
-        }
-
-        return count;
-    }
-
-    private int CountNtAlive()
-    {
-        var count = 0;
+        var nt = 0;
+        var typan = 0;
         var minds = EntityQueryEnumerator<MindComponent>();
         while (minds.MoveNext(out var mindId, out var mind))
         {
             if (!IsMindAlive(mind))
                 continue;
+
+            if (_typanJobs.MindHasHandledJob(mindId))
+            {
+                typan++;
+                continue;
+            }
 
             if (!_jobs.MindTryGetJobId(mindId, out var jobId) || jobId == null)
                 continue;
@@ -970,10 +976,10 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             if (_typanJobs.IsHandledJob(jobId.Value))
                 continue;
 
-            count++;
+            nt++;
         }
 
-        return count;
+        return (nt, typan);
     }
 
     private bool IsMindAlive(MindComponent mind)
@@ -991,11 +997,12 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         return true;
     }
 
-    private void BroadcastStatus(TypanStationWarRuleComponent component, bool includeMinimap = true)
+    private void BroadcastStatus(TypanStationWarRuleComponent component, bool includeMinimap = true, bool forceShapes = true)
     {
         var phase = component.Phase;
-        var ntAlive = phase >= TypanWarPhase.Active ? CountNtAlive() : 0;
-        var typanAlive = phase >= TypanWarPhase.Active ? CountTypanAlive() : 0;
+        var (ntAlive, typanAlive) = phase >= TypanWarPhase.Active
+            ? CountFactionAliveInternal()
+            : (0, 0);
 
         float remaining = 0f;
         if (phase == TypanWarPhase.Pending && component.WarStartTime != null)
@@ -1016,73 +1023,24 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             component.Winner,
             includeMinimap ? _captureZones.GetZoneStatuses() : null,
             includeMinimap ? CollectAllyBlips() : null,
-            includeMinimap ? CollectMinimapGrids(component) : null,
+            includeMinimap ? _minimap.CollectMinimapGrids(component, forceShapes) : null,
             includeMinimapData: includeMinimap), Filter.Broadcast());
-    }
-
-    private TypanWarMinimapGrid[] CollectMinimapGrids(TypanStationWarRuleComponent rule)
-    {
-        if (rule.Phase != TypanWarPhase.Active || !rule.LayoutApplied)
-            return Array.Empty<TypanWarMinimapGrid>();
-
-        var list = new List<TypanWarMinimapGrid>();
-
-        if (rule.NtStation is { } ntStation && TryComp<StationDataComponent>(ntStation, out var ntData))
-            CollectStationGrids(ntStation, ntData, TypanWarMinimapGridKind.NtStation, TypanWarMinimapGridKind.NtShuttle, list);
-
-        if (rule.TypanStation is { } typanStation && TryComp<StationDataComponent>(typanStation, out var typanData))
-            CollectStationGrids(typanStation, typanData, TypanWarMinimapGridKind.TypanStation, TypanWarMinimapGridKind.TypanShuttle, list);
-
-        return list.ToArray();
-    }
-
-    private void CollectStationGrids(
-        EntityUid station,
-        StationDataComponent stationData,
-        TypanWarMinimapGridKind stationKind,
-        TypanWarMinimapGridKind shuttleKind,
-        List<TypanWarMinimapGrid> list)
-    {
-        var largest = _station.GetLargestGrid((station, stationData));
-
-        foreach (var gridUid in stationData.Grids)
-        {
-            if (!TryComp<MapGridComponent>(gridUid, out _))
-                continue;
-
-            var aabb = _lookup.GetWorldAABB(gridUid);
-            if (aabb.Size == Vector2.Zero)
-                continue;
-
-            var kind = gridUid switch
-            {
-                _ when HasComp<TradeStationComponent>(gridUid) => TypanWarMinimapGridKind.Trade,
-                _ when gridUid != largest && HasComp<ShuttleComponent>(gridUid) => shuttleKind,
-                _ => stationKind,
-            };
-
-            var name = kind is TypanWarMinimapGridKind.NtShuttle or TypanWarMinimapGridKind.TypanShuttle
-                ? MetaData(gridUid).EntityName
-                : string.Empty;
-
-            list.Add(new TypanWarMinimapGrid(GetNetEntity(gridUid), aabb.Left, aabb.Bottom, aabb.Right, aabb.Top, kind, name));
-        }
     }
 
     private TypanWarAllyBlip[] CollectAllyBlips()
     {
         var list = new List<TypanWarAllyBlip>();
-        var minds = EntityQueryEnumerator<MindComponent>();
-        while (minds.MoveNext(out var mindId, out var mind))
+        var query = EntityQueryEnumerator<TypanWarFactionComponent, TransformComponent, MindContainerComponent>();
+        while (query.MoveNext(out var uid, out var faction, out _, out var mindContainer))
         {
-            if (!IsMindAlive(mind) || !TryGetWarSide((mindId, mind), out var side))
+            if (mindContainer.Mind is not { } mindId || !TryComp(mindId, out MindComponent? mind))
                 continue;
 
-            if (mind.CurrentEntity is not { } ent || !Exists(ent))
+            if (!IsMindAlive(mind))
                 continue;
 
-            var pos = _transform.GetWorldPosition(ent);
-            list.Add(new TypanWarAllyBlip(pos.X, pos.Y, side));
+            var pos = _transform.GetWorldPosition(uid);
+            list.Add(new TypanWarAllyBlip(pos.X, pos.Y, faction.Side));
         }
 
         return list.ToArray();
@@ -1100,8 +1058,9 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                 continue;
 
             var phase = component.Phase;
-            var ntAlive = phase >= TypanWarPhase.Active ? CountNtAlive() : 0;
-            var typanAlive = phase >= TypanWarPhase.Active ? CountTypanAlive() : 0;
+            var (ntAlive, typanAlive) = phase >= TypanWarPhase.Active
+                ? CountFactionAliveInternal()
+                : (0, 0);
 
             float remaining = 0f;
             if (phase == TypanWarPhase.Pending && component.WarStartTime != null)
@@ -1123,7 +1082,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                     component.Winner,
                     _captureZones.GetZoneStatuses(),
                     CollectAllyBlips(),
-                    CollectMinimapGrids(component),
+                    _minimap.CollectMinimapGrids(component, forceShapes: true),
                     includeMinimapData: true),
                 session);
             return;

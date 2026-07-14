@@ -56,6 +56,7 @@
   recipes:
   - MagazineBoxAntiMateriel
   - MagazinePistolCaselessRifle
+  - MagazineCaselessRifle
   - MagazineLightRifleBox
   - MagazineLightRifleIncendiary
   - MagazineBoxLightRifleIncendiary
