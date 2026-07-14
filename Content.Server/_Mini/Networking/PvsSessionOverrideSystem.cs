@@ -218,21 +218,13 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
                 _pvs.RemoveSessionOverride(uid, session);
         }
 
-        // Replicating every station grid ignores PVS range and floods clients on join.
-        // Only do this during station war where players cross grid boundaries constantly.
+        // Never force-replicate whole station grids: that bypasses PVS and tanks the server
+        // during station war (minimap draws from server AABBs, not client tile meshes).
+        // Drop shuttles still need overrides so both factions can see/board them.
         var gridQuery = EntityQueryEnumerator<StationMemberComponent>();
-        while (gridQuery.MoveNext(out var gridUid, out var member))
+        while (gridQuery.MoveNext(out var gridUid, out _))
         {
-            if (!warActive)
-            {
-                _pvs.RemoveSessionOverride(gridUid, session);
-                continue;
-            }
-
-            var isOwnStation = station != null && member.Station == station;
-            var isDropShuttle = _dropShuttleGrids.Contains(gridUid);
-
-            if (isOwnStation || isDropShuttle)
+            if (warActive && _dropShuttleGrids.Contains(gridUid))
                 _pvs.AddSessionOverride(gridUid, session);
             else
                 _pvs.RemoveSessionOverride(gridUid, session);

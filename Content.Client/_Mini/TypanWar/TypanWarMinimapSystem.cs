@@ -9,14 +9,11 @@ namespace Content.Client._Mini.TypanWar;
 
 public sealed class TypanWarMinimapSystem : EntitySystem
 {
-    private const float OpenPollIntervalSeconds = 1.5f;
-
     [Dependency] private readonly IPlayerManager _players = default!;
     [Dependency] private readonly TypanWarUiSystem _war = default!;
 
     private TypanWarMinimapWindow? _window;
     private bool _pendingOpen;
-    private float _openPollAccumulator;
 
     public override void Initialize()
     {
@@ -25,25 +22,6 @@ public sealed class TypanWarMinimapSystem : EntitySystem
         SubscribeLocalEvent<TypanWarMinimapActionEvent>(OnMinimapAction);
         _war.StatusUpdated += OnStatusUpdated;
         SubscribeNetworkEvent<RoundRestartCleanupEvent>(OnRoundRestart);
-    }
-
-    // FrameUpdate runs once per render frame — unlike Update, it is not re-run during prediction.
-    public override void FrameUpdate(float frameTime)
-    {
-        base.FrameUpdate(frameTime);
-
-        if (!IsWindowOpen())
-        {
-            _openPollAccumulator = 0f;
-            return;
-        }
-
-        _openPollAccumulator += frameTime;
-        if (_openPollAccumulator < OpenPollIntervalSeconds)
-            return;
-
-        _openPollAccumulator = 0f;
-        _war.RequestStatus();
     }
 
     public override void Shutdown()
@@ -69,7 +47,7 @@ public sealed class TypanWarMinimapSystem : EntitySystem
             return;
         }
 
-        if (_war.MinimapGrids.Length == 0)
+        if (_war.MinimapGrids.Length == 0 || !HasSilhouetteMeshes(_war.MinimapGrids))
         {
             _pendingOpen = true;
             _war.RequestStatus();
@@ -77,6 +55,17 @@ public sealed class TypanWarMinimapSystem : EntitySystem
         }
 
         OpenMinimapWindow();
+    }
+
+    private static bool HasSilhouetteMeshes(TypanWarMinimapGrid[] grids)
+    {
+        foreach (var grid in grids)
+        {
+            if (grid.Vertices is { Length: > 0 })
+                return true;
+        }
+
+        return false;
     }
 
     private void OnStatusUpdated()
@@ -98,6 +87,10 @@ public sealed class TypanWarMinimapSystem : EntitySystem
             CloseWindow();
             return;
         }
+
+        // Server pushes minimap data every ~2s; refresh from cache, never poll.
+        if (_war.MinimapGrids.Length == 0)
+            return;
 
         RefreshWindow();
     }
@@ -142,14 +135,11 @@ public sealed class TypanWarMinimapSystem : EntitySystem
         _pendingOpen = false;
 
         if (_window == null)
-        {
-            TypanWarMinimapControl.ClearShapeCache();
             return;
-        }
 
         _window.Close();
         _window.Dispose();
         _window = null;
-        TypanWarMinimapControl.ClearShapeCache();
+        // Silhouettes live on the control; dropping the window resets them via recreation.
     }
 }

@@ -3,6 +3,7 @@
 
 using Content.Shared._Mini.TypanWar;
 using Content.Shared.GameTicking;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Timing;
 
 namespace Content.Client._Mini.TypanWar;
@@ -81,10 +82,56 @@ public sealed class TypanWarUiSystem : EntitySystem
         {
             CaptureZones = ev.CaptureZones;
             AllyBlips = ev.AllyBlips;
-            MinimapGrids = ev.MinimapGrids;
+            MinimapGrids = MergeMinimapGrids(MinimapGrids, ev.MinimapGrids);
         }
 
         StatusUpdated?.Invoke();
+    }
+
+    /// <summary>
+    /// Periodic broadcasts omit silhouette vertices; keep previously received meshes.
+    /// </summary>
+    private static TypanWarMinimapGrid[] MergeMinimapGrids(TypanWarMinimapGrid[] previous, TypanWarMinimapGrid[] incoming)
+    {
+        if (incoming.Length == 0)
+            return incoming;
+
+        var prevById = new Dictionary<NetEntity, TypanWarMinimapGrid>(previous.Length);
+        foreach (var grid in previous)
+            prevById[grid.Grid] = grid;
+
+        var merged = new TypanWarMinimapGrid[incoming.Length];
+        for (var i = 0; i < incoming.Length; i++)
+        {
+            var grid = incoming[i];
+            if (grid.Vertices != null)
+            {
+                merged[i] = grid;
+                continue;
+            }
+
+            if (prevById.TryGetValue(grid.Grid, out var old) && old.Vertices != null)
+            {
+                merged[i] = new TypanWarMinimapGrid(
+                    grid.Grid,
+                    grid.MinX,
+                    grid.MinY,
+                    grid.MaxX,
+                    grid.MaxY,
+                    grid.Kind,
+                    grid.Name,
+                    old.Vertices,
+                    old.EdgeIndex,
+                    old.ShapeVersion,
+                    grid.WorldMatrix);
+            }
+            else
+            {
+                merged[i] = grid;
+            }
+        }
+
+        return merged;
     }
 
     private void OnBalanceStatus(TypanWarBalanceStatusEvent ev)

@@ -7,10 +7,8 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Resources;
 using Content.Shared._Mini.TypanWar;
-using Content.Shared.Maps;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
-using Robust.Client.Input;
 using Robust.Client.Player;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
@@ -18,15 +16,16 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Input;
 using Robust.Shared.IoC;
-using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
-using Robust.Shared.Physics;
 using Robust.Shared.Threading;
-using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
 namespace Content.Client._Mini.TypanWar;
 
+/// <summary>
+/// War overview map. Grid silhouettes use the shuttle radar / mass-scanner mesh
+/// (server-built), projected through the same DrawPrimitives path as BaseShuttleControl.
+/// </summary>
 public sealed class TypanWarMinimapControl : Control
 {
     private const float MinZoom = 0.5f;
@@ -34,20 +33,16 @@ public sealed class TypanWarMinimapControl : Control
     private const float ZoomStep = 0.12f;
     private const float BlipSize = 11f;
     private const float DrawBatchSize = 3f * 4096;
+    private const float FillAlpha = 0.55f;
 
     private static readonly Color Background = Color.FromHex("#0A0A10").WithAlpha(0.95f);
     private static readonly Color Border = Color.FromHex("#5A5670").WithAlpha(0.7f);
 
-    private static readonly Color NtStationFill = Color.FromHex("#1A2848").WithAlpha(0.88f);
-    private static readonly Color NtStationEdge = Color.FromHex("#5A9FFF");
-    private static readonly Color TypanStationFill = Color.FromHex("#421E1E").WithAlpha(0.88f);
-    private static readonly Color TypanStationEdge = Color.FromHex("#FF6666");
-    private static readonly Color TradeFill = Color.FromHex("#423818").WithAlpha(0.88f);
-    private static readonly Color TradeEdge = Color.FromHex("#D8C860");
-    private static readonly Color NtShuttleFill = Color.FromHex("#1A2848").WithAlpha(0.9f);
-    private static readonly Color NtShuttleEdge = Color.FromHex("#5A9FFF");
-    private static readonly Color TypanShuttleFill = Color.FromHex("#3A1818").WithAlpha(0.9f);
-    private static readonly Color TypanShuttleEdge = Color.FromHex("#E85050");
+    private static readonly Color NtStation = Color.FromHex("#5A9FFF");
+    private static readonly Color TypanStation = Color.FromHex("#FF6666");
+    private static readonly Color Trade = Color.FromHex("#D8C860");
+    private static readonly Color NtShuttle = Color.FromHex("#5A9FFF");
+    private static readonly Color TypanShuttle = Color.FromHex("#E85050");
 
     private static readonly Color NtBlip = Color.FromHex("#5A9FFF");
     private static readonly Color TypanBlip = Color.FromHex("#FF6060");
@@ -60,8 +55,6 @@ public sealed class TypanWarMinimapControl : Control
     [Dependency] private readonly IResourceCache _cache = default!;
     [Dependency] private readonly IParallelManager _parallel = default!;
 
-    private SharedMapSystem? _map;
-    private TurfSystem? _turf;
     private TransformSystem? _xform;
     private VectorFont? _font;
     private VectorFont? _zoneFont;
@@ -73,16 +66,9 @@ public sealed class TypanWarMinimapControl : Control
     private int _typanAlive;
     private NetEntity[] _cachedGridKeys = [];
 
-    private static readonly Dictionary<EntityUid, CachedGridShape> ShapeCache = new();
-    private readonly List<TypanWarMinimapGrid> _buildQueue = new();
-    private readonly List<Vector2> _screenVerts = new();
-    private readonly HashSet<Vector2i> _tileSet = new();
-    private readonly List<Vector2i> _tileList = new();
-    private readonly List<(Vector2 Start, Vector2 End)> _edges = new();
-    private readonly (DirectionFlag Dir, Vector2i Offset)[] _neighborDirections = new (DirectionFlag, Vector2i)[4];
-
-    private GridDrawJob _drawJob;
+    private readonly Dictionary<NetEntity, CachedSilhouette> _shapes = new();
     private Vector2[] _scaledVerts = Array.Empty<Vector2>();
+    private GridDrawJob _drawJob;
 
     private float _zoom = 1.15f;
     private Vector2 _pan;
@@ -96,21 +82,24 @@ public sealed class TypanWarMinimapControl : Control
     private float _viewMinY;
     private float _viewMaxY;
 
+    private sealed class CachedSilhouette
+    {
+        public Vector2[] Vertices = Array.Empty<Vector2>();
+        public int EdgeIndex;
+        public uint Version;
+        public Matrix3x2 WorldMatrix;
+        public TypanWarMinimapGridKind Kind;
+        public string Name = string.Empty;
+        public float MinX;
+        public float MinY;
+        public float MaxX;
+        public float MaxY;
+    }
+
     public TypanWarMinimapControl()
     {
         IoCManager.InjectDependencies(this);
-
-        for (var i = 0; i < 4; i++)
-        {
-            var dir = (DirectionFlag) Math.Pow(2, i);
-            _neighborDirections[i] = (dir, dir.AsDir().ToIntVec());
-        }
-
-        _drawJob = new GridDrawJob
-        {
-            ScaledVertices = _scaledVerts,
-        };
-
+        _drawJob = new GridDrawJob { ScaledVertices = _scaledVerts };
         MouseFilter = MouseFilterMode.Stop;
     }
 
@@ -125,63 +114,61 @@ public sealed class TypanWarMinimapControl : Control
         _typanAlive = typanAlive;
 
         if (gridsChanged)
-        {
-            _hasViewBounds = false;
             _cachedGridKeys = grids.Select(g => g.Grid).ToArray();
-            QueueShapeRebuild();
-        }
 
-        if (_grids.Length > 0)
+        MergeSilhouettes(grids);
+
+        _hasViewBounds = false;
+        if (_grids.Length > 0 || _zones.Length > 0)
             UpdateViewBounds();
     }
 
-    /// <summary>
-    /// Warm up bounds and start tile mesh building before the window becomes visible.
-    /// </summary>
     public void PrepareForDisplay()
     {
         _zoom = 1.15f;
         _pan = Vector2.Zero;
 
-        if (_grids.Length > 0)
+        if (_grids.Length > 0 || _zones.Length > 0)
             UpdateViewBounds();
-
-        QueueShapeRebuild();
-
-        if (_buildQueue.Count == 0)
-            return;
-
-        ProcessBuildQueue(int.MaxValue);
     }
 
-    public static void ClearShapeCache() => ShapeCache.Clear();
+    public void ClearShapes() => _shapes.Clear();
 
-    private bool HasPendingShapes()
+    private void MergeSilhouettes(TypanWarMinimapGrid[] grids)
     {
-        if (_grids.Length == 0)
-            return false;
+        var active = new HashSet<NetEntity>();
 
-        foreach (var grid in _grids)
+        foreach (var grid in grids)
         {
-            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
-                continue;
+            active.Add(grid.Grid);
 
-            if (!ShapeCache.ContainsKey(uid) &&
-                _ent.TryGetComponent(uid, out MapGridComponent? mapGrid))
-                return true;
+            if (!_shapes.TryGetValue(grid.Grid, out var cached))
+            {
+                cached = new CachedSilhouette();
+                _shapes[grid.Grid] = cached;
+            }
+
+            cached.Kind = grid.Kind;
+            cached.Name = grid.Name;
+            cached.MinX = grid.MinX;
+            cached.MinY = grid.MinY;
+            cached.MaxX = grid.MaxX;
+            cached.MaxY = grid.MaxY;
+            cached.WorldMatrix = grid.WorldMatrix;
+
+            if (grid.Vertices != null)
+            {
+                cached.Vertices = grid.Vertices;
+                cached.EdgeIndex = grid.EdgeIndex;
+                cached.Version = grid.ShapeVersion;
+            }
         }
 
-        return false;
-    }
-
-    protected override void FrameUpdate(FrameEventArgs args)
-    {
-        base.FrameUpdate(args);
-
-        if (_buildQueue.Count == 0)
-            return;
-
-        ProcessBuildQueue(maxGrids: 1);
+        foreach (var key in _shapes.Keys.ToArray())
+        {
+            if (!active.Contains(key))
+                _shapes.Remove(key);
+        }
     }
 
     protected override void KeyBindDown(GUIBoundKeyEventArgs args)
@@ -250,17 +237,7 @@ public sealed class TypanWarMinimapControl : Control
 
         DrawForcesLegend(handle, box);
 
-        if (HasPendingShapes() && _font != null)
-        {
-            var loading = Loc.GetString("typan-war-minimap-loading");
-            var dims = handle.GetDimensions(_font, loading, 1f);
-            var pos = new Vector2(
-                box.Left + (box.Width - dims.X) * 0.5f,
-                box.Top + (box.Height - dims.Y) * 0.5f);
-            handle.DrawString(_font, pos, loading, Color.FromHex("#A8A8B8"));
-        }
-
-        if (!_hasViewBounds && _grids.Length > 0)
+        if (!_hasViewBounds && (_grids.Length > 0 || _zones.Length > 0))
             UpdateViewBounds();
 
         if (!TryBuildTransform(box, out var map))
@@ -268,24 +245,20 @@ public sealed class TypanWarMinimapControl : Control
 
         foreach (var grid in _grids)
         {
-            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid ||
-                !ShapeCache.TryGetValue(uid, out var shape))
-            {
-                DrawBoundsFallback(handle, map, grid);
-                continue;
-            }
-
-            DrawCachedShape(handle, map, shape);
-
-            if (!shape.IsShuttle)
+            if (!_shapes.TryGetValue(grid.Grid, out var shape) || shape.Vertices.Length == 0)
                 continue;
 
-            var center = map.WorldToScreen(shape.CenterWorld.X, shape.CenterWorld.Y);
+            DrawSilhouette(handle, map, shape);
+
+            if (!IsShuttleKind(shape.Kind))
+                continue;
+
+            var center = map.WorldToScreen((shape.MinX + shape.MaxX) * 0.5f, (shape.MinY + shape.MaxY) * 0.5f);
             var blipColor = shape.Kind == TypanWarMinimapGridKind.NtShuttle ? NtBlip : TypanBlip;
             DrawMassScannerBlip(handle, center, blipColor, BlipSize);
 
-            if (!string.IsNullOrEmpty(shape.Label))
-                DrawEntityLabel(handle, center, shape.Label, blipColor);
+            if (!string.IsNullOrEmpty(shape.Name))
+                DrawEntityLabel(handle, center, shape.Name, blipColor);
         }
 
         foreach (var zone in _zones)
@@ -315,6 +288,53 @@ public sealed class TypanWarMinimapControl : Control
             DrawCircleBlip(handle, map.WorldToScreen(self.X, self.Y), SelfBlip, 6f);
     }
 
+    private void DrawSilhouette(DrawingHandleScreen handle, MapTransform map, CachedSilhouette shape)
+    {
+        var total = shape.Vertices.Length;
+        if (total == 0)
+            return;
+
+        Extensions.EnsureLength(ref _scaledVerts, total);
+
+        _drawJob.Map = map;
+        _drawJob.WorldMatrix = shape.WorldMatrix;
+        _drawJob.Vertices = shape.Vertices;
+        _drawJob.ScaledVertices = _scaledVerts;
+        _parallel.ProcessNow(_drawJob, total);
+
+        var color = ColorForKind(shape.Kind);
+        var triCount = shape.EdgeIndex;
+        var edgeCount = total - triCount;
+
+        for (var i = 0; i < Math.Ceiling(triCount / DrawBatchSize); i++)
+        {
+            var start = (int) (i * DrawBatchSize);
+            var end = (int) Math.Min(triCount, start + DrawBatchSize);
+            var count = end - start;
+            handle.DrawPrimitives(
+                DrawPrimitiveTopology.TriangleList,
+                new Span<Vector2>(_scaledVerts, start, count),
+                color.WithAlpha(FillAlpha));
+        }
+
+        if (edgeCount > 0)
+        {
+            handle.DrawPrimitives(
+                DrawPrimitiveTopology.LineList,
+                new Span<Vector2>(_scaledVerts, triCount, edgeCount),
+                color);
+        }
+    }
+
+    private static Color ColorForKind(TypanWarMinimapGridKind kind) => kind switch
+    {
+        TypanWarMinimapGridKind.NtStation => NtStation,
+        TypanWarMinimapGridKind.TypanStation => TypanStation,
+        TypanWarMinimapGridKind.NtShuttle => NtShuttle,
+        TypanWarMinimapGridKind.TypanShuttle => TypanShuttle,
+        _ => Trade,
+    };
+
     private void DrawForcesLegend(DrawingHandleScreen handle, UIBox2 box)
     {
         if (_font == null)
@@ -340,231 +360,6 @@ public sealed class TypanWarMinimapControl : Control
         var textY = legendBox.Top + 4f;
         handle.DrawString(_font, new Vector2(textX, textY), ntText, NtBlip);
         handle.DrawString(_font, new Vector2(textX, textY + lineHeight), typanText, TypanBlip);
-    }
-
-    private void QueueShapeRebuild()
-    {
-        _buildQueue.Clear();
-
-        foreach (var grid in _grids)
-        {
-            if (!_ent.TryGetEntity(grid.Grid, out var gridUid) || gridUid is not { } uid)
-                continue;
-
-            if (!_ent.TryGetComponent(uid, out MapGridComponent? mapGrid) ||
-                !ShapeCache.TryGetValue(uid, out var cached) ||
-                cached.LastBuild < mapGrid.LastTileModifiedTick)
-            {
-                _buildQueue.Add(grid);
-                continue;
-            }
-        }
-
-        var activeIds = _grids
-            .Select(g => g.Grid)
-            .Where(net => _ent.TryGetEntity(net, out _))
-            .Select(net => _ent.GetEntity(net))
-            .ToHashSet();
-
-        foreach (var uid in ShapeCache.Keys.ToArray())
-        {
-            if (!activeIds.Contains(uid))
-                ShapeCache.Remove(uid);
-        }
-    }
-
-    private void ProcessBuildQueue(int maxGrids)
-    {
-        if (_buildQueue.Count == 0)
-            return;
-
-        _map ??= _ent.System<SharedMapSystem>();
-        _turf ??= _ent.System<TurfSystem>();
-        _xform ??= _ent.System<TransformSystem>();
-
-        var built = 0;
-
-        while (_buildQueue.Count > 0 && built < maxGrids)
-        {
-            var gridInfo = _buildQueue[0];
-            _buildQueue.RemoveAt(0);
-
-            if (!_ent.TryGetEntity(gridInfo.Grid, out var gridUid) || gridUid is not { } uid)
-                continue;
-
-            if (!_ent.TryGetComponent(uid, out MapGridComponent? mapGrid))
-                continue;
-
-            if (ShapeCache.TryGetValue(uid, out var cached) && cached.LastBuild >= mapGrid.LastTileModifiedTick)
-                continue;
-
-            var (fill, edge) = gridInfo.Kind switch
-            {
-                TypanWarMinimapGridKind.NtStation => (NtStationFill, NtStationEdge),
-                TypanWarMinimapGridKind.TypanStation => (TypanStationFill, TypanStationEdge),
-                TypanWarMinimapGridKind.NtShuttle => (NtShuttleFill, NtShuttleEdge),
-                TypanWarMinimapGridKind.TypanShuttle => (TypanShuttleFill, TypanShuttleEdge),
-                _ => (TradeFill, TradeEdge),
-            };
-
-            if (TryBuildGridShape(uid, mapGrid, gridInfo, fill, edge, out var shape))
-                ShapeCache[uid] = shape;
-            else if (ShapeCache.TryGetValue(uid, out var fallback))
-                ShapeCache[uid] = fallback;
-
-            built++;
-        }
-    }
-
-    private bool TryBuildGridShape(
-        EntityUid gridUid,
-        MapGridComponent mapGrid,
-        TypanWarMinimapGrid gridInfo,
-        Color fill,
-        Color edge,
-        out CachedGridShape shape)
-    {
-        shape = default;
-
-        _tileSet.Clear();
-        _tileList.Clear();
-
-        var tileSize = mapGrid.TileSize;
-        var worldMatrix = _xform!.GetWorldMatrix(gridUid);
-        var vertices = new List<Vector2>();
-        var minWorld = new Vector2(float.MaxValue, float.MaxValue);
-        var maxWorld = new Vector2(float.MinValue, float.MinValue);
-
-        void IncludeWorld(Vector2 world)
-        {
-            minWorld = Vector2.Min(minWorld, world);
-            maxWorld = Vector2.Max(maxWorld, world);
-        }
-
-        var rator = _map!.GetAllTilesEnumerator(gridUid, mapGrid);
-        while (rator.MoveNext(out var tileRef))
-        {
-            var tile = tileRef.Value;
-
-            if (tile.Tile.IsEmpty || _turf!.IsSpace(tile))
-                continue;
-
-            var def = _turf.GetContentTileDefinition(tile);
-            if (def.MapAtmosphere)
-                continue;
-
-            var index = tile.GridIndices;
-            _tileSet.Add(index);
-            _tileList.Add(index);
-
-            var bl = _map.TileToVector((gridUid, mapGrid), index);
-            var br = bl + new Vector2(tileSize, 0f);
-            var tr = bl + new Vector2(tileSize, tileSize);
-            var tl = bl + new Vector2(0f, tileSize);
-
-            AddWorldTri(vertices, worldMatrix, bl, br, tl);
-            AddWorldTri(vertices, worldMatrix, br, tr, tl);
-
-            IncludeWorld(Vector2.Transform(bl, worldMatrix));
-            IncludeWorld(Vector2.Transform(tr, worldMatrix));
-        }
-
-        if (_tileSet.Count == 0)
-            return false;
-
-        var edgeIndex = vertices.Count;
-        _edges.Clear();
-
-        foreach (var index in _tileList)
-        {
-            var bl = _map.TileToVector((gridUid, mapGrid), index);
-            var br = bl + new Vector2(tileSize, 0f);
-            var tr = bl + new Vector2(tileSize, tileSize);
-            var tl = bl + new Vector2(0f, tileSize);
-
-            foreach (var (dir, dirVec) in _neighborDirections)
-            {
-                if (_tileSet.Contains(index + dirVec))
-                    continue;
-
-                var (start, end) = dir switch
-                {
-                    DirectionFlag.South => (bl, br),
-                    DirectionFlag.East => (br, tr),
-                    DirectionFlag.North => (tr, tl),
-                    DirectionFlag.West => (tl, bl),
-                    _ => throw new NotImplementedException(),
-                };
-
-                _edges.Add((start, end));
-            }
-        }
-
-        MergeCollinearEdges();
-
-        foreach (var (start, end) in _edges)
-        {
-            vertices.Add(Vector2.Transform(start, worldMatrix));
-            vertices.Add(Vector2.Transform(end, worldMatrix));
-        }
-
-        var centerWorld = minWorld.X <= maxWorld.X
-            ? (minWorld + maxWorld) * 0.5f
-            : new Vector2((gridInfo.MinX + gridInfo.MaxX) * 0.5f, (gridInfo.MinY + gridInfo.MaxY) * 0.5f);
-
-        shape = new CachedGridShape(
-            gridUid,
-            mapGrid.LastTileModifiedTick,
-            vertices,
-            edgeIndex,
-            fill,
-            edge,
-            IsShuttleKind(gridInfo.Kind),
-            gridInfo.Kind,
-            gridInfo.Name,
-            centerWorld);
-        return true;
-    }
-
-    private void MergeCollinearEdges()
-    {
-        var merged = true;
-
-        while (merged)
-        {
-            merged = false;
-
-            for (var i = 0; i < _edges.Count; i++)
-            {
-                var (start, end) = _edges[i];
-
-                for (var j = i + 1; j < _edges.Count; j++)
-                {
-                    var (neighborStart, neighborEnd) = _edges[j];
-
-                    if (!end.Equals(neighborStart))
-                        continue;
-
-                    if (!CollinearSimplifier.IsCollinear(start, end, neighborEnd, 10f * float.Epsilon))
-                        continue;
-
-                    _edges[i] = (start, neighborEnd);
-                    _edges.RemoveAt(j);
-                    merged = true;
-                    break;
-                }
-
-                if (merged)
-                    break;
-            }
-        }
-    }
-
-    private static void AddWorldTri(List<Vector2> tris, Matrix3x2 worldMatrix, Vector2 a, Vector2 b, Vector2 c)
-    {
-        tris.Add(Vector2.Transform(a, worldMatrix));
-        tris.Add(Vector2.Transform(b, worldMatrix));
-        tris.Add(Vector2.Transform(c, worldMatrix));
     }
 
     private static bool GridKeysEqual(NetEntity[] cached, TypanWarMinimapGrid[] grids)
@@ -621,55 +416,6 @@ public sealed class TypanWarMinimapControl : Control
         _viewMinY = minY - pad;
         _viewMaxY = maxY + pad;
         _hasViewBounds = true;
-    }
-
-    private void DrawBoundsFallback(DrawingHandleScreen handle, MapTransform map, TypanWarMinimapGrid grid)
-    {
-        if (grid.MaxX <= grid.MinX || grid.MaxY <= grid.MinY)
-            return;
-
-        var (fill, edge) = grid.Kind switch
-        {
-            TypanWarMinimapGridKind.NtStation => (NtStationFill, NtStationEdge),
-            TypanWarMinimapGridKind.TypanStation => (TypanStationFill, TypanStationEdge),
-            TypanWarMinimapGridKind.NtShuttle => (NtShuttleFill, NtShuttleEdge),
-            TypanWarMinimapGridKind.TypanShuttle => (TypanShuttleFill, TypanShuttleEdge),
-            _ => (TradeFill, TradeEdge),
-        };
-
-        var topLeft = map.WorldToScreen(grid.MinX, grid.MaxY);
-        var bottomRight = map.WorldToScreen(grid.MaxX, grid.MinY);
-        var box = new UIBox2(topLeft.X, topLeft.Y, bottomRight.X, bottomRight.Y);
-        handle.DrawRect(box, fill);
-        handle.DrawRect(box, edge, false);
-    }
-
-    private void DrawCachedShape(DrawingHandleScreen handle, MapTransform map, CachedGridShape shape)
-    {
-        var total = shape.Vertices.Count;
-        if (total == 0)
-            return;
-
-        Extensions.EnsureLength(ref _scaledVerts, total);
-
-        _drawJob.MapTransform = map;
-        _drawJob.Vertices = shape.Vertices;
-        _drawJob.ScaledVertices = _scaledVerts;
-        _parallel.ProcessNow(_drawJob, total);
-
-        var triCount = shape.EdgeIndex;
-        var edgeCount = total - triCount;
-
-        for (var i = 0; i < Math.Ceiling(triCount / DrawBatchSize); i++)
-        {
-            var start = (int) (i * DrawBatchSize);
-            var end = (int) Math.Min(triCount, start + DrawBatchSize);
-            var count = end - start;
-            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, new Span<Vector2>(_scaledVerts, start, count), shape.Fill);
-        }
-
-        if (edgeCount > 0)
-            handle.DrawPrimitives(DrawPrimitiveTopology.LineList, new Span<Vector2>(_scaledVerts, triCount, edgeCount), shape.Edge);
     }
 
     private static bool IsShuttleKind(TypanWarMinimapGridKind kind) =>
@@ -777,18 +523,6 @@ public sealed class TypanWarMinimapControl : Control
         return true;
     }
 
-    private readonly record struct CachedGridShape(
-        EntityUid GridUid,
-        GameTick LastBuild,
-        List<Vector2> Vertices,
-        int EdgeIndex,
-        Color Fill,
-        Color Edge,
-        bool IsShuttle,
-        TypanWarMinimapGridKind Kind,
-        string Label,
-        Vector2 CenterWorld);
-
     private readonly struct MapTransform
     {
         public readonly float MinX;
@@ -821,20 +555,23 @@ public sealed class TypanWarMinimapControl : Control
             var ny = (worldY - MinY) * Scale;
             return new Vector2(OffsetX + nx, OffsetY + DrawHeight - ny);
         }
+
+        public Vector2 WorldToScreen(Vector2 world) => WorldToScreen(world.X, world.Y);
     }
 
     private record struct GridDrawJob : IParallelRobustJob
     {
         public int BatchSize => 64;
 
-        public MapTransform MapTransform;
-        public List<Vector2> Vertices;
+        public MapTransform Map;
+        public Matrix3x2 WorldMatrix;
+        public Vector2[] Vertices;
         public Vector2[] ScaledVertices;
 
         public void Execute(int index)
         {
-            var vert = Vertices[index];
-            ScaledVertices[index] = MapTransform.WorldToScreen(vert.X, vert.Y);
+            var world = Vector2.Transform(Vertices[index], WorldMatrix);
+            ScaledVertices[index] = Map.WorldToScreen(world);
         }
     }
 }
