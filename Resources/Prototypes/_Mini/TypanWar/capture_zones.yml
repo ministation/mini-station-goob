@@ -28,8 +28,8 @@
         hard: false
   - type: PointLight
     enabled: true
-    radius: 1.5
-    power: 1.5
+    radius: 2.2
+    energy: 0.65
     color: "#E8E8E8"
   - type: Damageable
     damageContainer: Inorganic
@@ -48,6 +48,14 @@
   - type: TypanWarCaptureZone
     captureTimeSeconds: 35
     lootIntervalSeconds: 300
+  # Soft floor glow across the 3×3 capture footprint.
+  - type: PointLight
+    enabled: true
+    radius: 3.25
+    energy: 0.35
+    softness: 2.5
+    color: "#D8D8E8"
+    castShadows: false
 
 # Legacy mapper markers (optional — zones are spawned automatically when combat begins).
 - type: entity

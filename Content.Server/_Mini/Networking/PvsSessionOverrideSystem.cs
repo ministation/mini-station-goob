@@ -23,6 +23,12 @@ namespace Content.Server._Mini.Networking;
 /// Centralizes session-scoped PVS overrides. Component-scoped events like
 /// <see cref="ComponentStartup"/> only allow a single global subscription per component type.
 /// </summary>
+/// <remarks>
+/// Do NOT put station/drop-shuttle grids or player bodies into session overrides.
+/// Those trees are huge, share the PVS enter budget with normal chunks, and abort
+/// mid-recursion when the budget is exceeded — causing inventory LeavePvs and
+/// nearby players to appear invisible on other clients.
+/// </remarks>
 public sealed class PvsSessionOverrideSystem : EntitySystem
 {
     private const float RefreshDebounceSeconds = 0.25f;
@@ -30,7 +36,6 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
     [Dependency] private readonly PvsOverrideSystem _pvs = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
 
-    private readonly HashSet<EntityUid> _dropShuttleGrids = new();
     private readonly Dictionary<ICommonSession, EntityUid?> _pendingRefresh = new();
     private float _pendingRefreshAccumulator;
 
@@ -45,7 +50,6 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
         SubscribeLocalEvent<StationGridAddedEvent>(OnStationGridAdded);
         SubscribeLocalEvent<TypanWarFactionComponent, ComponentStartup>(OnFactionStartup);
         SubscribeLocalEvent<TypanWarDropShuttleComponent, ComponentStartup>(OnDropShuttleStartup);
-        SubscribeLocalEvent<TypanWarDropShuttleComponent, ComponentShutdown>(OnDropShuttleShutdown);
         _player.PlayerStatusChanged += OnPlayerStatusChanged;
     }
 
@@ -107,6 +111,10 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
 
     private void OnPlayerDetached(PlayerDetachedEvent args)
     {
+        // Clear recursive overrides from the body being left (ghost/SSD) before AttachedEntity is null.
+        if (!Deleted(args.Entity))
+            _pvs.RemoveSessionOverride(args.Entity, args.Player);
+
         RefreshPlayer(args.Player);
     }
 
@@ -129,7 +137,6 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
 
     private void OnWarLayoutReady(TypanWarLayoutReadyEvent ev)
     {
-        SyncDropShuttleGrids();
         RefreshAllPlayers();
     }
 
@@ -154,32 +161,20 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
 
     private void OnDropShuttleStartup(EntityUid uid, TypanWarDropShuttleComponent component, ComponentStartup args)
     {
-        _dropShuttleGrids.Add(uid);
-        RefreshAllPlayers();
-    }
-
-    private void OnDropShuttleShutdown(EntityUid uid, TypanWarDropShuttleComponent component, ComponentShutdown args)
-    {
-        _dropShuttleGrids.Remove(uid);
+        // Clear any leftover grid override from older builds; never re-add grids.
+        foreach (var session in _player.Sessions)
+        {
+            if (session.Status == SessionStatus.InGame)
+                _pvs.RemoveSessionOverride(uid, session);
+        }
     }
 
     public void RefreshAllPlayers()
     {
-        SyncDropShuttleGrids();
-
         foreach (var session in _player.Sessions)
         {
             RefreshPlayer(session);
         }
-    }
-
-    private void SyncDropShuttleGrids()
-    {
-        _dropShuttleGrids.Clear();
-
-        var query = EntityQueryEnumerator<TypanWarDropShuttleComponent>();
-        while (query.MoveNext(out var uid, out _))
-            _dropShuttleGrids.Add(uid);
     }
 
     public void RefreshPlayer(ICommonSession session, EntityUid? player = null)
@@ -188,7 +183,7 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
             return;
 
         RefreshStationOverrides(session, player);
-        RefreshWarPlayerOverride(session, player);
+        ClearBodySessionOverride(session, player);
         RefreshPointManagerOverrides(session, player);
         RefreshSiloOverrides(session, player);
     }
@@ -207,8 +202,7 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
                 station = member.Station;
         }
 
-        var warActive = TypanStationWarRuleSystem.IsWarActive;
-
+        // Station *data* entities are tiny; safe to force for UI/station state.
         var query = EntityQueryEnumerator<StationDataComponent>();
         while (query.MoveNext(out var uid, out _))
         {
@@ -218,35 +212,21 @@ public sealed class PvsSessionOverrideSystem : EntitySystem
                 _pvs.RemoveSessionOverride(uid, session);
         }
 
-        // Never force-replicate whole station grids: that bypasses PVS and tanks the server
-        // during station war (minimap draws from server AABBs, not client tile meshes).
-        // Drop shuttles still need overrides so both factions can see/board them.
+        // Never force-replicate grids (stations or drop shuttles). Full transform trees
+        // exhaust PVS enter budget → inventory Detached + players invisible to others.
         var gridQuery = EntityQueryEnumerator<StationMemberComponent>();
         while (gridQuery.MoveNext(out var gridUid, out _))
-        {
-            if (warActive && _dropShuttleGrids.Contains(gridUid))
-                _pvs.AddSessionOverride(gridUid, session);
-            else
-                _pvs.RemoveSessionOverride(gridUid, session);
-        }
+            _pvs.RemoveSessionOverride(gridUid, session);
     }
 
     /// <summary>
-    /// Keeps the player's own inventory replicated when crossing grid boundaries during station war.
+    /// Clears legacy war self-body session overrides that burned PVS enter budget.
+    /// Inventory and nearby players use normal chunk PVS instead.
     /// </summary>
-    private void RefreshWarPlayerOverride(ICommonSession session, EntityUid? player)
+    private void ClearBodySessionOverride(ICommonSession session, EntityUid? player)
     {
-        if (session.Status != SessionStatus.InGame)
-            return;
-
         player ??= session.AttachedEntity;
-
-        if (player == null)
-            return;
-
-        if (TypanStationWarRuleSystem.IsWarActive && HasComp<TypanWarFactionComponent>(player.Value))
-            _pvs.AddSessionOverride(player.Value, session);
-        else
+        if (player != null && !Deleted(player.Value))
             _pvs.RemoveSessionOverride(player.Value, session);
     }
 

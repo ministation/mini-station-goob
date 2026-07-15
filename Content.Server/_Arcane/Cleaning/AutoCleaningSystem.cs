@@ -1,4 +1,6 @@
 using System.Linq;
+using Content.Goobstation.Shared.Xenobiology.Components;
+using Content.Server._Mini.TypanWar;
 using Content.Server.Chat.Systems;
 using Content.Shared._Arcane.CCVars;
 using Content.Shared.GameTicking;
@@ -19,25 +21,27 @@ public sealed partial class AutoCleaningSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
 
-    // Логгер
     private ISawmill _sawmill = default!;
 
     private bool _autoCleaningEnabled = false;
     private bool _isActive = false;
     private bool _isWarned = false;
     private static TimeSpan _nextUpdate = TimeSpan.MaxValue;
-    private static TimeSpan _updateInterval = TimeSpan.FromMinutes(30);
+    private static readonly TimeSpan NormalUpdateInterval = TimeSpan.FromMinutes(30);
+    private static readonly TimeSpan WarUpdateInterval = TimeSpan.FromMinutes(15);
     private static TimeSpan _warningWaiting = TimeSpan.FromSeconds(30);
     private static HashSet<ProtoId<TagPrototype>> _cleaningTags = ["Trash", "Cartridge"];
     private static HashSet<ProtoId<TagPrototype>> _disallowedTags = ["Cigarette", "CigPack", "Syringe", "LightTube", "LightBulb", "LightTubeCrystalRed", "LightTubeCrystalBlue", "LightTubeCrystalGreen"];
 
     private const int MaxCleanPerCycle = 500;
 
+    private static TimeSpan GetUpdateInterval() =>
+        TypanStationWarRuleSystem.IsWarActive ? WarUpdateInterval : NormalUpdateInterval;
+
     public override void Initialize()
     {
         base.Initialize();
 
-        // Инициализируем логгер
         _sawmill = Logger.GetSawmill("autocleaning");
 
         Subs.CVar(_cfg, ACCVars.AutoCleaningEnabled, SetAutoCleaningEnabled, true);
@@ -48,7 +52,7 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
     private void OnRoundStarted(RoundStartedEvent args)
     {
-        _nextUpdate = _timing.CurTime + _updateInterval;
+        _nextUpdate = _timing.CurTime + GetUpdateInterval();
         _isActive = true;
         _isWarned = false;
 
@@ -71,6 +75,14 @@ public sealed partial class AutoCleaningSystem : EntitySystem
         if (!_isActive || !_autoCleaningEnabled)
             return;
 
+        // During war, drop to 15-minute cycles (shorten an already-scheduled long wait).
+        if (!_isWarned && TypanStationWarRuleSystem.IsWarActive)
+        {
+            var warDeadline = _timing.CurTime + WarUpdateInterval;
+            if (_nextUpdate > warDeadline)
+                _nextUpdate = warDeadline;
+        }
+
         if (_nextUpdate < _timing.CurTime)
         {
             if (_isWarned)
@@ -90,10 +102,10 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
     private void ProccessCleaning()
     {
-        _nextUpdate = _timing.CurTime + _updateInterval;
+        _nextUpdate = _timing.CurTime + GetUpdateInterval();
         _isWarned = false;
 
-        _sawmill.Info("Starting floor cleaning cycle...");
+        _sawmill.Info($"Starting floor cleaning cycle (next in {GetUpdateInterval().TotalMinutes} min)...");
 
         var cleanedCount = CleanFloorItems();
 
@@ -123,7 +135,6 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var tag, out var transform))
         {
-            // Пропускаем, если нет нужных тегов или есть запрещённые
             if (!tag.Tags.Intersect(_cleaningTags).Any())
                 continue;
 
@@ -133,21 +144,18 @@ public sealed partial class AutoCleaningSystem : EntitySystem
                 continue;
             }
 
-            // Объект внутри контейнера/инвентаря — пропускаем
             if (transform.ParentUid != transform.GridUid && transform.ParentUid != transform.MapUid)
             {
                 skippedContainer++;
                 continue;
             }
 
-            // Объект прикручен (лампы, трубы и т.д.) — пропускаем
             if (transform.Anchored)
             {
                 skippedAnchored++;
                 continue;
             }
 
-            // Не сносить живых / занятых игроками мышей и таракамолей
             if (HasComp<ActorComponent>(uid)
                 || (TryComp<MindContainerComponent>(uid, out var mindContainer) && mindContainer.HasMind)
                 || HasComp<MobStateComponent>(uid))
@@ -155,16 +163,16 @@ public sealed partial class AutoCleaningSystem : EntitySystem
                 continue;
             }
 
-            // Объект лежит на полу — удаляем
+            if (HasComp<SlimeExtractComponent>(uid))
+                continue;
+
             QueueDel(uid);
             deletedCount++;
 
-            // Защита от лагов
             if (deletedCount >= MaxCleanPerCycle)
                 break;
         }
 
-        // Подробное логирование
         _sawmill.Debug($"Cleaning stats: deleted={deletedCount}, skipped (container={skippedContainer}, anchored={skippedAnchored}, disallowed={skippedDisallowed})");
 
         if (deletedCount >= MaxCleanPerCycle)
