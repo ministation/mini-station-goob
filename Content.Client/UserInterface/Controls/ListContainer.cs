@@ -199,10 +199,8 @@ public class ListContainer : Control
             _suppressScrollValueChanged = true;
 
             if (finalHeight < cHeight)
-                finalWidth -= vBarSize;
-
-            if (finalHeight < cHeight)
             {
+                finalWidth -= vBarSize;
                 _vScrollBar.Visible = true;
                 _vScrollBar.Page = finalHeight;
                 _vScrollBar.MaxValue = cHeight;
@@ -302,7 +300,8 @@ public class ListContainer : Control
                         AddChild(button);
                     }
                     button.SetPositionInParent(i - _topIndex);
-                    button.Measure(finalSize);
+                    // Measure against the width actually reserved for rows (excl. scrollbar).
+                    button.Measure(new Vector2(finalWidth, finalHeight));
                 }
             }
 
@@ -317,8 +316,10 @@ public class ListContainer : Control
         #endregion
 
         #region Layout Children
-        // Use pixel position
-        var pixelWidth = (int)(finalWidth * UIScale);
+        // Prefer pixel scrollbar size so rows don't overflow by 1–2px under UIScale.
+        var pixelWidth = (int)(finalSize.X * UIScale);
+        if (_vScrollBar.Visible)
+            pixelWidth -= _vScrollBar.DesiredPixelSize.X;
         var pixelSeparation = (int) (ActualSeparation * UIScale);
 
         var pixelOffset = (int) -((scroll.Y - _topIndex * (_itemHeight + ActualSeparation)) * UIScale);
@@ -332,7 +333,7 @@ public class ListContainer : Control
             first = false;
 
             var pixelSize = child.DesiredPixelSize.Y;
-            var targetBox = new UIBox2i(0, pixelOffset, pixelWidth, pixelOffset + pixelSize);
+            var targetBox = new UIBox2i(0, pixelOffset, Math.Max(0, pixelWidth), pixelOffset + pixelSize);
             child.ArrangePixel(targetBox);
 
             pixelOffset += pixelSize;
@@ -395,16 +396,11 @@ public sealed class ListContainerButton : ContainerButton, IEntityControl
 
     public ListContainerButton(ListData data, int index)
     {
-        AddStyleClass(StyleClassButton);
+        // Row StyleBox comes from StyleNano / sheetlet (dark flats + content margins).
+        // Do not set StyleBoxOverride here — it nukes margins and causes ~px overflow in AHelp.
+        AddStyleClass(ListContainer.StyleClassListContainerButton);
         Data = data;
         Index = index;
-        StyleBoxOverride = new StyleBoxFlat(Color.White);
-        // AddChild(Background = new PanelContainer
-        // {
-        //     HorizontalExpand = true,
-        //     VerticalExpand = true,
-        //     PanelOverride = new StyleBoxFlat {BackgroundColor = new Color(55, 55, 68)}
-        // });
     }
 
     public EntityUid? UiEntity => (Data as EntityListData)?.Uid;

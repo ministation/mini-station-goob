@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Examine;
 using Content.Shared.Labels.Components;
+using Content.Shared.Localization;
 using Content.Shared.NameModifier.EntitySystems;
 using Content.Shared.Paper;
 using Robust.Shared.Containers;
@@ -36,7 +37,10 @@ public sealed partial class LabelSystem : EntitySystem
     {
         if (!string.IsNullOrEmpty(ent.Comp.CurrentLabel))
         {
-            ent.Comp.CurrentLabel = Loc.GetString(ent.Comp.CurrentLabel);
+            // Many prototypes use LocIds (reagent-name-*), but goob/medical fills also
+            // store raw display text like "tricordrazine 10u". Loc.GetString would spam
+            // Unknown messageId; only localize when a real key exists.
+            ent.Comp.CurrentLabel = LocExtensions.LocalizeOrRaw(ent.Comp.CurrentLabel);
             Dirty(ent);
         }
 

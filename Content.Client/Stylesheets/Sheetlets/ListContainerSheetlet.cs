@@ -14,7 +14,8 @@ public sealed class ListContainerSheetlet<T> : Sheetlet<T> where T : PalettedSty
     {
         IButtonConfig buttonCfg = sheet;
 
-        var box = new StyleBoxFlat() { BackgroundColor = Color.White };
+        // Dark base so list rows are not a pure-white bar under Mini StyleNano / AHelp.
+        var box = new StyleBoxFlat() { BackgroundColor = new Color(55, 55, 68) };
 
         var rules = new List<StyleRule>(
         [

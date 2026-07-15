@@ -4,19 +4,25 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <BoxContainer xmlns="https://spacestation14.io"
               xmlns:controls="using:Content.Client.UserInterface.Controls"
-              Orientation="Vertical">
+              Orientation="Vertical"
+              RectClipContent="True"
+              HorizontalExpand="True">
     <Control MinSize="0 5" />
     <LineEdit Name="FilterLineEdit"
               MinSize="100 0"
               HorizontalExpand="True"
+              Margin="0 0 2 0"
               PlaceHolder="{Loc player-list-filter}"/>
     <PanelContainer Name="BackgroundPanel"
                     VerticalExpand="True"
-                    HorizontalExpand="True">
+                    HorizontalExpand="True"
+                    RectClipContent="True"
+                    Margin="0 0 2 0">
         <controls:ListContainer Name="PlayerListContainer"
                   Access="Public"
                   Toggle="True"
                   Group="True"
-                  MinSize="100 0"/>
+                  MinSize="100 0"
+                  HorizontalExpand="True"/>
     </PanelContainer>
 </BoxContainer>

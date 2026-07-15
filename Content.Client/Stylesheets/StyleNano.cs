@@ -307,12 +307,14 @@ namespace Content.Client.Stylesheets
         public StyleNano(IResourceCache resCache, Color? accentColor = null) : base(resCache)
         {
             var accent = accentColor ?? Color.FromHex("#8f8569c3");
-            var accentGray = (byte) (accent.R * 0.299f + accent.G * 0.587f + accent.B * 0.114f);
+            // Color.R/G/B are floats 0–1 — casting the luminance to byte truncated everything to 0 (pure black).
+            var accentGray = accent.R * 0.299f + accent.G * 0.587f + accent.B * 0.114f;
             var neutralAccent = new Color(accentGray, accentGray, accentGray);
             var tonedAccent = Color.InterpolateBetween(accent, neutralAccent, 0.35f);
             Color Accent(string baseHex, float mix)
             {
                 var original = Color.FromHex(baseHex);
+                // Keep UI surfaces readable: never drop below ~opaque dark panels.
                 var alpha = original.A < 0.92f ? 0.92f : original.A;
                 var tonedMix = mix * 0.85f;
                 if (tonedMix > 0.75f)
@@ -682,11 +684,28 @@ namespace Content.Client.Stylesheets
             itemListItemBackgroundTransparent.SetContentMarginOverride(StyleBox.Margin.Vertical, 2);
             itemListItemBackgroundTransparent.SetContentMarginOverride(StyleBox.Margin.Horizontal, 4);
 
-            var squareTex = resCache.GetTexture("/Textures/Interface/Nano/square.png");
-            var listContainerButton = new StyleBoxTexture
+            // Dark solid boxes — do NOT use white square.png + ModulateSelf for lists.
+            // White base + broken/missing modulate produced opaque white rows (AHelp, vendors…).
+            var listContainerButton = new StyleBoxFlat
             {
-                Texture = squareTex,
-                ContentMarginLeftOverride = 10
+                BackgroundColor = Color.FromHex("#373744"),
+                ContentMarginLeftOverride = 8,
+                ContentMarginTopOverride = 2,
+                // Leave room for pin + scrollbar edge so AHelp rows don't clip past panel.
+                ContentMarginRightOverride = 6,
+                ContentMarginBottomOverride = 2,
+            };
+            var listContainerButtonHover = new StyleBoxFlat(listContainerButton)
+            {
+                BackgroundColor = Color.FromHex("#4B4B56"),
+            };
+            var listContainerButtonPressed = new StyleBoxFlat(listContainerButton)
+            {
+                BackgroundColor = Color.FromHex("#4B4B56"),
+            };
+            var listContainerButtonDisabled = new StyleBoxFlat(listContainerButton)
+            {
+                BackgroundColor = Color.FromHex("#0A0A0C"),
             };
 
             // NanoHeading
@@ -749,7 +768,7 @@ namespace Content.Client.Stylesheets
 
             var glassWindowPanel = new StyleBoxFlat
             {
-                BackgroundColor = Accent("#14141CCC", 0.06f),      // было 0.10
+                BackgroundColor = Accent("#14141CF0", 0.06f),      // opaque enough for FancyWindow / guidebook
                 BorderColor = Accent("#5A5A6E88", 0.42f),          // было 0.48
                 BorderThickness = new Thickness(0),
                 Padding = new Thickness(2),
@@ -1210,25 +1229,30 @@ namespace Content.Client.Stylesheets
                 Element<ContainerButton>().Class(StyleClassStorageButton)
                     .Pseudo(ContainerButton.StylePseudoClassDisabled)
                     .Prop(Control.StylePropertyModulateSelf, ButtonColorDisabled),
-// ListContainer
+// ListContainer — solid dark styleboxes (no white base / modulate)
                 Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
-                    .Prop(ContainerButton.StylePropertyStyleBox, listContainerButton),
+                    .Prop(ContainerButton.StylePropertyStyleBox, listContainerButton)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
 
                 Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
                     .Pseudo(ContainerButton.StylePseudoClassNormal)
-                    .Prop(Control.StylePropertyModulateSelf, new Color(55, 55, 68)),
+                    .Prop(ContainerButton.StylePropertyStyleBox, listContainerButton)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
 
                 Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
                     .Pseudo(ContainerButton.StylePseudoClassHover)
-                    .Prop(Control.StylePropertyModulateSelf, new Color(75, 75, 86)),
+                    .Prop(ContainerButton.StylePropertyStyleBox, listContainerButtonHover)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
 
                 Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
                     .Pseudo(ContainerButton.StylePseudoClassPressed)
-                    .Prop(Control.StylePropertyModulateSelf, new Color(75, 75, 86)),
+                    .Prop(ContainerButton.StylePropertyStyleBox, listContainerButtonPressed)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
 
                 Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
                     .Pseudo(ContainerButton.StylePseudoClassDisabled)
-                    .Prop(Control.StylePropertyModulateSelf, new Color(10, 10, 12)),
+                    .Prop(ContainerButton.StylePropertyStyleBox, listContainerButtonDisabled)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
 
                 // Main menu: Make those buttons bigger.
                 new StyleRule(new SelectorChild(
@@ -2376,6 +2400,20 @@ namespace Content.Client.Stylesheets
                     .Prop(TabContainer.StylePropertyTabStyleBoxInactive, glassTabInactive),
 
                 // Extra pass for windows that still use legacy panel classes.
+                // FancyWindow / Guidebook use StyleClass.BackgroundPanel — must be defined in StyleNano
+                // (goob PanelSheetlet lives on SheetSystem, which Mini does not use as the active skin).
+                Element<PanelContainer>().Class(StyleClass.BackgroundPanel)
+                    .Prop(PanelContainer.StylePropertyPanel, glassWindowPanel)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
+                Element<PanelContainer>().Class(StyleClass.BackgroundPanelOpenLeft)
+                    .Prop(PanelContainer.StylePropertyPanel, glassWindowPanel)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
+                Element<PanelContainer>().Class(StyleClass.BackgroundPanelOpenRight)
+                    .Prop(PanelContainer.StylePropertyPanel, glassWindowPanel)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
                 Element<PanelContainer>().Class("BackgroundDark")
                     .Prop(PanelContainer.StylePropertyPanel, glassSurfaceDark)
                     .Prop(Control.StylePropertyModulateSelf, Color.White),

@@ -3,8 +3,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 <BoxContainer xmlns="https://spacestation14.io"
-              Orientation="Horizontal" HorizontalExpand="true">
+              Orientation="Horizontal"
+              HorizontalExpand="True"
+              RectClipContent="True">
     <Label Name="PlayerEntryLabel" Text="" ClipText="True" HorizontalExpand="True" />
     <TextureButton Name="PlayerEntryPinButton"
-                   HorizontalAlignment="Right" />
+                   HorizontalAlignment="Right"
+                   SetSize="16 16"
+                   Margin="2 0 2 0" />
 </BoxContainer>
