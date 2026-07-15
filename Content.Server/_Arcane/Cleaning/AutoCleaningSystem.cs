@@ -2,8 +2,11 @@ using System.Linq;
 using Content.Server.Chat.Systems;
 using Content.Shared._Arcane.CCVars;
 using Content.Shared.GameTicking;
+using Content.Shared.Mind.Components;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Tag;
 using Robust.Shared.Configuration;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Log;
@@ -141,6 +144,14 @@ public sealed partial class AutoCleaningSystem : EntitySystem
             if (transform.Anchored)
             {
                 skippedAnchored++;
+                continue;
+            }
+
+            // Не сносить живых / занятых игроками мышей и таракамолей
+            if (HasComp<ActorComponent>(uid)
+                || (TryComp<MindContainerComponent>(uid, out var mindContainer) && mindContainer.HasMind)
+                || HasComp<MobStateComponent>(uid))
+            {
                 continue;
             }
 

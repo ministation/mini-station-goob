@@ -19,7 +19,7 @@
   components:
   - type: StationEvent
     earliestStart: 30
-    weight: 8
+    weight: 3
     minimumPlayers: 15
     maxOccurrences: 1
     startAnnouncement: station-event-communication-interception
@@ -40,8 +40,8 @@
     definitions:
     - prefRoles: [ Traitor ]
       min: 1
-      max: 2
-      playerRatio: 10
+      max: 1
+      playerRatio: 20
       skills: # CorvaxGoob-Skills
       - All
       blacklist:
@@ -131,7 +131,7 @@
   id: TunnelClownMidround
   components:
   - type: StationEvent
-    weight: 4
+    weight: 2 # Mini: fewer free midround antags
     duration: null
     earliestStart: 15
     minimumPlayers: 20
@@ -465,7 +465,7 @@
   id: SlasherSpawn
   components:
   - type: StationEvent
-    weight: 4 # CorvaxGoob Changes: 3 > 4
+    weight: 2 # Mini: fewer free midround antags
     duration: null
     earliestStart: 30
     minimumPlayers: 30

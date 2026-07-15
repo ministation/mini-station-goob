@@ -21,6 +21,7 @@ using Content.Server.Mind;
 using Content.Server.Roles;
 using Content.Server.Roles.Jobs;
 using Content.Shared.CharacterInfo;
+using Content.Shared.Mind;
 using Content.Shared.Objectives;
 using Content.Shared.Objectives.Components;
 using Content.Shared.Objectives.Systems;
@@ -56,11 +57,26 @@ public sealed class CharacterInfoSystem : EntitySystem
         var antagAllComplete = false;
         var antagCoinGranted = false;
 
-        if (_minds.TryGetMind(entity, out var mindId, out var mind))
+        EntityUid? mindId = null;
+        MindComponent? mind = null;
+
+        // Prefer the body's mind; if mismatch (reconnect race), fall back to the session UserId mind.
+        if (_minds.TryGetMind(entity, out var bodyMindId, out var bodyMind))
+        {
+            mindId = bodyMindId;
+            mind = bodyMind;
+        }
+        else if (_minds.TryGetMind(args.SenderSession.UserId, out var sessionMindId, out var sessionMind))
+        {
+            mindId = sessionMindId;
+            mind = sessionMind;
+        }
+
+        if (mindId != null && mind != null)
         {
             foreach (var objective in mind.Objectives)
             {
-                var info = _objectives.GetInfo(objective, mindId, mind);
+                var info = _objectives.GetInfo(objective, mindId.Value, mind);
                 if (info == null)
                     continue;
 
@@ -70,12 +86,12 @@ public sealed class CharacterInfoSystem : EntitySystem
                 objectives[issuer].Add(info.Value);
             }
 
-            if (_jobs.MindTryGetJobName(mindId, out var jobName))
+            if (_jobs.MindTryGetJobName(mindId.Value, out var jobName))
                 jobTitle = jobName;
 
-            briefing = _roles.MindGetBriefing(mindId);
-            antagAllComplete = _antagObjectiveRewards.AreAllObjectivesComplete(mindId, mind);
-            antagCoinGranted = _antagObjectiveRewards.IsRewardGranted(mindId);
+            briefing = _roles.MindGetBriefing(mindId.Value);
+            antagAllComplete = _antagObjectiveRewards.AreAllObjectivesComplete(mindId.Value, mind);
+            antagCoinGranted = _antagObjectiveRewards.IsRewardGranted(mindId.Value);
         }
 
         RaiseNetworkEvent(new CharacterInfoEvent(

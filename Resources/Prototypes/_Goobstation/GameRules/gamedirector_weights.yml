@@ -16,12 +16,12 @@
 - type: weightedRandom
   id: GameDirector
   weights:
-    Traitor: 0.05
+    Traitor: 0.03
     Changeling: 0.10
     Nukeops: 0.05
     Revolutionary: 0.05
     Zombie: 0.04
-    Heretic: 0.02
+    Heretic: 0.01
     BlobGameMode: 0.05
     Wizard: 0.001
     CosmicCult: 0.05

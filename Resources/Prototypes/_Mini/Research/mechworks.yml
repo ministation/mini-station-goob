@@ -188,6 +188,7 @@
   recipeUnlocks:
   - ShuttleConsoleCircuitboardTypan
   - ShuttlePilotConsoleCircuitboardTypan
+  - CargoShuttleConsoleCircuitboardTypan
   - IFFConsoleCircuitboardTypan
   - ThrusterMachineCircuitboard
   - GyroscopeMachineCircuitboard

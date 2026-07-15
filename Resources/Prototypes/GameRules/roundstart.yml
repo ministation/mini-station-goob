@@ -158,13 +158,13 @@
   - type: SubGamemodes
     rules:
     - id: Thief
-      prob: 0.4 # CorvaxGoob-GameRulesTweak
+      prob: 0.2 # Mini: fewer free sub-antags (token store unchanged)
     - id: Heretic # goob edit
-      prob: 0.2 # CorvaxGoob-GameRulesTweak
+      prob: 0.08
     - id: Devil # Goob
-      prob: 0.1 # CorvaxGoob-GameRulesTweak
+      prob: 0.05
     - id: Shadowling # Goob
-      prob: 0.05 # CorvaxGoob-GameRulesTweak
+      prob: 0.02
 
 - type: entity
   parent: BaseGameRule
@@ -397,8 +397,8 @@
     selectionTime: IntraPlayerSpawn # Goobstation
     definitions:
     - prefRoles: [ Traitor ]
-      max: 8
-      playerRatio: 10
+      max: 4
+      playerRatio: 18
       chaosScore: 150 # Goobstation
       skills: # CorvaxGoob-Skills
       - All
@@ -423,8 +423,8 @@
     selectionTime: IntraPlayerSpawn # Goobstation
     definitions:
     - prefRoles: [ HeadRev ]
-      max: 3
-      playerRatio: 15
+      max: 2
+      playerRatio: 20
       skills: # CorvaxGoob-Skills
       - All
       blacklist:

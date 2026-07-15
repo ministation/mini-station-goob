@@ -94,11 +94,11 @@ public sealed class EmoteOnDamageSystem : EntitySystem
 
             if (emoteOnDamage.WithChat)
             {
-                _chatSystem.TryEmoteWithChat(uid, selectedEmote, emoteOnDamage.HiddenFromChatWindow ? ChatTransmitRange.HideChat : ChatTransmitRange.Normal);
+                _chatSystem.TryEmoteWithChat(uid, selectedEmote, emoteOnDamage.HiddenFromChatWindow ? ChatTransmitRange.HideChat : ChatTransmitRange.Normal, forceEmote: true);
             }
             else
             {
-                _chatSystem.TryEmoteWithoutChat(uid, selectedEmote);
+                _chatSystem.TryEmoteWithoutChat(uid, selectedEmote, voluntary: false);
             }
 
             emoteOnDamage.LastEmoteTime = _gameTiming.CurTime;

@@ -48,7 +48,7 @@ public sealed class DeathgaspSystem: EntitySystem
         if (HasComp<MutedComponent>(uid))
             return false;
 
-        _chat.TryEmoteWithChat(uid, component.Prototype, ignoreActionBlocker: true);
+        _chat.TryEmoteWithChat(uid, component.Prototype, ignoreActionBlocker: true, forceEmote: true);
 
         return true;
     }

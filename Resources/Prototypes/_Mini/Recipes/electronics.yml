@@ -71,6 +71,11 @@
 
 - type: latheRecipe
   parent: BaseGoldCircuitboardRecipe
+  id: CargoShuttleConsoleCircuitboardTypan
+  result: CargoShuttleConsoleCircuitboardTypan
+
+- type: latheRecipe
+  parent: BaseGoldCircuitboardRecipe
   id: ShuttlePilotConsoleCircuitboardTypan
   result: ShuttlePilotConsoleCircuitboardTypan
 

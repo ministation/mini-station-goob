@@ -415,6 +415,7 @@
   recipes:
   - ShuttleConsoleCircuitboardTypan
   - ShuttlePilotConsoleCircuitboardTypan
+  - CargoShuttleConsoleCircuitboardTypan
   - IFFConsoleCircuitboardTypan
   - RadarConsoleCircuitboardTypan
   - ThrusterMachineCircuitboard

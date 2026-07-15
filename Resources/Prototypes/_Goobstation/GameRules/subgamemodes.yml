@@ -10,8 +10,8 @@
   - type: AntagSelection
     definitions:
     - prefRoles: [ Traitor ]
-      max: 3
-      playerRatio: 10
+      max: 1
+      playerRatio: 25
       blacklist:
         components:
         - AntagImmune

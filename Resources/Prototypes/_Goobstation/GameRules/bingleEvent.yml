@@ -17,7 +17,7 @@
   components:
   - type: StationEvent
     earliestStart: 50
-    weight: 3
+    weight: 1.5 # Mini: fewer free midround antags
     duration: 50
     minimumPlayers: 50
     chaos: # Goobstation
@@ -38,7 +38,7 @@
   components:
   - type: StationEvent
     earliestStart: 50
-    weight: 3
+    weight: 1.5 # Mini: fewer free midround antags
     duration: 50
     minimumPlayers: 50
     chaos: # Goobstation
