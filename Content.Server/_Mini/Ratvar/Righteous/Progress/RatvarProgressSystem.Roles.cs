@@ -6,7 +6,7 @@ using Robust.Shared.Player;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Content.Server.Radio;
-using Content.Server.Radio.Components;
+using Content.Shared.Radio.Components;
 using Content.Server.Radio.EntitySystems;
 
 namespace Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress;

@@ -195,7 +195,7 @@ public sealed partial class RatvarAbilitiesSystem
         var target = args.Target;
         if (HasComp<BorgChassisComponent>(target))
         {
-            _empSystem.TryEmpEffects(target, 30000, 15);
+            _empSystem.TryEmpEffects(target, 30000, TimeSpan.FromSeconds(15));
             args.Handled = true;
             return;
         }

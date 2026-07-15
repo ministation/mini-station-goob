@@ -63,6 +63,7 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
     [Dependency] private readonly SharedMindSystem _mind = default!;
     [Dependency] private readonly IChatManager _chat = default!;
     [Dependency] private readonly AlertsSystem _alerts = default!;
+    [Dependency] private readonly Content.Shared.Roles.SharedRoleSystem _roles = default!;
     [Dependency] private readonly GhostRoleSystem _ghost = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly ChatSystem _chatSystem = default!;
@@ -113,7 +114,7 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
             Actions.AddAction(ent, actionId);
         }
 
-        _alerts.ShowAlert(ent, ent.Comp.ChemicalAlert);
+        _alerts.ShowAlert((ent.Owner, null), ent.Comp.ChemicalAlert);
         UpdateUiState(ent);
     }
 
@@ -131,7 +132,7 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
 #pragma warning disable CS0618
              if (!comp.Host.HasValue)
             {
-                _alerts.ClearAlert(comp.Owner, comp.SugarAlert);
+                _alerts.ClearAlert((comp.Owner, null), comp.SugarAlert);
                 continue;
             }
 
@@ -144,9 +145,9 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
             _damageable.TryChangeDamage(comp.Owner, comp.HealingDamage); // Heal borer
 
             if (HasBorerProtection(comp.Host.Value))
-                _alerts.ShowAlert(comp.Owner, comp.SugarAlert);
+                _alerts.ShowAlert((comp.Owner, null), comp.SugarAlert);
             else
-                _alerts.ClearAlert(comp.Owner, comp.SugarAlert);
+                _alerts.ClearAlert((comp.Owner, null), comp.SugarAlert);
 #pragma warning restore CS0618
         }
 
@@ -184,12 +185,12 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
         if (comp.UiUpdateInterval > 0 && comp.ChemicalPoints % comp.UiUpdateInterval == 0)
             UpdateUiState(ent);
 
-        _alerts.ShowAlert(ent, ent.Comp.ChemicalAlert);
+        _alerts.ShowAlert((ent.Owner, null), ent.Comp.ChemicalAlert);
 
         if (comp.Host.HasValue && !HasBorerProtection(comp.Host.Value))
-            _alerts.ClearAlert(ent, ent.Comp.SugarAlert);
+            _alerts.ClearAlert((ent.Owner, null), ent.Comp.SugarAlert);
         else if (comp.Host.HasValue)
-            _alerts.ShowAlert(ent, ent.Comp.SugarAlert);
+            _alerts.ShowAlert((ent.Owner, null), ent.Comp.SugarAlert);
 
         Dirty(ent);
     }
@@ -251,10 +252,10 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
         solution.AddReagent(chemicalPrototype.Reagent, chemAmount);
 
         // add the chemicals to the bloodstream of the host
-        if (!_blood.TryAddToChemicals((comp.Host.Value, blood), solution))
+        if (!_blood.TryAddToBloodstream((comp.Host.Value, blood), solution))
             return false;
 
-        _admin.Add(LogType.ReagentEffect,
+        _admin.Add(LogType.ForceFeed,
             LogImpact.Low,
             $"{ToPrettyString(uid):actor} injected {chemAmount}u of {chemicalPrototype.Reagent:reagent}"
             + $" (severity: {chemicalPrototype.Severity}) into host {ToPrettyString(comp.Host.Value):target}");
@@ -541,7 +542,7 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
         var query = EntityQueryEnumerator<MindComponent>();
         while (query.MoveNext(out var mindUid, out var mind))
         {
-            if (!mind.MindRoles.Any(HasComp<CorticalBorerRoleComponent>))
+            if (!_roles.MindHasRole<CorticalBorerRoleComponent>(mindUid))
                 continue;
 
             var name = mind.CharacterName;
@@ -712,7 +713,7 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
 
     private void EnsureBorerObjectives(EntityUid mindId, MindComponent mindComp, List<EntProtoId> objectives)
     {
-        if (!mindComp.MindRoles.Any(HasComp<CorticalBorerRoleComponent>))
+        if (!_roles.MindHasRole<CorticalBorerRoleComponent>(mindId))
             return;
 
         foreach (var objective in objectives)

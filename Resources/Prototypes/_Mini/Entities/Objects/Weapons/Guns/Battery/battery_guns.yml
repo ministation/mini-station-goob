@@ -18,7 +18,7 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
-  - type: HitscanBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: RedLaser
     fireCost: 62.5
   - type: StaticPrice
@@ -46,7 +46,7 @@
   - type: Gun
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/taser2.ogg
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: BulletDisabler
     fireCost: 62.5
   - type: AmmoSelector
@@ -100,7 +100,7 @@
   - type: ContainerContainer
     containers:
       ballistic-ammo: !type:Container
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: BulletPistol
     fireCost: 100
   - type: Battery

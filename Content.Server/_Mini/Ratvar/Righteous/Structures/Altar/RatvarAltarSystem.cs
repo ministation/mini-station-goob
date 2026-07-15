@@ -17,7 +17,7 @@ using Content.Server.Antag;
 using Content.Server.RPSX.GameTicking.Rules.Ratvar;
 using Content.Server.EUI;
 using Content.Server.RPSX.DarkForces.Ratvar.UI;
-using Content.Server.Radio.Components;
+using Content.Shared.Radio.Components;
 using Content.Server.Radio.EntitySystems;
 
 namespace Content.Server.RPSX.DarkForces.Ratvar.Righteous.Structures.Altar;

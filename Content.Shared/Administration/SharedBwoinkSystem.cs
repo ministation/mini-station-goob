@@ -30,7 +30,7 @@ namespace Content.Shared.Administration
             public string Text { get; }
             public bool PlaySound { get; }
             public readonly bool AdminOnly;
-            public string? IconPath { get; }  // <-- НОВОЕ ПОЛЕ
+            public string? IconPath { get; }  // <-- ╨¥╨₧╨Æ╨₧╨ò ╨ƒ╨₧╨¢╨ò
 
             public BwoinkTextMessage(
                 NetUserId userId,
@@ -39,7 +39,7 @@ namespace Content.Shared.Administration
                 DateTime? sentAt = default,
                 bool playSound = true,
                 bool adminOnly = false,
-                string? iconPath = null)  // <-- НОВЫЙ ПАРАМЕТР
+                string? iconPath = null)  // <-- ╨¥╨₧╨Æ╨½╨Ö ╨ƒ╨É╨á╨É╨£╨ò╨ó╨á
             {
                 SentAt = sentAt ?? DateTime.Now;
                 UserId = userId;

@@ -161,7 +161,7 @@
 - type: latheRecipePack
   id: TypanBorgModulesWeaponry
   recipes:
-  - BorgModuleAdvancedChemical
+  - BorgModuleAdvancedTopical
   - BorgModuleAdvancedSurgery
   - BorgModuleSecurityStandard
   - BorgModuleSecurityAdvanced

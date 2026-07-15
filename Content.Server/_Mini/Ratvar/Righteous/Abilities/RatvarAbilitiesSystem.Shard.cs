@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Abilities.Enchantment.Items;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress;
@@ -175,7 +175,7 @@ public sealed partial class RatvarAbilitiesSystem
 
         var mapCoordinates = _transformSystem.GetMapCoordinates(uid);
 
-        _empSystem.EmpPulse(mapCoordinates, 5f, 20000, 10);
+        _empSystem.EmpPulse(mapCoordinates, 5f, 20000, TimeSpan.FromSeconds(10));
         QueueDel(uid);
         args.Handled = true;
     }

@@ -1,9 +1,4 @@
-// SPDX-FileCopyrightText: 2023 DrSmugleaf
-// SPDX-FileCopyrightText: 2023 Leon Friedrich
-// SPDX-FileCopyrightText: 2024 Nemanja
-// SPDX-FileCopyrightText: 2025 Coenx-flex
-//
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: MIT
 
 using Content.Shared.Actions;
 using Content.Shared.DoAfter;
@@ -49,10 +44,6 @@ public sealed class HarvestDoAfterCancelled : EntityEventArgs
 {
 }
 
-public sealed partial class RevenantShopActionEvent : InstantActionEvent
-{
-}
-
 public sealed partial class RevenantDefileActionEvent : InstantActionEvent
 {
 }
@@ -76,12 +67,4 @@ public enum RevenantVisuals : byte
     Corporeal,
     Stunned,
     Harvesting,
-}
-
-[NetSerializable, Serializable]
-public enum RevenantVisualLayers : byte
-{
-    Digit1,
-    Digit2,
-    Digit3
 }

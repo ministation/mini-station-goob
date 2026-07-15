@@ -14,7 +14,7 @@
       - BorgModuleTool
       - BorgModuleRescue
       - BorgModuleSyndicateWeapon
-      - BorgModuleAdvancedChemical
+      - BorgModuleAdvancedTopical
       - BorgModuleAdvancedSurgery
   - type: ItemSlots
     slots:

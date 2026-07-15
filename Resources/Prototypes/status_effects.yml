@@ -1,12 +1,12 @@
-﻿# Status effect prototypes.
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Status effect prototypes.
 # Holds no actual logic, just some basic data about the effect.
+
+# Note: We have a new status effect system that needs all of these status effects to be fully ported to.
+# Adding new status effects under the old system is NOT RECOMMENDED.
 
 - type: statusEffect
   id: Stun
-  alert: Stun
-
-- type: statusEffect
-  id: KnockedDown
   alert: Stun
 
 - type: statusEffect
@@ -23,9 +23,6 @@
   id: AllCaps
 
 - type: statusEffect
-  id: SeeingRainbows
-
-- type: statusEffect
   id: Electrocution
 
 - type: statusEffect
@@ -36,6 +33,7 @@
 
 - type: statusEffect
   id: PressureImmunity
+  alwaysAllowed: true # Shitmed: Used by space animal heart to work on anything
 
 - type: statusEffect
   id: Muted
@@ -44,9 +42,6 @@
 - type: statusEffect
   id: Corporeal
   alert: Corporeal
-
-- type: statusEffect
-  id: ForcedSleep #I.e., they will not wake on damage or similar
 
 - type: statusEffect
   id: TemporaryBlindness
@@ -58,10 +53,11 @@
   id: RatvarianLanguage #Praise him
 
 - type: statusEffect
-  id: StaminaModifier
-
-- type: statusEffect
-  id: PhaseShifted
-
-- type: statusEffect
   id: Flashed
+
+- type: statusEffect
+  id: RadiationProtection
+
+- type: statusEffect
+  id: Adrenaline
+  alert: Adrenaline

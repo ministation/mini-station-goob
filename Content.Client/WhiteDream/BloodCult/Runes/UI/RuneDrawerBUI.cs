@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.WhiteDream.BloodCult.Runes;
 using JetBrains.Annotations;
@@ -84,7 +84,7 @@ public sealed class RuneDrawerBUI : BoundUserInterface
                 continue;
 
             var itemSize = new Vector2(64f, 64f);
-            var button = new RadialMenuTextureButton
+            var button = new RadialMenuButton
             {
                 ToolTip = Loc.GetString(runeProto.Name),
                 StyleClasses = { "RadialMenuButton" },

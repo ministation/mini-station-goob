@@ -14,7 +14,7 @@ namespace Content.Goobstation.Shared.NTR;
 public sealed partial class NtrTaskPrototype : IPrototype
 {
     [DataField]
-    public string Proto { get; set; } = default!;
+    public string Proto { get; private set; } = default!;
 
     /// <inheritdoc/>
     [IdDataField]
@@ -54,13 +54,13 @@ public sealed partial class NtrTaskPrototype : IPrototype
     public float Cooldown; //in seconds
 
     [DataField]
-    public Dictionary<ProtoId<ReagentPrototype>, FixedPoint2> Reagents { get; set; } = new();
+    public Dictionary<ProtoId<ReagentPrototype>, FixedPoint2> Reagents { get; private set; } = new();
 
     [DataField]
     public string SolutionName { get; private set; } = "drink"; // i want to end it all already
 
     [DataField("reagentTask")] // shitcod
-    public bool IsReagentTask { get; set; }
+    public bool IsReagentTask { get; private set; }
 
     [DataField]
     public int Penalty { get; private set; } = 1;

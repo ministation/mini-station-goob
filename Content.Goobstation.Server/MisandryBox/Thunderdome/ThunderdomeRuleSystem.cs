@@ -31,6 +31,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mind.Components;
 using Content.Shared.Popups;
+using Content.Shared.Power;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using Content.Shared.Weapons.Ranged.Components;
@@ -997,9 +998,9 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             weapons.Add(new ThunderdomeLoadoutOption
             {
                 Index = i,
-                Name = Loc.GetString(loadout.Name),
-                Description = string.IsNullOrEmpty(loadout.Description) ? string.Empty : Loc.GetString(loadout.Description),
-                Category = Loc.GetString(loadout.Category),
+                Name = loadout.Name,
+                Description = loadout.Description ?? string.Empty,
+                Category = loadout.Category,
                 SpritePrototype = loadout.Sprite,
             });
         }
@@ -1011,8 +1012,8 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             grenades.Add(new ThunderdomeLoadoutOption
             {
                 Index = i,
-                Name = Loc.GetString(loadout.Name),
-                Description = string.IsNullOrEmpty(loadout.Description) ? string.Empty : Loc.GetString(loadout.Description),
+                Name = loadout.Name,
+                Description = loadout.Description ?? string.Empty,
                 Category = string.Empty,
                 SpritePrototype = loadout.Sprite,
             });
@@ -1025,8 +1026,8 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             medicals.Add(new ThunderdomeLoadoutOption
             {
                 Index = i,
-                Name = Loc.GetString(loadout.Name),
-                Description = string.IsNullOrEmpty(loadout.Description) ? string.Empty : Loc.GetString(loadout.Description),
+                Name = loadout.Name,
+                Description = loadout.Description ?? string.Empty,
                 Category = string.Empty,
                 SpritePrototype = loadout.Sprite,
             });
@@ -1039,8 +1040,8 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             heads.Add(new ThunderdomeLoadoutOption
             {
                 Index = i,
-                Name = Loc.GetString(loadout.Name),
-                Description = string.IsNullOrEmpty(loadout.Description) ? string.Empty : Loc.GetString(loadout.Description),
+                Name = loadout.Name,
+                Description = loadout.Description ?? string.Empty,
                 Category = string.Empty,
                 SpritePrototype = loadout.Sprite,
             });
@@ -1053,8 +1054,8 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             necks.Add(new ThunderdomeLoadoutOption
             {
                 Index = i,
-                Name = Loc.GetString(loadout.Name),
-                Description = string.IsNullOrEmpty(loadout.Description) ? string.Empty : Loc.GetString(loadout.Description),
+                Name = loadout.Name,
+                Description = loadout.Description ?? string.Empty,
                 Category = string.Empty,
                 SpritePrototype = loadout.Sprite,
             });
@@ -1067,8 +1068,8 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             glasses.Add(new ThunderdomeLoadoutOption
             {
                 Index = i,
-                Name = Loc.GetString(loadout.Name),
-                Description = string.IsNullOrEmpty(loadout.Description) ? string.Empty : Loc.GetString(loadout.Description),
+                Name = loadout.Name,
+                Description = loadout.Description ?? string.Empty,
                 Category = string.Empty,
                 SpritePrototype = loadout.Sprite,
             });
@@ -1081,8 +1082,8 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             backpacks.Add(new ThunderdomeLoadoutOption
             {
                 Index = i,
-                Name = Loc.GetString(loadout.Name),
-                Description = string.IsNullOrEmpty(loadout.Description) ? string.Empty : Loc.GetString(loadout.Description),
+                Name = loadout.Name,
+                Description = loadout.Description ?? string.Empty,
                 Category = string.Empty,
                 SpritePrototype = loadout.Sprite,
             });
@@ -1095,8 +1096,8 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             utilities.Add(new ThunderdomeLoadoutOption
             {
                 Index = i,
-                Name = Loc.GetString(loadout.Name),
-                Description = string.IsNullOrEmpty(loadout.Description) ? string.Empty : Loc.GetString(loadout.Description),
+                Name = loadout.Name,
+                Description = loadout.Description ?? string.Empty,
                 Category = string.Empty,
                 SpritePrototype = loadout.Sprite,
             });
@@ -1152,8 +1153,7 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
                     if (!inGun && TryComp<BallisticAmmoProviderComponent>(contained, out var ballistic))
                         RefillBallistic((contained, ballistic));
 
-                    if (!inGun && (HasComp<HitscanBatteryAmmoProviderComponent>(contained)
-                        || HasComp<ProjectileBatteryAmmoProviderComponent>(contained)))
+                    if (!inGun && (HasComp<BatteryAmmoProviderComponent>(contained)))
                         RefillBattery(contained);
 
                     if (!inGun && TryComp<RevolverAmmoProviderComponent>(contained, out var revolver))
@@ -1303,7 +1303,7 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
 
         if (stack.Comp.Count < maxMedicalStack)
         {
-            _stack.SetCount(stack, maxMedicalStack);
+            _stack.SetCount(stack.Owner, maxMedicalStack, stack.Comp);
         }
     }
 

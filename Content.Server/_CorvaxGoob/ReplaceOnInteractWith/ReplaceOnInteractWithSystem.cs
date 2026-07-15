@@ -31,7 +31,7 @@ public sealed class ReplaceOnInteractWithSystem : EntitySystem
         if (_whitelist.IsWhitelistFail(entity.Comp.Whitelist, args.Target.Value))
             return;
 
-        if (_whitelist.IsBlacklistPass(entity.Comp.Blacklsit, args.Target.Value))
+        if (_whitelist.IsWhitelistPass(entity.Comp.Blacklsit, args.Target.Value))
             return;
 
         _doAfterSystem.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User, entity.Comp.Delay, new ReplaceOnInteractWithDoAfterEvent(), entity, target: args.Target, used: entity));

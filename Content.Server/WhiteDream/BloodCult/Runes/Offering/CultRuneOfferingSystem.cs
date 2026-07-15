@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Shared.Bible.Components;
 using Content.Server._EinsteinEngines.Language;
 using Content.Server.Body.Systems;
@@ -114,7 +114,7 @@ public sealed class CultRuneOfferingSystem : EntitySystem
         _stun.TryAddStunDuration(target, TimeSpan.FromSeconds(2f));
         if (TryComp(target, out CuffableComponent? cuffs) && cuffs.Container.ContainedEntities.Count >= 1)
         {
-            var lastAddedCuffs = cuffs.LastAddedCuffs;
+            var lastAddedCuffs = cuffs.Container.ContainedEntities[^1];
             _cuffable.Uncuff(target, user, lastAddedCuffs);
         }
 

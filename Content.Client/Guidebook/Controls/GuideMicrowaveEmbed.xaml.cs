@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 pathetic meowmeow <uhhadd@gmail.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Diagnostics.CodeAnalysis;
@@ -20,17 +17,18 @@ using Robust.Shared.Utility;
 
 namespace Content.Client.Guidebook.Controls;
 
+/// <summary>
+/// Control for embedding a microwave recipe into a guidebook.
+/// </summary>
 [UsedImplicitly, GenerateTypedNameReferences]
-// Mini station edit start: guide-book
-public sealed partial class GuideMicrowaveEmbed : PanelContainer, IDocumentTag, ISearchableControl, IGuidebookEntryAnchor
+public sealed partial class GuideMicrowaveEmbed : PanelContainer, IDocumentTag, ISearchableControl, IPrototypeRepresentationControl
 {
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly ILogManager _logManager = default!;
 
     private ISawmill _sawmill = default!;
 
-    public IPrototype? AnchorPrototype { get; private set; }
-// Mini station edit end: guide-book
+    public IPrototype? RepresentedPrototype { get; private set; }
 
     public GuideMicrowaveEmbed()
     {
@@ -86,11 +84,9 @@ public sealed partial class GuideMicrowaveEmbed : PanelContainer, IDocumentTag, 
     {
         var entity = _prototype.Index<EntityPrototype>(recipe.Result);
 
-        // Mini station edit start: guide-book
-        AnchorPrototype = entity;
+        RepresentedPrototype = entity;
 
-        IconContainer.AddChild(new GuideEntityEmbed(recipe.Result, false, false, registerAsGuideAnchor: false));
-        // Mini station edit end: guide-book
+        IconContainer.AddChild(new GuideEntityEmbed(recipe.Result, false, false));
         ResultName.SetMarkup(entity.Name);
         ResultDescription.SetMarkup(entity.Description);
     }
@@ -101,19 +97,21 @@ public sealed partial class GuideMicrowaveEmbed : PanelContainer, IDocumentTag, 
         {
             var ingredient = _prototype.Index<EntityPrototype>(product);
 
-            IngredientsGrid.AddChild(new GuideEntityEmbed(product, false, false, registerAsGuideAnchor: false)); // Mini station edit: guide-book
+            IngredientsGrid.AddChild(new GuideEntityEmbed(product, false, false));
+
+            // solid name
 
             var solidNameMsg = new FormattedMessage();
             solidNameMsg.AddMarkupOrThrow(Loc.GetString("guidebook-microwave-solid-name-display", ("ingredient", ingredient.Name)));
             solidNameMsg.Pop();
 
-            // Mini station edit start: guide-book
-            var solidNameLabel = new GuidebookCrossRefLabel();
+            var solidNameLabel = new GuidebookRichPrototypeLink();
             solidNameLabel.SetMessage(solidNameMsg);
-            solidNameLabel.TargetPrototype = ingredient;
-            // Mini station edit end: guide-book
+            solidNameLabel.LinkedPrototype = ingredient;
 
             IngredientsGrid.AddChild(solidNameLabel);
+
+            // solid quantity
 
             var solidQuantityMsg = new FormattedMessage();
             solidQuantityMsg.AddMarkupOrThrow(Loc.GetString("guidebook-microwave-solid-quantity-display", ("amount", amount)));
@@ -132,27 +130,31 @@ public sealed partial class GuideMicrowaveEmbed : PanelContainer, IDocumentTag, 
         {
             var reagent = _prototype.Index<ReagentPrototype>(product);
 
+            // liquid color
+
             var liquidColorMsg = new FormattedMessage();
             liquidColorMsg.AddMarkupOrThrow(Loc.GetString("guidebook-microwave-reagent-color-display", ("color", reagent.SubstanceColor)));
             liquidColorMsg.Pop();
 
-            var liquidColorLabel = new RichTextLabel();
+            var liquidColorLabel = new GuidebookRichPrototypeLink();
             liquidColorLabel.SetMessage(liquidColorMsg);
             liquidColorLabel.HorizontalAlignment = Control.HAlignment.Center;
+            liquidColorLabel.LinkedPrototype = reagent;
 
             IngredientsGrid.AddChild(liquidColorLabel);
+
+            // liquid name
 
             var liquidNameMsg = new FormattedMessage();
             liquidNameMsg.AddMarkupOrThrow(Loc.GetString("guidebook-microwave-reagent-name-display", ("reagent", reagent.LocalizedName)));
             liquidNameMsg.Pop();
 
-            // Mini station edit start: guide-book
-            var liquidNameLabel = new GuidebookCrossRefLabel();
+            var liquidNameLabel = new RichTextLabel();
             liquidNameLabel.SetMessage(liquidNameMsg);
-            liquidNameLabel.TargetPrototype = reagent;
-            // Mini station edit end: guide-book
 
             IngredientsGrid.AddChild(liquidNameLabel);
+
+            // liquid quantity
 
             var liquidQuantityMsg = new FormattedMessage();
             liquidQuantityMsg.AddMarkupOrThrow(Loc.GetString("guidebook-microwave-reagent-quantity-display", ("amount", amount)));

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Numerics;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.RPSX.DarkForces.Ratvar.UI;
@@ -34,7 +34,7 @@ public sealed partial class RatvarEnchantmentMenu : RadialMenu
         Main.Children.Clear();
         foreach (var model in models)
         {
-            var button = new RadialMenuTextureButton
+            var button = new RadialMenuButton
             {
                 StyleClasses = { "RadialMenuButton" },
                 SetSize = new Vector2(64f, 64f),

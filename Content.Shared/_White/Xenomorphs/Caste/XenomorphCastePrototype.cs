@@ -2,7 +2,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._White.Xenomorphs.Caste;
 
-[Prototype("xenomorphCaste")]
+[Prototype]
 public sealed partial class XenomorphCastePrototype : IPrototype
 {
     [IdDataField]

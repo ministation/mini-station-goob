@@ -58,12 +58,11 @@ namespace Content.Client.Lobby.UI
             Discord.OnPressed += _ => _uriOpener.OpenUri(new Uri("https://discord.gg/mini-station"));
             Telegram.OnPressed += _ => _uriOpener.OpenUri(new Uri("https://t.me/mini_station"));
             CharacterSetup.OnPressed += _ => SwitchState(LobbyGuiState.CharacterSetup);
-            // DailyRewardsButton.OnPressed += _ => OpenDailyRewards();
-            // AntagTokensButton.OnPressed += _ => OpenAntagTokens();
+            DailyRewardsButton.OnPressed += _ => OpenDailyRewards();
+            AntagTokensButton.OnPressed += _ => OpenAntagTokens();
             Rules.OnPressed += _ => new RulesAndInfoWindow().Open();
             Guidebook.OnPressed += _ => UserInterfaceManager.GetUIController<GuidebookUIController>().ToggleGuidebook();
             Changelog.OnPressed += _ => UserInterfaceManager.GetUIController<ChangelogUIController>().ToggleWindow();
-            //RoadmapButton.OnPressed += _ => UserInterfaceManager.GetUIController<RoadmapUIController>().ToggleRoadmap();
         }
 
         public void SwitchState(LobbyGuiState state)

@@ -8,6 +8,7 @@
   components:
 # Mini-start: intercom resprite
   - type: Sprite
+    sprite: _Mini/Structures/Wallmounts/intercom.rsi
     layers:
     - state: typan
     - state: unshaded-typan

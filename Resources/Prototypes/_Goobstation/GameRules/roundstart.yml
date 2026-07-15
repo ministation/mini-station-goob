@@ -1,33 +1,3 @@
-# SPDX-FileCopyrightText: 2026 Casha
-# SPDX-FileCopyrightText: 2024 Aiden <aiden@djkraz.com>
-# SPDX-FileCopyrightText: 2024 Errant <35878406+Errant-4@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2024 Fenn <162015305+TooSillyFennec@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2024 Fishbait <Fishbait@git.ml>
-# SPDX-FileCopyrightText: 2024 Rouge2t7 <81053047+Sarahon@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2024 fishbait <gnesse@gmail.com>
-# SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2024 whateverusername0 <whateveremail>
-# SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 Aidenkrz <aiden@djkraz.com>
-# SPDX-FileCopyrightText: 2025 Armok <155400926+ARMOKS@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 Aviu00 <93730715+Aviu00@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
-# SPDX-FileCopyrightText: 2025 Ilya246 <57039557+Ilya246@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 Ilya246 <ilyukarno@gmail.com>
-# SPDX-FileCopyrightText: 2025 Marcus F <199992874+thebiggestbruh@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 Piras314 <p1r4s@proton.me>
-# SPDX-FileCopyrightText: 2025 SX-7 <sn1.test.preria.2002@gmail.com>
-# SPDX-FileCopyrightText: 2025 SX_7 <sn1.test.preria.2002@gmail.com>
-# SPDX-FileCopyrightText: 2025 Solstice <solsticeofthewinter@gmail.com>
-# SPDX-FileCopyrightText: 2025 SolsticeOfTheWinter <solsticeofthewinter@gmail.com>
-# SPDX-FileCopyrightText: 2025 Ted Lukin <66275205+pheenty@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 TheBorzoiMustConsume <197824988+TheBorzoiMustConsume@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 gus <august.eymann@gmail.com>
-# SPDX-FileCopyrightText: 2025 loltart <159829224+loltart@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 loltart <lo1tartyt@gmail.com>
-# SPDX-FileCopyrightText: 2025 pheenty <fedorlukin2006@gmail.com>
-# SPDX-FileCopyrightText: 2025 thebiggestbruh <199992874+thebiggestbruh@users.noreply.github.com>
-#
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # SubGamemodes
@@ -39,7 +9,7 @@
   - type: SubGamemodes
     rules:
     - id: SubgamemodeTraitor
-      prob: 0.2
+      prob: 0.5
 
 # GameModes
 
@@ -49,7 +19,7 @@
   components:
   - type: ChangelingRule
   - type: GameRule
-    minPlayers: 0
+    minPlayers: 15
   - type: AntagRandomObjectives
     sets:
     - groups: ChangelingObjectiveGroups
@@ -65,8 +35,8 @@
     agentName: changeling-roundend-name
     definitions:
     - prefRoles: [ Changeling ]
-      max: 3
-      playerRatio: 18
+      max: 4
+      playerRatio: 12
       chaosScore: 200
       jobBlacklist: [ Chaplain ] # GOOBSTATION
       skills: # CorvaxGoob-Skills
@@ -92,7 +62,7 @@
     - groups: CorporateObjectiveGroups
     maxDifficulty: 8 # Very rare antag so they should get a lot of objectives
   - type: GameRule
-    minPlayers: 15
+    minPlayers: 30
     delay:
       min: 465
       max: 665 # Delay is so the heads help their department get set up.
@@ -118,13 +88,13 @@
   id: CalmTraitor # For Dual Antag Gamemodes
   components:
   - type: GameRule
-    minPlayers: 15
+    minPlayers: 30
   - type: AntagSelection
     selectionTime: IntraPlayerSpawn
     definitions:
     - prefRoles: [ Traitor ]
-      max: 2
-      playerRatio: 20
+      max: 3
+      playerRatio: 15
       blacklist:
         components:
         - CommandStaff
@@ -142,7 +112,7 @@
   id: CalmLing # For Dual Antag Gamemodes
   components:
   - type: GameRule
-    minPlayers: 15
+    minPlayers: 30
   - type: AntagSelection
     selectionTime: IntraPlayerSpawn
     agentName: changeling-roundend-name
@@ -165,7 +135,7 @@
   id: Calmops # For Dual Antag Gamemodes
   components:
   - type: GameRule
-    minPlayers: 15
+    minPlayers: 30
   - type: LoadMapRule
     mapPath: /Maps/_Goobstation/Nonstations/nukieplanet.yml
   - type: AntagSelection
@@ -174,8 +144,6 @@
     - prefRoles: [ NukeopsCommander ]
       fallbackRoles: [ Nukeops, NukeopsMedic ]
       spawnerPrototype: SpawnPointNukeopsCommander
-      skills: # CorvaxGoob-Skills
-      - All
       playerRatio: 15
       startingGear: SyndicateCommanderGearFull
       unequipOldGear: true
@@ -193,8 +161,6 @@
     - prefRoles: [ NukeopsMedic ]
       fallbackRoles: [ Nukeops, NukeopsCommander ]
       spawnerPrototype: SpawnPointNukeopsMedic
-      skills: # CorvaxGoob-Skills
-      - All
       playerRatio: 15
       startingGear: SyndicateOperativeMedicFull
       unequipOldGear: true
@@ -214,8 +180,6 @@
     - prefRoles: [ Nukeops ]
       fallbackRoles: [ NukeopsCommander, NukeopsMedic ]
       spawnerPrototype: SpawnPointNukeopsOperative
-      skills: # CorvaxGoob-Skills
-      - All
       max: 10
       playerRatio: 20
       startingGear: SyndicateOperativeGearFull
@@ -240,7 +204,7 @@
   parent: BaseGameRule
   components:
   - type: GameRule
-    minPlayers: 20
+    minPlayers: 30
   - type: RevolutionaryRule
   - type: AntagSelection
     selectionTime: IntraPlayerSpawn
@@ -392,7 +356,7 @@
     - prefRoles: [ Nukeops ]
       fallbackRoles: [ NukeopsCommander, NukeopsMedic ]
       spawnerPrototype: SpawnPointNukeopsOperative
-      max: 10 # Goobstation / еЏ¤еёѓз©єй—ґз«™ - жІЎжњ‰й™ђе€¶зљ„ж ёз‰№е·Ґ
+      max: 10 # Goobstation / 古布空间站 - 没有限制的核特工
       playerRatio: 16 # Goobstation
       startingGear: SyndicateOperativeGearFullHonkops
       skills: # CorvaxGoob-Skills
@@ -421,7 +385,7 @@
   components:
   - type: DevilRule
   - type: GameRule
-    minPlayers: 0
+    minPlayers: 15
   - type: AntagObjectives
     objectives:
     - DevilContractObjective
@@ -449,7 +413,7 @@
   id: OopsAllThieves
   components:
   - type: GameRule
-    minPlayers: 0
+    minPlayers: 30
     chaosScore: 1200
   - type: AntagSelection
     agentName: thief-round-end-agent-name

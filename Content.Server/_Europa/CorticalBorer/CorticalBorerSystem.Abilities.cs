@@ -1,3 +1,4 @@
+using Content.Shared.Medical;
 // SPDX-FileCopyrightText: 2025 Coenx-flex
 // SPDX-FileCopyrightText: 2025 Cojoke
 // SPDX-FileCopyrightText: 2025 ark1368

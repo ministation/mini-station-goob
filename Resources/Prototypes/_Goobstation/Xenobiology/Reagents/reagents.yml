@@ -17,68 +17,65 @@
     Medicine:
       metabolismRate: 0.1
       effects:
-        - !type:HealthChange
-          conditions:
-            - !type:OrganType
-              type: Slime
-              shouldHave: false
-            - !type:MobStateCondition
-              mobstate: Critical
-          damage:
-            types:
-              Asphyxiation: -2 # should keep target in crit
-        - !type:HealthChange
-          conditions:
-            - !type:OrganType
-              type: Slime
-              shouldHave: false
-          damage:
-            types:
-              Bloodloss: -7 # 20 bloodloss damage every 3 seconds when there are no blood in bloodsream
+      - !type:HealthChange
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [ Slime ]
+          inverted: true
+        - !type:MobStateCondition
+          mobstate: Critical
+        damage:
+          types:
+            Asphyxiation: -2 # should keep target in crit
+      - !type:HealthChange
+        conditions:
+        - !type:MetabolizerTypeCondition # Goob, Vox are stinky
+          type: [ Vox ]
+          inverted: true
+        damage:
+          types:
+            Bloodloss: -7 # 20 bloodloss damage every 3 seconds when there are no blood in bloodsream
     Narcotic:
       metabolismRate: 0.1
       effects:
-        - !type:ModifyStatusEffect
-          conditions:
-            - !type:OrganType
-              type: Slime
-              shouldHave: false
-          effectProto: StatusEffectSeeingRainbow
-          type: Add
-          time: 5
-          refresh: false
-        - !type:Drunk
-          conditions:
-            - !type:OrganType
-              type: Slime
-              shouldHave: false
-          boozePower: 5
+      - !type:ModifyStatusEffect
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [ Slime ]
+          inverted: true
+        effectProto: StatusEffectSeeingRainbow
+        type: Add
+        time: 5
+      - !type:Drunk
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [ Slime ]
+          inverted: true
+        boozePower: 5
     Poison:
       metabolismRate: 0.1
       effects:
-        - !type:Emote
-          conditions:
-            - !type:OrganType # Goobstation - Yowie
-              type: Yowie
-              shouldHave: false
-            - !type:OrganType
-              type: Slime
-              shouldHave: false
-          emote: Yawn
-          showInChat: true
-          probability: 0.1
-        - !type:ModifyStatusEffect
-          conditions:
-            - !type:OrganType # Goobstation - Yowie
-              type: Yowie
-              shouldHave: false
-            - !type:OrganType
-              type: Slime
-              shouldHave: false
-          effectProto: StatusEffectDrowsiness
-          time: 2
-          type: Add
-          refresh: false
+      - !type:Emote
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type:
+          - Yowie # Goobstation - Yowie
+          - Slime
+          inverted: true
+        emote: Yawn
+        showInChat: true
+        probability: 0.1
+      - !type:ModifyStatusEffect
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type:
+          - Yowie # Goobstation - Yowie
+          - Slime
+          inverted: true
+        effectProto: StatusEffectDrowsiness
+        time: 2
+        type: Add
+
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -90,11 +87,12 @@
     Food:
       metabolismRate: 1
       effects:
-        - !type:ModifySlimeComponent
-          conditions:
-            - !type:ReagentThreshold
-              min: 1
-          extractBonus: 1
+      - !type:ModifySlimeComponent
+        conditions:
+        - !type:ReagentCondition
+          reagent: XenobioJellyPurple
+          min: 1
+        extractBonus: 1
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -106,11 +104,12 @@
     Food:
       metabolismRate: 1
       effects:
-        - !type:ModifySlimeComponent
-          conditions:
-            - !type:ReagentThreshold
-              min: 1
-          chanceModifier: -0.25
+      - !type:ModifySlimeComponent
+        conditions:
+        - !type:ReagentCondition
+          reagent: XenobioJellyBlue
+          min: 1
+        chanceModifier: -0.25
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -122,14 +121,12 @@
     Food:
       metabolismRate: 1
       effects:
-        - !type:ModifyStatusEffect
-          effectProto: StatusEffectFireImmune
-          time: 60
-          refresh: false
-        - !type:ModifyStatusEffect
-          effectProto: StatusEffectWeatherImmune
-          time: 60
-          refresh: false
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectFireImmune
+        time: 60
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectWeatherImmune
+        time: 60
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -141,12 +138,12 @@
     Food:
       metabolismRate: 1
       effects:
-        - !type:ModifySlimeComponent
-          conditions:
-            - !type:ReagentThreshold
-              min: 1
-          offspringBonus: 2
-          maxOffspringCap: 6
+      - !type:ModifySlimeComponent
+        conditions:
+        - !type:ReagentCondition
+          reagent: XenobioJellyCerulean
+          min: 1
+        offspringBonus: 2
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -158,11 +155,12 @@
     Food:
       metabolismRate: 1
       effects:
-        - !type:ModifySlimeComponent
-          conditions:
-            - !type:ReagentThreshold
-              min: 1
-          chanceModifier: 0.25
+      - !type:ModifySlimeComponent
+        conditions:
+        - !type:ReagentCondition
+          reagent: XenobioJellyRed
+          min: 1
+        chanceModifier: 0.25
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -174,17 +172,19 @@
     Poison:
       metabolismRate: 5 # hello hypospray users!
       effects:
-        - !type:SpeciesChange
-          conditions:
-            - !type:ReagentThreshold
-              min: 10
-          newSpecies: SlimePerson
-        - !type:AdjustReagent
+      - !type:SpeciesChange
+        conditions:
+        - !type:ReagentCondition
           reagent: XenobioJellyGreen
-          amount: -50.0
-          conditions:
-            - !type:ReagentThreshold
-              min: 10
+          min: 10
+        newSpecies: SlimePerson
+      - !type:AdjustReagent
+        reagent: XenobioJellyGreen
+        amount: -50.0
+        conditions:
+        - !type:ReagentCondition
+          reagent: XenobioJellyGreen
+          min: 10
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -196,17 +196,19 @@
     Poison:
       metabolismRate: 5 # hello hypospray users!
       effects:
-        - !type:SpeciesChange
-          conditions:
-            - !type:ReagentThreshold
-              min: 10
-          newSpecies: Human
-        - !type:AdjustReagent
+      - !type:SpeciesChange
+        conditions:
+        - !type:ReagentCondition
           reagent: XenobioHumanToxin
-          amount: -50.0
-          conditions:
-            - !type:ReagentThreshold
-              min: 10
+          min: 10
+        newSpecies: Human
+      - !type:AdjustReagent
+        reagent: XenobioHumanToxin
+        amount: -50.0
+        conditions:
+        - !type:ReagentCondition
+          reagent: XenobioHumanToxin
+          min: 10
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -218,11 +220,12 @@
     Poison:
       metabolismRate: 1
       effects:
-        - !type:ChangeFactionEntityEffect
-          conditions:
-            - !type:ReagentThreshold
-              min: 5
-          newFaction: Passive
+      - !type:ChangeFactionEntityEffect
+        conditions:
+        - !type:ReagentCondition
+          reagent: XenobioJellyPink
+          min: 5
+        newFaction: Passive
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -234,22 +237,24 @@
     Poison:
       metabolismRate: 5 # hello hypospray users!
       effects:
-        - !type:RandomSpeciesChange
-          speciesBlacklist:
-            - Skeleton # if he's dead it's GG
-            - IPC # do i have to explain this one
-            - Cyborg # why the fuck is this a thing?
-            - Shadowling # yeah.
-          # add more here
-          conditions:
-            - !type:ReagentThreshold
-              min: 10
-        - !type:AdjustReagent
+      - !type:RandomSpeciesChange
+        speciesBlacklist:
+        - Skeleton # if he's dead it's GG
+        - IPC # do i have to explain this one
+        - Cyborg # why the fuck is this a thing?
+        - Shadowling # yeah.
+        # add more here
+        conditions:
+        - !type:ReagentCondition
           reagent: AdvancedMutationToxin
-          amount: -50.0
-          conditions:
-            - !type:ReagentThreshold
-              min: 10
+          min: 10
+      - !type:AdjustReagent
+        reagent: AdvancedMutationToxin
+        amount: -50.0
+        conditions:
+        - !type:ReagentCondition
+          reagent: AdvancedMutationToxin
+          min: 10
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -261,17 +266,19 @@
     Poison:
       metabolismRate: 5 # hello hypospray users!
       effects:
-        - !type:SpeciesChange
-          conditions:
-            - !type:ReagentThreshold
-              min: 10
-          newSpecies: Felinid
-        - !type:AdjustReagent
+      - !type:SpeciesChange
+        conditions:
+        - !type:ReagentCondition
           reagent: XenobioFelinidToxin
-          amount: -50.0
-          conditions:
-            - !type:ReagentThreshold
-              min: 10
+          min: 10
+        newSpecies: Felinid
+      - !type:AdjustReagent
+        reagent: XenobioFelinidToxin
+        amount: -50.0
+        conditions:
+        - !type:ReagentCondition
+          reagent: XenobioFelinidToxin
+          min: 10
 
 - type: reagent
   parent: BaseXenobioReagent
@@ -283,13 +290,15 @@
     Narcotic:
       metabolismRate: 1
       effects:
-        - !type:SexChange
-          conditions:
-            - !type:ReagentThreshold
-              min: 5
-        - !type:AdjustReagent
+      - !type:SexChange
+        conditions:
+        - !type:ReagentCondition
           reagent: XenobioGenderFluid
-          amount: -50.0
-          conditions:
-            - !type:ReagentThreshold
-              min: 5
+          min: 5
+      - !type:AdjustReagent
+        reagent: XenobioGenderFluid
+        amount: -50.0
+        conditions:
+        - !type:ReagentCondition
+          reagent: XenobioGenderFluid
+          min: 5

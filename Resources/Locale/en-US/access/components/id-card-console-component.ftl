@@ -16,8 +16,10 @@ id-card-console-window-save-button = Save
 id-card-console-window-job-title-label = Job title:
 id-card-console-window-eject-button = Eject
 id-card-console-window-insert-button = Insert
-id-card-console-window-job-selection-label = Job presets (sets department and job icon):
-id-card-console-window-apply-job-access-button = Apply Job Access
+id-card-console-window-job-selection-label = Job preset (sets department and job icon):
+id-card-console-window-select-all-button = Grant all
+id-card-console-window-deselect-all-button = Revoke all
+id-card-console-window-apply-job-access-button = Apply job accesses
 id-card-console-window-full-access-button = Full
 id-card-console-window-extended-access-button = Extended
 

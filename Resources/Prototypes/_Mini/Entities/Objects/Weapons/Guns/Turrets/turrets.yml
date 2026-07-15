@@ -207,7 +207,7 @@
       availableModes:
         - FullAuto
       soundGunshot: /Audio/Weapons/Guns/Gunshots/laser.ogg
-    - type: HitscanBatteryAmmoProvider
+    - type: BatteryAmmoProvider
       proto: RedLaser
       fireCost: 120
     - type: Battery

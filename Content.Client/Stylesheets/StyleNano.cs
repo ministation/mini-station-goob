@@ -1439,7 +1439,8 @@ namespace Content.Client.Stylesheets
                 }),
 
                 // small number for the entity counter in the entity menu
-                new StyleRule(new SelectorElement(typeof(Label), new[] {ContextMenuElement.StyleClassEntityMenuIconLabel}, null, null), new[]
+                // Goob renamed/removed StyleClassEntityMenuIconLabel — keep Mini font rule via literal.
+                new StyleRule(new SelectorElement(typeof(Label), new[] {"entityMenuIconLabel"}, null, null), new[]
                 {
                     new StyleProperty("font", notoSans10),
                     new StyleProperty(Label.StylePropertyAlignMode, Label.AlignMode.Right),
@@ -1631,7 +1632,7 @@ namespace Content.Client.Stylesheets
                     }),
 
                 new StyleRule(
-                    new SelectorElement(typeof(MenuButton), new[] {MenuButton.StyleClassRedTopButton}, null, new[] {Button.StylePseudoClassNormal}),
+                    new SelectorElement(typeof(MenuButton), new[] {"topButtonRed"}, null, new[] {Button.StylePseudoClassNormal}),
                     new[]
                     {
                         new StyleProperty(Button.StylePropertyModulateSelf, ButtonColorDefaultRed),
@@ -1659,7 +1660,7 @@ namespace Content.Client.Stylesheets
                     }),
 
                 new StyleRule(
-                    new SelectorElement(typeof(MenuButton), new[] {MenuButton.StyleClassRedTopButton}, null, new[] {Button.StylePseudoClassHover}),
+                    new SelectorElement(typeof(MenuButton), new[] {"topButtonRed"}, null, new[] {Button.StylePseudoClassHover}),
                     new[]
                     {
                         new StyleProperty(Button.StylePropertyModulateSelf, ButtonColorHoveredRed),

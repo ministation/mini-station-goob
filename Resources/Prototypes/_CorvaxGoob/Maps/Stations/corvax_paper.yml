@@ -69,8 +69,7 @@
           Musician: [ 1, 1 ]
           Reporter: [ 1, 1 ]
           ServiceWorker: [ 3, 3 ]
-          Zookeeper: [ 1, 1 ]
-          Passenger: [ 3, 3 ]
+          Passenger: [ -1, -1 ]
           RadioHost: [ 1, 1 ]
           #silicon
           StationAi: [ 1, 1 ]

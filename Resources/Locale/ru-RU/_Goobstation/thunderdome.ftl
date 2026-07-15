@@ -1,14 +1,14 @@
-# Ghost HUD button
-thunderdome-ghost-button = Грозовая Арена ({$count})
-thunderdome-ghost-button-default = Грозовая Арена (0)
+# Кнопка в HUD призрака
+thunderdome-ghost-button = Арена ({ $count })
+thunderdome-ghost-button-default = Арена
 
-# Loadout window
-thunderdome-loadout-title = Снаряжение Грозовой Арены
-thunderdome-loadout-players = игроков на арене: {$count}
-thunderdome-loadout-subtitle = Выбери свой комплект оружия
+# Окно лодаутов
+thunderdome-loadout-title = Снаряжение арены
+thunderdome-loadout-players = Игроков на арене: { $count }
+thunderdome-loadout-subtitle = Выберите основное оружие
 thunderdome-loadout-confirm = Зайти на арену
 
-# Tab titles
+# Вкладки
 thunderdome-tab-weapons = Оружие
 thunderdome-tab-grenades = Гранаты
 thunderdome-tab-medical = Медицина
@@ -18,8 +18,7 @@ thunderdome-tab-glasses = Очки
 thunderdome-tab-backpack = Рюкзак
 thunderdome-tab-utility = Утилита
 
-thunderdome-loadout-base-gear = Базовое снаряжение: пистолет Mk58 + магазин, вспышка в РПС, сам РПС
-# Weapon categories
+# Категории
 thunderdome-category-shotguns = Дробовики
 thunderdome-category-smgs = Пистолеты-пулемёты
 thunderdome-category-rifles = Винтовки
@@ -32,9 +31,10 @@ thunderdome-category-medical = Медицина
 thunderdome-category-head = Голова
 thunderdome-category-neck = Шея
 thunderdome-category-glasses = Очки
-thunderdome-category-backpack = Рюкзаки
+thunderdome-category-backpack = Рюкзак
 thunderdome-category-utility = Утилита
-# Weapon names
+
+# Названия оружия
 thunderdome-loadout-shotgun = Каммерер
 thunderdome-loadout-doublebarreled = Двустволка
 thunderdome-loadout-smg = Дрозд
@@ -50,184 +50,163 @@ thunderdome-loadout-smg2 = C-20r
 thunderdome-loadout-smg3 = WSPR
 thunderdome-loadout-estoc = Эсток
 thunderdome-loadout-advlaser = Продвинутый лазер
-thunderdome-loadout-laserrifle = Лазерный карабин
-thunderdome-loadout-lasersniper = Лазерная снайперка
+thunderdome-loadout-laserrifle = Лазерная винтовка
+thunderdome-loadout-lasersniper = Лазерная снайперская винтовка
+thunderdome-loadout-mosin = Кардешёв-Мосина
 
-# Weapon descriptions (tooltips)
+# Описания оружия
 thunderdome-desc-shotgun = Дробовик + 1 коробка картечи, 1 коробка ружейных патронов
 thunderdome-desc-doublebarreled = Двустволка + 2 коробки картечи
-thunderdome-desc-smg = Пистолет пулемёт + 2 пары магазинов
-thunderdome-desc-wt550 = Пистолет пулемёт + 2 пары магазинов
+thunderdome-desc-smg = Пистолет-пулемёт + 2 запасных магазина
+thunderdome-desc-wt550 = Пистолет-пулемёт с верхней подачей + 2 запасных магазина
 thunderdome-desc-lecter = Винтовка + 2 стандартных магазина, 1 зажигательный магазин
-thunderdome-desc-akms = Штурмовая винтовка + 2 пары магазинов
-thunderdome-desc-python = Заряженный бронебойный револьвер + 1 спидлоадер с бронебойными
+thunderdome-desc-akms = Штурмовая винтовка + 2 запасных магазина
+thunderdome-desc-python = Револьвер с ББ-патронами + 1 ББ спидлоадер
 thunderdome-desc-inspector = Револьвер + 2 спидлоадера
-thunderdome-desc-hristov = Анти-материальная снайперская винтовка + 2 пары магазинов
-thunderdome-desc-esword = Энергетический меч + 2 инъектора стимуляторов
-thunderdome-desc-capo = Пособие по Капоэйре + 2 автоинъектора
-thunderdome-desc-smg2 = Компактный пистолет-пулемёт C-20r + 2 запасных магазина
-thunderdome-desc-smg3 = Штурмовая винтовка WSPR + 2 запасных магазина
-thunderdome-desc-estoc = Дальнобойный эсток + 2 запасных магазина
+thunderdome-desc-hristov = Анти-материальная снайперская винтовка + 2 запасных магазина
+thunderdome-desc-esword = Энергетический меч + 2 инъектора гиперзина
+thunderdome-desc-capo = Пособие по капоэйре + 2 автоинъектора
+thunderdome-desc-smg2 = Синдикатский ПП + 2 запасных магазина
+thunderdome-desc-smg3 = Бескалильная винтовка + 2 запасных магазина
+thunderdome-desc-estoc = Лёгкая винтовка + 2 запасных магазина
 thunderdome-desc-advlaser = Самозаряжающийся лазерный пистолет
-thunderdome-desc-laserrifle = Самозаряжающийся лазерный карабин с автоматическим огнём
+thunderdome-desc-laserrifle = Самозаряжающаяся лазерная винтовка с автоматическим огнём
 thunderdome-desc-lasersniper = Мощная самозаряжающаяся лазерная снайперская винтовка
+thunderdome-desc-mosin = Кардешёв-Мосина + 2 магазина + ушанка + ВОДКА
 
-# Grenade loadouts
+# Гранаты
 thunderdome-loadout-grenade-none = Без гранаты
 thunderdome-loadout-grenade-frag = Осколочная граната
 thunderdome-loadout-grenade-flash = Светошумовая граната
 thunderdome-loadout-grenade-smoke = Дымовая граната
+thunderdome-loadout-grenade-incendiary = Зажигательная граната
+thunderdome-loadout-grenade-cleaner = Граната с пеной
+thunderdome-loadout-grenade-stinger = Граната «Жало»
+thunderdome-loadout-grenade-teargas = Граната со слезоточивым газом
 
 thunderdome-desc-grenade-none = Без гранаты
 thunderdome-desc-grenade-frag = Осколочная граната для урона по площади
 thunderdome-desc-grenade-flash = Оглушает и ослепляет врагов поблизости
 thunderdome-desc-grenade-smoke = Создаёт дымовую завесу
+thunderdome-desc-grenade-incendiary = Поджигает область
+thunderdome-desc-grenade-cleaner = Выпускает пену космического чистящего средства
+thunderdome-desc-grenade-stinger = Граната с резиновыми дробинками для нелетального контроля
+thunderdome-desc-grenade-teargas = Выпускает слезоточивый газ, вызывающий боль и слепоту
 
-# Medical loadouts
-thunderdome-loadout-medical-default = Базовая медицина
+# Медицина
+thunderdome-loadout-medical-default = Хирургический набор
 thunderdome-loadout-medical-ephedrine = Боевой стимулятор
 thunderdome-loadout-medical-bicaridine = Быстрое лечение
 
-thunderdome-desc-medical-default = Медицинская нить, регенеративная сетка, компактный спрей от ран, компактный спрей от ожогов и таблетки трикордразина
-thunderdome-desc-medical-ephedrine = Автоинъектор эфедрина для буста скорости, плюс бинты, мазь и марля
-thunderdome-desc-medical-bicaridine = Автоинъекторы бикаридина и дермалина для быстрого лечения, плюс бинты, мазь и марля
+thunderdome-desc-medical-default = Медицинский шов, регенеративная сетка, компактный стиптик, компактный ожоговый спрей и таблетки три-к-разина
+thunderdome-desc-medical-ephedrine = Автоинъектор эфедрина для ускорения + бинты, мазь и марля
+thunderdome-desc-medical-bicaridine = Автоинъекторы бикаридина и дермалина для быстрого лечения + бинты, мазь и марля
 
-# Head loadouts
+# Голова
 thunderdome-loadout-head-default = Базовый шлем
 thunderdome-loadout-head-basic = Базовый шлем
-thunderdome-loadout-head-security = Берет СБ
+thunderdome-loadout-head-security = Берет охраны
 thunderdome-loadout-head-brigmedic = Берет бригмедика
 thunderdome-loadout-head-combatmedic = Берет боевого медика
-thunderdome-loadout-head-hos = Берет ГСБ
-thunderdome-loadout-head-brigadier = Шляпа генерал-бригадира
+thunderdome-loadout-head-hos = Берет главы службы безопасности
+thunderdome-loadout-head-brigadier = Фуражка бригадного генерала
 thunderdome-loadout-head-chameleon = Шляпа-хамелеон
 
 thunderdome-desc-head-default = Стандартный боевой шлем
 thunderdome-desc-head-basic = Стандартный боевой шлем
-thunderdome-desc-head-security = Берет службы безопасности
+thunderdome-desc-head-security = Берет охраны
 thunderdome-desc-head-brigmedic = Берет бригмедика
 thunderdome-desc-head-combatmedic = Берет боевого медика
 thunderdome-desc-head-hos = Берет главы службы безопасности
-thunderdome-desc-head-brigadier = Шляпа генерал-бригадира - пахнет сталью
+thunderdome-desc-head-brigadier = Фуражка бригадного генерала — пахнет сталью
 thunderdome-desc-head-chameleon = Шляпа-хамелеон, меняющая внешний вид
 
-# Neck loadouts
+# Шея
 thunderdome-loadout-neck-none = Без плаща
-thunderdome-loadout-neck-moth = Плащ ниан
+thunderdome-loadout-neck-moth = Плащ моли
 thunderdome-loadout-neck-goliath = Плащ голиафа
-thunderdome-loadout-neck-trans = Транс-ансамбль
-thunderdome-loadout-neck-brigadier = Плащ генерал-бригадира
-thunderdome-loadout-neck-blueshield = Шарф офицера "Синий Щит"
-thunderdome-loadout-neck-oldmantle = Старая тканевая обмотка
+thunderdome-loadout-neck-trans = Транс-наряд
+thunderdome-loadout-neck-brigadier = Плащ бригадного генерала
+thunderdome-loadout-neck-blueshield = Шарф офицера «Синий щит»
+thunderdome-loadout-neck-oldmantle = Старый тканевый кушак
 thunderdome-loadout-neck-specops = Плащ офицера спецопераций
-thunderdome-loadout-neck-gsb = Наплечная мантия главы СБ
+thunderdome-loadout-neck-gsb = Наплечная мантия главы службы безопасности
 thunderdome-loadout-neck-ertleader = Мантия лидера ОБР
-thunderdome-loadout-neck-vox = Вех!-плащ
-thunderdome-loadout-neck-bandage = Старая тканевая обмотка
-thunderdome-loadout-neck-chameleon = Шарф-хамелеон
+thunderdome-loadout-neck-vox = Плащ «Weh»
+thunderdome-loadout-neck-bandage = Старый тканевый кушак
+thunderdome-loadout-neck-chameleon = Полосатый красный шарф
 
-thunderdome-desc-neck-none = Без аксессуара на шею
-thunderdome-desc-neck-moth = Декоративный плащ ниан
+thunderdome-desc-neck-none = Без аксессуара на шее
+thunderdome-desc-neck-moth = Декоративный плащ моли
 thunderdome-desc-neck-goliath = Плащ охотника на голиафов
-thunderdome-desc-neck-trans = Транс-прайд ансамбль
-thunderdome-desc-neck-brigadier = Потрёпанный, но внушительный плащ элитных воинов
-thunderdome-desc-neck-blueshield = Шарф высокопоставленных телохранителей
-thunderdome-desc-neck-oldmantle = Потрёпанная тканевая обмотка, выцветшая за годы
-thunderdome-desc-neck-specops = Логотип НаноТрейзен, вышитый золотом, говорит сам за себя
+thunderdome-desc-neck-trans = Наряд транс-гордости
+thunderdome-desc-neck-brigadier = Потрёпанный, но внушительный плащ элитного бойца
+thunderdome-desc-neck-blueshield = Шарф телохранителя высокого ранга
+thunderdome-desc-neck-oldmantle = Потрёпанный тканевый кушак, выцветший за годы
+thunderdome-desc-neck-specops = Логотип NanoTrasen, вышитый золотом, говорит сам за себя
 thunderdome-desc-neck-gsb = Символ преданности станции
-thunderdome-desc-neck-ertleader = Необычайная декоративная накидка на плечи
-thunderdome-desc-neck-vox = Вех!
-thunderdome-desc-neck-bandage = Потрёпанная тканевая обмотка, выцветшая за годы
+thunderdome-desc-neck-ertleader = Нарядная накидка на плечи
+thunderdome-desc-neck-vox = Weh!
+thunderdome-desc-neck-bandage = Потрёпанный тканевый кушак, выцветший за годы
 thunderdome-desc-neck-chameleon = Шарф-хамелеон, меняющий внешний вид
 
-# Glasses loadouts
-thunderdome-loadout-glasses-none = Без очков
-thunderdome-loadout-glasses-sun = Солнцезащитные очки
-thunderdome-loadout-glasses-sunglasses = Солнцезащитные очки
-thunderdome-loadout-glasses-secsun = Солнцезащитные очки СБ
-thunderdome-loadout-glasses-security = Солнцезащитные очки СБ
+# Очки
+thunderdome-loadout-glasses-sunglasses = Солнечные очки
+thunderdome-loadout-glasses-security = Солнечные очки охраны
 thunderdome-loadout-glasses-diagnostic = Медицинский HUD
-thunderdome-loadout-glasses-thermal = Термальные очки
-thunderdome-loadout-glasses-nightvision = Ночное видение
+thunderdome-loadout-glasses-thermal = Тепловизионные очки
+thunderdome-loadout-glasses-nightvision = Прибор ночного видения
 
-thunderdome-desc-glasses-sunglasses = Защита от вспышек
-thunderdome-desc-glasses-security = Защита от вспышек (СБ стиль)
-thunderdome-desc-glasses-diagnostic = Медицинский HUD - уязвимы к вспышкам!
-thunderdome-desc-glasses-thermal = Термальные очки для видения сквозь стены - уязвимы к вспышкам!
-thunderdome-desc-glasses-nightvision = Очки ночного видения для видения в темноте
+thunderdome-desc-glasses-sunglasses = Обычные солнечные очки
+thunderdome-desc-glasses-security = Солнечные очки охраны с HUD
+thunderdome-desc-glasses-diagnostic = Медицинский диагностический HUD
+thunderdome-desc-glasses-thermal = Видит тепловые следы сквозь стены
+thunderdome-desc-glasses-nightvision = ПНВ для видимости в темноте
 
-# Backpack loadouts
+# Рюкзак
 thunderdome-loadout-backpack-default = Рюкзак
 thunderdome-loadout-backpack-satchel = Сумка
 thunderdome-loadout-backpack-leather = Кожаная сумка
-thunderdome-loadout-backpack-duffel = Вещмешок
+thunderdome-loadout-backpack-duffel = Спортивная сумка
 
 thunderdome-desc-backpack-default = Стандартный рюкзак
 thunderdome-desc-backpack-satchel = Компактная сумка
 thunderdome-desc-backpack-leather = Стильная кожаная сумка
-thunderdome-desc-backpack-duffel = Большой вещмешок
+thunderdome-desc-backpack-duffel = Большая спортивная сумка
 
-# Utility loadouts
+# Утилита
 thunderdome-loadout-utility-none = Без утилиты
 thunderdome-loadout-utility-soap = Мыло
 thunderdome-loadout-utility-knives = Метательные ножи
 thunderdome-loadout-utility-skates = Роликовые коньки
-thunderdome-loadout-utility-decoy = Голографическая ловушка
+thunderdome-loadout-utility-decoy = Голографическая приманка
 
 thunderdome-desc-utility-none = Без утилиты
-thunderdome-desc-utility-soap = Кусок мыла для мгновенного сбивания с ног. Высокий риск - высокая награда.
+thunderdome-desc-utility-soap = Кусок мыла для мгновенного нокдауна. Высокий риск, высокая награда.
 thunderdome-desc-utility-knives = 4 метательных ножа для дальнего урона
-thunderdome-desc-utility-skates = Роликовые коньки для увеличения скорости передвижения
-thunderdome-desc-utility-decoy = Проектор голографической ловушки. Создаёт 3 фальшивых клона на 8 секунд.
+thunderdome-desc-utility-skates = Роликовые коньки для повышенной скорости
+thunderdome-desc-utility-decoy = Голографический проектор-приманка. Создаёт 3 клона на 8 секунд.
 
-# Kill streak announcements
+# Серии убийств
 thunderdome-streak-3 = { $player } совершил серию убийств!
 thunderdome-streak-4 = { $player } доминирует!
-thunderdome-streak-5 = { $player } совершил Мега Убийство!
-thunderdome-streak-6 = { $player } Беспощаден!
-thunderdome-streak-7 = { $player } Ужасен!
-thunderdome-streak-8 = { $player } Монстр!
+thunderdome-streak-5 = { $player } совершил мега-убийство!
+thunderdome-streak-6 = { $player } неудержим!
+thunderdome-streak-7 = { $player } просто чудовищен!
+thunderdome-streak-8 = { $player } — монстр!
 thunderdome-streak-9 = { $player } БОЖЕСТВЕННЫЙ!
 thunderdome-streak-12 = { $player } ВЫШЕ БОГОВ!
-# Revival
-thunderdome-revival-title = Тело Воскрешено
-thunderdome-revival-offer = Ваше первоначальное тело восстановлено! Вернётесь в него?
+
+# Возрождение
+thunderdome-revival-title = Тело воскрешено
+thunderdome-revival-offer = Ваше первоначальное тело восстановлено! Вернуться в него?
 thunderdome-revival-accept = Вернуться в тело
 thunderdome-revival-decline = Остаться на арене
-# Chat / messages
-thunderdome-join = { $player } вошёл на Грозовой ринг!
-thunderdome-leave = { $player } покинул Грозовой ринг.
+
+# Чат и сообщения
+thunderdome-join = { $player } зашёл на арену!
+thunderdome-leave = { $player } покинул арену.
 thunderdome-leave-01 = { $user } исчезает, устав убивать.
 
-# Kill announcements
-thunderdome-kill-announcement = {$killer} убил {$victim}! Статистика: {$kills} киллов | K/D: {$kd} | Серия: {$streak}
-
-# Weapon entities
-ent-WeaponLaserCarbineAutoRecharge = лазерный карабин
-    .desc = Эргономичный лазерный карабин с самозаряжающейся ядерной батареей. Идеален для продолжительного боя.
-ent-WeaponSniperLaser = лазерная снайперская винтовка
-    .desc = Мощная лазерная снайперская винтовка с самозаряжающимся энергоблоком. Наносит разрушительные точные выстрелы.
-
-# Thunderdome custom items
-ent-EphedrineAutoInjectorThunderdome = автоинъектор эфедрина
-    .desc = Быстрый автоинъектор с 10 единицами эфедрина. Даёт мгновенный буст скорости в бою.
-
-ent-BicaridineAutoInjectorThunderdome = автоинъектор бикаридина
-    .desc = Быстрый автоинъектор с 15 единицами бикаридина. Быстро лечит физические повреждения.
-
-ent-DermalineAutoInjectorThunderdome = автоинъектор дермалина
-    .desc = Быстрый автоинъектор с 10 единицами дермалина. Быстро лечит ожоги.
-
-ent-PortableRechargerCompact = компактный портативный зарядник
-    .desc = Компактная версия портативного зарядника. Меньше, но так же эффективна.
-
-ent-SprayBottleStypticPowderThunderdome = компактный спрей с кровоостанавливающим порошком
-    .suffix = Тандердом, 2 использования
-    .desc = Компактный флакон-спрей с кровоостанавливающим порошком. Хватит на 2 применения.
-
-ent-SprayBottleSilverSulfadiazineThunderdome = компактный спрей с сульфадиазином серебра
-    .suffix = Тандердом, 2 использования
-    .desc = Компактный флакон-спрей с сульфадиазином серебра. Хватит на 2 применения.
-
-ent-DecoyHologramThunderdome = проектор голографической ловушки
-    .desc = Проецирует голографическую ловушку в виде вас. Длится 10 секунд.
+# Объявления об убийствах
+thunderdome-kill-announcement = { $killer } убил { $victim }! Статистика: { $kills } убийств | K/D: { $kd } | Серия: { $streak }

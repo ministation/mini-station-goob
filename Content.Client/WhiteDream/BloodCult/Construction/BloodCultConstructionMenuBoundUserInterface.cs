@@ -41,7 +41,7 @@ public sealed class BloodCultConstructionMenuBoundUserInterface : BoundUserInter
         _menu.OpenOverMouseScreenPosition();
     }
 
-    private IEnumerable<RadialMenuOption> ConvertToButtons(IReadOnlyList<RadialSelectorEntry> entries)
+    private IEnumerable<RadialMenuOptionBase> ConvertToButtons(IReadOnlyList<RadialSelectorEntry> entries)
     {
         foreach (var entry in entries)
         {
@@ -49,7 +49,7 @@ public sealed class BloodCultConstructionMenuBoundUserInterface : BoundUserInter
             {
                 yield return new RadialMenuNestedLayerOption(ConvertToButtons(entry.Category.Entries).ToList())
                 {
-                    Sprite = entry.Category.Icon,
+                    IconSpecifier = RadialMenuIconSpecifier.With(entry.Category.Icon),
                     ToolTip = entry.Category.Name,
                 };
                 continue;
@@ -60,7 +60,7 @@ public sealed class BloodCultConstructionMenuBoundUserInterface : BoundUserInter
 
             yield return new RadialMenuActionOption<string>(HandleMenuOptionClick, entry.Prototype)
             {
-                Sprite = GetSprite(entry),
+                IconSpecifier = RadialMenuIconSpecifier.With(GetSprite(entry)),
                 ToolTip = GetTooltip(entry),
             };
         }

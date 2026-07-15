@@ -1,12 +1,3 @@
-// SPDX-FileCopyrightText: 2021 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
-// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
-// SPDX-FileCopyrightText: 2024 AJCM-git <60196617+AJCM-git@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 beck-thompson <107373427+beck-thompson@users.noreply.github.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Net;
@@ -35,10 +26,14 @@ public sealed class RulesManager
 
     private async void OnConnected(object? sender, NetChannelArgs e)
     {
-         var isLocalhost = IPAddress.IsLoopback(e.Channel.RemoteEndPoint.Address) &&
-                               _cfg.GetCVar(CCVars.RulesExemptLocal);
+        var channel = e.Channel;
+        var isLocalhost = IPAddress.IsLoopback(channel.RemoteEndPoint.Address) &&
+                              _cfg.GetCVar(CCVars.RulesExemptLocal);
 
-        var lastRead = await _dbManager.GetLastReadRules(e.Channel.UserId);
+        var lastRead = await _dbManager.GetLastReadRules(channel.UserId);
+        if (!channel.IsConnected)
+            return;
+
         var hasCooldown = lastRead > LastValidReadTime;
 
         var showRulesMessage = new SendRulesInformationMessage
@@ -47,7 +42,7 @@ public sealed class RulesManager
             CoreRules = _cfg.GetCVar(CCVars.RulesFile),
             ShouldShowRules = !isLocalhost && !hasCooldown,
         };
-        _netManager.ServerSendMessage(showRulesMessage, e.Channel);
+        _netManager.ServerSendMessage(showRulesMessage, channel);
     }
 
     private async void OnRulesAccepted(RulesAcceptedMessage message)

@@ -1947,7 +1947,7 @@ entities:
     - type: BatterySelfRecharger
       autoRechargeRate: 5
       autoRecharge: True
-    - type: HitscanBatteryAmmoProvider
+    - type: BatteryAmmoProvider
       fireCost: 50
       proto: RedHeavyLaser
     - type: ShipGunType
@@ -1982,7 +1982,7 @@ entities:
     - type: BatterySelfRecharger
       autoRechargeRate: 20
       autoRecharge: True
-    - type: HitscanBatteryAmmoProvider
+    - type: BatteryAmmoProvider
       fireCost: 50
       proto: RedLightLaser
     - type: ShipGunType

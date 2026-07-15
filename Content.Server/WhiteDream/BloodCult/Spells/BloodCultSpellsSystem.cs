@@ -1,4 +1,4 @@
-﻿using Content.Server.Actions;
+using Content.Server.Actions;
 using Content.Server.Cuffs;
 using Content.Server.DoAfter;
 using Content.Server.Emp;
@@ -205,7 +205,7 @@ public sealed class BloodCultSpellsSystem : EntitySystem
         if (ev.Handled)
             return;
 
-        _empSystem.EmpPulse(_transform.GetMapCoordinates(ev.Performer), ev.Range, ev.EnergyConsumption, ev.Duration);
+        _empSystem.EmpPulse(_transform.GetMapCoordinates(ev.Performer), ev.Range, ev.EnergyConsumption, TimeSpan.FromSeconds(ev.Duration));
         ev.Handled = true;
     }
 

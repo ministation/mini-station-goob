@@ -3,7 +3,7 @@
  * Copyright: (c) 2025 TornadoTechnology
  */
 
-using Content.Server.Maps;
+using Content.Shared.Maps;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._TT.AdditionalMap;

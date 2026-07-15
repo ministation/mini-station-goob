@@ -6,6 +6,7 @@ using Content.Server._TT.StationHandleJob;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
 using Content.Server.Maps;
+using Content.Shared.Maps;
 using Content.Shared.Station.Components;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.Prototypes;

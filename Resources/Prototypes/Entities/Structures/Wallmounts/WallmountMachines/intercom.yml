@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: entity
   parent: BaseWallmountMachine
   id: BaseIntercom
@@ -43,7 +45,7 @@
   - type: Sprite
     noRot: false
     drawdepth: SmallObjects
-    sprite: _Mini/Structures/Wallmounts/intercom.rsi # Mini-resprite
+    sprite: Structures/Wallmounts/intercom.rsi
     layers:
     - state: base
     - state: unshaded
@@ -125,7 +127,7 @@
   components:
   - type: Sprite
     drawdepth: SmallObjects
-    sprite: _Mini/Structures/Wallmounts/intercom.rsi # Mini-resprite
+    sprite: Structures/Wallmounts/intercom.rsi
     layers:
     - state: build
     - state: panel
@@ -223,24 +225,6 @@
   suffix: Command
   description: An intercom. It's been reinforced with metal.
   components:
-# Mini-start: intercom resprite
-  - type: Sprite
-    layers:
-    - state: command
-    - state: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      shader: unshaded
-    - state: broadcasting
-      map: ["enum.RadioDeviceVisualLayers.Broadcasting"]
-      shader: unshaded
-      visible: false
-    - state: speaker
-      map: ["enum.RadioDeviceVisualLayers.Speaker"]
-      shader: unshaded
-      visible: false
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-# Mini-end
   - type: ContainerFill
     containers:
       board:
@@ -254,24 +238,6 @@
   parent: Intercom
   suffix: Engineering
   components:
-# Mini-start: intercom resprite
-  - type: Sprite
-    layers:
-    - state: engineering
-    - state: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      shader: unshaded
-    - state: broadcasting
-      map: ["enum.RadioDeviceVisualLayers.Broadcasting"]
-      shader: unshaded
-      visible: false
-    - state: speaker
-      map: ["enum.RadioDeviceVisualLayers.Speaker"]
-      shader: unshaded
-      visible: false
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-# Mini-end
   - type: ContainerFill
     containers:
       board:
@@ -285,24 +251,6 @@
   parent: Intercom
   suffix: Medical
   components:
-# Mini-start: intercom resprite
-  - type: Sprite
-    layers:
-    - state: medical
-    - state: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      shader: unshaded
-    - state: broadcasting
-      map: ["enum.RadioDeviceVisualLayers.Broadcasting"]
-      shader: unshaded
-      visible: false
-    - state: speaker
-      map: ["enum.RadioDeviceVisualLayers.Speaker"]
-      shader: unshaded
-      visible: false
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-# Mini-end
   - type: ContainerFill
     containers:
       board:
@@ -316,24 +264,6 @@
   parent: Intercom
   suffix: Science
   components:
-# Mini-start: intercom resprite
-  - type: Sprite
-    layers:
-    - state: science
-    - state: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      shader: unshaded
-    - state: broadcasting
-      map: ["enum.RadioDeviceVisualLayers.Broadcasting"]
-      shader: unshaded
-      visible: false
-    - state: speaker
-      map: ["enum.RadioDeviceVisualLayers.Speaker"]
-      shader: unshaded
-      visible: false
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-# Mini-end
   - type: ContainerFill
     containers:
       board:
@@ -348,24 +278,6 @@
   suffix: Security
   description: An intercom. It's been reinforced with metal from security helmets, making it a bitch-and-a-half to open.
   components:
-# Mini-start: intercom resprite
-  - type: Sprite
-    layers:
-    - state: security
-    - state: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      shader: unshaded
-    - state: broadcasting
-      map: ["enum.RadioDeviceVisualLayers.Broadcasting"]
-      shader: unshaded
-      visible: false
-    - state: speaker
-      map: ["enum.RadioDeviceVisualLayers.Speaker"]
-      shader: unshaded
-      visible: false
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-# Mini-end
   - type: ContainerFill
     containers:
       board:
@@ -379,24 +291,6 @@
   parent: Intercom
   suffix: Service
   components:
-# Mini-start: intercom resprite
-  - type: Sprite
-    layers:
-    - state: service
-    - state: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      shader: unshaded
-    - state: broadcasting
-      map: ["enum.RadioDeviceVisualLayers.Broadcasting"]
-      shader: unshaded
-      visible: false
-    - state: speaker
-      map: ["enum.RadioDeviceVisualLayers.Speaker"]
-      shader: unshaded
-      visible: false
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-# Mini-end
   - type: ContainerFill
     containers:
       board:
@@ -410,24 +304,6 @@
   parent: Intercom
   suffix: Supply
   components:
-# Mini-start: intercom resprite
-  - type: Sprite
-    layers:
-    - state: supply
-    - state: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      shader: unshaded
-    - state: broadcasting
-      map: ["enum.RadioDeviceVisualLayers.Broadcasting"]
-      shader: unshaded
-      visible: false
-    - state: speaker
-      map: ["enum.RadioDeviceVisualLayers.Speaker"]
-      shader: unshaded
-      visible: false
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-# Mini-end
   - type: ContainerFill
     containers:
       board:
@@ -454,24 +330,6 @@
   parent: Intercom
   suffix: Freelance
   components:
-# Mini-start: intercom resprite
-  - type: Sprite
-    layers:
-    - state: freelance
-    - state: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      shader: unshaded
-    - state: broadcasting
-      map: ["enum.RadioDeviceVisualLayers.Broadcasting"]
-      shader: unshaded
-      visible: false
-    - state: speaker
-      map: ["enum.RadioDeviceVisualLayers.Speaker"]
-      shader: unshaded
-      visible: false
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-# Mini-end
   - type: ContainerFill
     containers:
       board:

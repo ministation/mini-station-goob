@@ -1,3 +1,4 @@
+using Content.Shared.SurveillanceCamera.Components;
 using System.Linq;
 using System.Numerics;
 using Content.Goobstation.Common.Effects;

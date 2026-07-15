@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server.DoAfter;
 using Content.Server.Emp;
 using Content.Server.GameTicking;
@@ -58,7 +58,7 @@ public sealed class CultRuneApocalypseSystem : EntitySystem
             _transform.GetMapCoordinates(ent),
             ent.Comp.EmpRange,
             ent.Comp.EmpEnergyConsumption,
-            ent.Comp.EmpDuration);
+            TimeSpan.FromSeconds(ent.Comp.EmpDuration));
 
         foreach (var guaranteedEvent in ent.Comp.GuaranteedEvents)
             _gameTicker.StartGameRule(guaranteedEvent);

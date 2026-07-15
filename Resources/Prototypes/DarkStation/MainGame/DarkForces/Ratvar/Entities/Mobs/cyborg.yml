@@ -225,9 +225,8 @@
     - state: generic
     - state: icon-tools
   - type: ItemBorgModule
-    moduleId: RatvarWeapon
-    items:
-    - RatvarSpear
+    hands:
+    - item: RatvarSpear
   - type: Tag
     tags:
     - RatvarBorgModule

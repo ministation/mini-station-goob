@@ -1,24 +1,3 @@
-// SPDX-FileCopyrightText: 2022 metalgearsloth <metalgearsloth@gmail.com>
-// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
-// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 DrSmugleaf <drsmugleaf@gmail.com>
-// SPDX-FileCopyrightText: 2023 Jezithyr <jezithyr@gmail.com>
-// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Morb <14136326+Morb0@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 deltanedas <@deltanedas:kde.org>
-// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 0x6273 <0x40@keemail.me>
-// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
-// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
-// SPDX-FileCopyrightText: 2024 Vasilis <vasilis@pikachu.systems>
-// SPDX-FileCopyrightText: 2024 faint <46868845+ficcialfaint@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 metalgearsloth <comedian_vs_clown@hotmail.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Diagnostics.CodeAnalysis;
@@ -30,7 +9,6 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC;
 using Content.Shared.NPC.Systems;
-using Content.Shared._Mini.MiniCCVars;
 using Prometheus;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
@@ -56,8 +34,6 @@ namespace Content.Server.NPC.Systems
         /// </summary>
         public bool Enabled { get; set; } = true;
 
-        private bool _sleepWithoutPlayers = true;
-
         private int _maxUpdates;
 
         private int _count;
@@ -69,7 +45,6 @@ namespace Content.Server.NPC.Systems
 
             Subs.CVar(_configurationManager, CCVars.NPCEnabled, value => Enabled = value, true);
             Subs.CVar(_configurationManager, CCVars.NPCMaxUpdates, obj => _maxUpdates = obj, true);
-            Subs.CVar(_configurationManager, MiniCCVars.NPCDisableWithoutPlayers, value => _sleepWithoutPlayers = value, true);
         }
 
         public void OnPlayerNPCAttach(EntityUid uid, HTNComponent component, PlayerAttachedEvent args)
@@ -86,18 +61,17 @@ namespace Content.Server.NPC.Systems
             if (TryComp<MindContainerComponent>(uid, out var mindContainer) && mindContainer.HasMind)
                 return;
 
-            if (!_sleepWithoutPlayers)
-                WakeNPC(uid, component);
+            WakeNPC(uid, component);
+        }
+
+        public void OnNPCStartup(EntityUid uid, HTNComponent component, ComponentStartup args)
+        {
+            component.Blackboard.SetValue(NPCBlackboard.Owner, uid);
         }
 
         public void OnNPCMapInit(EntityUid uid, HTNComponent component, MapInitEvent args)
         {
-            component.Blackboard.SetValue(NPCBlackboard.Owner, uid);
-
-            if (_sleepWithoutPlayers)
-                SleepNPC(uid, component);
-            else
-                WakeNPC(uid, component);
+            WakeNPC(uid, component);
         }
 
         public void OnNPCShutdown(EntityUid uid, HTNComponent component, ComponentShutdown args)
@@ -136,9 +110,6 @@ namespace Content.Server.NPC.Systems
             {
                 return;
             }
-
-            if (!component.Blackboard.TryGetValue<EntityUid>(NPCBlackboard.Owner, out _, EntityManager))
-                component.Blackboard.SetValue(NPCBlackboard.Owner, uid);
 
             Log.Debug($"Waking {ToPrettyString(uid)}");
             EnsureComp<ActiveNPCComponent>(uid);
@@ -189,8 +160,7 @@ namespace Content.Server.NPC.Systems
             switch (args.NewMobState)
             {
                 case MobState.Alive:
-                    if (!_sleepWithoutPlayers)
-                        WakeNPC(uid, component);
+                    WakeNPC(uid, component);
                     break;
                 case MobState.Critical:
                 case MobState.Dead:

@@ -113,10 +113,10 @@
       "name": "water_vapor-1"
     },
     {
-      "name": "scrubber-connector"
+      "name": "purple"
     },
     {
-      "name": "scrubber-open"
+      "name": "purple-1"
     },
     {
       "name": "brown"
@@ -125,10 +125,28 @@
       "name": "brown-1"
     },
     {
-      "name": "purple"
+      "name": "healium"
     },
     {
-      "name": "purple-1"
+      "name": "healium-1"
+    },
+    {
+      "name": "scrubber-connector"
+    },
+    {
+      "name": "scrubber-open"
+    },
+    {
+      "name": "bounty"
+    },
+    {
+      "name": "captains_paper"
+    },
+    {
+      "name": "invoice"
+    },
+    {
+      "name": "paper"
     },
     {
       "name": "helium"
@@ -141,12 +159,6 @@
     },
     {
       "name": "nob-1"
-    },
-    {
-      "name": "healium"
-    },
-    {
-      "name": "healium-1"
     },
     {
       "name": "proto_nitrate"
