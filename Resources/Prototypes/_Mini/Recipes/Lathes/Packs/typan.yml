@@ -414,7 +414,6 @@
   id: TypanShuttleBoards
   recipes:
   - ShuttleConsoleCircuitboardTypan
-  - ShuttlePilotConsoleCircuitboardTypan
   - CargoShuttleConsoleCircuitboardTypan
   - IFFConsoleCircuitboardTypan
   - RadarConsoleCircuitboardTypan

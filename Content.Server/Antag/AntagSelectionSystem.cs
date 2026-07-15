@@ -401,7 +401,8 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
             if (!ent.Comp.PreSelectedSessions.TryGetValue(def, out var set))
                 continue;
 
-            foreach (var session in set)
+            // Copy before iterating: MakeAntag may update PreSelectedSessions (UserId rematch).
+            foreach (var session in set.ToArray())
             {
                 TryMakeAntag(ent, session, def);
             }
@@ -798,6 +799,10 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
 
     private static void AddSessionByUserId(HashSet<ICommonSession> set, ICommonSession session)
     {
+        // Same session object already present — no mutation (important while enumerating the set).
+        if (set.Contains(session))
+            return;
+
         // Replace any stale session object for the same UserId (reconnect).
         set.RemoveWhere(s => s.UserId == session.UserId);
         set.Add(session);

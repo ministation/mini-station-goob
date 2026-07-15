@@ -111,15 +111,6 @@
 
 - type: entity
   parent: BaseComputerCircuitboardTypan
-  id: ShuttlePilotConsoleCircuitboardTypan
-  name: консоль управления шаттлом (консольная плата)
-  description: Консольная плата для консоли управления шаттлом.
-  components:
-  - type: ComputerBoard
-    prototype: SyndicateComputerShuttle
-
-- type: entity
-  parent: BaseComputerCircuitboardTypan
   id: XenobiologyBountyComputerCircuitboardTypan
   name: консоль ксенобиологии (консольная плата)
   description: Консольная плата для консоли ксенобиологии.
