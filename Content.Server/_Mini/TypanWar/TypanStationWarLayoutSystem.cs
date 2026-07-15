@@ -4,6 +4,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Server.Cargo.Components;
+using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Systems;
 using Content.Shared._Mini.TypanWar;
 using Content.Shared.Parallax;
@@ -23,6 +24,7 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
     private const float TradePostMinDistance = 90f;
     private const int TradePostPlacementAttempts = 48;
 
+    [Dependency] private readonly DockingSystem _dock = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
@@ -65,6 +67,11 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
             return;
         }
 
+        // SetMapCoordinates clears physics joints but leaves DockingComponent.DockedWith set.
+        // Undock first so posts / guest shuttles are not left half-docked across maps.
+        UndockStationGrids(ntData);
+        UndockStationGrids(typanData);
+
         var ntMap = ntXform.MapID;
         var separation = new Vector2(rule.StationSeparationTiles, 0f);
         var ntCenter = _transform.GetWorldPosition(ntGrid.Value);
@@ -91,6 +98,11 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
         RaiseLocalEvent(new TypanWarLayoutReadyEvent(ev.Rule, ev.NtStation, ev.TypanStation));
     }
 
+    private void UndockStationGrids(StationDataComponent stationData)
+    {
+        foreach (var grid in stationData.Grids.ToList())
+            _dock.UndockDocks(grid);
+    }
     private void ApplyWarParallax(MapId mapId, string parallaxId)
     {
         if (string.IsNullOrWhiteSpace(parallaxId))
@@ -108,6 +120,9 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
         {
             if (grid == anchorGrid || !HasComp<TradeStationComponent>(grid))
                 continue;
+
+            // Trade posts may still be docked to shuttles after the map merge.
+            _dock.UndockDocks(grid);
 
             if (!TryPlaceTradeGridNearStation(grid, anchorGrid, maxDistance))
                 Log.Warning($"Typan station war layout: failed to reposition trade grid {grid} within {maxDistance}m of station {station}.");
