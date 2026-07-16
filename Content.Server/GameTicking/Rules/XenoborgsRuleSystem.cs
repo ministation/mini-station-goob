@@ -100,8 +100,14 @@ public sealed class XenoborgsRuleSystem : GameRuleSystem<XenoborgsRuleComponent>
 
         xenoborgsRuleComponent.MaxNumberXenoborgs = Math.Max(xenoborgsRuleComponent.MaxNumberXenoborgs, numXenoborgs);
 
+        // No living players at all (e.g. solo mothership core round): 0/0 is NaN and NaN <= x is false,
+        // which would incorrectly call the shuttle.
+        var totalAlive = numHumans + numXenoborgs;
+        if (totalAlive == 0)
+            return;
+
         if (xenoborgsRuleComponent.XenoborgShuttleCalled
-            || (float)numXenoborgs / (numHumans + numXenoborgs) <= xenoborgsRuleComponent.XenoborgShuttleCallPercentage
+            || (float)numXenoborgs / totalAlive <= xenoborgsRuleComponent.XenoborgShuttleCallPercentage
             || _roundEnd.IsRoundEndRequested())
             return;
 

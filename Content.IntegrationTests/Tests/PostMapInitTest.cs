@@ -173,9 +173,16 @@ namespace Content.IntegrationTests.Tests
             "CorvaxChloris",
             "CorvaxSilly",
             "CorvaxCluster",
-            "CorvaxAvrite",
-            "CorvaxAwesome"
+            // "CorvaxAwesome" // prototype is commented out upstream
             // Corvax-Goob-Maps-end
+
+            // Mini-start
+            "MiniCluster",
+            "MiniOmega",
+            "MiniPacked",
+            "MiniSilly",
+            "Typan",
+            // Mini-end
         };
         // Goobstation edit start, yeah i know, but this is easier and less load than loading protoman or something.
         private static readonly string[] GameMapsInCurrentPool = // plus dev
