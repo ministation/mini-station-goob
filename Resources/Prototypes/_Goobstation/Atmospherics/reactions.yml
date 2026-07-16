@@ -1,22 +1,24 @@
 # /tg/ gas reactions
 
 # TODO: change these to use dictionary serializer when its cherry picked
-- type: gasReaction
-  id: bzFormation
-  priority: 2
-  maximumTemperature: 313.149 # Atmospherics.FireMinimumTemperatureToExist - 60
-  minimumRequirements:
-  - 0     # oxygen
-  - 0     # nitrogen
-  - 0     # carbon dioxide
-  - 10    # plasma
-  - 0     # tritium
-  - 0     # vapor
-  - 0     # miasma
-  - 10    # n2o
-  - 0     # frezon
-  effects:
-  - !type:BZFormationReaction
+# Disabled: Mini uses WhiteDream Assmos BZProductionReaction instead.
+# Having both active double-converted plasma/N2O into BZ each atmos tick.
+# - type: gasReaction
+#   id: bzFormation
+#   priority: 2
+#   maximumTemperature: 313.149 # Atmospherics.FireMinimumTemperatureToExist - 60
+#   minimumRequirements:
+#   - 0     # oxygen
+#   - 0     # nitrogen
+#   - 0     # carbon dioxide
+#   - 10    # plasma
+#   - 0     # tritium
+#   - 0     # vapor
+#   - 0     # miasma
+#   - 10    # n2o
+#   - 0     # frezon
+#   effects:
+#   - !type:BZFormationReaction
 
 - type: gasReaction
   id: N2OFormation
@@ -92,23 +94,27 @@
 #   effects:
 #   - !type:NitriumDecompositionReaction
 
-- type: gasReaction
-  id: PluoxiumProduction
-  priority: 3
-  minimumTemperature: 50.0
-  maximumTemperature: 273.15
-  minimumRequirements:
-  - 0.01  # oxygen
-  - 0     # nitrogen
-  - 0.01  # carbon dioxide
-  - 0     # plasma
-  - 0.01  # tritium
-  - 0     # vapor
-  - 0     # miasma
-  - 0     # n2o
-  - 0     # frezon
-  - 0     # bz
-  - 0     # healium
-  - 0     # nitrium
-  effects:
-  - !type:PluoxiumProductionReaction
+# Disabled: Mini uses WhiteDream PluoxiumProductionReaction.
+# Duplicate !type:PluoxiumProductionReaction collided with White's class
+# (YamlTypeTagLookup picks first match) and also ran twice → CO2/O2/Trit
+# turned into Pluoxium + WaterVapor instead of Pluoxium + Hydrogen.
+# - type: gasReaction
+#   id: PluoxiumProduction
+#   priority: 3
+#   minimumTemperature: 50.0
+#   maximumTemperature: 273.15
+#   minimumRequirements:
+#   - 0.01  # oxygen
+#   - 0     # nitrogen
+#   - 0.01  # carbon dioxide
+#   - 0     # plasma
+#   - 0.01  # tritium
+#   - 0     # vapor
+#   - 0     # miasma
+#   - 0     # n2o
+#   - 0     # frezon
+#   - 0     # bz
+#   - 0     # healium
+#   - 0     # nitrium
+#   effects:
+#   - !type:PluoxiumProductionReaction

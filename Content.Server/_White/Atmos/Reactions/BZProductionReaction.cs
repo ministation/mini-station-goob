@@ -23,7 +23,7 @@ public sealed partial class BZProductionReaction : IGasReactionEffect
 
         var BZFormed = Math.Min(0.01f * ratioEfficiency * environmentEfficiency, Math.Min(initialNitrousOxide * 0.4f, initialPlasma * 0.8f));
 
-        if (initialNitrousOxide - BZFormed * 0.4f < 0 || initialPlasma - (0.8f - BZFormed) < 0 || BZFormed <= 0)
+        if (initialNitrousOxide - BZFormed * 0.4f < 0 || initialPlasma - 0.8f * BZFormed < 0 || BZFormed <= 0)
             return ReactionResult.NoReaction;
 
         var oldHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);

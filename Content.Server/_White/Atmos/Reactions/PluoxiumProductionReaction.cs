@@ -24,6 +24,8 @@ public sealed partial class PluoxiumProductionReaction : IGasReactionEffect
         if (producedAmount <= 0 || initialCarbonDioxide - producedAmount < 0 || initialOxygen - producedAmount * 0.5f < 0 || initialTritium - producedAmount * 0.01f <0)
             return ReactionResult.NoReaction;
 
+        var oldHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);
+
         mixture.AdjustMoles(Gas.CarbonDioxide, -producedAmount);
         mixture.AdjustMoles(Gas.Oxygen, -producedAmount * 0.5f);
         mixture.AdjustMoles(Gas.Tritium, -producedAmount * 0.01f);
@@ -32,7 +34,6 @@ public sealed partial class PluoxiumProductionReaction : IGasReactionEffect
 
         var energyReleased = producedAmount * Atmospherics.PluoxiumFormationEnergy;
 
-        var oldHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);
         var newHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);
         if (newHeatCapacity > Atmospherics.MinimumHeatCapacity)
             mixture.Temperature = Math.Max((mixture.Temperature * oldHeatCapacity + energyReleased) / newHeatCapacity, Atmospherics.TCMB);

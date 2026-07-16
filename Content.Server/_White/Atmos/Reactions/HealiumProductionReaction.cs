@@ -19,16 +19,17 @@ public sealed partial class HealiumProductionReaction : IGasReactionEffect
         var initialFrezon = mixture.GetMoles(Gas.Frezon);
 
         var temperature = mixture.Temperature;
-        var heatEfficiency = Math.Min(temperature*0.3f, Math.Min(initialFrezon*2.75f, initialBZ*0.25f));
+        // Caps must be reactant / coefficient (consumption is *2.75 frezon and *0.25 BZ).
+        var heatEfficiency = Math.Min(temperature * 0.3f, Math.Min(initialFrezon / 2.75f, initialBZ / 0.25f));
 
         if (heatEfficiency <= 0 || initialFrezon - heatEfficiency * 2.75f < 0 || initialBZ - heatEfficiency * 0.25f < 0)
             return ReactionResult.NoReaction;
 
         var oldHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);
 
-        mixture.AdjustMoles(Gas.Frezon, -heatEfficiency*2.75f);
-        mixture.AdjustMoles(Gas.BZ, -heatEfficiency*0.25f);
-        mixture.AdjustMoles(Gas.Healium, heatEfficiency*3);
+        mixture.AdjustMoles(Gas.Frezon, -heatEfficiency * 2.75f);
+        mixture.AdjustMoles(Gas.BZ, -heatEfficiency * 0.25f);
+        mixture.AdjustMoles(Gas.Healium, heatEfficiency * 3);
 
         var energyReleased = heatEfficiency * Atmospherics.HealiumFormationEnergy;
 

@@ -19,19 +19,28 @@ public sealed partial class HyperNobliumProductionReaction : IGasReactionEffect
         var initialTritium = mixture.GetMoles(Gas.Tritium);
         var initialBZ = mixture.GetMoles(Gas.BZ);
 
-        var nobFormed = Math.Min((initialNitrogen+initialTritium)*0.01f,Math.Min(initialTritium*5f, initialNitrogen*10f));
-        if (nobFormed <= 0 || (initialTritium - 5f) * nobFormed < 0 || (initialNitrogen - 10f) * nobFormed < 0)
+        // Caps must use divisors matching consumption (5 trit / 10 N2 per mol formed).
+        var nobFormed = Math.Min(
+            (initialNitrogen + initialTritium) * 0.01f,
+            Math.Min(initialTritium / 5f, initialNitrogen / 10f));
+
+        if (nobFormed <= 0)
             return ReactionResult.NoReaction;
 
         var oldHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);
 
-        var reductionFactor = Math.Clamp(initialTritium/(initialTritium+initialBZ), 0.001f, 1f);
+        var reductionFactor = Math.Clamp(initialTritium / (initialTritium + initialBZ), 0.001f, 1f);
+        var tritiumRemoved = 5f * nobFormed * reductionFactor;
+        var nitrogenRemoved = 10f * nobFormed;
 
-        mixture.AdjustMoles(Gas.Tritium, -5f * nobFormed * reductionFactor);
-        mixture.AdjustMoles(Gas.Nitrogen, -10f * nobFormed);
+        if (initialTritium - tritiumRemoved < 0 || initialNitrogen - nitrogenRemoved < 0)
+            return ReactionResult.NoReaction;
+
+        mixture.AdjustMoles(Gas.Tritium, -tritiumRemoved);
+        mixture.AdjustMoles(Gas.Nitrogen, -nitrogenRemoved);
         mixture.AdjustMoles(Gas.HyperNoblium, nobFormed);
 
-        var energyReleased = nobFormed * (Atmospherics.NobliumFormationEnergy/Math.Max(initialBZ, 1));
+        var energyReleased = nobFormed * (Atmospherics.NobliumFormationEnergy / Math.Max(initialBZ, 1));
 
         var newHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);
         if (newHeatCapacity > Atmospherics.MinimumHeatCapacity)
