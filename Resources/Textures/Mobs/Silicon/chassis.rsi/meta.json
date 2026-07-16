@@ -60,6 +60,10 @@
             "directions": 4
         },
         {
+            "name": "eng",
+            "directions": 4
+        },
+        {
             "name": "engineer_derelict",
             "directions": 4
         },

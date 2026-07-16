@@ -171,6 +171,9 @@
             "name": "pda-syndi"
         },
         {
+            "name": "pda-syndi-agent"
+        },
+        {
             "name": "pda-syndi-corpsman"
         },
         {
