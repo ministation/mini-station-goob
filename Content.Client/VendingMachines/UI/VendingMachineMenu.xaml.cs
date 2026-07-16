@@ -81,10 +81,8 @@ namespace Content.Client.VendingMachines.UI
             var item = new VendingMachineItem(protoID, text);
             _listItems[protoID] = (button, item);
             button.AddChild(item);
-            button.AddStyleClass(ListContainer.StyleClassListContainerButton);
-            // Keep dark row — ButtonSquare alone relied on white square.png + modulate.
-            button.StyleBoxOverride = new StyleBoxFlat(Color.FromHex("#373744"));
-            button.ModulateSelfOverride = Color.White;
+            // Row style (dark base + hover/pressed) comes from the ListContainerButton
+            // style class via StyleNano; a StyleBoxOverride here would kill hover feedback.
             button.Disabled = !_enabled || _amounts[protoID] == 0;
         }
 

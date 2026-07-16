@@ -19,8 +19,6 @@ public sealed partial class SmartFridgeMenu : FancyWindow
     public event Action<GUIBoundKeyEventArgs, ListData>? OnItemSelected;
     public event Action<SmartFridgeListData>? OnRemoveButtonPressed;
 
-    private readonly StyleBoxFlat _styleBox = new() { BackgroundColor = new Color(70, 73, 102) };
-
     public SmartFridgeMenu()
     {
         RobustXamlLoader.Load(this);
@@ -54,7 +52,6 @@ public sealed partial class SmartFridgeMenu : FancyWindow
 
         button.AddChild(item);
         button.ToolTip = label;
-        button.StyleBoxOverride = _styleBox;
     }
 
     public void Populate(Entity<SmartFridgeComponent> ent)
