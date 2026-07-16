@@ -1,0 +1,131 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# NT-branded suit storage (state nt instead of base) for high-ranking NanoTrasen roles.
+
+- type: entity
+  id: SuitStorageNT
+  parent: SuitStorageBase
+  abstract: true
+  components:
+  - type: Sprite
+    noRot: true
+    sprite: Structures/Storage/suit_storage.rsi
+    layers:
+    - state: nt
+    - state: door
+      map: ["enum.StorageVisualLayers.Door"]
+    - state: welded
+      visible: false
+      map: ["enum.WeldableLayers.BaseWelded"]
+    - state: locked
+      map: ["enum.LockVisualLayers.Lock"]
+      shader: unshaded
+  - type: EntityStorageVisuals
+    stateBaseClosed: nt
+    stateDoorOpen: nt
+    stateDoorClosed: door
+
+# ERT suit storages
+- type: entity
+  id: SuitStorageERTLeader
+  parent: SuitStorageNT
+  suffix: ERT Leader
+  components:
+  - type: StorageFill
+    contents:
+    - id: OxygenTankFilled
+    - id: NitrogenTankFilled
+    - id: ClothingOuterHardsuitERTLeader
+    - id: ClothingMaskGasERT
+    - id: ClothingShoesBootsMagEmergencyResponseTeam
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  id: SuitStorageERTSecurity
+  parent: SuitStorageNT
+  suffix: ERT Security
+  components:
+  - type: StorageFill
+    contents:
+    - id: OxygenTankFilled
+    - id: NitrogenTankFilled
+    - id: ClothingOuterHardsuitERTSecurity
+    - id: ClothingMaskGasERT
+    - id: ClothingShoesBootsMagEmergencyResponseTeam
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  id: SuitStorageERTMedical
+  parent: SuitStorageNT
+  suffix: ERT Medical
+  components:
+  - type: StorageFill
+    contents:
+    - id: OxygenTankFilled
+    - id: NitrogenTankFilled
+    - id: ClothingOuterHardsuitERTMedical
+    - id: ClothingMaskGasERT
+    - id: ClothingShoesBootsMagEmergencyResponseTeam
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  id: SuitStorageERTEngineer
+  parent: SuitStorageNT
+  suffix: ERT Engineer
+  components:
+  - type: StorageFill
+    contents:
+    - id: OxygenTankFilled
+    - id: NitrogenTankFilled
+    - id: ClothingOuterHardsuitERTEngineer
+    - id: ClothingMaskGasERT
+    - id: ClothingShoesBootsMagEmergencyResponseTeam
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  id: SuitStorageERTJanitor
+  parent: SuitStorageNT
+  suffix: ERT Janitor
+  components:
+  - type: StorageFill
+    contents:
+    - id: OxygenTankFilled
+    - id: NitrogenTankFilled
+    - id: ClothingOuterHardsuitERTJanitor
+    - id: ClothingMaskGasERT
+    - id: ClothingShoesBootsMagEmergencyResponseTeam
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  id: SuitStorageERTChaplain
+  parent: SuitStorageNT
+  suffix: ERT Chaplain
+  components:
+  - type: StorageFill
+    contents:
+    - id: OxygenTankFilled
+    - id: NitrogenTankFilled
+    - id: ClothingOuterHardsuitERTChaplain
+    - id: ClothingMaskGasERT
+    - id: ClothingShoesBootsMagEmergencyResponseTeam
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  id: SuitStorageERTJuggernaut
+  parent: SuitStorageNT
+  suffix: ERT Juggernaut
+  components:
+  - type: StorageFill
+    contents:
+    - id: OxygenTankFilled
+    - id: NitrogenTankFilled
+    - id: ClothingOuterHardsuitERTJuggernaut
+    - id: ClothingMaskGasERT
+    - id: ClothingShoesBootsMagEmergencyResponseTeam
+  - type: AccessReader
+    access: [["CentralCommand"]]

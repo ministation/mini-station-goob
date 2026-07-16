@@ -258,7 +258,7 @@
 
 - type: entity
   id: SuitStorageCorporate
-  parent: SuitStorageBase
+  parent: SuitStorageNT
   suffix: Corporate Modsuit
   components:
     - type: StorageFill
@@ -390,7 +390,7 @@
 
 - type: entity
   id: SuitStorageTrainer
-  parent: SuitStorageBase
+  parent: SuitStorageNT
   suffix: Trainer Modsuit
   components:
     - type: StorageFill

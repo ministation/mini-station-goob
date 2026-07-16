@@ -2,7 +2,7 @@
 #bso hardsuit
 - type: entity
   id: SuitStorageBlueshield
-  parent: SuitStorageBase
+  parent: SuitStorageNT
   suffix: BSO Hardsuit
   components:
   - type: StorageFill

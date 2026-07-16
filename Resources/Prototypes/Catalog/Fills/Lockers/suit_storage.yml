@@ -254,7 +254,7 @@
 #Captain's hardsuit
 - type: entity
   id: SuitStorageCaptain
-  parent: SuitStorageBase
+  parent: SuitStorageNT
   suffix: Captain
   components:
   - type: EntityTableContainerFill
