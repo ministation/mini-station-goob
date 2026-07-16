@@ -690,10 +690,10 @@ namespace Content.Client.Stylesheets
             {
                 BackgroundColor = Color.FromHex("#373744"),
                 ContentMarginLeftOverride = 8,
-                ContentMarginTopOverride = 2,
+                ContentMarginTopOverride = 6,
                 // Leave room for pin + scrollbar edge so AHelp rows don't clip past panel.
                 ContentMarginRightOverride = 6,
-                ContentMarginBottomOverride = 2,
+                ContentMarginBottomOverride = 6,
             };
             var listContainerButtonHover = new StyleBoxFlat(listContainerButton)
             {

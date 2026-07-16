@@ -78,7 +78,7 @@ public sealed class MiniCCVars
         CVarDef.Create("tts.client_enabled", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<bool> TTSRadioGhostEnabled =
-        CVarDef.Create("tts.radio_ghost_enabled", false, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("tts.radio_ghost_enabled", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Option to disable TTS queue in radio for client

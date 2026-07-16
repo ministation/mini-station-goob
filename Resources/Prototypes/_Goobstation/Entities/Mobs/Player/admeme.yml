@@ -28,6 +28,7 @@
   - SlimePerson
   - Dwarf
   - Feroxi
+  - Hydrakin # Mini - same as Feroxi: no aquatic species as ERT
   - Chitinid
   components:
   - type: RandomHumanoidAppearance

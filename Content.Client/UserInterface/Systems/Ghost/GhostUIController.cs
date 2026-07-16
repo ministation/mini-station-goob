@@ -73,7 +73,7 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         }
 
         Gui.Visible = _system?.IsGhost ?? false;
-        Gui.Update(_system?.AvailableGhostRoleCount, _system?.Player?.CanReturnToBody, _system?.Player?.CanEnterGhostBar, _system?.Player?.CanTakeGhostRoles); // CorvaxGoob-GhostBar edit
+        Gui.Update(_system?.AvailableGhostRoleCount, _system?.Player?.CanReturnToBody, _system?.Player?.CanTakeGhostRoles);
 
         // Mini-station: Typan war ghost HUD restrictions
         var war = EntityManager.System<TypanWarUiSystem>();
@@ -134,8 +134,6 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         Gui.ReturnToBodyPressed += ReturnToBody;
         Gui.ReturnToRoundPressed += ReturnToRound; // FREAKY EDIT / Mini
         Gui.GhostRolesPressed += GhostRolesPressed;
-        Gui.GhostBarPressed += GhostBarPressed; // CorvaxGoob-GhostBar
-        Gui.GhostBarWindow.SpawnButtonPressed += GhostBarSpawnPressed; // CorvaxGoob-GhostBar
         Gui.ThunderdomePressed += ThunderdomePressed; // Goobstation - Thunderdome
         Gui.TargetWindow.WarpClicked += OnWarpClicked;
 
@@ -151,8 +149,6 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         Gui.ReturnToBodyPressed -= ReturnToBody;
         Gui.ReturnToRoundPressed -= ReturnToRound; // FREAKY EDIT / Mini
         Gui.GhostRolesPressed -= GhostRolesPressed;
-        Gui.GhostBarPressed -= GhostBarPressed; // CorvaxGoob-GhostBar
-        Gui.GhostBarWindow.SpawnButtonPressed -= GhostBarSpawnPressed; // CorvaxGoob-GhostBar
         Gui.ThunderdomePressed -= ThunderdomePressed; // Goobstation - Thunderdome
         Gui.TargetWindow.WarpClicked -= OnWarpClicked;
 
@@ -179,16 +175,6 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
     private void GhostRolesPressed()
     {
         _system?.OpenGhostRoles();
-    }
-
-    private void GhostBarPressed() // CorvaxGoob-GhostBar
-    {
-        Gui?.GhostBarWindow.OpenCentered();
-    }
-
-    private void GhostBarSpawnPressed() // CorvaxGoob-GhostBar
-    {
-        _system?.GhostBarSpawn();
     }
 
     // Goobstation - Thunderdome

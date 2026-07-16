@@ -9,9 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <Button Name="ReturnToBodyButton" Text="{Loc ghost-gui-return-to-body-button}" />
         <Button Name="GhostWarpButton" Text="{Loc ghost-gui-ghost-warp-button}" />
         <Button Name="GhostRolesButton" />
-        <!-- Mini: ghost bar disabled -->
-        <Button Name="GhostBarButton" Text="{Loc 'ghost-target-window-ghostbar'}" Visible="False" />
-        <Button Name="AntagTokensButton" Text="{Loc antag-token-window-roles-title}" /> <!-- Mini-station edit -->
+        <Button Name="AntagTokensButton" Text="{Loc antag-token-window-roles-title}" />
         <Button Name="ThunderdomeButton" Text="{Loc thunderdome-ghost-button-default}" />
     </BoxContainer>
 </widgets:GhostGui>
