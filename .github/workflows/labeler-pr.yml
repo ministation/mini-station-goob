@@ -11,5 +11,7 @@ jobs:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
+    # Labeling is non-critical: don't fail CI on transient GitHub 5xx ("Unicorn") errors.
+    continue-on-error: true
     steps:
-    - uses: actions/labeler@v5
+    - uses: actions/labeler@v6
