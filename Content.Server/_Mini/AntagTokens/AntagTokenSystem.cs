@@ -45,7 +45,6 @@ using Content.Server.Ghost.Roles;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Ghost.Roles.Events;
 using Content.Server.Station.Systems;
-using Robust.Server.GameObjects;
 using Robust.Shared.Asynchronous;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Log;
@@ -70,7 +69,6 @@ public sealed class AntagTokenSystem : EntitySystem
     [Dependency] private readonly GhostRoleSystem _ghostRoles = default!;
     [Dependency] private readonly ITaskManager _taskManager = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IServerPreferencesManager _preferences = default!;
     [Dependency] private readonly TypanStationWarRuleSystem _typanWar = default!;
@@ -151,6 +149,7 @@ public sealed class AntagTokenSystem : EntitySystem
 
         SubscribeLocalEvent<AntagSelectionComponent, AntagSelectionExcludeSessionEvent>(OnExcludeReservedSession);
         SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnJoinedLobby);
+        SubscribeLocalEvent<RulePlayerSpawningEvent>(OnRulePlayerSpawning, before: new[] { typeof(AntagSelectionSystem) });
         SubscribeLocalEvent<RulePlayerJobsPreSpawnEvent>(OnJobsAssignedPreSpawn);
         SubscribeLocalEvent<RulePlayerJobsAssignedEvent>(OnRoundstartJobsAssigned, after: new[] { typeof(AntagSelectionSystem) });
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
@@ -487,8 +486,10 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         }
 
-        if (!string.IsNullOrWhiteSpace(role.AntagId) &&
-            _prototype.TryIndex<AntagPrototype>(role.AntagId, out var antagProto) &&
+        // Dual ghost projection clears AntagId; still enforce lobby antag playtime (e.g. yao → Nukeops).
+        var playtimeAntagId = role.AntagId ?? catalogRole.AntagId;
+        if (!string.IsNullOrWhiteSpace(playtimeAntagId) &&
+            _prototype.TryIndex<AntagPrototype>(playtimeAntagId, out var antagProto) &&
             !HasAntagPlaytimeAccess(session, antagProto.ID))
         {
             error = Loc.GetString("antag-unlock-error-playtime-required");
@@ -1116,6 +1117,58 @@ public sealed class AntagTokenSystem : EntitySystem
         SaveAll();
     }
 
+    /// <summary>
+    /// Off-station token antags (mothership, xenomorph, nukeops) use the same PrePlayerSpawn path as
+    /// AntagSelection: MakeAntag without a station body so AntagSelectEntityEvent / spawners run,
+    /// then remove the session from the station spawn pool.
+    /// </summary>
+    private void OnRulePlayerSpawning(RulePlayerSpawningEvent ev)
+    {
+        for (var i = ev.PlayerPool.Count - 1; i >= 0; i--)
+        {
+            var session = ev.PlayerPool[i];
+            if (!TryGetPendingLobbyRole(session.UserId, out var role) || !role.IgnoresStationJob)
+                continue;
+
+            var state = EnsureStateExists(session.UserId);
+            if (state == null)
+                continue;
+
+            var cache = BuildSendStateCache(session.UserId);
+            if (!TryGetRoleAvailability(role, session.UserId, purchased: true, out var statusLocKey, in cache))
+            {
+                RefundPendingDeposit(session.UserId, state);
+                PersistState(session.UserId, state);
+                SendState(session.UserId);
+                ShowPopup(session, statusLocKey == null
+                    ? Loc.GetString("antag-tokens-popup-deposit-cancelled-refund")
+                    : Loc.GetString("antag-tokens-popup-deposit-cancelled-reason-refund", ("reason", Loc.GetString(statusLocKey))));
+                continue;
+            }
+
+            if (!TryAssignReservedRoundstartRole(session, role, out var assignError))
+            {
+                RefundPendingDeposit(session.UserId, state);
+                PersistState(session.UserId, state);
+                SendState(session.UserId);
+                ShowPopup(session, assignError ?? Loc.GetString("antag-tokens-error-assign-failed-refund"));
+                continue;
+            }
+
+            ev.PlayerPool.RemoveAt(i);
+            _gameTicker.PlayerJoinGame(session);
+
+            state.PendingDepositRoleId = null;
+            state.PendingDepositQueuedAtUtc = null;
+            state.PendingDepositUsedRoleCredit = false;
+            state.PendingDepositUsedDonorDailyFree = false;
+            MarkLobbyTokenAntagGranted(session.UserId, role.Id);
+            PersistState(session.UserId, state);
+            SendState(session.UserId);
+            ShowPopup(session, Loc.GetString("antag-tokens-popup-role-assigned", ("role", Loc.GetString(role.NameLocKey))));
+        }
+    }
+
     private void OnJobsAssignedPreSpawn(RulePlayerJobsPreSpawnEvent ev)
     {
         foreach (var (userId, (job, station)) in ev.AssignedJobs.ToList())
@@ -1129,7 +1182,7 @@ public sealed class AntagTokenSystem : EntitySystem
             if (!IsJobIncompatibleWithTokenRole(job.Value, role))
                 continue;
 
-            if (!TryPickAntagCompatibleJob(userId, role, station, out var remappedJob))
+            if (!TryPickAntagCompatibleJob(userId, role, station, ev.AssignedJobs, out var remappedJob))
                 continue;
 
             ev.AssignedJobs[userId] = (remappedJob, station);
@@ -1145,9 +1198,30 @@ public sealed class AntagTokenSystem : EntitySystem
 
     private void OnRoundstartJobsAssigned(RulePlayerJobsAssignedEvent ev)
     {
+        // Any ignoresStationJob deposit still pending was not fulfilled in RulePlayerSpawning.
+        foreach (var (userId, _) in _states.ToList())
+        {
+            if (!TryGetPendingLobbyRole(userId, out var pendingRole) || !pendingRole.IgnoresStationJob)
+                continue;
+
+            var orphanState = EnsureStateExists(userId);
+            if (orphanState == null)
+                continue;
+
+            RefundPendingDeposit(userId, orphanState);
+            PersistState(userId, orphanState);
+            SendState(userId);
+            if (_playerManager.TryGetSessionById(userId, out var orphanSession))
+                ShowPopup(orphanSession, Loc.GetString("antag-tokens-error-assign-failed-refund"));
+        }
+
         foreach (var session in ev.Players)
         {
-            if (!TryGetPendingLobbyRole(session.UserId, out var role))
+            if (!TryGetPendingLobbyRole(session.UserId, out var role) || role.IgnoresStationJob)
+                continue;
+
+            // Players with no job assignment are in the event but were not spawned.
+            if (session.AttachedEntity is not { Valid: true })
                 continue;
 
             var state = EnsureStateExists(session.UserId);
@@ -1368,7 +1442,9 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         }
 
-        if (session.AttachedEntity is not { Valid: true })
+        // Station antags need a living body. Off-station entity antags are assigned PrePlayerSpawn with no body
+        // so MakeAntag can raise AntagSelectEntityEvent (AntagSpawner / AntagMultipleRoleSpawner).
+        if (!role.IgnoresStationJob && session.AttachedEntity is not { Valid: true })
         {
             error = Loc.GetString("antag-tokens-error-no-entity");
             return false;
@@ -1386,9 +1462,9 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         }
 
-        var ruleEntity = TryResolveGameRuleForTokenRole(role, out var existingRule)
-            ? existingRule
-            : _gameTicker.AddGameRule(role.GameRuleId!);
+        if (!TryEnsureGameRuleForTokenAssign(role, out var ruleEntity, out error))
+            return false;
+
         if (!TryComp<AntagSelectionComponent>(ruleEntity, out var selection))
         {
             error = Loc.GetString("antag-tokens-error-rule-missing-antag-selection");
@@ -1404,13 +1480,64 @@ public sealed class AntagTokenSystem : EntitySystem
         var chosenDefinition = definition ?? throw new InvalidOperationException("Matching antag definition was null after successful lookup.");
         _antagSelection.MakeAntag((ruleEntity, selection), session, chosenDefinition);
 
-        if (IsXenomorphTokenRole(role) &&
-            !EnsureSessionHasXenomorphBody(session, out error))
+        if (!WasAntagAssignmentSuccessful(session, (ruleEntity, selection)))
         {
+            error = Loc.GetString("antag-tokens-error-assign-failed-refund");
             return false;
         }
 
         return true;
+    }
+
+    private bool TryEnsureGameRuleForTokenAssign(AntagRoleDefinition role, out EntityUid ruleEntity, out string? error)
+    {
+        error = null;
+
+        if (TryResolveGameRuleForTokenRole(role, out ruleEntity))
+        {
+            if (!_gameTicker.IsGameRuleActive(ruleEntity) && !_gameTicker.StartGameRule(ruleEntity))
+            {
+                error = Loc.GetString("antag-tokens-error-event-start-failed");
+                return false;
+            }
+
+            return true;
+        }
+
+        if (string.IsNullOrEmpty(role.GameRuleId))
+        {
+            error = Loc.GetString("antag-tokens-error-rule-missing-antag-selection");
+            return false;
+        }
+
+        ruleEntity = _gameTicker.AddGameRule(role.GameRuleId);
+        if (!_gameTicker.StartGameRule(ruleEntity))
+        {
+            error = Loc.GetString("antag-tokens-error-event-start-failed");
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool WasAntagAssignmentSuccessful(ICommonSession session, Entity<AntagSelectionComponent> rule)
+    {
+        if (!_mind.TryGetMind(session, out var mindId, out _))
+            return false;
+
+        if (!_role.MindIsAntagonist(mindId))
+            return false;
+
+        if (session.AttachedEntity is not { Valid: true } attached || HasComp<GhostComponent>(attached))
+            return false;
+
+        foreach (var (assignedMind, _) in rule.Comp.AssignedMinds)
+        {
+            if (assignedMind == mindId)
+                return true;
+        }
+
+        return false;
     }
 
     private static bool TryFindMatchingDefinition(
@@ -1438,67 +1565,6 @@ public sealed class AntagTokenSystem : EntitySystem
         }
 
         definition = null;
-        return false;
-    }
-
-    private static bool IsXenomorphTokenRole(AntagRoleDefinition role)
-    {
-        return role.Id == "xenomorph" ||
-               role.AntagId == "XenomorphsInfestationRoundstart";
-    }
-
-    private bool EnsureSessionHasXenomorphBody(ICommonSession session, out string? error)
-    {
-        error = null;
-
-        if (session.AttachedEntity is { Valid: true } attached &&
-            HasComp<Content.Shared._White.Xenomorphs.Xenomorph.XenomorphComponent>(attached))
-        {
-            return true;
-        }
-
-        if (!_mind.TryGetMind(session, out var mindId, out _))
-        {
-            error = Loc.GetString("antag-tokens-error-no-entity");
-            return false;
-        }
-
-        EntityCoordinates coords;
-        EntityUid? oldBody = null;
-        if (session.AttachedEntity is { Valid: true } body)
-        {
-            oldBody = body;
-            coords = Transform(body).Coordinates;
-        }
-        else if (!TryGetXenomorphSpawnCoordinates(out coords))
-        {
-            error = Loc.GetString("antag-tokens-error-assign-failed-refund");
-            return false;
-        }
-
-        var larva = Spawn("MobXenomorphLarva", coords);
-        _transform.AttachToGridOrMap(larva);
-        _mind.TransferTo(mindId, larva, ghostCheckOverride: true);
-
-        if (oldBody is { } uid && uid != larva)
-            QueueDel(uid);
-
-        return true;
-    }
-
-    private bool TryGetXenomorphSpawnCoordinates(out EntityCoordinates coordinates)
-    {
-        var query = EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
-        while (query.MoveNext(out _, out var meta, out var xform))
-        {
-            if (meta.EntityPrototype?.ID != "SpawnPointGhostXenomorph")
-                continue;
-
-            coordinates = xform.Coordinates;
-            return true;
-        }
-
-        coordinates = default;
         return false;
     }
 
@@ -1547,6 +1613,7 @@ public sealed class AntagTokenSystem : EntitySystem
         NetUserId userId,
         AntagRoleDefinition role,
         EntityUid station,
+        IReadOnlyDictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> assignedJobs,
         out ProtoId<JobPrototype> newJobId)
     {
         newJobId = default;
@@ -1555,6 +1622,16 @@ public sealed class AntagTokenSystem : EntitySystem
             prefs.SelectedCharacter is not HumanoidCharacterProfile profile)
         {
             return false;
+        }
+
+        var slotLimits = _stationJobs.GetRoundStartJobs(station);
+        var occupancy = new Dictionary<ProtoId<JobPrototype>, int>();
+        foreach (var (uid, (job, st)) in assignedJobs)
+        {
+            if (uid == userId || job == null || st != station)
+                continue;
+
+            occupancy[job.Value] = occupancy.GetValueOrDefault(job.Value) + 1;
         }
 
         var candidates = new List<(ProtoId<JobPrototype> Job, JobPriority Priority)>();
@@ -1567,6 +1644,9 @@ public sealed class AntagTokenSystem : EntitySystem
                 continue;
 
             if (IsJobIncompatibleWithTokenRole(job, role))
+                continue;
+
+            if (!HasFreeRoundstartJobSlot(job, slotLimits, occupancy))
                 continue;
 
             candidates.Add((job, priority));
@@ -1582,14 +1662,6 @@ public sealed class AntagTokenSystem : EntitySystem
             if (tier.Count == 0)
                 continue;
 
-            var available = _stationJobs.GetAvailableJobs(station).ToHashSet();
-            var onStation = tier.Where(j => available.Contains(j)).ToList();
-            if (onStation.Count > 0)
-            {
-                picked = _random.Pick(onStation);
-                break;
-            }
-
             picked = _random.Pick(tier);
             break;
         }
@@ -1599,6 +1671,20 @@ public sealed class AntagTokenSystem : EntitySystem
 
         newJobId = picked.Value;
         return true;
+    }
+
+    private static bool HasFreeRoundstartJobSlot(
+        ProtoId<JobPrototype> job,
+        IReadOnlyDictionary<ProtoId<JobPrototype>, int?> slotLimits,
+        IReadOnlyDictionary<ProtoId<JobPrototype>, int> occupancy)
+    {
+        if (!slotLimits.TryGetValue(job, out var limit))
+            return false;
+
+        if (limit == null)
+            return true;
+
+        return occupancy.GetValueOrDefault(job) < limit;
     }
 
     private bool IsRoleBlockedBySpecies(ICommonSession session, AntagRoleDefinition role)
@@ -2228,10 +2314,19 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
     {
         ruleEntity = EntityUid.Invalid;
 
-        if (string.IsNullOrEmpty(role.RequiresPresetGameRuleId))
-            return false;
+        if (!string.IsNullOrEmpty(role.RequiresPresetGameRuleId) &&
+            TryFindAddedGameRule(role.RequiresPresetGameRuleId, out ruleEntity))
+        {
+            return true;
+        }
 
-        return TryFindAddedGameRule(role.RequiresPresetGameRuleId, out ruleEntity);
+        if (!string.IsNullOrEmpty(role.GameRuleId) &&
+            TryFindAddedGameRule(role.GameRuleId, out ruleEntity))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private static void SpendForRole(PlayerTokenState state, AntagRoleDefinition role, bool useRoleCredit, bool useDonorDailyFree,
