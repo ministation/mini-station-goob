@@ -332,6 +332,7 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 20
       requiresPreRoundLobby: true
+      ignoresStationJob: true
 
     - id: mothership_core
       nameLocKey: antag-store-role-mothership-core-name
@@ -341,22 +342,30 @@
       mode: LobbyDeposit
       antagId: MothershipCore
       gameRuleId: Xenoborgs
+      requiresPresetGameRuleId: Xenoborgs
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 30
       requiresPreRoundLobby: true
+      ignoresStationJob: true
 
     - id: yao
       nameLocKey: antag-store-role-yao-name
       descriptionLocKey: antag-store-role-yao-description
       cost: 14
       iconPath: /Textures/_Mini/Interface/Antags/nukie.png
-      mode: GhostRule
+      mode: Dual
+      # Lobby / roundstart Nukeops operative
+      antagId: Nukeops
+      gameRuleId: Nukeops
+      requiresPresetGameRuleId: Nukeops
+      tagLocKey: antag-token-window-tag-queue
+      ignoresStationJob: true
+      # Midround ghost LoneOps
       ghostAutoJoinEntityProto: SpawnPointLoneNukeOperativeToken
       ghostRulesLocKey: ghost-role-information-loneop-rules
-      gameRuleId: TokenLoneOpsSpawn
-      tagLocKey: antag-token-window-tag-ghost
+      ghostGameRuleId: TokenLoneOpsSpawn
+      ghostTagLocKey: antag-token-window-tag-ghost
       minimumPlayers: 25
-      requiresInRound: true
       minimumTimeFromRoundStart: 2700
       freeMinimumSponsorLevel: 3
 
