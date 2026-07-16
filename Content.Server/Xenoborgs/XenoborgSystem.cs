@@ -1,6 +1,7 @@
 using Content.Server.Antag;
 using Content.Server.GameTicking.Rules;
 using Content.Server.GameTicking.Rules.Components;
+using Content.Server.Roles;
 using Content.Server.Silicons.Borgs;
 using Content.Shared.Destructible;
 using Content.Shared.Mind;
@@ -31,6 +32,20 @@ public sealed partial class XenoborgSystem : EntitySystem
 
         SubscribeLocalEvent<XenoborgComponent, MindAddedMessage>(OnXenoborgMindAdded);
         SubscribeLocalEvent<XenoborgComponent, MindRemovedMessage>(OnXenoborgMindRemoved);
+
+        SubscribeLocalEvent<XenoborgRoleComponent, GetBriefingEvent>(OnGetBriefing);
+    }
+
+    private void OnGetBriefing(EntityUid uid, XenoborgRoleComponent component, ref GetBriefingEvent args)
+    {
+        var isCore = args.Mind.Comp.OwnedEntity is { } owned && HasComp<MothershipCoreComponent>(owned);
+        var briefing = Loc.GetString(isCore ? "mothership-welcome" : "xenoborgs-welcome");
+        var objective = Loc.GetString(isCore
+            ? "roles-antag-mothership-core-objective"
+            : "roles-antag-xenoborg-objective");
+
+        args.Append(briefing);
+        args.Append(objective);
     }
 
     private void OnXenoborgDestroyed(EntityUid uid, XenoborgComponent component, DestructionEventArgs args)

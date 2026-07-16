@@ -333,6 +333,18 @@
       minimumPlayers: 20
       requiresPreRoundLobby: true
 
+    - id: mothership_core
+      nameLocKey: antag-store-role-mothership-core-name
+      descriptionLocKey: antag-store-role-mothership-core-description
+      cost: 12
+      iconPath: /Textures/_Mini/Interface/Antags/mothership.png
+      mode: LobbyDeposit
+      antagId: MothershipCore
+      gameRuleId: Xenoborgs
+      tagLocKey: antag-token-window-tag-queue
+      minimumPlayers: 30
+      requiresPreRoundLobby: true
+
     - id: yao
       nameLocKey: antag-store-role-yao-name
       descriptionLocKey: antag-store-role-yao-description

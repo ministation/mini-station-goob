@@ -99,6 +99,9 @@ antag-store-role-shadowling-description = Roundstart deposit for Shadowling. Sha
 antag-store-role-xenomorph-name = Xenomorph
 antag-store-role-xenomorph-description = Roundstart queue for the xenomorph infestation. Survival only.
 
+antag-store-role-mothership-core-name = Mothership Core
+antag-store-role-mothership-core-description = Roundstart deposit for the xenoborg mothership core. Queued in lobby. Survival modes.
+
 antag-store-role-bingle-name = Bingle
 antag-store-role-bingle-description = Ghost role for a Bingle. Survival only.
 

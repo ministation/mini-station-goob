@@ -21,6 +21,8 @@ public static class AntagLobbyIcons
         ["NukeopsCommander"] = "/Textures/_Mini/Interface/Antags/nukie.png",
         ["Blob"] = "/Textures/_Mini/Interface/Antags/blob.png",
         ["Wizard"] = "/Textures/_Mini/Interface/Antags/wizard.png",
+        ["Xenoborg"] = "/Textures/_Mini/Interface/Antags/xenoborg.png",
+        ["MothershipCore"] = "/Textures/_Mini/Interface/Antags/mothership.png",
     };
 
     public static bool TryResolveIconPath(AntagPrototype antag, out string path)

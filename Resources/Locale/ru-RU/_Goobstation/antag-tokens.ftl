@@ -99,6 +99,9 @@ antag-store-role-shadowling-description = Очередь на шедоулинг
 antag-store-role-xenomorph-name = Ксеноморф
 antag-store-role-xenomorph-description = Очередь на раундстартовое заражение ксеноморфами. Только выживание.
 
+antag-store-role-mothership-core-name = Ядро материнского корабля
+antag-store-role-mothership-core-description = Очередь на ядро материнского корабля ксеноборгов. Выбирается заранее в лобби. Режимы выживания.
+
 antag-store-role-bingle-name = Бингл
 antag-store-role-bingle-description = Гост-роль бингла. Только выживание.
 

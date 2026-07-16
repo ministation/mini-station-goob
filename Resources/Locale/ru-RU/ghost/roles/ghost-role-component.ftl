@@ -250,5 +250,9 @@ ghost-role-information-gingerbread-description =
     Распространяйте паточную вкуснятину и хорошее настроение.
 ghost-role-information-emotional-support-scurret-name = Эмоционально поддерживающий Скюррет
 ghost-role-information-emotional-support-scurret-description = Поддерживайте экипаж, будьте милым, постоянно говорите "ва".
+ghost-role-information-mothership-core-name = Ядро материнского корабля
+ghost-role-information-mothership-core-desc = Вы — ядро материнского корабля ксеноборгов. Помогайте им размножаться, боргуя любой мозг, который они вам принесут.
+ghost-role-information-xenoborg-name = Ксеноборг
+ghost-role-information-xenoborg-desc = Странный киборг, созданный для самовоспроизведения и захвата станции путём превращения разумных существ в ксеноборгов.
 ghost-role-information-wizard-name = Волшебник
 ghost-role-information-wizard-desc = ТЫ ВОЛШЕБНИК! Покажи станции, из чего сделана твоя магия.
