@@ -151,12 +151,14 @@ thunderdome-desc-neck-bandage = Потрёпанный тканевый куша
 thunderdome-desc-neck-chameleon = Шарф-хамелеон, меняющий внешний вид
 
 # Очки
+thunderdome-loadout-glasses-none = Без очков
 thunderdome-loadout-glasses-sunglasses = Солнечные очки
 thunderdome-loadout-glasses-security = Солнечные очки охраны
 thunderdome-loadout-glasses-diagnostic = Медицинский HUD
 thunderdome-loadout-glasses-thermal = Тепловизионные очки
 thunderdome-loadout-glasses-nightvision = Прибор ночного видения
 
+thunderdome-desc-glasses-none = Без очков
 thunderdome-desc-glasses-sunglasses = Обычные солнечные очки
 thunderdome-desc-glasses-security = Солнечные очки охраны с HUD
 thunderdome-desc-glasses-diagnostic = Медицинский диагностический HUD

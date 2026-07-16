@@ -12,12 +12,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <BoxContainer Orientation="Vertical">
         <Control>
             <PanelContainer StyleClasses="WindowHeadingBackground" Name="WindowHeader" />
-            <BoxContainer Margin="4 2 4 0" Orientation="Horizontal">
-                <Label Name="WindowTitle"
-                       HorizontalExpand="True" VAlign="Center" StyleClasses="FancyWindowTitle" ClipText="true" />
-                <TextureButton Name="HelpButton" StyleClasses="windowHelpButton" VerticalAlignment="Center" Disabled="True" Visible="False" Access="Public" />
-                <TextureButton Name="CloseButton" StyleClasses="windowCloseButton"
-                               VerticalAlignment="Center" />
+            <BoxContainer Orientation="Horizontal">
+                <!-- Mini signal rail: player accent, soft pulse -->
+                <PanelContainer Name="AccentRail"
+                                StyleClasses="WindowAccentRail"
+                                MinWidth="3"
+                                MaxWidth="3"
+                                VerticalExpand="True"
+                                Margin="0 1 0 1" />
+                <BoxContainer Margin="4 2 4 0" Orientation="Horizontal" HorizontalExpand="True">
+                    <Label Name="WindowTitle"
+                           HorizontalExpand="True" VAlign="Center" StyleClasses="FancyWindowTitle" ClipText="true" />
+                    <TextureButton Name="HelpButton" StyleClasses="windowHelpButton" VerticalAlignment="Center" Disabled="True" Visible="False" Access="Public" />
+                    <TextureButton Name="CloseButton" StyleClasses="windowCloseButton"
+                                   VerticalAlignment="Center" />
+                </BoxContainer>
             </BoxContainer>
         </Control>
         <PanelContainer StyleClasses="LowDivider" />

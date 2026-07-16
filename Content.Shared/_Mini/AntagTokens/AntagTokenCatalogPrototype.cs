@@ -71,6 +71,19 @@ public sealed partial class AntagTokenListingEntry
     [DataField]
     public string? RequiresPresetGameRuleId;
 
+    /// <summary>
+    /// When true, station job / department gates are skipped (off-station or separate entity antags).
+    /// </summary>
+    [DataField]
+    public bool IgnoresStationJob;
+
+    /// <summary>Game rule used when a Dual listing resolves to GhostRule (defaults to <see cref="GameRuleId"/>).</summary>
+    [DataField]
+    public string? GhostGameRuleId;
+
+    [DataField]
+    public string? GhostTagLocKey;
+
     public AntagRoleDefinition ToDefinition()
     {
         return new AntagRoleDefinition(
@@ -93,7 +106,10 @@ public sealed partial class AntagTokenListingEntry
             FreeMinimumSponsorLevel ?? -1,
             JobBlacklist,
             SpeciesBlacklist,
-            RequiresPresetGameRuleId);
+            RequiresPresetGameRuleId,
+            IgnoresStationJob,
+            GhostGameRuleId,
+            GhostTagLocKey);
     }
 }
 

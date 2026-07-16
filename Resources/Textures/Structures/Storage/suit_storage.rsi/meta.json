@@ -24,6 +24,12 @@
     },
     {
       "name": "welded"
+    },
+    {
+      "name": "open"
+    },
+    {
+      "name": "nt"
     }
   ]
 }

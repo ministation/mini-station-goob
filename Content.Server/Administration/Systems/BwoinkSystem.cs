@@ -137,13 +137,33 @@ namespace Content.Server.Administration.Systems
                 _activeConversations.Clear();
             });
             _rankIcons = _prototypeManager.EnumeratePrototypes<AdminRankIconPrototype>()
-            .ToDictionary(p => p.Rank, p => p.Icon);
+                .GroupBy(p => p.Rank.Trim(), StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(g => g.Key, g => g.First().Icon, StringComparer.OrdinalIgnoreCase);
         	_rateLimit.Register(
                 RateLimitKey,
                 new RateLimitRegistration(CCVars.AhelpRateLimitPeriod,
                     CCVars.AhelpRateLimitCount,
                     PlayerRateLimitedAction)
                 );
+        }
+
+        private string? ResolveAdminRankIcon(string adminTitle)
+        {
+            var title = adminTitle.Trim();
+            if (title.Length == 0)
+                return null;
+
+            if (_rankIcons.TryGetValue(title, out var path))
+                return path;
+
+            // Combined titles like "Модератор | Ивент мастер" — try each part.
+            foreach (var part in title.Split('|', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (_rankIcons.TryGetValue(part, out path))
+                    return path;
+            }
+
+            return null;
         }
 
         private async void OnCallChanged(string url)
@@ -763,13 +783,18 @@ namespace Content.Server.Administration.Systems
                 else
                     adminTitle = bwoinkParams.SenderAdmin?.Title;
 
-                if (adminTitle != null && _rankIcons.TryGetValue(adminTitle, out var path))
-                    iconPath = path;
+                if (adminTitle != null)
+                    iconPath = ResolveAdminRankIcon(adminTitle);
 
-                if (iconPath != null && adminPrefix.Length > 0)
-                    adminPrefix = adminPrefix.Replace("[/bold] ", $"[/bold] [icon=\"{iconPath}\"] ");
-
-                _sawmill.Info($"adminPrefix={adminPrefix}, iconPath={iconPath}");
+                if (iconPath != null)
+                {
+                    if (adminPrefix.Length > 0 && adminPrefix.Contains("[/bold] "))
+                        adminPrefix = adminPrefix.Replace("[/bold] ", $"[/bold] [icon=\"{iconPath}\"] ");
+                    else if (adminPrefix.Length > 0)
+                        adminPrefix = $"{adminPrefix}[icon=\"{iconPath}\"] ";
+                    else
+                        adminPrefix = $"[icon=\"{iconPath}\"] ";
+                }
             }
 
             // If role color is enabled and exists, use it, otherwise use the discord reply color

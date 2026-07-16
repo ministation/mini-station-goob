@@ -144,7 +144,13 @@ public sealed class AntagTokenUiSystem : EntitySystem
 
     private void OnPurchasePressed(string roleId)
     {
-        if (_listings.TryGetListing(roleId, out var def) && def.Mode == AntagPurchaseMode.GhostRule)
+        var entryMode = _cachedState?.Roles.Find(r => r.RoleId == roleId)?.Mode;
+        var treatAsGhost = entryMode == AntagPurchaseMode.GhostRule
+            || (entryMode == null &&
+                _listings.TryGetListing(roleId, out var catalogDef) &&
+                catalogDef.Mode == AntagPurchaseMode.GhostRule);
+
+        if (treatAsGhost && _listings.TryGetListing(roleId, out var def))
         {
             CloseRulesConfirmWindow();
             var rulesKey = def.GhostRulesLocKey ?? "ghost-role-information-antagonist-rules";

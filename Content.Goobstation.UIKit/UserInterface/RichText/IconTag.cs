@@ -74,11 +74,11 @@ public sealed class IconTag : IMarkupTagHandler
         return new TextureRect
         {
             Texture = texture,
-            SetWidth = 20,
-            SetHeight = 20,
-            MaxSize = new System.Numerics.Vector2(20, 20),
+            SetWidth = 16,
+            SetHeight = 16,
+            MaxSize = new System.Numerics.Vector2(16, 16),
             Stretch = TextureRect.StretchMode.KeepAspectCentered,
-            VerticalAlignment = Control.VAlignment.Bottom,
+            VerticalAlignment = Control.VAlignment.Center,
             MouseFilter = Control.MouseFilterMode.Stop,
         };
     }

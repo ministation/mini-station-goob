@@ -98,6 +98,9 @@ namespace Content.Server.GameTicking
 
             _stationJobs.AssignOverflowJobs(ref assignedJobs, playerNetIds, profiles, spawnableStations);
 
+            // Mini: allow systems (e.g. antag tokens) to reassign incompatible roundstart jobs before spawn.
+            RaiseLocalEvent(new RulePlayerJobsPreSpawnEvent(assignedJobs, profiles));
+
             // Calculate extended access for stations.
             var stationJobCounts = spawnableStations.ToDictionary(e => e, _ => 0);
             foreach (var (netUser, (job, station)) in assignedJobs)

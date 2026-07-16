@@ -13,6 +13,7 @@ using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Players;
 using Content.Shared.Preferences;
+using Content.Shared.Roles;
 using Content.Shared.Roles.Components;
 using JetBrains.Annotations;
 using Prometheus;
@@ -23,6 +24,7 @@ using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 using System.Text.RegularExpressions;
@@ -1041,6 +1043,24 @@ namespace Content.Server.GameTicking
             PlayerPool = playerPool;
             Profiles = profiles;
             Forced = forced;
+        }
+    }
+
+    /// <summary>
+    ///     Event raised after roundstart jobs are assigned but before players are spawned.
+    ///     Mutate <see cref="AssignedJobs"/> to change which job a player will spawn as.
+    /// </summary>
+    public sealed class RulePlayerJobsPreSpawnEvent
+    {
+        public Dictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> AssignedJobs { get; }
+        public IReadOnlyDictionary<NetUserId, HumanoidCharacterProfile> Profiles { get; }
+
+        public RulePlayerJobsPreSpawnEvent(
+            Dictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> assignedJobs,
+            IReadOnlyDictionary<NetUserId, HumanoidCharacterProfile> profiles)
+        {
+            AssignedJobs = assignedJobs;
+            Profiles = profiles;
         }
     }
 

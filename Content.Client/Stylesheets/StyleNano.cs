@@ -690,10 +690,11 @@ namespace Content.Client.Stylesheets
             {
                 BackgroundColor = Color.FromHex("#373744"),
                 ContentMarginLeftOverride = 8,
-                ContentMarginTopOverride = 6,
+                // ~5% thinner than previous 6px vertical padding.
+                ContentMarginTopOverride = 5,
                 // Leave room for pin + scrollbar edge so AHelp rows don't clip past panel.
                 ContentMarginRightOverride = 6,
-                ContentMarginBottomOverride = 6,
+                ContentMarginBottomOverride = 5,
             };
             var listContainerButtonHover = new StyleBoxFlat(listContainerButton)
             {
@@ -877,13 +878,20 @@ namespace Content.Client.Stylesheets
             var glassHeadingSurface = new StyleBoxFlat
             {
                 BackgroundColor = Accent("#2A2A38D9", 0.26f),      // было 0.34
-                BorderColor = Accent("#7A7A9099", 0.46f),          // было 0.52
-                BorderThickness = new Thickness(0),
+                // Mini signal: accent underline under every FancyWindow header.
+                BorderColor = accent.WithAlpha(0.72f),
+                BorderThickness = new Thickness(0, 0, 0, 2),
                 Padding = new Thickness(1),
                 ContentMarginLeftOverride = 6,
                 ContentMarginTopOverride = 2,
                 ContentMarginRightOverride = 6,
                 ContentMarginBottomOverride = 2,
+            };
+
+            var windowAccentRail = new StyleBoxFlat
+            {
+                BackgroundColor = accent,
+                BorderThickness = new Thickness(0),
             };
 
             var glassListBackground = new StyleBoxFlat
@@ -2438,8 +2446,13 @@ namespace Content.Client.Stylesheets
                     .Prop(PanelContainer.StylePropertyPanel, glassHeadingSurface)
                     .Prop(Control.StylePropertyModulateSelf, Color.White),
 
+                Element<PanelContainer>().Class("WindowAccentRail")
+                    .Prop(PanelContainer.StylePropertyPanel, windowAccentRail)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
                 Element<Label>().Class("FancyWindowTitle")
-                    .Prop(Label.StylePropertyFontColor, Color.FromHex("#ECF4FF")),
+                    .Prop(Label.StylePropertyFontColor,
+                        Color.InterpolateBetween(Color.FromHex("#ECF4FF"), accent, 0.28f)),
 
                 // Guidebook + admin lists and trees.
                 Element<Tree>()

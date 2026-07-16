@@ -37,12 +37,14 @@ using Robust.Shared.Timing;
 using Content.Shared.Chat;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Preferences;
 using Content.Server.Chat.Systems;
 using Content.Server.Ghost.Roles;
-using Content.Server.Ghost.Roles;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Ghost.Roles.Events;
+using Content.Server.Station.Systems;
 using Robust.Server.GameObjects;
 using Robust.Shared.Asynchronous;
 using Robust.Shared.GameObjects;
@@ -72,6 +74,7 @@ public sealed class AntagTokenSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IServerPreferencesManager _preferences = default!;
     [Dependency] private readonly TypanStationWarRuleSystem _typanWar = default!;
+    [Dependency] private readonly StationJobsSystem _stationJobs = default!;
 
     private readonly Dictionary<NetUserId, PlayerTokenState> _states = new();
     private readonly Dictionary<NetUserId, int?> _sponsorLevelOverrides = new();
@@ -148,6 +151,7 @@ public sealed class AntagTokenSystem : EntitySystem
 
         SubscribeLocalEvent<AntagSelectionComponent, AntagSelectionExcludeSessionEvent>(OnExcludeReservedSession);
         SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnJoinedLobby);
+        SubscribeLocalEvent<RulePlayerJobsPreSpawnEvent>(OnJobsAssignedPreSpawn);
         SubscribeLocalEvent<RulePlayerJobsAssignedEvent>(OnRoundstartJobsAssigned, after: new[] { typeof(AntagSelectionSystem) });
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
         SubscribeLocalEvent<RoundStartingEvent>(OnRoundStarting);
@@ -469,9 +473,17 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         }
 
-        if (!_listings.TryGetListing(roleId, out var role))
+        if (!_listings.TryGetListing(roleId, out var catalogRole))
         {
             error = Loc.GetString("antag-tokens-error-role-not-in-store");
+            return false;
+        }
+
+        var cache = BuildSendStateCache(session.UserId);
+        var role = AntagTokenCatalog.ResolveEffectiveRole(catalogRole, cache.InPreRoundLobby, cache.InRound);
+        if (role.Mode == AntagPurchaseMode.Unavailable)
+        {
+            error = Loc.GetString("antag-tokens-error-role-unavailable-generic");
             return false;
         }
 
@@ -517,7 +529,6 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         }
 
-        var cache = BuildSendStateCache(session.UserId);
         var holdsThisCap = (role.Mode == AntagPurchaseMode.LobbyDeposit && state.PendingDepositRoleId == role.Id)
             || (role.Mode == AntagPurchaseMode.GhostRule && state.PendingGhostAutoRoleId == role.Id);
         if (!TryGetRoleAvailability(role, session.UserId, holdsThisCap, out var statusLocKey, in cache))
@@ -727,7 +738,7 @@ public sealed class AntagTokenSystem : EntitySystem
         _states[player.UserId] = state;
         if (state.PendingGhostAutoRoleId is { } ghostPendingId &&
             _listings.TryGetListing(ghostPendingId, out var ghostListing) &&
-            ghostListing.Mode == AntagPurchaseMode.GhostRule &&
+            AntagTokenCatalog.SupportsGhostAutoJoin(ghostListing) &&
             _globallyClaimedGhostRoles.Add(ghostPendingId))
         {
             BroadcastAntagTokenUiRefresh();
@@ -817,7 +828,7 @@ public sealed class AntagTokenSystem : EntitySystem
         if (selection?.TokenId == AntagTokenCatalog.DepositSelectionTokenId &&
             selection.AntagId is { Length: > 0 } selectedRoleId &&
             _listings.TryGetListing(selectedRoleId, out var role) &&
-            role.Mode == AntagPurchaseMode.LobbyDeposit)
+            role.Mode is AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.Dual)
         {
             state.PendingDepositRoleId = selectedRoleId;
             state.PendingDepositQueuedAtUtc = selection.SelectedAt;
@@ -1055,7 +1066,7 @@ public sealed class AntagTokenSystem : EntitySystem
         _ghostMinimumTimeRandomBonusByRole.Clear();
         foreach (var role in _listings.ListingsOrdered)
         {
-            if (role.Mode != AntagPurchaseMode.GhostRule || role.MinimumTimeFromRoundStart <= 0)
+            if (!AntagTokenCatalog.SupportsGhostAutoJoin(role) || role.MinimumTimeFromRoundStart <= 0)
                 continue;
 
             _ghostMinimumTimeRandomBonusByRole[role.Id] = _random.Next(-300, 901);
@@ -1105,6 +1116,33 @@ public sealed class AntagTokenSystem : EntitySystem
         SaveAll();
     }
 
+    private void OnJobsAssignedPreSpawn(RulePlayerJobsPreSpawnEvent ev)
+    {
+        foreach (var (userId, (job, station)) in ev.AssignedJobs.ToList())
+        {
+            if (job == null)
+                continue;
+
+            if (!TryGetPendingLobbyRole(userId, out var role) || role.IgnoresStationJob)
+                continue;
+
+            if (!IsJobIncompatibleWithTokenRole(job.Value, role))
+                continue;
+
+            if (!TryPickAntagCompatibleJob(userId, role, station, out var remappedJob))
+                continue;
+
+            ev.AssignedJobs[userId] = (remappedJob, station);
+
+            if (_playerManager.TryGetSessionById(userId, out var session))
+            {
+                ShowPopup(session,
+                    Loc.GetString("antag-tokens-popup-job-remapped",
+                        ("job", _prototype.Index(remappedJob).LocalizedName)));
+            }
+        }
+    }
+
     private void OnRoundstartJobsAssigned(RulePlayerJobsAssignedEvent ev)
     {
         foreach (var session in ev.Players)
@@ -1128,12 +1166,13 @@ public sealed class AntagTokenSystem : EntitySystem
                 continue;
             }
 
+            // Pre-spawn remap should already have fixed reserved jobs; if still blocked, refund.
             if (IsReservedRoleBlockedByCurrentJob(session, role))
             {
                 RefundPendingDeposit(session.UserId, state);
                 PersistState(session.UserId, state);
                 SendState(session.UserId);
-                ShowPopup(session, Loc.GetString("antag-tokens-popup-job-blocks-queued"));
+                ShowPopup(session, Loc.GetString("antag-tokens-popup-job-remap-failed"));
                 continue;
             }
 
@@ -1177,9 +1216,11 @@ public sealed class AntagTokenSystem : EntitySystem
             return;
         }
 
-        if (!_listings.TryGetListing(ev.RoleId, out var role))
+        if (!_listings.TryGetListing(ev.RoleId, out var catalogRole))
             return;
 
+        var cache = BuildSendStateCache(args.SenderSession.UserId);
+        var role = AntagTokenCatalog.ResolveEffectiveRole(catalogRole, cache.InPreRoundLobby, cache.InRound);
         var message = role.Mode == AntagPurchaseMode.GhostRule
             ? Loc.GetString("antag-tokens-popup-purchase-ghost")
             : Loc.GetString("antag-tokens-popup-purchase-deposit");
@@ -1212,14 +1253,14 @@ public sealed class AntagTokenSystem : EntitySystem
         if (!_states.TryGetValue(userId, out var state) ||
             state.PendingDepositRoleId == null ||
             !_listings.TryGetListing(state.PendingDepositRoleId, out var selectedRole) ||
-            selectedRole.Mode != AntagPurchaseMode.LobbyDeposit ||
+            selectedRole.Mode is not (AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.Dual) ||
             selectedRole.AntagId == null ||
             selectedRole.GameRuleId == null)
         {
             return false;
         }
 
-        role = selectedRole;
+        role = AntagTokenCatalog.AsLobbyDeposit(selectedRole);
         return true;
     }
 
@@ -1286,7 +1327,7 @@ public sealed class AntagTokenSystem : EntitySystem
         {
             if (state.PendingDepositRoleId != null &&
                 _listings.TryGetListing(state.PendingDepositRoleId, out var depListing) &&
-                depListing.Mode == AntagPurchaseMode.LobbyDeposit)
+                depListing.Mode is AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.Dual)
             {
                 return true;
             }
@@ -1377,9 +1418,19 @@ public sealed class AntagTokenSystem : EntitySystem
         string antagId,
         [NotNullWhen(true)] out AntagSelectionDefinition? definition)
     {
+        // Prefer PrefRoles so antagId "Nukeops" does not match Commander via FallbackRoles.
         foreach (var def in selection.Definitions)
         {
-            if (!MatchesDefinition(antagId, def))
+            if (!def.PrefRoles.Contains(antagId))
+                continue;
+
+            definition = def;
+            return true;
+        }
+
+        foreach (var def in selection.Definitions)
+        {
+            if (!def.FallbackRoles.Contains(antagId))
                 continue;
 
             definition = def;
@@ -1453,6 +1504,18 @@ public sealed class AntagTokenSystem : EntitySystem
 
     private bool IsReservedRoleBlockedByCurrentJob(ICommonSession session, AntagRoleDefinition role)
     {
+        if (role.IgnoresStationJob)
+            return false;
+
+        // Only block while the player is alive on a reserved station job — ghosts/corpses keep old mind jobs.
+        if (session.AttachedEntity is not { Valid: true } attached ||
+            HasComp<GhostComponent>(attached) ||
+            !TryComp<MobStateComponent>(attached, out var mobState) ||
+            mobState.CurrentState != MobState.Alive)
+        {
+            return false;
+        }
+
         if (!_mind.TryGetMind(session, out var mindId, out _) ||
             !_jobs.MindTryGetJobId(mindId, out var jobId) ||
             jobId == null)
@@ -1460,13 +1523,82 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         }
 
-        if (role.JobBlacklist is { Count: > 0 } && role.JobBlacklist.Contains(jobId.Value))
+        return IsJobIncompatibleWithTokenRole(jobId.Value, role);
+    }
+
+    private bool IsJobIncompatibleWithTokenRole(ProtoId<JobPrototype> jobId, AntagRoleDefinition role)
+    {
+        if (role.IgnoresStationJob)
+            return false;
+
+        if (role.JobBlacklist is { Count: > 0 } && role.JobBlacklist.Contains(jobId))
             return true;
 
-        if (!_jobs.TryGetAllDepartments(jobId.Value, out var departments))
+        if (!_jobs.TryGetAllDepartments(jobId, out var departments))
             return false;
 
         return departments.Any(d => d.ID is "Command" or "Security" or "Silicon" or "Typan" or "Typan2");
+    }
+
+    /// <summary>
+    /// Pick a preference job (priority ≥ Low) compatible with the token antag for roundstart assignment.
+    /// </summary>
+    private bool TryPickAntagCompatibleJob(
+        NetUserId userId,
+        AntagRoleDefinition role,
+        EntityUid station,
+        out ProtoId<JobPrototype> newJobId)
+    {
+        newJobId = default;
+
+        if (!_preferences.TryGetCachedPreferences(userId, out var prefs) ||
+            prefs.SelectedCharacter is not HumanoidCharacterProfile profile)
+        {
+            return false;
+        }
+
+        var candidates = new List<(ProtoId<JobPrototype> Job, JobPriority Priority)>();
+        foreach (var (job, priority) in profile.JobPriorities)
+        {
+            if (priority < JobPriority.Low)
+                continue;
+
+            if (!_prototype.HasIndex(job))
+                continue;
+
+            if (IsJobIncompatibleWithTokenRole(job, role))
+                continue;
+
+            candidates.Add((job, priority));
+        }
+
+        if (candidates.Count == 0)
+            return false;
+
+        ProtoId<JobPrototype>? picked = null;
+        foreach (var priority in new[] { JobPriority.High, JobPriority.Medium, JobPriority.Low })
+        {
+            var tier = candidates.Where(c => c.Priority == priority).Select(c => c.Job).ToList();
+            if (tier.Count == 0)
+                continue;
+
+            var available = _stationJobs.GetAvailableJobs(station).ToHashSet();
+            var onStation = tier.Where(j => available.Contains(j)).ToList();
+            if (onStation.Count > 0)
+            {
+                picked = _random.Pick(onStation);
+                break;
+            }
+
+            picked = _random.Pick(tier);
+            break;
+        }
+
+        if (picked == null)
+            return false;
+
+        newJobId = picked.Value;
+        return true;
     }
 
     private bool IsRoleBlockedBySpecies(ICommonSession session, AntagRoleDefinition role)
@@ -1504,6 +1636,8 @@ public sealed class AntagTokenSystem : EntitySystem
     private bool TryGetRoleAvailability(AntagRoleDefinition role, NetUserId userId, bool purchased, out string? statusLocKey, in AntagSendStateCache cache)
     {
         statusLocKey = null;
+
+        role = AntagTokenCatalog.ResolveEffectiveRole(role, cache.InPreRoundLobby, cache.InRound);
 
         if (role.Mode == AntagPurchaseMode.Unavailable)
         {
@@ -1560,8 +1694,14 @@ public sealed class AntagTokenSystem : EntitySystem
         if (cache.RoundstartBlockedByPreset &&
             role.Mode is AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.GhostRule)
         {
-            statusLocKey = "antag-store-status-unavailable";
-            return false;
+            // Roles that join an existing preset rule (e.g. Nukeops on Nukeops preset) stay available.
+            var allowedOnBlockedPreset = !string.IsNullOrEmpty(role.RequiresPresetGameRuleId) &&
+                                        !IsPresetMissingRequiredGameRule(role.RequiresPresetGameRuleId);
+            if (!allowedOnBlockedPreset)
+            {
+                statusLocKey = "antag-store-status-unavailable";
+                return false;
+            }
         }
 
         if (!string.IsNullOrEmpty(role.RequiresPresetGameRuleId))
@@ -1655,7 +1795,8 @@ public sealed class AntagTokenSystem : EntitySystem
             if (rid == null)
                 continue;
 
-            if (!_listings.TryGetListing(rid, out var listed) || listed.Mode != AntagPurchaseMode.LobbyDeposit)
+            if (!_listings.TryGetListing(rid, out var listed) ||
+                listed.Mode is not (AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.Dual))
                 continue;
 
             depositCounts[rid] = depositCounts.GetValueOrDefault(rid) + 1;
@@ -1698,7 +1839,7 @@ public sealed class AntagTokenSystem : EntitySystem
                 continue;
 
             if (!_listings.TryGetListing(state.PendingDepositRoleId, out var depRole) ||
-                depRole.Mode != AntagPurchaseMode.LobbyDeposit)
+                depRole.Mode is not (AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.Dual))
             {
                 continue;
             }
@@ -1780,7 +1921,7 @@ public sealed class AntagTokenSystem : EntitySystem
             return 0;
 
         var minimum = role.MinimumTimeFromRoundStart;
-        if (role.Mode == AntagPurchaseMode.GhostRule &&
+        if ((role.Mode is AntagPurchaseMode.GhostRule or AntagPurchaseMode.Dual) &&
             _ghostMinimumTimeRandomBonusByRole.TryGetValue(role.Id, out var bonus))
             minimum += bonus;
 
@@ -1847,17 +1988,23 @@ public sealed class AntagTokenSystem : EntitySystem
 
         var cache = BuildSendStateCache(userId);
         var roles = new List<AntagTokenRoleEntry>(_listings.ListingCount);
-        foreach (var role in _listings.ListingsOrdered)
+        foreach (var catalogRole in _listings.ListingsOrdered)
         {
+            var role = AntagTokenCatalog.ResolveEffectiveRole(catalogRole, cache.InPreRoundLobby, cache.InRound);
             var purchased = (role.Mode == AntagPurchaseMode.LobbyDeposit && state.PendingDepositRoleId == role.Id)
                 || (role.Mode == AntagPurchaseMode.GhostRule && state.PendingGhostAutoRoleId == role.Id);
+            // Pending lobby deposit on a Dual card must still show as purchased after resolve would flip to GhostRule.
+            if (!purchased &&
+                catalogRole.Mode == AntagPurchaseMode.Dual &&
+                state.PendingDepositRoleId == catalogRole.Id)
+                purchased = true;
             var holdsCapForAvailability = purchased;
             var freeUnlocks = state.RoleCredits.GetValueOrDefault(role.Id);
             var useRoleCredit = freeUnlocks > 0;
             EvaluateFreePurchaseFlags(role, userId, state, useRoleCredit, out var donorDailyFree, out var publicRoundFree);
             var freePurchaseAvailable = !useRoleCredit && (donorDailyFree || publicRoundFree);
             var canAfford = useRoleCredit || freePurchaseAvailable || state.Balance >= role.Cost;
-            var available = TryGetRoleAvailability(role, userId, holdsCapForAvailability, out var statusLocKey, in cache);
+            var available = TryGetRoleAvailability(catalogRole, userId, holdsCapForAvailability, out var statusLocKey, in cache);
             var saturated = role.Mode == AntagPurchaseMode.LobbyDeposit && !holdsCapForAvailability &&
                 IsAntagTrackGloballySaturated(in cache)
                 || role.Mode == AntagPurchaseMode.GhostRule && !holdsCapForAvailability &&
@@ -1967,7 +2114,7 @@ private async Task PersistStateAsync(NetUserId userId, PlayerTokenState state)
 
     foreach (var listing in _listings.ListingsOrdered)
     {
-        if (listing.Mode != AntagPurchaseMode.GhostRule || string.IsNullOrWhiteSpace(listing.GhostAutoJoinEntityProto))
+        if (!AntagTokenCatalog.SupportsGhostAutoJoin(listing))
             continue;
 
         var entryId = AntagTokenCatalog.GetGhostAutoPendingEntryId(listing.Id);
@@ -2263,8 +2410,7 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             return;
 
         if (!_listings.TryGetListing(state.PendingGhostAutoRoleId, out var listing) ||
-            listing.Mode != AntagPurchaseMode.GhostRule ||
-            string.IsNullOrEmpty(listing.GhostAutoJoinEntityProto))
+            !AntagTokenCatalog.SupportsGhostAutoJoin(listing))
         {
             return;
         }

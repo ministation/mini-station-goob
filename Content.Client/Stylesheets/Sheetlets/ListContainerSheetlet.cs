@@ -19,9 +19,9 @@ public sealed class ListContainerSheetlet<T> : Sheetlet<T> where T : PalettedSty
         {
             BackgroundColor = new Color(55, 55, 68),
             ContentMarginLeftOverride = 8,
-            ContentMarginTopOverride = 6,
+            ContentMarginTopOverride = 5,
             ContentMarginRightOverride = 6,
-            ContentMarginBottomOverride = 6,
+            ContentMarginBottomOverride = 5,
         };
 
         var rules = new List<StyleRule>(

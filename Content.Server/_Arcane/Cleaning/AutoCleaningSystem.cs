@@ -1,6 +1,5 @@
 using System.Linq;
 using Content.Goobstation.Shared.Xenobiology.Components;
-using Content.Server._Mini.TypanWar;
 using Content.Server.Chat.Systems;
 using Content.Shared._Arcane.CCVars;
 using Content.Shared.GameTicking;
@@ -27,16 +26,12 @@ public sealed partial class AutoCleaningSystem : EntitySystem
     private bool _isActive = false;
     private bool _isWarned = false;
     private static TimeSpan _nextUpdate = TimeSpan.MaxValue;
-    private static readonly TimeSpan NormalUpdateInterval = TimeSpan.FromMinutes(30);
-    private static readonly TimeSpan WarUpdateInterval = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan UpdateInterval = TimeSpan.FromMinutes(15);
     private static TimeSpan _warningWaiting = TimeSpan.FromSeconds(30);
     private static HashSet<ProtoId<TagPrototype>> _cleaningTags = ["Trash", "Cartridge"];
     private static HashSet<ProtoId<TagPrototype>> _disallowedTags = ["Cigarette", "CigPack", "Syringe", "LightTube", "LightBulb", "LightTubeCrystalRed", "LightTubeCrystalBlue", "LightTubeCrystalGreen"];
 
     private const int MaxCleanPerCycle = 500;
-
-    private static TimeSpan GetUpdateInterval() =>
-        TypanStationWarRuleSystem.IsWarActive ? WarUpdateInterval : NormalUpdateInterval;
 
     public override void Initialize()
     {
@@ -52,7 +47,7 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
     private void OnRoundStarted(RoundStartedEvent args)
     {
-        _nextUpdate = _timing.CurTime + GetUpdateInterval();
+        _nextUpdate = _timing.CurTime + UpdateInterval;
         _isActive = true;
         _isWarned = false;
 
@@ -75,14 +70,6 @@ public sealed partial class AutoCleaningSystem : EntitySystem
         if (!_isActive || !_autoCleaningEnabled)
             return;
 
-        // During war, drop to 15-minute cycles (shorten an already-scheduled long wait).
-        if (!_isWarned && TypanStationWarRuleSystem.IsWarActive)
-        {
-            var warDeadline = _timing.CurTime + WarUpdateInterval;
-            if (_nextUpdate > warDeadline)
-                _nextUpdate = warDeadline;
-        }
-
         if (_nextUpdate < _timing.CurTime)
         {
             if (_isWarned)
@@ -102,10 +89,10 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
     private void ProccessCleaning()
     {
-        _nextUpdate = _timing.CurTime + GetUpdateInterval();
+        _nextUpdate = _timing.CurTime + UpdateInterval;
         _isWarned = false;
 
-        _sawmill.Info($"Starting floor cleaning cycle (next in {GetUpdateInterval().TotalMinutes} min)...");
+        _sawmill.Info($"Starting floor cleaning cycle (next in {UpdateInterval.TotalMinutes} min)...");
 
         var cleanedCount = CleanFloorItems();
 
