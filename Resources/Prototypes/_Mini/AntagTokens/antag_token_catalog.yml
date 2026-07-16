@@ -34,18 +34,6 @@
       minimumTimeFromRoundStart: 1800
       freeMinimumSponsorLevel: 2
 
-    - id: agent
-      nameLocKey: antag-store-role-agent-name
-      descriptionLocKey: antag-store-role-agent-description
-      cost: 4
-      iconPath: /Textures/_Mini/Interface/Antags/traitor.png
-      mode: LobbyDeposit
-      antagId: Traitor
-      gameRuleId: Traitor
-      tagLocKey: antag-token-window-tag-queue
-      requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 1
-
     - id: abductor
       nameLocKey: antag-store-role-abductor-name
       descriptionLocKey: antag-store-role-abductor-description
@@ -89,6 +77,18 @@
       minimumPlayers: 15
       requiresInRound: true
       minimumTimeFromRoundStart: 2100
+      freeMinimumSponsorLevel: 1
+
+    - id: agent
+      nameLocKey: antag-store-role-agent-name
+      descriptionLocKey: antag-store-role-agent-description
+      cost: 4
+      iconPath: /Textures/_Mini/Interface/Antags/traitor.png
+      mode: LobbyDeposit
+      antagId: Traitor
+      gameRuleId: Traitor
+      tagLocKey: antag-token-window-tag-queue
+      requiresPreRoundLobby: true
       freeMinimumSponsorLevel: 1
 
     - id: devil
