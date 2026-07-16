@@ -29,12 +29,8 @@
       state: mvcable_3
       color: Yellow
     - sprite: Structures/Power/Cables/mv_cable.rsi
-      state: mvstripes_3
-    - sprite: Structures/Power/Cables/mv_cable.rsi
       state: mvcable_12
       color: Yellow
-    - sprite: Structures/Power/Cables/mv_cable.rsi
-      state: mvstripes_12
   - type: RandomSpawner
     prototypes:
     - CableMV

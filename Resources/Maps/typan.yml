@@ -45583,7 +45583,7 @@ entities:
     - type: Transform
       pos: -0.5,-23.5
       parent: 2
-- proto: SmartFridgeMedical
+- proto: SmartFridgeTypan
   entities:
   - uid: 2548
     components:

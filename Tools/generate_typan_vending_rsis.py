@@ -32,10 +32,10 @@ DEFAULT_SKIP = {
 }
 
 # OKLab (a, b) accents. Sourced from Typan glass airlocks / techfab med.
-# mining uses None → enhanced black/red only.
 PALETTE_ACCENTS: dict[str, tuple[float, float] | None] = {
     "default": None,
-    "mining": None,
+    # brown-red chassis (cargo airlock brown, hotter red trim)
+    "mining": (0.0474, 0.0810),
     # techfab med / glass medical — cyan-blue
     "medical": (-0.0433, -0.0734),
     # glass engineering — yellow/gold
@@ -226,21 +226,15 @@ def typan_target(
 
     if accent is not None:
         if chroma < 0.04:
-            # Medical needs a stronger blue chassis wash (techfab-like).
+            # Medical/mining get a stronger chassis wash (techfab-like).
             # Other departments keep charcoal body + accent paint only.
-            if palette == "medical" and L >= 0.35:
+            if palette in ("medical", "mining") and L >= 0.3:
                 return dept_paint(L, max(chroma, 0.05), accent)
             return charcoal(L, mining=False)
         return dept_paint(L, chroma, accent)
 
     if chroma < 0.04:
         return charcoal(L, mining=mining)
-
-    if mining:
-        # Non-red chromatic paint collapses into darker red-tinted charcoal.
-        if chroma > 0.05:
-            return red_trim(L * 0.85, mining=True)
-        return charcoal(L * 0.85, mining=True)
 
     return charcoal(L * 0.9, mining=False)
 

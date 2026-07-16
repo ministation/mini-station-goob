@@ -32,6 +32,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/boozeomat.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -42,8 +44,12 @@
   id: VendingMachineCartTypan
   suffix: Тайпан
   components:
+  - type: VendingMachine
+    pack: PTechTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/laptop.rsi
+  - type: AccessReader
+    access: [["TypanCommand"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -56,6 +62,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/chefvend.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -236,6 +244,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/dinnerware.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -304,6 +314,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/nutri_green.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -316,6 +328,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/security.rsi
+  - type: AccessReader
+    access: [["TypanProtection"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -340,6 +354,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/seeds_green.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -460,6 +476,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/robotics.rsi
+  - type: AccessReader
+    access: [["TypanScience"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -540,6 +558,8 @@
     pack: HyDrobeTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/hydrobe.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -552,6 +572,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/lawdrobe.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -566,6 +588,8 @@
     pack: SecDrobeTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/secdrobe.rsi
+  - type: AccessReader
+    access: [["TypanProtection"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -578,6 +602,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/bardrobe.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -590,6 +616,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/chapdrobe.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -604,6 +632,8 @@
     pack: CargoDrobeTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/cargodrobe.rsi
+  - type: AccessReader
+    access: [["TypanCargo"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -618,6 +648,8 @@
     pack: MediDrobeTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/medidrobe.rsi
+  - type: AccessReader
+    access: [["TypanMedical"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -630,6 +662,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/chemdrobe.rsi
+  - type: AccessReader
+    access: [["TypanMedical"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -642,6 +676,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/curadrobe.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -656,6 +692,8 @@
     pack: AtmosDrobeTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/atmosdrobe.rsi
+  - type: AccessReader
+    access: [["TypanEngineering"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -670,6 +708,8 @@
     pack: EngiDrobeTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/engidrobe.rsi
+  - type: AccessReader
+    access: [["TypanEngineering"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -684,6 +724,8 @@
     pack: ChefDrobeTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/chefdrobe.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -696,6 +738,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/detdrobe.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -708,6 +752,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/janidrobe.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -722,6 +768,8 @@
     pack: SciDrobeTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/scidrobe.rsi
+  - type: AccessReader
+    access: [["TypanScience"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -734,6 +782,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/robodrobe.rsi
+  - type: AccessReader
+    access: [["TypanScience"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -746,6 +796,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/genedrobe.rsi
+  - type: AccessReader
+    access: [["TypanMedical"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -758,6 +810,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/virodrobe.rsi
+  - type: AccessReader
+    access: [["TypanMedical"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -770,6 +824,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/centdrobe.rsi
+  - type: AccessReader
+    access: [["TypanCommand"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -782,6 +838,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/happyhonk.rsi
+  - type: AccessReader
+    access: [["TypanService"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -828,6 +886,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/chemvend.rsi
+  - type: AccessReader
+    access: [["TypanMedical"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -852,6 +912,8 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/wallmed.rsi
+  - type: AccessReader
+    access: [["TypanMedical"]]
   - type: PointLight
     radius: 1.5
     energy: 1.6

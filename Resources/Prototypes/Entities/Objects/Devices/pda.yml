@@ -1108,15 +1108,18 @@
   components:
   - type: Pda
     id: SyndicateIDCard
+  - type: Sprite # Mini: blood-red syndicate PDA sprite
+    sprite: _Mini/Objects/Devices/typan_pda.rsi
   - type: Appearance
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi
+       pda
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi
+    sprite: _Mini/Objects/Devices/typan_pda.rsi # Mini
+    state: pda
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
@@ -1132,13 +1135,13 @@
   components:
   - type: Pda
     id: SyndiOperativeIDCard
-  - type: Appearance
+  - type: Appearance # Mini: typan_pda.rsi has no operative state, use blood-red base
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-operative
+       pda
   - type: Icon
-    state: pda-syndi-operative
+    state: pda
 
 - type: entity
   parent: [ SyndiOperativePDA, BaseSyndicateContraband ]
@@ -1148,13 +1151,13 @@
   components:
   - type: Pda
     id: SyndiCorpsmanIDCard
-  - type: Appearance
+  - type: Appearance # Mini: use blood-red typan syndicate sprite
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-corpsman
+       pda-syndi-med
   - type: Icon
-    state: pda-syndi-corpsman
+    state: pda-syndi-med
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
@@ -1170,13 +1173,13 @@
   components:
   - type: Pda
     id: SyndiCommanderIDCard
-  - type: Appearance
+  - type: Appearance # Mini: use typan syndicate command sprite
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-commander
+       pda-syndi-com
   - type: Icon
-    state: pda-syndi-commander
+    state: pda-syndi-com
 
 - type: entity
   parent: BaseSecurityPDA
@@ -1526,12 +1529,15 @@
   components:
   - type: Pda
     id: PirateIDCard
+  - type: Sprite # Mini: pirate keeps vanilla pda.rsi (typan rsi has no pda-pirate)
+    sprite: Objects/Devices/pda.rsi
   - type: Appearance
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
        pda-pirate
   - type: Icon
+    sprite: Objects/Devices/pda.rsi
     state: pda-pirate
 
 - type: entity # Goobstation?
@@ -1542,15 +1548,18 @@
   components:
   - type: Pda
     id: NukieAgentIDCard # Goobstation
+  - type: Sprite # Mini: typan syndicate PDA sprites
+    sprite: _Mini/Objects/Devices/typan_pda.rsi
   - type: Appearance
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-corpsman # Goobstation?
+       pda-syndi-med
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-corpsman # Goobstation?
+    sprite: _Mini/Objects/Devices/typan_pda.rsi
+    state: pda-syndi-med
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
