@@ -34,10 +34,19 @@ public sealed class TraitorRuleTest
   description: traitor-description
   showInVote: false
   rules:
-  - Traitor
+  - TraitorIntegrationTestRule
+
+- type: entity
+  id: TraitorIntegrationTestRule
+  parent: Traitor
+  components:
+  - type: GameRule
+    delay:
+      min: 0
+      max: 0
 ";
 
-    private const string TraitorGameRuleProtoId = "Traitor";
+    private const string TraitorGameRuleProtoId = "TraitorIntegrationTestRule";
     private const string TraitorPresetId = "TraitorIntegrationTest";
     private const string TraitorAntagRoleName = "Traitor";
     private static readonly ProtoId<NpcFactionPrototype> SyndicateFaction = "Syndicate";

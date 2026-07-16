@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Generate black/red Typan vending RSI variants from NT VendingMachines sprites.
+"""Generate Typan vending RSI variants from NT VendingMachines sprites.
 
 Copies RSI structure (meta.json, frame packing, directions, delays, alpha) and
 recolors RGB with a luminance-preserving Typan palette transfer.
+
+Department accents are sampled from Typan glass airlocks / medical techfab:
+black chassis + department color + red syndicate trim.
 """
 
 from __future__ import annotations
@@ -21,12 +24,75 @@ SRC_DIR = ROOT / "Resources" / "Textures" / "Structures" / "Machines" / "Vending
 DST_DIR = ROOT / "Resources" / "Textures" / "_Mini" / "Structures" / "Machines" / "VendingMachines"
 MANIFEST_PATH = ROOT / "Tools" / "typan_vending_palette.json"
 
-# Skip templates / already-syndie skins / non-machine placeholders.
 DEFAULT_SKIP = {
     "empty.rsi",
     "syndiedrobe.rsi",
     "bruiseomat.rsi",
     "random.rsi",
+}
+
+# OKLab (a, b) accents. Sourced from Typan glass airlocks / techfab med.
+# mining uses None → enhanced black/red only.
+PALETTE_ACCENTS: dict[str, tuple[float, float] | None] = {
+    "default": None,
+    "mining": None,
+    # techfab med / glass medical — cyan-blue
+    "medical": (-0.0433, -0.0734),
+    # glass engineering — yellow/gold
+    "engineering": (0.0058, 0.1107),
+    # glass cargo — brown
+    "cargo": (0.0474, 0.0810),
+    # glass atmospherics — teal
+    "atmos": (-0.0769, -0.0038),
+    # glass science purple (department paint itself is violet)
+    "science": (0.0577, -0.1423),
+    # glass command — darker blue
+    "command": (-0.0376, -0.0698),
+    # glass service — olive green
+    "service": (-0.0668, 0.0836),
+    # glass virology — green
+    "virology": (-0.0766, 0.0595),
+}
+
+# Which RSI gets which palette. Unlisted → default black/red.
+DEFAULT_PALETTE_MAP: dict[str, str] = {
+    # Medical / SindiMed — blue-black-red
+    "medivend.rsi": "medical",
+    "medical.rsi": "medical",
+    "wallmed.rsi": "medical",
+    "medidrobe.rsi": "medical",
+    "chemdrobe.rsi": "medical",
+    "chemvend.rsi": "medical",
+    "genedrobe.rsi": "medical",
+    "virodrobe.rsi": "virology",
+    # Engineering — yellow-black-red
+    "engivend.rsi": "engineering",
+    "engidrobe.rsi": "engineering",
+    "youtool.rsi": "engineering",
+    "tankdispenser.rsi": "engineering",
+    # Mining — heavy black/red
+    "mining.rsi": "mining",
+    # Cargo — brown-black-red
+    "cargodrobe.rsi": "cargo",
+    # Atmos — teal-black-red
+    "atmosdrobe.rsi": "atmos",
+    # Science — purple-black-red
+    "scidrobe.rsi": "science",
+    "robotics.rsi": "science",
+    "robodrobe.rsi": "science",
+    # Service / hydro / food
+    "chefdrobe.rsi": "service",
+    "chefvend.rsi": "service",
+    "dinnerware.rsi": "service",
+    "hydrobe.rsi": "service",
+    "janidrobe.rsi": "service",
+    "bardrobe.rsi": "service",
+    "nutri.rsi": "service",
+    "nutri_green.rsi": "service",
+    "seeds.rsi": "service",
+    "seeds_green.rsi": "service",
+    # Command
+    "centdrobe.rsi": "command",
 }
 
 
@@ -79,61 +145,108 @@ def clamp01(x: float) -> float:
     return max(0.0, min(1.0, x))
 
 
-def typan_target(L: float, chroma: float, hue_deg: float, is_unshaded: bool) -> tuple[int, int, int]:
-    """Map source OKLab into Typan black chassis + red accents (boozeomat-style).
+def charcoal(lum: float, mining: bool = False) -> tuple[int, int, int]:
+    if mining:
+        if lum < 0.2:
+            return (12, 10, 10)
+        if lum < 0.4:
+            return (24, 18, 18)
+        if lum < 0.6:
+            return (40, 30, 30)
+        if lum < 0.8:
+            return (62, 48, 48)
+        return (110, 90, 90)
+    if lum < 0.2:
+        return (19, 21, 20)
+    if lum < 0.4:
+        return (34, 30, 30)
+    if lum < 0.6:
+        return (50, 46, 46)
+    if lum < 0.8:
+        return (72, 70, 70)
+    return (127, 127, 127)
 
-    Shaded chassis collapses to near-black / dark gray regardless of source paint
-    color. Only red-family source pixels and unshaded emissives become red.
-    """
-    # Unshaded overlays: keep readable emissives in the red family.
+
+def is_red_family(hue_deg: float) -> bool:
+    return hue_deg >= 315.0 or hue_deg <= 50.0
+
+
+def red_trim(L: float, mining: bool = False) -> tuple[int, int, int]:
+    boost = 1.35 if mining else 1.0
+    if L > 0.55:
+        L2 = clamp01(L * 0.35)
+        target_c = 0.05 * boost
+    elif L > 0.35:
+        L2 = clamp01(L * 0.45)
+        target_c = 0.06 * boost
+    else:
+        L2 = clamp01(L * 0.55)
+        target_c = 0.045 * boost
+    if mining:
+        # Push midtones toward a hotter dark red.
+        L2 = clamp01(L2 * 0.9)
+        target_c = min(0.12, target_c + 0.02)
+    return oklab_to_rgb(L2, target_c * 0.9, target_c * 0.25)
+
+
+def dept_paint(L: float, chroma: float, accent: tuple[float, float]) -> tuple[int, int, int]:
+    """Remap body paint onto a department accent, keeping luminance cues."""
+    aa, ab = accent
+    accent_c = math.hypot(aa, ab) or 0.08
+    # Stronger wash on lighter panels (techfab-flag look); darker stays muted.
+    base_c = lerp(0.035, accent_c * 1.25, clamp01((L - 0.25) / 0.55))
+    target_c = clamp01(lerp(base_c, accent_c * 1.2, clamp01(chroma / 0.10)))
+    L2 = clamp01(L * 0.78)
+    scale = target_c / accent_c
+    return oklab_to_rgb(L2, aa * scale, ab * scale)
+
+
+def typan_target(
+    L: float,
+    chroma: float,
+    hue_deg: float,
+    is_unshaded: bool,
+    palette: str,
+) -> tuple[int, int, int]:
+    mining = palette == "mining"
+    accent = PALETTE_ACCENTS.get(palette)
+
+    # Screens/emissives always stay red regardless of department palette.
     if is_unshaded:
         if chroma < 0.02 and L < 0.2:
             return oklab_to_rgb(L * 0.7, 0.0, 0.0)
         if chroma < 0.02 and L > 0.85:
-            # bright UI glyphs → pale red/white
             return (238, 200, 200)
-        # Colored or lit pixels → red emissive
-        target_c = 0.14 if chroma > 0.03 else 0.08
+        target_c = 0.16 if mining else (0.14 if chroma > 0.03 else 0.08)
         L2 = clamp01(lerp(L, 0.55, 0.25) if L > 0.4 else L * 0.9)
         return oklab_to_rgb(L2, target_c * 0.95, target_c * 0.3)
 
-    # Shaded body: syndicate black/gray chassis (boozeomat-style).
-    def charcoal(lum: float) -> tuple[int, int, int]:
-        if lum < 0.2:
-            return (19, 21, 20)
-        if lum < 0.4:
-            return (34, 30, 30)
-        if lum < 0.6:
-            return (50, 46, 46)
-        if lum < 0.8:
-            return (72, 70, 70)
-        return (127, 127, 127)
+    if is_red_family(hue_deg) and chroma >= 0.04:
+        return red_trim(L, mining=mining)
+
+    if accent is not None:
+        if chroma < 0.04:
+            # Medical needs a stronger blue chassis wash (techfab-like).
+            # Other departments keep charcoal body + accent paint only.
+            if palette == "medical" and L >= 0.35:
+                return dept_paint(L, max(chroma, 0.05), accent)
+            return charcoal(L, mining=False)
+        return dept_paint(L, chroma, accent)
 
     if chroma < 0.04:
-        return charcoal(L)
+        return charcoal(L, mining=mining)
 
-    # Red-family source pixels keep the dark-red trim treatment that made the
-    # boozeomat look right.
-    if hue_deg >= 315.0 or hue_deg <= 50.0:
-        if L > 0.55:
-            L2 = clamp01(L * 0.35)
-            target_c = 0.05
-        elif L > 0.35:
-            L2 = clamp01(L * 0.45)
-            target_c = 0.06
-        else:
-            L2 = clamp01(L * 0.55)
-            target_c = 0.045
-        return oklab_to_rgb(L2, target_c * 0.9, target_c * 0.25)
+    if mining:
+        # Non-red chromatic paint collapses into darker red-tinted charcoal.
+        if chroma > 0.05:
+            return red_trim(L * 0.85, mining=True)
+        return charcoal(L * 0.85, mining=True)
 
-    # Any other chassis paint color (olive, blue, green, yellow bodies) becomes
-    # plain charcoal, slightly darkened so panel lines keep contrast.
-    return charcoal(L * 0.9)
+    return charcoal(L * 0.9, mining=False)
 
 
-def recolor_rgba(img: Image.Image, is_unshaded: bool) -> Image.Image:
+def recolor_rgba(img: Image.Image, is_unshaded: bool, palette: str) -> Image.Image:
     src = img.convert("RGBA")
-    # Pillow 10+: get_flattened_data; older: getdata.
     raw = src.get_flattened_data() if hasattr(src, "get_flattened_data") else src.getdata()
     data = list(raw)
     cache: dict[tuple[int, int, int], tuple[int, int, int]] = {}
@@ -147,7 +260,7 @@ def recolor_rgba(img: Image.Image, is_unshaded: bool) -> Image.Image:
         if mapped is None:
             L, oa, ob = rgb_to_oklab(r, g, b)
             hue_deg = math.degrees(math.atan2(ob, oa)) % 360.0
-            mapped = typan_target(L, math.hypot(oa, ob), hue_deg, is_unshaded)
+            mapped = typan_target(L, math.hypot(oa, ob), hue_deg, is_unshaded, palette)
             cache[key] = mapped
         nr, ng, nb = mapped
         out.append((nr, ng, nb, a))
@@ -157,15 +270,19 @@ def recolor_rgba(img: Image.Image, is_unshaded: bool) -> Image.Image:
 
 def load_manifest() -> dict:
     if MANIFEST_PATH.exists():
-        return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    return {
-        "skip": sorted(DEFAULT_SKIP),
-        "notes": "Auto-generated Typan vending recolor manifest",
-        "overrides": {
-            # Medical Typan historically pointed at medical.rsi; NT medical uses medivend.
-            "medical.rsi": {"source": "medivend.rsi", "enabled": False},
-        },
-    }
+        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    else:
+        manifest = {
+            "skip": sorted(DEFAULT_SKIP),
+            "notes": "Typan vending recolor manifest",
+            "overrides": {},
+            "palettes": {},
+        }
+    # Ensure palette map exists and is filled with defaults for missing keys.
+    palettes = dict(DEFAULT_PALETTE_MAP)
+    palettes.update(manifest.get("palettes", {}))
+    manifest["palettes"] = palettes
+    return manifest
 
 
 def save_manifest(manifest: dict) -> None:
@@ -176,10 +293,7 @@ def validate_rsi(src: Path, dst: Path) -> list[str]:
     errors: list[str] = []
     src_meta = json.loads((src / "meta.json").read_text(encoding="utf-8"))
     dst_meta = json.loads((dst / "meta.json").read_text(encoding="utf-8"))
-    # Structure must match except copyright note.
-    src_states = src_meta.get("states", [])
-    dst_states = dst_meta.get("states", [])
-    if src_states != dst_states:
+    if src_meta.get("states") != dst_meta.get("states"):
         errors.append(f"{dst.name}: states mismatch vs source")
     if src_meta.get("size") != dst_meta.get("size"):
         errors.append(f"{dst.name}: size mismatch")
@@ -194,15 +308,12 @@ def validate_rsi(src: Path, dst: Path) -> list[str]:
         if a.size != b.size:
             errors.append(f"{dst.name}/{png.name}: size {a.size} -> {b.size}")
             continue
-        # Alpha mask must be identical.
-        aa = a.split()[3].tobytes()
-        bb = b.split()[3].tobytes()
-        if aa != bb:
+        if a.split()[3].tobytes() != b.split()[3].tobytes():
             errors.append(f"{dst.name}/{png.name}: alpha mask changed")
     return errors
 
 
-def process_rsi(name: str, source_name: str | None = None) -> list[str]:
+def process_rsi(name: str, source_name: str | None, palette: str) -> list[str]:
     src_name = source_name or name
     src = SRC_DIR / src_name
     dst = DST_DIR / name
@@ -216,7 +327,7 @@ def process_rsi(name: str, source_name: str | None = None) -> list[str]:
     meta = json.loads((src / "meta.json").read_text(encoding="utf-8"))
     copyright = meta.get("copyright", "")
     meta["copyright"] = (
-        f"{copyright} Recolored to Typan black/red palette for Mini Station "
+        f"{copyright} Recolored to Typan {palette} palette for Mini Station "
         f"(auto-generated by Tools/generate_typan_vending_rsis.py)."
     ).strip()
     (dst / "meta.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
@@ -224,8 +335,7 @@ def process_rsi(name: str, source_name: str | None = None) -> list[str]:
     for png in sorted(src.glob("*.png")):
         is_unshaded = "unshaded" in png.name.lower()
         img = Image.open(png)
-        out = recolor_rgba(img, is_unshaded=is_unshaded)
-        # Deterministic PNG write.
+        out = recolor_rgba(img, is_unshaded=is_unshaded, palette=palette)
         out.save(dst / png.name, format="PNG", optimize=False, compress_level=6)
 
     return validate_rsi(src, dst)
@@ -240,12 +350,13 @@ def main() -> int:
     manifest = load_manifest()
     skip = set(manifest.get("skip", [])) | DEFAULT_SKIP
     overrides = manifest.get("overrides", {})
+    palettes = manifest.get("palettes", {})
 
     rsi_names = sorted(p.name for p in SRC_DIR.iterdir() if p.is_dir() and p.name.endswith(".rsi"))
     if args.only:
         rsi_names = [n if n.endswith(".rsi") else f"{n}.rsi" for n in args.only]
 
-    selected: list[tuple[str, str]] = []
+    selected: list[tuple[str, str, str]] = []
     for name in rsi_names:
         if name in skip:
             continue
@@ -253,22 +364,24 @@ def main() -> int:
         if ov.get("enabled") is False:
             continue
         source = ov.get("source", name)
-        selected.append((name, source))
+        palette = ov.get("palette") or palettes.get(name, "default")
+        if palette not in PALETTE_ACCENTS:
+            print(f"WARNING: unknown palette '{palette}' for {name}, using default", file=sys.stderr)
+            palette = "default"
+        selected.append((name, source, palette))
 
-    # Ensure medical alias is generated as medivend output name used by prototypes.
-    # Also always generate medivend.rsi if present.
     print(f"Will process {len(selected)} RSI into {DST_DIR}")
     if args.dry_run:
-        for name, source in selected:
-            print(f"  {name} <= {source}")
+        for name, source, palette in selected:
+            print(f"  {name} <= {source} [{palette}]")
         save_manifest(manifest)
         return 0
 
     DST_DIR.mkdir(parents=True, exist_ok=True)
     all_errors: list[str] = []
-    for name, source in selected:
-        print(f"Recoloring {source} -> {name}")
-        errs = process_rsi(name, source_name=source)
+    for name, source, palette in selected:
+        print(f"Recoloring {source} -> {name} [{palette}]")
+        errs = process_rsi(name, source_name=source, palette=palette)
         if errs:
             print("  ERRORS:")
             for e in errs:
@@ -277,7 +390,6 @@ def main() -> int:
         else:
             print("  ok")
 
-    # Keep legacy medical.rsi name as a copy of medivend for old refs.
     medivend_dst = DST_DIR / "medivend.rsi"
     medical_dst = DST_DIR / "medical.rsi"
     if medivend_dst.exists():

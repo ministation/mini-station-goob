@@ -517,7 +517,7 @@
   - type: PointLight
     radius: 1.5
     energy: 1.6
-    color: "#8B0000"
+    color: "#B00000"
 
 - type: entity
   parent: VendingMachineDonut
