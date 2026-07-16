@@ -115,10 +115,11 @@ public sealed class ServerListBox : BoxContainer
         };
 
         // Fixed-size icon slot so labels line up even if an icon is missing.
+        const float iconSlotSize = 20f;
         var iconSlot = new Control
         {
-            MinSize = new Vector2(20, 20),
-            MaxSize = new Vector2(20, 20),
+            MinSize = new Vector2(iconSlotSize, iconSlotSize),
+            MaxSize = new Vector2(iconSlotSize, iconSlotSize),
         };
 
         if (icon != null)
@@ -130,8 +131,17 @@ public sealed class ServerListBox : BoxContainer
                     HorizontalAlignment = HAlignment.Center,
                     VerticalAlignment = VAlignment.Center,
                 };
-                animatedIcon.DisplayRect.TextureScale = new Vector2(ActionIconScale, ActionIconScale);
                 animatedIcon.SetFromSpriteSpecifier(icon);
+
+                // Shrink oversized textures (e.g. 96x96 Ghost.png) to fit the slot,
+                // otherwise they overflow the button towards bottom-right.
+                var scale = ActionIconScale;
+                var texSize = animatedIcon.DisplayRect.Texture?.Size ?? Vector2i.One;
+                var maxDim = Math.Max(texSize.X, texSize.Y);
+                if (maxDim * scale > iconSlotSize)
+                    scale = iconSlotSize / maxDim;
+
+                animatedIcon.DisplayRect.TextureScale = new Vector2(scale, scale);
                 iconSlot.AddChild(animatedIcon);
             }
             catch

@@ -43913,14 +43913,14 @@ entities:
       anchored: False
       pos: -504.0371,509.62436
       parent: 1
-- proto: RandomVendingDrinks
+- proto: RandomVendingDrinksTypan
   entities:
   - uid: 2642
     components:
     - type: Transform
       pos: 10.5,14.5
       parent: 2
-- proto: RandomVendingSnacks
+- proto: RandomVendingSnacksTypan
   entities:
   - uid: 44
     components:
@@ -47663,14 +47663,14 @@ entities:
     - type: Transform
       pos: 35.5,12.5
       parent: 2
-- proto: VendingMachineCoffeeTypan
+- proto: RandomVendingDrinksTypan
   entities:
   - uid: 4657
     components:
     - type: Transform
       pos: 14.5,19.5
       parent: 2
-- proto: VendingMachineColaRedTypan
+- proto: RandomVendingDrinksTypan
   entities:
   - uid: 355
     components:
@@ -47744,14 +47744,14 @@ entities:
     - type: Transform
       pos: 44.5,9.5
       parent: 2
-- proto: VendingMachineSnackTealTypan
+- proto: RandomVendingSnacksTypan
   entities:
   - uid: 673
     components:
     - type: Transform
       pos: 26.5,1.5
       parent: 2
-- proto: VendingMachineSovietSodaTypan
+- proto: RandomVendingDrinksTypan
   entities:
   - uid: 4677
     components:
