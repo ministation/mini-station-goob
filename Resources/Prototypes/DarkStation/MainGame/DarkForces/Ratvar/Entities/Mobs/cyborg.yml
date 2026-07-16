@@ -182,6 +182,7 @@
       endValue: 2.0
       isLooped: true
   - type: ToggleableVisuals
+    spriteLayer: light
   - type: PointLight
     enabled: false
     mask: /Textures/Effects/LightMasks/cone.png

@@ -4,11 +4,11 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Utility;
 using Robust.Client.Console;
 using Robust.Client.Graphics;
-using Robust.Client.ResourceManagement;
 using System.Numerics;
 using Robust.Client.GameObjects;
 using Robust.Client.Input;
 using Robust.Shared.Enums;
+using Robust.Shared.Maths;
 
 namespace Content.Client.Lobby.UI;
 
@@ -17,8 +17,13 @@ public sealed class ServerListBox : BoxContainer
     private const float ActionButtonHeight = 40f;
     private const float ActionIconScale = 0.36f;
 
+    private static readonly SpriteSpecifier CoinAnimatedIcon = new SpriteSpecifier.Rsi(
+        new ResPath("/Textures/_Mini/Interface/antag_tokens.rsi"), "coin_animated");
+
+    private static readonly SpriteSpecifier ClockAnimatedIcon = new SpriteSpecifier.Rsi(
+        new ResPath("/Textures/_Mini/Interface/daily_rewards.rsi"), "clock_animated");
+
     [Dependency] private readonly IClientConsoleHost _consoleHost = default!;
-    [Dependency] private readonly IResourceCache _resourceCache = default!;
     private IGameController _gameController;
     private List<Button> _connectButtons = new();
     private IUriOpener _uriOpener;
@@ -56,17 +61,17 @@ public sealed class ServerListBox : BoxContainer
 
         actionButtonsContainer.AddChild(CreateActionButton(
             "Терминал",
-            "/Textures/_Mini/Interface/Coin.png",
+            CoinAnimatedIcon,
             OpenAntagTokens));
 
         actionButtonsContainer.AddChild(CreateActionButton(
             "Награды",
-            "/Textures/_Mini/Interface/Clock.png",
+            ClockAnimatedIcon,
             OpenDailyRewards));
 
         actionButtonsContainer.AddChild(CreateActionButton(
             "Призраки",
-            "/Textures/_Mini/Interface/Ghost.png",
+            new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Ghost.png")),
             OpenGhostShop));
 
         AddChild(actionButtonsContainer);
@@ -91,7 +96,7 @@ public sealed class ServerListBox : BoxContainer
         AddChild(scrollContainer);
     }
 
-    private Button CreateActionButton(string text, string? iconPath, Action onPressed)
+    private Button CreateActionButton(string text, SpriteSpecifier? icon, Action onPressed)
     {
         var button = new Button
         {
@@ -116,19 +121,18 @@ public sealed class ServerListBox : BoxContainer
             MaxSize = new Vector2(20, 20),
         };
 
-        if (iconPath != null)
+        if (icon != null)
         {
             try
             {
-                var texture = _resourceCache.GetResource<TextureResource>(iconPath);
-                iconSlot.AddChild(new TextureRect
+                var animatedIcon = new AnimatedTextureRect
                 {
-                    Texture = texture,
-                    TextureScale = new Vector2(ActionIconScale, ActionIconScale),
                     HorizontalAlignment = HAlignment.Center,
                     VerticalAlignment = VAlignment.Center,
-                    Stretch = TextureRect.StretchMode.KeepCentered,
-                });
+                };
+                animatedIcon.DisplayRect.TextureScale = new Vector2(ActionIconScale, ActionIconScale);
+                animatedIcon.SetFromSpriteSpecifier(icon);
+                iconSlot.AddChild(animatedIcon);
             }
             catch
             {
