@@ -540,8 +540,13 @@ public sealed class UserAHelpUIHandler : IAHelpUIHandler
         _ownerId = owner;
     }
 
-    public void BindRating(AdminHelpRatingClientSystem ratingSystem)
+    public void BindRating(AdminHelpRatingClientSystem? ratingSystem)
     {
+        // UISystemDependency may still be uninitialized during integration-test recycle
+        // when admin status updates before entity systems are ready.
+        if (ratingSystem == null)
+            return;
+
         _ratingSystem = ratingSystem;
         ratingSystem.StateUpdated -= OnRatingStateUpdated;
         ratingSystem.StateUpdated += OnRatingStateUpdated;
