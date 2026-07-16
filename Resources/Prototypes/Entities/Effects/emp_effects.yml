@@ -21,6 +21,11 @@
   - type: AnimationPlayer
 
 - type: entity
+  id: EffectEmpPulseNoSound
+  parent: EffectEmpPulse
+  categories: [ HideSpawnMenu ]
+
+- type: entity
   id: EffectEmpDisabled
   categories: [ HideSpawnMenu ]
   components:

@@ -6,7 +6,16 @@
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Medical/Stypticspray.rsi
-    state: icon
+    layers:
+    - state: icon
+    - state: cleaner-fill-1
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
+  - type: SolutionContainerVisuals
+    maxFillLevels: 1
+    fillBaseName: cleaner-fill-
+    inHandsMaxFillLevels: 0
+    equippedMaxFillLevels: 0
   - type: Tag
     tags:
     - Spray
@@ -19,7 +28,16 @@
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Medical/Silverspray.rsi
-    state: icon
+    layers:
+    - state: icon
+    - state: cleaner-fill-1
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
+  - type: SolutionContainerVisuals
+    maxFillLevels: 1
+    fillBaseName: cleaner-fill-
+    inHandsMaxFillLevels: 0
+    equippedMaxFillLevels: 0
   - type: Tag
     tags:
     - Spray

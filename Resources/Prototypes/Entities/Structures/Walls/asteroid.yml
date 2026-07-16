@@ -400,9 +400,51 @@
     oreChance: 0.33
     oreRarityPrototypeId: RandomOreDistributionStandard
 
+# Edge-layer asteroid rock without IconSmooth (uses manual sprite corners).
+- type: entity
+  abstract: true
+  id: AsteroidRockEdgeBase
+  parent: BaseWall
+  name: asteroid rock edge
+  description: A rocky asteroid.
+  components:
+  - type: Transform
+    noRot: true
+  - type: MiningScannerViewable
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Rock
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 120
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          path: /Audio/Effects/break_stone.ogg
+          params:
+            volume: -6
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 2000
+  - type: Gatherable
+    toolWhitelist:
+      tags: []
+
 - type: entity
   id: IronSandstone
-  parent: AsteroidRock
+  parent: AsteroidRockEdgeBase
   name: ironsandstone
   suffix: no ore yield
   components:

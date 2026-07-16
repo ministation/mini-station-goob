@@ -384,6 +384,8 @@ public sealed partial class AdminLogsControl : Control
         var newTypes = types.ToHashSet();
         var buttons = new SortedSet<AdminLogTypeButton>(_adminLogTypeButtonComparer);
 
+        SelectedTypes.Clear();
+
         foreach (var control in TypesContainer.Children.ToArray())
         {
             if (control is not AdminLogTypeButton type ||
@@ -392,6 +394,8 @@ public sealed partial class AdminLogsControl : Control
                 continue;
             }
 
+            type.Pressed = true;
+            SelectedTypes.Add(type.Type);
             buttons.Add(type);
         }
 
