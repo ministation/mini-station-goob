@@ -39,8 +39,12 @@ public sealed class PoweredLightSystem : SharedPoweredLightSystem
         light.LastGhostBlink = time;
 
         ToggleBlinkingLight(uid, light, true);
-        uid.SpawnTimer(light.GhostBlinkingTime, () =>
+        // Orion-Edit: this RobustToolbox fork has no EntityUid.SpawnTimer extension.
+        Robust.Shared.Timing.Timer.Spawn(light.GhostBlinkingTime, () =>
         {
+            if (TerminatingOrDeleted(uid))
+                return;
+
             ToggleBlinkingLight(uid, light, false);
         });
 
