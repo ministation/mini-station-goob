@@ -92,6 +92,11 @@ namespace Content.Server.Voting.Managers
 
         private void PlayerManagerOnPlayerStatusChanged(object? sender, SessionStatusEventArgs e)
         {
+            // Integration-test dummy sessions have no network transport. They still
+            // transition to InGame for ticker tests, but cannot receive vote messages.
+            if (e.Session.Channel is DummyChannel)
+                return;
+
             if (e.NewStatus == SessionStatus.InGame)
             {
                 // Send current votes to newly connected players.

@@ -1,0 +1,15 @@
+{
+  "notes": "Typan vending recolor manifest. skip = RSI ignored; overrides.source remaps output name to a different NT source RSI.",
+  "skip": [
+    "bruiseomat.rsi",
+    "empty.rsi",
+    "random.rsi",
+    "syndiedrobe.rsi"
+  ],
+  "overrides": {
+    "medical.rsi": {
+      "source": "medivend.rsi",
+      "enabled": true
+    }
+  }
+}

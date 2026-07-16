@@ -1,0 +1,251 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Typan drobe inventories — department uniforms replace NT jumpsuits.
+
+- type: vendingMachineInventory
+  id: AtmosDrobeTypanInventory
+  startingInventory:
+    ClothingBackpackDuffelAtmospherics: 2
+    ClothingBackpackSatchelAtmospherics: 2
+    ClothingBackpackAtmospherics: 2
+    ClothingBackpackMessengerAtmospherics: 2
+    ClothingUniformJumpsuitTypanAtmosphericsEngineer: 3
+    ClothingUniformJumpskirtTypanAtmosphericsEngineer: 3
+    ClothingAtmosphericsOveralls: 3
+    ClothingShoesColorWhite: 3
+    ClothingHeadsetEngineering: 2
+    ClothingHeadHelmetFire: 2
+    ClothingOuterSuitFire: 2
+    ClothingOuterWinterAtmos: 2
+    ClothingNeckScarfStripedLightBlue: 3
+  contrabandInventory:
+    ToyFigurineAtmosTech: 1
+  emaggedInventory:
+    ClothingOuterSuitAtmosFire: 1
+    ClothingHeadHelmetAtmosFire: 1
+
+- type: vendingMachineInventory
+  id: EngiDrobeTypanInventory
+  startingInventory:
+    ClothingBackpackDuffelEngineering: 3
+    ClothingBackpackSatchelEngineering: 3
+    ClothingBackpackEngineering: 3
+    ClothingBackpackMessengerEngineering: 3
+    ClothingUniformJumpsuitTypanTechnician: 3
+    ClothingUniformJumpskirtTypanTechnician: 3
+    ClothingUniformJumpsuitTypanTechnicalOperationsSupervisor: 2
+    ClothingUniformJumpskirtTypanTechnicalOperationsSupervisor: 2
+    ClothingShoesColorBlack: 3
+    ClothingOuterVestHazard: 3
+    ClothingShoesBootsWork: 3
+    ClothingHeadHatHardhatYellow: 3
+    ClothingHeadHatHardhatOrange: 3
+    ClothingHeadsetEngineering: 3
+    ClothingOuterWinterEngi: 2
+    ClothingNeckScarfStripedOrange: 3
+    ClothingShoesBootsWinterEngi: 2
+  contrabandInventory:
+    ToyFigurineEngineer: 1
+    ToyFigurineChiefEngineer: 1
+
+- type: vendingMachineInventory
+  id: MediDrobeTypanInventory
+  startingInventory:
+    ClothingBackpackDuffelMedical: 4
+    ClothingBackpackMedical: 4
+    ClothingBackpackSatchelMedical: 4
+    ClothingBackpackMessengerMedical: 4
+    ClothingUniformJumpsuitTypanMedic: 4
+    ClothingUniformJumpskirtTypanMedic: 4
+    ClothingUniformJumpsuitTypanParamedic: 3
+    ClothingUniformJumpskirtTypanParamedic: 3
+    ClothingBeltMedical: 4
+    ClothingHeadHatBeretMedic: 4
+    ClothingHeadNurseHat: 4
+    ClothingOuterCoatLab: 4
+    ClothingShoesColorWhite: 4
+    ClothingHandsGlovesLatex: 4
+    ClothingHandsGlovesNitrile: 2
+    ClothingHeadsetMedical: 4
+    ClothingOuterWinterMed: 2
+    ClothingOuterHospitalGown: 5
+    UniformScrubsColorGreen: 4
+    UniformScrubsColorBlue: 4
+    UniformScrubsColorPurple: 4
+    ClothingHeadHatSurgcapGreen: 4
+    ClothingHeadHatSurgcapBlue: 4
+    ClothingHeadHatSurgcapPurple: 4
+    ClothingShoesBootsWinterMed: 2
+  contrabandInventory:
+    ToyFigurineMedicalDoctor: 1
+    ToyFigurineParamedic: 1
+    ToyFigurineChiefMedicalOfficer: 1
+
+- type: vendingMachineInventory
+  id: CargoDrobeTypanInventory
+  startingInventory:
+    ClothingBackpackCargo: 3
+    ClothingBackpackSatchelCargo: 3
+    ClothingBackpackDuffelCargo: 3
+    ClothingBackpackMessengerCargo: 3
+    ClothingUniformJumpsuitTypanCargotech: 3
+    ClothingUniformJumpskirtTypanCargotech: 3
+    ClothingUniformOverallsTypanCargotech: 3
+    ClothingShoesColorBlack: 3
+    ClothingHandsGlovesFingerless: 3
+    ClothingHeadHatCargosoft: 3
+    ClothingHeadBandBrown: 3
+    ClothingHeadsetCargo: 3
+    ClothingOuterWinterCargo: 2
+    ClothingNeckScarfStripedBrown: 3
+    ClothingShoesBootsWinterCargo: 2
+    MailBag: 2
+  contrabandInventory:
+    ToyFigurineCargoTech: 1
+    ToyFigurineSalvage: 1
+    ToyFigurineQuartermaster: 1
+
+- type: vendingMachineInventory
+  id: SciDrobeTypanInventory
+  startingInventory:
+    ClothingBackpackScience: 3
+    ClothingBackpackSatchelScience: 3
+    ClothingBackpackDuffelScience: 3
+    ClothingBackpackMessengerScience: 3
+    ClothingUniformJumpsuitTypanResearcher: 3
+    ClothingUniformJumpskirtTypanResearcher: 3
+    ClothingUniformJumpsuitTypanResearchDirector: 2
+    ClothingUniformJumpskirtTypanResearchDirector: 2
+    ClothingOuterCoatRnd: 3
+    ClothingShoesColorWhite: 3
+    ClothingNeckTieSci: 3
+    ClothingHeadsetScience: 3
+    ClothingMaskGas: 3
+    ClothingOuterWinterSci: 2
+    ClothingNeckScarfStripedPurple: 3
+    ClothingShoesBootsWinterSci: 2
+  contrabandInventory:
+    ToyFigurineResearchDirector: 1
+
+- type: vendingMachineInventory
+  id: ChefDrobeTypanInventory
+  startingInventory:
+    ClothingHeadsetService: 2
+    ClothingOuterApronChef: 3
+    ClothingOuterWinterChef: 2
+    ClothingOuterJacketChef: 1
+    ClothingUniformJumpsuitTypanChef: 3
+    ClothingUniformJumpskirtTypanChef: 3
+    ClothingMaskItalianMoustache: 2
+    ClothingHeadHatChef: 2
+    ClothingShoesColorBlack: 2
+    ClothingShoesChef: 2
+    ClothingBeltChef: 2
+    BookUSSPCook: 1
+  contrabandInventory:
+    ToyFigurineChef: 1
+
+- type: vendingMachineInventory
+  id: HyDrobeTypanInventory
+  startingInventory:
+    ClothingBackpackHydroponics: 2
+    ClothingBackpackSatchelHydroponics: 2
+    ClothingBackpackDuffelHydroponics: 2
+    ClothingBackpackMessengerHydroponics: 2
+    ClothingOuterApronBotanist: 2
+    ClothingUniformJumpsuitTypanBotanist: 3
+    ClothingUniformJumpskirtTypanBotanist: 3
+    ClothingNeckScarfStripedGreen: 3
+    ClothingHeadBandBotany: 3
+    ClothingHeadsetService: 2
+    ClothingOuterWinterHydro: 2
+  contrabandInventory:
+    ToyFigurineBotanist: 1
+
+- type: vendingMachineInventory
+  id: SecDrobeTypanInventory
+  startingInventory:
+    ClothingBackpackSecurity: 3
+    ClothingBackpackSatchelSecurity: 3
+    ClothingBackpackDuffelSecurity: 3
+    ClothingBackpackMessengerSecurity: 3
+    ClothingUniformJumpsuitTypanPatrol: 3
+    ClothingUniformJumpskirtTypanRecruit: 3
+    ClothingUniformJumpsuitTypanCommunicationsOfficer: 2
+    ClothingUniformJumpskirtTypanCommunicationsOfficer: 2
+    ClothingShoesBootsJack: 3
+    ClothingHeadHatBeretSecurity: 3
+    ClothingHeadHatSecsoft: 3
+    ClothingHeadBandRed: 3
+    ClothingMaskNeckGaiterRed: 3
+    ClothingHandsGlovesColorBlack: 3
+    ClothingHandsGlovesFingerless: 3
+    ClothingHeadsetAltSecurityRegular: 3
+    ClothingOuterWinterSec: 2
+    ClothingOuterArmorBasic: 2
+    ClothingNeckScarfStripedRed: 3
+    ClothingShoesBootsCombat: 1
+    ClothingShoesBootsWinterSec: 2
+    ClothingHeadHelmetBasic: 2
+  contrabandInventory:
+    ToyFigurineSecurity: 1
+    ToyFigurineWarden: 1
+    ToyFigurineHeadOfSecurity: 1
+
+# Main Typan clothing vendor (replaces SyndieDrobe on Typan map).
+- type: vendingMachineInventory
+  id: SyndieDrobeTypanInventory
+  startingInventory:
+    ClothingBackpackMessengerSyndicate: 2
+    ClothingHeadHatOutlawHat: 3
+    ClothingHeadHatSyndie: 5
+    ClothingMaskNeckGaiter: 5
+    ClothingOuterWinterSyndie: 5
+    ClothingHeadHatSyndieMAA: 3
+    ClothingOuterWinterSyndieCap: 3
+    ClothingOuterCoatSyndieCap: 3
+    ClothingUniformJumpsuitSyndieFormal: 5
+    ClothingUniformJumpskirtSyndieFormalDress: 5
+    ClothingUniformJumpsuitOperative: 5
+    ClothingUniformJumpskirtOperative: 5
+    ClothingUniformJumpsuitCasualSyndicate: 5
+    ClothingNeckScarfStripedSyndieGreen: 2
+    ClothingNeckScarfStripedSyndieRed: 2
+    ClothingShoesBootsWinterSyndicate: 2
+    # Typan department uniforms
+    ClothingUniformJumpsuitTypanAtmosphericsEngineer: 3
+    ClothingUniformJumpskirtTypanAtmosphericsEngineer: 3
+    ClothingUniformJumpsuitTypanBotanist: 3
+    ClothingUniformJumpskirtTypanBotanist: 3
+    ClothingUniformJumpsuitTypanChef: 3
+    ClothingUniformJumpskirtTypanChef: 3
+    ClothingUniformJumpsuitTypanTechnicalOperationsSupervisor: 2
+    ClothingUniformJumpskirtTypanTechnicalOperationsSupervisor: 2
+    ClothingUniformJumpsuitTypanCommunicationsOfficer: 2
+    ClothingUniformJumpskirtTypanCommunicationsOfficer: 2
+    ClothingUniformJumpsuitTypanMedic: 3
+    ClothingUniformJumpskirtTypanMedic: 3
+    ClothingUniformJumpsuitTypanParamedic: 3
+    ClothingUniformJumpskirtTypanParamedic: 3
+    ClothingUniformJumpsuitTypanPatrol: 3
+    ClothingUniformJumpskirtTypanRecruit: 3
+    ClothingUniformJumpsuitTypanResearchDirector: 2
+    ClothingUniformJumpskirtTypanResearchDirector: 2
+    ClothingUniformJumpsuitTypanResearcher: 3
+    ClothingUniformJumpskirtTypanResearcher: 3
+    ClothingUniformJumpsuitTypanTechnician: 3
+    ClothingUniformJumpskirtTypanTechnician: 3
+    ClothingUniformJumpsuitTypanCargotech: 3
+    ClothingUniformJumpskirtTypanCargotech: 3
+    ClothingUniformOverallsTypanCargotech: 3
+    ClothingUniformJumpsuitTypanDirectory: 1
+  contrabandInventory:
+    ToyFigurineFootsoldier: 1
+    ToyFigurineNukieElite: 1
+    ToyFigurineNukieCommander: 1
+    ClothingUniformJumpskirtTacticalMaid: 5
+    ClothingHeadHatTacticalMaidHeadband: 5
+    ClothingHandsTacticalMaidGloves: 5
+    ClothingShoesRealJordans: 1
+  emaggedInventory:
+    ClothingOuterCoatSyndieCapArmored: 1
+    ClothingOuterWinterSyndieCapArmored: 1
