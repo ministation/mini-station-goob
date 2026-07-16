@@ -304,7 +304,7 @@
 #     - type: BorgSwitchableType
 #       selectedBorgType: typan-service
 #     - type: TTS # Corvax-TTS
-#       voice: Glados
+#       voice: Robot
 #     - type: BorgTransponder
 #       sprite:
 #         sprite: _Mini/Mobs/Silicon/chassis.rsi

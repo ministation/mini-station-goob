@@ -53,6 +53,18 @@ public static class AntagLobbyIcons
             return true;
         }
 
+        if (antag.ID is "Xenoborg" or "MothershipCore")
+        {
+            sprite = antag.ID == "MothershipCore"
+                ? new SpriteSpecifier.Rsi(
+                    new ResPath("/Textures/Mobs/Silicon/mothership_core.rsi"),
+                    "core-idle")
+                : new SpriteSpecifier.Rsi(
+                    new ResPath("/Textures/Mobs/Silicon/chassis.rsi"),
+                    "xenoborg_heavy");
+            return true;
+        }
+
         sprite = default!;
         return false;
     }

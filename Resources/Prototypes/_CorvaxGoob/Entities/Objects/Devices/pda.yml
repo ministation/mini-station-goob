@@ -15,10 +15,10 @@
         !type:String
         pda-surgeon
   - type: Icon
-    sprite: _CorvaxGoob/Objects/Devices/pda.rsi
+    sprite: _Mini/Objects/Devices/pda.rsi
     state: pda-surgeon
   - type: Sprite
-    sprite: _CorvaxGoob/Objects/Devices/pda.rsi
+    sprite: _Mini/Objects/Devices/pda.rsi
     state: pda-surgeon
   - type: GuideHelp
     guides:

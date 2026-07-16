@@ -37,7 +37,6 @@
     proto: BulletLaserMini
     fireCost: 40
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 15
   - type: MagazineVisuals
     magState: mag

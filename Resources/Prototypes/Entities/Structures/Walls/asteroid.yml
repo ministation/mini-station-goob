@@ -407,6 +407,7 @@
   suffix: no ore yield
   components:
   - type: Icon
+    sprite: Structures/Walls/rock.rsi
     state: ironsandstone
   - type: Sprite
     sprite: Structures/Walls/rock.rsi

@@ -24,7 +24,6 @@
   - type: StaticPrice
     price: 300
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 10
 
 - type: entity
@@ -72,7 +71,6 @@
   - type: ToggleableVisuals
     spriteLayer: enum.ToggleableVisuals.Layer
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 20
 
 - type: entity
@@ -107,6 +105,5 @@
     maxCharge: 1200
     startingCharge: 1200
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 20
   - type: AmmoCounter

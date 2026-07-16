@@ -21,7 +21,7 @@
       0: Alive
       8000000: Dead
   - type: Stamina
-    critThreshold: 300000
+    baseCritThreshold: 300000
   - type: Physics
     bodyType: KinematicController
   - type: Fixtures

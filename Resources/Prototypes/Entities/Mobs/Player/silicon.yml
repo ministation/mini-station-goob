@@ -80,7 +80,7 @@
   - type: RadarConsole
     followEntity: false
   - type: CommunicationsConsole
-    canShuttle: false
+    canCallShuttle: false
     title: comms-console-announcement-title-station-ai
     color: "#5ed7aa"
     sound: /Audio/_CorvaxGoob/Announcements/aiannounce.ogg # CorvaxGoob-Announcements
@@ -536,7 +536,7 @@
     - Schechi
     - NewKinPidgin
   - type: TTS # CorvaxGoob-TTS
-    voice: Glados
+    voice: Robot
   # CorvaxGoob-Revert : DB conflicts
   # - type: SpeechSynthesis # Corvax-Frontier-Barks
   #   voice: Borg
@@ -673,6 +673,22 @@
       cell_slot:
         name: power-cell-slot-component-slot-name-default
         startingItem: PowerCellHyper
+
+- type: entity
+# // Ministation-Start: Typan Borg Selection and Mimicry
+  id: Mimicry
+  parent: BaseAction
+  categories: [ HideSpawnMenu ]
+  components:
+    - type: Action
+      itemIconStyle: NoItem
+      icon:
+        sprite: _Mini/Interface/Actions/borgs.rsi
+        state: mimicry
+      useDelay: 4
+    - type: InstantAction
+      event: !type:MimicryEvent
+# // Ministation-End: Typan Borg Selection and Mimicry
 
 - type: entity
   id: PlayerBorgSyndicateSaboteurGhostRole

@@ -7,7 +7,6 @@
   description: An ergonomic laser carbine with a self-recharging nuclear battery. Perfect for sustained combat.
   components:
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 25
 
 - type: entity
@@ -17,10 +16,8 @@
   description: A high-powered laser sniper rifle with a self-recharging power cell. Delivers devastating precision shots.
   components:
   - type: BatterySelfRecharger
-    autoRecharge: true
     autoRechargeRate: 20
     autoRechargePauseTime: 25
-    autoRechargePause: true
   - type: SpeedModifiedOnWield
     walkModifier: 0.8
     sprintModifier: 0.8

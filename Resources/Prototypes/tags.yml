@@ -136,6 +136,9 @@
   id: BorgModuleScience # Cyborg module category for scientists
 
 - type: Tag
+  id: BorgModuleSecurity # Cyborg module category for security
+
+- type: Tag
   id: BorgModuleService # Cyborg module category for bartenders, botanists, and more
 
 - type: Tag

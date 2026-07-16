@@ -6,7 +6,7 @@
   setPreference: false
   startingGear: CentcomSpecialOperationsOfficerGear
   icon: "JobIconNanotrasenRed"
-  supervisors: job-supervisors-no-one
+  supervisors: job-supervisors-nobody
   canBeAntag: false
   accessGroups:
   - AllAccess

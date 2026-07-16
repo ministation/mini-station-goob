@@ -6,7 +6,7 @@
   antagonist: true
   setPreference: true
   objective: roles-antag-thief-objective
-  guides: [ Thief ]
+  guides: [ Thieves ]
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 1h
