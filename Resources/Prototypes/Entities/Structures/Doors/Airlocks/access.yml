@@ -1223,6 +1223,15 @@
       board: [ DoorElectronicsExternal ]
 
 - type: entity
+  parent: AirlockExternalGlassShuttleLocked
+  id: AirlockExternalGlassShuttleCentcommERTLocked
+  suffix: External, Glass, Docking, CentComm ERT, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsExternal ]
+
+- type: entity
   parent: AirlockGlassShuttle
   id: AirlockExternalGlassShuttleArrivals
   suffix: External, Arrivals, Glass, Docking
