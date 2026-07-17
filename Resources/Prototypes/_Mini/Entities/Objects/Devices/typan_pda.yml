@@ -10,6 +10,19 @@
 
 - type: entity
   parent: BaseTypanPDA
+  id: TypanPDAPassenger
+  name: blood-red PDA
+  description: A blood-red PDA without any corporate spyware. Probably.
+  components:
+  - type: Pda
+    id: PassengerIDCard
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda
+
+- type: entity
+  parent: BaseTypanPDA
   id: SyndiPDARD
   name: syndicate research director PDA
   description: A concentration of the worst technologies! It smells like cheap plastic...

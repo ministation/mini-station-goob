@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Mini-station PDA variants. Base overlays from tgstation. Job-specific sprites from ministation resprites.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "id_overlay"
+    },
+    {
+      "name": "insert_overlay"
+    },
+    {
+      "name": "light_overlay"
+    },
+    {
+      "name": "pda"
+    },
+    {
+      "name": "pda-cburn"
+    },
+    {
+      "name": "pda-coroner"
+    },
+    {
+      "name": "pda-investigator"
+    },
+    {
+      "name": "pda-seniorminer"
+    },
+    {
+      "name": "pda-seniorservice"
+    },
+    {
+      "name": "pda-surgeon"
+    }
+  ]
+}

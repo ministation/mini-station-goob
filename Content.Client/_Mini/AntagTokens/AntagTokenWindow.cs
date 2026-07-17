@@ -546,8 +546,8 @@ public sealed class AntagTokenWindow : DefaultWindow
             MinSize = new Vector2(268, 40),
             MaxSize = new Vector2(268, 40),
             Disabled = IsButtonDisabled(entry, null),
-            ToolTip = GetButtonTooltip(entry, playtimeReason)
         };
+        ApplyButtonTooltip(buyButton, entry, playtimeReason);
 
         var roleId = entry.RoleId;
         buyButton.OnPressed += _ => OnPurchasePressed?.Invoke(roleId);
@@ -651,11 +651,21 @@ public sealed class AntagTokenWindow : DefaultWindow
         return entry.Mode == AntagPurchaseMode.LobbyDeposit && entry.Saturated;
     }
 
-    private static string GetButtonTooltip(AntagTokenRoleEntry entry, FormattedMessage? playtimeReason = null)
+    private static void ApplyButtonTooltip(Button button, AntagTokenRoleEntry entry, FormattedMessage? playtimeReason = null)
     {
         if (playtimeReason != null)
-            return playtimeReason.ToMarkup();
+        {
+            var tooltip = new Tooltip();
+            tooltip.SetMessage(playtimeReason);
+            button.TooltipSupplier = _ => tooltip;
+            return;
+        }
 
+        button.ToolTip = GetPlainButtonTooltip(entry);
+    }
+
+    private static string GetPlainButtonTooltip(AntagTokenRoleEntry entry)
+    {
         if (entry.StatusLocKey != null)
             return Loc.GetString(entry.StatusLocKey);
 

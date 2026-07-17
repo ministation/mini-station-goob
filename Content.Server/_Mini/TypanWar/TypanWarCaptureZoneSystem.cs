@@ -14,6 +14,7 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Roles.Jobs;
+using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
@@ -38,6 +39,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
     [Dependency] private readonly TypanStationWarRuleSystem _warRule = default!;
     [Dependency] private readonly TTStationHandleJobSystem _typanJobs = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly SharedPointLightSystem _lights = default!;
 
     private readonly HashSet<EntityUid> _lookupEnts = new();
 
@@ -327,6 +329,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             zone.CaptureProgress = 0f;
             zone.CapturingOwner = null;
             Dirty(uid, zone);
+            UpdateFlagVisual(uid, zone);
 
             if (_runtime.TryGetValue(uid, out var runtime))
             {
@@ -693,12 +696,29 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         if (zone.FlagEntity is not { } flag || !Exists(flag))
             return;
 
+        // Keep flag snapped to zone center (trade swap / reparent can desync anchored entities).
+        var zoneXform = Transform(uid);
+        var flagXform = Transform(flag);
+        var zoneTile = _transform.GetGridOrMapTilePosition(uid, zoneXform);
+        var flagTile = _transform.GetGridOrMapTilePosition(flag, flagXform);
+        if (zoneXform.GridUid != flagXform.GridUid || zoneTile != flagTile)
+        {
+            if (flagXform.Anchored)
+                _transform.Unanchor(flag, flagXform);
+
+            _transform.SetCoordinates(flag, zoneXform.Coordinates);
+            _transform.AnchorEntity(flag);
+        }
+
         if (!TryComp<TypanWarCaptureFlagComponent>(flag, out var flagComp))
             return;
 
         flagComp.CaptureOwner = zone.CaptureOwner;
         Dirty(flag, flagComp);
-    }
+
+        var glow = TypanWarColors.ForCaptureOwner(zone.CaptureOwner);
+        _lights.SetColor(flag, glow);
+        _lights.SetColor(uid, glow);    }
 
     private ZoneRuntimeState GetRuntime(EntityUid uid)
     {

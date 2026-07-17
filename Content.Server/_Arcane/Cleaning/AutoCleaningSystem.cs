@@ -1,9 +1,13 @@
 using System.Linq;
+using Content.Goobstation.Shared.Xenobiology.Components;
 using Content.Server.Chat.Systems;
 using Content.Shared._Arcane.CCVars;
 using Content.Shared.GameTicking;
+using Content.Shared.Mind.Components;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Tag;
 using Robust.Shared.Configuration;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Log;
@@ -16,14 +20,13 @@ public sealed partial class AutoCleaningSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
 
-    // Логгер
     private ISawmill _sawmill = default!;
 
     private bool _autoCleaningEnabled = false;
     private bool _isActive = false;
     private bool _isWarned = false;
     private static TimeSpan _nextUpdate = TimeSpan.MaxValue;
-    private static TimeSpan _updateInterval = TimeSpan.FromMinutes(30);
+    private static readonly TimeSpan UpdateInterval = TimeSpan.FromMinutes(15);
     private static TimeSpan _warningWaiting = TimeSpan.FromSeconds(30);
     private static HashSet<ProtoId<TagPrototype>> _cleaningTags = ["Trash", "Cartridge"];
     private static HashSet<ProtoId<TagPrototype>> _disallowedTags = ["Cigarette", "CigPack", "Syringe", "LightTube", "LightBulb", "LightTubeCrystalRed", "LightTubeCrystalBlue", "LightTubeCrystalGreen"];
@@ -34,7 +37,6 @@ public sealed partial class AutoCleaningSystem : EntitySystem
     {
         base.Initialize();
 
-        // Инициализируем логгер
         _sawmill = Logger.GetSawmill("autocleaning");
 
         Subs.CVar(_cfg, ACCVars.AutoCleaningEnabled, SetAutoCleaningEnabled, true);
@@ -45,7 +47,7 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
     private void OnRoundStarted(RoundStartedEvent args)
     {
-        _nextUpdate = _timing.CurTime + _updateInterval;
+        _nextUpdate = _timing.CurTime + UpdateInterval;
         _isActive = true;
         _isWarned = false;
 
@@ -87,10 +89,10 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
     private void ProccessCleaning()
     {
-        _nextUpdate = _timing.CurTime + _updateInterval;
+        _nextUpdate = _timing.CurTime + UpdateInterval;
         _isWarned = false;
 
-        _sawmill.Info("Starting floor cleaning cycle...");
+        _sawmill.Info($"Starting floor cleaning cycle (next in {UpdateInterval.TotalMinutes} min)...");
 
         var cleanedCount = CleanFloorItems();
 
@@ -120,7 +122,6 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var tag, out var transform))
         {
-            // Пропускаем, если нет нужных тегов или есть запрещённые
             if (!tag.Tags.Intersect(_cleaningTags).Any())
                 continue;
 
@@ -130,30 +131,35 @@ public sealed partial class AutoCleaningSystem : EntitySystem
                 continue;
             }
 
-            // Объект внутри контейнера/инвентаря — пропускаем
             if (transform.ParentUid != transform.GridUid && transform.ParentUid != transform.MapUid)
             {
                 skippedContainer++;
                 continue;
             }
 
-            // Объект прикручен (лампы, трубы и т.д.) — пропускаем
             if (transform.Anchored)
             {
                 skippedAnchored++;
                 continue;
             }
 
-            // Объект лежит на полу — удаляем
+            if (HasComp<ActorComponent>(uid)
+                || (TryComp<MindContainerComponent>(uid, out var mindContainer) && mindContainer.HasMind)
+                || HasComp<MobStateComponent>(uid))
+            {
+                continue;
+            }
+
+            if (HasComp<SlimeExtractComponent>(uid))
+                continue;
+
             QueueDel(uid);
             deletedCount++;
 
-            // Защита от лагов
             if (deletedCount >= MaxCleanPerCycle)
                 break;
         }
 
-        // Подробное логирование
         _sawmill.Debug($"Cleaning stats: deleted={deletedCount}, skipped (container={skippedContainer}, anchored={skippedAnchored}, disallowed={skippedDisallowed})");
 
         if (deletedCount >= MaxCleanPerCycle)

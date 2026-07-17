@@ -16,7 +16,7 @@
 #         refresh: false
 #       - !type:HealthChange
 #         conditions:
-#         - !type:ReagentThreshold
+#         - !type:BloodReagentThresholdCondition
 #           reagent: BZ
 #           min: 0.5
 #         scaleByQuantity: true
@@ -26,7 +26,7 @@
 #             Cellular: 0.005
 #       - !type:PopupMessage
 #         conditions:
-#         - !type:ReagentThreshold
+#         - !type:BloodReagentThresholdCondition
 #           reagent: BZ
 #           min: 1
 #         - !type:OrganType
@@ -37,7 +37,7 @@
 #         probability: 0.1
 #       - !type:MovespeedModifier
 #         conditions:
-#         - !type:ReagentThreshold
+#         - !type:BloodReagentThresholdCondition
 #           reagent: BZ
 #           min: 1
 #         - !type:OrganType
@@ -46,7 +46,7 @@
 #         sprintSpeedModifier: 0.65
 #       - !type:GenericStatusEffect
 #         conditions:
-#         - !type:ReagentThreshold
+#         - !type:BloodReagentThresholdCondition
 #           reagent: BZ
 #           min: 1
 #         - !type:OrganType
@@ -121,7 +121,7 @@
 #       effects:
 #       - !type:MovespeedModifier
 #         conditions:
-#           - !type:ReagentThreshold
+#           - !type:BloodReagentThresholdCondition
 #             reagent: Nitrium
 #             min: 0.5
 #         statusLifetime: 32
@@ -129,21 +129,21 @@
 #         sprintSpeedModifier: 1.3
 #       - !type:GenericStatusEffect
 #         conditions:
-#         - !type:ReagentThreshold
+#         - !type:BloodReagentThresholdCondition
 #             min: 0.5
 #         key: Stun
 #         time: 1.5
 #         type: Remove
 #       - !type:GenericStatusEffect
 #         conditions:
-#         - !type:ReagentThreshold
+#         - !type:BloodReagentThresholdCondition
 #             min: 0.5
 #         key: KnockedDown
 #         time: 1.5
 #         type: Remove
 #       - !type:GenericStatusEffect
 #         conditions:
-#         - !type:ReagentThreshold
+#         - !type:BloodReagentThresholdCondition
 #             min: 0.5
 #         key: ForcedSleep
 #         component: ForcedSleeping
@@ -151,7 +151,7 @@
 #         type: Remove
 #       - !type:HealthChange
 #         conditions:
-#           - !type:ReagentThreshold
+#           - !type:BloodReagentThresholdCondition
 #             reagent: Nitrium
 #             min: 10
 #         scaleByQuantity: true
@@ -174,7 +174,7 @@
 #       effects:
 #       - !type:GenericStatusEffect
 #         conditions:
-#         - !type:ReagentThreshold
+#         - !type:BloodReagentThresholdCondition
 #           reagent: Healium
 #           min: 2
 #         key: ForcedSleep
@@ -183,7 +183,7 @@
 #         type: Add
 #       - !type:HealthChange
 #         conditions:
-#         - !type:ReagentThreshold
+#         - !type:BloodReagentThresholdCondition
 #           reagent: Healium
 #           min: 2
 #         scaleByQuantity: true
@@ -228,11 +228,10 @@
       effects:
       - !type:HealthChange
         conditions:
-        - !type:ReagentThreshold
+        - !type:BloodReagentThresholdCondition
           reagent: Zauker
           min: 0.25
           max: 8
-        scaleByQuantity: true
         ignoreResistances: true
         damage:
           types:
@@ -242,10 +241,9 @@
             Bloodloss: 0.25
       - !type:HealthChange
         conditions:
-        - !type:ReagentThreshold
+        - !type:BloodReagentThresholdCondition
           reagent: Zauker
           min: 8
-        scaleByQuantity: true
         ignoreResistances: true
         damage:
           types:

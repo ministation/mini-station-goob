@@ -1,5 +1,5 @@
-// SPDX-FileCopyrightText: 2026 Casha
-// Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+// SPDX-License-Identifier: MIT
+
 #if TOOLS
 
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +24,10 @@ public sealed class DesignTimeContextFactorySqlite : IDesignTimeDbContextFactory
 {
     public SqliteServerDbContext CreateDbContext(string[] args)
     {
+#if !USE_SYSTEM_SQLITE
+        raw.SetProvider(new SQLite3Provider_e_sqlite3());
+#endif
+
         var optionsBuilder = new DbContextOptionsBuilder<SqliteServerDbContext>();
         optionsBuilder.UseSqlite("Data Source=:memory:");
         return new SqliteServerDbContext(optionsBuilder.Options);

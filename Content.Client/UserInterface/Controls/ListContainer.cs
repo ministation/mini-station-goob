@@ -1,17 +1,9 @@
-// SPDX-FileCopyrightText: 2022 ElectroJr <leonsfriedrich@gmail.com>
-// SPDX-FileCopyrightText: 2022 Jacob Tong <10494922+ShadowCommander@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
-// SPDX-FileCopyrightText: 2024 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Linq;
 using System.Numerics;
 using JetBrains.Annotations;
+using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Input;
@@ -38,7 +30,16 @@ public class ListContainer : Control
     /// Called when creating a button on the UI.
     /// The provided <see cref="ListContainerButton"/> is the generated button that Controls should be parented to.
     /// </summary>
-    public Action<ListData, ListContainerButton>? GenerateItem;
+    public Action<ListData, ListContainerButton>? GenerateItem
+    {
+        get => _generateItem;
+        set {
+            _generateItem = value;
+            // Invalidate _itemHeight so we recalculate the size of children the next
+            // time PopulateList() is called
+            _itemHeight = 0;
+        }
+    }
 
     /// <inheritdoc cref="BaseButton.OnPressed"/>
     public Action<BaseButton.ButtonEventArgs, ListData>? ItemPressed;
@@ -69,6 +70,7 @@ public class ListContainer : Control
     private bool _updateChildren = false;
     private bool _suppressScrollValueChanged;
     private ButtonGroup? _buttonGroup;
+    public Action<ListData, ListContainerButton>? _generateItem;
 
     public int ScrollSpeedY { get; set; } = 50;
 
@@ -197,10 +199,8 @@ public class ListContainer : Control
             _suppressScrollValueChanged = true;
 
             if (finalHeight < cHeight)
-                finalWidth -= vBarSize;
-
-            if (finalHeight < cHeight)
             {
+                finalWidth -= vBarSize;
                 _vScrollBar.Visible = true;
                 _vScrollBar.Page = finalHeight;
                 _vScrollBar.MaxValue = cHeight;
@@ -300,7 +300,8 @@ public class ListContainer : Control
                         AddChild(button);
                     }
                     button.SetPositionInParent(i - _topIndex);
-                    button.Measure(finalSize);
+                    // Measure against the width actually reserved for rows (excl. scrollbar).
+                    button.Measure(new Vector2(finalWidth, finalHeight));
                 }
             }
 
@@ -315,8 +316,10 @@ public class ListContainer : Control
         #endregion
 
         #region Layout Children
-        // Use pixel position
-        var pixelWidth = (int)(finalWidth * UIScale);
+        // Prefer pixel scrollbar size so rows don't overflow by 1–2px under UIScale.
+        var pixelWidth = (int)(finalSize.X * UIScale);
+        if (_vScrollBar.Visible)
+            pixelWidth -= _vScrollBar.DesiredPixelSize.X;
         var pixelSeparation = (int) (ActualSeparation * UIScale);
 
         var pixelOffset = (int) -((scroll.Y - _topIndex * (_itemHeight + ActualSeparation)) * UIScale);
@@ -330,7 +333,7 @@ public class ListContainer : Control
             first = false;
 
             var pixelSize = child.DesiredPixelSize.Y;
-            var targetBox = new UIBox2i(0, pixelOffset, pixelWidth, pixelOffset + pixelSize);
+            var targetBox = new UIBox2i(0, pixelOffset, Math.Max(0, pixelWidth), pixelOffset + pixelSize);
             child.ArrangePixel(targetBox);
 
             pixelOffset += pixelSize;
@@ -393,15 +396,11 @@ public sealed class ListContainerButton : ContainerButton, IEntityControl
 
     public ListContainerButton(ListData data, int index)
     {
-        AddStyleClass(StyleClassButton);
+        // Row StyleBox comes from StyleNano / sheetlet (dark flats + content margins).
+        // Do not set StyleBoxOverride here — it nukes margins and causes ~px overflow in AHelp.
+        AddStyleClass(ListContainer.StyleClassListContainerButton);
         Data = data;
         Index = index;
-        // AddChild(Background = new PanelContainer
-        // {
-        //     HorizontalExpand = true,
-        //     VerticalExpand = true,
-        //     PanelOverride = new StyleBoxFlat {BackgroundColor = new Color(55, 55, 68)}
-        // });
     }
 
     public EntityUid? UiEntity => (Data as EntityListData)?.Uid;

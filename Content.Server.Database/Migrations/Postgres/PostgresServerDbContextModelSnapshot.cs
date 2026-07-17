@@ -21,7 +21,7 @@ namespace Content.Server.Database.Migrations.Postgres
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -1209,12 +1209,12 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("uuid")
                         .HasColumnName("player_id");
 
-                    b.Property<List<int>>("StreakMilestones")
+                    b.PrimitiveCollection<string>("StreakMilestones")
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("streak_milestones");
 
-                    b.Property<List<TimeSpan>>("TicketMilestones")
+                    b.PrimitiveCollection<string>("TicketMilestones")
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("ticket_milestones");

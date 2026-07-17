@@ -1,12 +1,3 @@
-// SPDX-FileCopyrightText: 2022 Veritius <veritiusgaming@gmail.com>
-// SPDX-FileCopyrightText: 2022 metalgearsloth <comedian_vs_clown@hotmail.com>
-// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 DrSmugleaf <10968691+DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
-// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers@gmail.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Threading;
@@ -54,9 +45,12 @@ public sealed class UserDbDataManager : IPostInjectInit
 
     public void ClientDisconnected(ICommonSession session)
     {
-        _users.Remove(session.UserId, out var data);
-        if (data == null)
-            throw new InvalidOperationException("Did not have cached data in ClientDisconnect!");
+        if (!_users.Remove(session.UserId, out var data) || data == null)
+        {
+            // Race: disconnect before ClientConnected finished caching, or double-disconnect.
+            _sawmill.Debug($"ClientDisconnected without cached user data for {session}");
+            return;
+        }
 
         data.Cancel.Cancel();
         data.Cancel.Dispose();

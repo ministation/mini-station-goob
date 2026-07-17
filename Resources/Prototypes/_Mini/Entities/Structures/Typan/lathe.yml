@@ -26,6 +26,7 @@
         - Sheet
         - RawMaterial
         - Ingot
+        - SheetPlasma
   - type: ResearchClient
 #   isTypan: true
   - type: Lathe
@@ -100,6 +101,7 @@
         - Sheet
         - RawMaterial
         - Ingot
+        - SheetPlasma
   - type: ResearchClient
 #   isTypan: true
   - type: Lathe
@@ -187,6 +189,7 @@
         - Sheet
         - RawMaterial
         - Ingot
+        - SheetPlasma
   - type: RequireProjectileTarget
 
 
@@ -242,6 +245,7 @@
       - Sheet
       - RawMaterial
       - Ingot
+      - SheetPlasma
 
 
 - type: entity
@@ -286,6 +290,7 @@
       - Sheet
       - RawMaterial
       - Ingot
+      - SheetPlasma
 
 
 - type: entity
@@ -319,6 +324,7 @@
       tags:
         - Sheet
         - RawMaterial
+        - SheetPlasma
   - type: ResearchClient
 #   isTypan: true
   - type: Lathe
@@ -420,6 +426,7 @@
         - Sheet
         - RawMaterial
         - Ingot
+        - SheetPlasma
 
 
 - type: entity

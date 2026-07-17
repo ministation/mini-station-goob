@@ -1,12 +1,3 @@
-// SPDX-FileCopyrightText: 2021 Javier Guardia Fernández <DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2021 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
-// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
-// SPDX-FileCopyrightText: 2023 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 DamianX <DamianX@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 DrSmugleaf <drsmugleaf@gmail.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-//
 // SPDX-License-Identifier: MIT
 
 using System.Linq;
@@ -393,6 +384,8 @@ public sealed partial class AdminLogsControl : Control
         var newTypes = types.ToHashSet();
         var buttons = new SortedSet<AdminLogTypeButton>(_adminLogTypeButtonComparer);
 
+        SelectedTypes.Clear();
+
         foreach (var control in TypesContainer.Children.ToArray())
         {
             if (control is not AdminLogTypeButton type ||
@@ -401,6 +394,8 @@ public sealed partial class AdminLogsControl : Control
                 continue;
             }
 
+            type.Pressed = true;
+            SelectedTypes.Add(type.Type);
             buttons.Add(type);
         }
 

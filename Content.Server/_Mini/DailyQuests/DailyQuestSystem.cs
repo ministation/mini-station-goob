@@ -1,3 +1,4 @@
+using Content.Shared.Roles.Components;
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 using System;
@@ -92,14 +93,12 @@ public sealed class DailyQuestSystem : EntitySystem
     /// </summary>
     private readonly Dictionary<NetUserId, DailyQuestRoundTracker> _roundTrackers = new();
 
-    private EntityQuery<MindComponent> _mindQuery;
     private EntityQuery<MobStateComponent> _mobQuery;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        _mindQuery = GetEntityQuery<MindComponent>();
         _mobQuery = GetEntityQuery<MobStateComponent>();
 
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawnComplete);
@@ -677,19 +676,13 @@ public sealed class DailyQuestSystem : EntitySystem
 
     private void OnDamageChanged(EntityUid uid, DamageableComponent component, DamageChangedEvent args)
     {
-        if (!args.DamageIncreased || args.Origin == null)
+        if (!args.DamageIncreased)
             return;
 
         if (TryGetPlayerState(uid, out var victimState) && victimState.Round.WasActivePlayer)
             victimState.Round.FailedNoDamage = true;
 
-        if (args.Origin != null &&
-            TryGetPlayerState(args.Origin.Value, out var attackerState) &&
-            IsHumanPlayer(uid) &&
-            uid != args.Origin)
-        {
-            attackerState.Round.FailedNoMelee = true;
-        }
+        // NoMeleeHits is failed only via OnMeleeHit — ranged / other damage must not fail pacifist.
     }
 
     private void OnMeleeHit(MeleeHitEvent args)
@@ -974,6 +967,27 @@ public sealed class DailyQuestSystem : EntitySystem
                 continue;
             }
 
+            // Pacifist / no-hit timer: complete mid-round once playtime is met (matches UI progress).
+            if (proto.QuestType == DailyQuestType.NoMeleeHits
+                && state.Round.WasActivePlayer
+                && !state.Round.FailedNoMelee
+                && state.Round.ActivePlaytime >= proto.MinRoundPlaytime)
+            {
+                CompleteSlot(session, slot, proto);
+                changed = true;
+                continue;
+            }
+
+            if (proto.QuestType == DailyQuestType.NoDamageTaken
+                && state.Round.WasActivePlayer
+                && !state.Round.FailedNoDamage
+                && state.Round.ActivePlaytime >= proto.MinRoundPlaytime)
+            {
+                CompleteSlot(session, slot, proto);
+                changed = true;
+                continue;
+            }
+
             if (proto.QuestType == DailyQuestType.EarnMiningPoints)
             {
                 var before = slot.Progress;
@@ -1009,7 +1023,8 @@ public sealed class DailyQuestSystem : EntitySystem
 
     private bool IsHumanPlayer(EntityUid uid)
     {
-        if (!_mindQuery.TryComp(uid, out var mind) || mind.UserId == null)
+        // MindComponent lives on the mind entity, not the body.
+        if (!_minds.TryGetMind(uid, out _, out var mind) || mind.UserId == null)
             return false;
 
         return _playerManager.TryGetSessionById(mind.UserId.Value, out _);

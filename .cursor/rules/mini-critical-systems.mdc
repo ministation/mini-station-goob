@@ -1,0 +1,41 @@
+---
+description: Mini-Station critical systems that must survive goob/upstream merges
+alwaysApply: true
+---
+
+# Mini critical systems (do NOT lose on upstream merge)
+
+When merging goob/upstream or resolving conflicts, **prefer Mini** for these unless the user says otherwise. After any large merge, verify the checklist below.
+
+## Never silently drop
+
+| Area | Keep / restore |
+|---|---|
+| **Local chat job icons** | `Content.Server/Chat/Systems/ChatSystem.cs` must wire `RadioJobIconSystem`, pass `$jobIcon` / `$jobName` into `WrapPublicMessage` / `WrapWhisperMessage` / `WrapMessage`. RU locale uses them: `Resources/Locale/ru-RU/chat/managers/chat-manager.ftl` |
+| **Radio job icons** | `RadioSystem` + `Content.Goobstation.Shared/Radio/RadioJobIconSystem.cs` + `chat-radio-message-name-with-icon` |
+| **TTS radio** | `Content.Server/_CorvaxGoob/TTS/`, `Content.Client/_CorvaxGoob/TTS/`, lead-in `/Audio/_Mini/TTS/radio.ogg` |
+| **Sponsors** | `Content.Server/_Mini/Sponsor/`, `Content.Server/_Sponsor/`, `SponsorImplementations/`, Postgres sync (`[Sponsors]` logs). Do not keep dead stubs that replace live sync |
+| **Daily quests / rewards** | `Content.*/_Mini/DailyQuests/`, `DailyReward*`, prototypes `Resources/Prototypes/_Mini/DailyQuests/`, lobby/Escape entry (`dailyrewardmenu`) |
+| **Antag tokens** | Mini antag-token UI + lobby `AntagTokensButton` / `antagtokenmenu` |
+| **AHelp / admin rating** | Mini `BwoinkPanel` (`TryAddMarkup`/`AddMarkupPermissive`, stickers, `AttachRatingPanel`), `AHelpUIController.BindRating`, `BwoinkTextMessage.IconPath`, `AdminHelpRating*` systems, safe sponsor hex colors in `ColorSponsorOOC`. UIKit `IconTag` must support `[icon="/Textures/..."]` via `TryCreateControl`; `BaseTextureTag` must cap sticker size (`MaxSize` 120) |
+| **Lobby / UI** | Mini `Content.Client/Lobby/`, `StyleNano`/`StyleSpace`/`StyleBase`, accent rebuild in `StylesheetManager`, fonts `Resources/Fonts/_Mini/**/*.ttf`, `ui_font_styles.yml`, Nano textures used by StyleNano (e.g. `Resources/Textures/Interface/Nano/square.png`) |
+| **Vote UI** | `VotePopup` with `PixelScrollProgressBar` + `AngleRect` (not stock ProgressBar) |
+| **Typan / Mini content** | `Resources/Prototypes/_Mini/`, `Content.*/_Mini/`, TypanWar, maps/assets under `_Mini` |
+
+## Merge protocol
+
+1. Prefer `ours` / HEAD for paths above when the conflict is Mini feature vs goob cleanup.
+2. If goob refactors APIs (skin color, FancyWindow stylesheet string, etc.), **port Mini UI onto the new API** — do not delete the Mini feature.
+3. After merge smoke-check:
+   - say in local chat → no `$jobIcon`/`$jobName` loc errors, icons visible
+   - radio TTS static + voice
+   - `[Sponsors] Загружено` (or expected skip) without wiping sponsor consumers
+   - Escape/lobby → Награды / daily quests cards
+   - vote popup → pixel scroll bar
+4. Binary assets (`Fonts/_Mini`, `Audio/_Mini`) must stay on disk; empty LICENSE-only dirs mean restore from HEAD.
+
+## Red flags in logs
+
+- `Unknown variable: $jobIcon` / `$jobName` → ChatSystem wrap args lost
+- missing `/Audio/_Mini/TTS/radio.ogg` or `/Fonts/_Mini/...ttf` → restore binaries from HEAD
+- `Attempted to resolve invalid EntProtoId` for Mini/Goob loadouts → fix YAML / migration alias, do not leave broken refs

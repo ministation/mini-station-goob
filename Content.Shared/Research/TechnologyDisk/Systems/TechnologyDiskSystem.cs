@@ -1,19 +1,15 @@
-using Content.Shared.Access.Components;
-using Content.Shared.Access.Systems;
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Lathe;
-using Content.Shared._Mini.Converter;
+using Content.Shared.NameModifier.EntitySystems;
 using Content.Shared.Popups;
 using Content.Shared.Random.Helpers;
 using Content.Shared.Research.Components;
 using Content.Shared.Research.Prototypes;
 using Content.Shared.Research.Systems;
 using Content.Shared.Research.TechnologyDisk.Components;
-using Content.Shared.Power.EntitySystems;
-using Content.Shared.Stacks;
-using Robust.Shared.Audio;
-using Robust.Shared.Audio.Systems;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -22,16 +18,12 @@ namespace Content.Shared.Research.TechnologyDisk.Systems;
 
 public sealed class TechnologyDiskSystem : EntitySystem
 {
-    [Dependency] private readonly AccessReaderSystem _accessReader = default!;
-    [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly IPrototypeManager _protoMan = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedPowerReceiverSystem _powerReceiver = default!;
     [Dependency] private readonly SharedResearchSystem _research = default!;
     [Dependency] private readonly SharedLatheSystem _lathe = default!;
-    [Dependency] private readonly SharedStackSystem _stack = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly NameModifierSystem _nameModifier = default!;
 
     public override void Initialize()
     {
@@ -40,6 +32,7 @@ public sealed class TechnologyDiskSystem : EntitySystem
         SubscribeLocalEvent<TechnologyDiskComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<TechnologyDiskComponent, AfterInteractEvent>(OnAfterInteract);
         SubscribeLocalEvent<TechnologyDiskComponent, ExaminedEvent>(OnExamine);
+        SubscribeLocalEvent<TechnologyDiskComponent, RefreshNameModifiersEvent>(OnRefreshNameModifiers);
     }
 
     private void OnMapInit(Entity<TechnologyDiskComponent> ent, ref MapInitEvent args)
@@ -50,6 +43,7 @@ public sealed class TechnologyDiskSystem : EntitySystem
         var weightedRandom = _protoMan.Index(ent.Comp.TierWeightPrototype);
         var tier = int.Parse(weightedRandom.Pick(_random));
 
+        //get a list of every distinct recipe in all the technologies.
         var techs = new HashSet<ProtoId<LatheRecipePrototype>>();
         foreach (var tech in _protoMan.EnumeratePrototypes<TechnologyPrototype>())
         {
@@ -62,9 +56,11 @@ public sealed class TechnologyDiskSystem : EntitySystem
         if (techs.Count == 0)
             return;
 
-        ent.Comp.Recipes = new();
+        //pick one
+        ent.Comp.Recipes = [];
         ent.Comp.Recipes.Add(_random.Pick(techs));
         Dirty(ent);
+        _nameModifier.RefreshNameModifiers(ent.Owner);
     }
 
     private void OnAfterInteract(Entity<TechnologyDiskComponent> ent, ref AfterInteractEvent args)
@@ -72,77 +68,7 @@ public sealed class TechnologyDiskSystem : EntitySystem
         if (args.Handled || !args.CanReach || args.Target is not { } target)
             return;
 
-        if (TryComp<ConverterComponent>(target, out var converter))
-        {
-            if (!_net.IsServer)
-                return;
-
-            if (converter.PointsPerTelecrystal <= 0)
-            {
-                _popup.PopupClient(Loc.GetString("mini-converter-examine-disabled"), target, args.User);
-                return;
-            }
-
-            if (!_powerReceiver.IsPowered(target))
-            {
-                _popup.PopupClient(Loc.GetString("tech-disk-converter-no-power-popup"), target, args.User);
-                return;
-            }
-
-            if (TryComp<AccessReaderComponent>(target, out var reader) &&
-                !_accessReader.IsAllowed(args.User, target, reader))
-            {
-                _popup.PopupClient(Loc.GetString("tech-disk-converter-no-access-popup"), target, args.User);
-                return;
-            }
-
-            var value = ent.Comp.TierWeightPrototype == "RareTechDiskTierWeights"
-                ? converter.RareTechnologyDiskPoints
-                : converter.TechnologyDiskPoints;
-
-            if (value < 0)
-                value = 0;
-
-            converter.StoredPoints += value;
-
-            var payout = 0;
-            if (converter.PointsPerTelecrystal > 0)
-            {
-                payout = converter.StoredPoints / converter.PointsPerTelecrystal;
-                converter.StoredPoints %= converter.PointsPerTelecrystal;
-            }
-
-            if (payout > 0)
-            {
-                var telecrystalStack = Spawn("Telecrystal1", Transform(target).Coordinates);
-                _stack.SetCount(telecrystalStack, payout);
-                _stack.TryMergeToContacts(telecrystalStack);
-
-                _popup.PopupClient(Loc.GetString("tech-disk-exchanged-yield",
-                        ("amount", payout),
-                        ("progress", converter.StoredPoints),
-                        ("needed", converter.PointsPerTelecrystal)),
-                    target,
-                    args.User);
-            }
-            else
-            {
-                _popup.PopupClient(Loc.GetString("tech-disk-exchanged",
-                        ("value", value),
-                        ("progress", converter.StoredPoints),
-                        ("needed", converter.PointsPerTelecrystal)),
-                    target,
-                    args.User);
-            }
-
-            _audio.PlayPvs(new SoundPathSpecifier("/Audio/_Mini/Misc/convert.ogg"), target, AudioParams.Default.WithVolume(-11f));
-            QueueDel(ent);
-            args.Handled = true;
-            return;
-        }
-
-        if (!HasComp<ResearchServerComponent>(target) ||
-            !TryComp<TechnologyDatabaseComponent>(target, out var database))
+        if (!HasComp<ResearchServerComponent>(target) || !TryComp<TechnologyDatabaseComponent>(target, out var database))
             return;
 
         if (ent.Comp.Recipes != null)
@@ -153,10 +79,7 @@ public sealed class TechnologyDiskSystem : EntitySystem
             }
         }
         _popup.PopupClient(Loc.GetString("tech-disk-inserted"), target, args.User);
-
-        if (_net.IsServer)
-            QueueDel(ent);
-
+        PredictedQueueDel(ent.Owner);
         args.Handled = true;
     }
 
@@ -168,9 +91,21 @@ public sealed class TechnologyDiskSystem : EntitySystem
             var prototype = _protoMan.Index(ent.Comp.Recipes[0]);
             message = Loc.GetString("tech-disk-examine", ("result", _lathe.GetRecipeName(prototype)));
 
-            if (ent.Comp.Recipes.Count > 1)
+            if (ent.Comp.Recipes.Count > 1) //idk how to do this well. sue me.
                 message += " " + Loc.GetString("tech-disk-examine-more");
         }
         args.PushMarkup(message);
+    }
+
+    private void OnRefreshNameModifiers(Entity<TechnologyDiskComponent> entity, ref RefreshNameModifiersEvent args)
+    {
+        if (entity.Comp.Recipes != null)
+        {
+            foreach (var recipe in entity.Comp.Recipes)
+            {
+                var proto = _protoMan.Index(recipe);
+                args.AddModifier("tech-disk-name-format", extraArgs: ("technology", _lathe.GetRecipeName(proto)));
+            }
+        }
     }
 }

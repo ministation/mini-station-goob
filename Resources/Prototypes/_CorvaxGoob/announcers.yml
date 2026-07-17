@@ -1,3 +1,15 @@
+- type: announcer
+  id: Intern
+  minDaysInMonth: 5
+  shuttleRecallSound:
+    collection: InternShuttleRecall
+  shuttleCallSound:
+    collection: InternShuttleCall
+  shuttleDockedSound:
+    path: /Audio/_CorvaxGoob/Announcements/Announcers/Intern/shattledocked.ogg
+  centcomAnnouncementSound:
+    collection: InternCommandReport
+
 - type: soundCollection
   id: InternCommandReport
   files:

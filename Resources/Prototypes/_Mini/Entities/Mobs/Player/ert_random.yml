@@ -510,23 +510,4 @@
 #     - type: RandomHumanoidSpawner
 #       settings: CBURNAgent
 
-- type: randomHumanoidSettings
-  id: CBURNAgent
-  parent: EventHumanoidERT
-  components:
-    - type: GhostRole
-      name: ghost-role-information-cburn-agent-name
-      description: ghost-role-information-cburn-agent-description
-      rules: ghost-role-information-nonantagonist-rules
-      skills: # CorvaxGoob-Skills
-      - All
-      raffle:
-        settings: short
-      job: CBURNAgent
-    - type: RandomMetadata
-      nameSegments:
-      - NamesFirstERT
-      - NamesLastERT
-      nameFormat: name-format-ert
-    - type: Loadout
-      prototypes: [ CBURNAgentGear ]
+# randomHumanoidSettings CBURNAgent is defined in Prototypes/Entities/Mobs/Player/humanoid.yml

@@ -1,10 +1,3 @@
-// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
-// SPDX-FileCopyrightText: 2024 IProduceWidgets <107586145+IProduceWidgets@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Ducks <97200673+TwoDucksOnnaPlane@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Linq;
@@ -41,10 +34,19 @@ public sealed class TraitorRuleTest
   description: traitor-description
   showInVote: false
   rules:
-  - Traitor
+  - TraitorIntegrationTestRule
+
+- type: entity
+  id: TraitorIntegrationTestRule
+  parent: Traitor
+  components:
+  - type: GameRule
+    delay:
+      min: 0
+      max: 0
 ";
 
-    private const string TraitorGameRuleProtoId = "Traitor";
+    private const string TraitorGameRuleProtoId = "TraitorIntegrationTestRule";
     private const string TraitorPresetId = "TraitorIntegrationTest";
     private const string TraitorAntagRoleName = "Traitor";
     private static readonly ProtoId<NpcFactionPrototype> SyndicateFaction = "Syndicate";

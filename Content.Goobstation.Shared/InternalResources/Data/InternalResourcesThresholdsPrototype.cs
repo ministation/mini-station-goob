@@ -12,7 +12,7 @@ public sealed partial class InternalResourcesThresholdsPrototype : IPrototype
     public string ID { get; private set; } = default!;
 
     /// <summary>
-    /// Float is the percentage from 0 to 1. 
+    /// Float is the percentage from 0 to 1.
     /// Bool is if the threshold was met.
     /// </summary>
     [DataField]

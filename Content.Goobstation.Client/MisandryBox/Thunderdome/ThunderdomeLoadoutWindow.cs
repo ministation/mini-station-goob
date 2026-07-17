@@ -281,7 +281,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         {
             var header = new Label
             {
-                Text = category,
+                Text = LocString(category),
                 StyleClasses = { "LabelKeyText" },
                 Margin = new Thickness(4, 6, 0, 2),
             };
@@ -289,7 +289,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
 
             foreach (var option in options)
             {
-                var card = new ThunderdomeWeaponCard(option.Index, option.Name, option.SpritePrototype, option.Description);
+                var card = new ThunderdomeWeaponCard(option.Index, LocString(option.Name), option.SpritePrototype, LocString(option.Description));
                 card.OnSelected += OnWeaponCardSelected;
                 _weaponsContainer.AddChild(card);
 
@@ -304,7 +304,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         // Grenades tab
         foreach (var option in state.Grenades)
         {
-            var card = new ThunderdomeWeaponCard(option.Index, option.Name, option.SpritePrototype, option.Description);
+            var card = new ThunderdomeWeaponCard(option.Index, LocString(option.Name), option.SpritePrototype, LocString(option.Description));
             card.OnSelected += OnGrenadeCardSelected;
             _grenadesContainer.AddChild(card);
 
@@ -318,7 +318,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         // Medical tab
         foreach (var option in state.Medicals)
         {
-            var card = new ThunderdomeWeaponCard(option.Index, option.Name, option.SpritePrototype, option.Description);
+            var card = new ThunderdomeWeaponCard(option.Index, LocString(option.Name), option.SpritePrototype, LocString(option.Description));
             card.OnSelected += OnMedicalCardSelected;
             _medicalsContainer.AddChild(card);
 
@@ -332,7 +332,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         // Head tab
         foreach (var option in state.Heads)
         {
-            var card = new ThunderdomeWeaponCard(option.Index, option.Name, option.SpritePrototype, option.Description);
+            var card = new ThunderdomeWeaponCard(option.Index, LocString(option.Name), option.SpritePrototype, LocString(option.Description));
             card.OnSelected += OnHeadCardSelected;
             _headsContainer.AddChild(card);
 
@@ -346,7 +346,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         // Neck tab
         foreach (var option in state.Necks)
         {
-            var card = new ThunderdomeWeaponCard(option.Index, option.Name, option.SpritePrototype, option.Description);
+            var card = new ThunderdomeWeaponCard(option.Index, LocString(option.Name), option.SpritePrototype, LocString(option.Description));
             card.OnSelected += OnNeckCardSelected;
             _necksContainer.AddChild(card);
 
@@ -360,7 +360,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         // Glasses tab
         foreach (var option in state.Glasses)
         {
-            var card = new ThunderdomeWeaponCard(option.Index, option.Name, option.SpritePrototype, option.Description);
+            var card = new ThunderdomeWeaponCard(option.Index, LocString(option.Name), option.SpritePrototype, LocString(option.Description));
             card.OnSelected += OnGlassesCardSelected;
             _glassesContainer.AddChild(card);
 
@@ -374,7 +374,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         // Backpack tab
         foreach (var option in state.Backpacks)
         {
-            var card = new ThunderdomeWeaponCard(option.Index, option.Name, option.SpritePrototype, option.Description);
+            var card = new ThunderdomeWeaponCard(option.Index, LocString(option.Name), option.SpritePrototype, LocString(option.Description));
             card.OnSelected += OnBackpackCardSelected;
             _backpacksContainer.AddChild(card);
 
@@ -388,7 +388,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         // Utilities tab
         foreach (var option in state.Utilities)
         {
-            var card = new ThunderdomeWeaponCard(option.Index, option.Name, option.SpritePrototype, option.Description);
+            var card = new ThunderdomeWeaponCard(option.Index, LocString(option.Name), option.SpritePrototype, LocString(option.Description));
             card.OnSelected += OnUtilityCardSelected;
             _utilitiesContainer.AddChild(card);
 
@@ -472,5 +472,10 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         _selectedUtilityCard = card;
         _utilitySelection = card.WeaponIndex;
         card.SetSelected(true);
+    }
+
+    private static string LocString(string? key)
+    {
+        return string.IsNullOrEmpty(key) ? string.Empty : Loc.GetString(key);
     }
 }

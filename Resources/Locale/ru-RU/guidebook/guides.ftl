@@ -132,6 +132,7 @@ guide-entry-antagonists = Антагонисты
 guide-entry-nuclear-operatives = Ядерные оперативники
 guide-entry-traitors = Предатели
 guide-entry-zombies = Зомби
+guide-entry-xenoborgs = Ксеноборги
 guide-entry-revolutionaries = Революционеры
 guide-entry-minor-antagonists = Малые антагонисты
 guide-entry-space-ninja = Космический ниндзя

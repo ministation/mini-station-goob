@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Numerics;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.RPSX.DarkForces.Ratvar.Prototypes;
@@ -37,7 +37,7 @@ public sealed partial class RatvarMidasTouchMenu : RadialMenu
             if (!_prototypeManager.TryIndex<RatvarMidasTouchablePrototype>(id, out var prototype))
                 continue;
 
-            var button = new RadialMenuTextureButton
+            var button = new RadialMenuButton
             {
                 StyleClasses = { "RadialMenuButton" },
                 SetSize = new Vector2(64f, 64f),

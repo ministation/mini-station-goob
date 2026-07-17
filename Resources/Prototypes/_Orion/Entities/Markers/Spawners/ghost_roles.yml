@@ -27,6 +27,24 @@
 
 - type: entity
   parent: MarkerBase
+  id: SpawnPointSkeletonBartender
+  name: skeleton bartender
+  suffix: Spawner, Ghost Role
+  categories: [ Spawner ]
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    layers:
+      - state: green
+      - sprite: Mobs/Species/Skeleton/parts.rsi
+        state: skull_icon
+      - state: bartender
+  - type: ConditionalSpawner
+    prototypes:
+    - MobSkeletonBartender
+
+- type: entity
+  parent: MarkerBase
   id: SpawnPointSkeletonPirate
   name: skeleton pirate cryo capsule
   suffix: Spawner, Ghost Role

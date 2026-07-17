@@ -161,7 +161,7 @@
 - type: latheRecipePack
   id: TypanBorgModulesWeaponry
   recipes:
-  - BorgModuleAdvancedChemical
+  - BorgModuleAdvancedTopical
   - BorgModuleAdvancedSurgery
   - BorgModuleSecurityStandard
   - BorgModuleSecurityAdvanced
@@ -414,7 +414,7 @@
   id: TypanShuttleBoards
   recipes:
   - ShuttleConsoleCircuitboardTypan
-  - ShuttlePilotConsoleCircuitboardTypan
+  - CargoShuttleConsoleCircuitboardTypan
   - IFFConsoleCircuitboardTypan
   - RadarConsoleCircuitboardTypan
   - ThrusterMachineCircuitboard

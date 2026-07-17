@@ -50,7 +50,7 @@
 #   - type: ShowJobIcons
 #   - type: ShowSyndicateIcons
 #   - type: TTS
-#     voice: Glados
+#     voice: Robot
 #   - type: MindContainer
 #   - type: GhostRole
 #     allowMovement: false

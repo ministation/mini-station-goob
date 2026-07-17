@@ -193,20 +193,39 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
             return false;
 
         var coords = _map.GridTileToLocal(tradeGrid.Value, grid, centerTile);
-        _transform.SetCoordinates(zoneUid, coords);
+        MoveAnchoredTo(zoneUid, coords);
 
         if (Exists(flagUid))
-            _transform.SetCoordinates(flagUid, coords);
+            MoveAnchoredTo(flagUid, coords);
 
         newDisplayName = BuildLocationName(target, centerTile);
         return true;
     }
 
+    private void MoveAnchoredTo(EntityUid uid, EntityCoordinates coords)
+    {
+        if (TryComp(uid, out TransformComponent? xform) && xform.Anchored)
+            _transform.Unanchor(uid, xform);
+
+        _transform.SetCoordinates(uid, coords);
+        _transform.AnchorEntity(uid);
+    }
+
     private void ClearExistingZones()
     {
-        var query = EntityQueryEnumerator<TypanWarCaptureZoneComponent>();
-        while (query.MoveNext(out var uid, out _))
+        var zoneQuery = EntityQueryEnumerator<TypanWarCaptureZoneComponent>();
+        while (zoneQuery.MoveNext(out var uid, out var zone))
+        {
+            if (zone.FlagEntity is { } linkedFlag && Exists(linkedFlag))
+                Del(linkedFlag);
+
             Del(uid);
+        }
+
+        // Orphan flags left after earlier failed respawns / zone-only deletes.
+        var flagQuery = EntityQueryEnumerator<TypanWarCaptureFlagComponent>();
+        while (flagQuery.MoveNext(out var flagUid, out _))
+            Del(flagUid);
     }
 
     private EntityUid? FindTradeGridForStation(EntityUid station, EntityUid mainGrid)
@@ -275,23 +294,11 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
     {
         center = default;
 
-        if (!TryComp<TransformComponent>(target.Grid, out var xform))
+        if (!TryComp<TransformComponent>(target.Grid, out _))
             return false;
 
-        if (target.IsTradePost)
-        {
-            var bounds = grid.LocalAABB;
-            var centerCandidate = new Vector2i(
-                (int) ((bounds.Left + bounds.Right) * 0.5f),
-                (int) ((bounds.Bottom + bounds.Top) * 0.5f));
-
-            if (IsValidZoneCenter(target.Grid, grid, centerCandidate, new Vector2i(1, 1)))
-            {
-                center = centerCandidate;
-                return true;
-            }
-        }
-
+        // Prefer a random valid interior tile — AABB geometric center of trade posts
+        // often lands in hangars / docks that look "outside" the capture footprint.
         return TryPickCenterTileRandom(target.Grid, grid, out center);
     }
 

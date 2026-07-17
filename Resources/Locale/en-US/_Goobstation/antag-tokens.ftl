@@ -63,8 +63,8 @@ antag-store-role-initial-infected-description = Roundstart deposit for the initi
 antag-store-role-revenant-name = Revenant
 antag-store-role-revenant-description = Starts the revenant event with an exclusive ghost role. Available in all modes except Extended.
 
-antag-store-role-yao-name = Yao
-antag-store-role-yao-description = Triggers a lone-op style personal event. Only the buyer can claim the role. Yao and survival modes.
+antag-store-role-yao-name = Operative
+antag-store-role-yao-description = In lobby on the Nukeops preset — queue for a roundstart operative. In-round as a ghost — LoneOps. One purchase per round.
 
 antag-store-role-headrev-name = Head Revolutionary
 antag-store-role-headrev-description = Roundstart deposit for Head Revolutionary. Revolution mode only.
@@ -98,6 +98,9 @@ antag-store-role-shadowling-description = Roundstart deposit for Shadowling. Sha
 
 antag-store-role-xenomorph-name = Xenomorph
 antag-store-role-xenomorph-description = Roundstart queue for the xenomorph infestation. Survival only.
+
+antag-store-role-mothership-core-name = Mothership Core
+antag-store-role-mothership-core-description = Roundstart deposit for the xenoborg mothership core. Queued in lobby. Survival modes.
 
 antag-store-role-bingle-name = Bingle
 antag-store-role-bingle-description = Ghost role for a Bingle. Survival only.
@@ -133,6 +136,8 @@ antag-tokens-error-deposit-consumed = Your queue was already used because you al
 antag-tokens-popup-deposit-cancelled-refund = Deposit cancelled. Tickets refunded.
 antag-tokens-popup-deposit-cancelled-reason-refund = {$reason} Tickets refunded.
 antag-tokens-popup-job-blocks-queued = Your current Command, Security, or Silicon (AI/borg) job blocks this queued role. Tickets refunded.
+antag-tokens-popup-job-remapped = Your job was changed to "{$job}" so the purchased antagonist can be assigned.
+antag-tokens-popup-job-remap-failed = No compatible job in your preferences (Low or higher) for this role. Tickets refunded.
 antag-tokens-error-assign-failed-refund = Could not assign the reserved role. Tickets refunded.
 antag-tokens-popup-role-assigned = Reserved role "{$role}" assigned.
 antag-tokens-popup-event-ended-refund = The event for "{$role}" did not happen. Tickets refunded.

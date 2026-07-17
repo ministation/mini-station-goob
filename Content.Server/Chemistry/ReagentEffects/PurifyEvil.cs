@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using Content.Shared.EntityEffects;
 using Content.Shared.Jittering;
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
@@ -8,7 +8,7 @@ using Robust.Shared.Prototypes;
 namespace Content.Server.Chemistry.ReagentEffects;
 
 [UsedImplicitly]
-public sealed partial class PurifyEvil : EntityEffect
+public sealed partial class PurifyEvil : EntityEffectBase<PurifyEvil>
 {
     [DataField]
     public float Amplitude = 10.0f;
@@ -19,31 +19,36 @@ public sealed partial class PurifyEvil : EntityEffect
     [DataField]
     public TimeSpan Time = TimeSpan.FromSeconds(30.0f);
 
-    protected override string? ReagentEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)
+    public override string? EntityEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys)
     {
         return Loc.GetString("reagent-effect-guidebook-purify-evil");
     }
+}
 
-    public override void Effect(EntityEffectBaseArgs args)
+public sealed partial class PurifyEvilEntityEffectSystem : EntityEffectSystem<TransformComponent, PurifyEvil>
+{
+    [Dependency] private readonly SharedJitteringSystem _jitter = default!;
+
+    protected override void Effect(Entity<TransformComponent> entity, ref EntityEffectEvent<PurifyEvil> args)
     {
-        var entityManager = args.EntityManager;
-        var uid = args.TargetEntity;
-        if (!entityManager.TryGetComponent(uid, out BloodCultistComponent? bloodCultist) ||
+        if (!TryComp(entity, out BloodCultistComponent? bloodCultist) ||
             bloodCultist.DeconvertToken is not null)
         {
             return;
         }
 
-        entityManager.System<SharedJitteringSystem>().DoJitter(uid, Time, true, Amplitude, Frequency);
+        var effect = args.Effect;
+        _jitter.DoJitter(entity, effect.Time, true, effect.Amplitude, effect.Frequency);
 
         bloodCultist.DeconvertToken = new CancellationTokenSource();
-        Robust.Shared.Timing.Timer.Spawn(Time, () => DeconvertCultist(uid, entityManager),
+        var uid = entity.Owner;
+        Robust.Shared.Timing.Timer.Spawn(effect.Time, () => DeconvertCultist(uid),
             bloodCultist.DeconvertToken.Token);
     }
 
-    private void DeconvertCultist(EntityUid uid, IEntityManager entityManager)
+    private void DeconvertCultist(EntityUid uid)
     {
-        if (entityManager.HasComponent<BloodCultistComponent>(uid))
-            entityManager.RemoveComponent<BloodCultistComponent>(uid);
+        if (HasComp<BloodCultistComponent>(uid))
+            RemComp<BloodCultistComponent>(uid);
     }
 }

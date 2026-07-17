@@ -63,3 +63,5 @@ Resources/Maps/**/*.yml text eol=lf merge=mapping-merge-driver
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+# todo marty
+Changelog.yml merge=union

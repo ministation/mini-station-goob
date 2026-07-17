@@ -150,12 +150,14 @@ thunderdome-desc-neck-bandage = A tattered fabric wrap, faded over the years
 thunderdome-desc-neck-chameleon = Chameleon scarf that can change appearance
 
 # Glasses loadouts
+thunderdome-loadout-glasses-none = No Glasses
 thunderdome-loadout-glasses-sunglasses = Sunglasses
 thunderdome-loadout-glasses-security = Security Sunglasses
 thunderdome-loadout-glasses-diagnostic = Medical HUD
 thunderdome-loadout-glasses-thermal = Thermal Vision Goggles
 thunderdome-loadout-glasses-nightvision = Night Vision
 
+thunderdome-desc-glasses-none = No glasses
 thunderdome-desc-glasses-sunglasses = Standard sunglasses
 thunderdome-desc-glasses-security = Security sunglasses with HUD
 thunderdome-desc-glasses-diagnostic = Medical diagnostic HUD

@@ -1,3 +1,4 @@
+using Content.Shared.Destructible;
 // SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -372,6 +373,19 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
 
             if (dockConfig == null)
                 continue;
+
+            // Clear stale DockedWith / DockJointId before FTLDock recreates welds
+            // (map merges ClearJoints without undocking and cause "joint already existed").
+            foreach (var (dockAUid, dockBUid, dockA, dockB) in dockConfig.Docks)
+            {
+                if (dockA.DockedWith != null)
+                    _dock.Undock((dockAUid, dockA));
+                if (dockB.DockedWith != null)
+                    _dock.Undock((dockBUid, dockB));
+
+                dockA.DockJointId = null;
+                dockB.DockJointId = null;
+            }
 
             _shuttle.FTLDock((shuttleUid, shuttleXform), dockConfig);
             config = dockConfig;

@@ -94,20 +94,20 @@
 - type: entity
   parent: BaseComputerCircuitboardTypan
   id: ShuttleConsoleCircuitboardTypan
+  name: консоль управления шаттлом (консольная плата)
+  description: Консольная плата для консоли управления шаттлом Синдиката.
+  components:
+  - type: ComputerBoard
+    prototype: SyndicateComputerShuttle
+
+- type: entity
+  parent: BaseComputerCircuitboardTypan
+  id: CargoShuttleConsoleCircuitboardTypan
   name: консоль управления грузовым шаттлом (консольная плата)
   description: Консольная плата для консоли управления грузовым шаттлом.
   components:
   - type: ComputerBoard
     prototype: MiniComputerShuttleCargo
-
-- type: entity
-  parent: BaseComputerCircuitboardTypan
-  id: ShuttlePilotConsoleCircuitboardTypan
-  name: консоль управления шаттлом (консольная плата)
-  description: Консольная плата для консоли управления шаттлом.
-  components:
-  - type: ComputerBoard
-    prototype: SyndicateComputerShuttle
 
 - type: entity
   parent: BaseComputerCircuitboardTypan

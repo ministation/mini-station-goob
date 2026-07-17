@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: entity
   parent: [MobObserverBase, InventoryBase]
   id: AdminObserver
@@ -16,6 +18,7 @@
     - SilentStorageUser
     - PreventAccessLogging
     - AllowBiomeLoading
+    - NotGhostnadoWarpable
   - type: Input
     context: "aghost"
   - type: Ghost
@@ -35,11 +38,8 @@
     needsHands: false
   - type: CombatMode
   - type: Physics
+    bodyType: Kinematic # Admin ghosts should ignore the laws of physics.
     ignorePaused: true
-    bodyType: Kinematic
-  - type: Body
-    prototype: Aghost
-    thermalVisibility: false # WD EDIT
   - type: Access
     groups:
     - AllAccess
@@ -114,12 +114,14 @@
   - type: Speech # Goobstation
     speechVerb: HolierThanThou
   - type: Eye
-    visMask:
-      - Ghost
+    visMask: # Goob edit
       - Normal
-      - CosmicCultMonument # DeltaV - Cosmic Cult
+      - Ghost
       - Abductor
-  - type: AghostColor
+      - CosmicCultMonument # DeltaV - Cosmic Cult
+      - EldritchInfluence
+      - EldritchInfluenceSpent
+      - Admin
   - type: IgnoreSkills # CorvaxGoob-Skills
   # Corvax-Goob-start
   - type: MovementSpeedModifier
@@ -138,7 +140,7 @@
   components:
   - type: Action
     icon: { sprite: Structures/Machines/parts.rsi, state: box_0 }
-    iconOn: Structures/Machines/parts.rsi/box_2.png
+    iconOn: { sprite: Structures/Machines/parts.rsi, state: box_2 }
     keywords: [ "AI", "console", "interface" ]
     priority: -10
 

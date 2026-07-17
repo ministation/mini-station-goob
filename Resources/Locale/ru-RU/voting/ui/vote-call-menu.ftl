@@ -7,9 +7,11 @@ ui-vote-votekick-type-raiding = Набег
 ui-vote-votekick-type-cheating = Использование читов
 ui-vote-votekick-type-spamming = Спам
 # Window title of the vote create menu
-ui-vote-create-title = Голосование
+ui-vote-create-title = Начать голосование
+ui-vote-create-subtitle = Выберите тему и запустите общее голосование
+ui-vote-type-label = Тип голосования
 # Submit button in the vote create button
-ui-vote-create-button = Запустить
+ui-vote-create-button = Запустить голосование
 # Follow button in the vote create menu
 ui-vote-follow-button = Следовать за пользователем
 ui-vote-type-timeout = Это голосование было недавно запущено ({ $remaining })

@@ -1,1 +1,1 @@
-hydrakin-cool-off-emote = {THE($name)} остывает, излучая тепло.
+hydrakin-cool-off-emote = {THE($name)} begins to radiate out heat.

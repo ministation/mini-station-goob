@@ -21,6 +21,8 @@ public static class AntagLobbyIcons
         ["NukeopsCommander"] = "/Textures/_Mini/Interface/Antags/nukie.png",
         ["Blob"] = "/Textures/_Mini/Interface/Antags/blob.png",
         ["Wizard"] = "/Textures/_Mini/Interface/Antags/wizard.png",
+        ["Xenoborg"] = "/Textures/_Mini/Interface/Antags/xenoborg.png",
+        ["MothershipCore"] = "/Textures/_Mini/Interface/Antags/mothership.png",
     };
 
     public static bool TryResolveIconPath(AntagPrototype antag, out string path)
@@ -50,6 +52,18 @@ public static class AntagLobbyIcons
             sprite = new SpriteSpecifier.Rsi(
                 new ResPath("/Textures/WhiteDream/BloodCult/cult_hud.rsi"),
                 "cult_member");
+            return true;
+        }
+
+        if (antag.ID is "Xenoborg" or "MothershipCore")
+        {
+            sprite = antag.ID == "MothershipCore"
+                ? new SpriteSpecifier.Rsi(
+                    new ResPath("/Textures/Mobs/Silicon/mothership_core.rsi"),
+                    "core-idle")
+                : new SpriteSpecifier.Rsi(
+                    new ResPath("/Textures/Mobs/Silicon/chassis.rsi"),
+                    "xenoborg_heavy");
             return true;
         }
 

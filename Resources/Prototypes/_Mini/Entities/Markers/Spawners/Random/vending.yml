@@ -1,0 +1,88 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Typan random food/drink vending machine spawners.
+
+- type: entity
+  id: RandomVendingDrinksTypan
+  name: random vending machine spawner
+  suffix: Тайпан, Напитки
+  parent: MarkerBase
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: Structures/Machines/VendingMachines/random.rsi
+      state: drink
+  - type: RandomSpawner
+    prototypes:
+    - VendingMachineCoffeeTypan
+    - VendingMachineColaTypan
+    - VendingMachineColaBlackTypan
+    - VendingMachineColaRedTypan
+    - VendingMachineDrGibbTypan
+    - VendingMachinePwrGameTypan
+    - VendingMachineShamblersJuiceTypan
+    - VendingMachineSmiteTypan
+    - VendingMachineSodaTypan
+    - VendingMachineSovietSodaTypan
+    - VendingMachineSpaceUpTypan
+    - VendingMachineStarkistTypan
+    chance: 1
+
+- type: entity
+  id: RandomVendingSnacksTypan
+  name: random vending machine spawner
+  suffix: Тайпан, Закуски
+  parent: MarkerBase
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: Structures/Machines/VendingMachines/random.rsi
+      state: snack
+  - type: RandomSpawner
+    prototypes:
+    - VendingMachineDiscountTypan
+    - VendingMachineSnackTypan
+    - VendingMachineSnackBlueTypan
+    - VendingMachineSnackGreenTypan
+    - VendingMachineSnackOrangeTypan
+    - VendingMachineSnackTealTypan
+    - VendingMachineChangTypan
+    - VendingMachineDonutTypan
+    chance: 1
+
+- type: entity
+  id: RandomVendingTypan
+  name: random vending machine spawner
+  suffix: Тайпан, Еда и напитки
+  parent: MarkerBase
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: Structures/Machines/VendingMachines/random.rsi
+      state: any
+  - type: RandomSpawner
+    prototypes:
+    - VendingMachineChangTypan
+    - VendingMachineCigsTypan
+    - VendingMachineCoffeeTypan
+    - VendingMachineColaTypan
+    - VendingMachineColaBlackTypan
+    - VendingMachineColaRedTypan
+    - VendingMachineDiscountTypan
+    - VendingMachineDonutTypan
+    - VendingMachineDrGibbTypan
+    - VendingMachinePwrGameTypan
+    - VendingMachineShamblersJuiceTypan
+    - VendingMachineSmiteTypan
+    - VendingMachineSnackTypan
+    - VendingMachineSnackBlueTypan
+    - VendingMachineSnackGreenTypan
+    - VendingMachineSnackOrangeTypan
+    - VendingMachineSnackTealTypan
+    - VendingMachineSodaTypan
+    - VendingMachineSovietSodaTypan
+    - VendingMachineSpaceUpTypan
+    - VendingMachineStarkistTypan
+    chance: 1

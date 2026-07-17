@@ -1,9 +1,3 @@
-// SPDX-FileCopyrightText: 2025 August Eymann <august.eymann@gmail.com>
-// SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
-// SPDX-FileCopyrightText: 2025 SolsticeOfTheWinter <solsticeofthewinter@gmail.com>
-// SPDX-FileCopyrightText: 2025 TheBorzoiMustConsume <197824988+TheBorzoiMustConsume@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Goobstation.Common.CCVar;
@@ -69,6 +63,8 @@ public partial class XenobiologySystem
     /// </summary>
     private void UpdateMitosis()
     {
+        var mitosisQueue = new List<EntityUid>();
+
         var query = EntityQueryEnumerator<SlimeComponent, MobGrowthComponent, HungerComponent>();
         while (query.MoveNext(out var uid, out var slime, out var growthComp, out var hungerComp))
         {
@@ -85,8 +81,15 @@ public partial class XenobiologySystem
             if (_hunger.GetHunger(hungerComp) < slime.MitosisHunger)
                 continue;
 
+            mitosisQueue.Add(uid);
+        }
+
+        foreach (var uid in mitosisQueue)
+        {
+            if (!TryComp<SlimeComponent>(uid, out var slime))
+                continue;
+
             DoMitosis((uid, slime));
-            slime.NextUpdateTime = _gameTiming.CurTime + slime.UpdateInterval;
         }
     }
 
@@ -143,7 +146,7 @@ public partial class XenobiologySystem
 
         var parentChemSolutionTransfer = new Solution();
         if (TryComp<BloodstreamComponent>(ent, out var parentBloodstream)
-            && _solutionContainer.ResolveSolution(ent.Owner, parentBloodstream.ChemicalSolutionName, ref parentBloodstream.ChemicalSolution, out var parentChem))
+            && _solutionContainer.ResolveSolution(ent.Owner, parentBloodstream.BloodSolutionName, ref parentBloodstream.BloodSolution, out var parentChem))
         {
             parentChemSolutionTransfer.AddSolution(parentChem, _proto);
             parentChem.RemoveAllSolution();
@@ -153,7 +156,7 @@ public partial class XenobiologySystem
         foreach (var s in slimes)
         {
             if (TryComp<BloodstreamComponent>(s, out var childBloodstream)
-                && _solutionContainer.ResolveSolution(s, childBloodstream.ChemicalSolutionName, ref childBloodstream.ChemicalSolution, out var childChem))
+                && _solutionContainer.ResolveSolution(s, childBloodstream.BloodSolutionName, ref childBloodstream.BloodSolution, out var childChem))
                 childChem.AddSolution(parentChemSolutionTransfer, _proto);
 
             var childStomachList = _body.GetBodyOrganEntityComps<StomachComponent>(s);

@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Syndicate PTech stock for Typan station.
+
+- type: vendingMachineInventory
+  id: PTechTypanInventory
+  startingInventory:
+    TypanPDAPassenger: 5
+    ClearPDA: 5
+    PassengerIDCard: 5
+    ClothingHeadsetAltSyndicate: 5
+    EncryptionKeySyndie: 4
+    RubberStampApproved: 1
+    RubberStampDenied: 1
+    RubberStampSyndicate: 1
+    BoxFolderPlasticClipboardEmpty: 2
+    Paper: 10
+    Envelope: 10
+    HandLabeler: 2
+  contrabandInventory:
+    BalloonSyn: 2
+    LuxuryPen: 1

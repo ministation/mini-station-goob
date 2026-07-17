@@ -114,8 +114,8 @@ public sealed class SeedDnaConsoleSystem : SharedSeedDnaConsoleSystem
             {
                 var seedChemQuantity = new SeedChemQuantity
                 {
-                    Min = value.Min,
-                    Max = value.Max,
+                    Min = (Content.Goobstation.Maths.FixedPoint.FixedPoint2)value.Min,
+                    Max = (Content.Goobstation.Maths.FixedPoint.FixedPoint2)value.Max,
                     PotencyDivisor = value.PotencyDivisor,
                     Inherent = value.Inherent,
                 };
@@ -135,7 +135,7 @@ public sealed class SeedDnaConsoleSystem : SharedSeedDnaConsoleSystem
                     {
                         var oldKey = chemicalKeys[keyIndex];
                         var oldChem = seedData.Chemicals[oldKey];
-                        float chemMax = oldChem.Max;
+                        float chemMax = (float)oldChem.Max;
 
                         currentVolume -= chemMax;
                         volumeNeeded -= chemMax;
@@ -193,9 +193,9 @@ public sealed class SeedDnaConsoleSystem : SharedSeedDnaConsoleSystem
         {
             var dto = new SeedChemQuantityDto
             {
-                Min = value.Min,
-                Max = value.Max,
-                PotencyDivisor = value.PotencyDivisor,
+                Min = (int)value.Min,
+                Max = (int)value.Max,
+                PotencyDivisor = (int)value.PotencyDivisor,
                 Inherent = value.Inherent,
             };
             seedDataDto.Chemicals[key] = dto;

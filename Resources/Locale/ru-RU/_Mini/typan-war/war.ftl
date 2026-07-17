@@ -113,7 +113,7 @@ typan-war-minimap-map-legend = Силуэты = станции и шаттлы �
 typan-war-minimap-controls = Колёсико — масштаб · перетаскивание — перемещение
 typan-war-minimap-loading = Загрузка карты…
 typan-war-layout-failed = Война станций прервана: не удалось объединить станции на поле боя.
-typan-war-ghost-thunderdome-blocked = Thunderdome недоступен во время войны станций.
+typan-war-ghost-thunderdome-blocked = Арена недоступна во время войны станций.
 
 typan-war-ftl-blocked = Блюспейс-прыжки заблокированы на время войны станций.
 

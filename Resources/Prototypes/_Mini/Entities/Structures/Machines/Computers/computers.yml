@@ -236,7 +236,7 @@
     energy: 1.6
     color: "#43ccb5"
   - type: Computer
-    board: ShuttleConsoleCircuitboardTypan
+    board: CargoShuttleConsoleCircuitboardTypan
 
 - type: entity
   parent: ComputerSurveillanceCameraMonitor
@@ -397,7 +397,7 @@
     - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
       state: generic_panel_open
   - type: Computer
-    board: ShuttlePilotConsoleCircuitboardTypan
+    board: ShuttleConsoleCircuitboardTypan
   - type: PointLight
     radius: 1.5
     energy: 1.6

@@ -1,14 +1,8 @@
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 DoutorWhite <thedoctorwhite@gmail.com>
-// SPDX-FileCopyrightText: 2025 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using Content.Shared.CCVar;
+using Content.Client.Graphics;
 using Robust.Client.Graphics;
-using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
-using RobustCVars = Robust.Shared.CVars;
 
 namespace Content.Client.Light;
 
@@ -21,11 +15,10 @@ public sealed class LightBlurOverlay : Overlay
 
     [Dependency] private readonly IClyde _clyde = default!;
     [Dependency] private readonly IOverlayManager _overlay = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     public const int ContentZIndex = TileEmissionOverlay.ContentZIndex + 1;
 
-    private IRenderTarget? _blurTarget;
+    private readonly OverlayResourceCache<CachedResources> _resources = new();
 
     public LightBlurOverlay()
     {
@@ -35,19 +28,40 @@ public sealed class LightBlurOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        if (args.Viewport.Eye is not { } eye || !_cfg.GetCVar(RobustCVars.LightBlur))
+        if (args.Viewport.Eye == null)
             return;
 
         var beforeOverlay = _overlay.GetOverlay<BeforeLightTargetOverlay>();
-        var size = beforeOverlay.EnlargedLightTarget.Size;
+        var beforeLightRes = beforeOverlay.GetCachedForViewport(args.Viewport);
+        var res = _resources.GetForViewport(args.Viewport, static _ => new CachedResources());
 
-        if (_blurTarget?.Size != size)
+        var size = beforeLightRes.EnlargedLightTarget.Size;
+
+        if (res.BlurTarget?.Size != size)
         {
-            _blurTarget = _clyde
+            res.BlurTarget = _clyde
                 .CreateRenderTarget(size, new RenderTargetFormatParameters(RenderTargetColorFormat.Rgba8Srgb), name: "enlarged-light-blur");
         }
 
-        var target = beforeOverlay.EnlargedLightTarget;
-        _clyde.BlurRenderTarget(args.Viewport, target, _blurTarget, eye, 14f);
+        var target = beforeLightRes.EnlargedLightTarget;
+        // Yeah that's all this does keep walkin.
+        _clyde.BlurRenderTarget(args.Viewport, target, res.BlurTarget, args.Viewport.Eye, 14f * 5f);
+    }
+
+    protected override void DisposeBehavior()
+    {
+        _resources.Dispose();
+
+        base.DisposeBehavior();
+    }
+
+    private sealed class CachedResources : IDisposable
+    {
+        public IRenderTarget? BlurTarget;
+
+        public void Dispose()
+        {
+            BlurTarget?.Dispose();
+        }
     }
 }

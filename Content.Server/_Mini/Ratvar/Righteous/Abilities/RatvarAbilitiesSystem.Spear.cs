@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Abilities.Enchantment.Weapons;
 using Content.Shared.Humanoid;
 using Content.Shared.Silicons.Borgs.Components;
@@ -34,13 +34,13 @@ public sealed partial class RatvarAbilitiesSystem
             if (HasComp<HumanoidAppearanceComponent>(entity))
             {
                 var transform = Transform(entity).MapPosition;
-                _empSystem.EmpPulse(transform, 0.1f, 15000, 3);
+                _empSystem.EmpPulse(transform, 0.1f, 15000, TimeSpan.FromSeconds(3));
             }
 
             if (HasComp<BorgChassisComponent>(entity))
             {
                 var transform = Transform(entity).MapPosition;
-                _empSystem.EmpPulse(transform, 0.1f, 25000, 7);
+                _empSystem.EmpPulse(transform, 0.1f, 25000, TimeSpan.FromSeconds(7));
             }
         }
     }

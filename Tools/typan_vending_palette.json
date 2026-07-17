@@ -1,0 +1,47 @@
+{
+  "notes": "Typan vending recolor manifest. skip = RSI ignored; overrides.source remaps output name to a different NT source RSI; palettes assign department accent sets (from Typan glass airlocks / medical techfab).",
+  "skip": [
+    "bruiseomat.rsi",
+    "empty.rsi",
+    "random.rsi",
+    "syndiedrobe.rsi"
+  ],
+  "overrides": {
+    "medical.rsi": {
+      "source": "medivend.rsi",
+      "enabled": true,
+      "palette": "medical"
+    }
+  },
+  "palettes": {
+    "medivend.rsi": "medical",
+    "medical.rsi": "medical",
+    "wallmed.rsi": "medical",
+    "medidrobe.rsi": "medical",
+    "chemdrobe.rsi": "medical",
+    "chemvend.rsi": "medical",
+    "genedrobe.rsi": "medical",
+    "virodrobe.rsi": "virology",
+    "engivend.rsi": "engineering",
+    "engidrobe.rsi": "engineering",
+    "youtool.rsi": "engineering",
+    "tankdispenser.rsi": "engineering",
+    "mining.rsi": "mining",
+    "cargodrobe.rsi": "cargo",
+    "atmosdrobe.rsi": "atmos",
+    "scidrobe.rsi": "science",
+    "robotics.rsi": "science",
+    "robodrobe.rsi": "science",
+    "chefdrobe.rsi": "service",
+    "chefvend.rsi": "service",
+    "dinnerware.rsi": "service",
+    "hydrobe.rsi": "service",
+    "janidrobe.rsi": "service",
+    "bardrobe.rsi": "service",
+    "nutri.rsi": "service",
+    "nutri_green.rsi": "service",
+    "seeds.rsi": "service",
+    "seeds_green.rsi": "service",
+    "centdrobe.rsi": "command"
+  }
+}

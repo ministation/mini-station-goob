@@ -1,1 +1,1 @@
-species-name-hydrakin = Гидракин
+species-name-hydrakin = Hydrakin

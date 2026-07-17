@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,6 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -31,7 +31,6 @@ namespace Content.Server.Database
             options.ConfigureWarnings(x =>
             {
                 x.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning);
-                x.Ignore(RelationalEventId.PendingModelChangesWarning);
 #if DEBUG
                 // for tests
                 x.Ignore(CoreEventId.SensitiveDataLoggingEnabledWarning);
@@ -89,38 +88,6 @@ namespace Content.Server.Database
             // EF core can make this automatically unique on sqlite but not psql.
             modelBuilder.Entity<IPIntelCache>()
                 .HasIndex(p => p.Address)
-                .IsUnique();
-
-            var timeSpanListConverter = new ValueConverter<List<TimeSpan>, string>(
-                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => JsonSerializer.Deserialize<List<TimeSpan>>(v, (JsonSerializerOptions?)null) ?? new List<TimeSpan>());
-
-            var intListConverter = new ValueConverter<List<int>, string>(
-                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => JsonSerializer.Deserialize<List<int>>(v, (JsonSerializerOptions?)null) ?? new List<int>());
-
-            var timeSpanListComparer = new ValueComparer<List<TimeSpan>>(
-                (c1, c2) => c1!.SequenceEqual(c2!),
-                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                c => c.ToList());
-
-            var intListComparer = new ValueComparer<List<int>>(
-                (c1, c2) => c1!.SequenceEqual(c2!),
-                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                c => c.ToList());
-
-            modelBuilder.Entity<PlayerGhostRoleTickets>()
-                .Property(p => p.TicketMilestones)
-                .HasConversion(timeSpanListConverter)
-                .Metadata.SetValueComparer(timeSpanListComparer);
-
-            modelBuilder.Entity<PlayerGhostRoleTickets>()
-                .Property(p => p.StreakMilestones)
-                .HasConversion(intListConverter)
-                .Metadata.SetValueComparer(intListComparer);
-
-            modelBuilder.Entity<PlayerGhostRoleTickets>()
-                .HasIndex(p => p.PlayerId)
                 .IsUnique();
         }
 

@@ -1,35 +1,10 @@
-// SPDX-FileCopyrightText: 2022 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 Flipp Syder <76629141+vulppine@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 Jezithyr <Jezithyr.@gmail.com>
-// SPDX-FileCopyrightText: 2022 Jezithyr <Jezithyr@gmail.com>
-// SPDX-FileCopyrightText: 2022 Jezithyr <jmaster9999@gmail.com>
-// SPDX-FileCopyrightText: 2022 Visne <39844191+Visne@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 jicksaw <jicksaw@pm.me>
-// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 wrexbe <wrexbe@protonmail.com>
-// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Pieter-Jan Briers <pieterjan.briers@gmail.com>
-// SPDX-FileCopyrightText: 2023 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 0x6273 <0x40@keemail.me>
-// SPDX-FileCopyrightText: 2024 Nikolai Korolev <CrafterKolyan@mail.ru>
-// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
-// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
-// SPDX-FileCopyrightText: 2024 RedFoxIV <38788538+RedFoxIV@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Winkarst <74284083+Winkarst-cpu@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Aidenkrz <aiden@djkraz.com>
-// SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
-// SPDX-FileCopyrightText: 2025 Ted Lukin <66275205+pheenty@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 gluesniffler <linebarrelerenthusiast@gmail.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using System.Linq;
-using Content.Client.UserInterface.Systems.Chat.Controls;
-using Content.Goobstation.Common.CCVar; // Goobstation Change
+
+using Content.Goobstation.Common.CCVar;
+using Robust.Shared.Configuration;
 using Content.Client.UserInterface;
+using Content.Client.UserInterface.Systems.Chat.Controls;
 using Content.Shared.Chat;
 using Content.Shared.Input;
 using Robust.Client.Audio;
@@ -38,7 +13,6 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Audio;
-using Robust.Shared.Configuration;
 using Robust.Shared.Input;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
@@ -50,13 +24,15 @@ namespace Content.Client.UserInterface.Systems.Chat.Widgets;
 [Virtual]
 public partial class ChatBox : UIWidget
 {
+    // <Trauma>
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly ILocalizationManager _loc = default!;
+    // </Trauma>
     [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly ILogManager _log = default!;
 
     private readonly ISawmill _sawmill;
     private readonly ChatUIController _controller;
-    private readonly IConfigurationManager _cfg; // WD EDIT
-    private readonly ILocalizationManager _loc; // WD EDIT
 
     public bool Main { get; set; }
 
@@ -89,11 +65,18 @@ public partial class ChatBox : UIWidget
         RefreshChatFont();
 
         // WD EDIT START
-        _cfg = IoCManager.Resolve<IConfigurationManager>();
         _coalescence = _cfg.GetCVar(GoobCVars.CoalesceIdenticalMessages); // i am uncomfortable calling repopulate on chatbox in its ctor, even though it worked in testing i'll still err on the side of caution
         _cfg.OnValueChanged(GoobCVars.CoalesceIdenticalMessages, UpdateCoalescence, true); // eplicitly false to underline the above comment
         // WD EDIT END
     }
+
+    public void RefreshChatFont()
+    {
+        UiChatFonts.ApplyToOutput(Contents);
+        Repopulate();
+    }
+
+    public void InvalidateFontLayout() => RefreshChatFont();
 
     private void OnTextEntered(LineEditEventArgs args)
     {
@@ -114,7 +97,6 @@ public partial class ChatBox : UIWidget
         msg.Read = true;
 
         var color = msg.MessageColorOverride ?? msg.Channel.TextColor();
-        var displayMessage = msg.WrappedMessage;
 
         // WD EDIT START
         (string, Color) tup = (msg.WrappedMessage, color);
@@ -126,15 +108,18 @@ public partial class ChatBox : UIWidget
         // Thanks robustengine, very cool.
         if (_coalescence && msg.CanCoalesce && _lastLine == tup && Contents.EntryCount >= 2)// CorvaxGoob-fix
         {
+            if (!msg.CanCoalesce) // Goobstation Edit - Coalescing Chat
+                return;
+
             _lastLineRepeatCount++;
-            AddLine(displayMessage, color, _lastLineRepeatCount);
+            AddLine(msg.WrappedMessage, color, _lastLineRepeatCount);
             Contents.RemoveEntry(^2);
         }
         else
         {
             _lastLineRepeatCount = 0;
             _lastLine = (msg.WrappedMessage, color);
-            AddLine(displayMessage, color, _lastLineRepeatCount);
+            AddLine(msg.WrappedMessage, color, _lastLineRepeatCount);
         } // WD EDIT END
     }
 
@@ -167,6 +152,11 @@ public partial class ChatBox : UIWidget
     {
         Contents.Clear();
 
+        foreach (var message in _controller.History)
+        {
+            OnMessageAdded(message.Item2);
+        }
+
         if (active)
         {
             _controller.ClearUnfilteredUnreads(channel);
@@ -180,14 +170,6 @@ public partial class ChatBox : UIWidget
     {
         _controller.UpdateHighlights(highlighs);
     }
-
-    public void RefreshChatFont()
-    {
-        UiChatFonts.ApplyToOutput(Contents);
-        Repopulate();
-    }
-
-    public void InvalidateFontLayout() => RefreshChatFont();
 
     public void AddLine(string message, Color color, int repeat = 0)
     {
@@ -204,7 +186,7 @@ public partial class ChatBox : UIWidget
                                 ("size", 8+sizeIncrease)
                                 ));
         } // WD EDIT END
-        Contents.AddMessage(formatted);
+        Contents.AddMessage(formatted, tagsAllowed: null);
     }
 
     public void Focus(ChatSelectChannel? channel = null)

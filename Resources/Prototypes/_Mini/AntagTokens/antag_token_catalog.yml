@@ -34,18 +34,6 @@
       minimumTimeFromRoundStart: 1800
       freeMinimumSponsorLevel: 2
 
-    - id: agent
-      nameLocKey: antag-store-role-agent-name
-      descriptionLocKey: antag-store-role-agent-description
-      cost: 4
-      iconPath: /Textures/_Mini/Interface/Antags/traitor.png
-      mode: LobbyDeposit
-      antagId: Traitor
-      gameRuleId: Traitor
-      tagLocKey: antag-token-window-tag-queue
-      requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 1
-
     - id: abductor
       nameLocKey: antag-store-role-abductor-name
       descriptionLocKey: antag-store-role-abductor-description
@@ -89,6 +77,18 @@
       minimumPlayers: 15
       requiresInRound: true
       minimumTimeFromRoundStart: 2100
+      freeMinimumSponsorLevel: 1
+
+    - id: agent
+      nameLocKey: antag-store-role-agent-name
+      descriptionLocKey: antag-store-role-agent-description
+      cost: 4
+      iconPath: /Textures/_Mini/Interface/Antags/traitor.png
+      mode: LobbyDeposit
+      antagId: Traitor
+      gameRuleId: Traitor
+      tagLocKey: antag-token-window-tag-queue
+      requiresPreRoundLobby: true
       freeMinimumSponsorLevel: 1
 
     - id: devil
@@ -332,19 +332,40 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 20
       requiresPreRoundLobby: true
+      ignoresStationJob: true
+
+    - id: mothership_core
+      nameLocKey: antag-store-role-mothership-core-name
+      descriptionLocKey: antag-store-role-mothership-core-description
+      cost: 12
+      iconPath: /Textures/_Mini/Interface/Antags/mothership.png
+      mode: LobbyDeposit
+      antagId: MothershipCore
+      gameRuleId: Xenoborgs
+      requiresPresetGameRuleId: Xenoborgs
+      tagLocKey: antag-token-window-tag-queue
+      minimumPlayers: 30
+      requiresPreRoundLobby: true
+      ignoresStationJob: true
 
     - id: yao
       nameLocKey: antag-store-role-yao-name
       descriptionLocKey: antag-store-role-yao-description
       cost: 14
       iconPath: /Textures/_Mini/Interface/Antags/nukie.png
-      mode: GhostRule
+      mode: Dual
+      # Lobby / roundstart Nukeops operative
+      antagId: Nukeops
+      gameRuleId: Nukeops
+      requiresPresetGameRuleId: Nukeops
+      tagLocKey: antag-token-window-tag-queue
+      ignoresStationJob: true
+      # Midround ghost LoneOps
       ghostAutoJoinEntityProto: SpawnPointLoneNukeOperativeToken
       ghostRulesLocKey: ghost-role-information-loneop-rules
-      gameRuleId: TokenLoneOpsSpawn
-      tagLocKey: antag-token-window-tag-ghost
+      ghostGameRuleId: TokenLoneOpsSpawn
+      ghostTagLocKey: antag-token-window-tag-ghost
       minimumPlayers: 25
-      requiresInRound: true
       minimumTimeFromRoundStart: 2700
       freeMinimumSponsorLevel: 3
 

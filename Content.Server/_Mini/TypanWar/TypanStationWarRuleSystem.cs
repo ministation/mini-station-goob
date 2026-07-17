@@ -614,8 +614,11 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
     private void CancelWarInsufficient(EntityUid ruleUid, TypanStationWarRuleComponent component, int ntAlive, int typanAlive)
     {
+        // Unlock midround antags / ghost roles / tokens immediately — don't wait for Ended.
         component.Phase = TypanWarPhase.Ended;
         component.Winner = TypanWarWinner.Stalemate;
+        IsWarActive = false;
+        IsModeActive = false;
 
         var locKey = ntAlive < component.MinNtAlive
             ? "typan-war-start-cancelled-nt"

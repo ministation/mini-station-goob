@@ -1,7 +1,10 @@
 using Content.Shared.Chat;
+using Content.Shared.Ghost;
 using Content.Shared._CorvaxGoob.CCCVars;
 using Content.Shared._CorvaxGoob.TTS;
+using Content.Shared._Mini.MiniCCVars;
 using Robust.Client.Audio;
+using Robust.Client.Player;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -27,6 +30,7 @@ public sealed partial class TTSSystem : EntitySystem
     [Dependency] private readonly IResourceManager _res = default!;
     [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
 
     private ISawmill _sawmill = default!;
     private static MemoryContentRoot _contentRoot = new();
@@ -51,6 +55,7 @@ public sealed partial class TTSSystem : EntitySystem
     private const int RadioLeadInMs = 160;
 
     private float _volume = 0.0f;
+    private bool _radioGhostEnabled = true;
     private int _fileIdx = 0;
 
     public override void Initialize()
@@ -64,6 +69,7 @@ public sealed partial class TTSSystem : EntitySystem
         _sawmill = Logger.GetSawmill("tts");
         _cfg.OnValueChanged(CCCVars.TTSVolume, OnTtsVolumeChanged, true);
         _cfg.OnValueChanged(CCCVars.AnnouncementsSound, OnAnnouncementsVolumeChanged, true);
+        _cfg.OnValueChanged(MiniCCVars.TTSRadioGhostEnabled, OnRadioGhostEnabledChanged, true);
         SubscribeNetworkEvent<PlayTTSEvent>(OnPlayTTS);
         SubscribeNetworkEvent<TTSAnnouncedEvent>(OnAnnounced);
     }
@@ -73,6 +79,7 @@ public sealed partial class TTSSystem : EntitySystem
         base.Shutdown();
         _cfg.UnsubValueChanged(CCCVars.TTSVolume, OnTtsVolumeChanged);
         _cfg.UnsubValueChanged(CCCVars.AnnouncementsSound, OnAnnouncementsVolumeChanged);
+        _cfg.UnsubValueChanged(MiniCCVars.TTSRadioGhostEnabled, OnRadioGhostEnabledChanged);
     }
 
     public void RequestPreviewTTS(string voiceId)
@@ -85,18 +92,32 @@ public sealed partial class TTSSystem : EntitySystem
         _volume = volume;
     }
 
+    private void OnRadioGhostEnabledChanged(bool enabled)
+    {
+        _radioGhostEnabled = enabled;
+    }
+
     private void OnPlayTTS(PlayTTSEvent ev)
     {
         _sawmill.Verbose($"Play TTS audio {ev.Data.Length} bytes from {ev.SourceUid} entity");
 
         if (ev.IsRadio)
         {
+            if (!_radioGhostEnabled && IsLocalPlayerGhost())
+                return;
+
             PlayRadioStatic();
             Timer.Spawn(TimeSpan.FromMilliseconds(RadioLeadInMs), () => PlayTtsAudio(ev));
             return;
         }
 
         PlayTtsAudio(ev);
+    }
+
+    private bool IsLocalPlayerGhost()
+    {
+        return _playerManager.LocalEntity is { } local
+               && HasComp<GhostComponent>(local);
     }
 
     private void PlayTtsAudio(PlayTTSEvent ev)

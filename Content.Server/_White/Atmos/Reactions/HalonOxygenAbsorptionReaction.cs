@@ -20,15 +20,18 @@ public sealed partial class HalonOxygenAbsorptionReaction : IGasReactionEffect
 
         var temperature = mixture.Temperature;
 
-        var heatEfficiency = Math.Min(temperature / (Atmospherics.FireMinimumTemperatureToExist * 10f), Math.Min(initialHalon, initialOxygen*20f));
+        // Cap by oxygen/20 to match consumption of 20 O2 per heatEfficiency.
+        var heatEfficiency = Math.Min(
+            temperature / (Atmospherics.FireMinimumTemperatureToExist * 10f),
+            Math.Min(initialHalon, initialOxygen / 20f));
         if (heatEfficiency <= 0f || initialHalon - heatEfficiency < 0f || initialOxygen - heatEfficiency * 20f < 0f)
             return ReactionResult.NoReaction;
 
         var oldHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);
 
         mixture.AdjustMoles(Gas.Halon, -heatEfficiency);
-        mixture.AdjustMoles(Gas.Oxygen, -heatEfficiency*20f);
-        mixture.AdjustMoles(Gas.CarbonDioxide, heatEfficiency*5f);
+        mixture.AdjustMoles(Gas.Oxygen, -heatEfficiency * 20f);
+        mixture.AdjustMoles(Gas.CarbonDioxide, heatEfficiency * 5f);
 
         var energyUsed = heatEfficiency * Atmospherics.HalonCombustionEnergy;
         var newHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);

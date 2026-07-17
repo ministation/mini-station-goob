@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Syndicate smart fridge for Typan station.
+
+- type: entity
+  parent: SmartFridgeMedical
+  id: SmartFridgeTypan
+  suffix: Тайпан
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/smartfridge.rsi
+    snapCardinals: true
+    layers:
+    - state: smartfridge
+      map: ["enum.StorageVisualLayers.Base"]
+    - state: smartfridge_door
+      map: ["enum.StorageVisualLayers.Door"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: PointLight
+    radius: 1.2
+    energy: 3.0
+    color: "#8B0000"
+  - type: AccessReader
+    access: [["TypanMedical"]]

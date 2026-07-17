@@ -1,8 +1,3 @@
-// SPDX-FileCopyrightText: 2023 Moony <moony@hellomouse.net>
-// SPDX-FileCopyrightText: 2023 moonheart08 <moonheart08@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Collections.Generic;
@@ -30,6 +25,11 @@ public sealed class AdminTest : ToolshedTest
                 foreach (var cmd in toolMan.DefaultEnvironment.AllCommands())
                 {
                     if (ignored.Contains(cmd.Cmd.GetType().Assembly))
+                        continue;
+
+                    // Only care about content commands.
+                    var assemblyName = cmd.Cmd.GetType().Assembly.FullName;
+                    if (assemblyName == null || !assemblyName.StartsWith("Content."))
                         continue;
 
                     Assert.That(admin.TryGetCommandFlags(cmd, out _), $"Command does not have admin permissions set up: {cmd.FullName()}");

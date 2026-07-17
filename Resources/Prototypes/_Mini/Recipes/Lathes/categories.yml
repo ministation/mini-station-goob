@@ -15,9 +15,7 @@
   id: Precious
   name: lathe-category-precious
 
-- type: latheCategory
-  id: Faux
-  name: lathe-category-faux
+# Faux is defined in Prototypes/Recipes/Lathes/categories.yml
 
 - type: latheCategory
   id: Specialized

@@ -5,9 +5,16 @@
   components:
   - type: Sprite
     sprite: DarkStation/MainGame/DarkForces/Ratvar/Weapons/ratvar_spear.rsi
-    state: spear
+    layers:
+    - state: spear
+    - state: spear1
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
   - type: SolutionContainerVisuals
+    maxFillLevels: 1
+    fillBaseName: spear
     inHandsMaxFillLevels: 0
+    equippedMaxFillLevels: 0
   - type: MeleeWeapon
     wideAnimationRotation: -135
     damage:

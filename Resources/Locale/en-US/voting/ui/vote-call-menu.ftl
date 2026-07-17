@@ -22,6 +22,8 @@ ui-vote-votekick-type-spamming = Spamming
 
 # Window title of the vote create menu
 ui-vote-create-title = Call Vote
+ui-vote-create-subtitle = Select a topic and call a server-wide vote
+ui-vote-type-label = Vote type
 
 # Submit button in the vote create button
 ui-vote-create-button = Call Vote

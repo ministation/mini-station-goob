@@ -288,14 +288,14 @@ public sealed class AHelpUIController: UIController, IOnSystemChanged<BwoinkSyst
 
     private void UnreadAHelpReceived()
     {
-        GameAHelpButton?.StyleClasses.Add(MenuButton.StyleClassRedTopButton);
+        GameAHelpButton?.StyleClasses.Add("topButtonRed");
         LobbyAHelpButton?.StyleClasses.Add(StyleNano.StyleClassButtonColorRed);
         _hasUnreadAHelp = true;
     }
 
     private void UnreadAHelpRead()
     {
-        GameAHelpButton?.StyleClasses.Remove(MenuButton.StyleClassRedTopButton);
+        GameAHelpButton?.StyleClasses.Remove("topButtonRed");
         LobbyAHelpButton?.StyleClasses.Remove(StyleNano.StyleClassButtonColorRed);
         _hasUnreadAHelp = false;
     }
@@ -540,8 +540,13 @@ public sealed class UserAHelpUIHandler : IAHelpUIHandler
         _ownerId = owner;
     }
 
-    public void BindRating(AdminHelpRatingClientSystem ratingSystem)
+    public void BindRating(AdminHelpRatingClientSystem? ratingSystem)
     {
+        // UISystemDependency may still be uninitialized during integration-test recycle
+        // when admin status updates before entity systems are ready.
+        if (ratingSystem == null)
+            return;
+
         _ratingSystem = ratingSystem;
         ratingSystem.StateUpdated -= OnRatingStateUpdated;
         ratingSystem.StateUpdated += OnRatingStateUpdated;

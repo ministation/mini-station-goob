@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.StatusIcon;
 using Robust.Client.GameObjects;
@@ -12,6 +11,11 @@ using Robust.Shared.Utility;
 
 namespace Content.Goobstation.UIKit.UserInterface.RichText;
 
+/// <summary>
+/// Mini/Goob icon tag:
+/// - <c>[icon="/Textures/_Mini/Interface/AdminIcons/..."]</c> (AHelp rank icons)
+/// - <c>[icon src="JobIconId" tooltip="..."]</c> (local/radio job icons)
+/// </summary>
 public sealed class IconTag : IMarkupTagHandler
 {
     private const string AdminIconsPrefix = "/Textures/_Mini/Interface/AdminIcons/";
@@ -27,6 +31,7 @@ public sealed class IconTag : IMarkupTagHandler
     {
         control = null;
 
+        // AHelp / admin ranks: [icon="/Textures/..."]
         if (node.Value.StringValue is { } path)
         {
             if (path.StartsWith(AdminIconsPrefix, StringComparison.Ordinal))
@@ -47,6 +52,7 @@ public sealed class IconTag : IMarkupTagHandler
             }
         }
 
+        // Chat job icons: [icon src="JobIconNoId" tooltip="Assistant"]
         if (!node.Attributes.TryGetValue("src", out var id) || id.StringValue == null)
             return false;
 
@@ -68,10 +74,11 @@ public sealed class IconTag : IMarkupTagHandler
         return new TextureRect
         {
             Texture = texture,
-            SetWidth = 20,
-            SetHeight = 20,
+            SetWidth = 16,
+            SetHeight = 16,
+            MaxSize = new System.Numerics.Vector2(16, 16),
             Stretch = TextureRect.StretchMode.KeepAspectCentered,
-            VerticalAlignment = Control.VAlignment.Bottom,
+            VerticalAlignment = Control.VAlignment.Center,
             MouseFilter = Control.MouseFilterMode.Stop,
         };
     }

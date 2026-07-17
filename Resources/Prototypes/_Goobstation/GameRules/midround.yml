@@ -1,16 +1,3 @@
-# SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 Aidenkrz <aiden@djkraz.com>
-# SPDX-FileCopyrightText: 2025 Aviu00 <93730715+Aviu00@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
-# SPDX-FileCopyrightText: 2025 Ilya246 <57039557+Ilya246@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 Ilya246 <ilyukarno@gmail.com>
-# SPDX-FileCopyrightText: 2025 SolsticeOfTheWinter <solsticeofthewinter@gmail.com>
-# SPDX-FileCopyrightText: 2025 TheBorzoiMustConsume <197824988+TheBorzoiMustConsume@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 gus <august.eymann@gmail.com>
-# SPDX-FileCopyrightText: 2025 loltart <159829224+loltart@users.noreply.github.com>
-# SPDX-FileCopyrightText: 2025 loltart <lo1tartyt@gmail.com>
-#
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: entity
@@ -19,7 +6,7 @@
   components:
   - type: StationEvent
     earliestStart: 30
-    weight: 8
+    weight: 3
     minimumPlayers: 15
     maxOccurrences: 1
     startAnnouncement: station-event-communication-interception
@@ -40,8 +27,8 @@
     definitions:
     - prefRoles: [ Traitor ]
       min: 1
-      max: 2
-      playerRatio: 10
+      max: 1
+      playerRatio: 20
       skills: # CorvaxGoob-Skills
       - All
       blacklist:
@@ -131,7 +118,7 @@
   id: TunnelClownMidround
   components:
   - type: StationEvent
-    weight: 4
+    weight: 2 # Mini: fewer free midround antags
     duration: null
     earliestStart: 15
     minimumPlayers: 20
@@ -465,7 +452,7 @@
   id: SlasherSpawn
   components:
   - type: StationEvent
-    weight: 4 # CorvaxGoob Changes: 3 > 4
+    weight: 2 # Mini: fewer free midround antags
     duration: null
     earliestStart: 30
     minimumPlayers: 30

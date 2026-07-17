@@ -17,7 +17,10 @@ public sealed partial class TTSSystem
 
     private void InitializeRadioTTS()
     {
+        // Living players: radio arrives on the headset and is relayed to the wearer.
         SubscribeLocalEvent<TTSComponent, HeadsetRadioReceiveRelayEvent>(OnHeadsetRadioReceive);
+        // Ghosts / intrinsic receivers (ActiveRadio on the mob itself): event is raised on the entity.
+        SubscribeLocalEvent<TTSComponent, RadioReceiveEvent>(OnDirectRadioReceive);
     }
 
     private void CleanupRadioTTS()
@@ -29,6 +32,11 @@ public sealed partial class TTSSystem
     private void OnHeadsetRadioReceive(EntityUid uid, TTSComponent component, ref HeadsetRadioReceiveRelayEvent args)
     {
         _ = HandleRadioReceiveAsync(uid, args.RelayedEvent);
+    }
+
+    private void OnDirectRadioReceive(EntityUid uid, TTSComponent component, ref RadioReceiveEvent args)
+    {
+        _ = HandleRadioReceiveAsync(uid, args);
     }
 
     private async Task HandleRadioReceiveAsync(EntityUid uid, RadioReceiveEvent args)

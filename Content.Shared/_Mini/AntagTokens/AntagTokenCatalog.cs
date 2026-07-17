@@ -49,9 +49,10 @@ public static class AntagTokenCatalog
     public const string BorerRole = "borer";
     public const string RatvarCultRole = "ratvar_cult";
     public const string BloodCultRole = "blood_cultist";
+    public const string MothershipCoreRole = "mothership_core";
 
-
-
+    /// <summary>Alias kept for older references; operative uses <see cref="YaoRole"/>.</summary>
+    public const string NukeopsRole = YaoRole;
 
     public static readonly (TimeSpan Threshold, int RewardAmount)[] OnlineRewardMilestones = [];
 
@@ -102,6 +103,77 @@ public static class AntagTokenCatalog
 
         return roleId is ThiefRole or AgentRole;
     }
+
+    /// <summary>
+    /// Dual listings act as lobby deposit before round start and ghost rule in-round.
+    /// </summary>
+    public static AntagPurchaseMode GetEffectiveMode(AntagRoleDefinition role, bool inPreRoundLobby, bool inRound)
+    {
+        if (role.Mode != AntagPurchaseMode.Dual)
+            return role.Mode;
+
+        if (inPreRoundLobby)
+            return AntagPurchaseMode.LobbyDeposit;
+
+        if (inRound)
+            return AntagPurchaseMode.GhostRule;
+
+        return AntagPurchaseMode.Unavailable;
+    }
+
+    public static AntagRoleDefinition ResolveEffectiveRole(AntagRoleDefinition role, bool inPreRoundLobby, bool inRound)
+    {
+        if (role.Mode != AntagPurchaseMode.Dual)
+            return role;
+
+        var mode = GetEffectiveMode(role, inPreRoundLobby, inRound);
+        return mode switch
+        {
+            AntagPurchaseMode.LobbyDeposit => AsLobbyDeposit(role),
+            AntagPurchaseMode.GhostRule => AsGhostRule(role),
+            _ => role with { Mode = AntagPurchaseMode.Unavailable },
+        };
+    }
+
+    /// <summary>Lobby/roundstart projection of a Dual listing (also used when fulfilling a pending deposit).</summary>
+    public static AntagRoleDefinition AsLobbyDeposit(AntagRoleDefinition role)
+    {
+        if (role.Mode is not (AntagPurchaseMode.Dual or AntagPurchaseMode.LobbyDeposit))
+            return role;
+
+        return role with
+        {
+            Mode = AntagPurchaseMode.LobbyDeposit,
+            RequiresPreRoundLobby = true,
+            RequiresInRound = false,
+            MinimumTimeFromRoundStart = 0,
+            TagLocKey = role.TagLocKey ?? "antag-token-window-tag-queue",
+        };
+    }
+
+    public static AntagRoleDefinition AsGhostRule(AntagRoleDefinition role)
+    {
+        if (role.Mode is not (AntagPurchaseMode.Dual or AntagPurchaseMode.GhostRule))
+            return role;
+
+        return role with
+        {
+            Mode = AntagPurchaseMode.GhostRule,
+            RequiresInRound = true,
+            RequiresPreRoundLobby = false,
+            GameRuleId = role.GhostGameRuleId ?? role.GameRuleId,
+            TagLocKey = role.GhostTagLocKey ?? "antag-token-window-tag-ghost",
+            // Lone-op midround does not require the Nukeops preset.
+            RequiresPresetGameRuleId = null,
+            AntagId = null,
+        };
+    }
+
+    public static bool SupportsGhostAutoJoin(AntagRoleDefinition role)
+    {
+        return role.Mode is AntagPurchaseMode.GhostRule or AntagPurchaseMode.Dual
+               && !string.IsNullOrWhiteSpace(role.GhostAutoJoinEntityProto);
+    }
 }
 
 public enum AntagPurchaseMode : byte
@@ -109,6 +181,8 @@ public enum AntagPurchaseMode : byte
     LobbyDeposit,
     GhostRule,
     Unavailable,
+    /// <summary>Lobby deposit in preround; ghost rule once the round is running.</summary>
+    Dual,
 }
 
 public sealed record AntagRoleDefinition(
@@ -131,4 +205,7 @@ public sealed record AntagRoleDefinition(
     int FreeMinimumSponsorLevel = -1,
     IReadOnlyList<ProtoId<JobPrototype>>? JobBlacklist = null,
     IReadOnlyList<ProtoId<SpeciesPrototype>>? SpeciesBlacklist = null,
-    string? RequiresPresetGameRuleId = null);
+    string? RequiresPresetGameRuleId = null,
+    bool IgnoresStationJob = false,
+    string? GhostGameRuleId = null,
+    string? GhostTagLocKey = null);

@@ -1420,93 +1420,38 @@ namespace Content.Client.Lobby.UI
             if (Profile is null) return;
 
             var skin = _prototypeManager.Index<SpeciesPrototype>(Profile.Species).SkinColoration;
+            var strategy = _prototypeManager.Index(skin).Strategy;
 
-            switch (skin)
+            switch (strategy.InputType)
             {
-                case HumanoidSkinColor.HumanToned:
+                case SkinColorationStrategyInput.Unary:
+                {
+                    if (!_pixelSkinSlider.Visible)
                     {
-                        if (!_pixelSkinSlider.Visible)
-                        {
-                            _pixelSkinSlider.Visible = true;
-                            RgbSkinColorContainer.Visible = false;
-                        }
-
-                        var color = SkinColor.HumanSkinTone((int) _pixelSkinSlider.Value);
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));//
-                        break;
+                        _pixelSkinSlider.Visible = true;
+                        RgbSkinColorContainer.Visible = false;
                     }
-                case HumanoidSkinColor.Hues:
+
+                    var color = strategy.FromUnary(_pixelSkinSlider.Value);
+
+                    Markings.CurrentSkinColor = color;
+                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                    break;
+                }
+                case SkinColorationStrategyInput.Color:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        Markings.CurrentSkinColor = _rgbSkinColorSelector.Color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(_rgbSkinColorSelector.Color));
-                        break;
+                        _pixelSkinSlider.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
-                case HumanoidSkinColor.TintedHues:
-                    {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
 
-                        var color = SkinColor.TintedHues(_rgbSkinColorSelector.Color);
+                    var color = strategy.ClosestSkinColor(_rgbSkinColorSelector.Color);
 
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        break;
-                    }
-                case HumanoidSkinColor.VoxFeathers:
-                    {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        var color = SkinColor.ClosestVoxColor(_rgbSkinColorSelector.Color);
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        break;
-                    }
-                case HumanoidSkinColor.NoColor:
-                    {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        var color = Color.FromName("White");
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        break;
-                    }
-                // Goobstation Section Start - Tajaran
-                case HumanoidSkinColor.AnimalFur: // Goobstation - Tajaran
-                    {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        var color = SkinColor.ClosestAnimalFurColor(_rgbSkinColorSelector.Color);
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        break;
-                    }
-                // Goobstation Section End - Tajaran
+                    Markings.CurrentSkinColor = color;
+                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                    break;
+                }
             }
 
             ReloadProfilePreview();
@@ -1725,84 +1670,33 @@ namespace Content.Client.Lobby.UI
                 return;
 
             var skin = _prototypeManager.Index<SpeciesPrototype>(Profile.Species).SkinColoration;
+            var strategy = _prototypeManager.Index(skin).Strategy;
 
-            switch (skin)
+            switch (strategy.InputType)
             {
-                case HumanoidSkinColor.HumanToned:
+                case SkinColorationStrategyInput.Unary:
+                {
+                    if (!_pixelSkinSlider.Visible)
                     {
-                        if (!_pixelSkinSlider.Visible)
-                        {
-                            _pixelSkinSlider.Visible = true;
-                            RgbSkinColorContainer.Visible = false;
-                        }
-
-                        _pixelSkinSlider.Value = SkinColor.HumanSkinToneFromColor(Profile.Appearance.SkinColor);
-
-                        break;
+                        _pixelSkinSlider.Visible = true;
+                        RgbSkinColorContainer.Visible = false;
                     }
-                case HumanoidSkinColor.Hues:
+
+                    _pixelSkinSlider.Value = strategy.ToUnary(Profile.Appearance.SkinColor);
+                    break;
+                }
+                case SkinColorationStrategyInput.Color:
+                {
+                    if (!RgbSkinColorContainer.Visible)
                     {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        // set the RGB values to the direct values otherwise
-                        _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
-                        break;
+                        _pixelSkinSlider.Visible = false;
+                        RgbSkinColorContainer.Visible = true;
                     }
-                case HumanoidSkinColor.TintedHues:
-                    {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
 
-                        // set the RGB values to the direct values otherwise
-                        _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
-                        break;
-                    }
-                case HumanoidSkinColor.VoxFeathers:
-                    {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        _rgbSkinColorSelector.Color = SkinColor.ClosestVoxColor(Profile.Appearance.SkinColor);
-
-                        break;
-                    }
-                case HumanoidSkinColor.NoColor:
-                    {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        _rgbSkinColorSelector.Color = Color.FromName("White");
-
-                        break;
-                    }
-                // Goobstation Section Start - Tajaran
-                case HumanoidSkinColor.AnimalFur: // Goobstation - Tajaran
-                    {
-                        if (!RgbSkinColorContainer.Visible)
-                        {
-                            _pixelSkinSlider.Visible = false;
-                            RgbSkinColorContainer.Visible = true;
-                        }
-
-                        _rgbSkinColorSelector.Color = SkinColor.ClosestAnimalFurColor(Profile.Appearance.SkinColor);
-                        break;
-                    }
-                // Goobstation Section End - Tajaran
+                    _rgbSkinColorSelector.Color = strategy.ClosestSkinColor(Profile.Appearance.SkinColor);
+                    break;
+                }
             }
-
         }
 
         public void UpdateSpeciesGuidebookIcon()

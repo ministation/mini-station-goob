@@ -1,4 +1,5 @@
-﻿using Content.Goobstation.Shared.Bible;
+using Content.Shared.Roles.Components;
+using Content.Goobstation.Shared.Bible;
 using Content.Server._EinsteinEngines.Language;
 using Content.Server.Mind;
 using Content.Server.Popups;

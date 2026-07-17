@@ -100,6 +100,7 @@ public sealed class SponsorSystem : EntitySystem
         if (IsPostgresUnconfigured(builder))
         {
             Log.Warning("[Sponsors] PostgreSQL is not configured, skipping sponsor sync.");
+            return false;
         }
 
         try
@@ -143,7 +144,7 @@ public sealed class SponsorSystem : EntitySystem
             _nextRetryAt = _timing.CurTime + _retryDelay;
 
             if (_retryDelay == RetryStep)
-                Log.Warning($"[Sponsors] Критическая ошибка БД: {ex}");
+                Log.Warning($"[Sponsors] БД недоступна ({ex.GetType().Name}: {ex.Message}). Повтор через {_retryDelay.TotalSeconds:0} сек.");
             else
                 Log.Warning($"[Sponsors] БД недоступна, следующая попытка через {_retryDelay.TotalSeconds:0} сек.");
 

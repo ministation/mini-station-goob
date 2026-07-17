@@ -4,6 +4,26 @@
   icon: /Textures/_Mini/Interface/AdminIcons/host.png
 
 - type: adminRankIcon
+  id: HostEn
+  rank: Host
+  icon: /Textures/_Mini/Interface/AdminIcons/host.png
+
+- type: adminRankIcon
+  id: Administrator
+  rank: Администратор
+  icon: /Textures/_Mini/Interface/AdminIcons/host.png
+
+- type: adminRankIcon
+  id: AdministratorEn
+  rank: Administrator
+  icon: /Textures/_Mini/Interface/AdminIcons/host.png
+
+- type: adminRankIcon
+  id: Admin
+  rank: Admin
+  icon: /Textures/_Mini/Interface/AdminIcons/host.png
+
+- type: adminRankIcon
   id: JuniorModerator
   rank: Младший модератор
   icon: /Textures/_Mini/Interface/AdminIcons/junior_moderator.png
@@ -62,24 +82,3 @@
   id: JuniorMentor
   rank: Младший ментор
   icon: /Textures/_Mini/Interface/AdminIcons/junior_mentor.png
-
-# Комбинированные должности (опционально, если хотите и для них иконки)
-# - type: adminRankIcon
-#   id: JuniorModJuniorEvent
-#   rank: М.Модератор | М.Ивент Мастер
-#   icon: /Textures/_Mini/Interface/AdminIcons/junior_mod_junior_event.png
-
-# - type: adminRankIcon
-#   id: JuniorModEventMaster
-#   rank: М.Модератор | Ивент Мастер
-#   icon: /Textures/_Mini/Interface/AdminIcons/junior_mod_event_master.png
-
-# - type: adminRankIcon
-#   id: ModEventMaster
-#   rank: Модератор | Ивент мастер
-#   icon: /Textures/_Mini/Interface/AdminIcons/mod_event_master.png
-
-# - type: adminRankIcon
-#   id: ModJuniorEvent
-#   rank: Модератор | М.Ивент Мастер
-#   icon: /Textures/_Mini/Interface/AdminIcons/mod_junior_event.png

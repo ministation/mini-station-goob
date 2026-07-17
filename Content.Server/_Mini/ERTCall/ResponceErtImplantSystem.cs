@@ -8,15 +8,12 @@ public sealed class ResponceErtImplantSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-
         SubscribeLocalEvent<ResponceErtImplantComponent, ImplantImplantedEvent>(OnImplantImplanted);
     }
 
     private void OnImplantImplanted(Entity<ResponceErtImplantComponent> ent, ref ImplantImplantedEvent args)
     {
-        // Проверяем, что Implanted не null
-        if (args.Implanted is not { } implanted)
-            return;
+        var implanted = args.Implanted;
 
         if (TryComp<ResponceErtOnAllowedStateComponent>(implanted, out var imp))
         {

@@ -52,7 +52,7 @@
       map: [ "light" ]
   - type: HandheldLight
     addPrefix: false
-  - type: ToggleableLightVisuals
+  - type: ToggleableVisuals
     spriteLayer: light
     clothingVisuals:
       head:
@@ -153,7 +153,7 @@
       map: [ "light" ]
   - type: HandheldLight
     addPrefix: false
-  - type: ToggleableLightVisuals
+  - type: ToggleableVisuals
     spriteLayer: light
     clothingVisuals:
       head:

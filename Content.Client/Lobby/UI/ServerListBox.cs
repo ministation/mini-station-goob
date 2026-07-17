@@ -4,18 +4,26 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Utility;
 using Robust.Client.Console;
 using Robust.Client.Graphics;
-using Robust.Client.ResourceManagement;
 using System.Numerics;
 using Robust.Client.GameObjects;
 using Robust.Client.Input;
 using Robust.Shared.Enums;
+using Robust.Shared.Maths;
 
 namespace Content.Client.Lobby.UI;
 
 public sealed class ServerListBox : BoxContainer
 {
+    private const float ActionButtonHeight = 40f;
+    private const float ActionIconScale = 0.36f;
+
+    private static readonly SpriteSpecifier CoinAnimatedIcon = new SpriteSpecifier.Rsi(
+        new ResPath("/Textures/_Mini/Interface/antag_tokens.rsi"), "coin_animated");
+
+    private static readonly SpriteSpecifier ClockAnimatedIcon = new SpriteSpecifier.Rsi(
+        new ResPath("/Textures/_Mini/Interface/daily_rewards.rsi"), "clock_animated");
+
     [Dependency] private readonly IClientConsoleHost _consoleHost = default!;
-    [Dependency] private readonly IResourceCache _resourceCache = default!;
     private IGameController _gameController;
     private List<Button> _connectButtons = new();
     private IUriOpener _uriOpener;
@@ -43,41 +51,28 @@ public sealed class ServerListBox : BoxContainer
         _uriOpener = IoCManager.Resolve<IUriOpener>();
         Orientation = LayoutOrientation.Vertical;
 
-        // Добавляем контейнер для кнопок действий (вертикальное расположение)
         var actionButtonsContainer = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
             HorizontalExpand = true,
-            Margin = new Thickness(0, 0, 0, 10)
+            SeparationOverride = 2,
+            Margin = new Thickness(0, 0, 0, 4)
         };
 
-        // Кнопка ежедневных наград
-        var dailyRewardsButton = CreateActionButton(
-            "Награды",
-            "/Textures/_Mini/Interface/Clock.png", // Путь к вашей иконке (можно null)
-            OpenDailyRewards
-        );
-        dailyRewardsButton.Margin = new Thickness(0, 0, 0, 5);
-
-        // Кнопка токенов антагониста
-        var antagTokensButton = CreateActionButton(
+        actionButtonsContainer.AddChild(CreateActionButton(
             "Терминал",
-            "/Textures/_Mini/Interface/Coin.png", // Путь к вашей иконке (можно null)
-            OpenAntagTokens
-        );
+            CoinAnimatedIcon,
+            OpenAntagTokens));
 
-        actionButtonsContainer.AddChild(dailyRewardsButton);
-        actionButtonsContainer.AddChild(antagTokensButton);
+        actionButtonsContainer.AddChild(CreateActionButton(
+            "Награды",
+            ClockAnimatedIcon,
+            OpenDailyRewards));
 
-        // Кнопка магазина призраков
-        var ghostShopButton = CreateActionButton(
+        actionButtonsContainer.AddChild(CreateActionButton(
             "Призраки",
-            "/Textures/_Mini/Interface/Ghost.png",
-            OpenGhostShop
-        );
-        ghostShopButton.Margin = new Thickness(0, 5, 0, 0);
-
-        actionButtonsContainer.AddChild(ghostShopButton);
+            new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Ghost.png")),
+            OpenGhostShop));
 
         AddChild(actionButtonsContainer);
 
@@ -99,72 +94,76 @@ public sealed class ServerListBox : BoxContainer
 
         scrollContainer.AddChild(serverContainer);
         AddChild(scrollContainer);
-
-        // AddServers(serverContainer);
     }
 
-    /// <summary>
-    /// Создаёт кнопку с иконкой и текстом
-    /// </summary>
-    /// <param name="text">Текст кнопки</param>
-    /// <param name="iconPath">Путь к иконке (может быть null)</param>
-    /// <param name="onPressed">Действие при нажатии</param>
-    /// <returns>Готовая кнопка</returns>
-    private Button CreateActionButton(string text, string? iconPath, Action onPressed)
+    private Button CreateActionButton(string text, SpriteSpecifier? icon, Action onPressed)
     {
         var button = new Button
         {
             HorizontalExpand = true,
-            MinHeight = 40
+            MinHeight = ActionButtonHeight,
+            MaxHeight = ActionButtonHeight,
+            SetHeight = ActionButtonHeight,
         };
 
-        // Создаём контейнер для содержимого кнопки
         var contentContainer = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             HorizontalAlignment = HAlignment.Center,
-            VerticalAlignment = VAlignment.Center
+            VerticalAlignment = VAlignment.Center,
+            SeparationOverride = 6,
         };
 
-        // Добавляем иконку, если указан путь
-        if (iconPath != null)
+        // Fixed-size icon slot so labels line up even if an icon is missing.
+        const float iconSlotSize = 20f;
+        var iconSlot = new Control
+        {
+            MinSize = new Vector2(iconSlotSize, iconSlotSize),
+            MaxSize = new Vector2(iconSlotSize, iconSlotSize),
+        };
+
+        if (icon != null)
         {
             try
             {
-                var texture = _resourceCache.GetResource<TextureResource>(iconPath);
-                var icon = new TextureRect
+                var animatedIcon = new AnimatedTextureRect
                 {
-                    Texture = texture,
-                    TextureScale = new Vector2(0.4f, 0.4f), // Масштаб иконки
-                    Margin = new Thickness(0, 0, 5, 0) // Отступ справа от иконки
+                    HorizontalAlignment = HAlignment.Center,
+                    VerticalAlignment = VAlignment.Center,
                 };
-                contentContainer.AddChild(icon);
+                animatedIcon.SetFromSpriteSpecifier(icon);
+
+                // Shrink oversized textures (e.g. 96x96 Ghost.png) to fit the slot,
+                // otherwise they overflow the button towards bottom-right.
+                var scale = ActionIconScale;
+                var texSize = animatedIcon.DisplayRect.Texture?.Size ?? Vector2i.One;
+                var maxDim = Math.Max(texSize.X, texSize.Y);
+                if (maxDim * scale > iconSlotSize)
+                    scale = iconSlotSize / maxDim;
+
+                animatedIcon.DisplayRect.TextureScale = new Vector2(scale, scale);
+                iconSlot.AddChild(animatedIcon);
             }
             catch
             {
-                // Если текстура не найдена, просто пропускаем добавление иконки
-                // Можно добавить логгирование ошибки при необходимости
+                // Keep empty slot for alignment.
             }
         }
 
-        // Добавляем текст
-        var label = new Label
+        contentContainer.AddChild(iconSlot);
+        contentContainer.AddChild(new Label
         {
             Text = text,
-            HorizontalAlignment = HAlignment.Center
-        };
-        contentContainer.AddChild(label);
+            HorizontalAlignment = HAlignment.Left,
+            VerticalAlignment = VAlignment.Center,
+            MinWidth = 90,
+        });
 
         button.AddChild(contentContainer);
         button.OnPressed += _ => onPressed();
 
         return button;
     }
-
-    // private void AddServers(BoxContainer container)
-    // {
-    //     AddServerInfo(container, "МИНИ-СТАНЦИЯ:ОАЗИС", "ss14://ministation.qeqk.ru:1215", "Вайтлист с высоким уровнем отыгрыша", null);
-    // }
 
     private void AddServerInfo(BoxContainer container, string serverName, string serverUrl, string description, string? discord)
     {

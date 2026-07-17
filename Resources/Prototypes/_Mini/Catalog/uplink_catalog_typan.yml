@@ -1304,7 +1304,7 @@
   conditions:
     - !type:BuyerJobCondition
       whitelist:
-        - Boxer
+        - Passenger
 
 - type: listing
   id: TypanUplinkNecronomicon

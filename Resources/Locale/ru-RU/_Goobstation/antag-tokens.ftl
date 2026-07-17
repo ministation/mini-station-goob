@@ -64,12 +64,12 @@ antag-store-role-revenant-name = Ревенант
 antag-store-role-revenant-description = Вызов события ревенанта. Роль-призрак достанется только вам. Доступен во всех режимах кроме расширенного.
 
 antag-store-role-yao-name = Оперативник
-antag-store-role-yao-description = Вызов события яо. Формат одинокого оперативника. Роль только ваша. Доступен в яо и выживании.
+antag-store-role-yao-description = В лобби на пресете Nukeops — очередь на раундстартового оперативника. В раунде как гост — LoneOps. Одна покупка на раунд.
 
 antag-store-role-headrev-name = Глава революции
 antag-store-role-headrev-description = Очередь на главу восстания. Выбирается заранее в лобби. Только режим революции.
 
-antag-store-role-cosmic-cult-name = Космический культист
+antag-store-role-cosmic-cult-name = Космо-культист
 antag-store-role-cosmic-cult-description = Очередь на космического культиста. Выбирается заранее в лобби. Только космокульт.
 
 antag-store-role-devil-name = Дьявол
@@ -99,10 +99,13 @@ antag-store-role-shadowling-description = Очередь на шедоулинг
 antag-store-role-xenomorph-name = Ксеноморф
 antag-store-role-xenomorph-description = Очередь на раундстартовое заражение ксеноморфами. Только выживание.
 
+antag-store-role-mothership-core-name = Ядро ксеноборгов
+antag-store-role-mothership-core-description = Очередь на ядро материнского корабля ксеноборгов. Выбирается заранее в лобби. Режимы выживания.
+
 antag-store-role-bingle-name = Бингл
 antag-store-role-bingle-description = Гост-роль бингла. Только выживание.
 
-antag-store-role-clone-name = Парадоксальный клон
+antag-store-role-clone-name = Клон
 antag-store-role-clone-description = Гост роль парадоксального клона.
 
 antag-store-role-rat-king-name = Крысиный король
@@ -145,6 +148,8 @@ antag-tokens-error-deposit-consumed = Очередь уже сработала: 
 antag-tokens-popup-deposit-cancelled-refund = Очередь отменена. Билеты возвращены.
 antag-tokens-popup-deposit-cancelled-reason-refund = {$reason} Билеты возвращены.
 antag-tokens-popup-job-blocks-queued = Ваша роль командования, СБ или ИИ/борга блокирует эту очередь. Билеты возвращены.
+antag-tokens-popup-job-remapped = Ради купленного антагониста ваша профессия сменена на «{$job}».
+antag-tokens-popup-job-remap-failed = Нет подходящей профессии в приоритетах (низкий и выше), совместимой с этой ролью. Билеты возвращены.
 antag-tokens-error-assign-failed-refund = Не удалось выдать зарезервированную роль. Билеты возвращены.
 antag-tokens-popup-role-assigned = Зарезервированная роль «{$role}» выдана.
 antag-tokens-popup-event-ended-refund = Событие для «{$role}» не состоялось. Билеты возвращены.

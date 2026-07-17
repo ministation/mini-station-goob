@@ -1,92 +1,6 @@
-// SPDX-FileCopyrightText: 2021 20kdc <asdd2808@gmail.com>
-// SPDX-FileCopyrightText: 2021 Alex Evgrashin <aevgrashin@yandex.ru>
-// SPDX-FileCopyrightText: 2021 Alexander Evgrashin <evgrashin.adl@gmail.com>
-// SPDX-FileCopyrightText: 2021 Flipp Syder <76629141+vulppine@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2021 Galactic Chimp <63882831+GalacticChimp@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2021 Neith <95721684+Phantom-Lily@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2021 Paul Ritter <ritter.paul1@gmail.com>
-// SPDX-FileCopyrightText: 2021 Paul Ritter <ritter.paul1@googlemail.com>
-// SPDX-FileCopyrightText: 2021 Swept <sweptwastaken@protonmail.com>
-// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
-// SPDX-FileCopyrightText: 2021 Visne <vincefvanwijk@gmail.com>
-// SPDX-FileCopyrightText: 2021 collinlunn <60152240+collinlunn@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 Javier Guardia Fernández <DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 Moony <moonheart08@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2022 Veritius <veritiusgaming@gmail.com>
-// SPDX-FileCopyrightText: 2022 metalgearsloth <comedian_vs_clown@hotmail.com>
-// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
-// SPDX-FileCopyrightText: 2022 wrexbe <81056464+wrexbe@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Kara <lunarautomaton6@gmail.com>
-// SPDX-FileCopyrightText: 2023 Kevin Zheng <kevinz5000@gmail.com>
-// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Moony <moony@hellomouse.net>
-// SPDX-FileCopyrightText: 2023 Riggle <27156122+RigglePrime@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Tom Leys <tom@crump-leys.com>
-// SPDX-FileCopyrightText: 2023 Visne <39844191+Visne@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 Vordenburg <114301317+Vordenburg@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2023 moonheart08 <moonheart08@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 0x6273 <0x40@keemail.me>
-// SPDX-FileCopyrightText: 2024 12rabbits <53499656+12rabbits@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Aidenkrz <aiden@djkraz.com>
-// SPDX-FileCopyrightText: 2024 Alzore <140123969+Blackern5000@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 ArtisticRoomba <145879011+ArtisticRoomba@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Brandon Hu <103440971+Brandon-Huu@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Dimastra <65184747+Dimastra@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Dimastra <dimastra@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 DrSmugleaf <10968691+DrSmugleaf@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 DrSmugleaf <drsmugleaf@gmail.com>
-// SPDX-FileCopyrightText: 2024 Ed <96445749+TheShuEd@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Emisse <99158783+Emisse@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Eoin Mcloughlin <helloworld@eoinrul.es>
-// SPDX-FileCopyrightText: 2024 IProduceWidgets <107586145+IProduceWidgets@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 JIPDawg <51352440+JIPDawg@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 JIPDawg <JIPDawg93@gmail.com>
-// SPDX-FileCopyrightText: 2024 Mervill <mervills.email@gmail.com>
-// SPDX-FileCopyrightText: 2024 Moomoobeef <62638182+Moomoobeef@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 PJBot <pieterjan.briers+bot@gmail.com>
-// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
-// SPDX-FileCopyrightText: 2024 Pieter-Jan Briers <pieterjan.briers@gmail.com>
-// SPDX-FileCopyrightText: 2024 Piras314 <p1r4s@proton.me>
-// SPDX-FileCopyrightText: 2024 PopGamer46 <yt1popgamer@gmail.com>
-// SPDX-FileCopyrightText: 2024 PursuitInAshes <pursuitinashes@gmail.com>
-// SPDX-FileCopyrightText: 2024 QueerNB <176353696+QueerNB@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Saphire Lattice <lattice@saphi.re>
-// SPDX-FileCopyrightText: 2024 ShadowCommander <10494922+ShadowCommander@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 ShadowCommander <shadowjjt@gmail.com>
-// SPDX-FileCopyrightText: 2024 Simon <63975668+Simyon264@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Spessmann <156740760+Spessmann@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Tayrtahn <tayrtahn@gmail.com>
-// SPDX-FileCopyrightText: 2024 Thomas <87614336+Aeshus@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Winkarst <74284083+Winkarst-cpu@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 Wrexbe (Josh) <81056464+wrexbe@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 deltanedas <39013340+deltanedas@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 deltanedas <@deltanedas:kde.org>
-// SPDX-FileCopyrightText: 2024 eoineoineoin <github@eoinrul.es>
-// SPDX-FileCopyrightText: 2024 github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 lzk <124214523+lzk228@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 nikthechampiongr <32041239+nikthechampiongr@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 stellar-novas <stellar_novas@riseup.net>
-// SPDX-FileCopyrightText: 2024 themias <89101928+themias@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 username <113782077+whateverusername0@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2024 whateverusername0 <whateveremail>
-// SPDX-FileCopyrightText: 2024 wrexbe <wrexbe@protonmail.com>
-// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 Errant <35878406+Errant-4@users.noreply.github.com>
-// SPDX-FileCopyrightText: 2025 TemporalOroboros <TemporalOroboros@gmail.com>
-// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
-//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server._CorvaxGoob.Skills;
-using Content.Server._TT.StationHandleJob;
-using Content.Server._Mini.TypanWar;
-using SkillTypes = Content.Shared._CorvaxGoob.Skills.Skills;
 using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
 using Content.Server.GameTicking.Events;
@@ -95,7 +9,6 @@ using Content.Server.Spawners.Components;
 using Content.Server.Speech.Components;
 using Content.Server.Station.Components;
 using Content.Shared.CCVar;
-using Content.Shared.Chat;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Humanoid;
@@ -126,8 +39,7 @@ namespace Content.Server.GameTicking
         [Dependency] private readonly SharedJobSystem _jobs = default!;
         [Dependency] private readonly AdminSystem _admin = default!;
         [Dependency] private readonly SkillsSystem _skills = default!; // CorvaxGoob-Skills
-        [Dependency] private readonly TTStationHandleJobSystem _ttStationHandleJob = default!;
-        [Dependency] private readonly TypanWarBalanceSystem _typanWarBalance = default!;
+
         public static readonly EntProtoId ObserverPrototypeName = "MobObserver";
         public static readonly EntProtoId AdminObserverPrototypeName = "AdminObserver";
 
@@ -182,18 +94,12 @@ namespace Content.Server.GameTicking
             }
 
             var spawnableStations = GetSpawnableStations();
-            _ttStationHandleJob.EnsureHandledStationsIncluded(spawnableStations);
             var assignedJobs = _stationJobs.AssignJobs(profiles, spawnableStations);
-
-            _ttStationHandleJob.AssignRoundstartHandledJobs(ref assignedJobs, profiles, playerNetIds);
-
-            _ttStationHandleJob.FixJobStationAssignments(ref assignedJobs);
 
             _stationJobs.AssignOverflowJobs(ref assignedJobs, playerNetIds, profiles, spawnableStations);
 
-            _ttStationHandleJob.FixJobStationAssignments(ref assignedJobs);
-
-            _typanWarBalance.BalanceRoundstartAssignments(ref assignedJobs);
+            // Mini: allow systems (e.g. antag tokens) to reassign incompatible roundstart jobs before spawn.
+            RaiseLocalEvent(new RulePlayerJobsPreSpawnEvent(assignedJobs, profiles));
 
             // Calculate extended access for stations.
             var stationJobCounts = spawnableStations.ToDictionary(e => e, _ => 0);
@@ -209,9 +115,6 @@ namespace Content.Server.GameTicking
                 }
                 else
                 {
-                    if (!stationJobCounts.ContainsKey(station))
-                        stationJobCounts[station] = 0;
-
                     stationJobCounts[station] += 1;
                 }
             }
@@ -219,33 +122,24 @@ namespace Content.Server.GameTicking
             _stationJobs.CalcExtendedAccess(stationJobCounts);
 
             // Spawn everybody in!
-            var spawnedPlayers = new List<ICommonSession>();
             foreach (var (player, (job, station)) in assignedJobs)
             {
                 if (job == null)
                     continue;
 
-                var session = _playerManager.GetSessionById(player);
-                if (SpawnPlayer(session, profiles[player], station, job, false))
-                {
-                    spawnedPlayers.Add(session);
-                }
-                else
-                {
-                    HandleFailedSpawn(session);
-                }
+                SpawnPlayer(_playerManager.GetSessionById(player), profiles[player], station, job, false);
             }
 
             RefreshLateJoinAllowed();
 
             // Allow rules to add roles to players who have been spawned in. (For example, on-station traitors)
             RaiseLocalEvent(new RulePlayerJobsAssignedEvent(
-                spawnedPlayers.ToArray(),
+                assignedJobs.Keys.Select(x => _playerManager.GetSessionById(x)).ToArray(),
                 profiles,
                 force));
         }
 
-        private bool SpawnPlayer(ICommonSession player,
+        private void SpawnPlayer(ICommonSession player,
             EntityUid station,
             string? jobId = null,
             bool lateJoin = true,
@@ -254,22 +148,22 @@ namespace Content.Server.GameTicking
             var character = GetPlayerProfile(player);
 
             var jobBans = _banManager.GetJobBans(player.UserId);
-            if (jobBans == null || jobId != null && jobBans.Contains(jobId))
-                return false;
+            if (jobBans == null || jobId != null && jobBans.Contains(jobId)) //TODO: use IsRoleBanned directly?
+                return;
 
-            if (jobId != null && lateJoin)
+            if (jobId != null)
             {
                 var jobs = new List<ProtoId<JobPrototype>> {jobId};
                 var ev = new IsRoleAllowedEvent(player, jobs, null);
                 RaiseLocalEvent(ref ev);
                 if (ev.Cancelled)
-                    return false;
+                    return;
             }
 
-            return SpawnPlayer(player, character, station, jobId, lateJoin, silent);
+            SpawnPlayer(player, character, station, jobId, lateJoin, silent);
         }
 
-        private bool SpawnPlayer(ICommonSession player,
+        private void SpawnPlayer(ICommonSession player,
             HumanoidCharacterProfile character,
             EntityUid station,
             string? jobId = null,
@@ -278,7 +172,7 @@ namespace Content.Server.GameTicking
         {
             // Can't spawn players with a dummy ticker!
             if (DummyTicker)
-                return false;
+                return;
 
             if (station == EntityUid.Invalid)
             {
@@ -293,24 +187,8 @@ namespace Content.Server.GameTicking
             if (lateJoin && DisallowLateJoin)
             {
                 JoinAsObserver(player);
-                return false;
+                return;
             }
-
-            //FREAKY EDIT START
-            //Ghost system return to round, check for whether the character isn't the same.
-            if (lateJoin && !_adminManager.IsAdmin(player) && !CheckGhostReturnToRound(player, character, out var checkAvoid))
-            {
-                var message = checkAvoid
-                    ? Loc.GetString("ghost-respawn-same-character-slightly-changed-name")
-                    : Loc.GetString("ghost-respawn-same-character");
-                var wrappedMessage = Loc.GetString("chat-manager-server-wrap-message", ("message", message));
-
-                _chatManager.ChatMessageToOne(ChatChannel.Server, message, wrappedMessage,
-                    default, false, player.Channel, Color.Red);
-
-                return false;
-            }
-            //FREAKY EDIT END
 
             string speciesId;
             if (_randomizeCharacters)
@@ -350,7 +228,7 @@ namespace Content.Server.GameTicking
             if (bev.Handled)
             {
                 PlayerJoinGame(player, silent);
-                return true;
+                return;
             }
 
             // Figure out job restrictions
@@ -380,35 +258,10 @@ namespace Content.Server.GameTicking
 
                 _chatManager.DispatchServerMessage(player,
                     Loc.GetString("game-ticker-player-no-jobs-available-when-joining"));
-                return false;
+                return;
             }
 
-            var jobPrototype = _prototypeManager.Index<JobPrototype>(jobId);
-
-            var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(station, jobId, character, out var spawnFailureMessage);
-            if (mobMaybe is not { } mob)
-            {
-                if (spawnFailureMessage == null)
-                    Log.Error($"Failed to spawn player {player.Name} as job {jobId} on station {Name(station)}.");
-
-                return HandleFailedSpawn(player, spawnFailureMessage);
-            }
-
-            var data = player.ContentData();
-
-            DebugTools.AssertNotNull(data);
-
-            var newMind = _mind.CreateMind(data!.UserId, character.Name);
-            _mind.SetUserId(newMind, data.UserId);
-
-            _mind.TransferTo(newMind, mob);
-            PlayerJoinGame(player, silent);
-            _admin.UpdatePlayerList(player);
-
-            _roles.MindAddJobRole(newMind, silent: silent, jobPrototype:jobId);
-            _playTimeTrackings.PlayerRolesChanged(player);
-            var jobName = _jobs.MindTryGetJobName(newMind);
-            _admin.UpdatePlayerList(player);
+            DoSpawn(player, character, station, jobId, silent, out var mob, out var jobPrototype, out var jobName);
 
             if (lateJoin && !silent)
             {
@@ -469,7 +322,7 @@ namespace Content.Server.GameTicking
             }
 
             if (jobPrototype is not null) // CorvaxGoob-Skills
-                _skills.GrantSkill(mob, new HashSet<SkillTypes>(jobPrototype.Skills), true);
+                _skills.GrantSkill(mob, jobPrototype.Skills, true);
 
             // We raise this event directed to the mob, but also broadcast it so game rules can do something now.
             PlayersJoinedRoundNormally++;
@@ -482,22 +335,43 @@ namespace Content.Server.GameTicking
                 station,
                 character);
             RaiseLocalEvent(mob, aev, true);
-            return true;
         }
 
-        private bool HandleFailedSpawn(ICommonSession player, string? failureMessage = null)
+        /// <summary>
+        /// Creates a mob on the specified station, creates the new mind, equips job-specific starting gear and loadout
+        /// </summary>
+        public void DoSpawn(
+            ICommonSession player,
+            HumanoidCharacterProfile character,
+            EntityUid station,
+            string jobId,
+            bool silent,
+            out EntityUid mob,
+            out JobPrototype jobPrototype,
+            out string jobName)
         {
-            if (!LobbyEnabled)
-            {
-                JoinAsObserver(player);
-            }
+            PlayerJoinGame(player, silent);
 
-            var evNoJobs = new NoJobsAvailableSpawningEvent(player);
-            RaiseLocalEvent(evNoJobs);
+            var data = player.ContentData();
 
-            _chatManager.DispatchServerMessage(player,
-                failureMessage ?? Loc.GetString("game-ticker-player-no-jobs-available-when-joining"));
-            return false;
+            DebugTools.AssertNotNull(data);
+
+            var newMind = _mind.CreateMind(data!.UserId, character.Name);
+            _mind.SetUserId(newMind, data.UserId);
+
+            jobPrototype = _prototypeManager.Index<JobPrototype>(jobId);
+
+            _playTimeTrackings.PlayerRolesChanged(player);
+
+            var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(station, jobId, character);
+            DebugTools.AssertNotNull(mobMaybe);
+            mob = mobMaybe!.Value;
+
+            _mind.TransferTo(newMind, mob);
+
+            _roles.MindAddJobRole(newMind, silent: silent, jobPrototype: jobId);
+            jobName = _jobs.MindTryGetJobName(newMind);
+            _admin.UpdatePlayerList(player);
         }
 
         public void Respawn(ICommonSession player)
@@ -570,66 +444,6 @@ namespace Content.Server.GameTicking
                 LogImpact.Low,
                 $"{player.Name} late joined the round as an Observer with {ToPrettyString(ghost):entity}.");
         }
-
-        //FREAKY EDIT START
-        private bool CheckGhostReturnToRound(ICommonSession player, HumanoidCharacterProfile character, out bool checkAvoid)
-        {
-            checkAvoid = false;
-
-            var allPlayerMinds = EntityQuery<MindComponent>()
-                .Where(mind => mind.OriginalOwnerUserId == player.UserId);
-
-            foreach (var mind in allPlayerMinds)
-            {
-                if (mind.CharacterName == character.Name)
-                    return false;
-
-                if (mind.CharacterName == null)
-                    continue;
-
-                var similarity = CalculateStringSimilarity(mind.CharacterName, character.Name);
-                switch (similarity)
-                {
-                    case >= 85f:
-                    {
-                        _chatManager.SendAdminAlert(Loc.GetString("ghost-respawn-log-character-almost-same",
-                            ("player", player.Name), ("try", false), ("oldName", mind.CharacterName),
-                            ("newName", character.Name)));
-                        checkAvoid = true;
-
-                        return false;
-                    }
-                    case >= 50f:
-                    {
-                        _chatManager.SendAdminAlert(Loc.GetString("ghost-respawn-log-character-almost-same",
-                            ("player", player.Name), ("try", true), ("oldName", mind.CharacterName),
-                            ("newName", character.Name)));
-
-                        break;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        private float CalculateStringSimilarity(string str1, string str2)
-        {
-            var minLength = Math.Min(str1.Length, str2.Length);
-            var matchingCharacters = 0;
-
-            for (var i = 0; i < minLength; i++)
-            {
-                if (str1[i] == str2[i])
-                    matchingCharacters++;
-            }
-
-            float maxLength = Math.Max(str1.Length, str2.Length);
-            var similarityPercentage = (matchingCharacters / maxLength) * 100;
-
-            return similarityPercentage;
-        }
-        //FREAKY EDIT END
 
         #region Spawn Points
 

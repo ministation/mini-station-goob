@@ -1,4 +1,6 @@
 using Content.Server.Objectives.Components;
+using Content.Shared.Objectives.Systems;
+using Content.Shared.Objectives.Components;
 using Content.Server.Popups;
 using Content.Shared.Interaction;
 using Content.Shared.Mind;
@@ -9,7 +11,7 @@ using Content.Shared.Verbs;
 using Robust.Server.GameObjects;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
-using Content.Server.Objectives.Components.Targets;
+using Content.Shared.Objectives.Components;
 
 namespace Content.Server._Mini.Pinpointer.Systems;
 

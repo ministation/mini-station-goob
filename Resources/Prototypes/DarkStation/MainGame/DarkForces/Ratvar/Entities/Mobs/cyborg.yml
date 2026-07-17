@@ -181,7 +181,8 @@
       startValue: 0.1
       endValue: 2.0
       isLooped: true
-  - type: ToggleableLightVisuals
+  - type: ToggleableVisuals
+    spriteLayer: light
   - type: PointLight
     enabled: false
     mask: /Textures/Effects/LightMasks/cone.png
@@ -225,9 +226,8 @@
     - state: generic
     - state: icon-tools
   - type: ItemBorgModule
-    moduleId: RatvarWeapon
-    items:
-    - RatvarSpear
+    hands:
+    - item: RatvarSpear
   - type: Tag
     tags:
     - RatvarBorgModule

@@ -147,7 +147,7 @@
   tier: 2
   cost: 15000
   recipeUnlocks:
-  - BorgModuleAdvancedChemical
+  - BorgModuleAdvancedTopical
   - BorgModuleAdvancedSurgery
   # Goobstation R&D Console rework start
   position: 22,5

@@ -15,7 +15,7 @@ namespace Content.Server.Database.Migrations.Sqlite
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
 
             modelBuilder.Entity("Content.Server.Database.Admin", b =>
                 {
@@ -1138,12 +1138,12 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("player_id");
 
-                    b.Property<string>("StreakMilestones")
+                    b.PrimitiveCollection<string>("StreakMilestones")
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("streak_milestones");
 
-                    b.Property<string>("TicketMilestones")
+                    b.PrimitiveCollection<string>("TicketMilestones")
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("ticket_milestones");
@@ -1158,9 +1158,6 @@ namespace Content.Server.Database.Migrations.Sqlite
 
                     b.HasKey("Id")
                         .HasName("PK_player_ghost_role_tickets");
-
-                    b.HasIndex("PlayerId")
-                        .IsUnique();
 
                     b.ToTable("player_ghost_role_tickets", (string)null);
                 });
