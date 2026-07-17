@@ -170,6 +170,7 @@
     - ActionSummonCultDoor
     - ActionSummonSoulStone
   - type: MovementIgnoreGravity
+  - type: GravityAffected # Mini: MovementIgnoreGravitySystem ensures it on startup, keep prototype data stable for PrototypeSaveTest
   - type: MeleeWeapon
     hidden: true
     angle: 30
@@ -210,6 +211,7 @@
     actions:
     - ActionPhaseShift
   - type: MovementIgnoreGravity
+  - type: GravityAffected # Mini: MovementIgnoreGravitySystem ensures it on startup, keep prototype data stable for PrototypeSaveTest
   - type: MovementSpeedModifier
     baseWalkSpeed: 4
     baseSprintSpeed: 4

@@ -86,6 +86,11 @@ public sealed partial class SpaceArtillerySystem : EntitySystem
 
     private void OnBatteryChargeChanged(EntityUid uid, SpaceArtilleryComponent component, ref ChargeChangedEvent args)
     {
+        // Mini: don't touch ApcPowerReceiver.Load before map init, otherwise the prototype
+        // gets "modified on spawn" on uninitialized maps (PrototypeSaveTest / map saving).
+        if (MetaData(uid).EntityLifeStage < EntityLifeStage.MapInitialized)
+            return;
+
         if (TryComp<ApcPowerReceiverComponent>(uid, out var apcPowerReceiver) && TryComp<BatteryComponent>(uid, out var battery))
         {
             apcPowerReceiver.Load = battery.LastCharge >= battery.MaxCharge * 0.99 ? component.PowerUsePassive : component.PowerUsePassive + component.PowerChargeRate;

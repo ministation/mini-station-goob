@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 #nullable enable
+using System.Linq;
+using Robust.Shared.Audio.Components;
 using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -31,6 +33,18 @@ public sealed partial class MindTests
         await pair.RunTicksSync(5);
 
         Assert.That(pair.Server.EntMan.EntityCount, Is.EqualTo(0));
+
+        // Mini: CorvaxGoob announcements (round restart centcomm.ogg) play as purely client-side
+        // audio entities, which "entities delete" on the server can't touch. Clean them up here.
+        await pair.Client.WaitPost(() =>
+        {
+            foreach (var ent in pair.Client.EntMan.GetEntities().ToArray())
+            {
+                if (pair.Client.EntMan.IsClientSide(ent) && pair.Client.EntMan.HasComponent<AudioComponent>(ent))
+                    pair.Client.EntMan.DeleteEntity(ent);
+            }
+        });
+        await pair.RunTicksSync(1);
 
         foreach (var ent in pair.Client.EntMan.GetEntities())
         {
