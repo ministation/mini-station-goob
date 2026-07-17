@@ -3,7 +3,6 @@
 using System.Linq;
 using System.Numerics;
 using Content.Client.Gameplay;
-using Content.Client.Stylesheets;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Ghost;
@@ -23,7 +22,7 @@ using Robust.Shared.Timing;
 namespace Content.Client.Voting.UI
 {
     [GenerateTypedNameReferences]
-    public sealed partial class VoteCallMenu : BaseWindow
+    public sealed partial class VoteCallMenu : Content.Client.UserInterface.Controls.FancyWindow
     {
         [Dependency] private readonly IClientConsoleHost _consoleHost = default!;
         [Dependency] private readonly IVoteManager _voteManager = default!;
@@ -65,8 +64,8 @@ namespace Content.Client.Voting.UI
             RobustXamlLoader.Load(this);
             _votingSystem = _entityManager.System<VotingSystem>();
 
-            Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetSystem;
-            CloseButton.OnPressed += _ => Close();
+            // Inherit the active global Mini/Nano stylesheet. An explicit
+            // SheetSystem here made this window retain the stock upstream skin.
             VoteNotTrustedLabel.Text = Loc.GetString("ui-vote-trusted-users-notice", ("timeReq", _cfg.GetCVar(CCVars.VotekickEligibleVoterDeathtime)));
 
             foreach (StandardVoteType voteType in Enum.GetValues<StandardVoteType>())
