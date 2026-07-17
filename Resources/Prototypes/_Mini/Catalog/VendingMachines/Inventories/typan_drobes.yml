@@ -249,3 +249,70 @@
   emaggedInventory:
     ClothingOuterCoatSyndieCapArmored: 1
     ClothingOuterWinterSyndieCapArmored: 1
+
+# Typan ClothesMate: civilian basics + full set of Typan department uniforms.
+- type: vendingMachineInventory
+  id: ClothesMateTypanInventory
+  startingInventory:
+    # Civilian basics
+    ClothingBackpack: 5
+    ClothingBackpackDuffel: 5
+    ClothingBackpackSatchel: 3
+    ClothingBackpackMessenger: 5
+    ClothingBackpackMessengerSyndicate: 2
+    ClothingUniformJumpsuitColorGrey: 6
+    ClothingUniformJumpskirtColorGrey: 6
+    ClothingUniformJumpsuitColorBlack: 4
+    ClothingUniformJumpskirtColorBlack: 4
+    ClothingUniformJumpsuitColorRed: 4
+    ClothingUniformJumpskirtColorRed: 4
+    ClothingUniformJumpsuitCasualSyndicate: 4
+    ClothingUniformJumpsuitSyndieFormal: 2
+    ClothingUniformJumpskirtSyndieFormalDress: 2
+    ClothingShoesColorBlack: 8
+    ClothingShoesColorRed: 4
+    ClothingShoesColorWhite: 3
+    ClothingHeadHatGreysoft: 4
+    ClothingHeadHatRedsoft: 4
+    ClothingHeadHatBlacksoft: 4
+    ClothingHeadBandBlack: 2
+    ClothingHeadBandRed: 2
+    ClothingHeadBandSkull: 2
+    ClothingHeadHatSyndie: 3
+    ClothingMaskNeckGaiter: 4
+    ClothingNeckScarfStripedSyndieGreen: 2
+    ClothingNeckScarfStripedSyndieRed: 2
+    ClothingOuterWinterSyndie: 3
+    ClothingShoesBootsWinterSyndicate: 2
+    # Typan department uniforms
+    ClothingUniformJumpsuitTypanAtmosphericsEngineer: 3
+    ClothingUniformJumpskirtTypanAtmosphericsEngineer: 3
+    ClothingUniformJumpsuitTypanBotanist: 3
+    ClothingUniformJumpskirtTypanBotanist: 3
+    ClothingUniformJumpsuitTypanChef: 3
+    ClothingUniformJumpskirtTypanChef: 3
+    ClothingUniformJumpsuitTypanTechnicalOperationsSupervisor: 2
+    ClothingUniformJumpskirtTypanTechnicalOperationsSupervisor: 2
+    ClothingUniformJumpsuitTypanCommunicationsOfficer: 2
+    ClothingUniformJumpskirtTypanCommunicationsOfficer: 2
+    ClothingUniformJumpsuitTypanMedic: 3
+    ClothingUniformJumpskirtTypanMedic: 3
+    ClothingUniformJumpsuitTypanParamedic: 3
+    ClothingUniformJumpskirtTypanParamedic: 3
+    ClothingUniformJumpsuitTypanPatrol: 3
+    ClothingUniformJumpskirtTypanRecruit: 3
+    ClothingUniformJumpsuitTypanResearchDirector: 2
+    ClothingUniformJumpskirtTypanResearchDirector: 2
+    ClothingUniformJumpsuitTypanResearcher: 3
+    ClothingUniformJumpskirtTypanResearcher: 3
+    ClothingUniformJumpsuitTypanTechnician: 3
+    ClothingUniformJumpskirtTypanTechnician: 3
+    ClothingUniformJumpsuitTypanCargotech: 3
+    ClothingUniformJumpskirtTypanCargotech: 3
+    ClothingUniformOverallsTypanCargotech: 3
+    ClothingUniformJumpsuitTypanDirectory: 1
+  contrabandInventory:
+    ClothingUniformJumpskirtTacticalMaid: 3
+    ClothingHeadHatTacticalMaidHeadband: 3
+    ClothingHandsTacticalMaidGloves: 3
+    ClothingShoesRealJordans: 1

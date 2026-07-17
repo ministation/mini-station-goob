@@ -86,6 +86,8 @@
   id: VendingMachineClothingTypan
   suffix: Тайпан
   components:
+  - type: VendingMachine
+    pack: ClothesMateTypanInventory
   - type: Sprite
     sprite: _Mini/Structures/Machines/VendingMachines/clothing.rsi
   - type: PointLight

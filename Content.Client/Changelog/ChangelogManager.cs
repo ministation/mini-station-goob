@@ -37,6 +37,14 @@ namespace Content.Client.Changelog
         private const string SawmillName = "changelog";
         public const string MainChangelogName = "Mini";
 
+        // Mini: показываем игрокам только наш чейнджлог (+ админский, он виден только админам).
+        // Wizden/Goob/Maps/Rules вкладки скрыты, файлы остаются в репозитории.
+        private static readonly string[] VisibleChangelogFiles =
+        {
+            "ChangelogMini",
+            "Admin",
+        };
+
         private ISawmill _sawmill = default!;
 
         public bool NewChangelogEntries { get; private set; }
@@ -117,6 +125,9 @@ namespace Content.Client.Changelog
                 foreach (var file in _resource.ContentFindFiles(new ResPath("/Changelog/")))
                 {
                     if (file.Directory != directory || file.Extension != "yml")
+                        continue;
+
+                    if (!VisibleChangelogFiles.Contains(file.FilenameWithoutExtension)) // Mini
                         continue;
 
                     var yamlData = _resource.ContentFileReadYaml(file);

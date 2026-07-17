@@ -272,7 +272,7 @@ public sealed class MiniCCVars
      */
 
     public static readonly CVarDef<string> LobbyChangelogsList =
-        CVarDef.Create("lobby_changelog.list", "ChangelogMini.yml,Changelog.yml", CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("lobby_changelog.list", "ChangelogMini.yml", CVar.SERVER | CVar.REPLICATED);
 
     /*
      * Cryoteleport
