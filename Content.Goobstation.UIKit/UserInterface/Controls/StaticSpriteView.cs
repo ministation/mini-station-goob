@@ -17,7 +17,6 @@ public class StaticSpriteView : Control
     private SharedTransformSystem? _transform;
     protected readonly IEntityManager EntMan;
 
-    private SpriteComponent? _cachedSprite;
     private readonly Angle _cachedWorldRotation = Angle.Zero;
 
     [ViewVariables]
@@ -204,7 +203,7 @@ public class StaticSpriteView : Control
         var fake = Entity?.Owner ?? EntMan.Spawn();
         var fakeSprite = EntMan.EnsureComponent<SpriteComponent>(fake);
         Entity = (fake, fakeSprite);
-        SpriteSystem.CopySprite((uid.Value, sprite), Entity.Value);
+        SpriteSystem.CopySprite((uid.Value, sprite), Entity.Value.AsNullable());
 
         NetEnt = EntMan.GetNetEntity(uid);
         RealEntity = uid;
@@ -279,7 +278,7 @@ public class StaticSpriteView : Control
 
         var offset = SpriteOffset
             ? Vector2.Zero
-            : - (-_eyeRotation).RotateVec(_cachedSprite.Offset * _scale) * new Vector2(1, -1) * EyeManager.PixelsPerMeter;
+            : - (-_eyeRotation).RotateVec(ent.Comp.Offset * _scale) * new Vector2(1, -1) * EyeManager.PixelsPerMeter;
 
         var position = PixelSize / 2 + offset * stretch * UIScale;
         var scale = Scale * UIScale * stretch;
