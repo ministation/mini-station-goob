@@ -69,7 +69,7 @@ antag-store-role-yao-description = В лобби на пресете Nukeops —
 antag-store-role-headrev-name = Глава революции
 antag-store-role-headrev-description = Очередь на главу восстания. Выбирается заранее в лобби. Только режим революции.
 
-antag-store-role-cosmic-cult-name = Космический культист
+antag-store-role-cosmic-cult-name = Космо-культист
 antag-store-role-cosmic-cult-description = Очередь на космического культиста. Выбирается заранее в лобби. Только космокульт.
 
 antag-store-role-devil-name = Дьявол
@@ -99,13 +99,13 @@ antag-store-role-shadowling-description = Очередь на шедоулинг
 antag-store-role-xenomorph-name = Ксеноморф
 antag-store-role-xenomorph-description = Очередь на раундстартовое заражение ксеноморфами. Только выживание.
 
-antag-store-role-mothership-core-name = Ядро материнского корабля
+antag-store-role-mothership-core-name = Ядро ксеноборгов
 antag-store-role-mothership-core-description = Очередь на ядро материнского корабля ксеноборгов. Выбирается заранее в лобби. Режимы выживания.
 
 antag-store-role-bingle-name = Бингл
 antag-store-role-bingle-description = Гост-роль бингла. Только выживание.
 
-antag-store-role-clone-name = Парадоксальный клон
+antag-store-role-clone-name = Клон
 antag-store-role-clone-description = Гост роль парадоксального клона.
 
 antag-store-role-rat-king-name = Крысиный король

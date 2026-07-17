@@ -4,7 +4,7 @@
   mapPath: /Maps/_CorvaxGoob/Stations/Paper/corvax_paper.yml
   maxRandomOffset: 0
   randomRotation: false
-  minPlayers: 25
+  minPlayers: 0
   maxPlayers: 55
   stations:
     CorvaxPaper:
