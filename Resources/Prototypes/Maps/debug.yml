@@ -13,7 +13,7 @@
           mapNameTemplate: "Empty"
         - type: StationJobs
           availableJobs:
-            Passenger: [ 3, 3 ]
+            Passenger: [ -1, -1 ] # Mini: integration tests spawn many dummy players; a slot cap makes them (and antag selection) randomly fail
 
 - type: gameMap
   id: Dev
