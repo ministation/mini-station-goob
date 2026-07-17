@@ -273,6 +273,14 @@
         layer:
         - MachineLayer
   - type: EntityStorage
+    closeSound: # Mini: same open/close sound as Typan suit storages
+      path: /Audio/Machines/blastdoor.ogg
+      params:
+        volume: -7
+    openSound:
+      path: /Audio/Machines/blastdoor.ogg
+      params:
+        volume: -7
   - type: ContainerContainer
     containers:
       entity_storage: !type:Container
