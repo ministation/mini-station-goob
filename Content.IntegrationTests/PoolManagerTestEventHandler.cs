@@ -6,7 +6,10 @@ namespace Content.IntegrationTests;
 public sealed class PoolManagerTestEventHandler
 {
     // This value is completely arbitrary.
-    private static TimeSpan MaximumTotalTestingTimeLimit => TimeSpan.FromMinutes(20);
+    // Mini: 20 minutes is not enough for the full content suite on GitHub-hosted runners;
+    // when the limit is hit the watchdog shuts the pool down and every remaining test
+    // instantly fails with "Pool manager has not been initialized".
+    private static TimeSpan MaximumTotalTestingTimeLimit => TimeSpan.FromMinutes(40);
     private static TimeSpan HardStopTimeLimit => MaximumTotalTestingTimeLimit.Add(TimeSpan.FromMinutes(1));
 
     [OneTimeSetUp]
