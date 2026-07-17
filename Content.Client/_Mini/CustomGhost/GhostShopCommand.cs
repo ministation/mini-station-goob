@@ -1,7 +1,9 @@
+using Content.Shared.Administration;
 using Robust.Shared.Console;
 
 namespace Content.Client._Mini.CustomGhost;
 
+[AnyCommand]
 public sealed class GhostShopCommand : IConsoleCommand
 {
     public string Command => "ghostshop";

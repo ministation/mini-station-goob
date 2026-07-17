@@ -338,13 +338,13 @@ public sealed class AntagTokenSetMonthlyEarnedCommand : IConsoleCommand
 }
 
 [AdminCommand(AdminFlags.Admin)]
-public sealed class AntagTokenMenuCommand : IConsoleCommand
+public sealed class AntagTokenStoreCommand : IConsoleCommand
 {
     [Dependency] private readonly IEntityManager _entities = default!;
 
-    public string Command => "antagtokenmenu";
-    public string Description => "Enables or disables the antagonist token menu and role выдача.";
-    public string Help => "Usage: antagtokenmenu <on|off|status>";
+    public string Command => "antagtokenstore";
+    public string Description => "Enables or disables the antagonist token menu and role выдачу.";
+    public string Help => "Usage: antagtokenstore <on|off|status>";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {

@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
-using Content.Shared._Mini.DailyRewards;
+using Content.Shared.Administration;
 using Robust.Shared.Console;
 using Robust.Shared.Localization;
 
 namespace Content.Client._Mini.DailyRewards;
 
+[AnyCommand]
 public sealed class DailyRewardMenuCommand : LocalizedEntityCommands
 {
     public override string Command => "dailyrewardmenu";
