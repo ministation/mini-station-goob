@@ -41,7 +41,7 @@ public sealed class SaveLoadReparentTest
         await server.WaitAssertion(() =>
         {
             mapSys.CreateMap(out var mapId);
-            maps.CreateGrid(mapId);
+            maps.CreateGridEntity(mapId);
             var human = entities.SpawnEntity("HumanBodyDummy", new MapCoordinates(0, 0, mapId));
 
             Assert.That(entities.HasComponent<BodyComponent>(human), Is.True);

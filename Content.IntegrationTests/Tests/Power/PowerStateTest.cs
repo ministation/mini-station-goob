@@ -10,8 +10,6 @@ namespace Content.IntegrationTests.Tests.Power;
 [TestFixture]
 public sealed class PowerStateTest
 {
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
-
     [TestPrototypes]
     private const string Prototypes = @"
 - type: entity
@@ -43,7 +41,7 @@ public sealed class PowerStateTest
         await server.WaitAssertion(() =>
         {
             mapSys.CreateMap(out var mapId);
-            var grid = _mapSystem.CreateGridEntity(mapId);
+            var grid = mapSys.CreateGridEntity(mapId);
 
             mapSys.SetTile(grid, Vector2i.Zero, new Tile(1));
 
@@ -87,7 +85,7 @@ public sealed class PowerStateTest
         await server.WaitAssertion(() =>
         {
             mapSys.CreateMap(out var mapId);
-            var grid = _mapSystem.CreateGridEntity(mapId);
+            var grid = mapSys.CreateGridEntity(mapId);
 
             mapSys.SetTile(grid, Vector2i.Zero, new Tile(1));
 
@@ -140,7 +138,7 @@ public sealed class PowerStateTest
         await server.WaitAssertion(() =>
         {
             mapSys.CreateMap(out var mapId);
-            var grid = _mapSystem.CreateGridEntity(mapId);
+            var grid = mapSys.CreateGridEntity(mapId);
 
             mapSys.SetTile(grid, Vector2i.Zero, new Tile(1));
 

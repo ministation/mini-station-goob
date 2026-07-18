@@ -77,6 +77,13 @@ public partial class TraumaSystem
             || HasComp<GodmodeComponent>(args.Component.HoldingWoundable))
             return;
 
+        // Skip parts already being / already amputated — otherwise AmputateWoundable →
+        // DamageOnAmputate → wound severity → ApplyTraumas(Dismemberment) stacks forever.
+        if (!TryComp<WoundableComponent>(args.Component.HoldingWoundable, out var holdingWoundable)
+            || !holdingWoundable.CanRemove
+            || holdingWoundable.WoundableSeverity == WoundableSeverity.Severed)
+            return;
+
         // Overflow is only used when we are capping the wound, so we use it over the computed delta
         // which will be useless in this specific scenario.
         var delta = args.Overflow ?? args.NewSeverity - args.OldSeverity;
@@ -88,8 +95,7 @@ public partial class TraumaSystem
             return;
 
         var woundable = args.Component.HoldingWoundable;
-        var woundableComp = Comp<WoundableComponent>(args.Component.HoldingWoundable);
-        ApplyTraumas((woundable, woundableComp), woundEnt, traumasToInduce, delta);
+        ApplyTraumas((woundable, holdingWoundable), woundEnt, traumasToInduce, delta);
     }
 
     private void OnWoundHealAttempt(Entity<TraumaInflicterComponent> inflicter, ref WoundHealAttemptEvent args)
@@ -751,6 +757,8 @@ public partial class TraumaSystem
                 case TraumaType.Dismemberment:
                     Logger.Debug("Attempting to trigger dismemberment");
                     if (!_wound.IsWoundableRoot(target)
+                        && target.Comp.CanRemove
+                        && target.Comp.WoundableSeverity != WoundableSeverity.Severed
                         && _wound.TryInduceWound(targetChosen.Value, "Blunt", 0f, out var woundInduced)) // We need this to add the trauma into.
                     {
                         AddTrauma(

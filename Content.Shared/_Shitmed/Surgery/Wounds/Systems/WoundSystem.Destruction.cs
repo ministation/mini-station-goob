@@ -112,25 +112,30 @@ public sealed partial class WoundSystem
             || _timing.ApplyingState)
             return;
 
-
-        var bodyPart = Comp<BodyPartComponent>(parentWoundableEntity);
-        if (bodyPart.Body is not { } body
-            || !woundableComp.CanRemove)
+        // Already amputating / severed — re-entry from DamageOnAmputate → trauma → dismemberment
+        // would recurse until StackOverflowException.
+        if (!woundableComp.CanRemove
+            || woundableComp.WoundableSeverity == WoundableSeverity.Severed)
             return;
 
-        _audio.PlayPvs(woundableComp.WoundableDelimbedSound, bodyPart.Body.Value);
+        var bodyPart = Comp<BodyPartComponent>(parentWoundableEntity);
+        if (bodyPart.Body is not { } body)
+            return;
+
+        _audio.PlayPvs(woundableComp.WoundableDelimbedSound, body);
+
+        // Detach first (sets Severed) so DamageOnAmputate cannot re-trigger trauma on this part.
+        AmputateWoundableSafely(parentWoundableEntity, woundableEntity, woundableComp);
 
         var ampEv = new BeforeAmputationDamageEvent();
-        RaiseLocalEvent(bodyPart.Body.Value, ref ampEv);
+        RaiseLocalEvent(body, ref ampEv);
 
         if (woundableComp.DamageOnAmputate != null
-            && _body.TryGetRootPart(bodyPart.Body.Value, out var rootPart)
+            && _body.TryGetRootPart(body, out var rootPart)
             && !ampEv.Cancelled) // goob edit
-            _damageable.TryChangeDamage(bodyPart.Body.Value,
+            _damageable.TryChangeDamage(body,
                 woundableComp.DamageOnAmputate,
                 targetPart: _body.GetTargetBodyPart(rootPart));
-
-        AmputateWoundableSafely(parentWoundableEntity, woundableEntity);
 
         if (TryComp<WoundableComponent>(parentWoundableEntity, out var parentWoundable)
             && parentWoundable.CanBleed)
@@ -171,7 +176,8 @@ public sealed partial class WoundSystem
         bool amputateChildrenSafely = false)
     {
         if (!Resolve(woundableEntity, ref woundableComp)
-            || !woundableComp.CanRemove)
+            || !woundableComp.CanRemove
+            || woundableComp.WoundableSeverity == WoundableSeverity.Severed)
             return;
 
         var bodyPart = Comp<BodyPartComponent>(parentWoundableEntity);

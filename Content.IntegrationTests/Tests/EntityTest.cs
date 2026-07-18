@@ -21,8 +21,6 @@ namespace Content.IntegrationTests.Tests
     [TestOf(typeof(EntityUid))]
     public sealed class EntityTest
     {
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
-
         private static readonly HashSet<ProtoId<EntityCategoryPrototype>> IgnoredCategories = ["Spawner", "Debug"]; // goob fuck it maybe its like the debug spiral or something causing the mem.
 
         [Test, NonParallelizable] // Goobstation edit - NonParallelizable
@@ -74,7 +72,7 @@ namespace Content.IntegrationTests.Tests
                     foreach (var protoId in batchProtoIds) // goob Batchprotoids
                     {
                         mapSystem.CreateMap(out var mapId);
-                        var grid = _mapSystem.CreateGridEntity(mapId);
+                        var grid = mapSystem.CreateGridEntity(mapId);
                         // TODO: Fix this better in engine.
                         mapSystem.SetTile(grid.Owner, grid.Comp, Vector2i.Zero, new Tile(1));
                         var coord = new EntityCoordinates(grid.Owner, 0, 0);
@@ -268,7 +266,7 @@ namespace Content.IntegrationTests.Tests
                     foreach (var protoId in batchProtoIds) // goob Batchprotoids
                     {
                         mapSys.CreateMap(out var mapId);
-                        var grid = _mapSystem.CreateGridEntity(mapId);
+                        var grid = mapSys.CreateGridEntity(mapId);
                         var ent = sEntMan.SpawnEntity(protoId, new EntityCoordinates(grid.Owner, 0.5f, 0.5f));
                         foreach (var (_, component) in sEntMan.GetNetComponents(ent))
                         {
@@ -709,7 +707,7 @@ namespace Content.IntegrationTests.Tests
                         foreach (var proto in subset)
                         {
                             mapSys.CreateMap(out var mapId);
-                            var grid = _mapSystem.CreateGridEntity(mapId);
+                            var grid = mapSys.CreateGridEntity(mapId);
 
                             var ent = entMan.SpawnEntity(
                                 proto.Id,

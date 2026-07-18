@@ -12,8 +12,6 @@ namespace Content.IntegrationTests.Tests.DeviceLinking;
 
 public sealed class DeviceLinkingTest
 {
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
-
     private const string PortTesterProtoId = "DeviceLinkingSinkPortTester";
 
     [TestPrototypes]
@@ -58,7 +56,7 @@ public sealed class DeviceLinkingTest
                     {
                         // Create a map for each entity/port combo so they can't interfere
                         mapSys.CreateMap(out var mapId);
-                        var grid = _mapSystem.CreateGridEntity(mapId);
+                        var grid = mapSys.CreateGridEntity(mapId);
                         mapSys.SetTile(grid.Owner, grid.Comp, Vector2i.Zero, new Tile(1));
                         var coord = new EntityCoordinates(grid.Owner, 0, 0);
 

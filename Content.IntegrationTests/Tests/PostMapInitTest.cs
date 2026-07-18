@@ -375,8 +375,7 @@ namespace Content.IntegrationTests.Tests
                 foreach (var yamlEntity in (YamlSequenceNode) yamlEntities)
                 {
                     var protoId = yamlEntity["proto"].AsString();
-                    protoManager.TryIndex(protoId, out var proto, false);
-                    if (proto is null || proto.EditorSuffix is null)
+                    if (!protoManager.TryIndex(protoId, out var proto) || proto.EditorSuffix is null)
                         continue;
                     if (proto.Categories.Contains(dnmCategory) && !DoNotMapWhitelist.Contains(map.ToString()))
                     {

@@ -21,8 +21,6 @@ namespace Content.IntegrationTests.Tests;
 [TestFixture]
 public sealed class CargoTest
 {
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
-
     private static readonly HashSet<ProtoId<CargoProductPrototype>> Ignored =
     [
         // This is ignored because it is explicitly intended to be able to sell for more than it costs.
@@ -167,7 +165,7 @@ public sealed class CargoTest
         await server.WaitAssertion(() =>
         {
             var mapId = testMap.MapId;
-            var grid = _mapSystem.CreateGridEntity(mapId);
+            var grid = mapSystem.CreateGridEntity(mapId);
             var coord = new EntityCoordinates(grid.Owner, 0, 0);
 
             var sliceableEntityProtos = protoManager.EnumeratePrototypes<EntityPrototype>()
