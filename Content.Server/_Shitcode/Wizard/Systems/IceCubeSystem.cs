@@ -1,23 +1,24 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using System.Linq;
-using Content.Server._Goobstation.Wizard.Components;
-using Content.Server.Temperature.Components;
-using Content.Server.Temperature.Systems;
 using Content.Shared._Goobstation.Wizard.Traps;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Events;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Movement.Components;
 using Content.Shared.Projectiles;
 using Content.Shared.Temperature;
 using Content.Shared.Temperature.Components;
 using Content.Shared.Whitelist;
+using Content.Server._Goobstation.Wizard.Components;
+using Content.Server.Temperature.Components;
+using Content.Server.Temperature.Systems;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Random;
+using System.Linq;
 
 namespace Content.Server._Goobstation.Wizard.Systems;
 
@@ -183,6 +184,11 @@ public sealed class IceCubeSystem : SharedIceCubeSystem
             xform: xform);
 
         if (physics.BodyType != BodyType.KinematicController)
+            return;
+
+        // Input movers must stay KinematicController — switching to Dynamic trips TileFrictionController
+        // asserts when CanMove is false (iced / stunned) during mass entity spawn tests and in play.
+        if (HasComp<InputMoverComponent>(uid))
             return;
 
         comp.OldBodyType = physics.BodyType;

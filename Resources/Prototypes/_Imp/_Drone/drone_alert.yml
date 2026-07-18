@@ -28,3 +28,4 @@
   description: alerts-drone-battery-desc
   minSeverity: 0
   maxSeverity: 10
+  clientHandled: true # Mini: the power cell is read on the client, same as BorgBattery

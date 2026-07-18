@@ -1,5 +1,9 @@
 # Production-oriented network tuning for Mini Station.
 # Merge with your main server config or load via --config-file.
+#
+# Game traffic is Lidgren UDP + libsodium AEAD (XChaCha20-Poly1305), NOT OpenSSL/TLS.
+# TLS / ss14s only applies to status HTTP, hub, and reverse-proxy fronts.
+# Do not chase TLS cipher suites for the game bus — wrong stack.
 
 [net]
 pvs_range = 21
@@ -8,9 +12,18 @@ pvs_compress_level = 2
 pvs_dirty_buffer_ticks = 30
 tickrate = 30
 log_late_msg = false
+# Keep encryption off the main sim thread under player load.
+encryption_thread = true
+# Cut Lidgren warning/error spam I/O when under DDoS or flaky peers (same as Goob prod).
+lidgren_log_warning = false
+lidgren_log_error = false
 gasoverlaytickrate = 4.5
 gasoverlaythresholds = 35
 atmosdbgoverlaytickrate = 4.5
+
+[game]
+# Avoid round-end PVS override storms (same as Goob).
+round_end_pvs_overrides = false
 
 [midi]
 max_events_per_second = 400

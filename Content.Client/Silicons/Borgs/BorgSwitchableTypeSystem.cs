@@ -29,6 +29,15 @@ public sealed class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeSystem
 
         SubscribeLocalEvent<BorgSwitchableTypeComponent, AfterAutoHandleStateEvent>(AfterStateHandler);
         SubscribeLocalEvent<BorgSwitchableTypeComponent, ComponentStartup>(OnComponentStartup);
+        // Mini: the subtype (chassis skin) lives in a separate component; its state can arrive
+        // after BorgSwitchableTypeComponent, so re-apply the appearance when it changes too.
+        SubscribeLocalEvent<BorgSwitchableSubtypeComponent, AfterAutoHandleStateEvent>(AfterSubtypeStateHandler);
+    }
+
+    private void AfterSubtypeStateHandler(Entity<BorgSwitchableSubtypeComponent> ent, ref AfterAutoHandleStateEvent args)
+    {
+        if (TryComp(ent, out BorgSwitchableTypeComponent? switchable))
+            UpdateEntityAppearance((ent.Owner, switchable));
     }
 
     private void OnComponentStartup(Entity<BorgSwitchableTypeComponent> ent, ref ComponentStartup args)

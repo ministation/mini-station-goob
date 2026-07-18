@@ -121,10 +121,18 @@ namespace Content.Shared.Friction
                      * Extra catch for input movers that may be temporarily unable to move for whatever reason.
                      * Block movement shouldn't be added and removed frivolously so it should be reliable to use this
                      * as a check for brains and such which have input mover purely for ghosting behavior.
+                     *
+                     * If an InputMover somehow became Dynamic (ice cube, unanchor races, etc.), restore
+                     * KinematicController instead of hard-failing spawn-all integration tests.
                      */
-                    DebugTools.Assert(!_moverQuery.HasComp(uid) || _blockMoverQuery.HasComp(uid),
-                        $"Input mover: {ToPrettyString(uid)} in TileFrictionController is not the correct BodyType, BodyType found: {body.BodyType}, expected: KinematicController.");
-                    continue;
+                    if (_moverQuery.HasComp(uid) && !_blockMoverQuery.HasComp(uid))
+                    {
+                        PhysicsSystem.SetBodyType(uid, BodyType.KinematicController, body: body);
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
 
                 // Physics engine doesn't apply damping to Kinematic Controllers so we have to do it here.

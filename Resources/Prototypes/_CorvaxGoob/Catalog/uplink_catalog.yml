@@ -4,7 +4,7 @@
   description: uplink-syndicate-capture-device-scd-desc
   productEntity: WeaponGrapplingGunHunterSyndicate
   cost:
-    Telecrystal: 6
+    Telecrystal: 1
   categories:
   - UplinkWeaponry
   conditions:
@@ -19,7 +19,7 @@
   description: uplink-cat-maid-bundle-desc
   productEntity: ClothingBackpackDuffelSyndicateCatMaidBundle
   cost:
-    Telecrystal: 27
+    Telecrystal: 5
   categories:
   - UplinkPointless
 
@@ -29,7 +29,7 @@
   description: uplink-appearance-converter-desc
   productEntity: ClothingHandsAppearanceConverter
   cost:
-    Telecrystal: 8
+    Telecrystal: 2
   categories:
   - UplinkWearables
 
@@ -39,7 +39,7 @@
   description: uplink-blood-red-paper-box-desc
   productEntity: BloodRedPaperBox
   cost:
-    Telecrystal: 3
+    Telecrystal: 1
   categories:
   - UplinkPointless
 
@@ -49,7 +49,7 @@
   description: uplink-stamp-chameleon-desc
   productEntity: RubberStampChameleon
   cost:
-    Telecrystal: 4
+    Telecrystal: 1
   categories:
   - UplinkDeception
 
@@ -60,7 +60,7 @@
   icon: { sprite: _CorvaxGoob/Mobs/Pets/syndicategorilla.rsi, state: crawling }
   productEntity: ReinforcementRadioSyndicateGorilla
   cost:
-    Telecrystal: 10
+    Telecrystal: 2
   categories:
   - UplinkAllies
   conditions:
@@ -77,7 +77,7 @@
   icon: { sprite: Objects/Fun/dice.rsi, state: d20_20 }
   productEntity: DiceOfFate
   cost:
-    Telecrystal: 12
+    Telecrystal: 2
   categories:
   - UplinkJob
   conditions:
@@ -93,7 +93,7 @@
   icon: { sprite:  Objects/Tools/Toolboxes/toolbox_yellow.rsi, state: icon}
   productEntity: BlueprintToolboxElectricalTurret
   cost:
-    Telecrystal: 14
+    Telecrystal: 3
   categories:
   - UplinkJob
   conditions:

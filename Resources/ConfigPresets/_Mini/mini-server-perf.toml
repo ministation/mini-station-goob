@@ -1,0 +1,19 @@
+# Cheap server CPU wins for Mini Station (pair with mini-network.toml).
+# Load via --config-file (merge with main server config).
+#
+# Smoke after deploy:
+# - Server FPS / tick time under peak (Prometheus or metrics from network-baseline.toml)
+# - Door / projectile clipping or tunneling (if bad: raise physics.target_minimum_tickrate to 45 or 60)
+# - Mob swarm: HTN still responsive enough with npc.max_updates = 96
+
+[physics]
+# Default 60 → 2 physics substeps at net.tickrate 30. Match tickrate → 1 substep (large CPU save).
+target_minimum_tickrate = 30
+
+[npc]
+# Soft cap under dense awake HTN populations (engine default 128).
+max_updates = 96
+
+[debug]
+# Never disable Pow3r parallelism in production.
+pow3r_disable_parallel = false

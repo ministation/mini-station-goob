@@ -4,7 +4,7 @@
   description: uplink-beast-gourd-desc
   productEntity: BeastBloodGourd
   cost:
-   Telecrystal: 15
+   Telecrystal: 3
   categories:
   - UplinkChemicals
   conditions:

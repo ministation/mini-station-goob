@@ -74,11 +74,11 @@
 - type: startingGear
   id: BlueshieldOfficerGear
   equipment:
-    eyes: ClothingEyesGlassesBSO
-    #gloves: ClothingHandsGlovesCombat - Goobstation, moved to loadouts
-    id: BlueshieldPDA
+    # Mini: eyes / id / belt intentionally omitted — JobBlueshieldOfficer loadout groups
+    # (BlueshieldOfficerEyes, BlueshieldOfficerPDA, BlueshieldOfficerBelt) already equip them.
+    # EquipRoleLoadout runs before EquipStartingGear; a second spawn for an occupied slot
+    # fails Insert and leaves the duplicate on the floor next to cryo.
     ears: ClothingHeadsetAltBlueshield
-    belt: ClothingBeltMilitaryWebbingFilled
     pocket1: UniqueBlueshieldOfficerLockerTeleporter
   storage:
     back:

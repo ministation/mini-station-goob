@@ -126,13 +126,13 @@
 
 - type: entity
   parent: BaseUplinkRadio
-  # Goobstation - Telecrystal rework
+  # Goobstation - Telecrystal rework / Mini: agent scale (20 TC)
   id: BaseUplinkRadio200TC
-  suffix: 80 TC
+  suffix: 20 TC
   components:
   - type: Store
     balance:
-      Telecrystal: 80
+      Telecrystal: 20
 
 - type: entity
   parent: BaseUplinkRadio
