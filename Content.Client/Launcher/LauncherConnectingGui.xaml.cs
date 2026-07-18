@@ -12,6 +12,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Timing;
 
 namespace Content.Client.Launcher
 {
