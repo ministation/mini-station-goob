@@ -9,7 +9,6 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Configuration;
-using Robust.Shared.Timing;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -31,7 +30,6 @@ namespace Content.Client.Launcher
         private readonly IConfigurationManager _cfg;
         private readonly IClipboardManager _clipboard;
         private readonly IStylesheetManager _stylesheetManager;
-        private readonly ConnectingServerStatusFetcher _statusFetcher = new();
 
         public LauncherConnectingGui(LauncherConnecting state, IRobustRandom random,
             IPrototypeManager prototype, IConfigurationManager config, IClipboardManager clipboard)
@@ -70,8 +68,10 @@ namespace Content.Client.Launcher
 
             ConnectionStateChanged(state.ConnectionState);
 
-            _statusFetcher.StatusUpdated += OnServerStatusUpdated;
-            MaybeStartStatusPoll();
+            // Live /status poll removed — it required a matching engine build and crashed mismatched launchers.
+            StatusPlayers.Text = Loc.GetString("connecting-info-players-unavailable");
+            StatusMap.Text = Loc.GetString("connecting-info-map-unavailable");
+            StatusPreset.Text = Loc.GetString("connecting-info-preset-unavailable");
 
             // Redial flag setup
             var edim = IoCManager.Resolve<ExtendedDisconnectInformationManager>();
@@ -85,25 +85,12 @@ namespace Content.Client.Launcher
             _stylesheetManager.StylesheetsUpdated += OnStylesheetsUpdated;
             ApplyMiniStylesheet();
             RefreshCoinLabel();
-            MaybeStartStatusPoll();
         }
 
         protected override void ExitedTree()
         {
             base.ExitedTree();
             _stylesheetManager.StylesheetsUpdated -= OnStylesheetsUpdated;
-            _statusFetcher.Stop();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _statusFetcher.StatusUpdated -= OnServerStatusUpdated;
-                _statusFetcher.Dispose();
-            }
-
-            base.Dispose(disposing);
         }
 
         private void OnStylesheetsUpdated()
@@ -114,60 +101,6 @@ namespace Content.Client.Launcher
         private void ApplyMiniStylesheet()
         {
             Stylesheet = _stylesheetManager.SheetNano;
-        }
-
-        private void MaybeStartStatusPoll()
-        {
-            if (_state.CurrentPage != LauncherConnecting.Page.Connecting)
-            {
-                _statusFetcher.Stop();
-                return;
-            }
-
-            _statusFetcher.Start(_state.Address);
-        }
-
-        private void OnServerStatusUpdated(ConnectingServerStatus? status)
-        {
-            if (Disposed)
-                return;
-
-            // Status callbacks may arrive off the main thread depending on HttpClient.
-            // Robust UI must be touched on the main thread — marshal via Timer if needed.
-            Timer.Spawn(0, () => ApplyServerStatus(status));
-        }
-
-        private void ApplyServerStatus(ConnectingServerStatus? status)
-        {
-            if (Disposed)
-                return;
-
-            if (status is not { } s)
-            {
-                StatusPlayers.Text = Loc.GetString("connecting-info-players-unavailable");
-                StatusMap.Text = Loc.GetString("connecting-info-map-unavailable");
-                StatusPreset.Text = Loc.GetString("connecting-info-preset-unavailable");
-                return;
-            }
-
-            if (s.Players is { } players)
-            {
-                StatusPlayers.Text = s.SoftMaxPlayers is { } max
-                    ? Loc.GetString("connecting-info-players", ("players", players), ("max", max))
-                    : Loc.GetString("connecting-info-players-only", ("players", players));
-            }
-            else
-            {
-                StatusPlayers.Text = Loc.GetString("connecting-info-players-unavailable");
-            }
-
-            StatusMap.Text = string.IsNullOrWhiteSpace(s.Map)
-                ? Loc.GetString("connecting-info-map-unknown")
-                : Loc.GetString("connecting-info-map", ("map", s.Map));
-
-            StatusPreset.Text = string.IsNullOrWhiteSpace(s.Preset)
-                ? Loc.GetString("connecting-info-preset-unknown")
-                : Loc.GetString("connecting-info-preset", ("preset", s.Preset));
         }
 
         private void RefreshCoinLabel()
@@ -306,8 +239,6 @@ namespace Content.Client.Launcher
 
             if (page == LauncherConnecting.Page.Disconnected)
                 DisconnectReason.Text = _state.LastDisconnectReason;
-
-            MaybeStartStatusPoll();
         }
 
         private void ConnectionStateChanged(ClientConnectionState state)
