@@ -26,6 +26,12 @@ public partial class TraumaSystem
     private const string TraumaContainerId = "Traumas";
     public static readonly TraumaType[] TraumasBlockingHealing = { TraumaType.BoneDamage, TraumaType.OrganDamage, TraumaType.Dismemberment };
 
+    /// <summary>
+    /// Prevents OnWoundSeverityPointChanged → ApplyTraumas from nesting when
+    /// TryInduceWound / AmputateWoundable raise more severity events mid-trauma.
+    /// </summary>
+    private int _applyingTraumasDepth;
+
     private void InitProcess()
     {
         SubscribeLocalEvent<TraumaInflicterComponent, ComponentInit>(OnTraumaInflicterInit);
@@ -75,6 +81,15 @@ public partial class TraumaSystem
     {
         if (!_timing.IsFirstTimePredicted
             || HasComp<GodmodeComponent>(args.Component.HoldingWoundable))
+            return;
+
+        // DamageOnAmputate must not spawn more Dismemberment (stack overflow loop).
+        if (_wound.SuppressTraumaFromAmputation)
+            return;
+
+        // TryInduceWound / AmputateWoundable inside ApplyTraumas can raise severity again —
+        // do not nest another ApplyTraumas pass on the same call stack.
+        if (_applyingTraumasDepth > 0)
             return;
 
         // Skip parts already being / already amputated — otherwise AmputateWoundable →
@@ -652,6 +667,19 @@ public partial class TraumaSystem
     #region Private API
 
     private void ApplyTraumas(Entity<WoundableComponent> target, Entity<TraumaInflicterComponent> inflicter, List<TraumaType> traumas, FixedPoint2 severity)
+    {
+        _applyingTraumasDepth++;
+        try
+        {
+            ApplyTraumasCore(target, inflicter, traumas, severity);
+        }
+        finally
+        {
+            _applyingTraumasDepth--;
+        }
+    }
+
+    private void ApplyTraumasCore(Entity<WoundableComponent> target, Entity<TraumaInflicterComponent> inflicter, List<TraumaType> traumas, FixedPoint2 severity)
     {
         var bodyPart = Comp<BodyPartComponent>(target);
         if (!bodyPart.Body.HasValue)

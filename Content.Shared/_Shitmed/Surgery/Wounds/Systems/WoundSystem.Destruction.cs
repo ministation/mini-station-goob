@@ -122,46 +122,70 @@ public sealed partial class WoundSystem
         if (bodyPart.Body is not { } body)
             return;
 
-        _audio.PlayPvs(woundableComp.WoundableDelimbedSound, body);
-
-        // Detach first (sets Severed) so DamageOnAmputate cannot re-trigger trauma on this part.
-        AmputateWoundableSafely(parentWoundableEntity, woundableEntity, woundableComp);
-
-        var ampEv = new BeforeAmputationDamageEvent();
-        RaiseLocalEvent(body, ref ampEv);
-
-        if (woundableComp.DamageOnAmputate != null
-            && _body.TryGetRootPart(body, out var rootPart)
-            && !ampEv.Cancelled) // goob edit
-            _damageable.TryChangeDamage(body,
-                woundableComp.DamageOnAmputate,
-                targetPart: _body.GetTargetBodyPart(rootPart));
-
-        if (TryComp<WoundableComponent>(parentWoundableEntity, out var parentWoundable)
-            && parentWoundable.CanBleed)
+        _amputationDepth++;
+        try
         {
-            foreach (var wound in GetWoundableWounds(parentWoundableEntity))
+            _audio.PlayPvs(woundableComp.WoundableDelimbedSound, body);
+
+            // Detach first (sets Severed) so DamageOnAmputate cannot re-trigger trauma on this part.
+            AmputateWoundableSafely(parentWoundableEntity, woundableEntity, woundableComp);
+
+            // Only the outermost amputation applies stump damage, and trauma induction is
+            // suppressed for that damage — otherwise ApplyDamageToBodyParts → wounds →
+            // Dismemberment → AmputateWoundable stacks forever across remaining limbs.
+            if (_amputationDepth == 1
+                && woundableComp.WoundableSeverity == WoundableSeverity.Severed
+                && woundableComp.DamageOnAmputate != null
+                && _body.TryGetRootPart(body, out var rootPart))
             {
-                if (!TryComp<BleedInflicterComponent>(wound, out var bleeds))
-                    continue;
+                var ampEv = new BeforeAmputationDamageEvent();
+                RaiseLocalEvent(body, ref ampEv);
 
-                bleeds.BleedingAmountRaw += 20f;
-                bleeds.Scaling = 1f;
-                bleeds.ScalingLimit = 1f;
-                bleeds.IsBleeding = true;
+                if (!ampEv.Cancelled)
+                {
+                    _amputationTraumaSuppress++;
+                    try
+                    {
+                        _damageable.TryChangeDamage(body,
+                            woundableComp.DamageOnAmputate,
+                            targetPart: _body.GetTargetBodyPart(rootPart));
+                    }
+                    finally
+                    {
+                        _amputationTraumaSuppress--;
+                    }
+                }
             }
+
+            if (TryComp<WoundableComponent>(parentWoundableEntity, out var parentWoundable)
+                && parentWoundable.CanBleed)
+            {
+                foreach (var wound in GetWoundableWounds(parentWoundableEntity))
+                {
+                    if (!TryComp<BleedInflicterComponent>(wound, out var bleeds))
+                        continue;
+
+                    bleeds.BleedingAmountRaw += 20f;
+                    bleeds.Scaling = 1f;
+                    bleeds.ScalingLimit = 1f;
+                    bleeds.IsBleeding = true;
+                }
+            }
+
+            if (!_net.IsServer)
+                return;
+
+            _throwing.TryThrow(
+                woundableEntity,
+                _random.NextAngle().ToWorldVec() * _random.NextFloat(0.8f, 5f),
+                _random.NextFloat(0.5f, 1f),
+                pushbackRatio: 0.3f
+            );
         }
-
-
-        if (!_net.IsServer)
-            return;
-
-        _throwing.TryThrow(
-            woundableEntity,
-            _random.NextAngle().ToWorldVec() * _random.NextFloat(0.8f, 5f),
-            _random.NextFloat(0.5f, 1f),
-            pushbackRatio: 0.3f
-        );
+        finally
+        {
+            _amputationDepth--;
+        }
     }
 
     /// <summary>
