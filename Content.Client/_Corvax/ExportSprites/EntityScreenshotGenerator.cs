@@ -14,10 +14,6 @@ using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Manager;
-using Robust.Shared.Serialization.Markdown;
-using Robust.Shared.Serialization.Markdown.Mapping;
-using Robust.Shared.Serialization.Markdown.Sequence;
 using Robust.Shared.Utility;
 
 namespace Content.Client.Corvax.ExportSprites;
@@ -34,9 +30,7 @@ public sealed class EntityScreenshotGenerator
     [Dependency] private readonly ILogManager _logManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IResourceManager _resourceManager = default!;
-    [Dependency] private readonly ISerializationManager _serialization = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
 
     private ISawmill _sawmill = default!;
     private bool _started;
@@ -132,7 +126,7 @@ public sealed class EntityScreenshotGenerator
                 .OrderBy(proto => proto.ID)
                 .ToList();
             var previewMap = mapSystem.CreateMap(out var mapId);
-            var previewGrid = _mapSystem.CreateGridEntity(mapId);
+            var previewGrid = mapSystem.CreateGridEntity(mapId);
 
             if (!_resourceManager.UserData.IsDir(outputDir))
                 _resourceManager.UserData.CreateDir(outputDir);
@@ -288,56 +282,15 @@ public sealed class EntityScreenshotGenerator
     {
         icon = null;
 
-        foreach (var (_, entry) in prototype.Components)
+        // No System.Reflection — client sandbox forbids FieldInfo/PropertyInfo/BindingFlags.
+        if (prototype.TryGetComponent(out IconComponent? iconComp, _entityManager.ComponentFactory)
+            && iconComp.Icon != SpriteSpecifier.Invalid)
         {
-            if (TryExtractSpriteSpecifierFromObject(entry.Component, out icon))
-                return true;
+            icon = iconComp.Icon;
+            return true;
         }
 
         return false;
-    }
-
-    private bool TryExtractSpriteSpecifierFromObject(object component, out SpriteSpecifier? icon)
-    {
-        icon = null;
-        var type = component.GetType();
-        foreach (var field in type.GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic))
-        {
-            if (typeof(SpriteSpecifier).IsAssignableFrom(field.FieldType) && field.GetValue(component) is SpriteSpecifier specifier && specifier != SpriteSpecifier.Invalid)
-            {
-                icon = specifier;
-                return true;
-            }
-        }
-
-        foreach (var prop in type.GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic))
-        {
-            if (!prop.CanRead || prop.GetIndexParameters().Length != 0)
-                continue;
-
-            if (typeof(SpriteSpecifier).IsAssignableFrom(prop.PropertyType) && prop.GetValue(component) is SpriteSpecifier specifier && specifier != SpriteSpecifier.Invalid)
-            {
-                icon = specifier;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static Type? GetSequenceElementType(Type? type)
-    {
-        if (type == null)
-            return null;
-
-        if (type.IsArray)
-            return type.GetElementType();
-
-        var genericArguments = type.GenericTypeArguments;
-        if (genericArguments.Length == 1)
-            return genericArguments[0];
-
-        return null;
     }
 
 }

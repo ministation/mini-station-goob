@@ -42,13 +42,13 @@ public sealed class DecalPlacerUIController : UIController, IOnStateExited<Gamep
 
     public void OnSystemLoaded(SandboxSystem system)
     {
-        _sandbox.SandboxDisabled += CloseWindow;
+        system.SandboxDisabled += CloseWindow;
         _prototypes.PrototypesReloaded += OnPrototypesReloaded;
     }
 
     public void OnSystemUnloaded(SandboxSystem system)
     {
-        _sandbox.SandboxDisabled -= CloseWindow;
+        system.SandboxDisabled -= CloseWindow;
         _prototypes.PrototypesReloaded -= OnPrototypesReloaded;
     }
 

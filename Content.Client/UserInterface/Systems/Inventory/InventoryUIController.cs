@@ -256,21 +256,21 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
     // Neuron Activation
     public void OnSystemLoaded(ClientInventorySystem system)
     {
-        _inventorySystem.OnSlotAdded += AddSlot;
-        _inventorySystem.OnSlotRemoved += RemoveSlot;
-        _inventorySystem.OnLinkInventorySlots += LoadSlots;
-        _inventorySystem.OnUnlinkInventory += UnloadSlots;
-        _inventorySystem.OnSpriteUpdate += SpriteUpdated;
+        system.OnSlotAdded += AddSlot;
+        system.OnSlotRemoved += RemoveSlot;
+        system.OnLinkInventorySlots += LoadSlots;
+        system.OnUnlinkInventory += UnloadSlots;
+        system.OnSpriteUpdate += SpriteUpdated;
     }
 
     // Neuron Deactivation
     public void OnSystemUnloaded(ClientInventorySystem system)
     {
-        _inventorySystem.OnSlotAdded -= AddSlot;
-        _inventorySystem.OnSlotRemoved -= RemoveSlot;
-        _inventorySystem.OnLinkInventorySlots -= LoadSlots;
-        _inventorySystem.OnUnlinkInventory -= UnloadSlots;
-        _inventorySystem.OnSpriteUpdate -= SpriteUpdated;
+        system.OnSlotAdded -= AddSlot;
+        system.OnSlotRemoved -= RemoveSlot;
+        system.OnLinkInventorySlots -= LoadSlots;
+        system.OnUnlinkInventory -= UnloadSlots;
+        system.OnSpriteUpdate -= SpriteUpdated;
     }
 
     private void ItemPressed(GUIBoundKeyEventArgs args, SlotControl control)
@@ -466,16 +466,16 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
     // Monkey copies code
     public void OnSystemLoaded(HandsSystem system)
     {
-        _handsSystem.OnPlayerItemAdded += OnItemAdded;
-        _handsSystem.OnPlayerItemRemoved += OnItemRemoved;
-        _handsSystem.OnPlayerSetActiveHand += SetActiveHand;
+        system.OnPlayerItemAdded += OnItemAdded;
+        system.OnPlayerItemRemoved += OnItemRemoved;
+        system.OnPlayerSetActiveHand += SetActiveHand;
     }
 
     public void OnSystemUnloaded(HandsSystem system)
     {
-        _handsSystem.OnPlayerItemAdded -= OnItemAdded;
-        _handsSystem.OnPlayerItemRemoved -= OnItemRemoved;
-        _handsSystem.OnPlayerSetActiveHand -= SetActiveHand;
+        system.OnPlayerItemAdded -= OnItemAdded;
+        system.OnPlayerItemRemoved -= OnItemRemoved;
+        system.OnPlayerSetActiveHand -= SetActiveHand;
     }
 
 

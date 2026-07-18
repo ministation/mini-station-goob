@@ -44,7 +44,7 @@ namespace Content.Client.Gameplay
         [Dependency] private readonly IViewVariablesManager _vvm = default!;
         [Dependency] private readonly IConsoleHost _conHost = default!;
         [Dependency] private readonly IConfigurationManager _configurationManager = default!;
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
+        private SharedMapSystem _mapSystem = default!;
 
         private ClickableEntityComparer _comparer = default!;
 
@@ -83,6 +83,7 @@ namespace Content.Client.Gameplay
 
         protected override void Startup()
         {
+            _mapSystem = _entityManager.System<SharedMapSystem>();
             _vvm.RegisterDomain("enthover", ResolveVvHoverObject, ListVVHoverPaths);
             _inputManager.KeyBindStateChanged += OnKeyBindStateChanged;
             _comparer = new ClickableEntityComparer();

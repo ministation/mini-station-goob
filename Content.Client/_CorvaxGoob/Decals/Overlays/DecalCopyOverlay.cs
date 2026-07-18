@@ -16,7 +16,7 @@ public sealed class DecalCopyOverlay : Overlay
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
+    private readonly SharedMapSystem _mapSystem;
     private readonly SharedTransformSystem _transform;
     private readonly SpriteSystem _sprite;
     private readonly SharedDecalSystem _sharedDecalSystem;
@@ -30,6 +30,7 @@ public sealed class DecalCopyOverlay : Overlay
     {
         IoCManager.InjectDependencies(this);
 
+        _mapSystem = _entityManager.System<SharedMapSystem>();
         _transform = _entityManager.System<SharedTransformSystem>();
         _sprite = _entityManager.System<SpriteSystem>();
         _sharedDecalSystem = _entityManager.System<SharedDecalSystem>();
