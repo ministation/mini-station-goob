@@ -266,8 +266,7 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
             out _,
             EntityManager,
             _prototypes,
-            (HumanoidCharacterProfile?)
-            _preferencesManager.GetPreferences(player.UserId).SelectedCharacter);
+            (HumanoidCharacterProfile?) _preferencesManager.GetPreferencesOrNull(player.UserId)?.SelectedCharacter);
     }
 
     /// <summary>
@@ -301,8 +300,7 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
             out _,
             EntityManager,
             _prototypes,
-            (HumanoidCharacterProfile?)
-            _preferencesManager.GetPreferences(player.UserId).SelectedCharacter);
+            (HumanoidCharacterProfile?) _preferencesManager.GetPreferencesOrNull(player.UserId)?.SelectedCharacter);
     }
 
     public HashSet<ProtoId<JobPrototype>> GetDisallowedJobs(ICommonSession player)
@@ -326,7 +324,7 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
             if (tokens.HasJobUnlock(player.UserId, job.ID))
                 continue;
 
-            if (!JobRequirements.TryRequirementsMet(job, playTimes, out _, EntityManager, _prototypes, (HumanoidCharacterProfile?) _preferencesManager.GetPreferences(player.UserId).SelectedCharacter))
+            if (!JobRequirements.TryRequirementsMet(job, playTimes, out _, EntityManager, _prototypes, (HumanoidCharacterProfile?) _preferencesManager.GetPreferencesOrNull(player.UserId)?.SelectedCharacter))
                 roles.Add(job.ID);
         }
 
@@ -338,7 +336,16 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
         if (!_cfg.GetCVar(CCVars.GameRoleTimers))
             return;
 
-        var player = _playerManager.GetSessionById(userId);
+        // Mini: the player may have disconnected between readying up and round start,
+        // in which case the session/preferences are gone and lookups throw KeyNotFoundException,
+        // killing the whole GameTicker round start. Bail out gracefully instead.
+        if (!_playerManager.TryGetSessionById(userId, out var player))
+        {
+            Log.Warning($"RemoveDisallowedJobs: no session for {userId}, clearing their job list.");
+            jobs.Clear();
+            return;
+        }
+
         if (!_tracking.TryGetTrackerTimes(player, out var playTimes))
         {
             // Sorry mate but your playtimes haven't loaded.
@@ -346,10 +353,12 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
             playTimes ??= new Dictionary<string, TimeSpan>();
         }
 
+        var profile = (HumanoidCharacterProfile?) _preferencesManager.GetPreferencesOrNull(userId)?.SelectedCharacter;
+
         for (var i = 0; i < jobs.Count; i++)
         {
             if (_prototypes.Resolve(jobs[i], out var job)
-                && JobRequirements.TryRequirementsMet(job, playTimes, out _, EntityManager, _prototypes, (HumanoidCharacterProfile?) _preferencesManager.GetPreferences(userId).SelectedCharacter))
+                && JobRequirements.TryRequirementsMet(job, playTimes, out _, EntityManager, _prototypes, profile))
             {
                 continue;
             }
