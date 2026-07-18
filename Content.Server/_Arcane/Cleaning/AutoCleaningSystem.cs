@@ -25,11 +25,12 @@ public sealed partial class AutoCleaningSystem : EntitySystem
     private bool _autoCleaningEnabled = false;
     private bool _isActive = false;
     private bool _isWarned = false;
-    private static TimeSpan _nextUpdate = TimeSpan.MaxValue;
+    // Instance (not static): static timers survive TestPair recycle and wipe Trash entities mid-EntityTest.
+    private TimeSpan _nextUpdate = TimeSpan.MaxValue;
     private static readonly TimeSpan UpdateInterval = TimeSpan.FromMinutes(15);
-    private static TimeSpan _warningWaiting = TimeSpan.FromSeconds(30);
-    private static HashSet<ProtoId<TagPrototype>> _cleaningTags = ["Trash", "Cartridge"];
-    private static HashSet<ProtoId<TagPrototype>> _disallowedTags = ["Cigarette", "CigPack", "Syringe", "LightTube", "LightBulb", "LightTubeCrystalRed", "LightTubeCrystalBlue", "LightTubeCrystalGreen"];
+    private static readonly TimeSpan WarningWaiting = TimeSpan.FromSeconds(30);
+    private static readonly HashSet<ProtoId<TagPrototype>> CleaningTags = ["Trash", "Cartridge"];
+    private static readonly HashSet<ProtoId<TagPrototype>> DisallowedTags = ["Cigarette", "CigPack", "Syringe", "LightTube", "LightBulb", "LightTubeCrystalRed", "LightTubeCrystalBlue", "LightTubeCrystalGreen"];
 
     private const int MaxCleanPerCycle = 500;
 
@@ -78,12 +79,12 @@ public sealed partial class AutoCleaningSystem : EntitySystem
                 return;
             }
 
-            _nextUpdate = _timing.CurTime + _warningWaiting;
+            _nextUpdate = _timing.CurTime + WarningWaiting;
             _isWarned = true;
 
-            _chat.DispatchGlobalAnnouncement(Loc.GetString("cent-com-cleaning-warning", ("seconds", _warningWaiting.Seconds)), colorOverride: Color.Aqua);
+            _chat.DispatchGlobalAnnouncement(Loc.GetString("cent-com-cleaning-warning", ("seconds", WarningWaiting.Seconds)), colorOverride: Color.Aqua);
 
-            _sawmill.Info($"AutoCleaning warning sent. Cleaning in {_warningWaiting.Seconds} seconds");
+            _sawmill.Info($"AutoCleaning warning sent. Cleaning in {WarningWaiting.Seconds} seconds");
         }
     }
 
@@ -122,10 +123,10 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var tag, out var transform))
         {
-            if (!tag.Tags.Intersect(_cleaningTags).Any())
+            if (!tag.Tags.Intersect(CleaningTags).Any())
                 continue;
 
-            if (tag.Tags.Intersect(_disallowedTags).Any())
+            if (tag.Tags.Intersect(DisallowedTags).Any())
             {
                 skippedDisallowed++;
                 continue;

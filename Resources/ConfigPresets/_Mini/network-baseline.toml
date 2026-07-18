@@ -22,7 +22,7 @@ log_late_msg = true
 # Related Mini presets:
 #   mini-network.toml     — PVS / AEAD thread / Lidgren log hygiene (not TLS)
 #   mini-server-perf.toml — physics 1 substep + NPC budget
-#   mini-client.toml      — outline.enabled = false (client FPS)
+#   mini-client.toml      — docs: put outline.enabled = false in *client* config.toml
 #
 # Smoke checklist (perf deploy):
 #   1) Server tick/FPS under load (histograms above)

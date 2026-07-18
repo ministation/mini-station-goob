@@ -603,10 +603,10 @@
   id: UplinkPistol9mmMagazine
   name: uplink-pistol-magazine-name
   description: uplink-pistol-magazine-desc
-  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Pistol/pistol_high_capacity_mag.rsi, state: base-icon }
-  productEntity: MagazinePistolHighCapacity
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Pistol/pistol_mag.rsi, state: red-icon }
+  productEntity: BoxSyndicateMagazinePistol
   cost:
-    Telecrystal: 1 # goob - Ammo should be cheap.
+    Telecrystal: 1 # goob - Ammo should be cheap. Mini: box of 3
   categories:
   - UplinkAmmo
   #Goobstation
@@ -622,9 +622,9 @@
   name: uplink-pistol-magazine-c20r-name
   description: uplink-pistol-magazine-c20r-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Pistol/smg_mag.rsi, state: red-icon }
-  productEntity: MagazinePistolSubMachineGun
+  productEntity: BoxSyndicateMagazinePistolSubMachineGun
   cost:
-    Telecrystal: 1 # goob - Ammo should be cheap. 96 dmg per TC.
+    Telecrystal: 1 # goob - Ammo should be cheap. 96 dmg per TC. Mini: box of 3
   categories:
   - UplinkAmmo
   #Goobstation
@@ -640,9 +640,9 @@
   name: uplink-pistol-magazine-caseless-name
   description: uplink-pistol-magazine-caseless-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/CaselessRifle/caseless_pistol_mag.rsi, state: red-icon }
-  productEntity: MagazinePistolCaselessRifle
+  productEntity: BoxSyndicateMagazinePistolCaselessRifle
   cost:
-    Telecrystal: 1 # goob
+    Telecrystal: 1 # goob / Mini: box of 3
   categories:
   - UplinkAmmo
   #Goobstation
@@ -658,9 +658,9 @@
   name: uplink-speedloader-magnum-name
   description: uplink-speedloader-magnu-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/SpeedLoaders/Magnum/magnum_speed_loader.rsi, state: icon }
-  productEntity: SpeedLoaderMagnumAP
+  productEntity: BoxSyndicateSpeedLoaderMagnumAP
   cost:
-    Telecrystal: 1 # goob - AP, but only 6 bullets in speedloader
+    Telecrystal: 1 # goob - AP / Mini: box of 2 loaders
   categories:
   - UplinkAmmo
   #Goobstation
@@ -692,9 +692,9 @@
   id: UplinkEstocAmmo
   name: uplink-estoc-ammo-name
   description: uplink-estoc-ammo-desc
-  productEntity: MagazineLightRifle
+  productEntity: BoxSyndicateMagazineRifle
   cost:
-    Telecrystal: 1 # goob - higher ammo cost due to .30 rifle's 40% armour piercing
+    Telecrystal: 1 # goob / Mini: box of 3 (.20 rifle for Estoc)
   categories:
   - UplinkAmmo
   #Goobstation

@@ -805,9 +805,9 @@
   id: UplinkMagazineNailgun
   name: uplink-magazine-nailgun-name
   description: uplink-magazine-nailgun-desc
-  productEntity: MagazineNailgunArmorPiercing
+  productEntity: BoxSyndicateMagazineNailgunArmorPiercing
   cost:
-    Telecrystal: 1
+    Telecrystal: 1 # Mini: box of 3
   categories:
   - UplinkJob
   conditions:
@@ -1270,9 +1270,9 @@
   name: uplink-shotgun-magazine-name
   description: uplink-shotgun-magazine-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Shotgun/m12.rsi, state: pellets }
-  productEntity: MagazineShotgun
+  productEntity: BoxSyndicateMagazineShotgun
   cost:
-    Telecrystal: 1
+    Telecrystal: 1 # Mini: box of 3
   categories:
   - UplinkAmmo
 
@@ -1281,9 +1281,9 @@
   name: uplink-shotgun-magazine-slug-name
   description: uplink-shotgun-magazine-slug-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Shotgun/m12.rsi, state: slug }
-  productEntity: MagazineShotgunSlug
+  productEntity: BoxSyndicateMagazineShotgunSlug
   cost:
-    Telecrystal: 1 # So little total damage
+    Telecrystal: 1 # So little total damage / Mini: box of 3
   categories:
   - UplinkAmmo
 
@@ -1394,9 +1394,9 @@
   name: uplink-rifle-caseless-mag-name
   description: uplink-rifle-caseless-mag-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/CaselessRifle/caseless_rifle_mag.rsi, state: base }
-  productEntity: MagazineCaselessRifle
+  productEntity: BoxSyndicateMagazineCaselessRifle
   cost:
-    Telecrystal: 2 # Much more damage than C20 or M90 (780, 98 dmg per TC), but hollow-point
+    Telecrystal: 2 # Much more damage than C20 or M90 / Mini: box of 2
   categories:
   - UplinkAmmo
   conditions:
@@ -1410,9 +1410,9 @@
   name: uplink-highcap-pistol-mag-name
   description: uplink-highcap-pistol-mag-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Pistol/pistol_high_capacity_mag.rsi, state: base }
-  productEntity: MagazinePistolHighCapacity
+  productEntity: BoxSyndicateMagazinePistolHighCapacity
   cost:
-    Telecrystal: 1
+    Telecrystal: 1 # Mini: box of 2
   categories:
   - UplinkAmmo
   conditions:
@@ -1457,9 +1457,9 @@
   name: uplink-pistol-magazine-caseless-saphe-name
   description: uplink-pistol-magazine-caseless-saphe-desc
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/CaselessRifle/caseless_pistol_mag.rsi, state: base }
-  productEntity: MagazinePistolCaselessRifleSAPHE
+  productEntity: BoxSyndicateMagazinePistolCaselessRifleSAPHE
   cost:
-    Telecrystal: 1 # 23 damage but ~1/3 of a rifle magazine and semi armor piercing, remember the damage is 13 pierce 10.5 explosive
+    Telecrystal: 1 # Mini: box of 2
   categories:
   - UplinkAmmo
   conditions:
@@ -1473,9 +1473,9 @@
   name: uplink-m7s-mag-name
   description: uplink-m7s-mag-desc
   icon: { sprite: _Goobstation/Objects/Weapons/Guns/Ammunition/Magazine/M7S_magazine.rsi, state: icon }
-  productEntity: MagazineLowCaliberM7S
+  productEntity: BoxSyndicateMagazineLowCaliberM7S
   cost:
-    Telecrystal: 1 # 105 dmg per TC which seems huge, but you're missing half of your shots
+    Telecrystal: 1 # Mini: box of 3
   categories:
   - UplinkAmmo
   conditions:
