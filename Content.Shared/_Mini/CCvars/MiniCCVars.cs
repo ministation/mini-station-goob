@@ -546,4 +546,21 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> HoldLookUp =
         CVarDef.Create("scope.hold_look_up", true, CVar.CLIENT | CVar.ARCHIVE);
 
+    /*
+     * Connecting UI — cached coin balance from last AntagToken sync
+     */
+
+    /// <summary>
+    /// Last known antag-token / coin balance for the connecting screen.
+    /// </summary>
+    public static readonly CVarDef<int> CachedCoinBalance =
+        CVarDef.Create("ministation.cached_coin_balance", 0, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Whether <see cref="CachedCoinBalance"/> has been synced at least once this install.
+    /// Distinguishes "0 coins" from "never received a balance".
+    /// </summary>
+    public static readonly CVarDef<bool> CachedCoinBalanceKnown =
+        CVarDef.Create("ministation.cached_coin_balance_known", false, CVar.CLIENTONLY | CVar.ARCHIVE);
+
 }

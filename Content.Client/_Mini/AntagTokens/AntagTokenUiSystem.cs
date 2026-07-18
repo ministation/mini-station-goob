@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using Content.Client.Players.PlayTimeTracking;
 using Content.Client.UserInterface.Systems.Ghost.Controls.Roles;
 using Content.Shared._Mini.AntagTokens;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Roles;
+using Robust.Shared.Configuration;
 using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -17,6 +19,7 @@ public sealed class AntagTokenUiSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly AntagTokenListingSystem _listings = default!;
     [Dependency] private readonly JobRequirementsManager _requirements = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     private AntagTokenWindow? _window;
     private GhostRoleRulesWindow? _rulesConfirmWindow;
@@ -25,6 +28,16 @@ public sealed class AntagTokenUiSystem : EntitySystem
     private readonly Dictionary<string, int> _purchaseCooldowns = new();
     private TimeSpan _lastStateSyncCurTime;
     private int _lastAppliedElapsedSeconds = -1;
+
+    /// <summary>
+    /// Raised when coin balance is synced from the server (also updates ARCHIVE cache CVars).
+    /// </summary>
+    public event Action<int>? BalanceChanged;
+
+    public int? CachedBalance =>
+        _cfg.GetCVar(MiniCCVars.CachedCoinBalanceKnown)
+            ? _cfg.GetCVar(MiniCCVars.CachedCoinBalance)
+            : null;
 
     public override void Initialize()
     {
@@ -71,6 +84,8 @@ public sealed class AntagTokenUiSystem : EntitySystem
         _cachedState = ev.State;
         _lastStateSyncCurTime = _timing.CurTime;
 
+        CacheBalance(ev.State.Balance);
+
         if (_window == null || _window.Disposed)
         {
             if (!_awaitingOpen)
@@ -81,6 +96,13 @@ public sealed class AntagTokenUiSystem : EntitySystem
 
         _window?.UpdateState(ev.State);
         ApplyCooldownDisplayAfterStateUpdate();
+    }
+
+    private void CacheBalance(int balance)
+    {
+        _cfg.SetCVar(MiniCCVars.CachedCoinBalance, balance);
+        _cfg.SetCVar(MiniCCVars.CachedCoinBalanceKnown, true);
+        BalanceChanged?.Invoke(balance);
     }
 
     private void RebuildPurchaseCooldownsFromElapsed()

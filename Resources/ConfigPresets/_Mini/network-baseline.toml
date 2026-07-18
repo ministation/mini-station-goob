@@ -18,3 +18,13 @@ log_late_msg = true
 # Client baseline: enable netgraph overlay (Options > Network) and set:
 #   net.buffer_size = 2-3
 #   net.pvs_enter_budget = 150-250
+#
+# Related Mini presets:
+#   mini-network.toml     — PVS / AEAD thread / Lidgren log hygiene (not TLS)
+#   mini-server-perf.toml — physics 1 substep + NPC budget
+#   mini-client.toml      — outline.enabled = false (client FPS)
+#
+# Smoke checklist (perf deploy):
+#   1) Server tick/FPS under load (histograms above)
+#   2) Physics clipping (doors/projectiles) after target_minimum_tickrate = 30
+#   3) Client: outlines off, FPS in busy rooms

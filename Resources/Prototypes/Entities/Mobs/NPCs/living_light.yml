@@ -63,6 +63,10 @@
           - MobMask
         layer:
           - Opaque
+  # Re-assert after Fixtures (same pattern as MobRobotic / regalrat) — spawn-all tests
+  # otherwise hit TileFrictionController with Dynamic + InputMover.
+  - type: Physics
+    bodyType: KinematicController
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: LivingLight
@@ -103,8 +107,6 @@
           - !type:PlaySoundBehavior
             sound:
               collection: GlassBreak
-  - type: Physics # Goob ????????????
-    bodyType: KinematicController
 
 - type: entity
   id: MobLuminousPerson

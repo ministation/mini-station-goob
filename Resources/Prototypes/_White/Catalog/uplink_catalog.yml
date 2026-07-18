@@ -7,7 +7,7 @@
   description: uplink-experimental-syndicate-teleporter-desc
   productEntity: ExperimentalSyndicateTeleporter
   cost:
-    Telecrystal: 10 # Goob
+    Telecrystal: 2 # Goob
   categories:
     - UplinkDisruption
   conditions:
@@ -23,7 +23,7 @@
   icon: { sprite: /Textures/_White/Objects/Weapons/Melee/Daggers/betrayal_knife.rsi, state: icon }
   productEntity: BetrayalKnife
   cost:
-    Telecrystal: 10 # goob
+    Telecrystal: 2 # goob
   categories:
   - UplinkWeaponry
   conditions:
@@ -40,7 +40,7 @@
   description: uplink-night-vision-desc
   productEntity: ClothingEyesNightVisionGogglesSyndie
   cost:
-    Telecrystal: 4 # goob
+    Telecrystal: 1 # goob
   categories:
   - UplinkWearables
   conditions:
@@ -55,7 +55,7 @@
   description: uplink-night-vision-desc
   productEntity: ClothingEyesNightVisionGogglesNukie
   cost:
-    Telecrystal: 4 # goob
+    Telecrystal: 1 # goob
   categories:
   - UplinkWearables
   conditions:
@@ -72,7 +72,7 @@
   description: uplink-thermal-vision-desc
   productEntity: ClothingEyesThermalVisionGogglesSyndie
   cost:
-    Telecrystal: 6 # goob
+    Telecrystal: 1 # goob
   categories:
   - UplinkWearables
   conditions:
@@ -87,7 +87,7 @@
   description: uplink-thermal-vision-desc
   productEntity: ClothingEyesThermalVisionGogglesNukie
   cost:
-    Telecrystal: 6 # goob
+    Telecrystal: 1 # goob
   categories:
   - UplinkWearables
   conditions:

@@ -1,0 +1,10 @@
+# Mini client-side cheap FPS wins.
+# Apply on the game client (launcher user config / client config.toml), not on the server.
+#
+# Smoke:
+# - Interaction / target outlines should be gone (or only when re-enabled in options)
+# - Client FPS in dense sprite areas should rise vs outline.enabled = true
+
+[outline]
+# Selection/interaction sprite outline shaders are expensive; disable for +100–200 FPS class wins.
+enabled = false
