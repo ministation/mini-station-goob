@@ -757,6 +757,13 @@ namespace Content.Client.Stylesheets
             };
             paperBackground.SetPatchMargin(StyleBox.Margin.All, 16.0f);
 
+            // Mini: background of the paper edit textbox (used to be TransparentBorderedWindowPanel upstream).
+            var paperEditBackground = new StyleBoxTexture
+            {
+                Texture = resCache.GetTexture("/Textures/Interface/Nano/transparent_window_background_bordered.png"),
+            };
+            paperEditBackground.SetPatchMargin(StyleBox.Margin.All, 2);
+
             var contextMenuExpansionTexture = resCache.GetTexture("/Textures/Interface/VerbIcons/group.svg.192dpi.png");
             var verbMenuConfirmationTexture = resCache.GetTexture("/Textures/Interface/VerbIcons/group.svg.192dpi.png");
 
@@ -2023,6 +2030,18 @@ namespace Content.Client.Stylesheets
                 // The default look of paper in UIs. Pages can have components which override this
                 Element<PanelContainer>().Class("PaperDefaultBorder")
                     .Prop(PanelContainer.StylePropertyPanel, paperBackground),
+                // Mini: upstream PaperWindow.xaml now uses StyleIdentifier + PaperEditBackground class
+                // (rules live in PaperSheetlet for the new stylesheet system); mirror them here for StyleNano.
+                Element<PanelContainer>().Identifier("PaperDefaultBorder")
+                    .Prop(PanelContainer.StylePropertyPanel, paperBackground),
+                Element<PanelContainer>().Class("PaperEditBackground")
+                    .Prop(PanelContainer.StylePropertyPanel, paperEditBackground),
+                Element<PanelContainer>().Identifier("PaperEditBackground")
+                    .Prop(PanelContainer.StylePropertyPanel, paperEditBackground),
+                Element<TextEdit>().Class("PaperLineEdit")
+                    .Prop(LineEdit.StylePropertyStyleBox, new StyleBoxEmpty())
+                    .Prop("font-color", new Color(25, 25, 25))
+                    .Prop(TextEdit.StylePropertyCursorColor, new Color(25, 25, 25)),
                 Element<RichTextLabel>().Class("PaperWrittenText")
                     .Prop(Label.StylePropertyFont, notoSans12)
                     .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#111111")),
