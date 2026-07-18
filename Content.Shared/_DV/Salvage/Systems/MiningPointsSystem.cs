@@ -7,15 +7,15 @@ using Content.Shared.Lathe;
 using Content.Shared.Materials;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
-using Robust.Shared.Timing;
+using Robust.Shared.Network;
 
 namespace Content.Shared._DV.Salvage.Systems;
 
 public sealed class MiningPointsSystem : EntitySystem
 {
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly INetManager _net = default!;
 
     private EntityQuery<MiningPointsComponent> _query;
 
@@ -36,23 +36,29 @@ public sealed class MiningPointsSystem : EntitySystem
 
     private void OnMaterialEntityInserted(Entity<MiningPointsLatheComponent> ent, ref MaterialEntityInsertedEvent args)
     {
-        // Award points for unprocessed ore regardless of material-silo link.
-        // Requiring OreSiloClient.Silo meant station processors gave 0 points until cargo
-        // manually linked them in the silo UI — broken for normal salvage gameplay.
-        if (!_timing.IsFirstTimePredicted
-            || !TryComp<UnclaimedOreComponent>(args.Inserted, out var unclaimedOre))
+        // Server-authoritative: clients only predicted-insert materials; points live on the machine component.
+        // Also ignore silo link — requiring OreSiloClient.Silo made station processors award 0 until cargo linked them.
+        if (_net.IsClient)
             return;
 
-        var points = unclaimedOre.MiningPoints * args.Count;
+        if (!TryComp(args.Inserted, out UnclaimedOreComponent? unclaimedOre))
+            return;
+
+        var points = (uint) Math.Max(0, Math.Floor(unclaimedOre.MiningPoints * args.Count));
         if (points > 0)
-            AddPoints(ent.Owner, (uint) points);
+            AddPoints(ent.Owner, points);
     }
 
     private void OnClaimMiningPoints(Entity<MiningPointsLatheComponent> ent, ref LatheClaimMiningPointsMessage args)
     {
         var user = args.Actor;
-        if (GetPointComp(user) is {} dest) // Goobstation - borg Miningpoints
-            TransferAll(ent.Owner, dest);
+        if (GetPointComp(user) is not { } dest)
+            return;
+
+        if (!TryComp(ent.Owner, out MiningPointsComponent? machinePoints) || machinePoints.Points == 0)
+            return;
+
+        TransferAll(ent.Owner, dest);
     }
 
     #endregion

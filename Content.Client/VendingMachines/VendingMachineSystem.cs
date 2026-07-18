@@ -48,17 +48,26 @@ public sealed class VendingMachineSystem : SharedVendingMachineSystem
 
         foreach (var entry in state.Inventory)
         {
-            component.Inventory.Add(entry.Key, new(entry.Value));
+            var copy = new VendingMachineInventoryEntry(entry.Value);
+            if (string.IsNullOrEmpty(copy.ID))
+                copy.ID = entry.Key;
+            component.Inventory.Add(entry.Key, copy);
         }
 
         foreach (var entry in state.EmaggedInventory)
         {
-            component.EmaggedInventory.Add(entry.Key, new(entry.Value));
+            var copy = new VendingMachineInventoryEntry(entry.Value);
+            if (string.IsNullOrEmpty(copy.ID))
+                copy.ID = entry.Key;
+            component.EmaggedInventory.Add(entry.Key, copy);
         }
 
         foreach (var entry in state.ContrabandInventory)
         {
-            component.ContrabandInventory.Add(entry.Key, new(entry.Value));
+            var copy = new VendingMachineInventoryEntry(entry.Value);
+            if (string.IsNullOrEmpty(copy.ID))
+                copy.ID = entry.Key;
+            component.ContrabandInventory.Add(entry.Key, copy);
         }
 
         if (UISystem.TryGetOpenUi<VendingMachineBoundUserInterface>(uid, VendingMachineUiKey.Key, out var bui))
@@ -157,7 +166,8 @@ public sealed class VendingMachineSystem : SharedVendingMachineSystem
             return;
 
         _sprite.LayerSetVisible(sprite.AsNullable(), layer, true);
-        _sprite.LayerSetAutoAnimated(sprite.AsNullable(), layer, true);
+        // Freeze RSI loops on the first frame — cycling "rotating panel" states look bad on NanoMed/etc.
+        _sprite.LayerSetAutoAnimated(sprite.AsNullable(), layer, false);
         _sprite.LayerSetRsiState(sprite.AsNullable(), layer, state);
     }
 

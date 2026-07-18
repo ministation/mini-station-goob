@@ -37,10 +37,16 @@
   # Ammo
   - item: MagazinePistolSubMachineGun
     probability: 0.58
+    countMin: 2
+    countMax: 4
   - item: MagazinePistolCaselessRifle
     probability: 0.35
+    countMin: 2
+    countMax: 4
   - item: MagazineLightRifle
     probability: 0.4
+    countMin: 2
+    countMax: 4
   - item: MagazineBoxLightRifle
     probability: 0.22
   - item: MagazineBoxMagnum
@@ -49,10 +55,14 @@
     probability: 0.45
   - item: MagazineHighCaliber
     probability: 0.1
+    countMin: 2
+    countMax: 4
   - item: MagazineBoxAntiMateriel
     probability: 0.06
   - item: MagazinePistol
     probability: 0.3
+    countMin: 2
+    countMax: 4
   # Armor
   - item: ClothingOuterHardsuitTypanPatrol
     probability: 0.7

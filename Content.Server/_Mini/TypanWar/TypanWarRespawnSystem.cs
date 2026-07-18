@@ -94,14 +94,21 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         var minds = EntityQueryEnumerator<TypanWarCombatMindComponent, MindComponent>();
         while (minds.MoveNext(out var mindId, out var combat, out var mind))
         {
-            if (combat.RespawnUiOpen)
-                continue;
-
             if (GetGhostEntity(mind) is not { } ghost)
                 continue;
 
             if (mind.UserId is not { } userId || !_players.TryGetSessionById(userId, out var session))
                 continue;
+
+            // Stuck flag after a failed open (e.g. AttachedEntity was null) — allow retry.
+            if (combat.RespawnUiOpen)
+            {
+                if (session.AttachedEntity is { } actor && _ui.IsUiOpen(ghost, TypanWarRespawnUiKey.Key, actor))
+                    continue;
+
+                combat.RespawnUiOpen = false;
+                Dirty(mindId, combat);
+            }
 
             OpenRespawnUi(ghost, mindId, combat, session);
         }
@@ -322,12 +329,27 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         if (combat.PendingCorpse == null && TryComp<MindComponent>(mindId, out var mind))
             TryRememberCorpse(mind, ghostUid, combat, mindId);
 
-        combat.RespawnUiOpen = true;
-        Dirty(mindId, combat);
-
         _ui.SetUi(ghostUid, TypanWarRespawnUiKey.Key,
             new InterfaceData("TypanWarRespawnBoundUserInterface", interactionRange: 0f, requireInputValidation: false));
-        _ui.OpenUi(ghostUid, TypanWarRespawnUiKey.Key, session);
+
+        // Wait until the session is actually on the ghost — otherwise OpenUi no-ops and a stuck
+        // RespawnUiOpen flag would permanently suppress TryOpenPendingRespawnUis retries.
+        if (session.AttachedEntity != ghostUid)
+        {
+            combat.RespawnUiOpen = false;
+            Dirty(mindId, combat);
+            return;
+        }
+
+        if (!_ui.TryOpenUi(ghostUid, TypanWarRespawnUiKey.Key, ghostUid))
+        {
+            combat.RespawnUiOpen = false;
+            Dirty(mindId, combat);
+            return;
+        }
+
+        combat.RespawnUiOpen = true;
+        Dirty(mindId, combat);
         PushRespawnUiState(ghostUid, combat);
     }
 
