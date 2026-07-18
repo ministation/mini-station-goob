@@ -183,10 +183,11 @@ namespace Content.Server._Imp.Drone
 
             var chargePercent = 0f;
             var hasBattery = false;
-            if (_powerCell.TryGetBatteryFromSlot(uid, out var battery) && _battery.TryGetBatteryComponent(uid, out var batteryComponent, out _))
+            if (_powerCell.TryGetBatteryFromSlot(uid, out var battery))
             {
                 hasBattery = true;
-                chargePercent = MathF.Round(batteryComponent.LastCharge /batteryComponent.MaxCharge * 10f); // max is 10 min is 0
+                // Mini: use GetChargeLevel, LastCharge is only the charge at the last networked update.
+                chargePercent = MathF.Round(_battery.GetChargeLevel(battery.Value.AsNullable()) * 10f); // max is 10 min is 0
             }
 
             var state = new DroneBuiState(chargePercent, hasBattery);
@@ -205,9 +206,8 @@ namespace Content.Server._Imp.Drone
                 return;
             }
 
-            var chargePercent = new short();
-            if (_battery.TryGetBatteryComponent(ent.Owner, out var batteryComponent, out var _))
-                chargePercent = (short) MathF.Round(batteryComponent.LastCharge / batteryComponent.MaxCharge * 10f);
+            // Mini: use GetChargeLevel, LastCharge is only the charge at the last networked update.
+            var chargePercent = (short) MathF.Round(_battery.GetChargeLevel(battery.Value.AsNullable()) * 10f);
 
             if (chargePercent == 5 && chargePercent < ent.Comp.LastChargePercent)
             {

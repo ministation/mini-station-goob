@@ -76,16 +76,18 @@ public sealed partial class NukeopsRuleComponent : Component
     /// <summary>
     /// Additional telecrystals granted per player on the server during war.
     /// Total bonus is divided by number of operatives.
+    /// Mini: keep war grant flat at WarTcAmountPerNukie (40).
     /// </summary>
     [DataField]
-    public int WarTcPerPlayer = 2;
+    public int WarTcPerPlayer = 0;
 
     /// <summary>
     /// Compensation telecrystals granted per missing nuclear operative.
     /// Total bonus is divided by number of operatives.
+    /// Mini: keep war grant flat at WarTcAmountPerNukie (40).
     /// </summary>
     [DataField]
-    public int WarTcPerNukieMissing = 10;
+    public int WarTcPerNukieMissing = 0;
     // Goobstation end
 
     /// <summary>

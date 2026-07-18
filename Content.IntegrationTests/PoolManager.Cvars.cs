@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 #nullable enable
+using Content.Shared._Arcane.CCVars;
 using Content.Shared.CCVar;
 
 namespace Content.IntegrationTests;
@@ -38,5 +39,7 @@ public static partial class PoolManager
         (CCVars.InteractionRateLimitPeriod.Name, "0.1"),
         (CCVars.MovementMobPushing.Name, "false"),
         (CCVars.LavalandEnabled.Name, "false"), // Lavaland Change
+        // Floor trash sweeper deletes Trash-tagged entities mid-test (e.g. Envelope in EntityTest).
+        (ACCVars.AutoCleaningEnabled.Name, "false"),
     };
 }

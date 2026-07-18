@@ -1,0 +1,13 @@
+# Mini client-side cheap FPS wins.
+# Apply on the game client (launcher user config / client config.toml), NOT via server --config-preset.
+# ConfigPresetTests loads every file under ConfigPresets/ on the *server*, and outline.enabled is
+# CLIENTONLY — putting the CVar here would ERRO ("unregistered variable").
+#
+# Copy into the client config.toml:
+#
+#   [outline]
+#   enabled = false
+#
+# Smoke:
+# - Interaction / target outlines should be gone (or only when re-enabled in options)
+# - Client FPS in dense sprite areas should rise vs outline.enabled = true

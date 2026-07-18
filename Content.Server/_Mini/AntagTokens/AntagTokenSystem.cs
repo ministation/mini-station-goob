@@ -753,6 +753,9 @@ public sealed class AntagTokenSystem : EntitySystem
 
         EntityManager.System<JobUnlockSystem>().SendJobUnlocksIfOnline(player.UserId);
         EntityManager.System<AntagUnlockSystem>().SendRoleBypassStateIfOnline(player.UserId);
+
+        // Push balance early so the client can cache coins before / as lobby loads.
+        SendState(player.UserId);
     }
 
     private PlayerTokenState BuildPlayerTokenStateFromRows(

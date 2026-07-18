@@ -1,3 +1,4 @@
+using Content.Shared.Atmos.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Prototypes;
 using Content.Shared.Chemistry.Reagent;

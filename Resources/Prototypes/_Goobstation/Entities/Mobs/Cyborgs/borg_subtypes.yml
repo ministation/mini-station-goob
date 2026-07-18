@@ -4,20 +4,20 @@
 - type: borgSubtype
   parentBorgType: generic
   id: generic_default
-  spritePath: _Mini/Mobs/Silicon/chassis.rsi
+  spritePath: Mobs/Silicon/chassis.rsi
   dummyPrototype: BorgChassisGeneric
 
 # Mining subtypes
 - type: borgSubtype
   parentBorgType: mining
   id: mining_default
-  spritePath: _Mini/Mobs/Silicon/chassis.rsi
+  spritePath: Mobs/Silicon/chassis.rsi
   dummyPrototype: BorgChassisMining
 
 - type: borgSubtype
   parentBorgType: mining
   id: mining_basic
-  spritePath: _Mini/Mobs/Silicon/chassis.rsi
+  spritePath: Mobs/Silicon/chassis.rsi
   dummyPrototype: BorgChassisMiningBasic
 
 # - type: borgSubtype
@@ -60,7 +60,7 @@
 - type: borgSubtype
   parentBorgType: engineering
   id: engineer_default
-  spritePath: _Mini/Mobs/Silicon/chassis.rsi
+  spritePath: Mobs/Silicon/chassis.rsi
   dummyPrototype: BorgChassisEngineer
 
 # - type: borgSubtype
@@ -103,7 +103,7 @@
 - type: borgSubtype
   parentBorgType: janitor
   id: janitor_default
-  spritePath: _Mini/Mobs/Silicon/chassis.rsi
+  spritePath: Mobs/Silicon/chassis.rsi
   dummyPrototype: BorgChassisJanitor
 
 # - type: borgSubtype
@@ -152,7 +152,7 @@
 - type: borgSubtype
   parentBorgType: medical
   id: default_medical
-  spritePath: _Mini/Mobs/Silicon/chassis.rsi
+  spritePath: Mobs/Silicon/chassis.rsi
   dummyPrototype: BorgChassisMedical
 
 # - type: borgSubtype
@@ -207,14 +207,14 @@
 - type: borgSubtype
   parentBorgType: service
   id: default_service
-  spritePath: _Mini/Mobs/Silicon/chassis.rsi
+  spritePath: Mobs/Silicon/chassis.rsi
   dummyPrototype: BorgChassisService
 
 # Security subtypes
 - type: borgSubtype
   parentBorgType: security
   id: security_default
-  spritePath: _Mini/Mobs/Silicon/chassis.rsi
+  spritePath: Mobs/Silicon/chassis.rsi
   dummyPrototype: BorgChassisSecurity
 
 - type: entity

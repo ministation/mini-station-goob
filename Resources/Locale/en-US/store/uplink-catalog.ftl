@@ -189,20 +189,20 @@ uplink-shrapnel-grenade-name = Shrapnel Grenade
 uplink-shrapnel-grenade-desc = Launches a spray of sharp fragments dealing great damage against unarmored targets.
 
 # Ammo
-uplink-pistol-magazine-name = Pistol Magazine (.35 auto)
-uplink-pistol-magazine-desc = Pistol magazine with 15 cartridges. Compatible with the Viper.
+uplink-pistol-magazine-name = Pistol Magazine Box (.35 auto)
+uplink-pistol-magazine-desc = A syndicate box with 3 pistol magazines (10 rounds each). Compatible with the Viper.
 
-uplink-pistol-magazine-c20r-name = SMG magazine (.35 auto)
-uplink-pistol-magazine-c20r-desc = SMG magazine with 30 cartridges. Compatible with C-20r.
+uplink-pistol-magazine-c20r-name = SMG Magazine Box (.35 auto)
+uplink-pistol-magazine-c20r-desc = A syndicate box with 3 SMG magazines (30 rounds each). Compatible with C-20r.
 
 uplink-magazine-bulldog-pellet-name = Drum magazine (.50 pellet)
 uplink-magazine-bulldog-pellet-desc = Shotgun magazine with 8 shells filled with buckshot. Compatible with the Bulldog.
 
-uplink-pistol-magazine-caseless-name = Pistol Magazine (9.5mm HP)
-uplink-pistol-magazine-caseless-desc = Pistol magazine with 10 hollow-point caseless catridges. Compatible with the Cobra.
+uplink-pistol-magazine-caseless-name = Pistol Magazine Box (9.5mm HP)
+uplink-pistol-magazine-caseless-desc = A syndicate box with 3 pistol magazines (10 hollow-point caseless rounds each). Compatible with the Cobra.
 
-uplink-speedloader-magnum-name = Speedloader (.45 magnum AP)
-uplink-speedloader-magnu-desc = Revolver speedloader with 6 armor-piercing catridges, capable of ignoring armor entirely. Compatible with the Python.
+uplink-speedloader-magnum-name = Speedloader Box (.45 magnum AP)
+uplink-speedloader-magnu-desc = A syndicate box with 2 armor-piercing speedloaders (6 rounds each). Compatible with the Python.
 
 uplink-mosin-ammo-name = Ammunition box (.30 rifle)
 uplink-mosin-ammo-desc = A box of 60 cartridges for the surplus rifle.

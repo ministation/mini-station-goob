@@ -6,6 +6,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using System.Net;
 
 namespace Content.Client.Launcher
 {
@@ -28,6 +29,8 @@ namespace Content.Client.Launcher
         private string? _connectFailReason;
 
         public string? Address => _gameController.LaunchState.Ss14Address ?? _gameController.LaunchState.ConnectAddress;
+
+        public DnsEndPoint? ConnectEndpoint => _gameController.LaunchState.ConnectEndpoint;
 
         public string? ConnectFailReason
         {
