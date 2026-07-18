@@ -23,7 +23,7 @@ public sealed partial class TypanWarCombatMindComponent : Component
 
     public EntityCoordinates BaseSpawn;
 
-    /// <summary>SecurityOfficer (NT) or TypanPatrol may respawn at roundstart spawn.</summary>
+    /// <summary>When true, respawn UI offers the original job spawn location.</summary>
     public bool AllowBaseSpawn;
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]

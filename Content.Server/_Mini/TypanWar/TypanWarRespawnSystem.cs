@@ -7,6 +7,7 @@ using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Mind;
 using Content.Server.Preferences.Managers;
+using Content.Server.Spawners.Components;
 using Content.Server.Station.Systems;
 using Content.Server._Mini.Networking;
 using Robust.Shared.Containers;
@@ -21,6 +22,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
+using Content.Shared.Station.Components;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
@@ -41,6 +43,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
     [Dependency] private readonly IPlayerManager _players = default!;
     [Dependency] private readonly IServerPreferencesManager _prefs = default!;
     [Dependency] private readonly StationSpawningSystem _spawning = default!;
+    [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly TypanStationWarRuleSystem _warRule = default!;
     [Dependency] private readonly TypanWarCaptureZoneSystem _captureZones = default!;
     [Dependency] private readonly TypanWarFriendlyFireSystem _friendlyFire = default!;
@@ -48,6 +51,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
     [Dependency] private readonly PvsSessionOverrideSystem _pvsSession = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
 
     private readonly Dictionary<EntityUid, HumanoidCharacterProfile> _profiles = new();
     private float _uiUpdateAccumulator;
@@ -403,6 +407,8 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             _ => TypanWarCaptureOwner.Typan,
         };
 
+        EnsureDutySpawn(combat);
+
         if (combat.AllowBaseSpawn && combat.BaseSpawn != default)
         {
             options.Add(new RespawnOptionData(
@@ -426,6 +432,80 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         return options.ToArray();
     }
 
+    /// <summary>
+    /// Restores duty-spawn for minds that were created when only Sec/Patrol could use it,
+    /// or whose BaseSpawn was never recorded.
+    /// </summary>
+    private void EnsureDutySpawn(TypanWarCombatMindComponent combat)
+    {
+        if (combat.AllowBaseSpawn && combat.BaseSpawn != default)
+            return;
+
+        if (combat.Station == EntityUid.Invalid || combat.Job == default)
+            return;
+
+        if (!TryPickJobSpawnCoordinates(combat.Station, combat.Job, out var coords))
+            return;
+
+        combat.AllowBaseSpawn = true;
+        combat.BaseSpawn = coords;
+    }
+
+    private bool TryPickJobSpawnCoordinates(
+        EntityUid station,
+        ProtoId<JobPrototype> job,
+        out EntityCoordinates coords)
+    {
+        coords = default;
+        var positions = CollectJobSpawnCoordinates(station, job, SpawnPointType.Job);
+        if (positions.Count == 0)
+            positions = CollectJobSpawnCoordinates(station, job, SpawnPointType.LateJoin);
+
+        if (positions.Count == 0)
+            return false;
+
+        coords = _random.Pick(positions);
+        return true;
+    }
+
+    private List<EntityCoordinates> CollectJobSpawnCoordinates(
+        EntityUid station,
+        ProtoId<JobPrototype> job,
+        SpawnPointType spawnType)
+    {
+        var positions = new List<EntityCoordinates>();
+        var query = EntityQueryEnumerator<SpawnPointComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var spawnPoint, out var xform))
+        {
+            if (spawnPoint.Job != job || spawnPoint.SpawnType != spawnType)
+                continue;
+
+            if (!IsSpawnOnStation(uid, xform, station))
+                continue;
+
+            positions.Add(xform.Coordinates);
+        }
+
+        return positions;
+    }
+
+    private bool IsSpawnOnStation(EntityUid spawnEnt, TransformComponent xform, EntityUid station)
+    {
+        if (_station.GetOwningStation(spawnEnt, xform) == station)
+            return true;
+
+        if (!TryComp<StationDataComponent>(station, out var data) || xform.GridUid is not { } gridUid)
+            return false;
+
+        foreach (var grid in data.Grids)
+        {
+            if (grid == gridUid)
+                return true;
+        }
+
+        return false;
+    }
+
     private bool TryResolveRespawnOption(
         TypanWarCombatMindComponent combat,
         bool isBase,
@@ -436,6 +516,8 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
         if (isBase)
         {
+            EnsureDutySpawn(combat);
+
             if (!combat.AllowBaseSpawn || combat.BaseSpawn == default)
                 return false;
 
