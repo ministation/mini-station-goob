@@ -1,14 +1,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Client.Message;
+using Content.Client.UserInterface.RichText;
 // Goob Station - End of Round Screen
 using Content.Client.Stylesheets;
+using Content.Goobstation.UIKit.UserInterface.RichText;
 using Content.Shared.GameTicking;
 using Content.Shared.Mobs;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
+using Robust.Client.UserInterface.RichText;
 using Robust.Shared.Utility;
+using System;
 using System.Linq;
 using System.Numerics;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
@@ -17,6 +21,24 @@ namespace Content.Client.RoundEnd
 {
     public sealed partial class RoundEndSummaryWindow : DefaultWindow // CorvaxGoob-PhotoCamera : made it partial
     {
+        /// <summary>
+        /// Server-authored round-end text includes Goob manifest purchase icons ([tex]/[font]).
+        /// Default RichTextLabel whitelist strips those, so icons never appear.
+        /// </summary>
+        private static readonly Type[] RoundEndSummaryTags =
+        [
+            typeof(BoldItalicTag),
+            typeof(BoldTag),
+            typeof(BulletTag),
+            typeof(ColorTag),
+            typeof(HeadingTag),
+            typeof(ItalicTag),
+            typeof(UiFontTag),
+            typeof(TextureTag),
+            typeof(EntityTextureTag),
+            typeof(IconTag),
+        ];
+
         private readonly IFileDialogManager _fileDialogManager; // CorvaxGoob-PhotoCamera
         private readonly IEntityManager _entityManager;
         public int RoundId;
@@ -90,11 +112,11 @@ namespace Content.Client.RoundEnd
                                                    ("seconds", roundDuration.Seconds)));
             roundEndSummaryContainer.AddChild(roundTimeLabel);
 
-            //Round end text
+            //Round end text (antag objectives + purchase manifest icons)
             if (!string.IsNullOrEmpty(roundEnd))
             {
                 var roundEndLabel = new RichTextLabel();
-                roundEndLabel.SetMarkup(roundEnd);
+                roundEndLabel.SetMessage(FormattedMessage.FromMarkupOrThrow(roundEnd), RoundEndSummaryTags);
                 roundEndSummaryContainer.AddChild(roundEndLabel);
             }
 
