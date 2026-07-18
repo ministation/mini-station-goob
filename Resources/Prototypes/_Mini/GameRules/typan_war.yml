@@ -10,7 +10,7 @@
     - LoneRunRule
   - type: TypanStationWarRule
     announcementDelaySeconds: 15
-    warStartDelaySeconds: 30
+    warStartDelaySeconds: 300
     warDurationSeconds: 3600
     warMusicDelaySeconds: 90
     warMusicDurationSeconds: 90
@@ -21,8 +21,8 @@
     - 90
     - 90
     roundEndDelaySeconds: 120
-    minNtAlive: 0
-    minTypanAlive: 0
+    minNtAlive: 5
+    minTypanAlive: 5
     maxFactionRatio: 2
     prepInsufficientCheckIntervalSeconds: 30
     warIntelEventDelaySeconds: 900
@@ -31,9 +31,7 @@
     capturePointIntervalSeconds: 45
     tradeZoneSwapScoreThreshold: 50
     minRespawnSeconds: 10
-    maxRespawnSeconds: 120
-    deathPenaltyWindowSeconds: 300
-    deathPenaltyStepSeconds: 20
+    maxRespawnSeconds: 60
     dropShuttleRespawnDelaySeconds: 120
     stationSeparationTiles: 300
     tradePostMaxDistanceTiles: 500
