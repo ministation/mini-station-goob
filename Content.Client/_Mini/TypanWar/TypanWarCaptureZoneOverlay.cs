@@ -176,7 +176,7 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
         };
 
         var screenCenter = viewport.WorldToScreen(worldPos);
-        screenCenter.Y -= 35f;
+        screenCenter.Y -= 50f;
 
         const float barHalfW = 44f;
         const float barHalfH = 5f;
@@ -186,6 +186,8 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
             screenCenter - new Vector2(barHalfW, barHalfH),
             screenCenter + new Vector2(barHalfW, barHalfH));
 
+        var outline = new UIBox2(box.Left - 1f, box.Bottom - 1f, box.Right + 1f, box.Top + 1f);
+        handle.DrawRect(outline, Color.Black);
         handle.DrawRect(box, back);
 
         var fillWidth = box.Width * Math.Clamp(zone.CaptureProgress, 0f, 1f);

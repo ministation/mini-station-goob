@@ -5,7 +5,6 @@ using Content.Shared._Lavaland.UnclaimedOre;
 using Content.Shared.Access.Systems;
 using Content.Shared.Lathe;
 using Content.Shared.Materials;
-using Content.Shared.Materials.OreSilo;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Timing;
@@ -37,11 +36,11 @@ public sealed class MiningPointsSystem : EntitySystem
 
     private void OnMaterialEntityInserted(Entity<MiningPointsLatheComponent> ent, ref MaterialEntityInsertedEvent args)
     {
+        // Award points for unprocessed ore regardless of material-silo link.
+        // Requiring OreSiloClient.Silo meant station processors gave 0 points until cargo
+        // manually linked them in the silo UI — broken for normal salvage gameplay.
         if (!_timing.IsFirstTimePredicted
-            || !TryComp<UnclaimedOreComponent>(args.Inserted, out var unclaimedOre)
-            || !TryComp<OreSiloClientComponent>(ent, out var utilizer)
-            || !utilizer.Silo.HasValue
-            || Transform(utilizer.Silo.Value).MapID != Transform(ent).MapID)
+            || !TryComp<UnclaimedOreComponent>(args.Inserted, out var unclaimedOre))
             return;
 
         var points = unclaimedOre.MiningPoints * args.Count;

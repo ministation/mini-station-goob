@@ -381,15 +381,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
 
         if (contested)
         {
-            runtime.CapturingToward = null;
-            zone.CapturingOwner = null;
-            if (zone.CaptureProgress > 0f)
-            {
-                zone.CaptureProgress = Math.Max(0f,
-                    zone.CaptureProgress - frameTime / (zone.CaptureTimeSeconds * zone.ContestDecayMultiplier));
-                DirtyZoneIfNeeded(uid, zone, runtime);
-            }
-
+            // Pause capture: keep progress and capturing faction so resume does not reset.
             return;
         }
 
