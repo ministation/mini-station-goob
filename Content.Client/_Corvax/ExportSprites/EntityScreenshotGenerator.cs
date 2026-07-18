@@ -32,11 +32,11 @@ public sealed class EntityScreenshotGenerator
     [Dependency] private readonly IGameController _gameController = default!;
     [Dependency] private readonly IClientGameTiming _gameTiming = default!;
     [Dependency] private readonly ILogManager _logManager = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IResourceManager _resourceManager = default!;
     [Dependency] private readonly ISerializationManager _serialization = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
 
     private ISawmill _sawmill = default!;
     private bool _started;
@@ -132,7 +132,7 @@ public sealed class EntityScreenshotGenerator
                 .OrderBy(proto => proto.ID)
                 .ToList();
             var previewMap = mapSystem.CreateMap(out var mapId);
-            var previewGrid = _mapManager.CreateGridEntity(mapId);
+            var previewGrid = _mapSystem.CreateGridEntity(mapId);
 
             if (!_resourceManager.UserData.IsDir(outputDir))
                 _resourceManager.UserData.CreateDir(outputDir);
@@ -290,53 +290,35 @@ public sealed class EntityScreenshotGenerator
 
         foreach (var (_, entry) in prototype.Components)
         {
-            if (TryExtractSpriteSpecifier(entry.Component.GetType(), entry.Mapping, out icon))
+            if (TryExtractSpriteSpecifierFromObject(entry.Component, out icon))
                 return true;
         }
 
         return false;
     }
 
-    private bool TryExtractSpriteSpecifier(Type? expectedType, DataNode? node, out SpriteSpecifier? icon)
+    private bool TryExtractSpriteSpecifierFromObject(object component, out SpriteSpecifier? icon)
     {
         icon = null;
-
-        if (node == null)
-            return false;
-
-        if (expectedType != null &&
-            typeof(SpriteSpecifier).IsAssignableFrom(expectedType) &&
-            TryParseSpriteSpecifier(node, out icon))
+        var type = component.GetType();
+        foreach (var field in type.GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic))
         {
-            return true;
-        }
-
-        if (node is MappingDataNode mapping)
-        {
-            foreach (var (key, child) in mapping.Children)
+            if (typeof(SpriteSpecifier).IsAssignableFrom(field.FieldType) && field.GetValue(component) is SpriteSpecifier specifier && specifier != SpriteSpecifier.Invalid)
             {
-                Type? childType = null;
-
-                if (expectedType != null &&
-                    _serialization.TryGetVariableType(expectedType, key, out var resolvedType))
-                {
-                    childType = resolvedType;
-                }
-
-                if (TryExtractSpriteSpecifier(childType, child, out icon))
-                    return true;
+                icon = specifier;
+                return true;
             }
-
-            return false;
         }
 
-        if (node is SequenceDataNode sequence)
+        foreach (var prop in type.GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic))
         {
-            var elementType = GetSequenceElementType(expectedType);
-            foreach (var child in sequence.Sequence)
+            if (!prop.CanRead || prop.GetIndexParameters().Length != 0)
+                continue;
+
+            if (typeof(SpriteSpecifier).IsAssignableFrom(prop.PropertyType) && prop.GetValue(component) is SpriteSpecifier specifier && specifier != SpriteSpecifier.Invalid)
             {
-                if (TryExtractSpriteSpecifier(elementType, child, out icon))
-                    return true;
+                icon = specifier;
+                return true;
             }
         }
 
@@ -358,25 +340,4 @@ public sealed class EntityScreenshotGenerator
         return null;
     }
 
-    private bool TryParseSpriteSpecifier(DataNode node, out SpriteSpecifier? icon)
-    {
-        icon = null;
-
-        try
-        {
-            icon = _serialization.Read<SpriteSpecifier>(node, notNullableOverride: true);
-            if (icon == SpriteSpecifier.Invalid)
-            {
-                icon = null;
-                return false;
-            }
-
-            return true;
-        }
-        catch
-        {
-            icon = null;
-            return false;
-        }
-    }
 }

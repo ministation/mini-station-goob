@@ -14,6 +14,7 @@ using Content.Shared.CombatMode;
 using Content.Shared.Interaction;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
+using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Movement.Systems;
 using Content.Shared.NPC;
 using Content.Shared.NPC.Components;
@@ -549,11 +550,11 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         if (tileMovement.SlideActive || direction == Vector2.Zero)
             return;
 
-        var targetLocation = transform.LocalPosition + (direction.Normalized() * 0.97f);
+        var targetCoords = new EntityCoordinates(transform.ParentUid, transform.LocalPosition + (direction.Normalized() * 0.97f));
 
         tileMovement.SlideActive = true;
         tileMovement.Origin = new EntityCoordinates(transform.ParentUid, transform.LocalPosition);
-        tileMovement.Destination = SharedMoverController.SnapCoordinatesToTile(targetLocation);
+        tileMovement.Destination = targetCoords.SnapToGrid().Position;
         tileMovement.MovementKeyInitialDownTime = CurrentTime;
         tileMovement.CurrentSlideMoveButtons = MoveButtons.None;
     }

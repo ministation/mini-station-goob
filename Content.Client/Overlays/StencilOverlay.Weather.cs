@@ -10,6 +10,8 @@ namespace Content.Client.Overlays;
 
 public sealed partial class StencilOverlay
 {
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
+
     private List<Entity<MapGridComponent>> _grids = new();
 
     private void DrawWeather(
@@ -34,7 +36,7 @@ public sealed partial class StencilOverlay
             _grids.Clear();
 
             // idk if this is safe to cache in a field and clear sloth help
-            _mapManager.FindGridsIntersecting(mapId, worldAABB, ref _grids);
+            _mapSystem.FindGridsIntersecting(mapId, worldAABB, ref _grids);
 
             foreach (var grid in _grids)
             {

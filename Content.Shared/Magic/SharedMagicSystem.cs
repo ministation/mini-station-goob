@@ -68,7 +68,6 @@ public abstract class SharedMagicSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!; // Goobstation
     [Dependency] private readonly ISerializationManager _seriMan = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedGunSystem _gunSystem = default!;
@@ -110,7 +109,6 @@ public abstract class SharedMagicSystem : EntitySystem
         SubscribeLocalEvent<RandomGlobalSpawnSpellEvent>(OnRandomGlobalSpawnSpell);
         SubscribeLocalEvent<MindSwapSpellEvent>(OnMindSwapSpell);
         SubscribeLocalEvent<VoidApplauseSpellEvent>(OnVoidApplause);
-
 
         // Spell wishlist
         //  A wishlish of spells that I'd like to implement or planning on implementing in a future PR
@@ -426,7 +424,7 @@ public abstract class SharedMagicSystem : EntitySystem
         // If applicable, this ensures the projectile is parented to grid on spawn, instead of the map.
         var fromMap = _transform.ToMapCoordinates(fromCoords);
 
-        var spawnCoords = _mapManager.TryFindGridAt(fromMap, out var gridUid, out _)
+        var spawnCoords = _mapSystem.TryFindGridAt(fromMap, out var gridUid, out _)
             ? _transform.WithEntityId(fromCoords, gridUid)
             : new(_mapSystem.GetMap(fromMap.MapId), fromMap.Position);
         var userVelocity = _physics.GetMapLinearVelocity(spawnCoords); // Goob edit
@@ -505,7 +503,7 @@ public abstract class SharedMagicSystem : EntitySystem
         if (!_net.IsServer)
             return;
 
-        var ent = Spawn(proto, position.SnapToGrid(EntityManager, _mapManager));
+        var ent = Spawn(proto, position.SnapToGrid(EntityManager));
 
         if (lifetime != null)
         {

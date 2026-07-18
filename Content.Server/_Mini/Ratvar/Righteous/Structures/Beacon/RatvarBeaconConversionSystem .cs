@@ -12,6 +12,7 @@ namespace Content.Server.RPSX.DarkForces.Ratvar.Righteous.Structures;
 
 public sealed class RatvarBeaconConversionSystem : EntitySystem
 {
+    [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly ITileDefinitionManager _tileDef = default!;
     [Dependency] private readonly TileSystem _tile = default!;
     [Dependency] private readonly TurfSystem _turf = default!;
@@ -103,7 +104,7 @@ public sealed class RatvarBeaconConversionSystem : EntitySystem
                     continue;
 
                 var tilePos = new Vector2i(centerTile.X + dx, centerTile.Y + dy);
-                var tileRef = grid.GetTileRef(tilePos);
+                var tileRef = _map.GetTileRef(gridUid, grid, tilePos);
 
                 if (tileRef.Tile.TypeId == cBrassTileDef.TileId)
                     continue;

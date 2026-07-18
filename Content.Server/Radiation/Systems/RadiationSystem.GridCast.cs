@@ -15,6 +15,8 @@ namespace Content.Server.Radiation.Systems;
 // main algorithm that fire radiation rays to target
 public partial class RadiationSystem
 {
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
+
     private List<Entity<MapGridComponent>> _grids = new();
 
     private readonly record struct SourceData(
@@ -183,7 +185,7 @@ public partial class RadiationSystem
         // Avoids having to do a lookup per source*receiver.
         var box = Box2.FromTwoPoints(source.WorldPosition, destWorld);
         _grids.Clear();
-        _mapManager.FindGridsIntersecting(mapId, box, ref _grids, true);
+        _mapSystem.FindGridsIntersecting(mapId, box, ref _grids, true);
 
         // gridcast through each grid and try to hit some radiation blockers
         // the ray will be updated with each grid that has some blockers
@@ -337,7 +339,6 @@ public partial class RadiationSystem
         }
 
         // Goobstation End - Radiation Overhaul
-
 
         if (!saveVisitedTiles || blockers!.Count <= 0)
             return ray;

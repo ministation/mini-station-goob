@@ -1,20 +1,20 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
 using System.Linq;
 using System.Numerics;
-using Content.Server._CorvaxGoob.Announcer;
 using Content.Server.Announcements;
 using Content.Server.Discord;
 using Content.Server.GameTicking.Events;
+using Content.Server.Maps;
 using Content.Server.Roles;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
+using Content.Shared.Maps;
 using Content.Shared.Mind;
 using Content.Shared.Players;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Components;
+using Robust.Shared.Prototypes;
 using JetBrains.Annotations;
 using Prometheus;
 using Robust.Shared.Asynchronous;
@@ -24,29 +24,16 @@ using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
-using System.Text.RegularExpressions;
-
-// Goob Station - End of Round Screen
-using Content.Goobstation.Common.LastWords;
-using Content.Shared.Damage;
-using Content.Shared.Mobs;
-using Content.Shared.Mobs.Components;
-using Content.Goobstation.Maths.FixedPoint;
-using Content.Goobstation.Shared.Mind.Components;
-using Content.Server.Maps;
-using Content.Shared.Maps;
 
 namespace Content.Server.GameTicking
 {
     public sealed partial class GameTicker
     {
-        [Dependency] private readonly DiscordWebhook _discord = default!;
-        [Dependency] private readonly RoleSystem _role = default!;
-        [Dependency] private readonly ITaskManager _taskManager = default!;
-        [Dependency] private readonly AnnouncerSystem _announcer = default!;
+        [Dependency] private DiscordWebhook _discord = default!;
+        [Dependency] private RoleSystem _role = default!;
+        [Dependency] private ITaskManager _taskManager = default!;
 
         private static readonly Counter RoundNumberMetric = Metrics.CreateCounter(
             "ss14_round_number",
@@ -105,11 +92,9 @@ namespace Content.Server.GameTicking
         /// </remarks>
         private void LoadMaps()
         {
-            if (_mapManager.MapExists(DefaultMap))
+            if (_map.MapExists(DefaultMap))
                 return;
 
-            // Preset rules must be added before the maps load: stations post-init during map load
-            // and systems like roundstart station variation only run if their rule is already added.
             AddGamePresetRules();
 
             var maps = new List<GameMapPrototype>();
@@ -135,14 +120,13 @@ namespace Content.Server.GameTicking
                 throw new Exception("invalid config; couldn't select a valid station map!");
             }
 
-            var activePreset = Preset ?? CurrentPreset;
-            if (activePreset?.MapPool != null &&
-                _prototypeManager.TryIndex<GameMapPoolPrototype>(activePreset.MapPool, out var pool) &&
+            if (CurrentPreset?.MapPool != null &&
+                ProtoMan.TryIndex<GameMapPoolPrototype>(CurrentPreset.MapPool, out var pool) &&
                 !pool.Maps.Contains(mainStationMap.ID))
             {
                 var msg = Loc.GetString("game-ticker-start-round-invalid-map",
                     ("map", mainStationMap.MapName),
-                    ("mode", Loc.GetString(activePreset.ModeTitle)));
+                    ("mode", Loc.GetString(CurrentPreset.ModeTitle)));
                 Log.Debug(msg);
                 SendServerMessage(msg);
             }
@@ -226,7 +210,7 @@ namespace Content.Server.GameTicking
                 }
 
                 _metaData.SetEntityName(mapUid, proto.MapName);
-                var g = new List<EntityUid> {grid.Value.Owner};
+                var g = new List<EntityUid> { grid.Value.Owner };
                 RaiseLocalEvent(new PostGameMapLoad(proto, mapId, g, stationName));
                 return g;
             }
@@ -276,7 +260,7 @@ namespace Content.Server.GameTicking
                 }
 
                 _metaData.SetEntityName(mapUid, proto.MapName);
-                var g = new List<EntityUid> {grid.Value.Owner};
+                var g = new List<EntityUid> { grid.Value.Owner };
                 RaiseLocalEvent(new PostGameMapLoad(proto, mapId, g, stationName));
                 return g;
             }
@@ -326,7 +310,7 @@ namespace Content.Server.GameTicking
                     throw new Exception($"Failed to load game-map grid {ev.GameMap.ID}");
                 }
 
-                var g = new List<EntityUid> {grid.Value.Owner};
+                var g = new List<EntityUid> { grid.Value.Owner };
                 // TODO MAP LOADING use a new event?
                 RaiseLocalEvent(new PostGameMapLoad(proto, targetMap, g, stationName));
                 return g;
@@ -393,10 +377,8 @@ namespace Content.Server.GameTicking
             var autoDeAdmin = _cfg.GetCVar(CCVars.AdminDeadminOnJoin);
             foreach (var (userId, status) in _playerGameStatuses)
             {
-                if (LobbyEnabled && status != PlayerGameStatus.ReadyToPlay)
-                    continue;
-                if (!_playerManager.TryGetSessionById(userId, out var session))
-                    continue;
+                if (LobbyEnabled && status != PlayerGameStatus.ReadyToPlay) continue;
+                if (!_playerManager.TryGetSessionById(userId, out var session)) continue;
 
                 if (autoDeAdmin && _adminManager.IsAdmin(session))
                 {
@@ -410,7 +392,7 @@ namespace Content.Server.GameTicking
                 HumanoidCharacterProfile profile;
                 if (_prefsManager.TryGetCachedPreferences(userId, out var preferences))
                 {
-                    profile = (HumanoidCharacterProfile) preferences.SelectedCharacter;
+                    profile = (HumanoidCharacterProfile)preferences.SelectedCharacter;
                 }
                 else
                 {
@@ -430,9 +412,6 @@ namespace Content.Server.GameTicking
             // applies to players who didn't ready up
             UpdateInfoText();
 
-            // Preset may change after map preload (e.g. forcepreset) — swap in the new
-            // preset's rules if so. Rules queued by other means (e.g. addgamerule) survive.
-            RefreshGamePresetRules();
             StartGamePresetRules();
 
             RoundLengthMetric.Set(0);
@@ -450,10 +429,6 @@ namespace Content.Server.GameTicking
 
             // MapInitialize *before* spawning players, our codebase is too shit to do it afterwards...
             _map.InitializeMap(DefaultMap);
-            // ADT-Tweak-start: ReWork Vote Map
-            if (_gameMapManager.GetSelectedMap() is { } selectedMap)
-                _gameMapManager.RegisterPlayedMap(selectedMap.ID);
-            // ADT-Tweak-End
 
             SpawnPlayers(readyPlayers, readyPlayerProfiles, force);
 
@@ -467,7 +442,6 @@ namespace Content.Server.GameTicking
             AnnounceRound();
             UpdateInfoText();
             SendRoundStartedDiscordMessage();
-            RaiseLocalEvent(new RoundStartedEvent(RoundId)); // CorvaxGoob-StationGoal
 
 #if EXCEPTION_TOLERANCE
             }
@@ -592,33 +566,6 @@ namespace Content.Server.GameTicking
 
                 var roles = _roles.MindGetAllRoleInfo(mindId);
 
-                // Goobstation - End of round last words
-                #region Goob Station - End of round last words
-
-                var lastWords = "";
-                var mobState = MobState.Invalid;
-                var damagePerGroup = new Dictionary<string, FixedPoint2>();
-                var lastMob = TryComp<MindLastMobComponent>(mindId, out var lastMobComponent)
-                    ? lastMobComponent.LastMob
-                    : null;
-
-                // Get last words if they exist (stored on the mind)
-                if (TryComp<LastWordsComponent>(mindId, out var lastWordsComponent))
-                    lastWords = lastWordsComponent.LastWords;
-
-                // Get mob state and damage if the mob still exists
-                if (lastMob != null && !TerminatingOrDeleted(lastMob))
-                {
-                    if (TryComp<MobStateComponent>(lastMob, out var mobStateComp))
-                        mobState = mobStateComp.CurrentState;
-
-                    if (TryComp<DamageableComponent>(lastMob, out var damageableComp))
-                        damagePerGroup = damageableComp.DamagePerGroup;
-                }
-
-                #endregion
-                // END
-
                 var playerEndRoundInfo = new RoundEndMessageEvent.RoundEndPlayerInfo()
                 {
                     // Note that contentPlayerData?.Name sticks around after the player is disconnected.
@@ -635,11 +582,7 @@ namespace Content.Server.GameTicking
                     JobPrototypes = roles.Where(role => !role.Antagonist).Select(role => role.Prototype).ToArray(),
                     AntagPrototypes = roles.Where(role => role.Antagonist).Select(role => role.Prototype).ToArray(),
                     Observer = observer,
-                    Connected = connected,
-                    // Goob Station - End of Round Screen
-                    LastWords = lastWords,
-                    EntMobState = mobState,
-                    DamagePerGroup = damagePerGroup
+                    Connected = connected
                 };
                 listOfPlayerInfo.Add(playerEndRoundInfo);
             }
@@ -659,7 +602,7 @@ namespace Content.Server.GameTicking
             );
             RaiseNetworkEvent(roundEndMessageEvent);
             RaiseLocalEvent(roundEndMessageEvent);
-            RaiseLocalEvent(new RoundEndedEvent(RoundId, roundDuration)); // Corvax
+
             _replayRoundPlayerInfo = listOfPlayerInfoFinal;
             _replayRoundText = roundEndText;
         }
@@ -670,42 +613,21 @@ namespace Content.Server.GameTicking
             {
                 if (_webhookIdentifier == null)
                     return;
-                var playerCount = _playerManager.PlayerCount;
+
                 var duration = RoundDuration();
-                var gamemodeTitle = CurrentPreset != null ? Loc.GetString(CurrentPreset.ModeTitle) : string.Empty;
-
-                var textEv = new RoundEndTextAppendEvent();
-                RaiseLocalEvent(textEv);
-
-                var manifest = Regex.Replace(textEv.Text, @"\[/\.*?\]", "");
-                manifest = Regex.Replace(manifest, @"\[.*?\]", "");
-
                 var content = Loc.GetString("discord-round-notifications-end",
                     ("id", RoundId),
                     ("hours", Math.Truncate(duration.TotalHours)),
                     ("minutes", duration.Minutes),
-                    ("seconds", duration.Seconds),
-                    ("gamemode", gamemodeTitle),
-                    ("manifest", manifest),
-                    ("playerCount", playerCount));
-                if (textEv.Text == String.Empty)
-                {
-                    content = Loc.GetString("discord-round-notifications-end-no-manifest",
-                        ("id", RoundId),
-                        ("hours", Math.Truncate(duration.TotalHours)),
-                        ("minutes", duration.Minutes),
-                        ("seconds", duration.Seconds),
-                        ("playerCount", playerCount),
-                        ("gamemode", gamemodeTitle));
-                }
-
+                    ("seconds", duration.Seconds));
                 var payload = new WebhookPayload { Content = content };
 
                 await _discord.CreateMessage(_webhookIdentifier.Value, payload);
 
                 if (DiscordRoundEndRole == null)
                     return;
-                content = Loc.GetString("discord-round-notifications-end-ping", ("roleId", DiscordRoundEndRole), ("playerCount", playerCount));
+
+                content = Loc.GetString("discord-round-notifications-end-ping", ("roleId", DiscordRoundEndRole));
                 payload = new WebhookPayload { Content = content };
                 payload.AllowedMentions.AllowRoleMentions();
 
@@ -770,8 +692,8 @@ namespace Content.Server.GameTicking
             {
                 if (_webhookIdentifier == null)
                     return;
-                var playerCount = _playerManager.PlayerCount;
-                var content = Loc.GetString("discord-round-notifications-new", ("playerCount", playerCount), ("roleId", DiscordRoundEndRole ?? "0"));
+
+                var content = Loc.GetString("discord-round-notifications-new");
 
                 var payload = new WebhookPayload { Content = content };
 
@@ -804,8 +726,6 @@ namespace Content.Server.GameTicking
 
             EntityManager.FlushEntities();
 
-            _mapManager.Restart();
-
             _banManager.Restart();
 
             _gameMapManager.ClearSelectedMap();
@@ -813,7 +733,6 @@ namespace Content.Server.GameTicking
             // Clear up any game rules.
             ClearGameRules();
             CurrentPreset = null;
-            _addedPresetRules.Clear();
 
             _allPreviousGameRules.Clear();
 
@@ -872,14 +791,7 @@ namespace Content.Server.GameTicking
         {
             if (CurrentPreset == null) return;
 
-            var options = _prototypeManager.EnumeratePrototypes<RoundAnnouncementPrototype>().ToList();
-
-            // CorvaxGoob-CustomAnnouncers-Start : Gets any available announcer in round and sort prototypes to their RoundAnnouncementPrototype pack.
-            if (_announcer.TryGetAnnouncerToday(out var announcerPrototype))
-                options = options.Where(opt => opt.Announcer == announcerPrototype.ID).ToList();
-            else
-                options = options.Where(opt => opt.Announcer == "Default").ToList();
-            // CorvaxGoob-CustomAnnouncers-End
+            var options = ProtoMan.EnumeratePrototypes<RoundAnnouncementPrototype>().ToList();
 
             if (options.Count == 0)
                 return;
@@ -890,7 +802,7 @@ namespace Content.Server.GameTicking
                 _chatSystem.DispatchGlobalAnnouncement(Loc.GetString(proto.Message), playSound: true);
 
             if (proto.Sound != null)
-                _chatSystem.SendGlobalSound(proto.Sound, Filter.Broadcast());
+                _audio.PlayGlobal(proto.Sound, Filter.Broadcast(), true);
         }
 
         private async void SendRoundStartedDiscordMessage()
@@ -899,14 +811,10 @@ namespace Content.Server.GameTicking
             {
                 if (_webhookIdentifier == null)
                     return;
-                var playerCount = _playerManager.PlayerCount;
+
                 var mapName = _gameMapManager.GetSelectedMap()?.MapName ?? Loc.GetString("discord-round-notifications-unknown-map");
-                var gamemodeTitle = CurrentPreset != null ? Loc.GetString(CurrentPreset.ModeTitle) : string.Empty;
-                var content = Loc.GetString("discord-round-notifications-started",
-                    ("id", RoundId),
-                    ("map", mapName),
-                    ("gamemode", gamemodeTitle),
-                    ("playerCount", playerCount));
+                var content = Loc.GetString("discord-round-notifications-started", ("id", RoundId), ("map", mapName));
+
                 var payload = new WebhookPayload { Content = content };
 
                 await _discord.CreateMessage(_webhookIdentifier.Value, payload);
@@ -1047,16 +955,16 @@ namespace Content.Server.GameTicking
     }
 
     /// <summary>
-    ///     Event raised after roundstart jobs are assigned but before players are spawned.
-    ///     Mutate <see cref="AssignedJobs"/> to change which job a player will spawn as.
+    ///     Mini: raised after jobs are assigned but before players are spawned, so systems can
+    ///     reassign incompatible roundstart jobs (e.g. antag tokens).
     /// </summary>
     public sealed class RulePlayerJobsPreSpawnEvent
     {
-        public Dictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> AssignedJobs { get; }
+        public Dictionary<NetUserId, (ProtoId<JobPrototype>? Job, EntityUid Station)> AssignedJobs { get; }
         public IReadOnlyDictionary<NetUserId, HumanoidCharacterProfile> Profiles { get; }
 
         public RulePlayerJobsPreSpawnEvent(
-            Dictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> assignedJobs,
+            Dictionary<NetUserId, (ProtoId<JobPrototype>? Job, EntityUid Station)> assignedJobs,
             IReadOnlyDictionary<NetUserId, HumanoidCharacterProfile> profiles)
         {
             AssignedJobs = assignedJobs;
@@ -1105,12 +1013,6 @@ namespace Content.Server.GameTicking
 
             Text += text;
             _doNewLine = true;
-        }
-
-        // goob edit
-        public void AppendAtStart(string text)
-        {
-            Text = text + Text;
         }
     }
 }
