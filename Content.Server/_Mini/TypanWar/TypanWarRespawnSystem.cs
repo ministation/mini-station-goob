@@ -674,6 +674,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
     private EntityUid? ResolveCorpseBeforeTransfer(MindComponent mind, EntityUid ghostUid)
     {
+        // Only the currently owned dead body — OriginalOwnedEntity can be a stale first corpse.
         if (mind.OwnedEntity is { } owned &&
             owned != ghostUid &&
             Exists(owned) &&
@@ -682,17 +683,6 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             mobState.CurrentState == MobState.Dead)
         {
             return owned;
-        }
-
-        if (mind.OriginalOwnedEntity is { } originalNet &&
-            TryGetEntity(originalNet, out var original) &&
-            original != ghostUid &&
-            Exists(original) &&
-            !HasComp<GhostComponent>(original) &&
-            TryComp<MobStateComponent>(original, out var originalState) &&
-            originalState.CurrentState == MobState.Dead)
-        {
-            return original;
         }
 
         return null;

@@ -998,8 +998,8 @@ namespace Content.Server.Administration.Systems
             if (!Color.TryFromHex(color, out var parsed))
                 return fallback;
 
-            // Fully transparent admin OOC would blank the ckey — force opaque, keep RRGGBBAA.
-            if (parsed.AByte == 0)
+            // Keep RRGGBBAA from DB, but never emit near-invisible alpha that blanks ckeys.
+            if (parsed.AByte < 255)
                 parsed = parsed.WithAlpha(byte.MaxValue);
 
             return parsed.ToHex();

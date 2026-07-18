@@ -391,12 +391,23 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             capturing = TypanWarCaptureOwner.Typan;
         else
         {
-            runtime.CapturingToward = null;
-            zone.CapturingOwner = null;
+            // Point empty: do not clear CapturingToward while progress remains,
+            // otherwise the next resume hits CapturingToward != capturing and wipes %.
             if (zone.CaptureProgress > 0f && zone.CaptureOwner != TypanWarCaptureOwner.Neutral)
             {
                 zone.CaptureProgress = Math.Max(0f, zone.CaptureProgress - frameTime / zone.CaptureTimeSeconds);
+                if (zone.CaptureProgress <= 0f)
+                {
+                    runtime.CapturingToward = null;
+                    zone.CapturingOwner = null;
+                }
+
                 DirtyZoneIfNeeded(uid, zone, runtime);
+            }
+            else if (zone.CaptureProgress <= 0f)
+            {
+                runtime.CapturingToward = null;
+                zone.CapturingOwner = null;
             }
 
             TryAwardCapturePoints(uid, zone, runtime, frameTime);
