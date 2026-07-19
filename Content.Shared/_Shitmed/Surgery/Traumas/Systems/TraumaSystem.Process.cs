@@ -26,6 +26,12 @@ public partial class TraumaSystem
     private const string TraumaContainerId = "Traumas";
     public static readonly TraumaType[] TraumasBlockingHealing = { TraumaType.BoneDamage, TraumaType.OrganDamage, TraumaType.Dismemberment };
 
+    /// <summary>
+    /// Prevents OnWoundSeverityPointChanged → ApplyTraumas from nesting when
+    /// TryInduceWound / AmputateWoundable raise more severity events mid-trauma.
+    /// </summary>
+    private int _applyingTraumasDepth;
+
     private void InitProcess()
     {
         SubscribeLocalEvent<TraumaInflicterComponent, ComponentInit>(OnTraumaInflicterInit);
@@ -77,6 +83,22 @@ public partial class TraumaSystem
             || HasComp<GodmodeComponent>(args.Component.HoldingWoundable))
             return;
 
+        // DamageOnAmputate must not spawn more Dismemberment (stack overflow loop).
+        if (_wound.SuppressTraumaFromAmputation)
+            return;
+
+        // TryInduceWound / AmputateWoundable inside ApplyTraumas can raise severity again —
+        // do not nest another ApplyTraumas pass on the same call stack.
+        if (_applyingTraumasDepth > 0)
+            return;
+
+        // Skip parts already being / already amputated — otherwise AmputateWoundable →
+        // DamageOnAmputate → wound severity → ApplyTraumas(Dismemberment) stacks forever.
+        if (!TryComp<WoundableComponent>(args.Component.HoldingWoundable, out var holdingWoundable)
+            || !holdingWoundable.CanRemove
+            || holdingWoundable.WoundableSeverity == WoundableSeverity.Severed)
+            return;
+
         // Overflow is only used when we are capping the wound, so we use it over the computed delta
         // which will be useless in this specific scenario.
         var delta = args.Overflow ?? args.NewSeverity - args.OldSeverity;
@@ -88,8 +110,7 @@ public partial class TraumaSystem
             return;
 
         var woundable = args.Component.HoldingWoundable;
-        var woundableComp = Comp<WoundableComponent>(args.Component.HoldingWoundable);
-        ApplyTraumas((woundable, woundableComp), woundEnt, traumasToInduce, delta);
+        ApplyTraumas((woundable, holdingWoundable), woundEnt, traumasToInduce, delta);
     }
 
     private void OnWoundHealAttempt(Entity<TraumaInflicterComponent> inflicter, ref WoundHealAttemptEvent args)
@@ -647,6 +668,19 @@ public partial class TraumaSystem
 
     private void ApplyTraumas(Entity<WoundableComponent> target, Entity<TraumaInflicterComponent> inflicter, List<TraumaType> traumas, FixedPoint2 severity)
     {
+        _applyingTraumasDepth++;
+        try
+        {
+            ApplyTraumasCore(target, inflicter, traumas, severity);
+        }
+        finally
+        {
+            _applyingTraumasDepth--;
+        }
+    }
+
+    private void ApplyTraumasCore(Entity<WoundableComponent> target, Entity<TraumaInflicterComponent> inflicter, List<TraumaType> traumas, FixedPoint2 severity)
+    {
         var bodyPart = Comp<BodyPartComponent>(target);
         if (!bodyPart.Body.HasValue)
             return;
@@ -751,6 +785,8 @@ public partial class TraumaSystem
                 case TraumaType.Dismemberment:
                     Logger.Debug("Attempting to trigger dismemberment");
                     if (!_wound.IsWoundableRoot(target)
+                        && target.Comp.CanRemove
+                        && target.Comp.WoundableSeverity != WoundableSeverity.Severed
                         && _wound.TryInduceWound(targetChosen.Value, "Blunt", 0f, out var woundInduced)) // We need this to add the trauma into.
                     {
                         AddTrauma(

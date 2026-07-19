@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
 using Content.Shared.Stealth.Components;
 using Content.Shared.Whitelist;
 using Robust.Shared.Prototypes;
@@ -29,18 +27,16 @@ public partial class StatusIconData : IComparable<StatusIconData>
     public int Priority = 10;
 
     /// <summary>
+    /// Whether or not to always show this icon to the entity that owns it.
+    /// </summary>
+    [DataField]
+    public bool VisibleToOwner = true;
+
+    /// <summary>
     /// Whether or not to hide the icon to ghosts
     /// </summary>
     [DataField]
     public bool VisibleToGhosts = true;
-
-    // WD EDIT START
-    /// <summary>
-    /// Whether or not to hide the icon to owner
-    /// </summary>
-    [DataField]
-    public bool VisibleToOwner = true;
-    // WD EDIT END
 
     /// <summary>
     /// Whether or not to hide the icon when we are inside a container like a locker or a crate.
@@ -79,6 +75,12 @@ public partial class StatusIconData : IComparable<StatusIconData>
     public int Offset = 0;
 
     /// <summary>
+    /// Offset of the status icon, left and right only.
+    /// </summary>
+    [DataField]
+    public int OffsetHorizontal = 0;
+
+    /// <summary>
     /// Sets if the icon should be rendered with or without the effect of lighting.
     /// </summary>
     [DataField]
@@ -92,6 +94,7 @@ public partial class StatusIconData : IComparable<StatusIconData>
 /// <summary>
 /// <see cref="StatusIconData"/> but in new convenient prototype form!
 /// </summary>
+[DataDefinition]
 public abstract partial class StatusIconPrototype : StatusIconData, IPrototype
 {
     /// <inheritdoc/>
@@ -128,6 +131,12 @@ public sealed partial class JobIconPrototype : StatusIconPrototype, IInheritingP
     /// </summary>
     [DataField]
     public bool AllowSelection = true;
+
+    /// <summary>
+    /// Should this job icon be considered a crew job for silicons?
+    /// </summary>
+    [DataField]
+    public bool IsCrewJob = true;
 }
 
 /// <summary>
@@ -225,24 +234,6 @@ public sealed partial class SsdIconPrototype : StatusIconPrototype, IInheritingP
     [AbstractDataField]
     public bool Abstract { get; private set; }
 }
-
-/*
-//Goobstation
-/// <summary>
-/// StatusIcons for diseases.
-/// </summary>
-[Prototype]
-public sealed partial class DiseaseIconPrototype : StatusIconPrototype, IInheritingPrototype
-{
-    /// <inheritdoc />
-    [ParentDataField(typeof(AbstractPrototypeIdArraySerializer<SsdIconPrototype>))]
-    public string[]? Parents { get; private set; }
-
-    /// <inheritdoc />
-    [NeverPushInheritance]
-    [AbstractDataField]
-    public bool Abstract { get; private set; }
-}*/
 
 [Serializable, NetSerializable]
 public enum StatusIconLocationPreference : byte

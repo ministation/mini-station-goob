@@ -11,6 +11,7 @@ using Content.Shared.EntityEffects;
 using Content.Shared.EntityEffects.Effects.EntitySpawning;
 using Content.Shared.Kitchen;
 using Content.Shared.Nutrition.Components;
+using Content.Shared.Botany.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Markdown.Value;
@@ -165,11 +166,11 @@ public sealed class FoodGuideDataSystem : EntitySystem
             }
 
             if (entity.Components.TryGetValue("Produce", out var produceEntry)
-                && produceEntry.Mapping.TryGet<ValueDataNode>("seedId", out var seedNode)
-                && !string.IsNullOrEmpty(seedNode.Value))
+                && produceEntry.Component is SharedProduceComponent produce
+                && !string.IsNullOrEmpty(produce.SeedId))
             {
                 _plantEntities.Add(entity.ID);
-                AddSource(entity.ID, new FoodEntitySource(FoodEntitySourceKind.Hydroponics, null, null, seedNode.Value));
+                AddSource(entity.ID, new FoodEntitySource(FoodEntitySourceKind.Hydroponics, null, null, produce.SeedId));
             }
         }
 

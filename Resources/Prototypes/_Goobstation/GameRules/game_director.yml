@@ -19,7 +19,7 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: GameRule
-    minPlayers: 25
+    minPlayers: 15
   - type: GameDirector
     dualAntags: true
     stories:

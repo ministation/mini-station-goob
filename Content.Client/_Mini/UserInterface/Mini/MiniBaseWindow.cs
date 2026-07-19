@@ -8,7 +8,6 @@ using Robust.Shared.Input;
 
 namespace Content.Client._Donate.Mini;
 
-[Virtual]
 public abstract class MiniBaseWindow : Control
 {
     [Flags]

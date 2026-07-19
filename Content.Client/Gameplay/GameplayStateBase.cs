@@ -39,12 +39,12 @@ namespace Content.Client.Gameplay
         [Dependency] private readonly IPlayerManager _playerManager = default!;
         [Dependency] private readonly IEntitySystemManager _entitySystemManager = default!;
         [Dependency] private readonly IGameTiming _timing = default!;
-        [Dependency] private readonly IMapManager _mapManager = default!;
         [Dependency] protected readonly IUserInterfaceManager UserInterfaceManager = default!;
         [Dependency] private readonly IEntityManager _entityManager = default!;
         [Dependency] private readonly IViewVariablesManager _vvm = default!;
         [Dependency] private readonly IConsoleHost _conHost = default!;
         [Dependency] private readonly IConfigurationManager _configurationManager = default!;
+        private SharedMapSystem _mapSystem = default!;
 
         private ClickableEntityComparer _comparer = default!;
 
@@ -83,6 +83,7 @@ namespace Content.Client.Gameplay
 
         protected override void Startup()
         {
+            _mapSystem = _entityManager.System<SharedMapSystem>();
             _vvm.RegisterDomain("enthover", ResolveVvHoverObject, ListVVHoverPaths);
             _inputManager.KeyBindStateChanged += OnKeyBindStateChanged;
             _comparer = new ClickableEntityComparer();
@@ -256,7 +257,7 @@ namespace Content.Client.Gameplay
                     coordinates = EntityCoordinates.Invalid;
                 else
                 {
-                    coordinates = _mapManager.TryFindGridAt(map.Value, mousePosWorld.Position, out var uid, out _)
+                    coordinates = _mapSystem.TryFindGridAt(map.Value, mousePosWorld.Position, out var uid, out _)
                         ? mapSystem.MapToGrid(uid, mousePosWorld)
                         : transformSystem.ToCoordinates(map.Value, mousePosWorld);
                 }

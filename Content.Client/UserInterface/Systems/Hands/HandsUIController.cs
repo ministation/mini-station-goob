@@ -49,28 +49,28 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     public void OnSystemLoaded(HandsSystem system)
     {
-        _handsSystem.OnPlayerAddHand += OnAddHand;
-        _handsSystem.OnPlayerItemAdded += OnItemAdded;
-        _handsSystem.OnPlayerItemRemoved += OnItemRemoved;
-        _handsSystem.OnPlayerSetActiveHand += SetActiveHand;
-        _handsSystem.OnPlayerRemoveHand += OnRemoveHand;
-        _handsSystem.OnPlayerHandsAdded += LoadPlayerHands;
-        _handsSystem.OnPlayerHandsRemoved += UnloadPlayerHands;
-        _handsSystem.OnPlayerHandBlocked += HandBlocked;
-        _handsSystem.OnPlayerHandUnblocked += HandUnblocked;
+        system.OnPlayerAddHand += OnAddHand;
+        system.OnPlayerItemAdded += OnItemAdded;
+        system.OnPlayerItemRemoved += OnItemRemoved;
+        system.OnPlayerSetActiveHand += SetActiveHand;
+        system.OnPlayerRemoveHand += OnRemoveHand;
+        system.OnPlayerHandsAdded += LoadPlayerHands;
+        system.OnPlayerHandsRemoved += UnloadPlayerHands;
+        system.OnPlayerHandBlocked += HandBlocked;
+        system.OnPlayerHandUnblocked += HandUnblocked;
     }
 
     public void OnSystemUnloaded(HandsSystem system)
     {
-        _handsSystem.OnPlayerAddHand -= OnAddHand;
-        _handsSystem.OnPlayerItemAdded -= OnItemAdded;
-        _handsSystem.OnPlayerItemRemoved -= OnItemRemoved;
-        _handsSystem.OnPlayerSetActiveHand -= SetActiveHand;
-        _handsSystem.OnPlayerRemoveHand -= OnRemoveHand;
-        _handsSystem.OnPlayerHandsAdded -= LoadPlayerHands;
-        _handsSystem.OnPlayerHandsRemoved -= UnloadPlayerHands;
-        _handsSystem.OnPlayerHandBlocked -= HandBlocked;
-        _handsSystem.OnPlayerHandUnblocked -= HandUnblocked;
+        system.OnPlayerAddHand -= OnAddHand;
+        system.OnPlayerItemAdded -= OnItemAdded;
+        system.OnPlayerItemRemoved -= OnItemRemoved;
+        system.OnPlayerSetActiveHand -= SetActiveHand;
+        system.OnPlayerRemoveHand -= OnRemoveHand;
+        system.OnPlayerHandsAdded -= LoadPlayerHands;
+        system.OnPlayerHandsRemoved -= UnloadPlayerHands;
+        system.OnPlayerHandBlocked -= HandBlocked;
+        system.OnPlayerHandUnblocked -= HandUnblocked;
     }
 
     private void OnAddHand(Entity<HandsComponent> entity, string name, HandLocation location)

@@ -85,7 +85,6 @@ public sealed partial class HereticAbilitySystem : SharedHereticAbilitySystem
     [Dependency] private readonly ThrowingSystem _throw = default!;
     [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
     [Dependency] private readonly StationSystem _station = default!;
-    [Dependency] private readonly IMapManager _mapMan = default!;
     [Dependency] private readonly ITileDefinitionManager _tileDefinitionManager = default!;
     [Dependency] private readonly IComponentFactory _compFactory = default!;
     [Dependency] private readonly ProtectiveBladeSystem _pblade = default!;
@@ -106,6 +105,7 @@ public sealed partial class HereticAbilitySystem : SharedHereticAbilitySystem
     [Dependency] private readonly PvsOverrideSystem _pvs = default!;
     [Dependency] private readonly CloningSystem _cloning = default!;
     [Dependency] private readonly MovementSpeedModifierSystem _modifier = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
 
     private static readonly ProtoId<HereticRitualPrototype> BladeBladeRitual = "BladeBlade";
 
@@ -311,7 +311,7 @@ public sealed partial class HereticAbilitySystem : SharedHereticAbilitySystem
             var isOnStation = targetStation != null && targetStation == ownStation;
 
             var ang = Angle.Zero;
-            if (_mapMan.TryFindGridAt(_transform.GetMapCoordinates(Transform(uid)), out var grid, out var _))
+            if (_mapSystem.TryFindGridAt(_transform.GetMapCoordinates(Transform(uid)), out var grid, out var _))
                 ang = Transform(grid).LocalRotation;
 
             var vector = targetMapCoords.Position - ourMapCoords.Position;

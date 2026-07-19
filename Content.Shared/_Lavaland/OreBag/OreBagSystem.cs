@@ -5,14 +5,14 @@ using Content.Shared.DragDrop;
 using Content.Shared.Storage;
 using Content.Shared.Interaction;
 using Content.Shared.Materials;
-using Robust.Shared.Timing;
+using Robust.Shared.Network;
 
 namespace Content.Shared._Lavaland.OreBag;
 
 public sealed class OreBagSystem : EntitySystem
 {
     [Dependency] private readonly SharedMaterialStorageSystem _materialStorage = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly INetManager _net = default!;
     public override void Initialize()
     {
         SubscribeLocalEvent<OreBagComponent, AfterInteractEvent>(OnAfterInteract);
@@ -27,7 +27,7 @@ public sealed class OreBagSystem : EntitySystem
         if (!args.CanReach
           || args.Target == null
           || !HasComp<MiningPointsLatheComponent>(args.Target)
-          || !_timing.IsFirstTimePredicted)
+          || _net.IsClient)
             return;
 
         if (!TryComp<StorageComponent>(uid, out var storage))
@@ -45,7 +45,7 @@ public sealed class OreBagSystem : EntitySystem
 
     private void OnDrag(Entity<OreBagComponent> ent, ref DragDropDraggedEvent args)
     {
-        if (!TryComp<StorageComponent>(ent.Owner, out var storage) || args.Handled)
+        if (_net.IsClient || !TryComp<StorageComponent>(ent.Owner, out var storage) || args.Handled)
             return;
 
         var validEntities = new List<EntityUid>();

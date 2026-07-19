@@ -161,7 +161,8 @@ public sealed partial class BluespaceHarvesterComponent : Component
 }
 
 [Serializable]
-public sealed class BluespaceHarvesterTap
+[DataDefinition]
+public sealed partial class BluespaceHarvesterTap
 {
     /// <summary>
     /// The minimum level from which Visual is enabled.

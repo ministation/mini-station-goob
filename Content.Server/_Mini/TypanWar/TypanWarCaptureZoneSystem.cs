@@ -376,34 +376,35 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         CountFactionPlayers(gridUid, grid, centerTile, zone.ZoneHalfExtents, out var ntCount, out var typanCount);
 
         var runtime = GetRuntime(uid);
-        var contested = ntCount > 0 && typanCount > 0;
+        var progressRate = frameTime / Math.Max(zone.CaptureTimeSeconds, 0.01f);
+
+        // Majority captures; equal counts (including empty / 1v1) freeze progress.
+        // 2 capturers on the winning side = 2x speed; 3+ still caps at 2x.
         TypanWarCaptureOwner? capturing = null;
-
-        if (contested)
-        {
-            runtime.CapturingToward = null;
-            zone.CapturingOwner = null;
-            if (zone.CaptureProgress > 0f)
-            {
-                zone.CaptureProgress = Math.Max(0f,
-                    zone.CaptureProgress - frameTime / (zone.CaptureTimeSeconds * zone.ContestDecayMultiplier));
-                DirtyZoneIfNeeded(uid, zone, runtime);
-            }
-
-            return;
-        }
+        var capturerCount = 0;
 
         if (ntCount > typanCount)
+        {
             capturing = TypanWarCaptureOwner.Nanotrasen;
+            capturerCount = ntCount;
+        }
         else if (typanCount > ntCount)
+        {
             capturing = TypanWarCaptureOwner.Typan;
+            capturerCount = typanCount;
+        }
         else
         {
-            runtime.CapturingToward = null;
-            zone.CapturingOwner = null;
-            if (zone.CaptureProgress > 0f && zone.CaptureOwner != TypanWarCaptureOwner.Neutral)
+            // Equal presence (or empty): freeze when both sides present; decay when empty.
+            if (ntCount == 0 && typanCount == 0 && zone.CaptureProgress > 0f)
             {
-                zone.CaptureProgress = Math.Max(0f, zone.CaptureProgress - frameTime / zone.CaptureTimeSeconds);
+                zone.CaptureProgress = Math.Max(0f, zone.CaptureProgress - progressRate);
+                if (zone.CaptureProgress <= 0f)
+                {
+                    runtime.CapturingToward = null;
+                    zone.CapturingOwner = null;
+                }
+
                 DirtyZoneIfNeeded(uid, zone, runtime);
             }
 
@@ -426,9 +427,10 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         if (runtime.CapturingToward != capturing)
             zone.CaptureProgress = 0f;
 
+        var speedMultiplier = Math.Clamp(capturerCount, 1, 2);
         runtime.CapturingToward = capturing;
         zone.CapturingOwner = capturing;
-        zone.CaptureProgress += frameTime / zone.CaptureTimeSeconds;
+        zone.CaptureProgress += progressRate * speedMultiplier;
         DirtyZoneIfNeeded(uid, zone, runtime);
 
         if (zone.CaptureProgress < 1f)
