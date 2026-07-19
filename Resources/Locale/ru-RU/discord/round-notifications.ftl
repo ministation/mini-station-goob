@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# Discord mentions must not use raw "<@&...>" — Fluent treats "<...>" as markup tags and crashes locale load.
+# Role mention is passed as $rolePing from C# (raw "<@&id>" must not appear in FTL — Fluent treats <> as tags).
+# ">>>" is Discord block-quote (side bar). Keep it as the first characters of the message.
 discord-round-notifications-new =
-    { $rolePing }🆕 **Новый раунд начнётся через 3 минуты!**
+    >>> { $rolePing }🆕 **Новый раунд начнётся через 3 минуты!**
     `{ $playerCount }` игроков сейчас играет
 discord-round-notifications-started =
     >>> Раунд #{ $id } начался!
@@ -15,7 +16,7 @@ discord-round-notifications-end =
     Игроков `{ $playerCount }`
     Режим: { $gamemode }
 discord-round-notifications-end-ping =
-    { $rolePing }**Раунд перезапускается!**
+    >>> { $rolePing }**Раунд перезапускается!**
     `{ $playerCount }` игроков сейчас играет
     Новый раунд начнётся через 3 минуты!
 discord-round-notifications-unknown-map = *Неизвестная карта*

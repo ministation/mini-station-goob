@@ -631,7 +631,7 @@ namespace Content.Server.GameTicking
                     return;
 
                 content = Loc.GetString("discord-round-notifications-end-ping",
-                    ("rolePing", $"<@&{DiscordRoundEndRole}> "),
+                    ("rolePing", $"<@&{DiscordRoundEndRole}>\n"),
                     ("playerCount", _playerManager.PlayerCount));
                 payload = new WebhookPayload { Content = content };
                 payload.AllowedMentions.AllowRoleMentions();
@@ -698,7 +698,7 @@ namespace Content.Server.GameTicking
                 if (_webhookIdentifier == null)
                     return;
 
-                var rolePing = DiscordRoundEndRole != null ? $"<@&{DiscordRoundEndRole}> " : string.Empty;
+                var rolePing = DiscordRoundEndRole != null ? $"<@&{DiscordRoundEndRole}>\n" : string.Empty;
                 var content = Loc.GetString("discord-round-notifications-new",
                     ("rolePing", rolePing),
                     ("playerCount", _playerManager.PlayerCount));
