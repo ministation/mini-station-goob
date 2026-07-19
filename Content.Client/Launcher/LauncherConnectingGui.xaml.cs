@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Client.Stylesheets;
 using Content.Shared._Mini.MiniCCVars;
@@ -13,6 +13,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Timer = Robust.Shared.Timing.Timer;
 
 namespace Content.Client.Launcher
 {
@@ -31,6 +32,7 @@ namespace Content.Client.Launcher
         private readonly IConfigurationManager _cfg;
         private readonly IClipboardManager _clipboard;
         private readonly IStylesheetManager _stylesheetManager;
+        private readonly ConnectingServerStatusFetcher _statusFetcher = new();
 
         public LauncherConnectingGui(LauncherConnecting state, IRobustRandom random,
             IPrototypeManager prototype, IConfigurationManager config, IClipboardManager clipboard)
@@ -69,10 +71,8 @@ namespace Content.Client.Launcher
 
             ConnectionStateChanged(state.ConnectionState);
 
-            // Live /status poll removed — it required a matching engine build and crashed mismatched launchers.
-            StatusPlayers.Text = Loc.GetString("connecting-info-players-unavailable");
-            StatusMap.Text = Loc.GetString("connecting-info-map-unavailable");
-            StatusPreset.Text = Loc.GetString("connecting-info-preset-unavailable");
+            _statusFetcher.StatusUpdated += OnServerStatusUpdated;
+            MaybeStartStatusPoll();
 
             // Redial flag setup
             var edim = IoCManager.Resolve<ExtendedDisconnectInformationManager>();
@@ -86,12 +86,78 @@ namespace Content.Client.Launcher
             _stylesheetManager.StylesheetsUpdated += OnStylesheetsUpdated;
             ApplyMiniStylesheet();
             RefreshCoinLabel();
+            MaybeStartStatusPoll();
         }
 
         protected override void ExitedTree()
         {
             base.ExitedTree();
             _stylesheetManager.StylesheetsUpdated -= OnStylesheetsUpdated;
+            _statusFetcher.Stop();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _statusFetcher.StatusUpdated -= OnServerStatusUpdated;
+                _statusFetcher.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private void MaybeStartStatusPoll()
+        {
+            if (_state.CurrentPage != LauncherConnecting.Page.Connecting)
+            {
+                _statusFetcher.Stop();
+                return;
+            }
+
+            _statusFetcher.Start(_state.Address);
+        }
+
+        private void OnServerStatusUpdated(ConnectingServerStatus? status)
+        {
+            if (Disposed)
+                return;
+
+            // Status callbacks may arrive off the main thread depending on HttpClient.
+            Timer.Spawn(0, () => ApplyServerStatus(status));
+        }
+
+        private void ApplyServerStatus(ConnectingServerStatus? status)
+        {
+            if (Disposed)
+                return;
+
+            if (status is not { } s)
+            {
+                StatusPlayers.Text = Loc.GetString("connecting-info-players-unavailable");
+                StatusMap.Text = Loc.GetString("connecting-info-map-unavailable");
+                StatusPreset.Text = Loc.GetString("connecting-info-preset-unavailable");
+                return;
+            }
+
+            if (s.Players is { } players)
+            {
+                StatusPlayers.Text = s.SoftMaxPlayers is { } max
+                    ? Loc.GetString("connecting-info-players", ("players", players), ("max", max))
+                    : Loc.GetString("connecting-info-players-only", ("players", players));
+            }
+            else
+            {
+                StatusPlayers.Text = Loc.GetString("connecting-info-players-unavailable");
+            }
+
+            StatusMap.Text = string.IsNullOrWhiteSpace(s.Map)
+                ? Loc.GetString("connecting-info-map-unknown")
+                : Loc.GetString("connecting-info-map", ("map", s.Map));
+
+            StatusPreset.Text = string.IsNullOrWhiteSpace(s.Preset)
+                ? Loc.GetString("connecting-info-preset-unknown")
+                : Loc.GetString("connecting-info-preset", ("preset", s.Preset));
         }
 
         private void OnStylesheetsUpdated()
@@ -240,6 +306,8 @@ namespace Content.Client.Launcher
 
             if (page == LauncherConnecting.Page.Disconnected)
                 DisconnectReason.Text = _state.LastDisconnectReason;
+
+            MaybeStartStatusPoll();
         }
 
         private void ConnectionStateChanged(ClientConnectionState state)
