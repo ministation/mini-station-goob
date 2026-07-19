@@ -119,9 +119,16 @@ public sealed partial class LatheMenu : DefaultWindow
     /// </summary>
     private void UpdateMiningPoints(uint points)
     {
-        MiningPointsClaimButton.Disabled = points == 0 ||
-            _player.LocalSession?.AttachedEntity is not { } player ||
-            !_miningPoints.CanClaimPoints(player); // Goobstation - borg mining Points
+        var player = _player.LocalSession?.AttachedEntity;
+        var canClaim = player is { } p && _miningPoints.CanClaimPoints(p);
+        // Keep the button clickable when there are points so the server can show a "need ID" popup.
+        MiningPointsClaimButton.Disabled = points == 0;
+        MiningPointsClaimButton.ToolTip = points == 0
+            ? Loc.GetString("lathe-menu-mining-points-claim-empty")
+            : canClaim
+                ? Loc.GetString("lathe-menu-mining-points-claim-button")
+                : Loc.GetString("lathe-menu-mining-points-claim-no-id");
+
         if (points == _lastMiningPoints)
             return;
 

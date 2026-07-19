@@ -496,3 +496,6 @@
     - TypanOreSmelting
     - RGlassSmelting
     - TypanAdvancedSmelting
+  - type: MiningPoints
+  - type: MiningPointsLathe
+  - type: OreSiloClient

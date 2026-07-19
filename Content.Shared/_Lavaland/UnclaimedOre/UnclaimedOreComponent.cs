@@ -7,9 +7,9 @@ namespace Content.Shared._Lavaland.UnclaimedOre;
 /// <summary>
 ///     Component that holds information about ore that hasn't been processed yet.
 /// </summary>
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class UnclaimedOreComponent : Component
 {
-    [DataField]
+    [DataField, AutoNetworkedField]
     public float MiningPoints;
 }
