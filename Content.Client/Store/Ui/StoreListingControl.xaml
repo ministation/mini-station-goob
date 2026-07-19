@@ -65,9 +65,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                     <Label Name="BuyPriceLabel" Align="Center" VAlign="Center" />
                     <TextureRect
                         Name="CurrencyIcon"
-                        MinSize="20 20"
-                        MaxSize="20 20"
-                        SetSize="20 20"
+                        MinSize="24 24"
+                        MaxSize="24 24"
+                        SetSize="24 24"
                         Stretch="KeepAspectCentered"
                         Visible="False" />
                 </BoxContainer>
