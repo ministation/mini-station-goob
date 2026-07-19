@@ -67,6 +67,7 @@
   description: Экспериментальный автолат, использующий технологию экстремального нагрева для замедленного, но гораздо более экономичного создания предметов.
   components:
   - type: Sprite
+    snapCardinals: true
     sprite: _Mini/Structures/Machines/Typan/autolathe_hypercon.rsi
   - type: Machine
     board: AutolatheHyperConvectionMachineCircuitboardTypan
@@ -134,6 +135,7 @@
   description: Экспериментальный протолат, использующий технологию экстремального нагрева для замедленного, но гораздо более экономичного создания предметов.
   components:
   - type: Sprite
+    snapCardinals: true
     sprite: _Mini/Structures/Machines/Typan/protolathe_hypercon.rsi
   - type: Machine
     board: ProtolatheHyperConvectionMachineCircuitboardTypan
@@ -201,6 +203,7 @@
   description: Экспериментальный принтер схем, использующий технологию экстремального нагрева для замедленного, но гораздо более экономичного создания предметов.
   components:
   - type: Sprite
+    snapCardinals: true
     sprite: _Mini/Structures/Machines/Typan/circuit_imprinter_hypercon.rsi
   - type: Machine
     board: CircuitImprinterHyperConvectionMachineCircuitboardTypan
@@ -215,6 +218,7 @@
   description: Печатает запчасти для создания робототехники и других механизмов.
   components:
   - type: Sprite
+    snapCardinals: true
     sprite: _Mini/Structures/Machines/Typan/exosuit_fabricator.rsi
     layers:
     - state: fab-idle
@@ -259,7 +263,7 @@
     noRot: false
   - type: Sprite
     sprite: _Mini/Structures/Machines/Typan/uniform_printer.rsi
-    snapCardinals: false
+    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -343,6 +347,7 @@
   description: Печатает инветнарь для медицинского отсека.
   components:
   - type: Sprite
+    snapCardinals: true
     sprite: _Mini/Structures/Machines/Typan/techfab.rsi
     layers:
     - state: icon
@@ -383,6 +388,7 @@
   description: Печатает инвентарь для охранного отсека.
   components:
   - type: Sprite
+    snapCardinals: true
     sprite: _Mini/Structures/Machines/Typan/techfab.rsi
     layers:
     - state: icon
@@ -437,6 +443,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    snapCardinals: true
     sprite: _Mini/Structures/Machines/Typan/ore_processor.rsi
     layers:
     - state: icon
@@ -471,6 +478,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    snapCardinals: true
     sprite: _Mini/Structures/Machines/Typan/ore_processor_industrial.rsi
   - type: Machine
     board: OreProcessorIndustrialMachineCircuitboardTypan

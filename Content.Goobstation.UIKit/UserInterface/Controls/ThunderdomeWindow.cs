@@ -85,6 +85,7 @@ public class ThunderdomeWindow : BaseWindow
         {
             Text = "THUNDERDOME",
             StyleClasses = { "LabelHeadingBigger" },
+            FontColorOverride = ThunderdomeTheme.HeaderText,
             VerticalAlignment = VAlignment.Center,
             HorizontalExpand = true,
         };
@@ -117,6 +118,10 @@ public class ThunderdomeWindow : BaseWindow
         {
             VerticalExpand = true,
             HorizontalExpand = true,
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = ThunderdomeTheme.BodyBg,
+            },
         };
 
         _contentBox = new BoxContainer

@@ -48,6 +48,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         {
             Text = Loc.GetString("thunderdome-loadout-players", ("count", 0)),
             StyleClasses = { "LabelSubText" },
+            FontColorOverride = ThunderdomeTheme.SubText,
             HorizontalAlignment = HAlignment.Center,
             Margin = new Thickness(0, 4, 0, 4),
         };
@@ -57,6 +58,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         {
             Text = Loc.GetString("thunderdome-loadout-subtitle"),
             StyleClasses = { "LabelSubText" },
+            FontColorOverride = ThunderdomeTheme.SubText,
             HorizontalAlignment = HAlignment.Center,
             Margin = new Thickness(0, 0, 0, 6),
         };
@@ -283,6 +285,7 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
             {
                 Text = LocString(category),
                 StyleClasses = { "LabelKeyText" },
+                FontColorOverride = ThunderdomeTheme.HeaderText,
                 Margin = new Thickness(4, 6, 0, 2),
             };
             _weaponsContainer.AddChild(header);

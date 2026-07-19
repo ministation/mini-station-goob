@@ -90,6 +90,7 @@ public sealed class ThunderdomeWeaponCard : PanelContainer
         {
             Text = weaponName,
             StyleClasses = { "LabelHeading" },
+            FontColorOverride = ThunderdomeTheme.ButtonText,
             VerticalAlignment = VAlignment.Center,
             HorizontalExpand = true,
             Margin = new Thickness(8, 0, 0, 0),

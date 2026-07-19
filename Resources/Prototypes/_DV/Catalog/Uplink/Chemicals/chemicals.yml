@@ -2,6 +2,7 @@
   id: UplinkBeastBlood
   name: uplink-beast-gourd-name
   description: uplink-beast-gourd-desc
+  icon: { sprite: _DV/Objects/Specific/Species/Oni/cybergourd.rsi, state: icon }
   productEntity: BeastBloodGourd
   cost:
    Telecrystal: 3

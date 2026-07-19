@@ -8,6 +8,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/condiments.rsi
   - type: PointLight
     color: "#8B0000"
@@ -19,6 +20,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/ammo.rsi
   - type: PointLight
     radius: 1.5
@@ -31,6 +33,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/boozeomat.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -47,6 +50,7 @@
   - type: VendingMachine
     pack: PTechTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/laptop.rsi
   - type: AccessReader
     access: [["TypanCommand"]]
@@ -61,6 +65,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/chefvend.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -75,6 +80,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/cigs.rsi
   - type: PointLight
     radius: 1.5
@@ -89,6 +95,7 @@
   - type: VendingMachine
     pack: ClothesMateTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/clothing.rsi
   - type: PointLight
     radius: 1.5
@@ -101,6 +108,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/winterdrobe.rsi
   - type: PointLight
     radius: 1.5
@@ -113,6 +121,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/coffee.rsi
   - type: PointLight
     radius: 1.5
@@ -125,6 +134,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/cola.rsi
   - type: PointLight
     radius: 1.5
@@ -137,6 +147,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/soda2.rsi
   - type: PointLight
     radius: 1.5
@@ -149,6 +160,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/cola.rsi
   - type: PointLight
     radius: 1.5
@@ -161,6 +173,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/spaceup.rsi
   - type: PointLight
     radius: 1.5
@@ -173,6 +186,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/soda.rsi
   - type: PointLight
     radius: 1.5
@@ -185,6 +199,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/starkist.rsi
   - type: PointLight
     radius: 1.5
@@ -197,6 +212,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/shamblersjuice.rsi
   - type: PointLight
     radius: 1.5
@@ -209,6 +225,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/pwrgame.rsi
   - type: PointLight
     radius: 1.5
@@ -221,6 +238,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/gib.rsi
   - type: PointLight
     radius: 1.5
@@ -233,6 +251,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/smite.rsi
   - type: PointLight
     radius: 1.5
@@ -245,6 +264,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/dinnerware.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -259,6 +279,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/magivend.rsi
   - type: PointLight
     radius: 1.5
@@ -271,6 +292,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/discount.rsi
   - type: PointLight
     radius: 1.5
@@ -285,6 +307,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/engivend.rsi
   - type: AccessReader
     access: [["TypanEngineering"]]
@@ -301,6 +324,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/medivend.rsi
   - type: AccessReader
     access: [["TypanMedical"]]
@@ -315,6 +339,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/nutri_green.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -329,6 +354,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/security.rsi
   - type: AccessReader
     access: [["TypanProtection"]]
@@ -343,6 +369,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/seeds_green.rsi
   - type: PointLight
     radius: 1.5
@@ -355,6 +382,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/seeds_green.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -369,6 +397,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/snack.rsi
   - type: PointLight
     radius: 1.5
@@ -381,6 +410,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/sustenance.rsi
   - type: PointLight
     radius: 1.5
@@ -393,6 +423,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/snack-blue.rsi
   - type: PointLight
     radius: 1.5
@@ -405,6 +436,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/snack-orange.rsi
   - type: PointLight
     radius: 1.5
@@ -417,6 +449,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/snack-green.rsi
   - type: PointLight
     radius: 1.5
@@ -429,6 +462,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/snack-teal.rsi
   - type: PointLight
     radius: 1.5
@@ -441,6 +475,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/sodasoviet.rsi
   - type: PointLight
     radius: 1.5
@@ -453,6 +488,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/theater.rsi
   - type: PointLight
     radius: 1.5
@@ -465,6 +501,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/vendomat.rsi
   - type: PointLight
     radius: 1.5
@@ -477,6 +514,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/robotics.rsi
   - type: AccessReader
     access: [["TypanScience"]]
@@ -493,6 +531,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/youtool.rsi
   - type: PointLight
     radius: 1.5
@@ -505,6 +544,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/games.rsi
   - type: PointLight
     radius: 1.5
@@ -517,6 +557,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/snix.rsi
   - type: PointLight
     radius: 1.5
@@ -531,6 +572,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/mining.rsi
   - type: AccessReader
     access: [["TypanCargo"]]
@@ -545,6 +587,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/donut.rsi
   - type: PointLight
     radius: 1.5
@@ -559,6 +602,7 @@
   - type: VendingMachine
     pack: HyDrobeTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/hydrobe.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -573,6 +617,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/lawdrobe.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -589,6 +634,7 @@
   - type: VendingMachine
     pack: SecDrobeTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/secdrobe.rsi
   - type: AccessReader
     access: [["TypanProtection"]]
@@ -617,6 +663,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/chapdrobe.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -633,6 +680,7 @@
   - type: VendingMachine
     pack: CargoDrobeTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/cargodrobe.rsi
   - type: AccessReader
     access: [["TypanCargo"]]
@@ -649,6 +697,7 @@
   - type: VendingMachine
     pack: MediDrobeTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/medidrobe.rsi
   - type: AccessReader
     access: [["TypanMedical"]]
@@ -663,6 +712,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/chemdrobe.rsi
   - type: AccessReader
     access: [["TypanMedical"]]
@@ -677,6 +727,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/curadrobe.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -693,6 +744,7 @@
   - type: VendingMachine
     pack: AtmosDrobeTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/atmosdrobe.rsi
   - type: AccessReader
     access: [["TypanEngineering"]]
@@ -709,6 +761,7 @@
   - type: VendingMachine
     pack: EngiDrobeTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/engidrobe.rsi
   - type: AccessReader
     access: [["TypanEngineering"]]
@@ -725,6 +778,7 @@
   - type: VendingMachine
     pack: ChefDrobeTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/chefdrobe.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -739,6 +793,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/detdrobe.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -753,6 +808,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/janidrobe.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -769,6 +825,7 @@
   - type: VendingMachine
     pack: SciDrobeTypanInventory
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/scidrobe.rsi
   - type: AccessReader
     access: [["TypanScience"]]
@@ -783,6 +840,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/robodrobe.rsi
   - type: AccessReader
     access: [["TypanScience"]]
@@ -797,6 +855,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/genedrobe.rsi
   - type: AccessReader
     access: [["TypanMedical"]]
@@ -811,6 +870,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/virodrobe.rsi
   - type: AccessReader
     access: [["TypanMedical"]]
@@ -825,6 +885,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/centdrobe.rsi
   - type: AccessReader
     access: [["TypanCommand"]]
@@ -839,6 +900,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/happyhonk.rsi
   - type: AccessReader
     access: [["TypanService"]]
@@ -853,6 +915,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/pride.rsi
   - type: PointLight
     radius: 1.5
@@ -865,6 +928,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/tankdispenser.rsi
   - type: PointLight
     color: "#8B0000"
@@ -876,6 +940,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/tankdispenser.rsi
   - type: PointLight
     color: "#8B0000"
@@ -887,6 +952,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/chemvend.rsi
   - type: AccessReader
     access: [["TypanMedical"]]
@@ -901,6 +967,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/wallmed.rsi
   - type: PointLight
     radius: 1.5
@@ -913,6 +980,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/VendingMachines/wallmed.rsi
   - type: AccessReader
     access: [["TypanMedical"]]

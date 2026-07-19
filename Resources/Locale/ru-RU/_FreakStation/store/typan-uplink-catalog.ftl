@@ -43,6 +43,35 @@ uplink-typan-uranium-desc = Кажется, что вы потихоньку м�
 uplink-typan-fuel-name = Антиматериальное топливо
 uplink-typan-fuel-desc = Используется для заправки ДАМа.
 
+uplink-typan-cable-name = Катушка НВ-кабеля
+uplink-typan-cable-desc = Полная катушка низковольтного кабеля для проводки станции.
+uplink-typan-cable-mv-name = Катушка СВ-кабеля
+uplink-typan-cable-mv-desc = Полная катушка средневольтного кабеля.
+uplink-typan-cable-hv-name = Катушка ВВ-кабеля
+uplink-typan-cable-hv-desc = Полная катушка высоковольтного кабеля.
+uplink-typan-rods-name = Металлические стержни
+uplink-typan-rods-desc = Стопка стержней для решёток, каркасов и строительства.
+uplink-typan-rglass-name = Бронестекло
+uplink-typan-rglass-desc = Стопка армированного стекла.
+uplink-typan-wood-name = Деревянные доски
+uplink-typan-wood-desc = Стопка древесины для мебели и обшивки.
+uplink-typan-cloth-name = Ткань
+uplink-typan-cloth-desc = Стопка ткани для одежды и крафта.
+uplink-typan-cardboard-name = Картон
+uplink-typan-cardboard-desc = Стопка картона — дешёвый расходник.
+uplink-typan-brass-name = Латунь
+uplink-typan-brass-desc = Стопка латуни для механизмов и часовщиков.
+uplink-typan-bananium-name = Бананиум
+uplink-typan-bananium-desc = Редкий бананиум. Хонк.
+uplink-typan-plastic-bulk-name = Пластик (x10)
+uplink-typan-plastic-bulk-desc = Небольшая пачка пластика.
+uplink-typan-steel-bulk-name = Сталь (x10)
+uplink-typan-steel-bulk-desc = Небольшая пачка стали.
+uplink-typan-glass-bulk-name = Стекло (x10)
+uplink-typan-glass-bulk-desc = Небольшая пачка стекла.
+uplink-typan-durathread-name = Дюраткань
+uplink-typan-durathread-desc = Прочная ткань для бронированной одежды.
+
 uplink-typan-ak-magazine-name = Магазин (.30 винтовочные)
 uplink-typan-ak-magazine-desc = Магазин винтовки на 30 патронов. Совместим с АКМС.
 

@@ -1,10 +1,11 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+﻿// SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Linq;
 using Content.Shared.VendingMachines;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
 using Robust.Shared.GameStates;
+using Robust.Shared.Maths;
 
 namespace Content.Client.VendingMachines;
 
@@ -48,17 +49,26 @@ public sealed class VendingMachineSystem : SharedVendingMachineSystem
 
         foreach (var entry in state.Inventory)
         {
-            component.Inventory.Add(entry.Key, new(entry.Value));
+            var copy = new VendingMachineInventoryEntry(entry.Value);
+            if (string.IsNullOrEmpty(copy.ID))
+                copy.ID = entry.Key;
+            component.Inventory.Add(entry.Key, copy);
         }
 
         foreach (var entry in state.EmaggedInventory)
         {
-            component.EmaggedInventory.Add(entry.Key, new(entry.Value));
+            var copy = new VendingMachineInventoryEntry(entry.Value);
+            if (string.IsNullOrEmpty(copy.ID))
+                copy.ID = entry.Key;
+            component.EmaggedInventory.Add(entry.Key, copy);
         }
 
         foreach (var entry in state.ContrabandInventory)
         {
-            component.ContrabandInventory.Add(entry.Key, new(entry.Value));
+            var copy = new VendingMachineInventoryEntry(entry.Value);
+            if (string.IsNullOrEmpty(copy.ID))
+                copy.ID = entry.Key;
+            component.ContrabandInventory.Add(entry.Key, copy);
         }
 
         if (UISystem.TryGetOpenUi<VendingMachineBoundUserInterface>(uid, VendingMachineUiKey.Key, out var bui))
@@ -117,32 +127,37 @@ public sealed class VendingMachineSystem : SharedVendingMachineSystem
 
     private void UpdateAppearance(EntityUid uid, VendingMachineVisualState visualState, VendingMachineComponent component, SpriteComponent sprite)
     {
-        SetLayerState(VendingMachineVisualLayers.Base, component.OffState, (uid, sprite));
+        // Always draw the front RSI face; camera orbit must not flip to side panels.
+        sprite.EnableDirectionOverride = true;
+        sprite.DirectionOverride = Direction.South;
+
+        SetLayerState(VendingMachineVisualLayers.Base, component.OffState, (uid, sprite), animate: false);
 
         switch (visualState)
         {
             case VendingMachineVisualState.Normal:
-                SetLayerState(VendingMachineVisualLayers.BaseUnshaded, component.NormalState, (uid, sprite));
-                SetLayerState(VendingMachineVisualLayers.Screen, component.ScreenState, (uid, sprite));
+                // Idle unshaded "rotating panel" loops stay frozen; screens keep their delays.
+                SetLayerState(VendingMachineVisualLayers.BaseUnshaded, component.NormalState, (uid, sprite), animate: false);
+                SetLayerState(VendingMachineVisualLayers.Screen, component.ScreenState, (uid, sprite), animate: true);
                 break;
 
             case VendingMachineVisualState.Deny:
                 if (component.LoopDenyAnimation)
-                    SetLayerState(VendingMachineVisualLayers.BaseUnshaded, component.DenyState, (uid, sprite));
+                    SetLayerState(VendingMachineVisualLayers.BaseUnshaded, component.DenyState, (uid, sprite), animate: true);
                 else
                     PlayAnimation(uid, VendingMachineVisualLayers.BaseUnshaded, component.DenyState, (float)component.DenyDelay.TotalSeconds, sprite);
 
-                SetLayerState(VendingMachineVisualLayers.Screen, component.ScreenState, (uid, sprite));
+                SetLayerState(VendingMachineVisualLayers.Screen, component.ScreenState, (uid, sprite), animate: true);
                 break;
 
             case VendingMachineVisualState.Eject:
                 PlayAnimation(uid, VendingMachineVisualLayers.BaseUnshaded, component.EjectState, (float)component.EjectDelay.TotalSeconds, sprite);
-                SetLayerState(VendingMachineVisualLayers.Screen, component.ScreenState, (uid, sprite));
+                SetLayerState(VendingMachineVisualLayers.Screen, component.ScreenState, (uid, sprite), animate: true);
                 break;
 
             case VendingMachineVisualState.Broken:
                 HideLayers((uid, sprite));
-                SetLayerState(VendingMachineVisualLayers.Base, component.BrokenState, (uid, sprite));
+                SetLayerState(VendingMachineVisualLayers.Base, component.BrokenState, (uid, sprite), animate: false);
                 break;
 
             case VendingMachineVisualState.Off:
@@ -151,13 +166,13 @@ public sealed class VendingMachineSystem : SharedVendingMachineSystem
         }
     }
 
-    private void SetLayerState(VendingMachineVisualLayers layer, string? state, Entity<SpriteComponent> sprite)
+    private void SetLayerState(VendingMachineVisualLayers layer, string? state, Entity<SpriteComponent> sprite, bool animate)
     {
         if (string.IsNullOrEmpty(state))
             return;
 
         _sprite.LayerSetVisible(sprite.AsNullable(), layer, true);
-        _sprite.LayerSetAutoAnimated(sprite.AsNullable(), layer, true);
+        _sprite.LayerSetAutoAnimated(sprite.AsNullable(), layer, animate);
         _sprite.LayerSetRsiState(sprite.AsNullable(), layer, state);
     }
 

@@ -3,13 +3,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:Robust.Client.UserInterface.Controls;assembly=Robust.Client"
     Title="{Loc stickers-window-title}"
-    MinSize="300 200"
-    SetSize="400 300"
+    MinSize="360 280"
+    SetSize="420 360"
     Resizable="True">
-    <BoxContainer Orientation="Vertical" SeparationOverride="10" Margin="10" VerticalExpand="True">
-        <!-- Stickers Grid -->
-        <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
-            <GridContainer Name="StickerGrid" Columns="4" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+    <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="8" VerticalExpand="True" HorizontalExpand="True">
+        <ScrollContainer
+            Name="StickerScroll"
+            VerticalExpand="True"
+            HorizontalExpand="True"
+            HScrollEnabled="False"
+            MinHeight="220">
+            <GridContainer
+                Name="StickerGrid"
+                Columns="5"
+                HorizontalExpand="True"
+                VerticalAlignment="Top"
+                Margin="4"/>
         </ScrollContainer>
     </BoxContainer>
 </DefaultWindow>

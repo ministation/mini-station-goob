@@ -5,11 +5,11 @@
   description: A traditional drinking vessel used by oni. It is said to be filled with the finest sake.
   components:
   - type: Sprite
-    state: icon
     sprite: _DV/Objects/Specific/Species/Oni/gourd.rsi
   - type: SolutionContainerManager
     solutions:
       drink:
+        maxVol: 50
         reagents:
         - ReagentId: Sake
           Quantity: 50
@@ -28,11 +28,11 @@
   description: A modified drinking gourd from cybersun, this one produces a potent blend of stims and booze known as beast's blood.
   components:
   - type: Sprite
-    state: icon
     sprite: _DV/Objects/Specific/Species/Oni/cybergourd.rsi
   - type: SolutionContainerManager
     solutions:
       drink:
+        maxVol: 50
         reagents:
         - ReagentId: BeastBlood
           Quantity: 50

@@ -57,56 +57,67 @@
   id: UplinkWeaponry
   name: store-category-weapons
   priority: 0
+  accentColor: "#C23B3B"
 
 - type: storeCategory
   id: UplinkAmmo
   name: store-category-ammo
   priority: 1
+  accentColor: "#D4A017"
 
 - type: storeCategory
   id: UplinkExplosives
   name: store-category-explosives
   priority: 2
+  accentColor: "#E85D04"
 
 - type: storeCategory
   id: UplinkWearables
   name: store-category-wearables
   priority: 3
+  accentColor: "#5B8DEF"
 
 - type: storeCategory
   id: UplinkChemicals
   name: store-category-chemicals
   priority: 4
+  accentColor: "#2ECC71"
 
 - type: storeCategory
   id: UplinkDeception
   name: store-category-deception
   priority: 5
+  accentColor: "#9B59B6"
 
 - type: storeCategory
   id: UplinkDisruption
   name: store-category-disruption
   priority: 6
+  accentColor: "#E67E22"
 
 - type: storeCategory
   id: UplinkImplants
   name: store-category-implants
   priority: 7
+  accentColor: "#1ABC9C"
 
 - type: storeCategory
   id: UplinkAllies
   name: store-category-allies
   priority: 8
+  accentColor: "#E74C3C"
 
 - type: storeCategory
   id: UplinkJob
   name: store-category-job
   priority: 9
+  accentColor: "#3498DB"
 
 - type: storeCategory
   id: UplinkPointless
   name: store-category-pointless
   priority: 10
+  accentColor: "#7F8C8D"
 
 #nukie delivery
 
@@ -128,3 +139,4 @@
   id: DiscountedItems
   name: store-discounted-items
   priority: 200
+  accentColor: "#F1C40F"

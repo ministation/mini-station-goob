@@ -7,7 +7,7 @@
   #discountDownTo:
  #  Telecrystal: 2
   cost:
-    Telecrystal: 4
+    Telecrystal: 1 # Goob 4 / 5
   categories:
     - UplinkDeception
   #Goobstation

@@ -16,6 +16,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: _Lavaland/Structures/VendingMachines/minerdrobe.rsi
     layers:
     - state: "off"

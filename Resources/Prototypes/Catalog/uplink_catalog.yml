@@ -687,14 +687,14 @@
       tags:
       - ContractorUplink
 
-# For the Estoc
+# For the Estoc (.30 light rifle — not .20)
 - type: listing
   id: UplinkEstocAmmo
   name: uplink-estoc-ammo-name
   description: uplink-estoc-ammo-desc
-  productEntity: BoxSyndicateMagazineRifle
+  productEntity: MagazineLightRifle
   cost:
-    Telecrystal: 1 # goob / Mini: box of 3 (.20 rifle for Estoc)
+    Telecrystal: 2 # .30 mag for Estoc (Goob 7 / ~3.5, Mini 2)
   categories:
   - UplinkAmmo
   #Goobstation
@@ -906,6 +906,7 @@
   id: UplinkSyndicateIDCard
   name: uplink-syndicate-id-card-name
   description: uplink-syndicate-id-card-desc
+  icon: { sprite: Objects/Misc/id_cards.rsi, state: syndie }
   productEntity: SyndicateIDCard
   cost:
     Telecrystal: 1

@@ -3,6 +3,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Content.Server._Amour.Stickers;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
@@ -55,6 +56,7 @@ internal sealed partial class ChatManager : IChatManager
     //[Dependency] private readonly LinkAccountManager _linkAccount = default!; // RMC - Patreon // CorvaxGoob-Coins
 
     private ISawmill _sawmill = default!;
+    private StickerSanitizerSystem? _stickerSanitizer;
 
     /// <summary>
     /// The maximum length a player-sent message can be sent
@@ -76,6 +78,7 @@ internal sealed partial class ChatManager : IChatManager
         _configurationManager.OnValueChanged(CCVars.AdminOocEnabled, OnAdminOocEnabledChanged, true);
 
         _sawmill = _logManager.GetSawmill("SERVER");
+        _stickerSanitizer = _entityManager.System<StickerSanitizerSystem>();
 
         RegisterRateLimits();
     }
@@ -277,7 +280,8 @@ internal sealed partial class ChatManager : IChatManager
         }
 
         Color? colorOverride = null;
-        var wrappedMessage = Loc.GetString("chat-manager-send-ooc-wrap-message", ("playerName",player.Name), ("message", FormattedMessage.EscapeText(message)));
+        var escapedMessage = EscapeChatMessage(message);
+        var wrappedMessage = Loc.GetString("chat-manager-send-ooc-wrap-message", ("playerName",player.Name), ("message", escapedMessage));
         if (_adminManager.HasAdminFlag(player, AdminFlags.NameColor))
         {
             var prefs = _preferencesManager.GetPreferences(player.UserId);
@@ -310,7 +314,7 @@ internal sealed partial class ChatManager : IChatManager
         // CorvaxGoob-Sponsors-Start
         if (_sponsorsManager != null && _sponsorsManager.TryGetServerOocColor(player.UserId, out var oocColor))
         {
-            wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message", ("patronColor", oocColor), ("playerName", player.Name), ("message", FormattedMessage.EscapeText(message)));
+            wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message", ("patronColor", oocColor), ("playerName", player.Name), ("message", escapedMessage));
         }
         // CorvaxGoob-Sponsors-End
 
@@ -331,7 +335,7 @@ internal sealed partial class ChatManager : IChatManager
         var clients = _adminManager.ActiveAdmins.Select(p => p.Channel);
         var wrappedMessage = Loc.GetString("chat-manager-send-admin-chat-wrap-message",
                                         ("adminChannelName", Loc.GetString("chat-manager-admin-channel-name")),
-                                        ("playerName", player.Name), ("message", FormattedMessage.EscapeText(message)));
+                                        ("playerName", player.Name), ("message", EscapeChatMessage(message)));
 
         foreach (var client in clients)
         {
@@ -354,6 +358,15 @@ internal sealed partial class ChatManager : IChatManager
     #endregion
 
     #region Utility
+
+    /// <summary>
+    /// Escapes chat markup and converts Amour sticker tokens like #laugh# into [tex] tags.
+    /// </summary>
+    private string EscapeChatMessage(string message)
+    {
+        _stickerSanitizer ??= _entityManager.System<StickerSanitizerSystem>();
+        return _stickerSanitizer.SanitizeMessageWithStickers(message);
+    }
 
     // Goobstation Edit - Coalescing Chat
     public void ChatMessageToOne(ChatChannel channel, string message, string wrappedMessage, EntityUid source, bool hideChat, INetChannel client, Color? colorOverride = null, bool recordReplay = false, string? audioPath = null, float audioVolume = 0, NetUserId? author = null, bool canCoalesce = true)

@@ -4,3 +4,4 @@
   id: UplinkSales
   name: store-category-uplink-sales
   priority: 10
+  accentColor: "#F39C12"
