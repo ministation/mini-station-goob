@@ -36,12 +36,16 @@ public sealed class MiningPointsSystem : EntitySystem
 
     private void OnMaterialEntityInserted(Entity<MiningPointsLatheComponent> ent, ref MaterialEntityInsertedEvent args)
     {
-        // Server-authoritative: clients only predicted-insert materials; points live on the machine component.
-        // Also ignore silo link — requiring OreSiloClient.Silo made station processors award 0 until cargo linked them.
+        // Server MaterialStorageSystem awards points before QueueDel.
+        // Keep this as a fallback for any non-server insert path (tests / predicted shared).
         if (_net.IsClient)
             return;
 
         if (!TryComp(args.Inserted, out UnclaimedOreComponent? unclaimedOre))
+            return;
+
+        // Already awarded by MaterialStorageSystem when both comps are present.
+        if (HasComp<MiningPointsComponent>(ent.Owner))
             return;
 
         var points = (uint) Math.Max(0, Math.Floor(unclaimedOre.MiningPoints * args.Count));

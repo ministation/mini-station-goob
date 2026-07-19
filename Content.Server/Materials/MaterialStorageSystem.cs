@@ -2,6 +2,9 @@
 
 using System.Linq;
 using Content.Server.Administration.Logs;
+using Content.Shared._DV.Salvage.Components;
+using Content.Shared._DV.Salvage.Systems;
+using Content.Shared._Lavaland.UnclaimedOre;
 using Content.Shared.Materials;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
@@ -31,6 +34,7 @@ public sealed class MaterialStorageSystem : SharedMaterialStorageSystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly StackSystem _stackSystem = default!;
     [Dependency] private readonly TagSystem _tag = default!; // Goobstation Change
+    [Dependency] private readonly MiningPointsSystem _miningPoints = default!;
 
     private static readonly ProtoId<TagPrototype> OreTag = "Ore"; // Goobstation Change
     public override void Initialize()
@@ -125,8 +129,23 @@ public sealed class MaterialStorageSystem : SharedMaterialStorageSystem
             return false;
         if (TryComp<ApcPowerReceiverComponent>(receiver, out var power) && !power.Powered)
             return false;
+
+        // Read mining-point value before insert/delete — UnclaimedOre lives on the ore entity.
+        uint miningPointsToAward = 0;
+        if (HasComp<MiningPointsLatheComponent>(receiver) &&
+            HasComp<MiningPointsComponent>(receiver) &&
+            TryComp<UnclaimedOreComponent>(toInsert, out var unclaimedOre))
+        {
+            var oreCount = TryComp<StackComponent>(toInsert, out var oreStack) ? oreStack.Count : 1;
+            miningPointsToAward = (uint) Math.Max(0, Math.Floor(unclaimedOre.MiningPoints * oreCount));
+        }
+
         if (!base.TryInsertMaterialEntity(user, toInsert, receiver, storage, material, composition))
             return false;
+
+        if (miningPointsToAward > 0)
+            _miningPoints.AddPoints(receiver, miningPointsToAward);
+
         _audio.PlayPvs(storage.InsertingSound, receiver);
         if (user != receiver) // Goobstation - add check to make sure automation doesnt spam popups
             _popup.PopupEntity(Loc.GetString("machine-insert-item",
