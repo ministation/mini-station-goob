@@ -7,7 +7,7 @@
   description: Prints equipment and circuitboards for use by engineering department.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/techfab.rsi
     layers:
     - state: icon
@@ -82,7 +82,7 @@
   description: Prints equipment and circuitboards for use by cargo department.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/techfab.rsi
     layers:
     - state: icon
@@ -153,7 +153,7 @@
   description: Prints equipment and circuitboards for use by science department.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/techfab.rsi
     layers:
     - state: icon
@@ -249,7 +249,7 @@
   description: Prints equipment and circuitboards for use by service department.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/techfab.rsi
     layers:
     - state: icon
@@ -317,7 +317,7 @@
   description: Standard-issue ammunition and gear for Emergency Response Team deployments. Fast, basic, reliable.
   components:
     - type: Sprite
-      snapCardinals: true
+      noRot: true
       sprite: Structures/Machines/techfab.rsi
       layers:
         - state: icon

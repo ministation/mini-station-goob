@@ -117,8 +117,8 @@
   description: It produces basic items using metal and glass. Has the ability to process blueprints to print new recipes.
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/autolathe.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -201,7 +201,7 @@
   description: A highly-experimental autolathe that harnesses the power of extreme heat to slowly create objects more cost-effectively.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/autolathe_hypercon.rsi
   - type: Machine
     board: AutolatheHyperConvectionMachineCircuitboard
@@ -213,8 +213,8 @@
   description: Converts raw materials into advanced items.
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/protolathe.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -286,7 +286,7 @@
   description: A highly-experimental protolathe that harnesses the power of extreme heat to slowly create objects more cost-effectively.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/protolathe_hypercon.rsi
   - type: Machine
     board: ProtolatheHyperConvectionMachineCircuitboard
@@ -298,8 +298,8 @@
   description: Prints circuit boards for machines.
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/circuit_imprinter.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -354,7 +354,7 @@
   description: A highly-experimental circuit imprinter that harnesses the power of extreme heat to slowly create objects more cost-effectively.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/circuit_imprinter_hypercon.rsi
   - type: Machine
     board: CircuitImprinterHyperConvectionMachineCircuitboard
@@ -366,7 +366,7 @@
   description: Creates parts for robotics and other mechanical needs.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/exosuit_fabricator.rsi
     layers:
     - state: fab-idle
@@ -429,8 +429,8 @@
   components:
   - type: OreSiloClient # CorvaxGoob-changes: add Silo
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/biofabricator.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -473,7 +473,7 @@
   description: Prints equipment and circuitboards for use by security crew. #Goobstation - Circuitboards description
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/techfab.rsi
     layers:
     - state: icon
@@ -549,7 +549,7 @@
   description: Prints the bare minimum of bullets that any budget military or armory could need. Nothing fancy.
   components:
     - type: Sprite
-      snapCardinals: true
+      noRot: true
       sprite: Structures/Machines/techfab.rsi
       layers:
         - state: icon
@@ -586,7 +586,7 @@
   description: Prints equipment and circuitboards for use by the medbay.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/techfab.rsi
     layers:
     - state: icon
@@ -664,8 +664,8 @@
   - type: Transform
     noRot: false
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/uniform_printer.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -713,8 +713,8 @@
   components:
   - type: OreSiloClient # CorvaxGoob-changes: add Silo
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/biofabricator.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -760,7 +760,7 @@
   description: It produces sheets and ingots using ores.
   components:
     - type: Sprite
-      snapCardinals: true
+      noRot: true
       sprite: Structures/Machines/ore_processor.rsi
       layers:
         - state: icon
@@ -810,7 +810,7 @@
   description: An ore processor specifically designed for mass-producing metals in industrial applications.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/ore_processor_industrial.rsi
   - type: Machine
     board: OreProcessorIndustrialMachineCircuitboard
@@ -830,7 +830,7 @@
   components:
   - type: OreSiloClient # CorvaxGoob-changes: add Silo
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: Structures/Machines/sheetifier.rsi
     layers:
     - state: base_machine
@@ -864,8 +864,8 @@
   - type: Transform
     noRot: false
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/cuttermachine.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
