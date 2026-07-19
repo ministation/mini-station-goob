@@ -25,7 +25,7 @@ public sealed class ConnectingServerStatusFetcher : IDisposable
     public ConnectingServerStatusFetcher()
     {
         // Engine without this API / missing IoC registration → UI stays on "unavailable".
-        IoCManager.TryResolveType(out _statusClient);
+        IoCManager.Instance?.TryResolveType(out _statusClient);
     }
 
     /// <param name="connectAddress">
