@@ -38,14 +38,24 @@
   # Ammo
   - item: MagazinePistol
     probability: 0.72
+    countMin: 2
+    countMax: 4
   - item: MagazinePistolSubMachineGun
     probability: 0.58
+    countMin: 2
+    countMax: 4
   - item: MagazinePistolSubMachineGunTopMounted
     probability: 0.42
+    countMin: 2
+    countMax: 4
   - item: MagazineLightRifle
     probability: 0.12
+    countMin: 2
+    countMax: 4
   - item: MagazineShotgun
     probability: 0.28
+    countMin: 2
+    countMax: 4
   - item: MagazineBoxMagnum
     probability: 0.38
   - item: MagazineBoxLightRifle

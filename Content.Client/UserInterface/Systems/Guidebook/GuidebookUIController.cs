@@ -109,12 +109,12 @@ public sealed class GuidebookUIController : UIController, IOnStateEntered<LobbyS
 
     public void OnSystemLoaded(GuidebookSystem system)
     {
-        _guidebookSystem.OnGuidebookOpen += OpenGuidebook;
+        system.OnGuidebookOpen += OpenGuidebook;
     }
 
     public void OnSystemUnloaded(GuidebookSystem system)
     {
-        _guidebookSystem.OnGuidebookOpen -= OpenGuidebook;
+        system.OnGuidebookOpen -= OpenGuidebook;
     }
 
     internal void UnloadButton()

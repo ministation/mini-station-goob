@@ -76,7 +76,8 @@ public sealed class ShopVendorSystem : SharedShopVendorSystem
             return;
 
         sprite.LayerSetVisible(layer, true);
-        sprite.LayerSetAutoAnimated(layer, true);
+        // Freeze RSI loops on the first frame (same as stock VendingMachineSystem).
+        sprite.LayerSetAutoAnimated(layer, false);
         sprite.LayerSetState(layer, state);
     }
 

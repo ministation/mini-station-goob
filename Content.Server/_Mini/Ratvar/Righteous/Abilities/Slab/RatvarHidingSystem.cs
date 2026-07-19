@@ -64,10 +64,10 @@ public sealed class RatvarHidingSystem : EntitySystem
     };
 
     [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedTransformSystem _sharedTransform = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     private EntityUid? PausedMap { get; set; }
 
     public override void Initialize()
@@ -114,11 +114,10 @@ public sealed class RatvarHidingSystem : EntitySystem
         if (PausedMap != null && Exists(PausedMap))
             return;
 
-        var newMap = _mapManager.CreateMap();
-        PausedMap = _mapManager.GetMapEntityId(newMap);
+        PausedMap = _mapSystem.CreateMap(out var mapId);
 
         _metaData.SetEntityName(PausedMap.Value, "Карта Ратвара, не трогать!");
-        _mapManager.SetMapPaused(newMap, true);
+        _mapSystem.SetPaused(mapId, true);
     }
 
     private void TeleportToMap(EntityUid target)

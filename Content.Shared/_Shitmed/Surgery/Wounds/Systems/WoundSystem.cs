@@ -58,6 +58,22 @@ public sealed partial class WoundSystem : EntitySystem
     private float _medicalHealingTickrate = 0.5f;
     private TimeSpan _minimumTimeBeforeHeal = TimeSpan.FromSeconds(2f);
 
+    /// <summary>
+    /// Nested AmputateWoundable depth. DamageOnAmputate only runs at the outermost call so
+    /// child amputations during DestroyWoundableChildren cannot re-enter trauma.
+    /// </summary>
+    private int _amputationDepth;
+
+    /// <summary>
+    /// While applying DamageOnAmputate, TraumaSystem must not spawn more dismemberment.
+    /// </summary>
+    private int _amputationTraumaSuppress;
+
+    /// <summary>
+    /// True while WoundSystem is applying post-amputation damage that must not induce traumas.
+    /// </summary>
+    public bool SuppressTraumaFromAmputation => _amputationTraumaSuppress > 0;
+
     private const double WoundJobTime = 0.005;
     private readonly JobQueue _woundJobQueue = new(WoundJobTime);
     public sealed class WoundJob : Job<object>

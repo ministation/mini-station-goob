@@ -32,4 +32,12 @@ public sealed partial class TypanWarSurplusLootEntry
     /// </summary>
     [DataField]
     public float? LateRoundProbability;
+
+    /// <summary>Minimum copies spawned when this entry succeeds (inclusive).</summary>
+    [DataField]
+    public int CountMin = 1;
+
+    /// <summary>Maximum copies spawned when this entry succeeds (inclusive).</summary>
+    [DataField]
+    public int CountMax = 1;
 }

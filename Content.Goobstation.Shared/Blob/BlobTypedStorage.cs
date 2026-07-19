@@ -9,32 +9,17 @@ using Robust.Shared.Prototypes;
 namespace Content.Goobstation.Shared.Blob;
 
 #region BlobTypedStorage
-[DataDefinition]
-public abstract partial class BlobTypedStorage<T> : IEnumerable<KeyValuePair<BlobTileType, T>>
+public abstract class BlobTypedStorage<T> : IEnumerable<KeyValuePair<BlobTileType, T>> where T : notnull
 {
-    [DataField]
     public virtual T Core { get; set; } = default!;
-    [DataField]
-    public virtual T Invalid  { get; set; } = default!;
-    [DataField]
-    public virtual T Resource  { get; set; } = default!;
-    [DataField]
-    public virtual T Factory  { get; set; } = default!;
-    [DataField]
-    public virtual T Node  { get; set; } = default!;
-    [DataField]
-    public virtual T Reflective  { get; set; } = default!;
-    [DataField]
-    public virtual T Strong  { get; set; } = default!;
-    [DataField]
+    public virtual T Invalid { get; set; } = default!;
+    public virtual T Resource { get; set; } = default!;
+    public virtual T Factory { get; set; } = default!;
+    public virtual T Node { get; set; } = default!;
+    public virtual T Reflective { get; set; } = default!;
+    public virtual T Strong { get; set; } = default!;
     public virtual T Normal { get; set; } = default!;
-    /*
-    [DataField]
-    public virtual T Storage  { get; set; }
-    [DataField]
-    public virtual T Turret { get; set; }
-*/
-    // Method for accessing fields through the indexer
+
     [Pure]
     public T this[BlobTileType type]
     {
@@ -48,10 +33,6 @@ public abstract partial class BlobTypedStorage<T> : IEnumerable<KeyValuePair<Blo
             BlobTileType.Reflective => Reflective,
             BlobTileType.Strong => Strong,
             BlobTileType.Normal => Normal,
-            /*
-            BlobTileType.Storage => Storage,
-            BlobTileType.Turret => Turret,
-            */
             _ => throw new ArgumentOutOfRangeException(nameof(type), $"Unknown tile type: {type}")
         };
         set
@@ -82,14 +63,6 @@ public abstract partial class BlobTypedStorage<T> : IEnumerable<KeyValuePair<Blo
                 case BlobTileType.Normal:
                     Normal = value;
                     break;
-                /*
-                case BlobTileType.Storage:
-                    Storage = value;
-                    break;
-                case BlobTileType.Turret:
-                    Turret = value;
-                    break;
-                    */
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), $"Unknown tile type: {type}");
             }
@@ -111,10 +84,6 @@ public abstract partial class BlobTypedStorage<T> : IEnumerable<KeyValuePair<Blo
         yield return new KeyValuePair<BlobTileType, T>(BlobTileType.Reflective, Reflective);
         yield return new KeyValuePair<BlobTileType, T>(BlobTileType.Strong, Strong);
         yield return new KeyValuePair<BlobTileType, T>(BlobTileType.Normal, Normal);
-        /*
-        yield return new KeyValuePair<BlobTileType, T>(BlobTileType.Storage, Storage);
-        yield return new KeyValuePair<BlobTileType, T>(BlobTileType.Turret, Turret);
-        */
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -127,9 +96,55 @@ public abstract partial class BlobTypedStorage<T> : IEnumerable<KeyValuePair<Blo
 [DataDefinition]
 public sealed partial class BlobTileCosts : BlobTypedStorage<FixedPoint2>
 {
+    [DataField]
+    public override FixedPoint2 Core { get; set; }
+
+    [DataField]
+    public override FixedPoint2 Invalid { get; set; }
+
+    [DataField]
+    public override FixedPoint2 Resource { get; set; }
+
+    [DataField]
+    public override FixedPoint2 Factory { get; set; }
+
+    [DataField]
+    public override FixedPoint2 Node { get; set; }
+
+    [DataField]
+    public override FixedPoint2 Reflective { get; set; }
+
+    [DataField]
+    public override FixedPoint2 Strong { get; set; }
+
+    [DataField]
+    public override FixedPoint2 Normal { get; set; }
 }
 
 [DataDefinition]
 public sealed partial class BlobTileProto : BlobTypedStorage<EntProtoId<BlobTileComponent>>
 {
+    [DataField]
+    public override EntProtoId<BlobTileComponent> Core { get; set; }
+
+    [DataField]
+    public override EntProtoId<BlobTileComponent> Invalid { get; set; }
+
+    [DataField]
+    public override EntProtoId<BlobTileComponent> Resource { get; set; }
+
+    [DataField]
+    public override EntProtoId<BlobTileComponent> Factory { get; set; }
+
+    [DataField]
+    public override EntProtoId<BlobTileComponent> Node { get; set; }
+
+    [DataField]
+    public override EntProtoId<BlobTileComponent> Reflective { get; set; }
+
+    [DataField]
+    public override EntProtoId<BlobTileComponent> Strong { get; set; }
+
+    [DataField]
+    public override EntProtoId<BlobTileComponent> Normal { get; set; }
 }

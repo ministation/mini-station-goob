@@ -15,7 +15,6 @@ namespace Content.Client.NodeContainer
     {
         [Dependency] private readonly IOverlayManager _overlayManager = default!;
         [Dependency] private readonly EntityLookupSystem _entityLookup = default!;
-        [Dependency] private readonly IMapManager _mapManager = default!;
         [Dependency] private readonly IInputManager _inputManager = default!;
         [Dependency] private readonly IResourceCache _resourceCache = default!;
 
@@ -87,7 +86,6 @@ namespace Content.Client.NodeContainer
                 var overlay = new NodeVisualizationOverlay(
                     this,
                     _entityLookup,
-                    _mapManager,
                     _inputManager,
                     _resourceCache,
                     EntityManager);

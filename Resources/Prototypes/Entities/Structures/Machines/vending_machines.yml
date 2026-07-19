@@ -21,6 +21,7 @@
       path: /Audio/Ambience/Objects/vending_machine_hum.ogg
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/empty.rsi
+    noRot: true
     snapCardinals: false
   - type: Physics
     bodyType: Static
@@ -1120,6 +1121,7 @@
   - type: SpeakOnUIClosed
     pack: NutriMaxGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/nutri_green.rsi
     layers:
     - state: "off"
@@ -1204,6 +1206,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/seeds_green.rsi
     layers:
     - state: "off"
@@ -1668,6 +1671,7 @@
   - type: SpeakOnUIClosed
     pack: ChangGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/snix.rsi
     layers:
     - state: "off"
@@ -2540,6 +2544,7 @@
     normalState: normal-unshaded
     denyState: deny-unshaded
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/wallmed.rsi
     layers:
     - state: "off" # Goob
@@ -2567,6 +2572,7 @@
     pack: NanoMedInventory
     offState: off
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/wallmed.rsi
     layers:
     - state: "off"

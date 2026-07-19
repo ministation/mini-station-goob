@@ -139,8 +139,7 @@ public sealed class AHelpUIController: UIController, IOnSystemChanged<BwoinkSyst
     {
         CommandBinds.Unregister<AHelpUIController>();
 
-        DebugTools.Assert(_bwoinkSystem != null);
-        _bwoinkSystem!.OnBwoinkTextMessageRecieved -= ReceivedBwoink;
+        system.OnBwoinkTextMessageRecieved -= ReceivedBwoink;
         _bwoinkSystem = null;
     }
 

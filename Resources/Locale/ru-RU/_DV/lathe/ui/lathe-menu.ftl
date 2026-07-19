@@ -6,3 +6,5 @@
 
 lathe-menu-mining-points = Шахтёрские очки: { $points }
 lathe-menu-mining-points-claim-button = Забрать Очки
+lathe-menu-mining-points-claim-empty = Нет очков для получения
+lathe-menu-mining-points-claim-no-id = Нужна ID-карта (в КПК или в руке), чтобы забрать очки

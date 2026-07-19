@@ -74,7 +74,15 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public float MinRespawnSeconds = 10f;
 
     [DataField]
-    public float MaxRespawnSeconds = 60f;
+    public float MaxRespawnSeconds = 120f;
+
+    /// <summary>How long recent deaths count toward the death-penalty respawn delay.</summary>
+    [DataField]
+    public float DeathPenaltyWindowSeconds = 300f;
+
+    /// <summary>Extra respawn seconds added per death beyond the first inside the window.</summary>
+    [DataField]
+    public float DeathPenaltyStepSeconds = 20f;
 
     [DataField]
     public float NtCapturePoints;

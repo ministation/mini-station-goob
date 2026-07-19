@@ -176,17 +176,26 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
         };
 
         var screenCenter = viewport.WorldToScreen(worldPos);
-        screenCenter.Y -= 35f;
+        screenCenter.Y -= 50f;
 
-        const float barHalfW = 44f;
-        const float barHalfH = 5f;
-        var back = Color.FromHex("#252530").WithAlpha(0.55f);
+        const float barHalfW = 48f;
+        const float barHalfH = 6f;
+        const float frameThickness = 2f;
+        var frameColor = Color.Black;
+        var trackColor = Color.Black;
 
         var box = new UIBox2(
             screenCenter - new Vector2(barHalfW, barHalfH),
             screenCenter + new Vector2(barHalfW, barHalfH));
 
-        handle.DrawRect(box, back);
+        // Opaque black frame; black track strip sits inside it.
+        var outer = new UIBox2(
+            box.Left - frameThickness,
+            box.Bottom - frameThickness,
+            box.Right + frameThickness,
+            box.Top + frameThickness);
+        handle.DrawRect(outer, frameColor);
+        handle.DrawRect(box, trackColor);
 
         var fillWidth = box.Width * Math.Clamp(zone.CaptureProgress, 0f, 1f);
         if (fillWidth > 0f)
