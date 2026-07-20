@@ -125,6 +125,8 @@
   - type: Repairable
     doAfterDelay: 10
     # allowSelfRepair: false # Goobstation
+  - type: EyeProtection # Mini - cyborgs are immune to welder flash/eye damage
+    protectionTime: 100
   - type: BorgChassis
   - type: LockingWhitelist
     blacklist:

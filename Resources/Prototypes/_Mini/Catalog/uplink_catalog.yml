@@ -175,3 +175,36 @@
     whitelist:
       tags:
       - NukeOpsUplink
+
+- type: listing
+  id: UplinkNanoPaste
+  name: uplink-nanopaste-name
+  description: uplink-nanopaste-desc
+  icon: { sprite: /Textures/_Mini/Objects/Specific/Robotics/nanopaste.rsi, state: icon }
+  productEntity: NanoPaste
+  cost:
+    Telecrystal: 4
+  categories:
+  - UplinkMedicine
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - ContractorUplink
+      - ContravendUplink
+  - !type:BuyerSpeciesCondition
+    whitelist:
+    - IPC
+
+# ERT / CBRUN bluespace medicine
+- type: listing
+  id: UplinkNanoPasteBluespace
+  name: uplink-nanopaste-name
+  description: uplink-nanopaste-desc
+  icon: { sprite: /Textures/_Mini/Objects/Specific/Robotics/nanopaste.rsi, state: icon }
+  productEntity: NanoPaste
+  cost:
+    Productunit: 2
+  categories:
+  - ADTUplinkERTmed
+  - UplinkERTMed

@@ -1,0 +1,58 @@
+- type: stack
+  id: NanoPaste
+  name: stack-nanopaste
+  icon: { sprite: /Textures/_Mini/Objects/Specific/Robotics/nanopaste.rsi, state: icon }
+  spawn: NanoPaste1
+  maxCount: 10
+
+- type: entity
+  parent: BaseHealingItem
+  id: NanoPaste
+  name: nanopaste
+  description: A tube of restorative nanomachines for repairing damaged cyborgs and other silicon chassis.
+  suffix: Full
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Specific/Robotics/nanopaste.rsi
+    state: icon
+  - type: Item
+    sprite: _Mini/Objects/Specific/Robotics/nanopaste.rsi
+    size: Small
+  - type: Stack
+    stackType: NanoPaste
+    count: 10
+  - type: Healing
+    damageContainers:
+    - Silicon
+    - SiliconRadiation
+    damage:
+      types:
+        Blunt: -20
+        Slash: -20
+        Piercing: -20
+        Heat: -20
+        Shock: -20
+        Ion: -20
+        Radiation: -10
+    healingBeginSound:
+      path: /Audio/Items/Medical/brutepack_begin.ogg
+    healingEndSound:
+      path: /Audio/Items/Medical/brutepack_end.ogg
+
+- type: entity
+  parent: NanoPaste
+  id: NanoPaste1
+  suffix: Single
+  components:
+  - type: Stack
+    stackType: NanoPaste
+    count: 1
+
+- type: entity
+  parent: NanoPaste
+  id: NanoPaste10
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: NanoPaste
+    count: 10

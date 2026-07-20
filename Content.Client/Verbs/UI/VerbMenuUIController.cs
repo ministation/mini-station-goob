@@ -219,9 +219,11 @@ namespace Content.Client.Verbs.UI
                 return;
             }
 
-            // Server response is the full verb set. UnionWith kept stale entries because
-            // Verb.CompareTo ignores Disabled and valve Text changes leave both open/close.
+            // Replace server/shared verbs so stale Disabled/Text (e.g. valve open/close) don't stick
+            // after UnionWith (CompareTo ignores those). Keep ClientExclusive verbs (VV, examine, etc.).
+            var clientExclusive = CurrentVerbs.Where(v => v.ClientExclusive).ToArray();
             CurrentVerbs.Clear();
+            CurrentVerbs.UnionWith(clientExclusive);
             CurrentVerbs.UnionWith(verbs);
             FillVerbPopup(popup);
         }

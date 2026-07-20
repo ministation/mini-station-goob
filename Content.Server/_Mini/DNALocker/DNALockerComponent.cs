@@ -1,6 +1,6 @@
+using System.Threading;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Audio.Systems;
 using Robust.Shared.Utility;
 
 namespace Content.Server._Mini.DNALocker;
@@ -15,14 +15,15 @@ public sealed partial class DNALockerComponent : Component
     public EntityUid? ActionEntity;
 
     [DataField]
-    public string DNA = String.Empty;
-    public bool IsLocked => DNA != string.Empty;
+    public string DNA = string.Empty;
+
+    public bool IsLocked => !string.IsNullOrEmpty(DNA);
 
     [DataField]
-    public bool DNAWasStored = false;
+    public bool DNAWasStored;
 
     [DataField]
-    public bool Activated = false;
+    public bool Activated;
 
     [DataField("actionIcon")]
     public SpriteSpecifier? ActionIcon;
@@ -50,4 +51,10 @@ public sealed partial class DNALockerComponent : Component
 
     [DataField("deniedSound")]
     public SoundSpecifier DeniedSound = new SoundPathSpecifier("/Audio/Effects/Cargo/buzz_sigh.ogg");
+
+    /// <summary>
+    /// Cancels the self-destruct countdown (emag, unlock, or suit deletion).
+    /// </summary>
+    [NonSerialized]
+    public CancellationTokenSource? ExplosionToken;
 }

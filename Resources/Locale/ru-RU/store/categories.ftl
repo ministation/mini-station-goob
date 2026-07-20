@@ -5,6 +5,7 @@ store-category-weapons = Вооружение
 store-category-ammo = Боеприпасы
 store-category-explosives = Взрывчатка
 store-category-chemicals = Химикаты
+store-category-medicine = Медицина
 store-category-deception = Обман
 store-category-disruption = Саботаж
 store-category-allies = Союзники
