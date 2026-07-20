@@ -6,8 +6,8 @@
   components:
   - type: OreSiloClient
   - type: Sprite
+    noRot: true
     sprite: _CorvaxGoob/Structures/Machines/printer.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]

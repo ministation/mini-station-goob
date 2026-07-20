@@ -1,0 +1,40 @@
+# Ratvar radial menu entries for clockwork structures (referenced from SheetBrass).
+
+- type: construction
+  name: construction-recipe-clockwork-wall
+  id: ClockworkWallConstruction
+  graph: ClockworkGirder
+  startNode: start
+  targetNode: clockworkWall
+  hide: true
+  category: craft-category-RatvarConstruction
+  objectType: Structure
+  entityWhitelist:
+    components:
+    - RatvarRighteous
+  description: construction-recipe-clockwork-wall-desc
+  conditions:
+  - !type:TileNotBlocked
+    failIfSpace: false
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: false
+
+- type: construction
+  name: construction-recipe-pinion-airlock
+  id: PinionAirlockConstruction
+  graph: PinionAirlock
+  startNode: start
+  targetNode: airlock
+  hide: true
+  category: craft-category-RatvarConstruction
+  objectType: Structure
+  entityWhitelist:
+    components:
+    - RatvarRighteous
+  description: construction-recipe-pinion-airlock-desc
+  conditions:
+  - !type:TileNotBlocked
+    failIfSpace: false
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false

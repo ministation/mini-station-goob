@@ -145683,6 +145683,23 @@ entities:
     - type: Transform
       pos: 7.5,-55.5
       parent: 2
+- proto: SpawnPointVirologist
+  entities:
+  - uid: 27700
+    components:
+    - type: Transform
+      pos: 35.5,-54.5
+      parent: 2
+  - uid: 27701
+    components:
+    - type: Transform
+      pos: 39.5,-58.5
+      parent: 2
+  - uid: 27702
+    components:
+    - type: Transform
+      pos: 42.5,-59.5
+      parent: 2
 - proto: SpawnPointWarden
   entities:
   - uid: 22304
@@ -173477,8 +173494,8 @@ entities:
       pos: 4.5,37.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
+      deviceLists:
+      - 27274
 - proto: WeaponEnergyTurretSecurityControlPanel
   entities:
   - uid: 27274
@@ -173487,6 +173504,9 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 5.5,35.5
       parent: 2
+    - type: DeviceList
+      devices:
+      - 27273
 - proto: WeaponLaserCarbinePractice
   entities:
   - uid: 27275

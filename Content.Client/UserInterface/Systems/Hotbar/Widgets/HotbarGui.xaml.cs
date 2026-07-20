@@ -33,8 +33,8 @@ public sealed partial class HotbarGui : UIWidget
 
     public void SetHighlightHand(HandUILocation? hand)
     {
-        StatusPanelLeft.UpdateHighlight(hand is HandUILocation.Left);
-        StatusPanelRight.UpdateHighlight(hand is HandUILocation.Right);
+        StatusPanelLeft.UpdateHighlight(false);
+        StatusPanelRight.UpdateHighlight(false);
     }
 
     public void UpdateStatusVisibility(bool left, bool right)

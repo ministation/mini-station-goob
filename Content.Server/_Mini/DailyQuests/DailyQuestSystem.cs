@@ -28,7 +28,6 @@ using Content.Shared._DV.Salvage.Systems;
 using Content.Shared._Mini.DailyQuests;
 using Content.Shared._Mini.DailyRewards;
 using Content.Shared.Cargo.Components;
-using Content.Shared.Cargo.Components;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems.Hypospray;
 using Content.Shared.Cuffs;

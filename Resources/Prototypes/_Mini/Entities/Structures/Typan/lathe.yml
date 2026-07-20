@@ -6,8 +6,8 @@
   description: Производит базовые изделия из металла и стекла. Имеет возможность обрабатывать чертежи для печати по новым рецептам.
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/autolathe.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -21,6 +21,7 @@
   - type: Machine
     board: AutolatheMachineCircuitboardTypan
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
         - Sheet
@@ -67,7 +68,7 @@
   description: Экспериментальный автолат, использующий технологию экстремального нагрева для замедленного, но гораздо более экономичного создания предметов.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/autolathe_hypercon.rsi
   - type: Machine
     board: AutolatheHyperConvectionMachineCircuitboardTypan
@@ -82,8 +83,8 @@
   description: Преобразует сырьё в продвинутые предметы.
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/protolathe.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -97,6 +98,7 @@
   - type: Machine
     board: ProtolatheMachineCircuitboardTypan
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
         - Sheet
@@ -135,7 +137,7 @@
   description: Экспериментальный протолат, использующий технологию экстремального нагрева для замедленного, но гораздо более экономичного создания предметов.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/protolathe_hypercon.rsi
   - type: Machine
     board: ProtolatheHyperConvectionMachineCircuitboardTypan
@@ -150,8 +152,8 @@
   description: Печатает платы для машин.
   components:
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/circuit_imprinter.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -186,6 +188,7 @@
     - SecurityBoards
     - TypanCloning
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
         - Sheet
@@ -203,7 +206,7 @@
   description: Экспериментальный принтер схем, использующий технологию экстремального нагрева для замедленного, но гораздо более экономичного создания предметов.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/circuit_imprinter_hypercon.rsi
   - type: Machine
     board: CircuitImprinterHyperConvectionMachineCircuitboardTypan
@@ -218,7 +221,7 @@
   description: Печатает запчасти для создания робототехники и других механизмов.
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/exosuit_fabricator.rsi
     layers:
     - state: fab-idle
@@ -244,6 +247,7 @@
     - TypanBorgModulesWeaponry
     - TypanMech
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
       - Sheet
@@ -262,8 +266,8 @@
   - type: Transform
     noRot: false
   - type: Sprite
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/uniform_printer.rsi
-    snapCardinals: false
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -289,6 +293,7 @@
     emagStaticPacks:
     - ClothingCentComm
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
       - Sheet
@@ -305,8 +310,8 @@
   description: Производит кубы животных, используя биомассу
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/biofabricator.rsi
-    snapCardinals: true
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
@@ -323,6 +328,7 @@
   - type: Machine
     board: BiofabricatorMachineCircuitboardTypan
   - type: MaterialStorage
+    connectToSilo: true
     ignoreColor: true
     whitelist:
       tags:
@@ -427,6 +433,7 @@
     - TypanGrenades
     - TypanLightRifleAmmoResearch
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
         - Sheet
@@ -436,14 +443,14 @@
 
 
 - type: entity
-  parent: OreProcessor
+  parent: [OreProcessor, BaseSiloUtilizer]
   id: OreProcessorTypan
   name: переработчик руды
   description: Производит металлические листы и слитки из руды.
   suffix: Тайпан
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/ore_processor.rsi
     layers:
     - state: icon
@@ -468,7 +475,6 @@
       - Ore
   - type: MiningPoints
   - type: MiningPointsLathe
-  - type: OreSiloClient
   - type: Lathe
     idleState: icon
     runningState: building
@@ -478,14 +484,14 @@
     - RGlassSmelting
 
 - type: entity
-  parent: OreProcessorIndustrial
+  parent: [OreProcessorIndustrial, BaseSiloUtilizer]
   id: OreProcessorIndustrialTypan
   name: промышленный переработчик руды
   description: Переработчик руды, разработанный специально для производства металлов в промышленных масштабах.
   suffix: Тайпан
   components:
   - type: Sprite
-    snapCardinals: true
+    noRot: true
     sprite: _Mini/Structures/Machines/Typan/ore_processor_industrial.rsi
   - type: Machine
     board: OreProcessorIndustrialMachineCircuitboardTypan
@@ -498,4 +504,5 @@
     - TypanAdvancedSmelting
   - type: MiningPoints
   - type: MiningPointsLathe
-  - type: OreSiloClient
+  - type: MaterialStorage
+    connectToSilo: true

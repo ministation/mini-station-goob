@@ -92,7 +92,7 @@ namespace Content.Client.UserInterface.Controls
         private string? _storageTexturePath;
         public string? StorageTexturePath
         {
-            get => _buttonTexturePath;
+            get => _storageTexturePath;
             set
             {
                 _storageTexturePath = value;

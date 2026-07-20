@@ -686,9 +686,9 @@
   name: syndicate ID card
   components:
   - type: Sprite
+    sprite: Objects/Misc/id_cards.rsi
     layers:
-    - state: black
-    - state: syndi
+    - state: syndie
   - type: Access
     tags:
     - NuclearOperative

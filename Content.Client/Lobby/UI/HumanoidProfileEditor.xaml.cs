@@ -760,7 +760,7 @@ namespace Content.Client.Lobby.UI
                 return;
 
             _ttsTab.UpdateControls(Profile, Profile.Sex);
-            _ttsTab.SetSelectedVoice(Profile.Voice);
+            _ttsTab.SetSelectedVoice(Profile.TTSVoice);
         }
 
         #endregion

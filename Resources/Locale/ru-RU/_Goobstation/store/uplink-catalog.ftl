@@ -152,10 +152,10 @@ uplink-heavy-shotgun-magazine-slug-name = Барабан (.2 взрывной п
 uplink-heavy-shotgun-magazine-slug-desc = Магазин с 15 осколочно-зажигательными пульными патронами. Совместим с NZ CSG-242.
 uplink-m7s-mag-name = Коробка боковых магазинов ПП (5x23 мм)
 uplink-m7s-mag-desc = Синдикатная коробка с 3 магазинами по 48 патронов 5x23 мм. Совместим с M7S.
-uplink-cartridge-G8-demolishing-name = Разрушительный патрон G8
-uplink-cartridge-G8-demolishing-desc = Этот патрон стреляет пулей "Копьё Ареса", разрушающей целые линии стен, наносящей сильный урон выносливости и перегружающей энергетические вихри. Совместим с HE1S-G8.
-uplink-cartridge-G8-hypercharged-name = Гиперзаряженный патрон G8
-uplink-cartridge-G8-hypercharged-desc = Этот патрон стреляет пулей "Молния Зевса", оглушающей всё на пути и создающей энергетический вихрь в точке попадания, вызывающий мощный взрыв при перегрузке. Совместим с HE1S-G8.
+uplink-cartridge-G8-demolishing-name = Коробка разрушительных патронов G8
+uplink-cartridge-G8-demolishing-desc = Синдикатная коробка с 4 патронами G8. Стреляют пулей «Копьё Ареса», разрушая линии стен, нанося сильный урон выносливости и перегружая энергетические вихри. Для HE1S-G8.
+uplink-cartridge-G8-hypercharged-name = Коробка гиперзаряженных патронов G8
+uplink-cartridge-G8-hypercharged-desc = Синдикатная коробка с 4 патронами G8. Стреляют пулей «Молния Зевса», оглушая всё на пути и создавая энергетический вихрь со взрывом при перегрузке. Для HE1S-G8.
 uplink-high-caliber-shotgun-box-name = Коробка ружейных патронов (.8 калибр)
 uplink-high-caliber-shotgun-box-desc = 16 патронов 8 калибра для дробовика.
 uplink-high-caliber-shotgun-box-slug-name = Коробка ружейных патронов (.8 пули)
@@ -166,8 +166,8 @@ uplink-m90-ammo-name = Магазин (.20)
 uplink-m90-ammo-desc = 25 патронов .20 калибра. Совместим с M-90 и Лектером.
 uplink-high-caliber-shotgun-box-sarin-name = Коробка ружейных патронов (.8 газ)
 uplink-high-caliber-shotgun-box-sarin-desc = 16 патронов 8 калибра с газом зарин для боевого дробовика, выпускающих небольшое облако газа.
-uplink-estoc-ammo-name = Коробка магазинов (.20 винтовочные)
-uplink-estoc-ammo-desc = Синдикатная коробка с 3 магазинами по 30 патронов .20. Совместим с «Эсток».
+uplink-estoc-ammo-name = Магазин (.30)
+uplink-estoc-ammo-desc = Магазин .30 калибра. Совместим с Эсток.
 
 # Grenades
 

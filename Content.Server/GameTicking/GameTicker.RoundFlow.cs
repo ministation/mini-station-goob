@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Server._CorvaxGoob.Announcer;
 using Content.Server.Announcements;
 using Content.Server.Discord;
 using Content.Server.GameTicking.Events;
@@ -34,6 +35,7 @@ namespace Content.Server.GameTicking
         [Dependency] private DiscordWebhook _discord = default!;
         [Dependency] private RoleSystem _role = default!;
         [Dependency] private ITaskManager _taskManager = default!;
+        [Dependency] private readonly AnnouncerSystem _announcer = default!;
 
         private static readonly Counter RoundNumberMetric = Metrics.CreateCounter(
             "ss14_round_number",
@@ -442,6 +444,7 @@ namespace Content.Server.GameTicking
             AnnounceRound();
             UpdateInfoText();
             SendRoundStartedDiscordMessage();
+            RaiseLocalEvent(new RoundStartedEvent(RoundId)); // CorvaxGoob-StationGoal
 
 #if EXCEPTION_TOLERANCE
             }
@@ -803,6 +806,12 @@ namespace Content.Server.GameTicking
 
             var options = ProtoMan.EnumeratePrototypes<RoundAnnouncementPrototype>().ToList();
 
+            // CorvaxGoob-CustomAnnouncers: only play stock welcome when no calendar announcer is active.
+            if (_announcer.TryGetAnnouncerToday(out var announcerPrototype))
+                options = options.Where(opt => opt.Announcer == announcerPrototype.ID).ToList();
+            else
+                options = options.Where(opt => opt.Announcer == "Default").ToList();
+
             if (options.Count == 0)
                 return;
 
@@ -812,7 +821,7 @@ namespace Content.Server.GameTicking
                 _chatSystem.DispatchGlobalAnnouncement(Loc.GetString(proto.Message), playSound: true);
 
             if (proto.Sound != null)
-                _audio.PlayGlobal(proto.Sound, Filter.Broadcast(), true);
+                _chatSystem.SendGlobalSound(proto.Sound, Filter.Broadcast());
         }
 
         private async void SendRoundStartedDiscordMessage()

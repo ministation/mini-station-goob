@@ -1,3 +1,4 @@
+using Content.Shared.Clothing.EntitySystems;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
@@ -19,7 +20,7 @@ public sealed partial class IngestionSystem
 
     public void InitializeUtensils()
     {
-        SubscribeLocalEvent<UtensilComponent, AfterInteractEvent>(OnAfterInteract, after: new[] { typeof(ToolOpenableSystem) });
+        SubscribeLocalEvent<UtensilComponent, AfterInteractEvent>(OnAfterInteract, after: [typeof(ToolOpenableSystem), typeof(ClothingSystem)]);
 
         SubscribeLocalEvent<EdibleComponent, GetUtensilsEvent>(OnGetEdibleUtensils);
 

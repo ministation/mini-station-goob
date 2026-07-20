@@ -72,9 +72,15 @@ public sealed partial class StickerSelectorWindow : DefaultWindow
                 continue;
             }
 
+            var isMiniEmoji = sticker.TexturePath.ToString()
+                .Contains("_Mini/Interface/Emoji", StringComparison.OrdinalIgnoreCase);
+            var iconSize = isMiniEmoji ? 36f / 1.5f : 36f; // ~24 for Mini
+            var btnSize = isMiniEmoji ? 48f / 1.5f : 48f;
+
             var btn = new Button
             {
-                MinSize = new Vector2(40, 40),
+                MinSize = new Vector2(btnSize, btnSize),
+                MaxSize = new Vector2(btnSize + 8f, btnSize + 8f),
                 ToolTip = sticker.ID
             };
 
@@ -84,8 +90,9 @@ public sealed partial class StickerSelectorWindow : DefaultWindow
                 Stretch = TextureRect.StretchMode.KeepAspectCentered,
                 HorizontalAlignment = Control.HAlignment.Center,
                 VerticalAlignment = Control.VAlignment.Center,
-                MinSize = new Vector2(32, 32),
-                MaxSize = new Vector2(32, 32)
+                SetSize = new Vector2(iconSize, iconSize),
+                MinSize = new Vector2(iconSize, iconSize),
+                MaxSize = new Vector2(iconSize, iconSize)
             };
 
             btn.AddChild(texRect);

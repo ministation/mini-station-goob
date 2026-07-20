@@ -17,6 +17,7 @@
   - type: Advertise
     pack: SyndieDrobeAds
   - type: Sprite
+    noRot: true
     sprite: _NF/Structures/Machines/VendingMachines/contravend.rsi
     layers:
     - state: "off"

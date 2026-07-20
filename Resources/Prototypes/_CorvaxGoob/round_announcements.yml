@@ -26,3 +26,4 @@
 - type: roundAnnouncement
   id: EnjoyYS
   sound: /Audio/_CorvaxGoob/Announcements/enjoyyourstay.ogg
+  announcer: Intern

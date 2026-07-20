@@ -111,7 +111,7 @@ namespace Content.Client.Verbs.UI
             Close();
 
             var menu = popup ?? _context.RootMenu;
-            menu.MenuBody.RemoveAllChildren();
+            menu.MenuBody.DisposeAllChildren();
 
             CurrentTarget = target;
             CurrentVerbs = _verbSystem.GetVerbs(target, user, Verb.VerbTypes, out ExtraCategories, force);
@@ -209,7 +209,7 @@ namespace Content.Client.Verbs.UI
         /// </summary>
         public void AddServerVerbs(List<Verb>? verbs, ContextMenuPopup popup)
         {
-            popup.MenuBody.RemoveAllChildren();
+            popup.MenuBody.DisposeAllChildren();
 
             // Verbs may be null if the server does not think we can see the target entity. This **should** not happen.
             if (verbs == null)
@@ -225,7 +225,9 @@ namespace Content.Client.Verbs.UI
 
         public void OnKeyBindDown(ContextMenuElement element, GUIBoundKeyEventArgs args)
         {
-            if (args.Function != EngineKeyFunctions.Use && args.Function != ContentKeyFunctions.ActivateItemInWorld)
+            if (args.Function != EngineKeyFunctions.Use
+                && args.Function != EngineKeyFunctions.UIClick
+                && args.Function != ContentKeyFunctions.ActivateItemInWorld)
                 return;
 
             if (element is not VerbMenuElement verbElement)
@@ -307,7 +309,20 @@ namespace Content.Client.Verbs.UI
             _verbSystem.ExecuteVerb(CurrentTarget, verb);
 
             if (verb.CloseMenu ?? verb.CloseMenuDefault)
+            {
                 _context.Close();
+                return;
+            }
+
+            if (OpenMenu == null || !OpenMenu.Visible)
+                return;
+
+            if (_playerManager.LocalEntity is not { Valid: true } user)
+                return;
+
+            CurrentVerbs = _verbSystem.GetVerbs(CurrentTarget, user, Verb.VerbTypes, out ExtraCategories);
+            OpenMenu.MenuBody.DisposeAllChildren();
+            FillVerbPopup(OpenMenu);
         }
     }
 }

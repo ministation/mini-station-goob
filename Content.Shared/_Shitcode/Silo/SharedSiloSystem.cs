@@ -12,8 +12,10 @@ using Content.Goobstation.Common.Silo;
 using Content.Shared.DeviceLinking;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Materials;
+using Content.Shared.Power.EntitySystems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Shared._Goobstation.Silo;
 
@@ -22,6 +24,8 @@ public abstract class SharedSiloSystem : EntitySystem
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] protected readonly SharedDeviceLinkSystem DeviceLink = default!;
     [Dependency] protected readonly SharedMaterialStorageSystem _materialStorage = default!;
+    [Dependency] private readonly SharedPowerReceiverSystem _powerReceiver = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     private bool _siloEnabled;
 
@@ -36,6 +40,8 @@ public abstract class SharedSiloSystem : EntitySystem
 
         SubscribeLocalEvent<SiloComponent, NewLinkEvent>(OnNewLink);
         SubscribeLocalEvent<SiloUtilizerComponent, PortDisconnectedEvent>(OnPortDisconnected);
+        SubscribeLocalEvent<SiloUtilizerComponent, GetStoredMaterialsEvent>(OnGetStoredMaterials);
+        SubscribeLocalEvent<SiloUtilizerComponent, ConsumeStoredMaterialsEvent>(OnConsumeStoredMaterials);
     }
 
     private void OnPortDisconnected(Entity<SiloUtilizerComponent> ent, ref PortDisconnectedEvent args)
@@ -74,6 +80,56 @@ public abstract class SharedSiloSystem : EntitySystem
 
         utilizer.Silo = ent;
         Dirty(args.Sink, utilizer);
+    }
+
+    private void OnGetStoredMaterials(Entity<SiloUtilizerComponent> ent, ref GetStoredMaterialsEvent args)
+    {
+        if (args.LocalOnly || args.Entity.Owner != ent.Owner)
+            return;
+
+        var silo = GetSilo(ent);
+        if (silo == null || !CanTransmitMaterials(silo.Value.Owner, ent.Owner))
+            return;
+
+        var materials = _materialStorage.GetStoredMaterials((silo.Value.Owner, silo.Value.Comp), localOnly: true);
+
+        foreach (var (mat, amount) in materials)
+        {
+            if (!_materialStorage.IsMaterialWhitelisted((args.Entity.Owner, args.Entity.Comp), mat))
+                continue;
+
+            var existing = args.Materials.GetOrNew(mat);
+            args.Materials[mat] = existing + amount;
+        }
+    }
+
+    private void OnConsumeStoredMaterials(Entity<SiloUtilizerComponent> ent, ref ConsumeStoredMaterialsEvent args)
+    {
+        if (args.LocalOnly || args.Entity.Owner != ent.Owner)
+            return;
+
+        var silo = GetSilo(ent);
+        if (silo == null || !CanTransmitMaterials(silo.Value.Owner, ent.Owner))
+            return;
+
+        foreach (var (mat, amount) in args.Materials)
+        {
+            if (!_materialStorage.TryChangeMaterialAmount(silo.Value.Owner, mat, amount, silo.Value.Comp))
+                continue;
+
+            args.Materials[mat] = 0;
+        }
+    }
+
+    private bool CanTransmitMaterials(EntityUid silo, EntityUid utilizer)
+    {
+        if (!_powerReceiver.IsPowered((silo, null)))
+            return false;
+
+        if (_transform.GetGrid(utilizer) != _transform.GetGrid(silo))
+            return false;
+
+        return true;
     }
 
     public bool TryGetMaterialAmount(EntityUid machine, string material, out int amount)

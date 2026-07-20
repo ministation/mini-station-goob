@@ -45,7 +45,8 @@ public sealed class StoreBoundUserInterface : BoundUserInterface
         _menu.OnCategoryButtonPressed += (_, category) =>
         {
             _menu.CurrentCategory = category;
-            _menu?.UpdateListing();
+            // Rebuild category chrome so selection highlight / modulate don't stick on the previous tab.
+            UpdateListingsWithSearchFilter();
         };
 
         _menu.OnWithdrawAttempt += (_, type, amount) =>

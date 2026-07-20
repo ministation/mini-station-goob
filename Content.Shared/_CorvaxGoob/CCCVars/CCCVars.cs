@@ -101,7 +101,7 @@ public sealed class CCCVars
     /// Activate announcer in round by their special calendar.
     /// </summary>
     public static readonly CVarDef<bool> CalendarAnnouncerEnabled =
-        CVarDef.Create("announcer.calendar", true, CVar.SERVERONLY);
+        CVarDef.Create("announcer.calendar", false, CVar.SERVERONLY);
 
     public static readonly CVarDef<bool> DiscordAuthEnabled =
         CVarDef.Create("discord_auth.enabled", false, CVar.SERVERONLY);

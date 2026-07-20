@@ -142,6 +142,7 @@ using Content.Client.Resources;
 using Content.Client.Silicons.Laws.SiliconLawEditUi;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Controls.FancyTree;
+using Content.Client.UserInterface.Systems.Actions.Controls;
 using Content.Client.Verbs.UI;
 using Content.Goobstation.UIKit.UserInterface.Controls;
 using Content.Shared.Verbs;
@@ -191,6 +192,7 @@ namespace Content.Client.Stylesheets
         public const string StyleClassTooltipActionCharges = "tooltipActionCharges";
         public const string StyleClassHotbarSlotNumber = "hotbarSlotNumber";
         public const string StyleClassActionSearchBox = "actionSearchBox";
+        public const string StyleClassActionMenuItem = "actionMenuItem";
         public const string StyleClassActionMenuItemRevoked = "actionMenuItemRevoked";
         public const string StyleClassChatLineEdit = "chatLineEdit";
         public const string StyleClassChatChannelSelectorButton = "chatSelectorOptionButton";
@@ -261,7 +263,7 @@ namespace Content.Client.Stylesheets
 
         // Context menu button colors
         public static readonly Color ButtonColorContext = Color.FromHex("#2d3341d9");
-        public static readonly Color ButtonColorContextHover = Color.FromHex("#2d2e33");
+        public static readonly Color ButtonColorContextHover = Color.FromHex("#3d4556");
         public static readonly Color ButtonColorContextPressed = Color.FromHex("#404352");
         public static readonly Color ButtonColorContextDisabled = Color.Black;
 
@@ -1008,6 +1010,13 @@ namespace Content.Client.Stylesheets
                     {
                         new StyleProperty(PanelContainer.StylePropertyPanel, handSlotHighlight),
                     }),
+                // action bar / action menu hover highlight (ActionSheetlet is unused on Mini)
+                new StyleRule(
+                    new SelectorElement(typeof(PanelContainer), new[] {ActionButton.StyleClassActionHighlightRect}, null, null),
+                    new[]
+                    {
+                        new StyleProperty(PanelContainer.StylePropertyPanel, handSlotHighlight),
+                    }),
                 // Hotbar background
                 new StyleRule(new SelectorElement(typeof(PanelContainer), new[] {StyleClassHotbarPanel}, null, null),
                     new[]
@@ -1345,6 +1354,40 @@ namespace Content.Client.Stylesheets
                     {
                         new StyleProperty(LineEdit.StylePropertyStyleBox, actionSearchBox),
                     }),
+
+                // User action panel menu buttons
+                Element<Button>().Class(StyleClassActionMenuItem)
+                    .Prop(Button.StylePropertyStyleBox, buttonRectActionMenuItem)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
+                Element<Button>().Class(StyleClassActionMenuItem)
+                    .Pseudo(ContainerButton.StylePseudoClassNormal)
+                    .Prop(Button.StylePropertyStyleBox, buttonRectActionMenuItem)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
+                Element<Button>().Class(StyleClassActionMenuItem)
+                    .Pseudo(ContainerButton.StylePseudoClassHover)
+                    .Prop(Button.StylePropertyStyleBox, buttonRectActionMenuItemHover)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
+                Element<Button>().Class(StyleClassActionMenuItem)
+                    .Pseudo(ContainerButton.StylePseudoClassPressed)
+                    .Prop(Button.StylePropertyStyleBox, buttonRectActionMenuItemPressed)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
+                Element<Button>().Class(StyleClassActionMenuItemRevoked)
+                    .Prop(Button.StylePropertyStyleBox, buttonRectActionMenuItemRevoked)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
+                Element<Button>().Class(StyleClassActionMenuItemRevoked)
+                    .Pseudo(ContainerButton.StylePseudoClassHover)
+                    .Prop(Button.StylePropertyStyleBox, buttonRectActionMenuItemHover)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
+
+                Element<Button>().Class(StyleClassActionMenuItemRevoked)
+                    .Pseudo(ContainerButton.StylePseudoClassPressed)
+                    .Prop(Button.StylePropertyStyleBox, buttonRectActionMenuItemPressed)
+                    .Prop(Control.StylePropertyModulateSelf, Color.White),
 
                 // TabContainer
                 new StyleRule(new SelectorElement(typeof(TabContainer), null, null, null),
@@ -2156,6 +2199,15 @@ namespace Content.Client.Stylesheets
                     .Pseudo(TextureButton.StylePseudoClassHover)
                     .Prop(TextureButton.StylePropertyTexture, resCache.GetTexture("/Textures/Interface/Radial/button_hover.png"))
                     .Prop(Control.StylePropertyModulateSelf, Accent("#C5D0DCFF", 0.28f)),
+
+                Element<RadialMenuButton>().Class("RadialMenuButton")
+                    .Prop(Control.StylePropertyModulateSelf, Accent("#AAB5C4FF", 0.22f)),
+                Element<RadialMenuButton>().Class("RadialMenuButton")
+                    .Pseudo(ContainerButton.StylePseudoClassHover)
+                    .Prop(Control.StylePropertyModulateSelf, Accent("#C5D0DCFF", 0.28f)),
+                Element<RadialMenuButton>().Class("RadialMenuButton")
+                    .Pseudo(ContainerButton.StylePseudoClassPressed)
+                    .Prop(Control.StylePropertyModulateSelf, Accent("#D8E2ECFF", 0.32f)),
 
                 Element<TextureButton>().Class("RadialMenuCloseButton")
                     .Prop(TextureButton.StylePropertyTexture, resCache.GetTexture("/Textures/Interface/Radial/close_normal.png"))

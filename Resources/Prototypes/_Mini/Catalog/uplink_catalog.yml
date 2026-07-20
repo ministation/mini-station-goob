@@ -167,7 +167,7 @@
   icon: { sprite: Clothing/Back/Duffels/syndicate.rsi, state: icon-ammo }
   productEntity: ClothingBackpackDuffelSyndicateAmmoFilled
   cost:
-    Telecrystal: 3
+    Telecrystal: 15 # Goob 75 / 5
   categories:
   - UplinkAmmo
   conditions:

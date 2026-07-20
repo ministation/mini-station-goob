@@ -172,7 +172,10 @@
   - type: SleepEmitSound
   - type: SSDIndicator
   - type: StandingState
+    downFrictionMod: 0.65
   - type: Crawler
+    speedModifier: 0.6
+    standTime: 1.2
   - type: Dna
   - type: Scent # Einstein Engines
   - type: MindContainer

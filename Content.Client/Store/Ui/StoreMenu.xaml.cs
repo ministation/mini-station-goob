@@ -11,6 +11,7 @@ using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
+using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client.Store.Ui;
@@ -36,6 +37,10 @@ public sealed partial class StoreMenu : DefaultWindow
 
     private List<ListingData> _cachedListings = new();
 
+    private static readonly Color DefaultAccent = Color.FromHex("#C23B3B");
+    private static readonly Color CategoryBg = Color.FromHex("#141A24");
+    private static readonly Color CategoryBgSelected = Color.FromHex("#2A3A55");
+
     public StoreMenu()
     {
         RobustXamlLoader.Load(this);
@@ -60,7 +65,7 @@ public sealed partial class StoreMenu : DefaultWindow
                 ("currency", Loc.GetString(proto.DisplayName, ("amount", 1)))) + "\n";
         }
 
-        BalanceInfo.SetMarkup(balanceStr.TrimEnd());
+        BalanceInfo.SetMarkup($"[color=#F2F4F8][bold]{balanceStr.TrimEnd()}[/bold][/color]");
 
         var disabled = true;
         foreach (var type in currency)
@@ -133,13 +138,21 @@ public sealed partial class StoreMenu : DefaultWindow
         var spriteSys = _entityManager.EntitySysManager.GetEntitySystem<SpriteSystem>();
 
         Texture? texture = null;
-        if (listing.Icon != null)
-            texture = spriteSys.Frame0(listing.Icon);
+        EntProtoId? productProto = null;
 
-        if (listing.ProductEntity != null)
+        // Show real product sprites for magazines/speedloaders so MagazineVisuals ammo layers appear.
+        // Custom listing icons are used for boxes / special catalog art.
+        if (listing.ProductEntity != null && PreferEntityProductSprite(listing.ProductEntity.Value))
         {
-            if (texture == null)
-                texture = spriteSys.GetPrototypeIcon(listing.ProductEntity).Default;
+            productProto = listing.ProductEntity;
+        }
+        else if (listing.Icon != null)
+        {
+            texture = spriteSys.Frame0(listing.Icon);
+        }
+        else if (listing.ProductEntity != null)
+        {
+            productProto = listing.ProductEntity;
         }
         else if (listing.ProductAction != null)
         {
@@ -148,7 +161,9 @@ public sealed partial class StoreMenu : DefaultWindow
                 texture = spriteSys.Frame0(icon);
         }
 
-        var newListing = new StoreListingControl(listing, GetListingPriceString(listing), hasBalance, texture);
+        var accent = GetCategoryAccent(CurrentCategory);
+        var (priceText, currencyTex) = GetListingPriceDisplay(listing, spriteSys);
+        var newListing = new StoreListingControl(listing, priceText, hasBalance, texture, accent, currencyTex, productProto);
 
         if (listing.DiscountValue > 0) // WD EDIT
             newListing.StoreItemBuyButton.AddStyleClass("ButtonColorRed");
@@ -157,6 +172,14 @@ public sealed partial class StoreMenu : DefaultWindow
             => OnListingButtonPressed?.Invoke(args, listing);
 
         StoreListingsContainer.AddChild(newListing);
+    }
+
+    private static bool PreferEntityProductSprite(EntProtoId product)
+    {
+        var id = product.Id;
+        // Layered BallisticAmmoProvider mags — Icon/base alone looks empty in the store.
+        return id.StartsWith("Magazine", StringComparison.Ordinal)
+               || id.StartsWith("SpeedLoader", StringComparison.Ordinal);
     }
 
     public bool HasListingPrice(Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2> currency, Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2> price)
@@ -170,6 +193,37 @@ public sealed partial class StoreMenu : DefaultWindow
                 return false;
         }
         return true;
+    }
+
+    private (string Text, Texture? Icon) GetListingPriceDisplay(ListingData listing, SpriteSystem spriteSys)
+    {
+        if (listing.Cost.Count < 1)
+            return (Loc.GetString("store-currency-free"), null);
+
+        // Prefer a single currency amount + icon (e.g. telecrystal sprite next to "2").
+        if (listing.Cost.Count == 1)
+        {
+            var (type, amount) = listing.Cost.First();
+            var currency = _prototypeManager.Index(type);
+            Texture? icon = null;
+
+            if (currency.Cash is { } cash && cash.Count > 0)
+            {
+                var cashProto = cash.Values.First();
+                icon = spriteSys.GetPrototypeIcon(cashProto.Id).Default;
+            }
+
+            if (icon != null)
+                return (amount.ToString(), icon);
+
+            return (Loc.GetString(
+                "store-ui-price-display",
+                ("amount", amount),
+                ("currency", Loc.GetString(currency.DisplayName, ("amount", amount)))
+            ), null);
+        }
+
+        return (GetListingPriceString(listing), null);
     }
 
     private string GetListingPriceString(ListingData listing)
@@ -229,22 +283,52 @@ public sealed partial class StoreMenu : DefaultWindow
         var group = new ButtonGroup();
         foreach (var proto in allCategories)
         {
+            var accent = proto.AccentColor ?? (proto.Evil ? Color.FromHex("#D43B3B") : DefaultAccent);
+            var selected = proto.ID == CurrentCategory;
+
+            var rail = new PanelContainer
+            {
+                HorizontalExpand = true,
+                Margin = new Thickness(0, 0, 0, 3),
+                PanelOverride = new StyleBoxFlat
+                {
+                    BackgroundColor = selected ? CategoryBgSelected : CategoryBg,
+                    BorderColor = accent,
+                    BorderThickness = new Thickness(3, 0, 0, 0),
+                    ContentMarginLeftOverride = 2,
+                    ContentMarginRightOverride = 2,
+                    ContentMarginTopOverride = 0,
+                    ContentMarginBottomOverride = 0,
+                },
+            };
+
             var catButton = new StoreCategoryButton
             {
                 Text = Loc.GetString(proto.Name),
                 Id = proto.ID,
-                Pressed = proto.ID == CurrentCategory,
+                Pressed = selected,
                 Group = group,
                 ToggleMode = true,
-                StyleClasses = { "OpenBoth" }
+                HorizontalExpand = true,
+                MinHeight = 32,
             };
 
-            if (proto.Evil) // Goobstation
+            // Selection is shown via Pressed + rail background only — don't tint with accent (looks "stuck" red).
+            if (proto.Evil && !selected)
                 catButton.AddStyleClass("ButtonColorRed");
 
-            catButton.OnPressed += args => OnCategoryButtonPressed?.Invoke(args, catButton.Id);
-            CategoryListContainer.AddChild(catButton);
+            catButton.OnPressed += args => OnCategoryButtonPressed?.Invoke(args, catButton.Id!);
+            rail.AddChild(catButton);
+            CategoryListContainer.AddChild(rail);
         }
+    }
+
+    private Color GetCategoryAccent(string categoryId)
+    {
+        if (_prototypeManager.TryIndex<StoreCategoryPrototype>(categoryId, out var proto) && proto.AccentColor != null)
+            return proto.AccentColor.Value;
+
+        return DefaultAccent;
     }
 
     public override void Close()

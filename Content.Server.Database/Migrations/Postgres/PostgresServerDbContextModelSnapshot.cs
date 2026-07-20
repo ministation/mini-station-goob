@@ -1363,12 +1363,16 @@ namespace Content.Server.Database.Migrations.Postgres
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("species");
-
-                    b.Property<string>("Voice")
+                    // Corvax-TTS-Start
+                    b.Property<string>("TTSVoice")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("voice");
+                        .HasColumnName("ttsvoice");
 
+                    b.Property<string>("Voice")
+                        .HasColumnType("text")
+                        .HasColumnName("voice");
+                    // Corvax-TTS-End
                     b.HasKey("Id")
                         .HasName("PK_profile");
 

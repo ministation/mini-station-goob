@@ -123,7 +123,10 @@ public sealed partial class SimpleRadialMenu : RadialMenu
     {
         var button = settings.UseSectors
             ? ConvertToButtonWithSector(model, settings)
-            : new RadialMenuButton();
+            : new RadialMenuButton
+            {
+                StyleClasses = { "RadialMenuButton" },
+            };
         button.SetSize = new Vector2(64f, 64f);
         button.ToolTip = model.ToolTip;
         var imageControl = model.IconSpecifier switch
@@ -199,7 +202,8 @@ public sealed partial class SimpleRadialMenu : RadialMenu
         var button = new RadialMenuButtonWithSector
         {
             DrawBorder = settings.DisplayBorders,
-            DrawBackground = !settings.NoBackground
+            DrawBackground = !settings.NoBackground,
+            StyleClasses = { "RadialMenuButton" },
         };
         if (model.BackgroundColor.HasValue)
         {

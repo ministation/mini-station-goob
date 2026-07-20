@@ -31,6 +31,8 @@ store-category-job = Job
 store-category-wearables = Wearables
 store-category-contractor = Contractor
 store-category-pointless = Pointless
+store-category-silicon = Silicon
+store-category-materials = Materials
 store-discounted-items = Discounts
 
 # Revenant
