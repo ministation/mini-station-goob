@@ -61,21 +61,20 @@ jobs:
       run: dotnet test --no-build --configuration DebugOpt Content.Tests/Content.Tests.csproj --filter "FullyQualifiedName!~Content.Tests.Client.Stylesheets.StyleGlassStylesheetTests" -- NUnit.ConsoleOut=0
 
     - name: Run Content.IntegrationTests
-      shell: pwsh
+      shell: bash
       env:
+        DOTNET_gcServer: 1
         SHARD: ${{ matrix.shard }}
       run: |
-        $env:DOTNET_gcServer = 1
-        $filter = switch ($env:SHARD) {
-          "heavy" {
-            "FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest"
-          }
-          default {
-            "FullyQualifiedName!~Content.IntegrationTests.Tests.EntityTest&FullyQualifiedName!~Content.IntegrationTests.Tests.PostMapInitTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.StationPowerTests&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.PowerTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Atmos.AirtightTest&FullyQualifiedName!~Content.IntegrationTests.Tests.ClickableTest"
-          }
-        }
-        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj --filter "$filter" -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
-        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        set -euo pipefail
+        if [ "$SHARD" = "heavy" ]; then
+          FILTER='FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest'
+        else
+          FILTER='FullyQualifiedName!~Content.IntegrationTests.Tests.EntityTest&FullyQualifiedName!~Content.IntegrationTests.Tests.PostMapInitTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.StationPowerTests&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.PowerTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Atmos.AirtightTest&FullyQualifiedName!~Content.IntegrationTests.Tests.ClickableTest'
+        fi
+        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj \
+          --filter "$FILTER" \
+          -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.NumberOfTestWorkers=1
 
   ci-success:
     name: Build & Test Debug
