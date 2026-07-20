@@ -70,6 +70,8 @@ public sealed class AnnouncerSystem : EntitySystem
 
         if (_resetCountdown is null && _enabled)
             _announcerToday = CalculateAvailableAnnouncerToday();
+        else if (_resetCountdown is null)
+            _announcerToday = null;
     }
     public AnnouncerPrototype? GetAnnouncerToday() => _announcerToday;
 

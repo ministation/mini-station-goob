@@ -7,7 +7,6 @@
   - /Audio/Announcements/RoundEnd/disappointed.ogg
   - /Audio/Announcements/RoundEnd/notevenpaidforthis.ogg
   - /Audio/Announcements/RoundEnd/stalemate.ogg
-  - /Audio/_CorvaxGoob/Announcements/Announcers/Intern/irod.ogg # CorvaxGoob
 
 - type: soundCollection
   id: PowerOn
