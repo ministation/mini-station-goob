@@ -28,7 +28,6 @@ using Content.Shared._DV.Salvage.Systems;
 using Content.Shared._Mini.DailyQuests;
 using Content.Shared._Mini.DailyRewards;
 using Content.Shared.Cargo.Components;
-using Content.Shared.Cargo.Components;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems.Hypospray;
 using Content.Shared.Cuffs;
@@ -120,7 +119,7 @@ public sealed class DailyQuestSystem : EntitySystem
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<DamageableComponent, DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<MeleeHitEvent>(OnMeleeHit);
-        SubscribeLocalEvent<EmoteEvent>(OnEmotePerformed);
+        SubscribeLocalEvent<EmotePerformedEvent>(OnEmotePerformed);
         SubscribeLocalEvent<CargoBountyLabelPrintedEvent>(OnCargoBountyLabelPrinted);
         SubscribeLocalEvent<StructureWeldedEvent>(OnStructureWelded);
         SubscribeLocalEvent<MiningPointsClaimedEvent>(OnMiningPointsClaimed);
@@ -703,12 +702,9 @@ public sealed class DailyQuestSystem : EntitySystem
         }
     }
 
-    private void OnEmotePerformed(EntityUid uid, ref EmoteEvent args)
+    private void OnEmotePerformed(ref EmotePerformedEvent args)
     {
-        if (!args.Voluntary)
-            return;
-
-        TryIncrement(uid, DailyQuestType.PerformEmotes);
+        TryIncrement(args.User, DailyQuestType.PerformEmotes);
     }
 
     private void OnCargoBountyLabelPrinted(ref CargoBountyLabelPrintedEvent args)

@@ -15,6 +15,7 @@ using Content.Shared.Materials;
 using Content.Shared.Power.EntitySystems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Shared._Goobstation.Silo;
 
@@ -87,14 +88,14 @@ public abstract class SharedSiloSystem : EntitySystem
             return;
 
         var silo = GetSilo(ent);
-        if (silo == null || !CanTransmitMaterials(silo.Value, ent))
+        if (silo == null || !CanTransmitMaterials(silo.Value.Owner, ent.Owner))
             return;
 
-        var materials = _materialStorage.GetStoredMaterials(silo.Value, localOnly: true);
+        var materials = _materialStorage.GetStoredMaterials((silo.Value.Owner, silo.Value.Comp), localOnly: true);
 
         foreach (var (mat, amount) in materials)
         {
-            if (!_materialStorage.IsMaterialWhitelisted(args.Entity, mat))
+            if (!_materialStorage.IsMaterialWhitelisted((args.Entity.Owner, args.Entity.Comp), mat))
                 continue;
 
             var existing = args.Materials.GetOrNew(mat);
@@ -108,21 +109,21 @@ public abstract class SharedSiloSystem : EntitySystem
             return;
 
         var silo = GetSilo(ent);
-        if (silo == null || !CanTransmitMaterials(silo.Value, ent))
+        if (silo == null || !CanTransmitMaterials(silo.Value.Owner, ent.Owner))
             return;
 
         foreach (var (mat, amount) in args.Materials)
         {
-            if (!_materialStorage.TryChangeMaterialAmount(silo.Value, mat, amount, silo.Value.Comp))
+            if (!_materialStorage.TryChangeMaterialAmount(silo.Value.Owner, mat, amount, silo.Value.Comp))
                 continue;
 
             args.Materials[mat] = 0;
         }
     }
 
-    private bool CanTransmitMaterials(Entity<MaterialStorageComponent> silo, EntityUid utilizer)
+    private bool CanTransmitMaterials(EntityUid silo, EntityUid utilizer)
     {
-        if (!_powerReceiver.IsPowered(silo))
+        if (!_powerReceiver.IsPowered((silo, null)))
             return false;
 
         if (_transform.GetGrid(utilizer) != _transform.GetGrid(silo))
