@@ -106,7 +106,22 @@ jobs:
             "FullyQualifiedName!~Content.IntegrationTests.Tests.EntityTest&FullyQualifiedName!~Content.IntegrationTests.Tests.PostMapInitTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.StationPowerTests&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.PowerTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Atmos.AirtightTest&FullyQualifiedName!~Content.IntegrationTests.Tests.ClickableTest"
           }
         }
-        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj --filter $filter -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$(pwd)/test_results"
+        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj --filter "$filter" --logger "console;verbosity=minimal" -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$(pwd)/test_results"
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        $resultFile = Get-ChildItem -Path test_results -Recurse -Filter *.xml | Select-Object -First 1
+        if (-not $resultFile) { throw "No NUnit results XML in test_results" }
+
+        [xml]$nunit = Get-Content -LiteralPath $resultFile.FullName
+        $run = $nunit.'test-run'
+        $total = [int]$run.total
+        $passed = [int]$run.passed
+        $failed = [int]$run.failed
+        Write-Host "Shard ${{ matrix.shard }}: total=$total passed=$passed failed=$failed"
+
+        $minTests = if ("${{ matrix.shard }}" -eq "heavy") { 30 } else { 100 }
+        if ($total -lt $minTests) { throw "Expected at least $minTests tests, got $total (filter or --no-build broken?)" }
+        if ($failed -gt 0) { throw "$failed test(s) failed" }
 
     - name: Archive integration test results
       if: always()
