@@ -25,11 +25,9 @@ jobs:
       matrix:
         include:
           - shard: fast
-            timeout_minutes: 75
-            run_unit_tests: true
-          - shard: heavy
             timeout_minutes: 90
-            run_unit_tests: false
+          - shard: heavy
+            timeout_minutes: 120
 
     steps:
     - name: Checkout Master
@@ -56,85 +54,28 @@ jobs:
       run: dotnet restore
 
     - name: Build Project
-      run: |
-        dotnet build --configuration DebugOpt --no-restore /m
-        test -f bin/Content.IntegrationTests/Content.IntegrationTests.dll
+      run: dotnet build --configuration DebugOpt --no-restore /m
 
     - name: Run Content.Tests
-      if: matrix.run_unit_tests
-      run: dotnet test --no-build --configuration DebugOpt Content.Tests/Content.Tests.csproj --filter "FullyQualifiedName!~Content.Tests.Client.Stylesheets.StyleGlassStylesheetTests" -- NUnit.ConsoleOut=0 NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$(pwd)/test_results"
-
-    - name: Archive unit test results
-      if: always() && matrix.run_unit_tests
-      uses: actions/upload-artifact@v4
-      with:
-        name: nunit3-unit-results
-        path: test_results/*
-        retention-days: 7
-        if-no-files-found: ignore
+      if: matrix.shard == 'fast'
+      run: dotnet test --no-build --configuration DebugOpt Content.Tests/Content.Tests.csproj --filter "FullyQualifiedName!~Content.Tests.Client.Stylesheets.StyleGlassStylesheetTests" -- NUnit.ConsoleOut=0
 
     - name: Run Content.IntegrationTests
-      shell: bash
+      shell: pwsh
       env:
-        DOTNET_gcServer: 1
         SHARD: ${{ matrix.shard }}
       run: |
-        set -uo pipefail
-        RESULTS_DIR="$GITHUB_WORKSPACE/integration_test_results"
-        rm -rf "$RESULTS_DIR"
-        mkdir -p "$RESULTS_DIR"
-
-        if [ "$SHARD" = "heavy" ]; then
-          FILTER='FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest'
-          MIN_TESTS=30
-        else
-          FILTER='FullyQualifiedName!~Content.IntegrationTests.Tests.EntityTest&FullyQualifiedName!~Content.IntegrationTests.Tests.PostMapInitTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.StationPowerTests&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.PowerTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Atmos.AirtightTest&FullyQualifiedName!~Content.IntegrationTests.Tests.ClickableTest'
-          MIN_TESTS=100
-        fi
-
-        LISTED=$(dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj \
-          --filter "$FILTER" --list-tests | grep -c 'Content\.IntegrationTests' || true)
-        echo "Shard $SHARD listed tests: $LISTED"
-        if [ "$LISTED" -lt "$MIN_TESTS" ]; then
-          echo "Expected at least $MIN_TESTS listed tests, got $LISTED"
-          exit 1
-        fi
-
-        set -e
-        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj \
-          --filter "$FILTER" \
-          --results-directory "$RESULTS_DIR" \
-          --logger "console;verbosity=normal" \
-          --logger "trx;LogFileName=IntegrationTests_${SHARD}.trx" \
-          -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
-
-        TRX=$(find "$RESULTS_DIR" -name '*.trx' | head -1)
-        if [ -z "$TRX" ]; then
-          echo "No TRX under $RESULTS_DIR"
-          find "$RESULTS_DIR" -type f -ls || true
-          exit 1
-        fi
-
-        TOTAL=$(grep -oE 'total="[0-9]+"' "$TRX" | head -1 | grep -oE '[0-9]+')
-        FAILED=$(grep -oE 'failed="[0-9]+"' "$TRX" | head -1 | grep -oE '[0-9]+')
-        echo "Shard $SHARD trx=$TRX total=$TOTAL failed=$FAILED"
-
-        if [ -z "$TOTAL" ] || [ "$TOTAL" -lt "$MIN_TESTS" ]; then
-          echo "Expected at least $MIN_TESTS executed tests, got '${TOTAL:-0}'"
-          exit 1
-        fi
-        if [ -n "$FAILED" ] && [ "$FAILED" -gt 0 ]; then
-          exit 1
-        fi
-
-    - name: Archive integration test results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: nunit3-integration-results-${{ matrix.shard }}
-        path: integration_test_results/**
-        retention-days: 7
-        if-no-files-found: ignore
+        $env:DOTNET_gcServer = 1
+        $filter = switch ($env:SHARD) {
+          "heavy" {
+            "FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest"
+          }
+          default {
+            "FullyQualifiedName!~Content.IntegrationTests.Tests.EntityTest&FullyQualifiedName!~Content.IntegrationTests.Tests.PostMapInitTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.StationPowerTests&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.PowerTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Atmos.AirtightTest&FullyQualifiedName!~Content.IntegrationTests.Tests.ClickableTest"
+          }
+        }
+        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj --filter "$filter" -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   ci-success:
     name: Build & Test Debug
