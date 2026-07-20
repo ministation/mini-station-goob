@@ -20,7 +20,6 @@
     sound:
       path: /Audio/Ambience/Objects/vending_machine_hum.ogg
   - type: Sprite
-    noRot: true
     sprite: Structures/Machines/VendingMachines/empty.rsi
     noRot: true
     snapCardinals: false
