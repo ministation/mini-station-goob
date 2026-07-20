@@ -360136,8 +360136,6 @@ entities:
       pos: 97.5,-88.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 39257
   - uid: 39246

@@ -95409,26 +95409,22 @@ entities:
       pos: 38.491764,-41.364925
       parent: 13307
     - type: Stethoscope
-      actionEntity: invalid
     - type: ActionsContainer
     - type: ContainerContainer
       containers:
         actions: !type:Container
-          ents:
-          - invalid
+          ents: []
   - uid: 2039
     components:
     - type: Transform
       pos: 29.51191,-31.395493
       parent: 13307
     - type: Stethoscope
-      actionEntity: invalid
     - type: ActionsContainer
     - type: ContainerContainer
       containers:
         actions: !type:Container
-          ents:
-          - invalid
+          ents: []
   - uid: 14966
     components:
     - type: Transform
@@ -118083,7 +118079,6 @@ entities:
       pos: -31.49463,-40.90357
       parent: 13307
     - type: HandheldLight
-      toggleActionEntity: invalid
     - type: ContainerContainer
       containers:
         cell_slot: !type:ContainerSlot
@@ -118093,8 +118088,7 @@ entities:
         actions: !type:Container
           showEnts: False
           occludes: True
-          ents:
-          - invalid
+          ents: []
     - type: ActionsContainer
   - uid: 25703
     components:
@@ -118116,7 +118110,6 @@ entities:
       pos: -28.613546,-74.81218
       parent: 13307
     - type: HandheldLight
-      toggleActionEntity: invalid
     - type: ContainerContainer
       containers:
         cell_slot: !type:ContainerSlot
@@ -118126,8 +118119,7 @@ entities:
         actions: !type:Container
           showEnts: False
           occludes: True
-          ents:
-          - invalid
+          ents: []
     - type: ActionsContainer
 - proto: FlippoLighter
   entities:
@@ -174808,16 +174800,12 @@ entities:
       pos: -45.636387,-15.32077
       parent: 13307
     - type: GasTank
-      toggleActionEntity: invalid
     - type: Jetpack
-      toggleActionEntity: invalid
     - type: ActionsContainer
     - type: ContainerContainer
       containers:
         actions: !type:Container
-          ents:
-          - invalid
-          - invalid
+          ents: []
 - proto: JetpackBlueFilled
   entities:
   - uid: 2911
@@ -175169,7 +175157,6 @@ entities:
       pos: -45.550945,18.48654
       parent: 13307
     - type: HandheldLight
-      toggleActionEntity: invalid
     - type: ContainerContainer
       containers:
         cell_slot: !type:ContainerSlot
@@ -175179,8 +175166,7 @@ entities:
         actions: !type:Container
           showEnts: False
           occludes: True
-          ents:
-          - invalid
+          ents: []
     - type: Physics
       canCollide: True
     - type: ActionsContainer
@@ -180003,13 +179989,11 @@ entities:
       pos: 34.424454,-39.43835
       parent: 13307
     - type: GasTank
-      toggleActionEntity: invalid
     - type: ActionsContainer
     - type: ContainerContainer
       containers:
         actions: !type:Container
-          ents:
-          - invalid
+          ents: []
 - proto: NodeScanner
   entities:
   - uid: 5310
