@@ -147,8 +147,12 @@ public sealed class IdCardConsoleSystem : SharedIdCardConsoleSystem
         _idCard.TryChangeFullName(targetId, newFullName, player: player);
         _idCard.TryChangeJobTitle(targetId, newJobTitle, player: player);
 
-        if (_prototype.Resolve(newJobProto, out var job)
-            && _prototype.Resolve(job.Icon, out var jobIcon))
+        // Client sends an empty job proto when the preset wasn't changed (access/name only).
+        // Use TryIndex — Resolve logs an error for empty/invalid ProtoIds.
+        JobPrototype? job = null;
+        if (!string.IsNullOrEmpty(newJobProto) &&
+            _prototype.TryIndex(newJobProto, out job) &&
+            _prototype.TryIndex(job.Icon, out var jobIcon))
         {
             _idCard.TryChangeJobIcon(targetId, jobIcon, player: player);
             _idCard.TryChangeJobDepartment(targetId, job);
@@ -158,7 +162,7 @@ public sealed class IdCardConsoleSystem : SharedIdCardConsoleSystem
         if ((!TryComp<StationRecordKeyStorageComponent>(targetId, out var keyStorage)
             || keyStorage.Key is not { } key
             || !_record.TryGetRecord<GeneralStationRecord>(key, out _))
-            && newJobProto != string.Empty)
+            && !string.IsNullOrEmpty(newJobProto))
         {
             Comp<IdCardComponent>(targetId).JobPrototype = newJobProto;
         }
@@ -210,7 +214,7 @@ public sealed class IdCardConsoleSystem : SharedIdCardConsoleSystem
         return _accessReader.IsAllowed(id.Value, uid, reader);
     }
 
-    private void UpdateStationRecord(EntityUid uid, EntityUid targetId, string newFullName, ProtoId<AccessLevelPrototype> newJobTitle, JobPrototype? newJobProto)
+    private void UpdateStationRecord(EntityUid uid, EntityUid targetId, string newFullName, string newJobTitle, JobPrototype? newJobProto)
     {
         if (!TryComp<StationRecordKeyStorageComponent>(targetId, out var keyStorage)
             || keyStorage.Key is not { } key

@@ -25,7 +25,8 @@ public sealed partial class SpawnEntityEntityEffectSystem : EntityEffectSystem<T
         {
             for (var i = 0; i < quantity; i++)
             {
-                PredictedSpawn(proto, coords);
+                // EntitySystem has no PredictedSpawn(MapCoordinates) proxy — use EntityManager.
+                EntityManager.PredictedSpawn(proto, coords);
             }
         }
         else if (_net.IsServer)

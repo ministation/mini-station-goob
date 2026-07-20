@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Collections.Generic;
-using System.Linq;  // goob - intermap transmitters
 using Content.Goobstation.Shared.Communications; // goob - intermap transmitters
 using Content.Goobstation.Shared.Loudspeaker.Events; // goob - loudspeakers
 using Content.Server.Administration.Logs;
@@ -433,8 +432,8 @@ public sealed partial class RadioSystem : EntitySystem
     /// <inheritdoc cref="TelecomServerComponent"/>
     private bool HasActiveServer(MapId mapId, string channelId)
     {
-        var servers = EntityQuery<TelecomServerComponent, EncryptionKeyHolderComponent, ApcPowerReceiverComponent, TransformComponent>();
-        foreach (var (_, keys, power, transform) in servers)
+        var query = EntityQueryEnumerator<TelecomServerComponent, EncryptionKeyHolderComponent, ApcPowerReceiverComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var keys, out var power, out var transform))
         {
             if (transform.MapID == mapId &&
                 power.Powered &&
@@ -443,6 +442,7 @@ public sealed partial class RadioSystem : EntitySystem
                 return true;
             }
         }
+
         return false;
     }
 
@@ -490,8 +490,14 @@ public sealed partial class RadioSystem : EntitySystem
     /// <inheritdoc cref="TelecomServerComponent"/>
     private bool HasActiveTransmitter(MapId mapId)
     {
-        return EntityQuery<TelecomTransmitterComponent, ApcPowerReceiverComponent, TransformComponent>()
-            .Any(server => server.Item3.MapID == mapId && server.Item2.Powered);
+        var query = EntityQueryEnumerator<TelecomTransmitterComponent, ApcPowerReceiverComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var power, out var transform))
+        {
+            if (transform.MapID == mapId && power.Powered)
+                return true;
+        }
+
+        return false;
     }
     // goob end
 }
