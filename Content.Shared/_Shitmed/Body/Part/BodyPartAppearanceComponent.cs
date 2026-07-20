@@ -26,7 +26,7 @@ public sealed partial class BodyPartAppearanceComponent : Component
     /// <summary>
     ///     ID of this custom base layer. Must be a <see cref="HumanoidSpeciesSpriteLayer"/>.
     /// </summary>
-    [DataField, AutoNetworkedField]
+    [DataField("id"), AutoNetworkedField]
     public ProtoId<HumanoidSpeciesSpriteLayer>? ID { get; set; }
 
     /// <summary>

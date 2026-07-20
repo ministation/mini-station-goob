@@ -25,7 +25,6 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
     private const int TradePostPlacementAttempts = 48;
 
     [Dependency] private readonly DockingSystem _dock = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly StationSystem _station = default!;
@@ -204,7 +203,7 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
         var tradeAabb = _transform.GetWorldMatrix(tradeGrid).TransformBox(tradeMapGrid.LocalAABB);
 
         grids.Clear();
-        _mapManager.FindGridsIntersecting(mapId, tradeAabb, ref grids);
+        _map.FindGridsIntersecting(mapId, tradeAabb, ref grids);
 
         foreach (var (uid, gridComp) in grids)
         {

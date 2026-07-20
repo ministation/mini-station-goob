@@ -159,7 +159,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <BoxContainer Orientation="Vertical" Name="MiningPointsContainer" Visible="False">
                 <BoxContainer Orientation="Horizontal">
                     <Label Name="MiningPointsLabel" HorizontalExpand="True"/>
-                    <Button Name="MiningPointsClaimButton" Text="{Loc 'lathe-menu-mining-points-claim-button'}"/>
+                    <Button Name="MiningPointsClaimButton" Text="{Loc 'lathe-menu-mining-points-claim-button'}" Mode="Press"/>
                 </BoxContainer>
                 <RichTextLabel Name="MiningPointsNoConnectionWarning"></RichTextLabel>
             </BoxContainer>

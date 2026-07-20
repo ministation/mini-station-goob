@@ -200,6 +200,7 @@ guide-entry-rules-lrp = Standard Ruleset
 guide-entry-rules-mrp = MRP Ruleset
 guide-entry-rules-role-types = Role Types
 guide-entry-rules-core = Core Rules
+guide-entry-rules-c0 = C0
 guide-entry-rules-c1 = C1
 guide-entry-rules-c2 = C2
 guide-entry-rules-c3 = C3

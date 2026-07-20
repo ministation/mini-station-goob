@@ -7,6 +7,7 @@ using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Mind;
 using Content.Server.Preferences.Managers;
+using Content.Server.Spawners.Components;
 using Content.Server.Station.Systems;
 using Content.Server._Mini.Networking;
 using Robust.Shared.Containers;
@@ -21,6 +22,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
+using Content.Shared.Station.Components;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
@@ -41,6 +43,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
     [Dependency] private readonly IPlayerManager _players = default!;
     [Dependency] private readonly IServerPreferencesManager _prefs = default!;
     [Dependency] private readonly StationSpawningSystem _spawning = default!;
+    [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly TypanStationWarRuleSystem _warRule = default!;
     [Dependency] private readonly TypanWarCaptureZoneSystem _captureZones = default!;
     [Dependency] private readonly TypanWarFriendlyFireSystem _friendlyFire = default!;
@@ -48,6 +51,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
     [Dependency] private readonly PvsSessionOverrideSystem _pvsSession = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
 
     private readonly Dictionary<EntityUid, HumanoidCharacterProfile> _profiles = new();
     private float _uiUpdateAccumulator;
@@ -90,14 +94,21 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         var minds = EntityQueryEnumerator<TypanWarCombatMindComponent, MindComponent>();
         while (minds.MoveNext(out var mindId, out var combat, out var mind))
         {
-            if (combat.RespawnUiOpen)
-                continue;
-
             if (GetGhostEntity(mind) is not { } ghost)
                 continue;
 
             if (mind.UserId is not { } userId || !_players.TryGetSessionById(userId, out var session))
                 continue;
+
+            // Stuck flag after a failed open (e.g. AttachedEntity was null) — allow retry.
+            if (combat.RespawnUiOpen)
+            {
+                if (session.AttachedEntity is { } actor && _ui.IsUiOpen(ghost, TypanWarRespawnUiKey.Key, actor))
+                    continue;
+
+                combat.RespawnUiOpen = false;
+                Dirty(mindId, combat);
+            }
 
             OpenRespawnUi(ghost, mindId, combat, session);
         }
@@ -187,7 +198,8 @@ public sealed class TypanWarRespawnSystem : EntitySystem
                 return;
 
             combat.PendingCorpse = ev.Target;
-            var delay = CalculateRespawnDelay(rule);
+            RecordDeath(combat, rule);
+            var delay = CalculateRespawnDelay(rule, combat);
             combat.RespawnAvailableAt = _timing.CurTime + TimeSpan.FromSeconds(delay);
             Dirty(mindContainer.Mind.Value, combat);
             return;
@@ -213,9 +225,14 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             if (!TryGetActiveRule(out var rule))
                 return;
 
-            combat.RespawnAvailableAt = _timing.CurTime + TimeSpan.FromSeconds(CalculateRespawnDelay(rule));
+            combat.RespawnAvailableAt = _timing.CurTime + TimeSpan.FromSeconds(CalculateRespawnDelay(rule, combat));
             Dirty(args.Mind.Owner, combat);
         }
+
+        // Visit-ghost keeps OwnedEntity on the corpse; TransferTo-ghost already moved the mind.
+        // Ensure we still have a corpse reference if death tracking missed it.
+        if (combat.PendingCorpse == null)
+            TryRememberCorpse(args.Mind.Comp, ghostUid, combat, args.Mind.Owner);
 
         if (args.Mind.Comp.UserId is not { } userId || !_players.TryGetSessionById(userId, out var session))
             return;
@@ -285,11 +302,16 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
         _ui.CloseUi(uid, TypanWarRespawnUiKey.Key, args.Actor);
 
+        // Capture before TransferTo: Visit-ghosts still own the corpse as OwnedEntity.
         var pendingCorpse = combat.PendingCorpse;
-        _mind.TransferTo(mindId.Value, mob, mind: mind);
+        if (pendingCorpse == null || !Exists(pendingCorpse))
+            pendingCorpse = ResolveCorpseBeforeTransfer(mind, uid);
+
+        // Force-leave returnable ghosts so OwnedEntity actually moves off the corpse.
+        _mind.TransferTo(mindId.Value, mob, ghostCheckOverride: true, mind: mind);
         Del(uid);
 
-        CleanupCorpseAfterRespawn(pendingCorpse);
+        CleanupCorpseAfterRespawn(pendingCorpse, mindId.Value);
         combat.PendingCorpse = null;
         combat.RespawnAvailableAt = null;
         combat.RespawnUiOpen = false;
@@ -304,12 +326,30 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
     private void OpenRespawnUi(EntityUid ghostUid, EntityUid mindId, TypanWarCombatMindComponent combat, ICommonSession session)
     {
-        combat.RespawnUiOpen = true;
-        Dirty(mindId, combat);
+        if (combat.PendingCorpse == null && TryComp<MindComponent>(mindId, out var mind))
+            TryRememberCorpse(mind, ghostUid, combat, mindId);
 
         _ui.SetUi(ghostUid, TypanWarRespawnUiKey.Key,
             new InterfaceData("TypanWarRespawnBoundUserInterface", interactionRange: 0f, requireInputValidation: false));
-        _ui.OpenUi(ghostUid, TypanWarRespawnUiKey.Key, session);
+
+        // Wait until the session is actually on the ghost — otherwise OpenUi no-ops and a stuck
+        // RespawnUiOpen flag would permanently suppress TryOpenPendingRespawnUis retries.
+        if (session.AttachedEntity != ghostUid)
+        {
+            combat.RespawnUiOpen = false;
+            Dirty(mindId, combat);
+            return;
+        }
+
+        if (!_ui.TryOpenUi(ghostUid, TypanWarRespawnUiKey.Key, ghostUid))
+        {
+            combat.RespawnUiOpen = false;
+            Dirty(mindId, combat);
+            return;
+        }
+
+        combat.RespawnUiOpen = true;
+        Dirty(mindId, combat);
         PushRespawnUiState(ghostUid, combat);
     }
 
@@ -403,6 +443,8 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             _ => TypanWarCaptureOwner.Typan,
         };
 
+        EnsureDutySpawn(combat);
+
         if (combat.AllowBaseSpawn && combat.BaseSpawn != default)
         {
             options.Add(new RespawnOptionData(
@@ -426,6 +468,80 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         return options.ToArray();
     }
 
+    /// <summary>
+    /// Restores duty-spawn for minds that were created when only Sec/Patrol could use it,
+    /// or whose BaseSpawn was never recorded.
+    /// </summary>
+    private void EnsureDutySpawn(TypanWarCombatMindComponent combat)
+    {
+        if (combat.AllowBaseSpawn && combat.BaseSpawn != default)
+            return;
+
+        if (combat.Station == EntityUid.Invalid || combat.Job == default)
+            return;
+
+        if (!TryPickJobSpawnCoordinates(combat.Station, combat.Job, out var coords))
+            return;
+
+        combat.AllowBaseSpawn = true;
+        combat.BaseSpawn = coords;
+    }
+
+    private bool TryPickJobSpawnCoordinates(
+        EntityUid station,
+        ProtoId<JobPrototype> job,
+        out EntityCoordinates coords)
+    {
+        coords = default;
+        var positions = CollectJobSpawnCoordinates(station, job, SpawnPointType.Job);
+        if (positions.Count == 0)
+            positions = CollectJobSpawnCoordinates(station, job, SpawnPointType.LateJoin);
+
+        if (positions.Count == 0)
+            return false;
+
+        coords = _random.Pick(positions);
+        return true;
+    }
+
+    private List<EntityCoordinates> CollectJobSpawnCoordinates(
+        EntityUid station,
+        ProtoId<JobPrototype> job,
+        SpawnPointType spawnType)
+    {
+        var positions = new List<EntityCoordinates>();
+        var query = EntityQueryEnumerator<SpawnPointComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var spawnPoint, out var xform))
+        {
+            if (spawnPoint.Job != job || spawnPoint.SpawnType != spawnType)
+                continue;
+
+            if (!IsSpawnOnStation(uid, xform, station))
+                continue;
+
+            positions.Add(xform.Coordinates);
+        }
+
+        return positions;
+    }
+
+    private bool IsSpawnOnStation(EntityUid spawnEnt, TransformComponent xform, EntityUid station)
+    {
+        if (_station.GetOwningStation(spawnEnt, xform) == station)
+            return true;
+
+        if (!TryComp<StationDataComponent>(station, out var data) || xform.GridUid is not { } gridUid)
+            return false;
+
+        foreach (var grid in data.Grids)
+        {
+            if (grid == gridUid)
+                return true;
+        }
+
+        return false;
+    }
+
     private bool TryResolveRespawnOption(
         TypanWarCombatMindComponent combat,
         bool isBase,
@@ -436,6 +552,8 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
         if (isBase)
         {
+            EnsureDutySpawn(combat);
+
             if (!combat.AllowBaseSpawn || combat.BaseSpawn == default)
                 return false;
 
@@ -484,14 +602,37 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         return true;
     }
 
-    private float CalculateRespawnDelay(TypanStationWarRuleComponent rule)
+    private void RecordDeath(TypanWarCombatMindComponent combat, TypanStationWarRuleComponent rule)
     {
-        if (rule.WarStartTime == null)
-            return rule.MinRespawnSeconds;
+        var now = _timing.CurTime;
+        var window = TimeSpan.FromSeconds(rule.DeathPenaltyWindowSeconds);
+        combat.RecentDeathTimes.RemoveAll(t => now - t > window);
+        combat.RecentDeathTimes.Add(now);
+    }
 
-        var elapsed = (_timing.CurTime - rule.WarStartTime.Value).TotalSeconds;
-        var t = Math.Clamp(elapsed / rule.WarDurationSeconds, 0, 1);
-        return rule.MinRespawnSeconds + (float) t * (rule.MaxRespawnSeconds - rule.MinRespawnSeconds);
+    private float CalculateRespawnDelay(TypanStationWarRuleComponent rule, TypanWarCombatMindComponent? combat = null)
+    {
+        var warLerp = rule.MinRespawnSeconds;
+        if (rule.WarStartTime != null)
+        {
+            var elapsed = (_timing.CurTime - rule.WarStartTime.Value).TotalSeconds;
+            var t = Math.Clamp(elapsed / rule.WarDurationSeconds, 0, 1);
+            // Keep the historical 10→60s war floor; death streak alone pushes toward MaxRespawnSeconds (120).
+            const float warFloorCap = 60f;
+            var warCap = Math.Min(rule.MaxRespawnSeconds, warFloorCap);
+            warLerp = rule.MinRespawnSeconds + (float) t * (warCap - rule.MinRespawnSeconds);
+        }
+
+        if (combat == null)
+            return Math.Min(rule.MaxRespawnSeconds, warLerp);
+
+        var now = _timing.CurTime;
+        var window = TimeSpan.FromSeconds(rule.DeathPenaltyWindowSeconds);
+        combat.RecentDeathTimes.RemoveAll(t => now - t > window);
+
+        var deaths = Math.Max(1, combat.RecentDeathTimes.Count);
+        var deathDelay = rule.MinRespawnSeconds + (deaths - 1) * rule.DeathPenaltyStepSeconds;
+        return Math.Min(rule.MaxRespawnSeconds, Math.Max(warLerp, deathDelay));
     }
 
     private bool TryGetActiveRule([NotNullWhen(true)] out TypanStationWarRuleComponent? rule)
@@ -543,13 +684,44 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         return true;
     }
 
-    private void CleanupCorpseAfterRespawn(EntityUid? corpse)
+    private void TryRememberCorpse(MindComponent mind, EntityUid ghostUid, TypanWarCombatMindComponent combat, EntityUid mindId)
+    {
+        var corpse = ResolveCorpseBeforeTransfer(mind, ghostUid);
+        if (corpse == null)
+            return;
+
+        combat.PendingCorpse = corpse;
+        Dirty(mindId, combat);
+    }
+
+    private EntityUid? ResolveCorpseBeforeTransfer(MindComponent mind, EntityUid ghostUid)
+    {
+        // Only the currently owned dead body — OriginalOwnedEntity can be a stale first corpse.
+        if (mind.OwnedEntity is { } owned &&
+            owned != ghostUid &&
+            Exists(owned) &&
+            !HasComp<GhostComponent>(owned) &&
+            TryComp<MobStateComponent>(owned, out var mobState) &&
+            mobState.CurrentState == MobState.Dead)
+        {
+            return owned;
+        }
+
+        return null;
+    }
+
+    private void CleanupCorpseAfterRespawn(EntityUid? corpse, EntityUid mindId)
     {
         if (corpse == null || !Exists(corpse))
             return;
 
-        if (TryComp<MindContainerComponent>(corpse, out var mindContainer) && mindContainer.HasMind)
+        // Skip only if someone else is controlling the corpse (e.g. returned / taken over).
+        if (TryComp<MindContainerComponent>(corpse, out var mindContainer) &&
+            mindContainer.Mind is { } occupyingMind &&
+            occupyingMind != mindId)
+        {
             return;
+        }
 
         var coords = Transform(corpse.Value).Coordinates;
 
@@ -559,7 +731,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
                 _containers.EmptyContainer(container, force: true, destination: coords, reparent: true);
         }
 
-        Del(corpse.Value);
+        QueueDel(corpse.Value);
     }
 
     private readonly record struct RespawnOptionData(bool IsBase, EntityUid Zone, EntityCoordinates Coordinates, string Label, string Description);

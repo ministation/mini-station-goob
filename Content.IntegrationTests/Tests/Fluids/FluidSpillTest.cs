@@ -40,7 +40,7 @@ public sealed class FluidSpill
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
-        var mapManager = server.ResolveDependency<IMapManager>();
+        var mapManager = server.System<SharedMapSystem>();
         var entityManager = server.ResolveDependency<IEntityManager>();
         var puddleSystem = server.System<PuddleSystem>();
         var mapSystem = server.System<SharedMapSystem>();
@@ -56,7 +56,7 @@ public sealed class FluidSpill
         await server.WaitPost(() =>
         {
             mapSystem.CreateMap(out var mapId);
-            var grid = mapManager.CreateGridEntity(mapId);
+            var grid = mapSystem.CreateGridEntity(mapId);
             gridId = grid.Owner;
 
             for (var x = 0; x < 3; x++)
@@ -70,7 +70,6 @@ public sealed class FluidSpill
             entityManager.SpawnEntity("WallReinforced", mapSystem.GridTileToLocal(grid, grid.Comp, new Vector2i(0, 1)));
             entityManager.SpawnEntity("WallReinforced", mapSystem.GridTileToLocal(grid, grid.Comp, new Vector2i(1, 0)));
         });
-
 
         var puddleOrigin = new Vector2i(0, 0);
         await server.WaitAssertion(() =>

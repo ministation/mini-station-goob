@@ -16,6 +16,7 @@ namespace Content.Server._Lavaland.Procedural.Systems;
 
 public sealed partial class LavalandSystem
 {
+
     public bool SetupLavalandPlanet(
         ProtoId<LavalandMapPrototype> mapProto,
         out Entity<LavalandMapComponent>? lavaland,
@@ -70,7 +71,7 @@ public sealed partial class LavalandSystem
         SetupRuins(pool, lavaland.Value, preloader.Value);
 
         // Hide all grids from the mass scanner.
-        foreach (var grid in _mapManager.GetAllGrids(lavalandMapId))
+        foreach (var grid in _map.GetAllGrids(lavalandMapId))
         {
             var flag = IFFFlags.HideLabel;
 

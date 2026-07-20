@@ -459,9 +459,16 @@
     board: OreProcessorMachineCircuitboardTypan
   - type: MaterialStorage
     ignoreColor: true
+    ignoreMaterialWhiteList: true
+    connectToSilo: true
+    disconnectSiloOffMap: true
+    disallowOreEjection: false
     whitelist:
       tags:
       - Ore
+  - type: MiningPoints
+  - type: MiningPointsLathe
+  - type: OreSiloClient
   - type: Lathe
     idleState: icon
     runningState: building
@@ -489,3 +496,6 @@
     - TypanOreSmelting
     - RGlassSmelting
     - TypanAdvancedSmelting
+  - type: MiningPoints
+  - type: MiningPointsLathe
+  - type: OreSiloClient

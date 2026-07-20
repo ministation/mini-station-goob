@@ -44,7 +44,6 @@ public sealed class MappingState : GameplayStateBase
     [Dependency] private readonly IEntityNetworkManager _entityNetwork = default!;
     [Dependency] private readonly IInputManager _input = default!;
     [Dependency] private readonly ILogManager _log = default!;
-    [Dependency] private readonly IMapManager _mapMan = default!;
     [Dependency] private readonly MappingManager _mapping = default!;
     [Dependency] private readonly IOverlayManager _overlays = default!;
     [Dependency] private readonly IPlacementManager _placement = default!;
@@ -55,6 +54,7 @@ public sealed class MappingState : GameplayStateBase
     private EntityMenuUIController _entityMenuController = default!;
 
     private DecalPlacementSystem _decal = default!;
+    private MapSystem _maps = default!;
     private SpriteSystem _sprite = default!;
     private TransformSystem _transform = default!;
     private VerbSystem _verbs = default!;
@@ -206,6 +206,7 @@ public sealed class MappingState : GameplayStateBase
         _entityMenuController = UserInterfaceManager.GetUIController<EntityMenuUIController>();
 
         _decal = _entityManager.System<DecalPlacementSystem>();
+        _maps = _entityManager.System<MapSystem>();
         _sprite = _entityManager.System<SpriteSystem>();
         _transform = _entityManager.System<TransformSystem>();
         _verbs = _entityManager.System<VerbSystem>();
@@ -793,7 +794,7 @@ public sealed class MappingState : GameplayStateBase
         {
             var mapPos = _transform.ToMapCoordinates(coords);
 
-            if (_mapMan.TryFindGridAt(mapPos, out var gridUid, out var grid) &&
+            if (_maps.TryFindGridAt(mapPos, out var gridUid, out var grid) &&
                 _entityManager.System<SharedMapSystem>().TryGetTileRef(gridUid, grid, coords, out var tileRef) &&
                 _allPrototypesDict.TryGetValue(_entityManager.System<TurfSystem>().GetContentTileDefinition(tileRef), out button))
             {
@@ -877,7 +878,6 @@ public sealed class MappingState : GameplayStateBase
         ToggleCollapse(button);
     }
 
-
     private void UnCollapse(MappingSpawnButton button)
     {
         if (button.CollapseButton.Pressed)
@@ -926,7 +926,6 @@ public sealed class MappingState : GameplayStateBase
             _scrollTo = null;
         }
     }
-
 
     // TODO this doesn't handle pressing down multiple state hotkeys at the moment
     public enum CursorState

@@ -38,7 +38,6 @@ namespace Content.IntegrationTests.Tests.Networking
             var server = pair.Server;
             var client = pair.Client;
 
-            var sMapManager = server.ResolveDependency<IMapManager>();
             var sEntityManager = server.ResolveDependency<IEntityManager>();
             var cEntityManager = client.ResolveDependency<IEntityManager>();
             var sGameTiming = server.ResolveDependency<IGameTiming>();

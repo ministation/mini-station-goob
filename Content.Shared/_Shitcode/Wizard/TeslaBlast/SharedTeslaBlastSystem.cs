@@ -136,41 +136,62 @@ public abstract class SharedTeslaBlastSystem : EntitySystem
 }
 
 [Serializable, NetSerializable]
-public sealed partial class TeslaBlastDoAfterEvent(
-    TimeSpan delay,
-    float range,
-    int boltCount,
-    int arcDepth,
-    Vector2 damage,
-    Vector2 stunTime,
-    string lightningPrototype,
-    NetEntity action) : DoAfterEvent
+public sealed partial class TeslaBlastDoAfterEvent : DoAfterEvent
 {
-    public TimeSpan Delay = delay;
+    [DataField]
+    public TimeSpan Delay;
 
-    public float Range = range;
+    [DataField]
+    public float Range;
 
-    public int BoltCount = boltCount;
+    [DataField]
+    public int BoltCount;
 
-    public int ArcDepth = arcDepth;
+    [DataField]
+    public int ArcDepth;
 
-    public Vector2 MinMaxDamage = damage;
+    [DataField]
+    public Vector2 MinMaxDamage;
 
-    public Vector2 MinMaxStunTime = stunTime;
+    [DataField]
+    public Vector2 MinMaxStunTime;
 
-    public string LightningPrototype = lightningPrototype;
+    [DataField]
+    public string LightningPrototype = default!;
 
-    public NetEntity Action = action;
+    [DataField]
+    public NetEntity Action;
 
-    public TeslaBlastDoAfterEvent() : this(TimeSpan.FromSeconds(10),
-        7f,
-        1,
-        5,
-        new(15f, 50f),
-        new(1f, 8f),
-        "SuperchargedLightning",
-        NetEntity.Invalid)
+    public TeslaBlastDoAfterEvent(
+        TimeSpan delay,
+        float range,
+        int boltCount,
+        int arcDepth,
+        Vector2 damage,
+        Vector2 stunTime,
+        string lightningPrototype,
+        NetEntity action)
     {
+        Delay = delay;
+        Range = range;
+        BoltCount = boltCount;
+        ArcDepth = arcDepth;
+        MinMaxDamage = damage;
+        MinMaxStunTime = stunTime;
+        LightningPrototype = lightningPrototype;
+        Action = action;
+    }
+
+    public TeslaBlastDoAfterEvent()
+    {
+        Delay = TimeSpan.FromSeconds(10);
+        Range = 7f;
+        BoltCount = 1;
+        ArcDepth = 5;
+        MinMaxDamage = new(15f, 50f);
+        MinMaxStunTime = new(1f, 8f);
+        LightningPrototype = "SuperchargedLightning";
+        Action = NetEntity.Invalid;
     }
 
     public override DoAfterEvent Clone() => this;

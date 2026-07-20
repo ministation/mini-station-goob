@@ -12,7 +12,6 @@ using Robust.Shared.IoC;
 
 namespace Content.Client.UserInterface.Controls;
 
-[Virtual]
 public class RadialMenu : BaseWindow
 {
     /// <summary>
@@ -231,7 +230,6 @@ public class RadialMenu : BaseWindow
 /// Base class for radial menu buttons. Excludes all actions except clicks and alt-clicks
 /// from interactions.
 /// </summary>
-[Virtual]
 public abstract class RadialMenuButtonBase : BaseButton
 {
     /// <inheritdoc />
@@ -323,7 +321,6 @@ public sealed class RadialMenuOuterAreaButton : RadialMenuButtonBase
     }
 }
 
-[Virtual]
 public class RadialMenuButton : RadialMenuButtonBase
 {
     /// <summary>
@@ -410,7 +407,6 @@ public interface IRadialMenuItemWithSector
     public Vector2 ParentCenter { set; }
 }
 
-[Virtual]
 public class RadialMenuButtonWithSector : RadialMenuButton, IRadialMenuItemWithSector
 {
     private Vector2[]? _sectorPointsForDrawing;

@@ -809,11 +809,12 @@ namespace Content.Server.Administration.Systems
                 && bwoinkParams.SenderAdmin is not null)
             {
                 var prefs = _preferencesManager.GetPreferences(bwoinkParams.SenderId);
+                // DB / preferences store Color as #RRGGBBAA — keep that form for markup.
                 adminColor = prefs.AdminOOCColor.ToHex();
             }
 
-            // Normalize color so we never emit broken [color=] / alpha hex that blanks the nickname.
-            adminColor = NormalizeMarkupColor(adminColor, "#52b4e9");
+            // Normalize so we never emit empty/broken [color=]; keep #RRGGBBAA from DB.
+            adminColor = NormalizeMarkupColor(adminColor, "red");
 
             // Admins always use a plain escaped nick (players may keep sponsor markup in SenderName).
             var senderLabel = bwoinkParams.SenderAdmin is not null
@@ -990,8 +991,18 @@ namespace Content.Server.Administration.Systems
             if (!color.StartsWith('#'))
                 color = "#" + color;
 
-            // Accept only #RGB / #RRGGBB — 8-digit alpha hex blanks nicknames in AHelp.
-            return color.Length is 4 or 7 ? color : fallback;
+            // Named / short / full RGB / RRGGBBAA (engine Color.ToHex + DB format).
+            if (color.Length is not (4 or 5 or 7 or 9))
+                return fallback;
+
+            if (!Color.TryFromHex(color, out var parsed))
+                return fallback;
+
+            // Keep RRGGBBAA from DB, but never emit near-invisible alpha that blanks ckeys.
+            if (parsed.AByte < 255)
+                parsed = parsed.WithAlpha(byte.MaxValue);
+
+            return parsed.ToHex();
         }
 
         private string StripMarkupForWebhook(string markup)

@@ -249,7 +249,8 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         combat.Station = args.Station;
         if (args.JobId != null)
             combat.Job = new ProtoId<JobPrototype>(args.JobId);
-        combat.AllowBaseSpawn = args.JobId is "SecurityOfficer" or "TypanPatrol";
+        // Duty spawn ("Спавн должности") for all organic combatants — not only Sec/Patrol.
+        combat.AllowBaseSpawn = !IsSilicon(args.Mob);
         if (combat.AllowBaseSpawn && combat.BaseSpawn == default)
             combat.BaseSpawn = Transform(args.Mob).Coordinates;
         combat.RespawnAvailableAt = null;

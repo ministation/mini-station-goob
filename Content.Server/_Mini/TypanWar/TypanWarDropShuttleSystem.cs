@@ -213,6 +213,8 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
             return false;
         }
 
+        // Load onto an initialized temp map so MapLoader runs RecursiveMapInit on the grid.
+        // Drop shuttle YAMLs must stay pre-init (no mapInit: true) so door boards / turret HTN fill.
         _map.CreateMap(out var mapId);
 
         if (!_loader.TryLoadGrid(mapId, shuttlePath, out var shuttleGrid) ||
@@ -225,6 +227,8 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
         }
 
         shuttleUid = shuttleGrid.Value;
+        // Belt-and-suspenders: ensure ContainerFill / HTN still run if a map was re-saved post-init.
+        _map.RecursiveMapInit(shuttleUid);
 
         if (!TryDockToFreePort(shuttleUid, shuttleXform, station, stationData, out var config, out var targetGrid))
         {

@@ -9,7 +9,7 @@
 pvs_range = 21
 pvs_priority_range = 23
 pvs_compress_level = 2
-pvs_dirty_buffer_ticks = 30
+# Dirty buffer size is a compile-time constant in Robust (PvsSystem.DirtyBufferSize), not a CVar.
 tickrate = 30
 log_late_msg = false
 # Keep encryption off the main sim thread under player load.

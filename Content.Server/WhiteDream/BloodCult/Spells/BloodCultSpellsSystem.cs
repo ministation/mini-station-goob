@@ -382,7 +382,7 @@ public sealed class BloodCultSpellsSystem : EntitySystem
 
     private SpriteSpecifier? GetActionPrototypeIcon(string protoId)
     {
-        if (!_proto.TryIndex(protoId, out var prototype, false)
+        if (!_proto.TryIndex(protoId, out EntityPrototype? prototype)
             || !prototype.TryGetComponent(out ActionComponent? action, EntityManager.ComponentFactory))
             return null;
 

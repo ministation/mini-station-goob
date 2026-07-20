@@ -20,8 +20,8 @@ public sealed class SunShadowOverlay : Overlay
 
     [Dependency] private readonly IClyde _clyde = default!;
     [Dependency] private readonly IEntityManager _entManager = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IPrototypeManager _protoManager = default!;
+    private readonly SharedMapSystem _mapSystem;
     private readonly EntityLookupSystem _lookup;
     private readonly SharedTransformSystem _xformSys;
 
@@ -32,6 +32,7 @@ public sealed class SunShadowOverlay : Overlay
     public SunShadowOverlay()
     {
         IoCManager.InjectDependencies(this);
+        _mapSystem = _entManager.System<SharedMapSystem>();
         _xformSys = _entManager.System<SharedTransformSystem>();
         _lookup = _entManager.System<EntityLookupSystem>();
         ZIndex = AfterLightTargetOverlay.ContentZIndex + 1;
@@ -48,7 +49,7 @@ public sealed class SunShadowOverlay : Overlay
             return;
 
         _grids.Clear();
-        _mapManager.FindGridsIntersecting(args.MapId,
+        _mapSystem.FindGridsIntersecting(args.MapId,
             args.WorldBounds.Enlarged(SunShadowComponent.MaxLength),
             ref _grids);
 
