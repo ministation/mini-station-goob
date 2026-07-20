@@ -442,6 +442,7 @@ namespace Content.Server.GameTicking
             AnnounceRound();
             UpdateInfoText();
             SendRoundStartedDiscordMessage();
+            RaiseLocalEvent(new RoundStartedEvent(RoundId)); // CorvaxGoob-StationGoal
 
 #if EXCEPTION_TOLERANCE
             }
