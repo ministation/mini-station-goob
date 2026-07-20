@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 
+using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
@@ -25,5 +26,11 @@ public sealed partial class StoreCategoryPrototype : IPrototype
 
     [DataField]
     public bool Evil { get; private set; } = false; // Goobstation
+
+    /// <summary>
+    ///     Accent color for category buttons and listing cards in the store UI.
+    /// </summary>
+    [DataField]
+    public Color? AccentColor { get; private set; }
 }
 

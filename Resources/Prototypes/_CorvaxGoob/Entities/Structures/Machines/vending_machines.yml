@@ -10,6 +10,7 @@
     brokenState: broken
     normalState: normal-unshaded
   - type: Sprite
+    noRot: true
     sprite: _CorvaxGoob/Structures/Machines/VendingMachines/captaindrobe.rsi
     layers:
     - state: "off"

@@ -3,6 +3,7 @@
 using System.Collections.Frozen;
 using Content.Goobstation.Common.MisandryBox;
 using Content.Shared._EinsteinEngines.Language.Components;
+using Content.Shared._Mini.DailyQuests;
 using Content.Shared.Chat.Prototypes;
 using Content.Shared.Speech;
 using Robust.Shared.Audio;
@@ -293,6 +294,12 @@ public abstract partial class SharedChatSystem
 
         var ev = new EmoteEvent(proto, voluntary);
         RaiseLocalEvent(uid, ref ev);
+
+        if (_net.IsServer && voluntary)
+        {
+            var performed = new EmotePerformedEvent(uid);
+            RaiseLocalEvent(ref performed);
+        }
 
         return true;
     }

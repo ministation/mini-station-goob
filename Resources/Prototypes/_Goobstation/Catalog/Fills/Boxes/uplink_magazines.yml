@@ -145,3 +145,46 @@
     contents:
     - id: MagazinePistolCaselessRifleSAPHE
       amount: 2
+
+
+- type: entity
+  parent: BaseSyndicateUplinkMagazineBundle
+  id: BoxSyndicateCartridgeG8Demolishing
+  name: syndicate G8 demolishing cartridge box
+  description: A syndicate-branded box with four G8 demolishing cartridges.
+  components:
+  - type: Storage
+    whitelist:
+      tags:
+      - Cartridge
+      - CartridgeG8
+  - type: StorageFill
+    contents:
+    - id: CartridgeG8Demolishing
+      amount: 4
+  - type: Sprite
+    layers:
+    - state: box_of_doom
+    - sprite: Objects/Weapons/Guns/Ammunition/Casings/large_casing.rsi
+      state: base
+
+- type: entity
+  parent: BaseSyndicateUplinkMagazineBundle
+  id: BoxSyndicateCartridgeG8Hypercharged
+  name: syndicate G8 hypercharged cartridge box
+  description: A syndicate-branded box with four G8 hypercharged cartridges.
+  components:
+  - type: Storage
+    whitelist:
+      tags:
+      - Cartridge
+      - CartridgeG8
+  - type: StorageFill
+    contents:
+    - id: CartridgeG8Hypercharged
+      amount: 4
+  - type: Sprite
+    layers:
+    - state: box_of_doom
+    - sprite: Objects/Weapons/Guns/Ammunition/Casings/anomalous_casing.rsi
+      state: base

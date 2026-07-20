@@ -4,6 +4,7 @@ using Content.Shared._DV.VendingMachines;
 using Content.Shared.VendingMachines;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
+using Robust.Shared.Maths;
 
 namespace Content.Client._DV.VendingMachines;
 
@@ -40,17 +41,20 @@ public sealed class ShopVendorSystem : SharedShopVendorSystem
             state = VendingMachineVisualState.Normal;
 
         var sprite = ent.Comp2;
-        SetLayerState(VendingMachineVisualLayers.Base, ent.Comp1.OffState, sprite);
-        SetLayerState(VendingMachineVisualLayers.Screen, ent.Comp1.ScreenState, sprite);
+        sprite.EnableDirectionOverride = true;
+        sprite.DirectionOverride = Direction.South;
+
+        SetLayerState(VendingMachineVisualLayers.Base, ent.Comp1.OffState, sprite, animate: false);
+        SetLayerState(VendingMachineVisualLayers.Screen, ent.Comp1.ScreenState, sprite, animate: true);
         switch (state)
         {
             case VendingMachineVisualState.Normal:
-                SetLayerState(VendingMachineVisualLayers.BaseUnshaded, ent.Comp1.NormalState, sprite);
+                SetLayerState(VendingMachineVisualLayers.BaseUnshaded, ent.Comp1.NormalState, sprite, animate: false);
                 break;
 
             case VendingMachineVisualState.Deny:
                 if (ent.Comp1.LoopDenyAnimation)
-                    SetLayerState(VendingMachineVisualLayers.BaseUnshaded, ent.Comp1.DenyState, sprite);
+                    SetLayerState(VendingMachineVisualLayers.BaseUnshaded, ent.Comp1.DenyState, sprite, animate: true);
                 else
                     PlayAnimation(ent, VendingMachineVisualLayers.BaseUnshaded, ent.Comp1.DenyState, ent.Comp1.DenyDelay, sprite);
                 break;
@@ -61,7 +65,7 @@ public sealed class ShopVendorSystem : SharedShopVendorSystem
 
             case VendingMachineVisualState.Broken:
                 HideLayers(sprite);
-                SetLayerState(VendingMachineVisualLayers.Base, ent.Comp1.BrokenState, sprite);
+                SetLayerState(VendingMachineVisualLayers.Base, ent.Comp1.BrokenState, sprite, animate: false);
                 break;
 
             case VendingMachineVisualState.Off:
@@ -70,14 +74,13 @@ public sealed class ShopVendorSystem : SharedShopVendorSystem
         }
     }
 
-    private static void SetLayerState(VendingMachineVisualLayers layer, string? state, SpriteComponent sprite)
+    private static void SetLayerState(VendingMachineVisualLayers layer, string? state, SpriteComponent sprite, bool animate)
     {
         if (state == null)
             return;
 
         sprite.LayerSetVisible(layer, true);
-        // Freeze RSI loops on the first frame (same as stock VendingMachineSystem).
-        sprite.LayerSetAutoAnimated(layer, false);
+        sprite.LayerSetAutoAnimated(layer, animate);
         sprite.LayerSetState(layer, state);
     }
 

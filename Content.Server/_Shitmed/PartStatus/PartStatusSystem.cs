@@ -77,12 +77,13 @@ public sealed class PartStatusSystem : EntitySystem
             return;
 
         var partStatusSet = CollectPartStatuses(rootPart.Value);
-        var text = GetExamineText(entity, entity, partStatusSet);
+        var text = GetExamineText(entity, entity, partStatusSet, styling: false);
+        var plain = text.ToString();
 
         _chat.ChatMessageToOne(
             ChatChannel.Emotes,
-            text.ToMarkup(),
-            text.ToMarkup(),
+            plain,
+            plain,
             EntityUid.Invalid,
             false,
             actor.PlayerSession.Channel,

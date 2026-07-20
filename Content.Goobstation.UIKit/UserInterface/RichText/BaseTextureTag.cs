@@ -15,20 +15,33 @@ public abstract class BaseTextureTag
     [Dependency] protected readonly IEntitySystemManager EntitySystemManager = default!;
 
     /// <summary>
-    /// Mini sticker/icon size cap — without MaxSize, RSI/frames can explode into a huge white stripe in AHelp.
+    /// Mini sticker/icon size cap — keep inline chat stickers line-sized so multiple
+    /// [tex] tags don't wrap onto the next line / over the name.
     /// </summary>
     protected static bool TryDrawIcon(Texture tex,
         long scaleValue,
         Vector2 offset,
         string? tooltip,
-        [NotNullWhen(true)] out Control? control)
+        [NotNullWhen(true)] out Control? control,
+        float maxSize = 28f)
     {
-        var adjustedOffset = offset + new Vector2(-6, -4);
-        var texture = new TooltipTextureRect(tooltip, adjustedOffset)
+        // Chat line height is ~16–20px; stickers are 32x32. Cap inline size so two
+        // stickers stay on the same line instead of wrapping over "OOC:".
+        var scale = Math.Max(1, (int) scaleValue);
+        var natural = Math.Max(tex.Width, tex.Height) * scale;
+        var size = Math.Clamp(natural, 12f, Math.Max(12f, maxSize));
+
+        var texture = new TooltipTextureRect(tooltip, offset)
         {
             Texture = tex,
-            TextureScale = new Vector2(scaleValue, scaleValue),
-            MaxSize = new Vector2(120, 120),
+            Stretch = TextureRect.StretchMode.KeepAspectCentered,
+            HorizontalExpand = false,
+            VerticalExpand = false,
+            HorizontalAlignment = Control.HAlignment.Left,
+            VerticalAlignment = Control.VAlignment.Bottom,
+            SetSize = new Vector2(size, size),
+            MinSize = new Vector2(size, size),
+            MaxSize = new Vector2(size, size),
         };
 
         control = texture;
@@ -38,9 +51,10 @@ public abstract class BaseTextureTag
     protected static Control DrawIcon(Texture tex,
         long scaleValue,
         Vector2 offset,
-        string? tooltip)
+        string? tooltip,
+        float maxSize = 28f)
     {
-        TryDrawIcon(tex, scaleValue, offset, tooltip, out var control);
+        TryDrawIcon(tex, scaleValue, offset, tooltip, out var control, maxSize);
         return control!;
     }
 

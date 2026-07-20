@@ -43,6 +43,35 @@ uplink-typan-uranium-desc = You feel like you are slowly mutating.
 uplink-typan-fuel-name = Antimatter fuel
 uplink-typan-fuel-desc = Used to fuel the AME.
 
+uplink-typan-cable-name = LV cable coil
+uplink-typan-cable-desc = A full coil of low-voltage cable for station wiring.
+uplink-typan-cable-mv-name = MV cable coil
+uplink-typan-cable-mv-desc = A full coil of medium-voltage cable.
+uplink-typan-cable-hv-name = HV cable coil
+uplink-typan-cable-hv-desc = A full coil of high-voltage cable.
+uplink-typan-rods-name = Metal rods
+uplink-typan-rods-desc = A stack of rods for lattices, frames, and construction.
+uplink-typan-rglass-name = Reinforced glass
+uplink-typan-rglass-desc = A stack of reinforced glass.
+uplink-typan-wood-name = Wood planks
+uplink-typan-wood-desc = A stack of wood for furniture and plating.
+uplink-typan-cloth-name = Cloth
+uplink-typan-cloth-desc = A stack of cloth for clothing and crafting.
+uplink-typan-cardboard-name = Cardboard
+uplink-typan-cardboard-desc = A stack of cardboard — cheap filler material.
+uplink-typan-brass-name = Brass
+uplink-typan-brass-desc = A stack of brass for machinery and clockwork.
+uplink-typan-bananium-name = Bananium
+uplink-typan-bananium-desc = Rare bananium. Honk.
+uplink-typan-plastic-bulk-name = Plastic (x10)
+uplink-typan-plastic-bulk-desc = A small pack of plastic sheets.
+uplink-typan-steel-bulk-name = Steel (x10)
+uplink-typan-steel-bulk-desc = A small pack of steel sheets.
+uplink-typan-glass-bulk-name = Glass (x10)
+uplink-typan-glass-bulk-desc = A small pack of glass sheets.
+uplink-typan-durathread-name = Durathread
+uplink-typan-durathread-desc = Tough fabric for armored clothing.
+
 uplink-typan-ak-magazine-name = Magazine (.30 rifle)
 uplink-typan-ak-magazine-desc = 30-round rifle magazine. Compatible with AKMS.
 

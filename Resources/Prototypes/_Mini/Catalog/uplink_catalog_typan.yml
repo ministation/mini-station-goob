@@ -7,7 +7,7 @@
   description: uplink-pistol-viper-desc
   productEntity: WeaponPistolViper
   cost:
-    Telecrystal: 4
+    Telecrystal: 3
   categories:
   - TypanUplinkWeaponry
 
@@ -50,7 +50,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Melee/e_sword.rsi, state: icon }
   productEntity: EnergySword
   cost:
-    Telecrystal: 15
+    Telecrystal: 7
   categories:
   - TypanUplinkWeaponry
 
@@ -61,7 +61,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Melee/e_dagger.rsi, state: icon }
   productEntity: EnergyDaggerBox
   cost:
-    Telecrystal: 4
+    Telecrystal: 2
   categories:
   - TypanUplinkWeaponry
 
@@ -72,7 +72,7 @@
   icon: { sprite: /Textures/Objects/Storage/boxicons.rsi, state: throwing_knives }
   productEntity: ThrowingKnivesKit
   cost:
-    Telecrystal: 6
+    Telecrystal: 4
   categories:
     - TypanUplinkWeaponry
 
@@ -82,7 +82,7 @@
   description: uplink-gloves-north-star-desc
   productEntity: ClothingHandsGlovesNorthStar
   cost:
-    Telecrystal: 12
+    Telecrystal: 8
   categories:
   - TypanUplinkWeaponry
 
@@ -93,7 +93,7 @@
   description: uplink-miniature-energy-crossbow-desc
   productEntity: MiniatureEnergyCrossbow
   cost:
-    Telecrystal: 14
+    Telecrystal: 10
   categories:
   - TypanUplinkWeaponry
 
@@ -105,7 +105,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Melee/e_shield.rsi, state: eshield-on }
   productEntity: EnergyShield
   cost:
-    Telecrystal: 16
+    Telecrystal: 10
   categories:
   - TypanUplinkWeaponry
 
@@ -116,7 +116,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/Snipers/heavy_sniper.rsi, state: base }
   productEntity: BriefcaseSyndieSniperBundleFilled
   cost:
-    Telecrystal: 20
+    Telecrystal: 12
   categories:
   - TypanUplinkWeaponry
 
@@ -127,7 +127,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/SMGs/c20r.rsi, state: icon }
   productEntity: ClothingBackpackDuffelSyndicateFilledSMG
   cost:
-    Telecrystal: 20
+    Telecrystal: 14
   categories:
   - TypanUplinkWeaponry
 
@@ -138,7 +138,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/Shotguns/bulldog.rsi, state: icon }
   productEntity: ClothingBackpackDuffelSyndicateFilledShotgun
   cost:
-    Telecrystal: 25
+    Telecrystal: 16
   categories:
   - TypanUplinkWeaponry
 
@@ -150,7 +150,7 @@
   icon: { sprite: _Mini/Objects/Weapons/Guns/LMGs/L2RPK.rsi, state: icon }
   productEntity: WeaponLightMachineGunL2RPK
   cost:
-    Telecrystal: 30
+    Telecrystal: 20
   categories:
   - TypanUplinkWeaponry
 
@@ -205,7 +205,7 @@
   description: uplink-emp-grenade-desc
   productEntity: EmpGrenade
   cost:
-    Telecrystal: 2
+    Telecrystal: 1
   categories:
   - TypanUplinkExplosives
 
@@ -215,7 +215,7 @@
   description: uplink-emp-kit-desc
   productEntity: ElectricalDisruptionKit
   cost:
-    Telecrystal: 6
+    Telecrystal: 4
   categories:
     - TypanUplinkExplosives
 
@@ -236,10 +236,9 @@
   id: TypanUplinkPistol9mmMagazineHigh
   name: uplink-highcap-pistol-mag-name
   description: uplink-highcap-pistol-mag-desc
-  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Pistol/pistol_high_capacity_mag.rsi, state: base }
   productEntity: BoxSyndicateMagazinePistolHighCapacity
   cost:
-    Telecrystal: 2
+    Telecrystal: 1
   categories:
   - TypanUplinkAmmo
 
@@ -251,7 +250,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Pistol/smg_mag.rsi, state: red-icon }
   productEntity: BoxSyndicateMagazinePistolSubMachineGun
   cost:
-    Telecrystal: 2
+    Telecrystal: 1
   categories:
   - TypanUplinkAmmo
 
@@ -275,7 +274,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/SpeedLoaders/Magnum/magnum_speed_loader.rsi, state: icon }
   productEntity: BoxSyndicateSpeedLoaderMagnumAP
   cost:
-    Telecrystal: 3
+    Telecrystal: 2
   categories:
   - TypanUplinkAmmo
 
@@ -307,7 +306,7 @@
   description: uplink-ammo-bundle-desc
   productEntity: ClothingBackpackDuffelSyndicateAmmoFilled
   cost:
-    Telecrystal: 20
+    Telecrystal: 12
   categories:
   - TypanUplinkAmmo
   conditions:
@@ -325,7 +324,7 @@
   icon: { sprite: /Textures/Objects/Misc/pens.rsi, state: pen }
   productEntity: HypopenBox
   cost:
-    Telecrystal: 10
+    Telecrystal: 6
   categories:
   - TypanUplinkChemicals
 
@@ -373,7 +372,7 @@
   description: uplink-nocturine-chemistry-bottle-desc
   productEntity: ChemistryBottleNocturine
   cost:
-    Telecrystal: 20
+    Telecrystal: 12
   categories:
   - TypanUplinkChemicals
 
@@ -383,7 +382,7 @@
   description: uplink-combat-medkit-desc
   productEntity: MedkitCombatFilled
   cost:
-    Telecrystal: 8
+    Telecrystal: 5
   categories:
   - TypanUplinkChemicals
 
@@ -393,7 +392,7 @@
   description: uplink-combat-medipen-desc
   productEntity: CombatMedipen
   cost:
-    Telecrystal: 8
+    Telecrystal: 4
   categories:
   - TypanUplinkChemicals
 
@@ -403,7 +402,7 @@
   description: uplink-stimpack-desc
   productEntity: Stimpack
   cost:
-    Telecrystal: 6
+    Telecrystal: 4
   categories:
   - TypanUplinkChemicals
 
@@ -413,7 +412,7 @@
   description: uplink-stimkit-desc
   productEntity: StimkitFilled
   cost:
-    Telecrystal: 14
+    Telecrystal: 8
   categories:
   - TypanUplinkChemicals
 
@@ -433,7 +432,7 @@
   description: uplink-meds-bundle-desc
   productEntity: ClothingBackpackDuffelSyndicateMedicalBundleFilled
   cost:
-    Telecrystal: 28
+    Telecrystal: 16
   categories:
   - TypanUplinkChemicals
   conditions:
@@ -460,7 +459,7 @@
   description: uplink-stealth-box-desc
   productEntity: StealthBox
   cost:
-    Telecrystal: 12
+    Telecrystal: 8
   categories:
   - TypanUplinkDeception
 
@@ -470,7 +469,7 @@
   description: uplink-chameleon-projector-desc
   productEntity: ChameleonProjector
   cost:
-    Telecrystal: 12
+    Telecrystal: 8
   categories:
   - TypanUplinkDeception
 
@@ -481,7 +480,7 @@
   icon: { sprite: /Textures/Objects/Devices/encryption_keys.rsi, state: synd_label }
   productEntity: BoxEncryptionKeySyndie # Two for the price of one
   cost:
-    Telecrystal: 6
+    Telecrystal: 3
   categories:
   - TypanUplinkDeception
 
@@ -595,7 +594,7 @@
   description: uplink-radio-jammer-desc
   productEntity: RadioJammer
   cost:
-    Telecrystal: 10
+    Telecrystal: 6
   categories:
   - TypanUplinkDisruption
 
@@ -605,7 +604,7 @@
   description: uplink-syndicate-weapon-module-desc
   productEntity: BorgModuleSyndicateWeapon
   cost:
-    Telecrystal: 15
+    Telecrystal: 8
   categories:
   - TypanUplinkDisruption
 
@@ -666,7 +665,7 @@
   description: uplink-duffel-surgery-desc
   productEntity: ClothingBackpackDuffelSyndicateFilledMedical
   cost:
-    Telecrystal: 10
+    Telecrystal: 7
   categories:
   - TypanUplinkDisruption
 
@@ -676,7 +675,7 @@
   description: uplink-power-sink-desc
   productEntity: PowerSink
   cost:
-    Telecrystal: 20
+    Telecrystal: 12
   categories:
   - TypanUplinkDisruption
   conditions:
@@ -757,28 +756,30 @@
 
 # Allies
 
-- type: listing
-  id: TypanUplinkHoloparaKit
-  name: uplink-holopara-kit-name
-  description: uplink-holopara-kit-desc
-  icon: { sprite: /Textures/Objects/Misc/guardian_info.rsi, state: icon }
-  productEntity: BoxHoloparasite
-  cost:
-    Telecrystal: 35
-  categories:
-  - TypanUplinkAllies
-
-- type: listing
-  id: TypanUplinkReinforcementRadioSyndicateCyborgAssault
-  name:  uplink-reinforcement-radio-cyborg-assault-name
-  description: uplink-reinforcement-radio-cyborg-assault-desc
-  productEntity: ReinforcementRadioSyndicateCyborgAssault
-  icon: { sprite: Objects/Devices/communication.rsi, state: old-radio-borg-assault }
-  cost:
-    Telecrystal: 50
-  categories:
-    - TypanUplinkAllies
-
+# Mini: removed from Typan uplink (TypanUplinkHoloparaKit)
+# - type: listing
+#   id: TypanUplinkHoloparaKit
+#   name: uplink-holopara-kit-name
+#   description: uplink-holopara-kit-desc
+#   icon: { sprite: /Textures/Objects/Misc/guardian_info.rsi, state: icon }
+#   productEntity: BoxHoloparasite
+#   cost:
+#     Telecrystal: 28
+#   categories:
+#   - TypanUplinkAllies
+#
+# Mini: removed from Typan uplink (TypanUplinkReinforcementRadioSyndicateCyborgAssault)
+# - type: listing
+#   id: TypanUplinkReinforcementRadioSyndicateCyborgAssault
+#   name:  uplink-reinforcement-radio-cyborg-assault-name
+#   description: uplink-reinforcement-radio-cyborg-assault-desc
+#   productEntity: ReinforcementRadioSyndicateCyborgAssault
+#   icon: { sprite: Objects/Devices/communication.rsi, state: old-radio-borg-assault }
+#   cost:
+#     Telecrystal: 40
+#   categories:
+#     - TypanUplinkAllies
+#
 - type: listing
   id: TypanUplinkCarpDehydrated
   name: uplink-carp-dehydrated-name
@@ -813,7 +814,7 @@
   icon: { sprite: /Textures/Clothing/Back/Backpacks/backpack.rsi, state: icon }
   productEntity: StorageImplanter
   cost:
-    Telecrystal: 8
+    Telecrystal: 6
   categories:
     - TypanUplinkImplants
 
@@ -824,7 +825,7 @@
   icon: { sprite: /Textures/Actions/Implants/implants.rsi, state: freedom }
   productEntity: FreedomImplanter
   cost:
-    Telecrystal: 5
+    Telecrystal: 4
   categories:
     - TypanUplinkImplants
 
@@ -835,7 +836,7 @@
   icon: { sprite: /Textures/Structures/Specific/anomaly.rsi, state: anom4 }
   productEntity: ScramImplanter
   cost:
-    Telecrystal: 6 # it's a gamble that may kill you easily so 6 TC per 2 uses, second one more of a backup
+    Telecrystal: 5 # it's a gamble that may kill you easily so 6 TC per 2 uses, second one more of a backup
   categories:
     - TypanUplinkImplants
 
@@ -868,7 +869,7 @@
   icon: { sprite: /Textures/Objects/Magic/magicactions.rsi, state: gib }
   productEntity: DeathAcidifierImplanter
   cost:
-    Telecrystal: 6
+    Telecrystal: 4
   categories:
     - TypanUplinkImplants
 
@@ -1032,7 +1033,7 @@
   icon: { sprite: _Mini/Clothing/OuterClothing/Hardsuits/typan_patrol.rsi, state: icon }
   productEntity: ClothingOuterHardsuitTypanPatrol
   cost:
-    Telecrystal: 14
+    Telecrystal: 10
   categories:
   - TypanUplinkWearables
 
@@ -1054,7 +1055,7 @@
   icon: { sprite: /Textures/Clothing/OuterClothing/Hardsuits/syndieelite.rsi, state: icon }
   productEntity: ClothingBackpackDuffelSyndicateEliteHardsuitBundle
   cost:
-    Telecrystal: 18
+    Telecrystal: 14
   categories:
   - TypanUplinkWearables
 
@@ -1065,7 +1066,7 @@
   icon: { sprite: /Textures/Structures/Storage/Crates/syndicate.rsi, state: icon }
   productEntity: CrateCybersunJuggernautBundle
   cost:
-    Telecrystal: 35
+    Telecrystal: 28
   categories:
   - TypanUplinkWearables
 
@@ -1488,7 +1489,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/SMGs/atreides.rsi, state: icon }
   productEntity: WeaponSubMachineGunAtreides
   cost:
-    Telecrystal: 22
+    Telecrystal: 16
   categories:
   - TypanUplinkWeaponry
 
@@ -1576,7 +1577,6 @@
   id: TypanUplinkMagazineRifleAK
   name: uplink-typan-ak-magazine-name
   description: uplink-typan-ak-magazine-desc
-  icon: { sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi, state: base }
   productEntity: MagazineLightRifle
   cost:
     Telecrystal: 2
@@ -1590,7 +1590,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/ak.rsi, state: icon }
   productEntity: ClothingBackpackDuffelSyndicateFilledAK
   cost:
-    Telecrystal: 18
+    Telecrystal: 14
   categories:
   - TypanUplinkWeaponry
 
@@ -1611,7 +1611,7 @@
   icon: { sprite: /Textures/_Goobstation/Clothing/OuterClothing/Hardsuits/cybersunstealth.rsi, state: icon }
   productEntity: ClothingBackpackDuffelSyndicateStealthHardsuitBundle
   cost:
-    Telecrystal: 16
+    Telecrystal: 12
   categories:
   - TypanUplinkWearables
 
@@ -1621,7 +1621,7 @@
   description: uplink-WSPR-desc
   productEntity: WeaponRifleWSPR
   cost:
-    Telecrystal: 20
+    Telecrystal: 16
   categories:
   - TypanUplinkWeaponry
 
@@ -1632,7 +1632,7 @@
   icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Rifles/burner.rsi, state: icon }
   productEntity: WeaponRifleBurner
   cost:
-    Telecrystal: 24
+    Telecrystal: 18
   categories:
   - TypanUplinkWeaponry
 
@@ -1643,7 +1643,7 @@
   icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Pistols/Dualetta.rsi, state: icon }
   productEntity: BriefcaseSyndieDualettaBundleFilled
   cost:
-    Telecrystal: 20
+    Telecrystal: 14
   categories:
   - TypanUplinkWeaponry
 
@@ -1653,7 +1653,7 @@
   description: uplink-m7s-desc
   productEntity: WeaponSubMachineGunM7S
   cost:
-    Telecrystal: 22
+    Telecrystal: 16
   categories:
     -  TypanUplinkWeaponry
 
@@ -1663,7 +1663,7 @@
   description: uplink-combat-shotgun-desc
   productEntity: WeaponShotgunCombat
   cost:
-    Telecrystal: 22
+    Telecrystal: 16
   categories:
     -  TypanUplinkWeaponry
 
@@ -1671,10 +1671,9 @@
   id: TypanUplinkCaselessRifleMag
   name: uplink-rifle-caseless-mag-name
   description: uplink-rifle-caseless-mag-desc
-  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/CaselessRifle/caseless_rifle_mag.rsi, state: base }
   productEntity: BoxSyndicateMagazineCaselessRifle
   cost:
-    Telecrystal: 2 # Much more damage than C20 or M90 (780, 98 dmg per TC), but hollow-point
+    Telecrystal: 1 # Much more damage than C20 or M90 (780, 98 dmg per TC), but hollow-point
   categories:
   - TypanUplinkAmmo
 
@@ -1685,7 +1684,7 @@
   icon: { sprite: _Goobstation/Objects/Weapons/Guns/Ammunition/Magazine/M7S_magazine.rsi, state: icon }
   productEntity: BoxSyndicateMagazineLowCaliberM7S
   cost:
-    Telecrystal: 3 # 105 dmg per TC which seems huge, but you're missing half of your shots
+    Telecrystal: 1 # 105 dmg per TC which seems huge, but you're missing half of your shots
   categories:
   - TypanUplinkAmmo
 
@@ -1693,7 +1692,6 @@
   id: TypanUplinkMagazineHighCaliber
   name: uplink-high-caliber-magazine-name
   description: uplink-high-caliber-magazine-desc
-  icon: { sprite: _Goobstation/Objects/Weapons/Guns/Ammunition/Magazine/heavy_rifle_mags.rsi, state: base }
   productEntity: MagazineHighCaliber
   cost:
     Telecrystal: 2
@@ -1717,6 +1715,451 @@
   icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/CaselessRifle/caseless_pistol_mag.rsi, state: yellow-icon }
   productEntity: BoxSyndicateMagazinePistolCaselessRifleSAPHE
   cost:
-    Telecrystal: 3 # 23 damage but ~1/3 of a rifle magazine and semi armor piercing, remember the damage is 13 pierce 10.5 explosive
+    Telecrystal: 1 # 23 damage but ~1/3 of a rifle magazine and semi armor piercing, remember the damage is 13 pierce 10.5 explosive
   categories:
   - TypanUplinkAmmo
+
+
+# Mini: expanded Typan catalog — prices aligned with main Mini TC (1 TC ≈ 3000 research)
+
+- type: listing
+  id: TypanUplinkC4
+  name: uplink-c4-name
+  description: uplink-c4-desc
+  productEntity: C4
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkExplosives
+
+# Mini: removed from Typan uplink (TypanUplinkC4Bundle)
+# - type: listing
+#   id: TypanUplinkC4Bundle
+#   name: uplink-c4-bundle-name
+#   description: uplink-c4-bundle-desc
+#   productEntity: ClothingBackpackDuffelSyndicateC4tBundle
+#   cost:
+#     Telecrystal: 10
+#   categories:
+#   - TypanUplinkExplosives
+#
+# Mini: removed from Typan uplink (TypanUplinkSyndieMiniBomb)
+# - type: listing
+#   id: TypanUplinkSyndieMiniBomb
+#   name: uplink-mini-bomb-name
+#   description: uplink-mini-bomb-desc
+#   productEntity: SyndieMiniBomb
+#   cost:
+#     Telecrystal: 5
+#   categories:
+#   - TypanUplinkExplosives
+#
+- type: listing
+  id: TypanUplinkExplosiveGrenade
+  name: uplink-explosive-grenade-name
+  description: uplink-explosive-grenade-desc
+  productEntity: ExGrenade
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkExplosives
+
+# Mini: removed from Typan uplink (TypanUplinkGrenadeShrapnel)
+# - type: listing
+#   id: TypanUplinkGrenadeShrapnel
+#   name: uplink-shrapnel-grenade-name
+#   description: uplink-shrapnel-grenade-desc
+#   productEntity: GrenadeShrapnel
+#   cost:
+#     Telecrystal: 2
+#   categories:
+#   - TypanUplinkExplosives
+#
+# Mini: removed from Typan uplink (TypanUplinkGrenadeIncendiary)
+# - type: listing
+#   id: TypanUplinkGrenadeIncendiary
+#   name: uplink-incendiary-grenade-name
+#   description: uplink-incendiary-grenade-desc
+#   productEntity: GrenadeIncendiary
+#   cost:
+#     Telecrystal: 2
+#   categories:
+#   - TypanUplinkExplosives
+#
+# Mini: removed from Typan uplink (TypanUplinkClusterGrenade)
+# - type: listing
+#   id: TypanUplinkClusterGrenade
+#   name: uplink-cluster-grenade-name
+#   description: uplink-cluster-grenade-desc
+#   productEntity: ClusterGrenade
+#   cost:
+#     Telecrystal: 4
+#   categories:
+#   - TypanUplinkExplosives
+#
+# Mini: removed from Typan uplink (TypanUplinkExplodingPen)
+# - type: listing
+#   id: TypanUplinkExplodingPen
+#   name: uplink-exploding-pen-name
+#   description: uplink-exploding-pen-desc
+#   icon: { sprite: /Textures/Objects/Misc/pens.rsi, state: pen }
+#   productEntity: PenExplodingBox
+#   cost:
+#     Telecrystal: 2
+#   categories:
+#   - TypanUplinkExplosives
+#
+# Mini: removed from Typan uplink (TypanUplinkSyndicateBomb)
+# - type: listing
+#   id: TypanUplinkSyndicateBomb
+#   name: uplink-exploding-syndicate-bomb-name
+#   description: uplink-exploding-syndicate-bomb-desc
+#   productEntity: SyndicateBomb
+#   cost:
+#     Telecrystal: 10
+#   categories:
+#   - TypanUplinkExplosives
+#
+- type: listing
+  id: TypanUplinkMagazineShotgun
+  name: uplink-shotgun-magazine-name
+  description: uplink-shotgun-magazine-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Shotgun/m12.rsi, state: pellets }
+  productEntity: BoxSyndicateMagazineShotgun
+  cost:
+    Telecrystal: 1
+  categories:
+  - TypanUplinkAmmo
+
+- type: listing
+  id: TypanUplinkMagazineShotgunSlug
+  name: uplink-shotgun-magazine-slug-name
+  description: uplink-shotgun-magazine-slug-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Shotgun/m12.rsi, state: slug }
+  productEntity: BoxSyndicateMagazineShotgunSlug
+  cost:
+    Telecrystal: 1
+  categories:
+  - TypanUplinkAmmo
+
+- type: listing
+  id: TypanUplinkEstocAmmo
+  name: uplink-estoc-ammo-name
+  description: uplink-estoc-ammo-desc
+  productEntity: MagazineLightRifle
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkAmmo
+
+- type: listing
+  id: TypanUplinkSyndicateIDCard
+  name: uplink-syndicate-id-card-name
+  description: uplink-syndicate-id-card-desc
+  icon: { sprite: Objects/Misc/id_cards.rsi, state: syndie }
+  productEntity: SyndicateIDCard
+  cost:
+    Telecrystal: 1
+  categories:
+  - TypanUplinkDeception
+
+- type: listing
+  id: TypanUplinkEnergyCrossbow
+  name: uplink-energycrossbow-name
+  description: uplink-energycrossbow-desc
+  productEntity: WeaponEnergyCrossbow
+  cost:
+    Telecrystal: 6
+  categories:
+  - TypanUplinkWeaponry
+
+- type: listing
+  id: TypanUplinkSyndicateDisabler
+  name: uplink-syndicate-disabler-name
+  description: uplink-syndicate-disabler-desc
+  icon: { sprite: _EinsteinEngines/Objects/Weapons/Guns/Battery/syndicate-disabler.rsi, state: base }
+  productEntity: WeaponDisablerSyndicate
+  cost:
+    Telecrystal: 4
+  categories:
+  - TypanUplinkWeaponry
+
+- type: listing
+  id: TypanUplinkGlovesKnuckleDusters
+  name: uplink-gloves-knuckleduster-name
+  description: uplink-gloves-knuckleduster-desc
+  icon: { sprite: _Goobstation/Clothing/Hands/Gloves/knuckleduster.rsi, state: syndicateknuckleduster }
+  productEntity: ClothingHandsKnuckleDustersSyndicate
+  cost:
+    Telecrystal: 4
+  categories:
+  - TypanUplinkWeaponry
+
+- type: listing
+  id: TypanUplinkOmnimedToolSyndie
+  name: uplink-omnimed-tool-syndie-name
+  description: uplink-omnimed-tool-syndie-desc
+  icon: { sprite: /Textures/_Shitmed/Objects/Specific/Medical/Surgery/omnimed.rsi, state: evil }
+  productEntity: OmnimedToolSyndie
+  cost:
+    Telecrystal: 7
+  categories:
+  - TypanUplinkChemicals
+
+- type: listing
+  id: TypanUplinkAdvancedCombatMedipen
+  name: uplink-advanced-combat-medipen-name
+  description: uplink-advanced-combat-medipen-desc
+  productEntity: AdvancedCombatMedipen
+  cost:
+    Telecrystal: 5
+  categories:
+  - TypanUplinkChemicals
+
+- type: listing
+  id: TypanUplinkSmokeImplanter
+  name: uplink-smoke-implant-name
+  description: uplink-smoke-implant-desc
+  icon: { sprite: /Textures/Objects/Weapons/Grenades/smoke.rsi, state: icon }
+  productEntity: SmokeImplanter
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkImplants
+
+- type: listing
+  id: TypanUplinkBinaryImplanter
+  name: uplink-binary-implant-name
+  description: uplink-binary-implant-desc
+  productEntity: BinaryImplanter
+  cost:
+    Telecrystal: 1
+  categories:
+  - TypanUplinkImplants
+
+- type: listing
+  id: TypanUplinkSyndicateWeaponModuleAdvanced
+  name: uplink-syndicate-weapon-module-advanced-name
+  description: uplink-syndicate-weapon-module-advanced-desc
+  productEntity: BorgModuleSyndicateWeaponAdvanced
+  cost:
+    Telecrystal: 8
+  categories:
+  - TypanUplinkDisruption
+
+# Mini: removed from Typan uplink (TypanUplinkReinforcementRadioSyndicate)
+# - type: listing
+#   id: TypanUplinkReinforcementRadioSyndicate
+#   name: uplink-reinforcement-radio-name
+#   description: uplink-reinforcement-radio-traitor-desc
+#   productEntity: ReinforcementRadioSyndicate
+#   icon: { sprite: Objects/Devices/communication.rsi, state: old-radio-urist }
+#   cost:
+#     Telecrystal: 14
+#   categories:
+#   - TypanUplinkAllies
+#
+- type: listing
+  id: TypanUplinkEstoc
+  name: uplink-estoc-name
+  description: uplink-estoc-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/estoc.rsi, state: icon }
+  productEntity: WeaponRifleEstoc
+  cost:
+    Telecrystal: 12
+  categories:
+  - TypanUplinkWeaponry
+
+- type: listing
+  id: TypanUplinkPistolAnaconda
+  name: uplink-anaconda-name
+  description: uplink-anaconda-desc
+  productEntity: WeaponPistolAnaconda
+  cost:
+    Telecrystal: 8
+  categories:
+  - TypanUplinkWeaponry
+
+- type: listing
+  id: TypanUplinkHushpup
+  name: uplink-hushpup-name
+  description: uplink-hushpup-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Shotguns/hushpup.rsi, state: icon }
+  productEntity: ClothingBackpackDuffelSyndicateFilledHushpup
+  cost:
+    Telecrystal: 6
+  categories:
+  - TypanUplinkWeaponry
+
+- type: listing
+  id: TypanUplinkContractorBaton
+  name: uplink-contractor-baton-name
+  description: uplink-contractor-baton-desc
+  productEntity: ContractorBaton
+  cost:
+    Telecrystal: 7
+  categories:
+  - TypanUplinkWeaponry
+
+- type: listing
+  id: TypanUplinkDisposableTurret
+  name: uplink-disposable-turret-name
+  description: uplink-disposable-turret-desc
+  productEntity: ToolboxElectricalTurretFilled
+  cost:
+    Telecrystal: 6
+  categories:
+  - TypanUplinkWeaponry
+
+- type: listing
+  id: TypanUplinkHE1SG8Bundle
+  name: uplink-he1sg8-bundle-name
+  description: uplink-he1sg8-bundle-desc
+  productEntity: ClothingBackpackDuffelSyndicateFilledHE1SG8
+  cost:
+    Telecrystal: 26
+  categories:
+  - TypanUplinkWeaponry
+
+
+# Mini: extra Typan materials / resources (1 TC ≈ 3000 research)
+
+- type: listing
+  id: TypanUplinkCableCoil
+  name: uplink-typan-cable-name
+  description: uplink-typan-cable-desc
+  productEntity: CableApcStack
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkCableMV
+  name: uplink-typan-cable-mv-name
+  description: uplink-typan-cable-mv-desc
+  productEntity: CableMVStack
+  cost:
+    Telecrystal: 3
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkCableHV
+  name: uplink-typan-cable-hv-name
+  description: uplink-typan-cable-hv-desc
+  productEntity: CableHVStack
+  cost:
+    Telecrystal: 4
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkPartRodMetal
+  name: uplink-typan-rods-name
+  description: uplink-typan-rods-desc
+  productEntity: PartRodMetal
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkSheetRGlass
+  name: uplink-typan-rglass-name
+  description: uplink-typan-rglass-desc
+  productEntity: SheetRGlass
+  cost:
+    Telecrystal: 4
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkMaterialWood
+  name: uplink-typan-wood-name
+  description: uplink-typan-wood-desc
+  productEntity: MaterialWoodPlank
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkMaterialCloth
+  name: uplink-typan-cloth-name
+  description: uplink-typan-cloth-desc
+  productEntity: MaterialCloth
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkMaterialCardboard
+  name: uplink-typan-cardboard-name
+  description: uplink-typan-cardboard-desc
+  productEntity: MaterialCardboard
+  cost:
+    Telecrystal: 1
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkSheetBrass
+  name: uplink-typan-brass-name
+  description: uplink-typan-brass-desc
+  productEntity: SheetBrass
+  cost:
+    Telecrystal: 3
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkMaterialBananium
+  name: uplink-typan-bananium-name
+  description: uplink-typan-bananium-desc
+  productEntity: MaterialBananium
+  cost:
+    Telecrystal: 6
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkSheetPlastic10
+  name: uplink-typan-plastic-bulk-name
+  description: uplink-typan-plastic-bulk-desc
+  productEntity: SheetPlastic10
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkSheetSteel10
+  name: uplink-typan-steel-bulk-name
+  description: uplink-typan-steel-bulk-desc
+  productEntity: SheetSteel10
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkSheetGlass10
+  name: uplink-typan-glass-bulk-name
+  description: uplink-typan-glass-bulk-desc
+  productEntity: SheetGlass10
+  cost:
+    Telecrystal: 2
+  categories:
+  - TypanUplinkMaterials
+
+- type: listing
+  id: TypanUplinkMaterialDurathread
+  name: uplink-typan-durathread-name
+  description: uplink-typan-durathread-desc
+  productEntity: MaterialDurathread
+  cost:
+    Telecrystal: 4
+  categories:
+  - TypanUplinkMaterials

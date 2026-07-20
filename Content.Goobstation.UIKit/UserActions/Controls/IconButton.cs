@@ -17,18 +17,22 @@ public class IconButton : Button
     public readonly RichTextLabel Label;
     //public readonly PanelContainer HighlightRect;
 
+    public const string StyleClassActionMenuItem = "actionMenuItem";
+
     public IconButton(string name)
     {
         MinSize = new Vector2(0, 24);
         Margin = new Thickness(1);
         HorizontalAlignment = HAlignment.Left;
+        StyleClasses.Add(StyleClassActionMenuItem);
 
         _mainContainer = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             //HorizontalExpand = true,
             MinSize = new Vector2(0, 24),
-            Margin = new Thickness(1)
+            Margin = new Thickness(1),
+            MouseFilter = MouseFilterMode.Ignore,
         };
         AddChild(_mainContainer);
 
@@ -43,7 +47,8 @@ public class IconButton : Button
             TextureScale = new Vector2(1, 1),
             MinSize = new Vector2(24, 24),
             MaxSize = new Vector2(24, 24),
-            Visible = true
+            Visible = true,
+            MouseFilter = MouseFilterMode.Ignore,
         };
         _mainContainer.AddChild(Icon);
 
@@ -55,7 +60,8 @@ public class IconButton : Button
             VerticalAlignment = VAlignment.Center,
             Margin = new Thickness(1),
             Text = name,
-            Visible = true
+            Visible = true,
+            MouseFilter = MouseFilterMode.Ignore,
         };
         _mainContainer.AddChild(Label);
     }

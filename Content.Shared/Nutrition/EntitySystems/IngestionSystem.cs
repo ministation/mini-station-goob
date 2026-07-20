@@ -3,6 +3,8 @@ using Content.Shared.Administration.Logs;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Organ;
 using Content.Shared.Body.Systems;
+using Content.Shared.Clothing.Components;
+using Content.Shared.Clothing.EntitySystems;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -71,8 +73,8 @@ public sealed partial class IngestionSystem : EntitySystem
         SubscribeLocalEvent<EdibleComponent, ComponentInit>(OnEdibleInit);
 
         // Interactions
-        SubscribeLocalEvent<EdibleComponent, UseInHandEvent>(OnUseEdibleInHand, after: [typeof(OpenableSystem), typeof(InventorySystem), typeof(ActivatableUISystem)]);
-        SubscribeLocalEvent<EdibleComponent, AfterInteractEvent>(OnEdibleInteract, after: [typeof(ToolOpenableSystem)]);
+        SubscribeLocalEvent<EdibleComponent, UseInHandEvent>(OnUseEdibleInHand, after: [typeof(OpenableSystem), typeof(InventorySystem), typeof(ActivatableUISystem), typeof(ClothingSystem)]);
+        SubscribeLocalEvent<EdibleComponent, AfterInteractEvent>(OnEdibleInteract, after: [typeof(ToolOpenableSystem), typeof(ClothingSystem)]);
 
         // Generic Eating Handlers
         SubscribeLocalEvent<EdibleComponent, BeforeIngestedEvent>(OnBeforeIngested);
@@ -100,7 +102,7 @@ public sealed partial class IngestionSystem : EntitySystem
     /// </summary>
     private void OnUseEdibleInHand(Entity<EdibleComponent> entity, ref UseInHandEvent ev)
     {
-        if (ev.Handled)
+        if (ev.Handled || HasComp<ClothingComponent>(entity))
             return;
 
         ev.Handled = TryIngest(ev.User, entity);
@@ -111,7 +113,7 @@ public sealed partial class IngestionSystem : EntitySystem
     /// </summary>
     private void OnEdibleInteract(Entity<EdibleComponent> entity, ref AfterInteractEvent args)
     {
-        if (args.Handled || args.Target == null || !args.CanReach)
+        if (args.Handled || args.Target == null || !args.CanReach || HasComp<ClothingComponent>(entity))
             return;
 
         args.Handled = TryIngest(args.User, args.Target.Value, entity);

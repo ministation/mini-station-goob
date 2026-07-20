@@ -8062,6 +8062,14 @@ entities:
       parent: 5000
     - type: Fixtures
       fixtures: {}
+  - uid: 7838
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -6.5,6.5
+      parent: 5416
+    - type: Fixtures
+      fixtures: {}
   - uid: 6328
     components:
     - type: Transform

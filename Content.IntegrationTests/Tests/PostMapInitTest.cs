@@ -184,49 +184,32 @@ namespace Content.IntegrationTests.Tests
             "Typan",
             // Mini-end
         };
-        // Goobstation edit start, yeah i know, but this is easier and less load than loading protoman or something.
-        private static readonly string[] GameMapsInCurrentPool = // plus dev
+        // Keep in sync with DefaultMapPool in Resources/Prototypes/Maps/Pools/default.yml
+        private static readonly string[] GameMapsInCurrentPool =
         {
-            // order this list alphabetically, mark dev maps
-              //"Amber", kill
-              "Atlas",
-              "Bagel",
-             //  "Barratry", kill memory concerns
-            //"Box",            // Not in pool
-              "CentComm",      // CentComm
-              "Chloris",
-              "Cluster",
-              "Cog",
-            //"Core",           // Not in pool.
-              "Delta",
-              "Dev",            // Dev map
-            //"dm01-entryway",  // Deathmatch
-            //"Europa",         // Not in pool.
-              "Exo",
-            //  "Fland",        // kill due to mem
-              "FlandHighPop",
-              "Kettle",
-            //"Lambda",         // Not in pool
-              "Lavatest",       //Dev map
-              "Leonid",
-              "Loop",
-              "Marathon",
-              "Meta",
-            //"MeteorArena",    // Deathmatch
-            //  "Oasis",        // kill due to memory
-              "OasisHighPop",
-              "Omega",
-              "Origin",
-            //"OriginHighPop",  //Not in pool
-              "TestTeg",        //Dev map
-            //"Train",          //Not in pool
-              "Packed",
-              "Reach",
-              "Saltern",
-              "Serpentcrest",
-             // "Snowball", // fuck off not in pool
+            "Atlas",
+            "Bagel",
+            "Barratry",
+            "Box",
+            "Chloris",
+            "Cog",
+            "Delta",
+            "Fland",
+            "FlandHighPop",
+            "Kettle",
+            "Leonid",
+            "Marathon",
+            "Meta",
+            "MiniCluster",
+            "MiniOmega",
+            "MiniPacked",
+            "Oasis",
+            "OasisHighPop",
+            "Origin",
+            "Saltern",
+            "Serpentcrest",
+            "Snowball",
         };
-        // Goobstation edit end
 
         private static readonly ProtoId<EntityCategoryPrototype> DoNotMapCategory = "DoNotMap";
 

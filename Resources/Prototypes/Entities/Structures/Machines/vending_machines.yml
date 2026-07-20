@@ -206,6 +206,7 @@
     pack: CondimentInventory
     offState: off
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/condiments.rsi
     drawdepth: SmallObjects
     layers:
@@ -245,6 +246,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/ammo.rsi
     layers:
     - state: "off"
@@ -254,7 +256,6 @@
       shader: unshaded
     - state: panel
       map: ["enum.WiresVisualLayers.MaintenancePanel"]
-
 - type: entity
   parent: VendingMachine
   id: VendingMachineBooze
@@ -273,6 +274,7 @@
   - type: SpeakOnUIClosed
     pack: BoozeOMatGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/boozeomat.rsi
     layers:
     - state: "off"
@@ -307,6 +309,7 @@
   - type: SpeakOnUIClosed
     pack: BruiseOMatGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/bruiseomat.rsi
     layers:
     - state: "off"
@@ -378,6 +381,7 @@
   - type: SpeakOnUIClosed
     pack: ChefvendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/chefvend.rsi
     layers:
     - state: "off"
@@ -449,6 +453,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/clothing.rsi
     layers:
     - state: "off"
@@ -485,6 +490,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/winterdrobe.rsi
     layers:
     - state: "off"
@@ -603,6 +609,7 @@
   suffix: Black
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/soda2.rsi
     layers:
     - state: "off"
@@ -626,6 +633,7 @@
   description: It vends cola, in space.
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/cola.rsi
     layers:
     - state: "off"
@@ -653,6 +661,7 @@
     offState: off
     normalState: normal-unshaded
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/spaceup.rsi
     layers:
     - state: "off"
@@ -714,6 +723,7 @@
     offState: off
     normalState: normal-unshaded
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/starkist.rsi
     layers:
     - state: "off"
@@ -752,6 +762,7 @@
   - type: DatasetVocalizer
     dataset: RobustSoftdrinksAds
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/shamblersjuice.rsi
     layers:
     - state: "off"
@@ -790,6 +801,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/pwrgame.rsi
     layers:
     - state: "off"
@@ -828,6 +840,7 @@
   - type: SpeakOnUIClosed
     pack: DrGibbGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/gib.rsi
     layers:
     - state: "off"
@@ -851,6 +864,7 @@
   description: Popular with the administration.
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/smite.rsi
     layers:
     - state: "off"
@@ -981,6 +995,7 @@
   - type: SpeakOnUIClosed
     pack: DiscountDansGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/discount.rsi
     layers:
     - state: "off"
@@ -1092,6 +1107,7 @@
     pack: NanoMedPlusInventory
     offState: off
   - type: Sprite
+    noRot: true
     layers:
     - state: "off"
       map: ["enum.VendingMachineVisualLayers.Base"]
@@ -1290,6 +1306,7 @@
     ejectState: eject-unshaded
     denyState: deny-unshaded
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/sustenance.rsi
     layers:
     - state: "off"
@@ -1312,6 +1329,7 @@
   suffix: Blue
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/snack-blue.rsi
     layers:
     - state: "off"
@@ -1334,6 +1352,7 @@
   suffix: Orange
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/snack-orange.rsi
     layers:
     - state: "off"
@@ -1356,6 +1375,7 @@
   suffix: Green
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/snack-green.rsi
     layers:
     - state: "off"
@@ -1378,6 +1398,7 @@
   suffix: Teal
   components:
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/snack-teal.rsi
     layers:
     - state: "off"
@@ -1706,6 +1727,7 @@
   #  normalState: normal-unshaded
   #  denyState: deny-unshaded
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/mining.rsi
     layers:
     - state: "off"
@@ -1770,6 +1792,7 @@
   - type: SpeakOnUIClosed
     pack: DonutGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/donut.rsi
     layers:
     - state: "off"
@@ -1804,6 +1827,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/hydrobe.rsi
     layers:
     - state: "off"
@@ -1836,6 +1860,7 @@
   - type: SpeakOnUIClosed
     pack: LawDrobeGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/lawdrobe.rsi
     layers:
     - state: "off"
@@ -1864,6 +1889,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/secdrobe.rsi
     layers:
     - state: "off"
@@ -1896,6 +1922,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/bardrobe.rsi
     layers:
     - state: "off"
@@ -1920,6 +1947,7 @@
     normalState: normal-unshaded
     denyState: deny-unshaded
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/chapdrobe.rsi
     layers:
     - state: "off"
@@ -1954,6 +1982,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/cargodrobe.rsi
     layers:
     - state: "off"
@@ -1986,6 +2015,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/medidrobe.rsi
     layers:
     - state: "off"
@@ -2014,6 +2044,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/chemdrobe.rsi
     layers:
     - state: "off"
@@ -2042,6 +2073,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/curadrobe.rsi
     layers:
     - state: "off"
@@ -2070,6 +2102,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/atmosdrobe.rsi
     layers:
     - state: "off"
@@ -2102,6 +2135,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/engidrobe.rsi
     layers:
     - state: "off"
@@ -2134,6 +2168,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/chefdrobe.rsi
     layers:
     - state: "off"
@@ -2162,6 +2197,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/detdrobe.rsi
     layers:
     - state: "off"
@@ -2190,6 +2226,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/janidrobe.rsi
     layers:
     - state: "off"
@@ -2224,6 +2261,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/scidrobe.rsi
     layers:
     - state: "off"
@@ -2252,6 +2290,7 @@
   - type: SpeakOnUIClosed
     pack: SyndieDrobeGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/syndiedrobe.rsi
     layers:
     - state: "off"
@@ -2284,6 +2323,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/robodrobe.rsi
     layers:
     - state: "off"
@@ -2312,6 +2352,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/genedrobe.rsi
     layers:
     - state: "off"
@@ -2340,6 +2381,7 @@
   - type: SpeakOnUIClosed
     pack: GenericVendGoodbyes
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/virodrobe.rsi
     layers:
     - state: "off"
@@ -2364,6 +2406,7 @@
     brokenState: broken
     normalState: normal-unshaded
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/centdrobe.rsi
     layers:
     - state: "off"
@@ -2400,6 +2443,7 @@
     soundVend: /Audio/Items/bikehorn.ogg
     initialStockQuality: 1.0 # Nobody knows how Honk does it, but their vending machines always seem well-stocked...
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/happyhonk.rsi
     layers:
     - state: "off"
@@ -2445,6 +2489,7 @@
     energy: 2.0 # reduced energy since the color is pure white
     color: "#FF9CE0" # Corvax-Goob-VendomatsTweak
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/pride.rsi
     layers:
     - state: "off"
@@ -2456,7 +2501,6 @@
       map: ["enum.WiresVisualLayers.MaintenancePanel"]
 
 # Gas Tank Dispenser
-
 - type: entity
   parent: VendingMachine
   id: VendingMachineTankDispenserEVA
@@ -2467,9 +2511,9 @@
   - type: VendingMachine
     pack: TankDispenserEVAInventory
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/tankdispenser.rsi #TODO add visualiser for remaining tanks as layers
     state: dispenser
-
 - type: entity
   parent: VendingMachine
   id: VendingMachineTankDispenserEngineering
@@ -2480,11 +2524,11 @@
   - type: VendingMachine
     pack: TankDispenserEngineeringInventory
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/tankdispenser.rsi #TODO add visualiser for remaining tanks as layers
     layers:
     - state: dispenser
     - state: dispensereng
-
 - type: entity
   parent: VendingMachine
   id: VendingMachineChemicals
@@ -2499,6 +2543,7 @@
     denyState: deny
   # ejectDelay: 2 Goobstation - No reason for the eject delay to be 2 seconds
   - type: Sprite
+    noRot: true
     sprite: Structures/Machines/VendingMachines/chemvend.rsi
     layers:
     - state: "off"

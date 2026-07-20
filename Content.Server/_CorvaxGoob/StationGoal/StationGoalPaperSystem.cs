@@ -62,7 +62,7 @@ namespace Content.Server._CorvaxGoob.StationGoal
                 }
 
                 if (selGoal is null)
-                    return;
+                    continue;
 
                 if (SendStationGoal(uid, selGoal))
                 {
@@ -118,10 +118,17 @@ namespace Content.Server._CorvaxGoob.StationGoal
             );
 
             var wasSent = false;
+            // Typan goals stay on Typan — Centcomm receiveAll must not get syndicate station goals.
+            var isTypanStation = HasComp<TTStationHandleJobComponent>(ent);
             var query = EntityQueryEnumerator<FaxMachineComponent>();
             while (query.MoveNext(out var faxUid, out var fax))
             {
-                if (!fax.ReceiveAllStationGoals && !(fax.ReceiveStationGoal && _station.GetOwningStation(faxUid) == ent))
+                var ownsThisStation = _station.GetOwningStation(faxUid) == ent;
+                var shouldReceive =
+                    (fax.ReceiveStationGoal && ownsThisStation) ||
+                    (fax.ReceiveAllStationGoals && !isTypanStation);
+
+                if (!shouldReceive)
                     continue;
 
                 _fax.Receive(faxUid, printout, null, fax);
@@ -129,7 +136,8 @@ namespace Content.Server._CorvaxGoob.StationGoal
                 foreach (var spawnEnt in goal.Spawns)
                     SpawnAtPosition(spawnEnt, Transform(faxUid).Coordinates);
 
-                wasSent |= fax.ReceiveStationGoal;
+                // Centcomm (receiveAllStationGoals) also counts as a successful delivery for NT objective assignment.
+                wasSent |= fax.ReceiveStationGoal || fax.ReceiveAllStationGoals;
             }
 
             if (wasSent)
