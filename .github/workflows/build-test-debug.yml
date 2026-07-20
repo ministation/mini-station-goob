@@ -45,7 +45,9 @@ jobs:
       run: dotnet restore
 
     - name: Build Project
-      run: dotnet build --configuration DebugOpt --no-restore /m
+      run: |
+        dotnet build --configuration DebugOpt --no-restore /m
+        test -f bin/Content.IntegrationTests/Content.IntegrationTests.dll
 
     - name: Run Content.Tests
       run: dotnet test --no-build --configuration DebugOpt Content.Tests/Content.Tests.csproj --filter "FullyQualifiedName!~Content.Tests.Client.Stylesheets.StyleGlassStylesheetTests" -- NUnit.ConsoleOut=0 NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$(pwd)/test_results"
@@ -96,52 +98,65 @@ jobs:
     - name: Extract build
       run: tar xzf build.tar.gz && rm build.tar.gz
 
-    - name: Run Content.IntegrationTests
-      shell: pwsh
+    - name: Verify integration build output
       run: |
-        $env:DOTNET_gcServer=1
-        $resultsDir = Join-Path (Get-Location) "integration_test_results"
-        if (Test-Path $resultsDir) { Remove-Item -Recurse -Force $resultsDir }
-        New-Item -ItemType Directory -Path $resultsDir | Out-Null
-        Remove-Item -Recurse -Force test_results -ErrorAction SilentlyContinue
+        ls -la bin/Content.IntegrationTests/
+        test -f bin/Content.IntegrationTests/Content.IntegrationTests.dll
 
-        $filter = switch ("${{ matrix.shard }}") {
-          "heavy" {
-            "FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest"
-          }
-          default {
-            "FullyQualifiedName!~Content.IntegrationTests.Tests.EntityTest&FullyQualifiedName!~Content.IntegrationTests.Tests.PostMapInitTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.StationPowerTests&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.PowerTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Atmos.AirtightTest&FullyQualifiedName!~Content.IntegrationTests.Tests.ClickableTest"
-          }
-        }
-        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj --filter "$filter" --logger "console;verbosity=minimal" -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$resultsDir"
-        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    - name: Run Content.IntegrationTests
+      shell: bash
+      env:
+        DOTNET_gcServer: 1
+        SHARD: ${{ matrix.shard }}
+      run: |
+        set -euo pipefail
+        RESULTS_DIR="$GITHUB_WORKSPACE/integration_test_results"
+        rm -rf "$RESULTS_DIR" test_results
+        mkdir -p "$RESULTS_DIR"
 
-        $resultFile = Get-ChildItem -Path $resultsDir -Recurse -Filter *.xml |
-          Where-Object {
-            $xml = [xml](Get-Content -LiteralPath $_.FullName -Raw)
-            $xml.'test-run'.fullname -like '*Content.IntegrationTests*'
-          } |
-          Select-Object -First 1
-        if (-not $resultFile) { throw "No Content.IntegrationTests NUnit results XML in $resultsDir" }
+        if [ "$SHARD" = "heavy" ]; then
+          FILTER='FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest'
+        else
+          FILTER='FullyQualifiedName!~Content.IntegrationTests.Tests.EntityTest&FullyQualifiedName!~Content.IntegrationTests.Tests.PostMapInitTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.StationPowerTests&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.PowerTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Atmos.AirtightTest&FullyQualifiedName!~Content.IntegrationTests.Tests.ClickableTest'
+        fi
 
-        [xml]$nunit = Get-Content -LiteralPath $resultFile.FullName
-        $run = $nunit.'test-run'
-        $assembly = $run.fullname
-        $total = [int]$run.total
-        $passed = [int]$run.passed
-        $failed = [int]$run.failed
-        Write-Host "Shard ${{ matrix.shard }} assembly=$assembly total=$total passed=$passed failed=$failed duration=$($run.duration)s"
+        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj \
+          --filter "$FILTER" \
+          --results-directory "$RESULTS_DIR" \
+          --logger "trx;LogFileName=IntegrationTests_${SHARD}.trx" \
+          --logger "console;verbosity=normal" \
+          -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.TestOutputXml=logs NUnit.WorkDirectory="$RESULTS_DIR"
 
-        $minTests = if ("${{ matrix.shard }}" -eq "heavy") { 30 } else { 100 }
-        if ($total -lt $minTests) { throw "Expected at least $minTests integration tests, got $total (filter or --no-build broken?)" }
-        if ($failed -gt 0) { throw "$failed test(s) failed" }
+        find "$RESULTS_DIR" -type f | head -50
+
+        TRX=$(find "$RESULTS_DIR" -name "IntegrationTests_${SHARD}.trx" | head -1)
+        if [ -z "$TRX" ]; then
+          echo "No TRX file under $RESULTS_DIR"
+          exit 1
+        fi
+
+        TOTAL=$(grep -oE 'total="[0-9]+"' "$TRX" | head -1 | grep -oE '[0-9]+')
+        PASSED=$(grep -oE 'passed="[0-9]+"' "$TRX" | head -1 | grep -oE '[0-9]+')
+        FAILED=$(grep -oE 'failed="[0-9]+"' "$TRX" | head -1 | grep -oE '[0-9]+')
+        echo "Shard $SHARD trx=$TRX total=$TOTAL passed=$PASSED failed=$FAILED"
+
+        MIN_TESTS=100
+        if [ "$SHARD" = "heavy" ]; then MIN_TESTS=30; fi
+        if [ -z "$TOTAL" ] || [ "$TOTAL" -lt "$MIN_TESTS" ]; then
+          echo "Expected at least $MIN_TESTS integration tests, got '${TOTAL:-0}'"
+          exit 1
+        fi
+        if [ -n "$FAILED" ] && [ "$FAILED" -gt 0 ]; then
+          echo "$FAILED test(s) failed"
+          exit 1
+        fi
 
     - name: Archive integration test results
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: nunit3-integration-results-${{ matrix.shard }}
-        path: integration_test_results/*
+        path: integration_test_results/**
         retention-days: 7
         if-no-files-found: ignore
 
