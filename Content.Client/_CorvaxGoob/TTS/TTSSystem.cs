@@ -107,7 +107,19 @@ public sealed partial class TTSSystem : EntitySystem
                 return;
 
             PlayRadioStatic();
-            Timer.Spawn(TimeSpan.FromMilliseconds(RadioLeadInMs), () => PlayTtsAudio(ev));
+            // Capture data now — delayed callback must not touch a disposed system / IoC.
+            var radioEv = ev;
+            Timer.Spawn(TimeSpan.FromMilliseconds(RadioLeadInMs), () =>
+            {
+                try
+                {
+                    PlayTtsAudio(radioEv);
+                }
+                catch (Exception e)
+                {
+                    _sawmill.Error($"Failed to play delayed radio TTS: {e}");
+                }
+            });
             return;
         }
 

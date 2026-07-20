@@ -28,13 +28,14 @@ public sealed class RatvarFriendlyFireSystem : EntitySystem
         if (args.Type != HarmfulActionType.Harm)
             return;
 
+        // Self-harm is still allowed (e.g. fist yourself).
+        if (args.User == ent.Owner)
+            return;
+
         if (!IsRatvarAlly(args.User, ent))
             return;
 
         args.Cancel();
-
-        if (args.User == ent.Owner)
-            return;
 
         _popup.PopupPredicted(
             Loc.GetString("ratvar-friendly-fire-blocked"),
@@ -45,8 +46,9 @@ public sealed class RatvarFriendlyFireSystem : EntitySystem
 
     public bool IsRatvarAlly(EntityUid a, EntityUid b)
     {
+        // Do not treat self as an ally — that used to block self-harm for every Damageable entity.
         if (a == b)
-            return true;
+            return false;
 
         if (!IsRatvarMember(a) || !IsRatvarMember(b))
             return false;

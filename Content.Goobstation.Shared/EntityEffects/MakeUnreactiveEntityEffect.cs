@@ -1,6 +1,5 @@
 using Content.Shared.Chemistry.Reaction;
 using Content.Shared.EntityEffects;
-using Content.Shared.EntityEffects.Effects;
 using Content.Shared.Tag;
 using Robust.Shared.Prototypes;
 
@@ -15,8 +14,11 @@ public sealed partial class MakeUnreactiveEntityEffectSystem
 
     protected override void Effect(Entity<ReactiveComponent> entity, ref EntityEffectEvent<MakeUnreactiveEntityEffect> args)
     {
-        // ?????
-        RemComp<ReactiveComponent>(entity.Owner);
+        // Clear reactions immediately so further reagents do nothing, but defer removing the
+        // component so later effects in the same batch (SpawnEntity, CreateRQuantity, etc.) still run.
+        entity.Comp.Reactions = null;
+        entity.Comp.ReactiveGroups = null;
+        RemCompDeferred<ReactiveComponent>(entity.Owner);
         _tags.AddTag(entity.Owner, TrashTag);
     }
 }

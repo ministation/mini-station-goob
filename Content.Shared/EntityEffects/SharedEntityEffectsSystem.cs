@@ -29,6 +29,10 @@ public sealed partial class SharedEntityEffectsSystem : EntitySystem, IEntityEff
     {
         var scale = args.ReagentQuantity.Quantity.Float();
 
+        // Goobstation - OneUnitReaction clamps multi-unit injections to a single unit of effect scale.
+        if (entity.Comp.OneUnitReaction)
+            scale = Math.Min(scale, 1f);
+
         if (args.Reagent.ReactiveEffects != null && entity.Comp.ReactiveGroups != null)
         {
             foreach (var (key, val) in args.Reagent.ReactiveEffects)
@@ -46,9 +50,9 @@ public sealed partial class SharedEntityEffectsSystem : EntitySystem, IEntityEff
             }
         }
 
-        if (entity.Comp.Reactions != null)
+        if (entity.Comp.Reactions is { } reactions)
         {
-            foreach (var entry in entity.Comp.Reactions)
+            foreach (var entry in reactions)
             {
                 if (!entry.Methods.Contains(args.Method))
                     continue;
