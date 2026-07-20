@@ -15,10 +15,21 @@ on:
     branches: [ master, staging, stable ]
 
 jobs:
-  build:
+  build-and-test:
     if: github.event.pull_request.draft == false
+    name: Build & Test (${{ matrix.shard }})
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shard: fast
+            timeout_minutes: 75
+            run_unit_tests: true
+          - shard: heavy
+            timeout_minutes: 90
+            run_unit_tests: false
 
     steps:
     - name: Checkout Master
@@ -50,23 +61,11 @@ jobs:
         test -f bin/Content.IntegrationTests/Content.IntegrationTests.dll
 
     - name: Run Content.Tests
+      if: matrix.run_unit_tests
       run: dotnet test --no-build --configuration DebugOpt Content.Tests/Content.Tests.csproj --filter "FullyQualifiedName!~Content.Tests.Client.Stylesheets.StyleGlassStylesheetTests" -- NUnit.ConsoleOut=0 NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$(pwd)/test_results"
 
-    - name: Archive build output
-      run: |
-        rm -rf test_results
-        tar czf /tmp/build.tar.gz --exclude='.git' --exclude='./test_results' .
-
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-output
-        path: /tmp/build.tar.gz
-        retention-days: 1
-        compression-level: 0
-
     - name: Archive unit test results
-      if: always()
+      if: always() && matrix.run_unit_tests
       uses: actions/upload-artifact@v4
       with:
         name: nunit3-unit-results
@@ -74,80 +73,57 @@ jobs:
         retention-days: 7
         if-no-files-found: ignore
 
-  integration-tests:
-    if: github.event.pull_request.draft == false
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 75
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [fast, heavy]
-
-    steps:
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v4.1.0
-      with:
-        dotnet-version: 10.0.x
-
-    - name: Download build artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: build-output
-
-    - name: Extract build
-      run: tar xzf build.tar.gz && rm build.tar.gz
-
-    - name: Verify integration build output
-      run: |
-        ls -la bin/Content.IntegrationTests/
-        test -f bin/Content.IntegrationTests/Content.IntegrationTests.dll
-
     - name: Run Content.IntegrationTests
       shell: bash
       env:
         DOTNET_gcServer: 1
         SHARD: ${{ matrix.shard }}
       run: |
-        set -euo pipefail
+        set -uo pipefail
         RESULTS_DIR="$GITHUB_WORKSPACE/integration_test_results"
-        rm -rf "$RESULTS_DIR" test_results
+        rm -rf "$RESULTS_DIR"
         mkdir -p "$RESULTS_DIR"
 
         if [ "$SHARD" = "heavy" ]; then
           FILTER='FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest'
+          MIN_TESTS=30
         else
           FILTER='FullyQualifiedName!~Content.IntegrationTests.Tests.EntityTest&FullyQualifiedName!~Content.IntegrationTests.Tests.PostMapInitTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.StationPowerTests&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.PowerTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Atmos.AirtightTest&FullyQualifiedName!~Content.IntegrationTests.Tests.ClickableTest'
+          MIN_TESTS=100
         fi
 
+        LISTED=$(dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj \
+          --filter "$FILTER" --list-tests | grep -c 'Content\.IntegrationTests' || true)
+        echo "Shard $SHARD listed tests: $LISTED"
+        if [ "$LISTED" -lt "$MIN_TESTS" ]; then
+          echo "Expected at least $MIN_TESTS listed tests, got $LISTED"
+          exit 1
+        fi
+
+        set -e
         dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj \
           --filter "$FILTER" \
           --results-directory "$RESULTS_DIR" \
-          --logger "trx;LogFileName=IntegrationTests_${SHARD}.trx" \
           --logger "console;verbosity=normal" \
-          -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.TestOutputXml=logs NUnit.WorkDirectory="$RESULTS_DIR"
+          --logger "trx;LogFileName=IntegrationTests_${SHARD}.trx" \
+          -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
 
-        find "$RESULTS_DIR" -type f | head -50
-
-        TRX=$(find "$RESULTS_DIR" -name "IntegrationTests_${SHARD}.trx" | head -1)
+        TRX=$(find "$RESULTS_DIR" -name '*.trx' | head -1)
         if [ -z "$TRX" ]; then
-          echo "No TRX file under $RESULTS_DIR"
+          echo "No TRX under $RESULTS_DIR"
+          find "$RESULTS_DIR" -type f -ls || true
           exit 1
         fi
 
         TOTAL=$(grep -oE 'total="[0-9]+"' "$TRX" | head -1 | grep -oE '[0-9]+')
-        PASSED=$(grep -oE 'passed="[0-9]+"' "$TRX" | head -1 | grep -oE '[0-9]+')
         FAILED=$(grep -oE 'failed="[0-9]+"' "$TRX" | head -1 | grep -oE '[0-9]+')
-        echo "Shard $SHARD trx=$TRX total=$TOTAL passed=$PASSED failed=$FAILED"
+        echo "Shard $SHARD trx=$TRX total=$TOTAL failed=$FAILED"
 
-        MIN_TESTS=100
-        if [ "$SHARD" = "heavy" ]; then MIN_TESTS=30; fi
         if [ -z "$TOTAL" ] || [ "$TOTAL" -lt "$MIN_TESTS" ]; then
-          echo "Expected at least $MIN_TESTS integration tests, got '${TOTAL:-0}'"
+          echo "Expected at least $MIN_TESTS executed tests, got '${TOTAL:-0}'"
           exit 1
         fi
         if [ -n "$FAILED" ] && [ "$FAILED" -gt 0 ]; then
-          echo "$FAILED test(s) failed"
           exit 1
         fi
 
@@ -163,8 +139,7 @@ jobs:
   ci-success:
     name: Build & Test Debug
     needs:
-      - build
-      - integration-tests
+      - build-and-test
     runs-on: ubuntu-latest
     steps:
       - name: CI succeeded
