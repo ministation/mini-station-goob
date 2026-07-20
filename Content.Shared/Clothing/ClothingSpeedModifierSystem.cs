@@ -69,6 +69,14 @@ public sealed class ClothingSpeedModifierSystem : EntitySystem
         if (component.Standing != null && !_standing.IsMatchingState(args.Owner, component.Standing.Value))
             return;
 
+        // Don't stack clothing slowdowns with crawl speed (knockdown already applies ~0.4x).
+        // Speed-boost clothing can still help while downed.
+        if (component.Standing == null &&
+            _standing.IsDown(args.Owner) &&
+            component.WalkModifier < 1f &&
+            component.SprintModifier < 1f)
+            return;
+
         args.Args.ModifySpeed(component.WalkModifier, component.SprintModifier);
     }
 

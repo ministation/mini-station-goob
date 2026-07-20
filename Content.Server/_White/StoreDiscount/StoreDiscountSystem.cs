@@ -20,7 +20,11 @@ public sealed class StoreDiscountSystem : EntitySystem
         var count = _random.Next(store.Sales.MinItems, store.Sales.MaxItems + 1);
 
         listings = listings
-            .Where(l => !l.SaleBlacklist && l.Cost.Any(x => x.Value > 1) && store.Categories.Overlaps(l.Categories)) // goob edit
+            .Where(l => !l.SaleBlacklist
+                        && l.Cost.Any(x => x.Value > 1)
+                        // Don't put leftover pre-/5 mega-prices on "sale" for 20 TC agents.
+                        && l.Cost.Values.All(v => v.Int() <= 25)
+                        && store.Categories.Overlaps(l.Categories)) // goob edit
             .OrderBy(_ => _random.Next()).Take(count).ToList();
 
         foreach (var listing in listings)

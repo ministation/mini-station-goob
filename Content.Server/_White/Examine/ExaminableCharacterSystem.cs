@@ -129,7 +129,9 @@ public sealed class ExaminableCharacterSystem : EntitySystem
         message.Pop();
         if (showExamine && _netConfigManager.GetClientCVar(actorComponent.PlayerSession.Channel, GoobCVars.LogInChat))
         {
-            _chatManager.ChatMessageToOne(ChatChannel.Emotes, message.ToString(), ToMarkup(message), EntityUid.Invalid, false, actorComponent.PlayerSession.Channel, recordReplay: false, canCoalesce: false); // Goobstation Edit
+            var wrapped = ToMarkup(message);
+            var plain = FormattedMessage.RemoveMarkupOrThrow(wrapped);
+            _chatManager.ChatMessageToOne(ChatChannel.Emotes, plain, wrapped, EntityUid.Invalid, false, actorComponent.PlayerSession.Channel, recordReplay: false, canCoalesce: false); // Goobstation Edit
         }
     }
 
@@ -163,7 +165,9 @@ public sealed class ExaminableCharacterSystem : EntitySystem
             AddLine(message);
             message.Pop();
 
-            _chatManager.ChatMessageToOne(ChatChannel.Emotes, message.ToString(), ToMarkup(message), EntityUid.Invalid, false, actorComponent.PlayerSession.Channel, recordReplay: false, canCoalesce: false); // Goobstation Edit
+            var wrapped = ToMarkup(message);
+            var plain = FormattedMessage.RemoveMarkupOrThrow(wrapped);
+            _chatManager.ChatMessageToOne(ChatChannel.Emotes, plain, wrapped, EntityUid.Invalid, false, actorComponent.PlayerSession.Channel, recordReplay: false, canCoalesce: false); // Goobstation Edit
         }
     }
 

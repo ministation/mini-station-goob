@@ -219,6 +219,9 @@ namespace Content.Client.Verbs.UI
                 return;
             }
 
+            // Server response is the full verb set. UnionWith kept stale entries because
+            // Verb.CompareTo ignores Disabled and valve Text changes leave both open/close.
+            CurrentVerbs.Clear();
             CurrentVerbs.UnionWith(verbs);
             FillVerbPopup(popup);
         }

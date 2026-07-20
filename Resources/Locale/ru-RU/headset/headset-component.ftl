@@ -1,6 +1,6 @@
 # Chat window radio wrap (prefix and postfix)
-chat-radio-message-wrap = [bold][color={ $channel-color }]{ $channel } [/color][color={ $headset-color }][icon src="{ $jobIcon }" tooltip="{ $jobName }"]  { $name }[/bold][/color][color={ $channel-color }] { $verb }, [font={ $fontType } size={ $fontSize }]"{ $message }"[/font][/color]
-chat-radio-message-wrap-bold = [bold][color={ $channel-color }]{ $channel } [/color][color={ $headset-color }][icon src="{ $jobIcon }" tooltip="{ $jobName }"]  { $name }[/bold][/color][color={ $channel-color }] { $verb }, [font={ $fontType } size={ $fontSize }][bold]"{ $message }"[/bold][/font][/color]
+chat-radio-message-wrap = [color={ $channel-color }][bold]{ $channel }[/bold][/color] [color={ $headset-color }][bold][icon src="{ $jobIcon }" tooltip="{ $jobName }"] { $name }[/bold][/color][color={ $channel-color }] { $verb }, [font={ $fontType } size={ $fontSize }]"{ $message }"[/font][/color]
+chat-radio-message-wrap-bold = [color={ $channel-color }][bold]{ $channel }[/bold][/color] [color={ $headset-color }][bold][icon src="{ $jobIcon }" tooltip="{ $jobName }"] { $name }[/bold][/color][color={ $channel-color }] { $verb }, [font={ $fontType } size={ $fontSize }][bold]"{ $message }"[/bold][/font][/color]
 examine-headset-default-channel = Канал по умолчанию этой гарнитуры [color={$color}]{$channel}[/color].
 chat-radio-common = Общий
 chat-radio-centcom = Центральное Командование

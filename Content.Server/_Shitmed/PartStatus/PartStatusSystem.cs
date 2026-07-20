@@ -78,12 +78,13 @@ public sealed class PartStatusSystem : EntitySystem
 
         var partStatusSet = CollectPartStatuses(rootPart.Value);
         var text = GetExamineText(entity, entity, partStatusSet, styling: false);
-        var plain = text.ToString();
+        var wrapped = text.ToMarkup();
+        var plain = FormattedMessage.RemoveMarkupOrThrow(wrapped);
 
         _chat.ChatMessageToOne(
             ChatChannel.Emotes,
             plain,
-            plain,
+            wrapped,
             EntityUid.Invalid,
             false,
             actor.PlayerSession.Channel,
@@ -241,10 +242,16 @@ public sealed class PartStatusSystem : EntitySystem
 
             var name = Loc.GetString("body-part-" + partStatus.PartName.Replace(" ", "-")); // CorvaxGoob-Localization
 
-            message.AddText("    " + Loc.GetString(locString,
+            var line = Loc.GetString(locString,
                 ("possessive", possessive),
                 ("part", name), // CorvaxGoob-Localization // partStatus.PartName -> name
-                ("status", statusDescription)));
+                ("status", statusDescription));
+
+            // Styled lines contain [font]/[bold] markup — AddText would escape them literally.
+            if (styleless)
+                message.AddText("    " + line);
+            else
+                message.AddMarkupOrThrow("    " + line);
 
             message.PushNewline();
         }
