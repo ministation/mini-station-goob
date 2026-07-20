@@ -51,7 +51,9 @@ jobs:
       run: dotnet test --no-build --configuration DebugOpt Content.Tests/Content.Tests.csproj --filter "FullyQualifiedName!~Content.Tests.Client.Stylesheets.StyleGlassStylesheetTests" -- NUnit.ConsoleOut=0 NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$(pwd)/test_results"
 
     - name: Archive build output
-      run: tar czf /tmp/build.tar.gz --exclude='.git' .
+      run: |
+        rm -rf test_results
+        tar czf /tmp/build.tar.gz --exclude='.git' --exclude='./test_results' .
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
@@ -98,6 +100,11 @@ jobs:
       shell: pwsh
       run: |
         $env:DOTNET_gcServer=1
+        $resultsDir = Join-Path (Get-Location) "integration_test_results"
+        if (Test-Path $resultsDir) { Remove-Item -Recurse -Force $resultsDir }
+        New-Item -ItemType Directory -Path $resultsDir | Out-Null
+        Remove-Item -Recurse -Force test_results -ErrorAction SilentlyContinue
+
         $filter = switch ("${{ matrix.shard }}") {
           "heavy" {
             "FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest"
@@ -106,21 +113,27 @@ jobs:
             "FullyQualifiedName!~Content.IntegrationTests.Tests.EntityTest&FullyQualifiedName!~Content.IntegrationTests.Tests.PostMapInitTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.StationPowerTests&FullyQualifiedName!~Content.IntegrationTests.Tests.Power.PowerTest&FullyQualifiedName!~Content.IntegrationTests.Tests.Atmos.AirtightTest&FullyQualifiedName!~Content.IntegrationTests.Tests.ClickableTest"
           }
         }
-        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj --filter "$filter" --logger "console;verbosity=minimal" -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$(pwd)/test_results"
+        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj --filter "$filter" --logger "console;verbosity=minimal" -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$resultsDir"
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-        $resultFile = Get-ChildItem -Path test_results -Recurse -Filter *.xml | Select-Object -First 1
-        if (-not $resultFile) { throw "No NUnit results XML in test_results" }
+        $resultFile = Get-ChildItem -Path $resultsDir -Recurse -Filter *.xml |
+          Where-Object {
+            $xml = [xml](Get-Content -LiteralPath $_.FullName -Raw)
+            $xml.'test-run'.fullname -like '*Content.IntegrationTests*'
+          } |
+          Select-Object -First 1
+        if (-not $resultFile) { throw "No Content.IntegrationTests NUnit results XML in $resultsDir" }
 
         [xml]$nunit = Get-Content -LiteralPath $resultFile.FullName
         $run = $nunit.'test-run'
+        $assembly = $run.fullname
         $total = [int]$run.total
         $passed = [int]$run.passed
         $failed = [int]$run.failed
-        Write-Host "Shard ${{ matrix.shard }}: total=$total passed=$passed failed=$failed"
+        Write-Host "Shard ${{ matrix.shard }} assembly=$assembly total=$total passed=$passed failed=$failed duration=$($run.duration)s"
 
         $minTests = if ("${{ matrix.shard }}" -eq "heavy") { 30 } else { 100 }
-        if ($total -lt $minTests) { throw "Expected at least $minTests tests, got $total (filter or --no-build broken?)" }
+        if ($total -lt $minTests) { throw "Expected at least $minTests integration tests, got $total (filter or --no-build broken?)" }
         if ($failed -gt 0) { throw "$failed test(s) failed" }
 
     - name: Archive integration test results
@@ -128,7 +141,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: nunit3-integration-results-${{ matrix.shard }}
-        path: test_results/*
+        path: integration_test_results/*
         retention-days: 7
         if-no-files-found: ignore
 
