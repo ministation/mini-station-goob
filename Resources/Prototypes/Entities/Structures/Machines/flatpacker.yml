@@ -45,7 +45,7 @@
       tags:
       - Sheet
       - RawMaterial
-        - Ingot
+      - Ingot
   - type: AmbientSound
     enabled: false
     volume: 5
