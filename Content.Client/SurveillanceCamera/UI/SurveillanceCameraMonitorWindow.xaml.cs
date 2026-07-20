@@ -187,6 +187,7 @@ public sealed partial class SurveillanceCameraMonitorWindow : FancyWindow // Goo
         }
         else
         {
+            _isSwitching = false;
             CameraViewBackground.Visible = true;
             CameraStatus.Text = Loc.GetString("surveillance-camera-monitor-ui-status-disconnected");
         }

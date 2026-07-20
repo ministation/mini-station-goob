@@ -261,7 +261,7 @@ namespace Content.Client.Stylesheets
 
         // Context menu button colors
         public static readonly Color ButtonColorContext = Color.FromHex("#2d3341d9");
-        public static readonly Color ButtonColorContextHover = Color.FromHex("#2d2e33");
+        public static readonly Color ButtonColorContextHover = Color.FromHex("#3d4556");
         public static readonly Color ButtonColorContextPressed = Color.FromHex("#404352");
         public static readonly Color ButtonColorContextDisabled = Color.Black;
 
@@ -2156,6 +2156,15 @@ namespace Content.Client.Stylesheets
                     .Pseudo(TextureButton.StylePseudoClassHover)
                     .Prop(TextureButton.StylePropertyTexture, resCache.GetTexture("/Textures/Interface/Radial/button_hover.png"))
                     .Prop(Control.StylePropertyModulateSelf, Accent("#C5D0DCFF", 0.28f)),
+
+                Element<RadialMenuButton>().Class("RadialMenuButton")
+                    .Prop(Control.StylePropertyModulateSelf, Accent("#AAB5C4FF", 0.22f)),
+                Element<RadialMenuButton>().Class("RadialMenuButton")
+                    .Pseudo(ContainerButton.StylePseudoClassHover)
+                    .Prop(Control.StylePropertyModulateSelf, Accent("#C5D0DCFF", 0.28f)),
+                Element<RadialMenuButton>().Class("RadialMenuButton")
+                    .Pseudo(ContainerButton.StylePseudoClassPressed)
+                    .Prop(Control.StylePropertyModulateSelf, Accent("#D8E2ECFF", 0.32f)),
 
                 Element<TextureButton>().Class("RadialMenuCloseButton")
                     .Prop(TextureButton.StylePropertyTexture, resCache.GetTexture("/Textures/Interface/Radial/close_normal.png"))

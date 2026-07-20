@@ -39,6 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                           Margin="10">
             </BoxContainer>
         </BoxContainer>
+        <PanelContainer StyleClasses="HotbarPanel">
         <BoxContainer Orientation="Horizontal" Name="Hotbar" HorizontalAlignment="Center">
             <inventory:ItemSlotButtonContainer
                 Name="SecondHotbar"
@@ -76,5 +77,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 Columns="6"
                 />
         </BoxContainer>
+        </PanelContainer>
     </BoxContainer>
 </widgets:HotbarGui>

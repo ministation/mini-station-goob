@@ -120,7 +120,7 @@ public sealed class DailyQuestSystem : EntitySystem
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<DamageableComponent, DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<MeleeHitEvent>(OnMeleeHit);
-        SubscribeLocalEvent<EmotePerformedEvent>(OnEmotePerformed);
+        SubscribeLocalEvent<EmoteEvent>(OnEmotePerformed);
         SubscribeLocalEvent<CargoBountyLabelPrintedEvent>(OnCargoBountyLabelPrinted);
         SubscribeLocalEvent<StructureWeldedEvent>(OnStructureWelded);
         SubscribeLocalEvent<MiningPointsClaimedEvent>(OnMiningPointsClaimed);
@@ -703,9 +703,12 @@ public sealed class DailyQuestSystem : EntitySystem
         }
     }
 
-    private void OnEmotePerformed(ref EmotePerformedEvent args)
+    private void OnEmotePerformed(EntityUid uid, ref EmoteEvent args)
     {
-        TryIncrement(args.User, DailyQuestType.PerformEmotes);
+        if (!args.Voluntary)
+            return;
+
+        TryIncrement(uid, DailyQuestType.PerformEmotes);
     }
 
     private void OnCargoBountyLabelPrinted(ref CargoBountyLabelPrintedEvent args)

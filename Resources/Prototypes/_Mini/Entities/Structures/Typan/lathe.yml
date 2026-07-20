@@ -21,6 +21,7 @@
   - type: Machine
     board: AutolatheMachineCircuitboardTypan
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
         - Sheet
@@ -97,6 +98,7 @@
   - type: Machine
     board: ProtolatheMachineCircuitboardTypan
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
         - Sheet
@@ -186,6 +188,7 @@
     - SecurityBoards
     - TypanCloning
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
         - Sheet
@@ -244,6 +247,7 @@
     - TypanBorgModulesWeaponry
     - TypanMech
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
       - Sheet
@@ -289,6 +293,7 @@
     emagStaticPacks:
     - ClothingCentComm
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
       - Sheet
@@ -323,6 +328,7 @@
   - type: Machine
     board: BiofabricatorMachineCircuitboardTypan
   - type: MaterialStorage
+    connectToSilo: true
     ignoreColor: true
     whitelist:
       tags:
@@ -427,6 +433,7 @@
     - TypanGrenades
     - TypanLightRifleAmmoResearch
   - type: MaterialStorage
+    connectToSilo: true
     whitelist:
       tags:
         - Sheet
