@@ -24,7 +24,7 @@ public class IconButton : Button
         MinSize = new Vector2(0, 24);
         Margin = new Thickness(1);
         HorizontalAlignment = HAlignment.Left;
-        StyleClasses = { StyleClassActionMenuItem };
+        StyleClasses.Add(StyleClassActionMenuItem);
 
         _mainContainer = new BoxContainer
         {
