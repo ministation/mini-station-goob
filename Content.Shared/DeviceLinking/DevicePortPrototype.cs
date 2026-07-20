@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: MIT
-
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Set;
@@ -9,7 +7,8 @@ namespace Content.Shared.DeviceLinking;
 /// <summary>
 ///     A prototype for a device port, for use with device linking.
 /// </summary>
-public abstract class DevicePortPrototype
+[DataDefinition]
+public abstract partial class DevicePortPrototype
 {
     [IdDataField]
     public string ID { get; private set; } = default!;
@@ -18,14 +17,14 @@ public abstract class DevicePortPrototype
     ///     Localization string for the port name. Displayed in the linking UI.
     /// </summary>
     [DataField("name", required:true)]
-    public LocId Name; // Goobstation - LocId
+    public string Name = default!;
 
     /// <summary>
     ///     Localization string for a description of the ports functionality. Should either indicate when a source
     ///     port is fired, or what function a sink port serves. Displayed as a tooltip in the linking UI.
     /// </summary>
     [DataField("description", required: true)]
-    public LocId Description; // Goobstation - LocId
+    public string Description = default!;
 }
 
 [Prototype]

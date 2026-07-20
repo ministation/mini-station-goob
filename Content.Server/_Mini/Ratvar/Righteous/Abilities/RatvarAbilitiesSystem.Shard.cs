@@ -28,6 +28,7 @@ public sealed partial class RatvarAbilitiesSystem
 {
     [Dependency] private readonly EntityLookupSystem _entityLookupSystem = default!;
     [Dependency] private readonly MindSystem _mindSystem = default!;
+    [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly TurfSystem _turf = default!;
     [Dependency] private readonly ITileDefinitionManager _tileDefinition = default!;
     [Dependency] private readonly TileSystem _tile = default!;
@@ -123,7 +124,7 @@ public sealed partial class RatvarAbilitiesSystem
             return;
 
         var range = component.ConvertRange;
-        var tilesRefs = grid.GetLocalTilesIntersecting(new Box2(pos.Position + new Vector2(-range, -range),
+        var tilesRefs = _map.GetLocalTilesIntersecting(gridUid.Value, grid, new Box2(pos.Position + new Vector2(-range, -range),
             pos.Position + new Vector2(range, range)));
 
         var cultTileDef = (ContentTileDefinition) _tileDefinition[component.TileId];

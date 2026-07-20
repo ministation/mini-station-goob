@@ -37,3 +37,88 @@
 - type: sticker
   id: vocal
   texture: /Textures/Interface/Emotes/vocal.png
+
+# Mini custom emoji
+- type: sticker
+  id: amamam
+  texture: /Textures/_Mini/Interface/Emoji/amamam.png
+
+- type: sticker
+  id: blin
+  texture: /Textures/_Mini/Interface/Emoji/blin.png
+
+- type: sticker
+  id: cho
+  texture: /Textures/_Mini/Interface/Emoji/cho.png
+
+- type: sticker
+  id: govno
+  texture: /Textures/_Mini/Interface/Emoji/govno.png
+
+- type: sticker
+  id: grustnenko
+  texture: /Textures/_Mini/Interface/Emoji/grustnenko.png
+
+- type: sticker
+  id: hueta
+  texture: /Textures/_Mini/Interface/Emoji/hueta.png
+
+- type: sticker
+  id: kaiiiif
+  texture: /Textures/_Mini/Interface/Emoji/kaiiiif.png
+
+- type: sticker
+  id: like
+  texture: /Textures/_Mini/Interface/Emoji/like.png
+
+- type: sticker
+  id: memasik1
+  texture: /Textures/_Mini/Interface/Emoji/memasik1.png
+
+- type: sticker
+  id: memasik2
+  texture: /Textures/_Mini/Interface/Emoji/memasik2.png
+
+- type: sticker
+  id: nihuya
+  texture: /Textures/_Mini/Interface/Emoji/nihuya.png
+
+- type: sticker
+  id: nu_pozhaluista
+  texture: /Textures/_Mini/Interface/Emoji/nu_pozhaluista.png
+
+- type: sticker
+  id: pizdato
+  texture: /Textures/_Mini/Interface/Emoji/pizdato.png
+
+- type: sticker
+  id: pizza
+  texture: /Textures/_Mini/Interface/Emoji/pizza.png
+
+- type: sticker
+  id: podmig
+  texture: /Textures/_Mini/Interface/Emoji/podmig.png
+
+- type: sticker
+  id: poshel_nahuy
+  texture: /Textures/_Mini/Interface/Emoji/poshel_nahuy.png
+
+- type: sticker
+  id: tebepizdedc
+  texture: /Textures/_Mini/Interface/Emoji/tebepizdedc.png
+
+- type: sticker
+  id: vz
+  texture: /Textures/_Mini/Interface/Emoji/vz.png
+
+- type: sticker
+  id: yaeblan
+  texture: /Textures/_Mini/Interface/Emoji/yaeblan.png
+
+- type: sticker
+  id: yaustal
+  texture: /Textures/_Mini/Interface/Emoji/yaustal.png
+
+- type: sticker
+  id: zliy
+  texture: /Textures/_Mini/Interface/Emoji/zliy.png

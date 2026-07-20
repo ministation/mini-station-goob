@@ -79,11 +79,17 @@ public sealed class TextureTag : BaseTextureTag, IMarkupTagHandler
             tex = EntitySystemManager.GetEntitySystem<SpriteSystem>().Frame0(sprite);
         }
 
+        // Mini custom emoji fill more of the 32x32 canvas than stock emotes — draw ~1.5x smaller.
+        var maxInline = rawPath.Contains("_Mini/Interface/Emoji", StringComparison.OrdinalIgnoreCase)
+            ? 28f / 1.5f
+            : 28f;
+
         if (!TryDrawIcon(tex,
                 scaleValue.Value,
                 new Vector2((float) x, (float) y),
                 tooltip,
-                out var texture))
+                out var texture,
+                maxInline))
             return false;
 
         control = texture;

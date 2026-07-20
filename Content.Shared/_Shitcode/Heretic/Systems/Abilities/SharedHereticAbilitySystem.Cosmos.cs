@@ -109,7 +109,6 @@ public abstract partial class SharedHereticAbilitySystem
         Dirty(args.Action, starBlast);
     }
 
-
     private void OnEntityTerminating(Entity<StarBlastComponent> ent, ref EntityTerminatingEvent args)
     {
         if (ent.Comp.Action == EntityUid.Invalid || TerminatingOrDeleted(ent.Comp.Action) ||
@@ -156,7 +155,7 @@ public abstract partial class SharedHereticAbilitySystem
         if (!TryUseAbility(args, false))
             return;
 
-        var coords = Transform(args.Performer).Coordinates.SnapToGrid(EntityManager, _mapMan);
+        var coords = Transform(args.Performer).Coordinates.SnapToGrid(EntityManager);
 
         // No placing runes on top of runes
         if (Lookup.GetEntitiesInRange<HereticCosmicRuneComponent>(coords, 0.4f).Count > 0)
@@ -206,7 +205,6 @@ public abstract partial class SharedHereticAbilitySystem
             DirtyField(runeAction.SecondRune.Value, secondRuneComp, nameof(HereticCosmicRuneComponent.LinkedRune));
             return;
         }
-
 
         if (!secondRuneResolved)
         {

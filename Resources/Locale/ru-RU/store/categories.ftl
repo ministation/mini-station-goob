@@ -13,6 +13,8 @@ store-category-implants = Импланты
 store-category-job = Работа
 store-category-pointless = Безделушки
 store-category-contractor = Наёмник
+store-category-silicon = Синтетики
+store-category-materials = Материалы
 store-discounted-items = Скидки
 # Revenant
 store-category-abilities = Способности

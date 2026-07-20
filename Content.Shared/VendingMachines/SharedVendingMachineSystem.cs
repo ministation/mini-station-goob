@@ -70,17 +70,17 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 
         foreach (var weh in component.Inventory)
         {
-            inventory[weh.Key] = new(weh.Value);
+            inventory[weh.Key] = CopyEntry(weh.Key, weh.Value);
         }
 
         foreach (var weh in component.EmaggedInventory)
         {
-            emaggedInventory[weh.Key] = new(weh.Value);
+            emaggedInventory[weh.Key] = CopyEntry(weh.Key, weh.Value);
         }
 
         foreach (var weh in component.ContrabandInventory)
         {
-            contrabandInventory[weh.Key] = new(weh.Value);
+            contrabandInventory[weh.Key] = CopyEntry(weh.Key, weh.Value);
         }
 
         args.State = new VendingMachineComponentState()
@@ -94,6 +94,18 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
             DispenseOnHitEnd = component.DispenseOnHitEnd,
             Broken = component.Broken,
         };
+    }
+
+    /// <summary>
+    /// Copies an inventory entry and backfills <see cref="VendingMachineInventoryEntry.ID"/>
+    /// from the dictionary key when maps/states omit or mis-tag it (e.g. legacy <c>iD</c>).
+    /// </summary>
+    private static VendingMachineInventoryEntry CopyEntry(string key, VendingMachineInventoryEntry entry)
+    {
+        var copy = new VendingMachineInventoryEntry(entry);
+        if (string.IsNullOrEmpty(copy.ID))
+            copy.ID = key;
+        return copy;
     }
 
     public override void Update(float frameTime)
@@ -153,6 +165,28 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     protected virtual void OnMapInit(EntityUid uid, VendingMachineComponent component, MapInitEvent args)
     {
         RestockInventoryFromPrototype(uid, component, component.InitialStockQuality);
+        SanitizeInventoryIds(component);
+    }
+
+    /// <summary>
+    /// Ensures every inventory entry's <see cref="VendingMachineInventoryEntry.ID"/> matches its dictionary key.
+    /// Legacy map YAML used the auto-tag <c>iD</c>; after the field was pinned to <c>id</c> those values
+    /// deserialize as empty/null and crash the client BUI when resolving prototypes.
+    /// </summary>
+    private static void SanitizeInventoryIds(VendingMachineComponent component)
+    {
+        SanitizeInventoryIds(component.Inventory);
+        SanitizeInventoryIds(component.EmaggedInventory);
+        SanitizeInventoryIds(component.ContrabandInventory);
+    }
+
+    private static void SanitizeInventoryIds(Dictionary<string, VendingMachineInventoryEntry> inventory)
+    {
+        foreach (var (key, entry) in inventory)
+        {
+            if (string.IsNullOrEmpty(entry.ID))
+                entry.ID = key;
+        }
     }
 
     private void OnEmpPulse(Entity<VendingMachineComponent> ent, ref EmpPulseEvent args)
@@ -421,15 +455,23 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
                 }
 
                 if (inventory.TryGetValue(id, out var entry))
+                {
                     // Prevent a machine's stock from going over three times
                     // the prototype's normal amount. This is an arbitrary
                     // number and meant to be a convenience for someone
                     // restocking a machine who doesn't want to force vend out
                     // all the items just to restock one empty slot without
                     // losing the rest of the restock.
+                    if (string.IsNullOrEmpty(entry.ID))
+                        entry.ID = id;
                     entry.Amount = Math.Min(entry.Amount + amount, 3 * restock);
+                }
                 else
                     inventory.Add(id, new VendingMachineInventoryEntry(type, id, restock));
+            }
+            else if (string.IsNullOrEmpty(id))
+            {
+                Log.Error($"Vending machine {ToPrettyString(uid)} inventory pack contains a null/empty product id.");
             }
         }
     }

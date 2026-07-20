@@ -125,8 +125,12 @@ public sealed class MaterialStorageSystem : SharedMaterialStorageSystem
             return false;
         if (TryComp<ApcPowerReceiverComponent>(receiver, out var power) && !power.Powered)
             return false;
+
+        // Mining points are awarded by MiningPointsSystem via MaterialEntityInsertedEvent
+        // (raised inside base.TryInsertMaterialEntity while the ore entity still exists).
         if (!base.TryInsertMaterialEntity(user, toInsert, receiver, storage, material, composition))
             return false;
+
         _audio.PlayPvs(storage.InsertingSound, receiver);
         if (user != receiver) // Goobstation - add check to make sure automation doesnt spam popups
             _popup.PopupEntity(Loc.GetString("machine-insert-item",

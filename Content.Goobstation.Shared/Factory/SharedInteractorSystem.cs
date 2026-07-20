@@ -117,7 +117,10 @@ public abstract class SharedInteractorSystem : EntitySystem
             return _interaction.AltInteract(ent, target);
 
         if (!_hands.TryGetActiveItem(ent.Owner, out var tool))
-            return _interaction.InteractHand(ent, target);
+        {
+            _interaction.InteractHand(ent, target);
+            return true;
+        }
 
         var coords = Transform(target).Coordinates;
         return _interaction.InteractUsing(ent, tool.Value, target, coords);

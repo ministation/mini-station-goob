@@ -208,8 +208,8 @@ namespace Content.Shared.VendingMachines
         [DataField]
         public InventoryType Type;
 
-        [DataField]
-        public string ID;
+        [DataField("id")]
+        public string ID = string.Empty;
 
         [DataField]
         public uint Amount;

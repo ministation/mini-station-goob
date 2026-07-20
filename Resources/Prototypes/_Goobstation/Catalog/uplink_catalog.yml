@@ -293,16 +293,17 @@
   categories:
   - UplinkWeaponry
 
-- type: listing
-  id: UplinkM90
-  name: uplink-m90-name
-  description: uplink-m90-desc
-  icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Rifles/m90.rsi, state: icon }
-  productEntity: WeaponRifleM90
-  cost:
-    Telecrystal: 10
-  categories:
-  - UplinkWeaponry
+# Mini: M-90 / .20 — NT оружие (Лектер и т.п.), не для аплинка синдиката
+# - type: listing
+#   id: UplinkM90
+#   name: uplink-m90-name
+#   description: uplink-m90-desc
+#   icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Rifles/m90.rsi, state: icon }
+#   productEntity: WeaponRifleM90
+#   cost:
+#     Telecrystal: 10
+#   categories:
+#   - UplinkWeaponry
 
 - type: listing
   id: UplinkSyndicateDisabler
@@ -1068,22 +1069,23 @@
       tags:
       - NukeOpsUplink
 
-- type: listing
-  id: UplinkAutosurgeonStatvekaSandevistan
-  name: uplink-autosurgeon-statveka-sandevistan-name
-  description: uplink-autosurgeon-statveka-sandevistan-desc
-  icon: { sprite: _Goobstation/Objects/Misc/sandevistan.rsi, state: icon }
-  productEntity: AutosurgeonStatvekaSandevistan
-  cost:
-    Telecrystal: 13
-  categories:
-  - UplinkImplants
-  conditions:
-  - !type:StoreWhitelistCondition
-    blacklist:
-      tags:
-      - NukeOpsUplink
-
+# Mini: Statveka Sandevistan looks identical in store — keep regular only
+# - type: listing
+#   id: UplinkAutosurgeonStatvekaSandevistan
+#   name: uplink-autosurgeon-statveka-sandevistan-name
+#   description: uplink-autosurgeon-statveka-sandevistan-desc
+#   icon: { sprite: _Goobstation/Objects/Misc/sandevistan.rsi, state: icon }
+#   productEntity: AutosurgeonStatvekaSandevistan
+#   cost:
+#     Telecrystal: 13
+#   categories:
+#   - UplinkImplants
+#   conditions:
+#   - !type:StoreWhitelistCondition
+#     blacklist:
+#       tags:
+#       - NukeOpsUplink
+#
 - type: listing
   id: NukieUplinkAutosurgeonSandevistan
   name: uplink-autosurgeon-sandevistan-name
@@ -1100,22 +1102,23 @@
       tags:
       - LoneOpsUplink
 
-- type: listing
-  id: NukieUplinkAutosurgeonStatvekaSandevistan
-  name: uplink-autosurgeon-statveka-sandevistan-name
-  description: uplink-autosurgeon-statveka-sandevistan-desc
-  icon: { sprite: _Goobstation/Objects/Misc/sandevistan.rsi, state: icon }
-  productEntity: AutosurgeonStatvekaSandevistan
-  cost:
-    Telecrystal: 25
-  categories:
-  - UplinkImplants
-  conditions:
-  - !type:StoreWhitelistCondition
-    whitelist:
-      tags:
-      - LoneOpsUplink
-
+# Mini: Statveka Sandevistan looks identical in store — keep regular only
+# - type: listing
+#   id: NukieUplinkAutosurgeonStatvekaSandevistan
+#   name: uplink-autosurgeon-statveka-sandevistan-name
+#   description: uplink-autosurgeon-statveka-sandevistan-desc
+#   icon: { sprite: _Goobstation/Objects/Misc/sandevistan.rsi, state: icon }
+#   productEntity: AutosurgeonStatvekaSandevistan
+#   cost:
+#     Telecrystal: 25
+#   categories:
+#   - UplinkImplants
+#   conditions:
+#   - !type:StoreWhitelistCondition
+#     whitelist:
+#       tags:
+#       - LoneOpsUplink
+#
 - type: listing
   id: UplinkClothingOuterDavidsJacketValid
   name: uplink-davids-jacket-name
@@ -1291,10 +1294,9 @@
   id: UplinkMagazineLightRifleBox
   name: uplink-l6-box-name
   description: uplink-l6-box-desc
-  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_box.rsi, state: base }
   productEntity: MagazineLightRifleBox
   cost:
-    Telecrystal: 4
+    Telecrystal: 3
   categories:
   - UplinkAmmo
   conditions:
@@ -1307,7 +1309,6 @@
   id: UplinkMagazineHighCaliber
   name: uplink-high-caliber-magazine-name
   description: uplink-high-caliber-magazine-desc
-  icon: { sprite: _Goobstation/Objects/Weapons/Guns/Ammunition/Magazine/heavy_rifle_mags.rsi, state: base }
   productEntity: MagazineHighCaliber
   cost:
     Telecrystal: 2
@@ -1323,7 +1324,6 @@
   id: UplinkMagazineHighCaliberExplosive
   name: uplink-high-caliber-explosive-magazine-name
   description: uplink-high-caliber-explosive-magazine-desc
-  icon: { sprite: _Goobstation/Objects/Weapons/Guns/Ammunition/Magazine/heavy_rifle_mags.rsi, state: red }
   productEntity: MagazineHighCaliberExplosive
   cost:
     Telecrystal: 2
@@ -1378,22 +1378,22 @@
       tags:
       - ContractorUplink
 
-- type: listing
-  id: UplinkM90Ammo
-  name: uplink-m90-ammo-name
-  description: uplink-m90-ammo-desc
-  productEntity: MagazineRifle
-  cost:
-    Telecrystal: 1
-  categories:
-  - UplinkAmmo
+# Mini: .20 магазины — NT калибр, не для аплинка
+# - type: listing
+#   id: UplinkM90Ammo
+#   name: uplink-m90-ammo-name
+#   description: uplink-m90-ammo-desc
+#   productEntity: MagazineRifle
+#   cost:
+#     Telecrystal: 1
+#   categories:
+#   - UplinkAmmo
 
 # 弾薬
 - type: listing
   id: UplinkCaselessRifleMag
   name: uplink-rifle-caseless-mag-name
   description: uplink-rifle-caseless-mag-desc
-  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/CaselessRifle/caseless_rifle_mag.rsi, state: base }
   productEntity: BoxSyndicateMagazineCaselessRifle
   cost:
     Telecrystal: 2 # Much more damage than C20 or M90 / Mini: box of 2
@@ -1409,7 +1409,6 @@
   id: UplinkHighCapacityMagazinePistol
   name: uplink-highcap-pistol-mag-name
   description: uplink-highcap-pistol-mag-desc
-  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/Pistol/pistol_high_capacity_mag.rsi, state: base }
   productEntity: BoxSyndicateMagazinePistolHighCapacity
   cost:
     Telecrystal: 1 # Mini: box of 2
@@ -1456,7 +1455,7 @@
   id: UplinkMagazinePistolCaselessRifleSAPHE
   name: uplink-pistol-magazine-caseless-saphe-name
   description: uplink-pistol-magazine-caseless-saphe-desc
-  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/CaselessRifle/caseless_pistol_mag.rsi, state: base }
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Ammunition/Magazine/CaselessRifle/caseless_pistol_mag.rsi, state: yellow-icon }
   productEntity: BoxSyndicateMagazinePistolCaselessRifleSAPHE
   cost:
     Telecrystal: 1 # Mini: box of 2
@@ -1488,9 +1487,10 @@
   id: UplinkCartridgeG8Demolishing
   name: uplink-cartridge-G8-demolishing-name
   description: uplink-cartridge-G8-demolishing-desc
-  productEntity:  CartridgeG8Demolishing
+  icon: { sprite: Objects/Weapons/Guns/Ammunition/Casings/large_casing.rsi, state: base }
+  productEntity: BoxSyndicateCartridgeG8Demolishing
   cost:
-    Telecrystal: 1 # 12% cheaper than the bundle, coherency with china
+    Telecrystal: 3 # Mini: box of 4
   categories:
   - UplinkAmmo
   conditions:
@@ -1503,9 +1503,10 @@
   id: UplinkCartridgeG8Hypercharged
   name: uplink-cartridge-G8-hypercharged-name
   description: uplink-cartridge-G8-hypercharged-desc
-  productEntity: CartridgeG8Hypercharged
+  icon: { sprite: Objects/Weapons/Guns/Ammunition/Casings/anomalous_casing.rsi, state: base }
+  productEntity: BoxSyndicateCartridgeG8Hypercharged
   cost:
-    Telecrystal: 1 # 12% cheaper than the bundle, coherency with china
+    Telecrystal: 3 # Mini: box of 4
   categories:
   - UplinkAmmo
   conditions:

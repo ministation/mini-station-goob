@@ -13,20 +13,22 @@ namespace Content.Server.Electrocution
     {
         [DataField("cable")]
         public EntityUid? CableEntity;
+
         [DataField("node")]
         public string? NodeName;
 
-        public override IEnumerable<Node> GetReachableNodes(TransformComponent xform,
+        public override IEnumerable<Node> GetReachableNodes(
+            Entity<TransformComponent> xform,
             EntityQuery<NodeContainerComponent> nodeQuery,
             EntityQuery<TransformComponent> xformQuery,
-            MapGridComponent? grid,
+            Entity<MapGridComponent>? grid,
             IEntityManager entMan)
         {
             if (CableEntity == null || NodeName == null)
                 yield break;
 
-            var _nodeContainer = entMan.System<NodeContainerSystem>();
-            if (_nodeContainer.TryGetNode(CableEntity.Value, NodeName, out Node? node))
+            var nodeContainer = entMan.System<NodeContainerSystem>();
+            if (nodeContainer.TryGetNode(CableEntity.Value, NodeName, out Node? node))
                 yield return node;
         }
     }

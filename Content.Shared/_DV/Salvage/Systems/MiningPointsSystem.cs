@@ -2,21 +2,23 @@
 
 using Content.Shared._DV.Salvage.Components;
 using Content.Shared._Lavaland.UnclaimedOre;
+using Content.Shared._Mini.DailyQuests;
 using Content.Shared.Access.Systems;
 using Content.Shared.Lathe;
 using Content.Shared.Materials;
-using Content.Shared.Materials.OreSilo;
+using Content.Shared.Popups;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
-using Robust.Shared.Timing;
+using Robust.Shared.Network;
 
 namespace Content.Shared._DV.Salvage.Systems;
 
 public sealed class MiningPointsSystem : EntitySystem
 {
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly INetManager _net = default!;
 
     private EntityQuery<MiningPointsComponent> _query;
 
@@ -37,23 +39,43 @@ public sealed class MiningPointsSystem : EntitySystem
 
     private void OnMaterialEntityInserted(Entity<MiningPointsLatheComponent> ent, ref MaterialEntityInsertedEvent args)
     {
-        if (!_timing.IsFirstTimePredicted
-            || !TryComp<UnclaimedOreComponent>(args.Inserted, out var unclaimedOre)
-            || !TryComp<OreSiloClientComponent>(ent, out var utilizer)
-            || !utilizer.Silo.HasValue
-            || Transform(utilizer.Silo.Value).MapID != Transform(ent).MapID)
+        // Server-authoritative. Event fires inside SharedMaterialStorageSystem.TryInsertMaterialEntity
+        // before the server QueueDel's the ore, so UnclaimedOre is still readable here.
+        // Do not require OreSiloClient.Silo — that left station processors at 0 until cargo linked them.
+        if (_net.IsClient)
             return;
 
-        var points = unclaimedOre.MiningPoints * args.Count;
+        if (!TryComp(args.Inserted, out UnclaimedOreComponent? unclaimedOre))
+            return;
+
+        if (!_query.TryComp(ent.Owner, out _))
+            return;
+
+        var points = (uint) Math.Max(0, Math.Floor(unclaimedOre.MiningPoints * args.Count));
         if (points > 0)
-            AddPoints(ent.Owner, (uint) points);
+            AddPoints(ent.Owner, points);
     }
 
     private void OnClaimMiningPoints(Entity<MiningPointsLatheComponent> ent, ref LatheClaimMiningPointsMessage args)
     {
+        if (_net.IsClient)
+            return;
+
         var user = args.Actor;
-        if (GetPointComp(user) is {} dest) // Goobstation - borg Miningpoints
-            TransferAll(ent.Owner, dest);
+        if (!_query.TryComp(ent.Owner, out var machinePoints) || machinePoints.Points == 0)
+            return;
+
+        if (GetPointComp(user) is not { } dest)
+        {
+            _popup.PopupEntity(Loc.GetString("lathe-menu-mining-points-claim-no-id"), ent.Owner, user);
+            return;
+        }
+
+        if (!TransferAll((ent.Owner, machinePoints), dest))
+            return;
+
+        var claimed = new MiningPointsClaimedEvent(user);
+        RaiseLocalEvent(ref claimed);
     }
 
     #endregion
@@ -63,7 +85,7 @@ public sealed class MiningPointsSystem : EntitySystem
     /// <summary>
     public bool CanClaimPoints(EntityUid user) // Goobstation - borg Miningpoints
     {
-        if (TryComp<MiningPointsComponent>(user, out var comp))
+        if (TryComp<MiningPointsComponent>(user, out _))
             return true;
         if (TryFindIdCard(user) != null)
             return true;
@@ -77,7 +99,7 @@ public sealed class MiningPointsSystem : EntitySystem
     public Entity<MiningPointsComponent?>? GetPointComp(EntityUid user) // Goobstation - borg Miningpoints
     {
         if (TryComp<MiningPointsComponent>(user, out var comp))
-            return  (user,comp);
+            return (user, comp);
         return TryFindIdCard(user);
     }
 
@@ -95,7 +117,7 @@ public sealed class MiningPointsSystem : EntitySystem
         if (!_query.TryComp(idCard, out var comp))
             return null;
 
-        return (idCard, comp);
+        return (idCard.Owner, comp);
     }
 
     /// <summary>
@@ -118,7 +140,7 @@ public sealed class MiningPointsSystem : EntitySystem
             return false;
 
         ent.Comp.Points -= amount;
-        Dirty(ent);
+        Dirty(ent.Owner, ent.Comp);
         return true;
     }
 
@@ -131,7 +153,7 @@ public sealed class MiningPointsSystem : EntitySystem
             return false;
 
         ent.Comp.Points += amount;
-        Dirty(ent);
+        Dirty(ent.Owner, ent.Comp);
         return true;
     }
 

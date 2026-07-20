@@ -193,11 +193,10 @@ uplink-heavy-shotgun-magazine-slug-desc = Shotgun magazine with 15 high-eplosive
 uplink-m7s-mag-name = SMG Magazine Box (5x23mm)
 uplink-m7s-mag-desc = A syndicate box with 3 side-mounted SMG magazines (48 rounds each). Compatible with M7S.
 
-uplink-cartridge-G8-demolishing-name = G8 demolishing cartridge
-uplink-cartridge-G8-demolishing-desc = This cartridge shots "The Spear of Ares" bullet, demolishing whole lines of walls, dealing massive stamina damage to people and overcharging energy vortexes. Used by HE1S-G8.
-
-uplink-cartridge-G8-hypercharged-name = G8 hypercharged cartridge
-uplink-cartridge-G8-hypercharged-desc = This cartridge shots "The Bolt of Zeus" bullet, shocking everyone on its way and creating an energy vortex at its destination point, that creates a massive explosion on overcharge. Used by HE1S-G8.
+uplink-cartridge-G8-demolishing-name = G8 demolishing cartridge box
+uplink-cartridge-G8-demolishing-desc = A syndicate box with 4 G8 demolishing cartridges. Fires "The Spear of Ares", demolishing walls, dealing massive stamina damage and overcharging energy vortexes. Used by HE1S-G8.
+uplink-cartridge-G8-hypercharged-name = G8 hypercharged cartridge box
+uplink-cartridge-G8-hypercharged-desc = A syndicate box with 4 G8 hypercharged cartridges. Fires "The Bolt of Zeus", shocking everything on its path and creating an energy vortex that explodes on overcharge. Used by HE1S-G8.
 
 uplink-high-caliber-shotgun-box-name = 8 Gauge shell box
 uplink-high-caliber-shotgun-box-desc = 16 shells of 8 Gauge shells, for the combat shotgun.
@@ -211,8 +210,8 @@ uplink-high-caliber-shotgun-box-flash-slug-desc = 16 shells of 8 Gauge flashbang
 uplink-high-caliber-shotgun-box-sarin-name = 8 Gauge sarin gas shell box
 uplink-high-caliber-shotgun-box-sarin-desc = 16 shells of 8 Gauge sarin shells for the combat shotgun, which release a small plus-shaped cloud of sarin gas.
 
-uplink-estoc-ammo-name = Rifle Magazine Box (.20 rifle)
-uplink-estoc-ammo-desc = A syndicate box with 3 rifle magazines (30 rounds each). Compatible with the Estoc.
+uplink-estoc-ammo-name = Rifle Magazine (.30 rifle)
+uplink-estoc-ammo-desc = Rifle magazine with 30 rounds. Compatible with the Estoc.
 
 uplink-m90-ammo-name = Rifle Magazine (.20 rifle)
 uplink-m90-ammo-desc = Rifle magazine with 25 rounds. Compatible with the M-90 and Lecter.

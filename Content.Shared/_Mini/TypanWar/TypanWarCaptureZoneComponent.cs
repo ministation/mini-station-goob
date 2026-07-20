@@ -39,6 +39,7 @@ public sealed partial class TypanWarCaptureZoneComponent : Component
     [DataField]
     public float CaptureTimeSeconds = 35f;
 
+    /// <summary>Unused legacy field (contested zones now use majority / freeze instead of accelerated decay).</summary>
     [DataField]
     public float ContestDecayMultiplier = 2f;
 

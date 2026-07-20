@@ -56,11 +56,18 @@ public sealed class TypanWarSurplusBundleSystem : EntitySystem
             if (!_random.Prob(GetEffectiveProbability(entry, roundProgress)))
                 continue;
 
-            var item = Spawn(entry.Item, coords);
-            if (_entityStorage.Insert(item, uid))
-                spawned++;
-            else
-                Del(item);
+            var countMin = Math.Max(1, entry.CountMin);
+            var countMax = Math.Max(countMin, entry.CountMax);
+            var count = _random.Next(countMin, countMax + 1);
+
+            for (var i = 0; i < count; i++)
+            {
+                var item = Spawn(entry.Item, coords);
+                if (_entityStorage.Insert(item, uid))
+                    spawned++;
+                else
+                    Del(item);
+            }
         }
 
         if (spawned != 0 || string.IsNullOrEmpty(component.FallbackItem.Id))

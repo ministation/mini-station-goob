@@ -18,7 +18,6 @@ namespace Content.Server._Mini.ERT;
 
 public sealed class ErtComputerShuttleSystem : EntitySystem
 {
-    [DataField]
     public InGameICChatType ChatType = InGameICChatType.Speak;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly PowerReceiverSystem _powerReceiverSystem = default!;

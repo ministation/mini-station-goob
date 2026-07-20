@@ -8,8 +8,8 @@
   components:
   - type: OreSiloClient # CorvaxGoob-changes: add Silo
   - type: Sprite
+    noRot: true
     sprite: _Shitmed/Structures/Machines/limbgrower.rsi
-    snapCardinals: true
     layers:
     # CorvaxGoob-MB-sprite-start
     - state: icon

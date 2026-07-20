@@ -1,9 +1,5 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Content.Goobstation.Common.Interactions;
-using Content.Shared._Shitcode.Heretic.Components;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration.Logs;
 using Content.Shared.CCVar;
@@ -57,40 +53,37 @@ namespace Content.Shared.Interaction
     [UsedImplicitly]
     public abstract partial class SharedInteractionSystem : EntitySystem
     {
-        [Dependency] private readonly IGameTiming _gameTiming = default!;
-        [Dependency] private readonly IMapManager _mapManager = default!;
-        [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
-        [Dependency] private readonly ISharedChatManager _chat = default!;
-        [Dependency] private readonly ActionBlockerSystem _actionBlockerSystem = default!;
-        [Dependency] private readonly EntityLookupSystem _lookup = default!;
-        [Dependency] private readonly SharedHandsSystem _hands = default!;
-        [Dependency] private readonly InventorySystem _inventory = default!;
-        [Dependency] private readonly PullingSystem _pullSystem = default!;
-        [Dependency] private readonly RotateToFaceSystem _rotateToFaceSystem = default!;
-        [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
-        [Dependency] private readonly SharedPhysicsSystem _broadphase = default!;
-        [Dependency] private readonly SharedTransformSystem _transform = default!;
-        [Dependency] private readonly SharedVerbSystem _verbSystem = default!;
-        [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
-        [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
-        [Dependency] private readonly SharedStrippableSystem _strippable = default!;
-        [Dependency] private readonly SharedPlayerRateLimitManager _rateLimit = default!;
-        [Dependency] private readonly TagSystem _tagSystem = default!;
-        [Dependency] private readonly UseDelaySystem _useDelay = default!;
+        [Dependency] private IGameTiming _gameTiming = default!;
+        [Dependency] private ISharedAdminLogManager _adminLogger = default!;
+        [Dependency] private ISharedChatManager _chat = default!;
+        [Dependency] private ActionBlockerSystem _actionBlockerSystem = default!;
+        [Dependency] private EntityLookupSystem _lookup = default!;
+        [Dependency] private SharedHandsSystem _hands = default!;
+        [Dependency] private InventorySystem _inventory = default!;
+        [Dependency] private PullingSystem _pullSystem = default!;
+        [Dependency] private RotateToFaceSystem _rotateToFaceSystem = default!;
+        [Dependency] private SharedContainerSystem _containerSystem = default!;
+        [Dependency] private SharedMapSystem _map = default!;
+        [Dependency] private SharedPhysicsSystem _broadphase = default!;
+        [Dependency] private SharedTransformSystem _transform = default!;
+        [Dependency] private SharedVerbSystem _verbSystem = default!;
+        [Dependency] private SharedPopupSystem _popupSystem = default!;
+        [Dependency] private SharedUserInterfaceSystem _ui = default!;
+        [Dependency] private SharedStrippableSystem _strippable = default!;
+        [Dependency] private SharedPlayerRateLimitManager _rateLimit = default!;
+        [Dependency] private TagSystem _tagSystem = default!;
+        [Dependency] private UseDelaySystem _useDelay = default!;
 
-        // <Trauma>
-        private EntityQuery<TargetInteractionRelayComponent> _targetRelayQuery;
-        // </Trauma>
-        private EntityQuery<IgnoreUIRangeComponent> _ignoreUiRangeQuery;
-        private EntityQuery<FixturesComponent> _fixtureQuery;
-        private EntityQuery<ItemComponent> _itemQuery;
-        private EntityQuery<PhysicsComponent> _physicsQuery;
-        private EntityQuery<HandsComponent> _handsQuery;
-        private EntityQuery<InteractionRelayComponent> _relayQuery;
-        private EntityQuery<CombatModeComponent> _combatQuery;
-        private EntityQuery<WallMountComponent> _wallMountQuery;
-        private EntityQuery<UseDelayComponent> _delayQuery;
-        private EntityQuery<ActivatableUIComponent> _uiQuery;
+        [Dependency] private EntityQuery<IgnoreUIRangeComponent> _ignoreUiRangeQuery = default!;
+        [Dependency] private EntityQuery<FixturesComponent> _fixtureQuery = default!;
+        [Dependency] private EntityQuery<ItemComponent> _itemQuery = default!;
+        [Dependency] private EntityQuery<PhysicsComponent> _physicsQuery = default!;
+        [Dependency] private EntityQuery<HandsComponent> _handsQuery = default!;
+        [Dependency] private EntityQuery<InteractionRelayComponent> _relayQuery = default!;
+        [Dependency] private EntityQuery<CombatModeComponent> _combatQuery = default!;
+        [Dependency] private EntityQuery<WallMountComponent> _wallMountQuery = default!;
+        [Dependency] private EntityQuery<UseDelayComponent> _delayQuery = default!;
+        [Dependency] private EntityQuery<ActivatableUIComponent> _uiQuery = default!;
 
         /// <summary>
         /// The collision mask used by default for
@@ -109,20 +102,6 @@ namespace Content.Shared.Interaction
 
         public override void Initialize()
         {
-            // <Trauma>
-            _targetRelayQuery = GetEntityQuery<TargetInteractionRelayComponent>();
-            // </Trauma>
-            _ignoreUiRangeQuery = GetEntityQuery<IgnoreUIRangeComponent>();
-            _fixtureQuery = GetEntityQuery<FixturesComponent>();
-            _itemQuery = GetEntityQuery<ItemComponent>();
-            _physicsQuery = GetEntityQuery<PhysicsComponent>();
-            _handsQuery = GetEntityQuery<HandsComponent>();
-            _relayQuery = GetEntityQuery<InteractionRelayComponent>();
-            _combatQuery = GetEntityQuery<CombatModeComponent>();
-            _wallMountQuery = GetEntityQuery<WallMountComponent>();
-            _delayQuery = GetEntityQuery<UseDelayComponent>();
-            _uiQuery = GetEntityQuery<ActivatableUIComponent>();
-
             SubscribeLocalEvent<BoundUserInterfaceCheckRangeEvent>(HandleUserInterfaceRangeCheck);
 
             // TODO make this a broadcast event subscription again when engine has updated.
@@ -175,26 +154,12 @@ namespace Content.Shared.Interaction
         {
             _uiQuery.TryComp(ev.Target, out var aUiComp);
 
-            // CorvaxGoob-GhostUIViewing-Start
-            if (TryComp<GhostComponent>(ev.Actor, out var ghost) && !ghost.CanGhostInteract) // Полностью игнорить если не гост или который может прямо взамоимодействовать с UI
-            {
-                if (ev.Message is not OpenBoundInterfaceMessage // Проверяем если не банальное открытие 
-                    || !ghost.CanGhostOpenUI
-                    || aUiComp is not null && (aUiComp.SingleUser || aUiComp.BlockSpectators)) // Доп проверки
-                    ev.Cancel();
-
-                return;
-            }
-            // CorvaxGoob-GhostUIViewing-End
-
-            // _uiQuery.TryComp(ev.Target, out var aUiComp); CorvaxGoob-GhostUIViewing : смещено повыше
             if (!_actionBlockerSystem.CanInteract(ev.Actor, ev.Target))
             {
                 // We permit ghosts to open uis unless explicitly blocked
                 if (ev.Message is not OpenBoundInterfaceMessage
-                    // || !HasComp<GhostComponent>(ev.Actor) // CorvaxGoob-GhostUIGuest
-                    // || aUiComp?.BlockSpectators == true // CorvaxGoob-GhostUIGuest
-                    || _tagSystem.HasTag(ev.Actor, "CantInteract")) // Shitmed change
+                    || !HasComp<GhostComponent>(ev.Actor)
+                    || aUiComp?.BlockSpectators == true)
                 {
                     ev.Cancel();
                     return;
@@ -215,6 +180,10 @@ namespace Content.Shared.Interaction
             if (aUiComp == null)
                 return;
 
+            // Key shouldn't ever be null.
+            if (!Equals(aUiComp.Key, ev.UiKey))
+                return;
+
             if (aUiComp.SingleUser && aUiComp.CurrentSingleUser != null && aUiComp.CurrentSingleUser != ev.Actor)
             {
                 ev.Cancel();
@@ -227,9 +196,6 @@ namespace Content.Shared.Interaction
 
         private bool UiRangeCheck(Entity<TransformComponent?> user, Entity<TransformComponent?> target, float range)
         {
-            if (range < 0) // Goobstation
-                return true;
-
             if (!Resolve(target, ref target.Comp))
                 return false;
 
@@ -246,8 +212,6 @@ namespace Content.Shared.Interaction
         /// <summary>
         ///     Prevents an item with the Unremovable component from being removed from a container by almost any means
         /// </summary>
-        ///
-        ///
         private void OnRemoveAttempt(EntityUid uid, UnremoveableComponent item, ContainerGettingRemovedAttemptEvent args)
         {
             // don't prevent the server state for the container from being applied to the client correctly
@@ -309,12 +273,6 @@ namespace Content.Shared.Interaction
 
             if (Deleted(uid))
                 return false;
-
-            // <Trauma>
-            if (_targetRelayQuery.TryComp(uid, out var relay) && relay.RelayPulls &&
-                Exists(relay.RelayEntity) && relay.RelayEntity.Value != uid)
-                return HandleTryPullObject(session, coords, relay.RelayEntity.Value);
-            // </Trauma>
 
             if (!InRangeUnobstructed(userEntity.Value, uid, popup: true))
                 return false;
@@ -452,32 +410,10 @@ namespace Content.Shared.Interaction
             if (target != null && Deleted(target.Value))
                 return;
 
-            // <Trauma>
-            if (_targetRelayQuery.TryComp(target, out var targetRelay) && Exists(targetRelay.RelayEntity) &&
-                targetRelay.RelayEntity.Value != target)
-            {
-                if (_actionBlockerSystem.CanInteract(user, target))
-                {
-                    UserInteraction(user,
-                        coordinates,
-                        targetRelay.RelayEntity.Value,
-                        altInteract,
-                        checkCanInteract,
-                        checkAccess,
-                        checkCanUse);
-                    return;
-                }
-            }
-            // </Trauma>
-
             if (!altInteract && _combatQuery.TryComp(user, out var combatMode) && combatMode.IsInCombatMode)
             {
-                if (!CombatModeCanHandInteract(user, target)
-                    && (!TryGetUsedEntity(user, out var heldItem, checkCanUse: false)
-                        || !_tagSystem.HasTag(heldItem.Value, "BloodRitesAura")))
-                {
+                if (!CombatModeCanHandInteract(user, target))
                     return;
-                }
             }
 
             if (!ValidateInteractAndFace(user, coordinates))
@@ -552,21 +488,22 @@ namespace Content.Shared.Interaction
             return uid != null && IsDeleted(uid.Value);
         }
 
-        public bool InteractHand(EntityUid user, EntityUid target) // Goobstation - useful return value
+        public void InteractHand(EntityUid user, EntityUid target)
         {
             if (IsDeleted(user) || IsDeleted(target))
-                return false; // Goobstation
+                return;
 
             var complexInteractions = _actionBlockerSystem.CanComplexInteract(user);
             if (!complexInteractions)
             {
-                return InteractionActivate(user, // Goobstation
+                InteractionActivate(user,
                     target,
                     checkCanInteract: false,
                     checkUseDelay: true,
                     checkAccess: false,
                     complexInteractions: complexInteractions,
                     checkDeletion: false);
+                return;
             }
 
             // allow for special logic before main interaction
@@ -575,7 +512,7 @@ namespace Content.Shared.Interaction
             if (ev.Handled)
             {
                 _adminLogger.Add(LogType.InteractHand, LogImpact.Low, $"{ToPrettyString(user):user} interacted with {ToPrettyString(target):target}, but it was handled by another system");
-                return false; // Goobstation
+                return;
             }
 
             DebugTools.Assert(!IsDeleted(user) && !IsDeleted(target));
@@ -589,11 +526,11 @@ namespace Content.Shared.Interaction
             _adminLogger.Add(LogType.InteractHand, LogImpact.Low, $"{user} interacted with {target}");
             DoContactInteraction(user, target, message);
             if (message.Handled || userMessage.Handled)
-                return true; // Goobstation
+                return;
 
             DebugTools.Assert(!IsDeleted(user) && !IsDeleted(target));
             // Else we run Activate.
-            return InteractionActivate(user, // Goobstation
+            InteractionActivate(user,
                 target,
                 checkCanInteract: false,
                 checkUseDelay: true,
@@ -897,7 +834,7 @@ namespace Content.Shared.Interaction
             if (!inRange && popup && _gameTiming.IsFirstTimePredicted)
             {
                 var message = Loc.GetString("interaction-system-user-interaction-cannot-reach");
-                _popupSystem.PopupClient(message, origin, origin);
+                _popupSystem.PopupEntity(message, origin, origin);
             }
 
             return inRange;
@@ -967,8 +904,8 @@ namespace Content.Shared.Interaction
                     ignoreAnchored = angleDelta < wallMount.Arc / 2 || Math.Tau - angleDelta < wallMount.Arc / 2;
                 }
 
-                if (ignoreAnchored && _mapManager.TryFindGridAt(targetCoords, out _, out var grid))
-                    ignored.UnionWith(grid.GetAnchoredEntities(targetCoords));
+                if (ignoreAnchored && _map.TryFindGridAt(targetCoords, out var gridUid, out var grid))
+                    ignored.UnionWith(_map.GetAnchoredEntities((gridUid, grid), targetCoords));
             }
 
             Ignored combinedPredicate = e => e == target || (predicate?.Invoke(e) ?? false) || ignored.Contains(e);
@@ -1293,14 +1230,6 @@ namespace Content.Shared.Interaction
             if (checkCanUse && !_actionBlockerSystem.CanUseHeldEntity(user, used))
                 return false;
 
-            // Goobstation [
-            var useAttemptEv = new UseInHandAttemptEvent(user);
-            RaiseLocalEvent(used, useAttemptEv);
-
-            if (useAttemptEv.Cancelled)
-                return false;
-            // ] Goobstation
-
             var useMsg = new UseInHandEvent(user);
             RaiseLocalEvent(used, useMsg, true);
             if (useMsg.Handled)
@@ -1341,9 +1270,6 @@ namespace Content.Shared.Interaction
             if (IsDeleted(user) || IsDeleted(item))
                 return;
 
-            var dropMsg = new DroppedEvent(user);
-            RaiseLocalEvent(item, dropMsg, true);
-
             // If the dropper is rotated then use their targetrelativerotation as the drop rotation
             var rotation = Angle.Zero;
 
@@ -1353,6 +1279,9 @@ namespace Content.Shared.Interaction
             }
 
             Transform(item).LocalRotation = rotation;
+
+            var dropMsg = new DroppedEvent(user);
+            RaiseLocalEvent(item, dropMsg, true);
         }
         #endregion
 

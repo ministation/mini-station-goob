@@ -9,21 +9,15 @@ using Robust.Shared.Serialization;
 namespace Content.Goobstation.Shared.Blob;
 
 #region BlobChemTypedStorage
-[DataDefinition, Serializable, NetSerializable]
-public abstract partial class BlobChemTypedStorage<T> : IEnumerable
+[Serializable, NetSerializable]
+public abstract class BlobChemTypedStorage<T> : IEnumerable where T : notnull
 {
-    [DataField]
     public virtual T BlazingOil { get; set; } = default!;
-    [DataField]
-    public virtual T ReactiveSpines { get; set; }= default!;
-    [DataField]
-    public virtual T RegenerativeMateria { get; set; }= default!;
-    [DataField]
-    public virtual T ExplosiveLattice { get; set; }= default!;
-    [DataField]
-    public virtual T ElectromagneticWeb { get; set; }= default!;
+    public virtual T ReactiveSpines { get; set; } = default!;
+    public virtual T RegenerativeMateria { get; set; } = default!;
+    public virtual T ExplosiveLattice { get; set; } = default!;
+    public virtual T ElectromagneticWeb { get; set; } = default!;
 
-    // Indexer to access fields via BlobChemType enumeration
     [Pure]
     public T this[BlobChemType type]
     {
@@ -61,13 +55,11 @@ public abstract partial class BlobChemTypedStorage<T> : IEnumerable
         }
     }
 
-    // Method for adding a value
     public void Add(BlobChemType key, T value)
     {
         this[key] = value;
     }
 
-    // Realization IEnumerable
     public IEnumerator<KeyValuePair<BlobChemType, T>> GetEnumerator()
     {
         yield return new KeyValuePair<BlobChemType, T>(BlobChemType.BlazingOil, BlazingOil);
@@ -84,11 +76,37 @@ public abstract partial class BlobChemTypedStorage<T> : IEnumerable
 [DataDefinition, Serializable, NetSerializable]
 public sealed partial class BlobChemColors : BlobChemTypedStorage<Color>
 {
+    [DataField]
+    public override Color BlazingOil { get; set; }
 
+    [DataField]
+    public override Color ReactiveSpines { get; set; }
+
+    [DataField]
+    public override Color RegenerativeMateria { get; set; }
+
+    [DataField]
+    public override Color ExplosiveLattice { get; set; }
+
+    [DataField]
+    public override Color ElectromagneticWeb { get; set; }
 }
 
 [DataDefinition, Serializable, NetSerializable]
 public sealed partial class BlobChemDamage : BlobChemTypedStorage<DamageSpecifier>
 {
+    [DataField]
+    public override DamageSpecifier BlazingOil { get; set; } = new();
 
+    [DataField]
+    public override DamageSpecifier ReactiveSpines { get; set; } = new();
+
+    [DataField]
+    public override DamageSpecifier RegenerativeMateria { get; set; } = new();
+
+    [DataField]
+    public override DamageSpecifier ExplosiveLattice { get; set; } = new();
+
+    [DataField]
+    public override DamageSpecifier ElectromagneticWeb { get; set; } = new();
 }
