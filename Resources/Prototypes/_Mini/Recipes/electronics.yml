@@ -1,10 +1,5 @@
 - type: latheRecipe
   parent: BaseCircuitboardRecipe
-  id: PhotocopierMachineCircuitboard
-  result: PhotocopierMachineCircuitboard
-
-- type: latheRecipe
-  parent: BaseCircuitboardRecipe
   id: GeneratorRTGMachineCircuitboard
   result: GeneratorRTGMachineCircuitboard
 

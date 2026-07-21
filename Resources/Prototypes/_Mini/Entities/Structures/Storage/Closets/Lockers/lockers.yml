@@ -4,10 +4,12 @@
   parent: LockerAtmospherics
   description: A standard-issue Syndicate storage unit.
   components:
+    - type: Sprite
+      sprite: _Mini/Structures/Storage/closet.rsi
     - type: Appearance
     - type: EntityStorageVisuals
       stateBaseClosed: typanatm
-      stateDoorOpen: tac_open
+      stateDoorOpen: typanatm_open
       stateDoorClosed: typanatm_door
     - type: StorageFill
       contents:
@@ -29,6 +31,8 @@
   parent: LockerAtmospherics
   description: A standard-issue Syndicate storage unit.
   components:
+    - type: Sprite
+      sprite: _Mini/Structures/Storage/closet.rsi
     - type: Appearance
     - type: EntityStorageVisuals
       stateBaseClosed: tac
@@ -46,10 +50,12 @@
   parent: LockerSalvageSpecialist
   description: A standard-issue Syndicate storage unit.
   components:
+    - type: Sprite
+      sprite: _Mini/Structures/Storage/closet.rsi
     - type: Appearance
     - type: EntityStorageVisuals
       stateBaseClosed: typancargo
-      stateDoorOpen: tac_open
+      stateDoorOpen: typancargo_open
       stateDoorClosed: typancargo_door
     - type: AccessReader
       access: [["TypanCargo"]]
@@ -64,11 +70,13 @@
   parent: LockerMedicineFilled
   description: A standard-issue Syndicate storage unit.
   components:
+    - type: Sprite
+      sprite: _Mini/Structures/Storage/closet.rsi
     - type: Appearance
     - type: EntityStorageVisuals
-      stateBaseClosed: typanmed
-      stateDoorOpen: tac_open
-      stateDoorClosed: typanmed_door
+      stateBaseClosed: typanmedcab
+      stateDoorOpen: typanmedcab_open
+      stateDoorClosed: typanmedcab_door
     - type: AccessReader
       access: [["TypanMedical"]]
 
@@ -96,10 +104,12 @@
   parent: LockerScienceFilled
   description: Хранилище вещей учёного.
   components:
+    - type: Sprite
+      sprite: _Mini/Structures/Storage/closet.rsi
     - type: Appearance
     - type: EntityStorageVisuals
       stateBaseClosed: typan_sci
-      stateDoorOpen: tac_open
+      stateDoorOpen: typan_sci_open
       stateDoorClosed: typan_sci_door
     - type: AccessReader
       access: [["TypanScience"]]
@@ -110,10 +120,12 @@
   parent: LockerScienceFilledXenobiology
   description: Хранилище вещей учёного.
   components:
+    - type: Sprite
+      sprite: _Mini/Structures/Storage/closet.rsi
     - type: Appearance
     - type: EntityStorageVisuals
       stateBaseClosed: typan_sci
-      stateDoorOpen: tac_open
+      stateDoorOpen: typan_sci_open
       stateDoorClosed: typan_sci_door
     - type: AccessReader
       access: [["TypanScience"]]
@@ -124,10 +136,12 @@
   parent: LockerBotanistFilled
   description: Хранилище вещей ботаника.
   components:
+    - type: Sprite
+      sprite: _Mini/Structures/Storage/closet.rsi
     - type: Appearance
     - type: EntityStorageVisuals
       stateBaseClosed: typanbot
-      stateDoorOpen: tac_open
+      stateDoorOpen: typanbot_open
       stateDoorClosed: typanbot_door
     - type: AccessReader
       access: [["TypanService"]]
@@ -174,7 +188,7 @@
   #      params:
   #        volume: -3
 
-# Old red syndicate locker sprites (Structures/Storage/closet.rsi typan*/tac), not black MK.
+# Typan red locker sprites live in _Mini/Structures/Storage/closet.rsi
 - type: entity
   id: LockerTypanBaseSecure
   parent: LockerBaseSecure
@@ -184,7 +198,7 @@
   suffix: Тайпан
   components:
   - type: Sprite
-    sprite: Structures/Storage/closet.rsi
+    sprite: _Mini/Structures/Storage/closet.rsi
     noRot: true
     layers:
     - state: tac
@@ -212,7 +226,7 @@
   components:
   - type: Sprite
     noRot: true
-    sprite: Structures/Storage/closet.rsi
+    sprite: _Mini/Structures/Storage/closet.rsi
     layers:
     - state: tac
       map: ["enum.StorageVisualLayers.Base"]
@@ -239,9 +253,9 @@
   components:
   - type: Appearance
   - type: EntityStorageVisuals
-    stateBaseClosed: tac
-    stateDoorOpen: tac_open
-    stateDoorClosed: tac_door
+    stateBaseClosed: typansteel
+    stateDoorOpen: typansteel_open
+    stateDoorClosed: typansteel_door
 
 # Booze
 - type: entity
@@ -260,9 +274,9 @@
   name: шкаф руководителя техобеспечения
   components:
   - type: EntityStorageVisuals
-    stateBaseClosed: tac
-    stateDoorOpen: tac_open
-    stateDoorClosed: tac_door
+    stateBaseClosed: typants
+    stateDoorOpen: typants_open
+    stateDoorClosed: typants_door
   - type: AccessReader
     access: [["TypanCommand"]]
 
@@ -274,7 +288,7 @@
   components:
   - type: EntityStorageVisuals
     stateBaseClosed: typancargo
-    stateDoorOpen: tac_open
+    stateDoorOpen: typancargo_open
     stateDoorClosed: typancargo_door
   - type: AccessReader
     access: [["TypanCargo"]]
@@ -287,7 +301,7 @@
   components:
   - type: EntityStorageVisuals
     stateBaseClosed: typanatm
-    stateDoorOpen: tac_open
+    stateDoorOpen: typanatm_open
     stateDoorClosed: typanatm_door
   - type: AccessReader
     access: [["TypanAtmospherics"]]
@@ -299,9 +313,9 @@
   name: шкаф ремонтника
   components:
   - type: EntityStorageVisuals
-    stateBaseClosed: typanatm
-    stateDoorOpen: tac_open
-    stateDoorClosed: typanatm_door
+    stateBaseClosed: typaneng
+    stateDoorOpen: typaneng_open
+    stateDoorClosed: typaneng_door
   - type: AccessReader
     access: [["TypanEngineering"]]
 
@@ -323,7 +337,7 @@
   components:
   - type: EntityStorageVisuals
     stateBaseClosed: typanbot
-    stateDoorOpen: tac_open
+    stateDoorOpen: typanbot_open
     stateDoorClosed: typanbot_door
   - type: AccessReader
     access: [["TypanService"]]
@@ -335,9 +349,9 @@
   name: шкаф повара
   components:
   - type: EntityStorageVisuals
-    stateBaseClosed: typanbot
-    stateDoorOpen: tac_open
-    stateDoorClosed: typanbot_door
+    stateBaseClosed: typanchef
+    stateDoorOpen: typanchef_open
+    stateDoorClosed: typanchef_door
   - type: AccessReader
     access: [["TypanService"]]
 
@@ -349,10 +363,12 @@
   description: Стандартное хранилище Синдиката.
   suffix: Тайпан
   components:
+  - type: Sprite
+    sprite: _Mini/Structures/Storage/closet.rsi
   - type: EntityStorageVisuals
-    stateBaseClosed: typanmed
-    stateDoorOpen: tac_open
-    stateDoorClosed: typanmed_door
+    stateBaseClosed: typanmedcab
+    stateDoorOpen: typanmedcab_open
+    stateDoorClosed: typanmedcab_door
   - type: AccessReader
     access: [["TypanMedical"]]
 
@@ -363,9 +379,9 @@
   name: шкаф медика
   components:
   - type: EntityStorageVisuals
-    stateBaseClosed: typanmed
-    stateDoorOpen: tac_open
-    stateDoorClosed: typanmed_door
+    stateBaseClosed: typanmedic
+    stateDoorOpen: typanmedic_open
+    stateDoorClosed: typanmedic_door
   - type: AccessReader
     access: [["TypanMedical"]]
 
@@ -376,9 +392,9 @@
   name: шкаф парамедика
   components:
   - type: EntityStorageVisuals
-    stateBaseClosed: typanmed
-    stateDoorOpen: tac_open
-    stateDoorClosed: typanmed_door
+    stateBaseClosed: typanparamed
+    stateDoorOpen: typanparamed_open
+    stateDoorClosed: typanparamed_door
   - type: AccessReader
     access: [["TypanMedical"]]
 
@@ -390,10 +406,12 @@
   description: Стандартное хранилище Синдиката.
   suffix: Тайпан
   components:
+  - type: Sprite
+    sprite: _Mini/Structures/Storage/closet.rsi
   - type: EntityStorageVisuals
-    stateBaseClosed: typanmed
-    stateDoorOpen: tac_open
-    stateDoorClosed: typanmed_door
+    stateBaseClosed: typanchem
+    stateDoorOpen: typanchem_open
+    stateDoorClosed: typanchem_door
   - type: AccessReader
     access: [["TypanMedical"], ["TypanScience"]]
 
@@ -404,9 +422,9 @@
   name: шкаф директора исследований
   components:
   - type: EntityStorageVisuals
-    stateBaseClosed: typan_sci
-    stateDoorOpen: tac_open
-    stateDoorClosed: typan_sci_door
+    stateBaseClosed: typanrd
+    stateDoorOpen: typanrd_open
+    stateDoorClosed: typanrd_door
   - type: AccessReader
     access: [["TypanResearchDirector"]]
 
@@ -418,7 +436,7 @@
   components:
   - type: EntityStorageVisuals
     stateBaseClosed: typan_sci
-    stateDoorOpen: tac_open
+    stateDoorOpen: typan_sci_open
     stateDoorClosed: typan_sci_door
   - type: AccessReader
     access: [["TypanScience"]]
@@ -430,9 +448,9 @@
   name: шкаф офицера телекоммуникаций
   components:
   - type: EntityStorageVisuals
-    stateBaseClosed: tac
-    stateDoorOpen: tac_open
-    stateDoorClosed: tac_door
+    stateBaseClosed: typanco
+    stateDoorOpen: typanco_open
+    stateDoorClosed: typanco_door
   - type: AccessReader
     access: [["TypanCommunicationsOfficer"]]
 
@@ -443,9 +461,9 @@
   name: шкаф патрульного
   components:
   - type: EntityStorageVisuals
-    stateBaseClosed: tac
-    stateDoorOpen: tac_open
-    stateDoorClosed: tac_door
+    stateBaseClosed: typanpatrol
+    stateDoorOpen: typanpatrol_open
+    stateDoorClosed: typanpatrol_door
   - type: AccessReader
     access: [["TypanCommand"]]
 
@@ -454,6 +472,25 @@
   parent: LockerTypanBaseSecure
   name: оружейный шкаф
   components:
+  - type: Sprite
+    sprite: _Mini/Structures/Storage/closet.rsi
+    noRot: true
+    layers:
+    - state: shotguncase
+      map: ["enum.StorageVisualLayers.Base"]
+    - state: shotguncase_door
+      map: ["enum.StorageVisualLayers.Door"]
+    - state: locked
+      map: ["enum.LockVisualLayers.Lock"]
+      shader: unshaded
+    - state: welded
+      visible: false
+      map: ["enum.WeldableLayers.BaseWelded"]
+    - state: paper
+      visible: false
+      sprite: Structures/Storage/closet_labels.rsi
+      offset: "-0.065,0"
+      map: ["enum.PaperLabelVisuals.Layer"]
   - type: EntityStorageVisuals
     stateBaseClosed: shotguncase
     stateDoorOpen: shotguncase_open

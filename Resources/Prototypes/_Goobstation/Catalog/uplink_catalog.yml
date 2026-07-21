@@ -1069,23 +1069,22 @@
       tags:
       - NukeOpsUplink
 
-# Mini: Statveka Sandevistan looks identical in store — keep regular only
-# - type: listing
-#   id: UplinkAutosurgeonStatvekaSandevistan
-#   name: uplink-autosurgeon-statveka-sandevistan-name
-#   description: uplink-autosurgeon-statveka-sandevistan-desc
-#   icon: { sprite: _Goobstation/Objects/Misc/sandevistan.rsi, state: icon }
-#   productEntity: AutosurgeonStatvekaSandevistan
-#   cost:
-#     Telecrystal: 13
-#   categories:
-#   - UplinkImplants
-#   conditions:
-#   - !type:StoreWhitelistCondition
-#     blacklist:
-#       tags:
-#       - NukeOpsUplink
-#
+- type: listing
+  id: UplinkAutosurgeonStatvekaSandevistan
+  name: uplink-autosurgeon-statveka-sandevistan-name
+  description: uplink-autosurgeon-statveka-sandevistan-desc
+  icon: { sprite: _Goobstation/Objects/Misc/sandevistan.rsi, state: icon }
+  productEntity: AutosurgeonStatvekaSandevistan
+  cost:
+    Telecrystal: 13
+  categories:
+  - UplinkImplants
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
+
 - type: listing
   id: NukieUplinkAutosurgeonSandevistan
   name: uplink-autosurgeon-sandevistan-name
@@ -1102,23 +1101,22 @@
       tags:
       - LoneOpsUplink
 
-# Mini: Statveka Sandevistan looks identical in store — keep regular only
-# - type: listing
-#   id: NukieUplinkAutosurgeonStatvekaSandevistan
-#   name: uplink-autosurgeon-statveka-sandevistan-name
-#   description: uplink-autosurgeon-statveka-sandevistan-desc
-#   icon: { sprite: _Goobstation/Objects/Misc/sandevistan.rsi, state: icon }
-#   productEntity: AutosurgeonStatvekaSandevistan
-#   cost:
-#     Telecrystal: 25
-#   categories:
-#   - UplinkImplants
-#   conditions:
-#   - !type:StoreWhitelistCondition
-#     whitelist:
-#       tags:
-#       - LoneOpsUplink
-#
+- type: listing
+  id: NukieUplinkAutosurgeonStatvekaSandevistan
+  name: uplink-autosurgeon-statveka-sandevistan-name
+  description: uplink-autosurgeon-statveka-sandevistan-desc
+  icon: { sprite: _Goobstation/Objects/Misc/sandevistan.rsi, state: icon }
+  productEntity: AutosurgeonStatvekaSandevistan
+  cost:
+    Telecrystal: 25
+  categories:
+  - UplinkImplants
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - LoneOpsUplink
+
 - type: listing
   id: UplinkClothingOuterDavidsJacketValid
   name: uplink-davids-jacket-name
@@ -1137,6 +1135,7 @@
     - UplinkAutosurgeonRightMantisBlade
     - UplinkAutosurgeonLeftMantisBlade
     - UplinkAutosurgeonSandevistan
+    - UplinkAutosurgeonStatvekaSandevistan
   - !type:BuyerWhitelistCondition
     blacklist:
       components:

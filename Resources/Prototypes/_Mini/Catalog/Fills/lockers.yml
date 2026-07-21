@@ -316,6 +316,10 @@
   suffix: Тайпан, Заполненный, Случайный
   parent: ClosetTypanSteel
   components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: typansteel
+    stateDoorOpen: typansteel_open
+    stateDoorClosed: typansteel_door
   - type: EntityTableContainerFill
     containers:
       entity_storage: !type:NestedSelector

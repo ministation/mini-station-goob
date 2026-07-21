@@ -213,6 +213,27 @@
           1.2
         ]
       ]
+    },
+    {
+      "name": "pda-syndi-med"
+    },
+    {
+      "name": "pda-syndi-com"
+    },
+    {
+      "name": "pda-syndi-corpsman"
+    },
+    {
+      "name": "pda-syndi-commander"
+    },
+    {
+      "name": "pda-syndi-agent"
+    },
+    {
+      "name": "pda-syndi-operative"
+    },
+    {
+      "name": "pda-syndi"
     }
   ]
 }

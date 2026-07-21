@@ -554,15 +554,6 @@
       "name": "syndicate_open"
     },
     {
-      "name": "tac"
-    },
-    {
-      "name": "tac_door"
-    },
-    {
-      "name": "tac_open"
-    },
-    {
       "name": "unlocked"
     },
     {
@@ -626,46 +617,7 @@
       "name": "coroner_secure_open"
     },
     {
-      "name": "typanatm"
-    },
-    {
-      "name": "typanatm_door"
-    },
-    {
-      "name": "typanatm_open"
-    },
-    {
-      "name": "typancargo"
-    },
-    {
-      "name": "typancargo_door"
-    },
-    {
-      "name": "typancargo_open"
-    },
-    {
-      "name": "typanmed_door"
-    },
-    {
-      "name": "typanmed"
-    },
-    {
-      "name": "typan_sci"
-    },
-    {
-      "name": "typan_sci_door"
-    },
-    {
-      "name": "typanbot"
-    },
-    {
-      "name": "typanbot_door"
-    },
-    {
       "name": "eng_evac_door"
-    },
-    {
-      "name": "typan_cargo"
     }
   ]
 }
