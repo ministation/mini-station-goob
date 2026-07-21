@@ -24,6 +24,11 @@
   - TypanService
   - TypanTechnicalOperationsSupervisor
   - TypanExternal
+  skills: # CorvaxGoob-Skills
+  - Shooting
+  - ShuttleControl
+  - AdvancedBuilding
+  - MedicalEquipment
   special:
   - !type:AddImplantSpecial
     implants: [ DeathRattleImplantTypan ]

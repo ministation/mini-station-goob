@@ -236,6 +236,9 @@ public abstract class SharedMaterialStorageSystem : EntitySystem
         var localLowerLimit = -existing;
         var localChange = Math.Clamp(remaining, localLowerLimit, localUpperLimit);
 
+        if (localChange != remaining)
+            return false;
+
         existing += localChange;
 
         if (existing == 0)
@@ -283,6 +286,8 @@ public abstract class SharedMaterialStorageSystem : EntitySystem
         var changeEv = new ConsumeStoredMaterialsEvent((entity, entity.Comp), materials, localOnly);
         RaiseLocalEvent(entity, ref changeEv);
 
+        var localChanges = new Dictionary<ProtoId<MaterialPrototype>, int>();
+
         foreach (var (material, remaining) in changeEv.Materials)
         {
             var existing = entity.Comp.Storage.GetOrNew(material);
@@ -291,13 +296,21 @@ public abstract class SharedMaterialStorageSystem : EntitySystem
             var localLowerLimit = -existing;
             var localChange = Math.Clamp(remaining, localLowerLimit, localUpperLimit);
 
+            if (localChange != remaining)
+                return false;
+
+            localChanges[material] = localChange;
+        }
+
+        foreach (var (material, localChange) in localChanges)
+        {
+            var existing = entity.Comp.Storage.GetOrNew(material);
             existing += localChange;
 
             if (existing == 0)
                 entity.Comp.Storage.Remove(material);
             else
                 entity.Comp.Storage[material] = existing;
-
         }
 
         var ev = new MaterialAmountChangedEvent();
