@@ -125,3 +125,12 @@
   components:
   - type: AccessReader
     access: [["TypanExternal"]]
+
+- type: entity
+  parent: DoorElectronicsTypan
+  id: DoorElectronicsTypanSyndicate
+  suffix: Typan, Syndicate, Closed
+  components:
+  - type: AccessReader
+    # Anyone with Typan external OR syndie agent access (covers all Typan jobs).
+    access: [["TypanExternal"], ["SyndicateAgent"]]

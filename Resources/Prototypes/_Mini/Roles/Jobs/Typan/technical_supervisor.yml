@@ -24,6 +24,7 @@
   - TypanService
   - TypanTechnicalOperationsSupervisor
   - TypanExternal
+  - SyndicateAgent
   skills: # CorvaxGoob-Skills
   - Shooting
   - ShuttleControl

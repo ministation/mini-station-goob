@@ -6678,7 +6678,7 @@ entities:
       pos: 26.215158,-0.96731424
     - type: Physics
       canCollide: False
-- proto: AirlockExternalGlassShuttleSyndicateLocked
+- proto: AirlockExternalGlassShuttleTypanLocked
   entities:
   - uid: 108
     components:
@@ -49641,7 +49641,7 @@ entities:
       pos: 33.73825,1.3386055
     - type: Physics
       canCollide: False
-- proto: PlasmaWindoorSecureSyndicateLocked
+- proto: PlasmaWindoorSecureTypanExternalLocked
   entities:
   - uid: 6947
     components:

@@ -316,7 +316,7 @@ entities:
     - type: IFF
       color: '#880000FF'
     - type: FTLDrive
-- proto: AirlockExternalGlassShuttleSyndicateLocked
+- proto: AirlockExternalGlassShuttleTypanLocked
   entities:
   - uid: 2
     components:

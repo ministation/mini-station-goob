@@ -17,6 +17,7 @@
   - TypanTechnicalOperationsSupervisor
   - TypanVault
   - TypanExternal
+  - SyndicateAgent
 
 - type: accessLevel
   id: TypanArmory

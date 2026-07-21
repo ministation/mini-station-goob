@@ -75,6 +75,12 @@ public readonly record struct LatheItemProducedEvent(EntityUid Lathe, EntityUid?
 public readonly record struct CargoBountyLabelPrintedEvent(EntityUid Actor);
 
 /// <summary>
+/// Raised when a cargo bounty is fulfilled by selling a matching crate.
+/// </summary>
+[ByRefEvent]
+public readonly record struct CargoBountyFulfilledEvent(EntityUid Station);
+
+/// <summary>
 /// Raised when a player claims mining points from a mining lathe.
 /// </summary>
 [ByRefEvent]

@@ -31,7 +31,7 @@ using Content.Shared.Database;
 using Content.Shared.EntityEffects;
 using Content.Shared.Kitchen.Components;
 using Content.Shared.Labels.Components;
-using Content.Shared.Labels.Components;
+using Content.Shared._Mini.DailyQuests;
 
 namespace Content.Server.Botany.Systems;
 
@@ -726,6 +726,8 @@ public sealed class PlantHolderSystem : EntitySystem
 
             _botany.Harvest(component.Seed, user, component.YieldMod);
             AfterHarvest(plantholder, component);
+            var harvestEv = new PlantHarvestedEvent(user);
+            RaiseLocalEvent(ref harvestEv);
             return true;
         }
 

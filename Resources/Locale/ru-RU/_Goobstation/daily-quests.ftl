@@ -45,20 +45,20 @@ daily-quest-cargo-bounty-mythic-desc = Зайдите за грузчика и �
 daily-quest-cargo-bounty-legendary-name = Грузовой заказ
 daily-quest-cargo-bounty-legendary-desc = Зайдите за грузчика и доведите суммарный баланс счетов станции до {$count} кредитов.
 
-daily-quest-typan-cargo-bounty-rare-name = Груз Тайпана
-daily-quest-typan-cargo-bounty-rare-desc = Зайдите за грузчика Тайпана и оформите {$count} грузовых заказа.
+daily-quest-typan-cargo-bounty-rare-name = Производство Тайпана
+daily-quest-typan-cargo-bounty-rare-desc = Зайдите за грузчика Тайпана и изготовьте {$count} изделий на фабрикаторе.
 
-daily-quest-typan-cargo-bounty-superRare-name = Груз Тайпана
-daily-quest-typan-cargo-bounty-superRare-desc = Зайдите за грузчика Тайпана и оформите {$count} грузовых заказа.
+daily-quest-typan-cargo-bounty-superRare-name = Производство Тайпана
+daily-quest-typan-cargo-bounty-superRare-desc = Зайдите за грузчика Тайпана и изготовьте {$count} изделий на фабрикаторе.
 
-daily-quest-typan-cargo-bounty-epic-name = Груз Тайпана
-daily-quest-typan-cargo-bounty-epic-desc = Зайдите за грузчика Тайпана и оформите {$count} грузовых заказа.
+daily-quest-typan-cargo-bounty-epic-name = Производство Тайпана
+daily-quest-typan-cargo-bounty-epic-desc = Зайдите за грузчика Тайпана и изготовьте {$count} изделий на фабрикаторе.
 
-daily-quest-typan-cargo-bounty-mythic-name = Груз Тайпана
-daily-quest-typan-cargo-bounty-mythic-desc = Зайдите за грузчика Тайпана и оформите {$count} грузовых заказа.
+daily-quest-typan-cargo-bounty-mythic-name = Производство Тайпана
+daily-quest-typan-cargo-bounty-mythic-desc = Зайдите за грузчика Тайпана и изготовьте {$count} изделий на фабрикаторе.
 
-daily-quest-typan-cargo-bounty-legendary-name = Груз Тайпана
-daily-quest-typan-cargo-bounty-legendary-desc = Зайдите за грузчика Тайпана и доведите суммарный баланс счетов станции до {$count} кредитов.
+daily-quest-typan-cargo-bounty-legendary-name = Производство Тайпана
+daily-quest-typan-cargo-bounty-legendary-desc = Зайдите за грузчика Тайпана и изготовьте {$count} изделий на фабрикаторе.
 
 daily-quest-heal-general-rare-name = Первая помощь
 daily-quest-heal-general-rare-desc = Вылечите {$count} других игроков на любой роли.
@@ -179,21 +179,6 @@ daily-quest-mining-salvage-mythic-desc = Зайдите за утилизато�
 
 daily-quest-mining-salvage-legendary-name = Шахтёр
 daily-quest-mining-salvage-legendary-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за раунд.
-
-daily-quest-mining-typan-cargo-rare-name = Утиль Тайпана
-daily-quest-mining-typan-cargo-rare-desc = Зайдите за грузчика Тайпана и заработайте {$count} очков утилизации.
-
-daily-quest-mining-typan-cargo-superRare-name = Утиль Тайпана
-daily-quest-mining-typan-cargo-superRare-desc = Зайдите за грузчика Тайпана и заработайте {$count} очков утилизации.
-
-daily-quest-mining-typan-cargo-epic-name = Утиль Тайпана
-daily-quest-mining-typan-cargo-epic-desc = Зайдите за грузчика Тайпана и заработайте {$count} очков утилизации.
-
-daily-quest-mining-typan-cargo-mythic-name = Утиль Тайпана
-daily-quest-mining-typan-cargo-mythic-desc = Зайдите за грузчика Тайпана и заработайте {$count} очков утилизации.
-
-daily-quest-mining-typan-cargo-legendary-name = Утиль Тайпана
-daily-quest-mining-typan-cargo-legendary-desc = Зайдите за грузчика Тайпана и заработайте {$count} очков утилизации.
 
 daily-quest-cuff-security-rare-name = Задержание
 daily-quest-cuff-security-rare-desc = Зайдите за офицера СБ и наденьте наручники на {$count} человек.

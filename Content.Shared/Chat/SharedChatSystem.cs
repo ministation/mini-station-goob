@@ -7,8 +7,10 @@ using Content.Shared._EinsteinEngines.Language;
 using Content.Shared._EinsteinEngines.Language.Systems;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Chat.Prototypes;
+using Content.Shared.Inventory;
 using Content.Shared.Popups;
 using Content.Shared.Radio;
+using Content.Shared.Radio.Components;
 using Content.Shared.Speech;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio;
@@ -61,6 +63,7 @@ public abstract partial class SharedChatSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly SharedLanguageSystem _language = default!; // Einstein Engines - Language
+    [Dependency] private readonly InventorySystem _inventory = default!;
 
     /// <summary>
     /// Cache of the keycodes for faster lookup.
@@ -188,7 +191,7 @@ public abstract partial class SharedChatSystem : EntitySystem
         if (input.StartsWith(RadioCommonPrefix))
         {
             output = SanitizeMessageCapital(input[1..].TrimStart());
-            channel = _prototypeManager.Index<RadioChannelPrototype>(CommonChannel);
+            channel = ResolveRadioChannelOrDefault(source, preferCommon: true);
             return true;
         }
 
@@ -197,8 +200,10 @@ public abstract partial class SharedChatSystem : EntitySystem
 
         if (input.Length < 2 || char.IsWhiteSpace(input[1]))
         {
+            // "." / ":" without a key → headset default (e.g. Syndicate on syndie headsets).
             output = SanitizeMessageCapital(input[1..].TrimStart());
-            if (!quiet)
+            channel = ResolveRadioChannelOrDefault(source, preferCommon: false);
+            if (channel == null && !quiet)
                 _popup.PopupEntity(Loc.GetString("chat-manager-no-radio-key"), source, source);
             return true;
         }
@@ -209,11 +214,7 @@ public abstract partial class SharedChatSystem : EntitySystem
 
         if (channelKey == DefaultChannelKey)
         {
-            var ev = new GetDefaultRadioChannelEvent();
-            RaiseLocalEvent(source, ev);
-
-            if (ev.Channel != null)
-                _prototypeManager.TryIndex(ev.Channel, out channel);
+            channel = ResolveRadioChannelOrDefault(source, preferCommon: false);
             return true;
         }
 
@@ -224,6 +225,61 @@ public abstract partial class SharedChatSystem : EntitySystem
         }
 
         return true;
+    }
+
+    private bool HasRadioChannel(EntityUid source, ProtoId<RadioChannelPrototype> channelId)
+    {
+        if (TryComp(source, out IntrinsicRadioTransmitterComponent? intrinsic)
+            && intrinsic.Channels.Contains(channelId))
+            return true;
+
+        if (_inventory.TryGetSlotEntity(source, "ears", out var headset)
+            && TryComp(headset, out EncryptionKeyHolderComponent? earKeys)
+            && earKeys.Channels.Contains(channelId))
+            return true;
+
+        if (TryComp(source, out WearingHeadsetComponent? wearing)
+            && TryComp(wearing.Headset, out EncryptionKeyHolderComponent? wornKeys)
+            && wornKeys.Channels.Contains(channelId))
+            return true;
+
+        return false;
+    }
+
+    /// <summary>
+    /// Resolves the radio channel for `;` / `:р` / bare `.` prefixes.
+    /// When <paramref name="preferCommon"/> is true, Common is used if the headset has it;
+    /// otherwise (and for syndie headsets without Common) the headset default is used.
+    /// </summary>
+    private RadioChannelPrototype? ResolveRadioChannelOrDefault(EntityUid source, bool preferCommon)
+    {
+        EncryptionKeyHolderComponent? keys = null;
+        if (_inventory.TryGetSlotEntity(source, "ears", out var headset))
+            TryComp(headset, out keys);
+        if (keys == null && TryComp(source, out WearingHeadsetComponent? wearing))
+            TryComp(wearing.Headset, out keys);
+
+        if (preferCommon && keys != null && keys.Channels.Contains(CommonChannel))
+            return _prototypeManager.Index<RadioChannelPrototype>(CommonChannel);
+
+        if (preferCommon && keys == null && HasRadioChannel(source, CommonChannel))
+            return _prototypeManager.Index<RadioChannelPrototype>(CommonChannel);
+
+        var defaultId = keys?.DefaultChannel;
+        if (defaultId == null)
+        {
+            var ev = new GetDefaultRadioChannelEvent();
+            RaiseLocalEvent(source, ev);
+            defaultId = ev.Channel;
+        }
+
+        if (defaultId != null && _prototypeManager.TryIndex(defaultId, out RadioChannelPrototype? channel))
+            return channel;
+
+        if (preferCommon)
+            return _prototypeManager.Index<RadioChannelPrototype>(CommonChannel);
+
+        return null;
     }
 
     // Goobstation - Starlight collective mind port

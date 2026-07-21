@@ -824,8 +824,9 @@ public sealed partial class ChatUIController : UIController
             channel = prefixChannel;
         else if (channel == ChatSelectChannel.Radio)
         {
-            // radio must have prefix as it goes through the say command.
-            text = $";{text}";
+            // Use headset default channel (:р), not Common (;).
+            // Syndicate headsets → Syndicate; dept headsets → their department.
+            text = $"{SharedChatSystem.DefaultChannelPrefix}{text}";
         }
 
         _manager.SendMessage(text, prefixChannel == 0 ? channel : prefixChannel);

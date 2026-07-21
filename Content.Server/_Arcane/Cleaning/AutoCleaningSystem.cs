@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Goobstation.Shared.Xenobiology.Components;
 using Content.Server.Chat.Systems;
+using Content.Server.GameTicking;
 using Content.Shared._Arcane.CCVars;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind.Components;
@@ -19,6 +20,7 @@ public sealed partial class AutoCleaningSystem : EntitySystem
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
+    [Dependency] private readonly GameTicker _gameTicker = default!;
 
     private ISawmill _sawmill = default!;
 
@@ -44,6 +46,7 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
         SubscribeLocalEvent<RoundEndedEvent>(OnRoundEnded);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
     }
 
     private void OnRoundStarted(RoundStartedEvent args)
@@ -57,16 +60,29 @@ public sealed partial class AutoCleaningSystem : EntitySystem
 
     private void OnRoundEnded(RoundEndedEvent args)
     {
+        Deactivate("round ended");
+    }
+
+    private void OnRoundRestartCleanup(RoundRestartCleanupEvent args)
+    {
+        Deactivate("round restart cleanup");
+    }
+
+    private void Deactivate(string reason)
+    {
         _isActive = false;
         _isWarned = false;
         _nextUpdate = TimeSpan.MaxValue;
-
-        _sawmill.Info("AutoCleaning system deactivated (round ended)");
+        _sawmill.Info($"AutoCleaning system deactivated ({reason})");
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        // Never run in lobby / post-round even if activation state desyncs.
+        if (_gameTicker.RunLevel != GameRunLevel.InRound)
+            return;
 
         if (!_isActive || !_autoCleaningEnabled)
             return;

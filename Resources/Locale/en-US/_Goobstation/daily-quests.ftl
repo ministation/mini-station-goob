@@ -45,20 +45,20 @@ daily-quest-cargo-bounty-mythic-desc = Play cargo technician and print {$count} 
 daily-quest-cargo-bounty-legendary-name = Cargo order
 daily-quest-cargo-bounty-legendary-desc = Play cargo technician and raise total station account balance to {$count} credits.
 
-daily-quest-typan-cargo-bounty-rare-name = Taipan cargo
-daily-quest-typan-cargo-bounty-rare-desc = Play Taipan cargo tech and print {$count} cargo bounties.
+daily-quest-typan-cargo-bounty-rare-name = Taipan production
+daily-quest-typan-cargo-bounty-rare-desc = Play Taipan cargo tech and produce {$count} items on a lathe.
 
-daily-quest-typan-cargo-bounty-superRare-name = Taipan cargo
-daily-quest-typan-cargo-bounty-superRare-desc = Play Taipan cargo tech and print {$count} cargo bounties.
+daily-quest-typan-cargo-bounty-superRare-name = Taipan production
+daily-quest-typan-cargo-bounty-superRare-desc = Play Taipan cargo tech and produce {$count} items on a lathe.
 
-daily-quest-typan-cargo-bounty-epic-name = Taipan cargo
-daily-quest-typan-cargo-bounty-epic-desc = Play Taipan cargo tech and print {$count} cargo bounties.
+daily-quest-typan-cargo-bounty-epic-name = Taipan production
+daily-quest-typan-cargo-bounty-epic-desc = Play Taipan cargo tech and produce {$count} items on a lathe.
 
-daily-quest-typan-cargo-bounty-mythic-name = Taipan cargo
-daily-quest-typan-cargo-bounty-mythic-desc = Play Taipan cargo tech and print {$count} cargo bounties.
+daily-quest-typan-cargo-bounty-mythic-name = Taipan production
+daily-quest-typan-cargo-bounty-mythic-desc = Play Taipan cargo tech and produce {$count} items on a lathe.
 
-daily-quest-typan-cargo-bounty-legendary-name = Taipan cargo
-daily-quest-typan-cargo-bounty-legendary-desc = Play Taipan cargo tech and raise total station balance to {$count} credits.
+daily-quest-typan-cargo-bounty-legendary-name = Taipan production
+daily-quest-typan-cargo-bounty-legendary-desc = Play Taipan cargo tech and produce {$count} items on a lathe.
 
 daily-quest-heal-general-rare-name = First aid
 daily-quest-heal-general-rare-desc = Heal {$count} other players on any role.
@@ -179,21 +179,6 @@ daily-quest-mining-salvage-mythic-desc = Play salvage specialist and earn {$coun
 
 daily-quest-mining-salvage-legendary-name = Miner
 daily-quest-mining-salvage-legendary-desc = Play salvage specialist and earn {$count} mining points in one round.
-
-daily-quest-mining-typan-cargo-rare-name = Taipan salvage
-daily-quest-mining-typan-cargo-rare-desc = Play Taipan cargo tech and earn {$count} mining points.
-
-daily-quest-mining-typan-cargo-superRare-name = Taipan salvage
-daily-quest-mining-typan-cargo-superRare-desc = Play Taipan cargo tech and earn {$count} mining points.
-
-daily-quest-mining-typan-cargo-epic-name = Taipan salvage
-daily-quest-mining-typan-cargo-epic-desc = Play Taipan cargo tech and earn {$count} mining points.
-
-daily-quest-mining-typan-cargo-mythic-name = Taipan salvage
-daily-quest-mining-typan-cargo-mythic-desc = Play Taipan cargo tech and earn {$count} mining points.
-
-daily-quest-mining-typan-cargo-legendary-name = Taipan salvage
-daily-quest-mining-typan-cargo-legendary-desc = Play Taipan cargo tech and earn {$count} mining points.
 
 daily-quest-cuff-security-rare-name = Detention
 daily-quest-cuff-security-rare-desc = Play security officer and cuff {$count} people.
