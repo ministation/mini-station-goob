@@ -631,29 +631,6 @@
     - type: RandomHumanoidSpawner
       settings: CBURNAgent
 
-- type: randomHumanoidSettings
-  id: CBURNAgent
-  parent: CentcommHumanoid
-  components:
-    - type: AutoImplant
-      implants: [ FreedomImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant ] # Goobstation
-    - type: Loadout
-      prototypes: [ CBURNAgentGear ]
-      roleLoadout: [ RoleSurvivalEVA ]
-    - type: GhostRole
-      name: ghost-role-information-cburn-agent-name
-      description: ghost-role-information-cburn-agent-description
-      rules: ghost-role-information-nonantagonist-rules
-      skills: # CorvaxGoob-Skills
-      - All
-      raffle:
-        settings: short
-      job: CBURNAgent
-    - type: RandomMetadata
-      nameSegments:
-      - NamesMilitaryLast
-      nameFormat: name-format-ert-officer
-
 ## Central Command
 
 - type: entity
