@@ -33,9 +33,8 @@
       prototypes: [ ERTLeaderGear ]
     - type: RandomMetadata
       nameSegments:
-      - NamesFirstERTLeader
-      - NamesLastERT
-      nameFormat: name-format-ert
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-leader
 
 # ### Red
 # - type: entity
@@ -66,9 +65,8 @@
       prototypes: [ ERTLeaderGearEVA ]
     - type: RandomMetadata
       nameSegments:
-      - NamesFirstERTLeader
-      - NamesLastERT
-      nameFormat: name-format-ert
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-leader
 
 # ### Gamma
 # - type: entity
@@ -99,9 +97,8 @@
       prototypes: [ ERTLeaderGearEVA ]
     - type: RandomMetadata
       nameSegments:
-      - NamesFirstERTLeader
-      - NamesLastERT
-      nameFormat: name-format-ert
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-leader
 
 # ### CBURN
 # - type: entity
@@ -130,9 +127,8 @@
       job: CBURNLeader
     - type: RandomMetadata
       nameSegments:
-      - NamesFirstERTLeader
-      - NamesLastERT
-      nameFormat: name-format-ert
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-leader
     - type: Loadout
       prototypes: [ CBURNLeaderGear ]
       roleLoadout: [ RoleSurvivalExtended ]
@@ -170,9 +166,8 @@
       job: ERTSecurityAmber
     - type: RandomMetadata
       nameSegments:
-      - NamesFirstERT
-      - NamesLastERT
-      nameFormat: name-format-ert
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-officer
     - type: Loadout
       prototypes: [ ERTSecurityGear ]
 
@@ -198,6 +193,10 @@
       raffle:
         settings: short
       job: ERTSecurityRed
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-officer
     - type: Loadout
       prototypes: [ ERTSecurityGearEVA ]
 
@@ -223,6 +222,10 @@
       raffle:
         settings: short
       job: ERTSecurityGamma
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-officer
     - type: Loadout
       prototypes: [ ERTSecurityGearEVA ]
 
@@ -259,9 +262,8 @@
       job: ERTMedicalAmber
     - type: RandomMetadata
       nameSegments:
-      - NamesFirstERT
-      - NamesLastERT
-      nameFormat: name-format-ert
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-corpsman
     - type: Loadout
       prototypes: [ ERTMedicalGear ]
 
@@ -287,6 +289,10 @@
       raffle:
         settings: short
       job: ERTMedicalRed
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-corpsman
     - type: Loadout
       prototypes: [ ERTMedicalGearEVA ]
 
@@ -312,6 +318,10 @@
       raffle:
         settings: short
       job: ERTMedicalGamma
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-corpsman
     - type: Loadout
       prototypes: [ ERTMedicalGearEVA ]
 
@@ -348,9 +358,8 @@
       job: ERTJanitorAmber
     - type: RandomMetadata
       nameSegments:
-      - NamesFirstERT
-      - NamesLastERT
-      nameFormat: name-format-ert
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-specialist
     - type: Loadout
       prototypes: [ ERTJanitorGear ]
 
@@ -376,6 +385,10 @@
       raffle:
         settings: short
       job: ERTJanitorRed
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-specialist
     - type: Loadout
       prototypes: [ ERTJanitorGearEVA ]
 
@@ -401,6 +414,10 @@
       raffle:
         settings: short
       job: ERTJanitorGamma
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-specialist
     - type: Loadout
       prototypes: [ ERTJanitorGearEVA ]
 
@@ -437,9 +454,8 @@
       job: ERTEngineerAmber
     - type: RandomMetadata
       nameSegments:
-      - NamesFirstERT
-      - NamesLastERT
-      nameFormat: name-format-ert
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-specialist
     - type: Loadout
       prototypes: [ ERTEngineerGear ]
 
@@ -465,6 +481,10 @@
       raffle:
         settings: short
       job: ERTEngineerRed
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-specialist
     - type: Loadout
       prototypes: [ ERTEngineerGearEVA ]
 
@@ -490,6 +510,10 @@
       raffle:
         settings: short
       job: ERTEngineerGamma
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-specialist
     - type: Loadout
       prototypes: [ ERTEngineerGearEVA ]
 
@@ -511,3 +535,26 @@
 #       settings: CBURNAgent
 
 # randomHumanoidSettings CBURNAgent is defined in Prototypes/Entities/Mobs/Player/humanoid.yml
+
+- type: randomHumanoidSettings
+  id: CBURNAgent
+  parent: CentcommHumanoid
+  components:
+    - type: AutoImplant
+      implants: [ FreedomImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant ]
+    - type: Loadout
+      prototypes: [ CBURNAgentGear ]
+      roleLoadout: [ RoleSurvivalEVA ]
+    - type: GhostRole
+      name: ghost-role-information-cburn-agent-name
+      description: ghost-role-information-cburn-agent-description
+      rules: ghost-role-information-nonantagonist-rules
+      skills: # CorvaxGoob-Skills
+      - All
+      raffle:
+        settings: short
+      job: CBURNAgent
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-officer
