@@ -168,7 +168,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         if (TryGetRunningWarRule(out var component)
             && component.Phase is TypanWarPhase.Pending or TypanWarPhase.Active)
         {
-            EnsureWarModePlayerEffects(args.Mob);
+            ApplyWarModePlayerEffects(args.Mob);
 
             if (_mind.TryGetMind(args.Mob, out var mindId, out var mind))
                 RecordFactionJoin(component, (mindId, mind));
@@ -894,7 +894,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             _minimap.RemoveMinimapAction(uid);
     }
 
-    private void EnsureWarModePlayerEffects(EntityUid mob)
+    public void ApplyWarModePlayerEffects(EntityUid mob)
     {
         EnsureComp<IgnoreSkillsComponent>(mob);
     }
@@ -912,7 +912,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             if (!IsMindAlive(mind) || mind.CurrentEntity is not { } mob)
                 continue;
 
-            EnsureWarModePlayerEffects(mob);
+            ApplyWarModePlayerEffects(mob);
         }
     }
 

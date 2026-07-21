@@ -309,6 +309,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         combat.RespawnUiOpen = false;
         Dirty(mindId.Value, combat);
 
+        _warRule.ApplyWarModePlayerEffects(mob);
         _friendlyFire.SetupCombatant(mob, combat.Side);
         _minimap.EnsureMinimapAction(mob);
 
