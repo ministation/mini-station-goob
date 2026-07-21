@@ -130,7 +130,7 @@
 
 - type: randomHumanoidSettings
   id: ERTLeader
-  parent: CentcommHumanoid # Goobstation
+  parent: CentcommHumanoidERT # Mini — allow IPC (max 1 per squad)
   components:
     - type: GhostRole
       name: ghost-role-information-ert-leader-name

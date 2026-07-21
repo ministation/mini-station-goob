@@ -7,8 +7,16 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Machines/Typan/silo.rsi
-  - type: Silo
+  - type: OreSilo
+  - type: ActivatableUI
+    key: enum.OreSiloUiKey.Key
+  - type: ActivatableUIRequiresPower
+  - type: UserInterface
+    interfaces:
+      enum.OreSiloUiKey.Key:
+        type: OreSiloBoundUserInterface
   - type: MaterialStorage
+    ignoreColor: true
     whitelist:
       tags:
       - Sheet

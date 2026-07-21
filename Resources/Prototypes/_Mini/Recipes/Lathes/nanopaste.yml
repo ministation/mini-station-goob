@@ -2,6 +2,8 @@
   parent: BaseRoboticsRecipe
   id: NanoPaste
   result: NanoPaste
+  categories:
+  - Medical
   completetime: 2
   materials:
     Steel: 200

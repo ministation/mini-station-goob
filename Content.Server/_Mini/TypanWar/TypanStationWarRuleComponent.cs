@@ -46,10 +46,10 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public float RoundEndDelaySeconds = 120f;
 
     [DataField]
-    public int MinNtAlive = 5;
+    public int MinNtAlive = 1;
 
     [DataField]
-    public int MinTypanAlive = 5;
+    public int MinTypanAlive = 1;
 
     /// <summary>Max allowed faction headcount ratio (e.g. 2 means at most 2× players on one side).</summary>
     [DataField]
@@ -105,6 +105,14 @@ public sealed partial class TypanStationWarRuleComponent : Component
 
     [DataField]
     public string WarParallax = "TypanWarParallax";
+
+    /// <summary>
+    /// Parallax used by planet-surface stations (MiniSilly, CorvaxPearl).
+    /// When the NT map already uses this parallax, war layout keeps it and ensures map atmosphere
+    /// instead of replacing it with <see cref="WarParallax"/>.
+    /// </summary>
+    [DataField]
+    public string SurfaceParallax = "Water";
 
     /// <summary>Shuttle map spawned and docked to Typan when combat begins. Disabled for capture-zone war mode.</summary>
     [DataField]

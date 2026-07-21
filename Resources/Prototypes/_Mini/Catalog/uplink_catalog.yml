@@ -207,4 +207,23 @@
     Productunit: 2
   categories:
   - ADTUplinkERTmed
+  conditions:
+  - !type:BuyerSpeciesCondition
+    whitelist:
+    - IPC
+
+# Same listing for legacy Mini ERT uplink category (do not merge categories — UI duplicates tabs)
+- type: listing
+  id: UplinkNanoPasteBluespaceMini
+  name: uplink-nanopaste-name
+  description: uplink-nanopaste-desc
+  icon: { sprite: /Textures/_Mini/Objects/Specific/Robotics/nanopaste.rsi, state: icon }
+  productEntity: NanoPaste
+  cost:
+    Productunit: 2
+  categories:
   - UplinkERTMed
+  conditions:
+  - !type:BuyerSpeciesCondition
+    whitelist:
+    - IPC

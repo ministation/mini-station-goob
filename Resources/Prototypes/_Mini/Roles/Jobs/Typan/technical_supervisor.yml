@@ -10,9 +10,9 @@
   canBeAntag: false
   weight: 10
   requirements:
-  - !type:DepartmentTimeRequirement
-    department: Typan
-    time: 144000 # 40 hours
+  - !type:RoleTimeRequirement
+    role: JobTypanAtmosTech
+    time: 54000 # 15 hours
   access:
   - TypanAtmospherics
   - TypanCargo

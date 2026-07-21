@@ -536,7 +536,7 @@
 
 - type: randomHumanoidSettings
   id: CBURNAgent
-  parent: CentcommHumanoid
+  parent: CentcommHumanoidERT
   components:
     - type: AutoImplant
       implants: [ FreedomImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant ]

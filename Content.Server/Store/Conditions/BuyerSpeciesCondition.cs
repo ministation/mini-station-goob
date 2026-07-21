@@ -30,23 +30,31 @@ public sealed partial class BuyerSpeciesCondition : ListingCondition
     {
         var ent = args.EntityManager;
 
-        if (!ent.TryGetComponent<MindComponent>(args.Buyer, out var mind))
-            return true; // needed to obtain body entityuid to check for humanoid appearance
-
-        if (!ent.TryGetComponent<HumanoidAppearanceComponent>(mind.OwnedEntity, out var appearance))
-            return true; // inanimate or non-humanoid entities should be handled elsewhere, main example being surplus crates
-
-        if (Blacklist != null)
+        // Buyer is usually the mob opening the store, not the mind entity.
+        EntityUid body = args.Buyer;
+        if (ent.TryGetComponent<MindComponent>(args.Buyer, out var mindComp))
         {
-            if (Blacklist.Contains(appearance.Species))
-                return false;
+            if (mindComp.OwnedEntity is not { } owned)
+                return Whitelist == null;
+            body = owned;
+        }
+        else if (ent.System<SharedMindSystem>().TryGetMind(args.Buyer, out _, out mindComp))
+        {
+            if (mindComp.OwnedEntity is { } owned)
+                body = owned;
         }
 
-        if (Whitelist != null)
+        if (!ent.TryGetComponent<HumanoidAppearanceComponent>(body, out var appearance))
         {
-            if (!Whitelist.Contains(appearance.Species))
-                return false;
+            // Non-humanoids: hide whitelist-only listings, allow unrestricted ones.
+            return Whitelist == null;
         }
+
+        if (Blacklist != null && Blacklist.Contains(appearance.Species))
+            return false;
+
+        if (Whitelist != null && !Whitelist.Contains(appearance.Species))
+            return false;
 
         return true;
     }

@@ -1,5 +1,7 @@
 
 using Content.Server.Chat.Systems;
+using Content.Server.Humanoid.Components;
+using Content.Server.Humanoid.Systems;
 using Content.Shared._Mini.ERT;
 using Content.Shared._Mini.ERT.Prototypes;
 using Content.Shared._Mini.TimeWindow;
@@ -7,6 +9,7 @@ using Robust.Shared.Prototypes;
 using Content.Server._Mini.ERTCall;
 using Content.Server.GameTicking.Rules;
 using System.Linq;
+using Content.Shared.Humanoid;
 using Content.Shared.Storage;
 using Robust.Shared.Random;
 using Robust.Shared.Map;
@@ -54,6 +57,10 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedPinpointerSystem _pinpointerSystem = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
+    [Dependency] private readonly RandomHumanoidSystem _randomHumanoid = default!;
+
+    private static readonly HashSet<string> IpcSpeciesBlacklist = ["IPC"];
+
     private readonly Dictionary<ProtoId<ErtTeamPrototype>, ExpectedTeamData> _expectedTeams = new();
     private TimedWindow? _coolDown = null;
     private readonly TimedWindow _defaultWindowWaitingSpecies = new(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
@@ -227,12 +234,8 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
         if (!EntityManager.EntityExists(ent.Comp.Settings.SpawnPoint))
             return;
 
-        var spawns = EntitySpawnCollection.GetSpawns(prototype.Spawns, _random);
-
-        foreach (var proto in spawns)
-        {
-            Spawn(proto, Transform(ent.Comp.Settings.SpawnPoint).Coordinates);
-        }
+        SpawnErtSquad(EntitySpawnCollection.GetSpawns(prototype.Spawns, _random),
+            Transform(ent.Comp.Settings.SpawnPoint).Coordinates);
     }
 
     private void OnRuleLoadedGrids(Entity<ErtSpawnRuleComponent> ent, ref RuleLoadedGridsEvent args)
@@ -263,12 +266,7 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
                 return;
             }
 
-            var spawns = EntitySpawnCollection.GetSpawns(prototype.Spawns, _random);
-
-            foreach (var proto in spawns)
-            {
-                Spawn(proto, Transform(uid).Coordinates);
-            }
+            SpawnErtSquad(EntitySpawnCollection.GetSpawns(prototype.Spawns, _random), Transform(uid).Coordinates);
         }
 
         // Устанавливаем pinpointer target для всех пинпоинтеров на карте ERT
@@ -475,6 +473,39 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
         }
 
         return ruleEntity;
+    }
+
+    /// <summary>
+    /// Spawns an ERT/CBURN squad with at most one IPC. Subsequent members blacklist IPC.
+    /// </summary>
+    private void SpawnErtSquad(List<string> spawnProtos, EntityCoordinates coordinates)
+    {
+        var ipcUsed = false;
+
+        foreach (var protoId in spawnProtos)
+        {
+            if (!_prototypeManager.TryIndex(protoId, out EntityPrototype? entProto) ||
+                !entProto.TryGetComponent(out RandomHumanoidSpawnerComponent? spawner, EntityManager.ComponentFactory) ||
+                string.IsNullOrEmpty(spawner.SettingsPrototypeId))
+            {
+                Spawn(protoId, coordinates);
+                continue;
+            }
+
+            var name = Loc.GetString(entProto.Name);
+            var extraBlacklist = ipcUsed ? IpcSpeciesBlacklist : null;
+            var humanoid = _randomHumanoid.SpawnRandomHumanoid(
+                spawner.SettingsPrototypeId,
+                coordinates,
+                name,
+                extraBlacklist);
+
+            if (TryComp(humanoid, out HumanoidAppearanceComponent? appearance) &&
+                appearance.Species == "IPC")
+            {
+                ipcUsed = true;
+            }
+        }
     }
 
     public int GetBalance()

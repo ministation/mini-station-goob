@@ -37,12 +37,28 @@ public sealed class RandomHumanoidSystem : EntitySystem
 
     public EntityUid SpawnRandomHumanoid(string prototypeId, EntityCoordinates coordinates, string name)
     {
+        return SpawnRandomHumanoid(prototypeId, coordinates, name, null);
+    }
+
+    public EntityUid SpawnRandomHumanoid(
+        string prototypeId,
+        EntityCoordinates coordinates,
+        string name,
+        HashSet<string>? additionalSpeciesBlacklist)
+    {
         if (!_prototypeManager.TryIndex<RandomHumanoidSettingsPrototype>(prototypeId, out var prototype))
             throw new ArgumentException("Could not get random humanoid settings");
 
+        HashSet<string>? blacklist = prototype.SpeciesBlacklist;
+        if (additionalSpeciesBlacklist is { Count: > 0 })
+        {
+            blacklist = new HashSet<string>(prototype.SpeciesBlacklist);
+            blacklist.UnionWith(additionalSpeciesBlacklist);
+        }
+
         var profile = prototype.SpeciesWhitelist != null
             ? HumanoidCharacterProfile.RandomWithSpecies(prototype.SpeciesWhitelist)
-            : HumanoidCharacterProfile.Random(prototype.SpeciesBlacklist); // Goob edit
+            : HumanoidCharacterProfile.Random(blacklist); // Goob edit
         var speciesProto = _prototypeManager.Index<SpeciesPrototype>(profile.Species);
         var humanoid = EntityManager.CreateEntityUninitialized(speciesProto.Prototype, coordinates);
 
