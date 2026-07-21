@@ -1,20 +1,24 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from tgstation at commit https://github.com/tgstation/tgstation/commit/4f6190e2895e09116663ef282d3ce1d8b35c032e. Recolor by kabacho4ek_ (discord) for Space Station 14 server Мёртвый Космос",
+  "copyright": "Taken from tgstation.",
   "size": {
     "x": 32,
     "y": 32
   },
   "states": [
     {
-      "name": "pda"
-    },
-    {
       "name": "id_overlay"
     },
     {
+      "name": "id_overlay_wide"
+    },
+    {
       "name": "equipped-BELT",
+      "directions": 4
+    },
+    {
+      "name": "equipped-IDCARD",
       "directions": 4
     },
     {
@@ -32,85 +36,183 @@
       "name": "light_overlay"
     },
     {
-      "name": "pda-syndi-med",
+      "name": "light_overlay_wide"
+    },
+    {
+      "name": "pda-deathsquad"
+    },
+    {
+      "name": "id_overlay-deathsquad",
       "delays": [
         [
-          0.3,
-          0.3,
-          0.3,
-          0.3
+          0.5,
+          0.5,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.5,
+          0.2,
+          0.2,
+          0.2,
+          0.5,
+          0.2,
+          0.2,
+          0.5,
+          0.2,
+          0.2,
+          0.2,
+          1,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.8
         ]
       ]
     },
     {
-      "name": "pda-syndi-cargo",
+      "name": "pda",
       "delays": [
         [
-          0.3,
-          0.3,
-          0.3,
-          0.3
+          1.2,
+          1.2,
+          1.2,
+          1.2
         ]
       ]
     },
     {
-      "name": "pda-syndi-botan",
+      "name": "pda-atmos",
       "delays": [
         [
-          0.3,
-          0.3,
-          0.3,
-          0.3
+          1.2,
+          1.2,
+          1.2,
+          1.2
         ]
       ]
     },
     {
-      "name": "pda-syndi-science",
+      "name": "pda-cargo",
       "delays": [
         [
-          0.3,
-          0.3,
-          0.3,
-          0.3
+          1.2,
+          1.2,
+          1.2,
+          1.2
         ]
       ]
     },
     {
-      "name": "pda-syndi-chef",
+      "name": "pda-tos",
       "delays": [
         [
-          0.3,
-          0.3,
-          0.3,
-          0.3
+          1.2,
+          1.2,
+          1.2,
+          1.2
         ]
       ]
     },
     {
-      "name": "pda-syndi-com",
+      "name": "pda-chef",
       "delays": [
         [
-          0.3,
-          0.3,
-          0.3,
-          0.3
+          1.2,
+          1.2,
+          1.2,
+          1.2
         ]
       ]
     },
     {
-      "name": "pda-syndi-eng",
+      "name": "pda-technician",
       "delays": [
         [
-          0.3,
-          0.3,
-          0.3,
-          0.3
+          1.2,
+          1.2,
+          1.2,
+          1.2
         ]
       ]
     },
     {
-      "name": "equipped-IDCARD",
-      "directions": 4
+      "name": "pda-co",
+      "delays": [
+        [
+          1.2,
+          1.2,
+          1.2,
+          1.2
+        ]
+      ]
+    },
+    {
+      "name": "pda-medical",
+      "delays": [
+        [
+          1.2,
+          1.2,
+          1.2,
+          1.2
+        ]
+      ]
+    },
+    {
+      "name": "pda-paramedic",
+      "delays": [
+        [
+          1.2,
+          1.2,
+          1.2,
+          1.2
+        ]
+      ]
+    },
+    {
+      "name": "pda-rd",
+      "delays": [
+        [
+          1.2,
+          1.2,
+          1.2,
+          1.2
+        ]
+      ]
+    },
+    {
+      "name": "pda-researcher",
+      "delays": [
+        [
+          1.2,
+          1.2,
+          1.2,
+          1.2
+        ]
+      ]
+    },
+    {
+      "name": "pda-security",
+      "delays": [
+        [
+          1.2,
+          1.2,
+          1.2,
+          1.2
+        ]
+      ]
+    },
+    {
+      "name": "pda-hydro",
+      "delays": [
+        [
+          1.2,
+          1.2,
+          1.2,
+          1.2
+        ]
+      ]
     }
   ]
 }

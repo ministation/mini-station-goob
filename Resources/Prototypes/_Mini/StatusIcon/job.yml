@@ -115,5 +115,5 @@
   id: JobIconTypanTechnicalOperationsSupervisor
   icon:
     sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
-    state: commander
+    state: technicalsupervisor
   jobName: job-name-typan-technical-supervisor

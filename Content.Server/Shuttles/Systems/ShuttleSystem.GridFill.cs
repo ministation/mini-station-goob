@@ -71,10 +71,29 @@ public sealed partial class ShuttleSystem
 
         if (_loader.TryLoadGrid(mapId, component.Path, out var ent))
         {
-            if (HasComp<ShuttleComponent>(ent))
-                TryFTLProximity(ent.Value, targetGrid.Value);
+            var moved = false;
 
-            _station.AddGridToStation(uid, ent.Value);
+            if (HasComp<ShuttleComponent>(ent))
+                moved = TryFTLProximity(ent.Value, targetGrid.Value);
+
+            // If proximity FTL fails (crowded maps like Aspid with preplaced guest grids),
+            // still reparent onto the station map before the temporary map is deleted.
+            if (!moved)
+            {
+                var targetXform = Transform(targetGrid.Value);
+                if (targetXform.MapUid != null)
+                {
+                    var fallback = new EntityCoordinates(targetGrid.Value, new Vector2(64f, 0f));
+                    _transform.SetCoordinates(ent.Value, fallback);
+                    moved = true;
+                    Log.Warning($"Cargo shuttle FTL proximity failed for {ToPrettyString(uid)}; placed via fallback offset.");
+                }
+            }
+
+            if (moved)
+                _station.AddGridToStation(uid, ent.Value);
+            else
+                Log.Error($"Failed to place cargo shuttle for {ToPrettyString(uid)} from {component.Path}");
         }
 
         _mapSystem.DeleteMap(mapId);

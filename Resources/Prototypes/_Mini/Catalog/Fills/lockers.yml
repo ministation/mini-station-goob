@@ -249,6 +249,8 @@
       prob: 0.15
     - id: ClothingBeltUtilityEngineering
     - id: ClothingEyesGlassesMeson
+    - id: ClothingHandsTypanTechnicalOperationsSupervisor
+    - id: ClothingNeckMantleTechnicalOperationsSupervisor
     - id: RCD
     - id: RCDAmmo
 

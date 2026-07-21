@@ -33,11 +33,11 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-science
+       pda-rd
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-science
+    state: pda-rd
 
 - type: entity
   parent: BaseTypanPDA
@@ -51,11 +51,11 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-science
+       pda-researcher
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-science
+    state: pda-researcher
 
 - type: entity
   parent: BaseTypanPDA
@@ -69,11 +69,11 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-botan
+       pda-hydro
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-botan
+    state: pda-hydro
 
 - type: entity
   parent: BaseTypanPDA
@@ -87,11 +87,11 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-med
+       pda-medical
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-med
+    state: pda-medical
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
@@ -115,11 +115,11 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-eng
+       pda-atmos
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-eng
+    state: pda-atmos
 
 - type: entity
   parent: BaseTypanPDA
@@ -133,11 +133,11 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-com
+       pda-co
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-com
+    state: pda-co
 
 - type: entity
   parent: BaseTypanPDA
@@ -151,11 +151,11 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-cargo
+       pda-cargo
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-cargo
+    state: pda-cargo
 
 - type: entity
   parent: BaseTypanPDA
@@ -169,11 +169,11 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-chef
+       pda-chef
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-chef
+    state: pda-chef
 
 - type: entity
   parent: BaseTypanPDA
@@ -187,8 +187,26 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-com
+       pda-security
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
-    state: pda-syndi-com
+    state: pda-security
+
+- type: entity
+  parent: BaseTypanPDA
+  id: SyndiPDATOS
+  name: КПК руководителя техобеспечения
+  description: Главное, не потеряйте его в инженерном отсеке!
+  components:
+  - type: Pda
+    id: TypanIDCardTOS
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-tos
+  - type: PdaBorderColor
+    borderColor: "#891417"
+  - type: Icon
+    state: pda-tos

@@ -10,6 +10,7 @@ using Content.Shared.Maps;
 using Content.Shared.Station.Components;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Server._Mini.TypanWar;
 
@@ -21,11 +22,13 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
 {
     private const string WarPresetId = "TypanStationWar";
     private static readonly ProtoId<GameMapPrototype> TypanMapId = "Typan";
+    private static readonly ProtoId<GameMapPrototype> AspidMapId = "Aspid";
     private static readonly ProtoId<GameMapPrototype> NtFallbackMapId = "Empty";
 
     [Dependency] private readonly GameTicker _ticker = default!;
     [Dependency] private readonly IGameMapManager _gameMapManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
 
     public override void Initialize()
     {
@@ -64,10 +67,16 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
         if (_prototypes.HasIndex<AdditionalMapPrototype>(mainMap.ID))
             return;
 
-        if (mainMap.ID != TypanMapId && !HasTypanStation())
-            LoadSupplemental(TypanMapId);
-        else if (mainMap.ID == TypanMapId && !HasNtStation())
+        var isTypanMain = mainMap.ID == TypanMapId || mainMap.ID == AspidMapId;
+        if (!isTypanMain && !HasTypanStation())
+            LoadSupplemental(SelectTypanMapId());
+        else if (isTypanMain && !HasNtStation())
             LoadSupplemental(NtFallbackMapId);
+    }
+
+    private ProtoId<GameMapPrototype> SelectTypanMapId()
+    {
+        return _random.Prob(0.5f) ? AspidMapId : TypanMapId;
     }
 
     private bool IsWarPresetActive()

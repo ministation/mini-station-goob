@@ -198,6 +198,34 @@
     jobIcon: JobIconSyndicateOfficer
 
 - type: entity
+  parent: IDCardStandard
+  id: TypanIDCardTOS
+  name: ID-карта руководителя техобеспечения
+  suffix: Тайпан
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/typaneng.rsi
+    layers:
+    - state: typancardeng
+  - type: PresetIdCard
+    job: TypanTechnicalOperationsSupervisor
+  - type: Access
+    tags:
+    - TypanAtmospherics
+    - TypanCargo
+    - TypanCommand
+    - TypanEngineering
+    - TypanMaint
+    - TypanMedical
+    - TypanResearch
+    - TypanService
+    - TypanTechnicalOperationsSupervisor
+    - TypanExternal
+    - SyndicateAgent
+  - type: IdCard
+    jobIcon: JobIconTypanTechnicalOperationsSupervisor
+
+- type: entity
   parent: Emag
   id: EmagTypanLimited
   suffix: Тайпан, ЕМАГ, Ограниченный

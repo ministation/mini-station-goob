@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 07/16/2026 20:27:11
-  entityCount: 7804
+  entityCount: 7806
 maps:
 - 1
 grids:
@@ -45759,6 +45759,13 @@ entities:
     - type: Transform
       pos: 26.5,-7.5
       parent: 2
+- proto: SpawnPointLatejoinTypanTechnicalOperationsSupervisor
+  entities:
+  - uid: 7839
+    components:
+    - type: Transform
+      pos: 27.5,-7.5
+      parent: 2
 - proto: SpawnPointLatejoinTypanMedic
   entities:
   - uid: 4959
@@ -45879,6 +45886,14 @@ entities:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 26.5,-7.5
+      parent: 2
+- proto: SpawnTypanTechnicalOperationsSupervisor
+  entities:
+  - uid: 7840
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 27.5,-7.5
       parent: 2
 - proto: SpawnTypanMedic
   entities:

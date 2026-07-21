@@ -63636,7 +63636,7 @@ entities:
       pos: -30.5,-10.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 1396
@@ -63648,7 +63648,7 @@ entities:
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: PoweredLight
-      on: False
+      on: True
   - uid: 3597
     components:
     - type: Transform
@@ -63661,7 +63661,7 @@ entities:
       pos: -14.5,26.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 3918
@@ -63733,7 +63733,7 @@ entities:
       pos: -31.5,-1.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 4982
@@ -63743,7 +63743,7 @@ entities:
       pos: 3.5,29.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63755,7 +63755,7 @@ entities:
       pos: -11.5,29.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63767,7 +63767,7 @@ entities:
       pos: -2.5,27.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63779,7 +63779,7 @@ entities:
       pos: 1.5,30.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63790,7 +63790,7 @@ entities:
       pos: 4.5,25.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63802,7 +63802,7 @@ entities:
       pos: 5.5,19.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63813,7 +63813,7 @@ entities:
       pos: -0.5,21.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63825,7 +63825,7 @@ entities:
       pos: -4.5,24.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63837,7 +63837,7 @@ entities:
       pos: -5.5,20.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63848,7 +63848,7 @@ entities:
       pos: -14.5,31.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63883,7 +63883,7 @@ entities:
       pos: 25.5,28.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63895,7 +63895,7 @@ entities:
       pos: 25.5,24.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63907,7 +63907,7 @@ entities:
       pos: 28.5,24.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63919,7 +63919,7 @@ entities:
       pos: 33.5,26.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63939,7 +63939,7 @@ entities:
       pos: 33.5,16.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63951,7 +63951,7 @@ entities:
       pos: 28.5,16.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63963,7 +63963,7 @@ entities:
       pos: 27.5,12.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63974,7 +63974,7 @@ entities:
       pos: 30.5,10.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63986,7 +63986,7 @@ entities:
       pos: 38.5,11.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -63998,7 +63998,7 @@ entities:
       pos: 19.5,8.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64010,7 +64010,7 @@ entities:
       pos: 26.5,5.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64022,7 +64022,7 @@ entities:
       pos: 23.5,13.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64034,7 +64034,7 @@ entities:
       pos: 18.5,14.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64046,7 +64046,7 @@ entities:
       pos: 16.5,13.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64065,7 +64065,7 @@ entities:
       pos: 11.5,6.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64077,7 +64077,7 @@ entities:
       pos: 14.5,6.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64089,7 +64089,7 @@ entities:
       pos: 17.5,6.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64101,7 +64101,7 @@ entities:
       pos: 20.5,6.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64113,7 +64113,7 @@ entities:
       pos: 25.5,8.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64125,7 +64125,7 @@ entities:
       pos: -27.5,-1.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 5929
@@ -64135,7 +64135,7 @@ entities:
       pos: -24.5,5.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64146,7 +64146,7 @@ entities:
       pos: -22.5,11.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64158,7 +64158,7 @@ entities:
       pos: -11.5,7.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64170,7 +64170,7 @@ entities:
       pos: -13.5,13.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64181,7 +64181,7 @@ entities:
       pos: -8.5,14.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64193,7 +64193,7 @@ entities:
       pos: -16.5,16.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64205,7 +64205,7 @@ entities:
       pos: -26.5,15.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64217,7 +64217,7 @@ entities:
       pos: -20.5,15.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64229,7 +64229,7 @@ entities:
       pos: -17.5,20.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64241,7 +64241,7 @@ entities:
       pos: -10.5,20.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64253,7 +64253,7 @@ entities:
       pos: -10.5,19.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64265,7 +64265,7 @@ entities:
       pos: -7.5,8.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64283,7 +64283,7 @@ entities:
       pos: -14.5,-18.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 5995
@@ -64293,7 +64293,7 @@ entities:
       pos: -2.5,-0.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64304,7 +64304,7 @@ entities:
       pos: -17.5,-0.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 6015
@@ -64314,7 +64314,7 @@ entities:
       pos: -14.5,-6.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 6406
@@ -64348,7 +64348,7 @@ entities:
       pos: -0.5,5.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64360,7 +64360,7 @@ entities:
       pos: 0.5,1.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64372,7 +64372,7 @@ entities:
       pos: -2.5,3.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64384,7 +64384,7 @@ entities:
       pos: -0.5,-5.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64395,7 +64395,7 @@ entities:
       pos: 5.5,-1.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64415,7 +64415,7 @@ entities:
       pos: -26.5,-7.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64427,7 +64427,7 @@ entities:
       pos: -20.5,-6.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64439,7 +64439,7 @@ entities:
       pos: -22.5,-1.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64451,7 +64451,7 @@ entities:
       pos: -14.5,-9.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64463,7 +64463,7 @@ entities:
       pos: -14.5,-13.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64475,7 +64475,7 @@ entities:
       pos: -20.5,-12.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64487,7 +64487,7 @@ entities:
       pos: -12.5,-10.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64499,7 +64499,7 @@ entities:
       pos: -9.5,-15.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64511,7 +64511,7 @@ entities:
       pos: -4.5,-12.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64595,7 +64595,7 @@ entities:
       pos: 11.5,-11.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64607,7 +64607,7 @@ entities:
       pos: 15.5,-8.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64625,7 +64625,7 @@ entities:
       pos: 21.5,-11.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64636,7 +64636,7 @@ entities:
       pos: 27.5,-3.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64648,7 +64648,7 @@ entities:
       pos: 29.5,-8.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64660,7 +64660,7 @@ entities:
       pos: 18.5,-15.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64672,7 +64672,7 @@ entities:
       pos: 24.5,-15.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64684,7 +64684,7 @@ entities:
       pos: 32.5,-11.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64696,7 +64696,7 @@ entities:
       pos: 34.5,-5.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64708,7 +64708,7 @@ entities:
       pos: 34.5,-12.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64719,7 +64719,7 @@ entities:
       pos: 33.5,-16.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64770,7 +64770,7 @@ entities:
       pos: 20.5,-20.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64782,7 +64782,7 @@ entities:
       pos: 18.5,-27.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64794,7 +64794,7 @@ entities:
       pos: 9.5,-27.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64805,7 +64805,7 @@ entities:
       pos: 13.5,-20.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64817,7 +64817,7 @@ entities:
       pos: 10.5,-30.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64829,7 +64829,7 @@ entities:
       pos: 14.5,-30.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64841,7 +64841,7 @@ entities:
       pos: 4.5,-26.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64860,7 +64860,7 @@ entities:
       pos: 4.5,-15.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64872,7 +64872,7 @@ entities:
       pos: 11.5,-19.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64891,7 +64891,7 @@ entities:
       pos: -0.5,12.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64903,7 +64903,7 @@ entities:
       pos: 21.5,-8.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64945,7 +64945,7 @@ entities:
       pos: -37.5,5.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64957,7 +64957,7 @@ entities:
       pos: -31.5,10.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64968,7 +64968,7 @@ entities:
       pos: -32.5,16.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64979,7 +64979,7 @@ entities:
       pos: -35.5,13.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -64990,7 +64990,7 @@ entities:
       pos: -37.5,13.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65002,7 +65002,7 @@ entities:
       pos: -36.5,-1.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65014,7 +65014,7 @@ entities:
       pos: -40.5,-7.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65026,7 +65026,7 @@ entities:
       pos: -37.5,-10.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65069,7 +65069,7 @@ entities:
       pos: -10.5,-3.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65103,7 +65103,7 @@ entities:
       pos: -13.5,-30.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65131,7 +65131,7 @@ entities:
       pos: -6.5,-29.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65151,7 +65151,7 @@ entities:
       pos: -7.5,-32.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65162,7 +65162,7 @@ entities:
       pos: -3.5,-31.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65190,7 +65190,7 @@ entities:
       pos: -24.5,-10.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 8864
@@ -65200,7 +65200,7 @@ entities:
       pos: -17.5,7.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 9043
@@ -65225,7 +65225,7 @@ entities:
       pos: 13.5,-0.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65291,7 +65291,7 @@ entities:
       pos: 39.5,34.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65311,7 +65311,7 @@ entities:
       pos: 46.5,30.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65322,7 +65322,7 @@ entities:
       pos: -40.5,27.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 10890
@@ -65331,7 +65331,7 @@ entities:
       pos: 18.5,-3.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 11867
@@ -65341,7 +65341,7 @@ entities:
       pos: -27.5,-16.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 11929
@@ -65351,7 +65351,7 @@ entities:
       pos: -41.5,20.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65363,7 +65363,7 @@ entities:
       pos: -36.5,22.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65374,7 +65374,7 @@ entities:
       pos: 11.5,15.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 12547
@@ -65383,7 +65383,7 @@ entities:
       pos: -18.5,11.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 12652
@@ -65392,7 +65392,7 @@ entities:
       pos: 5.5,-29.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 12672
@@ -65402,7 +65402,7 @@ entities:
       pos: 27.5,-26.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 12975
@@ -65417,7 +65417,7 @@ entities:
       pos: 27.5,-34.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 13188
@@ -65427,7 +65427,7 @@ entities:
       pos: -24.5,-13.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 13189
@@ -65437,7 +65437,7 @@ entities:
       pos: -30.5,-13.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
 - proto: PoweredlightExterior
@@ -65448,7 +65448,7 @@ entities:
       pos: -25.5,-0.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: PointLight
       energy: 4.5
       color: '#B4FCF0FF'
@@ -65492,7 +65492,7 @@ entities:
       pos: -20.5,5.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: PointLight
@@ -65517,7 +65517,7 @@ entities:
       pos: -11.5,-51.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65528,7 +65528,7 @@ entities:
       pos: -14.5,-48.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65540,7 +65540,7 @@ entities:
       pos: -19.5,-48.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65560,7 +65560,7 @@ entities:
       pos: -31.5,-6.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
     - type: ApcPowerReceiver
@@ -65634,7 +65634,7 @@ entities:
       pos: 31.5,6.5
       parent: 1
     - type: PoweredLight
-      on: False
+      on: True
     - type: DeviceLinkSink
       invokeCounter: 1
   - uid: 12126
@@ -70802,6 +70802,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 7.5,-16.25
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7470:
@@ -70817,6 +70819,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -18.5,8.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         8864:
@@ -70843,6 +70847,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 30.5,-7.25
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7211:
@@ -70856,6 +70862,8 @@ entities:
     - type: Transform
       pos: 22.5,-2.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         10890:
@@ -70873,6 +70881,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: 26.25,-12.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7209:
@@ -70893,6 +70903,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -12.5,31.25
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         4991:
@@ -70904,6 +70916,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -14.5,14.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5933:
@@ -70918,6 +70932,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -18.5,7.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         1178:
@@ -70928,6 +70944,8 @@ entities:
     - type: Transform
       pos: 14.15,11.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         12400:
@@ -70953,6 +70971,8 @@ entities:
     - type: Transform
       pos: -26.6,-8.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         8852:
@@ -70976,6 +70996,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 33.5,-15.65
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7217:
@@ -70993,6 +71015,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -10.5,-48.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         2781:
@@ -71010,6 +71034,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -21.5,16.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5940:
@@ -71021,6 +71047,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -13.5,-3.15
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         8005:
@@ -71032,6 +71060,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -21.5,14.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5936:
@@ -71043,6 +71073,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -27.5,6.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5929:
@@ -71054,6 +71086,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: -13.5,17.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5943:
@@ -71070,6 +71104,8 @@ entities:
     - type: Transform
       pos: 1.5,22.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         4988:
@@ -71081,6 +71117,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -6.5,20.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         4990:
@@ -71092,6 +71130,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 2.5,26.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         4985:
@@ -71118,6 +71158,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 6.5,29.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         4982:
@@ -71128,6 +71170,8 @@ entities:
     - type: Transform
       pos: -2.5,26.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         4989:
@@ -71139,6 +71183,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: -2.25,4.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7473:
@@ -71153,6 +71199,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -0.5,1.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         6410:
@@ -71164,6 +71212,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -0.5,1.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         6411:
@@ -71175,6 +71225,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 6.5,-1.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         6413:
@@ -71192,6 +71244,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: 14.25,-2.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         9052:
@@ -71203,6 +71257,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 10.5,6.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5484:
@@ -71214,6 +71270,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 13.5,6.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5485:
@@ -71225,6 +71283,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 19.5,6.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5486:
@@ -71235,6 +71295,8 @@ entities:
     - type: Transform
       pos: 21.75,16.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5481:
@@ -71248,6 +71310,8 @@ entities:
     - type: Transform
       pos: 31.15,7.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         11590:
@@ -71258,6 +71322,8 @@ entities:
     - type: Transform
       pos: 28.25,15.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5475:
@@ -71269,6 +71335,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 26.5,17.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5474:
@@ -71280,6 +71348,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 34.5,26.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5471:
@@ -71294,6 +71364,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 26.5,24.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5469:
@@ -71305,6 +71377,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 26.5,28.25
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5468:
@@ -71316,6 +71390,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: 26.75,4.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5479:
@@ -71327,6 +71403,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: 21.75,4.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5522:
@@ -71338,6 +71416,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 35.5,10.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         5477:
@@ -71349,6 +71429,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 38.5,32.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         9062:
@@ -71363,6 +71445,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: 19.25,-16.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7212:
@@ -71373,6 +71457,8 @@ entities:
     - type: Transform
       pos: 8.75,-16.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7471:
@@ -71384,6 +71470,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: 16.25,-28.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7468:
@@ -71413,6 +71501,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: 5.75,-31.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         12652:
@@ -71424,6 +71514,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -0.5,-31.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         8017:
@@ -71437,6 +71529,8 @@ entities:
     - type: Transform
       pos: -12.25,-27.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         8010:
@@ -71448,6 +71542,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: -6.25,-30.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         8014:
@@ -71459,6 +71555,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: -33.25,12.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7900:
@@ -71472,6 +71570,8 @@ entities:
     - type: Transform
       pos: -33.25,12.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7901:
@@ -71489,6 +71589,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -38.5,20.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         11929:
@@ -71505,6 +71607,8 @@ entities:
     - type: Transform
       pos: -36.75,-8.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7904:
@@ -71516,6 +71620,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -35.5,-4.25
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         7903:
@@ -71530,6 +71636,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -10.5,-10.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         6752:
@@ -71547,6 +71655,8 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -19.5,-3.75
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         6745:
@@ -71564,6 +71674,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -23.5,-2.25
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         188:
@@ -71574,6 +71686,8 @@ entities:
     - type: Transform
       pos: -21.25,0.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         6746:
@@ -71584,6 +71698,8 @@ entities:
     - type: Transform
       pos: -26.75,-4.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         6744:
@@ -71604,6 +71720,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -14.5,-11.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         6748:
@@ -71627,6 +71745,8 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -12.5,26.8
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         3806:
@@ -71638,6 +71758,8 @@ entities:
       rot: 3.141592653589793 rad
       pos: 25.75,-28.5
       parent: 1
+    - type: SignalSwitch
+      state: true
     - type: DeviceLinkSource
       linkedPorts:
         12672:

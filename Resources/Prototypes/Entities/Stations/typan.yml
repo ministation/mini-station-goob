@@ -27,6 +27,7 @@
       - TypanPatrol
       - TypanBorg
       - TypanCommander
+      - TypanTechnicalOperationsSupervisor
 
 - type: entity
   id: TypanStationShuttles

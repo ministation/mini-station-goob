@@ -21,3 +21,9 @@ ent-TypanIDCardBotanist = ID-карта ботаника Синдиката
 
 ent-TypanIDCardChef = ID-карта повара Синдиката
     .desc = { ent-IDCardStandard.desc }
+
+ent-TypanIDCardOff = ID-карта патрульного Синдиката
+    .desc = { ent-IDCardStandard.desc }
+
+ent-TypanIDCardTOS = ID-карта руководителя техобеспечения
+    .desc = { ent-IDCardStandard.desc }

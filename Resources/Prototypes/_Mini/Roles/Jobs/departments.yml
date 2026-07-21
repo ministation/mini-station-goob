@@ -6,13 +6,14 @@
   roles:
   - TypanCommander
   - TypanResearchDirector
+  - TypanTechnicalOperationsSupervisor
   - TypanPatrol
   - TypanAtmosTech
-  - TypanBotanist
-  - TypanCargotech
-  - TypanChef
   - TypanMedic
   - TypanScience
+  - TypanCargotech
+  - TypanChef
+  - TypanBotanist
 
 - type: department
   id: Typan2
