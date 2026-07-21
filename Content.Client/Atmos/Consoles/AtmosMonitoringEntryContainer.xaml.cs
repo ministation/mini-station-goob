@@ -36,14 +36,16 @@ public sealed partial class AtmosMonitoringEntryContainer : BoxContainer
         NetworkColorStripe.Modulate = data.Color;
 
         // Load fonts
-        var headerFont = new VectorFont(_cache.GetResource<FontResource>(MiniFonts.Bold), 11);
-        var normalFont = new VectorFont(_cache.GetResource<FontResource>(MiniFonts.Regular), 11);
+        var headerFont = _cache.GetStack("Bold", 11);
+        var normalFont = _cache.GetStack("Regular", 11);
 
         // Set fonts
         TemperatureHeaderLabel.FontOverride = headerFont;
         PressureHeaderLabel.FontOverride = headerFont;
         TotalMolHeaderLabel.FontOverride = headerFont;
         GasesHeaderLabel.FontOverride = headerFont;
+
+        NetworkNameLabel.FontOverride = headerFont;
 
         TemperatureLabel.FontOverride = normalFont;
         PressureLabel.FontOverride = normalFont;
@@ -55,7 +57,7 @@ public sealed partial class AtmosMonitoringEntryContainer : BoxContainer
     public void UpdateEntry(AtmosMonitoringConsoleEntry updatedData, bool isFocus)
     {
         // Load fonts
-        var normalFont = new VectorFont(_cache.GetResource<FontResource>(MiniFonts.Regular), 11);
+        var normalFont = _cache.GetStack("Regular", 11);
 
         // Update name and values
         if (!string.IsNullOrEmpty(updatedData.Address))

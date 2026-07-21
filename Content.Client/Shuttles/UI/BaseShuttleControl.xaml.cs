@@ -50,7 +50,7 @@ public partial class BaseShuttleControl : MapGridControl
     {
         RobustXamlLoader.Load(this);
         Maps = EntManager.System<SharedMapSystem>();
-        Font = new VectorFont(IoCManager.Resolve<IResourceCache>().GetResource<FontResource>(MiniFonts.Regular), 12);
+        Font = IoCManager.Resolve<IResourceCache>().GetStack("Regular", 12);
 
         _drawJob = new GridDrawJob()
         {
