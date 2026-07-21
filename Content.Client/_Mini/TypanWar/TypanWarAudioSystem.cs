@@ -14,6 +14,10 @@ namespace Content.Client._Mini.TypanWar;
 /// <summary>
 /// Suppresses round ambient music during Typan station war and respects <see cref="CCVars.EventMusicEnabled"/> for war BGM.
 /// </summary>
+/// <remarks>
+/// Cannot subscribe to <see cref="AudioComponent"/> <c>ComponentStartup</c>/<c>ComponentShutdown</c> —
+/// those directed component events are exclusive to <c>Robust.Client.Audio.AudioSystem</c>.
+/// </remarks>
 public sealed class TypanWarAudioSystem : EntitySystem
 {
     [Dependency] private readonly ContentAudioSystem _audioContent = default!;
@@ -22,24 +26,29 @@ public sealed class TypanWarAudioSystem : EntitySystem
 
     private bool _eventMusicEnabled = true;
     private bool _suppressAmbient;
-    private readonly List<EntityUid> _warMusicStreams = new();
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<PlayAmbientMusicEvent>(OnPlayAmbientMusic);
-        SubscribeLocalEvent<AudioComponent, ComponentStartup>(OnAudioStartup);
-        SubscribeLocalEvent<AudioComponent, ComponentShutdown>(OnAudioShutdown);
         SubscribeNetworkEvent<TypanWarStatusEvent>(OnWarStatus);
         SubscribeNetworkEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         Subs.CVar(_cfg, CCVars.EventMusicEnabled, OnEventMusicChanged, true);
     }
 
+    public override void Update(float frameTime)
+    {
+        // Stop war BGM the server spawned while event music is off (only relevant mid-war).
+        if (_eventMusicEnabled || !_suppressAmbient)
+            return;
+
+        StopWarMusicStreams();
+    }
+
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         _suppressAmbient = false;
-        _warMusicStreams.Clear();
     }
 
     private void OnWarStatus(TypanWarStatusEvent ev)
@@ -58,35 +67,23 @@ public sealed class TypanWarAudioSystem : EntitySystem
         ev.Cancelled = true;
     }
 
-    private void OnAudioStartup(EntityUid uid, AudioComponent comp, ComponentStartup args)
-    {
-        if (!TypanWarSounds.IsBackgroundMusicTrack(comp.FileName))
-            return;
-
-        if (!_eventMusicEnabled)
-        {
-            _audio.Stop(uid);
-            return;
-        }
-
-        _warMusicStreams.Add(uid);
-    }
-
-    private void OnAudioShutdown(EntityUid uid, AudioComponent comp, ComponentShutdown args)
-    {
-        _warMusicStreams.Remove(uid);
-    }
-
     private void OnEventMusicChanged(bool enabled)
     {
         _eventMusicEnabled = enabled;
 
-        if (enabled)
-            return;
+        if (!enabled)
+            StopWarMusicStreams();
+    }
 
-        foreach (var stream in _warMusicStreams)
-            _audio.Stop(stream);
+    private void StopWarMusicStreams()
+    {
+        var query = EntityQueryEnumerator<AudioComponent>();
+        while (query.MoveNext(out var uid, out var audio))
+        {
+            if (!TypanWarSounds.IsBackgroundMusicTrack(audio.FileName))
+                continue;
 
-        _warMusicStreams.Clear();
+            _audio.Stop(uid);
+        }
     }
 }

@@ -61,7 +61,6 @@
   - lsmonitor
   - monitorinfo
   - watch
-  - sendgarbage
   - setinputcontext
   - showplayervelocity
   - tilelookup
@@ -146,6 +145,7 @@
   - gcf
   - getcomponentregistration
   - fuck
+  - sendgarbage
   - replay_recording_start
   - replay_recording_stop
   - transfer_test
