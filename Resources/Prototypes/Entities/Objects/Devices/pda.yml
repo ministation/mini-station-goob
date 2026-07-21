@@ -1135,13 +1135,13 @@
   components:
   - type: Pda
     id: SyndiOperativeIDCard
-  - type: Appearance # Mini: typan_pda.rsi has no operative state, use blood-red base
+  - type: Appearance # Mini: typan operative syndicate sprite
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda
+       pda-syndi-operative
   - type: Icon
-    state: pda
+    state: pda-syndi-operative
 
 - type: entity
   parent: [ SyndiOperativePDA, BaseSyndicateContraband ]
@@ -1540,6 +1540,22 @@
     sprite: Objects/Devices/pda.rsi
     state: pda-pirate
 
+- type: entity
+  parent: [ BaseHighlyIllegalContraband, BasePDA ]
+  id: NinjaPDA
+  name: ninja PDA
+  description: You stealthy bastard, you!
+  components:
+  - type: Pda
+    id: NinjaIDCard
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-ninja
+  - type: Icon
+    state: pda-ninja
+
 - type: entity # Goobstation?
   parent: [ BaseMedicalPDA, BaseSyndicateContraband ]
   id: SyndiAgentPDA
@@ -1554,12 +1570,12 @@
     appearanceDataInit:
      enum.PdaVisuals.PdaType:
        !type:String
-       pda-syndi-med
+       pda-syndi-agent
   - type: PdaBorderColor
     borderColor: "#891417"
   - type: Icon
     sprite: _Mini/Objects/Devices/typan_pda.rsi
-    state: pda-syndi-med
+    state: pda-syndi-agent
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:

@@ -240,7 +240,6 @@
   - ElectricGrillMachineCircuitboard
   - BoozeDispenserMachineCircuitboard
   - SodaDispenserMachineCircuitboard
-  - PhotocopierMachineCircuitboard
   - SurveillanceCameraMonitorCircuitboardTypan
   - TypanHolopadMachineCircuitboard
 
@@ -334,6 +333,7 @@
   - DiseaseSwab
   - BodyBag
   - CaneSheathFilled
+  - NanoPaste
 
 ## Surgery
 - type: latheRecipePack

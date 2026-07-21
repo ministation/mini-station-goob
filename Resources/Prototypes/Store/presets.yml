@@ -12,6 +12,7 @@
     - UplinkAmmo
     - UplinkExplosives
     - UplinkChemicals
+    - UplinkMedicine
     - UplinkDeception
     - UplinkDisruption
     - UplinkImplants
@@ -77,6 +78,7 @@
     - UplinkAmmo
     - UplinkExplosives
     - UplinkChemicals
+    - UplinkMedicine
     - UplinkDeception
     - UplinkDisruption
     - UplinkImplants

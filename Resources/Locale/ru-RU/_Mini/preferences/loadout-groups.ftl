@@ -52,3 +52,4 @@ loadout-group-typan-technical-supervisor-uniform = Руководитель те
 loadout-group-typan-technical-supervisor-shoes = Руководитель техобеспечения, обувь
 loadout-group-typan-technical-supervisor-outerclothing = Руководитель техобеспечения, верхняя одежда
 loadout-group-typan-technical-supervisor-gloves = Руководитель техобеспечения, перчатки
+loadout-group-typan-technical-supervisor-neck = Руководитель техобеспечения, шея

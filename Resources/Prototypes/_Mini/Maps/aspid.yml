@@ -1,0 +1,36 @@
+- type: gameMap
+  id: Aspid
+  mapName: 'Аспид'
+  mapPath: /Maps/_Mini/aspid.yml
+  minPlayers: 0
+  stations:
+    Aspid:
+      stationProto: StandardTypanStation
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'НИКК Аспид'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: StationJobs
+          availableJobs:
+            TypanAtmosTech: [ 3, 3 ]
+            TypanBotanist: [ 1, 1 ]
+            TypanCargotech: [ 3, 3 ]
+            TypanChef: [ 1, 1 ]
+            TypanMedic: [ 2, 2 ]
+            TypanResearchDirector: [ 1, 1 ]
+            TypanScience: [ 2, 2 ]
+            TypanPatrol: [ 4, 4 ]
+            TypanBorg: [ 2, 2 ]
+            TypanCommander: [ 1, 1 ]
+            TypanTechnicalOperationsSupervisor: [ 1, 1 ]
+        - type: StationCargoShuttle
+          path: /Maps/Shuttles/typan_cargo_shuttle.yml
+        - type: StationGoal
+          goals:
+          - SyndicateAi
+          - SyndicateCargo
+          - SyndicateMaid
+          - SyndicateMedical
+          - SyndicateEngineering

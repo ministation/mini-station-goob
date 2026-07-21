@@ -17,4 +17,24 @@ public static class TypanWarSounds
     /// <summary>Longer dramatic sting when combat begins.</summary>
     public static readonly SoundPathSpecifier WarDeclaration =
         new("/Audio/_Mini/TypanWar/war_declaration.ogg");
+
+    private static readonly string[] BackgroundMusicTracks =
+    [
+        "/Audio/_Mini/TypanWar/station_war.ogg",
+        "/Audio/_Mini/TypanWar/desolation.ogg",
+    ];
+
+    public static bool IsBackgroundMusicTrack(string fileName)
+    {
+        if (string.IsNullOrEmpty(fileName))
+            return false;
+
+        foreach (var path in BackgroundMusicTracks)
+        {
+            if (fileName.Contains(path, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
 }

@@ -182,6 +182,7 @@ namespace Content.IntegrationTests.Tests
             "MiniPacked",
             "MiniSilly",
             "Typan",
+            "Aspid",
             // Mini-end
         };
         // Keep in sync with DefaultMapPool in Resources/Prototypes/Maps/Pools/default.yml
@@ -209,6 +210,7 @@ namespace Content.IntegrationTests.Tests
             "Saltern",
             "Serpentcrest",
             "Snowball",
+            "MiniSilly",
         };
 
         private static readonly ProtoId<EntityCategoryPrototype> DoNotMapCategory = "DoNotMap";

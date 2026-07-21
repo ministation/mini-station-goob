@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Content.Server.Chat.Systems;
 using Content.Server.Radio;
 using Content.Shared._CorvaxGoob.TTS;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
 namespace Content.Server._CorvaxGoob.TTS;
@@ -42,7 +42,6 @@ public sealed partial class TTSSystem
     private async Task HandleRadioReceiveAsync(EntityUid uid, RadioReceiveEvent args)
     {
         if (!_isEnabled ||
-            !args.Language.SpeechOverride.RequireSpeech ||
             !TryComp<ActorComponent>(uid, out var actor))
             return;
 
@@ -126,19 +125,8 @@ public sealed partial class TTSSystem
         if (source == receiver)
             return true;
 
-        var inPvs = false;
-        foreach (var session in Filter.Pvs(source).Recipients)
-        {
-            if (session.AttachedEntity != receiver)
-                continue;
-
-            inPvs = true;
-            break;
-        }
-
-        if (!inPvs)
-            return false;
-
+        // Cheap distance check only — Filter.Pvs() per radio listener was causing
+        // severe server lag when many players were on the same channel.
         var xformQuery = GetEntityQuery<TransformComponent>();
         if (!xformQuery.TryComp(source, out var sourceXform) ||
             !xformQuery.TryComp(receiver, out var receiverXform) ||
@@ -147,7 +135,8 @@ public sealed partial class TTSSystem
 
         var sourcePos = _xforms.GetWorldPosition(sourceXform, xformQuery);
         var receiverPos = _xforms.GetWorldPosition(receiverXform, xformQuery);
-        return (sourcePos - receiverPos).Length() <= ChatSystem.VoiceRange;
+        var range = ChatSystem.VoiceRange;
+        return (sourcePos - receiverPos).LengthSquared() <= range * range;
     }
 
     private void PruneRadioRequests(uint currentTick)

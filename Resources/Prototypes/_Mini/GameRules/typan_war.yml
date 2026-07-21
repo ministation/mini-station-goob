@@ -31,11 +31,13 @@
     capturePointIntervalSeconds: 45
     tradeZoneSwapScoreThreshold: 50
     minRespawnSeconds: 10
-    maxRespawnSeconds: 60
+    maxRespawnSeconds: 120
+    deathPenaltyStepSeconds: 110
     dropShuttleRespawnDelaySeconds: 120
     stationSeparationTiles: 300
     tradePostMaxDistanceTiles: 500
     warParallax: TypanWarParallax
+    surfaceParallax: Water
     dropShuttlePath: /Maps/_Mini/Shuttles/typan_drop_shuttle.yml
     ntDropShuttlePath: /Maps/_Mini/Shuttles/nt_drop_shuttle.yml
 

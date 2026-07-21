@@ -22,6 +22,11 @@
 
 # Gloves
 - type: loadout
+  id: TypanTechSupTOSGloves
+  equipment:
+    gloves: ClothingHandsTypanTechnicalOperationsSupervisor
+
+- type: loadout
   id: TypanTechSupCombatGloves
   equipment:
     gloves: ClothingHandsGlovesCombat
@@ -30,6 +35,12 @@
   id: TypanTechSupBlackGloves
   equipment:
     gloves: ClothingHandsGlovesColorBlack
+
+# Neck
+- type: loadout
+  id: TypanTechSupMantle
+  equipment:
+    neck: ClothingNeckMantleTechnicalOperationsSupervisor
 
 # Shoes
 - type: loadout
@@ -64,8 +75,16 @@
   name: loadout-group-typan-technical-supervisor-gloves
   minLimit: 1
   loadouts:
+  - TypanTechSupTOSGloves
   - TypanTechSupCombatGloves
   - TypanTechSupBlackGloves
+
+- type: loadoutGroup
+  id: TypanTechnicalOperationsSupervisorNeck
+  name: loadout-group-typan-technical-supervisor-neck
+  minLimit: 0
+  loadouts:
+  - TypanTechSupMantle
 
 - type: loadoutGroup
   id: TypanTechnicalOperationsSupervisorShoes

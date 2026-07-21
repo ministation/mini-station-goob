@@ -21,7 +21,7 @@ public sealed partial class HeadsetComponent : Component
     public SlotFlags RequiredSlot = SlotFlags.EARS;
 
     [DataField, AutoNetworkedField]
-    public Color Color = Color.Lime;
+    public Color Color = Color.FromHex("#cfcfcf");
 
     public void CopyColorFrom(HeadsetComponent other)
     {
@@ -30,6 +30,6 @@ public sealed partial class HeadsetComponent : Component
 
     public void ResetColorToDefault()
     {
-        Color = Color.Lime;
+        Color = Color.FromHex("#cfcfcf");
     }
 }

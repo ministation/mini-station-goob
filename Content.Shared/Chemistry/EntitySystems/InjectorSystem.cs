@@ -321,7 +321,8 @@ public sealed partial class InjectorSystem : EntitySystem
 
         return _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, user, doAfterTime, new InjectorDoAfterEvent(), injector.Owner, target: target, used: injector.Owner)
         {
-            BreakOnMove = true,
+            // Drawing from beakers/bags shouldn't cancel when the player walks a step.
+            BreakOnMove = false,
             BreakOnWeightlessMove = false,
             BreakOnDamage = true,
             NeedHand = injector.Comp.NeedHand,

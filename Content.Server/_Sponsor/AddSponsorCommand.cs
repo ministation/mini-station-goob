@@ -14,7 +14,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Sponsor;
 
-[AdminCommand(AdminFlags.Moderator)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class AddSponsorCommand: IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;

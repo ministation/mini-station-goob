@@ -290,6 +290,9 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
     {
         if (handName == null)
         {
+            if (_activeHand != null)
+                _activeHand.Highlight = false;
+
             _activeHand = null;
             HandsGui?.SetHighlightHand(null);
             return;
@@ -298,6 +301,10 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
         if (!_handLookup.TryGetValue(handName, out var handControl) || handControl == _activeHand)
             return;
 
+        if (_activeHand != null)
+            _activeHand.Highlight = false;
+
+        handControl.Highlight = true;
         _activeHand = handControl;
 
         if (HandsGui != null &&

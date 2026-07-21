@@ -1427,9 +1427,10 @@
   productEntity: ReinforcementRadioSyndicateCyborgAssault
   icon: { sprite: Objects/Devices/communication.rsi, state: old-radio-borg-assault }
   cost:
-    Telecrystal: 75 # goob
+    Telecrystal: 75 # mini
   categories:
     - UplinkAllies
+  saleBlacklist: true
   conditions:
     - !type:StoreWhitelistCondition
       whitelist:

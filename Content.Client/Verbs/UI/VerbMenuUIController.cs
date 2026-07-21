@@ -219,6 +219,11 @@ namespace Content.Client.Verbs.UI
                 return;
             }
 
+            // Replace server/shared verbs so stale Disabled/Text (e.g. valve open/close) don't stick
+            // after UnionWith (CompareTo ignores those). Keep ClientExclusive verbs (VV, examine, etc.).
+            var clientExclusive = CurrentVerbs.Where(v => v.ClientExclusive).ToArray();
+            CurrentVerbs.Clear();
+            CurrentVerbs.UnionWith(clientExclusive);
             CurrentVerbs.UnionWith(verbs);
             FillVerbPopup(popup);
         }

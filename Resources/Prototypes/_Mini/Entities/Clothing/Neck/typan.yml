@@ -1,0 +1,12 @@
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMantleTechnicalOperationsSupervisor
+  name: мантия руководителя техобеспечения
+  description: Строгая мантия с кроваво-красными элементами и золотой окаймовкой.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Neck/technical_supervisormantle.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Neck/technical_supervisormantle.rsi
+  - type: Tag
+    tags: [] # ignore "WhitelistChameleon" tag

@@ -8,6 +8,7 @@
   - PositronicBrain
   - SciFlash
   - CyborgEndoskeleton
+  - NanoPaste # Mini
 
 - type: latheRecipePack
   id: BorgModulesStatic

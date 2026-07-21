@@ -3,16 +3,16 @@
   name: job-name-typan-technical-supervisor
   description: job-description-typan-technical-supervisor
   playTimeTracker: JobTypanTechnicalOperationsSupervisor
-  setPreference: false
-  overrideConsoleVisibility: true
+  setPreference: true
   startingGear: TypanTechnicalOperationsSupervisorGear
   icon: "JobIconTypanTechnicalOperationsSupervisor"
-  supervisors: job-supervisors-syndicate
+  supervisors: job-supervisors-typan-syndicate
   canBeAntag: false
+  weight: 10
   requirements:
-  - !type:DepartmentTimeRequirement
-    department: Typan
-    time: 144000 # 40 hours
+  - !type:RoleTimeRequirement
+    role: JobTypanAtmosTech
+    time: 54000 # 15 hours
   access:
   - TypanAtmospherics
   - TypanCargo
@@ -24,15 +24,26 @@
   - TypanService
   - TypanTechnicalOperationsSupervisor
   - TypanExternal
+  skills: # CorvaxGoob-Skills
+  - Shooting
+  - ShuttleControl
+  - AdvancedBuilding
+  - MedicalEquipment
   special:
   - !type:AddImplantSpecial
     implants: [ DeathRattleImplantTypan ]
+  - !type:AddComponentSpecial
+    components:
+      - type: AntagImmune
+      - type: NpcFactionMember
+        factions:
+        - Typan
 
 - type: startingGear
   id: TypanTechnicalOperationsSupervisorGear
   equipment:
     ears: ClothingHeadsetAltSyndicate
-    id: SyndiPDAEng
+    id: SyndiPDATOS
 
 - type: chameleonOutfit
   id: TypanTechnicalOperationsSupervisorChameleonOutfit

@@ -60,15 +60,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 MinSize="56 28"
                 MaxSize="56 28"
                 SetSize="56 28"
+                RectClipContent="False"
                 Access="Public">
                 <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" SeparationOverride="2">
                     <Label Name="BuyPriceLabel" Align="Center" VAlign="Center" />
+                    <!-- Layout slot stays small so the button size doesn't grow; KeepCentered + TextureScale draws larger and overflows. -->
                     <TextureRect
                         Name="CurrencyIcon"
-                        MinSize="24 24"
-                        MaxSize="24 24"
-                        SetSize="24 24"
-                        Stretch="KeepAspectCentered"
+                        MinSize="14 14"
+                        MaxSize="14 14"
+                        SetSize="14 14"
+                        CanShrink="True"
+                        Stretch="KeepCentered"
+                        TextureScale="1 1"
                         Visible="False" />
                 </BoxContainer>
             </Button>

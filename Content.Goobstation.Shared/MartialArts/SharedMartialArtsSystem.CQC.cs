@@ -221,7 +221,7 @@ public partial class SharedMartialArtsSystem
 
         _stun.TryKnockdown(target, proto.ParalyzeTime, true, true, proto.DropItems);
         _stamina.TakeStaminaDamage(target, proto.StaminaDamage, source: ent);
-        ComboPopup(ent, target, proto.Name);
+        ComboPopup(ent, target, proto.ID); // CorvaxGoob-Localization // proto.Name -> proto.ID
         ent.Comp.LastAttacks.Clear();
     }
 

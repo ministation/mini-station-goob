@@ -249,7 +249,9 @@
       prob: 0.15
     - id: ClothingBeltUtilityEngineering
     - id: ClothingEyesGlassesMeson
-    - id: RCD
+    - id: ClothingHandsTypanTechnicalOperationsSupervisor
+    - id: ClothingNeckMantleTechnicalOperationsSupervisor
+    - id: RCDSyndicate
     - id: RCDAmmo
 
 # Security
@@ -314,6 +316,10 @@
   suffix: Тайпан, Заполненный, Случайный
   parent: ClosetTypanSteel
   components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: typansteel
+    stateDoorOpen: typansteel_open
+    stateDoorClosed: typansteel_door
   - type: EntityTableContainerFill
     containers:
       entity_storage: !type:NestedSelector

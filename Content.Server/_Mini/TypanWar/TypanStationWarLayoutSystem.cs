@@ -3,10 +3,12 @@
 
 using System.Linq;
 using System.Numerics;
+using Content.Server.Atmos.EntitySystems;
 using Content.Server.Cargo.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Systems;
 using Content.Shared._Mini.TypanWar;
+using Content.Shared.Atmos;
 using Content.Shared.Parallax;
 using Content.Shared.Station.Components;
 using Robust.Shared.Map;
@@ -24,6 +26,10 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
     private const float TradePostMinDistance = 90f;
     private const int TradePostPlacementAttempts = 48;
 
+    /// <summary>Breathable surface mix matching MiniSilly / CorvaxPearl map atmosphere.</summary>
+    private static readonly GasMixture SurfaceAtmosphereMixture = CreateSurfaceAtmosphere();
+
+    [Dependency] private readonly AtmosphereSystem _atmos = default!;
     [Dependency] private readonly DockingSystem _dock = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
@@ -89,7 +95,7 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
         RepositionTradeGrids(ev.NtStation, ntData, ntGrid.Value, rule.TradePostMaxDistanceTiles);
         RepositionTradeGrids(ev.TypanStation, typanData, typanGrid.Value, rule.TradePostMaxDistanceTiles);
 
-        ApplyWarParallax(ntMap, rule.WarParallax);
+        ApplyWarMapEnvironment(ntMap, rule);
 
         rule.LayoutApplied = true;
         Log.Info($"Typan station war layout: merged Typan grids onto map {ntMap} with {rule.StationSeparationTiles} tile offset.");
@@ -102,15 +108,49 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
         foreach (var grid in stationData.Grids.ToList())
             _dock.UndockDocks(grid);
     }
-    private void ApplyWarParallax(MapId mapId, string parallaxId)
+
+    private void ApplyWarMapEnvironment(MapId mapId, TypanStationWarRuleComponent rule)
     {
-        if (string.IsNullOrWhiteSpace(parallaxId))
+        var mapUid = _map.GetMap(mapId);
+        var isSurface = IsSurfaceMap(mapUid, rule.SurfaceParallax);
+
+        if (isSurface)
+        {
+            EnsureComp<ParallaxComponent>(mapUid, out var parallax);
+            parallax.Parallax = rule.SurfaceParallax;
+            Dirty(mapUid, parallax);
+
+            // Keep / restore breathable planet atmosphere so Typan space tiles aren't vacuum.
+            _atmos.SetMapAtmosphere(mapUid, space: false, SurfaceAtmosphereMixture);
+            Log.Info($"Typan station war layout: kept surface parallax '{rule.SurfaceParallax}' with map atmosphere on map {mapId}.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(rule.WarParallax))
             return;
 
-        var mapUid = _map.GetMap(mapId);
-        EnsureComp<ParallaxComponent>(mapUid, out var parallax);
-        parallax.Parallax = parallaxId;
-        Dirty(mapUid, parallax);
+        EnsureComp<ParallaxComponent>(mapUid, out var warParallax);
+        warParallax.Parallax = rule.WarParallax;
+        Dirty(mapUid, warParallax);
+    }
+
+    private bool IsSurfaceMap(EntityUid mapUid, string surfaceParallax)
+    {
+        if (string.IsNullOrWhiteSpace(surfaceParallax))
+            return false;
+
+        return TryComp<ParallaxComponent>(mapUid, out var parallax)
+               && string.Equals(parallax.Parallax, surfaceParallax, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static GasMixture CreateSurfaceAtmosphere()
+    {
+        var moles = new float[Atmospherics.AdjustedNumberOfGases];
+        moles[(int) Gas.Oxygen] = 21.824879f;
+        moles[(int) Gas.Nitrogen] = 82.10312f;
+        var mixture = new GasMixture(moles, 288.15f, 2500f);
+        mixture.MarkImmutable();
+        return mixture;
     }
 
     private void RepositionTradeGrids(EntityUid station, StationDataComponent stationData, EntityUid anchorGrid, float maxDistance)

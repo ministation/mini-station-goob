@@ -122,12 +122,21 @@ public sealed class AirlockSystem : SharedAirlockSystem
         switch (state)
         {
             case DoorState.Open:
+                // Freeze static powered lights — opening/closing RSI states are animated; AutoAnimated
+                // must be off or they keep looping after appearance stops updating (e.g. reconnect).
                 _sprite.LayerSetRsiState((uid, args.Sprite), DoorVisualLayers.BaseUnlit, comp.ClosingSpriteState);
+                _sprite.LayerSetAutoAnimated((uid, args.Sprite), DoorVisualLayers.BaseUnlit, false);
                 _sprite.LayerSetAnimationTime((uid, args.Sprite), DoorVisualLayers.BaseUnlit, 0);
                 break;
             case DoorState.Closed:
                 _sprite.LayerSetRsiState((uid, args.Sprite), DoorVisualLayers.BaseUnlit, comp.OpeningSpriteState);
+                _sprite.LayerSetAutoAnimated((uid, args.Sprite), DoorVisualLayers.BaseUnlit, false);
                 _sprite.LayerSetAnimationTime((uid, args.Sprite), DoorVisualLayers.BaseUnlit, 0);
+                break;
+            case DoorState.Opening:
+            case DoorState.Closing:
+            case DoorState.Denying:
+                _sprite.LayerSetAutoAnimated((uid, args.Sprite), DoorVisualLayers.BaseUnlit, true);
                 break;
         }
     }

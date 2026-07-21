@@ -31,8 +31,8 @@ public sealed partial class TypanWarCombatMindComponent : Component
 
     public bool RespawnUiOpen;
 
-    /// <summary>Corpse to clean up after the next successful war respawn.</summary>
-    public EntityUid? PendingCorpse;
+    /// <summary>Corpses to clean up after the next successful war respawn.</summary>
+    public List<EntityUid> PendingCorpses = new();
 
     /// <summary>Server-only death timestamps used for death-penalty respawn delay.</summary>
     public List<TimeSpan> RecentDeathTimes = new();

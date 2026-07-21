@@ -98,6 +98,17 @@
     spawn_type: LateJoin
 
 - type: entity
+  name: latejoin technical operations supervisor
+  id: SpawnPointLatejoinTypanTechnicalOperationsSupervisor
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanTechnicalOperationsSupervisor
+    spawn_type: LateJoin
+
+- type: entity
   name: спавн раундстарт atmostech
   id: SpawnTypanAtmos
   parent: SpawnPointJobBase
@@ -183,6 +194,17 @@
     state: green
   - type: SpawnPoint
     job_id: TypanCommander
+    spawn_type: Job
+
+- type: entity
+  name: спавн раундстарт руководителя техобеспечения
+  id: SpawnTypanTechnicalOperationsSupervisor
+  parent: SpawnPointJobBase
+  components:
+  - type: Sprite
+    state: green
+  - type: SpawnPoint
+    job_id: TypanTechnicalOperationsSupervisor
     spawn_type: Job
 
 - type: entity

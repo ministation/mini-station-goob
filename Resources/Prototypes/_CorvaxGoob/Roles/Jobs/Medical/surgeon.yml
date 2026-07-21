@@ -30,7 +30,7 @@
   equipment:
     ears: ClothingHeadsetMedical
     belt: ClothingBeltSurgicalBoardFilled
-    shoes: ClothingShoesColorWhite
+    # shoes: ClothingShoesColorWhite - moved to MedicalShoes loadout
     id: SurgeonPDA
     mask: ClothingMaskSterile
 

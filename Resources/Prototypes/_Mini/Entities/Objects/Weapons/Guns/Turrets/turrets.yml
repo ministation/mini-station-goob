@@ -32,23 +32,9 @@
   description: Высокотехнологичная автономная система вооружения, предназначенная для предотвращения проникновений посторонних лиц в важные зоны.
   suffix: Тайпан, ИИ, Борги
   components:
-  - type: Sprite
-    sprite: _Mini/Objects/Weapons/Guns/Turrets/turrets.rsi
-    layers:
-      - state: stand
-      - state: typan
-        map: [ "enum.DeployableTurretVisuals.Weapon" ]
-        visible: false
-      - state: typan
-        map: [ "enum.PowerDeviceVisualLayers.Powered" ]
-        visible: false
-      - state: stand
-        map: [ "enum.DeployableTurretVisuals.Turret" ]
-  - type: DeployableTurret
-    deployedState: full
-    retractedState: stand
-    deployingState: full
-    retractingState: stand
+  - type: NpcFactionMember
+    factions:
+    - Typan
   - type: AccessReader
     access: [["StationAi"], ["TypanResearchDirector"]]
   - type: StationAiTurret
@@ -69,23 +55,9 @@
   description: Высокотехнологичная автономная система вооружения, предназначенная для предотвращения проникновений посторонних лиц в важные зоны.
   suffix: Тайпан, Охрана
   components:
-  - type: Sprite
-    sprite: _Mini/Objects/Weapons/Guns/Turrets/turrets.rsi
-    layers:
-      - state: stand
-      - state: typan
-        map: [ "enum.DeployableTurretVisuals.Weapon" ]
-        visible: false
-      - state: typan
-        map: [ "enum.PowerDeviceVisualLayers.Powered" ]
-        visible: false
-      - state: stand
-        map: [ "enum.DeployableTurretVisuals.Turret" ]
-  - type: DeployableTurret
-    deployedState: full
-    retractedState: stand
-    deployingState: full
-    retractingState: stand
+  - type: NpcFactionMember
+    factions:
+    - Typan
   - type: AccessReader
     access: [["StationAi"], ["TypanProtection"]]
   - type: TurretTargetSettings
@@ -106,23 +78,9 @@
   description: Высокотехнологичная автономная система вооружения, предназначенная для предотвращения проникновений посторонних лиц в важные зоны.
   suffix: Тайпан, Командование
   components:
-  - type: Sprite
-    sprite: _Mini/Objects/Weapons/Guns/Turrets/turrets.rsi
-    layers:
-      - state: stand
-      - state: typan
-        map: [ "enum.DeployableTurretVisuals.Weapon" ]
-        visible: false
-      - state: typan
-        map: [ "enum.PowerDeviceVisualLayers.Powered" ]
-        visible: false
-      - state: stand
-        map: [ "enum.DeployableTurretVisuals.Turret" ]
-  - type: DeployableTurret
-    deployedState: full
-    retractedState: stand
-    deployingState: full
-    retractingState: stand
+  - type: NpcFactionMember
+    factions:
+    - Typan
   - type: AccessReader
     access: [["StationAi"], ["TypanCommand"]]
   - type: TurretTargetSettings

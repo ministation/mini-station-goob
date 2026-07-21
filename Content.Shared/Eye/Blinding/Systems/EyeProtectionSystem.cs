@@ -6,6 +6,7 @@ using Content.Shared.Eye.Blinding.Components;
 using Content.Shared.Tools.Components;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Clothing.Components;
+using Content.Shared.Silicons.Borgs.Components;
 
 namespace Content.Shared.Eye.Blinding.Systems
 {
@@ -41,6 +42,10 @@ namespace Content.Shared.Eye.Blinding.Systems
         private void OnUseAttempt(EntityUid uid, RequiresEyeProtectionComponent component, ToolUseAttemptEvent args)
         {
             if (!component.Toggled)
+                return;
+
+            // Cyborg chassis have no biological eyes — never apply welder flash/eye damage.
+            if (HasComp<BorgChassisComponent>(args.User))
                 return;
 
             if (!TryComp<BlindableComponent>(args.User, out var blindable) || blindable.IsBlind)

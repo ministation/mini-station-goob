@@ -479,6 +479,7 @@
     idleState: icon
     runningState: building
     defaultProductionAmount: 10
+    outputToStorage: true
     staticPacks:
     - TypanOreSmelting
     - RGlassSmelting
@@ -498,6 +499,7 @@
   - type: Lathe
     materialUseMultiplier: 0.75
     timeMultiplier: 0.5
+    outputToStorage: true
     staticPacks:
     - TypanOreSmelting
     - RGlassSmelting

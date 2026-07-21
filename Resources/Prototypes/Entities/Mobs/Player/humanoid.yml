@@ -130,7 +130,7 @@
 
 - type: randomHumanoidSettings
   id: ERTLeader
-  parent: CentcommHumanoid # Goobstation
+  parent: CentcommHumanoidERT # Mini — allow IPC (max 1 per squad)
   components:
     - type: GhostRole
       name: ghost-role-information-ert-leader-name
@@ -630,30 +630,6 @@
       state: cburn
     - type: RandomHumanoidSpawner
       settings: CBURNAgent
-
-- type: randomHumanoidSettings
-  id: CBURNAgent
-  parent: CentcommHumanoid
-  components:
-    - type: AutoImplant
-      implants: [ FreedomImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant ] # Goobstation
-    - type: Loadout
-      prototypes: [CBURNGear]
-      roleLoadout: [ RoleSurvivalEVA ]
-    - type: GhostRole
-      name: ghost-role-information-cburn-agent-name
-      description: ghost-role-information-cburn-agent-description
-      rules: ghost-role-information-nonantagonist-rules
-      skills: # CorvaxGoob-Skills
-      - All
-      raffle:
-        settings: short
-      job: CBURN
-    - type: RandomMetadata
-      nameSegments:
-      - NamesMilitaryFirst
-      - NamesMilitaryLast
-      nameFormat: name-format-ert
 
 ## Central Command
 

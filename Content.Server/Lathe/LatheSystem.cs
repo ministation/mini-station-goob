@@ -186,8 +186,12 @@ namespace Content.Server.Lathe
             if (!CanProduce(uid, recipe, quantity, component))
                 return false;
 
+            var materials = new Dictionary<ProtoId<MaterialPrototype>, int>();
             foreach (var (mat, amount) in GetAdjustedAmount(component, recipe))
-                _materialStorage.TryChangeMaterialAmount(uid, mat, -amount * quantity);
+                materials[mat] = -amount * quantity;
+
+            if (!_materialStorage.TryChangeMaterialAmount((uid, null), materials))
+                return false;
 
             if (component.Queue.Last is { } node && node.ValueRef.Recipe == recipe.ID)
                 node.ValueRef.ItemsRequested += quantity;

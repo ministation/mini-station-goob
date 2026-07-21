@@ -659,6 +659,22 @@
 
 - type: entity
   parent: AgentIDCard
+  id: NinjaIDCard
+  name: green ID card
+  description: A green ID card....
+  suffix: Ninja
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/ninja_id.rsi
+    layers:
+    - state: Ninja_ID
+  - type: Item
+    heldPrefix: green
+  - type: Clothing
+    sprite: _Mini/Objects/Misc/ninja_id.rsi
+
+- type: entity
+  parent: AgentIDCard
   id: NukieAgentIDCard
   suffix: Nukie
   components:

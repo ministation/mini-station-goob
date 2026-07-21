@@ -41,6 +41,35 @@
   - type: GhostRole
     job: CentralCommandOfficial
 
+# Mini — ERT / CBURN may spawn as IPC (squad soft-cap enforced in ErtResponceSystem).
+- type: randomHumanoidSettings
+  id: CentcommHumanoidERT
+  parent: CentcommHumanoid
+  speciesBlacklist:
+  - Monkey
+  - Kobold
+  - Abductor
+  - Yowie
+  - Diona
+  - Harpy
+  - Vox
+  - Tajaran
+  - Resomi
+  - Oni
+  - Gingerbread
+  - Plasmaman
+  - Reptilian
+  - Moth
+  - Shadowkin
+  - Arachnid
+  - Vulpkanin
+  - Rodentia
+  - SlimePerson
+  - Dwarf
+  - Feroxi
+  - Hydrakin
+  - Chitinid
+
 # Navy Officer
 
 - type: entity

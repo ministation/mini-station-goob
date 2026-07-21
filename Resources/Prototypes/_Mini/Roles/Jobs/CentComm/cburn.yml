@@ -37,6 +37,7 @@
   id: CBURNLeaderGear
   equipment:
     jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
     mask: ClothingMaskGasExplorer
     eyes: ClothingEyesGlassesSecurity
     ears: ClothingHeadsetCentCom
@@ -47,8 +48,9 @@
     id: CBURNPDA
     pocket1: DoubleEmergencyOxygenTankFilled
     pocket2: DoorRemoteAll
-
-
+  storage:
+    back:
+    - BaseUplinkCBRUN
 # Agent
 
 ## CBURN

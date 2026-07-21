@@ -6,6 +6,7 @@
     CableApcStack: 4
     SciFlash: 4
     ProximitySensor: 3
+    NanoPaste: 4 # Mini
     ClothingEyesHudDiagnostic: 2
     ClothingEyesEyepatchHudDiag: 2
     RemoteSignaller: 3

@@ -116,7 +116,7 @@ public sealed class AntagTokenAddCommand : IConsoleCommand
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class AntagTokenSetBalanceCommand : IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -154,7 +154,7 @@ public sealed class AntagTokenSetBalanceCommand : IConsoleCommand
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class AntagTokenBuyCommand : IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -257,7 +257,7 @@ public sealed class AntagTokenOpenCommand : IConsoleCommand
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class AntagTokenSetSponsorCommand : IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -299,7 +299,7 @@ public sealed class AntagTokenSetSponsorCommand : IConsoleCommand
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class AntagTokenSetMonthlyEarnedCommand : IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;

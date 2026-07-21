@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from tgstation at https://github.com/vgstation-coders/vgstation13/commit/02b9f6894af4419c9f7e699a22c402b086d8067e, edited by andrew_fenriz (discord) for Space Station 14 server Мёртвый Космос",
+  "copyright": "Taken from tgstation at https://github.com/vgstation-coders/vgstation13/commit/02b9f6894af4419c9f7e699a22c402b086d8067e, edited by andrew_fenriz (discord) for Space Station 14 server Мёртвый Космос; Typan red locker states (tac/typan*) moved from Structures/Storage/closet.rsi",
   "size": {
     "x": 32,
     "y": 32
@@ -92,7 +92,13 @@
       "name": "secure_door"
     },
     {
+      "name": "generic"
+    },
+    {
       "name": "generic_door"
+    },
+    {
+      "name": "generic_open"
     },
     {
       "name": "shotgun"
@@ -122,6 +128,162 @@
     },
     {
       "name": "welded"
+    },
+    {
+      "name": "tac"
+    },
+    {
+      "name": "tac_door"
+    },
+    {
+      "name": "tac_open"
+    },
+    {
+      "name": "typanatm"
+    },
+    {
+      "name": "typanatm_door"
+    },
+    {
+      "name": "typanatm_open"
+    },
+    {
+      "name": "typancargo"
+    },
+    {
+      "name": "typancargo_door"
+    },
+    {
+      "name": "typancargo_open"
+    },
+    {
+      "name": "typanmed"
+    },
+    {
+      "name": "typanmed_door"
+    },
+    {
+      "name": "typan_sci"
+    },
+    {
+      "name": "typan_sci_door"
+    },
+    {
+      "name": "typanbot"
+    },
+    {
+      "name": "typanbot_door"
+    },
+    {
+      "name": "typansteel"
+    },
+    {
+      "name": "typansteel_door"
+    },
+    {
+      "name": "typansteel_open"
+    },
+    {
+      "name": "typanpatrol"
+    },
+    {
+      "name": "typanpatrol_door"
+    },
+    {
+      "name": "typanpatrol_open"
+    },
+    {
+      "name": "typan_cargo"
+    },
+    {
+      "name": "typants"
+    },
+    {
+      "name": "typants_door"
+    },
+    {
+      "name": "typants_open"
+    },
+    {
+      "name": "typanco"
+    },
+    {
+      "name": "typanco_door"
+    },
+    {
+      "name": "typanco_open"
+    },
+    {
+      "name": "typaneng"
+    },
+    {
+      "name": "typaneng_door"
+    },
+    {
+      "name": "typaneng_open"
+    },
+    {
+      "name": "typanbot_open"
+    },
+    {
+      "name": "typanchef"
+    },
+    {
+      "name": "typanchef_door"
+    },
+    {
+      "name": "typanchef_open"
+    },
+    {
+      "name": "typanmedcab"
+    },
+    {
+      "name": "typanmedcab_door"
+    },
+    {
+      "name": "typanmedcab_open"
+    },
+    {
+      "name": "typanmedic"
+    },
+    {
+      "name": "typanmedic_door"
+    },
+    {
+      "name": "typanmedic_open"
+    },
+    {
+      "name": "typanparamed"
+    },
+    {
+      "name": "typanparamed_door"
+    },
+    {
+      "name": "typanparamed_open"
+    },
+    {
+      "name": "typanchem"
+    },
+    {
+      "name": "typanchem_door"
+    },
+    {
+      "name": "typanchem_open"
+    },
+    {
+      "name": "typan_sci_open"
+    },
+    {
+      "name": "typanrd"
+    },
+    {
+      "name": "typanrd_door"
+    },
+    {
+      "name": "typanrd_open"
+    },
+    {
+      "name": "typanmed_open"
     }
   ]
 }

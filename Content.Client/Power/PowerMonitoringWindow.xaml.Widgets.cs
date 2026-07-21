@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Client.Stylesheets;
+using Content.Client.Resources;
 using Content.Shared.Power;
 using Robust.Client.Graphics;
+using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.IoC;
 using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -455,6 +458,8 @@ public sealed class PowerMonitoringButton : Button
         VerticalExpand = true;
         Margin = new Thickness(0f, 1f, 0f, 1f);
 
+        var rowFont = IoCManager.Resolve<IResourceCache>().GetStack("Regular", 12);
+
         MainContainer = new BoxContainer()
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
@@ -478,6 +483,7 @@ public sealed class PowerMonitoringButton : Button
         {
             HorizontalExpand = true,
             ClipText = true,
+            FontOverride = rowFont,
         };
 
         MainContainer.AddChild(NameLocalized);
@@ -521,6 +527,7 @@ public sealed class PowerMonitoringButton : Button
             Margin = new Thickness(10, -4, 10, 0),
             ClipText = true,
             Visible = false,
+            FontOverride = rowFont,
         };
 
         BackgroundPanel.AddChild(BatteryPercentage);
@@ -532,6 +539,7 @@ public sealed class PowerMonitoringButton : Button
             SetWidth = 80f,
             Margin = new Thickness(10, 0, 0, 0),
             ClipText = true,
+            FontOverride = rowFont,
         };
 
         MainContainer.AddChild(PowerValue);

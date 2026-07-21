@@ -67,6 +67,7 @@
   - JetInjector
   - SprayBottleStypticPowderEmpty #CorvaxGoob
   - SprayBottleSilverSulfadiazineEmpty #CorvaxGoob
+  - NanoPaste # Mini — IPC repair in medical section
 
 - type: latheRecipePack
   id: RollerBedsStatic

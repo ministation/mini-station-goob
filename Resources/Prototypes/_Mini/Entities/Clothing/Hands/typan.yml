@@ -26,3 +26,17 @@
     fiberMaterial: fibers-leather
     fiberColor: fibers-black
   - type: FingerprintMask
+
+- type: entity
+  parent: ClothingHandsGlovesCombat
+  id: ClothingHandsTypanTechnicalOperationsSupervisor
+  name: перчатки руководителя техобеспечения
+  description: Изолированные перчатки с позолоченными вставками. Без них невозможно работать.
+  suffix: Тайпан
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Hands/Gloves/gloves_ts.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Hands/Gloves/gloves_ts.rsi
+  - type: Tag
+    tags: [] # ignore "WhitelistChameleon" tag

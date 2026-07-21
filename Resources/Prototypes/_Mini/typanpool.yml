@@ -2,7 +2,7 @@
   id: Dev
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Typan
   maps:
@@ -12,221 +12,232 @@
   id: Atlas
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Amber
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Bagel
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: MiniCluster
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: MiniOmega
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: MiniPacked
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Lambda
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Box
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Cluster
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Fland
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Loop
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Marathon
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Meta
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Oasis
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Omega
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Origin
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Saltern
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Packed
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Reach
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: FlandHighPop
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: OasisHighPop
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Barratry
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Kettle
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Leonid
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Delta
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Chloris
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Cog
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: Serpentcrest
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxAstra
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxBox
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxChloris
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxGlacier
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxPilgrim
   maps:
     - Typan
-
+    - Aspid
 # Midpop 25–55
 
 - type: additionalMap
   id: CorvaxBagel
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxMascara
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxOutpost
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxPaper
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxVoid
   maps:
     - Typan
-
+    - Aspid
 # Lowpop 0–25
 - type: additionalMap
   id: CorvaxMaus
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxOmega
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxPacked
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxTushkan
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxCluster
   maps:
     - Typan
-
+    - Aspid
 - type: additionalMap
   id: CorvaxPearl
   maps:
     - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniSilly
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxSilly
+  maps:
+    - Typan
+    - Aspid

@@ -1,9 +1,27 @@
 # Ratvar radial menu entries for clockwork structures (referenced from SheetBrass).
+# One-step graphs so brass builds finished walls/doors (not girder/assembly frames).
+
+- type: constructionGraph
+  id: RatvarClockworkWallGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: clockworkWall
+      completed:
+      - !type:SnapToGrid
+        southRotation: true
+      steps:
+      - material: Brass
+        amount: 4
+        doAfter: 3
+  - node: clockworkWall
+    entity: WallClock
 
 - type: construction
   name: construction-recipe-clockwork-wall
   id: ClockworkWallConstruction
-  graph: ClockworkGirder
+  graph: RatvarClockworkWallGraph
   startNode: start
   targetNode: clockworkWall
   hide: true
@@ -20,10 +38,27 @@
   canRotate: false
   canBuildInImpassable: false
 
+- type: constructionGraph
+  id: RatvarPinionAirlockGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: airlock
+      completed:
+      - !type:SnapToGrid
+        southRotation: true
+      steps:
+      - material: Brass
+        amount: 6
+        doAfter: 4
+  - node: airlock
+    entity: PinionAirlock
+
 - type: construction
   name: construction-recipe-pinion-airlock
   id: PinionAirlockConstruction
-  graph: PinionAirlock
+  graph: RatvarPinionAirlockGraph
   startNode: start
   targetNode: airlock
   hide: true

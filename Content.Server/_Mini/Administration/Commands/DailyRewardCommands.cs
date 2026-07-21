@@ -50,7 +50,7 @@ public sealed class DailyRewardStatusCommand : IConsoleCommand
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class DailyRewardSetStreakCommand : IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -126,7 +126,7 @@ public sealed class DailyRewardSetStreakCommand : IConsoleCommand
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class DailyRewardSetLastClaimCommand : IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -176,7 +176,7 @@ public sealed class DailyRewardSetLastClaimCommand : IConsoleCommand
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class DailyRewardSetTimeCommand : IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -214,7 +214,7 @@ public sealed class DailyRewardSetTimeCommand : IConsoleCommand
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class DailyRewardReadyCommand : IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -246,7 +246,7 @@ public sealed class DailyRewardReadyCommand : IConsoleCommand
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Host)]
 public sealed class DailyRewardResetCommand : IConsoleCommand
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;

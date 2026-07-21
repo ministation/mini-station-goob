@@ -736,6 +736,26 @@ public sealed class AntagTokenSystem : EntitySystem
             PersistState(player.UserId, state);
         }
 
+        // Merge with any in-memory state created before DB load (e.g. daily quest coin grants).
+        if (_states.TryGetValue(player.UserId, out var existing))
+        {
+            var mergedBalance = Math.Max(state.Balance, existing.Balance);
+            var mergedMonthly = Math.Max(state.MonthlyEarned, existing.MonthlyEarned);
+            var balanceRaised = mergedBalance > state.Balance || mergedMonthly > state.MonthlyEarned;
+            state.Balance = mergedBalance;
+            state.MonthlyEarned = mergedMonthly;
+            if (existing.PendingGhostAutoRoleId != null && state.PendingGhostAutoRoleId == null)
+            {
+                state.PendingGhostAutoRoleId = existing.PendingGhostAutoRoleId;
+                state.PendingGhostAutoQueuedAtUtc = existing.PendingGhostAutoQueuedAtUtc;
+                state.PendingGhostAutoUsedRoleCredit = existing.PendingGhostAutoUsedRoleCredit;
+                state.PendingGhostAutoUsedDonorDailyFree = existing.PendingGhostAutoUsedDonorDailyFree;
+            }
+
+            if (balanceRaised)
+                PersistState(player.UserId, state);
+        }
+
         _states[player.UserId] = state;
         if (state.PendingGhostAutoRoleId is { } ghostPendingId &&
             _listings.TryGetListing(ghostPendingId, out var ghostListing) &&

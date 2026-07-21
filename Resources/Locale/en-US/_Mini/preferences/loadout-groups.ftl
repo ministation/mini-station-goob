@@ -52,3 +52,4 @@ loadout-group-typan-technical-supervisor-uniform = Tech. Supervisor Uniform
 loadout-group-typan-technical-supervisor-shoes = Tech. Supervisor Shoes
 loadout-group-typan-technical-supervisor-outerclothing = Tech. Supervisor Outer Clothing
 loadout-group-typan-technical-supervisor-gloves = Tech. Supervisor Gloves
+loadout-group-typan-technical-supervisor-neck = Tech. Supervisor Neck

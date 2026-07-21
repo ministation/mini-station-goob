@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using System.Linq;  // goob - intermap transmitters
+using System.Collections.Generic;
 using Content.Goobstation.Shared.Communications; // goob - intermap transmitters
 using Content.Goobstation.Shared.Loudspeaker.Events; // goob - loudspeakers
 using Content.Server.Administration.Logs;
@@ -163,14 +163,19 @@ public sealed partial class RadioSystem : EntitySystem
         RaiseLocalEvent(messageSource, evt);
 
         // Goob - Job icons
-        if (_radioIconSystem.TryGetJobIcon(messageSource, out var jobIcon, out var jobName))
+        ProtoId<JobIconPrototype> jobIcon = "JobIconNoId";
+        string? jobName = null;
+        if (_radioIconSystem.TryGetJobIcon(messageSource, out var resolvedIcon, out var resolvedName))
         {
-            var iconEvent = new TransformSpeakerJobIconEvent(messageSource, jobIcon.Value, jobName);
+            var iconEvent = new TransformSpeakerJobIconEvent(messageSource, resolvedIcon!.Value, resolvedName);
             RaiseLocalEvent(messageSource, iconEvent);
 
             jobIcon = iconEvent.JobIcon;
             jobName = iconEvent.JobName;
         }
+
+        if (!_prototype.HasIndex<JobIconPrototype>(jobIcon))
+            jobIcon = "JobIconNoId";
 
         var name = evt.VoiceName;
         name = FormattedMessage.EscapeText(name);
@@ -217,24 +222,7 @@ public sealed partial class RadioSystem : EntitySystem
 
         content = Highlight(content);
 
-        var wrappedMessage = Loc.GetString(speech.Bold ? "chat-radio-message-wrap-bold" : "chat-radio-message-wrap",
-            ("channel-color", channel.Color),
-            // Mini Station test fixes start
-            ("color", channel.Color),
-            ("languageColor", channel.Color),
-            ("jobIcon", (object?)jobIcon ?? ""),
-            ("jobName", jobName ?? ""),
-            // Mini Station test fixes end
-            ("fontType", speech.FontId),
-            ("fontSize", speech.FontSize),
-            ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
-            ("channel", $"\\[{channel.LocalizedName}\\]"),
-            ("name", name),
-            ("message", content),
-            ("headset-color", headsetColor),
-            ("job", job));
-        // ("language", language));
-        // var wrappedMessage = WrapRadioMessage(messageSource, channel, name, content, language); // Einstein Engines - Language
+        var wrappedMessage = WrapRadioMessage(messageSource, channel, name, content, language, jobIcon, jobName, headsetColor, job);
 
         // most radios are relayed to chat, so lets parse the chat message beforehand
         // var chat = new ChatMessage(
@@ -266,6 +254,9 @@ public sealed partial class RadioSystem : EntitySystem
         var sourceMapId = Transform(radioSource).MapID;
         var hasActiveServer = HasActiveServer(sourceMapId, channel.ID);
         var sourceServerExempt = _exemptQuery.HasComp(radioSource);
+        // Cache transmitter presence — querying every receiver was O(n*entities) lag.
+        var sourceHasTransmitter = HasActiveTransmitter(sourceMapId);
+        var transmitterByMap = new Dictionary<MapId, bool> { [sourceMapId] = sourceHasTransmitter };
 
         var radioQuery = EntityQueryEnumerator<ActiveRadioComponent, TransformComponent>();
         while (canSend && radioQuery.MoveNext(out var receiver, out var radio, out var transform))
@@ -277,9 +268,17 @@ public sealed partial class RadioSystem : EntitySystem
                     continue;
             }
 
-            if (!channel.LongRange && transform.MapID != sourceMapId && !radio.GlobalReceive
-                && !(HasActiveTransmitter(transform.MapID) && HasActiveTransmitter(sourceMapId))) // goob - intermap transmitters
-                continue;
+            if (!channel.LongRange && transform.MapID != sourceMapId && !radio.GlobalReceive)
+            {
+                if (!transmitterByMap.TryGetValue(transform.MapID, out var receiverHasTransmitter))
+                {
+                    receiverHasTransmitter = HasActiveTransmitter(transform.MapID);
+                    transmitterByMap[transform.MapID] = receiverHasTransmitter;
+                }
+
+                if (!(receiverHasTransmitter && sourceHasTransmitter)) // goob - intermap transmitters
+                    continue;
+            }
 
             // don't need telecom server for long range channels or handheld radios and intercoms
             var needServer = !channel.LongRange && !sourceServerExempt;
@@ -377,8 +376,7 @@ public sealed partial class RadioSystem : EntitySystem
 
         // Goobstation - Bolded Language Overrides begin
         var wrapId = speech.Bold ? "chat-radio-message-wrap-bold" : "chat-radio-message-wrap";
-        if (speech.Bold && language.SpeechOverride.BoldFontId != null)
-            wrapId = "chat-radio-message-wrap-bolded-language";
+        // Radio names keep headset color; bolded-language wrap uses channel color for the whole line.
         // Goobstation end
 
         if (language.SpeechOverride.Color is { } colorOverride)
@@ -408,10 +406,7 @@ public sealed partial class RadioSystem : EntitySystem
                 }
             }
 
-        var nameString = jobIcon is null // (unrelated to loudspeakers but still goob)
-            ? name
-            : Loc.GetString("chat-radio-message-name-with-icon", ("jobIcon", jobIcon!), ("jobName", jobName ?? ""), ("name", name));
-        // goob end
+        var nameString = name;
 
         return Loc.GetString(wrapId,
             ("channel-color", channel.Color),
@@ -437,8 +432,8 @@ public sealed partial class RadioSystem : EntitySystem
     /// <inheritdoc cref="TelecomServerComponent"/>
     private bool HasActiveServer(MapId mapId, string channelId)
     {
-        var servers = EntityQuery<TelecomServerComponent, EncryptionKeyHolderComponent, ApcPowerReceiverComponent, TransformComponent>();
-        foreach (var (_, keys, power, transform) in servers)
+        var query = EntityQueryEnumerator<TelecomServerComponent, EncryptionKeyHolderComponent, ApcPowerReceiverComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var keys, out var power, out var transform))
         {
             if (transform.MapID == mapId &&
                 power.Powered &&
@@ -447,6 +442,7 @@ public sealed partial class RadioSystem : EntitySystem
                 return true;
             }
         }
+
         return false;
     }
 
@@ -494,8 +490,14 @@ public sealed partial class RadioSystem : EntitySystem
     /// <inheritdoc cref="TelecomServerComponent"/>
     private bool HasActiveTransmitter(MapId mapId)
     {
-        return EntityQuery<TelecomTransmitterComponent, ApcPowerReceiverComponent, TransformComponent>()
-            .Any(server => server.Item3.MapID == mapId && server.Item2.Powered);
+        var query = EntityQueryEnumerator<TelecomTransmitterComponent, ApcPowerReceiverComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var power, out var transform))
+        {
+            if (transform.MapID == mapId && power.Powered)
+                return true;
+        }
+
+        return false;
     }
     // goob end
 }

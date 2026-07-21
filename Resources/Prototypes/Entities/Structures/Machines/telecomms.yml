@@ -6,6 +6,9 @@
   name: telecommunication server
   description: When powered and filled with encryption keys it allows radio headset communication.
   components:
+  # Maps place many servers on one APC; 1000W each from BaseMachinePowered trips MaxLoad.
+  - type: ApcPowerReceiver
+    powerLoad: 200
   - type: Sprite
     sprite: Structures/Machines/telecomms.rsi
     snapCardinals: true

@@ -26,7 +26,7 @@
     gloves: ClothingHandsGlovesSpaceNinja
     outerClothing: ClothingOuterSuitSpaceNinja
     shoes: ClothingShoesSpaceNinja
-    id: AgentIDCard
+    id: NinjaPDA
     ears: ClothingHeadsetNinja
     pocket1: SpiderCharge
     pocket2: PinpointerStation

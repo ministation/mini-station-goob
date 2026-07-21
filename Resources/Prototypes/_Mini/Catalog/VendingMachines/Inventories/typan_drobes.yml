@@ -34,6 +34,8 @@
     ClothingUniformJumpskirtTypanTechnician: 3
     ClothingUniformJumpsuitTypanTechnicalOperationsSupervisor: 2
     ClothingUniformJumpskirtTypanTechnicalOperationsSupervisor: 2
+    ClothingHandsTypanTechnicalOperationsSupervisor: 2
+    ClothingNeckMantleTechnicalOperationsSupervisor: 2
     ClothingShoesColorBlack: 3
     ClothingOuterVestHazard: 3
     ClothingShoesBootsWork: 3
@@ -220,6 +222,8 @@
     ClothingUniformJumpskirtTypanChef: 3
     ClothingUniformJumpsuitTypanTechnicalOperationsSupervisor: 2
     ClothingUniformJumpskirtTypanTechnicalOperationsSupervisor: 2
+    ClothingHandsTypanTechnicalOperationsSupervisor: 2
+    ClothingNeckMantleTechnicalOperationsSupervisor: 2
     ClothingUniformJumpsuitTypanCommunicationsOfficer: 2
     ClothingUniformJumpskirtTypanCommunicationsOfficer: 2
     ClothingUniformJumpsuitTypanMedic: 3
@@ -293,6 +297,8 @@
     ClothingUniformJumpskirtTypanChef: 3
     ClothingUniformJumpsuitTypanTechnicalOperationsSupervisor: 2
     ClothingUniformJumpskirtTypanTechnicalOperationsSupervisor: 2
+    ClothingHandsTypanTechnicalOperationsSupervisor: 2
+    ClothingNeckMantleTechnicalOperationsSupervisor: 2
     ClothingUniformJumpsuitTypanCommunicationsOfficer: 2
     ClothingUniformJumpskirtTypanCommunicationsOfficer: 2
     ClothingUniformJumpsuitTypanMedic: 3
