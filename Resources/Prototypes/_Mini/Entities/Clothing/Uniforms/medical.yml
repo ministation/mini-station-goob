@@ -1,0 +1,35 @@
+- type: entity
+  parent: ClothingUniformJumpsuitMedicalDoctor
+  id: ClothingUniformJumpsuitMedicalDoctor
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Uniforms/suitmedical.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Uniforms/suitmedical.rsi
+
+- type: entity
+  parent: ClothingUniformJumpskirtMedicalDoctor
+  id: ClothingUniformJumpskirtMedicalDoctor
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Uniforms/medicalskirt.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Uniforms/medicalskirt.rsi
+
+- type: entity
+  parent: ClothingOuterCoatLab
+  id: ClothingOuterCoatLab
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Coats/syndi_labcoat_med.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Coats/syndi_labcoat_med.rsi
+
+- type: entity
+  parent: ClothingOuterCoatLabChem
+  id: ClothingOuterCoatLabChem
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Coats/syndi_labcoat.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Coats/syndi_labcoat.rsi

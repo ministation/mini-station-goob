@@ -365,6 +365,23 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Storage/closet.rsi
+    noRot: true
+    layers:
+    - state: typanmedcab
+      map: ["enum.StorageVisualLayers.Base"]
+    - state: typanmedcab_door
+      map: ["enum.StorageVisualLayers.Door"]
+    - state: locked
+      map: ["enum.LockVisualLayers.Lock"]
+      shader: unshaded
+    - state: welded
+      visible: false
+      map: ["enum.WeldableLayers.BaseWelded"]
+    - state: paper
+      visible: false
+      sprite: Structures/Storage/closet_labels.rsi
+      offset: "-0.065,0"
+      map: ["enum.PaperLabelVisuals.Layer"]
   - type: EntityStorageVisuals
     stateBaseClosed: typanmedcab
     stateDoorOpen: typanmedcab_open
@@ -408,6 +425,23 @@
   components:
   - type: Sprite
     sprite: _Mini/Structures/Storage/closet.rsi
+    noRot: true
+    layers:
+    - state: typanchem
+      map: ["enum.StorageVisualLayers.Base"]
+    - state: typanchem_door
+      map: ["enum.StorageVisualLayers.Door"]
+    - state: locked
+      map: ["enum.LockVisualLayers.Lock"]
+      shader: unshaded
+    - state: welded
+      visible: false
+      map: ["enum.WeldableLayers.BaseWelded"]
+    - state: paper
+      visible: false
+      sprite: Structures/Storage/closet_labels.rsi
+      offset: "-0.065,0"
+      map: ["enum.PaperLabelVisuals.Layer"]
   - type: EntityStorageVisuals
     stateBaseClosed: typanchem
     stateDoorOpen: typanchem_open
