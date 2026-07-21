@@ -534,8 +534,6 @@
 #     - type: RandomHumanoidSpawner
 #       settings: CBURNAgent
 
-# randomHumanoidSettings CBURNAgent is defined in Prototypes/Entities/Mobs/Player/humanoid.yml
-
 - type: randomHumanoidSettings
   id: CBURNAgent
   parent: CentcommHumanoid

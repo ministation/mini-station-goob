@@ -31,7 +31,8 @@
     capturePointIntervalSeconds: 45
     tradeZoneSwapScoreThreshold: 50
     minRespawnSeconds: 10
-    maxRespawnSeconds: 60
+    maxRespawnSeconds: 120
+    deathPenaltyStepSeconds: 110
     dropShuttleRespawnDelaySeconds: 120
     stationSeparationTiles: 300
     tradePostMaxDistanceTiles: 500
