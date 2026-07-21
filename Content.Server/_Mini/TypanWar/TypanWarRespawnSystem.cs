@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Goobstation.Shared.Mind.Components;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Mind;
@@ -186,10 +187,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         if (!TypanStationWarRuleSystem.IsWarActive)
             return;
 
-        if (!TryComp<MindContainerComponent>(ev.Target, out var mindContainer) || mindContainer.Mind == null)
-            return;
-
-        if (!TryComp<TypanWarCombatMindComponent>(mindContainer.Mind, out var combat))
+        if (!TryGetCombatMindForMob(ev.Target, out var mindId, out var combat))
             return;
 
         if (ev.NewMobState == MobState.Dead)
@@ -197,18 +195,17 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             if (!TryGetActiveRule(out var rule))
                 return;
 
-            combat.PendingCorpse = ev.Target;
+            TrackCorpse(combat, ev.Target, mindId.Value);
             RecordDeath(combat, rule);
             var delay = CalculateRespawnDelay(rule, combat);
             combat.RespawnAvailableAt = _timing.CurTime + TimeSpan.FromSeconds(delay);
-            Dirty(mindContainer.Mind.Value, combat);
+            Dirty(mindId.Value, combat);
             return;
         }
 
         if (ev.OldMobState == MobState.Dead && ev.NewMobState != MobState.Dead)
         {
-            combat.PendingCorpse = null;
-            Dirty(mindContainer.Mind.Value, combat);
+            UntrackCorpse(combat, ev.Target, mindId.Value);
         }
     }
 
@@ -230,9 +227,8 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         }
 
         // Visit-ghost keeps OwnedEntity on the corpse; TransferTo-ghost already moved the mind.
-        // Ensure we still have a corpse reference if death tracking missed it.
-        if (combat.PendingCorpse == null)
-            TryRememberCorpse(args.Mind.Comp, ghostUid, combat, args.Mind.Owner);
+        // Ensure we still have corpse references if death tracking missed them.
+        CollectCorpsesForMind(args.Mind.Comp, ghostUid, combat, args.Mind.Owner);
 
         if (args.Mind.Comp.UserId is not { } userId || !_players.TryGetSessionById(userId, out var session))
             return;
@@ -302,17 +298,13 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
         _ui.CloseUi(uid, TypanWarRespawnUiKey.Key, args.Actor);
 
-        // Capture before TransferTo: Visit-ghosts still own the corpse as OwnedEntity.
-        var pendingCorpse = combat.PendingCorpse;
-        if (pendingCorpse == null || !Exists(pendingCorpse))
-            pendingCorpse = ResolveCorpseBeforeTransfer(mind, uid);
+        CollectCorpsesForMind(mind, uid, combat, mindId.Value);
 
         // Force-leave returnable ghosts so OwnedEntity actually moves off the corpse.
         _mind.TransferTo(mindId.Value, mob, ghostCheckOverride: true, mind: mind);
         Del(uid);
 
-        CleanupCorpseAfterRespawn(pendingCorpse, mindId.Value);
-        combat.PendingCorpse = null;
+        CleanupPendingCorpses(combat, mindId.Value);
         combat.RespawnAvailableAt = null;
         combat.RespawnUiOpen = false;
         Dirty(mindId.Value, combat);
@@ -326,8 +318,8 @@ public sealed class TypanWarRespawnSystem : EntitySystem
 
     private void OpenRespawnUi(EntityUid ghostUid, EntityUid mindId, TypanWarCombatMindComponent combat, ICommonSession session)
     {
-        if (combat.PendingCorpse == null && TryComp<MindComponent>(mindId, out var mind))
-            TryRememberCorpse(mind, ghostUid, combat, mindId);
+        if (TryComp<MindComponent>(mindId, out var mind))
+            CollectCorpsesForMind(mind, ghostUid, combat, mindId);
 
         _ui.SetUi(ghostUid, TypanWarRespawnUiKey.Key,
             new InterfaceData("TypanWarRespawnBoundUserInterface", interactionRange: 0f, requireInputValidation: false));
@@ -684,30 +676,109 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         return true;
     }
 
-    private void TryRememberCorpse(MindComponent mind, EntityUid ghostUid, TypanWarCombatMindComponent combat, EntityUid mindId)
+    private bool TryGetCombatMindForMob(
+        EntityUid mob,
+        [NotNullWhen(true)] out EntityUid? mindId,
+        [NotNullWhen(true)] out TypanWarCombatMindComponent? combat)
     {
-        var corpse = ResolveCorpseBeforeTransfer(mind, ghostUid);
-        if (corpse == null)
+        mindId = null;
+        combat = null;
+
+        EntityUid? resolvedMind = null;
+        if (TryComp<MindContainerComponent>(mob, out var container) && container.Mind is { } containedMind)
+            resolvedMind = containedMind;
+        else if (_mind.TryGetMind(mob, out var lookedUpMind, out _))
+            resolvedMind = lookedUpMind;
+
+        if (resolvedMind == null || !TryComp(resolvedMind.Value, out TypanWarCombatMindComponent? comp))
+            return false;
+
+        mindId = resolvedMind;
+        combat = comp;
+        return true;
+    }
+
+    private void TrackCorpse(TypanWarCombatMindComponent combat, EntityUid corpse, EntityUid mindId)
+    {
+        if (!TryGetDeadCorpse(corpse, EntityUid.Invalid, out var tracked))
             return;
 
-        combat.PendingCorpse = corpse;
+        if (combat.PendingCorpses.Contains(tracked))
+            return;
+
+        combat.PendingCorpses.Add(tracked);
         Dirty(mindId, combat);
     }
 
-    private EntityUid? ResolveCorpseBeforeTransfer(MindComponent mind, EntityUid ghostUid)
+    private void UntrackCorpse(TypanWarCombatMindComponent combat, EntityUid corpse, EntityUid mindId)
     {
-        // Only the currently owned dead body — OriginalOwnedEntity can be a stale first corpse.
-        if (mind.OwnedEntity is { } owned &&
-            owned != ghostUid &&
-            Exists(owned) &&
-            !HasComp<GhostComponent>(owned) &&
-            TryComp<MobStateComponent>(owned, out var mobState) &&
-            mobState.CurrentState == MobState.Dead)
+        if (!combat.PendingCorpses.Remove(corpse))
+            return;
+
+        Dirty(mindId, combat);
+    }
+
+    private void CollectCorpsesForMind(
+        MindComponent mind,
+        EntityUid ghostUid,
+        TypanWarCombatMindComponent combat,
+        EntityUid mindId)
+    {
+        var changed = false;
+
+        foreach (var candidate in GetCorpseCandidates(mind, ghostUid, mindId))
         {
-            return owned;
+            if (!TryGetDeadCorpse(candidate, ghostUid, out var corpse))
+                continue;
+
+            if (combat.PendingCorpses.Contains(corpse))
+                continue;
+
+            combat.PendingCorpses.Add(corpse);
+            changed = true;
         }
 
-        return null;
+        if (changed)
+            Dirty(mindId, combat);
+    }
+
+    private IEnumerable<EntityUid> GetCorpseCandidates(MindComponent mind, EntityUid ghostUid, EntityUid mindId)
+    {
+        if (mind.OwnedEntity is { } owned)
+            yield return owned;
+
+        if (mind.OriginalOwnedEntity is { } netOriginal &&
+            TryGetEntity(netOriginal, out var original) &&
+            original is { } originalEntity)
+        {
+            yield return originalEntity;
+        }
+
+        if (TryComp<MindLastMobComponent>(mindId, out var lastMob) && lastMob.LastMob is { } lastMobEntity)
+            yield return lastMobEntity;
+    }
+
+    private bool TryGetDeadCorpse(EntityUid entity, EntityUid ghostUid, out EntityUid corpse)
+    {
+        corpse = default;
+
+        if (entity == ghostUid || !Exists(entity) || HasComp<GhostComponent>(entity))
+            return false;
+
+        if (!TryComp<MobStateComponent>(entity, out var mobState) || mobState.CurrentState != MobState.Dead)
+            return false;
+
+        corpse = entity;
+        return true;
+    }
+
+    private void CleanupPendingCorpses(TypanWarCombatMindComponent combat, EntityUid mindId)
+    {
+        foreach (var corpse in combat.PendingCorpses.ToArray())
+            CleanupCorpseAfterRespawn(corpse, mindId);
+
+        combat.PendingCorpses.Clear();
+        Dirty(mindId, combat);
     }
 
     private void CleanupCorpseAfterRespawn(EntityUid? corpse, EntityUid mindId)
