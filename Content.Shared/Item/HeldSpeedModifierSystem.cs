@@ -3,6 +3,7 @@
 using Content.Shared.Clothing;
 using Content.Shared.Hands;
 using Content.Shared.Movement.Systems;
+using Content.Shared.Standing;
 using Robust.Shared.Containers; // Goobstation
 
 namespace Content.Shared.Item;
@@ -14,6 +15,7 @@ public sealed class HeldSpeedModifierSystem : EntitySystem
 {
     [Dependency] private readonly MovementSpeedModifierSystem _movementSpeedModifier = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!; // Goobstation
+    [Dependency] private readonly StandingStateSystem _standing = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -53,6 +55,13 @@ public sealed class HeldSpeedModifierSystem : EntitySystem
     private void OnRefreshMovementSpeedModifiers(EntityUid uid, HeldSpeedModifierComponent component, HeldRelayedEvent<RefreshMovementSpeedModifiersEvent> args)
     {
         var (walkMod, sprintMod) = GetHeldMovementSpeedModifiers(uid, component);
+
+        // Match ClothingSpeedModifier: don't stack held slowdowns with crawl (~0.4x).
+        if (walkMod < 1f && sprintMod < 1f &&
+            _container.TryGetContainingContainer((uid, null, null), out var container) &&
+            _standing.IsDown(container.Owner))
+            return;
+
         args.Args.ModifySpeed(walkMod, sprintMod);
     }
 

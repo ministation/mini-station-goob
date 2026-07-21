@@ -32,14 +32,9 @@ public abstract partial class SharedHandsSystem
 
     private void OnKnockedDownRefresh(Entity<HandsComponent> ent, ref KnockedDownRefreshEvent args)
     {
-        var freeHands = CountFreeHands(ent.AsNullable());
-        var totalHands = GetHandCount(ent.AsNullable());
-
-        // Can't crawl around without any hands.
-        // Entities without the HandsComponent will always have full crawling speed.
-        if (totalHands == 0)
+        // Can't crawl without any hands (e.g. severed / smite). Occupied hands no longer
+        // scale crawl speed — holding items while prone was unusably slow.
+        if (GetHandCount(ent.AsNullable()) == 0)
             args.SpeedModifier = 0f;
-        else
-            args.SpeedModifier *= (float)freeHands / totalHands;
     }
 }
