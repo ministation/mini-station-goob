@@ -638,7 +638,7 @@
     - type: AutoImplant
       implants: [ FreedomImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant ] # Goobstation
     - type: Loadout
-      prototypes: [CBURNGear]
+      prototypes: [ CBURNAgentGear ]
       roleLoadout: [ RoleSurvivalEVA ]
     - type: GhostRole
       name: ghost-role-information-cburn-agent-name
@@ -648,12 +648,11 @@
       - All
       raffle:
         settings: short
-      job: CBURN
+      job: CBURNAgent
     - type: RandomMetadata
       nameSegments:
-      - NamesMilitaryFirst
       - NamesMilitaryLast
-      nameFormat: name-format-ert
+      nameFormat: name-format-ert-officer
 
 ## Central Command
 
