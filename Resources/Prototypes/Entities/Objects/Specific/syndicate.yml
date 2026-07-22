@@ -94,11 +94,11 @@
 - type: entity
   parent: BaseUplinkRadio
   id: BaseUplinkRadio50TCNukeOps
-  suffix: 40 TC, NukeOps reinforcement
+  suffix: 20 TC, NukeOps reinforcement
   components:
   - type: Store
     balance:
-      Telecrystal: 40
+      Telecrystal: 20
   - type: Tag
     tags:
     - NukeOpsUplink

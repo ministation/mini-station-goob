@@ -5,7 +5,7 @@
   parent: BaseUplinkRadio
   # Goobstation - Telecrystal rework
   id: LoneOpsUplink350TC
-  suffix: 350 TC, LoneOps
+  suffix: 60 TC, LoneOps
   components:
   - type: Store
     balance:

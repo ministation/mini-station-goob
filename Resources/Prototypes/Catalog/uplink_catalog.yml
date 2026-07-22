@@ -1411,6 +1411,8 @@
   categories:
   - UplinkAllies
   conditions:
+    - !type:ListingLimitedStockCondition
+      stock: 1
     - !type:StoreWhitelistCondition
       whitelist:
         tags:
@@ -1418,6 +1420,7 @@
       blacklist:
         tags:
           - ContravendUplink
+          - NukeOpsReinforcementUplink
 
 
 - type: listing
