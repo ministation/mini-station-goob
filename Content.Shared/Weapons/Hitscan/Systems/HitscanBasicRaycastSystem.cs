@@ -41,6 +41,7 @@ public sealed class HitscanBasicRaycastSystem : EntitySystem
         var rayCastResults = _physics.IntersectRay(mapCords.MapId, ray, ent.Comp.MaxDistance, shooter, false);
 
         var target = args.Target;
+        var aimMapPosition = args.AimMapPosition;
         // If you are in a container, use the raycast result
         // Otherwise:
         //  1.) Hit the first entity that you targeted.
@@ -51,7 +52,7 @@ public sealed class HitscanBasicRaycastSystem : EntitySystem
             : rayCastResults.FirstOrNull(hit =>
                 hit.HitEntity == target
                 || CompOrNull<RequireProjectileTargetComponent>(hit.HitEntity)?.Active != true
-                || (args.AimMapPosition is { } aim
+                || (aimMapPosition is { } aim
                     && _requireProjectileTarget.IsWithinCrawlHitzone(hit.HitEntity, aim)));
 
         var distanceTried = result?.Distance ?? ent.Comp.MaxDistance;
