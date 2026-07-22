@@ -20,6 +20,7 @@ public sealed class HitscanBasicRaycastSystem : EntitySystem
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly ISharedAdminLogManager _log = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly RequireProjectileTargetSystem _requireProjectileTarget = default!;
 
     private EntityQuery<HitscanBasicVisualsComponent> _visualsQuery;
 
@@ -44,10 +45,14 @@ public sealed class HitscanBasicRaycastSystem : EntitySystem
         // Otherwise:
         //  1.) Hit the first entity that you targeted.
         //  2.) Hit the first entity that doesn't require you to aim at it specifically to be hit.
+        //  3.) Hit a prone entity when aiming directly at / near them (crawl hitzone).
         var result = _container.IsEntityOrParentInContainer(shooter)
             ? rayCastResults.FirstOrNull()
-            : rayCastResults.FirstOrNull(hit => hit.HitEntity == target
-                                                || CompOrNull<RequireProjectileTargetComponent>(hit.HitEntity)?.Active != true);
+            : rayCastResults.FirstOrNull(hit =>
+                hit.HitEntity == target
+                || CompOrNull<RequireProjectileTargetComponent>(hit.HitEntity)?.Active != true
+                || (args.AimMapPosition is { } aim
+                    && _requireProjectileTarget.IsWithinCrawlHitzone(hit.HitEntity, aim)));
 
         var distanceTried = result?.Distance ?? ent.Comp.MaxDistance;
 

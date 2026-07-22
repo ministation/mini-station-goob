@@ -17,6 +17,11 @@ public record struct HitscanTraceEvent
     public EntityCoordinates FromCoordinates;
 
     /// <summary>
+    /// World/map aim point the player was pointing at (mouse). Used for prone hitzone checks.
+    /// </summary>
+    public Vector2? AimMapPosition;
+
+    /// <summary>
     /// Direction that the ray was fired towards.
     /// </summary>
     public Vector2 ShotDirection;

@@ -92,7 +92,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      100: Dead
+      125: Dead # Mini — was 100
     stateAlertDict:
       Alive: BorgHealth
       Dead: BorgDead
@@ -108,8 +108,8 @@
       - !type:GibBehavior { }
   - type: SlowOnDamage
     speedModifierThresholds:
-      60: 0.7
-      80: 0.5
+      75: 0.7
+      100: 0.5
   - type: SiliconDownOnDead
   - type: Inventory
     templateId: ipc
