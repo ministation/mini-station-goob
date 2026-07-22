@@ -39938,7 +39938,7 @@ entities:
       parent: 2
       rot: 3.141592653589793 rad
       pos: 19.5,11.5
-- proto: PlasmaWindoorSecureSyndicateLocked
+- proto: PlasmaWindoorSecureTypanExternalLocked
   entities:
   - uid: 1116
     components:
@@ -53720,7 +53720,7 @@ entities:
       parent: 5416
       rot: -1.5707963267948966 rad
       pos: -1.5,7.5
-- proto: WindoorSecureSyndicateLocked
+- proto: WindoorSecureTypanExternalLocked
   entities:
   - uid: 611
     components:

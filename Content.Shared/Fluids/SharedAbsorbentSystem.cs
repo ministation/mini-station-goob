@@ -8,6 +8,7 @@ using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Fluids.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Item;
+using Content.Shared._Mini.DailyQuests;
 using Content.Shared.Popups;
 using Content.Shared.Timing;
 using Content.Shared.Weapons.Melee;
@@ -357,6 +358,9 @@ public abstract class SharedAbsorbentSystem : EntitySystem
         _melee.DoLunge(user, absorbEnt, Angle.Zero, localPos, null, Angle.Zero, false);
 
         RaiseLocalEvent(target, new FootprintCleanEvent()); // Corvax-Next-Footprints
+
+        var cleanEv = new FloorCleanedEvent(user, 1);
+        RaiseLocalEvent(ref cleanEv);
 
         return true;
     }

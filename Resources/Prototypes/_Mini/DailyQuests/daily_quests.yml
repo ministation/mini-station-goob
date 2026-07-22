@@ -50,47 +50,47 @@
 - type: dailyQuest
   id: TypanCargoBountyRare
   rarity: rare
-  questType: FulfillCargoBounty
+  questType: LatheProduce
   name: daily-quest-typan-cargo-bounty-rare-name
   description: daily-quest-typan-cargo-bounty-rare-desc
   requiredJob: TypanCargotech
-  targetCount: 2
+  targetCount: 5
 
 - type: dailyQuest
   id: TypanCargoBountySuperRare
   rarity: superRare
-  questType: FulfillCargoBounty
+  questType: LatheProduce
   name: daily-quest-typan-cargo-bounty-superRare-name
   description: daily-quest-typan-cargo-bounty-superRare-desc
   requiredJob: TypanCargotech
-  targetCount: 4
+  targetCount: 8
 
 - type: dailyQuest
   id: TypanCargoBountyEpic
   rarity: epic
-  questType: FulfillCargoBounty
+  questType: LatheProduce
   name: daily-quest-typan-cargo-bounty-epic-name
   description: daily-quest-typan-cargo-bounty-epic-desc
   requiredJob: TypanCargotech
-  targetCount: 6
+  targetCount: 12
 
 - type: dailyQuest
   id: TypanCargoBountyMythic
   rarity: mythic
-  questType: FulfillCargoBounty
+  questType: LatheProduce
   name: daily-quest-typan-cargo-bounty-mythic-name
   description: daily-quest-typan-cargo-bounty-mythic-desc
   requiredJob: TypanCargotech
-  targetCount: 10
+  targetCount: 18
 
 - type: dailyQuest
   id: TypanCargoBountyLegendary
   rarity: legendary
-  questType: EarnStationBankBalance
+  questType: LatheProduce
   name: daily-quest-typan-cargo-bounty-legendary-name
   description: daily-quest-typan-cargo-bounty-legendary-desc
   requiredJob: TypanCargotech
-  targetCount: 80000
+  targetCount: 25
 
 
 - type: dailyQuest
@@ -529,52 +529,6 @@
   description: daily-quest-mining-salvage-legendary-desc
   requiredJob: SalvageSpecialist
   targetCount: 15000
-
-
-- type: dailyQuest
-  id: MiningTypanCargoRare
-  rarity: rare
-  questType: EarnMiningPoints
-  name: daily-quest-mining-typan-cargo-rare-name
-  description: daily-quest-mining-typan-cargo-rare-desc
-  requiredJob: TypanCargotech
-  targetCount: 2000
-
-- type: dailyQuest
-  id: MiningTypanCargoSuperRare
-  rarity: superRare
-  questType: EarnMiningPoints
-  name: daily-quest-mining-typan-cargo-superRare-name
-  description: daily-quest-mining-typan-cargo-superRare-desc
-  requiredJob: TypanCargotech
-  targetCount: 4000
-
-- type: dailyQuest
-  id: MiningTypanCargoEpic
-  rarity: epic
-  questType: EarnMiningPoints
-  name: daily-quest-mining-typan-cargo-epic-name
-  description: daily-quest-mining-typan-cargo-epic-desc
-  requiredJob: TypanCargotech
-  targetCount: 6500
-
-- type: dailyQuest
-  id: MiningTypanCargoMythic
-  rarity: mythic
-  questType: EarnMiningPoints
-  name: daily-quest-mining-typan-cargo-mythic-name
-  description: daily-quest-mining-typan-cargo-mythic-desc
-  requiredJob: TypanCargotech
-  targetCount: 10000
-
-- type: dailyQuest
-  id: MiningTypanCargoLegendary
-  rarity: legendary
-  questType: EarnMiningPoints
-  name: daily-quest-mining-typan-cargo-legendary-name
-  description: daily-quest-mining-typan-cargo-legendary-desc
-  requiredJob: TypanCargotech
-  targetCount: 18000
 
 
 - type: dailyQuest

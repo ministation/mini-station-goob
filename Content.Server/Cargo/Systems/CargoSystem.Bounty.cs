@@ -209,6 +209,9 @@ public sealed partial class CargoSystem
             TryRemoveBounty(station, bounty.Value, false);
             FillBountyDatabase(station);
             _adminLogger.Add(LogType.Action, LogImpact.Low, $"Bounty \"{bounty.Value.Bounty}\" (id:{bounty.Value.Id}) was fulfilled");
+
+            var fulfillEv = new CargoBountyFulfilledEvent(station);
+            RaiseLocalEvent(ref fulfillEv);
         }
     }
 

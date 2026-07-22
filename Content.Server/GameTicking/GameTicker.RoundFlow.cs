@@ -508,6 +508,8 @@ namespace Content.Server.GameTicking
             {
                 Log.Error($"Error while sending round end Discord message: {e}");
             }
+
+            RaiseLocalEvent(new RoundEndedEvent(RoundId, RoundDuration()));
         }
 
         public void ShowRoundEndScoreboard(string text = "")

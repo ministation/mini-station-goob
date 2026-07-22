@@ -258,9 +258,6 @@ namespace Content.Server.Lathe
                         var result = Spawn(resultProto, Transform(uid).Coordinates);
                         RaiseLocalEvent(uid, new LatheGetResultEvent(result)); // CorvaxGoob-Prefilled-Printers
 
-                        var latheEv = new LatheItemProducedEvent(uid, comp.LastQuestActor);
-                        RaiseLocalEvent(ref latheEv);
-
                         _stack.TryMergeToContacts(result);
 
                         // <Goobstation> No NTR factorio
@@ -268,6 +265,10 @@ namespace Content.Server.Lathe
                             scannable.Points = 0;
                         // </Goobstation>
                     }
+
+                    // Always count finished recipes for daily LatheProduce quests (incl. ore processors).
+                    var latheEv = new LatheItemProducedEvent(uid, comp.LastQuestActor);
+                    RaiseLocalEvent(ref latheEv);
                 }
 
                 if (currentRecipe.ResultReagents is { } resultReagents &&

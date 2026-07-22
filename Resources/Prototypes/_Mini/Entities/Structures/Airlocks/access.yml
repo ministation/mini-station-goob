@@ -217,3 +217,30 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsTypanExternal ]
+
+- type: entity
+  parent: AirlockGlassShuttleSyndicate
+  id: AirlockExternalGlassShuttleTypanLocked
+  suffix: Typan, External, Locked, Glass
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanSyndicate ]
+
+- type: entity
+  parent: WindoorSecure
+  id: WindoorSecureTypanExternalLocked
+  suffix: Typan, External, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanSyndicate ]
+
+- type: entity
+  parent: WindoorSecurePlasma
+  id: PlasmaWindoorSecureTypanExternalLocked
+  suffix: Typan, External, Locked, Plasma
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsTypanSyndicate ]

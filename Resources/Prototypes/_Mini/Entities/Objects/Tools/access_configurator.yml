@@ -27,6 +27,7 @@
       - TypanService
       - TypanVault
       - TypanExternal
+      - SyndicateAgent
       privilegedIdSlot:
         name: id-card-console-privileged-id
         ejectSound: /Audio/Machines/id_swipe.ogg

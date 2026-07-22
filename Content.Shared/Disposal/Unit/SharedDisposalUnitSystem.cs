@@ -259,11 +259,9 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
             return;
         }
 
-        if (component.Engaged && !TryFlush(uid, component)) // Goobstation - bring back speedflush
-        {
-            // Run ManualEngage to recalculate a new flush time
-            QueueAutomaticEngage(uid, component); // Goobstation - queue it instead
-        }
+        // Recalculate flush delay when power returns; don't flush immediately.
+        if (component.Engaged)
+            QueueAutomaticEngage(uid, component);
     }
 
     private void OnAnchorChanged(EntityUid uid, DisposalUnitComponent component, ref AnchorStateChangedEvent args)
@@ -343,19 +341,27 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
             return;
         }
 
-        var state = GetState(uid, component);
-
-        switch (state)
+        // Force flush overlay so client plays flush anim/sound even if pressure state races.
+        if (flush)
         {
-            case DisposalsPressureState.Flushed:
-                _appearance.SetData(uid, DisposalUnitComponent.Visuals.VisualState, DisposalUnitComponent.VisualState.OverlayFlushing, appearance);
-                break;
-            case DisposalsPressureState.Pressurizing:
-                _appearance.SetData(uid, DisposalUnitComponent.Visuals.VisualState, DisposalUnitComponent.VisualState.OverlayCharging, appearance);
-                break;
-            case DisposalsPressureState.Ready:
-                _appearance.SetData(uid, DisposalUnitComponent.Visuals.VisualState, DisposalUnitComponent.VisualState.Anchored, appearance);
-                break;
+            _appearance.SetData(uid, DisposalUnitComponent.Visuals.VisualState, DisposalUnitComponent.VisualState.OverlayFlushing, appearance);
+        }
+        else
+        {
+            var state = GetState(uid, component);
+
+            switch (state)
+            {
+                case DisposalsPressureState.Flushed:
+                    _appearance.SetData(uid, DisposalUnitComponent.Visuals.VisualState, DisposalUnitComponent.VisualState.OverlayFlushing, appearance);
+                    break;
+                case DisposalsPressureState.Pressurizing:
+                    _appearance.SetData(uid, DisposalUnitComponent.Visuals.VisualState, DisposalUnitComponent.VisualState.OverlayCharging, appearance);
+                    break;
+                case DisposalsPressureState.Ready:
+                    _appearance.SetData(uid, DisposalUnitComponent.Visuals.VisualState, DisposalUnitComponent.VisualState.Anchored, appearance);
+                    break;
+            }
         }
 
         _appearance.SetData(uid, DisposalUnitComponent.Visuals.Handle, component.Engaged
@@ -375,7 +381,8 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
             lightState |= DisposalUnitComponent.LightStates.Full;
         }
 
-        if (state is DisposalsPressureState.Pressurizing or DisposalsPressureState.Flushed)
+        var pressureState = flush ? DisposalsPressureState.Flushed : GetState(uid, component);
+        if (pressureState is DisposalsPressureState.Pressurizing or DisposalsPressureState.Flushed)
         {
             lightState |= DisposalUnitComponent.LightStates.Charging;
         }
@@ -607,7 +614,8 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
             }
         }
 
-        UpdateState(uid, state, component, metadata);
+        // Recompute after flush so we don't wipe NextPressurized with a stale Ready state.
+        UpdateState(uid, GetState(uid, component, metadata), component, metadata);
     }
 
     public bool TryFlush(EntityUid uid, DisposalUnitComponent component)
@@ -657,6 +665,8 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
         // stop queuing NOW
         component.NextFlush = null;
 
+        // Ensure Flushed state so pressure CD / overlay don't get skipped.
+        component.State = DisposalsPressureState.Flushed;
         UpdateVisualState(uid, component, true);
         Dirty(uid, component);
         UpdateUI((uid, component));
@@ -673,11 +683,13 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
     {
         component.Engaged = true;
         UpdateVisualState(uid, component);
-        Dirty(uid, component);
         UpdateUI((uid, component));
 
         if (!CanFlush(uid, component))
+        {
+            Dirty(uid, component);
             return;
+        }
 
         if (!Resolve(uid, ref metadata))
             return;
@@ -685,6 +697,7 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
         var pauseTime = Metadata.GetPauseTime(uid, metadata);
         var nextEngage = GameTiming.CurTime - pauseTime + component.ManualFlushTime;
         component.NextFlush = TimeSpan.FromSeconds(Math.Min((component.NextFlush ?? TimeSpan.MaxValue).TotalSeconds, nextEngage.TotalSeconds));
+        Dirty(uid, component, metadata);
     }
 
     public void Disengage(EntityUid uid, DisposalUnitComponent component)

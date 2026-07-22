@@ -121,6 +121,7 @@ public sealed class DailyQuestSystem : EntitySystem
         SubscribeLocalEvent<MeleeHitEvent>(OnMeleeHit);
         SubscribeLocalEvent<EmotePerformedEvent>(OnEmotePerformed);
         SubscribeLocalEvent<CargoBountyLabelPrintedEvent>(OnCargoBountyLabelPrinted);
+        SubscribeLocalEvent<CargoBountyFulfilledEvent>(OnCargoBountyFulfilled);
         SubscribeLocalEvent<StructureWeldedEvent>(OnStructureWelded);
         SubscribeLocalEvent<MiningPointsClaimedEvent>(OnMiningPointsClaimed);
         SubscribeLocalEvent<BankBalanceUpdatedEvent>(OnBankBalanceUpdated);
@@ -709,7 +710,25 @@ public sealed class DailyQuestSystem : EntitySystem
 
     private void OnCargoBountyLabelPrinted(ref CargoBountyLabelPrintedEvent args)
     {
+        // Keep print as progress so cargo quests stay completable without waiting for a sale.
         TryIncrement(args.Actor, DailyQuestType.FulfillCargoBounty);
+    }
+
+    private void OnCargoBountyFulfilled(ref CargoBountyFulfilledEvent args)
+    {
+        foreach (var session in _playerManager.Sessions)
+        {
+            if (session.Status == SessionStatus.Disconnected)
+                continue;
+
+            if (session.AttachedEntity is not { Valid: true } ent)
+                continue;
+
+            if (_station.GetOwningStation(ent) != args.Station)
+                continue;
+
+            TryIncrement(session, DailyQuestType.FulfillCargoBounty);
+        }
     }
 
     private void OnBankBalanceUpdated(ref BankBalanceUpdatedEvent ev)

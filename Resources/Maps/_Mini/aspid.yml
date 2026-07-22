@@ -4,8 +4,8 @@ meta:
   engineVersion: 283.1.0
   forkId: ""
   forkVersion: ""
-  time: 07/21/2026 01:57:18
-  entityCount: 10296
+  time: 07/22/2026 04:04:33
+  entityCount: 10302
 maps:
 - 1
 grids:
@@ -5429,9 +5429,9 @@ entities:
     - type: Joint
       joints:
         docking15357: !type:WeldJoint
-          stiffness: 9251.699
+          stiffness: 9251.115
           referenceAngle: 1.5707964
-          damping: 1030.7175
+          damping: 1030.6525
           localAnchorB: 0.49999997,-13
           localAnchorA: -24,-30.5
           id: docking15357
@@ -5701,7 +5701,7 @@ entities:
     - type: Transform
       parent: 1
       rot: -1.5707963267948966 rad
-      pos: 72.40329,-55.583387
+      pos: 72.40329,-55.583385
     - type: MapGrid
       chunks:
         0,0:
@@ -6678,7 +6678,7 @@ entities:
       pos: 26.215158,-0.96731424
     - type: Physics
       canCollide: False
-- proto: AirlockExternalGlassShuttleSyndicateLocked
+- proto: AirlockExternalGlassShuttleTypanLocked
   entities:
   - uid: 108
     components:
@@ -16007,6 +16007,31 @@ entities:
     - type: Transform
       parent: 2
       pos: 6.5,-44.5
+  - uid: 6979
+    components:
+    - type: Transform
+      parent: 2
+      pos: -28.5,15.5
+  - uid: 7238
+    components:
+    - type: Transform
+      parent: 2
+      pos: -28.5,16.5
+  - uid: 7609
+    components:
+    - type: Transform
+      parent: 2
+      pos: -28.5,17.5
+  - uid: 7610
+    components:
+    - type: Transform
+      parent: 2
+      pos: -28.5,18.5
+  - uid: 7652
+    components:
+    - type: Transform
+      parent: 2
+      pos: -28.5,19.5
   - uid: 9960
     components:
     - type: Transform
@@ -49641,7 +49666,7 @@ entities:
       pos: 33.73825,1.3386055
     - type: Physics
       canCollide: False
-- proto: PlasmaWindoorSecureSyndicateLocked
+- proto: PlasmaWindoorSecureTypanExternalLocked
   entities:
   - uid: 6947
     components:
@@ -60744,6 +60769,13 @@ entities:
       parent: 2
       rot: -1.5707963267948966 rad
       pos: -2.5,12.5
+- proto: VendingMachineDinnerwareTypan
+  entities:
+  - uid: 7686
+    components:
+    - type: Transform
+      parent: 2
+      pos: 1.5,6.5
 - proto: VendingMachineEngivendTypan
   entities:
   - uid: 8519

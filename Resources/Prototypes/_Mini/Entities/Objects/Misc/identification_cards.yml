@@ -47,6 +47,7 @@
     - TypanVault
     - TypanExternal
     - NuclearOperative
+    - SyndicateAgent
   - type: IdCard
     jobIcon: JobIconSyndicateFormal
 
