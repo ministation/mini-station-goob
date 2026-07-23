@@ -54,7 +54,7 @@ typan-war-manifest =
     {"[color=#A8C8FF]▸ NanoTrasen:[/color] hold capture zones and reach [bold]100 points[/bold]."}
     {"[color=#FFB0B0]▸ Syndicate:[/color] hold capture zones and reach [bold]100 points[/bold]."}
     {"[color=#C8C4D8]▸[/color] If time runs out first, the faction with more points wins."}
-    {"[color=#C8C4D8]▸[/color] Active combat lasts [bold]60 minutes[/bold]."}
+    {"[color=#C8C4D8]▸[/color] Active combat lasts [bold]45 minutes[/bold]."}
     {" "}
     {"[color=#C8C4D8][bold]Capture zones[/bold][/color] [color=#888898](A / B / C)[/color]"}
     {"[color=#C8C4D8]▸[/color] Three 3×3 zones appear when combat begins — NT station, Typan station, and a trade outpost."}

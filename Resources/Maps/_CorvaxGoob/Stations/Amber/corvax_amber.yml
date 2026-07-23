@@ -52007,10 +52007,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: Carpet
   entities:
   - uid: 7109
@@ -72251,10 +72255,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: Envelope
   entities:
   - uid: 18858
@@ -123104,10 +123112,14 @@ entities:
       silo: 26016
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: SciFlash
   entities:
   - uid: 21401
@@ -123334,10 +123346,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: SeedExtractor
   entities:
   - uid: 3306
@@ -123364,10 +123380,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ShardGlass
   entities:
   - uid: 793
@@ -134418,10 +134438,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: UniformShortsRed
   entities:
   - uid: 2293

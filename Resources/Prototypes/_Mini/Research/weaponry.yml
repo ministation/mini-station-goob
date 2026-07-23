@@ -8,12 +8,14 @@
     state: icon
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - WeaponProtoKineticAccelerator
   - ShuttleGunKineticCircuitboard
    # Goobstation R&D Console rework start
-  position: 31,0
+  position: 6,31
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -26,7 +28,9 @@
     state: incendiarydisplay
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - BoxShotgunIncendiary
   - MagazineRifleIncendiary
@@ -40,7 +44,7 @@
   - MagazineBoxLightRifleIncendiary
   - MagazineBoxRifleIncendiary
    # Goobstation R&D Console rework start
-  position: 32,2
+  position: 7,33
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -53,14 +57,16 @@
     state: beanbag
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - MagazineShotgunBeanbag
   - BoxShellTranquilizer
   - BoxBeanbag
   - WeaponDisabler
    # Goobstation R&D Console rework start
-  position: 32,3
+  position: 7,34
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -73,7 +79,9 @@
     state: uranium
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - MagazineRifleUranium
   - MagazinePistolUranium
@@ -86,7 +94,7 @@
   - MagazineBoxRifleUranium
   - BoxShotgunUranium
      # Goobstation R&D Console rework start
-  position: 33,2
+  position: 8,33
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -99,14 +107,16 @@
     state: icon
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - Truncheon
   - TelescopicShield
   - HoloprojectorSecurity
   - WeaponDisablerSMG
      # Goobstation R&D Console rework start
-  position: 33,3
+  position: 8,34
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -119,7 +129,9 @@
     state: payload-explosive-armed
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - SignallerAdvanced
   - SignalTrigger
@@ -129,7 +141,7 @@
   - ExplosivePayload
   - ChemicalPayload
      # Goobstation R&D Console rework start
-  position: 32,1
+  position: 7,32
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -142,11 +154,13 @@
     state: icon
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - ClothingBackpackElectropack
      # Goobstation R&D Console rework start
-  position: 34,3
+  position: 9,34
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -159,12 +173,14 @@
     state: icon
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - WeaponPistolViper
   - WeaponRevolverPython
      # Goobstation R&D Console rework start
-  position: 32,4
+  position: 7,35
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -177,12 +193,14 @@
     state: syndicateknuckleduster
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - ClothingHandsKnuckleDustersSyndicate
   - ThrowingKnife
      # Goobstation R&D Console rework start
-  position: 32,5
+  position: 7,36
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -195,12 +213,14 @@
     state: icon
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - ClothingHandsGlovesNorthStar
   - ClothingHandsGlovesBoxingRigged
      # Goobstation R&D Console rework start
-  position: 33,5
+  position: 8,36
   # technologyPrerequisites:
   # - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -213,11 +233,13 @@
     state: base
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - WeaponSniperMosin
      # Goobstation R&D Console rework start
-  position: 33,4
+  position: 8,35
   technologyPrerequisites:
   - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -229,11 +251,13 @@
     entity: BorgModuleSyndicateWeapon
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - BorgModuleSyndicateWeapon
   - BorgModuleOperative
-  position: 35,2
+  position: 10,33
 
 - type: technology
   id: TypanSecurityBorgModuleT1
@@ -242,10 +266,12 @@
     entity: BorgModuleSecurityStandard
   discipline: TypanWeaponry
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - BorgModuleSecurityStandard
-  position: 35,3
+  position: 10,34
 
 # Tier 2
 
@@ -257,7 +283,9 @@
     state: base
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - PowerCageRechargerCircuitboard
   - PowerCageSmall
@@ -272,7 +300,7 @@
   - ShuttleGunFriendshipCircuitboard
   - ShuttleGunDusterCircuitboard
   # Goobstation R&D Console rework start
-  position: 33,-4
+  position: 8,30
   technologyPrerequisites:
   - TypanSalvageWeapons
   - TypanExplosiveTechnology
@@ -286,11 +314,13 @@
     state: icon
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - ClothingEyesNightVisionGogglesSyndie
      # Goobstation R&D Console rework start
-  position: 34,1
+  position: 9,32
   technologyPrerequisites:
   - TypanMagnetsTech
   # Goobstation R&D Console rework end
@@ -303,11 +333,13 @@
     state: icon
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - WeaponPistolCobra
      # Goobstation R&D Console rework start
-  position: 33,6
+  position: 8,37
   technologyPrerequisites:
   - TypanBasicPistols
   # Goobstation R&D Console rework end
@@ -320,7 +352,9 @@
     state: icon
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - GrenadeShrapnel
   - ExGrenade
@@ -330,7 +364,7 @@
   - ClusterGrenade
   - EmpGrenade
      # Goobstation R&D Console rework start
-  position: 33,1
+  position: 8,32
   technologyPrerequisites:
   - TypanExplosiveTechnology
   # Goobstation R&D Console rework end
@@ -343,11 +377,13 @@
     state: base
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - WeaponSniperHristov
      # Goobstation R&D Console rework start
-  position: 34,4
+  position: 9,35
   technologyPrerequisites:
   - TypanBasicRifles
   # Goobstation R&D Console rework end
@@ -360,11 +396,13 @@
     state: icon
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - WeaponSubMachineGunC20r
      # Goobstation R&D Console rework start
-  position: 34,5
+  position: 9,36
   technologyPrerequisites:
   - TypanBasicRifles
   # Goobstation R&D Console rework end
@@ -377,11 +415,13 @@
     state: icon
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - WeaponRifleAk
      # Goobstation R&D Console rework start
-  position: 34,6
+  position: 9,37
   technologyPrerequisites:
   - TypanBasicRifles
   # Goobstation R&D Console rework end
@@ -394,11 +434,13 @@
     state: icon
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - WeaponShotgunBulldog
      # Goobstation R&D Console rework start
-  position: 34,7
+  position: 9,38
   technologyPrerequisites:
   - TypanBasicRifles
   # Goobstation R&D Console rework end
@@ -410,11 +452,13 @@
     entity: BorgModuleSyndicateWeaponAdvanced
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - BorgModuleSyndicateWeaponAdvanced
   - BorgModuleMartyr
-  position: 36,2
+  position: 11,33
   technologyPrerequisites:
   - TypanBorgModulesT1
 
@@ -425,10 +469,12 @@
     entity: BorgModuleSecurityAdvanced
   discipline: TypanWeaponry
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - BorgModuleSecurityAdvanced
-  position: 36,3
+  position: 11,34
   technologyPrerequisites:
   - TypanSecurityBorgModuleT1
 
@@ -442,12 +488,14 @@
     state: icon
   discipline: TypanWeaponry
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - HolyHandGrenade
   - WhiteholeGrenade
   # Goobstation R&D Console rework start
-  position: 34,-4
+  position: 9,30
   technologyPrerequisites:
   - TypanGrenades
   - TypanBasicShuttleArmament
@@ -461,11 +509,13 @@
     state: icon
   discipline: TypanWeaponry
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - WeaponLightMachineGunL6
   # Goobstation R&D Console rework start
-  position: 35,6
+  position: 10,37
   technologyPrerequisites:
   - TypanAssaultRifles
   # Goobstation R&D Console rework end
@@ -478,11 +528,13 @@
     state: icon
   discipline: TypanWeaponry
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - WeaponLauncherChinaLake
   # Goobstation R&D Console rework start
-  position: 35,1
+  position: 10,32
   # technologyPrerequisites:
   # - TypanGrenades
   # Goobstation R&D Console rework end
@@ -495,11 +547,13 @@
     state: icon
   discipline: TypanWeaponry
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - WeaponEnergyCrossbow
   # Goobstation R&D Console rework start
-  position: 35,0
+  position: 10,31
   # technologyPrerequisites:
   # - TypanGrenades
   # Goobstation R&D Console rework end
@@ -511,10 +565,12 @@
     entity: BorgModuleL6C
   discipline: TypanWeaponry
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - BorgModuleEsword
   - BorgModuleL6C
-  position: 37,2
+  position: 12,33
   technologyPrerequisites:
   - TypanBorgModulesT2

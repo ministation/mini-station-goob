@@ -18242,10 +18242,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 8589
     components:
     - type: Transform
@@ -18253,10 +18257,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 11745
     components:
     - type: Transform
@@ -18264,10 +18272,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 26356
     components:
     - type: Transform
@@ -18280,10 +18292,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: BackgammonBoard
   entities:
   - uid: 7088
@@ -19377,10 +19393,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: BiomassReclaimer
   entities:
   - uid: 11743
@@ -55231,10 +55251,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: Carpet
   entities:
   - uid: 461
@@ -70749,10 +70773,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: CleanerDispenser
   entities:
   - uid: 5517
@@ -74671,10 +74699,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 15337
     components:
     - type: Transform
@@ -74683,10 +74715,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ComputerRoboticsControl
   entities:
   - uid: 6509
@@ -85065,10 +85101,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ExosuitFabricator
   entities:
   - uid: 6537
@@ -85078,10 +85118,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 7745
     components:
     - type: Transform
@@ -85089,10 +85133,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ExplosivesSignMed
   entities:
   - uid: 5197
@@ -134264,10 +134312,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: MedicatedSuture
   entities:
   - uid: 24232
@@ -135163,10 +135215,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 25336
     components:
     - type: Transform
@@ -135174,10 +135230,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: OrganArachnidEyes
   entities:
   - uid: 6462
@@ -141398,10 +141458,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 27772
     components:
     - type: Transform
@@ -141409,10 +141473,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: PsychBed
   entities:
   - uid: 4930
@@ -150406,10 +150474,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ScrapAirlock1
   entities:
   - uid: 24072
@@ -150989,10 +151061,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: SeedExtractor
   entities:
   - uid: 6022
@@ -151014,10 +151090,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ShardGlassPlasma
   entities:
   - uid: 9293
@@ -166722,10 +166802,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: UniformShortsRed
   entities:
   - uid: 10378

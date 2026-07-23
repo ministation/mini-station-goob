@@ -12988,10 +12988,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: BananaPhoneInstrument
   entities:
   - uid: 18234
@@ -13362,10 +13366,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 14382
     components:
     - type: Transform
@@ -42684,10 +42692,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: CleanerDispenser
   entities:
   - uid: 9611
@@ -43883,10 +43895,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 15918
     components:
     - type: Transform
@@ -43895,10 +43911,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 15920
     components:
     - type: Transform
@@ -43906,10 +43926,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ComputerRoboticsControl
   entities:
   - uid: 16051
@@ -52310,10 +52334,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ExtinguisherCabinetFilled
   entities:
   - uid: 1222
@@ -85844,10 +85872,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: MedkitBruteFilled
   entities:
   - uid: 10956
@@ -89501,10 +89533,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ProtolatheMachineCircuitboard
   entities:
   - uid: 9852
@@ -93091,10 +93127,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: SeedExtractor
   entities:
   - uid: 1340
@@ -100744,10 +100784,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: Vaccinator
   entities:
   - uid: 17643

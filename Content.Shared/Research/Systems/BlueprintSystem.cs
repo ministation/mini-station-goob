@@ -67,7 +67,7 @@ public sealed class BlueprintSystem : EntitySystem
 
         _container.Insert(blueprint.Owner, _container.GetContainer(ent, ent.Comp.ContainerId));
 
-        var ev = new TechnologyDatabaseModifiedEvent(blueprint.Comp.ProvidedRecipes.Select(it => it.Id).ToList());
+        var ev = new TechnologyDatabaseModifiedEvent(blueprint.Comp.ProvidedRecipes.ToList());
         RaiseLocalEvent(ent, ref ev);
         return true;
     }

@@ -236417,10 +236417,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: OrganDwarfLiver
   entities:
   - uid: 36391
@@ -254535,10 +254539,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: SciFlash
   entities:
   - uid: 39894
@@ -255204,10 +255212,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: SeedExtractor
   entities:
   - uid: 3717
@@ -255255,10 +255267,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ShardGlass
   entities:
   - uid: 18420
@@ -278040,10 +278056,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: UniformScrubsColorBlue
   entities:
   - uid: 2577

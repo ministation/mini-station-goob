@@ -17522,10 +17522,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: AutolatheMachineCircuitboard
   entities:
   - uid: 1005
@@ -37879,10 +37883,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: Carpet
   entities:
   - uid: 4620
@@ -49812,10 +49820,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ExosuitFabricator
   entities:
   - uid: 6345
@@ -86120,10 +86132,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: Protolathe
   entities:
   - uid: 10783
@@ -90934,10 +90950,14 @@ entities:
       silo: 10051
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ScrapCanister2
   entities:
   - uid: 11506
@@ -91090,10 +91110,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: SecurityWhistle
   entities:
   - uid: 11527
@@ -91127,10 +91151,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: ShardGlass
   entities:
   - uid: 11531
@@ -99719,10 +99747,14 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
     - type: MaterialStorage
       materialWhiteList:
       - Cloth

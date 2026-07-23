@@ -50,7 +50,12 @@ public sealed class TechnologyDiskSystem : EntitySystem
             if (tech.Tier != tier)
                 continue;
 
-            techs.UnionWith(tech.RecipeUnlocks);
+            foreach (var recipe in tech.RecipeUnlocks)
+            {
+                // Tech trees may reference recipes that were not ported; skip invalid ids.
+                if (_protoMan.HasIndex(recipe))
+                    techs.Add(recipe);
+            }
         }
 
         if (techs.Count == 0)
@@ -88,11 +93,13 @@ public sealed class TechnologyDiskSystem : EntitySystem
         var message = Loc.GetString("tech-disk-examine-none");
         if (ent.Comp.Recipes != null && ent.Comp.Recipes.Count > 0)
         {
-            var prototype = _protoMan.Index(ent.Comp.Recipes[0]);
-            message = Loc.GetString("tech-disk-examine", ("result", _lathe.GetRecipeName(prototype)));
+            if (_protoMan.TryIndex(ent.Comp.Recipes[0], out LatheRecipePrototype? prototype))
+            {
+                message = Loc.GetString("tech-disk-examine", ("result", _lathe.GetRecipeName(prototype)));
 
-            if (ent.Comp.Recipes.Count > 1) //idk how to do this well. sue me.
-                message += " " + Loc.GetString("tech-disk-examine-more");
+                if (ent.Comp.Recipes.Count > 1) //idk how to do this well. sue me.
+                    message += " " + Loc.GetString("tech-disk-examine-more");
+            }
         }
         args.PushMarkup(message);
     }
@@ -103,7 +110,9 @@ public sealed class TechnologyDiskSystem : EntitySystem
         {
             foreach (var recipe in entity.Comp.Recipes)
             {
-                var proto = _protoMan.Index(recipe);
+                if (!_protoMan.TryIndex(recipe, out LatheRecipePrototype? proto))
+                    continue;
+
                 args.AddModifier("tech-disk-name-format", extraArgs: ("technology", _lathe.GetRecipeName(proto)));
             }
         }

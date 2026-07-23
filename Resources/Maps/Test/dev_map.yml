@@ -20573,10 +20573,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: UraniumReinforcedWindowDirectional
   entities:
   - uid: 748

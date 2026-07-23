@@ -8849,10 +8849,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
     - type: SiloUtilizer
       silo: 13053
 - proto: BananaPhoneInstrument
@@ -9459,10 +9463,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 9308
     components:
     - type: Transform
@@ -9470,10 +9478,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: BiomassReclaimer
   entities:
   - uid: 12382
@@ -24712,10 +24724,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
     - type: SiloUtilizer
       silo: 13053
 - proto: Carpet
@@ -30873,10 +30889,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
   - uid: 3805
     components:
     - type: Transform
@@ -36073,10 +36093,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
     - type: SiloUtilizer
       silo: 13053
 - proto: ExosuitFabricator
@@ -61525,10 +61549,14 @@ entities:
       silo: 13053
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: OreProcessorMachineCircuitboard
   entities:
   - uid: 9517
@@ -65689,10 +65717,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
     - type: SiloUtilizer
       silo: 13053
 - proto: ProximitySensor
@@ -69496,10 +69528,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
     - type: SiloUtilizer
       silo: 13053
 - proto: Screen
@@ -69603,10 +69639,14 @@ entities:
       silo: 13053
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: SeedExtractor
   entities:
   - uid: 6012
@@ -69623,10 +69663,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
     - type: SiloUtilizer
       silo: 13053
 - proto: ShardGlass
@@ -77001,10 +77045,14 @@ entities:
       parent: 1
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
 - proto: UniformShortsRed
   entities:
   - uid: 8815

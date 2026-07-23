@@ -8,10 +8,12 @@
     state: fab-idle
   discipline: TypanResearch
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - ProximitySensor
-  position: 20,0
+  position: 10,26
 
 - type: technology
   id: TypanBasicAnomalousResearch
@@ -21,14 +23,16 @@
     state: icon
   discipline: TypanResearch
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - AnomalyScanner
   - AnomalyLocator
   - AnomalyLocatorWide
   - APECircuitboard
   - AnomalyVesselCircuitboardTypan
-  position: 19,-1
+  position: 9,25
   technologyPrerequisites:
   - TypanBasicRobotics
 
@@ -40,13 +44,15 @@
     state: display
   discipline: TypanResearch
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - NodeScanner
   - AnalysisComputerCircuitboardTypan
   - ArtifactAnalyzerMachineCircuitboard
   - XenobiologyBountyComputerCircuitboardTypan
-  position: 19,1
+  position: 9,27
   technologyPrerequisites:
   - TypanBasicRobotics
 
@@ -58,11 +64,13 @@
     state: icon
   discipline: TypanResearch
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - ClothingShoesBootsMagSyndie
   - ClothingShoesBootsMoon
-  position: 18,-1
+  position: 8,25
   technologyPrerequisites:
   - TypanBasicAnomalousResearch
 
@@ -74,10 +82,12 @@
     state: icon
   discipline: TypanResearch
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - EnergyDagger
-  position: 18,1
+  position: 8,27
   technologyPrerequisites:
   - TypanBasicXenoArcheology
 
@@ -91,14 +101,16 @@
     state: base
   discipline: TypanResearch
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - WeaponPistolCHIMP
   - WeaponPistolCHIMPUpgradeKit
   - AnomalySynchronizerCircuitboard
   - AnomalyVesselExperimentalCircuitboardTypan
   - WeaponGauntletGorilla
-  position: 17,-2
+  position: 7,24
   technologyPrerequisites:
   - TypanBasicAnomalousResearch
 
@@ -110,10 +122,12 @@
     state: icon
   discipline: TypanResearch
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - ArtifactCrusherMachineCircuitboard
-  position: 17,2
+  position: 7,28
   technologyPrerequisites:
   - TypanBasicXenoArcheology
 
@@ -125,11 +139,13 @@
     state: base
   discipline: TypanResearch
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - WeaponParticleDecelerator
   - HoloprojectorField
-  position: 17,0
+  position: 7,26
   technologyPrerequisites:
   - TypanMagnetsTech
 
@@ -141,11 +157,13 @@
     state: icon
   discipline: TypanResearch
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - EnergySword
   - EnergyShield
-  position: 17,1
+  position: 7,27
   technologyPrerequisites:
   - TypanEnergyDaggers
 
@@ -157,10 +175,12 @@
     state: icon
   discipline: TypanResearch
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - ChameleonProjector
-  position: 17,3
+  position: 7,29
   technologyPrerequisites:
   - TypanEnergyDaggers
 
@@ -174,10 +194,12 @@
     state: icon
   discipline: TypanResearch
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - EmagTypanLimited
-  position: 16,3
+  position: 6,29
   technologyPrerequisites:
   - TypanChameleonProjector
   - TypanAdvancedAnomalyResearch
@@ -190,10 +212,12 @@
     state: icon
   discipline: TypanResearch
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - ClothingShoesBootsMagAdvSynd
-  position: 16,-1
+  position: 6,25
   technologyPrerequisites:
   - TypanDeterrenceTechnologies
 
@@ -205,9 +229,11 @@
     state: icon
   discipline: TypanResearch
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - EnergySwordDouble
-  position: 16,1
+  position: 6,27
   technologyPrerequisites:
   - TypanEnergyWeapons

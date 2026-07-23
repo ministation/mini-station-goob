@@ -10,9 +10,7 @@
   parent: BaseStructure
   id: DocumentPrinter
 
-- type: entity
-  parent: ResearchDisk
-  id: ResearchDataDisk
+# ResearchDataDisk lives in Prototypes/_Mini/Entities/Objects/Specific/Research/disk.yml
 
 - type: entity
   parent: MarkerBase

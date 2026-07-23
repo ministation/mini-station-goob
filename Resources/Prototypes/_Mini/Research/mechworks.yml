@@ -8,12 +8,14 @@
     state: icon
   discipline: TypanMechworks
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - RadarConsoleCircuitboardTypan
   - HandHeldMassScanner
   # Goobstation R&D Console rework start
-  position: 20,-3
+  position: 1,33
   technologyPrerequisites: []
   # Goobstation R&D Console rework end
 
@@ -25,14 +27,16 @@
     state: handdrill
   discipline: TypanMechworks
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - MiningDrill
   - MineralScannerEmpty
   - OreProcessorIndustrialMachineCircuitboardTypan
   - ClothingMaskWeldingGas
   # Goobstation R&D Console rework start
-  position: 20,-4
+  position: 1,32
   technologyPrerequisites:
   - TypanSpaceScanning
   # Goobstation R&D Console rework end
@@ -45,13 +49,15 @@
     state: empty
   discipline: TypanMechworks
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - PowerCellHigh
   - TurboItemRechargerCircuitboard
   - SMESAdvancedMachineCircuitboard
   # Goobstation R&D Console rework start
-  position: 21,-6
+  position: 2,30
   technologyPrerequisites:
   - TypanSpaceScanning
   # Goobstation R&D Console rework end
@@ -64,11 +70,13 @@
     state: base
   discipline: TypanMechworks
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - FlatpackerMachineCircuitboard
   # Goobstation R&D Console rework start
-  position: 21,-4
+  position: 2,32
   technologyPrerequisites:
   - TypanSalvageEquipment
   # Goobstation R&D Console rework end
@@ -81,7 +89,9 @@
     state: building
   discipline: TypanMechworks
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - AutolatheHyperConvectionMachineCircuitboardTypan
   - ProtolatheHyperConvectionMachineCircuitboardTypan
@@ -89,7 +99,7 @@
   - SheetifierMachineCircuitboard
   - ADTBotanicalSeedDNAManipulatorCircuitboard
   # Goobstation R&D Console rework start
-  position: 21,-5
+  position: 2,31
   technologyPrerequisites:
   - TypanSpaceScanning
   # Goobstation R&D Console rework end
@@ -102,7 +112,9 @@
     state: portgen0
   discipline: TypanMechworks
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - PortableGeneratorPacmanMachineCircuitboard
   - PortableGeneratorSuperPacmanMachineCircuitboard
@@ -111,7 +123,7 @@
   - SolarTrackerElectronics
   - EmitterCircuitboard
   # Goobstation R&D Console rework start
-  position: 20,-2
+  position: 1,34
   technologyPrerequisites:
   - TypanAdvancedPowercells
   # Goobstation R&D Console rework end
@@ -124,12 +136,14 @@
     state: freezerOff
   discipline: TypanMechworks
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - ThermomachineFreezerMachineCircuitBoard
   - GasRecyclerMachineCircuitboard
   # Goobstation R&D Console rework start
-  position: 18,-4
+  position: 0,32
   technologyPrerequisites:
   - TypanMechanicalCompression
   # Goobstation R&D Console rework end
@@ -142,7 +156,9 @@
     state: bloodredripley
   discipline: TypanMechworks
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - TypanRipleyHarness
   - TypanRipleyLArm
@@ -152,7 +168,7 @@
   - TypanRipleyCentralElectronics
   - TypanRipleyPeripheralsElectronics
   - MechEquipmentTypanRipleyGrabber
-  position: 20,-5
+  position: 1,31
   technologyPrerequisites:
   - TypanIndustrialEngineering
 
@@ -164,12 +180,14 @@
     state: icon
   discipline: TypanMechworks
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - ClothingOuterEVASuitSyndicate
   - ClothingHeadHelmetSyndicate
   # Goobstation R&D Console rework start
-  position: 21,-3
+  position: 2,33
   technologyPrerequisites:
   - TypanIndustrialEngineering
   # Goobstation R&D Console rework end
@@ -184,7 +202,9 @@
     state: base
   discipline: TypanMechworks
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - ShuttleConsoleCircuitboardTypan
   - CargoShuttleConsoleCircuitboardTypan
@@ -193,7 +213,7 @@
   - GyroscopeMachineCircuitboard
   - MiniGravityGeneratorCircuitboard
   # Goobstation R&D Console rework start
-  position: 22,-4
+  position: 3,32
   technologyPrerequisites:
   - TypanPowerGeneration
   # Goobstation R&D Console rework end
@@ -206,13 +226,15 @@
     state: icon
   discipline: TypanMechworks
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - HellfireFreezerMachineCircuitBoard
   - PortableScrubberMachineCircuitBoard
   - HolofanProjector
   # Goobstation R&D Console rework start
-  position: 18,-5
+  position: 0,31
   technologyPrerequisites:
   - TypanAtmosphericTech
   # Goobstation R&D Console rework end
@@ -225,7 +247,9 @@
     state: icon
   discipline: TypanMechworks
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - SyndicateWelderExperimental
   - SyndicatePowerDrill
@@ -234,7 +258,7 @@
   - Fulton
   - FultonBeacon
   # Goobstation R&D Console rework start
-  position: 22,-5
+  position: 3,31
   technologyPrerequisites:
   - TypanIndustrialEngineering
   # Goobstation R&D Console rework end
@@ -247,14 +271,16 @@
     state: handdrill
   discipline: TypanMechworks
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - MiningDrillDiamond
   - AdvancedMineralScannerEmpty
   - BorgModuleAdvancedMining
   - SalvageExpeditionsComputerCircuitboard
   # Goobstation R&D Console rework start
-  position: 20,-6
+  position: 1,30
   technologyPrerequisites:
   - TypanAdvancedToolsTechnology
   # Goobstation R&D Console rework end
@@ -267,7 +293,9 @@
     state: icon
   discipline: TypanMechworks
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - ClothingEyesHudTypanDiagnostic
   - ClothingEyesHudTypanMedical
@@ -275,7 +303,7 @@
   - ClothingEyesHudTypanResearch
   - ClothingEyesHudTypanAdvanced
   # Goobstation R&D Console rework start
-  position: 23,-5
+  position: 4,31
   technologyPrerequisites:
   - TypanHardsuitsBasic
   # Goobstation R&D Console rework end
@@ -288,12 +316,14 @@
     state: icon
   discipline: TypanMechworks
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - ClothingOuterHardsuitSyndie
   - ClothingOuterHardsuitSyndieMedic
   # Goobstation R&D Console rework start
-  position: 21,-2
+  position: 2,34
   technologyPrerequisites:
   - TypanHardsuitsBasic
   # Goobstation R&D Console rework end
@@ -306,12 +336,14 @@
     state: icon
   discipline: TypanMechworks
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - ClothingOuterHardsuitSyndieElite
   - ClothingOuterHardsuitSyndieCommander
   # Goobstation R&D Console rework start
-  position: 22,-2
+  position: 3,34
   technologyPrerequisites:
   - TypanHardsuits
   # Goobstation R&D Console rework end
@@ -326,12 +358,14 @@
     state: microreactor
   discipline: TypanMechworks
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - PowerCellMicroreactor
   - PowerCellHyper
   # Goobstation R&D Console rework start
-  position: 22,-6
+  position: 3,30
   technologyPrerequisites:
   - TypanHUD
   - TypanEliteHardsuits
@@ -345,11 +379,13 @@
     state: icon
   discipline: TypanMechworks
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - ClothingOuterHardsuitJuggernaut
   # Goobstation R&D Console rework start
-  position: 22,-1
+  position: 3,35
   technologyPrerequisites:
   - TypanEliteHardsuits
   # Goobstation R&D Console rework end

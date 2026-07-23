@@ -11,15 +11,13 @@ public sealed class RequestReadyManifestMessage : EntityEventArgs;
 [Serializable, NetSerializable]
 public sealed class ReadyManifestAntagEntry
 {
-    public string CharacterName { get; }
     public string RoleId { get; }
     public string RoleName { get; }
     public int Cost { get; }
     public int QueuePosition { get; }
 
-    public ReadyManifestAntagEntry(string characterName, string roleId, string roleName, int cost, int queuePosition)
+    public ReadyManifestAntagEntry(string roleId, string roleName, int cost, int queuePosition)
     {
-        CharacterName = characterName;
         RoleId = roleId;
         RoleName = roleName;
         Cost = cost;

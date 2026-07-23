@@ -48471,6 +48471,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: MiniComputerShuttleCargo
   entities:
   - uid: 4822
@@ -60622,6 +60623,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: UprightPianoInstrument
   entities:
   - uid: 8488
@@ -69123,6 +69125,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: WeaponSniperMosin
   entities:
   - uid: 9873
