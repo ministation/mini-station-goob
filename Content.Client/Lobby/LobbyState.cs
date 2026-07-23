@@ -1,4 +1,5 @@
 using Content.Client._Mini.Latejoin;
+using Content.Client._Mini.ReadyManifest;
 using Content.Client.Audio;
 using Content.Client._Donate.UI;
 using Content.Client.GameTicking.Managers;
@@ -85,6 +86,7 @@ namespace Content.Client.Lobby
             //Lobby.CharacterPreview.PatronPerks.OnPressed += OnPatronPerksPressed; CorvaxGoob-Coins
             Lobby.ReadyButton.OnPressed += OnReadyPressed;
             Lobby.ReadyButton.OnToggled += OnReadyToggled;
+            Lobby.ManifestButton.OnPressed += OnManifestPressed;
 
             // Lobby.DonateButton.OnPressed += OnDonatePressed;
 
@@ -115,6 +117,7 @@ namespace Content.Client.Lobby
             //Lobby.CharacterPreview.PatronPerks.OnPressed -= OnPatronPerksPressed; CorvaxGoob-Coins
             Lobby!.ReadyButton.OnPressed -= OnReadyPressed;
             Lobby!.ReadyButton.OnToggled -= OnReadyToggled;
+            Lobby!.ManifestButton.OnPressed -= OnManifestPressed;
             // Lobby.DonateButton.OnPressed -= OnDonatePressed;
             Lobby = null;
         }
@@ -146,6 +149,11 @@ namespace Content.Client.Lobby
         private void OnReadyToggled(BaseButton.ButtonToggledEventArgs args)
         {
             SetReady(args.Pressed);
+        }
+
+        private void OnManifestPressed(BaseButton.ButtonEventArgs args)
+        {
+            _entityManager.System<ReadyManifestSystem>().RequestReadyManifest();
         }
 
         public override void FrameUpdate(FrameEventArgs e)
@@ -210,6 +218,8 @@ namespace Content.Client.Lobby
                 Lobby!.ReadyButton.Text = Loc.GetString("lobby-state-ready-button-join-state");
                 Lobby!.ReadyButton.ToggleMode = false;
                 Lobby!.ReadyButton.Pressed = false;
+                Lobby!.ManifestButton.Visible = false;
+                Lobby!.ObserveButton.Visible = true;
                 Lobby!.ObserveButton.Disabled = false;
             }
             else
@@ -219,6 +229,8 @@ namespace Content.Client.Lobby
                 Lobby!.ReadyButton.ToggleMode = true;
                 Lobby!.ReadyButton.Disabled = false;
                 Lobby!.ReadyButton.Pressed = _gameTicker.AreWeReady;
+                Lobby!.ManifestButton.Visible = true;
+                Lobby!.ObserveButton.Visible = false;
                 Lobby!.ObserveButton.Disabled = true;
             }
 

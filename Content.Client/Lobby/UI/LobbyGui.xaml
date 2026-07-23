@@ -70,7 +70,11 @@
                             </controls:StripeBack>
                             <lobbyUi:LobbyCharacterPreviewPanel Name="CharacterPreview" Access="Public" Visible="True" Margin="0 0 0 2"/>
                             <Button Name="ReadyButton" Access="Public" ToggleMode="True" Text="{Loc 'ui-lobby-ready-up-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
-                            <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public" Text="{Loc 'ui-lobby-observe-button'}" WindowType="{x:Type lobbyUi:ObserveWarningWindow}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
+                            <!-- Manifest (pre-round) / Observe (in-round): same fixed slot, only one visible -->
+                            <BoxContainer Orientation="Vertical" MinSize="250 48" MaxSize="280 48" HorizontalExpand="True" HorizontalAlignment="Stretch">
+                                <Button Name="ManifestButton" Access="Public" Text="{Loc 'ui-lobby-manifest-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
+                                <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public" Text="{Loc 'ui-lobby-observe-button'}" WindowType="{x:Type lobbyUi:ObserveWarningWindow}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48" Visible="False"/>
+                            </BoxContainer>
                             <Button Name="CharacterSetup" Access="Public" Text="{Loc 'lobby-character-preview-panel-character-setup-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
                             <Button Name="OptionsButton" Access="Public" Text="{Loc 'ui-lobby-options-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
                             <Button Name="AuthorizationDiscordButton" StyleClasses="ButtonColorYellow" Access="Public" Text="Авторизация" MinSize="250 48" MaxSize="280 48"/>

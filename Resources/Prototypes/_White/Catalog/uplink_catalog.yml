@@ -7,7 +7,7 @@
   description: uplink-experimental-syndicate-teleporter-desc
   productEntity: ExperimentalSyndicateTeleporter
   cost:
-    Telecrystal: 10 # Goob 50 / 5
+    Telecrystal: 6 # Mini — was 10, -4
   categories:
     - UplinkDisruption
   conditions:
@@ -23,7 +23,7 @@
   icon: { sprite: /Textures/_White/Objects/Weapons/Melee/Daggers/betrayal_knife.rsi, state: icon }
   productEntity: BetrayalKnife
   cost:
-    Telecrystal: 6 # Goob 30 / 5
+    Telecrystal: 10 # Mini — was 6, +4
   categories:
   - UplinkWeaponry
   conditions:
