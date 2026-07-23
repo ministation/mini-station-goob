@@ -1,11 +1,10 @@
-using Content.Shared._CorvaxGoob.CCCVars;
+using Content.Client._Mini.DiscordAuth;
 using System.Numerics;
 using Content.Client._Donate.Mini;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.IoC;
 using Robust.Shared.Configuration;
-using Robust.Shared.Player;
 using Robust.Client.Player;
 
 namespace Content.Client._Donate.UI;
@@ -89,15 +88,7 @@ public sealed class DonateShopWindow : MiniDefaultWindow
             MinSize = new Vector2(250, 40),
             StyleClasses = {"ActionButton"}
         };
-        discordButton.OnPressed += _ =>
-        {
-            var userId = _playerManager.LocalSession?.UserId;
-            if (userId != null)
-            {
-                var requestUrl = $"{_cfg.GetCVar(CCCVars.DiscordAuthApiUrl)}/login/{userId}";
-                _uriOpener.OpenUri(new Uri(requestUrl));
-            }
-        };
+        discordButton.OnPressed += _ => DiscordAuthLink.TryOpen(_cfg, _playerManager, _uriOpener);
         buttonsContainer.AddChild(discordButton);
 
         // Кнопка Boosty

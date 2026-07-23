@@ -115,13 +115,16 @@ public sealed class TTSManager
 
             var soundData = Convert.FromBase64String(firstResult.Audio);
 
-            _cache.Add(cacheKey, soundData);
-            _cacheKeysSeq.Add(cacheKey);
-            if (_cache.Count > _maxCachedCount)
+            // Concurrent identical requests can race past the initial TryGetValue — use TryAdd.
+            if (_cache.TryAdd(cacheKey, soundData))
             {
-                var firstKey = _cacheKeysSeq.First();
-                _cache.Remove(firstKey);
-                _cacheKeysSeq.Remove(firstKey);
+                _cacheKeysSeq.Add(cacheKey);
+                if (_cache.Count > _maxCachedCount)
+                {
+                    var firstKey = _cacheKeysSeq.First();
+                    _cache.Remove(firstKey);
+                    _cacheKeysSeq.Remove(firstKey);
+                }
             }
 
             _sawmill.Debug($"Generated new audio for '{text}' speech by '{speaker}' speaker ({soundData.Length} bytes)");

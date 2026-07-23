@@ -196,6 +196,23 @@
     whitelist:
     - IPC
 
+# Mini: agent objective pinpointer (kept out of stock uplink_catalog so goob merges don't wipe it)
+- type: listing
+  id: UplinkPinpointer
+  name: Пинпоинтер агента
+  description: Показывает местонахождение целей, может быть полезно.
+    Цели нужно выбирать из списка.
+  productEntity: PinpointerSyndicateUniversal
+  cost:
+    Telecrystal: 1
+  categories:
+  - UplinkDeception
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
+
 # ERT / CBRUN bluespace medicine
 - type: listing
   id: UplinkNanoPasteBluespace

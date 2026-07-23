@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Content.Server.Chat.Systems;
 using Content.Server.Radio;
 using Content.Shared._CorvaxGoob.TTS;
+using Robust.Shared.Enums;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -79,6 +80,12 @@ public sealed partial class TTSSystem
 
         var soundData = await requestState.SoundTask;
         if (soundData is null)
+            return;
+
+        // Session may have disconnected while awaiting TTS generation.
+        if (!TryComp(uid, out actor) ||
+            actor.PlayerSession.Status != SessionStatus.InGame ||
+            !actor.PlayerSession.Channel.IsConnected)
             return;
 
         RaiseNetworkEvent(new PlayTTSEvent(soundData, isWhisper: true, isRadio: true, pitch: pitch), actor.PlayerSession);
