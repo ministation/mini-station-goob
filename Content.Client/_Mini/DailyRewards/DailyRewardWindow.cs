@@ -28,6 +28,7 @@ public sealed class DailyRewardWindow : DefaultWindow
 {
     private const string ClockIconPath = "/Textures/_Mini/Interface/Clock.png";
     private const string CoinIconPath = "/Textures/_Mini/Interface/Coin.png";
+    private const float RewardCardWidth = 132f;
     private static readonly string AntagCoinIconPath = AntagTokenCatalog.CurrencyIconPath;
 
     private static readonly Color WindowBackgroundColor = Color.FromHex("#0f1115");
@@ -72,6 +73,8 @@ public sealed class DailyRewardWindow : DefaultWindow
     private string? _pendingReplaceQuestId;
     private int _pendingReplaceSlotIndex = -1;
     private DailyRewardUpdateMessage? _state;
+    private Label? _currentRewardTimerLabel;
+    private TextureRect? _currentRewardTimerIcon;
 
     public DailyRewardWindow()
     {
@@ -269,6 +272,7 @@ public sealed class DailyRewardWindow : DefaultWindow
             _state.DailyQuests);
 
         UpdateActiveTimerUi();
+        UpdateCurrentRewardTimerUi();
         _questTimeSmooth += frameTime;
 
         if (_replaceErrorTimer > 0f)
@@ -419,6 +423,22 @@ public sealed class DailyRewardWindow : DefaultWindow
         _claimButton.Text = Loc.GetString(state.CanClaim
             ? "daily-reward-window-claim-ready"
             : "daily-reward-window-claim-locked");
+
+        UpdateCurrentRewardTimerUi();
+    }
+
+    private void UpdateCurrentRewardTimerUi()
+    {
+        if (_currentRewardTimerLabel == null || _state == null)
+            return;
+
+        var ready = _state.CanClaim;
+        if (_currentRewardTimerIcon != null)
+            _currentRewardTimerIcon.Visible = !ready;
+
+        _currentRewardTimerLabel.Text = ready
+            ? Loc.GetString("daily-reward-card-timer-ready")
+            : FormatCooldown(_state.TimeUntilNextClaim);
     }
 
     private void RefreshState(bool rebuildQuestSection)
@@ -440,6 +460,8 @@ public sealed class DailyRewardWindow : DefaultWindow
             UpdateQuestCardsFromState();
 
         _rewardTrack.RemoveAllChildren();
+        _currentRewardTimerLabel = null;
+        _currentRewardTimerIcon = null;
         for (var i = 0; i < state.Rewards.Count; i++)
         {
             var reward = state.Rewards[i];
@@ -456,54 +478,64 @@ public sealed class DailyRewardWindow : DefaultWindow
         {
             Orientation = LayoutOrientation.Vertical,
             SeparationOverride = 4,
-            MinSize = new Vector2(136, 0)
+            MinSize = new Vector2(RewardCardWidth + 6, 0)
         };
 
         column.AddChild(CreateRewardCard(reward));
 
         if (reward.IsCurrent)
         {
+            var ready = state.CanClaim;
+
             var timerLabel = new Label
             {
-                Text = state.CanClaim
+                Text = ready
                     ? Loc.GetString("daily-reward-card-timer-ready")
-                    : Loc.GetString("daily-reward-card-timer-wait", ("time", FormatCooldown(state.TimeUntilNextClaim))),
-                StyleClasses = { "LabelHeading" },
-                Modulate = ClaimReadyColor,                     // текст зелёный
-                HorizontalAlignment = HAlignment.Center
+                    : FormatCooldown(state.TimeUntilNextClaim),
+                StyleClasses = { "LabelSmall" },
+                Modulate = ClaimReadyColor,
+                HorizontalAlignment = HAlignment.Center,
+                VerticalAlignment = VAlignment.Center
             };
+            _currentRewardTimerLabel = timerLabel;
 
             var timerRow = new BoxContainer
             {
                 Orientation = LayoutOrientation.Horizontal,
-                SeparationOverride = 6,
+                SeparationOverride = 4,
                 HorizontalAlignment = HAlignment.Center,
-                VerticalAlignment = VAlignment.Center
+                VerticalAlignment = VAlignment.Center,
+                HorizontalExpand = true
             };
-            timerRow.AddChild(new TextureRect
+
+            var clockIcon = new TextureRect
             {
                 Texture = _clockTexture,
-                MinSize = new Vector2(16, 16),
-                TextureScale = new Vector2(0.5f, 0.5f),
+                MinSize = new Vector2(12, 12),
+                TextureScale = new Vector2(0.35f, 0.35f),
                 Stretch = TextureRect.StretchMode.KeepCentered,
-                VerticalAlignment = VAlignment.Center
-            });
+                VerticalAlignment = VAlignment.Center,
+                Visible = !ready
+            };
+            _currentRewardTimerIcon = clockIcon;
+            timerRow.AddChild(clockIcon);
             timerRow.AddChild(timerLabel);
 
             var timerPanel = new PanelContainer
             {
-                Margin = new Thickness(0, 2, 0, 0),
+                Margin = new Thickness(0, 2, 6, 0),
+                MinSize = new Vector2(RewardCardWidth, 22),
+                MaxSize = new Vector2(RewardCardWidth, 22),
                 PanelOverride = new StyleBoxFlat
                 {
                     BackgroundColor = TimePanelColor.WithAlpha(0.9f),
-                    BorderColor = PurchasedCardColor,
+                    BorderColor = Color.Transparent,
                     BorderThickness = new Thickness(0),
-                    ContentMarginLeftOverride =24,
-                    ContentMarginTopOverride = 4,
-                    ContentMarginRightOverride =23,
-                    ContentMarginBottomOverride = 4
-                },
-                HorizontalAlignment = HAlignment.Center
+                    ContentMarginLeftOverride = 8,
+                    ContentMarginTopOverride = 2,
+                    ContentMarginRightOverride = 8,
+                    ContentMarginBottomOverride = 2
+                }
             };
             timerPanel.AddChild(timerRow);
 
@@ -761,8 +793,8 @@ public sealed class DailyRewardWindow : DefaultWindow
 
         var panel = new PanelContainer
         {
-            MinSize = new Vector2(132, 124),
-            MaxSize = new Vector2(132, 124),
+            MinSize = new Vector2(RewardCardWidth, 124),
+            MaxSize = new Vector2(RewardCardWidth, 124),
             Margin = new Thickness(0, 0, 6, 0),
             PanelOverride = new StyleBoxFlat
             {

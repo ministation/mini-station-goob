@@ -1,6 +1,6 @@
 ﻿- type: gameMap
   id: Typan
-  mapName: 'Станция синдиката'
+  mapName: 'НИКК Тайпан'
   mapPath: /Maps/typan.yml
   minPlayers: 0
   stations:

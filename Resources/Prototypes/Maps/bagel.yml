@@ -2,7 +2,7 @@
 
 - type: gameMap
   id: Bagel
-  mapName: 'Bagel Station'
+  mapName: 'NT14 Багель'
   mapPath: /Maps/_Goobstation/bagel.yml # Goobstation - custom bagel
   minPlayers: 35
   maxPlayers: 80
@@ -11,7 +11,7 @@
       stationProto: StandardNanotrasenStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: '{0} Bagel Station {1}'
+          mapNameTemplate: '{0} Багель {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

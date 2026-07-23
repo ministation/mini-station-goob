@@ -2,7 +2,7 @@
 
 - type: gameMap
   id: Leonid
-  mapName: "Leonid Station"
+  mapName: 'NTB Леонид'
   mapPath: /Maps/_Goobstation/leonid.yml
   minPlayers: 35
   stations:
@@ -10,7 +10,7 @@
       stationProto: StandardNanotrasenStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: "{0} Leonid Station {1}"
+          mapNameTemplate: '{0} Леонид {1}'
           nameGenerator: !type:NanotrasenNameGenerator
             prefixCreator: "B"
         - type: StationEmergencyShuttle

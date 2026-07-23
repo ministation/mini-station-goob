@@ -4,8 +4,8 @@ meta:
   engineVersion: 283.1.0
   forkId: ""
   forkVersion: ""
-  time: 07/22/2026 04:03:33
-  entityCount: 9058
+  time: 07/23/2026 07:24:51
+  entityCount: 9078
 maps:
 - 1
 grids:
@@ -7964,7 +7964,7 @@ entities:
       pos: 20.5,9.5
     - type: Door
       state: Opening
-      secondsUntilStateChange: -25486.766
+      secondsUntilStateChange: -26036.521
     - type: DeviceLinkSource
       lastSignals:
         DoorStatus: True
@@ -9583,6 +9583,11 @@ entities:
       pos: 13.5,19.5
 - proto: CableApcExtension
   entities:
+  - uid: 206
+    components:
+    - type: Transform
+      parent: 2
+      pos: 12.5,19.5
   - uid: 349
     components:
     - type: Transform
@@ -13913,6 +13918,26 @@ entities:
     - type: Transform
       parent: 2
       pos: 28.5,-15.5
+  - uid: 5477
+    components:
+    - type: Transform
+      parent: 2
+      pos: 11.5,19.5
+  - uid: 5609
+    components:
+    - type: Transform
+      parent: 2
+      pos: 8.5,19.5
+  - uid: 5610
+    components:
+    - type: Transform
+      parent: 2
+      pos: 7.5,19.5
+  - uid: 5760
+    components:
+    - type: Transform
+      parent: 2
+      pos: 9.5,19.5
   - uid: 7568
     components:
     - type: Transform
@@ -15043,6 +15068,51 @@ entities:
     - type: Transform
       parent: 2
       pos: 20.5,19.5
+  - uid: 9062
+    components:
+    - type: Transform
+      parent: 2
+      pos: 12.5,18.5
+  - uid: 9068
+    components:
+    - type: Transform
+      parent: 2
+      pos: 10.5,8.5
+  - uid: 9069
+    components:
+    - type: Transform
+      parent: 2
+      pos: 11.5,8.5
+  - uid: 9070
+    components:
+    - type: Transform
+      parent: 2
+      pos: 12.5,8.5
+  - uid: 9071
+    components:
+    - type: Transform
+      parent: 2
+      pos: 13.5,8.5
+  - uid: 9072
+    components:
+    - type: Transform
+      parent: 2
+      pos: 13.5,5.5
+  - uid: 9073
+    components:
+    - type: Transform
+      parent: 2
+      pos: 13.5,6.5
+  - uid: 9074
+    components:
+    - type: Transform
+      parent: 2
+      pos: 13.5,7.5
+  - uid: 9075
+    components:
+    - type: Transform
+      parent: 2
+      pos: 10.5,19.5
 - proto: CableApcStack
   entities:
   - uid: 1208
@@ -22948,12 +23018,6 @@ entities:
       pos: -16.5,8.5
 - proto: ComputerComms
   entities:
-  - uid: 206
-    components:
-    - type: Transform
-      parent: 2
-      rot: -1.5707963267948966 rad
-      pos: 12.5,-17.5
   - uid: 2400
     components:
     - type: Transform
@@ -23766,34 +23830,30 @@ entities:
       pos: 13.485455,-1.4102929
     - type: Physics
       canCollide: False
-- proto: CryogenicSleepUnitSpawner
+- proto: CryogenicSleepUnitSpawnerLateJoin
   entities:
+  - uid: 2426
+    components:
+    - type: Transform
+      parent: 2
+      rot: 3.141592653589793 rad
+      pos: -32.5,13.5
   - uid: 2471
     components:
     - type: Transform
       parent: 2
-      rot: 1.5707963267948966 rad
-      pos: -32.5,13.5
+      pos: -29.5,12.5
   - uid: 2472
     components:
     - type: Transform
       parent: 2
-      rot: 1.5707963267948966 rad
-      pos: -32.5,12.5
-- proto: CryogenicSleepUnitSpawnerLateJoin
-  entities:
+      pos: -29.5,13.5
   - uid: 2473
     components:
     - type: Transform
       parent: 2
-      rot: -1.5707963267948966 rad
-      pos: -29.5,13.5
-  - uid: 2474
-    components:
-    - type: Transform
-      parent: 2
-      rot: -1.5707963267948966 rad
-      pos: -29.5,12.5
+      rot: 3.141592653589793 rad
+      pos: -32.5,12.5
 - proto: CryoPod
   entities:
   - uid: 2475
@@ -26578,6 +26638,13 @@ entities:
     - type: Transform
       parent: 2
       pos: -15.5,42.5
+- proto: DresserCaptainFilled
+  entities:
+  - uid: 9067
+    components:
+    - type: Transform
+      parent: 2
+      pos: -9.5,-2.5
 - proto: DresserChiefEngineerFilled
   entities:
   - uid: 2895
@@ -42694,6 +42761,36 @@ entities:
       parent: 8771
       rot: 3.141592653589793 rad
       pos: -1.5,-2.5
+  - uid: 9063
+    components:
+    - type: Transform
+      parent: 2
+      rot: 1.5707963267948966 rad
+      pos: 0.5,40.5
+  - uid: 9064
+    components:
+    - type: Transform
+      parent: 2
+      rot: -1.5707963267948966 rad
+      pos: -46.5,18.5
+  - uid: 9065
+    components:
+    - type: Transform
+      parent: 2
+      rot: -1.5707963267948966 rad
+      pos: -56.5,21.5
+  - uid: 9066
+    components:
+    - type: Transform
+      parent: 2
+      rot: -1.5707963267948966 rad
+      pos: -56.5,17.5
+  - uid: 9076
+    components:
+    - type: Transform
+      parent: 2
+      rot: 1.5707963267948966 rad
+      pos: -18.5,30.5
 - proto: PoweredSmallLightEmpty
   entities:
   - uid: 4807
@@ -47217,12 +47314,6 @@ entities:
     - type: Transform
       parent: 2
       pos: -16.849047,-6.0545735
-  - uid: 5477
-    components:
-    - type: Transform
-      parent: 2
-      rot: 1.5707963267948966 rad
-      pos: 40.544044,-16.475271
 - proto: SheetGlass
   entities:
   - uid: 5478
@@ -49031,6 +49122,11 @@ entities:
     - type: Transform
       parent: 2
       pos: -27.5,-4.5
+  - uid: 2474
+    components:
+    - type: Transform
+      parent: 2
+      pos: 8.5,38.5
   - uid: 5671
     components:
     - type: Transform
@@ -49047,6 +49143,11 @@ entities:
       parent: 2
       pos: -50.5,24.5
   - uid: 9031
+    components:
+    - type: Transform
+      parent: 2
+      pos: 5.5,-2.5
+  - uid: 9078
     components:
     - type: Transform
       parent: 2
@@ -49233,11 +49334,6 @@ entities:
     - type: Transform
       parent: 2
       pos: -12.5,5.5
-  - uid: 5760
-    components:
-    - type: Transform
-      parent: 2
-      pos: 22.5,-29.5
 - proto: SpawnPointHeadOfSecurity
   entities:
   - uid: 5716
@@ -52789,6 +52885,13 @@ entities:
     - type: Transform
       parent: 2
       pos: 43.5,-13.5
+- proto: VendingBarDrobe
+  entities:
+  - uid: 9077
+    components:
+    - type: Transform
+      parent: 2
+      pos: 10.5,-29.5
 - proto: VendingMachineAtmosDrobe
   entities:
   - uid: 6115

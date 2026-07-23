@@ -2,7 +2,7 @@
 
 - type: gameMap
   id: Cog
-  mapName: 'Cog'
+  mapName: 'NTR4 Ког'
   mapPath: /Maps/_Goobstation/cog.yml
   minPlayers: 40
   stations:
@@ -10,7 +10,7 @@
       stationProto: StandardNanotrasenStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: '{0} Cog {1}'
+          mapNameTemplate: '{0} Ког {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: 'R4' # R4407/Goon. GS isn't as cool sounding.

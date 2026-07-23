@@ -1,6 +1,6 @@
 - type: gameMap
   id: Snowball
-  mapName: 'Snowball Station'
+  mapName: 'NT14 Сноуболл'
   mapPath: /Maps/snowball.yml
   minPlayers: 15
   maxPlayers: 50
@@ -9,7 +9,7 @@
       stationProto: StandardNanotrasenStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: '{0} Snowball Station {1}'
+          mapNameTemplate: '{0} Сноуболл {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'
