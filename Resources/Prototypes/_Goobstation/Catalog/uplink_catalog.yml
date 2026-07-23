@@ -338,7 +338,7 @@
   icon: { sprite:  /Textures/_Goobstation/Objects/Weapons/Guns/Battery/miniature_ebow.rsi, state: icon }
   productEntity: MiniatureEnergyCrossbow
   cost:
-    Telecrystal: 10
+    Telecrystal: 8 # Mini — was 10, -2
   categories:
   - UplinkWeaponry
   conditions:
@@ -369,7 +369,7 @@
   icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Rifles/burner.rsi, state: icon }
   productEntity: WeaponRifleBurner
   cost:
-    Telecrystal: 20 # don't kill me piras
+    Telecrystal: 16 # Mini — was 20, -4
   categories:
   - UplinkWeaponry
   conditions:
@@ -432,7 +432,7 @@
   description: uplink-anaconda-desc
   productEntity: WeaponPistolAnaconda
   cost:
-    Telecrystal: 8 # This + esword = 75 TC
+    Telecrystal: 6 # Mini — was 8, -2
   categories:
   - UplinkWeaponry
   conditions:
@@ -494,7 +494,7 @@
   description: uplink-combat-shotgun-desc
   productEntity: WeaponShotgunCombat
   cost:
-    Telecrystal: 10
+    Telecrystal: 13 # Mini — was 10, +3
   categories:
     -  UplinkWeaponry
   conditions:
@@ -1654,7 +1654,7 @@
   description: uplink-capoeira-desc
   productEntity: CapoeiraManual
   cost:
-    Telecrystal: 7
+    Telecrystal: 12 # Mini — was 7, +5
   categories:
   - UplinkWeaponry
 
@@ -1809,7 +1809,7 @@
   icon: { sprite: /Textures/_NF/Objects/Weapons/Melee/energy_pickaxe.rsi, state: icon }
   productEntity: NFEnergyPickaxe
   cost:
-    Telecrystal: 6 # Worse than esword for combat, better for breaching
+    Telecrystal: 7 # Mini — was 6, +1
   categories:
   - UplinkWeaponry
   conditions:

@@ -238,7 +238,7 @@ public sealed partial class GoobCVars
     ///     Sets the size of the hitbox where projectile/laser will hit any entity regardless of crawling
     /// </summary>
     public static readonly CVarDef<float> CrawlHitzoneSize =
-        CVarDef.Create("goob.crawl_hitzone_size", 0.4f, CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("goob.crawl_hitzone_size", 0.85f, CVar.SERVER | CVar.REPLICATED);
 
     #region Blob
     public static readonly CVarDef<int> BlobMax =

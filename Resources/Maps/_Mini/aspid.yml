@@ -44848,7 +44848,7 @@ entities:
       parent: 2
       pos: 3.5,-5.5
     - type: WarpPoint
-      location: ННКСС Тайпан
+      location: НИКК Аспид
 - proto: Girder
   entities:
   - uid: 6206

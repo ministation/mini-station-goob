@@ -1,11 +1,11 @@
 - type: latheRecipe
   parent: BaseRoboticsRecipe
   id: NanoPaste
-  result: NanoPaste
+  result: NanoPaste1
   categories:
   - Medical
   completetime: 2
   materials:
-    Steel: 200
-    Plastic: 100
-    Glass: 100
+    Steel: 20
+    Plastic: 10
+    Glass: 10

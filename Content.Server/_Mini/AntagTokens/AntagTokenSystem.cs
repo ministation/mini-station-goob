@@ -25,6 +25,7 @@ using Content.Server.Roles.Jobs;
 using Content.Shared._Mini.AntagUnlock;
 using Content.Shared._Mini.AntagTokens;
 using Content.Shared._Mini.JobUnlock;
+using Content.Shared._Mini.ReadyManifest;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Content.Shared.Roles;
@@ -603,6 +604,7 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingDepositUsedDonorDailyFree = useDonorDailyFree;
             PersistState(session.UserId, state);
             SendState(session.UserId);
+            RaiseLocalEvent(new AntagTokenQueueChangedEvent());
             return true;
         }
 
@@ -674,6 +676,7 @@ public sealed class AntagTokenSystem : EntitySystem
         RefundPendingDeposit(userId, state);
         PersistState(userId, state);
         SendState(userId);
+        RaiseLocalEvent(new AntagTokenQueueChangedEvent());
         return true;
     }
 
@@ -1964,6 +1967,7 @@ public sealed class AntagTokenSystem : EntitySystem
         if (pending.Count <= slotForPending)
             return;
 
+        var raisedQueueChanged = false;
         for (var i = slotForPending; i < pending.Count; i++)
         {
             var uid = pending[i].UserId;
@@ -1973,12 +1977,16 @@ public sealed class AntagTokenSystem : EntitySystem
             RefundPendingDeposit(uid, state);
             PersistState(uid, state);
             SendState(uid);
+            raisedQueueChanged = true;
 
             if (_playerManager.TryGetSessionById(uid, out var session))
             {
                 ShowPopup(session, Loc.GetString("antag-tokens-popup-deposit-refunded-queue-cap"));
             }
         }
+
+        if (raisedQueueChanged)
+            RaiseLocalEvent(new AntagTokenQueueChangedEvent());
     }
 
     private void EnforceGhostTrackPending(int max)
@@ -2372,6 +2380,58 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             state.LastDonorDailyFreeAntagDay = 0;
         else
             state.Balance += role.Cost;
+    }
+
+    /// <summary>
+    /// Ordered lobby antag-token deposits for the ready-manifest window.
+    /// </summary>
+    public List<ReadyManifestAntagEntry> GetLobbyAntagQueueForManifest()
+    {
+        var pending = new List<(NetUserId UserId, string RoleId, DateTime QueuedAt)>();
+        foreach (var (userId, state) in _states)
+        {
+            if (state.PendingDepositRoleId == null)
+                continue;
+
+            if (!_listings.TryGetListing(state.PendingDepositRoleId, out var depRole) ||
+                depRole.Mode is not (AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.Dual))
+            {
+                continue;
+            }
+
+            pending.Add((userId, depRole.Id, state.PendingDepositQueuedAtUtc ?? DateTime.MinValue));
+        }
+
+        pending.Sort(static (a, b) => a.QueuedAt.CompareTo(b.QueuedAt));
+
+        var result = new List<ReadyManifestAntagEntry>(pending.Count);
+        for (var i = 0; i < pending.Count; i++)
+        {
+            var (userId, roleId, _) = pending[i];
+            if (!_listings.TryGetListing(roleId, out var role))
+                continue;
+
+            var characterName = "?";
+            if (_preferences.TryGetCachedPreferences(userId, out var prefs) &&
+                prefs.SelectedCharacter is HumanoidCharacterProfile profile)
+            {
+                characterName = profile.Name;
+            }
+            else if (_playerManager.TryGetSessionById(userId, out var session))
+            {
+                characterName = session.Name;
+            }
+
+            var roleName = Loc.GetString(role.NameLocKey);
+            result.Add(new ReadyManifestAntagEntry(
+                characterName,
+                role.Id,
+                roleName,
+                role.Cost,
+                i + 1));
+        }
+
+        return result;
     }
 
     private void RefundPendingDeposit(NetUserId userId, PlayerTokenState state)

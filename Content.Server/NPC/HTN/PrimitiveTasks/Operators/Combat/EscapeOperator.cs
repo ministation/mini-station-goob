@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Content.Server.NPC.Components;
 using Content.Server.Storage.EntitySystems;
 using Content.Shared.CombatMode;
+using Content.Shared.Storage.Components;
 using Robust.Server.Containers;
 
 namespace Content.Server.NPC.HTN.PrimitiveTasks.Operators.Combat.Melee;
@@ -34,7 +35,7 @@ public sealed partial class EscapeOperator : HTNOperator, IHtnConditionalShutdow
         var owner = blackboard.GetValue<EntityUid>(NPCBlackboard.Owner);
         var target = blackboard.GetValue<EntityUid>(TargetKey);
 
-        if (_entityStorage.TryOpenStorage(owner, target))
+        if (TryEscape(owner, target))
         {
             TaskShutdown(blackboard, HTNOperatorStatus.Finished);
             return;
@@ -59,12 +60,28 @@ public sealed partial class EscapeOperator : HTNOperator, IHtnConditionalShutdow
             return (false, null);
         }
 
-        if (_entityStorage.TryOpenStorage(owner, target))
+        // Only attempt open during planning for real entity storage.
+        // Non-storage containers (grinders, etc.) are handled in Startup/Update via remove.
+        if (_entManager.HasComponent<EntityStorageComponent>(target) &&
+            _entityStorage.TryOpenStorage(owner, target))
         {
             return (false, null);
         }
 
         return (true, null);
+    }
+
+    /// <summary>
+    /// Opens entity storage if possible, otherwise force-removes from a regular container.
+    /// Avoids Resolve spam when the container owner is not an <see cref="EntityStorageComponent"/>.
+    /// </summary>
+    private bool TryEscape(EntityUid owner, EntityUid target)
+    {
+        if (_entManager.HasComponent<EntityStorageComponent>(target))
+            return _entityStorage.TryOpenStorage(owner, target);
+
+        // Regular containers (grinders, inventories, etc.) — yank out instead of resolving EntityStorage.
+        return _container.TryRemoveFromContainer(owner, force: true) && !_container.IsEntityInContainer(owner);
     }
 
     public void ConditionalShutdown(NPCBlackboard blackboard)
@@ -107,7 +124,7 @@ public sealed partial class EscapeOperator : HTNOperator, IHtnConditionalShutdow
             }
             else
             {
-                if (_entityStorage.TryOpenStorage(owner, target))
+                if (TryEscape(owner, target))
                 {
                     status = HTNOperatorStatus.Finished;
                 }

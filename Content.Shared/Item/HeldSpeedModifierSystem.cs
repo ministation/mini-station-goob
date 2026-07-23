@@ -56,7 +56,7 @@ public sealed class HeldSpeedModifierSystem : EntitySystem
     {
         var (walkMod, sprintMod) = GetHeldMovementSpeedModifiers(uid, component);
 
-        // Match ClothingSpeedModifier: don't stack held slowdowns with crawl (~0.4x).
+        // Match ClothingSpeedModifier: don't stack held slowdowns with crawl (~0.45x).
         if (walkMod < 1f && sprintMod < 1f &&
             _container.TryGetContainingContainer((uid, null, null), out var container) &&
             _standing.IsDown(container.Owner))

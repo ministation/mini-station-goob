@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Numerics;
 using Content.Goobstation.Common.CCVar; //Goobstation - Crawling
 using Content.Goobstation.Common.Projectiles;
 using Content.Shared._DV.Abilities;
 using Content.Shared.Projectiles;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Standing;
+using Robust.Shared.Map;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Containers;
 using Robust.Shared.Physics.Components;
@@ -20,8 +22,11 @@ public sealed class RequireProjectileTargetSystem : EntitySystem
     // Goobstation
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly EntityLookupSystem _lookup = default!;
 
     private float _crawlHitzoneSize; //Goobstation
+
+    public float CrawlHitzoneSize => _crawlHitzoneSize;
 
     public override void Initialize()
     {
@@ -29,6 +34,43 @@ public sealed class RequireProjectileTargetSystem : EntitySystem
         SubscribeLocalEvent<RequireProjectileTargetComponent, StoodEvent>(StandingBulletHit);
         SubscribeLocalEvent<RequireProjectileTargetComponent, DownedEvent>(LayingBulletPass);
         _cfg.OnValueChanged(GoobCVars.CrawlHitzoneSize, value => _crawlHitzoneSize = value, true); //Goobstation - Crawling
+    }
+
+    /// <summary>
+    /// Finds a prone / require-target entity near the aim point so aimed shots still hit them.
+    /// </summary>
+    public EntityUid? TryGetAimedProneTarget(EntityCoordinates aimCoordinates, float? range = null)
+    {
+        var mapCoords = _transform.ToMapCoordinates(aimCoordinates);
+        if (mapCoords.MapId == MapId.Nullspace)
+            return null;
+
+        var hitzone = range ?? _crawlHitzoneSize;
+        if (hitzone <= 0f)
+            return null;
+
+        EntityUid? best = null;
+        var bestDist = hitzone;
+
+        foreach (var uid in _lookup.GetEntitiesInRange(mapCoords, hitzone))
+        {
+            if (!TryComp<RequireProjectileTargetComponent>(uid, out var require) || !require.Active)
+                continue;
+
+            var dist = (_transform.GetMapCoordinates(uid).Position - mapCoords.Position).Length();
+            if (dist > bestDist)
+                continue;
+
+            bestDist = dist;
+            best = uid;
+        }
+
+        return best;
+    }
+
+    public bool IsWithinCrawlHitzone(EntityUid entity, Vector2 aimMapPosition)
+    {
+        return (_transform.GetMapCoordinates(entity).Position - aimMapPosition).Length() <= _crawlHitzoneSize;
     }
 
     private void PreventCollide(Entity<RequireProjectileTargetComponent> ent, ref PreventCollideEvent args)
@@ -73,7 +115,7 @@ public sealed class RequireProjectileTargetSystem : EntitySystem
             if (TerminatingOrDeleted(shooter.Value))
                 return;
 
-            if ((_transform.GetMapCoordinates(ent).Position - projectile.TargetCoordinates).Length() <= _crawlHitzoneSize) //Goobstation
+            if (IsWithinCrawlHitzone(ent, projectile.TargetCoordinates)) //Goobstation
                 return;
 
             if (!_container.IsEntityOrParentInContainer(shooter.Value))

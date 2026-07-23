@@ -39,6 +39,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Content.Shared.Damage.Components;
 using Content.Shared.Item;
 using Content.Goobstation.Common.Weapons.Multishot;
 
@@ -72,6 +73,7 @@ public abstract partial class SharedGunSystem : EntitySystem
     [Dependency] protected readonly SharedTransformSystem TransformSystem = default!;
     [Dependency] protected readonly TagSystem TagSystem = default!;
     [Dependency] protected readonly ThrowingSystem ThrowingSystem = default!;
+    [Dependency] private readonly RequireProjectileTargetSystem _requireProjectileTarget = default!;
 
     /// <summary>
     /// Default projectile speed
@@ -176,6 +178,10 @@ public abstract partial class SharedGunSystem : EntitySystem
         var potentialTarget = GetEntity(msg.Target);
         if (gun.Comp.Target == null || !gun.Comp.BurstActivated || !gun.Comp.LockOnTargetBurst)
             gun.Comp.Target = potentialTarget;
+
+        // Clicking a prone body often fails sprite hit-tests; resolve target from aim point.
+        if (gun.Comp.Target == null && gun.Comp.ShootCoordinates is { } aimCoords)
+            gun.Comp.Target = _requireProjectileTarget.TryGetAimedProneTarget(aimCoords);
         // Goob edit end
         AttemptShoot(user.Value, gun);
     }

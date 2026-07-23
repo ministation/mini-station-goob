@@ -192,6 +192,7 @@ public sealed partial class GunSystem : SharedGunSystem
                     var hitscanEv = new HitscanTraceEvent
                     {
                         FromCoordinates = fromCoordinates,
+                        AimMapPosition = toMapBeforeRecoil,
                         ShotDirection = mapDirection.Normalized(),
                         Gun = gun,
                         Shooter = user,

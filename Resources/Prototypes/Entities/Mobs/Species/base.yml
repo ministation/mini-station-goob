@@ -174,7 +174,7 @@
   - type: StandingState
     downFrictionMod: 0.65
   - type: Crawler
-    speedModifier: 0.6
+    speedModifier: 0.45
     standTime: 1.2
   - type: Dna
   - type: Scent # Einstein Engines

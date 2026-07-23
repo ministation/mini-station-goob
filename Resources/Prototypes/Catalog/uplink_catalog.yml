@@ -10,7 +10,7 @@
   description: uplink-pistol-viper-desc
   productEntity: WeaponPistolViper
   cost:
-    Telecrystal: 3 # goob - this +1 mag = 15 TC
+    Telecrystal: 2 # Mini — was 3, -1
   categories:
   - UplinkWeaponry
   #Goobstation
@@ -117,7 +117,7 @@
   #  Telecrystal: 3
   productEntity: WeaponEnergyCrossbow
   cost:
-    Telecrystal: 6 # Goob
+    Telecrystal: 4 # Mini — was 6, -2
   categories:
   - UplinkWeaponry
   conditions:
@@ -184,7 +184,7 @@
   icon: { sprite: /Textures/Objects/Weapons/Melee/e_shield.rsi, state: eshield-on }
   productEntity: EnergyShield
   cost:
-    Telecrystal: 3 # goob
+    Telecrystal: 5 # Mini — was 3, +2
   categories:
   - UplinkWeaponry
 
@@ -1230,7 +1230,7 @@
   description: uplink-omnimed-tool-syndie-desc
   productEntity: OmnimedToolSyndie
   cost:
-    Telecrystal: 7
+    Telecrystal: 4 # Mini — was 7, -3
   icon: { sprite: /Textures/_Shitmed/Objects/Specific/Medical/Surgery/omnimed.rsi, state: evil }
   categories:
   - UplinkDisruption
@@ -1411,6 +1411,8 @@
   categories:
   - UplinkAllies
   conditions:
+    - !type:ListingLimitedStockCondition
+      stock: 1
     - !type:StoreWhitelistCondition
       whitelist:
         tags:
@@ -1418,6 +1420,7 @@
       blacklist:
         tags:
           - ContravendUplink
+          - NukeOpsReinforcementUplink
 
 
 - type: listing
@@ -1572,7 +1575,7 @@
   icon: { sprite: /Textures/Structures/Specific/anomaly.rsi, state: anom4 }
   productEntity: ScramImplanter
   cost:
-    Telecrystal: 3 # goob - can be useful, but does nothing on its own
+    Telecrystal: 5 # Mini — was 3, +2
   categories:
     - UplinkImplants
 
@@ -1687,7 +1690,7 @@
   icon: { sprite: /Textures/Objects/Magic/magicactions.rsi, state: gib }
   productEntity: DeathAcidifierImplanter
   cost:
-    Telecrystal: 4 # goob # goob - traitor suicide implants
+    Telecrystal: 1 # Mini — was 4
   categories:
     - UplinkImplants
   #Goobstation
@@ -1921,7 +1924,7 @@
   icon: { sprite: /Textures/Clothing/OuterClothing/Hardsuits/syndicate.rsi, state: icon }
   productEntity: ClothingBackpackDuffelSyndicateHardsuitBundle
   cost:
-    Telecrystal: 10 # goob
+    Telecrystal: 8 # Mini — was 10, -2
   categories:
   - UplinkWearables
   #Goobstation
@@ -1956,7 +1959,7 @@
   icon: { sprite: /Textures/Clothing/OuterClothing/Hardsuits/syndieelite.rsi, state: icon }
   productEntity: ClothingBackpackDuffelSyndicateEliteHardsuitBundle
   cost:
-    Telecrystal: 15 # goob
+    Telecrystal: 12 # Mini — was 15, -3
   categories:
   - UplinkWearables
   #Goobstation
@@ -1979,7 +1982,7 @@
   icon: { sprite: /Textures/Clothing/OuterClothing/Hardsuits/cybersun.rsi, state: icon } # goobstation - duke nukies
   productEntity: CrateCybersunJuggernautBundle
   cost:
-    Telecrystal: 15 # goob
+    Telecrystal: 20 # Mini — was 15
   categories:
   - UplinkWearables
   #Goobstation
