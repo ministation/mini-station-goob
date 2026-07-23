@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Combined high-pop production preset for Mini Station.
+# Merge into instance config.toml OR load with:
+#   config.presets=_Mini/mini-highpop
+# (also pair with your main goob/server config).
+#
+# Includes: mini-network + mini-server-perf + cheap atmos flags.
+# Smoke after deploy:
+# - Tick time / Prometheus Serialize+Send States under peak
+# - Door/projectile clipping (if bad: physics.target_minimum_tickrate = 45)
+# - Softcap: raise game.soft_max_players if the host can sustain more
+
+[net]
+pvs_range = 21
+pvs_priority_range = 23
+pvs_compress_level = 2
+tickrate = 30
+log_late_msg = false
+encryption_thread = true
+lidgren_log_warning = false
+lidgren_log_error = false
+gasoverlaytickrate = 4.5
+gasoverlaythresholds = 35
+atmosdbgoverlaytickrate = 4.5
+
+[game]
+round_end_pvs_overrides = false
+# Soft deny around current E3-class host limits; raise when on faster single-thread CPU.
+soft_max_players = 40
+
+[physics]
+# Default 60 → 2 substeps at tickrate 30. Match tickrate → 1 substep.
+target_minimum_tickrate = 30
+
+[npc]
+max_updates = 96
+
+[debug]
+pow3r_disable_parallel = false
+
+[atmos]
+# Goob default true is O(n^2) airflow — keep off on potato / high-pop hosts.
+mmos_expensive_airflow = false
+superconduction = false
+space_wind = false
+
+[midi]
+max_events_per_second = 400
+max_events_per_batch = 40

@@ -32,8 +32,8 @@ public static class DiscordAuthLink
         apiUrl = apiUrl.TrimEnd('/');
         var requestUrl = $"{apiUrl}/login/{userId.Value}";
 
-        if (!Uri.TryCreate(requestUrl, UriKind.Absolute, out var uri) ||
-            (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+        // Client sandbox forbids System.UriKind / Uri.TryCreate — validate with a simple prefix check.
+        if (!IsHttpUrl(requestUrl))
         {
             Logger.ErrorS("discord_auth", $"Invalid auth URL: {requestUrl}");
             return false;
@@ -41,7 +41,7 @@ public static class DiscordAuthLink
 
         try
         {
-            uriOpener.OpenUri(uri);
+            uriOpener.OpenUri(requestUrl);
             return true;
         }
         catch (Exception e)
@@ -49,5 +49,11 @@ public static class DiscordAuthLink
             Logger.ErrorS("discord_auth", $"Failed to open auth URL: {e}");
             return false;
         }
+    }
+
+    private static bool IsHttpUrl(string url)
+    {
+        return url.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+               || url.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
     }
 }

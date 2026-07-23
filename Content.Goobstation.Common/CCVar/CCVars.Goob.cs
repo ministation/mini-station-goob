@@ -34,8 +34,11 @@ public sealed partial class GoobCVars
     /// Increases default airflow calculations to O(n^2) complexity, for use with heavy space wind optimizations. Potato servers BEWARE
     /// This solves the problem of objects being trapped in an infinite loop of slamming into a wall repeatedly.
     /// </summary>
+    /// <remarks>
+    /// Mini/high-pop default is false — enable only if you need the expensive airflow fix and have spare CPU.
+    /// </remarks>
     public static readonly CVarDef<bool> MonstermosUseExpensiveAirflow =
-        CVarDef.Create("atmos.mmos_expensive_airflow", true, CVar.SERVERONLY);
+        CVarDef.Create("atmos.mmos_expensive_airflow", false, CVar.SERVERONLY);
 
     /// <summary>
     ///     A multiplier on the amount of force applied to Humanoid entities, as tracked by HumanoidAppearanceComponent

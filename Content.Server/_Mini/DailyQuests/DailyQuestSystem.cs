@@ -66,7 +66,8 @@ namespace Content.Server._Mini.DailyQuests;
 public sealed class DailyQuestSystem : EntitySystem
 {
     private const int DailyQuestCount = 2;
-    private const float UiRefreshInterval = 1f;
+    /// <summary>Periodic sweep for week rollover + live quest timers (not every second).</summary>
+    private const float UiRefreshInterval = 5f;
 
     private float _uiRefreshAccumulator;
 

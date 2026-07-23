@@ -28,9 +28,14 @@ namespace Content.Server._Mini.DailyRewards;
 public sealed class DailyRewardSystem : EntitySystem
 {
     private const string StreakRewardIconPath = "/Textures/_Mini/DailyRewards/streak.png";
-    private const float StateRefreshInterval = 1f;
+    /// <summary>How often to push UI state to players who opened the rewards menu.</summary>
+    private const float StateRefreshInterval = 5f;
+    /// <summary>How often to flush playtime / ticket milestones (not every sim tick).</summary>
+    private const float PlaytimeGrantInterval = 5f;
 
     private float _stateRefreshAccumulator;
+    private float _playtimeGrantAccumulator;
+    private readonly HashSet<NetUserId> _uiWatchers = new();
 
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
@@ -191,12 +196,14 @@ public sealed class DailyRewardSystem : EntitySystem
     public bool TryOpenForSession(ICommonSession session)
     {
         EnsureStateExists(session.UserId);
+        _uiWatchers.Add(session.UserId);
         SendState(session);
         return true;
     }
 
     public void RefreshUi(NetUserId userId)
     {
+        _uiWatchers.Add(userId);
         if (_playerManager.TryGetSessionById(userId, out var session))
             SendState(session);
     }
@@ -205,23 +212,41 @@ public sealed class DailyRewardSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        _stateRefreshAccumulator += frameTime;
-        var sendState = _stateRefreshAccumulator >= StateRefreshInterval;
-        if (sendState)
-            _stateRefreshAccumulator = 0f;
-
-        foreach (var session in _playerManager.Sessions)
+        _playtimeGrantAccumulator += frameTime;
+        if (_playtimeGrantAccumulator >= PlaytimeGrantInterval)
         {
+            _playtimeGrantAccumulator = 0f;
+
+            foreach (var session in _playerManager.Sessions)
+            {
+                if (session.Status == SessionStatus.Disconnected)
+                    continue;
+
+                if (!_states.ContainsKey(session.UserId))
+                    continue;
+
+                GrantTicketsForPlaytime(session);
+            }
+        }
+
+        _stateRefreshAccumulator += frameTime;
+        if (_stateRefreshAccumulator < StateRefreshInterval)
+            return;
+
+        _stateRefreshAccumulator = 0f;
+
+        foreach (var userId in _uiWatchers)
+        {
+            if (!_playerManager.TryGetSessionById(userId, out var session))
+                continue;
+
             if (session.Status == SessionStatus.Disconnected)
                 continue;
 
-            if (!_states.ContainsKey(session.UserId))
+            if (!_states.ContainsKey(userId))
                 continue;
 
-            GrantTicketsForPlaytime(session);
-
-            if (sendState)
-                SendState(session);
+            SendState(session);
         }
     }
 
@@ -252,6 +277,7 @@ public sealed class DailyRewardSystem : EntitySystem
             _ = _db.UpsertDailyRewardProgress(state.Progress);
 
         _states.Remove(player.UserId);
+        _uiWatchers.Remove(player.UserId);
     }
 
     private void OnPlayerDataLoaded(ICommonSession player)

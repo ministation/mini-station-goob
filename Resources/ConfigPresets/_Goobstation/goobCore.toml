@@ -10,6 +10,14 @@ max_connections = 2000
 lidgren_log_warning = false
 lidgren_log_error = false
 log_late_msg = false
+# Mini high-pop: tighter PVS + cheaper compression (see ConfigPresets/_Mini/mini-highpop.toml)
+pvs_range = 21
+pvs_priority_range = 23
+pvs_compress_level = 2
+encryption_thread = true
+gasoverlaytickrate = 4.5
+gasoverlaythresholds = 35
+atmosdbgoverlaytickrate = 4.5
 
 [status]
 enabled = true
@@ -24,6 +32,21 @@ round_end_pvs_overrides = false
 defaultpreset = "CombatDynamic"
 ipintel_enabled = true
 ipintel_contact_email = "administrator@goobstation.com"
+
+[physics]
+# 1 physics substep at tickrate 30 (default target 60 = 2 substeps).
+target_minimum_tickrate = 30
+
+[npc]
+max_updates = 96
+
+[atmos]
+mmos_expensive_airflow = false
+superconduction = false
+space_wind = false
+
+[debug]
+pow3r_disable_parallel = false
 
 [movement]
 mob_pushing = 0
