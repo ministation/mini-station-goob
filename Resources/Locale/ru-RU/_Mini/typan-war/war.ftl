@@ -111,6 +111,7 @@ typan-war-minimap-forces-nt = Нанотрайзен: {$count} бойцов
 typan-war-minimap-forces-typan = Синдикат: {$count} бойцов
 typan-war-minimap-map-legend = Силуэты = станции и шаттлы · треугольники = союзники · буквы = зоны захвата
 typan-war-minimap-controls = Колёсико — масштаб · перетаскивание — перемещение
+typan-war-minimap-music = Музыка войны
 typan-war-minimap-loading = Загрузка карты…
 typan-war-layout-failed = Война станций прервана: не удалось объединить станции на поле боя.
 typan-war-ghost-thunderdome-blocked = Арена недоступна во время войны станций.

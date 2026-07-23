@@ -232,3 +232,5 @@ research-technology-smart-weaponry-desc = Оружейные системы с �
 research-technology-heavy-weaponry = Тяжёлое вооружение
 research-technology-heavy-weaponry-desc = Системы вооружения тяжёлого класса и вспомогательное оснащение.
 research-technology-energy-barriers-desc = Переносные и стационарные системы проецируемых энергетических барьеров.
+research-technology-mini-lathe-parity-name = Паритет рецептов лате
+research-technology-mini-lathe-parity-desc = Скрытый узел для динамических рецептов лате, не покрытых деревом исследований Mini.

@@ -57,6 +57,12 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> RadioTTSSoundsEnabled =
         CVarDef.Create("audio.radio_tts_sounds_enabled", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Client toggle for Typan station war background music.
+    /// </summary>
+    public static readonly CVarDef<bool> WarMusicEnabled =
+        CVarDef.Create("audio.war_music_enabled", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
     /*
     * Lobby ui
     */

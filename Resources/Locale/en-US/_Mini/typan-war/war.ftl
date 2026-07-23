@@ -87,6 +87,7 @@ typan-war-minimap-forces-nt = NanoTrasen: {$count} fighters
 typan-war-minimap-forces-typan = Syndicate: {$count} fighters
 typan-war-minimap-map-legend = Silhouettes = stations & shuttles (named) · triangles = allies · letters = capture zones
 typan-war-minimap-controls = Scroll — zoom · drag — pan
+typan-war-minimap-music = War music
 typan-war-minimap-loading = Loading map…
 typan-war-layout-failed = Station war aborted: failed to merge stations onto the battlefield.
 typan-war-ghost-thunderdome-blocked = Thunderdome is disabled during station war.

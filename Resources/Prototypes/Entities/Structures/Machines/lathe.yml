@@ -264,6 +264,8 @@
     - Translators
     # CorvaxGoob Packs
     - BodyBagsDynamic # AdvancedBodyBags
+    # Mini: tech unlocks missing from other DynamicPacks (ResearchTest parity)
+    - MiniResearchParity
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - SecurityAmmo
