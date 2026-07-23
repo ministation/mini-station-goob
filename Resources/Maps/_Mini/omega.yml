@@ -5696,7 +5696,7 @@ entities:
             2: 34952
         chunkSize: 4
     - type: BecomesStation
-      id: CorvaxOmega
+      id: MiniOmega
     - type: OccluderTree
     - type: Shuttle
       dampingModifiers:
