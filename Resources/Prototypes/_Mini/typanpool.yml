@@ -186,6 +186,11 @@
     - Typan
     - Aspid
 - type: additionalMap
+  id: CorvaxMarathon
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
   id: CorvaxMascara
   maps:
     - Typan

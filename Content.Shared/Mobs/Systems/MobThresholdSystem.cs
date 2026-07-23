@@ -16,6 +16,8 @@ using Content.Shared._Shitmed.Medical.Surgery.Wounds.Systems;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
+using Robust.Shared.Enums;
+using Robust.Shared.Player;
 using Robust.Shared.Serialization;
 using Robust.Shared.Network;
 
@@ -28,6 +30,7 @@ public sealed partial class MobThresholdSystem : EntitySystem
     [Dependency] private readonly WoundSystem _wound = default!; // Shitmed Change
     [Dependency] private readonly SharedBodySystem _body = default!; // Shitmed Change
     [Dependency] private readonly INetManager _net = default!;
+    [Dependency] private readonly ISharedPlayerManager _player = default!;
     public override void Initialize()
     {
         SubscribeLocalEvent<MobThresholdsComponent, ComponentGetState>(OnGetState);
@@ -477,7 +480,7 @@ public sealed partial class MobThresholdSystem : EntitySystem
         CheckThresholds(target, mobState, thresholds, args.Damageable, args.Origin);
 
         if (_net.IsServer)
-            RaiseNetworkEvent(new MobThresholdChecked(GetNetEntity(target)), target);
+            RaiseThresholdChecked(target);
 
         UpdateAlerts(target, mobState.CurrentState, thresholds, args.Damageable);
     }
@@ -490,11 +493,26 @@ public sealed partial class MobThresholdSystem : EntitySystem
 
         // mob states are handled by consciousness. so we fine here
         if (_net.IsServer)
-            RaiseNetworkEvent(new MobThresholdChecked(GetNetEntity(body)), body);
+            RaiseThresholdChecked(body);
 
         UpdateAlerts(body, mobState.CurrentState, thresholds, null, Comp<BodyComponent>(body));
     }
     // Shitmed Change End
+
+    /// <summary>
+    /// Only notify the controlling client when it is still connected — rotting corpses of
+    /// disconnected players used to spam net errors every damage tick.
+    /// </summary>
+    private void RaiseThresholdChecked(EntityUid target)
+    {
+        if (!_player.TryGetSessionByEntity(target, out var session))
+            return;
+
+        if (session.Status != SessionStatus.InGame || !session.Channel.IsConnected)
+            return;
+
+        RaiseNetworkEvent(new MobThresholdChecked(GetNetEntity(target)), session);
+    }
 
     private void MobThresholdStartup(EntityUid target, MobThresholdsComponent thresholds, ComponentStartup args)
     {

@@ -88,7 +88,6 @@
     - MedkitCombatFilled # End of first line
     - GrenadeShrapnel
     - EmpGrenade
-    - ERTSecurityUndeterminedWeapon # Goobstation?
     #belt: # Goobstation
     #- Truncheon
     #- Handcuffs
@@ -172,6 +171,7 @@
     - ChaplainUndeterminedBible # Goobstation
     - Nullrod # Goobstation
     - ADTBaseUplinkBOBERT
+    - PinpointerNuclear # Mini
     - ExecutiveIDCard # Goobstation - Executive Access!
     belt:
     - Bible
@@ -256,6 +256,7 @@
     - RCDAmmo
     - MetalFoamGrenade
     - AirGrenade
+    - PinpointerNuclear # Mini
     belt:
     - JawsOfLife
     - PowerDrill
@@ -285,6 +286,7 @@
     - RCDAmmo
     - CableDetStack
     - BoxDetonator
+    - PinpointerNuclear # Mini
 
 - type: chameleonOutfit
   id: ERTEngineerChameleonOutfit
@@ -352,7 +354,7 @@
     - MedkitCombatFilled # End of first line
     - HoloprojectorSecurity
     - PowerCellHigh
-    - ERTSecurityUndeterminedWeapon # Goobstation
+    - PinpointerNuclear # Mini
     #belt: # Goobstation custom belt
     #- Stunbaton
     #- Handcuffs
@@ -390,6 +392,7 @@
     - MagazineRifleIncendiary
     - MagazineRifleUranium
     - Zipties
+    - PinpointerNuclear # Mini
 
 - type: startingGear
   parent: ERTSecurityGearEVA
@@ -415,6 +418,7 @@
     - GrenadeFlash
     - GrenadeFlash
     - MagazinePistol
+    - PinpointerNuclear # Mini
     #belt: # Goobstation
     #- Truncheon
     #- Handcuffs
@@ -442,6 +446,7 @@
     - MagazinePistolSubMachineGunTopMounted
     - MagazinePistolSubMachineGunTopMounted
     - MagazinePistolSubMachineGunTopMounted
+    - PinpointerNuclear # Mini
     #belt: # Goobstation
     #- Truncheon
     #- Handcuffs
@@ -469,6 +474,7 @@
     - ExGrenade
     - CableDetStack
     - BoxDetonator
+    - PinpointerNuclear # Mini
     #belt: # Goobstation
     #- Truncheon
     #- Handcuffs
@@ -560,6 +566,7 @@
     - CartridgeAtropine
     - CartridgeAtropine
     - MedicalBeamGunBattery
+    - PinpointerNuclear # Mini
     #belt: # Goobstation custom belt
     #- DefibrillatorCompact
     #- MedkitCombatFilled
@@ -587,6 +594,7 @@
     - MedkitCombatFilled
     - ClothingEyesGlassesChemical
     - ChemistryBottleOmnizine
+    - PinpointerNuclear # Mini
     #belt: # Goobstation
     #- Truncheon
     #- Zipties
@@ -665,6 +673,7 @@
     - GrenadeCleanade
     - GrenadeCleanade
     - GrenadeCleanade
+    - PinpointerNuclear # Mini
     belt:
     - MegaSprayBottleSpaceCleaner
     - Holoprojector

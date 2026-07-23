@@ -198,6 +198,7 @@
   - type: AccessReader # Goobstation-WantedMenu
     access: [["Security"]]
     shouldShowExaminationText: false
+  - type: EntitySkills # CorvaxGoob - skills on body
   - type: UserInterface
     interfaces:
       enum.HumanoidMarkingModifierKey.Key:
@@ -214,6 +215,8 @@
         requireInputValidation: false
       enum.RadarConsoleUiKey.Key: #goob - contractor
         type: RadarConsoleBoundUserInterface
+      enum.SkillTrainingUiKey.Key: # CorvaxGoob - skill training
+        type: SkillTrainingBoundUserInterface
   - type: Puller
   - type: Speech
     speechSounds: Alto
