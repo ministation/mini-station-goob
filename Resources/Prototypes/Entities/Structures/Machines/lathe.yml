@@ -344,6 +344,8 @@
     - BluespaceTechnologyBoards # BluespaceHarvester
     - BluespaceHarvesterBoards # BluespaceHarvester
     - Cloning # Cloning
+    # Mini: tech unlocks missing from other DynamicPacks (ResearchTest parity)
+    - MiniResearchParity
   - type: MaterialStorage
     whitelist: *StandardMaterialWhitelist
   - type: OreSiloClient
