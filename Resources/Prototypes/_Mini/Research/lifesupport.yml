@@ -3,6 +3,7 @@
 - type: technology
   id: TypanHydroponics
   name: research-technology-basic-hydroponics
+  description: research-technology-basic-hydroponics
   icon:
     sprite: Structures/Machines/seed_extractor.rsi
     state: seedextractor
@@ -24,6 +25,7 @@
 - type: technology
   id: TypanAdvancedEntertainment
   name: research-technology-advanced-entertainment
+  description: research-technology-advanced-entertainment
   icon:
     sprite: Objects/Fun/Instruments/h_synthesizer.rsi
     state: icon
@@ -45,6 +47,7 @@
 - type: technology
   id: TypanMeatManipulation
   name: research-technology-meat-manipulation
+  description: research-technology-meat-manipulation
   icon:
     sprite: Structures/Machines/fat_sucker.rsi
     state: display
@@ -88,6 +91,7 @@
 - type: technology
   id: TypanBasicHypospray
   name: research-technology-basic-hypospray
+  description: research-technology-basic-hypospray
   icon:
     sprite: _CorvaxGoob/Objects/Specific/Medical/brigmedichypo.rsi
     state: hypo
@@ -109,6 +113,7 @@
 - type: technology
   id: TypanBiofabrication
   name: research-technology-biofabrication
+  description: research-technology-biofabrication
   icon:
     sprite: Structures/Machines/biofabricator.rsi
     state: icon
@@ -130,6 +135,7 @@
 - type: technology
   id: TypanBiochemicalStasis
   name: research-technology-biochemical-stasis
+  description: research-technology-biochemical-stasis
   icon:
     sprite: Structures/Machines/stasis_bed.rsi
     state: icon
@@ -152,6 +158,7 @@
 - type: technology
   id: TypanMechanizedTreatment
   name: research-technology-mechanized-treatment
+  description: research-technology-mechanized-treatment
   icon:
     sprite: _Mini/Mobs/Silicon/chassis.rsi
     state: medical
@@ -172,6 +179,7 @@
 - type: technology
   id: TypanAdvancedCleaning
   name: research-technology-advanced-cleaning
+  description: research-technology-advanced-cleaning
   icon:
     sprite: Objects/Specific/Janitorial/advmop.rsi
     state: advmop
@@ -193,6 +201,7 @@
 - type: technology
   id: TypanAdvancedSpray
   name: research-technology-advanced-spray
+  description: research-technology-advanced-spray
   icon:
     sprite: Objects/Weapons/Guns/Basic/spraynozzle.rsi
     state: icon
@@ -213,6 +222,7 @@
 - type: technology
   id: TypanBluespaceCargoTransport
   name: research-technology-bluespace-cargo-transport
+  description: research-technology-bluespace-cargo-transport
   icon:
     sprite: _Mini/Structures/Machines/Typan/cargo_telepad.rsi
     state: display
@@ -233,6 +243,7 @@
 - type: technology
   id: TypanHypopen
   name: research-technology-hypopen
+  description: research-technology-hypopen
   icon:
     sprite: Objects/Misc/pens.rsi
     state: pen
@@ -253,6 +264,7 @@
 - type: technology
   id: TypanArmorVest
   name: research-technology-armor-vest
+  description: research-technology-armor-vest
   icon:
     sprite: Clothing/OuterClothing/Vests/webvest.rsi
     state: icon
@@ -273,6 +285,7 @@
 - type: technology
   id: TypanChameleonClothing
   name: research-technology-chameleon-clothing
+  description: research-technology-chameleon-clothing
   icon:
     sprite: Clothing/Neck/Scarfs/red.rsi
     state: icon
@@ -304,6 +317,7 @@
 - type: technology
   id: TypanCloning
   name: research-technology-cloning
+  description: research-technology-cloning
   icon:
     sprite: Structures/Machines/cloning.rsi
     state: pod_0
@@ -328,6 +342,7 @@
 - type: technology
   id: TypanAdvancedHypospray
   name: research-technology-advanced-hypospray
+  description: research-technology-advanced-hypospray
   icon:
     sprite: Objects/Specific/Medical/syndihypo.rsi
     state: hypo
@@ -347,6 +362,7 @@
 - type: technology
   id: TypanDefibrillatorSyndicate
   name: research-technology-defibrillator-syndicate
+  description: research-technology-defibrillator-syndicate
   icon:
     sprite: Objects/Specific/Medical/defibsyndi.rsi
     state: icon

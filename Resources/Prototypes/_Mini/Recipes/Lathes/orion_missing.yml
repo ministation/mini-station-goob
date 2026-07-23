@@ -362,12 +362,7 @@
   materials:
     Plastic: 100
 
-- type: latheRecipe
-  parent: BaseAmmoRecipe
-  id: MagazineRifle762
-  result: MagazineRifle762
-  materials:
-    Steel: 565
+# MagazineRifle762 removed — entity does not exist in this fork (use MagazineLightRifle*)
 
 - type: latheRecipe
   id: MechanicalPinchesAbductor
@@ -781,4 +776,34 @@
     Silver: 500
     Plasma: 250
     Gold: 250
+
+- type: latheRecipe
+  id: NTCustomLawboard
+  result: NTCustomLawboard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: Intellicard
+  result: Intellicard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 500
+    Gold: 200
+
+- type: latheRecipe
+  id: PairedChopsticks
+  result: PairedChopsticks
+  categories:
+  - Service
+  completetime: 2
+  materials:
+    Wood: 50
 

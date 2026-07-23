@@ -22,7 +22,7 @@
   - MagazineBoxPistol
   - MagazineBoxRifle
   # - MagazineBoxRifle762  # missing lathe recipe / entity
-  - MagazineRifle762
+  # - MagazineRifle762  # missing entity
   # - MagazineRifle762Empty  # missing lathe recipe / entity
   - MagazinePistol
   - MagazinePistolEmpty
@@ -202,8 +202,8 @@
   - MagazineShotgunIncendiary
   - MagazineBoxPistolIncendiary
   - MagazineBoxMagnumIncendiary
-  - MagazineBoxRifle762Incendiary
-  - MagazineRifle762Incendiary
+  # - MagazineBoxRifle762Incendiary  # missing lathe recipe
+  # - MagazineRifle762Incendiary  # missing lathe recipe
   - MagazineBoxRifleIncendiary
   # Uranium
   - MagazineRifleUranium
@@ -212,8 +212,8 @@
   - SpeedLoaderMagnumUranium
   - MagazineBoxPistolUranium
   - MagazineBoxMagnumUranium
-  - MagazineBoxRifle762Uranium
-  - MagazineRifle762Uranium
+  # - MagazineBoxRifle762Uranium  # missing lathe recipe
+  # - MagazineRifle762Uranium  # missing lathe recipe
   - MagazineBoxRifleUranium
   - BoxShotgunUranium
   - MagazineBoxShotgunUraniumHighCaliber

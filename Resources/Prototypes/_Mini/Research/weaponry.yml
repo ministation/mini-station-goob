@@ -3,6 +3,7 @@
 - type: technology
   id: TypanSalvageWeapons
   name: research-technology-salvage-weapons
+  description: research-technology-salvage-weapons
   icon:
     sprite: Objects/Weapons/Guns/Basic/kinetic_accelerator.rsi
     state: icon
@@ -23,6 +24,7 @@
 - type: technology
   id: TypanDraconicMunitions
   name: research-technology-draconic-munitions
+  description: research-technology-draconic-munitions
   icon:
     sprite: Objects/Weapons/Guns/Ammunition/Boxes/pistol.rsi
     state: incendiarydisplay
@@ -52,6 +54,7 @@
 - type: technology
   id: TypanNonlethalAmmunition
   name: research-technology-nonlethal-ammunition
+  description: research-technology-nonlethal-ammunition
   icon:
     sprite: Objects/Weapons/Guns/Ammunition/Casings/shotgun_shell.rsi
     state: beanbag
@@ -74,6 +77,7 @@
 - type: technology
   id: TypanUraniumMunitions
   name: research-technology-uranium-munitions
+  description: research-technology-uranium-munitions
   icon:
     sprite: Objects/Materials/Sheets/other.rsi
     state: uranium
@@ -102,6 +106,7 @@
 - type: technology
   id: TypanAdvancedRiotControl
   name: research-technology-advanced-riot-control
+  description: research-technology-advanced-riot-control
   icon:
     sprite: Objects/Weapons/Melee/truncheon.rsi
     state: icon
@@ -124,6 +129,7 @@
 - type: technology
   id: TypanExplosiveTechnology
   name: research-technology-explosive-technology
+  description: research-technology-explosive-technology
   icon:
     sprite: Objects/Devices/payload.rsi
     state: payload-explosive-armed
@@ -149,6 +155,7 @@
 - type: technology
   id: TypanSpecialMeans
   name: research-technology-special-means
+  description: research-technology-special-means
   icon:
     sprite: Clothing/Back/Backpacks/electropack.rsi
     state: icon
@@ -168,6 +175,7 @@
 - type: technology
   id: TypanBasicPistols
   name: research-technology-basic-pistols
+  description: research-technology-basic-pistols
   icon:
     sprite: Objects/Weapons/Guns/Pistols/viper.rsi
     state: icon
@@ -188,6 +196,7 @@
 - type: technology
   id: TypanEdgedWeapons
   name: research-technology-edged-weapons
+  description: research-technology-edged-weapons
   icon:
     sprite: _Goobstation/Clothing/Hands/Gloves/knuckleduster.rsi
     state: syndicateknuckleduster
@@ -208,6 +217,7 @@
 - type: technology
   id: TypanCombatGloves
   name: research-technology-combat-gloves
+  description: research-technology-combat-gloves
   icon:
     sprite: Clothing/Hands/Gloves/northstar.rsi
     state: icon
@@ -228,6 +238,7 @@
 - type: technology
   id: TypanBasicRifles
   name: research-technology-basic-rifles
+  description: research-technology-basic-rifles
   icon:
     sprite: Objects/Weapons/Guns/Snipers/bolt_gun_wood.rsi
     state: base
@@ -247,6 +258,7 @@
 - type: technology
   id: TypanBorgModulesT1
   name: research-technology-typan-borg-modules-t1
+  description: research-technology-typan-borg-modules-t1
   icon:
     entity: BorgModuleSyndicateWeapon
   discipline: TypanWeaponry
@@ -262,6 +274,7 @@
 - type: technology
   id: TypanSecurityBorgModuleT1
   name: research-technology-typan-security-borg-module-t1
+  description: research-technology-typan-security-borg-module-t1
   icon:
     entity: BorgModuleSecurityStandard
   discipline: TypanWeaponry
@@ -278,6 +291,7 @@
 - type: technology
   id: TypanBasicShuttleArmament
   name: research-technology-shuttle-weapon
+  description: research-technology-shuttle-weapon
   icon:
     sprite: Objects/Weapons/Guns/Ammunition/Magazine/Grenade/grenade_cartridge.rsi
     state: base
@@ -309,6 +323,7 @@
 - type: technology
   id: TypanNightVisionTechnology
   name: research-technology-typan-night-vision
+  description: research-technology-typan-night-vision
   icon:
     sprite: _White/Clothing/Eyes/Goggles/snightvision.rsi
     state: icon
@@ -328,6 +343,7 @@
 - type: technology
   id: TypanAdvancedPistols
   name: research-technology-advanced-pistols
+  description: research-technology-advanced-pistols
   icon:
     sprite: Objects/Weapons/Guns/Pistols/cobra.rsi
     state: icon
@@ -347,6 +363,7 @@
 - type: technology
   id: TypanGrenades
   name: research-technology-grenades
+  description: research-technology-grenades
   icon:
     sprite: Objects/Weapons/Grenades/shrapnelgrenade.rsi
     state: icon
@@ -372,6 +389,7 @@
 - type: technology
   id: TypanSniperRifles
   name: research-technology-sniper-rifles
+  description: research-technology-sniper-rifles
   icon:
     sprite: Objects/Weapons/Guns/Snipers/heavy_sniper.rsi
     state: base
@@ -391,6 +409,7 @@
 - type: technology
   id: TypanSMGs
   name: research-technology-smgs
+  description: research-technology-smgs
   icon:
     sprite: Objects/Weapons/Guns/SMGs/c20r.rsi
     state: icon
@@ -410,6 +429,7 @@
 - type: technology
   id: TypanAssaultRifles
   name: research-technology-assault-rifles
+  description: research-technology-assault-rifles
   icon:
     sprite: Objects/Weapons/Guns/Rifles/ak.rsi
     state: icon
@@ -429,6 +449,7 @@
 - type: technology
   id: TypanShotguns
   name: research-technology-shotguns
+  description: research-technology-shotguns
   icon:
     sprite: Objects/Weapons/Guns/Shotguns/bulldog.rsi
     state: icon
@@ -448,6 +469,7 @@
 - type: technology
   id: TypanBorgModulesT2
   name: research-technology-typan-borg-modules-t2
+  description: research-technology-typan-borg-modules-t2
   icon:
     entity: BorgModuleSyndicateWeaponAdvanced
   discipline: TypanWeaponry
@@ -465,6 +487,7 @@
 - type: technology
   id: TypanSecurityBorgModuleT2
   name: research-technology-typan-security-borg-module-t2
+  description: research-technology-typan-security-borg-module-t2
   icon:
     entity: BorgModuleSecurityAdvanced
   discipline: TypanWeaponry
@@ -483,6 +506,7 @@
 - type: technology
   id: TypanExperimentalGrenades
   name: research-technology-experimental-grenades
+  description: research-technology-experimental-grenades
   icon:
     sprite: Objects/Weapons/Grenades/holyhandgrenade.rsi
     state: icon
@@ -504,6 +528,7 @@
 - type: technology
   id: TypanHeavyWeapons
   name: research-technology-heavy-weapons
+  description: research-technology-heavy-weapons
   icon:
     sprite: Objects/Weapons/Guns/LMGs/l6.rsi
     state: icon
@@ -523,6 +548,7 @@
 - type: technology
   id: TypanGrenadeLaunchers
   name: research-technology-grenade-launchers
+  description: research-technology-grenade-launchers
   icon:
     sprite: Objects/Weapons/Guns/Launchers/china_lake.rsi
     state: icon
@@ -542,6 +568,7 @@
 - type: technology
   id: TypanSpecialWeapons
   name: research-technology-special-weapons
+  description: research-technology-special-weapons
   icon:
     sprite: _Goobstation/Objects/Weapons/Guns/Battery/miniature_ebow.rsi
     state: icon
@@ -561,6 +588,7 @@
 - type: technology
   id: TypanBorgModulesT3
   name: research-technology-typan-borg-modules-t3
+  description: research-technology-typan-borg-modules-t3
   icon:
     entity: BorgModuleL6C
   discipline: TypanWeaponry
