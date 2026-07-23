@@ -164,6 +164,11 @@
     - Typan
     - Aspid
 - type: additionalMap
+  id: CorvaxDelta
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
   id: CorvaxGlacier
   maps:
     - Typan
@@ -238,6 +243,11 @@
     - Aspid
 - type: additionalMap
   id: CorvaxSilly
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: Snowball
   maps:
     - Typan
     - Aspid

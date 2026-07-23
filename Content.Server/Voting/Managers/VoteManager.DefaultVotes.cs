@@ -35,8 +35,9 @@ namespace Content.Server.Voting.Managers
         private VotingSystem? _votingSystem;
         private RoleSystem? _roleSystem;
         private GameTicker? _gameTicker;
-        private const int MaxPresetVoteOptions = 6;
-        private const int RecentPresetHistorySize = 12;
+        private const int MaxPresetVoteOptions = 8;
+        private const int MaxMapVoteOptions = 8;
+        private const int RecentPresetHistorySize = 16;
 
         private string _lastPickedPreset = "";
         private readonly Queue<string> _recentVotePresets = new();
@@ -273,7 +274,9 @@ namespace Content.Server.Voting.Managers
 
         private void CreateMapVote(ICommonSession? initiator)
         {
-            var maps = _gameMapManager.CurrentlyEligibleMaps().ToDictionary(map => map, map => map.MapName);
+            var eligible = _gameMapManager.CurrentlyEligibleMaps().ToList();
+            var selectedMaps = SelectMapsForVote(eligible);
+            var maps = selectedMaps.ToDictionary(map => map, map => map.MapName);
 
             var alone = _playerManager.PlayerCount == 1 && initiator != null;
             var options = new VoteOptions
@@ -313,6 +316,8 @@ namespace Content.Server.Voting.Managers
                 }
 
                 _adminLogger.Add(LogType.Vote, LogImpact.Medium, $"Map vote finished: {picked.MapName}");
+                // Mini-Tweak: exclude recently voted maps from the next ballot.
+                _gameMapManager.RegisterPlayedMap(picked.ID);
                 var ticker = _entityManager.EntitySysManager.GetEntitySystem<GameTicker>();
                 if (ticker.CanUpdateMap())
                 {
@@ -721,6 +726,22 @@ namespace Content.Server.Voting.Managers
                 presets[preset.ID] = preset.ModeTitle;
 
             return presets;
+        }
+
+        /// <summary>
+        /// Random subset of eligible maps so ballots rotate instead of always listing the full pool.
+        /// </summary>
+        private List<GameMapPrototype> SelectMapsForVote(List<GameMapPrototype> eligible)
+        {
+            if (eligible.Count == 0)
+                return eligible;
+
+            _random.Shuffle(eligible);
+
+            if (eligible.Count <= MaxMapVoteOptions)
+                return eligible;
+
+            return eligible.Take(MaxMapVoteOptions).ToList();
         }
 
         private void RememberVotePresets(IEnumerable<string> presetIds)
