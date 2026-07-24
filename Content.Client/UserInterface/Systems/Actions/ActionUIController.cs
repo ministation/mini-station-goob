@@ -67,17 +67,33 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
     [UISystemDependency] private readonly ActionTargetMarkSystem? _mark = default!; // Goobstation
     [UISystemDependency] private readonly EntityLookupSystem _lookup = default!; // Goobstation
 
+    private const int DefaultPageIndex = 0;
+    private const int PagedSlotCount = 10;
+    private const int MaxPageCount = 9;
+
     private ActionButtonContainer? _container;
-    private List<EntityUid?> _actions = new(); // Goob edit
+    private List<EntityUid?> _actions = new(); // Flat mode
+    private readonly List<ActionPage> _pages = new();
+    private int _currentPageIndex = DefaultPageIndex;
     private readonly DragDropHelper<ActionButton> _menuDragHelper;
     private readonly TextureRect _dragShadow;
     private ActionsWindow? _window;
 
-    private readonly Dictionary<EntityUid, List<EntityUid?>> _savedActions = new(); // Goobstation
-    private ISawmill _sawmill = default!; // Goobstation
+    private readonly Dictionary<EntityUid, SavedActionLayout> _savedActions = new();
+    /// <summary>
+    /// Last rich layout from a "real" body (most non-null slots). Survives temporary
+    /// polymorphs like ethereal jaunt so revert does not restore the jaunt bar layout.
+    /// </summary>
+    private SavedActionLayout? _persistentLayout;
+    private EntityUid? _pendingLoadFrom;
+    private bool _layoutIsPaged;
+    private ISawmill _sawmill = default!;
 
     private ActionsBar? ActionsBar => UIManager.GetActiveUIWidgetOrNull<ActionsBar>();
     private MenuButton? ActionButton => UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.ActionButton;
+    private ActionPage CurrentPage => _pages[_currentPageIndex];
+    private bool IsPagedMode =>
+        string.Equals(_cfg.GetCVar(GoobCVars.ActionBarMode), GoobCVars.ActionBarModePaged, StringComparison.OrdinalIgnoreCase);
 
     public bool IsDragging => _menuDragHelper.IsDragging;
 
@@ -97,6 +113,9 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             SetSize = new Vector2(64, 64),
             MouseFilter = MouseFilterMode.Ignore
         };
+
+        for (var i = 0; i < MaxPageCount; i++)
+            _pages.Add(new ActionPage(PagedSlotCount));
     }
 
     public override void Initialize()
@@ -107,7 +126,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         gameplayStateLoad.OnScreenLoad += OnScreenLoad;
         gameplayStateLoad.OnScreenUnload += OnScreenUnload;
 
-        _sawmill = Logger.GetSawmill("action_ui_controller"); // Goobstation
+        _sawmill = Logger.GetSawmill("action_ui_controller");
+        _cfg.OnValueChanged(GoobCVars.ActionBarMode, OnActionBarModeChanged, true);
     }
 
     private void OnScreenLoad()
@@ -146,7 +166,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         var hotbarKeys = ContentKeyFunctions.GetHotbarBoundKeys();
         for (var i = 0; i < hotbarKeys.Length; i++)
         {
-            var boundId = i; // This is needed, because the lambda captures it.
+            var boundId = i;
             var boundKey = hotbarKeys[i];
             builder = builder.Bind(boundKey, new PointerInputCmdHandler((in PointerInputCmdArgs args) =>
             {
@@ -161,6 +181,18 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         builder
             .Bind(ContentKeyFunctions.OpenActionsMenu,
                 InputCmdHandler.FromDelegate(_ => ToggleWindow()))
+            .Bind(ContentKeyFunctions.ActionBarPreviousPage,
+                InputCmdHandler.FromDelegate(_ =>
+                {
+                    if (IsPagedMode)
+                        ChangePage(_currentPageIndex - 1);
+                }))
+            .Bind(ContentKeyFunctions.ActionBarNextPage,
+                InputCmdHandler.FromDelegate(_ =>
+                {
+                    if (IsPagedMode)
+                        ChangePage(_currentPageIndex + 1);
+                }))
             .BindBefore(EngineKeyFunctions.Use, new PointerInputCmdHandler(TargetingOnUse, outsidePrediction: true),
                     typeof(ConstructionSystem), typeof(DragDropSystem))
                 .BindBefore(ContentKeyFunctions.AltActivateItemInWorld, new PointerInputCmdHandler(AltTargeting, outsidePrediction: true)) // Goobstation
@@ -269,17 +301,148 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
     private void TriggerAction(int index)
     {
-        if (!_actions.TryGetValue(index, out var actionId) ||
-            _actionsSystem?.GetAction(actionId) is not {} action)
+        EntityUid? actionId;
+        if (IsPagedMode)
+        {
+            // Shift-row hotkeys (indices >= 10) are unused in paged mode.
+            if (index < 0 || index >= PagedSlotCount)
+                return;
+            actionId = CurrentPage[index];
+        }
+        else if (!_actions.TryGetValue(index, out actionId))
         {
             return;
         }
 
-        // TODO: probably should have a clientside event raised for flexibility
+        if (_actionsSystem?.GetAction(actionId) is not {} action)
+            return;
+
         if (EntityManager.TryGetComponent<TargetActionComponent>(action, out var target))
             ToggleTargeting((action, action, target));
         else
             _actionsSystem?.TriggerAction(action);
+    }
+
+    private void ChangePage(int index)
+    {
+        if (_actionsSystem == null || _pages.Count == 0)
+            return;
+
+        var lastPage = _pages.Count - 1;
+        if (index < 0)
+            index = lastPage;
+        else if (index > lastPage)
+            index = 0;
+
+        _currentPageIndex = index;
+        RefreshActionContainer();
+        UpdatePageButtons();
+    }
+
+    private void OnLeftArrowPressed(ButtonEventArgs args)
+    {
+        ChangePage(_currentPageIndex - 1);
+    }
+
+    private void OnRightArrowPressed(ButtonEventArgs args)
+    {
+        ChangePage(_currentPageIndex + 1);
+    }
+
+    private void UpdatePageButtons()
+    {
+        if (ActionsBar?.PageButtons is not { } pageButtons)
+            return;
+
+        pageButtons.Visible = IsPagedMode;
+        pageButtons.Label.Text = $"{_currentPageIndex + 1}";
+    }
+
+    private void OnActionBarModeChanged(string _)
+    {
+        if (_layoutIsPaged != IsPagedMode)
+            MigrateLayoutToCurrentMode();
+        _layoutIsPaged = IsPagedMode;
+        UpdatePageButtons();
+        RefreshActionContainer();
+        QueueWindowUpdate();
+    }
+
+    private void MigrateLayoutToCurrentMode()
+    {
+        if (IsPagedMode)
+        {
+            var flat = new List<EntityUid?>(_actions);
+            if (flat.Count == 0)
+            {
+                foreach (var page in _pages)
+                {
+                    for (var i = 0; i < page.Size; i++)
+                    {
+                        if (page[i] != null)
+                            flat.Add(page[i]);
+                    }
+                }
+            }
+
+            foreach (var page in _pages)
+                page.Clear();
+
+            EnsurePageCapacity((flat.Count + PagedSlotCount - 1) / PagedSlotCount);
+            for (var i = 0; i < flat.Count; i++)
+            {
+                var pageIndex = i / PagedSlotCount;
+                var slot = i % PagedSlotCount;
+                _pages[pageIndex][slot] = flat[i];
+            }
+
+            _currentPageIndex = DefaultPageIndex;
+            _actions.Clear();
+        }
+        else
+        {
+            _actions.Clear();
+            foreach (var page in _pages)
+            {
+                for (var i = 0; i < page.Size; i++)
+                {
+                    if (page[i] != null)
+                        _actions.Add(page[i]);
+                }
+            }
+
+            foreach (var page in _pages)
+                page.Clear();
+            _currentPageIndex = DefaultPageIndex;
+        }
+
+        _layoutIsPaged = IsPagedMode;
+    }
+
+    private void EnsurePageCapacity(int pageCount)
+    {
+        pageCount = Math.Clamp(pageCount, 1, MaxPageCount);
+        while (_pages.Count < pageCount)
+            _pages.Add(new ActionPage(PagedSlotCount));
+    }
+
+    private void RefreshActionContainer()
+    {
+        if (_actionsSystem == null || _container == null)
+            return;
+
+        if (IsPagedMode)
+        {
+            _container.SetActionData(
+                _actionsSystem,
+                CurrentPage,
+                fixedSize: true,
+                keys: ContentKeyFunctions.GetPagedHotbarBoundKeys());
+        }
+        else
+        {
+            _container.SetActionData(_actionsSystem, _actions.ToArray());
+        }
     }
 
     // Goobstation start
@@ -337,11 +500,18 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (entity == default)
             return;
 
-        if (_actions.Count == 0)
+        var layout = CaptureLayout();
+        if (layout.IsEmpty)
             return;
 
-        _savedActions[entity] = new(_actions);
-        _sawmill.Debug($"Saved actions for entity {entity}");
+        _savedActions[entity] = layout;
+
+        // Prefer the richest layout as the session default so short-lived forms
+        // (jaunt, etc.) do not overwrite the player's arranged hotbar.
+        if (_persistentLayout == null || layout.NonNullCount >= _persistentLayout.NonNullCount)
+            _persistentLayout = layout.Clone();
+
+        _sawmill.Debug($"Saved actions for entity {entity} (non-null={layout.NonNullCount})");
     }
 
     private void OnActionsLoaded(EntityUid entity)
@@ -350,19 +520,117 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (entity == default)
         {
             _savedActions.Remove(entity);
+            _pendingLoadFrom = null;
             return;
         }
 
-        if (_playerManager.LocalEntity == null)
+        if (!_savedActions.ContainsKey(entity) && _persistentLayout == null)
             return;
-        var localEntity = _playerManager.LocalEntity.Value;
 
-        if (!_savedActions.TryGetValue(entity, out var savedActions))
-            return;
-        if (savedActions.Count == 0 || _actions.Count == 0 || _actions.SequenceEqual(savedActions))
-            return;
+        if (!TryApplySavedLayout(entity))
+            _pendingLoadFrom = entity;
+    }
+
+    private bool TryApplySavedLayout(EntityUid entity)
+    {
+        if (_playerManager.LocalEntity == null)
+            return false;
+
+        var localEntity = _playerManager.LocalEntity.Value;
+        _savedActions.TryGetValue(entity, out var entitySaved);
+
+        // Prefer the richer persistent layout when the event points at a temporary form
+        // (e.g. jaunt revert sends the jaunt uid — its layout would wipe the real bar).
+        var saved = entitySaved;
+        if (_persistentLayout != null)
+        {
+            if (saved == null || _persistentLayout.NonNullCount > saved.NonNullCount)
+                saved = _persistentLayout;
+        }
+
+        if (saved == null)
+            return false;
+
+        var current = CaptureLayout().Flatten();
+        if (!current.Any(a => a != null))
+            return false;
+
+        // Same-entity reload (item equip): UID-only match. Otherwise allow prototype matching
+        // (polymorph / persistent layout from a previous body).
+        var allowProtoMatch = !(entitySaved != null && ReferenceEquals(saved, entitySaved) && entity == localEntity);
+        var savedEntityForRemap = allowProtoMatch
+            ? (entity == localEntity ? EntityUid.Invalid : entity)
+            : localEntity;
+
+        var remapped = RemapLayout(saved.Flatten(), current, savedEntityForRemap, localEntity);
+
+        ApplyFlatLayout(remapped);
+        if (IsPagedMode)
+            _currentPageIndex = Math.Clamp(saved.CurrentPage, 0, Math.Max(0, _pages.Count - 1));
+        UpdatePageButtons();
+        _savedActions.Remove(entity);
+        _pendingLoadFrom = null;
+        RefreshActionContainer();
+        QueueWindowUpdate();
+        _sawmill.Debug($"Loaded actions for entity {entity} (from persistent={ReferenceEquals(saved, _persistentLayout)})");
+        return true;
+    }
+
+    private SavedActionLayout CaptureLayout()
+    {
+        var layout = new SavedActionLayout { CurrentPage = _currentPageIndex };
+        if (IsPagedMode)
+        {
+            layout.IsPaged = true;
+            foreach (var page in _pages)
+                layout.Pages.Add(page.ToList());
+        }
+        else
+        {
+            layout.IsPaged = false;
+            layout.Pages.Add(new List<EntityUid?>(_actions));
+        }
+
+        return layout;
+    }
+
+    private void ApplyFlatLayout(List<EntityUid?> flat)
+    {
+        if (IsPagedMode)
+        {
+            foreach (var page in _pages)
+                page.Clear();
+
+            EnsurePageCapacity(Math.Max(1, (flat.Count + PagedSlotCount - 1) / PagedSlotCount));
+            var maxSlots = _pages.Count * PagedSlotCount;
+            for (var i = 0; i < flat.Count && i < maxSlots; i++)
+            {
+                _pages[i / PagedSlotCount][i % PagedSlotCount] = flat[i];
+            }
+
+            _currentPageIndex = Math.Clamp(_currentPageIndex, 0, _pages.Count - 1);
+            _actions.Clear();
+        }
+        else
+        {
+            _actions = new List<EntityUid?>(flat);
+            foreach (var page in _pages)
+                page.Clear();
+            _currentPageIndex = DefaultPageIndex;
+        }
+
+        _layoutIsPaged = IsPagedMode;
+    }
+
+    private List<EntityUid?> RemapLayout(
+        List<EntityUid?> savedActions,
+        List<EntityUid?> currentActions,
+        EntityUid savedEntity,
+        EntityUid localEntity)
+    {
         var metaQuery = EntityManager.GetEntityQuery<MetaDataComponent>();
         var actionQuery = EntityManager.GetEntityQuery<ActionComponent>();
+        var used = new HashSet<EntityUid>();
 
         (EntityUid?, Type)? GetActionContainerAndType(EntityUid action)
         {
@@ -377,12 +645,10 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
                 return true;
             if (a == null || b == null)
                 return false;
-            // Goobstation start
             if (a.Value == b.Value)
                 return true;
-            if (entity == localEntity) // Action EntityUids are not equal but this is the same entity
+            if (savedEntity == localEntity)
                 return false;
-            // Goobstation end
             if (!metaQuery.TryGetComponent(a.Value, out var metaA) ||
                 !metaQuery.TryGetComponent(b.Value, out var metaB))
                 return false;
@@ -400,40 +666,98 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
                 return false;
             if (containerA == containerB)
                 return true;
-            // Container for entity before ling polymorph is null for some reason
             return containerA == localEntity && containerB == null || containerA == null && containerB == localEntity;
         }
 
-        List<EntityUid?> newActions = new();
+        var newActions = new List<EntityUid?>();
         foreach (var savedAction in savedActions)
         {
-            if (_actions.FirstOrDefault(x => IdsEqual(x, savedAction)) is { } action)
+            if (savedAction == null)
             {
-                newActions.Add(action);
+                newActions.Add(null);
+                continue;
+            }
+
+            var match = currentActions.FirstOrDefault(x =>
+                x != null && !used.Contains(x.Value) && IdsEqual(x, savedAction));
+            if (match is { } matched)
+            {
+                used.Add(matched);
+                newActions.Add(matched);
+            }
+            else
+            {
+                // Keep the hole so slot positions survive temporary forms / missing actions.
+                newActions.Add(null);
             }
         }
-        var addedActions = _actions.Except(newActions);
-        _actions = newActions.Concat(addedActions).ToList();
-        OnActionsUpdated();
-        _savedActions.Remove(entity);
-        _sawmill.Debug($"Loaded actions for entity {entity}");
+
+        foreach (var action in currentActions)
+        {
+            if (action == null || used.Contains(action.Value))
+                continue;
+            newActions.Add(action);
+        }
+
+        return newActions;
     }
     // Goobstation end
+
+    private void AppendAction(EntityUid action)
+    {
+        if (IsPagedMode)
+        {
+            foreach (var page in _pages)
+            {
+                for (var i = 0; i < page.Size; i++)
+                {
+                    if (page[i] != null)
+                        continue;
+                    page[i] = action;
+                    return;
+                }
+            }
+
+            // All pages full — leave action off the bar until a slot frees up.
+            return;
+        }
+
+        if (!_actions.Contains(action))
+            _actions.Add(action);
+    }
+
+    private bool ContainsAction(EntityUid actionId)
+    {
+        if (IsPagedMode)
+        {
+            foreach (var page in _pages)
+            {
+                for (var i = 0; i < page.Size; i++)
+                {
+                    if (page[i] == actionId)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        return _actions.Contains(actionId);
+    }
 
     private void OnActionAdded(EntityUid actionId)
     {
         if (_actionsSystem?.GetAction(actionId) is not {} action)
             return;
 
-        // TODO: event
-        // if the action is toggled when we add it, start targeting
         if (action.Comp.Toggled && EntityManager.TryGetComponent<TargetActionComponent>(actionId, out var target))
             StartTargeting((action, action, target));
 
-        if (_actions.Contains(action))
-            return;
+        if (!ContainsAction(action))
+            AppendAction(action);
 
-        _actions.Add(action);
+        if (_pendingLoadFrom is { } pending)
+            TryApplySavedLayout(pending);
     }
 
     private void OnActionRemoved(EntityUid actionId)
@@ -444,15 +768,31 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (actionId == SelectingTargetFor)
             StopTargeting();
 
-        _actions.RemoveAll(x => x == actionId);
+        if (IsPagedMode)
+        {
+            foreach (var page in _pages)
+            {
+                for (var i = 0; i < page.Size; i++)
+                {
+                    if (page[i] == actionId)
+                        page[i] = null;
+                }
+            }
+        }
+        else
+        {
+            _actions.RemoveAll(x => x == actionId);
+        }
     }
 
     private void OnActionsUpdated()
     {
         QueueWindowUpdate();
 
-        if (_actionsSystem != null)
-            _container?.SetActionData(_actionsSystem, _actions.ToArray());
+        if (_pendingLoadFrom is { } pending)
+            TryApplySavedLayout(pending);
+
+        RefreshActionContainer();
     }
 
     private void ActionButtonPressed(ButtonEventArgs args)
@@ -607,6 +947,26 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
         int position;
 
+        if (IsPagedMode)
+        {
+            if (actionId == null)
+            {
+                button.ClearData();
+                if (_container?.TryGetButtonIndex(button, out position) ?? false)
+                    CurrentPage[position] = null;
+            }
+            else if (button.TryReplaceWith(actionId.Value, _actionsSystem) &&
+                     _container != null &&
+                     _container.TryGetButtonIndex(button, out position))
+            {
+                CurrentPage[position] = actionId;
+            }
+
+            if (updateSlots)
+                RefreshActionContainer();
+            return;
+        }
+
         if (actionId == null)
         {
             button.ClearData();
@@ -631,7 +991,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         }
 
         if (updateSlots)
-            _container?.SetActionData(_actionsSystem, _actions.ToArray());
+            RefreshActionContainer();
     }
 
     private void DragAction()
@@ -653,8 +1013,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (dragged.Parent is ActionButtonContainer)
             SetAction(dragged, swapAction, false);
 
-        if (_actionsSystem != null)
-            _container?.SetActionData(_actionsSystem, _actions.ToArray());
+        RefreshActionContainer();
 
         _menuDragHelper.EndDrag();
     }
@@ -820,6 +1179,9 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             return;
         }
 
+        ActionsBar.PageButtons.LeftArrow.OnPressed -= OnLeftArrowPressed;
+        ActionsBar.PageButtons.RightArrow.OnPressed -= OnRightArrowPressed;
+
         if (_window != null)
         {
             _window.OnOpen -= OnWindowOpened;
@@ -850,6 +1212,10 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             return;
         }
 
+        ActionsBar.PageButtons.LeftArrow.OnPressed += OnLeftArrowPressed;
+        ActionsBar.PageButtons.RightArrow.OnPressed += OnRightArrowPressed;
+        UpdatePageButtons();
+
         RegisterActionContainer(ActionsBar.ActionsContainer);
 
         _actionsSystem?.LinkAllActions();
@@ -878,13 +1244,28 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (_actionsSystem == null)
             return;
 
-        _actions.Clear();
-        foreach (var assign in assignments)
+        if (IsPagedMode)
         {
-            _actions.Add(assign.ActionId);
+            foreach (var page in _pages)
+                page.Clear();
+
+            foreach (var assign in assignments)
+            {
+                EnsurePageCapacity(assign.Hotbar + 1);
+                if (assign.Slot < PagedSlotCount)
+                    _pages[assign.Hotbar][assign.Slot] = assign.ActionId;
+            }
+        }
+        else
+        {
+            _actions.Clear();
+            foreach (var assign in assignments)
+            {
+                _actions.Add(assign.ActionId);
+            }
         }
 
-        _container?.SetActionData(_actionsSystem, _actions.ToArray());
+        RefreshActionContainer();
     }
 
     public void RemoveActionContainer()
@@ -965,7 +1346,10 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             return;
 
         LoadDefaultActions();
-        _container?.SetActionData(_actionsSystem, _actions.ToArray());
+        if (_pendingLoadFrom is { } pending)
+            TryApplySavedLayout(pending);
+        RefreshActionContainer();
+        UpdatePageButtons();
         QueueWindowUpdate();
     }
 
@@ -984,12 +1368,41 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         var actions = _actionsSystem.GetClientActions().Where(action => action.Comp.AutoPopulate).ToList();
         actions.Sort(ActionComparer);
 
+        if (IsPagedMode)
+        {
+            foreach (var page in _pages)
+                page.Clear();
+
+            EnsurePageCapacity(Math.Max(1, (actions.Count + PagedSlotCount - 1) / PagedSlotCount));
+
+            var offset = 0;
+            foreach (var page in _pages)
+            {
+                for (var slot = 0; slot < page.Size; slot++)
+                {
+                    var actionIndex = slot + offset;
+                    page[slot] = actionIndex < actions.Count ? actions[actionIndex].Owner : null;
+                }
+
+                offset += page.Size;
+                if (offset >= actions.Count)
+                    break;
+            }
+
+            _currentPageIndex = DefaultPageIndex;
+            _actions.Clear();
+            _layoutIsPaged = true;
+            return;
+        }
+
         _actions.Clear();
         foreach (var (action, _) in actions)
         {
             if (!_actions.Contains(action))
                 _actions.Add(action);
         }
+
+        _layoutIsPaged = false;
     }
 
     /// <summary>
@@ -1111,5 +1524,85 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
         handOverlay.IconOverride = null;
         handOverlay.EntityOverride = null;
+    }
+
+    private sealed class SavedActionLayout
+    {
+        public bool IsPaged;
+        public int CurrentPage;
+        public List<List<EntityUid?>> Pages { get; } = new();
+
+        public bool IsEmpty => Pages.Count == 0 || Pages.All(p => p.Count == 0 || p.All(a => a == null));
+
+        public int NonNullCount
+        {
+            get
+            {
+                var count = 0;
+                foreach (var page in Pages)
+                {
+                    foreach (var action in page)
+                    {
+                        if (action != null)
+                            count++;
+                    }
+                }
+
+                return count;
+            }
+        }
+
+        public List<EntityUid?> Flatten()
+        {
+            var flat = new List<EntityUid?>();
+            foreach (var page in Pages)
+                flat.AddRange(page);
+            return flat;
+        }
+
+        public SavedActionLayout Clone()
+        {
+            var clone = new SavedActionLayout
+            {
+                IsPaged = IsPaged,
+                CurrentPage = CurrentPage,
+            };
+            foreach (var page in Pages)
+                clone.Pages.Add(new List<EntityUid?>(page));
+            return clone;
+        }
+    }
+
+    private sealed class ActionPage
+    {
+        private readonly EntityUid?[] _data;
+
+        public ActionPage(int size)
+        {
+            _data = new EntityUid?[size];
+        }
+
+        public EntityUid? this[int index]
+        {
+            get => _data[index];
+            set => _data[index] = value;
+        }
+
+        public int Size => _data.Length;
+
+        public void Clear()
+        {
+            Array.Fill(_data, null);
+        }
+
+        public List<EntityUid?> ToList()
+        {
+            return _data.ToList();
+        }
+
+        public static implicit operator EntityUid?[](ActionPage page)
+        {
+            return page._data.ToArray();
+        }
     }
 }

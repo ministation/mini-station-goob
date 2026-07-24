@@ -132,6 +132,18 @@ namespace Content.Shared.Input
                 HotbarShift1, HotbarShift2, HotbarShift3, HotbarShift4, HotbarShift5, HotbarShift6, HotbarShift7, HotbarShift8, HotbarShift9, HotbarShift0
             };
 
+        /// <summary>
+        /// Hotkeys for a single paged action-bar page (slots 1-0, no Shift row).
+        /// </summary>
+        public static BoundKeyFunction[] GetPagedHotbarBoundKeys() =>
+            new[]
+            {
+                Hotbar1, Hotbar2, Hotbar3, Hotbar4, Hotbar5, Hotbar6, Hotbar7, Hotbar8, Hotbar9, Hotbar0
+            };
+
+        public static readonly BoundKeyFunction ActionBarNextPage = "ActionBarNextPage";
+        public static readonly BoundKeyFunction ActionBarPreviousPage = "ActionBarPreviousPage";
+
         public static readonly BoundKeyFunction Vote0 = "Vote0";
         public static readonly BoundKeyFunction Vote1 = "Vote1";
         public static readonly BoundKeyFunction Vote2 = "Vote2";

@@ -6,6 +6,7 @@ using Content.Shared.Input;
 using Robust.Client.Input;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Input;
 using Robust.Shared.Utility;
 
 namespace Content.Client.UserInterface.Systems.Actions.Controls;
@@ -32,8 +33,15 @@ public class ActionButtonContainer : GridContainer
 
     public void SetActionData(ActionsSystem system, params EntityUid?[] actionTypes)
     {
-        var uniqueCount = Math.Min(system.GetClientActions().Count(), actionTypes.Length + 1);
-        var keys = ContentKeyFunctions.GetHotbarBoundKeys();
+        SetActionData(system, actionTypes, fixedSize: false, keys: null);
+    }
+
+    public void SetActionData(ActionsSystem system, EntityUid?[] actionTypes, bool fixedSize, BoundKeyFunction[]? keys)
+    {
+        var uniqueCount = fixedSize
+            ? actionTypes.Length
+            : Math.Min(system.GetClientActions().Count(), actionTypes.Length + 1);
+        keys ??= ContentKeyFunctions.GetHotbarBoundKeys();
 
         for (var i = 0; i < uniqueCount; i++)
         {
