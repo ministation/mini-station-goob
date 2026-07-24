@@ -3,6 +3,7 @@
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Mobs.Components;
+using Content.Goobstation.Maths.FixedPoint;
 using Robust.Shared.Prototypes;
 using System.Linq;
 
@@ -48,11 +49,28 @@ public sealed class SharedSuicideSystem : EntitySystem
         // Removing structural because it causes issues against entities that cannot take structural damage,
         // then getting the total to use in calculations for spreading out damage.
         appliedDamageSpecifier.DamageDict.Remove("Structural");
+        totalDamage = appliedDamageSpecifier.GetTotal();
+        if (totalDamage <= FixedPoint2.Zero)
+            return;
 
-        // Split the total amount of damage needed to kill the target by every damage type in the DamageSpecifier
-        foreach (var (key, value) in appliedDamageSpecifier.DamageDict)
+        // Split the lethal amount proportionally across remaining damage types.
+        // Do not Math.Ceiling here — that turns an exact half (e.g. 62.5) into 63 and breaks
+        // even splits / SuicideCommandTests. Remainder goes on the last type so the total stays lethal.
+        var keys = appliedDamageSpecifier.DamageDict.Keys.ToList();
+        var assigned = FixedPoint2.Zero;
+        for (var i = 0; i < keys.Count; i++)
         {
-            appliedDamageSpecifier.DamageDict[key] = Math.Ceiling((double) (value * lethalAmountOfDamage / totalDamage));
+            var key = keys[i];
+            var value = appliedDamageSpecifier.DamageDict[key];
+            if (i == keys.Count - 1)
+            {
+                appliedDamageSpecifier.DamageDict[key] = lethalAmountOfDamage - assigned;
+                break;
+            }
+
+            var share = value * lethalAmountOfDamage / totalDamage;
+            appliedDamageSpecifier.DamageDict[key] = share;
+            assigned += share;
         }
 
         _damageableSystem.TryChangeDamage(target, appliedDamageSpecifier, true, origin: target, targetPart: TargetBodyPart.Chest); // Shitmed Change

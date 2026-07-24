@@ -1,0 +1,3 @@
+# Orion EnergyDome — ignore melee context hits on barrier FX
+- type: Tag
+  id: MeleeHitIgnore

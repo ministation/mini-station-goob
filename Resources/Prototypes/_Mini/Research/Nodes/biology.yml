@@ -80,8 +80,8 @@
   - type: General
     amount: 10000
   technologyPrerequisites:
-  - ArtificialSelection
   - Xenobiology
+  - Hydroponics
   discountExperiments:
   - ScanningPeopleMutant
   discountExperimentCosts:
@@ -163,6 +163,7 @@
 
 - type: technology
   id: ArtificialSelection
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-artificial-selection-name
   description: research-technology-artificial-selection-desc
   icon:
