@@ -36,8 +36,8 @@ public sealed class ThunderdomeLoadoutEui : BaseEui
         {
             case ThunderdomeLoadoutSelectedMessage selected:
                 var sel = selected.Selection;
-                _thunderdomeSystem.SpawnPlayer(_session, _ruleEntity, sel.WeaponIndex, sel.GrenadeIndex, sel.MedicalIndex, sel.HeadIndex, sel.NeckIndex, sel.GlassesIndex, sel.BackpackIndex, sel.UtilityIndex);
-                Close();
+                if (_thunderdomeSystem.SpawnPlayer(_session, _ruleEntity, sel.WeaponIndex, sel.GrenadeIndex, sel.MedicalIndex, sel.HeadIndex, sel.NeckIndex, sel.GlassesIndex, sel.BackpackIndex, sel.UtilityIndex))
+                    Close();
                 break;
         }
     }
