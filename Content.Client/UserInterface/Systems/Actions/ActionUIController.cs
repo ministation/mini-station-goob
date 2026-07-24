@@ -555,17 +555,15 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (!current.Any(a => a != null))
             return false;
 
-        // Remap against the body that owned the chosen layout when possible.
-        var remapSource = entity;
-        if (ReferenceEquals(saved, _persistentLayout) ||
-            (entitySaved != null && !ReferenceEquals(saved, entitySaved)))
-        {
-            // Persistent layout may predate this entity; still use proto remap (source != local).
-            if (remapSource == localEntity)
-                remapSource = EntityUid.Invalid;
-        }
+        // Same-entity reload (item equip): UID-only match. Otherwise allow prototype matching
+        // (polymorph / persistent layout from a previous body).
+        var allowProtoMatch = !(entitySaved != null && ReferenceEquals(saved, entitySaved) && entity == localEntity);
+        var savedEntityForRemap = allowProtoMatch
+            ? (entity == localEntity ? EntityUid.Invalid : entity)
+            : localEntity;
 
-        var remapped = RemapLayout(saved.Flatten(), current, remapSource, localEntity);
+        var remapped = RemapLayout(saved.Flatten(), current, savedEntityForRemap, localEntity);
+
         ApplyFlatLayout(remapped);
         if (IsPagedMode)
             _currentPageIndex = Math.Clamp(saved.CurrentPage, 0, Math.Max(0, _pages.Count - 1));
@@ -604,7 +602,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
                 page.Clear();
 
             EnsurePageCapacity(Math.Max(1, (flat.Count + PagedSlotCount - 1) / PagedSlotCount));
-            for (var i = 0; i < flat.Count; i++)
+            var maxSlots = _pages.Count * PagedSlotCount;
+            for (var i = 0; i < flat.Count && i < maxSlots; i++)
             {
                 _pages[i / PagedSlotCount][i % PagedSlotCount] = flat[i];
             }
@@ -685,6 +684,11 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             {
                 used.Add(matched);
                 newActions.Add(matched);
+            }
+            else
+            {
+                // Keep the hole so slot positions survive temporary forms / missing actions.
+                newActions.Add(null);
             }
         }
 
