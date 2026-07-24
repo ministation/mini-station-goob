@@ -694,18 +694,33 @@ public sealed class GhostRoleSystem : EntitySystem
 
         DebugTools.AssertNotNull(player.ContentData());
 
-        // After taking a ghost role, the player cannot return to the original body, so wipe the player's current mind
-        // unless it is a visiting mind
-        if(_mindSystem.TryGetMind(player.UserId, out _, out var mind) && !mind.IsVisitingEntity)
+        // After taking a ghost role the player cannot return to the original body.
+        // Always UnVisit + WipeMind so we never skip cleanup while visiting (that left
+        // sessions briefly attached to null and could strand clients on a black screen).
+        if (_mindSystem.TryGetMind(player.UserId, out _, out _))
+        {
+            _mindSystem.UnVisit(player);
             _mindSystem.WipeMind(player);
+        }
 
-        var newMind = _mindSystem.CreateMind(player.UserId,
-            Comp<MetaDataComponent>(mob).EntityName);
-
-        _mindSystem.SetUserId(newMind, player.UserId);
+        // Create mind without UserId first, bind the mob, then attach the session —
+        // avoids CreateMind(userId) attaching the eye to null before TransferTo.
+        var newMind = _mindSystem.CreateMind(null, Comp<MetaDataComponent>(mob).EntityName);
         _mindSystem.TransferTo(newMind, mob);
-
+        _mindSystem.SetUserId(newMind, player.UserId);
         _roleSystem.MindAddRoles(newMind.Owner, role.MindRoles, newMind.Comp);
+
+        if (player.AttachedEntity == mob)
+            return;
+
+        Log.Error(
+            $"Ghost role transfer failed to attach {player} to {ToPrettyString(mob)}; attached={ToPrettyString(player.AttachedEntity)}. Spawning observer fallback.");
+
+        var ghost = _ghost.SpawnGhost((newMind.Owner, (MindComponent?) newMind.Comp));
+        if (ghost == null)
+        {
+            Log.Error($"Observer fallback also failed for {player} after ghost role take; session may have a black screen.");
+        }
     }
 
     /// <summary>

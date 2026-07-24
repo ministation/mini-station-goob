@@ -503,7 +503,8 @@ namespace Content.Server.Ghost
             {
                 Log.Warning($"No spawn valid ghost spawn position found for {mind.Comp.CharacterName}"
                     + $" \"{ToPrettyString(mind)}\"");
-                _minds.TransferTo(mind.Owner, null, createGhost: false, mind: mind.Comp);
+                // Do not TransferTo(null) here — that strands online clients with a black screen
+                // (no eye). Callers must handle a null return (lobby fallback / retry).
                 return null;
             }
 
