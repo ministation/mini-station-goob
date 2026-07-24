@@ -701,7 +701,7 @@ public sealed class GhostRoleSystem : EntitySystem
             if (oldMind.IsVisitingEntity)
             {
                 // Drop the visit (reattaches briefly to the body); UserId is cleared when the new mind binds.
-                _mindSystem.UnVisit(oldMindId, oldMind);
+                _mindSystem.UnVisit(oldMindId.Value, oldMind);
             }
             else
             {
