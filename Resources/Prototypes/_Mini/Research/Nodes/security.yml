@@ -134,7 +134,7 @@
   - SecurityEquipment
   recipeUnlocks:
   - TelescopicShield
-  # - RiotBulletShield  # MaterialArbitrage: destroy yields more Glass than lathe cost
+  - RiotBulletShield
   - Handcuffs
   - BolaEnergy
   - Truncheon

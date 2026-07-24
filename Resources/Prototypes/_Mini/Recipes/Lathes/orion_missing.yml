@@ -78,7 +78,7 @@
   - Service
   completetime: 4
   materials:
-    Glass: 200
+    Glass: 300
     Plastic: 100
 
 - type: latheRecipe
@@ -416,7 +416,7 @@
   - Security
   completetime: 4
   materials:
-    Steel: 700
+    Steel: 1000
 
 - type: latheRecipe
   id: MultitoolAbductor
@@ -527,7 +527,7 @@
   completetime: 4
   materials:
     Steel: 700
-    Glass: 250
+    Glass: 400
     Plasma: 150
 
 - type: latheRecipe
