@@ -180,7 +180,7 @@
 
 - type: latheRecipe
   id: ClothingHeadset
-  result: ClothingHeadset
+  result: ClothingHeadsetEmpty
   categories:
   - Clothing
   completetime: 4

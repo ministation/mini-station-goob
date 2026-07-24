@@ -146,9 +146,12 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
                 SelectTech(proto, tech.Value);
         }
 
-        // Refit when the visible set changes (discipline filter / server switch).
-        _pendingFit = true;
-        FitVisibleTechnologies();
+        // Keep user zoom/pan across unlocks and point sync; Fit/Recenter is explicit only.
+        var items = DragContainer.Children.OfType<FancyResearchConsoleItem>().ToList();
+        if (items.Count > 0)
+            CacheContentBounds(items);
+        ClampPan();
+        ApplyLayoutPositions();
     }
 
     // Orion-Start
@@ -654,8 +657,17 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
     protected override void Resized()
     {
         base.Resized();
-        if (_pendingFit || DragContainer.ChildCount > 0)
+        if (_pendingFit)
+        {
             FitVisibleTechnologies();
+            return;
+        }
+
+        if (DragContainer.ChildCount > 0)
+        {
+            ClampPan();
+            ApplyLayoutPositions();
+        }
     }
 
     public override void Close()

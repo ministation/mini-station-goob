@@ -396,7 +396,9 @@ public sealed partial class LatheMenu : DefaultWindow
             return textRect;
         }
 
-        if (recipe.Result is { } result)
+        if (recipe.Result is { } result
+            && _prototypeManager.TryIndex(result, out EntityPrototype? resultProto)
+            && !resultProto.Abstract)
         {
             var entProtoView = new EntityPrototypeView();
             entProtoView.SetPrototype(result);
