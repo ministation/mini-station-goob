@@ -121,6 +121,12 @@ public sealed partial class MiscTab : Control
             layoutEntries.Add(new OptionDropDownCVar<string>.ValueOption(layout.ToString()!, Loc.GetString($"ui-options-hud-layout-{layout.ToString()!.ToLower()}")));
         }
 
+        var actionBarModeEntries = new List<OptionDropDownCVar<string>.ValueOption>
+        {
+            new(GoobCVars.ActionBarModeFlat, Loc.GetString("ui-options-action-bar-mode-flat")),
+            new(GoobCVars.ActionBarModePaged, Loc.GetString("ui-options-action-bar-mode-paged")),
+        };
+
         var fontStyles = _prototypeManager.EnumeratePrototypes<UiFontStylePrototype>().ToList();
         fontStyles.Sort();
         var fontStyleEntries = new List<OptionDropDownCVar<string>.ValueOption>();
@@ -136,6 +142,7 @@ public sealed partial class MiscTab : Control
 
         Control.AddOptionDropDown(CVars.InterfaceTheme, DropDownHudTheme, themeEntries);
         Control.AddOptionDropDown(CCVars.UILayout, DropDownHudLayout, layoutEntries);
+        Control.AddOptionDropDown(GoobCVars.ActionBarMode, DropDownActionBarMode, actionBarModeEntries);
         Control.AddOptionDropDown(CCVars.UiFontStyle, DropDownUiFontStyle, fontStyleEntries);
 
         Control.AddOptionCheckBox(CVars.DiscordEnabled, DiscordRich);

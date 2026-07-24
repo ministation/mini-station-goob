@@ -12,6 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     HorizontalExpand="False"
 >
     <BoxContainer Orientation="Vertical">
+        <controls:ActionPageButtons
+            Name="PageButtons"
+            Access="Public"
+            Visible="False"
+            HorizontalAlignment="Center"/>
         <controls:ActionButtonContainer
             HorizontalAlignment="Center"
             VerticalAlignment="Center"

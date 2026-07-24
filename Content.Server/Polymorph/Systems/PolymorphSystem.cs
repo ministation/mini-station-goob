@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Goobstation.Common.Actions;
 using Content.Server.Actions;
 using Content.Server.Humanoid;
 using Content.Server.Inventory;
@@ -407,6 +408,9 @@ public sealed partial class PolymorphSystem : EntitySystem
 
         _tag.RemoveTag(uid, SharedBindSoulSystem.IgnoreBindSoulTag); // Goobstation
 
+        // Restore client action-bar layout after body change (same contract as changeling).
+        RaiseNetworkEvent(new LoadActionsEvent(GetNetEntity(uid)), child);
+
         // CorvaxGoob edit start - items that failed to transfer must not disappear to paused map.
         // This only applies to transfer mode: for inventory None (e.g. jaunts), force-dropping here strips the parent body.
         if (configuration.Inventory == PolymorphInventoryChange.Transfer)
@@ -541,6 +545,8 @@ public sealed partial class PolymorphSystem : EntitySystem
             _mindSystem.TransferTo(mindId, parent, mind: mind);
 
         _tag.RemoveTag(uid, SharedBindSoulSystem.IgnoreBindSoulTag); // Goobstation
+
+        RaiseNetworkEvent(new LoadActionsEvent(GetNetEntity(uid)), parent);
 
         if (TryComp<PolymorphableComponent>(parent, out var polymorphableComponent))
             polymorphableComponent.LastPolymorphEnd = _gameTiming.CurTime;
