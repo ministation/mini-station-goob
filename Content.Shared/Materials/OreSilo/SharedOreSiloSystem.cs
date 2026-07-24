@@ -1,3 +1,4 @@
+using Content.Goobstation.Common.Silo;
 using Content.Shared.Power.EntitySystems;
 using JetBrains.Annotations;
 using Robust.Shared.Utility;
@@ -11,6 +12,7 @@ public abstract class SharedOreSiloSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     private EntityQuery<OreSiloClientComponent> _clientQuery;
+    private EntityQuery<SiloUtilizerComponent> _utilizerQuery;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -29,6 +31,7 @@ public abstract class SharedOreSiloSystem : EntitySystem
         SubscribeLocalEvent<OreSiloClientComponent, ComponentShutdown>(OnClientShutdown);
 
         _clientQuery = GetEntityQuery<OreSiloClientComponent>();
+        _utilizerQuery = GetEntityQuery<SiloUtilizerComponent>();
     }
 
     private void OnToggleOreSiloClient(Entity<OreSiloComponent> ent, ref ToggleOreSiloClientMessage args)
@@ -97,6 +100,11 @@ public abstract class SharedOreSiloSystem : EntitySystem
         if (args.LocalOnly)
             return;
 
+        // Typan lathes inherit OreSiloClient from BaseLathe and also use Goob SiloUtilizer.
+        // Prefer the active Goob silo link to avoid double-counting materials.
+        if (HasActiveSiloUtilizer(ent.Owner))
+            return;
+
         if (ent.Comp.Silo is not { } silo)
             return;
 
@@ -121,6 +129,9 @@ public abstract class SharedOreSiloSystem : EntitySystem
         if (args.LocalOnly)
             return;
 
+        if (HasActiveSiloUtilizer(ent.Owner))
+            return;
+
         if (ent.Comp.Silo is not { } silo || !TryComp<MaterialStorageComponent>(silo, out var materialStorage))
             return;
 
@@ -133,6 +144,11 @@ public abstract class SharedOreSiloSystem : EntitySystem
                 continue;
             args.Materials[mat] = 0;
         }
+    }
+
+    private bool HasActiveSiloUtilizer(EntityUid uid)
+    {
+        return _utilizerQuery.TryComp(uid, out var utilizer) && utilizer.Silo != null;
     }
 
     private void OnClientShutdown(Entity<OreSiloClientComponent> ent, ref ComponentShutdown args)

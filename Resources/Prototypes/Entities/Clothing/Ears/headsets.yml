@@ -41,6 +41,18 @@
 
 - type: entity
   parent: ClothingHeadset
+  id: ClothingHeadsetEmpty
+  name: empty headset
+  description: A modular intercom that fits over the head. Comes without encryption keys.
+  components:
+  - type: Sprite
+    sprite: Clothing/Ears/Headsets/base.rsi
+  - type: ContainerFill
+    containers:
+      key_slots: []
+
+- type: entity
+  parent: ClothingHeadset
   id: ClothingHeadsetGrey
   name: passenger headset
   components:
