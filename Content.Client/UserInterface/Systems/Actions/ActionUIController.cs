@@ -80,6 +80,11 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
     private ActionsWindow? _window;
 
     private readonly Dictionary<EntityUid, SavedActionLayout> _savedActions = new();
+    /// <summary>
+    /// Last rich layout from a "real" body (most non-null slots). Survives temporary
+    /// polymorphs like ethereal jaunt so revert does not restore the jaunt bar layout.
+    /// </summary>
+    private SavedActionLayout? _persistentLayout;
     private EntityUid? _pendingLoadFrom;
     private bool _layoutIsPaged;
     private ISawmill _sawmill = default!;
@@ -500,7 +505,13 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             return;
 
         _savedActions[entity] = layout;
-        _sawmill.Debug($"Saved actions for entity {entity}");
+
+        // Prefer the richest layout as the session default so short-lived forms
+        // (jaunt, etc.) do not overwrite the player's arranged hotbar.
+        if (_persistentLayout == null || layout.NonNullCount >= _persistentLayout.NonNullCount)
+            _persistentLayout = layout.Clone();
+
+        _sawmill.Debug($"Saved actions for entity {entity} (non-null={layout.NonNullCount})");
     }
 
     private void OnActionsLoaded(EntityUid entity)
@@ -513,7 +524,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             return;
         }
 
-        if (!_savedActions.ContainsKey(entity))
+        if (!_savedActions.ContainsKey(entity) && _persistentLayout == null)
             return;
 
         if (!TryApplySavedLayout(entity))
@@ -525,14 +536,36 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (_playerManager.LocalEntity == null)
             return false;
 
-        if (!_savedActions.TryGetValue(entity, out var saved))
+        var localEntity = _playerManager.LocalEntity.Value;
+        _savedActions.TryGetValue(entity, out var entitySaved);
+
+        // Prefer the richer persistent layout when the event points at a temporary form
+        // (e.g. jaunt revert sends the jaunt uid — its layout would wipe the real bar).
+        var saved = entitySaved;
+        if (_persistentLayout != null)
+        {
+            if (saved == null || _persistentLayout.NonNullCount > saved.NonNullCount)
+                saved = _persistentLayout;
+        }
+
+        if (saved == null)
             return false;
 
         var current = CaptureLayout().Flatten();
         if (!current.Any(a => a != null))
             return false;
 
-        var remapped = RemapLayout(saved.Flatten(), current, entity, _playerManager.LocalEntity.Value);
+        // Remap against the body that owned the chosen layout when possible.
+        var remapSource = entity;
+        if (ReferenceEquals(saved, _persistentLayout) ||
+            (entitySaved != null && !ReferenceEquals(saved, entitySaved)))
+        {
+            // Persistent layout may predate this entity; still use proto remap (source != local).
+            if (remapSource == localEntity)
+                remapSource = EntityUid.Invalid;
+        }
+
+        var remapped = RemapLayout(saved.Flatten(), current, remapSource, localEntity);
         ApplyFlatLayout(remapped);
         if (IsPagedMode)
             _currentPageIndex = Math.Clamp(saved.CurrentPage, 0, Math.Max(0, _pages.Count - 1));
@@ -541,7 +574,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         _pendingLoadFrom = null;
         RefreshActionContainer();
         QueueWindowUpdate();
-        _sawmill.Debug($"Loaded actions for entity {entity}");
+        _sawmill.Debug($"Loaded actions for entity {entity} (from persistent={ReferenceEquals(saved, _persistentLayout)})");
         return true;
     }
 
@@ -1497,12 +1530,42 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
         public bool IsEmpty => Pages.Count == 0 || Pages.All(p => p.Count == 0 || p.All(a => a == null));
 
+        public int NonNullCount
+        {
+            get
+            {
+                var count = 0;
+                foreach (var page in Pages)
+                {
+                    foreach (var action in page)
+                    {
+                        if (action != null)
+                            count++;
+                    }
+                }
+
+                return count;
+            }
+        }
+
         public List<EntityUid?> Flatten()
         {
             var flat = new List<EntityUid?>();
             foreach (var page in Pages)
                 flat.AddRange(page);
             return flat;
+        }
+
+        public SavedActionLayout Clone()
+        {
+            var clone = new SavedActionLayout
+            {
+                IsPaged = IsPaged,
+                CurrentPage = CurrentPage,
+            };
+            foreach (var page in Pages)
+                clone.Pages.Add(new List<EntityUid?>(page));
+            return clone;
         }
     }
 
