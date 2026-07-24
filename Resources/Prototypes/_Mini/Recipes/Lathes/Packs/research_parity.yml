@@ -41,7 +41,7 @@
   - CableHVStack
   - CableMVStack
   - CableStack
-  - CandyBowl
+  # CandyBowl - destruction arbitrage (Glass) vs lathe cost
   - Cane
   - CapacitorStockPart
   - CargoBountyComputerCircuitboard
@@ -139,8 +139,7 @@
   - FoodPlateSmall
   - FoodPlateSmallPlastic
   - FoodPlateTin
-  - FoodShakerPepperEmpty
-  - FoodShakerSaltEmpty
+  # FoodShakerPepperEmpty / FoodShakerSaltEmpty - destruction arbitrage (Glass)
   - ForensicPad
   - Fork
   - ForkPlastic
@@ -295,7 +294,7 @@
   - RightHandIPC
   - RightLegBorg
   - RightLegIPC
-  - RiotBulletShield
+  # RiotBulletShield - destruction arbitrage (Glass) vs lathe cost
   - RiotShield
   - RoboticArmCircuitboard
   - RollerBedSpawnFolded

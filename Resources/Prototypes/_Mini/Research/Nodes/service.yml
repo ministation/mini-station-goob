@@ -49,8 +49,8 @@
   - Pen
   - CrewCassette
   # - ConfettiGrenade  # missing lathe recipe / entity
-  - FoodShakerSaltEmpty
-  - FoodShakerPepperEmpty
+  # - FoodShakerSaltEmpty  # MaterialArbitrage: destroy yields more Glass than lathe cost
+  # - FoodShakerPepperEmpty
   - VinylPlayerCircuitboard
   - TapeDeckCircuitboard
   - StationRadioServerCircuitboard
@@ -151,7 +151,7 @@
   - ElectricGrillMachineCircuitboard
   - MicrowaveMachineCircuitboard
   - FoodBowlBig
-  - CandyBowl
+  # - CandyBowl  # MaterialArbitrage: destroy yields more Glass than lathe cost
   - FoodPlate
   - FoodPlateSmall
   - FoodPlatePlastic
