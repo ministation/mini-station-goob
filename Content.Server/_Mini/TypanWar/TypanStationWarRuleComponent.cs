@@ -20,7 +20,7 @@ public sealed partial class TypanStationWarRuleComponent : Component
     public float WarStartDelaySeconds = 300f;
 
     [DataField]
-    public float WarDurationSeconds = 3600f;
+    public float WarDurationSeconds = 2700f;
 
     [DataField]
     public float WarMusicDelaySeconds = 90f;

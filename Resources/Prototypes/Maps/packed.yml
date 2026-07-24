@@ -2,7 +2,7 @@
 
 - type: gameMap
   id: Packed
-  mapName: "Packed"
+  mapName: 'NTVG Пакет'
   mapPath: /Maps/_Goobstation/packed.yml # Goobstation
   minPlayers: 0
   maxPlayers: 35
@@ -11,7 +11,7 @@
       stationProto: StandardNanotrasenStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: "{0} Packed {1}"
+          mapNameTemplate: '{0} Пакет {1}'
           nameGenerator: !type:NanotrasenNameGenerator
             prefixCreator: "VG"
         - type: StationEmergencyShuttle

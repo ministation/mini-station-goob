@@ -85,7 +85,6 @@ public sealed partial class ReadyManifestUi : DefaultWindow
                 Text = Loc.GetString(
                     "ready-manifest-antag-queue-entry",
                     ("position", entry.QueuePosition),
-                    ("name", entry.CharacterName),
                     ("role", entry.RoleName)),
                 VerticalAlignment = VAlignment.Center,
             });

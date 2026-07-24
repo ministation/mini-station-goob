@@ -2148,10 +2148,14 @@ entities:
       - lube
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
       currentTechnologyCards:
       - AdvancedPowercells
       - WeaponizedLaserManipulation
@@ -10367,10 +10371,14 @@ entities:
       - lube
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
       currentTechnologyCards:
       - AdvancedPowercells
       - WeaponizedLaserManipulation

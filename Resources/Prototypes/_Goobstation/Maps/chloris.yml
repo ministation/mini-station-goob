@@ -2,7 +2,7 @@
 
 - type: gameMap
   id: Chloris
-  mapName: 'Chloris'
+  mapName: 'NTLPK Хлорис'
   mapPath: /Maps/_Goobstation/chloris.yml
   minPlayers: 80
   stations:
@@ -10,7 +10,7 @@
       stationProto: StandardNanotrasenStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: '{0} Chloris {1}'
+          mapNameTemplate: '{0} Хлорис {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: 'LPK'

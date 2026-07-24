@@ -1,6 +1,6 @@
 - type: gameMap
   id: Exo
-  mapName: 'Exo'
+  mapName: 'NT14 Экзо'
   mapPath: /Maps/exo.yml
   minPlayers: 25
   maxPlayers: 70
@@ -9,7 +9,7 @@
       stationProto: StandardNanotrasenStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Exomorph Vessel "Conquest" EXO-{1}'
+          mapNameTemplate: 'Корабль «Конквест» EXO-{1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

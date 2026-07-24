@@ -332,3 +332,34 @@
     stackRequirements:
       Manipulator: 4
       Cable: 1
+
+# R&D Network
+- type: entity
+  parent: BaseMachineCircuitboard
+  id: ResearchDestructiveAnalyzerMachineCircuitboard
+  name: destructive analyzer machine board
+  description: A machine printed circuit board for a destructive analyzer.
+  components:
+  - type: Sprite
+    state: science
+  - type: MachineBoard
+    prototype: ResearchDestructiveAnalyzer
+    stackRequirements:
+      Cable: 5
+      Manipulator: 2
+      Glass: 2
+
+- type: entity
+  parent: BaseMachineCircuitboard
+  id: ResearchExperimentalDestructiveScannerMachineCircuitboard
+  name: experimental destructive scanner machine board
+  description: A machine printed circuit board for an experimental destructive scanner.
+  components:
+  - type: Sprite
+    state: science
+  - type: MachineBoard
+    prototype: ResearchExperimentalDestructiveScanner
+    stackRequirements:
+      Glass: 5
+      Cable: 5
+      Manipulator: 2

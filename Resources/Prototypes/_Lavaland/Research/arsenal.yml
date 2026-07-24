@@ -1,19 +1,2 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+﻿# Mini-Edit: Replaced by _Mini/Research techweb nodes
 
-- type: technology
-  id: KineticModifications
-  name: research-technology-kinetic-modifications
-  icon:
-    sprite: _Lavaland/Objects/Weapons/upgrade.rsi
-    state: display
-  discipline: Industrial
-  tier: 2
-  cost: 10000
-  recipeUnlocks:
-  - PKAUpgradeDamage
-  - PKAUpgradeRange
-  - PKAUpgradeFireRate
-  - PKAUpgradeSpace
-  position: 0,-7
-  technologyPrerequisites:
-  - MassExcavation

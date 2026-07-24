@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2023 deltanedas <39013340+deltanedas@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 deltanedas <@deltanedas:kde.org>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+//
 // SPDX-License-Identifier: MIT
 
 using Content.Shared.Research.Components;
@@ -32,10 +37,10 @@ public sealed class ResearchStealerSystem : SharedResearchStealerSystem
         var count = _random.Next(comp.MinToSteal, comp.MaxToSteal + 1);
         for (var i = 0; i < count; i++)
         {
-            if (database.UnlockedTechnologies.Count == 0)
+            if (database.ResearchedTechnologies.Count == 0) // Orion-Edit
                 break;
 
-            var toRemove = _random.Pick(database.UnlockedTechnologies);
+            var toRemove = _random.Pick(database.ResearchedTechnologies); // Orion-Edit
             if (_research.TryRemoveTechnology((target, database), toRemove))
                 ev.Techs.Add(toRemove);
         }

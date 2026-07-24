@@ -1,0 +1,13 @@
+# Kept for ResearchTest / debug spawn. Player machines (Protolathe, CircuitImprinter,
+# ScienceTechFab, Typan + hyper variants) also reference MiniResearchParity.
+# Recipes in that pack must remain >= 2x destroy/deconstruct yield so hyper 0.5x stays fair.
+- type: entity
+  id: MiniResearchParityLathe
+  parent: BaseLathe
+  name: research parity lathe
+  description: Debug/test lathe that exposes Mini research recipe unlocks for CI parity.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Lathe
+    dynamicPacks:
+    - MiniResearchParity

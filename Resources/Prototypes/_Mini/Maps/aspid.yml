@@ -1,6 +1,6 @@
 - type: gameMap
   id: Aspid
-  mapName: 'Аспид'
+  mapName: 'НИКК Аспид'
   mapPath: /Maps/_Mini/aspid.yml
   minPlayers: 0
   stations:

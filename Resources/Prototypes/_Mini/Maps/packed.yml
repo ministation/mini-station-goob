@@ -1,6 +1,6 @@
 ﻿- type: gameMap
   id: MiniPacked
-  mapName: 'Packed'
+  mapName: 'NTJU Пакет'
   mapPath: /Maps/_Mini/packed.yml # Goobstation
   minPlayers: 0
   maxPlayers: 35
@@ -9,10 +9,10 @@
       stationProto: StandardNanotrasenStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: '{0} Packed {1}'
+          mapNameTemplate: '{0} Пакет {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
-            prefixCreator: 'VG'
+            prefixCreator: 'JU'
         - type: StationEmergencyShuttle
           emergencyShuttlePath: /Maps/Shuttles/emergency_crimson.yml
         - type: StationJobs

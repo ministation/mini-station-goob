@@ -1,3 +1,10 @@
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2024 exincore <me@exin.xyz>
+// SPDX-FileCopyrightText: 2024 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Diagnostics.CodeAnalysis;
@@ -22,6 +29,7 @@ public sealed partial class ResearchSystem
         SubscribeLocalEvent<ResearchClientComponent, ResearchClientServerSelectedMessage>(OnClientSelected);
         SubscribeLocalEvent<ResearchClientComponent, ResearchClientServerDeselectedMessage>(OnClientDeselected);
         SubscribeLocalEvent<ResearchClientComponent, ResearchRegistrationChangedEvent>(OnClientRegistrationChanged);
+        SubscribeLocalEvent<ResearchClientComponent, TechnologyDatabaseModifiedEvent>(OnClientDatabaseModified); // Orion
     }
 
     #region UI
@@ -32,7 +40,7 @@ public sealed partial class ResearchSystem
             return;
 
         // Validate that we can access this server.
-        if (!GetServers(uid).Contains((serveruid.Value, serverComponent)))
+        if (!GetServers(uid).Any(server => server.Owner == serveruid.Value)) // Orion-Edit
             return;
 
         UnregisterClient(uid, component);
@@ -63,10 +71,18 @@ public sealed partial class ResearchSystem
         UpdateClientInterface(uid, component);
     }
 
+    // Orion-Start
+    private void OnClientDatabaseModified(EntityUid uid, ResearchClientComponent component, ref TechnologyDatabaseModifiedEvent args)
+    {
+        SyncClientWithServer(uid, clientComponent: component);
+    }
+    // Orion-End
+
     private void OnClientMapInit(EntityUid uid, ResearchClientComponent component, MapInitEvent args)
     {
-        if (GetServers(uid).FirstOrNull() is { } server)
-            RegisterClient(uid, server, component, server);
+        // Orion-Edit-Start
+        TryAutoRegisterClient(uid, component);
+        // Orion-Edit-End
     }
 
     private void OnClientShutdown(EntityUid uid, ResearchClientComponent component, ComponentShutdown args)
@@ -86,14 +102,30 @@ public sealed partial class ResearchSystem
             if (ent.Comp.Server is not null)
                 return;
 
-            if (GetServers(ent).FirstOrNull() is { } server)
-                RegisterClient(ent, server, ent, server);
+            // Orion-Edit-Start
+            TryAutoRegisterClient(ent, ent.Comp);
+            // Orion-Edit-End
         }
         else
         {
             UnregisterClient(ent, ent.Comp);
         }
     }
+
+    // Orion-Start
+    private void TryAutoRegisterClient(EntityUid uid, ResearchClientComponent component)
+    {
+        if (component.Server is not null)
+            return;
+
+        var servers = GetServers(uid);
+        if (servers.Count == 0)
+            return;
+
+        var server = servers[0];
+        RegisterClient(uid, server, component, server);
+    }
+    // Orion-End
 
     private void UpdateClientInterface(EntityUid uid, ResearchClientComponent? component = null)
     {

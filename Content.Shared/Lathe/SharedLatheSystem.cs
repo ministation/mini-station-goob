@@ -156,15 +156,15 @@ public abstract class SharedLatheSystem : EntitySystem
             return Loc.GetString(proto.Name) + (string.IsNullOrEmpty(proto.SubName) ? string.Empty : " (" + Loc.GetString(proto.SubName) + ")"); // Goobstation - Recipes subnames
 
 
-        if (proto.Result is {} result)
+        if (proto.Result is {} result && _proto.TryIndex(result, out var resultProto))
         {
-            return _proto.Index(result).Name;
+            return resultProto.Name;
         }
 
         if (proto.ResultReagents is { } resultReagents)
         {
             return ContentLocalizationManager.FormatList(resultReagents
-                .Select(p => Loc.GetString("lathe-menu-result-reagent-display", ("reagent", _proto.Index(p.Key).LocalizedName), ("amount", p.Value)))
+                .Select(p => Loc.GetString("lathe-menu-result-reagent-display", ("reagent", _proto.TryIndex(p.Key, out var reagent) ? reagent.LocalizedName : p.Key.ToString()), ("amount", p.Value)))
                 .ToList());
         }
 
@@ -182,16 +182,18 @@ public abstract class SharedLatheSystem : EntitySystem
         if (!string.IsNullOrWhiteSpace(proto.Description))
             return Loc.GetString(proto.Description);
 
-        if (proto.Result is {} result)
+        if (proto.Result is {} result && _proto.TryIndex(result, out var resultProto))
         {
-            return _proto.Index(result).Description;
+            return resultProto.Description;
         }
 
         if (proto.ResultReagents is { } resultReagents)
         {
             // We only use the first one for the description since these descriptions don't combine very well.
             var reagent = resultReagents.First().Key;
-            return _proto.Index(reagent).LocalizedDescription;
+            return _proto.TryIndex(reagent, out var reagentProto)
+                ? reagentProto.LocalizedDescription
+                : string.Empty;
         }
 
         return string.Empty;

@@ -8377,6 +8377,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: BalloonSyn
   entities:
   - uid: 2171
@@ -8797,6 +8798,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: BlastDoor
   entities:
   - uid: 115
@@ -21434,6 +21436,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: ClosetEmergencyFilledRandom
   entities:
   - uid: 1120
@@ -24790,6 +24793,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: ExtinguisherCabinetFilled
   entities:
   - uid: 3487
@@ -38976,6 +38980,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: MedkitAdvancedFilled
   entities:
   - uid: 116
@@ -39168,6 +39173,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
   - uid: 640
     components:
     - type: Transform
@@ -39175,10 +39181,11 @@ entities:
       pos: -3.5,-6.5
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - TypanMechworks
+      - TypanWeaponry
+      - TypanResearch
+      - TypanLifeSupport
+      - Syndicate
   - uid: 3299
     components:
     - type: Transform
@@ -39187,10 +39194,11 @@ entities:
       pos: -19.5,-15.5
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - TypanMechworks
+      - TypanWeaponry
+      - TypanResearch
+      - TypanLifeSupport
+      - Syndicate
 - proto: MiniComputerShuttleCargo
   entities:
   - uid: 380
@@ -39364,6 +39372,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: OrganXenomorphBrain
   entities:
   - uid: 7053
@@ -42750,6 +42759,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: ProtolatheTypan
   entities:
   - uid: 55
@@ -42765,6 +42775,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: Rack
   entities:
   - uid: 1029
@@ -47712,6 +47723,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: UprightPianoInstrument
   entities:
   - uid: 2689
@@ -53561,6 +53573,7 @@ entities:
       - TypanWeaponry
       - TypanResearch
       - TypanLifeSupport
+      - Syndicate
 - proto: WeaponTurretLaserTypan
   entities:
   - uid: 4647

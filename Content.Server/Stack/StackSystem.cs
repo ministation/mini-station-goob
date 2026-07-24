@@ -21,6 +21,15 @@ namespace Content.Server.Stack
         #region Spawning
 
         /// <summary>
+        /// Server implementation of the shared virtual Split. Orion/Mini call sites use this overload;
+        /// the shared base always returns null.
+        /// </summary>
+        public override EntityUid? Split(EntityUid uid, int amount, EntityCoordinates spawnPosition, StackComponent? stack = null)
+        {
+            return Split((uid, stack), amount, spawnPosition);
+        }
+
+        /// <summary>
         /// Spawns a new entity and moves an amount to it from the stack.
         /// Moves nothing if amount is greater than ent's stack count.
         /// </summary>

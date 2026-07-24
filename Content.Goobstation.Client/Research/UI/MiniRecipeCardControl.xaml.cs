@@ -19,12 +19,13 @@ public sealed partial class MiniRecipeCardControl : Control
     {
         RobustXamlLoader.Load(this);
 
-        var discipline = prototypeManager.Index(technology.Discipline);
-        Background.ModulateSelfOverride = discipline.Color;
+        if (prototypeManager.TryIndex(technology.Discipline, out var discipline))
+            Background.ModulateSelfOverride = discipline.Color;
+
         NameLabel.SetMessage(lathe.GetRecipeName(proto));
 
-        if (proto.Result.HasValue)
-            Showcase.Texture = sprite.Frame0(prototypeManager.Index(proto.Result.Value));
+        if (proto.Result is { } result && prototypeManager.TryIndex(result, out var resultProto))
+            Showcase.Texture = sprite.Frame0(resultProto);
 
         if (proto.Description.HasValue)
         {

@@ -706,10 +706,14 @@ entities:
           ents: []
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
       currentTechnologyCards:
       - IndustrialEngineering
       - Virology
@@ -3273,10 +3277,14 @@ entities:
       - Bananium
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
       currentTechnologyCards:
       - IndustrialEngineering
       - Virology
@@ -7762,10 +7770,14 @@ entities:
       - Uranium
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Industrial
-      - Arsenal
-      - Experimental
-      - CivilianServices
+      - Engineering
+      - Security
+      - Cargo
+      - Shaft
+      - Scientific
+      - Robotics
+      - Medical
+      - Service
       currentTechnologyCards:
       - IndustrialEngineering
       - Virology

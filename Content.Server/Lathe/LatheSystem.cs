@@ -403,14 +403,14 @@ namespace Content.Server.Lathe
 
         private void OnTechnologyDatabaseModified(Entity<LatheAnnouncingComponent> ent, ref TechnologyDatabaseModifiedEvent args)
         {
-            if (args.NewlyUnlockedRecipes is null)
+            if (args.UnlockedRecipes is null)
                 return;
 
             if (!TryGetAvailableRecipes(ent.Owner, out var potentialRecipes))
                 return;
 
             var recipeNames = new List<string>();
-            foreach (var recipeId in args.NewlyUnlockedRecipes)
+            foreach (var recipeId in args.UnlockedRecipes)
             {
                 if (!potentialRecipes.Contains(new(recipeId)))
                     continue;

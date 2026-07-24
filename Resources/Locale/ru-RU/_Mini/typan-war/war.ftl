@@ -75,7 +75,7 @@ typan-war-manifest =
     {"[color=#A8C8FF]▸ Нанотрайзен:[/color] удерживать зоны захвата и набрать [bold]100 очков[/bold]."}
     {"[color=#FFB0B0]▸ Синдикат:[/color] удерживать зоны захвата и набрать [bold]100 очков[/bold]."}
     {"[color=#C8C4D8]▸[/color] Если таймер истечёт раньше — побеждает сторона с большим числом очков."}
-    {"[color=#C8C4D8]▸[/color] Активная фаза боя — [bold]60 минут[/bold]."}
+    {"[color=#C8C4D8]▸[/color] Активная фаза боя — [bold]45 минут[/bold]."}
     {" "}
     {"[color=#C8C4D8][bold]Зоны захвата[/bold][/color] [color=#888898](A / B / C)[/color]"}
     {"[color=#C8C4D8]▸[/color] Три зоны 3×3 появляются с началом боя — станция NT, станция Тайпан и торговый аванпост."}
@@ -111,6 +111,7 @@ typan-war-minimap-forces-nt = Нанотрайзен: {$count} бойцов
 typan-war-minimap-forces-typan = Синдикат: {$count} бойцов
 typan-war-minimap-map-legend = Силуэты = станции и шаттлы · треугольники = союзники · буквы = зоны захвата
 typan-war-minimap-controls = Колёсико — масштаб · перетаскивание — перемещение
+typan-war-minimap-music = Музыка войны
 typan-war-minimap-loading = Загрузка карты…
 typan-war-layout-failed = Война станций прервана: не удалось объединить станции на поле боя.
 typan-war-ghost-thunderdome-blocked = Арена недоступна во время войны станций.

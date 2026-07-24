@@ -28,7 +28,19 @@ public sealed class InternalEncryptionKeySpawner : EntitySystem
         if (!HasComp<EncryptionKeyHolderComponent>(headset)
             || !TryComp<ContainerFillComponent>(headset, out var fillComp)
             || !fillComp.Containers.TryGetValue(EncryptionKeyHolderComponent.KeyContainerName, out var defaultKeys))
+        {
+            Del(headset);
             return;
+        }
+
+        // IPCs don't wear headsets (no ears slot) — copy department name color for radio wraps.
+        if (TryComp<HeadsetComponent>(headset, out var sourceHeadset))
+        {
+            var ipcHeadset = EnsureComp<HeadsetComponent>(target);
+            ipcHeadset.CopyColorFrom(sourceHeadset);
+            ipcHeadset.Enabled = false; // color only; radio goes through IntrinsicRadio*
+            Dirty(target, ipcHeadset);
+        }
 
         _container.CleanContainer(keyHolder.KeyContainer);
 

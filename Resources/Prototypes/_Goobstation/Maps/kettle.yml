@@ -2,7 +2,7 @@
 
 - type: gameMap
   id: Kettle
-  mapName: 'Kettle'
+  mapName: 'NT14 Кеттл'
   mapPath: /Maps/_Goobstation/kettle.yml
   minPlayers: 35
   stations:
@@ -10,7 +10,7 @@
       stationProto: StandardNanotrasenStation
       components:
         - type: StationNameSetup
-          mapNameTemplate: '{0} Kettle {1}'
+          mapNameTemplate: '{0} Кеттл {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

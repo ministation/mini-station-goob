@@ -2414,24 +2414,13 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         var result = new List<ReadyManifestAntagEntry>(pending.Count);
         for (var i = 0; i < pending.Count; i++)
         {
-            var (userId, roleId, _) = pending[i];
+            var (_, roleId, _) = pending[i];
             if (!_listings.TryGetListing(roleId, out var role))
                 continue;
 
-            var characterName = "?";
-            if (_preferences.TryGetCachedPreferences(userId, out var prefs) &&
-                prefs.SelectedCharacter is HumanoidCharacterProfile profile)
-            {
-                characterName = profile.Name;
-            }
-            else if (_playerManager.TryGetSessionById(userId, out var session))
-            {
-                characterName = session.Name;
-            }
-
+            // Do not include buyer/character names — ready-manifest is public and would enable metagaming.
             var roleName = Loc.GetString(role.NameLocKey);
             result.Add(new ReadyManifestAntagEntry(
-                characterName,
                 role.Id,
                 roleName,
                 role.Cost,

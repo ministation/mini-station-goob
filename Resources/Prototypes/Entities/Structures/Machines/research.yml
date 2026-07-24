@@ -25,12 +25,18 @@
     color: "#b211b2"
   - type: LitOnPowered
   - type: ResearchServer
+    networkId: StationResearchNet
   - type: TechnologyDatabase
     supportedDisciplines:
-    - Industrial
-    - Arsenal
-    - Experimental
-    - CivilianServices
+    # Mini / Orion techweb — NT station (no Syndicate / Typan)
+    - Engineering
+    - Security
+    - Cargo
+    - Shaft
+    - Scientific
+    - Robotics
+    - Medical
+    - Service
   - type: ApcPowerReceiver
     powerLoad: 200
   - type: ExtensionCableReceiver

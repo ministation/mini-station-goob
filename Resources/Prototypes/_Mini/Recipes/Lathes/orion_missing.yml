@@ -1,0 +1,809 @@
+# Auto-ported from Orion: lathe recipes referenced by Mini techweb but missing after cleanup.
+# Do not expand casually — only recipes required by recipeUnlocks.
+
+- type: latheRecipe
+  id: AlertsComputerCircuitboard
+  result: AlertsComputerCircuitboard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: AntimovCircuitBoard
+  result: AntimovCircuitBoard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: BarSpoon
+  result: BarSpoon
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Glass: 200
+    Plastic: 100
+
+- type: latheRecipe
+  id: BlockGameArcadeComputerCircuitboard
+  result: BlockGameArcadeComputerCircuitboard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 300
+    Plastic: 150
+
+- type: latheRecipe
+  id: Bloodpack
+  result: Bloodpack
+  categories:
+  - Medical
+  completetime: 4
+  materials:
+    Plastic: 200
+
+- type: latheRecipe
+  id: BoneManipulatorAbductor
+  result: BoneManipulatorAbductor
+  categories:
+  - Tools
+  completetime: 5
+  materials:
+    Steel: 700
+    Silver: 450
+    Plasma: 250
+
+- type: latheRecipe
+  id: Broomstick
+  result: Broomstick
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Steel: 300
+    Plastic: 150
+
+- type: latheRecipe
+  id: CandyBowl
+  result: CandyBowl
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Glass: 300
+    Plastic: 100
+
+- type: latheRecipe
+  id: CargoBountyComputerCircuitboard
+  result: CargoBountyComputerCircuitboard
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Steel: 300
+    Plastic: 150
+
+- type: latheRecipe
+  id: CargoRequestComputerCircuitboard
+  result: CargoRequestComputerCircuitboard
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Steel: 300
+    Plastic: 150
+
+- type: latheRecipe
+  id: ClothingEyesHudDiagnostic
+  result: ClothingEyesHudDiagnostic
+  categories:
+  - Clothing
+  completetime: 4
+  materials:
+    Cloth: 300
+    Steel: 100
+
+- type: latheRecipe
+  id: ClothingEyesHudMedical
+  result: ClothingEyesHudMedical
+  categories:
+  - Medical
+  completetime: 4
+  materials:
+    Steel: 400
+    Glass: 250
+    Plastic: 200
+
+- type: latheRecipe
+  id: ClothingEyesNightVisionDiagnosticGoggles
+  result: ClothingEyesNightVisionDiagnosticGoggles
+  categories:
+  - Robotics
+  completetime: 2
+  materials:
+    Steel: 200
+    Glass: 100
+    Silver: 100
+    Gold: 100
+
+- type: latheRecipe
+  id: ClothingEyesNightVisionMedicalGoggles
+  result: ClothingEyesNightVisionMedicalGoggles
+  categories:
+  - Medical
+  completetime: 7
+  materials:
+    Steel: 300
+    Glass: 300
+    Silver: 100
+    Gold: 100
+    Plasma: 200
+
+- type: latheRecipe
+  id: ClothingEyesNightVisionSecurityGoggles
+  result: ClothingEyesNightVisionSecurityGoggles
+  categories:
+  - Security
+  completetime: 5
+  materials:
+    Steel: 500
+    Glass: 300
+    Silver: 100
+    Gold: 100
+
+- type: latheRecipe
+  id: ClothingEyesWelding
+  result: ClothingEyesWelding
+  categories:
+  - Clothing
+  completetime: 4
+  materials:
+    Cloth: 300
+    Steel: 100
+
+- type: latheRecipe
+  id: ClothingHeadHatCardborg
+  result: ClothingHeadHatCardborg
+  categories:
+  - Robotics
+  completetime: 4
+  materials:
+    Plastic: 300
+
+- type: latheRecipe
+  id: ClothingHeadset
+  result: ClothingHeadset
+  categories:
+  - Clothing
+  completetime: 4
+  materials:
+    Steel: 300
+
+- type: latheRecipe
+  id: ClothingNeckStethoscope
+  result: ClothingNeckStethoscope
+  categories:
+  - Medical
+  completetime: 4
+  materials:
+    Steel: 200
+
+- type: latheRecipe
+  id: ClothingOuterCardborg
+  result: ClothingOuterCardborg
+  categories:
+  - Robotics
+  completetime: 4
+  materials:
+    Plastic: 300
+
+- type: latheRecipe
+  parent: BaseToolRecipe
+  id: ClothingShoesBootsMag
+  result: ClothingShoesBootsMag
+  materials:
+    Steel: 850
+    Plastic: 250
+
+- type: latheRecipe
+  id: CommsComputerCircuitboard
+  result: CommsComputerCircuitboard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: CrewMonitoringComputerCircuitboard
+  result: CrewMonitoringComputerCircuitboard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: Crowbar
+  result: Crowbar
+  categories:
+  - Tools
+  completetime: 4
+  materials:
+    Steel: 400
+    Plastic: 150
+
+- type: latheRecipe
+  id: CrowbarAbductor
+  result: CrowbarAbductor
+  categories:
+  - Tools
+  completetime: 6
+  materials:
+    Steel: 900
+    Silver: 500
+    Plasma: 250
+    Gold: 250
+
+- type: latheRecipe
+  id: DiagnoserMachineCircuitboard
+  result: DiagnoserMachineCircuitboard
+  categories:
+  - Medical
+  completetime: 4
+  materials:
+    Steel: 400
+    Glass: 250
+    Plastic: 200
+
+- type: latheRecipe
+  id: DrinkShaker
+  result: DrinkShaker
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Steel: 200
+    Plastic: 100
+
+- type: latheRecipe
+  parent: BaseSilverCircuitboardRecipe
+  id: DurandCentralElectronics
+  result: DurandCentralElectronics
+
+- type: latheRecipe
+  id: EnergyScalpelAbductor
+  result: EnergyScalpelAbductor
+  categories:
+  - Tools
+  completetime: 5
+  materials:
+    Steel: 700
+    Silver: 450
+    Plasma: 250
+
+- type: latheRecipe
+  id: FireExtinguisherMini
+  result: FireExtinguisherMini
+  categories:
+  - Engineering
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: FishingRod
+  result: FishingRod
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Steel: 300
+    Plastic: 150
+
+- type: latheRecipe
+  parent: BaseToolRecipe
+  id: FlashlightSeclite
+  result: FlashlightSeclite
+  materials:
+    Steel: 200
+    Glass: 100
+    Plastic: 100
+
+- type: latheRecipe
+  id: FoamCrossbow
+  result: FoamCrossbow
+  categories:
+  - Security
+  completetime: 4
+  materials:
+    Plastic: 700
+
+- type: latheRecipe
+  id: Fork
+  result: Fork
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Steel: 100
+
+- type: latheRecipe
+  id: ForkPlastic
+  result: ForkPlastic
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Plastic: 100
+
+- type: latheRecipe
+  parent: BaseGoldCircuitboardRecipe
+  id: GygaxCentralElectronics
+  result: GygaxCentralElectronics
+
+- type: latheRecipe
+  id: KnifePlastic
+  result: KnifePlastic
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Plastic: 100
+
+# MagazineRifle762 removed — entity does not exist in this fork (use MagazineLightRifle*)
+
+- type: latheRecipe
+  id: MechanicalPinchesAbductor
+  result: MechanicalPinchesAbductor
+  categories:
+  - Tools
+  completetime: 5
+  materials:
+    Steel: 700
+    Silver: 450
+    Plasma: 250
+
+- type: latheRecipe
+  id: MedicalBeamGunSyndicate
+  result: MedicalBeamGunSyndicate
+  categories:
+  - Medical
+  completetime: 4
+  materials:
+    Steel: 400
+    Glass: 250
+    Plastic: 200
+    Plasma: 850
+
+- type: latheRecipe
+  id: MedicalBiofabMachineBoard
+  result: MedicalBiofabMachineBoard
+  categories:
+  - Medical
+  completetime: 4
+  materials:
+    Steel: 400
+    Glass: 250
+    Plastic: 200
+
+- type: latheRecipe
+  id: MedicalRecordsComputerCircuitboard
+  result: MedicalRecordsComputerCircuitboard
+  categories:
+  - Medical
+  completetime: 4
+  materials:
+    Steel: 400
+    Glass: 250
+    Plastic: 200
+
+- type: latheRecipe
+  id: ModularGrenade
+  result: ModularGrenade
+  categories:
+  - Security
+  completetime: 4
+  materials:
+    Steel: 1000
+
+- type: latheRecipe
+  id: MultitoolAbductor
+  result: MultitoolAbductor
+  categories:
+  - Tools
+  completetime: 6
+  materials:
+    Steel: 900
+    Silver: 500
+    Plasma: 350
+    Gold: 250
+
+- type: latheRecipe
+  id: OxygenTank
+  result: OxygenTank
+  categories:
+  - Engineering
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: ParcelWrap
+  result: ParcelWrap
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Plastic: 150
+
+- type: latheRecipe
+  id: PepperSpray
+  result: PepperSpray
+  categories:
+  - Security
+  completetime: 4
+  materials:
+    Steel: 700
+
+- type: latheRecipe
+  id: PersonalAI
+  result: PersonalAI
+  categories:
+  - Robotics
+  completetime: 4
+  materials:
+    Steel: 700
+    Glass: 300
+    Plastic: 300
+
+- type: latheRecipe
+  id: PetCarrier
+  result: PetCarrier
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Steel: 300
+    Plastic: 150
+
+- type: latheRecipe
+  id: PlasmaTank
+  result: PlasmaTank
+  categories:
+  - Engineering
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: PowerComputerCircuitboard
+  result: PowerComputerCircuitboard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: RadioHandheld
+  result: RadioHandheld
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Steel: 300
+    Plastic: 150
+
+- type: latheRecipe
+  id: RemoteSignaller
+  result: RemoteSignaller
+  categories:
+  - Engineering
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: RiotBulletShield
+  result: RiotBulletShield
+  categories:
+  - Security
+  completetime: 4
+  materials:
+    Steel: 700
+    Glass: 400
+    Plasma: 150
+
+- type: latheRecipe
+  id: SadTromboneImplanter
+  result: SadTromboneImplanter
+  categories:
+  - Robotics
+  completetime: 4
+  materials:
+    Steel: 700
+    Glass: 300
+    Plastic: 300
+
+- type: latheRecipe
+  id: SawElectric
+  result: SawElectric
+  categories:
+  - Tools
+  completetime: 4
+  materials:
+    Steel: 400
+    Plastic: 150
+
+- type: latheRecipe
+  id: ScreenTimerElectronics
+  result: ScreenTimerElectronics
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: ScrewdriverAbductor
+  result: ScrewdriverAbductor
+  categories:
+  - Tools
+  completetime: 6
+  materials:
+    Steel: 900
+    Silver: 500
+    Plasma: 250
+    Gold: 250
+
+- type: latheRecipe
+  id: SearingToolAbductor
+  result: SearingToolAbductor
+  categories:
+  - Tools
+  completetime: 5
+  materials:
+    Steel: 700
+    Silver: 450
+    Plasma: 250
+
+- type: latheRecipe
+  id: SpaceVillainArcadeComputerCircuitboard
+  result: SpaceVillainArcadeComputerCircuitboard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 700
+    Glass: 300
+    Plastic: 300
+
+- type: latheRecipe
+  id: Spoon
+  result: Spoon
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Steel: 100
+
+- type: latheRecipe
+  id: SpoonPlastic
+  result: SpoonPlastic
+  categories:
+  - Service
+  completetime: 4
+  materials:
+    Plastic: 100
+
+- type: latheRecipe
+  id: StationAiUploadCircuitboard
+  result: StationAiUploadCircuitboard
+  categories:
+  - Robotics
+  completetime: 4
+  materials:
+    Steel: 700
+    Glass: 300
+    Plastic: 300
+
+- type: latheRecipe
+  id: SurveillanceWirelessCameraBodySecurity
+  result: SurveillanceWirelessCameraBodySecurity
+  categories:
+  - Security
+  completetime: 4
+  materials:
+    Steel: 700
+    Glass: 250
+
+- type: latheRecipe
+  id: SyndicatePersonalAI
+  result: SyndicatePersonalAI
+  categories:
+  - Robotics
+  completetime: 4
+  materials:
+    Steel: 700
+    Glass: 300
+    Plastic: 300
+
+- type: latheRecipe
+  id: TeslaGroundingRod
+  result: TeslaGroundingRod
+  categories:
+  - Engineering
+  completetime: 4
+  materials:
+    Steel: 1800
+    Glass: 700
+
+- type: latheRecipe
+  id: TrackingImplanter
+  result: TrackingImplanter
+  categories:
+  - Robotics
+  completetime: 4
+  materials:
+    Steel: 700
+    Glass: 300
+    Plastic: 300
+
+- type: latheRecipe
+  id: VaccinatorMachineCircuitboard
+  result: VaccinatorMachineCircuitboard
+  categories:
+  - Medical
+  completetime: 4
+  materials:
+    Steel: 400
+    Glass: 250
+    Plastic: 200
+
+- type: latheRecipe
+  id: WaterVaporTank
+  result: WaterVaporTank
+  categories:
+  - Engineering
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: WeaponMechChainSword
+  result: WeaponMechChainSword
+  categories:
+  - Mech
+  completetime: 4
+  materials:
+    Steel: 700
+    Glass: 300
+    Plastic: 300
+
+- type: latheRecipe
+  id: WeaponMechCombatMissileRack6
+  result: WeaponMechCombatMissileRack6
+  categories:
+  - Mech
+  completetime: 4
+  materials:
+    Steel: 1200
+    Glass: 400
+    Plasma: 200
+
+- type: latheRecipe
+  id: WeaponMechCombatTeslaCannon
+  result: WeaponMechCombatTeslaCannon
+  categories:
+  - Mech
+  completetime: 4
+  materials:
+    Steel: 1200
+    Glass: 400
+    Plasma: 200
+
+- type: latheRecipe
+  id: WeaponMechMeleeDrill
+  result: WeaponMechMeleeDrill
+  categories:
+  - Mech
+  completetime: 4
+  materials:
+    Steel: 1200
+    Glass: 400
+    Plasma: 200
+
+- type: latheRecipe
+  id: WelderAbductor
+  result: WelderAbductor
+  categories:
+  - Tools
+  completetime: 6
+  materials:
+    Steel: 900
+    Silver: 500
+    Plasma: 450
+    Gold: 250
+
+- type: latheRecipe
+  id: WelderMini
+  result: WelderMini
+  categories:
+  - Engineering
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: WirecutterAbductor
+  result: WirecutterAbductor
+  categories:
+  - Tools
+  completetime: 6
+  materials:
+    Steel: 900
+    Silver: 500
+    Plasma: 250
+    Gold: 250
+
+- type: latheRecipe
+  id: WrenchAbductor
+  result: WrenchAbductor
+  categories:
+  - Tools
+  completetime: 6
+  materials:
+    Steel: 900
+    Silver: 500
+    Plasma: 250
+    Gold: 250
+
+- type: latheRecipe
+  id: NTCustomLawboard
+  result: NTCustomLawboard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: Intellicard
+  result: Intellicard
+  categories:
+  - Circuitry
+  completetime: 4
+  materials:
+    Steel: 500
+    Glass: 500
+    Gold: 200
+
+- type: latheRecipe
+  id: PairedChopsticks
+  result: PairedChopsticks
+  categories:
+  - Service
+  completetime: 2
+  materials:
+    Wood: 50
+

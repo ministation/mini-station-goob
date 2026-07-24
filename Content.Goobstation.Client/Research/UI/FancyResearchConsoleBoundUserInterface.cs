@@ -1,7 +1,13 @@
+// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Aiden <aiden@djkraz.com>
+// SPDX-FileCopyrightText: 2025 FaDeOkno <143940725+FaDeOkno@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 FaDeOkno <logkedr18@gmail.com>
+// SPDX-FileCopyrightText: 2025 coderabbitai[bot] <136622811+coderabbitai[bot]@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 gluesniffler <159397573+gluesniffler@users.noreply.github.com>
+//
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Linq;
-using Content.Goobstation.Common.Research;
 using Content.Shared.Research.Components;
 using Content.Shared.Research.Prototypes;
 using JetBrains.Annotations;
@@ -52,7 +58,7 @@ public sealed class FancyResearchConsoleBoundUserInterface : BoundUserInterface
             return;
 
         _consoleMenu?.UpdatePanels(rState.Researches);
-        _consoleMenu?.UpdateInformationPanel(rState.Points);
+        _consoleMenu?.UpdateInformationPanel(rState); // Orion-Edit
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)
@@ -68,7 +74,7 @@ public sealed class FancyResearchConsoleBoundUserInterface : BoundUserInterface
             return;
         if (!_consoleMenu.List.SequenceEqual(castState.Researches))
             _consoleMenu.UpdatePanels(castState.Researches);
-        if (_consoleMenu.Points != castState.Points)
-            _consoleMenu.UpdateInformationPanel(castState.Points);
+
+        _consoleMenu.UpdateInformationPanel(castState); // Orion-Edit
     }
 }
