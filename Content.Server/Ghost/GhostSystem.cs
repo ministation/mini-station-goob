@@ -503,8 +503,11 @@ namespace Content.Server.Ghost
             {
                 Log.Warning($"No spawn valid ghost spawn position found for {mind.Comp.CharacterName}"
                     + $" \"{ToPrettyString(mind)}\"");
-                // Do not TransferTo(null) here — that strands online clients with a black screen
-                // (no eye). Callers must handle a null return (lobby fallback / retry).
+                // Detach from the current body so mind replacements (TransferTo onto the same
+                // entity) and forced ghosting can proceed. Callers that spawn observers for online
+                // players must handle a null return (e.g. JoinAsObserver → lobby) instead of
+                // leaving the client InGame with no eye.
+                _minds.TransferTo(mind.Owner, null, createGhost: false, mind: mind.Comp);
                 return null;
             }
 

@@ -694,17 +694,23 @@ public sealed class GhostRoleSystem : EntitySystem
 
         DebugTools.AssertNotNull(player.ContentData());
 
-        // After taking a ghost role the player cannot return to the original body.
-        // Always UnVisit + WipeMind so we never skip cleanup while visiting (that left
-        // sessions briefly attached to null and could strand clients on a black screen).
-        if (_mindSystem.TryGetMind(player.UserId, out _, out _))
+        // After taking a ghost role, the player cannot return to a non-visiting (player-ghost) body.
+        // Visiting minds (aghost) must keep ownership of the original body so admins can return later.
+        if (_mindSystem.TryGetMind(player.UserId, out var oldMindId, out var oldMind))
         {
-            _mindSystem.UnVisit(player);
-            _mindSystem.WipeMind(player);
+            if (oldMind.IsVisitingEntity)
+            {
+                // Drop the visit (reattaches briefly to the body); UserId is cleared when the new mind binds.
+                _mindSystem.UnVisit(oldMindId.Value, oldMind);
+            }
+            else
+            {
+                _mindSystem.WipeMind(player);
+            }
         }
 
         // Create mind without UserId first, bind the mob, then attach the session —
-        // avoids CreateMind(userId) attaching the eye to null before TransferTo.
+        // avoids CreateMind(userId) attaching the eye to null before TransferTo (black screen).
         var newMind = _mindSystem.CreateMind(null, Comp<MetaDataComponent>(mob).EntityName);
         _mindSystem.TransferTo(newMind, mob);
         _mindSystem.SetUserId(newMind, player.UserId);

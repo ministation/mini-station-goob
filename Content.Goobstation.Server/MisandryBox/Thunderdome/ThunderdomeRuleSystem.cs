@@ -95,6 +95,10 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
 
     private readonly Dictionary<ICommonSession, ThunderdomeLoadoutEui> _activeEuis = new();
     private readonly Dictionary<NetUserId, GlobalThunderdomeStats> _globalStats = new();
+    /// <summary>
+    /// Prevents re-entrant / spam join from creating orphan arena bodies when spawn fails mid-way.
+    /// </summary>
+    private readonly HashSet<NetUserId> _spawningPlayers = new();
     private TimeSpan _nextGlobalStatsCleanup = TimeSpan.Zero;
     private int _retentionDays = 30;
     private float _suicidePenaltyWindow = 10f;
@@ -340,126 +344,148 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
         GhostDomePlayer(ent, rule, playSound: false);
     }
 
-    public void SpawnPlayer(ICommonSession session, EntityUid ruleEntity, int weaponIdx, int grenadeIdx, int medicalIdx, int headIdx, int neckIdx, int glassesIdx, int backpackIdx, int utilityIdx)
+    /// <returns>True if the player was attached to a new thunderdome body.</returns>
+    public bool SpawnPlayer(ICommonSession session, EntityUid ruleEntity, int weaponIdx, int grenadeIdx, int medicalIdx, int headIdx, int neckIdx, int glassesIdx, int backpackIdx, int utilityIdx)
     {
-        if (!TryComp<ThunderdomeRuleComponent>(ruleEntity, out var rule)
-            || !rule.Active
-            || session.AttachedEntity is not { Valid: true } ghostEntity
-            || !HasComp<GhostComponent>(ghostEntity))
-            return;
+        if (!_spawningPlayers.Add(session.UserId))
+            return false;
 
-        var spawnCoords = GetRandomSpawnPoint(rule);
-        if (spawnCoords == null || !_mind.TryGetMind(ghostEntity, out _, out var mindComp))
-            return;
-
-        HumanoidCharacterProfile? profile = null;
-        if (mindComp.UserId is { } userId && _prefs.TryGetCachedPreferences(userId, out var prefs))
+        EntityUid? mob = null;
+        var success = false;
+        try
         {
-            var selectedProfile = prefs.SelectedCharacter as HumanoidCharacterProfile;
-            if (selectedProfile != null)
+            if (!TryComp<ThunderdomeRuleComponent>(ruleEntity, out var rule)
+                || !rule.Active
+                || session.AttachedEntity is not { Valid: true } ghostEntity
+                || !HasComp<GhostComponent>(ghostEntity)
+                || HasComp<ThunderdomePlayerComponent>(ghostEntity))
+                return false;
+
+            var spawnCoords = GetRandomSpawnPoint(rule);
+            if (spawnCoords == null || !_mind.TryGetMind(ghostEntity, out _, out var mindComp))
+                return false;
+
+            HumanoidCharacterProfile? profile = null;
+            if (mindComp.UserId is { } userId && _prefs.TryGetCachedPreferences(userId, out var prefs))
             {
-                var species = _allowedSpecies.Contains(selectedProfile.Species)
-                    ? selectedProfile.Species
-                    : SharedHumanoidAppearanceSystem.DefaultSpecies;
-                profile = selectedProfile.WithSpecies(species);
+                var selectedProfile = prefs.SelectedCharacter as HumanoidCharacterProfile;
+                if (selectedProfile != null)
+                {
+                    var species = _allowedSpecies.Contains(selectedProfile.Species)
+                        ? selectedProfile.Species
+                        : SharedHumanoidAppearanceSystem.DefaultSpecies;
+                    profile = selectedProfile.WithSpecies(species);
+                }
             }
-        }
 
-        var originalBody = mindComp.OwnedEntity != ghostEntity ? mindComp.OwnedEntity : null;
+            var originalBody = mindComp.OwnedEntity != ghostEntity ? mindComp.OwnedEntity : null;
 
-        var mob = _stationSpawning.SpawnPlayerMob(spawnCoords.Value, null, profile, null);
-        _stationSpawning.EquipStartingGear(mob, rule.Gear);
+            mob = _stationSpawning.SpawnPlayerMob(spawnCoords.Value, null, profile, null);
+            _stationSpawning.EquipStartingGear(mob.Value, rule.Gear);
 
-        // Equip cosmetic items first (they don't use storage)
-        SpawnHeadLoadout(mob, headIdx, rule);
-        SpawnNeckLoadout(mob, neckIdx, rule);
-        SpawnGlassesLoadout(mob, glassesIdx, rule);
-        SpawnBackpackLoadout(mob, backpackIdx, rule);
+            // Equip cosmetic items first (they don't use storage)
+            SpawnHeadLoadout(mob.Value, headIdx, rule);
+            SpawnNeckLoadout(mob.Value, neckIdx, rule);
+            SpawnGlassesLoadout(mob.Value, glassesIdx, rule);
+            SpawnBackpackLoadout(mob.Value, backpackIdx, rule);
 
-        // Then spawn items that go into storage (after backpack is equipped)
-        // Grenade first (goes to belt, doesn't affect backpack order)
-        SpawnGrenadeLoadout(mob, grenadeIdx, rule);
-        // Utility second (goes to backpack)
-        SpawnUtilityLoadout(mob, utilityIdx, rule);
-        // Medical third (goes to backpack)
-        SpawnMedicalLoadout(mob, medicalIdx, rule);
-        // Weapon last (ammo goes to backpack, appears in Q/A)
-        SpawnLoadoutItems(mob, weaponIdx, rule);
+            // Then spawn items that go into storage (after backpack is equipped)
+            // Grenade first (goes to belt, doesn't affect backpack order)
+            SpawnGrenadeLoadout(mob.Value, grenadeIdx, rule);
+            // Utility second (goes to backpack)
+            SpawnUtilityLoadout(mob.Value, utilityIdx, rule);
+            // Medical third (goes to backpack)
+            SpawnMedicalLoadout(mob.Value, medicalIdx, rule);
+            // Weapon last (ammo goes to backpack, appears in Q/A)
+            SpawnLoadoutItems(mob.Value, weaponIdx, rule);
 
-        EnsureComp<IgnoreSkillsComponent>(mob);
+            EnsureComp<IgnoreSkillsComponent>(mob.Value);
 
-        var tdPlayer = EnsureComp<ThunderdomePlayerComponent>(mob);
-        tdPlayer.RuleEntity = ruleEntity;
-        tdPlayer.WeaponSelection = weaponIdx;
-        tdPlayer.GrenadeSelection = grenadeIdx;
-        tdPlayer.MedicalSelection = medicalIdx;
-        tdPlayer.HeadSelection = headIdx;
-        tdPlayer.NeckSelection = neckIdx;
-        tdPlayer.GlassesSelection = glassesIdx;
-        tdPlayer.BackpackSelection = backpackIdx;
-        tdPlayer.UtilitySelection = utilityIdx;
-        tdPlayer.CharacterName = profile?.Name ?? "Unknown";
+            var tdPlayer = EnsureComp<ThunderdomePlayerComponent>(mob.Value);
+            tdPlayer.RuleEntity = ruleEntity;
+            tdPlayer.WeaponSelection = weaponIdx;
+            tdPlayer.GrenadeSelection = grenadeIdx;
+            tdPlayer.MedicalSelection = medicalIdx;
+            tdPlayer.HeadSelection = headIdx;
+            tdPlayer.NeckSelection = neckIdx;
+            tdPlayer.GlassesSelection = glassesIdx;
+            tdPlayer.BackpackSelection = backpackIdx;
+            tdPlayer.UtilitySelection = utilityIdx;
+            tdPlayer.CharacterName = profile?.Name ?? "Unknown";
 
-        // Восстанавливаем статистику из rule по UserId
-        if (mindComp.UserId != null)
-        {
-            rule.Kills.TryGetValue(mindComp.UserId.Value, out var kills);
-            rule.Deaths.TryGetValue(mindComp.UserId.Value, out var deaths);
-            rule.BestStreaks.TryGetValue(mindComp.UserId.Value, out var bestStreak);
-            tdPlayer.Kills = kills;
-            tdPlayer.Deaths = deaths;
-            tdPlayer.CurrentStreak = 0; // Серия сбрасывается при смерти
-            tdPlayer.BestStreak = bestStreak;
-
-            // Сохраняем имя персонажа в rule для таблицы лидеров
-            rule.CharacterNames[mindComp.UserId.Value] = tdPlayer.CharacterName;
-
-            // Ensure player exists in dictionaries (initialize with 0 if first time)
-            if (!rule.Kills.ContainsKey(mindComp.UserId.Value))
-                rule.Kills[mindComp.UserId.Value] = 0;
-            if (!rule.Deaths.ContainsKey(mindComp.UserId.Value))
-                rule.Deaths[mindComp.UserId.Value] = 0;
-            if (!rule.BestStreaks.ContainsKey(mindComp.UserId.Value))
-                rule.BestStreaks[mindComp.UserId.Value] = 0;
-
-            // Сохраняем выбор лодаута и инициализируем глобальную статистику
-            if (!_globalStats.TryGetValue(mindComp.UserId.Value, out var globalStats))
+            // Восстанавливаем статистику из rule по UserId
+            if (mindComp.UserId != null)
             {
-                globalStats = new GlobalThunderdomeStats();
-                _globalStats[mindComp.UserId.Value] = globalStats;
+                rule.Kills.TryGetValue(mindComp.UserId.Value, out var kills);
+                rule.Deaths.TryGetValue(mindComp.UserId.Value, out var deaths);
+                rule.BestStreaks.TryGetValue(mindComp.UserId.Value, out var bestStreak);
+                tdPlayer.Kills = kills;
+                tdPlayer.Deaths = deaths;
+                tdPlayer.CurrentStreak = 0; // Серия сбрасывается при смерти
+                tdPlayer.BestStreak = bestStreak;
+
+                // Сохраняем имя персонажа в rule для таблицы лидеров
+                rule.CharacterNames[mindComp.UserId.Value] = tdPlayer.CharacterName;
+
+                // Ensure player exists in dictionaries (initialize with 0 if first time)
+                if (!rule.Kills.ContainsKey(mindComp.UserId.Value))
+                    rule.Kills[mindComp.UserId.Value] = 0;
+                if (!rule.Deaths.ContainsKey(mindComp.UserId.Value))
+                    rule.Deaths[mindComp.UserId.Value] = 0;
+                if (!rule.BestStreaks.ContainsKey(mindComp.UserId.Value))
+                    rule.BestStreaks[mindComp.UserId.Value] = 0;
+
+                // Сохраняем выбор лодаута и инициализируем глобальную статистику
+                if (!_globalStats.TryGetValue(mindComp.UserId.Value, out var globalStats))
+                {
+                    globalStats = new GlobalThunderdomeStats();
+                    _globalStats[mindComp.UserId.Value] = globalStats;
+                }
+                globalStats.LastWeaponSelection = weaponIdx;
+                globalStats.LastGrenadeSelection = grenadeIdx;
+                globalStats.LastMedicalSelection = medicalIdx;
+                globalStats.LastHeadSelection = headIdx;
+                globalStats.LastNeckSelection = neckIdx;
+                globalStats.LastGlassesSelection = glassesIdx;
+                globalStats.LastBackpackSelection = backpackIdx;
+                globalStats.LastUtilitySelection = utilityIdx;
+                globalStats.LastCharacterName = profile?.Name ?? "Unknown";
+
+                // Update leaderboard immediately to show new player
+                UpdateLeaderboard(rule);
             }
-            globalStats.LastWeaponSelection = weaponIdx;
-            globalStats.LastGrenadeSelection = grenadeIdx;
-            globalStats.LastMedicalSelection = medicalIdx;
-            globalStats.LastHeadSelection = headIdx;
-            globalStats.LastNeckSelection = neckIdx;
-            globalStats.LastGlassesSelection = glassesIdx;
-            globalStats.LastBackpackSelection = backpackIdx;
-            globalStats.LastUtilitySelection = utilityIdx;
-            globalStats.LastCharacterName = profile?.Name ?? "Unknown";
 
-            // Update leaderboard immediately to show new player
-            UpdateLeaderboard(rule);
+            if (originalBody is { Valid: true } body && !HasComp<ThunderdomeOriginalBodyComponent>(body))
+            {
+                var marker = EnsureComp<ThunderdomeOriginalBodyComponent>(body);
+                if (mindComp.UserId is { } ownerId)
+                    marker.Owner = ownerId;
+
+            }
+
+            if (!_tempMind.TrySwapTempMind(session, mob.Value))
+            {
+                Log.Warning($"Thunderdome spawn failed mind swap for {session}; deleting orphan body {ToPrettyString(mob.Value)}.");
+                return false;
+            }
+
+            rule.Players.Add(GetNetEntity(mob.Value));
+
+            _skills.GrantAllSkills(mob.Value); // CorvaxGoob-Skills
+
+            _activeEuis.Remove(session);
+
+            BroadcastPlayerCount(rule);
+            success = true;
+            return true;
         }
-
-        if (originalBody is { Valid: true } body && !HasComp<ThunderdomeOriginalBodyComponent>(body))
+        finally
         {
-            var marker = EnsureComp<ThunderdomeOriginalBodyComponent>(body);
-            if (mindComp.UserId is { } ownerId)
-                marker.Owner = ownerId;
+            if (!success && mob != null && !TerminatingOrDeleted(mob.Value))
+                QueueDel(mob.Value);
 
+            _spawningPlayers.Remove(session.UserId);
         }
-
-        if (!_tempMind.TrySwapTempMind(session, mob))
-            return;
-
-        rule.Players.Add(GetNetEntity(mob));
-
-        _skills.GrantAllSkills(mob); // CorvaxGoob-Skills
-
-        _activeEuis.Remove(session);
-
-        BroadcastPlayerCount(rule);
     }
 
     private void CleanUpPlayer(Entity<ThunderdomePlayerComponent> ent, ThunderdomeRuleComponent rule, bool playSound, SoundPathSpecifier sound)
