@@ -105,9 +105,15 @@ public sealed class GameMapManager : IGameMapManager
             .Where(map => IsMapEligible(map) && !_recentlyPlayedMaps.Contains(map.ID))
             .ToArray(); // Mini-Tweak: ReWork Vote Map
 
-        return maps.Length == 0
-            ? AllMaps().Where(x => x.Fallback && !_recentlyPlayedMaps.Contains(x.ID))
-            : maps; // Mini-Tweak: ReWork Vote Map
+        if (maps.Length > 0)
+            return maps;
+
+        // Ban emptied the pool — fall back without recent-map filter so votes never get zero options.
+        var unbannedFallback = AllMaps().Where(x => x.Fallback && !_recentlyPlayedMaps.Contains(x.ID)).ToArray();
+        if (unbannedFallback.Length > 0)
+            return unbannedFallback;
+
+        return AllVotableMaps().Where(IsMapEligible);
     }
 
     public IEnumerable<GameMapPrototype> AllVotableMaps()
@@ -147,6 +153,9 @@ public sealed class GameMapManager : IGameMapManager
     // Mini-Tweak-start: Добавлена функция для фильтрации последних карт
     public void RegisterPlayedMap(string mapId)
     {
+        if (_recentlyPlayedMaps.Contains(mapId))
+            return;
+
         _recentlyPlayedMaps.Enqueue(mapId);
 
         while (_recentlyPlayedMaps.Count > RecentMapBanDepth)

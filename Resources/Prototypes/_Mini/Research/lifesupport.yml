@@ -3,18 +3,21 @@
 - type: technology
   id: TypanHydroponics
   name: research-technology-basic-hydroponics
+  description: research-technology-basic-hydroponics
   icon:
     sprite: Structures/Machines/seed_extractor.rsi
     state: seedextractor
   discipline: TypanLifeSupport
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - SeedExtractorMachineCircuitboard
   - HydroponicsTrayMachineCircuitboard
   - ReagentGrinderIndustrialMachineCircuitboard
     # Goobstation R&D Console rework start
-  position: 17,4
+  position: 14,31
   # technologyPrerequisites:
   # - SpaceScanning
   # Goobstation R&D Console rework end
@@ -22,18 +25,21 @@
 - type: technology
   id: TypanAdvancedEntertainment
   name: research-technology-advanced-entertainment
+  description: research-technology-advanced-entertainment
   icon:
     sprite: Objects/Fun/Instruments/h_synthesizer.rsi
     state: icon
   discipline: TypanLifeSupport
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - SynthesizerInstrument
   - DawInstrumentMachineCircuitboard
   - JukeboxCircuitBoard
     # Goobstation R&D Console rework start
-  position: 20,3
+  position: 17,30
   # technologyPrerequisites:
   # - SpaceScanning
   # Goobstation R&D Console rework end
@@ -41,18 +47,21 @@
 - type: technology
   id: TypanMeatManipulation
   name: research-technology-meat-manipulation
+  description: research-technology-meat-manipulation
   icon:
     sprite: Structures/Machines/fat_sucker.rsi
     state: display
   discipline: TypanLifeSupport
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - FatExtractorMachineCircuitboard
   - BiofabricatorMachineCircuitboardTypan
   - BiomassReclaimerMachineCircuitboard
     # Goobstation R&D Console rework start
-  position: 17,5
+  position: 14,32
   # technologyPrerequisites:
   # - SpaceScanning
   # Goobstation R&D Console rework end
@@ -82,16 +91,19 @@
 - type: technology
   id: TypanBasicHypospray
   name: research-technology-basic-hypospray
+  description: research-technology-basic-hypospray
   icon:
     sprite: _CorvaxGoob/Objects/Specific/Medical/brigmedichypo.rsi
     state: hypo
   discipline: TypanLifeSupport
   tier: 1
-  cost: 7500
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - SyndiHypo
   # Goobstation R&D Console rework start
-  position: 22,4
+  position: 19,31
   # technologyPrerequisites:
   # - SpaceScanning
   # Goobstation R&D Console rework end
@@ -101,18 +113,21 @@
 - type: technology
   id: TypanBiofabrication
   name: research-technology-biofabrication
+  description: research-technology-biofabrication
   icon:
     sprite: Structures/Machines/biofabricator.rsi
     state: icon
   discipline: TypanLifeSupport
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - AbominationCube
   - SpaceCarpCube
   - SpaceTickCube
   # Goobstation R&D Console rework start
-  position: 18,6
+  position: 15,33
   technologyPrerequisites:
   - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -120,19 +135,22 @@
 - type: technology
   id: TypanBiochemicalStasis
   name: research-technology-biochemical-stasis
+  description: research-technology-biochemical-stasis
   icon:
     sprite: Structures/Machines/stasis_bed.rsi
     state: icon
   discipline: TypanLifeSupport
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - StasisBedMachineCircuitboard
   - CryoPodMachineCircuitboard
   - CryostasisBeaker
   - SyringeCryostasis
   # Goobstation R&D Console rework start
-  position: 23,5
+  position: 20,32
   # technologyPrerequisites:
   # - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -140,17 +158,20 @@
 - type: technology
   id: TypanMechanizedTreatment
   name: research-technology-mechanized-treatment
+  description: research-technology-mechanized-treatment
   icon:
     sprite: _Mini/Mobs/Silicon/chassis.rsi
     state: medical
   discipline: TypanLifeSupport
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - BorgModuleAdvancedTopical
   - BorgModuleAdvancedSurgery
   # Goobstation R&D Console rework start
-  position: 22,5
+  position: 19,32
   # technologyPrerequisites:
   # - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -158,18 +179,21 @@
 - type: technology
   id: TypanAdvancedCleaning
   name: research-technology-advanced-cleaning
+  description: research-technology-advanced-cleaning
   icon:
     sprite: Objects/Specific/Janitorial/advmop.rsi
     state: advmop
   discipline: TypanLifeSupport
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - AdvMopItem
   - MegaSprayBottle
   - BorgModuleAdvancedCleaning
     # Goobstation R&D Console rework start
-  position: 19,4
+  position: 16,31
   # technologyPrerequisites:
   # - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -177,17 +201,20 @@
 - type: technology
   id: TypanAdvancedSpray
   name: research-technology-advanced-spray
+  description: research-technology-advanced-spray
   icon:
     sprite: Objects/Weapons/Guns/Basic/spraynozzle.rsi
     state: icon
   discipline: TypanLifeSupport
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - WeaponSprayNozzle
   - ClothingBackpackWaterTank
     # Goobstation R&D Console rework start
-  position: 19,6
+  position: 16,33
   # technologyPrerequisites:
   # - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -195,16 +222,19 @@
 - type: technology
   id: TypanBluespaceCargoTransport
   name: research-technology-bluespace-cargo-transport
+  description: research-technology-bluespace-cargo-transport
   icon:
     sprite: _Mini/Structures/Machines/Typan/cargo_telepad.rsi
     state: display
   discipline: TypanLifeSupport
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - CargoTelepadMachineCircuitboardTypan
   # Goobstation R&D Console rework start
-  position: 21,8
+  position: 18,34
   # technologyPrerequisites:
   # - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -213,17 +243,20 @@
 - type: technology
   id: TypanHypopen
   name: research-technology-hypopen
+  description: research-technology-hypopen
   icon:
     sprite: Objects/Misc/pens.rsi
     state: pen
   discipline: TypanLifeSupport
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - Hypopen
   - HypoDart
   # Goobstation R&D Console rework start
-  position: 24,6
+  position: 21,33
   # technologyPrerequisites:
   # - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -231,17 +264,20 @@
 - type: technology
   id: TypanArmorVest
   name: research-technology-armor-vest
+  description: research-technology-armor-vest
   icon:
     sprite: Clothing/OuterClothing/Vests/webvest.rsi
     state: icon
   discipline: TypanLifeSupport
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - ClothingOuterVestWeb
   - ClothingOuterVestWebElite
   # Goobstation R&D Console rework start
-  position: 25,6
+  position: 22,33
   # technologyPrerequisites:
   # - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -249,12 +285,15 @@
 - type: technology
   id: TypanChameleonClothing
   name: research-technology-chameleon-clothing
+  description: research-technology-chameleon-clothing
   icon:
     sprite: Clothing/Neck/Scarfs/red.rsi
     state: icon
   discipline: TypanLifeSupport
   tier: 2
-  cost: 15000
+  pointCosts:
+  - type: General
+    amount: 15000
   recipeUnlocks:
   - ClothingBackpackChameleon
   - ClothingHeadsetChameleon
@@ -268,7 +307,7 @@
   - ClothingUniformJumpsuitChameleon
   - ChameleonPDA
   # Goobstation R&D Console rework start
-  position: 26,6
+  position: 23,33
   technologyPrerequisites:
   - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -278,12 +317,15 @@
 - type: technology
   id: TypanCloning
   name: research-technology-cloning
+  description: research-technology-cloning
   icon:
     sprite: Structures/Machines/cloning.rsi
     state: pod_0
   discipline: TypanLifeSupport
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - CloningPodMachineCircuitboard
   - MedicalScannerMachineCircuitboard
@@ -292,7 +334,7 @@
   - MedicalScannerMachineCircuitboardRecipe
   - CloningConsoleComputerCircuitboardRecipe
   # Goobstation R&D Console rework start
-  position: 24,4
+  position: 21,31
   technologyPrerequisites:
   - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -300,16 +342,19 @@
 - type: technology
   id: TypanAdvancedHypospray
   name: research-technology-advanced-hypospray
+  description: research-technology-advanced-hypospray
   icon:
     sprite: Objects/Specific/Medical/syndihypo.rsi
     state: hypo
   discipline: TypanLifeSupport
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - SyndiHypo
   # Goobstation R&D Console rework start
-  position: 24,5
+  position: 21,32
   technologyPrerequisites:
   - TypanMeatManipulation
   # Goobstation R&D Console rework end
@@ -317,16 +362,19 @@
 - type: technology
   id: TypanDefibrillatorSyndicate
   name: research-technology-defibrillator-syndicate
+  description: research-technology-defibrillator-syndicate
   icon:
     sprite: Objects/Specific/Medical/defibsyndi.rsi
     state: icon
   discipline: TypanLifeSupport
   tier: 3
-  cost: 30000
+  pointCosts:
+  - type: General
+    amount: 30000
   recipeUnlocks:
   - DefibrillatorSyndicate
   # Goobstation R&D Console rework start
-  position: 25,5
+  position: 22,32
   technologyPrerequisites:
   - TypanMeatManipulation
   # Goobstation R&D Console rework end

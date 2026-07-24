@@ -200,7 +200,7 @@ public sealed partial class RadioSystem : EntitySystem
             ? FormattedMessage.EscapeText(message)
             : message;
 
-        var headsetColor = TryComp(radioSource, out HeadsetComponent? headset) ? headset.Color : channel.Color;
+        var headsetColor = ResolveRadioNameColor(messageSource, radioSource, channel);
 
         var job = String.Empty;
         if (_inventory.HasSlot(messageSource, "id"))
@@ -357,6 +357,20 @@ public sealed partial class RadioSystem : EntitySystem
     }
 
     // CorvaxGoob-Anonymous-Radio-End
+
+    /// <summary>
+    /// Name color for radio wraps: radio source headset → speaker headset (IPC) → channel.
+    /// </summary>
+    private Color ResolveRadioNameColor(EntityUid messageSource, EntityUid radioSource, RadioChannelPrototype channel)
+    {
+        if (TryComp(radioSource, out HeadsetComponent? headset))
+            return headset.Color;
+
+        if (TryComp(messageSource, out HeadsetComponent? speakerHeadset))
+            return speakerHeadset.Color;
+
+        return channel.Color;
+    }
 
     // Einstein Engines - Language begin
     private string WrapRadioMessage(

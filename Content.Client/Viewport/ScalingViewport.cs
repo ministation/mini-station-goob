@@ -165,9 +165,13 @@ namespace Content.Client.Viewport
 
             var drawBox = GetDrawBox();
             var drawBoxGlobal = drawBox.Translated(GlobalPixelPosition);
+            var uiMatrix = handle.DrawingHandleScreen.GetTransform();
             _viewport.RenderScreenOverlaysBelow(handle, this, drawBoxGlobal);
-            handle.DrawingHandleScreen.DrawTextureRect(_viewport.RenderTarget.Texture, drawBox);
+            handle.DrawingHandleScreen.SetTransform(Matrix3x2.Identity);
+            handle.DrawingHandleScreen.DrawTextureRect(_viewport.RenderTarget.Texture, drawBoxGlobal);
+            handle.DrawingHandleScreen.SetTransform(uiMatrix);
             _viewport.RenderScreenOverlaysAbove(handle, this, drawBoxGlobal);
+            handle.DrawingHandleScreen.SetTransform(uiMatrix);
         }
 
         public void Screenshot(CopyPixelsDelegate<Rgba32> callback)

@@ -24,6 +24,8 @@ public sealed class AnimatedBackgroundControl : TextureRect
     public AnimatedBackgroundControl()
     {
         IoCManager.InjectDependencies(this);
+        // Never steal lobby / menu clicks — this control is fullscreen behind UI.
+        MouseFilter = MouseFilterMode.Ignore;
         InitializeStates();
     }
     private void InitializeStates()

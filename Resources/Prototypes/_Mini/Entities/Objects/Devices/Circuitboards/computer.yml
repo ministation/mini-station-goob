@@ -135,3 +135,15 @@
   components:
   - type: ComputerBoard
     prototype: MiniStationAiUploadComputer
+
+# R&D Network
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: ResearchServerControlConsoleCircuitboard
+  name: R&D server control console board
+  description: A computer printed circuit board for an R&D server control console.
+  components:
+  - type: Sprite
+    state: cpu_science
+  - type: ComputerBoard
+    prototype: ComputerResearchServerControl

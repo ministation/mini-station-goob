@@ -64,6 +64,7 @@
                     </PanelContainer>
                     <!-- Center Panel -->
                     <PanelContainer Name="CenterPanel" StyleClasses="LobbyBackground" MinWidth="300" HorizontalExpand="True" VerticalExpand="True">
+                        <ScrollContainer HScrollEnabled="False" VScrollEnabled="True" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" VerticalAlignment="Center" HorizontalAlignment="Center" SeparationOverride="2">
                             <controls:StripeBack Name="StripeBack" Access="Public" Margin="0 0 0 2">
                                 <Label Name="StartTime" MaxWidth="250" Access="Public" Align="Center" FontColorOverride="{x:Static maths:Color.DarkGray}" StyleClasses="LabelBig" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -77,9 +78,10 @@
                             </BoxContainer>
                             <Button Name="CharacterSetup" Access="Public" Text="{Loc 'lobby-character-preview-panel-character-setup-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
                             <Button Name="OptionsButton" Access="Public" Text="{Loc 'ui-lobby-options-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
-                            <Button Name="AuthorizationDiscordButton" StyleClasses="ButtonColorYellow" Access="Public" Text="Авторизация" MinSize="250 48" MaxSize="280 48"/>
+                            <Button Name="AuthorizationDiscordButton" StyleClasses="ButtonColorYellow" Access="Public" Text="Авторизация" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
                             <Button Name="LeaveButton" StyleClasses="ButtonColorRed" Access="Public" Text="{Loc 'ui-lobby-leave-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48" />
                         </BoxContainer>
+                        </ScrollContainer>
                     </PanelContainer>
                     <!-- Right Panel - Chat -->
                     <PanelContainer StyleClasses="LobbyBackground" Name="RightPanel" MinWidth="300" HorizontalExpand="True" VerticalExpand="True">

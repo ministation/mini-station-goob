@@ -244,7 +244,7 @@
 
 # Heavy shotgun
 
-# Pellet
+# Pellet — Mini: nerfed so first hit doesn't amputate limbs (was HardBomb on every pellet).
 - type: entity
   id: BulletPelletHeavyHighExplosive
   name: pellet (2 gauge)
@@ -257,13 +257,14 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 7
+        Piercing: 5
+        Blunt: 3
   - type: ExplodeOnTrigger
   - type: Explosive
-    explosionType: HardBomb # Boom
-    maxIntensity: 1
-    intensitySlope: 2
-    totalIntensity: 1
+    explosionType: Default
+    maxIntensity: 0.5
+    intensitySlope: 1.5
+    totalIntensity: 0.5
 
 - type: entity
   id: BulletShrapnelHeavyHighExplosive
@@ -275,10 +276,10 @@
     sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
     state: ball
   - type: Explosive
-    explosionType: DemolitionCharge
-    totalIntensity: 15
-    intensitySlope: 5
-    maxIntensity: 5
+    explosionType: Default
+    totalIntensity: 4
+    intensitySlope: 3
+    maxIntensity: 2
   - type: ExplodeOnTrigger
   - type: TimedDespawn
     lifetime: 6
@@ -290,8 +291,8 @@
   components:
   - type: ProjectileSpread
     proto: BulletPelletHeavyHighExplosive
-    count: 6
-    spread: 45
+    count: 5
+    spread: 40
 
 - type: entity
   id: BulletSlugHeavyHighExplosive
@@ -306,10 +307,10 @@
     deleteOnCollide: false # ScatteringGrenade manages deletion
     damage:
       types:
-        Piercing: 30
-      armorPenetration: 0.5
+        Piercing: 20
+      armorPenetration: 0.35
   - type: StaminaDamageOnCollide
-    damage: 40
+    damage: 30
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container
@@ -317,11 +318,11 @@
     fillPrototype: BulletShrapnelHeavyHighExplosive
     delayBeforeTriggerContents: 0.5
     intervalBetweenTriggersMax: 0.2
-    capacity: 6
+    capacity: 4
     randomDistance: true
-    randomThrowDistanceMin: 4
-    randomThrowDistanceMax: 8
-    velocity: 6
+    randomThrowDistanceMin: 3
+    randomThrowDistanceMax: 6
+    velocity: 5
 
 
 # MP-APERS

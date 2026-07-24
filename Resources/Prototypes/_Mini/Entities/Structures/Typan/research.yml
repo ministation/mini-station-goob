@@ -50,12 +50,14 @@
         map: ["enum.WiresVisualLayers.MaintenancePanel"]
   - type: ResearchServer
 #   isTypan: true
+    networkId: TypanResearchNet
   - type: TechnologyDatabase
     supportedDisciplines:
     - TypanMechworks
     - TypanWeaponry
     - TypanResearch
     - TypanLifeSupport
+    - Syndicate # syndicate techweb branch (not on NT)
   - type: Machine
     board: ResearchAndDevelopmentServerMachineCircuitboardTypan
 

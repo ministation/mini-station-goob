@@ -29,8 +29,6 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
-using Content.Shared.Silicons.Borgs.Components;
-using Content.Shared._EinsteinEngines.Silicon.Components;
 using Content.Shared.Station.Components;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
@@ -188,7 +186,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
         _friendlyFire.SetFaction(args.Mob, side);
 
-        if (warComponent.Phase == TypanWarPhase.Active && !IsSilicon(args.Mob))
+        if (warComponent.Phase == TypanWarPhase.Active)
             _friendlyFire.SetupCombatant(args.Mob, side);
 
         _minimap.EnsureMinimapAction(args.Mob);
@@ -249,8 +247,8 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         combat.Station = args.Station;
         if (args.JobId != null)
             combat.Job = new ProtoId<JobPrototype>(args.JobId);
-        // Duty spawn ("Спавн должности") for all organic combatants — not only Sec/Patrol.
-        combat.AllowBaseSpawn = !IsSilicon(args.Mob);
+        // Duty spawn ("Спавн должности") for all combatants, including borgs of both factions.
+        combat.AllowBaseSpawn = true;
         if (combat.AllowBaseSpawn && combat.BaseSpawn == default)
             combat.BaseSpawn = Transform(args.Mob).Coordinates;
         combat.RespawnAvailableAt = null;
@@ -300,11 +298,6 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
             return;
         }
-    }
-
-    private bool IsSilicon(EntityUid uid)
-    {
-        return HasComp<SiliconComponent>(uid) || HasComp<BorgChassisComponent>(uid);
     }
 
     private void OnConsoleFtlAttempt(ref ConsoleFTLAttemptEvent ev)
@@ -870,7 +863,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
             _friendlyFire.SetFaction(mob, side);
 
-            if (IsWarActive && !IsSilicon(mob))
+            if (IsWarActive)
             {
                 _friendlyFire.SetupCombatant(mob, side);
                 _minimap.EnsureMinimapAction(mob);

@@ -1,0 +1,54 @@
+# Auto-generated for ResearchTest.AllTechPrintableTest parity.
+# Dynamic lathe recipes not unlocked by any Mini technology.
+# Hidden so it never appears on the research console.
+- type: technology
+  id: MiniLatheParity
+  name: research-technology-mini-lathe-parity-name
+  description: research-technology-mini-lathe-parity-desc
+  icon:
+    sprite: Objects/Misc/stock_parts.rsi
+    state: matter_bin
+  discipline: Scientific
+  tier: 1
+  hidden: true
+  pointCosts:
+  - type: General
+    amount: 1
+  recipeUnlocks:
+  - AdvancedJetInjector
+  - AnomalyPayload
+  - CableDetStack1
+  - ChefBelt
+  - ChiefEngineerBelt
+  - ClothingEyesGlassesSecurityContraDetect
+  - ComputerIFFCircuitboard
+  - EmptyDetonator
+  - FauxTileAstroIronsand
+  - FauxTileAstroIronsandBorderless
+  - FauxTileDarkAstroGrass
+  - FauxTileDesertAstroSand
+  - FauxTileLightAstroGrass
+  - FillableMedipen
+  - GambamovCircuitBoard
+  - HolsterBelt
+  - JanitorBelt
+  - LatheUpgradeKitCryo
+  - LatheUpgradeKitHyper
+  - MachineBluespaceHarvesterCircuitboard
+  - MachineBluespaceTransitorCircuitboard
+  - MachineMedipenRefillerCircuitboard
+  - MedicalBelt
+  - MedicalEMTBelt
+  - MilitaryWebbingCMO
+  - OreProcessorIndustrialMachineCircuitboard
+  - PlantBelt
+  - QuantumTelepadMachineCircuitboard
+  - SalvageWebbing
+  - ScienceBelt
+  - SecurityBelt
+  - SecurityWebbing
+  - ShuttleRemoteControlSystemCircuitboard
+  - SurgicalBoard
+  - WeaponGrapplingGunHunter
+  - XeeplianTranslator
+  position: -99,-99

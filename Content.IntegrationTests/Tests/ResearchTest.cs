@@ -63,7 +63,11 @@ public sealed class ResearchTest
         await server.WaitAssertion(() =>
         {
             var allEnts = protoManager.EnumeratePrototypes<EntityPrototype>();
-            var latheTechs = new HashSet<ProtoId<LatheRecipePrototype>>();
+            // Dynamic-only: research unlocks that appear after unlocking techs.
+            var dynamicRecipes = new HashSet<ProtoId<LatheRecipePrototype>>();
+            // Any lathe recipe (static or dynamic): Goob moved many "researched" boards onto
+            // departmental techfab static packs (e.g. ScienceBoardsStatic on ScienceTechFab).
+            var printableRecipes = new HashSet<ProtoId<LatheRecipePrototype>>();
             foreach (var proto in allEnts)
             {
                 if (proto.Abstract)
@@ -75,10 +79,16 @@ public sealed class ResearchTest
                 if (!proto.TryGetComponent<LatheComponent>(out var lathe, compFact))
                     continue;
 
-                latheSys.AddRecipesFromPacks(latheTechs, lathe.DynamicPacks);
+                latheSys.AddRecipesFromPacks(dynamicRecipes, lathe.DynamicPacks);
+                latheSys.AddRecipesFromPacks(printableRecipes, lathe.DynamicPacks);
+                latheSys.AddRecipesFromPacks(printableRecipes, lathe.StaticPacks);
 
                 if (proto.TryGetComponent<EmagLatheRecipesComponent>(out var emag, compFact))
-                    latheSys.AddRecipesFromPacks(latheTechs, emag.EmagDynamicPacks);
+                {
+                    latheSys.AddRecipesFromPacks(dynamicRecipes, emag.EmagDynamicPacks);
+                    latheSys.AddRecipesFromPacks(printableRecipes, emag.EmagDynamicPacks);
+                    latheSys.AddRecipesFromPacks(printableRecipes, emag.EmagStaticPacks);
+                }
             }
 
             Assert.Multiple(() =>
@@ -90,14 +100,16 @@ public sealed class ResearchTest
                     unlockedTechs.UnionWith(tech.RecipeUnlocks);
                     foreach (var recipe in tech.RecipeUnlocks)
                     {
-                        Assert.That(latheTechs, Does.Contain(recipe), $"Recipe '{recipe}' from tech '{tech.ID}' cannot be unlocked on any lathes.");
+                        Assert.That(printableRecipes, Does.Contain(recipe),
+                            $"Recipe '{recipe}' from tech '{tech.ID}' cannot be unlocked on any lathes.");
                     }
                 }
 
                 // now check that every dynamic recipe a lathe lists can be unlocked
-                foreach (var recipe in latheTechs)
+                foreach (var recipe in dynamicRecipes)
                 {
-                    Assert.That(unlockedTechs, Does.Contain(recipe), $"Recipe '{recipe}' is dynamic on a lathe but cannot be unlocked by research.");
+                    Assert.That(unlockedTechs, Does.Contain(recipe),
+                        $"Recipe '{recipe}' is dynamic on a lathe but cannot be unlocked by research.");
                 }
             });
         });

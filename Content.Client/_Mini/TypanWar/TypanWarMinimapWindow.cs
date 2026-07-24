@@ -3,15 +3,20 @@
 
 using System.Numerics;
 using Content.Client.UserInterface.Controls;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared._Mini.TypanWar;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Configuration;
 using Robust.Shared.IoC;
 
 namespace Content.Client._Mini.TypanWar;
 
 public sealed class TypanWarMinimapWindow : FancyWindow
 {
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
+
     private readonly TypanWarMinimapControl _map;
+    private readonly CheckBox _warMusicCheckBox;
 
     public TypanWarMinimapWindow()
     {
@@ -19,21 +24,45 @@ public sealed class TypanWarMinimapWindow : FancyWindow
 
         Title = Loc.GetString("typan-war-minimap-title");
         MinWidth = 680;
-        MinHeight = 680;
-        SetSize = new Vector2(720, 720);
+        MinHeight = 720;
+        SetSize = new Vector2(720, 760);
+
+        var root = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+        };
+        ContentsContainer.AddChild(root);
 
         _map = new TypanWarMinimapControl
         {
             VerticalExpand = true,
             HorizontalExpand = true,
-            MinSize = new Vector2(660, 660),
+            MinSize = new Vector2(660, 640),
             Margin = new Thickness(2),
         };
-        ContentsContainer.AddChild(_map);
+        root.AddChild(_map);
+
+        _warMusicCheckBox = new CheckBox
+        {
+            Text = Loc.GetString("typan-war-minimap-music"),
+            Pressed = _cfg.GetCVar(MiniCCVars.WarMusicEnabled),
+            HorizontalAlignment = HAlignment.Left,
+            Margin = new Thickness(4, 0, 4, 2),
+        };
+        _warMusicCheckBox.OnToggled += args =>
+        {
+            _cfg.SetCVar(MiniCCVars.WarMusicEnabled, args.Pressed);
+            _cfg.SaveToFile();
+        };
+        root.AddChild(_warMusicCheckBox);
     }
 
     public void OpenPrepared()
     {
+        _warMusicCheckBox.Pressed = _cfg.GetCVar(MiniCCVars.WarMusicEnabled);
         _map.PrepareForDisplay();
 
         if (!IsOpen)

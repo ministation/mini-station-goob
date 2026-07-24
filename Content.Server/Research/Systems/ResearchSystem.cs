@@ -1,3 +1,20 @@
+// SPDX-FileCopyrightText: 2019 Pieter-Jan Briers <pieterjan.briers@gmail.com>
+// SPDX-FileCopyrightText: 2020 ComicIronic <comicironic@gmail.com>
+// SPDX-FileCopyrightText: 2020 Pieter-Jan Briers <pieterjan.briers+git@gmail.com>
+// SPDX-FileCopyrightText: 2020 Víctor Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2020 chairbender <kwhipke1@gmail.com>
+// SPDX-FileCopyrightText: 2021 Acruid <shatter66@gmail.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <6766154+Zumorica@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2021 Vera Aguilera Puerto <gradientvera@outlook.com>
+// SPDX-FileCopyrightText: 2022 Chris <HoofedEar@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 Rane <60792108+Elijahrane@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 metalgearsloth <31366439+metalgearsloth@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2022 mirrorcult <lunarautomaton6@gmail.com>
+// SPDX-FileCopyrightText: 2023 Chief-Engineer <119664036+Chief-Engineer@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 DrSmugleaf <DrSmugleaf@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2023 Nemanja <98561806+EmoGarbage404@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 Aiden <28298836+Aidenkrz@users.noreply.github.com>
+//
 // SPDX-License-Identifier: MIT
 
 using System.Diagnostics.CodeAnalysis;
@@ -10,6 +27,7 @@ using Content.Shared.Research.Components;
 using Content.Shared.Research.Systems;
 using JetBrains.Annotations;
 using Robust.Server.GameObjects;
+using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Server.Research.Systems
@@ -24,6 +42,7 @@ namespace Content.Server.Research.Systems
         [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
         [Dependency] private readonly SharedPopupSystem _popup = default!;
         [Dependency] private readonly RadioSystem _radio = default!;
+        [Dependency] private readonly IRobustRandom _random = default!; // Orion
 
         public override void Initialize()
         {
@@ -32,6 +51,10 @@ namespace Content.Server.Research.Systems
             InitializeConsole();
             InitializeSource();
             InitializeServer();
+            // Orion-Start
+            InitializeExperiments();
+            InitializeDiscovery();
+            // Orion-End
 
             SubscribeLocalEvent<TechnologyDatabaseComponent, ResearchRegistrationChangedEvent>(OnDatabaseRegistrationChanged);
         }
@@ -79,15 +102,20 @@ namespace Content.Server.Research.Systems
             return GetServers(client).Select(x => x.Comp.Id).ToArray();
         }
 
-        public HashSet<Entity<ResearchServerComponent>> GetServers(EntityUid client)
+        public List<Entity<ResearchServerComponent>> GetServers(EntityUid client) // Orion-Edit
         {
             var clientXform = Transform(client);
             if (clientXform.GridUid is not { } grid)
-                return [];
+                return new List<Entity<ResearchServerComponent>>(); // Orion-Edit
 
-            var set = new HashSet<Entity<ResearchServerComponent>>();
-            _lookup.GetGridEntities(grid, set);
-            return set;
+            // Orion-Edit-Start
+            var servers = new HashSet<Entity<ResearchServerComponent>>();
+            _lookup.GetGridEntities(grid, servers);
+
+            return servers
+                .OrderBy(ent => ent.Comp.Id)
+                .ToList();
+            // Orion-Edit-End
         }
 
         public override void Update(float frameTime)

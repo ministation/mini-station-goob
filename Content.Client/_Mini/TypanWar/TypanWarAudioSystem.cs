@@ -2,8 +2,8 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using Content.Client.Audio;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared._Mini.TypanWar;
-using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
@@ -12,7 +12,7 @@ using Robust.Shared.Configuration;
 namespace Content.Client._Mini.TypanWar;
 
 /// <summary>
-/// Suppresses round ambient music during Typan station war and respects <see cref="CCVars.EventMusicEnabled"/> for war BGM.
+/// Suppresses round ambient music while war BGM may play, and respects <see cref="MiniCCVars.WarMusicEnabled"/>.
 /// </summary>
 /// <remarks>
 /// Cannot subscribe to <see cref="AudioComponent"/> <c>ComponentStartup</c>/<c>ComponentShutdown</c> —
@@ -24,8 +24,8 @@ public sealed class TypanWarAudioSystem : EntitySystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
 
-    private bool _eventMusicEnabled = true;
-    private bool _suppressAmbient;
+    private bool _warMusicEnabled = true;
+    private bool _warActive;
 
     public override void Initialize()
     {
@@ -34,13 +34,13 @@ public sealed class TypanWarAudioSystem : EntitySystem
         SubscribeLocalEvent<PlayAmbientMusicEvent>(OnPlayAmbientMusic);
         SubscribeNetworkEvent<TypanWarStatusEvent>(OnWarStatus);
         SubscribeNetworkEvent<RoundRestartCleanupEvent>(OnRoundRestart);
-        Subs.CVar(_cfg, CCVars.EventMusicEnabled, OnEventMusicChanged, true);
+        Subs.CVar(_cfg, MiniCCVars.WarMusicEnabled, OnWarMusicChanged, true);
     }
 
     public override void Update(float frameTime)
     {
-        // Stop war BGM the server spawned while event music is off (only relevant mid-war).
-        if (_eventMusicEnabled || !_suppressAmbient)
+        // Server-replicated war BGM keeps coming back unless we continuously stop it while disabled.
+        if (_warMusicEnabled || !_warActive)
             return;
 
         StopWarMusicStreams();
@@ -48,31 +48,43 @@ public sealed class TypanWarAudioSystem : EntitySystem
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
-        _suppressAmbient = false;
+        _warActive = false;
     }
 
     private void OnWarStatus(TypanWarStatusEvent ev)
     {
-        _suppressAmbient = ev.Phase != TypanWarPhase.Inactive;
-
-        if (_suppressAmbient)
-            _audioContent.DisableAmbientMusic();
+        _warActive = ev.Phase != TypanWarPhase.Inactive;
+        UpdateAmbientSuppression();
     }
 
     private void OnPlayAmbientMusic(ref PlayAmbientMusicEvent ev)
     {
-        if (ev.Cancelled || !_suppressAmbient)
+        if (ev.Cancelled || !ShouldSuppressAmbient())
             return;
 
         ev.Cancelled = true;
     }
 
-    private void OnEventMusicChanged(bool enabled)
+    private void OnWarMusicChanged(bool enabled)
     {
-        _eventMusicEnabled = enabled;
+        _warMusicEnabled = enabled;
 
         if (!enabled)
             StopWarMusicStreams();
+
+        UpdateAmbientSuppression();
+    }
+
+    /// <summary>
+    /// Ambient is only muted while war is active AND war music is enabled (so BGM isn't layered).
+    /// If the player turns war music off, normal ambient music may resume.
+    /// </summary>
+    private bool ShouldSuppressAmbient() => _warActive && _warMusicEnabled;
+
+    private void UpdateAmbientSuppression()
+    {
+        if (ShouldSuppressAmbient())
+            _audioContent.DisableAmbientMusic();
     }
 
     private void StopWarMusicStreams()

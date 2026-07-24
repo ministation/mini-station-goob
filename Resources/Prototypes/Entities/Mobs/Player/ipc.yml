@@ -82,6 +82,7 @@
     factions:
     - NanoTrasen
   - type: StandingState
+  - type: FlashImmunity
   - type: Damageable
     damageContainer: SiliconRadiation
     damageModifierSet: IPC

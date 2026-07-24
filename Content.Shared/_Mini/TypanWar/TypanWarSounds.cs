@@ -33,6 +33,12 @@ public static class TypanWarSounds
         {
             if (fileName.Contains(path, StringComparison.OrdinalIgnoreCase))
                 return true;
+
+            // AudioComponent.FileName is usually the full ResPath, but match the leaf too.
+            var slash = path.LastIndexOf('/');
+            var leaf = slash >= 0 ? path[(slash + 1)..] : path;
+            if (fileName.Contains(leaf, StringComparison.OrdinalIgnoreCase))
+                return true;
         }
 
         return false;

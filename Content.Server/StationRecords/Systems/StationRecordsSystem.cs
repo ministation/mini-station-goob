@@ -11,6 +11,7 @@ using Content.Shared.Inventory;
 using Content.Shared.PDA;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
+using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.StationRecords;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
@@ -93,13 +94,38 @@ public sealed partial class StationRecordsSystem : SharedStationRecordsSystem
             || !_prototypeManager.HasIndex<JobPrototype>(jobId))
             return;
 
-        if (!_inventory.TryGetSlotEntity(player, "id", out var idUid))
+        EntityUid? keyHolder = null;
+        if (_inventory.TryGetSlotEntity(player, "id", out var idUid))
+        {
+            keyHolder = idUid;
+        }
+        else if (HasComp<BorgChassisComponent>(player))
+        {
+            // Borg inventory has no ID slot — still put them on the crew manifest (PDA).
+            keyHolder = player;
+        }
+        else
+        {
             return;
+        }
 
         TryComp<FingerprintComponent>(player, out var fingerprintComponent);
         TryComp<DnaComponent>(player, out var dnaComponent);
 
-        CreateGeneralRecord(station, idUid.Value, profile.Name, profile.Age, profile.Species, profile.Sex, jobId, fingerprintComponent?.Fingerprint, dnaComponent?.DNA, profile, records); // CorvaxGoob-Locale
+        var name = MetaData(player).EntityName;
+        if (string.IsNullOrWhiteSpace(name))
+            name = profile.Name;
+
+        var age = profile.Age;
+        var species = profile.Species;
+        var sex = profile.Sex;
+        if (HasComp<BorgChassisComponent>(player))
+        {
+            species = "Silicon";
+            sex = Sex.Unsexed;
+        }
+
+        CreateGeneralRecord(station, keyHolder, name, age, species, sex, jobId, fingerprintComponent?.Fingerprint, dnaComponent?.DNA, profile, records); // CorvaxGoob-Locale
     }
 
 
@@ -194,6 +220,8 @@ public sealed partial class StationRecordsSystem : SharedStationRecordsSystem
             keyStorageEntity = id;
         }
 
+        // Borg chassis (and other JobEntity spawns without an ID) need the key stored on themselves.
+        EnsureComp<StationRecordKeyStorageComponent>(keyStorageEntity);
         _keyStorage.AssignKey(keyStorageEntity, key);
     }
 

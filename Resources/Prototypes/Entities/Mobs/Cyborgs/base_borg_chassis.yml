@@ -19,6 +19,7 @@
       collection: MetalThud
   - type: CombatMode
   - type: NoSlip
+  - type: FlashImmunity
   - type: StaticPrice
     price: 1250
   - type: Fixtures

@@ -1,5 +1,6 @@
 # Production-oriented network tuning for Mini Station.
-# Merge with your main server config or load via --config-file.
+# Prefer the combined preset: config.presets=_Mini/mini-highpop
+# Or merge this file with mini-server-perf.toml into instance config.toml.
 #
 # Game traffic is Lidgren UDP + libsodium AEAD (XChaCha20-Poly1305), NOT OpenSSL/TLS.
 # TLS / ss14s only applies to status HTTP, hub, and reverse-proxy fronts.

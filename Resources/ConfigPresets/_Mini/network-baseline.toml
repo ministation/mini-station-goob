@@ -20,9 +20,13 @@ log_late_msg = true
 #   net.pvs_enter_budget = 150-250
 #
 # Related Mini presets:
+#   mini-highpop.toml     — combined production high-pop (preferred)
 #   mini-network.toml     — PVS / AEAD thread / Lidgren log hygiene (not TLS)
-#   mini-server-perf.toml — physics 1 substep + NPC budget
+#   mini-server-perf.toml — physics 1 substep + NPC budget + cheap atmos
 #   mini-client.toml      — docs: put outline.enabled = false in *client* config.toml
+#
+# Load high-pop: config.presets=_Mini/mini-highpop
+# Ops: Tools/highpop_server_env.sh + Tools/measure_highpop_load.sh
 #
 # Smoke checklist (perf deploy):
 #   1) Server tick/FPS under load (histograms above)

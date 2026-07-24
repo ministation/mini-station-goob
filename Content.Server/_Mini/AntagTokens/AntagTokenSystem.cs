@@ -85,9 +85,11 @@ public sealed class AntagTokenSystem : EntitySystem
     private readonly HashSet<string> _lastRoundPurchasedRoles = new(StringComparer.Ordinal);
     private float _databaseSyncAccumulator;
     private float _lobbyDepositCapacityEnforceAccumulator;
+    private float _onlineRewardAccumulator;
     private bool _databaseSyncPassRunning;
     private bool _storeEnabled = true;
-    private const float DatabaseSyncInterval = 15f;
+    private const float DatabaseSyncInterval = 30f;
+    private const float OnlineRewardInterval = 30f;
     private const int SharedTokenSlotsPlayersPerSlot = 8;
     private bool _enforcingSharedTokenSlotCapacity;
     private readonly Dictionary<string, int> _ghostMinimumTimeRandomBonusByRole = new();
@@ -172,33 +174,38 @@ public sealed class AntagTokenSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        var now = DateTime.UtcNow;
-        foreach (var session in _playerManager.Sessions)
+        _onlineRewardAccumulator -= frameTime;
+        if (_onlineRewardAccumulator <= 0f)
         {
-            if (!_onlineRewards.TryGetValue(session.UserId, out var rewardState))
-                continue;
-
-            rewardState.EnsureCurrentCycle(now);
-
-            foreach (var (threshold, rewardAmount) in AntagTokenCatalog.OnlineRewardMilestones)
+            _onlineRewardAccumulator = OnlineRewardInterval;
+            var now = DateTime.UtcNow;
+            foreach (var session in _playerManager.Sessions)
             {
-                if (rewardState.GrantedThresholds.Contains(threshold))
+                if (!_onlineRewards.TryGetValue(session.UserId, out var rewardState))
                     continue;
 
-                if (rewardState.GetElapsed(now) < threshold)
-                    continue;
+                rewardState.EnsureCurrentCycle(now);
 
-                rewardState.GrantedThresholds.Add(threshold);
-                AddBalance(session.UserId, rewardAmount, out var granted, out _);
-
-                if (granted > 0)
+                foreach (var (threshold, rewardAmount) in AntagTokenCatalog.OnlineRewardMilestones)
                 {
-                    var hours = (int) threshold.TotalHours;
-                    var message = Loc.GetString("antag-tokens-online-reward", ("amount", granted), ("hours", hours));
+                    if (rewardState.GrantedThresholds.Contains(threshold))
+                        continue;
 
-                    if (session.AttachedEntity is { Valid: true } uid)
+                    if (rewardState.GetElapsed(now) < threshold)
+                        continue;
+
+                    rewardState.GrantedThresholds.Add(threshold);
+                    AddBalance(session.UserId, rewardAmount, out var granted, out _);
+
+                    if (granted > 0)
                     {
-                        _popup.PopupEntity(message, uid, uid);
+                        var hours = (int) threshold.TotalHours;
+                        var message = Loc.GetString("antag-tokens-online-reward", ("amount", granted), ("hours", hours));
+
+                        if (session.AttachedEntity is { Valid: true } uid)
+                        {
+                            _popup.PopupEntity(message, uid, uid);
+                        }
                     }
                 }
             }
@@ -2407,24 +2414,13 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         var result = new List<ReadyManifestAntagEntry>(pending.Count);
         for (var i = 0; i < pending.Count; i++)
         {
-            var (userId, roleId, _) = pending[i];
+            var (_, roleId, _) = pending[i];
             if (!_listings.TryGetListing(roleId, out var role))
                 continue;
 
-            var characterName = "?";
-            if (_preferences.TryGetCachedPreferences(userId, out var prefs) &&
-                prefs.SelectedCharacter is HumanoidCharacterProfile profile)
-            {
-                characterName = profile.Name;
-            }
-            else if (_playerManager.TryGetSessionById(userId, out var session))
-            {
-                characterName = session.Name;
-            }
-
+            // Do not include buyer/character names — ready-manifest is public and would enable metagaming.
             var roleName = Loc.GetString(role.NameLocKey);
             result.Add(new ReadyManifestAntagEntry(
-                characterName,
                 role.Id,
                 roleName,
                 role.Cost,

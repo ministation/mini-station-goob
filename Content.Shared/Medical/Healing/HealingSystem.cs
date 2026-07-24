@@ -261,7 +261,7 @@ public sealed class HealingSystem : EntitySystem
             .Any(damageKey => _wounds.GetWoundableSeverityPoint(
                 targetedPart.Value,
                 damageGroup: GetDamageGroupByType(damageKey),
-                healable: true) > 0 || damageable.Damage.DamageDict[damageKey].Value > 0))
+                healable: true) > 0 || damageable.Damage.DamageDict.TryGetValue(damageKey, out var damage) && damage.Value > 0))
             return true;
 
         if (healing.BloodlossModifier == 0)

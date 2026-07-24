@@ -116,6 +116,8 @@ namespace Content.Server.GameTicking
             if (mainStationMap != null)
             {
                 maps.Add(mainStationMap);
+                // Mini-Tweak: keep recent-map ban in sync so map votes rotate.
+                _gameMapManager.RegisterPlayedMap(mainStationMap.ID);
             }
             else
             {
