@@ -451,13 +451,7 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
         }
 
         if (!_tempMind.TrySwapTempMind(session, mob))
-        {
-            QueueDel(mob);
             return;
-        }
-
-        if (Exists(ghostEntity))
-            QueueDel(ghostEntity);
 
         rule.Players.Add(GetNetEntity(mob));
 
@@ -483,7 +477,7 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             _audio.PlayStatic(sound, filter, deathCoords.Value, true, audioParams);
         }
 
-        CleanupStoredOriginalBody(ent, deleteBodies: true);
+        ClearOriginalBodyMarker(ent);
         _tempMind.TryRestoreAsGhost(ent);
         QueueDel(ent);
         BroadcastPlayerCount(rule);
@@ -793,48 +787,10 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
 
     private void ClearOriginalBodyMarker(EntityUid tempBody)
     {
-        CleanupStoredOriginalBody(tempBody, deleteBodies: false);
-    }
-
-    private void CleanupStoredOriginalBody(EntityUid tempBody, bool deleteBodies)
-    {
-        NetUserId? owner = null;
-        EntityUid? ownedBody = null;
-
         if (TryComp<TemporaryMindComponent>(tempBody, out var temp)
-            && TryComp<MindComponent>(temp.OriginalMind, out var origMind))
-        {
-            owner = origMind.OriginalOwnerUserId ?? origMind.UserId;
-            ownedBody = origMind.OwnedEntity;
-
-            if (ownedBody is { } body && Exists(body))
-            {
-                RemComp<ThunderdomeOriginalBodyComponent>(body);
-
-                if (deleteBodies)
-                {
-                    if (HasComp<GhostComponent>(body))
-                        _mind.TransferTo(temp.OriginalMind, null, createGhost: false, mind: origMind);
-
-                    QueueDel(body);
-                }
-            }
-        }
-
-        if (owner == null)
-            return;
-
-        var query = EntityQueryEnumerator<ThunderdomeOriginalBodyComponent>();
-        while (query.MoveNext(out var uid, out var comp))
-        {
-            if (comp.Owner != owner)
-                continue;
-
-            RemComp<ThunderdomeOriginalBodyComponent>(uid);
-
-            if (deleteBodies && uid != ownedBody)
-                QueueDel(uid);
-        }
+            && TryComp<MindComponent>(temp.OriginalMind, out var origMind)
+            && origMind.OwnedEntity is { } originalBody)
+            RemComp<ThunderdomeOriginalBodyComponent>(originalBody);
     }
 
     private void OnDespawnPickedUp(Entity<TimedDespawnComponent> ent, ref EntGotInsertedIntoContainerMessage args)
