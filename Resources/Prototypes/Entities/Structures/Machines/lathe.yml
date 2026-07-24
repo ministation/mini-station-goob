@@ -339,6 +339,7 @@
     - ShuttleBoards
     # Goobstation Packs
     - SharedBoards
+    - SharedBoardsMiniParity # Mini ResearchTest parity (tech unlocks not on other packs)
     - ShuttleBoardsGoob
     # CorvaxGoob Packs
     - BluespaceTechnologyBoards # BluespaceHarvester
