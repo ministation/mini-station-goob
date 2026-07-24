@@ -127,6 +127,7 @@
     - Instruments
     - TypanEquipment
     - SalvageSecurityWeapons
+    - MiniResearchParity
 
 
 - type: entity
@@ -187,6 +188,7 @@
     - SalvageSecurityBoards
     - SecurityBoards
     - TypanCloning
+    - MiniResearchParity
   - type: MaterialStorage
     connectToSilo: true
     whitelist:
