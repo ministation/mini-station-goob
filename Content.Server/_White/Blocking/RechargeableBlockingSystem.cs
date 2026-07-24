@@ -91,7 +91,10 @@ public sealed class RechargeableBlockingSystem : EntitySystem
         BatterySelfRechargerComponent? recharger;
         if (battery.LastCharge < 1)
         {
-            if (TryComp(uid, out recharger))
+            // Only refresh when the rate actually changes — RefreshChargeRate raises ChargeChanged
+            // and would otherwise recurse infinitely through OnChargeChanged.
+            if (TryComp(uid, out recharger) &&
+                !MathHelper.CloseTo(recharger.AutoRechargeRate, component.DischargedRechargeRate))
             {
                 recharger.AutoRechargeRate = component.DischargedRechargeRate;
                 _battery.RefreshChargeRate(uid);
@@ -106,7 +109,8 @@ public sealed class RechargeableBlockingSystem : EntitySystem
             return;
 
         component.Discharged = false;
-        if (TryComp(uid, out recharger))
+        if (TryComp(uid, out recharger) &&
+            !MathHelper.CloseTo(recharger.AutoRechargeRate, component.ChargedRechargeRate))
         {
             recharger.AutoRechargeRate = component.ChargedRechargeRate;
             _battery.RefreshChargeRate(uid);
