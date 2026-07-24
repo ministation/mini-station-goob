@@ -1,6 +1,6 @@
-# Dedicated lathe used only so ResearchTest can see Mini tech unlocks that aren't on
-# departmental DynamicPacks. Must NOT parent BaseHyperlathe / have materialUseMultiplier < 1,
-# or MaterialArbitrageTest fails (hyper lathes inherit packs and halve costs).
+# Kept for ResearchTest / debug spawn. Player machines (Protolathe, CircuitImprinter,
+# ScienceTechFab, Typan + hyper variants) also reference MiniResearchParity.
+# Recipes in that pack must remain >= 2x destroy/deconstruct yield so hyper 0.5x stays fair.
 - type: entity
   id: MiniResearchParityLathe
   parent: BaseLathe

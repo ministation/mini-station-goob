@@ -92,6 +92,7 @@
   - PowerCageSmall
   - TelescopicShield
   - ClothingBackpackHarmpack
+  - EnergyDomeTurtle # Orion Energy Barriers
 
 - type: latheRecipePack
   id: SecurityBoards

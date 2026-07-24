@@ -479,6 +479,9 @@ uplink-snack-box-desc = A box of delicious snacks and drinks to eat alone or wit
 uplink-eshield-name = Energy Shield
 uplink-eshield-desc = Exotic energy shield that reflects all laser beams and offers a little protection from bullets and other physical attacks. It is discharged from received damage and is able to recharge automatically. Warning: EMP pulses are able to discharge energy shield internal battery.
 
+uplink-energy-dome-personal-syndie-name = Blood Red Personal Shield Generator
+uplink-energy-dome-personal-syndie-desc = A belt-worn personal shield generator. Protects from lasers and bullets but prevents the wearer from using ranged weapons. Powered by a cell.
+
 uplink-soap-name = Soap
 uplink-soap-desc = An untrustworthy bar of soap. Smells of fear.
 

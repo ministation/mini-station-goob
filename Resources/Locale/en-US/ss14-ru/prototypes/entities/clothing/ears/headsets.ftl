@@ -1,5 +1,7 @@
 ent-ClothingHeadset = headset
     .desc = An updated, modular intercom that fits over the head. Takes encryption keys.
+ent-ClothingHeadsetEmpty = empty headset
+    .desc = A modular intercom that fits over the head. Comes without encryption keys.
 ent-ClothingHeadsetGrey = passenger headset
     .desc = { ent-ClothingHeadset.desc }
 ent-ClothingHeadsetCargo = cargo headset

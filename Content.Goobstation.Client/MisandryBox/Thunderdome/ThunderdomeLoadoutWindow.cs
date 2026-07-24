@@ -216,19 +216,22 @@ public sealed class ThunderdomeLoadoutWindow : ThunderdomeWindow
         };
         _confirmButton.OnPressed += () =>
         {
-            if (_weaponSelection >= 0)
-            {
-                var selection = new ThunderdomeLoadoutSelection(
-                    _weaponSelection,
-                    _grenadeSelection,
-                    _medicalSelection,
-                    _headSelection,
-                    _neckSelection,
-                    _glassesSelection,
-                    _backpackSelection,
-                    _utilitySelection);
-                OnLoadoutConfirmed?.Invoke(selection);
-            }
+            if (_weaponSelection < 0 || _confirmButton.Disabled)
+                return;
+
+            // Prevent spam while waiting for the server to spawn / close the EUI.
+            _confirmButton.Disabled = true;
+
+            var selection = new ThunderdomeLoadoutSelection(
+                _weaponSelection,
+                _grenadeSelection,
+                _medicalSelection,
+                _headSelection,
+                _neckSelection,
+                _glassesSelection,
+                _backpackSelection,
+                _utilitySelection);
+            OnLoadoutConfirmed?.Invoke(selection);
         };
         Contents.AddChild(_confirmButton);
     }

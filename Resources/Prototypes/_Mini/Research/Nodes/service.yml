@@ -16,7 +16,7 @@
   - ParcelWrap
   - CutterMachineCircuitboard
   - RadioHandheld
-  - ClothingHeadset # Without keys!!!
+  - ClothingHeadset # ClothingHeadsetEmpty — without keys
   - TapeRecorder
   - CassetteTape
   - PetCarrier
@@ -49,8 +49,8 @@
   - Pen
   - CrewCassette
   # - ConfettiGrenade  # missing lathe recipe / entity
-  # - FoodShakerSaltEmpty  # MaterialArbitrage: destroy yields more Glass than lathe cost
-  # - FoodShakerPepperEmpty
+  - FoodShakerSaltEmpty
+  - FoodShakerPepperEmpty
   - VinylPlayerCircuitboard
   - TapeDeckCircuitboard
   - StationRadioServerCircuitboard
@@ -151,7 +151,7 @@
   - ElectricGrillMachineCircuitboard
   - MicrowaveMachineCircuitboard
   - FoodBowlBig
-  # - CandyBowl  # MaterialArbitrage: destroy yields more Glass than lathe cost
+  - CandyBowl
   - FoodPlate
   - FoodPlateSmall
   - FoodPlatePlastic
@@ -239,6 +239,7 @@
 
 - type: technology
   id: FishingEquipAdv
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-fishing-equip-adv-name
   description: research-technology-fishing-equip-adv-desc
   icon:
@@ -258,6 +259,7 @@
 
 - type: technology
   id: MarineUtility
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-marine-utility-name
   description: research-technology-marine-utility-desc
   icon:

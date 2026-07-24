@@ -919,7 +919,7 @@ public abstract partial class SharedActionsSystem : EntitySystem
         foreach (var actionId in comp.Actions.ToArray())
         {
             if (GetAction(actionId) is not {} ent)
-                return;
+                continue;
 
             if (ent.Comp.Container == container)
                 RemoveAction((performer, comp), (ent, ent));

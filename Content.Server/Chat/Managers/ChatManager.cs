@@ -24,6 +24,7 @@ using Robust.Shared.Utility;
 // using Content.Server._RMC14.LinkAccount; // RMC - Patreon // CorvaxGoob-Coins
 // using Content.Server._RMC14.LinkAccount; CorvaxGoob-Coins
 using Content.Corvax.Interfaces.Shared; // RMC - Patreon
+using Content.Server.Sponsors;
 
 namespace Content.Server.Chat.Managers;
 
@@ -311,12 +312,24 @@ internal sealed partial class ChatManager : IChatManager
         }
         */
 
-        // CorvaxGoob-Sponsors-Start
-        if (_sponsorsManager != null && _sponsorsManager.TryGetServerOocColor(player.UserId, out var oocColor))
+        // Mini / CorvaxGoob sponsor nickname colors in OOC (same source as AHelp).
+        string? patronColorHex = null;
+        var miniSponsor = _entityManager.System<SponsorSystem>().Sponsors
+            .FirstOrDefault(d => d.Uid == player.UserId.ToString());
+        if (miniSponsor.Level > 0)
+            patronColorHex = SponsorColor.GetColorForNickname(miniSponsor.Level);
+        else if (_sponsorsManager != null &&
+                 _sponsorsManager.TryGetServerOocColor(player.UserId, out var oocColor) &&
+                 oocColor != null)
+            patronColorHex = oocColor.Value.ToHex();
+
+        if (patronColorHex != null)
         {
-            wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message", ("patronColor", oocColor), ("playerName", player.Name), ("message", escapedMessage));
+            wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message-no-icon",
+                ("patronColor", patronColorHex),
+                ("playerName", FormattedMessage.EscapeText(player.Name)),
+                ("message", escapedMessage));
         }
-        // CorvaxGoob-Sponsors-End
 
         //TODO: player.Name color, this will need to change the structure of the MsgChatMessage
         ChatMessageToAll(ChatChannel.OOC, message, wrappedMessage, EntityUid.Invalid, hideChat: false, recordReplay: true, colorOverride: colorOverride, author: player.UserId);

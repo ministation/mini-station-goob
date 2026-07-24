@@ -1,7 +1,7 @@
-ent-BaseHardlightArrow = { "" }
-    .desc = { "" }
-ent-BaseHardlightEmbeddableArrow = { ent-BaseItem }
-    .desc = { ent-BaseItem.desc }
+ent-BaseHardlightArrow = стрела из твёрдого света
+    .desc = Стрела, сделанная из твёрдого света.
+ent-BaseHardlightEmbeddableArrow = { ent-BaseHardlightArrow }
+    .desc = { ent-BaseHardlightArrow.desc }
 ent-ArrowEnergy = энергетическая стрела
     .desc = Стрела, сделанная из твёрдого света.
 ent-ArrowDisabler = дизейблер стрела

@@ -89,6 +89,7 @@
 
 - type: technology
   id: MechMedical
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-mech-medical-name
   description: research-technology-mech-medical-desc
   icon:
@@ -218,6 +219,7 @@
 
 - type: technology
   id: MechHeavy
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-mech-heavy-name
   description: research-technology-mech-heavy-desc
   icon:
@@ -237,6 +239,7 @@
 
 - type: technology
   id: MechInfiltrator
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-mech-infiltrator-name
   description: research-technology-mech-infiltrator-desc
   icon:
@@ -321,8 +324,8 @@
   - type: General
     amount: 12500
   technologyPrerequisites:
-  - MechHeavy
   - ExoticAmmo
+  - MechAssault
   recipeUnlocks:
   - WeaponMechCombatMissileRack6
   - WeaponMechCombatMissileRack8
@@ -331,6 +334,7 @@
 
 - type: technology
   id: MechEquipmentBluespace
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-mech-equipment-bluespace-name
   description: research-technology-mech-equipment-bluespace-desc
   icon:

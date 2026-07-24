@@ -662,3 +662,6 @@
   - type: Xenoborg
   - type: BypassLock
     bypassDelay: 15 # We don't want people to easily be able to remove xenoborg brains.
+  - type: EntitySkills # CorvaxGoob-Skills — same as station Borg job
+    skills:
+    - All

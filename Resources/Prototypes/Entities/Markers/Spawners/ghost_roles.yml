@@ -265,6 +265,8 @@
     name: ghost-role-information-mothership-core-name
     description: ghost-role-information-mothership-core-desc
     rules: ghost-role-information-silicon-rules
+    skills: # CorvaxGoob-Skills
+    - All
     mindRoles:
     - MindRoleMothershipCore
   - type: Sprite
@@ -287,6 +289,8 @@
     name: ghost-role-information-xenoborg-name
     description: ghost-role-information-xenoborg-desc
     rules: ghost-role-information-silicon-rules
+    skills: # CorvaxGoob-Skills
+    - All
     mindRoles:
     - MindRoleXenoborg
   - type: Sprite

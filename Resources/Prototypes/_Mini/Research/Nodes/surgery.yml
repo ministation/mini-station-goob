@@ -1,5 +1,6 @@
 - type: technology
   id: OldstationSurgery
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-oldstation-surgery-name
   description: research-technology-oldstation-surgery-desc
   icon:
@@ -17,6 +18,7 @@
 
 - type: technology
   id: Surgery
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-surgery-name
   description: research-technology-surgery-desc
   icon:
@@ -36,6 +38,7 @@
 
 - type: technology
   id: AdvancedSurgery
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-advanced-surgery-name
   description: research-technology-advanced-surgery-desc
   icon:
@@ -59,6 +62,7 @@
 
 - type: technology
   id: ExperimentalSurgery
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-experimental-surgery-name
   description: research-technology-experimental-surgery-desc
   icon:
@@ -95,7 +99,7 @@
   - type: General
     amount: 10000
   technologyPrerequisites:
-  - ExperimentalSurgery
+  - MedicalEquipment
   discountExperiments:
   - AutopsyXenomorph
   discountExperimentCosts:
