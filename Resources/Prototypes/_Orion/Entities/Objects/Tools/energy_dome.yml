@@ -23,7 +23,7 @@
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
-        startingItem: PowerCellSuper
+        startingItem: PowerCellHigh
         whitelist:
           tags:
             - PowerCell
@@ -33,7 +33,7 @@
     domePrototype: EnergyDomeSmallRed
   - type: PowerCellDraw
     drawRate: 0
-    useRate: 0
+    useCharge: 0
   - type: UseDelay
     delay: 10.0
   - type: ScannableForPoints # Goob
@@ -88,7 +88,7 @@
   - type: PowerCellDraw
     enabled: false
     drawRate: 0
-    useRate: 0
+    useCharge: 0
   - type: UseDelay
     delay: 10.0
   - type: DeviceNetwork
