@@ -264,8 +264,6 @@
     - Translators
     # CorvaxGoob Packs
     - BodyBagsDynamic # AdvancedBodyBags
-    # Mini: tech unlocks missing from other DynamicPacks (ResearchTest parity)
-    - MiniResearchParity
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - SecurityAmmo
@@ -339,14 +337,11 @@
     - ShuttleBoards
     # Goobstation Packs
     - SharedBoards
-    - SharedBoardsMiniParity # Mini ResearchTest parity (tech unlocks not on other packs)
     - ShuttleBoardsGoob
     # CorvaxGoob Packs
     - BluespaceTechnologyBoards # BluespaceHarvester
     - BluespaceHarvesterBoards # BluespaceHarvester
     - Cloning # Cloning
-    # Mini: tech unlocks missing from other DynamicPacks (ResearchTest parity)
-    - MiniResearchParity
   - type: MaterialStorage
     whitelist: *StandardMaterialWhitelist
   - type: OreSiloClient

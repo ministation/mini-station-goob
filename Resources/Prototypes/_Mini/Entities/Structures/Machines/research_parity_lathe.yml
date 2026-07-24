@@ -1,0 +1,13 @@
+# Dedicated lathe used only so ResearchTest can see Mini tech unlocks that aren't on
+# departmental DynamicPacks. Must NOT parent BaseHyperlathe / have materialUseMultiplier < 1,
+# or MaterialArbitrageTest fails (hyper lathes inherit packs and halve costs).
+- type: entity
+  id: MiniResearchParityLathe
+  parent: BaseLathe
+  name: research parity lathe
+  description: Debug/test lathe that exposes Mini research recipe unlocks for CI parity.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Lathe
+    dynamicPacks:
+    - MiniResearchParity

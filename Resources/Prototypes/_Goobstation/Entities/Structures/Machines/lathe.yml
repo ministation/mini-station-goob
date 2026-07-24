@@ -210,7 +210,6 @@
     - SpecOpsGoogles
     - EngineeringBoards
     - SharedBoards
-    - SharedBoardsMiniParity # Mini ResearchTest parity
     - ScienceBoards
     - ScienceBoardsGoob
     - ShuttleBoards
@@ -230,8 +229,6 @@
     - AdvancedRoboticsBoards # MutableLaws
     - WorkBeltsSharedDynamic # WorkBelts-Techfab
     - WokrBeltsSciDynamic # WorkBelts-Techfab
-    # Mini: tech unlocks missing from other DynamicPacks (ResearchTest parity)
-    - MiniResearchParity
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - MechBoardsSecurity
