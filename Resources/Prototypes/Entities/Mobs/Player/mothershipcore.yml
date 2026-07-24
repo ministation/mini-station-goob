@@ -163,6 +163,9 @@
     guides:
     - Robotics
     - Xenoborgs
+  - type: EntitySkills # CorvaxGoob-Skills — shuttle / tools like Borg
+    skills:
+    - All
   - type: Inventory
     templateId: borg
   - type: NpcFactionMember

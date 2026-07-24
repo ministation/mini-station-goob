@@ -1,7 +1,13 @@
 ent-EnergyDomeGeneratorPersonalSyndie = blood red personal shield generator
-    .desc = A personal shield generator that protects the wearer from lasers and bullets but prevents from using ranged weapons himself. Uses a power cell.
+    .desc = A personal shield generator that protects the wearer from lasers and bullets but prevents from using ranged weapons himself. The bundled cell slowly self-recharges.
 ent-EnergyDomeTurtle = BR-40c "Turtle"
-    .desc = A two-handed and heavy energy barrier with extremely low passive energy consumption. Can be tethered with a multitool.
+    .desc = A two-handed and heavy energy barrier with extremely low passive energy consumption. Can be tethered with a multitool. The bundled cell slowly self-recharges.
 ent-EnergyDomeWiredTest = static Dome
     .desc = Test energy barrier powered by station wiring. I don't know how the hell to balance it.....
     .suffix = DEBUG
+ent-PowerCellHighEnergyDome = { ent-PowerCellHigh }
+    .desc = A rechargeable power cell with a weak built-in trickle charger for energy dome generators.
+    .suffix = Full, Energy Dome
+ent-PowerCellSmallEnergyDome = { ent-PowerCellSmall }
+    .desc = A rechargeable power cell with a weak built-in trickle charger for energy dome generators.
+    .suffix = Full, Energy Dome

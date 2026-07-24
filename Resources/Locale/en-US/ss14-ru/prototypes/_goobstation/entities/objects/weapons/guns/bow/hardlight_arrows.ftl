@@ -1,7 +1,7 @@
-ent-BaseHardlightArrow = { "" }
-    .desc = { "" }
-ent-BaseHardlightEmbeddableArrow = { ent-BaseItem }
-    .desc = { ent-BaseItem.desc }
+ent-BaseHardlightArrow = hardlight arrow
+    .desc = An arrow made from hardlight.
+ent-BaseHardlightEmbeddableArrow = { ent-BaseHardlightArrow }
+    .desc = { ent-BaseHardlightArrow.desc }
 ent-ArrowEnergy = energy arrow
     .desc = An arrow made from hardlight.
 ent-ArrowDisabler = disabler arrow

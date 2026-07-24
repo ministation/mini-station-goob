@@ -903,6 +903,17 @@
 # Wearables
 
 - type: listing
+  id: TypanUplinkEnergyDomePersonalSyndie
+  name: uplink-energy-dome-personal-syndie-name
+  description: uplink-energy-dome-personal-syndie-desc
+  icon: { sprite: _Orion/Objects/Tools/EnergyDome/syndie.rsi, state: icon }
+  productEntity: EnergyDomeGeneratorPersonalSyndie
+  cost:
+    Telecrystal: 5
+  categories:
+  - TypanUplinkWearables
+
+- type: listing
   id: TypanUplinkJetpack
   name: uplink-black-jetpack-name
   description: uplink-black-jetpack-desc

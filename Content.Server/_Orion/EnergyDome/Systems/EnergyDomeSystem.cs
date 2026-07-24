@@ -5,7 +5,11 @@ using Content.Shared.Actions;
 using Content.Shared.Damage;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Examine;
+using Content.Shared.Hands;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Inventory.Events;
 using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Power.Components;
@@ -25,6 +29,12 @@ namespace Content.Server._Orion.EnergyDome.Systems;
 
 public sealed class EnergyDomeSystem : EntitySystem
 {
+    /// <summary>
+    /// Minimum joules required to enable a cell-powered dome.
+    /// HasCharge(0) is always true for a present battery, so we need a positive threshold.
+    /// </summary>
+    private const float MinEnableCharge = 1f;
+
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly BatterySystem _battery = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
@@ -33,6 +43,9 @@ public sealed class EnergyDomeSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly PowerCellSystem _powerCell = default!;
     [Dependency] private readonly DeviceLinkSystem _signalSystem = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly SharedActionsSystem _actions = default!;
+    [Dependency] private readonly ActionContainerSystem _actionContainer = default!;
 
     public override void Initialize()
     {
@@ -51,6 +64,9 @@ public sealed class EnergyDomeSystem : EntitySystem
         SubscribeLocalEvent<EnergyDomeGeneratorComponent, ChargeChangedEvent>(OnChargeChanged);
 
         SubscribeLocalEvent<EnergyDomeGeneratorComponent, EntParentChangedMessage>(OnParentChanged);
+        SubscribeLocalEvent<EnergyDomeGeneratorComponent, DroppedEvent>(OnDropped);
+        SubscribeLocalEvent<EnergyDomeGeneratorComponent, GotUnequippedHandEvent>(OnUnequippedHand);
+        SubscribeLocalEvent<EnergyDomeGeneratorComponent, GotUnequippedEvent>(OnUnequipped);
 
         SubscribeLocalEvent<EnergyDomeGeneratorComponent, GetVerbsEvent<ActivationVerb>>(AddToggleDomeVerb);
         SubscribeLocalEvent<EnergyDomeGeneratorComponent, ExaminedEvent>(OnExamine);
@@ -64,6 +80,9 @@ public sealed class EnergyDomeSystem : EntitySystem
     {
         if (generator.Comp.CanDeviceNetworkUse)
             _signalSystem.EnsureSinkPorts(generator, generator.Comp.TogglePort, generator.Comp.OnPort, generator.Comp.OffPort);
+
+        if (generator.Comp.CanInteractUse)
+            _actionContainer.EnsureAction(generator, ref generator.Comp.ToggleActionEntity, generator.Comp.ToggleAction);
     }
 
     #region Use Ways
@@ -74,37 +93,37 @@ public sealed class EnergyDomeSystem : EntitySystem
             return;
 
         if (args.Port == generator.Comp.OnPort)
-        {
             AttemptToggle(generator, true);
-        }
-        if (args.Port == generator.Comp.OffPort)
-        {
+        else if (args.Port == generator.Comp.OffPort)
             AttemptToggle(generator, false);
-        }
-        if (args.Port == generator.Comp.TogglePort)
-        {
+        else if (args.Port == generator.Comp.TogglePort)
             AttemptToggle(generator, !generator.Comp.Enabled);
-        }
     }
 
     private void OnAfterInteract(Entity<EnergyDomeGeneratorComponent> generator, ref AfterInteractEvent args)
     {
-        if (generator.Comp.CanInteractUse)
-            AttemptToggle(generator, !generator.Comp.Enabled);
+        if (!generator.Comp.CanInteractUse || args.Handled || !args.CanReach)
+            return;
+
+        if (AttemptToggle(generator, !generator.Comp.Enabled, args.User))
+            args.Handled = true;
     }
 
     private void OnActivatedInWorld(Entity<EnergyDomeGeneratorComponent> generator, ref ActivateInWorldEvent args)
     {
-        if (generator.Comp.CanInteractUse)
-            AttemptToggle(generator, !generator.Comp.Enabled);
+        if (!generator.Comp.CanInteractUse || args.Handled || !args.Complex)
+            return;
+
+        if (AttemptToggle(generator, !generator.Comp.Enabled, args.User))
+            args.Handled = true;
     }
 
     private void OnExamine(Entity<EnergyDomeGeneratorComponent> generator, ref ExaminedEvent args)
     {
         args.PushMarkup(Loc.GetString(
-            (generator.Comp.Enabled)
-            ? "energy-dome-on-examine-is-on-message"
-            : "energy-dome-on-examine-is-off-message"
+            generator.Comp.Enabled
+                ? "energy-dome-on-examine-is-on-message"
+                : "energy-dome-on-examine-is-off-message"
             ));
     }
 
@@ -113,16 +132,17 @@ public sealed class EnergyDomeSystem : EntitySystem
         if (!args.CanAccess || !args.CanInteract || !generator.Comp.CanInteractUse)
             return;
 
+        var user = args.User;
         ActivationVerb verb = new()
         {
             Text = Loc.GetString("energy-dome-verb-toggle"),
-            Act = () => AttemptToggle(generator, !generator.Comp.Enabled)
+            Act = () => AttemptToggle(generator, !generator.Comp.Enabled, user)
         };
 
         args.Verbs.Add(verb);
     }
 
-    private static void OnGetActions(Entity<EnergyDomeGeneratorComponent> generator, ref GetItemActionsEvent args)
+    private void OnGetActions(Entity<EnergyDomeGeneratorComponent> generator, ref GetItemActionsEvent args)
     {
         if (generator.Comp.CanInteractUse)
             args.AddAction(ref generator.Comp.ToggleActionEntity, generator.Comp.ToggleAction);
@@ -133,7 +153,18 @@ public sealed class EnergyDomeSystem : EntitySystem
         if (args.Handled)
             return;
 
-        AttemptToggle(generator, !generator.Comp.Enabled);
+        // Orphaned action (item no longer held/worn) — strip it and refuse to activate.
+        if (generator.Comp.CanInteractUse && !IsHeldOrWornBy(generator, args.Performer))
+        {
+            if (generator.Comp.ToggleActionEntity is { } action)
+                _actions.RemoveProvidedAction(args.Performer, generator, action);
+
+            TurnOff(generator, false);
+            args.Handled = true;
+            return;
+        }
+
+        AttemptToggle(generator, !generator.Comp.Enabled, args.Performer);
         args.Handled = true;
     }
 
@@ -148,7 +179,7 @@ public sealed class EnergyDomeSystem : EntitySystem
 
     private void OnPowerCellChanged(Entity<EnergyDomeGeneratorComponent> generator, ref PowerCellChangedEvent args)
     {
-        if (args.Ejected || !_powerCell.HasDrawCharge(generator.Owner))
+        if (args.Ejected || !HasPower(generator))
             TurnOff(generator, true);
     }
 
@@ -181,8 +212,13 @@ public sealed class EnergyDomeSystem : EntitySystem
             {
                 _battery.UseCharge(cell.Value.AsNullable(), energyLeak);
 
-                if (cell.Value.Comp.LastCharge <= 0)
+                if (_battery.GetCharge(cell.Value.AsNullable()) <= 0)
                     TurnOff((generatorUid, generatorComp), true);
+            }
+            else
+            {
+                // Cell gone while dome was active.
+                TurnOff((generatorUid, generatorComp), true);
             }
         }
 
@@ -192,7 +228,7 @@ public sealed class EnergyDomeSystem : EntitySystem
 
         _battery.UseCharge((generatorUid, (BatteryComponent?) battery), energyLeak);
 
-        if (battery.LastCharge <= 0)
+        if (_battery.GetCharge((generatorUid, battery)) <= 0)
             TurnOff((generatorUid, generatorComp), true);
     }
 
@@ -204,6 +240,21 @@ public sealed class EnergyDomeSystem : EntitySystem
             TurnOff(generator, false);
     }
 
+    private void OnDropped(Entity<EnergyDomeGeneratorComponent> generator, ref DroppedEvent args)
+    {
+        TurnOff(generator, false);
+    }
+
+    private void OnUnequippedHand(Entity<EnergyDomeGeneratorComponent> generator, ref GotUnequippedHandEvent args)
+    {
+        TurnOff(generator, false);
+    }
+
+    private void OnUnequipped(Entity<EnergyDomeGeneratorComponent> generator, ref GotUnequippedEvent args)
+    {
+        TurnOff(generator, false);
+    }
+
     private void OnComponentRemove(Entity<EnergyDomeGeneratorComponent> generator, ref ComponentRemove args)
     {
         TurnOff(generator, false);
@@ -213,52 +264,47 @@ public sealed class EnergyDomeSystem : EntitySystem
 
     #region Functional
 
-    public bool AttemptToggle(Entity<EnergyDomeGeneratorComponent> generator, bool status)
+    public bool AttemptToggle(Entity<EnergyDomeGeneratorComponent> generator, bool status, EntityUid? user = null)
     {
         if (_useDelay.IsDelayed(generator.Owner))
         {
             _audio.PlayPvs(generator.Comp.TurnOffSound, generator);
-            _popup.PopupEntity(
-                    Loc.GetString("energy-dome-recharging"),
-                    generator);
+            Popup(generator, Loc.GetString("energy-dome-recharging"), user);
             return false;
         }
 
-        if (TryComp<PowerCellSlotComponent>(generator, out _))
+        // Turning off is always allowed (even with a dead cell).
+        if (!status)
         {
-            if (!_powerCell.TryGetBatteryFromSlot(generator.Owner, out _) && !TryComp(generator, out BatteryComponent? _))
-            {
-                _audio.PlayPvs(generator.Comp.TurnOffSound, generator);
-                _popup.PopupEntity(
-                    Loc.GetString("energy-dome-no-cell"),
-                    generator);
-                return false;
-            }
-
-            if (!_powerCell.HasDrawCharge(generator.Owner))
-            {
-                _audio.PlayPvs(generator.Comp.TurnOffSound, generator);
-                _popup.PopupEntity(
-                    Loc.GetString("energy-dome-no-power"),
-                    generator);
-                return false;
-            }
+            Toggle(generator, false);
+            return true;
         }
 
-        if (TryComp<BatteryComponent>(generator, out var battery))
+        if (user != null && generator.Comp.CanInteractUse && !IsHeldOrWornBy(generator, user.Value))
         {
-            if (battery.LastCharge <= 0)
-            {
-                _audio.PlayPvs(generator.Comp.TurnOffSound, generator);
-                _popup.PopupEntity(
-                    Loc.GetString("energy-dome-no-power"),
-                    generator);
-                return false;
-            }
+            _audio.PlayPvs(generator.Comp.TurnOffSound, generator);
+            return false;
         }
 
-        Toggle(generator, status);
+        if (!HasPower(generator, out var missingCell))
+        {
+            _audio.PlayPvs(generator.Comp.TurnOffSound, generator);
+            Popup(generator,
+                Loc.GetString(missingCell ? "energy-dome-no-cell" : "energy-dome-no-power"),
+                user);
+            return false;
+        }
+
+        Toggle(generator, true);
         return true;
+    }
+
+    private void Popup(EntityUid generator, string message, EntityUid? user)
+    {
+        if (user != null)
+            _popup.PopupEntity(message, generator, user.Value);
+        else
+            _popup.PopupEntity(message, generator);
     }
 
     private void Toggle(Entity<EnergyDomeGeneratorComponent> generator, bool status)
@@ -281,14 +327,10 @@ public sealed class EnergyDomeSystem : EntitySystem
         _transform.SetParent(newDome, protectedEntity);
 
         if (TryComp<EnergyDomeComponent>(newDome, out var domeComp))
-        {
             domeComp.Generator = generator;
-        }
 
         if (TryComp<PowerCellDrawComponent>(generator.Owner, out _))
-        {
             _powerCell.SetDrawEnabled(generator.Owner, true);
-        }
 
         generator.Comp.SpawnedDome = newDome;
         _audio.PlayPvs(generator.Comp.TurnOnSound, generator);
@@ -302,11 +344,11 @@ public sealed class EnergyDomeSystem : EntitySystem
 
         generator.Comp.Enabled = false;
         QueueDel(generator.Comp.SpawnedDome);
+        generator.Comp.SpawnedDome = null;
+        generator.Comp.DomeParentEntity = null;
 
         if (TryComp<PowerCellDrawComponent>(generator.Owner, out _))
-        {
             _powerCell.SetDrawEnabled(generator.Owner, false);
-        }
 
         _audio.PlayPvs(generator.Comp.TurnOffSound, generator);
 
@@ -316,18 +358,56 @@ public sealed class EnergyDomeSystem : EntitySystem
         _audio.PlayPvs(generator.Comp.EnergyOutSound, generator);
 
         if (TryComp<UseDelayComponent>(generator, out var useDelay))
-        {
             _useDelay.TryResetDelay(new Entity<UseDelayComponent>(generator, useDelay));
-        }
     }
 
     #endregion
 
     #region Util
 
+    /// <summary>
+    /// True if the generator has enough charge to enable (wired battery or slotted cell).
+    /// </summary>
+    private bool HasPower(EntityUid generator, out bool missingCell)
+    {
+        missingCell = false;
+
+        if (TryComp<PowerCellSlotComponent>(generator, out _))
+        {
+            if (!_powerCell.TryGetBatteryFromSlot(generator, out var cell))
+            {
+                // Wired generators may still have a built-in Battery without a cell.
+                if (TryComp<BatteryComponent>(generator, out var wired) &&
+                    _battery.GetCharge((generator, wired)) >= MinEnableCharge)
+                    return true;
+
+                missingCell = true;
+                return false;
+            }
+
+            return _battery.GetCharge(cell.Value.AsNullable()) >= MinEnableCharge;
+        }
+
+        if (TryComp<BatteryComponent>(generator, out var battery))
+            return _battery.GetCharge((generator, battery)) >= MinEnableCharge;
+
+        return false;
+    }
+
+    private bool HasPower(EntityUid generator) => HasPower(generator, out _);
+
+    private bool IsHeldOrWornBy(EntityUid generator, EntityUid user)
+    {
+        if (_hands.IsHolding(user, generator))
+            return true;
+
+        return _container.TryGetContainingContainer((generator, null, null), out var container)
+               && container.Owner == user;
+    }
+
     private EntityUid GetProtectedEntity(EntityUid entity)
     {
-        return (_container.TryGetOuterContainer(entity, Transform(entity), out var container))
+        return _container.TryGetOuterContainer(entity, Transform(entity), out var container)
             ? container.Owner
             : entity;
     }

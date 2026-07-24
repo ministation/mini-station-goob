@@ -92,7 +92,10 @@ public sealed class RechargeableBlockingSystem : EntitySystem
         if (battery.LastCharge < 1)
         {
             if (TryComp(uid, out recharger))
+            {
                 recharger.AutoRechargeRate = component.DischargedRechargeRate;
+                _battery.RefreshChargeRate(uid);
+            }
 
             component.Discharged = true;
             _itemToggle.TryDeactivate(uid, predicted: false);
@@ -104,6 +107,9 @@ public sealed class RechargeableBlockingSystem : EntitySystem
 
         component.Discharged = false;
         if (TryComp(uid, out recharger))
+        {
             recharger.AutoRechargeRate = component.ChargedRechargeRate;
+            _battery.RefreshChargeRate(uid);
+        }
     }
 }

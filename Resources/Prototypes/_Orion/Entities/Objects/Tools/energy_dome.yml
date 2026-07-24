@@ -23,7 +23,7 @@
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
-        startingItem: PowerCellHigh
+        startingItem: PowerCellHighEnergyDome
         whitelist:
           tags:
             - PowerCell
@@ -76,7 +76,7 @@
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
-        startingItem: PowerCellSmall
+        startingItem: PowerCellSmallEnergyDome
         whitelist:
           tags:
             - PowerCell
@@ -101,6 +101,29 @@
     - Toggle
     - On
     - Off
+
+# Weak self-recharge cells shipped with Energy Dome generators (damage still drains; regen is slow).
+- type: entity
+  parent: PowerCellHigh
+  id: PowerCellHighEnergyDome
+  name: high-capacity power cell
+  description: A rechargeable standardized power cell with a weak internal trickle charger for energy dome generators.
+  suffix: Full, Energy Dome
+  components:
+  - type: BatterySelfRecharger
+    autoRechargeRate: 8 # ~2.25 min empty→full (1080)
+    autoRechargePauseTime: 5
+
+- type: entity
+  parent: PowerCellSmall
+  id: PowerCellSmallEnergyDome
+  name: small-capacity power cell
+  description: A rechargeable power cell with a weak internal trickle charger for energy dome generators.
+  suffix: Full, Energy Dome
+  components:
+  - type: BatterySelfRecharger
+    autoRechargeRate: 3 # ~2 min empty→full (360)
+    autoRechargePauseTime: 5
 
 - type: entity
   parent: BaseMachine

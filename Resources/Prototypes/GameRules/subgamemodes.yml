@@ -99,12 +99,16 @@
       spawnerPrototype: SpawnPointGhostRoleMothershipCore
       mindRoles:
       - MindRoleMothershipCore
+      skills: # CorvaxGoob-Skills
+      - All
       chaosScore: 250 # Goobstation
     - prefRoles: [ Xenoborg ]
       fallbackRoles: [ MothershipCore ]
       spawnerPrototype: SpawnPointGhostRoleXenoborg
       mindRoles:
       - MindRoleXenoborg
+      skills: # CorvaxGoob-Skills
+      - All
       min: 4
       max: 4
       chaosScore: 250 # Goobstation
