@@ -1,0 +1,29 @@
+# Ported from wega-team/ss14-wega (GPL-3.0) — Corvax-Wega Genetics
+- type: reagent
+  id: Mutadon
+  name: reagent-name-mutadon
+  group: Medicine
+  desc: reagent-desc-mutadon
+  physicalDesc: reagent-physical-desc-opaque
+  flavor: medicine
+  color: "#64a0aa"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:ChemCureDnaDisease
+      - !type:HealthChange
+        damage:
+          types:
+            Cellular: 0.5
+
+- type: reaction
+  id: Mutadon
+  reactants:
+    UnstableMutagen:
+      amount: 1
+    Acetone:
+      amount: 1
+    Bromine:
+      amount: 1
+  products:
+    Mutadon: 3

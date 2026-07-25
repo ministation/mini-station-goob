@@ -20,6 +20,7 @@ using Content.Shared.Actions;
 using Content.Shared.Damage;
 using Content.Shared.Actions.Components;
 using Content.Shared.Charges.Systems;
+using Content.Shared.Ghost;
 using Content.Shared.Heretic;
 using Content.Shared.Input;
 using Content.Shared.Mobs.Components;
@@ -500,6 +501,11 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (entity == default)
             return;
 
+        // Ghost / admin-ghost hotbars are tiny and must not overwrite the body layout,
+        // otherwise the next attach remaps a rich bar into leading empty slots.
+        if (EntityManager.HasComponent<GhostComponent>(entity))
+            return;
+
         var layout = CaptureLayout();
         if (layout.IsEmpty)
             return;
@@ -520,6 +526,14 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (entity == default)
         {
             _savedActions.Remove(entity);
+            _pendingLoadFrom = null;
+            return;
+        }
+
+        // LinkAllActions already filled ghost actions; applying a prior body layout
+        // keeps unmatched holes and pushes ghost actions off page 0.
+        if (EntityManager.HasComponent<GhostComponent>(entity))
+        {
             _pendingLoadFrom = null;
             return;
         }
@@ -562,7 +576,28 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             ? (entity == localEntity ? EntityUid.Invalid : entity)
             : localEntity;
 
-        var remapped = RemapLayout(saved.Flatten(), current, savedEntityForRemap, localEntity);
+        var savedFlat = saved.Flatten();
+        var remapped = RemapLayout(savedFlat, current, savedEntityForRemap, localEntity);
+
+        // Cross-entity proto remap with zero overlaps (ghost-role takeover, etc.):
+        // keeping saved holes only blanks page 0. Keep LinkAllActions defaults instead.
+        if (allowProtoMatch)
+        {
+            var mappedHits = 0;
+            var limit = Math.Min(savedFlat.Count, remapped.Count);
+            for (var i = 0; i < limit; i++)
+            {
+                if (savedFlat[i] != null && remapped[i] != null)
+                    mappedHits++;
+            }
+
+            if (mappedHits == 0)
+            {
+                _pendingLoadFrom = null;
+                _sawmill.Debug($"Skipped action layout remap for {entity}: no prototype overlaps");
+                return true;
+            }
+        }
 
         ApplyFlatLayout(remapped);
         if (IsPagedMode)

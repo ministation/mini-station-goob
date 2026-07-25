@@ -36,6 +36,9 @@
   id: JobChemist
 
 - type: playTimeTracker
+  id: JobGeneticist
+
+- type: playTimeTracker
   id: JobChiefEngineer
 
 - type: playTimeTracker

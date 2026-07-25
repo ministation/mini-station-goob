@@ -218,6 +218,9 @@ loadout-group-medical-intern-jumpsuit = Medical intern jumpsuit
 loadout-group-chemist-jumpsuit = Chemist jumpsuit
 loadout-group-chemist-outerclothing = Chemist outer clothing
 loadout-group-chemist-backpack = Chemist backpack
+loadout-group-genetics-jumpsuit = Geneticist jumpsuit
+loadout-group-genetics-outerclothing = Geneticist outer clothing
+loadout-group-genetics-backpack = Geneticist backpack
 
 loadout-group-paramedic-head = Paramedic head
 loadout-group-paramedic-jumpsuit = Paramedic jumpsuit

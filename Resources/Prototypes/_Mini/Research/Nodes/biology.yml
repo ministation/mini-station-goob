@@ -88,6 +88,7 @@
     ScanningPeopleMutant: 10000
   recipeUnlocks:
   - MedicalScannerMachineCircuitboard
+  - DnaModifierComputerCircuitboard
   - XenoCompatibilityImplanter
   position: 13,14
 

@@ -21,6 +21,7 @@ When merging goob/upstream or resolving conflicts, **prefer Mini** for these unl
 | **Lobby / UI** | Mini `Content.Client/Lobby/`, `StyleNano`/`StyleSpace`/`StyleBase`, accent rebuild in `StylesheetManager`, fonts `Resources/Fonts/_Mini/**/*.ttf`, `ui_font_styles.yml`, Nano textures used by StyleNano (e.g. `Resources/Textures/Interface/Nano/square.png`) |
 | **Vote UI** | `VotePopup` with `PixelScrollProgressBar` + `AngleRect` (not stock ProgressBar) |
 | **Typan / Mini content** | `Resources/Prototypes/_Mini/`, `Content.*/_Mini/`, TypanWar, maps/assets under `_Mini` |
+| **Genetics (Paradise/Wega)** | `Content.*/_Mini/Genetics/`, prototypes `Resources/Prototypes/_Mini/Genetics/`, textures `_Mini/Genetics`, Mutadon, DnaModifier on organics + DnaServer on R&D server |
 
 ## Merge protocol
 

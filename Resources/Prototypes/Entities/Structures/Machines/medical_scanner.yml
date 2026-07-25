@@ -50,8 +50,15 @@
   - type: ContainerContainer
     containers:
       scanner-bodyContainer: !type:ContainerSlot
+      beakerSlot: !type:ContainerSlot # Mini genetics (Wega DNA modifier)
       machine_board: !type:Container
       machine_parts: !type:Container
+  - type: ItemSlots
+    slots:
+      beakerSlot:
+        whitelist:
+          components:
+          - FitsInDispenser
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: StrongMetallic
@@ -78,6 +85,8 @@
   - type: EmptyOnMachineDeconstruct
     containers:
     - scanner-bodyContainer
+    - beakerSlot
   - type: GuideHelp
     guides:
     - Cloning
+    - Genetics

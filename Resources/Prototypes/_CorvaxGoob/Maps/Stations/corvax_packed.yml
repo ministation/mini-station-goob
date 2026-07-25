@@ -31,6 +31,7 @@
             # medical
             ChiefMedicalOfficer: [ 1, 1 ]
             MedicalDoctor: [ 3, 3 ]
+            Geneticist: [ 1, 1 ]
             MedicalIntern: [ 2, 2 ]
             Paramedic: [ 1, 1 ]
             Chemist: [ 2, 2 ]

@@ -300090,6 +300090,27 @@ entities:
     - type: Transform
       pos: 31.5,133.5
       parent: 2
+- proto: SpawnPointGeneticist
+  entities:
+  - uid: 51114
+    components:
+    - type: Transform
+      parent: 2
+      pos: 36.5,133.5
+- proto: MedicalScanner
+  entities:
+  - uid: 51115
+    components:
+    - type: Transform
+      parent: 2
+      pos: 37.5,133.5
+- proto: DnaModifierConsole
+  entities:
+  - uid: 51116
+    components:
+    - type: Transform
+      parent: 2
+      pos: 38.5,133.5
 - proto: SpawnPointMedicalIntern
   entities:
   - uid: 41342
