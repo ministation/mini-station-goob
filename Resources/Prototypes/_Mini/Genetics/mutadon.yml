@@ -8,7 +8,7 @@
   flavor: medicine
   color: "#64a0aa"
   metabolisms:
-    Bloodstream:
+    Medicine:
       effects:
       - !type:ChemCureDnaDisease
       - !type:HealthChange

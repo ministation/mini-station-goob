@@ -1,5 +1,7 @@
 ﻿reagent-name-mutadon = mutadon
 reagent-desc-mutadon = A medication that cures genetic diseases and resets structural enzyme blocks.
+reagent-name-bromine = bromine
+reagent-desc-bromine = A toxic halogen element, usually liquid at room temperature.
 reagent-effect-guidebook-cure-dna-disease =
     { $chance ->
         [1] Cures a genetic disease
