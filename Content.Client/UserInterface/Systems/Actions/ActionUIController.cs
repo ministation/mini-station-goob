@@ -80,13 +80,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
     private readonly TextureRect _dragShadow;
     private ActionsWindow? _window;
 
-    private readonly Dictionary<EntityUid, SavedActionLayout> _savedActions = new();
-    /// <summary>
-    /// Live arrangement for <see cref="_layoutOwner"/> only. Never apply across different characters.
-    /// Survives temporary forms (jaunt/ghost) for that same body.
-    /// </summary>
-    private SavedActionLayout? _persistentLayout;
-    private EntityUid? _layoutOwner;
+    // Goobstation: hotbar layout is stored on ActionBarLayoutComponent of the body entity.
     private EntityUid? _pendingLoadFrom;
     private TimeSpan? _pendingRestoreSince;
     private bool _layoutIsPaged;
@@ -507,7 +501,6 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (entity == default)
             return;
 
-        // Ghost/jaunt must never overwrite the arranged hotbar.
         if (IsTransientActionBody(entity))
         {
             _sawmill.Info($"Skip saving action layout from transient {entity}");
@@ -515,7 +508,10 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         }
 
         PersistLayout(entity);
-        _sawmill.Info($"Saved action layout for {entity} (slots={_persistentLayout?.NonNullCount})");
+        var count = EntityManager.TryGetComponent(entity, out ActionBarLayoutComponent? layout)
+            ? layout.NonNullCount
+            : 0;
+        _sawmill.Info($"Saved action layout on entity {entity} (slots={count})");
     }
 
     private void OnActionsLoaded(EntityUid entity)
@@ -525,16 +521,9 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (_playerManager.LocalEntity is not { } local)
             return;
 
-        // Still on jaunt/ghost — keep the real body's save for when we return.
+        // Still on jaunt/ghost — layout stays on the real body entity.
         if (IsTransientActionBody(local))
             return;
-
-        // Different character / new round: never apply another body's hotbar.
-        if (!CanRestoreFor(local))
-        {
-            ClearSessionLayout();
-            return;
-        }
 
         if (!TryRestoreLayout())
         {
@@ -543,35 +532,11 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         }
     }
 
-    private bool CanRestoreFor(EntityUid localEntity)
-    {
-        if (IsTransientActionBody(localEntity))
-            return false;
-
-        if (_savedActions.ContainsKey(localEntity))
-            return true;
-
-        return _layoutOwner == localEntity && _persistentLayout != null;
-    }
-
-    private void ClearSessionLayout()
-    {
-        _persistentLayout = null;
-        _layoutOwner = null;
-        _pendingLoadFrom = null;
-        _pendingRestoreSince = null;
-    }
-
     /// <summary>
-    /// Snapshot current hotbar into session persistence. Call after user rearranges slots.
+    /// Writes the current hotbar into <see cref="ActionBarLayoutComponent"/> on that entity only.
     /// </summary>
-    /// <param name="allowShrink">
-    /// If false, never replace a richer saved layout with a thinner one (partial restore).
-    /// </param>
     private void PersistLayout(EntityUid? forEntity = null, bool allowShrink = true)
     {
-        // IMPORTANT: on detach LocalEntity is often already the ghost/jaunt while _pages
-        // still hold the previous body's arrangement. Key off forEntity, not LocalEntity.
         var key = forEntity ?? _playerManager.LocalEntity;
         if (key is not { } uid)
             return;
@@ -579,21 +544,34 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (IsTransientActionBody(uid))
             return;
 
-        var layout = CaptureLayout();
-        if (layout.IsEmpty)
+        var captured = CaptureLayout();
+        if (captured.IsEmpty)
             return;
 
-        if (!allowShrink && _persistentLayout != null && _layoutOwner == uid)
-        {
-            if (layout.NonNullCount < _persistentLayout.NonNullCount ||
-                layout.Pages.Count < _persistentLayout.Pages.Count)
-                return;
-        }
+        if (!allowShrink &&
+            EntityManager.TryGetComponent(uid, out ActionBarLayoutComponent? existing) &&
+            (captured.NonNullCount < existing.NonNullCount ||
+             captured.Pages.Count < existing.Pages.Count))
+            return;
 
-        var stored = layout.Clone();
-        _persistentLayout = stored;
-        _layoutOwner = uid;
-        _savedActions[uid] = stored.Clone();
+        var layout = EntityManager.EnsureComponent<ActionBarLayoutComponent>(uid);
+        layout.IsPaged = captured.IsPaged;
+        layout.CurrentPage = captured.CurrentPage;
+        layout.Pages.Clear();
+        foreach (var page in captured.Pages)
+        {
+            var data = new List<ActionBarSlotData>(page.Count);
+            foreach (var slot in page)
+            {
+                data.Add(new ActionBarSlotData
+                {
+                    ProtoId = slot.ProtoId,
+                    ContainerProtoId = slot.ContainerProtoId,
+                });
+            }
+
+            layout.Pages.Add(data);
+        }
     }
 
     private bool TryRestoreLayout()
@@ -605,43 +583,36 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         {
             _pendingLoadFrom = null;
             _pendingRestoreSince = null;
-            _sawmill.Info($"Skip restore onto transient {localEntity}");
             return true;
         }
 
-        if (!CanRestoreFor(localEntity))
-        {
-            ClearSessionLayout();
-            return false;
-        }
-
-        SavedActionLayout? saved = null;
-        if (_savedActions.TryGetValue(localEntity, out var entitySaved))
-            saved = entitySaved;
-        else if (_layoutOwner == localEntity)
-            saved = _persistentLayout;
-
-        if (saved == null)
+        // Only this entity's component — never a session-wide layout from another body.
+        if (!EntityManager.TryGetComponent(localEntity, out ActionBarLayoutComponent? layout) ||
+            layout.Pages.Count == 0)
             return false;
 
+        var saved = ToSavedLayout(layout);
         var current = CaptureAvailableSlots();
         if (current.Count == 0)
             return false;
 
         var savedCount = saved.NonNullCount;
+        if (savedCount == 0)
+            return false;
+
         var (remapped, matched) = RemapLayout(saved.Flatten(), current, localEntity);
         if (matched == 0)
             return false;
 
-        // Stale layout from another round/character: only a few protos overlap (combat/scream).
-        // Applying it replaces LoadDefault with a nearly empty bar.
+        // Component left over on a reused uid / stripped character: almost nothing overlaps.
         if (matched * 2 < savedCount && current.Count * 2 < savedCount)
         {
-            _sawmill.Info($"Reject stale action layout (matched={matched}/{savedCount}, have={current.Count})");
-            _savedActions.Remove(localEntity);
-            ClearSessionLayout();
+            _sawmill.Info($"Reject stale entity layout on {localEntity} (matched={matched}/{savedCount})");
+            EntityManager.RemoveComponent<ActionBarLayoutComponent>(localEntity);
             LoadDefaultActions();
             RefreshActionContainer();
+            _pendingLoadFrom = null;
+            _pendingRestoreSince = null;
             return true;
         }
 
@@ -666,8 +637,27 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         _pendingLoadFrom = null;
         _pendingRestoreSince = null;
         PersistLayout(localEntity, allowShrink: false);
-        _sawmill.Info($"Restored action layout (matched={matched}/{savedCount}, available={current.Count})");
+        _sawmill.Info($"Restored action layout from entity {localEntity} (matched={matched}/{savedCount})");
         return true;
+    }
+
+    private static SavedActionLayout ToSavedLayout(ActionBarLayoutComponent layout)
+    {
+        var saved = new SavedActionLayout
+        {
+            IsPaged = layout.IsPaged,
+            CurrentPage = layout.CurrentPage,
+        };
+
+        foreach (var page in layout.Pages)
+        {
+            var slots = new List<SavedSlot>(page.Count);
+            foreach (var slot in page)
+                slots.Add(new SavedSlot(null, slot.ProtoId, slot.ContainerProtoId));
+            saved.Pages.Add(slots);
+        }
+
+        return saved;
     }
 
     private bool IsTransientActionBody(EntityUid uid)
@@ -962,9 +952,9 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             if (TryRestoreLayout())
                 return;
 
-            // Still waiting for a real restore for *this* body — do not fill intentional holes.
-            if (_persistentLayout != null &&
-                _layoutOwner == _playerManager.LocalEntity)
+            // Waiting for this body's component restore — do not fill intentional holes.
+            if (_playerManager.LocalEntity is { } local &&
+                EntityManager.HasComponent<ActionBarLayoutComponent>(local))
                 return;
 
             _pendingLoadFrom = null;
@@ -1568,19 +1558,12 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
         LoadDefaultActions();
 
-        if (_playerManager.LocalEntity is not { } local)
+        if (_playerManager.LocalEntity is not { } local ||
+            IsTransientActionBody(local) ||
+            !EntityManager.HasComponent<ActionBarLayoutComponent>(local))
         {
-            RefreshActionContainer();
-            UpdatePageButtons();
-            QueueWindowUpdate();
-            return;
-        }
-
-        if (IsTransientActionBody(local) || !CanRestoreFor(local))
-        {
-            // New character / new round: keep defaults, drop another body's session layout.
-            if (!IsTransientActionBody(local))
-                ClearSessionLayout();
+            _pendingLoadFrom = null;
+            _pendingRestoreSince = null;
             RefreshActionContainer();
             UpdatePageButtons();
             QueueWindowUpdate();
@@ -1592,6 +1575,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             _pendingLoadFrom = local;
             _pendingRestoreSince ??= _timing.CurTime;
         }
+
         RefreshActionContainer();
         UpdatePageButtons();
         QueueWindowUpdate();
