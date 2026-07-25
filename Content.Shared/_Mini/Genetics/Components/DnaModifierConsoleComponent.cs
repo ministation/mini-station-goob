@@ -19,10 +19,14 @@ public sealed partial class DnaModifierConsoleComponent : Component
     public TimeSpan NextUpdate;
     public TimeSpan UpdateInterval = TimeSpan.FromSeconds(2);
 
-    [DataField, AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
+    /// <summary>
+    /// Runtime cooldown timestamps. Not DataFields — CurTime values must not
+    /// serialize into maps or fail PrototypeSaveTest / SaveLoadSaveTest.
+    /// </summary>
+    [AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan LastInjectorTime;
 
-    [DataField, AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
+    [AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan LastSubjectInjectTime;
 
     [DataField, ViewVariables(VVAccess.ReadWrite)]

@@ -139697,7 +139697,6 @@ entities:
       parent: 2
       pos: -51.5,9.5
     - type: DnaServer
-      serverId: 7
 - proto: Retractor
   entities:
   - uid: 19990

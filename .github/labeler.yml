@@ -28,7 +28,7 @@
 
 "🪧 Изменения: Прототипы":
   - changed-files:
-      -any-glob-to-any-file: "**/*.yml"
+      - any-glob-to-any-file: "**/*.yml"
 
 "Есть C#":
   - changed-files:

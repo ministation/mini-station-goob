@@ -89681,7 +89681,6 @@ entities:
       parent: 2
       pos: 14.5,-17.5
     - type: DnaServer
-      serverId: 6
 - proto: Retractor
   entities:
   - uid: 11495

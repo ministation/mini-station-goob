@@ -5,7 +5,11 @@ namespace Content.Shared.Genetics;
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class DnaServerComponent : Component
 {
-    [DataField, ViewVariables, AutoNetworkedField]
+    /// <summary>
+    /// Runtime-assigned id. Not a DataField — regenerates on spawn and must not
+    /// dirty prototype save tests / map YAML.
+    /// </summary>
+    [ViewVariables, AutoNetworkedField]
     public int ServerId;
 
     [ViewVariables]

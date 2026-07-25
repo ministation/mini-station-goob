@@ -88760,7 +88760,6 @@ entities:
       parent: 2
       pos: 49.5,23.5
     - type: DnaServer
-      serverId: 11
 - proto: Retractor
   entities:
   - uid: 16305

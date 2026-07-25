@@ -68825,7 +68825,6 @@ entities:
       parent: 1
       pos: -25.5,-0.5
     - type: DnaServer
-      serverId: 8
 - proto: RGBStaff
   entities:
   - uid: 5939

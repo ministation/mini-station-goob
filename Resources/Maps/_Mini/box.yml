@@ -176568,7 +176568,6 @@ entities:
       parent: 2
       pos: 52.5,-31.5
     - type: DnaServer
-      serverId: 9
 - proto: ResearchAndDevelopmentServerMachineCircuitboard
   entities:
   - uid: 19086

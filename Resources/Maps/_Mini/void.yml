@@ -124976,7 +124976,6 @@ entities:
       parent: 1
       pos: 169.5,91.5
     - type: DnaServer
-      serverId: 10
 - proto: ResearchDisk
   entities:
   - uid: 8594
