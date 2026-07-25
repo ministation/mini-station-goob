@@ -504,14 +504,15 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (layout.IsEmpty)
             return;
 
-        _savedActions[entity] = layout;
+        var stored = layout.Clone();
+        _savedActions[entity] = stored;
 
         // Prefer the richest layout as the session default so short-lived forms
-        // (jaunt, etc.) do not overwrite the player's arranged hotbar.
-        if (_persistentLayout == null || layout.NonNullCount >= _persistentLayout.NonNullCount)
-            _persistentLayout = layout.Clone();
+        // (jaunt, ghost) do not overwrite the player's arranged hotbar.
+        if (_persistentLayout == null || stored.NonNullCount >= _persistentLayout.NonNullCount)
+            _persistentLayout = stored.Clone();
 
-        _sawmill.Debug($"Saved actions for entity {entity} (non-null={layout.NonNullCount})");
+        _sawmill.Debug($"Saved actions for entity {entity} (non-null={stored.NonNullCount})");
     }
 
     private void OnActionsLoaded(EntityUid entity)
@@ -533,36 +534,28 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
     private bool TryApplySavedLayout(EntityUid entity)
     {
-        if (_playerManager.LocalEntity == null)
+        if (_playerManager.LocalEntity is not { } localEntity)
             return false;
 
-        var localEntity = _playerManager.LocalEntity.Value;
         _savedActions.TryGetValue(entity, out var entitySaved);
 
-        // Prefer the richer persistent layout when the event points at a temporary form
-        // (e.g. jaunt revert sends the jaunt uid — its layout would wipe the real bar).
         var saved = entitySaved;
-        if (_persistentLayout != null)
-        {
-            if (saved == null || _persistentLayout.NonNullCount > saved.NonNullCount)
-                saved = _persistentLayout;
-        }
+        if (_persistentLayout != null &&
+            (saved == null || _persistentLayout.NonNullCount > saved.NonNullCount))
+            saved = _persistentLayout;
 
         if (saved == null)
             return false;
 
-        var current = CaptureLayout().Flatten();
-        if (!current.Any(a => a != null))
+        var current = CaptureCurrentSlots();
+        if (!current.Any(s => s.Action != null))
             return false;
 
-        // Same-entity reload (item equip): UID-only match. Otherwise allow prototype matching
-        // (polymorph / persistent layout from a previous body).
-        var allowProtoMatch = !(entitySaved != null && ReferenceEquals(saved, entitySaved) && entity == localEntity);
-        var savedEntityForRemap = allowProtoMatch
-            ? (entity == localEntity ? EntityUid.Invalid : entity)
-            : localEntity;
+        var (remapped, matched) = RemapLayout(saved.Flatten(), current, localEntity);
 
-        var remapped = RemapLayout(saved.Flatten(), current, savedEntityForRemap, localEntity);
+        // Actions not ready / wrong body yet — keep save and retry later.
+        if (matched == 0)
+            return false;
 
         ApplyFlatLayout(remapped);
         if (IsPagedMode)
@@ -572,7 +565,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         _pendingLoadFrom = null;
         RefreshActionContainer();
         QueueWindowUpdate();
-        _sawmill.Debug($"Loaded actions for entity {entity} (from persistent={ReferenceEquals(saved, _persistentLayout)})");
+        _sawmill.Debug($"Loaded actions for entity {entity} (matched={matched}, persistent={ReferenceEquals(saved, _persistentLayout)})");
         return true;
     }
 
@@ -582,16 +575,60 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (IsPagedMode)
         {
             layout.IsPaged = true;
-            foreach (var page in _pages)
-                layout.Pages.Add(page.ToList());
+            var lastUsed = 0;
+            for (var i = 0; i < _pages.Count; i++)
+            {
+                for (var slot = 0; slot < _pages[i].Size; slot++)
+                {
+                    if (_pages[i][slot] != null)
+                        lastUsed = i;
+                }
+            }
+
+            lastUsed = Math.Max(lastUsed, _currentPageIndex);
+            for (var i = 0; i <= lastUsed && i < _pages.Count; i++)
+                layout.Pages.Add(CapturePageSlots(_pages[i]));
         }
         else
         {
             layout.IsPaged = false;
-            layout.Pages.Add(new List<EntityUid?>(_actions));
+            layout.Pages.Add(_actions.Select(ToSavedSlot).ToList());
         }
 
         return layout;
+    }
+
+    private List<SavedSlot> CaptureCurrentSlots()
+    {
+        if (IsPagedMode)
+        {
+            var slots = new List<SavedSlot>();
+            foreach (var page in _pages)
+                slots.AddRange(CapturePageSlots(page));
+            return slots;
+        }
+
+        return _actions.Select(ToSavedSlot).ToList();
+    }
+
+    private List<SavedSlot> CapturePageSlots(ActionPage page)
+    {
+        var slots = new List<SavedSlot>(page.Size);
+        for (var i = 0; i < page.Size; i++)
+            slots.Add(ToSavedSlot(page[i]));
+        return slots;
+    }
+
+    private SavedSlot ToSavedSlot(EntityUid? action)
+    {
+        if (action is not { } uid)
+            return default;
+
+        string? proto = null;
+        if (EntityManager.TryGetComponent(uid, out MetaDataComponent? meta))
+            proto = meta.EntityPrototype?.ID;
+
+        return new SavedSlot(uid, proto);
     }
 
     private void ApplyFlatLayout(List<EntityUid?> flat)
@@ -622,84 +659,89 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         _layoutIsPaged = IsPagedMode;
     }
 
-    private List<EntityUid?> RemapLayout(
-        List<EntityUid?> savedActions,
-        List<EntityUid?> currentActions,
-        EntityUid savedEntity,
+    private (List<EntityUid?> Result, int Matched) RemapLayout(
+        List<SavedSlot> savedSlots,
+        List<SavedSlot> currentSlots,
         EntityUid localEntity)
     {
         var metaQuery = EntityManager.GetEntityQuery<MetaDataComponent>();
         var actionQuery = EntityManager.GetEntityQuery<ActionComponent>();
         var used = new HashSet<EntityUid>();
 
-        (EntityUid?, Type)? GetActionContainerAndType(EntityUid action)
+        EntityUid? FindMatch(SavedSlot saved)
         {
-            if (actionQuery.TryComp(action, out var actionComp))
-                return (actionComp.Container, typeof(ActionComponent));
+            if (saved.Action is { } savedUid)
+            {
+                foreach (var current in currentSlots)
+                {
+                    if (current.Action is not { } cur || used.Contains(cur))
+                        continue;
+                    if (cur == savedUid)
+                        return cur;
+                }
+            }
+
+            if (saved.ProtoId == null)
+                return null;
+
+            foreach (var current in currentSlots)
+            {
+                if (current.Action is not { } cur || used.Contains(cur))
+                    continue;
+
+                var curProto = current.ProtoId;
+                if (curProto == null && metaQuery.TryGetComponent(cur, out var meta))
+                    curProto = meta.EntityPrototype?.ID;
+
+                if (curProto != saved.ProtoId)
+                    continue;
+
+                // Prefer matching container role when both sides still exist.
+                if (saved.Action is { } savedAction &&
+                    actionQuery.TryComp(savedAction, out var savedComp) &&
+                    actionQuery.TryComp(cur, out var curComp))
+                {
+                    var a = savedComp.Container;
+                    var b = curComp.Container;
+                    if (a != b &&
+                        !(a == localEntity && b == null) &&
+                        !(a == null && b == localEntity))
+                        continue;
+                }
+
+                return cur;
+            }
+
             return null;
         }
 
-        bool IdsEqual(EntityUid? a, EntityUid? b)
-        {
-            if (a == null && b == null)
-                return true;
-            if (a == null || b == null)
-                return false;
-            if (a.Value == b.Value)
-                return true;
-            if (savedEntity == localEntity)
-                return false;
-            if (!metaQuery.TryGetComponent(a.Value, out var metaA) ||
-                !metaQuery.TryGetComponent(b.Value, out var metaB))
-                return false;
-            if (metaA.EntityPrototype?.ID != metaB.EntityPrototype?.ID)
-                return false;
-
-            var containerAndTypeA = GetActionContainerAndType(a.Value);
-            var containerAndTypeB = GetActionContainerAndType(b.Value);
-
-            if (containerAndTypeA == null || containerAndTypeB == null)
-                return false;
-            var (containerA, typeA) = containerAndTypeA.Value;
-            var (containerB, typeB) = containerAndTypeB.Value;
-            if (typeA != typeB)
-                return false;
-            if (containerA == containerB)
-                return true;
-            return containerA == localEntity && containerB == null || containerA == null && containerB == localEntity;
-        }
-
         var newActions = new List<EntityUid?>();
-        foreach (var savedAction in savedActions)
+        var matched = 0;
+        foreach (var saved in savedSlots)
         {
-            if (savedAction == null)
+            if (saved.IsEmpty)
             {
                 newActions.Add(null);
                 continue;
             }
 
-            var match = currentActions.FirstOrDefault(x =>
-                x != null && !used.Contains(x.Value) && IdsEqual(x, savedAction));
-            if (match is { } matched)
+            if (FindMatch(saved) is { } matchedAction)
             {
-                used.Add(matched);
-                newActions.Add(matched);
+                used.Add(matchedAction);
+                newActions.Add(matchedAction);
+                matched++;
             }
-            else
-            {
-                // Keep the hole so slot positions survive temporary forms / missing actions.
-                newActions.Add(null);
-            }
+            // Missing action: drop the slot entry (do not pad with null holes).
         }
 
-        foreach (var action in currentActions)
+        foreach (var current in currentSlots)
         {
-            if (action == null || used.Contains(action.Value))
+            if (current.Action is not { } action || used.Contains(action))
                 continue;
             newActions.Add(action);
         }
 
-        return newActions;
+        return (newActions, matched);
     }
     // Goobstation end
 
@@ -1526,13 +1568,18 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         handOverlay.EntityOverride = null;
     }
 
+    private readonly record struct SavedSlot(EntityUid? Action, string? ProtoId)
+    {
+        public bool IsEmpty => Action == null && ProtoId == null;
+    }
+
     private sealed class SavedActionLayout
     {
         public bool IsPaged;
         public int CurrentPage;
-        public List<List<EntityUid?>> Pages { get; } = new();
+        public List<List<SavedSlot>> Pages { get; } = new();
 
-        public bool IsEmpty => Pages.Count == 0 || Pages.All(p => p.Count == 0 || p.All(a => a == null));
+        public bool IsEmpty => Pages.Count == 0 || Pages.All(p => p.Count == 0 || p.All(a => a.IsEmpty));
 
         public int NonNullCount
         {
@@ -1541,9 +1588,9 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
                 var count = 0;
                 foreach (var page in Pages)
                 {
-                    foreach (var action in page)
+                    foreach (var slot in page)
                     {
-                        if (action != null)
+                        if (!slot.IsEmpty)
                             count++;
                     }
                 }
@@ -1552,9 +1599,9 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             }
         }
 
-        public List<EntityUid?> Flatten()
+        public List<SavedSlot> Flatten()
         {
-            var flat = new List<EntityUid?>();
+            var flat = new List<SavedSlot>();
             foreach (var page in Pages)
                 flat.AddRange(page);
             return flat;
@@ -1568,7 +1615,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
                 CurrentPage = CurrentPage,
             };
             foreach (var page in Pages)
-                clone.Pages.Add(new List<EntityUid?>(page));
+                clone.Pages.Add(new List<SavedSlot>(page));
             return clone;
         }
     }
