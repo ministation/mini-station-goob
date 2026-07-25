@@ -541,6 +541,11 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (key is not { } uid)
             return;
 
+        // Detach during entity delete / round flush — never add comps to a dying entity.
+        if (!EntityManager.TryGetComponent(uid, out MetaDataComponent? meta) ||
+            meta.EntityLifeStage >= EntityLifeStage.Terminating)
+            return;
+
         if (IsTransientActionBody(uid))
             return;
 
@@ -554,7 +559,14 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
              captured.Pages.Count < existing.Pages.Count))
             return;
 
-        var layout = EntityManager.EnsureComponent<ActionBarLayoutComponent>(uid);
+        if (!EntityManager.TryGetComponent(uid, out ActionBarLayoutComponent? layout))
+        {
+            if (meta.EntityLifeStage >= EntityLifeStage.Terminating)
+                return;
+
+            layout = EntityManager.AddComponent<ActionBarLayoutComponent>(uid);
+        }
+
         layout.IsPaged = captured.IsPaged;
         layout.CurrentPage = captured.CurrentPage;
         layout.Pages.Clear();
