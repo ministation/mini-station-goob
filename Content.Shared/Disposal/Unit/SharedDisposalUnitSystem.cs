@@ -259,8 +259,8 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
             return;
         }
 
-        // Recalculate flush delay when power returns; don't flush immediately.
-        if (component.Engaged)
+        // Goobstation - bring back speedflush (spam power button to flush).
+        if (component.Engaged && !TryFlush(uid, component))
             QueueAutomaticEngage(uid, component);
     }
 
