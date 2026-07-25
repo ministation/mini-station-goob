@@ -26,10 +26,12 @@
 - type: startingGear
   id: GeneticistGear
   equipment:
-    id: MedicalPDA
+    id: GeneticsPDA
     ears: ClothingHeadsetMedicalScience
     belt: ClothingBeltMedicalFilled
-    outerClothing: ClothingOuterCoatLabGene
+  storage:
+    back:
+    - BoxDnaInjector
 
 - type: chameleonOutfit
   id: GeneticistChameleonOutfit

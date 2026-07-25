@@ -38,7 +38,6 @@
     ears: ClothingHeadsetMedical
     eyes: ClothingEyesHudViro
     belt: ClothingBeltMedicalFilled #No request and still medical so uh delete if want them with no belt I guess
-    outerClothing: ClothingOuterCoatLabViro
   storage:
     back:
     - BoxMouthSwab

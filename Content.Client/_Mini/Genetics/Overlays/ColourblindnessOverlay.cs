@@ -31,7 +31,7 @@ public sealed partial class ColourblindnessOverlay : Overlay
         if (args.Viewport.Eye != eyeComp.Eye)
             return false;
 
-        return true;
+        return _entityManager.HasComponent<ColourBlindnessComponent>(_playerManager.LocalEntity);
     }
 
     protected override void Draw(in OverlayDrawArgs args)

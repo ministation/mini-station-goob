@@ -12,14 +12,33 @@ public sealed partial class DnaClientSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<DnaClientComponent, ComponentInit>(OnInit);
+        SubscribeLocalEvent<DnaClientComponent, ComponentShutdown>(OnShutdown);
     }
 
     private void OnInit(Entity<DnaClientComponent> ent, ref ComponentInit args)
     {
+        // Drop map/runtime leftovers pointing at entities that no longer exist.
+        if (ent.Comp.Server is { } stale && !Exists(stale))
+        {
+            ent.Comp.Server = null;
+            ent.Comp.ConnectedToServer = false;
+            Dirty(ent);
+        }
+
+        if (ent.Comp.ConnectedToServer && ent.Comp.Server is { } existing
+            && TryComp<DnaServerComponent>(existing, out _))
+            return;
+
         foreach (var server in _dnaServer.GetServers())
         {
             _dnaServer.RegisterClient((server, server.Comp), (ent, ent.Comp));
+            break; // one server is enough; avoid multi-register churn
         }
+    }
+
+    private void OnShutdown(Entity<DnaClientComponent> ent, ref ComponentShutdown args)
+    {
+        _dnaServer.UnregisterClient((ent, ent.Comp));
     }
 
     public bool TryGetBufferData(Entity<DnaClientComponent?> client, int bufferIndex, [NotNullWhen(true)] out EnzymeInfo? data)
@@ -71,13 +90,19 @@ public sealed partial class DnaClientSystem : EntitySystem
         if (!Resolve(client, ref client.Comp))
             return false;
 
-        if (!client.Comp.ConnectedToServer)
+        if (!client.Comp.ConnectedToServer || client.Comp.Server is not { } serverUid)
             return false;
 
-        if (!TryComp<DnaServerComponent>(client.Comp.Server!.Value, out var serverComponent))
+        if (!TryComp<DnaServerComponent>(serverUid, out var serverComponent))
+        {
+            // Stale link (server deleted without a clean shutdown path).
+            client.Comp.Server = null;
+            client.Comp.ConnectedToServer = false;
+            Dirty(client.Owner, client.Comp);
             return false;
+        }
 
-        serverEnt = (client.Comp.Server!.Value, serverComponent);
+        serverEnt = (serverUid, serverComponent);
         return true;
     }
 }

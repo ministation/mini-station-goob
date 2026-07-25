@@ -44,10 +44,7 @@ public sealed partial class DizzySystem : EntitySystem
 
     private void OnShutdown(EntityUid uid, DizzyEffectComponent component, ComponentShutdown args)
     {
-        if (_player.LocalEntity == uid)
-        {
-            _overlay.CurrentIntensity = 0;
-            _overlayMan.RemoveOverlay(_overlay);
-        }
+        _overlay.CurrentIntensity = 0;
+        _overlayMan.RemoveOverlay(_overlay);
     }
 }

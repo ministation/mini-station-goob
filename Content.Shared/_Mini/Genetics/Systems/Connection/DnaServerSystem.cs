@@ -20,10 +20,35 @@ public sealed partial class DnaServerSystem : EntitySystem
     {
         ent.Comp.ServerId = GenerateId();
         Dirty(ent);
+
+        // Consoles may spawn before the server; attach unconnected clients.
+        var query = EntityQueryEnumerator<DnaClientComponent>();
+        while (query.MoveNext(out var clientUid, out var client))
+        {
+            if (client.ConnectedToServer && client.Server is { } linked && Exists(linked))
+                continue;
+
+            RegisterClient((ent, ent.Comp), (clientUid, client));
+        }
     }
 
     private void OnShutdown(Entity<DnaServerComponent> ent, ref ComponentShutdown args)
     {
+        // Clear client links when the DNA server goes away.
+        foreach (var clientUid in ent.Comp.Clients.ToArray())
+        {
+            if (!TryComp<DnaClientComponent>(clientUid, out var client))
+                continue;
+
+            if (client.Server == ent.Owner)
+            {
+                client.Server = null;
+                client.ConnectedToServer = false;
+                Dirty(clientUid, client);
+            }
+        }
+
+        ent.Comp.Clients.Clear();
         ent.Comp.Buffer1 = null;
         ent.Comp.Buffer2 = null;
         ent.Comp.Buffer3 = null;
@@ -36,12 +61,38 @@ public sealed partial class DnaServerSystem : EntitySystem
         if (!Resolve(server, ref server.Comp) || !Resolve(client, ref client.Comp))
             return;
 
+        // Drop a stale link before attaching to a live server.
+        if (client.Comp.Server is { } oldServer
+            && oldServer != server.Owner
+            && TryComp<DnaServerComponent>(oldServer, out var oldServerComp))
+        {
+            oldServerComp.Clients.Remove(client);
+            Dirty(oldServer, oldServerComp);
+        }
+
         server.Comp.Clients.Add(client);
         client.Comp.ConnectedToServer = true;
         client.Comp.Server = server;
 
         Dirty(client.Owner, client.Comp);
         Dirty(server.Owner, server.Comp);
+    }
+
+    public void UnregisterClient(Entity<DnaClientComponent?> client)
+    {
+        if (!Resolve(client, ref client.Comp, false))
+            return;
+
+        if (client.Comp.Server is { } server
+            && TryComp<DnaServerComponent>(server, out var serverComp))
+        {
+            serverComp.Clients.Remove(client);
+            Dirty(server, serverComp);
+        }
+
+        client.Comp.Server = null;
+        client.Comp.ConnectedToServer = false;
+        Dirty(client.Owner, client.Comp);
     }
 
     public IEnumerable<Entity<DnaServerComponent>> GetServers()

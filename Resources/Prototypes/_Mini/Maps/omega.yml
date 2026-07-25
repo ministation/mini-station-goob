@@ -1,9 +1,11 @@
 - type: gameMap
   id: MiniOmega
   mapName: 'NTRK Омега'
-  mapPath: /Maps/_Mini/omega.yml # Goobstation
-  minPlayers: 7
-  maxPlayers: 35
+  mapPath: /Maps/_Mini/omega.yml
+  maxRandomOffset: 0
+  randomRotation: false
+  minPlayers: 0
+  maxPlayers: 25
   stations:
     MiniOmega:
       stationProto: StandardNanotrasenStation
@@ -14,63 +16,64 @@
             !type:NanotrasenNameGenerator
             prefixCreator: 'RK'
         - type: StationEmergencyShuttle
-          emergencyShuttlePath: /Maps/Shuttles/emergency_omega.yml
+          emergencyShuttlePath: /Maps/_CorvaxGoob/Stations/Omega/Shuttles/corvax_emergency_omega.yml
         - type: StationJobs
           availableJobs:
-            #service
+            # command
             Captain: [ 1, 1 ]
-            NanotrasenRepresentative: [ 1, 1 ] # Goobstation
-            BlueshieldOfficer: [ 1, 1 ] # Goobstation
-            HeadOfPersonnel: [ 1, 1 ]
-            Bartender: [ 1, 1 ]
-            Botanist: [ 2, 2 ]
-            Chef: [ 1, 1 ]
-            Janitor: [ 1, 2 ]
-            Chaplain: [ 1, 1 ]
-            Librarian: [ 1, 1 ]
-            ServiceWorker: [ 2, 2 ]
-            #engineering
+            BlueshieldOfficer: [ 1, 1 ]
+            NanotrasenRepresentative: [ 1, 1 ]
+            # cargo
+            Quartermaster: [ 1, 1 ]
+            SalvageSpecialist: [ 2, 2 ]
+            ShaftMiner: [ 2, 2 ]
+            CargoTechnician: [ 2, 2 ]
+            # engineering
             ChiefEngineer: [ 1, 1 ]
             AtmosphericTechnician: [ 2, 2 ]
             StationEngineer: [ 3, 3 ]
             TechnicalAssistant: [ 2, 2 ]
-            #medical
+            # medical
             ChiefMedicalOfficer: [ 1, 1 ]
-            Chemist: [ 2, 2 ]
             MedicalDoctor: [ 3, 3 ]
             Geneticist: [ 1, 1 ]
-            Paramedic: [ 1, 1 ]
             MedicalIntern: [ 2, 2 ]
-            Virologist: [ 1, 2 ]
-            #science
+            Paramedic: [ 1, 1 ]
+            Chemist: [ 2, 2 ]
+            Surgeon: [ 1, 1 ]
+            Virologist: [ 1, 1 ]
+            # science
             ResearchDirector: [ 1, 1 ]
             Scientist: [ 4, 4 ]
             ResearchAssistant: [ 2, 2 ]
-            #security
+            # security
             HeadOfSecurity: [ 1, 1 ]
             Warden: [ 1, 1 ]
+            WardenHelper: [ 1, 1 ]
             SecurityOfficer: [ 4, 4 ]
-            Detective: [ 1, 1 ]
             SecurityCadet: [ 2, 2 ]
-            Lawyer: [ 1, 1 ]
+            Detective: [ 1, 1 ]
+            Pilot: [ 1, 1 ]
             Brigmedic: [ 1, 1 ]
-            #supply
-            Quartermaster: [ 1, 1 ]
-            SalvageSpecialist: [ 2, 2 ]
-            CargoTechnician: [ 2, 2 ]
-            ShaftMiner: [ 2, 2 ]
-            #civilian
-            Passenger: [ 3, 3 ]
+            Lawyer: [ 1, 1 ]
+            # service
+            HeadOfPersonnel: [ 1, 1 ]
+            Bartender: [ 1, 1 ]
+            Botanist: [ 2, 2 ]
+            Chaplain: [ 1, 1 ]
+            Chef: [ 1, 1 ]
             Clown: [ 1, 1 ]
+            Janitor: [ 1, 2 ]
+            Librarian: [ 1, 1 ]
             Mime: [ 1, 1 ]
             Musician: [ 1, 1 ]
-            #silicon
+            ServiceWorker: [ 2, 2 ]
+            Passenger: [ 3, 3 ]
+            Reporter: [ 1, 1 ]
+            # silicon
             StationAi: [ 1, 1 ]
             Borg: [ 2, 2 ]
-
-        # Goobstation blob-config-start SMALL+
         - type: StationBlobConfig
-          stageBegin: 25
-          stageCritical: 350
-          stageTheEnd: 700
-        # Goobstation blob-config-end
+          stageBegin: 20
+          stageCritical: 300
+          stageTheEnd: 600

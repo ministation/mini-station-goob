@@ -29,6 +29,8 @@ public sealed partial class NoirVisionSystem : EntitySystem
 
     private void OnPlayerAttached(EntityUid uid, NoirVisionComponent component, LocalPlayerAttachedEvent args)
     {
+        _overlay.RedThreshold = component.RedThreshold;
+        _overlay.RedSaturation = component.RedSaturation;
         _overlayMan.AddOverlay(_overlay);
     }
 
@@ -49,7 +51,7 @@ public sealed partial class NoirVisionSystem : EntitySystem
 
     private void OnDizzyShutdown(EntityUid uid, NoirVisionComponent component, ComponentShutdown args)
     {
-        if (_player.LocalEntity == uid)
-            _overlayMan.RemoveOverlay(_overlay);
+        // Always drop the overlay — LocalEntity may already be the ghost when the body shuts down.
+        _overlayMan.RemoveOverlay(_overlay);
     }
 }

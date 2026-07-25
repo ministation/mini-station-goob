@@ -117,6 +117,11 @@ namespace Content.Server.Genetics.System
 
                     UpdateUserInterface(uid, component);
                 }
+                else if (component.GeneticScanner != null)
+                {
+                    component.GeneticScanner = null;
+                    component.GeneticScannerInRange = false;
+                }
             }
         }
 
@@ -150,6 +155,9 @@ namespace Content.Server.Genetics.System
         /// </summary>
         private void TryBindGeneticScanner(EntityUid uid, DnaModifierConsoleComponent component)
         {
+            if (component.GeneticScanner != null && !HasComp<MedicalScannerComponent>(component.GeneticScanner))
+                component.GeneticScanner = null;
+
             if (component.GeneticScanner != null && HasComp<MedicalScannerComponent>(component.GeneticScanner))
             {
                 RecheckConnections(uid, component.GeneticScanner, component);

@@ -551,6 +551,15 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             return false;
 
         var localEntity = _playerManager.LocalEntity.Value;
+
+        // Observer / admin-ghost: never remap a body hotbar onto the ghost bar.
+        // OnComponentLinked can run this before OnActionsLoaded's Ghost early-out.
+        if (EntityManager.HasComponent<GhostComponent>(localEntity))
+        {
+            _pendingLoadFrom = null;
+            return true;
+        }
+
         _savedActions.TryGetValue(entity, out var entitySaved);
 
         // Prefer the richer persistent layout when the event points at a temporary form
@@ -579,22 +588,33 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         var savedFlat = saved.Flatten();
         var remapped = RemapLayout(savedFlat, current, savedEntityForRemap, localEntity);
 
-        // Cross-entity proto remap with zero overlaps (ghost-role takeover, etc.):
-        // keeping saved holes only blanks page 0. Keep LinkAllActions defaults instead.
+        // Cross-entity proto remap that mostly blanks the bar (ghost-role / observer-style
+        // mismatch, or only a few shared actions like combat-mode): keep LinkAllActions.
         if (allowProtoMatch)
         {
             var mappedHits = 0;
+            var remappedNonNull = 0;
             var limit = Math.Min(savedFlat.Count, remapped.Count);
             for (var i = 0; i < limit; i++)
             {
+                if (remapped[i] != null)
+                    remappedNonNull++;
                 if (savedFlat[i] != null && remapped[i] != null)
                     mappedHits++;
             }
 
-            if (mappedHits == 0)
+            for (var i = limit; i < remapped.Count; i++)
+            {
+                if (remapped[i] != null)
+                    remappedNonNull++;
+            }
+
+            var currentNonNull = current.Count(a => a != null);
+            if (mappedHits == 0 || remappedNonNull * 2 < currentNonNull)
             {
                 _pendingLoadFrom = null;
-                _sawmill.Debug($"Skipped action layout remap for {entity}: no prototype overlaps");
+                _sawmill.Debug(
+                    $"Skipped action layout remap for {entity}: mappedHits={mappedHits}, remapped={remappedNonNull}, current={currentNonNull}");
                 return true;
             }
         }
@@ -1381,8 +1401,19 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             return;
 
         LoadDefaultActions();
-        if (_pendingLoadFrom is { } pending)
+
+        // Do not apply a pending body layout onto observer/admin-ghost here — this runs
+        // before ActionsLoaded, and remap would leave leading black empty slots.
+        if (_playerManager.LocalEntity is { } local
+            && EntityManager.HasComponent<GhostComponent>(local))
+        {
+            _pendingLoadFrom = null;
+        }
+        else if (_pendingLoadFrom is { } pending)
+        {
             TryApplySavedLayout(pending);
+        }
+
         RefreshActionContainer();
         UpdatePageButtons();
         QueueWindowUpdate();
@@ -1390,6 +1421,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
     private void OnComponentUnlinked()
     {
+        // Drop in-flight remaps so the next attach cannot punch holes into a new bar.
+        _pendingLoadFrom = null;
         _container?.ClearActionData();
         QueueWindowUpdate();
         StopTargeting();

@@ -34,12 +34,13 @@ public sealed partial class NoirVisionOverlay : Overlay
         if (args.Viewport.Eye != eyeComp.Eye)
             return false;
 
-        if (_entityManager.TryGetComponent<NoirVisionComponent>(_playerManager.LocalEntity, out var noirVision))
-        {
-            RedThreshold = noirVision.RedThreshold;
-            RedSaturation = noirVision.RedSaturation;
-        }
+        // Only draw while the local entity still has noir vision — otherwise a stale
+        // overlay (e.g. after ghosting) keeps desaturating the observer view.
+        if (!_entityManager.TryGetComponent<NoirVisionComponent>(_playerManager.LocalEntity, out var noirVision))
+            return false;
 
+        RedThreshold = noirVision.RedThreshold;
+        RedSaturation = noirVision.RedSaturation;
         return true;
     }
 

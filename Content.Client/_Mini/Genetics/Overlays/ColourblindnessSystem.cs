@@ -44,7 +44,6 @@ public sealed partial class ColourblindnessSystem : EntitySystem
 
     private void OnShutdown(EntityUid uid, ColourBlindnessComponent component, ComponentShutdown args)
     {
-        if (_player.LocalEntity == uid)
-            _overlayMan.RemoveOverlay(_overlay);
+        _overlayMan.RemoveOverlay(_overlay);
     }
 }

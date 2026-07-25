@@ -1,0 +1,21 @@
+- type: entity
+  parent: BaseMedicalPDA
+  id: GeneticsPDA
+  name: genetics PDA
+  description: Something about this is oddly sticky.
+  components:
+  - type: Pda
+    id: GeneticsIDCard
+  - type: Appearance
+    appearanceDataInit:
+     enum.PdaVisuals.PdaType:
+       !type:String
+       pda-genetics
+  - type: PdaBorderColor
+    borderColor: "#d7d7d0"
+    accentVColor: "#3b8c4e"
+  - type: Icon
+    state: pda-genetics
+  - type: GuideHelp
+    guides:
+    - Genetics

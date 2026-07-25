@@ -3,7 +3,7 @@
 - type: gameMap
   id: Saltern
   mapName: 'NT14 Солтерн'
-  mapPath: /Maps/_Mini/saltern.yml # Goobstation - use custom saltern
+  mapPath: /Maps/_Goobstation/saltern.yml # Goobstation
   minPlayers: 0
   maxPlayers: 35
   fallback: true

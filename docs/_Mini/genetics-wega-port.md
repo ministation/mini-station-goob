@@ -52,6 +52,14 @@ Keep attribution; Mini AGPL remains compatible for combined distribution.
 - [x] Guidebook wired into Medical guides
 - [x] Compile Content.Shared / Server / Client (0 errors)
 
+## Maps & loadout (Mini)
+
+- **Maps:** `Tools/_Mini/remap_genetics_medbay.py` remaps `Maps/_Mini` only (not `_CorvaxGoob`).
+  - `SpawnPointGeneticist` is always placed on a free tile **adjacent to** `SpawnPointMedicalDoctor` (first doctor spawn).
+  - `MedicalScanner` + `DnaModifierConsole` go next to that doctor cluster (reuse a scanner only if it is ≤10 tiles from the primary doctor; otherwise place a new pair). Bind range ≤4.
+  - Skips `Events` / `Shuttles` / `CentComm` / `Bitrun`.
+- **Loadout:** Geneticist starting gear includes `BoxDnaInjector` (`BaseAmmoProvider`, 10× empty `DnaInjector`) — same pattern as sterile swab boxes.
+
 ## Known gaps / stubs
 
 - UI cosmetics: seeded from `HumanoidAppearance` (Wega VisualBody not ported).
@@ -59,4 +67,4 @@ Keep attribution; Mini AGPL remains compatible for combined distribution.
 - Matter Eater / cough / height adapted to Mini APIs.
 - Strong genes (TK, mind communication) may still need playtests.
 - Do not merge Wega `ChatSystem`/`ForensicsSystem` patches wholesale — Mini job icons / forensics DNA stay.
-- Map spawn: place `DnaModifierConsole` next to Genetics/`MedicalScanner` rooms (manual map edit).
+- Stock / `_Goobstation` maps are out of scope for the remapper (Mini + CorvaxGoob Stations only).
