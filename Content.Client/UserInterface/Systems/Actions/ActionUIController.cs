@@ -1595,6 +1595,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
     private void OnComponentUnlinked()
     {
+        // Drop in-flight remaps so the next attach cannot punch holes into a new bar.
+        _pendingLoadFrom = null;
         _container?.ClearActionData();
         QueueWindowUpdate();
         StopTargeting();

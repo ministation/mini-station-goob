@@ -309926,6 +309926,27 @@ entities:
     - type: Transform
       pos: 2.5,-40.5
       parent: 2
+- proto: SpawnPointGeneticist
+  entities:
+  - uid: 60116
+    components:
+    - type: Transform
+      parent: 2
+      pos: -29.5,-73.5
+- proto: MedicalScanner
+  entities:
+  - uid: 60117
+    components:
+    - type: Transform
+      parent: 2
+      pos: -28.5,-73.5
+- proto: DnaModifierConsole
+  entities:
+  - uid: 60118
+    components:
+    - type: Transform
+      parent: 2
+      pos: -27.5,-73.5
 - proto: SpawnPointMedicalIntern
   entities:
   - uid: 43957

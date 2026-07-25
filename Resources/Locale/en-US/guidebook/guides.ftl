@@ -122,6 +122,7 @@ guide-entry-brute = Advanced Brute Medication
 guide-entry-plastic = Plastic Sheet Production
 guide-entry-botanicals = Botanicals
 guide-entry-cloning = Cloning
+guide-entry-genetics = Genetics
 guide-entry-cryogenics = Cryogenics
 guide-entry-science = Science
 guide-entry-technologies = Technologies

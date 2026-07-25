@@ -97707,6 +97707,27 @@ entities:
     - type: Transform
       pos: 39.5,18.5
       parent: 2
+- proto: SpawnPointGeneticist
+  entities:
+  - uid: 17645
+    components:
+    - type: Transform
+      parent: 2
+      pos: 38.5,4.5
+- proto: MedicalScanner
+  entities:
+  - uid: 17646
+    components:
+    - type: Transform
+      parent: 2
+      pos: 39.5,4.5
+- proto: DnaModifierConsole
+  entities:
+  - uid: 17647
+    components:
+    - type: Transform
+      parent: 2
+      pos: 40.5,4.5
 - proto: SpawnPointMedicalIntern
   entities:
   - uid: 10475

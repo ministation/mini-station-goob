@@ -114,6 +114,7 @@
   roles:
   - Chemist
   - ChiefMedicalOfficer
+  - Geneticist # Mini: Paradise/Wega genetics
   - MedicalDoctor
   - MedicalIntern
   - Psychologist

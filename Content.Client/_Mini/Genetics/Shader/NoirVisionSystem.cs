@@ -1,0 +1,57 @@
+using Content.Client.Shaders.Systems;
+using Content.Shared.Genetics;
+using Content.Shared.Shaders;
+using Robust.Client.Graphics;
+using Robust.Client.Player;
+using Robust.Shared.Player;
+
+namespace Content.Client.Shaders.System;
+
+public sealed partial class NoirVisionSystem : EntitySystem
+{
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IOverlayManager _overlayMan = default!;
+
+    private NoirVisionOverlay _overlay = default!;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<NoirVisionComponent, ComponentInit>(OnDizzyInit);
+        SubscribeLocalEvent<NoirVisionComponent, ComponentShutdown>(OnDizzyShutdown);
+
+        SubscribeLocalEvent<NoirVisionComponent, LocalPlayerAttachedEvent>(OnPlayerAttached);
+        SubscribeLocalEvent<NoirVisionComponent, LocalPlayerDetachedEvent>(OnPlayerDetached);
+
+        _overlay = new();
+    }
+
+    private void OnPlayerAttached(EntityUid uid, NoirVisionComponent component, LocalPlayerAttachedEvent args)
+    {
+        _overlay.RedThreshold = component.RedThreshold;
+        _overlay.RedSaturation = component.RedSaturation;
+        _overlayMan.AddOverlay(_overlay);
+    }
+
+    private void OnPlayerDetached(EntityUid uid, NoirVisionComponent component, LocalPlayerDetachedEvent args)
+    {
+        _overlayMan.RemoveOverlay(_overlay);
+    }
+
+    private void OnDizzyInit(EntityUid uid, NoirVisionComponent component, ComponentInit args)
+    {
+        if (_player.LocalEntity == uid)
+        {
+            _overlay.RedThreshold = component.RedThreshold;
+            _overlay.RedSaturation = component.RedSaturation;
+            _overlayMan.AddOverlay(_overlay);
+        }
+    }
+
+    private void OnDizzyShutdown(EntityUid uid, NoirVisionComponent component, ComponentShutdown args)
+    {
+        // Always drop the overlay — LocalEntity may already be the ghost when the body shuts down.
+        _overlayMan.RemoveOverlay(_overlay);
+    }
+}

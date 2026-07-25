@@ -94172,6 +94172,27 @@ entities:
     - type: Transform
       pos: -13.5,31.5
       parent: 2
+- proto: SpawnPointGeneticist
+  entities:
+  - uid: 18077
+    components:
+    - type: Transform
+      parent: 2
+      pos: -11.5,31.5
+- proto: MedicalScanner
+  entities:
+  - uid: 18078
+    components:
+    - type: Transform
+      parent: 2
+      pos: -10.5,31.5
+- proto: DnaModifierConsole
+  entities:
+  - uid: 18079
+    components:
+    - type: Transform
+      parent: 2
+      pos: -9.5,31.5
 - proto: SpawnPointMedicalIntern
   entities:
   - uid: 14401

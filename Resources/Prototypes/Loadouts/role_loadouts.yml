@@ -723,6 +723,23 @@
   - ChemistEnvirogloves
 
 - type: roleLoadout
+  id: JobGeneticist
+  groups:
+  - Inventory # CorvaxGoob-loadouts
+  - GroupTankHarness
+  - MedicalMask
+  - MedicalEyewear
+  - GeneticsJumpsuit
+  - MedicalGloves
+  - GeneticsBackpack
+  - GeneticsOuterClothing
+  - MedicalShoes
+  - SurvivalMedical
+  - Trinkets
+  - Animals # Goobstation
+  - GroupSpeciesBreathToolMedical
+
+- type: roleLoadout
   id: JobParamedic
   groups:
   - Inventory # CorvaxGoob-loadouts

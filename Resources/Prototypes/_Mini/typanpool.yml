@@ -8,6 +8,225 @@
   maps:
     - Empty
 
+# Mini station maps (CorvaxGoob copies under Maps/_Mini)
+- type: additionalMap
+  id: MiniAmber
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniAstra
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniAvrite
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniBagel
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniBox
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniChloris
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniCluster
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniDelta
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniGlacier
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniMarathon
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniMascara
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniMaus
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniOmega
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniOutpost
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniPacked
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniPaper
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniPearl
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniPilgrim
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniTushkan
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniVoid
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: MiniSilly
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: Aspid
+  maps:
+    - Empty
+
+# CorvaxGoob originals (CorvaxMapPool / forcemap)
+- type: additionalMap
+  id: CorvaxAstra
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxBox
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxChloris
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxDelta
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxGlacier
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxPilgrim
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxBagel
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxMarathon
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxMascara
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxOutpost
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxPaper
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxVoid
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxMaus
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxOmega
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxPacked
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxTushkan
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxCluster
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxPearl
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxAmber
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxAvrite
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: CorvaxSilly
+  maps:
+    - Typan
+    - Aspid
+
+# Stock / Goob maps that may still be forced
 - type: additionalMap
   id: Atlas
   maps:
@@ -20,26 +239,6 @@
     - Aspid
 - type: additionalMap
   id: Bagel
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: MiniCluster
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: MiniOmega
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: MiniPacked
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: Lambda
   maps:
     - Typan
     - Aspid
@@ -149,110 +348,12 @@
     - Typan
     - Aspid
 - type: additionalMap
-  id: CorvaxAstra
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxBox
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxChloris
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxDelta
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxGlacier
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxPilgrim
-  maps:
-    - Typan
-    - Aspid
-# Midpop 25–55
-
-- type: additionalMap
-  id: CorvaxBagel
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxMarathon
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxMascara
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxOutpost
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxPaper
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxVoid
-  maps:
-    - Typan
-    - Aspid
-# Lowpop 0–25
-- type: additionalMap
-  id: CorvaxMaus
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxOmega
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxPacked
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxTushkan
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxCluster
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxPearl
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: MiniSilly
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
-  id: CorvaxSilly
-  maps:
-    - Typan
-    - Aspid
-- type: additionalMap
   id: Snowball
+  maps:
+    - Typan
+    - Aspid
+- type: additionalMap
+  id: Lambda
   maps:
     - Typan
     - Aspid

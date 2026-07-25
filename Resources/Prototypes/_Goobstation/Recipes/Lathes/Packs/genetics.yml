@@ -1,4 +1,5 @@
 - type: latheRecipePack
-  id: Genetics # thats bait
+  id: Genetics
   recipes:
   - XenoCompatibilityImplanter
+  - DnaModifierComputerCircuitboard

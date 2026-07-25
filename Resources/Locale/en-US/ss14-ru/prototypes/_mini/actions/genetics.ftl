@@ -1,0 +1,10 @@
+ent-ActionGenCloakOfDarkness = Cloak of darkness
+    .desc = You are a shadow.
+ent-ActionGenPolymorphism = Polymorphism
+    .desc = Take on someone else's form.
+ent-ActionMindCommunicationGen = Telepathy
+    .desc = Contact someone through their mind.
+ent-ActionHulkTransformation = Transformation
+    .desc = SMASH!
+ent-ActionHulkCharge = Charge
+    .desc = GO AHEAD!

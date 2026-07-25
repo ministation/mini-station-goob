@@ -14014,6 +14014,27 @@ entities:
     - type: Transform
       pos: 4.5,-2.5
       parent: 2
+- proto: SpawnPointGeneticist
+  entities:
+  - uid: 2526
+    components:
+    - type: Transform
+      parent: 2
+      pos: 4.5,-3.5
+- proto: MedicalScanner
+  entities:
+  - uid: 2527
+    components:
+    - type: Transform
+      parent: 2
+      pos: 5.5,-3.5
+- proto: DnaModifierConsole
+  entities:
+  - uid: 2528
+    components:
+    - type: Transform
+      parent: 2
+      pos: 6.5,-3.5
 - proto: SpawnPointMusician
   entities:
   - uid: 1993

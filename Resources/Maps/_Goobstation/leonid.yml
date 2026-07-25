@@ -191944,6 +191944,27 @@ entities:
     - type: Transform
       pos: -62.5,-26.5
       parent: 2
+- proto: SpawnPointGeneticist
+  entities:
+  - uid: 35969
+    components:
+    - type: Transform
+      parent: 2
+      pos: -65.5,-26.5
+- proto: MedicalScanner
+  entities:
+  - uid: 35970
+    components:
+    - type: Transform
+      parent: 2
+      pos: -64.5,-26.5
+- proto: DnaModifierConsole
+  entities:
+  - uid: 35971
+    components:
+    - type: Transform
+      parent: 2
+      pos: -63.5,-26.5
 - proto: SpawnPointMedicalIntern
   entities:
   - uid: 29599

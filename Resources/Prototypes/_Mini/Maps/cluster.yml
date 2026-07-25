@@ -3,7 +3,7 @@
   mapName: 'NGT Кластер'
   mapPath: /Maps/_Mini/cluster.yml
   minPlayers: 0
-  maxPlayers: 35
+  maxPlayers: 25
   stations:
     MiniCluster:
       stationProto: StandardNanotrasenStation
@@ -17,11 +17,11 @@
             prefixCreator: 'KL'
         - type: StationJobs
           availableJobs:
-            #service
-            StationAi: [ 1, 1 ]
+            #command
             Captain: [ 1, 1 ]
-            NanotrasenRepresentative: [ 1, 1 ]
             BlueshieldOfficer: [ 1, 1 ]
+            NanotrasenRepresentative: [ 1, 1 ]
+            #service
             HeadOfPersonnel: [ 1, 1 ]
             Bartender: [ 1, 1 ]
             Botanist: [ 2, 2 ]
@@ -29,9 +29,7 @@
             Janitor: [ 1, 1 ]
             Chaplain: [ 1, 1 ]
             Librarian: [ 1, 1 ]
-            Lawyer: [ 1, 1 ]
             ServiceWorker: [ 1, 1 ]
-            RadioHost: [ 1, 1 ]
             #engineering
             ChiefEngineer: [ 1, 1 ]
             AtmosphericTechnician: [ 2, 2 ]
@@ -41,34 +39,36 @@
             ChiefMedicalOfficer: [ 1, 1 ]
             Chemist: [ 1, 1 ]
             MedicalDoctor: [ 2, 2 ]
+            Geneticist: [ 1, 1 ]
             MedicalIntern: [ 2, 2 ]
-            Virologist: [ 2, 3 ]
+            Virologist: [ 1, 1 ]
             #science
             ResearchDirector: [ 1, 1 ]
             Scientist: [ 3, 3 ]
             ResearchAssistant: [ 2, 2 ]
-            Borg: [ 1, 1 ]
+            Roboticist: [ 1, 1 ]
             #security
             HeadOfSecurity: [ 1, 1 ]
             Warden: [ 1, 1 ]
+            WardenHelper: [ 1, 1 ]
             Detective: [ 1, 1 ]
             SecurityOfficer: [ 3, 3 ]
             SecurityCadet: [ 2, 2 ]
             Brigmedic: [ 1, 1 ]
+            # court
+            Lawyer: [ 1, 1 ]
+            Magistrate: [ 1, 1 ]
             #supply
             Quartermaster: [ 1, 1 ]
-            SalvageSpecialist: [ 1, 1 ]
+            SalvageSpecialist: [ 2, 2 ]
+            ShaftMiner: [ 2, 2 ]
             CargoTechnician: [ 2, 2 ]
-            ShaftMiner : [ 2, 2 ]
             #civillian
             Passenger: [ 3, 3 ]
             Clown: [ 1, 1 ]
             Mime: [ 1, 1 ]
             Musician: [ 1, 1 ]
-
-        # Goobstation blob-config-start SMALL+
-        - type: StationBlobConfig
-          stageBegin: 25
-          stageCritical: 350
-          stageTheEnd: 700
-        # Goobstation blob-config-end
+            Reporter: [ 1, 1 ]
+            #silicon
+            StationAi: [ 1, 1 ]
+            Borg: [ 1, 1 ]

@@ -1,0 +1,63 @@
+# Jumpsuit
+- type: loadout
+  id: GeneticsJumpsuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitGenetics
+  groupBy: "jumpsuit"
+
+- type: loadout
+  id: GeneticsJumpskirt
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtGenetics
+  groupBy: "jumpsuit"
+
+# Back
+- type: loadout
+  id: GeneticsBackpack
+  equipment:
+    back: ClothingBackpackGenetics
+
+- type: loadout
+  id: GeneticsSatchel
+  equipment:
+    back: ClothingBackpackSatchelGenetics
+
+- type: loadout
+  id: GeneticsDuffel
+  equipment:
+    back: ClothingBackpackDuffelGenetics
+
+# Outer clothing
+- type: loadout
+  id: GeneticsOuterClothingLab
+  equipment:
+    outerClothing: ClothingOuterCoatLabGene
+
+- type: loadout
+  id: GeneticsOuterClothingWinter
+  equipment:
+    outerClothing: ClothingOuterWinterGen
+
+- type: loadoutGroup
+  id: GeneticsJumpsuit
+  name: loadout-group-genetics-jumpsuit
+  loadouts:
+  - GeneticsJumpsuit
+  - GeneticsJumpskirt
+
+- type: loadoutGroup
+  id: GeneticsBackpack
+  name: loadout-group-genetics-backpack
+  loadouts:
+  - GeneticsBackpack
+  - GeneticsSatchel
+  - GeneticsDuffel
+
+- type: loadoutGroup
+  id: GeneticsOuterClothing
+  name: loadout-group-genetics-outerclothing
+  minLimit: 0
+  defaultSelected: 1
+  loadouts:
+  - GeneticsOuterClothingLab
+  - GeneticsOuterClothingWinter

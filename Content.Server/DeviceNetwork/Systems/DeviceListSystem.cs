@@ -174,7 +174,10 @@ public sealed class DeviceListSystem : SharedDeviceListSystem
         PruneDeletedEntries(list.Comp);
         Dirty(list);
 
-        VerifyDeviceList(list.Owner, list.Comp); // Goobstation - Fix desync of configurator lists
+        // Skip during entity teardown: maps often have one-way DeviceList links, and Assert would
+        // fail AllComponents / GameMapsLoadableTest flush even though the device is already gone.
+        if (!TerminatingOrDeleted(device) && !TerminatingOrDeleted(list.Owner))
+            VerifyDeviceList(list.Owner, list.Comp); // Goobstation - Fix desync of configurator lists
     }
 
     private void OnMapSave(BeforeSerializationEvent ev)
