@@ -30,7 +30,11 @@ public sealed partial class HeatResistanceGenSystem : EntitySystem
 
     private void OnShutdown(Entity<HeatResistanceGenComponent> ent, ref ComponentShutdown args)
     {
-        if (ent.Comp.RemFlammable) AddComp<FlammableComponent>(ent);
+        if (TerminatingOrDeleted(ent))
+            return;
+
+        if (ent.Comp.RemFlammable)
+            AddComp<FlammableComponent>(ent);
 
         if (TryComp<TemperatureDamageComponent>(ent, out var temperature))
         {

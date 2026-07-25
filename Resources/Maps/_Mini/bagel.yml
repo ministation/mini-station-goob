@@ -11357,16 +11357,6 @@ entities:
     - type: Action
       originalIconColor: '#FFFFFFFF'
       container: 26931
-- proto: ActionToggleBlock
-  entities:
-  - uid: 27
-    components:
-    - type: Transform
-      parent: 26
-  - uid: 29
-    components:
-    - type: Transform
-      parent: 28
 - proto: ActionToggleInternals
   entities:
   - uid: 31
@@ -139760,27 +139750,11 @@ entities:
     - type: Transform
       parent: 2
       pos: -23.275162,1.7264378
-    - type: Blocking
-      blockingToggleActionEntity: 27
-    - type: ActionsContainer
-    - type: ContainerContainer
-      containers:
-        actions: !type:Container
-          ents:
-          - 27
   - uid: 28
     components:
     - type: Transform
       parent: 2
       pos: -23.275162,1.5834877
-    - type: Blocking
-      blockingToggleActionEntity: 29
-    - type: ActionsContainer
-    - type: ContainerContainer
-      containers:
-        actions: !type:Container
-          ents:
-          - 29
 - proto: RiotShield
   entities:
   - uid: 25255

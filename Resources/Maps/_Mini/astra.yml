@@ -41416,6 +41416,7 @@ entities:
         collection: storageRustle
     missingComponents:
     - StorageFill
+    - EntityTableContainerFill
   - uid: 2339
     components:
     - type: MetaData
@@ -41648,6 +41649,7 @@ entities:
         collection: storageRustle
     missingComponents:
     - StorageFill
+    - EntityTableContainerFill
   - uid: 2392
     components:
     - type: Transform
