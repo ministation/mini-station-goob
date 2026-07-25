@@ -26,6 +26,7 @@ public sealed partial class ActionBarLayoutComponent : Component
     public List<List<ActionBarSlotData>> Pages = new();
 
     [ViewVariables]
+    public int NonNullCount
     {
         get
         {
