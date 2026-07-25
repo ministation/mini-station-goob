@@ -22,3 +22,16 @@
   color: "#9b2d30"
   roles:
   - TypanBorg
+
+# Visible CentComm department for character job priorities (ОСЩ, ПНТ, ПЦК, помощник).
+- type: department
+  id: CentComm
+  name: department-CentComm
+  description: department-CentComm-description
+  color: "#0c344d"
+  weight: 110
+  roles:
+  - BlueshieldOfficer
+  - NanotrasenRepresentative
+  - CentralCommandOfficial
+  - CentralCommandAssistant

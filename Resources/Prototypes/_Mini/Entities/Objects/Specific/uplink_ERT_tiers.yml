@@ -1,0 +1,150 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Tier ERT uplinks (Blue / Red / Gamma). CBURN/Chaplains keep ADTBaseUplinkBOBERT.
+
+- type: storeCategory
+  id: UplinkERTCallWeapon
+  name: store-category-weapon-ert
+  priority: 1
+
+- type: storeCategory
+  id: UplinkERTCallBomb
+  name: store-category-bomb-ert
+  priority: 2
+
+- type: storeCategory
+  id: UplinkERTCallAmmo
+  name: store-category-ammo-ert
+  priority: 3
+
+- type: storeCategory
+  id: UplinkERTCallMed
+  name: store-category-med-ert
+  priority: 4
+
+- type: storeCategory
+  id: UplinkERTCallMisc
+  name: store-category-misc-ert
+  priority: 5
+
+- type: entity
+  id: StorePresetUplinkERTCall
+  abstract: true
+  components:
+  - type: Store
+    name: store-preset-name-uplink
+    categories:
+    - UplinkERTCallWeapon
+    - UplinkERTCallMisc
+    - UplinkERTCallAmmo
+    - UplinkERTCallBomb
+    - UplinkERTCallMed
+    currencyWhitelist:
+    - Productunit
+
+- type: entity
+  parent: [BaseItem, StorePresetUplinkERTCall]
+  id: BaseUplinkERTBlue
+  name: блюспейс магазин ОБР
+  description: Блюспейс магазин синего отряда быстрого реагирования.
+  suffix: 10 ET
+  components:
+  - type: Sprite
+    sprite: ADT/Objects/Specific/bobert.rsi
+    layers:
+    - state: icon
+  - type: Item
+    sprite: ADT/Objects/Specific/bobert.rsi
+    heldPrefix: icon
+  - type: Tag
+    tags:
+    - ERTUplinkBlue
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StoreUiKey.Key
+  - type: Store
+    balance:
+      Productunit: 10
+
+- type: entity
+  parent: BaseUplinkERTBlue
+  id: BaseUplinkERTBlueLeader
+  suffix: 20 ET
+  components:
+  - type: Store
+    balance:
+      Productunit: 20
+
+- type: entity
+  parent: [BaseItem, StorePresetUplinkERTCall]
+  id: BaseUplinkERTRed
+  name: блюспейс магазин ОБР
+  description: Блюспейс магазин красного отряда быстрого реагирования.
+  suffix: 20 ET
+  components:
+  - type: Sprite
+    sprite: ADT/Objects/Specific/bobert.rsi
+    layers:
+    - state: icon
+  - type: Item
+    sprite: ADT/Objects/Specific/bobert.rsi
+    heldPrefix: icon
+  - type: Tag
+    tags:
+    - ERTUplinkRed
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StoreUiKey.Key
+  - type: Store
+    balance:
+      Productunit: 20
+
+- type: entity
+  parent: BaseUplinkERTRed
+  id: BaseUplinkERTRedLeader
+  suffix: 30 ET
+  components:
+  - type: Store
+    balance:
+      Productunit: 30
+
+- type: entity
+  parent: [BaseItem, StorePresetUplinkERTCall]
+  id: BaseUplinkERTGamma
+  name: блюспейс магазин ОБР
+  description: Блюспейс магазин гамма-отряда быстрого реагирования.
+  suffix: 30 ET
+  components:
+  - type: Sprite
+    sprite: ADT/Objects/Specific/bobert.rsi
+    layers:
+    - state: icon
+  - type: Item
+    sprite: ADT/Objects/Specific/bobert.rsi
+    heldPrefix: icon
+  - type: Tag
+    tags:
+    - ERTUplinkGamma
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StoreUiKey.Key
+  - type: Store
+    balance:
+      Productunit: 30
+
+- type: entity
+  parent: BaseUplinkERTGamma
+  id: BaseUplinkERTGammaLeader
+  suffix: 40 ET
+  components:
+  - type: Store
+    balance:
+      Productunit: 40

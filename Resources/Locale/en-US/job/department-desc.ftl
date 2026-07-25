@@ -14,6 +14,7 @@ department-Cargo-description = Complete bounties, earn Spessos, and order useful
 department-Civilian-description = Perform small helpful tasks to keep the station sane and well catered.
 department-Command-description = Manage the crew and keep them working efficiently.
 department-CentralCommand-description = Manage the crew and keep them working efficiently.
+department-CentComm-description = NanoTrasen dignitaries and Central Command staff on-station and at CentComm.
 department-Engineering-description = Keep the power on and the station operational.
 department-Medical-description = Keep the crew healthy.
 department-Security-description = Keep the peace around the station.

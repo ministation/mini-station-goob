@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: job
+  id: CentralCommandAssistant
+  name: job-name-centcom-assistant
+  description: job-description-centcom-assistant
+  playTimeTracker: JobCentralCommandAssistant
+  setPreference: true
+  whitelisted: true
+  startingGear: CentcomAssistantGear
+  icon: "JobIconCentCommAssistant"
+  supervisors: job-supervisors-centcom
+  canBeAntag: false
+  skills:
+  - All
+  weight: 25 # Above typical station jobs so multi-station AssignJobs still sees CentComm slots
+  requirements:
+  - !type:AgeRequirement
+    requiredAge: 21
+  - !type:SpeciesRequirement
+    inverted: true
+    species:
+    - Felinid
+  - !type:SpeciesRequirement
+    inverted: true
+    species:
+    - Abductor
+  - !type:OverallPlaytimeRequirement
+    time: 72000 # 20 hours
+  accessGroups:
+  - AllAccess
+  access:
+  - CentralCommand
+  - NanotrasenRepresentative
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
+
+# Unique kit only — clothes come from JobCentralCommandAssistant roleLoadout groups.
+- type: startingGear
+  id: CentcomAssistantGear
+  equipment:
+    id: CentcomPDA
+    ears: ClothingHeadsetCentCom
+    belt: BoxFolderCentComClipboard
+    pocket1: PenCentcom
+    pocket2: RubberStampCentcom
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+
+- type: chameleonOutfit
+  id: CentralCommandAssistantOutfit
+  job: CentralCommandAssistant
+  hasMindShield: true
+  equipment:
+    neck: ClothingNeckScarfStripedCentcom

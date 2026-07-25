@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: SpawnPointCentralCommandOfficial
+  parent: SpawnPointJobBase
+  name: central command official
+  components:
+  - type: SpawnPoint
+    job_id: CentralCommandOfficial
+    spawn_type: Job
+  - type: Sprite
+    layers:
+    - state: green
+    - state: centcom
+
+- type: entity
+  id: SpawnPointCentralCommandAssistant
+  parent: SpawnPointJobBase
+  name: central command assistant
+  components:
+  - type: SpawnPoint
+    job_id: CentralCommandAssistant
+    spawn_type: Job
+  - type: Sprite
+    layers:
+    - state: green
+    - state: centcom
+
+- type: entity
+  id: SpawnPointLateJoinCentComm
+  parent: MarkerBase
+  name: latejoin spawn point
+  suffix: CentComm
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+  - type: SpawnPoint
+    spawn_type: LateJoin
+    # Null job_id: any CentComm handled job (ПЦК / стажер) may latejoin here.

@@ -19,6 +19,7 @@ public static class DepartmentRepresentativeJobs
         ["Civilian"] = "HeadOfPersonnel",
         ["Silicon"] = "Borg",
         ["CentralCommand"] = "CentralCommandOfficial",
+        ["CentComm"] = "CentralCommandOfficial",
         ["Typan"] = "TypanCommander",
         ["Typan2"] = "TypanBorg",
         ["Legal"] = "Lawyer",

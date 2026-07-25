@@ -2,6 +2,7 @@ department-Cargo-description = Выполняйте запросы, зараба
 department-Civilian-description = Выполняйте небольшие полезные задания для поддержания нормальной и сытой работы станции.
 department-Command-description = Управляйте экипажем и обеспечивайте его эффективную работу.
 department-CentralCommand-description = Руководите экипажем и обеспечивайте его эффективную работу.
+department-CentComm-description = Представители NanoTrasen и Центрального Командования на станции и на ЦК.
 department-Engineering-description = Поддерживайте наличие электроэнергии и целостность станции.
 department-Medical-description = Поддерживайте здоровье экипажа.
 department-Security-description = Поддерживайте порядок на станции.

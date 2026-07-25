@@ -84,14 +84,12 @@
   - epsilon
   - gamma
   spawns:
-    # - id: RandomHumanoidSpawnerERTLeaderAmber
-    #   amount: 1
-    # - id: RandomHumanoidSpawnerERTEngineerAmber
-    #   amount: 1
-    - id: RandomHumanoidSpawnerERTSecurity
+    - id: RandomHumanoidSpawnerERTLeaderBlue
       amount: 1
-    # - id: RandomHumanoidSpawnerERTMedicalAmber
-    #   amount: 1
+    - id: RandomHumanoidSpawnerERTSecurityBlue
+      amount: 2
+    - id: RandomHumanoidSpawnerERTMedicalBlue
+      amount: 1
 
 - type: ertTeam
   id: Red
@@ -121,11 +119,11 @@
   - gamma
   price: 4
   spawns:
-    - id: RandomHumanoidSpawnerERTLeaderEVA
+    - id: RandomHumanoidSpawnerERTLeaderRedTier
       amount: 1
-    - id: RandomHumanoidSpawnerERTSecurityEVA
-      amount: 3
-    - id: RandomHumanoidSpawnerERTMedicalEVA
+    - id: RandomHumanoidSpawnerERTSecurityRedTier
+      amount: 2
+    - id: RandomHumanoidSpawnerERTMedicalRedTier
       amount: 1
 
 - type: ertTeam
@@ -155,13 +153,13 @@
   codeBlackList:
   - epsilon
   spawns:
-    - id: RandomHumanoidSpawnerERTLeaderEVA
+    - id: RandomHumanoidSpawnerERTLeaderGammaTier
       amount: 1
-    - id: RandomHumanoidSpawnerERTEngineerEVA
+    - id: RandomHumanoidSpawnerERTSecurityGammaTier
       amount: 1
-    - id: RandomHumanoidSpawnerERTSecurityEVA
-      amount: 4
-    - id: RandomHumanoidSpawnerERTMedicalEVA
+    - id: RandomHumanoidSpawnerERTJuggernautGamma
+      amount: 1
+    - id: RandomHumanoidSpawnerERTMedicalGammaTier
       amount: 1
 
 - type: ertTeam
@@ -173,7 +171,7 @@
   description:
     Представитель Центрального Командования NanoTrasen, прибывающий на станцию
     для решения возникших проблем, которые не могут быть решены обычным способом.
-    Представитель Центрального Командования и 3 офицера Синий Щит прибывают
+    Представитель Центрального Командования и 2 офицера ОБР прибывают
     на шаттле, который оснащён всем необходимым оборудованием
     для выполнения их миссии.
     Время прибытия от 5 до 7 минут.

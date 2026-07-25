@@ -272,6 +272,10 @@ public sealed class DNALockerSystem : EntitySystem
             _popupSystem.PopupEntity(Loc.GetString("dna-locker-unlock"), uid, userUid);
             component.DNA = string.Empty;
             component.DNAWasStored = false;
+
+            // OnDNAStore removes the action; GetItemActions only runs on equip, so restore it here.
+            if (_inventory.TryGetContainingEntity(uid, out var wearer))
+                _actions.AddAction(wearer.Value, ref component.ActionEntity, component.Action, uid);
         }
         else
         {

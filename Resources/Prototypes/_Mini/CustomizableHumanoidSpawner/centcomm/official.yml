@@ -58,13 +58,7 @@
     - CentCommFlippo
     - BoxSurvivalSlotsEngineering
 
-- type: roleLoadout
-  id: JobCentralCommandOfficial
-  groups:
-  # - GroupTankHarness # outerClothing slot occupied by startingGear
-  - CentralCommandOfficialLoadout
-  - Survival
-  - GroupSpeciesBreathTool
+# JobCentralCommandOfficial roleLoadout lives in _Mini/Loadouts/Jobs/CentComm/official.yml
 
 - type: loadoutGroup
   id: CentralCommandOfficialLoadout
@@ -73,11 +67,12 @@
   loadouts:
   - CentralCommandOfficialLoadout
 
+# Used by midround/customizable paths if selected; not in JobCentralCommandOfficial groups above.
 - type: loadout
   id: CentralCommandOfficialLoadout
   equipment:
     neck: ClothingNeckCloakCentcom
-    back: ClothingBackpackSatchel
+    back: ClothingBackpackSatchelCentcomm
     head: ClothingHeadHatCentcomcap
     eyes: ClothingEyesGlassesHiddenSecurity
   storage:

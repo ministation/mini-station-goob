@@ -40,11 +40,23 @@
   id: NanotrasenCentralCommand
   parent:
     - BaseStation
+    - BaseStationJobsSpawning
+    - BaseStationRecords
     - BaseStationAlertLevels
     - BaseStationNanotrasen
   categories: [ HideSpawnMenu ]
   components:
     - type: Transform
+    # Roundstart/latejoin jobs live only on CentComm (grid loaded via StationCentcomm).
+    - type: StationJobs
+      availableJobs:
+        CentralCommandOfficial: [ 1, 1 ]
+        CentralCommandAssistant: [ 1, 1 ]
+    # Same dedicated-station pattern as Typan — AssignRoundstartHandledJobs + forced spawn points.
+    - type: TTStationHandleJob
+      jobs:
+      - CentralCommandOfficial
+      - CentralCommandAssistant
 
 - type: entity
   id: StandardStationArena
