@@ -20,6 +20,7 @@ using Content.Shared.Actions;
 using Content.Shared.Damage;
 using Content.Shared.Actions.Components;
 using Content.Shared.Charges.Systems;
+using Content.Shared.Ghost;
 using Content.Shared.Heretic;
 using Content.Shared.Input;
 using Content.Shared.Mobs.Components;
@@ -507,9 +508,9 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         var stored = layout.Clone();
         _savedActions[entity] = stored;
 
-        // Prefer the richest layout as the session default so short-lived forms
-        // (jaunt, ghost) do not overwrite the player's arranged hotbar.
-        if (_persistentLayout == null || stored.NonNullCount >= _persistentLayout.NonNullCount)
+        // Never let ghost/jaunt hotbars overwrite the session arrangement.
+        if (!IsTransientActionBody(entity) &&
+            (_persistentLayout == null || stored.NonNullCount >= _persistentLayout.NonNullCount))
             _persistentLayout = stored.Clone();
 
         _sawmill.Debug($"Saved actions for entity {entity} (non-null={stored.NonNullCount})");
@@ -547,13 +548,26 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (saved == null)
             return false;
 
-        var current = CaptureCurrentSlots();
-        if (!current.Any(s => s.Action != null))
+        // Ghost / ethereal jaunt: keep the rich save, do not shuffle their tiny hotbar.
+        if (IsTransientActionBody(localEntity))
+        {
+            _pendingLoadFrom = null;
+            if (entitySaved != null && entitySaved.NonNullCount < saved.NonNullCount)
+                _savedActions.Remove(entity);
+            _sawmill.Debug($"Skip action layout onto transient body {localEntity}");
+            return true;
+        }
+
+        var current = CaptureAvailableSlots();
+        var currentCount = current.Count;
+        if (currentCount == 0)
+            return false;
+
+        if (!ShouldApplyLayout(saved.NonNullCount, currentCount))
             return false;
 
         var (remapped, matched) = RemapLayout(saved.Flatten(), current, localEntity);
 
-        // Actions not ready / wrong body yet — keep save and retry later.
         if (matched == 0)
             return false;
 
@@ -561,11 +575,32 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (IsPagedMode)
             _currentPageIndex = Math.Clamp(saved.CurrentPage, 0, Math.Max(0, _pages.Count - 1));
         UpdatePageButtons();
-        _savedActions.Remove(entity);
+        if (entitySaved != null)
+            _savedActions.Remove(entity);
         _pendingLoadFrom = null;
         RefreshActionContainer();
         QueueWindowUpdate();
         _sawmill.Debug($"Loaded actions for entity {entity} (matched={matched}, persistent={ReferenceEquals(saved, _persistentLayout)})");
+        return true;
+    }
+
+    private bool IsTransientActionBody(EntityUid uid)
+    {
+        return EntityManager.HasComponent<GhostComponent>(uid)
+               || EntityManager.HasComponent<SpectralComponent>(uid);
+    }
+
+    /// <summary>
+    /// True when the current body looks like it can hold the saved arrangement (not a jaunt/ghost).
+    /// </summary>
+    private static bool ShouldApplyLayout(int savedCount, int currentCount)
+    {
+        if (savedCount <= 0)
+            return false;
+        if (currentCount < 5 && currentCount * 2 < savedCount)
+            return false;
+        if (currentCount < savedCount / 2)
+            return false;
         return true;
     }
 
@@ -598,17 +633,19 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         return layout;
     }
 
-    private List<SavedSlot> CaptureCurrentSlots()
+    /// <summary>
+    /// All actions currently granted to the local player (not UI slot order).
+    /// Used as the remapping pool after body changes.
+    /// </summary>
+    private List<SavedSlot> CaptureAvailableSlots()
     {
-        if (IsPagedMode)
-        {
-            var slots = new List<SavedSlot>();
-            foreach (var page in _pages)
-                slots.AddRange(CapturePageSlots(page));
-            return slots;
-        }
+        if (_actionsSystem == null)
+            return [];
 
-        return _actions.Select(ToSavedSlot).ToList();
+        var slots = new List<SavedSlot>();
+        foreach (var action in _actionsSystem.GetClientActions())
+            slots.Add(ToSavedSlot(action.Owner));
+        return slots;
     }
 
     private List<SavedSlot> CapturePageSlots(ActionPage page)
@@ -670,6 +707,7 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
         EntityUid? FindMatch(SavedSlot saved)
         {
+            // 1) Exact entity reuse (same body after aghost / unequip that kept action ents).
             if (saved.Action is { } savedUid)
             {
                 foreach (var current in currentSlots)
@@ -684,6 +722,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             if (saved.ProtoId == null)
                 return null;
 
+            // 2) Prototype match — only if unambiguous (or uniquely pinned by container).
+            var candidates = new List<EntityUid>();
             foreach (var current in currentSlots)
             {
                 if (current.Action is not { } cur || used.Contains(cur))
@@ -693,25 +733,40 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
                 if (curProto == null && metaQuery.TryGetComponent(cur, out var meta))
                     curProto = meta.EntityPrototype?.ID;
 
-                if (curProto != saved.ProtoId)
-                    continue;
-
-                // Prefer matching container role when both sides still exist.
-                if (saved.Action is { } savedAction &&
-                    actionQuery.TryComp(savedAction, out var savedComp) &&
-                    actionQuery.TryComp(cur, out var curComp))
-                {
-                    var a = savedComp.Container;
-                    var b = curComp.Container;
-                    if (a != b &&
-                        !(a == localEntity && b == null) &&
-                        !(a == null && b == localEntity))
-                        continue;
-                }
-
-                return cur;
+                if (curProto == saved.ProtoId)
+                    candidates.Add(cur);
             }
 
+            if (candidates.Count == 0)
+                return null;
+            if (candidates.Count == 1)
+                return candidates[0];
+
+            if (saved.Action is { } savedAction &&
+                actionQuery.TryComp(savedAction, out var savedComp))
+            {
+                EntityUid? containerPick = null;
+                var picks = 0;
+                foreach (var cur in candidates)
+                {
+                    if (!actionQuery.TryComp(cur, out var curComp))
+                        continue;
+                    var a = savedComp.Container;
+                    var b = curComp.Container;
+                    if (a == b ||
+                        a == localEntity && b == null ||
+                        a == null && b == localEntity)
+                    {
+                        containerPick = cur;
+                        picks++;
+                    }
+                }
+
+                if (picks == 1)
+                    return containerPick;
+            }
+
+            // Ambiguous duplicate prototypes — leave the slot empty rather than shuffle.
             return null;
         }
 
@@ -731,7 +786,11 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
                 newActions.Add(matchedAction);
                 matched++;
             }
-            // Missing action: drop the slot entry (do not pad with null holes).
+            else
+            {
+                // Keep the index so later slots do not shift left.
+                newActions.Add(null);
+            }
         }
 
         foreach (var current in currentSlots)
