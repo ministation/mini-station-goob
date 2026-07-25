@@ -11359,14 +11359,6 @@ entities:
       container: 26931
 - proto: ActionToggleInternals
   entities:
-  - uid: 31
-    components:
-    - type: Transform
-      parent: 30
-  - uid: 34
-    components:
-    - type: Transform
-      parent: 33
   - uid: 17832
     mapInit: true
     paused: true
@@ -11376,18 +11368,8 @@ entities:
     - type: Action
       originalIconColor: '#FFFFFFFF'
       container: 17765
-- proto: ActionToggleJetpack
-  entities:
-  - uid: 32
-    components:
-    - type: Transform
-      parent: 30
 - proto: ActionToggleLight
   entities:
-  - uid: 36
-    components:
-    - type: Transform
-      parent: 35
   - uid: 3972
     mapInit: true
     paused: true
@@ -79184,14 +79166,6 @@ entities:
     - type: Transform
       parent: 2
       pos: -44.324707,4.6161547
-    - type: GasTank
-      toggleActionEntity: 34
-    - type: ActionsContainer
-    - type: ContainerContainer
-      containers:
-        actions: !type:Container
-          ents:
-          - 34
 - proto: DresserBlueshieldOfficerFilled
   entities:
   - uid: 3963
@@ -121526,17 +121500,6 @@ entities:
     - type: Transform
       parent: 2
       pos: 0.4860487,21.156673
-    - type: GasTank
-      toggleActionEntity: 31
-    - type: Jetpack
-      toggleActionEntity: 32
-    - type: ActionsContainer
-    - type: ContainerContainer
-      containers:
-        actions: !type:Container
-          ents:
-          - 32
-          - 31
   - uid: 17364
     components:
     - type: Transform
@@ -121722,22 +121685,6 @@ entities:
     - type: Transform
       parent: 2
       pos: -43.55127,4.7099047
-    - type: HandheldLight
-      toggleActionEntity: 36
-    - type: ContainerContainer
-      containers:
-        cell_slot: !type:ContainerSlot
-          ent: null
-          showEnts: False
-          occludes: True
-        actions: !type:Container
-          ents:
-          - 36
-          showEnts: False
-          occludes: True
-    - type: Physics
-      canCollide: True
-    - type: ActionsContainer
   - uid: 17393
     components:
     - type: Transform
