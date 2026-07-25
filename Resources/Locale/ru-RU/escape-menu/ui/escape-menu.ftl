@@ -8,3 +8,4 @@ ui-escape-wiki = Wiki
 ui-escape-disconnect = Отключиться
 ui-escape-quit = Выйти
 ui-escape-character = Редактор персонажей
+ui-escape-ghosts = Призраки

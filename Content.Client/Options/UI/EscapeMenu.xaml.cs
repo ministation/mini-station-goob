@@ -24,6 +24,12 @@ namespace Content.Client.Options.UI
         {
             _consoleHost.ExecuteCommand("dailyrewardmenu");
         }
+
+        private void OpenGhostShop()
+        {
+            _consoleHost.ExecuteCommand("ghostshop");
+        }
+
         public EscapeMenu()
         {
             RobustXamlLoader.Load(this);
@@ -34,6 +40,7 @@ namespace Content.Client.Options.UI
             Site.OnPressed += _ => _uriOpener.OpenUri(new Uri("https://ministation.ru"));
             Discord.OnPressed += _ => _uriOpener.OpenUri(new Uri("https://discord.gg/mini-station"));
             DailyRewardsButton.OnPressed += _ => OpenDailyRewards();
+            GhostsButton.OnPressed += _ => OpenGhostShop();
         }
     }
 }

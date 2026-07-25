@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 using Content.Server.Database;
 using Content.Shared.Ghost;
@@ -16,7 +15,6 @@ public sealed class CustomGhostSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
-    [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
 
     public override void Initialize()
@@ -96,18 +94,13 @@ public sealed class CustomGhostSystem : EntitySystem
             return;
 
         _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.Sprite, proto.CustomSpritePath.ToString());
+        _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.SizeOverride, proto.SizeOverride);
+        _appearanceSystem.SetData(ghostUid,
+            CustomGhostAppearance.AlphaOverride,
+            proto.AlphaOverride > 0 ? proto.AlphaOverride : 1f);
 
-        if (proto.SizeOverride != Vector2.One)
-            _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.SizeOverride, proto.SizeOverride);
-
-        if (proto.AlphaOverride > 0)
-            _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.AlphaOverride, proto.AlphaOverride);
-
-        if (proto.GhostName != string.Empty)
-            _metaData.SetEntityName(ghostUid, proto.GhostName);
-
-        if (proto.GhostDescription != string.Empty)
-            _metaData.SetEntityDescription(ghostUid, proto.GhostDescription);
+        // Do not overwrite MetaData name/description — GhostSystem already set the
+        // player's character/ckey name. Theme display names belong in the shop UI only.
 
         EntityManager.AddComponents(ghostUid, proto.Components);
         _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.YAMLKOSTIL, themeId);
@@ -221,8 +214,8 @@ public sealed class CustomGhostSystem : EntitySystem
 
         SendShopState(args.SenderSession, balanceToken?.Amount ?? 0, ownedThemes, selectedTheme);
 
-        if (themeId != null && args.SenderSession.AttachedEntity is { Valid: true } ent && HasComp<GhostComponent>(ent))
-            ApplyTheme(ent, themeId);
+        if (args.SenderSession.AttachedEntity is { Valid: true } ent && HasComp<GhostComponent>(ent))
+            ApplyTheme(ent, themeId ?? "GhostThemeDefault");
     }
 
     private async void SendShopState(ICommonSession session)
