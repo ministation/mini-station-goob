@@ -5,6 +5,7 @@ using Content.Client.Clothing;
 using Content.Client.Inventory;
 using Content.Shared._Mini.FootWalk;
 using Content.Shared._Mini.MiniCCVars;
+using Content.Shared.Gravity;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Inventory.Events;
@@ -48,6 +49,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private StandingStateSystem _standing = default!;
+    [Dependency] private SharedGravitySystem _gravity = default!;
     [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private MarkingManager _markings = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
@@ -946,6 +948,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             return false;
 
         if (_mobQuery.TryGetComponent(uid, out var mob) && !_mobState.IsAlive(uid, mob))
+            return false;
+
+        // No ground contact in zero-G — nothing to push off.
+        if (_gravity.IsWeightless(uid))
             return false;
 
         return !_standing.IsDown(uid);
