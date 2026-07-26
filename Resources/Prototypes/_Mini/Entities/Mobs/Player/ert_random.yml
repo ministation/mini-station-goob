@@ -21,8 +21,8 @@
   parent: EventHumanoidERT
   components:
     - type: GhostRole
-      name: ghost-role-information-ert-leader-name
-      description: ghost-role-information-ert-leader-description
+      name: ghost-role-information-op-commander-name
+      description: ghost-role-information-op-commander-description
       rules: ghost-role-information-nonantagonist-rules
       skills: # CorvaxGoob-Skills
       - All
@@ -159,8 +159,8 @@
   parent: EventHumanoidERT
   components:
     - type: GhostRole
-      name: ghost-role-information-ert-security-name
-      description: ghost-role-information-ert-security-description
+      name: ghost-role-information-op-officer-name
+      description: ghost-role-information-op-officer-description
       rules: ghost-role-information-nonantagonist-rules
       skills: # CorvaxGoob-Skills
       - All
@@ -258,8 +258,8 @@
   parent: EventHumanoidERT
   components:
     - type: GhostRole
-      name: ghost-role-information-ert-medical-name
-      description: ghost-role-information-ert-medical-description
+      name: ghost-role-information-op-medic-name
+      description: ghost-role-information-op-medic-description
       rules: ghost-role-information-nonantagonist-rules
       skills: # CorvaxGoob-Skills
       - All
@@ -570,7 +570,7 @@
 
 - type: entity
   id: RandomHumanoidSpawnerERTLeaderBlue
-  name: ERT leader
+  name: OP commander
   suffix: ERTRole, Blue
   components:
   - type: Sprite
@@ -581,7 +581,7 @@
 
 - type: entity
   id: RandomHumanoidSpawnerERTSecurityBlue
-  name: ERT security
+  name: OP officer
   suffix: ERTRole, Blue
   components:
   - type: Sprite
@@ -592,7 +592,7 @@
 
 - type: entity
   id: RandomHumanoidSpawnerERTMedicalBlue
-  name: ERT medic
+  name: OP medic
   suffix: ERTRole, Blue
   components:
   - type: Sprite

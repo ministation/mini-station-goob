@@ -1,12 +1,19 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# ERT shoulder holster — accepts large guns (same capacity idea as syndie holster).
+# ERT shoulder holster — same capacity as syndie holster (large guns), NT sprites.
 
 - type: entity
-  parent: [ClothingBeltHolster, BaseCentcommContraband]
+  parent: [ClothingBeltStorageBase, BaseCentcommContraband]
   id: ClothingBeltHolsterERT
   name: плечевая кобура ОБР
   description: Углублённая плечевая кобура отряда ОБР. Вмещает крупное огнестрельное оружие и боеприпасы.
   components:
+  - type: Sprite
+    sprite: Clothing/Belt/holster.rsi
+  - type: Clothing
+    sprite: Clothing/Belt/holster.rsi
+    slots:
+    - belt
+    - neck
   - type: Storage
     maxItemSize: Huge
     grid:
@@ -18,6 +25,11 @@
       - CartridgeAmmo
       tags:
       - EnergySpeedloader
+  - type: ContainerContainer
+    containers:
+      item: !type:ContainerSlot
+      storagebase: !type:Container
+        ents: []
   - type: ItemSlots
     slots:
       item:
@@ -25,3 +37,5 @@
         whitelist:
           components:
           - Gun
+  - type: StaticPrice
+    price: 500

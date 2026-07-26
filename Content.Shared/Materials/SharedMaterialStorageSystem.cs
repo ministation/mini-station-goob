@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Goobstation.Common.Silo;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Components;
 using Content.Shared.Stacks;
@@ -416,9 +417,15 @@ public abstract class SharedMaterialStorageSystem : EntitySystem
         if (!CanTakeVolume(receiver, totalVolume, storage, localOnly: true))
             return false;
 
+        // Mapped lathes/techfabs often have SiloUtilizer (Goob material silo). Depositing into the
+        // shared silo makes sheets vanish from the machine UI whenever the silo isn't in PVS.
+        // Keep interact/automation inserts local; crafting and ore-processor output still use the silo.
+        var depositLocalOnly = TryComp(receiver, out SiloUtilizerComponent? utilizer) && utilizer.Silo != null;
+
         foreach (var (mat, vol) in composition.MaterialComposition)
         {
-            TryChangeMaterialAmount(receiver, mat, vol * multiplier, storage);
+            if (!TryChangeMaterialAmount(receiver, mat, vol * multiplier, storage, localOnly: depositLocalOnly))
+                return false;
         }
 
         var insertingComp = EnsureComp<InsertingMaterialStorageComponent>(receiver);

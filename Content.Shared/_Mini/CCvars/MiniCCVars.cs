@@ -549,6 +549,12 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> TracesEnabled =
         CVarDef.Create("opt.traces_enabled", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Client toggle for lower-body foot walk bob (shoes / hardsuit boots).
+    /// </summary>
+    public static readonly CVarDef<bool> FootWalkAnimationEnabled =
+        CVarDef.Create("accessibility.foot_walk_animation", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
     public static readonly CVarDef<bool> HoldLookUp =
         CVarDef.Create("scope.hold_look_up", true, CVar.CLIENT | CVar.ARCHIVE);
 

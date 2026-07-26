@@ -469,21 +469,39 @@
     whitelist:
       tags:
       - ERTUplinkRed
+      - ERTUplinkGamma
 
 - type: listing
-  id: ERTCallGammaHolster
-  name: Плечевая кобура ОБР
-  description: Углублённая плечевая кобура. Вмещает крупное оружие.
-  icon: { sprite: Clothing/Belt/holster.rsi, state: icon }
-  productEntity: ClothingBeltHolsterERT
+  id: ERTCallBlueNanoPaste
+  name: uplink-nanopaste-name
+  description: uplink-nanopaste-desc
+  icon: { sprite: /Textures/_Mini/Objects/Specific/Robotics/nanopaste.rsi, state: icon }
+  productEntity: NanoPaste
   cost:
-    Productunit: 1
+    Productunit: 2
   categories:
-  - UplinkERTCallMisc
+  - UplinkERTCallMed
   conditions:
   - !type:StoreWhitelistCondition
     whitelist:
       tags:
+      - ERTUplinkBlue
+
+- type: listing
+  id: ERTCallRedNanoPaste
+  name: uplink-nanopaste-name
+  description: uplink-nanopaste-desc
+  icon: { sprite: /Textures/_Mini/Objects/Specific/Robotics/nanopaste.rsi, state: icon }
+  productEntity: NanoPaste
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTCallMed
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
       - ERTUplinkGamma
 
 - type: listing

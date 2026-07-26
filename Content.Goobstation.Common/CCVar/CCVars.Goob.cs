@@ -652,6 +652,12 @@ public sealed partial class GoobCVars
         CVarDef.Create("hub.use_dynamic_hostname", false, CVar.SERVERONLY);
 
     /// <summary>
+    /// Whether bloody footprints / body drag marks are created at all.
+    /// </summary>
+    public static readonly CVarDef<bool> FootprintsEnabled =
+        CVarDef.Create("footprints.enabled", false, CVar.SERVERONLY);
+
+    /// <summary>
     /// Determines minimum amount of solution you have to step into for footprints to be created.
     /// </summary>
     public static readonly CVarDef<float> MinimumPuddleSizeForFootprints =

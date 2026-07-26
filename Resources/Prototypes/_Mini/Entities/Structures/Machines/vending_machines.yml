@@ -1017,6 +1017,8 @@
     - map: ["computerLayerScreen"]
       state: unshaded
   - type: DiskConsole
+    autoFeedAdjacentConverter: true
+    adjacentConverterRange: 3
   - type: ResearchClient
   - type: AccessReader
     access: [["TypanScience"]]

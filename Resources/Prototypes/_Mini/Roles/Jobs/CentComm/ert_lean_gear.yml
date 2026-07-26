@@ -241,6 +241,7 @@
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltCentCom
     belt: ClothingBeltMilitaryWebbingERTLean
+    neck: ClothingBeltHolsterERT
     pocket1: DoubleEmergencyOxygenTankFilled
   storage:
     back:
@@ -248,3 +249,4 @@
     - PinpointerNuclear
     - CrowbarRed
     - EmergencyMedipen
+

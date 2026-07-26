@@ -1,12 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# Blue ERT "field" hardsuits — olive-graphite RSI recolors of stock ERT suits.
-# Helmets keep stock visuals (glass unchanged). Armor weaker than stock ERT.
+# OP (Blue) field hardsuits — olive-graphite RSI recolors of stock ERT suits.
+# Helmets keep stock visuals (glass unchanged). Slightly below stock ERT armor;
+# commander suit is a step above officer/medic.
 
 - type: entity
   parent: ClothingOuterHardsuitERTLeader
   id: ClothingOuterHardsuitERTLeaderBlue
-  name: скафандр командира ОБР (полевой)
-  description: Облегчённый полевой скафандр командира синего отряда ОБР. Защита слабее стандартного комплекта.
+  name: OP commander hardsuit
+  description: Field hardsuit for the support squad commander. Stronger protection than the rest of the OP kit.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -19,25 +20,25 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.7
-        Slash: 0.7
-        Piercing: 0.65
-        Heat: 0.7
-        Radiation: 0.75
-        Caustic: 0.75
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.55
+        Heat: 0.6
+        Radiation: 0.65
+        Caustic: 0.65
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.9
   - type: ExplosionResistance
-    damageCoefficient: 0.7
+    damageCoefficient: 0.6
   - type: StaminaResistance
-    damageCoefficient: 0.7
+    damageCoefficient: 0.6
 
 - type: entity
   parent: ClothingOuterHardsuitERTSecurity
   id: ClothingOuterHardsuitERTSecurityBlue
-  name: скафандр офицера ОБР (полевой)
-  description: Облегчённый полевой скафандр безопасности синего отряда ОБР.
+  name: OP officer hardsuit
+  description: Field hardsuit for a support squad officer.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -50,25 +51,25 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.7
-        Slash: 0.7
-        Piercing: 0.65
-        Heat: 0.7
-        Radiation: 0.75
-        Caustic: 0.75
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.6
+        Heat: 0.65
+        Radiation: 0.7
+        Caustic: 0.7
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.9
   - type: ExplosionResistance
-    damageCoefficient: 0.7
+    damageCoefficient: 0.65
   - type: StaminaResistance
-    damageCoefficient: 0.7
+    damageCoefficient: 0.65
 
 - type: entity
   parent: ClothingOuterHardsuitERTMedical
   id: ClothingOuterHardsuitERTMedicalBlue
-  name: скафандр медика ОБР (полевой)
-  description: Облегчённый полевой медицинский скафандр синего отряда ОБР.
+  name: OP medic hardsuit
+  description: Field medical hardsuit for the support squad.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -81,25 +82,25 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.75
-        Slash: 0.75
-        Piercing: 0.7
-        Heat: 0.65
-        Radiation: 0.7
-        Caustic: 0.65
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.65
+        Heat: 0.6
+        Radiation: 0.65
+        Caustic: 0.6
   - type: ClothingSpeedModifier
     walkModifier: 0.95
     sprintModifier: 0.95
   - type: ExplosionResistance
-    damageCoefficient: 0.75
+    damageCoefficient: 0.7
   - type: StaminaResistance
-    damageCoefficient: 0.75
+    damageCoefficient: 0.7
 
 - type: entity
   parent: ClothingHeadHelmetHardsuitERTLeader
   id: ClothingHeadHelmetHardsuitERTLeaderBlue
-  name: шлем командира ОБР (полевой)
-  description: Шлем командира синего отряда ОБР. Стекло без изменений.
+  name: OP commander helmet
+  description: Helmet of the support squad commander.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -112,8 +113,8 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitERTSecurity
   id: ClothingHeadHelmetHardsuitERTSecurityBlue
-  name: шлем офицера ОБР (полевой)
-  description: Шлем безопасности синего отряда ОБР. Стекло без изменений.
+  name: OP officer helmet
+  description: Helmet of a support squad officer.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -126,8 +127,8 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitERTMedical
   id: ClothingHeadHelmetHardsuitERTMedicalBlue
-  name: шлем медика ОБР (полевой)
-  description: Шлем медика синего отряда ОБР. Стекло без изменений.
+  name: OP medic helmet
+  description: Helmet of a support squad medic.
   suffix: Blue Field
   components:
   - type: Sprite

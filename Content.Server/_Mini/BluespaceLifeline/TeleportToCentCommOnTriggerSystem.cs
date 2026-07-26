@@ -12,11 +12,14 @@ using Content.Shared.Trigger;
 using Content.Shared.Warps;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Mini.BluespaceLifeline;
 
 public sealed class TeleportToCentCommOnTriggerSystem : EntitySystem
 {
+    private static readonly EntProtoId EffectProto = "BluespaceLifeline";
+
     private static readonly HashSet<string> KeepSlots = new(StringComparer.Ordinal)
     {
         "jumpsuit",
@@ -49,6 +52,9 @@ public sealed class TeleportToCentCommOnTriggerSystem : EntitySystem
             Log.Warning($"Bluespace lifeline: no CentComm warp for {ToPrettyString(host)}");
             return;
         }
+
+        // Leave the corridor VFX at the departure point (old SpawnOnTrigger behaviour).
+        Spawn(EffectProto, _transform.GetMapCoordinates(host));
 
         StripExceptEssentials(host);
         _transform.SetCoordinates(host, coords);
