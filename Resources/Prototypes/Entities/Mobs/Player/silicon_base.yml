@@ -40,8 +40,8 @@
     - type: Examiner
     # - type: Recyclable
     #   safe: false
-    # - type: EyeProtection # You'll want this if your robot can't wear glasses, like an IPC.
-    #   protectionTime: 12
+    - type: EyeProtection # Goobstation - silicons are immune to welder flash/eye damage
+      protectionTime: 100
     - type: Fixtures
       fixtures:
         fix1:
