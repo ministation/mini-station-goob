@@ -53,6 +53,8 @@
   - type: Physics
     bodyType: KinematicController
   - type: Construct
+  - type: WeakToHoly # Mini: declare in YAML — CultWeakToHolySystem must not add it at spawn (PrototypeSaveTest)
+    alwaysTakeHoly: true
   - type: Fixtures
     fixtures:
       fix1:
