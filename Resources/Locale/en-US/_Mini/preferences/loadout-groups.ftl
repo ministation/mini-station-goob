@@ -1,6 +1,22 @@
+# CentComm roundstart
+loadout-group-centcomm-official-jumpsuit = CentComm Official jumpsuit
+loadout-group-centcomm-official-head = CentComm Official head
+loadout-group-centcomm-official-shoes = CentComm Official shoes
+loadout-group-centcomm-official-gloves = CentComm Official gloves
+loadout-group-centcomm-official-backpack = CentComm Official backpack
+loadout-group-centcomm-assistant-jumpsuit = CentComm Intern jumpsuit
+loadout-group-centcomm-assistant-head = CentComm Intern head
+loadout-group-centcomm-assistant-outerclothing = CentComm Intern outer clothing
+loadout-group-centcomm-assistant-shoes = CentComm Intern shoes
+loadout-group-centcomm-assistant-gloves = CentComm Intern gloves
+loadout-group-centcomm-assistant-backpack = CentComm Intern backpack
+loadout-group-centcomm-assistant-neck = CentComm Intern neck
+loadout-group-centcomm-assistant-eyes = CentComm Intern eyes
+
 # Typan
 # Atmospherics Engineer
 loadout-group-typan-atmospherics-engineer-uniform = Atmos. Tech Uniform
+
 loadout-group-typan-atmospherics-engineer-shoes = Atmos. Tech Shoes
 loadout-group-typan-atmospherics-engineer-outerclothing = Atmos. Tech Outer Clothing
 # Botanist

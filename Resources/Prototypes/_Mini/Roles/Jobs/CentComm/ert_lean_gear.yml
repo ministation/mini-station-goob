@@ -1,0 +1,250 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Lean ERT loadouts: no weapons on spawn; uplink + pinpointer; leader holoprojector; gamma thermal (x-ray stand-in).
+
+- type: entity
+  parent: ClothingBeltMilitaryWebbing
+  id: ClothingBeltMilitaryWebbingERTLean
+  suffix: ERT Lean
+  components:
+  - type: StorageFill
+    contents:
+    - id: CrowbarRed
+    - id: Flash
+    - id: PowerCellHigh
+    - id: EmergencyMedipen
+
+- type: entity
+  parent: ClothingBeltMedical
+  id: ClothingBeltMedicalERTLean
+  suffix: ERT Lean
+  components:
+  - type: StorageFill
+    contents:
+    - id: Brutepack
+    - id: Ointment
+    - id: Gauze
+    - id: EmergencyMedipen
+    - id: EmergencyMedipen
+
+# --- Blue (Amber jobs) ---
+
+- type: startingGear
+  id: ERTLeaderGearBlue
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTLeader
+    back: ClothingBackpackERTLeader
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesHudMedSec
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitERTLeaderBlue
+    id: ERTLeaderPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMilitaryWebbingERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTBlueLeader
+    - HoloprojectorField
+    - PinpointerNuclear
+    - CrowbarRed
+    - EmergencyMedipen
+
+- type: startingGear
+  id: ERTSecurityGearBlue
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTSecurity
+    back: ClothingBackpackERTSecurity
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesHudMedSec
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitERTSecurityBlue
+    id: ERTSecurityPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMilitaryWebbingERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTBlue
+    - PinpointerNuclear
+    - CrowbarRed
+    - EmergencyMedipen
+
+- type: startingGear
+  id: ERTMedicalGearBlue
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTMedic
+    back: ClothingBackpackERTMedical
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesHudMedSec
+    gloves: ClothingHandsGlovesNitrile
+    outerClothing: ClothingOuterHardsuitERTMedicalBlue
+    id: ERTMedicPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMedicalERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTBlue
+    - PinpointerNuclear
+    - CrowbarRed
+    - DefibrillatorCompact
+    - HandheldHealthAnalyzer
+    - EmergencyMedipen
+
+- type: startingGear
+  id: ERTLeaderGearRedLean
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTLeader
+    back: ClothingBackpackERTLeader
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesHudMedSec
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitERTLeader
+    id: ERTLeaderPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMilitaryWebbingERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTRedLeader
+    - HoloprojectorField
+    - PinpointerNuclear
+    - CrowbarRed
+    - EmergencyMedipen
+
+- type: startingGear
+  id: ERTSecurityGearRedLean
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTSecurity
+    back: ClothingBackpackERTSecurity
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesHudMedSec
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitERTSecurity
+    id: ERTSecurityPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMilitaryWebbingERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTRed
+    - PinpointerNuclear
+    - CrowbarRed
+    - EmergencyMedipen
+
+- type: startingGear
+  id: ERTMedicalGearRedLean
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTMedic
+    back: ClothingBackpackERTMedical
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesHudMedSec
+    gloves: ClothingHandsGlovesNitrile
+    outerClothing: ClothingOuterHardsuitERTMedical
+    id: ERTMedicPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMedicalERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTRed
+    - PinpointerNuclear
+    - CrowbarRed
+    - DefibrillatorCompact
+    - HandheldHealthAnalyzer
+    - EmergencyMedipen
+
+# --- Gamma ---
+
+- type: startingGear
+  id: ERTLeaderGearGammaLean
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTLeader
+    back: ClothingBackpackERTLeader
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesThermalVisionGoggles
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitERTLeader
+    id: ERTLeaderPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMilitaryWebbingERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTGammaLeader
+    - HoloprojectorField
+    - PinpointerNuclear
+    - CrowbarRed
+    - EmergencyMedipen
+
+- type: startingGear
+  id: ERTSecurityGearGammaLean
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTSecurity
+    back: ClothingBackpackERTSecurity
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesThermalVisionGoggles
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitERTSecurity
+    id: ERTSecurityPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMilitaryWebbingERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTGamma
+    - PinpointerNuclear
+    - CrowbarRed
+    - EmergencyMedipen
+
+- type: startingGear
+  id: ERTMedicalGearGammaLean
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTMedic
+    back: ClothingBackpackERTMedical
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesThermalVisionGoggles
+    gloves: ClothingHandsGlovesNitrile
+    outerClothing: ClothingOuterHardsuitERTMedical
+    id: ERTMedicPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMedicalERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTGamma
+    - PinpointerNuclear
+    - CrowbarRed
+    - DefibrillatorCompact
+    - HandheldHealthAnalyzer
+    - EmergencyMedipen
+
+- type: startingGear
+  id: ERTJuggernautGearGamma
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTSecurity
+    back: ClothingBackpackERTSecurity
+    shoes: ClothingShoesBootsMagEmergencyResponseTeam
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesThermalVisionGoggles
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitERTJuggernaut
+    id: ERTSecurityPDA
+    ears: ClothingHeadsetAltCentCom
+    belt: ClothingBeltMilitaryWebbingERTLean
+    pocket1: DoubleEmergencyOxygenTankFilled
+  storage:
+    back:
+    - BaseUplinkERTGamma
+    - PinpointerNuclear
+    - CrowbarRed
+    - EmergencyMedipen

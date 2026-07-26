@@ -30,7 +30,8 @@
         settings: short
       job: ERTLeaderAmber
     - type: Loadout
-      prototypes: [ ERTLeaderGear ]
+      prototypes: [ ERTLeaderGearBlue ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
     - type: RandomMetadata
       nameSegments:
       - NamesMilitaryLast
@@ -62,7 +63,8 @@
         settings: short
       job: ERTLeaderRed
     - type: Loadout
-      prototypes: [ ERTLeaderGearEVA ]
+      prototypes: [ ERTLeaderGearRedLean ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
     - type: RandomMetadata
       nameSegments:
       - NamesMilitaryLast
@@ -94,7 +96,8 @@
         settings: short
       job: ERTLeaderGamma
     - type: Loadout
-      prototypes: [ ERTLeaderGearEVA ]
+      prototypes: [ ERTLeaderGearGammaLean ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
     - type: RandomMetadata
       nameSegments:
       - NamesMilitaryLast
@@ -169,7 +172,8 @@
       - NamesMilitaryLast
       nameFormat: name-format-ert-officer
     - type: Loadout
-      prototypes: [ ERTSecurityGear ]
+      prototypes: [ ERTSecurityGearBlue ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
 
 # ### Red
 # - type: entity
@@ -198,7 +202,8 @@
       - NamesMilitaryLast
       nameFormat: name-format-ert-officer
     - type: Loadout
-      prototypes: [ ERTSecurityGearEVA ]
+      prototypes: [ ERTSecurityGearRedLean ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
 
 # ### Gamma
 # - type: entity
@@ -227,7 +232,8 @@
       - NamesMilitaryLast
       nameFormat: name-format-ert-officer
     - type: Loadout
-      prototypes: [ ERTSecurityGearEVA ]
+      prototypes: [ ERTSecurityGearGammaLean ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
 
 # ## Medical
 # ### Amber
@@ -265,7 +271,8 @@
       - NamesMilitaryLast
       nameFormat: name-format-ert-corpsman
     - type: Loadout
-      prototypes: [ ERTMedicalGear ]
+      prototypes: [ ERTMedicalGearBlue ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
 
 # ### Red
 # - type: entity
@@ -294,7 +301,8 @@
       - NamesMilitaryLast
       nameFormat: name-format-ert-corpsman
     - type: Loadout
-      prototypes: [ ERTMedicalGearEVA ]
+      prototypes: [ ERTMedicalGearRedLean ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
 
 # ### Gamma
 # - type: entity
@@ -323,7 +331,8 @@
       - NamesMilitaryLast
       nameFormat: name-format-ert-corpsman
     - type: Loadout
-      prototypes: [ ERTMedicalGearEVA ]
+      prototypes: [ ERTMedicalGearGammaLean ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
 
 # ## Janitor
 # ### Amber
@@ -539,7 +548,7 @@
   parent: CentcommHumanoidERT
   components:
     - type: AutoImplant
-      implants: [ FreedomImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant ]
+      implants: [ FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant ]
     - type: Loadout
       prototypes: [ CBURNAgentGear ]
       roleLoadout: [ RoleSurvivalEVA ]
@@ -556,3 +565,138 @@
       nameSegments:
       - NamesMilitaryLast
       nameFormat: name-format-ert-officer
+
+# Color-tier spawners (Blue = Amber jobs)
+
+- type: entity
+  id: RandomHumanoidSpawnerERTLeaderBlue
+  name: ERT leader
+  suffix: ERTRole, Blue
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertleadereva
+  - type: RandomHumanoidSpawner
+    settings: ERTLeaderAmber
+
+- type: entity
+  id: RandomHumanoidSpawnerERTSecurityBlue
+  name: ERT security
+  suffix: ERTRole, Blue
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertsecurityeva
+  - type: RandomHumanoidSpawner
+    settings: ERTSecurityAmber
+
+- type: entity
+  id: RandomHumanoidSpawnerERTMedicalBlue
+  name: ERT medic
+  suffix: ERTRole, Blue
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertmedicaleva
+  - type: RandomHumanoidSpawner
+    settings: ERTMedicalAmber
+
+- type: entity
+  id: RandomHumanoidSpawnerERTLeaderRedTier
+  name: ERT leader
+  suffix: ERTRole, Red
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertleadereva
+  - type: RandomHumanoidSpawner
+    settings: ERTLeaderRed
+
+- type: entity
+  id: RandomHumanoidSpawnerERTSecurityRedTier
+  name: ERT security
+  suffix: ERTRole, Red
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertsecurityeva
+  - type: RandomHumanoidSpawner
+    settings: ERTSecurityRed
+
+- type: entity
+  id: RandomHumanoidSpawnerERTMedicalRedTier
+  name: ERT medic
+  suffix: ERTRole, Red
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertmedicaleva
+  - type: RandomHumanoidSpawner
+    settings: ERTMedicalRed
+
+- type: entity
+  id: RandomHumanoidSpawnerERTLeaderGammaTier
+  name: ERT leader
+  suffix: ERTRole, Gamma
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertleadereva
+  - type: RandomHumanoidSpawner
+    settings: ERTLeaderGamma
+
+- type: entity
+  id: RandomHumanoidSpawnerERTSecurityGammaTier
+  name: ERT security
+  suffix: ERTRole, Gamma
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertsecurityeva
+  - type: RandomHumanoidSpawner
+    settings: ERTSecurityGamma
+
+- type: entity
+  id: RandomHumanoidSpawnerERTMedicalGammaTier
+  name: ERT medic
+  suffix: ERTRole, Gamma
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertmedicaleva
+  - type: RandomHumanoidSpawner
+    settings: ERTMedicalGamma
+
+- type: randomHumanoidSettings
+  id: ERTJuggernautGamma
+  parent: EventHumanoidERT
+  components:
+  - type: GhostRole
+    name: ghost-role-information-ert-juggernaut-name
+    description: ghost-role-information-ert-juggernaut-description
+    rules: ghost-role-information-nonantagonist-rules
+    skills:
+    - All
+    raffle:
+      settings: short
+    job: ERTJuggernautGamma
+  - type: RandomMetadata
+    nameSegments:
+    - NamesMilitaryLast
+    nameFormat: name-format-ert-officer
+  - type: Loadout
+    prototypes: [ ERTJuggernautGearGamma ]
+    roleLoadout: [ RoleSurvivalMilitaryDouble ]
+  - type: AutoImplant
+    implants: [ FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
+
+- type: entity
+  id: RandomHumanoidSpawnerERTJuggernautGamma
+  name: ERT juggernaut
+  suffix: ERTRole, Gamma
+  components:
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: ertsecurityeva
+  - type: RandomHumanoidSpawner
+    settings: ERTJuggernautGamma

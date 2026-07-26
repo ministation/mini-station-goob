@@ -42,7 +42,6 @@
   description: department-CentralCommand-description
   color: "#0c344d"
   roles:
-  - CentralCommandOfficial
   - CBURN
   - ERTLeader
   - ERTChaplain
@@ -52,8 +51,6 @@
   - ERTEngineer
   - DeathSquad
   - HecuOperative
-  - BlueshieldOfficer # Goobstation - Start
-  - NanotrasenRepresentative
   - NanotrasenCareerTrainer
   - NavyOfficer
   - NavyCaptain
@@ -77,10 +74,9 @@
   - HeadOfSecurity
   - ResearchDirector
   - Quartermaster
-  - BlueshieldOfficer # Goobstation
-  - NanotrasenRepresentative # Goobstation
+  - BlueshieldOfficer # Goobstation — keep for Command playtime; also listed under CentComm
+  - NanotrasenRepresentative # Goobstation — keep for Command playtime; also listed under CentComm
   - NanotrasenCareerTrainer # Goobstation
-  - CentralCommandOfficial
   - CBURN
   - ERTLeader
   - ERTChaplain

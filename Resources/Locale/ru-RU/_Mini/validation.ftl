@@ -8,6 +8,7 @@ loadout-group-blueshield-officer-underwear = нижнее бельё офице�
 spawner-loadout-centcomm-officer = лодаут офицера ЦК
 spawner-loadout-centcomm-soo = лодаут офицера специальных операций
 spawner-loadout-centcomm-official = лодаут представителя ЦК
+loadout-group-centcom-assistant = лодаут стажера ЦК
 spawner-loadout-centcomm-administrator = лодаут администратора ЦК
 spawner-loadout-blueshield = лодаут офицера «Синего Щита»
 loadout-group-syndicate-backpack = Синдикат, спина

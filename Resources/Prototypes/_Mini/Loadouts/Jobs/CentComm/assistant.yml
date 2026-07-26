@@ -1,0 +1,157 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Personalization loadouts for roundstart стажер ЦК.
+# Clothes live here; unique kit stays in CentcomAssistantGear startingGear.
+
+- type: loadout
+  id: CentCommAssistantJumpsuitAgent
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomAgent
+
+- type: loadout
+  id: CentCommAssistantJumpsuitOfficial
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficial
+
+- type: loadout
+  id: CentCommAssistantJumpskirt
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCentcomOfficial
+
+- type: loadout
+  id: CentCommAssistantJumpsuitFormal
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomFormal
+
+- type: loadout
+  id: CentCommAssistantHeadHat
+  equipment:
+    head: ClothingHeadHatCentcom
+
+- type: loadout
+  id: CentCommAssistantHeadCap
+  equipment:
+    head: ClothingHeadHatCentcomcap
+
+- type: loadout
+  id: CentCommAssistantOuterWinter
+  equipment:
+    outerClothing: ClothingOuterWinterCentcom
+
+- type: loadout
+  id: CentCommAssistantShoesLaceup
+  equipment:
+    shoes: ClothingShoesBootsLaceup
+
+- type: loadout
+  id: CentCommAssistantShoesLeather
+  equipment:
+    shoes: ClothingShoesLeather
+
+- type: loadout
+  id: CentCommAssistantGlovesBlack
+  equipment:
+    gloves: ClothingHandsGlovesColorBlack
+
+- type: loadout
+  id: CentCommAssistantGlovesGold
+  equipment:
+    gloves: ClothingHandsGlovesHeavyGoldenTrim
+
+- type: loadout
+  id: CentCommAssistantBackpackSatchel
+  equipment:
+    back: ClothingBackpackSatchelCentcomm
+
+- type: loadout
+  id: CentCommAssistantBackpack
+  equipment:
+    back: ClothingBackpackCentcomm
+
+- type: loadout
+  id: CentCommAssistantNeckScarf
+  equipment:
+    neck: ClothingNeckScarfStripedCentcom
+
+- type: loadout
+  id: CentCommAssistantEyesSunglasses
+  equipment:
+    eyes: ClothingEyesGlassesSunglasses
+
+- type: loadoutGroup
+  id: CentCommAssistantJumpsuit
+  name: loadout-group-centcomm-assistant-jumpsuit
+  loadouts:
+  - CentCommAssistantJumpsuitAgent
+  - CentCommAssistantJumpsuitOfficial
+  - CentCommAssistantJumpskirt
+  - CentCommAssistantJumpsuitFormal
+
+- type: loadoutGroup
+  id: CentCommAssistantHead
+  name: loadout-group-centcomm-assistant-head
+  minLimit: 0
+  loadouts:
+  - CentCommAssistantHeadHat
+  - CentCommAssistantHeadCap
+
+- type: loadoutGroup
+  id: CentCommAssistantOuterClothing
+  name: loadout-group-centcomm-assistant-outerclothing
+  minLimit: 0
+  loadouts:
+  - CentCommAssistantOuterWinter
+
+- type: loadoutGroup
+  id: CentCommAssistantShoes
+  name: loadout-group-centcomm-assistant-shoes
+  loadouts:
+  - CentCommAssistantShoesLaceup
+  - CentCommAssistantShoesLeather
+
+- type: loadoutGroup
+  id: CentCommAssistantGloves
+  name: loadout-group-centcomm-assistant-gloves
+  loadouts:
+  - CentCommAssistantGlovesBlack
+  - CentCommAssistantGlovesGold
+
+- type: loadoutGroup
+  id: CentCommAssistantBackpack
+  name: loadout-group-centcomm-assistant-backpack
+  loadouts:
+  - CentCommAssistantBackpackSatchel
+  - CentCommAssistantBackpack
+
+- type: loadoutGroup
+  id: CentCommAssistantNeck
+  name: loadout-group-centcomm-assistant-neck
+  minLimit: 0
+  loadouts:
+  - CentCommAssistantNeckScarf
+
+- type: loadoutGroup
+  id: CentCommAssistantEyes
+  name: loadout-group-centcomm-assistant-eyes
+  minLimit: 0
+  loadouts:
+  - CentCommAssistantEyesSunglasses
+
+- type: roleLoadout
+  id: JobCentralCommandAssistant
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - CentCommAssistantHead
+  - CentCommAssistantJumpsuit
+  - CentCommAssistantOuterClothing
+  - CentCommAssistantBackpack
+  - CentCommAssistantNeck
+  - CentCommAssistantShoes
+  - CentCommAssistantGloves
+  - CentCommAssistantEyes
+  - Trinkets
+  - GroupSpeciesBreathTool
+  - Survival
+  - CentComOfficerEnvirohelm
+  - CentComOfficerEnvirosuit
+  - CentComOfficerEnvirogloves

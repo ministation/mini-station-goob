@@ -458,11 +458,8 @@ public sealed class MonumentSystem : SharedMonumentSystem
             EnsureComp<PressureImmunityComponent>(cultist);
             EnsureComp<TemperatureImmunityComponent>(cultist);
 
-            // Goobstation Change - Shitchap
-            if (!HasComp<WeakToHolyComponent>(cultist))
-                EnsureComp<WeakToHolyComponent>(cultist).AlwaysTakeHoly = true;
-            else
-                cultComp.WasWeakToHoly = true;
+            // Goobstation / Mini: force AlwaysTakeHoly (YAML may add WeakToHoly without it)
+            EnsureComp<WeakToHolyComponent>(cultist).AlwaysTakeHoly = true;
 
             foreach (var influenceProto in _protoMan.EnumeratePrototypes<InfluencePrototype>().Where(influenceProto => influenceProto.Tier == 3))
             {

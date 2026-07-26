@@ -9,7 +9,7 @@
     NanoTrasen. Предназначен для локализации утечек опасных веществ,
     биологических угроз, а также проведения дезинфекции и эвакуации персонала
     в условиях заражения.
-    5 бойцов РХБЗЗ и 1 лидер прибывают на шаттле РХБЗЗ, который оснащён
+    6 бойцов РХБЗЗ прибывают на шаттле РХБЗЗ, который оснащён
     всем необходимым оборудованием для выполнения их миссии.
     Время прибытия отряда от 10 до 15 минут.
   sender: ert-responce-cso-sender
@@ -25,7 +25,7 @@
   - gamma
   spawns:
     - id: RandomHumanoidSpawnerCBURNUnit
-      amount: 1
+      amount: 6
 
 - type: ertTeam
   id: Chaplains
@@ -38,7 +38,7 @@
     оккультными угрозами и нематериальными сущностями. Эти священники прошли специальную
     подготовку по обнаружению и нейтрализации культистской активности, очищению скверны
     и защите экипажа от тлетворного влияния Нар-Си, Космобога и Ратвара.
-    Отряд состоит из лидера и трёх святых паладинов, вооружённых благословлённым
+    Отряд состоит из четырёх священников ОБР, вооружённых благословлённым
     оружием, кропилами и святой водой. Каждый член отряда владеет искусством
     изгнания демонов, распознавания культистских символов и проведения экстренных обрядов очищения.
 
@@ -53,23 +53,21 @@
     max: 10m
   price: 6
   spawns:
-    - id: RandomHumanoidSpawnerERTLeaderEVA
-      amount: 1
     - id: RandomHumanoidSpawnerERTChaplainEVA
-      amount: 3
+      amount: 4
 
 - type: ertTeam
   id: Blue
-  name: ОБР Синий
+  name: ОП — отряд поддержки
   startAnnouncement: station-event-response-team-arrival
   startAudio:
     path: /Audio/_Mini/Announcements/ERT/spawn.ogg
   description:
-    Отряд быстрого реагирования Синий NanoTrasen, предназначенный для
+    Отряд поддержки (ОП) NanoTrasen, предназначенный для
     проведения разведывательных операций и оказания поддержки силам
     Службы Безопасности в борьбе с незначительными угрозами, в случае
     если текущий состав слишком мал.
-    5 членов отряда прибывают на шаттле Синий, который оснащён всем
+    5 членов отряда прибывают на шаттле поддержки, который оснащён всем
     необходимым оборудованием для выполнения их миссии.
     Время прибытия отряда от 5 до 10 минут.
   rule: SpawnBlueShuttle
@@ -84,14 +82,12 @@
   - epsilon
   - gamma
   spawns:
-    # - id: RandomHumanoidSpawnerERTLeaderAmber
-    #   amount: 1
-    # - id: RandomHumanoidSpawnerERTEngineerAmber
-    #   amount: 1
-    - id: RandomHumanoidSpawnerERTSecurity
+    - id: RandomHumanoidSpawnerERTLeaderBlue
       amount: 1
-    # - id: RandomHumanoidSpawnerERTMedicalAmber
-    #   amount: 1
+    - id: RandomHumanoidSpawnerERTSecurityBlue
+      amount: 2
+    - id: RandomHumanoidSpawnerERTMedicalBlue
+      amount: 1
 
 - type: ertTeam
   id: Red
@@ -121,11 +117,11 @@
   - gamma
   price: 4
   spawns:
-    - id: RandomHumanoidSpawnerERTLeaderEVA
+    - id: RandomHumanoidSpawnerERTLeaderRedTier
       amount: 1
-    - id: RandomHumanoidSpawnerERTSecurityEVA
-      amount: 3
-    - id: RandomHumanoidSpawnerERTMedicalEVA
+    - id: RandomHumanoidSpawnerERTSecurityRedTier
+      amount: 2
+    - id: RandomHumanoidSpawnerERTMedicalRedTier
       amount: 1
 
 - type: ertTeam
@@ -155,13 +151,13 @@
   codeBlackList:
   - epsilon
   spawns:
-    - id: RandomHumanoidSpawnerERTLeaderEVA
+    - id: RandomHumanoidSpawnerERTLeaderGammaTier
       amount: 1
-    - id: RandomHumanoidSpawnerERTEngineerEVA
+    - id: RandomHumanoidSpawnerERTSecurityGammaTier
       amount: 1
-    - id: RandomHumanoidSpawnerERTSecurityEVA
-      amount: 4
-    - id: RandomHumanoidSpawnerERTMedicalEVA
+    - id: RandomHumanoidSpawnerERTJuggernautGamma
+      amount: 1
+    - id: RandomHumanoidSpawnerERTMedicalGammaTier
       amount: 1
 
 - type: ertTeam
@@ -173,7 +169,7 @@
   description:
     Представитель Центрального Командования NanoTrasen, прибывающий на станцию
     для решения возникших проблем, которые не могут быть решены обычным способом.
-    Представитель Центрального Командования и 3 офицера Синий Щит прибывают
+    Представитель Центрального Командования и 2 офицера ОБР прибывают
     на шаттле, который оснащён всем необходимым оборудованием
     для выполнения их миссии.
     Время прибытия от 5 до 7 минут.

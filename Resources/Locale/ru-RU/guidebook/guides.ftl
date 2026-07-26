@@ -92,7 +92,10 @@ guide-entry-forensics = Криминалистика
 guide-entry-defusal = Обезвреживание крупной бомбы
 guide-entry-criminal-records = Криминальные записи
 guide-entry-command = Командование
+guide-entry-centcomm-official = Представитель ЦК
+guide-entry-centcomm-assistant = Стажёр ЦК
 guide-entry-service = Сервис
+
 guide-entry-newplayer = Новичок? Вам сюда!
 guide-entry-charactercreation = Создание персонажа
 guide-entry-species = Расы

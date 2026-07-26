@@ -8,7 +8,7 @@
   description: job-description-ertleader
   playTimeTracker: JobERTLeaderAmber
   setPreference: false
-  startingGear: ERTLeaderGear
+  startingGear: ERTLeaderGearBlue
   icon: "JobIconERTLeader"
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -29,7 +29,7 @@
   - ErtTeamLeader
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 # - type: startingGear
 #   id: ERTLeaderGearAmber
@@ -63,7 +63,7 @@
   - All
   playTimeTracker: JobERTLeaderRed
   setPreference: false
-  startingGear: ERTLeaderGearEVA
+  startingGear: ERTLeaderGearRedLean
   icon: "JobIconERTLeader"
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -84,7 +84,7 @@
   - ErtTeamLeader
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 # - type: startingGear
 #   id: ERTLeaderGearRed
@@ -118,7 +118,7 @@
   description: job-description-ertleader
   playTimeTracker: JobERTLeaderGamma
   setPreference: false
-  startingGear: ERTLeaderGearEVA
+  startingGear: ERTLeaderGearGammaLean
   icon: "JobIconERTLeader"
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -141,7 +141,7 @@
   - ErtTeamLeader
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 # - type: startingGear
 #   id: ERTLeaderGearGamma
@@ -179,7 +179,7 @@
   - All
   playTimeTracker: JobERTSecurityAmber
   setPreference: false
-  startingGear: ERTSecurityGear
+  startingGear: ERTSecurityGearBlue
   icon: "JobIconERT"
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -196,7 +196,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 # - type: startingGear
 #   id: ERTSecurityGearAmber
@@ -234,7 +234,7 @@
   - All
   playTimeTracker: JobERTSecurityRed
   setPreference: false
-  startingGear: ERTSecurityGearEVA
+  startingGear: ERTSecurityGearRedLean
   icon: "JobIconERT"
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -251,7 +251,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 # - type: startingGear
 #   id: ERTSecurityGearRed
@@ -285,7 +285,7 @@
   - All
   playTimeTracker: JobERTSecurityGamma
   setPreference: false
-  startingGear: ERTSecurityGearEVA
+  startingGear: ERTSecurityGearGammaLean
   icon: "JobIconERT"
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -302,7 +302,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 # - type: startingGear
 #   id: ERTSecurityGearGamma
@@ -339,7 +339,7 @@
   description: job-description-ertmedic
   playTimeTracker: JobERTMedicalAmber
   setPreference: false
-  startingGear: ERTMedicalGear
+  startingGear: ERTMedicalGearBlue
   icon: "JobIconERT"
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -356,7 +356,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 # - type: startingGear
 #   id: ERTMedicalGearAmber
@@ -393,7 +393,7 @@
   description: job-description-ertmedic
   playTimeTracker: JobERTMedicalRed
   setPreference: false
-  startingGear: ERTMedicalGearEVA
+  startingGear: ERTMedicalGearRedLean
   icon: "JobIconERT"
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -412,7 +412,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 # - type: startingGear
 #   id: ERTMedicalGearRed
@@ -452,7 +452,7 @@
   - All
   playTimeTracker: JobERTMedicalGamma
   setPreference: false
-  startingGear: ERTMedicalGearEVA
+  startingGear: ERTMedicalGearGammaLean
   icon: "JobIconERT"
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -469,7 +469,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 # - type: startingGear
 #   id: ERTMedicalGearGamma
@@ -827,3 +827,31 @@
 #     - TrashBagBlue
 #     - PinpointerNuclear
 #     - ClothingEyesNightVisionGoggles
+
+# Juggernaut (Gamma)
+- type: job
+  id: ERTJuggernautGamma
+  name: job-name-ertjuggernaut
+  description: job-description-ertsecurity
+  skills:
+  - All
+  playTimeTracker: JobERTJuggernautGamma
+  setPreference: false
+  startingGear: ERTJuggernautGearGamma
+  icon: "JobIconERT"
+  supervisors: job-supervisors-centcom
+  canBeAntag: false
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Medical
+    time: 14400
+  - !type:DepartmentTimeRequirement
+    department: Security
+    time: 72000
+  accessGroups:
+  - AllAccess
+  access:
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]

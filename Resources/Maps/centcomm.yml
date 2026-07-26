@@ -33600,6 +33600,28 @@ entities:
     - type: Transform
       pos: -5.5,4.5
       parent: 1668
+- proto: SpawnPointCentralCommandOfficial
+  entities:
+  - uid: 7000
+    components:
+    - type: Transform
+      # Next to CentCom warp (26.5,-0.5) — interior arrival, not outer window wall.
+      pos: 25.5,-0.5
+      parent: 1668
+- proto: SpawnPointCentralCommandAssistant
+  entities:
+  - uid: 7001
+    components:
+    - type: Transform
+      pos: 26.5,0.5
+      parent: 1668
+- proto: SpawnPointLateJoinCentComm
+  entities:
+  - uid: 7002
+    components:
+    - type: Transform
+      pos: 27.5,-0.5
+      parent: 1668
 - proto: SpaceCash1000000
   entities:
   - uid: 6027

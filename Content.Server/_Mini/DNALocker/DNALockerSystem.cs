@@ -196,7 +196,8 @@ public sealed class DNALockerSystem : EntitySystem
 
     private void OnGetActions(EntityUid uid, DNALockerComponent comp, GetItemActionsEvent args)
     {
-        if (!comp.DNAWasStored)
+        // Show store-DNA action only while biocode is unlocked (no DNA locked in).
+        if (!comp.IsLocked)
             args.AddAction(ref comp.ActionEntity, comp.Action);
     }
 
@@ -205,7 +206,8 @@ public sealed class DNALockerSystem : EntitySystem
         if (args.Handled)
             return;
 
-        if (comp.DNAWasStored)
+        // Locked with DNA: cannot overwrite until unlocked.
+        if (comp.IsLocked)
         {
             _popupSystem.PopupEntity(Loc.GetString("hardsuit-identification-dna-already-stored"), args.Performer, args.Performer);
             args.Handled = true;
@@ -224,8 +226,12 @@ public sealed class DNALockerSystem : EntitySystem
         CancelExplosion(comp);
         RemComp<UnremoveableComponent>(uid);
 
+        // Hide the store-DNA action while biocode is locked with stored DNA.
         if (comp.ActionEntity is { } action)
+        {
             _actions.RemoveProvidedAction(args.Performer, uid, action);
+            comp.ActionEntity = null;
+        }
 
         _audio.PlayPvs(comp.LockSound, uid);
         _popupSystem.PopupEntity(Loc.GetString("hardsuit-identification-dna-was-stored"), args.Performer, args.Performer);
@@ -272,6 +278,16 @@ public sealed class DNALockerSystem : EntitySystem
             _popupSystem.PopupEntity(Loc.GetString("dna-locker-unlock"), uid, userUid);
             component.DNA = string.Empty;
             component.DNAWasStored = false;
+
+            // Biocode unlocked: DNA can be rewritten; restore the store-DNA action.
+            if (component.ActionEntity is { } oldAction)
+            {
+                _actions.RemoveAction(oldAction);
+                component.ActionEntity = null;
+            }
+
+            if (_inventory.TryGetContainingEntity(uid, out var wearer))
+                _actions.AddAction(wearer.Value, ref component.ActionEntity, component.Action, uid);
         }
         else
         {

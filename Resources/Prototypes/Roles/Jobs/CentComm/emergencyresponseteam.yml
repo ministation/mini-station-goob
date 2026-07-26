@@ -154,7 +154,7 @@
     outerClothing: ClothingOuterHardsuitERTChaplain
     id: ERTChaplainPDA
     ears: ClothingHeadsetAltCentCom
-    belt: ClothingBeltMilitaryWebbingERT
+    belt: ClothingBeltSecurityWebbing # Mini: default RPS
     pocket1: WeaponPulsePistol # Goobstation Literally described as "Favored sidearm of NT ERT operatives".
     pocket2: CombatKnife
   storage:
@@ -162,26 +162,18 @@
     - BoxCandle
     - BodyBagFolded
     - BodyBagFolded
-    - JugWater
-    - JugBlood # End of first row
-    - FoodBakedBunHotX
-    - FoodBakedBunHotX
-    - FoodBakedBunHotX
-    - FoodBakedBunHotX
     - ChaplainUndeterminedBible # Goobstation
     - Nullrod # Goobstation
-    - ADTBaseUplinkBOBERT
-    - PinpointerNuclear # Mini
+    - Cropilo # Mini: crozier
+    - BaseUplinkBOBERT # Mini: chaplain holy uplink (not ADT ERT)
+    - PinpointerCult # Mini: cult threat pinpointer
     - ExecutiveIDCard # Goobstation - Executive Access!
-    belt:
+    # Mini: NOT in ClothingBeltSecurityWebbing — its whitelist ejects Bible/Lantern/Crowbar/Flippo
     - Bible
     - Lantern
-    - Lantern
-    - Lantern
     - CrowbarRed
-    - WeaponPistolMk58
-    - MagazinePistol
     - FlippoEngravedLighter
+
 
 - type: chameleonOutfit
   id: ERTChaplainChameleonOutfit
