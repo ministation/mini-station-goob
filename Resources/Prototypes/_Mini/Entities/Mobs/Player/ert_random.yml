@@ -570,7 +570,7 @@
 
 - type: entity
   id: RandomHumanoidSpawnerERTLeaderBlue
-  name: командир ОП
+  name: OP commander
   suffix: ERTRole, Blue
   components:
   - type: Sprite
@@ -581,7 +581,7 @@
 
 - type: entity
   id: RandomHumanoidSpawnerERTSecurityBlue
-  name: офицер ОП
+  name: OP officer
   suffix: ERTRole, Blue
   components:
   - type: Sprite
@@ -592,7 +592,7 @@
 
 - type: entity
   id: RandomHumanoidSpawnerERTMedicalBlue
-  name: медик ОП
+  name: OP medic
   suffix: ERTRole, Blue
   components:
   - type: Sprite

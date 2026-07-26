@@ -6,8 +6,8 @@
 - type: entity
   parent: ClothingOuterHardsuitERTLeader
   id: ClothingOuterHardsuitERTLeaderBlue
-  name: скафандр командира ОП
-  description: Полевой скафандр командира отряда поддержки. Усиленная защита по сравнению с остальным комплектом ОП.
+  name: OP commander hardsuit
+  description: Field hardsuit for the support squad commander. Stronger protection than the rest of the OP kit.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -37,8 +37,8 @@
 - type: entity
   parent: ClothingOuterHardsuitERTSecurity
   id: ClothingOuterHardsuitERTSecurityBlue
-  name: скафандр офицера ОП
-  description: Полевой скафандр офицера отряда поддержки.
+  name: OP officer hardsuit
+  description: Field hardsuit for a support squad officer.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -68,8 +68,8 @@
 - type: entity
   parent: ClothingOuterHardsuitERTMedical
   id: ClothingOuterHardsuitERTMedicalBlue
-  name: скафандр медика ОП
-  description: Полевой медицинский скафандр отряда поддержки.
+  name: OP medic hardsuit
+  description: Field medical hardsuit for the support squad.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -99,8 +99,8 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitERTLeader
   id: ClothingHeadHelmetHardsuitERTLeaderBlue
-  name: шлем командира ОП
-  description: Шлем командира отряда поддержки.
+  name: OP commander helmet
+  description: Helmet of the support squad commander.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -113,8 +113,8 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitERTSecurity
   id: ClothingHeadHelmetHardsuitERTSecurityBlue
-  name: шлем офицера ОП
-  description: Шлем офицера отряда поддержки.
+  name: OP officer helmet
+  description: Helmet of a support squad officer.
   suffix: Blue Field
   components:
   - type: Sprite
@@ -127,8 +127,8 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitERTMedical
   id: ClothingHeadHelmetHardsuitERTMedicalBlue
-  name: шлем медика ОП
-  description: Шлем медика отряда поддержки.
+  name: OP medic helmet
+  description: Helmet of a support squad medic.
   suffix: Blue Field
   components:
   - type: Sprite
