@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 - type: shader
   id: SpriteHalfClip
@@ -13,18 +13,18 @@
   path: "/Textures/_Mini/Shaders/sprite_foot_half_clip.swsl"
   params:
     keepRight: 0
-    footCut: 0.35
+    footCut: 0.2
 
 - type: shader
   id: SpriteFootHole
   kind: source
   path: "/Textures/_Mini/Shaders/sprite_foot_hole.swsl"
   params:
-    footCut: 0.35
+    footCut: 0.2
 
 - type: shader
   id: SpriteFootBand
   kind: source
   path: "/Textures/_Mini/Shaders/sprite_foot_band.swsl"
   params:
-    footCut: 0.35
+    footCut: 0.2
