@@ -10,6 +10,7 @@ using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Goobstation.Shared.Waddle;
 using Content.Shared.Movement.Components;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Standing;
@@ -53,6 +54,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     private EntityQuery<PhysicsComponent> _physicsQuery;
     private EntityQuery<MobStateComponent> _mobQuery;
     private EntityQuery<BorgChassisComponent> _borgQuery;
+    private EntityQuery<WaddleAnimationComponent> _waddleQuery;
     private EntityQuery<InputMoverComponent> _moverQuery;
     private EntityQuery<MovementSpeedModifierComponent> _moveSpeedQuery;
     private EntityQuery<HumanoidAppearanceComponent> _humanoidQuery;
@@ -79,6 +81,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         _physicsQuery = GetEntityQuery<PhysicsComponent>();
         _mobQuery = GetEntityQuery<MobStateComponent>();
         _borgQuery = GetEntityQuery<BorgChassisComponent>();
+        _waddleQuery = GetEntityQuery<WaddleAnimationComponent>();
         _moverQuery = GetEntityQuery<InputMoverComponent>();
         _moveSpeedQuery = GetEntityQuery<MovementSpeedModifierComponent>();
         _humanoidQuery = GetEntityQuery<HumanoidAppearanceComponent>();
@@ -148,18 +151,19 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_spriteQuery.TryGetComponent(uid, out var sprite))
                 continue;
 
-            var facing = _xform.GetWorldRotation(uid).ToRsiDirection(RsiDirectionType.Dir4);
-            var useSplits = facing is RsiDirection.South or RsiDirection.North;
-            EnsureClothingSplits((uid, walk), useSplits);
-
             if (!CanAnimate(uid)
                 || !_physicsQuery.TryGetComponent(uid, out var physics)
                 || physics.LinearVelocity.LengthSquared() < walk.MinSpeedSquared
                 || !HasLowerBodyVisuals(uid, sprite))
             {
+                ClearClothingWalkLayers((uid, walk));
                 ResetLowerBody((uid, walk), sprite);
                 continue;
             }
+
+            var facing = _xform.GetWorldRotation(uid).ToRsiDirection(RsiDirectionType.Dir4);
+            var useSplits = facing is RsiDirection.South or RsiDirection.North;
+            EnsureClothingSplits((uid, walk), useSplits);
 
             var speed = physics.LinearVelocity.Length();
             walk.Phase += frameTime * walk.CycleSpeed * GetStepRate(uid, walk, speed);
@@ -764,10 +768,28 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (_borgQuery.HasComp(uid))
             return false;
 
+        // Clown/jester shoes already play WaddleAnimation — skip foot bob.
+        if (_waddleQuery.HasComp(uid))
+            return false;
+
         if (_mobQuery.TryGetComponent(uid, out var mob) && !_mobState.IsAlive(uid, mob))
             return false;
 
         return !_standing.IsDown(uid);
+    }
+
+    private void ClearClothingWalkLayers(Entity<FootWalkAnimationComponent> ent)
+    {
+        if (!ent.Comp.ClothingSplitsActive
+            && ent.Comp.ShoeSplitKeys.Count == 0
+            && ent.Comp.OuterSplitKeys.Count == 0
+            && ent.Comp.OuterSideBandKeys.Count == 0)
+            return;
+
+        ClearShoeSplits(ent);
+        ClearOuterSplits(ent);
+        ClearOuterSideBands(ent);
+        ent.Comp.ClothingSplitsActive = false;
     }
 
     private bool HasLowerBodyVisuals(EntityUid uid, SpriteComponent sprite)
