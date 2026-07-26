@@ -24,8 +24,7 @@
     rules:
     - id: Thief
       prob: 0.4 # CorvaxGoob-GameRulesTweak
-    - id: Heretic # goob edit
-      prob: 0.2 # CorvaxGoob-GameRulesTweak
+    # Mini: Heretic removed from calm/standard/light/lowpop (SubGamemodes on those presets)
     - id: Devil # Goob
       prob: 0.1 # CorvaxGoob-GameRulesTweak
     - id: Shadowling # Goob
@@ -43,8 +42,6 @@
     rules:
     - id: Thief
       prob: 0.5
-    - id: Heretic # goob edit
-      prob: 0.2
     - id: Devil # Goob
       prob: 0.02
     - id: Shadowling # Goob

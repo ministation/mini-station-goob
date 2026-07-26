@@ -10,6 +10,8 @@
     - type: CanEnchant
     - type: WeakToHoly
       alwaysTakeHoly: true
+    # Mini: OnMindRemoved re-applies WeakToHoly after knowledge strip so empty
+    # heretic bodies still take holy damage without a mind.
 
 - type: hereticKnowledge
   id: HeartbeatOfMansus

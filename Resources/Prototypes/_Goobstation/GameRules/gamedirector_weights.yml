@@ -8,7 +8,7 @@
     Nukeops: 0.05
     Revolutionary: 0.05
     Zombie: 0.04
-    Heretic: 0.01
+    Heretic: 0.0 # Mini: no heretics on Спокойный / Стандартный (GameDirector)
     BlobGameMode: 0.05
     Wizard: 0.001
     CosmicCult: 0.05

@@ -79,6 +79,12 @@ public sealed class WeakToHolySystem : EntitySystem
         var unholyEvent = new DamageUnholyEvent(unholyTarget, args.Origin);
         RaiseLocalEvent(unholyTarget, ref unholyEvent);
 
+        // Empty heretic vessels keep WeakToHoly after the mind leaves; mind checks alone miss them.
+        if (!unholyEvent.ShouldTakeHoly
+            && TryComp<WeakToHolyComponent>(unholyTarget, out var weak)
+            && weak.AlwaysTakeHoly)
+            unholyEvent.ShouldTakeHoly = true;
+
         if (!unholyEvent.ShouldTakeHoly && IsUnholyAntag(unholyTarget))
             unholyEvent.ShouldTakeHoly = true;
 
