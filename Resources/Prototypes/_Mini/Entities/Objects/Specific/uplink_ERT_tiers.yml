@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# Tier ERT uplinks (Blue / Red / Gamma). CBURN/Chaplains keep ADTBaseUplinkBOBERT.
+# Tier ERT uplinks (Blue / Red / Gamma). CBURN keeps BaseUplinkCBRUN; Chaplains use BaseUplinkBOBERT.
 
 - type: storeCategory
   id: UplinkERTCallWeapon

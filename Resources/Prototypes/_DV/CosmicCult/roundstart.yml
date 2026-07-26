@@ -34,5 +34,7 @@
       components:
       - type: CosmicCult
       - type: WeakToHoly # GOOBSTATION
+        alwaysTakeHoly: true # Mini: without this Holy damage is zeroed
       mindRoles:
       - MindRoleCosmicCult
+

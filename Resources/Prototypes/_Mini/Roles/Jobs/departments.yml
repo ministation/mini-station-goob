@@ -31,7 +31,7 @@
   color: "#0c344d"
   weight: 110
   roles:
-  - BlueshieldOfficer
-  - NanotrasenRepresentative
   - CentralCommandOfficial
   - CentralCommandAssistant
+  - BlueshieldOfficer
+  - NanotrasenRepresentative

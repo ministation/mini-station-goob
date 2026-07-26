@@ -1,5 +1,5 @@
 ent-ActionActivateBluespaceLifeline = Activate Bluespace Lifeline
-    .desc = Activates your bluespace lifeline implant, teleporting you far-far away from this station. You won't be able to come back.
+    .desc = Teleports you to Central Command. You will lose all your belongings and will not be able to return easily.
 ent-ActionHorn = Honk!
     .desc = Beep the horn at whoever you will run over.
 ent-ActionSiren = Siren

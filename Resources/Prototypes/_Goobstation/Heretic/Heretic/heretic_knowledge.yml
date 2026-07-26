@@ -9,6 +9,7 @@
     addedComponents:
     - type: CanEnchant
     - type: WeakToHoly
+      alwaysTakeHoly: true
 
 - type: hereticKnowledge
   id: HeartbeatOfMansus

@@ -13,7 +13,12 @@
   canBeAntag: false
   skills: # CorvaxGoob-Skills
   - All
-  weight: 25 # Above typical station jobs so multi-station AssignJobs still sees CentComm slots
+  guides: # Mini
+  - CentralCommandOfficial
+  - Writing
+  - SOPCentcomm
+  weight: 40 # Top of CentComm prefs list (ПЦК)
+
   requirements:
   - !type:AgeRequirement
     requiredAge: 21
@@ -56,6 +61,7 @@
     - BoxFolderCentComClipboard
     - DeterrentCaseFilled
     - DoorRemoteAll
+    - TelephoneCentComm
 
 - type: chameleonOutfit
   id: CentralCommandOfficialOutfit

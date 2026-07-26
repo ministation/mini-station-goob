@@ -37,7 +37,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudMedSec
     gloves: ClothingHandsGlovesCombat
-    outerClothing: ClothingOuterHardsuitERTLeader
+    outerClothing: ClothingOuterHardsuitERTLeaderBlue
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltCentCom
     belt: ClothingBeltMilitaryWebbingERTLean
@@ -59,7 +59,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudMedSec
     gloves: ClothingHandsGlovesCombat
-    outerClothing: ClothingOuterHardsuitERTSecurity
+    outerClothing: ClothingOuterHardsuitERTSecurityBlue
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltCentCom
     belt: ClothingBeltMilitaryWebbingERTLean
@@ -80,7 +80,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudMedSec
     gloves: ClothingHandsGlovesNitrile
-    outerClothing: ClothingOuterHardsuitERTMedical
+    outerClothing: ClothingOuterHardsuitERTMedicalBlue
     id: ERTMedicPDA
     ears: ClothingHeadsetAltCentCom
     belt: ClothingBeltMedicalERTLean
@@ -93,8 +93,6 @@
     - DefibrillatorCompact
     - HandheldHealthAnalyzer
     - EmergencyMedipen
-
-# --- Red ---
 
 - type: startingGear
   id: ERTLeaderGearRedLean

@@ -35,6 +35,13 @@
         Heat: 15
         Piercing: 5
     animation: WeaponArcThrust
+    soundHit:
+      path: /Audio/Weapons/plasma_cutter.ogg
+    soundSwing:
+      path: /Audio/Weapons/plasma_cutter.ogg
+      params:
+        volume: -6
+        variation: 0.15
   - type: IgniteOnMeleeHit
     fireStacks: 2
   - type: LandAtCursor

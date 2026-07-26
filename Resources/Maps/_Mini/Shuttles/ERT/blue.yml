@@ -1,16 +1,16 @@
 meta:
   format: 7
-  category: Map
+  category: Grid
   engineVersion: 283.1.0
   forkId: ""
   forkVersion: ""
-  time: 07/25/2026 21:58:33
-  entityCount: 507
-maps:
-- 324
+  time: 07/25/2026 23:34:48
+  entityCount: 504
+maps: []
 grids:
 - 1
-orphans: []
+orphans:
+- 1
 nullspace: []
 tilemap:
   0: Space
@@ -32,7 +32,7 @@ entities:
     - type: MetaData
       name: NT-Bug MK4
     - type: Transform
-      parent: 324
+      parent: invalid
     - type: MapGrid
       chunks:
         0,0:
@@ -88,19 +88,17 @@ entities:
         - node:
             id: Bot
             color: '#FFFFFFFF'
+          decals:
+            133: -3,-3
+            134: -3,-2
+        - node:
+            id: Bot
+            color: '#FFFFFFFF'
             angle: 4.71238898038469 rad
           decals:
             105: 3,-2
             106: 3,-3
             107: 3,-4
-        - node:
-            id: Box
-            color: '#FFFFFFFF'
-            angle: 4.71238898038469 rad
-          decals:
-            102: -3,-2
-            103: -3,-3
-            104: -3,-4
         - node:
             id: DeliveryGreyscale
             color: '#9FED5896'
@@ -216,9 +214,6 @@ entities:
             125: 5,-2
             126: 5,-3
             127: 5,-4
-            128: -3,-2
-            129: -3,-3
-            130: -3,-4
         - node:
             id: MiniTileSteelLineN
             color: '#D4D4D49B'
@@ -460,16 +455,6 @@ entities:
       chunkHistory: {}
     - type: ImplicitRoof
     - type: ExplosionAirtightGrid
-  - uid: 324
-    components:
-    - type: MetaData
-      name: Map Entity
-    - type: Transform
-    - type: Map
-      mapPaused: True
-    - type: GridTree
-    - type: Broadphase
-    - type: OccluderTree
 - proto: AirlockCentralCommandGlassLocked
   entities:
   - uid: 2
@@ -1787,24 +1772,6 @@ entities:
       parent: 1
       rot: 3.141592653589793 rad
       pos: 1.5,0.5
-  - uid: 398
-    components:
-    - type: Transform
-      parent: 1
-      rot: -1.5707963267948966 rad
-      pos: -2.5,-1.5
-  - uid: 447
-    components:
-    - type: Transform
-      parent: 1
-      rot: -1.5707963267948966 rad
-      pos: -2.5,-2.5
-  - uid: 454
-    components:
-    - type: Transform
-      parent: 1
-      rot: -1.5707963267948966 rad
-      pos: -2.5,-3.5
 - proto: ClosetWallEmergency
   entities:
   - uid: 228
@@ -2032,6 +1999,16 @@ entities:
       pos: -1.5,-8.5
 - proto: CryogenicSleepUnitSpawnerERT
   entities:
+  - uid: 289
+    components:
+    - type: Transform
+      parent: 1
+      pos: -2.5,-2.5
+  - uid: 290
+    components:
+    - type: Transform
+      parent: 1
+      pos: -2.5,-1.5
   - uid: 326
     components:
     - type: Transform
@@ -2622,26 +2599,6 @@ entities:
       enabled: False
     - type: ApcPowerReceiver
       powerLoad: 0
-  - uid: 289
-    components:
-    - type: Transform
-      parent: 1
-      rot: 3.141592653589793 rad
-      pos: -0.5,-6.5
-    - type: PointLight
-      enabled: False
-    - type: ApcPowerReceiver
-      powerLoad: 0
-  - uid: 290
-    components:
-    - type: Transform
-      parent: 1
-      rot: 3.141592653589793 rad
-      pos: 1.5,-6.5
-    - type: PointLight
-      enabled: False
-    - type: ApcPowerReceiver
-      powerLoad: 0
   - uid: 291
     components:
     - type: Transform
@@ -2664,42 +2621,32 @@ entities:
     components:
     - type: Transform
       parent: 1
-      rot: -1.5707963267948966 rad
-      pos: 5.5,-10.5
-    - type: PointLight
-      enabled: False
-    - type: ApcPowerReceiver
-      powerLoad: 0
+      rot: 3.141592653589793 rad
+      pos: 1.5,-6.5
   - uid: 294
     components:
     - type: Transform
       parent: 1
-      rot: 1.5707963267948966 rad
-      pos: -4.5,-10.5
-    - type: PointLight
-      enabled: False
-    - type: ApcPowerReceiver
-      powerLoad: 0
+      rot: 3.141592653589793 rad
+      pos: -0.5,-6.5
   - uid: 295
     components:
     - type: Transform
       parent: 1
       rot: -1.5707963267948966 rad
-      pos: 1.5,-1.5
-    - type: PointLight
-      enabled: False
-    - type: ApcPowerReceiver
-      powerLoad: 0
+      pos: 5.5,-10.5
   - uid: 296
     components:
     - type: Transform
       parent: 1
       rot: 1.5707963267948966 rad
-      pos: -0.5,-1.5
-    - type: PointLight
-      enabled: False
-    - type: ApcPowerReceiver
-      powerLoad: 0
+      pos: -4.5,-10.5
+  - uid: 324
+    components:
+    - type: Transform
+      parent: 1
+      rot: 3.141592653589793 rad
+      pos: 0.5,-1.5
   - uid: 456
     components:
     - type: Transform

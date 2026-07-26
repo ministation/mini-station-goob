@@ -47,11 +47,8 @@
   categories: [ HideSpawnMenu ]
   components:
     - type: Transform
-    # Roundstart/latejoin jobs live only on CentComm (grid loaded via StationCentcomm).
-    - type: StationJobs
-      availableJobs:
-        CentralCommandOfficial: [ 1, 1 ]
-        CentralCommandAssistant: [ 1, 1 ]
+    # Jobs come from gameMap station config (CentComm), not the entity prototype —
+    # StationJobs mutates JobList/TotalJobs on init which fails PrototypeSaveTest.
     # Same dedicated-station pattern as Typan — AssignRoundstartHandledJobs + forced spawn points.
     - type: TTStationHandleJob
       jobs:

@@ -1,0 +1,138 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Blue ERT "field" hardsuits — olive-graphite RSI recolors of stock ERT suits.
+# Helmets keep stock visuals (glass unchanged). Armor weaker than stock ERT.
+
+- type: entity
+  parent: ClothingOuterHardsuitERTLeader
+  id: ClothingOuterHardsuitERTLeaderBlue
+  name: скафандр командира ОБР (полевой)
+  description: Облегчённый полевой скафандр командира синего отряда ОБР. Защита слабее стандартного комплекта.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertleader_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertleader_field.rsi
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitERTLeaderBlue
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.65
+        Heat: 0.7
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ClothingSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+  - type: StaminaResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingOuterHardsuitERTSecurity
+  id: ClothingOuterHardsuitERTSecurityBlue
+  name: скафандр офицера ОБР (полевой)
+  description: Облегчённый полевой скафандр безопасности синего отряда ОБР.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity_field.rsi
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitERTSecurityBlue
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.65
+        Heat: 0.7
+        Radiation: 0.75
+        Caustic: 0.75
+  - type: ClothingSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+  - type: StaminaResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingOuterHardsuitERTMedical
+  id: ClothingOuterHardsuitERTMedicalBlue
+  name: скафандр медика ОБР (полевой)
+  description: Облегчённый полевой медицинский скафандр синего отряда ОБР.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertmedical_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertmedical_field.rsi
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitERTMedicalBlue
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.7
+        Heat: 0.65
+        Radiation: 0.7
+        Caustic: 0.65
+  - type: ClothingSpeedModifier
+    walkModifier: 0.95
+    sprintModifier: 0.95
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: StaminaResistance
+    damageCoefficient: 0.75
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitERTLeader
+  id: ClothingHeadHelmetHardsuitERTLeaderBlue
+  name: шлем командира ОБР (полевой)
+  description: Шлем командира синего отряда ОБР. Стекло без изменений.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertleader_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertleader_field.rsi
+  - type: PointLight
+    color: "#9aaa70"
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitERTSecurity
+  id: ClothingHeadHelmetHardsuitERTSecurityBlue
+  name: шлем офицера ОБР (полевой)
+  description: Шлем безопасности синего отряда ОБР. Стекло без изменений.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertsecurity_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertsecurity_field.rsi
+  - type: PointLight
+    color: "#9aaa70"
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitERTMedical
+  id: ClothingHeadHelmetHardsuitERTMedicalBlue
+  name: шлем медика ОБР (полевой)
+  description: Шлем медика синего отряда ОБР. Стекло без изменений.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertmedical_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertmedical_field.rsi
+  - type: PointLight
+    color: "#9aaa70"

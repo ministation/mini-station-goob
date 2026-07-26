@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: entity
-  parent: BaseSuicideAction
+  parent: BaseAction
   id: ActionActivateBluespaceLifeline
   name: Activate Bluespace Lifeline
-  description: Activates your bluespace lifeline implant, teleporting you far-far away from this station. You won't be able to come back.
+  description: Teleports you to Central Command. You will lose all your belongings and will not be able to return easily.
   components:
+  - type: ConfirmableAction
+    popup: bluespace-lifeline-action-popup
   - type: Action
     checkCanInteract: false
     checkConsciousness: false

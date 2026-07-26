@@ -548,7 +548,7 @@
   parent: CentcommHumanoidERT
   components:
     - type: AutoImplant
-      implants: [ FreedomImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant ]
+      implants: [ FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant ]
     - type: Loadout
       prototypes: [ CBURNAgentGear ]
       roleLoadout: [ RoleSurvivalEVA ]
@@ -688,7 +688,7 @@
     prototypes: [ ERTJuggernautGearGamma ]
     roleLoadout: [ RoleSurvivalMilitaryDouble ]
   - type: AutoImplant
-    implants: [ FreedomImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
+    implants: [ FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
 - type: entity
   id: RandomHumanoidSpawnerERTJuggernautGamma

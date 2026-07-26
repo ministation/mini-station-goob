@@ -1,0 +1,17 @@
+ert-admin-window-subtitle = Управление ожидающими вызовами и отправка отрядов
+ert-admin-settings-title = Настройки
+ert-admin-cooldown-label = Задержка (сек)
+ert-admin-points-label = Бюджет очков
+ert-admin-actions-label = Действия
+ert-admin-apply-button = Применить
+ert-admin-refresh-button = Обновить
+ert-admin-expected-title = Ожидающие вызовы
+ert-admin-teams-title = Отряды для отправки
+ert-admin-delete-button = Удалить вызов
+ert-admin-edit-title = Редактировать выбранный вызов
+ert-admin-arrival-label = Время прибытия (сек)
+ert-admin-reason-label = Цель вызова
+ert-admin-set-reason-button = Цель
+ert-admin-send-title = Отправить новый отряд
+ert-admin-send-reason-label = Цель вызова
+ert-admin-send-button = Отправить отряд ОБР

@@ -441,11 +441,43 @@
 
 - type: listing
   id: ERTCallGammaEnergyShield
-  name: Энергетический щит
-  description: Персональный энергетический щит.
-  productEntity: EnergyShield
+  name: Купол «Черепаха»
+  description: Переносной энергетический купол BR-40c Turtle.
+  productEntity: EnergyDomeTurtle
   cost:
     Productunit: 6
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedHolster
+  name: Плечевая кобура ОБР
+  description: Углублённая плечевая кобура. Вмещает крупное оружие.
+  icon: { sprite: Clothing/Belt/holster.rsi, state: icon }
+  productEntity: ClothingBeltHolsterERT
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+
+- type: listing
+  id: ERTCallGammaHolster
+  name: Плечевая кобура ОБР
+  description: Углублённая плечевая кобура. Вмещает крупное оружие.
+  icon: { sprite: Clothing/Belt/holster.rsi, state: icon }
+  productEntity: ClothingBeltHolsterERT
+  cost:
+    Productunit: 1
   categories:
   - UplinkERTCallMisc
   conditions:

@@ -4,20 +4,18 @@
   parent: BaseSubdermalImplant
   id: BluespaceLifelineImplant
   name: bluespace lifeline implant
-  description: Teleports the hosts body to Central Command on activation. They will not be able to return.
+  description: Teleports the host to Central Command on activation or death. They lose their belongings and will not be able to return easily.
   categories: [ HideSpawnMenu ]
   components:
   - type: SubdermalImplant
-    permanent: true
+    permanent: false
     implantAction: ActionActivateBluespaceLifeline
   - type: MansusGraspBlockTrigger
   - type: TriggerOnMobstateChange
     mobState:
     - Dead
   - type: TriggerOnActivateImplant
-  - type: DeleteParentOnTrigger
-  - type: SpawnOnTrigger
-    proto: BluespaceLifelineSpawnCore
+  - type: TeleportToCentCommOnTrigger
   - type: Tag
     tags:
     - SubdermalImplant

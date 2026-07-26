@@ -1,11 +1,13 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: entity
   name: anomal activity pinpointer
-  description: Indicates the presence of evil spirits and abnormal activity. Please restart before use!
+  description: Tracks cult monuments, Ratvar portals, Nar'Sie rending runes, heretics and devils. Alt-click / verb to change mode.
   id: PinpointerCult
   parent: [PinpointerBase, BaseCommandContraband]
   components:
   - type: Pinpointer
-    whitelist:
-      components:
-      - Monument
-    targetName: pinpointer-cult-monument-target
+    canTargetMultiple: true
+    updateTargetName: false
+    targetName: pinpointer-cult-mode-auto
+  - type: CultThreatPinpointer

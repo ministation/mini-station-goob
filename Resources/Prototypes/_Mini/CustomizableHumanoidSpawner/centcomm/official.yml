@@ -113,6 +113,7 @@
     - Plasmaman
     - Feroxi
     - Hydrakin
+    - Tajaran
   randomizeName: false
   components:
     - type: NpcFactionMember
@@ -121,6 +122,9 @@
     - type: AutoImplant
       implants:
       - MindShieldImplant
+      - FreedomImplant
+      - BluespaceLifelineImplant
+      - RadioImplantCentcomm
       - DeathRattleImplantCentcomm
       - TrackingImplant
     - type: ErtStaff
