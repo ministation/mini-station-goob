@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: shader
+  id: SpriteHalfClip
+  kind: source
+  path: "/Textures/_Mini/Shaders/sprite_half_clip.swsl"
+  params:
+    keepRight: 0
+
+- type: shader
+  id: SpriteFootHalfClip
+  kind: source
+  path: "/Textures/_Mini/Shaders/sprite_foot_half_clip.swsl"
+  params:
+    keepRight: 0
+    footCut: 0.35
+
+- type: shader
+  id: SpriteFootHole
+  kind: source
+  path: "/Textures/_Mini/Shaders/sprite_foot_hole.swsl"
+  params:
+    footCut: 0.35
+
+- type: shader
+  id: SpriteFootBand
+  kind: source
+  path: "/Textures/_Mini/Shaders/sprite_foot_band.swsl"
+  params:
+    footCut: 0.35

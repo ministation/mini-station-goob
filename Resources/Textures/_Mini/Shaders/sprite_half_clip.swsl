@@ -1,0 +1,10 @@
+// Clip one horizontal half using local quad coords (UV2 = 0..1 across the sprite).
+// Do NOT use atlas UV — that is almost never near 0.5 for RSI frames.
+uniform highp float keepRight;
+
+void fragment()
+{
+    highp vec4 tex = zTexture(UV);
+    bool keep = keepRight > 0.5 ? (UV2.x >= 0.5) : (UV2.x < 0.5);
+    COLOR = keep ? tex : vec4(0.0);
+}
