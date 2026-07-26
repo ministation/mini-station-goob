@@ -4,6 +4,7 @@ using System.Numerics;
 using Content.Client.Clothing;
 using Content.Client.Inventory;
 using Content.Shared._Mini.FootWalk;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Inventory.Events;
@@ -17,7 +18,9 @@ using Content.Shared.Standing;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Utility;
+using Robust.Shared.Configuration;
 using Robust.Shared.Graphics.RSI;
+using Robust.Shared.Maths;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -49,6 +52,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     [Dependency] private MarkingManager _markings = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IEyeManager _eye = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+
+    private bool _enabled = true;
 
     private EntityQuery<SpriteComponent> _spriteQuery;
     private EntityQuery<PhysicsComponent> _physicsQuery;
@@ -87,6 +94,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         _humanoidQuery = GetEntityQuery<HumanoidAppearanceComponent>();
         _invSlotsQuery = GetEntityQuery<InventorySlotsComponent>();
 
+        _cfg.OnValueChanged(MiniCCVars.FootWalkAnimationEnabled, enabled =>
+        {
+            _enabled = enabled;
+            if (!enabled)
+                DisableAllAnimations();
+        }, true);
+
         SubscribeLocalEvent<FootWalkAnimationComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<FootWalkAnimationComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<FootWalkAnimationComponent, DidEquipEvent>(OnDidEquip);
@@ -102,11 +116,11 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
     private void OnShutdown(Entity<FootWalkAnimationComponent> ent, ref ComponentShutdown args)
     {
+        if (_spriteQuery.TryGetComponent(ent.Owner, out var sprite))
+            SetBodyFeetHidden(ent, sprite, hide: false);
+
         ResetLowerBody(ent);
-        ClearShoeSplits(ent);
-        ClearOuterSplits(ent);
-        ClearOuterSideBands(ent);
-        ent.Comp.ClothingSplitsActive = false;
+        ClearClothingWalkLayers(ent);
     }
 
     private void OnDidEquip(Entity<FootWalkAnimationComponent> ent, ref DidEquipEvent args)
@@ -115,20 +129,21 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             return;
 
         // Force rebuild next frame for current facing.
-        ent.Comp.ClothingSplitsActive = false;
-        ClearShoeSplits(ent);
-        ClearOuterSplits(ent);
-        ClearOuterSideBands(ent);
+        ClearClothingWalkLayers(ent);
     }
 
     private void OnDidUnequip(Entity<FootWalkAnimationComponent> ent, ref DidUnequipEvent args)
     {
         if (args.Slot == ShoesSlot)
+        {
             ClearShoeSplits(ent);
+            ent.Comp.ClothingMode = 0;
+        }
         else if (args.Slot == OuterSlot)
         {
-            ClearOuterSplits(ent);
-            ClearOuterSideBands(ent);
+            ClearOuterSplits(ent, clearHole: false);
+            ClearOuterSideBands(ent, clearHole: true);
+            ent.Comp.ClothingMode = 0;
         }
     }
 
@@ -137,14 +152,14 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (args.ContainerId is not (ShoesSlot or OuterSlot))
             return;
 
-        ent.Comp.ClothingSplitsActive = false;
-        ClearShoeSplits(ent);
-        ClearOuterSplits(ent);
-        ClearOuterSideBands(ent);
+        ClearClothingWalkLayers(ent);
     }
 
     public override void FrameUpdate(float frameTime)
     {
+        if (!_enabled)
+            return;
+
         var query = EntityQueryEnumerator<FootWalkAnimationComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var walk, out _))
         {
@@ -157,13 +172,20 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 || !HasLowerBodyVisuals(uid, sprite))
             {
                 ClearClothingWalkLayers((uid, walk));
+                SetBodyFeetHidden((uid, walk), sprite, hide: false);
                 ResetLowerBody((uid, walk), sprite);
                 continue;
             }
 
-            var facing = _xform.GetWorldRotation(uid).ToRsiDirection(RsiDirectionType.Dir4);
-            var useSplits = facing is RsiDirection.South or RsiDirection.North;
-            EnsureClothingSplits((uid, walk), useSplits);
+            // Must match sprite RSI direction (world + eye), otherwise camera turns invert bob / wrong mode.
+            var facing = GetScreenFacing(uid);
+            var frontMode = facing is RsiDirection.South or RsiDirection.North;
+            EnsureClothingMode((uid, walk), frontMode);
+
+            var hasShoes = HasSlotVisuals(uid, ShoesSlot);
+            var hasOuter = HasSlotVisuals(uid, OuterSlot);
+            // Never show bare feet under shoes or a hardsuit boot band/hole.
+            SetBodyFeetHidden((uid, walk), sprite, hide: hasShoes || hasOuter);
 
             var speed = physics.LinearVelocity.Length();
             walk.Phase += frameTime * walk.CycleSpeed * GetStepRate(uid, walk, speed);
@@ -180,45 +202,64 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             var leftY = MathF.Max(0f, MathF.Sin(walk.Phase)) * leftAmp;
             var rightY = MathF.Max(0f, MathF.Sin(walk.Phase + MathF.PI)) * rightAmp;
 
+            // Side near foot (the one toward the camera for E/W sprites).
+            var nearY = facing == RsiDirection.East ? rightY : leftY;
+
             ResetLowerBody((uid, walk), sprite, clearTouched: false);
             walk.TouchedEnumLayers.Clear();
             walk.TouchedStringLayers.Clear();
 
             _humanoidQuery.TryGetComponent(uid, out var humanoid);
 
-            if (useSplits)
+            if (frontMode)
             {
-                ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY));
-                ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY));
-
-                // South: texture left ≈ RFoot. North mirrors L/R on the sheet.
+                // South: sprite left ≈ RFoot. North mirrors L/R on the sheet (clothing only).
+                // Body layers stay anatomical L/R — never invert with the camera sheet.
                 var invert = facing == RsiDirection.North;
+
+                ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
+                ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
+
                 ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
                 ApplySplitHalves((uid, sprite), walk, walk.OuterSplitKeys, leftY, rightY, invert);
             }
             else
             {
-                // Side states: one clothing sprite covers both feet. If boots/suit lift alone,
-                // the lower body peeks through the punched hole — keep body glued to clothing Y.
-                var sideY = MathF.Max(leftY, rightY);
-                var covered = walk.OuterSideBandKeys.Count > 0 || HasSlotVisuals(uid, ShoesSlot);
-
-                if (covered)
+                // Side: one silhouette — clothing lifts with near foot; don't alternate bare feet under boots.
+                if (hasOuter)
                 {
-                    var cover = new Vector2(0f, sideY);
-                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, cover);
-                    ApplySide((uid, sprite), walk, humanoid, RightLayers, cover);
+                    // Full suit: legs must move with the boot band or flesh peeks through the hole.
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: true);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, nearY), skipFeet: true);
+                }
+                else if (hasShoes)
+                {
+                    // Pants + shoes: legs can alternate; feet stay hidden under shoes.
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: true);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: true);
                 }
                 else
                 {
-                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY));
-                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY));
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: false);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: false);
                 }
 
-                ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, sideY);
-                ApplySideBandOffset((uid, sprite), walk, sideY);
+                if (hasShoes)
+                    ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, nearY);
+
+                if (hasOuter)
+                    ApplySideBandOffset((uid, sprite), walk, nearY);
             }
         }
+    }
+
+    /// <summary>
+    /// On-screen RSI facing — same angle sprites use (worldRotation + eyeRotation).
+    /// </summary>
+    private RsiDirection GetScreenFacing(EntityUid uid)
+    {
+        var angle = (_xform.GetWorldRotation(uid) + _eye.CurrentEye.Rotation).Reduced().FlipPositive();
+        return angle.ToRsiDirection(RsiDirectionType.Dir4);
     }
 
     private bool HasSlotVisuals(EntityUid uid, string slot)
@@ -228,15 +269,68 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                && keys.Count > 0;
     }
 
+    private void SetBodyFeetHidden(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite, bool hide)
+    {
+        if (ent.Comp.BodyFeetHidden == hide)
+            return;
+
+        foreach (var layer in new[] { HumanoidVisualLayers.LFoot, HumanoidVisualLayers.RFoot })
+        {
+            if (!_sprite.LayerMapTryGet((ent.Owner, sprite), layer, out var index, false))
+                continue;
+
+            _sprite.LayerSetVisible((ent.Owner, sprite), index, !hide);
+        }
+
+        // Foot markings ride with the foot layer — hide when covering clothing is on.
+        if (_humanoidQuery.TryGetComponent(ent.Owner, out var humanoid))
+            SetFootMarkingsVisible((ent.Owner, sprite), humanoid, visible: !hide);
+
+        ent.Comp.BodyFeetHidden = hide;
+    }
+
+    private void SetFootMarkingsVisible(
+        Entity<SpriteComponent> ent,
+        HumanoidAppearanceComponent humanoid,
+        bool visible)
+    {
+        foreach (var part in new[] { HumanoidVisualLayers.LFoot, HumanoidVisualLayers.RFoot })
+        {
+            var category = MarkingCategoriesConversion.FromHumanoidVisualLayers(part);
+            if (!humanoid.MarkingSet.TryGetCategory(category, out var list))
+                continue;
+
+            foreach (var marking in list)
+            {
+                if (!_markings.TryGetMarking(marking, out var proto))
+                    continue;
+
+                foreach (var spriteSpec in proto.Sprites)
+                {
+                    if (spriteSpec is not SpriteSpecifier.Rsi rsi)
+                        continue;
+
+                    var key = $"{proto.ID}-{rsi.RsiState}";
+                    if (_sprite.LayerMapTryGet(ent.AsNullable(), key, out var index, false))
+                        _sprite.LayerSetVisible(ent.AsNullable(), index, visible);
+                }
+            }
+        }
+    }
+
     private void ApplySide(
         Entity<SpriteComponent?> ent,
         FootWalkAnimationComponent walk,
         HumanoidAppearanceComponent? humanoid,
         HumanoidVisualLayers[] layers,
-        Vector2 offset)
+        Vector2 offset,
+        bool skipFeet = false)
     {
         foreach (var layer in layers)
         {
+            if (skipFeet && layer is HumanoidVisualLayers.LFoot or HumanoidVisualLayers.RFoot)
+                continue;
+
             SetLayerOffset(ent, walk, layer, offset);
             OffsetMarkingsForPart(ent, walk, humanoid, layer, offset);
         }
@@ -330,29 +424,64 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             SetLayerOffset(ent, walk, key, offset);
     }
 
-    private void EnsureClothingSplits(Entity<FootWalkAnimationComponent> ent, bool useSplits)
+    private void EnsureClothingMode(Entity<FootWalkAnimationComponent> ent, bool frontMode)
     {
-        if (useSplits)
-        {
-            if (ent.Comp.OuterSideBandKeys.Count > 0)
-                ClearOuterSideBands(ent);
+        var desired = frontMode ? (byte) 1 : (byte) 2;
+        var cutChanged = !float.IsNaN(ent.Comp.AppliedOuterFootCut)
+                         && !MathHelper.CloseToPercent(ent.Comp.AppliedOuterFootCut, ent.Comp.OuterFootCut);
 
-            EnsureShoeSplits(ent, forceRebuild: !ent.Comp.ClothingSplitsActive);
-            EnsureOuterSplits(ent, forceRebuild: !ent.Comp.ClothingSplitsActive);
-            ent.Comp.ClothingSplitsActive = true;
-            return;
+        if (cutChanged)
+        {
+            // Foot-cut param changed — rebuild outer layers once.
+            ClearOuterSplits(ent, clearHole: false);
+            ClearOuterSideBands(ent, clearHole: true);
+            ent.Comp.ClothingMode = 0;
         }
 
-        if (ent.Comp.ClothingSplitsActive
-            || ent.Comp.ShoeSplitKeys.Count > 0
-            || ent.Comp.OuterSplitKeys.Count > 0)
-        {
-            ClearShoeSplits(ent);
-            ClearOuterSplits(ent);
-            ent.Comp.ClothingSplitsActive = false;
-        }
-
+        // Build both front halves and side bands once; facing only toggles visibility.
+        EnsureShoeSplits(ent, forceRebuild: ent.Comp.ShoeSplitKeys.Count == 0);
+        EnsureOuterSplits(ent, forceRebuild: ent.Comp.OuterSplitKeys.Count == 0);
         EnsureOuterSideBands(ent, forceRebuild: ent.Comp.OuterSideBandKeys.Count == 0);
+        ent.Comp.ClothingSplitsActive = true;
+        ent.Comp.AppliedOuterFootCut = ent.Comp.OuterFootCut;
+
+        if (ent.Comp.ClothingMode == desired)
+            return;
+
+        SetClothingModeVisible(ent, frontMode);
+        ent.Comp.ClothingMode = desired;
+    }
+
+    private void SetClothingModeVisible(Entity<FootWalkAnimationComponent> ent, bool frontMode)
+    {
+        if (!_spriteQuery.TryGetComponent(ent.Owner, out var sprite))
+            return;
+
+        // Shoes: front = L/R halves, side = full sprite (X-cut looks wrong on E/W).
+        foreach (var key in ent.Comp.HiddenShoeKeys)
+        {
+            if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
+                _sprite.LayerSetVisible((ent.Owner, sprite), index, !frontMode);
+        }
+
+        foreach (var key in ent.Comp.ShoeSplitKeys)
+        {
+            if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
+                _sprite.LayerSetVisible((ent.Owner, sprite), index, frontMode);
+        }
+
+        // Outer: front = X-halves, side = Y-band. Same hole on the base suit.
+        foreach (var key in ent.Comp.OuterSplitKeys)
+        {
+            if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
+                _sprite.LayerSetVisible((ent.Owner, sprite), index, frontMode);
+        }
+
+        foreach (var key in ent.Comp.OuterSideBandKeys)
+        {
+            if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
+                _sprite.LayerSetVisible((ent.Owner, sprite), index, !frontMode);
+        }
     }
 
     private void EnsureShoeSplits(Entity<FootWalkAnimationComponent> ent, bool forceRebuild)
@@ -380,14 +509,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            _sprite.LayerSetVisible((ent.Owner, sprite), key, false);
+            // Track originals; visibility is set by ClothingMode (start hidden until mode applied).
             ent.Comp.HiddenShoeKeys.Add(key);
 
             var displacementKey = $"{key}-displacement";
             if (slots.VisualLayerKeys[ShoesSlot].Contains(displacementKey)
                 && _sprite.LayerMapTryGet((ent.Owner, sprite), displacementKey, out _, false))
             {
-                _sprite.LayerSetVisible((ent.Owner, sprite), displacementKey, false);
                 ent.Comp.HiddenShoeKeys.Add(displacementKey);
             }
 
@@ -421,6 +549,20 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 ent.Comp.ShoeSplitKeys,
                 footCut: null);
         }
+
+        // Default to current mode if already known, else hide halves until SetClothingModeVisible.
+        if (ent.Comp.ClothingMode == 1)
+            SetClothingModeVisible(ent, frontMode: true);
+        else if (ent.Comp.ClothingMode == 2)
+            SetClothingModeVisible(ent, frontMode: false);
+        else
+        {
+            foreach (var key in ent.Comp.ShoeSplitKeys)
+            {
+                if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
+                    _sprite.LayerSetVisible((ent.Owner, sprite), index, false);
+            }
+        }
     }
 
     private void EnsureOuterSplits(Entity<FootWalkAnimationComponent> ent, bool forceRebuild)
@@ -428,39 +570,27 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (!_spriteQuery.TryGetComponent(ent.Owner, out var sprite)
             || !_invSlotsQuery.TryGetComponent(ent.Owner, out var slots))
         {
-            ClearOuterSplits(ent);
+            ClearOuterSplits(ent, clearHole: true);
             return;
         }
 
         if (!TryGetSourceKeys(slots, OuterSlot, out var sourceKeys))
         {
-            ClearOuterSplits(ent);
+            ClearOuterSplits(ent, clearHole: true);
             return;
         }
 
         if (!forceRebuild && SplitsMatch(ent.Comp.OuterSplitKeys, sourceKeys))
             return;
 
-        ClearOuterSplits(ent, sprite);
+        ClearOuterSplits(ent, sprite, clearHole: false);
 
         foreach (var key in sourceKeys)
         {
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            // Punch foot band out of the full suit so halves can bob without double boots.
-            var hole = _prototypes.Index(FootHoleShader).InstanceUnique();
-            hole.SetParameter("footCut", ent.Comp.OuterFootCut);
-            sprite.LayerSetShader(key, hole, FootHoleShader.Id);
-            ent.Comp.HoledOuterKeys.Add(key);
-
-            var displacementKey = $"{key}-displacement";
-            if (slots.VisualLayerKeys[OuterSlot].Contains(displacementKey)
-                && _sprite.LayerMapTryGet((ent.Owner, sprite), displacementKey, out _, false))
-            {
-                _sprite.LayerSetVisible((ent.Owner, sprite), displacementKey, false);
-                ent.Comp.HoledOuterKeys.Add(displacementKey);
-            }
+            EnsureOuterHole(ent, sprite, key, slots);
 
             if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
                 continue;
@@ -492,6 +622,16 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 ent.Comp.OuterSplitKeys,
                 ent.Comp.OuterFootCut);
         }
+
+        // Hide until mode selects front.
+        if (ent.Comp.ClothingMode != 1)
+        {
+            foreach (var key in ent.Comp.OuterSplitKeys)
+            {
+                if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
+                    _sprite.LayerSetVisible((ent.Owner, sprite), index, false);
+            }
+        }
     }
 
     private void EnsureOuterSideBands(Entity<FootWalkAnimationComponent> ent, bool forceRebuild)
@@ -499,38 +639,27 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (!_spriteQuery.TryGetComponent(ent.Owner, out var sprite)
             || !_invSlotsQuery.TryGetComponent(ent.Owner, out var slots))
         {
-            ClearOuterSideBands(ent);
+            ClearOuterSideBands(ent, clearHole: true);
             return;
         }
 
         if (!TryGetSourceKeys(slots, OuterSlot, out var sourceKeys))
         {
-            ClearOuterSideBands(ent);
+            ClearOuterSideBands(ent, clearHole: true);
             return;
         }
 
         if (!forceRebuild && SideBandsMatch(ent.Comp.OuterSideBandKeys, sourceKeys))
             return;
 
-        ClearOuterSideBands(ent, sprite);
+        ClearOuterSideBands(ent, sprite, clearHole: false);
 
         foreach (var key in sourceKeys)
         {
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            var hole = _prototypes.Index(FootHoleShader).InstanceUnique();
-            hole.SetParameter("footCut", ent.Comp.OuterFootCut);
-            sprite.LayerSetShader(key, hole, FootHoleShader.Id);
-            ent.Comp.HoledOuterKeys.Add(key);
-
-            var displacementKey = $"{key}-displacement";
-            if (slots.VisualLayerKeys[OuterSlot].Contains(displacementKey)
-                && _sprite.LayerMapTryGet((ent.Owner, sprite), displacementKey, out _, false))
-            {
-                _sprite.LayerSetVisible((ent.Owner, sprite), displacementKey, false);
-                ent.Comp.HoledOuterKeys.Add(displacementKey);
-            }
+            EnsureOuterHole(ent, sprite, key, slots);
 
             if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
                 continue;
@@ -548,7 +677,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             _sprite.LayerSetColor(layer, src.Color);
             _sprite.LayerSetOffset(layer, src.Offset);
             _sprite.LayerSetScale(layer, src.Scale);
-            _sprite.LayerSetVisible(layer, true);
+            _sprite.LayerSetVisible(layer, ent.Comp.ClothingMode == 2);
             _sprite.LayerSetAutoAnimated(layer, src.AutoAnimated);
             _sprite.LayerSetDirOffset(layer, src.DirOffset);
 
@@ -556,6 +685,29 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             shader.SetParameter("footCut", ent.Comp.OuterFootCut);
             sprite.LayerSetShader(bandKey, shader, FootBandShader.Id);
             ent.Comp.OuterSideBandKeys.Add(bandKey);
+        }
+    }
+
+    private void EnsureOuterHole(
+        Entity<FootWalkAnimationComponent> ent,
+        SpriteComponent sprite,
+        string key,
+        InventorySlotsComponent slots)
+    {
+        if (!ent.Comp.HoledOuterKeys.Contains(key))
+        {
+            var hole = _prototypes.Index(FootHoleShader).InstanceUnique();
+            hole.SetParameter("footCut", ent.Comp.OuterFootCut);
+            sprite.LayerSetShader(key, hole, FootHoleShader.Id);
+            ent.Comp.HoledOuterKeys.Add(key);
+        }
+
+        var displacementKey = $"{key}-displacement";
+        if (slots.VisualLayerKeys[OuterSlot].Contains(displacementKey)
+            && _sprite.LayerMapTryGet((ent.Owner, sprite), displacementKey, out _, false)
+            && ent.Comp.HoledOuterKeys.Add(displacementKey))
+        {
+            _sprite.LayerSetVisible((ent.Owner, sprite), displacementKey, false);
         }
     }
 
@@ -667,7 +819,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         ent.Comp.HiddenShoeKeys.Clear();
     }
 
-    private void ClearOuterSplits(Entity<FootWalkAnimationComponent> ent, SpriteComponent? sprite = null)
+    private void ClearOuterSplits(
+        Entity<FootWalkAnimationComponent> ent,
+        SpriteComponent? sprite = null,
+        bool clearHole = true)
     {
         if (sprite == null)
             _spriteQuery.TryGetComponent(ent.Owner, out sprite);
@@ -677,22 +832,19 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             foreach (var key in ent.Comp.OuterSplitKeys)
                 _sprite.RemoveLayer((ent.Owner, sprite), key, logMissing: false);
 
-            foreach (var key in ent.Comp.HoledOuterKeys)
-            {
-                if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
-                    continue;
-
-                // Restore visibility if we hid displacement; clear foot-hole shader.
-                _sprite.LayerSetVisible((ent.Owner, sprite), index, true);
-                sprite.LayerSetShader(index, shader: null, prototype: null);
-            }
+            if (clearHole)
+                ClearOuterHoles(ent, sprite);
         }
 
         ent.Comp.OuterSplitKeys.Clear();
-        ent.Comp.HoledOuterKeys.Clear();
+        if (clearHole)
+            ent.Comp.HoledOuterKeys.Clear();
     }
 
-    private void ClearOuterSideBands(Entity<FootWalkAnimationComponent> ent, SpriteComponent? sprite = null)
+    private void ClearOuterSideBands(
+        Entity<FootWalkAnimationComponent> ent,
+        SpriteComponent? sprite = null,
+        bool clearHole = true)
     {
         if (sprite == null)
             _spriteQuery.TryGetComponent(ent.Owner, out sprite);
@@ -702,18 +854,25 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             foreach (var key in ent.Comp.OuterSideBandKeys)
                 _sprite.RemoveLayer((ent.Owner, sprite), key, logMissing: false);
 
-            foreach (var key in ent.Comp.HoledOuterKeys)
-            {
-                if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
-                    continue;
-
-                _sprite.LayerSetVisible((ent.Owner, sprite), index, true);
-                sprite.LayerSetShader(index, shader: null, prototype: null);
-            }
+            if (clearHole)
+                ClearOuterHoles(ent, sprite);
         }
 
         ent.Comp.OuterSideBandKeys.Clear();
-        ent.Comp.HoledOuterKeys.Clear();
+        if (clearHole)
+            ent.Comp.HoledOuterKeys.Clear();
+    }
+
+    private void ClearOuterHoles(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
+    {
+        foreach (var key in ent.Comp.HoledOuterKeys)
+        {
+            if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
+                continue;
+
+            _sprite.LayerSetVisible((ent.Owner, sprite), index, true);
+            sprite.LayerSetShader(index, shader: null, prototype: null);
+        }
     }
 
     private void SetLayerOffset(
@@ -763,6 +922,20 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         return baseRate * slowFactor;
     }
 
+    private void DisableAllAnimations()
+    {
+        var query = EntityQueryEnumerator<FootWalkAnimationComponent>();
+        while (query.MoveNext(out var uid, out var walk))
+        {
+            ClearClothingWalkLayers((uid, walk));
+            if (_spriteQuery.TryGetComponent(uid, out var sprite))
+            {
+                SetBodyFeetHidden((uid, walk), sprite, hide: false);
+                ResetLowerBody((uid, walk), sprite);
+            }
+        }
+    }
+
     private bool CanAnimate(EntityUid uid)
     {
         if (_borgQuery.HasComp(uid))
@@ -784,12 +957,21 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             && ent.Comp.ShoeSplitKeys.Count == 0
             && ent.Comp.OuterSplitKeys.Count == 0
             && ent.Comp.OuterSideBandKeys.Count == 0)
+        {
+            if (_spriteQuery.TryGetComponent(ent.Owner, out var idleSprite))
+                SetBodyFeetHidden(ent, idleSprite, hide: false);
             return;
+        }
 
         ClearShoeSplits(ent);
-        ClearOuterSplits(ent);
-        ClearOuterSideBands(ent);
+        ClearOuterSplits(ent, clearHole: false);
+        ClearOuterSideBands(ent, clearHole: true);
         ent.Comp.ClothingSplitsActive = false;
+        ent.Comp.ClothingMode = 0;
+        ent.Comp.AppliedOuterFootCut = float.NaN;
+
+        if (_spriteQuery.TryGetComponent(ent.Owner, out var sprite))
+            SetBodyFeetHidden(ent, sprite, hide: false);
     }
 
     private bool HasLowerBodyVisuals(EntityUid uid, SpriteComponent sprite)

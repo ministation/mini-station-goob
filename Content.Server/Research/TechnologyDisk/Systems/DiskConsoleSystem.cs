@@ -147,10 +147,8 @@ public sealed class DiskConsoleSystem : EntitySystem
         if (serverComp.Points < component.PricePerDisk)
             return false;
 
-        _research.ModifyServerPoints(server.Value, -component.PricePerDisk, serverComp);
-        _research.LogNetworkEvent(server.Value, "disk", Loc.GetString("research-netlog-disk-printing-started", ("points", component.PricePerDisk), ("user", _research.GetResearchLogUserName(actor))), actor, serverComp); // Orion
-        _audio.PlayPvs(component.PrintSound, uid);
-
+        // Mark printing before deducting points — ModifyServerPoints raises PointsChanged
+        // synchronously and would re-enter TryStartAutoPrint otherwise (stack overflow).
         var printing = EnsureComp<DiskConsolePrintingComponent>(uid);
         printing.FinishTime = _timing.CurTime + component.PrintDuration;
         // Orion-Start
@@ -158,6 +156,11 @@ public sealed class DiskConsoleSystem : EntitySystem
         printing.Server = server.Value;
         printing.Price = component.PricePerDisk;
         // Orion-End
+
+        _research.ModifyServerPoints(server.Value, -component.PricePerDisk, serverComp);
+        _research.LogNetworkEvent(server.Value, "disk", Loc.GetString("research-netlog-disk-printing-started", ("points", component.PricePerDisk), ("user", _research.GetResearchLogUserName(actor))), actor, serverComp); // Orion
+        _audio.PlayPvs(component.PrintSound, uid);
+
         return true;
     }
 
@@ -224,7 +227,11 @@ public sealed class DiskConsoleSystem : EntitySystem
 
     private void OnPointsChanged(EntityUid uid, DiskConsoleComponent component, ref ResearchServerPointsChangedEvent args)
     {
-        TryStartAutoPrint(uid, component);
+        // Only auto-start when points increase (e.g. research disk). Deducting print cost
+        // also fires this event and must not re-enter TryStartPrinting.
+        if (args.Delta > 0)
+            TryStartAutoPrint(uid, component);
+
         UpdateUserInterface(uid, component);
     }
 

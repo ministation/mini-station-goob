@@ -44,11 +44,11 @@ public sealed partial class FootWalkAnimationComponent : Component
     public float SideFarAmplitudeFactor = 0.4f;
 
     /// <summary>
-    /// Local UV height of the foot band on full-body clothing (hardsuits).
-    /// UV2.y == 0 at sprite bottom.
+    /// Local UV height of the boot band on full-body clothing (hardsuits).
+    /// Keep low so only boots move, not the whole lower suit (avoids solid hop).
     /// </summary>
     [DataField]
-    public float OuterFootCut = 0.35f;
+    public float OuterFootCut = 0.2f;
 
     /// <summary>
     /// Client-only walk cycle phase (radians).
@@ -69,32 +69,51 @@ public sealed partial class FootWalkAnimationComponent : Component
     public readonly List<string> ShoeSplitKeys = new();
 
     /// <summary>
-    /// Original shoe layers currently hidden while splits are active.
+    /// Original shoe layers currently tracked (hidden on front, shown on side).
     /// </summary>
     [ViewVariables]
     public readonly HashSet<string> HiddenShoeKeys = new();
 
     /// <summary>
-    /// Runtime outerClothing foot-half layers (N/S).
+    /// Runtime outerClothing foot-half layers (front N/S).
     /// </summary>
     [ViewVariables]
     public readonly List<string> OuterSplitKeys = new();
 
     /// <summary>
-    /// Runtime outerClothing foot-band layers (E/W, no X-split).
+    /// Runtime outerClothing foot-band layers (side E/W).
     /// </summary>
     [ViewVariables]
     public readonly List<string> OuterSideBandKeys = new();
 
     /// <summary>
-    /// Original outerClothing layers that had a foot-hole shader applied.
+    /// Original outerClothing layers with foot-hole shader.
     /// </summary>
     [ViewVariables]
     public readonly HashSet<string> HoledOuterKeys = new();
 
     /// <summary>
-    /// True while N/S half-split clothing layers are active (false on E/W).
+    /// True while any clothing walk layers are built (front halves and/or side bands).
     /// </summary>
     [ViewVariables]
     public bool ClothingSplitsActive;
+
+    /// <summary>
+    /// Last applied clothing mode so facing changes only toggle visibility.
+    /// 0 = none, 1 = front (N/S halves), 2 = side (E/W band).
+    /// </summary>
+    [ViewVariables]
+    public byte ClothingMode;
+
+    /// <summary>
+    /// OuterFootCut last applied to hole/band/half shaders (forces rebuild on change).
+    /// </summary>
+    [ViewVariables]
+    public float AppliedOuterFootCut = float.NaN;
+
+    /// <summary>
+    /// True while LFoot/RFoot sprite layers are hidden because shoes or outer clothing cover them.
+    /// </summary>
+    [ViewVariables]
+    public bool BodyFeetHidden;
 }
