@@ -58,7 +58,7 @@
 
 - type: ertTeam
   id: Blue
-  name: ОП: отряд поддержки
+  name: "ОП: отряд поддержки"
   startAnnouncement: station-event-response-team-arrival
   startAudio:
     path: /Audio/_Mini/Announcements/ERT/spawn.ogg
