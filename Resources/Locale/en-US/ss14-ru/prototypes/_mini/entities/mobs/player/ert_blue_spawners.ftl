@@ -1,6 +1,9 @@
 ent-RandomHumanoidSpawnerERTLeaderBlue = OP commander
     .suffix = ERTRole, Blue
+    .desc = { "" }
 ent-RandomHumanoidSpawnerERTSecurityBlue = OP officer
     .suffix = ERTRole, Blue
+    .desc = { "" }
 ent-RandomHumanoidSpawnerERTMedicalBlue = OP medic
     .suffix = ERTRole, Blue
+    .desc = { "" }
