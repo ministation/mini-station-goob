@@ -14,19 +14,19 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// Peak lift in sprite units. ~2.8px at 32 PPCM.
     /// </summary>
     [DataField]
-    public float Amplitude = 2.8f / 32f;
+    public float Amplitude = 2.5f / 32f;
 
     /// <summary>
     /// Walk cycle speed in radians per second at a normal walk.
     /// </summary>
     [DataField]
-    public float CycleSpeed = 10f;
+    public float CycleSpeed = 9f;
 
     [DataField]
     public float WalkRate = 0.6375f;
 
     [DataField]
-    public float SprintRate = 1.4025f;
+    public float SprintRate = 1.2025f;
 
     [DataField]
     public float MinSlowFactor = 0.35f;
@@ -44,11 +44,11 @@ public sealed partial class FootWalkAnimationComponent : Component
     public float SideFarAmplitudeFactor = 0.4f;
 
     /// <summary>
-    /// Local UV height of the foot band on full-body clothing (hardsuits).
-    /// UV2.y == 0 at sprite bottom.
+    /// Local UV height of the boot band on full-body clothing (hardsuits).
+    /// UV2.y == 0 at sprite bottom. Keep low so only boots move, not calves.
     /// </summary>
     [DataField]
-    public float OuterFootCut = 0.35f;
+    public float OuterFootCut = 0.2f;
 
     /// <summary>
     /// Client-only walk cycle phase (radians).
@@ -97,4 +97,10 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     [ViewVariables]
     public bool ClothingSplitsActive;
+
+    /// <summary>
+    /// OuterFootCut last applied to hole/band shaders (forces rebuild on change).
+    /// </summary>
+    [ViewVariables]
+    public float AppliedOuterFootCut = float.NaN;
 }
