@@ -155,3 +155,52 @@
   name: tts-voice-name-sofia
   sex: Female
   speaker: sofia
+
+# --- Compatibility aliases (old WC3 / specialty IDs still referenced by entities & prefs) ---
+- type: ttsVoice
+  id: Garithos
+  name: tts-voice-name-denis
+  sex: Male
+  speaker: denis
+
+- type: ttsVoice
+  id: Maiev
+  name: tts-voice-name-irina
+  sex: Female
+  speaker: irina
+
+- type: ttsVoice
+  id: Myron
+  name: tts-voice-name-baya
+  sex: Unsexed
+  speaker: baya
+
+- type: ttsVoice
+  id: Robot
+  name: tts-voice-name-aidar
+  sex: Unsexed
+  speaker: aidar
+
+- type: ttsVoice
+  id: Boyar
+  name: tts-voice-name-denis
+  sex: Male
+  speaker: denis
+
+- type: ttsVoice
+  id: Zanud
+  name: tts-voice-name-denis
+  sex: Male
+  speaker: denis
+
+- type: ttsVoice
+  id: Goga
+  name: tts-voice-name-denis
+  sex: Male
+  speaker: denis
+
+- type: ttsVoice
+  id: Vika
+  name: tts-voice-name-irina
+  sex: Female
+  speaker: irina
