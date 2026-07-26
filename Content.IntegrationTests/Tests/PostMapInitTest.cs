@@ -275,11 +275,16 @@ namespace Content.IntegrationTests.Tests
             var cfg = server.ResolveDependency<IConfigurationManager>();
             Assert.That(cfg.GetCVar(CCVars.GridFill), Is.False);
 
-            var shuttleFolder = new ResPath("/Maps/Shuttles");
-            var shuttles = resMan
-                .ContentFindFiles(shuttleFolder)
+            var shuttleFolders = new[]
+            {
+                new ResPath("/Maps/Shuttles"),
+                new ResPath("/Maps/_Mini/Shuttles"),
+            };
+            var shuttles = shuttleFolders
+                .SelectMany(folder => resMan.ContentFindFiles(folder))
                 .Where(filePath =>
                     filePath.Extension == "yml" && !filePath.Filename.StartsWith(".", StringComparison.Ordinal))
+                .Distinct()
                 .ToArray();
 
             await server.WaitPost(() =>

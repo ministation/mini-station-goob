@@ -117,6 +117,18 @@ public abstract class SharedPinpointerSystem : EntitySystem
         // WD EDIT END
     }
 
+    public void SetTargetName(EntityUid uid, string? name, PinpointerComponent? pinpointer = null)
+    {
+        if (!Resolve(uid, ref pinpointer))
+            return;
+
+        if (pinpointer.TargetName == name)
+            return;
+
+        pinpointer.TargetName = name;
+        Dirty(uid, pinpointer);
+    }
+
     /// <summary>
     ///     Update direction from pinpointer to selected target (if it was set)
     /// </summary>

@@ -241,7 +241,9 @@ namespace Content.Server.Genetics.System
 
             if (!_powerReceiverSystem.IsPowered(consoleUid))
             {
-                _uiSystem.CloseUis(consoleUid);
+                // Close only this BUI key so ActivatableUI OnUIClose can clear CurrentSingleUser.
+                if (_uiSystem.IsUiOpen(consoleUid, DnaModifierUiKey.Key))
+                    _uiSystem.CloseUi(consoleUid, DnaModifierUiKey.Key);
                 return;
             }
 

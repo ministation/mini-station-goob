@@ -47,7 +47,7 @@ namespace Content.Client._Mini.ERT.UI
                 {
                     AvailableTeamsList.AddItem(
                         $"{proto.Name} ({price})",
-                        metadata: team.ToString()
+                        metadata: team.Id
                     );
 
                     _availableTeams.Add(proto);

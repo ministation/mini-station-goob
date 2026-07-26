@@ -665,10 +665,16 @@ public sealed partial class DnaModifierSystem : SharedDnaModifierSystem
         if (string.IsNullOrEmpty(component.Upper) || string.IsNullOrEmpty(component.Lowest))
             return;
 
+        // Monkeys/kobolds are HumanoidAppearance too — do not use that to pick form.
+        // Compare prototype / DnaLowest or we recurse: ChangeDna → spawn Lowest → ChangeDna → …
+        var protoId = MetaData(target).EntityPrototype?.ID;
+        var isLowestForm = HasComp<DnaLowestComponent>(target) || protoId == component.Lowest;
+        var isUpperForm = HasComp<DnaModifiedComponent>(target) || protoId == component.Upper;
+
         int hexValue = Convert.ToInt32(enzyme.HexCode[0], 16);
         if (hexValue < 8)
         {
-            if (!HasComp<HumanoidAppearanceComponent>(target))
+            if (isLowestForm)
                 return;
 
             // Zero add an entity
@@ -725,9 +731,6 @@ public sealed partial class DnaModifierSystem : SharedDnaModifierSystem
         }
         else
         {
-            if (HasComp<HumanoidAppearanceComponent>(target))
-                return;
-
             // Minus one check parent
             if (TryComp<DnaLowestComponent>(target, out var dnaLowest) && dnaLowest.Parent != null)
             {
@@ -777,6 +780,9 @@ public sealed partial class DnaModifierSystem : SharedDnaModifierSystem
                 _entManager.DeleteEntity(target);
                 return;
             }
+
+            if (isUpperForm || !isLowestForm)
+                return;
 
             // Zero add an entity
             _buckle.TryUnbuckle(target, target, true);

@@ -1,87 +1,69 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <DefaultWindow xmlns="https://spacestation14.io"
-               xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
+               xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                Title="{Loc 'admin-player-actions-window-ert'}"
-               MinWidth="550"
-               MinHeight="500">
-    <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="8">
-        <!-- Основная панель с двумя списками -->
-        <BoxContainer Orientation="Horizontal" SeparationOverride="10" HorizontalExpand="True" VerticalExpand="True">
-            <!-- Левый список: ожидающие вызовы -->
-            <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" VerticalExpand="True">
-                <Label Text="Ожидающие вызовы" StyleClasses="labelHeading" />
-                <ItemList Name="ExpectedList" HorizontalExpand="True" VerticalExpand="True" MinHeight="150" />
+               MinSize="520 420"
+               SetSize="560 480">
+    <BoxContainer Orientation="Vertical" Margin="6" SeparationOverride="6" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Horizontal">
+            <PanelContainer SetWidth="6">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#1d8bad" />
+                </PanelContainer.PanelOverride>
+            </PanelContainer>
+            <Label Text="{Loc 'admin-player-actions-window-ert'}" StyleClasses="LabelHeading" Margin="6 0 0 0" />
+        </BoxContainer>
 
-                <!-- Кнопки управления для левого списка -->
-                <BoxContainer Orientation="Horizontal" SeparationOverride="8" Margin="0,4,0,0">
-                    <Button Name="DeleteErtButton" Text="Удалить" HorizontalExpand="True" />
-                    <Button Name="RefreshButton" Text="Обновить" HorizontalExpand="True" />
+        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="2">
+                <Label Text="{Loc 'ert-admin-cooldown-label'}" StyleClasses="LabelSubText" />
+                <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                    <LineEdit Name="CooldownSeconds" HorizontalExpand="True" />
+                    <Button Name="SetCooldownButton" Text="{Loc 'ert-admin-apply-button'}" MinWidth="80" />
                 </BoxContainer>
             </BoxContainer>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="2">
+                <Label Text="{Loc 'ert-admin-points-label'}" StyleClasses="LabelSubText" />
+                <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                    <LineEdit Name="PointsEdit" HorizontalExpand="True" />
+                    <Button Name="SetPointsButton" Text="{Loc 'ert-admin-apply-button'}" MinWidth="80" />
+                </BoxContainer>
+            </BoxContainer>
+            <Button Name="RefreshButton" Text="{Loc 'ert-admin-refresh-button'}" VerticalAlignment="Bottom" MinWidth="90" />
+        </BoxContainer>
 
-            <!-- Правый список: отряды для отправки -->
+        <BoxContainer Orientation="Horizontal" SeparationOverride="6" HorizontalExpand="True" VerticalExpand="True">
             <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" VerticalExpand="True">
-                <Label Text="Отряды для отправки" StyleClasses="labelHeading" />
-                <ItemList Name="ResponceList" HorizontalExpand="True" VerticalExpand="True" MinHeight="150" />
+                <Label Text="{Loc 'ert-admin-expected-title'}" StyleClasses="LabelSubText" />
+                <ItemList Name="ExpectedList" MinHeight="140" HorizontalExpand="True" VerticalExpand="True" />
+                <Button Name="DeleteErtButton" Text="{Loc 'ert-admin-delete-button'}" />
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" VerticalExpand="True">
+                <Label Text="{Loc 'ert-admin-teams-title'}" StyleClasses="LabelSubText" />
+                <ItemList Name="ResponceList" MinHeight="140" HorizontalExpand="True" VerticalExpand="True" />
             </BoxContainer>
         </BoxContainer>
 
-        <!-- Панель редактирования выбранного вызова -->
-        <PanelContainer StyleClasses="panel" Margin="0,8,0,0">
-            <BoxContainer Orientation="Vertical" SeparationOverride="6" Margin="8">
-                <Label Text="Редактировать выбранный вызов" StyleClasses="labelHeading" />
-
-                <!-- Первая строка параметров -->
-                <BoxContainer Orientation="Horizontal" SeparationOverride="8">
-                    <BoxContainer Orientation="Vertical" SeparationOverride="2" HorizontalExpand="True">
-                        <Label Text="Время прибытия (сек):" />
-                        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                            <LineEdit Name="ArrivalSeconds" HorizontalExpand="True" />
-                            <Button Name="SetArrivalButton" Text="✓" ToolTip="Установить" StyleClasses="squareButton" SetWidth="30" />
-                        </BoxContainer>
-                    </BoxContainer>
-
-                    <BoxContainer Orientation="Vertical" SeparationOverride="2" HorizontalExpand="True">
-                        <Label Text="Задержка(сек):" />
-                        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                            <LineEdit Name="CooldownSeconds" HorizontalExpand="True" />
-                            <Button Name="SetCooldownButton" Text="✓" ToolTip="Установить" StyleClasses="squareButton" SetWidth="30" />
-                        </BoxContainer>
-                    </BoxContainer>
-                </BoxContainer>
-
-                <!-- Вторая строка параметров -->
-                <BoxContainer Orientation="Horizontal" SeparationOverride="8" Margin="0,4,0,0">
-                    <BoxContainer Orientation="Vertical" SeparationOverride="2" HorizontalExpand="True">
-                        <Label Text="Бюджет очков:" />
-                        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                            <LineEdit Name="PointsEdit" HorizontalExpand="True" />
-                            <Button Name="SetPointsButton" Text="✓" ToolTip="Установить" StyleClasses="squareButton" SetWidth="30" />
-                        </BoxContainer>
-                    </BoxContainer>
-
-                    <BoxContainer Orientation="Vertical" SeparationOverride="2" HorizontalExpand="True">
-                        <Label Text="Цель вызова:" />
-                        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                            <LineEdit Name="ReasonEdit" HorizontalExpand="True" />
-                            <Button Name="SetReasonButton" Text="✓" ToolTip="Установить" StyleClasses="squareButton" SetWidth="30" />
-                        </BoxContainer>
-                    </BoxContainer>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="2">
+                <Label Text="{Loc 'ert-admin-arrival-label'}" StyleClasses="LabelSubText" />
+                <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                    <LineEdit Name="ArrivalSeconds" HorizontalExpand="True" />
+                    <Button Name="SetArrivalButton" Text="{Loc 'ert-admin-apply-button'}" MinWidth="80" />
                 </BoxContainer>
             </BoxContainer>
-        </PanelContainer>
-
-        <!-- Панель отправки нового отряда -->
-        <PanelContainer StyleClasses="panel" Margin="0,8,0,0">
-            <BoxContainer Orientation="Vertical" SeparationOverride="6" Margin="8">
-                <Label Text="Отправить новый отряд" StyleClasses="labelHeading" />
-
-                <BoxContainer Orientation="Vertical" SeparationOverride="4">
-                    <Label Text="Цель вызова:" />
-                    <LineEdit Name="ReasonResponceEdit" HorizontalExpand="True" />
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="2">
+                <Label Text="{Loc 'ert-admin-reason-label'}" StyleClasses="LabelSubText" />
+                <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                    <LineEdit Name="ReasonEdit" HorizontalExpand="True" />
+                    <Button Name="SetReasonButton" Text="{Loc 'ert-admin-set-reason-button'}" MinWidth="80" />
                 </BoxContainer>
-
-                <Button Name="ResponceErtButton" Text="Отправить отряд ОБР" HorizontalExpand="True" Margin="0,8,0,0" />
             </BoxContainer>
-        </PanelContainer>
+        </BoxContainer>
+
+        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+            <LineEdit Name="ReasonResponceEdit" HorizontalExpand="True" PlaceHolder="{Loc 'ert-admin-send-reason-label'}" />
+            <Button Name="ResponceErtButton" Text="{Loc 'ert-admin-send-button'}" MinWidth="160" />
+        </BoxContainer>
     </BoxContainer>
 </DefaultWindow>

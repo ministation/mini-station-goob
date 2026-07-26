@@ -12,7 +12,7 @@
   - type: Projectile
     damage:
       types:
-        Holy: 5
+        Holy: 10
   - type: SolutionContainerManager
     solutions:
       ammo:

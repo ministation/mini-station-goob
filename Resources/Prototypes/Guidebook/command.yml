@@ -4,3 +4,6 @@
   id: Command
   name: guide-entry-command
   text: "/ServerInfo/Guidebook/Command.xml"
+  children:
+  - CentralCommandOfficial # Mini
+  - CentralCommandAssistant # Mini

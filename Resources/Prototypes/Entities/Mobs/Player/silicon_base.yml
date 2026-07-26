@@ -250,6 +250,7 @@
     - type: CanEscapeInventory
     - type: HumanoidAppearance
       species: IPC
+    - type: FootWalkAnimation # Mini: IPC has feet; borg chassis does not inherit this
     - type: Body
       prototype: IPC
       requiredLegs: 2

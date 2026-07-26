@@ -1,0 +1,17 @@
+ert-admin-window-subtitle = Manage pending calls and dispatch teams
+ert-admin-settings-title = Settings
+ert-admin-cooldown-label = Cooldown (sec)
+ert-admin-points-label = Points budget
+ert-admin-actions-label = Actions
+ert-admin-apply-button = Apply
+ert-admin-refresh-button = Refresh
+ert-admin-expected-title = Pending calls
+ert-admin-teams-title = Teams to send
+ert-admin-delete-button = Delete call
+ert-admin-edit-title = Edit selected call
+ert-admin-arrival-label = Arrival time (sec)
+ert-admin-reason-label = Call reason
+ert-admin-set-reason-button = Reason
+ert-admin-send-title = Send a new team
+ert-admin-send-reason-label = Call reason
+ert-admin-send-button = Send ERT team

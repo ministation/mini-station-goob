@@ -1,8 +1,8 @@
 - type: entity
   parent: [BaseItem,  StorePresetUplinkERT]
   id: BaseUplinkBOBERT
-  name: holy store
-  description: Store of Emergency Response Team, powered with bluespace.
+  name: блюспейс магазин экзорцистов
+  description: Священный блюспейс-магазин отряда экзорцистов ОБР.
   suffix: 30 PU
   components:
   - type: Sprite

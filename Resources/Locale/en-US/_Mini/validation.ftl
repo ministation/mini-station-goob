@@ -9,6 +9,7 @@ spawner-loadout-centcomm-officer = CentCom officer loadout
 spawner-loadout-centcomm-operator = CentCom operator loadout
 spawner-loadout-centcomm-soo = Special operations officer loadout
 spawner-loadout-centcomm-official = CentCom official loadout
+loadout-group-centcom-assistant = CentComm intern loadout
 spawner-loadout-centcomm-administrator = CentCom administrator loadout
 spawner-loadout-blueshield = Blueshield officer loadout
 loadout-group-syndicate-backpack = Syndicate back slot

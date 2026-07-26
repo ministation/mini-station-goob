@@ -3,8 +3,10 @@
 using System.Linq;
 using Content.Goobstation.Common.Religion;
 using Content.Goobstation.Shared.Bible;
+using Content.Goobstation.Shared.Devil;
 using Content.Goobstation.Shared.Religion.Nullrod;
 using Content.Server.Heretic.EntitySystems;
+using Content.Shared._DV.CosmicCult.Components;
 using Content.Shared._Shitmed.Medical.Surgery.Wounds.Systems;
 using Content.Shared.Damage;
 using Content.Shared.Heretic;
@@ -14,9 +16,13 @@ using Robust.Shared.Physics.Events;
 using Robust.Shared.Timing;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared.Body.Components;
+using Content.Shared.Body.Part;
 using Content.Shared.Body.Systems;
+using Content.Shared.RPSX.DarkForces.Ratvar.Righteous.Roles;
 using Content.Shared.Timing; // Shitmed Change
 using Content.Shared._Shitmed.Damage; // Shitmed Change
+using Content.Shared.WhiteDream.BloodCult.BloodCultist;
+using Content.Shared.WhiteDream.BloodCult.Constructs;
 
 namespace Content.Goobstation.Shared.Religion;
 
@@ -63,33 +69,48 @@ public sealed class WeakToHolySystem : EntitySystem
 
     private void OnHolyDamageModify(Entity<DamageableComponent> ent, ref DamageModifyEvent args)
     {
-        var unholyEvent = new DamageUnholyEvent(args.Target, args.Origin);
-        RaiseLocalEvent(args.Target, ref unholyEvent);
+        // Resolve the body that owns WeakToHoly / antag comps (damage often hits body parts).
+        var unholyTarget = args.Target;
+        if (TryComp(ent, out BodyPartComponent? part) && part.Body is { } bodyUid)
+            unholyTarget = bodyUid;
+        else if (HasComp<BodyComponent>(ent))
+            unholyTarget = ent.Owner;
 
-        var holyCoefficient = 0f; // Default resistance
+        var unholyEvent = new DamageUnholyEvent(unholyTarget, args.Origin);
+        RaiseLocalEvent(unholyTarget, ref unholyEvent);
 
-        if (unholyEvent.ShouldTakeHoly)
-            holyCoefficient = 1f; //Allow holy damage
+        // Empty heretic vessels keep WeakToHoly after the mind leaves; mind checks alone miss them.
+        if (!unholyEvent.ShouldTakeHoly
+            && TryComp<WeakToHolyComponent>(unholyTarget, out var weak)
+            && weak.AlwaysTakeHoly)
+            unholyEvent.ShouldTakeHoly = true;
 
-        DamageModifierSet modifierSet = new()
+        if (!unholyEvent.ShouldTakeHoly && IsUnholyAntag(unholyTarget))
+            unholyEvent.ShouldTakeHoly = true;
+
+        // Only filter Holy on bodies / body parts — not random damageables.
+        if (!HasComp<BodyComponent>(ent) && !HasComp<BodyPartComponent>(ent))
+            return;
+
+        var holyCoefficient = unholyEvent.ShouldTakeHoly ? 1f : 0f;
+        args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, new DamageModifierSet
         {
             Coefficients = new Dictionary<string, float>
             {
                 { "Holy", holyCoefficient },
             },
-        };
+        });
+    }
 
-        if (!TryComp<BodyComponent>(ent, out var body))
-            return;
-
-        if (!_body.TryGetRootPart(ent, out var rootPart, body: body))
-            return;
-
-        foreach (var woundable in _wound.GetAllWoundableChildren(rootPart.Value))
-        {
-            if (HasComp<DamageableComponent>(woundable))
-                args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, modifierSet);
-        }
+    private bool IsUnholyAntag(EntityUid uid)
+    {
+        return HasComp<BloodCultistComponent>(uid)
+               || HasComp<ConstructComponent>(uid)
+               || HasComp<RatvarRighteousComponent>(uid)
+               || HasComp<CosmicCultComponent>(uid)
+               || HasComp<DevilComponent>(uid)
+               || _heretic.TryGetHereticComponent(uid, out _, out _)
+               || _heretic.IsHereticOrGhoul(uid);
     }
 
     private void OnUnholyItemDamage(Entity<WeakToHolyComponent> uid, ref DamageUnholyEvent args)
@@ -100,7 +121,8 @@ public sealed class WeakToHolySystem : EntitySystem
             return;
         }
 
-        if (_heretic.TryGetHereticComponent(uid, out var heretic, out _) && heretic.Ascended)
+        // Any heretic (not only ascended) takes holy damage.
+        if (_heretic.TryGetHereticComponent(uid, out _, out _))
         {
             args.ShouldTakeHoly = true;
             return;

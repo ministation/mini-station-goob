@@ -229,8 +229,6 @@
     - AdvancedRoboticsBoards # MutableLaws
     - WorkBeltsSharedDynamic # WorkBelts-Techfab
     - WokrBeltsSciDynamic # WorkBelts-Techfab
-    # Mini: tech unlocks not covered by departmental DynamicPacks (no hyper child)
-    - MiniResearchParity
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - MechBoardsSecurity

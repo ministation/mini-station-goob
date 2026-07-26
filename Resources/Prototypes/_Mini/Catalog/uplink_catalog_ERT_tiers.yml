@@ -1,0 +1,571 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Catalogs gated by ERTUplinkBlue / Red / Gamma tags on the store entity.
+
+# --- Blue ---
+
+- type: listing
+  id: ERTCallBlueLecter
+  name: Лектер
+  description: boobr-lecter-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/lecter.rsi, state: icon }
+  productEntity: ClothingBackpackDuffelNanotrasenLecterBundle
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkBlue
+
+- type: listing
+  id: ERTCallBlueDisabler
+  name: Станнер
+  description: Нелетальный станнер для подавления.
+  productEntity: WeaponDisabler
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkBlue
+
+- type: listing
+  id: ERTCallBlueCamera
+  name: Жучок камеры
+  description: Портативная скрытая камера наблюдения.
+  productEntity: CameraBug
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkBlue
+
+- type: listing
+  id: ERTCallBlueGauze
+  name: Бинты
+  description: Набор бинтов для полевой помощи.
+  productEntity: Gauze
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallMed
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkBlue
+
+- type: listing
+  id: ERTCallBlueBrutepack
+  name: Набор от ушибов
+  description: Базовый набор для лечения физических повреждений.
+  productEntity: Brutepack
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallMed
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkBlue
+
+- type: listing
+  id: ERTCallBlueZipties
+  name: Стяжки
+  description: Одноразовые пластиковые стяжки.
+  productEntity: Zipties
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkBlue
+
+- type: listing
+  id: ERTCallBlueLecterAmmo
+  name: Магазин 20.винтовочный
+  description: Магазин для Лектера
+  icon: { sprite: Objects/Weapons/Guns/Ammunition/Magazine/Rifle/rifle_mag.rsi, state: base }
+  productEntity: MagazineRifle
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallAmmo
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkBlue
+
+- type: listing
+  id: ERTCallBlueMedipen
+  name: Аварийный медипен
+  description: Одноразовый медипен для экстренной помощи.
+  productEntity: EmergencyMedipen
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallMed
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkBlue
+
+- type: listing
+  id: ERTCallBlueJetpack
+  name: Джетпак
+  productEntity: JetpackVoidFilled
+  description: boobr-jetpack-desc
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkBlue
+
+# --- Red (+ shared with Gamma) ---
+
+- type: listing
+  id: ERTCallRedM90
+  name: М-90
+  description: boobr-m90-desc
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Rifles/carbine.rsi, state: base }
+  productEntity: ClothingBackpackDuffelNanotrasenМ-90Bundle
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedAnnie
+  name: Энни
+  description: boobr-annie-desc
+  icon: { sprite: _Goobstation/Objects/Weapons/Guns/Rifles/annie.rsi, state: icon }
+  productEntity: ClothingBackpackDuffelNanotrasenAnnieBundle
+  cost:
+    Productunit: 10
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedDrozd
+  name: Дрозд
+  description: boobr-drozd-desc
+  icon: { sprite: Objects/Weapons/Guns/SMGs/drozd.rsi, state: base }
+  productEntity: WeaponSubMachineGunDrozd
+  cost:
+    Productunit: 8
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedPulsePistol
+  name: Импульсный пистолет
+  description: Компактный импульсный пистолет NanoTrasen.
+  productEntity: WeaponPulsePistol
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedEnforcer
+  name: Силовик
+  description: Улучшенный помповый дробовик.
+  icon: { sprite: /Textures/Objects/Weapons/Guns/Shotguns/enforcer.rsi, state: icon }
+  productEntity: ClothingBackpackDuffelNanotrasenEnforcerBundle
+  cost:
+    Productunit: 10
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedDisabler
+  name: Станнер
+  description: Нелетальный станнер для подавления.
+  productEntity: WeaponDisabler
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedCombatMedipen
+  name: Боевой медипен
+  description: Одноразовый медипен, восстанавливающий большинство видов повреждений.
+  productEntity: CombatMedipen
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTCallMed
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedBicaridine
+  name: Автоинъектор бикаридина
+  description: Автоинъектор с бикаридином для лечения физических травм.
+  productEntity: BicaridineAutoInjectorThunderdome
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallMed
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedDermaline
+  name: Автоинъектор дермалина
+  description: Автоинъектор с дермалином для лечения ожогов.
+  productEntity: DermalineAutoInjectorThunderdome
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallMed
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedRifleAmmo
+  name: Магазин 20.винтовочный
+  description: Магазин для М-90
+  icon: { sprite: Objects/Weapons/Guns/Ammunition/Magazine/Rifle/rifle_mag.rsi, state: base }
+  productEntity: MagazineRifle
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallAmmo
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedAnnieAmmo
+  name: Магазин 30.винтовочный
+  description: Магазин для Энни
+  icon: { sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi, state: base }
+  productEntity: MagazineLightRifle
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallAmmo
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedDrozdAmmo
+  name: Магазин 35.авто
+  description: Магазин для Дрозда
+  icon: { sprite: Objects/Weapons/Guns/Ammunition/Magazine/Pistol/smg_mag.rsi, state: red-icon }
+  productEntity: MagazinePistolSubMachineGun
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallAmmo
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedGrenade
+  name: Разрывная граната
+  description: Граната для подавления легкобронированного противника.
+  productEntity: GrenadeShrapnel
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallBomb
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedC4
+  name: C-4
+  productEntity: C4
+  description: boobr-c4-desc
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallBomb
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedJetpack
+  name: Джетпак
+  productEntity: JetpackVoidFilled
+  description: boobr-jetpack-desc
+  cost:
+    Productunit: 2
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedJaws
+  name: Челюсти жизни
+  description: boobr-JawsOfLife-desc
+  productEntity: JawsOfLife
+  cost:
+    Productunit: 3
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedNightVision
+  name: uplink-night-vision-name
+  description: uplink-night-vision-desc
+  productEntity: ClothingEyesNightVisionGoggles
+  cost:
+    Productunit: 4
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+      - ERTUplinkGamma
+
+# --- Gamma exclusive ---
+
+- type: listing
+  id: ERTCallGammaTurret
+  name: Раскладная турель
+  description: Переносная лазерная турель с самозарядкой.
+  icon: { sprite: _Mini/Objects/Weapons/Guns/Turrets/turrets.rsi, state: full }
+  productEntity: ToolboxElectricalTurretNanotrasen
+  cost:
+    Productunit: 8
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallGammaEnergyShield
+  name: Купол «Черепаха»
+  description: Переносной энергетический купол BR-40c Turtle.
+  productEntity: EnergyDomeTurtle
+  cost:
+    Productunit: 6
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallRedHolster
+  name: Плечевая кобура ОБР
+  description: Углублённая плечевая кобура. Вмещает крупное оружие.
+  icon: { sprite: Clothing/Belt/holster.rsi, state: icon }
+  productEntity: ClothingBeltHolsterERT
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkRed
+
+- type: listing
+  id: ERTCallGammaHolster
+  name: Плечевая кобура ОБР
+  description: Углублённая плечевая кобура. Вмещает крупное оружие.
+  icon: { sprite: Clothing/Belt/holster.rsi, state: icon }
+  productEntity: ClothingBeltHolsterERT
+  cost:
+    Productunit: 1
+  categories:
+  - UplinkERTCallMisc
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallGammaAdvMedkit
+  name: Продвинутая аптечка
+  productEntity: MedkitAdvancedFilled
+  description: uplink-ert-medkit-desc
+  cost:
+    Productunit: 3
+  categories:
+  - UplinkERTCallMed
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallGammaOxandrolone
+  name: Автоинъектор оксандролона
+  description: Автоинъектор с оксандролоном для лечения тяжёлых ожогов.
+  productEntity: OxandroloneAutoInjector
+  cost:
+    Productunit: 3
+  categories:
+  - UplinkERTCallMed
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkGamma
+
+- type: listing
+  id: ERTCallGammaPortableRecharger
+  name: Портативный зарядник
+  description: boobr-portable-recharger-desc
+  productEntity: PortableRecharger
+  cost:
+    Productunit: 4
+  categories:
+  - UplinkERTCallAmmo
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkGamma
+
+# Heavy — leader + juggernaut only
+- type: listing
+  id: ERTCallGammaMinigun
+  name: Миниган
+  description: Тяжёлый миниган. Только для лидера и джаггернаута.
+  productEntity: WeaponMinigun
+  cost:
+    Productunit: 20
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkGamma
+  - !type:BuyerJobCondition
+    whitelist:
+    - ERTLeaderGamma
+    - ERTJuggernautGamma
+
+- type: listing
+  id: ERTCallGammaPulseRifle
+  name: Импульсная винтовка
+  description: Тяжёлая импульсная винтовка. Только для лидера и джаггернаута.
+  productEntity: WeaponPulseRifle
+  cost:
+    Productunit: 18
+  categories:
+  - UplinkERTCallWeapon
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - ERTUplinkGamma
+  - !type:BuyerJobCondition
+    whitelist:
+    - ERTLeaderGamma
+    - ERTJuggernautGamma

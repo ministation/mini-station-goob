@@ -162,6 +162,7 @@
     - id: RCDAmmo
     - id: AirGrenade
     - id: ClothingHandsGlovesAtmosInsulated # Goobstation - insulated atmos gloves
+    - id: ClothingShoesBootsMagAtmos # Mini - atmos magboots back in atmos lockers
     - id: ClothingBackpackFirefighterTank # Assmos - Firefighter nozzle
     - id: RPD #funkystation
     - id: DoorRemoteFirefight # Goobstation - re adding fire door remote

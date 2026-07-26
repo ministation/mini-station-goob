@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Map these on ERT shuttles. Each capsule is one ErtSpawnPoint — squad spawn fills one member per empty pod.
+
+- type: entity
+  parent: CryogenicSleepUnit
+  id: CryogenicSleepUnitSpawnerERT
+  name: капсула криогенного сна ОБР
+  suffix: ERT Spawner
+  description: Сверхохлаждаемый контейнер для прибытия оперативников ОБР. В каждой капсуле спавнится один член отряда.
+  components:
+  - type: ErtSpawnPoint
+  - type: AccessReader
+    breakOnAccessBreaker: false
+    access: [["CentralCommand"]]
+    examinationText: access-reader-examination-functionality-restricted
+  - type: PointLight
+    color: "#1d8bad"
+    radius: 1.5
+    energy: 0.5
+    castShadows: false

@@ -62,29 +62,35 @@ public sealed class CustomGhostSystem : EntitySystem
     {
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
 
+        // Prefer an explicit ":selected" token. Do not TryIndex the raw suffix
+        // "ThemeId:selected" — that never matches a prototype and skips the pick.
         string? selectedThemeId = null;
+        string? fallbackThemeId = null;
+
         foreach (var token in tokens)
         {
-            if (token.TokenId.StartsWith("ghost-theme:") && token.Amount > 0)
+            if (!token.TokenId.StartsWith("ghost-theme:") || token.Amount <= 0)
+                continue;
+
+            var themeId = token.TokenId["ghost-theme:".Length..];
+
+            if (themeId.EndsWith(":selected"))
             {
-                var themeId = token.TokenId["ghost-theme:".Length..];
-                if (!_prototypeManager.TryIndex<CustomGhostPrototype>(themeId, out _))
-                    continue;
-
-                if (token.TokenId.EndsWith(":selected"))
-                {
-                    selectedThemeId = themeId;
-                    break;
-                }
-
-                selectedThemeId ??= themeId;
+                var selectedId = themeId[..^":selected".Length];
+                if (_prototypeManager.TryIndex<CustomGhostPrototype>(selectedId, out _))
+                    selectedThemeId = selectedId;
+                continue;
             }
+
+            if (fallbackThemeId == null && _prototypeManager.TryIndex<CustomGhostPrototype>(themeId, out _))
+                fallbackThemeId = themeId;
         }
 
-        if (selectedThemeId == null)
+        var themeToApply = selectedThemeId ?? fallbackThemeId;
+        if (themeToApply == null)
             return false;
 
-        ApplyTheme(ghostUid, selectedThemeId);
+        ApplyTheme(ghostUid, themeToApply);
         return true;
     }
 
@@ -170,7 +176,9 @@ public sealed class CustomGhostSystem : EntitySystem
 
         foreach (var token in tokens)
         {
-            if (token.TokenId.StartsWith("ghost-theme:") && token.TokenId.EndsWith(":selected"))
+            if (token.Amount > 0
+                && token.TokenId.StartsWith("ghost-theme:")
+                && token.TokenId.EndsWith(":selected"))
             {
                 oldSelectedThemeId = token.TokenId;
                 break;
@@ -197,19 +205,15 @@ public sealed class CustomGhostSystem : EntitySystem
 
         foreach (var token in tokens)
         {
-            if (token.TokenId.StartsWith("ghost-theme:"))
-            {
-                var tId = token.TokenId["ghost-theme:".Length..];
+            if (!token.TokenId.StartsWith("ghost-theme:") || token.Amount <= 0)
+                continue;
 
-                if (tId.EndsWith(":selected"))
-                {
-                    selectedTheme = tId.Replace(":selected", "");
-                }
-                else
-                {
-                    ownedThemes.Add(tId);
-                }
-            }
+            var tId = token.TokenId["ghost-theme:".Length..];
+
+            if (tId.EndsWith(":selected"))
+                selectedTheme = tId[..^":selected".Length];
+            else
+                ownedThemes.Add(tId);
         }
 
         SendShopState(args.SenderSession, balanceToken?.Amount ?? 0, ownedThemes, selectedTheme);
@@ -271,7 +275,7 @@ public sealed class CustomGhostSystem : EntitySystem
 
                 if (themeId.EndsWith(":selected"))
                 {
-                    selectedTheme = themeId.Replace(":selected", "");
+                    selectedTheme = themeId[..^":selected".Length];
                 }
                 else
                 {

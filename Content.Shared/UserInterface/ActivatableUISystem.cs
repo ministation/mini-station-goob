@@ -188,15 +188,15 @@ public sealed partial class ActivatableUISystem : EntitySystem
 
     private void OnUIClose(EntityUid uid, ActivatableUIComponent component, BoundUIClosedEvent args)
     {
-        var user = args.Actor;
-
-        if (user != component.CurrentSingleUser)
-            return;
-
         if (!Equals(args.UiKey, component.Key))
             return;
 
-        SetCurrentSingleUser(uid, null, component);
+        // Clear the single-user lock when this key is fully closed. Matching only
+        // CurrentSingleUser misses CloseUis / ghost / disconnect edge cases and leaves
+        // "Activatable UI has user without being opened?" spam (e.g. DnaModifierConsole).
+        if (args.Actor == component.CurrentSingleUser ||
+            component.Key != null && !_uiSystem.IsUiOpen(uid, component.Key))
+            SetCurrentSingleUser(uid, null, component);
     }
 
     private bool InteractUI(EntityUid user, EntityUid uiEntity, ActivatableUIComponent aui)
@@ -239,13 +239,17 @@ public sealed partial class ActivatableUISystem : EntitySystem
 
         if (aui.SingleUser && aui.CurrentSingleUser != null && user != aui.CurrentSingleUser)
         {
-            var message = Loc.GetString("machine-already-in-use", ("machine", uiEntity));
-            _popupSystem.PopupClient(message, uiEntity, user);
-
             if (_uiSystem.IsUiOpen(uiEntity, aui.Key))
+            {
+                var message = Loc.GetString("machine-already-in-use", ("machine", uiEntity));
+                _popupSystem.PopupClient(message, uiEntity, user);
                 return true;
+            }
 
-            Log.Error($"Activatable UI has user without being opened? Entity: {ToPrettyString(uiEntity)}. User: {aui.CurrentSingleUser}, Key: {aui.Key}");
+            // Stale lock: claimed user but UI is not open. Clear and allow reopen.
+            Log.Warning(
+                $"Clearing stale ActivatableUI single-user lock. Entity: {ToPrettyString(uiEntity)}. Was: {aui.CurrentSingleUser}, Key: {aui.Key}");
+            SetCurrentSingleUser(uiEntity, null, aui);
         }
 
         // CorvaxGoob-GhostUIViewing-Start

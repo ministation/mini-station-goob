@@ -1,1 +1,9 @@
 pinpointer-cult-monument-target = cult monument
+pinpointer-cult-cycle-mode = Cycle tracking mode
+pinpointer-cult-mode-changed = Pinpointer mode: {$mode}
+pinpointer-cult-mode-auto = auto (by priority)
+pinpointer-cult-mode-monument = cosmic cult monument
+pinpointer-cult-mode-ratvar = Ratvar summoning portal
+pinpointer-cult-mode-narsie = Nar'Sie dimensional rending
+pinpointer-cult-mode-heretic = heretic
+pinpointer-cult-mode-devil = devil

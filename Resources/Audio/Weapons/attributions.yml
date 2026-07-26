@@ -1,5 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+- files: ["cropilo1.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Mini Station cropilo melee hit sound."
+  source: "https://github.com/MiniStation14/mini-station-14"
+
 - files: ["plasma_cutter.ogg"]
   license: "CC-BY-SA-3.0"
   copyright: "Taken from Citadel station."

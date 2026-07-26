@@ -374,9 +374,15 @@ namespace Content.Server.GameTicking
 
             _playTimeTrackings.PlayerRolesChanged(player);
 
-            var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(station, jobId, character);
+            var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(station, jobId, character, out var spawnFailure);
             DebugTools.AssertNotNull(mobMaybe);
-            mob = mobMaybe!.Value;
+            if (mobMaybe is not { } spawnedMob)
+            {
+                throw new InvalidOperationException(
+                    spawnFailure ?? $"Failed to spawn player as {jobId} on station {ToPrettyString(station)}.");
+            }
+
+            mob = spawnedMob;
 
             _mind.TransferTo(newMind, mob);
 

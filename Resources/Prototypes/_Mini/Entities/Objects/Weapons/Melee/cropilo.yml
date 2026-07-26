@@ -31,7 +31,7 @@
         Blunt: 0
         Holy: 25
     soundHit:
-      collection: AlienClaw
+      path: /Audio/Weapons/cropilo1.ogg
   - type: MeleeChemicalInjector
     transferAmount: 5
     solution: food
