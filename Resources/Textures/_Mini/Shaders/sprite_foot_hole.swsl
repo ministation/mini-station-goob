@@ -1,0 +1,14 @@
+// Punch a hole in the foot band of full-body clothing so half-boot layers can bob.
+uniform highp float footCut; // zero alpha where UV2.y < footCut
+
+void fragment()
+{
+    highp vec4 tex = zTexture(UV);
+    if (UV2.y < footCut)
+    {
+        COLOR = vec4(0.0);
+        return;
+    }
+
+    COLOR = tex;
+}
