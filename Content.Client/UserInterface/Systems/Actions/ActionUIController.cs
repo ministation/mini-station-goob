@@ -898,13 +898,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             }
         }
 
-        foreach (var current in currentSlots)
-        {
-            if (current.Action is not { } action || used.Contains(action))
-                continue;
-            newActions.Add(action);
-        }
-
+        // Do not append unmatched current actions — that puts back everything the player
+        // cleared from the hotbar whenever layout is restored (equip / jaunt / aghost).
         return (newActions, matched);
     }
     // Goobstation end
@@ -973,7 +968,13 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         }
 
         if (!ContainsAction(action))
+        {
             AppendAction(action);
+            // Keep entity layout in sync when item actions appear (suit, tank, coat…).
+            if (_playerManager.LocalEntity is { } local &&
+                !IsTransientActionBody(local))
+                PersistLayout(local);
+        }
     }
 
     private void OnActionRemoved(EntityUid actionId)
