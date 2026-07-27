@@ -15,8 +15,16 @@ discord-round-notifications-end =
     Длительность: { $hours }ч { $minutes }м { $seconds }с
     Игроков `{ $playerCount }`
     Режим: { $gamemode }
+    ```
+    { $manifest }
+    ```
+discord-round-notifications-end-no-manifest =
+    >>> Раунд #{ $id } завершён
+    Длительность: { $hours }ч { $minutes }м { $seconds }с
+    Игроков `{ $playerCount }`
+    Режим: { $gamemode }
 discord-round-notifications-end-ping =
-    >>> { $rolePing }**Раунд перезапускается!**
+    >>> **Раунд перезапускается!**
     `{ $playerCount }` игроков сейчас играет
     Новый раунд начнётся через 3 минуты!
 discord-round-notifications-unknown-map = *Неизвестная карта*
