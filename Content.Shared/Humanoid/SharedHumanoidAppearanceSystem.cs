@@ -52,10 +52,10 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     private ISharedSponsorsManager? _sponsors;
 
     // CorvaxGoob-TTS-Start
-    public const string DefaultVoice = "Denis";
+    public const string DefaultVoice = "Eugene";
     public static readonly Dictionary<Sex, string> DefaultSexVoice = new()
     {
-        {Sex.Male, "Denis"},
+        {Sex.Male, "Eugene"},
         {Sex.Female, "Irina"},
         {Sex.Unsexed, "Baya"},
     };
