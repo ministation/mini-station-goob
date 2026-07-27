@@ -19,7 +19,16 @@ discord-round-notifications-end =
     Duration: {$hours}h {$minutes}m {$seconds}s
     Players: {$playerCount}
     Mode: {$gamemode}
+    ```
+    {$manifest}
+    ```
+discord-round-notifications-end-no-manifest =
+    >>> Round #{$id} has ended.
+    Duration: {$hours}h {$minutes}m {$seconds}s
+    Players: {$playerCount}
+    Mode: {$gamemode}
 discord-round-notifications-end-ping =
-    >>> { $rolePing }A new round will start soon!
+    >>> **Round is restarting!**
     `{ $playerCount }` players online
+    A new round will start in 3 minutes!
 discord-round-notifications-unknown-map = Unknown
