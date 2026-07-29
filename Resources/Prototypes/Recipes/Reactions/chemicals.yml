@@ -555,7 +555,11 @@
       amount: 1
     Iodine:
       amount: 1
+<<<<<<< HEAD
     SulfuricAcid:
+=======
+    Hydrogen:
+>>>>>>> 4d2728835b (Добавил рецепт брома)
       amount: 1
   products:
     Bromine: 2
