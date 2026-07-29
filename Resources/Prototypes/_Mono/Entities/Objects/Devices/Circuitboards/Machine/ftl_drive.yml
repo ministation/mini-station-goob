@@ -8,9 +8,10 @@
     state: supply
   - type: MachineBoard
     prototype: MachineFTLDrive
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 5 # Mini: Orion Manipulator->Servo
     stackRequirements:
       Steel: 5
-      Manipulator: 5
 
 - type: entity
   id: MachineFTLDriveHighCircuitboard
@@ -22,6 +23,7 @@
     state: supply
   - type: MachineBoard
     prototype: MachineFTLDriveHigh
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 5 # Mini: Orion Manipulator->Servo
     stackRequirements:
       Steel: 15
-      Manipulator: 5

@@ -96,7 +96,7 @@
   description: spellbook-mutate-desc
   productAction: ActionMutateSpell
   cost:
-    WizCoin: 2
+    WizCoin: 3 # Mini: nerf mjollnir+hulk combo
   categories:
   - SpellbookOffensive
   conditions:
@@ -104,6 +104,7 @@
     stock: 1
   - !type:BuyBeforeCondition
     blacklist:
+    - SpellbookHammerMjollnir
     - SpellbookFullRandom
     - SpellbookSemiRandom
 
@@ -694,6 +695,7 @@
     WizCoin: 2
   categories:
   - SpellbookEquipment
+  disableRefund: true
 
 - type: listing
   id: SpellbookPaperRobe

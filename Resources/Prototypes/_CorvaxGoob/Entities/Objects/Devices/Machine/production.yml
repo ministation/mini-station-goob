@@ -43,8 +43,9 @@
   components:
     - type: MachineBoard
       prototype: PrinterDoc
+      partRequirements: # Mini: Orion MachineParts
+        Servo: 4 # Mini: Orion Manipulator->Servo
       stackRequirements:
-        Manipulator: 4
         Glass: 1
 
 - type: entity
@@ -57,11 +58,12 @@
     state: medical
   - type: MachineBoard
     prototype: StasisOperatingTable
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 1 # Mini: Orion Manipulator->Servo
     stackRequirements:
       Cable: 6
       Silver: 2
       Steel: 6
-      Manipulator: 1
 
 - type: entity
   parent: BaseMachineCircuitboard
@@ -73,8 +75,8 @@
     state: medical
   - type: MachineBoard
     prototype: MedipenRefiller
-    stackRequirements:
-      Manipulator: 5
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 5 # Mini: Orion Manipulator->Servo
     tagRequirements:
       GlassBeaker:
         amount: 3
@@ -92,11 +94,12 @@
     state: science
   - type: MachineBoard
     prototype: QuantumTelepad
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 2 # Mini: Orion Manipulator->Servo
     stackRequirements:
       Steel: 20
       Glass: 15
       Plasma: 10
-      Manipulator: 2
   - type: Item
     size: Normal
 
@@ -108,7 +111,8 @@
   components:
   - type: MachineBoard
     prototype: MachineCivilianFlatpacker
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 3 # Mini: Orion Manipulator->Servo
     stackRequirements:
       Steel: 8
       Glass: 4
-      Manipulator: 3

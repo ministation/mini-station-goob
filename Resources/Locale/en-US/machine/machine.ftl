@@ -21,7 +21,10 @@ machine-upgrade-not-upgraded = [color=yellow]{CAPITALIZE($upgraded)}[/color] not
 
 machine-part-name-capacitor = Capacitor
 machine-part-name-manipulator = Manipulator
+machine-part-name-servo = Servo
 machine-part-name-matter-bin = Matter Bin
+machine-part-name-scanning-module = Scanning Module
+machine-part-name-micro-laser = Micro-Laser
 machine-part-name-power-cell = Power Cell
 
 two-way-lever-left = push left

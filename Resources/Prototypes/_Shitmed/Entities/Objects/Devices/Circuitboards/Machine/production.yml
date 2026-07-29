@@ -8,9 +8,10 @@
   components:
   - type: MachineBoard
     prototype: Autodoc
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4 # Mini: Orion Manipulator->Servo
     stackRequirements:
       Cable: 3
-      Manipulator: 4
       Steel: 10
     tagRequirements:
       BorgArm:

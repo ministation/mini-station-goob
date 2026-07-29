@@ -407,6 +407,9 @@
     - AdvancedCybernetics
     - PowerAugments
     - ToolAugments
+    # Mini-start
+    - PartsDynamic
+    # Mini-end
     - PowerCells
   - type: EmagLatheRecipes # Goobstation
     emagStaticPacks:

@@ -8,7 +8,10 @@ machine-upgrade-decreased-by-amount = Параметр [color=yellow]{ $upgraded
 machine-upgrade-not-upgraded = Параметр [color=yellow]{ $upgraded }[/color] не улучшался.
 machine-part-name-capacitor = Конденсатор
 machine-part-name-manipulator = Манипулятор
+machine-part-name-servo = Сервопривод
 machine-part-name-matter-bin = Ёмкость материи
+machine-part-name-scanning-module = Сканирующий модуль
+machine-part-name-micro-laser = Микро-лазер
 machine-part-name-power-cell = Батарея
 two-way-lever-left = сдвинуть рычаг влево
 two-way-lever-right = сдвинуть рычаг вправо

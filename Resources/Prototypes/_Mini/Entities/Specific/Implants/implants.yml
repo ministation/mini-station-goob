@@ -16,7 +16,7 @@
     - Critical
     - Dead
   - type: RattleOnTrigger
-    radioChannel: Syndicate
+    radioChannel: Typan
 
 - type: entity
   id: DeathRattleImplanterTypan

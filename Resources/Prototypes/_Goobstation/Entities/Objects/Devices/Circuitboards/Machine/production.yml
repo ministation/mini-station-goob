@@ -10,8 +10,8 @@
     state: engineering
   - type: MachineBoard
     prototype: EngineeringTechFab
-    stackRequirements:
-      Manipulator: 4
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4 # Mini: Orion Manipulator->Servo
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -27,8 +27,8 @@
     state: engineering
   - type: MachineBoard
     prototype: CargoTechFab
-    stackRequirements:
-      Manipulator: 4
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4 # Mini: Orion Manipulator->Servo
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -44,8 +44,8 @@
     state: science
   - type: MachineBoard
     prototype: ScienceTechFab
-    stackRequirements:
-      Manipulator: 4
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4 # Mini: Orion Manipulator->Servo
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -61,8 +61,8 @@
     state: service
   - type: MachineBoard
     prototype: ServiceTechFab
-    stackRequirements:
-      Manipulator: 4
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4 # Mini: Orion Manipulator->Servo
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -78,8 +78,8 @@
     state: ert
   - type: MachineBoard
     prototype: ERTTechFab
-    stackRequirements:
-      Manipulator: 4
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4 # Mini: Orion Manipulator->Servo
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -94,8 +94,9 @@
       state: engineering
     - type: MachineBoard
       prototype: TeslaCoil
+      partRequirements: # Mini: Orion MachineParts
+        Servo: 5 # Mini: Orion Manipulator->Servo
       stackRequirements:
-        Manipulator: 5
         Steel: 10
         CableHV: 10
 
@@ -108,8 +109,9 @@
       state: engineering
     - type: MachineBoard
       prototype: RadiationCollector
+      partRequirements: # Mini: Orion MachineParts
+        Servo: 5 # Mini: Orion Manipulator->Servo
       stackRequirements:
-        Manipulator: 5
         Steel: 5
         CableHV: 10
         Plasma: 5
@@ -123,8 +125,9 @@
     state: engineering
   - type: MachineBoard
     prototype: PlumbingPump
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4 # Mini: Orion Manipulator->Servo
     stackRequirements:
-      Manipulator: 4
       Steel: 5
     tagRequirements:
       GlassBeaker:
@@ -141,8 +144,9 @@
       state: medical
     - type: MachineBoard
       prototype: EnergyChemDispenser
+      partRequirements: # Mini: Orion MachineParts
+        Servo: 1 # Mini: Orion Manipulator->Servo
       stackRequirements:
-        Manipulator: 1
         Glass: 1
         Steel: 3
       tagRequirements:

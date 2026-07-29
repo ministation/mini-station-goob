@@ -8,7 +8,8 @@
   components:
     - type: MachineBoard
       prototype: Holopad
+      partRequirements: # Mini: Orion MachineParts
+        Servo: 4 # Mini: Orion Manipulator->Servo
       stackRequirements:
-        Manipulator: 4
         Cable: 4
         Glass: 2

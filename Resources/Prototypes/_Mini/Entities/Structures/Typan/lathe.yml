@@ -127,6 +127,12 @@
     - Instruments
     - TypanEquipment
     - SalvageSecurityWeapons
+    # Mini-start: Orion research unlock wiring (no MiniResearchParity on shared fabs)
+    - PartsDynamic
+    - BasicService
+    - AbductorEngineering
+    - AbductorMedical
+    # Mini-end
 
 
 - type: entity

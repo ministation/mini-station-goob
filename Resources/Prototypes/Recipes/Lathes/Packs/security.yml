@@ -112,6 +112,10 @@
   - GrenadeEMP
   - GrenadeFlash
   - MagazineGrenadeEmpty
+  # Mini-start: Explosives tech unlocks
+  - ModularGrenade
+  - SmokeGrenade
+  # Mini-end
 
 # Shared between secfab and emagged protolathe
 - type: latheRecipePack

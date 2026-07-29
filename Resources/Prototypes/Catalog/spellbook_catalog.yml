@@ -214,9 +214,13 @@
   description: spellbook-hammer-mjollnir-description
   productEntity: Mjollnir
   cost:
-    WizCoin: 2
+    WizCoin: 3 # Mini: nerf mjollnir+hulk combo
   categories:
   - SpellbookEquipment
+  conditions:
+  - !type:BuyBeforeCondition
+    blacklist:
+    - SpellbookMutate
 
 - type: listing
   id: SpellbookHammerSingularity

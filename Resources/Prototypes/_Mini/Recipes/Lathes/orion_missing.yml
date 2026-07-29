@@ -180,7 +180,7 @@
 
 - type: latheRecipe
   id: ClothingHeadset
-  result: ClothingHeadset
+  result: ClothingHeadsetGrey # Mini: abstract ClothingHeadset cannot spawn
   categories:
   - Clothing
   completetime: 4

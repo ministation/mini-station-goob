@@ -43,7 +43,7 @@
 - type: startingGear
   id: TypanTechnicalOperationsSupervisorGear
   equipment:
-    ears: ClothingHeadsetAltSyndicate
+    ears: ClothingHeadsetAltTypan
     id: SyndiPDATOS
 
 - type: chameleonOutfit

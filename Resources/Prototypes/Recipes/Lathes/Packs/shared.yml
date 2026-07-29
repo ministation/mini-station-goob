@@ -13,6 +13,13 @@
   - Igniter
   - ModularReceiver
   - MicroManipulatorStockPart
+  # Mini-start: Orion T1 stock parts (Parts startingTechnology)
+  - CapacitorStockPart
+  - ScanningModuleStockPart
+  - MicroServoStockPart
+  - MicroLaserStockPart
+  - MatterBinStockPart
+  # Mini-end
   - ConveyorBeltAssembly
 
 - type: latheRecipePack
