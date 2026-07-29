@@ -29,6 +29,7 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
     [Dependency] private readonly IGameMapManager _gameMapManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly TTStationHandleJobSystem _stationHandleJobs = default!;
 
     public override void Initialize()
     {
@@ -87,8 +88,14 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
 
     private bool HasTypanStation()
     {
-        var query = EntityQueryEnumerator<TTStationHandleJobComponent>();
-        return query.MoveNext(out _, out _);
+        var query = EntityQueryEnumerator<StationDataComponent>();
+        while (query.MoveNext(out var uid, out _))
+        {
+            if (_stationHandleJobs.IsTypanFactionStation(uid))
+                return true;
+        }
+
+        return false;
     }
 
     private bool HasNtStation()
@@ -96,7 +103,7 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
         var query = EntityQueryEnumerator<StationDataComponent>();
         while (query.MoveNext(out var uid, out _))
         {
-            if (!HasComp<TTStationHandleJobComponent>(uid))
+            if (_stationHandleJobs.IsWarNanotrasenStation(uid))
                 return true;
         }
 

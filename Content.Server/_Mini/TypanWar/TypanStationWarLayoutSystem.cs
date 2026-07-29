@@ -3,6 +3,7 @@
 
 using System.Linq;
 using System.Numerics;
+using Content.Server._TT.StationHandleJob;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Cargo.Components;
 using Content.Server.Shuttles.Systems;
@@ -31,6 +32,7 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
 
     [Dependency] private readonly AtmosphereSystem _atmos = default!;
     [Dependency] private readonly DockingSystem _dock = default!;
+    [Dependency] private readonly TTStationHandleJobSystem _stationHandleJobs = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly StationSystem _station = default!;
@@ -46,6 +48,15 @@ public sealed class TypanStationWarLayoutSystem : EntitySystem
     {
         if (!TryComp<TypanStationWarRuleComponent>(ev.Rule, out var rule) || rule.LayoutApplied)
             return;
+
+        if (!_stationHandleJobs.IsWarNanotrasenStation(ev.NtStation) ||
+            !_stationHandleJobs.IsTypanFactionStation(ev.TypanStation))
+        {
+            Log.Error(
+                $"Typan station war layout: invalid station pairing NT={ToPrettyString(ev.NtStation)} Typan={ToPrettyString(ev.TypanStation)}.");
+            RaiseLocalEvent(new TypanWarLayoutFailedEvent(ev.Rule));
+            return;
+        }
 
         if (!TryComp<StationDataComponent>(ev.NtStation, out var ntData) ||
             !TryComp<StationDataComponent>(ev.TypanStation, out var typanData))

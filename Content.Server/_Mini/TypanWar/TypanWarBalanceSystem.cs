@@ -260,13 +260,13 @@ public sealed class TypanWarBalanceSystem : EntitySystem
             if (!IsMindAlive(mind))
                 continue;
 
-            if (_typanJobs.MindHasHandledJob(mindId))
+            if (_typanJobs.MindHasTypanFactionJob(mindId))
             {
                 typan++;
                 continue;
             }
 
-            if (_jobs.MindTryGetJobId(mindId, out var jobId) && jobId != null)
+            if (_jobs.MindTryGetJobId(mindId, out var jobId) && jobId != null && !_typanJobs.IsCentCommJob(jobId.Value))
                 nt++;
         }
 
@@ -290,7 +290,7 @@ public sealed class TypanWarBalanceSystem : EntitySystem
 
     private TypanWarSide GetJobSide(ProtoId<JobPrototype> job)
     {
-        return _typanJobs.IsHandledJob(job) ? TypanWarSide.Typan : TypanWarSide.Nanotrasen;
+        return _typanJobs.IsTypanJob(job) ? TypanWarSide.Typan : TypanWarSide.Nanotrasen;
     }
 
     private static bool CanJoinSide(TypanWarSide side, int ntCount, int typanCount, int ratio)
