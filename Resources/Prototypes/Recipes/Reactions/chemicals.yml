@@ -545,3 +545,19 @@
       amount: 1
   products:
     Lye: 2
+
+- type: reaction
+  id: BromineSynthesis
+  name: reagent-name-bromine
+  impact: Low
+  reactants:
+    Chlorine:
+      amount: 1
+    Iodine:
+      amount: 1
+    Hydrogen:
+      amount: 1
+  products:
+    Bromine: 2
+  sound: !type:SoundPathSpecifier
+    path: /Audio/Effects/Chemistry/bubbles.ogg
