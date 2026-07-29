@@ -555,7 +555,7 @@
       amount: 1
     Iodine:
       amount: 1
-    Hydrogen:
+    SulfuricAcid:
       amount: 1
   products:
     Bromine: 2
