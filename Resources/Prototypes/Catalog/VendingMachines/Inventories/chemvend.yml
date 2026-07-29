@@ -5,6 +5,7 @@
   startingInventory:
     Jug: 8 #Goob edit - Energy Chem
     JugAluminium: 2
+    JugBromine: 1
     JugCarbon: 4
     JugChlorine: 2 #Goob edit
     JugCopper: 2
