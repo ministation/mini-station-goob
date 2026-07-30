@@ -9,7 +9,7 @@
   - type: MachineBoard
     prototype: SlimeGrinder
     partRequirements: # Mini: Orion MachineParts
-      Servo: 5 # Mini: Orion Manipulator->Servo
+      Servo: 5
     stackRequirements:
       Steel: 5
     tagRequirements:

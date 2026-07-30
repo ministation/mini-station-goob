@@ -9,7 +9,7 @@
   - type: MachineBoard
     prototype: Autodoc
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Cable: 3
       Steel: 10

@@ -18,6 +18,9 @@ machine-upgrade-decreased-by-percentage = [color=yellow]{CAPITALIZE($upgraded)}[
 machine-upgrade-increased-by-amount = [color=yellow]{CAPITALIZE($upgraded)}[/color] increased by {$difference}.
 machine-upgrade-decreased-by-amount = [color=yellow]{CAPITALIZE($upgraded)}[/color] decreased by {$difference}.
 machine-upgrade-not-upgraded = [color=yellow]{CAPITALIZE($upgraded)}[/color] not upgraded.
+machine-upgrade-increased-by-percentage-extra = [color=yellow]{CAPITALIZE($upgraded)}[/color] increased by [color={$color}]{$percent}%[/color].
+machine-upgrade-decreased-by-percentage-extra = [color=yellow]{CAPITALIZE($upgraded)}[/color] decreased by [color={$color}]{$percent}%[/color].
+machine-upgrade-not-upgraded-extra = [color=yellow]{CAPITALIZE($upgraded)}[/color] unchanged.
 
 machine-part-name-capacitor = Capacitor
 machine-part-name-manipulator = Manipulator

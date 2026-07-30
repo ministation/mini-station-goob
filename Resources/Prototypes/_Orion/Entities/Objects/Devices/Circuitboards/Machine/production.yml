@@ -7,10 +7,8 @@
   - type: MachineBoard
     prototype: QuantumServer
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
-#      Capacitor: 2
-#      ScanningModule: 1
       Cable: 5
       Glass: 4
 
@@ -23,7 +21,7 @@
   - type: MachineBoard
     prototype: Netpod
     partRequirements: # Mini: Orion MachineParts
-      Servo: 1 # Mini: Orion Manipulator->Servo
+      Servo: 1
     stackRequirements:
       Cable: 3
       Glass: 3
@@ -37,7 +35,7 @@
   - type: MachineBoard
     prototype: Byteforge
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Cable: 4
       Glass: 4

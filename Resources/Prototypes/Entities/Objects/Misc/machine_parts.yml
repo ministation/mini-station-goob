@@ -22,8 +22,7 @@
       sprite: Objects/Misc/stock_parts.rsi
     - type: Item
       size: Tiny
-    - type: Stack
-      count: 1
+    # Mini/Orion MachineParts: no Stack — shared stackType collapses tier on Split (RPED/deconstruct).
     - type: PhysicalComposition #Goobstation - Recycle update
       materialComposition:
         Steel: 12
@@ -42,5 +41,4 @@
   components:
     - type: Sprite
       state: micro_mani
-    - type: Stack
-      stackType: Manipulator
+    # Mini/Orion: Stack removed (tier-safe stock parts)

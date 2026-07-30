@@ -12,6 +12,7 @@ using Content.Server.Power.EntitySystems;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.Stack;
 using Content.Shared._Mini.DailyQuests;
+using Content.Shared._Mini.Construction.Events;
 using Content.Shared.Atmos;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -84,6 +85,10 @@ namespace Content.Server.Lathe
 
             SubscribeLocalEvent<LatheComponent, BeforeActivatableUIOpenEvent>((u, c, _) => UpdateUserInterfaceState(u, c));
             SubscribeLocalEvent<LatheComponent, MaterialAmountChangedEvent>(OnMaterialAmountChanged);
+            // Mini-start: Orion MachineParts
+            SubscribeLocalEvent<LatheComponent, RefreshPartsEvent>(OnPartsRefresh);
+            SubscribeLocalEvent<LatheComponent, UpgradeExamineEvent>(OnUpgradeExamine);
+            // Mini-end
             SubscribeLocalEvent<TechnologyDatabaseComponent, LatheGetRecipesEvent>(OnGetRecipes);
             SubscribeLocalEvent<EmagLatheRecipesComponent, LatheGetRecipesEvent>(GetEmagLatheRecipes);
             SubscribeLocalEvent<LatheHeatProducingComponent, LatheStartPrintingEvent>(OnHeatStartPrinting);
@@ -214,7 +219,7 @@ namespace Content.Server.Lathe
                 component.Queue.RemoveFirst();
             var recipe = _proto.Index(batch.Recipe);
 
-            var time = _reagentSpeed.ApplySpeed(uid, recipe.CompleteTime) * component.TimeMultiplier;
+            var time = _reagentSpeed.ApplySpeed(uid, recipe.CompleteTime) * component.FinalTimeMultiplier;
 
             var lathe = EnsureComp<LatheProducingComponent>(uid);
             lathe.StartTime = _timing.CurTime;
@@ -372,8 +377,29 @@ namespace Content.Server.Lathe
             _appearance.SetData(uid, LatheVisuals.IsInserting, false);
             _appearance.SetData(uid, LatheVisuals.IsRunning, false);
 
+            component.FinalTimeMultiplier = component.TimeMultiplier;
+            component.FinalMaterialUseMultiplier = component.MaterialUseMultiplier;
+
             _materialStorage.UpdateMaterialWhitelist(uid);
         }
+
+        // Mini-start: Orion MachineParts
+        private void OnPartsRefresh(EntityUid uid, LatheComponent component, RefreshPartsEvent args)
+        {
+            var printRating = args.GetPartRating(component.MachinePartPrintSpeed);
+            var materialRating = args.GetPartRating(component.MachinePartMaterialUse);
+
+            component.FinalTimeMultiplier = component.TimeMultiplier * MathF.Pow(component.PartRatingPrintTimeMultiplier, printRating - 1f);
+            component.FinalMaterialUseMultiplier = component.MaterialUseMultiplier * MathF.Pow(component.PartRatingMaterialUseMultiplier, materialRating - 1f);
+            Dirty(uid, component);
+        }
+
+        private void OnUpgradeExamine(EntityUid uid, LatheComponent component, UpgradeExamineEvent args)
+        {
+            args.AddPercentageUpgrade("lathe-component-upgrade-speed", component.FinalTimeMultiplier, component.TimeMultiplier);
+            args.AddPercentageUpgrade("lathe-component-upgrade-material-use", component.FinalMaterialUseMultiplier, component.MaterialUseMultiplier);
+        }
+        // Mini-end
 
         /// <summary>
         /// Sets the machine sprite to either play the running animation
@@ -462,7 +488,7 @@ namespace Content.Server.Lathe
             foreach (var (mat, amount) in recipe.Materials)
             {
                 var adjustedAmount = recipe.ApplyMaterialDiscount
-                    ? (int)(amount * lathe.MaterialUseMultiplier)
+                    ? (int)(amount * lathe.FinalMaterialUseMultiplier)
                     : amount;
 
                 yield return (mat, adjustedAmount);

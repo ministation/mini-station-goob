@@ -44,7 +44,7 @@
     - type: MachineBoard
       prototype: PrinterDoc
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4 # Mini: Orion Manipulator->Servo
+        Servo: 4
       stackRequirements:
         Glass: 1
 
@@ -59,7 +59,7 @@
   - type: MachineBoard
     prototype: StasisOperatingTable
     partRequirements: # Mini: Orion MachineParts
-      Servo: 1 # Mini: Orion Manipulator->Servo
+      Servo: 1
     stackRequirements:
       Cable: 6
       Silver: 2
@@ -76,7 +76,7 @@
   - type: MachineBoard
     prototype: MedipenRefiller
     partRequirements: # Mini: Orion MachineParts
-      Servo: 5 # Mini: Orion Manipulator->Servo
+      Servo: 5
     tagRequirements:
       GlassBeaker:
         amount: 3
@@ -95,7 +95,7 @@
   - type: MachineBoard
     prototype: QuantumTelepad
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Steel: 20
       Glass: 15
@@ -112,7 +112,7 @@
   - type: MachineBoard
     prototype: MachineCivilianFlatpacker
     partRequirements: # Mini: Orion MachineParts
-      Servo: 3 # Mini: Orion Manipulator->Servo
+      Servo: 3
     stackRequirements:
       Steel: 8
       Glass: 4

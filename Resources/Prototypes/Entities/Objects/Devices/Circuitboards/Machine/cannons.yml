@@ -14,7 +14,7 @@
   - type: MachineBoard
     prototype: ShuttleGunSvalinnMachineGun
     partRequirements: # Mini: Orion MachineParts
-      Servo: 6 # Mini: Orion Manipulator->Servo
+      Servo: 6
     stackRequirements:
       Steel: 5
       CableHV: 5
@@ -32,7 +32,7 @@
   - type: MachineBoard
     prototype: ShuttleGunPerforator
     partRequirements: # Mini: Orion MachineParts
-      Servo: 10 # Mini: Orion Manipulator->Servo
+      Servo: 10
     stackRequirements:
       Steel: 10
       CableHV: 5
@@ -50,7 +50,7 @@
   - type: MachineBoard
     prototype: ShuttleGunFriendship
     partRequirements: # Mini: Orion MachineParts
-      Servo: 5 # Mini: Orion Manipulator->Servo
+      Servo: 5
     stackRequirements:
       Steel: 7
       CableHV: 5
@@ -68,7 +68,7 @@
   - type: MachineBoard
     prototype: ShuttleGunDuster
     partRequirements: # Mini: Orion MachineParts
-      Servo: 10 # Mini: Orion Manipulator->Servo
+      Servo: 10
     stackRequirements:
       Steel: 10
       CableHV: 5
@@ -87,7 +87,7 @@
   - type: MachineBoard
     prototype: ShuttleGunKinetic
     partRequirements: # Mini: Orion MachineParts
-      Servo: 5 # Mini: Orion Manipulator->Servo
+      Servo: 5
     stackRequirements:
       Steel: 5
       CableHV: 2

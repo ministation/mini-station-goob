@@ -9,7 +9,7 @@
   - type: MachineBoard
     prototype: MachineFTLDrive
     partRequirements: # Mini: Orion MachineParts
-      Servo: 5 # Mini: Orion Manipulator->Servo
+      Servo: 5
     stackRequirements:
       Steel: 5
 
@@ -24,6 +24,6 @@
   - type: MachineBoard
     prototype: MachineFTLDriveHigh
     partRequirements: # Mini: Orion MachineParts
-      Servo: 5 # Mini: Orion Manipulator->Servo
+      Servo: 5
     stackRequirements:
       Steel: 15

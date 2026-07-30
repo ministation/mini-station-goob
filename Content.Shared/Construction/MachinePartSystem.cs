@@ -43,18 +43,14 @@ namespace Content.Shared.Construction
                         ("requiredElement", Loc.GetString(name))));
                 }
 
-                // Mini: Orion MachineParts — partRequirements (Servo etc.)
+                // Mini: Orion MachineParts
                 foreach (var (partType, amount) in component.PartRequirements)
                 {
                     string requiredElement;
                     if (_prototype.TryIndex(partType, out MachinePartPrototype? machinePart))
-                    {
                         requiredElement = Loc.GetString(machinePart.Name);
-                    }
                     else
-                    {
                         requiredElement = partType;
-                    }
 
                     args.PushMarkup(Loc.GetString("machine-board-component-required-element-entry-text",
                         ("amount", amount),
@@ -112,7 +108,40 @@ namespace Content.Shared.Construction
                 }
                 else
                 {
-                    // The item has no material cost, so we cannot get the full cost.
+                    return false;
+                }
+            }
+
+            foreach (var (partType, amount) in comp.PartRequirements)
+            {
+                if (!_prototype.TryIndex(partType, out MachinePartPrototype? machinePart))
+                    return false;
+
+                if (!_prototype.Resolve(machinePart.StockPartPrototype, out var partProto))
+                    return false;
+
+                if (partProto.TryGetComponent<PhysicalCompositionComponent>(out var partPhys, EntityManager.ComponentFactory))
+                {
+                    foreach (var (mat, matAmount) in partPhys.MaterialComposition)
+                    {
+                        materials.TryAdd(mat, 0);
+                        materials[mat] += matAmount * amount * coefficient;
+                    }
+                }
+                else if (_lathe.TryGetRecipesFromEntity(machinePart.StockPartPrototype, out var partRecipes))
+                {
+                    var partRecipe = partRecipes[0];
+                    if (partRecipes.Count > 1)
+                        partRecipe = partRecipes.MinBy(p => p.Materials.Values.Sum());
+
+                    foreach (var (mat, matAmount) in partRecipe!.Materials)
+                    {
+                        materials.TryAdd(mat, 0);
+                        materials[mat] += matAmount * amount * coefficient;
+                    }
+                }
+                else
+                {
                     return false;
                 }
             }
@@ -181,12 +210,10 @@ namespace Content.Shared.Construction
                 }
                 else
                 {
-                    // The item has no material cost, so we cannot get the full cost.
                     return false;
                 }
             }
 
-            // We were able to construct all elements of the recipe.
             return true;
         }
     }

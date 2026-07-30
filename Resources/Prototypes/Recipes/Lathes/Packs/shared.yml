@@ -13,7 +13,7 @@
   - Igniter
   - ModularReceiver
   - MicroManipulatorStockPart
-  # Mini-start: Orion T1 stock parts (Parts startingTechnology)
+  # Mini-start: Orion T1 stock parts
   - CapacitorStockPart
   - ScanningModuleStockPart
   - MicroServoStockPart

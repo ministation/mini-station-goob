@@ -9,7 +9,7 @@
     - type: MachineBoard
       prototype: Autolathe
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4 # Mini: Orion Manipulator->Servo
+        Servo: 4
       stackRequirements:
         Glass: 1
 
@@ -22,7 +22,7 @@
   - type: MachineBoard
     prototype: AutolatheHyperConvection
     partRequirements: # Mini: Orion MachineParts
-      Servo: 3 # Mini: Orion Manipulator->Servo
+      Servo: 3
     stackRequirements:
       Glass: 1
     tagRequirements:
@@ -41,7 +41,7 @@
   - type: MachineBoard
     prototype: Protolathe
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -58,7 +58,7 @@
   - type: MachineBoard
     prototype: ProtolatheHyperConvection
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -78,7 +78,7 @@
   - type: MachineBoard
     prototype: Biofabricator
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Glass: 1
 
@@ -93,7 +93,7 @@
     - type: MachineBoard
       prototype: SecurityTechFab
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4 # Mini: Orion Manipulator->Servo
+        Servo: 4
       tagRequirements:
         GlassBeaker:
           amount: 2
@@ -110,7 +110,7 @@
     - type: MachineBoard
       prototype: AmmoTechFab
       partRequirements: # Mini: Orion MachineParts
-        Servo: 2 # Mini: Orion Manipulator->Servo
+        Servo: 2
 
 - type: entity
   id: MedicalTechFabCircuitboard
@@ -123,7 +123,7 @@
     - type: MachineBoard
       prototype: MedicalTechFab
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4 # Mini: Orion Manipulator->Servo
+        Servo: 4
       tagRequirements:
         GlassBeaker:
           amount: 2
@@ -141,7 +141,7 @@
   - type: MachineBoard
     prototype: CircuitImprinter
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -158,7 +158,7 @@
   - type: MachineBoard
     prototype: CircuitImprinterHyperConvection
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -177,7 +177,7 @@
   - type: MachineBoard
     prototype: ExosuitFabricator
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Glass: 5
   - type: GuideHelp
@@ -209,7 +209,7 @@
   - type: MachineBoard
     prototype: Biogenerator
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     tagRequirements:
       GlassBeaker:
         amount: 1
@@ -223,7 +223,7 @@
   - type: MachineBoard
     prototype: UniformPrinter
     partRequirements: # Mini: Orion MachineParts
-      Servo: 3 # Mini: Orion Manipulator->Servo
+      Servo: 3
 
 - type: entity
   id: VaccinatorMachineCircuitboard
@@ -235,7 +235,7 @@
   - type: MachineBoard
     prototype: Vaccinator
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Cable: 5
     tagRequirements:
@@ -274,7 +274,7 @@
     - type: MachineBoard
       prototype: MachineArtifactAnalyzer
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         Glass: 5
 
@@ -289,7 +289,7 @@
   - type: MachineBoard
     prototype: MachineArtifactCrusher
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Glass: 1
       Steel: 5
@@ -305,7 +305,7 @@
     - type: MachineBoard
       prototype: MachineAnomalyVessel
       partRequirements: # Mini: Orion MachineParts
-        Servo: 3 # Mini: Orion Manipulator->Servo
+        Servo: 3
       stackRequirements:
         Cable: 1
         PlasmaGlass: 10
@@ -321,7 +321,7 @@
   - type: MachineBoard
     prototype: MachineAnomalyVesselExperimental
     partRequirements: # Mini: Orion MachineParts
-      Servo: 3 # Mini: Orion Manipulator->Servo
+      Servo: 3
     stackRequirements:
       Cable: 5
       PlasmaGlass: 15
@@ -338,7 +338,7 @@
     - type: MachineBoard
       prototype: MachineAnomalySynchronizer
       partRequirements: # Mini: Orion MachineParts
-        Servo: 7 # Mini: Orion Manipulator->Servo
+        Servo: 7
       stackRequirements:
         PlasmaGlass: 5
         Cable: 5
@@ -354,7 +354,7 @@
     - type: MachineBoard
       prototype: MachineAPE
       partRequirements: # Mini: Orion MachineParts
-        Servo: 2 # Mini: Orion Manipulator->Servo
+        Servo: 2
       stackRequirements:
         Cable: 1
         Glass: 1
@@ -370,7 +370,7 @@
   - type: MachineBoard
     prototype: GasThermoMachineFreezer
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Cable: 5
   - type: Construction
@@ -389,7 +389,7 @@
   - type: MachineBoard
     prototype: GasThermoMachineHeater
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Cable: 5
   - type: Construction
@@ -408,7 +408,7 @@
   - type: MachineBoard
     prototype: GasThermoMachineHellfireFreezer
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Plasma: 1
   - type: Construction
@@ -427,7 +427,7 @@
   - type: MachineBoard
     prototype: GasThermoMachineHellfireHeater
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Plasma: 1
   - type: Construction
@@ -446,7 +446,7 @@
   - type: MachineBoard
     prototype: BaseGasCondenser
     partRequirements: # Mini: Orion MachineParts
-      Servo: 1 # Mini: Orion Manipulator->Servo
+      Servo: 1
     stackRequirements:
       Glass: 1
 
@@ -461,7 +461,7 @@
   - type: MachineBoard
     prototype: PortableScrubber
     partRequirements: # Mini: Orion MachineParts
-      Servo: 3 # Mini: Orion Manipulator->Servo
+      Servo: 3
     stackRequirements:
       Cable: 5
       Glass: 2
@@ -477,7 +477,7 @@
   - type: MachineBoard
     prototype: SpaceHeater
     partRequirements: # Mini: Orion MachineParts
-      Servo: 3 # Mini: Orion Manipulator->Servo
+      Servo: 3
     stackRequirements:
       Cable: 5
 
@@ -492,7 +492,7 @@
     - type: MachineBoard
       prototype: CloningPod
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4 # Mini: Orion Manipulator->Servo
+        Servo: 4
       stackRequirements:
         Glass: 1
         Cable: 1
@@ -508,7 +508,7 @@
     - type: MachineBoard
       prototype: MedicalScanner
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         Glass: 5
         Cable: 1
@@ -550,7 +550,7 @@
     - type: MachineBoard
       prototype: ChemMaster
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         Glass: 1
         Cable: 1
@@ -570,7 +570,7 @@
     - type: MachineBoard
       prototype: ChemDispenserEmpty
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         Glass: 1
         Steel: 3
@@ -590,7 +590,7 @@
   - type: MachineBoard
     prototype: BiomassReclaimer
     partRequirements: # Mini: Orion MachineParts
-      Servo: 3 # Mini: Orion Manipulator->Servo
+      Servo: 3
     stackRequirements:
       Steel: 5
     tagRequirements:
@@ -629,7 +629,7 @@
     - type: MachineBoard
       prototype: SeedExtractor
       partRequirements: # Mini: Orion MachineParts
-        Servo: 3 # Mini: Orion Manipulator->Servo
+        Servo: 3
       stackRequirements:
         # replacing the console screen
         Glass: 1
@@ -647,7 +647,7 @@
     - type: MachineBoard
       prototype: SMESBasicEmpty
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         CableHV: 10
       componentRequirements:
@@ -667,7 +667,7 @@
   - type: MachineBoard
     prototype: SMESAdvancedEmpty
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       CableHV: 20
     componentRequirements:
@@ -687,7 +687,7 @@
     - type: MachineBoard
       prototype: PowerCellRecharger
       partRequirements: # Mini: Orion MachineParts
-        Servo: 2 # Mini: Orion Manipulator->Servo
+        Servo: 2
       stackRequirements:
         Cable: 5
     - type: PhysicalComposition
@@ -713,7 +713,7 @@
     - type: MachineBoard
       prototype: PowerCageRecharger
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4 # Mini: Orion Manipulator->Servo
+        Servo: 4
       stackRequirements:
         Steel: 5
         Cable: 10
@@ -736,7 +736,7 @@
     - type: MachineBoard
       prototype: BorgCharger
       partRequirements: # Mini: Orion MachineParts
-        Servo: 2 # Mini: Orion Manipulator->Servo
+        Servo: 2
       stackRequirements:
         Cable: 5
     - type: PhysicalComposition
@@ -762,7 +762,7 @@
     - type: MachineBoard
       prototype: WeaponCapacitorRecharger
       partRequirements: # Mini: Orion MachineParts
-        Servo: 2 # Mini: Orion Manipulator->Servo
+        Servo: 2
       stackRequirements:
         CableMV: 5
     - type: PhysicalComposition
@@ -784,7 +784,7 @@
   - type: MachineBoard
     prototype: TurboItemRecharger
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       CableMV: 5
   - type: PhysicalComposition #Goobstation - Recycle update
@@ -802,7 +802,7 @@
     - type: MachineBoard
       prototype: SubstationBasicEmpty
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         CableMV: 5
         CableHV: 5
@@ -863,7 +863,7 @@
     - type: MachineBoard
       prototype: PortableGeneratorPacman
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         CableHV: 5
     - type: PhysicalComposition
@@ -884,7 +884,7 @@
   - type: MachineBoard
     prototype: Thruster
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Steel: 5
 
@@ -898,7 +898,7 @@
   - type: MachineBoard
     prototype: Gyroscope
     partRequirements: # Mini: Orion MachineParts
-      Servo: 3 # Mini: Orion Manipulator->Servo
+      Servo: 3
     stackRequirements:
       Glass: 2
 
@@ -912,7 +912,7 @@
     - type: MachineBoard
       prototype: PortableGeneratorSuperPacman
       partRequirements: # Mini: Orion MachineParts
-        Servo: 2 # Mini: Orion Manipulator->Servo
+        Servo: 2
       stackRequirements:
         CableHV: 10
     - type: PhysicalComposition
@@ -933,7 +933,7 @@
     - type: MachineBoard
       prototype: PortableGeneratorJrPacman
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         Cable: 10
     - type: PhysicalComposition
@@ -953,7 +953,7 @@
     - type: MachineBoard
       prototype: KitchenReagentGrinder
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4 # Mini: Orion Manipulator->Servo
+        Servo: 4
       tagRequirements:
         GlassBeaker:
           amount: 1
@@ -970,7 +970,7 @@
   - type: MachineBoard
     prototype: ChemistryHotplate
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Glass: 1
 
@@ -985,7 +985,7 @@
   - type: MachineBoard
     prototype: KitchenElectricGrill
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Glass: 2
       Cable: 5
@@ -1000,7 +1000,7 @@
     - type: MachineBoard
       prototype: StasisBed
       partRequirements: # Mini: Orion MachineParts
-        Servo: 2 # Mini: Orion Manipulator->Servo
+        Servo: 2
       stackRequirements:
         Cable: 3
         Steel: 2
@@ -1016,7 +1016,7 @@
   - type: MachineBoard
     prototype: MachineElectrolysisUnit
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Cable: 1
 
@@ -1031,7 +1031,7 @@
   - type: MachineBoard
     prototype: MachineCentrifuge
     partRequirements: # Mini: Orion MachineParts
-      Servo: 1 # Mini: Orion Manipulator->Servo
+      Servo: 1
     stackRequirements:
       Steel: 1
 
@@ -1045,7 +1045,7 @@
   - type: MachineBoard
     prototype: MachineMaterialSilo
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Cable: 1
 
@@ -1059,7 +1059,7 @@
     - type: MachineBoard
       prototype: OreProcessor
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4 # Mini: Orion Manipulator->Servo
+        Servo: 4
       stackRequirements:
         Glass: 1
 
@@ -1073,7 +1073,7 @@
   - type: MachineBoard
     prototype: OreProcessorIndustrial
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Glass: 1
 
@@ -1085,7 +1085,7 @@
   - type: MachineBoard
     prototype: Sheetifier
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
 
 - type: entity
   id: MicrowaveMachineCircuitboard
@@ -1097,7 +1097,7 @@
     - type: MachineBoard
       prototype: KitchenMicrowave
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         Glass: 2
         Cable: 2
@@ -1116,7 +1116,7 @@
     - type: MachineBoard
       prototype: SyndicateMicrowave
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       stackRequirements:
         Glass: 2
         Cable: 2
@@ -1131,7 +1131,7 @@
     - type: MachineBoard
       prototype: FatExtractor
       partRequirements: # Mini: Orion MachineParts
-        Servo: 1 # Mini: Orion Manipulator->Servo
+        Servo: 1
       componentRequirements:
         Utensil:
           amount: 1
@@ -1146,7 +1146,7 @@
   - type: MachineBoard
     prototype: MachineFlatpacker
     partRequirements: # Mini: Orion MachineParts
-      Servo: 3 # Mini: Orion Manipulator->Servo
+      Servo: 3
     stackRequirements:
       Steel: 1
 
@@ -1160,7 +1160,7 @@
     - type: MachineBoard
       prototype: Emitter
       partRequirements: # Mini: Orion MachineParts
-        Servo: 2 # Mini: Orion Manipulator->Servo
+        Servo: 2
       stackRequirements:
         CableHV: 5
         Glass: 2
@@ -1245,7 +1245,7 @@
   - type: MachineBoard
     prototype: GasRecycler
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Steel: 10
       Plasma: 5
@@ -1278,7 +1278,7 @@
     - type: MachineBoard
       prototype: CargoTelepad
       partRequirements: # Mini: Orion MachineParts
-        Servo: 2 # Mini: Orion Manipulator->Servo
+        Servo: 2
       stackRequirements:
         Steel: 5
         BSCrystal: 2 # Goobstation
@@ -1294,7 +1294,7 @@
   - type: MachineBoard
     prototype: CargoMailTeleporter
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Steel: 5
 
@@ -1340,7 +1340,7 @@
   - type: MachineBoard
     prototype: SalvageMagnet
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Steel: 5
       CableHV: 5
@@ -1357,7 +1357,7 @@
   - type: MachineBoard
     prototype: GravityGeneratorMini
     partRequirements: # Mini: Orion MachineParts
-      Servo: 7 # Mini: Orion Manipulator->Servo
+      Servo: 7
     stackRequirements:
       Steel: 5
       CableHV: 5
@@ -1372,7 +1372,7 @@
   - type: MachineBoard
     prototype: StationAnchor
     partRequirements: # Mini: Orion MachineParts
-      Servo: 7 # Mini: Orion Manipulator->Servo
+      Servo: 7
     stackRequirements:
       Steel: 10
       Glass: 5
@@ -1387,7 +1387,7 @@
   - type: MachineBoard
     prototype: ReagentGrinderIndustrial
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4 # Mini: Orion Manipulator->Servo
+      Servo: 4
     stackRequirements:
       Glass: 1
 
@@ -1415,7 +1415,7 @@
   - type: MachineBoard
     prototype: CutterMachine
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Steel: 2
       Cable: 1
@@ -1431,7 +1431,7 @@
   - type: MachineBoard
     prototype: SmartFridge
     partRequirements: # Mini: Orion MachineParts
-      Servo: 2 # Mini: Orion Manipulator->Servo
+      Servo: 2
     stackRequirements:
       Glass: 5
     tagRequirements:
@@ -1451,5 +1451,5 @@
     - type: MachineBoard
       prototype: MedicalBiofabricator
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4 # Mini: Orion Manipulator->Servo
+        Servo: 4
 # Shitmed Change End
