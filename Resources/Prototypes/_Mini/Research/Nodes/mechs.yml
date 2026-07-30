@@ -97,7 +97,6 @@
     state: odysseus
   discipline: Robotics
   tier: 2
-  hidden: true # Mini: TODO no recipeUnlocks
   pointCosts:
   - type: General
     amount: 5000
