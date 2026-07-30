@@ -313,7 +313,6 @@
     state: heart-u-on
   discipline: Robotics
   tier: 3
-  hidden: true # Mini: TODO no recipeUnlocks (gate for hidden AdvancedCyberOrgans)
   announceChannels:
   - Science
   - Medical
@@ -337,7 +336,6 @@
     state: l_arm-combined
   discipline: Robotics
   tier: 5
-  hidden: true # Mini: TODO no recipeUnlocks
   announceChannels:
   - Science
   - Medical

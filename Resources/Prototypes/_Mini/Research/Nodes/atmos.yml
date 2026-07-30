@@ -90,7 +90,6 @@
     state: teg
   discipline: Engineering
   tier: 3
-  hidden: true # Mini: TODO no fusion recipes
   announceChannels:
   - Engineering
   pointCosts:
@@ -143,7 +142,6 @@
     state: icon
   discipline: Engineering
   tier: 5
-  hidden: true # Mini: TODO no recipeUnlocks
   announceChannels:
   - Engineering
   pointCosts:

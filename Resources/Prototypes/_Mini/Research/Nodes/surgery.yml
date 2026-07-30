@@ -8,7 +8,6 @@
     state: shiv
   discipline: Medical
   tier: 1
-  hidden: true # Mini: TODO no surgery operation unlocks
   pointCosts:
   - type: General
     amount: 2500

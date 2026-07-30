@@ -227,7 +227,6 @@
     state: durand
   discipline: Robotics
   tier: 4
-  hidden: true # Mini: TODO no recipeUnlocks
   announceChannels:
   - Science
   pointCosts:
@@ -343,7 +342,6 @@
     state: mecha_teleport
   discipline: Robotics
   tier: 5
-  hidden: true # Mini: TODO no recipeUnlocks
   announceChannels:
   - Science
   pointCosts:

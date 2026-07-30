@@ -247,7 +247,6 @@
     state: icon
   discipline: Service
   tier: 2
-  hidden: true # Mini: TODO no recipeUnlocks (gate for hidden MarineUtility)
   pointCosts:
   - type: General
     amount: 5000
@@ -268,7 +267,6 @@
     state: icon
   discipline: Service
   tier: 3
-  hidden: true # Mini: TODO no recipeUnlocks
   pointCosts:
   - type: General
     amount: 7500

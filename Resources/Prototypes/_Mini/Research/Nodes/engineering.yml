@@ -132,7 +132,6 @@
     state: vortex
   discipline: Engineering
   tier: 1
-  hidden: true # Mini: TODO PowerCellVortex missing
   announceChannels:
   - Engineering
   pointCosts:
