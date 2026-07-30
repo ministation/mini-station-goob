@@ -6,8 +6,8 @@ ert-call-recall-announcement = Центральное Командование �
 ert-call-accept-announcement = Центральное Командование приняло решение. Мы начали подготовку { $name } для отправки на станцию. Через { $time } минут отряд прибудет в ваш сектор.
 ert-call-accept-announcement-fake = Центральное Командование приняло решение. Мы начали подготовку { $name } для отправки на станцию.
 ert-call-spawn-announcement = { $name } направляется к станции.
-ert-team-name-blue = [color=#FFBF00]ОБР подразделение "Синий"[/color]
-ert-call-announcement-blue = Центральное Командование получило запрос на отправку подразделения Отряда Быстрого Реагирования [color=#FFBF00]"Синий"[/color].
+ert-team-name-blue = [color=#FFBF00]ОП: отряд поддержки[/color]
+ert-call-announcement-blue = Центральное Командование получило запрос на отправку [color=#FFBF00]отряда поддержки (ОП)[/color].
 
 ert-team-name-red = [color=#FF0000]ОБР подразделение кода "Красный"[/color]
 ert-call-announcement-red = Центральное Командование получило запрос на отправку подразделения Отряда Быстрого Реагирования кода [color=#FF0000]"Красный"[/color].

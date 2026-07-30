@@ -323,6 +323,8 @@ ui-options-function-hotbar-shift7 = Hotbar slot Shift+7
 ui-options-function-hotbar-shift8 = Hotbar slot Shift+8
 ui-options-function-hotbar-shift9 = Hotbar slot Shift+9
 ui-options-function-hotbar-shift0 = Hotbar slot Shift+0
+ui-options-function-action-bar-previous-page = Hotbar previous page
+ui-options-function-action-bar-next-page = Hotbar next page
 ui-options-function-loadout1 = Hotbar Loadout 1
 ui-options-function-loadout2 = Hotbar Loadout 2
 ui-options-function-loadout3 = Hotbar Loadout 3
@@ -396,6 +398,7 @@ ui-options-accessability-header-content = Content
 ui-options-enable-color-name = Add colors to character names
 ui-options-colorblind-friendly = Colorblind friendly mode
 ui-options-reduced-motion = Reduce motion of visual effects
+ui-options-foot-walk-animation = Foot walk bob (shoes / hardsuit boots)
 ui-options-screen-shake-intensity = Screen shake intensity
 
 ui-options-chat-window-opacity = Chat window opacity

@@ -374,9 +374,15 @@ namespace Content.Server.GameTicking
 
             _playTimeTrackings.PlayerRolesChanged(player);
 
-            var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(station, jobId, character);
+            var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(station, jobId, character, out var spawnFailure);
             DebugTools.AssertNotNull(mobMaybe);
-            mob = mobMaybe!.Value;
+            if (mobMaybe is not { } spawnedMob)
+            {
+                throw new InvalidOperationException(
+                    spawnFailure ?? $"Failed to spawn player as {jobId} on station {ToPrettyString(station)}.");
+            }
+
+            mob = spawnedMob;
 
             _mind.TransferTo(newMind, mob);
 
@@ -423,37 +429,71 @@ namespace Content.Server.GameTicking
             if (DummyTicker)
                 return;
 
+            // Spawn before marking JoinedGame so a failed spawn never leaves the client
+            // InGame with a null eye (black screen).
+            if (!SpawnObserver(player))
+            {
+                Log.Error($"Failed to spawn observer for {player}; returning to lobby to avoid black screen.");
+                if (LobbyEnabled)
+                    PlayerJoinLobby(player);
+                else
+                    _chatManager.DispatchServerMessage(player,
+                        Loc.GetString("game-ticker-observer-spawn-failed"));
+                return;
+            }
+
             PlayerJoinGame(player);
-            SpawnObserver(player);
         }
 
         /// <summary>
         /// Spawns an observer ghost and attaches the given player to it. If the player does not yet have a mind, the
         /// player is given a new mind with the observer role. Otherwise, the current mind is transferred to the ghost.
         /// </summary>
-        public void SpawnObserver(ICommonSession player)
+        /// <returns>True if the player was attached to a valid observer ghost.</returns>
+        public bool SpawnObserver(ICommonSession player)
         {
             if (DummyTicker)
-                return;
+                return false;
 
             var makeObserver = false;
             Entity<MindComponent?>? mind = player.GetMind();
             if (mind == null)
             {
                 var name = GetPlayerProfile(player).Name;
-                var (mindId, mindComp) = _mind.CreateMind(player.UserId, name);
-                mind = (mindId, mindComp);
-                _mind.SetUserId(mind.Value, player.UserId);
+                // Create without UserId so we do not attach the session to null before the ghost exists.
+                var created = _mind.CreateMind(null, name);
+                mind = (created.Owner, created.Comp);
                 makeObserver = true;
             }
 
             var ghost = _ghost.SpawnGhost(mind.Value);
+            if (ghost == null)
+            {
+                _adminLogger.Add(LogType.LateJoin,
+                    LogImpact.High,
+                    $"{player.Name} failed to late join as an Observer (no valid spawn position).");
+                return false;
+            }
+
             if (makeObserver)
+            {
+                _mind.SetUserId(mind.Value, player.UserId);
                 _roles.MindAddRole(mind.Value, "MindRoleObserver");
+            }
+
+            if (player.AttachedEntity != ghost)
+            {
+                // Existing minds are attached inside SpawnGhost/TransferTo; if that failed, refuse success.
+                _adminLogger.Add(LogType.LateJoin,
+                    LogImpact.High,
+                    $"{player.Name} observer spawn created {ToPrettyString(ghost):entity} but session was not attached.");
+                return false;
+            }
 
             _adminLogger.Add(LogType.LateJoin,
                 LogImpact.Low,
                 $"{player.Name} late joined the round as an Observer with {ToPrettyString(ghost):entity}.");
+            return true;
         }
 
         #region Spawn Points

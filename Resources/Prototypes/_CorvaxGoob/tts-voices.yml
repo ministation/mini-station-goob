@@ -1,3 +1,7 @@
+# SS14 prototypes — все продакшен-голоса (Silero + Piper)
+# speaker = id на TTS API (http://HOST:8000)
+
+# --- Silero builtin ---
 - type: ttsVoice
   id: Aidar
   name: tts-voice-name-aidar
@@ -7,7 +11,7 @@
 - type: ttsVoice
   id: Baya
   name: tts-voice-name-baya
-  sex: Female
+  sex: Unsexed
   speaker: baya
 
 - type: ttsVoice
@@ -28,81 +32,188 @@
   sex: Male
   speaker: eugene
 
+# --- Piper ---
+- type: ttsVoice
+  id: Denis
+  name: tts-voice-name-denis
+  sex: Male
+  speaker: denis
+
+- type: ttsVoice
+  id: Dmitri
+  name: tts-voice-name-dmitri
+  sex: Male
+  speaker: dmitri
+
+- type: ttsVoice
+  id: Irina
+  name: tts-voice-name-irina
+  sex: Female
+  speaker: irina
+
+- type: ttsVoice
+  id: Ruslan
+  name: tts-voice-name-ruslan
+  sex: Male
+  speaker: ruslan
+
+# --- Silero custom (male) ---
+- type: ttsVoice
+  id: Viktor
+  name: tts-voice-name-viktor
+  sex: Male
+  speaker: viktor
+
+- type: ttsVoice
+  id: Roman
+  name: tts-voice-name-roman
+  sex: Male
+  speaker: roman
+
+- type: ttsVoice
+  id: Maxim
+  name: tts-voice-name-maxim
+  sex: Male
+  speaker: maxim
+
+# Natalia speaker sounds male — shown as Gnome
+- type: ttsVoice
+  id: Natalia
+  name: tts-voice-name-gnome
+  sex: Male
+  speaker: natalia
+
+# --- Silero custom that sound female (API speaker ids unchanged) ---
+- type: ttsVoice
+  id: Andrei
+  name: tts-voice-name-alina
+  sex: Female
+  speaker: andrei
+
+- type: ttsVoice
+  id: Sergei
+  name: tts-voice-name-serafima
+  sex: Female
+  speaker: sergei
+
+- type: ttsVoice
+  id: Pavel
+  name: tts-voice-name-polina
+  sex: Female
+  speaker: pavel
+
+- type: ttsVoice
+  id: Nikita
+  name: tts-voice-name-nika
+  sex: Female
+  speaker: nikita
+
+- type: ttsVoice
+  id: Anton
+  name: tts-voice-name-antonina
+  sex: Female
+  speaker: anton
+
+# --- Silero custom (female) ---
+- type: ttsVoice
+  id: Anna
+  name: tts-voice-name-anna
+  sex: Female
+  speaker: anna
+
+- type: ttsVoice
+  id: Elena
+  name: tts-voice-name-elena
+  sex: Female
+  speaker: elena
+
+- type: ttsVoice
+  id: Olga
+  name: tts-voice-name-olga
+  sex: Female
+  speaker: olga
+
+- type: ttsVoice
+  id: Daria
+  name: tts-voice-name-daria
+  sex: Female
+  speaker: daria
+
+# --- Compatibility aliases (hidden from character editor) ---
 - type: ttsVoice
   id: Garithos
-  name: tts-voice-name-garithos
+  name: tts-voice-name-eugene
   sex: Male
-  speaker: garithos
+  speaker: eugene
+  roundStart: false
 
 - type: ttsVoice
   id: Maiev
-  name: tts-voice-name-maiev
+  name: tts-voice-name-irina
   sex: Female
-  speaker: maiev
+  speaker: irina
+  roundStart: false
 
 - type: ttsVoice
   id: Myron
-  name: Мира
-  sex: Female
-  speaker: myron
-
-- type: ttsVoice
-  id: Oleg
-  name: Даша
-  sex: Female
-  speaker: oleg
-
-- type: ttsVoice
-  id: Zina
-  name: tts-voice-name-zina
-  sex: Female
-  speaker: zina
-
-- type: ttsVoice
-  id: Zanuda
-  name: Зануда
-  sex: Female
-  speaker: zanuda
-
-- type: ttsVoice
-  id: Goga
-  name: Гога
-  sex: Male
-  speaker: goga
-
-- type: ttsVoice
-  id: Zanud
-  name: Нудик
-  sex: Male
-  speaker: zanud
+  name: tts-voice-name-baya
+  sex: Unsexed
+  speaker: baya
+  roundStart: false
 
 - type: ttsVoice
   id: Robot
-  name: Робот
-  sex: Male
-  speaker: semen
+  name: tts-voice-name-aidar
+  sex: Unsexed
+  speaker: aidar
   roundStart: false
 
 - type: ttsVoice
   id: Boyar
-  name: Боярин
+  name: tts-voice-name-eugene
   sex: Male
-  speaker: boyar
+  speaker: eugene
+  roundStart: false
+
+- type: ttsVoice
+  id: Zanud
+  name: tts-voice-name-eugene
+  sex: Male
+  speaker: eugene
+  roundStart: false
+
+- type: ttsVoice
+  id: Goga
+  name: tts-voice-name-eugene
+  sex: Male
+  speaker: eugene
+  roundStart: false
 
 - type: ttsVoice
   id: Vika
-  name: Вика
+  name: tts-voice-name-irina
   sex: Female
-  speaker: vika
+  speaker: irina
+  roundStart: false
+
+# Removed from menu for now (kept as hidden aliases if prefs still reference them)
+- type: ttsVoice
+  id: Maria
+  name: tts-voice-name-irina
+  sex: Female
+  speaker: irina
+  roundStart: false
 
 - type: ttsVoice
-  id: Popovich
-  name: Попович
-  sex: Male
-  speaker: popovich
+  id: Svetlana
+  name: tts-voice-name-irina
+  sex: Female
+  speaker: irina
+  roundStart: false
 
 - type: ttsVoice
-  id: Zlata
-  name: Злата
+  id: Sofia
+  name: tts-voice-name-irina
   sex: Female
-  speaker: zlata
+  speaker: irina
+  roundStart: false

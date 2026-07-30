@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 using Content.Server.Database;
 using Content.Shared.Ghost;
@@ -16,7 +15,6 @@ public sealed class CustomGhostSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
-    [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
 
     public override void Initialize()
@@ -64,29 +62,35 @@ public sealed class CustomGhostSystem : EntitySystem
     {
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
 
+        // Prefer an explicit ":selected" token. Do not TryIndex the raw suffix
+        // "ThemeId:selected" — that never matches a prototype and skips the pick.
         string? selectedThemeId = null;
+        string? fallbackThemeId = null;
+
         foreach (var token in tokens)
         {
-            if (token.TokenId.StartsWith("ghost-theme:") && token.Amount > 0)
+            if (!token.TokenId.StartsWith("ghost-theme:") || token.Amount <= 0)
+                continue;
+
+            var themeId = token.TokenId["ghost-theme:".Length..];
+
+            if (themeId.EndsWith(":selected"))
             {
-                var themeId = token.TokenId["ghost-theme:".Length..];
-                if (!_prototypeManager.TryIndex<CustomGhostPrototype>(themeId, out _))
-                    continue;
-
-                if (token.TokenId.EndsWith(":selected"))
-                {
-                    selectedThemeId = themeId;
-                    break;
-                }
-
-                selectedThemeId ??= themeId;
+                var selectedId = themeId[..^":selected".Length];
+                if (_prototypeManager.TryIndex<CustomGhostPrototype>(selectedId, out _))
+                    selectedThemeId = selectedId;
+                continue;
             }
+
+            if (fallbackThemeId == null && _prototypeManager.TryIndex<CustomGhostPrototype>(themeId, out _))
+                fallbackThemeId = themeId;
         }
 
-        if (selectedThemeId == null)
+        var themeToApply = selectedThemeId ?? fallbackThemeId;
+        if (themeToApply == null)
             return false;
 
-        ApplyTheme(ghostUid, selectedThemeId);
+        ApplyTheme(ghostUid, themeToApply);
         return true;
     }
 
@@ -96,18 +100,13 @@ public sealed class CustomGhostSystem : EntitySystem
             return;
 
         _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.Sprite, proto.CustomSpritePath.ToString());
+        _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.SizeOverride, proto.SizeOverride);
+        _appearanceSystem.SetData(ghostUid,
+            CustomGhostAppearance.AlphaOverride,
+            proto.AlphaOverride > 0 ? proto.AlphaOverride : 1f);
 
-        if (proto.SizeOverride != Vector2.One)
-            _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.SizeOverride, proto.SizeOverride);
-
-        if (proto.AlphaOverride > 0)
-            _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.AlphaOverride, proto.AlphaOverride);
-
-        if (proto.GhostName != string.Empty)
-            _metaData.SetEntityName(ghostUid, proto.GhostName);
-
-        if (proto.GhostDescription != string.Empty)
-            _metaData.SetEntityDescription(ghostUid, proto.GhostDescription);
+        // Do not overwrite MetaData name/description — GhostSystem already set the
+        // player's character/ckey name. Theme display names belong in the shop UI only.
 
         EntityManager.AddComponents(ghostUid, proto.Components);
         _appearanceSystem.SetData(ghostUid, CustomGhostAppearance.YAMLKOSTIL, themeId);
@@ -177,7 +176,9 @@ public sealed class CustomGhostSystem : EntitySystem
 
         foreach (var token in tokens)
         {
-            if (token.TokenId.StartsWith("ghost-theme:") && token.TokenId.EndsWith(":selected"))
+            if (token.Amount > 0
+                && token.TokenId.StartsWith("ghost-theme:")
+                && token.TokenId.EndsWith(":selected"))
             {
                 oldSelectedThemeId = token.TokenId;
                 break;
@@ -204,25 +205,21 @@ public sealed class CustomGhostSystem : EntitySystem
 
         foreach (var token in tokens)
         {
-            if (token.TokenId.StartsWith("ghost-theme:"))
-            {
-                var tId = token.TokenId["ghost-theme:".Length..];
+            if (!token.TokenId.StartsWith("ghost-theme:") || token.Amount <= 0)
+                continue;
 
-                if (tId.EndsWith(":selected"))
-                {
-                    selectedTheme = tId.Replace(":selected", "");
-                }
-                else
-                {
-                    ownedThemes.Add(tId);
-                }
-            }
+            var tId = token.TokenId["ghost-theme:".Length..];
+
+            if (tId.EndsWith(":selected"))
+                selectedTheme = tId[..^":selected".Length];
+            else
+                ownedThemes.Add(tId);
         }
 
         SendShopState(args.SenderSession, balanceToken?.Amount ?? 0, ownedThemes, selectedTheme);
 
-        if (themeId != null && args.SenderSession.AttachedEntity is { Valid: true } ent && HasComp<GhostComponent>(ent))
-            ApplyTheme(ent, themeId);
+        if (args.SenderSession.AttachedEntity is { Valid: true } ent && HasComp<GhostComponent>(ent))
+            ApplyTheme(ent, themeId ?? "GhostThemeDefault");
     }
 
     private async void SendShopState(ICommonSession session)
@@ -278,7 +275,7 @@ public sealed class CustomGhostSystem : EntitySystem
 
                 if (themeId.EndsWith(":selected"))
                 {
-                    selectedTheme = themeId.Replace(":selected", "");
+                    selectedTheme = themeId[..^":selected".Length];
                 }
                 else
                 {

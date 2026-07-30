@@ -919,7 +919,7 @@ public abstract partial class SharedActionsSystem : EntitySystem
         foreach (var actionId in comp.Actions.ToArray())
         {
             if (GetAction(actionId) is not {} ent)
-                return;
+                continue;
 
             if (ent.Comp.Container == container)
                 RemoveAction((performer, comp), (ent, ent));
@@ -1074,8 +1074,6 @@ public abstract partial class SharedActionsSystem : EntitySystem
             return;
 
         GrantActions((ent, ent), ev.Actions, args.Equipment);
-
-        LoadActions(args.Equipee); // Goobstation
     }
 
     private void OnHandEquipped(Entity<ActionsComponent> ent, ref DidEquipHandEvent args)
@@ -1090,8 +1088,6 @@ public abstract partial class SharedActionsSystem : EntitySystem
             return;
 
         GrantActions((ent, ent), ev.Actions, args.Equipped);
-
-        LoadActions(args.User); // Goobstation
     }
 
     private void OnDidUnequip(EntityUid uid, ActionsComponent component, DidUnequipEvent args)

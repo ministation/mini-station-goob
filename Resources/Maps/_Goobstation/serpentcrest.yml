@@ -157902,6 +157902,27 @@ entities:
     - type: Transform
       pos: 11.5,-41.5
       parent: 2
+- proto: SpawnPointGeneticist
+  entities:
+  - uid: 29504
+    components:
+    - type: Transform
+      parent: 2
+      pos: 10.5,-40.5
+- proto: MedicalScanner
+  entities:
+  - uid: 29505
+    components:
+    - type: Transform
+      parent: 2
+      pos: 11.5,-40.5
+- proto: DnaModifierConsole
+  entities:
+  - uid: 29506
+    components:
+    - type: Transform
+      parent: 2
+      pos: 12.5,-40.5
 - proto: SpawnPointMedicalIntern
   entities:
   - uid: 26911

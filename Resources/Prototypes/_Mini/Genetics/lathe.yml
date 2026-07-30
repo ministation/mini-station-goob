@@ -1,0 +1,5 @@
+# Ported from wega-team/ss14-wega (GPL-3.0) — Corvax-Wega Genetics
+- type: latheRecipe
+  parent: BaseCircuitboardRecipe
+  id: DnaModifierComputerCircuitboard
+  result: DnaModifierComputerCircuitboard

@@ -29,6 +29,9 @@
   id: Drunk
 
 - type: statusEffect
+  id: Dizzy
+
+- type: statusEffect
   id: SlurredSpeech
 
 - type: statusEffect

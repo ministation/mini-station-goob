@@ -122,6 +122,7 @@ guide-entry-brute = Advanced Brute Medication
 guide-entry-plastic = Plastic Sheet Production
 guide-entry-botanicals = Botanicals
 guide-entry-cloning = Cloning
+guide-entry-genetics = Genetics
 guide-entry-cryogenics = Cryogenics
 guide-entry-science = Science
 guide-entry-technologies = Technologies
@@ -141,7 +142,10 @@ guide-entry-forensics = Forensics
 guide-entry-defusal = Large Bomb Defusal
 guide-entry-criminal-records = Criminal Records
 guide-entry-command = Command
+guide-entry-centcomm-official = CentComm Official
+guide-entry-centcomm-assistant = CentComm Intern
 guide-entry-service = Service
+
 
 guide-entry-newplayer = New? Start here!
 guide-entry-charactercreation = Creating Characters

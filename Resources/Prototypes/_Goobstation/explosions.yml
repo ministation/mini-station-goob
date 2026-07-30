@@ -95,6 +95,19 @@
   fireStates: 6
   fireStacks: 5
 
+- type: explosion
+  id: HardlightArrow
+  damagePerIntensity:
+    types:
+      # Heat only — Blunt/Slash from Default was severing limbs via Shitmed.
+      Heat: 6
+  tileBreakChance: [0]
+  tileBreakIntensity: [0]
+  lightColor: "#7300FF"
+  fireColor: "#7300FF"
+  texturePath: /Textures/Effects/fire_greyscale.rsi
+  fireStates: 3
+
   # Used by RPO-A shmel
 - type: explosion
   id: Thermobaric

@@ -8,7 +8,9 @@ using Content.Shared._Mini.TimeWindow;
 using Robust.Shared.Prototypes;
 using Content.Server._Mini.ERTCall;
 using Content.Server.GameTicking.Rules;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Shared.Bed.Cryostorage;
 using Content.Shared.Humanoid;
 using Content.Shared.Storage;
 using Robust.Shared.Random;
@@ -28,6 +30,7 @@ using Content.Server.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.EntitySerialization;
+using Robust.Shared.Containers;
 
 namespace Content.Server._Mini.ERT;
 
@@ -58,6 +61,7 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
     [Dependency] private readonly SharedPinpointerSystem _pinpointerSystem = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly RandomHumanoidSystem _randomHumanoid = default!;
+    [Dependency] private readonly SharedContainerSystem _container = default!;
 
     private static readonly HashSet<string> IpcSpeciesBlacklist = ["IPC"];
 
@@ -234,8 +238,9 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
         if (!EntityManager.EntityExists(ent.Comp.Settings.SpawnPoint))
             return;
 
+        var mapId = Transform(ent.Comp.Settings.SpawnPoint).MapID;
         SpawnErtSquad(EntitySpawnCollection.GetSpawns(prototype.Spawns, _random),
-            Transform(ent.Comp.Settings.SpawnPoint).Coordinates);
+            CollectErtSpawnPoints(mapId));
     }
 
     private void OnRuleLoadedGrids(Entity<ErtSpawnRuleComponent> ent, ref RuleLoadedGridsEvent args)
@@ -243,30 +248,28 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
         if (!_prototypeManager.TryIndex(ent.Comp.Team, out var prototype))
             return;
 
-        var query = EntityQueryEnumerator<ErtSpawnPointComponent, TransformComponent>();
-        while (query.MoveNext(out var uid, out _, out var xform))
+        var spawnPoints = CollectErtSpawnPoints(args.Map, args.Grids);
+
+        if (spawnPoints.Count == 0)
         {
-            if (xform.MapID != args.Map)
-                continue;
+            Log.Warning($"ERT team '{ent.Comp.Team}' loaded grids but found no ErtSpawnPoint / cryo spawners.");
+        }
+        else if (prototype.Special != null)
+        {
+            var spawnPoint = spawnPoints[0];
+            var spec = Spawn(prototype.Special.Value, Transform(spawnPoint).Coordinates);
 
-            if (xform.GridUid is not { } grid || !args.Grids.Contains(grid))
-                continue;
+            var window = _defaultWindowWaitingSpecies.Clone();
+            var settings = new WaitingSpeciesSettings(args.Map, window, ent.Comp.Team, spawnPoint);
 
-            if (prototype.Special != null)
-            {
-                var spec = Spawn(prototype.Special.Value, Transform(uid).Coordinates);
+            EnsureComp<ErtSpeciesRoleComponent>(spec).Settings = settings;
+            _timedWindowSystem.Reset(window);
 
-                var window = _defaultWindowWaitingSpecies.Clone();
-                var settings = new WaitingSpeciesSettings(args.Map, window, ent.Comp.Team, uid);
-
-                EnsureComp<ErtSpeciesRoleComponent>(spec).Settings = settings;
-                _timedWindowSystem.Reset(window);
-
-                _windowWaitingSpecies.Add(settings);
-                return;
-            }
-
-            SpawnErtSquad(EntitySpawnCollection.GetSpawns(prototype.Spawns, _random), Transform(uid).Coordinates);
+            _windowWaitingSpecies.Add(settings);
+        }
+        else
+        {
+            SpawnErtSquad(EntitySpawnCollection.GetSpawns(prototype.Spawns, _random), spawnPoints);
         }
 
         // Устанавливаем pinpointer target для всех пинпоинтеров на карте ERT
@@ -476,35 +479,125 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
     }
 
     /// <summary>
-    /// Spawns an ERT/CBURN squad with at most one IPC. Subsequent members blacklist IPC.
+    /// Spawns an ERT/CBURN squad with at most one IPC. One member per spawn point when possible;
+    /// cryo capsules (<see cref="ErtSpawnPointComponent"/> on a sleeper) receive the body in storage.
     /// </summary>
-    private void SpawnErtSquad(List<string> spawnProtos, EntityCoordinates coordinates)
+    private void SpawnErtSquad(List<string> spawnProtos, List<EntityUid> spawnPoints)
     {
         var ipcUsed = false;
+        var available = new List<EntityUid>(spawnPoints);
+        EntityCoordinates? fallbackCoords = spawnPoints.Count > 0
+            ? Transform(spawnPoints[0]).Coordinates
+            : null;
 
         foreach (var protoId in spawnProtos)
         {
+            var spawnPoint = TakeNextErtSpawnPoint(available);
+            var coordinates = spawnPoint is { } point
+                ? Transform(point).Coordinates
+                : fallbackCoords;
+
+            if (coordinates is not { } coords)
+            {
+                Log.Error($"Cannot spawn ERT member '{protoId}': no ErtSpawnPoint coordinates.");
+                continue;
+            }
+
+            EntityUid spawned;
             if (!_prototypeManager.TryIndex(protoId, out EntityPrototype? entProto) ||
                 !entProto.TryGetComponent(out RandomHumanoidSpawnerComponent? spawner, EntityManager.ComponentFactory) ||
                 string.IsNullOrEmpty(spawner.SettingsPrototypeId))
             {
-                Spawn(protoId, coordinates);
-                continue;
+                spawned = Spawn(protoId, coords);
             }
-
-            var name = Loc.GetString(entProto.Name);
-            var extraBlacklist = ipcUsed ? IpcSpeciesBlacklist : null;
-            var humanoid = _randomHumanoid.SpawnRandomHumanoid(
-                spawner.SettingsPrototypeId,
-                coordinates,
-                name,
-                extraBlacklist);
-
-            if (TryComp(humanoid, out HumanoidAppearanceComponent? appearance) &&
-                appearance.Species == "IPC")
+            else
             {
-                ipcUsed = true;
+                var name = Loc.GetString(entProto.Name);
+                var extraBlacklist = ipcUsed ? IpcSpeciesBlacklist : null;
+                spawned = _randomHumanoid.SpawnRandomHumanoid(
+                    spawner.SettingsPrototypeId,
+                    coords,
+                    name,
+                    extraBlacklist);
+
+                if (TryComp(spawned, out HumanoidAppearanceComponent? appearance) &&
+                    appearance.Species == "IPC")
+                {
+                    ipcUsed = true;
+                }
             }
+
+            if (spawnPoint is { } insertPoint)
+                TryInsertIntoErtCryo(insertPoint, spawned);
+        }
+    }
+
+    private List<EntityUid> CollectErtSpawnPoints(MapId mapId, IReadOnlyCollection<EntityUid>? grids = null)
+    {
+        var spawnPoints = new List<EntityUid>();
+        var query = EntityQueryEnumerator<ErtSpawnPointComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out var xform))
+        {
+            if (xform.MapID != mapId)
+                continue;
+
+            if (grids != null)
+            {
+                if (xform.GridUid is not { } grid || !grids.Contains(grid))
+                    continue;
+            }
+
+            spawnPoints.Add(uid);
+        }
+
+        return spawnPoints;
+    }
+
+    /// <summary>
+    /// Prefers empty cryo storage slots, then plain markers.
+    /// </summary>
+    private EntityUid? TakeNextErtSpawnPoint(List<EntityUid> available)
+    {
+        for (var i = 0; i < available.Count; i++)
+        {
+            var uid = available[i];
+            if (!TryGetErtStorageContainer(uid, out var container))
+                continue;
+
+            if (container.ContainedEntities.Count != 0)
+                continue;
+
+            available.RemoveAt(i);
+            return uid;
+        }
+
+        if (available.Count == 0)
+            return null;
+
+        var fallback = available[0];
+        available.RemoveAt(0);
+        return fallback;
+    }
+
+    private bool TryGetErtStorageContainer(EntityUid spawnPoint, [NotNullWhen(true)] out BaseContainer? container)
+    {
+        const string storageId = "storage";
+        return _container.TryGetContainer(spawnPoint, storageId, out container);
+    }
+
+    private void TryInsertIntoErtCryo(EntityUid spawnPoint, EntityUid mob)
+    {
+        if (!TryGetErtStorageContainer(spawnPoint, out var container))
+            return;
+
+        if (!_container.Insert(mob, container))
+            return;
+
+        // Ghost-role bodies have no mind yet; default NoMindGracePeriod would cryo-pause them in 30s.
+        if (TryComp(mob, out CryostorageContainedComponent? contained))
+        {
+            contained.GracePeriodEndTime = null;
+            Dirty(mob, contained);
         }
     }
 

@@ -72,3 +72,12 @@
 
 - type: Tag
   id: LightTube
+
+- type: Tag
+  id: ERTUplinkBlue
+
+- type: Tag
+  id: ERTUplinkRed
+
+- type: Tag
+  id: ERTUplinkGamma

@@ -26,6 +26,7 @@
   - type: LitOnPowered
   - type: ResearchServer
     networkId: StationResearchNet
+  - type: DnaServer # Mini: Paradise/Wega genetics buffers
   - type: TechnologyDatabase
     supportedDisciplines:
     # Mini / Orion techweb — NT station (no Syndicate / Typan / empty Cargo)

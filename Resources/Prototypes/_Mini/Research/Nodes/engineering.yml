@@ -124,6 +124,7 @@
 
 - type: technology
   id: PartsVortex
+  hidden: true # empty unlocks — disabled until content exists
   name: research-technology-parts-vortex-name
   description: research-technology-parts-vortex-desc
   icon:

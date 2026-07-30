@@ -10,7 +10,9 @@ using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Content.Shared.Station.Components;
+using Content.Shared.Warps;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -242,10 +244,19 @@ public sealed class TTStationHandleJobSystem : EntitySystem
 
     private List<EntityCoordinates> CollectSpawnLocations(EntityUid handledStation, ProtoId<JobPrototype> job)
     {
+        // Prefer job-specific Job spawners, then LateJoin (null job_id = any job, like stock SpawnPointSystem).
         var possiblePositions = CollectSpawnLocations(handledStation, job, SpawnPointType.Job);
 
         if (possiblePositions.Count == 0)
             possiblePositions = CollectSpawnLocations(handledStation, job, SpawnPointType.LateJoin);
+
+        // Any compatible spawner on the station (covers Unset / mixed map data).
+        if (possiblePositions.Count == 0)
+            possiblePositions = CollectCompatibleSpawnLocations(handledStation, job);
+
+        // Last resort: stand on a station grid so AbortSpawn does not wipe the round.
+        if (possiblePositions.Count == 0)
+            possiblePositions = CollectGridFallbackLocations(handledStation);
 
         return possiblePositions;
     }
@@ -260,13 +271,90 @@ public sealed class TTStationHandleJobSystem : EntitySystem
             if (!IsSpawnOnStation(uid, xform, handledStation))
                 continue;
 
-            if (spawnPoint.Job != job)
+            // Null Job means any role may use this point (LateJoin CentComm, etc.).
+            if (spawnPoint.Job != null && spawnPoint.Job != job)
                 continue;
 
             if (spawnPoint.SpawnType != spawnType)
                 continue;
 
             possiblePositions.Add(xform.Coordinates);
+        }
+
+        return possiblePositions;
+    }
+
+    private List<EntityCoordinates> CollectCompatibleSpawnLocations(EntityUid handledStation, ProtoId<JobPrototype> job)
+    {
+        var possiblePositions = new List<EntityCoordinates>();
+
+        var query = EntityQueryEnumerator<SpawnPointComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var spawnPoint, out var xform))
+        {
+            if (spawnPoint.SpawnType is SpawnPointType.Observer)
+                continue;
+
+            if (!IsSpawnOnStation(uid, xform, handledStation))
+                continue;
+
+            if (spawnPoint.Job != null && spawnPoint.Job != job)
+                continue;
+
+            possiblePositions.Add(xform.Coordinates);
+        }
+
+        return possiblePositions;
+    }
+
+    private List<EntityCoordinates> CollectGridFallbackLocations(EntityUid handledStation)
+    {
+        var possiblePositions = new List<EntityCoordinates>();
+
+        if (!TryComp<StationDataComponent>(handledStation, out var data) || data.Grids.Count == 0)
+            return possiblePositions;
+
+        // Prefer named warp points on the station (CentComm map has "CentCom") — never use grid (0,0), that is space.
+        var warps = EntityQueryEnumerator<WarpPointComponent, TransformComponent>();
+        while (warps.MoveNext(out _, out var warp, out var xform))
+        {
+            if (!IsTransformOnStationGrids(xform, data))
+                continue;
+
+            if (warp.Location != null &&
+                warp.Location.Contains("CentCom", StringComparison.OrdinalIgnoreCase))
+                possiblePositions.Add(xform.Coordinates);
+        }
+
+        if (possiblePositions.Count == 0)
+        {
+            warps = EntityQueryEnumerator<WarpPointComponent, TransformComponent>();
+            while (warps.MoveNext(out _, out _, out var xform))
+            {
+                if (!IsTransformOnStationGrids(xform, data))
+                    continue;
+
+                possiblePositions.Add(xform.Coordinates);
+            }
+        }
+
+        if (possiblePositions.Count > 0)
+        {
+            Log.Warning(
+                $"No job spawners on {GetStationName(handledStation)}; falling back to warp point(s).");
+            return possiblePositions;
+        }
+
+        // Last resort: local offset into the grid AABB (origin is often empty space around CentComm).
+        foreach (var grid in data.Grids)
+        {
+            if (!Exists(grid) || !TryComp<MapGridComponent>(grid, out var gridComp))
+                continue;
+
+            var local = gridComp.LocalAABB.Center;
+            possiblePositions.Add(new EntityCoordinates(grid, local));
+            Log.Warning(
+                $"No warps on {GetStationName(handledStation)}; falling back to grid AABB center {local} on {ToPrettyString(grid)}.");
+            break;
         }
 
         return possiblePositions;
@@ -280,12 +368,37 @@ public sealed class TTStationHandleJobSystem : EntitySystem
         if (!TryComp<StationDataComponent>(station, out var data))
             return false;
 
-        if (xform.GridUid is not { } gridUid)
+        return IsTransformOnStationGrids(xform, data);
+    }
+
+    private bool IsTransformOnStationGrids(TransformComponent xform, StationDataComponent data)
+    {
+        if (xform.GridUid is { } gridUid)
+        {
+            foreach (var grid in data.Grids)
+            {
+                if (grid == gridUid)
+                    return true;
+            }
+        }
+
+        // Entity still parented to the grid but GridUid not updated yet.
+        foreach (var grid in data.Grids)
+        {
+            if (grid == xform.ParentUid)
+                return true;
+        }
+
+        // CentComm is a dedicated map: accept anything on the same map as a station grid.
+        if (xform.MapUid is not { } mapUid)
             return false;
 
         foreach (var grid in data.Grids)
         {
-            if (grid == gridUid)
+            if (!TryComp(grid, out TransformComponent? gridXform))
+                continue;
+
+            if (gridXform.MapUid == mapUid)
                 return true;
         }
 

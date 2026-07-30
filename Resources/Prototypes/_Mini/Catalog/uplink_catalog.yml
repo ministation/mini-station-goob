@@ -213,6 +213,24 @@
       tags:
       - NukeOpsUplink
 
+# Mini: Orion personal energy dome (syndie belt shield)
+- type: listing
+  id: UplinkEnergyDomePersonalSyndie
+  name: uplink-energy-dome-personal-syndie-name
+  description: uplink-energy-dome-personal-syndie-desc
+  icon: { sprite: _Orion/Objects/Tools/EnergyDome/syndie.rsi, state: icon }
+  productEntity: EnergyDomeGeneratorPersonalSyndie
+  cost:
+    Telecrystal: 5
+  categories:
+  - UplinkWearables
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - ContractorUplink
+      - ContravendUplink
+
 # ERT / CBRUN bluespace medicine
 - type: listing
   id: UplinkNanoPasteBluespace

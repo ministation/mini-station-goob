@@ -23,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <Button Name="Site" Text="Сайт"/>
         <Button Name="Discord" Text="Дискорд"/>
         <Button Name="DailyRewardsButton" Text="Награды"/>
+        <Button Access="Public" Name="GhostsButton" Text="{Loc 'ui-escape-ghosts'}" />
         <Button Name="AuthorizationDiscordButton" StyleClasses="ButtonColorYellow" Access="Public" Text="Авторизация"/>
         <Button Access="Public" Name="CharacterButton" Text="{Loc 'ui-escape-character'}" /> <!-- Goobstation - Character customization in escape menu -->
         <PanelContainer StyleClasses="LowDivider" Margin="0 2.5 0 2.5" />

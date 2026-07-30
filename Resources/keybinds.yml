@@ -634,6 +634,14 @@ binds:
   type: State
   key: Num9
   mod1: Shift
+- function: ActionBarPreviousPage
+  type: State
+  key: Num1
+  mod1: Shift
+- function: ActionBarNextPage
+  type: State
+  key: Num2
+  mod1: Shift
 - function: MappingUnselect
   type: State
   key: MouseRight

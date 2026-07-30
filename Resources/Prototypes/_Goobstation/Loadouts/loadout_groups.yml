@@ -1660,6 +1660,7 @@
   id: VirologistOuterClothing
   name: loadout-group-virologist-outerclothing
   minLimit: 0
+  defaultSelected: 1
   loadouts:
    - VirologistLabCoat
    - VirologistWintercoat

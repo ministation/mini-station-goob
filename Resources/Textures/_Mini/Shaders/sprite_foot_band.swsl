@@ -1,0 +1,9 @@
+// Keep only the foot band of a full-body clothing sprite (no horizontal split).
+// Used for E/W side views where X-cutting boots looks wrong.
+uniform highp float footCut; // keep pixels with UV2.y < footCut
+
+void fragment()
+{
+    highp vec4 tex = zTexture(UV);
+    COLOR = UV2.y < footCut ? tex : vec4(0.0);
+}

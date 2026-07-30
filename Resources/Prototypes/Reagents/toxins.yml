@@ -335,6 +335,7 @@
         damage:
           types:
             Radiation: 3
+      - !type:ChemMutateDna # Mini genetics — activates disease SE blocks
     Narcotic:
       effects:
       - !type:MutateDiseases

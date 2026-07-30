@@ -117,3 +117,19 @@
     sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
     state: technicalsupervisor
   jobName: job-name-typan-technical-supervisor
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCentCommOfficial
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: Centcomm
+  jobName: job-name-centcomoff
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCentCommAssistant
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: Nanotrasen
+  jobName: job-name-centcom-assistant

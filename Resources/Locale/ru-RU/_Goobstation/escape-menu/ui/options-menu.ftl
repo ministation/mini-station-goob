@@ -11,3 +11,6 @@ ui-options-hud-theme-coscult = Космический культ
 ui-options-admin-notifications-title = Админ уведомления
 ui-options-admin-notifications-volume = Громкость админ уведомлений
 ui-options-lock-action-bar-drag = Разрешить перетаскивание действий на хотбаре только при открытом меню действий
+ui-options-action-bar-mode = Режим панели действий:
+ui-options-action-bar-mode-flat = Полоса (без вкладок)
+ui-options-action-bar-mode-paged = Вкладки

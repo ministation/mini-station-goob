@@ -105,6 +105,17 @@ namespace Content.Server.Lathe
                     FinishProducing(uid, lathe);
             }
 
+            // Unstick lathes after RemCompDeferred removed LatheProducing while CurrentRecipe/queue remain.
+            var stuckQuery = EntityQueryEnumerator<LatheComponent>();
+            while (stuckQuery.MoveNext(out var uid, out var lathe))
+            {
+                if (lathe.CurrentRecipe != null && !HasComp<LatheProducingComponent>(uid))
+                    RecoverInterruptedRecipe(uid, lathe);
+
+                if (lathe.CurrentRecipe == null && lathe.Queue.Count > 0 && this.IsPowered(uid, EntityManager))
+                    TryStartProducing(uid, lathe);
+            }
+
             var heatQuery = EntityQueryEnumerator<LatheHeatProducingComponent, LatheProducingComponent, TransformComponent>();
             while (heatQuery.MoveNext(out var uid, out var heatComp, out _, out var xform))
             {
@@ -210,6 +221,12 @@ namespace Content.Server.Lathe
         {
             if (!Resolve(uid, ref component))
                 return false;
+
+            // RemCompDeferred(LatheProducing) can race with a same-frame restart:
+            // CurrentRecipe stays set, producing comp is gone → queue eats mats and never prints.
+            if (component.CurrentRecipe != null && !HasComp<LatheProducingComponent>(uid))
+                RecoverInterruptedRecipe(uid, component);
+
             if (component.CurrentRecipe != null || component.Queue.Count <= 0 || !this.IsPowered(uid, EntityManager))
                 return false;
 
@@ -235,14 +252,31 @@ namespace Content.Server.Lathe
 
             if (time == TimeSpan.Zero)
             {
-                // Goobstation edit start: handle special case with lots of 0-time recipes that insert into storage
+                // Goobstation: 0-time + OutputToStorage batches (avoids stack overflow).
+                // ManyStorage already finishes/clears/starts next — do not call FinishProducing after.
                 if (component.OutputToStorage)
+                {
                     FinishProducingManyStorage((uid, component, lathe));
-                // Goobstation edit end
+                    return true;
+                }
 
                 FinishProducing(uid, component, lathe);
             }
             return true;
+        }
+
+        /// <summary>
+        /// Re-queues a recipe that was interrupted after LatheProducingComponent was removed
+        /// while CurrentRecipe was still set (RemCompDeferred race). Materials stay paid.
+        /// </summary>
+        private void RecoverInterruptedRecipe(EntityUid uid, LatheComponent component)
+        {
+            if (component.CurrentRecipe is not { } recipe)
+                return;
+
+            component.Queue.AddFirst(new LatheRecipeBatch(recipe, 0, 1));
+            component.CurrentRecipe = null;
+            UpdateUserInterfaceState(uid, component);
         }
 
         public void FinishProducing(EntityUid uid, LatheComponent? comp = null, LatheProducingComponent? prodComp = null)

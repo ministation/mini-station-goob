@@ -8,6 +8,7 @@ game-ticker-delay-start = Начало раунда было отложено н
 game-ticker-pause-start = Начало раунда было приостановлено.
 game-ticker-pause-start-resumed = Отсчёт начала раунда возобновлён.
 game-ticker-player-join-game-message = Добро пожаловать на Космическую Станцию 14! Если вы играете впервые, обязательно нажмите ESC на клавиатуре и прочитайте правила игры, а также не бойтесь просить помощи в "Админ помощь".
+game-ticker-observer-spawn-failed = Не удалось заспавнить вас наблюдателем (нет точки спавна). Перезайдите или обратитесь к администратору.
 game-ticker-get-info-text =
     Ждём тебя на [color=gold]Мини-станции![/color]
     Сейчас [color=white]{ $roundId }[/color] раунд

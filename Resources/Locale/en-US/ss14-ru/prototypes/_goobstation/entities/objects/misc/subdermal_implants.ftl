@@ -1,5 +1,5 @@
 ent-BluespaceLifelineImplant = bluespace lifeline implant
-    .desc = Teleports the hosts body to Central Command on activation. They will not be able to return.
+    .desc = Teleports the host to Central Command on activation or death. You will lose all your belongings and will not be able to return easily.
 ent-CommandTrackingImplant = command tracking implant
     .desc = This implant reserved for command has a tracking device attached to a private suit sensor network, as well as a condition monitor for the Command radio channel.
 ent-PacifismImplant = pacifism implant

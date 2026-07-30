@@ -274,6 +274,9 @@ namespace Content.Client.Options.UI.Tabs
                 AddButton(boundKey);
             }
 
+            AddButton(ContentKeyFunctions.ActionBarPreviousPage);
+            AddButton(ContentKeyFunctions.ActionBarNextPage);
+
             AddHeader("ui-options-header-shuttle");
             AddButton(ContentKeyFunctions.ShuttleStrafeUp);
             AddButton(ContentKeyFunctions.ShuttleStrafeRight);

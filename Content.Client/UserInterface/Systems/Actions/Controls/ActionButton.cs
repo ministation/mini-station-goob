@@ -335,8 +335,10 @@ public sealed class ActionButton : Control, IEntityControl
     public void UpdateBackground()
     {
         _controller ??= UserInterfaceManager.GetUIController<ActionUIController>();
+        // Filled slots always show the slot background. While dragging, all empty hotbar
+        // slots show it too so drop targets are visible (not only the trailing Flat-mode slot).
         if (Action != null ||
-            _controller.IsDragging && GetPositionInParent() == Parent?.ChildCount - 1)
+            _controller.IsDragging && Parent is ActionButtonContainer)
         {
             Button.Texture = _buttonBackgroundTexture;
         }

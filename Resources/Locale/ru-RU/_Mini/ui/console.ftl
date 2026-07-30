@@ -35,12 +35,15 @@ ert-responce-caused-messager-sierra =
     На станции инициализирован уровень угрозы Сьерра с протоколами военного положения, объявляется мобилизация экипажа.
     Инициировано развёртывание сил РХБЗЗ по вектору угрозы.
 
-ert-computer-window-title = Компьютер ОБР
+ert-computer-window-title = Консоль эвакуации ОБР
 
-ert-computer-evac-title = начать эвакуацию
+ert-computer-evac-title = эвакуация на ЦК
 ert-computer-evac-cancle-title = отменить эвакуацию
 
-ert-computer-time-until-eval = Осталось { $time } секунд до эвакуации.
+ert-computer-time-until-eval = Осталось { $time } секунд до эвакуации на ЦК.
+ert-computer-evac-centcomm-missing = Ошибка: станция ЦК недоступна для БСС-прыжка.
+ert-computer-evac-started = Инициирован БСС-прыжок к Центральному Командованию.
+ert-computer-evac-failed = Эвакуация не удалась: { $reason }.
 
 station-event-response-team-arrival = Отряд быстрого реагирования приступил к выполнению задачи на станции.
 
@@ -63,3 +66,5 @@ ert-call-fail-prototype-missing = Отряда не доступен.
 ert-call-fail-code-blacklist = Уровень тревоги ({$level}) запрещает вызов этого отряда.
 ert-call-fail-not-enough-points = Недостаточно ресурса для вызова (нужно {$price}, доступно {$balance}).
 ert-call-fail-cooldown = Повторный вызов возможен через {$seconds} сек.
+ert-call-fail-no-team-selected = Сначала выберите отряд из списка.
+ert-call-success-device = Запрос на вызов отряда принят.

@@ -40,11 +40,20 @@
   id: NanotrasenCentralCommand
   parent:
     - BaseStation
+    - BaseStationJobsSpawning
+    - BaseStationRecords
     - BaseStationAlertLevels
     - BaseStationNanotrasen
   categories: [ HideSpawnMenu ]
   components:
     - type: Transform
+    # Jobs come from gameMap station config (CentComm), not the entity prototype —
+    # StationJobs mutates JobList/TotalJobs on init which fails PrototypeSaveTest.
+    # Same dedicated-station pattern as Typan — AssignRoundstartHandledJobs + forced spawn points.
+    - type: TTStationHandleJob
+      jobs:
+      - CentralCommandOfficial
+      - CentralCommandAssistant
 
 - type: entity
   id: StandardStationArena

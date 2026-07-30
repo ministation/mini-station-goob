@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+﻿# SPDX-License-Identifier: AGPL-3.0-or-later
 
 name: Diff RSIs
 
@@ -20,14 +20,74 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
+      # Ana06/get-changed-files uses the Compare API, which fails on large PRs with:
+      # "Sorry, this diff is taking too long to generate" / not_available.
+      # Paginated PR files API scales; also avoids the Node 20 action deprecation.
       - name: Get changed files
         id: files
-        uses: Ana06/get-changed-files@v2.3.0
-        with:
-          format: 'space-delimited'
-          filter: |
-            **.rsi
-            **.png
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          mapfile -t rows < <(
+            gh api --paginate \
+              "repos/${{ github.repository }}/pulls/${{ github.event.number }}/files" \
+              --jq '.[] | [.status, .filename, (.previous_filename // "")] | @tsv'
+          )
+
+          added=()
+          modified=()
+          removed=()
+
+          is_rsi_path() {
+            # RSIDiffBot only cares about files inside *.rsi/ (png/meta/etc).
+            case "$1" in
+              *.rsi|*.rsi/*) return 0 ;;
+              *) return 1 ;;
+            esac
+          }
+
+          for row in "${rows[@]+"${rows[@]}"}"; do
+            IFS=$'\t' read -r status filename previous <<< "$row"
+
+            if ! is_rsi_path "$filename"; then
+              # Renames out of RSI still need the previous path as removed.
+              if [[ "$status" == "renamed" ]] && is_rsi_path "$previous"; then
+                removed+=("$previous")
+              fi
+              continue
+            fi
+
+            case "$status" in
+              added)
+                added+=("$filename")
+                ;;
+              removed)
+                removed+=("$filename")
+                ;;
+              modified|changed)
+                modified+=("$filename")
+                ;;
+              renamed)
+                if is_rsi_path "$previous"; then
+                  removed+=("$previous")
+                fi
+                added+=("$filename")
+                ;;
+            esac
+          done
+
+          join_space() {
+            local IFS=' '
+            echo "$*"
+          }
+
+          {
+            echo "added=$(join_space "${added[@]+"${added[@]}"}")"
+            echo "modified=$(join_space "${modified[@]+"${modified[@]}"}")"
+            echo "removed=$(join_space "${removed[@]+"${removed[@]}"}")"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Diff changed RSIs
         id: diff

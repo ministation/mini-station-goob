@@ -40,6 +40,7 @@
             #medical (6 - 8)
             Chemist: [ 2, 2 ]
             MedicalDoctor: [ 3, 5 ]
+            Geneticist: [ 1, 1 ]
             MedicalIntern: [ 3, 3 ] #intern, not counted
             Paramedic: [ 1, 1 ]
             #science (3 - 5)

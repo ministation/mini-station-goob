@@ -2,6 +2,7 @@
 
 using Content.Server.Store.Systems;
 using Content.Goobstation.Shared.Mindcontrol;
+using Content.Goobstation.Shared.Religion;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Eye;
 using Content.Shared.Heretic;
@@ -137,6 +138,9 @@ public sealed partial class HereticSystem : SharedHereticSystem
 
         SetMinionsMaster(ent, null);
         RaiseKnowledgeEvents(ent, args.Container, true);
+        // Knowledge events used to strip WeakToHoly with the mind. Keep the vacated
+        // heretic body vulnerable to holy even without a soul attached.
+        EnsureComp<WeakToHolyComponent>(args.Container).AlwaysTakeHoly = true;
     }
 
     private void SetMinionsMaster(Entity<HereticComponent> ent, EntityUid? newMaster)

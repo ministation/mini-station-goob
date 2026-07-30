@@ -1,0 +1,17 @@
+// Keep only the foot band of a full-body clothing sprite (hardsuit boots),
+// and only one horizontal half. UV2.y == 0 at sprite bottom (feet).
+uniform highp float keepRight;
+uniform highp float footCut; // keep pixels with UV2.y < footCut
+
+void fragment()
+{
+    highp vec4 tex = zTexture(UV);
+    if (UV2.y >= footCut)
+    {
+        COLOR = vec4(0.0);
+        return;
+    }
+
+    bool keep = keepRight > 0.5 ? (UV2.x >= 0.5) : (UV2.x < 0.5);
+    COLOR = keep ? tex : vec4(0.0);
+}

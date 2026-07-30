@@ -625,6 +625,15 @@ public sealed partial class GoobCVars
         CVarDef.Create("ui.lock_action_bar_drag", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
+    /// Action hotbar layout: "Flat" (infinite strip, 20 hotkeys) or "Paged" (10-slot pages with tabs).
+    /// </summary>
+    public static readonly CVarDef<string> ActionBarMode =
+        CVarDef.Create("ui.action_bar_mode", "Flat", CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    public const string ActionBarModeFlat = "Flat";
+    public const string ActionBarModePaged = "Paged";
+
+    /// <summary>
     /// Whether or not to show detailed examine text.
     /// </summary>
     public static readonly CVarDef<bool> DetailedExamine =
@@ -641,6 +650,12 @@ public sealed partial class GoobCVars
     /// </summary>
     public static readonly CVarDef<bool> UseDynamicHostname =
         CVarDef.Create("hub.use_dynamic_hostname", false, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Whether bloody footprints / body drag marks are created at all.
+    /// </summary>
+    public static readonly CVarDef<bool> FootprintsEnabled =
+        CVarDef.Create("footprints.enabled", false, CVar.SERVERONLY);
 
     /// <summary>
     /// Determines minimum amount of solution you have to step into for footprints to be created.

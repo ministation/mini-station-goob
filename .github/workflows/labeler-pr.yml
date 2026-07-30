@@ -3,7 +3,7 @@
 name: "Labels: PR"
 
 on:
-- pull_request_target
+  pull_request_target:
 
 jobs:
   labeler:
@@ -11,7 +11,110 @@ jobs:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
-    # Labeling is non-critical: don't fail CI on transient GitHub 5xx ("Unicorn") errors.
+    # Labeling is non-critical: don't fail CI on transient GitHub errors.
     continue-on-error: true
     steps:
-    - uses: actions/labeler@v6
+      # actions/labeler uses the PR files API, which fails on large PRs with:
+      # "Sorry, this diff is taking too long to generate" / not_available.
+      # Label from a local git diff instead.
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+          # Base repo is enough; we fetch the PR head SHA below.
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Label PR from git diff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_CLONE_URL: ${{ github.event.pull_request.head.repo.clone_url }}
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          set -euo pipefail
+
+          git remote add prhead "$HEAD_CLONE_URL" 2>/dev/null || git remote set-url prhead "$HEAD_CLONE_URL"
+          git fetch --no-tags --depth=1 prhead "$HEAD_SHA"
+
+          mapfile -t files < <(git diff --name-only "$BASE_SHA"..."$HEAD_SHA")
+          echo "Changed files: ${#files[@]}"
+
+          if (( ${#files[@]} == 0 )); then
+            echo "No changed files; skipping labels"
+            exit 0
+          fi
+
+          labels=()
+          has_cs=0
+
+          for f in "${files[@]}"; do
+            case "$f" in
+              *.cs) has_cs=1 ;;
+            esac
+
+            case "$f" in
+              *.rsi/*.png)
+                labels+=("🖼️ Изменения: Спрайты")
+                ;;
+            esac
+
+            if [[ "$f" == Resources/Maps/* && "$f" == *.yml ]] || \
+               [[ "$f" == Resources/Prototypes/Maps/* && "$f" == *.yml ]]; then
+              labels+=("🗺️ Изменения: Карты")
+            fi
+
+            case "$f" in
+              *.xaml*)
+                labels+=("💻 Изменения: Интерфейс (UI)")
+                ;;
+            esac
+
+            case "$f" in
+              *.swsl)
+                labels+=("📸 Изменения: Шейдеры")
+                ;;
+            esac
+
+            case "$f" in
+              *.ogg)
+                labels+=("🎶 Изменения: Звуки")
+                ;;
+            esac
+
+            case "$f" in
+              *.ftl)
+                labels+=("🏳️ Изменения: FTL (Перевод)")
+                ;;
+            esac
+
+            case "$f" in
+              *.yml|*.yaml)
+                labels+=("🪧 Изменения: Прототипы")
+                ;;
+            esac
+          done
+
+          if (( has_cs == 1 )); then
+            labels+=("Есть C#")
+          else
+            labels+=("Без C#")
+          fi
+
+          # Deduplicate
+          mapfile -t labels < <(printf '%s\n' "${labels[@]}" | awk 'NF && !seen[$0]++')
+
+          if (( ${#labels[@]} == 0 )); then
+            echo "No labels to apply"
+            exit 0
+          fi
+
+          echo "Applying labels:"
+          printf ' - %s\n' "${labels[@]}"
+
+          # Build JSON array for gh
+          json=$(printf '%s\n' "${labels[@]}" | jq -R . | jq -s .)
+          gh api \
+            --method POST \
+            "repos/${{ github.repository }}/issues/${PR_NUMBER}/labels" \
+            --input <(jq -n --argjson labels "$json" '{labels: $labels}')

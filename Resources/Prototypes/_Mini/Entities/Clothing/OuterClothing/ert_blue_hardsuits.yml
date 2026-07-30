@@ -1,0 +1,139 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# OP (Blue) field hardsuits — olive-graphite RSI recolors of stock ERT suits.
+# Helmets keep stock visuals (glass unchanged). Slightly below stock ERT armor;
+# commander suit is a step above officer/medic.
+
+- type: entity
+  parent: ClothingOuterHardsuitERTLeader
+  id: ClothingOuterHardsuitERTLeaderBlue
+  name: OP commander hardsuit
+  description: Field hardsuit for the support squad commander. Stronger protection than the rest of the OP kit.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertleader_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertleader_field.rsi
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitERTLeaderBlue
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.55
+        Heat: 0.6
+        Radiation: 0.65
+        Caustic: 0.65
+  - type: ClothingSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.6
+  - type: StaminaResistance
+    damageCoefficient: 0.6
+
+- type: entity
+  parent: ClothingOuterHardsuitERTSecurity
+  id: ClothingOuterHardsuitERTSecurityBlue
+  name: OP officer hardsuit
+  description: Field hardsuit for a support squad officer.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity_field.rsi
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitERTSecurityBlue
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.6
+        Heat: 0.65
+        Radiation: 0.7
+        Caustic: 0.7
+  - type: ClothingSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.65
+  - type: StaminaResistance
+    damageCoefficient: 0.65
+
+- type: entity
+  parent: ClothingOuterHardsuitERTMedical
+  id: ClothingOuterHardsuitERTMedicalBlue
+  name: OP medic hardsuit
+  description: Field medical hardsuit for the support squad.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertmedical_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Hardsuits/ERTSuits/ertmedical_field.rsi
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitERTMedicalBlue
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.65
+        Heat: 0.6
+        Radiation: 0.65
+        Caustic: 0.6
+  - type: ClothingSpeedModifier
+    walkModifier: 0.95
+    sprintModifier: 0.95
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+  - type: StaminaResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitERTLeader
+  id: ClothingHeadHelmetHardsuitERTLeaderBlue
+  name: OP commander helmet
+  description: Helmet of the support squad commander.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertleader_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertleader_field.rsi
+  - type: PointLight
+    color: "#9aaa70"
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitERTSecurity
+  id: ClothingHeadHelmetHardsuitERTSecurityBlue
+  name: OP officer helmet
+  description: Helmet of a support squad officer.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertsecurity_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertsecurity_field.rsi
+  - type: PointLight
+    color: "#9aaa70"
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitERTMedical
+  id: ClothingHeadHelmetHardsuitERTMedicalBlue
+  name: OP medic helmet
+  description: Helmet of a support squad medic.
+  suffix: Blue Field
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertmedical_field.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Head/Hardsuits/ERThelmets/ertmedical_field.rsi
+  - type: PointLight
+    color: "#9aaa70"

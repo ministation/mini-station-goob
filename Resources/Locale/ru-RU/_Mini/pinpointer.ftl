@@ -1,1 +1,9 @@
 pinpointer-cult-monument-target = монумент культистов
+pinpointer-cult-cycle-mode = Сменить режим отслеживания
+pinpointer-cult-mode-changed = Режим пинпоинтера: {$mode}
+pinpointer-cult-mode-auto = авто (по приоритету)
+pinpointer-cult-mode-monument = монумент космических культистов
+pinpointer-cult-mode-ratvar = портал призыва Ратвара
+pinpointer-cult-mode-narsie = руна разрыва Нар'Си
+pinpointer-cult-mode-heretic = еретик
+pinpointer-cult-mode-devil = дьявол

@@ -41,6 +41,7 @@
             Chemist: [ 2, 3 ]
             Paramedic: [ 2, 2 ]
             MedicalDoctor: [ 3, 5 ]
+            Geneticist: [ 1, 1 ]
             MedicalIntern: [ 8, 8 ]
             Virologist: [ 1, 2 ]
             #science

@@ -236,6 +236,16 @@ ghost-role-information-ert-security-description = Assist with security efforts t
 ghost-role-information-ert-medical-name = ERT Medical
 ghost-role-information-ert-medical-description = Assist with medical efforts to resolve the station's issues.
 
+ghost-role-information-op-commander-name = OP Commander
+ghost-role-information-op-commander-description = Lead the support squad and help the station deal with the threat.
+ghost-role-information-op-officer-name = OP Officer
+ghost-role-information-op-officer-description = Provide security as part of the support squad.
+ghost-role-information-op-medic-name = OP Medic
+ghost-role-information-op-medic-description = Provide medical aid as part of the support squad.
+
+ghost-role-information-ert-juggernaut-name = ERT Juggernaut
+ghost-role-information-ert-juggernaut-description = Heavy Gamma ERT operative in a juggernaut hardsuit. Protect the station and follow your leader.
+
 ghost-role-information-cburn-agent-name = CBURN Agent
 ghost-role-information-cburn-agent-description = A highly trained CentComm agent, specializing in biological threats.
 

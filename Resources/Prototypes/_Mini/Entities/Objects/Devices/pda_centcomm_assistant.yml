@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# CentComm intern PDA / ID — distinct from Official CentcomPDA.
+
+- type: entity
+  parent: IDCardStandard
+  id: CentcomAssistantIDCard
+  name: ID карта стажёра ЦК
+  description: Идентификатор стажёра Центрального Командования.
+  components:
+  - type: Sprite
+    layers:
+    - state: centcom
+    - state: idcentcom
+  - type: Item
+    heldPrefix: blue
+  - type: PresetIdCard
+    job: CentralCommandAssistant
+  - type: NanoChatCard
+    listNumber: false
+
+- type: entity
+  parent: CentcomPDA
+  id: CentcomAssistantPDA
+  name: КПК стажёра ЦК
+  description: Светло-зелёный знак бюрократической стажировки.
+  components:
+  - type: Pda
+    id: CentcomAssistantIDCard
+    penSlot:
+      startingItem: PenCentcom
+      priority: -1
+      whitelist:
+        tags:
+        - Write
+  - type: PdaBorderColor
+    borderColor: "#3d8b5f"

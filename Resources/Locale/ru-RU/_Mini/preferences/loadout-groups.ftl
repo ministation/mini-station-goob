@@ -1,6 +1,22 @@
+# CentComm roundstart
+loadout-group-centcomm-official-jumpsuit = ПЦК, комбинезон
+loadout-group-centcomm-official-head = ПЦК, головной убор
+loadout-group-centcomm-official-shoes = ПЦК, обувь
+loadout-group-centcomm-official-gloves = ПЦК, перчатки
+loadout-group-centcomm-official-backpack = ПЦК, рюкзак
+loadout-group-centcomm-assistant-jumpsuit = Стажер ЦК, комбинезон
+loadout-group-centcomm-assistant-head = Стажер ЦК, головной убор
+loadout-group-centcomm-assistant-outerclothing = Стажер ЦК, верхняя одежда
+loadout-group-centcomm-assistant-shoes = Стажер ЦК, обувь
+loadout-group-centcomm-assistant-gloves = Стажер ЦК, перчатки
+loadout-group-centcomm-assistant-backpack = Стажер ЦК, рюкзак
+loadout-group-centcomm-assistant-neck = Стажер ЦК, шея
+loadout-group-centcomm-assistant-eyes = Стажер ЦК, глаза
+
 # Typan
 # Atmospherics Engineer
 loadout-group-typan-atmospherics-engineer-uniform = Атмосферный техник, комбинезон
+
 loadout-group-typan-atmospherics-engineer-shoes = Атмосферный техник, обувь
 loadout-group-typan-atmospherics-engineer-outerclothing = Атмосферный техник, верхняя одежда
 # Botanist

@@ -176,10 +176,27 @@ namespace Content.IntegrationTests.Tests
             // "CorvaxAwesome" // prototype is commented out upstream
             // Corvax-Goob-Maps-end
 
-            // Mini-start
+            // Mini-start (CorvaxGoob station copies under Maps/_Mini)
+            "MiniAmber",
+            "MiniAstra",
+            "MiniAvrite",
+            "MiniBagel",
+            "MiniBox",
+            "MiniChloris",
             "MiniCluster",
+            "MiniDelta",
+            "MiniGlacier",
+            "MiniMarathon",
+            "MiniMascara",
+            "MiniMaus",
             "MiniOmega",
+            "MiniOutpost",
             "MiniPacked",
+            "MiniPaper",
+            "MiniPearl",
+            "MiniPilgrim",
+            "MiniTushkan",
+            "MiniVoid",
             "MiniSilly",
             "Typan",
             "Aspid",
@@ -188,29 +205,21 @@ namespace Content.IntegrationTests.Tests
         // Keep in sync with DefaultMapPool in Resources/Prototypes/Maps/Pools/default.yml
         private static readonly string[] GameMapsInCurrentPool =
         {
-            "Atlas",
-            "Bagel",
-            "Barratry",
-            "Box",
-            "Chloris",
-            "Cog",
-            "Delta",
-            "Fland",
-            "FlandHighPop",
-            "Kettle",
-            "Leonid",
-            "Marathon",
-            "Meta",
-            "MiniCluster",
+            "MiniAstra",
+            "MiniBox",
+            "MiniChloris",
+            "MiniDelta",
+            "MiniGlacier",
+            "MiniPilgrim",
+            "MiniBagel",
+            "MiniMascara",
+            "MiniOutpost",
+            "MiniPaper",
+            "MiniVoid",
             "MiniOmega",
             "MiniPacked",
-            "Oasis",
-            "OasisHighPop",
-            "Origin",
-            "Saltern",
-            "Serpentcrest",
-            "Snowball",
             "MiniSilly",
+            "MiniCluster",
         };
 
         private static readonly ProtoId<EntityCategoryPrototype> DoNotMapCategory = "DoNotMap";
@@ -266,11 +275,16 @@ namespace Content.IntegrationTests.Tests
             var cfg = server.ResolveDependency<IConfigurationManager>();
             Assert.That(cfg.GetCVar(CCVars.GridFill), Is.False);
 
-            var shuttleFolder = new ResPath("/Maps/Shuttles");
-            var shuttles = resMan
-                .ContentFindFiles(shuttleFolder)
+            var shuttleFolders = new[]
+            {
+                new ResPath("/Maps/Shuttles"),
+                new ResPath("/Maps/_Mini/Shuttles"),
+            };
+            var shuttles = shuttleFolders
+                .SelectMany(folder => resMan.ContentFindFiles(folder))
                 .Where(filePath =>
                     filePath.Extension == "yml" && !filePath.Filename.StartsWith(".", StringComparison.Ordinal))
+                .Distinct()
                 .ToArray();
 
             await server.WaitPost(() =>

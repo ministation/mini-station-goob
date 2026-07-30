@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
     xmlns:at="clr-namespace:Content.Client.Administration.UI.Tabs.AdminTab"
+    xmlns:gm="clr-namespace:Content.Client.Administration.UI.GameModes"
     Margin="4"
     MinSize="50 50">
     <BoxContainer Orientation="Vertical">
@@ -21,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <cc:CommandButton Command="timetransferpanel" Text="{Loc admin-player-actions-window-time-transfer}"/>
             <cc:CommandButton Command="achatwindow" Text="{Loc admin-player-actions-window-admin-chat}"/>
             <cc:UICommandButton Command="ertui" Text="{Loc admin-player-actions-window-ert}" WindowType="{x:Type at:ERTCallWindow}"/>
+            <cc:UICommandButton Command="gamemodesui" Text="{Loc game-modes-admin-menu-button}" WindowType="{x:Type gm:GameModesWindow}"/>
         </GridContainer>
     </BoxContainer>
 </Control>

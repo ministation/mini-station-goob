@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using Content.Server._CorvaxGoob.Announcer;
 using Content.Server.Announcements;
 using Content.Server.Discord;
@@ -621,27 +622,43 @@ namespace Content.Server.GameTicking
                 if (_webhookIdentifier == null)
                     return;
 
+                var playerCount = _playerManager.PlayerCount;
                 var duration = RoundDuration();
                 var gamemodeTitle = CurrentPreset != null ? Loc.GetString(CurrentPreset.ModeTitle) : string.Empty;
+
+                var textEv = new RoundEndTextAppendEvent();
+                RaiseLocalEvent(textEv);
+
+                var manifest = Regex.Replace(textEv.Text, @"\[/\.*?\]", "");
+                manifest = Regex.Replace(manifest, @"\[.*?\]", "");
+
                 var content = Loc.GetString("discord-round-notifications-end",
                     ("id", RoundId),
                     ("hours", Math.Truncate(duration.TotalHours)),
                     ("minutes", duration.Minutes),
                     ("seconds", duration.Seconds),
-                    ("playerCount", _playerManager.PlayerCount),
-                    ("gamemode", gamemodeTitle));
+                    ("playerCount", playerCount),
+                    ("gamemode", gamemodeTitle),
+                    ("manifest", manifest));
+
+                if (textEv.Text == string.Empty)
+                {
+                    content = Loc.GetString("discord-round-notifications-end-no-manifest",
+                        ("id", RoundId),
+                        ("hours", Math.Truncate(duration.TotalHours)),
+                        ("minutes", duration.Minutes),
+                        ("seconds", duration.Seconds),
+                        ("playerCount", playerCount),
+                        ("gamemode", gamemodeTitle));
+                }
+
                 var payload = new WebhookPayload { Content = content };
 
                 await _discord.CreateMessage(_webhookIdentifier.Value, payload);
 
-                if (DiscordRoundEndRole == null)
-                    return;
-
                 content = Loc.GetString("discord-round-notifications-end-ping",
-                    ("rolePing", $"<@&{DiscordRoundEndRole}>\n"),
-                    ("playerCount", _playerManager.PlayerCount));
+                    ("playerCount", playerCount));
                 payload = new WebhookPayload { Content = content };
-                payload.AllowedMentions.AllowRoleMentions();
 
                 await _discord.CreateMessage(_webhookIdentifier.Value, payload);
             }

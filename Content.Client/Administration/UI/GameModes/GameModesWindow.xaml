@@ -1,0 +1,51 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<DefaultWindow xmlns="https://spacestation14.io"
+               xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+               Title="{Loc 'game-modes-admin-window-title'}"
+               MinSize="950 520"
+               SetSize="1100 620">
+    <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="10" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Horizontal">
+            <PanelContainer SetWidth="8">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#1d8bad" />
+                </PanelContainer.PanelOverride>
+            </PanelContainer>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="8 0 0 0">
+                <Label Text="{Loc 'game-modes-admin-window-title'}" StyleClasses="LabelHeading" />
+                <Label Text="{Loc 'game-modes-admin-window-subtitle'}" StyleClasses="LabelSubText" />
+            </BoxContainer>
+        </BoxContainer>
+
+        <PanelContainer StyleClasses="AngleRect">
+            <BoxContainer Orientation="Horizontal" Margin="10" SeparationOverride="8">
+                <CheckBox Name="VoteEnabledCheck" Text="{Loc 'game-modes-admin-vote-enabled'}" HorizontalExpand="True" />
+                <Label Name="CurrentPresetLabel" Text="" VerticalAlignment="Center" HorizontalExpand="True" />
+                <Label Name="LobbyLabel" Text="" VerticalAlignment="Center" MinWidth="140" />
+                <Button Name="RefreshButton" Text="{Loc 'game-modes-admin-refresh'}" MinWidth="120" />
+                <Button Name="StartVoteButton" Text="{Loc 'game-modes-admin-start-vote'}" MinWidth="150" />
+            </BoxContainer>
+        </PanelContainer>
+
+        <PanelContainer StyleClasses="LowDivider" />
+
+        <BoxContainer Orientation="Horizontal" SeparationOverride="10" HorizontalExpand="True" VerticalExpand="True">
+            <BoxContainer Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True" VerticalExpand="True">
+                <Label Text="{Loc 'game-modes-admin-presets-title'}" StyleClasses="LabelSubText" />
+                <ItemList Name="PresetsList" MinSize="420 360" HorizontalExpand="True" VerticalExpand="True" />
+            </BoxContainer>
+
+            <PanelContainer StyleClasses="AngleRect" MinSize="320 360" VerticalExpand="True">
+                <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="8" VerticalExpand="True">
+                    <Label Text="{Loc 'game-modes-admin-selected-title'}" StyleClasses="LabelSubText" />
+                    <Label Name="SelectedNameLabel" />
+                    <Label Name="SelectedMetaLabel" StyleClasses="LabelSubText" />
+                    <RichTextLabel Name="SelectedDescLabel" StyleClasses="LabelSubText" VerticalExpand="True" />
+                    <Button Name="SetPresetButton" Text="{Loc 'game-modes-admin-set-button'}" />
+                    <Button Name="ForcePresetButton" Text="{Loc 'game-modes-admin-force-button'}" />
+                    <Label Name="StatusLabel" StyleClasses="LabelSubText" />
+                </BoxContainer>
+            </PanelContainer>
+        </BoxContainer>
+    </BoxContainer>
+</DefaultWindow>

@@ -134,7 +134,7 @@
   - SecurityEquipment
   recipeUnlocks:
   - TelescopicShield
-  # - RiotBulletShield  # MaterialArbitrage: destroy yields more Glass than lathe cost
+  - RiotBulletShield
   - Handcuffs
   - BolaEnergy
   - Truncheon
@@ -393,7 +393,7 @@
   name: research-technology-energy-barriers
   description: research-technology-energy-barriers-desc
   icon:
-    sprite: _Mini/Objects/Tools/EnergyDome/reinhardt.rsi
+    sprite: _Orion/Objects/Tools/EnergyDome/reinhardt.rsi
     state: icon
   discipline: Security
   tier: 2
@@ -405,5 +405,6 @@
     amount: 12000
   technologyPrerequisites:
   - PortableMicrofusionWeaponry
-  # recipeUnlocks: EnergyDomeTurtle (missing lathe recipe / entity)
+  recipeUnlocks:
+  - EnergyDomeTurtle
   position: 18,4

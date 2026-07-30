@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Linq;
 using Content.Client._Mini.ERT;
 using Content.Shared._Mini.ERT.Prototypes;
@@ -36,7 +38,6 @@ namespace Content.Client.Administration.UI.Tabs.AdminTab
             if (_ertSystem != null)
                 _ertSystem.OnStateUpdated += PopulateFromSystem;
 
-            // initial request
             _ertSystem?.RequestAdminState();
         }
 
@@ -45,21 +46,25 @@ namespace Content.Client.Administration.UI.Tabs.AdminTab
 
         private void OnListSelected(ItemList.ItemListSelectedEventArgs args)
         {
-            if (args.ItemIndex < 0) return;
+            if (args.ItemIndex < 0)
+                return;
+
             _selectedProtoId = ExpectedList[args.ItemIndex].Metadata as string;
 
-            // Отображаем цель вызова для выбранного отряда
             var state = _ertSystem?.LastState;
             if (state == null || _selectedProtoId == null)
                 return;
 
             var entry = state.Entries.FirstOrDefault(e => e.ProtoId == _selectedProtoId);
             ReasonEdit.Text = entry?.CallReason ?? "";
+            ArrivalSeconds.Text = entry?.SecondsRemaining.ToString() ?? "";
         }
 
         private void OnResponceListSelected(ItemList.ItemListSelectedEventArgs args)
         {
-            if (args.ItemIndex < 0) return;
+            if (args.ItemIndex < 0)
+                return;
+
             _selectedRepsonceProtoId = ResponceList[args.ItemIndex].Metadata as string;
         }
 
@@ -71,7 +76,8 @@ namespace Content.Client.Administration.UI.Tabs.AdminTab
         private void PopulateFromSystem()
         {
             var state = _ertSystem?.LastState;
-            if (state == null) return;
+            if (state == null)
+                return;
 
             ExpectedList.Clear();
 
@@ -93,7 +99,8 @@ namespace Content.Client.Administration.UI.Tabs.AdminTab
 
         private void SetArrival()
         {
-            if (_selectedProtoId == null) return;
+            if (_selectedProtoId == null)
+                return;
 
             if (!int.TryParse(ArrivalSeconds.Text, out var seconds))
                 return;
@@ -104,7 +111,9 @@ namespace Content.Client.Administration.UI.Tabs.AdminTab
 
         private void Delete()
         {
-            if (_selectedProtoId == null) return;
+            if (_selectedProtoId == null)
+                return;
+
             _ertSystem?.AdminDeleteErt(_selectedProtoId);
             Refresh();
         }
@@ -129,7 +138,8 @@ namespace Content.Client.Administration.UI.Tabs.AdminTab
 
         private void SetReason()
         {
-            if (_selectedProtoId == null) return;
+            if (_selectedProtoId == null)
+                return;
 
             _ertSystem?.AdminSetReason(_selectedProtoId, ReasonEdit.Text);
             Refresh();
@@ -137,10 +147,19 @@ namespace Content.Client.Administration.UI.Tabs.AdminTab
 
         private void CallErt()
         {
-            if (_selectedRepsonceProtoId == null) return;
+            if (_selectedRepsonceProtoId == null)
+                return;
 
             _ertSystem?.AdminCallErt(_selectedRepsonceProtoId, ReasonResponceEdit.Text);
             Refresh();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && _ertSystem != null)
+                _ertSystem.OnStateUpdated -= PopulateFromSystem;
+
+            base.Dispose(disposing);
         }
     }
 }

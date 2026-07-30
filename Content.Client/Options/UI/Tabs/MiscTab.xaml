@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                        StyleClasses="LabelKeyText"/>
                 <ui:OptionDropDown Name="DropDownHudTheme" Title="{Loc 'ui-options-hud-theme'}" />
                 <ui:OptionDropDown Name="DropDownHudLayout" Title="{Loc 'ui-options-hud-layout'}" />
+                <ui:OptionDropDown Name="DropDownActionBarMode" Title="{Loc 'ui-options-action-bar-mode'}" />
                 <Label Text="{Loc 'ui-options-general-text-styles'}"
                        StyleClasses="LabelKeyText"/>
                 <ui:OptionDropDown Name="DropDownUiFontStyle" Title="{Loc 'ui-options-font-style'}" />

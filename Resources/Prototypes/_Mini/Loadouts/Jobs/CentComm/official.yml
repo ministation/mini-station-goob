@@ -1,0 +1,130 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Personalization loadouts for roundstart ПЦК.
+# Clothes live here; unique kit stays in CentcomGear startingGear (avoid double-equip drops).
+
+- type: loadout
+  id: CentCommOfficialJumpsuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficial
+
+- type: loadout
+  id: CentCommOfficialJumpskirt
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCentcomOfficial
+
+- type: loadout
+  id: CentCommOfficialJumpsuitFormal
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomFormal
+
+- type: loadout
+  id: CentCommOfficialJumpsuitAgent
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomAgent
+
+- type: loadout
+  id: CentCommOfficialHeadCap
+  equipment:
+    head: ClothingHeadHatCentcomcap
+
+- type: loadout
+  id: CentCommOfficialHeadHat
+  equipment:
+    head: ClothingHeadHatCentcom
+
+- type: loadout
+  id: CentCommOfficialShoesCombat
+  equipment:
+    shoes: ClothingShoesBootsCombatFilled
+
+- type: loadout
+  id: CentCommOfficialShoesLaceup
+  equipment:
+    shoes: ClothingShoesBootsLaceup
+
+- type: loadout
+  id: CentCommOfficialGlovesGold
+  equipment:
+    gloves: ClothingHandsGlovesHeavyGoldenTrim
+
+- type: loadout
+  id: CentCommOfficialGlovesNaval
+  equipment:
+    gloves: ClothingHandsGlovesCentcomNaval
+
+- type: loadout
+  id: CentCommOfficialGlovesBlack
+  equipment:
+    gloves: ClothingHandsGlovesColorBlack
+
+- type: loadout
+  id: CentCommOfficialBackpackSatchel
+  equipment:
+    back: ClothingBackpackSatchelCentcomm
+
+- type: loadout
+  id: CentCommOfficialBackpack
+  equipment:
+    back: ClothingBackpackCentcomm
+
+- type: loadout
+  id: CentCommOfficialBackpackMessenger
+  equipment:
+    back: ClothingBackpackMessengerCentcomm
+
+- type: loadoutGroup
+  id: CentCommOfficialJumpsuit
+  name: loadout-group-centcomm-official-jumpsuit
+  loadouts:
+  - CentCommOfficialJumpsuit
+  - CentCommOfficialJumpskirt
+  - CentCommOfficialJumpsuitFormal
+  - CentCommOfficialJumpsuitAgent
+
+- type: loadoutGroup
+  id: CentCommOfficialHead
+  name: loadout-group-centcomm-official-head
+  minLimit: 0
+  loadouts:
+  - CentCommOfficialHeadCap
+  - CentCommOfficialHeadHat
+
+- type: loadoutGroup
+  id: CentCommOfficialShoes
+  name: loadout-group-centcomm-official-shoes
+  loadouts:
+  - CentCommOfficialShoesCombat
+  - CentCommOfficialShoesLaceup
+
+- type: loadoutGroup
+  id: CentCommOfficialGloves
+  name: loadout-group-centcomm-official-gloves
+  loadouts:
+  - CentCommOfficialGlovesGold
+  - CentCommOfficialGlovesNaval
+  - CentCommOfficialGlovesBlack
+
+- type: loadoutGroup
+  id: CentCommOfficialBackpack
+  name: loadout-group-centcomm-official-backpack
+  loadouts:
+  - CentCommOfficialBackpackSatchel
+  - CentCommOfficialBackpack
+  - CentCommOfficialBackpackMessenger
+
+- type: roleLoadout
+  id: JobCentralCommandOfficial
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - CentCommOfficialHead
+  - CentCommOfficialJumpsuit
+  - CentCommOfficialBackpack
+  - CentCommOfficialShoes
+  - CentCommOfficialGloves
+  - Trinkets
+  - GroupSpeciesBreathTool
+  - Survival
+  - CentComOfficerEnvirohelm
+  - CentComOfficerEnvirosuit
+  - CentComOfficerEnvirogloves

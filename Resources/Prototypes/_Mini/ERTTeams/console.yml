@@ -50,8 +50,8 @@
 - type: entity
   parent: BaseComputerAiAccess
   id: ErtComputerShuttle
-  name: консоль вызова обр NanoTrasen
-  description: Консоль для вызова отрядов быстрого реагирования на станции NanoTrasen.
+  name: консоль эвакуации ОБР
+  description: Запускает БСС-прыжок шаттла ОБР к станции Центрального Командования.
   components:
   - type: Sprite
     layers:
@@ -259,3 +259,13 @@
     - Blue
     - Cburn
     - Chaplains
+
+- type: entity
+  parent: TelephoneCaptain
+  id: TelephoneCentComm
+  name: устройство вызова ОБР
+  description: Устройство связи Центрального Командования для вызова отрядов ОБР.
+  suffix: CentComm
+  components:
+  - type: AccessReader
+    access: [["CentralCommand"]]

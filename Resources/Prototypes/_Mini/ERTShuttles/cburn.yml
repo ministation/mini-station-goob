@@ -1,11 +1,11 @@
 - type: ertShuttle
   id: Cburn
-  path: /Maps/Shuttles/ERT/cburn.yml
+  path: /Maps/_Mini/Shuttles/ERT/cburn.yml
 
 - type: ertShuttle
   id: CburnNecro
-  path: /Maps/Shuttles/ERT/cburn.yml
+  path: /Maps/_Mini/Shuttles/ERT/cburn.yml
 
 - type: ertShuttle
   id: CburnSpiders
-  path: /Maps/Shuttles/ERT/cburn.yml
+  path: /Maps/_Mini/Shuttles/ERT/cburn.yml

@@ -8,7 +8,7 @@
   completetime: 2
   materials:
     Steel: 50
-    Glass: 100
+    Glass: 200
 
 - type: latheRecipe
   id: FoodShakerPepperEmpty
@@ -18,7 +18,7 @@
   completetime: 2
   materials:
     Steel: 50
-    Glass: 100
+    Glass: 200
 
 - type: latheRecipe
   id: CrewCassette

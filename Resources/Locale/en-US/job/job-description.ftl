@@ -40,6 +40,7 @@ job-description-captain = Keep the station running, delegate work to the other h
 job-description-cargotech = Deal with requisitions and deliveries, pilot the cargo shuttle to the trade station and back, and work with others to make ludicrous amounts of cash and then waste it all gambling.
 job-description-ce = Manage the Engineering department to ensure power, atmospherics, and the hull are in perfect shape.
 job-description-centcomoff = Act as an ambassador to the newest state-of-the-art space station in Nanotrasen's fleet.
+job-description-centcom-assistant = Assist the CentComm Official at Central Command as an intern: paperwork, station liaison work, and escort duties.
 job-description-chaplain = Preach the good word of your deity and religion, and conduct spiritual healing and miracles with your bible.
 job-description-chef = Keep the station fed with a variety of food items, butcher dead animals to ensure ammonia doesn't leak, and help keep the bar lively.
 job-description-chemist = Produce medicinal drugs for the doctors to use, research ethically dubious rare chemicals, and produce weapons of war when enemies of the station arrive.

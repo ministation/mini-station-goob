@@ -1,0 +1,14 @@
+# Ported from wega-team/ss14-wega (GPL-3.0) — Corvax-Wega Genetics
+- type: polymorph
+  id: HulkPolymorph
+  configuration:
+    entity: MobHulk
+    forced: true
+    duration: 600
+
+- type: polymorph
+  id: HulkPolymorphAlt
+  configuration:
+    entity: MobZilla
+    forced: true
+    duration: 600

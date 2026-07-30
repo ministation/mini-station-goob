@@ -89,6 +89,7 @@
     horizontalRotation: 90
   - type: HumanoidAppearance
     species: Human
+  - type: FootWalkAnimation # Mini: subtle foot bob while walking
   - type: TypingIndicator
   - type: SlowOnDamage
     speedModifierThresholds:
@@ -301,6 +302,7 @@
       groups:
         Brute: -0.07
   - type: Fingerprint
+  - type: DnaModifier # Mini: Paradise/Wega genetics (organic species only)
   - type: Blindable
   # Other
   - type: Temperature

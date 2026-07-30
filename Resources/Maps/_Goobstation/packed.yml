@@ -81138,6 +81138,27 @@ entities:
     - type: Transform
       pos: 71.5,7.5
       parent: 2
+- proto: SpawnPointGeneticist
+  entities:
+  - uid: 15529
+    components:
+    - type: Transform
+      parent: 2
+      pos: 72.5,5.5
+- proto: MedicalScanner
+  entities:
+  - uid: 15530
+    components:
+    - type: Transform
+      parent: 2
+      pos: 73.5,5.5
+- proto: DnaModifierConsole
+  entities:
+  - uid: 15531
+    components:
+    - type: Transform
+      parent: 2
+      pos: 74.5,5.5
 - proto: SpawnPointMedicalIntern
   entities:
   - uid: 11993

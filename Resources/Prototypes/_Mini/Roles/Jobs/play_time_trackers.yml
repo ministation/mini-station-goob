@@ -67,6 +67,8 @@
   id: JobERTJanitorRed
 - type: playTimeTracker
   id: JobERTJanitorGamma
+- type: playTimeTracker
+  id: JobERTJuggernautGamma
 
 - type: playTimeTracker
   id: JobCBURNLeader

@@ -23,6 +23,7 @@ When merging goob/upstream or resolving conflicts, **prefer Mini** for these unl
 | **RND console zoom** | `FancyResearchConsoleMenu.UpdatePanels` / `Resized` — **no** `FitVisibleTechnologies()` on unlock/sync (Mini-start/end). Fit only on open / Recenter / pending first layout |
 | **RND lathe unlocks** | Orion packs `PartsDynamic` / `BasicService` / `Abductor*` + T1 in `PartsStatic`. **Never** put `MiniResearchParity` on NT Engi/Sci/Service techfabs (dumps ammo/all unlocks). Typan uses `TypanEquipment` for syndie unlocks |
 | **Typan / Mini content** | `Resources/Prototypes/_Mini/`, `Content.*/_Mini/`, TypanWar, maps/assets under `_Mini` |
+| **Genetics (Paradise/Wega)** | `Content.*/_Mini/Genetics/`, prototypes `Resources/Prototypes/_Mini/Genetics/`, textures `_Mini/Genetics`, Mutadon, DnaModifier on organics + DnaServer on R&D server |
 
 ## Merge protocol
 

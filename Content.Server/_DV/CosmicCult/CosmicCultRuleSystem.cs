@@ -819,7 +819,11 @@ public sealed class CosmicCultRuleSystem : GameRuleSystem<CosmicCultRuleComponen
         _antag.SendBriefing(session, Loc.GetString("cosmiccult-role-conversion-fluff"), Color.FromHex("#4cabb3"), _briefingSound);
         _antag.SendBriefing(uid, Loc.GetString("cosmiccult-role-short-briefing"), Color.FromHex("#cae8e8"), null);
 
+        // Preserve WeakToHoly if they already had it (e.g. heretic); CultWeakToHolySystem sets AlwaysTakeHoly.
+        var hadWeakToHoly = HasComp<WeakToHolyComponent>(uid);
         var cultComp = EnsureComp<CosmicCultComponent>(uid);
+        if (hadWeakToHoly)
+            cultComp.WasWeakToHoly = true;
         cultComp.EntropyBudget = 10; // pity balance
         cultComp.StoredDamageContainer = Comp<DamageableComponent>(uid).DamageContainerID!.Value;
         EnsureComp<IntrinsicRadioReceiverComponent>(uid);
@@ -842,11 +846,8 @@ public sealed class CosmicCultRuleSystem : GameRuleSystem<CosmicCultRuleComponen
         }
         else if (cosmicGamerule.CurrentTier == 2)
         {
-            // Goobstation Change - Shitchap
-            if (!HasComp<WeakToHolyComponent>(uid))
-                EnsureComp<WeakToHolyComponent>(uid).AlwaysTakeHoly = true;
-            else
-                cultComp.WasWeakToHoly = true;
+            // Goobstation / Mini: force AlwaysTakeHoly (YAML may add WeakToHoly without it)
+            EnsureComp<WeakToHolyComponent>(uid).AlwaysTakeHoly = true;
 
             cultComp.EntropyBudget = 26; // pity balance
 
