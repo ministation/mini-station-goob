@@ -41,4 +41,6 @@
   components:
     - type: Sprite
       state: micro_mani
-    # Mini/Orion: Stack removed (tier-safe stock parts)
+    # Construction material stack only — Mini typed tiers (Servo/etc.) stay unstacked (tier-safe RPED).
+    - type: Stack
+      stackType: Manipulator
