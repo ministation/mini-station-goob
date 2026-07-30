@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Goobstation.Common.Religion;
+using Content.Goobstation.Shared.Devil;
 using Content.Server._DV.CosmicCult.Components;
 using Content.Server.Popups;
 using Content.Shared._DV.CosmicCult.Components;
@@ -92,6 +93,11 @@ public sealed class CosmicConversionSystem : EntitySystem
             if (HasComp<BibleUserComponent>(target))
             {
                 _popup.PopupEntity(Loc.GetString("cult-glyph-target-chaplain"), uid, args.User);
+                args.Cancel();
+            }
+            else if (HasComp<DevilComponent>(target))
+            {
+                _popup.PopupEntity(Loc.GetString("cult-glyph-target-devil"), uid, args.User);
                 args.Cancel();
             }
             else if (uid.Comp.NegateProtection == false && HasComp<MindShieldComponent>(target))
