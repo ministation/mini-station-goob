@@ -13,6 +13,12 @@
   - type: Tag
     tags:
       - HolofanProjector
+  # Override Holoprojector recycle yield so hyper-lathe (0.5x) material cost stays non-arbitrage.
+  - type: PhysicalComposition
+    materialComposition:
+      Steel: 75
+      Plastic: 12
+      Glass: 12
 
 - type: entity
   parent: Holoprojector
