@@ -5,8 +5,10 @@ using Content.Goobstation.Common.Religion;
 using Content.Goobstation.Shared.Bible;
 using Content.Goobstation.Shared.Devil;
 using Content.Goobstation.Shared.Religion.Nullrod;
+using Content.Goobstation.Shared.Shadowling.Components;
 using Content.Server.Heretic.EntitySystems;
 using Content.Shared._DV.CosmicCult.Components;
+using Content.Shared._Goobstation.Wizard;
 using Content.Shared._Shitmed.Medical.Surgery.Wounds.Systems;
 using Content.Shared.Damage;
 using Content.Shared.Heretic;
@@ -109,6 +111,9 @@ public sealed class WeakToHolySystem : EntitySystem
                || HasComp<RatvarRighteousComponent>(uid)
                || HasComp<CosmicCultComponent>(uid)
                || HasComp<DevilComponent>(uid)
+               || HasComp<WizardComponent>(uid)
+               || HasComp<ApprenticeComponent>(uid)
+               || HasComp<ShadowlingComponent>(uid)
                || _heretic.TryGetHereticComponent(uid, out _, out _)
                || _heretic.IsHereticOrGhoul(uid);
     }

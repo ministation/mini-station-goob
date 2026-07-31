@@ -22,6 +22,7 @@ namespace Content.Client.Ghost
         [Dependency] private readonly GhostVisibilitySystem _ghostVisSystem = default!; // Goobstation
 
         public int AvailableGhostRoleCount { get; private set; }
+        public int AvailableImportantGhostRoleCount { get; private set; }
 
         private bool _ghostVisibility = true;
 
@@ -185,6 +186,7 @@ namespace Content.Client.Ghost
         private void OnUpdateGhostRoleCount(GhostUpdateGhostRoleCountEvent msg)
         {
             AvailableGhostRoleCount = msg.AvailableGhostRoles;
+            AvailableImportantGhostRoleCount = msg.ImportantGhostRoles;
             GhostRoleCountUpdated?.Invoke(msg);
         }
 

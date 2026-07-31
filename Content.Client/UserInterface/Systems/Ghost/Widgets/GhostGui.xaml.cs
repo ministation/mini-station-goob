@@ -21,7 +21,7 @@ public sealed partial class GhostGui : UIWidget
     public event Action? GhostRolesPressed;
     public event Action? ThunderdomePressed; // Goobstation - Thunderdome
     public event Action? ReturnToRoundPressed; // FREAKY EDIT / Mini
-    private int _prevNumberRoles;
+    private int _prevImportantRoles;
 
     public GhostGui()
     {
@@ -35,7 +35,7 @@ public sealed partial class GhostGui : UIWidget
         GhostWarpButton.OnPressed += _ => RequestWarpsPressed?.Invoke();
         ReturnToBodyButton.OnPressed += _ => ReturnToBodyPressed?.Invoke();
         GhostRolesButton.OnPressed += _ => GhostRolesPressed?.Invoke();
-        GhostRolesButton.OnPressed += _ => GhostRolesButton.StyleClasses.Remove(StyleClass.Negative);
+        GhostRolesButton.OnPressed += _ => ClearImportantHighlight();
         ThunderdomeButton.OnPressed += _ => ThunderdomePressed?.Invoke(); // Goobstation - Thunderdome
         AntagTokensButton.OnPressed += _ => OpenAntagTokens(); // Mini-station
     }
@@ -46,7 +46,7 @@ public sealed partial class GhostGui : UIWidget
         Visible = false;
     }
 
-    public void Update(int? roles, bool? canReturnToBody, bool? canTakeGhostRoles = true)
+    public void Update(int? roles, bool? canReturnToBody, bool? canTakeGhostRoles = true, int? importantRoles = null)
     {
         ReturnToBodyButton.Disabled = !canReturnToBody ?? true;
         GhostRolesButton.Disabled = !canTakeGhostRoles ?? true;
@@ -55,15 +55,20 @@ public sealed partial class GhostGui : UIWidget
         {
             GhostRolesButton.Text = Loc.GetString("ghost-gui-ghost-roles-button", ("count", roles));
 
-            if (roles > _prevNumberRoles)
-            {
-                GhostRolesButton.StyleClasses.Add(StyleClass.Negative);
-            }
+            // Important = antagonists / ERT / CBURN — same red Caution style as changelog "new!".
+            if (importantRoles is { } important && important > _prevImportantRoles)
+                GhostRolesButton.StyleClasses.Add(StyleBase.ButtonCaution);
 
-            _prevNumberRoles = (int)roles;
+            if (importantRoles != null)
+                _prevImportantRoles = importantRoles.Value;
         }
 
         TargetWindow.Populate();
+    }
+
+    private void ClearImportantHighlight()
+    {
+        GhostRolesButton.StyleClasses.Remove(StyleBase.ButtonCaution);
     }
 
     // Mini-station: hide ghost-role / antag / thunderdome during Typan war

@@ -37,6 +37,8 @@
         description: ghost-panel-antagonist-wizard-description
         priority: 5
       - type: Wizard
+      - type: WeakToHoly
+        alwaysTakeHoly: true
       - type: CanEnchant
       - type: LanguageKnowledge
         speaks: []
@@ -101,6 +103,8 @@
       - RoleSurvivalEVA
       components:
       - type: Wizard
+      - type: WeakToHoly
+        alwaysTakeHoly: true
       - type: RandomMetadata
       - type: CanEnchant
       - type: LanguageKnowledge
@@ -139,6 +143,8 @@
       - MindRoleApprentice
       components:
       - type: Apprentice
+      - type: WeakToHoly
+        alwaysTakeHoly: true
       - type: CanEnchant
       - type: LanguageKnowledge
         speaks: []

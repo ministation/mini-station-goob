@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Goobstation.Shared.Religion;
 using Content.Goobstation.Shared.Shadowling;
 using Content.Goobstation.Shared.Shadowling.Components;
 using Content.Server.Antag;
@@ -107,6 +108,7 @@ public sealed class ShadowlingRuleSystem : GameRuleSystem<ShadowlingRuleComponen
 
         EnsureComp<ZombieImmuneComponent>(target);
         EnsureComp<ShadowlingComponent>(target);
+        EnsureComp<WeakToHolyComponent>(target).AlwaysTakeHoly = true;
         return true;
     }
 
