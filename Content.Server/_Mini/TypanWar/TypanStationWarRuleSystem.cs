@@ -829,7 +829,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             if (!IsMindAlive(mind))
                 continue;
 
-            if (_typanJobs.MindHasHandledJob(mindId))
+            if (_typanJobs.MindHasTypanFactionJob(mindId))
                 TryAddObjective(mindId, mind, "TypanWarObjective", Loc.GetString("typan-war-objective-typan"));
             else if (_jobs.MindTryGetJobId(mindId, out var jobId) && jobId != null)
                 TryAddObjective(mindId, mind, "NtWarObjective", Loc.GetString("typan-war-objective-nt"));
@@ -927,7 +927,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
     {
         side = default;
 
-        if (_typanJobs.MindHasHandledJob(mind.Owner))
+        if (_typanJobs.MindHasTypanFactionJob(mind.Owner))
         {
             side = TypanWarSide.Typan;
             return true;
@@ -935,6 +935,9 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
         if (_jobs.MindTryGetJobId(mind.Owner, out var jobId) && jobId != null)
         {
+            if (_typanJobs.IsCentCommJob(jobId.Value))
+                return false;
+
             side = TypanWarSide.Nanotrasen;
             return true;
         }
@@ -961,7 +964,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             if (!IsMindAlive(mind))
                 continue;
 
-            if (_typanJobs.MindHasHandledJob(mindId))
+            if (_typanJobs.MindHasTypanFactionJob(mindId))
             {
                 typan++;
                 continue;
@@ -970,7 +973,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             if (!_jobs.MindTryGetJobId(mindId, out var jobId) || jobId == null)
                 continue;
 
-            if (_typanJobs.IsHandledJob(jobId.Value))
+            if (_typanJobs.IsCentCommJob(jobId.Value))
                 continue;
 
             nt++;
@@ -1102,21 +1105,21 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         if (mind.Comp.UserId is not { } userId)
             return;
 
-        if (_typanJobs.MindHasHandledJob(mind.Owner))
+        if (_typanJobs.MindHasTypanFactionJob(mind.Owner))
         {
             component.TypanJoinedUsers.Add(userId);
             return;
         }
 
-        if (_jobs.MindTryGetJobId(mind.Owner, out var jobId) && jobId != null)
+        if (_jobs.MindTryGetJobId(mind.Owner, out var jobId) && jobId != null && !_typanJobs.IsCentCommJob(jobId.Value))
             component.NtJoinedUsers.Add(userId);
     }
 
     private void RecordFactionJoin(TypanStationWarRuleComponent component, NetUserId userId, string jobId)
     {
-        if (_typanJobs.IsHandledJob(new ProtoId<JobPrototype>(jobId)))
+        if (_typanJobs.IsTypanJob(new ProtoId<JobPrototype>(jobId)))
             component.TypanJoinedUsers.Add(userId);
-        else
+        else if (!_typanJobs.IsCentCommJob(new ProtoId<JobPrototype>(jobId)))
             component.NtJoinedUsers.Add(userId);
     }
 
@@ -1147,12 +1150,15 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         var stations = EntityQueryEnumerator<StationDataComponent>();
         while (stations.MoveNext(out var uid, out _))
         {
-            if (HasComp<TTStationHandleJobComponent>(uid))
+            if (_typanJobs.IsTypanFactionStation(uid))
             {
                 if (!typanStation.IsValid())
                     typanStation = uid;
                 continue;
             }
+
+            if (_typanJobs.IsCentCommFactionStation(uid))
+                continue;
 
             if (!ntStation.IsValid())
                 ntStation = uid;

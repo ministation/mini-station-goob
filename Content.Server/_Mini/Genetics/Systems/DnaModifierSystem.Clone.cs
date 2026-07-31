@@ -1,8 +1,8 @@
+using Content.Server.Humanoid;
 using Content.Shared.DetailExaminable;
 using Content.Shared.Forensics.Components;
 using Content.Shared.Genetics;
 using Content.Shared.Humanoid;
-using Content.Shared.Humanoid.Markings;
 using Content.Shared.Inventory;
 
 namespace Content.Server.Genetics.System;
@@ -12,6 +12,8 @@ namespace Content.Server.Genetics.System;
 /// </summary>
 public sealed partial class DnaModifierSystem
 {
+    [Dependency] private readonly HumanoidAppearanceSystem _humanoid = default!;
+
     public bool TryCloneHumanoid(Entity<DnaModifierComponent> entity, Entity<DnaModifierComponent> target)
     {
         if (target.Comp.UniqueIdentifiers == null)
@@ -45,16 +47,8 @@ public sealed partial class DnaModifierSystem
             // Inventory deep-clone not available on Mini ServerInventorySystem — skip.
         }
 
-        if (TryComp<HumanoidAppearanceComponent>(entity, out var appearance) &&
-            TryComp<HumanoidAppearanceComponent>(target, out var targetAppearance))
-        {
-            appearance.SkinColor = targetAppearance.SkinColor;
-            appearance.EyeColor = targetAppearance.EyeColor;
-            appearance.Gender = targetAppearance.Gender;
-            appearance.Sex = targetAppearance.Sex;
-            appearance.MarkingSet = new MarkingSet(targetAppearance.MarkingSet);
-            Dirty(entity, appearance);
-        }
+        if (HasComp<HumanoidAppearanceComponent>(entity) && HasComp<HumanoidAppearanceComponent>(target))
+            _humanoid.CloneAppearance(target, entity);
 
         entity.Comp.UniqueIdentifiers!.Gender = target.Comp.UniqueIdentifiers!.Gender;
         Dirty(entity, entity.Comp);

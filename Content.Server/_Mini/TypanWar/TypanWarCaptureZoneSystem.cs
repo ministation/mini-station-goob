@@ -627,10 +627,11 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             if (!TryComp<MindComponent>(mindContainer.Mind, out var mind) || !IsMindAlive(mind))
                 continue;
 
-            if (_typanJobs.MindHasHandledJob(mindContainer.Mind.Value))
+            if (_typanJobs.MindHasTypanFactionJob(mindContainer.Mind.Value))
                 typanCount++;
             else if (_jobs.MindTryGetJobId(mindContainer.Mind.Value, out var jobId) && jobId != null
-                     && !_typanJobs.IsHandledJob(jobId.Value))
+                     && !_typanJobs.IsTypanJob(jobId.Value)
+                     && !_typanJobs.IsCentCommJob(jobId.Value))
                 ntCount++;
         }
     }

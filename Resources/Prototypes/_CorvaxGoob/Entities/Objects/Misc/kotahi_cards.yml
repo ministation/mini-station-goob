@@ -32,9 +32,17 @@
     sprite: EstacaoPirata/Objects/Misc/cards.rsi
     layers:
     - state: kotahi_box
+      map: [ "closeLayer" ]
     - state: kotahi_box_open
       map: [ "openLayer" ]
       visible: false
+  # Parent CardBoxBase ItemCounter expects fullLayer; Kotahi has no *_box_full RSI state.
+  - type: ItemCounter
+    count:
+      components:
+      - CardDeck
+    composite: true
+    layerStates: []
   - type: OpenTriggeredStorageFill
     contents:
     - id: CardDeckKotahi

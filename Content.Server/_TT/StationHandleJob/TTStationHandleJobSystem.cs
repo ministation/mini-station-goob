@@ -22,6 +22,9 @@ namespace Content.Server._TT.StationHandleJob;
 
 public sealed class TTStationHandleJobSystem : EntitySystem
 {
+    private static readonly EntProtoId TypanStationPrototype = "StandardTypanStation";
+    private static readonly EntProtoId CentCommStationPrototype = "NanotrasenCentralCommand";
+
     [Dependency] private readonly IBanManager _banManager = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
@@ -67,16 +70,51 @@ public sealed class TTStationHandleJobSystem : EntitySystem
     }
 
     /// <summary>
-    /// Returns true if the job belongs to a TTStationHandleJob station (e.g. Typan roles).
+    /// Returns true if the job belongs to a TTStationHandleJob station (e.g. Typan or CentComm roles).
     /// </summary>
     public bool IsHandledJob(ProtoId<JobPrototype> job) => TryGetHandledStation(job, out _);
 
-    public bool MindHasHandledJob(EntityUid mindId)
-    {
-        return _jobs.MindTryGetJobId(mindId, out var jobId)
-               && jobId != null
-               && IsHandledJob(jobId.Value);
-    }
+    /// <summary>
+    /// Typan/Aspid war faction station (not CentComm, which also uses <see cref="TTStationHandleJobComponent"/>).
+    /// </summary>
+    public bool IsTypanFactionStation(EntityUid station) =>
+        MetaData(station).EntityPrototype?.ID == TypanStationPrototype.Id;
+
+    /// <summary>
+    /// CentComm jobs station created from <see cref="CentCommStationPrototype"/>.
+    /// </summary>
+    public bool IsCentCommFactionStation(EntityUid station) =>
+        MetaData(station).EntityPrototype?.ID == CentCommStationPrototype.Id;
+
+    /// <summary>
+    /// Playable NT station for station war (excludes Typan and CentComm).
+    /// </summary>
+    public bool IsWarNanotrasenStation(EntityUid station) =>
+        HasComp<StationDataComponent>(station)
+        && !IsTypanFactionStation(station)
+        && !IsCentCommFactionStation(station);
+
+    /// <summary>
+    /// Returns true if the job belongs to a Typan faction station.
+    /// </summary>
+    public bool IsTypanJob(ProtoId<JobPrototype> job) =>
+        TryGetHandledStation(job, out var station) && IsTypanFactionStation(station);
+
+    /// <summary>
+    /// Returns true if the job belongs to the CentComm jobs station.
+    /// </summary>
+    public bool IsCentCommJob(ProtoId<JobPrototype> job) =>
+        TryGetHandledStation(job, out var station) && IsCentCommFactionStation(station);
+
+    public bool MindHasHandledJob(EntityUid mindId) =>
+        _jobs.MindTryGetJobId(mindId, out var jobId)
+        && jobId != null
+        && IsHandledJob(jobId.Value);
+
+    public bool MindHasTypanFactionJob(EntityUid mindId) =>
+        _jobs.MindTryGetJobId(mindId, out var jobId)
+        && jobId != null
+        && IsTypanJob(jobId.Value);
 
     public bool TryGetHandledStation(ProtoId<JobPrototype> job, out EntityUid station)
     {

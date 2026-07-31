@@ -28,14 +28,16 @@ public sealed class CrayonSystem : SharedCrayonSystem
         private readonly Entity<CrayonComponent> _crayon;
         private readonly SharedChargesSystem _charges;
         private readonly RichTextLabel _label;
-        private readonly int? _capacity;
+        private readonly bool _infinite;
+        private readonly int _capacity;
 
         public StatusControl(Entity<CrayonComponent> crayon, SharedChargesSystem charges, EntityManager entityManager)
         {
             _crayon = crayon;
             _charges = charges;
-            if (entityManager.TryGetComponent(_crayon.Owner, out LimitedChargesComponent? limited))
-                _capacity = limited.MaxCharges;
+            // Unlimited crayons (e.g. CrayonBlood) have no LimitedChargesComponent.
+            _infinite = !entityManager.TryGetComponent(crayon.Owner, out LimitedChargesComponent? limited);
+            _capacity = limited?.MaxCharges ?? 0;
             _label = new RichTextLabel { StyleClasses = { StyleClass.ItemStatus } };
             AddChild(_label);
         }
@@ -44,24 +46,12 @@ public sealed class CrayonSystem : SharedCrayonSystem
         {
             base.FrameUpdate(args);
 
-            // Unlimited crayons (e.g. CrayonBlood) have no LimitedChargesComponent.
-            if (_capacity is not { } capacity)
-            {
-                _label.SetMarkup(Robust.Shared.Localization.Loc.GetString("crayon-drawing-label",
-                    ("color", _crayon.Comp.Color),
-                    ("state", _crayon.Comp.SelectedState),
-                    ("infinite", true),
-                    ("charges", -1),
-                    ("capacity", -1)));
-                return;
-            }
-
             _label.SetMarkup(Robust.Shared.Localization.Loc.GetString("crayon-drawing-label",
                 ("color", _crayon.Comp.Color),
                 ("state", _crayon.Comp.SelectedState),
-                ("infinite", false),
-                ("charges", _charges.GetCurrentCharges(_crayon.Owner)),
-                ("capacity", capacity)));
+                ("charges", _infinite ? 0 : _charges.GetCurrentCharges(_crayon.Owner)),
+                ("capacity", _capacity),
+                ("infinite", _infinite)));
         }
     }
 }
