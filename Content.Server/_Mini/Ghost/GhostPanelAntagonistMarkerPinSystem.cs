@@ -25,6 +25,10 @@ namespace Content.Server._Mini.Ghost;
 /// YAML на AntagSelection/мобах тоже может задавать маркер; PinSystem — страховка от потери при мержах.
 /// Культисты/зомби появляются только после видимого превращения, без лишней меты.
 /// Не помечаем «скрытых» антагов (предатель, генокрад, еретик, вор) — они остаются в списке живых.
+///
+/// Robust допускает только одну directed-подписку на пару Comp+Event на всём сервере.
+/// ComponentStartup/MapInit у многих антагов уже заняты — используем ComponentInit
+/// (у Xenomorph занят ComponentInit → MapInitEvent).
 /// </summary>
 public sealed class GhostPanelAntagonistMarkerPinSystem : EntitySystem
 {
@@ -32,120 +36,121 @@ public sealed class GhostPanelAntagonistMarkerPinSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<NukeOperativeComponent, ComponentStartup>(OnNukeOperative);
-        SubscribeLocalEvent<SpaceNinjaComponent, ComponentStartup>(OnSpaceNinja);
-        SubscribeLocalEvent<WizardComponent, ComponentStartup>(OnWizard);
-        SubscribeLocalEvent<AbductorComponent, ComponentStartup>(OnAbductor);
-        SubscribeLocalEvent<CorticalBorerComponent, ComponentStartup>(OnCorticalBorer);
-        SubscribeLocalEvent<OmnipresenceComponent, ComponentStartup>(OnHastur);
-        SubscribeLocalEvent<SlaughterDemonComponent, ComponentStartup>(OnSlaughterDemon);
-        SubscribeLocalEvent<WraithComponent, ComponentStartup>(OnWraith);
-        SubscribeLocalEvent<RevenantComponent, ComponentStartup>(OnRevenant);
-        SubscribeLocalEvent<SlasherComponent, ComponentStartup>(OnSlasher);
-        SubscribeLocalEvent<BingleComponent, ComponentStartup>(OnBingle);
-        SubscribeLocalEvent<BlobObserverComponent, ComponentStartup>(OnBlob);
-        SubscribeLocalEvent<XenomorphComponent, ComponentStartup>(OnXenomorph);
-        SubscribeLocalEvent<DevilComponent, ComponentStartup>(OnDevil);
-        SubscribeLocalEvent<DarkLordMarkerComponent, ComponentStartup>(OnDarkLord);
-        SubscribeLocalEvent<ShadowlingComponent, ComponentStartup>(OnShadowling);
+        SubscribeLocalEvent<NukeOperativeComponent, ComponentInit>(OnNukeOperative);
+        SubscribeLocalEvent<SpaceNinjaComponent, ComponentInit>(OnSpaceNinja);
+        SubscribeLocalEvent<WizardComponent, ComponentInit>(OnWizard);
+        SubscribeLocalEvent<AbductorComponent, ComponentInit>(OnAbductor);
+        SubscribeLocalEvent<CorticalBorerComponent, ComponentInit>(OnCorticalBorer);
+        SubscribeLocalEvent<OmnipresenceComponent, ComponentInit>(OnHastur);
+        SubscribeLocalEvent<SlaughterDemonComponent, ComponentInit>(OnSlaughterDemon);
+        SubscribeLocalEvent<WraithComponent, ComponentInit>(OnWraith);
+        SubscribeLocalEvent<RevenantComponent, ComponentInit>(OnRevenant);
+        SubscribeLocalEvent<SlasherComponent, ComponentInit>(OnSlasher);
+        SubscribeLocalEvent<BingleComponent, ComponentInit>(OnBingle);
+        SubscribeLocalEvent<BlobObserverComponent, ComponentInit>(OnBlob);
+        SubscribeLocalEvent<DevilComponent, ComponentInit>(OnDevil);
+        SubscribeLocalEvent<DarkLordMarkerComponent, ComponentInit>(OnDarkLord);
+        SubscribeLocalEvent<ShadowlingComponent, ComponentInit>(OnShadowling);
+        // XenomorphComponent.ComponentInit already claimed by XenomorphsRuleSystem.
+        SubscribeLocalEvent<XenomorphComponent, MapInitEvent>(OnXenomorph);
 
         SubscribeLocalEvent<MetaDataComponent, EntityZombifiedEvent>(OnZombify);
 
-        SubscribeLocalEvent<PentagramComponent, ComponentStartup>(OnCultistAscent);
+        SubscribeLocalEvent<PentagramComponent, ComponentInit>(OnCultistAscent);
         SubscribeLocalEvent<PentagramComponent, ComponentRemove>(OnCultistDescent);
     }
 
-    private void OnNukeOperative(Entity<NukeOperativeComponent> ent, ref ComponentStartup args)
+    private void OnNukeOperative(Entity<NukeOperativeComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-nukeops-name",
             "ghost-panel-antagonist-nukeops-description",
             priority: 10);
 
-    private void OnSpaceNinja(Entity<SpaceNinjaComponent> ent, ref ComponentStartup args)
+    private void OnSpaceNinja(Entity<SpaceNinjaComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-ninja-name",
             "ghost-panel-antagonist-ninja-description",
             priority: 40);
 
-    private void OnWizard(Entity<WizardComponent> ent, ref ComponentStartup args)
+    private void OnWizard(Entity<WizardComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-wizard-name",
             "ghost-panel-antagonist-wizard-description",
             priority: 5);
 
-    private void OnAbductor(Entity<AbductorComponent> ent, ref ComponentStartup args)
+    private void OnAbductor(Entity<AbductorComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-abductor-name",
             "ghost-panel-antagonist-abductor-description",
             priority: 25);
 
-    private void OnCorticalBorer(Entity<CorticalBorerComponent> ent, ref ComponentStartup args)
+    private void OnCorticalBorer(Entity<CorticalBorerComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-cortical-borer-name",
             "ghost-panel-antagonist-cortical-borer-description",
             priority: 55);
 
-    private void OnHastur(Entity<OmnipresenceComponent> ent, ref ComponentStartup args)
+    private void OnHastur(Entity<OmnipresenceComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-hastur-name",
             "ghost-panel-antagonist-hastur-description",
             priority: 8);
 
-    private void OnSlaughterDemon(Entity<SlaughterDemonComponent> ent, ref ComponentStartup args)
+    private void OnSlaughterDemon(Entity<SlaughterDemonComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-slaughter-name",
             "ghost-panel-antagonist-slaughter-description",
             priority: 12);
 
-    private void OnWraith(Entity<WraithComponent> ent, ref ComponentStartup args)
+    private void OnWraith(Entity<WraithComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-wraith-name",
             "ghost-panel-antagonist-wraith-description",
             priority: 15);
 
-    private void OnRevenant(Entity<RevenantComponent> ent, ref ComponentStartup args)
+    private void OnRevenant(Entity<RevenantComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-revenant-name",
             "ghost-panel-antagonist-revenant-description",
             priority: 70);
 
-    private void OnSlasher(Entity<SlasherComponent> ent, ref ComponentStartup args)
+    private void OnSlasher(Entity<SlasherComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-slasher-name",
             "ghost-panel-antagonist-slasher-description",
             priority: 18);
 
-    private void OnBingle(Entity<BingleComponent> ent, ref ComponentStartup args)
+    private void OnBingle(Entity<BingleComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-bingle-name",
             "ghost-panel-antagonist-bingle-description",
             priority: 60);
 
-    private void OnBlob(Entity<BlobObserverComponent> ent, ref ComponentStartup args)
+    private void OnBlob(Entity<BlobObserverComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-blob-name",
             "ghost-panel-antagonist-blob-description",
             priority: 9);
 
-    private void OnXenomorph(Entity<XenomorphComponent> ent, ref ComponentStartup args)
+    private void OnXenomorph(Entity<XenomorphComponent> ent, ref MapInitEvent args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-xenomorph-name",
             "ghost-panel-antagonist-xenomorph-description",
             priority: 22);
 
-    private void OnDevil(Entity<DevilComponent> ent, ref ComponentStartup args)
+    private void OnDevil(Entity<DevilComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-devil-name",
             "ghost-panel-antagonist-devil-description",
             priority: 14);
 
-    private void OnDarkLord(Entity<DarkLordMarkerComponent> ent, ref ComponentStartup args)
+    private void OnDarkLord(Entity<DarkLordMarkerComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-dark-lord-name",
             "ghost-panel-antagonist-dark-lord-description",
             priority: 16);
 
-    private void OnShadowling(Entity<ShadowlingComponent> ent, ref ComponentStartup args)
+    private void OnShadowling(Entity<ShadowlingComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
             "ghost-panel-antagonist-shadowling-name",
             "ghost-panel-antagonist-shadowling-description",
@@ -157,7 +162,7 @@ public sealed class GhostPanelAntagonistMarkerPinSystem : EntitySystem
             "ghost-panel-antagonist-zombie-description",
             priority: 50);
 
-    private void OnCultistAscent(Entity<PentagramComponent> ent, ref ComponentStartup args)
+    private void OnCultistAscent(Entity<PentagramComponent> ent, ref ComponentInit args)
         => Pin(ent.Owner,
             "ghost-panel-antagonist-cult-name",
             "ghost-panel-antagonist-cult-description",

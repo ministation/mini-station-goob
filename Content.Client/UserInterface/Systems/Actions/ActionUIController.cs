@@ -24,6 +24,8 @@ using Content.Shared.Ghost;
 using Content.Shared.Heretic;
 using Content.Shared.Input;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Revenant.Components;
+using Content.Goobstation.Shared.Wraith.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
@@ -674,8 +676,16 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
     private bool IsTransientActionBody(EntityUid uid)
     {
-        return EntityManager.HasComponent<GhostComponent>(uid)
-               || EntityManager.HasComponent<SpectralComponent>(uid);
+        if (EntityManager.HasComponent<GhostComponent>(uid))
+            return true;
+
+        // Permanent spectral antags keep a persistent hotbar (unlike jaunts / temp forms).
+        // Treating them as transient skips layout save/restore and breaks reconnect races.
+        if (EntityManager.HasComponent<WraithComponent>(uid) ||
+            EntityManager.HasComponent<RevenantComponent>(uid))
+            return false;
+
+        return EntityManager.HasComponent<SpectralComponent>(uid);
     }
 
     private SavedActionLayout CaptureLayout()
@@ -1008,8 +1018,47 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
 
         if (_pendingLoadFrom != null)
             TryRestoreLayout();
+        else if (ShouldReloadDefaultActions())
+            LoadDefaultActions();
 
         RefreshActionContainer();
+    }
+
+    /// <summary>
+    /// After reconnect, action NetEntities can arrive before ActionComponent is ready.
+    /// <see cref="LoadDefaultActions"/> then fills nothing and never retries for permanent bodies.
+    /// </summary>
+    private bool ShouldReloadDefaultActions()
+    {
+        if (_actionsSystem == null || _playerManager.LocalEntity is not { } local)
+            return false;
+
+        if (IsTransientActionBody(local))
+            return false;
+
+        if (!IsHotbarEmpty())
+            return false;
+
+        return _actionsSystem.GetClientActions().Any(action => action.Comp.AutoPopulate);
+    }
+
+    private bool IsHotbarEmpty()
+    {
+        if (IsPagedMode)
+        {
+            foreach (var page in _pages)
+            {
+                for (var i = 0; i < page.Size; i++)
+                {
+                    if (page[i] != null)
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        return _actions.Count == 0 || _actions.All(a => a == null);
     }
 
     private void ActionButtonPressed(ButtonEventArgs args)
