@@ -15,6 +15,7 @@ using Content.Shared._White.Xenomorphs.Xenomorph;
 using Content.Shared.Ninja.Components;
 using Content.Shared.NukeOps;
 using Content.Shared.Revenant.Components;
+using Content.Shared.Roles.Components;
 using Content.Shared.WhiteDream.BloodCult.Components;
 using Content.Shared.Zombies;
 
@@ -181,6 +182,11 @@ public sealed class GhostPanelAntagonistMarkerPinSystem : EntitySystem
 
     private void Pin(EntityUid uid, string name, string description, int priority)
     {
+        // Mind-role entities (e.g. MindRoleAbductor*) also carry antag comps like Abductor.
+        // Markers belong on the body/spawner, not the role entity — and adding them breaks UninitializedSaveTest.
+        if (HasComp<MindRoleComponent>(uid))
+            return;
+
         var marker = EnsureComp<GhostPanelAntagonistMarkerComponent>(uid);
         marker.Name = name;
         marker.Description = description;
