@@ -3,6 +3,10 @@
   id: MobHumanTunnelClown
   name: Tunnel clown
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-tunnel-clown-name
+    description: ghost-panel-antagonist-tunnel-clown-description
+    priority: 45
   - type: RandomHumanoidAppearance
     randomizeName: true
   - type: Loadout
@@ -14,6 +18,10 @@
   id: MobHumanSingulothKnight
   name: Singuloth Knight
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-singuloth-knight-name
+    description: ghost-panel-antagonist-singuloth-knight-description
+    priority: 42
   - type: RandomHumanoidAppearance
     randomizeName: true
   - type: Loadout
@@ -24,6 +32,10 @@
   id: MobHumanDarkLord
   name: The Dark Lord
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-dark-lord-name
+    description: ghost-panel-antagonist-dark-lord-description
+    priority: 16
   - type: ActionGrant
     actions:
     - ActionLightningBolt
@@ -38,6 +50,10 @@
   id: MobHumanChosenOne
   name: The chosen one
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-chosen-one-name
+    description: ghost-panel-antagonist-chosen-one-description
+    priority: 43
   - type: ActionGrant
     actions:
     - ActionRepulseNoRobes
@@ -53,6 +69,10 @@
   id: MobHumanMimeAssassin
   name: Mime assassin
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-mime-assassin-name
+    description: ghost-panel-antagonist-mime-assassin-description
+    priority: 44
   - type: AutoImplant
     implants:
     - FreedomImplanter
@@ -69,6 +89,10 @@
   id: MobHumanDarkPriest
   name: Dark Priest
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-dark-priest-name
+    description: ghost-panel-antagonist-dark-priest-description
+    priority: 41
   - type: RandomHumanoidAppearance
     randomizeName: true
   - type: Loadout
@@ -79,6 +103,10 @@
   id: MobVoxRaider
   name: Vox Raider
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-vox-raider-name
+    description: ghost-panel-antagonist-vox-raider-description
+    priority: 38
   - type: AutoImplant
     implants:
     - DeathAcidifierImplant

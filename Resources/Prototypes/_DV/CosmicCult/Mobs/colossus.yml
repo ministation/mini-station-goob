@@ -5,6 +5,10 @@
   name: entropic colossus
   description: A colossal monstrosity of malign plating and dendritic infestation.
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-colossus-name
+    description: ghost-panel-antagonist-colossus-description
+    priority: 11
   - type: FTLSmashImmune
   - type: CosmicCultExamine
     cultistText: cosmic-examine-text-cultentity

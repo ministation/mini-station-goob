@@ -31,6 +31,11 @@
       roleLoadout:
       - RoleSurvivalEVA
       components:
+      # Mini: ghost teleport panel antagonist section
+      - type: GhostPanelAntagonistMarker
+        name: ghost-panel-antagonist-wizard-name
+        description: ghost-panel-antagonist-wizard-description
+        priority: 5
       - type: Wizard
       - type: CanEnchant
       - type: LanguageKnowledge

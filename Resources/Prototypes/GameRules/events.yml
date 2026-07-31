@@ -359,6 +359,11 @@
         color: Green
         sound: /Audio/Misc/ninja_greeting.ogg
       components:
+      # Mini: ghost teleport panel antagonist section
+      - type: GhostPanelAntagonistMarker
+        name: ghost-panel-antagonist-ninja-name
+        description: ghost-panel-antagonist-ninja-description
+        priority: 40
       - type: SpaceNinja
       - type: NpcFactionMember
         factions:
@@ -421,6 +426,12 @@
         text: paradox-clone-role-greeting
         color: lightblue
         sound: /Audio/Misc/paradox_clone_greeting.ogg
+      components:
+      # Mini: ghost teleport panel antagonist section
+      - type: GhostPanelAntagonistMarker
+        name: ghost-panel-antagonist-paradox-clone-name
+        description: ghost-panel-antagonist-paradox-clone-description
+        priority: 35
       mindRoles:
       - MindRoleParadoxClone
   - type: DynamicRuleCost
@@ -823,6 +834,11 @@
       roleLoadout:
       - RoleSurvivalNukie
       components:
+      # Mini: ghost teleport panel antagonist section
+      - type: GhostPanelAntagonistMarker
+        name: ghost-panel-antagonist-loneops-name
+        description: ghost-panel-antagonist-loneops-description
+        priority: 20
       - type: NukeOperative
       - type: RandomMetadata
         nameSegments:

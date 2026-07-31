@@ -22,6 +22,11 @@
     raffle:
       settings: default
   - type: GhostTakeoverAvailable
+  # Mini: ghost teleport panel antagonist section
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-cortical-borer-name
+    description: ghost-panel-antagonist-cortical-borer-description
+    priority: 55
   - type: Sprite
     scale: 0.6, 0.6
     drawdepth: SmallMobs
