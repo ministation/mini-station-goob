@@ -35,8 +35,8 @@ public abstract partial class InteractionTest
     protected const string Cable = "Cable";
     protected const string Rod = "MetalRod";
 
-    // Parts
-    protected const string Manipulator1 = "MicroManipulatorStockPart";
+    // Parts — Mini/Orion: boards use Servo MachineParts, not Manipulator stacks
+    protected const string Servo1 = "MicroServoStockPart";
     protected const string Battery1 = "PowerCellSmall";
     protected const string Battery4 = "PowerCellHyper";
 
