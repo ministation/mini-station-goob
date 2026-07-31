@@ -71,5 +71,7 @@ public sealed class MachineBoardPartCostTest
 
             entMan.DeleteEntity(board);
         });
+
+        await pair.CleanReturnAsync();
     }
 }
