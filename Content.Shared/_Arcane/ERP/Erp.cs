@@ -2,9 +2,9 @@
 
 public enum ErpPreference
 {
-    Yes = 2,
-    Ask = 1,
     No = 0,
+    Ask = 1,
+    Yes = 2,
 }
 
 public sealed class ErpPreferenceChangedEvent(ErpPreference oldPreference, ErpPreference newPreference) : EntityEventArgs

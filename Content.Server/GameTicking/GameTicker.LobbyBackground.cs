@@ -5,7 +5,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server.GameTicking;
 
-// Oasis — atmospheric lobby backgrounds
+// Oasis atmospheric lobby backgrounds
 public sealed partial class GameTicker
 {
     private static readonly string[] MiniLobbyBackgroundPaths =

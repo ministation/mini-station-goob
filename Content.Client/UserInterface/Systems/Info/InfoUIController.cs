@@ -2,6 +2,7 @@
 
 using Content.Client.Gameplay;
 using Content.Client.Info;
+using Content.Client.Administration.Managers;
 using Content.Shared.Guidebook;
 using Content.Shared.Info;
 using Robust.Client.Console;
@@ -17,6 +18,7 @@ public sealed class InfoUIController : UIController, IOnStateExited<GameplayStat
     [Dependency] private readonly IClientConsoleHost _consoleHost = default!;
     [Dependency] private readonly INetManager _netManager = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private readonly IClientAdminManager _adminManager = default!;
 
     private RulesPopup? _rulesPopup;
     private RulesAndInfoWindow? _infoWindow;
@@ -41,6 +43,10 @@ public sealed class InfoUIController : UIController, IOnStateExited<GameplayStat
             "",
             (_, _, _) =>
         {
+            // Admin-only shortcut to dismiss the rules popup.
+            if (!_adminManager.IsAdmin())
+                return;
+
             OnAcceptPressed();
         });
     }

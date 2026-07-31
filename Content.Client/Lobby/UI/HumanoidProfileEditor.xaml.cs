@@ -597,7 +597,8 @@ namespace Content.Client.Lobby.UI
 
             #region ErpPreference
 
-            foreach (var value in Enum.GetValues<ErpPreference>())
+            // Order: Отключено -> Спрашивать -> Да (by enum value), not Yes-first.
+            foreach (var value in Enum.GetValues<ErpPreference>().OrderBy(v => (int) v))
             {
                 ErpPreferenceButton.AddItem(
                     Loc.GetString($"humanoid-profile-editor-erp-preference-{value.ToString().ToLower()}"),

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# Oasis — ERP sister project of Mini Station.
+# Oasis ERP sister project preset.
 # Load with: config.presets=_Mini/oasis
 # Pair with mini-network / mini-server-perf / mini-highpop as needed.
 #

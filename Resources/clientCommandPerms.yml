@@ -26,7 +26,6 @@
     - gc
     - gc_mode
     - cvar
-    - fuckrules
     - midipanic
     - replay_recording_start
     - replay_recording_stop
@@ -95,6 +94,10 @@
     - uploadfile
     - loadprototype
     - uploadfolder
+
+- Flags: ADMIN
+  Commands:
+    - fuckrules
 
 - Flags: ADMINCHAT
   Commands:
