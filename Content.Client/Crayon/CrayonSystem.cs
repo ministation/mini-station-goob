@@ -35,6 +35,7 @@ public sealed class CrayonSystem : SharedCrayonSystem
         {
             _crayon = crayon;
             _charges = charges;
+            // Unlimited crayons (e.g. CrayonBlood) have no LimitedChargesComponent.
             _infinite = !entityManager.TryGetComponent(crayon.Owner, out LimitedChargesComponent? limited);
             _capacity = limited?.MaxCharges ?? 0;
             _label = new RichTextLabel { StyleClasses = { StyleClass.ItemStatus } };
@@ -44,18 +45,6 @@ public sealed class CrayonSystem : SharedCrayonSystem
         protected override void FrameUpdate(FrameEventArgs args)
         {
             base.FrameUpdate(args);
-
-            // Unlimited crayons (e.g. CrayonBlood) have no LimitedChargesComponent.
-            if (_capacity is not { } capacity)
-            {
-                _label.SetMarkup(Robust.Shared.Localization.Loc.GetString("crayon-drawing-label",
-                    ("color", _crayon.Comp.Color),
-                    ("state", _crayon.Comp.SelectedState),
-                    ("infinite", true),
-                    ("charges", -1),
-                    ("capacity", -1)));
-                return;
-            }
 
             _label.SetMarkup(Robust.Shared.Localization.Loc.GetString("crayon-drawing-label",
                 ("color", _crayon.Comp.Color),
