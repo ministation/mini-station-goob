@@ -8,10 +8,11 @@
     state: security
   - type: MachineBoard
     prototype: GunneryServerLow
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4
     stackRequirements:
       Glass: 10
       Steel: 10
-      Manipulator: 4
 
 - type: entity
   id: MachineGCSMediumCircuitboard
@@ -23,10 +24,11 @@
     state: security
   - type: MachineBoard
     prototype: GunneryServerMedium
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4
     stackRequirements:
       Glass: 10
       Steel: 10
-      Manipulator: 4
 
 - type: entity
   id: MachineGCSHighCircuitboard
@@ -38,10 +40,11 @@
     state: security
   - type: MachineBoard
     prototype: GunneryServerHigh
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4
     stackRequirements:
       Glass: 10
       Steel: 10
-      Manipulator: 4
 
 - type: entity
   id: MachineGCSUltraCircuitboard
@@ -53,7 +56,8 @@
     state: security
   - type: MachineBoard
     prototype: GunneryServerUltra
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4
     stackRequirements:
       Glass: 10
       Steel: 10
-      Manipulator: 4

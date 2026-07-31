@@ -1,4 +1,4 @@
-# Tier 1
+# Tier 1 — Mini/Orion: no Stack (shared stackType collapses upgraded tiers on Split)
 
 - type: entity
   parent: BaseStockPart
@@ -9,8 +9,6 @@
   - type: Sprite
     sprite: _Mini/Objects/Misc/stock_parts.rsi
     state: capacitor
-  - type: Stack
-    stackType: Capacitor
   - type: MachinePart
     part: Capacitor
     tier: 1
@@ -25,8 +23,6 @@
   - type: Sprite
     sprite: _Mini/Objects/Misc/stock_parts.rsi
     state: scan_module
-  - type: Stack
-    stackType: ScanningModule
   - type: MachinePart
     part: ScanningModule
     tier: 1
@@ -41,8 +37,6 @@
   - type: Sprite
     sprite: _Mini/Objects/Misc/stock_parts.rsi
     state: micro_servo
-  - type: Stack
-    stackType: Servo
   - type: MachinePart
     part: Servo
     tier: 1
@@ -57,8 +51,6 @@
   - type: Sprite
     sprite: _Mini/Objects/Misc/stock_parts.rsi
     state: micro_laser
-  - type: Stack
-    stackType: MicroLaser
   - type: MachinePart
     part: MicroLaser
     tier: 1
@@ -73,8 +65,6 @@
   - type: Sprite
     sprite: _Mini/Objects/Misc/stock_parts.rsi
     state: matter_bin
-  - type: Stack
-    stackType: MatterBin
   - type: MachinePart
     part: MatterBin
     tier: 1

@@ -42,12 +42,12 @@
     sprite: _Goobstation/Objects/Weapons/Melee/mjollnir.rsi # GoobStation Edit
     layers:
     - state: icon
-  # - type: UseDelay
-  #   delay: 5 # Goobstation
-  # - type: UseDelayOnMeleeHit
+  - type: UseDelay
+    delay: 5 # Mini: melee stun cooldown
+  - type: UseDelayOnMeleeHit
   - type: MeleeThrowOnHit
     distance: 10 # Goobstation
-    stunTime: 3
+    stunTime: 2 # Mini: nerf stun
     activateOnThrown: true
   - type: MeleeWeapon
     attackRate: 0.75 # Goobstation

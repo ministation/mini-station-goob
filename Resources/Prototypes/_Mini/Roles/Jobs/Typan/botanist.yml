@@ -28,6 +28,6 @@
 - type: startingGear
   id: SyndicateBotanist
   equipment:
-    ears: ClothingHeadsetAltSyndicate
+    ears: ClothingHeadsetAltTypan
     id: SyndiPDABotan
     belt: TypanPlantBag

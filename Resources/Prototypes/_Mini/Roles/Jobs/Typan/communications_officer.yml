@@ -42,7 +42,7 @@
 - type: startingGear
   id: TypanCommander
   equipment:
-    ears: ClothingHeadsetAltSyndicate
+    ears: ClothingHeadsetAltTypan
     id: SyndiPDACom
     pocket1: SyndicateWhistle
     pocket2: ClothingMaskGasSyndicate

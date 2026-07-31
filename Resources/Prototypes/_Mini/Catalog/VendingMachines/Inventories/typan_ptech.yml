@@ -7,8 +7,8 @@
     TypanPDAPassenger: 5
     ClearPDA: 5
     PassengerIDCard: 5
-    ClothingHeadsetAltSyndicate: 5
-    EncryptionKeySyndie: 4
+    ClothingHeadsetAltTypan: 5
+    EncryptionKeyTypan: 4
     RubberStampApproved: 1
     RubberStampDenied: 1
     RubberStampSyndicate: 1

@@ -1,0 +1,48 @@
+# Mini: Orion had locales + tech refs but no experiment prototypes.
+- type: researchExperiment
+  id: AutopsyHuman
+  name: research-experiment-autopsy-human-name
+  description: research-experiment-autopsy-human-desc
+  category: Scanning
+  objective: !type:ScanSamplesExperimentObjective
+    requiredComponents:
+    - HumanoidAppearance
+    target: 1
+  reward:
+    pointRewards:
+    - type: General
+      amount: 750
+    - type: Experimental
+      amount: 250
+
+- type: researchExperiment
+  id: AutopsyNonhuman
+  name: research-experiment-autopsy-nonhuman-name
+  description: research-experiment-autopsy-nonhuman-desc
+  category: Scanning
+  objective: !type:ScanSamplesExperimentObjective
+    requiredConditions:
+    - NonBaselineHumanoid
+    target: 1
+  reward:
+    pointRewards:
+    - type: General
+      amount: 1000
+    - type: Experimental
+      amount: 350
+
+- type: researchExperiment
+  id: AutopsyXenomorph
+  name: research-experiment-autopsy-xenomorph-name
+  description: research-experiment-autopsy-xenomorph-desc
+  category: Scanning
+  objective: !type:ScanSamplesExperimentObjective
+    requiredComponents:
+    - Xenomorph
+    target: 1
+  reward:
+    pointRewards:
+    - type: General
+      amount: 1500
+    - type: Experimental
+      amount: 500

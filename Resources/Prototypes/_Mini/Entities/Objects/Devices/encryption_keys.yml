@@ -1,0 +1,31 @@
+- type: entity
+  parent: [ EncryptionKey, BaseSyndicateContraband ]
+  id: EncryptionKeyTypan
+  name: typan encryption key
+  description: An encryption key used by Typan personnel.
+  components:
+  - type: EncryptionKey
+    channels:
+    - Typan
+    defaultChannel: Typan
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: synd_label
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  name: typan encryption key box
+  parent: [BoxEncryptionKeyPassenger, BaseSyndicateContraband]
+  id: BoxEncryptionKeyTypan
+  description: Two Typan encryption keys for the price of one. Miniaturized for ease of use.
+  components:
+  - type: Item
+    size: Normal
+  - type: EntityTableContainerFill
+    containers:
+      storagebase:
+        id: EncryptionKeyTypan
+        amount: 2
+  - type: Storage

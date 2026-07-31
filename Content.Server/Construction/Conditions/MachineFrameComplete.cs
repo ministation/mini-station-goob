@@ -92,14 +92,9 @@ namespace Content.Server.Construction.Conditions
 
                 string elementName;
                 if (protoManager.TryIndex(partType, out var machinePart))
-                {
-                    var partEnt = protoManager.Index(machinePart.StockPartPrototype);
-                    elementName = partEnt.Name;
-                }
+                    elementName = Loc.GetString(machinePart.Name);
                 else
-                {
                     elementName = partType;
-                }
 
                 args.PushMarkup(Loc.GetString("construction-condition-machine-frame-required-element-entry",
                     ("amount", amount),

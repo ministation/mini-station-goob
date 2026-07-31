@@ -42,5 +42,5 @@
   id: TypanResearchDirector
   equipment:
     eyes: ClothingEyesHudTypanResearch
-    ears: ClothingHeadsetAltSyndicate
+    ears: ClothingHeadsetAltTypan
     id: SyndiPDARD

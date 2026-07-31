@@ -397,6 +397,7 @@
     state: icon
   discipline: Security
   tier: 2
+  hidden: true # Mini: TODO EnergyDomeTurtle missing
   announceChannels:
   - Security
   pointCosts:

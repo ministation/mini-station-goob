@@ -146,12 +146,15 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
                 SelectTech(proto, tech.Value);
         }
 
-        // Keep user zoom/pan across unlocks and point sync; Fit/Recenter is explicit only.
+        // Mini-start: do NOT call FitVisibleTechnologies() here on every UpdatePanels.
+        // Upstream/Goob "refit on visible set change" resets zoom/pan after each unlock.
+        // Fit only on open (_pendingFit) / Recenter button / first Resized.
         var items = DragContainer.Children.OfType<FancyResearchConsoleItem>().ToList();
         if (items.Count > 0)
             CacheContentBounds(items);
         ClampPan();
         ApplyLayoutPositions();
+        // Mini-end
     }
 
     // Orion-Start
@@ -657,6 +660,7 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
     protected override void Resized()
     {
         base.Resized();
+        // Mini-start: only auto-fit while pending initial layout; never reset zoom on every resize.
         if (_pendingFit)
         {
             FitVisibleTechnologies();
@@ -668,6 +672,7 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
             ClampPan();
             ApplyLayoutPositions();
         }
+        // Mini-end
     }
 
     public override void Close()

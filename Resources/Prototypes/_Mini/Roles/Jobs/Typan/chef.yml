@@ -29,5 +29,5 @@
 - type: startingGear
   id: TypanChef
   equipment:
-    ears: ClothingHeadsetAltSyndicate
+    ears: ClothingHeadsetAltTypan
     id: SyndiPDAChef

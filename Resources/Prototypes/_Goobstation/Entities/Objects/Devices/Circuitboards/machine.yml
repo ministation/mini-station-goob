@@ -10,8 +10,9 @@
     state: engineering
   - type: MachineBoard
     prototype: RoboticArm
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4
     stackRequirements:
-      Manipulator: 4
       Steel: 6
       Cable: 5
     tagRequirements:
@@ -29,8 +30,9 @@
     state: engineering
   - type: MachineBoard
     prototype: Constructor
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 5
     stackRequirements:
-      Manipulator: 5
       Steel: 10
       Cable: 5
     tagRequirements:
@@ -46,8 +48,9 @@
   components:
   - type: MachineBoard
     prototype: StorageBin
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4
     stackRequirements:
-      Manipulator: 4
       Steel: 1
 
 - type: entity
@@ -60,8 +63,9 @@
     state: engineering
   - type: MachineBoard
     prototype: Interactor
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 4
     stackRequirements:
-      Manipulator: 4
       Plastic: 4
       Cable: 5
     tagRequirements:
@@ -79,8 +83,9 @@
     state: service
   - type: MachineBoard
     prototype: VinylPlayer
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 1
     stackRequirements:
-      Manipulator: 1
       Steel: 1
       WoodPlank: 3
 
@@ -94,8 +99,9 @@
     state: service
   - type: MachineBoard
     prototype: TapeDeck
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 2
     stackRequirements:
-      Manipulator: 2
       Plastic: 3
       WoodPlank: 5
 
@@ -109,8 +115,9 @@
     state: service
   - type: MachineBoard
     prototype: StationRadioServer
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 1
     stackRequirements:
-      Manipulator: 1
       Steel: 10
       Plastic: 10
       Plasma: 5
@@ -126,8 +133,9 @@
     state: service
   - type: MachineBoard
     prototype: StationRadioRig
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 3
     stackRequirements:
-      Manipulator: 3
       Steel: 5
       Glass: 5
       Cable: 2
@@ -142,8 +150,9 @@
     state: service
   - type: MachineBoard
     prototype: StationRadioReceiver
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 1
     stackRequirements:
-      Manipulator: 1
       Cable: 2
 
 - type: entity
@@ -168,8 +177,8 @@
     state: service
   - type: MachineBoard
     prototype: ServiceEnergyChemDispenser
-    stackRequirements:
-      Manipulator: 3
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 3
     tagRequirements:
       GlassBeaker:
         amount: 2

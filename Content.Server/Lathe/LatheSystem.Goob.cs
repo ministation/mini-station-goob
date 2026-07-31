@@ -80,7 +80,7 @@ public sealed partial class LatheSystem
                     break;
                 var batch = comp.Queue.First();
                 var recipe = _proto.Index(batch.Recipe);
-                var time = _reagentSpeed.ApplySpeed(uid, recipe.CompleteTime) * comp.TimeMultiplier;
+                var time = _reagentSpeed.ApplySpeed(uid, recipe.CompleteTime) * comp.FinalTimeMultiplier;
                 if (time != TimeSpan.Zero)
                     break;
                 batch.ItemsPrinted++;

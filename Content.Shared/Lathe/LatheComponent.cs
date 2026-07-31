@@ -3,6 +3,7 @@
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Lathe.Prototypes;
 using Content.Shared.Research.Prototypes;
+using Content.Shared._Mini.Construction.Prototypes;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -84,6 +85,27 @@ namespace Content.Shared.Lathe
         /// </summary>
         [DataField, ViewVariables(VVAccess.ReadWrite), AutoNetworkedField]
         public float MaterialUseMultiplier = 1;
+
+        // Mini-start: Orion MachineParts (Servo-only boards; upgrades via Servo rating)
+        [ViewVariables(VVAccess.ReadWrite)]
+        public float FinalTimeMultiplier = 1;
+
+        [DataField, ViewVariables(VVAccess.ReadWrite), AutoNetworkedField]
+        public float FinalMaterialUseMultiplier = 1;
+
+        [DataField]
+        public ProtoId<MachinePartPrototype> MachinePartPrintSpeed = "Servo";
+
+        [DataField]
+        public ProtoId<MachinePartPrototype> MachinePartMaterialUse = "Servo";
+
+        [DataField]
+        public float PartRatingPrintTimeMultiplier = 0.5f;
+
+        [DataField]
+        public float PartRatingMaterialUseMultiplier = 0.85f;
+        // Mini-end
+
         #endregion
 
         // Goobstation change start

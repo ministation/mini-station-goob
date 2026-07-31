@@ -29,10 +29,9 @@
   - type: DnaServer # Mini: Paradise/Wega genetics buffers
   - type: TechnologyDatabase
     supportedDisciplines:
-    # Mini / Orion techweb — NT station (no Syndicate / Typan)
+    # Mini / Orion techweb — NT station (no Syndicate / Typan / empty Cargo)
     - Engineering
     - Security
-    - Cargo
     - Shaft
     - Scientific
     - Robotics

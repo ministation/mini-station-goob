@@ -1,0 +1,18 @@
+# Orion port: abductor tools unlocked via alien tech.
+- type: latheRecipePack
+  id: AbductorEngineering
+  recipes:
+  - CrowbarAbductor
+  - MultitoolAbductor
+  - ScrewdriverAbductor
+  - WelderAbductor
+  - WirecutterAbductor
+  - WrenchAbductor
+
+- type: latheRecipePack
+  id: AbductorMedical
+  recipes:
+  - EnergyScalpelAbductor
+  - SearingToolAbductor
+  - MechanicalPinchesAbductor
+  - BoneManipulatorAbductor

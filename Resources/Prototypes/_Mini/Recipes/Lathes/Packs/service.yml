@@ -1,0 +1,30 @@
+# Orion port: service / cafeteria / office unlocks.
+- type: latheRecipePack
+  id: BasicService
+  recipes:
+  - FishingRod
+  - ParcelWrap
+  - RadioHandheld
+  - ClothingHeadset
+  - PetCarrier
+  - Broomstick
+  - Flare
+  - BarSpoon
+  - Spoon
+  - SpoonPlastic
+  - Fork
+  - ForkPlastic
+  - KitchenKnife
+  - KnifePlastic
+  - DrinkShaker
+  - PairedChopsticks
+  - ClothingHeadHatCardborg
+  - ClothingOuterCardborg
+
+- type: latheRecipePack
+  id: Hydroponic
+  recipes:
+  - HydroponicsToolSpade
+  - HydroponicsToolMiniHoe
+  - HydroponicsToolClippers
+  - HydroponicsToolHatchet
