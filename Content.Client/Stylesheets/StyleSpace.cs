@@ -28,10 +28,11 @@ namespace Content.Client.Stylesheets
     {
         public static readonly Color SpaceRed = Color.FromHex("#9b2236");
 
-        public static readonly Color ButtonColorDefault = Color.FromHex("#464966");
-        public static readonly Color ButtonColorHovered = Color.FromHex("#575b7f");
-        public static readonly Color ButtonColorPressed = Color.FromHex("#3e6c45");
-        public static readonly Color ButtonColorDisabled = Color.FromHex("#30313c");
+        // Oasis: purple button palette
+        public static readonly Color ButtonColorDefault = Color.FromHex("#5B3A7A");
+        public static readonly Color ButtonColorHovered = Color.FromHex("#7B4F9A");
+        public static readonly Color ButtonColorPressed = Color.FromHex("#4A2A6A");
+        public static readonly Color ButtonColorDisabled = Color.FromHex("#3A2A4A");
 
         public static readonly Color ButtonColorCautionDefault = Color.FromHex("#ab3232");
         public static readonly Color ButtonColorCautionHovered = Color.FromHex("#cf2f2f");

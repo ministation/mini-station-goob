@@ -1,0 +1,125 @@
+- type: entity
+  id: BaseEroticOrgan
+  parent: BaseHumanOrgan
+  abstract: true
+  components:
+  - type: Organ
+    canEnable: true
+    removable: false
+
+# Universal (all sexes)
+# Internal muscle — no integrity display in health scanner.
+- type: entity
+  id: OrganAnus
+  parent: BaseEroticOrgan
+  name: anus
+  description: An internal sphincter muscle.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Mobs/organs/anus.rsi
+    state: default
+  - type: Organ
+    slotId: anus
+    removable: false
+  - type: EroticOrgan
+    sensitivity: 1.2
+  - type: AnusOrgan
+
+# Male / Futanari
+# External organ — shows in health scanner.
+- type: entity
+  id: OrganPenis
+  parent: BaseEroticOrgan
+  name: penis
+  description: A male genital organ.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Mobs/organs/penis.rsi
+    state: default
+  - type: Organ
+    intCap: 15
+    integrity: 15
+    integrityThresholds:
+      Normal: 15
+      Damaged: 6
+      Destroyed: 0
+    slotId: penis
+    removable: false
+  - type: EroticOrgan
+    sensitivity: 1.5
+  - type: PenisOrgan
+
+# Internal gonads — no integrity display in health scanner.
+- type: entity
+  id: OrganTesticles
+  parent: BaseEroticOrgan
+  name: testicles
+  description: Male gonads.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Mobs/organs/testicles.rsi
+    state: default
+  - type: Organ
+    slotId: testicles
+    removable: false
+  - type: EroticOrgan
+    sensitivity: 1.0
+  - type: TesticlesOrgan
+
+# Female / Futanari
+# Mostly internal — no integrity display in health scanner.
+- type: entity
+  id: OrganVagina
+  parent: BaseEroticOrgan
+  name: vagina
+  description: A female genital organ.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Mobs/organs/vagina.rsi
+    state: default
+  - type: Organ
+    slotId: vagina
+    removable: false
+  - type: EroticOrgan
+    sensitivity: 1.5
+  - type: VaginaOrgan
+
+# Deeply internal — no integrity display in health scanner.
+- type: entity
+  id: OrganUterus
+  parent: BaseEroticOrgan
+  name: uterus
+  description: A female reproductive organ.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Mobs/organs/uterus.rsi
+    state: default
+  - type: Organ
+    slotId: uterus
+    removable: false
+  - type: EroticOrgan
+    sensitivity: 0.8
+  - type: UterusOrgan
+
+# External tissue — shows in health scanner.
+- type: entity
+  id: OrganBreasts
+  parent: BaseEroticOrgan
+  name: breasts
+  description: Mammary glands.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Mobs/organs/breasts.rsi
+    state: default
+  - type: Organ
+    intCap: 15
+    integrity: 15
+    integrityThresholds:
+      Normal: 15
+      Damaged: 6
+      Destroyed: 0
+    slotId: breasts
+    removable: false
+  - type: EroticOrgan
+    sensitivity: 1.1
+  - type: BreastsOrgan

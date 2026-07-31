@@ -167,6 +167,7 @@ using Content.Client.Sprite;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface;
 using Content.Client.UserInterface.Systems.Guidebook;
+using Content.Shared._Arcane.ERP;
 using Content.Shared._CorvaxGoob.CCCVars;
 using Content.Corvax.Interfaces.Shared;
 using Content.Shared._Mini.MiniCCVars;
@@ -593,6 +594,23 @@ namespace Content.Client.Lobby.UI
             };
 
             #endregion SpawnPriority
+
+            #region ErpPreference
+
+            foreach (var value in Enum.GetValues<ErpPreference>())
+            {
+                ErpPreferenceButton.AddItem(
+                    Loc.GetString($"humanoid-profile-editor-erp-preference-{value.ToString().ToLower()}"),
+                    (int) value);
+            }
+
+            ErpPreferenceButton.OnItemSelected += args =>
+            {
+                ErpPreferenceButton.SelectId(args.Id);
+                SetErpPreference((ErpPreference) args.Id);
+            };
+
+            #endregion ErpPreference
 
             #region Eyes
 
@@ -1119,6 +1137,7 @@ namespace Content.Client.Lobby.UI
             UpdateGenderControls();
             UpdateSkinColor();
             UpdateSpawnPriorityControls();
+            UpdateErpPreferenceControls();
             UpdateAgeEdit();
             UpdateEyePickers();
             UpdateSaveButton();
@@ -1562,6 +1581,12 @@ namespace Content.Client.Lobby.UI
             SetDirty();
         }
 
+        private void SetErpPreference(ErpPreference preference)
+        {
+            Profile = Profile?.WithErpPreference(preference);
+            SetDirty();
+        }
+
         /*// begin Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
         private void SetProfileHeight(float height)
         {
@@ -1748,6 +1773,14 @@ namespace Content.Client.Lobby.UI
             }
 
             SpawnPriorityButton.SelectId((int) Profile.SpawnPriority);
+        }
+
+        private void UpdateErpPreferenceControls()
+        {
+            if (Profile == null)
+                return;
+
+            ErpPreferenceButton.SelectId((int) Profile.ErpPreference);
         }
 
         /*// begin Goobstation: port EE height/width sliders // CorvaxGoob-Clearing

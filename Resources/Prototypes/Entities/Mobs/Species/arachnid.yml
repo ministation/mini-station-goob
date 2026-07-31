@@ -73,6 +73,7 @@
     sounds:
       Male: UnisexArachnid
       Female: UnisexArachnid
+      Futanari: UnisexArachnid
       Unsexed: UnisexArachnid
   - type: TypingIndicator
     proto: spider

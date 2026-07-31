@@ -2,10 +2,14 @@
   <ColorBox Color="#2A1A2866" OutlineColor="#C084FC33" OutlineThickness="1" Margin="2">
     <Box Orientation="Vertical">
       <Box Orientation="Horizontal" HorizontalAlignment="Center">
-        [color=#C084FC][head=2]8.3. Граничные случаи[/head][/color]
+        [color=#C084FC][head=2]8.3. Запрещённый контент[/head][/color]
       </Box>
       <Box Orientation="Vertical" Margin="12">
-        Если администратор прикажет прекратить действия «на грани», вы обязаны немедленно подчиниться.
+        Строго запрещены: любой контент с несовершеннолетними / «loli/shota», зоофилия, некрофилия, extremegore в сочетании с ERP, а также ERP без согласия или вопреки статусу No.
+
+        Запрещено распространять реальные порноматериалы через игру (ссылки, файлы) без необходимости механик сервера.
+
+        Нарушения этого пункта могут караться перманентным баном без предупреждения.
       </Box>
     </Box>
   </ColorBox>

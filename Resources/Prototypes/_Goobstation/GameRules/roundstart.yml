@@ -35,8 +35,8 @@
     agentName: changeling-roundend-name
     definitions:
     - prefRoles: [ Changeling ]
-      max: 4
-      playerRatio: 12
+      max: 3 # Oasis: was 4
+      playerRatio: 18 # Oasis: was 12
       chaosScore: 200
       jobBlacklist: [ Chaplain ] # GOOBSTATION
       skills: # CorvaxGoob-Skills

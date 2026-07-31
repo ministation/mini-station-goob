@@ -1,0 +1,73 @@
+﻿- type: entity
+  parent: ClothingUnderwearBase
+  id: ClothingUnderwearpantiesSpiderman
+  name: panties spiderman
+  description: Men's panties with a print of an ancient hero.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Clothing/Underwear/Underwear/panties_with_spiderman.rsi
+
+- type: entity
+  parent: ClothingUnderwearBase
+  id: ClothingUnderwearboxerwolf
+  name: boxer with wolf
+  description: Brutal boxers with a wolf print.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Clothing/Underwear/Underwear/boxer_wolf.rsi
+
+- type: entity
+  parent: ClothingUnderwearBase
+  id: ClothingUnderwearboxerelephant
+  name: elephant boxers
+  description: Are you sure it's not a thong?!
+  components:
+  - type: Sprite
+    sprite: _Arcane/Clothing/Underwear/Underwear/boxer_elephant.rsi
+
+- type: entity
+  parent: ClothingUnderwearBase
+  id: ClothingUnderwearboxerfrance
+  name: france boxers
+  description: Boxers with the print of the ancient country "France".
+  components:
+  - type: Sprite
+    sprite: _Arcane/Clothing/Underwear/Underwear/boxer_france.rsi
+
+- type: entity
+  parent: ClothingUnderwearBase
+  id: ClothingUnderwearboxermaidwithsuspenders
+  name: maid's boxer with suspenders
+  description: Boxers for real men.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Clothing/Underwear/Underwear/boxer_maidwithsuspenders.rsi
+
+
+- type: entity
+  parent: ClothingUnderwearBase
+  id: ClothingUnderwearWarmThongs
+  name: warm thongs
+  description: Warm thongs with fur lining.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Clothing/Underwear/Underwear/warm_thongs.rsi
+
+- type: entity
+  parent: ClothingUnderwearBase
+  id: ClothingUnderwearPussystickers
+  name: pussy stickers
+  description: Stickers on the most intimate place for your perverted pleasures.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Clothing/Underwear/Underwear/pussy_stickers.rsi
+
+- type: entity
+  parent: ClothingUnderwearBase
+  id: ClothingUnderwearBeerPants
+  name: beer pants
+  description: Beer pants.
+  components:
+  - type: Sprite
+    sprite: _Arcane/Clothing/Underwear/beer_pants.rsi
+

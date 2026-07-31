@@ -20,17 +20,24 @@ namespace Content.Client.Launcher
     public sealed partial class LauncherConnectingGui : Control
     {
         private const float RedialWaitTimeSeconds = 15f;
+        private const string WhitelistGateKey = "whitelist";
+        private const string DiscordInviteFallback = "https://discord.gg/mini-station-oasis";
+
         private readonly LauncherConnecting _state;
         private float _waitTime;
 
         // Pressing reconnect will redial instead of simply reconnecting.
         private bool _redial;
+        private bool _whitelistDenied;
+        private string? _discordInvite;
+        private string? _lastFailReason;
 
         private readonly IRobustRandom _random;
         private readonly IPrototypeManager _prototype;
         private readonly IConfigurationManager _cfg;
         private readonly IClipboardManager _clipboard;
         private readonly IStylesheetManager _stylesheetManager;
+        private readonly IUriOpener _uriOpener;
 
         public LauncherConnectingGui(LauncherConnecting state, IRobustRandom random,
             IPrototypeManager prototype, IConfigurationManager config, IClipboardManager clipboard)
@@ -41,6 +48,7 @@ namespace Content.Client.Launcher
             _cfg = config;
             _clipboard = clipboard;
             _stylesheetManager = IoCManager.Resolve<IStylesheetManager>();
+            _uriOpener = IoCManager.Resolve<IUriOpener>();
 
             RobustXamlLoader.Load(this);
 
@@ -53,10 +61,15 @@ namespace Content.Client.Launcher
             ChangeLoginTip();
             RetryButton.OnPressed += ReconnectButtonPressed;
             ReconnectButton.OnPressed += ReconnectButtonPressed;
+            WhitelistRetryButton.OnPressed += ReconnectButtonPressed;
 
             CopyButton.OnPressed += CopyButtonPressed;
             CopyButtonDisconnected.OnPressed += CopyButtonDisconnectedPressed;
+            WhitelistCopyButton.OnPressed += WhitelistCopyButtonPressed;
+            WhitelistDiscordButton.OnPressed += WhitelistDiscordButtonPressed;
             ExitButton.OnPressed += _ => _state.Exit();
+
+            WhitelistBody.SetMessage(Loc.GetString("connecting-whitelist-body"));
 
             var addr = state.Address;
             if (addr != null)
@@ -139,6 +152,32 @@ namespace Content.Client.Launcher
             CopyText(DisconnectReason.Text);
         }
 
+        private void WhitelistCopyButtonPressed(BaseButton.ButtonEventArgs args)
+        {
+            CopyText(_lastFailReason ?? WhitelistBody.Text);
+        }
+
+        private void WhitelistDiscordButtonPressed(BaseButton.ButtonEventArgs args)
+        {
+            var invite = _discordInvite;
+            if (string.IsNullOrWhiteSpace(invite))
+                invite = DiscordInviteFallback;
+
+            // Client sandbox forbids System.UriKind / Uri.TryCreate — use string OpenUri.
+            if (!invite.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+                && !invite.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            try
+            {
+                _uriOpener.OpenUri(invite);
+            }
+            catch (Exception)
+            {
+                // Ignore invalid invite URLs from the server.
+            }
+        }
+
         private void CopyText(string? text)
         {
             if (!string.IsNullOrEmpty(text))
@@ -149,6 +188,7 @@ namespace Content.Client.Launcher
 
         private void ConnectFailReasonChanged(string? reason)
         {
+            _lastFailReason = reason;
             ConnectFailReason.SetMessage(reason == null
                 ? ""
                 : Loc.GetString("connecting-fail-reason", ("reason", reason)));
@@ -165,6 +205,8 @@ namespace Content.Client.Launcher
             {
                 _waitTime = 0;
                 _redial = false;
+                _whitelistDenied = false;
+                _discordInvite = null;
             }
             else
             {
@@ -179,7 +221,25 @@ namespace Content.Client.Launcher
                     _waitTime = RedialWaitTimeSeconds;
                 }
 
+                var gate = reason.Message.StringOf("gate");
+                _whitelistDenied = gate == WhitelistGateKey
+                    || IsWhitelistReasonFallback(reason.Reason);
+                _discordInvite = reason.Message.StringOf("discord");
+
+                if (_whitelistDenied && _state.CurrentPage == LauncherConnecting.Page.ConnectFailed)
+                    ApplyFailPageVisibility();
             }
+        }
+
+        private static bool IsWhitelistReasonFallback(string? reason)
+        {
+            if (string.IsNullOrEmpty(reason))
+                return false;
+
+            return reason.Contains("whitelist", StringComparison.OrdinalIgnoreCase)
+                   || reason.Contains("белый список", StringComparison.OrdinalIgnoreCase)
+                   || reason.Contains("Закрытый набор", StringComparison.OrdinalIgnoreCase)
+                   || reason.Contains("Closed enrollment", StringComparison.OrdinalIgnoreCase);
         }
 
         private void ChangeLoginTip()
@@ -210,7 +270,7 @@ namespace Content.Client.Launcher
             base.FrameUpdate(args);
 
             var button = _state.CurrentPage == LauncherConnecting.Page.ConnectFailed
-                ? RetryButton
+                ? (_whitelistDenied ? WhitelistRetryButton : RetryButton)
                 : ReconnectButton;
 
             _waitTime -= args.DeltaSeconds;
@@ -235,11 +295,34 @@ namespace Content.Client.Launcher
         private void OnPageChanged(LauncherConnecting.Page page)
         {
             ConnectingStatus.Visible = page == LauncherConnecting.Page.Connecting;
-            ConnectFail.Visible = page == LauncherConnecting.Page.ConnectFailed;
             Disconnected.Visible = page == LauncherConnecting.Page.Disconnected;
+
+            if (page == LauncherConnecting.Page.ConnectFailed)
+            {
+                ApplyFailPageVisibility();
+            }
+            else
+            {
+                ConnectFail.Visible = false;
+                WhitelistDenied.Visible = false;
+            }
 
             if (page == LauncherConnecting.Page.Disconnected)
                 DisconnectReason.Text = _state.LastDisconnectReason;
+
+            if (page == LauncherConnecting.Page.Connecting)
+            {
+                _whitelistDenied = false;
+                _discordInvite = null;
+            }
+        }
+
+        private void ApplyFailPageVisibility()
+        {
+            WhitelistDenied.Visible = _whitelistDenied;
+            ConnectFail.Visible = !_whitelistDenied;
+            WhitelistDiscordButton.Disabled = false;
+            WhitelistDiscordButton.ToolTip = _discordInvite ?? DiscordInviteFallback;
         }
 
         private void ConnectionStateChanged(ClientConnectionState state)

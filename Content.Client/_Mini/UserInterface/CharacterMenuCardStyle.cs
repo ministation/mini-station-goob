@@ -19,14 +19,14 @@ public static class CharacterMenuCardStyle
     public const float BodyLineHeight = 16f;
     public const float IconSize = 20f;
 
-    public static readonly Color AccentColor = Color.FromHex("#9a8fb5");
+    public static readonly Color AccentColor = Color.FromHex("#8B00FF");
     public static readonly Color ClaimReadyColor = Color.FromHex("#6b9e7a");
-    public static readonly Color CardBackgroundColor = Color.FromHex("#201e28");
+    public static readonly Color CardBackgroundColor = Color.FromHex("#1A1224");
     public static readonly Color TitleTextColor = Color.White;
-    public static readonly Color BodyTextColor = Color.FromHex("#c5d3ed");
-    public static readonly Color BriefingTextColor = Color.FromHex("#f0d878");
-    public static readonly Color ObjectiveBorderColor = Color.FromHex("#455674");
-    public static readonly Color ProgressTextColor = Color.FromHex("#d7e2f4");
+    public static readonly Color BodyTextColor = Color.FromHex("#D4C4F0");
+    public static readonly Color BriefingTextColor = Color.FromHex("#E9D5FF");
+    public static readonly Color ObjectiveBorderColor = Color.FromHex("#5B3A7A");
+    public static readonly Color ProgressTextColor = Color.FromHex("#E9D5FF");
 
     public static StyleBoxFlat CreateObjectivePanelStyle(bool complete) => new()
     {

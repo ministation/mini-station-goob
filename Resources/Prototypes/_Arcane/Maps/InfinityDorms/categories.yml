@@ -1,0 +1,19 @@
+﻿# SPDX-License-Identifier: MIT
+
+- type: infinityDormCategory
+  id: General
+  color: "#7c4f1caa"
+  name: Классика
+  priority: 2
+
+- type: infinityDormCategory
+  id: Unusual
+  color: "#801e37aa"
+  name: Необычные
+  priority: 1
+
+- type: infinityDormCategory
+  id: Exotic
+  color: "#1c772caa"
+  name: Экзотические
+  priority: 0

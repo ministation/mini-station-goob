@@ -1,0 +1,87 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+               xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+               xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
+               xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+               Title="{Loc erp-panel-title}"
+               Resizable="False"
+               SetSize="400 600">
+
+    <PanelContainer HorizontalExpand="True" VerticalExpand="True">
+        <PanelContainer.PanelOverride>
+            <gfx:StyleBoxFlat BackgroundColor="#8B00FF" />
+        </PanelContainer.PanelOverride>
+    </PanelContainer>
+
+    <PanelContainer Margin="3">
+        <PanelContainer.PanelOverride>
+            <gfx:StyleBoxFlat BackgroundColor="#1A1224" />
+        </PanelContainer.PanelOverride>
+
+        <BoxContainer Orientation="Vertical">
+            <BoxContainer Orientation="Vertical">
+                <RichTextLabel Name="HeaderLabel" Margin="0 10 0 5" HorizontalAlignment="Center" />
+                <ProgressBar Name="ArousalProgressBar" MaxHeight="32" Margin="10 5" MinValue="0" Value="0" MaxValue="1">
+                    <ProgressBar.ForegroundStyleBoxOverride>
+                        <gfx:StyleBoxFlat BackgroundColor="#8B00FF"
+                            BorderThickness="2"
+                            BorderColor="#C084FC"/>
+                    </ProgressBar.ForegroundStyleBoxOverride>
+                    <TextureRect TexturePath="/Textures/_Arcane/Interface/heartIcon.png"
+                                Stretch="KeepAspectCentered"
+                                HorizontalAlignment="Right"
+                                TextureScale="2 2"/>
+                </ProgressBar>
+
+                <BoxContainer Orientation="Vertical" Margin="0 10 0 0">
+                    <BoxContainer Orientation="Horizontal" Margin="0 5" HorizontalAlignment="Center">
+                        <Button Name="CustomArousalButton"
+                                StyleClasses="OpenBoth"
+                                Text="{Loc erp-panel-custom-arousal-button}"
+                                ToolTip="{Loc erp-panel-custom-arousal-button-tooltip}"
+                                SetHeight="30"
+                                SetWidth="175"
+                                Margin="10 0">
+                            <Button.StyleBoxOverride>
+                                <gfx:StyleBoxFlat BackgroundColor="#5A3782" BorderColor="#C084FC" BorderThickness="2"/>
+                            </Button.StyleBoxOverride>
+                        </Button>
+                        <Button Name="CustomMoaningButton"
+                                StyleClasses="OpenBoth"
+                                Text="{Loc erp-panel-custom-moaning-button}"
+                                ToolTip="{Loc erp-panel-custom-moaning-button-tooltip}"
+                                SetHeight="30"
+                                SetWidth="175"
+                                Margin="10 0">
+                            <Button.StyleBoxOverride>
+                                <gfx:StyleBoxFlat BackgroundColor="#5A3782" BorderColor="#C084FC" BorderThickness="2"/>
+                            </Button.StyleBoxOverride>
+                        </Button>
+                    </BoxContainer>
+                    <BoxContainer Orientation="Horizontal" Margin="0 5">
+                        <Slider Name="ArousalSlider" HorizontalExpand="True" MinValue="0" MaxValue="300" Value="100" Margin="10 0" Visible="False">
+                            <RichTextLabel Name="ArousalLabel" Text="100%" HorizontalAlignment="Right" Margin="0 0 10 0"/>
+                        </Slider>
+                        <Slider Name="MoaningSlider" HorizontalExpand="True" MinValue="0" MaxValue="300" Value="100" Margin="10 0" Visible="False">
+                            <RichTextLabel Name="MoaningLabel" Text="100%" HorizontalAlignment="Right" Margin="0 0 10 0"/>
+                        </Slider>
+                    </BoxContainer>
+                </BoxContainer>
+            </BoxContainer>
+
+            <BoxContainer Orientation="Horizontal" Margin="5">
+                <TextureRect TexturePath="/Textures/Interface/VerbIcons/examine.svg.192dpi.png"
+                                Stretch="KeepAspectCentered"
+                                HorizontalAlignment="Left"
+                                TextureScale="0.5 0.5"/>
+                <LineEdit Name="SearchInput" VerticalExpand="True" HorizontalExpand="True" MaxHeight="26" Margin="0 0 5 0" />
+            </BoxContainer>
+
+            <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                <BoxContainer Name="ButtonsContainer" Orientation="Vertical" Margin="3">
+
+                </BoxContainer>
+            </ScrollContainer>
+        </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>
+

@@ -295,8 +295,8 @@
     selectionTime: IntraPlayerSpawn
     definitions:
     - prefRoles: [ Traitor ]
-      max: 8
-      playerRatio: 10
+      max: 5 # Oasis: fewer traitors
+      playerRatio: 18 # Oasis: was 10
       chaosScore: 150 # Goobstation
       skills: # CorvaxGoob-Skills
       - All
@@ -321,8 +321,8 @@
     selectionTime: IntraPlayerSpawn # Goobstation
     definitions:
     - prefRoles: [ HeadRev ]
-      max: 3
-      playerRatio: 15
+      max: 2 # Oasis: was 3
+      playerRatio: 22 # Oasis: was 15
       skills: # CorvaxGoob-Skills
       - All
       blacklist:
@@ -428,8 +428,8 @@
     selectionTime: IntraPlayerSpawn
     definitions:
     - prefRoles: [ InitialInfected ]
-      max: 4 # Goobstation
-      playerRatio: 15 # Goobstation
+      max: 3 # Oasis: was 4
+      playerRatio: 22 # Oasis: was 15
       jobBlacklist: [ Chaplain ] # Goobstation
       skills: # CorvaxGoob-Skills
       - All

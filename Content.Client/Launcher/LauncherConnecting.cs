@@ -91,9 +91,11 @@ namespace Content.Client.Launcher
                 // Result deliberately discarded.
                 Redial();
             }
+
+            // Fire structured reason first so the GUI can detect whitelist gate before page swap.
+            ConnectFailed?.Invoke(args);
             ConnectFailReason = args.Reason;
             CurrentPage = Page.ConnectFailed;
-            ConnectFailed?.Invoke(args);
         }
 
         private void OnConnectStateChanged(ClientConnectionState state)

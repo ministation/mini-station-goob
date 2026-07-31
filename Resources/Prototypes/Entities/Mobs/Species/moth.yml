@@ -61,6 +61,7 @@
     sounds:
       Male: MaleMoth
       Female: FemaleMoth
+      Futanari: FemaleMoth
       Unsexed: UnisexMoth
   - type: MovementSpeedModifier
     baseWeightlessAcceleration: 3 # Goobstation value

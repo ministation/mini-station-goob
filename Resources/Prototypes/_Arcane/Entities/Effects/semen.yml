@@ -1,0 +1,7 @@
+- type: entity
+  id: PuddleSemen
+  parent: PuddleSemenBase
+
+- type: entity
+  id: PuddleFemCum
+  parent: PuddleFemCumBase

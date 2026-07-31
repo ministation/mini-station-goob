@@ -162,6 +162,17 @@ namespace Content.Server.Connection
                 if (reason == ConnectionDenyReason.Full)
                     properties["delay"] = _cfg.GetCVar(CCVars.GameServerFullReconnectDelay);
 
+                // Oasis / closed beta: structured gate so the client can show a branded deny panel.
+                if (reason == ConnectionDenyReason.Whitelist)
+                {
+                    properties["gate"] = "whitelist";
+                    var discord = _cfg.GetCVar(CCVars.WhitelistDenyDiscord);
+                    if (string.IsNullOrWhiteSpace(discord))
+                        discord = _cfg.GetCVar(CCVars.InfoLinksDiscord);
+                    if (!string.IsNullOrWhiteSpace(discord))
+                        properties["discord"] = discord;
+                }
+
                 e.Deny(new NetDenyReason(msg, properties));
             }
             else

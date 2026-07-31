@@ -247,7 +247,7 @@ public sealed class MiniCCVars
         CVarDef.Create("role_unlock.early_purchase_enabled", false, CVar.SERVER | CVar.REPLICATED);
 
     public static readonly CVarDef<string> ServerName =
-        CVarDef.Create("lobby.server_name", "Mini Station", CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("lobby.server_name", "Oasis", CVar.SERVER | CVar.REPLICATED);
 
     /*
      * Planet Prison

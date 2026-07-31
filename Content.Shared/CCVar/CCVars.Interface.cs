@@ -33,14 +33,15 @@ public sealed partial class CCVars
     /// <summary>
     /// Interface accent red channel (0-255) for glass styling.
     /// </summary>
+    // Oasis: default purple accent (#8B00FF)
     public static readonly CVarDef<int> InterfaceAccentRed =
-        CVarDef.Create("ui.interface_accent_red", 127, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("ui.interface_accent_red", 139, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Interface accent green channel (0-255) for glass styling.
     /// </summary>
     public static readonly CVarDef<int> InterfaceAccentGreen =
-        CVarDef.Create("ui.interface_accent_green", 183, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("ui.interface_accent_green", 0, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Interface accent blue channel (0-255) for glass styling.

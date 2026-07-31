@@ -226,6 +226,7 @@
     sounds:
       Male: MaleHuman
       Female: FemaleHuman
+      Futanari: FemaleHuman
       Unsexed: MaleHuman
   - type: LanguageKnowledge # Einstein Engines - Languages (all mobs should speak TauCeti unless otherwise specified, to prevent universal.)
     speaks:
@@ -270,6 +271,8 @@
   - type: MindControllable # Goobstation
   - type: VisibleContraband # Goobstation
   - type: MomentumSteering # Goobstation - No steer
+  # Oasis / Arcane ERP
+  - type: ErpPanelOwner
 
 - type: entity
   save: false
@@ -304,6 +307,24 @@
   - type: Fingerprint
   - type: DnaModifier # Mini: Paradise/Wega genetics (organic species only)
   - type: Blindable
+  # Oasis / Arcane ERP organs
+  - type: EroticOrgans
+    groinCommon:
+    - proto: OrganAnus
+      slot: anus
+    groinMale:
+    - proto: OrganPenis
+      slot: penis
+    - proto: OrganTesticles
+      slot: testicles
+    groinFemale:
+    - proto: OrganVagina
+      slot: vagina
+    - proto: OrganUterus
+      slot: uterus
+    chestFemale:
+    - proto: OrganBreasts
+      slot: breasts
   # Other
   - type: Temperature
     currentTemperature: 310.15

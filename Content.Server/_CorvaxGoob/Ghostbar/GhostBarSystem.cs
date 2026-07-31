@@ -25,7 +25,7 @@ namespace Content.Server._CorvaxGoob.Ghostbar;
 
 public sealed class GhostBarSystem : EntitySystem
 {
-    private const bool GhostBarEnabled = false; // Mini: ghost bar disabled
+    private const bool GhostBarEnabled = true;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly MapLoaderSystem _mapLoader = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -44,7 +44,7 @@ public sealed class GhostBarSystem : EntitySystem
 
     public override void Initialize()
     {
-        // SubscribeLocalEvent<RoundStartingEvent>(OnRoundStart);
+        SubscribeLocalEvent<RoundStartingEvent>(OnRoundStart);
         SubscribeNetworkEvent<GhostBarSpawnEvent>(SpawnPlayer);
 
         SubscribeLocalEvent<GhostBarPlayerComponent, OpenGhostRolesListActionEvent>(OnActionOpenGhostRoles);

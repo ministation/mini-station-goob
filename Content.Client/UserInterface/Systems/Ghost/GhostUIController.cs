@@ -4,7 +4,6 @@ using Content.Client.Ghost;
 using Content.Client._Mini.TypanWar;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Client.UserInterface.Systems.Ghost.Widgets;
-using Content.Goobstation.Shared.MisandryBox.Thunderdome;
 using Content.Shared._Mini.TypanWar;
 using Content.Shared.Ghost;
 using Robust.Client.UserInterface;
@@ -29,10 +28,6 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
         gameplayStateLoad.OnScreenLoad += OnScreenLoad;
         gameplayStateLoad.OnScreenUnload += OnScreenUnload;
-
-        // Goobstation - Thunderdome
-        _entManager.EventBus.SubscribeEvent<ThunderdomePlayerCountEvent>
-            (EventSource.Network, this, OnThunderdomePlayerCount);
     }
 
     private void OnScreenLoad()
@@ -134,7 +129,7 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         Gui.ReturnToBodyPressed += ReturnToBody;
         Gui.ReturnToRoundPressed += ReturnToRound; // FREAKY EDIT / Mini
         Gui.GhostRolesPressed += GhostRolesPressed;
-        Gui.ThunderdomePressed += ThunderdomePressed; // Goobstation - Thunderdome
+        Gui.GhostBarPressed += GhostBarPressed;
         Gui.TargetWindow.WarpClicked += OnWarpClicked;
 
         UpdateGui();
@@ -149,7 +144,7 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         Gui.ReturnToBodyPressed -= ReturnToBody;
         Gui.ReturnToRoundPressed -= ReturnToRound; // FREAKY EDIT / Mini
         Gui.GhostRolesPressed -= GhostRolesPressed;
-        Gui.ThunderdomePressed -= ThunderdomePressed; // Goobstation - Thunderdome
+        Gui.GhostBarPressed -= GhostBarPressed;
         Gui.TargetWindow.WarpClicked -= OnWarpClicked;
 
         Gui.Hide();
@@ -177,14 +172,8 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         _system?.OpenGhostRoles();
     }
 
-    // Goobstation - Thunderdome
-    private void ThunderdomePressed()
+    private void GhostBarPressed()
     {
-        _net.SendSystemNetworkMessage(new ThunderdomeJoinRequestEvent());
-    }
-
-    private void OnThunderdomePlayerCount(ThunderdomePlayerCountEvent ev)
-    {
-        Gui?.UpdateThunderdome(ev.Count);
+        _system?.GhostBarSpawn();
     }
 }

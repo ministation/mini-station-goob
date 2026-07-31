@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
          xmlns:parallax="clr-namespace:Content.Client.Parallax"
          xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls">
     <parallax:ParallaxControl SpeedX="20"/>
-    <Control HorizontalAlignment="Center" VerticalAlignment="Center" MinSize="400 280">
+    <Control HorizontalAlignment="Center" VerticalAlignment="Center" MinSize="440 320">
         <PanelContainer StyleClasses="BackgroundPanel" />
-        <BoxContainer Orientation="Vertical" MinSize="400 280">
+        <BoxContainer Orientation="Vertical" MinSize="440 320">
             <!-- FancyWindow-style header with Mini accent rail -->
             <Control>
                 <PanelContainer StyleClasses="WindowHeadingBackground" />
@@ -54,6 +54,38 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                     StyleClasses="OpenRight"
                                     MinWidth="120"/>
                             <Button Name="CopyButton"
+                                    Text="{Loc 'connecting-copy'}"
+                                    HorizontalAlignment="Center"
+                                    StyleClasses="OpenLeft"
+                                    MinWidth="140"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                    <!-- Oasis closed-beta / whitelist deny panel -->
+                    <BoxContainer Orientation="Vertical" Name="WhitelistDenied" Visible="False" SeparationOverride="10">
+                        <Label Text="{Loc 'connecting-whitelist-title'}"
+                               StyleClasses="LabelHeadingBigger"
+                               Align="Center" />
+                        <PanelContainer StyleClasses="AngleRect">
+                            <BoxContainer Orientation="Vertical" Margin="12 10" SeparationOverride="6">
+                                <RichTextLabel Name="WhitelistBody" />
+                                <Label Name="WhitelistHint"
+                                       StyleClasses="LabelSubText"
+                                       Align="Center"
+                                       Text="{Loc 'connecting-whitelist-hint'}" />
+                            </BoxContainer>
+                        </PanelContainer>
+                        <BoxContainer Orientation="Horizontal" Align="Center" SeparationOverride="0">
+                            <Button Name="WhitelistDiscordButton"
+                                    Text="{Loc 'connecting-whitelist-discord'}"
+                                    HorizontalAlignment="Center"
+                                    StyleClasses="OpenRight"
+                                    MinWidth="140"/>
+                            <Button Name="WhitelistRetryButton"
+                                    Text="{Loc 'connecting-retry'}"
+                                    HorizontalAlignment="Center"
+                                    StyleClasses="OpenBoth"
+                                    MinWidth="120"/>
+                            <Button Name="WhitelistCopyButton"
                                     Text="{Loc 'connecting-copy'}"
                                     HorizontalAlignment="Center"
                                     StyleClasses="OpenLeft"

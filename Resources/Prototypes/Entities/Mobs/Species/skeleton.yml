@@ -58,6 +58,7 @@
     sounds:
       Male: Skeleton
       Female: Skeleton
+      Futanari: Skeleton
       Unsexed: Skeleton
   - type: LanguageKnowledge # Einstein Engines - Language
     speaks:

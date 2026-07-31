@@ -1,0 +1,85 @@
+# SPDX-License-Identifier: MIT
+
+# Map compat entities used by Infinity Dorms hotel.yml
+
+- type: entity
+  parent: BedsheetHOS
+  id: DoubleBedsheetHOS
+  name: HOS's double bedsheet
+  description: Decorated with a shield emblem. While crime doesn't sleep, you do, but you are still THE LAW!
+  components:
+  - type: Sprite
+    sprite: _Orion/Objects/Misc/bedsheets_double.rsi
+    state: double_sheethos
+    noRot: true
+
+- type: entity
+  parent: BedsheetBrown
+  id: DoubleBedsheetBrown
+  name: brown double bedsheet
+  components:
+  - type: Sprite
+    sprite: _Orion/Objects/Misc/bedsheets_double.rsi
+    state: double_sheetbrown
+    noRot: true
+
+- type: entity
+  parent: BedsheetCosmos
+  id: DoubleBedsheetCosmos
+  name: cosmos double bedsheet
+  components:
+  - type: Sprite
+    sprite: _Orion/Objects/Misc/bedsheets_double.rsi
+    state: double_sheetcosmos
+    noRot: true
+
+- type: entity
+  parent: Mannequin
+  id: MannequinMan
+  name: mannequin man
+  components:
+  - type: Sprite
+    sprite: _Orion/Structures/Decoration/mannequin.rsi
+    state: mannequin
+    layers:
+    - map: [ "mannequin" ]
+      sprite: _Orion/Structures/Decoration/mannequin.rsi
+      state: mannequin
+
+- type: entity
+  parent: Mannequin
+  id: MannequinWoman
+  name: mannequin woman
+  components:
+  - type: Sprite
+    sprite: _Orion/Structures/Decoration/mannequin.rsi
+    state: mannequin_woman
+    layers:
+    - map: [ "mannequin" ]
+      sprite: _Orion/Structures/Decoration/mannequin.rsi
+      state: mannequin_woman
+
+- type: entity
+  parent: BasePowerCell
+  id: PowerCellBluespaceReactor
+  name: bluespace reactor power cell
+  description: Self charging transdimensional power cell, houses a miniature reactor within its bluespace power pocket.
+  suffix: Full
+  components:
+  - type: Sprite
+    sprite: _Orion/Objects/Power/power_cells.rsi
+    layers:
+    - map: [ "enum.PowerCellVisualLayers.Base" ]
+      state: bluespace_reactor
+    - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
+      state: o2
+      shader: unshaded
+  - type: Battery
+    maxCharge: 1400
+    startingCharge: 1400
+  - type: BatterySelfRecharger
+    autoRechargeRate: 15
+    autoRechargePauseTime: 1
+  - type: BatteryAmmoProvider
+    proto: HeavyRedLaser
+    fireCost: 200

@@ -1,0 +1,62 @@
+﻿# Arcane rules
+- type: guideEntry
+  id: ArcaneRuleset
+  name: guide-entry-arcane-server-rules
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/Ruleset.xml"
+  ruleEntry: true
+  children:
+  - ArcaneRule0
+  - ArcaneRule1
+  - ArcaneRule2
+  - ArcaneRule3
+  - ArcaneRule4
+  - ArcaneRule5
+  - ArcaneRule6
+  - ArcaneRule7
+  - ArcaneRuleX
+
+- type: guideEntry
+  id: ArcaneRule0
+  name: guide-entry-arcane-server-rules-rule-0
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/Rule0.xml"
+
+- type: guideEntry
+  id: ArcaneRule1
+  name: guide-entry-arcane-server-rules-rule-1
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/Rule1.xml"
+
+- type: guideEntry
+  id: ArcaneRule2
+  name: guide-entry-arcane-server-rules-rule-2
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/Rule2.xml"
+
+- type: guideEntry
+  id: ArcaneRule3
+  name: guide-entry-arcane-server-rules-rule-3
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/Rule3.xml"
+
+- type: guideEntry
+  id: ArcaneRule4
+  name: guide-entry-arcane-server-rules-rule-4
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/Rule4.xml"
+
+- type: guideEntry
+  id: ArcaneRule5
+  name: guide-entry-arcane-server-rules-rule-5
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/Rule5.xml"
+
+- type: guideEntry
+  id: ArcaneRule6
+  name: guide-entry-arcane-server-rules-rule-6
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/Rule6.xml"
+
+- type: guideEntry
+  id: ArcaneRule7
+  name: guide-entry-arcane-server-rules-rule-7
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/Rule7.xml"
+
+- type: guideEntry
+  id: ArcaneRuleX
+  name: guide-entry-arcane-server-rules-rule-x
+  text: "/ServerInfo/_Arcane/Guidebook/ServerRules/RuleX.xml"
+

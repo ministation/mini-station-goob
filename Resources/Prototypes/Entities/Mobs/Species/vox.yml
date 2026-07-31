@@ -38,6 +38,7 @@
     sounds:
       Male: UnisexVox
       Female: UnisexVox
+      Futanari: UnisexVox
       Unsexed: UnisexVox
   - type: Butcherable # CorvaxGoob organ resprite
     butcheringType: Spike

@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Oasis — ERP sister project of Mini Station.
+# Load with: config.presets=_Mini/oasis
+# Pair with mini-network / mini-server-perf / mini-highpop as needed.
+#
+# Closed beta ops:
+# 1) Keep whitelist.enabled = true until open beta.
+# 2) After Discord application approval: whitelistadd <username or UserId>
+# 3) Revoke: whitelistremove <username or UserId>
+# 4) Kick leftovers: kicknonwhitelisted
+# 5) Admins bypass the whitelist automatically.
+# 6) Set infolinks.discord to the Oasis invite (shown on the deny UI).
+# Accent CVars (client): ui.interface_accent_red/green/blue already default to #8B00FF.
+
+[lobby]
+server_name = "Oasis"
+
+[game]
+hostname = "Оазис"
+
+[adminlogs]
+server_name = "Oasis"
+
+[whitelist]
+enabled = true
+deny_discord = "https://discord.gg/mini-station-oasis"
+
+[thunderdome]
+enabled = false
+
+[infolinks]
+discord = "https://discord.gg/mini-station-oasis"

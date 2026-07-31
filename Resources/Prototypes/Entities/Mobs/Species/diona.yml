@@ -98,6 +98,7 @@
     sounds:
       Male: UnisexDiona
       Female: UnisexDiona
+      Futanari: UnisexDiona
       Unsexed: UnisexDiona
   - type: TypingIndicator
     proto: diona

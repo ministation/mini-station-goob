@@ -8,7 +8,7 @@ using Robust.Client.UserInterface;
 namespace Content.Client._Mini.TypanWar;
 
 /// <summary>
-/// Hides ghost role / antag / Thunderdome controls during station war.
+/// Hides ghost role / antag / ghost bar controls during station war.
 /// </summary>
 public sealed class TypanWarGhostUiSystem : EntitySystem
 {

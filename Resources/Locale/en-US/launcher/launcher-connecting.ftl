@@ -13,7 +13,7 @@
 
 ### Connecting dialog when you start up the game
 
-connecting-title = Space Station 14
+connecting-title = Oasis
 connecting-exit = Exit
 connecting-retry = Retry
 connecting-reconnect = Reconnect
@@ -24,7 +24,7 @@ connecting-in-progress = Connecting to server...
 connecting-disconnected = Disconnected from server:
 connecting-tip = Don't die!
 connecting-window-tip = Tip { $numberTip }
-connecting-version = ver 0.1
+connecting-version = Oasis
 connecting-fail-reason = Failed to connect to server:
                          { $reason }
 connecting-state-NotConnecting = Not connecting
@@ -47,3 +47,8 @@ connecting-info-preset-unknown = Mode: unknown
 connecting-info-preset-unavailable = Mode: unavailable
 connecting-info-coins = Coins: { $balance }
 connecting-info-coins-unknown = Coins: after login
+
+connecting-whitelist-title = Closed enrollment
+connecting-whitelist-body = Oasis only accepts approved players. Fill out the application in Discord and wait for staff approval.
+connecting-whitelist-discord = Open Discord
+connecting-whitelist-hint = After approval, try connecting again.

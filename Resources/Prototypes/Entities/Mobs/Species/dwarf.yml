@@ -49,6 +49,7 @@
     sounds:
       Male: UnisexDwarf
       Female: FemaleDwarf
+      Futanari: FemaleDwarf
       Unsexed: UnisexDwarf
   - type: ReplacementAccent
     accent: dwarf

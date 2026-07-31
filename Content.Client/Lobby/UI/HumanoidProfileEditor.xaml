@@ -112,6 +112,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                     <Control HorizontalExpand="True"/>
                                     <OptionButton Name="SpawnPriorityButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
+                                <!-- ERP preference -->
+                                <BoxContainer HorizontalExpand="True">
+                                    <Label Text="{Loc 'humanoid-profile-editor-erp-preference-label'}" />
+                                    <Control HorizontalExpand="True"/>
+                                    <OptionButton Name="ErpPreferenceButton" HorizontalAlignment="Right" />
+                                </BoxContainer>
                                 <!-- CorvaxGoob-Revert : DB conflicts -->
                                 <!-- Height Slider --> <!-- begin Goobstation: port EE height/width sliders -->
                                 <!-- <BoxContainer HorizontalExpand="True">

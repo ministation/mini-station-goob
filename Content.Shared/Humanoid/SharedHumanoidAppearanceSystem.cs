@@ -57,6 +57,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     {
         {Sex.Male, "Eugene"},
         {Sex.Female, "Irina"},
+        {Sex.Futanari, "Irina"},
         {Sex.Unsexed, "Baya"},
     };
     // CorvaxGoob-TTS-End

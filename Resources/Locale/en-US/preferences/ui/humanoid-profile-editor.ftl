@@ -34,6 +34,7 @@ humanoid-profile-editor-clothing-show = Show
 humanoid-profile-editor-sex-label = Sex:
 humanoid-profile-editor-sex-male-text = Male
 humanoid-profile-editor-sex-female-text = Female
+humanoid-profile-editor-sex-futanari-text = Futanari
 humanoid-profile-editor-sex-unsexed-text = None
 humanoid-profile-editor-age-label = Age:
 humanoid-profile-editor-skin-color-label = Skin color:
@@ -50,6 +51,7 @@ humanoid-profile-editor-open-image-button = Open images
 humanoid-profile-editor-save-button = Save
 humanoid-profile-editor-reset-button = Reset
 humanoid-profile-editor-spawn-priority-label = Spawn priority:
+humanoid-profile-editor-erp-preference-label = ERP preference:
 humanoid-profile-editor-eyes-label = Eye color:
 humanoid-profile-editor-jobs-tab = Jobs
 humanoid-profile-editor-preference-unavailable-stay-in-lobby-button = Stay in lobby if preference unavailable.
@@ -65,6 +67,11 @@ humanoid-profile-editor-guidebook-button-tooltip = Click for more info
 humanoid-profile-editor-preference-spawn-priority-none = None
 humanoid-profile-editor-preference-spawn-priority-arrivals = Arrivals
 humanoid-profile-editor-preference-spawn-priority-cryosleep = Cryosleep
+
+# ERP preference
+humanoid-profile-editor-erp-preference-yes = Yes
+humanoid-profile-editor-erp-preference-ask = Ask
+humanoid-profile-editor-erp-preference-no = No
 
 humanoid-profile-editor-jobs-amount-in-department-tooltip = Jobs in the {$departmentName} department
 humanoid-profile-editor-department-jobs-label = {$departmentName} jobs

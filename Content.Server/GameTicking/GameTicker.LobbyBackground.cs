@@ -5,13 +5,12 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server.GameTicking;
 
-// Mini Station - alternating lobby backgrounds (Mars / space hole)
+// Oasis — atmospheric lobby backgrounds
 public sealed partial class GameTicker
 {
     private static readonly string[] MiniLobbyBackgroundPaths =
     [
-        "/Textures/_Mini/Lobby/mars.rsi",
-        "/Textures/_OS/Lobby/space-hole.rsi",
+        "/Textures/_OS/Lobby/evening_sun7.rsi",
     ];
 
     private int _lobbyBackgroundIndex;

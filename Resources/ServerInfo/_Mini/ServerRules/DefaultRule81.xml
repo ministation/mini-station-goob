@@ -2,10 +2,14 @@
   <ColorBox Color="#2A1A2866" OutlineColor="#C084FC33" OutlineThickness="1" Margin="2">
     <Box Orientation="Vertical">
       <Box Orientation="Horizontal" HorizontalAlignment="Center">
-        [color=#C084FC][head=2]8.1. Эротическое содержание[/head][/color]
+        [color=#C084FC][head=2]8.1. Согласие и статусы[/head][/color]
       </Box>
       <Box Orientation="Vertical" Margin="12">
-        Запрещено распространение рисунков, фанфиков и записей с развратным содержанием на бумаге в игре.
+        Играть на Оазисе можно только с 18 лет. Персонажи в ERP тоже должны восприниматься как совершеннолетние.
+
+        Согласие можно отозвать в любой момент (IC, LOOC или OOC). После отзыва все ERP-действия немедленно прекращаются.
+
+        Нельзя «продавливать» ERP, игнорировать Ask/No, использовать ERP как способ грифа или давления. При споре обращайтесь в АХелп.
       </Box>
     </Box>
   </ColorBox>

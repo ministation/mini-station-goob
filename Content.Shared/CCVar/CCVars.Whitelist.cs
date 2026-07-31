@@ -18,4 +18,11 @@ public sealed partial class CCVars
     /// </summary>
     public static readonly CVarDef<string> WhitelistPrototypeList =
         CVarDef.Create("whitelist.prototype_list", "basicWhitelist", CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Discord invite shown on the connecting deny panel when a player is not whitelisted.
+    ///     Falls back to <see cref="InfoLinksDiscord"/> when empty.
+    /// </summary>
+    public static readonly CVarDef<string> WhitelistDenyDiscord =
+        CVarDef.Create("whitelist.deny_discord", "", CVar.SERVERONLY);
 }

@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Taken from SPLURT-Station/S.P.L.U.R.T-Station-13, modular_splurt/icons/effects/cumoverlay.dmi. Assets are CC-BY-SA-3.0 unless otherwise indicated by the source repository README.",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "cum_normal",
+            "directions": 4
+        },
+        {
+            "name": "cum_large",
+            "directions": 4
+        },
+        {
+            "name": "cum_obj"
+        }
+    ]
+}

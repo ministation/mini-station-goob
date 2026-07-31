@@ -1,6 +1,6 @@
 ### Connecting dialog when you start up the game
 
-connecting-title = Мини-станция
+connecting-title = Оазис
 connecting-exit = Выйти
 connecting-retry = Повторить
 connecting-reconnect = Переподключиться
@@ -11,7 +11,7 @@ connecting-in-progress = Подключение к серверу...
 connecting-disconnected = Отключены от сервера:
 connecting-tip = Не умирай!
 connecting-window-tip = Совет { $numberTip }
-connecting-version = Mini
+connecting-version = Oasis
 connecting-fail-reason =
     Не удалось подключиться:
     { $reason }
@@ -35,3 +35,8 @@ connecting-info-preset-unknown = Режим: неизвестен
 connecting-info-preset-unavailable = Режим: недоступен
 connecting-info-coins = Монетки: { $balance }
 connecting-info-coins-unknown = Монетки: после входа
+
+connecting-whitelist-title = Закрытый набор
+connecting-whitelist-body = Оазис принимает только одобренных игроков. Заполните анкету в Discord и дождитесь решения администрации.
+connecting-whitelist-discord = Открыть Discord
+connecting-whitelist-hint = После одобрения попробуйте подключиться снова.

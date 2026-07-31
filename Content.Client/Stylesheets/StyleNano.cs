@@ -235,12 +235,13 @@ namespace Content.Client.Stylesheets
         public static readonly Color DangerousRedFore = Color.FromHex("#BB3232");
         public static readonly Color DisabledFore = Color.FromHex("#5A5A5A");
 
-        public static readonly Color ButtonColorDefault = Color.FromHex("#464966");
+        // Oasis: purple button palette (#8B00FF family)
+        public static readonly Color ButtonColorDefault = Color.FromHex("#5B3A7A");
         public static readonly Color ButtonColorDefaultRed = Color.FromHex("#D43B3B");
-        public static readonly Color ButtonColorHovered = Color.FromHex("#575b7f");
+        public static readonly Color ButtonColorHovered = Color.FromHex("#7B4F9A");
         public static readonly Color ButtonColorHoveredRed = Color.FromHex("#DF6B6B");
-        public static readonly Color ButtonColorPressed = Color.FromHex("#3e6c45");
-        public static readonly Color ButtonColorDisabled = Color.FromHex("#30313c");
+        public static readonly Color ButtonColorPressed = Color.FromHex("#4A2A6A");
+        public static readonly Color ButtonColorDisabled = Color.FromHex("#3A2A4A");
 
         public static readonly Color ButtonColorCautionDefault = Color.FromHex("#ab3232");
         public static readonly Color ButtonColorCautionHovered = Color.FromHex("#cf2f2f");
@@ -262,9 +263,9 @@ namespace Content.Client.Stylesheets
         public static readonly Color PointMagenta = Color.FromHex("#FF00FF");
 
         // Context menu button colors
-        public static readonly Color ButtonColorContext = Color.FromHex("#2d3341d9");
-        public static readonly Color ButtonColorContextHover = Color.FromHex("#3d4556");
-        public static readonly Color ButtonColorContextPressed = Color.FromHex("#404352");
+        public static readonly Color ButtonColorContext = Color.FromHex("#3A2A4Ad9");
+        public static readonly Color ButtonColorContextHover = Color.FromHex("#5B3A7A");
+        public static readonly Color ButtonColorContextPressed = Color.FromHex("#4A2A6A");
         public static readonly Color ButtonColorContextDisabled = Color.Black;
 
         // Examine button colors

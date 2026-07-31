@@ -138,6 +138,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Administration.Logs;
+using Content.Shared._Arcane.ERP;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Database;
@@ -396,6 +397,7 @@ namespace Content.Server.Database
 
             // CorvaxGoob-Revert : DB conflicts
             // var barkVoice = profile.BarkVoice ?? SharedHumanoidAppearanceSystem.DefaultBarkVoice; // Goob Station - Barks
+            var erpPreference = (ErpPreference) profile.ErpPreference;
 
             return new HumanoidCharacterProfile(
                 profile.CharacterName,
@@ -420,7 +422,8 @@ namespace Content.Server.Database
                 (PreferenceUnavailableMode) profile.PreferenceUnavailable,
                 antags.ToHashSet(),
                 traits.ToHashSet(),
-                loadouts
+                loadouts,
+                erpPreference
                 // barkVoice // Goob Station - Barks // CorvaxGoob-Revert : DB conflicts
             );
         }
@@ -450,6 +453,7 @@ namespace Content.Server.Database
             profile.EyeColor = appearance.EyeColor.ToHex();
             profile.SkinColor = appearance.SkinColor.ToHex();
             profile.SpawnPriority = (int) humanoid.SpawnPriority;
+            profile.ErpPreference = (int) humanoid.ErpPreference;
             profile.Markings = markings;
             profile.Slot = slot;
             profile.PreferenceUnavailable = (DbPreferenceUnavailableMode) humanoid.PreferenceUnavailable;

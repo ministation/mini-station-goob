@@ -1,0 +1,92 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Taken from SPLURT-Station/S.P.L.U.R.T-Station-13, icons/obj/genitals/effects.dmi. Assets are CC-BY-SA-3.0 unless otherwise indicated by the source repository README.",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "semen1"
+        },
+        {
+            "name": "semen2"
+        },
+        {
+            "name": "semen3"
+        },
+        {
+            "name": "semen4"
+        },
+        {
+            "name": "fem1"
+        },
+        {
+            "name": "fem2"
+        },
+        {
+            "name": "fem3"
+        },
+        {
+            "name": "fem4",
+            "directions": 4
+        },
+        {
+            "name": "milk1"
+        },
+        {
+            "name": "milk2"
+        },
+        {
+            "name": "milk3"
+        },
+        {
+            "name": "milk4",
+            "directions": 4
+        },
+        {
+            "name": "shoesemen",
+            "directions": 4
+        },
+        {
+            "name": "semenshoe1",
+            "directions": 4
+        },
+        {
+            "name": "semenshoe2",
+            "directions": 4
+        },
+        {
+            "name": "semenpaw1",
+            "directions": 4
+        },
+        {
+            "name": "semenpaw2",
+            "directions": 4
+        },
+        {
+            "name": "semenclaw1",
+            "directions": 4
+        },
+        {
+            "name": "semenclaw2",
+            "directions": 4
+        },
+        {
+            "name": "drip1"
+        },
+        {
+            "name": "drip2"
+        },
+        {
+            "name": "drip3"
+        },
+        {
+            "name": "drip4"
+        },
+        {
+            "name": "drip5"
+        }
+    ]
+}

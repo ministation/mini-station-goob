@@ -2,14 +2,19 @@
   <ColorBox Color="#2A1A2866" OutlineColor="#C084FC33" OutlineThickness="1" Margin="2">
     <Box Orientation="Vertical">
       <Box Orientation="Horizontal" HorizontalAlignment="Center">
-        [color=#C084FC][head=2]Правило 8. Эротический контент[/head][/color]
+        [color=#C084FC][head=2]Правило 8. Эротический контент (ERP)[/head][/color]
       </Box>
       <Box Orientation="Vertical" Margin="12">
-        ERP (Erotic Role Play): всё, что серьёзнее поцелуев и обнимашек, запрещено.
+        Оазис — ERP-friendly сервер. Эротический ролеплей разрешён только между совершеннолетними игроками при взаимном согласии.
 
-        - [textlink="8.1. Эротическое содержание" link="DefaultRule81"]
-        - [textlink="8.2. Высказывания" link="DefaultRule82"]
-        - [textlink="8.3. Граничные случаи" link="DefaultRule83"]
+        Обязательно выставляйте ERP-статус персонажа (Yes / Ask / No) и уважайте статусы других:
+        - [color=#86EFAC]Yes[/color] — открыт к ERP;
+        - [color=#FDE68A]Ask[/color] — спросите в LOOC/OOC перед началом;
+        - [color=#F87171]No[/color] — ERP запрещён, любые попытки — нарушение.
+
+        - [textlink="8.1. Согласие и статусы" link="DefaultRule81"]
+        - [textlink="8.2. Границы и публичность" link="DefaultRule82"]
+        - [textlink="8.3. Запрещённый контент" link="DefaultRule83"]
       </Box>
     </Box>
   </ColorBox>

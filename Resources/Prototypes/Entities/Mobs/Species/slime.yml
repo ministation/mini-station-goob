@@ -56,6 +56,7 @@
     sounds:
       Male: MaleSlime
       Female: FemaleSlime
+      Futanari: FemaleSlime
       Unsexed: MaleSlime
   - type: LanguageKnowledge # Einstein Engines - Languages
     speaks:

@@ -1,0 +1,101 @@
+- type: entity
+  id: EffectCumWall
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        hard: false
+  - type: Sprite
+    noRot: true
+    drawdepth: Effects
+    sprite: /Textures/_Arcane/Effects/cumoverlay.rsi
+    state: cum_obj
+  - type: Reactive
+    reactions:
+    - reagents: [ Water, SpaceCleaner, SoapReagent ]
+      methods: [ Touch ]
+      effects:
+      - !type:RemoveCumWallEffect
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  abstract: true
+  parent: PuddleTemporary
+  id: PuddleSemenBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    noRot: true
+    drawdepth: Puddles
+    color: white
+    sprite: /Textures/_Arcane/Effects/genitals_effects.rsi
+    layers:
+    - state: semen1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        semen1: ""
+        semen2: ""
+        semen3: ""
+        semen4: ""
+  - type: IconSmooth
+    key: semen_puddles
+    mode: NoSprite
+  - type: SolutionContainerManager
+    solutions:
+      puddle:
+        maxVol: 1000
+        reagents:
+        - ReagentId: Semen
+          Quantity: 10
+  - type: Tag
+    tags:
+    - HideContextMenu
+    - DNASolutionScannable
+
+- type: entity
+  abstract: true
+  parent: PuddleTemporary
+  id: PuddleFemCumBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    noRot: true
+    drawdepth: Puddles
+    color: white
+    sprite: /Textures/_Arcane/Effects/genitals_effects.rsi
+    layers:
+    - state: fem1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        fem1: ""
+        fem2: ""
+        fem3: ""
+        fem4: ""
+  - type: IconSmooth
+    key: femcum_puddles
+    mode: NoSprite
+  - type: SolutionContainerManager
+    solutions:
+      puddle:
+        maxVol: 1000
+        reagents:
+        - ReagentId: FemCum
+          Quantity: 10
+  - type: Tag
+    tags:
+    - HideContextMenu
+    - DNASolutionScannable

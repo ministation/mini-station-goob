@@ -53,6 +53,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Content.Shared.CCVar;
 using Content.Shared._CorvaxGoob.TTS;
+using Content.Shared._Arcane.ERP;
 using Content.Shared.Dataset;
 using Content.Shared.GameTicking;
 using Content.Shared.Humanoid;
@@ -147,6 +148,9 @@ namespace Content.Shared.Preferences
         [DataField]
         public Gender Gender { get; private set; } = Gender.Male;
 
+        [DataField]
+        public ErpPreference ErpPreference { get; set; } = ErpPreference.Ask;
+
         /// <summary>
         /// <see cref="Appearance"/>
         /// </summary>
@@ -199,7 +203,8 @@ namespace Content.Shared.Preferences
             PreferenceUnavailableMode preferenceUnavailable,
             HashSet<ProtoId<AntagPrototype>> antagPreferences,
             HashSet<ProtoId<TraitPrototype>> traitPreferences,
-            Dictionary<string, RoleLoadout> loadouts)
+            Dictionary<string, RoleLoadout> loadouts,
+            ErpPreference erpPreference = ErpPreference.Ask)
             // ProtoId<BarkPrototype> barkVoice) // Goob Station - Barks // CorvaxGoob-Revert : DB conflicts
         {
             Name = name;
@@ -216,6 +221,7 @@ namespace Content.Shared.Preferences
             _antagPreferences = antagPreferences;
             _traitPreferences = traitPreferences;
             _loadouts = loadouts;
+            ErpPreference = erpPreference;
             // BarkVoice = barkVoice; // Goob Station - Barks // CorvaxGoob-Revert : DB conflicts
 
             var hasHighPrority = false;
@@ -248,7 +254,8 @@ namespace Content.Shared.Preferences
                 other.PreferenceUnavailable,
                 new HashSet<ProtoId<AntagPrototype>>(other.AntagPreferences),
                 new HashSet<ProtoId<TraitPrototype>>(other.TraitPreferences),
-                new Dictionary<string, RoleLoadout>(other.Loadouts))
+                new Dictionary<string, RoleLoadout>(other.Loadouts),
+                other.ErpPreference)
                 // other.BarkVoice) // Goob Station - Barks // CorvaxGoob-Revert : DB conflicts
         {
         }
@@ -400,6 +407,11 @@ namespace Content.Shared.Preferences
         public HumanoidCharacterProfile WithSpawnPriorityPreference(SpawnPriorityPreference spawnPriority)
         {
             return new(this) { SpawnPriority = spawnPriority };
+        }
+
+        public HumanoidCharacterProfile WithErpPreference(ErpPreference preference)
+        {
+            return new(this) { ErpPreference = preference };
         }
 
         // CorvaxGoob-Revert : DB conflicts
@@ -574,6 +586,7 @@ namespace Content.Shared.Preferences
             if (TTSVoice != other.TTSVoice) return false; // CorvaxGoob-TTS
             if (Gender != other.Gender) return false;
             if (Species != other.Species) return false;
+            if (ErpPreference != other.ErpPreference) return false;
             // if (Height != other.Height) return false; // Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
             // if (Width != other.Width) return false; // Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
             // if (BarkVoice != other.BarkVoice) return false; // Goob Station - Barks // CorvaxGoob-Clearing
@@ -610,6 +623,7 @@ namespace Content.Shared.Preferences
             {
                 Sex.Male => Sex.Male,
                 Sex.Female => Sex.Female,
+                Sex.Futanari => Sex.Futanari,
                 Sex.Unsexed => Sex.Unsexed,
                 _ => Sex.Male // Invalid enum values.
             };
@@ -688,6 +702,14 @@ namespace Content.Shared.Preferences
                 _ => SpawnPriorityPreference.None // Invalid enum values.
             };
 
+            var erpPreference = ErpPreference switch
+            {
+                ErpPreference.Yes => ErpPreference.Yes,
+                ErpPreference.Ask => ErpPreference.Ask,
+                ErpPreference.No => ErpPreference.No,
+                _ => ErpPreference.Ask // Invalid enum values.
+            };
+
             var priorities = new Dictionary<ProtoId<JobPrototype>, JobPriority>(JobPriorities
                 .Where(p => prototypeManager.TryIndex<JobPrototype>(p.Key, out var job) && job.SetPreference && p.Value switch
                 {
@@ -726,6 +748,7 @@ namespace Content.Shared.Preferences
             Gender = gender;
             Appearance = appearance;
             SpawnPriority = spawnPriority;
+            ErpPreference = erpPreference;
 
             _jobPriorities.Clear();
 
@@ -818,7 +841,10 @@ namespace Content.Shared.Preferences
         // SHOULD BE NOT PUBLIC, BUT....
         public static bool CanHaveVoice(TTSVoicePrototype voice, Sex sex)
         {
-            return voice.RoundStart && sex == Sex.Unsexed || (voice.Sex == sex || voice.Sex == Sex.Unsexed);
+            return voice.RoundStart && (sex == Sex.Unsexed
+                || voice.Sex == sex
+                || voice.Sex == Sex.Female && sex == Sex.Futanari
+                || voice.Sex == Sex.Unsexed);
         }
         // CorvaxGoob-TTS-End
         public ICharacterProfile Validated(ICommonSession session, IDependencyCollection collection, string[] sponsorPrototypes)
@@ -868,6 +894,7 @@ namespace Content.Shared.Preferences
             // hashCode.Add(BarkVoice); // Goob Station - Barks // CorvaxGoob-Revert : DB conflicts
             hashCode.Add((int) SpawnPriority);
             hashCode.Add((int) PreferenceUnavailable);
+            hashCode.Add((int) ErpPreference);
             return hashCode.ToHashCode();
         }
 
