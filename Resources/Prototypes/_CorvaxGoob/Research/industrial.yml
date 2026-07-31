@@ -1,12 +1,20 @@
-﻿- type: technology
+﻿# CorvaxGoob nuclear reactor tech — adapted to Mini Orion techweb (Engineering + pointCosts).
+# Parent stock Industrial / cost / PowerGeneration no longer exist on Mini.
+
+- type: technology
   id: NuclearPowerGeneration
   name: research-technology-nuclear-power
+  description: research-technology-nuclear-power
   icon:
     sprite: _CorvaxGoob/Structures/Power/Generation/FissionGenerator/reactor_parts.rsi
     state: default_rod
-  discipline: Industrial
-  tier: 1
-  cost: 7500
+  discipline: Engineering
+  tier: 2
+  announceChannels:
+  - Engineering
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - NuclearReactorMonitorComputerCircuitboard
   - GasTurbineMonitorComputerCircuitboard
@@ -26,18 +34,23 @@
   - BrassGasTurbineBlade
   - SilverGasTurbineStator
   technologyPrerequisites:
-  - PowerGeneration
-  position: -1, -2
+  - EnergyManipulation
+  position: 5,4
 
 - type: technology
   id: NuclearPowerRecycling
   name: research-technology-nuclear-recycling
+  description: research-technology-nuclear-recycling
   icon:
     sprite: _CorvaxGoob/Structures/Power/Generation/FissionGenerator/reactor_parts.rsi
     state: nuclear_waste
-  discipline: Industrial
+  discipline: Engineering
   tier: 2
-  cost: 7500
+  announceChannels:
+  - Engineering
+  pointCosts:
+  - type: General
+    amount: 7500
   recipeUnlocks:
   - NuclearCentrifugeMachineCircuitboard
   - PlutoniumReactorFuelRod
@@ -53,4 +66,4 @@
   - GoldGasTurbineBlade
   technologyPrerequisites:
   - NuclearPowerGeneration
-  position: -1, -3
+  position: 5,5
