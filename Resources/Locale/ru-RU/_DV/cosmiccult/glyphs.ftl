@@ -5,6 +5,7 @@ cult-glyph-conditions-not-met = Нет подходящих целей в рад
 cult-glyph-too-many-targets = Слишком много целей на глифе!
 cult-glyph-target-mindshield = Защита разума предотвращает влияние глифа!
 cult-glyph-target-chaplain = Искра божественной силы предотвращает влияние глифа!
+cult-glyph-target-devil = Адская сущность отвергает влияние глифа!
 cult-glyph-name-knowledge = Пакт знания
 cult-glyph-description-knowledge = Знание. Прививает искру несмываемого знания. Может обратить большинство в наши ряды.
 cult-glyph-name-projection = Пакт проекции

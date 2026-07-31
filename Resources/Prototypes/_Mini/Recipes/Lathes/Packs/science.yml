@@ -1,0 +1,12 @@
+# Mini: Fundamental Science (starting tech) — was only on MiniResearchParity.
+- type: latheRecipePack
+  id: MiniFundamentalScienceStatic
+  recipes:
+  - ExperiScanner
+  - ResearchDataDisk
+  - ResearchAndDevelopmentServerMachineCircuitboard
+  - ResearchServerControlConsoleCircuitboard
+  - ResearchComputerCircuitboard
+  - ResearchDestructiveAnalyzerMachineCircuitboard
+  - ResearchExperimentalDestructiveScannerMachineCircuitboard
+  - TinfoilHats

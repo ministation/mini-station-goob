@@ -6,9 +6,15 @@ machine-upgrade-decreased-by-percentage = Параметр [color=yellow]{ $upgr
 machine-upgrade-increased-by-amount = Параметр [color=yellow]{ $upgraded }[/color] увеличен на { $difference }.
 machine-upgrade-decreased-by-amount = Параметр [color=yellow]{ $upgraded }[/color] уменьшен на { $difference }.
 machine-upgrade-not-upgraded = Параметр [color=yellow]{ $upgraded }[/color] не улучшался.
+machine-upgrade-increased-by-percentage-extra = Параметр [color=yellow]{ $upgraded }[/color] увеличен на [color={ $color }]{ $percent }%[/color].
+machine-upgrade-decreased-by-percentage-extra = Параметр [color=yellow]{ $upgraded }[/color] уменьшен на [color={ $color }]{ $percent }%[/color].
+machine-upgrade-not-upgraded-extra = Параметр [color=yellow]{ $upgraded }[/color] не изменился.
 machine-part-name-capacitor = Конденсатор
 machine-part-name-manipulator = Манипулятор
+machine-part-name-servo = Сервопривод
 machine-part-name-matter-bin = Ёмкость материи
+machine-part-name-scanning-module = Сканирующий модуль
+machine-part-name-micro-laser = Микро-лазер
 machine-part-name-power-cell = Батарея
 two-way-lever-left = сдвинуть рычаг влево
 two-way-lever-right = сдвинуть рычаг вправо

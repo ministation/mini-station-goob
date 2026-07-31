@@ -114,7 +114,7 @@
   description: research-experiment-scanning-points-anomalies-desc
   category: Scanning
   objective: !type:ScanSamplesExperimentObjective
-    requiredTags:
+    requiredComponents:
     - AnomalyCore
     target: 2
   reward:
@@ -131,6 +131,7 @@
   category: Scanning
   objective: !type:PresentItemExperimentObjective
     requiredEntityPrototypes:
+    - MaterialBSCrystal
     - MaterialBSCrystal1
     - AnomalyCoreBluespaceInert
   reward:

@@ -113,6 +113,7 @@
     unlitIdleState: unlit
     unlitRunningState: unlit-building
     dynamicPacks:
+    - PartsDynamic
     - SyndicateAdvancedTools
     - TypanHardsuits
     - ScienceEquipment
@@ -127,6 +128,12 @@
     - Instruments
     - TypanEquipment
     - SalvageSecurityWeapons
+    # Mini-start: Orion research unlock wiring (no MiniResearchParity on shared fabs)
+    - PartsDynamic
+    - BasicService
+    - AbductorEngineering
+    - AbductorMedical
+    # Mini-end
 
 
 - type: entity
@@ -172,6 +179,7 @@
     runningState: building
     staticPacks:
     - TypanScienceBoardsStatic
+    - MiniFundamentalScienceStatic
     - TypanServiceBoardsStatic
     - TypanCargoBoardsStatic
     - MedicalBoardsStatic

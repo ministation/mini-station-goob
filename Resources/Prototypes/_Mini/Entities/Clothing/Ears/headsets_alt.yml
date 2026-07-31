@@ -1,0 +1,18 @@
+- type: entity
+  parent: [ClothingHeadsetAlt, BaseSyndicateContraband]
+  id: ClothingHeadsetAltTypan
+  name: typan over-ear headset
+  description: An updated, modular Typan intercom that fits over the head and takes encryption keys (there are 5 key slots.).
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 5
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyTypan
+  - type: Sprite
+    sprite: _Mini/Clothing/Ears/Headsets/hs_typan.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/Ears/Headsets/hs_typan.rsi
+  - type: Headset
+    color: "#c45eb8"

@@ -408,6 +408,16 @@
   - ChameleonPDA
   - ChameleonProjector
   - WeaponPistolCHIMPUpgradeKit
+  # Mini-start: Typan weaponry / illegal unlocks
+  - Truncheon
+  - TelescopicShield
+  - HoloprojectorSecurity
+  - WeaponDisablerSMG
+  - FoamCrossbow
+  - SyndicatePersonalAI
+  - MedicalBeamGunSyndicate
+  - SyndicateBodyBag
+  # Mini-end
 
 ## Shuttles
 - type: latheRecipePack

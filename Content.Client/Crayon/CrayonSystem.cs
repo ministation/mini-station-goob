@@ -8,7 +8,6 @@ using Content.Shared.Charges.Systems;
 using Content.Shared.Crayon;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
-using Robust.Shared.GameStates;
 using Robust.Shared.Timing;
 
 namespace Content.Client.Crayon;
@@ -16,13 +15,12 @@ namespace Content.Client.Crayon;
 public sealed class CrayonSystem : SharedCrayonSystem
 {
     [Dependency] private readonly SharedChargesSystem _charges = default!;
-    [Dependency] private readonly EntityManager _entityManager = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        Subs.ItemStatus<CrayonComponent>(ent => new StatusControl(ent, _charges, _entityManager));
+        Subs.ItemStatus<CrayonComponent>(ent => new StatusControl(ent, _charges, EntityManager));
     }
 
     private sealed class StatusControl : Control
@@ -46,6 +44,18 @@ public sealed class CrayonSystem : SharedCrayonSystem
         protected override void FrameUpdate(FrameEventArgs args)
         {
             base.FrameUpdate(args);
+
+            // Unlimited crayons (e.g. CrayonBlood) have no LimitedChargesComponent.
+            if (_capacity is not { } capacity)
+            {
+                _label.SetMarkup(Robust.Shared.Localization.Loc.GetString("crayon-drawing-label",
+                    ("color", _crayon.Comp.Color),
+                    ("state", _crayon.Comp.SelectedState),
+                    ("infinite", true),
+                    ("charges", -1),
+                    ("capacity", -1)));
+                return;
+            }
 
             _label.SetMarkup(Robust.Shared.Localization.Loc.GetString("crayon-drawing-label",
                 ("color", _crayon.Comp.Color),

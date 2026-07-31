@@ -298,7 +298,10 @@ public sealed class ExperimentalDestructiveScannerSystem : EntitySystem
     private void OnPartsRefresh(EntityUid uid, ExperimentalDestructiveScannerComponent component, RefreshPartsEvent args)
     {
         var servoTier = args.GetPartRating(component.ServoPart);
-        component.ScanDuration = TimeSpan.FromSeconds(MathF.Max(0.5f, (float)component.BaseScanDuration.TotalSeconds / MathF.Max(servoTier, 1f)));
+        var scanTier = args.GetPartRating(component.ScanningModulePart);
+        var laserTier = args.GetPartRating(component.MicroLaserPart);
+        var rating = MathF.Max(1f, (servoTier + scanTier + laserTier) / 3f);
+        component.ScanDuration = TimeSpan.FromSeconds(MathF.Max(0.5f, (float)component.BaseScanDuration.TotalSeconds / rating));
 
         UpdateUi((uid, component));
     }

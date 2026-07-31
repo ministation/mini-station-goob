@@ -239,6 +239,7 @@
     #- ChemistryStatic
     #- SurgeryStatic
     dynamicPacks:
+    - PartsDynamic
     - AdvancedTools
     #- ScienceEquipment - Goobstation - Moved to Scifab
     #- ScienceExplosives - Goobstation - Moved to Scifab
@@ -407,6 +408,9 @@
     - AdvancedCybernetics
     - PowerAugments
     - ToolAugments
+    # Mini-start
+    - PartsDynamic
+    # Mini-end
     - PowerCells
   - type: EmagLatheRecipes # Goobstation
     emagStaticPacks:

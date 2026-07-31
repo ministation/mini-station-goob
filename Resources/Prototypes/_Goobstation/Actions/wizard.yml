@@ -395,6 +395,7 @@
       state: mutate
   - type: InstantAction
     event: !type:MutateSpellEvent
+      duration: 25 # Mini: nerf hulk duration
   - type: SpeakOnAction
     sentence: action-speech-spell-mutate
   - type: Magic

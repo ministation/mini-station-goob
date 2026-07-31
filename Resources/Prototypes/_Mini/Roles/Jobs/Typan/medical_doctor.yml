@@ -38,7 +38,7 @@
   id: TypanMedic
   equipment:
     eyes: ClothingEyesHudTypanMedical
-    ears: ClothingHeadsetAltSyndicate
+    ears: ClothingHeadsetAltTypan
     id: MedicalPDASyndi
     belt: ClothingBeltMedicalFilled
     pocket1: SyndiHypo

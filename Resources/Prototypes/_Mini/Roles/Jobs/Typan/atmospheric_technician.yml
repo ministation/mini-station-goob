@@ -32,5 +32,5 @@
   id: TypanAtmosTech
   equipment:
     eyes: ClothingEyesHudTypanDiagnostic
-    ears: ClothingHeadsetAltSyndicate
+    ears: ClothingHeadsetAltTypan
     id: SyndiPDAEng

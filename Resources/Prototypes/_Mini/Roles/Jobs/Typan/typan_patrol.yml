@@ -40,7 +40,7 @@
 - type: startingGear
   id: TypanPatrol
   equipment:
-    ears: ClothingHeadsetAltSyndicate
+    ears: ClothingHeadsetAltTypan
     id: SyndiPDAOff
     pocket1: WeaponPistolViper
     mask: ClothingMaskGasSyndicate
