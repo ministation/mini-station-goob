@@ -112,40 +112,6 @@ namespace Content.Shared.Construction
                 }
             }
 
-            foreach (var (partType, amount) in comp.PartRequirements)
-            {
-                if (!_prototype.TryIndex(partType, out MachinePartPrototype? machinePart))
-                    return false;
-
-                if (!_prototype.Resolve(machinePart.StockPartPrototype, out var partProto))
-                    return false;
-
-                if (partProto.TryGetComponent<PhysicalCompositionComponent>(out var partPhys, EntityManager.ComponentFactory))
-                {
-                    foreach (var (mat, matAmount) in partPhys.MaterialComposition)
-                    {
-                        materials.TryAdd(mat, 0);
-                        materials[mat] += matAmount * amount * coefficient;
-                    }
-                }
-                else if (_lathe.TryGetRecipesFromEntity(machinePart.StockPartPrototype, out var partRecipes))
-                {
-                    var partRecipe = partRecipes[0];
-                    if (partRecipes.Count > 1)
-                        partRecipe = partRecipes.MinBy(p => p.Materials.Values.Sum());
-
-                    foreach (var (mat, matAmount) in partRecipe!.Materials)
-                    {
-                        materials.TryAdd(mat, 0);
-                        materials[mat] += matAmount * amount * coefficient;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
             // Mini: Orion MachineParts
             foreach (var (partType, amount) in comp.PartRequirements)
             {
