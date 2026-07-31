@@ -25,6 +25,10 @@
   parent: MobSpaceBasic
   description: bingle
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-bingle-name
+    description: ghost-panel-antagonist-bingle-description
+    priority: 60
   - type: Bingle
     upgradedID: MobBingleUpgraded
   - type: GhostTakeoverAvailable

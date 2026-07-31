@@ -1,0 +1,69 @@
+﻿# CorvaxGoob nuclear reactor tech — adapted to Mini Orion techweb (Engineering + pointCosts).
+# Parent stock Industrial / cost / PowerGeneration no longer exist on Mini.
+
+- type: technology
+  id: NuclearPowerGeneration
+  name: research-technology-nuclear-power
+  description: research-technology-nuclear-power
+  icon:
+    sprite: _CorvaxGoob/Structures/Power/Generation/FissionGenerator/reactor_parts.rsi
+    state: default_rod
+  discipline: Engineering
+  tier: 2
+  announceChannels:
+  - Engineering
+  pointCosts:
+  - type: General
+    amount: 7500
+  recipeUnlocks:
+  - NuclearReactorMonitorComputerCircuitboard
+  - GasTurbineMonitorComputerCircuitboard
+  - UraniumReactorFuelRod
+  - PlasmaReactorFuelRod
+  - UraniumGlassReactorFuelRod
+  - SilverReactorControlRod
+  - PlasteelReactorControlRod
+  - PlasmaGlassReactorControlRod
+  - SilverReactorGasChannel
+  - PlasteelReactorGasChannel
+  - PlasmaGlassReactorGasChannel
+  - SilverReactorHeatExchanger
+  - PlasteelReactorHeatExchanger
+  - PlasmaGlassReactorHeatExchanger
+  - PlasteelGasTurbineBlade
+  - BrassGasTurbineBlade
+  - SilverGasTurbineStator
+  technologyPrerequisites:
+  - EnergyManipulation
+  position: 5,4
+
+- type: technology
+  id: NuclearPowerRecycling
+  name: research-technology-nuclear-recycling
+  description: research-technology-nuclear-recycling
+  icon:
+    sprite: _CorvaxGoob/Structures/Power/Generation/FissionGenerator/reactor_parts.rsi
+    state: nuclear_waste
+  discipline: Engineering
+  tier: 2
+  announceChannels:
+  - Engineering
+  pointCosts:
+  - type: General
+    amount: 7500
+  recipeUnlocks:
+  - NuclearCentrifugeMachineCircuitboard
+  - PlutoniumReactorFuelRod
+  - BananiumReactorFuelRod
+  - GoldReactorControlRod
+  - DiamondReactorControlRod
+  - GoldReactorGasChannel
+  - DiamondReactorGasChannel
+  - GoldReactorHeatExchanger
+  - DiamondReactorHeatExchanger
+  - DiamondGasTurbineBlade
+  - GoldGasTurbineStator
+  - GoldGasTurbineBlade
+  technologyPrerequisites:
+  - NuclearPowerGeneration
+  position: 5,5

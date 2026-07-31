@@ -106,6 +106,10 @@ public sealed partial class GhostSystem
         var query = AllEntityQuery<GhostPanelAntagonistMarkerComponent, MetaDataComponent>();
         while (query.MoveNext(out var uid, out var component, out var meta))
         {
+            // Пустые оболочки без активного игрока не показываем в телепорте.
+            if (!TryComp<MindContainerComponent>(uid, out var mindContainer) || !mindContainer.HasMind)
+                continue;
+
             var warp = new GhostWarpGlobalAntagonist(
                 GetNetEntity(uid),
                 meta.EntityName,

@@ -217,7 +217,7 @@ public sealed class GhostRoleSystem : EntitySystem
             return;
 
         _needsUpdateGhostRoleCount = false;
-        var response = new GhostUpdateGhostRoleCountEvent(GetGhostRoleCount());
+        var response = new GhostUpdateGhostRoleCountEvent(GetGhostRoleCount(), GetImportantGhostRoleCount());
         foreach (var player in _playerManager.Sessions)
         {
             RaiseNetworkEvent(response, player.Channel);
@@ -319,7 +319,7 @@ public sealed class GhostRoleSystem : EntitySystem
     {
         if (args.NewStatus == SessionStatus.InGame)
         {
-            var response = new GhostUpdateGhostRoleCountEvent(_ghostRoles.Count);
+            var response = new GhostUpdateGhostRoleCountEvent(GetGhostRoleCount(), GetImportantGhostRoleCount());
             RaiseNetworkEvent(response, args.Session.Channel);
         }
         else
@@ -736,6 +736,51 @@ public sealed class GhostRoleSystem : EntitySystem
     {
         var metaQuery = GetEntityQuery<MetaDataComponent>();
         return _ghostRoles.Count(pair => metaQuery.CompOrNull(pair.Value.Owner)?.EntityPaused == false); // Goobstation - goidafix random test fail from deleted ghost roles
+    }
+
+    /// <summary>
+    /// Antagonists, ERT (ОБР) and CBURN (РХБЗЗ) — roles that should flash the ghost-roles button.
+    /// </summary>
+    public int GetImportantGhostRoleCount()
+    {
+        var metaQuery = GetEntityQuery<MetaDataComponent>();
+        var count = 0;
+        foreach (var (_, roleEnt) in _ghostRoles)
+        {
+            if (metaQuery.CompOrNull(roleEnt.Owner)?.EntityPaused != false)
+                continue;
+
+            if (IsImportantGhostRole(roleEnt))
+                count++;
+        }
+
+        return count;
+    }
+
+    private bool IsImportantGhostRole(Entity<GhostRoleComponent> role)
+    {
+        // ERT / ОБР and CBURN / РХБЗЗ
+        if (role.Comp.JobProto is { } job)
+        {
+            var jobId = (string) job;
+            if (jobId.StartsWith("ERT", StringComparison.Ordinal)
+                || jobId.StartsWith("CBURN", StringComparison.Ordinal))
+                return true;
+        }
+
+        // Antagonist mind roles (Solo/Team/FreeAgent/Silicon antags, etc.)
+        foreach (var proto in role.Comp.MindRoles)
+        {
+            if (!_prototype.TryIndex(proto, out var indexed)
+                || !indexed.TryGetComponent<MindRoleComponent>(out var mindRoleObj, _ent.ComponentFactory))
+                continue;
+
+            var mindRole = (MindRoleComponent) mindRoleObj;
+            if (mindRole.Antag || mindRole.ExclusiveAntag)
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>

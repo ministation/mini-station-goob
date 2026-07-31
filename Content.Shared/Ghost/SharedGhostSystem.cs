@@ -211,9 +211,16 @@ namespace Content.Shared.Ghost
     {
         public int AvailableGhostRoles { get; }
 
-        public GhostUpdateGhostRoleCountEvent(int availableGhostRoleCount)
+        /// <summary>
+        /// Count of "important" roles (antagonists, ERT/ОБР, CBURN/РХБЗЗ) currently available.
+        /// Used by the ghost UI to highlight the roles button.
+        /// </summary>
+        public int ImportantGhostRoles { get; }
+
+        public GhostUpdateGhostRoleCountEvent(int availableGhostRoleCount, int importantGhostRoleCount = 0)
         {
             AvailableGhostRoles = availableGhostRoleCount;
+            ImportantGhostRoles = importantGhostRoleCount;
         }
     }
 

@@ -60,6 +60,12 @@ internal sealed class ClientSponsorManager : ISharedSponsorsManager, ISponsorUpd
     {
         throw new NotImplementedException();
     }
+
+    public bool TryGetTierNameForPrototype(string prototypeId, [NotNullWhen(true)] out string? tierName)
+    {
+        tierName = null;
+        return false;
+    }
 }
 
 public interface ISponsorUpdateInvoker

@@ -549,11 +549,11 @@
       tags:
       - ERTUplinkGamma
 
-# Heavy — leader + juggernaut only
+# Heavy — juggernaut only
 - type: listing
   id: ERTCallGammaMinigun
   name: Миниган
-  description: Тяжёлый миниган. Только для лидера и джаггернаута.
+  description: Тяжёлый миниган. Только для джаггернаута.
   productEntity: WeaponMinigun
   cost:
     Productunit: 20
@@ -566,7 +566,6 @@
       - ERTUplinkGamma
   - !type:BuyerJobCondition
     whitelist:
-    - ERTLeaderGamma
     - ERTJuggernautGamma
 
 - type: listing

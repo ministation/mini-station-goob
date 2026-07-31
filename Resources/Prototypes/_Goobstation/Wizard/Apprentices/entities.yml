@@ -17,6 +17,8 @@
     prototypes: [ApprenticeGearBlue]
     roleLoadout: [RoleSurvivalEVA]
   - type: Apprentice
+  - type: WeakToHoly
+    alwaysTakeHoly: true
   - type: SpellsGrant
     antagProfile: ApprenticeRule
   - type: NpcFactionMember

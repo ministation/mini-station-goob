@@ -6,6 +6,7 @@
     Cold: 0.5
     Cellular: 0.1
     Caustic: 0.1
+    Holy: 1.5
   ignoreArmorPierceFlags: All
 
 - type: damageModifierSet
@@ -16,7 +17,7 @@
     Piercing: 0.0
     Shock: 0.0
     Heat: 0.0
-    Holy: 0.0
+    Holy: 1.5
     Radiation: 0.0
     Poison: 0.0
     Cold: 0.0
@@ -33,7 +34,7 @@
     Piercing: 0.4
     Shock: 0.4
     Heat: 0.1
-    Holy: 0.1
+    Holy: 1.5
     Radiation: 0.0
     Poison: 0.0
     Cold: 0.0

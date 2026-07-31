@@ -63,6 +63,13 @@ internal sealed class ServerSponsorManager : ISharedSponsorsManager, ISponsorRec
         return TryGetInfo(userId, out var sponsorData) && sponsorData.ServerPriorityJoin;
     }
 
+    public bool TryGetTierNameForPrototype(string prototypeId, [NotNullWhen(true)] out string? tierName)
+    {
+        // Mini sponsor sync has prototype lists, but no tier-name mapping yet.
+        tierName = null;
+        return false;
+    }
+
     public void RegisterSponsorDataProvider(ISponsorDataProvider sponsorDataProvider)
     {
         _sponsorDataProviders.Add(sponsorDataProvider);

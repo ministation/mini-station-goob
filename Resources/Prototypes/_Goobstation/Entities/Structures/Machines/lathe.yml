@@ -41,6 +41,7 @@
     - MiscSignallersStatic
     - NailgunStatic
     - NailsStatic
+    - ReactorPartsBasic
     dynamicPacks:
     - PartsDynamic
     - ConstructionBagOfHolding
@@ -62,6 +63,15 @@
     # CorvaxGoob Packs
     - WorkBeltsSharedDynamic # WorkBelts-Techfab
     - WokrBeltsEngDynamic # WorkBelts-Techfab
+    # Nuclear Reactor Packs
+    - ReactorCircuitboards
+    - ReactorFuelRods
+    - ReactorControlRods
+    - ReactorGasChannels
+    - ReactorHeatExchangers
+    - GasTurbineBlades
+    - GasTurbineStators
+    - NuclearSafetyTools
     # Mini-start: Orion research unlock wiring (no MiniResearchParity — it dumps all unlocks incl. ammo)
     - PartsDynamic
     - AbductorEngineering

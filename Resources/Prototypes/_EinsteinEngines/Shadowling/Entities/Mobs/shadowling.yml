@@ -22,6 +22,8 @@
   - type: Damageable
     damageContainer: Biological
     damageModifierSet: ShadowlingAscendant
+  - type: WeakToHoly
+    alwaysTakeHoly: true
   - type: MobMover
   - type: InputMover
   - type: InteractionOutline

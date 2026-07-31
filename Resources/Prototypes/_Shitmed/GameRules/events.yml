@@ -39,6 +39,11 @@
         color: Green
         sound: /Audio/_Shitmed/Misc/abductor.ogg
       components:
+      # Mini: ghost teleport panel antagonist section
+      - type: GhostPanelAntagonistMarker
+        name: ghost-panel-antagonist-abductor-name
+        description: ghost-panel-antagonist-abductor-description
+        priority: 25
       - type: Abductor
       - type: ActionGrant
         actions:

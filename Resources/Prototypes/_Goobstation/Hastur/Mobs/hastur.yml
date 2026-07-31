@@ -4,6 +4,11 @@
   id: MobHastur
   description: He who must not be named...
   components:
+    # Mini: ghost teleport panel antagonist section
+    - type: GhostPanelAntagonistMarker
+      name: ghost-panel-antagonist-hastur-name
+      description: ghost-panel-antagonist-hastur-description
+      priority: 8
     - type: Omnipresence
       cloneDistance: 3.5
       stunRange: 2.5

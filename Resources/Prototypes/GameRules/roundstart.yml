@@ -162,6 +162,11 @@
       roleLoadout:
       - RoleSurvivalNukie
       components:
+      # Mini: ghost teleport panel antagonist section
+      - type: GhostPanelAntagonistMarker
+        name: ghost-panel-antagonist-nukeops-name
+        description: ghost-panel-antagonist-nukeops-description
+        priority: 10
       - type: NukeOperative
       - type: RandomMetadata
         nameSegments:
@@ -183,6 +188,11 @@
       roleLoadout:
       - RoleSurvivalNukie
       components:
+      # Mini: ghost teleport panel antagonist section
+      - type: GhostPanelAntagonistMarker
+        name: ghost-panel-antagonist-nukeops-name
+        description: ghost-panel-antagonist-nukeops-description
+        priority: 10
       - type: NukeOperative
       - type: RandomMetadata
         nameSegments:
@@ -208,6 +218,11 @@
       roleLoadout:
       - RoleSurvivalNukie
       components:
+      # Mini: ghost teleport panel antagonist section
+      - type: GhostPanelAntagonistMarker
+        name: ghost-panel-antagonist-nukeops-name
+        description: ghost-panel-antagonist-nukeops-description
+        priority: 10
       - type: NukeOperative
       - type: RandomMetadata
         nameSegments:

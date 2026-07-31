@@ -3,6 +3,10 @@
   id: MobContractor
   name: Syndicate Contractor
   components:
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-contractor-name
+    description: ghost-panel-antagonist-contractor-description
+    priority: 28
   - type: Loadout
     prototypes: [ ContractorGear ]
     roleLoadout: [ RoleSurvivalSyndicate ]
