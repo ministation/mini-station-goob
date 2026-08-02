@@ -41,6 +41,6 @@
   components:
     - type: Sprite
       state: micro_mani
-    # Construction material stack only — Mini typed tiers (Servo/etc.) stay unstacked (tier-safe RPED).
     - type: Stack
       stackType: Manipulator
+      count: 1
