@@ -654,11 +654,13 @@ public sealed class NukeSystem : EntitySystem
 
         component.Exploded = true;
 
-        _explosions.QueueExplosion(uid,
+        var mapCoordinates = _transform.GetMapCoordinates(uid, xform: transform);
+        _explosions.QueueExplosion(mapCoordinates,
             component.ExplosionType,
             component.TotalIntensity,
             component.IntensitySlope,
-            component.MaxIntensity);
+            component.MaxIntensity,
+            uid);
 
         RaiseLocalEvent(new NukeExplodedEvent()
         {
@@ -666,7 +668,7 @@ public sealed class NukeSystem : EntitySystem
         });
 
         _sound.StopStationEventMusic(uid, StationEventMusicType.Nuke);
-        Del(uid);
+        QueueDel(uid);
     }
 
     /// <summary>
