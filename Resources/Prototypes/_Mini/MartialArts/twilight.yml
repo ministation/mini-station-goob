@@ -1,0 +1,138 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: martialArt
+  id: Twilight
+  martialArtsForm: Twilight
+  roundstartCombos: TwilightMoves
+
+- type: comboList
+  id: TwilightMoves
+  combos:
+  # 3-hit first (documentation / fallback if matcher order matters)
+  - TwilightMutePulse
+  - TwilightVoidGrip
+  - TwilightEchoBlade
+  - TwilightShadowRip
+  - TwilightResonanceBreak
+  - TwilightConsecutive
+  # 2-hit CQC parity
+  - TwilightSlam
+  - TwilightKick
+  - TwilightRestrain
+  - TwilightPressure
+
+# --- CQC parity ---
+
+- type: combo
+  id: TwilightSlam
+  name: Shadow Throw
+  martialArtsForm: Twilight
+  attacks:
+  - Grab
+  - Harm
+  event: !type:TwilightSlamPerformedEvent { }
+  extraDamage: 10
+  paralyzeTime: 12
+
+- type: combo
+  id: TwilightKick
+  name: Echo Strike
+  martialArtsForm: Twilight
+  attacks:
+  - Harm
+  - Harm
+  event: !type:TwilightKickPerformedEvent { }
+  extraDamage: 10
+  staminaDamage: 25
+
+- type: combo
+  id: TwilightRestrain
+  name: Resonance Hold
+  martialArtsForm: Twilight
+  attacks:
+  - Grab
+  - Grab
+  event: !type:TwilightRestrainPerformedEvent { }
+  paralyzeTime: 10
+  staminaDamage: 30
+
+- type: combo
+  id: TwilightPressure
+  name: Echo Rip
+  martialArtsForm: Twilight
+  attacks:
+  - Disarm
+  - Grab
+  event: !type:TwilightPressurePerformedEvent { }
+  staminaDamage: 65
+
+- type: combo
+  id: TwilightConsecutive
+  name: Void Chain
+  martialArtsForm: Twilight
+  attacks:
+  - Disarm
+  - Disarm
+  - Harm
+  event: !type:TwilightConsecutivePerformedEvent { }
+  extraDamage: 10
+  staminaDamage: 70
+
+# --- Umbra exclusive (no prefix conflicts) ---
+
+- type: combo
+  id: TwilightMutePulse
+  name: Mute Pulse
+  martialArtsForm: Twilight
+  attacks:
+  - Disarm
+  - Harm
+  - Harm
+  event: !type:TwilightMutePulsePerformedEvent { }
+  staminaDamage: 40
+
+- type: combo
+  id: TwilightVoidGrip
+  name: Void Grip
+  martialArtsForm: Twilight
+  attacks:
+  - Harm
+  - Grab
+  - Disarm
+  event: !type:TwilightVoidGripPerformedEvent { }
+
+- type: combo
+  id: TwilightEchoBlade
+  name: Echo Blade
+  martialArtsForm: Twilight
+  attacks:
+  - Harm
+  - Disarm
+  - Grab
+  event: !type:TwilightEchoBladePerformedEvent { }
+  extraDamage: 20
+  damageType: Slash
+
+- type: combo
+  id: TwilightShadowRip
+  name: Shadow Tear
+  martialArtsForm: Twilight
+  attacks:
+  - Grab
+  - Disarm
+  - Disarm
+  event: !type:TwilightShadowRipPerformedEvent { }
+  staminaDamage: 45
+  thrownSpeed: 9
+
+- type: combo
+  id: TwilightResonanceBreak
+  name: Resonance Break
+  martialArtsForm: Twilight
+  attacks:
+  - Disarm
+  - Disarm
+  - Grab
+  event: !type:TwilightResonanceBreakPerformedEvent { }
+  paralyzeTime: 5
+  staminaDamage: 50
