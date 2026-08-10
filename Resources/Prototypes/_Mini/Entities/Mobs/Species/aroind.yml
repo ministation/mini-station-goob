@@ -9,7 +9,7 @@
   components:
   - type: Hunger
   - type: Icon
-    sprite: Mobs/Species/Aroind/parts.rsi
+    sprite: _Mini/Mobs/Species/Aroind/parts.rsi
     state: full
   - type: Thirst
   - type: Butcherable
@@ -104,7 +104,7 @@
   - type: HumanoidAppearance
     species: Aroind
   - type: Icon
-    sprite: Mobs/Species/Aroind/parts.rsi
+    sprite: _Mini/Mobs/Species/Aroind/parts.rsi
     state: full
 
 - type: entity
