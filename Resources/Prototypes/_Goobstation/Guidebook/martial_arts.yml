@@ -11,6 +11,7 @@
   - Ninjutsu
   - DragonKungFu
   - HellRip
+  - Twilight
 
 - type: guideEntry
   id: CQC
@@ -51,3 +52,8 @@
   id: DragonKungFu
   name: guide-entry-dragon-kung-fu
   text: "/ServerInfo/_Goobstation/Guidebook/MartialArts/DragonKungFu.xml"
+
+- type: guideEntry
+  id: Twilight
+  name: guide-entry-twilight
+  text: "/ServerInfo/_Mini/Guidebook/MartialArts/Twilight.xml"

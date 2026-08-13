@@ -102,6 +102,7 @@ public abstract partial class SharedMartialArtsSystem : EntitySystem
         InitializeDragon();
         InitializeNinjutsu();
         InitializeHellRip();
+        InitializeTwilight();
         InitializeCanPerformCombo();
 
         SubscribeLocalEvent<MartialArtsKnowledgeComponent, ComponentShutdown>(OnShutdown);
@@ -270,6 +271,7 @@ public abstract partial class SharedMartialArtsSystem : EntitySystem
         switch (ent.Comp.MartialArtsForm)
         {
             case MartialArtsForms.CloseQuartersCombat:
+            case MartialArtsForms.Twilight:
                 OnCQCAttackPerformed(ent, ref args);
                 break;
             case MartialArtsForms.Capoeira:

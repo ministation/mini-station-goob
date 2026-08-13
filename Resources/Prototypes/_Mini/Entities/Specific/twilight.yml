@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: [BaseItem, BaseCentcommContraband]
+  id: TwilightManual
+  name: twilight combat manual
+  description: A violet-bound manual of Umbra-9 close-quarters doctrine — Twilight. The pages smell faintly of ozone.
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/twilight_manual.rsi
+    state: icon
+  - type: Item
+    size: Small
+    sprite: _Mini/Objects/Misc/twilight_manual.rsi
+  - type: StaticPrice
+    price: 3000
+  - type: GrantTwilight
+  - type: GuideHelp
+    guides:
+    - Twilight

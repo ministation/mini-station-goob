@@ -89,13 +89,12 @@ public partial class SharedMartialArtsSystem
 
     private void CheckCombo(EntityUid uid, EntityUid target, CanPerformComboComponent comp)
     {
-        var success = false;
+        // Prefer the longest matching combo so 3-hit moves are not stolen by 2-hit suffixes
+        // (e.g. Disarm→Harm→Harm must not resolve as Harm→Harm).
+        ComboPrototype? best = null;
 
         foreach (var proto in comp.AllowedCombos)
         {
-            if (success)
-                break;
-
             // If we are targeting ourselves and combo doesn't allow it (or otherwise), then continue
             if (uid == target != proto.PerformOnSelf)
                 continue;
@@ -104,17 +103,20 @@ public partial class SharedMartialArtsSystem
             if (sum < 0)
                 continue;
 
-            var list = comp.LastAttacks.GetRange(sum, proto.AttackTypes.Count).AsEnumerable();
-            var attackList = proto.AttackTypes.AsEnumerable();
+            var list = comp.LastAttacks.GetRange(sum, proto.AttackTypes.Count);
 
-            if (!list.SequenceEqual(attackList) || proto.ResultEvent == null)
+            if (!list.SequenceEqual(proto.AttackTypes) || proto.ResultEvent == null)
                 continue;
-            var beingPerformedEv = new ComboBeingPerformedEvent(proto.ID);
-            var ev = proto.ResultEvent;
 
-            RaiseLocalEvent(uid, beingPerformedEv);
-            RaiseLocalEvent(uid, ev);
+            if (best == null || proto.AttackTypes.Count > best.AttackTypes.Count)
+                best = proto;
         }
+
+        if (best?.ResultEvent is not { } resultEvent)
+            return;
+
+        RaiseLocalEvent(uid, new ComboBeingPerformedEvent(best.ID));
+        RaiseLocalEvent(uid, resultEvent);
     }
     private void OnComboBeingPerformed(Entity<CanPerformComboComponent> ent, ref ComboBeingPerformedEvent args)
     {
