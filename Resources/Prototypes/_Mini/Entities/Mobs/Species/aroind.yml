@@ -1,0 +1,141 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  save: false
+  parent: BaseMobSpeciesOrganic
+  id: BaseMobAroind
+  name: Urist McAroind
+  abstract: true
+  components:
+  - type: Hunger
+  - type: Icon
+    sprite: _Mini/Mobs/Species/Aroind/parts.rsi
+    state: full
+  - type: Thirst
+  - type: Butcherable
+    butcheringType: Spike
+    spawned:
+    - id: FoodMeatHuman
+      amount: 5
+  - type: LanguageKnowledge
+    speaks:
+    - TauCetiBasic
+    - SolCommon
+    understands:
+    - TauCetiBasic
+    - SolCommon
+  - type: HumanoidAppearance
+    species: Aroind
+    hideLayersOnEquip:
+    - Hair
+    - Snout
+  - type: Body
+    prototype: Human
+    requiredLegs: 2
+  - type: Inventory
+    speciesId: Aroind
+  - type: Sprite
+    netsync: false
+    noRot: true
+    drawdepth: Mobs
+    layers:
+      - map: [ "enum.HumanoidVisualLayers.Groin" ]
+      - map: [ "enum.HumanoidVisualLayers.Chest" ]
+      - map: [ "enum.HumanoidVisualLayers.Head" ]
+      - map: [ "enum.HumanoidVisualLayers.Snout" ]
+      - map: [ "enum.HumanoidVisualLayers.Eyes" ]
+      - map: [ "enum.HumanoidVisualLayers.RArm" ]
+      - map: [ "enum.HumanoidVisualLayers.LArm" ]
+      - map: [ "enum.HumanoidVisualLayers.RLeg" ]
+      - map: [ "enum.HumanoidVisualLayers.LLeg" ]
+      - map: [ "enum.HumanoidVisualLayers.UndergarmentBottom" ]
+      - map: [ "enum.HumanoidVisualLayers.UndergarmentTop" ]
+      - map: [ "jumpsuit" ]
+      - map: [ "enum.HumanoidVisualLayers.LFoot" ]
+      - map: [ "enum.HumanoidVisualLayers.RFoot" ]
+      - map: [ "enum.HumanoidVisualLayers.LHand" ]
+      - map: [ "enum.HumanoidVisualLayers.RHand" ]
+      - map: [ "enum.HumanoidVisualLayers.Face" ]
+      - map: [ "gloves" ]
+      - map: [ "shoes" ]
+      - map: [ "ears" ]
+      - map: [ "eyes" ]
+      - map: [ "id" ]
+      - map: [ "outerClothing" ]
+      - map: [ "belt" ]
+      - map: [ "back" ]
+      - map: [ "neck" ]
+      - map: [ "enum.HumanoidVisualLayers.SnoutCover" ]
+      - map: [ "enum.HumanoidVisualLayers.FacialHair" ]
+      - map: [ "enum.HumanoidVisualLayers.HeadSide" ]
+      - map: [ "maskalt" ]
+      - map: [ "enum.HumanoidVisualLayers.Hair" ]
+      - map: [ "mask" ]
+      - map: [ "enum.HumanoidVisualLayers.HeadTop" ]
+      - map: [ "enum.HumanoidVisualLayers.Tail" ]
+      - map: [ "enum.HumanoidVisualLayers.Wings" ]
+      - map: [ "head" ]
+      - map: [ "pocket1" ]
+      - map: [ "pocket2" ]
+      - map: [ "enum.HumanoidVisualLayers.Handcuffs" ]
+        color: "#ffffff"
+        sprite: Objects/Misc/handcuffs.rsi
+        state: body-overlay-2
+        visible: false
+      - map: [ "clownedon" ]
+        sprite: "Effects/creampie.rsi"
+        state: "creampie_human"
+        visible: false
+  - type: MobState
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      100: Alive
+      200: Dead
+
+
+- type: entity
+  save: false
+  parent: BaseSpeciesDummy
+  id: MobAroindDummy
+  categories: [ HideSpawnMenu ]
+  description: A dummy aroind meant to be used in character setup.
+  components:
+  - type: HumanoidAppearance
+    species: Aroind
+  - type: Icon
+    sprite: _Mini/Mobs/Species/Aroind/parts.rsi
+    state: full
+
+- type: entity
+  save: false
+  parent: BaseMobAroind
+  id: MobAroind
+  components:
+    - type: CombatMode
+    - type: InteractionPopup
+      successChance: 1
+      interactSuccessString: hugging-success-generic
+      interactSuccessSound: /Audio/Effects/thudswoosh.ogg
+      messagePerceivedByOthers: hugging-success-generic-others
+    - type: MindContainer
+    - type: MindExaminable
+    - type: Input
+      context: "human"
+    - type: MobMover
+    - type: InputMover
+    - type: Alerts
+    - type: Eye
+    - type: CameraRecoil
+    - type: Examiner
+    - type: CanHostGuardian
+    - type: NpcFactionMember
+      factions:
+        - NanoTrasen
+    - type: Respirator
+      damage:
+       types:
+        Asphyxiation: 1.0
+      damageRecovery:
+        types:
+          Asphyxiation: -1.0
