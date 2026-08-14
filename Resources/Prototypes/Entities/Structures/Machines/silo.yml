@@ -17,8 +17,9 @@
           True: { state: silo_active }
           False: { state: silo }
   - type: OreSilo
-    range: 3000
+    range: 3000 # Mini
   - type: MaterialStorage
+
     whitelist:
       tags:
       - Sheet

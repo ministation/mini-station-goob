@@ -47,3 +47,7 @@ space_wind = false
 [midi]
 max_events_per_second = 400
 max_events_per_batch = 40
+
+[footprints]
+# Decal footprints every step wreck late-round tick time / PVS.
+enabled = false

@@ -1,3 +1,5 @@
+﻿/*
+// CorvaxGoob-Footprint-Refactoring
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Diagnostics.CodeAnalysis;
@@ -44,7 +46,6 @@ public sealed class FootprintSystem : EntitySystem
     public const string PuddleSolution = "puddle";
 
     private float _minimumPuddleSize;
-    private bool _enabled;
 
     public override void Initialize()
     {
@@ -54,7 +55,6 @@ public sealed class FootprintSystem : EntitySystem
 
         _noFootprintsQuery = GetEntityQuery<NoFootprintsComponent>();
 
-        Subs.CVar(_configuration, GoobCVars.FootprintsEnabled, value => _enabled = value, true);
         Subs.CVar(_configuration, GoobCVars.MinimumPuddleSizeForFootprints, value => _minimumPuddleSize = value, true);
     }
 
@@ -65,9 +65,6 @@ public sealed class FootprintSystem : EntitySystem
 
     private void OnMove(Entity<FootprintOwnerComponent> entity, ref MoveEvent e)
     {
-        if (!_enabled)
-            return;
-
         if (_noFootprintsQuery.HasComp(entity))
             return;
 
@@ -288,3 +285,4 @@ public sealed class FootprintSystem : EntitySystem
         return false;
     }
 }
+*/

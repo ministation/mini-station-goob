@@ -7,7 +7,14 @@
   id: AnomalyPayload
 
 - type: Tag
+  id: BagelTheatre
+
+- type: Tag
+  id: BagelCage
+
+- type: Tag
   id: BoneSetter
+
 
 - type: Tag
   id: CarcTile

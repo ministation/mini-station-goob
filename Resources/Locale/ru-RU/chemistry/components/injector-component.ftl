@@ -33,9 +33,6 @@ injector-component-drawing-target = { CAPITALIZE($user) } начинает на�
 injector-component-injecting-target = { CAPITALIZE($user) } начинает вводить содержимое шприца в вас!
 injector-component-deny-user = Экзоскелет слишком тонкий!
 
-injector-volume-transfer-label = Объем: [color=white]{ $currentVolume }/{ $totalVolume }ед.[/color]
-    Режим: [color=white]{ $modeString }[/color] ([color=white]{ $transferVolume }ед.[/color])
-
 injector-toggle-verb-text = Переключить режим Инъектора
 
 

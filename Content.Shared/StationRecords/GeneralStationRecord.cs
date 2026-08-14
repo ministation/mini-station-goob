@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 
+using Content.Shared._CorvaxGoob.AppearanceConverter;
 using Content.Shared.Humanoid;
 using Robust.Shared.Serialization;
 
@@ -72,4 +73,10 @@ public sealed partial record GeneralStationRecord
     /// </summary>
     [DataField]
     public string? DNA;
+
+    /// <summary>
+    ///     Полное описание раундстарт внешности
+    /// </summary>
+    [DataField]
+    public AppearanceConverterVisualTransformProfile? Visual;
 }

@@ -112,7 +112,8 @@
         Heat: 1
   - type: Hunger
   - type: Thirst
-  - type: FootprintOwner
+  # Mini perf: footprints disabled (see base.yml / footprints.enabled)
+  # - type: CorvaxFootprintOwner
   - type: WraithAbsorbable # Goobstation - wraith
 # Corvax-Goob-GreySpecies-end
 

@@ -282,11 +282,3 @@ ghost-role-information-derelict-mining-cyborg-description = Вы — кибор�
 ghost-role-information-derelict-syndicate-assault-cyborg-name = Брошенный штурмовой киборг Синдиката
 
 ghost-role-information-derelict-syndicate-assault-cyborg-description = Вы — раняя модель штурмового киборга Синдиката, которая заблудилась в космосе. После долгих лет воздействия ионных бурь вы оказываетесь рядом с космической станцией.
-
-ghost-role-information-mothership-core-name = Ядро материнского корабля
-
-ghost-role-information-mothership-core-desc = Вы — ядро матринского корабля ксеноборгов, помогите им размножиться, боргируя мозги, которые они вам приносят.
-
-ghost-role-information-xenoborg-name = Ксеноборг
-
-ghost-role-information-xenoborg-desc = Странный киборг, сделанный, чтобы воспроизводить себя и захватывать станцию, превращая любое разумное существо в ксеноборга.
