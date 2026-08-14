@@ -70,25 +70,29 @@ public static class MiniFonts
 
     public static Font GetStack(this IResourceCache cache, string variation = "Regular", int size = 10, bool mono = false)
     {
-        if (IoCManager.Instance is { } ioc)
-            return ioc.Resolve<IUiFontStackManager>().GetStack(cache, mono ? "Mono-Regular" : variation, size);
+        // Unit tests construct stylesheets without ClientContentIoC / Mini font files.
+        if (IoCManager.Instance is { } ioc
+            && ioc.TryResolveType<IUiFontStackManager>(out var fonts))
+            return fonts.GetStack(cache, mono ? "Mono-Regular" : variation, size);
 
-        return cache.GetFont(Stack(variation, mono), size);
+        return new DummyFont();
     }
 
     public static Font GetChatStack(this IResourceCache cache, string variation = "Regular", int size = 12)
     {
-        if (IoCManager.Instance is { } ioc)
-            return ioc.Resolve<IUiFontStackManager>().GetChatStack(cache, variation, size);
+        if (IoCManager.Instance is { } ioc
+            && ioc.TryResolveType<IUiFontStackManager>(out var fonts))
+            return fonts.GetChatStack(cache, variation, size);
 
-        return cache.GetFont(Stack(variation), size);
+        return new DummyFont();
     }
 
     public static Font GetStackWithPrimary(this IResourceCache cache, string path, int size = 10)
     {
-        if (IoCManager.Instance is { } ioc)
-            return ioc.Resolve<IUiFontStackManager>().GetStackWithPrimary(cache, path, size);
+        if (IoCManager.Instance is { } ioc
+            && ioc.TryResolveType<IUiFontStackManager>(out var fonts))
+            return fonts.GetStackWithPrimary(cache, path, size);
 
-        return cache.GetFont(StackWithPrimary(path), size);
+        return new DummyFont();
     }
 }
