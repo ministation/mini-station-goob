@@ -219,5 +219,3 @@ guide-entry-xenoarchaeologyunlockingnodes = Разблокировка узло�
 guide-entry-analysisconsole = Аналитическая консоль
 
 guide-entry-lawsets = Наборы законов синтетиков
-
-guide-entry-xenoborgs = Ксеноборги

@@ -122,7 +122,9 @@
     - type: Perishable
     - type: Hunger
     - type: Thirst
-    # - type: FootprintOwner Arcane
+    # Mini perf: footprints disabled (see footprints.enabled)
+    # - type: CorvaxFootprintOwner
+
     - type: ItemSlots # No infinite batteries.
 
 - type: entity

@@ -162,12 +162,20 @@ namespace Content.Client.Stylesheets
         // Goobstation - ZH text support start
         public static Font NotoStack(this IResourceCache resCache, string variation = "Regular", int size = 10, bool display = false)
         {
-            return IoCManager.Resolve<IUiFontStackManager>().GetStack(resCache, variation, size, display);
+            if (IoCManager.Instance is { } ioc
+                && ioc.TryResolveType<IUiFontStackManager>(out var fonts))
+                return fonts.GetStack(resCache, variation, size, display);
+
+            return new DummyFont();
         }
 
         public static Font NotoStack2ElectricBoogaloo(this IResourceCache resCache, string path = MiniFonts.Regular, int size = 10)
         {
-            return IoCManager.Resolve<IUiFontStackManager>().GetStackWithPrimary(resCache, path, size);
+            if (IoCManager.Instance is { } ioc
+                && ioc.TryResolveType<IUiFontStackManager>(out var fonts))
+                return fonts.GetStackWithPrimary(resCache, path, size);
+
+            return new DummyFont();
         }
         // Goobstation - ZH text support end
     }
@@ -328,8 +336,10 @@ namespace Content.Client.Stylesheets
             var notoSans10 = resCache.NotoStack(size: 10);
             var notoSansItalic10 = resCache.NotoStack(variation: "Italic", size: 10);
             var notoSans12 = resCache.NotoStack(size: 12);
-            var uiFontStack = IoCManager.Resolve<IUiFontStackManager>();
-            var chatFont = uiFontStack.UsesPrimaryChatFontOverride
+            var useChatOverride = IoCManager.Instance is { } ioc
+                && ioc.TryResolveType<IUiFontStackManager>(out var uiFontStack)
+                && uiFontStack.UsesPrimaryChatFontOverride;
+            var chatFont = useChatOverride
                 ? resCache.GetChatStack(size: UiChatFonts.BaseSize)
                 : notoSans12;
             var notoSansItalic12 = resCache.NotoStack(variation: "Italic", size: 12);

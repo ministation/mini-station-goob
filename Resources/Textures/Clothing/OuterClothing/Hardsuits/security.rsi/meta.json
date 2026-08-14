@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Sprited by Egorik1 for mini-station",
+  "copyright": "Sprited by Egorik1 for mini-station. equipped-OUTERCLOTHING-hydrakin from goob.",
   "size": {
     "x": 32,
     "y": 32
@@ -40,6 +40,10 @@
     },
     {
       "name": "equipped-OUTERCLOTHING-dog",
+      "directions": 4
+    },
+    {
+      "name": "equipped-OUTERCLOTHING-hydrakin",
       "directions": 4
     }
   ]

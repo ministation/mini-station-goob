@@ -1,2 +1,2 @@
-ent-ActionHydrakinCoolOff = Cool off
-    .desc = Dispel some of your body heat.
+ent-ActionHydrakinCoolOff = Охладиться
+    .desc = Сбросить часть тепла своего тела.

@@ -1,2 +1,2 @@
-reagent-name-peranol = peranol
-reagent-desc-peranol = A more stable version of Leporazine, reducing the body temperature and healing heat burns. It has amplified effect on Hydrakins.
+reagent-name-peranol = перанол
+reagent-desc-peranol = Более стабильный аналог лепоразина: снижает температуру тела и лечит термические ожоги. На гидракинов действует усиленно.

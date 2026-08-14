@@ -131,7 +131,3 @@ law-painter-name = Художник
 law-antimov-name = Антимов
 
 law-nutimov-name = Орехимов
-
-law-xenoborg-name = Ксеноборг
-
-law-mothershipcore-name = Ядро материнского корабля
