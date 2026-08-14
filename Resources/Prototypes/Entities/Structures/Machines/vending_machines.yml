@@ -129,6 +129,10 @@
     understands:
     - TauCetiBasic
     - RobotTalk
+  # CorvaxGoob - Vending Return: declare container so PrototypeSaveTest / map saves match ComponentInit
+  - type: ContainerContainer
+    containers:
+      vending_machine_returned_inventory: !type:Container
 
 - type: entity
   id: VendingMachineWallmount
@@ -193,6 +197,10 @@
     enabled: false
     usesApcPower: true
   - type: Rotatable
+  # CorvaxGoob - Vending Return: declare container so PrototypeSaveTest / map saves match ComponentInit
+  - type: ContainerContainer
+    containers:
+      vending_machine_returned_inventory: !type:Container
 
 # Vending machines
 

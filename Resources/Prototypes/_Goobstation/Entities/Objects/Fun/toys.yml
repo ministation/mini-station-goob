@@ -1198,11 +1198,12 @@
 #  id: EvilPlushiePasha
 #  suffix: Evil
 
-#- type: entity
-#  name: Evil TwoFish
-#  parent: PlushieTwofish
-#  id: EvilPlushieTwofish
-#  suffix: Evil
+# Mini: still placed on Bagel — keep for map load (Evil* plushies were commented upstream)
+- type: entity
+  name: Evil TwoFish
+  parent: PlushieTwofish
+  id: EvilPlushieTwofish
+  suffix: Evil
 
 #- type: entity
 #  name: evil Leo Malone plush
