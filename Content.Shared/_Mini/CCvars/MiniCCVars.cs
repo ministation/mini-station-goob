@@ -216,10 +216,10 @@ public sealed class MiniCCVars
      */
 
     /// <summary>
-    /// Link to boosty to show in the launcher.
+    /// Link to the site donate page to show in the launcher.
     /// </summary>
     public static readonly CVarDef<string> InfoLinksDonate =
-        CVarDef.Create("infolinks.donate", "", CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("infolinks.donate", "https://ministation.ru/donate", CVar.SERVER | CVar.REPLICATED);
 
     /**
      * Lobby

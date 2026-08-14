@@ -91,19 +91,19 @@ public sealed class DonateShopWindow : MiniDefaultWindow
         discordButton.OnPressed += _ => DiscordAuthLink.TryOpen(_cfg, _playerManager, _uriOpener);
         buttonsContainer.AddChild(discordButton);
 
-        // Кнопка Boosty
-        var boostyButton = new Button
+        // Кнопка донатов на сайте
+        var donateButton = new Button
         {
             Text = "Купить подписку",
             HorizontalExpand = true,
             MinSize = new Vector2(250, 40),
             StyleClasses = {"ActionButton"}
         };
-        boostyButton.OnPressed += _ =>
+        donateButton.OnPressed += _ =>
         {
-            _uriOpener.OpenUri(new Uri("https://boosty.to/mini-station"));
+            _uriOpener.OpenUri(new Uri("https://ministation.ru/donate"));
         };
-        buttonsContainer.AddChild(boostyButton);
+        buttonsContainer.AddChild(donateButton);
 
         container.AddChild(buttonsContainer);
         _profilePanel.AddChild(container);

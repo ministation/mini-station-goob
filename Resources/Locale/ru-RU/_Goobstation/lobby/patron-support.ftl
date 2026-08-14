@@ -1,6 +1,6 @@
 patron-support-window-title = Поддержите Мини-станцию
 patron-support-window-header = Благодарим вас за то, что играете на нашем сервере!
-patron-support-window-description1 = Если вам по-настоящему нравится играть на Мини-станции, просим поддержать нас на нашем Boosty.
+patron-support-window-description1 = Если вам по-настоящему нравится играть на Мини-станции, просим поддержать нас на странице донатов.
 patron-support-window-description2 = Ваша помощь поможет нам оплачивать серверное содержание, TTS-озвучку и улучшать существующий контент!
 
 patron-support-window-tiers-header = Уровни поддержки и награды
@@ -21,4 +21,4 @@ patron-support-window-tier3-perk1 = = Всё за предыдущий уров�
 patron-support-window-tier3-perk2 = • 🟡 Жёлтый цвет ника в OOC
 patron-support-window-tier3-perk3 = • 🌟Выдача ядерного оперативника, блоба, шедоулинга, космического культиста, мага, генокрада, дьявола или абдуктора и всех других крупных антагонистов после начала раунда по просьбе игрока
 
-patron-support-window-button = Посетить наш Boosty
+patron-support-window-button = Перейти к донатам
