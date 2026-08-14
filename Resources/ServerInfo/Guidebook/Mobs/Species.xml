@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </Box>
   <Box>
     <GuideEntityEmbed Entity="MobShadowkin" Caption="Тенекин"/>
-    <GuideEntityEmbed Entity="MobHydrakin" Caption="Hydrakin"/>
+    <GuideEntityEmbed Entity="MobHydrakin" Caption="Гидракин"/>
   </Box>
 
 </Document>
