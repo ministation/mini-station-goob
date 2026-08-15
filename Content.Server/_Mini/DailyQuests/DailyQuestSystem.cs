@@ -604,10 +604,7 @@ public sealed class DailyQuestSystem : EntitySystem
 
     private void OnHyposprayPatientInjected(ref HyposprayPatientInjectedEvent args)
     {
-        if (args.User == args.Target)
-            return;
-
-        if (!IsHumanPlayer(args.Target))
+        if (!_mobQuery.HasComp(args.Target))
             return;
 
         TryIncrement(args.User, DailyQuestType.InjectPatients);

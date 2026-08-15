@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Linq;
+using Content.Shared._Goobstation.Wizard;
+using Content.Shared._Shitcode.Heretic.Systems;
+using Content.Shared.Body.Part;
 using Content.Shared.EntityConditions;
 using Content.Shared.Mind;
 using JetBrains.Annotations;
@@ -12,10 +15,13 @@ public sealed partial class HasComponentConditionSystem : EntityConditionSystem<
 {
     [Dependency] private readonly SharedMindSystem _mind = default!;
     [Dependency] private readonly EntityManager _ent = default!;
+    [Dependency] private readonly SharedHereticSystem _heretic = default!;
 
     protected override void Condition(Entity<MetaDataComponent> ent, ref EntityConditionEvent<HasComponentCondition> args)
     {
         var target = ent.Owner;
+        if (TryComp(target, out BodyPartComponent? part) && part.Body is { } bodyUid)
+            target = bodyUid;
 
         bool entHasComp = args.Condition.ConsiderAll
             ? args.Condition.Components.Values.All(c => _ent.HasComponent(target, c.Component.GetType()))
@@ -30,8 +36,22 @@ public sealed partial class HasComponentConditionSystem : EntityConditionSystem<
         }
 
         var hasComp = entHasComp || mindEntHasComp;
+        if (!hasComp && LooksForHereticOrGhoul(args.Condition))
+            hasComp = _heretic.IsHereticOrGhoul(target);
+        if (!hasComp && LooksForWizard(args.Condition))
+            hasComp = HasComp<WizardComponent>(target) || HasComp<ApprenticeComponent>(target);
 
         args.Result = hasComp;
+    }
+
+    private static bool LooksForHereticOrGhoul(HasComponentCondition condition)
+    {
+        return condition.Components.ContainsKey("Heretic") || condition.Components.ContainsKey("Ghoul");
+    }
+
+    private static bool LooksForWizard(HasComponentCondition condition)
+    {
+        return condition.Components.ContainsKey("Wizard") || condition.Components.ContainsKey("Apprentice");
     }
 }
 

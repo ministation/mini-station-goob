@@ -8,6 +8,7 @@ using Content.Server.Storage.EntitySystems;
 using Content.Shared._Mini.Construction.Components;
 using Content.Shared._Mini.Construction.Events;
 using Content.Shared._Mini.Construction.Prototypes;
+using Content.Shared.Construction.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.Exchanger;
 using Content.Shared.Interaction;
@@ -36,6 +37,7 @@ public sealed class PartExchangerSystem : EntitySystem
     [Dependency] private readonly IComponentFactory _factory = default!;
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly BeamSystem _beam = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     public override void Initialize()
     {
@@ -66,7 +68,7 @@ public sealed class PartExchangerSystem : EntitySystem
         if (exchanger.ExchangeBeamPrototype is { } beamPrototype)
             _beam.TryCreateBeam(user, target, beamPrototype, accumulateIndex: false);
 
-        return _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, user, exchanger.ExchangeDuration, new ExchangerDoAfterEvent(), used, target: target, used: used)
+        if (!_doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, user, exchanger.ExchangeDuration, new ExchangerDoAfterEvent(), used, target: target, used: used)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
@@ -74,7 +76,11 @@ public sealed class PartExchangerSystem : EntitySystem
                 ? 1.2f
                 : null,
             RequireCanInteract = exchanger.DoDistanceCheck,
-        });
+        }))
+            return false;
+
+        _audio.PlayPvs(exchanger.ExchangeSound, used);
+        return true;
     }
 
     private void OnAfterInteract(EntityUid uid, PartExchangerComponent component, AfterInteractEvent args)
@@ -93,8 +99,7 @@ public sealed class PartExchangerSystem : EntitySystem
         if (!CanStartExchange(args.User, target, component))
             return;
 
-        if (TryStartExchangeDoAfter(args.User, uid, target, component))
-            _audio.PlayPvs(component.ExchangeSound, uid);
+        TryStartExchangeDoAfter(args.User, uid, target, component);
     }
 
     public bool TryStartExchange(EntityUid target, InteractUsingEvent args)
@@ -137,6 +142,9 @@ public sealed class PartExchangerSystem : EntitySystem
 
         if (!TryComp<MachineComponent>(target, out var machine))
             return;
+
+        machine.BoardContainer = _container.EnsureContainer<Container>(target, MachineFrameComponent.BoardContainerName);
+        machine.PartContainer = _container.EnsureContainer<Container>(target, MachineFrameComponent.PartContainerName);
 
         var machineParts = new Dictionary<ProtoId<MachinePartPrototype>, List<(EntityUid Uid, MachinePartState State)>>();
         var storageParts = new Dictionary<ProtoId<MachinePartPrototype>, List<(EntityUid Uid, MachinePartState State)>>();
@@ -248,7 +256,8 @@ public sealed class PartExchangerSystem : EntitySystem
 
                 _container.RemoveEntity(target, currentPart.Uid);
 
-                if (!_storage.Insert(uid, currentPart.Uid, out _, playSound: false))
+                if (!_storage.Insert(uid, currentPart.Uid, out _, playSound: false)
+                    && !_container.Insert(currentPart.Uid, storage.Container, force: true))
                 {
                     _container.Insert(currentPart.Uid, machine.PartContainer, force: true);
                     foreach (var reservedUid in replacementUids)
@@ -283,13 +292,95 @@ public sealed class PartExchangerSystem : EntitySystem
             }
         }
 
+        if (TryFillMissingMachineParts(machine, storage, storageParts))
+            changed = true;
+
         if (changed)
         {
             _construction.RefreshParts(target, machine);
             _audio.PlayPvs(component.ExchangeSound, uid);
         }
+        else
+        {
+            _popup.PopupEntity(Loc.GetString("part-exchanger-no-upgrade"), target, args.User);
+        }
 
         args.Handled = true;
+    }
+
+    private bool TryFillMissingMachineParts(
+        MachineComponent machine,
+        StorageComponent storage,
+        Dictionary<ProtoId<MachinePartPrototype>, List<(EntityUid Uid, MachinePartState State)>> storageParts)
+    {
+        if (machine.BoardContainer.ContainedEntities.Count == 0)
+            return false;
+
+        if (!TryComp<MachineBoardComponent>(machine.BoardContainer.ContainedEntities[0], out var board))
+            return false;
+
+        var requirements = GetEffectivePartRequirements(machine, board);
+        var installed = new Dictionary<ProtoId<MachinePartPrototype>, int>();
+        foreach (var partUid in machine.PartContainer.ContainedEntities)
+        {
+            if (!_construction.GetMachinePartState(partUid, out var partState))
+                continue;
+
+            installed[partState.Part.Part] = installed.GetValueOrDefault(partState.Part.Part) + partState.Quantity();
+        }
+
+        var changed = false;
+        foreach (var (partType, required) in requirements)
+        {
+            var missing = required - installed.GetValueOrDefault(partType);
+            if (missing <= 0)
+                continue;
+
+            if (!storageParts.TryGetValue(partType, out var available) || available.Count == 0)
+                continue;
+
+            available.Sort((a, b) => b.State.Part.Tier.CompareTo(a.State.Part.Tier));
+
+            foreach (var candidate in available.ToArray())
+            {
+                if (missing <= 0)
+                    break;
+
+                if (!_container.TryRemoveFromContainer(candidate.Uid, force: true))
+                    continue;
+
+                if (!_container.Insert(candidate.Uid, machine.PartContainer, force: true))
+                {
+                    _container.Insert(candidate.Uid, storage.Container, force: true);
+                    continue;
+                }
+
+                var used = candidate.State.Quantity();
+                missing -= used;
+                available.RemoveAll(part => part.Uid == candidate.Uid);
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    private Dictionary<ProtoId<MachinePartPrototype>, int> GetEffectivePartRequirements(MachineComponent machine, MachineBoardComponent board)
+    {
+        var requirements = new Dictionary<ProtoId<MachinePartPrototype>, int>(board.PartRequirements);
+
+        if (machine.Board is not { } boardProto
+            || !_proto.TryIndex<EntityPrototype>(boardProto.Id, out var entityProto)
+            || !entityProto.TryGetComponent(out MachineBoardComponent? protoBoard, _factory))
+            return requirements;
+
+        foreach (var (partType, amount) in protoBoard.PartRequirements)
+        {
+            if (!requirements.TryGetValue(partType, out var current) || amount > current)
+                requirements[partType] = amount;
+        }
+
+        return requirements;
     }
 
     private bool TryInsertIntoMachineFrame(EntityUid user, EntityUid frameUid, StorageComponent storage, MachineFrameComponent machineFrame)

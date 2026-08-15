@@ -22,6 +22,7 @@
     whitelist:
       components:
       - MachinePart
+      - StockPart
       - MachineBoard
       - ComputerBoard
       - Stack
@@ -59,3 +60,12 @@
   - type: Storage
     grid:
       - 0,0,12,8
+    quickInsert: true
+    areaInsert: true
+    whitelist:
+      components:
+      - MachinePart
+      - StockPart
+      - MachineBoard
+      - ComputerBoard
+      - Stack

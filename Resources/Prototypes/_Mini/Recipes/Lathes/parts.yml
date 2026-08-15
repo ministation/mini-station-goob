@@ -1,3 +1,33 @@
+- type: latheRecipe
+  abstract: true
+  parent: BaseStockPartRecipe
+  id: BaseStockPartRecipeT2
+  materials:
+    Steel: 100
+    Plastic: 50
+    Glass: 50
+
+- type: latheRecipe
+  abstract: true
+  parent: BaseStockPartRecipe
+  id: BaseStockPartRecipeT3
+  materials:
+    Steel: 150
+    Plastic: 75
+    Gold: 50
+    Silver: 25
+
+- type: latheRecipe
+  abstract: true
+  parent: BaseStockPartRecipe
+  id: BaseStockPartRecipeT4
+  materials:
+    Steel: 200
+    Plastic: 100
+    Gold: 75
+    Silver: 50
+    Plasma: 50
+
 # Tier 1
 - type: latheRecipe
   parent: BaseStockPartRecipe
@@ -26,27 +56,27 @@
 
 # Tier 2
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT2
   id: AdvancedCapacitorStockPart
   result: AdvancedCapacitorStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT2
   id: AdvancedScanningModuleStockPart
   result: AdvancedScanningModuleStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT2
   id: NanoServoStockPart
   result: NanoServoStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT2
   id: HighPowerMicroLaserStockPart
   result: HighPowerMicroLaserStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT2
   id: AdvancedMatterBinStockPart
   result: AdvancedMatterBinStockPart
 
@@ -62,53 +92,53 @@
 
 # Tier 3
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT3
   id: SuperCapacitorStockPart
   result: SuperCapacitorStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT3
   id: PhasicScanningModuleStockPart
   result: PhasicScanningModuleStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT3
   id: PicoServoStockPart
   result: PicoServoStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT3
   id: UltraHighPowerMicroLaserStockPart
   result: UltraHighPowerMicroLaserStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT3
   id: SuperMatterBinStockPart
   result: SuperMatterBinStockPart
 
 # Tier 4
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT4
   id: TriphasicScanningModuleStockPart
   result: TriphasicScanningModuleStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT4
   id: FemtoServoStockPart
   result: FemtoServoStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT4
   id: BluespaceCapacitorStockPart
   result: BluespaceCapacitorStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT4
   id: QuadUltraMicroLaserStockPart
   result: QuadUltraMicroLaserStockPart
 
 - type: latheRecipe
-  parent: BaseStockPartRecipe
+  parent: BaseStockPartRecipeT4
   id: BluespaceMatterBinStockPart
   result: BluespaceMatterBinStockPart
 

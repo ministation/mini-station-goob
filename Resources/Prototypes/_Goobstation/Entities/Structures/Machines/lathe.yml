@@ -184,6 +184,8 @@
   - type: Machine
     board: ScienceTechFabCircuitboard
   - type: Lathe
+    machinePartPrintSpeed: ScanningModule
+    machinePartMaterialUse: MatterBin
     idleState: icon
     runningState: icon
     staticPacks:
