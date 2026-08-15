@@ -246,6 +246,7 @@ public abstract partial class SharedMoverController : VirtualController
                 var didTileMovement = HandleTileMovement(uid,
                     uid,
                     tileMovement,
+                    mover,
                     physicsComponent,
                     xform,
                     tileDef,

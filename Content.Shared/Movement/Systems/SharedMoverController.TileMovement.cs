@@ -15,6 +15,7 @@ public abstract partial class SharedMoverController
         EntityUid uid,
         EntityUid physicsUid,
         TileMovementComponent tileMovement,
+        InputMoverComponent inputMover,
         PhysicsComponent physicsComponent,
         TransformComponent targetTransform,
         ContentTileDefinition? tileDef,
