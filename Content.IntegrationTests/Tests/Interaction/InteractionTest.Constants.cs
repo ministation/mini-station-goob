@@ -37,6 +37,7 @@ public abstract partial class InteractionTest
 
     // Parts — Mini/Orion: boards use Servo MachineParts, not Manipulator stacks
     protected const string Servo1 = "MicroServoStockPart";
+    protected const string MatterBin1 = "MatterBinStockPart";
     protected const string Battery1 = "PowerCellSmall";
     protected const string Battery4 = "PowerCellHyper";
 

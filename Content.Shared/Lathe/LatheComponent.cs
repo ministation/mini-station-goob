@@ -97,7 +97,7 @@ namespace Content.Shared.Lathe
         public ProtoId<MachinePartPrototype> MachinePartPrintSpeed = "Servo";
 
         [DataField]
-        public ProtoId<MachinePartPrototype> MachinePartMaterialUse = "Servo";
+        public ProtoId<MachinePartPrototype> MachinePartMaterialUse = "MatterBin";
 
         [DataField]
         public float PartRatingPrintTimeMultiplier = 0.5f;

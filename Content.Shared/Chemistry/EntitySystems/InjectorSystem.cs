@@ -663,7 +663,7 @@ public sealed partial class InjectorSystem : EntitySystem
         var afterInjectEv = new AfterHyposprayInjectsEvent { User = user, Target = target };
         RaiseLocalEvent(injector, ref afterInjectEv);
 
-        if (user != target)
+        if (HasComp<BloodstreamComponent>(target))
         {
             var questEv = new HyposprayPatientInjectedEvent(user, target);
             RaiseLocalEvent(ref questEv);

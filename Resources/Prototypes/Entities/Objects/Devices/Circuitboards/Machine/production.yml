@@ -9,7 +9,8 @@
     - type: MachineBoard
       prototype: Autolathe
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4
+        Servo: 2
+        MatterBin: 2
       stackRequirements:
         Glass: 1
 
@@ -41,7 +42,8 @@
   - type: MachineBoard
     prototype: Protolathe
     partRequirements: # Mini: Orion MachineParts
-      Servo: 4
+      Servo: 2
+      MatterBin: 2
     tagRequirements:
       GlassBeaker:
         amount: 2
@@ -93,7 +95,8 @@
     - type: MachineBoard
       prototype: SecurityTechFab
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4
+        Servo: 2
+        MatterBin: 2
       tagRequirements:
         GlassBeaker:
           amount: 2
@@ -123,7 +126,8 @@
     - type: MachineBoard
       prototype: MedicalTechFab
       partRequirements: # Mini: Orion MachineParts
-        Servo: 4
+        Servo: 2
+        MatterBin: 2
       tagRequirements:
         GlassBeaker:
           amount: 2

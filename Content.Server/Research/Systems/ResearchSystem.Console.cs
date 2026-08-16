@@ -98,7 +98,8 @@ public sealed partial class ResearchSystem
             var message = Loc.GetString(
                 "research-console-unlock-technology-radio-broadcast",
                 ("technology", Loc.GetString(technologyPrototype.Name)),
-                ("amount", costText)); // Orion-Edit: Removed approver
+                ("amount", costText),
+                ("approver", GetResearchLogUserName(act)));
 
             // Orion-Start
             var messageIC = Loc.GetString(

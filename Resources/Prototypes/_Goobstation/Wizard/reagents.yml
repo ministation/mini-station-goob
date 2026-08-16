@@ -15,6 +15,7 @@
           type: [ Yowie ]
           inverted: true
         - !type:HasComponentCondition
+          checkMind: true
           components:
           - type: Wizard
           - type: Apprentice
@@ -29,6 +30,7 @@
           type: [ Yowie ]
           inverted: true
         - !type:HasComponentCondition
+          checkMind: true
           components:
           - type: Wizard
           - type: Apprentice
@@ -58,6 +60,7 @@
         amount: 3
         conditions:
         - !type:HasComponentCondition
+          checkMind: true
           components:
           - type: Wizard
           - type: Apprentice
@@ -72,6 +75,7 @@
             Genetic: -5
         conditions:
         - !type:HasComponentCondition
+          checkMind: true
           components:
           - type: Wizard
           - type: Apprentice
@@ -80,6 +84,7 @@
         amount: -1.5
         conditions:
         - !type:HasComponentCondition
+          checkMind: true
           components:
           - type: Wizard
           - type: Apprentice
@@ -88,6 +93,7 @@
         cleanseRate: 6
         conditions:
         - !type:HasComponentCondition
+          checkMind: true
           components:
           - type: Wizard
           - type: Apprentice
@@ -98,6 +104,7 @@
         type: Remove
         conditions:
         - !type:HasComponentCondition
+          checkMind: true
           components:
           - type: Wizard
           - type: Apprentice

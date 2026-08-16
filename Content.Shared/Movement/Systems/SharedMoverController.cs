@@ -11,6 +11,7 @@ using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Tag;
+using Content.Shared._vg.TileMovement;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
@@ -64,6 +65,7 @@ public abstract partial class SharedMoverController : VirtualController
     [Dependency] protected EntityQuery<RelayInputMoverComponent> RelayQuery = default!;
     [Dependency] protected EntityQuery<PullableComponent> PullableQuery = default!;
     [Dependency] protected EntityQuery<TransformComponent> XformQuery = default!;
+    [Dependency] protected EntityQuery<TileMovementComponent> TileMovementQuery = default!;
 
     private static readonly ProtoId<TagPrototype> FootstepSoundTag = "FootstepSound";
 
@@ -174,7 +176,9 @@ public abstract partial class SharedMoverController : VirtualController
         // If we're not the target of a relay then handle lerp data.
         if (relaySource == null)
         {
-            // Update relative movement
+            if (TileMovementQuery.HasComp(uid))
+                TryUpdateRelative(uid, mover, xform);
+
             if (mover.LerpTarget < Timing.CurTime)
             {
                 TryUpdateRelative(uid, mover, xform);
@@ -234,6 +238,31 @@ public abstract partial class SharedMoverController : VirtualController
 
         // Get current tile def for things like speed/friction mods
         ContentTileDefinition? tileDef = null;
+
+        if (TileMovementQuery.TryComp(uid, out var tileMovement))
+        {
+            if (!weightless && !inAirHelpless)
+            {
+                var didTileMovement = HandleTileMovement(uid,
+                    uid,
+                    tileMovement,
+                    mover,
+                    physicsComponent,
+                    xform,
+                    tileDef,
+                    relayTarget,
+                    frameTime);
+                tileMovement.WasWeightlessLastTick = weightless;
+                if (didTileMovement)
+                    return;
+            }
+            else
+            {
+                tileMovement.WasWeightlessLastTick = weightless;
+                tileMovement.SlideActive = false;
+                tileMovement.FailureSlideActive = false;
+            }
+        }
 
         var touching = false;
         // Should we use tile friction or not?

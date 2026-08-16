@@ -361,49 +361,49 @@ daily-quest-clean-typan-patrol-legendary-name = Clean sector
 daily-quest-clean-typan-patrol-legendary-desc = Play Taipan patrol and clean {$count} decals.
 
 daily-quest-inject-paramedic-rare-name = Injections
-daily-quest-inject-paramedic-rare-desc = Play paramedic and inject {$count} players.
+daily-quest-inject-paramedic-rare-desc = Play paramedic and make {$count} injections.
 
 daily-quest-inject-paramedic-superRare-name = Injections
-daily-quest-inject-paramedic-superRare-desc = Play paramedic and inject {$count} players.
+daily-quest-inject-paramedic-superRare-desc = Play paramedic and make {$count} injections.
 
 daily-quest-inject-paramedic-epic-name = Injections
-daily-quest-inject-paramedic-epic-desc = Play paramedic and inject {$count} players.
+daily-quest-inject-paramedic-epic-desc = Play paramedic and make {$count} injections.
 
 daily-quest-inject-paramedic-mythic-name = Injections
-daily-quest-inject-paramedic-mythic-desc = Play paramedic and inject {$count} players.
+daily-quest-inject-paramedic-mythic-desc = Play paramedic and make {$count} injections.
 
 daily-quest-inject-paramedic-legendary-name = Injections
-daily-quest-inject-paramedic-legendary-desc = Play paramedic and inject {$count} players.
+daily-quest-inject-paramedic-legendary-desc = Play paramedic and make {$count} injections.
 
 daily-quest-inject-typan-medic-rare-name = Taipan injections
-daily-quest-inject-typan-medic-rare-desc = Play Taipan medic and inject {$count} players.
+daily-quest-inject-typan-medic-rare-desc = Play Taipan medic and make {$count} injections.
 
 daily-quest-inject-typan-medic-superRare-name = Taipan injections
-daily-quest-inject-typan-medic-superRare-desc = Play Taipan medic and inject {$count} players.
+daily-quest-inject-typan-medic-superRare-desc = Play Taipan medic and make {$count} injections.
 
 daily-quest-inject-typan-medic-epic-name = Taipan injections
-daily-quest-inject-typan-medic-epic-desc = Play Taipan medic and inject {$count} players.
+daily-quest-inject-typan-medic-epic-desc = Play Taipan medic and make {$count} injections.
 
 daily-quest-inject-typan-medic-mythic-name = Taipan injections
-daily-quest-inject-typan-medic-mythic-desc = Play Taipan medic and inject {$count} players.
+daily-quest-inject-typan-medic-mythic-desc = Play Taipan medic and make {$count} injections.
 
 daily-quest-inject-typan-medic-legendary-name = Taipan injections
-daily-quest-inject-typan-medic-legendary-desc = Play Taipan medic and inject {$count} players.
+daily-quest-inject-typan-medic-legendary-desc = Play Taipan medic and make {$count} injections.
 
 daily-quest-inject-chemist-rare-name = Chemistry
-daily-quest-inject-chemist-rare-desc = Play chemist and inject {$count} players.
+daily-quest-inject-chemist-rare-desc = Play chemist and make {$count} injections.
 
 daily-quest-inject-chemist-superRare-name = Chemistry
-daily-quest-inject-chemist-superRare-desc = Play chemist and inject {$count} players.
+daily-quest-inject-chemist-superRare-desc = Play chemist and make {$count} injections.
 
 daily-quest-inject-chemist-epic-name = Chemistry
-daily-quest-inject-chemist-epic-desc = Play chemist and inject {$count} players.
+daily-quest-inject-chemist-epic-desc = Play chemist and make {$count} injections.
 
 daily-quest-inject-chemist-mythic-name = Chemistry
-daily-quest-inject-chemist-mythic-desc = Play chemist and inject {$count} players.
+daily-quest-inject-chemist-mythic-desc = Play chemist and make {$count} injections.
 
 daily-quest-inject-chemist-legendary-name = Chemistry
-daily-quest-inject-chemist-legendary-desc = Play chemist and inject {$count} players.
+daily-quest-inject-chemist-legendary-desc = Play chemist and make {$count} injections.
 
 daily-quest-kill-security-rare-name = Clearance
 daily-quest-kill-security-rare-desc = Play security officer and kill {$count} hostiles.

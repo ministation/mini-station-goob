@@ -8,7 +8,6 @@ using Content.Goobstation.Shared.Religion.Nullrod;
 using Content.Goobstation.Shared.Shadowling.Components;
 using Content.Server.Heretic.EntitySystems;
 using Content.Shared._DV.CosmicCult.Components;
-using Content.Shared._Goobstation.Wizard;
 using Content.Shared._Shitmed.Medical.Surgery.Wounds.Systems;
 using Content.Shared.Damage;
 using Content.Shared.Heretic;
@@ -87,7 +86,7 @@ public sealed class WeakToHolySystem : EntitySystem
             && weak.AlwaysTakeHoly)
             unholyEvent.ShouldTakeHoly = true;
 
-        if (!unholyEvent.ShouldTakeHoly && IsUnholyAntag(unholyTarget))
+        if (!unholyEvent.ShouldTakeHoly && IsObviousUnholyAntag(unholyTarget))
             unholyEvent.ShouldTakeHoly = true;
 
         // Only filter Holy on bodies / body parts — not random damageables.
@@ -104,18 +103,14 @@ public sealed class WeakToHolySystem : EntitySystem
         });
     }
 
-    private bool IsUnholyAntag(EntityUid uid)
+    private bool IsObviousUnholyAntag(EntityUid uid)
     {
         return HasComp<BloodCultistComponent>(uid)
                || HasComp<ConstructComponent>(uid)
                || HasComp<RatvarRighteousComponent>(uid)
                || HasComp<CosmicCultComponent>(uid)
                || HasComp<DevilComponent>(uid)
-               || HasComp<WizardComponent>(uid)
-               || HasComp<ApprenticeComponent>(uid)
-               || HasComp<ShadowlingComponent>(uid)
-               || _heretic.TryGetHereticComponent(uid, out _, out _)
-               || _heretic.IsHereticOrGhoul(uid);
+               || HasComp<ShadowlingComponent>(uid);
     }
 
     private void OnUnholyItemDamage(Entity<WeakToHolyComponent> uid, ref DamageUnholyEvent args)
@@ -126,14 +121,12 @@ public sealed class WeakToHolySystem : EntitySystem
             return;
         }
 
-        // Any heretic (not only ascended) takes holy damage.
-        if (_heretic.TryGetHereticComponent(uid, out _, out _))
+        if (_heretic.TryGetHereticComponent(uid, out var heretic, out _) && heretic.Ascended)
         {
             args.ShouldTakeHoly = true;
             return;
         }
 
-        // If any item in hand or in inventory has Unholy item, shouldtakeholy is true.
         if (_inventorySystem.GetHandOrInventoryEntities(args.Target, SlotFlags.WITHOUT_POCKET)
             .Any(HasComp<UnholyItemComponent>))
             args.ShouldTakeHoly = true;

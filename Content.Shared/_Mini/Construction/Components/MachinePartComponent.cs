@@ -1,9 +1,10 @@
 using Content.Shared._Mini.Construction.Prototypes;
+using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Mini.Construction.Components;
 
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent]
 public sealed partial class MachinePartComponent : Component
 {
     [DataField(required: true)]

@@ -38,6 +38,7 @@ namespace Content.Server.Bible
         [Dependency] private readonly SharedAudioSystem _audio = default!;
         [Dependency] private readonly UseDelaySystem _delay = default!;
         [Dependency] private readonly SharedTransformSystem _transform = default!;
+        [Dependency] private readonly GoobBibleSystem _goobBible = default!;
 
         public override void Initialize()
         {
@@ -126,6 +127,9 @@ namespace Content.Server.Bible
             var ev = new BibleSmiteUsed();
             RaiseLocalEvent(args.Target.Value, ref ev);
             // Goobstation - Wraith - End
+
+            if (_goobBible.TryDoSmite(uid, args.User, args.Target.Value, useDelay, component))
+                return;
 
             // This only has a chance to fail if the target is not wearing anything on their head and is not a familiar.
             if (!_invSystem.TryGetSlotEntity(args.Target.Value, "head", out _) && !HasComp<FamiliarComponent>(args.Target.Value))
