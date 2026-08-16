@@ -109,8 +109,8 @@ public sealed partial class ConstructionSystem
         }
 
         var partRequirements = new Dictionary<ProtoId<MachinePartPrototype>, int>(machineBoard.PartRequirements);
-        if (component.Board is { } boardProto
-            && PrototypeManager.TryIndex<EntityPrototype>(boardProto.Id, out var boardEntityProto)
+        if (component.Board is { } boardProtoId
+            && PrototypeManager.TryIndex<EntityPrototype>(boardProtoId.Id, out var boardEntityProto)
             && boardEntityProto.TryGetComponent(out MachineBoardComponent? protoBoard, EntityManager.ComponentFactory))
         {
             foreach (var (partType, amount) in protoBoard.PartRequirements)
