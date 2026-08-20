@@ -159,7 +159,6 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
                     && woundable.Bleeds != totalPartBleeds) // Goobstation
                 {
                     woundable.Bleeds = totalPartBleeds; // Goobstation
-                    Dirty(bodyPart, woundable); // Goobstation
                 }
             }
 
