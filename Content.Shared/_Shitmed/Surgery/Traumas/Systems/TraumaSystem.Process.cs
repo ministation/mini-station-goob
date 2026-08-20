@@ -189,6 +189,7 @@ public partial class TraumaSystem
         ref WoundSeverityPointChangedEvent args)
     {
         if (_net.IsClient
+            || _wound.SuppressTraumaFromAmputation
             || HasComp<GodmodeComponent>(args.Component.HoldingWoundable))
             return;
 
