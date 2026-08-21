@@ -1,4 +1,4 @@
 [submodule "RobustToolbox"]
 	path = RobustToolbox
     url = https://github.com/ministation/RobustToolbox.git
-	branch = master
+	branch = ministation-288.1.0

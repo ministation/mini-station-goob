@@ -41,6 +41,20 @@ internal sealed class C0ControlFilteredFont : Font
         return _inner.DrawChar(handle, rune, baseline, scale, color, fallback);
     }
 
+    public override float DrawCharOutline(
+        DrawingHandleBase handle,
+        Rune rune,
+        Vector2 baseline,
+        float scale,
+        TextOutline outline,
+        bool fallback)
+    {
+        if (IsFiltered(rune))
+            return 0;
+
+        return _inner.DrawCharOutline(handle, rune, baseline, scale, outline, fallback);
+    }
+
     public override CharMetrics? GetCharMetrics(Rune rune, float scale, bool fallback)
     {
         if (IsFiltered(rune))

@@ -64,23 +64,22 @@ public sealed class HolosignSystem : EntitySystem
         // places the holographic sign at the click location, snapped to grid.
         var coords = args.ClickLocation.SnapToGrid(EntityManager);
         var mapCoords = _transform.ToMapCoordinates(coords);
-        var look = _map.TryFindGridAt(mapCoords, out var grid, out var gridComp)
-            ? _map.GetAnchoredEntities((grid, gridComp), mapCoords)
-            : _lookup.GetEntitiesInRange(mapCoords, 0.1f);
-        foreach (var entity in look)
+        if (_map.TryFindGridAt(mapCoords, out var grid, out var gridComp))
         {
-            if (_tag.HasTag(entity, component.HolosignTag))
-                return;
-
-            if (!_physicsQuery.TryComp(entity, out var physics) || !physics.CanCollide || !physics.Hard) // Goob
-                continue;
-
-            if ((physics.CollisionLayer &
-                 (int) (CollisionGroup.Impassable |
-                        CollisionGroup.LowImpassable |
-                        CollisionGroup.MidImpassable |
-                        CollisionGroup.HighImpassable)) != 0)
-                return;
+            var anchored = _map.GetAnchoredEntities((grid, gridComp), mapCoords);
+            while (anchored.MoveNext(out var entity))
+            {
+                if (BlocksHolosign(entity.Value, component))
+                    return;
+            }
+        }
+        else
+        {
+            foreach (var entity in _lookup.GetEntitiesInRange(mapCoords, 0.1f))
+            {
+                if (BlocksHolosign(entity, component))
+                    return;
+            }
         }
         if (!_powerCell.TryUseCharge(uid, component.ChargeUse, user: args.User)) // if no battery or no charge, doesn't work
             return;
@@ -92,5 +91,20 @@ public sealed class HolosignSystem : EntitySystem
             _transform.AnchorEntity(holoUid, xform); // anchor to prevent any tempering with (don't know what could even interact with it)
 
         args.Handled = true;
+    }
+
+    private bool BlocksHolosign(EntityUid entity, HolosignProjectorComponent component)
+    {
+        if (_tag.HasTag(entity, component.HolosignTag))
+            return true;
+
+        if (!_physicsQuery.TryComp(entity, out var physics) || !physics.CanCollide || !physics.Hard)
+            return false;
+
+        return (physics.CollisionLayer &
+                (int) (CollisionGroup.Impassable |
+                       CollisionGroup.LowImpassable |
+                       CollisionGroup.MidImpassable |
+                       CollisionGroup.HighImpassable)) != 0;
     }
 }

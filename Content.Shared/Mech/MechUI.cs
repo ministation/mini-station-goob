@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 
+using Robust.Shared.Audio;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.Mech;
@@ -124,5 +126,5 @@ public sealed class MechGrabberUiState : BoundUserInterfaceState
 [Serializable, NetSerializable]
 public sealed class MechSoundboardUiState : BoundUserInterfaceState
 {
-    public List<string> Sounds = new();
+    public List<ProtoId<SoundCollectionPrototype>> Sounds = new();
 }

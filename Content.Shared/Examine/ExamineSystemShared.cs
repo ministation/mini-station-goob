@@ -206,15 +206,14 @@ namespace Content.Shared.Examine
 
             foreach (var result in rayResults)
             {
-                if (!TryComp(result.HitEntity, out OccluderComponent? o))
+                if (!TryComp(result.HitEntity, out OccluderComponent? o) ||
+                    !TryComp(result.HitEntity, out TransformComponent? xform))
                 {
                     continue;
                 }
 
-                var bBox = o.BoundingBox;
-                bBox = bBox.Translated(_transform.GetWorldPosition(result.HitEntity));
-
-                if (bBox.Contains(origin.Position) || bBox.Contains(other.Position))
+                if (_occluder.ContainsPoint(o, xform, origin.Position) ||
+                    _occluder.ContainsPoint(o, xform, other.Position))
                 {
                     continue;
                 }
