@@ -783,9 +783,22 @@ namespace Content.Server.GameTicking
             if (lateMapWindow)
                 BeginMapPreload();
 
-            // Drain one stage whenever anything is queued (early and/or late).
+            // Drain staged preload. One stage per tick while the lobby countdown runs
+            // (keeps AHelp/chat responsive). When StartRound is already pending (force /
+            // deferred), finish the whole queue this tick so integration tests and
+            // force-start are not stuck across many frames with no spawn points.
             if (!MapsReady && _mapLoadQueue.Count > 0)
-                ProcessOneMapLoadStage();
+            {
+                if (_pendingStartRound)
+                {
+                    while (!MapsReady && _mapLoadQueue.Count > 0)
+                        ProcessOneMapLoadStage();
+                }
+                else
+                {
+                    ProcessOneMapLoadStage();
+                }
+            }
 
             TryConsumePendingStartRound();
 

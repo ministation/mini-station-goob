@@ -45,6 +45,9 @@ public sealed partial class TestPair
             Assert.That(gameTicker.DummyTicker, Is.False);
             Server.CfgMan.SetCVar(CCVars.GameLobbyEnabled, true);
             await Server.WaitPost(() => gameTicker.RestartRound());
+            await PoolManager.WaitUntil(Server,
+                () => gameTicker.RunLevel == GameRunLevel.PreRoundLobby || gameTicker.MapsReady,
+                maxTicks: 1200);
             await RunTicksSync(1);
         }
 
@@ -57,7 +60,16 @@ public sealed partial class TestPair
         await testOut.WriteLineAsync($"Recycling: {Watch.Elapsed.TotalMilliseconds} ms: Restarting server again");
         await Server.WaitPost(() => Server.EntMan.FlushEntities());
         await Server.WaitPost(() => gameTicker.RestartRound());
-        await RunTicksSync(1);
+        if (!next.DummyTicker && !next.InLobby)
+        {
+            await PoolManager.WaitUntil(Server,
+                () => gameTicker.MapsReady && gameTicker.RunLevel == GameRunLevel.InRound,
+                maxTicks: 1200);
+        }
+        else
+        {
+            await RunTicksSync(1);
+        }
     }
 
     public override void ValidateSettings(PairSettings s)
@@ -82,7 +94,8 @@ public sealed partial class TestPair
 
         var sPlayer = Server.ResolveDependency<ISharedPlayerManager>();
         var session = sPlayer.Sessions.Single();
-        var status = ticker.PlayerGameStatuses[session.UserId];
+        Assert.That(ticker.PlayerGameStatuses.TryGetValue(session.UserId, out var status), Is.True,
+            "Connected player missing from GameTicker.PlayerGameStatuses after pair setup.");
         var expected = settings.InLobby
             ? PlayerGameStatus.NotReadyToPlay
             : PlayerGameStatus.JoinedGame;

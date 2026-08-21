@@ -8,6 +8,7 @@ using Content.IntegrationTests.Tests.Destructible;
 using Content.IntegrationTests.Tests.DeviceNetwork;
 using Content.Server.GameTicking;
 using Content.Shared.CCVar;
+using Content.Shared.GameTicking;
 using Content.Shared.Players;
 using Robust.Shared;
 using Robust.Shared.ContentPack;
@@ -45,6 +46,10 @@ public sealed partial class TestPair : RobustIntegrationTest.TestPair
         {
             var gameTicker = Server.System<GameTicker>();
             await Server.WaitPost(() => gameTicker.RestartRound());
+            // Staged map preload may defer StartRound — wait until the round is actually InRound.
+            await PoolManager.WaitUntil(Server,
+                () => gameTicker.MapsReady && gameTicker.RunLevel == GameRunLevel.InRound,
+                maxTicks: 1200);
         }
     }
 

@@ -433,6 +433,16 @@ namespace Content.Server.GameTicking
             // InGame with a null eye (black screen).
             if (!SpawnObserver(player))
             {
+                // Staged map preload: maps/spawners not ready yet — keep the player tracked
+                // without dumping them into a black screen. Round start will spawn them.
+                if (!MapsReady)
+                {
+                    Log.Warning($"Observer spawn deferred for {player}; maps still preloading.");
+                    if (!_playerGameStatuses.ContainsKey(player.UserId))
+                        PlayerJoinLobby(player);
+                    return;
+                }
+
                 Log.Error($"Failed to spawn observer for {player}; returning to lobby to avoid black screen.");
                 if (LobbyEnabled)
                     PlayerJoinLobby(player);
