@@ -60,7 +60,8 @@ public sealed partial class TestPair
         await testOut.WriteLineAsync($"Recycling: {Watch.Elapsed.TotalMilliseconds} ms: Restarting server again");
         await Server.WaitPost(() => Server.EntMan.FlushEntities());
         await Server.WaitPost(() => gameTicker.RestartRound());
-        if (!next.DummyTicker && !next.InLobby)
+        var poolNext = (PoolSettings) next;
+        if (!poolNext.DummyTicker && !poolNext.InLobby)
         {
             await PoolManager.WaitUntil(Server,
                 () => gameTicker.MapsReady && gameTicker.RunLevel == GameRunLevel.InRound,

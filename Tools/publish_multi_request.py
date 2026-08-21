@@ -13,9 +13,9 @@ import requests
 import subprocess
 from typing import Iterable
 
-PUBLISH_TOKEN = os.environ["PUBLISH_TOKEN"]
-VERSION = os.environ["GITHUB_SHA"]
-FORK_ID = os.environ['FORK_ID']
+PUBLISH_TOKEN = os.environ["PUBLISH_TOKEN"].strip()
+VERSION = os.environ["GITHUB_SHA"].strip()
+FORK_ID = os.environ["FORK_ID"].strip()
 
 RELEASE_DIR = "release"
 
@@ -26,6 +26,14 @@ RELEASE_DIR = "release"
 _default_cdn = os.environ.get("ROBUST_CDN_URL", "https://cdn.ministation.ru/").strip()
 ROBUST_CDN_URL = _default_cdn if _default_cdn.endswith("/") else _default_cdn + "/"
 
+
+def _check(resp: requests.Response, step: str) -> None:
+    if resp.ok:
+        return
+    body = (resp.text or "")[:800]
+    raise RuntimeError(f"{step} failed: HTTP {resp.status_code} {resp.reason}\nURL: {resp.url}\nBody: {body}")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--fork-id", default=FORK_ID)
@@ -33,22 +41,24 @@ def main():
     args = parser.parse_args()
     fork_id = args.fork_id
 
+    engine_version = get_engine_version()
     session = requests.Session()
     session.headers = {
         "Authorization": f"Bearer {PUBLISH_TOKEN}",
     }
 
-    print(f"Starting publish on Robust.Cdn for version {VERSION}")
+    print(f"Starting publish on Robust.Cdn for version {VERSION} (engine {engine_version})")
+    print(f"CDN: {ROBUST_CDN_URL}fork/{fork_id}/")
 
     data = {
         "version": VERSION,
-        "engineVersion": get_engine_version(),
+        "engineVersion": engine_version,
     }
     headers = {
         "Content-Type": "application/json"
     }
     resp = session.post(f"{ROBUST_CDN_URL}fork/{fork_id}/publish/start", json=data, headers=headers)
-    resp.raise_for_status()
+    _check(resp, "publish/start")
     print("Publish successfully started, adding files...")
 
     for file in get_files_to_publish():
@@ -61,7 +71,7 @@ def main():
             }
             resp = session.post(f"{ROBUST_CDN_URL}fork/{fork_id}/publish/file", data=f, headers=headers)
 
-        resp.raise_for_status()
+        _check(resp, f"publish/file ({os.path.basename(file)})")
 
     print("Successfully pushed files, finishing publish...")
 
@@ -72,7 +82,7 @@ def main():
         "Content-Type": "application/json"
     }
     resp = session.post(f"{ROBUST_CDN_URL}fork/{fork_id}/publish/finish", json=data, headers=headers)
-    resp.raise_for_status()
+    _check(resp, "publish/finish")
 
     print("SUCCESS!")
 
