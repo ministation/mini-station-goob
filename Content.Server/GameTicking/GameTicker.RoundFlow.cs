@@ -84,10 +84,14 @@ namespace Content.Server.GameTicking
         public bool CanUpdateMap()
         {
             // Once staged preload has started (or finished), changing the map would desync the queue.
-            return RunLevel == GameRunLevel.PreRoundLobby &&
-                   !MapLoadInProgress &&
-                   !MapsReady &&
-                   _roundStartTime - RoundPreloadTime > _gameTiming.CurTime;
+            if (RunLevel != GameRunLevel.PreRoundLobby || MapLoadInProgress || MapsReady)
+                return false;
+
+            // No lobby countdown yet (DummyTicker / tests / idle): map is still free to change.
+            if (_roundStartTime == TimeSpan.Zero)
+                return true;
+
+            return _roundStartTime - RoundPreloadTime > _gameTiming.CurTime;
         }
 
         /// <summary>
@@ -360,11 +364,15 @@ namespace Content.Server.GameTicking
 
             if (!MapsReady)
             {
-                // Never sync-drain map load here — that freezes lobby/AHelp/ghost shop for everyone.
-                // Do not announce "round starting" yet — StartRound will run again when maps are ready.
+                // Never block the lobby tick path on map IO — but once StartRound was
+                // explicitly requested, finish the staged queue now so we enter InRound
+                // without waiting for Update (integration tests + force-start).
                 _sawmill.Warning("StartRound called before MapsReady; deferring to staged preload.");
                 _startingRound = false;
                 RequestStartRound(force);
+                while (!MapsReady && _mapLoadQueue.Count > 0)
+                    ProcessOneMapLoadStage();
+                TryConsumePendingStartRound();
                 return;
             }
 
