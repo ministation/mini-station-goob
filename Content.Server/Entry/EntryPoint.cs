@@ -29,6 +29,7 @@ using Content.Shared.Kitchen;
 using Content.Shared.Localizations;
 using Robust.Server;
 using Robust.Server.ServerStatus;
+using Robust.Shared;
 using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Prototypes;
@@ -102,6 +103,19 @@ namespace Content.Server.Entry
             Dependencies.InjectDependencies(this);
 
             LoadConfigPresets(_cfg, _res, _log.GetSawmill("configpreset"));
+
+            // Mini: never ship physics.target_minimum_tickrate below 60. REPLICATED+ARCHIVE;
+            // value 30 (1 substep @ tickrate 30) makes client prediction feel like unlocked VSync.
+            const int minPhysicsTargetTickrate = 60;
+            var physicsTarget = _cfg.GetCVar(CVars.TargetMinimumTickrate);
+            if (physicsTarget < minPhysicsTargetTickrate)
+            {
+                _log.GetSawmill("configpreset").Warning(
+                    "physics.target_minimum_tickrate was {Value}; clamping to {Min} (client frame pacing / VSync feel).",
+                    physicsTarget,
+                    minPhysicsTargetTickrate);
+                _cfg.SetCVar(CVars.TargetMinimumTickrate, minPhysicsTargetTickrate);
+            }
 
             var aczProvider = new ContentMagicAczProvider(Dependencies);
             _host.SetMagicAczProvider(aczProvider);

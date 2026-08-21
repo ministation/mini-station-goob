@@ -123,11 +123,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
         ResetLowerBody(ent);
         ClearClothingWalkLayers(ent);
+        ent.Comp.WasAnimating = false;
     }
 
     private void OnDidEquip(Entity<FootWalkAnimationComponent> ent, ref DidEquipEvent args)
     {
-        if (args.Slot is not (ShoesSlot or OuterSlot))
+        if (!_enabled || args.Slot is not (ShoesSlot or OuterSlot))
             return;
 
         // Force rebuild next frame for current facing.
@@ -136,6 +137,9 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
     private void OnDidUnequip(Entity<FootWalkAnimationComponent> ent, ref DidUnequipEvent args)
     {
+        if (!_enabled)
+            return;
+
         if (args.Slot == ShoesSlot)
         {
             ClearShoeSplits(ent);
@@ -151,7 +155,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
     private void OnVisualsChanged(Entity<FootWalkAnimationComponent> ent, ref VisualsChangedEvent args)
     {
-        if (args.ContainerId is not (ShoesSlot or OuterSlot))
+        if (!_enabled || args.ContainerId is not (ShoesSlot or OuterSlot))
             return;
 
         ClearClothingWalkLayers(ent);
@@ -162,27 +166,34 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (!_enabled)
             return;
 
+        // FrameUpdate uses real wall-clock delta (same as original). Entity Update can run
+        // multiple predicted ticks per frame and made the bob look too fast.
         var query = EntityQueryEnumerator<FootWalkAnimationComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var walk, out _))
         {
-            if (!_spriteQuery.TryGetComponent(uid, out var sprite))
+            if (!_spriteQuery.TryGetComponent(uid, out var sprite) || !sprite.Visible)
                 continue;
 
-            if (!CanAnimate(uid)
-                || !_physicsQuery.TryGetComponent(uid, out var physics)
-                || physics.LinearVelocity.LengthSquared() < walk.MinSpeedSquared
-                || !HasLowerBodyVisuals(uid, sprite))
+            // Cheap reject for the common idle case before CanAnimate / gravity checks.
+            if (!_physicsQuery.TryGetComponent(uid, out var physics)
+                || physics.LinearVelocity.LengthSquared() < walk.MinSpeedSquared)
             {
-                ClearClothingWalkLayers((uid, walk));
-                SetBodyFeetHidden((uid, walk), sprite, hide: false);
-                ResetLowerBody((uid, walk), sprite);
+                StopAnimating((uid, walk), sprite);
                 continue;
             }
+
+            if (!CanAnimate(uid) || !HasLowerBodyVisuals(uid, sprite))
+            {
+                StopAnimating((uid, walk), sprite);
+                continue;
+            }
+
+            walk.WasAnimating = true;
 
             // Must match sprite RSI direction (world + eye), otherwise camera turns invert bob / wrong mode.
             var facing = GetScreenFacing(uid);
             var frontMode = facing is RsiDirection.South or RsiDirection.North;
-            EnsureClothingMode((uid, walk), frontMode);
+            EnsureClothingModeIfNeeded((uid, walk), frontMode);
 
             var hasShoes = HasSlotVisuals(uid, ShoesSlot);
             var hasOuter = HasSlotVisuals(uid, OuterSlot);
@@ -207,9 +218,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             // Side near foot (the one toward the camera for E/W sprites).
             var nearY = facing == RsiDirection.East ? rightY : leftY;
 
-            ResetLowerBody((uid, walk), sprite, clearTouched: false);
-            walk.TouchedEnumLayers.Clear();
-            walk.TouchedStringLayers.Clear();
+            // Only undo last tick's offsets — do not re-zero every lower-body layer.
+            ResetTouchedOffsets((uid, walk), sprite);
 
             _humanoidQuery.TryGetComponent(uid, out var humanoid);
 
@@ -253,6 +263,18 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                     ApplySideBandOffset((uid, sprite), walk, nearY);
             }
         }
+    }
+
+    private void StopAnimating(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
+    {
+        if (!ent.Comp.WasAnimating)
+            return;
+
+        ClearClothingWalkLayers(ent);
+        SetBodyFeetHidden(ent, sprite, hide: false);
+        ResetLowerBody(ent, sprite);
+        ent.Comp.WasAnimating = false;
+        ent.Comp.Phase = 0f;
     }
 
     /// <summary>
@@ -426,7 +448,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             SetLayerOffset(ent, walk, key, offset);
     }
 
-    private void EnsureClothingMode(Entity<FootWalkAnimationComponent> ent, bool frontMode)
+    private void EnsureClothingModeIfNeeded(Entity<FootWalkAnimationComponent> ent, bool frontMode)
     {
         var desired = frontMode ? (byte) 1 : (byte) 2;
         var cutChanged = !float.IsNaN(ent.Comp.AppliedOuterFootCut)
@@ -434,11 +456,28 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
         if (cutChanged)
         {
-            // Foot-cut param changed — rebuild outer layers once.
             ClearOuterSplits(ent, clearHole: false);
             ClearOuterSideBands(ent, clearHole: true);
             ent.Comp.ClothingMode = 0;
+            ent.Comp.ClothingSplitsActive = false;
         }
+
+        if (!ent.Comp.ClothingSplitsActive)
+        {
+            EnsureClothingMode(ent, frontMode);
+            return;
+        }
+
+        if (ent.Comp.ClothingMode == desired)
+            return;
+
+        SetClothingModeVisible(ent, frontMode);
+        ent.Comp.ClothingMode = desired;
+    }
+
+    private void EnsureClothingMode(Entity<FootWalkAnimationComponent> ent, bool frontMode)
+    {
+        var desired = frontMode ? (byte) 1 : (byte) 2;
 
         // Build both front halves and side bands once; facing only toggles visibility.
         EnsureShoeSplits(ent, forceRebuild: ent.Comp.ShoeSplitKeys.Count == 0);
@@ -935,6 +974,9 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 SetBodyFeetHidden((uid, walk), sprite, hide: false);
                 ResetLowerBody((uid, walk), sprite);
             }
+
+            walk.WasAnimating = false;
+            walk.Phase = 0f;
         }
     }
 
@@ -997,18 +1039,11 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         return false;
     }
 
-    private void ResetLowerBody(
-        Entity<FootWalkAnimationComponent> ent,
-        SpriteComponent? sprite = null,
-        bool clearTouched = true)
+    /// <summary>
+    /// Zero only layers touched last tick, then clear the touch sets for this tick's Apply*.
+    /// </summary>
+    private void ResetTouchedOffsets(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
     {
-        if (sprite == null && !_spriteQuery.TryGetComponent(ent.Owner, out sprite))
-        {
-            ent.Comp.TouchedEnumLayers.Clear();
-            ent.Comp.TouchedStringLayers.Clear();
-            return;
-        }
-
         foreach (var key in ent.Comp.TouchedEnumLayers)
         {
             if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
@@ -1020,6 +1055,23 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
                 _sprite.LayerSetOffset((ent.Owner, sprite), index, Vector2.Zero);
         }
+
+        ent.Comp.TouchedEnumLayers.Clear();
+        ent.Comp.TouchedStringLayers.Clear();
+    }
+
+    private void ResetLowerBody(
+        Entity<FootWalkAnimationComponent> ent,
+        SpriteComponent? sprite = null)
+    {
+        if (sprite == null && !_spriteQuery.TryGetComponent(ent.Owner, out sprite))
+        {
+            ent.Comp.TouchedEnumLayers.Clear();
+            ent.Comp.TouchedStringLayers.Clear();
+            return;
+        }
+
+        ResetTouchedOffsets(ent, sprite);
 
         foreach (var layer in LeftLayers)
         {
@@ -1049,12 +1101,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         {
             if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
                 _sprite.LayerSetOffset((ent.Owner, sprite), index, Vector2.Zero);
-        }
-
-        if (clearTouched)
-        {
-            ent.Comp.TouchedEnumLayers.Clear();
-            ent.Comp.TouchedStringLayers.Clear();
         }
     }
 }

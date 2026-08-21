@@ -142,6 +142,11 @@ public sealed partial class WoundSystem : EntitySystem
     {
         base.Update(frameTime);
 
+        // Mini: healing jobs on every Body in PVS every tick wreck client FPS after woundmed.
+        // Server remains authoritative; client applies replicated wound/bleed state.
+        if (_net.IsClient)
+            return;
+
         if (!_timing.IsFirstTimePredicted)
             return;
 

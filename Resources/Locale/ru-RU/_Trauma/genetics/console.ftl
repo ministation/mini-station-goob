@@ -75,3 +75,14 @@ genetics-console-save-enzymes = Сохранить на диск
 genetics-console-disk-enzymes = Уникальные ферменты на диске
 genetics-console-apply-enzymes = Применить ферменты к объекту
 genetics-console-color = К{$r}/З{$g}/С{$b}
+
+genetics-console-tab-sequencer = Секвенатор
+genetics-console-tab-storage = Хранилище
+genetics-console-tab-combiner = Комбинатор
+genetics-console-tab-enzymes = Ферменты
+
+genetics-console-enzymes-current-disk = Текущий диск:
+genetics-console-enzymes-stored = Сохранённые ферменты:
+genetics-console-enzymes-sex = Пол:
+genetics-console-enzymes-eye-color = Цвет глаз:
+genetics-console-enzymes-skin-color = Цвет кожи:

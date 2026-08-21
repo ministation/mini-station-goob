@@ -77,3 +77,14 @@ genetics-console-save-enzymes = Save to Disk
 genetics-console-disk-enzymes = Disk Unique Enzymes
 genetics-console-apply-enzymes = Apply Enzymes to Subject
 genetics-console-color = R{$r}/G{$g}/B{$b}
+
+genetics-console-tab-sequencer = Sequencer
+genetics-console-tab-storage = Storage
+genetics-console-tab-combiner = Combiner
+genetics-console-tab-enzymes = Enzymes
+
+genetics-console-enzymes-current-disk = Current Disk:
+genetics-console-enzymes-stored = Stored Enzymes:
+genetics-console-enzymes-sex = Sex:
+genetics-console-enzymes-eye-color = Eye Color:
+genetics-console-enzymes-skin-color = Skin Color:

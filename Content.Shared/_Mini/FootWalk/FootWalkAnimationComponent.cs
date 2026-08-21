@@ -116,4 +116,10 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     [ViewVariables]
     public bool BodyFeetHidden;
+
+    /// <summary>
+    /// Client: last FrameUpdate applied walk offsets. Idle entities skip ResetLowerBody entirely.
+    /// </summary>
+    [ViewVariables]
+    public bool WasAnimating;
 }

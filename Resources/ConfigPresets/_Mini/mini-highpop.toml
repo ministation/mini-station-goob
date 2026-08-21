@@ -7,8 +7,8 @@
 # Includes: mini-network + mini-server-perf + cheap atmos flags.
 # Smoke after deploy:
 # - Tick time / Prometheus Serialize+Send States under peak
-# - Door/projectile clipping (if bad: physics.target_minimum_tickrate = 45)
 # - Softcap: raise game.soft_max_players if the host can sustain more
+# - Do NOT set physics.target_minimum_tickrate = 30 (REPLICATED; kills VSync lock feel)
 
 [net]
 pvs_range = 21
@@ -27,10 +27,6 @@ atmosdbgoverlaytickrate = 4.5
 round_end_pvs_overrides = false
 # Soft deny around current E3-class host limits; raise when on faster single-thread CPU.
 soft_max_players = 40
-
-[physics]
-# Default 60 → 2 substeps at tickrate 30. Match tickrate → 1 substep.
-target_minimum_tickrate = 30
 
 [npc]
 max_updates = 96

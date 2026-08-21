@@ -124,14 +124,19 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
                 else if (!_mobStateSystem.IsDead(uid))
                 {
                     // If they're healthy, we'll try and heal some bloodloss instead.
-                    _damageableSystem.TryChangeDamage(
-                        uid,
-                        bloodstream.BloodlossHealDamage * bloodPercentage * _bloodlossMultiplier, // Goobstation
-                        ignoreResistances: true,
-                        interruptsDoAfters: false,
-                        ignoreBlockers: true,
-                        targetPart: TargetBodyPart.All,
-                        splitDamage: SplitDamageBehavior.SplitEnsureAll); // Shitmed Change
+                    // Mini: skip zero heals — TryChangeDamage still walks woundmed graphs every tick.
+                    var bloodlossHeal = bloodstream.BloodlossHealDamage * bloodPercentage * _bloodlossMultiplier;
+                    if (bloodlossHeal.GetTotal() != FixedPoint2.Zero)
+                    {
+                        _damageableSystem.TryChangeDamage(
+                            uid,
+                            bloodlossHeal, // Goobstation
+                            ignoreResistances: true,
+                            interruptsDoAfters: false,
+                            ignoreBlockers: true,
+                            targetPart: TargetBodyPart.All,
+                            splitDamage: SplitDamageBehavior.SplitEnsureAll); // Shitmed Change
+                    }
 
                     _status.TryRemoveStatusEffect(uid, Bloodloss);
                 }
@@ -164,6 +169,7 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
 
             var missingBlood = bloodstream.BloodReferenceSolution.Volume - bloodstream.BloodSolution.Value.Comp.Solution.Volume;
 
+            var prevBleedFromWounds = bloodstream.BleedAmountFromWounds;
             bloodstream.BleedAmountFromWounds = (float) total; // why was it ever divided by 4? Goobstation
 
             if (_consciousness.TryGetNerveSystem(uid, out var nerveSys))
@@ -185,10 +191,19 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
             }
             // Shitmed Change End
             // Goobstation start
+            var prevBleedAmount = bloodstream.BleedAmount;
             bloodstream.BleedAmount = bloodstream.BleedAmountFromWounds + bloodstream.BleedAmountNotFromWounds;
             bloodstream.BleedAmount = Math.Clamp(bloodstream.BleedAmount, 0, bloodstream.MaxBleedAmount);
 
-            DirtyFields(uid, bloodstream, null, nameof(BloodstreamComponent.BleedAmount), nameof(BloodstreamComponent.BleedAmountFromWounds));
+            // Mini: Do NOT Dirty every living mob every UpdateInterval — that floods PVS/state and
+            // hitch-spikes client FPS after woundmed (upstream bloodstream rewrite).
+            if (!MathHelper.CloseTo(prevBleedAmount, bloodstream.BleedAmount)
+                || !MathHelper.CloseTo(prevBleedFromWounds, bloodstream.BleedAmountFromWounds))
+            {
+                DirtyFields(uid, bloodstream, null,
+                    nameof(BloodstreamComponent.BleedAmount),
+                    nameof(BloodstreamComponent.BleedAmountFromWounds));
+            }
 
             if (bloodstream.BleedAmount == 0)
                 _alertsSystem.ClearAlert(uid, bloodstream.BleedingAlert);

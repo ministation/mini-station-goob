@@ -359,6 +359,13 @@ public partial class ConsciousnessSystem
         if (!Resolve(target, ref consciousness))
             return false;
 
+        // Mini: bloodstream ticks this every interval for every living mob — skip no-op Dirties.
+        if (consciousness.Modifiers.TryGetValue((modifierOwner, identifier), out var existing)
+            && existing.Change.Equals(modifierChange)
+            && time == null
+            && existing.Type == type)
+            return true;
+
         var newModifier = new ConsciousnessModifier(Change: modifierChange, Time: _timing.CurTime + time, Type: type);
         consciousness.Modifiers[(modifierOwner, identifier)] = newModifier;
 

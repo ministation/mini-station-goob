@@ -22,7 +22,7 @@ log_late_msg = true
 # Related Mini presets:
 #   mini-highpop.toml     — combined production high-pop (preferred)
 #   mini-network.toml     — PVS / AEAD thread / Lidgren log hygiene (not TLS)
-#   mini-server-perf.toml — physics 1 substep + NPC budget + cheap atmos
+#   mini-server-perf.toml — footprints off + NPC budget + cheap atmos (physics stays default 60)
 #   mini-client.toml      — docs: put outline.enabled = false in *client* config.toml
 #
 # Load high-pop: config.presets=_Mini/mini-highpop
@@ -30,5 +30,5 @@ log_late_msg = true
 #
 # Smoke checklist (perf deploy):
 #   1) Server tick/FPS under load (histograms above)
-#   2) Physics clipping (doors/projectiles) after target_minimum_tickrate = 30
+#   2) Client frame pacing with VSync (physics.target_minimum_tickrate must stay 60)
 #   3) Client: outlines off, FPS in busy rooms

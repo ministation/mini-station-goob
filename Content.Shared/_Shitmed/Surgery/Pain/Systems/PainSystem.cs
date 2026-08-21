@@ -73,6 +73,10 @@ public sealed partial class PainSystem : EntitySystem
     {
         base.Update(frameTime);
 
+        // Mini: pain jobs over every NerveSystem in PVS on the client amplify woundmed hitch spikes.
+        if (_net.IsClient)
+            return;
+
         if (!_timing.IsFirstTimePredicted)
             return;
 

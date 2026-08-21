@@ -4,18 +4,13 @@
 #
 # Smoke after deploy:
 # - Server FPS / tick time under peak (Prometheus or metrics from network-baseline.toml)
-# - Door / projectile clipping or tunneling (if bad: raise physics.target_minimum_tickrate to 45 or 60)
-# - Mob swarm: HTN still responsive enough with npc.max_updates = 96
 # - Late round: footprints stay off (decals used to accumulate hard)
+# - Do NOT set physics.target_minimum_tickrate = 30 (REPLICATED; kills VSync lock feel)
 
 [footprints]
 # Bloody footprints / drag marks. Off by default in GoobCVars; pin explicitly for Mini.
 enabled = false
 minimum_puddle_size = 6
-
-[physics]
-# Default 60 → 2 physics substeps at net.tickrate 30. Match tickrate → 1 substep (large CPU save).
-target_minimum_tickrate = 30
 
 [npc]
 # Soft cap under dense awake HTN populations (engine default 128).
@@ -31,12 +26,8 @@ superconduction = false
 space_wind = false
 
 [midi]
-# Caps MIDI spam that tanks tick time in long rounds.
 max_events_per_second = 400
 max_events_per_batch = 40
 
-[net]
-# Slightly cheaper gas overlay updates (already in mini-highpop; keep here for solo merge).
-gasoverlaytickrate = 4.5
-gasoverlaythresholds = 35
-atmosdbgoverlaytickrate = 4.5
+# Keep engine default physics.target_minimum_tickrate = 60 (2 substeps @ tickrate 30).
+# Matching tickrate (30) saves CPU but tanks perceived smoothness / VSync lock feel.

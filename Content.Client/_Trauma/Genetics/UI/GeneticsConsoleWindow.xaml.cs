@@ -80,6 +80,11 @@ public sealed partial class GeneticsConsoleWindow : FancyWindow
 
         Enzymes.OnSave += () => OnSaveEnzymes?.Invoke();
         Enzymes.OnApply += () => OnApplyEnzymes?.Invoke();
+
+        Tabs.SetTabTitle(0, Loc.GetString("genetics-console-tab-sequencer"));
+        Tabs.SetTabTitle(1, Loc.GetString("genetics-console-tab-storage"));
+        Tabs.SetTabTitle(2, Loc.GetString("genetics-console-tab-combiner"));
+        Tabs.SetTabTitle(3, Loc.GetString("genetics-console-tab-enzymes"));
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
