@@ -43,6 +43,7 @@ public sealed partial class LavalandSystem : EntitySystem
     [Dependency] private readonly MapLoaderSystem _mapLoader = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly ShuttleSystem _shuttle = default!;
+    [Dependency] private readonly GameTicker _gameTicker = default!;
 
     private EntityQuery<MapGridComponent> _gridQuery;
     private EntityQuery<TransformComponent> _xformQuery;
@@ -70,7 +71,8 @@ public sealed partial class LavalandSystem : EntitySystem
         {
             foreach (var planetEntry in gameMap.Planets)
             {
-                SetupLavalandPlanet(planetEntry, out _);
+                // Default "Lavaland" is usually already early-queued; extras still enqueue here.
+                _gameTicker.EnqueueLavalandPlanet(planetEntry);
             }
         }
     }

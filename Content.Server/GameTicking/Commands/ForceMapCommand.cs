@@ -13,11 +13,12 @@ using Robust.Shared.Prototypes;
 namespace Content.Server.GameTicking.Commands
 {
     [AdminCommand(AdminFlags.Host)]
-    public sealed class ForceMapCommand : LocalizedCommands
+    public sealed class ForceMapCommand : LocalizedEntityCommands
     {
         [Dependency] private readonly IConfigurationManager _configurationManager = default!;
         [Dependency] private readonly IGameMapManager _gameMapManager = default!;
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+        [Dependency] private readonly GameTicker _ticker = default!;
 
         public override string Command => "forcemap";
 
@@ -26,6 +27,12 @@ namespace Content.Server.GameTicking.Commands
             if (args.Length != 1)
             {
                 shell.WriteLine(Loc.GetString(Loc.GetString($"shell-need-exactly-one-argument")));
+                return;
+            }
+
+            if (!_ticker.CanUpdateMap())
+            {
+                shell.WriteLine(Loc.GetString("cmd-forcemap-too-late"));
                 return;
             }
 

@@ -44,4 +44,5 @@ jobs:
       env:
         PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
         GITHUB_REPOSITORY: ${{ vars.GITHUB_REPOSITORY }}
+        ROBUST_CDN_URL: ${{ vars.ROBUST_CDN_URL }}
       if: env.PUBLISH_TOKEN

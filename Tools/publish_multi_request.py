@@ -23,7 +23,7 @@ RELEASE_DIR = "release"
 # CONFIGURATION PARAMETERS
 # Forks should change these to publish to their own infrastructure.
 #
-_default_cdn = os.environ.get("ROBUST_CDN_URL", "https://cdn.station14.ru/").strip()
+_default_cdn = os.environ.get("ROBUST_CDN_URL", "https://cdn.ministation.ru/").strip()
 ROBUST_CDN_URL = _default_cdn if _default_cdn.endswith("/") else _default_cdn + "/"
 
 def main():

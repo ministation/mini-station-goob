@@ -83,77 +83,23 @@ namespace Content.Server.GameTicking
         /// <returns></returns>
         public bool CanUpdateMap()
         {
+            // Once staged preload has started (or finished), changing the map would desync the queue.
             return RunLevel == GameRunLevel.PreRoundLobby &&
+                   !MapLoadInProgress &&
+                   !MapsReady &&
                    _roundStartTime - RoundPreloadTime > _gameTiming.CurTime;
         }
 
         /// <summary>
-        ///     Loads all the maps for the given round.
+        ///     Starts staged map preload for the round (builds a per-tick queue).
+        ///     Round start waits for <see cref="MapsReady"/> — never sync-drains.
         /// </summary>
         /// <remarks>
-        ///     Must be called before the runlevel is set to InRound.
+        ///     Must reach MapsReady before the runlevel is set to InRound.
         /// </remarks>
         private void LoadMaps()
         {
-            if (_map.MapExists(DefaultMap))
-                return;
-
-            AddGamePresetRules();
-
-            var maps = new List<GameMapPrototype>();
-
-            // the map might have been force-set by something
-            // (i.e. votemap or forcemap)
-            var mainStationMap = _gameMapManager.GetSelectedMap();
-            if (mainStationMap == null)
-            {
-                // otherwise set the map using the config rules
-                _gameMapManager.SelectMapByConfigRules();
-                mainStationMap = _gameMapManager.GetSelectedMap();
-            }
-
-            // Small chance the above could return no map.
-            // ideally SelectMapByConfigRules will always find a valid map
-            if (mainStationMap != null)
-            {
-                maps.Add(mainStationMap);
-                // Mini-Tweak: keep recent-map ban in sync so map votes rotate.
-                _gameMapManager.RegisterPlayedMap(mainStationMap.ID);
-            }
-            else
-            {
-                throw new Exception("invalid config; couldn't select a valid station map!");
-            }
-
-            if (CurrentPreset?.MapPool != null &&
-                ProtoMan.TryIndex<GameMapPoolPrototype>(CurrentPreset.MapPool, out var pool) &&
-                !pool.Maps.Contains(mainStationMap.ID))
-            {
-                var msg = Loc.GetString("game-ticker-start-round-invalid-map",
-                    ("map", mainStationMap.MapName),
-                    ("mode", Loc.GetString(CurrentPreset.ModeTitle)));
-                Log.Debug(msg);
-                SendServerMessage(msg);
-            }
-
-            // Let game rules dictate what maps we should load.
-            RaiseLocalEvent(new LoadingMapsEvent(maps));
-
-            if (maps.Count == 0)
-            {
-                _map.CreateMap(out var mapId, runMapInit: false);
-                DefaultMap = mapId;
-                return;
-            }
-
-            for (var i = 0; i < maps.Count; i++)
-            {
-                LoadGameMap(maps[i], out var mapId);
-                DebugTools.Assert(!_map.IsInitialized(mapId));
-
-                if (i == 0)
-                    DefaultMap = mapId;
-            }
+            BeginMapPreload();
         }
 
         public PreGameMapLoad RaisePreLoad(
@@ -365,6 +311,10 @@ namespace Content.Server.GameTicking
             if (DummyTicker || _startingRound)
                 return;
 
+            // Guard against double-start in the same tick (pending consume + countdown).
+            if (RunLevel != GameRunLevel.PreRoundLobby)
+                return;
+
             _startingRound = true;
 
             if (RoundId == 0)
@@ -374,8 +324,6 @@ namespace Content.Server.GameTicking
 
             DebugTools.Assert(RunLevel == GameRunLevel.PreRoundLobby);
             _sawmill.Info("Starting round!");
-
-            SendServerMessage(Loc.GetString("game-ticker-start-round"));
 
             var readyPlayers = new List<ICommonSession>();
             var readyPlayerProfiles = new Dictionary<NetUserId, HumanoidCharacterProfile>();
@@ -410,8 +358,17 @@ namespace Content.Server.GameTicking
 
             DebugTools.AssertEqual(readyPlayers.Count, ReadyPlayerCount());
 
-            // Just in case it hasn't been loaded previously we'll try loading it.
-            LoadMaps();
+            if (!MapsReady)
+            {
+                // Never sync-drain map load here — that freezes lobby/AHelp/ghost shop for everyone.
+                // Do not announce "round starting" yet — StartRound will run again when maps are ready.
+                _sawmill.Warning("StartRound called before MapsReady; deferring to staged preload.");
+                _startingRound = false;
+                RequestStartRound(force);
+                return;
+            }
+
+            SendServerMessage(Loc.GetString("game-ticker-start-round"));
 
             // map has been selected so update the lobby info text
             // applies to players who didn't ready up
@@ -433,7 +390,8 @@ namespace Content.Server.GameTicking
             }
 
             // MapInitialize *before* spawning players, our codebase is too shit to do it afterwards...
-            _map.InitializeMap(DefaultMap);
+            // Includes supplemental station maps loaded during staged preload (InitializeMaps was deferred).
+            InitializeLoadedStationMaps();
 
             SpawnPlayers(readyPlayers, readyPlayerProfiles, force);
 
@@ -776,6 +734,8 @@ namespace Content.Server.GameTicking
             {
                 _playerGameStatuses[session.UserId] = LobbyEnabled ? PlayerGameStatus.NotReadyToPlay : PlayerGameStatus.ReadyToPlay;
             }
+
+            ResetMapPreloadState();
         }
 
         public bool DelayStart(TimeSpan time)
@@ -801,10 +761,40 @@ namespace Content.Server.GameTicking
                 RoundLengthMetric.Inc(frameTime);
             }
 
+            if (RunLevel != GameRunLevel.PreRoundLobby)
+                return;
+
+            var lobbyCountdownActive = !_roundStartCountdownHasNotStartedYetDueToNoPlayers &&
+                                       _roundStartTime != TimeSpan.Zero;
+
+            // Lavaland: as soon as lobby countdown runs (map/mode votes still open).
+            var earlyLavalandWindow = _pendingStartRound ||
+                                      (lobbyCountdownActive && !Paused);
+
+            // Station + grids: only T-RoundPreloadTime (after map vote), or force-start.
+            var lateMapWindow = _pendingStartRound ||
+                                (lobbyCountdownActive &&
+                                 !Paused &&
+                                 _roundStartTime - RoundPreloadTime <= _gameTiming.CurTime);
+
+            if (earlyLavalandWindow)
+                BeginEarlyLavalandPreload();
+
+            if (lateMapWindow)
+                BeginMapPreload();
+
+            // Drain one stage whenever anything is queued (early and/or late).
+            if (!MapsReady && _mapLoadQueue.Count > 0)
+                ProcessOneMapLoadStage();
+
+            TryConsumePendingStartRound();
+
+            // Pending start may have already moved us InRound in this same tick.
+            if (RunLevel != GameRunLevel.PreRoundLobby)
+                return;
+
             if (_roundStartTime == TimeSpan.Zero ||
-                RunLevel != GameRunLevel.PreRoundLobby ||
                 Paused ||
-                _roundStartTime - RoundPreloadTime > _gameTiming.CurTime ||
                 _roundStartCountdownHasNotStartedYetDueToNoPlayers)
             {
                 return;
@@ -812,12 +802,17 @@ namespace Content.Server.GameTicking
 
             if (_roundStartTime < _gameTiming.CurTime)
             {
+                if (!MapsReady)
+                {
+                    // Hold countdown silently until late stages finish.
+                    _roundStartTime = _gameTiming.CurTime + TimeSpan.FromSeconds(1);
+                    RaiseNetworkEvent(new TickerLobbyCountdownEvent(_roundStartTime, Paused));
+                    BeginEarlyLavalandPreload();
+                    BeginMapPreload();
+                    return;
+                }
+
                 StartRound();
-            }
-            // Preload maps so we can start faster
-            else if (_roundStartTime - RoundPreloadTime < _gameTiming.CurTime)
-            {
-                LoadMaps();
             }
         }
 

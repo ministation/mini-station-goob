@@ -18,10 +18,11 @@ namespace Content.Server.GameTicking
         private TimeSpan _roundStartTime;
 
         /// <summary>
-        /// How long before RoundStartTime do we load maps.
+        /// How long before RoundStartTime we load the voted station map / grids.
+        /// Lavaland starts earlier (lobby countdown) — it does not depend on the map vote.
         /// </summary>
         [ViewVariables]
-        public TimeSpan RoundPreloadTime { get; private set; } = TimeSpan.FromSeconds(20); // Lavaland Change: make it a bit earlier
+        public TimeSpan RoundPreloadTime { get; private set; } = TimeSpan.FromSeconds(20);
 
         [ViewVariables]
         private TimeSpan _pauseTime;

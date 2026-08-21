@@ -83,6 +83,7 @@ jobs:
         PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
         GITHUB_REPOSITORY: ${{ vars.GITHUB_REPOSITORY }}
         FORK_ID: ${{ vars.FORK_ID }}
+        ROBUST_CDN_URL: ${{ vars.ROBUST_CDN_URL }}
 
     #    - name: Publish changelog (Discord)
     #      continue-on-error: true

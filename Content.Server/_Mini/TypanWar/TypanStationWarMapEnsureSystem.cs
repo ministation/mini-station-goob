@@ -11,6 +11,7 @@ using Content.Shared.Station.Components;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using System.Linq;
 
 namespace Content.Server._Mini.TypanWar;
 
@@ -43,12 +44,34 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
         if (ev.Maps.Count == 0)
             return;
 
-        TryEnsureSupplementalMaps(ev.Maps[0]);
+        TryEnqueueSupplementalMaps(ev.Maps);
     }
 
     private void OnRoundStarting(RoundStartingEvent ev)
     {
+        // Fallback when preload ran before war stations were decided / map had no AdditionalMap entry.
         TryEnsureSupplementalMaps();
+    }
+
+    /// <summary>
+    /// Enqueues missing NT/Typan supplemental maps onto the LoadingMaps list for staged preload.
+    /// </summary>
+    public void TryEnqueueSupplementalMaps(List<GameMapPrototype> maps)
+    {
+        if (!IsWarPresetActive() || maps.Count == 0)
+            return;
+
+        var mainMap = maps[0];
+
+        // typanpool.yml handles supplemental Typan for maps that declare additionalMap.
+        if (_prototypes.HasIndex<AdditionalMapPrototype>(mainMap.ID))
+            return;
+
+        var isTypanMain = mainMap.ID == TypanMapId || mainMap.ID == AspidMapId;
+        if (!isTypanMain && !HasTypanStation() && !maps.Any(m => m.ID == TypanMapId || m.ID == AspidMapId))
+            TryAddMap(maps, SelectTypanMapId());
+        else if (isTypanMain && !HasNtStation() && maps.All(m => m.ID != NtFallbackMapId))
+            TryAddMap(maps, NtFallbackMapId);
     }
 
     /// <summary>
@@ -73,6 +96,21 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
             LoadSupplemental(SelectTypanMapId());
         else if (isTypanMain && !HasNtStation())
             LoadSupplemental(NtFallbackMapId);
+    }
+
+    private void TryAddMap(List<GameMapPrototype> maps, ProtoId<GameMapPrototype> mapId)
+    {
+        if (!_prototypes.TryIndex(mapId, out var map))
+        {
+            Log.Error($"Typan Station War: failed to enqueue supplemental map '{mapId}' — prototype missing.");
+            return;
+        }
+
+        if (maps.Contains(map))
+            return;
+
+        Log.Info($"Typan Station War: enqueueing supplemental map '{mapId}' for staged preload.");
+        maps.Add(map);
     }
 
     private ProtoId<GameMapPrototype> SelectTypanMapId()
@@ -118,7 +156,8 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
             return;
         }
 
-        Log.Info($"Typan Station War: loading supplemental map '{mapId}'.");
+        Log.Info($"Typan Station War: loading supplemental map '{mapId}' (RoundStarting fallback).");
+        // Emergency path after staged preload — initialize immediately; not tracked in ticker's deferred list.
         _ticker.LoadGameMap(map, out _, options: new DeserializationOptions { InitializeMaps = true });
     }
 }

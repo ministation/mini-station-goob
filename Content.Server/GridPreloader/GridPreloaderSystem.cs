@@ -17,6 +17,7 @@ using JetBrains.Annotations;
 using Robust.Shared.EntitySerialization.Systems;
 
 namespace Content.Server.GridPreloader;
+
 public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
 {
     [Dependency] private readonly IConfigurationManager _cfg = default!;
@@ -31,11 +32,14 @@ public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
     /// </summary>
     public bool PreloadingEnabled;
 
+    private float _globalXOffset;
+
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        // Create the empty preloader map early if a station loads before staged GridPreloadCreate.
         SubscribeLocalEvent<PostGameMapLoad>(OnPostGameMapLoad);
 
         Subs.CVar(_cfg, CCVars.PreloadGrids, value => PreloadingEnabled = value, true);
@@ -43,6 +47,7 @@ public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _globalXOffset = 0f;
         var ent = GetPreloaderEntity();
         if (ent == null)
             return;
@@ -52,60 +57,97 @@ public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
 
     private void OnPostGameMapLoad(PostGameMapLoad ev)
     {
-        EnsurePreloadedGridMap();
+        // Lightweight: map shell only. Grid YAML copies are staged via GameTicker.
+        EnsureEmptyPreloaderMap();
     }
 
-    private void EnsurePreloadedGridMap()
+    /// <summary>
+    /// One PreloadedGridPrototype ID per copy that still needs loading.
+    /// </summary>
+    public IEnumerable<ProtoId<PreloadedGridPrototype>> EnumeratePreloadJobs()
     {
-        // Already have a preloader?
-        if (GetPreloaderEntity() != null)
-            return;
-
         if (!PreloadingEnabled)
-            return;
+            yield break;
 
-        var mapUid = _map.CreateMap(out var mapId, false);
-        var preloader = EnsureComp<GridPreloaderComponent>(mapUid);
-        _meta.SetEntityName(mapUid, "GridPreloader Map");
-        _map.SetPaused(mapId, true);
-
-        var globalXOffset = 0f;
         foreach (var proto in _prototype.EnumeratePrototypes<PreloadedGridPrototype>())
         {
             for (var i = 0; i < proto.Copies; i++)
-            {
-                if (!_mapLoader.TryLoadGrid(mapId, proto.Path, out var grid))
-                {
-                    Log.Error($"Failed to preload grid prototype {proto.ID}");
-                    continue;
-                }
-
-                var (gridUid, mapGrid) = grid.Value;
-
-                if (!TryComp<PhysicsComponent>(gridUid, out var physics))
-                    continue;
-
-                // Position Calculating
-                globalXOffset += mapGrid.LocalAABB.Width / 2;
-
-                var coords = new Vector2(-physics.LocalCenter.X + globalXOffset, -physics.LocalCenter.Y);
-                _transform.SetCoordinates(gridUid, new EntityCoordinates(mapUid, coords));
-
-                globalXOffset += (mapGrid.LocalAABB.Width / 2) + 1;
-
-                // Add to list
-                if (!preloader.PreloadedGrids.ContainsKey(proto.ID))
-                    preloader.PreloadedGrids[proto.ID] = new();
-                preloader.PreloadedGrids[proto.ID].Add(gridUid);
-            }
+                yield return proto.ID;
         }
+    }
+
+    /// <summary>
+    /// Creates the paused preloader map without loading any grids.
+    /// </summary>
+    public bool EnsureEmptyPreloaderMap()
+    {
+        if (GetPreloaderEntity() != null)
+            return true;
+
+        if (!PreloadingEnabled)
+            return false;
+
+        var mapUid = _map.CreateMap(out var mapId, false);
+        EnsureComp<GridPreloaderComponent>(mapUid);
+        _meta.SetEntityName(mapUid, "GridPreloader Map");
+        _map.SetPaused(mapId, true);
+        _globalXOffset = 0f;
+        return true;
+    }
+
+    /// <summary>
+    /// Loads a single preloaded-grid copy onto the preloader map.
+    /// </summary>
+    public bool TryLoadOnePreloadedGrid(ProtoId<PreloadedGridPrototype> protoId)
+    {
+        if (!PreloadingEnabled)
+            return false;
+
+        if (!_prototype.TryIndex(protoId, out var proto))
+        {
+            Log.Error($"Failed to preload grid prototype {protoId}: missing prototype.");
+            return false;
+        }
+
+        if (!EnsureEmptyPreloaderMap())
+            return false;
+
+        var preloaderEnt = GetPreloaderEntity();
+        if (preloaderEnt == null)
+            return false;
+
+        var (mapUid, preloader) = preloaderEnt.Value;
+        var mapId = Comp<MapComponent>(mapUid).MapId;
+
+        if (!_mapLoader.TryLoadGrid(mapId, proto.Path, out var grid))
+        {
+            Log.Error($"Failed to preload grid prototype {proto.ID}");
+            return false;
+        }
+
+        var (gridUid, mapGrid) = grid.Value;
+
+        if (!TryComp<PhysicsComponent>(gridUid, out var physics))
+            return false;
+
+        _globalXOffset += mapGrid.LocalAABB.Width / 2;
+
+        var coords = new Vector2(-physics.LocalCenter.X + _globalXOffset, -physics.LocalCenter.Y);
+        _transform.SetCoordinates(gridUid, new EntityCoordinates(mapUid, coords));
+
+        _globalXOffset += (mapGrid.LocalAABB.Width / 2) + 1;
+
+        if (!preloader.PreloadedGrids.ContainsKey(proto.ID))
+            preloader.PreloadedGrids[proto.ID] = new();
+        preloader.PreloadedGrids[proto.ID].Add(gridUid);
+
+        return true;
     }
 
     /// <summary>
     ///     Should be a singleton no matter station count, so we can assume 1
     ///     (better support for singleton component in engine at some point i guess)
     /// </summary>
-    /// <returns></returns>
     public Entity<GridPreloaderComponent>? GetPreloaderEntity()
     {
         var query = AllEntityQuery<GridPreloaderComponent>();
