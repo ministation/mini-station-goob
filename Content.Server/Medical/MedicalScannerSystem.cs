@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server.Cloning;
+using Content.Server.Cloning.Components;
 using Content.Server.Medical.Components;
 using Content.Shared.Destructible;
 using Content.Shared.ActionBlocker;
@@ -8,7 +9,7 @@ using Content.Shared.DragDrop;
 using Content.Shared.Movement.Events;
 using Content.Shared.Verbs;
 using Robust.Shared.Containers;
-using Content.Server.Cloning.Components;
+using Content.Shared._Trauma.Genetics.Console;
 using Content.Server.DeviceLinking.Systems;
 using Content.Shared.DeviceLinking.Events;
 using Content.Server.Power.EntitySystems;
@@ -144,6 +145,12 @@ namespace Content.Server.Medical
 
         private void OnPortDisconnected(EntityUid uid, MedicalScannerComponent component, PortDisconnectedEvent args)
         {
+            if (component.ConnectedConsole is { } console)
+            {
+                var ev = new ScannerDisconnectedEvent(uid);
+                RaiseLocalEvent(console, ref ev);
+            }
+
             component.ConnectedConsole = null;
         }
 
@@ -234,6 +241,11 @@ namespace Content.Server.Medical
 
             _containerSystem.Insert(to_insert, scannerComponent.BodyContainer);
             UpdateAppearance(uid, scannerComponent);
+            if (scannerComponent.ConnectedConsole is { } console)
+            {
+                var ev = new ScannerInsertedEvent(uid, to_insert);
+                RaiseLocalEvent(console, ref ev);
+            }
         }
 
         public void EjectBody(EntityUid uid, MedicalScannerComponent? scannerComponent)
@@ -243,6 +255,12 @@ namespace Content.Server.Medical
 
             if (scannerComponent.BodyContainer.ContainedEntity is not { Valid: true } contained)
                 return;
+
+            if (scannerComponent.ConnectedConsole is { } console)
+            {
+                var ev = new ScannerEjectedEvent(uid, contained);
+                RaiseLocalEvent(console, ref ev);
+            }
 
             _containerSystem.Remove(contained, scannerComponent.BodyContainer);
             _climbSystem.ForciblySetClimbing(contained, uid);

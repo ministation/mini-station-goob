@@ -75,6 +75,7 @@ guide-entry-botanical = Ботанические
 guide-entry-plastic = Пластиковая продукция
 guide-entry-cloning = Клонирование
 guide-entry-genetics = Генетика
+guide-entry-mutations = Список мутаций
 guide-entry-cryogenics = Криогеника
 guide-entry-science = Научный отдел
 guide-entry-technologies = Технологии

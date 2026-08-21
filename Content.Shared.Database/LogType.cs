@@ -512,4 +512,6 @@ public enum LogType
     /// Silicon law changes.
     /// </summary>
     SiliconLaws = 10005, // Goobstation
+
+    Genetics = 20001,
 }

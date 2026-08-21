@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: SpeechStatusEffectBase
+  id: StatusEffectMutedMutation
+  name: mute
+  components:
+  - type: Muted
+
+- type: entity
+  parent: MobStatusEffectBase
+  id: StatusEffectPressureImmunityMutation
+  name: pressure immunity
+  components:
+  - type: GrantComponentsStatusEffect
+    components:
+    - type: PressureImmunity

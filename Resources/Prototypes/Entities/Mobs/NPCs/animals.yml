@@ -1581,7 +1581,7 @@
   - type: DiseaseCarrier # Goobstation
   # Mini genetics: ancestors (monkeys/kobolds/…) are valid DNA-modifier subjects
   - type: Dna
-  - type: DnaModifier
+  - type: Mutatable
 
 - type: entity
   name: monkey
@@ -1627,7 +1627,7 @@
     clumsySound:
       path: /Audio/Animals/monkey_scream.ogg
   # Mini genetics (Wega): humanize / devolve chain
-  - type: DnaModifier
+  - type: Mutatable
     upper: MobHuman
     lowest: MobMonkey
 
@@ -1671,7 +1671,7 @@
   - type: GhostTakeoverAvailable
   - type: Loadout
     prototypes: [SyndicateOperativeGearMonkey]
-  - type: DnaModifier
+  - type: Mutatable
     upper: MobHuman
     lowest: MobBaseSyndicateMonkey
 
@@ -1819,7 +1819,7 @@
     description: ghost-role-information-kobold-description
     rules: ghost-role-information-sentientanimal-rules # Goobstation Sentient Animal PR
   # Mini genetics (Wega)
-  - type: DnaModifier
+  - type: Mutatable
     upper: MobReptilian
     lowest: MobKobold
 

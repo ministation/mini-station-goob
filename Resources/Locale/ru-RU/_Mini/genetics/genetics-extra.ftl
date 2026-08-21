@@ -8,4 +8,4 @@ reagent-effect-guidebook-cure-dna-disease =
         *[other] Лечит генетическую болезнь с шансом {NATURALPERCENT($chance, 2)} за тик
     }
 reagent-effect-guidebook-mutate-dna = Случайно активирует болезненные блоки ДНК
-job-description-geneticist = Открывайте мутации на ДНК-модификаторе, лечите генетические болезни и раздавайте полезные инъекторы по СРП.
+job-description-geneticist = Секвенируйте мутации на генетической консоли, печатайте мутаторы и раздавайте полезные гены по СРП.

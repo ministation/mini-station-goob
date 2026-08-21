@@ -12,6 +12,7 @@ using Content.Shared.Movement.Events;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Tag;
 using Content.Shared._vg.TileMovement;
+using Content.Shared._Trauma.Genetics.Events;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
@@ -386,10 +387,14 @@ public abstract partial class SharedMoverController : VirtualController
                 if (relaySource != null)
                 {
                     _audio.PlayPredicted(sound, uid, relaySource.Value, audioParams);
+                    var relayStep = new FootStepEvent(uid, _transform.GetWorldRotation(xform));
+                    RaiseLocalEvent(uid, ref relayStep);
                 }
                 else
                 {
                     _audio.PlayPredicted(sound, uid, uid, audioParams);
+                    var step = new FootStepEvent(uid, _transform.GetWorldRotation(xform));
+                    RaiseLocalEvent(uid, ref step);
                 }
             }
         }

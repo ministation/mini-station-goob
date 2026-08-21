@@ -1,0 +1,97 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entityEffect
+  id: MakeFelinid
+  guidebookText: entity-effect-guidebook-make-felinid
+  conditions:
+  - !type:NestedCondition
+    proto: IsHumanoid
+  - !type:WhitelistCondition
+    blacklist:
+      components:
+      - Felinid
+  effects:
+  - !type:RelayOrgan
+    category: Ears
+    effects:
+    - !type:Delete
+  - !type:RelayOrgan
+    category: Head
+    effects:
+    - !type:InsertNewOrgan
+      organ: OrganFelinidEars
+  - !type:RelayOrgan
+    category: Tail
+    effects:
+    - !type:DetachOrgan
+  - !type:RelayOrgan
+    category: Chest
+    effects:
+    - !type:AddOrganSlot
+      category: Tail
+    - !type:InsertNewOrgan
+      organ: OrganFelinidTail
+  - !type:RelayOrgans
+    whitelist:
+      components:
+      - Metabolizer
+    effects:
+    - !type:RemoveMetabolizerType
+      type: Human
+    - !type:AddMetabolizerType
+      type: Animal
+  - !type:PopupMessage
+    type: Pvs
+    visualType: LargeCaution
+    messages:
+    - entity-effect-popup-make-felinid
+  - !type:AddComponents
+    components:
+    - type: Felinid
+
+- type: entityEffect
+  id: RevertFelinid
+  guidebookText: entity-effect-guidebook-revert-felinid
+  conditions:
+  - !type:NestedCondition
+    proto: IsHumanoid
+  - !type:WhitelistCondition
+    whitelist:
+      components:
+      - Felinid
+  effects:
+  - !type:RelayOrgan
+    category: Ears
+    effects:
+    - !type:Delete
+  - !type:RelayOrgan
+    category: Head
+    effects:
+    - !type:RegenerateOrgan
+      slot: Eyes
+  - !type:RelayOrgan
+    category: Tail
+    effects:
+    - !type:Delete
+  - !type:RelayOrgan
+    category: Chest
+    effects:
+    - !type:RemoveOrganSlot
+      slot: Tail
+  - !type:RelayOrgans
+    whitelist:
+      components:
+      - Metabolizer
+    effects:
+    - !type:RemoveMetabolizerType
+      type: Animal
+    - !type:AddMetabolizerType
+      type: Human
+  - !type:PopupMessage
+    type: Pvs
+    visualType: MediumCaution
+    messages:
+    - entity-effect-popup-revert-felinid
+  - !type:RemoveComponents
+    components:
+    - type: Felinid

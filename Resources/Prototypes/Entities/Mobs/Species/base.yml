@@ -305,7 +305,7 @@
       groups:
         Brute: -0.07
   - type: Fingerprint
-  - type: DnaModifier # Mini: Paradise/Wega genetics (organic species only)
+  - type: Mutatable
   - type: Blindable
   # Other
   - type: Temperature
