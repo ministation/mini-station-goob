@@ -105,4 +105,15 @@ public sealed class ThermalRegulatorSystem : EntitySystem
             _tempSys.ChangeHeat(ent, Math.Min(targetHeat, ent.Comp1.ShiveringHeatRegulation), ignoreHeatResistance: true, ent);
         }
     }
+
+    public void ScaleHeatRegulation(Entity<ThermalRegulatorComponent?> ent, float shivering, float sweating, float metabolism, float regulation)
+    {
+        if (!Resolve(ent, ref ent.Comp))
+            return;
+
+        ent.Comp.ShiveringHeatRegulation *= shivering;
+        ent.Comp.SweatHeatRegulation *= sweating;
+        ent.Comp.MetabolismHeat *= metabolism;
+        ent.Comp.ImplicitHeatRegulation *= regulation;
+    }
 }

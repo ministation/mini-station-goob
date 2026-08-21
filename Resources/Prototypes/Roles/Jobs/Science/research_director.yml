@@ -45,6 +45,7 @@
   - Cryogenics
   - External # Goobstation
   - Robotics # CorvaxGoob
+  - Genetics
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]

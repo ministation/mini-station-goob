@@ -47,6 +47,7 @@
       - Research
       - Robotics # goobstation
       - Journalism # goobstation
+      - Genetics
       - ResearchDirector
       - Salvage
       - Security
@@ -135,6 +136,7 @@
     - BlueshieldOfficer # goobstation
     - Robotics # goobstation
     - Journalism # goobstation
+    - Genetics
     - Wizard
     - Xenoborg
     - GenpopEnter

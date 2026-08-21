@@ -426,6 +426,15 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
         DirtyField(ent, ent.Comp, nameof(BloodstreamComponent.BloodlossThreshold));
     }
 
+    public void SetBloodRefreshAmount(Entity<BloodstreamComponent?> ent, FixedPoint2 amount)
+    {
+        if (!Resolve(ent, ref ent.Comp))
+            return;
+
+        ent.Comp.BloodRefreshAmount = amount;
+        DirtyField(ent, ent.Comp, nameof(BloodstreamComponent.BloodRefreshAmount));
+    }
+
     /// <summary>
     /// Attempt to transfer a provided solution to internal solution.
     /// </summary>

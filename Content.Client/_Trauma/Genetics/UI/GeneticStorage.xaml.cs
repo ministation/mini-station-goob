@@ -1,0 +1,75 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using Content.Shared._Trauma.Genetics.Console;
+using Content.Shared._Trauma.Genetics.Mutations;
+
+using Robust.Client.UserInterface.Controls;
+
+namespace Content.Client._Trauma.Genetics.UI;
+
+[GenerateTypedNameReferences]
+public sealed partial class GeneticStorage : BoxContainer
+{
+    [Dependency] private IEntityManager _entMan = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+
+    public event Action<uint>? OnPrint;
+
+    private EntProtoId<MutationComponent>? _diskMutation;
+    private bool _cooldown;
+    private List<Button> _buttons = new();
+
+    public GeneticStorage()
+    {
+        IoCManager.InjectDependencies(this);
+        RobustXamlLoader.Load(this);
+    }
+
+    public void SetConsole(GeneticsConsoleComponent comp)
+    {
+        _buttons.Clear();
+        PrintButtons.RemoveAllChildren();
+        for (var i = 0; i < comp.Prints.Count; i++)
+        {
+            var index = (uint) i;
+            var cost = comp.Prints[i].Cost;
+            var proto = comp.Prints[i].Proto;
+            var button = new Button()
+            {
+                Text = Loc.GetString("genetics-console-print-item", ("item", _proto.Index(proto).Name), ("cost", cost)),
+                MaxWidth = 160f,
+                Margin = new Thickness(4),
+                HorizontalExpand = true
+            };
+            button.Disabled = true;
+            button.OnPressed += _ => OnPrint?.Invoke(index);
+            _buttons.Add(button);
+            PrintButtons.AddChild(button);
+        }
+    }
+
+    public void UpdateDisk(Entity<GeneticsDiskComponent>? disk)
+    {
+        DiskName.Text = _entMan.GetComponentOrNull<MetaDataComponent>(disk)?.EntityName
+            ?? Loc.GetString("genetics-console-no-disk");
+    }
+
+    public void UpdateDiskMutation(EntProtoId<MutationComponent>? mutation)
+    {
+        _diskMutation = mutation;
+        MutationName.Text = _proto.TryIndex(mutation, out var proto)
+            ? proto.Name
+            : Loc.GetString("genetics-console-disk-empty");
+        UpdateCooldowns(_cooldown);
+    }
+
+    public void UpdateCooldowns(bool cooldown)
+    {
+        _cooldown = cooldown;
+        var disabled = cooldown || _diskMutation == null;
+        foreach (var button in _buttons)
+        {
+            button.Disabled = disabled;
+        }
+    }
+}

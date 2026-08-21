@@ -21,6 +21,7 @@
   - Research
   - Maintenance
   - Cryogenics
+  - Genetics
 
 - type: startingGear
   id: GeneticistGear
@@ -30,7 +31,7 @@
     belt: ClothingBeltMedicalFilled
   storage:
     back:
-    - BoxDnaInjector
+    - BoxGeneticsDisk
 
 - type: chameleonOutfit
   id: GeneticistChameleonOutfit

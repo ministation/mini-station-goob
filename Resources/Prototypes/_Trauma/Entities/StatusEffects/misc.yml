@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: SpeechStatusEffectBase
+  id: StatusEffectMutedMutation
+  name: mute
+  components:
+  - type: Muted
+
+- type: entity
+  parent: MobStatusEffectBase
+  id: StatusEffectPressureImmunityMutation
+  name: pressure immunity
+  components:
+  - type: GrantComponentsStatusEffect
+    components:
+    - type: PressureImmunity
+
+- type: entity
+  parent: MobStatusEffectDebuff
+  id: StatusEffectBlurryVision
+  name: blurry vision
+  components:
+  - type: GrantComponentsStatusEffect
+    components:
+    - type: BlurryVision
+
+- type: entity
+  parent: MobStatusEffectDebuff
+  id: StatusEffectTemporaryBlindness
+  name: temporary blindness
+  components:
+  - type: GrantComponentsStatusEffect
+    components:
+    - type: TemporaryBlindness

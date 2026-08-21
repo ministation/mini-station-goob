@@ -1125,3 +1125,9 @@ ClothingShoesHighheelBootsFilled: ClothingShoesHighheelBoots
 #2026-07-17 Mini: lingering stack variants removed upstream (used on lambda.yml)
 Bloodpack10Lingering: Bloodpack
 Gauze10Lingering: Gauze
+
+#2026-08-21 Mini: Paradise/Wega genetics → Trauma console/disks
+DnaModifierConsole: ComputerGeneticsConsole
+BoxDnaInjector: BoxGeneticsDisk
+BoxDnaFisk: BoxGeneticsDisk
+DnaModifierComputerCircuitboard: GeneticsConsoleCircuitboard

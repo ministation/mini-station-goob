@@ -123,6 +123,7 @@ guide-entry-plastic = Plastic Sheet Production
 guide-entry-botanicals = Botanicals
 guide-entry-cloning = Cloning
 guide-entry-genetics = Genetics
+guide-entry-mutations = Mutations list
 guide-entry-cryogenics = Cryogenics
 guide-entry-science = Science
 guide-entry-technologies = Technologies

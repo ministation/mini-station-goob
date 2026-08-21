@@ -2,4 +2,6 @@
   id: Genetics
   recipes:
   - XenoCompatibilityImplanter
-  - DnaModifierComputerCircuitboard
+  - GeneticsConsoleCircuitboard
+  - GeneticsDisk
+  - HandheldGeneticsScanner

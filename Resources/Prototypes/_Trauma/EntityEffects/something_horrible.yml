@@ -1,0 +1,134 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entityEffect
+  id: SomethingHorrible
+  effects:
+  - !type:WeightedRandomEffect
+    children:
+    - weight: 3
+      effect: !type:NestedEffect
+        proto: SomethingHorribleNonLethal
+    - weight: 7
+      effect: !type:NestedEffect
+        proto: SomethingHorribleLethal
+
+- type: entityEffect
+  id: SomethingHorribleNonLethal
+  effects:
+  - !type:WeightedRandomEffect
+    children:
+    - effect: !type:Polymorph
+        prototype: Monkey
+    - effect: !type:Polymorph
+        prototype: Corgi
+    - weight: 2
+      effect: !type:Polymorph
+        prototype: Snail
+    - effect: !type:NestedEffect
+        proto: Cripple
+    - effect: !type:Polymorph
+        prototype: Corgi
+    - weight: 4
+      effect: !type:NestedEffect
+        proto: Alright
+    - weight: 2
+      effect: !type:Polymorph
+        prototype: Snail
+    - effect: !type:NestedEffect
+        proto: UltimateLifeform
+
+- type: entityEffect
+  id: SomethingHorribleLethal
+  effects:
+  - !type:WeightedRandomEffect
+    children:
+    - effect: !type:Gib
+    - effect: !type:NestedEffect
+        proto: Dust
+    - effect: !type:NestedEffect
+        proto: Skeletonize
+    - effect: !type:NestedEffect
+        proto: LookUp
+
+- type: entityEffect
+  id: Cripple
+  effects:
+  - !type:SpawnEntity
+    entity: VehicleWheelchair
+  - !type:AddComponents
+    guidebookText: entity-effect-guidebook-paralyze-legs
+    components:
+    - type: LegsParalyzed
+  - !type:PopupMessage
+    type: Pvs
+    messages:
+    - entity-effect-popup-crippled
+
+- type: entityEffect
+  id: Alright
+  effects:
+  - !type:PopupMessage
+    messages:
+    - entity-effect-popup-alright
+  - !type:WeightedRandomEffect
+    children:
+    - effect: !type:NoEffect
+    - effect: !type:NestedEffect
+        proto: MakeFragile
+    - effect: !type:Polymorph
+        prototype: Slime
+    - effect: !type:ModifyStatusEffect
+        effectProto: DecloningStatusEffect
+        time: 5m
+
+- type: entityEffect
+  id: MakeFragile
+  effects:
+  - !type:AddComponents
+    guidebookText: entity-effect-guidebook-make-fragile
+    components:
+    - type: Fragile
+
+- type: entityEffect
+  id: UltimateLifeform
+  effects:
+  - !type:PopupMessage
+    method: PopupCoordinates
+    messages:
+    - entity-effect-popup-ultimate-lifeform
+  - !type:Polymorph
+    prototype: Crab
+
+- type: entityEffect
+  id: Dust
+  effects:
+  - !type:PopupMessage
+    type: Pvs
+    method: PopupCoordinates
+    messages:
+    - entity-effect-popup-dusted
+  - !type:SpawnEntity
+    entity: Ash
+  - !type:Delete
+
+- type: entityEffect
+  id: Skeletonize
+  effects:
+  - !type:PopupMessage
+    type: Pvs
+    method: PopupCoordinates
+    messages:
+    - entity-effect-popup-skeletonized
+  - !type:Polymorph
+    prototype: Skeleton
+
+- type: entityEffect
+  id: LookUp
+  effects:
+  - !type:PopupMessage
+    visualType: LargeCaution
+    messages:
+    - entity-effect-popup-look-up
+  - !type:ModifyStatusEffect
+    effectProto: LookingUpStatusEffect
+    time: 3s

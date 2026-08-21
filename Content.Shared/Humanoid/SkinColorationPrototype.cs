@@ -212,13 +212,13 @@ public sealed partial class ClampedHsvColoration : ISkinColorationStrategy
     {
         var hsv = Color.ToHsv(color);
 
-        if (Hue is (var minHue, var maxHue) && (hsv.X < minHue || hsv.X > maxHue))
+        if (Hue is (var minHue, var maxHue) && !ChannelInRange(hsv.X, minHue, maxHue))
             return false;
 
-        if (Saturation is (var minSaturation, var maxSaturation) && (hsv.Y < minSaturation || hsv.Y > maxSaturation))
+        if (Saturation is (var minSaturation, var maxSaturation) && !ChannelInRange(hsv.Y, minSaturation, maxSaturation))
             return false;
 
-        if (Value is (var minValue, var maxValue) && (hsv.Z < minValue || hsv.Z > maxValue))
+        if (Value is (var minValue, var maxValue) && !ChannelInRange(hsv.Z, minValue, maxValue))
             return false;
 
         return true;
@@ -238,6 +238,12 @@ public sealed partial class ClampedHsvColoration : ISkinColorationStrategy
             hsv.Z = Math.Clamp(hsv.Z, minValue, maxValue);
 
         return Color.FromHsv(hsv);
+    }
+
+    private static bool ChannelInRange(float value, float min, float max)
+    {
+        const float epsilon = 2f / 255f;
+        return value >= min - epsilon && value <= max + epsilon;
     }
 }
 
@@ -272,13 +278,13 @@ public sealed partial class ClampedHslColoration : ISkinColorationStrategy
     {
         var hsl = Color.ToHsl(color);
 
-        if (Hue is (var minHue, var maxHue) && (hsl.X < minHue || hsl.X > maxHue))
+        if (Hue is (var minHue, var maxHue) && !ChannelInRange(hsl.X, minHue, maxHue))
             return false;
 
-        if (Saturation is (var minSaturation, var maxSaturation) && (hsl.Y < minSaturation || hsl.Y > maxSaturation))
+        if (Saturation is (var minSaturation, var maxSaturation) && !ChannelInRange(hsl.Y, minSaturation, maxSaturation))
             return false;
 
-        if (Lightness is (var minValue, var maxValue) && (hsl.Z < minValue || hsl.Z > maxValue))
+        if (Lightness is (var minValue, var maxValue) && !ChannelInRange(hsl.Z, minValue, maxValue))
             return false;
 
         return true;
@@ -298,5 +304,11 @@ public sealed partial class ClampedHslColoration : ISkinColorationStrategy
             hsl.Z = Math.Clamp(hsl.Z, minValue, maxValue);
 
         return Color.FromHsl(hsl);
+    }
+
+    private static bool ChannelInRange(float value, float min, float max)
+    {
+        const float epsilon = 2f / 255f;
+        return value >= min - epsilon && value <= max + epsilon;
     }
 }

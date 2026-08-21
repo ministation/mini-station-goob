@@ -51,6 +51,7 @@
   - Brig
   - Cryogenics
   - External # goobstation
+  - Genetics
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]

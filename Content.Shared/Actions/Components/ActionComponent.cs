@@ -165,6 +165,9 @@ public sealed partial class ActionComponent : Component
     [DataField, AutoNetworkedField]
     public bool RaiseOnUser;
 
+    [DataField, AutoNetworkedField]
+    public bool RaiseOnAction;
+
     /// <summary>
     ///     Whether or not to automatically add this action to the action bar when it becomes available.
     /// </summary>

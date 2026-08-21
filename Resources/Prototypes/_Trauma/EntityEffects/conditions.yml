@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entityCondition
+  id: IsHumanoid
+  condition: !type:WhitelistCondition
+    whitelist:
+      components:
+      - HumanoidAppearance
+
+- type: entityCondition
+  id: IsAwake
+  condition: !type:WhitelistCondition
+    inverted: true
+    whitelist:
+      components:
+      - Sleeping

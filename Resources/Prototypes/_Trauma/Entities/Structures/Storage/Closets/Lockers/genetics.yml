@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: LockerScientist
+  id: LockerGeneticist
+  name: geneticist's locker
+  components:
+  - type: AccessReader
+    access: [["Genetics"]]
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: FillLockerGeneticist
+
+- type: entity
+  parent: LockerGeneticist
+  id: LockerGeneticistFilled
+  suffix: Filled
+
+- type: entityTable
+  id: FillLockerGeneticist
+  table: !type:AllSelector
+    children:
+    - id: ClothingHandsGlovesLatex
+    - id: ClothingHeadsetMedicalScience
+    - id: ClothingMaskSterile
+    - id: ClothingOuterCoatLabGene
+    - id: ClothingEyesHudMedical
+    - id: HandheldGeneticsScanner
+    - id: BoxGeneticsDisk
+    - id: BoxSyringe
+    - id: HandheldHealthAnalyzer
+      prob: 0.6

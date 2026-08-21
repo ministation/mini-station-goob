@@ -12,6 +12,24 @@
   meltingPoint: 660.0
 
 - type: reagent
+  id: Bromine
+  name: reagent-name-bromine
+  group: Elements
+  desc: reagent-desc-bromine
+  physicalDesc: reagent-physical-desc-pungent
+  flavor: bitter
+  color: "#4c004c"
+  boilingPoint: 58.8
+  meltingPoint: -7.3
+  metabolisms:
+    Poison:
+      effects:
+      - !type:HealthChange
+        damage:
+          types:
+            Poison: 1
+
+- type: reagent
   id: Carbon
   name: reagent-name-carbon
   group: Elements
