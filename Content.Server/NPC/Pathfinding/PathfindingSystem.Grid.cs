@@ -241,6 +241,11 @@ public sealed partial class PathfindingSystem
 
     private void OnCollisionChange(ref CollisionChangeEvent ev)
     {
+        // FixtureSystem raises this during Physics ComponentInit while the transform is still
+        // transient and fixtures may not have valid shapes yet — skip until the entity is ready.
+        if (LifeStage(ev.BodyUid) < EntityLifeStage.Initialized)
+            return;
+
         var xform = Transform(ev.BodyUid);
 
         if (xform.GridUid == null)
@@ -253,6 +258,9 @@ public sealed partial class PathfindingSystem
 
     private void OnCollisionLayerChange(ref CollisionLayerChangeEvent ev)
     {
+        if (LifeStage(ev.Body) < EntityLifeStage.Initialized)
+            return;
+
         var xform = Transform(ev.Body);
 
         if (xform.GridUid == null)
@@ -264,6 +272,9 @@ public sealed partial class PathfindingSystem
 
     private void OnBodyTypeChange(ref PhysicsBodyTypeChangedEvent ev)
     {
+        if (LifeStage(ev.Entity) < EntityLifeStage.Initialized)
+            return;
+
         if (TryComp(ev.Entity, out TransformComponent? xform) &&
             xform.GridUid != null)
         {
