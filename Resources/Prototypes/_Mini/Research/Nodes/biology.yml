@@ -89,6 +89,8 @@
   recipeUnlocks:
   - MedicalScannerMachineCircuitboard
   - GeneticsConsoleCircuitboard
+  - GeneticsDisk
+  - HandheldGeneticsScanner
   - XenoCompatibilityImplanter
   position: 13,14
 
