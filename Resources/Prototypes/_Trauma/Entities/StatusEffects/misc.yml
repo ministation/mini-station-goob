@@ -15,3 +15,21 @@
   - type: GrantComponentsStatusEffect
     components:
     - type: PressureImmunity
+
+- type: entity
+  parent: MobStatusEffectDebuff
+  id: StatusEffectBlurryVision
+  name: blurry vision
+  components:
+  - type: GrantComponentsStatusEffect
+    components:
+    - type: BlurryVision
+
+- type: entity
+  parent: MobStatusEffectDebuff
+  id: StatusEffectTemporaryBlindness
+  name: temporary blindness
+  components:
+  - type: GrantComponentsStatusEffect
+    components:
+    - type: TemporaryBlindness

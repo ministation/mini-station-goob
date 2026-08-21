@@ -1626,10 +1626,7 @@
         Blunt: 1
     clumsySound:
       path: /Audio/Animals/monkey_scream.ogg
-  # Mini genetics (Wega): humanize / devolve chain
   - type: Mutatable
-    upper: MobHuman
-    lowest: MobMonkey
 
 - type: entity
   name: monkey
@@ -1672,8 +1669,6 @@
   - type: Loadout
     prototypes: [SyndicateOperativeGearMonkey]
   - type: Mutatable
-    upper: MobHuman
-    lowest: MobBaseSyndicateMonkey
 
 - type: entity
   id: MobMonkeySyndicateAgent
@@ -1818,10 +1813,7 @@
     name: ghost-role-information-kobold-name
     description: ghost-role-information-kobold-description
     rules: ghost-role-information-sentientanimal-rules # Goobstation Sentient Animal PR
-  # Mini genetics (Wega)
   - type: Mutatable
-    upper: MobReptilian
-    lowest: MobKobold
 
 - type: entity
   name: kobold

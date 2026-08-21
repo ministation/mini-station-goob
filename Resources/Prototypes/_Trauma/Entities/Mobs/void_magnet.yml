@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: DesynchronizedPocket
+  id: VoidMagnetPocket
+  name: void pocket
+  description: A tear in spacetime yanked around the user by a void magnet mutation.

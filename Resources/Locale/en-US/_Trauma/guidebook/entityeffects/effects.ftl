@@ -45,3 +45,7 @@ entity-effect-guidebook-melts-brain = {$chance ->
     [1] melts
     *[other] melt
 } the target's brain
+entity-effect-guidebook-increases-reach = increases reach
+entity-effect-guidebook-decreases-reach = decreases reach
+entity-effect-guidebook-paralyze-legs = paralyzes the target's legs
+entity-effect-guidebook-make-fragile = makes the target fragile

@@ -13,6 +13,7 @@ using Content.Shared.Whitelist;
 using Content.Shared._Trauma.Genetics.Mutations;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Shared._Trauma.Genetics.YamlCompat;
 
@@ -182,6 +183,9 @@ public sealed partial class RelayOrganEffectSystem : EntityEffectSystem<MetaData
 public sealed partial class RelayRandomPart : EntityEffectBase<RelayRandomPart>
 {
     [DataField]
+    public List<BodyPartType> Types = new();
+
+    [DataField]
     public EntityEffect Effect = default!;
 
     [DataField]
@@ -193,8 +197,30 @@ public sealed partial class RelayRandomPart : EntityEffectBase<RelayRandomPart>
 
 public sealed partial class RelayRandomPartEffectSystem : EntityEffectSystem<MetaDataComponent, RelayRandomPart>
 {
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private SharedEntityEffectsSystem _effects = default!;
+
     protected override void Effect(Entity<MetaDataComponent> ent, ref EntityEffectEvent<RelayRandomPart> args)
     {
+        var partFilter = args.Effect.Types;
+        var candidates = new List<EntityUid>();
+        foreach (var (part, partComp) in _body.GetBodyChildren(ent))
+        {
+            if (partFilter.Count > 0 && !partFilter.Contains(partComp.PartType))
+                continue;
+
+            candidates.Add(part);
+        }
+
+        if (candidates.Count == 0)
+        {
+            if (args.Effect.FailEffect is { } fail)
+                _effects.ApplyEffects(ent, [fail], user: args.User);
+            return;
+        }
+
+        _effects.ApplyEffects(_random.Pick(candidates), [args.Effect.Effect], user: args.User);
     }
 }
 
@@ -242,13 +268,20 @@ public sealed partial class RemoveOrganSlotEffectSystem : EntityEffectSystem<Met
 
 public sealed partial class DetachOrgan : EntityEffectBase<DetachOrgan>;
 
-public sealed partial class DetachOrganEffectSystem : EntityEffectSystem<OrganComponent, DetachOrgan>
+public sealed partial class DetachOrganEffectSystem : EntityEffectSystem<MetaDataComponent, DetachOrgan>
 {
     [Dependency] private SharedBodySystem _body = default!;
 
-    protected override void Effect(Entity<OrganComponent> ent, ref EntityEffectEvent<DetachOrgan> args)
+    protected override void Effect(Entity<MetaDataComponent> ent, ref EntityEffectEvent<DetachOrgan> args)
     {
-        _body.RemoveOrgan(ent);
+        if (HasComp<BodyPartComponent>(ent))
+        {
+            _body.TryDetachPart(ent);
+            return;
+        }
+
+        if (TryComp<OrganComponent>(ent, out var organ))
+            _body.RemoveOrgan(ent, organ);
     }
 }
 

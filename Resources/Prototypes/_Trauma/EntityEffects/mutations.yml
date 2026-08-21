@@ -64,7 +64,6 @@
   - !type:PlaySoundEffect
     sound:
       path: /Audio/Effects/lightburn.ogg
-    positional: false
 
 # Spastic
 
@@ -300,7 +299,7 @@
     effectProto: StatusEffectBlurryVision
     time: 40
   - !type:ModifyStatusEffect
-    effectProto: StatusEffectBlindness
+    effectProto: StatusEffectTemporaryBlindness
     time: 5 # few seconds of blindness instead of eye damage
   - !type:ModifyKnockdown
     time: 2

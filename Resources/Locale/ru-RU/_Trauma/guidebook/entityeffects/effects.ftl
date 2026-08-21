@@ -45,3 +45,7 @@ entity-effect-guidebook-melts-brain = {$chance ->
     [1] расплавляет
     *[other] расплавляет
 } мозг цели
+entity-effect-guidebook-increases-reach = увеличивает дистанцию взаимодействия
+entity-effect-guidebook-decreases-reach = уменьшает дистанцию взаимодействия
+entity-effect-guidebook-paralyze-legs = парализует ноги цели
+entity-effect-guidebook-make-fragile = делает цель хрупкой

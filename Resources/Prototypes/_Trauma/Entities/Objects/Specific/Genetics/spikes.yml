@@ -1,0 +1,42 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: BaseItem
+  id: TongueSpike
+  name: tongue spike
+  description: A hardened tongue launched as a weapon.
+  components:
+  - type: Sprite
+    sprite: Mobs/Species/Human/organs.rsi
+    state: tongue
+  - type: Item
+    size: Tiny
+  - type: EmbeddableProjectile
+    sound: /Audio/Weapons/star_hit.ogg
+  - type: DamageOtherOnHit
+    damage:
+      types:
+        Piercing: 12
+        Slash: 4
+  - type: LandAtCursor
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeCircle
+          radius: 0.2
+        density: 5
+        mask:
+        - ItemMask
+        restitution: 0.3
+        friction: 0.2
+
+- type: entity
+  parent: TongueSpike
+  id: TongueSpikeChem
+  name: chem spike
+  description: A tongue spike that can dump chemicals into whoever it embeds in.
+  components:
+  - type: Sprite
+    sprite: _Trauma/Actions/mutations.rsi
+    state: chemspike
+  - type: ChemTransferProjectile
