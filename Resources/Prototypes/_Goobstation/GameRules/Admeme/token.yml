@@ -488,13 +488,6 @@
         interfaces:
           enum.SlasherKitSelectUiKey.Key:
             type: SlasherKitSelectBoundUserInterface
-      - type: GhostRole
-        name: ghost-role-information-slasher-token
-        description: ghost-role-information-description-token-generic
-        rules: ghost-role-information-antagonist-rules
-        mindRoles:
-        - MindRoleGhostRoleSoloAntagonist
-      - type: GhostTakeoverAvailable
 
 - type: entity
   parent: ContractorSpawn
