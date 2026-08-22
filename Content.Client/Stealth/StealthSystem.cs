@@ -14,6 +14,7 @@ namespace Content.Client.Stealth;
 public sealed class StealthSystem : SharedStealthSystem
 {
     private static readonly ProtoId<ShaderPrototype> Shader = "Stealth";
+    private const string StealthShaderId = "Stealth";
 
     [Dependency] private readonly IPrototypeManager _protoMan = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
@@ -41,13 +42,16 @@ public sealed class StealthSystem : SharedStealthSystem
         var query = EntityQueryEnumerator<StealthComponent, SpriteComponent>();
         while (query.MoveNext(out var uid, out var stealth, out var sprite))
         {
-            if (stealth.Enabled && (sprite.PostShader == null || !sprite.RaiseShaderEvent))
+            if (stealth.Enabled)
             {
-                SetShader(uid, true, stealth, sprite); // force the stealth shader
+                if (!_sprite.TryGetPostShader(sprite, StealthShaderId, out var entry)
+                    || !entry.GetScreenTexture
+                    || !entry.RaiseShaderEvent)
+                    SetShader(uid, true, stealth, sprite);
             }
-            else if (!stealth.Enabled && sprite.PostShader == _shader)
+            else if (_sprite.HasPostShader(sprite, StealthShaderId))
             {
-                SetShader(uid, false, stealth, sprite); // clean up
+                SetShader(uid, false, stealth, sprite);
             }
         }
     }
@@ -67,9 +71,19 @@ public sealed class StealthSystem : SharedStealthSystem
             return;
 
         _sprite.SetColor((uid, sprite), Color.White);
-        sprite.PostShader = enabled ? _shader : null;
-        sprite.GetScreenTexture = enabled;
-        sprite.RaiseShaderEvent = enabled;
+
+        if (enabled)
+        {
+            _sprite.SetPostShader((uid, sprite), new SpriteComponent.PostShaderArgs(StealthShaderId, _shader)
+            {
+                GetScreenTexture = true,
+                RaiseShaderEvent = true,
+            });
+        }
+        else
+        {
+            _sprite.RemovePostShader((uid, sprite), StealthShaderId);
+        }
 
         if (!enabled)
         {
@@ -123,8 +137,8 @@ public sealed class StealthSystem : SharedStealthSystem
         // actual visual visibility effect is limited to -1.5 to 1.
         visibility = Math.Clamp(visibility, -1.5f, 1f);
 
-        _shader.SetParameter("reference", reference);
-        _shader.SetParameter("visibility", visibility);
+        args.Shader.SetParameter("reference", reference);
+        args.Shader.SetParameter("visibility", visibility);
 
         visibility = MathF.Max(0, visibility);
         _sprite.SetColor((uid, args.Sprite), new Color(visibility, visibility, 1, 1));

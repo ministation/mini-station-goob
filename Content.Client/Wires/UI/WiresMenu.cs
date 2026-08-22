@@ -13,6 +13,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.Animations;
 using Robust.Shared.Input;
+using Robust.Shared.Maths;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 
 namespace Content.Client.Wires.UI
@@ -427,36 +428,23 @@ namespace Content.Client.Wires.UI
                 {
                     var colorValue = _color.ColorValue();
                     var tex = _resourceCache.GetTexture(_isCut ? TextureCut[_type] : TextureNormal[_type]);
+                    var width = tex.Width * UIScale;
+                    var height = tex.Height * UIScale;
+                    var rect = UIBox2.FromDimensions(0, 0, width, height);
 
-                    var l = 0f;
-                    var r = tex.Width + l;
-                    var t = 0f;
-                    var b = tex.Height + t;
+                    var previous = handle.GetTransform();
+                    var scale = new Vector2(_mirror ? -1f : 1f, _flip ? -1f : 1f);
+                    var origin = new Vector2(_mirror ? width : 0f, _flip ? height : 0f);
+                    handle.SetTransform(Matrix3Helpers.CreateTransform(origin, Angle.Zero, scale) * previous);
 
-                    if (_flip)
-                    {
-                        (t, b) = (b, t);
-                    }
-
-                    if (_mirror)
-                    {
-                        (l, r) = (r, l);
-                    }
-
-                    l *= UIScale;
-                    r *= UIScale;
-                    t *= UIScale;
-                    b *= UIScale;
-
-                    var rect = new UIBox2(l, t, r, b);
                     if (_isCut)
                     {
-                        var copper = Color.Orange;
                         var copperTex = _resourceCache.GetTexture(TextureCopper[_type]);
-                        handle.DrawTextureRect(copperTex, rect, copper);
+                        handle.DrawTextureRect(copperTex, rect, Color.Orange);
                     }
 
                     handle.DrawTextureRect(tex, rect, colorValue);
+                    handle.SetTransform(previous);
                 }
             }
         }

@@ -197,8 +197,7 @@ public abstract partial class SharedSurgerySystem
     {
         if (_wounds.GetWoundableSeverityPoint(
                 args.Part,
-                damageGroup: ent.Comp.MainGroup,
-                healable: true) <= 0)
+                damageGroup: ent.Comp.MainGroup) <= 0)
             return;
 
         // Right now the bonus is based off the body's total damage, maybe we could make it based off each part in the future.
@@ -544,9 +543,9 @@ public abstract partial class SharedSurgerySystem
 
         if (traumaType == TraumaSystem.OrganDamage)
         {
-            foreach (var organ in _body.GetBodyOrgans(args.Body))
+            foreach (var organ in _body.GetPartOrgans(args.Part))
             {
-                foreach (var modifier in organ.Component.IntegrityModifiers)
+                foreach (var modifier in organ.Component.IntegrityModifiers.ToList())
                 {
                     var delta = healAmount - modifier.Value;
                     if (delta > 0)
@@ -566,9 +565,13 @@ public abstract partial class SharedSurgerySystem
                             modifier.Key.Item2,
                             modifier.Key.Item1,
                             organ.Component);
+                        healAmount = 0;
                         break;
                     }
                 }
+
+                if (healAmount <= 0)
+                    break;
             }
         }
         else if (traumaType == TraumaSystem.BoneDamage)
@@ -605,7 +608,7 @@ public abstract partial class SharedSurgerySystem
 
     private void OnTraumaTreatmentCheck(Entity<SurgeryTraumaTreatmentStepComponent> ent, ref SurgeryStepCompleteCheckEvent args)
     {
-        if (_trauma.HasWoundableTrauma(args.Part, ent.Comp.TraumaType))
+        if (HasPartTrauma(args.Part, ent.Comp.TraumaType))
             args.Cancelled = true;
     }
 

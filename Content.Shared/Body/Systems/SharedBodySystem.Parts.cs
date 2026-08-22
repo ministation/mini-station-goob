@@ -1176,11 +1176,11 @@ public partial class SharedBodySystem
         TargetBodyPart? targetPart = null,
         TargetingComponent? targetComp = null)
     {
-        if (!Resolve(target, ref targetComp, false))
-            return TargetBodyPart.Chest;
-
         if (targetPart.HasValue)
             return targetPart.Value;
+
+        if (!Resolve(target, ref targetComp, false))
+            return TargetBodyPart.Chest;
 
         if (attacker.HasValue
             && TryComp(attacker.Value, out TargetingComponent? attackerComp))
