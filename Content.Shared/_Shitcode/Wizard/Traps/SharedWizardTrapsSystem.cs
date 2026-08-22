@@ -39,6 +39,7 @@ public abstract class SharedWizardTrapsSystem : EntitySystem
     [Dependency] private   readonly EntityWhitelistSystem _whitelist = default!;
     [Dependency] private   readonly INetManager _net = default!;
     [Dependency] private   readonly ISharedPlayerManager _player = default!;
+    [Dependency] private   readonly IGameTiming _timing = default!;
 
     public override void Initialize()
     {
@@ -53,6 +54,20 @@ public abstract class SharedWizardTrapsSystem : EntitySystem
         SubscribeLocalEvent<ChillTrapComponent, TrapTriggeredEvent>(OnChillTriggered);
         SubscribeLocalEvent<BlindingTrapComponent, TrapTriggeredEvent>(OnBlindTriggered);
         SubscribeLocalEvent<DamageTrapComponent, TrapTriggeredEvent>(OnDamageTriggered);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        var query = EntityQueryEnumerator<WizardTrapIgnoreComponent>();
+        while (query.MoveNext(out var uid, out var ignore))
+        {
+            if (ignore.EndTime == TimeSpan.Zero || ignore.EndTime > _timing.CurTime)
+                continue;
+
+            RemComp<WizardTrapIgnoreComponent>(uid);
+        }
     }
 
     private void OnDamageTriggered(Entity<DamageTrapComponent> ent, ref TrapTriggeredEvent args)
@@ -222,7 +237,7 @@ public abstract class SharedWizardTrapsSystem : EntitySystem
 
     private bool IsEntityMindIgnored(EntityUid user, WizardTrapComponent trap)
     {
-        if (HasComp<GhostComponent>(user) || HasComp<SpectralComponent>(user) || !HasComp<MobStateComponent>(user))
+        if (HasComp<GhostComponent>(user) || HasComp<SpectralComponent>(user) || HasComp<WizardTrapIgnoreComponent>(user) || !HasComp<MobStateComponent>(user))
             return true;
 
         if (trap.TargetedEntityWhitelist != null && !_whitelist.IsWhitelistPass(trap.TargetedEntityWhitelist, user))

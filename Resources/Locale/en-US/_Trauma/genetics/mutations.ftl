@@ -205,6 +205,8 @@ MutationShockTouch-removed = The energy in your hands subsides.
 
 MutationMendingTouch-mutated = Your hand feels blessed!
 MutationMendingTouch-removed = Your hand feels secular once more.
+MutationMendingTouch-popup-none = {CAPITALIZE(SUBJECT($target))} {CONJUGATE-BE($target)} uninjured.
+MutationMendingTouch-popup-done = You take some of {POSS-ADJ($target)} injuries onto yourself.
 
 MutationVoidMagnet-mutated = You feel a heavy, dull force just beyond the walls watching you.
 

@@ -12,6 +12,7 @@
       organs:
         brain: OrganMothBrain # CorvaxGoob organs resprite
         eyes: OrganMothEyes # CorvaxGoob organs resprite
+        tongue: OrganHumanTongue
     chest:
       part: ChestMoth
       organs:

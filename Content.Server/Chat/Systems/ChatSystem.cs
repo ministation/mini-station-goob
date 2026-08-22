@@ -1267,7 +1267,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             ("message", message),
             ("language", languageDisplay),
             ("jobIcon", (object?)jobIcon ?? ""),
-            ("jobName", jobName ?? ""));
+            ("jobName", FormattedMessage.EscapeStringParameter(jobName ?? "")));
     }
     // Einstein Engines - Language end
 

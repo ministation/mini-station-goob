@@ -12,6 +12,7 @@
       organs:
         brain: OrganResomiBrain # CorvaxGoob resprite
         eyes: OrganResomiEyes # CorvaxGoob resprite
+        tongue: OrganHumanTongue
     chest:
       part: ChestResomi
       connections:

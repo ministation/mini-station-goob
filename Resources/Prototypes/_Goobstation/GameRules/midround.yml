@@ -653,13 +653,6 @@
         interfaces:
           enum.SlasherKitSelectUiKey.Key:
             type: SlasherKitSelectBoundUserInterface
-      - type: GhostRole
-        name: ghost-role-information-slasher-name
-        description: ghost-role-information-slasher-description
-        rules: ghost-role-information-antagonist-rules
-        mindRoles:
-        - MindRoleGhostRoleSoloAntagonist
-      - type: GhostTakeoverAvailable
   - type: Tag
     tags:
     - MidroundAntag

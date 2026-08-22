@@ -261,6 +261,8 @@
   components:
   - type: Sprite
     state: tongue
+  - type: Organ
+    slotId: tongue
   - type: Tag # goob edit
     tags:
     - Meat

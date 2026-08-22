@@ -427,7 +427,7 @@ public sealed partial class RadioSystem : EntitySystem
             ("color", channel.Color),
             // Mini Station start
             ("jobIcon", (object?)jobIcon ?? ""),
-            ("jobName", jobName ?? ""),
+            ("jobName", FormattedMessage.EscapeStringParameter(jobName ?? "")),
             // Mini Station end
             ("languageColor", languageColor),
             ("fontType", language.SpeechOverride.FontId ?? speech.FontId),

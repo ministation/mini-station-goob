@@ -10,6 +10,7 @@ using Content.Shared._Shitmed.Medical.Surgery.Steps;
 using Content.Shared._Shitmed.Medical.Surgery.Steps.Parts;
 using Content.Shared._Shitmed.Medical.Surgery.Wounds.Systems;
 using Content.Shared._Shitmed.Medical.Surgery.Wounds.Components;
+using Content.Shared._Shitmed.Medical.Surgery.Traumas;
 using Content.Shared._Shitmed.Medical.Surgery.Traumas.Components;
 using Content.Shared._Shitmed.Medical.Surgery.Traumas.Systems;
 using Content.Shared._Shitmed.Surgery;
@@ -219,7 +220,7 @@ public abstract partial class SharedSurgerySystem : EntitySystem
             return;
         }
 
-        if (_wounds.GetWoundableSeverityPoint(args.Part, partWoundable, ent.Comp.DamageGroup, healable: true) <= 0
+        if (_wounds.GetWoundableSeverityPoint(args.Part, partWoundable, ent.Comp.DamageGroup) <= 0
             && !HasComp<IncisionOpenComponent>(args.Part))
             args.Cancelled = true;
     }
@@ -397,7 +398,7 @@ public abstract partial class SharedSurgerySystem : EntitySystem
 
         // not inverted = cancel if no trauma present
         // inverted = cancel if trauma present
-        if (_trauma.HasWoundableTrauma(args.Part, ent.Comp.TraumaType) == ent.Comp.Inverted)
+        if (HasPartTrauma(args.Part, ent.Comp.TraumaType) == ent.Comp.Inverted)
             args.Cancelled = true;
     }
 
@@ -438,6 +439,43 @@ public abstract partial class SharedSurgerySystem : EntitySystem
             if (!bleeding)
                 args.Cancelled = true;
         }
+    }
+
+    private bool HasPartTrauma(EntityUid part, ProtoId<TraumaTypePrototype> traumaType)
+    {
+        if (traumaType == TraumaSystem.OrganDamage)
+            return PartHasOrganDamage(part);
+
+        if (traumaType == TraumaSystem.BoneDamage)
+            return PartHasBoneDamage(part);
+
+        return _trauma.HasWoundableTrauma(part, traumaType);
+    }
+
+    private bool PartHasOrganDamage(EntityUid part)
+    {
+        foreach (var organ in _body.GetPartOrgans(part))
+        {
+            if (organ.Component.OrganIntegrity < organ.Component.IntegrityCap)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool PartHasBoneDamage(EntityUid part)
+    {
+        if (!TryComp<WoundableComponent>(part, out var woundable))
+            return false;
+
+        foreach (var bone in woundable.Bone.ContainedEntities)
+        {
+            if (TryComp<BoneComponent>(bone, out var boneComp)
+                && boneComp.BoneIntegrity < boneComp.IntegrityCap)
+                return true;
+        }
+
+        return false;
     }
 
     private void OnMarkingPresentValid(Entity<SurgeryMarkingConditionComponent> ent, ref SurgeryValidEvent args)

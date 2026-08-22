@@ -12,6 +12,7 @@ using Content.Shared.DoAfter;
 using Content.Shared.Inventory;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Stunnable;
 using Content.Shared.Timing;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Network;
@@ -26,6 +27,7 @@ public sealed partial class GoobBibleSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly UseDelaySystem _delay = default!;
+    [Dependency] private readonly SharedStunSystem _stun = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly INetManager _netManager = default!;
@@ -59,6 +61,8 @@ public sealed partial class GoobBibleSystem : EntitySystem
             _popupSystem.PopupPredicted(popup, target, performer, PopupType.LargeCaution);
             _audio.PlayPvs(bibleComp.SizzleSoundPath, target);
             _damageableSystem.TryChangeDamage(target, bibleComp.SmiteDamage * multiplier, true, origin: bible, targetPart: TargetBodyPart.All, ignoreBlockers: true);
+            if (isDevil)
+                _stun.TryUpdateParalyzeDuration(target, bibleComp.SmiteStunDuration * multiplier);
             _delay.TryResetDelay((bible, useDelay));
         }
         else if (isDevil && HasComp<BibleUserComponent>(performer))
@@ -87,10 +91,10 @@ public sealed partial class GoobBibleSystem : EntitySystem
 
     public bool ShouldSmiteTarget(EntityUid target)
     {
-        if (TryComp<WeakToHolyComponent>(target, out var weakToHoly) && weakToHoly.AlwaysTakeHoly)
-            return true;
+        if (_heretic.TryGetHereticComponent(target, out _, out _))
+            return false;
 
-        if (_heretic.TryGetHereticComponent(target, out var heretic, out _) && heretic.Ascended)
+        if (TryComp<WeakToHolyComponent>(target, out var weakToHoly) && weakToHoly.AlwaysTakeHoly)
             return true;
 
         return _inventory.GetHandOrInventoryEntities(target, SlotFlags.WITHOUT_POCKET)

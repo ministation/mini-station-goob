@@ -12,6 +12,7 @@
       organs:
         brain: OrganAnimalBrain
         eyes: OrganAnimalEyes
+        tongue: OrganHumanTongue
     chest:
       part: ChestKobold
       connections:

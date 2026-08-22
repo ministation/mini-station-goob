@@ -16,12 +16,24 @@
   startingGear: GeneticistGear
   icon: "JobIconGeneticist"
   supervisors: job-supervisors-cmo
+  skills:
+  - Surgery
+  - MedicalEquipment
+  guides:
+  - MedicalDoctor
+  - Medical
+  - Medicine
   access:
   - Medical
   - Research
   - Maintenance
   - Cryogenics
   - Genetics
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SurgerySpeedModifier
+      speedModifier: 1.5
 
 - type: startingGear
   id: GeneticistGear
@@ -32,6 +44,7 @@
   storage:
     back:
     - BoxGeneticsDisk
+    - HandheldGeneticsScanner
 
 - type: chameleonOutfit
   id: GeneticistChameleonOutfit
