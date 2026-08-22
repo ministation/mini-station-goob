@@ -117,8 +117,8 @@ public sealed class ActionContainerSystem : EntitySystem
                     ToPrettyString(ent),
                     ToPrettyString(uid));
 
-                if (comp.Container.Contains(ent))
-                    _container.Remove(ent, comp.Container, reparent: false, force: true);
+                if (comp.Container.Contains(ent.Owner))
+                    _container.Remove(ent.Owner, comp.Container, reparent: false, force: true);
 
                 Del(ent);
                 actionId = null;
