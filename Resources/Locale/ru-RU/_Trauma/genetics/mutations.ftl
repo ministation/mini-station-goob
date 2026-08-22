@@ -204,6 +204,8 @@ MutationShockTouch-removed = Энергия в руках стихает.
 
 MutationMendingTouch-mutated = Рука ощущается благословенной!
 MutationMendingTouch-removed = Рука снова вполне мирская.
+MutationMendingTouch-popup-none = На {THE($target)} нет физических ран.
+MutationMendingTouch-popup-done = Вы переносите часть ран {THE($target)} на себя.
 
 MutationVoidMagnet-mutated = За стенами чувствуется тяжёлая тупая сила, которая за вами наблюдает.
 

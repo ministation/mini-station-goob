@@ -4,6 +4,7 @@ entity-effect-guidebook-delete-entity = {$chance ->
 } the target
 entity-effect-guidebook-speak = Causes involuntary speech
 entity-effect-guidebook-scale-entity = Scales the target's size by ({$x}, {$y})
+entity-effect-guidebook-transfer-injuries = Transfers {$percent}% of the target's brute and burn injuries to the user
 entity-effect-guidebook-attack-self = {$chance ->
     [1] makes
     *[other] make

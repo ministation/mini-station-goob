@@ -12,6 +12,7 @@
       organs:
         brain: OrganTajaranBrain # CorvaxGoob organs resprite
         eyes: OrganTajaranEyes # CorvaxGoob organs resprite
+        tongue: OrganHumanTongue
     chest:
       part: ChestTajaran
       connections:

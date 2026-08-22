@@ -4,6 +4,7 @@ entity-effect-guidebook-delete-entity = {$chance ->
 } цель
 entity-effect-guidebook-speak = Вызывает непроизвольную речь
 entity-effect-guidebook-scale-entity = Масштабирует размер цели на ({$x}, {$y})
+entity-effect-guidebook-transfer-injuries = Переносит {$percent}% травм цели (тупые и ожоги) на пользователя
 entity-effect-guidebook-attack-self = {$chance ->
     [1] заставляет
     *[other] заставляет

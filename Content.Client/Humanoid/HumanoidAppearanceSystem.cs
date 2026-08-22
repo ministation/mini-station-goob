@@ -8,6 +8,7 @@ using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Inventory;
 using Content.Shared.Preferences;
+using Content.Shared.Sprite;
 using Robust.Client.GameObjects;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
@@ -22,6 +23,7 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
     [Dependency] private readonly IConfigurationManager _configurationManager = default!;
     [Dependency] private readonly DisplacementMapSystem _displacement = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private readonly SharedScaleVisualsSystem _scaleVisuals = default!;
 
     public override void Initialize()
     {
@@ -62,7 +64,10 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
         humanoidAppearance.Height = height;
         humanoidAppearance.Width = width;
 
-        _sprite.SetScale((entity, sprite), new Vector2(width, height));
+        var scale = new Vector2(width, height);
+        if (HasComp<ScaleVisualsComponent>(entity.Owner))
+            scale *= _scaleVisuals.GetSpriteScale(entity.Owner);
+        _sprite.SetScale((entity, sprite), scale);
         // end Goobstation: port EE height/width sliders
 
         sprite[_sprite.LayerMapReserve((entity.Owner, sprite), HumanoidVisualLayers.Eyes)].Color = humanoidAppearance.EyeColor;

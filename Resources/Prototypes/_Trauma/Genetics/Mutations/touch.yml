@@ -46,26 +46,32 @@
     instability: 35
     difficulty: 16
     rarity: Mythical
-  #- type: ActionMutation
-  #  action: ActionMutationMendingTouch
-  # TODO: jesus christ this has a lot of logic
+  - type: ActionMutation
+    action: ActionMutationMendingTouch
 
-#- type: entity
-#  parent: BaseAction
-#  id: ActionMutationMendingTouch
-#  name: Mending Touch
-#  description: Lay your hands on other people to transfer a small amount of their physical injuries to yourself.
-#  components:
-#  - type: Sprite
-#    sprite: _Trauma/Actions/mutations.rsi
-#    layers:
-#    - state: mending_touch
-#  - type: Action
-#    useDelay: 12
-#  - type: TargetAction
-#  - type: EntityTargetAction
-#    whitelist:
-#      requireAll: true
-#      components:
-#      - Damageable
-#      - Body
+- type: entity
+  parent: BaseMutationAction
+  id: ActionMutationMendingTouch
+  name: Mending Touch
+  description: Lay your hands on other people to transfer a small amount of their physical injuries to yourself.
+  components:
+  - type: Sprite
+    sprite: _Trauma/Actions/mutations.rsi
+    layers:
+    - state: mending_touch
+  - type: Action
+    useDelay: 12
+  - type: TargetAction
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      requireAll: true
+      components:
+      - Damageable
+      - Body
+    event: !type:EffectTargetActionEvent
+  - type: EffectAction
+    effects:
+    - !type:TransferInjuries
+      fraction: 0.25
+      maxPerType: 10

@@ -12,6 +12,7 @@
       organs:
         brain: OrganVoxBrain # CorvaxGoob resprite
         eyes: OrganVoxEyes
+        tongue: OrganVoxTongueA
     chest: # Goob
       part: ChestVox
       connections:

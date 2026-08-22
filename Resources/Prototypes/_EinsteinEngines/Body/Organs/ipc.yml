@@ -46,6 +46,7 @@
   - type: Sprite
     state: tongue
   - type: Organ
+    slotId: tongue
   - type: Tag
     tags:
     - Organ
