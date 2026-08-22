@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+﻿# SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: entity
   id: TorchWall
@@ -34,7 +34,7 @@
       fix1:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.4,0.5,0.4,0.35"
+          bounds: "-0.4,0.35,0.4,0.5"
         density: 190
         mask:
         - TabletopMachineMask
