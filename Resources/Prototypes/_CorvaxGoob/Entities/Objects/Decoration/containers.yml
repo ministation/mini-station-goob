@@ -1,4 +1,4 @@
-- type: entity
+﻿- type: entity
   id: BaseShippingContainer
   abstract: true
   placement:
@@ -17,7 +17,7 @@
       fix1:
         shape:
           !type:PhysShapeAabb
-          bounds: "-1.5,0,1.5,-1"
+          bounds: "-1.5,-1,1.5,0"
         density: 1000
         layer:
         - WallLayer
@@ -116,8 +116,8 @@
 - type: entity
   id: ShippingContainerVitezstvi
   parent: BaseShippingContainer
-  name: Vítězství Arms shipping container
-  description: A standard-measure shipping container for bulk transport of goods. This one is from Vítězství Arms, proudly proclaiming that Vítězství weapons mean victory.
+  name: VÃ­tÄ›zstvÃ­ Arms shipping container
+  description: A standard-measure shipping container for bulk transport of goods. This one is from VÃ­tÄ›zstvÃ­ Arms, proudly proclaiming that VÃ­tÄ›zstvÃ­ weapons mean victory.
   components:
   - type: Sprite
     state: vitezstvi

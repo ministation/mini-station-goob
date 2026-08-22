@@ -127,10 +127,11 @@ namespace Content.Client.Paper.UI
                     Texture = backgroundImage,
                     TextureScale = visuals.BackgroundScale,
                     Mode = backgroundImageMode,
+                    // Thickness is L,T,R,B; StyleBox patch margins are L,B,R,T.
                     PatchMarginLeft = backgroundPatchMargin.Left,
-                    PatchMarginBottom = backgroundPatchMargin.Bottom,
+                    PatchMarginTop = backgroundPatchMargin.Top,
                     PatchMarginRight = backgroundPatchMargin.Right,
-                    PatchMarginTop = backgroundPatchMargin.Top
+                    PatchMarginBottom = backgroundPatchMargin.Bottom
                 };
 
             }
@@ -148,8 +149,7 @@ namespace Content.Client.Paper.UI
             }
 
             HeaderImage.ModulateSelfOverride = visuals.HeaderImageModulate;
-            HeaderImage.Margin = new Thickness(visuals.HeaderMargin.Left, visuals.HeaderMargin.Top,
-                    visuals.HeaderMargin.Right, visuals.HeaderMargin.Bottom);
+            HeaderImage.Margin = visuals.HeaderMargin;
 
             // Then the footer
             if (visuals.FooterImagePath is {} path)
@@ -159,8 +159,7 @@ namespace Content.Client.Paper.UI
             }
 
             FooterImage.ModulateSelfOverride = visuals.FooterImageModulate;
-            FooterImage.Margin = new Thickness(visuals.FooterMargin.Left, visuals.FooterMargin.Top,
-                    visuals.FooterMargin.Right, visuals.FooterMargin.Bottom);
+            FooterImage.Margin = visuals.FooterMargin;
 
             PaperContent.ModulateSelfOverride = visuals.ContentImageModulate;
             WrittenTextLabel.ModulateSelfOverride = visuals.FontAccentColor;
@@ -181,9 +180,7 @@ namespace Content.Client.Paper.UI
             }
 
             // Starlight-edit begin
-            _originalContentMargin = new Thickness(
-                    visuals.ContentMargin.Left, visuals.ContentMargin.Top,
-                    visuals.ContentMargin.Right, visuals.ContentMargin.Bottom);
+            _originalContentMargin = visuals.ContentMargin;
             PaperContent.Margin = _originalContentMargin;
             // Starlight-edit end
 

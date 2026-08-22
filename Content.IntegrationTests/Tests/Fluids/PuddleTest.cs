@@ -7,6 +7,8 @@ using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Fluids.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Maths;
+using System.Collections.Generic;
 
 namespace Content.IntegrationTests.Tests.Fluids
 {
@@ -48,18 +50,19 @@ namespace Content.IntegrationTests.Tests.Fluids
             var testMap = await pair.CreateTestMap();
             var grid = testMap.Grid;
 
-            var entitySystemManager = server.ResolveDependency<IEntitySystemManager>();
             var spillSystem = server.System<PuddleSystem>();
             var mapSystem = server.System<SharedMapSystem>();
 
-            // Remove all tiles
+            // Remove all tiles (collect first — mutating during GetAllTiles can empty chunks mid-enum).
             await server.WaitPost(() =>
             {
-                var tiles = mapSystem.GetAllTiles(grid.Owner, grid.Comp);
-                foreach (var tile in tiles)
+                var tiles = new List<(Vector2i GridIndices, Tile Tile)>();
+                foreach (var tile in mapSystem.GetAllTiles(grid.Owner, grid.Comp))
                 {
-                    mapSystem.SetTile(grid, tile.GridIndices, Tile.Empty);
+                    tiles.Add((tile.GridIndices, Tile.Empty));
                 }
+
+                mapSystem.SetTiles(grid, tiles);
             });
 
             await pair.RunTicksSync(5);

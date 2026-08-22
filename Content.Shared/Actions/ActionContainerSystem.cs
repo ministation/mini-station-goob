@@ -107,10 +107,20 @@ public sealed class ActionContainerSystem : EntitySystem
 
             actionId = ent;
             action = ent.Comp;
-            DebugTools.Assert(Transform(ent).ParentUid == uid);
-            DebugTools.Assert(_container.IsEntityInContainer(ent));
-            DebugTools.Assert(ent.Comp.Container == uid);
-            return true;
+            // Map-serialized action refs can be stale/mis-parented; treat as missing instead of DebugAssert.
+            if (Transform(ent).ParentUid != uid
+                || !_container.IsEntityInContainer(ent)
+                || ent.Comp.Container != uid)
+            {
+                Log.Error(
+                    $"Action {ToPrettyString(ent)} for {ToPrettyString(uid)} is not in a valid container state; recreating.");
+                actionId = null;
+                action = null;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         // Null prototypes are never valid entities, they mean that someone didn't provide a proper prototype.
