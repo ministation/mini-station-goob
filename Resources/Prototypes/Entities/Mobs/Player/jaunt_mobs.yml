@@ -22,6 +22,19 @@
   - type: Spectral
   - type: IsDeadIC # Goobstation
     dead: false
+  - type: Physics
+    bodyType: KinematicController
+    bodyStatus: InAir
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+        density: 15
+        layer:
+        - GhostImpassable
+  - type: WizardTrapIgnore
 
 # Should be slow, for balance
 - type: entity

@@ -8,6 +8,8 @@ using Content.Server.Mind.Commands;
 using Content.Server.Polymorph.Components;
 using Content.Shared._DV.Polymorph;
 using Content.Shared._Goobstation.Wizard.BindSoul;
+using Content.Shared._Goobstation.Wizard.Traps;
+using Content.Shared.Ghost;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Buckle;
@@ -478,6 +480,13 @@ public sealed partial class PolymorphSystem : EntitySystem
 
         if (component.Configuration.ExitPolymorphSound != null)
             _audio.PlayPvs(component.Configuration.ExitPolymorphSound, uidXform.Coordinates);
+
+        if (HasComp<SpectralComponent>(uid) || HasComp<WizardTrapIgnoreComponent>(uid))
+        {
+            var trapIgnore = EnsureComp<WizardTrapIgnoreComponent>(parent);
+            trapIgnore.EndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(1);
+            Dirty(parent, trapIgnore);
+        }
 
         _transform.SetParent(parent, parentXform, uidXform.ParentUid);
         _transform.SetCoordinates(parent, parentXform, uidXform.Coordinates, uidXform.LocalRotation);
