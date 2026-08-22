@@ -23,6 +23,10 @@ cmd-replay-error-no-replay = Сейчас не проигрывается пов
 cmd-replay-error-already-loaded = Повтор уже загружен.
 cmd-replay-error-run-level = Вы не можете загрузить повтор, пока присоединены к серверу.
 
+cmd-replay-toggleui-desc = Переключение пользовательского интерфейса управления воспроизведением.
+cmd-replay-toggle-screenshot-mode-desc = Переключает режим скриншотов при воспроизведении, скрывая интерфейс реплея и поле ввода чата.
+cmd-replay-toggle-screenshot-mode-help = replay_toggle_screenshot_mode
+
 # Recording commands
 
 cmd-replay-recording-start-desc = Начинает запись повтора, опционально с временным лимитом.
