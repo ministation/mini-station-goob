@@ -93,13 +93,9 @@ public sealed class DailyQuestSystem : EntitySystem
     /// </summary>
     private readonly Dictionary<NetUserId, DailyQuestRoundTracker> _roundTrackers = new();
 
-    private EntityQuery<MobStateComponent> _mobQuery;
-
     public override void Initialize()
     {
         base.Initialize();
-
-        _mobQuery = GetEntityQuery<MobStateComponent>();
 
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawnComplete);
         SubscribeLocalEvent<RoundEndMessageEvent>(OnRoundEnd);
@@ -437,15 +433,16 @@ public sealed class DailyQuestSystem : EntitySystem
         if (ev.Player.AttachedEntity is not { Valid: true } uid)
             return;
 
-        if (!_states.TryGetValue(ev.Player.UserId, out var state) || !state.LoadedFromDb)
-            return;
-
         if (ev.Player.GetMind() is { } mindId && _roles.MindHasRole<ObserverRoleComponent>(mindId))
             return;
 
+        var state = EnsureState(ev.Player.UserId);
         state.Round.WasActivePlayer = true;
         state.Round.ActiveEntity = uid;
         state.Round.TrackingSince ??= _timing.CurTime;
+
+        if (!string.IsNullOrEmpty(ev.JobId))
+            state.Round.PlayedJobs.Add(ev.JobId);
 
         if (state.Round.MiningPointsBaseline == 0)
         {
@@ -604,9 +601,6 @@ public sealed class DailyQuestSystem : EntitySystem
 
     private void OnHyposprayPatientInjected(ref HyposprayPatientInjectedEvent args)
     {
-        if (!_mobQuery.HasComp(args.Target))
-            return;
-
         TryIncrement(args.User, DailyQuestType.InjectPatients);
     }
 
@@ -754,7 +748,7 @@ public sealed class DailyQuestSystem : EntitySystem
                 if (proto.QuestType != DailyQuestType.EarnStationBankBalance)
                     continue;
 
-                if (!JobMatches(session, proto.RequiredJob))
+                if (!JobMatches(session, state, proto.RequiredJob))
                     continue;
 
                 slot.Progress = Math.Min(totalBalance, proto.TargetCount);
@@ -792,7 +786,7 @@ public sealed class DailyQuestSystem : EntitySystem
             if (proto.QuestType != DailyQuestType.EarnMiningPoints)
                 continue;
 
-            if (!JobMatches(session, proto.RequiredJob))
+            if (!JobMatches(session, state, proto.RequiredJob))
                 continue;
 
             slot.Progress = (int)Math.Min(earned, proto.TargetCount);
@@ -823,7 +817,7 @@ public sealed class DailyQuestSystem : EntitySystem
             if (!_prototypes.TryIndex(slot.QuestId, out DailyQuestPrototype? proto))
                 continue;
 
-            if (!JobMatches(session, proto.RequiredJob))
+            if (!JobMatches(session, state, proto.RequiredJob))
                 continue;
 
             if (state.Round.ActivePlaytime < proto.MinRoundPlaytime)
@@ -894,12 +888,15 @@ public sealed class DailyQuestSystem : EntitySystem
         if (!TryGetSession(user, out var session))
             return;
 
-        TryIncrement(session, type, amount, uniquePlayerId);
+        TryIncrement(session, type, amount, uniquePlayerId, user);
     }
 
-    private void TryIncrement(ICommonSession session, DailyQuestType type, int amount = 1, Guid? uniquePlayerId = null)
+    private void TryIncrement(ICommonSession session, DailyQuestType type, int amount = 1, Guid? uniquePlayerId = null, EntityUid? actionUser = null)
     {
-        var state = EnsureState(session.UserId);
+        if (!_states.TryGetValue(session.UserId, out var state) || !state.LoadedFromDb)
+            return;
+
+        EnsureDailyAssignmentsIfNeeded(session, state);
 
         foreach (var slot in state.Slots)
         {
@@ -912,7 +909,7 @@ public sealed class DailyQuestSystem : EntitySystem
             if (proto.QuestType != type)
                 continue;
 
-            if (!JobMatches(session, proto.RequiredJob))
+            if (!JobMatches(session, state, proto.RequiredJob, actionUser))
                 continue;
 
             if (proto.QuestType == DailyQuestType.HealOthers && uniquePlayerId == null)
@@ -971,7 +968,7 @@ public sealed class DailyQuestSystem : EntitySystem
             if (!_prototypes.TryIndex(slot.QuestId, out DailyQuestPrototype? proto))
                 continue;
 
-            if (!JobMatches(session, proto.RequiredJob))
+            if (!JobMatches(session, state, proto.RequiredJob))
                 continue;
 
             if (proto.QuestType == DailyQuestType.SurviveRound
@@ -1025,16 +1022,29 @@ public sealed class DailyQuestSystem : EntitySystem
         return changed;
     }
 
-    private bool JobMatches(ICommonSession session, ProtoId<JobPrototype>? requiredJob)
+    private bool JobMatches(
+        ICommonSession session,
+        PlayerDailyQuestState state,
+        ProtoId<JobPrototype>? requiredJob,
+        EntityUid? actionUser = null)
     {
         if (requiredJob == null)
             return true;
 
-        var mind = session.GetMind();
-        if (mind == null || !_jobs.MindTryGetJobId(mind, out var jobId))
-            return false;
+        if (state.Round.PlayedJobs.Contains(requiredJob.Value))
+            return true;
 
-        return jobId == requiredJob;
+        if (actionUser is { Valid: true } actor
+            && _minds.TryGetMind(actor, out var actorMind, out _)
+            && _jobs.MindTryGetJobId(actorMind, out var actorJob)
+            && actorJob == requiredJob)
+            return true;
+
+        var mind = session.GetMind();
+        if (mind != null && _jobs.MindTryGetJobId(mind, out var jobId) && jobId == requiredJob)
+            return true;
+
+        return false;
     }
 
     private bool IsHumanPlayer(EntityUid uid)
@@ -1126,6 +1136,7 @@ public sealed class DailyQuestSystem : EntitySystem
             FailedNoMelee = source.FailedNoMelee,
             FailedNoDamage = source.FailedNoDamage,
             MiningPointsBaseline = source.MiningPointsBaseline,
+            PlayedJobs = new HashSet<ProtoId<JobPrototype>>(source.PlayedJobs),
             UniqueProgress = source.UniqueProgress.ToDictionary(
                 kvp => kvp.Key,
                 kvp => new HashSet<Guid>(kvp.Value)),
@@ -1462,6 +1473,7 @@ public sealed class DailyQuestSystem : EntitySystem
         public bool FailedNoMelee;
         public bool FailedNoDamage;
         public uint MiningPointsBaseline;
+        public HashSet<ProtoId<JobPrototype>> PlayedJobs = new();
         public Dictionary<string, HashSet<Guid>> UniqueProgress = new();
 
         public void Reset()
@@ -1473,6 +1485,7 @@ public sealed class DailyQuestSystem : EntitySystem
             FailedNoMelee = false;
             FailedNoDamage = false;
             MiningPointsBaseline = 0;
+            PlayedJobs.Clear();
             UniqueProgress.Clear();
         }
     }

@@ -22,6 +22,7 @@ using Content.Shared.Verbs;
 using Content.Shared.Weapons.Melee.Events;
 using JetBrains.Annotations;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Content.Shared.Chemistry.EntitySystems.Hypospray; // Goob
 
@@ -45,6 +46,7 @@ public sealed partial class InjectorSystem : EntitySystem
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
     [Dependency] private readonly StandingStateSystem _standingState = default!;
     [Dependency] private readonly UseDelaySystem _useDelay = default!;
+    [Dependency] private readonly INetManager _net = default!;
 
     public override void Initialize()
     {
@@ -663,7 +665,7 @@ public sealed partial class InjectorSystem : EntitySystem
         var afterInjectEv = new AfterHyposprayInjectsEvent { User = user, Target = target };
         RaiseLocalEvent(injector, ref afterInjectEv);
 
-        if (HasComp<BloodstreamComponent>(target))
+        if (HasComp<BloodstreamComponent>(target) && _net.IsServer)
         {
             var questEv = new HyposprayPatientInjectedEvent(user, target);
             RaiseLocalEvent(ref questEv);

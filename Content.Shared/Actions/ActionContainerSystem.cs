@@ -107,13 +107,20 @@ public sealed class ActionContainerSystem : EntitySystem
 
             actionId = ent;
             action = ent.Comp;
-            // Map-serialized action refs can be stale/mis-parented; treat as missing instead of DebugAssert.
+            // Map-serialized action refs can be stale/mis-parented; recreate without failing integration tests.
             if (Transform(ent).ParentUid != uid
                 || !_container.IsEntityInContainer(ent)
                 || ent.Comp.Container != uid)
             {
-                Log.Error(
-                    $"Action {ToPrettyString(ent)} for {ToPrettyString(uid)} is not in a valid container state; recreating.");
+                Log.Warning(
+                    "Discarding stale map action {0} on {1}; recreating.",
+                    ToPrettyString(ent),
+                    ToPrettyString(uid));
+
+                if (comp.Container.Contains(ent.Owner))
+                    _container.Remove(ent.Owner, comp.Container, reparent: false, force: true);
+
+                Del(ent);
                 actionId = null;
                 action = null;
             }
