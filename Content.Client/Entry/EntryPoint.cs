@@ -167,14 +167,17 @@ namespace Content.Client.Entry
             _configManager.SetCVar("interface.resolutionAutoScaleLowerCutoffY", 240);
             _configManager.SetCVar("interface.resolutionAutoScaleMinimum", 0.5f);
 
-            // Mini: wipe archived physics.target_minimum_tickrate=30 from an old server connect.
-            if (_configManager.GetCVar(CVars.TargetMinimumTickrate) < 60)
-                _configManager.SetCVar(CVars.TargetMinimumTickrate, 60);
         }
 
         public override void PostInit()
         {
             base.PostInit();
+
+            // Mini: wipe archived physics.target_minimum_tickrate=30 from an old server connect.
+            // Moved from Init() to PostInit() because ClientNetConfigurationManager.Sawmill
+            // is null during Init() — SetupNetworking() runs after Init() on the client.
+            if (_configManager.GetCVar(CVars.TargetMinimumTickrate) < 60)
+                _configManager.SetCVar(CVars.TargetMinimumTickrate, 60);
 
             _stylesheetManager.Initialize();
 
