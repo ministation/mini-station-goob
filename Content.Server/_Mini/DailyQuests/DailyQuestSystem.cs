@@ -941,19 +941,31 @@ public sealed class DailyQuestSystem : EntitySystem
             or DailyQuestType.NoMeleeHits
             or DailyQuestType.NoDamageTaken;
 
-    private static (int Current, int Target) GetQuestProgressDisplay(
+    private (int Current, int Target) GetQuestProgressDisplay(
         PlayerDailyQuestState state,
         DailyQuestSlot slot,
         DailyQuestPrototype proto)
     {
         if (IsTimeBasedQuest(proto))
         {
-            var current = (int)Math.Min(state.Round.ActivePlaytime.TotalSeconds, proto.MinRoundPlaytime.TotalSeconds);
+            var current = (int)Math.Min(GetLivePlaytimeSeconds(state), proto.MinRoundPlaytime.TotalSeconds);
             var target = Math.Max(1, (int)proto.MinRoundPlaytime.TotalSeconds);
             return (current, target);
         }
 
         return (slot.Progress, proto.TargetCount);
+    }
+
+    /// <summary>
+    /// Playtime including the current un-flushed in-round segment while the player is being tracked,
+    /// so every UI snapshot matches what the next flush would produce.
+    /// </summary>
+    private double GetLivePlaytimeSeconds(PlayerDailyQuestState state)
+    {
+        var seconds = state.Round.ActivePlaytime.TotalSeconds;
+        if (state.Round.WasActivePlayer && state.Round.TrackingSince is { } since)
+            seconds += (_timing.CurTime - since).TotalSeconds;
+        return seconds;
     }
 
     private bool UpdateLiveQuestProgress(ICommonSession session, PlayerDailyQuestState state)
