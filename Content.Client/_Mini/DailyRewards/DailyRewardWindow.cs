@@ -29,6 +29,7 @@ public sealed class DailyRewardWindow : DefaultWindow
     private const string ClockIconPath = "/Textures/_Mini/Interface/Clock.png";
     private const string CoinIconPath = "/Textures/_Mini/Interface/Coin.png";
     private const float RewardCardWidth = 132f;
+    private const float QuestTimeSmoothCap = 5f;
     private static readonly string AntagCoinIconPath = AntagTokenCatalog.CurrencyIconPath;
 
     private static readonly Color WindowBackgroundColor = Color.FromHex("#0f1115");
@@ -273,7 +274,13 @@ public sealed class DailyRewardWindow : DefaultWindow
 
         UpdateActiveTimerUi();
         UpdateCurrentRewardTimerUi();
-        _questTimeSmooth += frameTime;
+
+        // Only extrapolate quest time while the server actually tracks the player,
+        // and cap it at one refresh interval so we never drift past the next authoritative snapshot.
+        if (_state.IsTrackingActiveTime)
+            _questTimeSmooth = Math.Min(_questTimeSmooth + frameTime, QuestTimeSmoothCap);
+        else
+            _questTimeSmooth = 0f;
 
         if (_replaceErrorTimer > 0f)
         {
