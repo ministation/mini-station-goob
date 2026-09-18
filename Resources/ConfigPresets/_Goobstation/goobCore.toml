@@ -117,3 +117,6 @@ barks_enabled = true
 [footprints]
 # Mini: bloody footprints spawn cleanable decals; keep off for long-round tick time.
 enabled = false
+
+[biomass]
+easy_mode = false

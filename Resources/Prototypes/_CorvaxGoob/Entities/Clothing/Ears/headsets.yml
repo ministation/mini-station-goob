@@ -33,3 +33,10 @@
     sprite: Clothing/Ears/Headsets/command.rsi
   - type: Headset
     color: "#fcdf03"
+
+- type: entity
+  id: ClothingHeadsetAltSyndicateUnremoveable
+  parent: ClothingHeadsetAltSyndicate
+  suffix: Unremoveable
+  components:
+  - type: Unremoveable
