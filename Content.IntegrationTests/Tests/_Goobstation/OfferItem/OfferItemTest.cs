@@ -26,8 +26,8 @@ public sealed class OfferItemTest
         await pair.RunTicksSync(5);
 
         EntityUid a = default, b = default, item = default;
-        HandsComponent? aHands = default;
-        OfferItemComponent? compAAfter = null, compBAfter = null;
+        HandsComponent aHands = default;
+        OfferItemComponent compAAfter = null, compBAfter = null;
 
         await server.WaitPost(() =>
         {
@@ -105,7 +105,7 @@ public sealed class OfferItemTest
         await pair.RunTicksSync(5);
 
         EntityUid a = default, b = default, item = default;
-        HandsComponent? aHands = default;
+        HandsComponent aHands = default;
 
         await server.WaitPost(() =>
         {
@@ -165,7 +165,7 @@ public sealed class OfferItemTest
         await pair.RunTicksSync(5);
 
         EntityUid a = default, b = default, item = default;
-        HandsComponent? aHands = default;
+        HandsComponent aHands = default;
 
         await server.WaitPost(() =>
         {
@@ -222,7 +222,7 @@ public sealed class OfferItemTest
         await pair.RunTicksSync(5);
 
         EntityUid a = default, b = default, item = default;
-        HandsComponent? aHands = default;
+        HandsComponent aHands = default;
 
         await server.WaitPost(() =>
         {
