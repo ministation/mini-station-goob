@@ -69,7 +69,9 @@ public sealed class OrbitVisualsSystem : EntitySystem
         var query = EntityQueryEnumerator<OrbitVisualsComponent, SpriteComponent>();
         while (query.MoveNext(out var uid, out var orbit, out var sprite))
         {
-            var progress = (float)(_timing.CurTime.TotalSeconds / orbit.OrbitLength) % 1;
+            // Use RealTime instead of CurTime: CurTime is tick-synced and can be rewound/corrected on the client,
+            // which makes the orbit phase jump and the ghost look like it's moving in jerks around the target.
+            var progress = (float)(_timing.RealTime.TotalSeconds / orbit.OrbitLength) % 1;
             var angle = new Angle(Math.PI * 2 * progress);
             var vec = angle.RotateVec(new Vector2(orbit.OrbitDistance, 0));
 
