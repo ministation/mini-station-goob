@@ -29,7 +29,6 @@ public sealed class DailyRewardWindow : DefaultWindow
     private const string ClockIconPath = "/Textures/_Mini/Interface/Clock.png";
     private const string CoinIconPath = "/Textures/_Mini/Interface/Coin.png";
     private const float RewardCardWidth = 132f;
-    private const float QuestTimeSmoothCap = 5f;
     private static readonly string AntagCoinIconPath = AntagTokenCatalog.CurrencyIconPath;
 
     private static readonly Color WindowBackgroundColor = Color.FromHex("#0f1115");
@@ -74,6 +73,8 @@ public sealed class DailyRewardWindow : DefaultWindow
     private string? _pendingReplaceQuestId;
     private int _pendingReplaceSlotIndex = -1;
     private DailyRewardUpdateMessage? _state;
+    private DateTime _stateReceivedUtc = DateTime.MinValue;
+    private DateTime _lastAdvanceUtc = DateTime.MinValue;
     private Label? _currentRewardTimerLabel;
     private TextureRect? _currentRewardTimerIcon;
 
@@ -199,6 +200,8 @@ public sealed class DailyRewardWindow : DefaultWindow
         TryFinishQuestReplace(state);
         var rebuildQuestSection = NeedsQuestSectionRebuild(_state?.DailyQuests, state.DailyQuests);
         _questTimeSmooth = 0f;
+        _stateReceivedUtc = DateTime.UtcNow;
+        _lastAdvanceUtc = DateTime.UtcNow;
         _state = state;
         RefreshState(rebuildQuestSection);
     }
@@ -242,22 +245,30 @@ public sealed class DailyRewardWindow : DefaultWindow
             ClearQuestReplacePending();
     }
 
-    public void AdvanceTimers(float frameTime)
+    public void AdvanceTimers()
     {
         if (_state == null)
             return;
 
-        var step = TimeSpan.FromSeconds(frameTime);
-        var timeUntilExpiration = MaxZero(_state.TimeUntilExpiration - step);
-        var timeUntilNextClaim = MaxZero(_state.TimeUntilNextClaim - step);
+        var nowUtc = DateTime.UtcNow;
+        var realDt = MaxZero(nowUtc - _lastAdvanceUtc);
+        _lastAdvanceUtc = nowUtc;
+
+        var elapsed = MaxZero(nowUtc - _stateReceivedUtc);
+
+        // The server snapshots are computed from DateTime.UtcNow, so extrapolate purely
+        // from wall-clock time since the last snapshot. Re-running this during client
+        // prediction re-prediction then stays correct, unlike accumulating frameTime.
+        var timeUntilExpiration = MaxZero(_state.TimeUntilExpiration - elapsed);
+        var timeUntilNextClaim = MaxZero(_state.TimeUntilNextClaim - elapsed);
         var currentActiveTime = _state.CurrentActiveTime;
 
         if (_state.IsTrackingActiveTime && currentActiveTime < _state.RequiredActiveTime)
-            currentActiveTime = Min(currentActiveTime + step, _state.RequiredActiveTime);
+            currentActiveTime = Min(currentActiveTime + elapsed, _state.RequiredActiveTime);
 
         var canClaim = currentActiveTime >= _state.RequiredActiveTime && timeUntilNextClaim == TimeSpan.Zero;
 
-        _state = new DailyRewardUpdateMessage(
+        var derived = new DailyRewardUpdateMessage(
             _state.CurrentStreak,
             _state.NextRewardDay,
             canClaim,
@@ -272,19 +283,19 @@ public sealed class DailyRewardWindow : DefaultWindow
             _state.OnlineGrantedThresholds,
             _state.DailyQuests);
 
-        UpdateActiveTimerUi();
-        UpdateCurrentRewardTimerUi();
+        UpdateActiveTimerUi(derived);
+        UpdateCurrentRewardTimerUi(derived);
 
-        // Only extrapolate quest time while the server actually tracks the player,
-        // and cap it at one refresh interval so we never drift past the next authoritative snapshot.
+        // Only extrapolate quest time while the server actually tracks the player.
+        // Derived from wall-clock since last snapshot, so it never drifts either way.
         if (_state.IsTrackingActiveTime)
-            _questTimeSmooth = Math.Min(_questTimeSmooth + frameTime, QuestTimeSmoothCap);
+            _questTimeSmooth = (float)elapsed.TotalSeconds;
         else
             _questTimeSmooth = 0f;
 
         if (_replaceErrorTimer > 0f)
         {
-            _replaceErrorTimer -= frameTime;
+            _replaceErrorTimer -= (float)realDt.TotalSeconds;
             if (_replaceErrorTimer <= 0f)
             {
                 _replaceError = null;
@@ -294,7 +305,7 @@ public sealed class DailyRewardWindow : DefaultWindow
 
         if (_replacePendingTimer > 0f)
         {
-            _replacePendingTimer -= frameTime;
+            _replacePendingTimer -= (float)realDt.TotalSeconds;
             if (_replacePendingTimer <= 0f)
                 ClearQuestReplacePending();
         }
@@ -402,13 +413,8 @@ public sealed class DailyRewardWindow : DefaultWindow
         return quest.CanReplace;
     }
 
-    private void UpdateActiveTimerUi()
+    private void UpdateActiveTimerUi(DailyRewardUpdateMessage state)
     {
-        if (_state == null)
-            return;
-
-        var state = _state;
-
         var progressRatio = state.RequiredActiveTime <= TimeSpan.Zero
             ? 1f
             : Math.Clamp((float)(state.CurrentActiveTime.TotalSeconds / state.RequiredActiveTime.TotalSeconds), 0f, 1f);
@@ -431,21 +437,21 @@ public sealed class DailyRewardWindow : DefaultWindow
             ? "daily-reward-window-claim-ready"
             : "daily-reward-window-claim-locked");
 
-        UpdateCurrentRewardTimerUi();
+        UpdateCurrentRewardTimerUi(state);
     }
 
-    private void UpdateCurrentRewardTimerUi()
+    private void UpdateCurrentRewardTimerUi(DailyRewardUpdateMessage state)
     {
-        if (_currentRewardTimerLabel == null || _state == null)
+        if (_currentRewardTimerLabel == null)
             return;
 
-        var ready = _state.CanClaim;
+        var ready = state.CanClaim;
         if (_currentRewardTimerIcon != null)
             _currentRewardTimerIcon.Visible = !ready;
 
         _currentRewardTimerLabel.Text = ready
             ? Loc.GetString("daily-reward-card-timer-ready")
-            : FormatCooldown(_state.TimeUntilNextClaim);
+            : FormatCooldown(state.TimeUntilNextClaim);
     }
 
     private void RefreshState(bool rebuildQuestSection)
@@ -459,7 +465,7 @@ public sealed class DailyRewardWindow : DefaultWindow
             ("current", state.CurrentStreak),
             ("max", state.Rewards.Count));
 
-        UpdateActiveTimerUi();
+        UpdateActiveTimerUi(state);
 
         if (rebuildQuestSection)
             RefreshQuestSection();

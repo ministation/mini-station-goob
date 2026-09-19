@@ -13,11 +13,12 @@ namespace Content.Client._Mini.DailyQuests;
 public sealed class DailyQuestUiSystem : EntitySystem
 {
     private const float TimerRefreshInterval = 0.1f;
-    private const float MaxTimeInterp = 5f;
 
     private readonly List<DailyQuestEntry> _quests = new();
     private float _interpSeconds;
     private float _timerRefreshAccumulator;
+    private DateTime _lastStateUtc = DateTime.UtcNow;
+    private DateTime _lastUpdateUtc = DateTime.UtcNow;
     private bool _hasActiveTimeQuest;
     private bool _hasClaimedQuestTimer;
     private bool _isTracking;
@@ -41,21 +42,32 @@ public sealed class DailyQuestUiSystem : EntitySystem
         if ((!_hasActiveTimeQuest && !_hasClaimedQuestTimer) || _quests.Count == 0)
             return;
 
-        // Only extrapolate quest time while the server actively tracks the player,
-        // and cap it at one refresh interval so the display never drifts past the next authoritative snapshot.
+        // Client entity systems are re-run for every predicted tick, so frameTime does
+        // not accumulate in real seconds. Derive everything from the wall-clock instead.
+        var nowUtc = DateTime.UtcNow;
+        var realDt = (float)MaxZero(nowUtc - _lastUpdateUtc).TotalSeconds;
+        _lastUpdateUtc = nowUtc;
+
+        // Only extrapolate quest time while the server actually tracks the player.
         if (_hasActiveTimeQuest)
         {
             if (_isTracking)
-                _interpSeconds = Math.Min(_interpSeconds + frameTime, MaxTimeInterp);
+                _interpSeconds = (float)MaxZero(nowUtc - _lastStateUtc).TotalSeconds;
             else
                 _interpSeconds = 0f;
         }
-        _timerRefreshAccumulator += frameTime;
+
+        _timerRefreshAccumulator += realDt;
         if (_timerRefreshAccumulator < TimerRefreshInterval)
             return;
 
         _timerRefreshAccumulator = 0f;
         QuestsUpdated?.Invoke(_quests, _interpSeconds);
+    }
+
+    private static TimeSpan MaxZero(TimeSpan span)
+    {
+        return span < TimeSpan.Zero ? TimeSpan.Zero : span;
     }
 
     private void OnRewardState(DailyRewardStateEvent ev)
@@ -70,6 +82,8 @@ public sealed class DailyQuestUiSystem : EntitySystem
         if (quests != null)
             _quests.AddRange(quests);
 
+        _lastStateUtc = DateTime.UtcNow;
+        _lastUpdateUtc = DateTime.UtcNow;
         _interpSeconds = 0;
         _hasActiveTimeQuest = false;
         _hasClaimedQuestTimer = false;

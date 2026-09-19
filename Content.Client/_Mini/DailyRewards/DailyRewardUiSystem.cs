@@ -120,7 +120,7 @@ public sealed class DailyRewardUiSystem : EntitySystem
         if (_window == null || _window.Disposed || !_window.IsOpen)
             return;
 
-        _window.AdvanceTimers(frameTime);
+        _window.AdvanceTimers();
     }
 
     public override void Shutdown()

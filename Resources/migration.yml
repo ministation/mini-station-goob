@@ -1131,3 +1131,5 @@ DnaModifierConsole: ComputerGeneticsConsole
 BoxDnaInjector: BoxGeneticsDisk
 BoxDnaFisk: BoxGeneticsDisk
 DnaModifierComputerCircuitboard: GeneticsConsoleCircuitboard
+#2026-09-09 CorvaxGoob
+EnergyChemDispenser: ChemDispenser

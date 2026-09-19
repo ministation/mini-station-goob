@@ -291,6 +291,7 @@
     - Tradeband
     - Schechi
     - NewKinPidgin
+    - Hydraspeak # CorvaxGoob
     understands:
     - TauCetiBasic
     - Canilunzt
@@ -311,6 +312,7 @@
     - Sign
     - Schechi
     - NewKinPidgin
+    - Hydraspeak # CorvaxGoob
   - type: ProtectedFromStepTriggers
   - type: DamageOnInteractProtection
     damageProtection:

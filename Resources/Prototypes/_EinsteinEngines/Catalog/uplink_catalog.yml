@@ -5,7 +5,7 @@
   productEntity: BriefcaseSyndieLobbyingBundlePlasmamanFilled
   #discountCategory: usualDiscounts
   #discountDownTo:
- #  Telecrystal: 2
+  #  Telecrystal: 2
   cost:
     Telecrystal: 1 # Goob 4 / 5
   categories:

@@ -2355,28 +2355,28 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: CrateHarvesterBackpackHolding
+- proto: CrateBluespaceIndustrialTools
   entities:
   - uid: 1321
     components:
     - type: Transform
       pos: -0.5,103.5
       parent: 1
-- proto: CrateHarvesterMedkit
+- proto: CrateBluespaceBiologicalImplants
   entities:
   - uid: 1319
     components:
     - type: Transform
       pos: 1.5,103.5
       parent: 1
-- proto: CrateHarvesterResearchDisk
+- proto: CrateBluespaceLimitedResearchDisk
   entities:
   - uid: 1322
     components:
     - type: Transform
       pos: 0.5,102.5
       parent: 1
-- proto: CrateHarvesterWeaponShotgun
+- proto: CrateBluespaceDestructionShotgun
   entities:
   - uid: 1320
     components:

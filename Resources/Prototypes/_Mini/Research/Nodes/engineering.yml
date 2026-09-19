@@ -217,6 +217,8 @@
   - FauxTileAstroIce
   - FauxTileAstroSnow
   - FauxTileAstroAsteroidSand
+  - FauxTileAstroSnowDug # CorvaxGoob
+  - FauxTileItemAstroChromite # CorvaxGoob
   - ConstructionBag
   - MailingUnitElectronics
   - SignalTimerElectronics
