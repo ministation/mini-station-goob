@@ -203,6 +203,7 @@
   - SchechiTranslator
   - GruntishTranslator
   - YowKriolTranslator
+  - HydraspeakTranslator
   position: 0,3
 
 - type: technology
@@ -239,4 +240,5 @@
   - GruntishTranslatorImplanter
   - YowKriolTranslatorImplanter
   - SignTranslatorImplanter
+  - HydraspeakTranslatorImplanter
   position: 0,4
