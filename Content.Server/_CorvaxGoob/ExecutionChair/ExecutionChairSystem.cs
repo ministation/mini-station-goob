@@ -65,7 +65,6 @@ namespace Content.Server._CorvaxNext.ExecutionChair
                 return;
 
             component.Enabled = activated;
-            Dirty(uid, component);
             var message = activated
                 ? Loc.GetString("execution-chair-turn-on")
                 : Loc.GetString("execution-chair-chair-turn-off");

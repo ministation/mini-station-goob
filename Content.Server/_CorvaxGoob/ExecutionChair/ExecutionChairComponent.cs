@@ -25,7 +25,7 @@ public sealed partial class ExecutionChairComponent : Component
     /// Indicates whether the chair is currently enabled. If true, and all conditions (powered, anchored, etc.)
     /// are met, the chair will deliver electrical damage to any buckled entities at regular intervals.
     /// </summary>
-    [DataField, AutoNetworkedField]
+    [DataField]
     public bool Enabled = false;
 
     /// <summary>
