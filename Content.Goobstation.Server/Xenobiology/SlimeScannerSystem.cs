@@ -10,13 +10,11 @@ using Robust.Shared.Utility;
 using System.Linq;
 using System.Text;
 
-namespace Content.Goobstation.Shared.Xenobiology.Systems;
-
-public sealed partial class SlimeScannerSystem : EntitySystem{
-    [Dependency] private readonly ExamineSystemShared _examine = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-
-    private StringBuilder _sb = new();
+namespace Content.Goobstation.Server.Xenobiology;
+public sealed partial class SlimeScannerSystem : EntitySystem
+{
+    [Dependency] private readonly ExamineSystemShared _examineSystem = default!;
+    [Dependency] private readonly IPrototypeManager _prot = default!;
 
     public override void Initialize()
     {
@@ -51,7 +49,7 @@ public sealed partial class SlimeScannerSystem : EntitySystem{
     private void TrySendTooltip(EntityUid player, EntityUid target, string message)
     {
         var markup = FormattedMessage.FromMarkupOrThrow(message);
-        _examine.SendExamineTooltip(player, target, markup, false, true);
+        _examineSystem.SendExamineTooltip(player, target, markup, false, true);
     }
 
     private string GenerateSlimeMarkup(Entity<SlimeComponent> ent)
@@ -61,6 +59,7 @@ public sealed partial class SlimeScannerSystem : EntitySystem{
         var sb = new StringBuilder();
 
         sb.AppendLine(Loc.GetString("slime-scanner-examine-slime-description", ("color", ent.Comp.SlimeColor.ToHex()), ("name", GetBreedName(ent.Comp.Breed))));
+
         // all this shit for a good looking examine text. imagine.
         sb.Append($"{Loc.GetString("slime-scanner-examine-slime-mutations", ("chance", mutationChance))} ");
         var mutations = ent.Comp.PotentialMutations.ToList();
@@ -68,11 +67,13 @@ public sealed partial class SlimeScannerSystem : EntitySystem{
         {
             if (!_prot.TryIndex(mutations[i], out var info))
                 continue;
+
             var color = "white";
             if (info.Components.TryGetComponent(nameof(SlimeComponent), out var sc))
                 color = ((SlimeComponent) sc!).SlimeColor.ToHex();
 
             sb.Append($"[color={color}]{XenobiologyLoc.GetBreedName(info)}[/color]");
+
             if (i == mutations.Count - 1) sb.AppendLine(".");
             else sb.Append(", ");
         }
@@ -91,12 +92,12 @@ public sealed partial class SlimeScannerSystem : EntitySystem{
 
     private string GenerateExtractMarkup(Entity<SlimeExtractComponent> ent)
     {
-        _sb.Clear();
+        var sb = new StringBuilder();
 
         if (!TryComp<ReactiveComponent>(ent, out var reactive) || reactive.Reactions == null)
         {
-            _sb.AppendLine(Loc.GetString("slime-scanner-examine-extract-unreactive"));
-            return _sb.ToString();
+            sb.AppendLine(Loc.GetString("slime-scanner-examine-extract-unreactive"));
+            return sb.ToString();
         }
 
         var reactions = reactive.Reactions;
@@ -110,10 +111,10 @@ public sealed partial class SlimeScannerSystem : EntitySystem{
             for (int j = 0; j < reagents.Count; j++)
             {
                 var reagent = reagents[j];
-                if (!_proto.TryIndex<ReagentPrototype>(reagent, out var rid))
+                if (!_prot.TryIndex<ReagentPrototype>(reagent, out var rid))
                     continue;
 
-                _sb.Append($"[color={rid.SubstanceColor.ToHex()}]{rid.ID.ToLower()}[/color]");
+                sb.Append($"[color={rid.SubstanceColor.ToHex()}]{rid.ID.ToLower()}[/color]");
 
                 if (reagents.Count <= 1)
                     continue;
@@ -124,8 +125,9 @@ public sealed partial class SlimeScannerSystem : EntitySystem{
             }
 
             if (i == reactions.Count - 1) sb.AppendLine(".");
-            else sb.Append(", ");        }
+            else sb.Append(", ");
+        }
 
-        return _sb.ToString();
+        return sb.ToString();
     }
 }
