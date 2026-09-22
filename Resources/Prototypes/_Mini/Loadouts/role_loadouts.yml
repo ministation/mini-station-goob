@@ -108,3 +108,199 @@
 #     #- SindieTrinkets
 #   whitelist:
 #     - TypanCommander
+
+# ---- moved from _Goobstation/Loadouts/role_loadouts.yml ----
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: roleLoadout
+  id: JobNanotrasenRepresentative
+  groups:
+  - Inventory # CorvaxGoob-loadouts
+  - GroupTankHarness
+  - NanotrasenRepresentativeHead
+  - NanotrasenRepresentativeJumpsuit
+  - NanotrasenRepresentativeBackpack
+  - NanotrasenRepresentativeNeck
+  - NanotrasenRepresentativeShoes
+  - NanotrasenRepresentativeBelt
+  - Glasses
+  - Trinkets
+  - NanotrasenRepresentativeJobTrinkets
+  - Animals
+  - GroupSpeciesBreathTool
+  - Survival
+  - NanotrasenRepresentativeGloves
+  # Goobstation - EE Plasmeme Change.
+  - NanotrasenRepresentativeEnvirohelm
+  - NanotrasenRepresentativeEnvirosuit
+  - NanotrasenRepresentativeEnvirogloves
+
+- type: roleLoadout
+  id: JobBlueshieldOfficer
+  groups:
+  - Inventory # CorvaxGoob-loadouts
+  - BlueshieldOfficerHead
+  - BlueshieldOfficerJumpsuit
+  - BlueshieldOfficerBackpack
+  - BlueshieldOfficerOuter
+  - BlueshieldOfficerNeck
+  - BlueshieldOfficerMask
+  - BlueshieldOfficerShoes
+  - BlueshieldOfficerBelt
+  - Trinkets
+  - BlueshieldOfficerJobTrinkets
+  - Animals
+  - GroupSpeciesBreathTool
+  - SurvivalSecurity
+  # Goobstation - EE Plasmeme Change.
+  - BlueshieldOfficerEnvirohelm
+  - BlueshieldOfficerEnvirosuit
+  - BlueshieldOfficerEnvirogloves
+  - BlueshieldOfficerGloves
+  # Mini Station
+  - BlueshieldOfficerEyes
+  - BlueshieldOfficerPDA
+
+- type: roleLoadout
+  id: JobNanotrasenCareerTrainer
+  groups:
+  - Inventory # CorvaxGoob-loadouts
+  - GroupTankHarness
+  - NanotrasenTrainerHead
+  - NanotrasenTrainerJumpsuit
+  - NanotrasenTrainerOuterClothing
+  - NanotrasenTrainerBackpack
+  - NanotrasenTrainerShoes
+  - NanotrasenTrainerGloves
+  - NanotrasenTrainerBelt
+  - Trinkets
+  - NanotrasenTrainerJobTrinkets
+  - Animals
+  - GroupSpeciesBreathTool
+  - Survival
+  # Goobstation - EE Plasmeme Change.
+  - CentComOfficerEnvirohelm
+  - CentComOfficerEnvirosuit
+  - CentComOfficerEnvirogloves
+
+- type: roleLoadout
+  id: RoleSurvivalNukieHonkops
+  groups:
+  - SurvivalSyndicate
+  - GroupHonkopsMask
+  - GroupPocketTankDouble
+
+# mini-station-edit: robototekhnik was wired to scientist groups (no own access PDA)
+- type: roleLoadout
+  id: JobRoboticist
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - RoboticistHead
+  - ScientistNeck
+  - RoboticistJumpsuit
+  - RoboticistBackpack
+  - RoboticistOuterClothing
+  - RoboticistGloves
+  - RoboticistShoes
+  - RoboticistPDA
+  - RoboticistGlasses
+  - Survival
+  - Trinkets
+  - ScientistJobTrinkets
+  - Animals
+  - GroupSpeciesBreathTool
+  # Plasmaman
+  - RoboticistEnvirohelm
+  - RoboticistEnvirosuit
+  - RoboticistEnvirogloves
+
+- type: roleLoadout
+  id: JobBrigmedic
+  groups:
+  - Inventory # CorvaxGoob-loadouts
+  - BrigmedicHead
+  #- MedicalMask
+  - BrigmedicMask # CorvaxGoob-Brigmedic-Loadout : Replaced from MedicalMask
+  - BrigmedicJumpsuit
+  - BrigmedicOuterClothing
+  - MedicalGloves
+  - BrigmedicBackpack
+  - SecurityMelee # EE parity, make corpsman able to carry weapons like the rest of security
+  - SecurityShoes
+  - SecurityNeck
+  - SurvivalSecurity
+  - Trinkets
+  - BrigmedicJobTrinkets
+  - Animals
+  - GroupSpeciesBreathToolSecurity
+  # Goobstation - EE Plasmeme Change.
+  - BrigmedicEnvirohelm
+  - BrigmedicEnvirosuit
+  - BrigmedicEnvirogloves
+
+- type: roleLoadout
+  id: JobRadioHost
+  groups:
+  - RadioHostJumpsuit
+  - CommonBackpack
+  - Survival
+  - Trinkets
+  - Animals
+  - GroupSpeciesBreathTool
+# - Glasses # CorvaxGoob-loadouts: replaced on a RadiohostGlasses loadout
+  - GroupTankHarness
+  - ServiceWorkerEnvirohelm
+  - ServiceWorkerEnvirosuit
+  - ServiceWorkerEnvirogloves
+
+# gives plasmaman a plasma breathing tank
+# other species get nothing
+- type: roleLoadout
+  id: RoleSurvivalPlasmaTank
+  groups:
+  - GroupEVATankPlasma
+
+# Event-restricted roles
+
+- type: roleLoadout
+  id: JobSecurityClown
+  groups:
+  - ClownBackpack
+  - SurvivalSecurity
+  - GroupSpeciesBreathToolSecurity
+
+- type: roleLoadout
+  id: JobCommandMaid
+  groups:
+  - CommonBackpack
+  - Survival
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobPartyMaker
+  groups:
+  - GroupTankHarness
+  - CommonBackpack
+  - Survival
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobVirologist
+  groups:
+   - GroupTankHarness
+   - MedicalDoctorHead
+   - MedicalMask
+   - VirologistJumpsuit
+   - MedicalGloves
+   - VirologistBackpack
+   - VirologistOuterClothing
+   - MedicalShoes
+   - VirologistPDA
+   - VirologistJobTrinkets
+   - SurvivalMedical
+   - Trinkets
+   - GroupSpeciesBreathToolMedical
+   - VirologyEnvirohelm
+   - VirologyEnvirosuit
+   - VirologyEnvirogloves

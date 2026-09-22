@@ -43,6 +43,9 @@ loadout-group-roboticist-outerclothing = Roboticist outer clothing
 loadout-group-roboticist-gloves = Roboticist gloves
 loadout-group-roboticist-shoes = Roboticist shoes
 loadout-group-roboticist-id = Roboticist ID
+loadout-group-roboticist-envirohelm = Roboticist envirohelm
+loadout-group-roboticist-envirosuit = Roboticist envirosuit
+loadout-group-roboticist-envirogloves = Roboticist envirogloves
 
 loadout-group-security-neck = Security neck
 
