@@ -49,4 +49,5 @@ public enum MartialArtsForms
     Ninjutsu,
     HellRip,
     Twilight,
-    Mimejutsu, // CorvaxGoob - Mimejutsu}
+    Mimejutsu, // CorvaxGoob - Mimejutsu
+}
