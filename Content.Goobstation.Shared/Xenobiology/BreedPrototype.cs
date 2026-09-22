@@ -5,15 +5,23 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Robust.Shared.Prototypes;
-
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
 namespace Content.Goobstation.Shared.Xenobiology;
 
 /// <summary>
 /// This prototype stores information about different slime breeds.
 /// </summary>
 [Prototype]
-public sealed partial class BreedPrototype : IPrototype
+public sealed partial class BreedPrototype : IPrototype, IInheritingPrototype
 {
+    /// <inheritdoc/>
+    [ParentDataField(typeof(AbstractPrototypeIdArraySerializer<BreedPrototype>))]
+    public string[]? Parents { get; private set; }
+
+    /// <inheritdoc/>
+    [NeverPushInheritance]
+    [AbstractDataField]
+    public bool Abstract { get; private set; }
     [IdDataField]
     public string ID { get; private set; } = null!;
 
@@ -32,6 +40,5 @@ public sealed partial class BreedPrototype : IPrototype
     /// <summary>
     /// What components should be given to the slime mob? Usually SlimeComponent.
     /// </summary>
-    [DataField]
-    public ComponentRegistry Components = new();
+    [DataField, AlwaysPushInheritance]    public ComponentRegistry Components = new();
 }

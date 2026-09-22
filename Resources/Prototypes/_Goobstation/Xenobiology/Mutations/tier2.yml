@@ -1,7 +1,7 @@
 - type: breed
+  parent: BaseMutation
   breedName: xenobio-breed-yellow
-  id: YellowMutation
-  producedExtract: YellowSlimeExtract
+  id: YellowMutation  producedExtract: YellowSlimeExtract
   components:
   - type: Slime
     slimeColor: "#ffff1a"
@@ -14,9 +14,9 @@
     - BluespaceMutation
 
 - type: breed
+  parent: BaseMutation
   breedName: xenobio-breed-dark-purple
-  id: DarkPurpleMutation
-  producedExtract: DarkPurpleSlimeExtract
+  id: DarkPurpleMutation  producedExtract: DarkPurpleSlimeExtract
   components:
   - type: Slime
     slimeColor: "#8e0ff0"
@@ -29,9 +29,9 @@
     - SepiaMutation
 
 - type: breed
+  parent: BaseMutation
   breedName: xenobio-breed-dark-blue
-  id: DarkBlueMutation
-  producedExtract: DarkBlueSlimeExtract
+  id: DarkBlueMutation  producedExtract: DarkBlueSlimeExtract
   components:
   - type: Slime
     slimeColor: "#1e8cfa"
@@ -44,9 +44,9 @@
     - CeruleanMutation
 
 - type: breed
+  parent: BaseMutation
   breedName: xenobio-breed-silver
-  id: SilverMutation
-  producedExtract: SilverSlimeExtract
+  id: SilverMutation  producedExtract: SilverSlimeExtract
   components:
   - type: Slime
     slimeColor: "#c4c4c4"
@@ -62,9 +62,9 @@
 
 # Эти больше не улучшаются, так что можно считать их уровнем 2.5
 - type: breed
+  parent: BaseMutation
   breedName: xenobio-breed-bluespace
-  id: BluespaceMutation
-  producedExtract: BluespaceSlimeExtract
+  id: BluespaceMutation  producedExtract: BluespaceSlimeExtract
   components:
   - type: Slime
     slimeColor: "#f0f8ff"
@@ -77,9 +77,9 @@
     - BluespaceMutation
 
 - type: breed
+  parent: BaseMutation
   breedName: xenobio-breed-sepia
-  id: SepiaMutation
-  producedExtract: SepiaSlimeExtract
+  id: SepiaMutation  producedExtract: SepiaSlimeExtract
   components:
   - type: Slime
     slimeColor: "#704214"
@@ -92,9 +92,9 @@
     - SepiaMutation
 
 - type: breed
+  parent: BaseMutation
   breedName: xenobio-breed-cerulean
-  id: CeruleanMutation
-  producedExtract: CeruleanSlimeExtract
+  id: CeruleanMutation  producedExtract: CeruleanSlimeExtract
   components:
   - type: Slime
     slimeColor: "#2A52BE"
@@ -105,9 +105,9 @@
     - CeruleanMutation
 
 - type: breed
+  parent: BaseMutation
   breedName: xenobio-breed-pyrite
-  id: PyriteMutation
-  producedExtract: PyriteSlimeExtract
+  id: PyriteMutation  producedExtract: PyriteSlimeExtract
   components:
   - type: Slime
     slimeColor: "#dcaa4f"

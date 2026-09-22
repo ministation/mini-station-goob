@@ -6,6 +6,8 @@ namespace Content.Goobstation.Shared.Xenobiology.Components;
 [RegisterComponent, NetworkedComponent]
 public sealed partial class PendingSlimeSpawnComponent : Component
 {
-    [DataField] public EntProtoId BasePrototype = "MobSlimeXenobioBaby";
-    [DataField] public ProtoId<BreedPrototype> Breed = "GreyMutation";
-}
+    [DataField]
+    public EntProtoId BasePrototype = "MobSlimeXenobioBaby";
+
+    [DataField]
+    public ProtoId<BreedPrototype> Breed = "GreyMutation";}

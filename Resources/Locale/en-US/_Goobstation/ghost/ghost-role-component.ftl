@@ -16,7 +16,9 @@ ghost-role-information-Hecu-rules = Вы обязаны подчиняться �
 
 ghost-role-information-lootbug-name = ЛуутБаг
 ghost-role-information-lootbug-description = Постарайся не быть разделаным лутарями.
-
+ghost-role-information-Hecu-name = HECU Operative
+ghost-role-information-Hecu-description = Follow any and all orders provided to you by [color=yellow][bold]Central Command[/bold][/color]. Otherwise, cooperate with Security to resolve the station's issues.
+ghost-role-information-Hecu-rules = You are required to obey orders given by your superior, you are effectively their [color=#6495ed][bold]Familiar[/bold][/color].
 ghost-role-information-homunculus-name = Гомункул
 ghost-role-information-homunculus-description = Повинуйся тому, кто тебя создал; если же его нет, поступай как пожелаешь.
 

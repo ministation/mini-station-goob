@@ -35,7 +35,6 @@ public sealed partial class SlimeTamedEvent : EntityEventArgs
 }
 [Serializable, NetSerializable]
 public sealed partial class EatCorpseDoAfterEvent : SimpleDoAfterEvent;
-
 /// <summary>
 /// rised after mitosis completed, but before parent slime deletion, directed to parent slime
 /// </summary>

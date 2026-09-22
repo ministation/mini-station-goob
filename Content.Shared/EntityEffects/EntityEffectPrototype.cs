@@ -8,8 +8,7 @@ namespace Content.Shared.EntityEffects;
 /// A prototype for entity effects which can be reused via <see cref="NestedEffect"/>.
 /// </summary>
 [Prototype]
-public sealed partial class EntityEffectPrototype: IPrototype
-{
+public sealed partial class EntityEffectPrototype : IPrototype{
     [IdDataField]
     public string ID { get; private set; } = string.Empty;
 

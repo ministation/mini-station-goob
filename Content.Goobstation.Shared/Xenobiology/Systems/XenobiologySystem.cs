@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.Xenobiology.Components;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Damage;
@@ -15,8 +16,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
 using Robust.Shared.Network;
-using Robust.Shared.Physics.Systems;
-using Robust.Shared.Prototypes;
+using Robust.Shared.Physics.Systems;using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -28,21 +28,22 @@ namespace Content.Goobstation.Shared.Xenobiology.Systems;
 /// </summary>
 public sealed partial class XenobiologySystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly HungerSystem _hunger = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly MetaDataSystem _metaData = default!;
-    [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
+    [Dependency] private readonly MetaDataSystem _metaData = default!;    [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedJitteringSystem _jitter = default!;
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly IConfigurationManager _configuration = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
+    [Dependency] private readonly MetaDataSystem _meta = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
+    private TimeSpan _updateInterval;
     public override void Initialize()
     {
         base.Initialize();
@@ -51,6 +52,7 @@ public sealed partial class XenobiologySystem : EntitySystem
         SubscribeBreeding();
 
         SubscribeLocalEvent<SlimeComponent, ExaminedEvent>(OnExamined);
+        Subs.CVar(_cfg, GoobCVars.BreedingInterval, x => _updateInterval = TimeSpan.FromSeconds(x), true);
     }
 
     public override void Update(float frameTime)
@@ -81,5 +83,4 @@ public sealed partial class XenobiologySystem : EntitySystem
         return _prototypeManager.TryIndex(slime.Comp.Breed, out var breedPrototype)
             ? breedPrototype.ProducedExtract
             : slime.Comp.DefaultExtract;
-    }
-}
+    }}

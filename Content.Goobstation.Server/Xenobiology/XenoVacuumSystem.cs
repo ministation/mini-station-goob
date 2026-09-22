@@ -1,42 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Goobstation.Shared.Xenobiology.Components;
-using Content.Goobstation.Shared.Xenobiology.Components.Equipment;
-using Content.Server.NPC.HTN;
-using Content.Server.Storage.EntitySystems;
-using Content.Shared.Coordinates;
-using Content.Shared.Destructible;
-using Content.Shared.Examine;
-using Content.Shared.Hands;
-using Content.Shared.Hands.EntitySystems;
-using Content.Shared.Interaction;
-using Content.Shared.Inventory;
-using Content.Shared.Mobs.Components;
-using Content.Shared.Popups;
-using Content.Shared.Stunnable;
-using Content.Shared.Throwing;
-using Content.Shared.Timing;
-using Content.Shared.Whitelist;
-using Robust.Shared.Audio;
-using Robust.Shared.Audio.Systems;
-using Robust.Shared.Containers;
-using Content.Shared.Storage.Components;
+using Content.Goobstation.Shared.Xenobiology.Components.Equipment;using Content.Server.NPC.HTN;
+using Content.Goobstation.Shared.Xenobiology.Systems;
 
 namespace Content.Goobstation.Server.Xenobiology;
 
 /// <summary>
-/// This handles the XenoVacuum and it's interactions.
+/// Primarily handle anything that need to be in serverside like HTN
 /// </summary>
-public sealed partial class XenoVacuumSystem : EntitySystem
+public sealed partial class XenoVacuumSystem : SharedXenoVacuumSystem
 {
-    [Dependency] private readonly InventorySystem _inventorySystem = default!;
-    [Dependency] private readonly ThrowingSystem _throw = default!;
-    [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedStunSystem _stun = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
     [Dependency] private readonly HTNSystem _htn = default!;
     [Dependency] private readonly UseDelaySystem _useDelay = default!;
     [Dependency] private readonly EntityStorageSystem _entStorage = default!;
@@ -57,6 +31,11 @@ public sealed partial class XenoVacuumSystem : EntitySystem
         SubscribeLocalEvent<XenoVacuumComponent, GotEquippedHandEvent>(OnEquippedHand);
         SubscribeLocalEvent<XenoVacuumComponent, GotUnequippedHandEvent>(OnUnequippedHand);
         SubscribeLocalEvent<XenoVacuumComponent, AfterInteractEvent>(OnAfterInteract);
+    }
+
+    protected override void SetHTNEnabled(EntityUid uid, bool enabled, float planCooldown)
+    {
+        _htn.SetHTNEnabled(uid, enabled, planCooldown);
     }
 
     private void OnTankInit(Entity<XenoVacuumTankComponent> ent, ref MapInitEvent args)
@@ -243,5 +222,4 @@ public sealed partial class XenoVacuumSystem : EntitySystem
         return true;
     }
 
-    #endregion
-}
+    #endregion}
