@@ -1271,8 +1271,9 @@
   - RegularLabCoat
   - ScienceLabCoat
   - ScienceWintercoat
-  - RoboticistLabCoat
-  - RoboticistWintercoat
+  # mini-station-edit: roboticist coats removed, roboticist has own group
+  #- RoboticistLabCoat
+  #- RoboticistWintercoat
   - SeniorResearcherLabCoat
 
 - type: loadoutGroup
@@ -1290,7 +1291,8 @@
   loadouts:
   - LatexGloves
   - PurpleGloves
-  - RobohandsGloves
+  # mini-station-edit: roboticist robohands removed, roboticist has own group
+  #- RobohandsGloves
 
 - type: loadoutGroup
   id: ScientistPDA

@@ -78,26 +78,30 @@
   - GroupHonkopsMask
   - GroupPocketTankDouble
 
+# mini-station-edit: robototekhnik was wired to scientist groups (no own access PDA)
 - type: roleLoadout
   id: JobRoboticist
   groups:
+  - Inventory
   - GroupTankHarness
-  - ScientistHead
+  - RoboticistHead
   - ScientistNeck
-  - ScientistJumpsuit
-  - ScientistBackpack
-  - ScientistOuterClothing
-  - ScientistGloves
-  - ScientistShoes
-  - ScientistPDA
-  - Glasses
+  - RoboticistJumpsuit
+  - RoboticistBackpack
+  - RoboticistOuterClothing
+  - RoboticistGloves
+  - RoboticistShoes
+  - RoboticistPDA
+  - RoboticistGlasses
   - Survival
   - Trinkets
+  - ScientistJobTrinkets
+  - Animals
   - GroupSpeciesBreathTool
   # Plasmaman
-  - ScientistEnvirohelm
-  - ScientistEnvirosuit
-  - ScientistEnvirogloves
+  - RoboticistEnvirohelm
+  - RoboticistEnvirosuit
+  - RoboticistEnvirogloves
 
 - type: roleLoadout
   id: JobBrigmedic

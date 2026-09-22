@@ -37,7 +37,7 @@
   maxLimit: 1
   loadouts:
   - ScientistEnvirohelm
-  - RoboticistEnvirohelm
+  # mini-station-edit: RoboticistEnvirohelm moved to its own group
 
 - type: loadoutGroup
   id: ScientistEnvirosuit
@@ -46,7 +46,7 @@
   maxLimit: 1
   loadouts:
   - ScientistEnvirosuit
-  - RoboticistEnvirosuit
+  # mini-station-edit: RoboticistEnvirosuit moved to its own group
 
 - type: loadoutGroup
   id: ScientistEnvirogloves
@@ -54,7 +54,7 @@
   minLimit: 1
   maxLimit: 1
   loadouts:
-  - RoboticistEnvirogloves
+  # mini-station-edit: RoboticistEnvirogloves moved to its own group
   - WhiteEnvirogloves
 
 # Research Assistant
@@ -1376,6 +1376,32 @@
   name: loadout-group-roboticist-id
   loadouts:
   - RoboticistPDA
+
+# mini-station-edit: roboticist plasmaman enviro groups (split off scientist ones)
+- type: loadoutGroup
+  id: RoboticistEnvirohelm
+  name: loadout-group-roboticist-envirohelm
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - RoboticistEnvirohelm
+
+- type: loadoutGroup
+  id: RoboticistEnvirosuit
+  name: loadout-group-roboticist-envirosuit
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - RoboticistEnvirosuit
+
+- type: loadoutGroup
+  id: RoboticistEnvirogloves
+  name: loadout-group-roboticist-envirogloves
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - RoboticistEnvirogloves
+  - WhiteEnvirogloves
 
 # Salvage
 
