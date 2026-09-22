@@ -46,6 +46,7 @@
       - !type:AddReagentToSolution
         reagent: XenobioJellyBlue
         solution: extract
-        strengthModifier: 1  - type: Tag
+        strengthModifier: 1
+  - type: Tag
     tags:
     - XenobiologyBlueExtract

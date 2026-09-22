@@ -1,7 +1,7 @@
 - type: breed
-  parent: BaseMutation
   id: OilMutation
-  breedName: xenobio-breed-oil  producedExtract: OilSlimeExtract
+  breedName: xenobio-breed-oil
+  producedExtract: OilSlimeExtract
   components:
   - type: Slime
     slimeColor: "#383936"
@@ -14,9 +14,9 @@
     - OilMutation
 
 - type: breed
-  parent: BaseMutation
   id: LightPinkMutation
-  breedName: xenobio-breed-light-pink  producedExtract: LightPinkSlimeExtract
+  breedName: xenobio-breed-light-pink
+  producedExtract: LightPinkSlimeExtract
   components:
   - type: Slime
     slimeColor: "#ffb3ec"
@@ -27,9 +27,9 @@
     - LightPinkMutation
 
 - type: breed
-  parent: BaseMutation
   id: BlackMutation
-  breedName: xenobio-breed-black  producedExtract: BlackSlimeExtract
+  breedName: xenobio-breed-black
+  producedExtract: BlackSlimeExtract
   components:
   - type: Slime
     slimeColor: "#000000"
@@ -40,9 +40,9 @@
     - BlackMutation
 
 - type: breed
-  parent: BaseMutation
   id: AdamantineMutation
-  breedName: xenobio-breed-adamantine  producedExtract: AdamantineSlimeExtract
+  breedName: xenobio-breed-adamantine
+  producedExtract: AdamantineSlimeExtract
   components:
   - type: Slime
     slimeColor: "#005c33"

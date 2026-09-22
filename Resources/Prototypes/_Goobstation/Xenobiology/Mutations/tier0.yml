@@ -1,8 +1,8 @@
 # Literally the first base
 - type: breed
-  parent: BaseMutation
   id: GreyMutation
-  breedName: xenobio-breed-grey  producedExtract: GreySlimeExtract
+  breedName: xenobio-breed-grey
+  producedExtract: GreySlimeExtract
   components:
   - type: Slime
     breed: GreyMutation

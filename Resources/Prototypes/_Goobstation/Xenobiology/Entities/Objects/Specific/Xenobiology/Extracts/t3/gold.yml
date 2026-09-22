@@ -23,7 +23,8 @@
         entity: RPassiveMobSpawner
         number: 5
         shouldScale: false
-        predicted: false    - reagents: [ Plasma ]
+        predicted: false
+    - reagents: [ Plasma ]
       methods: [ Touch, Injection ]
       effects:
       - !type:NestedEffect
@@ -35,7 +36,8 @@
         entity: RHostileMobSpawner
         number: 5
         shouldScale: false
-        predicted: false    - reagents: [ Blood ]
+        predicted: false
+    - reagents: [ Blood ]
       methods: [ Touch, Injection ]
       effects:
       - !type:NestedEffect
@@ -47,6 +49,7 @@
         entity: RNeutralMobSpawner
         number: 5
         shouldScale: false
-        predicted: false  - type: Tag
+        predicted: false
+  - type: Tag
     tags:
     - XenobiologyGoldExtract

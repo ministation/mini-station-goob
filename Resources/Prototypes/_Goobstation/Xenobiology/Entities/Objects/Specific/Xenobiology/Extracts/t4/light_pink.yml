@@ -33,7 +33,8 @@
         effects:
         - !type:AdjustReagent
           reagent: Cognizine
-          amount: 10    - reagents: [ Blood ]
+          amount: 10
+    - reagents: [ Blood ]
       methods: [ Touch, Injection ]
       effects:
       - !type:NestedEffect

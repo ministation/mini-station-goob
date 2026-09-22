@@ -1,7 +1,8 @@
 - type: entity
   parent: BaseMachinePowered
   id: BaseSlotMachine
-  name: слот-машина  abstract: true
+  name: слот-машина
+  abstract: true
   description: Чтобы начать игру, игроку необходимо вставить деньги в автомат, один спин - 250 кредитов.
   components:
   - type: StationAiWhitelist
@@ -94,7 +95,8 @@
   parent: BaseSlotMachine
   id: SlotMachine
   name: слот-машина
-  description:  Чтобы начать игру, игроку необходимо вставить деньги в автомат, один спин - 250 кредитов.  components:
+  description:  Чтобы начать игру, игроку необходимо вставить деньги в автомат, один спин - 250 кредитов.
+  components:
   - type: Sprite
     sprite: _Goobstation/Structures/Machines/slotmachines/slotmachine.rsi
     layers:
@@ -134,7 +136,8 @@
   parent: BaseSlotMachine
   id: SlotMachineHighRoller
   name: слот-машина для высоких ставок
-  description: Версия игрового автомата для высоких ставок — целых 100 тысяч за вращение, но можно выиграть 1 МИЛЛИОН!  components:
+  description: Версия игрового автомата для высоких ставок — целых 100 тысяч за вращение, но можно выиграть 1 МИЛЛИОН!
+  components:
   - type: Sprite
     sprite: _Goobstation/Structures/Machines/slotmachines/slotmachinehighroller.rsi
     layers:

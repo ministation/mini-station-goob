@@ -53,6 +53,7 @@
         effects:
         - !type:AdjustReagent
           reagent: CapsaicinOil
-          amount: 30  - type: Tag
+          amount: 30
+  - type: Tag
     tags:
     - XenobiologyOrangeExtract

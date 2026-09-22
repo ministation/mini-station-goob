@@ -1586,7 +1586,6 @@
   # Mini genetics: ancestors (monkeys/kobolds/…) are valid DNA-modifier subjects
   - type: Dna
   - type: Mutatable
-  - type: XenovacTarget # Goobstation - Xenobio
 - type: entity
   name: monkey
   id: MobMonkey

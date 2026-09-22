@@ -40,6 +40,7 @@
         effects:
         - !type:AdjustReagent
           reagent: XenobioGenderFluid
-          amount: 10  - type: Tag
+          amount: 10
+  - type: Tag
     tags:
     - XenobiologyPinkExtract

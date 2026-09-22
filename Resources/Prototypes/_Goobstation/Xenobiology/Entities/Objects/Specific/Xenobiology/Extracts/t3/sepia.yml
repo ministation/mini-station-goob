@@ -21,7 +21,8 @@
         effects:
         - !type:AdjustReagent
           reagent: Tilenol
-          amount: 100    - reagents: [ Plasma ]
+          amount: 100
+    - reagents: [ Plasma ]
       methods: [ Touch, Injection ]
       effects:
       - !type:NestedEffect

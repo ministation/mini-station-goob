@@ -19,16 +19,6 @@
     Glass: 300
 
 - type: latheRecipe
-  id: ResearchComputerCircuitboard
-  result: ResearchComputerCircuitboard
-  categories:
-  - Circuitry
-  completetime: 4
-  materials:
-    Steel: 500
-    Glass: 300
-
-- type: latheRecipe
   id: ResearchDestructiveAnalyzerMachineCircuitboard
   result: ResearchDestructiveAnalyzerMachineCircuitboard
   categories:

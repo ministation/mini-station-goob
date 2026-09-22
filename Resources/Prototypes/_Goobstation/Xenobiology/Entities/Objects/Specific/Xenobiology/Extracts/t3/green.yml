@@ -42,6 +42,7 @@
         effects:
         - !type:AdjustReagent
           reagent: XenobioHumanToxin
-          amount: 10  - type: Tag
+          amount: 10
+  - type: Tag
     tags:
     - XenobiologyGreenExtract
