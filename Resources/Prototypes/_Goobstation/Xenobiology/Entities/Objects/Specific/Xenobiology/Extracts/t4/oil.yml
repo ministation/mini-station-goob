@@ -27,7 +27,8 @@
         effects:
         - !type:AdjustReagent
           reagent: SpaceLube
-          amount: 100    - reagents: [ Plasma ]
+          amount: 100
+    - reagents: [ Plasma ]
       methods: [ Touch, Injection ]
       effects:
       - !type:NestedEffect

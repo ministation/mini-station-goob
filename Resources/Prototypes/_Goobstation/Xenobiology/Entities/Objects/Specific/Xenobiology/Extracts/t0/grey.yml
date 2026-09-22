@@ -26,7 +26,8 @@
         effects:
         - !type:AdjustReagent
           reagent: Epinephrine
-          amount: 15    - reagents: [ Plasma ]
+          amount: 15
+    - reagents: [ Plasma ]
       methods: [ Touch, Injection ]
       effects:
       - !type:NestedEffect

@@ -34,7 +34,8 @@
         effects:
         - !type:AdjustReagent
           reagent: XenobioJellyRed
-          amount: 1    - reagents: [ Blood ]
+          amount: 1
+    - reagents: [ Blood ]
       methods: [ Touch, Injection ]
       effects:
       - !type:NestedEffect

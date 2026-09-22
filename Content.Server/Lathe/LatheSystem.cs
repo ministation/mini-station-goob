@@ -261,7 +261,8 @@ namespace Content.Server.Lathe
                 }
 
                 FinishProducing(uid, component, lathe,
-                    component.OutputToStorage); // Goobstation edit start: handle special case with lots of 0-time recipes that insert into storage            }
+                    component.OutputToStorage); // Goobstation edit start: handle special case with lots of 0-time recipes that insert into storage
+            }
             return true;
         }
 
@@ -280,7 +281,8 @@ namespace Content.Server.Lathe
         }
 
         public void FinishProducing(EntityUid uid, LatheComponent? comp = null, LatheProducingComponent? prodComp = null,
-            bool bulk = false) // Goobstation        {
+            bool bulk = false) // Goobstation
+        {
             if (!Resolve(uid, ref comp, ref prodComp, false))
                 return;
 

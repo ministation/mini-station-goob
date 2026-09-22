@@ -118,7 +118,8 @@
   id: TunnelClownMidround
   components:
   - type: StationEvent
-    weight: 2 # Mini: fewer free midround antags    duration: null
+    weight: 2 # Mini: fewer free midround antags
+    duration: null
     earliestStart: 15
     minimumPlayers: 20
     chaos:

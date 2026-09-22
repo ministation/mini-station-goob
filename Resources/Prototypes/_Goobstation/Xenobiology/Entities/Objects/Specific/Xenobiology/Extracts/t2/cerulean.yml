@@ -38,6 +38,7 @@
         effects:
         - !type:AdjustReagent
           reagent: XenobioJellyCerulean
-          amount: 1  - type: Tag
+          amount: 1
+  - type: Tag
     tags:
     - XenobiologyCeruleanExtract

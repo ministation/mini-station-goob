@@ -39,6 +39,7 @@ public sealed class SmokeOnTriggerSystem : EntitySystem
             return;
 
         // TODO: move all of this into an API function in SmokeSystem
+
         // Goobstation - call SpawnSmoke helper
         // TODO: fuck YOU trauma. why the FUCK. TODO: make a wizden PR fixing this fucking nonsense
         args.Handled = GoidaFuckingFixThisSpawnSmoke(target.Value, ent.Comp.SmokePrototype, ent.Comp.Solution, ent.Comp.Duration, ent.Comp.SpreadAmount);
@@ -54,7 +55,8 @@ public sealed class SmokeOnTriggerSystem : EntitySystem
     {
         var xform = Transform(target);
         var mapCoords = _transform.GetMapCoordinates(target, xform);
-        if (!_mapMan.TryFindGridAt(mapCoords, out var gridUid, out var gridComp) ||            !_map.TryGetTileRef(gridUid, gridComp, xform.Coordinates, out var tileRef) ||
+        if (!_map.TryFindGridAt(mapCoords, out var gridUid, out var gridComp) ||
+            !_map.TryGetTileRef(gridUid, gridComp, xform.Coordinates, out var tileRef) ||
             tileRef.Tile.IsEmpty)
         {
             return false;

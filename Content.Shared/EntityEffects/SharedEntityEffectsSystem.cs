@@ -31,10 +31,6 @@ public sealed partial class SharedEntityEffectsSystem : EntitySystem, IEntityEff
     {
         var scale = entity.Comp.ScaleOverride ?? args.ReagentQuantity.Quantity.Float(); // Trauma - Added Scale Override
 
-        // Goobstation - OneUnitReaction clamps multi-unit injections to a single unit of effect scale.
-        if (entity.Comp.OneUnitReaction)
-            scale = Math.Min(scale, 1f);
-
         if (args.Reagent.ReactiveEffects != null && entity.Comp.ReactiveGroups != null)
         {
             foreach (var (key, val) in args.Reagent.ReactiveEffects)

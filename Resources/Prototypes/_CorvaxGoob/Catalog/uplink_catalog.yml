@@ -60,7 +60,8 @@
   icon: { sprite: _CorvaxGoob/Mobs/Pets/syndicategorilla.rsi, state: crawling }
   productEntity: ReinforcementRadioSyndicateGorilla
   cost:
-    Telecrystal: 10  categories:
+    Telecrystal: 10
+  categories:
   - UplinkAllies
   conditions:
   - !type:StoreWhitelistCondition

@@ -20,7 +20,8 @@
         effects:
         - !type:AdjustReagent
           reagent: XenobioJellyDarkBlue
-          amount: 1    - reagents: [ Plasma ]
+          amount: 1
+    - reagents: [ Plasma ]
       methods: [ Touch, Injection ]
       effects:
       - !type:NestedEffect
@@ -38,6 +39,7 @@
         effects:
         - !type:AdjustReagent
           reagent: Leporazine
-          amount: 30  - type: Tag
+          amount: 30
+  - type: Tag
     tags:
     - XenobiologyDarkBlueExtract
