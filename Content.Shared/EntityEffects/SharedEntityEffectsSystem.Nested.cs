@@ -16,5 +16,6 @@ public sealed partial class SharedEntityEffectsSystem
     {
         var proto = _protoMan.Index(id);
         if (_condition.TryConditions(target, proto.Conditions))
-            ApplyEffects(target, proto.Effects, scale, user); // Trauma    }
+            ApplyEffects(target, proto.Effects, scale, user); // Trauma
+    }
 }
