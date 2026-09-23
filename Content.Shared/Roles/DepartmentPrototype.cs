@@ -49,6 +49,15 @@ public sealed partial class DepartmentPrototype : IPrototype
     /// </summary>
     [DataField]
     public bool EditorHidden;
+
+    /// <summary>
+    /// Jobs in this department can never be the target of an antagonist objective
+    /// (kill/maroon/protect/steal-from and so on).
+    /// Used for faction roles such as Central Command and Taipan staff, who do not
+    /// work for the station and therefore must not be handed out as objectives.
+    /// </summary>
+    [DataField]
+    public bool AntagObjectiveImmune;
 }
 
 /// <summary>

@@ -3,6 +3,7 @@
   name: department-Typan
   description: department-Typan-description
   color: "#9b2d30"
+  antagObjectiveImmune: true # Mini - Taipan staff must not be antag objective targets
   roles:
   - TypanCommander
   - TypanResearchDirector
@@ -20,6 +21,7 @@
   name: department-Typan2
   description: department-Typan-Synt-description
   color: "#9b2d30"
+  antagObjectiveImmune: true # Mini - Taipan staff must not be antag objective targets
   roles:
   - TypanBorg
 
@@ -30,6 +32,7 @@
   description: department-CentComm-description
   color: "#0c344d"
   weight: 110
+  antagObjectiveImmune: true # Mini - CentComm staff must not be antag objective targets
   roles:
   - CentralCommandOfficial
   - CentralCommandAssistant

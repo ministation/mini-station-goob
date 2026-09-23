@@ -103,7 +103,8 @@ public abstract partial class SharedMartialArtsSystem : EntitySystem
         InitializeNinjutsu();
         InitializeHellRip();
         InitializeTwilight();
-        InitializeMimejutsu(); // CorvaxGoob        InitializeCanPerformCombo();
+        InitializeMimejutsu(); // CorvaxGoob
+        InitializeCanPerformCombo();
 
         SubscribeLocalEvent<MartialArtsKnowledgeComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<MartialArtsKnowledgeComponent, CheckGrabOverridesEvent>(CheckGrabStageOverride);
