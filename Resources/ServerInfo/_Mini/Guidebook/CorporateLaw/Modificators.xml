@@ -1,0 +1,145 @@
+<Document>
+
+  # Модификаторы сроков приговоров
+
+  <Table Columns="3">
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Название[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Описание[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Влияние на меру наказания[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        [bold]Крайняя необходимость[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Вынужденные действия в целях самозащиты, защиты здоровья и жизни своих коллег, а также сохранности своего рабочего места и станции в целом. Таковым также считается совершение преступления под давлением, оказанным угрозами, шантажом, гипнозом и тому подобным.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Снятие обвинений
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        [bold]Явка с повинной[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Сознательная личная сдача сотрудникам службы безопасности после совершения преступления до привлечения в качестве обвиняемого или подозреваемого.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Сокращение наказания на 50%
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        [bold]Сделка со следствием[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Раскрытие полных подробностей совершенного преступления при отсутствии необходимых улик. Сдача своих подельников, или помощь в розыске похищенного имущества, помощь в раскрытие дела.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Сокращение наказания на 50%
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        [bold]Отсутствие умысла[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Установленное в ходе разбирательства отсутствие намерения совершить инкриминируемое преступление, неумышленное преступление.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Назначение наказания на одну степень тяжести ниже без изменения статьи правонарушения
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        [bold]Пособничество[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Помощь в совершении преступления, или склонение к нему. Пособник, оказывающий помощь в совершении преступления, подлежит наказанию в соответствии с причастными статьями.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Наказание по всем статьям, по которым оказывалась помощь
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        [bold]Помеха следствию[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Неисполнение правомерных приказов сотрудников СБ (например призывов к порядку), находясь под следствием.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Увеличение наказания на 50%
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        [bold]Должностное преступление[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Совершение преступления должностным лицом. Эти лица призваны быть образцом и примером для подражания, на который будут ориентироваться прочие члены экипажа.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Увеличение наказания на 50%
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        [bold]Рецидив[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Повторное совершение преступления из одной и той же категории после отбытия наказания за предыдущее/выдачи предупреждения за проступок. Правонарушения не должны совершаться в рамках одного преступного загула, а должны быть отдельными повторными правонарушениями.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        +5 минут к наказанию за каждый случай рецидива (не считается за отдельный модификатор)
+      </Box>
+    </ColorBox>
+  </Table>
+
+  Возможно применять только одно послабление и одно ухудшение приговора, за исключением рецидива. Они накладываются к итоговому сроку и могут увеличить наказание, даже если время заключения уже достигло максимального срока по самой тяжкой статье. Либо уменьшить, а иногда и отменить заключение, например при проникновении на территорию для спасения от угрозы во время чрезвычайной ситуации, или самообороне.
+
+</Document>
