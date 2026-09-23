@@ -1,0 +1,208 @@
+<Document>
+  # Степени тяжести преступлений и соответствующие наказания
+
+  <Table Columns="3">
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Степень тяжести[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Правовое наказание[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Административное наказание[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        I (проступок)
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Заключение до 10 минут или предупреждение. (максимальный срок при сложении - 15 минут)
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#0F4F27">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        —
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        II (легкое)
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Заключение на 15 минут. (максимальный срок при сложении - 22,5 минут) (минимальный срок без сложения - 10 минут, при сложении - 17,5 минут)
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#414700">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Понижение в должности. На усмотрение главы отдела, к которому относится преступник.
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        III (среднее)
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Заключение на 25 минут. (максимальный срок при сложении - 37,5 минут) (минимальный срок без сложения - 15 минут, при сложении - 27,5 минут)
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#5F3800">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Понижение в должности или увольнение. На усмотрение главы отдела, к которому относится преступник.
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        IV (тяжкое)
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Заключение на 40 минут. (максимальный срок при сложении - 60 минут). (минимальный срок без сложения - 25 минут, при сложении - 35 минут)
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#611300">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Увольнение с должности, всегда.
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        V (особо тяжкое)
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Пожизненное заключение.
+      </Box>
+    </ColorBox>
+    <ColorBox Color="#56000C">
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        При сумме проведенных и предстоящих сроков заключения от 65 минут приговор заменяется на пожизненное заключение. Время заключения от 40 минут означает временное отбывание наказания в пермабриге, но не является поводом для перевода из обычной камеры, если дополнительное время было получено уже после вынесения основного вердикта. Смотритель и Глава СБ имеют право сами выбирать срок от максимального до минимального (К примеру, при IV статьях срок может быть от 40 минут до 25 без учета сложения статей)
+      </Box>
+    </ColorBox>
+  </Table>
+
+  ## Правила сложения статей
+
+  Преступники могут совершать преступления, предусмотренные несколькими статьями разных категорий (х05, х07 и тд). В этом случае срок заключения рассчитывается по самому тяжкому (4хх, 5хх и тд) преступлению, и все остальные правонарушения прибавляются в общей сумме не более 50% от её максимального срока.
+
+  - Преступления одной категории (например 201 и 301) не складываются, выбирается самая тяжкая статья (301 &gt; 201, значит 301).
+  - Некоторые преступления имеют примечания и не складываются с определенным статьями, либо прибавляются без ограничений (как 401).
+  - Модификаторы учитываются отдельно, накладываясь на итоговое время, но не более одного положительного и одного отрицательного (за исключением рецидива).
+
+  Например, преступник нанес жертве несколько ударов тупым предметом, в результате та погибла и была им же обворована. Статьи 201 (нападение второй степени) и 401 (убийство второй степени) одной категории, поэтому учитывается только последняя. Далее плюсуется 405 за разбой, но не более 50% срока, а значит время будет 40 минут + 20 минут (не более 50% от самой тяжкой), итого 60 минут. И уже к этому сроку прибавляются модификаторы.
+
+  При вынесении обвинительного приговора необходимо соблюдать следующий алгоритм:
+  - Установить статьи по которым будет выносится наказания, обращая внимание на примечания;
+  - Определить время заключения в рамках таблицы степеней тяжести преступления и соответствующих наказаний;
+  - Поверх полученного срока применить модификатор.
+
+  ## Нарушения заключённых
+
+  <Table Columns="4">
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Способ содержания заключённого[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Вандализм[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Попытка побега[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox OutlineThickness="2">
+      <Box HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+        [bold]Побег[/bold]
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Тюремное заключение
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Перезапуск таймера.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Перезапуск таймера, или перевод в карцер на оставшийся срок.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Заключение на тот же срок + 10 минут, или перезапуск с отбыванием в карцере.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Пермабриг
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Перевод в карцер на 10 минут.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Перевод в карцер на 10 минут. Повторная попытка является основанием для казни.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Летальная сила с последующим возвращением в место содержания, или убийство на месте.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Карцер
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Добавление 10 минут ко времени содержания в карцере.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Добавление 10 минут ко времени содержания в карцере, или казнь.
+      </Box>
+    </ColorBox>
+    <ColorBox>
+      <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
+        Убийство на месте.
+      </Box>
+    </ColorBox>
+  </Table>
+
+  [bold]Вандализм[/bold] — Разрушение и порча вещей, которые напрямую не ведут к побегу заключённого.
+  - Сломанные лампочки, мебель, испорченная одежда, разбрасывание предметов или мусора по камере, считаются как вандализм.
+
+  [bold]Попытка побега[/bold] — Попытка сломать барьеры, удерживающие заключенного (например: окна камеры, шлюзы, стеклянные двери) или нападение на сотрудника станции во время совершения самой попытки побега.
+
+  [bold]Побег[/bold] — Выход из области заключения без разрешения службы безопасности.
+  - Факт разрушенной внешней стены или окна камеры с возможностью выхода заключенного из области заключения, считается как побег.
+
+  - Наказания равноценно применяются как пожизненно осужденным, так и к отбывающим временное заключение в пермабриге.
+  - Увеличение срока за преступления уже после вынесения вердикта не является основанием для перевода в пермабриг из обычной камеры.
+
+</Document>
