@@ -28,6 +28,8 @@
       - ActionReturnToShip
   - type: GhostRole
     rules: abductors-ghost-role-rules
+    skills:
+    - All
     raffle:
       settings: default
   - type: GhostTakeoverAvailable
