@@ -2,16 +2,6 @@
 # Do not expand casually — only recipes required by recipeUnlocks.
 
 - type: latheRecipe
-  id: AlertsComputerCircuitboard
-  result: AlertsComputerCircuitboard
-  categories:
-  - Circuitry
-  completetime: 4
-  materials:
-    Steel: 500
-    Glass: 300
-
-- type: latheRecipe
   id: AntimovCircuitBoard
   result: AntimovCircuitBoard
   categories:
@@ -80,16 +70,6 @@
   materials:
     Glass: 300
     Plastic: 100
-
-- type: latheRecipe
-  id: CargoBountyComputerCircuitboard
-  result: CargoBountyComputerCircuitboard
-  categories:
-  - Service
-  completetime: 4
-  materials:
-    Steel: 300
-    Plastic: 150
 
 - type: latheRecipe
   id: CargoRequestComputerCircuitboard
@@ -216,16 +196,6 @@
 - type: latheRecipe
   id: CommsComputerCircuitboard
   result: CommsComputerCircuitboard
-  categories:
-  - Circuitry
-  completetime: 4
-  materials:
-    Steel: 500
-    Glass: 300
-
-- type: latheRecipe
-  id: CrewMonitoringComputerCircuitboard
-  result: CrewMonitoringComputerCircuitboard
   categories:
   - Circuitry
   completetime: 4
@@ -484,16 +454,6 @@
   result: PlasmaTank
   categories:
   - Engineering
-  completetime: 4
-  materials:
-    Steel: 500
-    Glass: 300
-
-- type: latheRecipe
-  id: PowerComputerCircuitboard
-  result: PowerComputerCircuitboard
-  categories:
-  - Circuitry
   completetime: 4
   materials:
     Steel: 500
@@ -806,4 +766,3 @@
   completetime: 2
   materials:
     Wood: 50
-

@@ -1,6 +1,6 @@
 - type: breed
-  breedName: xenobio-breed-oil
   id: OilMutation
+  breedName: xenobio-breed-oil
   producedExtract: OilSlimeExtract
   components:
   - type: Slime
@@ -14,8 +14,8 @@
     - OilMutation
 
 - type: breed
-  breedName: xenobio-breed-light-pink
   id: LightPinkMutation
+  breedName: xenobio-breed-light-pink
   producedExtract: LightPinkSlimeExtract
   components:
   - type: Slime
@@ -27,8 +27,8 @@
     - LightPinkMutation
 
 - type: breed
-  breedName: xenobio-breed-black
   id: BlackMutation
+  breedName: xenobio-breed-black
   producedExtract: BlackSlimeExtract
   components:
   - type: Slime
@@ -40,8 +40,8 @@
     - BlackMutation
 
 - type: breed
-  breedName: xenobio-breed-adamantine
   id: AdamantineMutation
+  breedName: xenobio-breed-adamantine
   producedExtract: AdamantineSlimeExtract
   components:
   - type: Slime

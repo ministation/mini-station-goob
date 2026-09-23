@@ -1,5 +1,5 @@
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyGrey
   components:
   - type: Slime
@@ -10,9 +10,10 @@
     - PurpleMutation
     - BlueMutation
     - MetalMutation
-
+  - type: PendingSlimeSpawn
+    breed: GreyMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyOrange
   components:
   - type: Slime
@@ -23,9 +24,10 @@
     - YellowMutation
     - DarkPurpleMutation
     - RedMutation
-
+  - type: PendingSlimeSpawn
+    breed: OrangeMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyPurple
   components:
   - type: Slime
@@ -36,9 +38,10 @@
     - DarkPurpleMutation
     - DarkBlueMutation
     - GreenMutation
-
+  - type: PendingSlimeSpawn
+    breed: PurpleMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyBlue
   components:
   - type: Slime
@@ -49,9 +52,10 @@
     - DarkBlueMutation
     - SilverMutation
     - PinkMutation
-
+  - type: PendingSlimeSpawn
+    breed: BlueMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyMetal
   components:
   - type: Slime
@@ -64,9 +68,10 @@
     - SilverMutation
     - YellowMutation
     - GoldMutation
-
+  - type: PendingSlimeSpawn
+    breed: MetalMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyYellow
   components:
   - type: Slime
@@ -76,9 +81,10 @@
     - OrangeMutation
     - MetalMutation
     - BluespaceMutation
-
+  - type: PendingSlimeSpawn
+    breed: YellowMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyDarkPurple
   components:
   - type: Slime
@@ -88,9 +94,10 @@
     - PurpleMutation
     - OrangeMutation
     - SepiaMutation
-
+  - type: PendingSlimeSpawn
+    breed: DarkPurpleMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyDarkBlue
   components:
   - type: Slime
@@ -100,9 +107,10 @@
     - BlueMutation
     - PurpleMutation
     - CeruleanMutation
-
+  - type: PendingSlimeSpawn
+    breed: DarkBlueMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabySilver
   components:
   - type: Slime
@@ -114,9 +122,10 @@
     - BlueMutation
     - MetalMutation
     - PyriteMutation
-
+  - type: PendingSlimeSpawn
+    breed: SilverMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyBluespace
   components:
   - type: Slime
@@ -126,9 +135,10 @@
     breed: BluespaceMutation
     potentialMutations:
     - BluespaceMutation
-
+  - type: PendingSlimeSpawn
+    breed: BluespaceMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabySepia
   components:
   - type: Slime
@@ -138,9 +148,10 @@
     breed: SepiaMutation
     potentialMutations:
     - SepiaMutation
-
+  - type: PendingSlimeSpawn
+    breed: SepiaMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyCerulean
   components:
   - type: Slime
@@ -148,9 +159,10 @@
     breed: CeruleanMutation
     potentialMutations:
     - CeruleanMutation
-
+  - type: PendingSlimeSpawn
+    breed: CeruleanMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyPyrite
   components:
   - type: Slime
@@ -160,9 +172,10 @@
     breed: PyriteMutation
     potentialMutations:
     - PyriteMutation
-
+  - type: PendingSlimeSpawn
+    breed: PyriteMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyRed
   components:
   - type: Slime
@@ -171,9 +184,10 @@
     potentialMutations:
     - RedMutation
     - OilMutation
-
+  - type: PendingSlimeSpawn
+    breed: RedMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyGreen
   components:
   - type: Slime
@@ -182,9 +196,10 @@
     potentialMutations:
     - GreenMutation
     - BlackMutation
-
+  - type: PendingSlimeSpawn
+    breed: GreenMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyPink
   components:
   - type: Slime
@@ -193,9 +208,10 @@
     potentialMutations:
     - PinkMutation
     - LightPinkMutation
-
+  - type: PendingSlimeSpawn
+    breed: PinkMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyGold
   components:
   - type: Slime
@@ -206,9 +222,10 @@
     potentialMutations:
     - GoldMutation
     - AdamantineMutation
-
+  - type: PendingSlimeSpawn
+    breed: GoldMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyOil
   components:
   - type: Slime
@@ -218,9 +235,10 @@
     breed: OilMutation
     potentialMutations:
     - OilMutation
-
+  - type: PendingSlimeSpawn
+    breed: OilMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyLightPink
   components:
   - type: Slime
@@ -228,9 +246,10 @@
     breed: LightPinkMutation
     potentialMutations:
     - LightPinkMutation
-
+  - type: PendingSlimeSpawn
+    breed: LightPinkMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyBlack
   components:
   - type: Slime
@@ -238,9 +257,10 @@
     breed: BlackMutation
     potentialMutations:
     - BlackMutation
-
+  - type: PendingSlimeSpawn
+    breed: BlackMutation
 - type: entity
-  parent: MobSlimeXenobioBaby
+  parent: MobSlimeXenobioBabyPending
   id: MobSlimeXenobioBabyAdamantine
   components:
   - type: Slime
@@ -250,3 +270,5 @@
     breed: AdamantineMutation
     potentialMutations:
     - AdamantineMutation
+  - type: PendingSlimeSpawn
+    breed: AdamantineMutation
