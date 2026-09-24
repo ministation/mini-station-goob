@@ -386,7 +386,6 @@ TransmitterSubspaceStockPart: null
 ClothingHeadHatHoodRad: null
 
 # 2024-01-12
-SpaceMedipen: null
 
 # 2024-01-18
 ClothingHeadHelmetVoidParamed: null
@@ -435,7 +434,6 @@ MobTaxiBot: null
 #SpawnVehicleSecway: null Goobstation - Re-add vehicles
 #SpawnVehicleJanicart: null Goobstation - Re-add vehicles
 #VehicleJanicart: null Goobstation - Re-add vehicles
-VehicleJanicartDestroyed: null
 
 # 2024-02-01
 YellowOxygenTank: OxygenTank
@@ -498,7 +496,6 @@ ImprovisedExplosiveFuel: FireBombFuel
 ClothingHeadHatHairflower: FoodPoppy
 
 # 2024-03-21
-RPED: null
 
 # 2024-03-30
 TraversalDistorterMachineCircuitboard: null
@@ -769,7 +766,6 @@ SalvageExpeditionsComputerCircuitboard: LavalandShuttleConsoleCircuitboard
 
 # 2025-01-06
 BorgModuleRadiationDetection: null
-BorgModuleGPS: null
 BorgModuleLightReplacer: BorgModuleCustodial
 BorgModuleAdvancedTreatment: null
 
@@ -898,7 +894,6 @@ ClothingHeadHelmetHardsuitBasic: null
 SuitStorageBasic: SuitStorageEVA
 
 # 2025-05-18
-ClothingNeckCloakMiner: null
 
 # 2025-08-11 CorvaxGoob
 PlushieSamantha: null
@@ -928,7 +923,6 @@ FloorTileItemRCircuit4: FloorTileItemRCircuit
 
 # 2025-06-06
 MagazineLightRifleMaxim: null
-MagazineLightRiflePkBox: null
 MagazineCaselessRifle10x24: null
 BaseMagazineCaselessRifleShort: null
 MagazineCaselessRifleShort: null
@@ -986,7 +980,6 @@ PlushieBoggle: null
 PlushieLehmin: null
 
 # 2025-07-17
-RipleyChassis: null
 HonkerChassis: null
 HamtrChassis: null
 VimChassis: null
@@ -1072,7 +1065,6 @@ BoxMailCapsulePrimed: null
 VendingMachineMailDrobe: null
 MailMetricsCartridge: null
 WeaponMailLake: null
-ComputerShuttleSalvage: null
 GygaxChassis: null
 RipleyMKIIChassis: null
 ClarkeChassis: null
@@ -1111,7 +1103,6 @@ HandheldHealthAnalyzerEmpty: HandheldHealthAnalyzer
 BorgModuleAdvancedChemical: BorgModuleAdvancedTopical
 
 #2026-07-10 CorvaxGoob
-PartRodMetalLingering0: null
 ClothingNeckCloakCe: ClothingNeckCloakWhiteCe
 ClothingNeckMantleCE: ClothingNeckMantleWhiteCE
 ClothingBeltAssaultFilled: ClothingBeltMilitaryWebbingFilled
