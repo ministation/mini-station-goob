@@ -15,9 +15,19 @@ public sealed class NutrimentPumpImplantSystem : EntitySystem
     [Dependency] private readonly ThirstSystem _thirst = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
 
+    // Pumps act on their own ExecutionInterval (>= 1 s); scanning implant holders twice a second
+    // instead of every tick is indistinguishable in gameplay.
+    private static readonly TimeSpan ScanInterval = TimeSpan.FromSeconds(0.5f);
+    private TimeSpan _nextScan;
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        if (_gameTiming.CurTime < _nextScan)
+            return;
+
+        _nextScan = _gameTiming.CurTime + ScanInterval;
 
         var query = EntityQueryEnumerator<ImplantedComponent>();
         while (query.MoveNext(out var uid, out var implantedComponent))
