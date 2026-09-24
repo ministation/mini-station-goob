@@ -65,8 +65,15 @@ public sealed class PixelScrollProgressBar : Control
             return;
 
         var fillWidth = box.Width * _value;
-        if (fillWidth < 1f)
-            return;
+
+        // Below the combined width of the texture's left+right patch caps the 9-slice draws the
+        // right cap on top of the left edge and the strip renders mirrored. Clamp to the caps so
+        // the smallest visible fill is still a proper leading segment.
+        var minFillWidth = Math.Min(
+            (_trackStyle.PatchMarginLeft + _trackStyle.PatchMarginRight) * _trackStyle.TextureScale.X * UIScale,
+            box.Width);
+        if (fillWidth < minFillWidth)
+            fillWidth = minFillWidth;
 
         var fill = new StyleBoxTexture(_trackStyle) { Modulate = Color.White };
         fill.Draw(handle, UIBox2.FromDimensions(box.Left, box.Top, fillWidth, box.Height), UIScale);

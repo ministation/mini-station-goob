@@ -155,7 +155,10 @@ public sealed partial class LavalandSystem
         }
 
         usedSpace.Add(ruinBox.Translated(coord.Value));
-        coords.Remove(coord.Value);
+        // Purge every lattice point covered by the placed ruin, not just its center: later ruins
+        // only sample the first few entries of the list, so leftover points inside occupied boxes
+        // would make them burn all spawn attempts and fail to place (seen on MiningPost/Generator).
+        coords.RemoveAll(c => ruinBox.Translated(coord.Value).Contains(new Vector2(c.X, c.Y)));
 
         // Teleport it into place on preloader map
         _transform.SetCoordinates(spawned, new EntityCoordinates(preloader, coord.Value));
@@ -219,7 +222,8 @@ public sealed partial class LavalandSystem
         Spawn(ruin.SpawnedMarker, new EntityCoordinates(lavaland, coord.Value));
 
         usedSpace.Add(ruinBox.Translated(coord.Value));
-        coords.Remove(coord.Value);
+        // Same as in LoadGridRuin: purge all covered lattice points, not just the center.
+        coords.RemoveAll(c => ruinBox.Translated(coord.Value).Contains(new Vector2(c.X, c.Y)));
     }
 
     /// <summary>
