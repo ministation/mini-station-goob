@@ -476,7 +476,13 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             {
                 Log.Warning(
                     $"Thunderdome mind swap for {session} left them attached to {ToPrettyString(session.AttachedEntity)} instead of {ToPrettyString(mob.Value)}; forcing attach.");
-                _playerManager.SetAttachedEntity(session, mob.Value);
+
+                if (!_playerManager.SetAttachedEntity(session, mob.Value, out _, force: true)
+                    || session.AttachedEntity != mob.Value)
+                {
+                    Log.Error($"Thunderdome spawn for {session}: could not attach to {ToPrettyString(mob.Value)}; aborting.");
+                    return false;
+                }
             }
 
             rule.Players.Add(GetNetEntity(mob.Value));
