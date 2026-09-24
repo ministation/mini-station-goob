@@ -476,7 +476,6 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             {
                 Log.Warning(
                     $"Thunderdome mind swap for {session} left them attached to {ToPrettyString(session.AttachedEntity)} instead of {ToPrettyString(mob.Value)}; forcing attach.");
-
                 if (!_playerManager.SetAttachedEntity(session, mob.Value, out _, force: true)
                     || session.AttachedEntity != mob.Value)
                 {
