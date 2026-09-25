@@ -69,7 +69,7 @@ public sealed class AntagTokenStatusCommand : IConsoleCommand
         shell.WriteLine($"Player: {session.Name}");
         shell.WriteLine($"Balance: {state.Balance}");
         shell.WriteLine($"Sponsor level: {system.GetEffectiveSponsorLevel(session.UserId)}");
-        shell.WriteLine($"Monthly cap: {AntagTokenCatalog.GetSponsorMonthlyCap(system.GetEffectiveSponsorLevel(session.UserId))?.ToString() ?? "none"}");
+        shell.WriteLine($"Monthly cap: {AntagTokenCatalog.MonthlyTokenCap}");
         shell.WriteLine($"Monthly earned: {state.MonthlyEarned}");
         shell.WriteLine($"Month: {state.MonthlyYear:D4}-{state.MonthlyMonth:D2}");
         shell.WriteLine($"Deposit: {state.PendingDepositRoleId ?? "none"}");
