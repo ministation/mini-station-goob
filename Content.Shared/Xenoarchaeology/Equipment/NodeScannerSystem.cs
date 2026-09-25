@@ -34,8 +34,16 @@ public sealed class NodeScannerSystem : EntitySystem
             connected.NextUpdate = _timing.CurTime + connected.LinkUpdateInterval;
 
             var attachedArtifact = connected.AttachedTo;
-            var artifactCoordinates = Transform(attachedArtifact).Coordinates;
-            if (!_transform.InRange(artifactCoordinates, transform.Coordinates, scanner.MaxLinkedRange))
+
+            // The artifact can be destroyed while the scanner stays attached (crusher,
+            // detonation): drop the link instead of throwing on a deleted entity every tick.
+            if (TerminatingOrDeleted(attachedArtifact) || !TryComp(attachedArtifact, out TransformComponent? artifactTransform))
+            {
+                RemCompDeferred(uid, connected);
+                continue;
+            }
+
+            if (!_transform.InRange(artifactTransform.Coordinates, transform.Coordinates, scanner.MaxLinkedRange))
             {
                 //scanner is too far, disconnect
                 RemCompDeferred(uid, connected);
