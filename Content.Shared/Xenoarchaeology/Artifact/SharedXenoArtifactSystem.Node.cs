@@ -84,7 +84,7 @@ public abstract partial class SharedXenoArtifactSystem
     /// <summary>
     /// Creates artifact node entity, attaching trigger and marking depth level for future use.
     /// </summary>
-    public Entity<XenoArtifactNodeComponent> CreateNode(Entity<XenoArtifactComponent> ent, ProtoId<XenoArchTriggerPrototype> trigger, int depth = 0)
+    public Entity<XenoArtifactNodeComponent>? CreateNode(Entity<XenoArtifactComponent> ent, ProtoId<XenoArchTriggerPrototype> trigger, int depth = 0)
     {
         var triggerProto = PrototypeManager.Index(trigger);
         return CreateNode(ent, triggerProto, depth);
@@ -92,13 +92,28 @@ public abstract partial class SharedXenoArtifactSystem
 
     /// <summary>
     /// Creates artifact node entity, attaching trigger and marking depth level for future use.
+    /// Returns null if the effects table produced no spawn.
     /// </summary>
-    public Entity<XenoArtifactNodeComponent> CreateNode(Entity<XenoArtifactComponent> ent, XenoArchTriggerPrototype trigger, int depth = 0)
+    public Entity<XenoArtifactNodeComponent>? CreateNode(Entity<XenoArtifactComponent> ent, XenoArchTriggerPrototype trigger, int depth = 0)
     {
-        var entProtoId = _entityTable.GetSpawns(ent.Comp.EffectsTable)
-                                     .First();
+        var spawns = _entityTable.GetSpawns(ent.Comp.EffectsTable);
 
-        AddNode((ent, ent), entProtoId, out var nodeEnt, dirty: false);
+        EntProtoId? entProtoId = null;
+        foreach (var spawn in spawns)
+        {
+            entProtoId = spawn;
+            break;
+        }
+
+        // The effects table can resolve to nothing (empty or custom table): skip the node instead of
+        // throwing during generation and leaving the artifact without a graph.
+        if (entProtoId == null)
+        {
+            Log.Error($"Artifact {ToPrettyString(ent)} effects table produced no entity for trigger {trigger.ID}; node skipped.");
+            return null;
+        }
+
+        AddNode((ent, ent), entProtoId.Value, out var nodeEnt, dirty: false);
         DebugTools.Assert(nodeEnt.HasValue, "Failed to create node on artifact.");
 
         var nodeComponent = nodeEnt.Value.Comp;
@@ -195,6 +210,11 @@ public abstract partial class SharedXenoArtifactSystem
 
                 outSegment.Add((node, comp));
             }
+
+            // Cached segments keep NetEntity references: nodes deleted since the last rebuild leave
+            // empty segments behind, and callers that measure segment width blow up on those.
+            if (outSegment.Count == 0)
+                continue;
 
             output.Add(outSegment);
         }
