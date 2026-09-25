@@ -578,6 +578,7 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingDepositRoleId = role.Id;
             state.PendingDepositQueuedAtUtc = DateTime.UtcNow;
             state.PendingDepositUsedRoleCredit = useRoleCredit;
+            state.PendingDepositUsedFree = usePublicRoundFree;
             PersistState(session.UserId, state);
             SendState(session.UserId);
             RaiseLocalEvent(new AntagTokenQueueChangedEvent());
@@ -598,6 +599,7 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingGhostAutoRoleId = role.Id;
             state.PendingGhostAutoQueuedAtUtc = DateTime.UtcNow;
             state.PendingGhostAutoUsedRoleCredit = useRoleCredit;
+            state.PendingGhostAutoUsedFree = usePublicRoundFree;
         }
 
         var ruleStarted = false;
@@ -621,7 +623,7 @@ public sealed class AntagTokenSystem : EntitySystem
             if (role.Mode == AntagPurchaseMode.GhostRule)
             {
                 _globallyClaimedGhostRoles.Remove(role.Id);
-                RefundRolePurchase(state, role, useRoleCredit);
+                RefundRolePurchase(state, role, useRoleCredit, usePublicRoundFree);
                 ClearPendingGhostAuto(state);
                 PersistState(session.UserId, state);
                 SendState(session.UserId);
@@ -742,6 +744,7 @@ public sealed class AntagTokenSystem : EntitySystem
                 state.PendingGhostAutoRoleId = existing.PendingGhostAutoRoleId;
                 state.PendingGhostAutoQueuedAtUtc = existing.PendingGhostAutoQueuedAtUtc;
                 state.PendingGhostAutoUsedRoleCredit = existing.PendingGhostAutoUsedRoleCredit;
+                state.PendingGhostAutoUsedFree = existing.PendingGhostAutoUsedFree;
             }
 
             if (balanceRaised)
@@ -794,11 +797,17 @@ public sealed class AntagTokenSystem : EntitySystem
                 case AntagTokenCatalog.DepositUsedRoleCreditEntryId:
                     state.PendingDepositUsedRoleCredit = token.Amount > 0;
                     break;
+                case AntagTokenCatalog.DepositUsedDonorDailyFreeEntryId:
+                    state.PendingDepositUsedFree = token.Amount > 0;
+                    break;
                 case AntagTokenCatalog.LastDonorBonusClaimEntryId:
                     state.LastDonorBonusClaimUtc = DecodeUnixSeconds(token.Amount);
                     break;
                 case AntagTokenCatalog.GhostAutoPendingUsedRoleCreditEntryId:
                     state.PendingGhostAutoUsedRoleCredit = token.Amount > 0;
+                    break;
+                case AntagTokenCatalog.GhostAutoPendingUsedDonorDailyFreeEntryId:
+                    state.PendingGhostAutoUsedFree = token.Amount > 0;
                     break;
                 case AntagTokenCatalog.GhostAntagConsumedMarkEntryId:
                     state.GhostAntagConsumedMark = token.Amount > 0;
@@ -862,11 +871,15 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         if (a.PendingDepositUsedRoleCredit != b.PendingDepositUsedRoleCredit)
             return false;
+        if (a.PendingDepositUsedFree != b.PendingDepositUsedFree)
+            return false;
         if (a.PendingGhostAutoRoleId != b.PendingGhostAutoRoleId)
             return false;
         if (a.PendingGhostAutoQueuedAtUtc != b.PendingGhostAutoQueuedAtUtc)
             return false;
         if (a.PendingGhostAutoUsedRoleCredit != b.PendingGhostAutoUsedRoleCredit)
+            return false;
+        if (a.PendingGhostAutoUsedFree != b.PendingGhostAutoUsedFree)
             return false;
         if (a.GhostAntagConsumedMark != b.GhostAntagConsumedMark)
             return false;
@@ -923,6 +936,7 @@ public sealed class AntagTokenSystem : EntitySystem
             newState.PendingDepositRoleId = null;
             newState.PendingDepositQueuedAtUtc = null;
             newState.PendingDepositUsedRoleCredit = false;
+            newState.PendingDepositUsedFree = false;
         }
 
         NormalizeMonthlyState(newState, DateTime.UtcNow, userId);
@@ -1160,6 +1174,7 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingDepositRoleId = null;
             state.PendingDepositQueuedAtUtc = null;
             state.PendingDepositUsedRoleCredit = false;
+            state.PendingDepositUsedFree = false;
             MarkLobbyTokenAntagGranted(session.UserId, role.Id);
             PersistState(session.UserId, state);
             SendState(session.UserId);
@@ -1260,6 +1275,7 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingDepositRoleId = null;
             state.PendingDepositQueuedAtUtc = null;
             state.PendingDepositUsedRoleCredit = false;
+            state.PendingDepositUsedFree = false;
             MarkLobbyTokenAntagGranted(session.UserId, role.Id);
             PersistState(session.UserId, state);
             SendState(session.UserId);
@@ -2180,7 +2196,8 @@ private async Task PersistStateAsync(NetUserId userId, PlayerTokenState state)
         _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.MonthlyYearEntryId, state.MonthlyYear),
         _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.MonthlyMonthEntryId, state.MonthlyMonth),
         _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.LastDonorBonusClaimEntryId, EncodeUnixSeconds(state.LastDonorBonusClaimUtc)),
-        _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.DepositUsedRoleCreditEntryId, state.PendingDepositUsedRoleCredit ? 1 : 0)
+        _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.DepositUsedRoleCreditEntryId, state.PendingDepositUsedRoleCredit ? 1 : 0),
+        _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.DepositUsedDonorDailyFreeEntryId, state.PendingDepositUsedFree ? 1 : 0)
     };
 
     foreach (var (role, amount) in state.RoleCredits)
@@ -2210,6 +2227,9 @@ private async Task PersistStateAsync(NetUserId userId, PlayerTokenState state)
 
     tasks.Add(_db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.GhostAutoPendingUsedRoleCreditEntryId,
         state.PendingGhostAutoRoleId != null && state.PendingGhostAutoUsedRoleCredit ? 1 : 0));
+
+    tasks.Add(_db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.GhostAutoPendingUsedDonorDailyFreeEntryId,
+        state.PendingGhostAutoRoleId != null && state.PendingGhostAutoUsedFree ? 1 : 0));
 
     tasks.Add(_db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.GhostAntagConsumedMarkEntryId,
         state.GhostAntagConsumedMark ? 1 : 0));
@@ -2335,11 +2355,12 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             state.Balance -= role.Cost;
     }
 
-    private static void RefundRolePurchase(PlayerTokenState state, AntagRoleDefinition role, bool usedRoleCredit)
+    private static void RefundRolePurchase(PlayerTokenState state, AntagRoleDefinition role, bool usedRoleCredit,
+        bool usedFree)
     {
         if (usedRoleCredit)
             state.RoleCredits[role.Id] = state.RoleCredits.GetValueOrDefault(role.Id) + 1;
-        else
+        else if (!usedFree)
             state.Balance += role.Cost;
     }
 
@@ -2390,6 +2411,7 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         {
             state.PendingDepositQueuedAtUtc = null;
             state.PendingDepositUsedRoleCredit = false;
+            state.PendingDepositUsedFree = false;
             return;
         }
 
@@ -2398,13 +2420,15 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             state.PendingDepositRoleId = null;
             state.PendingDepositQueuedAtUtc = null;
             state.PendingDepositUsedRoleCredit = false;
+            state.PendingDepositUsedFree = false;
             return;
         }
 
-        RefundRolePurchase(state, role, state.PendingDepositUsedRoleCredit);
+        RefundRolePurchase(state, role, state.PendingDepositUsedRoleCredit, state.PendingDepositUsedFree);
         state.PendingDepositRoleId = null;
         state.PendingDepositQueuedAtUtc = null;
         state.PendingDepositUsedRoleCredit = false;
+        state.PendingDepositUsedFree = false;
     }
 
     private static int EncodeUnixSeconds(DateTime? value)
@@ -2502,9 +2526,22 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         public string? PendingDepositRoleId { get; set; }
         public DateTime? PendingDepositQueuedAtUtc { get; set; }
         public bool PendingDepositUsedRoleCredit { get; set; }
+
+        /// <summary>
+        /// Persisted under the legacy "deposit-used-donor-daily-free" key. Marks a pending purchase
+        /// that did not deduct balance, so a refund must not credit tokens back.
+        /// </summary>
+        public bool PendingDepositUsedFree { get; set; }
+
         public string? PendingGhostAutoRoleId { get; set; }
         public DateTime? PendingGhostAutoQueuedAtUtc { get; set; }
         public bool PendingGhostAutoUsedRoleCredit { get; set; }
+
+        /// <summary>
+        /// Persisted under the legacy "ghost-auto-pending-used-donor-daily-free" key. Marks a pending
+        /// purchase that did not deduct balance, so a refund must not credit tokens back.
+        /// </summary>
+        public bool PendingGhostAutoUsedFree { get; set; }
 
         /// <summary>
         /// Persisted: ghost-rule token role was taken this station round (cleared every round cleanup).
@@ -2642,6 +2679,7 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         state.PendingGhostAutoRoleId = null;
         state.PendingGhostAutoQueuedAtUtc = null;
         state.PendingGhostAutoUsedRoleCredit = false;
+        state.PendingGhostAutoUsedFree = false;
     }
 
     private bool IsGhostAutoJoinPrototypeMatch(string? actualProtoId, string? expectedProtoId)
@@ -2704,6 +2742,7 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         if (state.PendingGhostAutoRoleId == null)
         {
             state.PendingGhostAutoUsedRoleCredit = false;
+            state.PendingGhostAutoUsedFree = false;
             return;
         }
 
@@ -2717,7 +2756,7 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             return;
         }
 
-        RefundRolePurchase(state, role, state.PendingGhostAutoUsedRoleCredit);
+        RefundRolePurchase(state, role, state.PendingGhostAutoUsedRoleCredit, state.PendingGhostAutoUsedFree);
         ClearPendingGhostAuto(state);
         if (_globallyClaimedGhostRoles.Remove(pendingId))
             BroadcastAntagTokenUiRefresh();
