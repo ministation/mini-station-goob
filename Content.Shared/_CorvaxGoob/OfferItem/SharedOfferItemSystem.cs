@@ -20,8 +20,7 @@ public abstract partial class SharedOfferItemSystem : EntitySystem
 
     private bool _acceptingOffer;
 
-    [ValidatePrototypeId<AlertPrototype>]
-    protected const string OfferAlert = "Offer";
+        protected const string OfferAlert = "Offer";
 
     public override void Initialize()
     {

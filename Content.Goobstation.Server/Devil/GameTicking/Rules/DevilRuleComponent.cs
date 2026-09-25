@@ -12,10 +12,10 @@ public sealed partial class DevilRuleComponent : Component
     [DataField]
     public SoundPathSpecifier BriefingSound = new("/Audio/_Goobstation/Ambience/Antag/devil_start.ogg");
 
-    [ValidatePrototypeId<NpcFactionPrototype>, DataField]
+    [DataField]
     public string DevilFaction = "DevilFaction";
 
-    [ValidatePrototypeId<NpcFactionPrototype>, DataField]
+    [DataField]
     public string NanotrasenFaction = "NanoTrasen";
 
     [DataField]

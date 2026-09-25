@@ -1,10 +1,9 @@
-﻿
+
 using Robust.Shared.Prototypes;
 using Robust.Shared.GameStates;
 using Content.Shared.Tools;
 using Content.Shared.Atmos;
 using Content.Shared.DeviceLinking;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using System.Numerics;
 
 namespace Content.Shared._CorvaxGoob.Power.Generation.FissionGenerator;
@@ -236,31 +235,31 @@ public sealed partial class TurbineComponent : Component
     /// <summary>
     /// The proto ID of the "Speed: High" source port
     /// </summary>
-    [DataField("speedHighPort", customTypeSerializer: typeof(PrototypeIdSerializer<SourcePortPrototype>))]
+    [DataField("speedHighPort")]
     public string SpeedHighPort = "TurbineSpeedHigh";
 
     /// <summary>
     /// The proto ID of the "Speed: Low" source port
     /// </summary>
-    [DataField("speedLowPort", customTypeSerializer: typeof(PrototypeIdSerializer<SourcePortPrototype>))]
+    [DataField("speedLowPort")]
     public string SpeedLowPort = "TurbineSpeedLow";
 
     /// <summary>
     /// The proto ID of the "Turbine Data" source port
     /// </summary>
-    [DataField("turbineDataPort", customTypeSerializer: typeof(PrototypeIdSerializer<SourcePortPrototype>))]
+    [DataField("turbineDataPort")]
     public string TurbineDataPort = "GasTurbineDataSender";
 
     /// <summary>
     /// The proto ID of the "Increase Stator Load" sink port
     /// </summary>
-    [DataField("statorLoadIncreasePort", customTypeSerializer: typeof(PrototypeIdSerializer<SinkPortPrototype>))]
+    [DataField("statorLoadIncreasePort")]
     public string StatorLoadIncreasePort = "IncreaseStatorLoad";
 
     /// <summary>
     /// The proto ID of the "Decrease Stator Load" sink port
     /// </summary>
-    [DataField("statorLoadDecreasePort", customTypeSerializer: typeof(PrototypeIdSerializer<SinkPortPrototype>))]
+    [DataField("statorLoadDecreasePort")]
     public string StatorLoadDecreasePort = "DecreaseStatorLoad";
 
     /// <summary>

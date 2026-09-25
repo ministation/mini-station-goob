@@ -3,7 +3,6 @@ using Content.Server.Botany.Systems;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Server.Botany.Components;
 
@@ -38,6 +37,6 @@ public sealed partial class PlantAnalyzerComponent : AbstractAnalyzerComponent
     /// <summary>
     /// What the machine will print.
     /// </summary>
-    [DataField("machineOutput", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    [DataField("machineOutput")]
     public string MachineOutput = "PlantAnalyzerReportPaper";
 }

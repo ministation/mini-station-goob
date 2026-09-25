@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server.Speech.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Server.Speech.Components;
 
@@ -11,7 +10,7 @@ namespace Content.Server.Speech.Components;
 [RegisterComponent]
 public sealed partial class ReplacementAccentComponent : Component
 {
-    [DataField(customTypeSerializer: typeof(PrototypeIdSerializer<ReplacementAccentPrototype>), required: true)]
+    [DataField(required: true)]
     public string Accent = default!;
 
 }

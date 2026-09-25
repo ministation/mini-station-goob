@@ -228,7 +228,7 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
 
         shuttleUid = shuttleGrid.Value;
         // Belt-and-suspenders: ensure ContainerFill / HTN still run if a map was re-saved post-init.
-        _map.RecursiveMapInit(shuttleUid);
+        RecursiveMapInit(shuttleUid);
 
         if (!TryDockToFreePort(shuttleUid, shuttleXform, station, stationData, out var config, out var targetGrid))
         {
@@ -457,5 +457,37 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
 
         return FormattedMessage.RemoveMarkupPermissive(
             _navMap.GetNearestBeaconString(_transform.ToMapCoordinates(config.Coordinates), onlyName: true));
+    }
+
+    /// <summary>
+    /// Runs map-init on <paramref name="root"/> and any descendants that have not been initialised yet.
+    /// Mirrors the engine's recursive map-init helper (public in our RT fork, absent upstream) using the
+    /// public <see cref="IEntityManager.RunMapInit"/> so the content builds on both engines.
+    /// Children are walked before the parent is skipped, so pre-init airlocks / vendors under an
+    /// already-initialised grid still receive MapInitEvent (door boards, StorageFill, HTN).
+    /// </summary>
+    private void RecursiveMapInit(EntityUid root)
+    {
+        var toInitialize = new List<EntityUid> { root };
+        for (var i = 0; i < toInitialize.Count; i++)
+        {
+            var uid = toInitialize[i];
+            if (!TryComp(uid, out MetaDataComponent? meta))
+                continue;
+
+            if (TryComp(uid, out TransformComponent? xform))
+            {
+                var children = xform.ChildEnumerator;
+                while (children.MoveNext(out var child))
+                {
+                    toInitialize.Add(child);
+                }
+            }
+
+            if (meta.EntityLifeStage == EntityLifeStage.MapInitialized)
+                continue;
+
+            EntityManager.RunMapInit(uid, meta);
+        }
     }
 }

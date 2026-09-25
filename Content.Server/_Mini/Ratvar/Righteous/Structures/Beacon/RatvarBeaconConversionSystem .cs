@@ -19,37 +19,27 @@ public sealed class RatvarBeaconConversionSystem : EntitySystem
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string ClockworkWallProto = "WallClock";
+        private const string ClockworkWallProto = "WallClock";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string ClockworkWindowProto = "ClockworkWindow";
+        private const string ClockworkWindowProto = "ClockworkWindow";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string ClockworkWindowDiagonalProto = "ClockworkWindowDiagonal";
+        private const string ClockworkWindowDiagonalProto = "ClockworkWindowDiagonal";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string WindowClockworkDirectionalProto = "WindowClockworkDirectional";
+        private const string WindowClockworkDirectionalProto = "WindowClockworkDirectional";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string PinionAirlockProto = "PinionAirlock";
+        private const string PinionAirlockProto = "PinionAirlock";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string TileConvertEffect = "RatvarTileSpawnEffect";
+        private const string TileConvertEffect = "RatvarTileSpawnEffect";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string WallConvertEffect = "RatvarWallSpawnEffect";
+        private const string WallConvertEffect = "RatvarWallSpawnEffect";
 
     private const string BrassTileId = "FloorBrassFilled";
 
-    [ValidatePrototypeId<TagPrototype>]
-    private const string WallTag = "Wall";
+        private const string WallTag = "Wall";
 
-    [ValidatePrototypeId<TagPrototype>]
-    private const string AirlockTag = "Airlock";
+        private const string AirlockTag = "Airlock";
 
-    [ValidatePrototypeId<TagPrototype>]
-    private const string WindowTag = "Window";
+        private const string WindowTag = "Window";
 
     private ISawmill _sawmill = default!;
 

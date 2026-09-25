@@ -1,7 +1,6 @@
 using Robust.Shared.GameStates;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Content.Shared._Orion.Bitrunning.Prototypes;
 using Content.Shared.EntityTable;
 using Robust.Shared.Audio;
@@ -65,7 +64,7 @@ public sealed partial class QuantumServerComponent : Component
     [DataField]
     public TimeSpan ExitBlindnessTime = TimeSpan.FromSeconds(3.5);
 
-    [DataField(customTypeSerializer: typeof(PrototypeIdSerializer<BitrunningVirtualDomainPrototype>)), AutoNetworkedField]
+    [DataField(), AutoNetworkedField]
     public string? CurrentDomain;
 
     // Server-only runtime state. These fields are not synchronized to clients.

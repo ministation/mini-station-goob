@@ -2,7 +2,6 @@ using Content.Shared.Actions;
 using Content.Shared.Silicons.Borgs;
 using System.Collections.Generic;
 using Robust.Shared.GameStates;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using Content.Shared.Clothing.EntitySystems;
