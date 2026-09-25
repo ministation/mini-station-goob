@@ -34,8 +34,7 @@ public sealed class RatvarAltarSystem : EntitySystem
     [Dependency] private readonly AntagSelectionSystem _antag = default!;
     [Dependency] private readonly EuiManager _euiMan = default!;
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string AltarGlow = "RatvarAltarActivateEffect";
+        private const string AltarGlow = "RatvarAltarActivateEffect";
 
     private readonly TimeSpan _timeToConvert = TimeSpan.FromSeconds(8);
     private readonly TimeSpan _timeToDie = TimeSpan.FromSeconds(16);

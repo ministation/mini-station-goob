@@ -41,19 +41,16 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
     [Dependency] private readonly TurfSystem _turf = default!;
 
 
-    [ValidatePrototypeId<ReagentPrototype>]
-    private const string Blood = "Blood";
+        private const string Blood = "Blood";
 
-    [ValidatePrototypeId<ReagentPrototype>]
-    private const string Slime = "Slime";
+        private const string Slime = "Slime";
 
-    [ValidatePrototypeId<ReagentPrototype>]
-    private const string CopperBlood = "CopperBlood";
+        private const string CopperBlood = "CopperBlood";
 
-    [ValidatePrototypeId<ReagentPrototype>] // goobstation
+    // goobstation
     private const string BloodChangeling = "BloodChangeling"; // goobstation
 
-    [ValidatePrototypeId<ReagentPrototype>] // goobstation
+    // goobstation
     private const string BlackBlood = "BlackBlood"; // goobstation
 
     private static string[] _standoutReagents = [Blood, Slime, CopperBlood, BloodChangeling, BlackBlood]; // goobstation - added BloodChangeling, BlackBlood

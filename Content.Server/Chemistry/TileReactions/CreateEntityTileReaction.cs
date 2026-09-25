@@ -8,7 +8,6 @@ using Content.Shared.Whitelist;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using System.Numerics;
 
 namespace Content.Server.Chemistry.TileReactions;
@@ -16,7 +15,7 @@ namespace Content.Server.Chemistry.TileReactions;
 [DataDefinition]
 public sealed partial class CreateEntityTileReaction : ITileReaction
 {
-    [DataField(required: true, customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    [DataField(required: true)]
     public string Entity = default!;
 
     [DataField]

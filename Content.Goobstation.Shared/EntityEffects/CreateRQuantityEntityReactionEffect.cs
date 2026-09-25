@@ -3,7 +3,6 @@
 using Content.Shared.EntityEffects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Goobstation.Shared.EntityEffects;
 
@@ -32,7 +31,7 @@ public sealed partial class CreateRQuantityEntityReactionEffect : EntityEffectBa
     /// <summary>
     ///     What entity to create.
     /// </summary>
-    [DataField(required: true, customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    [DataField(required: true)]
     public string Entity = default!;
 
     /// <summary>

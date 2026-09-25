@@ -5,7 +5,6 @@ using Content.Shared.Nutrition.Components;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Server.Nutrition.Components;
 
@@ -43,7 +42,7 @@ public sealed partial class FatExtractorComponent : Component
     /// <summary>
     /// Meat spawned by the extractor.
     /// </summary>
-    [DataField("meatPrototype", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>)), ViewVariables(VVAccess.ReadWrite)]
+    [DataField("meatPrototype"), ViewVariables(VVAccess.ReadWrite)]
     public string MeatPrototype = "FoodMeat";
 
     /// <summary>

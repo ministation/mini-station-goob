@@ -58,12 +58,9 @@ public sealed class BlobCoreSystem : EntitySystem
     private EntityQuery<BlobFactoryComponent> _factory;
     private EntityQuery<BlobNodeComponent> _node;
 
-    [ValidatePrototypeId<AlertPrototype>]
-    private const string BlobHealth = "BlobHealth";
-    [ValidatePrototypeId<AlertPrototype>]
-    private const string BlobResource = "BlobResource";
-    [ValidatePrototypeId<CurrencyPrototype>]
-    private const string BlobMoney = "BlobPoint";
+        private const string BlobHealth = "BlobHealth";
+        private const string BlobResource = "BlobResource";
+        private const string BlobMoney = "BlobPoint";
 
     private readonly ReaderWriterLockSlim _pointsChange = new();
 

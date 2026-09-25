@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 
 using Content.Shared.Explosion;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Server.Anomaly.Components;
 
@@ -11,7 +10,7 @@ public sealed partial class ExplosionAnomalyComponent : Component
     /// <summary>
     /// The explosion prototype to spawn
     /// </summary>
-    [DataField("supercriticalExplosion", required: true, customTypeSerializer: typeof(PrototypeIdSerializer<ExplosionPrototype>))]
+    [DataField("supercriticalExplosion", required: true)]
     public string ExplosionPrototype = default!;
 
     /// <summary>

@@ -26,14 +26,11 @@ namespace Content.Server.RPSX.DarkForces.Ratvar.Righteous.Abilities;
 
 public sealed partial class RatvarAbilitiesSystem
 {
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string ActionTeleport = "ActionRatvarSlabTeleport";
+        private const string ActionTeleport = "ActionRatvarSlabTeleport";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string ActionHiding = "ActionRatvarSlabHidings";
+        private const string ActionHiding = "ActionRatvarSlabHidings";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string SecretDoor = "SolidSecretDoor";
+        private const string SecretDoor = "SolidSecretDoor";
 
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly DoorSystem _doorSystem = default!;

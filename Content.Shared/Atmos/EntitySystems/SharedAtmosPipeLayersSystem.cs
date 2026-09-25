@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Database;
 using Content.Shared.Examine;
@@ -105,7 +106,7 @@ public abstract partial class SharedAtmosPipeLayersSystem : EntitySystem
                     DoContactInteraction = true,
                     Act = () =>
                     {
-                        _tool.UseTool(tool.Value, user, ent, ent.Comp.Delay, tool.Value.Comp.Qualities, new TrySettingPipeLayerCompletedEvent((AtmosPipeLayer)index));
+                        _tool.UseTool(tool.Value, user, ent, ent.Comp.Delay, tool.Value.Comp.Qualities.Select(q => q.Id), new TrySettingPipeLayerCompletedEvent((AtmosPipeLayer)index));
                     }
                 };
 
@@ -128,7 +129,7 @@ public abstract partial class SharedAtmosPipeLayersSystem : EntitySystem
             return;
         }
 
-        _tool.UseTool(args.Used, args.User, ent, ent.Comp.Delay, tool.Qualities, new TrySetNextPipeLayerCompletedEvent());
+        _tool.UseTool(args.Used, args.User, ent, ent.Comp.Delay, tool.Qualities.Select(q => q.Id), new TrySetNextPipeLayerCompletedEvent());
     }
 
     private void OnUseInHandEvent(Entity<AtmosPipeLayersComponent> ent, ref UseInHandEvent args)
@@ -149,7 +150,7 @@ public abstract partial class SharedAtmosPipeLayersSystem : EntitySystem
             return;
         }
 
-        _tool.UseTool(tool.Value, args.User, ent, ent.Comp.Delay, tool.Value.Comp.Qualities, new TrySetNextPipeLayerCompletedEvent());
+        _tool.UseTool(tool.Value, args.User, ent, ent.Comp.Delay, tool.Value.Comp.Qualities.Select(q => q.Id), new TrySetNextPipeLayerCompletedEvent());
     }
 
     private void OnSetNextPipeLayerCompleted(Entity<AtmosPipeLayersComponent> ent, ref TrySetNextPipeLayerCompletedEvent args)

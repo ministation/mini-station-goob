@@ -1,6 +1,5 @@
 using Content.Shared.DeviceLinking;
 using Robust.Shared.Audio;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Content.Server._CorvaxNext.ExecutionChair;
 
 namespace Content.Server._CorvaxNext.ExecutionChair;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress;
 using Content.Server.Power.Components;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Gear;
@@ -26,8 +26,7 @@ public sealed class RatvarGearSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly WiresSystem _wiresSystem = default!;
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string SmokeEffect = "RatvarSmokeEffect";
+        private const string SmokeEffect = "RatvarSmokeEffect";
 
     private const int MaxGearPower = 300;
 

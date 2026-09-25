@@ -2,7 +2,6 @@
 
 using Content.Goobstation.Maths.FixedPoint;
 using Robust.Shared.Serialization;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using System.Linq;
 
 namespace Content.Shared.Chemistry.Reagent;
@@ -16,7 +15,7 @@ namespace Content.Shared.Chemistry.Reagent;
 public partial struct ReagentId : IEquatable<ReagentId>
 {
     // TODO rename data field.
-    [DataField("ReagentId", customTypeSerializer: typeof(PrototypeIdSerializer<ReagentPrototype>), required: true)]
+    [DataField("ReagentId", required: true)]
     public string Prototype { get; private set; }
 
     /// <summary>
