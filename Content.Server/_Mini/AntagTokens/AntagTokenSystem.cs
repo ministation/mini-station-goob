@@ -107,40 +107,14 @@ public sealed class AntagTokenSystem : EntitySystem
         "TypanStationWar",
     };
 
-    private static int EncodeUtcDayNumber(DateTime utc)
-    {
-        return utc.Year * 10000 + utc.Month * 100 + utc.Day;
-    }
-
-    private void EvaluateFreePurchaseFlags(
+    private static void EvaluateFreePurchaseFlags(
         AntagRoleDefinition role,
-        NetUserId userId,
-        PlayerTokenState state,
         bool useRoleCredit,
-        out bool useDonorDailyFree,
         out bool usePublicRoundFree)
     {
-        useDonorDailyFree = false;
-        usePublicRoundFree = false;
-
-        if (useRoleCredit || role.FreeMinimumSponsorLevel < 0)
-            return;
-
-        if (role.FreeMinimumSponsorLevel == 0)
-        {
-            usePublicRoundFree = true;
-            return;
-        }
-
-        var sponsorLevel = GetEffectiveSponsorLevel(userId);
-        if (sponsorLevel < role.FreeMinimumSponsorLevel)
-            return;
-
-        var today = EncodeUtcDayNumber(DateTime.UtcNow);
-        if (state.LastDonorDailyFreeAntagDay == today)
-            return;
-
-        useDonorDailyFree = true;
+        // Public round free: the role is free for anyone once per round.
+        // Sponsor-only free roles were removed (no pay-to-win).
+        usePublicRoundFree = !useRoleCredit && role.FreeMinimumSponsorLevel == 0;
     }
     public override void Initialize()
     {
@@ -373,9 +347,6 @@ public sealed class AntagTokenSystem : EntitySystem
 
     public bool HasAntagPlaytimeAccess(ICommonSession session, ProtoId<AntagPrototype> antagId)
     {
-        if (GetEffectiveSponsorLevel(session.UserId) > 0)
-            return true;
-
         if (HasAntagUnlock(session.UserId, antagId))
             return true;
 
@@ -553,10 +524,9 @@ public sealed class AntagTokenSystem : EntitySystem
         }
 
         var useRoleCredit = state.RoleCredits.GetValueOrDefault(role.Id) > 0;
-        EvaluateFreePurchaseFlags(role, session.UserId, state, useRoleCredit, out var useDonorDailyFree,
-            out var usePublicRoundFree);
+        EvaluateFreePurchaseFlags(role, useRoleCredit, out var usePublicRoundFree);
 
-        if (!useRoleCredit && !useDonorDailyFree && !usePublicRoundFree && state.Balance < role.Cost)
+        if (!useRoleCredit && !usePublicRoundFree && state.Balance < role.Cost)
         {
             error = Loc.GetString("antag-tokens-error-not-enough-tokens-short");
             return false;
@@ -604,11 +574,10 @@ public sealed class AntagTokenSystem : EntitySystem
                 return false;
             }
 
-            SpendForRole(state, role, useRoleCredit, useDonorDailyFree, usePublicRoundFree);
+            SpendForRole(state, role, useRoleCredit, usePublicRoundFree);
             state.PendingDepositRoleId = role.Id;
             state.PendingDepositQueuedAtUtc = DateTime.UtcNow;
             state.PendingDepositUsedRoleCredit = useRoleCredit;
-            state.PendingDepositUsedDonorDailyFree = useDonorDailyFree;
             PersistState(session.UserId, state);
             SendState(session.UserId);
             RaiseLocalEvent(new AntagTokenQueueChangedEvent());
@@ -625,11 +594,10 @@ public sealed class AntagTokenSystem : EntitySystem
 
             _globallyClaimedGhostRoles.Add(role.Id);
 
-            SpendForRole(state, role, useRoleCredit, useDonorDailyFree, usePublicRoundFree);
+            SpendForRole(state, role, useRoleCredit, usePublicRoundFree);
             state.PendingGhostAutoRoleId = role.Id;
             state.PendingGhostAutoQueuedAtUtc = DateTime.UtcNow;
             state.PendingGhostAutoUsedRoleCredit = useRoleCredit;
-            state.PendingGhostAutoUsedDonorDailyFree = useDonorDailyFree;
         }
 
         var ruleStarted = false;
@@ -653,7 +621,7 @@ public sealed class AntagTokenSystem : EntitySystem
             if (role.Mode == AntagPurchaseMode.GhostRule)
             {
                 _globallyClaimedGhostRoles.Remove(role.Id);
-                RefundRolePurchase(state, role, useRoleCredit, useDonorDailyFree);
+                RefundRolePurchase(state, role, useRoleCredit);
                 ClearPendingGhostAuto(state);
                 PersistState(session.UserId, state);
                 SendState(session.UserId);
@@ -664,7 +632,7 @@ public sealed class AntagTokenSystem : EntitySystem
         }
 
         if (role.Mode != AntagPurchaseMode.GhostRule)
-            SpendForRole(state, role, useRoleCredit, useDonorDailyFree, usePublicRoundFree);
+            SpendForRole(state, role, useRoleCredit, usePublicRoundFree);
 
         PersistState(session.UserId, state);
         SendState(session.UserId);
@@ -774,7 +742,6 @@ public sealed class AntagTokenSystem : EntitySystem
                 state.PendingGhostAutoRoleId = existing.PendingGhostAutoRoleId;
                 state.PendingGhostAutoQueuedAtUtc = existing.PendingGhostAutoQueuedAtUtc;
                 state.PendingGhostAutoUsedRoleCredit = existing.PendingGhostAutoUsedRoleCredit;
-                state.PendingGhostAutoUsedDonorDailyFree = existing.PendingGhostAutoUsedDonorDailyFree;
             }
 
             if (balanceRaised)
@@ -835,15 +802,6 @@ public sealed class AntagTokenSystem : EntitySystem
                     break;
                 case AntagTokenCatalog.GhostAntagConsumedMarkEntryId:
                     state.GhostAntagConsumedMark = token.Amount > 0;
-                    break;
-                case AntagTokenCatalog.LastDonorDailyFreeAntagDayEntryId:
-                    state.LastDonorDailyFreeAntagDay = token.Amount;
-                    break;
-                case AntagTokenCatalog.DepositUsedDonorDailyFreeEntryId:
-                    state.PendingDepositUsedDonorDailyFree = token.Amount > 0;
-                    break;
-                case AntagTokenCatalog.GhostAutoPendingUsedDonorDailyFreeEntryId:
-                    state.PendingGhostAutoUsedDonorDailyFree = token.Amount > 0;
                     break;
                 default:
                     if (token.TokenId.StartsWith("ghost-auto-pending:", StringComparison.Ordinal) &&
@@ -912,12 +870,6 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         if (a.GhostAntagConsumedMark != b.GhostAntagConsumedMark)
             return false;
-        if (a.LastDonorDailyFreeAntagDay != b.LastDonorDailyFreeAntagDay)
-            return false;
-        if (a.PendingDepositUsedDonorDailyFree != b.PendingDepositUsedDonorDailyFree)
-            return false;
-        if (a.PendingGhostAutoUsedDonorDailyFree != b.PendingGhostAutoUsedDonorDailyFree)
-            return false;
         if (a.RoleCredits.Count != b.RoleCredits.Count)
             return false;
 
@@ -971,7 +923,6 @@ public sealed class AntagTokenSystem : EntitySystem
             newState.PendingDepositRoleId = null;
             newState.PendingDepositQueuedAtUtc = null;
             newState.PendingDepositUsedRoleCredit = false;
-            newState.PendingDepositUsedDonorDailyFree = false;
         }
 
         NormalizeMonthlyState(newState, DateTime.UtcNow, userId);
@@ -1209,7 +1160,6 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingDepositRoleId = null;
             state.PendingDepositQueuedAtUtc = null;
             state.PendingDepositUsedRoleCredit = false;
-            state.PendingDepositUsedDonorDailyFree = false;
             MarkLobbyTokenAntagGranted(session.UserId, role.Id);
             PersistState(session.UserId, state);
             SendState(session.UserId);
@@ -1310,7 +1260,6 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingDepositRoleId = null;
             state.PendingDepositQueuedAtUtc = null;
             state.PendingDepositUsedRoleCredit = false;
-            state.PendingDepositUsedDonorDailyFree = false;
             MarkLobbyTokenAntagGranted(session.UserId, role.Id);
             PersistState(session.UserId, state);
             SendState(session.UserId);
@@ -2140,8 +2089,8 @@ public sealed class AntagTokenSystem : EntitySystem
             var holdsCapForAvailability = purchased;
             var freeUnlocks = state.RoleCredits.GetValueOrDefault(role.Id);
             var useRoleCredit = freeUnlocks > 0;
-            EvaluateFreePurchaseFlags(role, userId, state, useRoleCredit, out var donorDailyFree, out var publicRoundFree);
-            var freePurchaseAvailable = !useRoleCredit && (donorDailyFree || publicRoundFree);
+            EvaluateFreePurchaseFlags(role, useRoleCredit, out var publicRoundFree);
+            var freePurchaseAvailable = !useRoleCredit && publicRoundFree;
             var canAfford = useRoleCredit || freePurchaseAvailable || state.Balance >= role.Cost;
             var available = TryGetRoleAvailability(catalogRole, userId, holdsCapForAvailability, out var statusLocKey, in cache);
             var saturated = role.Mode == AntagPurchaseMode.LobbyDeposit && !holdsCapForAvailability &&
@@ -2231,9 +2180,7 @@ private async Task PersistStateAsync(NetUserId userId, PlayerTokenState state)
         _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.MonthlyYearEntryId, state.MonthlyYear),
         _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.MonthlyMonthEntryId, state.MonthlyMonth),
         _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.LastDonorBonusClaimEntryId, EncodeUnixSeconds(state.LastDonorBonusClaimUtc)),
-        _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.DepositUsedRoleCreditEntryId, state.PendingDepositUsedRoleCredit ? 1 : 0),
-        _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.LastDonorDailyFreeAntagDayEntryId, state.LastDonorDailyFreeAntagDay),
-        _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.DepositUsedDonorDailyFreeEntryId, state.PendingDepositUsedDonorDailyFree ? 1 : 0)
+        _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.DepositUsedRoleCreditEntryId, state.PendingDepositUsedRoleCredit ? 1 : 0)
     };
 
     foreach (var (role, amount) in state.RoleCredits)
@@ -2263,9 +2210,6 @@ private async Task PersistStateAsync(NetUserId userId, PlayerTokenState state)
 
     tasks.Add(_db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.GhostAutoPendingUsedRoleCreditEntryId,
         state.PendingGhostAutoRoleId != null && state.PendingGhostAutoUsedRoleCredit ? 1 : 0));
-
-    tasks.Add(_db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.GhostAutoPendingUsedDonorDailyFreeEntryId,
-        state.PendingGhostAutoRoleId != null && state.PendingGhostAutoUsedDonorDailyFree ? 1 : 0));
 
     tasks.Add(_db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.GhostAntagConsumedMarkEntryId,
         state.GhostAntagConsumedMark ? 1 : 0));
@@ -2314,8 +2258,8 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
 
     private int? GetMonthlyCap(NetUserId userId)
     {
-        var sponsorLevel = GetEffectiveSponsorLevel(userId);
-        return sponsorLevel > 0 ? null : 100;
+        // Same monthly cap for everyone; sponsors no longer get an unlimited cap.
+        return AntagTokenCatalog.MonthlyTokenCap;
     }
 
     private bool IsRoundstartRoleBlockedByPreset()
@@ -2382,24 +2326,19 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         return false;
     }
 
-    private static void SpendForRole(PlayerTokenState state, AntagRoleDefinition role, bool useRoleCredit, bool useDonorDailyFree,
+    private static void SpendForRole(PlayerTokenState state, AntagRoleDefinition role, bool useRoleCredit,
         bool usePublicRoundFree)
     {
         if (useRoleCredit)
             state.RoleCredits[role.Id] = Math.Max(0, state.RoleCredits.GetValueOrDefault(role.Id) - 1);
-        else if (!useDonorDailyFree && !usePublicRoundFree)
+        else if (!usePublicRoundFree)
             state.Balance -= role.Cost;
-
-        if (useDonorDailyFree)
-            state.LastDonorDailyFreeAntagDay = EncodeUtcDayNumber(DateTime.UtcNow);
     }
 
-    private static void RefundRolePurchase(PlayerTokenState state, AntagRoleDefinition role, bool usedRoleCredit, bool usedDonorDailyFree)
+    private static void RefundRolePurchase(PlayerTokenState state, AntagRoleDefinition role, bool usedRoleCredit)
     {
         if (usedRoleCredit)
             state.RoleCredits[role.Id] = state.RoleCredits.GetValueOrDefault(role.Id) + 1;
-        else if (usedDonorDailyFree)
-            state.LastDonorDailyFreeAntagDay = 0;
         else
             state.Balance += role.Cost;
     }
@@ -2451,7 +2390,6 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         {
             state.PendingDepositQueuedAtUtc = null;
             state.PendingDepositUsedRoleCredit = false;
-            state.PendingDepositUsedDonorDailyFree = false;
             return;
         }
 
@@ -2460,15 +2398,13 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             state.PendingDepositRoleId = null;
             state.PendingDepositQueuedAtUtc = null;
             state.PendingDepositUsedRoleCredit = false;
-            state.PendingDepositUsedDonorDailyFree = false;
             return;
         }
 
-        RefundRolePurchase(state, role, state.PendingDepositUsedRoleCredit, state.PendingDepositUsedDonorDailyFree);
+        RefundRolePurchase(state, role, state.PendingDepositUsedRoleCredit);
         state.PendingDepositRoleId = null;
         state.PendingDepositQueuedAtUtc = null;
         state.PendingDepositUsedRoleCredit = false;
-        state.PendingDepositUsedDonorDailyFree = false;
     }
 
     private static int EncodeUnixSeconds(DateTime? value)
@@ -2566,13 +2502,9 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         public string? PendingDepositRoleId { get; set; }
         public DateTime? PendingDepositQueuedAtUtc { get; set; }
         public bool PendingDepositUsedRoleCredit { get; set; }
-        public bool PendingDepositUsedDonorDailyFree { get; set; }
         public string? PendingGhostAutoRoleId { get; set; }
         public DateTime? PendingGhostAutoQueuedAtUtc { get; set; }
         public bool PendingGhostAutoUsedRoleCredit { get; set; }
-        public bool PendingGhostAutoUsedDonorDailyFree { get; set; }
-
-        public int LastDonorDailyFreeAntagDay { get; set; }
 
         /// <summary>
         /// Persisted: ghost-rule token role was taken this station round (cleared every round cleanup).
@@ -2710,7 +2642,6 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         state.PendingGhostAutoRoleId = null;
         state.PendingGhostAutoQueuedAtUtc = null;
         state.PendingGhostAutoUsedRoleCredit = false;
-        state.PendingGhostAutoUsedDonorDailyFree = false;
     }
 
     private bool IsGhostAutoJoinPrototypeMatch(string? actualProtoId, string? expectedProtoId)
@@ -2773,7 +2704,6 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         if (state.PendingGhostAutoRoleId == null)
         {
             state.PendingGhostAutoUsedRoleCredit = false;
-            state.PendingGhostAutoUsedDonorDailyFree = false;
             return;
         }
 
@@ -2787,7 +2717,7 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             return;
         }
 
-        RefundRolePurchase(state, role, state.PendingGhostAutoUsedRoleCredit, state.PendingGhostAutoUsedDonorDailyFree);
+        RefundRolePurchase(state, role, state.PendingGhostAutoUsedRoleCredit);
         ClearPendingGhostAuto(state);
         if (_globallyClaimedGhostRoles.Remove(pendingId))
             BroadcastAntagTokenUiRefresh();
