@@ -20,7 +20,7 @@ public abstract partial class SharedSubdermalImplantSystem
     }
 
     /// <summary>
-    /// Relays events from the implanted to the implant.
+    /// Relays events from the implanted to their implants.
     /// </summary>
     private void RelayToImplantEvent<T>(EntityUid uid, ImplantedComponent component, T args) where T : notnull
     {
@@ -28,10 +28,17 @@ public abstract partial class SharedSubdermalImplantSystem
             return;
 
         var relayEv = new ImplantRelayEvent<T>(args, uid);
-        foreach (var implant in implantContainer.ContainedEntities)
+
+        // Copy first: an implant may answer by dropping implants. A microbomb triggers on death and
+        // gibs its host, taking the whole container with it, which broke the loop mid-enumeration.
+        var implants = new List<EntityUid>(implantContainer.ContainedEntities);
+        foreach (var implant in implants)
         {
             if (args is HandledEntityEventArgs { Handled: true })
                 return;
+
+            if (TerminatingOrDeleted(implant))
+                continue;
 
             RaiseLocalEvent(implant, relayEv);
         }
