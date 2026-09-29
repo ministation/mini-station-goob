@@ -110,3 +110,4 @@ guide-entry-corporate-agents = Корпоративный агент
 guide-entry-revealing-conditions = Раскрытие антагонистов
 guide-entry-xenobiology = Ксенобиология
 guide-entry-slaughter-demon = Демон резни
+guide-entry-gangwars = Войны банд

@@ -1,6 +1,6 @@
 - type: breed
-  breedName: xenobio-breed-red
   id: RedMutation
+  breedName: xenobio-breed-red
   producedExtract: RedSlimeExtract
   components:
   - type: Slime
@@ -13,8 +13,8 @@
     - OilMutation
 
 - type: breed
-  breedName: xenobio-breed-green
   id: GreenMutation
+  breedName: xenobio-breed-green
   producedExtract: GreenSlimeExtract
   components:
   - type: Slime
@@ -27,8 +27,8 @@
     - BlackMutation
 
 - type: breed
-  breedName: xenobio-breed-pink
   id: PinkMutation
+  breedName: xenobio-breed-pink
   producedExtract: PinkSlimeExtract
   components:
   - type: Slime
@@ -41,8 +41,8 @@
     - LightPinkMutation
 
 - type: breed
-  breedName: xenobio-breed-gold
   id: GoldMutation
+  breedName: xenobio-breed-gold
   producedExtract: GoldSlimeExtract
   components:
   - type: Slime

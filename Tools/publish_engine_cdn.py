@@ -34,7 +34,7 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--version", required=True, help="Engine version string, e.g. 288.1.0")
     p.add_argument("--from-dir", type=Path, help="Directory with Robust.Client_*.zip already built")
-    p.add_argument("--ssh-host", default=os.environ.get("MINI_CDN_SSH", "root@138.124.14.77"))
+    p.add_argument("--ssh-host", default=os.environ.get("MINI_CDN_SSH", "root@91.214.69.111"))
     p.add_argument("--ssh-port", default=os.environ.get("MINI_CDN_SSH_PORT", "2210"))
     p.add_argument("--remote-dir", default="/var/robust-engine-builds")
     args = p.parse_args()

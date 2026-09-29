@@ -8,8 +8,7 @@ slime-latch-fail-cluster = You're too heavy to latch onto anything!
 slime-eat-corpse-success = {$eater} is trying to tear something off {$target}!
 slime-eat-corpse-fail-not-eatable = {$target} doesn't look eatable.
 slime-eat-corpse-fail-not-dead = {$target} should be dead!
-slime-eat-corpse-fail-cluster = You're too heavy to tear apart corpses!
-slime-examined-stomach = [color=red]You can see something moving inside of it![/color]
+slime-eat-corpse-fail-cluster = You're too heavy to tear apart corpses!slime-examined-stomach = [color=red]You can see something moving inside of it![/color]
 slime-examined-tamer = [color=green]It seems happy to see you![/color]
 slime-interaction-tame = It seems to like you now!
 slime-interaction-tame-fail = It doesn't seem interested in you.

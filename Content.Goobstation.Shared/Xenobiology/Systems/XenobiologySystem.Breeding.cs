@@ -25,6 +25,7 @@ public partial class XenobiologySystem
     {
         SubscribeLocalEvent<RandomSlimeChangeComponent, MapInitEvent>(OnPendingSlimeMapInit);
         SubscribeLocalEvent<SlimeComponent, MapInitEvent>(OnSlimeMapInit);
+        SubscribeLocalEvent<PendingSlimeSpawnComponent, MapInitEvent>(OnPendingSlimeSpawnMapInit);
     }
 
     private void OnPendingSlimeMapInit(Entity<RandomSlimeChangeComponent> ent, ref MapInitEvent args)
@@ -169,5 +170,46 @@ public partial class XenobiologySystem
         _containerSystem.EmptyContainer(ent.Comp.Stomach);
         RaiseLocalEvent(ent, new SlimeMitosisEvent());
         QueueDel(ent);
+    }
+
+    /// <summary>
+    ///     Маркер спавна превращается в настоящего слайма: апстрим заменил прямые
+    ///     прототипы детёнышей на маркеры с <see cref="PendingSlimeSpawnComponent"/>,
+    ///     поэтому без этого обработчика слаймы в ксенобиологии не появляются.
+    /// </summary>
+    private void OnPendingSlimeSpawnMapInit(Entity<PendingSlimeSpawnComponent> ent, ref MapInitEvent args)
+    {
+        if (SpawnSlime(ent, ent.Comp.BasePrototype, ent.Comp.Breed) is not { } slime)
+            return;
+
+        var comp = slime.Comp;
+        // Каждый экземпляр слайма немного свой, как и в апстриме.
+        comp.MutationChance *= _random.NextFloat(.5f, 1.5f);
+        comp.MaxOffspring += _random.Next(-1, 2);
+        comp.ExtractsProduced += _random.Next(0, 2);
+        comp.MitosisHunger *= _random.NextFloat(.75f, 1.2f);
+        Dirty(slime);
+    }
+
+    /// <summary>
+    ///     Спавнит слайма заданной породы рядом с указанной сущностью.
+    /// </summary>
+    public Entity<SlimeComponent>? SpawnSlime(EntityUid parent, EntProtoId newEntityProto,
+        ProtoId<BreedPrototype> selectedBreed)
+    {
+        if (Deleted(parent) || !_proto.TryIndex(selectedBreed, out var newBreed))
+            return null;
+
+        var newEntityUid = SpawnNextToOrDrop(newEntityProto, parent, null, newBreed.Components);
+
+        if (!TryComp<SlimeComponent>(newEntityUid, out var newSlime))
+            return null;
+
+        if (newSlime.ShouldHaveShader && newSlime.Shader != null)
+            _appearance.SetData(newEntityUid, XenoSlimeVisuals.Shader, newSlime.Shader);
+
+        _appearance.SetData(newEntityUid, XenoSlimeVisuals.Color, newSlime.SlimeColor);
+        _metaData.SetEntityName(newEntityUid, XenobiologyLoc.GetBreedName(newBreed));
+        return (newEntityUid, newSlime);
     }
 }

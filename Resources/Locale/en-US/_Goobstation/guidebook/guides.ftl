@@ -112,3 +112,4 @@ guide-entry-corporate-agents = Corporate Agent
 guide-entry-revealing-conditions = Revealing Antagonists
 guide-entry-xenobiology = Xenobiology
 guide-entry-slaughter-demon = Slaughter Demon
+guide-entry-gangwars = Gang Wars

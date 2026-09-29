@@ -12,7 +12,7 @@
   - DragonKungFu
   - HellRip
   - Twilight
-
+  - Mimejutsu #CorvaxGoob
 - type: guideEntry
   id: CQC
   name: guide-entry-cqc
@@ -57,3 +57,8 @@
   id: Twilight
   name: guide-entry-twilight
   text: "/ServerInfo/_Mini/Guidebook/MartialArts/Twilight.xml"
+
+- type: guideEntry #CorvaxGoob
+  id: Mimejutsu
+  name: guide-entry-mimejutsu
+  text: "/ServerInfo/_CorvaxGoob/Guidebook/MartialArts/Mimejutsu.xml"

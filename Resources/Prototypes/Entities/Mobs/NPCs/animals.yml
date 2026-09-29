@@ -1560,6 +1560,7 @@
     - VimPilot
     - DoorBumpOpener
     - AnomalyHost
+    - XenobioSlimeFavoriteFood # Goobstation
   - type: Reactive
     groups:
       Flammable: [ Touch ]
@@ -1585,7 +1586,6 @@
   # Mini genetics: ancestors (monkeys/kobolds/…) are valid DNA-modifier subjects
   - type: Dna
   - type: Mutatable
-
 - type: entity
   name: monkey
   id: MobMonkey

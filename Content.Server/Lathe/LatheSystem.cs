@@ -260,7 +260,8 @@ namespace Content.Server.Lathe
                     return true;
                 }
 
-                FinishProducing(uid, component, lathe);
+                FinishProducing(uid, component, lathe,
+                    component.OutputToStorage); // Goobstation edit start: handle special case with lots of 0-time recipes that insert into storage
             }
             return true;
         }
@@ -279,12 +280,13 @@ namespace Content.Server.Lathe
             UpdateUserInterfaceState(uid, component);
         }
 
-        public void FinishProducing(EntityUid uid, LatheComponent? comp = null, LatheProducingComponent? prodComp = null)
+        public void FinishProducing(EntityUid uid, LatheComponent? comp = null, LatheProducingComponent? prodComp = null,
+            bool bulk = false) // Goobstation
         {
             if (!Resolve(uid, ref comp, ref prodComp, false))
                 return;
 
-            if (comp.CurrentRecipe != null)
+            while (comp.CurrentRecipe != null) // Goob, if to while for bulk recipes
             {
                 var currentRecipe = _proto.Index(comp.CurrentRecipe.Value);
                 if (currentRecipe.Result is { } resultProto)
@@ -329,10 +331,15 @@ namespace Content.Server.Lathe
                         _puddle.TrySpillAt(uid, toAdd, out _);
                     }
                 }
-            }
 
-            comp.CurrentRecipe = null;
-            prodComp.StartTime = _timing.CurTime;
+                comp.CurrentRecipe = null;
+                prodComp.StartTime = _timing.CurTime;
+
+                // Goobstation edit start, see method comment
+                if (!bulk || !TryStartNextBulkRecipe(uid, comp))
+                    break;
+                // Goobstation edit end
+            }
 
             if (!TryStartProducing(uid, comp))
             {

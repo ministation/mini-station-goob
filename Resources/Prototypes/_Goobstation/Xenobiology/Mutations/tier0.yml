@@ -1,7 +1,7 @@
 # Literally the first base
 - type: breed
-  breedName: xenobio-breed-grey
   id: GreyMutation
+  breedName: xenobio-breed-grey
   producedExtract: GreySlimeExtract
   components:
   - type: Slime
@@ -14,5 +14,3 @@
     - PurpleMutation
     - BlueMutation
     - MetalMutation
-
-# TODO add rainbow here for Smile

@@ -29,7 +29,7 @@
   - type: GhostRole
     rules: abductors-ghost-role-rules
     skills:
-    - Surgery
+    - All
     raffle:
       settings: default
   - type: GhostTakeoverAvailable
