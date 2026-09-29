@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress.Objectives.Summon;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Structures.Portal;
 using Content.Server.Mind;
@@ -22,20 +22,15 @@ public sealed partial class RatvarProgressSystem : EntitySystem
     [Dependency] private readonly RatvarSummonObjectiveSystem _summonObjectiveSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string ProgressPrototype = "RatvarProgress";
+        private const string ProgressPrototype = "RatvarProgress";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string BeaconsObjectivePrototype = "RatvarBeaconsObjective";
+        private const string BeaconsObjectivePrototype = "RatvarBeaconsObjective";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string ConvertObjectivePrototype = "RatvarConvertObjective";
+        private const string ConvertObjectivePrototype = "RatvarConvertObjective";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string PowerObjectivePrototype = "RatvarPowerObjective";
+        private const string PowerObjectivePrototype = "RatvarPowerObjective";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string RatvarSummonObjectivePrototype = "RatvarSummonObjective";
+        private const string RatvarSummonObjectivePrototype = "RatvarSummonObjective";
 
     private Entity<RatvarProgressComponent>? _progressEntity;
 

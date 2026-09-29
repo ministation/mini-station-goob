@@ -5,6 +5,7 @@
   name: guide-entry-security
   text: "/ServerInfo/Guidebook/Security/Security.xml"
   children:
+  - CorporateLaw # Mini - наш корпоративный закон в книгах СБ
   - Forensics
   - Defusal
   - CriminalRecords

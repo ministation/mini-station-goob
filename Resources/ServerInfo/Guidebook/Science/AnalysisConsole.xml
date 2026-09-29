@@ -1,22 +1,22 @@
 <Document>
-  # Analysis Console
+  # Консоль анализа
 
-  The Analysis Console is a device used to interface with artifacts. It can be used to check nodes, their triggers and effects, and extract points.
+  Консоль анализа — устройство для работы с артефактами. С её помощью можно просматривать узлы, их триггеры и эффекты, а также извлекать очки.
 
   <Box>
-    <GuideEntityEmbed Entity="ComputerAnalysisConsole" Caption="Analysis Console"/>
+    <GuideEntityEmbed Entity="ComputerAnalysisConsole" Caption="Консоль анализа"/>
   </Box>
 
-  The console displays detailed information about each node in the artifact’s tree structure. This includes:
-  - [bold]ID:[/bold] Unique identifier for use with the Node Scanner.
-  - [bold]Class:[/bold] The layer name, nodes on the same layer share it.
-  - [bold]Status:[/bold]
-  - [italic][color=red]Locked[/color][/italic] by default.
-  - [italic][color=plum]Active[/color][/italic] when first triggered.
-  - [italic][color=lime]Unlocked[/color][/italic] if a deeper node is reached (prevents manual activations).
-  - [bold]Durability:[/bold] Number of manual activations available.
-  - [bold]Effect:[/bold] What happens when the node activates or is manually triggered.
-  - [bold]Triggers:[/bold] Required actions to unlock the node.
-  - [bold]Server:[/bold] Choose the research server where extracted points are sent.
-  - [bold]Extract Points:[/bold] Extracts points from nodes unlocked since the last extraction.
+  Консоль показывает подробные сведения о каждом узле в древовидной структуре артефакта:
+  - [bold]ID:[/bold] уникальный идентификатор для использования со сканером узлов.
+  - [bold]Класс:[/bold] название слоя, общее для всех узлов этого слоя.
+  - [bold]Статус:[/bold]
+  - [italic][color=red]Заблокирован[/color][/italic] — по умолчанию.
+  - [italic][color=plum]Активный[/color][/italic] — после первого срабатывания.
+  - [italic][color=lime]Разблокирован[/color][/italic] — если достигнут более глубокий узел (ручные активации при этом недоступны).
+  - [bold]Прочность:[/bold] число доступных ручных активаций.
+  - [bold]Эффект:[/bold] что произойдёт при активации узла или ручном запуске.
+  - [bold]Триггеры:[/bold] действия, необходимые для разблокировки узла.
+  - [bold]Сервер:[/bold] выбор исследовательского сервера, на который отправляются извлечённые очки.
+  - [bold]Извлечь очки:[/bold] извлекает очки с узлов, разблокированных с момента последнего извлечения.
 </Document>

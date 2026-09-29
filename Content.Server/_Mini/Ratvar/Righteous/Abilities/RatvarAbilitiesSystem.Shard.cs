@@ -36,17 +36,13 @@ public sealed partial class RatvarAbilitiesSystem
     [Dependency] private readonly RatvarProgressSystem _progressSystem = default!;
     [Dependency] private readonly RatvarPortalSystem _portalSystem = default!;
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string TileConvertEffect = "RatvarTileSpawnEffect";
+        private const string TileConvertEffect = "RatvarTileSpawnEffect";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string WallConvertEffect = "RatvarWallSpawnEffect";
+        private const string WallConvertEffect = "RatvarWallSpawnEffect";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string RatvarCyborg = "MobRatvarCyborg";
+        private const string RatvarCyborg = "MobRatvarCyborg";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string ClockWall = "WallClock";
+        private const string ClockWall = "WallClock";
 
     private void InitializeShard()
     {

@@ -17,45 +17,63 @@ namespace Content.Client._Amour.Stickers.UI;
 [GenerateTypedNameReferences]
 public sealed partial class StickerSelectorWindow : DefaultWindow
 {
+    private const float CellSize = 40f;
+    private const float IconSize = 32f;
+    private const float GridMargin = 8f;
+
     private static StickerSelectorWindow? _instance;
-    
+
     public event Action<StickerPrototype>? OnStickerSelected;
-    
+
     private readonly StickerSystem _stickerSystem;
 
     private StickerSelectorWindow()
     {
         RobustXamlLoader.Load(this);
-        
+
         _stickerSystem = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<StickerSystem>();
-        
+
         PopulateStickers();
-        
+        StickerScroll.OnResized += UpdateColumns;
+        UpdateColumns();
+
         OnClose += () =>
         {
             ClearHandlers();
         };
     }
-    
+
     public static StickerSelectorWindow GetInstance()
     {
         if (_instance == null || _instance.Disposed)
         {
             _instance = new StickerSelectorWindow();
         }
-        
+
         return _instance;
     }
-    
+
     public void ClearHandlers()
     {
         OnStickerSelected = null;
     }
 
+    private void UpdateColumns()
+    {
+        // Keep cells perfectly square and the grid evenly filled: one column per ~40px of width.
+        var available = StickerScroll.Width - GridMargin;
+        if (available < CellSize)
+            return;
+
+        var columns = Math.Max(1, (int) (available / (CellSize + 2f)));
+        if (StickerGrid.Columns != columns)
+            StickerGrid.Columns = columns;
+    }
+
     private void PopulateStickers()
     {
         StickerGrid.Children.Clear();
-        
+
         var stickers = _stickerSystem.GetStickers();
         var resCache = IoCManager.Resolve<IResourceCache>();
 
@@ -72,15 +90,12 @@ public sealed partial class StickerSelectorWindow : DefaultWindow
                 continue;
             }
 
-            var isMiniEmoji = sticker.TexturePath.ToString()
-                .Contains("_Mini/Interface/Emoji", StringComparison.OrdinalIgnoreCase);
-            var iconSize = isMiniEmoji ? 36f / 1.5f : 36f; // ~24 for Mini
-            var btnSize = isMiniEmoji ? 48f / 1.5f : 48f;
-
+            // Uniform square cells for everything: mixed emoji/sticker sizes were making the
+            // grid ragged (columns sized by the tallest cell in each column).
             var btn = new Button
             {
-                MinSize = new Vector2(btnSize, btnSize),
-                MaxSize = new Vector2(btnSize + 8f, btnSize + 8f),
+                MinSize = new Vector2(CellSize, CellSize),
+                MaxSize = new Vector2(CellSize, CellSize),
                 ToolTip = sticker.ID
             };
 
@@ -90,18 +105,16 @@ public sealed partial class StickerSelectorWindow : DefaultWindow
                 Stretch = TextureRect.StretchMode.KeepAspectCentered,
                 HorizontalAlignment = Control.HAlignment.Center,
                 VerticalAlignment = Control.VAlignment.Center,
-                SetSize = new Vector2(iconSize, iconSize),
-                MinSize = new Vector2(iconSize, iconSize),
-                MaxSize = new Vector2(iconSize, iconSize)
+                SetSize = new Vector2(IconSize, IconSize)
             };
 
             btn.AddChild(texRect);
-            btn.OnPressed += _ => 
+            btn.OnPressed += _ =>
             {
                 OnStickerSelected?.Invoke(sticker);
                 Close();
             };
-            
+
             StickerGrid.AddChild(btn);
         }
     }

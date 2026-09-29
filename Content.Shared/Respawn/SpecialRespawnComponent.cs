@@ -2,7 +2,6 @@
 
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Shared.Respawn;
 
@@ -28,7 +27,7 @@ public sealed partial class SpecialRespawnComponent: Component
     /// The prototypeID of the entity to be respawned
     /// </summary>
     [ViewVariables]
-    [DataField("prototype", required:true, customTypeSerializer:typeof(PrototypeIdSerializer<EntityPrototype>))]
+    [DataField("prototype", required:true)]
     public string Prototype = "";
 }
 

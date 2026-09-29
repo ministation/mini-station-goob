@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Linq;
 using Content.Goobstation.Common.Tools; // Goob (obviously)
 using Robust.Shared.Audio; // goob
 using Content.Shared.Administration.Logs;
@@ -83,7 +84,7 @@ public abstract partial class SharedToolSystem : EntitySystem
         // Loop through tool qualities and add localized names to the list
         foreach (var toolQuality in ent.Comp.Qualities)
         {
-            if (_protoMan.TryIndex<ToolQualityPrototype>(toolQuality ?? string.Empty, out var protoToolQuality))
+            if (_protoMan.TryIndex(toolQuality, out ToolQualityPrototype? protoToolQuality))
             {
                 toolQualities.Add(Loc.GetString(protoToolQuality.Name));
             }
@@ -245,7 +246,7 @@ public abstract partial class SharedToolSystem : EntitySystem
     [PublicAPI]
     public bool HasAllQualities(EntityUid uid, [ForbidLiteral] IEnumerable<string> qualities, ToolComponent? tool = null)
     {
-        return Resolve(uid, ref tool, false) && tool.Qualities.ContainsAll(qualities);
+        return Resolve(uid, ref tool, false) && qualities.All(q => tool.Qualities.Contains(q));
     }
 
     private bool CanStartToolUse(EntityUid tool, EntityUid user, EntityUid? target, float fuel, IEnumerable<string> toolQualitiesNeeded, ToolComponent? toolComponent = null)
@@ -254,7 +255,7 @@ public abstract partial class SharedToolSystem : EntitySystem
             return false;
 
         // check if the tool can do what's required
-        if (!toolComponent.Qualities.ContainsAll(toolQualitiesNeeded))
+        if (!toolQualitiesNeeded.All(q => toolComponent.Qualities.Contains(q)))
             return false;
 
         // check if the user allows using the tool

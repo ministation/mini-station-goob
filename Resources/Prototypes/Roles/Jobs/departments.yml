@@ -60,6 +60,7 @@
   - GovernmentMan # Goobstation - End
   editorHidden: true
   weight: 120
+  antagObjectiveImmune: true # Mini - CentComm staff must not be antag objective targets
 
 - type: department
   id: Command

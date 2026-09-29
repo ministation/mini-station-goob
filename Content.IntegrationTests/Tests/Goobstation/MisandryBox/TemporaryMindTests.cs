@@ -3,10 +3,13 @@ using Content.Goobstation.Server.MisandryBox.Mind;
 using Content.Goobstation.Shared.MisandryBox.Mind;
 using Content.IntegrationTests.Pair;
 using Content.Server.GameTicking;
+using Content.Server.Ghost;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Systems;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -149,6 +152,138 @@ public sealed class TemporaryMindTests
         });
 
         await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Arena/Thunderdome regression: the player joins the arena while a ghost whose mind OWNS the
+    /// ghost entity (living player used the ghost command, or a lobby observer). After the swap the
+    /// session must control the new body and keep controlling it after the old ghost is deleted.
+    /// </summary>
+    [Test]
+    public async Task SwapFromOwnedGhostAttachesSessionToNewBody()
+    {
+        await using var pair = await SetupPair();
+        var ctx = await SetupGhostContext(pair, killFirst: false);
+
+        await pair.Server.WaitPost(() =>
+        {
+            Assert.That(ctx.TempMindSys.TrySwapTempMind(ctx.Player, ctx.NewBody), Is.True);
+        });
+        // The old ghost is queue-deleted during the swap; let its deletion and any cascades run.
+        await pair.RunTicksSync(10);
+
+        await pair.Server.WaitAssertion(() =>
+        {
+            Assert.That(ctx.Player.AttachedEntity, Is.EqualTo(ctx.NewBody),
+                "session must be attached to the new body after swapping from a ghost");
+        });
+
+        await pair.RunTicksSync(30);
+
+        await pair.Server.WaitAssertion(() =>
+        {
+            Assert.That(ctx.Player.AttachedEntity, Is.EqualTo(ctx.NewBody),
+                "session must stay attached to the new body after the old ghost is cleaned up");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Same regression for a dead player's ghost: the mind owns the corpse and only VISITS the
+    /// ghost. UnVisit re-attaches the session to the corpse mid-swap; the swap must still end with
+    /// the session controlling the new body.
+    /// </summary>
+    [Test]
+    public async Task SwapFromVisitingGhostAttachesSessionToNewBody()
+    {
+        await using var pair = await SetupPair();
+        var ctx = await SetupGhostContext(pair, killFirst: true);
+
+        await pair.Server.WaitPost(() =>
+        {
+            Assert.That(ctx.TempMindSys.TrySwapTempMind(ctx.Player, ctx.NewBody), Is.True);
+        });
+        await pair.RunTicksSync(10);
+
+        await pair.Server.WaitAssertion(() =>
+        {
+            Assert.That(ctx.Player.AttachedEntity, Is.EqualTo(ctx.NewBody),
+                "session must be attached to the new body after swapping from a visiting ghost");
+        });
+
+        await pair.RunTicksSync(30);
+
+        await pair.Server.WaitAssertion(() =>
+        {
+            Assert.That(ctx.Player.AttachedEntity, Is.EqualTo(ctx.NewBody),
+                "session must stay attached to the new body after the old ghost is cleaned up");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Ghosts the player like the "ghost" command does and leaves the session attached to the
+    /// ghost, then prepares a fresh body for the swap.
+    /// </summary>
+    private static async Task<TestContext> SetupGhostContext(TestPair pair, bool killFirst)
+    {
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var mindSys = server.System<SharedMindSystem>();
+        var tempMindSys = server.System<TemporaryMindSystem>();
+        var ghostSys = server.System<GhostSystem>();
+        var mobState = server.System<MobStateSystem>();
+        var playerMan = server.ResolveDependency<IPlayerManager>();
+        var player = playerMan.Sessions.Single();
+
+        if (killFirst)
+        {
+            await server.WaitPost(() =>
+            {
+                var body = player.AttachedEntity!.Value;
+                mobState.ChangeMobState(body, MobState.Dead);
+            });
+            await pair.RunTicksSync(5);
+        }
+
+        await server.WaitPost(() =>
+        {
+            var body = player.AttachedEntity!.Value;
+            Assert.That(mindSys.TryGetMind(body, out var mindId, out _), Is.True,
+                "player should have a mind");
+            Assert.That(ghostSys.OnGhostAttempt(mindId, true), Is.True, "ghost attempt should succeed");
+        });
+        await pair.RunTicksSync(10);
+
+        var ctx = new TestContext
+        {
+            EntMan = entMan,
+            MindSys = mindSys,
+            TempMindSys = tempMindSys,
+            Player = player,
+        };
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(player.AttachedEntity, Is.Not.Null, "player should be attached to a ghost");
+            var ghost = player.AttachedEntity!.Value;
+            Assert.That(entMan.HasComponent<GhostComponent>(ghost), "player should be a ghost");
+            Assert.That(mindSys.TryGetMind(ghost, out var origMindId, out _), Is.True,
+                "ghost should resolve to the player's mind");
+            ctx.OrigMindId = origMindId;
+            ctx.OriginalBody = default; // original body may be deleted/dead, not needed here
+        });
+
+        await server.WaitPost(() =>
+        {
+            ctx.NewBody = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
+            entMan.EnsureComponent<MindContainerComponent>(ctx.NewBody);
+        });
+
+        await pair.RunTicksSync(5);
+        return ctx;
     }
 
     private static async Task<TestPair> SetupPair()

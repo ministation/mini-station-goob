@@ -150,8 +150,19 @@ public sealed class NtrTaskSystem : EntitySystem
     #endregion
 
     #region Task Lifecycle
+    // Task generation is gated per-database by NextTaskGenerationTime (default 1 min) and expiry
+    // by MaxActiveTime (20 min); polling the databases once a second is plenty and keeps the
+    // per-tick sweep (incl. Tasks.ToArray copies in CleanExpiredTasks) off the hot path.
+    private static readonly TimeSpan DatabasePollInterval = TimeSpan.FromSeconds(1f);
+    private TimeSpan _nextDatabasePoll;
+
     public override void Update(float frameTime)
     {
+        if (_timing.CurTime < _nextDatabasePoll)
+            return;
+
+        _nextDatabasePoll = _timing.CurTime + DatabasePollInterval;
+
         var query = EntityQueryEnumerator<NtrTaskDatabaseComponent>();
         while (query.MoveNext(out var uid, out var db))
         {

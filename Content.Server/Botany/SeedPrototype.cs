@@ -9,7 +9,6 @@ using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Random;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Robust.Shared.Utility;
 
 using Content.Server.EntityEffects;
@@ -133,7 +132,7 @@ public partial class SeedData
     /// <summary>
     ///     The entity prototype that is spawned when this type of seed is extracted from produce using a seed extractor.
     /// </summary>
-    [DataField("packetPrototype", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    [DataField("packetPrototype")]
     public string PacketPrototype = "SeedBase";
 
     /// <summary>
@@ -234,7 +233,7 @@ public partial class SeedData
 
     [DataField("screaming")] public bool CanScream;
 
-    [DataField(customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))] public string KudzuPrototype = "WeakKudzu";
+    [DataField] public string KudzuPrototype = "WeakKudzu";
 
     [DataField] public bool TurnIntoKudzu;
     [DataField] public string? SplatPrototype { get; set; }

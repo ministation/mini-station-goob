@@ -25,6 +25,9 @@ public sealed class TTStationHandleJobSystem : EntitySystem
     private static readonly EntProtoId TypanStationPrototype = "StandardTypanStation";
     private static readonly EntProtoId CentCommStationPrototype = "NanotrasenCentralCommand";
 
+    // Preferred spawn warps for CentComm staff, in order. All roles must spawn in one place.
+    private static readonly string[] CentCommSpawnWarpPreference = new[] { "CentCom Office", "CentCom" };
+
     [Dependency] private readonly IBanManager _banManager = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
@@ -351,28 +354,24 @@ public sealed class TTStationHandleJobSystem : EntitySystem
         if (!TryComp<StationDataComponent>(handledStation, out var data) || data.Grids.Count == 0)
             return possiblePositions;
 
-        // Prefer named warp points on the station (CentComm map has "CentCom") — never use grid (0,0), that is space.
+        // CentComm roles must not scatter across warp points: fall back to a single
+        // deterministic spawn warp (CentCom Office; never the far "CentCom" arrival warp).
+        if (FindCentCommSpawnWarp(data) is { } arrival)
+        {
+            possiblePositions.Add(arrival);
+            Log.Warning(
+                $"No job spawners on {GetStationName(handledStation)}; falling back to the CentCom Office warp.");
+            return possiblePositions;
+        }
+
+        // Never use grid (0,0) — that is space.
         var warps = EntityQueryEnumerator<WarpPointComponent, TransformComponent>();
-        while (warps.MoveNext(out _, out var warp, out var xform))
+        while (warps.MoveNext(out _, out _, out var xform))
         {
             if (!IsTransformOnStationGrids(xform, data))
                 continue;
 
-            if (warp.Location != null &&
-                warp.Location.Contains("CentCom", StringComparison.OrdinalIgnoreCase))
-                possiblePositions.Add(xform.Coordinates);
-        }
-
-        if (possiblePositions.Count == 0)
-        {
-            warps = EntityQueryEnumerator<WarpPointComponent, TransformComponent>();
-            while (warps.MoveNext(out _, out _, out var xform))
-            {
-                if (!IsTransformOnStationGrids(xform, data))
-                    continue;
-
-                possiblePositions.Add(xform.Coordinates);
-            }
+            possiblePositions.Add(xform.Coordinates);
         }
 
         if (possiblePositions.Count > 0)
@@ -396,6 +395,41 @@ public sealed class TTStationHandleJobSystem : EntitySystem
         }
 
         return possiblePositions;
+    }
+
+    /// <summary>
+    /// Finds a single deterministic spawn warp for CentComm-style stations.
+    /// Prefers the exact "CentCom Office" warp, then exact "CentCom", then any
+    /// warp whose name contains "CentCom". Returns null for stations without
+    /// such a warp (e.g. Typan stations).
+    /// </summary>
+    private EntityCoordinates? FindCentCommSpawnWarp(StationDataComponent data)
+    {
+        foreach (var location in CentCommSpawnWarpPreference)
+        {
+            var warps = EntityQueryEnumerator<WarpPointComponent, TransformComponent>();
+            while (warps.MoveNext(out _, out var warp, out var xform))
+            {
+                if (!IsTransformOnStationGrids(xform, data))
+                    continue;
+
+                if (warp.Location == location)
+                    return xform.Coordinates;
+            }
+        }
+
+        var fallbackWarps = EntityQueryEnumerator<WarpPointComponent, TransformComponent>();
+        while (fallbackWarps.MoveNext(out _, out var warp, out var xform))
+        {
+            if (!IsTransformOnStationGrids(xform, data))
+                continue;
+
+            if (warp.Location != null &&
+                warp.Location.Contains("CentCom", StringComparison.OrdinalIgnoreCase))
+                return xform.Coordinates;
+        }
+
+        return null;
     }
 
     private bool IsSpawnOnStation(EntityUid spawnEnt, TransformComponent xform, EntityUid station)

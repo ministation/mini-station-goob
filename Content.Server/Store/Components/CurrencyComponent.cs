@@ -2,7 +2,6 @@
 
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Store;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Dictionary;
 
 namespace Content.Server.Store.Components;
 
@@ -30,6 +29,6 @@ public sealed partial class CurrencyComponent : Component
     /// because otherwise stack merging/splitting may modify the total value.
     /// </remarks>
     [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("price", customTypeSerializer: typeof(PrototypeIdDictionarySerializer<FixedPoint2, CurrencyPrototype>))]
+    [DataField("price")]
     public Dictionary<string, FixedPoint2> Price = new();
 }

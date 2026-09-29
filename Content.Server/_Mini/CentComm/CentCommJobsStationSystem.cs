@@ -30,7 +30,6 @@ public sealed class CentCommJobsStationSystem : EntitySystem
     private static readonly EntProtoId LateJoinSpawnPoint = "SpawnPointLateJoinCentComm";
 
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly StationSystem _station = default!;
 
     public override void Initialize()
@@ -66,7 +65,7 @@ public sealed class CentCommJobsStationSystem : EntitySystem
 
     /// <summary>
     /// Map markers can be missing or fail to load; ensure ПЦК / стажер spawners exist on the CentComm grid
-    /// next to the CentCom warp (never grid origin — that is empty space).
+    /// at the CentCom Office warp (never grid origin — that is empty space).
     /// </summary>
     private void EnsureCentCommSpawnPoints(EntityUid centcommGrid)
     {
@@ -101,15 +100,23 @@ public sealed class CentCommJobsStationSystem : EntitySystem
             $"CentComm spawn markers incomplete (official={hasOfficial}, assistant={hasAssistant}, latejoin={hasLateJoin}); spawning missing markers at {origin}.");
 
         if (!hasOfficial)
-            SpawnAt(OfficialSpawnPoint, origin, offset: (-1f, 0f));
+            SpawnAt(OfficialSpawnPoint, origin);
         if (!hasAssistant)
-            SpawnAt(AssistantSpawnPoint, origin, offset: (0f, 1f));
+            SpawnAt(AssistantSpawnPoint, origin);
         if (!hasLateJoin)
-            SpawnAt(LateJoinSpawnPoint, origin, offset: (1f, 0f));
+            SpawnAt(LateJoinSpawnPoint, origin);
     }
 
     private bool TryGetCentCommInteriorCoords(EntityUid centcommGrid, out EntityCoordinates coords)
     {
+        // All CentComm roles spawn at the CentCom Office warp; never use the far away
+        // "CentCom" arrival warp or grid origin (which is empty space).
+        if (TryGetWarpOnGrid(centcommGrid, "CentCom Office", out coords))
+            return true;
+
+        if (TryGetWarpOnGrid(centcommGrid, "CentCom", out coords))
+            return true;
+
         var warps = EntityQueryEnumerator<WarpPointComponent, TransformComponent>();
         while (warps.MoveNext(out _, out var warp, out var xform))
         {
@@ -144,10 +151,27 @@ public sealed class CentCommJobsStationSystem : EntitySystem
         return false;
     }
 
-    private void SpawnAt(EntProtoId prototype, EntityCoordinates origin, (float X, float Y) offset)
+    private bool TryGetWarpOnGrid(EntityUid grid, string location, out EntityCoordinates coords)
     {
-        var coords = origin.Offset(new System.Numerics.Vector2(offset.X, offset.Y));
-        var uid = Spawn(prototype, coords);
-        _transform.SetCoordinates(uid, coords);
+        var warps = EntityQueryEnumerator<WarpPointComponent, TransformComponent>();
+        while (warps.MoveNext(out _, out var warp, out var xform))
+        {
+            if (xform.GridUid != grid && xform.ParentUid != grid)
+                continue;
+
+            if (warp.Location != location)
+                continue;
+
+            coords = xform.Coordinates;
+            return true;
+        }
+
+        coords = default;
+        return false;
+    }
+
+    private void SpawnAt(EntProtoId prototype, EntityCoordinates origin)
+    {
+        Spawn(prototype, origin);
     }
 }

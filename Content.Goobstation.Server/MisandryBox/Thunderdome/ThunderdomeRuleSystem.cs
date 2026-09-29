@@ -469,6 +469,21 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
                 return false;
             }
 
+            // Safety net: after the swap the player must actually control the new body. If the
+            // session ended up somewhere else, the arena body would stand there as SSD while the
+            // player stays a ghost — re-attach explicitly and log it so the real cause is visible.
+            if (session.AttachedEntity != mob.Value)
+            {
+                Log.Warning(
+                    $"Thunderdome mind swap for {session} left them attached to {ToPrettyString(session.AttachedEntity)} instead of {ToPrettyString(mob.Value)}; forcing attach.");
+                if (!_playerManager.SetAttachedEntity(session, mob.Value, out _, force: true)
+                    || session.AttachedEntity != mob.Value)
+                {
+                    Log.Error($"Thunderdome spawn for {session}: could not attach to {ToPrettyString(mob.Value)}; aborting.");
+                    return false;
+                }
+            }
+
             rule.Players.Add(GetNetEntity(mob.Value));
 
             _skills.GrantAllSkills(mob.Value); // CorvaxGoob-Skills

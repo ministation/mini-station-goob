@@ -92,3 +92,45 @@
   - type: Computer
     board: ADTSecShuttleConsoleCircuitboard
 
+# Заглушки для удалённых апстримом прототипов, на которые ещё ссылаются карты.
+# Записи о них убраны из Resources/migration.yml — иначе десериализатор карт
+# помечает их как obsolete/removed и сущности не спавнятся.
+- type: entity
+  id: RipleyChassis
+  parent: BaseMechPart
+  name: ripley chassis
+  description: An unfinished APLU Ripley mech frame.
+
+- type: entity
+  id: VehicleJanicartDestroyed
+  parent: VehicleJanicart
+  name: destroyed janitorial cart
+  description: This janitorial cart has seen better days.
+
+- type: entity
+  id: RPED
+  parent: BaseItem
+  name: RPED
+  description: A Rapid Part Exchange Device.
+
+- type: entity
+  id: ComputerShuttleSalvage
+  parent: ADTComputerShuttleSalvage
+  name: salvage shuttle console
+
+- type: entity
+  id: ClothingNeckCloakMiner
+  parent: ClothingNeckCloakNanotrasen
+  name: miner cloak
+
+- type: entity
+  id: BorgModuleGPS
+  parent: BaseBorgModule
+  name: GPS module
+  description: A piece of tech that gives cyborgs new abilities.
+
+- type: entity
+  id: PartRodMetalLingering0
+  parent: PartRodMetal1
+  name: metal rod
+

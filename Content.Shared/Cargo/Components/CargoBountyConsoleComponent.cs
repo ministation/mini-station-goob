@@ -4,7 +4,6 @@ using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Shared.Cargo.Components;
 
@@ -14,7 +13,7 @@ public sealed partial class CargoBountyConsoleComponent : Component
     /// <summary>
     /// The id of the label entity spawned by the print label button.
     /// </summary>
-    [DataField("bountyLabelId", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    [DataField("bountyLabelId")]
     public string BountyLabelId = "PaperCargoBountyManifest";
 
     /// <summary>

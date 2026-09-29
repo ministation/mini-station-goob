@@ -94,7 +94,7 @@ namespace Content.Server.Voting.Managers
         {
             // Integration-test dummy sessions have no network transport. They still
             // transition to InGame for ticker tests, but cannot receive vote messages.
-            if (e.Session.Channel is IDummyChannel)
+            if (IsDummyChannel(e.Session.Channel))
                 return;
 
             if (e.NewStatus == SessionStatus.InGame)
@@ -682,5 +682,22 @@ namespace Content.Server.Voting.Managers
         }
 
         #endregion
+
+        /// <summary>
+        /// Whether this channel belongs to an integration-test / benchmark dummy session, which has no
+        /// transport and throws on any send. The engine's dummy channel type is internal in upstream
+        /// Robusta (our fork additionally exposes IDummyChannel), so match it by type name to keep the
+        /// content buildable on both engines. Unknown channels are treated as real.
+        /// </summary>
+        private static bool IsDummyChannel(INetChannel channel)
+        {
+            for (var type = channel.GetType(); type != null; type = type.BaseType)
+            {
+                if (type.Name == "DummyChannel")
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

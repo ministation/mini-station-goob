@@ -4,7 +4,6 @@ namespace Content.Server.Chat;
 
 using Content.Server.Chat.Systems;
 using Content.Shared.Chat.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Set;
 
 /// <summary>
 /// Causes an entity to automatically emote at a set interval.
@@ -16,7 +15,7 @@ public sealed partial class AutoEmoteComponent : Component
     /// A set of emotes that the entity will preform.
     /// <see cref="AutoEmotePrototype"/>
     /// </summary>
-    [DataField("emotes", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<AutoEmotePrototype>)), ViewVariables(VVAccess.ReadOnly)]
+    [DataField("emotes"), ViewVariables(VVAccess.ReadOnly)]
     public HashSet<string> Emotes = new HashSet<string>();
 
     /// <summary>

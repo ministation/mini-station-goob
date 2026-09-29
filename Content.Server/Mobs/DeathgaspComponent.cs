@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Shared.Chat.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Server.Mobs;
 
@@ -15,7 +14,7 @@ public sealed partial class DeathgaspComponent : Component
     /// <summary>
     ///     The emote prototype to use.
     /// </summary>
-    [DataField("prototype", customTypeSerializer:typeof(PrototypeIdSerializer<EmotePrototype>))]
+    [DataField("prototype")]
     public string Prototype = "DefaultDeathgasp";
 
     /// <summary>

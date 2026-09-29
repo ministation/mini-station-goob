@@ -3,7 +3,6 @@
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Server.Holiday.Christmas;
 
@@ -16,7 +15,7 @@ public sealed partial class RandomGiftComponent : Component
     /// <summary>
     /// The wrapper entity to spawn when unwrapping the gift.
     /// </summary>
-    [DataField("wrapper", required: true, customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    [DataField("wrapper", required: true)]
     public string? Wrapper;
 
     /// <summary>

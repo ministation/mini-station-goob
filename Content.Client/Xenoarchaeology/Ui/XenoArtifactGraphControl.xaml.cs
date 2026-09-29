@@ -86,8 +86,13 @@ public sealed partial class XenoArtifactGraphControl : BoxContainer
             return;
         var artifact = _artifact.Value;
 
-        var maxDepth = _artifactSystem.GetAllNodes(artifact)
-                                      .Max(s => s.Comp.Depth);
+        var allNodes = _artifactSystem.GetAllNodes(artifact).ToList();
+        if (allNodes.Count == 0)
+            return;
+
+        // An artifact can arrive with no nodes (empty effects table during generation):
+        // Max() over an empty set throws and kills the analyzer console draw.
+        var maxDepth = allNodes.Max(s => s.Comp.Depth);
         var segments = _artifactSystem.GetSegments(artifact);
 
         var bottomLeft = Position // the position
@@ -104,7 +109,11 @@ public sealed partial class XenoArtifactGraphControl : BoxContainer
 
         // gets settings for visualizing segments (groups of interconnected nodes - there may be 1 or more per artifact).
         var segmentWidths = segments.Sum(GetBiggestWidth);
-        var segmentSpacing = Math.Clamp((controlWidth - segmentWidths) / (segments.Count - 1), MinXSegmentSpacing, MaxXSegmentSpacing);
+        // A single segment divides by zero here, which turns every following position into NaN
+        // when the widths match exactly and the whole graph silently stops rendering.
+        var segmentSpacing = segments.Count > 1
+            ? Math.Clamp((controlWidth - segmentWidths) / (segments.Count - 1), MinXSegmentSpacing, MaxXSegmentSpacing)
+            : 0f;
         var segmentOffset = Math.Max((controlWidth - (segmentWidths) - (segmentSpacing * (segments.Count - 1))) / 2, 0);
 
         bottomLeft.X += segmentOffset;

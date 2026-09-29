@@ -1,5 +1,6 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
+using System.Numerics;
 using Robust.Shared.GameStates;
 
 namespace Content.Shared._Mini.FootWalk;
@@ -75,6 +76,13 @@ public sealed partial class FootWalkAnimationComponent : Component
     public readonly HashSet<string> HiddenShoeKeys = new();
 
     /// <summary>
+    /// Shoe source keys whose art crosses the sprite centre inside the foot band. Splitting those
+    /// into halves would tear the art, so they bob as one piece.
+    /// </summary>
+    [ViewVariables]
+    public readonly HashSet<string> BandOnlyShoeSources = new();
+
+    /// <summary>
     /// Runtime outerClothing foot-half layers (front N/S).
     /// </summary>
     [ViewVariables]
@@ -85,6 +93,21 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     [ViewVariables]
     public readonly List<string> OuterSideBandKeys = new();
+
+    /// <summary>
+    /// Outer clothing source keys whose art crosses the sprite centre inside the foot band. Long
+    /// garments (coats, robes) would shear open at the cut, so they bob as one band instead.
+    /// </summary>
+    [ViewVariables]
+    public readonly HashSet<string> BandOnlyOuterSources = new();
+
+    /// <summary>
+    /// Offsets the layers had before this system moved them, per layer key. Resets restore these
+    /// instead of zero, otherwise items with their own offset (clown shoes, roller skates) would
+    /// jump after the first step the mob takes.
+    /// </summary>
+    [ViewVariables]
+    public readonly Dictionary<string, Vector2> BaseOffsets = new();
 
     /// <summary>
     /// Original outerClothing layers with foot-hole shader.

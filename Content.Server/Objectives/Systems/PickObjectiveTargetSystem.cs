@@ -3,6 +3,7 @@
 using Content.Server.Objectives.Components;
 using Content.Server._CorvaxGoob.Objectives.Components;
 using Content.Shared.Mind;
+using Content.Shared.Mind.Filters;
 using Content.Shared.Objectives.Components;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Revolutionary.Components;
@@ -19,6 +20,9 @@ public sealed class PickObjectiveTargetSystem : EntitySystem
 {
     [Dependency] private readonly TargetObjectiveSystem _target = default!;
     [Dependency] private readonly SharedMindSystem _mind = default!;
+
+    // Jobs working for faction departments (Central Command, Taipan, etc.) must never be objective targets.
+    private static readonly MindFilter ObjectiveImmunityFilter = new AntagObjectiveImmuneMindFilter();
 
     public override void Initialize()
     {
@@ -60,6 +64,13 @@ public sealed class PickObjectiveTargetSystem : EntitySystem
             return;
         }
 
+        if (_mind.TryGetMind(targetComp.Target.Value, out var targetMind, out _)
+            && AntagObjectiveImmuneMindFilter.IsJobObjectiveImmune(targetMind, EntityManager))
+        {
+            args.Cancelled = true;
+            return;
+        }
+
         _target.SetTarget(ent.Owner, targetComp.Target.Value);
     }
 
@@ -77,7 +88,8 @@ public sealed class PickObjectiveTargetSystem : EntitySystem
             return;
 
         // couldn't find a target :(
-        if (_mind.PickFromPool(ent.Comp.Pool, ent.Comp.Filters, args.MindId) is not {} picked)
+        var filters = new List<MindFilter>(ent.Comp.Filters) { ObjectiveImmunityFilter };
+        if (_mind.PickFromPool(ent.Comp.Pool, filters, args.MindId) is not { } picked)
         {
             args.Cancelled = true;
             return;

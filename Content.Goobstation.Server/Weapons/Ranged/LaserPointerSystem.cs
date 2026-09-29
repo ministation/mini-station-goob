@@ -17,10 +17,17 @@ public sealed class LaserPointerSystem : SharedLaserPointerSystem
 
     private EntityUid? _managerUid;
 
+    // Building the recipient set walks Filter.Pvs for every active pointer and then touches a
+    // session override per online player; half a second of staleness is invisible for the
+    // laser line overlay, so don't pay for it every tick.
+    private static readonly TimeSpan OverrideRefreshInterval = TimeSpan.FromSeconds(0.5f);
+    private TimeSpan _nextOverrideRefresh;
+
     protected override void PvsOverride(EntityUid entity)
     {
         base.PvsOverride(entity);
         _managerUid = entity;
+        _nextOverrideRefresh = Timing.CurTime + OverrideRefreshInterval;
         RefreshLaserManagerOverrides();
     }
 
@@ -42,7 +49,11 @@ public sealed class LaserPointerSystem : SharedLaserPointerSystem
             AddOrRemoveLine(GetNetEntity(uid), pointer, wieldable, xform, null, null);
         }
 
-        RefreshLaserManagerOverrides();
+        if (Timing.CurTime >= _nextOverrideRefresh)
+        {
+            _nextOverrideRefresh = Timing.CurTime + OverrideRefreshInterval;
+            RefreshLaserManagerOverrides();
+        }
     }
 
     private void RefreshLaserManagerOverrides()

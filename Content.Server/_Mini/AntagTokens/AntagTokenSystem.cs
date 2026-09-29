@@ -632,7 +632,22 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingGhostAutoUsedDonorDailyFree = useDonorDailyFree;
         }
 
-        if (role.GameRuleId == null || !_gameTicker.StartGameRule(role.GameRuleId, out _))
+        var ruleStarted = false;
+        if (role.GameRuleId != null)
+        {
+            try
+            {
+                ruleStarted = _gameTicker.StartGameRule(role.GameRuleId, out _);
+            }
+            catch (Exception e)
+            {
+                // A rule that throws on start must not crash the network message dispatch;
+                // treat it as a failed purchase and fall through to the refund path below.
+                Log.Error($"Failed to start game rule {role.GameRuleId} for antag token purchase {role.Id} by {session}: {e}");
+            }
+        }
+
+        if (!ruleStarted)
         {
             error = Loc.GetString("antag-tokens-error-event-start-failed");
             if (role.Mode == AntagPurchaseMode.GhostRule)

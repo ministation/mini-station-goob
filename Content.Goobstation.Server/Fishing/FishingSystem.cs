@@ -59,7 +59,11 @@ public sealed class FishingSystem : SharedFishingSystem
         Anchor(ent, attachedEnt);
 
         // Currently we don't support multiple loots from this
-        var fish = spotComp.FishList.GetSpawns(_random.GetRandom(), EntityManager, _proto, new EntityTableContext()).First();
+        var spawns = spotComp.FishList.GetSpawns(_random.GetRandom(), EntityManager, _proto, new EntityTableContext()).ToList();
+        if (spawns.Count == 0)
+            return;
+
+        var fish = spawns[0];
 
         // Get fish difficulty
         _proto.Index(fish).TryGetComponent(out FishComponent? fishComp, _compFactory);

@@ -6,11 +6,7 @@ using Robust.Shared.Serialization.Markdown;
 using Robust.Shared.Serialization.Markdown.Mapping;
 using Robust.Shared.Serialization.Markdown.Sequence;
 using Robust.Shared.Serialization.Markdown.Value;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Dictionary;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.List;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Set;
 
 namespace Content.Server.Corvax.GuideGenerator;
 
@@ -151,33 +147,13 @@ public static class FieldStoreId
         var def = serializerType.GetGenericTypeDefinition();
         var args = serializerType.GetGenericArguments();
 
-        if ((def == typeof(PrototypeIdSerializer<>) || def == typeof(AbstractPrototypeIdSerializer<>)) &&
-            args[0] == typeof(EntityPrototype))
-        {
-            kind = EntityPrototypeSerializerKind.Single;
-            return true;
-        }
-
-        if ((def == typeof(PrototypeIdListSerializer<>)
-             || def == typeof(PrototypeIdHashSetSerializer<>)
-             || def == typeof(AbstractPrototypeIdArraySerializer<>)) &&
+        // PrototypeId*/PrototypeIdDictionary* serializers were removed in engine 289; only the
+        // parent-data array validator survives there. Fields that lost their explicit serializer
+        // are still picked up below via their declared type (ProtoId/EntProtoId).
+        if (def == typeof(AbstractPrototypeIdArraySerializer<>) &&
             args[0] == typeof(EntityPrototype))
         {
             kind = EntityPrototypeSerializerKind.Sequence;
-            return true;
-        }
-
-        if (def == typeof(PrototypeIdDictionarySerializer<,>) &&
-            args[1] == typeof(EntityPrototype))
-        {
-            kind = EntityPrototypeSerializerKind.DictionaryKey;
-            return true;
-        }
-
-        if (def == typeof(PrototypeIdValueDictionarySerializer<,>) &&
-            args[1] == typeof(EntityPrototype))
-        {
-            kind = EntityPrototypeSerializerKind.DictionaryValue;
             return true;
         }
 
