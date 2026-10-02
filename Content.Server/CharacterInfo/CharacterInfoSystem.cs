@@ -10,9 +10,10 @@ using Content.Shared.Mind;
 using Content.Shared.Objectives;
 using Content.Shared.Objectives.Components;
 using Content.Shared.Objectives.Systems;
-using Robust.Shared.Player;
 using System.Diagnostics.CodeAnalysis;
-
+using Content.Shared.Roles;
+using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 namespace Content.Server.CharacterInfo;
 
 public sealed class CharacterInfoSystem : EntitySystem
@@ -39,7 +40,7 @@ public sealed class CharacterInfoSystem : EntitySystem
         var entity = args.SenderSession.AttachedEntity.Value;
 
         var objectives = new Dictionary<string, List<ObjectiveInfo>>();
-        var jobTitle = Loc.GetString("character-info-no-profession");
+        ProtoId<JobPrototype>? jobId = null; // CorvaxGoob
         string? briefing = null;
         var antagAllComplete = false;
         var antagCoinGranted = false;
@@ -58,8 +59,8 @@ public sealed class CharacterInfoSystem : EntitySystem
                 objectives[issuer].Add(info.Value);
             }
 
-            if (_jobs.MindTryGetJobName(mindId, out var jobName))
-                jobTitle = jobName;
+            if (_jobs.MindTryGetJob(mindId, out var job)) // CorvaxGoob
+                jobId = job;
 
             briefing = _roles.MindGetBriefing(mindId);
             antagAllComplete = _antagObjectiveRewards.AreAllObjectivesComplete(mindId, mind);
@@ -138,5 +139,4 @@ public sealed class CharacterInfoSystem : EntitySystem
         mindId = bestId.Value;
         mind = bestMind;
         return true;
-    }
-}
+    }}
