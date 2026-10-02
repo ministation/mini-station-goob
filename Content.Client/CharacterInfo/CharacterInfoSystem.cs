@@ -2,8 +2,10 @@
 
 using Content.Shared.CharacterInfo;
 using Content.Shared.Objectives;
+using Content.Shared.Roles;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client.CharacterInfo;
 
@@ -36,13 +38,12 @@ public sealed class CharacterInfoSystem : EntitySystem
         var entity = GetEntity(msg.NetEntity);
         var data = new CharacterData(
             entity,
-            msg.JobTitle,
+            msg.JobProto, // CorvaxGoob
             msg.Objectives,
             msg.Briefing,
             Name(entity),
             msg.AntagAllObjectivesComplete,
             msg.AntagObjectiveCoinRewardGranted);
-
         OnCharacterUpdate?.Invoke(data);
     }
 
@@ -55,7 +56,7 @@ public sealed class CharacterInfoSystem : EntitySystem
 
     public readonly record struct CharacterData(
         EntityUid Entity,
-        string Job,
+        ProtoId<JobPrototype>? JobProto, // CorvaxGoob
         Dictionary<string, List<ObjectiveInfo>> Objectives,
         string? Briefing,
         string EntityName,

@@ -4,6 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <widgets:GhostGui xmlns="https://spacestation14.io"
                   xmlns:widgets="clr-namespace:Content.Client.UserInterface.Systems.Ghost.Widgets"
+                  xmlns:corvax="clr-namespace:Content.Client._CorvaxGoob.Ghost"
                   HorizontalAlignment="Center">
     <BoxContainer Orientation="Horizontal">
         <Button Name="ReturnToBodyButton" Text="{Loc ghost-gui-return-to-body-button}" />
@@ -11,5 +12,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <Button Name="GhostRolesButton" />
         <Button Name="AntagTokensButton" Text="{Loc antag-token-window-roles-title}" />
         <Button Name="ThunderdomeButton" Text="{Loc thunderdome-ghost-button-default}" />
-    </BoxContainer>
+        <corvax:GhostGoLobbyButton /> <!-- CorvaxGoob-GoLobby -->    </BoxContainer>
 </widgets:GhostGui>

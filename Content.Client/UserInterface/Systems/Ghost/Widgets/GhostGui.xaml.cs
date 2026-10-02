@@ -22,6 +22,7 @@ public sealed partial class GhostGui : UIWidget
     public event Action? ThunderdomePressed; // Goobstation - Thunderdome
     public event Action? ReturnToRoundPressed; // FREAKY EDIT / Mini
     private int _prevImportantRoles;
+    private int _prevNumberRoles;
 
     public GhostGui()
     {
@@ -46,10 +47,12 @@ public sealed partial class GhostGui : UIWidget
         Visible = false;
     }
 
-    public void Update(int? roles, bool? canReturnToBody, bool? canTakeGhostRoles = true, int? importantRoles = null)
+    // Ghoob edit && CorvaxGoob edit : GhostBar
+    public void Update(int? roles, bool? canReturnToBody, bool? canEnterGhostBar = true, bool? canTakeGhostRoles = true, int? importantRoles = null)
     {
         ReturnToBodyButton.Disabled = !canReturnToBody ?? true;
         GhostRolesButton.Disabled = !canTakeGhostRoles ?? true;
+        // Goobstation end
 
         if (roles != null)
         {

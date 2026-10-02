@@ -156,9 +156,11 @@
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Content.Client._CorvaxGoob.CharacterEditor.UI; // CorvaxGoob-TTS
+using Content.Client._CorvaxGoob.Chat;
+using Content.Client._CorvaxGoob.TTS;
 using Content.Client._Mini.AntagUnlock;
-using Content.Client._Mini.JobUnlock;
-using Content.Client.Humanoid;
+using Content.Client._Mini.JobUnlock;using Content.Client.Humanoid;
 using Content.Client.Lobby.UI.Loadouts;
 using Content.Client.Lobby.UI.Roles;
 using Content.Client.Message;
@@ -166,7 +168,8 @@ using Content.Client.Players.PlayTimeTracking;
 using Content.Client.Sprite;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface;
-using Content.Client.UserInterface.Systems.Guidebook;
+using Content.Client.UserInterface.Systems.Chat;using Content.Client.UserInterface.Systems.Guidebook;
+using Content.Shared._CorvaxGoob;
 using Content.Shared._CorvaxGoob.CCCVars;
 using Content.Corvax.Interfaces.Shared;
 using Content.Shared._Mini.MiniCCVars;
@@ -196,12 +199,13 @@ using Robust.Shared.ContentPack;
 using Robust.Shared.IoC;
 using Robust.Shared.Enums;
 using Robust.Shared.Physics;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
+using System.IO;
+using System.Linq;
+using System.Numerics;
 using Direction = Robust.Shared.Maths.Direction;
-using Content.Client._CorvaxGoob.TTS;
-using Content.Shared._CorvaxGoob; // CorvaxGoob-TTS
 
 namespace Content.Client.Lobby.UI
 {
@@ -231,6 +235,8 @@ namespace Content.Client.Lobby.UI
 
         // One at a time.
         private LoadoutWindow? _loadoutWindow;
+
+        private HighlightProfileEditorMenu? _highlightEditor; // CorvaxGoob
 
         private TTSTab? _ttsTab;// CorvaxGoob-TTS
 
@@ -1319,8 +1325,7 @@ namespace Content.Client.Lobby.UI
 
                     _jobPriorities.Add((job.ID, selector));
                     category.TrackJob(job.ID);
-                    category.JobsContent.AddChild(selector);
-                }
+                    category.JobsContent.AddChild(selector);                }
             }
 
             UpdateJobPriorities();
