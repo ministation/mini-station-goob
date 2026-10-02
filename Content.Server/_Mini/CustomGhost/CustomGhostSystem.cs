@@ -28,6 +28,9 @@ public sealed class CustomGhostSystem : EntitySystem
 
     private async void OnPlayerAttached(EntityUid uid, GhostComponent component, PlayerAttachedEvent args)
     {
+        if (EntityManager.TrySystem<Content.Server._CorvaxGoob.Ghost.GhostGoLobbySystem>(out var lobby))
+            lobby.MarkGhostAttached(uid);
+
         if (!_playerManager.TryGetSessionByEntity(uid, out var session))
             return;
 

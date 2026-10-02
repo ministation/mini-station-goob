@@ -49,7 +49,6 @@ public sealed partial class GhostGoLobbySystem : EntitySystem
     {
         SubscribeNetworkEvent<GhostGoLobbyEvent>(OnGhostGoLobby);
         SubscribeLocalEvent<GameRunLevelChangedEvent>(OnRunLevelChanged);
-        SubscribeLocalEvent<GhostComponent, ComponentStartupEvent>(OnGhostStartup);
 
         Subs.CVar(_cfg, CCCVars.GhostGoLobbyEnabled, value => _enabled = value, true);
         Subs.CVar(_cfg, CCCVars.GhostGoLobbyTimeHours, value => _requiredPlaytime = TimeSpan.FromHours(value), true);
@@ -78,7 +77,12 @@ public sealed partial class GhostGoLobbySystem : EntitySystem
             _usedCharacters.Clear();
     }
 
-    private void OnGhostStartup(EntityUid uid, GhostComponent component, ComponentStartupEvent args)
+    /// <summary>
+    /// Добавляет компонент лобби призрака. Вызывается из CustomGhostSystem при
+    /// привязке игрока: в движке 289 на пару (компонент, событие) допустима одна
+    /// подписка, поэтому отдельная подписка на PlayerAttachedEvent невозможна.
+    /// </summary>
+    public void MarkGhostAttached(EntityUid uid)
     {
         if (HasComp<GhostGoLobbyComponent>(uid))
             return;
