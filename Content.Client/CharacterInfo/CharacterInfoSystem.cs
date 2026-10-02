@@ -39,7 +39,6 @@ public sealed class CharacterInfoSystem : EntitySystem
         var data = new CharacterData(
             entity,
             msg.JobProto, // CorvaxGoob
-            msg.JobTitle,
             msg.Objectives,
             msg.Briefing,
             Name(entity),

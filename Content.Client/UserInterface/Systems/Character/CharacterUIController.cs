@@ -260,10 +260,13 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
 
     private static bool IsProgressOnlyUpdate(CharacterData prev, CharacterData next)
     {
+        var (_, prevJob, _, _, _, _, _) = prev;
+        var (_, nextJob, _, _, _, _, _) = next;
+
         if (prev.Entity != next.Entity)
             return false;
 
-        if (prev.Job != next.Job || prev.EntityName != next.EntityName)
+        if (prevJob != nextJob || prev.EntityName != next.EntityName)
             return false;
 
         if (prev.Briefing != next.Briefing)

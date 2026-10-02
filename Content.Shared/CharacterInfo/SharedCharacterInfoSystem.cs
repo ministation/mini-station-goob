@@ -30,12 +30,11 @@ public sealed class CharacterInfoEvent : EntityEventArgs
 
     public CharacterInfoEvent(
         NetEntity netEntity,
-        string jobTitle,
+        ProtoId<JobPrototype>? jobProto, // CorvaxGoob
         Dictionary<string, List<ObjectiveInfo>> objectives,
         string? briefing,
         bool antagAllObjectivesComplete = false,
         bool antagObjectiveCoinRewardGranted = false)
-    public CharacterInfoEvent(NetEntity netEntity, ProtoId<JobPrototype>? jobProto, Dictionary<string, List<ObjectiveInfo>> objectives, string? briefing) // CorvaxGoob
     {
         NetEntity = netEntity;
         JobProto = jobProto; // CorvaxGoob

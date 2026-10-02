@@ -69,7 +69,7 @@ public sealed class CharacterInfoSystem : EntitySystem
 
         RaiseNetworkEvent(new CharacterInfoEvent(
             GetNetEntity(entity),
-            jobTitle,
+            jobId,
             objectives,
             briefing,
             antagAllComplete,
