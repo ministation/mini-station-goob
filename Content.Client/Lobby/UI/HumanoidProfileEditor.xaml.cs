@@ -160,16 +160,16 @@ using Content.Client._CorvaxGoob.CharacterEditor.UI; // CorvaxGoob-TTS
 using Content.Client._CorvaxGoob.Chat;
 using Content.Client._CorvaxGoob.TTS;
 using Content.Client._Mini.AntagUnlock;
-using Content.Client._Mini.JobUnlock;using Content.Client.Humanoid;
-using Content.Client.Lobby.UI.Loadouts;
+using Content.Client._Mini.JobUnlock;
+using Content.Client.Humanoid;using Content.Client.Lobby.UI.Loadouts;
 using Content.Client.Lobby.UI.Roles;
 using Content.Client.Message;
 using Content.Client.Players.PlayTimeTracking;
 using Content.Client.Sprite;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface;
-using Content.Client.UserInterface.Systems.Chat;using Content.Client.UserInterface.Systems.Guidebook;
-using Content.Shared._CorvaxGoob;
+using Content.Client.UserInterface.Systems.Chat;
+using Content.Client.UserInterface.Systems.Guidebook;using Content.Shared._CorvaxGoob;
 using Content.Shared._CorvaxGoob.CCCVars;
 using Content.Corvax.Interfaces.Shared;
 using Content.Shared._Mini.MiniCCVars;
@@ -1323,10 +1323,71 @@ namespace Content.Client.Lobby.UI
                         SetDirty();
                     };
 
+                    var loadoutWindowBtn = new Button()
+                    {
+                        Text = Loc.GetString("loadout-window"),
+                        HorizontalAlignment = HAlignment.Right,
+                        VerticalAlignment = VAlignment.Center,
+                        Margin = new Thickness(3f, 3f, 0f, 0f),
+                    };
+
+                    // CorvaxGoob-Start
+                    var highLightsWindowBtn = new Button()
+                    {
+                        HorizontalAlignment = HAlignment.Right,
+                        Margin = new Thickness(3f, 0f, 0f, 0f),
+                        MinWidth = 32
+                    };
+                    highLightsWindowBtn.AddChild(new TextureRect()
+                    {
+                        TexturePath = "/Textures/Interface/Nano/filter.svg.96dpi.png",
+                        HorizontalAlignment = HAlignment.Center,
+                        VerticalAlignment = VAlignment.Center,
+                        TextureScale = new Vector2(0.75f, 0.75f)
+                    });
+
+                    highLightsWindowBtn.OnPressed += args =>
+                    {
+                        _highlightEditor = new(job);
+                        _highlightEditor.OpenCentered();
+                    };
+                    // CorvaxGoob-End
+
+                    var collection = IoCManager.Instance!;
+                    var protoManager = collection.Resolve<IPrototypeManager>();
+
+                    // If no loadout found then disabled button
+                    if (!protoManager.TryIndex<RoleLoadoutPrototype>(LoadoutSystem.GetJobPrototype(job.ID), out var roleLoadoutProto))
+                    {
+                        loadoutWindowBtn.Disabled = true;
+                    }
+                    // else
+                    else
+                    {
+                        loadoutWindowBtn.OnPressed += args =>
+                        {
+                            RoleLoadout? loadout = null;
+
+                            // Clone so we don't modify the underlying loadout.
+                            Profile?.Loadouts.TryGetValue(LoadoutSystem.GetJobPrototype(job.ID), out loadout);
+                            loadout = loadout?.Clone();
+
+                            if (loadout == null)
+                            {
+                                loadout = new RoleLoadout(roleLoadoutProto.ID);
+                                loadout.SetDefault(Profile, _playerManager.LocalSession, _prototypeManager);
+                            }
+
+                            OpenLoadout(job, loadout, roleLoadoutProto);
+                        };
+                    }
+
                     _jobPriorities.Add((job.ID, selector));
                     category.TrackJob(job.ID);
-                    category.JobsContent.AddChild(selector);                }
-            }
+                    category.JobsContent.AddChild(selector);
+                    category.JobsContent.AddChild(loadoutWindowBtn);
+                    category.JobsContent.AddChild(highLightsWindowBtn);
+                }            }
 
             UpdateJobPriorities();
         }

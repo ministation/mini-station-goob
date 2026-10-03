@@ -49,6 +49,7 @@ public sealed partial class GhostGui : UIWidget
 
     // Ghoob edit && CorvaxGoob edit : GhostBar
     public void Update(int? roles, bool? canReturnToBody, bool? canEnterGhostBar = true, bool? canTakeGhostRoles = true, int? importantRoles = null)
+    public void Update(int? roles, bool? canReturnToBody, bool? canEnterGhostBar = true, bool? canTakeGhostRoles = true)
     {
         ReturnToBodyButton.Disabled = !canReturnToBody ?? true;
         GhostRolesButton.Disabled = !canTakeGhostRoles ?? true;

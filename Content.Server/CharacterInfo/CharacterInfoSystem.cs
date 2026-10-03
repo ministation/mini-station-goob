@@ -13,8 +13,7 @@ using Content.Shared.Objectives.Systems;
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Roles;
 using Robust.Shared.Player;
-using Robust.Shared.Prototypes;
-namespace Content.Server.CharacterInfo;
+using Robust.Shared.Prototypes;namespace Content.Server.CharacterInfo;
 
 public sealed class CharacterInfoSystem : EntitySystem
 {
@@ -139,4 +138,5 @@ public sealed class CharacterInfoSystem : EntitySystem
         mindId = bestId.Value;
         mind = bestMind;
         return true;
-    }}
+    }
+}

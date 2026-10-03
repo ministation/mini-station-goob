@@ -9,8 +9,7 @@ using Content.Shared._Mini.TypanWar;
 using Content.Shared.Ghost;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
-using GhostWarpsResponseEvent = Content.Shared.Ghost.SharedGhostSystem.GhostWarpsResponseEvent;
-namespace Content.Client.UserInterface.Systems.Ghost;
+using GhostWarpsResponseEvent = Content.Shared.Ghost.SharedGhostSystem.GhostWarpsResponseEvent;namespace Content.Client.UserInterface.Systems.Ghost;
 
 // TODO hud refactor BEFORE MERGE fix ghost gui being too far up
 public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSystem>
@@ -72,12 +71,12 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         }
 
         Gui.Visible = _system?.IsGhost ?? false;
-        Gui.Update(_system?.AvailableGhostRoleCount, _system?.Player?.CanReturnToBody, _system?.Player?.CanTakeGhostRoles, _system?.AvailableImportantGhostRoleCount > 0);
+        Gui.Update(_system?.AvailableGhostRoleCount, _system?.Player?.CanReturnToBody, _system?.Player?.CanEnterGhostBar, _system?.Player?.CanTakeGhostRoles, _system?.AvailableImportantGhostRoleCount > 0); // CorvaxGoob-GhostBar edit + Mini important roles
 
         // Mini-station: Typan war ghost HUD restrictions
         var war = EntityManager.System<TypanWarUiSystem>();
-        Gui.SetWarModeRestrictions(war.Phase is TypanWarPhase.Pending or TypanWarPhase.Active);    }
-
+        Gui.SetWarModeRestrictions(war.Phase is TypanWarPhase.Pending or TypanWarPhase.Active);
+    }
     private void OnPlayerRemoved(GhostComponent component)
     {
         Gui?.Hide();
@@ -132,7 +131,8 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         Gui.ReturnToBodyPressed += ReturnToBody;
         Gui.ReturnToRoundPressed += ReturnToRound; // FREAKY EDIT / Mini
         Gui.GhostRolesPressed += GhostRolesPressed;
-        Gui.ThunderdomePressed += ThunderdomePressed; // Goobstation - Thunderdome
+        Gui.GhostBarPressed += GhostBarPressed; // CorvaxGoob-GhostBar
+        Gui.GhostBarWindow.SpawnButtonPressed += GhostBarSpawnPressed; // CorvaxGoob-GhostBar        Gui.ThunderdomePressed += ThunderdomePressed; // Goobstation - Thunderdome
         Gui.TargetWindow.WarpClicked += OnWarpClicked;
 
         UpdateGui();
@@ -161,8 +161,9 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
     private void ReturnToRound() // FREAKY EDIT
     {
         _system?.ReturnToRound();
-    }    private void RequestWarps()
-    {
+    }
+
+    private void RequestWarps()    {
         _system?.RequestWarps();
         Gui?.TargetWindow.Populate();
         Gui?.TargetWindow.OpenCentered();

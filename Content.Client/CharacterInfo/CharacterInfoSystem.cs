@@ -43,8 +43,7 @@ public sealed class CharacterInfoSystem : EntitySystem
             msg.Briefing,
             Name(entity),
             msg.AntagAllObjectivesComplete,
-            msg.AntagObjectiveCoinRewardGranted);
-        OnCharacterUpdate?.Invoke(data);
+            msg.AntagObjectiveCoinRewardGranted);        OnCharacterUpdate?.Invoke(data);
     }
 
     public List<Control> GetCharacterInfoControls(EntityUid uid)
