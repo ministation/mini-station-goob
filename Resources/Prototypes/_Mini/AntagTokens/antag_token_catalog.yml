@@ -2,7 +2,6 @@
 # Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 #
 # freeMinimumSponsorLevel (optional): omit — только за токены. 0 — бесплатно любому игроку (один раз за раунд).
-# 1–5 — бесплатно при уровне спонсора >= значения, не чаще 1 раза в сутки (UTC) на аккаунт.
 
 - type: antagTokenCatalog
   id: Default
@@ -17,7 +16,6 @@
       gameRuleId: OopsAllThieves
       tagLocKey: antag-token-window-tag-queue
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 1
 
     - id: revenant
       nameLocKey: antag-store-role-revenant-name
@@ -32,7 +30,6 @@
       requiresInRound: true
       minimumPlayers: 10
       minimumTimeFromRoundStart: 1800
-      freeMinimumSponsorLevel: 2
 
     - id: abductor
       nameLocKey: antag-store-role-abductor-name
@@ -47,7 +44,6 @@
       requiresInRound: true
       minimumPlayers: 10
       minimumTimeFromRoundStart: 900
-      freeMinimumSponsorLevel: 2
 
     - id: paradox_clone
       nameLocKey: antag-store-role-clone-name
@@ -62,7 +58,6 @@
       minimumPlayers: 10
       requiresInRound: true
       minimumTimeFromRoundStart: 1200
-      freeMinimumSponsorLevel: 2
 
     - id: vox
       nameLocKey: antag-store-role-vox-name
@@ -77,7 +72,6 @@
       minimumPlayers: 15
       requiresInRound: true
       minimumTimeFromRoundStart: 2100
-      freeMinimumSponsorLevel: 1
 
     - id: agent
       nameLocKey: antag-store-role-agent-name
@@ -89,7 +83,6 @@
       gameRuleId: Traitor
       tagLocKey: antag-token-window-tag-queue
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 1
 
     - id: devil
       nameLocKey: antag-store-role-devil-name
@@ -102,7 +95,6 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 10
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 3
       jobBlacklist: [Chaplain]
 
     - id: rat_king
@@ -118,7 +110,6 @@
       minimumPlayers: 15
       requiresInRound: true
       minimumTimeFromRoundStart: 900
-      freeMinimumSponsorLevel: 1
 
     - id: borer
       nameLocKey: cortical-borer-ghostrole-name
@@ -133,7 +124,6 @@
       minimumPlayers: 15
       requiresInRound: true
       minimumTimeFromRoundStart: 300
-      freeMinimumSponsorLevel: 2
 
     - id: bingle
       nameLocKey: antag-store-role-bingle-name
@@ -162,7 +152,6 @@
       minimumPlayers: 20
       requiresInRound: true
       minimumTimeFromRoundStart: 1800
-      freeMinimumSponsorLevel: 2
 
     - id: slasher
       nameLocKey: antag-store-role-slasher-name
@@ -177,7 +166,6 @@
       minimumPlayers: 20
       requiresInRound: true
       minimumTimeFromRoundStart: 1800
-      freeMinimumSponsorLevel: 4
 
     - id: headrev
       nameLocKey: antag-store-role-headrev-name
@@ -190,7 +178,6 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 25
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 3
 
     - id: hastur
       nameLocKey: antag-store-role-hastur-name
@@ -217,7 +204,6 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 30
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 2
 
     - id: slaughter_demon
       nameLocKey: antag-store-role-slaughter-demon-name
@@ -232,7 +218,6 @@
       minimumPlayers: 20
       requiresInRound: true
       minimumTimeFromRoundStart: 1800
-      freeMinimumSponsorLevel: 4
 
     - id: cosmic_cult
       nameLocKey: antag-store-role-cosmic-cult-name
@@ -246,7 +231,6 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 20
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 3
       jobBlacklist: [Chaplain]
 
     - id: ratvar_cult
@@ -261,7 +245,6 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 20
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 3
       jobBlacklist: [Chaplain]
 
     - id: blood_cult
@@ -276,7 +259,6 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 20
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 3
       jobBlacklist: [Chaplain]
 
     - id: heretic
@@ -290,7 +272,6 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 20
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 4
       jobBlacklist: [Chaplain]
 
     - id: dragon
@@ -306,7 +287,6 @@
       minimumPlayers: 20
       requiresInRound: true
       minimumTimeFromRoundStart: 1800
-      freeMinimumSponsorLevel: 2
 
     - id: shadowling
       nameLocKey: antag-store-role-shadowling-name
@@ -319,7 +299,6 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 25
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 4
 
     - id: xenomorph
       nameLocKey: antag-store-role-xenomorph-name
@@ -367,7 +346,6 @@
       ghostTagLocKey: antag-token-window-tag-ghost
       minimumPlayers: 25
       minimumTimeFromRoundStart: 2700
-      freeMinimumSponsorLevel: 3
 
     - id: changeling
       nameLocKey: antag-store-role-changeling-name
@@ -380,7 +358,6 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 25
       requiresPreRoundLobby: true
-      freeMinimumSponsorLevel: 4
       speciesBlacklist: [IPC]
 
     - id: wraith
@@ -396,7 +373,6 @@
       minimumPlayers: 30
       requiresInRound: true
       minimumTimeFromRoundStart: 2400
-      freeMinimumSponsorLevel: 4
 
     - id: wizard
       nameLocKey: antag-store-role-wizard-name
@@ -411,7 +387,6 @@
       minimumPlayers: 30
       requiresInRound: true
       minimumTimeFromRoundStart: 2100
-      freeMinimumSponsorLevel: 4
 
     - id: blob
       nameLocKey: antag-store-role-blob-name
@@ -426,4 +401,3 @@
       minimumPlayers: 30
       requiresInRound: true
       minimumTimeFromRoundStart: 2700
-      freeMinimumSponsorLevel: 5

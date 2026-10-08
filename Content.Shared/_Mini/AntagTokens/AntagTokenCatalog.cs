@@ -56,19 +56,8 @@ public static class AntagTokenCatalog
 
     public static readonly (TimeSpan Threshold, int RewardAmount)[] OnlineRewardMilestones = [];
 
-    private static readonly Dictionary<int, int> SponsorMonthlyCaps = new()
-    {
-        [1] = 20,
-        [2] = 30,
-        [3] = 40,
-        [4] = 60,
-        [5] = 100,
-    };
-
-    public static int? GetSponsorMonthlyCap(int sponsorLevel)
-    {
-        return SponsorMonthlyCaps.GetValueOrDefault(sponsorLevel);
-    }
+    /// <summary>Monthly token earning cap, the same for sponsors and regular players.</summary>
+    public const int MonthlyTokenCap = 100;
 
     public static string GetRoleCreditEntryId(string roleId)
     {

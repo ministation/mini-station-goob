@@ -4,7 +4,6 @@ using System.Linq;
 using Content.Server._Mini.TypanWar;
 using Content.Server._TT.StationHandleJob;
 using Content.Server.Administration.Managers;
-using Content.Server.Sponsors;
 using Content.Server._Mini.AntagTokens;
 using Content.Server.Antag.Components;
 using Content.Server.Chat.Managers;
@@ -67,7 +66,6 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
     //[Dependency] private readonly LastRolledAntagManager _lastRolled = default!; // Goobstation CorvaxGoob-Deleted
     [Dependency] private readonly PlayTimeTrackingManager _playTimeManager = default!;
     [Dependency] private readonly SkillsSystem _skills = default!; // CorvaxGoob-Skills
-    [Dependency] private readonly SponsorSystem _sponsor = default!; // mini-station donate privellege
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly TTStationHandleJobSystem _ttStationHandleJob = default!;
     [Dependency] private readonly TypanStationWarRuleSystem _typanWar = default!;
@@ -637,28 +635,6 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
             if (ValidAntagPreference(session, def.PrefRoles))
             {
                 preferredList.Add(session);
-                //mini-station donate privellege
-                var sponsor = _sponsor.Sponsors.FirstOrDefault(s => s.Uid == session.UserId.ToString());
-
-                if (sponsor.Level > 0)
-                {
-                    var level = sponsor.Level;
-
-                    // РџСЂРѕРІРµСЂСЏРµРј СѓСЃР»РѕРІРёСЏ РїРѕ СЂРѕР»СЏРј Рё СѓСЂРѕРІРЅСЏРј
-                    bool matchesTier1 = (def.PrefRoles.Contains("Traitor") || def.PrefRoles.Contains("Thief")) && level > 0;
-                    bool matchesTier2 = (def.PrefRoles.Contains("HeadRev") || def.PrefRoles.Contains("Zombie") || def.PrefRoles.Contains("Abductor")) && level > 1;
-                    bool matchesTier3 = (def.PrefRoles.Contains("Nukeops") || def.PrefRoles.Contains("Devil") || def.PrefRoles.Contains("Cultist")) && level > 2;
-                    bool matchesTier4 = level > 3;
-
-                    // Р•СЃР»Рё С…РѕС‚СЊ РѕРґРЅРѕ СѓСЃР»РѕРІРёРµ СЃСЂР°Р±РѕС‚Р°Р»Рѕ вЂ” РґРѕР±Р°РІР»СЏРµРј РІРµСЃР°
-                    if (matchesTier1 || matchesTier2 || matchesTier3 || matchesTier4)
-                    {
-                        for (var i = 0; i < 4; i++)
-                        {
-                            preferredList.Add(session);
-                        }
-                    }
-                }
             }
             else if (ValidAntagPreference(session, def.FallbackRoles))
             {

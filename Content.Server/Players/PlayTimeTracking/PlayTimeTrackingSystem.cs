@@ -247,9 +247,6 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
             return true;
 
         var tokens = EntityManager.System<AntagTokenSystem>();
-        if (tokens.GetEffectiveSponsorLevel(player.UserId) > 0)
-            return true;
-
         if (tokens.HasJobUnlock(player.UserId, job))
             return true;
 
@@ -281,9 +278,6 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
             return true;
 
         var tokens = EntityManager.System<AntagTokenSystem>();
-        if (tokens.GetEffectiveSponsorLevel(player.UserId) > 0)
-            return true;
-
         if (tokens.HasAntagUnlock(player.UserId, antag))
             return true;
 
@@ -316,9 +310,6 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
         }
 
         var tokens = EntityManager.System<AntagTokenSystem>();
-        if (tokens.GetEffectiveSponsorLevel(player.UserId) > 0)
-            return roles;
-
         foreach (var job in _prototypes.EnumeratePrototypes<JobPrototype>())
         {
             if (tokens.HasJobUnlock(player.UserId, job.ID))
