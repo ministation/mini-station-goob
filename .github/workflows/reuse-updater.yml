@@ -105,12 +105,16 @@ jobs:
         working-directory: ${{ github.workspace }}
 
       - name: Fork PR needs BOT_TOKEN to push
-        if: github.event.pull_request.head.repo.full_name != github.repository && secrets.BOT_TOKEN == ''
+        env:
+          HAS_BOT_TOKEN: ${{ secrets.BOT_TOKEN != '' }}
+        if: github.event.pull_request.head.repo.full_name != github.repository && env.HAS_BOT_TOKEN == 'true'
         run: |
           echo "::notice::Пуш в форк недоступен через GITHUB_TOKEN. Добавьте в secrets репозитория-получателя PAT с правом push в ${{ github.event.pull_request.head.repo.full_name }} (имя BOT_TOKEN) либо обновите заголовки REUSE локально."
 
       - name: Commit changes
-        if: github.event.pull_request.head.repo.full_name == github.repository || secrets.BOT_TOKEN != ''
+        env:
+          HAS_BOT_TOKEN: ${{ secrets.BOT_TOKEN != '' }}
+        if: github.event.pull_request.head.repo.full_name == github.repository || env.HAS_BOT_TOKEN == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: Automatically update REUSE headers"

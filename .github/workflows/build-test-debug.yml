@@ -65,7 +65,8 @@ jobs:
       shell: bash
       env:
         DOTNET_gcServer: 1
-        SHARD: ${{ matrix.shard }}      run: |
+        SHARD: ${{ matrix.shard }}
+      run: |
         set -euo pipefail
         if [ "$SHARD" = "heavy" ]; then
           FILTER='FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest'
