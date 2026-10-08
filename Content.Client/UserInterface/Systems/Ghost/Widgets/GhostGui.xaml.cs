@@ -52,7 +52,6 @@ public sealed partial class GhostGui : UIWidget
     {
         ReturnToBodyButton.Disabled = !canReturnToBody ?? true;
         GhostRolesButton.Disabled = !canTakeGhostRoles ?? true;
-        // Goobstation end
 
         if (roles != null)
         {
