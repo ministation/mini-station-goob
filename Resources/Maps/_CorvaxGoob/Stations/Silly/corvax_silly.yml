@@ -9548,14 +9548,10 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
   - uid: 192
     components:
     - type: Transform
@@ -9563,16 +9559,11 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
-    - type: SiloUtilizer
-      silo: 4069- proto: BananiumHorn
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
+- proto: BananiumHorn
   entities:
   - uid: 8482
     components:
@@ -19758,14 +19749,10 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
 - proto: Carpet
   entities:
   - uid: 1757
@@ -23329,16 +23316,11 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
-    - type: SiloUtilizer
-      silo: 4069- proto: CleanerDispenser
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
+- proto: CleanerDispenser
   entities:
   - uid: 2292
     components:
@@ -28048,14 +28030,10 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
 - proto: ERTSpawnerLeader
   entities:
   - uid: 8148
@@ -39433,16 +39411,11 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
-    - type: SiloUtilizer
-      silo: 4069- proto: OxygenAndNitrousOxideCanister
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
+- proto: OxygenAndNitrousOxideCanister
   entities:
   - uid: 4113
     components:
@@ -41286,14 +41259,10 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
 - proto: PsychBed
   entities:
   - uid: 4331
@@ -45158,16 +45127,11 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
-    - type: SiloUtilizer
-      silo: 4069- proto: Screwdriver
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
+- proto: Screwdriver
   entities:
   - uid: 7246
     components:
@@ -45184,14 +45148,10 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
 - proto: SeedExtractor
   entities:
   - uid: 4896
@@ -46746,27 +46706,6 @@ entities:
     - type: Transform
       pos: 6.5,16.5
       parent: 2
-- proto: SpawnPointGeneticist
-  entities:
-  - uid: 8868
-    components:
-    - type: Transform
-      parent: 2
-      pos: 2.5,12.5
-- proto: MedicalScanner
-  entities:
-  - uid: 8869
-    components:
-    - type: Transform
-      parent: 2
-      pos: 3.5,12.5
-- proto: DnaModifierConsole
-  entities:
-  - uid: 8870
-    components:
-    - type: Transform
-      parent: 2
-      pos: 4.5,12.5
 - proto: SpawnPointMedicalIntern
   entities:
   - uid: 5048
@@ -47056,6 +46995,7 @@ entities:
     - type: Transform
       pos: -7.5,-4.5
       parent: 8606
+    - type: Timer
   - uid: 8792
     components:
     - type: MetaData
@@ -49893,14 +49833,10 @@ entities:
       parent: 2
     - type: TechnologyDatabase
       supportedDisciplines:
-      - Engineering
-      - Security
-      - Cargo
-      - Shaft
-      - Scientific
-      - Robotics
-      - Medical
-      - Service
+      - Industrial
+      - Arsenal
+      - Experimental
+      - CivilianServices
 - proto: UniformShortsRed
   entities:
   - uid: 2315
