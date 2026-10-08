@@ -14,6 +14,7 @@ using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Roles;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+
 namespace Content.Server.CharacterInfo;
 
 public sealed class CharacterInfoSystem : EntitySystem
@@ -73,7 +74,7 @@ public sealed class CharacterInfoSystem : EntitySystem
             objectives,
             briefing,
             antagAllComplete,
-            antagCoinGranted), args.SenderSession);
+            antagCoinGranted), args.SenderSession); // CorvaxGoob
     }
 
     /// <summary>
@@ -139,4 +140,5 @@ public sealed class CharacterInfoSystem : EntitySystem
         mindId = bestId.Value;
         mind = bestMind;
         return true;
-    }}
+    }
+}

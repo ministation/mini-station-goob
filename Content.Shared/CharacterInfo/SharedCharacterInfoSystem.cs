@@ -34,8 +34,7 @@ public sealed class CharacterInfoEvent : EntityEventArgs
         Dictionary<string, List<ObjectiveInfo>> objectives,
         string? briefing,
         bool antagAllObjectivesComplete = false,
-        bool antagObjectiveCoinRewardGranted = false)
-    {
+        bool antagObjectiveCoinRewardGranted = false)    {
         NetEntity = netEntity;
         JobProto = jobProto; // CorvaxGoob
         Objectives = objectives;

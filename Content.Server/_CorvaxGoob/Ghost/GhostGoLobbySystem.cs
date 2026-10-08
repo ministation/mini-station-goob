@@ -10,8 +10,7 @@ using Content.Shared.Ghost;
 using Content.Shared.Popups;
 using Content.Shared.Preferences;
 using Robust.Shared.Configuration;
-using Robust.Shared.GameObjects;
-using Robust.Shared.Player;
+using Robust.Shared.GameObjects;using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
 namespace Content.Server._CorvaxGoob.Ghost;
@@ -82,8 +81,7 @@ public sealed partial class GhostGoLobbySystem : EntitySystem
     /// привязке игрока: в движке 289 на пару (компонент, событие) допустима одна
     /// подписка, поэтому отдельная подписка на PlayerAttachedEvent невозможна.
     /// </summary>
-    public void MarkGhostAttached(EntityUid uid)
-    {
+    public void MarkGhostAttached(EntityUid uid)    {
         if (HasComp<GhostGoLobbyComponent>(uid))
             return;
 

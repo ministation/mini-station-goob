@@ -10,6 +10,7 @@ using Content.Shared.Ghost;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
 using GhostWarpsResponseEvent = Content.Shared.Ghost.SharedGhostSystem.GhostWarpsResponseEvent;
+
 namespace Content.Client.UserInterface.Systems.Ghost;
 
 // TODO hud refactor BEFORE MERGE fix ghost gui being too far up
@@ -76,7 +77,8 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
 
         // Mini-station: Typan war ghost HUD restrictions
         var war = EntityManager.System<TypanWarUiSystem>();
-        Gui.SetWarModeRestrictions(war.Phase is TypanWarPhase.Pending or TypanWarPhase.Active);    }
+        Gui.SetWarModeRestrictions(war.Phase is TypanWarPhase.Pending or TypanWarPhase.Active);
+    }
 
     private void OnPlayerRemoved(GhostComponent component)
     {
@@ -161,7 +163,9 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
     private void ReturnToRound() // FREAKY EDIT
     {
         _system?.ReturnToRound();
-    }    private void RequestWarps()
+    }
+
+    private void RequestWarps()
     {
         _system?.RequestWarps();
         Gui?.TargetWindow.Populate();
