@@ -167,6 +167,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
         ResetLowerBody(ent);
         ClearClothingWalkLayers(ent);
+        ClearJointPatches(ent);
         ent.Comp.WasAnimating = false;
     }
 
@@ -263,6 +264,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             var facing = GetScreenFacing(uid);
             var frontMode = facing is RsiDirection.South or RsiDirection.North;
             EnsureClothingModeIfNeeded((uid, walk), frontMode);
+            EnsureJointPatches((uid, walk), sprite);
 
             var hasShoes = HasSlotVisuals(uid, ShoesSlot);
             var hasOuter = HasSlotVisuals(uid, OuterSlot);
@@ -399,6 +401,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         SetBodyFeetHidden(ent, sprite, hide: false);
         ResetLowerBody(ent, sprite);
         ClearClothingWalkLayers(ent);
+        ClearJointPatches(ent, sprite);
         StopBodyBounce(ent, sprite);
         ent.Comp.WasAnimating = false;
         ent.Comp.Phase = 0f;
@@ -436,6 +439,66 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
             StopBodyBounce((uid, walk), sprite);
         }
+    }
+
+    /// <summary>
+    /// Joint patches: rest-pose duplicates of the moving limb layers, inserted below the torso.
+    /// When a limb lifts, its vacated pixels are filled by the patch with the same art — the
+    /// "root" of the limb stays put while the limb itself rises, so no slit can open at the
+    /// joint (this is the closest a dynamic sprite rig gets to Stardew's baked overlap).
+    /// </summary>
+    private void EnsureJointPatches(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
+    {
+        if (ent.Comp.JointPatchKeys.Count > 0)
+            return;
+
+        // Below the groin: the patch only shows where every upper layer is empty — exactly the
+        // strip a lifting limb vacates.
+        if (!_sprite.LayerMapTryGet((ent.Owner, sprite), HumanoidVisualLayers.Groin, out var insertAt, false))
+            insertAt = 0;
+
+        foreach (var limb in new[] { HumanoidVisualLayers.LLeg, HumanoidVisualLayers.RLeg, HumanoidVisualLayers.LArm, HumanoidVisualLayers.RArm })
+        {
+            if (!_sprite.LayerMapTryGet((ent.Owner, sprite), limb, out var limbIndex, false)
+                || !_sprite.TryGetLayer((ent.Owner, sprite), limbIndex, out var src, false))
+                continue;
+
+            var key = $"walk-patch-{limb}";
+            var layer = _sprite.AddBlankLayer((ent.Owner, sprite), insertAt);
+            _sprite.LayerMapSet((ent.Owner, sprite), key, insertAt);
+
+            var rsi = src.ActualRsi;
+            if (rsi != null)
+                _sprite.LayerSetRsi(layer, rsi, src.State);
+            else if (src.Texture != null)
+                _sprite.LayerSetTexture(layer, src.Texture);
+
+            _sprite.LayerSetColor(layer, src.Color);
+
+            // Mid-walk the limb layer carries an animation offset; the patch must hold the rest pose.
+            _sprite.LayerSetOffset(layer, ent.Comp.TouchedEnumLayers.Contains(limb) ? Vector2.Zero : src.Offset);
+            _sprite.LayerSetScale(layer, src.Scale);
+            _sprite.LayerSetAutoAnimated(layer, src.AutoAnimated);
+            _sprite.LayerSetDirOffset(layer, src.DirOffset);
+            ent.Comp.JointPatchKeys.Add(key);
+        }
+    }
+
+    private void ClearJointPatches(Entity<FootWalkAnimationComponent> ent, SpriteComponent? sprite = null)
+    {
+        if (ent.Comp.JointPatchKeys.Count == 0)
+            return;
+
+        if (sprite == null)
+            _spriteQuery.TryGetComponent(ent.Owner, out sprite);
+
+        if (sprite != null)
+        {
+            foreach (var key in ent.Comp.JointPatchKeys)
+                _sprite.RemoveLayer((ent.Owner, sprite), key, logMissing: false);
+        }
+
+        ent.Comp.JointPatchKeys.Clear();
     }
 
     /// <summary>
@@ -1458,6 +1521,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             {
                 SetBodyFeetHidden((uid, walk), sprite, hide: false);
                 ResetLowerBody((uid, walk), sprite);
+                ClearJointPatches((uid, walk), sprite);
                 StopBodyBounce((uid, walk), sprite);
             }
 
@@ -1489,6 +1553,9 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
     private void ClearClothingWalkLayers(Entity<FootWalkAnimationComponent> ent)
     {
+        // Patches duplicate the limb art and go stale on any appearance change; rebuilt next frame.
+        ClearJointPatches(ent);
+
         if (!ent.Comp.ClothingSplitsActive
             && ent.Comp.ShoeSplitKeys.Count == 0
             && ent.Comp.OuterSplitKeys.Count == 0

@@ -124,6 +124,14 @@ public sealed partial class FootWalkAnimationComponent : Component
     [ViewVariables]
     public float BobRamp;
 
+    /// <summary>
+    /// Static rest-pose duplicates of the moving limb layers (legs, arms), rendered below the
+    /// torso. While a limb lifts, its patch fills the vacated pixels with the same art, so no
+    /// slit can open at the joints on the naked doll.
+    /// </summary>
+    [ViewVariables]
+    public readonly List<string> JointPatchKeys = new();
+
     [ViewVariables]
     public readonly HashSet<Enum> TouchedEnumLayers = new();
 
