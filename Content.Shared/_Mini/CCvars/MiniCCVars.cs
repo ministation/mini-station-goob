@@ -558,6 +558,15 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> HoldLookUp =
         CVarDef.Create("scope.hold_look_up", true, CVar.CLIENT | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Server toggle for the second station spawned every round (Typan/Aspid via
+    /// AdditionalMapLoaderSystem). Loading a second full map costs a lot of round-start time
+    /// and RAM, so it defaults to OFF for development builds; the production server config
+    /// must set it to true to keep the feature live.
+    /// </summary>
+    public static readonly CVarDef<bool> AdditionalMapsEnabled =
+        CVarDef.Create("ministation.additional_maps", false, CVar.SERVER | CVar.ARCHIVE);
+
     /*
      * Connecting UI — cached coin balance from last AntagToken sync
      */

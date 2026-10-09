@@ -1,6 +1,8 @@
 ﻿using Content.Server.GameTicking;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Maps;
 using Robust.Server.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
@@ -12,16 +14,30 @@ public sealed class AdditionalMapLoaderSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
+
+    private bool _enabled;
 
     public override void Initialize()
     {
         base.Initialize();
+
+        _cfg.OnValueChanged(MiniCCVars.AdditionalMapsEnabled, enabled =>
+        {
+            _enabled = enabled;
+            Log.Info($"Additional maps (Typan/Aspid) are {(enabled ? "enabled" : "disabled")}");
+        }, true);
 
         SubscribeLocalEvent<LoadingMapsEvent>(OnGetMaps);
     }
 
     private void OnGetMaps(LoadingMapsEvent args)
     {
+        // Off by default (ministation.additional_maps): skip the second full station to keep
+        // dev rounds cheap. Production server config enables it.
+        if (!_enabled)
+            return;
+
         if (args.Maps.Count == 0)
             return;
 
