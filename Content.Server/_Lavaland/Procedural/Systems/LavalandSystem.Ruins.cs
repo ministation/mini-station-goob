@@ -17,6 +17,118 @@ namespace Content.Server._Lavaland.Procedural.Systems;
 
 public sealed partial class LavalandSystem
 {
+    // Batched ruin placement state (see BeginRuinsBatch/ProcessRuinsBatch).
+    private Entity<LavalandMapComponent>? _ruinLavaland;
+    private Entity<LavalandPreloaderComponent>? _ruinPreloader;
+    private Random? _ruinRandom;
+    private List<Vector2i> _ruinCoords = new();
+    private List<Box2> _ruinUsedSpace = new();
+    private List<LavalandGridRuinPrototype>? _ruinGridList;
+    private int _ruinGridIndex;
+    private List<LavalandDungeonRuinPrototype>? _ruinDungeonList;
+    private int _ruinDungeonIndex;
+    private List<LavalandMarkerRuinPrototype>? _ruinMarkerList;
+    private int _ruinMarkerIndex;
+    private int _ruinPhase; // 0 idle, 1 grid, 2 dungeon, 3 marker
+
+    /// <summary>
+    /// Prepares the ruin placement plan for batched processing (same order and filters as
+    /// <see cref="SetupRuins"/>). Call once after a withRuins:false planet setup.
+    /// </summary>
+    public void BeginRuinsBatch(LavalandRuinPoolPrototype? pool, Entity<LavalandMapComponent> lavaland, Entity<LavalandPreloaderComponent> preloader)
+    {
+        if (pool == null)
+            return;
+
+        _ruinLavaland = lavaland;
+        _ruinPreloader = preloader;
+        _ruinRandom = new Random(lavaland.Comp.Seed);
+        _ruinUsedSpace = GetOutpostBoundary(lavaland);
+        var coords = GetCoordinates(pool.RuinDistance, pool.MaxDistance, pool.MinDistance);
+        _ruinRandom.Shuffle(coords);
+        _ruinCoords = coords;
+
+        _ruinGridList = GetGridRuinProtos(pool.GridRuins);
+        _ruinGridList.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+        _ruinDungeonList = GetDungeonRuinProtos(pool.DungeonRuins);
+        _ruinDungeonList.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+        _ruinMarkerList = GetMarkerRuinProtos(pool.MarkerRuins);
+        _ruinMarkerList.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+
+        _ruinGridIndex = 0;
+        _ruinDungeonIndex = 0;
+        _ruinMarkerIndex = 0;
+        _ruinPhase = 1;
+
+        Log.Debug($"Batched ruin setup on {ToPrettyString(lavaland)}: {_ruinGridList.Count} grid, {_ruinDungeonList.Count} dungeon, {_ruinMarkerList.Count} marker ruins.");
+    }
+
+    /// <summary>
+    /// Places ruins until the time budget is spent or all are done.
+    /// Returns true when the whole ruin plan has been placed (or nothing was queued).
+    /// </summary>
+    public bool ProcessRuinsBatch(TimeSpan budget)
+    {
+        if (_ruinPhase == 0)
+            return true;
+
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        while (true)
+        {
+            switch (_ruinPhase)
+            {
+                case 1:
+                    if (_ruinGridIndex >= _ruinGridList!.Count)
+                    {
+                        _ruinPhase = 2;
+                        _ruinCoords = _ruinCoords!.Where(coord => !_ruinUsedSpace!.Any(usedBox => usedBox.Contains(coord))).ToList();
+                        continue;
+                    }
+
+                    LoadGridRuin(_ruinGridList[_ruinGridIndex++], _ruinLavaland!.Value, _ruinPreloader!.Value, ref _ruinUsedSpace, ref _ruinCoords);
+                    break;
+                case 2:
+                    if (_ruinDungeonIndex >= _ruinDungeonList!.Count)
+                    {
+                        _ruinPhase = 3;
+                        _ruinCoords = _ruinCoords!.Where(coord => !_ruinUsedSpace!.Any(usedBox => usedBox.Contains(coord))).ToList();
+                        continue;
+                    }
+
+                    LoadDungeonRuin(_ruinDungeonList[_ruinDungeonIndex++], _ruinLavaland!.Value, _ruinPreloader!.Value, _ruinRandom!, ref _ruinUsedSpace, ref _ruinCoords);
+                    break;
+                case 3:
+                    if (_ruinMarkerIndex >= _ruinMarkerList!.Count)
+                    {
+                        CleanupRuinsBatch();
+                        return true;
+                    }
+
+                    LoadMarkerRuin(_ruinMarkerList[_ruinMarkerIndex++], _ruinLavaland!.Value, ref _ruinUsedSpace, ref _ruinCoords);
+                    break;
+            }
+
+            if (sw.Elapsed > budget)
+                return false;
+        }
+    }
+
+    private void CleanupRuinsBatch()
+    {
+        _ruinLavaland = null;
+        _ruinPreloader = null;
+        _ruinRandom = null;
+        _ruinCoords.Clear();
+        _ruinUsedSpace.Clear();
+        _ruinGridList = null;
+        _ruinDungeonList = null;
+        _ruinMarkerList = null;
+        _ruinGridIndex = 0;
+        _ruinDungeonIndex = 0;
+        _ruinMarkerIndex = 0;
+        _ruinPhase = 0;
+    }
+
     private void SetupRuins(LavalandRuinPoolPrototype? pool, Entity<LavalandMapComponent> lavaland, Entity<LavalandPreloaderComponent> preloader)
     {
         if (pool == null)

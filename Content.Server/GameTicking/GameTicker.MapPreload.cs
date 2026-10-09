@@ -59,10 +59,17 @@ public sealed partial class GameTicker
     {
         GameMap,
         LavalandPlanet,
+        LavalandRuins,
         GridPreloadCreate,
         GridPreloadOne,
         Finalize,
     }
+
+    /// <summary>
+    /// Max main-thread time per Lavaland ruin-batch stage. A single ruin load is atomic and can
+    /// exceed it, but the batch re-queues so the total never blocks one tick like before.
+    /// </summary>
+    private static readonly TimeSpan RuinBatchBudget = TimeSpan.FromMilliseconds(200);
 
     /// <summary>
     /// Schedule a Lavaland planet as its own tick stage. Safe to call during votes —
@@ -74,6 +81,7 @@ public sealed partial class GameTicker
             return;
 
         _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.LavalandPlanet, LavalandPlanet: planet));
+        _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.LavalandRuins));
     }
 
     /// <summary>
@@ -240,13 +248,22 @@ public sealed partial class GameTicker
                 Entity<LavalandMapComponent>? planetMap = null;
                 SlowOpLog.Run(_sawmill, $"Map preload: Lavaland '{planet}'", () =>
                 {
-                    if (lavaland.SetupLavalandPlanet(planet, out var map))
+                    if (lavaland.SetupLavalandPlanet(planet, out var map, withRuins: false))
                         planetMap = map;
                 });
                 if (planetMap != null)
                     _completedLavalandPlanets.Add(planet);
                 else
                     _sawmill.Warning($"Failed to setup Lavaland planet '{planet}' during staged preload.");
+                break;
+            }
+            case MapLoadStageKind.LavalandRuins:
+            {
+                var lavaland = EntityManager.System<LavalandSystem>();
+                var done = true;
+                SlowOpLog.Run(_sawmill, "Map preload: Lavaland ruins batch", () => done = lavaland.ProcessRuinsBatch(RuinBatchBudget));
+                if (!done)
+                    _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.LavalandRuins));
                 break;
             }
             case MapLoadStageKind.GridPreloadCreate:
