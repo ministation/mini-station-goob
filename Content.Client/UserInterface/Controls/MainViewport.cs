@@ -89,6 +89,13 @@ namespace Content.Client.UserInterface.Controls
                 fixedFactor = snapFactor.Value;
             }
 
+            // Mini: under vertical fit the horizontal axis must fill the control even when
+            // snapped to an integer scale — otherwise fullscreen players get huge black side
+            // borders (ScalingViewport honors IgnoreDimension in the fixed-size draw path).
+            Viewport.IgnoreDimension = verticalFit
+                ? ScalingViewportIgnoreDimension.Horizontal
+                : ScalingViewportIgnoreDimension.None;
+
             Viewport.FixedStretchSize = Viewport.ViewportSize * fixedFactor;
             Viewport.StretchMode = ScalingViewportStretchMode.Nearest;
 
