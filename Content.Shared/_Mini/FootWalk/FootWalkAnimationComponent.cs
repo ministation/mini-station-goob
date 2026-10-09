@@ -6,7 +6,8 @@ using Robust.Shared.GameStates;
 namespace Content.Shared._Mini.FootWalk;
 
 /// <summary>
-/// Client-side lower-body walk bob for humanoids (not borg chassis).
+/// Client-side walk bob for humanoids (not borg chassis): per-leg foot lift plus a
+/// Stardew-style whole-body bounce and arm swing.
 /// </summary>
 [RegisterComponent, NetworkedComponent]
 public sealed partial class FootWalkAnimationComponent : Component
@@ -52,10 +53,76 @@ public sealed partial class FootWalkAnimationComponent : Component
     public float OuterFootCut = 0.2f;
 
     /// <summary>
+    /// Peak whole-body bounce on each footfall (Stardew-style): the sprite itself rises while
+    /// legs and boots compensate, so torso, head and all clothes visibly ride up. ~1.25px at
+    /// 32 PPCM. 0 disables the bounce.
+    /// </summary>
+    [DataField]
+    public float BodyBounceAmplitude = 1.25f / 32f;
+
+    /// <summary>
+    /// Peak arm swing. Each arm rises in counter-phase, with the opposite foot. ~1px at 32 PPCM.
+    /// 0 disables.
+    /// </summary>
+    [DataField]
+    public float ArmSwingAmplitude = 1.0f / 32f;
+
+    /// <summary>
+    /// Whole-body bounce multiplier while sprinting (running reads as a stronger bounce).
+    /// </summary>
+    [DataField]
+    public float SprintBounceFactor = 1.25f;
+
+    /// <summary>
+    /// Arm swing multiplier while sprinting.
+    /// </summary>
+    [DataField]
+    public float SprintArmFactor = 1.4f;
+
+    /// <summary>
+    /// How far a planted foot may sink below its rest position (relative to the body bounce)
+    /// before clamping, in sprite units. Keeps feet from poking through the floor while the
+    /// body rises. ~0.5px at 32 PPCM.
+    /// </summary>
+    [DataField]
+    public float MaxLegSink = 0.5f / 32f;
+
+    /// <summary>
+    /// Bob intensity fade-in rate (per second), so the walk eases in on the first step.
+    /// </summary>
+    [DataField]
+    public float RampInRate = 10f;
+
+    /// <summary>
+    /// Bob intensity fade-out rate (per second), so the walk eases out instead of popping
+    /// back to rest the instant the mob stops.
+    /// </summary>
+    [DataField]
+    public float RampOutRate = 14f;
+
+    /// <summary>
     /// Client-only walk cycle phase (radians).
     /// </summary>
     [ViewVariables]
     public float Phase;
+
+    /// <summary>
+    /// Sprite offset the mob had before the whole-body bounce took over <c>Sprite.Offset</c>.
+    /// </summary>
+    [ViewVariables]
+    public Vector2 BaseSpriteOffset;
+
+    /// <summary>
+    /// True while the whole-body bounce is applied to the sprite.
+    /// </summary>
+    [ViewVariables]
+    public bool BodyBounceActive;
+
+    /// <summary>
+    /// Client-only bob intensity ramp (0..1): eases in on the first step, eases out on stop.
+    /// </summary>
+    [ViewVariables]
+    public float BobRamp;
 
     [ViewVariables]
     public readonly HashSet<Enum> TouchedEnumLayers = new();

@@ -33,6 +33,8 @@ namespace Content.Client._Mini.FootWalk;
 /// Walk bob for each lower-body side (leg + foot + markings).
 /// Shoes are split into L/R halves; hardsuit boot band is punched and split the same way.
 /// Far foot is suppressed when facing E/W.
+/// On top sits a Stardew-style whole-body bounce: the sprite itself rises on each footfall while
+/// legs/feet/boots compensate, so torso, head and every piece of clothing visibly bob.
 /// </summary>
 public sealed partial class FootWalkAnimationSystem : EntitySystem
 {
@@ -58,6 +60,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     [Dependency] private IConfigurationManager _cfg = default!;
 
     private bool _enabled = true;
+    private bool _bodyBounce = true;
 
     private EntityQuery<SpriteComponent> _spriteQuery;
     private EntityQuery<PhysicsComponent> _physicsQuery;
@@ -88,6 +91,18 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         HumanoidVisualLayers.RFoot,
     ];
 
+    private static readonly HumanoidVisualLayers[] LeftArmLayers =
+    [
+        HumanoidVisualLayers.LArm,
+        HumanoidVisualLayers.LHand,
+    ];
+
+    private static readonly HumanoidVisualLayers[] RightArmLayers =
+    [
+        HumanoidVisualLayers.RArm,
+        HumanoidVisualLayers.RHand,
+    ];
+
     public override void Initialize()
     {
         base.Initialize();
@@ -107,6 +122,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             _enabled = enabled;
             if (!enabled)
                 DisableAllAnimations();
+        }, true);
+
+        _cfg.OnValueChanged(MiniCCVars.FootWalkBodyBounceEnabled, enabled =>
+        {
+            _bodyBounce = enabled;
+            if (!enabled)
+                DisableBodyBounce();
         }, true);
 
         SubscribeLocalEvent<FootWalkAnimationComponent, ComponentStartup>(OnStartup);
@@ -136,7 +158,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     private void OnShutdown(Entity<FootWalkAnimationComponent> ent, ref ComponentShutdown args)
     {
         if (_spriteQuery.TryGetComponent(ent.Owner, out var sprite))
+        {
             SetBodyFeetHidden(ent, sprite, hide: false);
+            StopBodyBounce(ent, sprite);
+        }
 
         ResetLowerBody(ent);
         ClearClothingWalkLayers(ent);
@@ -206,19 +231,25 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             }
 
             // Cheap reject for the common idle case before CanAnimate / gravity checks.
-            if (velocity.LengthSquared() < walk.MinSpeedSquared)
+            var moving = velocity.LengthSquared() >= walk.MinSpeedSquared
+                         && CanAnimate(uid)
+                         && HasLowerBodyVisuals(uid, sprite);
+
+            if (moving)
+            {
+                walk.WasAnimating = true;
+                walk.BobRamp = MathF.Min(1f, walk.BobRamp + frameTime * walk.RampInRate);
+            }
+            else if (walk.BobRamp > 0f)
+            {
+                // Ease the bob out over a few frames instead of snapping offsets to zero.
+                walk.BobRamp = MathF.Max(0f, walk.BobRamp - frameTime * walk.RampOutRate);
+            }
+            else
             {
                 StopAnimating((uid, walk), sprite);
                 continue;
             }
-
-            if (!CanAnimate(uid) || !HasLowerBodyVisuals(uid, sprite))
-            {
-                StopAnimating((uid, walk), sprite);
-                continue;
-            }
-
-            walk.WasAnimating = true;
 
             // Must match sprite RSI direction (world + eye), otherwise camera turns invert bob / wrong mode.
             var facing = GetScreenFacing(uid);
@@ -242,11 +273,43 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             else if (facing == RsiDirection.West)
                 rightAmp *= walk.SideFarAmplitudeFactor;
 
-            var leftY = MathF.Max(0f, MathF.Sin(walk.Phase)) * leftAmp;
-            var rightY = MathF.Max(0f, MathF.Sin(walk.Phase + MathF.PI)) * rightAmp;
+            var leftY = MathF.Max(0f, MathF.Sin(walk.Phase)) * leftAmp * walk.BobRamp;
+            var rightY = MathF.Max(0f, MathF.Sin(walk.Phase + MathF.PI)) * rightAmp * walk.BobRamp;
+
+            var sprinting = _moverQuery.TryGetComponent(uid, out var mover) && mover.Sprinting;
+
+            // Stardew-style whole-body bounce: the sprite rises on each footfall, so torso, head
+            // and every clothing layer ride along for free. Legs and everything that must stay on
+            // the ground (shoes, hardsuit boots) get the bounce subtracted instead.
+            var bodyY = 0f;
+            if (_bodyBounce && walk.BodyBounceAmplitude > 0f)
+            {
+                bodyY = MathF.Abs(MathF.Sin(walk.Phase)) * walk.BodyBounceAmplitude
+                        * (sprinting ? walk.SprintBounceFactor : 1f) * walk.BobRamp;
+                EnsureBodyBounce((uid, walk), sprite);
+                _sprite.SetOffset((uid, sprite), walk.BaseSpriteOffset + new Vector2(0f, bodyY));
+            }
+            else if (walk.BodyBounceActive)
+            {
+                StopBodyBounce((uid, walk), sprite);
+            }
+
+            // Keep planted feet near the floor line instead of letting the bounce sink them.
+            var leftLegY = MathF.Max(leftY - bodyY, -walk.MaxLegSink);
+            var rightLegY = MathF.Max(rightY - bodyY, -walk.MaxLegSink);
+
+            // Arms swing in counter-phase: each arm rises with the opposite foot.
+            var armScale = (walk.Amplitude > 0f ? walk.ArmSwingAmplitude / walk.Amplitude : 0f)
+                           * (sprinting ? walk.SprintArmFactor : 1f);
+            var leftArmY = rightY * armScale;
+            var rightArmY = leftY * armScale;
+            if (facing == RsiDirection.East)
+                leftArmY *= walk.SideFarAmplitudeFactor;
+            else if (facing == RsiDirection.West)
+                rightArmY *= walk.SideFarAmplitudeFactor;
 
             // Side near foot (the one toward the camera for E/W sprites).
-            var nearY = facing == RsiDirection.East ? rightY : leftY;
+            var nearY = facing == RsiDirection.East ? rightLegY : leftLegY;
 
             // Only undo last tick's offsets — do not re-zero every lower-body layer.
             ResetTouchedOffsets((uid, walk), sprite);
@@ -259,15 +322,15 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 // Body layers stay anatomical L/R — never invert with the camera sheet.
                 var invert = facing == RsiDirection.North;
 
-                ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
-                ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
+                ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftLegY), skipFeet: hasShoes || hasOuter);
+                ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightLegY), skipFeet: hasShoes || hasOuter);
 
-                ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
-                ApplySplitHalves((uid, sprite), walk, walk.OuterSplitKeys, leftY, rightY, invert);
+                ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftLegY, rightLegY, invert);
+                ApplySplitHalves((uid, sprite), walk, walk.OuterSplitKeys, leftLegY, rightLegY, invert);
 
                 // Footwear and garments that cannot be split (their art has no centre gap) stay on
                 // the full sprite or band: one piece, bouncing on each footfall instead of shearing.
-                var singlePieceY = MathF.Max(leftY, rightY);
+                var singlePieceY = MathF.Max(MathF.Max(leftY, rightY) - bodyY, -walk.MaxLegSink);
                 ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, singlePieceY);
                 ApplySideBandOffset((uid, sprite), walk, singlePieceY);
             }
@@ -283,13 +346,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 else if (hasShoes)
                 {
                     // Pants + shoes: legs can alternate; feet stay hidden under shoes.
-                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: true);
-                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: true);
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftLegY), skipFeet: true);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightLegY), skipFeet: true);
                 }
                 else
                 {
-                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: false);
-                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: false);
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftLegY), skipFeet: false);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightLegY), skipFeet: false);
                 }
 
                 if (hasShoes)
@@ -297,6 +360,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 if (hasOuter)
                     ApplySideBandOffset((uid, sprite), walk, nearY);
+            }
+
+            if (walk.ArmSwingAmplitude > 0f)
+            {
+                ApplySide((uid, sprite), walk, humanoid, LeftArmLayers, new Vector2(0f, leftArmY));
+                ApplySide((uid, sprite), walk, humanoid, RightArmLayers, new Vector2(0f, rightArmY));
             }
         }
     }
@@ -311,8 +380,43 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         SetBodyFeetHidden(ent, sprite, hide: false);
         ResetLowerBody(ent, sprite);
         ClearClothingWalkLayers(ent);
+        StopBodyBounce(ent, sprite);
         ent.Comp.WasAnimating = false;
         ent.Comp.Phase = 0f;
+        ent.Comp.BobRamp = 0f;
+    }
+
+    /// <summary>
+    /// Takes over the whole sprite offset on the first walking frame.
+    /// </summary>
+    private void EnsureBodyBounce(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
+    {
+        if (ent.Comp.BodyBounceActive)
+            return;
+
+        ent.Comp.BaseSpriteOffset = sprite.Offset;
+        ent.Comp.BodyBounceActive = true;
+    }
+
+    private void StopBodyBounce(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
+    {
+        if (!ent.Comp.BodyBounceActive)
+            return;
+
+        _sprite.SetOffset((ent.Owner, sprite), ent.Comp.BaseSpriteOffset);
+        ent.Comp.BodyBounceActive = false;
+    }
+
+    private void DisableBodyBounce()
+    {
+        var query = EntityQueryEnumerator<FootWalkAnimationComponent>();
+        while (query.MoveNext(out var uid, out var walk))
+        {
+            if (!walk.BodyBounceActive || !_spriteQuery.TryGetComponent(uid, out var sprite))
+                continue;
+
+            StopBodyBounce((uid, walk), sprite);
+        }
     }
 
     /// <summary>
@@ -1079,6 +1183,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             {
                 SetBodyFeetHidden((uid, walk), sprite, hide: false);
                 ResetLowerBody((uid, walk), sprite);
+                StopBodyBounce((uid, walk), sprite);
             }
 
             ClearClothingWalkLayers((uid, walk));

@@ -555,6 +555,14 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> FootWalkAnimationEnabled =
         CVarDef.Create("accessibility.foot_walk_animation", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Client toggle for the Stardew-style whole-body walk bounce (torso, head and clothes rise
+    /// on each footfall) and the arm swing. The per-leg foot bob is
+    /// <see cref="FootWalkAnimationEnabled"/>.
+    /// </summary>
+    public static readonly CVarDef<bool> FootWalkBodyBounceEnabled =
+        CVarDef.Create("accessibility.foot_walk_body_bounce", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
     public static readonly CVarDef<bool> HoldLookUp =
         CVarDef.Create("scope.hold_look_up", true, CVar.CLIENT | CVar.ARCHIVE);
 
