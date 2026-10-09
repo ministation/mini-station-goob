@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server._Lavaland.Procedural.Systems;
+using Content.Server._Mini.Diagnostics;
 using Content.Server.GridPreloader;
 using Content.Server.Maps;
+using Content.Shared._Lavaland.Procedural.Components;
 using Content.Shared._Lavaland.Procedural.Prototypes;
 using Content.Shared.GridPreloader.Prototypes;
 using Content.Shared.Maps;
@@ -217,7 +219,8 @@ public sealed partial class GameTicker
             {
                 DebugTools.Assert(stage.GameMap != null);
                 _sawmill.Info($"Map preload stage: game map '{stage.GameMap.ID}'");
-                LoadGameMap(stage.GameMap, out var mapId);
+                MapId mapId = default;
+                SlowOpLog.Run(_sawmill, $"Map preload: game map '{stage.GameMap.ID}'", () => LoadGameMap(stage.GameMap!, out mapId));
                 DebugTools.Assert(!_map.IsInitialized(mapId));
                 _loadedStationMapIds.Add(mapId);
                 if (stage.IsMain)
@@ -234,10 +237,16 @@ public sealed partial class GameTicker
                 _sawmill.Info($"Map preload stage: Lavaland '{planet}'");
                 var lavaland = EntityManager.System<LavalandSystem>();
                 lavaland.EnsurePreloaderMap();
-                if (!lavaland.SetupLavalandPlanet(planet, out _))
-                    _sawmill.Warning($"Failed to setup Lavaland planet '{planet}' during staged preload.");
-                else
+                Entity<LavalandMapComponent>? planetMap = null;
+                SlowOpLog.Run(_sawmill, $"Map preload: Lavaland '{planet}'", () =>
+                {
+                    if (lavaland.SetupLavalandPlanet(planet, out var map))
+                        planetMap = map;
+                });
+                if (planetMap != null)
                     _completedLavalandPlanets.Add(planet);
+                else
+                    _sawmill.Warning($"Failed to setup Lavaland planet '{planet}' during staged preload.");
                 break;
             }
             case MapLoadStageKind.GridPreloadCreate:
@@ -248,7 +257,8 @@ public sealed partial class GameTicker
             case MapLoadStageKind.GridPreloadOne:
             {
                 DebugTools.Assert(stage.PreloadedGrid != null);
-                EntityManager.System<GridPreloaderSystem>().TryLoadOnePreloadedGrid(stage.PreloadedGrid.Value);
+                SlowOpLog.Run(_sawmill, $"Map preload: grid '{stage.PreloadedGrid.Value}'", () =>
+                    EntityManager.System<GridPreloaderSystem>().TryLoadOnePreloadedGrid(stage.PreloadedGrid.Value));
                 break;
             }
             case MapLoadStageKind.Finalize:
@@ -282,7 +292,7 @@ public sealed partial class GameTicker
             if (!_map.MapExists(mapId) || _map.IsInitialized(mapId))
                 continue;
 
-            _map.InitializeMap(mapId);
+            SlowOpLog.Run(_sawmill, $"Map init: map {mapId}", () => _map.InitializeMap(mapId));
             YieldNetworkDuringMapLoad();
         }
     }

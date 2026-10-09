@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Diagnostics.CodeAnalysis;
+using Content.Server._Mini.Diagnostics;
 using Content.Shared.CCVar;
 using Content.Shared.GridPreloader.Prototypes;
 using Content.Shared.GridPreloader.Systems;
@@ -119,13 +120,18 @@ public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
         var (mapUid, preloader) = preloaderEnt.Value;
         var mapId = Comp<MapComponent>(mapUid).MapId;
 
-        if (!_mapLoader.TryLoadGrid(mapId, proto.Path, out var grid))
+        bool loaded = false;
+        Entity<MapGridComponent>? grid = null;
+        SlowOpLog.Run($"Grid preload: '{protoId}'",
+            () => loaded = _mapLoader.TryLoadGrid(mapId, proto.Path, out grid));
+        if (!loaded || grid == null)
         {
             Log.Error($"Failed to preload grid prototype {proto.ID}");
             return false;
         }
 
-        var (gridUid, mapGrid) = grid.Value;
+        var gridUid = grid.Value.Owner;
+        var mapGrid = grid.Value.Comp;
 
         if (!TryComp<PhysicsComponent>(gridUid, out var physics))
             return false;
