@@ -213,8 +213,17 @@ namespace Content.Client.Viewport
             else
             {
                 // Center only, no scaling.
-                var pos = (ourSize - FixedStretchSize.Value) / 2;
-                return (UIBox2i) UIBox2.FromDimensions(pos, FixedStretchSize.Value);
+                // Mini: honor the ignored dimension even when a fixed stretch size is set —
+                // otherwise NN-snapped viewports letterbox the ignored axis with huge black
+                // borders (fullscreen players under viewport.vertical_fit).
+                var size = FixedStretchSize.Value;
+                if (_ignoreDimension == ScalingViewportIgnoreDimension.Horizontal)
+                    size.X = (int) ourSize.X;
+                else if (_ignoreDimension == ScalingViewportIgnoreDimension.Vertical)
+                    size.Y = (int) ourSize.Y;
+
+                var pos = (ourSize - size) / 2;
+                return (UIBox2i) UIBox2.FromDimensions(pos, size);
             }
         }
 
