@@ -21,7 +21,8 @@ public sealed partial class LavalandSystem
         ProtoId<LavalandMapPrototype> mapProto,
         out Entity<LavalandMapComponent>? lavaland,
         int? seed = null,
-        Entity<LavalandPreloaderComponent>? preloader = null)
+        Entity<LavalandPreloaderComponent>? preloader = null,
+        bool withRuins = true)
     {
         lavaland = null;
 
@@ -68,7 +69,12 @@ public sealed partial class LavalandSystem
 
         EnsureComp<BiomeOptimizeComponent>(lavalandMap).LoadArea = loadBox;
 
-        SetupRuins(pool, lavaland.Value, preloader.Value);
+        // With withRuins:false the ruins are placed later in time-budgeted batches
+        // (GameTicker staged preload), so the lobby doesn't freeze on a single multi-second tick.
+        if (withRuins)
+            SetupRuins(pool, lavaland.Value, preloader.Value);
+        else
+            BeginRuinsBatch(pool, lavaland.Value, preloader.Value);
 
         // Hide all grids from the mass scanner.
         foreach (var grid in _map.GetAllGrids(lavalandMapId))
