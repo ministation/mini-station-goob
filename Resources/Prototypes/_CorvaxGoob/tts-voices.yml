@@ -8,10 +8,11 @@
   sex: Male
   speaker: aidar
 
+# Baya sounds female on the live API (measured F0 ~239 Hz)
 - type: ttsVoice
   id: Baya
   name: tts-voice-name-baya
-  sex: Unsexed
+  sex: Female
   speaker: baya
 
 - type: ttsVoice
@@ -83,29 +84,31 @@
   sex: Male
   speaker: natalia
 
-# --- Silero custom that sound female (API speaker ids unchanged) ---
+# --- Silero custom speakers: no such models on the API, SpeakerPatch falls back to builtin
+# voices. Measured on the live API 09.10.2026: andrei/pavel -> aidar (~125 Hz, male),
+# sergei/nikita -> eugene (~103 Hz, male), anton -> xenia (~205 Hz, female).
 - type: ttsVoice
   id: Andrei
-  name: tts-voice-name-alina
-  sex: Female
+  name: tts-voice-name-andrei
+  sex: Male
   speaker: andrei
 
 - type: ttsVoice
   id: Sergei
-  name: tts-voice-name-serafima
-  sex: Female
+  name: tts-voice-name-sergei
+  sex: Male
   speaker: sergei
 
 - type: ttsVoice
   id: Pavel
-  name: tts-voice-name-polina
-  sex: Female
+  name: tts-voice-name-pavel
+  sex: Male
   speaker: pavel
 
 - type: ttsVoice
   id: Nikita
-  name: tts-voice-name-nika
-  sex: Female
+  name: tts-voice-name-nikita
+  sex: Male
   speaker: nikita
 
 - type: ttsVoice
@@ -157,7 +160,7 @@
 - type: ttsVoice
   id: Myron
   name: tts-voice-name-baya
-  sex: Unsexed
+  sex: Female
   speaker: baya
   roundStart: false
 
