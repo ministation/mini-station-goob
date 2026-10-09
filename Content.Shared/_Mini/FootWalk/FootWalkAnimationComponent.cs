@@ -46,11 +46,19 @@ public sealed partial class FootWalkAnimationComponent : Component
     public float SideFarAmplitudeFactor = 0.4f;
 
     /// <summary>
-    /// Local UV height of the boot band on full-body clothing (hardsuits).
+    /// UV height of the boot band on full-body clothing (hardsuits).
     /// Keep low so only boots move, not the whole lower suit (avoids solid hop).
     /// </summary>
     [DataField]
     public float OuterFootCut = 0.2f;
+
+    /// <summary>
+    /// UV height of the pant region on the jumpsuit (hip line measured from sprite bottom).
+    /// The region below the line is punched out of the suit and rebuilt as L/R halves that
+    /// follow the legs, so bare shins never show between the hem and the shoes.
+    /// </summary>
+    [DataField]
+    public float JumpsuitHipCut = 0.42f;
 
     /// <summary>
     /// Peak whole-body bounce on each footfall (Stardew-style): the sprite itself rises while
@@ -156,6 +164,37 @@ public sealed partial class FootWalkAnimationComponent : Component
     public readonly List<string> OuterSplitKeys = new();
 
     /// <summary>
+    /// Runtime jumpsuit pant-half layers (front N/S, region below JumpsuitHipCut).
+    /// </summary>
+    [ViewVariables]
+    public readonly List<string> JumpsuitSplitKeys = new();
+
+    /// <summary>
+    /// Original jumpsuit layers currently tracked (torso part, hidden on front).
+    /// </summary>
+    [ViewVariables]
+    public readonly HashSet<string> HiddenJumpsuitKeys = new();
+
+    /// <summary>
+    /// Jumpsuit source keys whose art crosses the sprite centre inside the pant region
+    /// (skirts, fused inseams). They cannot be X-split, so the pant band moves as one piece.
+    /// </summary>
+    [ViewVariables]
+    public readonly HashSet<string> BandOnlyJumpsuitSources = new();
+
+    /// <summary>
+    /// Runtime jumpsuit pant-band layers (side E/W and band-only sources).
+    /// </summary>
+    [ViewVariables]
+    public readonly List<string> JumpsuitBandKeys = new();
+
+    /// <summary>
+    /// Original jumpsuit layers with the pant-region hole shader.
+    /// </summary>
+    [ViewVariables]
+    public readonly HashSet<string> HoledJumpsuitKeys = new();
+
+    /// <summary>
     /// Runtime outerClothing foot-band layers (side E/W).
     /// </summary>
     [ViewVariables]
@@ -200,6 +239,12 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     [ViewVariables]
     public float AppliedOuterFootCut = float.NaN;
+
+    /// <summary>
+    /// JumpsuitHipCut last applied to jumpsuit hole/band/half shaders (forces rebuild on change).
+    /// </summary>
+    [ViewVariables]
+    public float AppliedJumpsuitHipCut = float.NaN;
 
     /// <summary>
     /// True while LFoot/RFoot sprite layers are hidden because shoes or outer clothing cover them.

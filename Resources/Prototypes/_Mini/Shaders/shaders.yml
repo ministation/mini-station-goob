@@ -28,3 +28,11 @@
   path: "/Textures/_Mini/Shaders/sprite_foot_band.swsl"
   params:
     footCut: 0.2
+
+- type: shader
+  id: SpritePantHalfClip
+  kind: source
+  path: "/Textures/_Mini/Shaders/sprite_pant_half_clip.swsl"
+  params:
+    keepRight: 0
+    footCut: 0.42
