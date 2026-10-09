@@ -266,6 +266,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
             var hasShoes = HasSlotVisuals(uid, ShoesSlot);
             var hasOuter = HasSlotVisuals(uid, OuterSlot);
+            var hasJumpsuit = HasSlotVisuals(uid, JumpsuitSlot);
             // Never show bare feet under shoes or a hardsuit boot band/hole.
             SetBodyFeetHidden((uid, walk), sprite, hide: hasShoes || hasOuter);
 
@@ -356,6 +357,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                     // Full suit: legs must move with the boot band or flesh peeks through the hole.
                     ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: true);
                     ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, nearY), skipFeet: true);
+                }
+                else if (hasJumpsuit)
+                {
+                    // Jumpsuit: the pant band rides the near leg, so both legs must follow it —
+                    // otherwise the far leg slides out of the pants on every step.
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: false);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, nearY), skipFeet: false);
                 }
                 else if (hasShoes)
                 {
