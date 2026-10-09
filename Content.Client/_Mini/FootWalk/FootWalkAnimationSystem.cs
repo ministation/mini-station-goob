@@ -335,6 +335,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
 
+                // Outer "splits" are the hardsuit BOOT halves (FootHalfClip keeps the boot band,
+                // not the coat body) — they are footwear and must ride the legs exactly.
+                ApplySplitHalves((uid, sprite), walk, walk.OuterSplitKeys, leftY, rightY, invert);
+
                 // Pant halves ride their leg exactly; lifts are never negative, so a half can
                 // only slide up over the holed torso, never open a slit at the hip.
                 ApplySplitHalves((uid, sprite), walk, walk.JumpsuitSplitKeys, leftY, rightY, invert);
