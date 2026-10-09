@@ -287,9 +287,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
             var sprinting = _moverQuery.TryGetComponent(uid, out var mover) && mover.Sprinting;
 
-            // Stardew-style whole-body bounce: the sprite rises on each footfall, so torso, head
-            // and every clothing layer ride along for free. Legs and everything that must stay on
-            // the ground (shoes, hardsuit boots) get the bounce subtracted instead.
+            // Stardew-style whole-body bounce: the sprite itself hops on each footfall and every
+            // layer rides it, feet included — like the baked walk frames in Stardew. Every other
+            // offset below is a pure lift (>= 0), so parts can only overlap more, never separate:
+            // no slits can open between limbs, naked or clothed.
             var bodyY = 0f;
             if (_bodyBounce && walk.BodyBounceAmplitude > 0f)
             {
@@ -303,10 +304,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 StopBodyBounce((uid, walk), sprite);
             }
 
-            // Keep planted feet near the floor line instead of letting the bounce sink them.
-            var leftLegY = MathF.Max(leftY - bodyY, -walk.MaxLegSink);
-            var rightLegY = MathF.Max(rightY - bodyY, -walk.MaxLegSink);
-
             // Arms swing in counter-phase: each arm rises with the opposite foot.
             var armScale = (walk.Amplitude > 0f ? walk.ArmSwingAmplitude / walk.Amplitude : 0f)
                            * (sprinting ? walk.SprintArmFactor : 1f);
@@ -318,7 +315,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 rightArmY *= walk.SideFarAmplitudeFactor;
 
             // Side near foot (the one toward the camera for E/W sprites).
-            var nearY = facing == RsiDirection.East ? rightLegY : leftLegY;
+            var nearY = facing == RsiDirection.East ? rightY : leftY;
 
             // Only undo last tick's offsets — do not re-zero every lower-body layer.
             ResetTouchedOffsets((uid, walk), sprite);
@@ -331,23 +328,21 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 // Body layers stay anatomical L/R — never invert with the camera sheet.
                 var invert = facing == RsiDirection.North;
 
-                ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftLegY), skipFeet: hasShoes || hasOuter);
-                ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightLegY), skipFeet: hasShoes || hasOuter);
+                ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
+                ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
 
-                ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftLegY, rightLegY, invert);
+                ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
 
-                // Pant halves must never dip below the holed torso's hip cut, or a skin slit
-                // shows at the hip; planted pants simply stay at rest.
-                ApplySplitHalves((uid, sprite), walk, walk.JumpsuitSplitKeys, MathF.Max(leftLegY, 0f), MathF.Max(rightLegY, 0f), invert);
+                // Pant halves ride their leg exactly; lifts are never negative, so a half can
+                // only slide up over the holed torso, never open a slit at the hip.
+                ApplySplitHalves((uid, sprite), walk, walk.JumpsuitSplitKeys, leftY, rightY, invert);
 
-                // Outer torso halves ride the body via the sprite bounce, never the legs:
-                // a jacket jerking with the legs exposed the suit between its hem and the waist.
                 // Footwear and garments that cannot be split (their art has no centre gap) stay on
                 // the full sprite or band: one piece, bouncing on each footfall instead of shearing.
-                var singlePieceY = MathF.Max(MathF.Max(leftY, rightY) - bodyY, -walk.MaxLegSink);
+                var singlePieceY = MathF.Max(leftY, rightY);
                 ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, singlePieceY);
                 ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, singlePieceY);
-                ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, MathF.Max(singlePieceY, 0f));
+                ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, singlePieceY);
             }
             else
             {
@@ -368,13 +363,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 else if (hasShoes)
                 {
                     // Pants + shoes: legs can alternate; feet stay hidden under shoes.
-                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftLegY), skipFeet: true);
-                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightLegY), skipFeet: true);
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: true);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: true);
                 }
                 else
                 {
-                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftLegY), skipFeet: false);
-                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightLegY), skipFeet: false);
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: false);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: false);
                 }
 
                 if (hasShoes)
@@ -383,8 +378,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 if (hasOuter)
                     ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, nearY);
 
-                // Same rule as the front halves: the pant band never dips below the torso cut.
-                ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, MathF.Max(nearY, 0f));
+                ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, nearY);
             }
 
             if (walk.ArmSwingAmplitude > 0f)

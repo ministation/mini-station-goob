@@ -88,14 +88,6 @@ public sealed partial class FootWalkAnimationComponent : Component
     public float SprintArmFactor = 1.4f;
 
     /// <summary>
-    /// How far a planted foot may sink below its rest position (relative to the body bounce)
-    /// before clamping, in sprite units. Keeps feet from poking through the floor while the
-    /// body rises. ~0.5px at 32 PPCM.
-    /// </summary>
-    [DataField]
-    public float MaxLegSink = 0.5f / 32f;
-
-    /// <summary>
     /// Bob intensity fade-in rate (per second), so the walk eases in on the first step.
     /// </summary>
     [DataField]
