@@ -592,4 +592,49 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> CachedCoinBalanceKnown =
         CVarDef.Create("ministation.cached_coin_balance_known", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+    /*
+     * Neuro players — LLM-driven passenger bots
+     */
+
+    /// <summary>Master switch for neuro player bots.</summary>
+    public static readonly CVarDef<bool> NeuroPlayerEnabled =
+        CVarDef.Create("neuroplayer.enabled", false, CVar.SERVER | CVar.ARCHIVE);
+
+    /// <summary>OpenAI-compatible chat completions endpoint.</summary>
+    public static readonly CVarDef<string> NeuroPlayerApiUrl =
+        CVarDef.Create("neuroplayer.api_url", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    /// <summary>Bearer key for the LLM API.</summary>
+    public static readonly CVarDef<string> NeuroPlayerApiKey =
+        CVarDef.Create("neuroplayer.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    public static readonly CVarDef<string> NeuroPlayerModel =
+        CVarDef.Create("neuroplayer.model", "gpt-4o-mini", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> NeuroPlayerBotCount =
+        CVarDef.Create("neuroplayer.bot_count", 3, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Local speech hearing radius for bots (tiles).</summary>
+    public static readonly CVarDef<float> NeuroPlayerHearRadius =
+        CVarDef.Create("neuroplayer.hear_radius", 10f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> NeuroPlayerMaxContext =
+        CVarDef.Create("neuroplayer.max_context_messages", 8, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Per-bot cooldown between LLM answers.</summary>
+    public static readonly CVarDef<int> NeuroPlayerCooldownSeconds =
+        CVarDef.Create("neuroplayer.response_cooldown_seconds", 8, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Global daily cap of LLM requests (0 = unlimited).</summary>
+    public static readonly CVarDef<int> NeuroPlayerMaxDailyRequests =
+        CVarDef.Create("neuroplayer.max_daily_requests", 1000, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> NeuroPlayerMaxTokens =
+        CVarDef.Create("neuroplayer.max_tokens", 120, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<float> NeuroPlayerTemperature =
+        CVarDef.Create("neuroplayer.temperature", 0.9f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> NeuroPlayerTimeoutSeconds =
+        CVarDef.Create("neuroplayer.request_timeout_seconds", 10, CVar.SERVERONLY | CVar.ARCHIVE);
 }
