@@ -6,6 +6,7 @@ using Content.Shared._Mini.TypanWar;
 using Content.Shared.Lock;
 using Content.Shared.Tag;
 using Robust.Shared.Prototypes;
+using System.Numerics;
 
 namespace Content.Server._Mini.TypanWar;
 
@@ -28,8 +29,25 @@ public sealed class TypanWarArmorySystem : EntitySystem
 
     private void OnWarStarted(TypanWarStartedEvent ev)
     {
+        SpawnWarArmories();
         UnlockArmoriesOnStation(ev.NtStation);
         UnlockArmoriesOnStation(ev.TypanStation);
+    }
+
+    /// <summary>
+    /// Maps carry no mapper-marked war armories, so a stocked locker is spawned next to each drop shuttle console.
+    /// </summary>
+    private void SpawnWarArmories()
+    {
+        var query = EntityQueryEnumerator<TypanWarDropShuttleConsoleComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var console, out var xform))
+        {
+            var proto = console.Side == TypanWarSide.Nanotrasen
+                ? "TypanWarArmoryLockerNt"
+                : "TypanWarArmoryLockerTypan";
+
+            Spawn(proto, xform.Coordinates.Offset(new Vector2(0, -1)));
+        }
     }
 
     private void UnlockArmoriesOnStation(EntityUid station)

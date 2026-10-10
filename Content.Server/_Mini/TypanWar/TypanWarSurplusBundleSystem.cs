@@ -47,13 +47,14 @@ public sealed class TypanWarSurplusBundleSystem : EntitySystem
             return;
         }
 
-        var roundProgress = TryGetWarRoundProgress(out _);
+        var roundProgress = TryGetWarRoundProgress(out var warRule);
+        var comebackMultiplier = GetComebackMultiplier(component.Faction, warRule);
         var coords = Transform(uid).Coordinates;
         var spawned = 0;
 
         foreach (var entry in table.Entries)
         {
-            if (!_random.Prob(GetEffectiveProbability(entry, roundProgress)))
+            if (!_random.Prob(GetEffectiveProbability(entry, roundProgress, comebackMultiplier)))
                 continue;
 
             var countMin = Math.Max(1, entry.CountMin);
@@ -78,12 +79,25 @@ public sealed class TypanWarSurplusBundleSystem : EntitySystem
             Del(fallback);
     }
 
-    private static float GetEffectiveProbability(TypanWarSurplusLootEntry entry, float roundProgress)
+    private static float GetEffectiveProbability(TypanWarSurplusLootEntry entry, float roundProgress, float comebackMultiplier)
     {
         if (entry.LateRoundProbability is { } late)
-            return MathHelper.Lerp(entry.Probability, late, roundProgress);
+            return Math.Min(1f, MathHelper.Lerp(entry.Probability, late, roundProgress) * comebackMultiplier);
 
-        return Math.Min(1f, entry.Probability * (1f + roundProgress * RoundLootQualityBonus));
+        return Math.Min(1f, entry.Probability * (1f + roundProgress * RoundLootQualityBonus) * comebackMultiplier);
+    }
+
+    private static float GetComebackMultiplier(TypanWarSide? faction, TypanStationWarRuleComponent? rule)
+    {
+        if (faction == null || rule == null || rule.ComebackScoreGap <= 0)
+            return 1f;
+
+        var gap = Math.Abs(rule.NtCapturePoints - rule.TypanCapturePoints);
+        if (gap < rule.ComebackScoreGap)
+            return 1f;
+
+        var losing = rule.NtCapturePoints < rule.TypanCapturePoints ? TypanWarSide.Nanotrasen : TypanWarSide.Typan;
+        return faction == losing ? rule.ComebackLootMultiplier : 1f;
     }
 
     private float TryGetWarRoundProgress(out TypanStationWarRuleComponent? rule)

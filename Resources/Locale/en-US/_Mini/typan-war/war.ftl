@@ -144,3 +144,9 @@ typan-war-round-end-mvp-nt = NanoTrasen MVP: {$name}
 typan-war-round-end-mvp-typan = Syndicate MVP: {$name}
 
 typan-war-round-end-rewards = War rations: coins paid — NanoTrasen {$nt}, Syndicate {$typan}.
+
+typan-war-event-diversion = [color=#FFB0B0]Station war:[/color] the losing faction receives reinforced supply at its held zones — deliver it to the front!
+
+typan-war-event-reinforcement = [color=#C8C4D8]Station war:[/color] HQ dispatches reserve drop shuttles to both stations.
+
+typan-war-ghost-roles-blocked = Ghost roles are unavailable during the station war.

@@ -19,3 +19,4 @@
       map: ["enum.PaperLabelVisuals.Layer"]
   - type: TypanWarSurplusBundle
     lootTable: TypanWarNtSurplusLoot
+    faction: Nanotrasen

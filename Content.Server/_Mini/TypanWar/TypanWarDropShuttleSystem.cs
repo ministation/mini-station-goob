@@ -40,6 +40,7 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
     [Dependency] private readonly ShuttleSystem _shuttle = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly TypanStationWarRuleSystem _warRule = default!;
 
     public override void Initialize()
     {
@@ -145,6 +146,12 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
         ClearTrackedShuttle(rule, ent.Comp.Side);
         ScheduleRespawn(rule, ent.Comp.Side);
         AnnounceShuttleLost(ent.Comp.Side);
+
+        // The opposing faction is credited with destroying the shuttle.
+        var scorer = ent.Comp.Side == TypanWarSide.Nanotrasen
+            ? TypanWarCaptureOwner.Typan
+            : TypanWarCaptureOwner.Nanotrasen;
+        _warRule.AddCapturePoints(scorer, rule.ShuttleDestroyScore);
     }
 
     private void TryProcessRespawn(EntityUid ruleUid, TypanStationWarRuleComponent rule, TypanWarSide side)
@@ -292,6 +299,31 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
             return false;
 
         return drop.Console == console;
+    }
+
+    /// <summary>
+    /// War event: immediately schedule replacement for missing drop shuttles.
+    /// Returns true if at least one respawn was scheduled.
+    /// </summary>
+    public bool TryForceRespawnShuttles(EntityUid ruleUid, TypanStationWarRuleComponent rule)
+    {
+        var scheduled = false;
+
+        foreach (var side in new[] { TypanWarSide.Nanotrasen, TypanWarSide.Typan })
+        {
+            if (HasWorkingDropShuttle(rule, side) || GetRespawnAt(rule, side) != null)
+                continue;
+
+            SetRespawnAt(rule, side, _timing.CurTime);
+            scheduled = true;
+        }
+
+        if (!scheduled)
+            return false;
+
+        TryProcessRespawn(ruleUid, rule, TypanWarSide.Nanotrasen);
+        TryProcessRespawn(ruleUid, rule, TypanWarSide.Typan);
+        return true;
     }
 
     private bool HasWorkingDropShuttle(TypanStationWarRuleComponent rule, TypanWarSide side)

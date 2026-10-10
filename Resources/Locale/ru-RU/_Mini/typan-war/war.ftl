@@ -186,3 +186,9 @@ typan-war-round-end-mvp-nt = MVP Нанотрайзен: {$name}
 typan-war-round-end-mvp-typan = MVP Синдиката: {$name}
 
 typan-war-round-end-rewards = Военный паёк: выплачено монет — Нанотрайзен {$nt}, Синдикат {$typan}.
+
+typan-war-event-diversion = [color=#FFB0B0]Война станций:[/color] отстающая сторона получает усиленное снабжение на удерживаемых зонах — доставьте его в бой!
+
+typan-war-event-reinforcement = [color=#C8C4D8]Война станций:[/color] штаб перебрасывает резервные дроп-шаттлы на обе станции.
+
+typan-war-ghost-roles-blocked = Ghost-роли недоступны во время войны станций.

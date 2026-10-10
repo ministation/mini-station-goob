@@ -279,14 +279,24 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                     break;
             }
 
-            if (!component.TradeZoneSwapped &&
-                component.TradeZoneSwapScoreThreshold > 0 &&
-                (component.NtCapturePoints >= component.TradeZoneSwapScoreThreshold ||
-                 component.TypanCapturePoints >= component.TradeZoneSwapScoreThreshold) &&
+            var maxScore = Math.Max(component.NtCapturePoints, component.TypanCapturePoints);
+            var swapDue =
+                (!component.TradeZoneSwapped &&
+                 component.TradeZoneSwapScoreThreshold > 0 &&
+                 maxScore >= component.TradeZoneSwapScoreThreshold) ||
+                (!component.TradeZoneSwappedSecond &&
+                 component.TradeZoneSwapSecondScoreThreshold > 0 &&
+                 maxScore >= component.TradeZoneSwapSecondScoreThreshold);
+
+            if (swapDue &&
                 component.NtStation is { } ntStation &&
                 component.TypanStation is { } typanStation)
             {
-                component.TradeZoneSwapped = true;
+                if (!component.TradeZoneSwapped)
+                    component.TradeZoneSwapped = true;
+                else
+                    component.TradeZoneSwappedSecond = true;
+
                 _captureZones.TrySwapTradeZone(ntStation, typanStation);
             }
 
@@ -301,6 +311,37 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                 EndWar(uid, component);
             }
 
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Capture points from combat kills, capped per faction so zone captures stay the main scoring source.
+    /// </summary>
+    public void AddKillScore(TypanWarSide side, int amount = 1)
+    {
+        var query = EntityQueryEnumerator<TypanStationWarRuleComponent, GameRuleComponent>();
+        while (query.MoveNext(out var ruleUid, out var component, out var gameRule))
+        {
+            if (!GameTicker.IsGameRuleActive(ruleUid, gameRule) || component.Phase != TypanWarPhase.Active)
+                continue;
+
+            var current = side == TypanWarSide.Nanotrasen ? component.KillScoreNt : component.KillScoreTypan;
+            var granted = component.KillScoreCap > 0
+                ? Math.Min(amount, component.KillScoreCap - current)
+                : amount;
+
+            if (granted <= 0)
+                return;
+
+            if (side == TypanWarSide.Nanotrasen)
+                component.KillScoreNt += granted;
+            else
+                component.KillScoreTypan += granted;
+
+            AddCapturePoints(
+                side == TypanWarSide.Nanotrasen ? TypanWarCaptureOwner.Nanotrasen : TypanWarCaptureOwner.Typan,
+                granted);
             return;
         }
     }
@@ -454,7 +495,8 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             {
                 TryStartWarMusic(component);
                 TryPlayWarEndWarning(component);
-                TryRunWarEvents(component);
+                TryRunWarEvents(component, frameTime);
+                TryCheckElimination(uid, component);
             }
 
             if (component.Phase == TypanWarPhase.Active &&
@@ -546,6 +588,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             return;
 
         GetStats(component, killerId.Value, killerName).Kills++;
+        AddKillScore(killerFaction.Side);
     }
 
     public void AddCaptureCredit(TypanStationWarRuleComponent component, List<(NetUserId Id, string Name)> capturers)
@@ -882,7 +925,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             colorOverride: TypanWarColors.Neutral);
     }
 
-    private void TryRunWarEvents(TypanStationWarRuleComponent component)
+    private void TryRunWarEvents(TypanStationWarRuleComponent component, float frameTime)
     {
         if (component.WarStartTime == null)
             return;
@@ -896,6 +939,136 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                 ("nt", (int) component.NtCapturePoints),
                 ("typan", (int) component.TypanCapturePoints)));
         }
+
+        component.WarEventsAccumulator += frameTime;
+        if (component.WarEventsAccumulator < component.WarEventsIntervalSeconds)
+            return;
+
+        component.WarEventsAccumulator = 0f;
+        RunNextWarEvent(component);
+    }
+
+    private void RunNextWarEvent(TypanStationWarRuleComponent component)
+    {
+        switch (component.WarEventsIndex++ % 3)
+        {
+            case 0:
+                RunSupplyEvent(component);
+                break;
+            case 1:
+                RunDiversionEvent(component);
+                break;
+            case 2:
+                RunReinforcementEvent(component);
+                break;
+        }
+    }
+
+    private void RunSupplyEvent(TypanStationWarRuleComponent component)
+    {
+        var spawned = SpawnZoneCrates(component, TypanWarCaptureOwner.Nanotrasen)
+                      + SpawnZoneCrates(component, TypanWarCaptureOwner.Typan);
+
+        if (spawned > 0)
+            SendMarkupGlobalAnnouncement(Loc.GetString("typan-war-event-supply"));
+    }
+
+    private void RunDiversionEvent(TypanStationWarRuleComponent component)
+    {
+        if (Math.Abs(component.NtCapturePoints - component.TypanCapturePoints) < component.ComebackScoreGap)
+            return;
+
+        var losing = component.NtCapturePoints < component.TypanCapturePoints
+            ? TypanWarCaptureOwner.Nanotrasen
+            : TypanWarCaptureOwner.Typan;
+
+        if (SpawnZoneCrates(component, losing) > 0)
+            SendMarkupGlobalAnnouncement(Loc.GetString("typan-war-event-diversion"));
+    }
+
+    private void RunReinforcementEvent(TypanStationWarRuleComponent component)
+    {
+        var ruleUid = FindActiveRuleUid();
+        if (ruleUid == null || !_dropShuttles.TryForceRespawnShuttles(ruleUid.Value, component))
+            return;
+
+        SendMarkupGlobalAnnouncement(Loc.GetString("typan-war-event-reinforcement"));
+    }
+
+    private int SpawnZoneCrates(TypanStationWarRuleComponent component, TypanWarCaptureOwner owner)
+    {
+        var spawned = 0;
+        foreach (var (zoneUid, coords, _, _) in _captureZones.GetOwnedZoneCoordinates(owner))
+        {
+            if (!TryComp<TypanWarCaptureZoneComponent>(zoneUid, out var zone))
+                continue;
+
+            var crateProto = owner switch
+            {
+                TypanWarCaptureOwner.Nanotrasen => zone.NtLootCrate,
+                TypanWarCaptureOwner.Typan => zone.TypanLootCrate,
+                _ => default(EntProtoId?),
+            };
+
+            if (crateProto == null)
+                continue;
+
+            Spawn(crateProto.Value, coords);
+            spawned++;
+        }
+
+        return spawned;
+    }
+
+    private EntityUid? FindActiveRuleUid()
+    {
+        var query = EntityQueryEnumerator<TypanStationWarRuleComponent, GameRuleComponent>();
+        while (query.MoveNext(out var uid, out var component, out var gameRule))
+        {
+            if (GameTicker.IsGameRuleActive(uid, gameRule) && component.Phase == TypanWarPhase.Active)
+                return uid;
+        }
+
+        return null;
+    }
+
+    private void TryCheckElimination(EntityUid uid, TypanStationWarRuleComponent component)
+    {
+        var (ntAlive, typanAlive) = CountFactionAliveInternal();
+        if (TryProcessElimination(uid, component, TypanWarSide.Nanotrasen, ntAlive == 0))
+            return;
+
+        TryProcessElimination(uid, component, TypanWarSide.Typan, typanAlive == 0);
+    }
+
+    private bool TryProcessElimination(
+        EntityUid uid,
+        TypanStationWarRuleComponent component,
+        TypanWarSide side,
+        bool eliminated)
+    {
+        if (!eliminated)
+        {
+            if (side == TypanWarSide.Nanotrasen)
+                component.NtEliminatedSince = null;
+            else
+                component.TypanEliminatedSince = null;
+            return false;
+        }
+
+        if (side == TypanWarSide.Nanotrasen)
+            component.NtEliminatedSince ??= _timing.CurTime;
+        else
+            component.TypanEliminatedSince ??= _timing.CurTime;
+
+        var since = side == TypanWarSide.Nanotrasen ? component.NtEliminatedSince : component.TypanEliminatedSince;
+        if (since == null || _timing.CurTime - since.Value < TimeSpan.FromSeconds(component.EliminationGraceSeconds))
+            return false;
+
+        component.Winner = side == TypanWarSide.Nanotrasen ? TypanWarWinner.Typan : TypanWarWinner.Nanotrasen;
+        component.WonByElimination = true;
+        EndWar(uid, component);
+        return true;
     }
 
     private void EndWar(EntityUid ruleUid, TypanStationWarRuleComponent component)
@@ -917,8 +1090,12 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
         var winnerKey = component.Winner switch
         {
-            TypanWarWinner.Nanotrasen => "typan-war-end-announce-nt",
-            TypanWarWinner.Typan => "typan-war-end-announce-typan",
+            TypanWarWinner.Nanotrasen => component.WonByElimination
+                ? "typan-war-end-announce-nt-elimination"
+                : "typan-war-end-announce-nt",
+            TypanWarWinner.Typan => component.WonByElimination
+                ? "typan-war-end-announce-typan-elimination"
+                : "typan-war-end-announce-typan",
             _ => "typan-war-end-announce-stalemate",
         };
 

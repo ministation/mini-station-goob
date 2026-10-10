@@ -10,7 +10,7 @@
     - LoneRunRule
   - type: TypanStationWarRule
     announcementDelaySeconds: 15
-    warStartDelaySeconds: 300
+    warStartDelaySeconds: 240
     warDurationSeconds: 2700
     warMusicDelaySeconds: 90
     warMusicDurationSeconds: 90

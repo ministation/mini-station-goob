@@ -6,3 +6,4 @@
   components:
   - type: TypanWarSurplusBundle
     lootTable: TypanWarTypanSurplusLoot
+    faction: Typan

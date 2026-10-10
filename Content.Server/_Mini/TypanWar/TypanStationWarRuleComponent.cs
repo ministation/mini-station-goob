@@ -126,6 +126,51 @@ public sealed partial class TypanStationWarRuleComponent : Component
     /// <summary>Set for technical stalemates (layout failure) where nobody fought — suppress rewards.</summary>
     public bool SkipRewards;
 
+    /// <summary>Max capture points a faction can earn from combat kills per war.</summary>
+    [DataField]
+    public int KillScoreCap = 30;
+
+    /// <summary>Capture points awarded to the opposing faction for destroying a drop shuttle.</summary>
+    [DataField]
+    public int ShuttleDestroyScore = 15;
+
+    /// <summary>A faction with zero living combatants for this long loses the war by elimination.</summary>
+    [DataField]
+    public float EliminationGraceSeconds = 180f;
+
+    /// <summary>Score gap after which the losing faction receives comeback supply.</summary>
+    [DataField]
+    public float ComebackScoreGap = 30f;
+
+    /// <summary>Loot probability multiplier for the losing faction while comeback is active.</summary>
+    [DataField]
+    public float ComebackLootMultiplier = 1.5f;
+
+    /// <summary>When either faction reaches this score, trade zone C swaps a second time.</summary>
+    [DataField]
+    public float TradeZoneSwapSecondScoreThreshold = 75f;
+
+    /// <summary>Interval between rotating war events (supply drop / diversion / reinforcement).</summary>
+    [DataField]
+    public float WarEventsIntervalSeconds = 360f;
+
+    public int KillScoreNt;
+
+    public int KillScoreTypan;
+
+    public bool TradeZoneSwappedSecond;
+
+    /// <summary>Winner was decided by eliminating all enemy combatants (end announcement variant).</summary>
+    public bool WonByElimination;
+
+    public TimeSpan? NtEliminatedSince;
+
+    public TimeSpan? TypanEliminatedSince;
+
+    public float WarEventsAccumulator;
+
+    public int WarEventsIndex;
+
     [DataField]
     public int StationSeparationTiles = 300;
 

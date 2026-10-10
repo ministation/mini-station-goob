@@ -490,8 +490,12 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         if (zone.CaptureOwner == TypanWarCaptureOwner.Neutral)
             return;
 
+        var interval = zone.LootIntervalSeconds;
+        if (IsComebackFaction(zone.CaptureOwner))
+            interval *= 0.5f;
+
         runtime.LootAccumulator += frameTime;
-        if (runtime.LootAccumulator < zone.LootIntervalSeconds)
+        if (runtime.LootAccumulator < interval)
             return;
 
         runtime.LootAccumulator = 0f;
@@ -590,6 +594,25 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
             Loc.GetString(TypanWarColors.SenderLocId(owner)),
             announcementSound: TypanWarSounds.HeadquartersAlert,
             colorOverride: TypanWarColors.ForCaptureOwner(owner));
+    }
+
+    /// <summary>
+    /// True while the faction is behind by <see cref="TypanStationWarRuleComponent.ComebackScoreGap"/> or more
+    /// and receives doubled zone supply as a comeback bonus.
+    /// </summary>
+    private bool IsComebackFaction(TypanWarCaptureOwner owner)
+    {
+        if (!TryGetActiveRule(out var rule))
+            return false;
+
+        var gap = Math.Abs(rule.NtCapturePoints - rule.TypanCapturePoints);
+        if (gap < rule.ComebackScoreGap)
+            return false;
+
+        var losing = rule.NtCapturePoints < rule.TypanCapturePoints
+            ? TypanWarCaptureOwner.Nanotrasen
+            : TypanWarCaptureOwner.Typan;
+        return owner == losing;
     }
 
     private bool TryGetActiveRule([NotNullWhen(true)] out TypanStationWarRuleComponent? rule)
