@@ -329,6 +329,21 @@ namespace Content.Server.Database
         private static async Task SetSelectedCharacterSlotAsync(NetUserId userId, int newSlot, ServerDbContext db)
         {
             var prefs = await db.Preference.SingleAsync(p => p.UserId == userId.UserId);
+
+            // Mini: the requested slot can race with a concurrent profile deletion (rapid
+            // UI requests), and the deferred FK preference -> profile then fails the whole
+            // save at commit (Npgsql 23503). Fall back to the lowest existing slot instead.
+            if (!await db.Profile.AnyAsync(p => p.PreferenceId == prefs.Id && p.Slot == newSlot))
+            {
+                var fallback = await db.Profile
+                    .Where(p => p.PreferenceId == prefs.Id)
+                    .OrderBy(p => p.Slot)
+                    .Select(p => (int?) p.Slot)
+                    .FirstOrDefaultAsync();
+                if (fallback != null)
+                    newSlot = fallback.Value;
+            }
+
             prefs.SelectedCharacterSlot = newSlot;
         }
 
