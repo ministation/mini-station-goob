@@ -132,3 +132,15 @@ typan-war-round-end-stalemate = Result: stalemate
 
 game-presets-typan-station-war = Station War
 game-presets-typan-station-war-description = Conflict between NanoTrasen and Typan. Hold capture zones and reach 100 points before the enemy.
+
+typan-war-round-end-top-nt = NanoTrasen squad: {$list}
+
+typan-war-round-end-top-typan = Syndicate squad: {$list}
+
+typan-war-round-end-top-entry = {$name} (captures {$captures}, kills {$kills})
+
+typan-war-round-end-mvp-nt = NanoTrasen MVP: {$name}
+
+typan-war-round-end-mvp-typan = Syndicate MVP: {$name}
+
+typan-war-round-end-rewards = War rations: coins paid — NanoTrasen {$nt}, Syndicate {$typan}.

@@ -96,6 +96,36 @@ public sealed partial class TypanStationWarRuleComponent : Component
 
     public bool TradeZoneSwapped;
 
+    /// <summary>Coins (antag token balance) paid to every war participant at EndWar.</summary>
+    [DataField]
+    public int ParticipationTokenReward = 3;
+
+    /// <summary>Extra coins for participants of the winning faction.</summary>
+    [DataField]
+    public int VictoryTokenReward = 2;
+
+    /// <summary>Extra coins for the MVP of each faction (top contributor by captures + kills).</summary>
+    [DataField]
+    public int MvpTokenReward = 5;
+
+    /// <summary>Per-player contribution for MVP pick and round-end text (runtime).</summary>
+    public Dictionary<NetUserId, TypanWarPlayerStats> PlayerStats = new();
+
+    /// <summary>Coins granted per user at EndWar (runtime, used by round-end text).</summary>
+    public Dictionary<NetUserId, int> RewardsGranted = new();
+
+    /// <summary>Total coins paid to each faction at EndWar (runtime, used by round-end text).</summary>
+    public int NtRewardsTotal;
+
+    public int TypanRewardsTotal;
+
+    public string? NtMvpName;
+
+    public string? TypanMvpName;
+
+    /// <summary>Set for technical stalemates (layout failure) where nobody fought — suppress rewards.</summary>
+    public bool SkipRewards;
+
     [DataField]
     public int StationSeparationTiles = 300;
 

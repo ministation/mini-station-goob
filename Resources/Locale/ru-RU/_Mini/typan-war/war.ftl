@@ -174,3 +174,15 @@ game-presets-typan-station-war = Война станций
 
 game-presets-typan-station-war-description = Конфликт между станцией Нанотрайзен и станцией Тайпан. Захватывайте зоны и наберите 100 очков раньше врага.
 
+
+typan-war-round-end-top-nt = Отряд Нанотрайзен: {$list}
+
+typan-war-round-end-top-typan = Отряд Синдиката: {$list}
+
+typan-war-round-end-top-entry = {$name} (захваты {$captures}, убийства {$kills})
+
+typan-war-round-end-mvp-nt = MVP Нанотрайзен: {$name}
+
+typan-war-round-end-mvp-typan = MVP Синдиката: {$name}
+
+typan-war-round-end-rewards = Военный паёк: выплачено монет — Нанотрайзен {$nt}, Синдикат {$typan}.

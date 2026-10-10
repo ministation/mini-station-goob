@@ -18,6 +18,7 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -52,6 +53,8 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         public TypanWarCaptureOwner? LastNetworkedCapturingOwner;
         public TypanWarCaptureOwner LastNetworkedCaptureOwner;
         public bool HasNetworkSnapshot;
+        public readonly List<(NetUserId Id, string Name)> NtCapturers = new();
+        public readonly List<(NetUserId Id, string Name)> TypanCapturers = new();
     }
 
     private readonly Dictionary<EntityUid, ZoneRuntimeState> _runtime = new();
@@ -373,9 +376,10 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         if (!TryGetZoneTiles(uid, zone, out var gridUid, out var grid, out var centerTile))
             return;
 
-        CountFactionPlayers(gridUid, grid, centerTile, zone.ZoneHalfExtents, out var ntCount, out var typanCount);
-
         var runtime = GetRuntime(uid);
+        CountFactionPlayers(gridUid, grid, centerTile, zone.ZoneHalfExtents,
+            out var ntCount, out var typanCount, runtime.NtCapturers, runtime.TypanCapturers);
+
         var progressRate = frameTime / Math.Max(zone.CaptureTimeSeconds, 0.01f);
 
         // Majority captures; equal counts (including empty / 1v1) freeze progress.
@@ -436,13 +440,15 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         if (zone.CaptureProgress < 1f)
             return;
 
-        CompleteCapture(uid, zone, capturing.Value);
+        CompleteCapture(uid, zone, capturing.Value,
+            capturing == TypanWarCaptureOwner.Nanotrasen ? runtime.NtCapturers : runtime.TypanCapturers);
     }
 
     private void CompleteCapture(
         EntityUid uid,
         TypanWarCaptureZoneComponent zone,
-        TypanWarCaptureOwner newOwner)
+        TypanWarCaptureOwner newOwner,
+        List<(NetUserId Id, string Name)> capturers)
     {
         var runtime = GetRuntime(uid);
         zone.CaptureOwner = newOwner;
@@ -452,6 +458,9 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         runtime.PointAccumulator = 0f;
         runtime.LootAccumulator = 0f;
         DirtyZoneIfNeeded(uid, zone, runtime, force: true);
+
+        if (TryGetActiveRule(out var rule))
+            _warRule.AddCaptureCredit(rule, capturers);
 
         UpdateFlagVisual(uid, zone);
         AnnounceCapture(uid, zone, newOwner);
@@ -605,10 +614,14 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         Vector2i centerTile,
         Vector2i halfExtents,
         out int ntCount,
-        out int typanCount)
+        out int typanCount,
+        List<(NetUserId Id, string Name)>? ntPlayers = null,
+        List<(NetUserId Id, string Name)>? typanPlayers = null)
     {
         ntCount = 0;
         typanCount = 0;
+        ntPlayers?.Clear();
+        typanPlayers?.Clear();
 
         var minTile = centerTile - halfExtents;
         var maxTile = centerTile + halfExtents;
@@ -628,12 +641,25 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
                 continue;
 
             if (_typanJobs.MindHasTypanFactionJob(mindContainer.Mind.Value))
+            {
                 typanCount++;
+                if (mind.UserId is { } typanId)
+                    typanPlayers?.Add((typanId, ResolvePlayerName(mind)));
+            }
             else if (_jobs.MindTryGetJobId(mindContainer.Mind.Value, out var jobId) && jobId != null
                      && !_typanJobs.IsTypanJob(jobId.Value)
                      && !_typanJobs.IsCentCommJob(jobId.Value))
+            {
                 ntCount++;
+                if (mind.UserId is { } ntId)
+                    ntPlayers?.Add((ntId, ResolvePlayerName(mind)));
+            }
         }
+    }
+
+    private static string ResolvePlayerName(MindComponent mind)
+    {
+        return mind.CharacterName ?? mind.UserId?.ToString() ?? string.Empty;
     }
 
     private void DirtyZoneIfNeeded(EntityUid uid, TypanWarCaptureZoneComponent zone, ZoneRuntimeState runtime, bool force = false)

@@ -2,6 +2,7 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using Content.Server._Mini.Networking;
+using Content.Server._Mini.AntagTokens;
 using Content.Server._Mini.Typan.StationGoal;
 using Content.Server._CorvaxGoob.Skills;
 using Robust.Shared.Prototypes;
@@ -38,6 +39,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 
 namespace Content.Server._Mini.TypanWar;
@@ -72,6 +74,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
     [Dependency] private readonly PvsSessionOverrideSystem _pvsSession = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly AntagTokenSystem _antagTokens = default!;
 
     private const float HudBroadcastIntervalSeconds = 1f;
     private const float MinimapBroadcastIntervalSeconds = 2f;
@@ -91,6 +94,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<TypanWarLayoutReadyEvent>(OnLayoutReady);
         SubscribeLocalEvent<TypanWarLayoutFailedEvent>(OnLayoutFailed);
+        SubscribeLocalEvent<TypanWarFactionComponent, MobStateChangedEvent>(OnCombatantStateChanged);
 
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
     }
@@ -229,6 +233,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             return;
 
         Log.Error("Typan station war: layout failed — ending war.");
+        component.SkipRewards = true;
 
         _chat.DispatchGlobalAnnouncement(
             Loc.GetString("typan-war-layout-failed"),
@@ -519,6 +524,185 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             _ => "typan-war-round-end-stalemate",
         };
         args.AddLine(Loc.GetString(winnerKey));
+
+        AppendWarStats(component, args);
+    }
+
+    private void OnCombatantStateChanged(Entity<TypanWarFactionComponent> victim, ref MobStateChangedEvent args)
+    {
+        if (args.NewMobState != MobState.Dead)
+            return;
+
+        if (!TryGetRunningWarRule(out var component) || component.Phase != TypanWarPhase.Active)
+            return;
+
+        if (args.Origin is not { } origin || origin == victim.Owner)
+            return;
+
+        if (!TryComp<TypanWarFactionComponent>(origin, out var killerFaction) || killerFaction.Side == victim.Comp.Side)
+            return;
+
+        if (!TryResolveWarPlayer(origin, out var killerId, out var killerName))
+            return;
+
+        GetStats(component, killerId.Value, killerName).Kills++;
+    }
+
+    public void AddCaptureCredit(TypanStationWarRuleComponent component, List<(NetUserId Id, string Name)> capturers)
+    {
+        foreach (var (id, name) in capturers)
+            GetStats(component, id, name).Captures++;
+    }
+
+    private bool TryResolveWarPlayer(EntityUid entity, [NotNullWhen(true)] out NetUserId? userId, [NotNullWhen(true)] out string? name)
+    {
+        userId = null;
+        name = null;
+
+        if (!TryComp<MindContainerComponent>(entity, out var container) ||
+            container.Mind is not { } mindId ||
+            !TryComp<MindComponent>(mindId, out var mind) ||
+            mind.UserId is not { } id)
+        {
+            return false;
+        }
+
+        userId = id;
+        name = mind.CharacterName
+            ?? (_playerManager.TryGetSessionById(id, out var session) ? session.Name : id.ToString());
+        return true;
+    }
+
+    private TypanWarPlayerStats GetStats(TypanStationWarRuleComponent component, NetUserId userId, string name)
+    {
+        if (!component.PlayerStats.TryGetValue(userId, out var stats))
+        {
+            stats = new TypanWarPlayerStats { Name = name };
+            component.PlayerStats[userId] = stats;
+        }
+
+        return stats;
+    }
+
+    private void GrantWarRewards(TypanStationWarRuleComponent component)
+    {
+        if (component.SkipRewards)
+            return;
+
+        if (component.ParticipationTokenReward <= 0 &&
+            component.VictoryTokenReward <= 0 &&
+            component.MvpTokenReward <= 0)
+        {
+            return;
+        }
+
+        var (ntMvp, typanMvp) = FindFactionMvps(component);
+        component.NtMvpName = ntMvp != null && component.PlayerStats.TryGetValue(ntMvp.Value, out var ntStats)
+            ? ntStats.Name
+            : null;
+        component.TypanMvpName = typanMvp != null && component.PlayerStats.TryGetValue(typanMvp.Value, out var typanStats)
+            ? typanStats.Name
+            : null;
+
+        var ntTotal = 0;
+        var typanTotal = 0;
+        GrantSideRewards(component, component.NtJoinedUsers, TypanWarWinner.Nanotrasen, ntMvp, ref ntTotal);
+        GrantSideRewards(component, component.TypanJoinedUsers, TypanWarWinner.Typan, typanMvp, ref typanTotal);
+
+        component.NtRewardsTotal = ntTotal;
+        component.TypanRewardsTotal = typanTotal;
+    }
+
+    private void GrantSideRewards(
+        TypanStationWarRuleComponent component,
+        HashSet<NetUserId> users,
+        TypanWarWinner faction,
+        NetUserId? mvp,
+        ref int total)
+    {
+        var won = component.Winner == faction;
+
+        foreach (var user in users)
+        {
+            var amount = component.ParticipationTokenReward;
+            if (won)
+                amount += component.VictoryTokenReward;
+            if (mvp != null && user == mvp.Value)
+                amount += component.MvpTokenReward;
+
+            if (amount <= 0)
+                continue;
+
+            _antagTokens.AddBalance(user, amount, out _, out _);
+            component.RewardsGranted[user] = amount;
+            total += amount;
+        }
+    }
+
+    private (NetUserId? Nt, NetUserId? Typan) FindFactionMvps(TypanStationWarRuleComponent component)
+    {
+        return (FindFactionMvp(component, component.NtJoinedUsers), FindFactionMvp(component, component.TypanJoinedUsers));
+    }
+
+    private NetUserId? FindFactionMvp(TypanStationWarRuleComponent component, HashSet<NetUserId> users)
+    {
+        NetUserId? best = null;
+        var bestScore = 0;
+
+        foreach (var user in users)
+        {
+            if (!component.PlayerStats.TryGetValue(user, out var stats) || stats.Score <= bestScore)
+                continue;
+
+            bestScore = stats.Score;
+            best = user;
+        }
+
+        return best;
+    }
+
+    private void AppendWarStats(TypanStationWarRuleComponent component, RoundEndTextAppendEvent args)
+    {
+        AppendFactionTopList(component, args, component.NtJoinedUsers, "typan-war-round-end-top-nt");
+        AppendFactionTopList(component, args, component.TypanJoinedUsers, "typan-war-round-end-top-typan");
+
+        if (component.NtMvpName is { } ntMvp)
+            args.AddLine(Loc.GetString("typan-war-round-end-mvp-nt", ("name", ntMvp)));
+
+        if (component.TypanMvpName is { } typanMvp)
+            args.AddLine(Loc.GetString("typan-war-round-end-mvp-typan", ("name", typanMvp)));
+
+        if (component.NtRewardsTotal > 0 || component.TypanRewardsTotal > 0)
+        {
+            args.AddLine(Loc.GetString("typan-war-round-end-rewards",
+                ("nt", component.NtRewardsTotal),
+                ("typan", component.TypanRewardsTotal)));
+        }
+    }
+
+    private void AppendFactionTopList(
+        TypanStationWarRuleComponent component,
+        RoundEndTextAppendEvent args,
+        HashSet<NetUserId> users,
+        string key)
+    {
+        var top = users
+            .Where(u => component.PlayerStats.TryGetValue(u, out var s) && s.Score > 0)
+            .Select(u => component.PlayerStats[u])
+            .OrderByDescending(s => s.Score)
+            .ThenByDescending(s => s.Captures)
+            .Take(3)
+            .Select(s => Loc.GetString("typan-war-round-end-top-entry",
+                ("name", s.Name),
+                ("score", s.Score),
+                ("captures", s.Captures),
+                ("kills", s.Kills)))
+            .ToList();
+
+        if (top.Count == 0)
+            return;
+
+        args.AddLine(Loc.GetString(key, ("list", string.Join(", ", top))));
     }
 
     private void SendPrepAnnouncement(TypanStationWarRuleComponent component)
@@ -745,6 +929,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
                 ("typan", (int) component.TypanCapturePoints)),
             TypanWarColors.ForWinner(component.Winner));
 
+        GrantWarRewards(component);
         BroadcastStatus(component);
         _warBalance.NotifyCombatPhaseEnded();
         _roundEnd.EndRound(TimeSpan.FromSeconds(component.RoundEndDelaySeconds));
