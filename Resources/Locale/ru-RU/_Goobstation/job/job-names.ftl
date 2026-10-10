@@ -11,6 +11,7 @@ job-name-futureagent = агент будущего
 job-name-salvagediver = спасатель
 job-name-ntr = представитель NanoTrasen
 job-name-bs = офицер Синий Щит
+job-name-bso = офицер Синий Щит
 job-name-overall = общее
 job-name-tider = грейтайд
 job-name-exec = служебный доступ
