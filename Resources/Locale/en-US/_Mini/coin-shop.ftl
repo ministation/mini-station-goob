@@ -1,6 +1,6 @@
-coin-shop-title = Shop
+coin-shop-title = Customization
 
-coin-shop-subtitle = Cosmetics for coins
+coin-shop-subtitle = Spend coins on cosmetics and ghost themes
 
 coin-shop-cosmetics-header = Cosmetics (carried with you every round)
 
@@ -18,7 +18,7 @@ coin-shop-color-tooltip = Nickname color in OOC and AHelp for 30 days. Buying ag
 
 coin-shop-lootbox-description = A random item from the catalog. Duplicates refund part of the coins.
 
-coin-shop-lootbox-button = Crate (25)
+coin-shop-lootbox-button = Open for 25
 
 coin-shop-roll-new = The crate dropped: {$item} ({$rarity})!
 
@@ -37,3 +37,7 @@ coin-shop-ghosts-header = Ghost themes
 coin-shop-ghost-select = Apply
 
 coin-shop-ghost-selected = Applied
+
+coin-shop-balance-label = Balance:
+
+coin-shop-lootbox-title = Lucky crate

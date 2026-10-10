@@ -1,6 +1,6 @@
-coin-shop-title = Магазин
+coin-shop-title = Кастомизация
 
-coin-shop-subtitle = Косметика за монетки
+coin-shop-subtitle = Тратьте монетки на косметику и темы призраков
 
 coin-shop-cosmetics-header = Косметика (выдаётся с собой каждый раунд)
 
@@ -18,7 +18,7 @@ coin-shop-color-tooltip = Цвет ника в OOC и ахелпе на 30 дн�
 
 coin-shop-lootbox-description = Случайный предмет из каталога. Дубликат вернёт часть монет.
 
-coin-shop-lootbox-button = Ящик (25)
+coin-shop-lootbox-button = Открыть за 25
 
 coin-shop-roll-new = Из ящика выпало: {$item} ({$rarity})!
 
@@ -37,3 +37,7 @@ coin-shop-ghosts-header = Темы призраков
 coin-shop-ghost-select = Применить
 
 coin-shop-ghost-selected = Применена
+
+coin-shop-balance-label = Баланс:
+
+coin-shop-lootbox-title = Ящик удачи
