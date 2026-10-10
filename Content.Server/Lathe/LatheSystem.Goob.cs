@@ -57,6 +57,15 @@ public sealed partial class LatheSystem
             var count = comp.Queue.Count;
             while (comp.CurrentRecipe != null)
             {
+                // Mini: the queue can be emptied externally while the lathe is still marked
+                // as producing — First() would throw InvalidOperationException, so finish
+                // gracefully instead (this method must be idempotent).
+                if (comp.Queue.Count == 0)
+                {
+                    Log.Warning($"FinishProducingManyStorage: queue on {ToPrettyString(uid)} was emptied before production finished, aborting bulk finish.");
+                    break;
+                }
+
                 var batch = comp.Queue.First();
                 batch.ItemsPrinted++;
                 if (batch.ItemsPrinted >= batch.ItemsRequested || batch.ItemsPrinted < 0)
