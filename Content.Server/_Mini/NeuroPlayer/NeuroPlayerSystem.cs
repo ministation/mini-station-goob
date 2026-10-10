@@ -42,6 +42,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
 {
     private const string CommonChannelId = "Common";
     private const int MaxReplyLength = 200;
+    private const float DirectReplyDistance = 3f;
 
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
@@ -73,6 +74,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private float _temperature;
     private int _timeoutSeconds;
     private bool _thinkingEnabled;
+    private float _directChance;
+    private float _proactiveChance;
+    private int _proactiveCooldownSeconds;
 
     private DateTime _dailyDate = DateTime.UtcNow.Date;
     private int _dailyRequests;
@@ -96,6 +100,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerTemperature, v => _temperature = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerTimeoutSeconds, v => _timeoutSeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerThinkingEnabled, v => _thinkingEnabled = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerDirectChance, v => _directChance = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerProactiveChance, v => _proactiveChance = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerProactiveCooldownSeconds, v => _proactiveCooldownSeconds = v, true);
 
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
@@ -280,13 +287,11 @@ public sealed class NeuroPlayerSystem : EntitySystem
             if (botXform.MapID != speakerXform.MapID)
                 continue;
 
-            if ((_transform.GetWorldPosition(botXform) - _transform.GetWorldPosition(speakerXform)).LengthSquared()
-                > _hearRadius * _hearRadius)
-            {
+            var distance = (_transform.GetWorldPosition(botXform) - _transform.GetWorldPosition(speakerXform)).Length();
+            if (distance > _hearRadius)
                 continue;
-            }
 
-            HandleSpeech(bot, speaker, ev.Message, viaRadio: false);
+            HandleSpeech(bot, speaker, ev.Message, viaRadio: false, distance);
         }
     }
 
@@ -298,7 +303,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         HandleSpeech(bot, ev.MessageSource, ev.OriginalChatMsg.Message, viaRadio: true);
     }
 
-    private void HandleSpeech(EntityUid bot, EntityUid speaker, string message, bool viaRadio)
+    private void HandleSpeech(EntityUid bot, EntityUid speaker, string message, bool viaRadio, float distance = -1f)
     {
         if (!_prototypes.TryIndex(Comp<NeuroPlayerComponent>(bot).PersonaId, out var persona))
             return;
@@ -310,10 +315,30 @@ public sealed class NeuroPlayerSystem : EntitySystem
         if (HasComp<NeuroPlayerComponent>(speaker))
             return;
 
-        if (!MatchesName(persona.Name, message))
+        // Named address: always answer (both local and radio).
+        if (MatchesName(persona.Name, message))
+        {
+            TryRespond(bot, persona, speakerName, message, viaRadio, proactive: false);
+            return;
+        }
+
+        // Unnamed speech: only react locally — global radio replies without a name would be spam.
+        if (viaRadio)
             return;
 
-        TryRespond(bot, persona, speakerName, message, viaRadio);
+        var comp = Comp<NeuroPlayerComponent>(bot);
+        if (_timing.CurTime < comp.NextProactiveResponse)
+            return;
+
+        // Face-to-face talk (<= 3 tiles) almost always gets a reply; background chatter — by chance.
+        var chance = distance >= 0 && distance <= DirectReplyDistance
+            ? _directChance
+            : _proactiveChance;
+
+        if (!_random.Prob(chance))
+            return;
+
+        TryRespond(bot, persona, speakerName, message, viaRadio, proactive: true);
     }
 
     /// <summary>Addressed by the full persona name or by its first word ("Vasya" for "Vasya Prokhorov").</summary>
@@ -334,7 +359,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
             comp.Context.Dequeue();
     }
 
-    private void TryRespond(EntityUid bot, NeuroPersonaPrototype persona, string speakerName, string message, bool viaRadio)
+    private void TryRespond(EntityUid bot, NeuroPersonaPrototype persona, string speakerName, string message, bool viaRadio, bool proactive)
     {
         if (string.IsNullOrEmpty(_apiUrl) || string.IsNullOrEmpty(_apiKey))
             return;
@@ -347,7 +372,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
             return;
 
         comp.RequestInFlight = true;
-        _ = RunCompletionAsync(bot, comp, persona, speakerName, message, viaRadio);
+        _ = RunCompletionAsync(bot, comp, persona, speakerName, message, viaRadio, proactive);
     }
 
     private bool CheckDailyBudget()
@@ -374,10 +399,17 @@ public sealed class NeuroPlayerSystem : EntitySystem
         NeuroPersonaPrototype persona,
         string speakerName,
         string message,
-        bool viaRadio)
+        bool viaRadio,
+        bool proactive)
     {
         try
         {
+            // Human-feel jitter: bots never reply instantly.
+            await Task.Delay(_random.Next(800, 3500));
+
+            if (Deleted(bot) || Terminating(bot))
+                return;
+
             var botName = Name(bot);
             var context = string.Join("\n", comp.Context.Select(c => $"{c.Speaker}: {c.Message}"));
 
@@ -444,6 +476,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
         {
             comp.RequestInFlight = false;
             comp.NextAllowedResponse = _timing.CurTime + TimeSpan.FromSeconds(_cooldownSeconds);
+            if (proactive)
+                comp.NextProactiveResponse = _timing.CurTime + TimeSpan.FromSeconds(_proactiveCooldownSeconds);
         }
     }
 

@@ -638,6 +638,18 @@ public sealed class MiniCCVars
     public static readonly CVarDef<int> NeuroPlayerTimeoutSeconds =
         CVarDef.Create("neuroplayer.request_timeout_seconds", 10, CVar.SERVERONLY | CVar.ARCHIVE);
 
+    /// <summary>Chance to join face-to-face speech (<= 3 tiles) without being named.</summary>
+    public static readonly CVarDef<float> NeuroPlayerDirectChance =
+        CVarDef.Create("neuroplayer.direct_chance", 0.5f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Chance to join background conversation nearby without being named.</summary>
+    public static readonly CVarDef<float> NeuroPlayerProactiveChance =
+        CVarDef.Create("neuroplayer.proactive_chance", 0.15f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Cooldown between unprompted replies of one bot (anti-spam).</summary>
+    public static readonly CVarDef<int> NeuroPlayerProactiveCooldownSeconds =
+        CVarDef.Create("neuroplayer.proactive_cooldown_seconds", 45, CVar.SERVERONLY | CVar.ARCHIVE);
+
     /// <summary>
     /// GLM-4.5/4.6 style reasoning mode. Off by default: with a small max_tokens budget
     /// thinking consumes the whole response and the bot stays silent.

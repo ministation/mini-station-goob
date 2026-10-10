@@ -22,4 +22,8 @@ public sealed partial class NeuroPlayerComponent : Component
 
     [ViewVariables]
     public TimeSpan NextAllowedResponse = TimeSpan.Zero;
+
+    /// <summary>Separate throttle for unprompted (no name) replies in local chat.</summary>
+    [ViewVariables]
+    public TimeSpan NextProactiveResponse = TimeSpan.Zero;
 }
