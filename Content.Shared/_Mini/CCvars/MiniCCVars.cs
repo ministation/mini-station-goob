@@ -630,7 +630,7 @@ public sealed class MiniCCVars
         CVarDef.Create("neuroplayer.max_daily_requests", 1000, CVar.SERVERONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<int> NeuroPlayerMaxTokens =
-        CVarDef.Create("neuroplayer.max_tokens", 120, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroplayer.max_tokens", 512, CVar.SERVERONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<float> NeuroPlayerTemperature =
         CVarDef.Create("neuroplayer.temperature", 0.9f, CVar.SERVERONLY | CVar.ARCHIVE);

@@ -174,7 +174,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private bool TrySpawnBot(NeuroPersonaPrototype persona, EntityCoordinates coords, EntityUid station)
     {
-        var profile = HumanoidCharacterProfile.Random().WithName(persona.Name);
+        var profile = HumanoidCharacterProfile.RandomWithSpecies("Human").WithName(persona.Name);
         var mob = _spawning.SpawnPlayerMob(coords, persona.Job, profile, station);
 
         var comp = EnsureComp<NeuroPlayerComponent>(mob);
@@ -310,10 +310,20 @@ public sealed class NeuroPlayerSystem : EntitySystem
         if (HasComp<NeuroPlayerComponent>(speaker))
             return;
 
-        if (!message.Contains(persona.Name, StringComparison.OrdinalIgnoreCase))
+        if (!MatchesName(persona.Name, message))
             return;
 
         TryRespond(bot, persona, speakerName, message, viaRadio);
+    }
+
+    /// <summary>Addressed by the full persona name or by its first word ("Vasya" for "Vasya Prokhorov").</summary>
+    private static bool MatchesName(string personaName, string message)
+    {
+        if (message.Contains(personaName, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var firstWord = personaName.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+        return firstWord.Length >= 3 && message.Contains(firstWord, StringComparison.OrdinalIgnoreCase);
     }
 
     private void AddContext(EntityUid bot, string speaker, string message)
