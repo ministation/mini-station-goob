@@ -637,4 +637,12 @@ public sealed class MiniCCVars
 
     public static readonly CVarDef<int> NeuroPlayerTimeoutSeconds =
         CVarDef.Create("neuroplayer.request_timeout_seconds", 10, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// GLM-4.5/4.6 style reasoning mode. Off by default: with a small max_tokens budget
+    /// thinking consumes the whole response and the bot stays silent.
+    /// Sent only when the model name contains "glm".
+    /// </summary>
+    public static readonly CVarDef<bool> NeuroPlayerThinkingEnabled =
+        CVarDef.Create("neuroplayer.thinking_enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
 }

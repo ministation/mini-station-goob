@@ -72,6 +72,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private int _maxTokens;
     private float _temperature;
     private int _timeoutSeconds;
+    private bool _thinkingEnabled;
 
     private DateTime _dailyDate = DateTime.UtcNow.Date;
     private int _dailyRequests;
@@ -94,6 +95,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerMaxTokens, v => _maxTokens = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerTemperature, v => _temperature = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerTimeoutSeconds, v => _timeoutSeconds = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerThinkingEnabled, v => _thinkingEnabled = v, true);
 
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
@@ -395,6 +397,12 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 MaxTokens = _maxTokens,
             };
 
+            // GLM-4.5/4.6 reasoning toggle: with a small token budget thinking eats the whole
+            // reply, so it is disabled unless requested. Sent only for glm models — other
+            // providers reject unknown fields.
+            if (_model.Contains("glm", StringComparison.OrdinalIgnoreCase))
+                body.Thinking = new ThinkingConfig { Type = _thinkingEnabled ? "enabled" : "disabled" };
+
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
             using var request = new HttpRequestMessage(HttpMethod.Post, _apiUrl);
             request.Headers.Authorization = new("Bearer", _apiKey);
@@ -450,6 +458,15 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
         [JsonPropertyName("max_tokens")]
         public int MaxTokens { get; set; }
+
+        [JsonPropertyName("thinking")]
+        public ThinkingConfig? Thinking { get; set; }
+    }
+
+    private sealed class ThinkingConfig
+    {
+        [JsonPropertyName("type")]
+        public string Type { get; set; } = "disabled";
     }
 
     private sealed class ChatMessageDto
