@@ -36,6 +36,7 @@ using Content.Shared.Database;
 using Robust.Shared.Prototypes;
 using Content.Shared._Amour.Stickers;
 using Content.Server._Amour.Stickers;
+using Content.Shared._Mini.CoinShop;
 
 namespace Content.Server.Administration.Systems
 {
@@ -741,6 +742,10 @@ namespace Content.Server.Administration.Systems
             {
                 var miniDonateColor = SponsorColor.GetColorForNickname(sponsor.Level);
                 displayName = $"[color={miniDonateColor}][bold]{plainName}[/bold][/color]";
+            }
+            else if (senderAdmin is null && CoinOocColorCache.TryGet(senderSession.UserId, out var coinColor))
+            {
+                displayName = $"[color={coinColor}][bold]{plainName}[/bold][/color]";
             }
 
             var bwoinkParams = new BwoinkParams(message,

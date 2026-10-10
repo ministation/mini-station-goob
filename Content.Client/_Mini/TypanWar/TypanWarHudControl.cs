@@ -29,13 +29,15 @@ public sealed class TypanWarHudControl : PanelContainer
     private readonly Label _typanScoreLabel;
     private readonly Label _timerLabel;
     private readonly TypanWarApexScoreBarControl _bar;
+    private BoxContainer _betRow = null!;
+    private string? _betRowBuiltKey;
 
     public TypanWarHudControl()
     {
         IoCManager.InjectDependencies(this);
 
         MinHeight = 42;
-        MaxHeight = 64;
+        MaxHeight = 130;
         HorizontalAlignment = HAlignment.Center;
         MouseFilter = MouseFilterMode.Ignore;
         PanelOverride = new StyleBoxFlat
@@ -107,7 +109,78 @@ public sealed class TypanWarHudControl : PanelContainer
         row.AddChild(_typanScoreLabel);
         row.AddChild(_timerLabel);
 
+        _betRow = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+            Visible = false,
+        };
+        column.AddChild(_betRow);
+
         Visible = false;
+    }
+
+    private void UpdateBetRow(bool bettingOpen, TypanWarSide? mySide, int myAmount, int[] amounts)
+    {
+        if (!bettingOpen && mySide == null)
+        {
+            _betRow.Visible = false;
+            _betRowBuiltKey = null;
+            return;
+        }
+
+        _betRow.Visible = true;
+
+        if (mySide != null)
+        {
+            if (_betRowBuiltKey != "placed")
+            {
+                _betRow.RemoveAllChildren();
+                _betRow.AddChild(new Label
+                {
+                    Text = Loc.GetString("typan-war-bet-placed",
+                        ("side", Loc.GetString(mySide == TypanWarSide.Nanotrasen
+                            ? "typan-war-bet-side-nt"
+                            : "typan-war-bet-side-typan")),
+                        ("amount", myAmount)),
+                    FontColorOverride = Color.FromHex("#F0D890"),
+                });
+                _betRowBuiltKey = "placed";
+            }
+
+            return;
+        }
+
+        var key = string.Join(",", amounts);
+        if (_betRowBuiltKey == key)
+            return;
+
+        _betRowBuiltKey = key;
+        _betRow.RemoveAllChildren();
+
+        _betRow.AddChild(new Label
+        {
+            Text = Loc.GetString("typan-war-bet-prompt"),
+            FontColorOverride = Color.FromHex("#adbac7"),
+        });
+
+        foreach (var amount in amounts)
+        {
+            AddBetButton(amount, TypanWarSide.Nanotrasen);
+            AddBetButton(amount, TypanWarSide.Typan);
+        }
+    }
+
+    private void AddBetButton(int amount, TypanWarSide side)
+    {
+        var button = new Button
+        {
+            Text = Loc.GetString(side == TypanWarSide.Nanotrasen ? "typan-war-bet-side-nt" : "typan-war-bet-side-typan")
+                + $" {amount}",
+        };
+        button.OnPressed += _ =>
+            IoCManager.Resolve<IEntityManager>().System<TypanWarUiSystem>().RequestBet(side, amount);
+        _betRow.AddChild(button);
     }
 
     public void Update(
@@ -116,11 +189,17 @@ public sealed class TypanWarHudControl : PanelContainer
         float ntPoints,
         float typanPoints,
         int pointsToWin,
-        float timeRemainingSeconds)
+        float timeRemainingSeconds,
+        bool bettingOpen = false,
+        TypanWarSide? myBetSide = null,
+        int myBetAmount = 0,
+        int[]? betAmounts = null)
     {
         Visible = phase is TypanWarPhase.Pending or TypanWarPhase.Active or TypanWarPhase.Ended;
         if (!Visible)
             return;
+
+        UpdateBetRow(bettingOpen, myBetSide, myBetAmount, betAmounts ?? [5, 10, 25]);
 
         _titleLabel.Text = phase switch
         {

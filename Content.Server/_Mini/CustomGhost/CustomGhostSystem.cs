@@ -16,6 +16,7 @@ public sealed class CustomGhostSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
+    [Dependency] private readonly Content.Server._Mini.AntagTokens.AntagTokenSystem _antagTokens = default!;
 
     public override void Initialize()
     {
@@ -142,17 +143,12 @@ public sealed class CustomGhostSystem : EntitySystem
             return;
         }
 
-        var balanceToken = tokens.FirstOrDefault(t => t.TokenId == "balance");
-        var balance = balanceToken?.Amount ?? 0;
-
-        if (balance < proto.Price)
+        if (!_antagTokens.TrySpendBalance(userId, proto.Price, out _))
         {
             SendShopState(args.SenderSession);
             return;
         }
 
-        var newBalance = balance - proto.Price;
-        await _db.SetPlayerAntagTokenAmount(userId.UserId, "balance", newBalance);
         await _db.SetPlayerAntagTokenAmount(userId.UserId, tokenId, 1);
 
         var ownedThemes = new List<string>();
@@ -167,7 +163,7 @@ public sealed class CustomGhostSystem : EntitySystem
         var selectedToken = ownedTokens.FirstOrDefault(t => t.TokenId.EndsWith(":selected"));
         var selectedTheme = selectedToken?.TokenId["ghost-theme:".Length..].Replace(":selected", "");
 
-        SendShopState(args.SenderSession, newBalance, ownedThemes, selectedTheme);
+        SendShopState(args.SenderSession, _antagTokens.GetBalance(userId), ownedThemes, selectedTheme);
     }
 
     private async void OnShopSelect(GhostShopSelectRequestEvent msg, EntitySessionEventArgs args)
@@ -204,7 +200,6 @@ public sealed class CustomGhostSystem : EntitySystem
         tokens = await _db.GetPlayerAntagTokens(userId.UserId);
         var ownedThemes = new List<string>();
         string? selectedTheme = null;
-        var balanceToken = tokens.FirstOrDefault(t => t.TokenId == "balance");
 
         foreach (var token in tokens)
         {
@@ -219,7 +214,7 @@ public sealed class CustomGhostSystem : EntitySystem
                 ownedThemes.Add(tId);
         }
 
-        SendShopState(args.SenderSession, balanceToken?.Amount ?? 0, ownedThemes, selectedTheme);
+        SendShopState(args.SenderSession, _antagTokens.GetBalance(userId), ownedThemes, selectedTheme);
 
         if (args.SenderSession.AttachedEntity is { Valid: true } ent && HasComp<GhostComponent>(ent))
             ApplyTheme(ent, themeId ?? "GhostThemeDefault");
@@ -262,17 +257,13 @@ public sealed class CustomGhostSystem : EntitySystem
     {
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
 
-        var balance = 0;
+        var balance = _antagTokens.GetBalance(userId);
         var ownedThemes = new List<string>();
         string? selectedTheme = null;
 
         foreach (var token in tokens)
         {
-            if (token.TokenId == "balance")
-            {
-                balance = token.Amount;
-            }
-            else if (token.TokenId.StartsWith("ghost-theme:") && token.Amount > 0)
+            if (token.TokenId.StartsWith("ghost-theme:") && token.Amount > 0)
             {
                 var themeId = token.TokenId["ghost-theme:".Length..];
 

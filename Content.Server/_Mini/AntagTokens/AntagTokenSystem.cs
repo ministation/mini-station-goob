@@ -210,7 +210,12 @@ public sealed class AntagTokenSystem : EntitySystem
 
         var state = EnsureStateExists(userId);
         if (state == null)
-            return false;
+        {
+            // Offline player: write the balance row directly (monthly cap can't be tracked without state).
+            PayBalanceOffline(userId, amount);
+            grantedAmount = amount;
+            return true;
+        }
 
         NormalizeMonthlyState(state, DateTime.UtcNow, userId);
 
@@ -257,6 +262,40 @@ public sealed class AntagTokenSystem : EntitySystem
         PersistState(userId, state);
         SendState(userId);
         return true;
+    }
+
+    /// <summary>
+    /// Direct balance payout (bet winnings, lootbox duplicate refunds) — bypasses the monthly earn cap.
+    /// Works for offline players by writing the balance row directly.
+    /// </summary>
+    public void PayBalance(NetUserId userId, int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        if (_states.TryGetValue(userId, out var state))
+        {
+            state.Balance += amount;
+            PersistState(userId, state);
+            SendState(userId);
+            return;
+        }
+
+        PayBalanceOffline(userId, amount);
+    }
+
+    private async void PayBalanceOffline(NetUserId userId, int amount)
+    {
+        try
+        {
+            var tokens = await _db.GetPlayerAntagTokens(userId.UserId, CancellationToken.None);
+            var balance = tokens.FirstOrDefault(t => t.TokenId == AntagTokenCatalog.BalanceEntryId)?.Amount ?? 0;
+            await _db.SetPlayerAntagTokenAmount(userId.UserId, AntagTokenCatalog.BalanceEntryId, balance + amount);
+        }
+        catch (Exception e)
+        {
+            Log.Error($"PayBalance offline write failed for {userId}: {e}");
+        }
     }
 
     public bool HasJobUnlock(NetUserId userId, ProtoId<JobPrototype> jobId)

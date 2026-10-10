@@ -1,0 +1,126 @@
+# Магазин за монетки: косметика (выдаётся с собой каждый раунд, экип в слот)
+- type: coinCosmetic
+  id: CoinHatBowler
+  name: Шляпа-боулер
+  item: ClothingHeadHatBowlerHat
+  slot: head
+  price: 15
+  order: 1
+  rarity: Common
+
+- type: coinCosmetic
+  id: CoinHatFez
+  name: Феска
+  item: ClothingHeadHatFez
+  slot: head
+  price: 15
+  order: 2
+  rarity: Common
+
+- type: coinCosmetic
+  id: CoinHatBeretFrench
+  name: Французский берет
+  item: ClothingHeadHatBeretFrench
+  slot: head
+  price: 15
+  order: 3
+  rarity: Common
+
+- type: coinCosmetic
+  id: CoinCloakMoth
+  name: Плащ мотылька
+  item: ClothingNeckCloakMoth
+  slot: neck
+  price: 15
+  order: 4
+  rarity: Common
+
+- type: coinCosmetic
+  id: CoinHatFedora
+  name: Коричневая федора
+  item: ClothingHeadHatFedoraBrown
+  slot: head
+  price: 30
+  order: 5
+  rarity: Rare
+
+- type: coinCosmetic
+  id: CoinHatOutlaw
+  name: Шляпа outlaw
+  item: ClothingHeadHatOutlawHat
+  slot: head
+  price: 30
+  order: 6
+  rarity: Rare
+
+- type: coinCosmetic
+  id: CoinCloakGoliath
+  name: Плащ голиафа
+  item: ClothingNeckCloakGoliathCloak
+  slot: neck
+  price: 30
+  order: 7
+  rarity: Rare
+
+- type: coinCosmetic
+  id: CoinHatWitch
+  name: Ведьминская шляпа
+  item: ClothingHeadHatWitch1
+  slot: head
+  price: 30
+  order: 8
+  rarity: Rare
+
+- type: coinCosmetic
+  id: CoinCloakNanotrasen
+  name: Плащ Нанотрайзен
+  item: ClothingNeckCloakNanotrasen
+  slot: neck
+  price: 45
+  order: 9
+  rarity: Epic
+
+- type: coinCosmetic
+  id: CoinHatPlaguedoctor
+  name: Шляпа чумного доктора
+  item: ClothingHeadHatPlaguedoctor
+  slot: head
+  price: 45
+  order: 10
+  rarity: Epic
+
+- type: coinCosmetic
+  id: CoinCloakPirate
+  name: Плащ пирата
+  item: ClothingNeckCloakPirateCap
+  slot: neck
+  price: 45
+  order: 11
+  rarity: Epic
+
+- type: coinCosmetic
+  id: CoinCloakVoid
+  name: Пустотный плащ
+  item: ClothingNeckCloakVoid
+  slot: neck
+  price: 60
+  order: 12
+  rarity: Legendary
+
+- type: coinCosmetic
+  id: CoinCloakSalvagerSupreme
+  name: Плащ великого утилизатора
+  item: ClothingNeckCloakSalvagerSupreme
+  slot: neck
+  price: 60
+  order: 13
+  rarity: Legendary
+
+- type: coinCosmetic
+  id: CoinCloakHerald
+  name: Плащ герольда
+  item: ClothingNeckCloakHerald
+  slot: neck
+  price: 60
+  order: 14
+  rarity: Legendary

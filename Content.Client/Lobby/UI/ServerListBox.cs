@@ -43,6 +43,11 @@ public sealed class ServerListBox : BoxContainer
         _consoleHost.ExecuteCommand("ghostshop");
     }
 
+    private void OpenCoinShop()
+    {
+        _consoleHost.ExecuteCommand("coinshop");
+    }
+
     public ServerListBox()
     {
         IoCManager.InjectDependencies(this);
@@ -73,6 +78,11 @@ public sealed class ServerListBox : BoxContainer
             "Призраки",
             new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Ghost.png")),
             OpenGhostShop));
+
+        actionButtonsContainer.AddChild(CreateActionButton(
+            "Магазин",
+            new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Coin.png")),
+            OpenCoinShop));
 
         AddChild(actionButtonsContainer);
 

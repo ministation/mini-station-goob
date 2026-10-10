@@ -192,3 +192,13 @@ typan-war-event-diversion = [color=#FFB0B0]Война станций:[/color] о
 typan-war-event-reinforcement = [color=#C8C4D8]Война станций:[/color] штаб перебрасывает резервные дроп-шаттлы на обе станции.
 
 typan-war-ghost-roles-blocked = Ghost-роли недоступны во время войны станций.
+
+typan-war-bet-prompt = Ставка на исход войны (выплата ×2, при ничьей вернётся половина):
+
+typan-war-bet-side-nt = NT
+
+typan-war-bet-side-typan = Тайпан
+
+typan-war-bet-placed = Ставка принята: {$side}, {$amount} монет.
+
+typan-war-round-end-bets = Ставки: Нанотрайзен {$nt}, Тайпан {$typan}. Выплачено победителям {$payout} монет.
