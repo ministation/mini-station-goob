@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.CCVar;
 using Content.Shared.Players.PlayTimeTracking;
@@ -31,7 +33,18 @@ public sealed partial class JobRequirementLoadoutEffect : LoadoutEffect
         }
 
         var manager = collection.Resolve<ISharedPlaytimeManager>();
-        var playtimes = manager.GetPlayTimes(session);
+        IReadOnlyDictionary<string, TimeSpan> playtimes;
+        try
+        {
+            playtimes = manager.GetPlayTimes(session);
+        }
+        catch (InvalidOperationException)
+        {
+            // Validate can run from user data load before playtime trackers initialize; treat as unverifiable and allow.
+            reason = FormattedMessage.Empty;
+            return true;
+        }
+
         return Requirement.Check(collection.Resolve<IEntityManager>(),
             collection.Resolve<IPrototypeManager>(),
             profile,
