@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Content.Server._Mini.AntagTokens;
 using Content.Server.Database;
 using Content.Shared._Mini.CoinShop;
+using Content.Server._Mini.CustomGhost;
+using Content.Shared._Mini.CustomGhost;
 using Content.Shared.GameTicking;
 using Content.Shared.Inventory;
 using Robust.Server.Player;
@@ -36,6 +38,7 @@ public sealed class CoinShopSystem : EntitySystem
     private static readonly int[] RarityWeights = [40, 35, 20, 5];
 
     [Dependency] private readonly AntagTokenSystem _antagTokens = default!;
+    [Dependency] private readonly CustomGhostSystem _customGhost = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -46,6 +49,10 @@ public sealed class CoinShopSystem : EntitySystem
     private readonly Dictionary<NetUserId, HashSet<string>> _ownedCosmetics = new();
     private readonly Dictionary<NetUserId, string?> _selectedCosmetics = new();
     private readonly Dictionary<NetUserId, string?> _oocColorId = new();
+    private readonly Dictionary<NetUserId, HashSet<string>> _ownedGhosts = new();
+    private readonly Dictionary<NetUserId, string?> _selectedGhost = new();
+
+    private const string GhostKeyPrefix = "ghost-theme:";
 
     public override void Initialize()
     {
@@ -56,6 +63,8 @@ public sealed class CoinShopSystem : EntitySystem
         SubscribeNetworkEvent<CoinShopBuyOocColorRequestEvent>(OnBuyOocColor);
         SubscribeNetworkEvent<CoinShopSelectCosmeticRequestEvent>(OnSelectCosmetic);
         SubscribeNetworkEvent<CoinShopLootboxRequestEvent>(OnLootbox);
+        SubscribeNetworkEvent<CoinShopBuyGhostRequestEvent>(OnBuyGhost);
+        SubscribeNetworkEvent<CoinShopSelectGhostRequestEvent>(OnSelectGhost);
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawnComplete);
 
         _userDb.AddOnLoadPlayer(LoadPlayerData);
@@ -70,11 +79,23 @@ public sealed class CoinShopSystem : EntitySystem
         string? selected = null;
         string? colorId = null;
         var expireDay = 0;
+        var ownedGhosts = new HashSet<string>();
+        string? selectedGhost = null;
 
         foreach (var token in tokens)
         {
             if (token.Amount <= 0)
                 continue;
+
+            if (token.TokenId.StartsWith(GhostKeyPrefix))
+            {
+                var ghostId = token.TokenId[GhostKeyPrefix.Length..];
+                if (ghostId.EndsWith(":selected"))
+                    selectedGhost = ghostId[..^":selected".Length];
+                else
+                    ownedGhosts.Add(ghostId);
+                continue;
+            }
 
             if (token.TokenId.StartsWith(CosmeticKeyPrefix))
             {
@@ -97,6 +118,8 @@ public sealed class CoinShopSystem : EntitySystem
         _ownedCosmetics[player.UserId] = owned;
         _selectedCosmetics[player.UserId] = selected;
         _oocColorId[player.UserId] = colorId;
+        _ownedGhosts[player.UserId] = ownedGhosts;
+        _selectedGhost[player.UserId] = selectedGhost;
 
         if (colorId != null &&
             expireDay > CoinOocColorCache.Today &&
@@ -115,6 +138,8 @@ public sealed class CoinShopSystem : EntitySystem
         _ownedCosmetics.Remove(player.UserId);
         _selectedCosmetics.Remove(player.UserId);
         _oocColorId.Remove(player.UserId);
+        _ownedGhosts.Remove(player.UserId);
+        _selectedGhost.Remove(player.UserId);
         CoinOocColorCache.Remove(player.UserId);
     }
 
@@ -240,6 +265,65 @@ public sealed class CoinShopSystem : EntitySystem
         SendState(args.SenderSession);
     }
 
+    private async void OnBuyGhost(CoinShopBuyGhostRequestEvent msg, EntitySessionEventArgs args)
+    {
+        var userId = args.SenderSession.UserId;
+
+        if (!_prototypes.TryIndex<CustomGhostPrototype>(msg.ThemeId, out var proto) ||
+            !string.IsNullOrEmpty(proto.Ckey) ||
+            proto.Price <= 0 ||
+            IsGhostOwned(userId, msg.ThemeId) ||
+            !_antagTokens.TrySpendBalance(userId, proto.Price, out _))
+        {
+            SendState(args.SenderSession);
+            return;
+        }
+
+        await _db.SetPlayerAntagTokenAmount(userId.UserId, GhostKeyPrefix + msg.ThemeId, 1);
+        if (!_ownedGhosts.TryGetValue(userId, out var set))
+        {
+            set = new HashSet<string>();
+            _ownedGhosts[userId] = set;
+        }
+        set.Add(msg.ThemeId);
+        SendState(args.SenderSession);
+    }
+
+    private async void OnSelectGhost(CoinShopSelectGhostRequestEvent msg, EntitySessionEventArgs args)
+    {
+        var session = args.SenderSession;
+        var userId = session.UserId;
+        var oldSelected = _selectedGhost.TryGetValue(userId, out var value) ? value : null;
+
+        if (msg.ThemeId != null && !IsGhostOwned(userId, msg.ThemeId))
+        {
+            SendState(session);
+            return;
+        }
+
+        if (oldSelected != null)
+            await _db.SetPlayerAntagTokenAmount(userId.UserId, GhostKeyPrefix + oldSelected + ":selected", 0);
+
+        if (msg.ThemeId != null)
+            await _db.SetPlayerAntagTokenAmount(userId.UserId, GhostKeyPrefix + msg.ThemeId + ":selected", 1);
+
+        _selectedGhost[userId] = msg.ThemeId;
+
+        // Live re-apply for players currently browsing as ghosts.
+        if (session.AttachedEntity is { Valid: true } attached && HasComp<Shared.Ghost.GhostComponent>(attached))
+        {
+            if (msg.ThemeId == null)
+                _customGhost.ApplyTheme(attached, "GhostThemeDefault");
+            else
+                await _customGhost.ApplyOwnedTheme(attached, userId);
+        }
+
+        SendState(session);
+    }
+
+    private bool IsGhostOwned(NetUserId userId, string themeId) =>
+        _ownedGhosts.TryGetValue(userId, out var owned) && owned.Contains(themeId);
+
     private CoinCosmeticPrototype? RollRandomCosmetic()
     {
         var roll = _random.Next(100);
@@ -302,7 +386,23 @@ public sealed class CoinShopSystem : EntitySystem
             .Select(p => new CoinShopColorEntry(p.ID, p.Color, p.Price, colorId == p.ID && colorActive, colorId == p.ID && colorActive))
             .ToList();
 
-        RaiseNetworkEvent(new CoinShopStateEvent(balance, cosmetics, colors, selected), session);
+        _ownedGhosts.TryGetValue(userId, out var ghostOwned);
+        _selectedGhost.TryGetValue(userId, out var ghostSelected);
+
+        var ghosts = _prototypes.EnumeratePrototypes<CustomGhostPrototype>()
+            .Where(p => p.Price >= 0 && string.IsNullOrEmpty(p.Ckey))
+            .OrderBy(p => p.Order)
+            .Select(p => new CoinShopGhostEntry(
+                p.ID,
+                string.IsNullOrEmpty(p.GhostName) ? p.ID : p.GhostName,
+                p.GhostDescription,
+                p.Price,
+                p.Price == 0 || (ghostOwned?.Contains(p.ID) ?? false),
+                p.Price == 0 ? ghostSelected == null : ghostSelected == p.ID,
+                p.CustomSpritePath.ToString()))
+            .ToList();
+
+        RaiseNetworkEvent(new CoinShopStateEvent(balance, cosmetics, colors, selected, ghosts, ghostSelected), session);
     }
 
     private static string SelectedKey(string cosmeticId) => CosmeticKeyPrefix + cosmeticId + CosmeticSelectedSuffix;

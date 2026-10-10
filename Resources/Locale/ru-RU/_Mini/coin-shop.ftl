@@ -31,3 +31,9 @@ coin-shop-rarity-rare = Редкий
 coin-shop-rarity-epic = Эпический
 
 coin-shop-rarity-legendary = Легендарный
+
+coin-shop-ghosts-header = Темы призраков
+
+coin-shop-ghost-select = Применить
+
+coin-shop-ghost-selected = Применена

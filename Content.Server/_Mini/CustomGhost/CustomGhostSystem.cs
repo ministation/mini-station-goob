@@ -62,7 +62,7 @@ public sealed class CustomGhostSystem : EntitySystem
         }
     }
 
-    private async Task<bool> ApplyOwnedTheme(EntityUid ghostUid, NetUserId userId)
+    public async Task<bool> ApplyOwnedTheme(EntityUid ghostUid, NetUserId userId)
     {
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
 
@@ -98,7 +98,7 @@ public sealed class CustomGhostSystem : EntitySystem
         return true;
     }
 
-    private void ApplyTheme(EntityUid ghostUid, string themeId)
+    public void ApplyTheme(EntityUid ghostUid, string themeId)
     {
         if (!_prototypeManager.TryIndex<CustomGhostPrototype>(themeId, out var proto))
             return;

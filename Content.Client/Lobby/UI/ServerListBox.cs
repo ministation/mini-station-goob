@@ -38,11 +38,6 @@ public sealed class ServerListBox : BoxContainer
         _consoleHost.ExecuteCommand("antagtokenmenu");
     }
 
-    private void OpenGhostShop()
-    {
-        _consoleHost.ExecuteCommand("ghostshop");
-    }
-
     private void OpenCoinShop()
     {
         _consoleHost.ExecuteCommand("coinshop");
@@ -73,11 +68,6 @@ public sealed class ServerListBox : BoxContainer
             "Награды",
             ClockAnimatedIcon,
             OpenDailyRewards));
-
-        actionButtonsContainer.AddChild(CreateActionButton(
-            "Призраки",
-            new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Ghost.png")),
-            OpenGhostShop));
 
         actionButtonsContainer.AddChild(CreateActionButton(
             "Магазин",

@@ -31,3 +31,9 @@ coin-shop-rarity-rare = Rare
 coin-shop-rarity-epic = Epic
 
 coin-shop-rarity-legendary = Legendary
+
+coin-shop-ghosts-header = Ghost themes
+
+coin-shop-ghost-select = Apply
+
+coin-shop-ghost-selected = Applied

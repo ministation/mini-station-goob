@@ -38,6 +38,7 @@ public sealed class CoinShopWindow : DefaultWindow
     private Label _balanceValueLabel = null!;
     private GridContainer _cosmeticGrid = null!;
     private BoxContainer _colorRow = null!;
+    private GridContainer _ghostGrid = null!;
     private Label _rollResultLabel = null!;
 
     public CoinShopWindow(CoinShopSystem system)
@@ -68,6 +69,8 @@ public sealed class CoinShopWindow : DefaultWindow
         root.AddChild(BuildCosmeticGrid());
         root.AddChild(BuildSectionHeader(Loc.GetString("coin-shop-colors-header")));
         root.AddChild(BuildColorRow());
+        root.AddChild(BuildSectionHeader(Loc.GetString("coin-shop-ghosts-header")));
+        root.AddChild(BuildGhostGrid());
         root.AddChild(BuildLootboxPanel());
     }
 
@@ -90,6 +93,10 @@ public sealed class CoinShopWindow : DefaultWindow
         _colorRow.RemoveAllChildren();
         foreach (var entry in state.Colors)
             _colorRow.AddChild(CreateColorButton(entry));
+
+        _ghostGrid.RemoveAllChildren();
+        foreach (var entry in state.Ghosts)
+            _ghostGrid.AddChild(CreateGhostCard(entry));
     }
 
     public void ShowRollResult(CoinShopRollResultEvent ev)
@@ -248,6 +255,94 @@ public sealed class CoinShopWindow : DefaultWindow
             SeparationOverride = 10
         };
         return _colorRow;
+    }
+
+    private Control BuildGhostGrid()
+    {
+        var scroll = new ScrollContainer
+        {
+            VerticalExpand = true,
+            HorizontalExpand = true,
+            MaxHeight = 170
+        };
+
+        _ghostGrid = new GridContainer
+        {
+            Columns = 4,
+            HSeparationOverride = 10,
+            VSeparationOverride = 10
+        };
+        scroll.AddChild(_ghostGrid);
+        return scroll;
+    }
+
+    private Control CreateGhostCard(CoinShopGhostEntry entry)
+    {
+        var card = new PanelContainer
+        {
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = CardBackgroundColor,
+                BorderColor = entry.Selected ? OwnedBorderColor : Color.Transparent,
+                BorderThickness = new Thickness(1)
+            }
+        };
+
+        var box = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 4,
+            Margin = new Thickness(10, 8)
+        };
+
+        var icon = new TextureRect { MinSize = new Vector2(32, 32), Stretch = TextureRect.StretchMode.KeepAspectCentered };
+        var tex = _system.GetGhostIcon(entry.IconRsiPath);
+        if (tex != null)
+            icon.Texture = tex;
+        box.AddChild(icon);
+
+        box.AddChild(new Label
+        {
+            Text = entry.Name,
+            ToolTip = entry.Description,
+            ClipText = true
+        });
+
+        if (entry.Owned)
+        {
+            var isSelected = entry.Selected;
+            var button = new Button
+            {
+                Text = Loc.GetString(isSelected ? "coin-shop-ghost-selected" : "coin-shop-ghost-select")
+            };
+            button.OnPressed += _ =>
+                _system.RequestSelectGhost(isSelected ? null : entry.Id);
+            box.AddChild(button);
+        }
+        else
+        {
+            var priceRow = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Horizontal,
+                SeparationOverride = 6
+            };
+            priceRow.AddChild(new TextureRect
+            {
+                Texture = _coinTexture,
+                MinSize = new Vector2(16, 16),
+                Stretch = TextureRect.StretchMode.KeepAspectCentered,
+                VerticalAlignment = VAlignment.Center
+            });
+            priceRow.AddChild(new Label { Text = entry.Price.ToString(), VerticalAlignment = VAlignment.Center });
+            box.AddChild(priceRow);
+
+            var buyButton = new Button { Text = Loc.GetString("coin-shop-buy") };
+            buyButton.OnPressed += _ => _system.RequestBuyGhost(entry.Id);
+            box.AddChild(buyButton);
+        }
+
+        card.AddChild(box);
+        return card;
     }
 
     private Control CreateColorButton(CoinShopColorEntry entry)

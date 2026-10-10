@@ -39,12 +39,48 @@ public sealed class CoinShopStateEvent(
     int balance,
     List<CoinShopItemEntry> cosmetics,
     List<CoinShopColorEntry> colors,
-    string? selectedCosmetic) : EntityEventArgs
+    string? selectedCosmetic,
+    List<CoinShopGhostEntry> ghosts,
+    string? selectedGhost) : EntityEventArgs
 {
     public int Balance { get; } = balance;
     public List<CoinShopItemEntry> Cosmetics { get; } = cosmetics;
     public List<CoinShopColorEntry> Colors { get; } = colors;
     public string? SelectedCosmetic { get; } = selectedCosmetic;
+    public List<CoinShopGhostEntry> Ghosts { get; } = ghosts;
+    public string? SelectedGhost { get; } = selectedGhost;
+}
+
+/// <summary>A ghost theme from the CustomGhost catalog, purchasable with coins.</summary>
+[Serializable, NetSerializable]
+public sealed class CoinShopGhostEntry(
+    string id,
+    string name,
+    string description,
+    int price,
+    bool owned,
+    bool selected,
+    string iconRsiPath)
+{
+    public string Id { get; } = id;
+    public string Name { get; } = name;
+    public string Description { get; } = description;
+    public int Price { get; } = price;
+    public bool Owned { get; } = owned;
+    public bool Selected { get; } = selected;
+    public string IconRsiPath { get; } = iconRsiPath;
+}
+
+[Serializable, NetSerializable]
+public sealed class CoinShopBuyGhostRequestEvent(string themeId) : EntityEventArgs
+{
+    public string ThemeId { get; } = themeId;
+}
+
+[Serializable, NetSerializable]
+public sealed class CoinShopSelectGhostRequestEvent(string? themeId) : EntityEventArgs
+{
+    public string? ThemeId { get; } = themeId;
 }
 
 [Serializable, NetSerializable]

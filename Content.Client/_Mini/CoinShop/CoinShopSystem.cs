@@ -2,12 +2,19 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using Content.Shared._Mini.CoinShop;
+using Content.Shared._Mini.CustomGhost;
+using Robust.Client.GameObjects;
+using Robust.Client.Graphics;
+using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
+using Robust.Shared.Utility;
 
 namespace Content.Client._Mini.CoinShop;
 
 public sealed class CoinShopSystem : EntitySystem
 {
+    [Dependency] private readonly IResourceCache _resourceCache = default!;
+    [Dependency] private readonly SpriteSystem _sprite = default!;
     [Dependency] private readonly IUserInterfaceManager _ui = default!;
 
     private CoinShopWindow? _window;
@@ -37,6 +44,24 @@ public sealed class CoinShopSystem : EntitySystem
 
     public void RequestLootbox() =>
         RaiseNetworkEvent(new CoinShopLootboxRequestEvent());
+
+    public void RequestBuyGhost(string themeId) =>
+        RaiseNetworkEvent(new CoinShopBuyGhostRequestEvent(themeId));
+
+    public void RequestSelectGhost(string? themeId) =>
+        RaiseNetworkEvent(new CoinShopSelectGhostRequestEvent(themeId));
+
+    public Texture? GetGhostIcon(string rsiPath)
+    {
+        try
+        {
+            return _sprite.Frame0(new SpriteSpecifier.Rsi(new ResPath(rsiPath), "animated"));
+        }
+        catch
+        {
+            return null;
+        }
+    }
 
     private void OpenWindow()
     {

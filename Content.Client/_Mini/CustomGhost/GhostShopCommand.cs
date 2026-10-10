@@ -12,7 +12,8 @@ public sealed class GhostShopCommand : IConsoleCommand
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
+        // Ghost themes were merged into the unified coin shop.
         var entMan = IoCManager.Resolve<IEntityManager>();
-        entMan.System<GhostShopSystem>().OpenShop();
+        entMan.System<CoinShop.CoinShopSystem>().OpenShop();
     }
 }
