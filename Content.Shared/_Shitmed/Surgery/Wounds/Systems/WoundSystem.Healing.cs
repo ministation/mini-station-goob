@@ -221,7 +221,10 @@ public sealed partial class WoundSystem
         var woundsToHeal = new List<(Entity<WoundComponent> Wound, FixedPoint2 Floor)>();
         foreach (var wound in component.Wounds.ContainedEntities)
         {
-            var woundComp = Comp<WoundComponent>(wound);
+            // Mini: skip stale container entries (client prediction desync can leave
+            // invalid entities inside Wounds — Comp would throw KeyNotFoundException).
+            if (!TryComp<WoundComponent>(wound, out var woundComp))
+                continue;
             if (CanHealWound(wound, out var floor, woundComp, ignoreBlockers)
                 && (damageGroup == null || damageGroup == woundComp.DamageGroup))
                 woundsToHeal.Add(((wound, woundComp), floor));
@@ -317,7 +320,9 @@ public sealed partial class WoundSystem
         var woundsToHeal = new List<(Entity<WoundComponent> Wound, FixedPoint2 Floor)>();
         foreach (var wound in component.Wounds.ContainedEntities)
         {
-            var woundComp = Comp<WoundComponent>(wound);
+            // Mini: same stale-entry guard as above.
+            if (!TryComp<WoundComponent>(wound, out var woundComp))
+                continue;
             if (CanHealWound(wound, out var floor, woundComp, ignoreBlockers)
                 && damageType == woundComp.DamageType)
                 woundsToHeal.Add(((wound, woundComp), floor));
@@ -538,7 +543,9 @@ public sealed partial class WoundSystem
 
             foreach (var woundEntity in woundableComp.Wounds.ContainedEntities)
             {
-                var type = Comp<WoundComponent>(woundEntity).DamageType;
+                if (!TryComp<WoundComponent>(woundEntity, out var woundComp))
+                    continue;
+                var type = woundComp.DamageType;
                 woundCountByType[type] = woundCountByType.GetValueOrDefault(type) + 1;
             }
         }

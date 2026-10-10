@@ -316,7 +316,9 @@ public sealed partial class WoundSystem
         var damage = FixedPoint2.Zero;
         foreach (var woundEntity in component.Wounds.ContainedEntities)
         {
-            var woundComp = Comp<WoundComponent>(woundEntity);
+            // Mini: skip stale container entries (invalid entity under prediction desync).
+            if (!TryComp<WoundComponent>(woundEntity, out var woundComp))
+                continue;
             if (!woundComp.IsScar)
                 damage += woundComp.WoundIntegrityDamage;
         }
