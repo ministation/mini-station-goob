@@ -17,6 +17,7 @@ using Robust.Client.Audio;
 using Robust.Client.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
 namespace Content.Goobstation.Client.Voice;
@@ -25,7 +26,7 @@ namespace Content.Goobstation.Client.Voice;
 /// Client-side manager for voice chat functionality.
 /// Handles network messages, proximity playback, and microphone transmission.
 /// </summary>
-public sealed class VoiceChatClientManager : IVoiceChatManager
+public sealed class VoiceChatClientManager : IVoiceChatManager, IEntityEventSubscriber
 {
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IAudioManager _audioManager = default!;
@@ -62,6 +63,7 @@ public sealed class VoiceChatClientManager : IVoiceChatManager
     private bool _transmitting;
     private bool _micAvailable;
     private TimeSpan _nextConnectAttempt = TimeSpan.Zero;
+    private readonly List<NetIncomingMessage> _pumpBuffer = new();
 
     public void Initalize()
     {
@@ -82,6 +84,10 @@ public sealed class VoiceChatClientManager : IVoiceChatManager
 
         _netManager.Connected += OnMainConnected;
         _netManager.Disconnect += OnMainDisconnected;
+
+        // Mini: the voice UDP server only approves in-game sessions, so a connection
+        // attempted in the lobby is rejected — retry once we are attached to an entity.
+        _entityManager.EventBus.SubscribeEvent<LocalPlayerAttachedEvent>(EventSource.Local, this, OnLocalPlayerAttached);
 
         if (_clientEnabled && _netManager.IsConnected)
             OnOptInChanged();
@@ -131,6 +137,17 @@ public sealed class VoiceChatClientManager : IVoiceChatManager
     private void OnMainDisconnected(object? sender, NetDisconnectedArgs e)
     {
         ShutdownTransmit();
+    }
+
+    private void OnLocalPlayerAttached(LocalPlayerAttachedEvent ev)
+    {
+        // Mini: drop any dead voice peer (e.g. one rejected while we were in the lobby)
+        // so the retry timer below connects for the in-game session.
+        if (!_clientEnabled || !_netManager.IsConnected)
+            return;
+
+        ShutdownTransmit();
+        _nextConnectAttempt = TimeSpan.Zero;
     }
 
     /// <summary>
@@ -264,6 +281,8 @@ public sealed class VoiceChatClientManager : IVoiceChatManager
 
         ShutdownTransmit();
 
+        _entityManager.EventBus.UnsubscribeEvent<LocalPlayerAttachedEvent>(EventSource.Local, this);
+
         foreach (var stream in _activeStreams.Values)
         {
             stream.Dispose();
@@ -275,11 +294,29 @@ public sealed class VoiceChatClientManager : IVoiceChatManager
 
     public void Update()
     {
-        // Mini: deferred voice connection until we are in game with a known server address.
-        if (_clientEnabled && _voiceClient == null && _netManager.IsConnected && _gameTiming.RealTime > _nextConnectAttempt)
+        // Mini: Lidgren only advances NetConnection.Status when the app dequeues
+        // StatusChanged messages — without pumping, the transmit gate never sees Connected.
+        PumpVoiceClient();
+
+        // Mini: the voice relay approves only in-game sessions (matched by IP), so
+        // (re)connect only while attached to an entity; recycle rejected/dead peers.
+        if (_clientEnabled
+            && _netManager.IsConnected
+            && _playerManager.LocalEntity != null
+            && _gameTiming.RealTime > _nextConnectAttempt)
         {
             _nextConnectAttempt = _gameTiming.RealTime + TimeSpan.FromSeconds(5);
-            StartTransmit();
+
+            if (_voiceClient == null)
+            {
+                StartTransmit();
+            }
+            else if (_serverConn == null
+                || _serverConn.Status == NetConnectionStatus.Disconnected)
+            {
+                ShutdownTransmit();
+                StartTransmit();
+            }
         }
 
         List<EntityUid>? toRemove = null;
@@ -310,6 +347,19 @@ public sealed class VoiceChatClientManager : IVoiceChatManager
     }
 
     // --- Transmit implementation (Mini) ---
+
+    private void PumpVoiceClient()
+    {
+        if (_voiceClient == null)
+            return;
+
+        _voiceClient.ReadMessages(_pumpBuffer);
+        for (var i = 0; i < _pumpBuffer.Count; i++)
+        {
+            _voiceClient.Recycle(_pumpBuffer[i]);
+        }
+        _pumpBuffer.Clear();
+    }
 
     private void StartTransmit()
     {

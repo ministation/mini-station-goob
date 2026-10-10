@@ -683,7 +683,6 @@ binds:
   type: State
   key: Num3
 # CorvaxGoob-changes-end.
-- function: VoiceChatPushToTalk # Mini - voice chat push to talk
+- function: VoiceChatPushToTalk # Mini - voice chat push to talk (N; Alt+V is InspectEntity)
   type: State
-  key: V
-  mod1: Alt
+  key: N

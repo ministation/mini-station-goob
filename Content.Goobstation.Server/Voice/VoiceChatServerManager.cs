@@ -49,13 +49,20 @@ public sealed class VoiceChatServerManager : IVoiceChatServerManager, IPostInjec
     {
         _sawmill = Logger.GetSawmill("voiceserver");
 
-        _cfg.OnValueChanged(GoobCVars.VoiceChatEnabled, OnVoiceChatEnabledChanged, true);
-        _cfg.OnValueChanged(GoobCVars.VoiceChatPort, OnVoiceChatPortChanged, true);
+        // Mini: register change hooks without immediate callbacks, then start explicitly
+        // from the current config below — with immediate callbacks the enabled hook could
+        // run before _port was assigned and the relay briefly bound an ephemeral port 0.
+        _cfg.OnValueChanged(GoobCVars.VoiceChatPort, OnVoiceChatPortChanged);
+        _cfg.OnValueChanged(GoobCVars.VoiceChatEnabled, OnVoiceChatEnabledChanged);
 
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
 
         _netManager.RegisterNetMessage<MsgVoiceChat>();
         _netManager.RegisterNetMessage<MsgVoiceChatOptIn>(OnVoiceChatOptIn);
+
+        _port = _cfg.GetCVar(GoobCVars.VoiceChatPort);
+        if (_cfg.GetCVar(GoobCVars.VoiceChatEnabled))
+            StartServer();
 
         _sawmill.Info("VoiceChatServerManager initialized");
     }
