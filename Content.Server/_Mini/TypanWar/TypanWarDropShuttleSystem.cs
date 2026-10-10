@@ -311,9 +311,10 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
 
         foreach (var side in new[] { TypanWarSide.Nanotrasen, TypanWarSide.Typan })
         {
-            if (HasWorkingDropShuttle(rule, side) || GetRespawnAt(rule, side) != null)
+            if (HasWorkingDropShuttle(rule, side))
                 continue;
 
+            // Override the regular respawn delay — the war event brings the shuttle back immediately.
             SetRespawnAt(rule, side, _timing.CurTime);
             scheduled = true;
         }

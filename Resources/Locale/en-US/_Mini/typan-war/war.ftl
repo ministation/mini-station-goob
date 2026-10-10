@@ -43,7 +43,7 @@ typan-war-hud-zone-owner-neutral = neutral
 typan-war-hud-zone-owner-nanotrasen = NT
 typan-war-hud-zone-owner-typan = Syndicate
 
-typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Bluespace jumps are blocked for the duration of the war. Follow combat readiness protocols — hostilities begin in five minutes.
+typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Bluespace jumps are blocked for the duration of the war. Follow combat readiness protocols — hostilities begin in four minutes.
 
 typan-war-manifest =
     {"[font size=18][color=#C8C4D8][bold]STATION WAR — OPERATIONAL BRIEF[/bold][/color][/font]"}
