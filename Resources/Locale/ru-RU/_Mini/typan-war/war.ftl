@@ -64,7 +64,7 @@ typan-war-hud-zone-owner-neutral = нейтральная
 typan-war-hud-zone-owner-nanotrasen = NT
 typan-war-hud-zone-owner-typan = Синдикат
 
-typan-war-prep-announce = Объявлена война между станциями Нанотрайзен и Тайпан. Блюспейс-прыжки заблокированы на всё время войны. Следуйте протоколам боевой готовности — через пять минут начнутся боевые действия.
+typan-war-prep-announce = Объявлена война между станциями Нанотрайзен и Тайпан. Блюспейс-прыжки заблокированы на всё время войны. Следуйте протоколам боевой готовности — через четыре минуты начнутся боевые действия.
 
 typan-war-manifest =
     {"[font size=18][color=#C8C4D8][bold]ВОЙНА СТАНЦИЙ — БОЕВАЯ СВОДКА[/bold][/color][/font]"}
@@ -174,3 +174,21 @@ game-presets-typan-station-war = Война станций
 
 game-presets-typan-station-war-description = Конфликт между станцией Нанотрайзен и станцией Тайпан. Захватывайте зоны и наберите 100 очков раньше врага.
 
+
+typan-war-round-end-top-nt = Отряд Нанотрайзен: {$list}
+
+typan-war-round-end-top-typan = Отряд Синдиката: {$list}
+
+typan-war-round-end-top-entry = {$name} (захваты {$captures}, убийства {$kills})
+
+typan-war-round-end-mvp-nt = MVP Нанотрайзен: {$name}
+
+typan-war-round-end-mvp-typan = MVP Синдиката: {$name}
+
+typan-war-round-end-rewards = Военный паёк: выплачено монет — Нанотрайзен {$nt}, Синдикат {$typan}.
+
+typan-war-event-diversion = [color=#FFB0B0]Война станций:[/color] отстающая сторона получает усиленное снабжение на удерживаемых зонах — доставьте его в бой!
+
+typan-war-event-reinforcement = [color=#C8C4D8]Война станций:[/color] штаб перебрасывает резервные дроп-шаттлы на обе станции.
+
+typan-war-ghost-roles-blocked = Ghost-роли недоступны во время войны станций.

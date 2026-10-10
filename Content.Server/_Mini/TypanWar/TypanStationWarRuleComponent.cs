@@ -96,6 +96,81 @@ public sealed partial class TypanStationWarRuleComponent : Component
 
     public bool TradeZoneSwapped;
 
+    /// <summary>Coins (antag token balance) paid to every war participant at EndWar.</summary>
+    [DataField]
+    public int ParticipationTokenReward = 1;
+
+    /// <summary>Extra coins for participants of the winning faction.</summary>
+    [DataField]
+    public int VictoryTokenReward = 2;
+
+    /// <summary>Extra coins for the MVP of each faction (top contributor by captures + kills).</summary>
+    [DataField]
+    public int MvpTokenReward = 5;
+
+    /// <summary>Per-player contribution for MVP pick and round-end text (runtime).</summary>
+    public Dictionary<NetUserId, TypanWarPlayerStats> PlayerStats = new();
+
+    /// <summary>Coins granted per user at EndWar (runtime, used by round-end text).</summary>
+    public Dictionary<NetUserId, int> RewardsGranted = new();
+
+    /// <summary>Total coins paid to each faction at EndWar (runtime, used by round-end text).</summary>
+    public int NtRewardsTotal;
+
+    public int TypanRewardsTotal;
+
+    public string? NtMvpName;
+
+    public string? TypanMvpName;
+
+    /// <summary>Set for technical stalemates (layout failure) where nobody fought — suppress rewards.</summary>
+    public bool SkipRewards;
+
+    /// <summary>Max capture points a faction can earn from combat kills per war.</summary>
+    [DataField]
+    public int KillScoreCap = 30;
+
+    /// <summary>Capture points awarded to the opposing faction for destroying a drop shuttle.</summary>
+    [DataField]
+    public int ShuttleDestroyScore = 15;
+
+    /// <summary>A faction with zero living combatants for this long loses the war by elimination.</summary>
+    [DataField]
+    public float EliminationGraceSeconds = 180f;
+
+    /// <summary>Score gap after which the losing faction receives comeback supply.</summary>
+    [DataField]
+    public float ComebackScoreGap = 30f;
+
+    /// <summary>Loot probability multiplier for the losing faction while comeback is active.</summary>
+    [DataField]
+    public float ComebackLootMultiplier = 1.5f;
+
+    /// <summary>When either faction reaches this score, trade zone C swaps a second time.</summary>
+    [DataField]
+    public float TradeZoneSwapSecondScoreThreshold = 75f;
+
+    /// <summary>Interval between rotating war events (supply drop / diversion / reinforcement).</summary>
+    [DataField]
+    public float WarEventsIntervalSeconds = 360f;
+
+    public int KillScoreNt;
+
+    public int KillScoreTypan;
+
+    public bool TradeZoneSwappedSecond;
+
+    /// <summary>Winner was decided by eliminating all enemy combatants (end announcement variant).</summary>
+    public bool WonByElimination;
+
+    public TimeSpan? NtEliminatedSince;
+
+    public TimeSpan? TypanEliminatedSince;
+
+    public float WarEventsAccumulator;
+
+    public int WarEventsIndex;
+
     [DataField]
     public int StationSeparationTiles = 300;
 

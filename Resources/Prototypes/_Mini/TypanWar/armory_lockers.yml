@@ -1,0 +1,41 @@
+- type: entity
+  id: TypanWarArmoryLockerNt
+  parent: LockerSecurity
+  suffix: Война станций
+  name: war armory locker
+  description: A NanoTrasen field armory locker stocked for the station war.
+  components:
+  - type: Lock
+    locked: false
+  - type: StorageFill
+    contents:
+    - id: WeaponLaserCarbine
+    - id: WeaponLaserCarbine
+    - id: MedkitCombat
+    - id: MedkitCombat
+    - id: GrenadeFlash
+    - id: GrenadeFlash
+  - type: Tag
+    tags:
+    - TypanWarArmory
+
+- type: entity
+  id: TypanWarArmoryLockerTypan
+  parent: LockerSyndicatePersonal
+  suffix: Война станций
+  name: war armory locker
+  description: A Syndicate field armory locker stocked for the station war.
+  components:
+  - type: Lock
+    locked: false
+  - type: StorageFill
+    contents:
+    - id: WeaponSubMachineGunC20r
+    - id: WeaponSubMachineGunC20r
+    - id: MedkitCombat
+    - id: MedkitCombat
+    - id: CombatKnife
+    - id: CombatKnife
+  - type: Tag
+    tags:
+    - TypanWarArmory

@@ -17,4 +17,8 @@ public sealed partial class TypanWarSurplusBundleComponent : Component
     /// <summary>Spawned when every roll fails (very unlikely with high-probability medkits).</summary>
     [DataField]
     public EntProtoId FallbackItem = "MedkitFilled";
+
+    /// <summary>Owning faction of the crate — the losing side rolls bonus loot while a comeback is active. Null disables the bonus.</summary>
+    [DataField]
+    public TypanWarSide? Faction;
 }

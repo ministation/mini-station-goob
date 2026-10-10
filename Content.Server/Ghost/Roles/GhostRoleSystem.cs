@@ -514,7 +514,11 @@ public sealed class GhostRoleSystem : EntitySystem
     public void Request(ICommonSession player, uint identifier)
     {
         if (TypanStationWarRuleSystem.IsModeActive)
+        {
+            if (player.AttachedEntity is { Valid: true } blockedEntity)
+                _popupSystem.PopupEntity(Loc.GetString("typan-war-ghost-roles-blocked"), blockedEntity, player);
             return;
+        }
 
         if (player.AttachedEntity is not { Valid: true } attached) // Goobstation
             return;

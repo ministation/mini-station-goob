@@ -43,7 +43,7 @@ typan-war-hud-zone-owner-neutral = neutral
 typan-war-hud-zone-owner-nanotrasen = NT
 typan-war-hud-zone-owner-typan = Syndicate
 
-typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Bluespace jumps are blocked for the duration of the war. Follow combat readiness protocols — hostilities begin in five minutes.
+typan-war-prep-announce = A war has been declared between the NanoTrasen and Typan stations. Bluespace jumps are blocked for the duration of the war. Follow combat readiness protocols — hostilities begin in four minutes.
 
 typan-war-manifest =
     {"[font size=18][color=#C8C4D8][bold]STATION WAR — OPERATIONAL BRIEF[/bold][/color][/font]"}
@@ -132,3 +132,21 @@ typan-war-round-end-stalemate = Result: stalemate
 
 game-presets-typan-station-war = Station War
 game-presets-typan-station-war-description = Conflict between NanoTrasen and Typan. Hold capture zones and reach 100 points before the enemy.
+
+typan-war-round-end-top-nt = NanoTrasen squad: {$list}
+
+typan-war-round-end-top-typan = Syndicate squad: {$list}
+
+typan-war-round-end-top-entry = {$name} (captures {$captures}, kills {$kills})
+
+typan-war-round-end-mvp-nt = NanoTrasen MVP: {$name}
+
+typan-war-round-end-mvp-typan = Syndicate MVP: {$name}
+
+typan-war-round-end-rewards = War rations: coins paid — NanoTrasen {$nt}, Syndicate {$typan}.
+
+typan-war-event-diversion = [color=#FFB0B0]Station war:[/color] the losing faction receives reinforced supply at its held zones — deliver it to the front!
+
+typan-war-event-reinforcement = [color=#C8C4D8]Station war:[/color] HQ dispatches reserve drop shuttles to both stations.
+
+typan-war-ghost-roles-blocked = Ghost roles are unavailable during the station war.
