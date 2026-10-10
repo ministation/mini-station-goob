@@ -24,9 +24,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 <ui:OptionSlider Name="SliderVolumeAmbience" Title="{Loc 'ui-options-ambience-volume'}" />
                 <ui:OptionSlider Name="SliderVolumeLobby" Title="{Loc 'ui-options-lobby-volume'}" />
                 <ui:OptionSlider Name="SliderVolumeInterface" Title="{Loc 'ui-options-interface-volume'}" />
-                <!-- Deleted by CorvaxGoob
+                <!-- Mini: voice chat (restored from Goobstation upstream) -->
+                <CheckBox Name="VoiceChatEnabledCheckBox" Text="{Loc 'ui-options-voice-chat-enabled'}"
+                          ToolTip="{Loc 'ui-options-voice-chat-enabled-tooltip'}" />
+                <CheckBox Name="HearSelfCheckBox" Text="{Loc 'ui-options-hear-self'}" />
                 <ui:OptionSlider Name="SliderVolumeVoiceChat" Title="{Loc 'ui-options-voice-chat-volume'}" />
-                -->
                 <ui:OptionSlider Name="SliderMaxAmbienceSounds" Title="{Loc 'ui-options-ambience-max-sounds'}"
                                  Margin="0 0 0 8" />
                 <!-- Deleted by CorvaxGoob

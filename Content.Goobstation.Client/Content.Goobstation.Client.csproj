@@ -12,6 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <Import Project="../MSBuild/Content.props" />
   <ItemGroup>
     <PackageReference Include="Nett" />
+    <PackageReference Include="Concentus" /> <!-- Mini: voice chat opus codec -->
+    <PackageReference Include="NAudio" /> <!-- Mini: voice chat microphone capture -->
     <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
   </ItemGroup>
 

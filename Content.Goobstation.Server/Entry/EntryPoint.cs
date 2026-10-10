@@ -8,7 +8,8 @@ namespace Content.Goobstation.Server.Entry;
 
 public sealed class EntryPoint : GameServer
 {
-    // private IVoiceChatServerManager _voiceManager = default!; // deleted by CorvaxGoob
+    // Mini: voice chat (restored from Goobstation upstream, was deleted by CorvaxGoob)
+    private IVoiceChatServerManager _voiceManager = default!;
     // private ICommonCurrencyManager _curr = default!; // deleted by CorvaxGoob
     // private IJoinQueueManager _joinQueue = default!; // deleted by CorvaxGoob
 
@@ -18,23 +19,15 @@ public sealed class EntryPoint : GameServer
 
         // ServerGoobContentIoC.Register(); // deleted by CorvaxGoob
 
+        // Mini: register voice chat before the graph is built
+        IoCManager.Register<IVoiceChatServerManager, VoiceChatServerManager>();
+
         IoCManager.BuildGraph();
 
-        /* deleted by CorvaxGoob
-        _voiceManager = IoCManager.Resolve<IVoiceChatServerManager>();
+        _voiceManager = IoCManager.Resolve<IVoiceChatServerManager>(); // Mini: voice chat
 
-        _joinQueue = IoCManager.Resolve<IJoinQueueManager>();
-        _joinQueue.Initialize();
-
-        _curr = IoCManager.Resolve<ICommonCurrencyManager>(); // Goobstation
-        _curr.Initialize(); // Goobstation
-        */
-    }
-
-    /* // deleted by CorvaxGoob
-    public override void PostInit()
-    {
-        base.PostInit();
+        // _joinQueue = IoCManager.Resolve<IJoinQueueManager>(); // deleted by CorvaxGoob
+        // _curr = IoCManager.Resolve<ICommonCurrencyManager>(); // deleted by CorvaxGoob
     }
 
     public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
@@ -44,8 +37,7 @@ public sealed class EntryPoint : GameServer
         switch (level)
         {
             case ModUpdateLevel.PreEngine:
-                _voiceManager.Update();
-                _joinQueue.Update(frameEventArgs.DeltaSeconds);
+                _voiceManager.Update(); // Mini: voice chat relay
                 break;
         }
     }
@@ -54,7 +46,6 @@ public sealed class EntryPoint : GameServer
     {
         base.Dispose(disposing);
 
-        _curr.Shutdown(); // Goobstation
-        _voiceManager.Shutdown(); // Goobstation
-    }*/
+        _voiceManager.Shutdown(); // Mini: voice chat
+    }
 }

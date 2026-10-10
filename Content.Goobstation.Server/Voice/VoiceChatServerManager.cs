@@ -5,6 +5,7 @@ using Concentus;
 using Concentus.Structs;
 using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.VoiceChat;
+using Content.Server._Mini.VoiceChat;
 using Content.Shared.CCVar;
 using Lidgren.Network;
 using Robust.Server.Player;
@@ -54,6 +55,7 @@ public sealed class VoiceChatServerManager : IVoiceChatServerManager, IPostInjec
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
 
         _netManager.RegisterNetMessage<MsgVoiceChat>();
+        _netManager.RegisterNetMessage<MsgVoiceChatOptIn>(OnVoiceChatOptIn);
 
         _sawmill.Info("VoiceChatServerManager initialized");
     }
@@ -75,6 +77,18 @@ public sealed class VoiceChatServerManager : IVoiceChatServerManager, IPostInjec
             StopServer();
             StartServer();
         }
+    }
+
+    /// <summary>
+    /// Mini: whether the player enabled voice chat client-side (opted out of TTS).
+    /// </summary>
+    public bool IsVoiceOptedIn(NetUserId userId) => VoiceChatOptIns.Contains(userId);
+
+    private void OnVoiceChatOptIn(MsgVoiceChatOptIn msg)
+    {
+        var userId = msg.MsgChannel.UserId;
+        VoiceChatOptIns.Set(userId, msg.OptedIn);
+        _sawmill.Info($"Player {msg.MsgChannel.UserName} voice chat opt-in: {msg.OptedIn}");
     }
 
     /// <summary>
@@ -420,6 +434,8 @@ public sealed class VoiceChatServerManager : IVoiceChatServerManager, IPostInjec
     {
         if (e.NewStatus == SessionStatus.Disconnected || e.OldStatus == SessionStatus.InGame && e.NewStatus != SessionStatus.InGame)
         {
+            VoiceChatOptIns.Set(e.Session.UserId, false); // Mini: drop voice opt-in on disconnect
+
             NetConnection? connectionToDrop = null;
             VoiceClientData? dataToDrop = null;
 

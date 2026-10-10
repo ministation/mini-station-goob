@@ -10,41 +10,52 @@
 using Content.Goobstation.Client.Voice;
 using Content.Goobstation.Client.JoinQueue;
 using Content.Goobstation.Common.ServerCurrency;
+using Content.Shared.Input;
+using Robust.Client.Input;
 using Robust.Shared.ContentPack;
+using Robust.Shared.Input;
+using Robust.Shared.Input.Binding;
 using Robust.Shared.Timing;
 
 namespace Content.Goobstation.Client.Entry;
 
 public sealed class EntryPoint : GameClient
 {
-    /* CorvaxGoob
+    // Mini: voice chat (restored from Goobstation upstream, was deleted by CorvaxGoob)
     [Dependency] private readonly IVoiceChatManager _voiceManager = default!;
-    [Dependency] private readonly JoinQueueManager _joinQueue = default!;
-    [Dependency] private readonly PollManager _pollManager = default!;
-    [Dependency] private readonly ICommonCurrencyManager _currMan = default!;
-    */
+    [Dependency] private readonly IInputManager _inputManager = default!;
+    // [Dependency] private readonly JoinQueueManager _joinQueue = default!; // deleted by CorvaxGoob
+    // [Dependency] private readonly PollManager _pollManager = default!; // deleted by CorvaxGoob
+    // [Dependency] private readonly ICommonCurrencyManager _currMan = default!; // deleted by CorvaxGoob
 
     public override void Init()
     {
         // ContentGoobClientIoC.Register(); CorvaxGoob
 
+        // Mini: register voice chat before the graph is built
+        IoCManager.Register<IVoiceChatManager, VoiceChatClientManager>();
+
         IoCManager.BuildGraph();
         IoCManager.InjectDependencies(this);
+
+        // Mini: push-to-talk binding
+        _inputManager.SetInputCommand(
+            ContentKeyFunctions.VoiceChatPushToTalk,
+            InputCmdHandler.FromDelegate(
+                enabled: _ => _voiceManager.SetTransmitting(true),
+                disabled: _ => _voiceManager.SetTransmitting(false)));
     }
 
     public override void PostInit()
     {
         base.PostInit();
 
-        /* CorvaxGoob
-        _voiceManager.Initalize();
-        _joinQueue.Initialize();
-        _pollManager.Initialize();
-        _currMan.Initialize();
-        */
+        _voiceManager.Initalize(); // Mini: voice chat
+        // _joinQueue.Initialize(); // deleted by CorvaxGoob
+        // _pollManager.Initialize(); // deleted by CorvaxGoob
+        // _currMan.Initialize(); // deleted by CorvaxGoob
     }
 
-    /*
     public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
     {
         base.Update(level, frameEventArgs);
@@ -52,7 +63,7 @@ public sealed class EntryPoint : GameClient
         switch (level)
         {
             case ModUpdateLevel.FramePreEngine:
-                _voiceManager.Update();
+                _voiceManager.Update(); // Mini: voice chat
                 break;
         }
     }
@@ -61,8 +72,7 @@ public sealed class EntryPoint : GameClient
     {
         base.Dispose(disposing);
 
-        _currMan.Shutdown();
-        _voiceManager.Shutdown();
+        // _currMan.Shutdown(); // deleted by CorvaxGoob
+        _voiceManager.Shutdown(); // Mini: voice chat
     }
-    */
 }
