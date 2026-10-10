@@ -609,7 +609,7 @@ public sealed class MiniCCVars
         CVarDef.Create("neuroplayer.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
 
     public static readonly CVarDef<string> NeuroPlayerModel =
-        CVarDef.Create("neuroplayer.model", "gpt-4o-mini", CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroplayer.model", "glm-5.3-flash", CVar.SERVERONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<int> NeuroPlayerBotCount =
         CVarDef.Create("neuroplayer.bot_count", 3, CVar.SERVERONLY | CVar.ARCHIVE);
