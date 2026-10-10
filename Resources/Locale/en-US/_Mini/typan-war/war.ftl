@@ -157,6 +157,8 @@ typan-war-bet-side-nt = NT
 
 typan-war-bet-side-typan = Typan
 
-typan-war-bet-placed = Bet accepted: {$side}, {$amount} coins.
+typan-war-bet-placed-label = Bet:
+
+typan-war-bet-payout-note = ×2 payout, half back on a draw
 
 typan-war-round-end-bets = Bets: NanoTrasen {$nt}, Typan {$typan}. Winners paid {$payout} coins.

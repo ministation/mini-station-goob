@@ -199,6 +199,8 @@ typan-war-bet-side-nt = NT
 
 typan-war-bet-side-typan = Тайпан
 
-typan-war-bet-placed = Ставка принята: {$side}, {$amount} монет.
+typan-war-bet-placed-label = Ставка:
+
+typan-war-bet-payout-note = выплата ×2, при ничьей вернётся половина
 
 typan-war-round-end-bets = Ставки: Нанотрайзен {$nt}, Тайпан {$typan}. Выплачено победителям {$payout} монет.

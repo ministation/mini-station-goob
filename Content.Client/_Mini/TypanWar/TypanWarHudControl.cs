@@ -133,25 +133,33 @@ public sealed class TypanWarHudControl : PanelContainer
 
         if (mySide != null)
         {
-            if (_betRowBuiltKey != "placed")
+            var placedKey = $"placed:{mySide}:{myAmount}";
+            if (_betRowBuiltKey != placedKey)
             {
+                _betRowBuiltKey = placedKey;
                 _betRow.RemoveAllChildren();
+
                 _betRow.AddChild(new Label
                 {
-                    Text = Loc.GetString("typan-war-bet-placed",
-                        ("side", Loc.GetString(mySide == TypanWarSide.Nanotrasen
-                            ? "typan-war-bet-side-nt"
-                            : "typan-war-bet-side-typan")),
-                        ("amount", myAmount)),
-                    FontColorOverride = Color.FromHex("#F0D890"),
+                    Text = Loc.GetString("typan-war-bet-placed-label"),
+                    FontColorOverride = Color.FromHex("#adbac7"),
+                    VerticalAlignment = VAlignment.Center,
+                    Margin = new Thickness(0, 0, 8, 0),
                 });
-                _betRowBuiltKey = "placed";
+                _betRow.AddChild(CreateActiveBetChip(mySide.Value, myAmount));
+                _betRow.AddChild(new Label
+                {
+                    Text = Loc.GetString("typan-war-bet-payout-note"),
+                    FontColorOverride = Color.FromHex("#F0D890"),
+                    VerticalAlignment = VAlignment.Center,
+                    Margin = new Thickness(8, 0, 0, 0),
+                });
             }
 
             return;
         }
 
-        var key = string.Join(",", amounts);
+        var key = "open:" + string.Join(",", amounts);
         if (_betRowBuiltKey == key)
             return;
 
@@ -162,26 +170,78 @@ public sealed class TypanWarHudControl : PanelContainer
         {
             Text = Loc.GetString("typan-war-bet-prompt"),
             FontColorOverride = Color.FromHex("#adbac7"),
+            VerticalAlignment = VAlignment.Center,
+            Margin = new Thickness(0, 0, 8, 0),
+        });
+
+        AddBetGroup(TypanWarSide.Nanotrasen, amounts);
+        _betRow.AddChild(new Control { MinSize = new Vector2(16, 0) });
+        AddBetGroup(TypanWarSide.Typan, amounts);
+    }
+
+    private void AddBetGroup(TypanWarSide side, int[] amounts)
+    {
+        _betRow.AddChild(new Label
+        {
+            Text = Loc.GetString(side == TypanWarSide.Nanotrasen ? "typan-war-bet-side-nt" : "typan-war-bet-side-typan"),
+            FontColorOverride = FactionAccent(side),
+            VerticalAlignment = VAlignment.Center,
+            Margin = new Thickness(0, 0, 4, 0),
         });
 
         foreach (var amount in amounts)
-        {
-            AddBetButton(amount, TypanWarSide.Nanotrasen);
-            AddBetButton(amount, TypanWarSide.Typan);
-        }
+            _betRow.AddChild(CreateBetChip(side, amount));
     }
 
-    private void AddBetButton(int amount, TypanWarSide side)
+    private Button CreateBetChip(TypanWarSide side, int amount)
     {
+        var accent = FactionAccent(side);
         var button = new Button
         {
-            Text = Loc.GetString(side == TypanWarSide.Nanotrasen ? "typan-war-bet-side-nt" : "typan-war-bet-side-typan")
-                + $" {amount}",
+            Text = amount.ToString(),
+            MinSize = new Vector2(46, 24),
+            MaxSize = new Vector2(46, 24),
         };
+
+        button.StyleBoxOverride = new StyleBoxFlat
+        {
+            BackgroundColor = accent.WithAlpha(0.25f),
+            BorderColor = accent,
+            BorderThickness = new Thickness(1),
+            ContentMarginLeftOverride = 6,
+            ContentMarginRightOverride = 6,
+        };
+
         button.OnPressed += _ =>
             IoCManager.Resolve<IEntityManager>().System<TypanWarUiSystem>().RequestBet(side, amount);
-        _betRow.AddChild(button);
+        return button;
     }
+
+    private Control CreateActiveBetChip(TypanWarSide side, int amount)
+    {
+        var accent = FactionAccent(side);
+        var chip = new PanelContainer
+        {
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = accent.WithAlpha(0.45f),
+                BorderColor = accent,
+                BorderThickness = new Thickness(1),
+            }
+        };
+
+        chip.AddChild(new Label
+        {
+            Text = Loc.GetString(side == TypanWarSide.Nanotrasen ? "typan-war-bet-side-nt" : "typan-war-bet-side-typan")
+                + $" · {amount}",
+            Margin = new Thickness(8, 2),
+        });
+
+        return chip;
+    }
+
+    private static Color FactionAccent(TypanWarSide side) =>
+        side == TypanWarSide.Nanotrasen ? Color.FromHex("#4A7FD4") : Color.FromHex("#C84848");
 
     public void Update(
         TypanWarPhase phase,
