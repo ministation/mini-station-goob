@@ -78,11 +78,11 @@ public sealed partial class AudioTab : Control
             SliderVolumeInterface,
             scale: ContentAudioSystem.InterfaceMultiplier);
 
-        // Deleted by CorvaxGoob
-        /*Control.AddOptionPercentSlider(
+        // Mini: voice chat volume (restored from Goobstation upstream)
+        Control.AddOptionPercentSlider(
             GoobCVars.VoiceChatVolume,
             SliderVolumeVoiceChat,
-            -8, 10);*/
+            -8, 10);
 
         // Goobstation - Highlight Chat Ping/Audio!
         Control.AddOptionPercentSlider(
@@ -100,7 +100,9 @@ public sealed partial class AudioTab : Control
         Control.AddOptionCheckBox(CCCVars.CombatModeSoundEnabled, CombatModeSoundCheckBox);
         //CorvaxGoob-CombatMode-Sound-End
 
-        // Control.AddOptionCheckBox(GoobCVars.VoiceChatHearSelf, HearSelfCheckBox); Deleted by CorvaxGoob
+        // Mini: voice chat (restored from Goobstation upstream)
+        Control.AddOptionCheckBox(GoobCVars.VoiceChatClientEnabled, VoiceChatEnabledCheckBox);
+        Control.AddOptionCheckBox(GoobCVars.VoiceChatHearSelf, HearSelfCheckBox);
         Control.AddOptionCheckBox(CCVars.LobbyMusicEnabled, LobbyMusicCheckBox);
         Control.AddOptionCheckBox(CCVars.RestartSoundsEnabled, RestartSoundsCheckBox);
         Control.AddOptionCheckBox(CCVars.EventMusicEnabled, EventMusicCheckBox);

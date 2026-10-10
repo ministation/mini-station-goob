@@ -5,6 +5,7 @@ using Concentus;
 using Concentus.Structs;
 using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.VoiceChat;
+using Content.Server._Mini.VoiceChat;
 using Content.Shared.CCVar;
 using Lidgren.Network;
 using Robust.Server.Player;
@@ -48,12 +49,20 @@ public sealed class VoiceChatServerManager : IVoiceChatServerManager, IPostInjec
     {
         _sawmill = Logger.GetSawmill("voiceserver");
 
-        _cfg.OnValueChanged(GoobCVars.VoiceChatEnabled, OnVoiceChatEnabledChanged, true);
-        _cfg.OnValueChanged(GoobCVars.VoiceChatPort, OnVoiceChatPortChanged, true);
+        // Mini: register change hooks without immediate callbacks, then start explicitly
+        // from the current config below — with immediate callbacks the enabled hook could
+        // run before _port was assigned and the relay briefly bound an ephemeral port 0.
+        _cfg.OnValueChanged(GoobCVars.VoiceChatPort, OnVoiceChatPortChanged);
+        _cfg.OnValueChanged(GoobCVars.VoiceChatEnabled, OnVoiceChatEnabledChanged);
 
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
 
         _netManager.RegisterNetMessage<MsgVoiceChat>();
+        _netManager.RegisterNetMessage<MsgVoiceChatOptIn>(OnVoiceChatOptIn);
+
+        _port = _cfg.GetCVar(GoobCVars.VoiceChatPort);
+        if (_cfg.GetCVar(GoobCVars.VoiceChatEnabled))
+            StartServer();
 
         _sawmill.Info("VoiceChatServerManager initialized");
     }
@@ -75,6 +84,18 @@ public sealed class VoiceChatServerManager : IVoiceChatServerManager, IPostInjec
             StopServer();
             StartServer();
         }
+    }
+
+    /// <summary>
+    /// Mini: whether the player enabled voice chat client-side (opted out of TTS).
+    /// </summary>
+    public bool IsVoiceOptedIn(NetUserId userId) => VoiceChatOptIns.Contains(userId);
+
+    private void OnVoiceChatOptIn(MsgVoiceChatOptIn msg)
+    {
+        var userId = msg.MsgChannel.UserId;
+        VoiceChatOptIns.Set(userId, msg.OptedIn);
+        _sawmill.Info($"Player {msg.MsgChannel.UserName} voice chat opt-in: {msg.OptedIn}");
     }
 
     /// <summary>
@@ -420,6 +441,8 @@ public sealed class VoiceChatServerManager : IVoiceChatServerManager, IPostInjec
     {
         if (e.NewStatus == SessionStatus.Disconnected || e.OldStatus == SessionStatus.InGame && e.NewStatus != SessionStatus.InGame)
         {
+            VoiceChatOptIns.Set(e.Session.UserId, false); // Mini: drop voice opt-in on disconnect
+
             NetConnection? connectionToDrop = null;
             VoiceClientData? dataToDrop = null;
 

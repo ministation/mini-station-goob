@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Fully deleted by CorvaxGoob
-/*
+// Mini: restored from Goobstation upstream (was deleted by CorvaxGoob)
 using Content.Goobstation.Server.Voice;
 using Robust.Shared.Player;
 
@@ -37,4 +36,3 @@ public sealed class VoiceChatSystem : EntitySystem
         }
     }
 }
-*/

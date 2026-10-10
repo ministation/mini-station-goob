@@ -8,10 +8,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <OutputPath>..\bin\Content.Client\</OutputPath>
     <OutputType Condition="'$(FullRelease)' != 'True'">Exe</OutputType>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <!-- Mini: copy NuGet package DLLs (Concentus/NAudio) to bin/Content.Client —
+         the packaging tool lists them from deps.json and reads them from this folder
+         (same as Content.Server.csproj for Concentus). -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <Import Project="../MSBuild/Content.props" />
   <ItemGroup>
     <PackageReference Include="Nett" />
+    <PackageReference Include="Concentus" /> <!-- Mini: voice chat opus codec -->
+    <PackageReference Include="NAudio" /> <!-- Mini: voice chat microphone capture -->
     <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
   </ItemGroup>
 

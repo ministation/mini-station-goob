@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Fully deleted by CorvaxGoob
-/*namespace Content.Goobstation.Client.Voice;
+// Mini: restored from Goobstation upstream (was deleted by CorvaxGoob)
+namespace Content.Goobstation.Client.Voice;
 
 /// <summary>
 /// Interface for the voice chat manager.
@@ -34,5 +34,9 @@ public interface IVoiceChatManager
     void Update();
 
     void Shutdown();
+
+    /// <summary>
+    /// Mini: enables/disables microphone transmission (push-to-talk key state).
+    /// </summary>
+    void SetTransmitting(bool transmitting);
 }
-*/

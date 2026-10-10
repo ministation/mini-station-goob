@@ -509,6 +509,14 @@ public sealed partial class GoobCVars
     public static readonly CVarDef<bool> VoiceChatHearSelf =
         CVarDef.Create("voice.hear_self", false, CVar.CLIENTONLY | CVar.ARCHIVE, "Whether to hear audio from your own entity.");
 
+    /// <summary>
+    /// Mini: player opt-in for voice chat. When off (default), the client neither captures
+    /// microphone audio nor plays incoming voice packets. While on, the player is opted out of
+    /// TTS server-side (voice chat or TTS — one or the other).
+    /// </summary>
+    public static readonly CVarDef<bool> VoiceChatClientEnabled =
+        CVarDef.Create("voice.client_enabled", false, CVar.CLIENTONLY | CVar.ARCHIVE, "Enable voice chat (microphone and proximity voice).");
+
     #endregion
 
     #region Queue
