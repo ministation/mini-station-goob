@@ -1328,14 +1328,6 @@ namespace Content.Client.Lobby.UI
                         SetDirty();
                     };
 
-                    var loadoutWindowBtn = new Button()
-                    {
-                        Text = Loc.GetString("loadout-window"),
-                        HorizontalAlignment = HAlignment.Right,
-                        VerticalAlignment = VAlignment.Center,
-                        Margin = new Thickness(3f, 3f, 0f, 0f),
-                    };
-
                     // CorvaxGoob-Start
                     var highLightsWindowBtn = new Button()
                     {
@@ -1358,35 +1350,9 @@ namespace Content.Client.Lobby.UI
                     };
                     // CorvaxGoob-End
 
-                    // If no loadout found then disabled button
-                    if (!hasLoadout)
-                    {
-                        loadoutWindowBtn.Disabled = true;
-                    }
-                    else
-                    {
-                        loadoutWindowBtn.OnPressed += args =>
-                        {
-                            RoleLoadout? loadout = null;
-
-                            // Clone so we don't modify the underlying loadout.
-                            Profile?.Loadouts.TryGetValue(LoadoutSystem.GetJobPrototype(job.ID), out loadout);
-                            loadout = loadout?.Clone();
-
-                            if (loadout == null)
-                            {
-                                loadout = new RoleLoadout(capturedLoadoutProto!.ID);
-                                loadout.SetDefault(Profile, _playerManager.LocalSession, _prototypeManager);
-                            }
-
-                            OpenLoadout(job, loadout, capturedLoadoutProto!);
-                        };
-                    }
-
                     _jobPriorities.Add((job.ID, selector));
                     category.TrackJob(job.ID);
                     jobContainer.AddChild(selector);
-                    jobContainer.AddChild(loadoutWindowBtn);
                     jobContainer.AddChild(highLightsWindowBtn);
                     category.JobsContent.AddChild(jobContainer);
                 }            }
