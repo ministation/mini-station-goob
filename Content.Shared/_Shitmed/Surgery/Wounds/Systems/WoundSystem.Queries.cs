@@ -105,7 +105,12 @@ public sealed partial class WoundSystem
             yield break;
 
         foreach (var woundEntity in targetWoundable.Wounds.ContainedEntities)
-            yield return (woundEntity, Comp<WoundComponent>(woundEntity));
+        {
+            // Mini: skip stale container entries (invalid entity under prediction desync).
+            if (!TryComp<WoundComponent>(woundEntity, out var woundComp))
+                continue;
+            yield return (woundEntity, woundComp);
+        }
     }
 
     /// <summary>
