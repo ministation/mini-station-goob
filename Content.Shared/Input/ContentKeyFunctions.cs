@@ -167,6 +167,9 @@ namespace Content.Shared.Input
         public static readonly BoundKeyFunction MappingRemoveDecal = "MappingRemoveDecal";
         public static readonly BoundKeyFunction MappingCancelEraseDecal = "MappingCancelEraseDecal";
         public static readonly BoundKeyFunction MappingOpenContextMenu = "MappingOpenContextMenu";
+        // Mini-changes-start:
+        public static readonly BoundKeyFunction VoiceChatPushToTalk = "VoiceChatPushToTalk";
+        // Mini-changes-end.
         // CorvaxGoob-changes-start:
         public static readonly BoundKeyFunction EditorNextObject = "EditorNextObject";
         public static readonly BoundKeyFunction EditorPreviousObject = "EditorPreviousObject";
