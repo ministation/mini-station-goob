@@ -98,7 +98,7 @@ public sealed partial class TypanStationWarRuleComponent : Component
 
     /// <summary>Coins (antag token balance) paid to every war participant at EndWar.</summary>
     [DataField]
-    public int ParticipationTokenReward = 3;
+    public int ParticipationTokenReward = 1;
 
     /// <summary>Extra coins for participants of the winning faction.</summary>
     [DataField]
