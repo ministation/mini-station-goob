@@ -650,6 +650,10 @@ public sealed class MiniCCVars
     public static readonly CVarDef<int> NeuroPlayerProactiveCooldownSeconds =
         CVarDef.Create("neuroplayer.proactive_cooldown_seconds", 45, CVar.SERVERONLY | CVar.ARCHIVE);
 
+    /// <summary>Interval between random point-of-interest visits per bot (seconds).</summary>
+    public static readonly CVarDef<int> NeuroPlayerPoiIntervalSeconds =
+        CVarDef.Create("neuroplayer.poi_interval_seconds", 240, CVar.SERVERONLY | CVar.ARCHIVE);
+
     /// <summary>
     /// GLM-4.5/4.6 style reasoning mode. Off by default: with a small max_tokens budget
     /// thinking consumes the whole response and the bot stays silent.

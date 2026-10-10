@@ -26,4 +26,19 @@ public sealed partial class NeuroPlayerComponent : Component
     /// <summary>Separate throttle for unprompted (no name) replies in local chat.</summary>
     [ViewVariables]
     public TimeSpan NextProactiveResponse = TimeSpan.Zero;
+
+    /// <summary>Cry (canned phrase) cooldown.</summary>
+    [ViewVariables]
+    public TimeSpan NextCry = TimeSpan.Zero;
+
+    /// <summary>Fleeing until this time (NeuroFleeCompound is the active root task).</summary>
+    [ViewVariables]
+    public TimeSpan? DangerUntil;
+
+    /// <summary>Visiting a POI until this time (NeuroVisitCompound is the active root task).</summary>
+    [ViewVariables]
+    public TimeSpan? VisitUntil;
+
+    [ViewVariables]
+    public float PoiAccumulator;
 }

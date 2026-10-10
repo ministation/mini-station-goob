@@ -1,0 +1,43 @@
+# Нейроигроки: бегство от опасности и визиты точек интереса.
+# Точку (NeuroPoint) выбирает NeuroPlayerSystem в коде.
+- type: htnCompound
+  id: NeuroFleeCompound
+  branches:
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:NeuroPointOperator
+            pointKey: NeuroPoint
+        - !type:HTNPrimitiveTask
+          operator: !type:MoveToOperator
+            pathfindInPlanning: false
+        - !type:HTNPrimitiveTask
+          operator: !type:SetFloatOperator
+            targetKey: IdleTime
+            amount: 5
+        - !type:HTNPrimitiveTask
+          operator: !type:WaitOperator
+            key: IdleTime
+          preconditions:
+            - !type:KeyExistsPrecondition
+              key: IdleTime
+
+- type: htnCompound
+  id: NeuroVisitCompound
+  branches:
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:NeuroPointOperator
+            pointKey: NeuroPoint
+        - !type:HTNPrimitiveTask
+          operator: !type:MoveToOperator
+            pathfindInPlanning: false
+        - !type:HTNPrimitiveTask
+          operator: !type:SetFloatOperator
+            targetKey: IdleTime
+            amount: 70
+        - !type:HTNPrimitiveTask
+          operator: !type:WaitOperator
+            key: IdleTime
+          preconditions:
+            - !type:KeyExistsPrecondition
+              key: IdleTime

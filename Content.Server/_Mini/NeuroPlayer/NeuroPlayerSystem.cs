@@ -8,16 +8,28 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Chat.Systems;
+using Content.Shared.Hands.EntitySystems;
 using Content.Server.NPC.HTN;
+using Content.Server.NPC.Systems;
+using Content.Shared.Inventory;
 using Content.Server.Radio;
 using Content.Server.Spawners.Components;
 using Content.Shared.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
+using System.Numerics;
 using Content.Shared._Mini.MiniCCVars;
 using Content.Shared._Mini.NeuroPlayer;
+using Content.Shared.Atmos.Components;
+using Content.Shared.BarSign;
+using Content.Shared.Body.Components;
+using Content.Shared.Body.Systems;
 using Content.Shared.Chat;
+using Content.Shared.Clothing.Components;
+using Content.Shared.Damage;
+using Robust.Shared.Containers;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Preferences;
@@ -55,6 +67,13 @@ public sealed class NeuroPlayerSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly StationSpawningSystem _spawning = default!;
     [Dependency] private readonly StationSystem _station = default!;
+    [Dependency] private readonly NPCSystem _npc = default!;
+    [Dependency] private readonly HTNSystem _htn = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly SharedInternalsSystem _internals = default!;
+    [Dependency] private readonly SharedContainerSystem _container = default!;
+    [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
 
     private ISawmill _sawmill = default!;
@@ -77,9 +96,18 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private float _directChance;
     private float _proactiveChance;
     private int _proactiveCooldownSeconds;
+    private int _poiIntervalSeconds;
+
+    private float _dangerScanAccumulator;
 
     private DateTime _dailyDate = DateTime.UtcNow.Date;
     private int _dailyRequests;
+
+    private static readonly string[] FireCries = ["Ааа, пожар! Горим!", "Огонь! Бежим отсюда!", "Горит! Спасайся!"];
+    private static readonly string[] PainCries = ["Ай! Больно!", "Ой! Помогите!", "Ах! Что происходит?!"];
+    private static readonly string[] FightCries = ["Драка! Спасайся кто может!", "Стреляют! Прячься!", "Ой-ой, отходим от греха!"];
+    private static readonly string[] DecompressionCries =
+        ["Воздух уходит! Кислород!", "Разгерметизация! Маску, МАСКУ!", "Шлюзы! Воздух кончается!"];
 
     public override void Initialize()
     {
@@ -103,6 +131,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerDirectChance, v => _directChance = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerProactiveChance, v => _proactiveChance = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerProactiveCooldownSeconds, v => _proactiveCooldownSeconds = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerPoiIntervalSeconds, v => _poiIntervalSeconds = v, true);
 
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
@@ -110,6 +139,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         // radio-delivered messages are handled separately via RadioReceiveEvent to avoid doubles.
         SubscribeLocalEvent<EntitySpokeEvent>(OnGlobalSpoke);
         SubscribeLocalEvent<NeuroPlayerComponent, RadioReceiveEvent>(OnRadioReceive);
+        SubscribeLocalEvent<DamageChangedEvent>(OnDamageChanged);
     }
 
     public override void Shutdown()
@@ -466,7 +496,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
             if (viaRadio)
                 reply = ";" + reply;
 
-            _chat.TrySendInGameICMessage(bot, reply, InGameICChatType.Speak, hideChat: true, hideLog: true);
+            _chat.TrySendInGameICMessage(bot, reply, InGameICChatType.Speak, hideChat: false, hideLog: true);
         }
         catch (Exception e)
         {
@@ -479,6 +509,281 @@ public sealed class NeuroPlayerSystem : EntitySystem
             if (proactive)
                 comp.NextProactiveResponse = _timing.CurTime + TimeSpan.FromSeconds(_proactiveCooldownSeconds);
         }
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (!_enabled)
+            return;
+
+        _dangerScanAccumulator += frameTime;
+        if (_dangerScanAccumulator >= 2f)
+        {
+            _dangerScanAccumulator = 0f;
+            ScanDangers();
+        }
+
+        var now = _timing.CurTime;
+        for (var i = _bots.Count - 1; i >= 0; i--)
+        {
+            var bot = _bots[i];
+            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp))
+                continue;
+
+            // Restore normal behavior once the flee / visit window is over.
+            if (comp.DangerUntil != null && now > comp.DangerUntil)
+            {
+                comp.DangerUntil = null;
+                RestoreIdle(bot);
+            }
+            else if (comp.VisitUntil != null && now > comp.VisitUntil)
+            {
+                comp.VisitUntil = null;
+                RestoreIdle(bot);
+            }
+
+            if (comp.DangerUntil != null)
+                continue;
+
+            comp.PoiAccumulator += frameTime;
+            if (comp.PoiAccumulator >= _poiIntervalSeconds)
+            {
+                comp.PoiAccumulator = 0f;
+                TryVisit(bot, comp);
+            }
+        }
+    }
+
+    private void RestoreIdle(EntityUid bot)
+    {
+        if (!TryComp<HTNComponent>(bot, out var htn))
+            return;
+
+        htn.RootTask = new HTNCompoundTask { Task = "IdleCompound" };
+        _htn.Replan(htn);
+    }
+
+    private void ScanDangers()
+    {
+        foreach (var bot in _bots)
+        {
+            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp) || comp.DangerUntil != null)
+                continue;
+
+            var botPos = _transform.GetWorldPosition(bot);
+            var botMap = Transform(bot).MapID;
+
+            var query = EntityQueryEnumerator<FlammableComponent, TransformComponent>();
+            while (query.MoveNext(out var uid, out var flammable, out var xform))
+            {
+                if (flammable.FireStacks <= 0 || xform.MapID != botMap)
+                    continue;
+
+                if ((xform.WorldPosition - botPos).Length() > 6f)
+                    continue;
+
+                TriggerDanger(bot, comp, xform.WorldPosition, FireCries);
+                break;
+            }
+        }
+    }
+
+    private void OnDamageChanged(DamageChangedEvent ev)
+    {
+        if (!_enabled || !ev.DamageIncreased || ev.DamageDelta == null)
+            return;
+
+        var victim = ev.Damageable.Owner;
+        if (!Exists(victim))
+            return;
+
+        var total = (float) ev.DamageDelta.GetTotal();
+
+        // Self-damage: pain cries and depressurization handling.
+        if (TryComp<NeuroPlayerComponent>(victim, out var botComp))
+        {
+            if (ev.DamageDelta.DamageDict.TryGetValue("Airloss", out var airloss) && airloss >= 3f)
+            {
+                // Decompression: scream, enable internals from own inventory, best-effort grab a hardsuit, run.
+                Cry(victim, botComp, DecompressionCries);
+                TryEnableInternals(victim);
+                TryGrabHardsuit(victim);
+                TriggerDanger(victim, botComp, _transform.GetWorldPosition(victim), null, cry: false);
+                return;
+            }
+
+            if (total >= 10f)
+                Cry(victim, botComp, PainCries);
+
+            return;
+        }
+
+        // Someone else got hurt badly nearby: run away from the fight.
+        if (total < 15f)
+            return;
+
+        var victimPos = _transform.GetWorldPosition(victim);
+        foreach (var bot in _bots)
+        {
+            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp) || comp.DangerUntil != null)
+                continue;
+
+            if (Transform(bot).MapID != Transform(victim).MapID)
+                continue;
+
+            if ((_transform.GetWorldPosition(bot) - victimPos).Length() > 6f)
+                continue;
+
+            TriggerDanger(bot, comp, victimPos, FightCries);
+        }
+    }
+
+    private void TriggerDanger(EntityUid bot, NeuroPlayerComponent comp, Vector2 dangerPos, string[]? cries, bool cry = true)
+    {
+        if (!TryComp<HTNComponent>(bot, out var htn))
+            return;
+
+        htn.Blackboard.SetValue("NeuroPoint", ComputeFleePoint(bot, dangerPos));
+        htn.RootTask = new HTNCompoundTask { Task = "NeuroFleeCompound" };
+        _htn.Replan(htn);
+
+        comp.DangerUntil = _timing.CurTime + TimeSpan.FromSeconds(12);
+        comp.VisitUntil = null;
+        comp.PoiAccumulator = 0f;
+
+        if (cry && cries != null)
+            Cry(bot, comp, cries);
+    }
+
+    private EntityCoordinates ComputeFleePoint(EntityUid bot, Vector2 dangerPos)
+    {
+        var botXform = Transform(bot);
+        var botPos = _transform.GetWorldPosition(botXform);
+        var away = botPos - dangerPos;
+        if (away.LengthSquared() < 0.01f)
+            away = new Vector2(1, 0);
+        away = Vector2.Normalize(away);
+
+        if (botXform.GridUid is { } grid && TryComp<MapGridComponent>(grid, out var mapGrid))
+        {
+            var centerTile = _transform.GetGridOrMapTilePosition(bot, botXform);
+            for (var dist = 10; dist <= 25; dist += 5)
+            {
+                var tile = centerTile + (away * dist).Floored();
+                if (_map.TryGetTileRef(grid, mapGrid, tile, out var tileRef) && !tileRef.Tile.IsEmpty)
+                    return _map.GridTileToLocal(grid, mapGrid, tile);
+            }
+        }
+
+        return botXform.Coordinates.Offset(away * 18f);
+    }
+
+    private void Cry(EntityUid bot, NeuroPlayerComponent comp, string[] phrases)
+    {
+        if (_timing.CurTime < comp.NextCry)
+            return;
+
+        comp.NextCry = _timing.CurTime + TimeSpan.FromSeconds(12);
+        _chat.TrySendInGameICMessage(bot, _random.Pick(phrases), InGameICChatType.Speak, hideChat: false, hideLog: true);
+    }
+
+    private void TryEnableInternals(EntityUid bot)
+    {
+        try
+        {
+            var internals = EnsureComp<InternalsComponent>(bot);
+
+            foreach (var container in _container.GetAllContainers(bot))
+            {
+                foreach (var item in container.ContainedEntities)
+                {
+                    if (!HasComp<GasTankComponent>(item))
+                        continue;
+
+                    if (_internals.TryConnectTank((bot, internals), item))
+                        return;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _sawmill.Warning($"Neuro player internals failed: {e.Message}");
+        }
+    }
+
+    private void TryGrabHardsuit(EntityUid bot)
+    {
+        try
+        {
+            var query = EntityQueryEnumerator<ClothingComponent, TransformComponent>();
+            while (query.MoveNext(out var uid, out _, out var xform))
+            {
+                if (xform.MapID != Transform(bot).MapID)
+                    continue;
+
+                // Only items lying free on the grid, within arm's reach.
+                if (_container.IsEntityInContainer(uid))
+                    continue;
+
+                if ((Prototype(uid)?.ID ?? string.Empty).IndexOf("Hardsuit", StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+
+                if ((_transform.GetWorldPosition(bot) - _transform.GetWorldPosition(xform)).Length() > 1.5f)
+                    continue;
+
+                if (!_hands.TryPickupAnyHand(bot, uid, checkActionBlocker: false))
+                    continue;
+
+                _inventory.TryEquip(bot, uid, "outerClothing", silent: true, force: true);
+                return;
+            }
+        }
+        catch (Exception e)
+        {
+            _sawmill.Warning($"Neuro player hardsuit grab failed: {e.Message}");
+        }
+    }
+
+    private void TryVisit(EntityUid bot, NeuroPlayerComponent comp)
+    {
+        if (!TryComp<HTNComponent>(bot, out var htn))
+            return;
+
+        var point = FindPointOfInterest(bot);
+        if (point == null)
+            return;
+
+        htn.Blackboard.SetValue("NeuroPoint", point.Value);
+        htn.RootTask = new HTNCompoundTask { Task = "NeuroVisitCompound" };
+        _htn.Replan(htn);
+        comp.VisitUntil = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(120, 240));
+    }
+
+    private EntityCoordinates? FindPointOfInterest(EntityUid bot)
+    {
+        var points = new List<EntityCoordinates>();
+        var botMap = Transform(bot).MapID;
+
+        var bars = EntityQueryEnumerator<BarSignComponent, TransformComponent>();
+        while (bars.MoveNext(out _, out _, out var xform))
+        {
+            if (xform.MapID != botMap)
+                continue;
+
+            points.Add(xform.Coordinates);
+        }
+
+        if (points.Count > 0)
+            return _random.Pick(points);
+
+        // No bar on this map: hang around late-join points (arrivals / halls).
+        var station = FindStation();
+        if (station != null)
+            points.AddRange(FindSpawnPoints(station.Value));
+
+        return points.Count > 0 ? _random.Pick(points) : null;
     }
 
     public (bool Enabled, bool ApiConfigured, int Bots, int DailyRequests) GetStatus()
