@@ -560,8 +560,23 @@ public sealed class MiniCCVars
     /// on each footfall) and the arm swing. The per-leg foot bob is
     /// <see cref="FootWalkAnimationEnabled"/>.
     /// </summary>
+    /// <remarks>
+    /// Off by default: the bounce lifts the whole sprite by 1.25 px on every step, and everything
+    /// drawn above the head (job icons, health bar, do-after, speech bubble) visibly shook against
+    /// the walking body — «худы дёргаются при ходьбе». The foot walk animation itself and the arm
+    /// swing stay on; players who like the bounce can turn it back on in the client settings, and
+    /// then <see cref="FootWalkHudFollowsBody"/> keeps the HUD glued to it.
+    /// </remarks>
     public static readonly CVarDef<bool> FootWalkBodyBounceEnabled =
-        CVarDef.Create("accessibility.foot_walk_body_bounce", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("accessibility.foot_walk_body_bounce", false, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Whether everything drawn above the head (job/status icons, health bar, do-after bar, speech
+    /// bubble) follows the FootWalk body bounce. True keeps the HUD glued to the body, so it never
+    /// shimmers against the walking sprite; false pins it to the un-bobbed position instead.
+    /// </summary>
+    public static readonly CVarDef<bool> FootWalkHudFollowsBody =
+        CVarDef.Create("accessibility.foot_walk_hud_follows_body", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<bool> HoldLookUp =
         CVarDef.Create("scope.hold_look_up", true, CVar.CLIENT | CVar.ARCHIVE);

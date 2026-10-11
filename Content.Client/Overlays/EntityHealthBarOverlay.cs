@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Numerics;
+using Content.Client._Mini.FootWalk;
 using Content.Client.StatusIcon;
 using Content.Client.UserInterface.Systems;
 using Content.Shared._Shitmed.Medical.Surgery.Consciousness.Components; // Shitmed Change
@@ -99,7 +100,7 @@ public sealed class EntityHealthBarOverlay : Overlay
 
             handle.SetTransform(matty);
 
-            var yOffset = bounds.Height * EyeManager.PixelsPerMeter / 2 - 3f;
+            var yOffset = (bounds.Height + FootWalkBounce.GetAnchoredOffsetY(uid, spriteComponent.Offset.Y)) * EyeManager.PixelsPerMeter / 2 - 3f;
             var widthOfMob = bounds.Width * EyeManager.PixelsPerMeter;
 
             var position = new Vector2(-widthOfMob / EyeManager.PixelsPerMeter / 2, yOffset / EyeManager.PixelsPerMeter);
