@@ -45,6 +45,11 @@ public sealed class GhostShopSystem : EntitySystem
         RaiseNetworkEvent(new GhostShopSelectRequestEvent(themeId));
     }
 
+    public void RequestBuyColor(string colorId)
+    {
+        RaiseNetworkEvent(new GhostShopBuyColorRequestEvent(colorId));
+    }
+
     public Texture? GetIconTexture(string rsiPath, string state)
     {
         try

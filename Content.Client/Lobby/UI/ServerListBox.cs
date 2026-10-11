@@ -45,8 +45,7 @@ public sealed class ServerListBox : BoxContainer
 
     private void OpenGhostMenu()
     {
-        // Ghost themes live inside the customization window now.
-        _consoleHost.ExecuteCommand("coinshop");
+        _consoleHost.ExecuteCommand("ghostshop");
     }
 
     public ServerListBox()
@@ -76,9 +75,9 @@ public sealed class ServerListBox : BoxContainer
             OpenDailyRewards));
 
         actionButtonsContainer.AddChild(CreateActionButton(
-            "Кастомизация",
+            "Призраки",
             new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Ghost.png")),
-            OpenCoinShop));
+            OpenGhostMenu));
 
         AddChild(actionButtonsContainer);
 
