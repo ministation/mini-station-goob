@@ -654,6 +654,14 @@ public sealed class MiniCCVars
     public static readonly CVarDef<int> NeuroPlayerPoiIntervalSeconds =
         CVarDef.Create("neuroplayer.poi_interval_seconds", 240, CVar.SERVERONLY | CVar.ARCHIVE);
 
+    /// <summary>If no player is within this radius (tiles), the bot walks toward one.</summary>
+    public static readonly CVarDef<float> NeuroPlayerSeekRadius =
+        CVarDef.Create("neuroplayer.seek_radius", 30f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Cooldown between LLM small-talk exchanges between bots.</summary>
+    public static readonly CVarDef<int> NeuroPlayerBotChatterCooldownSeconds =
+        CVarDef.Create("neuroplayer.bot_chatter_cooldown_seconds", 240, CVar.SERVERONLY | CVar.ARCHIVE);
+
     /// <summary>
     /// GLM-4.5/4.6 style reasoning mode. Off by default: with a small max_tokens budget
     /// thinking consumes the whole response and the bot stays silent.

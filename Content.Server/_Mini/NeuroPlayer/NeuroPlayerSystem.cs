@@ -26,6 +26,7 @@ using Content.Shared.Atmos.Components;
 using Content.Shared.BarSign;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
+using Content.Shared._CorvaxGoob.TTS;
 using Content.Shared.Chat;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Damage;
@@ -97,6 +98,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private float _proactiveChance;
     private int _proactiveCooldownSeconds;
     private int _poiIntervalSeconds;
+    private float _seekRadius;
+    private int _botChatterCooldownSeconds;
 
     private float _dangerScanAccumulator;
 
@@ -132,6 +135,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerProactiveChance, v => _proactiveChance = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerProactiveCooldownSeconds, v => _proactiveCooldownSeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerPoiIntervalSeconds, v => _poiIntervalSeconds = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerSeekRadius, v => _seekRadius = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerBotChatterCooldownSeconds, v => _botChatterCooldownSeconds = v, true);
 
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
@@ -211,7 +216,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private bool TrySpawnBot(NeuroPersonaPrototype persona, EntityCoordinates coords, EntityUid station)
     {
-        var profile = HumanoidCharacterProfile.RandomWithSpecies("Human").WithName(persona.Name);
+        var profile = HumanoidCharacterProfile.RandomWithSpecies("Human");
         var mob = _spawning.SpawnPlayerMob(coords, persona.Job, profile, station);
 
         var comp = EnsureComp<NeuroPlayerComponent>(mob);
@@ -225,6 +230,17 @@ public sealed class NeuroPlayerSystem : EntitySystem
         var htn = EnsureComp<HTNComponent>(mob);
         htn.RootTask = new HTNCompoundTask { Task = "IdleCompound" };
         _factions.AddFactions(mob, new HashSet<ProtoId<NpcFactionPrototype>> { "NanoTrasen" });
+
+        // Random voice matching the bot's sex — neuro passengers speak out loud via TTS.
+        var voicePool = _prototypes.EnumeratePrototypes<TTSVoicePrototype>()
+            .Where(v => v.Sex == profile.Sex)
+            .ToList();
+        if (voicePool.Count > 0)
+        {
+            var tts = EnsureComp<TTSComponent>(mob);
+            tts.VoicePrototypeId = _random.Pick(voicePool).ID;
+            tts.Pitch = _random.NextFloat(0.95f, 1.05f);
+        }
 
         var mind = _mind.CreateMind(null, persona.Name);
         _mind.TransferTo(mind, mob);
@@ -784,6 +800,55 @@ public sealed class NeuroPlayerSystem : EntitySystem
             points.AddRange(FindSpawnPoints(station.Value));
 
         return points.Count > 0 ? _random.Pick(points) : null;
+    }
+
+    private async Task<string?> CompleteRawAsync(NeuroPersonaPrototype persona, string botName, string userPrompt)
+    {
+        var systemPrompt =
+            $"Ты — {botName}, пассажир на космической станции Нанотрайзен (игра Space Station 14).\n" +
+            $"{persona.Character}\n" +
+            "Правила:\n" +
+            "- Отвечай ОДНОЙ короткой репликой до 15 слов, по-русски, живым разговорным стилем.\n" +
+            "- Никогда не говори, что ты ИИ, бот, модель или что ты в игре или симуляции.\n" +
+            "- Не используй звёздочки и описания действий — только прямую речь.\n" +
+            "- Не обещай игровых действий и не обсуждай администрацию, правила и читы.\n" +
+            "- Если сказать нечего — короткая нейтральная реакция.";
+
+        var body = new CompletionRequest
+        {
+            Model = _model,
+            Messages =
+            [
+                new ChatMessageDto("system", systemPrompt),
+                new ChatMessageDto("user", userPrompt),
+            ],
+            Temperature = _temperature,
+            MaxTokens = _maxTokens,
+        };
+
+        // GLM-4.5/4.6 reasoning toggle: with a small token budget thinking eats the whole
+        // reply, so it is disabled unless requested. Sent only for glm models — other
+        // providers reject unknown fields.
+        if (_model.Contains("glm", StringComparison.OrdinalIgnoreCase))
+            body.Thinking = new ThinkingConfig { Type = _thinkingEnabled ? "enabled" : "disabled" };
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
+        using var request = new HttpRequestMessage(HttpMethod.Post, _apiUrl);
+        request.Headers.Authorization = new("Bearer", _apiKey);
+        request.Content = JsonContent.Create(body);
+
+        var response = await _httpClient.SendAsync(request, cts.Token);
+        response.EnsureSuccessStatusCode();
+        var payload = await response.Content.ReadFromJsonAsync<CompletionResponse>(cancellationToken: cts.Token);
+        var reply = payload?.Choices?.FirstOrDefault()?.Message?.Content?.Trim();
+
+        if (string.IsNullOrWhiteSpace(reply))
+            return null;
+
+        if (reply.Length > MaxReplyLength)
+            reply = reply[..MaxReplyLength];
+
+        return reply;
     }
 
     public (bool Enabled, bool ApiConfigured, int Bots, int DailyRequests) GetStatus()
