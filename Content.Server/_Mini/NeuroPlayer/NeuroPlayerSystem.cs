@@ -23,6 +23,8 @@ using Robust.Shared.Map.Components;
 using System.Numerics;
 using Content.Shared._Mini.MiniCCVars;
 using Content.Shared._Mini.NeuroPlayer;
+using Content.Server._Mini.TypanWar;
+using Content.Shared._Mini.TypanWar;
 using Content.Shared.Atmos.Components;
 using Content.Shared.BarSign;
 using Content.Shared.Body.Components;
@@ -156,6 +158,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         SubscribeLocalEvent<EntitySpokeEvent>(OnGlobalSpoke);
         SubscribeLocalEvent<NeuroPlayerComponent, RadioReceiveEvent>(OnRadioReceive);
         SubscribeLocalEvent<DamageChangedEvent>(OnDamageChanged);
+        SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
     }
 
     public override void Shutdown()
@@ -184,10 +187,23 @@ public sealed class NeuroPlayerSystem : EntitySystem
         _bots.Clear();
     }
 
+    private void OnWarStarted(TypanWarStartedEvent ev)
+    {
+        // Station war: neuro passengers are hidden for the duration.
+        DespawnBots();
+    }
+
     public void SpawnBots()
     {
         if (!_enabled)
             return;
+
+        // Station war: neuro passengers stay out of the conflict entirely.
+        if (TypanStationWarRuleSystem.IsModeActive)
+        {
+            _sawmill.Info("Neuro players skipped: station war is active.");
+            return;
+        }
 
         var personas = _prototypes.EnumeratePrototypes<NeuroPersonaPrototype>()
             .OrderBy(p => p.Order)
@@ -222,16 +238,102 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 spawned++;
         }
 
-        _sawmill.Info($"Neuro players: spawned {spawned}/{_botCount} bots.");
+        // Station janitor: experiments with the cleanbot routine (mop + puddles + decals).
+        var janitorPersona = _prototypes.EnumeratePrototypes<NeuroPersonaPrototype>()
+            .FirstOrDefault(p => p.ID == "NeuroJanitor");
+        if (janitorPersona != null && points.Count > 0)
+        {
+            var coords = _random.Pick(points);
+            if (TrySpawnBot(janitorPersona, coords, station.Value, forcedJob: "Janitor",
+                    rootTask: "CleanbotCompound",
+                    onSpawned: mob => GiveJanitorMop(mob)))
+                spawned++;
+        }
+
+        // Typan gets its own chef, CentComm gets its maid.
+        var typanStation = FindFactionStation(typan: true);
+        if (typanStation != null)
+        {
+            var persona = personas.FirstOrDefault(p => p.ID == "NeuroTypanChef") ?? personas[0];
+            var points2 = FindSpawnPoints(typanStation.Value);
+            if (points2.Count > 0 && TrySpawnBot(persona, _random.Pick(points2), typanStation.Value, forcedJob: "TypanChef"))
+                spawned++;
+        }
+
+        var ccStation = FindFactionStation(centcomm: true);
+        if (ccStation != null)
+        {
+            var persona = personas.FirstOrDefault(p => p.ID == "NeuroCCMaid") ?? personas[0];
+            var points3 = FindSpawnPoints(ccStation.Value);
+            if (points3.Count > 0 && TrySpawnBot(persona, _random.Pick(points3), ccStation.Value,
+                    forcedJob: "Passenger", onSpawned: mob => GiveMaidOutfit(mob)))
+                spawned++;
+        }
+
+        _sawmill.Info($"Neuro players: spawned {spawned} bots.");
     }
 
-    private bool TrySpawnBot(NeuroPersonaPrototype persona, EntityCoordinates coords, EntityUid station)
+    private void GiveJanitorMop(EntityUid mob)
+    {
+        try
+        {
+            var mop = Spawn("MopItem", Transform(mob).Coordinates);
+            _hands.TryPickupAnyHand(mob, mop, checkActionBlocker: false);
+        }
+        catch (Exception e)
+        {
+            _sawmill.Warning($"Neuro janitor mop failed: {e.Message}");
+        }
+    }
+
+    private void GiveMaidOutfit(EntityUid mob)
+    {
+        try
+        {
+            var uniform = Spawn("ClothingUniformJumpskirtJanimaid", Transform(mob).Coordinates);
+            _inventory.TryEquip(mob, uniform, "jumpsuit", silent: true, force: true);
+
+            var pda = Spawn("CommandMaidPDA", Transform(mob).Coordinates);
+            _inventory.TryEquip(mob, pda, "id", silent: true, force: true);
+        }
+        catch (Exception e)
+        {
+            _sawmill.Warning($"Neuro maid outfit failed: {e.Message}");
+        }
+    }
+
+    private EntityUid? FindFactionStation(bool typan = false, bool centcomm = false)
+    {
+        var query = EntityQueryEnumerator<StationDataComponent>();
+        while (query.MoveNext(out var uid, out var data))
+        {
+            if (data.Grids.Count == 0)
+                continue;
+
+            if (typan && _typanJobs.IsTypanFactionStation(uid))
+                return uid;
+
+            if (centcomm && _typanJobs.IsCentCommFactionStation(uid))
+                return uid;
+        }
+
+        return null;
+    }
+
+    private bool TrySpawnBot(
+        NeuroPersonaPrototype persona,
+        EntityCoordinates coords,
+        EntityUid station,
+        ProtoId<JobPrototype>? forcedJob = null,
+        string? rootTask = null,
+        Action<EntityUid>? onSpawned = null)
     {
         // Sometimes a basic profession look (cargo tech, service worker...) — purely gear,
         // player job slots are never consumed. Security stays player-only.
-        var job = _random.Prob(0.4f)
-            ? _random.Pick(BasicJobPrototypes)
-            : (ProtoId<JobPrototype>) "Passenger";
+        var job = forcedJob
+            ?? (_random.Prob(0.4f)
+                ? _random.Pick(BasicJobPrototypes)
+                : (ProtoId<JobPrototype>) "Passenger");
 
         var profile = HumanoidCharacterProfile.RandomWithSpecies("Human");
         var mob = _spawning.SpawnPlayerMob(coords, job, profile, station);
@@ -245,7 +347,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         receiver.Channels.Add(CommonChannelId);
 
         var htn = EnsureComp<HTNComponent>(mob);
-        htn.RootTask = new HTNCompoundTask { Task = "IdleCompound" };
+        htn.RootTask = new HTNCompoundTask { Task = rootTask ?? "IdleCompound" };
         _factions.AddFactions(mob, new HashSet<ProtoId<NpcFactionPrototype>> { "NanoTrasen" });
 
         // Random voice matching the bot's sex — neuro passengers speak out loud via TTS.
@@ -276,6 +378,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 _sawmill.Warning($"Neuro player {persona.Name}: crew manifest record failed: {e.Message}");
             }
         }
+
+        onSpawned?.Invoke(mob);
 
         _bots.Add(mob);
         return true;
