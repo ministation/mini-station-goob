@@ -474,6 +474,39 @@ public sealed class NeuroPlayerSystem : EntitySystem
             points.Add(new EntityCoordinates(uid, 0, 0));
         }
 
+        if (points.Count > 0)
+            return points;
+
+        // Mini maps have no bare LateJoin markers — their late-join flow goes through
+        // cryo sleep units (ContainerSpawnPoint with LateJoin type). Spawn next to those.
+        var cryoQuery = EntityQueryEnumerator<ContainerSpawnPointComponent, TransformComponent>();
+        while (cryoQuery.MoveNext(out var uid, out var point, out var xform))
+        {
+            if (point.SpawnType != SpawnPointType.LateJoin)
+                continue;
+
+            if (_station.GetOwningStation(uid, xform) != station)
+                continue;
+
+            points.Add(new EntityCoordinates(uid, 0, 0));
+        }
+
+        if (points.Count > 0)
+            return points;
+
+        // Last resort: job spawn points of the station (always present, free tiles).
+        var jobQuery = EntityQueryEnumerator<SpawnPointComponent, TransformComponent>();
+        while (jobQuery.MoveNext(out var uid, out var point, out var xform))
+        {
+            if (point.SpawnType != SpawnPointType.Job)
+                continue;
+
+            if (_station.GetOwningStation(uid, xform) != station)
+                continue;
+
+            points.Add(new EntityCoordinates(uid, 0, 0));
+        }
+
         return points;
     }
 
