@@ -571,13 +571,18 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 comp.DangerUntil = null;
                 RestoreIdle(bot);
             }
+            else if (comp.HostileUntil != null && now > comp.HostileUntil)
+            {
+                comp.HostileUntil = null;
+                RestoreIdle(bot);
+            }
             else if (comp.VisitUntil != null && now > comp.VisitUntil)
             {
                 comp.VisitUntil = null;
                 RestoreIdle(bot);
             }
 
-            if (comp.DangerUntil != null)
+            if (comp.DangerUntil != null || comp.HostileUntil != null)
                 continue;
 
             comp.PoiAccumulator += frameTime;
@@ -604,6 +609,20 @@ public sealed class NeuroPlayerSystem : EntitySystem
         {
             if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp) || comp.DangerUntil != null)
                 continue;
+
+            // Brave enough: engage hostile-faction mobs that wander too close.
+            var hostiles = _factions.GetNearbyHostiles((bot, CompOrNull<NpcFactionMemberComponent>(bot), null), 8f);
+            if (hostiles.Any())
+            {
+                if (TryComp<HTNComponent>(bot, out var attackHtn) && attackHtn.RootTask.Task != "SimpleHumanoidHostileCompound")
+                {
+                    attackHtn.RootTask = new HTNCompoundTask { Task = "SimpleHumanoidHostileCompound" };
+                    _htn.Replan(attackHtn);
+                }
+
+                comp.HostileUntil = _timing.CurTime + TimeSpan.FromSeconds(6);
+                continue;
+            }
 
             var botPos = _transform.GetWorldPosition(bot);
             var botMap = Transform(bot).MapID;
@@ -654,7 +673,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         }
 
         // Someone else got hurt badly nearby: run away from the fight.
-        if (total < 15f)
+        if (total < 15f || (ev.Origin is { } fightOrigin && HasComp<NeuroPlayerComponent>(fightOrigin)))
             return;
 
         var victimPos = _transform.GetWorldPosition(victim);

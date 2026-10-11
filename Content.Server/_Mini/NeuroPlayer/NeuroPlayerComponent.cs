@@ -35,6 +35,10 @@ public sealed partial class NeuroPlayerComponent : Component
     [ViewVariables]
     public TimeSpan? DangerUntil;
 
+    /// <summary>Fighting hostiles until this time (SimpleHumanoidHostileCompound is active).</summary>
+    [ViewVariables]
+    public TimeSpan? HostileUntil;
+
     /// <summary>Visiting a POI until this time (NeuroVisitCompound is the active root task).</summary>
     [ViewVariables]
     public TimeSpan? VisitUntil;
