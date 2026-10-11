@@ -44,6 +44,8 @@ using Content.Shared.Radio.Components;
 using Content.Shared.Interaction;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
+using Content.Shared.Prying.Components;
+using Content.Server.NPC;
 using Content.Shared.NPC.Systems;
 using Content.Shared.StationRecords;
 using Robust.Shared.Configuration;
@@ -421,6 +423,11 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
         var htn = EnsureComp<HTNComponent>(mob);
         htn.RootTask = new HTNCompoundTask { Task = rootTask ?? "IdleCompound" };
+
+        // Mini: walk like a crew member — pry airlocks open and let the planner
+        // route through doors instead of beelining into walls.
+        EnsureComp<PryingComponent>(mob);
+        htn.Blackboard.SetValue(NPCBlackboard.NavPry, true);
         _factions.AddFactions(mob, new HashSet<ProtoId<NpcFactionPrototype>> { "NanoTrasen" });
 
         // Random voice matching the bot's sex — neuro passengers speak out loud via TTS.
