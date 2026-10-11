@@ -13,14 +13,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
          (same as Content.Server.csproj for Concentus). -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
+  <!-- Mini: голосовой чат клиента — отдельный опт-ин, а не DEVELOPMENT.
+       Код войса держит сырые типы Lidgren/NAudio/Concentus, а клиентская песочница движка их
+       запрещает ("Access to type not allowed"), поэтому сборка с войсом не проходит типчек и
+       клиент падает на старте (Content.Goobstation.Client failed type checks). Разработка в
+       DEVELOPMENT-логике означала, что падает вообще любой локальный клиент, — поэтому теперь
+       войс включается флагом (и именно Rebuild: смена DefineConstants не инвалидирует
+       инкрементальную сборку):
+         dotnet build Content.Goobstation.Client -c Debug -p:MiniVoiceChat=True -t:Rebuild
+       и такой клиент запускается только с отключённой песочницей:
+         $env:ROBUST_DISABLE_SANDBOX=1
+       Обычные сборки (без флага) войс не содержат и стартуют нормально. Подробнее:
+       docs/_Mini/voice-chat-dev.md -->
+  <PropertyGroup Condition="'$(MiniVoiceChat)' == 'True' And '$(FullRelease)' != 'True'">
+    <DefineConstants>$(DefineConstants);VOICECHAT</DefineConstants>
+  </PropertyGroup>
   <Import Project="../MSBuild/Content.props" />
   <ItemGroup>
     <PackageReference Include="Nett" />
-    <!-- Mini: voice chat audio libs. Voice client code is DEVELOPMENT-only (see EntryPoint.cs):
-         its raw Lidgren/NAudio/Concentus type references fail the wizden engine's client sandbox
-         typecheck, so packaged FULL_RELEASE clients would crash on connect. -->
-    <PackageReference Include="Concentus" Condition="'$(FullRelease)' != 'True'" />
-    <PackageReference Include="NAudio" Condition="'$(FullRelease)' != 'True'" />
+    <!-- Mini: аудио-библиотеки войса нужны только вместе с VOICECHAT, см. комментарий выше. -->
+    <PackageReference Include="Concentus" Condition="'$(MiniVoiceChat)' == 'True' And '$(FullRelease)' != 'True'" />
+    <PackageReference Include="NAudio" Condition="'$(MiniVoiceChat)' == 'True' And '$(FullRelease)' != 'True'" />
     <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
   </ItemGroup>
 
