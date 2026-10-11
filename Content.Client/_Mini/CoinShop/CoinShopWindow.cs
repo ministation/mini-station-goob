@@ -443,15 +443,14 @@ public sealed class CoinShopWindow : DefaultWindow
             HorizontalAlignment = HAlignment.Center
         });
 
-        if (!entry.Active)
-        {
-            root.AddChild(BuildPriceRow(entry.Price, center: true));
-            root.AddChild(CreatePriceButton(entry.Price, 192, () => _system.RequestBuyOocColor(entry.Id)));
-        }
-        else
+        if (entry.Active)
         {
             root.AddChild(new Control { VerticalExpand = true });
+            return panel;
         }
+
+        root.AddChild(new Control { VerticalExpand = true });
+        root.AddChild(CreatePriceButton(entry.Price, 192, () => _system.RequestBuyOocColor(entry.Id)));
 
         return panel;
     }

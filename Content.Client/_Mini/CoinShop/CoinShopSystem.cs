@@ -53,6 +53,18 @@ public sealed class CoinShopSystem : EntitySystem
 
     public Texture? GetGhostIcon(string rsiPath)
     {
+        // Ghost theme ".rsi" folders ship as a single png without rsi.json — load the
+        // texture directly instead of going through the RSI loader.
+        foreach (var suffix in new[] { "/icon.png", "/animated.png", "/ghost.png" })
+        {
+            foreach (var prefix in new[] { "", "/Textures/" })
+            {
+                var path = new ResPath(prefix + rsiPath + suffix);
+                if (_resourceCache.TryGetResource<TextureResource>(path, out var res))
+                    return res.Texture;
+            }
+        }
+
         try
         {
             return _sprite.Frame0(new SpriteSpecifier.Rsi(new ResPath(rsiPath), "animated"));

@@ -317,14 +317,14 @@ internal sealed partial class ChatManager : IChatManager
         string? patronColorHex = null;
         var miniSponsor = _entityManager.System<SponsorSystem>().Sponsors
             .FirstOrDefault(d => d.Uid == player.UserId.ToString());
-        if (miniSponsor.Level > 0)
+        if (CoinOocColorCache.TryGet(player.UserId, out var coinColor))
+            patronColorHex = coinColor;
+        else if (miniSponsor.Level > 0)
             patronColorHex = SponsorColor.GetColorForNickname(miniSponsor.Level);
         else if (_sponsorsManager != null &&
                  _sponsorsManager.TryGetServerOocColor(player.UserId, out var oocColor) &&
                  oocColor != null)
             patronColorHex = oocColor.Value.ToHex();
-        else if (CoinOocColorCache.TryGet(player.UserId, out var coinColor))
-            patronColorHex = coinColor;
 
         if (patronColorHex != null)
         {
