@@ -151,6 +151,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedMindSystem _mind = default!;
+    [Dependency] private readonly SharedRoleSystem _roles = default!;
     [Dependency] private readonly NpcFactionSystem _factions = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly StationSpawningSystem _spawning = default!;
@@ -983,6 +984,12 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         var mind = _mind.CreateMind(null, persona.Name);
         _mind.TransferTo(mind, mob);
         _mind.SetGhostOnShutdown(mob, false);
+
+        // Mini: должность живёт в mind-роли, а не только в станционной записи. Панель телепорта
+        // (GetPlayerWarps -> _jobs.MindTryGetJob) и прочие job-интерфейсы читают именно её, поэтому
+        // боты висели в списке без профессии. Слоты jobs при этом не расходуются: слот выдаёт
+        // StationJobsSystem.TryAssignJob, которую мы не вызываем — игровые слоты остаются игрокам.
+        _roles.MindAddJobRole(mind, silent: true, jobPrototype: job);
 
         if (TryComp<StationRecordsComponent>(station, out var records))
         {
