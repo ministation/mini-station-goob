@@ -8,10 +8,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
+using Content.Server.GameTicking;
 using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
+using Content.Shared.GameTicking;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
@@ -32,6 +34,13 @@ public sealed partial class NeuroPlayerSystem
     /// <summary>Hard ceiling for an ahelp answer, even if neuroahelp.max_reply_chars is set higher.</summary>
     private const int MaxAHelpReplyLength = 400;
 
+    /// <summary>Mini: ticket wording that means "a human has to look at this".</summary>
+    private static readonly string[] HumanAdminWords =
+    [
+        "админ", "бан", "разбан", "апелляц", "чит", "грифер", "жалоб", "наруш",
+        "верните", "украл", "убили", "тикет", "наказ",
+    ];
+
     /// <summary>Colour of the assistant's name in the ahelp window.</summary>
     private const string AHelpColor = "#8ab4f8";
 
@@ -45,11 +54,13 @@ public sealed partial class NeuroPlayerSystem
     [Dependency] private readonly IAdminManager _adminManager = default!;
     [Dependency] private readonly BwoinkSystem _bwoink = default!;
     [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
+    [Dependency] private readonly GameTicker _gameTicker = default!;
 
     private bool _ahelpEnabled;
     private string _ahelpName = "Нейропомощник";
     private int _ahelpDelaySeconds;
     private int _ahelpCooldownSeconds;
+    private int _ahelpAdminSilenceSeconds;
     private int _ahelpMaxContext;
     private int _ahelpMaxTokens;
     private int _ahelpMaxReplyChars;
@@ -83,6 +94,7 @@ public sealed partial class NeuroPlayerSystem
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpName, v => _ahelpName = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpDelaySeconds, v => _ahelpDelaySeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpCooldownSeconds, v => _ahelpCooldownSeconds = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpAdminSilenceSeconds, v => _ahelpAdminSilenceSeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxContext, v => _ahelpMaxContext = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxTokens, v => _ahelpMaxTokens = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxReplyChars, v => _ahelpMaxReplyChars = v, true);
@@ -140,7 +152,7 @@ public sealed partial class NeuroPlayerSystem
         }
 
         // Somebody is already on duty — no need for the assistant.
-        if (HasActiveAdmins())
+        if (IsAdminHandlingTicket(message.UserId))
             return;
 
         // One pending answer per player, always for the newest message.
@@ -156,6 +168,23 @@ public sealed partial class NeuroPlayerSystem
     private bool HasActiveAdmins()
     {
         return _adminManager.ActiveAdmins.Any();
+    }
+
+    /// <summary>
+    /// Whether a live admin is actually handling this ticket: somebody is online AND wrote in this
+    /// channel recently (neuroahelp.admin_silence_seconds). An online but silent admin — busy with
+    /// another ticket, AFK, or simply not answering — no longer blocks the assistant.
+    /// </summary>
+    private bool IsAdminHandlingTicket(NetUserId userId)
+    {
+        if (!HasActiveAdmins())
+            return false;
+
+        if (!_ahelpLastStaffMessage.TryGetValue(userId, out var staffAt))
+            return false;
+
+        var silence = TimeSpan.FromSeconds(Math.Max(0, _ahelpAdminSilenceSeconds));
+        return _timing.CurTime - staffAt < silence;
     }
 
     private void AddAHelpContext(NetUserId userId, AHelpSpeaker speaker, string text)
@@ -196,8 +225,8 @@ public sealed partial class NeuroPlayerSystem
 
             _ahelpQueue.RemoveAt(i);
 
-            // An admin came online (or answered) while the ticket was waiting.
-            if (HasActiveAdmins())
+            // An admin picked the ticket up (or came online and answered) while it was waiting.
+            if (IsAdminHandlingTicket(pending.UserId))
                 continue;
 
             if (_ahelpLastStaffMessage.TryGetValue(pending.UserId, out var staffAt) && staffAt > pending.AskedAt)
@@ -252,8 +281,9 @@ public sealed partial class NeuroPlayerSystem
                 return;
             }
 
+            var startedAt = _timing.CurTime;
             var systemPrompt = BuildAHelpSystemPrompt();
-            var userPrompt = BuildAHelpUserPrompt(userId, session.Name);
+            var userPrompt = BuildAHelpUserPrompt(userId, session.Name, session);
 
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
             var reply = await SendCompletionWithFallbackAsync(config, systemPrompt, userPrompt, cts.Token,
@@ -273,10 +303,10 @@ public sealed partial class NeuroPlayerSystem
             if (!TryScreenText($"ahelp/{session.Name}", reply, blockAiTalk: false))
                 return;
 
-            // An admin could have come online while the model was thinking.
-            if (HasActiveAdmins())
+            // An admin could have answered while the model was thinking.
+            if (_ahelpLastStaffMessage.TryGetValue(userId, out var staffAt) && staffAt > startedAt)
             {
-                _sawmill.Info($"Neuro ahelp: admin came online, answer to {session.Name} dropped.");
+                _sawmill.Info($"Neuro ahelp: admin answered {session.Name} first, reply dropped.");
                 return;
             }
 
@@ -288,8 +318,12 @@ public sealed partial class NeuroPlayerSystem
                 FormattedMessage.EscapeText(reply);
 
             _bwoink.SendPlayerChannelSystemMessage(userId, text);
-            _adminLog.Add(LogType.AdminMessage, LogImpact.Low,
-                $"Neuro ahelp answered {stillConnected.Name}: {reply}");
+
+            // Mini: the assistant cannot punish and does not promise anything, but it can make a
+            // ticket that clearly needs a human stand out in the admin log.
+            var needsAdmin = NeedsHumanAdmin(userId);
+            _adminLog.Add(LogType.AdminMessage, needsAdmin ? LogImpact.Medium : LogImpact.Low,
+                $"{(needsAdmin ? "[нужен админ] " : "")}Neuro ahelp answered {stillConnected.Name}: {reply}");
 
             // Keep our own line in context so follow-up questions make sense. The context itself is
             // game-loop state, so the line is handed over through a queue instead of being added here.
@@ -299,6 +333,30 @@ public sealed partial class NeuroPlayerSystem
         {
             _sawmill.Warning($"Neuro ahelp request failed: {e.Message}");
         }
+    }
+
+    /// <summary>
+    /// Mini: whether this ticket clearly needs a human (grief, cheats, bans, appeals, lost items).
+    /// The assistant cannot act, but it flags such answers in the admin log at Medium impact.
+    /// </summary>
+    private bool NeedsHumanAdmin(NetUserId userId)
+    {
+        if (!_ahelpContext.TryGetValue(userId, out var context))
+            return false;
+
+        foreach (var (speaker, text) in context)
+        {
+            if (speaker == AHelpSpeaker.Assistant)
+                continue;
+
+            foreach (var word in HumanAdminWords)
+            {
+                if (ContainsWordWithSuffix(text, word, MaxNameSuffixLength))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>Answer length cap: cut at the last sentence end (or word) inside the budget.</summary>
@@ -371,20 +429,24 @@ public sealed partial class NeuroPlayerSystem
 
         var prompt =
             $"Ты — «{_ahelpName}», ИИ-помощник в админ-хелпе (ahelp) сервера «Мини-Станция» — русский МРП-сервер по Space Station 14 (форк Goob-Station с мини-картами).\n" +
-            "Главная задача: коротко объяснять, как устроена игра и эта сборка — механики, предметы, профессии, антагонисты, режимы, управление, что делает та или иная вещь и как что-то сделать.\n" +
-            "Формат ответа (это важно):\n" +
-            "- ОДНО-ДВА коротких предложения, максимум 200 символов. Без списков, без вступлений, без «чем могу помочь».\n" +
-            "- Сразу суть, как короткая подсказка в чате, по-русски.\n" +
-            "- Нужны шаги — перечисли их через запятую одной строкой, а не списком.\n" +
-            "- Не уверен или нужны детали — отправь в гайдбук в игре (Numpad 0)";
+            "Ты первая линия поддержки: отвечаешь на вопросы про игру и эту сборку (механики, предметы, профессии, антагонисты, режимы, управление), на вопросы про правила и наказания, подсказываешь что делать в спорной ситуации и куда обратиться. Можешь рассуждать о правилах, объяснять, чем обычно заканчиваются нарушения, и говорить, что решит живой админ.\n" +
+            "Формат ответа:\n" +
+            "- ОДНО-ДВА коротких предложения. Без списков, без вступлений, без «чем могу помочь».\n" +
+            "- Сразу суть, по-русски, как короткая подсказка в чате.\n" +
+            "- Нужны шаги — перечисли их через запятую одной строкой.\n" +
+            "- Ссылки на гайдбук/вики/Discord давай ТОЛЬКО когда без них не обойтись (не знаешь ответа или нужны детали). Не повторяй их в каждом сообщении.\n";
+
+        // Справочники подставляем только на случай «не знаю» — в каждом ответе они не нужны.
+        var fallbacks = new List<string> { "гайдбук в игре (Numpad 0)" };
         if (!string.IsNullOrWhiteSpace(wiki))
-            prompt += $" или на вики {wiki}";
+            fallbacks.Add($"вики {wiki}");
         if (!string.IsNullOrWhiteSpace(discord))
-            prompt += $"; срочное — Discord {discord}";
-        prompt += ".\n";
+            fallbacks.Add($"Discord {discord}");
+        prompt += $"- Если ответа не знаешь или нужны подробности — отправь в {string.Join(" / ", fallbacks)}, но только тогда.\n";
 
         prompt +=
-            "- Ты не администратор: не бань, не выдавай предметы, не разбирай конфликты, апелляции и наказания. Про нарушение, читы, потерю вещей или конфликт — одна фраза, что обращение увидят администраторы, и всё.\n" +
+            "- Ты не администратор: сам не бань, не выдавай предметы, не воскрешай, не решай спор — и не обещай этого. Но объяснять, советовать и успокаивать можно.\n" +
+            "- Если игрок просит живого админа или ситуация срочная (гриф, читы, потеря вещей, конфликт) — скажи, что обращение увидят администраторы, и попроси коротко описать суть. Про Discord напоминай только если дело срочное.\n" +
             "- Не выдумывай механик, которых нет, и не раскрывай внутренние настройки сервера.\n" +
             "- Без звёздочек и описаний действий; если спросят, кто ты — ты ИИ-помощник.";
 
@@ -398,7 +460,7 @@ public sealed partial class NeuroPlayerSystem
         return prompt;
     }
 
-    private string BuildAHelpUserPrompt(NetUserId userId, string playerName)
+    private string BuildAHelpUserPrompt(NetUserId userId, string playerName, ICommonSession session)
     {
         var lines = new List<string>();
 
@@ -417,7 +479,39 @@ public sealed partial class NeuroPlayerSystem
             }
         }
 
-        return "Обращение в админ-хелп:\n" + string.Join("\n", lines) +
-               "\n\nОтветь игроку одной короткой репликой по сути (механика/факт), без вступлений.";
+        return $"Контекст раунда: {BuildRoundContext(session)}.\n" +
+               "Обращение в админ-хелп:\n" + string.Join("\n", lines) +
+               "\n\nОтветь игроку коротко и по сути: сначала ответ на вопрос, без вступлений.";
+    }
+
+    /// <summary>
+    /// Mini: live round facts so the assistant can answer «что сейчас происходит» without guessing.
+    /// </summary>
+    private string BuildRoundContext(ICommonSession session)
+    {
+        var parts = new List<string>();
+
+        if (_gameTicker.RunLevel == GameRunLevel.InRound)
+        {
+            parts.Add($"идёт раунд {_gameTicker.RoundDuration():hh\\:mm\\:ss}");
+            if (_gameTicker.CurrentPreset != null)
+                parts.Add($"режим {_gameTicker.CurrentPreset.ID}");
+        }
+        else
+        {
+            parts.Add("раунд ещё не начался (лобби)");
+        }
+
+        if (session.AttachedEntity is { } mob && Exists(mob))
+        {
+            parts.Add($"игрок сейчас за {Name(mob)}");
+            if (Transform(mob).MapUid is { } map && Exists(map))
+                parts.Add($"локация «{Name(map)}»");
+        }
+
+        parts.Add($"в сети {_playerManager.Sessions.Count()} игроков");
+        parts.Add($"админов в сети: {_adminManager.ActiveAdmins.Count()}");
+
+        return string.Join(", ", parts);
     }
 }
