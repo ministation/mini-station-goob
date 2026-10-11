@@ -563,6 +563,14 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> FootWalkBodyBounceEnabled =
         CVarDef.Create("accessibility.foot_walk_body_bounce", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Whether everything drawn above the head (job/status icons, health bar, do-after bar, speech
+    /// bubble) follows the FootWalk body bounce. True keeps the HUD glued to the body, so it never
+    /// shimmers against the walking sprite; false pins it to the un-bobbed position instead.
+    /// </summary>
+    public static readonly CVarDef<bool> FootWalkHudFollowsBody =
+        CVarDef.Create("accessibility.foot_walk_hud_follows_body", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
     public static readonly CVarDef<bool> HoldLookUp =
         CVarDef.Create("scope.hold_look_up", true, CVar.CLIENT | CVar.ARCHIVE);
 
