@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Server._TT.StationHandleJob;
 using Content.Server.Chat.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Server.NPC.HTN;
@@ -34,6 +35,7 @@ using Robust.Shared.Containers;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Preferences;
+using Content.Shared.Roles;
 using Content.Shared.Radio.Components;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
@@ -76,6 +78,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
+    [Dependency] private readonly TTStationHandleJobSystem _typanJobs = default!;
 
     private ISawmill _sawmill = default!;
     private readonly HttpClient _httpClient = new();
@@ -105,6 +108,14 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private DateTime _dailyDate = DateTime.UtcNow.Date;
     private int _dailyRequests;
+
+    private static readonly ProtoId<JobPrototype>[] BasicJobPrototypes =
+    [
+        "CargoTechnician",
+        "ServiceWorker",
+        "Botanist",
+        "Chef",
+    ];
 
     private static readonly string[] FireCries = ["Ааа, пожар! Горим!", "Огонь! Бежим отсюда!", "Горит! Спасайся!"];
     private static readonly string[] PainCries = ["Ай! Больно!", "Ой! Помогите!", "Ах! Что происходит?!"];
@@ -216,8 +227,14 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private bool TrySpawnBot(NeuroPersonaPrototype persona, EntityCoordinates coords, EntityUid station)
     {
+        // Sometimes a basic profession look (cargo tech, service worker...) — purely gear,
+        // player job slots are never consumed. Security stays player-only.
+        var job = _random.Prob(0.4f)
+            ? _random.Pick(BasicJobPrototypes)
+            : (ProtoId<JobPrototype>) "Passenger";
+
         var profile = HumanoidCharacterProfile.RandomWithSpecies("Human");
-        var mob = _spawning.SpawnPlayerMob(coords, persona.Job, profile, station);
+        var mob = _spawning.SpawnPlayerMob(coords, job, profile, station);
 
         var comp = EnsureComp<NeuroPlayerComponent>(mob);
         comp.PersonaId = persona.ID;
