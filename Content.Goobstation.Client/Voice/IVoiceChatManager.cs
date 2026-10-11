@@ -1,4 +1,4 @@
-#if DEVELOPMENT
+#if VOICECHAT
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 // Mini: restored from Goobstation upstream (was deleted by CorvaxGoob)

@@ -7,10 +7,11 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Mini: voice chat only exists in DEVELOPMENT builds. It references raw Lidgren/NAudio/Concentus
-// types, which fail the wizden engine's client sandbox typecheck, so packaged (FULL_RELEASE)
-// clients crash on connect. It can come back once players get a launcher that ships our engine.
-#if DEVELOPMENT
+// Mini: голосовой чат клиента собирается только по флагу -p:MiniVoiceChat=True (define VOICECHAT).
+// Он держит сырые типы Lidgren/NAudio/Concentus, которые клиентская песочница движка запрещает,
+// поэтому такой клиент нужно запускать с ROBUST_DISABLE_SANDBOX=1. Обычные сборки войс не содержат
+// и стартуют нормально; в упакованные FULL_RELEASE-клиенты он не попадает.
+#if VOICECHAT
 using Content.Goobstation.Client.Voice;
 #endif
 using Content.Goobstation.Client.JoinQueue;
@@ -26,7 +27,7 @@ namespace Content.Goobstation.Client.Entry;
 
 public sealed class EntryPoint : GameClient
 {
-#if DEVELOPMENT
+#if VOICECHAT
     // Mini: voice chat (restored from Goobstation upstream, was deleted by CorvaxGoob)
     [Dependency] private readonly IVoiceChatManager _voiceManager = default!;
 #endif
@@ -39,7 +40,7 @@ public sealed class EntryPoint : GameClient
     {
         // ContentGoobClientIoC.Register(); CorvaxGoob
 
-#if DEVELOPMENT
+#if VOICECHAT
         // Mini: register voice chat before the graph is built
         IoCManager.Register<IVoiceChatManager, VoiceChatClientManager>();
 #endif
@@ -47,7 +48,7 @@ public sealed class EntryPoint : GameClient
         IoCManager.BuildGraph();
         IoCManager.InjectDependencies(this);
 
-#if DEVELOPMENT
+#if VOICECHAT
         // Mini: push-to-talk binding
         _inputManager.SetInputCommand(
             ContentKeyFunctions.VoiceChatPushToTalk,
@@ -61,7 +62,7 @@ public sealed class EntryPoint : GameClient
     {
         base.PostInit();
 
-#if DEVELOPMENT
+#if VOICECHAT
         _voiceManager.Initalize(); // Mini: voice chat
 #endif
         // _joinQueue.Initialize(); // deleted by CorvaxGoob
@@ -76,7 +77,7 @@ public sealed class EntryPoint : GameClient
         switch (level)
         {
             case ModUpdateLevel.FramePreEngine:
-#if DEVELOPMENT
+#if VOICECHAT
                 _voiceManager.Update(); // Mini: voice chat
 #endif
                 break;
@@ -88,7 +89,7 @@ public sealed class EntryPoint : GameClient
         base.Dispose(disposing);
 
         // _currMan.Shutdown(); // deleted by CorvaxGoob
-#if DEVELOPMENT
+#if VOICECHAT
         _voiceManager.Shutdown(); // Mini: voice chat
 #endif
     }
