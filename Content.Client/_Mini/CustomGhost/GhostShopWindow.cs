@@ -108,11 +108,15 @@ public sealed class GhostShopWindow : DefaultWindow
         };
         root.AddChild(colorHeader);
 
+        // ScrollContainer reports a zero desired height by default — without these the
+        // whole color section collapses into an empty strip under its header.
         var colorScroll = new ScrollContainer
         {
             HorizontalExpand = true,
             HScrollEnabled = true,
             VScrollEnabled = false,
+            ReturnMeasure = true,
+            MinHeight = 150,
             MaxHeight = 150
         };
         root.AddChild(colorScroll);

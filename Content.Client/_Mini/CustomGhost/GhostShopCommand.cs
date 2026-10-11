@@ -12,8 +12,8 @@ public sealed class GhostShopCommand : IConsoleCommand
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
-        // Ghost themes were merged into the unified coin shop.
+        // Кастомизация (coinshop) скрыта до полировки — ghostshop открывает меню призраков (темы + OOC-цвет).
         var entMan = IoCManager.Resolve<IEntityManager>();
-        entMan.System<CoinShop.CoinShopSystem>().OpenShop();
+        entMan.System<GhostShopSystem>().OpenShop();
     }
 }

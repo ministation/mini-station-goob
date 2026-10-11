@@ -261,7 +261,7 @@ public sealed class CoinShopWindow : DefaultWindow
             _rollResultLabel.Visible = visible;
     }
 
-    private Control BuildIconBox(string iconRsi, Vector2 size)
+    private Control BuildIconBox(string iconRsi, Vector2 size, Func<string, Texture?>? loader = null)
     {
         var imageBox = new BoxContainer
         {
@@ -271,7 +271,9 @@ public sealed class CoinShopWindow : DefaultWindow
             MinSize = new Vector2(0, size.Y + 20)
         };
 
-        var tex = _system.GetItemIcon(iconRsi);
+        // Ghost theme ".rsi" folders ship as a single png without rsi.json — they need the
+        // texture-first loader, otherwise the RSI loader logs "Failed to load RSI".
+        var tex = loader != null ? loader(iconRsi) : _system.GetItemIcon(iconRsi);
         if (tex != null)
         {
             imageBox.AddChild(new TextureRect
@@ -366,7 +368,7 @@ public sealed class CoinShopWindow : DefaultWindow
         };
         panel.AddChild(root);
 
-        root.AddChild(BuildIconBox(entry.IconRsiPath, new Vector2(96, 96)));
+        root.AddChild(BuildIconBox(entry.IconRsiPath, new Vector2(96, 96), _system.GetGhostIcon));
 
         root.AddChild(new Label
         {
