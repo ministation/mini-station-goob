@@ -1,5 +1,6 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+﻿// SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Robust.Shared.IoC;
 using Content.Shared.StatusIcon;
 using Content.Shared.StatusIcon.Components;
 using Robust.Client.GameObjects;
@@ -97,7 +98,7 @@ public sealed class StatusIconOverlay : Overlay
                         accOffsetL += texture.Height;
                         countL++;
                     }
-                    yOffset = (bounds.Height + sprite.Offset.Y) / 2f - (float)(accOffsetL - proto.Offset) / EyeManager.PixelsPerMeter;
+                    yOffset = (bounds.Height + sprite.Offset.Y - GetBounce(uid)) / 2f - (float)(accOffsetL - proto.Offset) / EyeManager.PixelsPerMeter;
                     xOffset = -(bounds.Width + sprite.Offset.X) / 2f;
 
                 }
@@ -110,7 +111,7 @@ public sealed class StatusIconOverlay : Overlay
                         accOffsetR += texture.Height;
                         countR++;
                     }
-                    yOffset = (bounds.Height + sprite.Offset.Y) / 2f - (float)(accOffsetR - proto.Offset) / EyeManager.PixelsPerMeter;
+                    yOffset = (bounds.Height + sprite.Offset.Y - GetBounce(uid)) / 2f - (float)(accOffsetR - proto.Offset) / EyeManager.PixelsPerMeter;
                     xOffset = (bounds.Width + sprite.Offset.X) / 2f - (float)texture.Width / EyeManager.PixelsPerMeter;
 
                 }
@@ -128,4 +129,16 @@ public sealed class StatusIconOverlay : Overlay
             handle.SetTransform(Matrix3x2.Identity);
         }
     }
+
+    /// <summary>
+    /// Mini: the FootWalk whole-body bounce rides inside <c>Sprite.Offset</c> while walking.
+    /// Anchored overlays must not follow it, so cancel the current bounce lift.
+    /// </summary>
+    private float GetBounce(EntityUid uid)
+    {
+        return _entity.TryGetComponent<Content.Shared._Mini.FootWalk.FootWalkAnimationComponent>(uid, out var walk)
+            ? walk.CurrentBounceY
+            : 0f;
+    }
+
 }

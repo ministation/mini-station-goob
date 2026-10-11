@@ -1,5 +1,6 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+﻿// SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Robust.Shared.IoC;
 using System.Numerics;
 using Content.Shared.Jittering;
 using Robust.Client.Animations;
@@ -33,7 +34,7 @@ namespace Content.Client.Jittering
 
             var animationPlayer = EnsureComp<AnimationPlayerComponent>(uid);
 
-            jittering.StartOffset = sprite.Offset;
+            jittering.StartOffset = sprite.Offset - new Vector2(0f, GetFootWalkBounce(uid)); // Mini: cancel walk bounce
             _animationPlayer.Play((uid, animationPlayer), GetAnimation(jittering, sprite), _jitterAnimationKey);
         }
 
@@ -104,5 +105,17 @@ namespace Content.Client.Jittering
                 }
             };
         }
+
+    /// <summary>
+    /// Mini: the FootWalk whole-body bounce lives inside <c>Sprite.Offset</c> while walking;
+    /// animations anchored to the sprite offset must not inherit it.
+    /// </summary>
+    private static float GetFootWalkBounce(EntityUid uid)
+    {
+        return IoCManager.Resolve<IEntityManager>()
+            .TryGetComponent<Content.Shared._Mini.FootWalk.FootWalkAnimationComponent>(uid, out var walk)
+            ? walk.CurrentBounceY
+            : 0f;
+    }
     }
 }

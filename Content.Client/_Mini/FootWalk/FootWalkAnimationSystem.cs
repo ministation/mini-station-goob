@@ -1,4 +1,4 @@
-// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+﻿// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Numerics;
 using Content.Client.Clothing;
@@ -299,6 +299,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 bodyY = MathF.Abs(MathF.Sin(walk.Phase)) * walk.BodyBounceAmplitude
                         * (sprinting ? walk.SprintBounceFactor : 1f) * walk.BobRamp;
                 EnsureBodyBounce((uid, walk), sprite);
+                walk.CurrentBounceY = bodyY;
                 _sprite.SetOffset((uid, sprite), walk.BaseSpriteOffset + new Vector2(0f, bodyY));
             }
             else if (walk.BodyBounceActive)
@@ -431,6 +432,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
         _sprite.SetOffset((ent.Owner, sprite), ent.Comp.BaseSpriteOffset);
         ent.Comp.BodyBounceActive = false;
+        ent.Comp.CurrentBounceY = 0f;
     }
 
     private void DisableBodyBounce()
