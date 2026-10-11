@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+﻿// SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Numerics;
 using Content.Goobstation.Common.CCVar;
@@ -413,7 +413,16 @@ public sealed partial class ParticleSystem : EntitySystem
         var currentMapId = eye.Position.MapId;
         var ageCheck = TimeSpan.FromSeconds(frameTime);
 
-        var viewport = _eye.GetWorldViewport();
+        // v292: EyeManager.GetWorldViewport() aborts on rotated eyes (raw corners break Box2
+        // ordering), so build the same bounds here with normalized corners.
+        var vpSize = (_eye.MainViewport as global::Robust.Client.UserInterface.Control)?.PixelSize ?? Vector2.One;
+        var worldTopRight = _eye.ScreenToMap(new Vector2(vpSize.X, 0f)).Position;
+        var worldBottomLeft = _eye.ScreenToMap(new Vector2(0f, vpSize.Y)).Position;
+        var viewport = new Box2(
+            MathF.Min(worldBottomLeft.X, worldTopRight.X),
+            MathF.Min(worldBottomLeft.Y, worldTopRight.Y),
+            MathF.Max(worldBottomLeft.X, worldTopRight.X),
+            MathF.Max(worldBottomLeft.Y, worldTopRight.Y));
         var pad = MathF.Max(viewport.Width, viewport.Height) * (ViewBoundsPaddingFactor - 1f) * 0.5f;
         var viewBounds = viewport.Enlarged(pad);
 

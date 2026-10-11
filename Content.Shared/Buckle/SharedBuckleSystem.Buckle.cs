@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+﻿// SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
@@ -528,7 +528,6 @@ public abstract partial class SharedBuckleSystem
         if (buckleXform.ParentUid == strap.Owner && !Terminating(oldBuckledXform.ParentUid))
         {
             _transform.PlaceNextTo((buckle, buckleXform), (strap.Owner, oldBuckledXform));
-            buckleXform.ActivelyLerping = false;
 
             var oldBuckledToWorldRot = _transform.GetWorldRotation(strap);
             _transform.SetWorldRotationNoLerp((buckle, buckleXform), oldBuckledToWorldRot);
