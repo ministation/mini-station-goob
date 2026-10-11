@@ -35,7 +35,16 @@ using Content.Shared._CorvaxGoob.TTS;
 using Content.Shared.Chat;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Damage;
+using Content.Shared.Examine;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Systems;
+using Content.Shared._EinsteinEngines.Language.Components;
+using Content.Shared._EinsteinEngines.Language.Systems;
+using Content.Shared.Ghost;
+using Content.Server.Administration.Logs;
+using Content.Shared.Database;
 using Robust.Shared.Containers;
+using Robust.Shared.Player;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Preferences;
@@ -66,6 +75,36 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private const int MaxReplyLength = 200;
     private const float DirectReplyDistance = 3f;
 
+    /// <summary>A whisper is meant for the person next to you — bots only hear it point blank.</summary>
+    private const float WhisperHearRadius = 2f;
+
+    /// <summary>How many extra letters a declined name form may add ("Вася" -> "Васей").</summary>
+    private const int MaxNameSuffixLength = 2;
+
+    /// <summary>Shortest word that can be matched against a given name stem (keeps "вас" from pinging "Вася").</summary>
+    private const int MinDeclinedNameLength = 4;
+
+    /// <summary>A bot-to-bot reply is never answered with another bot-to-bot reply within this window.</summary>
+    private const float BotChatterChainWindowSeconds = 20f;
+
+    /// <summary>Strict composition mandated by the owner: 4 NT bots + CentComm maid + Typan chef.</summary>
+    private const int CoreCompositionSize = 6;
+
+    /// <summary>Bots launch this long after the round starts, so maps and stations can settle.</summary>
+    private static readonly TimeSpan SpawnDelay = TimeSpan.FromSeconds(45);
+
+    /// <summary>Interval between retries when the roster could not be spawned yet.</summary>
+    private static readonly TimeSpan SpawnRetryDelay = TimeSpan.FromSeconds(5);
+
+    /// <summary>How often lonely bots look for company (neuroplayer.seek_radius).</summary>
+    private const float SeekCheckSeconds = 5f;
+
+    /// <summary>A bot never marches further than this to find somebody to talk to.</summary>
+    private const float MaxSeekRange = 120f;
+
+    /// <summary>Bots notice fires within this many tiles.</summary>
+    private const float FireAlertRadius = 12f;
+
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -86,6 +125,11 @@ public sealed class NeuroPlayerSystem : EntitySystem
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
     [Dependency] private readonly TTStationHandleJobSystem _typanJobs = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly ExamineSystemShared _examine = default!;
+    [Dependency] private readonly SharedLanguageSystem _language = default!;
+    [Dependency] private readonly EntityLookupSystem _lookup = default!;
+    [Dependency] private readonly IAdminLogManager _adminLog = default!;
 
     private ISawmill _sawmill = default!;
     private readonly HttpClient _httpClient = new();
@@ -110,11 +154,40 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private int _poiIntervalSeconds;
     private float _seekRadius;
     private int _botChatterCooldownSeconds;
+    private float _botChatterChance;
+    private string[] _blockedWords = [];
+    private bool _blockAiTalk = true;
+    private string _fallbackProvider = string.Empty;
+    private int _requestsPerMinute;
+
+    private readonly Queue<TimeSpan> _requestTimes = new();
+
+    private int _requestsOk;
+    private int _requestsFailed;
+    private int _fallbacks;
+    private int _requestsRateLimited;
+    private int _blockedReplies;
 
     private float _dangerScanAccumulator;
+    private float _seekAccumulator;
+
+    /// <summary>Round bookkeeping: bots are spawned once per round, with retries while they are missing.</summary>
+    private bool _spawnedThisRound;
+    private TimeSpan _roundStartTime;
+    private TimeSpan _lastSpawnAttempt;
+
+    /// <summary>Bots were despawned because a station war is running; they come back when it ends.</summary>
+    private bool _warSuppressed;
 
     private bool _configWarned;
     private string? _unknownProviderWarned;
+
+    /// <summary>Word separators for name matching — substring hits inside words stopped counting.</summary>
+    private static readonly char[] WordSeparators =
+    [
+        ' ', '\t', '\n', '\r', ',', '.', '!', '?', ';', ':', '"', '\'', '(', ')', '[', ']', '{', '}', '<', '>',
+        '-', '—', '–', '…', '/', '\\', '|', '*', '«', '»', '“', '”', '„', '№',
+    ];
 
 
     private static readonly ProtoId<JobPrototype>[] BasicJobPrototypes =
@@ -151,6 +224,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerEnabled, v => _enabled = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerProvider, v => _provider = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerFallbackProvider, v => _fallbackProvider = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerRequestsPerMinute, v => _requestsPerMinute = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerApiUrl, v => _apiUrl = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerApiKey, v => _apiKey = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerModel, v => _model = v, true);
@@ -168,6 +243,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerPoiIntervalSeconds, v => _poiIntervalSeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerSeekRadius, v => _seekRadius = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerBotChatterCooldownSeconds, v => _botChatterCooldownSeconds = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerBotChatterChance, v => _botChatterChance = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerBlockAiTalk, v => _blockAiTalk = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerBlockedWords, v => _blockedWords = ParseWordList(v), true);
 
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
@@ -175,6 +253,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         // radio-delivered messages are handled separately via RadioReceiveEvent to avoid doubles.
         SubscribeLocalEvent<EntitySpokeEvent>(OnGlobalSpoke);
         SubscribeLocalEvent<NeuroPlayerComponent, RadioReceiveEvent>(OnRadioReceive);
+        SubscribeLocalEvent<NeuroPlayerComponent, MobStateChangedEvent>(OnBotMobStateChanged);
         SubscribeLocalEvent<DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
         SubscribeLocalEvent<EvacShuttleDockedEvent>(OnEvacDocked);
@@ -188,6 +267,10 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private void OnRoundStarted(RoundStartedEvent ev)
     {
+        _roundStartTime = _timing.CurTime;
+        _spawnedThisRound = false;
+        _warSuppressed = false;
+
         if (!_enabled || _botCount <= 0)
             return;
 
@@ -197,18 +280,65 @@ public sealed class NeuroPlayerSystem : EntitySystem
             return;
         }
 
-        // Wait for maps/stations to settle before spawning.
-        Robust.Shared.Timing.Timer.Spawn(TimeSpan.FromSeconds(45), SpawnBots);
+        // Mini: spawning is driven by MaintainBots() instead of a single 45-second timer, so a
+        // failed attempt (no station yet, war running, cvar enabled mid-round) is retried, and
+        // toggling neuroplayer.enabled during a round actually works.
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         _bots.Clear();
+        _spawnedThisRound = false;
+        _warSuppressed = false;
+        _roundStartTime = TimeSpan.Zero;
+    }
+
+    /// <summary>
+    /// Mini: a downed bot stops living its life. Previously a corpse kept hearing chat, answering
+    /// (the reply was then dropped by the speech action blocker — an already paid LLM request),
+    /// crying and being scanned for danger for the rest of the round.
+    /// </summary>
+    private void OnBotMobStateChanged(EntityUid uid, NeuroPlayerComponent comp, MobStateChangedEvent args)
+    {
+        if (args.NewMobState == MobState.Alive)
+        {
+            // Revived (defib, cloning): back to wandering. An evac assignment is restored by RestoreIdle.
+            comp.PoiAccumulator = 0f;
+            RestoreIdle(uid);
+            return;
+        }
+
+        comp.DangerUntil = null;
+        comp.HostileUntil = null;
+        comp.VisitUntil = null;
+        comp.PoiAccumulator = 0f;
+    }
+
+    /// <summary>Whether the bot is alive and can act (corpses and critters stay silent).</summary>
+    private bool IsBotUp(EntityUid bot)
+    {
+        return Exists(bot) && !TerminatingOrDeleted(bot) && _mobState.IsAlive(bot);
+    }
+
+    /// <summary>Admin mute (neurobots mute): permanently or until the timed mute runs out.</summary>
+    private bool IsMuted(NeuroPlayerComponent comp)
+    {
+        return comp.Muted || (comp.MutedUntil != TimeSpan.Zero && _timing.CurTime < comp.MutedUntil);
+    }
+
+    private static string[] ParseWordList(string raw)
+    {
+        return raw
+            .Split([',', ';', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(w => w.Length >= 3)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
     }
 
     private void OnWarStarted(TypanWarStartedEvent ev)
     {
-        // Station war: neuro passengers are hidden for the duration.
+        // Station war: neuro passengers are hidden for the duration, and brought back afterwards.
+        _warSuppressed = true;
         DespawnBots();
     }
 
@@ -218,7 +348,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
             return;
 
         // Gather passengers on the docked evac shuttle; the first bot leads the group aloud.
-        EntityCoordinates? shuttlePoint = null;
+        EntityUid? shuttleUid = null;
         var shuttleMap = MapId.Nullspace;
 
         var query = EntityQueryEnumerator<EmergencyShuttleComponent, TransformComponent>();
@@ -227,28 +357,32 @@ public sealed class NeuroPlayerSystem : EntitySystem
             if (!xform.GridUid.HasValue)
                 continue;
 
-            shuttlePoint = xform.Coordinates;
+            shuttleUid = shuttle;
             shuttleMap = xform.MapID;
             break;
         }
 
-        if (shuttlePoint == null)
+        if (shuttleUid == null)
             return;
 
         var led = false;
         foreach (var bot in _bots)
         {
-            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp))
+            if (!IsBotUp(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp))
                 continue;
 
             if (Transform(bot).MapID != shuttleMap)
                 continue; // Typan chef / CentComm maid stay on their maps
 
-            if (!TryComp<HTNComponent>(bot, out var htn))
+            // Mini: remember the shuttle instead of a one-off point, so a bot that had to run from
+            // a fight walks back aboard instead of wandering off the pad.
+            comp.EvacShuttle = shuttleUid;
+            comp.EvacOffset = new Vector2(_random.NextFloat(-3f, 3f), _random.NextFloat(-3f, 3f));
+
+            if (!TryGetEvacPoint(bot, comp, out var point) || !TryComp<HTNComponent>(bot, out var htn))
                 continue;
 
-            var offset = new Vector2(_random.NextFloat(-3f, 3f), _random.NextFloat(-3f, 3f));
-            htn.Blackboard.SetValue("NeuroPoint", shuttlePoint.Value.Offset(offset));
+            htn.Blackboard.SetValue("NeuroPoint", point);
             htn.RootTask = new HTNCompoundTask { Task = "NeuroVisitCompound" };
             _htn.Replan(htn);
             comp.VisitUntil = _timing.CurTime + TimeSpan.FromSeconds(420);
@@ -259,6 +393,22 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 Cry(bot, comp, EvacCries);
             }
         }
+    }
+
+    /// <summary>Point on the docked evac shuttle for this bot, while the shuttle is still on its map.</summary>
+    private bool TryGetEvacPoint(EntityUid bot, NeuroPlayerComponent comp, out EntityCoordinates point)
+    {
+        point = default;
+
+        if (comp.EvacShuttle is not { } shuttle || !Exists(shuttle) || TerminatingOrDeleted(shuttle))
+            return false;
+
+        var shuttleXform = Transform(shuttle);
+        if (shuttleXform.MapID != Transform(bot).MapID)
+            return false;
+
+        point = shuttleXform.Coordinates.Offset(comp.EvacOffset);
+        return true;
     }
 
     public void SpawnBots()
@@ -309,7 +459,15 @@ public sealed class NeuroPlayerSystem : EntitySystem
         // Mini: strict composition requested by the owner:
         // 4 bots on the NT station (passenger, janitor, cargo tech, clown),
         // 1 maid on CentComm, 1 typan employee on Typan.
+        // neuroplayer.bot_count may ask for more than that core; the surplus shows up as extra
+        // passengers from personas the core does not use.
         var spawned = 0;
+        var corePersonaIds = new HashSet<string>
+        {
+            "NeuroVasya", "NeuroJanitor", "NeuroCargoTech", "NeuroClown", "NeuroCCMaid", "NeuroTypanChef",
+        };
+
+        var usedPersonaIds = new HashSet<string>();
         var mainStaff = new (string PersonaId, string Job, string? RootTask)[]
         {
             ("NeuroVasya", "Passenger", null),
@@ -325,7 +483,10 @@ public sealed class NeuroPlayerSystem : EntitySystem
             if (TrySpawnBot(persona, coords, station.Value, forcedJob: job,
                     rootTask: rootTask,
                     onSpawned: rootTask == "CleanbotCompound" ? mob => GiveJanitorMop(mob) : null))
+            {
                 spawned++;
+                usedPersonaIds.Add(persona.ID);
+            }
         }
 
         // CentComm gets its maid.
@@ -336,7 +497,10 @@ public sealed class NeuroPlayerSystem : EntitySystem
             var ccPoints = FindSpawnPoints(ccStation.Value);
             if (ccPoints.Count > 0 && TrySpawnBot(persona, _random.Pick(ccPoints), ccStation.Value,
                     forcedJob: "Passenger", onSpawned: GiveMaidOutfit))
+            {
                 spawned++;
+                usedPersonaIds.Add(persona.ID);
+            }
         }
 
         // Typan gets its own employee.
@@ -347,10 +511,41 @@ public sealed class NeuroPlayerSystem : EntitySystem
             var typanPoints = FindSpawnPoints(typanStation.Value);
             if (typanPoints.Count > 0 && TrySpawnBot(persona, _random.Pick(typanPoints), typanStation.Value,
                     forcedJob: "TypanChef"))
+            {
                 spawned++;
+                usedPersonaIds.Add(persona.ID);
+            }
         }
 
-        _sawmill.Info($"Neuro players: spawned {spawned} bots.");
+        // Surplus: neuroplayer.bot_count is now a real number instead of a kill switch. Values below
+        // the core size keep the mandated composition, higher values add random NT passengers.
+        var surplus = Math.Max(0, _botCount - CoreCompositionSize);
+        var sparePersonas = personas
+            .Where(p => !corePersonaIds.Contains(p.ID) && !usedPersonaIds.Contains(p.ID))
+            .Take(surplus)
+            .ToList();
+
+        foreach (var persona in sparePersonas)
+        {
+            if (!TrySpawnBot(persona, _random.Pick(points), station.Value))
+                continue;
+
+            spawned++;
+            usedPersonaIds.Add(persona.ID);
+        }
+
+        if (surplus > sparePersonas.Count)
+        {
+            _sawmill.Warning(
+                $"Neuro players: neuroplayer.bot_count={_botCount} asks for {surplus} extra bots, " +
+                $"but only {sparePersonas.Count} unused personas are available " +
+                $"(core composition is {CoreCompositionSize}).");
+        }
+
+        if (spawned > 0)
+            _spawnedThisRound = true;
+
+        _sawmill.Info($"Neuro players: spawned {spawned} bots (bot_count={_botCount}).");
     }
 
     private void GiveJanitorMop(EntityUid mob)
@@ -564,6 +759,10 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 continue;
             }
 
+            // Corpses do not listen.
+            if (!IsBotUp(bot))
+                continue;
+
             if (speaker == bot)
                 continue;
 
@@ -572,17 +771,28 @@ public sealed class NeuroPlayerSystem : EntitySystem
             if (botXform.MapID != speakerXform.MapID)
                 continue;
 
-            var distance = (_transform.GetWorldPosition(botXform) - _transform.GetWorldPosition(speakerXform)).Length();
-            if (distance > _hearRadius)
+            // Mini: a bot only understands languages it actually speaks. The spoke event carries the
+            // raw text (obfuscation is chat-side), so without this check bots replied to xeno/animal
+            // speech and to languages they never learned.
+            if (ev.Language != null && TryComp<LanguageSpeakerComponent>(bot, out _) &&
+                !_language.CanUnderstand(bot, ev.Language.ID))
+            {
+                continue;
+            }
+
+            // Mini: whispers are for the person next to you, and walls are not transparent.
+            var radius = ev.IsWhisper ? WhisperHearRadius : _hearRadius;
+            if (!_examine.InRangeUnOccluded(bot, speaker, radius))
                 continue;
 
+            var distance = (_transform.GetWorldPosition(botXform) - _transform.GetWorldPosition(speakerXform)).Length();
             HandleSpeech(bot, speaker, ev.Message, viaRadio: false, distance);
         }
     }
 
     private void OnRadioReceive(EntityUid bot, NeuroPlayerComponent comp, ref RadioReceiveEvent ev)
     {
-        if (!_enabled)
+        if (!_enabled || !IsBotUp(bot))
             return;
 
         HandleSpeech(bot, ev.MessageSource, ev.OriginalChatMsg.Message, viaRadio: true);
@@ -590,15 +800,31 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private void HandleSpeech(EntityUid bot, EntityUid speaker, string message, bool viaRadio, float distance = -1f)
     {
-        if (!_prototypes.TryIndex(Comp<NeuroPlayerComponent>(bot).PersonaId, out var persona))
+        var comp = Comp<NeuroPlayerComponent>(bot);
+
+        if (!IsBotUp(bot) || !_prototypes.TryIndex(comp.PersonaId, out var persona))
+            return;
+
+        // Admin mute: the bot keeps hearing the world but never answers it (and costs nothing).
+        if (IsMuted(comp))
             return;
 
         var speakerName = Name(speaker);
-        AddContext(bot, speakerName, message);
 
-        // Bots never respond to each other — only to players — so chatter loops are impossible.
+        // Mini: radio chatter from another map used to fill the bot's context even though it is
+        // nowhere near the conversation. Same map or a direct address only.
+        if (!viaRadio || HasComp<NeuroPlayerComponent>(speaker) ||
+            Transform(bot).MapID == Transform(speaker).MapID)
+        {
+            AddContext(bot, speakerName, message);
+        }
+
+        // Another bot talking: rare two-line small talk instead of total silence, never a chain.
         if (HasComp<NeuroPlayerComponent>(speaker))
+        {
+            TryBotChatter(bot, persona, comp, speaker, message);
             return;
+        }
 
         // Named address: always answer (both local and radio).
         if (MatchesName(persona.Name, message))
@@ -611,7 +837,6 @@ public sealed class NeuroPlayerSystem : EntitySystem
         if (viaRadio)
             return;
 
-        var comp = Comp<NeuroPlayerComponent>(bot);
         if (_timing.CurTime < comp.NextProactiveResponse)
             return;
 
@@ -626,14 +851,126 @@ public sealed class NeuroPlayerSystem : EntitySystem
         TryRespond(bot, persona, speakerName, message, viaRadio, proactive: true);
     }
 
-    /// <summary>Addressed by the full persona name or by its first word ("Vasya" for "Vasya Prokhorov").</summary>
+    /// <summary>
+    /// Mini: bot-to-bot small talk, throttled by neuroplayer.bot_chatter_cooldown_seconds and
+    /// neuroplayer.bot_chatter_chance. A reply to a bot's own chatter is never answered again, so
+    /// two bots cannot ping-pong and burn requests forever.
+    /// </summary>
+    private void TryBotChatter(
+        EntityUid bot,
+        NeuroPersonaPrototype persona,
+        NeuroPlayerComponent comp,
+        EntityUid speaker,
+        string message)
+    {
+        if (!TryComp<NeuroPlayerComponent>(speaker, out var speakerComp))
+            return;
+
+        // The speaker's last line was itself a bot chatter reply — the exchange ends here.
+        if (speakerComp.LastChatterReply != null &&
+            _timing.CurTime - speakerComp.LastChatterReply.Value < TimeSpan.FromSeconds(BotChatterChainWindowSeconds))
+        {
+            return;
+        }
+
+        if (_timing.CurTime < comp.NextBotChatter || !_random.Prob(_botChatterChance))
+            return;
+
+        comp.NextBotChatter = _timing.CurTime + TimeSpan.FromSeconds(_botChatterCooldownSeconds);
+        comp.LastChatterReply = _timing.CurTime;
+
+        TryRespond(bot, persona, Name(speaker), message, viaRadio: false, proactive: true);
+    }
+
+    /// <summary>
+    /// Addressed by the full persona name ("Вася Прохоров"), by the given name or by the surname,
+    /// including common Russian declensions ("Васю", "Васе", "Морозову", "Гордею"). Matching is
+    /// word-based: a substring inside a longer word no longer counts, so "грузчиками" does not ping
+    /// the bot named "Грузчик".
+    /// </summary>
     private static bool MatchesName(string personaName, string message)
     {
-        if (message.Contains(personaName, StringComparison.OrdinalIgnoreCase))
+        var words = message.Split(WordSeparators, StringSplitOptions.RemoveEmptyEntries);
+        if (words.Length == 0)
+            return false;
+
+        if (ContainsWordRun(words, personaName))
             return true;
 
-        var firstWord = personaName.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
-        return firstWord.Length >= 3 && message.Contains(firstWord, StringComparison.OrdinalIgnoreCase);
+        var nameWords = personaName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (nameWords.Length == 0)
+            return false;
+
+        if (MatchesDeclinedWord(words, nameWords[0]))
+            return true;
+
+        // Surname: "Морозову видел?" is as much an address as "Лика?".
+        return nameWords.Length > 1 && MatchesDeclinedWord(words, nameWords[^1]);
+    }
+
+    /// <summary>Word-run or declined-form match of one name part against the message words.</summary>
+    private static bool MatchesDeclinedWord(string[] messageWords, string nameWord)
+    {
+        var normalized = NormalizeYo(nameWord);
+        if (normalized.Length < 3)
+            return false;
+
+        var stem = TrimDeclension(normalized);
+        foreach (var word in messageWords)
+        {
+            var candidate = NormalizeYo(word);
+            if (candidate.Length < MinDeclinedNameLength || candidate.Length > stem.Length + MaxNameSuffixLength)
+                continue;
+
+            if (candidate.AsSpan().StartsWith(stem, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>Players type "е" for "ё" all the time: Пётр/Петру must still match.</summary>
+    private static string NormalizeYo(string value)
+    {
+        return value.Replace('ё', 'е').Replace('Ё', 'Е');
+    }
+
+    /// <summary>Whether the message contains the persona's full name as consecutive words.</summary>
+    private static bool ContainsWordRun(string[] words, string name)
+    {
+        var nameWords = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (nameWords.Length == 0 || words.Length < nameWords.Length)
+            return false;
+
+        for (var start = 0; start <= words.Length - nameWords.Length; start++)
+        {
+            var match = true;
+            for (var offset = 0; offset < nameWords.Length; offset++)
+            {
+                if (!words[start + offset].Equals(nameWords[offset], StringComparison.OrdinalIgnoreCase))
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match)
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Drops a trailing vowel or "й" so declined forms share a stem: "Вася" -> "Вас",
+    /// "Гордей" -> "Горде", "Пётр" -> "Петр" (a consonant ending stays).
+    /// </summary>
+    private static string TrimDeclension(string name)
+    {
+        const string endings = "аеёиоуыэюяй";
+        return name.Length > 3 && endings.Contains(char.ToLowerInvariant(name[^1]))
+            ? name[..^1]
+            : name;
     }
 
     private void AddContext(EntityUid bot, string speaker, string message)
@@ -646,6 +983,13 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private void TryRespond(EntityUid bot, NeuroPersonaPrototype persona, string speakerName, string message, bool viaRadio, bool proactive)
     {
+        if (!IsBotUp(bot))
+            return;
+
+        var comp = Comp<NeuroPlayerComponent>(bot);
+        if (IsMuted(comp))
+            return;
+
         var config = ResolveProvider();
         if (!config.IsConfigured)
         {
@@ -653,12 +997,103 @@ public sealed class NeuroPlayerSystem : EntitySystem
             return;
         }
 
-        var comp = Comp<NeuroPlayerComponent>(bot);
         if (comp.RequestInFlight || _timing.CurTime < comp.NextAllowedResponse)
+            return;
+
+        // Global budget: per-bot cooldowns alone still allowed ~45 requests a minute during spam.
+        if (!TryTakeRequestSlot())
             return;
 
         comp.RequestInFlight = true;
         _ = RunCompletionAsync(bot, comp, persona, speakerName, message, viaRadio, proactive);
+    }
+
+    /// <summary>Sliding-window budget guard (neuroplayer.requests_per_minute, 0 = unlimited).</summary>
+    private bool TryTakeRequestSlot()
+    {
+        if (_requestsPerMinute <= 0)
+            return true;
+
+        var now = _timing.CurTime;
+        while (_requestTimes.Count > 0 && now - _requestTimes.Peek() > TimeSpan.FromMinutes(1))
+            _requestTimes.Dequeue();
+
+        if (_requestTimes.Count >= _requestsPerMinute)
+        {
+            _requestsRateLimited++;
+            return false;
+        }
+
+        _requestTimes.Enqueue(now);
+        return true;
+    }
+
+    /// <summary>
+    /// Sends a request through the active provider and, if it fails, once more through
+    /// neuroplayer.fallback_provider. Returns the reply text or null.
+    /// </summary>
+    private async Task<string?> SendCompletionWithFallbackAsync(
+        NeuroProviderConfig primary,
+        string systemPrompt,
+        string userPrompt,
+        CancellationToken cancel)
+    {
+        try
+        {
+            var reply = await SendCompletionAsync(primary, systemPrompt, userPrompt, cancel);
+            Interlocked.Increment(ref _requestsOk);
+            return reply;
+        }
+        catch (Exception primaryError)
+        {
+            Interlocked.Increment(ref _requestsFailed);
+            _sawmill.Warning($"Neuro player request failed on {primary.Provider}/{primary.Model}: {primaryError.Message}");
+
+            if (!TryResolveFallback(primary, out var fallback))
+                return null;
+
+            try
+            {
+                Interlocked.Increment(ref _fallbacks);
+                _sawmill.Info($"Neuro players: retrying on {fallback.Provider}/{fallback.Model}.");
+
+                using var fallbackCts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
+                var reply = await SendCompletionAsync(fallback, systemPrompt, userPrompt, fallbackCts.Token);
+                Interlocked.Increment(ref _requestsOk);
+                return reply;
+            }
+            catch (Exception fallbackError)
+            {
+                Interlocked.Increment(ref _requestsFailed);
+                _sawmill.Warning(
+                    $"Neuro player fallback {fallback.Provider}/{fallback.Model} failed too: {fallbackError.Message}");
+                return null;
+            }
+        }
+    }
+
+    private bool TryResolveFallback(NeuroProviderConfig primary, out NeuroProviderConfig fallback)
+    {
+        fallback = default;
+
+        if (string.IsNullOrWhiteSpace(_fallbackProvider))
+            return false;
+
+        var candidate = NeuroProviderPresets.Resolve(_cfg, _fallbackProvider, _apiUrl, _apiKey, _model);
+
+        if (!candidate.IsConfigured || candidate.Provider == primary.Provider)
+            return false;
+
+        fallback = candidate;
+        return true;
+    }
+
+    /// <summary>Counters for the neurobots command. Written from request tasks, hence Interlocked.</summary>
+    public string DescribeStats()
+    {
+        return $"requests ok={Volatile.Read(ref _requestsOk)}, failed={Volatile.Read(ref _requestsFailed)}, " +
+               $"fallbacks={Volatile.Read(ref _fallbacks)}, rateLimited={Volatile.Read(ref _requestsRateLimited)}, " +
+               $"repliesBlocked={Volatile.Read(ref _blockedReplies)}";
     }
 
     /// <summary>
@@ -802,9 +1237,11 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 : $"Контекст переписки:\n{context}\n\n{speakerName} обращается к тебе: {message}";
 
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
-            var reply = await SendCompletionAsync(config, systemPrompt, userPrompt, cts.Token);
+            var reply = await SendCompletionWithFallbackAsync(config, systemPrompt, userPrompt, cts.Token);
 
-            if (string.IsNullOrWhiteSpace(reply) || Deleted(bot) || Terminating(bot))
+            // Mini: the bot may have died while the model was thinking — a corpse does not speak
+            // (the request is already paid for, but at least it does not get broadcast).
+            if (string.IsNullOrWhiteSpace(reply) || Deleted(bot) || Terminating(bot) || !IsBotUp(bot))
                 return;
 
             // Mini: players asked for no long dashes in bot replies.
@@ -816,10 +1253,18 @@ public sealed class NeuroPlayerSystem : EntitySystem
             if (reply.StartsWith(botName, StringComparison.OrdinalIgnoreCase))
                 reply = reply[botName.Length..].TrimStart(':', ' ', '-');
 
+            // Moderation screen: blocked words and out-of-character "I am an AI" admissions.
+            if (!TryScreenReply(bot, reply))
+                return;
+
             if (viaRadio)
                 reply = ";" + reply;
 
             _chat.TrySendInGameICMessage(bot, reply, InGameICChatType.Speak, hideChat: false, hideLog: true);
+
+            // Mini: bot speech used to leave no trace at all — no ActorComponent means ChatSystem
+            // skips its own admin log. Record it ourselves so moderation can see what bots said.
+            _adminLog.Add(LogType.Chat, LogImpact.Low, $"Say from neuro player {botName}: {reply}");
         }
         catch (Exception e)
         {
@@ -841,6 +1286,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
         if (!_enabled)
             return;
 
+        MaintainBots();
+
         _dangerScanAccumulator += frameTime;
         if (_dangerScanAccumulator >= 1f)
         {
@@ -848,11 +1295,25 @@ public sealed class NeuroPlayerSystem : EntitySystem
             ScanDangers();
         }
 
+        _seekAccumulator += frameTime;
+        if (_seekAccumulator >= SeekCheckSeconds)
+        {
+            _seekAccumulator = 0f;
+            SeekLonelyPlayers();
+        }
+
         var now = _timing.CurTime;
         for (var i = _bots.Count - 1; i >= 0; i--)
         {
             var bot = _bots[i];
-            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp))
+            if (!TryComp<NeuroPlayerComponent>(bot, out var comp))
+            {
+                _bots.RemoveAt(i);
+                continue;
+            }
+
+            // Downed bots keep their slot (they can be revived) but do not run errands.
+            if (!IsBotUp(bot))
                 continue;
 
             // Restore normal behavior once the flee / visit window is over.
@@ -884,10 +1345,121 @@ public sealed class NeuroPlayerSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Mini: keeps the roster honest instead of relying on a single 45-second timer.
+    /// Bots are spawned once per round, retried while the spawn failed (maps not ready, war mode)
+    /// and brought back after a station war ends. Dead bots are never resurrected.
+    /// </summary>
+    private void MaintainBots()
+    {
+        if (_botCount <= 0)
+            return;
+
+        _bots.RemoveAll(bot => !Exists(bot));
+
+        if (_spawnedThisRound && !_warSuppressed)
+            return;
+
+        if (TypanStationWarRuleSystem.IsModeActive)
+            return;
+
+        // Nobody is on the station before the round starts, and maps need time to settle after it.
+        if (_roundStartTime == TimeSpan.Zero || _timing.CurTime - _roundStartTime < SpawnDelay)
+            return;
+
+        // A failed attempt must not be repeated every tick: it scans prototypes and logs.
+        if (_timing.CurTime - _lastSpawnAttempt < SpawnRetryDelay)
+            return;
+
+        _lastSpawnAttempt = _timing.CurTime;
+
+        if (_warSuppressed)
+        {
+            _sawmill.Info("Neuro players: station war is over, bringing the bots back.");
+            _warSuppressed = false;
+        }
+
+        SpawnBots();
+    }
+
+    /// <summary>
+    /// Mini: neuroplayer.seek_radius finally does something — a bot with nobody around walks
+    /// towards the nearest real player instead of idling in an empty corridor.
+    /// </summary>
+    private void SeekLonelyPlayers()
+    {
+        if (_seekRadius <= 0f)
+            return;
+
+        foreach (var bot in _bots)
+        {
+            if (!IsBotUp(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp))
+                continue;
+
+            if (comp.DangerUntil != null || comp.HostileUntil != null || comp.VisitUntil != null)
+                continue;
+
+            var nearest = FindNearestPlayer(bot);
+            if (nearest == null)
+                continue;
+
+            var (coords, distance) = nearest.Value;
+
+            // Somebody is already close enough — no need to march anywhere.
+            if (distance <= _seekRadius)
+                continue;
+
+            if (!TryComp<HTNComponent>(bot, out var htn))
+                continue;
+
+            htn.Blackboard.SetValue("NeuroPoint", coords);
+            htn.RootTask = new HTNCompoundTask { Task = "NeuroVisitCompound" };
+            _htn.Replan(htn);
+            comp.VisitUntil = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(60, 120));
+        }
+    }
+
+    /// <summary>Nearest living player (never a ghost or another bot) with the distance to them.</summary>
+    private (EntityCoordinates Coords, float Distance)? FindNearestPlayer(EntityUid bot)
+    {
+        var botXform = Transform(bot);
+        var botPos = _transform.GetWorldPosition(botXform);
+
+        EntityCoordinates? best = null;
+        var bestDistance = float.MaxValue;
+
+        var query = EntityQueryEnumerator<ActorComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out var xform))
+        {
+            if (uid == bot || xform.MapID != botXform.MapID || HasComp<GhostComponent>(uid))
+                continue;
+
+            var distance = (xform.WorldPosition - botPos).Length();
+            if (distance > MaxSeekRange || distance >= bestDistance)
+                continue;
+
+            bestDistance = distance;
+            best = xform.Coordinates;
+        }
+
+        return best == null ? null : (best.Value, bestDistance);
+    }
+
     private void RestoreIdle(EntityUid bot)
     {
         if (!TryComp<HTNComponent>(bot, out var htn))
             return;
+
+        // Mini: a bot that was sent to the evac shuttle goes back aboard after a scare or a visit,
+        // and keeps waiting there until the shuttle leaves its map.
+        if (TryComp<NeuroPlayerComponent>(bot, out var comp) && TryGetEvacPoint(bot, comp, out var evacPoint))
+        {
+            htn.Blackboard.SetValue("NeuroPoint", evacPoint);
+            htn.RootTask = new HTNCompoundTask { Task = "NeuroVisitCompound" };
+            _htn.Replan(htn);
+            comp.VisitUntil = _timing.CurTime + TimeSpan.FromSeconds(420);
+            return;
+        }
 
         htn.RootTask = new HTNCompoundTask { Task = "IdleCompound" };
         _htn.Replan(htn);
@@ -897,7 +1469,11 @@ public sealed class NeuroPlayerSystem : EntitySystem
     {
         foreach (var bot in _bots)
         {
-            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp) || comp.DangerUntil != null)
+            if (!TryComp<NeuroPlayerComponent>(bot, out var comp) || comp.DangerUntil != null)
+                continue;
+
+            // Corpses do not run from fires.
+            if (!IsBotUp(bot))
                 continue;
 
             // Brave enough: engage hostile-faction mobs that wander too close.
@@ -914,19 +1490,22 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 continue;
             }
 
-            var botPos = _transform.GetWorldPosition(bot);
-            var botMap = Transform(bot).MapID;
-
-            var query = EntityQueryEnumerator<FlammableComponent, TransformComponent>();
-            while (query.MoveNext(out var uid, out var flammable, out var xform))
+            // Mini: a burning bot runs from its own fire (the old scan only looked at neighbours)
+            // and the scan is a range lookup instead of a sweep over every flammable entity in the world.
+            var botXform = Transform(bot);
+            if (TryComp<FlammableComponent>(bot, out var ownFlammable) && ownFlammable.FireStacks > 0)
             {
-                if (flammable.FireStacks <= 0 || xform.MapID != botMap)
+                TriggerDanger(bot, comp, _transform.GetWorldPosition(botXform), FireCries);
+                continue;
+            }
+
+            foreach (var (uid, flammable) in _lookup.GetEntitiesInRange<FlammableComponent>(
+                         botXform.Coordinates, FireAlertRadius))
+            {
+                if (uid == bot || flammable.FireStacks <= 0)
                     continue;
 
-                if ((xform.WorldPosition - botPos).Length() > 12f)
-                    continue;
-
-                TriggerDanger(bot, comp, xform.WorldPosition, FireCries);
+                TriggerDanger(bot, comp, _transform.GetWorldPosition(uid), FireCries);
                 break;
             }
         }
@@ -946,6 +1525,10 @@ public sealed class NeuroPlayerSystem : EntitySystem
         // Self-damage: pain cries and depressurization handling.
         if (TryComp<NeuroPlayerComponent>(victim, out var botComp))
         {
+            // Already down (dying/dead): no more fleeing, no more paid replies from a corpse.
+            if (!IsBotUp(victim))
+                return;
+
             if (ev.DamageDelta.DamageDict.TryGetValue("Airloss", out var airloss) && airloss >= 3f)
             {
                 // Decompression: scream, enable internals from own inventory, best-effort grab a hardsuit, run.
@@ -978,7 +1561,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         var victimPos = _transform.GetWorldPosition(victim);
         foreach (var bot in _bots)
         {
-            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp) || comp.DangerUntil != null)
+            if (!TryComp<NeuroPlayerComponent>(bot, out var comp) || comp.DangerUntil != null || !IsBotUp(bot))
                 continue;
 
             if (Transform(bot).MapID != Transform(victim).MapID)
@@ -1034,7 +1617,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
     // Mini: react to any interaction so bots do not ignore the world.
     private void OnBotInteracted(EntityUid bot, NeuroPlayerComponent comp, InteractHandEvent ev)
     {
-        if (ev.User == bot || !_enabled)
+        if (ev.User == bot || !_enabled || !IsBotUp(bot))
             return;
 
         AddContext(bot, Name(ev.User), "(дотронулся до тебя)");
@@ -1043,7 +1626,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private void Cry(EntityUid bot, NeuroPlayerComponent comp, string[] phrases)
     {
-        if (_timing.CurTime < comp.NextCry)
+        if (_timing.CurTime < comp.NextCry || !IsBotUp(bot) || IsMuted(comp))
             return;
 
         comp.NextCry = _timing.CurTime + TimeSpan.FromSeconds(12);
@@ -1078,20 +1661,15 @@ public sealed class NeuroPlayerSystem : EntitySystem
     {
         try
         {
-            var query = EntityQueryEnumerator<ClothingComponent, TransformComponent>();
-            while (query.MoveNext(out var uid, out _, out var xform))
+            // Mini: range lookup instead of sweeping every piece of clothing on the map.
+            var botXform = Transform(bot);
+            foreach (var (uid, _) in _lookup.GetEntitiesInRange<ClothingComponent>(botXform.Coordinates, 1.5f))
             {
-                if (xform.MapID != Transform(bot).MapID)
-                    continue;
-
                 // Only items lying free on the grid, within arm's reach.
                 if (_container.IsEntityInContainer(uid))
                     continue;
 
                 if ((Prototype(uid)?.ID ?? string.Empty).IndexOf("Hardsuit", StringComparison.OrdinalIgnoreCase) < 0)
-                    continue;
-
-                if ((_transform.GetWorldPosition(bot) - _transform.GetWorldPosition(xform)).Length() > 1.5f)
                     continue;
 
                 if (!_hands.TryPickupAnyHand(bot, uid, checkActionBlocker: false))
@@ -1179,6 +1757,211 @@ public sealed class NeuroPlayerSystem : EntitySystem
             _bots.Count(Exists),
             config.Provider,
             config.Model);
+    }
+
+    /// <summary>
+    /// Moderation screen for a raw model answer. Returns false when the line must not be said:
+    /// it contains a word from neuroplayer.blocked_words, or the bot breaks character and calls
+    /// itself an AI.
+    /// </summary>
+    private bool TryScreenReply(EntityUid bot, string reply)
+    {
+        var botName = Name(bot);
+
+        foreach (var word in _blockedWords)
+        {
+            if (!ContainsWordWithSuffix(reply, word, MaxNameSuffixLength))
+                continue;
+
+            _sawmill.Warning($"Neuro player {botName}: reply dropped by neuroplayer.blocked_words ('{word}'): {reply}");
+            Interlocked.Increment(ref _blockedReplies);
+            _adminLog.Add(LogType.Chat, LogImpact.Medium,
+                $"Neuro player {botName} reply blocked by blocked_words ('{word}'): {reply}");
+            return false;
+        }
+
+        if (_blockAiTalk && AdmitsBeingAi(reply))
+        {
+            _sawmill.Info($"Neuro player {botName}: out-of-character reply dropped: {reply}");
+            Interlocked.Increment(ref _blockedReplies);
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>Word match with a little morphology: "мат" catches "матом", but not "материал".</summary>
+    private static bool ContainsWordWithSuffix(string text, string word, int maxSuffix)
+    {
+        foreach (var token in text.Split(WordSeparators, StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (token.Length < word.Length || token.Length > word.Length + maxSuffix)
+                continue;
+
+            if (token.AsSpan().StartsWith(word, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static readonly string[] AiWords =
+    [
+        "ии", "иишка", "бот", "боты", "ботик", "нейросеть", "нейронка", "нейросетевой",
+        "модель", "моделька", "чатгпт", "gpt", "гпт", "llm", "deepseek", "дипсик", "промпт", "алгоритм",
+    ];
+
+    private static readonly string[] SelfWords = ["я", "мне", "меня", "мой", "моя", "моё", "мы", "нас", "себя"];
+
+    /// <summary>True when the bot says it is an AI/бот/модель instead of staying in character.</summary>
+    private static bool AdmitsBeingAi(string reply)
+    {
+        var words = reply
+            .Split(WordSeparators, StringSplitOptions.RemoveEmptyEntries)
+            .Select(w => w.ToLowerInvariant())
+            .ToArray();
+
+        var mentionsAi = words.Any(w => AiWords.Any(ai =>
+            w.Length >= ai.Length && w.Length <= ai.Length + 2 &&
+            w.AsSpan().StartsWith(ai, StringComparison.OrdinalIgnoreCase)));
+
+        if (!mentionsAi)
+            return false;
+
+        // "я бот", "как языковая модель", "я не человек" — self reference is what gives it away.
+        return words.Any(w => SelfWords.Contains(w));
+    }
+
+    /// <summary>Bots matching an admin query: persona id / name, or "all".</summary>
+    public List<EntityUid> FindBots(string query)
+    {
+        var result = new List<EntityUid>();
+        var matchAll = query is "all" or "*";
+
+        foreach (var bot in _bots)
+        {
+            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp))
+                continue;
+
+            if (matchAll)
+            {
+                result.Add(bot);
+                continue;
+            }
+
+            if (comp.PersonaId.Id.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                Name(bot).Contains(query, StringComparison.OrdinalIgnoreCase))
+            {
+                result.Add(bot);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>Mutes matching bots forever (minutes == null) or for a while. Returns how many.</summary>
+    public int MuteBots(string query, int? minutes)
+    {
+        var muted = 0;
+        foreach (var bot in FindBots(query))
+        {
+            var comp = Comp<NeuroPlayerComponent>(bot);
+
+            if (minutes == null)
+            {
+                comp.Muted = true;
+                comp.MutedUntil = TimeSpan.Zero;
+            }
+            else
+            {
+                comp.Muted = false;
+                comp.MutedUntil = _timing.CurTime + TimeSpan.FromMinutes(minutes.Value);
+            }
+
+            muted++;
+        }
+
+        return muted;
+    }
+
+    public int UnmuteBots(string query)
+    {
+        var unmuted = 0;
+        foreach (var bot in FindBots(query))
+        {
+            var comp = Comp<NeuroPlayerComponent>(bot);
+            if (!comp.Muted && comp.MutedUntil == TimeSpan.Zero)
+                continue;
+
+            comp.Muted = false;
+            comp.MutedUntil = TimeSpan.Zero;
+            unmuted++;
+        }
+
+        return unmuted;
+    }
+
+    /// <summary>One line per bot for the neurobots command.</summary>
+    public string DescribeBots()
+    {
+        if (_bots.Count == 0)
+            return "нейроигроков нет (neuroplayer.enabled / bot_count / война / раунд ещё не начался).";
+
+        var lines = new List<string>();
+        foreach (var bot in _bots)
+        {
+            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp))
+                continue;
+
+            var state = _mobState.IsDead(bot) ? "мертв" : _mobState.IsCritical(bot) ? "крит" : "жив";
+            var muted = comp.Muted
+                ? ", мут"
+                : comp.MutedUntil != TimeSpan.Zero && _timing.CurTime < comp.MutedUntil
+                    ? $", мут до {comp.MutedUntil - _timing.CurTime:hh\\:mm\\:ss}"
+                    : string.Empty;
+
+            lines.Add($"- {Name(bot)} [{comp.PersonaId.Id}] {state}{muted}");
+        }
+
+        return lines.Count == 0 ? "нейроигроков нет." : string.Join("\n", lines);
+    }
+
+    /// <summary>
+    /// Live provider check for admins: sends one real request and returns the reply or the error.
+    /// Answers "did I configure DeepSeek right?" without waiting for a round to start.
+    /// </summary>
+    public async Task<string> TestCompletionAsync(string? prompt)
+    {
+        var config = ResolveProvider();
+
+        var header = $"provider={config.Provider}, model={config.Model}, endpoint=" +
+                     $"{(string.IsNullOrEmpty(config.Endpoint) ? "<empty>" : config.Endpoint)}, " +
+                     $"key={(string.IsNullOrEmpty(config.ApiKey) ? "<empty>" : "set")}";
+
+        if (!config.IsConfigured)
+            return $"{header}\nНЕ НАСТРОЕНО: задайте neuroplayer.api_key и neuroplayer.provider.";
+
+        var systemPrompt =
+            "Ты — тестовый нейроигрок на космической станции. Ответь одной короткой фразой по-русски.";
+        var userPrompt = string.IsNullOrWhiteSpace(prompt)
+            ? "Представься одной фразой."
+            : prompt;
+
+        try
+        {
+            // Deliberately no fallback here: an admin checking the config wants the primary
+            // provider's own answer (or its own error), not a silent switch to the backup.
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
+            var reply = await SendCompletionAsync(config, systemPrompt, userPrompt, cts.Token);
+
+            return string.IsNullOrWhiteSpace(reply)
+                ? $"{header}\nМодель вернула пустой ответ (проверьте neuroplayer.max_tokens и модель)."
+                : $"{header}\nОтвет модели: {reply}";
+        }
+        catch (Exception e)
+        {
+            return $"{header}\nОШИБКА: {e.Message}";
+        }
     }
 
     private sealed class CompletionRequest

@@ -632,6 +632,20 @@ public sealed class MiniCCVars
     public static readonly CVarDef<string> NeuroPlayerProvider =
         CVarDef.Create("neuroplayer.provider", "custom", CVar.SERVERONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Provider used when the active one fails (5xx, timeout, bad key). Empty disables the retry;
+    /// the fallback must be a different provider, e.g. "deepseek".
+    /// </summary>
+    public static readonly CVarDef<string> NeuroPlayerFallbackProvider =
+        CVarDef.Create("neuroplayer.fallback_provider", "", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Global cap on LLM requests per minute across all bots (sliding window). 0 disables the cap.
+    /// Per-bot cooldowns alone allowed roughly 45 requests per minute during name-spam.
+    /// </summary>
+    public static readonly CVarDef<int> NeuroPlayerRequestsPerMinute =
+        CVarDef.Create("neuroplayer.requests_per_minute", 40, CVar.SERVERONLY | CVar.ARCHIVE);
+
     /// <summary>DeepSeek chat completions endpoint.</summary>
     public static readonly CVarDef<string> NeuroPlayerDeepSeekApiUrl =
         CVarDef.Create("neuroplayer.deepseek.api_url", "https://api.deepseek.com/chat/completions",
@@ -681,6 +695,11 @@ public sealed class MiniCCVars
     public static readonly CVarDef<string> NeuroPlayerOpenRouterModel =
         CVarDef.Create("neuroplayer.openrouter.model", "deepseek/deepseek-chat", CVar.SERVERONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Total number of neuro players. The strict core composition (4 NT bots + CentComm maid +
+    /// Typan chef = 6) is always spawned; values above it add random NT passengers from spare
+    /// personas, values at or below it keep the mandated composition. 0 disables the bots.
+    /// </summary>
     public static readonly CVarDef<int> NeuroPlayerBotCount =
         CVarDef.Create("neuroplayer.bot_count", 3, CVar.SERVERONLY | CVar.ARCHIVE);
 
@@ -727,6 +746,27 @@ public sealed class MiniCCVars
     /// <summary>Cooldown between LLM small-talk exchanges between bots.</summary>
     public static readonly CVarDef<int> NeuroPlayerBotChatterCooldownSeconds =
         CVarDef.Create("neuroplayer.bot_chatter_cooldown_seconds", 240, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Chance that a bot answers another bot's line when the cooldown allows it. 0 disables
+    /// bot-to-bot small talk entirely; the exchange is always one line, never a chain.
+    /// </summary>
+    public static readonly CVarDef<float> NeuroPlayerBotChatterChance =
+        CVarDef.Create("neuroplayer.bot_chatter_chance", 0.2f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Comma separated words that must never appear in a bot's reply (morphology is tolerated:
+    /// "мат" also blocks "матом", but not "материал"). A reply containing one is dropped and logged.
+    /// </summary>
+    public static readonly CVarDef<string> NeuroPlayerBlockedWords =
+        CVarDef.Create("neuroplayer.blocked_words", "", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Drop replies where the bot admits being an AI ("я бот", "языковая модель", "я не человек").
+    /// The system prompt forbids it, but models still slip now and then.
+    /// </summary>
+    public static readonly CVarDef<bool> NeuroPlayerBlockAiTalk =
+        CVarDef.Create("neuroplayer.block_ai_talk", true, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// GLM-4.5/4.6 style reasoning mode. Off by default: with a small max_tokens budget
