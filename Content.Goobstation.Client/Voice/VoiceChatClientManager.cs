@@ -1,3 +1,4 @@
+#if DEVELOPMENT
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 // Mini: restored from Goobstation upstream (was deleted by CorvaxGoob) and extended with the
@@ -494,3 +495,4 @@ public sealed class VoiceChatClientManager : IVoiceChatManager, IEntityEventSubs
         _serverConn = null;
     }
 }
+#endif
