@@ -1,4 +1,5 @@
 using Content.Shared._Mini.CustomGhost;
+using Content.Client.Resources;
 using Robust.Client.Console;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -52,6 +53,23 @@ public sealed class GhostShopSystem : EntitySystem
 
     public Texture? GetIconTexture(string rsiPath, string state)
     {
+        // Most theme folders ship a bare png without rsi.json — try textures FIRST so the
+        // RSI loader never logs "Failed to load RSI" for them.
+        foreach (var suffix in new[] { "/icon.png", "/animated.png", "/ghost.png" })
+        {
+            foreach (var prefix in new[] { "", "/Textures/" })
+            {
+                try
+                {
+                    return _resourceCache.GetTexture(new ResPath(prefix + rsiPath + suffix));
+                }
+                catch
+                {
+                    // try next
+                }
+            }
+        }
+
         try
         {
             return _sprite.Frame0(new SpriteSpecifier.Rsi(new ResPath(rsiPath), state));

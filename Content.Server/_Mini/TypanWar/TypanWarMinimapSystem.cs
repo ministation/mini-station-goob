@@ -7,6 +7,7 @@ using Content.Server.Cargo.Components;
 using Content.Server.Shuttles.Components;
 using Content.Server.Station.Systems;
 using Content.Shared._Mini.TypanWar;
+using Content.Shared.Ghost;
 using Content.Shared.GameTicking;
 using Content.Shared.Station.Components;
 using Robust.Shared.Map.Components;
@@ -47,6 +48,14 @@ public sealed class TypanWarMinimapSystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<TypanWarMinimapActionEvent>(_ => { });
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _shapeCache.Clear());
+        // Observers should see the war map too (and reach the music toggle on it).
+        SubscribeLocalEvent<GhostComponent, MapInitEvent>(OnGhostMapInit);
+    }
+
+    private void OnGhostMapInit(Entity<GhostComponent> ghost, ref MapInitEvent args)
+    {
+        if (TypanStationWarRuleSystem.IsModeActive)
+            EnsureMinimapAction(ghost);
     }
 
     public void EnsureMinimapAction(EntityUid uid)
