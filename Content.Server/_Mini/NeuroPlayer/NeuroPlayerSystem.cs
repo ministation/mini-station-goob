@@ -127,7 +127,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private static readonly string[] DecompressionCries =
         ["Воздух уходит! Кислород!", "Разгерметизация! Маску, МАСКУ!", "Шлюзы! Воздух кончается!"];
     private static readonly string[] EvacCries =
-        ["Бежим на эвак!", "Эвак сел, все наверх!", "За мной на эвак, шевелитесь!", "Погнали на эвак, пока не улетел!"];
+        ["Бежим на эвак!", "Эвак пристыковался, быстрее!", "За мной на эвак, шевелитесь!", "Погнали на эвак, пока не улетел!"];
 
     public override void Initialize()
     {
