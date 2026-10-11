@@ -16,8 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <Import Project="../MSBuild/Content.props" />
   <ItemGroup>
     <PackageReference Include="Nett" />
-    <PackageReference Include="Concentus" /> <!-- Mini: voice chat opus codec -->
-    <PackageReference Include="NAudio" /> <!-- Mini: voice chat microphone capture -->
+    <!-- Mini: voice chat audio libs. Voice client code is DEVELOPMENT-only (see EntryPoint.cs):
+         its raw Lidgren/NAudio/Concentus type references fail the wizden engine's client sandbox
+         typecheck, so packaged FULL_RELEASE clients would crash on connect. -->
+    <PackageReference Include="Concentus" Condition="'$(FullRelease)' != 'True'" />
+    <PackageReference Include="NAudio" Condition="'$(FullRelease)' != 'True'" />
     <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
   </ItemGroup>
 

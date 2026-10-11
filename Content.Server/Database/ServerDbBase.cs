@@ -937,11 +937,24 @@ namespace Content.Server.Database
                     TokenId = tokenId,
                     Amount = amount
                 });
+
+                try
+                {
+                    await db.DbContext.SaveChangesAsync();
+                    return;
+                }
+                catch (DbUpdateException)
+                {
+                    // A concurrent writer already inserted the (player, token) row — update it instead.
+                    db.DbContext.ChangeTracker.Clear();
+                    existing = await db.DbContext.PlayerAntagTokens
+                        .SingleOrDefaultAsync(p => p.PlayerId == playerId && p.TokenId == tokenId);
+                    if (existing == null)
+                        throw;
+                }
             }
-            else
-            {
-                existing.Amount = amount;
-            }
+
+            existing.Amount = amount;
 
             await db.DbContext.SaveChangesAsync();
         }
@@ -962,15 +975,28 @@ namespace Content.Server.Database
                     AntagId = antagId,
                     SelectedAt = DateTime.UtcNow
                 });
-            }
-            else
-            {
-                existing.TokenId = tokenId;
-                if (existing.AntagId != antagId)
+
+                try
                 {
-                    existing.AntagId = antagId;
-                    existing.SelectedAt = DateTime.UtcNow;
+                    await db.DbContext.SaveChangesAsync();
+                    return;
                 }
+                catch (DbUpdateException)
+                {
+                    // A concurrent writer already inserted the selection row — update it instead.
+                    db.DbContext.ChangeTracker.Clear();
+                    existing = await db.DbContext.PlayerAntagTokenSelections
+                        .SingleOrDefaultAsync(p => p.PlayerId == playerId);
+                    if (existing == null)
+                        throw;
+                }
+            }
+
+            existing.TokenId = tokenId;
+            if (existing.AntagId != antagId)
+            {
+                existing.AntagId = antagId;
+                existing.SelectedAt = DateTime.UtcNow;
             }
 
             await db.DbContext.SaveChangesAsync();

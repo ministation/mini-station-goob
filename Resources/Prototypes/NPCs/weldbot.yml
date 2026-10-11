@@ -17,15 +17,17 @@
             targetKey: WeldTarget
             targetMoveKey: TargetCoordinates
 
+        # Speak only after arriving: if the bot is held/anchored and cannot move,
+        # the branch re-plans silently instead of spamming the phrase every cycle.
+        - !type:HTNPrimitiveTask
+          operator: !type:MoveToOperator
+            pathfindInPlanning: false
+
         - !type:HTNPrimitiveTask
           operator: !type:SpeakOperator
             speech: !type:SingleSpeakOperatorSpeech
               line: weldbot-start-weld
             hidden: true
-
-        - !type:HTNPrimitiveTask
-          operator: !type:MoveToOperator
-            pathfindInPlanning: false
 
         - !type:HTNPrimitiveTask
           operator: !type:SetFloatOperator

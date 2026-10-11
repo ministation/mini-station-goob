@@ -5,6 +5,10 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# Dignitary
+
+job-description-bso = Будьте телохранителем и советником командования станции и VIP-персон Центрального Командования.
+
 # Navy
 
 job-description-navy-officer-undercover = Выполняйте поставленные задачи, устраняйте назначенные цели. Удачи.

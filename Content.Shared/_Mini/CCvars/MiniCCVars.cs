@@ -592,4 +592,77 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> CachedCoinBalanceKnown =
         CVarDef.Create("ministation.cached_coin_balance_known", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+    /*
+     * Neuro players — LLM-driven passenger bots
+     */
+
+    /// <summary>Master switch for neuro player bots.</summary>
+    public static readonly CVarDef<bool> NeuroPlayerEnabled =
+        CVarDef.Create("neuroplayer.enabled", false, CVar.SERVER | CVar.ARCHIVE);
+
+    /// <summary>OpenAI-compatible chat completions endpoint.</summary>
+    public static readonly CVarDef<string> NeuroPlayerApiUrl =
+        CVarDef.Create("neuroplayer.api_url", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    /// <summary>Bearer key for the LLM API.</summary>
+    public static readonly CVarDef<string> NeuroPlayerApiKey =
+        CVarDef.Create("neuroplayer.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    public static readonly CVarDef<string> NeuroPlayerModel =
+        CVarDef.Create("neuroplayer.model", "glm-5.3-flash", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> NeuroPlayerBotCount =
+        CVarDef.Create("neuroplayer.bot_count", 3, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Local speech hearing radius for bots (tiles).</summary>
+    public static readonly CVarDef<float> NeuroPlayerHearRadius =
+        CVarDef.Create("neuroplayer.hear_radius", 10f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> NeuroPlayerMaxContext =
+        CVarDef.Create("neuroplayer.max_context_messages", 8, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Per-bot cooldown between LLM answers.</summary>
+    public static readonly CVarDef<int> NeuroPlayerCooldownSeconds =
+        CVarDef.Create("neuroplayer.response_cooldown_seconds", 8, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> NeuroPlayerMaxTokens =
+        CVarDef.Create("neuroplayer.max_tokens", 512, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<float> NeuroPlayerTemperature =
+        CVarDef.Create("neuroplayer.temperature", 0.9f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> NeuroPlayerTimeoutSeconds =
+        CVarDef.Create("neuroplayer.request_timeout_seconds", 10, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Chance to join face-to-face speech (<= 3 tiles) without being named.</summary>
+    public static readonly CVarDef<float> NeuroPlayerDirectChance =
+        CVarDef.Create("neuroplayer.direct_chance", 0.5f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Chance to join background conversation nearby without being named.</summary>
+    public static readonly CVarDef<float> NeuroPlayerProactiveChance =
+        CVarDef.Create("neuroplayer.proactive_chance", 0.15f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Cooldown between unprompted replies of one bot (anti-spam).</summary>
+    public static readonly CVarDef<int> NeuroPlayerProactiveCooldownSeconds =
+        CVarDef.Create("neuroplayer.proactive_cooldown_seconds", 45, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Interval between random point-of-interest visits per bot (seconds).</summary>
+    public static readonly CVarDef<int> NeuroPlayerPoiIntervalSeconds =
+        CVarDef.Create("neuroplayer.poi_interval_seconds", 240, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>If no player is within this radius (tiles), the bot walks toward one.</summary>
+    public static readonly CVarDef<float> NeuroPlayerSeekRadius =
+        CVarDef.Create("neuroplayer.seek_radius", 30f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Cooldown between LLM small-talk exchanges between bots.</summary>
+    public static readonly CVarDef<int> NeuroPlayerBotChatterCooldownSeconds =
+        CVarDef.Create("neuroplayer.bot_chatter_cooldown_seconds", 240, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// GLM-4.5/4.6 style reasoning mode. Off by default: with a small max_tokens budget
+    /// thinking consumes the whole response and the bot stays silent.
+    /// Sent only when the model name contains "glm".
+    /// </summary>
+    public static readonly CVarDef<bool> NeuroPlayerThinkingEnabled =
+        CVarDef.Create("neuroplayer.thinking_enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
 }
