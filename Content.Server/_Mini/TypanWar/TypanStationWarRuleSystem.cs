@@ -95,6 +95,8 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         SubscribeLocalEvent<TypanWarLayoutReadyEvent>(OnLayoutReady);
         SubscribeLocalEvent<TypanWarLayoutFailedEvent>(OnLayoutFailed);
         SubscribeLocalEvent<TypanWarFactionComponent, MobStateChangedEvent>(OnCombatantStateChanged);
+        SubscribeNetworkEvent<TypanWarBetStateRequestEvent>(OnBetStateRequest);
+        SubscribeNetworkEvent<TypanWarBetRequestEvent>(OnBetRequest);
 
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
     }
@@ -704,6 +706,82 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         return best;
     }
 
+    private void OnBetStateRequest(TypanWarBetStateRequestEvent ev, EntitySessionEventArgs args)
+    {
+        if (TryGetRunningWarRule(out var component) && component.Phase == TypanWarPhase.Pending)
+            SendBetState(args.SenderSession, component);
+        else
+            RaiseNetworkEvent(TypanWarBetStateEvent.Closed(), args.SenderSession);
+    }
+
+    private void OnBetRequest(TypanWarBetRequestEvent ev, EntitySessionEventArgs args)
+    {
+        var session = args.SenderSession;
+
+        if (!TryGetRunningWarRule(out var component) || component.Phase != TypanWarPhase.Pending)
+        {
+            RaiseNetworkEvent(TypanWarBetStateEvent.Closed(), session);
+            return;
+        }
+
+        if (component.Bets.ContainsKey(session.UserId) ||
+            !component.BetAmounts.Contains(ev.Amount) ||
+            !_antagTokens.TrySpendBalance(session.UserId, ev.Amount, out _))
+        {
+            SendBetState(session, component);
+            return;
+        }
+
+        component.Bets[session.UserId] = (ev.Side, ev.Amount);
+        SendBetState(session, component);
+    }
+
+    private void SendBetState(ICommonSession session, TypanStationWarRuleComponent component)
+    {
+        var mine = component.Bets.TryGetValue(session.UserId, out var bet);
+        RaiseNetworkEvent(
+            new TypanWarBetStateEvent(
+                component.Phase == TypanWarPhase.Pending && !mine,
+                mine ? bet.Side : null,
+                mine ? bet.Amount : 0,
+                component.BetAmounts),
+            session);
+    }
+
+    private void BroadcastBetStateClosed()
+    {
+        RaiseNetworkEvent(TypanWarBetStateEvent.Closed(), Filter.Broadcast());
+    }
+
+    /// <summary>
+    /// Bet payouts: ×2 for the winning side, half back on a stalemate, nothing on a loss.
+    /// Paid via PayBalance (no monthly cap) — winnings are returns of staked coins, not new earnings.
+    /// </summary>
+    private void ProcessBets(TypanStationWarRuleComponent component)
+    {
+        if (component.Bets.Count == 0)
+            return;
+
+        var totalPayout = 0;
+        foreach (var (userId, bet) in component.Bets)
+        {
+            var payout = 0;
+            if (component.Winner == TypanWarWinner.Stalemate)
+                payout = bet.Amount / 2;
+            else if ((component.Winner == TypanWarWinner.Nanotrasen) == (bet.Side == TypanWarSide.Nanotrasen))
+                payout = bet.Amount * 2;
+
+            if (payout <= 0)
+                continue;
+
+            _antagTokens.PayBalance(userId, payout);
+            totalPayout += payout;
+        }
+
+        component.BetsTotalPayout = totalPayout;
+        BroadcastBetStateClosed();
+    }
+
     private void AppendWarStats(TypanStationWarRuleComponent component, RoundEndTextAppendEvent args)
     {
         AppendFactionTopList(component, args, component.NtJoinedUsers, "typan-war-round-end-top-nt");
@@ -720,6 +798,24 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             args.AddLine(Loc.GetString("typan-war-round-end-rewards",
                 ("nt", component.NtRewardsTotal),
                 ("typan", component.TypanRewardsTotal)));
+        }
+
+        if (component.Bets.Count > 0)
+        {
+            var ntBets = 0;
+            var typanBets = 0;
+            foreach (var bet in component.Bets.Values)
+            {
+                if (bet.Side == TypanWarSide.Nanotrasen)
+                    ntBets += bet.Amount;
+                else
+                    typanBets += bet.Amount;
+            }
+
+            args.AddLine(Loc.GetString("typan-war-round-end-bets",
+                ("nt", ntBets),
+                ("typan", typanBets),
+                ("payout", component.BetsTotalPayout)));
         }
     }
 
@@ -809,6 +905,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         SeedJoinedRoster(component);
         component.Phase = TypanWarPhase.Active;
         IsWarActive = true;
+        BroadcastBetStateClosed();
 
         if (component.NtStation is { } nt)
             _alertLevel.SetLevel(nt, "gamma", true, true, true, locked: true);
@@ -1107,6 +1204,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             TypanWarColors.ForWinner(component.Winner));
 
         GrantWarRewards(component);
+        ProcessBets(component);
         BroadcastStatus(component);
         _warBalance.NotifyCombatPhaseEnded();
         _roundEnd.EndRound(TimeSpan.FromSeconds(component.RoundEndDelaySeconds));
