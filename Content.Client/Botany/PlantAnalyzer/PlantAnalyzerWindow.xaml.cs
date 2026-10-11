@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.Botany.PlantAnalyzer;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Localization;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
@@ -141,7 +142,7 @@ public sealed partial class PlantAnalyzerWindow : FancyWindow
 
         _seedLabel.Text = msg.PlantData == null
             ? Loc.GetString("plant-analyzer-component-no-seed")
-            : Loc.GetString(msg.PlantData.SeedDisplayName);
+            : LocExtensions.LocalizeOrRaw(msg.PlantData.SeedDisplayName);
 
         _containerLabel.Text = _entityManager.HasComponent<MetaDataComponent>(target.Value)
             ? Identity.Name(target.Value, _entityManager)

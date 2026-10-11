@@ -9,6 +9,7 @@ using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Labels.EntitySystems;
+using Content.Shared.Localization;
 using Content.Shared.Paper;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
@@ -144,7 +145,7 @@ public sealed class PlantAnalyzerSystem : AbstractAnalyzerSystem<PlantAnalyzerCo
         var data = GatherData(component);
         var missingData = Loc.GetString("plant-analyzer-printout-missing");
 
-        var seedName = data.PlantData is not null ? Loc.GetString(data.PlantData.SeedDisplayName) : null;
+        var seedName = data.PlantData is not null ? LocExtensions.LocalizeOrRaw(data.PlantData.SeedDisplayName) : null;
         (string, object)[] parameters = [
             ("seedName", seedName ?? missingData),
             ("produce", data.ProduceData is not null ? PlantAnalyzerLocalizationHelper.ProduceToLocalizedStrings(data.ProduceData.Produce, _prototypeManager).Plural : missingData),
