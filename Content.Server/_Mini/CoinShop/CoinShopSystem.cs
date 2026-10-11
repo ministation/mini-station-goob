@@ -378,7 +378,7 @@ public sealed class CoinShopSystem : EntitySystem
         var cosmetics = _prototypes.EnumeratePrototypes<CoinCosmeticPrototype>()
             .OrderBy(p => p.Order)
             .ThenBy(p => p.Price)
-            .Select(p => new CoinShopItemEntry(p.ID, p.Name, p.Price, p.Rarity, owned?.Contains(p.ID) ?? false))
+            .Select(p => new CoinShopItemEntry(p.ID, p.Name, p.Price, p.Rarity, owned?.Contains(p.ID) ?? false, p.Icon.ToString()))
             .ToList();
 
         var colors = _prototypes.EnumeratePrototypes<CoinOocColorPrototype>()

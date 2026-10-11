@@ -41,3 +41,5 @@ coin-shop-ghost-selected = Применена
 coin-shop-balance-label = Баланс:
 
 coin-shop-lootbox-title = Ящик удачи
+
+coin-shop-color-days = Цвет ника на {$days} дней

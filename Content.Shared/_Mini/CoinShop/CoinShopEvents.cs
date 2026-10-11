@@ -89,13 +89,15 @@ public sealed class CoinShopItemEntry(
     string name,
     int price,
     CoinRarity rarity,
-    bool owned)
+    bool owned,
+    string iconRsi)
 {
     public string Id { get; } = id;
     public string Name { get; } = name;
     public int Price { get; } = price;
     public CoinRarity Rarity { get; } = rarity;
     public bool Owned { get; } = owned;
+    public string IconRsi { get; } = iconRsi;
 }
 
 [Serializable, NetSerializable]

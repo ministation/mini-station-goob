@@ -76,13 +76,8 @@ public sealed class ServerListBox : BoxContainer
             OpenDailyRewards));
 
         actionButtonsContainer.AddChild(CreateActionButton(
-            "Призраки",
-            new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Ghost.png")),
-            OpenGhostMenu));
-
-        actionButtonsContainer.AddChild(CreateActionButton(
             "Кастомизация",
-            new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Coin.png")),
+            new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Ghost.png")),
             OpenCoinShop));
 
         AddChild(actionButtonsContainer);

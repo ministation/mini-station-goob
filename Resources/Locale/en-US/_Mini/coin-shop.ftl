@@ -41,3 +41,5 @@ coin-shop-ghost-selected = Applied
 coin-shop-balance-label = Balance:
 
 coin-shop-lootbox-title = Lucky crate
+
+coin-shop-color-days = Nick color for {$days} days

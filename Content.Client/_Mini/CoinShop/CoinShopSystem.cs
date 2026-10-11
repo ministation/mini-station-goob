@@ -63,6 +63,18 @@ public sealed class CoinShopSystem : EntitySystem
         }
     }
 
+    public Texture? GetItemIcon(string rsiPath)
+    {
+        try
+        {
+            return _sprite.Frame0(new SpriteSpecifier.Rsi(new ResPath(rsiPath), "icon"));
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private void OpenWindow()
     {
         if (_window is { IsOpen: true })

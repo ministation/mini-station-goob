@@ -43,7 +43,7 @@ public sealed class CoinShopWindow : DefaultWindow
 
     private Label _balanceValueLabel = null!;
     private BoxContainer _cosmeticRow = null!;
-    private BoxContainer _colorRow = null!;
+    private GridContainer _colorGrid = null!;
     private BoxContainer _ghostRow = null!;
     private Label _rollResultLabel = null!;
 
@@ -55,7 +55,7 @@ public sealed class CoinShopWindow : DefaultWindow
         Title = Loc.GetString("coin-shop-title");
         MinSize = new Vector2(1000, 650);
         MaxSize = new Vector2(1000, float.PositiveInfinity);
-        SetSize = new Vector2(1000, 660);
+        SetSize = new Vector2(1000, 720);
 
         var backdrop = new PanelContainer
         {
@@ -82,7 +82,7 @@ public sealed class CoinShopWindow : DefaultWindow
         root.AddChild(BuildSectionHeader(Loc.GetString("coin-shop-cosmetics-header")));
         root.AddChild(BuildCosmeticRow());
         root.AddChild(BuildSectionHeader(Loc.GetString("coin-shop-colors-header")));
-        root.AddChild(BuildColorRow());
+        root.AddChild(BuildColorGrid());
         root.AddChild(BuildSectionHeader(Loc.GetString("coin-shop-ghosts-header")));
         root.AddChild(BuildGhostRow());
         root.AddChild(BuildLootboxPanel());
@@ -178,7 +178,7 @@ public sealed class CoinShopWindow : DefaultWindow
         };
     }
 
-    private Control BuildScrollRow(BoxContainer row, float maxHeight)
+    private Control BuildHScrollRow(BoxContainer row, float height)
     {
         var scroll = new ScrollContainer
         {
@@ -186,7 +186,7 @@ public sealed class CoinShopWindow : DefaultWindow
             HorizontalExpand = true,
             HScrollEnabled = true,
             VScrollEnabled = false,
-            MaxHeight = maxHeight
+            MaxHeight = height
         };
         scroll.AddChild(row);
         return scroll;
@@ -199,17 +199,19 @@ public sealed class CoinShopWindow : DefaultWindow
             Orientation = LayoutOrientation.Horizontal,
             SeparationOverride = 16
         };
-        return BuildScrollRow(_cosmeticRow, 230);
+        return BuildHScrollRow(_cosmeticRow, 300);
     }
 
-    private Control BuildColorRow()
+    private Control BuildColorGrid()
     {
-        _colorRow = new BoxContainer
+        _colorGrid = new GridContainer
         {
-            Orientation = LayoutOrientation.Horizontal,
-            SeparationOverride = 12
+            Columns = 4,
+            HSeparationOverride = 16,
+            VSeparationOverride = 12,
+            HorizontalExpand = true
         };
-        return _colorRow;
+        return _colorGrid;
     }
 
     private Control BuildGhostRow()
@@ -219,7 +221,7 @@ public sealed class CoinShopWindow : DefaultWindow
             Orientation = LayoutOrientation.Horizontal,
             SeparationOverride = 16
         };
-        return BuildScrollRow(_ghostRow, 330);
+        return BuildHScrollRow(_ghostRow, 350);
     }
 
     public void UpdateState(CoinShopStateEvent state)
@@ -230,9 +232,9 @@ public sealed class CoinShopWindow : DefaultWindow
         foreach (var entry in state.Cosmetics)
             _cosmeticRow.AddChild(CreateCosmeticCard(entry, state.SelectedCosmetic));
 
-        _colorRow.RemoveAllChildren();
+        _colorGrid.RemoveAllChildren();
         foreach (var entry in state.Colors)
-            _colorRow.AddChild(CreateColorButton(entry));
+            _colorGrid.AddChild(CreateColorCard(entry));
 
         _ghostRow.RemoveAllChildren();
         foreach (var entry in state.Ghosts)
@@ -259,13 +261,43 @@ public sealed class CoinShopWindow : DefaultWindow
             _rollResultLabel.Visible = visible;
     }
 
+    private Control BuildIconBox(string iconRsi, Vector2 size)
+    {
+        var imageBox = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            HorizontalAlignment = HAlignment.Center,
+            VerticalAlignment = VAlignment.Center,
+            MinSize = new Vector2(0, size.Y + 20)
+        };
+
+        var tex = _system.GetItemIcon(iconRsi);
+        if (tex != null)
+        {
+            imageBox.AddChild(new TextureRect
+            {
+                Texture = tex,
+                MinSize = size,
+                MaxSize = size,
+                Stretch = TextureRect.StretchMode.KeepAspectCentered
+            });
+        }
+        else
+        {
+            imageBox.AddChild(new Label { Text = "?", Modulate = Color.White });
+        }
+
+        return imageBox;
+    }
+
     private Control CreateCosmeticCard(CoinShopItemEntry entry, string? selected)
     {
         var isWorn = entry.Id == selected;
 
         var panel = new PanelContainer
         {
-            MinSize = new Vector2(240, 0),
+            MinSize = new Vector2(240, 290),
+            MaxSize = new Vector2(240, 290),
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = isWorn ? SelectedCardColor : CardBackgroundColor,
@@ -281,10 +313,11 @@ public sealed class CoinShopWindow : DefaultWindow
         var root = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 8,
-            VerticalExpand = true
+            SeparationOverride = 6
         };
         panel.AddChild(root);
+
+        root.AddChild(BuildIconBox(entry.IconRsi, new Vector2(96, 96)));
 
         root.AddChild(new Label
         {
@@ -293,15 +326,17 @@ public sealed class CoinShopWindow : DefaultWindow
             Modulate = RarityColors[(int) entry.Rarity],
             HorizontalAlignment = HAlignment.Center,
             MaxWidth = 208,
+            ClipText = true,
             ToolTip = Loc.GetString($"coin-shop-rarity-{entry.Rarity.ToString().ToLower()}"),
         });
 
-        root.AddChild(new Control { VerticalExpand = true });
-
         root.AddChild(BuildPriceRow(entry.Price, center: true));
 
-        root.AddChild(CreateActionButton(isWorn ? "coin-shop-unequip" : "coin-shop-equip", 240,
-            () => _system.RequestSelectCosmetic(isWorn ? null : entry.Id)));
+        root.AddChild(CreateActionButton(
+            isWorn ? "coin-shop-unequip" : "coin-shop-equip",
+            208,
+            () => _system.RequestSelectCosmetic(isWorn ? null : entry.Id),
+            isWorn));
 
         return panel;
     }
@@ -310,9 +345,8 @@ public sealed class CoinShopWindow : DefaultWindow
     {
         var panel = new PanelContainer
         {
-            MinSize = new Vector2(290, 0),
-            MaxSize = new Vector2(290, 1000),
-            VerticalExpand = true,
+            MinSize = new Vector2(290, 320),
+            MaxSize = new Vector2(290, 320),
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = entry.Selected ? SelectedCardColor : CardBackgroundColor,
@@ -328,35 +362,11 @@ public sealed class CoinShopWindow : DefaultWindow
         var root = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 8,
-            VerticalExpand = true
+            SeparationOverride = 6
         };
         panel.AddChild(root);
 
-        var imageBox = new BoxContainer
-        {
-            Orientation = LayoutOrientation.Vertical,
-            HorizontalAlignment = HAlignment.Center,
-            VerticalAlignment = VAlignment.Center,
-            MinSize = new Vector2(0, 140)
-        };
-        root.AddChild(imageBox);
-
-        var tex = _system.GetGhostIcon(entry.IconRsiPath);
-        if (tex != null)
-        {
-            imageBox.AddChild(new TextureRect
-            {
-                Texture = tex,
-                MinSize = new Vector2(96, 96),
-                MaxSize = new Vector2(96, 96),
-                Stretch = TextureRect.StretchMode.KeepAspectCentered
-            });
-        }
-        else
-        {
-            imageBox.AddChild(new Label { Text = "?", Modulate = Color.White });
-        }
+        root.AddChild(BuildIconBox(entry.IconRsiPath, new Vector2(96, 96)));
 
         root.AddChild(new Label
         {
@@ -364,21 +374,10 @@ public sealed class CoinShopWindow : DefaultWindow
             StyleClasses = { "LabelHeading" },
             Modulate = Color.White,
             HorizontalAlignment = HAlignment.Center,
-            MaxWidth = 268
+            MaxWidth = 268,
+            ClipText = true,
+            ToolTip = entry.Description,
         });
-
-        if (!string.IsNullOrEmpty(entry.Description))
-        {
-            root.AddChild(new Label
-            {
-                Text = entry.Description,
-                Modulate = AccentColor,
-                HorizontalAlignment = HAlignment.Center,
-                MaxWidth = 268
-            });
-        }
-
-        root.AddChild(new Control { VerticalExpand = true });
 
         if (entry.Owned)
         {
@@ -391,6 +390,7 @@ public sealed class CoinShopWindow : DefaultWindow
         }
         else
         {
+            root.AddChild(BuildPriceRow(entry.Price, center: true));
             root.AddChild(CreatePriceButton(entry.Price, 268,
                 () => _system.RequestBuyGhost(entry.Id)));
         }
@@ -398,24 +398,62 @@ public sealed class CoinShopWindow : DefaultWindow
         return panel;
     }
 
-    private Control CreateColorButton(CoinShopColorEntry entry)
+    private Control CreateColorCard(CoinShopColorEntry entry)
     {
-        var button = new Button
+        var panel = new PanelContainer
         {
-            Text = entry.Active ? Loc.GetString("coin-shop-color-active") : $"{entry.Price}",
-            ToolTip = Loc.GetString("coin-shop-color-tooltip"),
-            MinSize = new Vector2(74, 34),
+            MinSize = new Vector2(220, 200),
+            MaxSize = new Vector2(220, 200),
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = CardBackgroundColor,
+                BorderColor = entry.Active ? SelectedBorderColor : Color.Transparent,
+                BorderThickness = new Thickness(1),
+                ContentMarginLeftOverride = 14,
+                ContentMarginTopOverride = 14,
+                ContentMarginRightOverride = 14,
+                ContentMarginBottomOverride = 14
+            }
         };
 
-        button.StyleBoxOverride = new StyleBoxFlat
+        var root = new BoxContainer
         {
-            BackgroundColor = Color.TryFromHex(entry.ColorHex, out var parsed) ? parsed : Color.Gray,
-            BorderColor = entry.Active ? AccentColor : Color.Transparent,
-            BorderThickness = new Thickness(2),
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 8
         };
+        panel.AddChild(root);
 
-        button.OnPressed += _ => _system.RequestBuyOocColor(entry.Id);
-        return button;
+        // Big color swatch.
+        var swatch = new PanelContainer
+        {
+            MinSize = new Vector2(0, 64),
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = Color.TryFromHex(entry.ColorHex, out var parsed) ? parsed : Color.Gray,
+                BorderColor = Color.FromHex("#121824"),
+                BorderThickness = new Thickness(2)
+            }
+        };
+        root.AddChild(swatch);
+
+        root.AddChild(new Label
+        {
+            Text = entry.Active ? Loc.GetString("coin-shop-color-active") : Loc.GetString("coin-shop-color-days", ("days", 30)),
+            Modulate = entry.Active ? SelectedBorderColor : SubtitleColor,
+            HorizontalAlignment = HAlignment.Center
+        });
+
+        if (!entry.Active)
+        {
+            root.AddChild(BuildPriceRow(entry.Price, center: true));
+            root.AddChild(CreatePriceButton(entry.Price, 192, () => _system.RequestBuyOocColor(entry.Id)));
+        }
+        else
+        {
+            root.AddChild(new Control { VerticalExpand = true });
+        }
+
+        return panel;
     }
 
     private Control BuildLootboxPanel()
