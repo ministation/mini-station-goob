@@ -775,4 +775,49 @@ public sealed class MiniCCVars
     /// </summary>
     public static readonly CVarDef<bool> NeuroPlayerThinkingEnabled =
         CVarDef.Create("neuroplayer.thinking_enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /*
+     * Neuro ahelp assistant — LLM first-line responder in admin help while no admins are online.
+     * Uses the same LLM provider as the neuro players (neuroplayer.provider).
+     */
+
+    /// <summary>Master switch for the ahelp assistant.</summary>
+    public static readonly CVarDef<bool> NeuroAHelpEnabled =
+        CVarDef.Create("neuroahelp.enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Name the assistant introduces itself with; also used as the message prefix.</summary>
+    public static readonly CVarDef<string> NeuroAHelpName =
+        CVarDef.Create("neuroahelp.name", "Нейропомощник", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Grace period before answering a ticket: a live admin gets the first shot at it, and the
+    /// assistant only steps in if nobody picked the ticket up.
+    /// </summary>
+    public static readonly CVarDef<int> NeuroAHelpDelaySeconds =
+        CVarDef.Create("neuroahelp.delay_seconds", 8, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Per-player cooldown between assistant answers (anti-spam and anti-cost).</summary>
+    public static readonly CVarDef<int> NeuroAHelpCooldownSeconds =
+        CVarDef.Create("neuroahelp.cooldown_seconds", 120, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>How many recent ahelp lines are sent to the model as context.</summary>
+    public static readonly CVarDef<int> NeuroAHelpMaxContext =
+        CVarDef.Create("neuroahelp.max_context_messages", 8, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> NeuroAHelpMaxTokens =
+        CVarDef.Create("neuroahelp.max_tokens", 256, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Separate request budget, so the IC bots cannot starve the support channel
+    /// (0 = unlimited, like neuroplayer.requests_per_minute).
+    /// </summary>
+    public static readonly CVarDef<int> NeuroAHelpRequestsPerMinute =
+        CVarDef.Create("neuroahelp.requests_per_minute", 20, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Free-form extra instructions for the assistant (server rules summary, ссылки, тон общения).
+    /// Appended to the built-in system prompt.
+    /// </summary>
+    public static readonly CVarDef<string> NeuroAHelpExtraPrompt =
+        CVarDef.Create("neuroahelp.extra_prompt", "", CVar.SERVERONLY | CVar.ARCHIVE);
 }

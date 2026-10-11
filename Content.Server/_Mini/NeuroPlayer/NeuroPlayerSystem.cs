@@ -79,7 +79,7 @@ namespace Content.Server._Mini.NeuroPlayer;
 /// LLM-driven passenger bots ("neuro players"): spawn each round as passengers,
 /// wander public areas and answer when addressed by name in local chat or common radio.
 /// </summary>
-public sealed class NeuroPlayerSystem : EntitySystem
+public sealed partial class NeuroPlayerSystem : EntitySystem
 {
     private const string CommonChannelId = "Common";
     private const int MaxReplyLength = 200;
@@ -355,6 +355,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
         SubscribeLocalEvent<DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
         SubscribeLocalEvent<EvacShuttleDockedEvent>(OnEvacDocked);
+
+        // Admin-help assistant (partial file): answers ahelp while no admins are online.
+        InitializeAHelp();
     }
 
     public override void Shutdown()
@@ -1366,11 +1369,12 @@ public sealed class NeuroPlayerSystem : EntitySystem
         NeuroProviderConfig primary,
         string systemPrompt,
         string userPrompt,
-        CancellationToken cancel)
+        CancellationToken cancel,
+        int? maxTokens = null)
     {
         try
         {
-            var reply = await SendCompletionAsync(primary, systemPrompt, userPrompt, cancel);
+            var reply = await SendCompletionAsync(primary, systemPrompt, userPrompt, cancel, maxTokens);
             Interlocked.Increment(ref _requestsOk);
             return reply;
         }
@@ -1388,7 +1392,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 _sawmill.Info($"Neuro players: retrying on {fallback.Provider}/{fallback.Model}.");
 
                 using var fallbackCts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
-                var reply = await SendCompletionAsync(fallback, systemPrompt, userPrompt, fallbackCts.Token);
+                var reply = await SendCompletionAsync(fallback, systemPrompt, userPrompt, fallbackCts.Token, maxTokens);
                 Interlocked.Increment(ref _requestsOk);
                 return reply;
             }
@@ -1482,7 +1486,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
         NeuroProviderConfig config,
         string systemPrompt,
         string userPrompt,
-        CancellationToken cancel)
+        CancellationToken cancel,
+        int? maxTokens = null)
     {
         var body = new CompletionRequest
         {
@@ -1493,7 +1498,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 new ChatMessageDto("user", userPrompt),
             ],
             Temperature = _temperature,
-            MaxTokens = _maxTokens,
+            MaxTokens = maxTokens ?? _maxTokens,
         };
 
         // GLM-4.5/4.6 style reasoning toggle: with a small token budget thinking eats the whole
@@ -1612,6 +1617,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        // The ahelp assistant works even when the IC bots are disabled.
+        TickAHelp();
 
         if (!_enabled)
             return;
@@ -2103,23 +2111,30 @@ public sealed class NeuroPlayerSystem : EntitySystem
     /// </summary>
     private bool TryScreenReply(EntityUid bot, string reply)
     {
-        var botName = Name(bot);
+        return TryScreenText(Name(bot), reply, blockAiTalk: _blockAiTalk);
+    }
 
+    /// <summary>
+    /// Same screen as <see cref="TryScreenReply"/> but for a non-entity speaker (the ahelp
+    /// assistant), which is allowed to admit that it is an AI.
+    /// </summary>
+    private bool TryScreenText(string who, string reply, bool blockAiTalk)
+    {
         foreach (var word in _blockedWords)
         {
             if (!ContainsWordWithSuffix(reply, word, MaxNameSuffixLength))
                 continue;
 
-            _sawmill.Warning($"Neuro player {botName}: reply dropped by neuroplayer.blocked_words ('{word}'): {reply}");
+            _sawmill.Warning($"Neuro reply for {who}: dropped by neuroplayer.blocked_words ('{word}'): {reply}");
             Interlocked.Increment(ref _blockedReplies);
             _adminLog.Add(LogType.Chat, LogImpact.Medium,
-                $"Neuro player {botName} reply blocked by blocked_words ('{word}'): {reply}");
+                $"Neuro reply for {who} blocked by blocked_words ('{word}'): {reply}");
             return false;
         }
 
-        if (_blockAiTalk && AdmitsBeingAi(reply))
+        if (blockAiTalk && AdmitsBeingAi(reply))
         {
-            _sawmill.Info($"Neuro player {botName}: out-of-character reply dropped: {reply}");
+            _sawmill.Info($"Neuro reply for {who}: out-of-character reply dropped: {reply}");
             Interlocked.Increment(ref _blockedReplies);
             return false;
         }
