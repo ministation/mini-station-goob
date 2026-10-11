@@ -40,6 +40,16 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared._EinsteinEngines.Language.Components;
 using Content.Shared._EinsteinEngines.Language.Systems;
+using Content.Shared.Buckle;
+using Content.Shared.Buckle.Components;
+using Content.Shared.Cuffs;
+using Content.Shared.Cuffs.Components;
+using Content.Shared.DoAfter;
+// Content.Shared.DoAfter is both a namespace and the class inside it, so alias the type.
+using DoAfterData = Content.Shared.DoAfter.DoAfter;
+using Content.Shared.Movement.Pulling.Components;
+using Content.Shared.Movement.Pulling.Events;
+using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Ghost;
 using Content.Server.Administration.Logs;
 using Content.Shared.Database;
@@ -105,6 +115,34 @@ public sealed class NeuroPlayerSystem : EntitySystem
     /// <summary>Bots notice fires within this many tiles.</summary>
     private const float FireAlertRadius = 12f;
 
+    /*
+     * Resisting being handled. A live passenger is not luggage: pulls, cuffs and chairs are fought
+     * off with a roll. Failing the roll means the other player simply succeeds (so security can
+     * still arrest a struggling passenger), and downed bots never resist — dragging a crit body to
+     * medbay must stay possible.
+     */
+
+    /// <summary>Chance that a grab on a live bot simply fails.</summary>
+    private const float PullResistChance = 0.5f;
+
+    /// <summary>Chance that applying handcuffs is refused (the do-after never starts).</summary>
+    private const float CuffResistChance = 0.5f;
+
+    /// <summary>Chance that sitting the bot down on a chair/strap is refused.</summary>
+    private const float BuckleResistChance = 0.6f;
+
+    /// <summary>Chance per second that a dragged bot wriggles out of the grab (cuffed bots cannot).</summary>
+    private const float BreakFreeChance = 0.3f;
+
+    /// <summary>Chance per second that a buckled bot gets up (cuffed bots cannot).</summary>
+    private const float StandUpChance = 0.35f;
+
+    /// <summary>Fleeing from a grabber is shorter than fleeing from a fire.</summary>
+    private const float ResistFleeSeconds = 8f;
+
+    /// <summary>How often the "let me go" struggle is rolled.</summary>
+    private const float ResistCheckSeconds = 1f;
+
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -130,6 +168,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
     [Dependency] private readonly SharedLanguageSystem _language = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
+    [Dependency] private readonly PullingSystem _pulling = default!;
+    [Dependency] private readonly SharedBuckleSystem _buckle = default!;
+    [Dependency] private readonly SharedCuffableSystem _cuffable = default!;
 
     private ISawmill _sawmill = default!;
     private readonly HttpClient _httpClient = new();
@@ -162,6 +203,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private readonly Queue<TimeSpan> _requestTimes = new();
 
+    /// <summary>Cuffing do-afters already rolled for, so one attempt gets exactly one resist roll.</summary>
+    private readonly HashSet<DoAfterData> _cuffAttempts = new();
+
     private int _requestsOk;
     private int _requestsFailed;
     private int _fallbacks;
@@ -170,6 +214,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private float _dangerScanAccumulator;
     private float _seekAccumulator;
+    private float _resistAccumulator;
 
     /// <summary>Round bookkeeping: bots are spawned once per round, with retries while they are missing.</summary>
     private bool _spawnedThisRound;
@@ -214,6 +259,48 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private static readonly string[] EvacCries =
         ["Бежим на эвак!", "Эвак пристыковался, быстрее!", "За мной на эвак, шевелитесь!", "Погнали на эвак, пока не улетел!"];
 
+    private static readonly string[] ResistCries =
+    [
+        "Отстаньте от меня!",
+        "Эй, руки убрал! Я не груз!",
+        "Пустите! Я вам не багаж!",
+        "Отстаньте, я спешу!",
+    ];
+
+    private static readonly string[] DraggedCries =
+    [
+        "Отстаньте! Куда вы меня тащите?!",
+        "Пустите! Я сам дойду!",
+        "Отстаньте, я не чемодан!",
+    ];
+
+    private static readonly string[] BreakFreeCries =
+    [
+        "Отстаньте! Всё, хватит меня таскать!",
+        "Пустите! Я вырвался!",
+        "Отстаньте от меня, я сказал!",
+    ];
+
+    private static readonly string[] CuffResistCries =
+    [
+        "Отстаньте! Наручники?! Не дамся!",
+        "Пустите! Я ничего не сделал!",
+        "Отстаньте от меня! Помогите кто-нибудь!",
+    ];
+
+    private static readonly string[] BuckleResistCries =
+    [
+        "Отстаньте! Я не хочу сидеть!",
+        "Пустите! У меня дела!",
+        "Отстаньте, я не арестант!",
+    ];
+
+    private static readonly string[] SitDownCries =
+    [
+        "Отстаньте! Я тут не останусь!",
+        "Пустите, я не собираюсь сидеть!",
+    ];
+
     public override void Initialize()
     {
         base.Initialize();
@@ -254,6 +341,14 @@ public sealed class NeuroPlayerSystem : EntitySystem
         SubscribeLocalEvent<EntitySpokeEvent>(OnGlobalSpoke);
         SubscribeLocalEvent<NeuroPlayerComponent, RadioReceiveEvent>(OnRadioReceive);
         SubscribeLocalEvent<NeuroPlayerComponent, MobStateChangedEvent>(OnBotMobStateChanged);
+        // Resisting being handled: grabs, handcuffs and chairs.
+        SubscribeLocalEvent<NeuroPlayerComponent, PullAttemptEvent>(OnBotPullAttempt);
+        SubscribeLocalEvent<NeuroPlayerComponent, PullStartedMessage>(OnBotPullStarted);
+        SubscribeLocalEvent<NeuroPlayerComponent, BuckleAttemptEvent>(OnBotBuckleAttempt);
+        SubscribeLocalEvent<NeuroPlayerComponent, BuckledEvent>(OnBotBuckled);
+        // The cuff do-after is directed at the handcuffs, so the bot's component never sees the
+        // attempt itself — listen on the item and look at who is being cuffed.
+        SubscribeLocalEvent<HandcuffComponent, DoAfterAttemptEvent<AddCuffDoAfterEvent>>(OnHandcuffAttempt);
         SubscribeLocalEvent<DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
         SubscribeLocalEvent<EvacShuttleDockedEvent>(OnEvacDocked);
@@ -318,6 +413,173 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private bool IsBotUp(EntityUid bot)
     {
         return Exists(bot) && !TerminatingOrDeleted(bot) && _mobState.IsAlive(bot);
+    }
+
+    /// <summary>Whether somebody already put handcuffs on the bot.</summary>
+    private bool IsBotCuffed(EntityUid bot)
+    {
+        return TryComp<CuffableComponent>(bot, out var cuffable) && _cuffable.IsCuffed((bot, cuffable));
+    }
+
+    /// <summary>Whether a bot can fight back at all right now.</summary>
+    private bool CanResist(EntityUid bot, NeuroPlayerComponent comp)
+    {
+        return IsBotUp(bot) && !IsMuted(comp) && !IsBotCuffed(bot);
+    }
+
+    /// <summary>
+    /// Grab attempt: a live passenger tears the hand away with a coin flip. Downed bots never
+    /// resist, so carrying a crit body to medbay still works.
+    /// </summary>
+    private void OnBotPullAttempt(EntityUid uid, NeuroPlayerComponent comp, PullAttemptEvent args)
+    {
+        if (!_enabled || args.Cancelled || args.PullerUid == uid)
+            return;
+
+        // Bots never grab each other, but do not resist a bot either.
+        if (HasComp<NeuroPlayerComponent>(args.PullerUid) || !CanResist(uid, comp))
+            return;
+
+        if (!_random.Prob(PullResistChance))
+            return;
+
+        args.Cancelled = true;
+        Resist(uid, comp, args.PullerUid, ResistCries, flee: true);
+    }
+
+    /// <summary>Grab succeeded anyway: complain the whole time the bot is being dragged.</summary>
+    private void OnBotPullStarted(EntityUid uid, NeuroPlayerComponent comp, PullStartedMessage args)
+    {
+        if (!_enabled || args.PullerUid == uid || HasComp<NeuroPlayerComponent>(args.PullerUid))
+            return;
+
+        if (!CanResist(uid, comp))
+            return;
+
+        CryResist(uid, comp, DraggedCries);
+    }
+
+    /// <summary>
+    /// Handcuffs: refuse the attempt with a coin flip. The attempt event fires when the do-after
+    /// starts and again when it finishes (Mini raised its frequency for exactly this hook), so the
+    /// roll is remembered per do-after — otherwise the bot would also slip out at the last moment.
+    /// </summary>
+    private void OnHandcuffAttempt(Entity<HandcuffComponent> ent, ref DoAfterAttemptEvent<AddCuffDoAfterEvent> args)
+    {
+        if (!_enabled || args.Cancelled)
+            return;
+
+        // Second raise for the same do-after: the decision was already made.
+        if (!_cuffAttempts.Add(args.DoAfter))
+            return;
+
+        PruneCuffAttempts();
+
+        var user = args.DoAfter.Args.User;
+        if (args.DoAfter.Args.Target is not { } bot || bot == user)
+            return;
+
+        if (!TryComp<NeuroPlayerComponent>(bot, out var comp) || !CanResist(bot, comp))
+            return;
+
+        if (!_random.Prob(CuffResistChance))
+            return;
+
+        args.Cancel();
+        Resist(bot, comp, user, CuffResistCries, flee: true);
+    }
+
+    private void PruneCuffAttempts()
+    {
+        if (_cuffAttempts.Count < 128)
+            return;
+
+        _cuffAttempts.RemoveWhere(doAfter => doAfter.Completed || doAfter.Cancelled);
+    }
+
+    /// <summary>Sitting the bot down: refuse with a chance, otherwise complain from the chair.</summary>
+    private void OnBotBuckleAttempt(EntityUid uid, NeuroPlayerComponent comp, ref BuckleAttemptEvent args)
+    {
+        if (!_enabled || args.Cancelled || args.User is not { } user || user == uid)
+            return;
+
+        if (HasComp<NeuroPlayerComponent>(user) || !CanResist(uid, comp))
+            return;
+
+        if (!_random.Prob(BuckleResistChance))
+            return;
+
+        args.Cancelled = true;
+        Resist(uid, comp, user, BuckleResistCries, flee: true);
+    }
+
+    private void OnBotBuckled(EntityUid uid, NeuroPlayerComponent comp, ref BuckledEvent args)
+    {
+        if (!_enabled || !CanResist(uid, comp))
+            return;
+
+        CryResist(uid, comp, SitDownCries);
+    }
+
+    /// <summary>
+    /// Ongoing struggle, rolled once a second: a dragged bot wriggles out of a grab and a buckled
+    /// bot gets up. Handcuffs end both — that is what they are for.
+    /// </summary>
+    private void ResistBeingHeld()
+    {
+        foreach (var bot in _bots)
+        {
+            if (!TryComp<NeuroPlayerComponent>(bot, out var comp) || !CanResist(bot, comp))
+                continue;
+
+            if (TryComp<PullableComponent>(bot, out var pullable) &&
+                pullable.Puller is { } puller && Exists(puller) && !HasComp<NeuroPlayerComponent>(puller))
+            {
+                // user: bot keeps the engine's own escape rules (grab stage, escape cooldown, stamina).
+                if (_random.Prob(BreakFreeChance) && _pulling.TryStopPull(bot, pullable, user: bot))
+                {
+                    Resist(bot, comp, puller, BreakFreeCries, flee: true);
+                    continue;
+                }
+
+                CryResist(bot, comp, DraggedCries);
+                continue;
+            }
+
+            if (TryComp<BuckleComponent>(bot, out var buckleComp) && buckleComp.Buckled &&
+                _random.Prob(StandUpChance))
+            {
+                _buckle.TryUnbuckle((bot, buckleComp), bot, popup: false);
+                CryResist(bot, comp, SitDownCries);
+            }
+        }
+    }
+
+    /// <summary>Common reaction to being grabbed, cuffed or seated: shout and try to get away.</summary>
+    private void Resist(EntityUid bot, NeuroPlayerComponent comp, EntityUid user, string[] cries, bool flee)
+    {
+        CryResist(bot, comp, cries);
+
+        if (!flee || !user.IsValid() || !Exists(user) || HasComp<NeuroPlayerComponent>(user) || !IsBotUp(bot))
+            return;
+
+        TriggerDanger(bot, comp, _transform.GetWorldPosition(user), null, cry: false, seconds: ResistFleeSeconds);
+    }
+
+    /// <summary>"Отстаньте!" — canned line with its own, much shorter cooldown than a fire cry.</summary>
+    private void CryResist(EntityUid bot, NeuroPlayerComponent comp, string[] phrases)
+    {
+        if (_timing.CurTime < comp.NextResistCry || !IsBotUp(bot) || IsMuted(comp))
+            return;
+
+        comp.NextResistCry = _timing.CurTime + TimeSpan.FromSeconds(6);
+        SayCanned(bot, _random.Pick(phrases));
+    }
+
+    private void SayCanned(EntityUid bot, string phrase)
+    {
+        _chat.TrySendInGameICMessage(bot, phrase, InGameICChatType.Speak, hideChat: false, hideLog: true);
+        _adminLog.Add(LogType.Chat, LogImpact.Low, $"Say from neuro player {Name(bot)}: {phrase}");
     }
 
     /// <summary>Admin mute (neurobots mute): permanently or until the timed mute runs out.</summary>
@@ -1310,6 +1572,13 @@ public sealed class NeuroPlayerSystem : EntitySystem
             SeekLonelyPlayers();
         }
 
+        _resistAccumulator += frameTime;
+        if (_resistAccumulator >= ResistCheckSeconds)
+        {
+            _resistAccumulator = 0f;
+            ResistBeingHeld();
+        }
+
         var now = _timing.CurTime;
         for (var i = _bots.Count - 1; i >= 0; i--)
         {
@@ -1582,7 +1851,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         }
     }
 
-    private void TriggerDanger(EntityUid bot, NeuroPlayerComponent comp, Vector2 dangerPos, string[]? cries, bool cry = true)
+    private void TriggerDanger(EntityUid bot, NeuroPlayerComponent comp, Vector2 dangerPos, string[]? cries, bool cry = true, float seconds = 20f)
     {
         if (!TryComp<HTNComponent>(bot, out var htn))
             return;
@@ -1591,7 +1860,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         htn.RootTask = new HTNCompoundTask { Task = "NeuroFleeCompound" };
         _htn.Replan(htn);
 
-        comp.DangerUntil = _timing.CurTime + TimeSpan.FromSeconds(20);
+        comp.DangerUntil = _timing.CurTime + TimeSpan.FromSeconds(seconds);
         comp.VisitUntil = null;
         comp.PoiAccumulator = 0f;
 
@@ -1638,7 +1907,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
             return;
 
         comp.NextCry = _timing.CurTime + TimeSpan.FromSeconds(12);
-        _chat.TrySendInGameICMessage(bot, _random.Pick(phrases), InGameICChatType.Speak, hideChat: false, hideLog: true);
+        SayCanned(bot, _random.Pick(phrases));
     }
 
     private void TryEnableInternals(EntityUid bot)

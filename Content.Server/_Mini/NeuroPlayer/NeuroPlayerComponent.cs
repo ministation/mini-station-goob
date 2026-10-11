@@ -59,6 +59,10 @@ public sealed partial class NeuroPlayerComponent : Component
     [ViewVariables]
     public TimeSpan NextCry = TimeSpan.Zero;
 
+    /// <summary>Separate, shorter cooldown for "отстаньте" when somebody grabs, cuffs or seats the bot.</summary>
+    [ViewVariables]
+    public TimeSpan NextResistCry = TimeSpan.Zero;
+
     /// <summary>Fleeing until this time (NeuroFleeCompound is the active root task).</summary>
     [ViewVariables]
     public TimeSpan? DangerUntil;
