@@ -564,7 +564,9 @@ namespace Content.Shared.Cuffs
                 BreakOnWeightlessMove = false,
                 BreakOnDamage = true,
                 NeedHand = true,
-                DistanceThreshold = 1f // shorter than default but still feels good
+                DistanceThreshold = 1f, // shorter than default but still feels good
+                // Mini: ask the target whether it accepts the cuffs (neuro players resist).
+                AttemptFrequency = AttemptFrequency.StartAndEnd,
             };
 
             if (!_doAfter.TryStartDoAfter(doAfterEventArgs))

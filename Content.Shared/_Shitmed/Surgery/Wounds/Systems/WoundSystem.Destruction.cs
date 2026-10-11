@@ -1,4 +1,4 @@
-using Content.Goobstation.Maths.FixedPoint;
+﻿using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared._Shitmed.Medical.Surgery.Traumas;
 using Content.Shared._Shitmed.Medical.Surgery.Traumas.Components;
 using Content.Shared._Shitmed.Medical.Surgery.Wounds.Components;
@@ -62,13 +62,17 @@ public sealed partial class WoundSystem
             {
                 var traumaInflicter = EnsureComp<TraumaInflicterComponent>(woundInduced.Value.Owner);
 
-                _trauma.AddTrauma(
-                    parentWoundableEntity,
-                    (parentWoundableEntity, Comp<WoundableComponent>(parentWoundableEntity)),
-                    (woundInduced.Value.Owner, traumaInflicter),
-                    TraumaSystem.Dismemberment,
-                    15f,
-                    (bodyPart.PartType, bodyPart.Symmetry));
+                // Mini: the parent woundable can already be gone (deleted mob/body part).
+                if (TryComp<WoundableComponent>(parentWoundableEntity, out var parentWoundableComp))
+                {
+                    _trauma.AddTrauma(
+                        parentWoundableEntity,
+                        (parentWoundableEntity, parentWoundableComp),
+                        (woundInduced.Value.Owner, traumaInflicter),
+                        TraumaSystem.Dismemberment,
+                        15f,
+                        (bodyPart.PartType, bodyPart.Symmetry));
+                }
 
                 ApplyWoundBleeding(woundInduced.Value.Owner);
             }
@@ -242,7 +246,9 @@ public sealed partial class WoundSystem
 
         foreach (var child in new List<EntityUid>(woundableComp.ChildWoundables))
         {
-            var childWoundable = Comp<WoundableComponent>(child);
+            // Mini: child woundables can be queued for deletion mid-iteration.
+            if (!TryComp<WoundableComponent>(child, out var childWoundable))
+                continue;
             if (childWoundable.WoundableSeverity is WoundableSeverity.Mangled)
             {
                 DestroyWoundable(woundableEntity, child, childWoundable);

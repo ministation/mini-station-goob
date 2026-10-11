@@ -9,7 +9,7 @@
             pointKey: NeuroPoint
         - !type:HTNPrimitiveTask
           operator: !type:MoveToOperator
-            pathfindInPlanning: false
+            pathfindInPlanning: true
         - !type:HTNPrimitiveTask
           operator: !type:SetFloatOperator
             targetKey: IdleTime
@@ -30,7 +30,7 @@
             pointKey: NeuroPoint
         - !type:HTNPrimitiveTask
           operator: !type:MoveToOperator
-            pathfindInPlanning: false
+            pathfindInPlanning: true
         - !type:HTNPrimitiveTask
           operator: !type:SetFloatOperator
             targetKey: IdleTime

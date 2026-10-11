@@ -1,4 +1,4 @@
-// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+﻿// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Numerics;
 using Robust.Shared.GameStates;
@@ -117,6 +117,13 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     [ViewVariables]
     public bool BodyBounceActive;
+
+    /// <summary>
+    /// Current bounce lift in sprite units. Overlays anchored to <c>Sprite.Offset</c>
+    /// (status icons, stamina/jitter animations) subtract it to stay still while walking.
+    /// </summary>
+    [ViewVariables]
+    public float CurrentBounceY;
 
     /// <summary>
     /// Client-only bob intensity ramp (0..1): eases in on the first step, eases out on stop.

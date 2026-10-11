@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+﻿// SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Body.Components;
@@ -456,13 +456,19 @@ public sealed partial class WoundSystem
 
         var holdingWoundable = comp.HoldingWoundable;
 
+        // Mini: the wound's woundable can already be gone (deleted body part / bot
+        // cleanup) while damage events still flow — never hard-resolve it.
+        if (holdingWoundable == EntityUid.Invalid
+            || !TryComp<WoundableComponent>(holdingWoundable, out var holdingComp))
+            return false;
+
         var ev = new WoundHealAttemptOnWoundableEvent((wound, comp));
         RaiseLocalEvent(holdingWoundable, ref ev);
 
         if (ev.Cancelled)
             return false;
 
-        var ev1 = new WoundHealAttemptEvent((holdingWoundable, Comp<WoundableComponent>(holdingWoundable)), ignoreBlockers);
+        var ev1 = new WoundHealAttemptEvent((holdingWoundable, holdingComp), ignoreBlockers);
         RaiseLocalEvent(wound, ref ev1);
 
         severityFloor = ev1.SeverityFloor;

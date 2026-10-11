@@ -44,6 +44,11 @@ public sealed partial class GhostGui : UIWidget
     public void Hide()
     {
         TargetWindow.Close();
+
+        // Mini: призрак исчез (конец раунда, выход в лобби) — забываем список варпов, иначе
+        // на следующей жизни панель держит NetEntity, которых на сервере уже нет.
+        TargetWindow.Clear();
+
         Visible = false;
     }
 

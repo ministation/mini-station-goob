@@ -1,5 +1,6 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 
+using Robust.Shared.IoC;
 using System.Numerics;
 using Content.Client.Stunnable;
 using Content.Goobstation.Shared.Emoting;
@@ -74,7 +75,7 @@ public sealed partial class StaminaSystem : SharedStaminaSystem
         if (_mobState.IsDead(entity))
             return;
 
-        entity.Comp.StartOffset = sprite.Offset;
+        entity.Comp.StartOffset = sprite.Offset - new Vector2(0f, GetFootWalkBounce(entity.Owner)); // Mini: bounce rides in Sprite.Offset
 
         PlayAnimation((entity, entity.Comp, sprite));
     }
@@ -140,4 +141,17 @@ public sealed partial class StaminaSystem : SharedStaminaSystem
                 ref entity.Comp1.LastJitter),
             StaminaAnimationKey);
     }
+
+    /// <summary>
+    /// Mini: the FootWalk whole-body bounce lives inside <c>Sprite.Offset</c> while walking;
+    /// animations anchored to the sprite offset must not inherit it.
+    /// </summary>
+    private static float GetFootWalkBounce(EntityUid uid)
+    {
+        return IoCManager.Resolve<IEntityManager>()
+            .TryGetComponent<Content.Shared._Mini.FootWalk.FootWalkAnimationComponent>(uid, out var walk)
+            ? walk.CurrentBounceY
+            : 0f;
+    }
+
 }

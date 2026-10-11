@@ -109,9 +109,9 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
         if (Gui?.TargetWindow is not { } window)
             return;
 
-        // Mini-station: enriched ghost warp panel (players / places / antagonists)
+        // Mini-station: enriched ghost warp panel (players / places / antagonists).
+        // UpdateWarps сам пересобирает открытую панель — второй Populate только жёг кадры.
         window.UpdateWarps(msg.Players, msg.Places, msg.Antagonists);
-        window.Populate();
     }
 
     private void OnRoleCountUpdated(GhostUpdateGhostRoleCountEvent msg)
@@ -168,8 +168,15 @@ public sealed class GhostUIController : UIController, IOnSystemChanged<GhostSyst
     private void RequestWarps()
     {
         _system?.RequestWarps();
-        Gui?.TargetWindow.Populate();
-        Gui?.TargetWindow.OpenCentered();
+
+        if (Gui?.TargetWindow is not { } window)
+            return;
+
+        // Открываем до пересборки: Populate рисует уже полученные варпы (если они есть в этой
+        // жизни) и никогда не строит кнопки из списка прошлого раунда — раньше панель успевала
+        // показать старые кнопки, клик по ним уходил на удалённые сущности и «телепорт не работал».
+        window.OpenCentered();
+        window.Populate();
     }
 
     private void GhostRolesPressed()

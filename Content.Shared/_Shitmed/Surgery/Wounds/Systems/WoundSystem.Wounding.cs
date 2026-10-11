@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Content.Shared._Shitmed.DoAfter;
 using Content.Shared._Shitmed.Medical.Surgery.Traumas;
 using Content.Shared._Shitmed.Medical.Surgery.Traumas.Components;
@@ -68,7 +68,9 @@ public sealed partial class WoundSystem
         if (comp.HoldingWoundable == EntityUid.Invalid)
             return;
 
-        var parentWoundable = Comp<WoundableComponent>(comp.HoldingWoundable);
+        // Mini: the holding woundable can be deleted between wound insert and this event.
+        if (!TryComp<WoundableComponent>(comp.HoldingWoundable, out var parentWoundable))
+            return;
 
         if (!TryComp<WoundableComponent>(parentWoundable.RootWoundable, out var woundableRoot))
             return;
