@@ -1,4 +1,4 @@
-﻿// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Numerics;
 using Robust.Shared.GameStates;
@@ -124,6 +124,19 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     [ViewVariables]
     public float CurrentBounceY;
+
+    /// <summary>
+    /// Sprite height measured right after the walk animation reset its layer offsets, i.e. the
+    /// height without the animated legs/arms. Zero while the animation is not running.
+    /// </summary>
+    /// <remarks>
+    /// The foot bob lifts the leg and shoe layers by up to <see cref="Amplitude"/> (2.5 px) on every
+    /// step, and <c>SpriteSystem.GetLocalBounds()</c> includes layer offsets — so the sprite's bounds
+    /// height (and therefore any anchor built on <c>bounds.Height / 2</c>: status icons, health bar,
+    /// do-after bar) moved ~1.25 px per step even with the body bounce cancelled out.
+    /// </remarks>
+    [ViewVariables]
+    public float RestBoundsHeight;
 
     /// <summary>
     /// Client-only bob intensity ramp (0..1): eases in on the first step, eases out on stop.

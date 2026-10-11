@@ -326,6 +326,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             // Only undo last tick's offsets — do not re-zero every lower-body layer.
             ResetTouchedOffsets((uid, walk), sprite);
 
+            // Mini: right after the reset the layers sit in their rest pose, so this is the sprite
+            // height without the walk animation. Overlays above the head (status icons, health bar,
+            // do-after) anchor on it instead of the animated bounds, otherwise the raising legs moved
+            // them ~1.25 px every step — that was the «худ дёргается при ходьбе».
+            walk.RestBoundsHeight = _sprite.GetLocalBounds((uid, sprite)).Height;
+
             _humanoidQuery.TryGetComponent(uid, out var humanoid);
 
             if (frontMode)
@@ -414,6 +420,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         ent.Comp.WasAnimating = false;
         ent.Comp.Phase = 0f;
         ent.Comp.BobRamp = 0f;
+        // Layers are back at their rest pose: the live bounds are stable again.
+        ent.Comp.RestBoundsHeight = 0f;
     }
 
     /// <summary>

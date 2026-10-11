@@ -128,7 +128,7 @@ public sealed class DoAfterOverlay : Overlay
                 // Use the sprite itself if we know its bounds. This means short or tall sprites don't get overlapped
                 // by the bar. Mini: the sprite offset (and the FootWalk bounce in it) is applied on top, so the bar
                 // hangs above the head exactly like the status icons do.
-                var yOffset = (_sprite.GetLocalBounds((uid, sprite)).Height +
+                var yOffset = (FootWalkBounce.GetStableBoundsHeight(uid, _sprite.GetLocalBounds((uid, sprite)).Height) +
                                FootWalkBounce.GetAnchoredOffsetY(uid, sprite.Offset.Y)) / 2f + 0.05f;
 
                 // Position above the entity (we've already applied the matrix transform to the entity itself)

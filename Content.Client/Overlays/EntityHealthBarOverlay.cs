@@ -100,7 +100,7 @@ public sealed class EntityHealthBarOverlay : Overlay
 
             handle.SetTransform(matty);
 
-            var yOffset = (bounds.Height + FootWalkBounce.GetAnchoredOffsetY(uid, spriteComponent.Offset.Y)) * EyeManager.PixelsPerMeter / 2 - 3f;
+            var yOffset = (FootWalkBounce.GetStableBoundsHeight(uid, bounds.Height) + FootWalkBounce.GetAnchoredOffsetY(uid, spriteComponent.Offset.Y)) * EyeManager.PixelsPerMeter / 2 - 3f;
             var widthOfMob = bounds.Width * EyeManager.PixelsPerMeter;
 
             var position = new Vector2(-widthOfMob / EyeManager.PixelsPerMeter / 2, yOffset / EyeManager.PixelsPerMeter);

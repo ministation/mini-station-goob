@@ -51,4 +51,18 @@ public static class FootWalkBounce
     {
         return HudFollowsBody ? Get(uid) : 0f;
     }
+
+    /// <summary>
+    /// Sprite height for anchors above the head. The walk animation lifts the leg layers every step
+    /// and <c>GetLocalBounds()</c> includes those offsets, so the live bounds height oscillates by up
+    /// to <see cref="FootWalkAnimationComponent.Amplitude"/> — the HUD would bob with it. While the
+    /// animation runs we return the rest height the animation recorded instead.
+    /// </summary>
+    public static float GetStableBoundsHeight(EntityUid uid, float liveHeight)
+    {
+        var walk = IoCManager.Resolve<IEntityManager>()
+            .TryGetComponent<FootWalkAnimationComponent>(uid, out var comp) ? comp : null;
+
+        return walk is { RestBoundsHeight: > 0f } ? walk.RestBoundsHeight : liveHeight;
+    }
 }

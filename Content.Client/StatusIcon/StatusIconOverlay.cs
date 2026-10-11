@@ -61,6 +61,10 @@ public sealed class StatusIconOverlay : Overlay
             if (!bounds.Translated(worldPos).Intersects(args.WorldAABB))
                 continue;
 
+            // Mini: the live bounds follow the walking legs (up to 2.5 px per step), so anchors are
+            // built on the rest height the FootWalk animation recorded instead.
+            var stableHeight = FootWalkBounce.GetStableBoundsHeight(uid, bounds.Height);
+
             var icons = _statusIcon.GetStatusIcons(uid, meta);
             if (icons.Count == 0)
                 continue;
@@ -99,7 +103,7 @@ public sealed class StatusIconOverlay : Overlay
                         accOffsetL += texture.Height;
                         countL++;
                     }
-                    yOffset = (bounds.Height + FootWalkBounce.GetAnchoredOffsetY(uid, sprite.Offset.Y)) / 2f - (float)(accOffsetL - proto.Offset) / EyeManager.PixelsPerMeter;
+                    yOffset = (stableHeight + FootWalkBounce.GetAnchoredOffsetY(uid, sprite.Offset.Y)) / 2f - (float)(accOffsetL - proto.Offset) / EyeManager.PixelsPerMeter;
                     xOffset = -(bounds.Width + sprite.Offset.X) / 2f;
 
                 }
@@ -112,7 +116,7 @@ public sealed class StatusIconOverlay : Overlay
                         accOffsetR += texture.Height;
                         countR++;
                     }
-                    yOffset = (bounds.Height + FootWalkBounce.GetAnchoredOffsetY(uid, sprite.Offset.Y)) / 2f - (float)(accOffsetR - proto.Offset) / EyeManager.PixelsPerMeter;
+                    yOffset = (stableHeight + FootWalkBounce.GetAnchoredOffsetY(uid, sprite.Offset.Y)) / 2f - (float)(accOffsetR - proto.Offset) / EyeManager.PixelsPerMeter;
                     xOffset = (bounds.Width + sprite.Offset.X) / 2f - (float)texture.Width / EyeManager.PixelsPerMeter;
 
                 }
