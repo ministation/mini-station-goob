@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
 using Content.Server.Construction.Components;
 using Content.Shared.Construction;
 using Content.Shared.Construction.Prototypes;
@@ -9,7 +7,6 @@ using Content.Shared.Database;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
 using System.Linq;
-using Content.Shared.Hands.Components;
 
 namespace Content.Server.Construction
 {
@@ -51,7 +48,7 @@ namespace Content.Server.Construction
 
             // If the set graph prototype does not exist, also return null. This could be due to admemes changing values
             // in ViewVariables, so even though the construction state is invalid, just return null.
-            return PrototypeManager.TryIndex(construction.Graph, out ConstructionGraphPrototype? graph) ? graph : null;
+            return ProtoMan.TryIndex(construction.Graph, out ConstructionGraphPrototype? graph) ? graph : null;
         }
 
         /// <summary>
@@ -303,7 +300,7 @@ namespace Content.Server.Construction
             }
 
             // Exit if the new entity's prototype is the same as the original, or the prototype is invalid
-            if (newEntity == metaData.EntityPrototype?.ID || !PrototypeManager.HasIndex<EntityPrototype>(newEntity))
+            if (newEntity == metaData.EntityPrototype?.ID || !ProtoMan.HasIndex<EntityPrototype>(newEntity))
                 return null;
 
             // [Optional] Exit if the new entity's prototype is a parent of the original
@@ -313,7 +310,7 @@ namespace Content.Server.Construction
             if (GetCurrentNode(uid, construction)?.DoNotReplaceInheritingEntities == true &&
                 metaData.EntityPrototype?.ID != null)
             {
-                var parents = PrototypeManager.EnumerateParents<EntityPrototype>(metaData.EntityPrototype.ID)?.ToList();
+                var parents = ProtoMan.EnumerateParents<EntityPrototype>(metaData.EntityPrototype.ID)?.ToList();
 
                 if (parents != null && parents.Any(x => x.ID == newEntity))
                     return null;
@@ -323,7 +320,7 @@ namespace Content.Server.Construction
             Resolve(uid, ref containerManager, false);
 
             // We create the new entity.
-            var newUid = EntityManager.CreateEntityUninitialized(newEntity, transform.Coordinates);
+            var newUid = EntityManager.CreateEntityUninitialized(newEntity, transform.Coordinates, rotation: transform.LocalRotation);
 
             // Construction transferring.
             var newConstruction = EnsureComp<ConstructionComponent>(newUid);
@@ -365,9 +362,13 @@ namespace Content.Server.Construction
 
             // Transform transferring.
             var newTransform = Transform(newUid);
-            TransformSystem.AttachToGridOrMap(newUid, newTransform); // in case in hands or a container
-            newTransform.LocalRotation = transform.LocalRotation;
-            newTransform.Anchored = transform.Anchored;
+
+            TransformSystem.SetLocalRotationNoLerp(newUid, transform.LocalRotation);
+
+            // Prefer anchoring directly. If anchoring fails, attach to the grid or map only as a fallback.
+            // This avoids doing AttachToGridOrMap followed by TryAnchor, which can raise two transform updates.
+            if (!transform.Anchored || !TransformSystem.AnchorEntity((newUid, newTransform, null)))
+                TransformSystem.AttachToGridOrMap(newUid, newTransform);
 
             // Container transferring.
             if (containerManager != null)
@@ -397,14 +398,6 @@ namespace Content.Server.Construction
                 }
             }
 
-            // WD EDIT START
-            if (userUid != null && IsTransformParentOf(userUid.Value, transform) && TryComp(userUid, out HandsComponent? hands))
-            {
-                _handsSystem.TryDrop((userUid.Value, hands), uid);
-                _handsSystem.PickupOrDrop(userUid, newUid, handsComp: hands);
-            }
-            // WD EDIT END
-
             var entChangeEv = new ConstructionChangeEntityEvent(newUid, uid);
             RaiseLocalEvent(uid, entChangeEv);
             RaiseLocalEvent(newUid, entChangeEv, broadcast: true);
@@ -426,13 +419,6 @@ namespace Content.Server.Construction
             return newUid;
         }
 
-        private bool IsTransformParentOf(EntityUid uid, TransformComponent target) // WD EDIT
-        {
-            var parentUid = target.ParentUid;
-
-            return parentUid == uid || TryComp(parentUid, out TransformComponent? trans) && IsTransformParentOf(uid, trans);
-        }
-
         /// <summary>
         ///     Performs a construction graph change on a construction entity, also changing the node to a valid one on
         ///     the new graph.
@@ -450,7 +436,7 @@ namespace Content.Server.Construction
             if (!Resolve(uid, ref construction))
                 return false;
 
-            if (!PrototypeManager.TryIndex<ConstructionGraphPrototype>(graphId, out var graph))
+            if (!ProtoMan.TryIndex<ConstructionGraphPrototype>(graphId, out var graph))
                 return false;
 
             if (GetNodeFromGraph(graph, nodeId) is not { })
