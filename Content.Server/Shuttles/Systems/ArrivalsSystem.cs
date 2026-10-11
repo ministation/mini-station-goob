@@ -22,6 +22,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.DeviceNetwork;
 using Content.Shared.DeviceNetwork.Components;
 using Content.Shared.GameTicking;
+using Content.Shared.Ghost;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Components;
 using Content.Shared.Parallax.Biomes;
@@ -69,6 +70,7 @@ public sealed class ArrivalsSystem : EntitySystem
     private EntityQuery<PendingClockInComponent> _pendingQuery;
     private EntityQuery<ArrivalsBlacklistComponent> _blacklistQuery;
     private EntityQuery<MobStateComponent> _mobQuery;
+    private EntityQuery<GhostComponent> _ghostQuery;
 
     /// <summary>
     /// If enabled then spawns players on an alternate map so they can take a shuttle to the station.
@@ -84,6 +86,21 @@ public sealed class ArrivalsSystem : EntitySystem
     ///     The first arrival is a little early, to save everyone 10s
     /// </summary>
     private const float RoundStartFTLDuration = 10f;
+
+    /// <summary>
+    ///     Mini: how long a gated (parked) shuttle waits before re-checking whether anybody needs it.
+    /// </summary>
+    private const float IdleRetrySeconds = 5f;
+
+    /// <summary>
+    ///     Mini: delay after a summon before a shuttle parked at the station departs to pick latejoiners up.
+    /// </summary>
+    private const float SummonGraceSeconds = 3f;
+
+    /// <summary>
+    ///     Mini: minimum docking time at the terminal so a fresh latejoiner can walk in and board.
+    /// </summary>
+    private const float BoardingGraceSeconds = 20f;
 
     private readonly List<ProtoId<BiomeTemplatePrototype>> _arrivalsBiomeOptions = new()
     {
@@ -112,6 +129,7 @@ public sealed class ArrivalsSystem : EntitySystem
         _pendingQuery = GetEntityQuery<PendingClockInComponent>();
         _blacklistQuery = GetEntityQuery<ArrivalsBlacklistComponent>();
         _mobQuery = GetEntityQuery<MobStateComponent>();
+        _ghostQuery = GetEntityQuery<GhostComponent>();
 
         // Don't invoke immediately as it will get set in the natural course of things.
         Enabled = _cfgManager.GetCVar(CCVars.ArrivalsShuttles);
@@ -299,6 +317,19 @@ public sealed class ArrivalsSystem : EntitySystem
             };
             _deviceNetworkSystem.QueuePacket(uid, null, payload, netComp.TransmitFrequency);
         }
+
+        // Mini: summon fulfilled once the shuttle docks at either end. At the terminal also
+        // guarantee a boarding window so a fresh latejoiner can actually walk in and board.
+        component.Summoned = false;
+
+        TryGetArrivals(out var arrivalsUid);
+        if (arrivalsUid.IsValid() && TryComp(arrivalsUid, out TransformComponent? arrivalsXform) &&
+            Transform(uid).MapUid == arrivalsXform.MapUid)
+        {
+            var minNext = _timing.CurTime + TimeSpan.FromSeconds(BoardingGraceSeconds);
+            if (component.NextTransfer < minNext)
+                component.NextTransfer = minNext;
+        }
     }
 
     private void DumpChildren(EntityUid uid, ref FTLStartedEvent args)
@@ -380,6 +411,21 @@ public sealed class ArrivalsSystem : EntitySystem
 
         EnsureComp<PendingClockInComponent>(ev.SpawnResult.Value);
         EnsureComp<AutoOrientComponent>(ev.SpawnResult.Value);
+
+        // Mini: summon the ferry for the new arrival instead of making them wait for the
+        // scheduled cycle. Parked at the terminal it departs after a boarding window;
+        // otherwise it first has to fly over from the station.
+        if (_cfgManager.GetCVar(CCVars.ArrivalsIdleGate) &&
+            TryComp<StationArrivalsComponent>(ev.Station, out var stationArrivals) &&
+            TryComp<ArrivalsShuttleComponent>(stationArrivals.Shuttle, out var shuttleComp))
+        {
+            var atArrivals = Transform(stationArrivals.Shuttle).MapUid == arrivalsXform.MapUid;
+            var maxNext = _timing.CurTime + TimeSpan.FromSeconds(atArrivals ? BoardingGraceSeconds : SummonGraceSeconds);
+
+            shuttleComp.Summoned = true;
+            if (shuttleComp.NextTransfer > maxNext)
+                shuttleComp.NextTransfer = maxNext;
+        }
 
         // If you're forced to spawn, you're invincible until you leave wherever you were forced to spawn.
         if (ArrivalsGodmode)
@@ -499,6 +545,16 @@ public sealed class ArrivalsSystem : EntitySystem
                 if (comp.NextTransfer > curTime)
                     continue;
 
+                // Mini: idle gate. Flying empty legs on the cooldown is pure churn: every
+                // cross-map transfer re-parents the grid and busts PVS for clients near the
+                // docks, which on vanilla client engines means frame stalls and bursts of
+                // dropped MsgStateAck warnings.
+                if (_cfgManager.GetCVar(CCVars.ArrivalsIdleGate) && !ShouldLaunch(uid, comp, xform, arrivalsXform))
+                {
+                    comp.NextTransfer = curTime + TimeSpan.FromSeconds(IdleRetrySeconds);
+                    continue;
+                }
+
                 var tripTime = _shuttles.DefaultTravelTime + _shuttles.DefaultStartupTime;
 
                 // Go back to arrivals source
@@ -526,6 +582,55 @@ public sealed class ArrivalsSystem : EntitySystem
                 comp.NextTransfer += TimeSpan.FromSeconds(_cfgManager.GetCVar(CCVars.ArrivalsCooldown));
             }
         }
+    }
+
+    /// <summary>
+    /// Mini: whether this shuttle has a reason to launch on this transfer.
+    /// </summary>
+    private bool ShouldLaunch(EntityUid shuttle, ArrivalsShuttleComponent component, TransformComponent xform, TransformComponent arrivalsXform)
+    {
+        // Summoned to pick up latejoiners, currently parked at the station.
+        if (component.Summoned && xform.MapUid != arrivalsXform.MapUid)
+            return true;
+
+        if (HasPassengers(shuttle))
+            return true;
+
+        // Docked at the terminal: launch when somebody still waits to get to the station.
+        if (xform.MapUid == arrivalsXform.MapUid && HasWaitingPlayers(arrivalsXform.MapID))
+            return true;
+
+        return false;
+    }
+
+    private bool HasPassengers(EntityUid shuttle)
+    {
+        var query = AllEntityQuery<ActorComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out var xform))
+        {
+            if (xform.GridUid != shuttle)
+                continue;
+
+            // Ghosts spectating from the shuttle must not keep the ferry flying.
+            if (_ghostQuery.HasComp(uid))
+                continue;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool HasWaitingPlayers(MapId mapId)
+    {
+        var query = AllEntityQuery<PendingClockInComponent, TransformComponent>();
+        while (query.MoveNext(out _, out _, out var xform))
+        {
+            if (xform.MapID == mapId)
+                return true;
+        }
+
+        return false;
     }
 
     private void OnRoundStarting(RoundStartingEvent ev)

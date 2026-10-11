@@ -55,6 +55,15 @@ public sealed partial class CCVars
         CVarDef.Create("shuttle.arrivals_returns", false, CVar.SERVERONLY);
 
     /// <summary>
+    ///     Mini: when true, the arrivals shuttle only launches when there is someone to move
+    ///     (passengers aboard, a waiting latejoin or an active summon) instead of cycling on
+    ///     the cooldown forever. Empty scheduled legs re-parent the grid every cooldown and
+    ///     cause PVS churn on clients near the docks.
+    /// </summary>
+    public static readonly CVarDef<bool> ArrivalsIdleGate =
+        CVarDef.Create("shuttle.arrivals_idle_gate", true, CVar.SERVERONLY);
+
+    /// <summary>
     ///     Should all players who spawn at arrivals have godmode until they leave the map?
     /// </summary>
     public static readonly CVarDef<bool> GodmodeArrivals =
