@@ -12,6 +12,7 @@ public sealed class GhostShopCommand : IConsoleCommand
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
+        // Кастомизация (coinshop) скрыта до полировки — ghostshop открывает меню призраков (темы + OOC-цвет).
         var entMan = IoCManager.Resolve<IEntityManager>();
         entMan.System<GhostShopSystem>().OpenShop();
     }

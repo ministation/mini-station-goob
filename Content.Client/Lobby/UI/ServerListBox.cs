@@ -38,7 +38,12 @@ public sealed class ServerListBox : BoxContainer
         _consoleHost.ExecuteCommand("antagtokenmenu");
     }
 
-    private void OpenGhostShop()
+    private void OpenCoinShop()
+    {
+        _consoleHost.ExecuteCommand("coinshop");
+    }
+
+    private void OpenGhostMenu()
     {
         _consoleHost.ExecuteCommand("ghostshop");
     }
@@ -72,7 +77,7 @@ public sealed class ServerListBox : BoxContainer
         actionButtonsContainer.AddChild(CreateActionButton(
             "Призраки",
             new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Ghost.png")),
-            OpenGhostShop));
+            OpenGhostMenu));
 
         AddChild(actionButtonsContainer);
 

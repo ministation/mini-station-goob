@@ -25,6 +25,7 @@ using Robust.Shared.Utility;
 // using Content.Server._RMC14.LinkAccount; CorvaxGoob-Coins
 using Content.Corvax.Interfaces.Shared; // RMC - Patreon
 using Content.Server.Sponsors;
+using Content.Shared._Mini.CoinShop;
 
 namespace Content.Server.Chat.Managers;
 
@@ -316,7 +317,9 @@ internal sealed partial class ChatManager : IChatManager
         string? patronColorHex = null;
         var miniSponsor = _entityManager.System<SponsorSystem>().Sponsors
             .FirstOrDefault(d => d.Uid == player.UserId.ToString());
-        if (miniSponsor.Level > 0)
+        if (CoinOocColorCache.TryGet(player.UserId, out var coinColor))
+            patronColorHex = coinColor;
+        else if (miniSponsor.Level > 0)
             patronColorHex = SponsorColor.GetColorForNickname(miniSponsor.Level);
         else if (_sponsorsManager != null &&
                  _sponsorsManager.TryGetServerOocColor(player.UserId, out var oocColor) &&

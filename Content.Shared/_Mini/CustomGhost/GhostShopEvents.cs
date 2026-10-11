@@ -34,12 +34,40 @@ public sealed class GhostShopStateEvent : EntityEventArgs
 {
     public int Balance { get; }
     public List<GhostThemeEntry> Themes { get; }
+    public List<GhostColorEntry> Colors { get; }
 
     public GhostShopStateEvent(int balance, List<GhostThemeEntry> themes)
     {
         Balance = balance;
         Themes = themes;
+        Colors = new List<GhostColorEntry>();
     }
+
+    public GhostShopStateEvent(int balance, List<GhostThemeEntry> themes, List<GhostColorEntry> colors)
+    {
+        Balance = balance;
+        Themes = themes;
+        Colors = colors;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class GhostColorEntry(
+    string id,
+    string colorHex,
+    int price,
+    bool active)
+{
+    public string Id { get; } = id;
+    public string ColorHex { get; } = colorHex;
+    public int Price { get; } = price;
+    public bool Active { get; } = active;
+}
+
+[Serializable, NetSerializable]
+public sealed class GhostShopBuyColorRequestEvent(string colorId) : EntityEventArgs
+{
+    public string ColorId { get; } = colorId;
 }
 
 [Serializable, NetSerializable]

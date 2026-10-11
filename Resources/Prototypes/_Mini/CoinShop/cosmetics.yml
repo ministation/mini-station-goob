@@ -1,0 +1,140 @@
+# Магазин за монетки: косметика (выдаётся с собой каждый раунд, экип в слот)
+- type: coinCosmetic
+  id: CoinHatBowler
+  icon: "Clothing/Head/Hats/bowler_hat.rsi"
+  name: Шляпа-боулер
+  item: ClothingHeadHatBowlerHat
+  slot: head
+  price: 15
+  order: 1
+  rarity: Common
+
+- type: coinCosmetic
+  id: CoinHatFez
+  icon: "Clothing/Head/Hats/fez.rsi"
+  name: Феска
+  item: ClothingHeadHatFez
+  slot: head
+  price: 15
+  order: 2
+  rarity: Common
+
+- type: coinCosmetic
+  id: CoinHatBeretFrench
+  icon: "Clothing/Head/Hats/beret_french.rsi"
+  name: Французский берет
+  item: ClothingHeadHatBeretFrench
+  slot: head
+  price: 15
+  order: 3
+  rarity: Common
+
+- type: coinCosmetic
+  id: CoinCloakMoth
+  icon: "Clothing/Neck/Cloaks/moth.rsi"
+  name: Плащ мотылька
+  item: ClothingNeckCloakMoth
+  slot: neck
+  price: 15
+  order: 4
+  rarity: Common
+
+- type: coinCosmetic
+  id: CoinHatFedora
+  icon: "Clothing/Head/Hats/brownfedora.rsi"
+  name: Коричневая федора
+  item: ClothingHeadHatFedoraBrown
+  slot: head
+  price: 30
+  order: 5
+  rarity: Rare
+
+- type: coinCosmetic
+  id: CoinHatOutlaw
+  icon: "Clothing/Head/Hats/outlawhat.rsi"
+  name: Шляпа outlaw
+  item: ClothingHeadHatOutlawHat
+  slot: head
+  price: 30
+  order: 6
+  rarity: Rare
+
+- type: coinCosmetic
+  id: CoinCloakGoliath
+  icon: "Clothing/Neck/Cloaks/goliathcloak.rsi"
+  name: Плащ голиафа
+  item: ClothingNeckCloakGoliathCloak
+  slot: neck
+  price: 30
+  order: 7
+  rarity: Rare
+
+- type: coinCosmetic
+  id: CoinHatWitch
+  icon: "Clothing/Head/Hats/witchhat.rsi"
+  name: Ведьминская шляпа
+  item: ClothingHeadHatWitch1
+  slot: head
+  price: 30
+  order: 8
+  rarity: Rare
+
+- type: coinCosmetic
+  id: CoinCloakNanotrasen
+  icon: "Clothing/Neck/Cloaks/nanotrasen.rsi"
+  name: Плащ Нанотрайзен
+  item: ClothingNeckCloakNanotrasen
+  slot: neck
+  price: 45
+  order: 9
+  rarity: Epic
+
+- type: coinCosmetic
+  id: CoinHatPlaguedoctor
+  icon: "Clothing/Head/Hats/plaguedoctor.rsi"
+  name: Шляпа чумного доктора
+  item: ClothingHeadHatPlaguedoctor
+  slot: head
+  price: 45
+  order: 10
+  rarity: Epic
+
+- type: coinCosmetic
+  id: CoinCloakPirate
+  icon: "Clothing/Neck/Cloaks/piratecap.rsi"
+  name: Плащ пирата
+  item: ClothingNeckCloakPirateCap
+  slot: neck
+  price: 45
+  order: 11
+  rarity: Epic
+
+- type: coinCosmetic
+  id: CoinCloakVoid
+  icon: "Clothing/Neck/Cloaks/void.rsi"
+  name: Пустотный плащ
+  item: ClothingNeckCloakVoid
+  slot: neck
+  price: 60
+  order: 12
+  rarity: Legendary
+
+- type: coinCosmetic
+  id: CoinCloakSalvagerSupreme
+  icon: "Clothing/Neck/Cloaks/miner.rsi"
+  name: Плащ великого утилизатора
+  item: ClothingNeckCloakSalvagerSupreme
+  slot: neck
+  price: 60
+  order: 13
+  rarity: Legendary
+
+- type: coinCosmetic
+  id: CoinCloakHerald
+  icon: "Clothing/Neck/Cloaks/herald.rsi"
+  name: Плащ герольда
+  item: ClothingNeckCloakHerald
+  slot: neck
+  price: 60
+  order: 14
+  rarity: Legendary
