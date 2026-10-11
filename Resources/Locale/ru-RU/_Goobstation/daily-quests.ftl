@@ -614,3 +614,7 @@ daily-quest-untouchable-mythic-desc = За раунд не получите ур
 
 daily-quest-untouchable-legendary-name = Неуязвимый
 daily-quest-untouchable-legendary-desc = За раунд не получите урона. Нужно отыграть не менее {$minutes} минут живым.
+
+daily-quest-replace-denied-coins = Недостаточно монеток: замена задания стоит {$cost}.
+
+daily-quest-replace-success-paid = Задание заменено за {$cost} монетку.

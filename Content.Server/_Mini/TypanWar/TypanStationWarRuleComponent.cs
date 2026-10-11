@@ -171,6 +171,16 @@ public sealed partial class TypanStationWarRuleComponent : Component
 
     public int WarEventsIndex;
 
+    /// <summary>Coin amounts allowed for a single war bet (paid ×2 on win, half back on stalemate).</summary>
+    [DataField]
+    public int[] BetAmounts = [5, 10, 25];
+
+    /// <summary>One bet per player per war, placed during prep only (runtime).</summary>
+    public Dictionary<NetUserId, (TypanWarSide Side, int Amount)> Bets = new();
+
+    /// <summary>Total coins paid out as bet winnings at EndWar (runtime, used by round-end text).</summary>
+    public int BetsTotalPayout;
+
     [DataField]
     public int StationSeparationTiles = 300;
 

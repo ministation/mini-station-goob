@@ -33,15 +33,47 @@ public sealed class TypanWarUiSystem : EntitySystem
     public int NtJoined { get; private set; }
     public int TypanJoined { get; private set; }
 
+    public bool BettingOpen { get; private set; }
+    public TypanWarSide? MyBetSide { get; private set; }
+    public int MyBetAmount { get; private set; }
+    public int[] BetAmounts { get; private set; } = [5, 10, 25];
+
     public event Action? StatusUpdated;
     public event Action? BalanceUpdated;
+    public event Action? BetStateUpdated;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeNetworkEvent<TypanWarStatusEvent>(OnStatus);
         SubscribeNetworkEvent<TypanWarBalanceStatusEvent>(OnBalanceStatus);
+        SubscribeNetworkEvent<TypanWarBetStateEvent>(OnBetState);
         SubscribeNetworkEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    public void RequestBetState()
+    {
+        if (!_timing.IsFirstTimePredicted)
+            return;
+
+        RaiseNetworkEvent(new TypanWarBetStateRequestEvent());
+    }
+
+    public void RequestBet(TypanWarSide side, int amount)
+    {
+        if (!_timing.IsFirstTimePredicted)
+            return;
+
+        RaiseNetworkEvent(new TypanWarBetRequestEvent(side, amount));
+    }
+
+    private void OnBetState(TypanWarBetStateEvent ev)
+    {
+        BettingOpen = ev.BettingOpen;
+        MyBetSide = ev.MySide;
+        MyBetAmount = ev.MyAmount;
+        BetAmounts = ev.Amounts;
+        BetStateUpdated?.Invoke();
     }
 
     public void RequestStatus()
@@ -65,6 +97,7 @@ public sealed class TypanWarUiSystem : EntitySystem
     {
         ResetStatus();
         ResetBalance();
+        ResetBetState();
     }
 
     private void OnStatus(TypanWarStatusEvent ev)
@@ -168,5 +201,13 @@ public sealed class TypanWarUiSystem : EntitySystem
         NtJoined = 0;
         TypanJoined = 0;
         BalanceUpdated?.Invoke();
+    }
+
+    private void ResetBetState()
+    {
+        BettingOpen = false;
+        MyBetSide = null;
+        MyBetAmount = 0;
+        BetStateUpdated?.Invoke();
     }
 }

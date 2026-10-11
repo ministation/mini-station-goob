@@ -66,6 +66,9 @@ namespace Content.Server._Mini.DailyQuests;
 public sealed class DailyQuestSystem : EntitySystem
 {
     private const int DailyQuestCount = 2;
+
+    /// <summary>Coin cost of a quest replace after the free daily one.</summary>
+    private const int PaidReplaceCost = 1;
     /// <summary>Periodic sweep for week rollover + live quest timers (not every second).</summary>
     private const float UiRefreshInterval = 5f;
 
@@ -229,7 +232,6 @@ public sealed class DailyQuestSystem : EntitySystem
 
         var canReplace = !preview
             && slot.Status == DailyQuestStatus.Active
-            && !state.DailyReplaceUsed
             && CanReplaceSlot(state, slot, proto);
 
         var description = isTimeBased
@@ -304,10 +306,18 @@ public sealed class DailyQuestSystem : EntitySystem
             return;
         }
 
+        var paidReplace = false;
         if (state.DailyReplaceUsed)
         {
-            DenyQuestReplace(session, questId, Loc.GetString("daily-quest-replace-denied-used"), "daily-replace-used");
-            return;
+            if (!_antagTokens.TrySpendBalance(session.UserId, PaidReplaceCost, out _))
+            {
+                DenyQuestReplace(session, questId,
+                    Loc.GetString("daily-quest-replace-denied-coins", ("cost", PaidReplaceCost)),
+                    "insufficient-balance");
+                return;
+            }
+
+            paidReplace = true;
         }
 
         if (!CanReplaceSlot(state, slot, proto))
@@ -338,7 +348,9 @@ public sealed class DailyQuestSystem : EntitySystem
         Log.Info($"Daily quest replaced for {session.Name}: {questId} -> {pick} (slot {slotIndex})");
 
         if (session.AttachedEntity is { Valid: true } uid)
-            _popup.PopupEntity(Loc.GetString("daily-quest-replace-success"), uid, session);
+            _popup.PopupEntity(
+                Loc.GetString(paidReplace ? "daily-quest-replace-success-paid" : "daily-quest-replace-success"),
+                uid, session);
     }
 
     private void DenyQuestReplace(ICommonSession session, string questId, string reason, string detail)

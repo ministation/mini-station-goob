@@ -614,3 +614,7 @@ daily-quest-untouchable-mythic-desc = Take no damage during the round. Requires 
 
 daily-quest-untouchable-legendary-name = Untouchable
 daily-quest-untouchable-legendary-desc = Take no damage during the round. Requires {$minutes} minutes alive.
+
+daily-quest-replace-denied-coins = Not enough coins: replacing a quest costs {$cost}.
+
+daily-quest-replace-success-paid = Quest replaced for {$cost} coin.

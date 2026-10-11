@@ -1,8 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Content.Server._Mini.AntagTokens;
 using Content.Server.Database;
 using Content.Shared.Ghost;
 using Content.Shared._Mini.CustomGhost;
+using Content.Shared._Mini.CoinShop;
 using Robust.Server.Player;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -16,6 +18,7 @@ public sealed class CustomGhostSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
+    [Dependency] private readonly AntagTokenSystem _antagTokens = default!;
 
     public override void Initialize()
     {
@@ -24,6 +27,7 @@ public sealed class CustomGhostSystem : EntitySystem
         SubscribeNetworkEvent<GhostShopOpenRequestEvent>(OnShopOpen);
         SubscribeNetworkEvent<GhostShopBuyRequestEvent>(OnShopBuy);
         SubscribeNetworkEvent<GhostShopSelectRequestEvent>(OnShopSelect);
+        SubscribeNetworkEvent<GhostShopBuyColorRequestEvent>(OnShopBuyColor);
     }
 
     private async void OnPlayerAttached(EntityUid uid, GhostComponent component, PlayerAttachedEvent args)
@@ -61,7 +65,7 @@ public sealed class CustomGhostSystem : EntitySystem
         }
     }
 
-    private async Task<bool> ApplyOwnedTheme(EntityUid ghostUid, NetUserId userId)
+    public async Task<bool> ApplyOwnedTheme(EntityUid ghostUid, NetUserId userId)
     {
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
 
@@ -97,7 +101,7 @@ public sealed class CustomGhostSystem : EntitySystem
         return true;
     }
 
-    private void ApplyTheme(EntityUid ghostUid, string themeId)
+    public void ApplyTheme(EntityUid ghostUid, string themeId)
     {
         if (!_prototypeManager.TryIndex<CustomGhostPrototype>(themeId, out var proto))
             return;
@@ -118,7 +122,7 @@ public sealed class CustomGhostSystem : EntitySystem
     private async void OnShopOpen(GhostShopOpenRequestEvent msg, EntitySessionEventArgs args)
     {
         var userId = args.SenderSession.UserId;
-        var (balance, ownedThemes, selectedTheme) = await GetPlayerShopData(userId);
+        var (balance, ownedThemes, selectedTheme, colors) = await GetPlayerShopData(userId);
         SendShopState(args.SenderSession, balance, ownedThemes, selectedTheme);
     }
 
@@ -142,17 +146,12 @@ public sealed class CustomGhostSystem : EntitySystem
             return;
         }
 
-        var balanceToken = tokens.FirstOrDefault(t => t.TokenId == "balance");
-        var balance = balanceToken?.Amount ?? 0;
-
-        if (balance < proto.Price)
+        if (!_antagTokens.TrySpendBalance(userId, proto.Price, out _))
         {
             SendShopState(args.SenderSession);
             return;
         }
 
-        var newBalance = balance - proto.Price;
-        await _db.SetPlayerAntagTokenAmount(userId.UserId, "balance", newBalance);
         await _db.SetPlayerAntagTokenAmount(userId.UserId, tokenId, 1);
 
         var ownedThemes = new List<string>();
@@ -167,7 +166,32 @@ public sealed class CustomGhostSystem : EntitySystem
         var selectedToken = ownedTokens.FirstOrDefault(t => t.TokenId.EndsWith(":selected"));
         var selectedTheme = selectedToken?.TokenId["ghost-theme:".Length..].Replace(":selected", "");
 
-        SendShopState(args.SenderSession, newBalance, ownedThemes, selectedTheme);
+        SendShopState(args.SenderSession, _antagTokens.GetBalance(userId), ownedThemes, selectedTheme);
+    }
+
+    private async void OnShopBuyColor(GhostShopBuyColorRequestEvent msg, EntitySessionEventArgs args)
+    {
+        var userId = args.SenderSession.UserId;
+
+        if (!_prototypeManager.TryIndex<CoinOocColorPrototype>(msg.ColorId, out var proto) ||
+            !_antagTokens.TrySpendBalance(userId, proto.Price, out _))
+        {
+            SendShopState(args.SenderSession);
+            return;
+        }
+
+        var newExpire = (CoinOocColorCache.TryGetExpire(userId, out var currentExpire) ? currentExpire : CoinOocColorCache.Today) + 30;
+
+        var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
+        var oldColorRow = tokens.FirstOrDefault(tk => tk.Amount > 0 && tk.TokenId.StartsWith("ooc-color:"));
+        if (oldColorRow != null && oldColorRow.TokenId != "ooc-color:" + msg.ColorId)
+            await _db.SetPlayerAntagTokenAmount(userId.UserId, oldColorRow.TokenId, 0);
+
+        await _db.SetPlayerAntagTokenAmount(userId.UserId, "ooc-color:" + msg.ColorId, 1);
+        await _db.SetPlayerAntagTokenAmount(userId.UserId, "ooc-color-expire", newExpire);
+
+        CoinOocColorCache.Set(userId, proto.Color, newExpire);
+        SendShopState(args.SenderSession);
     }
 
     private async void OnShopSelect(GhostShopSelectRequestEvent msg, EntitySessionEventArgs args)
@@ -204,7 +228,6 @@ public sealed class CustomGhostSystem : EntitySystem
         tokens = await _db.GetPlayerAntagTokens(userId.UserId);
         var ownedThemes = new List<string>();
         string? selectedTheme = null;
-        var balanceToken = tokens.FirstOrDefault(t => t.TokenId == "balance");
 
         foreach (var token in tokens)
         {
@@ -219,7 +242,7 @@ public sealed class CustomGhostSystem : EntitySystem
                 ownedThemes.Add(tId);
         }
 
-        SendShopState(args.SenderSession, balanceToken?.Amount ?? 0, ownedThemes, selectedTheme);
+        SendShopState(args.SenderSession, _antagTokens.GetBalance(userId), ownedThemes, selectedTheme);
 
         if (args.SenderSession.AttachedEntity is { Valid: true } ent && HasComp<GhostComponent>(ent))
             ApplyTheme(ent, themeId ?? "GhostThemeDefault");
@@ -227,12 +250,14 @@ public sealed class CustomGhostSystem : EntitySystem
 
     private async void SendShopState(ICommonSession session)
     {
-        var (balance, ownedThemes, selectedTheme) = await GetPlayerShopData(session.UserId);
+        var (balance, ownedThemes, selectedTheme, colors) = await GetPlayerShopData(session.UserId);
         SendShopState(session, balance, ownedThemes, selectedTheme);
     }
 
-    private void SendShopState(ICommonSession session, int balance, List<string>? ownedThemes = null, string? selectedTheme = null)
+    private async void SendShopState(ICommonSession session, int balance, List<string>? ownedThemes = null, string? selectedTheme = null)
     {
+        var colors = (await GetPlayerShopData(session.UserId)).colors;
+
         var themes = _prototypeManager.EnumeratePrototypes<CustomGhostPrototype>()
             .Where(p => p.Price >= 0 && string.IsNullOrEmpty(p.Ckey))
             .OrderBy(p => p.Order)
@@ -255,24 +280,21 @@ public sealed class CustomGhostSystem : EntitySystem
             })
             .ToList();
 
-        RaiseNetworkEvent(new GhostShopStateEvent(balance, themes), session);
+        RaiseNetworkEvent(new GhostShopStateEvent(balance, themes, colors ?? new List<GhostColorEntry>()), session);
     }
 
-    private async Task<(int balance, List<string> ownedThemes, string? selectedTheme)> GetPlayerShopData(NetUserId userId)
+    private async Task<(int balance, List<string> ownedThemes, string? selectedTheme, List<GhostColorEntry> colors)> GetPlayerShopData(NetUserId userId)
     {
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
 
-        var balance = 0;
+        var balance = _antagTokens.GetBalance(userId);
         var ownedThemes = new List<string>();
         string? selectedTheme = null;
+        var colors = BuildColorEntries(tokens, userId);
 
         foreach (var token in tokens)
         {
-            if (token.TokenId == "balance")
-            {
-                balance = token.Amount;
-            }
-            else if (token.TokenId.StartsWith("ghost-theme:") && token.Amount > 0)
+            if (token.TokenId.StartsWith("ghost-theme:") && token.Amount > 0)
             {
                 var themeId = token.TokenId["ghost-theme:".Length..];
 
@@ -287,6 +309,31 @@ public sealed class CustomGhostSystem : EntitySystem
             }
         }
 
-        return (balance, ownedThemes, selectedTheme);
+        return (balance, ownedThemes, selectedTheme, colors);
+    }
+
+    private List<GhostColorEntry> BuildColorEntries(List<PlayerAntagToken> tokens, NetUserId userId)
+    {
+        string? colorId = null;
+        var expireDay = 0;
+
+        foreach (var token in tokens)
+        {
+            if (token.Amount <= 0)
+                continue;
+
+            if (token.TokenId.StartsWith("ooc-color:"))
+                colorId = token.TokenId["ooc-color:".Length..];
+            else if (token.TokenId == "ooc-color-expire")
+                expireDay = token.Amount;
+        }
+
+        var active = colorId != null && expireDay > CoinOocColorCache.Today &&
+                     _prototypeManager.TryIndex<CoinOocColorPrototype>(colorId, out _);
+
+        return _prototypeManager.EnumeratePrototypes<CoinOocColorPrototype>()
+            .OrderBy(p => p.Order)
+            .Select(p => new GhostColorEntry(p.ID, p.Color, p.Price, active && colorId == p.ID))
+            .ToList();
     }
 }

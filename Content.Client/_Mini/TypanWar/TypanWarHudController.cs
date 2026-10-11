@@ -58,18 +58,28 @@ public sealed class TypanWarHudController : UIController,
     public void OnSystemLoaded(TypanWarUiSystem system)
     {
         system.StatusUpdated += OnStatusUpdated;
+        system.BetStateUpdated += OnBetStateUpdated;
         Refresh();
     }
 
     public void OnSystemUnloaded(TypanWarUiSystem system)
     {
         system.StatusUpdated -= OnStatusUpdated;
+        system.BetStateUpdated -= OnBetStateUpdated;
+    }
+
+    private void OnBetStateUpdated()
+    {
+        Refresh();
     }
 
     private void OnStatusUpdated()
     {
         if (_war.Phase == TypanWarPhase.Ended && _war.Winner != TypanWarWinner.None)
             _endedFlashUntil = _timing.CurTime + TimeSpan.FromSeconds(EndedFlashDuration);
+
+        if (_war.Phase == TypanWarPhase.Pending)
+            _war.RequestBetState();
 
         Refresh();
     }
@@ -91,7 +101,11 @@ public sealed class TypanWarHudController : UIController,
             _war.NtCapturePoints,
             _war.TypanCapturePoints,
             _war.CapturePointsToWin,
-            _war.TimeRemainingSeconds);
+            _war.TimeRemainingSeconds,
+            _war.BettingOpen,
+            _war.MyBetSide,
+            _war.MyBetAmount,
+            _war.BetAmounts);
     }
 
     private static TypanWarHudControl? TryFindHud(Control screen)

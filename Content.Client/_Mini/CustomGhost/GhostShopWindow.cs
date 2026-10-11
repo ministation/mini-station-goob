@@ -18,6 +18,7 @@ public sealed class GhostShopWindow : DefaultWindow
     private static readonly Color WindowBackgroundColor = Color.FromHex("#0e0c14");
     private static readonly Color HeroPanelColor = Color.FromHex("#1a1622").WithAlpha(0.9f);
     private static readonly Color AccentColor = Color.FromHex("#8c7da8");
+    private static readonly Color SubtitleColor = Color.FromHex("#8b949e");
     private static readonly Color CardBackgroundColor = Color.FromHex("#1e1a26").WithAlpha(0.8f);
     private static readonly Color CardBorderColor = Color.Transparent;
     private static readonly Color SelectedCardColor = Color.FromHex("#1e4d3a").WithAlpha(0.7f);
@@ -30,6 +31,7 @@ public sealed class GhostShopWindow : DefaultWindow
 
     private Label _balanceValueLabel = null!;
     private BoxContainer _themeRow = null!;
+    private BoxContainer _colorRow = null!;
 
     public GhostShopWindow(GhostShopSystem system)
     {
@@ -37,9 +39,9 @@ public sealed class GhostShopWindow : DefaultWindow
         _coinTexture = IoCManager.Resolve<IResourceCache>().GetTexture(CoinIconPath);
 
         Title = "Магазин призраков";
-        MinSize = new Vector2(1000, 650);
+        MinSize = new Vector2(1000, 700);
         MaxSize = new Vector2(1000, float.PositiveInfinity);
-        SetSize = new Vector2(1000, 650);
+        SetSize = new Vector2(1000, 800);
 
         var root = new BoxContainer
         {
@@ -96,6 +98,35 @@ public sealed class GhostShopWindow : DefaultWindow
             SeparationOverride = 16
         };
         themeScroll.AddChild(_themeRow);
+
+        var colorHeader = new Label
+        {
+            Text = Loc.GetString("ghost-shop-color-header"),
+            StyleClasses = { "LabelHeading" },
+            Modulate = AccentColor,
+            Margin = new Thickness(4, 12, 0, 0)
+        };
+        root.AddChild(colorHeader);
+
+        // ScrollContainer reports a zero desired height by default — without these the
+        // whole color section collapses into an empty strip under its header.
+        var colorScroll = new ScrollContainer
+        {
+            HorizontalExpand = true,
+            HScrollEnabled = true,
+            VScrollEnabled = false,
+            ReturnMeasure = true,
+            MinHeight = 150,
+            MaxHeight = 150
+        };
+        root.AddChild(colorScroll);
+
+        _colorRow = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 16
+        };
+        colorScroll.AddChild(_colorRow);
     }
 
     protected override DragMode GetDragModeFor(Vector2 relativeMousePos)
@@ -115,6 +146,98 @@ public sealed class GhostShopWindow : DefaultWindow
         {
             _themeRow.AddChild(CreateThemeCard(entry));
         }
+
+        _colorRow.RemoveAllChildren();
+        foreach (var entry in state.Colors)
+            _colorRow.AddChild(CreateColorCard(entry));
+    }
+
+    private Control CreateColorCard(GhostColorEntry entry)
+    {
+        var panel = new PanelContainer
+        {
+            MinSize = new Vector2(200, 120),
+            MaxSize = new Vector2(200, 120),
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = entry.Active ? SelectedCardColor : CardBackgroundColor,
+                BorderColor = entry.Active ? SelectedBorderColor : CardBorderColor,
+                BorderThickness = new Thickness(1),
+                ContentMarginLeftOverride = 12,
+                ContentMarginTopOverride = 12,
+                ContentMarginRightOverride = 12,
+                ContentMarginBottomOverride = 12
+            }
+        };
+
+        var root = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 8
+        };
+        panel.AddChild(root);
+
+        root.AddChild(new PanelContainer
+        {
+            MinSize = new Vector2(0, 44),
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = Color.TryFromHex(entry.ColorHex, out var parsed) ? parsed : Color.Gray,
+                BorderColor = Color.FromHex("#121824"),
+                BorderThickness = new Thickness(2)
+            }
+        });
+
+        root.AddChild(new Label
+        {
+            Text = entry.Active ? Loc.GetString("ghost-shop-color-active") : Loc.GetString("ghost-shop-color-days"),
+            Modulate = entry.Active ? SelectedBorderColor : SubtitleColor,
+            HorizontalAlignment = HAlignment.Center
+        });
+
+        if (entry.Active)
+        {
+            root.AddChild(new Control { VerticalExpand = true });
+        }
+        else
+        {
+            var button = new Button
+            {
+                MinSize = new Vector2(176, 36),
+                MaxSize = new Vector2(176, 36)
+            };
+
+            var content = new BoxContainer
+            {
+                Orientation = LayoutOrientation.Horizontal,
+                SeparationOverride = 6,
+                HorizontalAlignment = HAlignment.Center,
+                VerticalAlignment = VAlignment.Center
+            };
+
+            content.AddChild(new Label
+            {
+                Text = entry.Price.ToString(),
+                Modulate = Color.White,
+                StyleClasses = { "LabelHeading" },
+                VerticalAlignment = VAlignment.Center
+            });
+
+            content.AddChild(new TextureRect
+            {
+                Texture = _coinTexture,
+                MinSize = new Vector2(16, 16),
+                MaxSize = new Vector2(16, 16),
+                TextureScale = new Vector2(0.4f, 0.4f),
+                VerticalAlignment = VAlignment.Center
+            });
+
+            button.AddChild(content);
+            button.OnPressed += _ => _system.RequestBuyColor(entry.Id);
+            root.AddChild(button);
+        }
+
+        return panel;
     }
 
     private Control BuildHero()

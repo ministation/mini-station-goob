@@ -150,3 +150,15 @@ typan-war-event-diversion = [color=#FFB0B0]Station war:[/color] the losing facti
 typan-war-event-reinforcement = [color=#C8C4D8]Station war:[/color] HQ dispatches reserve drop shuttles to both stations.
 
 typan-war-ghost-roles-blocked = Ghost roles are unavailable during the station war.
+
+typan-war-bet-prompt = Bet on the war outcome (×2 payout, half back on a draw):
+
+typan-war-bet-side-nt = NT
+
+typan-war-bet-side-typan = Typan
+
+typan-war-bet-placed-label = Bet:
+
+typan-war-bet-payout-note = ×2 payout, half back on a draw
+
+typan-war-round-end-bets = Bets: NanoTrasen {$nt}, Typan {$typan}. Winners paid {$payout} coins.
