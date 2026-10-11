@@ -7,7 +7,9 @@ using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Server._DV.Shuttles.Events;
 using Content.Server._TT.StationHandleJob;
+using Content.Server.Shuttles.Components;
 using Content.Server.Chat.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Server.NPC.HTN;
@@ -124,6 +126,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private static readonly string[] FightCries = ["Драка! Спасайся кто может!", "Стреляют! Прячься!", "Ой-ой, отходим от греха!"];
     private static readonly string[] DecompressionCries =
         ["Воздух уходит! Кислород!", "Разгерметизация! Маску, МАСКУ!", "Шлюзы! Воздух кончается!"];
+    private static readonly string[] EvacCries =
+        ["Эвакуация! Следуйте за мной к шаттлу!", "Шаттл пристыковался! Все наверх, идём к шаттлу!", "Пора уходить! Я веду группу к шаттлу!"];
 
     public override void Initialize()
     {
@@ -159,6 +163,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         SubscribeLocalEvent<NeuroPlayerComponent, RadioReceiveEvent>(OnRadioReceive);
         SubscribeLocalEvent<DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
+        SubscribeLocalEvent<EvacShuttleDockedEvent>(OnEvacDocked);
     }
 
     public override void Shutdown()
@@ -191,6 +196,55 @@ public sealed class NeuroPlayerSystem : EntitySystem
     {
         // Station war: neuro passengers are hidden for the duration.
         DespawnBots();
+    }
+
+    private void OnEvacDocked(EvacShuttleDockedEvent ev)
+    {
+        if (!_enabled)
+            return;
+
+        // Gather passengers on the docked evac shuttle; the first bot leads the group aloud.
+        EntityCoordinates? shuttlePoint = null;
+        var shuttleMap = MapId.Nullspace;
+
+        var query = EntityQueryEnumerator<EmergencyShuttleComponent, TransformComponent>();
+        while (query.MoveNext(out var shuttle, out _, out var xform))
+        {
+            if (!xform.GridUid.HasValue)
+                continue;
+
+            shuttlePoint = xform.Coordinates;
+            shuttleMap = xform.MapID;
+            break;
+        }
+
+        if (shuttlePoint == null)
+            return;
+
+        var led = false;
+        foreach (var bot in _bots)
+        {
+            if (!Exists(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp))
+                continue;
+
+            if (Transform(bot).MapID != shuttleMap)
+                continue; // Typan chef / CentComm maid stay on their maps
+
+            if (!TryComp<HTNComponent>(bot, out var htn))
+                continue;
+
+            var offset = new Vector2(_random.NextFloat(-3f, 3f), _random.NextFloat(-3f, 3f));
+            htn.Blackboard.SetValue("NeuroPoint", shuttlePoint.Value.Offset(offset));
+            htn.RootTask = new HTNCompoundTask { Task = "NeuroVisitCompound" };
+            _htn.Replan(htn);
+            comp.VisitUntil = _timing.CurTime + TimeSpan.FromSeconds(420);
+
+            if (!led)
+            {
+                led = true;
+                Cry(bot, comp, EvacCries);
+            }
+        }
     }
 
     public void SpawnBots()
