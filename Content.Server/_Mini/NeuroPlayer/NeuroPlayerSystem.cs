@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Egorik1
+﻿// SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Linq;
@@ -41,6 +41,7 @@ using Content.Shared.Mind;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using Content.Shared.Radio.Components;
+using Content.Shared.Interaction;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
 using Content.Shared.NPC.Systems;
@@ -121,6 +122,14 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private static readonly string[] FireCries = ["Ааа, пожар! Горим!", "Огонь! Бежим отсюда!", "Горит! Спасайся!"];
     private static readonly string[] PainCries = ["Ай! Больно!", "Ой! Помогите!", "Ах! Что происходит?!"];
     private static readonly string[] FightCries = ["Драка! Спасайся кто может!", "Стреляют! Прячься!", "Ой-ой, отходим от греха!"];
+
+    private static readonly string[] TouchCries =
+    [
+        "Эй, руки убрал!",
+        "Чего надо?",
+        "М? Что-то нужно?",
+        "Осторожнее, я не подставка.",
+    ];
     private static readonly string[] DecompressionCries =
         ["Воздух уходит! Кислород!", "Разгерметизация! Маску, МАСКУ!", "Шлюзы! Воздух кончается!"];
     private static readonly string[] EvacCries =
@@ -129,6 +138,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        SubscribeLocalEvent<NeuroPlayerComponent, InteractHandEvent>(OnBotInteracted);
 
         _sawmill = Logger.GetSawmill("neuroplayer");
 
@@ -248,6 +259,16 @@ public sealed class NeuroPlayerSystem : EntitySystem
         if (!_enabled)
             return;
 
+        // Mini: repeated spawns must not stack bots. Re-creating bots in the same
+        // tick (delete+create churn) trips the client "state is missing metadata"
+        // race, so skip while the previous batch is still alive.
+        _bots.RemoveAll(bot => !Exists(bot));
+        if (_bots.Count > 0)
+        {
+            _sawmill.Info("Neuro players: already spawned, skipping.");
+            return;
+        }
+
         // Station war: neuro passengers stay out of the conflict entirely.
         if (TypanStationWarRuleSystem.IsModeActive)
         {
@@ -278,45 +299,47 @@ public sealed class NeuroPlayerSystem : EntitySystem
             return;
         }
 
+        // Mini: strict composition requested by the owner:
+        // 4 bots on the NT station (passenger, janitor, cargo tech, clown),
+        // 1 maid on CentComm, 1 typan employee on Typan.
         var spawned = 0;
-        for (var i = 0; i < _botCount; i++)
+        var mainStaff = new (string PersonaId, string Job, string? RootTask)[]
         {
-            var persona = personas[i % personas.Count];
-            var coords = points[i % points.Count];
+            ("NeuroVasya", "Passenger", null),
+            ("NeuroJanitor", "Janitor", "CleanbotCompound"),
+            ("NeuroCargoTech", "CargoTechnician", null),
+            ("NeuroClown", "Clown", null),
+        };
 
-            if (TrySpawnBot(persona, coords, station.Value))
-                spawned++;
-        }
-
-        // Station janitor: experiments with the cleanbot routine (mop + puddles + decals).
-        var janitorPersona = _prototypes.EnumeratePrototypes<NeuroPersonaPrototype>()
-            .FirstOrDefault(p => p.ID == "NeuroJanitor");
-        if (janitorPersona != null && points.Count > 0)
+        foreach (var (personaId, job, rootTask) in mainStaff)
         {
+            var persona = personas.FirstOrDefault(p => p.ID == personaId) ?? personas[0];
             var coords = _random.Pick(points);
-            if (TrySpawnBot(janitorPersona, coords, station.Value, forcedJob: "Janitor",
-                    rootTask: "CleanbotCompound",
-                    onSpawned: mob => GiveJanitorMop(mob)))
+            if (TrySpawnBot(persona, coords, station.Value, forcedJob: job,
+                    rootTask: rootTask,
+                    onSpawned: rootTask == "CleanbotCompound" ? mob => GiveJanitorMop(mob) : null))
                 spawned++;
         }
 
-        // Typan gets its own chef, CentComm gets its maid.
-        var typanStation = FindFactionStation(typan: true);
-        if (typanStation != null)
-        {
-            var persona = personas.FirstOrDefault(p => p.ID == "NeuroTypanChef") ?? personas[0];
-            var points2 = FindSpawnPoints(typanStation.Value);
-            if (points2.Count > 0 && TrySpawnBot(persona, _random.Pick(points2), typanStation.Value, forcedJob: "TypanChef"))
-                spawned++;
-        }
-
+        // CentComm gets its maid.
         var ccStation = FindFactionStation(centcomm: true);
         if (ccStation != null)
         {
             var persona = personas.FirstOrDefault(p => p.ID == "NeuroCCMaid") ?? personas[0];
-            var points3 = FindSpawnPoints(ccStation.Value);
-            if (points3.Count > 0 && TrySpawnBot(persona, _random.Pick(points3), ccStation.Value,
-                    forcedJob: "Passenger", onSpawned: mob => GiveMaidOutfit(mob)))
+            var ccPoints = FindSpawnPoints(ccStation.Value);
+            if (ccPoints.Count > 0 && TrySpawnBot(persona, _random.Pick(ccPoints), ccStation.Value,
+                    forcedJob: "Passenger", onSpawned: GiveMaidOutfit))
+                spawned++;
+        }
+
+        // Typan gets its own employee.
+        var typanStation = FindFactionStation(typan: true);
+        if (typanStation != null)
+        {
+            var persona = personas.FirstOrDefault(p => p.ID == "NeuroTypanChef") ?? personas[0];
+            var typanPoints = FindSpawnPoints(typanStation.Value);
+            if (typanPoints.Count > 0 && TrySpawnBot(persona, _random.Pick(typanPoints), typanStation.Value,
+                    forcedJob: "TypanChef"))
                 spawned++;
         }
 
@@ -634,7 +657,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         try
         {
             // Human-feel jitter: bots never reply instantly.
-            await Task.Delay(_random.Next(800, 3500));
+            await Task.Delay(_random.Next(300, 1200));
 
             if (Deleted(bot) || Terminating(bot))
                 return;
@@ -687,6 +710,10 @@ public sealed class NeuroPlayerSystem : EntitySystem
             if (string.IsNullOrWhiteSpace(reply) || Deleted(bot) || Terminating(bot))
                 return;
 
+            // Mini: players asked for no long dashes in bot replies.
+            reply = reply.Replace('—', '-').Replace('–', '-');
+            reply = string.Join(' ', reply.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+
             if (reply.Length > MaxReplyLength)
                 reply = reply[..MaxReplyLength];
             if (reply.StartsWith(botName, StringComparison.OrdinalIgnoreCase))
@@ -718,7 +745,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
             return;
 
         _dangerScanAccumulator += frameTime;
-        if (_dangerScanAccumulator >= 2f)
+        if (_dangerScanAccumulator >= 1f)
         {
             _dangerScanAccumulator = 0f;
             ScanDangers();
@@ -799,7 +826,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
                 if (flammable.FireStacks <= 0 || xform.MapID != botMap)
                     continue;
 
-                if ((xform.WorldPosition - botPos).Length() > 6f)
+                if ((xform.WorldPosition - botPos).Length() > 12f)
                     continue;
 
                 TriggerDanger(bot, comp, xform.WorldPosition, FireCries);
@@ -833,7 +860,16 @@ public sealed class NeuroPlayerSystem : EntitySystem
             }
 
             if (total >= 10f)
+            {
                 Cry(victim, botComp, PainCries);
+
+                // Mini: significant damage should trigger fleeing immediately,
+                // not just a cry; run from the attacker if one is known.
+                var dangerPos = ev.Origin is { } origin && origin != victim && Exists(origin)
+                    ? _transform.GetWorldPosition(origin)
+                    : _transform.GetWorldPosition(victim);
+                TriggerDanger(victim, botComp, dangerPos, null, cry: false);
+            }
 
             return;
         }
@@ -867,7 +903,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         htn.RootTask = new HTNCompoundTask { Task = "NeuroFleeCompound" };
         _htn.Replan(htn);
 
-        comp.DangerUntil = _timing.CurTime + TimeSpan.FromSeconds(12);
+        comp.DangerUntil = _timing.CurTime + TimeSpan.FromSeconds(20);
         comp.VisitUntil = null;
         comp.PoiAccumulator = 0f;
 
@@ -887,7 +923,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         if (botXform.GridUid is { } grid && TryComp<MapGridComponent>(grid, out var mapGrid))
         {
             var centerTile = _transform.GetGridOrMapTilePosition(bot, botXform);
-            for (var dist = 10; dist <= 25; dist += 5)
+            for (var dist = 8; dist <= 30; dist += 4)
             {
                 var tile = centerTile + (away * dist).Floored();
                 if (_map.TryGetTileRef(grid, mapGrid, tile, out var tileRef) && !tileRef.Tile.IsEmpty)
@@ -896,6 +932,16 @@ public sealed class NeuroPlayerSystem : EntitySystem
         }
 
         return botXform.Coordinates.Offset(away * 18f);
+    }
+
+    // Mini: react to any interaction so bots do not ignore the world.
+    private void OnBotInteracted(EntityUid bot, NeuroPlayerComponent comp, InteractHandEvent ev)
+    {
+        if (ev.User == bot || !_enabled)
+            return;
+
+        AddContext(bot, Name(ev.User), "(дотронулся до тебя)");
+        Cry(bot, comp, TouchCries);
     }
 
     private void Cry(EntityUid bot, NeuroPlayerComponent comp, string[] phrases)
