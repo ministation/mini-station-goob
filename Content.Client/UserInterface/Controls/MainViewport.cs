@@ -2,6 +2,7 @@
 
 using System.Numerics;
 using Content.Client.Viewport;
+using Content.Client.UserInterface.Systems.Viewport;
 using Content.Shared.CCVar;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Configuration;
@@ -56,9 +57,14 @@ namespace Content.Client.UserInterface.Controls
             var fixedFactor = _cfg.GetCVar(CCVars.ViewportFixedScaleFactor);
             var verticalFit = _cfg.GetCVar(CCVars.ViewportVerticalFit);
             var filterMode = _cfg.GetCVar(CCVars.ViewportScalingFilterMode);
+            var snapped = false;
 
             if (stretch)
             {
+                // Reset to the canonical eye so snapping math is stable — the fill below
+                // grows ViewportSize and would otherwise feed back into the next snap check.
+                Viewport.ViewportSize = ViewportUIController.ViewportSize;
+
                 var snapFactor = CalcSnappingFactor();
                 if (snapFactor == null)
                 {
@@ -87,14 +93,28 @@ namespace Content.Client.UserInterface.Controls
 
                 // Found snap, set fixed factor and run non-stretching code.
                 fixedFactor = snapFactor.Value;
+                snapped = true;
             }
 
-            // Mini: under vertical fit the horizontal axis must fill the control even when
-            // snapped to an integer scale — otherwise fullscreen players get huge black side
-            // borders (ScalingViewport honors IgnoreDimension in the fixed-size draw path).
-            Viewport.IgnoreDimension = verticalFit
-                ? ScalingViewportIgnoreDimension.Horizontal
-                : ScalingViewportIgnoreDimension.None;
+            if (snapped && PixelSize.X > 0)
+            {
+                // Mini: fill the control exactly by growing the eye to the window size in
+                // world pixels at the snapped scale — square pixels and zero letterboxing.
+                // Stretching the draw box instead (the previous approach) distorted sprites
+                // on monitors whose aspect is wider than the 21x15-tile eye ("too wide").
+                var fill = new Vector2i(
+                    (int) MathF.Ceiling(PixelSize.X / fixedFactor),
+                    (int) MathF.Ceiling(PixelSize.Y / fixedFactor));
+                Viewport.ViewportSize = fill;
+                Viewport.IgnoreDimension = ScalingViewportIgnoreDimension.None;
+            }
+            else
+            {
+                // Manual fixed scale (stretch off): keep the classic letterboxed eye.
+                Viewport.IgnoreDimension = verticalFit
+                    ? ScalingViewportIgnoreDimension.Horizontal
+                    : ScalingViewportIgnoreDimension.None;
+            }
 
             Viewport.FixedStretchSize = Viewport.ViewportSize * fixedFactor;
             Viewport.StretchMode = ScalingViewportStretchMode.Nearest;
