@@ -2,6 +2,7 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Collections.Concurrent;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,8 +30,8 @@ namespace Content.Server._Mini.NeuroPlayer;
 /// </remarks>
 public sealed partial class NeuroPlayerSystem
 {
-    /// <summary>Ahelp answers may be longer than an IC one-liner, but still bounded.</summary>
-    private const int MaxAHelpReplyLength = 600;
+    /// <summary>Hard ceiling for an ahelp answer, even if neuroahelp.max_reply_chars is set higher.</summary>
+    private const int MaxAHelpReplyLength = 400;
 
     /// <summary>Colour of the assistant's name in the ahelp window.</summary>
     private const string AHelpColor = "#8ab4f8";
@@ -52,8 +53,15 @@ public sealed partial class NeuroPlayerSystem
     private int _ahelpCooldownSeconds;
     private int _ahelpMaxContext;
     private int _ahelpMaxTokens;
+    private int _ahelpMaxReplyChars;
     private int _ahelpRequestsPerMinute;
     private string _ahelpExtraPrompt = string.Empty;
+    private string _ahelpKnowledgeFile = string.Empty;
+    private int _ahelpKnowledgeMaxChars;
+
+    private string _ahelpKnowledgeCache = string.Empty;
+    private DateTime _ahelpKnowledgeStamp = DateTime.MinValue;
+    private bool _ahelpKnowledgeWarned;
 
     private readonly Dictionary<NetUserId, List<(AHelpSpeaker Speaker, string Text)>> _ahelpContext = new();
     private readonly Dictionary<NetUserId, TimeSpan> _ahelpLastStaffMessage = new();
@@ -78,8 +86,11 @@ public sealed partial class NeuroPlayerSystem
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpCooldownSeconds, v => _ahelpCooldownSeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxContext, v => _ahelpMaxContext = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxTokens, v => _ahelpMaxTokens = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxReplyChars, v => _ahelpMaxReplyChars = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpRequestsPerMinute, v => _ahelpRequestsPerMinute = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpExtraPrompt, v => _ahelpExtraPrompt = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpKnowledgeFile, v => _ahelpKnowledgeFile = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpKnowledgeMaxChars, v => _ahelpKnowledgeMaxChars = v, true);
 
         SubscribeNetworkEvent<SharedBwoinkSystem.BwoinkTextMessage>(OnAHelpTextMessage);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnAHelpRoundRestart);
@@ -92,6 +103,7 @@ public sealed partial class NeuroPlayerSystem
         _ahelpLastReply.Clear();
         _ahelpQueue.Clear();
         _ahelpRequestTimes.Clear();
+        _ahelpKnowledgeWarned = false;
     }
 
     /// <summary>
@@ -249,11 +261,11 @@ public sealed partial class NeuroPlayerSystem
             if (string.IsNullOrWhiteSpace(reply))
                 return;
 
-            // Mini: same cleanup the IC bots get — no long dashes, single spaces, bounded length.
+            // Mini: same cleanup the IC bots get — no long dashes, single spaces, then a hard cap at
+            // a sentence boundary: answers in ahelp must stay short.
             reply = reply.Replace('—', '-').Replace('–', '-');
             reply = string.Join(' ', reply.Split(' ', StringSplitOptions.RemoveEmptyEntries));
-            if (reply.Length > MaxAHelpReplyLength)
-                reply = reply[..MaxAHelpReplyLength];
+            reply = TrimAHelpReply(reply, Math.Min(_ahelpMaxReplyChars, MaxAHelpReplyLength));
 
             // Blocked words still apply, but unlike the IC bots the assistant is supposed to admit
             // that it is an AI, so that part of the screen is off.
@@ -288,29 +300,96 @@ public sealed partial class NeuroPlayerSystem
         }
     }
 
+    /// <summary>Answer length cap: cut at the last sentence end (or word) inside the budget.</summary>
+    private static string TrimAHelpReply(string reply, int maxChars)
+    {
+        if (maxChars <= 0 || reply.Length <= maxChars)
+            return reply;
+
+        var window = reply[..maxChars];
+
+        var sentence = window.LastIndexOfAny(['.', '!', '?', '…']);
+        if (sentence > maxChars / 3)
+            return window[..(sentence + 1)].TrimEnd();
+
+        var space = window.LastIndexOf(' ');
+        return space > maxChars / 3 ? window[..space].TrimEnd() + "…" : window.TrimEnd();
+    }
+
+    /// <summary>
+    /// Facts about this build, from neuroahelp.knowledge_file. Cached until the file changes, so the
+    /// owner can edit it on a live server without a restart.
+    /// </summary>
+    private string GetAHelpKnowledge()
+    {
+        if (string.IsNullOrWhiteSpace(_ahelpKnowledgeFile))
+            return string.Empty;
+
+        try
+        {
+            var path = Path.GetFullPath(_ahelpKnowledgeFile);
+
+            if (!File.Exists(path))
+            {
+                WarnAHelpKnowledge($"knowledge file '{path}' not found");
+                return string.Empty;
+            }
+
+            var stamp = File.GetLastWriteTimeUtc(path);
+            if (stamp == _ahelpKnowledgeStamp)
+                return _ahelpKnowledgeCache;
+
+            var text = File.ReadAllText(path);
+            if (text.Length > _ahelpKnowledgeMaxChars)
+                text = text[.._ahelpKnowledgeMaxChars];
+
+            _ahelpKnowledgeStamp = stamp;
+            _ahelpKnowledgeCache = text;
+            return text;
+        }
+        catch (Exception e)
+        {
+            WarnAHelpKnowledge($"cannot read knowledge file '{_ahelpKnowledgeFile}': {e.Message}");
+            return string.Empty;
+        }
+    }
+
+    private void WarnAHelpKnowledge(string reason)
+    {
+        if (_ahelpKnowledgeWarned)
+            return;
+
+        _ahelpKnowledgeWarned = true;
+        _sawmill.Warning($"Neuro ahelp: {reason}.");
+    }
+
     private string BuildAHelpSystemPrompt()
     {
         var discord = _cfg.GetCVar(CCVars.InfoLinksDiscord);
         var wiki = _cfg.GetCVar(CCVars.InfoLinksWiki);
 
         var prompt =
-            $"Ты — «{_ahelpName}», ИИ-помощник в админ-хелпе (ahelp) русского сервера «Мини-Станция» по игре Space Station 14.\n" +
-            "Администраторов сейчас в сети нет, поэтому на обращение отвечаешь ты — как первая линия поддержки.\n" +
-            "Правила:\n" +
-            "- Отвечай по-русски, коротко (2-4 предложения), вежливо и по делу.\n" +
-            "- Сразу честно говори, что ты ИИ-помощник, а не администратор.\n" +
-            "- Ты не можешь банить, выдавать предметы, воскрешать, разбирать конфликты и апелляции. Не обещай этого.\n" +
-            "- Если нужен живой админ (нарушения, читы, конфликт игроков, потеря вещей, апелляция) — скажи, что обращение увидят администраторы, и попроси коротко изложить суть.\n";
-
+            $"Ты — «{_ahelpName}», ИИ-помощник в админ-хелпе (ahelp) сервера «Мини-Станция» — русский МРП-сервер по Space Station 14 (форк Goob-Station с мини-картами).\n" +
+            "Главная задача: коротко объяснять, как устроена игра и эта сборка — механики, предметы, профессии, антагонисты, режимы, управление, что делает та или иная вещь и как что-то сделать.\n" +
+            "Формат ответа (это важно):\n" +
+            "- ОДНО-ДВА коротких предложения, максимум 200 символов. Без списков, без вступлений, без «чем могу помочь».\n" +
+            "- Сразу суть, как короткая подсказка в чате, по-русски.\n" +
+            "- Нужны шаги — перечисли их через запятую одной строкой, а не списком.\n" +
+            "- Не уверен или нужны детали — отправь в гайдбук в игре (Numpad 0)";
         if (!string.IsNullOrWhiteSpace(wiki))
-            prompt += $"- На вопросы про правила и механики ссылайся на вики сервера: {wiki}\n";
+            prompt += $" или на вики {wiki}";
         if (!string.IsNullOrWhiteSpace(discord))
-            prompt += $"- Для срочных вопросов и апелляций дай ссылку на Discord сервера: {discord}\n";
+            prompt += $"; срочное — Discord {discord}";
+        prompt += ".\n";
 
         prompt +=
-            "- Помогай с игровыми вопросами: что делать при баге, как найти механику, куда обратиться.\n" +
-            "- Не раскрывай внутренние настройки сервера, не обсуждай других игроков и не говори от лица администрации.\n" +
-            "- Не используй звёздочки и описания действий — только прямую речь.";
+            "- Ты не администратор: не бань, не выдавай предметы, не разбирай конфликты, апелляции и наказания. Про нарушение, читы, потерю вещей или конфликт — одна фраза, что обращение увидят администраторы, и всё.\n" +
+            "- Не выдумывай механик, которых нет, и не раскрывай внутренние настройки сервера.\n" +
+            "- Без звёздочек и описаний действий; если спросят, кто ты — ты ИИ-помощник.";
+
+        var knowledge = GetAHelpKnowledge();
+        if (!string.IsNullOrWhiteSpace(knowledge))
+            prompt += "\n\nФакты про эту сборку (используй их, а не догадки):\n" + knowledge;
 
         if (!string.IsNullOrWhiteSpace(_ahelpExtraPrompt))
             prompt += "\n\nДополнительные указания сервера:\n" + _ahelpExtraPrompt;
@@ -338,6 +417,6 @@ public sealed partial class NeuroPlayerSystem
         }
 
         return "Обращение в админ-хелп:\n" + string.Join("\n", lines) +
-               "\n\nОтветь игроку одной короткой репликой в ahelp.";
+               "\n\nОтветь игроку одной короткой репликой по сути (механика/факт), без вступлений.";
     }
 }

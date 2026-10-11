@@ -805,7 +805,25 @@ public sealed class MiniCCVars
         CVarDef.Create("neuroahelp.max_context_messages", 8, CVar.SERVERONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<int> NeuroAHelpMaxTokens =
-        CVarDef.Create("neuroahelp.max_tokens", 256, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroahelp.max_tokens", 120, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Hard cap for an assistant answer in characters. The model is asked for 1-2 short sentences,
+    /// and anything longer is cut at a sentence (or word) boundary.
+    /// </summary>
+    public static readonly CVarDef<int> NeuroAHelpMaxReplyChars =
+        CVarDef.Create("neuroahelp.max_reply_chars", 260, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Text/markdown file with facts about this build (mechanics, modes, jobs, controls). Relative
+    /// paths resolve against the server working directory. Included into the assistant's prompt.
+    /// </summary>
+    public static readonly CVarDef<string> NeuroAHelpKnowledgeFile =
+        CVarDef.Create("neuroahelp.knowledge_file", "", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>How much of the knowledge file is sent to the model (characters).</summary>
+    public static readonly CVarDef<int> NeuroAHelpKnowledgeMaxChars =
+        CVarDef.Create("neuroahelp.knowledge_max_chars", 6000, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Separate request budget, so the IC bots cannot starve the support channel
