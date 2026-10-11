@@ -3,6 +3,7 @@
 
 using Content.Server.Administration.Managers;
 using Content.Shared.Administration;
+using Content.Shared._Mini.NeuroPlayer;
 using Robust.Shared.Console;
 
 namespace Content.Server._Mini.Administration.Commands;
@@ -14,11 +15,11 @@ public sealed class NeuroBotCommand : IConsoleCommand
 
     public string Command => "neurobots";
     public string Description => "Управление нейроигроками (боты с LLM-чатом).";
-    public string Help => "Usage: neurobots <spawn|despawn|status>";
+    public string Help => "Usage: neurobots <spawn|despawn|status|providers>";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
-        if (args.Length != 1 || args[0] is not ("spawn" or "despawn" or "status"))
+        if (args.Length != 1 || args[0] is not ("spawn" or "despawn" or "status" or "providers"))
         {
             shell.WriteLine(Help);
             return;
@@ -44,8 +45,14 @@ public sealed class NeuroBotCommand : IConsoleCommand
                 shell.WriteLine("Нейроигроки удалены.");
                 break;
             case "status":
-                var (enabled, configured, bots) = neuro.GetStatus();
-                shell.WriteLine($"enabled={enabled}, apiConfigured={configured}, bots={bots}");
+                var (enabled, configured, bots, provider, model) = neuro.GetStatus();
+                shell.WriteLine(
+                    $"enabled={enabled}, apiConfigured={configured}, bots={bots}, provider={provider}, model={model}");
+                break;
+            case "providers":
+                shell.WriteLine($"Доступные провайдеры: {NeuroProviderPresets.AvailableIds}");
+                shell.WriteLine("Выбор: cvar neuroplayer.provider, ключ: neuroplayer.api_key " +
+                                "(или neuroplayer.<провайдер>.api_key).");
                 break;
         }
     }

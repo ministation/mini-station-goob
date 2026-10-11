@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2026 Egorik1
+// SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Linq;
@@ -92,6 +92,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private readonly List<EntityUid> _bots = new();
 
     private bool _enabled;
+    private string _provider = NeuroProviderPresets.CustomId;
     private string _apiUrl = string.Empty;
     private string _apiKey = string.Empty;
     private string _model = string.Empty;
@@ -111,6 +112,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private int _botChatterCooldownSeconds;
 
     private float _dangerScanAccumulator;
+
+    private bool _configWarned;
+    private string? _unknownProviderWarned;
 
 
     private static readonly ProtoId<JobPrototype>[] BasicJobPrototypes =
@@ -146,6 +150,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         _sawmill = Logger.GetSawmill("neuroplayer");
 
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerEnabled, v => _enabled = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerProvider, v => _provider = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerApiUrl, v => _apiUrl = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerApiKey, v => _apiKey = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerModel, v => _model = v, true);
@@ -641,8 +646,12 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private void TryRespond(EntityUid bot, NeuroPersonaPrototype persona, string speakerName, string message, bool viaRadio, bool proactive)
     {
-        if (string.IsNullOrEmpty(_apiUrl) || string.IsNullOrEmpty(_apiKey))
+        var config = ResolveProvider();
+        if (!config.IsConfigured)
+        {
+            WarnUnconfigured(config);
             return;
+        }
 
         var comp = Comp<NeuroPlayerComponent>(bot);
         if (comp.RequestInFlight || _timing.CurTime < comp.NextAllowedResponse)
@@ -650,6 +659,113 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
         comp.RequestInFlight = true;
         _ = RunCompletionAsync(bot, comp, persona, speakerName, message, viaRadio, proactive);
+    }
+
+    /// <summary>
+    /// Effective endpoint/key/model of the active LLM provider (DeepSeek, Z.ai, OpenAI, OpenRouter
+    /// or the legacy custom endpoint).
+    /// </summary>
+    private NeuroProviderConfig ResolveProvider()
+    {
+        // Пустое значение = legacy "custom" из конфига, ругаться на него не нужно.
+        if (!string.IsNullOrWhiteSpace(_provider) && !NeuroProviderPresets.IsKnown(_provider))
+        {
+            if (_unknownProviderWarned != _provider)
+            {
+                _unknownProviderWarned = _provider;
+                _sawmill.Warning(
+                    $"Neuro players: unknown provider '{_provider}', falling back to '{NeuroProviderPresets.CustomId}'. " +
+                    $"Available: {NeuroProviderPresets.AvailableIds}.");
+            }
+        }
+
+        return NeuroProviderPresets.Resolve(_cfg, _provider, _apiUrl, _apiKey, _model);
+    }
+
+    private void WarnUnconfigured(NeuroProviderConfig config)
+    {
+        if (_configWarned)
+            return;
+
+        _configWarned = true;
+        _sawmill.Warning(
+            $"Neuro players: LLM is not configured (provider={config.Provider}, " +
+            $"endpoint={(string.IsNullOrEmpty(config.Endpoint) ? "<empty>" : config.Endpoint)}, " +
+            $"key={(string.IsNullOrEmpty(config.ApiKey) ? "<empty>" : "set")}). " +
+            $"Set neuroplayer.api_key and pick a provider from: {NeuroProviderPresets.AvailableIds}.");
+    }
+
+    private static string BuildSystemPrompt(string botName, string character)
+    {
+        return
+            $"Ты — {botName}, пассажир на космической станции Нанотрайзен (игра Space Station 14).\n" +
+            $"{character}\n" +
+            "Правила:\n" +
+            "- Отвечай ОДНОЙ короткой репликой до 15 слов, по-русски, живым разговорным стилем.\n" +
+            "- Никогда не говори, что ты ИИ, бот, модель или что ты в игре или симуляции.\n" +
+            "- Не используй звёздочки и описания действий — только прямую речь.\n" +
+            "- Не обещай игровых действий и не обсуждай администрацию, правила и читы.\n" +
+            "- Если сказать нечего — короткая нейтральная реакция.";
+    }
+
+    /// <summary>
+    /// Sends one chat completion through the resolved provider and returns the raw reply text.
+    /// Provider differences (endpoint, model, thinking field) are handled here; failures carry the
+    /// response body so a bad key or model name is visible in the log instead of a bare status code.
+    /// </summary>
+    private async Task<string?> SendCompletionAsync(
+        NeuroProviderConfig config,
+        string systemPrompt,
+        string userPrompt,
+        CancellationToken cancel)
+    {
+        var body = new CompletionRequest
+        {
+            Model = config.Model,
+            Messages =
+            [
+                new ChatMessageDto("system", systemPrompt),
+                new ChatMessageDto("user", userPrompt),
+            ],
+            Temperature = _temperature,
+            MaxTokens = _maxTokens,
+        };
+
+        // GLM-4.5/4.6 style reasoning toggle: with a small token budget thinking eats the whole
+        // reply, so it is disabled unless requested. Sent only to providers that accept the field —
+        // DeepSeek and OpenAI reject unknown request fields.
+        if (config.SupportsThinking)
+            body.Thinking = new ThinkingConfig { Type = _thinkingEnabled ? "enabled" : "disabled" };
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, config.Endpoint);
+        request.Headers.Authorization = new("Bearer", config.ApiKey);
+        request.Content = JsonContent.Create(body);
+
+        using var response = await _httpClient.SendAsync(request, cancel);
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = await response.Content.ReadAsStringAsync(cancel);
+            if (errorBody.Length > 400)
+                errorBody = errorBody[..400];
+
+            throw new HttpRequestException(
+                $"{(int) response.StatusCode} {response.StatusCode} from {config.Provider}/{config.Model}: {errorBody}");
+        }
+
+        var payload = await response.Content.ReadFromJsonAsync<CompletionResponse>(cancellationToken: cancel);
+        var choice = payload?.Choices?.FirstOrDefault()?.Message;
+        var reply = choice?.Content?.Trim();
+
+        if (string.IsNullOrWhiteSpace(reply) && !string.IsNullOrWhiteSpace(choice?.ReasoningContent))
+        {
+            // Reasoning models (deepseek-reasoner and friends) spend max_tokens on hidden thinking
+            // and then return an empty answer — the bot would just stay silent forever.
+            _sawmill.Warning(
+                $"Neuro players: {config.Provider}/{config.Model} returned only reasoning_content. " +
+                $"Raise neuroplayer.max_tokens (now {_maxTokens}) or use a non-reasoning model.");
+        }
+
+        return reply;
     }
 
     private async Task RunCompletionAsync(
@@ -669,50 +785,24 @@ public sealed class NeuroPlayerSystem : EntitySystem
             if (Deleted(bot) || Terminating(bot))
                 return;
 
+            var config = ResolveProvider();
+            if (!config.IsConfigured)
+            {
+                WarnUnconfigured(config);
+                return;
+            }
+
             var botName = Name(bot);
             var context = string.Join("\n", comp.Context.Select(c => $"{c.Speaker}: {c.Message}"));
 
-            var systemPrompt =
-                $"Ты — {botName}, пассажир на космической станции Нанотрайзен (игра Space Station 14).\n" +
-                $"{persona.Character}\n" +
-                "Правила:\n" +
-                "- Отвечай ОДНОЙ короткой репликой до 15 слов, по-русски, живым разговорным стилем.\n" +
-                "- Никогда не говори, что ты ИИ, бот, модель или что ты в игре или симуляции.\n" +
-                "- Не используй звёздочки и описания действий — только прямую речь.\n" +
-                "- Не обещай игровых действий и не обсуждай администрацию, правила и читы.\n" +
-                "- Если сказать нечего — короткая нейтральная реакция.";
+            var systemPrompt = BuildSystemPrompt(botName, persona.Character);
 
             var userPrompt = string.IsNullOrWhiteSpace(context)
                 ? $"{speakerName} говорит тебе: {message}"
                 : $"Контекст переписки:\n{context}\n\n{speakerName} обращается к тебе: {message}";
 
-            var body = new CompletionRequest
-            {
-                Model = _model,
-                Messages =
-                [
-                    new ChatMessageDto("system", systemPrompt),
-                    new ChatMessageDto("user", userPrompt),
-                ],
-                Temperature = _temperature,
-                MaxTokens = _maxTokens,
-            };
-
-            // GLM-4.5/4.6 reasoning toggle: with a small token budget thinking eats the whole
-            // reply, so it is disabled unless requested. Sent only for glm models — other
-            // providers reject unknown fields.
-            if (_model.Contains("glm", StringComparison.OrdinalIgnoreCase))
-                body.Thinking = new ThinkingConfig { Type = _thinkingEnabled ? "enabled" : "disabled" };
-
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
-            using var request = new HttpRequestMessage(HttpMethod.Post, _apiUrl);
-            request.Headers.Authorization = new("Bearer", _apiKey);
-            request.Content = JsonContent.Create(body);
-
-            var response = await _httpClient.SendAsync(request, cts.Token);
-            response.EnsureSuccessStatusCode();
-            var payload = await response.Content.ReadFromJsonAsync<CompletionResponse>(cancellationToken: cts.Token);
-            var reply = payload?.Choices?.FirstOrDefault()?.Message?.Content?.Trim();
+            var reply = await SendCompletionAsync(config, systemPrompt, userPrompt, cts.Token);
 
             if (string.IsNullOrWhiteSpace(reply) || Deleted(bot) || Terminating(bot))
                 return;
@@ -1059,43 +1149,17 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private async Task<string?> CompleteRawAsync(NeuroPersonaPrototype persona, string botName, string userPrompt)
     {
-        var systemPrompt =
-            $"Ты — {botName}, пассажир на космической станции Нанотрайзен (игра Space Station 14).\n" +
-            $"{persona.Character}\n" +
-            "Правила:\n" +
-            "- Отвечай ОДНОЙ короткой репликой до 15 слов, по-русски, живым разговорным стилем.\n" +
-            "- Никогда не говори, что ты ИИ, бот, модель или что ты в игре или симуляции.\n" +
-            "- Не используй звёздочки и описания действий — только прямую речь.\n" +
-            "- Не обещай игровых действий и не обсуждай администрацию, правила и читы.\n" +
-            "- Если сказать нечего — короткая нейтральная реакция.";
-
-        var body = new CompletionRequest
+        var config = ResolveProvider();
+        if (!config.IsConfigured)
         {
-            Model = _model,
-            Messages =
-            [
-                new ChatMessageDto("system", systemPrompt),
-                new ChatMessageDto("user", userPrompt),
-            ],
-            Temperature = _temperature,
-            MaxTokens = _maxTokens,
-        };
+            WarnUnconfigured(config);
+            return null;
+        }
 
-        // GLM-4.5/4.6 reasoning toggle: with a small token budget thinking eats the whole
-        // reply, so it is disabled unless requested. Sent only for glm models — other
-        // providers reject unknown fields.
-        if (_model.Contains("glm", StringComparison.OrdinalIgnoreCase))
-            body.Thinking = new ThinkingConfig { Type = _thinkingEnabled ? "enabled" : "disabled" };
+        var systemPrompt = BuildSystemPrompt(botName, persona.Character);
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
-        using var request = new HttpRequestMessage(HttpMethod.Post, _apiUrl);
-        request.Headers.Authorization = new("Bearer", _apiKey);
-        request.Content = JsonContent.Create(body);
-
-        var response = await _httpClient.SendAsync(request, cts.Token);
-        response.EnsureSuccessStatusCode();
-        var payload = await response.Content.ReadFromJsonAsync<CompletionResponse>(cancellationToken: cts.Token);
-        var reply = payload?.Choices?.FirstOrDefault()?.Message?.Content?.Trim();
+        var reply = await SendCompletionAsync(config, systemPrompt, userPrompt, cts.Token);
 
         if (string.IsNullOrWhiteSpace(reply))
             return null;
@@ -1106,11 +1170,15 @@ public sealed class NeuroPlayerSystem : EntitySystem
         return reply;
     }
 
-    public (bool Enabled, bool ApiConfigured, int Bots) GetStatus()
+    public (bool Enabled, bool ApiConfigured, int Bots, string Provider, string Model) GetStatus()
     {
+        var config = ResolveProvider();
+
         return (_enabled,
-            !string.IsNullOrEmpty(_apiUrl) && !string.IsNullOrEmpty(_apiKey),
-            _bots.Count(Exists));
+            config.IsConfigured,
+            _bots.Count(Exists),
+            config.Provider,
+            config.Model);
     }
 
     private sealed class CompletionRequest
@@ -1168,5 +1236,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
     {
         [JsonPropertyName("content")]
         public string? Content { get; set; }
+
+        /// <summary>Hidden chain of thought some reasoning models (deepseek-reasoner) return.</summary>
+        [JsonPropertyName("reasoning_content")]
+        public string? ReasoningContent { get; set; }
     }
 }

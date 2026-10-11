@@ -611,6 +611,76 @@ public sealed class MiniCCVars
     public static readonly CVarDef<string> NeuroPlayerModel =
         CVarDef.Create("neuroplayer.model", "glm-5.3-flash", CVar.SERVERONLY | CVar.ARCHIVE);
 
+    /*
+     * Neuro player LLM providers.
+     *
+     * neuroplayer.provider picks the preset (custom, deepseek, zai, openai, openrouter).
+     * "custom" keeps the legacy behaviour: the endpoint/key/model above are used as-is.
+     * Every other provider carries its own endpoint, model and key cvar, so switching
+     * providers is a one-line config change and back and forth keys do not clash:
+     *
+     *   neuroplayer.provider = "deepseek"
+     *   neuroplayer.api_key = "sk-..."          # shared bearer key
+     *   # или отдельный ключ под провайдера:
+     *   neuroplayer.deepseek.api_key = "sk-..."
+     *
+     * An empty per-provider cvar falls back to the preset default (endpoint/model) or to
+     * the shared key. See <see cref="Content.Shared._Mini.NeuroPlayer.NeuroProviderPresets"/>.
+     */
+
+    /// <summary>Active LLM provider preset: custom, deepseek, zai, openai or openrouter.</summary>
+    public static readonly CVarDef<string> NeuroPlayerProvider =
+        CVarDef.Create("neuroplayer.provider", "custom", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>DeepSeek chat completions endpoint.</summary>
+    public static readonly CVarDef<string> NeuroPlayerDeepSeekApiUrl =
+        CVarDef.Create("neuroplayer.deepseek.api_url", "https://api.deepseek.com/chat/completions",
+            CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    /// <summary>DeepSeek bearer key; empty falls back to <see cref="NeuroPlayerApiKey"/>.</summary>
+    public static readonly CVarDef<string> NeuroPlayerDeepSeekApiKey =
+        CVarDef.Create("neuroplayer.deepseek.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    /// <summary>
+    /// DeepSeek model. "deepseek-chat" is the non-reasoning V3 chat model — the right pick for
+    /// one-line bot replies. "deepseek-reasoner" also works but spends the whole max_tokens
+    /// budget on hidden thinking, so raise <see cref="NeuroPlayerMaxTokens"/> for it.
+    /// </summary>
+    public static readonly CVarDef<string> NeuroPlayerDeepSeekModel =
+        CVarDef.Create("neuroplayer.deepseek.model", "deepseek-chat", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Z.ai (GLM coding plan) chat completions endpoint.</summary>
+    public static readonly CVarDef<string> NeuroPlayerZaiApiUrl =
+        CVarDef.Create("neuroplayer.zai.api_url", "https://api.z.ai/api/paas/v4/chat/completions",
+            CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    public static readonly CVarDef<string> NeuroPlayerZaiApiKey =
+        CVarDef.Create("neuroplayer.zai.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    public static readonly CVarDef<string> NeuroPlayerZaiModel =
+        CVarDef.Create("neuroplayer.zai.model", "glm-5.3-flash", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<string> NeuroPlayerOpenAiApiUrl =
+        CVarDef.Create("neuroplayer.openai.api_url", "https://api.openai.com/v1/chat/completions",
+            CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    public static readonly CVarDef<string> NeuroPlayerOpenAiApiKey =
+        CVarDef.Create("neuroplayer.openai.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    public static readonly CVarDef<string> NeuroPlayerOpenAiModel =
+        CVarDef.Create("neuroplayer.openai.model", "gpt-4o-mini", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>OpenRouter endpoint — handy to reach DeepSeek models through one key.</summary>
+    public static readonly CVarDef<string> NeuroPlayerOpenRouterApiUrl =
+        CVarDef.Create("neuroplayer.openrouter.api_url", "https://openrouter.ai/api/v1/chat/completions",
+            CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    public static readonly CVarDef<string> NeuroPlayerOpenRouterApiKey =
+        CVarDef.Create("neuroplayer.openrouter.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    public static readonly CVarDef<string> NeuroPlayerOpenRouterModel =
+        CVarDef.Create("neuroplayer.openrouter.model", "deepseek/deepseek-chat", CVar.SERVERONLY | CVar.ARCHIVE);
+
     public static readonly CVarDef<int> NeuroPlayerBotCount =
         CVarDef.Create("neuroplayer.bot_count", 3, CVar.SERVERONLY | CVar.ARCHIVE);
 
