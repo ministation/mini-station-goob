@@ -24,4 +24,10 @@ public sealed partial class ArrivalsShuttleComponent : Component
     [DataField("firstRun")]
     public bool FirstRun = true;
 
+    /// <summary>
+    ///     Mini: the shuttle was called for waiting latejoiners and must fly even without
+    ///     passengers aboard. Cleared as soon as it docks at either end.
+    /// </summary>
+    public bool Summoned;
+
 }
