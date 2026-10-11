@@ -65,7 +65,8 @@ jobs:
       shell: bash
       env:
         DOTNET_gcServer: 1
-        SHARD: ${{ matrix.shard }}      run: |
+        SHARD: ${{ matrix.shard }}
+      run: |
         set -euo pipefail
         if [ "$SHARD" = "heavy" ]; then
           FILTER='FullyQualifiedName~Content.IntegrationTests.Tests.EntityTest|FullyQualifiedName~Content.IntegrationTests.Tests.PostMapInitTest|FullyQualifiedName~Content.IntegrationTests.Tests.Power.StationPowerTests|FullyQualifiedName~Content.IntegrationTests.Tests.Power.PowerTest|FullyQualifiedName~Content.IntegrationTests.Tests.Atmos.AirtightTest|FullyQualifiedName~Content.IntegrationTests.Tests.ClickableTest'
@@ -75,6 +76,18 @@ jobs:
         dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj \
           --filter "$FILTER" \
           -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.NumberOfTestWorkers=1
+
+    # Mini: проверка типов клиентской песочницы отдельным шагом.
+    # Она ловит запрещённые типы в клиентских сборках ("Sandbox violation: Access to type not
+    # allowed"), из-за которых клиент падает на старте — например, сырые NAudio/Concentus/Lidgren
+    # в войс-чате. Держим её явно, чтобы она не потерялась при правках фильтров шардов.
+    - name: Sandbox type check (client assemblies)
+      if: matrix.shard == 'fast'
+      run: >
+        dotnet test --no-build --configuration DebugOpt
+        Content.IntegrationTests/Content.IntegrationTests.csproj
+        --filter "FullyQualifiedName~SandboxTest"
+        -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
 
   ci-success:
     name: Build & Test Debug
