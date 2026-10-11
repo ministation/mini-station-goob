@@ -44,8 +44,8 @@ public sealed class NeuroBotCommand : IConsoleCommand
                 shell.WriteLine("Нейроигроки удалены.");
                 break;
             case "status":
-                var (enabled, configured, bots, requests) = neuro.GetStatus();
-                shell.WriteLine($"enabled={enabled}, apiConfigured={configured}, bots={bots}, dailyRequests={requests}");
+                var (enabled, configured, bots) = neuro.GetStatus();
+                shell.WriteLine($"enabled={enabled}, apiConfigured={configured}, bots={bots}");
                 break;
         }
     }

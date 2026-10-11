@@ -625,10 +625,6 @@ public sealed class MiniCCVars
     public static readonly CVarDef<int> NeuroPlayerCooldownSeconds =
         CVarDef.Create("neuroplayer.response_cooldown_seconds", 8, CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>Global daily cap of LLM requests (0 = unlimited).</summary>
-    public static readonly CVarDef<int> NeuroPlayerMaxDailyRequests =
-        CVarDef.Create("neuroplayer.max_daily_requests", 1000, CVar.SERVERONLY | CVar.ARCHIVE);
-
     public static readonly CVarDef<int> NeuroPlayerMaxTokens =
         CVarDef.Create("neuroplayer.max_tokens", 512, CVar.SERVERONLY | CVar.ARCHIVE);
 

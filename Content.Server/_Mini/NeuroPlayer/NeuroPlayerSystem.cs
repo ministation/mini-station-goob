@@ -96,7 +96,6 @@ public sealed class NeuroPlayerSystem : EntitySystem
     private float _hearRadius;
     private int _maxContext;
     private int _cooldownSeconds;
-    private int _maxDailyRequests;
     private int _maxTokens;
     private float _temperature;
     private int _timeoutSeconds;
@@ -110,8 +109,6 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
     private float _dangerScanAccumulator;
 
-    private DateTime _dailyDate = DateTime.UtcNow.Date;
-    private int _dailyRequests;
 
     private static readonly ProtoId<JobPrototype>[] BasicJobPrototypes =
     [
@@ -143,7 +140,6 @@ public sealed class NeuroPlayerSystem : EntitySystem
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerHearRadius, v => _hearRadius = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerMaxContext, v => _maxContext = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerCooldownSeconds, v => _cooldownSeconds = v, true);
-        Subs.CVar(_cfg, MiniCCVars.NeuroPlayerMaxDailyRequests, v => _maxDailyRequests = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerMaxTokens, v => _maxTokens = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerTemperature, v => _temperature = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroPlayerTimeoutSeconds, v => _timeoutSeconds = v, true);
@@ -589,29 +585,8 @@ public sealed class NeuroPlayerSystem : EntitySystem
         if (comp.RequestInFlight || _timing.CurTime < comp.NextAllowedResponse)
             return;
 
-        if (!CheckDailyBudget())
-            return;
-
         comp.RequestInFlight = true;
         _ = RunCompletionAsync(bot, comp, persona, speakerName, message, viaRadio, proactive);
-    }
-
-    private bool CheckDailyBudget()
-    {
-        var today = DateTime.UtcNow.Date;
-        if (_dailyDate != today)
-        {
-            _dailyDate = today;
-            _dailyRequests = 0;
-        }
-
-        if (_maxDailyRequests <= 0 || _dailyRequests < _maxDailyRequests)
-        {
-            _dailyRequests++;
-            return true;
-        }
-
-        return false;
     }
 
     private async Task RunCompletionAsync(
@@ -1045,12 +1020,11 @@ public sealed class NeuroPlayerSystem : EntitySystem
         return reply;
     }
 
-    public (bool Enabled, bool ApiConfigured, int Bots, int DailyRequests) GetStatus()
+    public (bool Enabled, bool ApiConfigured, int Bots) GetStatus()
     {
         return (_enabled,
             !string.IsNullOrEmpty(_apiUrl) && !string.IsNullOrEmpty(_apiKey),
-            _bots.Count(Exists),
-            _dailyRequests);
+            _bots.Count(Exists));
     }
 
     private sealed class CompletionRequest
