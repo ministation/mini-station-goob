@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Robust.Shared.IoC;
 using System.Numerics;
@@ -112,10 +112,7 @@ namespace Content.Client.Jittering
     /// </summary>
     private static float GetFootWalkBounce(EntityUid uid)
     {
-        return IoCManager.Resolve<IEntityManager>()
-            .TryGetComponent<Content.Shared._Mini.FootWalk.FootWalkAnimationComponent>(uid, out var walk)
-            ? walk.CurrentBounceY
-            : 0f;
+        return Content.Client._Mini.FootWalk.FootWalkBounce.Get(uid);
     }
     }
 }

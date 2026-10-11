@@ -2,6 +2,7 @@
 
 using Robust.Client.UserInterface.RichText; // Goob
 using System.Numerics;
+using Content.Client._Mini.FootWalk;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Speech;
@@ -169,6 +170,10 @@ namespace Content.Client.Chat.UI
 
             var offset = (-_eyeManager.CurrentEye.Rotation).ToWorldVec() * -(EntityVerticalOffset + baseOffset);
             var worldPos = _transformSystem.GetWorldPosition(xform) + offset;
+
+            // Mini: the FootWalk bounce lifts the body inside Sprite.Offset, so a transform-based anchor
+            // would stay behind while the character steps. Follow the lift to keep the bubble glued.
+            worldPos.Y += FootWalkBounce.GetFollowLift(_senderEntity);
 
             var lowerCenter = _eyeManager.WorldToScreen(worldPos) / UIScale;
             var screenPos = lowerCenter - new Vector2(ContentSize.X / 2, ContentSize.Y + _verticalOffsetAchieved);
