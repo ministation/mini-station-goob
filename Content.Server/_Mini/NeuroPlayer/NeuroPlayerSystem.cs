@@ -605,12 +605,20 @@ public sealed class NeuroPlayerSystem : EntitySystem
     {
         // Sometimes a basic profession look (cargo tech, service worker...) — purely gear,
         // player job slots are never consumed. Security stays player-only.
+        // The persona's own profession is the default, so "Грузчик" actually looks like a cargo tech.
         var job = forcedJob
             ?? (_random.Prob(0.4f)
                 ? _random.Pick(BasicJobPrototypes)
-                : (ProtoId<JobPrototype>) "Passenger");
+                : persona.Job);
 
         var profile = HumanoidCharacterProfile.RandomWithSpecies("Human");
+
+        // Mini: body and voice follow the persona card instead of a random roll.
+        if (persona.Sex is { } personaSex)
+            profile = profile.WithSex(personaSex);
+        if (persona.Age is { } personaAge)
+            profile = profile.WithAge(personaAge);
+
         var mob = _spawning.SpawnPlayerMob(coords, job, profile, station);
 
         var comp = EnsureComp<NeuroPlayerComponent>(mob);
@@ -651,7 +659,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
             {
                 _stationRecords.CreateGeneralRecord(
                     station, mob, persona.Name, profile.Age, profile.Species, profile.Sex,
-                    persona.Job, null, null, profile, records);
+                    job, null, null, profile, records);
             }
             catch (Exception e)
             {
