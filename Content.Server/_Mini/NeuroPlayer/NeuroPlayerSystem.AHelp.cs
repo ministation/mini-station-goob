@@ -12,7 +12,6 @@ using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
-using Content.Shared.GameTicking;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
@@ -93,10 +92,12 @@ public sealed partial class NeuroPlayerSystem
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpKnowledgeMaxChars, v => _ahelpKnowledgeMaxChars = v, true);
 
         SubscribeNetworkEvent<SharedBwoinkSystem.BwoinkTextMessage>(OnAHelpTextMessage);
-        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnAHelpRoundRestart);
+        // RoundRestartCleanupEvent is already subscribed in the main Initialize(); the ahelp state is
+        // reset from that handler via ResetAHelpState() — a second subscription throws at startup.
     }
 
-    private void OnAHelpRoundRestart(RoundRestartCleanupEvent ev)
+    /// <summary>Drops per-round ahelp state. Called from the system's RoundRestartCleanupEvent handler.</summary>
+    private void ResetAHelpState()
     {
         _ahelpContext.Clear();
         _ahelpLastStaffMessage.Clear();
