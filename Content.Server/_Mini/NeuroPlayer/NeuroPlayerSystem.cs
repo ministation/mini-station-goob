@@ -393,6 +393,10 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         _spawnedThisRound = false;
         _warSuppressed = false;
         _roundStartTime = TimeSpan.Zero;
+
+        // Ahelp assistant state lives in the partial file; the event handler is shared because a
+        // system may only subscribe to an event once.
+        ResetAHelpState();
     }
 
     /// <summary>
