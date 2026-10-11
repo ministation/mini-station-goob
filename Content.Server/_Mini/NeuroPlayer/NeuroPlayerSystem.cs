@@ -224,6 +224,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
     /// <summary>Bots were despawned because a station war is running; they come back when it ends.</summary>
     private bool _warSuppressed;
 
+    /// <summary>Only the first failed spawn attempt of the round is logged as a warning.</summary>
+    private bool _spawnFailureLogged;
+
     private bool _configWarned;
     private string? _unknownProviderWarned;
 
@@ -365,6 +368,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
         _roundStartTime = _timing.CurTime;
         _spawnedThisRound = false;
         _warSuppressed = false;
+        _spawnFailureLogged = false;
 
         if (!_enabled || _botCount <= 0)
             return;
@@ -707,16 +711,18 @@ public sealed class NeuroPlayerSystem : EntitySystem
         var station = FindStation();
         if (!station.HasValue)
         {
-            _sawmill.Warning("Neuro players: no station found to spawn on.");
+            // No playable NT station in this round yet: passengers wait for it instead of settling
+            // down on CentComm or on the second station (MaintainBots retries in a few seconds).
+            LogSpawnFailure("no playable NT station found, waiting for it");
             return;
         }
 
         var points = FindSpawnPoints(station.Value);
         if (points.Count == 0)
         {
-            _sawmill.Warning(
-                $"Neuro players: no late-join spawn points on {Name(station.Value)} " +
-                $"({MetaData(station.Value).EntityPrototype?.ID ?? "no prototype"}).");
+            LogSpawnFailure(
+                $"no late-join spawn points on {Name(station.Value)} " +
+                $"({MetaData(station.Value).EntityPrototype?.ID ?? "no prototype"})");
             return;
         }
 
@@ -807,11 +813,30 @@ public sealed class NeuroPlayerSystem : EntitySystem
         }
 
         if (spawned > 0)
+        {
             _spawnedThisRound = true;
+            _spawnFailureLogged = false;
+        }
 
         _sawmill.Info(
             $"Neuro players: spawned {spawned} bots on {Name(station.Value)} " +
             $"({MetaData(station.Value).EntityPrototype?.ID ?? "no prototype"}, bot_count={_botCount}).");
+    }
+
+    /// <summary>
+    /// A failed spawn attempt is retried every few seconds, so only the first one of the round is a
+    /// warning and the rest go to the debug log.
+    /// </summary>
+    private void LogSpawnFailure(string reason)
+    {
+        if (_spawnFailureLogged)
+        {
+            _sawmill.Debug($"Neuro players: spawn attempt failed: {reason}.");
+            return;
+        }
+
+        _spawnFailureLogged = true;
+        _sawmill.Warning($"Neuro players: spawn attempt failed: {reason}. Retrying in a few seconds.");
     }
 
     private void GiveJanitorMop(EntityUid mob)
@@ -951,7 +976,7 @@ public sealed class NeuroPlayerSystem : EntitySystem
     }
 
     /// <summary>
-    /// The playable NT station the passenger crew belongs to.
+    /// The playable NT station the passenger crew belongs to, or null when the round has none.
     /// </summary>
     /// <remarks>
     /// Mini: CentComm (<c>NanotrasenCentralCommand</c>), Typan and Аспид (<c>StandardTypanStation</c>)
@@ -959,11 +984,12 @@ public sealed class NeuroPlayerSystem : EntitySystem
     /// player of their own (see <see cref="FindFactionStation"/>). Taking the first station the query
     /// happens to return put the whole passenger crew on CentComm or on the second station instead —
     /// the component store order is not creation order, so this is a lottery, not a rule.
+    /// Those stations are not a fallback either: passengers wait for the NT station, they never
+    /// spawn on a faction station.
     /// </remarks>
     private EntityUid? FindStation()
     {
         var candidates = new List<EntityUid>();
-        EntityUid? fallback = null;
 
         var query = EntityQueryEnumerator<StationDataComponent>();
         while (query.MoveNext(out var uid, out var data))
@@ -973,12 +999,10 @@ public sealed class NeuroPlayerSystem : EntitySystem
 
             if (_typanJobs.IsWarNanotrasenStation(uid))
                 candidates.Add(uid);
-            else
-                fallback ??= uid;
         }
 
         if (candidates.Count == 0)
-            return fallback;
+            return null;
 
         if (candidates.Count == 1)
             return candidates[0];
