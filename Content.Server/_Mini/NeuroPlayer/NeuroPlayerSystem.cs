@@ -714,7 +714,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
         var points = FindSpawnPoints(station.Value);
         if (points.Count == 0)
         {
-            _sawmill.Warning("Neuro players: no late-join spawn points found.");
+            _sawmill.Warning(
+                $"Neuro players: no late-join spawn points on {Name(station.Value)} " +
+                $"({MetaData(station.Value).EntityPrototype?.ID ?? "no prototype"}).");
             return;
         }
 
@@ -807,7 +809,9 @@ public sealed class NeuroPlayerSystem : EntitySystem
         if (spawned > 0)
             _spawnedThisRound = true;
 
-        _sawmill.Info($"Neuro players: spawned {spawned} bots (bot_count={_botCount}).");
+        _sawmill.Info(
+            $"Neuro players: spawned {spawned} bots on {Name(station.Value)} " +
+            $"({MetaData(station.Value).EntityPrototype?.ID ?? "no prototype"}, bot_count={_botCount}).");
     }
 
     private void GiveJanitorMop(EntityUid mob)
@@ -946,16 +950,48 @@ public sealed class NeuroPlayerSystem : EntitySystem
         _bots.Clear();
     }
 
+    /// <summary>
+    /// The playable NT station the passenger crew belongs to.
+    /// </summary>
+    /// <remarks>
+    /// Mini: CentComm (<c>NanotrasenCentralCommand</c>), Typan and Аспид (<c>StandardTypanStation</c>)
+    /// are stations with their own cryo pods and job spawners, and they each have exactly one neuro
+    /// player of their own (see <see cref="FindFactionStation"/>). Taking the first station the query
+    /// happens to return put the whole passenger crew on CentComm or on the second station instead —
+    /// the component store order is not creation order, so this is a lottery, not a rule.
+    /// </remarks>
     private EntityUid? FindStation()
     {
+        var candidates = new List<EntityUid>();
+        EntityUid? fallback = null;
+
         var query = EntityQueryEnumerator<StationDataComponent>();
         while (query.MoveNext(out var uid, out var data))
         {
-            if (data.Grids.Count > 0)
-                return uid;
+            if (data.Grids.Count == 0)
+                continue;
+
+            if (_typanJobs.IsWarNanotrasenStation(uid))
+                candidates.Add(uid);
+            else
+                fallback ??= uid;
         }
 
-        return null;
+        if (candidates.Count == 0)
+            return fallback;
+
+        if (candidates.Count == 1)
+            return candidates[0];
+
+        // More than one NT station (main map + дополнительная карта): pick one that can actually
+        // host a late-join passenger.
+        foreach (var candidate in candidates)
+        {
+            if (FindSpawnPoints(candidate).Count > 0)
+                return candidate;
+        }
+
+        return candidates[0];
     }
 
     private List<EntityCoordinates> FindSpawnPoints(EntityUid station)
