@@ -725,15 +725,15 @@ public sealed class MiniCCVars
 
     /// <summary>Chance to join face-to-face speech (<= 3 tiles) without being named.</summary>
     public static readonly CVarDef<float> NeuroPlayerDirectChance =
-        CVarDef.Create("neuroplayer.direct_chance", 0.5f, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroplayer.direct_chance", 0.9f, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>Chance to join background conversation nearby without being named.</summary>
     public static readonly CVarDef<float> NeuroPlayerProactiveChance =
-        CVarDef.Create("neuroplayer.proactive_chance", 0.15f, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroplayer.proactive_chance", 0.5f, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>Cooldown between unprompted replies of one bot (anti-spam).</summary>
     public static readonly CVarDef<int> NeuroPlayerProactiveCooldownSeconds =
-        CVarDef.Create("neuroplayer.proactive_cooldown_seconds", 45, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroplayer.proactive_cooldown_seconds", 10, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>Interval between random point-of-interest visits per bot (seconds).</summary>
     public static readonly CVarDef<int> NeuroPlayerPoiIntervalSeconds =
@@ -798,7 +798,14 @@ public sealed class MiniCCVars
 
     /// <summary>Per-player cooldown between assistant answers (anti-spam and anti-cost).</summary>
     public static readonly CVarDef<int> NeuroAHelpCooldownSeconds =
-        CVarDef.Create("neuroahelp.cooldown_seconds", 120, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroahelp.cooldown_seconds", 20, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// While admins are online the assistant stays quiet only if an admin wrote in this ticket
+    /// within this many seconds. Otherwise (nobody picked the ticket up) it answers anyway.
+    /// </summary>
+    public static readonly CVarDef<int> NeuroAHelpAdminSilenceSeconds =
+        CVarDef.Create("neuroahelp.admin_silence_seconds", 60, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>How many recent ahelp lines are sent to the model as context.</summary>
     public static readonly CVarDef<int> NeuroAHelpMaxContext =

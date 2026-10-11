@@ -33,6 +33,7 @@ using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
 using Content.Shared._CorvaxGoob.TTS;
 using Content.Shared.Chat;
+using Content.Shared.CombatMode;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Damage;
 using Content.Shared.Examine;
@@ -304,6 +305,18 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         "Пустите, я не собираюсь сидеть!",
     ];
 
+    /// <summary>Mini: fleeing time after a shove, short enough to resume normal life quickly.</summary>
+    private const float ShoveFleeSeconds = 8f;
+
+    /// <summary>Mini: reactions to being shoved (DisarmedEvent).</summary>
+    private static readonly string[] ShoveCries =
+    [
+        "Эй, не толкайся!",
+        "Руки убери!",
+        "Ты чего толкаешься?",
+        "Отстаньте, я не мешок!",
+    ];
+
     public override void Initialize()
     {
         base.Initialize();
@@ -349,6 +362,9 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         SubscribeLocalEvent<NeuroPlayerComponent, PullStartedMessage>(OnBotPullStarted);
         SubscribeLocalEvent<NeuroPlayerComponent, BuckleAttemptEvent>(OnBotBuckleAttempt);
         SubscribeLocalEvent<NeuroPlayerComponent, BuckledEvent>(OnBotBuckled);
+        // Shoves (WWDP shove rework) raise DisarmedEvent on the target: a bot answers with a cry and
+        // breaks away from the shover instead of silently eating it.
+        SubscribeLocalEvent<NeuroPlayerComponent, DisarmedEvent>(OnBotDisarmed);
         // The cuff do-after is directed at the handcuffs, so the bot's component never sees the
         // attempt itself — listen on the item and look at who is being cuffed.
         SubscribeLocalEvent<HandcuffComponent, DoAfterAttemptEvent<AddCuffDoAfterEvent>>(OnHandcuffAttempt);
@@ -530,6 +546,23 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             return;
 
         CryResist(uid, comp, SitDownCries);
+    }
+
+    /// <summary>
+    /// Mini: being shoved is a physical attack, not a no-op. The bot cries out and runs from the
+    /// shover; downed, cuffed and muted bots stay silent (a body is not a person).
+    /// </summary>
+    private void OnBotDisarmed(EntityUid uid, NeuroPlayerComponent comp, ref DisarmedEvent args)
+    {
+        if (!_enabled || !CanResist(uid, comp))
+            return;
+
+        var source = args.Source;
+        if (source == uid || !Exists(source))
+            return;
+
+        Cry(uid, comp, ShoveCries);
+        TriggerDanger(uid, comp, _transform.GetWorldPosition(source), null, cry: false, seconds: ShoveFleeSeconds);
     }
 
     /// <summary>
@@ -1888,16 +1921,20 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 return;
             }
 
-            if (total >= 10f)
+            if (total >= 1f)
             {
                 Cry(victim, botComp, PainCries);
 
-                // Mini: significant damage should trigger fleeing immediately,
-                // not just a cry; run from the attacker if one is known.
-                var dangerPos = ev.Origin is { } origin && origin != victim && Exists(origin)
-                    ? _transform.GetWorldPosition(origin)
-                    : _transform.GetWorldPosition(victim);
-                TriggerDanger(victim, botComp, dangerPos, null, cry: false);
+                // Mini: any real hit should make the bot break off, not only a 10+ damage one.
+                // Fleeing needs a known attacker, so damage from space or a stray wound only cries.
+                var attacker = ev.Origin is { } origin && origin != victim && Exists(origin) ? origin : (EntityUid?) null;
+                if (total >= 10f || attacker != null)
+                {
+                    var dangerPos = attacker != null
+                        ? _transform.GetWorldPosition(attacker.Value)
+                        : _transform.GetWorldPosition(victim);
+                    TriggerDanger(victim, botComp, dangerPos, null, cry: false);
+                }
             }
 
             return;
