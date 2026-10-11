@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Content.Shared._Mini.Ghost;
 using Content.Shared.Ghost;
 using Content.Shared.Mind.Components;
@@ -7,8 +7,9 @@ using Content.Shared.Roles;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Silicons.StationAi;
 using Content.Shared.SSDIndicator;
-using Robust.Shared.Prototypes;
 using Content.Shared.Warps;
+using Content.Shared.Whitelist;
+using Robust.Shared.Prototypes;
 
 // Не менять
 namespace Content.Server.Ghost;
@@ -18,15 +19,23 @@ public sealed partial class GhostSystem
     // Прототип-fallback департамента. Если у сущности нет департамента, он будет отображаться как этот
     private static readonly ProtoId<DepartmentPrototype> UnknownDepartmentPrototype = "Specific";
 
+    [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
+
     /// <summary>
     /// Создает список всех точек телепорта локаций
     /// </summary>
     /// <returns>Созданный список</returns>
     private IEnumerable<GhostWarpPlace> GetLocationWarps()
     {
-        var query = AllEntityQuery<WarpPointComponent, MetaDataComponent>();
-        while (query.MoveNext(out var uid, out var component, out var meta))
+        var query = AllEntityQuery<WarpPointComponent, MetaDataComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var component, out var meta, out var xform))
         {
+            // Mini: не отдаём в панель то, куда телепорт заведомо сломан.
+            // Точку, которую сам варп исключает (Blacklist), и точку без карты (nullspace/лобби)
+            // гость либо не должен видеть, либо телепорт туда оставит его в пустоте.
+            if (_whitelist.IsWhitelistPass(component.Blacklist, uid) || !IsWarpReachable(uid, xform))
+                continue;
+
             var warp = new GhostWarpPlace(
                 GetNetEntity(uid),
                 component.Location ?? meta.EntityName,
@@ -42,13 +51,17 @@ public sealed partial class GhostSystem
     /// <returns>Созданный список</returns>
     private IEnumerable<GhostWarpPlayer> GetPlayerWarps()
     {
-        var query = AllEntityQuery<MindContainerComponent, MetaDataComponent>();
-        while (query.MoveNext(out var uid, out var mind, out var meta))
+        var query = AllEntityQuery<MindContainerComponent, MetaDataComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var mind, out var meta, out var xform))
         {
             var isGhost = HasComp<GhostComponent>(uid);
             var isMob = HasComp<MobStateComponent>(uid);
 
             if (!IsEntityPanelRelevant(uid, isGhost, isMob))
+                continue;
+
+            // Mini: цель без карты (удалённое тело, только что вышедший игрок) — телепорт в nullspace.
+            if (!IsWarpReachable(uid, xform))
                 continue;
 
             var playerMind = mind.Mind ?? mind.LastMindStored;
@@ -79,6 +92,16 @@ public sealed partial class GhostSystem
         }
     }
 
+    /// <summary>
+    /// Mini: можно ли вообще телепортироваться к сущности. Сущности в nullspace (удаляемые тела,
+    /// остатки лобби) висят без карты — SetCoordinates туда оставляет призрака в пустоте.
+    /// </summary>
+    private bool IsWarpReachable(EntityUid uid, TransformComponent xform)
+    {
+        return !TerminatingOrDeleted(uid) && xform.MapUid != null;
+    }
+
+
     private bool TryGetPlayerJobInfo(EntityUid? mind,
         [NotNullWhen(true)] out string? job, out string department)
     {
@@ -103,11 +126,15 @@ public sealed partial class GhostSystem
     /// <returns>Созданный список</returns>
     private IEnumerable<GhostWarpGlobalAntagonist> GetAntagonistWarps()
     {
-        var query = AllEntityQuery<GhostPanelAntagonistMarkerComponent, MetaDataComponent>();
-        while (query.MoveNext(out var uid, out var component, out var meta))
+        var query = AllEntityQuery<GhostPanelAntagonistMarkerComponent, MetaDataComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var component, out var meta, out var xform))
         {
             // Пустые оболочки без активного игрока не показываем в телепорте.
             if (!TryComp<MindContainerComponent>(uid, out var mindContainer) || !mindContainer.HasMind)
+                continue;
+
+            // Mini: антагонист без карты — тот же сломанный телепорт в пустоту.
+            if (!IsWarpReachable(uid, xform))
                 continue;
 
             var warp = new GhostWarpGlobalAntagonist(

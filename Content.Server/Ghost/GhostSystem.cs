@@ -309,6 +309,17 @@ namespace Content.Server.Ghost
 
         #region Warp
 
+        // Mini edit start - для красивой гост меню
+        private void SendWarps(ICommonSession session)
+        {
+            var response = new GhostWarpsResponseEvent(GetPlayerWarps().ToList(),
+                GetLocationWarps().ToList(),
+                GetAntagonistWarps().ToList());
+
+            RaiseNetworkEvent(response, session.Channel);
+        }
+        // Mini edit end
+
         private void OnGhostWarpsRequest(GhostWarpsRequestEvent msg, EntitySessionEventArgs args)
         {
             if (args.SenderSession.AttachedEntity is not {Valid: true} entity
@@ -318,13 +329,7 @@ namespace Content.Server.Ghost
                 return;
             }
 
-            // Mini edit start - для красивой гост меню
-            var response = new GhostWarpsResponseEvent(GetPlayerWarps().ToList(),
-                GetLocationWarps().ToList(),
-                GetAntagonistWarps().ToList());
-            // Mini edit end
-
-            RaiseNetworkEvent(response, args.SenderSession.Channel);
+            SendWarps(args.SenderSession);
         }
 
         private void OnGhostWarpToTargetRequest(GhostWarpToTargetRequestEvent msg, EntitySessionEventArgs args)
@@ -338,13 +343,17 @@ namespace Content.Server.Ghost
 
             var target = GetEntity(msg.Target);
 
-            if (!Exists(target))
+            // Mini: список в панели живёт до следующего запроса — цель могли удалить (крио,
+            // деспавн, ливнувший игрок). Раньше это было «нажал и ничего не произошло»;
+            // теперь молча обновляем панель, чтобы мёртвая строка исчезла.
+            if (!Exists(target) || TerminatingOrDeleted(target))
             {
-                Log.Warning($"User {args.SenderSession.Name} tried to warp to an invalid entity id: {msg.Target}");
+                Log.Debug($"User {args.SenderSession.Name} tried to warp to a stale entity id: {msg.Target}");
+                SendWarps(args.SenderSession);
                 return;
             }
 
-            WarpTo(attached, target);
+            WarpTo(attached, target, args.SenderSession);
         }
 
         private void OnGhostnadoRequest(GhostnadoRequestEvent msg, EntitySessionEventArgs args)
@@ -363,8 +372,14 @@ namespace Content.Server.Ghost
             _followerSystem.StartFollowingEntity(uid, target);
         }
 
-        private void WarpTo(EntityUid uid, EntityUid target)
+        private void WarpTo(EntityUid uid, EntityUid target, ICommonSession session)
         {
+            if (TerminatingOrDeleted(target))
+            {
+                SendWarps(session);
+                return;
+            }
+
             _adminLog.Add(LogType.GhostWarp, $"{ToPrettyString(uid)} ghost warped to {ToPrettyString(target)}");
 
             if ((TryComp(target, out WarpPointComponent? warp) && warp.Follow) || HasComp<MobStateComponent>(target))
@@ -373,8 +388,24 @@ namespace Content.Server.Ghost
                 return;
             }
 
+            // Mini: цель без карты (nullspace) — телепорт туда оставит призрака в пустоте без
+            // возможности вернуться. Такие цели отфильтрованы в списке, проверяем ещё раз.
+            var targetXform = Transform(target);
+            if (targetXform.MapUid == null)
+            {
+                Log.Debug($"Ghost warp to {ToPrettyString(target)} skipped: target is not on a map.");
+                SendWarps(session);
+                return;
+            }
+
+            // Mini: если призрак кого-то преследовал, сначала корректно отцепляемся, иначе остаются
+            // висячие Follower/Followed (преследуемый «ведёт» призрака, которого уже нет рядом).
+            // deparent: false — координаты ставим сами строкой ниже, а штатный депарант удаляет
+            // преследователя, оказавшегося в nullspace.
+            _followerSystem.TryStopFollowing(uid, deparent: false);
+
             var xform = Transform(uid);
-            _transformSystem.SetCoordinates(uid, xform, Transform(target).Coordinates);
+            _transformSystem.SetCoordinates(uid, xform, targetXform.Coordinates);
             _transformSystem.AttachToGridOrMap(uid, xform);
             if (_physicsQuery.TryComp(uid, out var physics))
                 _physics.SetLinearVelocity(uid, Vector2.Zero, body: physics);

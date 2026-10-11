@@ -296,6 +296,27 @@ public sealed class FollowerSystem : EntitySystem
     }
 
     /// <summary>
+    ///     Stops this entity from following whoever it currently follows, if anyone.
+    ///     Handy before teleporting an entity: a raw coordinate change leaves the
+    ///     Follower/Followed pair dangling behind.
+    /// </summary>
+    /// <param name="uid">The follower.</param>
+    /// <param name="deparent">
+    ///     Whether to re-attach the follower to the grid/map. Pass false when the caller sets the
+    ///     coordinates itself right after: the default path deletes followers that end up in
+    ///     null-space, which is not what a teleport wants.
+    /// </param>
+    /// <returns>True if the entity was following somebody and stopped.</returns>
+    public bool TryStopFollowing(EntityUid uid, bool deparent = true)
+    {
+        if (!TryComp<FollowerComponent>(uid, out var follower) || !follower.Following.IsValid())
+            return false;
+
+        StopFollowingEntity(uid, follower.Following, deparent: deparent);
+        return true;
+    }
+
+    /// <summary>
     ///     Forces all of an entity's followers to stop following it.
     /// </summary>
     public void StopAllFollowers(EntityUid uid,
