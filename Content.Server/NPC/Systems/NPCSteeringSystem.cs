@@ -11,6 +11,7 @@ using Content.Server.NPC.Pathfinding;
 using Content.Shared.CCVar;
 using Content.Shared.Climbing.Systems;
 using Content.Shared.CombatMode;
+using Content.Shared.Doors.Systems;
 using Content.Shared.Interaction;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
@@ -73,6 +74,7 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
     [Dependency] private readonly SharedMeleeWeaponSystem _melee = default!;
     [Dependency] private readonly SharedMoverController _mover = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly SharedDoorSystem _doors = default!;
     [Dependency] private readonly SharedCombatModeSystem _combat = default!;
     [Dependency] protected readonly IGameTiming Timing = default!; // Tile Movement Change
     [Dependency] protected readonly SharedPhysicsSystem PhysicsSystem = default!; // Tile Movement Change

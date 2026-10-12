@@ -66,7 +66,6 @@ using Content.Shared.Radio.Components;
 using Content.Shared.Interaction;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
-using Content.Shared.Prying.Components;
 using Content.Shared.Turrets;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Server.NPC;
@@ -1019,10 +1018,13 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         var htn = EnsureComp<HTNComponent>(mob);
         htn.RootTask = new HTNCompoundTask { Task = rootTask ?? "IdleCompound" };
 
-        // Mini: walk like a crew member — pry airlocks open and let the planner
-        // route through doors instead of beelining into walls.
-        EnsureComp<PryingComponent>(mob);
-        htn.Blackboard.SetValue(NPCBlackboard.NavPry, true);
+        // Mini: двери бот открывает как член экипажа — своим ID из ПДА, который получает вместе со
+        // стартовым снаряжением профессии. Bump-open дверь открывается самим столкновением, click-open
+        // (firelock, ставни, windoor) — взаимодействием, а дверь без доступа для него тупик: он
+        // перестраивает маршрут вместо того, чтобы pry'ить её. NavInteract нужен, чтобы планировщик
+        // вообще считал click-open двери проходимыми: без флага GetTileCost возвращает для них 0.
+        htn.Blackboard.SetValue(NPCBlackboard.NavCrewDoors, true);
+        htn.Blackboard.SetValue(NPCBlackboard.NavInteract, true);
         // Mini: reach of the "run to any reachable tile" fallback branch of NeuroFleeCompound.
         htn.Blackboard.SetValue("FleeRange", 12f);
         _factions.AddFactions(mob, new HashSet<ProtoId<NpcFactionPrototype>> { "NanoTrasen" });
