@@ -1,6 +1,7 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Numerics;
+using Content.Shared.Humanoid;
 using Robust.Shared.GameStates;
 
 namespace Content.Shared._Mini.FootWalk;
@@ -219,6 +220,13 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     [ViewVariables]
     public readonly List<string> OuterSideBandKeys = new();
+
+    /// <summary>
+    /// Runtime sleeve layers: a copy of a garment clipped to a limb's own art, keyed by layer key and
+    /// holding the limb whose swing that piece of cloth rides.
+    /// </summary>
+    [ViewVariables]
+    public readonly Dictionary<string, HumanoidVisualLayers> SleeveCoverKeys = new();
 
     /// <summary>
     /// Outer clothing source keys whose art crosses the sprite centre inside the foot band. Long

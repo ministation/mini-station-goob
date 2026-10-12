@@ -44,7 +44,6 @@ public sealed class StatusIconOverlay : Overlay
 
         var eyeRot = args.Viewport.Eye?.Rotation ?? default;
 
-        var xformQuery = _entity.GetEntityQuery<TransformComponent>();
         var scaleMatrix = Matrix3Helpers.CreateScale(new Vector2(1, 1));
         var rotationMatrix = Matrix3Helpers.CreateRotation(-eyeRot);
 
@@ -56,7 +55,9 @@ public sealed class StatusIconOverlay : Overlay
 
             var bounds = comp.Bounds ?? _sprite.GetLocalBounds((uid, sprite));
 
-            var worldPos = _transform.GetWorldPosition(xform, xformQuery);
+            // Mini: sprites and the camera are drawn at the interpolated render position, so icons anchored
+            // to the simulation position tick-stepped (shook) against a walking body.
+            var worldPos = _transform.GetRenderWorldPosition((uid, xform));
 
             if (!bounds.Translated(worldPos).Intersects(args.WorldAABB))
                 continue;

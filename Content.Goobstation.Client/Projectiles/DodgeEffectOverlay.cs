@@ -1,4 +1,5 @@
 using Content.Goobstation.Shared.Projectiles;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
@@ -17,7 +18,7 @@ public sealed class DodgeEffectOverlay : Overlay
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
-    private SharedTransformSystem? _xformSystem;
+    private TransformSystem? _xformSystem;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
@@ -69,7 +70,7 @@ public sealed class DodgeEffectOverlay : Overlay
             if (xform.MapID != args.MapId)
                 continue;
 
-            var worldPos = _xformSystem.GetWorldPosition(uid);
+            var worldPos = _xformSystem.GetRenderWorldPosition((uid, xform));
             var elapsed = (float) (now - effect.Time).TotalSeconds;
             var progress = Math.Clamp(elapsed / dodge.Duration, 0f, 1f);
 

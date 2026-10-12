@@ -36,3 +36,10 @@
   params:
     keepRight: 0
     footCut: 0.42
+
+- type: shader
+  id: SpriteLimbMask
+  kind: source
+  path: "/Textures/_Mini/Shaders/sprite_limb_mask.swsl"
+  params:
+    limbUV: 0,0,1,1

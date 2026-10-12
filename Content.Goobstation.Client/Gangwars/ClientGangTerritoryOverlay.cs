@@ -42,7 +42,7 @@ public sealed class GangTerritoryOverlay(IEntityManager entManager) : Overlay
     private void CollectTiles(MapId mapId)
     {
         var query = entManager.EntityQueryEnumerator<GangTerritoryComponent, TransformComponent>();
-        while (query.MoveNext(out _, out var territoryComp, out var xform))
+        while (query.MoveNext(out var owner, out var territoryComp, out var xform))
         {
             if (xform.MapID != mapId
                 || xform.GridUid is not { } gridUid
@@ -53,7 +53,8 @@ public sealed class GangTerritoryOverlay(IEntityManager entManager) : Overlay
                 || !entManager.TryGetComponent(gridUid, out TransformComponent? gridXform))
                 continue;
 
-            var (_, _, worldMatrix, invWorldMatrix) = _transform.GetWorldPositionRotationMatrixWithInv(gridXform);
+            var worldMatrix = _transform.GetRenderWorldMatrix((gridUid, gridXform));
+            var invWorldMatrix = _transform.GetInvRenderWorldMatrix((gridUid, gridXform));
             var key = (gridUid, territoryComp.GangColor);
 
             if (!_groups.TryGetValue(key, out var group))
@@ -62,7 +63,7 @@ public sealed class GangTerritoryOverlay(IEntityManager entManager) : Overlay
                 _groups[key] = group;
             }
 
-            var localPos = Vector2.Transform(_transform.GetWorldPosition(xform), invWorldMatrix);
+            var localPos = Vector2.Transform(_transform.GetRenderWorldPosition((owner, xform)), invWorldMatrix);
             var circle = new Circle(localPos, territoryComp.TerritoryRadius);
 
             foreach (var tile in _mapSystem.GetLocalTilesIntersecting(gridUid, grid, circle, ignoreEmpty: true))
