@@ -97,7 +97,9 @@ public sealed class StatusIconOverlay : Overlay
                 if (proto.LocationPreference == StatusIconLocationPreference.Left ||
                     proto.LocationPreference == StatusIconLocationPreference.None && countL <= countR)
                 {
-                    if (accOffsetL + texture.Height > _sprite.GetLocalBounds((uid, sprite)).Height * EyeManager.PixelsPerMeter)
+                    // Mini: the fit check has to use the same rest height as the anchor below, otherwise
+                    // the lifting legs pushed the last icon over the edge and it blinked while walking.
+                    if (accOffsetL + texture.Height > stableHeight * EyeManager.PixelsPerMeter)
                         break;
                     if (proto.Layer == StatusIconLayer.Base)
                     {
@@ -110,7 +112,8 @@ public sealed class StatusIconOverlay : Overlay
                 }
                 else
                 {
-                    if (accOffsetR + texture.Height > _sprite.GetLocalBounds((uid, sprite)).Height * EyeManager.PixelsPerMeter)
+                    // Mini: see the left column above — same rest height, so icons do not blink.
+                    if (accOffsetR + texture.Height > stableHeight * EyeManager.PixelsPerMeter)
                         break;
                     if (proto.Layer == StatusIconLayer.Base)
                     {
