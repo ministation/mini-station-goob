@@ -19,6 +19,7 @@ using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Standing;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
+using Robust.Client.ResourceManagement;
 using Robust.Client.Utility;
 using Robust.Shared.Configuration;
 using Robust.Shared.Graphics.RSI;
@@ -66,6 +67,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IEyeManager _eye = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IResourceCache _resourceCache = default!;
 
     private bool _enabled = true;
     private bool _bodyBounce = true;
@@ -81,16 +83,16 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     private EntityQuery<InventorySlotsComponent> _invSlotsQuery;
 
     /// <summary>
-    /// Cache for <see cref="ArtCrossesCentre"/>, keyed by RSI path, state name and cut height.
-    /// Reading frame pixels is a GPU readback, so each garment art is inspected once per session.
+    /// Cache for <see cref="ArtCrossesCentre"/>, keyed by RSI path, state name and cut height, so a
+    /// garment's art is classified once per session.
     /// </summary>
     private readonly Dictionary<(string Rsi, string State, float Cut), bool> _crossesCentreCache = new();
 
     /// <summary>
-    /// Sprite pixels pulled back from the GPU since the current frame started. Readbacks are expensive
-    /// (the engine reads the whole sheet for every single pixel), used only for the slow-setup warning.
+    /// Centre-column alpha of every loaded RSI frame, taken from the CPU atlas sheet: the pixel
+    /// inspection below costs memory reads instead of GPU readbacks.
     /// </summary>
-    private int _artPixelReads;
+    private readonly RsiCentreProfiles _centreProfiles = new();
 
     // Leg+foot: IPC/cyber legs bake most of the foot into the leg sprite.
     private static readonly HumanoidVisualLayers[] LeftLayers =
@@ -160,6 +162,14 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             after: [typeof(ClientClothingSystem)]);
         SubscribeLocalEvent<FootWalkAnimationComponent, VisualsChangedEvent>(OnVisualsChanged,
             after: [typeof(ClientClothingSystem)]);
+
+        _centreProfiles.Subscribe(_resourceCache);
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        _centreProfiles.Unsubscribe(_resourceCache);
     }
 
     private void OnStartup(Entity<FootWalkAnimationComponent> ent, ref ComponentStartup args)
@@ -236,8 +246,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (!_enabled)
             return;
 
-        _artPixelReads = 0;
-
         // FrameUpdate uses real wall-clock delta (same as original). Entity Update can run
         // multiple predicted ticks per frame and made the bob look too fast.
         var query = EntityQueryEnumerator<FootWalkAnimationComponent, TransformComponent>();
@@ -285,23 +293,17 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             var facing = GetScreenFacing(uid);
             var frontMode = facing is RsiDirection.South or RsiDirection.North;
 
-            // Setting clothing layers up can inspect sprite pixels (GPU readbacks), so keep an eye on it:
-            // a slow setup for one mob is what shows up as a freeze when a new entity walks into view.
+            // Setting clothing layers up walks the clothing RSIs (alpha profiles, splitters); a slow
+            // setup for one mob is what shows up as a freeze when a new entity walks into view.
             var setupStart = Stopwatch.GetTimestamp();
-            var readsBefore = _artPixelReads;
 
             EnsureClothingModeIfNeeded((uid, walk), frontMode);
             EnsureJointPatches((uid, walk), sprite);
             EnsureSleeveCover((uid, walk), sprite);
 
             var setupMs = (Stopwatch.GetTimestamp() - setupStart) * 1000.0 / Stopwatch.Frequency;
-            var setupReads = _artPixelReads - readsBefore;
             if (setupMs >= 15.0)
-            {
-                Log.Warning(
-                    $"Foot walk: setup for {ToPrettyString(uid)} took {setupMs:F1} ms " +
-                    $"({setupReads} sprite pixel readbacks)");
-            }
+                Log.Warning($"Foot walk: setup for {ToPrettyString(uid)} took {setupMs:F1} ms");
 
             var hasShoes = HasSlotVisuals(uid, ShoesSlot);
             var hasOuter = HasSlotVisuals(uid, OuterSlot);
@@ -1845,72 +1847,24 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             {
                 if (rsiState.RsiDirections == RsiDirectionType.Dir1)
                 {
-                    result = CrossesCentre(rsiState.Frame0, cut);
+                    result = _centreProfiles.CrossesCentre(rsiState.Frame0, cut);
                 }
                 else
                 {
                     // The cut hits both front views, so either one having no gap is enough.
-                    result = CrossesCentre(rsiState.GetFrame(RsiDirection.South, 0), cut)
-                             || CrossesCentre(rsiState.GetFrame(RsiDirection.North, 0), cut);
+                    result = _centreProfiles.CrossesCentre(rsiState.GetFrame(RsiDirection.South, 0), cut)
+                             || _centreProfiles.CrossesCentre(rsiState.GetFrame(RsiDirection.North, 0), cut);
                 }
             }
         }
         catch (Exception e)
         {
-            // Pixel reads go through the GPU; when that fails, keep the plain left/right split.
+            // A frame with no profile keeps the plain left/right split.
             Log.Debug($"Foot walk: cannot inspect {rsi.Path} state {state}: {e.Message}");
         }
 
         _crossesCentreCache[key] = result;
         return result;
-    }
-
-    private bool CrossesCentre(Texture texture, float footCut)
-    {
-        var width = texture.Width;
-        var height = texture.Height;
-        if (width < 4 || height < 2)
-            return false;
-
-        var left = width / 2 - 1;
-        var right = width / 2;
-        var from = Math.Max(0, (int) (height * (1f - footCut)));
-
-        // Every SampleAlpha is a full texture readback on the render thread (the engine pulls the whole
-        // sheet back from the GPU for a single pixel), so a full scan of the band cost up to 128 of them:
-        // a garment nobody had seen yet froze the client for a good part of a second the moment its owner
-        // walked into view. A few rows across the band are enough to tell a fused skirt from split legs,
-        // and the bottom rows (where the gap between the legs is) are sampled first.
-        var rows = height - from;
-        var step = Math.Max(1, rows / 4);
-
-        // y = 0 is the top of the frame, so the foot band is the tail of the frame. Walking up from
-        // the bottom both starts where the feet are and stops at the first crossing found.
-        for (var y = height - 1; y >= from; y -= step)
-        {
-            if (SampleAlpha(texture, left, y) <= 0.05f)
-                continue;
-
-            if (SampleAlpha(texture, right, y) > 0.05f)
-                return true;
-        }
-
-        return false;
-    }
-
-    private float SampleAlpha(Texture texture, int x, int y)
-    {
-        _artPixelReads++;
-        // AtlasTexture.GetPixel asserts against the frame's absolute top edge instead of its own
-        // height, which fails for every row of a frame sitting in the first sheet row, so read
-        // through the source texture with the frame offset applied.
-        if (texture is AtlasTexture atlas)
-        {
-            var source = atlas.SourceTexture;
-            return source.GetPixel(x + (int) atlas.SubRegion.Left, y + (int) atlas.SubRegion.Top).A;
-        }
-
-        return texture.GetPixel(x, y).A;
     }
 
     /// <summary>

@@ -2,6 +2,7 @@
 
 using Robust.Client.UserInterface.RichText; // Goob
 using System.Numerics;
+using Content.Client._Mini.FootWalk;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Speech;
@@ -168,9 +169,11 @@ namespace Content.Client.Chat.UI
             if (_entityManager.TryGetComponent<SpeechComponent>(_senderEntity, out var speech))
                 baseOffset = speech.SpeechBubbleOffset;
 
-            // Mini: the sprite offset (the FootWalk bounce rides in it) is part of the drawn body, keep the bubble on it.
+            // Mini: the sprite offset is part of the drawn body, but the FootWalk whole-body bounce is
+            // cosmetic and rides inside it — a bubble glued to the bounce hopped on every step. Take the
+            // bounce back out, the bubble then stays at the character's own height while it walks.
             var spriteOffsetY = _entityManager.TryGetComponent<SpriteComponent>(_senderEntity, out var sprite)
-                ? sprite.Offset.Y
+                ? FootWalkBounce.GetAnchoredOffsetY(_senderEntity, sprite.Offset.Y)
                 : 0f;
 
             var offset = (-_eyeManager.CurrentEye.Rotation).ToWorldVec() * -(EntityVerticalOffset + baseOffset + spriteOffsetY);

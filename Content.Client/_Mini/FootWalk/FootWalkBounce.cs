@@ -12,20 +12,13 @@ namespace Content.Client._Mini.FootWalk;
 /// </summary>
 /// <remarks>
 /// The bounce lives inside <c>SpriteComponent.Offset</c> and lifts the drawn body by up to
-/// <see cref="FootWalkAnimationComponent.BodyBounceAmplitude"/> (1.25 px by default). The body is
-/// pixel-snapped when drawn, so an anchor that ignores the bounce visibly shimmers against the body
-/// on every step. <see cref="HudFollowsBody"/> decides the fix: true glues the overlay to the body
-/// (no relative motion), false keeps it still on screen (the bounce is cancelled out instead).
-/// It stays true: nothing toggles it since the client cvar was dropped.
+/// <see cref="FootWalkAnimationComponent.BodyBounceAmplitude"/> (1.25 px by default) on every step.
+/// It is body animation, not a change of where the character actually stands, so nothing above the
+/// head rides it: an overlay glued to the bounce hopped up and down with the feet ("худы трясутся
+/// при ходьбе"), while the rest offset keeps it steady at the character's own height.
 /// </remarks>
 public static class FootWalkBounce
 {
-    /// <summary>
-    /// Whether overlays above the head follow the body bounce. Glued to the body by default: an
-    /// overlay that stays still while the body hops shimmers against it on every step.
-    /// </summary>
-    public static bool HudFollowsBody = true;
-
     /// <summary>Current bounce lift in world units, or 0 when the entity does not walk-animate.</summary>
     public static float Get(EntityUid uid)
     {
@@ -36,12 +29,12 @@ public static class FootWalkBounce
     }
 
     /// <summary>
-    /// Vertical sprite anchor for an overlay that must not shimmer against the walking body:
-    /// the sprite offset minus the current bounce, unless the HUD is glued to the body.
+    /// Vertical sprite anchor for an overlay above the head: the sprite offset the body has at rest,
+    /// i.e. with the cosmetic bounce taken back out so the overlay does not hop along with it.
     /// </summary>
     public static float GetAnchoredOffsetY(EntityUid uid, float spriteOffsetY)
     {
-        return HudFollowsBody ? spriteOffsetY : spriteOffsetY - Get(uid);
+        return spriteOffsetY - Get(uid);
     }
 
     /// <summary>
