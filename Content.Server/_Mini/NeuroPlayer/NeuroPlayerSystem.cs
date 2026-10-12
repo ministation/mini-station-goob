@@ -258,6 +258,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     private static readonly string[] FireCries = ["Ааа, пожар! Горим!", "Огонь! Бежим отсюда!", "Горит! Спасайся!"];
     private static readonly string[] PainCries = ["Ай! Больно!", "Ой! Помогите!", "Ах! Что происходит?!"];
     private static readonly string[] FightCries = ["Драка! Спасайся кто может!", "Стреляют! Прячься!", "Ой-ой, отходим от греха!"];
+    private static readonly string[] TurretCries = ["Там турель! Я лучше обойду.", "Ой, турель, назад!", "Туда не пойду, там стреляют!"];
 
     private static readonly string[] TouchCries =
     [
@@ -1891,9 +1892,10 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             }
 
             // Mini: an armed hostile turret is a hazard, not a fight — walk out of its reach
-            // instead of standing in the line of fire waiting to be shot.
+            // instead of standing in the line of fire waiting to be shot (and say so, so the
+            // players around understand why the passenger suddenly backs off).
             if (FindArmedHostileTurret(bot, botXform) is { } turret)
-                TriggerDanger(bot, comp, _transform.GetWorldPosition(turret), null, cry: false);
+                TriggerDanger(bot, comp, _transform.GetWorldPosition(turret), TurretCries);
         }
     }
 
