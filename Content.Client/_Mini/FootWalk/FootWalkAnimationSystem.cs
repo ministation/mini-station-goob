@@ -1,5 +1,6 @@
-﻿// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
+using System.Diagnostics;
 using System.Numerics;
 using Content.Client.Clothing;
 using Content.Client.Inventory;
@@ -84,6 +85,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     /// Reading frame pixels is a GPU readback, so each garment art is inspected once per session.
     /// </summary>
     private readonly Dictionary<(string Rsi, string State, float Cut), bool> _crossesCentreCache = new();
+
+    /// <summary>
+    /// Sprite pixels pulled back from the GPU since the current frame started. Readbacks are expensive
+    /// (the engine reads the whole sheet for every single pixel), used only for the slow-setup warning.
+    /// </summary>
+    private int _artPixelReads;
 
     // Leg+foot: IPC/cyber legs bake most of the foot into the leg sprite.
     private static readonly HumanoidVisualLayers[] LeftLayers =
@@ -229,6 +236,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (!_enabled)
             return;
 
+        _artPixelReads = 0;
+
         // FrameUpdate uses real wall-clock delta (same as original). Entity Update can run
         // multiple predicted ticks per frame and made the bob look too fast.
         var query = EntityQueryEnumerator<FootWalkAnimationComponent, TransformComponent>();
@@ -275,9 +284,24 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             // Must match sprite RSI direction (world + eye), otherwise camera turns invert bob / wrong mode.
             var facing = GetScreenFacing(uid);
             var frontMode = facing is RsiDirection.South or RsiDirection.North;
+
+            // Setting clothing layers up can inspect sprite pixels (GPU readbacks), so keep an eye on it:
+            // a slow setup for one mob is what shows up as a freeze when a new entity walks into view.
+            var setupStart = Stopwatch.GetTimestamp();
+            var readsBefore = _artPixelReads;
+
             EnsureClothingModeIfNeeded((uid, walk), frontMode);
             EnsureJointPatches((uid, walk), sprite);
             EnsureSleeveCover((uid, walk), sprite);
+
+            var setupMs = (Stopwatch.GetTimestamp() - setupStart) * 1000.0 / Stopwatch.Frequency;
+            var setupReads = _artPixelReads - readsBefore;
+            if (setupMs >= 15.0)
+            {
+                Log.Warning(
+                    $"Foot walk: setup for {ToPrettyString(uid)} took {setupMs:F1} ms " +
+                    $"({setupReads} sprite pixel readbacks)");
+            }
 
             var hasShoes = HasSlotVisuals(uid, ShoesSlot);
             var hasOuter = HasSlotVisuals(uid, OuterSlot);
@@ -1841,7 +1865,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         return result;
     }
 
-    private static bool CrossesCentre(Texture texture, float footCut)
+    private bool CrossesCentre(Texture texture, float footCut)
     {
         var width = texture.Width;
         var height = texture.Height;
@@ -1852,9 +1876,17 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         var right = width / 2;
         var from = Math.Max(0, (int) (height * (1f - footCut)));
 
+        // Every SampleAlpha is a full texture readback on the render thread (the engine pulls the whole
+        // sheet back from the GPU for a single pixel), so a full scan of the band cost up to 128 of them:
+        // a garment nobody had seen yet froze the client for a good part of a second the moment its owner
+        // walked into view. A few rows across the band are enough to tell a fused skirt from split legs,
+        // and the bottom rows (where the gap between the legs is) are sampled first.
+        var rows = height - from;
+        var step = Math.Max(1, rows / 4);
+
         // y = 0 is the top of the frame, so the foot band is the tail of the frame. Walking up from
         // the bottom both starts where the feet are and stops at the first crossing found.
-        for (var y = height - 1; y >= from; y--)
+        for (var y = height - 1; y >= from; y -= step)
         {
             if (SampleAlpha(texture, left, y) <= 0.05f)
                 continue;
@@ -1866,8 +1898,9 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         return false;
     }
 
-    private static float SampleAlpha(Texture texture, int x, int y)
+    private float SampleAlpha(Texture texture, int x, int y)
     {
+        _artPixelReads++;
         // AtlasTexture.GetPixel asserts against the frame's absolute top edge instead of its own
         // height, which fails for every row of a frame sitting in the first sheet row, so read
         // through the source texture with the frame offset applied.
