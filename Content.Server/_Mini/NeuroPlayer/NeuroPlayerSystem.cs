@@ -37,6 +37,7 @@ using Content.Shared.Clothing.Components;
 using Content.Shared.Damage;
 using Content.Shared.Examine;
 using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared._EinsteinEngines.Language.Components;
 using Content.Shared._EinsteinEngines.Language.Systems;
@@ -64,6 +65,8 @@ using Content.Shared.Interaction;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
 using Content.Shared.Prying.Components;
+using Content.Shared.Turrets;
+using Content.Shared.Weapons.Ranged.Components;
 using Content.Server.NPC;
 using Content.Shared.NPC.Systems;
 using Content.Shared.StationRecords;
@@ -114,6 +117,12 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
     /// <summary>Bots notice fires within this many tiles.</summary>
     private const float FireAlertRadius = 12f;
+
+    /// <summary>
+    /// An armed hostile turret this close is walked away from, not fought. Its own guns reach
+    /// 10 tiles (RangedRange), so backing off from here actually gets the bot out of fire.
+    /// </summary>
+    private const float TurretAlertRange = 12f;
 
     /*
      * Resisting being handled. A live passenger is not luggage: pulls, cuffs and chairs are fought
@@ -922,6 +931,10 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         var comp = EnsureComp<NeuroPlayerComponent>(mob);
         comp.PersonaId = persona.ID;
 
+        // Mini: shared marker so shared systems (the mind examine status above all) know this body
+        // is puppeteered by an LLM rather than left behind by a player.
+        EnsureComp<NeuroPlayerMarkerComponent>(mob);
+
         var transmitter = EnsureComp<IntrinsicRadioTransmitterComponent>(mob);
         transmitter.Channels.Add(CommonChannelId);
         var receiver = EnsureComp<ActiveRadioComponent>(mob);
@@ -935,6 +948,10 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         EnsureComp<PryingComponent>(mob);
         htn.Blackboard.SetValue(NPCBlackboard.NavPry, true);
         _factions.AddFactions(mob, new HashSet<ProtoId<NpcFactionPrototype>> { "NanoTrasen" });
+
+        // Mini: machines (station AI turrets first of all) are not opponents a passenger can
+        // fight — bots used to open fire on a turret the moment it came in range.
+        IgnoreMachines(mob);
 
         // Random voice matching the bot's sex — neuro passengers speak out loud via TTS.
         var voicePool = _prototypes.EnumeratePrototypes<TTSVoicePrototype>()
@@ -1825,12 +1842,27 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             if (!IsBotUp(bot))
                 continue;
 
-            // Brave enough: engage hostile-faction mobs that wander too close.
-            var hostiles = _factions.GetNearbyHostiles((bot, CompOrNull<NpcFactionMemberComponent>(bot), null), 8f);
-            if (hostiles.Any())
+            // Brave enough: engage hostile-faction mobs that wander too close. Machines do not
+            // count: a turret or sentry is not an opponent a passenger can fight.
+            var engage = false;
+            foreach (var hostile in _factions.GetNearbyHostiles((bot, CompOrNull<NpcFactionMemberComponent>(bot), null), 8f))
+            {
+                if (IsMachine(hostile))
+                    continue;
+
+                engage = true;
+                break;
+            }
+
+            if (engage)
             {
                 if (TryComp<HTNComponent>(bot, out var attackHtn) && attackHtn.RootTask.Task != "SimpleHumanoidHostileCompound")
                 {
+                    // A fight runs through the NPC target queries, so the machine list is refreshed
+                    // right before it starts: hardware that appeared after the bot spawned (a
+                    // deployed turret crate, war hardware) must not become a combat target.
+                    IgnoreMachines(bot);
+
                     attackHtn.RootTask = new HTNCompoundTask { Task = "SimpleHumanoidHostileCompound" };
                     _htn.Replan(attackHtn);
                 }
@@ -1857,6 +1889,87 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 TriggerDanger(bot, comp, _transform.GetWorldPosition(uid), FireCries);
                 break;
             }
+
+            // Mini: an armed hostile turret is a hazard, not a fight — walk out of its reach
+            // instead of standing in the line of fire waiting to be shot.
+            if (FindArmedHostileTurret(bot, botXform) is { } turret)
+                TriggerDanger(bot, comp, _transform.GetWorldPosition(turret), null, cry: false);
+        }
+    }
+
+    /// <summary>
+    /// Mini: whether something the faction system calls a hostile is a machine rather than a
+    /// living being — turrets and sentries above all. Bots do not fight machines: a machine has
+    /// no fight to lose, and a bot shooting a station AI turret only collects live ammo in reply.
+    /// </summary>
+    private bool IsMachine(EntityUid ent)
+    {
+        if (HasComp<MobStateComponent>(ent))
+            return false;
+
+        return HasComp<DeployableTurretComponent>(ent)
+            || HasComp<TurretTargetSettingsComponent>(ent)
+            || HasComp<GunComponent>(ent);
+    }
+
+    /// <summary>Whether a machine is a hazard rather than scenery: anything but the bot's own side.</summary>
+    private bool IsHostileMachine(EntityUid bot, EntityUid target)
+    {
+        // Friendly machines (the station's own NanoTrasen turrets) are scenery; anything else
+        // that shoots is a hazard.
+        return IsMachine(target) && !_factions.IsEntityFriendly(bot, target);
+    }
+
+    /// <summary>
+    /// Nearest hostile turret that is actually out and loaded, or null. Retracted or broken
+    /// turrets are furniture: there is nothing to run from.
+    /// </summary>
+    private EntityUid? FindArmedHostileTurret(EntityUid bot, TransformComponent botXform)
+    {
+        foreach (var (uid, deployable) in _lookup.GetEntitiesInRange<DeployableTurretComponent>(
+                     botXform.Coordinates, TurretAlertRange))
+        {
+            // Deployed / deploying / firing share the Deployed bit; retracted and broken do not.
+            if ((deployable.CurrentState & DeployableTurretState.Deployed) == 0)
+                continue;
+
+            if (!IsHostileMachine(bot, uid) || !_examine.InRangeUnOccluded(bot, uid, TurretAlertRange))
+                continue;
+
+            return uid;
+        }
+
+        // Turrets that never retract (ballistic, xeno, the mini laser ones) have no state to
+        // check: an NPC-driven gun that is not a mob is armed by definition.
+        foreach (var (uid, _) in _lookup.GetEntitiesInRange<GunComponent>(botXform.Coordinates, TurretAlertRange))
+        {
+            if (HasComp<MobStateComponent>(uid) || !HasComp<HTNComponent>(uid))
+                continue;
+
+            if (!IsHostileMachine(bot, uid) || !_examine.InRangeUnOccluded(bot, uid, TurretAlertRange))
+                continue;
+
+            return uid;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Takes every machine of the map out of the bot's target lists (friendly machines are never
+    /// hostile targets anyway, so the list can be faction-agnostic). Both the danger scan and the
+    /// NPC combat target queries read the faction system's hostile lookup, and a faction exception
+    /// is the one place that covers both. Called on spawn and again whenever a bot picks a fight,
+    /// so hardware deployed mid-round is covered too (the engine allows only one ComponentStartup
+    /// subscriber per component, and the faction system already owns that one).
+    /// </summary>
+    private void IgnoreMachines(EntityUid bot)
+    {
+        var query = EntityQueryEnumerator<NpcFactionMemberComponent>();
+        while (query.MoveNext(out var uid, out _))
+        {
+            if (IsMachine(uid))
+                _factions.IgnoreEntity(bot, uid);
         }
     }
 
@@ -2270,13 +2383,21 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 continue;
 
             var state = _mobState.IsDead(bot) ? "мертв" : _mobState.IsCritical(bot) ? "крит" : "жив";
+            // Why the bot is not at its post: fleeing, fighting or on an errand.
+            var busy = comp.DangerUntil != null
+                ? "бежит"
+                : comp.HostileUntil != null
+                    ? "бой"
+                    : comp.VisitUntil != null
+                        ? "идёт"
+                        : "стоит";
             var muted = comp.Muted
                 ? ", мут"
                 : comp.MutedUntil != TimeSpan.Zero && _timing.CurTime < comp.MutedUntil
                     ? $", мут до {comp.MutedUntil - _timing.CurTime:hh\\:mm\\:ss}"
                     : string.Empty;
 
-            lines.Add($"- {Name(bot)} [{comp.PersonaId.Id}] {state}{muted}");
+            lines.Add($"- {Name(bot)} [{comp.PersonaId.Id}] {state}, {busy}{muted}");
         }
 
         return lines.Count == 0 ? "нейроигроков нет." : string.Join("\n", lines);

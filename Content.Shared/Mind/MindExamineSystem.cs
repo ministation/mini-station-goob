@@ -2,6 +2,7 @@ using Content.Shared.Examine;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
+using Content.Shared._Mini.NeuroPlayer;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 
@@ -98,6 +99,17 @@ public sealed class MindExamineSystem : EntitySystem
             return;
 
         var dead = _mobState.IsDead(ent);
+
+        // Mini: a neuro player's mind has no user id by design (an LLM runs the body), so the
+        // user-id based states below would call a live puppeteered body "catatonic" and a dead
+        // one "beyond recovery". They are ordinary crew: alive says nothing, dead says dead.
+        if (HasComp<NeuroPlayerMarkerComponent>(ent))
+        {
+            ent.Comp.State = dead ? MindState.Dead : MindState.None;
+            Dirty(ent);
+            return;
+        }
+
         _mind.TryGetMind(ent.Owner, out _, out var mindComp);
         var hasUserId = mindComp?.UserId;
         var hasActiveSession = hasUserId != null && _player.ValidSessionId(hasUserId.Value);
