@@ -163,17 +163,17 @@ public sealed class HeartRemovalTest
         }
 
         // 1. A surgeon who works without pauses finishes the operation.
-        Scenario? quick = null;
+        Scenario quick = null;
         await server.WaitPost(() => quick = Prepare("quick surgeon"));
         await pair.RunTicksSync(10);
-        await server.WaitPost(() => RemoveOrgan(quick!));
+        await server.WaitPost(() => RemoveOrgan(quick));
         await pair.RunTicksSync(30);
-        await server.WaitPost(() => AssertHeartOut(quick!));
+        await server.WaitPost(() => AssertHeartOut(quick));
 
         // 2. A surgeon who is called away for a minute: the steps that were performed must still
         //    count as performed, and the operation must be finishable after following the window
         //    (bleeding wounds may legitimately ask to be clamped again).
-        Scenario? delayed = null;
+        Scenario delayed = null;
         await server.WaitPost(() => delayed = Prepare("surgeon who took a minute"));
         await pair.RunTicksSync(1800);
 
