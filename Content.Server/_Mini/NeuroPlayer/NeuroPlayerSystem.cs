@@ -137,6 +137,15 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     /// <summary>Bots notice fires within this many tiles.</summary>
     private const float FireAlertRadius = 12f;
 
+    /// <summary>How far a brawl next to the bot is noticed.</summary>
+    private const float FightAlertRadius = 6f;
+
+    /// <summary>Total damage a body must already carry for a fresh scratch next to it to read as a fight.</summary>
+    private const float FightDamage = 15f;
+
+    /// <summary>How recently a body must have been touched to count as "being beaten right now".</summary>
+    private static readonly TimeSpan FightAlertWindow = TimeSpan.FromSeconds(2);
+
     /// <summary>
     /// An armed hostile turret this close is walked away from, not fought. Its own guns reach
     /// 10 tiles (RangedRange), so backing off from here actually gets the bot out of fire.
@@ -401,9 +410,13 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         // attempt itself — listen on the item and look at who is being cuffed.
         SubscribeLocalEvent<HandcuffComponent, DoAfterAttemptEvent<AddCuffDoAfterEvent>>(OnHandcuffAttempt);
         // Mini: DamageableSystem raises DamageChangedEvent with RaiseLocalEvent(victim, ...), i.e.
-        // directed at the damaged entity and NOT broadcast. A broadcast subscription
-        // (SubscribeLocalEvent<DamageChangedEvent>) therefore never fired and bots ignored every hit.
-        SubscribeLocalEvent<DamageableComponent, DamageChangedEvent>(OnDamageChanged);
+        // directed at the damaged entity and NOT broadcast, so the old broadcast subscription
+        // (SubscribeLocalEvent<DamageChangedEvent>) never fired and bots ignored every hit. The fix has
+        // to hang off our own component: the engine allows exactly one directed subscription per
+        // component+event pair per game, and DailyQuestSystem already owns
+        // DamageableComponent+DamageChangedEvent — a second one crashes the server at startup with
+        // "Duplicate Subscriptions".
+        SubscribeLocalEvent<NeuroPlayerComponent, DamageChangedEvent>(OnBotDamaged);
         SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
         SubscribeLocalEvent<EvacShuttleDockedEvent>(OnEvacDocked);
 
@@ -2100,6 +2113,27 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             // players around understand why the passenger suddenly backs off).
             if (FindArmedHostileTurret(bot, botXform) is { } turret)
                 TriggerDanger(bot, comp, _transform.GetWorldPosition(turret), TurretCries);
+
+            // Mini: somebody next to the bot is being beaten right now — cry and back off. The damage
+            // event itself cannot be hooked: the engine allows exactly one directed subscription per
+            // component+event pair per game and DailyQuestSystem owns
+            // DamageableComponent+DamageChangedEvent, so this is a range scan over bodies that still
+            // carry real damage and were touched within the last couple of seconds.
+            foreach (var (uid, _) in _lookup.GetEntitiesInRange<MobStateComponent>(
+                         botXform.Coordinates, FightAlertRadius))
+            {
+                if (uid == bot || HasComp<NeuroPlayerComponent>(uid))
+                    continue;
+
+                if (!TryComp<DamageableComponent>(uid, out var damageable) || damageable.TotalDamage < FightDamage)
+                    continue;
+
+                if (_timing.CurTime - damageable.LastModifiedTime > FightAlertWindow)
+                    continue;
+
+                TriggerDanger(bot, comp, _transform.GetWorldPosition(uid), FightCries);
+                break;
+            }
         }
     }
 
@@ -2180,77 +2214,52 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     }
 
     /// <summary>
-    /// Mini: the handler hangs off <see cref="DamageableComponent"/> because the event is raised
-    /// directed at the damaged entity (see <see cref="Initialize"/>). Both branches live here:
-    /// <paramref name="victim"/> is either the bot itself or somebody hurt next to it.
+    /// The bot itself was hurt: pain cries, decompression handling and running from whoever hit it.
     /// </summary>
-    private void OnDamageChanged(EntityUid victim, DamageableComponent damageable, DamageChangedEvent ev)
+    /// <remarks>
+    /// Mini: the event is raised directed at the damaged entity, so this is a component subscription on
+    /// the bot (<see cref="Initialize"/>). A brawl happening next to the bot is a range scan in
+    /// <see cref="ScanDangers"/> instead — the global component+event slot is already taken.
+    /// </remarks>
+    private void OnBotDamaged(EntityUid bot, NeuroPlayerComponent comp, DamageChangedEvent ev)
     {
         if (!_enabled || !ev.DamageIncreased || ev.DamageDelta == null)
             return;
 
-        if (!Exists(victim))
+        // Already down (dying/dead): no more fleeing, no more paid replies from a corpse.
+        if (!IsBotUp(bot))
             return;
 
-        var total = (float) ev.DamageDelta.GetTotal();
-
-        // Self-damage: pain cries and depressurization handling.
-        if (TryComp<NeuroPlayerComponent>(victim, out var botComp))
+        if (ev.DamageDelta.DamageDict.TryGetValue("Airloss", out var airloss) && airloss >= 3f)
         {
-            // Already down (dying/dead): no more fleeing, no more paid replies from a corpse.
-            if (!IsBotUp(victim))
-                return;
-
-            if (ev.DamageDelta.DamageDict.TryGetValue("Airloss", out var airloss) && airloss >= 3f)
-            {
-                // Decompression: scream, enable internals from own inventory, best-effort grab a hardsuit, run.
-                Cry(victim, botComp, DecompressionCries);
-                TryEnableInternals(victim);
-                TryGrabHardsuit(victim);
-                TriggerDanger(victim, botComp, _transform.GetWorldPosition(victim), null, cry: false);
-                return;
-            }
-
-            // Mini: any real hit makes the bot cry out, not only a 10+ damage one — ordinary
-            // punches and bullets were ignored outright. Fleeing needs a known attacker, so damage
-            // from space or a stray wound only cries.
-            if (total >= 1f)
-            {
-                Cry(victim, botComp, PainCries);
-
-                var attacker = ev.Origin is { } origin && origin != victim && Exists(origin)
-                    ? origin
-                    : (EntityUid?) null;
-
-                if (total >= 10f || attacker != null)
-                {
-                    var dangerPos = attacker != null
-                        ? _transform.GetWorldPosition(attacker.Value)
-                        : _transform.GetWorldPosition(victim);
-                    TriggerDanger(victim, botComp, dangerPos, null, cry: false);
-                }
-            }
-
+            // Decompression: scream, enable internals from own inventory, best-effort grab a hardsuit, run.
+            Cry(bot, comp, DecompressionCries);
+            TryEnableInternals(bot);
+            TryGrabHardsuit(bot);
+            TriggerDanger(bot, comp, _transform.GetWorldPosition(bot), null, cry: false);
             return;
         }
 
-        // Someone else got hurt badly nearby: run away from the fight.
-        if (total < 15f || (ev.Origin is { } fightOrigin && HasComp<NeuroPlayerComponent>(fightOrigin)))
+        var total = (float) ev.DamageDelta.GetTotal();
+
+        // Mini: any real hit makes the bot cry out, not only a 10+ damage one — ordinary punches and
+        // bullets were ignored outright. Fleeing needs a known attacker, so damage from space or a
+        // stray wound only cries.
+        if (total < 1f)
             return;
 
-        var victimPos = _transform.GetWorldPosition(victim);
-        foreach (var bot in _bots)
+        Cry(bot, comp, PainCries);
+
+        var attacker = ev.Origin is { } origin && origin != bot && Exists(origin)
+            ? origin
+            : (EntityUid?) null;
+
+        if (total >= 10f || attacker != null)
         {
-            if (!TryComp<NeuroPlayerComponent>(bot, out var comp) || comp.DangerUntil != null || !IsBotUp(bot))
-                continue;
-
-            if (Transform(bot).MapID != Transform(victim).MapID)
-                continue;
-
-            if ((_transform.GetWorldPosition(bot) - victimPos).Length() > 6f)
-                continue;
-
-            TriggerDanger(bot, comp, victimPos, FightCries);
+            var dangerPos = attacker != null
+                ? _transform.GetWorldPosition(attacker.Value)
+                : _transform.GetWorldPosition(bot);
+            TriggerDanger(bot, comp, dangerPos, null, cry: false);
         }
     }
 
