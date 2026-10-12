@@ -78,7 +78,14 @@ public abstract partial class SharedSurgerySystem
         SubSurgery<SurgeryTraumaTreatmentStepComponent>(OnTraumaTreatmentStep, OnTraumaTreatmentCheck);
         SubSurgery<SurgeryTraumaExtractStepComponent>(OnExtractTraumaStep, OnExtractTraumaCheck);
         SubSurgery<SurgeryBleedsTreatmentStepComponent>(OnBleedsTreatmentStep, OnBleedsTreatmentCheck);
-        SubSurgery<SurgeryStepPainInflicterComponent>(OnPainInflicterStep, OnPainInflicterCheck);
+        // Mini: only the pain effect, deliberately no completion check. Completion used to be "the
+        // SurgeryPain modifier is still on the part", but that modifier lives for the step's
+        // painDuration (30-60 s) and then expires: after a pause every pain-inflicting step counted
+        // as not done again, PreviousStepsComplete failed and the surgeon was refused the last step
+        // ("tried to start invalid surgery", "cannot cut the heart out"). Every pain-inflicting step
+        // has its own structural proof of completion (the component it adds, the organ it removes,
+        // the trauma/wound it treats), and that is what decides; the pain is still inflicted.
+        SubscribeLocalEvent<SurgeryStepPainInflicterComponent, SurgeryStepEvent>(OnPainInflicterStep);
         Subs.BuiEvents<SurgeryTargetComponent>(SurgeryUIKey.Key, subs =>
         {
             subs.Event<SurgeryStepChosenBuiMsg>(OnSurgeryTargetStepChosen);
@@ -699,16 +706,6 @@ public abstract partial class SharedSurgerySystem
                ent.Comp.PainDuration);
         }
     }
-
-    private void OnPainInflicterCheck(Entity<SurgeryStepPainInflicterComponent> ent, ref SurgeryStepCompleteCheckEvent args)
-    {
-        if (!_consciousness.TryGetNerveSystem(args.Body, out var nerveSys))
-            return;
-
-        if (!_pain.TryGetPainModifier(nerveSys.Value.Owner, args.Part, "SurgeryPain", out _, nerveSys))
-            args.Cancelled = true;
-    }
-
 
     private void OnSurgeryTargetStepChosen(Entity<SurgeryTargetComponent> ent, ref SurgeryStepChosenBuiMsg args)
     {
