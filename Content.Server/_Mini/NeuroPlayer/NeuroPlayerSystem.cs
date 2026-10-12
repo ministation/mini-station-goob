@@ -838,6 +838,14 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         // the whole crew on the same tile — they shoved each other, could not path out and just
         // milled around in one spot. Every bot gets a free tile of its own instead.
         var slots = DistributeSpawnPoints(points, Math.Min(Math.Max(mainStaff.Length, _botCount), 32));
+        if (slots.Count < mainStaff.Length)
+        {
+            // Every late-join marker is off-grid (map-parented): spawning here would drop the crew
+            // into open space. Wait for a marker that actually has a floor under it.
+            LogSpawnFailure($"late-join markers on {Name(station.Value)} are not on a grid");
+            return;
+        }
+
         var slot = 0;
 
         foreach (var (personaId, job, rootTask) in mainStaff)
@@ -1213,7 +1221,19 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (points.Count == 0 || count <= 0)
             return result;
 
-        var anchors = new List<EntityCoordinates>(points);
+        // Mini: a marker that is not on a grid (parented to the map entity) has no floor under it —
+        // the anchor coordinates are then a raw map position, i.e. open space, and a bot spawned
+        // there floats in the void. Only grid-backed markers can host a bot.
+        var anchors = new List<EntityCoordinates>(points.Count);
+        foreach (var point in points)
+        {
+            if (Transform(point.EntityId).GridUid != null)
+                anchors.Add(point);
+        }
+
+        if (anchors.Count == 0)
+            return result;
+
         _random.Shuffle(anchors);
 
         var used = new HashSet<Vector2i>();
