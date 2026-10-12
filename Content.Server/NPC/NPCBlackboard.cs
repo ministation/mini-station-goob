@@ -330,6 +330,12 @@ public sealed partial class NPCBlackboard : IEnumerable<KeyValuePair<string, obj
     public const string NavPry = "NavPry";
 
     /// <summary>
+    /// Mini: does the NPC open doors like a crew member (ID in the inventory, bump or click) instead
+    /// of prying them, and treat a door it has no access to as a dead end.
+    /// </summary>
+    public const string NavCrewDoors = "NavCrewDoors";
+
+    /// <summary>
     /// Can the NPC smash obstacles for steering.
     /// </summary>
     public const string NavSmash = "NavSmash";

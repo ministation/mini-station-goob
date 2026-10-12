@@ -476,6 +476,11 @@ namespace Content.Server.NPC.Pathfinding
                 flags |= PathFlags.Interact;
             }
 
+            if (blackboard.TryGetValue<bool>(NPCBlackboard.NavCrewDoors, out var crewDoors, EntityManager) && crewDoors)
+            {
+                flags |= PathFlags.CrewDoors;
+            }
+
             if (blackboard.TryGetValue<bool>(NPCBlackboard.NavBlob, out var blob, EntityManager) && blob) // Goobstation - Blob
             {
                 flags |= PathFlags.Blob;

@@ -33,4 +33,10 @@ public enum PathFlags : byte
     Interact = 1 << 4,
 
      Blob = 1 << 5,  // Goobstation - Blob
+
+    /// <summary>
+    /// Mini: this NPC opens doors the way a crew member does — with an ID it carries (bump or click) —
+    /// instead of prying every single one. A door it has no access to is a dead end, not a puzzle.
+    /// </summary>
+    CrewDoors = 1 << 6,
 }

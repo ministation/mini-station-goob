@@ -63,6 +63,13 @@ public sealed partial class PathfindingSystem
             {
                 modifier += 0.5f;
             }
+            // Mini: a crew-like NPC opens an access door with the ID it carries, so the door is as cheap
+            // as any other. Breadcrumbs only know that the tile HAS an access reader, not whether this
+            // NPC may pass, so a door that refuses later fails the move and the bot replans.
+            else if (isDoor && isAccess && (request.Flags & PathFlags.CrewDoors) != 0x0)
+            {
+                modifier += 0.5f;
+            }
             // Door we can force open one way or another
             else if (isDoor && isAccess && (request.Flags & PathFlags.Prying) != 0x0)
             {

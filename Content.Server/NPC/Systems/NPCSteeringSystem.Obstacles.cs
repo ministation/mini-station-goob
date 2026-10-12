@@ -104,6 +104,47 @@ public sealed partial class NPCSteeringSystem
                 // If we get to here then didn't succeed for reasons.
             }
 
+            // Mini: an NPC that opens doors with an ID it carries (crew bots) walks through them the way a
+            // crew member does — a bump-open door is opened by the collision itself, a click-open door by
+            // an interaction — and a door it has no access to is a dead end that sends it replanning
+            // instead of leaning on the door forever. Gated behind PathFlags.CrewDoors, so every other NPC
+            // keeps the prying/smashing behaviour below unchanged.
+            if (isDoor && (component.Flags & PathFlags.CrewDoors) != 0x0)
+            {
+                var crewDoorQuery = GetEntityQuery<DoorComponent>();
+
+                foreach (var ent in obstacleEnts)
+                {
+                    if (!crewDoorQuery.TryGetComponent(ent, out var door))
+                        continue;
+
+                    // Already through.
+                    if (door.State is DoorState.Open or DoorState.Opening)
+                        return SteeringObstacleStatus.Completed;
+
+                    // Welded, bolted or simply not our access: no way in, so let the bot pick another route.
+                    if (door.State == DoorState.Welded ||
+                        (TryComp<DoorBoltComponent>(ent, out var bolts) && bolts.BoltsDown) ||
+                        !_doors.HasAccess(ent, uid, door))
+                    {
+                        return SteeringObstacleStatus.Failed;
+                    }
+
+                    // Bump-open door: SharedDoorSystem.HandleCollide opens it while we walk in.
+                    if (door.BumpOpen)
+                        return SteeringObstacleStatus.Completed;
+
+                    // Click-open door (firelock, shutter, windoor): open it and wait for the state change.
+                    if ((component.Flags & PathFlags.Interact) != 0x0)
+                    {
+                        _interaction.InteractionActivate(uid, ent);
+                        return SteeringObstacleStatus.Continuing;
+                    }
+
+                    return SteeringObstacleStatus.Failed;
+                }
+            }
+
             if ((component.Flags & PathFlags.Prying) != 0x0 && isDoor)
             {
                 var doorQuery = GetEntityQuery<DoorComponent>();

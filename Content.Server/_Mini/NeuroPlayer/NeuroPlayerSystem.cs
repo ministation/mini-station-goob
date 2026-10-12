@@ -33,6 +33,7 @@ using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
 using Content.Shared._CorvaxGoob.TTS;
 using Content.Shared.Chat;
+using Content.Shared.CombatMode;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Damage;
 using Content.Shared.Examine;
@@ -60,11 +61,11 @@ using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
+using Content.Shared.SSDIndicator;
 using Content.Shared.Radio.Components;
 using Content.Shared.Interaction;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
-using Content.Shared.Prying.Components;
 using Content.Shared.Turrets;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Server.NPC;
@@ -115,6 +116,24 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     /// <summary>A bot never marches further than this to find somebody to talk to.</summary>
     private const float MaxSeekRange = 120f;
 
+    /// <summary>
+    /// Extra "distance" charged to a player another bot is already walking to, so the whole crew
+    /// does not converge on one person and pile up on their tile.
+    /// </summary>
+    private const float SeekCrowdPenalty = 15f;
+
+    /// <summary>Personal offset (tiles) that keeps two bots off the same tile at a shared target.</summary>
+    private const float SeekSpreadRadius = 1.5f;
+
+    /// <summary>How far from a spawn point a bot may be placed to get a free tile of its own.</summary>
+    private const int SpawnSpreadRadius = 4;
+
+    /// <summary>
+    /// When a bot that is already running away is hit again, only a threat that moved further than
+    /// this (tiles) from the current escape point makes it pick a new route.
+    /// </summary>
+    private const float RerouteDistance = 6f;
+
     /// <summary>Bots notice fires within this many tiles.</summary>
     private const float FireAlertRadius = 12f;
 
@@ -159,6 +178,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedMindSystem _mind = default!;
+    [Dependency] private readonly SharedRoleSystem _roles = default!;
     [Dependency] private readonly NpcFactionSystem _factions = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly StationSpawningSystem _spawning = default!;
@@ -184,6 +204,9 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     private ISawmill _sawmill = default!;
     private readonly HttpClient _httpClient = new();
     private readonly List<EntityUid> _bots = new();
+
+    /// <summary>Bot -> the point of interest it is currently visiting, so two bots do not share one.</summary>
+    private readonly Dictionary<EntityUid, EntityUid> _poiClaims = new();
 
     private bool _enabled;
     private string _provider = NeuroProviderPresets.CustomId;
@@ -314,6 +337,18 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         "Пустите, я не собираюсь сидеть!",
     ];
 
+    /// <summary>Mini: fleeing time after a shove, short enough to resume normal life quickly.</summary>
+    private const float ShoveFleeSeconds = 8f;
+
+    /// <summary>Mini: reactions to being shoved (DisarmedEvent).</summary>
+    private static readonly string[] ShoveCries =
+    [
+        "Эй, не толкайся!",
+        "Руки убери!",
+        "Ты чего толкаешься?",
+        "Отстаньте, я не мешок!",
+    ];
+
     public override void Initialize()
     {
         base.Initialize();
@@ -359,10 +394,16 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         SubscribeLocalEvent<NeuroPlayerComponent, PullStartedMessage>(OnBotPullStarted);
         SubscribeLocalEvent<NeuroPlayerComponent, BuckleAttemptEvent>(OnBotBuckleAttempt);
         SubscribeLocalEvent<NeuroPlayerComponent, BuckledEvent>(OnBotBuckled);
+        // Shoves (WWDP shove rework) raise DisarmedEvent on the target: a bot answers with a cry and
+        // breaks away from the shover instead of silently eating it.
+        SubscribeLocalEvent<NeuroPlayerComponent, DisarmedEvent>(OnBotDisarmed);
         // The cuff do-after is directed at the handcuffs, so the bot's component never sees the
         // attempt itself — listen on the item and look at who is being cuffed.
         SubscribeLocalEvent<HandcuffComponent, DoAfterAttemptEvent<AddCuffDoAfterEvent>>(OnHandcuffAttempt);
-        SubscribeLocalEvent<DamageChangedEvent>(OnDamageChanged);
+        // Mini: DamageableSystem raises DamageChangedEvent with RaiseLocalEvent(victim, ...), i.e.
+        // directed at the damaged entity and NOT broadcast. A broadcast subscription
+        // (SubscribeLocalEvent<DamageChangedEvent>) therefore never fired and bots ignored every hit.
+        SubscribeLocalEvent<DamageableComponent, DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
         SubscribeLocalEvent<EvacShuttleDockedEvent>(OnEvacDocked);
 
@@ -400,6 +441,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         _bots.Clear();
+        _poiClaims.Clear();
         _spawnedThisRound = false;
         _warSuppressed = false;
         _roundStartTime = TimeSpan.Zero;
@@ -543,6 +585,23 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     }
 
     /// <summary>
+    /// Mini: being shoved is a physical attack, not a no-op. The bot cries out and runs from the
+    /// shover; downed, cuffed and muted bots stay silent (a body is not a person).
+    /// </summary>
+    private void OnBotDisarmed(EntityUid uid, NeuroPlayerComponent comp, ref DisarmedEvent args)
+    {
+        if (!_enabled || !CanResist(uid, comp))
+            return;
+
+        var source = args.Source;
+        if (source == uid || !Exists(source))
+            return;
+
+        Cry(uid, comp, ShoveCries);
+        TriggerDanger(uid, comp, _transform.GetWorldPosition(source), null, cry: false, seconds: ShoveFleeSeconds);
+    }
+
+    /// <summary>
     /// Ongoing struggle, rolled once a second: a dragged bot wriggles out of a grab and a buckled
     /// bot gets up. Handcuffs end both — that is what they are for.
     /// </summary>
@@ -666,8 +725,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 continue;
 
             htn.Blackboard.SetValue("NeuroPoint", point);
-            htn.RootTask = new HTNCompoundTask { Task = "NeuroVisitCompound" };
-            _htn.Replan(htn);
+            SetRootTask(htn, "NeuroVisitCompound");
             comp.VisitUntil = _timing.CurTime + TimeSpan.FromSeconds(420);
 
             if (!led)
@@ -763,10 +821,16 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             ("NeuroClown", "Clown", null),
         };
 
+        // Mini: mini maps ship exactly one late-join marker, so picking a random point per bot put
+        // the whole crew on the same tile — they shoved each other, could not path out and just
+        // milled around in one spot. Every bot gets a free tile of its own instead.
+        var slots = DistributeSpawnPoints(points, Math.Min(Math.Max(mainStaff.Length, _botCount), 32));
+        var slot = 0;
+
         foreach (var (personaId, job, rootTask) in mainStaff)
         {
             var persona = personas.FirstOrDefault(p => p.ID == personaId) ?? personas[0];
-            var coords = _random.Pick(points);
+            var coords = slots[slot++];
             if (TrySpawnBot(persona, coords, station.Value, forcedJob: job,
                     rootTask: rootTask,
                     onSpawned: rootTask == "CleanbotCompound" ? mob => GiveJanitorMop(mob) : null))
@@ -814,7 +878,10 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
         foreach (var persona in sparePersonas)
         {
-            if (!TrySpawnBot(persona, _random.Pick(points), station.Value))
+            if (slot >= slots.Count)
+                break;
+
+            if (!TrySpawnBot(persona, slots[slot++], station.Value))
                 continue;
 
             spawned++;
@@ -936,6 +1003,13 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         // is puppeteered by an LLM rather than left behind by a player.
         EnsureComp<NeuroPlayerMarkerComponent>(mob);
 
+        // Mini: the humanoid prototype ships an SSD indicator that defaults to "SSD". A neuro player
+        // has no session by design, so every bot read as a disconnected sleeper: examine said
+        // "спит уже N минут" (FTL comp-ssd-person-examined), the SSD icon hung over its head and the
+        // ghost teleporter filed a live crew member under "left the body". The body is neither
+        // asleep nor abandoned, so drop the indicator instead of faking a session for it.
+        RemComp<SSDIndicatorComponent>(mob);
+
         var transmitter = EnsureComp<IntrinsicRadioTransmitterComponent>(mob);
         transmitter.Channels.Add(CommonChannelId);
         var receiver = EnsureComp<ActiveRadioComponent>(mob);
@@ -944,10 +1018,15 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         var htn = EnsureComp<HTNComponent>(mob);
         htn.RootTask = new HTNCompoundTask { Task = rootTask ?? "IdleCompound" };
 
-        // Mini: walk like a crew member — pry airlocks open and let the planner
-        // route through doors instead of beelining into walls.
-        EnsureComp<PryingComponent>(mob);
-        htn.Blackboard.SetValue(NPCBlackboard.NavPry, true);
+        // Mini: двери бот открывает как член экипажа — своим ID из ПДА, который получает вместе со
+        // стартовым снаряжением профессии. Bump-open дверь открывается самим столкновением, click-open
+        // (firelock, ставни, windoor) — взаимодействием, а дверь без доступа для него тупик: он
+        // перестраивает маршрут вместо того, чтобы pry'ить её. NavInteract нужен, чтобы планировщик
+        // вообще считал click-open двери проходимыми: без флага GetTileCost возвращает для них 0.
+        htn.Blackboard.SetValue(NPCBlackboard.NavCrewDoors, true);
+        htn.Blackboard.SetValue(NPCBlackboard.NavInteract, true);
+        // Mini: reach of the "run to any reachable tile" fallback branch of NeuroFleeCompound.
+        htn.Blackboard.SetValue("FleeRange", 12f);
         _factions.AddFactions(mob, new HashSet<ProtoId<NpcFactionPrototype>> { "NanoTrasen" });
 
         // Mini: machines (station AI turrets first of all) are not opponents a passenger can
@@ -969,6 +1048,12 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         _mind.TransferTo(mind, mob);
         _mind.SetGhostOnShutdown(mob, false);
 
+        // Mini: the profession lives in the mind role, not only in the station record. The ghost
+        // teleporter (GetPlayerWarps -> _jobs.MindTryGetJob) and other job interfaces read exactly
+        // that, which is why bots showed up as "unknown" with no job icon. Player job slots are not
+        // consumed: slots are handed out by StationJobsSystem.TryAssignJob, which is never called here.
+        _roles.MindAddJobRole(mind, silent: true, jobPrototype: job);
+
         if (TryComp<StationRecordsComponent>(station, out var records))
         {
             try
@@ -985,6 +1070,14 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
         onSpawned?.Invoke(mob);
 
+        // Mini: the HTN component is added at runtime, so MapInitEvent — the only thing that calls
+        // NPCSystem.WakeNPC — has already fired for this entity and never reaches it again. NPCs
+        // without ActiveNPCComponent are invisible to HTNSystem.UpdateNPC, and
+        // NPCProximitySleepSystem skips bodies that hold a mind, so nothing else woke the bot
+        // either: every plan (idling, fleeing, visiting) stayed dead code and the bots stood still
+        // forever. Wake the finished bot explicitly.
+        _npc.WakeNPC(mob, htn);
+
         _bots.Add(mob);
         return true;
     }
@@ -998,6 +1091,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         }
 
         _bots.Clear();
+        _poiClaims.Clear();
     }
 
     /// <summary>
@@ -1093,6 +1187,73 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         }
 
         return points;
+    }
+
+    /// <summary>
+    /// Mini: hands every bot a tile of its own. Mini maps ship exactly one late-join marker, so
+    /// picking a random point per bot dropped the whole crew on the same tile — they shoved each
+    /// other, could not path out and just milled around in one place.
+    /// </summary>
+    private List<EntityCoordinates> DistributeSpawnPoints(List<EntityCoordinates> points, int count)
+    {
+        var result = new List<EntityCoordinates>(count);
+        if (points.Count == 0 || count <= 0)
+            return result;
+
+        var anchors = new List<EntityCoordinates>(points);
+        _random.Shuffle(anchors);
+
+        var used = new HashSet<Vector2i>();
+
+        for (var i = 0; i < count; i++)
+            result.Add(FindFreeSpawnTile(anchors[i % anchors.Count], used));
+
+        return result;
+    }
+
+    /// <summary>
+    /// The anchor tile itself, otherwise the nearest free tile around it (spiralling out to
+    /// <see cref="SpawnSpreadRadius"/>). A tile counts as taken when another bot already got it,
+    /// when it has no floor (space) or when an anchored entity (wall, machine, furniture) sits on it.
+    /// </summary>
+    private EntityCoordinates FindFreeSpawnTile(EntityCoordinates anchor, HashSet<Vector2i> used)
+    {
+        if (Transform(anchor.EntityId).GridUid is not { } grid || !TryComp<MapGridComponent>(grid, out var mapGrid))
+            return anchor;
+
+        var center = _map.CoordinatesToTile(grid, mapGrid, anchor);
+
+        for (var radius = 0; radius <= SpawnSpreadRadius; radius++)
+        {
+            for (var dx = -radius; dx <= radius; dx++)
+            {
+                for (var dy = -radius; dy <= radius; dy++)
+                {
+                    // Only the outer ring: inner tiles were already tried at smaller radii.
+                    if (radius > 0 && Math.Abs(dx) != radius && Math.Abs(dy) != radius)
+                        continue;
+
+                    var tile = center + new Vector2i(dx, dy);
+                    if (!used.Add(tile) || !IsTileFreeForSpawn(grid, mapGrid, tile))
+                        continue;
+
+                    return _map.GridTileToLocal(grid, mapGrid, tile);
+                }
+            }
+        }
+
+        // Solid construction all around: the marker tile still beats not spawning at all.
+        return anchor;
+    }
+
+    /// <summary>Whether a tile can take a spawned mob: real floor with nothing anchored on top.</summary>
+    private bool IsTileFreeForSpawn(EntityUid grid, MapGridComponent mapGrid, Vector2i tile)
+    {
+        if (!_map.TryGetTileRef(grid, mapGrid, tile, out var tileRef) || tileRef.Tile.IsEmpty)
+            return false;
+
+        var anchored = _map.GetAnchoredEntitiesEnumerator(grid, mapGrid, tile);
+        return !anchored.MoveNext(out _);
     }
 
     private void OnGlobalSpoke(EntitySpokeEvent ev)
@@ -1676,6 +1837,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             if (!TryComp<NeuroPlayerComponent>(bot, out var comp))
             {
                 _bots.RemoveAt(i);
+                _poiClaims.Remove(bot);
                 continue;
             }
 
@@ -1758,6 +1920,11 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (_seekRadius <= 0f)
             return;
 
+        // Mini: every bot used to march to the same nearest player and pile up on their tile.
+        // A player somebody is already walking to gets a crowd penalty, so the crew spreads over
+        // the people actually on the station instead of forming one queue.
+        var crowd = new Dictionary<EntityUid, int>();
+
         foreach (var bot in _bots)
         {
             if (!IsBotUp(bot) || !TryComp<NeuroPlayerComponent>(bot, out var comp))
@@ -1766,11 +1933,11 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             if (comp.DangerUntil != null || comp.HostileUntil != null || comp.VisitUntil != null)
                 continue;
 
-            var nearest = FindNearestPlayer(bot);
+            var nearest = FindNearestPlayer(bot, crowd);
             if (nearest == null)
                 continue;
 
-            var (coords, distance) = nearest.Value;
+            var (target, coords, distance) = nearest.Value;
 
             // Somebody is already close enough — no need to march anywhere.
             if (distance <= _seekRadius)
@@ -1779,21 +1946,28 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             if (!TryComp<HTNComponent>(bot, out var htn))
                 continue;
 
-            htn.Blackboard.SetValue("NeuroPoint", coords);
-            htn.RootTask = new HTNCompoundTask { Task = "NeuroVisitCompound" };
-            _htn.Replan(htn);
+            crowd[target] = crowd.GetValueOrDefault(target) + 1;
+
+            // A personal offset, so two bots heading for the same person do not share one tile.
+            htn.Blackboard.SetValue("NeuroPoint", coords.Offset(_random.NextVector2(SeekSpreadRadius)));
+            SetRootTask(htn, "NeuroVisitCompound");
             comp.VisitUntil = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(60, 120));
         }
     }
 
-    /// <summary>Nearest living player (never a ghost or another bot) with the distance to them.</summary>
-    private (EntityCoordinates Coords, float Distance)? FindNearestPlayer(EntityUid bot)
+    /// <summary>
+    /// Nearest living player (never a ghost or another bot). Players that other bots are already
+    /// walking to are pushed away by <see cref="SeekCrowdPenalty"/>, which keeps the whole crew from
+    /// converging on one person.
+    /// </summary>
+    private (EntityUid Target, EntityCoordinates Coords, float Distance)? FindNearestPlayer(
+        EntityUid bot, Dictionary<EntityUid, int> crowd)
     {
         var botXform = Transform(bot);
         var botPos = _transform.GetWorldPosition(botXform);
 
-        EntityCoordinates? best = null;
-        var bestDistance = float.MaxValue;
+        (EntityUid Target, EntityCoordinates Coords, float Distance)? best = null;
+        var bestScore = float.MaxValue;
 
         var query = EntityQueryEnumerator<ActorComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out _, out var xform))
@@ -1802,14 +1976,47 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 continue;
 
             var distance = (xform.WorldPosition - botPos).Length();
-            if (distance > MaxSeekRange || distance >= bestDistance)
+            if (distance > MaxSeekRange)
                 continue;
 
-            bestDistance = distance;
-            best = xform.Coordinates;
+            var score = distance + crowd.GetValueOrDefault(uid) * SeekCrowdPenalty;
+            if (score >= bestScore)
+                continue;
+
+            bestScore = score;
+            best = (uid, xform.Coordinates, distance);
         }
 
-        return best == null ? null : (best.Value, bestDistance);
+        return best;
+    }
+
+    /// <summary>
+    /// Mini: switches the bot's root task and throws away the plan it is running right now. Without
+    /// the throw-away the engine keeps the old plan alive and only accepts a replacement whose branch
+    /// record is "worse" (HTNSystem.UpdateNPC compares them), so a bot parked in a 7-second idle wait
+    /// ignored a punch for as long as that wait lasted and the reaction looked absent. This is the
+    /// same shutdown sequence the engine itself runs when it swaps a plan.
+    /// </summary>
+    private void SetRootTask(HTNComponent htn, string task)
+    {
+        htn.RootTask = new HTNCompoundTask { Task = task };
+
+        // A plan still being computed belongs to the old root task. Its result would be adopted as
+        // soon as it lands (the bot then carries on with its old life and ignores the danger) because
+        // the engine keeps the running plan unless the new branch record is "worse". The engine drops
+        // planning the same way in SetHTNEnabled / OnHTNShutdown; a cancelled job finishes with a
+        // null result instead of an error.
+        htn.PlanningToken?.Cancel();
+        htn.PlanningToken = null;
+        htn.PlanningJob = null;
+
+        if (htn.Plan != null)
+        {
+            _htn.ShutdownTask(htn.Plan.CurrentOperator, htn.Blackboard, HTNOperatorStatus.BetterPlan);
+            _htn.ShutdownPlan(htn); // also clears htn.Plan
+        }
+
+        _htn.Replan(htn);
     }
 
     private void RestoreIdle(EntityUid bot)
@@ -1822,14 +2029,12 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (TryComp<NeuroPlayerComponent>(bot, out var comp) && TryGetEvacPoint(bot, comp, out var evacPoint))
         {
             htn.Blackboard.SetValue("NeuroPoint", evacPoint);
-            htn.RootTask = new HTNCompoundTask { Task = "NeuroVisitCompound" };
-            _htn.Replan(htn);
+            SetRootTask(htn, "NeuroVisitCompound");
             comp.VisitUntil = _timing.CurTime + TimeSpan.FromSeconds(420);
             return;
         }
 
-        htn.RootTask = new HTNCompoundTask { Task = "IdleCompound" };
-        _htn.Replan(htn);
+        SetRootTask(htn, "IdleCompound");
     }
 
     private void ScanDangers()
@@ -1864,8 +2069,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                     // deployed turret crate, war hardware) must not become a combat target.
                     IgnoreMachines(bot);
 
-                    attackHtn.RootTask = new HTNCompoundTask { Task = "SimpleHumanoidHostileCompound" };
-                    _htn.Replan(attackHtn);
+                    SetRootTask(attackHtn, "SimpleHumanoidHostileCompound");
                 }
 
                 comp.HostileUntil = _timing.CurTime + TimeSpan.FromSeconds(6);
@@ -1975,12 +2179,16 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         }
     }
 
-    private void OnDamageChanged(DamageChangedEvent ev)
+    /// <summary>
+    /// Mini: the handler hangs off <see cref="DamageableComponent"/> because the event is raised
+    /// directed at the damaged entity (see <see cref="Initialize"/>). Both branches live here:
+    /// <paramref name="victim"/> is either the bot itself or somebody hurt next to it.
+    /// </summary>
+    private void OnDamageChanged(EntityUid victim, DamageableComponent damageable, DamageChangedEvent ev)
     {
         if (!_enabled || !ev.DamageIncreased || ev.DamageDelta == null)
             return;
 
-        var victim = ev.Damageable.Owner;
         if (!Exists(victim))
             return;
 
@@ -2003,16 +2211,24 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 return;
             }
 
-            if (total >= 10f)
+            // Mini: any real hit makes the bot cry out, not only a 10+ damage one — ordinary
+            // punches and bullets were ignored outright. Fleeing needs a known attacker, so damage
+            // from space or a stray wound only cries.
+            if (total >= 1f)
             {
                 Cry(victim, botComp, PainCries);
 
-                // Mini: significant damage should trigger fleeing immediately,
-                // not just a cry; run from the attacker if one is known.
-                var dangerPos = ev.Origin is { } origin && origin != victim && Exists(origin)
-                    ? _transform.GetWorldPosition(origin)
-                    : _transform.GetWorldPosition(victim);
-                TriggerDanger(victim, botComp, dangerPos, null, cry: false);
+                var attacker = ev.Origin is { } origin && origin != victim && Exists(origin)
+                    ? origin
+                    : (EntityUid?) null;
+
+                if (total >= 10f || attacker != null)
+                {
+                    var dangerPos = attacker != null
+                        ? _transform.GetWorldPosition(attacker.Value)
+                        : _transform.GetWorldPosition(victim);
+                    TriggerDanger(victim, botComp, dangerPos, null, cry: false);
+                }
             }
 
             return;
@@ -2043,9 +2259,27 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (!TryComp<HTNComponent>(bot, out var htn))
             return;
 
-        htn.Blackboard.SetValue("NeuroPoint", ComputeFleePoint(bot, dangerPos));
-        htn.RootTask = new HTNCompoundTask { Task = "NeuroFleeCompound" };
-        _htn.Replan(htn);
+        var fleePoint = ComputeFleePoint(bot, dangerPos);
+
+        // Mini: a bot that is already on the run keeps its route. Restarting the plan on every hit
+        // (the attack rate is a hit per second) cancelled the path it was walking, so it stuttered in
+        // place and the reaction looked like nothing happened at all. Only a threat that moved
+        // somewhere else entirely sends it down a new route.
+        if (comp.DangerUntil != null &&
+            htn.Blackboard.TryGetValue<EntityCoordinates>("NeuroPoint", out var current, EntityManager) &&
+            (_transform.ToWorldPosition(current) - _transform.ToWorldPosition(fleePoint)).Length() <= RerouteDistance)
+        {
+            comp.DangerUntil = _timing.CurTime + TimeSpan.FromSeconds(seconds);
+            comp.VisitUntil = null;
+
+            if (cry && cries != null)
+                Cry(bot, comp, cries);
+
+            return;
+        }
+
+        htn.Blackboard.SetValue("NeuroPoint", fleePoint);
+        SetRootTask(htn, "NeuroFleeCompound");
 
         comp.DangerUntil = _timing.CurTime + TimeSpan.FromSeconds(seconds);
         comp.VisitUntil = null;
@@ -2055,6 +2289,12 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             Cry(bot, comp, cries);
     }
 
+    /// <summary>
+    /// A tile away from the danger that the bot can actually see. Mini: a point behind a wall made
+    /// MoveToOperator's planning-time pathfind fail, which failed the whole flee branch — the bot
+    /// stood still while it was being beaten. Line of sight means real floor, and a short distance
+    /// means the path there exists.
+    /// </summary>
     private EntityCoordinates ComputeFleePoint(EntityUid bot, Vector2 dangerPos)
     {
         var botXform = Transform(bot);
@@ -2067,11 +2307,15 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (botXform.GridUid is { } grid && TryComp<MapGridComponent>(grid, out var mapGrid))
         {
             var centerTile = _transform.GetGridOrMapTilePosition(bot, botXform);
-            for (var dist = 8; dist <= 30; dist += 4)
+            for (var dist = 4; dist <= 30; dist += 2)
             {
                 var tile = centerTile + (away * dist).Floored();
-                if (_map.TryGetTileRef(grid, mapGrid, tile, out var tileRef) && !tileRef.Tile.IsEmpty)
-                    return _map.GridTileToLocal(grid, mapGrid, tile);
+                if (!_map.TryGetTileRef(grid, mapGrid, tile, out var tileRef) || tileRef.Tile.IsEmpty)
+                    continue;
+
+                var coords = _map.GridTileToLocal(grid, mapGrid, tile);
+                if (_examine.InRangeUnOccluded(bot, coords, dist + 2f))
+                    return coords;
             }
         }
 
@@ -2158,35 +2402,80 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (point == null)
             return;
 
-        htn.Blackboard.SetValue("NeuroPoint", point.Value);
-        htn.RootTask = new HTNCompoundTask { Task = "NeuroVisitCompound" };
-        _htn.Replan(htn);
+        _poiClaims[bot] = point.Value.Point;
+
+        htn.Blackboard.SetValue("NeuroPoint", point.Value.Coords);
+        SetRootTask(htn, "NeuroVisitCompound");
         comp.VisitUntil = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(120, 240));
     }
 
-    private EntityCoordinates? FindPointOfInterest(EntityUid bot)
+    /// <summary>
+    /// A public spot to hang around: a bar first, late-join points (arrivals / halls) otherwise.
+    /// Mini: spots another bot already claimed are skipped, so the crew spreads over the station
+    /// instead of grazing on the same bar; when everything is taken, the spot furthest from the
+    /// rest of the crew wins.
+    /// </summary>
+    private (EntityUid Point, EntityCoordinates Coords)? FindPointOfInterest(EntityUid bot)
     {
-        var points = new List<EntityCoordinates>();
+        var points = new List<(EntityUid Point, EntityCoordinates Coords)>();
         var botMap = Transform(bot).MapID;
 
         var bars = EntityQueryEnumerator<BarSignComponent, TransformComponent>();
-        while (bars.MoveNext(out _, out _, out var xform))
+        while (bars.MoveNext(out var uid, out _, out var xform))
         {
             if (xform.MapID != botMap)
                 continue;
 
-            points.Add(xform.Coordinates);
+            points.Add((uid, xform.Coordinates));
         }
 
-        if (points.Count > 0)
-            return _random.Pick(points);
+        if (points.Count == 0)
+        {
+            // No bar on this map: hang around late-join points (arrivals / halls).
+            var station = FindStation();
+            if (station != null)
+            {
+                foreach (var coords in FindSpawnPoints(station.Value))
+                    points.Add((coords.EntityId, coords));
+            }
+        }
 
-        // No bar on this map: hang around late-join points (arrivals / halls).
-        var station = FindStation();
-        if (station != null)
-            points.AddRange(FindSpawnPoints(station.Value));
+        if (points.Count == 0)
+            return null;
 
-        return points.Count > 0 ? _random.Pick(points) : null;
+        var taken = new HashSet<EntityUid>();
+        foreach (var (other, claim) in _poiClaims)
+        {
+            if (other != bot && Exists(other))
+                taken.Add(claim);
+        }
+
+        var free = points.Where(p => !taken.Contains(p.Point)).ToList();
+        if (free.Count > 0)
+            return _random.Pick(free);
+
+        // Every spot is somebody else's: take the one furthest from the rest of the crew.
+        return points
+            .OrderByDescending(p => DistanceToNearestBot(bot, p.Coords))
+            .First();
+    }
+
+    /// <summary>Distance from <paramref name="coords"/> to the closest other bot (infinity when alone).</summary>
+    private float DistanceToNearestBot(EntityUid bot, EntityCoordinates coords)
+    {
+        var pos = _transform.ToWorldPosition(coords);
+        var botMap = Transform(bot).MapID;
+        var nearest = float.MaxValue;
+
+        foreach (var other in _bots)
+        {
+            if (other == bot || !Exists(other) || Transform(other).MapID != botMap)
+                continue;
+
+            nearest = Math.Min(nearest, (_transform.GetWorldPosition(other) - pos).Length());
+        }
+
+        return nearest;
     }
 
     private async Task<string?> CompleteRawAsync(NeuroPersonaPrototype persona, string botName, string userPrompt)
