@@ -318,17 +318,27 @@ public sealed class ArrivalsSystem : EntitySystem
             _deviceNetworkSystem.QueuePacket(uid, null, payload, netComp.TransmitFrequency);
         }
 
-        // Mini: summon fulfilled once the shuttle docks at either end. At the terminal also
-        // guarantee a boarding window so a fresh latejoiner can actually walk in and board.
-        component.Summoned = false;
-
         TryGetArrivals(out var arrivalsUid);
-        if (arrivalsUid.IsValid() && TryComp(arrivalsUid, out TransformComponent? arrivalsXform) &&
-            Transform(uid).MapUid == arrivalsXform.MapUid)
+        if (!arrivalsUid.IsValid() || !TryComp(arrivalsUid, out TransformComponent? arrivalsXform))
+            return;
+
+        if (Transform(uid).MapUid == arrivalsXform.MapUid)
         {
+            // Mini: docked at the terminal. Guarantee a boarding window so a fresh latejoiner can
+            // walk in and board. (The post-launch cooldown usually already covers it; this is the
+            // floor, not the ceiling — boarding leaves early, see Update.)
             var minNext = _timing.CurTime + TimeSpan.FromSeconds(BoardingGraceSeconds);
             if (component.NextTransfer < minNext)
                 component.NextTransfer = minNext;
+        }
+        else if (HasWaitingPlayers(arrivalsXform.MapID))
+        {
+            // Mini: docked at the station while somebody is still waiting at the terminal — their
+            // summon was issued while the ferry was already flying. Turn around now instead of
+            // making them sit out the rest of the cooldown before the ferry even starts back.
+            var maxNext = _timing.CurTime + TimeSpan.FromSeconds(SummonGraceSeconds);
+            if (component.NextTransfer > maxNext)
+                component.NextTransfer = maxNext;
         }
     }
 
@@ -412,9 +422,11 @@ public sealed class ArrivalsSystem : EntitySystem
         EnsureComp<PendingClockInComponent>(ev.SpawnResult.Value);
         EnsureComp<AutoOrientComponent>(ev.SpawnResult.Value);
 
-        // Mini: summon the ferry for the new arrival instead of making them wait for the
-        // scheduled cycle. Parked at the terminal it departs after a boarding window;
-        // otherwise it first has to fly over from the station.
+        // Mini: pull the ferry in for the new arrival instead of making them wait out the cooldown.
+        // Whether it actually flies is decided by the idle gate (somebody still waits at the
+        // terminal -> the ferry moves); all the summon does is shorten the wait: at the terminal
+        // that is the boarding window (they have to walk in and board), at the station just the
+        // startup delay before it heads over.
         if (_cfgManager.GetCVar(CCVars.ArrivalsIdleGate) &&
             TryComp<StationArrivalsComponent>(ev.Station, out var stationArrivals) &&
             TryComp<ArrivalsShuttleComponent>(stationArrivals.Shuttle, out var shuttleComp))
@@ -422,7 +434,6 @@ public sealed class ArrivalsSystem : EntitySystem
             var atArrivals = Transform(stationArrivals.Shuttle).MapUid == arrivalsXform.MapUid;
             var maxNext = _timing.CurTime + TimeSpan.FromSeconds(atArrivals ? BoardingGraceSeconds : SummonGraceSeconds);
 
-            shuttleComp.Summoned = true;
             if (shuttleComp.NextTransfer > maxNext)
                 shuttleComp.NextTransfer = maxNext;
         }
@@ -543,13 +554,22 @@ public sealed class ArrivalsSystem : EntitySystem
             while (query.MoveNext(out var uid, out var comp, out var shuttle, out var xform))
             {
                 if (comp.NextTransfer > curTime)
-                    continue;
+                {
+                    // Mini: the cooldown after a launch is longer than the docking time (50 s vs a
+                    // 10 s leg), so the ferry used to sit at the terminal for ~40 s with the
+                    // latejoiners already aboard, staring at a shuttle that was not going anywhere.
+                    // Leave as soon as everyone who is waiting for the ferry is on board.
+                    if (xform.MapUid == arrivalsXform.MapUid && AllWaitingPlayersAboard(uid, arrivalsXform.MapID))
+                        comp.NextTransfer = curTime;
+                    else
+                        continue;
+                }
 
                 // Mini: idle gate. Flying empty legs on the cooldown is pure churn: every
                 // cross-map transfer re-parents the grid and busts PVS for clients near the
                 // docks, which on vanilla client engines means frame stalls and bursts of
                 // dropped MsgStateAck warnings.
-                if (_cfgManager.GetCVar(CCVars.ArrivalsIdleGate) && !ShouldLaunch(uid, comp, xform, arrivalsXform))
+                if (_cfgManager.GetCVar(CCVars.ArrivalsIdleGate) && !ShouldLaunch(uid, arrivalsXform))
                 {
                     comp.NextTransfer = curTime + TimeSpan.FromSeconds(IdleRetrySeconds);
                     continue;
@@ -587,20 +607,46 @@ public sealed class ArrivalsSystem : EntitySystem
     /// <summary>
     /// Mini: whether this shuttle has a reason to launch on this transfer.
     /// </summary>
-    private bool ShouldLaunch(EntityUid shuttle, ArrivalsShuttleComponent component, TransformComponent xform, TransformComponent arrivalsXform)
+    private bool ShouldLaunch(EntityUid shuttle, TransformComponent arrivalsXform)
     {
-        // Summoned to pick up latejoiners, currently parked at the station.
-        if (component.Summoned && xform.MapUid != arrivalsXform.MapUid)
-            return true;
-
+        // Anybody aboard: take them to the station.
         if (HasPassengers(shuttle))
             return true;
 
-        // Docked at the terminal: launch when somebody still waits to get to the station.
-        if (xform.MapUid == arrivalsXform.MapUid && HasWaitingPlayers(arrivalsXform.MapID))
-            return true;
+        // Nobody is waiting to reach the station: stay parked. This is the idle gate itself —
+        // empty FTL legs re-parent the grid and churn PVS for everyone near the docks.
+        if (!HasWaitingPlayers(arrivalsXform.MapID))
+            return false;
 
-        return false;
+        // Somebody is still at the terminal waiting for the ferry.
+        // - Parked at the station (or in transit): fly over and pick them up. This used to hinge on a
+        //   summon flag that any docking cleared, so a latejoiner who spawned while the ferry was
+        //   already inbound could wait for it forever: nothing called it back from the station.
+        // - Parked at the terminal: their boarding window (see OnArrivalsDocked) has run out, so
+        //   depart. If they still have not made it, the next idle check flies the ferry back for
+        //   them — they keep PendingClockIn until they actually reach the station.
+        return true;
+    }
+
+    /// <summary>
+    /// Mini: is everybody who is still waiting at the terminal already on board? The ferry leaves as
+    /// soon as the group is complete instead of sitting out the rest of the cooldown with them.
+    /// </summary>
+    private bool AllWaitingPlayersAboard(EntityUid shuttle, MapId arrivalsMap)
+    {
+        var query = AllEntityQuery<PendingClockInComponent, TransformComponent>();
+        while (query.MoveNext(out _, out _, out var xform))
+        {
+            // Only people still on the terminal map are "waiting for the ferry"; everyone else has
+            // either already reached the station or is aboard (same grid).
+            if (xform.MapID != arrivalsMap)
+                continue;
+
+            if (xform.GridUid != shuttle)
+                return false;
+        }
+
+        return true;
     }
 
     private bool HasPassengers(EntityUid shuttle)
