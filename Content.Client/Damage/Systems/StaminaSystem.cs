@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 
 using Robust.Shared.IoC;
 using System.Numerics;
@@ -148,7 +148,10 @@ public sealed partial class StaminaSystem : SharedStaminaSystem
     /// </summary>
     private static float GetFootWalkBounce(EntityUid uid)
     {
-        return Content.Client._Mini.FootWalk.FootWalkBounce.Get(uid);
+        return IoCManager.Resolve<IEntityManager>()
+            .TryGetComponent<Content.Shared._Mini.FootWalk.FootWalkAnimationComponent>(uid, out var walk)
+            ? walk.CurrentBounceY
+            : 0f;
     }
 
 }

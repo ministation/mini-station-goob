@@ -16,12 +16,13 @@ namespace Content.Client._Mini.FootWalk;
 /// pixel-snapped when drawn, so an anchor that ignores the bounce visibly shimmers against the body
 /// on every step. <see cref="HudFollowsBody"/> decides the fix: true glues the overlay to the body
 /// (no relative motion), false keeps it still on screen (the bounce is cancelled out instead).
+/// It stays true: nothing toggles it since the client cvar was dropped.
 /// </remarks>
 public static class FootWalkBounce
 {
     /// <summary>
-    /// Whether overlays above the head follow the body bounce. Set from
-    /// <c>accessibility.foot_walk_hud_follows_body</c> by the FootWalk client system.
+    /// Whether overlays above the head follow the body bounce. Glued to the body by default: an
+    /// overlay that stays still while the body hops shimmers against it on every step.
     /// </summary>
     public static bool HudFollowsBody = true;
 
@@ -41,15 +42,6 @@ public static class FootWalkBounce
     public static float GetAnchoredOffsetY(EntityUid uid, float spriteOffsetY)
     {
         return HudFollowsBody ? spriteOffsetY : spriteOffsetY - Get(uid);
-    }
-
-    /// <summary>
-    /// World-space lift to add to an anchor that is based on the entity transform instead of the
-    /// sprite offset (the speech bubble). Zero when the HUD is not glued to the body.
-    /// </summary>
-    public static float GetFollowLift(EntityUid uid)
-    {
-        return HudFollowsBody ? Get(uid) : 0f;
     }
 
     /// <summary>

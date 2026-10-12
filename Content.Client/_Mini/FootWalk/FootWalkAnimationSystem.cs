@@ -1,4 +1,4 @@
-// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+﻿// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Numerics;
 using Content.Client.Clothing;
@@ -144,9 +144,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!enabled)
                 DisableBodyBounce();
         }, true);
-
-        // Mini: how the HUD above the head treats the bounce (glued to the body or pinned in place).
-        _cfg.OnValueChanged(MiniCCVars.FootWalkHudFollowsBody, follows => FootWalkBounce.HudFollowsBody = follows, true);
 
         SubscribeLocalEvent<FootWalkAnimationComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<FootWalkAnimationComponent, ComponentShutdown>(OnShutdown);
