@@ -3,6 +3,7 @@
 - type: htnCompound
   id: NeuroFleeCompound
   branches:
+    # Убежать в точку, которую выбрал NeuroPlayerSystem (в сторону от опасности).
     - tasks:
         - !type:HTNPrimitiveTask
           operator: !type:NeuroPointOperator
@@ -14,6 +15,28 @@
           operator: !type:SetFloatOperator
             targetKey: IdleTime
             amount: 5
+        - !type:HTNPrimitiveTask
+          operator: !type:WaitOperator
+            key: IdleTime
+          preconditions:
+            - !type:KeyExistsPrecondition
+              key: IdleTime
+
+    # Мини: точка бегства может оказаться недостижимой (за стеной, в космосе, на другом гриде) —
+    # тогда MoveToOperator падает ещё на планировании, ветка отменяется целиком, и бот стоял на
+    # месте, пока его били: реакции не было вообще. Запасная ветка даёт движение всегда —
+    # PickAccessibleOperator подбирает тайл, до которого путь реально существует.
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:PickAccessibleOperator
+            rangeKey: FleeRange
+        - !type:HTNPrimitiveTask
+          operator: !type:MoveToOperator
+            pathfindInPlanning: false
+        - !type:HTNPrimitiveTask
+          operator: !type:SetFloatOperator
+            targetKey: IdleTime
+            amount: 3
         - !type:HTNPrimitiveTask
           operator: !type:WaitOperator
             key: IdleTime

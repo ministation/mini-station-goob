@@ -111,11 +111,13 @@ public sealed partial class GhostSystem
         if (!_jobs.MindTryGetJob(mind, out var jobPrototype))
             return false;
 
-        if (!_jobs.TryGetDepartment(jobPrototype.ID, out var departmentPrototype))
-            return false;
-
+        // Профессия известна и без департамента: раньше такая роль снова показывалась как
+        // «неизвестно кто», хотя название работы и иконка у неё есть. Департамент — это только
+        // группировка в списке, поэтому он падает в Specific, а не съедает JobId.
         job = jobPrototype.ID;
-        department = departmentPrototype.ID;
+        department = _jobs.TryGetDepartment(jobPrototype.ID, out var departmentPrototype)
+            ? departmentPrototype.ID
+            : _prototypeManager.Index(UnknownDepartmentPrototype).ID;
 
         return true;
     }
