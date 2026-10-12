@@ -16,12 +16,13 @@ namespace Content.Client._Mini.FootWalk;
 /// pixel-snapped when drawn, so an anchor that ignores the bounce visibly shimmers against the body
 /// on every step. <see cref="HudFollowsBody"/> decides the fix: true glues the overlay to the body
 /// (no relative motion), false keeps it still on screen (the bounce is cancelled out instead).
+/// It stays true: nothing toggles it since the client cvar was dropped.
 /// </remarks>
 public static class FootWalkBounce
 {
     /// <summary>
-    /// Whether overlays above the head follow the body bounce. Set from
-    /// <c>accessibility.foot_walk_hud_follows_body</c> by the FootWalk client system.
+    /// Whether overlays above the head follow the body bounce. Glued to the body by default: an
+    /// overlay that stays still while the body hops shimmers against it on every step.
     /// </summary>
     public static bool HudFollowsBody = true;
 
@@ -44,11 +45,16 @@ public static class FootWalkBounce
     }
 
     /// <summary>
-    /// World-space lift to add to an anchor that is based on the entity transform instead of the
-    /// sprite offset (the speech bubble). Zero when the HUD is not glued to the body.
+    /// Sprite height for anchors above the head. The walk animation lifts the leg layers every step
+    /// and <c>GetLocalBounds()</c> includes those offsets, so the live bounds height oscillates by up
+    /// to <see cref="FootWalkAnimationComponent.Amplitude"/> — the HUD would bob with it. While the
+    /// animation runs we return the rest height the animation recorded instead.
     /// </summary>
-    public static float GetFollowLift(EntityUid uid)
+    public static float GetStableBoundsHeight(EntityUid uid, float liveHeight)
     {
-        return HudFollowsBody ? Get(uid) : 0f;
+        var walk = IoCManager.Resolve<IEntityManager>()
+            .TryGetComponent<FootWalkAnimationComponent>(uid, out var comp) ? comp : null;
+
+        return walk is { RestBoundsHeight: > 0f } ? walk.RestBoundsHeight : liveHeight;
     }
 }

@@ -2,10 +2,10 @@
 
 using Robust.Client.UserInterface.RichText; // Goob
 using System.Numerics;
-using Content.Client._Mini.FootWalk;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Speech;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -21,7 +21,7 @@ namespace Content.Client.Chat.UI
         [Dependency] private readonly IEyeManager _eyeManager = default!;
         [Dependency] private readonly IEntityManager _entityManager = default!;
         [Dependency] protected readonly IConfigurationManager ConfigManager = default!;
-        private readonly SharedTransformSystem _transformSystem;
+        private readonly TransformSystem _transformSystem;
 
         // <Goob>
         public static readonly Type[] AllowedTags =
@@ -105,7 +105,7 @@ namespace Content.Client.Chat.UI
         {
             IoCManager.InjectDependencies(this);
             _senderEntity = senderEntity;
-            _transformSystem = _entityManager.System<SharedTransformSystem>();
+            _transformSystem = _entityManager.System<TransformSystem>();
 
             // Use text clipping so new messages don't overlap old ones being pushed up.
             RectClipContent = true;
@@ -168,12 +168,14 @@ namespace Content.Client.Chat.UI
             if (_entityManager.TryGetComponent<SpeechComponent>(_senderEntity, out var speech))
                 baseOffset = speech.SpeechBubbleOffset;
 
-            var offset = (-_eyeManager.CurrentEye.Rotation).ToWorldVec() * -(EntityVerticalOffset + baseOffset);
-            var worldPos = _transformSystem.GetWorldPosition(xform) + offset;
+            // Mini: the sprite offset (the FootWalk bounce rides in it) is part of the drawn body, keep the bubble on it.
+            var spriteOffsetY = _entityManager.TryGetComponent<SpriteComponent>(_senderEntity, out var sprite)
+                ? sprite.Offset.Y
+                : 0f;
 
-            // Mini: the FootWalk bounce lifts the body inside Sprite.Offset, so a transform-based anchor
-            // would stay behind while the character steps. Follow the lift to keep the bubble glued.
-            worldPos.Y += FootWalkBounce.GetFollowLift(_senderEntity);
+            var offset = (-_eyeManager.CurrentEye.Rotation).ToWorldVec() * -(EntityVerticalOffset + baseOffset + spriteOffsetY);
+            // Mini: follow the interpolated position the sprite is drawn at, otherwise the bubble shakes while walking.
+            var worldPos = _transformSystem.GetRenderWorldPosition((_senderEntity, xform)) + offset;
 
             var lowerCenter = _eyeManager.WorldToScreen(worldPos) / UIScale;
             var screenPos = lowerCenter - new Vector2(ContentSize.X / 2, ContentSize.Y + _verticalOffsetAchieved);

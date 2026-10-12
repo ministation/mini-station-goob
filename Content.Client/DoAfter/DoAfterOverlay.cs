@@ -22,7 +22,7 @@ public sealed class DoAfterOverlay : Overlay
     private readonly IEntityManager _entManager;
     private readonly IGameTiming _timing;
     private readonly IPlayerManager _player;
-    private readonly SharedTransformSystem _transform;
+    private readonly TransformSystem _transform;
     private readonly MetaDataSystem _meta;
     private readonly ProgressColorSystem _progressColor;
     private readonly SharedContainerSystem _container;
@@ -47,7 +47,7 @@ public sealed class DoAfterOverlay : Overlay
         _entManager = entManager;
         _timing = timing;
         _player = player;
-        _transform = _entManager.EntitySysManager.GetEntitySystem<SharedTransformSystem>();
+        _transform = _entManager.EntitySysManager.GetEntitySystem<TransformSystem>();
         _meta = _entManager.EntitySysManager.GetEntitySystem<MetaDataSystem>();
         _container = _entManager.EntitySysManager.GetEntitySystem<SharedContainerSystem>();
         _progressColor = _entManager.System<ProgressColorSystem>();
@@ -62,7 +62,6 @@ public sealed class DoAfterOverlay : Overlay
     {
         var handle = args.WorldHandle;
         var rotation = args.Viewport.Eye?.Rotation ?? Angle.Zero;
-        var xformQuery = _entManager.GetEntityQuery<TransformComponent>();
 
         // If you use the display UI scale then need to set max(1f, displayscale) because 0 is valid.
         const float scale = 1f;
@@ -84,7 +83,8 @@ public sealed class DoAfterOverlay : Overlay
             if (comp.DoAfters.Count == 0)
                 continue;
 
-            var worldPosition = _transform.GetWorldPosition(xform, xformQuery);
+            // Mini: the sprite is drawn at the interpolated render position, the bar must match it.
+            var worldPosition = _transform.GetRenderWorldPosition((uid, xform));
             if (!bounds.Contains(worldPosition))
                 continue;
 
@@ -128,7 +128,7 @@ public sealed class DoAfterOverlay : Overlay
                 // Use the sprite itself if we know its bounds. This means short or tall sprites don't get overlapped
                 // by the bar. Mini: the sprite offset (and the FootWalk bounce in it) is applied on top, so the bar
                 // hangs above the head exactly like the status icons do.
-                var yOffset = (_sprite.GetLocalBounds((uid, sprite)).Height +
+                var yOffset = (FootWalkBounce.GetStableBoundsHeight(uid, _sprite.GetLocalBounds((uid, sprite)).Height) +
                                FootWalkBounce.GetAnchoredOffsetY(uid, sprite.Offset.Y)) / 2f + 0.05f;
 
                 // Position above the entity (we've already applied the matrix transform to the entity itself)

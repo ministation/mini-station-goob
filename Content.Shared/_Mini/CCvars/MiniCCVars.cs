@@ -560,23 +560,8 @@ public sealed class MiniCCVars
     /// on each footfall) and the arm swing. The per-leg foot bob is
     /// <see cref="FootWalkAnimationEnabled"/>.
     /// </summary>
-    /// <remarks>
-    /// Off by default: the bounce lifts the whole sprite by 1.25 px on every step, and everything
-    /// drawn above the head (job icons, health bar, do-after, speech bubble) visibly shook against
-    /// the walking body — «худы дёргаются при ходьбе». The foot walk animation itself and the arm
-    /// swing stay on; players who like the bounce can turn it back on in the client settings, and
-    /// then <see cref="FootWalkHudFollowsBody"/> keeps the HUD glued to it.
-    /// </remarks>
     public static readonly CVarDef<bool> FootWalkBodyBounceEnabled =
-        CVarDef.Create("accessibility.foot_walk_body_bounce", false, CVar.CLIENTONLY | CVar.ARCHIVE);
-
-    /// <summary>
-    /// Whether everything drawn above the head (job/status icons, health bar, do-after bar, speech
-    /// bubble) follows the FootWalk body bounce. True keeps the HUD glued to the body, so it never
-    /// shimmers against the walking sprite; false pins it to the un-bobbed position instead.
-    /// </summary>
-    public static readonly CVarDef<bool> FootWalkHudFollowsBody =
-        CVarDef.Create("accessibility.foot_walk_hud_follows_body", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("accessibility.foot_walk_body_bounce", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<bool> HoldLookUp =
         CVarDef.Create("scope.hold_look_up", true, CVar.CLIENT | CVar.ARCHIVE);
@@ -740,15 +725,15 @@ public sealed class MiniCCVars
 
     /// <summary>Chance to join face-to-face speech (<= 3 tiles) without being named.</summary>
     public static readonly CVarDef<float> NeuroPlayerDirectChance =
-        CVarDef.Create("neuroplayer.direct_chance", 0.9f, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroplayer.direct_chance", 0.5f, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>Chance to join background conversation nearby without being named.</summary>
     public static readonly CVarDef<float> NeuroPlayerProactiveChance =
-        CVarDef.Create("neuroplayer.proactive_chance", 0.5f, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroplayer.proactive_chance", 0.15f, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>Cooldown between unprompted replies of one bot (anti-spam).</summary>
     public static readonly CVarDef<int> NeuroPlayerProactiveCooldownSeconds =
-        CVarDef.Create("neuroplayer.proactive_cooldown_seconds", 10, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroplayer.proactive_cooldown_seconds", 45, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>Interval between random point-of-interest visits per bot (seconds).</summary>
     public static readonly CVarDef<int> NeuroPlayerPoiIntervalSeconds =
@@ -813,14 +798,7 @@ public sealed class MiniCCVars
 
     /// <summary>Per-player cooldown between assistant answers (anti-spam and anti-cost).</summary>
     public static readonly CVarDef<int> NeuroAHelpCooldownSeconds =
-        CVarDef.Create("neuroahelp.cooldown_seconds", 20, CVar.SERVERONLY | CVar.ARCHIVE);
-
-    /// <summary>
-    /// While admins are online the assistant stays quiet only if an admin wrote in this ticket
-    /// within this many seconds. Otherwise (nobody picked the ticket up) it answers anyway.
-    /// </summary>
-    public static readonly CVarDef<int> NeuroAHelpAdminSilenceSeconds =
-        CVarDef.Create("neuroahelp.admin_silence_seconds", 60, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroahelp.cooldown_seconds", 120, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>How many recent ahelp lines are sent to the model as context.</summary>
     public static readonly CVarDef<int> NeuroAHelpMaxContext =

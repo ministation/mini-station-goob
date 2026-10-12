@@ -15,7 +15,7 @@ public sealed class FishingOverlay : Overlay
 {
     private readonly IEntityManager _entManager;
     private readonly IPlayerManager _player;
-    private readonly SharedTransformSystem _transform;
+    private readonly TransformSystem _transform;
     private readonly ProgressColorSystem _progressColor;
 
     private readonly Texture _barTexture;
@@ -35,7 +35,7 @@ public sealed class FishingOverlay : Overlay
     {
         _entManager = entManager;
         _player = player;
-        _transform = _entManager.EntitySysManager.GetEntitySystem<SharedTransformSystem>();
+        _transform = _entManager.EntitySysManager.GetEntitySystem<TransformSystem>();
         _progressColor = _entManager.System<ProgressColorSystem>();
 
         // Load the progress bar texture
@@ -47,7 +47,6 @@ public sealed class FishingOverlay : Overlay
     {
         var handle = args.WorldHandle;
         var rotation = args.Viewport.Eye?.Rotation ?? Angle.Zero;
-        var xformQuery = _entManager.GetEntityQuery<TransformComponent>();
 
         const float scale = 1f;
         var scaleMatrix = Matrix3Helpers.CreateScale(new Vector2(scale, scale));
@@ -77,7 +76,8 @@ public sealed class FishingOverlay : Overlay
                 continue;
 
             // Get the world position of the entity
-            var worldPosition = _transform.GetWorldPosition(xform, xformQuery);
+            // Mini: the sprite is drawn at the interpolated render position, the bar must match it.
+            var worldPosition = _transform.GetRenderWorldPosition((uid, xform));
             if (!bounds.Contains(worldPosition))
                 continue;
 

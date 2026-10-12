@@ -1,5 +1,6 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
+using System.Diagnostics;
 using System.Numerics;
 using Content.Client.Clothing;
 using Content.Client.Inventory;
@@ -43,6 +44,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     private static readonly ProtoId<ShaderPrototype> FootHoleShader = "SpriteFootHole";
     private static readonly ProtoId<ShaderPrototype> FootBandShader = "SpriteFootBand";
     private static readonly ProtoId<ShaderPrototype> PantHalfClipShader = "SpritePantHalfClip";
+    private static readonly ProtoId<ShaderPrototype> SleeveMaskShader = "SpriteLimbMask";
 
     private const string ShoesSlot = "shoes";
     private const string OuterSlot = "outerClothing";
@@ -50,6 +52,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     private const string WalkLeftSuffix = "-walk-L";
     private const string WalkRightSuffix = "-walk-R";
     private const string WalkBandSuffix = "-walk-band";
+    private const string SleeveSuffix = "-walk-sleeve";
+    private const string SleeveMaskSuffix = "-walk-sleeve-mask";
+    private const string SleeveMaskTextureParam = "limbMap";
+    private const string SleeveMaskUvParam = "limbUV";
 
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private StandingStateSystem _standing = default!;
@@ -80,6 +86,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     /// </summary>
     private readonly Dictionary<(string Rsi, string State, float Cut), bool> _crossesCentreCache = new();
 
+    /// <summary>
+    /// Sprite pixels pulled back from the GPU since the current frame started. Readbacks are expensive
+    /// (the engine reads the whole sheet for every single pixel), used only for the slow-setup warning.
+    /// </summary>
+    private int _artPixelReads;
+
     // Leg+foot: IPC/cyber legs bake most of the foot into the leg sprite.
     private static readonly HumanoidVisualLayers[] LeftLayers =
     [
@@ -96,13 +108,20 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     private static readonly HumanoidVisualLayers[] LeftArmLayers =
     [
         HumanoidVisualLayers.LArm,
-        HumanoidVisualLayers.LHand,
     ];
 
     private static readonly HumanoidVisualLayers[] RightArmLayers =
     [
         HumanoidVisualLayers.RArm,
-        HumanoidVisualLayers.RHand,
+    ];
+
+    /// <summary>
+    /// Garments that get sleeve layers, with the limbs each of them can cover.
+    /// </summary>
+    private static readonly (string Slot, HumanoidVisualLayers[] Limbs)[] SleeveSlots =
+    [
+        (JumpsuitSlot, [HumanoidVisualLayers.LArm, HumanoidVisualLayers.RArm]),
+        (OuterSlot, [HumanoidVisualLayers.LArm, HumanoidVisualLayers.RArm]),
     ];
 
     public override void Initialize()
@@ -132,9 +151,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!enabled)
                 DisableBodyBounce();
         }, true);
-
-        // Mini: how the HUD above the head treats the bounce (glued to the body or pinned in place).
-        _cfg.OnValueChanged(MiniCCVars.FootWalkHudFollowsBody, follows => FootWalkBounce.HudFollowsBody = follows, true);
 
         SubscribeLocalEvent<FootWalkAnimationComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<FootWalkAnimationComponent, ComponentShutdown>(OnShutdown);
@@ -220,6 +236,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (!_enabled)
             return;
 
+        _artPixelReads = 0;
+
         // FrameUpdate uses real wall-clock delta (same as original). Entity Update can run
         // multiple predicted ticks per frame and made the bob look too fast.
         var query = EntityQueryEnumerator<FootWalkAnimationComponent, TransformComponent>();
@@ -266,8 +284,24 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             // Must match sprite RSI direction (world + eye), otherwise camera turns invert bob / wrong mode.
             var facing = GetScreenFacing(uid);
             var frontMode = facing is RsiDirection.South or RsiDirection.North;
+
+            // Setting clothing layers up can inspect sprite pixels (GPU readbacks), so keep an eye on it:
+            // a slow setup for one mob is what shows up as a freeze when a new entity walks into view.
+            var setupStart = Stopwatch.GetTimestamp();
+            var readsBefore = _artPixelReads;
+
             EnsureClothingModeIfNeeded((uid, walk), frontMode);
             EnsureJointPatches((uid, walk), sprite);
+            EnsureSleeveCover((uid, walk), sprite);
+
+            var setupMs = (Stopwatch.GetTimestamp() - setupStart) * 1000.0 / Stopwatch.Frequency;
+            var setupReads = _artPixelReads - readsBefore;
+            if (setupMs >= 15.0)
+            {
+                Log.Warning(
+                    $"Foot walk: setup for {ToPrettyString(uid)} took {setupMs:F1} ms " +
+                    $"({setupReads} sprite pixel readbacks)");
+            }
 
             var hasShoes = HasSlotVisuals(uid, ShoesSlot);
             var hasOuter = HasSlotVisuals(uid, OuterSlot);
@@ -325,6 +359,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
             // Only undo last tick's offsets — do not re-zero every lower-body layer.
             ResetTouchedOffsets((uid, walk), sprite);
+
+            // Mini: right after the reset the layers sit in their rest pose, so this is the sprite
+            // height without the walk animation. Overlays above the head (status icons, health bar,
+            // do-after) anchor on it instead of the animated bounds, otherwise the raising legs moved
+            // them ~1.25 px every step — that was the «худ дёргается при ходьбе».
+            walk.RestBoundsHeight = _sprite.GetLocalBounds((uid, sprite)).Height;
 
             _humanoidQuery.TryGetComponent(uid, out var humanoid);
 
@@ -393,8 +433,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
             if (walk.ArmSwingAmplitude > 0f)
             {
+                // Arms rise in counter-phase with the opposite foot, and every garment worn over an arm
+                // has a sleeve layer that rides the same offset, so the cloth moves with the limb and the
+                // bare arm can never slip out from under it (see EnsureSleeveCover).
                 ApplySide((uid, sprite), walk, humanoid, LeftArmLayers, new Vector2(0f, leftArmY));
                 ApplySide((uid, sprite), walk, humanoid, RightArmLayers, new Vector2(0f, rightArmY));
+                ApplySleeveCover((uid, walk), sprite, leftArmY, rightArmY);
             }
         }
     }
@@ -414,6 +458,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         ent.Comp.WasAnimating = false;
         ent.Comp.Phase = 0f;
         ent.Comp.BobRamp = 0f;
+        // Layers are back at their rest pose: the live bounds are stable again.
+        ent.Comp.RestBoundsHeight = 0f;
     }
 
     /// <summary>
@@ -491,6 +537,169 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             _sprite.LayerSetDirOffset(layer, src.DirOffset);
             ent.Comp.JointPatchKeys.Add(key);
         }
+    }
+
+    /// <summary>
+    /// Sleeve layers: a copy of every garment worn over an arm, clipped to that arm's own art, riding the
+    /// arm swing. Cloth is opaque over the arm, so lifting the arm out from under a static sleeve pushed
+    /// bare skin out along the shoulder on every step. Cutting the sleeve out of the garment does not work
+    /// either: the row it vacates at the cuff has nothing behind it and would flash a hole each step. A copy
+    /// drawn on top of the untouched garment does work — the union of both always covers the arm, so the
+    /// sleeve visibly moves with it and no skin can show.
+    /// </summary>
+    private void EnsureSleeveCover(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
+    {
+        // No swing, no sleeves to carry it.
+        if (ent.Comp.ArmSwingAmplitude <= 0f || !_invSlotsQuery.TryGetComponent(ent.Owner, out var slots))
+        {
+            ClearSleeveCover(ent, sprite);
+            return;
+        }
+
+        // Count what the build below would create; same conditions, so a built set always matches.
+        var wanted = 0;
+        foreach (var (slot, limbs) in SleeveSlots)
+        {
+            if (!TryGetSourceKeys(slots, slot, out var sourceKeys))
+                continue;
+
+            foreach (var key in sourceKeys)
+            {
+                if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false)
+                    || src.ActualRsi == null)
+                    continue;
+
+                foreach (var limb in limbs)
+                {
+                    if (!_sprite.LayerMapTryGet((ent.Owner, sprite), limb, out var limbIndex, false)
+                        || !_sprite.TryGetLayer((ent.Owner, sprite), limbIndex, out var limbLayer, false)
+                        || limbLayer.ActualRsi == null)
+                        continue;
+
+                    wanted++;
+                }
+            }
+        }
+
+        if (wanted == ent.Comp.SleeveCoverKeys.Count)
+            return;
+
+        ClearSleeveCover(ent, sprite);
+
+        // One shader instance per limb, shared by all of its sleeve copies: a single mask layer only has to
+        // hand the limb's art to that instance and every copy of that limb samples it.
+        var shaders = new Dictionary<HumanoidVisualLayers, ShaderInstance>();
+        var maskTargets = new Dictionary<HumanoidVisualLayers, string>();
+
+        foreach (var (slot, limbs) in SleeveSlots)
+        {
+            if (!TryGetSourceKeys(slots, slot, out var sourceKeys))
+                continue;
+
+            foreach (var key in sourceKeys)
+            {
+                if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false)
+                    || src.ActualRsi == null
+                    || !_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
+                    continue;
+
+                foreach (var limb in limbs)
+                {
+                    if (!_sprite.LayerMapTryGet((ent.Owner, sprite), limb, out var limbIndex, false)
+                        || !_sprite.TryGetLayer((ent.Owner, sprite), limbIndex, out var limbLayer, false)
+                        || limbLayer.ActualRsi == null)
+                        continue;
+
+                    if (!shaders.TryGetValue(limb, out var shader))
+                    {
+                        shader = _prototypes.Index(SleeveMaskShader).InstanceUnique();
+                        shaders[limb] = shader;
+                    }
+
+                    var sleeveKey = $"{key}{SleeveSuffix}-{limb}";
+
+                    var sleeve = _sprite.AddBlankLayer((ent.Owner, sprite), srcIndex + 1);
+                    _sprite.LayerMapSet((ent.Owner, sprite), sleeveKey, srcIndex + 1);
+                    _sprite.LayerSetRsi(sleeve, src.ActualRsi, src.State);
+                    _sprite.LayerSetColor(sleeve, src.Color);
+                    _sprite.LayerSetScale(sleeve, src.Scale);
+                    _sprite.LayerSetDirOffset(sleeve, src.DirOffset);
+                    _sprite.LayerSetAutoAnimated(sleeve, src.AutoAnimated);
+                    _sprite.LayerSetVisible(sleeve, false);
+                    sprite.LayerSetShader(sleeveKey, shader, SleeveMaskShader.Id);
+
+                    SetBaseOffset(ent.Comp, sleeveKey, src.Offset);
+                    ent.Comp.SleeveCoverKeys[sleeveKey] = limb;
+                    maskTargets.TryAdd(limb, sleeveKey);
+                }
+            }
+        }
+
+        // Mask layers only feed a limb's art into the shared sleeve shader; they are never drawn themselves.
+        foreach (var (limb, target) in maskTargets)
+        {
+            if (!_sprite.LayerMapTryGet((ent.Owner, sprite), limb, out var limbIndex, false)
+                || !_sprite.TryGetLayer((ent.Owner, sprite), limbIndex, out var limbLayer, false)
+                || limbLayer.ActualRsi == null)
+                continue;
+
+            var mask = _sprite.AddBlankLayer((ent.Owner, sprite), 0);
+            _sprite.LayerMapSet((ent.Owner, sprite), $"{target}{SleeveMaskSuffix}", 0);
+            mask.CopyToShaderParameters = new CopyToShaderParameters(target)
+            {
+                ParameterTexture = SleeveMaskTextureParam,
+                ParameterUV = SleeveMaskUvParam,
+            };
+            _sprite.LayerSetRsi(mask, limbLayer.ActualRsi, limbLayer.State);
+        }
+    }
+
+    /// <summary>
+    /// Moves every sleeve copy with the arm it covers.
+    /// </summary>
+    private void ApplySleeveCover(
+        Entity<FootWalkAnimationComponent> ent,
+        SpriteComponent sprite,
+        float leftArmY,
+        float rightArmY)
+    {
+        foreach (var (key, limb) in ent.Comp.SleeveCoverKeys)
+        {
+            var lift = limb switch
+            {
+                HumanoidVisualLayers.LArm => leftArmY,
+                HumanoidVisualLayers.RArm => rightArmY,
+                _ => 0f,
+            };
+
+            SetLayerOffset((ent.Owner, sprite), ent.Comp, key, new Vector2(0f, lift));
+
+            // At rest the copy would only draw the garment on top of itself.
+            if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
+                _sprite.LayerSetVisible((ent.Owner, sprite), index, lift != 0f);
+        }
+    }
+
+    private void ClearSleeveCover(Entity<FootWalkAnimationComponent> ent, SpriteComponent? sprite = null)
+    {
+        if (ent.Comp.SleeveCoverKeys.Count == 0)
+            return;
+
+        if (sprite == null)
+            _spriteQuery.TryGetComponent(ent.Owner, out sprite);
+
+        if (sprite != null)
+        {
+            foreach (var key in ent.Comp.SleeveCoverKeys.Keys)
+            {
+                // Masks first: a mask layer resolves its target layer by key while rendering.
+                _sprite.RemoveLayer((ent.Owner, sprite), $"{key}{SleeveMaskSuffix}", logMissing: false);
+                _sprite.RemoveLayer((ent.Owner, sprite), key, logMissing: false);
+            }
+        }
+
+        ForgetBaseOffsets(ent.Comp, ent.Comp.SleeveCoverKeys.Keys);
+        ent.Comp.SleeveCoverKeys.Clear();
     }
 
     private void ClearJointPatches(Entity<FootWalkAnimationComponent> ent, SpriteComponent? sprite = null)
@@ -1564,6 +1773,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     {
         // Patches duplicate the limb art and go stale on any appearance change; rebuilt next frame.
         ClearJointPatches(ent);
+        ClearSleeveCover(ent);
 
         if (!ent.Comp.ClothingSplitsActive
             && ent.Comp.ShoeSplitKeys.Count == 0
@@ -1655,7 +1865,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         return result;
     }
 
-    private static bool CrossesCentre(Texture texture, float footCut)
+    private bool CrossesCentre(Texture texture, float footCut)
     {
         var width = texture.Width;
         var height = texture.Height;
@@ -1666,9 +1876,17 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         var right = width / 2;
         var from = Math.Max(0, (int) (height * (1f - footCut)));
 
+        // Every SampleAlpha is a full texture readback on the render thread (the engine pulls the whole
+        // sheet back from the GPU for a single pixel), so a full scan of the band cost up to 128 of them:
+        // a garment nobody had seen yet froze the client for a good part of a second the moment its owner
+        // walked into view. A few rows across the band are enough to tell a fused skirt from split legs,
+        // and the bottom rows (where the gap between the legs is) are sampled first.
+        var rows = height - from;
+        var step = Math.Max(1, rows / 4);
+
         // y = 0 is the top of the frame, so the foot band is the tail of the frame. Walking up from
         // the bottom both starts where the feet are and stops at the first crossing found.
-        for (var y = height - 1; y >= from; y--)
+        for (var y = height - 1; y >= from; y -= step)
         {
             if (SampleAlpha(texture, left, y) <= 0.05f)
                 continue;
@@ -1680,8 +1898,9 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         return false;
     }
 
-    private static float SampleAlpha(Texture texture, int x, int y)
+    private float SampleAlpha(Texture texture, int x, int y)
     {
+        _artPixelReads++;
         // AtlasTexture.GetPixel asserts against the frame's absolute top edge instead of its own
         // height, which fails for every row of a frame sitting in the first sheet row, so read
         // through the source texture with the frame offset applied.
