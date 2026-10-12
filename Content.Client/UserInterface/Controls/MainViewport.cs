@@ -57,14 +57,25 @@ namespace Content.Client.UserInterface.Controls
             var fixedFactor = _cfg.GetCVar(CCVars.ViewportFixedScaleFactor);
             var verticalFit = _cfg.GetCVar(CCVars.ViewportVerticalFit);
             var filterMode = _cfg.GetCVar(CCVars.ViewportScalingFilterMode);
-            var snapped = false;
+
+            // The snap check and any letterboxed box are measured against the canonical eye; the
+            // fill below grows ViewportSize and would otherwise feed back into both.
+            Viewport.ViewportSize = ViewportUIController.ViewportSize;
+
+            if (stretch && verticalFit)
+            {
+                // Mini: vertical fit means the eye fills the control — no black frames for anyone.
+                FillScreen(CalcSnappingFactor(), renderScaleUp, filterMode);
+                return;
+            }
+
+            // Stretch off (manual scale) or vertical fit off: the player asked for a fixed,
+            // letterboxed eye, so keep the classic behaviour (never stretch an axis — sprites
+            // must stay square; ScalingViewport is stock and letterboxes the fixed-size box).
+            Viewport.IgnoreDimension = ScalingViewportIgnoreDimension.None;
 
             if (stretch)
             {
-                // Reset to the canonical eye so snapping math is stable — the fill below
-                // grows ViewportSize and would otherwise feed back into the next snap check.
-                Viewport.ViewportSize = ViewportUIController.ViewportSize;
-
                 var snapFactor = CalcSnappingFactor();
                 if (snapFactor == null)
                 {
@@ -76,7 +87,6 @@ namespace Content.Client.UserInterface.Controls
                         "bilinear" => ScalingViewportStretchMode.Bilinear,
                         _ => ScalingViewportStretchMode.Nearest
                     };
-                    Viewport.IgnoreDimension = verticalFit ? ScalingViewportIgnoreDimension.Horizontal : ScalingViewportIgnoreDimension.None;
 
                     if (renderScaleUp)
                     {
@@ -93,27 +103,6 @@ namespace Content.Client.UserInterface.Controls
 
                 // Found snap, set fixed factor and run non-stretching code.
                 fixedFactor = snapFactor.Value;
-                snapped = true;
-            }
-
-            if (snapped && PixelSize.X > 0)
-            {
-                // Mini: fill the control exactly by growing the eye to the window size in
-                // world pixels at the snapped scale — square pixels and zero letterboxing.
-                // Stretching the draw box instead (the previous approach) distorted sprites
-                // on monitors whose aspect is wider than the 21x15-tile eye ("too wide").
-                var fill = new Vector2i(
-                    (int) MathF.Ceiling(PixelSize.X / fixedFactor),
-                    (int) MathF.Ceiling(PixelSize.Y / fixedFactor));
-                Viewport.ViewportSize = fill;
-                Viewport.IgnoreDimension = ScalingViewportIgnoreDimension.None;
-            }
-            else
-            {
-                // Manual fixed scale (stretch off): keep the classic letterboxed eye.
-                Viewport.IgnoreDimension = verticalFit
-                    ? ScalingViewportIgnoreDimension.Horizontal
-                    : ScalingViewportIgnoreDimension.None;
             }
 
             Viewport.FixedStretchSize = Viewport.ViewportSize * fixedFactor;
@@ -130,6 +119,89 @@ namespace Content.Client.UserInterface.Controls
                 // At least we can NN.
                 Viewport.RenderScaleMode = ScalingViewportRenderScaleMode.Fixed;
                 Viewport.FixedRenderScale = 1;
+            }
+        }
+
+        /// <summary>
+        /// Mini: fills the control with world pixels. The eye is widened (and, at an integer
+        /// scale, also grown vertically) so that eye * scale covers the control exactly, and the
+        /// texture is drawn into the control itself — no black frames anywhere, square pixels and
+        /// no sprite distortion, unlike letterboxing or stretching the draw box.
+        /// </summary>
+        /// <param name="snapFactor">Integer scale within the snap tolerance, or null for the
+        /// exact window-height scale (which keeps the eye at the canonical 15 tiles tall).</param>
+        private void FillScreen(int? snapFactor, bool renderScaleUp, string filterMode)
+        {
+            if (PixelSize.X <= 0 || PixelSize.Y <= 0)
+            {
+                // Layout has not run yet — Resized() will call us again with a real size.
+                Viewport.FixedStretchSize = null;
+                Viewport.StretchMode = ScalingViewportStretchMode.Nearest;
+
+                if (renderScaleUp)
+                {
+                    Viewport.RenderScaleMode = ScalingViewportRenderScaleMode.CeilInt;
+                }
+                else
+                {
+                    Viewport.RenderScaleMode = ScalingViewportRenderScaleMode.Fixed;
+                    Viewport.FixedRenderScale = 1;
+                }
+
+                return;
+            }
+
+            var canonical = ViewportUIController.ViewportSize;
+            Vector2i fill;
+
+            if (snapFactor is { } snap)
+            {
+                // Float division matters: an integer one truncates and ceil() then leaves a
+                // one-pixel black line along the bottom/right edge on window sizes the scale
+                // does not divide.
+                fill = new Vector2i(
+                    (int) MathF.Ceiling(PixelSize.X / (float) snap),
+                    (int) MathF.Ceiling(PixelSize.Y / (float) snap));
+            }
+            else
+            {
+                // Exact window-height scale: exactly the canonical 15 tiles tall (no rounding to
+                // fight with), as wide as the window takes them at that scale.
+                fill = new Vector2i(
+                    (int) MathF.Ceiling(PixelSize.X * (canonical.Y / (float) PixelSize.Y)),
+                    canonical.Y);
+            }
+
+            Viewport.ViewportSize = fill;
+            Viewport.FixedStretchSize = PixelSize;
+            Viewport.IgnoreDimension = ScalingViewportIgnoreDimension.None;
+            Viewport.StretchMode = snapFactor != null
+                ? ScalingViewportStretchMode.Nearest
+                : filterMode switch
+                {
+                    "nearest" => ScalingViewportStretchMode.Nearest,
+                    "bilinear" => ScalingViewportStretchMode.Bilinear,
+                    _ => ScalingViewportStretchMode.Nearest
+                };
+
+            if (!renderScaleUp)
+            {
+                Viewport.RenderScaleMode = ScalingViewportRenderScaleMode.Fixed;
+                Viewport.FixedRenderScale = 1;
+                return;
+            }
+
+            if (snapFactor != null)
+            {
+                // The snapped scale is also the render scale: the texture lands on the screen 1:1.
+                Viewport.RenderScaleMode = ScalingViewportRenderScaleMode.Fixed;
+                Viewport.FixedRenderScale = snapFactor.Value;
+            }
+            else
+            {
+                // Fractional scale: render at the next integer up and let nearest-neighbour
+                // sampling bring it down, same as the classic stretch path.
+                Viewport.RenderScaleMode = ScalingViewportRenderScaleMode.CeilInt;
             }
         }
 
