@@ -17,6 +17,11 @@ public abstract class BlobChemTypedStorage<T> : IEnumerable where T : notnull
     public virtual T RegenerativeMateria { get; set; } = default!;
     public virtual T ExplosiveLattice { get; set; } = default!;
     public virtual T ElectromagneticWeb { get; set; } = default!;
+    public virtual T ComatoseFiber { get; set; } = default!;
+    public virtual T ChainCoating { get; set; } = default!;
+    public virtual T SinewyTendons { get; set; } = default!;
+    public virtual T CorrosiveSlime { get; set; } = default!;
+    public virtual T CryogenicPoison { get; set; } = default!;
 
     [Pure]
     public T this[BlobChemType type]
@@ -28,6 +33,11 @@ public abstract class BlobChemTypedStorage<T> : IEnumerable where T : notnull
             BlobChemType.RegenerativeMateria => RegenerativeMateria,
             BlobChemType.ExplosiveLattice => ExplosiveLattice,
             BlobChemType.ElectromagneticWeb => ElectromagneticWeb,
+            BlobChemType.ComatoseFiber => ComatoseFiber,
+            BlobChemType.ChainCoating => ChainCoating,
+            BlobChemType.SinewyTendons => SinewyTendons,
+            BlobChemType.CorrosiveSlime => CorrosiveSlime,
+            BlobChemType.CryogenicPoison => CryogenicPoison,
             _ => throw new ArgumentOutOfRangeException(nameof(type), $"Unknown chemical type: {type}")
         };
         set
@@ -49,6 +59,21 @@ public abstract class BlobChemTypedStorage<T> : IEnumerable where T : notnull
                 case BlobChemType.ElectromagneticWeb:
                     ElectromagneticWeb = value;
                     break;
+                case BlobChemType.ComatoseFiber:
+                    ComatoseFiber = value;
+                    break;
+                case BlobChemType.ChainCoating:
+                    ChainCoating = value;
+                    break;
+                case BlobChemType.SinewyTendons:
+                    SinewyTendons = value;
+                    break;
+                case BlobChemType.CorrosiveSlime:
+                    CorrosiveSlime = value;
+                    break;
+                case BlobChemType.CryogenicPoison:
+                    CryogenicPoison = value;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), $"Unknown chemical type: {type}");
             }
@@ -67,6 +92,11 @@ public abstract class BlobChemTypedStorage<T> : IEnumerable where T : notnull
         yield return new KeyValuePair<BlobChemType, T>(BlobChemType.RegenerativeMateria, RegenerativeMateria);
         yield return new KeyValuePair<BlobChemType, T>(BlobChemType.ExplosiveLattice, ExplosiveLattice);
         yield return new KeyValuePair<BlobChemType, T>(BlobChemType.ElectromagneticWeb, ElectromagneticWeb);
+        yield return new KeyValuePair<BlobChemType, T>(BlobChemType.ComatoseFiber, ComatoseFiber);
+        yield return new KeyValuePair<BlobChemType, T>(BlobChemType.ChainCoating, ChainCoating);
+        yield return new KeyValuePair<BlobChemType, T>(BlobChemType.SinewyTendons, SinewyTendons);
+        yield return new KeyValuePair<BlobChemType, T>(BlobChemType.CorrosiveSlime, CorrosiveSlime);
+        yield return new KeyValuePair<BlobChemType, T>(BlobChemType.CryogenicPoison, CryogenicPoison);
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -90,6 +120,21 @@ public sealed partial class BlobChemColors : BlobChemTypedStorage<Color>
 
     [DataField]
     public override Color ElectromagneticWeb { get; set; }
+
+    [DataField]
+    public override Color ComatoseFiber { get; set; }
+
+    [DataField]
+    public override Color ChainCoating { get; set; }
+
+    [DataField]
+    public override Color SinewyTendons { get; set; }
+
+    [DataField]
+    public override Color CorrosiveSlime { get; set; }
+
+    [DataField]
+    public override Color CryogenicPoison { get; set; }
 }
 
 [DataDefinition, Serializable, NetSerializable]
@@ -109,4 +154,19 @@ public sealed partial class BlobChemDamage : BlobChemTypedStorage<DamageSpecifie
 
     [DataField]
     public override DamageSpecifier ElectromagneticWeb { get; set; } = new();
+
+    [DataField]
+    public override DamageSpecifier ComatoseFiber { get; set; } = new();
+
+    [DataField]
+    public override DamageSpecifier ChainCoating { get; set; } = new();
+
+    [DataField]
+    public override DamageSpecifier SinewyTendons { get; set; } = new();
+
+    [DataField]
+    public override DamageSpecifier CorrosiveSlime { get; set; } = new();
+
+    [DataField]
+    public override DamageSpecifier CryogenicPoison { get; set; } = new();
 }

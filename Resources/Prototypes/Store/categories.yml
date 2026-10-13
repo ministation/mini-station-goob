@@ -125,6 +125,11 @@
   priority: 11
   accentColor: "#7F8C8D"
 
+- type: storeCategory
+  id: DiscountedItems
+  name: store-discounted-items
+  priority: 200
+
 #nukie delivery
 
 - type: storeCategory
@@ -140,7 +145,6 @@
 - type: storeCategory
   id: PAIAbilities
   name: store-category-abilities
-
 - type: storeCategory
   id: DiscountedItems
   name: store-discounted-items

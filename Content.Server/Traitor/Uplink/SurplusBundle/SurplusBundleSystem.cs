@@ -43,9 +43,9 @@ public sealed class SurplusBundleSystem : EntitySystem
     }
 
     // wow, is this leetcode reference?
-    private List<ListingData> GetRandomContent(Entity<SurplusBundleComponent, StoreComponent> ent)
+    private List<ListingDataWithCostModifiers> GetRandomContent(Entity<SurplusBundleComponent, StoreComponent> ent)
     {
-        var ret = new List<ListingData>();
+        var ret = new List<ListingDataWithCostModifiers>();
 
         var listings = _store.GetAvailableListings(ent, null, ent.Comp2.Categories)
             .OrderBy(p => p.Cost.Values.Sum())
@@ -88,7 +88,7 @@ public sealed class SurplusBundleSystem : EntitySystem
     /// <summary>
     /// Picks a listing with weight inversely proportional to cost — expensive items are possible but rare.
     /// </summary>
-    private ListingData PickCostWeightedListing(List<ListingData> listings, int startIndex, float exponent)
+    private ListingDataWithCostModifiers PickCostWeightedListing(List<ListingDataWithCostModifiers> listings, int startIndex, float exponent)
     {
         var totalWeight = 0f;
         Span<float> weights = stackalloc float[listings.Count - startIndex];

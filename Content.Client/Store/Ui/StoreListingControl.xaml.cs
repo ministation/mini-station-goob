@@ -13,8 +13,6 @@ using Robust.Shared.Timing;
 
 namespace Content.Client.Store.Ui;
 
-// goob edit - fuck newstore
-// do not touch unless you want to shoot yourself in the leg
 [GenerateTypedNameReferences]
 public sealed partial class StoreListingControl : PanelContainer
 {
@@ -23,7 +21,7 @@ public sealed partial class StoreListingControl : PanelContainer
     [Dependency] private readonly IGameTiming _timing = default!;
     private readonly ClientGameTicker _ticker;
 
-    private readonly ListingData _data;
+    private readonly ListingDataWithCostModifiers _data;
 
     private readonly bool _hasBalance;
     private readonly string _price;
@@ -35,15 +33,17 @@ public sealed partial class StoreListingControl : PanelContainer
     private static readonly Color CardBgHover = Color.FromHex("#1C2433");
     private static readonly Color CardBgDisabled = Color.FromHex("#10141C");
 
+    private readonly string _discount;
+
     public StoreListingControl(
-        ListingData data,
+        ListingDataWithCostModifiers data,
         string price,
+        string discount,
         bool hasBalance,
         Texture? texture = null,
         Color? accent = null,
         Texture? currencyTexture = null,
-        EntProtoId? productPrototype = null)
-    {
+        EntProtoId? productPrototype = null)    {
         IoCManager.InjectDependencies(this);
         RobustXamlLoader.Load(this);
 
@@ -60,6 +60,7 @@ public sealed partial class StoreListingControl : PanelContainer
         _cardStyle.BorderColor = Color.FromHex("#2A3344").WithAlpha(0.9f);
         _cardStyle.BackgroundColor = hasBalance ? CardBg : CardBgDisabled;
 
+        _discount = discount;
         StoreItemName.Text = ListingLocalisationHelpers.GetLocalisedNameOrEntityName(_data, _prototype);
         StoreItemName.FontColorOverride = Color.FromHex("#F2F4F8");
         StoreItemDescription.SetMessage(ListingLocalisationHelpers.GetLocalisedDescriptionOrEntityDescription(_data, _prototype));
@@ -123,9 +124,9 @@ public sealed partial class StoreListingControl : PanelContainer
         }
         else
         {
+            DiscountSubText.Text = _discount;
             BuyPriceLabel.Text = _price;
-            CurrencyIcon.Visible = CurrencyIcon.Texture != null;
-        }
+            CurrencyIcon.Visible = CurrencyIcon.Texture != null;        }
     }
 
     private void UpdateName()
