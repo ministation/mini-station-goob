@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.Doors.Systems;
 using Content.Server.NPC.Pathfinding;
 using Content.Server.Shuttles.Components;
@@ -5,6 +6,7 @@ using Content.Server.Shuttles.Events;
 using Content.Shared.Doors;
 using Content.Shared.Doors.Components;
 using Content.Shared.Popups;
+using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Events;
 using Content.Shared.Shuttles.Systems;
 using Robust.Shared.Map;
@@ -23,6 +25,7 @@ public sealed partial class DockingSystem : SharedDockingSystem
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private PathfindingSystem _pathfinding = default!;
     [Dependency] private ShuttleConsoleSystem _console = default!;
+    [Dependency] private ShuttleSystem _shuttleSystem = default!;
     [Dependency] private SharedJointSystem _jointSystem = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
@@ -35,6 +38,17 @@ public sealed partial class DockingSystem : SharedDockingSystem
 
     private readonly HashSet<Entity<DockingComponent>> _dockingSet = new();
     private readonly HashSet<Entity<DockingComponent, DoorBoltComponent>> _dockingBoltSet = new();
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        Subs.BuiEvents<ShuttleConsoleComponent>(ShuttleConsoleUiKey.Key, subs =>
+        {
+            subs.Event<DockRequestMessage>(OnRequestDock);
+            subs.Event<UndockRequestMessage>(OnRequestUndock);
+        });
+    }
 
     [SubscribeLocalEvent]
     private void OnAutoClose(EntityUid uid, DockingComponent component, BeforeDoorAutoCloseEvent args)
@@ -114,8 +128,7 @@ public sealed partial class DockingSystem : SharedDockingSystem
         _console.RefreshShuttleConsoles();
     }
 
-    [SubscribeLocalEvent]
-    private void OnRequestUndock(EntityUid uid, ShuttleConsoleComponent component, UndockRequestMessage args)
+    private void OnRequestUndock(Entity<ShuttleConsoleComponent> entity, ref UndockRequestMessage args)
     {
         if (!TryGetEntity(args.DockEntity, out var dockEnt) ||
             !_dockingQuery.TryComp(dockEnt, out var dockComp))
@@ -135,10 +148,10 @@ public sealed partial class DockingSystem : SharedDockingSystem
         Undock(dock);
     }
 
-    [SubscribeLocalEvent]
-    private void OnRequestDock(EntityUid uid, ShuttleConsoleComponent component, DockRequestMessage args)
+    private void OnRequestDock(Entity<ShuttleConsoleComponent> entity, ref DockRequestMessage args)
     {
-        var console = _console.GetDroneConsole(uid);
+        Log.Debug($"Received shuttle docking request from {args.Actor}: console {entity.Owner}, dock {args.DockEntity}, target {args.TargetDockEntity}.");
+        var console = _console.GetDroneConsole(entity.Owner);
 
         if (console == null)
         {
@@ -148,11 +161,13 @@ public sealed partial class DockingSystem : SharedDockingSystem
 
         var shuttleUid = Transform(console.Value).GridUid;
 
-        if (!CanShuttleDock(shuttleUid))
+        if (shuttleUid == null || !CanShuttleDock(shuttleUid))
         {
             _popup.PopupCursor(Loc.GetString("shuttle-console-dock-fail"), args.Actor);
             return;
         }
+
+        var shuttleGridUid = shuttleUid.Value;
 
         if (!TryGetEntity(args.DockEntity, out var ourDock) ||
             !TryGetEntity(args.TargetDockEntity, out var targetDock) ||
@@ -171,15 +186,59 @@ public sealed partial class DockingSystem : SharedDockingSystem
             return;
         }
 
-        // TODO: Move the CanDock stuff to the port state and also validate that stuff
-        // Also need to check preventpilot + enabled / dockedwith
-        if (!CanDock((ourDock.Value, ourDockComp), (targetDock.Value, targetDockComp)))
+        // Docking controls are shown while ports are within the UI highlight range. Snap a
+        // nearby shuttle into a collision-checked docking configuration instead of requiring
+        // the pilot to align both grids to sub-tile precision manually.
+        if (CanDock((ourDock.Value, ourDockComp), (targetDock.Value, targetDockComp)))
         {
+            Dock((ourDock.Value, ourDockComp), (targetDock.Value, targetDockComp));
+            return;
+        }
+
+        var shuttleXform = Transform(shuttleGridUid);
+        var ourDockXform = Transform(ourDock.Value);
+        var targetDockXform = Transform(targetDock.Value);
+        var targetGrid = targetDockXform.GridUid;
+
+        var ourDockPosition = _transform.GetWorldPosition(ourDockXform);
+        var targetDockPosition = _transform.GetWorldPosition(targetDockXform);
+        var dockingRange = DockingHiglightRange;
+
+        if (targetGrid == null ||
+            targetGrid == shuttleGridUid ||
+            shuttleXform.MapID != targetDockXform.MapID ||
+            (ourDockPosition - targetDockPosition).LengthSquared() > dockingRange * dockingRange)
+        {
+            Log.Debug($"Docking request rejected: ports {ourDock} and {targetDock} are outside the docking UI range or on different maps.");
             _popup.PopupCursor(Loc.GetString("shuttle-console-dock-fail"), args.Actor);
             return;
         }
 
-        Dock((ourDock.Value, ourDockComp), (targetDock.Value, targetDockComp));
+        var config = GetDockingConfig(
+            shuttleGridUid,
+            targetGrid.Value,
+            ourDock.Value,
+            ourDockComp,
+            targetDock.Value,
+            targetDockComp);
+
+        if (config == null)
+        {
+            Log.Debug($"Docking request rejected: no collision-free docking configuration for ports {ourDock} and {targetDock}.");
+            _popup.PopupCursor(Loc.GetString("shuttle-console-dock-fail"), args.Actor);
+            return;
+        }
+
+        if (!config.Docks.Any(docks =>
+                docks.DockAUid == ourDock.Value && docks.DockBUid == targetDock.Value ||
+                docks.DockAUid == targetDock.Value && docks.DockBUid == ourDock.Value))
+        {
+            Log.Debug($"Docking request rejected: the calculated docking configuration does not connect the requested ports {ourDock} and {targetDock}.");
+            _popup.PopupCursor(Loc.GetString("shuttle-console-dock-fail"), args.Actor);
+            return;
+        }
+
+        _shuttleSystem.FTLDock((shuttleGridUid, shuttleXform), config);
     }
 
     private void Cleanup(EntityUid dockAUid, DockingComponent dockA)

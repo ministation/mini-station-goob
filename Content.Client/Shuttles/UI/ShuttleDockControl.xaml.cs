@@ -234,11 +234,9 @@ public sealed partial class ShuttleDockControl : BaseShuttleControl
                 var canDraw = grid.Owner == GridEntity;
                 _dockButtons.TryGetValue(dock, out var dockButton);
 
-                // Rate limit
-                if (dockButton != null && dock.GridDockedWith != null)
-                {
+                // Keep visible docking controls clickable; alignment is checked and corrected by the server.
+                if (dockButton != null)
                     dockButton.Disabled = !canDockChange;
-                }
 
                 // If the dock is in range then also do highlighting
                 if (viewedDockPos != null && dock.Coordinates.NetEntity != gridNent)
@@ -260,14 +258,12 @@ public sealed partial class ShuttleDockControl : BaseShuttleControl
                             var rotA = _xformSystem.GetWorldRotation(coordsOne.EntityId) + _viewedState!.Angle;
                             var rotB = _xformSystem.GetWorldRotation(coordsTwo.EntityId) + dock.Angle;
 
-                            var distanceSq = (mapOne.Position - mapTwo.Position).LengthSquared();
-
                             var inAlignment = _dockSystem.InAlignment(mapOne, rotA, mapTwo, rotB);
-                            var maxDockDistSq = SharedDockingSystem.DockRange * SharedDockingSystem.DockRange;
-                            var canDock = distanceSq < maxDockDistSq && inAlignment;
 
+                            // Let the server make the authoritative docking check and show its failure popup.
+                            // A client-side transform estimate can be stale while a shuttle is moving.
                             if (dockButton != null)
-                                dockButton.Disabled = !canDock || !canDockChange;
+                                dockButton.Disabled = !canDockChange;
 
                             var lineColor = inAlignment ? Color.Lime : Color.Red;
                             handle.DrawDottedLine(viewedDockPos.Value, collisionCenter, lineColor, offset: lineOffset);
@@ -302,27 +298,36 @@ public sealed partial class ShuttleDockControl : BaseShuttleControl
             }
         }
 
-        // Draw the dock's collision
-        var invertedPosition = Vector2.Zero;
-        invertedPosition.Y = -invertedPosition.Y;
+        // Draw the selected dock with the same explicit geometry used for remote ports.
+        // Drawing a rotated box from only two opposite corners can collapse it into a line.
         var rotation = Matrix3Helpers.CreateRotation(-_angle.Value + MathF.PI);
-        var ourDockConnection = new UIBox2(
-            ScalePosition(Vector2.Transform(new Vector2(-0.2f, -0.7f), rotation)),
-            ScalePosition(Vector2.Transform(new Vector2(0.2f, -0.5f), rotation)));
+        var dockColor = Color.ToSrgb(_viewedState?.HighlightedColor ?? _fallbackHighlightedColor);
+        var connectionColor = Color.ToSrgb(Color.Pink);
 
-        var ourDock = new UIBox2(
-            ScalePosition(Vector2.Transform(new Vector2(-0.5f, 0.5f), rotation)),
-            ScalePosition(Vector2.Transform(new Vector2(0.5f, -0.5f), rotation)));
+        DrawRotatedRect(handle, new Vector2(-0.2f, -0.7f), new Vector2(0.2f, -0.5f), rotation, connectionColor, 0.2f);
+        DrawRotatedRect(handle, new Vector2(-0.5f, -0.5f), new Vector2(0.5f, 0.5f), rotation, dockColor, 0.35f);
+    }
 
-        var dockColor = _viewedState?.HighlightedColor ?? _fallbackHighlightedColor;
-        var connectionColor = Color.Pink;
+    private void DrawRotatedRect(
+        DrawingHandleScreen handle,
+        Vector2 min,
+        Vector2 max,
+        Matrix3x2 rotation,
+        Color color,
+        float fillAlpha)
+    {
+        var vertices = new[]
+        {
+            ScalePosition(Vector2.Transform(new Vector2(min.X, max.Y), rotation)),
+            ScalePosition(Vector2.Transform(max, rotation)),
+            ScalePosition(Vector2.Transform(new Vector2(max.X, min.Y), rotation)),
+            ScalePosition(Vector2.Transform(min, rotation)),
+        };
 
-        handle.DrawRect(ourDockConnection, connectionColor.WithAlpha(0.2f));
-        handle.DrawRect(ourDockConnection, connectionColor, filled: false);
-
-        // Draw the dock itself
-        handle.DrawRect(ourDock, dockColor.WithAlpha(0.2f));
-        handle.DrawRect(ourDock, dockColor, filled: false);
+        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleFan, vertices, color.WithAlpha(fillAlpha));
+        handle.DrawPrimitives(DrawPrimitiveTopology.LineList,
+            new[] { vertices[0], vertices[1], vertices[1], vertices[2], vertices[2], vertices[3], vertices[3], vertices[0] },
+            color);
     }
 
     private void HideDocks()
