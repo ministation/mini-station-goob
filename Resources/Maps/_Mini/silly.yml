@@ -17892,8 +17892,6 @@ entities:
         chunkSize: 4
     - type: GasTileOverlay
     - type: RadiationGridResistance
-    - type: BecomesStation
-      id: MiniSilly
     - type: NavMap
     - type: Joint
       joints:
