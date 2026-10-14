@@ -108,7 +108,7 @@ public sealed class AirlockSystem : SharedAirlockSystem
                     showBaseUnlit = true;
 
                 _appearanceSystem.TryGetData<bool>(uid, DoorVisuals.ClosedLights, out var closedLightsVisible, args.Component);
-                if (state == DoorState.Closed && closedLightsVisible)
+                if (state == DoorState.Closed && (closedLightsVisible || comp.OpenUnlitVisible))
                     showBaseUnlit = true;
             }
         }

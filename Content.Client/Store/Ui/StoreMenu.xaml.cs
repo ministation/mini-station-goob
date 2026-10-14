@@ -165,7 +165,7 @@ public sealed partial class StoreMenu : DefaultWindow
         var accent = GetCategoryAccent(CurrentCategory);
         var (priceText, currencyTex) = GetListingPriceDisplay(listing, spriteSys);
         var discount = GetDiscountString(listing);
-        var newListing = new StoreListingControl(listing, priceText, discount, hasBalance, texture, accent, currencyTex);
+        var newListing = new StoreListingControl(listing, priceText, discount, hasBalance, texture, accent, currencyTex, productProto);
         // <Trauma>
         if (discount != string.Empty)
             newListing.StoreItemBuyButton.AddStyleClass(StyleClass.Negative);
