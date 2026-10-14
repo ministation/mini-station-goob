@@ -145747,17 +145747,17 @@ entities:
       parent: 2
 - proto: SpawnPointVirologist
   entities:
-  - uid: 27700
+  - uid: 27706
     components:
     - type: Transform
       pos: 35.5,-54.5
       parent: 2
-  - uid: 27701
+  - uid: 27707
     components:
     - type: Transform
       pos: 39.5,-58.5
       parent: 2
-  - uid: 27702
+  - uid: 27708
     components:
     - type: Transform
       pos: 42.5,-59.5
