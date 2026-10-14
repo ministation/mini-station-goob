@@ -8,8 +8,13 @@ namespace Content.Shared._Trauma.Genetics.Abilities;
 /// Action component for use with <see cref="TelepathyActionEvent"/>.
 /// PDA messaging but with your mind...
 /// </summary>
+/// <remarks>
+/// Registered as <c>GeneticsTelepathyAction</c> instead of <c>TelepathyAction</c> to avoid colliding with
+/// <see cref="Content.Goobstation.Shared.Telepathy.TelepathyActionComponent"/>, which upstream also registers
+/// under that name.
+/// </remarks>
 [RegisterComponent, NetworkedComponent, Access(typeof(TelepathyActionSystem))]
-public sealed partial class TelepathyActionComponent : Component
+public sealed partial class GeneticsTelepathyActionComponent : Component
 {
     [DataField]
     public int MaxLength = 30; // no essays

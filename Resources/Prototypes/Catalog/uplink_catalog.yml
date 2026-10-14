@@ -82,7 +82,8 @@
   productEntity: EnergySword
   cost:
     Telecrystal: 7 # goob - desword is 74
-  saleLimit: 2 # Goob - 2 eswords = desword  categories:
+  saleLimit: 2 # Goob - 2 eswords = desword
+  categories:
   - UplinkWeaponry
   #Goobstation
   conditions:
