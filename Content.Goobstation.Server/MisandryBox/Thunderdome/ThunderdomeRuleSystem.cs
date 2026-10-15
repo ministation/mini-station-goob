@@ -1182,11 +1182,11 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
             if (!TryComp<ContainerManagerComponent>(current, out var containerManager))
                 continue;
 
-            foreach (var container in _container.GetAllContainers(current, containerManager))
+            foreach (var container in _container.GetAllContainers(current, containerManager).ToArray())
             {
                 var inGun = container.ID is "gun_magazine" or "gun_chamber" or "revolver-ammo";
 
-                foreach (var contained in container.ContainedEntities)
+                foreach (var contained in container.ContainedEntities.ToArray())
                 {
                     if (visited.Add(contained))
                         toCheck.Enqueue(contained);

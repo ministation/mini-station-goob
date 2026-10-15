@@ -57,10 +57,18 @@ public sealed partial class TemperatureSystem : SharedTemperatureSystem
     {
         base.Update(frameTime);
 
-        // conduct heat from the surface to the inside of entities with internal temperatures
+        // Temperature-change events can add or remove queried components, so snapshot the
+        // entities before raising any events during heat transfer.
+        var entities = new List<EntityUid>();
         var query = EntityQueryEnumerator<InternalTemperatureComponent, TemperatureComponent>();
-        while (query.MoveNext(out var uid, out var comp, out var temp))
+        while (query.MoveNext(out var uid, out _, out _))
+            entities.Add(uid);
+
+        foreach (var uid in entities)
         {
+            if (!TryComp<InternalTemperatureComponent>(uid, out var comp)
+                || !TryComp<TemperatureComponent>(uid, out var temp))
+                continue;
             // don't do anything if they equalised
             var diff = Math.Abs(temp.CurrentTemperature - comp.Temperature);
             if (diff < 0.1f)
