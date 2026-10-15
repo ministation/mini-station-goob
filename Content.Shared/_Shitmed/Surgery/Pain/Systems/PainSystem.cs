@@ -82,11 +82,18 @@ public sealed partial class PainSystem : EntitySystem
 
         _painJobQueue.Process();
 
-        // Process pain decay for all entities with active decay
+        // Process pain decay for all entities with active decay. Updating decay can remove
+        // its component, so first snapshot the query results before processing them.
+        var decayEntities = new List<EntityUid>();
         var decayQuery = EntityQueryEnumerator<PainDecayComponent, NerveSystemComponent>();
-        while (decayQuery.MoveNext(out var uid, out var decay, out var nerveSystem))
+        while (decayQuery.MoveNext(out var uid, out _, out _))
+            decayEntities.Add(uid);
+
+        foreach (var uid in decayEntities)
         {
-            if (TerminatingOrDeleted(uid))
+            if (TerminatingOrDeleted(uid)
+                || !TryComp<PainDecayComponent>(uid, out var decay)
+                || !TryComp<NerveSystemComponent>(uid, out var nerveSystem))
                 continue;
 
             UpdatePainDecay(uid, decay, nerveSystem);

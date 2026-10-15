@@ -686,7 +686,7 @@ public partial class PainSystem
             }
         }
 
-        foreach (var (key, value) in nerveSys.PainSoundsToPlay)
+        foreach (var (key, value) in nerveSys.PainSoundsToPlay.ToArray())
         {
             if (_timing.CurTime < value.Item3)
                 continue;
@@ -695,20 +695,20 @@ public partial class PainSystem
             nerveSys.PainSoundsToPlay.Remove(key);
         }
 
-        foreach (var (key, value) in nerveSys.Modifiers)
+        foreach (var (key, value) in nerveSys.Modifiers.ToArray())
             if (_timing.CurTime > value.Time)
                 shouldUpdate |= TryRemovePainModifier(nerveSysEnt, key.Item1, key.Item2, nerveSys);
 
-        foreach (var (key, value) in nerveSys.Multipliers)
+        foreach (var (key, value) in nerveSys.Multipliers.ToArray())
             if (_timing.CurTime > value.Time)
                 shouldUpdate |= TryRemovePainMultiplier(nerveSysEnt, key, nerveSys);
 
-        foreach (var ent in nerveSys.Nerves)
+        foreach (var ent in nerveSys.Nerves.ToArray())
         {
             if (!TryComp<NerveComponent>(ent, out var nerve))
                 continue;
 
-            foreach (var (key, value) in nerve.PainFeelingModifiers)
+            foreach (var (key, value) in nerve.PainFeelingModifiers.ToArray())
                 if (_timing.CurTime > value.Time)
                     shouldUpdate |= TryRemovePainFeelsModifier(key.Item1, key.Item2, ent, nerve);
         }
@@ -781,7 +781,7 @@ public partial class PainSystem
 
     private void CleanupSounds(NerveSystemComponent nerveSys)
     {
-        foreach (var (id, _) in nerveSys.PlayedPainSounds)
+        foreach (var id in nerveSys.PlayedPainSounds.Keys.ToArray())
         {
             if (!TerminatingOrDeleted(id))
                 _IHaveNoMouthAndIMustScream.Stop(id);
