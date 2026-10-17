@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server.Body.Systems;
+using Content.Server.NPC.Systems;
 using Content.Server.Popups;
 using Content.Shared._Goobstation.Wizard.Guardian;
 using Content.Shared.Actions;
@@ -17,6 +18,7 @@ using Content.Shared.Mech.EntitySystems;
 using Content.Shared.Mobs;
 using Content.Shared.NPC.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Weapons.Melee;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
@@ -41,6 +43,7 @@ namespace Content.Server.Guardian
         [Dependency] private readonly SharedContainerSystem _container = default!;
         [Dependency] private readonly SharedTransformSystem _transform = default!;
         [Dependency] private readonly NpcFactionSystem _faction = default!; // Goobstation
+        [Dependency] private readonly NPCSystem _npc = default!;
 
         public override void Initialize()
         {
@@ -54,7 +57,10 @@ namespace Content.Server.Guardian
             SubscribeLocalEvent<GuardianComponent, MoveEvent>(OnGuardianMove);
             SubscribeLocalEvent<GuardianComponent, DamageChangedEvent>(OnGuardianDamaged);
             SubscribeLocalEvent<GuardianComponent, PlayerAttachedEvent>(OnGuardianPlayerAttached);
-            SubscribeLocalEvent<GuardianComponent, PlayerDetachedEvent>(OnGuardianPlayerDetached);
+            SubscribeLocalEvent<GuardianComponent, MapInitEvent>(OnGuardianMapInit, after: [typeof(NPCSystem)]);
+            SubscribeLocalEvent<GuardianComponent, EntGotRemovedFromContainerMessage>(OnGuardianRemovedFromContainer);
+            // Let NPCSystem wake the HTN on detachment before we retract and put it back to sleep.
+            SubscribeLocalEvent<GuardianComponent, PlayerDetachedEvent>(OnGuardianPlayerDetached, after: [typeof(NPCSystem)]);
 
             SubscribeLocalEvent<GuardianHostComponent, ComponentInit>(OnHostInit);
             SubscribeLocalEvent<GuardianHostComponent, MoveEvent>(OnHostMove);
@@ -90,6 +96,12 @@ namespace Content.Server.Guardian
             if (args.Handled)
                 return;
 
+            if (!HasComp<ActorComponent>(uid))
+            {
+                args.Handled = true;
+                return;
+            }
+
             if (_container.IsEntityInContainer(uid))
             {
                 _popupSystem.PopupEntity(Loc.GetString("guardian-inside-container"), uid, uid);
@@ -100,6 +112,41 @@ namespace Content.Server.Guardian
                 ToggleGuardian(uid, component);
 
             args.Handled = true;
+        }
+
+        private void OnGuardianMapInit(Entity<GuardianComponent> ent, ref MapInitEvent args)
+        {
+            if (!ent.Comp.GuardianLoose)
+            {
+                _npc.SleepNPC(ent);
+                SetGuardianAutoAttack(ent, false);
+            }
+        }
+
+        private void SetGuardianAutoAttack(EntityUid guardian, bool enabled)
+        {
+            if (!TryComp<MeleeWeaponComponent>(guardian, out var melee) || melee.AutoAttack == enabled)
+                return;
+
+            melee.AutoAttack = enabled;
+            Dirty(guardian, melee);
+        }
+
+        private void OnGuardianRemovedFromContainer(Entity<GuardianComponent> ent, ref EntGotRemovedFromContainerMessage args)
+        {
+            if (TerminatingOrDeleted(ent.Owner)
+                || ent.Comp.GuardianLoose
+                || ent.Comp.Host is not { } hostUid
+                || !TryComp(hostUid, out GuardianHostComponent? host)
+                || TerminatingOrDeleted(hostUid)
+                || args.Container != host.GuardianContainer)
+            {
+                return;
+            }
+
+            _npc.SleepNPC(ent);
+            SetGuardianAutoAttack(ent, false);
+            _container.Insert(ent.Owner, host.GuardianContainer);
         }
 
         private void OnGuardianPlayerDetached(EntityUid uid, GuardianComponent component, PlayerDetachedEvent args)
@@ -116,6 +163,8 @@ namespace Content.Server.Guardian
 
         private void OnGuardianPlayerAttached(EntityUid uid, GuardianComponent component, PlayerAttachedEvent args)
         {
+            SetGuardianAutoAttack(uid, component.GuardianLoose);
+
             var host = component.Host;
 
             if (!HasComp<GuardianHostComponent>(host))
@@ -149,7 +198,16 @@ namespace Content.Server.Guardian
 
         private void OnGuardianAttackAttempt(EntityUid uid, GuardianComponent component, AttackAttemptEvent args)
         {
-            if (args.Cancelled || args.Target != component.Host)
+            if (args.Cancelled)
+                return;
+
+            if (!component.GuardianLoose)
+            {
+                args.Cancel();
+                return;
+            }
+
+            if (args.Target != component.Host)
                 return;
 
             // why is this server side code? This should be in shared
@@ -237,6 +295,9 @@ namespace Content.Server.Guardian
             var host = EnsureComp<GuardianHostComponent>(args.Args.Target.Value);
             // Use map position so it's not inadvertantly parented to the host + if it's in a container it spawns outside I guess.
             var guardian = Spawn(component.GuardianProto, _transform.GetMapCoordinates(args.Args.Target.Value, xform: hostXform));
+            // Keep its hostile fallback AI and melee auto-attacks dormant until manifested.
+            _npc.SleepNPC(guardian);
+            SetGuardianAutoAttack(guardian, false);
 
             // Goobstation start
             _faction.IgnoreEntity(guardian, args.Args.Target.Value);
@@ -391,14 +452,20 @@ namespace Content.Server.Guardian
             }
 
             DebugTools.Assert(hostComponent.GuardianContainer.Contains(guardian));
+            guardianComponent.GuardianLoose = true;
             _container.Remove(guardian, hostComponent.GuardianContainer);
             DebugTools.Assert(!hostComponent.GuardianContainer.Contains(guardian));
+            SetGuardianAutoAttack(guardian, true);
 
-            guardianComponent.GuardianLoose = true;
+            if (!HasComp<ActorComponent>(guardian))
+                _npc.WakeNPC(guardian);
         }
 
         private void RetractGuardian(EntityUid host,GuardianHostComponent hostComponent, EntityUid guardian, GuardianComponent guardianComponent)
         {
+            _npc.SleepNPC(guardian);
+            SetGuardianAutoAttack(guardian, false);
+
             if (!guardianComponent.GuardianLoose)
             {
                 DebugTools.Assert(hostComponent.GuardianContainer.Contains(guardian));
