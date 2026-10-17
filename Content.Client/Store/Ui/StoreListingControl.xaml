@@ -81,7 +81,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <BoxContainer Name="TextColumn" Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Top">
             <Label Name="StoreItemName" StyleClasses="LabelHeading" HorizontalExpand="True" ClipText="True" />
             <RichTextLabel Name="StoreItemDescription" HorizontalExpand="True" />
-            <Label Name="DiscountSubText" StyleClasses="LabelSubText" Visible="False" />
-        </BoxContainer>
+            <Label Name="DiscountSubText" StyleClasses="LabelSubText" Visible="False" />        </BoxContainer>
     </BoxContainer>
 </PanelContainer>

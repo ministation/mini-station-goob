@@ -22,15 +22,15 @@ public sealed partial class TelepathyActionSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<TelepathyActionComponent, TelepathyActionEvent>(OnTelepathyPrompt);
+        SubscribeLocalEvent<GeneticsTelepathyActionComponent, TelepathyActionEvent>(OnTelepathyPrompt);
 
-        Subs.BuiEvents<TelepathyActionComponent>(TelepathyUiKey.Key, subs =>
+        Subs.BuiEvents<GeneticsTelepathyActionComponent>(TelepathyUiKey.Key, subs =>
         {
             subs.Event<TelepathyChosenMessage>(OnTelepathyChosen);
         });
     }
 
-    private void OnTelepathyPrompt(Entity<TelepathyActionComponent> ent, ref TelepathyActionEvent args)
+    private void OnTelepathyPrompt(Entity<GeneticsTelepathyActionComponent> ent, ref TelepathyActionEvent args)
     {
         if (_net.IsClient)
             return;
@@ -43,7 +43,7 @@ public sealed partial class TelepathyActionSystem : EntitySystem
             Log.Error($"Failed to open UI for {ToPrettyString(ent)} of {ToPrettyString(user)}");
     }
 
-    private void OnTelepathyChosen(Entity<TelepathyActionComponent> ent, ref TelepathyChosenMessage args)
+    private void OnTelepathyChosen(Entity<GeneticsTelepathyActionComponent> ent, ref TelepathyChosenMessage args)
     {
         var user = args.Actor;
         if (ent.Comp.Target is not { } target)

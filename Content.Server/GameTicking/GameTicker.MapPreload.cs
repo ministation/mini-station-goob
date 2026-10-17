@@ -77,6 +77,12 @@ public sealed partial class GameTicker
     /// </summary>
     public void EnqueueLavalandPlanet(ProtoId<LavalandMapPrototype> planet)
     {
+        // Every gameMap prototype defaults to Planets = { Lavaland }, so maps queue it even when
+        // Lavaland is off (lavaland.enabled = false, e.g. the dev preset). SetupLavalandPlanet
+        // would bail out on that cvar and the stage would only log a warning, so don't queue at all.
+        if (!EntityManager.System<LavalandSystem>().LavalandEnabled)
+            return;
+
         if (_completedLavalandPlanets.Contains(planet) || !_queuedLavalandPlanets.Add(planet))
             return;
 

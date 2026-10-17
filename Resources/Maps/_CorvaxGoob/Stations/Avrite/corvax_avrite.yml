@@ -311498,21 +311498,21 @@ entities:
       parent: 2
 - proto: SpawnPointGeneticist
   entities:
-  - uid: 60116
+  - uid: 60316
     components:
     - type: Transform
       parent: 2
       pos: -29.5,-73.5
 - proto: MedicalScanner
   entities:
-  - uid: 60117
+  - uid: 60317
     components:
     - type: Transform
       parent: 2
       pos: -28.5,-73.5
 - proto: DnaModifierConsole
   entities:
-  - uid: 60118
+  - uid: 60318
     components:
     - type: Transform
       parent: 2

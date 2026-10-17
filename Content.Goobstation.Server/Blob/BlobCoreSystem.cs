@@ -327,6 +327,12 @@ public sealed class BlobCoreSystem : EntitySystem
             case BlobChemType.ElectromagneticWeb:
                 _damageable.SetDamageModifierSetId(uid, "ElectromagneticWebBlob");
                 break;
+            case BlobChemType.SinewyTendons:
+                _damageable.SetDamageModifierSetId(uid, "SinewyTendonsBlob");
+                break;
+            case BlobChemType.ChainCoating:
+                _damageable.SetDamageModifierSetId(uid, "ChainCoatingBlob");
+                break;
             default:
                 _damageable.SetDamageModifierSetId(uid, "BaseBlob");
                 break;
@@ -390,7 +396,6 @@ public sealed class BlobCoreSystem : EntitySystem
         var tileComp = tile.Comp;
 
         coreComp.BlobTiles.Add(tile);
-
         tileComp.Color = coreComp.ChemСolors[coreComp.CurrentChem];
         tileComp.Core = core;
         Dirty(tile, tileComp);
@@ -514,7 +519,7 @@ public sealed class BlobCoreSystem : EntitySystem
         if (!CheckValidBlobTile(blobTile.Value, nearNode, args.RequireNode, args))
             return;
 
-        if (!TryUseAbility(blobCore, blobCore.Comp.BlobTileCosts[tileType], coords))
+        if (!TryUseAbility(blobCore, GetTileCost(blobCore, tileType), coords))
             return;
 
         TransformBlobTile(
@@ -582,6 +587,16 @@ public sealed class BlobCoreSystem : EntitySystem
         _killCoreJobQueue.EnqueueJob(job);
     }
 
+    public FixedPoint2 GetTileCost(Entity<BlobCoreComponent> core, BlobTileType tileType)
+    {
+        if (core.Comp.BlobTileCostsByChem.TryGetValue(tileType, out var chemCosts) && chemCosts.TryGetValue(core.Comp.CurrentChem, out var specialCost))
+        {
+            return specialCost;
+        }
+
+        return core.Comp.BlobTileCosts[tileType];
+    }
+
     public void RemoveTileWithReturnCost(Entity<BlobTileComponent> target, Entity<BlobCoreComponent> core)
     {
         RemoveBlobTile(target, core);
@@ -591,7 +606,7 @@ public sealed class BlobCoreSystem : EntitySystem
 
         if (target.Comp.ReturnCost)
         {
-            returnCost = core.Comp.BlobTileCosts[tileComp.BlobTileType];
+            returnCost = GetTileCost(core, tileComp.BlobTileType);
         }
 
         if (returnCost <= 0)

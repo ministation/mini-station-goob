@@ -1498,7 +1498,7 @@ entities:
     - type: Godmode
       oldDamage:
         woundSeverityMultipliers: {}
-- proto: BoneAxe
+- proto: WeaponBoneAxe
   entities:
   - uid: 795
     components:

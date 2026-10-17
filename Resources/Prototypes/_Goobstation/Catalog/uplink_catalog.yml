@@ -693,7 +693,6 @@
     whitelist:
     - HijackShuttleObjective
     - NukeDiskStealObjective
-  saleLimit: 1
 
 
 - type: listing
@@ -1591,7 +1590,6 @@
     Telecrystal: 80
   categories:
   - UplinkAllies
-  saleBlacklist: true
   conditions:
   - !type:StoreWhitelistCondition
     blacklist:
@@ -1608,7 +1606,6 @@
     Telecrystal: 130
   categories:
   - UplinkAllies
-  saleBlacklist: true
   conditions:
   - !type:StoreWhitelistCondition
     whitelist:
@@ -1842,7 +1839,6 @@
     Telecrystal: 45
   categories:
   - UplinkWeaponry # Usually the first tab new players look at
-  saleBlacklist: true
   conditions:
     - !type:StoreWhitelistCondition
       whitelist:
@@ -1918,7 +1914,6 @@
     Telecrystal: 50
   categories:
     - UplinkDisruption
-  saleBlacklist: true
   conditions:
     - !type:StoreWhitelistCondition
       whitelist:
