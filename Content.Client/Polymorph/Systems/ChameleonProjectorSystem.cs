@@ -33,7 +33,19 @@ public sealed class ChameleonProjectorSystem : SharedChameleonProjectorSystem
 
     private void OnHandleState(Entity<ChameleonDisguiseComponent> ent, ref AfterAutoHandleStateEvent args)
     {
-        CopyComp<SpriteComponent>(ent);
+        if (TryComp(ent.Comp.SourceEntity, out SpriteComponent? sourceSprite)
+            && _spriteQuery.TryComp(ent, out var sprite))
+        {
+            // Copy the initialized sprite without removing/re-adding its component.
+            _sprite.CopySprite((ent.Comp.SourceEntity, sourceSprite), (ent.Owner, sprite));
+            // The disguise must stay visible even if the source object hides its own sprite.
+            _sprite.SetVisible((ent.Owner, sprite), true);
+        }
+        else
+        {
+            CopyComp<SpriteComponent>(ent);
+        }
+
         CopyComp<GenericVisualizerComponent>(ent);
         CopyComp<SolutionContainerVisualsComponent>(ent);
         CopyComp<BurnStateVisualsComponent>(ent);

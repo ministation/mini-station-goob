@@ -14,3 +14,28 @@
   text: station-goal-typan-deep-cover
   stamp: RubberStampSyndicate
   minPlayers: 10
+
+- type: stationGoal
+  id: TypanSabotage
+  text: station-goal-typan-sabotage
+  stamp: RubberStampSyndicate
+
+- type: stationGoal
+  id: TypanTechnologyTheft
+  text: station-goal-typan-technology-theft
+  stamp: RubberStampSyndicate
+
+- type: stationGoal
+  id: TypanRevolution
+  text: station-goal-typan-revolution
+  stamp: RubberStampSyndicate
+
+- type: stationGoal
+  id: TypanEquipmentSupply
+  text: station-goal-typan-equipment-supply
+  stamp: RubberStampSyndicate
+
+- type: stationGoal
+  id: TypanBorg
+  text: station-goal-typan-borg
+  stamp: RubberStampSyndicate
