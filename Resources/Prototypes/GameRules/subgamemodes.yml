@@ -26,6 +26,13 @@
       allowNonHumans: true
       multiAntagSetting: NotExclusive
       startingGear: ThiefGear
+      skills: # CorvaxGoob-Skills
+      - ShuttleControl
+      - AdvancedBuilding
+      - Surgery
+      - SelfSurgery
+      - MedicalEquipment
+      - Butchering
       jobBlacklist: [ Chaplain ] # GOOBSTATION
       blacklist: # GOOBSTATION
         components:
