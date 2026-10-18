@@ -130,11 +130,6 @@
   name: store-discounted-items
   priority: 200
 
-- type: storeCategory
-  id: DiscountedItems
-  name: store-discounted-items
-  priority: 200
-
 #nukie delivery
 
 - type: storeCategory
