@@ -40,7 +40,6 @@ public sealed partial class StoreMenu : DefaultWindow
     private static readonly Color DefaultAccent = Color.FromHex("#C23B3B");
     private static readonly Color CategoryBg = Color.FromHex("#141A24");
     private static readonly Color CategoryBgSelected = Color.FromHex("#2A3A55");
-
     public StoreMenu()
     {
         RobustXamlLoader.Load(this);
@@ -170,7 +169,6 @@ public sealed partial class StoreMenu : DefaultWindow
         if (discount != string.Empty)
             newListing.StoreItemBuyButton.AddStyleClass(StyleClass.Negative);
         // </Trauma>
-
         newListing.StoreItemBuyButton.OnButtonDown += args
             => OnListingButtonPressed?.Invoke(args, listing);
 
@@ -198,8 +196,7 @@ public sealed partial class StoreMenu : DefaultWindow
         return true;
     }
 
-    private (string Text, Texture? Icon) GetListingPriceDisplay(ListingDataWithCostModifiers listing, SpriteSystem spriteSys)
-    {
+    private (string Text, Texture? Icon) GetListingPriceDisplay(ListingDataWithCostModifiers listing, SpriteSystem spriteSys)    {
         if (listing.Cost.Count < 1)
             return (Loc.GetString("store-currency-free"), null);
 
@@ -368,8 +365,7 @@ public sealed partial class StoreMenu : DefaultWindow
                 catButton.AddStyleClass(StyleClass.Negative);
             catButton.OnPressed += args => OnCategoryButtonPressed?.Invoke(args, catButton.Id!);
             rail.AddChild(catButton);
-            CategoryListContainer.AddChild(rail);
-        }
+            CategoryListContainer.AddChild(rail);        }
     }
 
     private Color GetCategoryAccent(string categoryId)

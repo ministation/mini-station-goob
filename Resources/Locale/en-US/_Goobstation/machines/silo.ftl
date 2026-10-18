@@ -3,7 +3,8 @@ lathe-menu-mining-points-no-connection-warning = [bold][color=red]WARNING:[/colo
 lathe-menu-mining-points-silo-not-on-same-grid = [bold][color=red]WARNING:[/color][/bold] This device isn't on the same map as its silo.
 lathe-menu-mining-points-silo-not-on-same-map = [bold][color=red]WARNING:[/color][/bold] This device isn't on the same map as it's silo. By dumping ore you will NOT receive ore points.
 lathe-menu-mining-points-silo-out-of-range = [bold][color=red]WARNING:[/color][/bold] Linked silo is out of range! By dumping ore you will NOT receive ore points.
-lathe-menu-mining-points-silo-invalid = [bold][color=red]WARNING:[/color][/bold] Linked silo is invalid! By dumping ore you will NOT receive ore points.signal-port-name-material-silo = Material silo
-signal-port-description-material-silo = Bluespace storage for station materials
+lathe-menu-mining-points-silo-invalid = [bold][color=red]WARNING:[/color][/bold] Linked silo is invalid! By dumping ore you will NOT receive ore points.
+
+signal-port-name-material-silo = Material silosignal-port-description-material-silo = Bluespace storage for station materials
 signal-port-name-material-silo-utilizer = Silo utilizer
 signal-port-description-material-silo-utilizer = Utilizer for station material silo
