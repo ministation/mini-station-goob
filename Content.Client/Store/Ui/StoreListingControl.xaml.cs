@@ -43,8 +43,7 @@ public sealed partial class StoreListingControl : PanelContainer
         Texture? texture = null,
         Color? accent = null,
         Texture? currencyTexture = null,
-        EntProtoId? productPrototype = null)    {
-        IoCManager.InjectDependencies(this);
+        EntProtoId? productPrototype = null)    {        IoCManager.InjectDependencies(this);
         RobustXamlLoader.Load(this);
 
         _ticker = _entity.System<ClientGameTicker>();
@@ -59,7 +58,6 @@ public sealed partial class StoreListingControl : PanelContainer
         _railStyle.BackgroundColor = _accent;
         _cardStyle.BorderColor = Color.FromHex("#2A3344").WithAlpha(0.9f);
         _cardStyle.BackgroundColor = hasBalance ? CardBg : CardBgDisabled;
-
         _discount = discount;
         StoreItemName.Text = ListingLocalisationHelpers.GetLocalisedNameOrEntityName(_data, _prototype);
         StoreItemName.FontColorOverride = Color.FromHex("#F2F4F8");
@@ -126,8 +124,8 @@ public sealed partial class StoreListingControl : PanelContainer
         {
             DiscountSubText.Text = _discount;
             BuyPriceLabel.Text = _price;
-            CurrencyIcon.Visible = CurrencyIcon.Texture != null;        }
-    }
+            CurrencyIcon.Visible = CurrencyIcon.Texture != null;
+        }    }
 
     private void UpdateName()
     {

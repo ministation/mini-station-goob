@@ -16,8 +16,7 @@
     - id: TelephoneIaa
     #- id: ExecutiveBriefcaseEmpty # nanorep update # No gamer loot.
     #- id: ComputerNTRTasksFlatpack # nanorep update
-    - id: ClothingEyesGlassesCentCommNoThermal # kinda gamer loot but med/sci and other inspections make it make sense
-    - id: Paper
+    - id: ClothingEyesGlassesCentCommNoThermal # kinda gamer loot but med/sci and other inspections make it make sense    - id: Paper
       amount: !type:ConstantNumberSelector
         value: 5
     - id: NanoRepStationReport # Goobstation

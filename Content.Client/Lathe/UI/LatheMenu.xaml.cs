@@ -133,6 +133,7 @@ public sealed partial class LatheMenu : DefaultWindow
     {
         base.FrameUpdate(args);
         SetEntityGoob(Entity); // Goob - for mining points and shit
+        MaterialsList.SetOwner(Entity);
     }
 
     /// <summary>
