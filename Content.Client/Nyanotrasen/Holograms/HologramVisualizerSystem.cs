@@ -18,11 +18,11 @@ public sealed class HologramVisualizerSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<HologramVisualsComponent, ComponentInit>(OnComponentInit);
+        SubscribeLocalEvent<HologramVisualsComponent, ComponentStartup>(OnComponentInit);
         SubscribeLocalEvent<HologramVisualsComponent, ComponentShutdown>(OnComponentShutdown);
     }
 
-    private void OnComponentInit(EntityUid uid, HologramVisualsComponent component, ComponentInit args)
+    private void OnComponentInit(EntityUid uid, HologramVisualsComponent component, ref ComponentStartup args)
     {
         if (TryComp<SpriteComponent>(uid, out var sprite))
             sprite.PostShader = (_shaderProto ??= _protoMan.Index(_shaderId)).InstanceUnique();

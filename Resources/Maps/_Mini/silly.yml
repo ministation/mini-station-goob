@@ -307,6 +307,8 @@ entities:
       angularDamping: 0.05
     - type: Fixtures
       fixtures: {}
+    - type: BecomesStation
+      id: MiniSilly
     - type: OccluderTree
     - type: SpreaderGrid
       updateAccumulator: 0.25510007
@@ -31013,8 +31015,6 @@ entities:
       angularDamping: 0
     - type: Fixtures
       fixtures: {}
-    - type: BecomesStation
-      id: Empty
     - type: OccluderTree
     - type: Shuttle
       dampingModifiers:
@@ -31324,7 +31324,6 @@ entities:
       targetCoordinates:
         position: -6,-20
         entityId: 2
-      startupStream: invalid
     - type: Joint
       joints:
         docking136054: !type:WeldJoint
@@ -37247,8 +37246,7 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 65
-      configurators:
-      - invalid
+      configurators: []
 - proto: AltarFangs
   entities:
   - uid: 11701
@@ -106381,8 +106379,7 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 65
-      configurators:
-      - invalid
+      configurators: []
     - type: AtmosPipeColor
       color: '#0055CCFF'
 - proto: GasVentScrubber
@@ -107103,8 +107100,7 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 64
-      configurators:
-      - invalid
+      configurators: []
     - type: AtmosPipeColor
       color: '#990000FF'
   - uid: 9522
@@ -110090,8 +110086,7 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 65
-      configurators:
-      - invalid
+      configurators: []
     - type: AtmosPipeColor
       color: '#990000FF'
 - proto: GasVolumePump
@@ -116258,7 +116253,6 @@ entities:
     - type: EmitSoundOnCollide
       nextSound: -231.7666007
     - type: Store
-      startingMap: invalid
       listings:
       - saleLimit: 1
         saleBlacklist: False
@@ -149633,7 +149627,6 @@ entities:
     - type: Physics
       canCollide: False
     - type: Store
-      startingMap: invalid
       listings:
       - saleLimit: 1
         saleBlacklist: False
@@ -177832,7 +177825,6 @@ entities:
     - type: EmitSoundOnCollide
       nextSound: -231.7666007
     - type: Store
-      startingMap: invalid
       listings:
       - saleLimit: 1
         saleBlacklist: False
@@ -206032,7 +206024,6 @@ entities:
     - type: EmitSoundOnCollide
       nextSound: -231.7666007
     - type: Store
-      startingMap: invalid
       listings:
       - saleLimit: 1
         saleBlacklist: False
@@ -255163,19 +255154,13 @@ entities:
       shuttle: 13813
     - type: GatewayGenerator
       nextUnlock: -8486.2988739
-      generated:
-      - invalid
-      - invalid
-      - invalid
+      generated: []
     - type: StationCargoShuttle
       path: /Maps/_CorvaxGoob/Stations/Silly/Shuttles/corvax_cargo_silly.yml
     - type: StationCentcomm
       shuttleIndex: 23
-      mapEntity: invalid
-      entity: invalid
     - type: StationEmergencyShuttle
       emergencyShuttlePath: /Maps/_CorvaxGoob/Stations/Silly/Shuttles/corvax_emergency_silly.yml
-      emergencyShuttle: invalid
     - type: SalvageMagnetData
       offered:
       - 1028343200

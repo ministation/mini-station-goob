@@ -6,6 +6,7 @@ using Content.Shared.Clothing;
 using Content.Shared.Hands;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 using System.Linq;
 
@@ -25,11 +26,27 @@ public sealed class EnchantVisualsSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<EnchantedComponent, AfterAutoHandleStateEvent>(OnHandleState);
+        SubscribeLocalEvent<EnchantedComponent, ComponentStartup>(OnComponentStartup);
         SubscribeLocalEvent<EnchantedComponent, HeldVisualsUpdatedEvent>(OnHeldVisualsUpdated);
         SubscribeLocalEvent<EnchantedComponent, EquipmentVisualsUpdatedEvent>(OnEquipmentVisualsUpdated);
     }
 
+    private void OnComponentStartup(Entity<EnchantedComponent> ent, ref ComponentStartup args)
+    {
+        ApplyShader(ent);
+    }
+
     private void OnHandleState(Entity<EnchantedComponent> ent, ref AfterAutoHandleStateEvent args)
+    {
+        // Component state is applied before the client entity finishes initializing,
+        // and setting a post-shader before SpriteComponent.Init warns in debug.
+        if (!TryComp<SpriteComponent>(ent, out var sprite) || !sprite.Initialized)
+            return;
+
+        ApplyShader(ent);
+    }
+
+    private void ApplyShader(Entity<EnchantedComponent> ent)
     {
         if (!TryComp<SpriteComponent>(ent, out var sprite))
             return;

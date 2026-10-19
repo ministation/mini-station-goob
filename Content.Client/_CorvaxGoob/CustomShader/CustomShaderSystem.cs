@@ -20,7 +20,7 @@ public sealed class CustomShaderSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<CustomShaderComponent, ComponentInit>(OnComponentInit);
+        SubscribeLocalEvent<CustomShaderComponent, ComponentStartup>(OnComponentInit);
         SubscribeLocalEvent<CustomShaderComponent, ComponentShutdown>(OnComponentShutdown);
 
         SubscribeLocalEvent<CustomShaderComponent, AfterAutoHandleStateEvent>(OnHandleState);
@@ -36,7 +36,7 @@ public sealed class CustomShaderSystem : EntitySystem
         ApplyShader(entity, entity.Comp.Shader);
     }
 
-    private void OnComponentInit(Entity<CustomShaderComponent> entity, ref ComponentInit ev)
+    private void OnComponentInit(Entity<CustomShaderComponent> entity, ref ComponentStartup ev)
     {
         if (entity.Comp.Shader is null)
             return;
