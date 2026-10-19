@@ -59,6 +59,30 @@ public sealed class DailyRewardClaimRequestEvent : EntityEventArgs
 {
 }
 
+/// <summary>
+/// Result of a daily reward claim attempt. Sent to the client so the menu can always show
+/// feedback, even when the player has no attached entity (lobby) and a popup is not possible.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class DailyRewardClaimResultEvent(
+    bool granted,
+    int amount,
+    string? roleName,
+    bool monthlyCapReached,
+    string? reasonLocKey,
+    TimeSpan retryIn) : EntityEventArgs
+{
+    public bool Granted { get; } = granted;
+    public int Amount { get; } = amount;
+    public string? RoleName { get; } = roleName;
+    /// <summary>True if the reward was granted, but the monthly coin cap swallowed part of it.</summary>
+    public bool MonthlyCapReached { get; } = monthlyCapReached;
+    /// <summary>Localization id explaining why the claim was rejected.</summary>
+    public string? ReasonLocKey { get; } = reasonLocKey;
+    /// <summary>Cooldown or remaining playtime before the next attempt.</summary>
+    public TimeSpan RetryIn { get; } = retryIn;
+}
+
 [Serializable, NetSerializable]
 public sealed class DailyQuestReplaceRequestEvent : EntityEventArgs
 {
