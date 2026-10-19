@@ -181,6 +181,8 @@
     amount: 500
   recipeUnlocks:
   - CircuitImprinterMachineCircuitboard
+  - DiodeDiscElectroBehavioural
+  - DiodeDiscElectroDisruptive
   - SolarControlComputerCircuitboard
   - SolarTrackerElectronics
   - PowerComputerCircuitboard
@@ -288,6 +290,7 @@
   - ClothingEyesWelding
   - GeigerCounter
   - RadiationCollectorCircuitboard
+  - SupermatterComputerCircuitboard
   position: 6,4
 
 - type: technology

@@ -6,6 +6,7 @@ using System.Text;
 using Content.IntegrationTests.Tests.Movement;
 using Content.Server.NPC.Components;
 using Content.Server.NPC.Systems;
+using Content.Shared.NPC;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Physics.Components;
 using Content.Shared.Movement.Components;
@@ -30,7 +31,14 @@ public sealed class NpcSteeringWalkTest : MovementTest
         var steering = Server.System<NPCSteeringSystem>();
         await Server.WaitPost(() =>
         {
-            steering.Register(npc, target);
+            // Mini: NPCSteeringSystem.Update() iterates only entities with ActiveNPCComponent,
+            // so without it Register() adds the component but steering never ticks.
+            if (!SEntMan.HasComponent<ActiveNPCComponent>(npc))
+                SEntMan.AddComponent<ActiveNPCComponent>(npc);
+            var steer = steering.Register(npc, target);
+            // Mini: this test checks steering + movement on an empty grid, not pathfinding.
+            // DirectMove skips the async pathfinder so the NPC beelines to the target.
+            steer.DirectMove = true;
         });
 
         var log = new StringBuilder();
@@ -61,6 +69,14 @@ public sealed class NpcSteeringWalkTest : MovementTest
                 "NPC did not walk to the target, pos=" + pos + System.Environment.NewLine + log);
         });
 
-        await Pair.CleanReturnAsync();
+        // Mini: stop steering and remove the NPC before the pair is returned, otherwise
+        // map teardown + an active pathfinding job can log exceptions and fail the pooled test.
+        await Server.WaitPost(() =>
+        {
+            steering.Unregister(npc);
+            SEntMan.DeleteEntity(npc);
+        });
+
+        // InteractionTest.TearDownInternal already does CleanReturnAsync(), don't do it twice.
     }
 }

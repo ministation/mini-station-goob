@@ -20,6 +20,9 @@
             "name": "mag-0"
         },
         {
+            "name": "flashlight"
+        },
+        {
             "name": "inhand-left",
             "directions": 4
         },
@@ -31,7 +34,7 @@
             "name": "equipped-BELT",
             "directions": 4
         },
-		{
+        {
             "name": "equipped-SUITSTORAGE",
             "directions": 4
         }

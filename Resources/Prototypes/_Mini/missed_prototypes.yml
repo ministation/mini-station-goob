@@ -109,7 +109,7 @@
 
 - type: entity
   id: RPED
-  parent: BaseItem
+  parent: RapidPartExchanger # Mini: was BaseItem placeholder -> no sprite (ItemSpriteTest)
   name: RPED
   description: A Rapid Part Exchange Device.
 
@@ -128,6 +128,11 @@
   parent: BaseBorgModule
   name: GPS module
   description: A piece of tech that gives cyborgs new abilities.
+  components:
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-gps
 
 - type: entity
   id: PartRodMetalLingering0

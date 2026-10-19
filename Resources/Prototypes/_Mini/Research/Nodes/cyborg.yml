@@ -17,6 +17,7 @@
   - ScanningPeopleAndroid
   recipeUnlocks:
   - CyborgEndoskeleton
+  - SecEndoskeleton
   - LightHeadBorg
   - LeftArmBorg
   - RightArmBorg
@@ -92,6 +93,7 @@
   - Cybernetics
   recipeUnlocks:
   - BorgModuleAdvancedCleaning
+  - BorgModuleAdvancedClowning
   position: 19,14
 
 - type: technology

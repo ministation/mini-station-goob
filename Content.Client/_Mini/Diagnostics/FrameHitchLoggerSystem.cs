@@ -65,7 +65,7 @@ public sealed partial class FrameHitchLoggerSystem : EntitySystem
         while (_lines.Count > MaxLines)
             _lines.Dequeue();
 
-        Log.Warning($"[hitch] {line}");
+        Log.Info($"[hitch] {line}");
 
         try
         {

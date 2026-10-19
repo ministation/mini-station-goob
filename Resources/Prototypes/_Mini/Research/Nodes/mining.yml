@@ -13,6 +13,7 @@
     amount: 500
   recipeUnlocks:
   - Pickaxe
+  - PickaxeDiamond
   - Shovel
   - ConveyorBeltAssembly
   - AutolatheMachineCircuitboard
@@ -40,6 +41,7 @@
   recipeUnlocks:
   - MineralScannerEmpty
   - MiningDrill
+  - MiningDrillSuper
   - WeaponMechMeleeDrill
   - MarkerBeacon
   - HandheldGPSBasic
@@ -117,6 +119,7 @@
   - PlasmaControl
   recipeUnlocks:
   - WeaponPlasmaCutter
+  - WeaponSuperPlasmaCutter
   position: 1,26
 
 - type: technology
