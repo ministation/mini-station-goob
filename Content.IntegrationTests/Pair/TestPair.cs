@@ -46,10 +46,14 @@ public sealed partial class TestPair : RobustIntegrationTest.TestPair
         {
             var gameTicker = Server.System<GameTicker>();
             await Server.WaitPost(() => gameTicker.RestartRound());
-            // Staged map preload may defer StartRound — wait until the round is actually InRound.
-            await PoolManager.WaitUntil(Server,
-                () => gameTicker.MapsReady && gameTicker.RunLevel == GameRunLevel.InRound,
-                maxTicks: 1200);
+            // InLobby-пара остаётся в лобби (тест сам проверяет лобби), а для
+            // обычной пары стейджированный прелоад карт может отложить StartRound.
+            if (!settings.InLobby)
+            {
+                await PoolManager.WaitUntil(Server,
+                    () => gameTicker.MapsReady && gameTicker.RunLevel == GameRunLevel.InRound,
+                    maxTicks: 1200);
+            }
         }
     }
 
