@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
+#nullable enable annotations
+
 using System.Linq;
 using Content.Client._Mini.DailyRewards;
 using Content.Server._Mini.AntagTokens;
