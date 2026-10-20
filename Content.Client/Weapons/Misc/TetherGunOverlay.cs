@@ -40,8 +40,8 @@ public sealed class TetherGunOverlay : Overlay
             if (xform.MapID != gunXform.MapID)
                 continue;
 
-            var worldPos = xformSystem.GetWorldPosition(xform);
-            var gunWorldPos = xformSystem.GetWorldPosition(gunXform);
+            var worldPos = xformSystem.GetRenderWorldPosition((uid, xform));
+            var gunWorldPos = xformSystem.GetRenderWorldPosition((gun, gunXform));
             var diff = worldPos - gunWorldPos;
             var angle = diff.ToWorldAngle();
             var length = diff.Length() / 2f;

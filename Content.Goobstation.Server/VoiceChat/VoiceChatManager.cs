@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.VoiceChat;
+using Content.Server._Mini.VoiceChat;
 using Robust.Server.Player;
 using Robust.Server.ServerStatus;
 using Robust.Shared;
@@ -64,6 +65,7 @@ public sealed partial class VoiceChatManager
         _net.RegisterNetMessage<MsgVoiceSelf>();
         _net.RegisterNetMessage<MsgVoicePushToTalk>(message => PushToTalkReceived?.Invoke(message.MsgChannel.UserId, message.Pressed, message.Radio));
         _net.RegisterNetMessage<MsgVoiceMicMute>(message => MicMuteReceived?.Invoke(message.MsgChannel.UserId, message.Muted));
+        _net.RegisterNetMessage<MsgVoiceChatOptIn>(OnVoiceOptIn); // Mini: voice chat opt-in
         _net.Disconnect += OnDisconnect;
 
         LoadWebFiles();
@@ -305,8 +307,15 @@ public sealed partial class VoiceChatManager
         SendStatus(message.MsgChannel);
     }
 
+    private void OnVoiceOptIn(MsgVoiceChatOptIn message)
+    {
+        VoiceChatOptIns.Set(message.MsgChannel.UserId, message.OptedIn);
+    }
+
     private void OnDisconnect(object? sender, NetDisconnectedArgs args)
     {
+        VoiceChatOptIns.Set(args.Channel.UserId, false);
+
         if (_userTokens.Remove(args.Channel.UserId, out var code))
             _tokens.TryRemove(code, out _);
 

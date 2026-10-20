@@ -57,7 +57,7 @@ public sealed class StatusIconOverlay : Overlay
 
             // Mini: sprites and the camera are drawn at the interpolated render position, so icons anchored
             // to the simulation position tick-stepped (shook) against a walking body.
-            var worldPos = _transform.GetWorldPosition(xform);
+            var worldPos = _transform.GetRenderWorldPosition((uid, xform));
 
             if (!bounds.Translated(worldPos).Intersects(args.WorldAABB))
                 continue;

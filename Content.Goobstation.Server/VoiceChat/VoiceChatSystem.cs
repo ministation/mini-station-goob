@@ -8,6 +8,7 @@ using Content.Server.GameTicking;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Telephone;
 using Content.Server.VoiceMask;
+using Content.Server._Mini.VoiceChat;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Chat;
 using Content.Shared.Clothing.Components;
@@ -219,6 +220,10 @@ public sealed partial class VoiceChatSystem : EntitySystem
             return;
 
         if (TryHandleGodFrame(session, frame, now))
+            return;
+
+        // Mini: voice chat is opt-in. Players who did not enable it must not transmit audio.
+        if (!VoiceChatOptIns.Contains(frame.User))
             return;
 
         if (IsInLobby(session))

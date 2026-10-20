@@ -67,7 +67,7 @@ public sealed class MapTextOverlay : Overlay
 
         while(query.MoveNext(out var uid, out var mapText))
         {
-            var mapPos = _transform.GetMapCoordinates(uid);
+            var mapPos = _transform.GetRenderMapCoordinates(uid);
 
             if (mapPos.MapId != args.MapId)
                 continue;

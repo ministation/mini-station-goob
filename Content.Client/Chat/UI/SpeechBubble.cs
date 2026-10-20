@@ -182,7 +182,7 @@ namespace Content.Client.Chat.UI
 
             var offset = (-_eyeManager.CurrentEye.Rotation).ToWorldVec() * -(EntityVerticalOffset + baseOffset + spriteOffsetY);
             // Mini: follow the interpolated position the sprite is drawn at, otherwise the bubble shakes while walking.
-            var worldPos = _transformSystem.GetWorldPosition(xform) + offset;
+            var worldPos = _transformSystem.GetRenderWorldPosition((_senderEntity, xform)) + offset;
 
             var lowerCenter = _eyeManager.WorldToScreen(worldPos) / UIScale;
             var screenPos = lowerCenter - new Vector2(ContentSize.X / 2, ContentSize.Y + _verticalOffsetAchieved);

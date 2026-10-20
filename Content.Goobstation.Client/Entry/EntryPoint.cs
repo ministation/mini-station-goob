@@ -7,7 +7,9 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Client.UserInterface.Systems.Chat.Controls;
 using Content.Goobstation.Client.VoiceChat;
+using Content.Goobstation.Client.VoiceChat.UI;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -28,6 +30,8 @@ public sealed partial class EntryPoint : GameClient
 
         // Mini: register voice chat before the graph is built
         IoCManager.Register<VoiceChatManager>();
+        // Mini: mic/deafen buttons next to the chat box come from the Goobstation client module
+        IoCManager.Register<IChatVoiceControls, ChatVoiceControls>();
 
         IoCManager.BuildGraph();
         IoCManager.InjectDependencies(this);

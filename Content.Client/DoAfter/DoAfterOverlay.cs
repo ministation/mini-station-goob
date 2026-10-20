@@ -84,7 +84,7 @@ public sealed partial class DoAfterOverlay : Overlay // Goob
                 continue;
 
             // Mini: the sprite is drawn at the interpolated render position, the bar must match it.
-            var worldPosition = _transform.GetWorldPosition(xform);
+            var worldPosition = _transform.GetRenderWorldPosition((uid, xform));
             if (!bounds.Contains(worldPosition))
                 continue;
 

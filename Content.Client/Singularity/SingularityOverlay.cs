@@ -62,7 +62,7 @@ namespace Content.Client.Singularity
                 if (xform.MapID != args.MapId)
                     continue;
 
-                var mapPos = _xformSystem.GetWorldPosition(xform);
+                var mapPos = _xformSystem.GetRenderWorldPosition((uid, xform));
 
                 // is the distortion in range?
                 if ((mapPos - args.WorldAABB.ClosestPoint(mapPos)).LengthSquared() > MaxDistance * MaxDistance)
