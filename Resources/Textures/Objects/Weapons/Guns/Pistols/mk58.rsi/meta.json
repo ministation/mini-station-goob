@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "sprited by Egorik1 for mini-station",
+  "copyright": "sprited by Egorik1 for mini-station; flashlight state taken from GoobStation resprite (CC-BY-SA-3.0, RedTerror)",
   "size": {
     "x": 32,
     "y": 32
@@ -18,6 +18,9 @@
     },
     {
       "name": "mag-0"
+    },
+    {
+      "name": "flashlight"
     },
     {
       "name": "inhand-left",
