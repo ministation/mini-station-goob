@@ -22,6 +22,15 @@
       Healium: ignore # it's harmless unless you also breathe in nitrium, which is danger
       Nitrium: danger
       Pluoxium: ignore
+      # The rest of the gas enum: a monitor missing a threshold for a reported gas
+      # would crash the air alarm UI on the client.
+      Hydrogen: danger
+      HyperNoblium: unwanted
+      ProtoNitrate: danger
+      Zauker: danger
+      Halon: danger
+      Helium: unwanted
+      AntiNoblium: danger
       # </Goobstation>
 
 - type: entity
