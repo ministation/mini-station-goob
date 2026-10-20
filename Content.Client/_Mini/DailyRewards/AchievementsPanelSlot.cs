@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Casha
+// Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Robust.Client.UserInterface;
 
 namespace Content.Client._Mini.DailyRewards;
