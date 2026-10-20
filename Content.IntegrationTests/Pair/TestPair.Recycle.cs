@@ -56,6 +56,15 @@ public sealed partial class TestPair
         await ApplySettings(next);
         await RunTicksSync(1);
 
+        // A previous test may have left a custom game preset behind (e.g. a test-only preset whose rules
+        // require players). Starting a round with it is cancelled by the min-player rule check when no one
+        // is ready: the ticker restarts the round and delays the next start by 30 s, so the pair never
+        // reaches InRound and the next test times out. Restore the preset a freshly created pair would have.
+        var freshPreset = ((PoolSettings) next).InLobby
+            ? Server.CfgMan.GetCVar(CCVars.GameLobbyDefaultPreset)
+            : "sandbox";
+        await Server.WaitPost(() => gameTicker.SetGamePreset(freshPreset));
+
         // Restart server.
         await testOut.WriteLineAsync($"Recycling: {Watch.Elapsed.TotalMilliseconds} ms: Restarting server again");
         await Server.WaitPost(() => Server.EntMan.FlushEntities());

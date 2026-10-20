@@ -83,6 +83,11 @@ namespace Content.Server.GameTicking
         /// <returns></returns>
         public bool CanUpdateMap()
         {
+            // A dummy ticker (integration tests, tools) never starts a round: lobby/preload state from
+            // a previous real round may be stale, so the map is always free to change.
+            if (DummyTicker)
+                return true;
+
             // Once staged preload has started (or finished), changing the map would desync the queue.
             if (RunLevel != GameRunLevel.PreRoundLobby || MapLoadInProgress || MapsReady)
                 return false;
