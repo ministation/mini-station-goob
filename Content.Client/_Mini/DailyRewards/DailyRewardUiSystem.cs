@@ -88,7 +88,8 @@ public sealed class DailyRewardUiSystem : EntitySystem
             return;
 
         var window = new DailyRewardWindow();
-        window.Title = Loc.GetString("daily-reward-window-title");
+        // The window hosts weekly quests and achievements, so it is the generic rewards menu.
+        window.Title = Loc.GetString("daily-reward-window-title-menu");
         AttachWindow(window);
     }
 

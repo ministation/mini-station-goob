@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Casha
 daily-reward-window-title = Ежедневные награды
+daily-reward-window-title-menu = Награды
 daily-reward-window-subtitle = Заходи каждый день, играй в раунде и двигайся по цепочке наград
 daily-reward-window-streak = Текущий стрик
 daily-reward-window-streak-value = {$current} / {$max} дней
@@ -39,3 +40,4 @@ daily-reward-online-title = Награды за время
 daily-reward-online-hour-stage = {$hours} ч
 daily-reward-online-claimed = Получено
 daily-reward-online-reward = +{$amount}
+daily-reward-claim-result-disabled = Награды за время временно отключены. Монеты приносят еженедельные квесты и достижения.

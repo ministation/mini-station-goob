@@ -3,6 +3,7 @@
   name: achievement-boss-killer-name
   description: achievement-boss-killer-desc
   category: Lavaland
+  rarity: Mythic
   icon: { entity: Pickaxe }
   condition: !type:BossKillCondition
     prototypes:
@@ -17,6 +18,7 @@
   name: achievement-hierophant-killer-name
   description: achievement-hierophant-killer-desc
   category: Lavaland
+  rarity: Mythic
   icon: { entity: MobHierophant }
   condition: !type:BossKillCondition
     prototypes:
@@ -27,6 +29,7 @@
   name: achievement-colossus-killer-name
   description: achievement-colossus-killer-desc
   category: Lavaland
+  rarity: Mythic
   icon: { entity: LavalandBossColossus }
   condition: !type:BossKillCondition
     prototypes:
@@ -37,6 +40,7 @@
   name: achievement-drake-killer-name
   description: achievement-drake-killer-desc
   category: Lavaland
+  rarity: Mythic
   icon: { entity: LavalandBossAshDrake }
   condition: !type:BossKillCondition
     prototypes:
@@ -47,6 +51,7 @@
   name: achievement-bubblegum-killer-name
   description: achievement-bubblegum-killer-desc
   category: Lavaland
+  rarity: Mythic
   icon: { entity: LavalandBossBubblegum }
   condition: !type:BossKillCondition
     prototypes:
@@ -57,6 +62,7 @@
   name: achievement-legion-killer-name
   description: achievement-legion-killer-desc
   category: Lavaland
+  rarity: Mythic
   icon: { entity: LavalandBossMegaLegion }
   condition: !type:BossKillCondition
     prototypes:

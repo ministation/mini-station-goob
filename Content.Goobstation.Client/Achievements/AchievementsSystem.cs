@@ -1,3 +1,5 @@
+using Content.Client._Mini.DailyRewards;
+using Content.Goobstation.Client.Achievements.UI;
 using Content.Goobstation.Shared.Achievements;
 
 namespace Content.Goobstation.Client.Achievements;
@@ -15,6 +17,16 @@ public sealed class AchievementsSystem : EntitySystem
 
         SubscribeNetworkEvent<AchievementsStateEvent>(OnState);
         SubscribeNetworkEvent<AchievementUnlockedEvent>(OnUnlocked);
+
+        // The rewards menu embeds the achievements browser. Hand it a panel factory so the menu
+        // does not have to reference this content module.
+        AchievementsPanelSlot.Factory = () => new AchievementsPanel();
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        AchievementsPanelSlot.Factory = null;
     }
 
     public void RequestState()

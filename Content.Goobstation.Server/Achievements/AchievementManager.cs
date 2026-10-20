@@ -225,7 +225,9 @@ public sealed partial class AchievementManager : IPostInjectInit
             Math.Min(entry?.Progress ?? 0, proto.Condition.Count),
             proto.Condition.Count,
             entry?.UnlockedAt,
-            GetRarity(proto.ID));
+            GetRarity(proto.ID),
+            proto.GetRarity(),
+            proto.GetCoinReward());
     }
 
     public List<AchievementData> BuildState(ICommonSession session)

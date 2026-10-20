@@ -75,6 +75,7 @@
   name: achievement-completionist-name
   description: achievement-completionist-desc
   category: Milestones
+  rarity: Legendary
   icon: { entity: MaterialDiamond1 }
   condition: !type:AchievementCountCondition
     count: 30

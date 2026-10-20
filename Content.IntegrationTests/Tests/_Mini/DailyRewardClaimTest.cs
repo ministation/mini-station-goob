@@ -8,6 +8,7 @@ using Content.Client._Mini.DailyRewards;
 using Content.Server._Mini.AntagTokens;
 using Content.Server._Mini.DailyRewards;
 using Content.Shared._Mini.DailyRewards;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Input;
 using NUnit.Framework;
 using Robust.Client.UserInterface;
@@ -48,6 +49,10 @@ public sealed class DailyRewardClaimTest
         var tokens = sEntMan.System<AntagTokenSystem>();
 
         var session = playerMan.Sessions.Single();
+
+        // Time-based rewards are disabled by default now; this test covers the daily claim path,
+        // so it turns them back on explicitly.
+        server.CfgMan.SetCVar(MiniCCVars.TimeRewardsEnabled, true);
 
         // Force the daily reward into "ready to claim" state.
         await server.WaitPost(() =>

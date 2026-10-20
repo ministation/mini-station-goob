@@ -1,4 +1,5 @@
 using Content.Goobstation.Shared.Achievements;
+using Content.Shared._Mini.DailyQuests;
 using Content.Shared.EntityConditions;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -28,6 +29,33 @@ public sealed partial class AchievementPrototype : IPrototype
 
     [DataField(required: true)]
     public AchievementCondition Condition = default!;
+
+    /// <summary>
+    /// Reward tier. Uses the same rarities as weekly quests, so the reward scale matches.
+    /// When omitted, the tier is derived from <see cref="AchievementCondition.Count"/>:
+    /// one-off feats stay Rare (1 coin) and grindy ones scale up to Legendary.
+    /// </summary>
+    [DataField]
+    public DailyQuestRarity? Rarity;
+
+    public DailyQuestRarity GetRarity()
+    {
+        if (Rarity is { } explicitRarity)
+            return explicitRarity;
+
+        // Most achievements are one-off feats and stay Rare (one coin). Only long grinds scale up,
+        // and the curated prototypes override the tier explicitly for especially hard feats.
+        return Condition.Count switch
+        {
+            < 100 => DailyQuestRarity.Rare,
+            < 500 => DailyQuestRarity.Epic,
+            < 2000 => DailyQuestRarity.Mythic,
+            _ => DailyQuestRarity.Legendary,
+        };
+    }
+
+    /// <summary>Coins granted once when the achievement is unlocked.</summary>
+    public int GetCoinReward() => GetRarity().GetDefaultReward();
 }
 
 [ImplicitDataDefinitionForInheritors]

@@ -70,6 +70,7 @@
   name: achievement-block-stacker-name
   description: achievement-block-stacker-desc
   category: General
+  rarity: Legendary
   icon: { entity: BlockGameArcade }
   condition: !type:BlockGameScoreCondition
     score: 30000
@@ -188,6 +189,7 @@
   name: achievement-what-did-you-expect-name
   description: achievement-what-did-you-expect-desc
   category: General
+  rarity: Legendary
   icon: { entity: Supermatter }
   condition: !type:SupermatterConsumedCondition
 
@@ -207,6 +209,7 @@
   name: achievement-nuclear-payback-name
   description: achievement-nuclear-payback-desc
   category: General
+  rarity: Epic
   icon: { entity: NukeDisk }
   condition: !type:NukiePaybackCondition
     requirements:
@@ -221,6 +224,7 @@
   name: achievement-peak-science-name
   description: achievement-peak-science-desc
   category: General
+  rarity: Epic
   icon: { entity: ResearchAndDevelopmentServer }
   condition: !type:ResearchCompleteCondition
     requirements:
@@ -276,6 +280,7 @@
   name: achievement-its-not-shutting-down-name
   description: achievement-its-not-shutting-down-desc
   category: General
+  rarity: Epic
   icon: { entity: CartridgeRocketSingularityBuster }
   condition: !type:SingularityBustedCondition
 
@@ -284,6 +289,7 @@
   name: achievement-complete-set-name
   description: achievement-complete-set-desc
   category: General
+  rarity: Epic
   icon: { entity: ToolboxMechanical }
   condition: !type:PeriodicRequirementsCondition
     requirements:
@@ -376,6 +382,7 @@
   name: achievement-right-man-wrong-place-name
   description: achievement-right-man-wrong-place-desc
   category: General
+  rarity: Epic
   icon: { entity: NuclearBomb }
   condition: !type:NukeDisarmCondition
     requirements:
@@ -402,6 +409,7 @@
   name: achievement-belay-those-orders-name
   description: achievement-belay-those-orders-desc
   category: General
+  rarity: Epic
   icon: { entity: NukeDisk }
   condition: !type:BlobDefeatedCondition
     requirements:
@@ -496,6 +504,7 @@
   name: achievement-nanotrasens-greatest-soldier-name
   description: achievement-nanotrasens-greatest-soldier-desc
   category: General
+  rarity: Epic
   icon: { entity: ClothingHeadHelmetHardsuitBlueshield }
   condition: !type:CommandProtectedCondition
     requirements:

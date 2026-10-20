@@ -93,6 +93,17 @@ public sealed class DailyRewardWindow : DefaultWindow
     private DateTime? _claimPendingSinceUtc;
     private DateTime? _claimStatusHideAtUtc;
 
+    private readonly TabContainer _tabs = new()
+    {
+        VerticalExpand = true,
+        HorizontalExpand = true,
+    };
+
+    private Control? _heroSection;
+    private Control? _roadTitle;
+    private PanelContainer? _rewardsPanel;
+    private bool? _timeRewardsVisible;
+
     public DailyRewardWindow()
     {
         IoCManager.InjectDependencies(this);
@@ -104,7 +115,9 @@ public sealed class DailyRewardWindow : DefaultWindow
             ? antagRes.Texture
             : _resourceCache.GetTexture(CoinIconPath);
 
-        Title = Loc.GetString("daily-reward-window-title");
+        // One rewards menu for everything: weekly quests, achievements and (while enabled)
+        // the time-based daily rewards.
+        Title = Loc.GetString("daily-reward-window-title-menu");
         MinSize = new Vector2(1080, 760);
         SetSize = new Vector2(1120, 780);
 
@@ -126,7 +139,17 @@ public sealed class DailyRewardWindow : DefaultWindow
         Contents.AddChild(backdrop);
         backdrop.AddChild(root);
 
-        root.AddChild(BuildHeroSection(out _streakValueLabel, out _activeProgressLabel, out _cooldownLabel, out _expiryLabel, out _activeProgressBar, out _claimButton));
+        _heroSection = BuildHeroSection(out _streakValueLabel, out _activeProgressLabel, out _cooldownLabel, out _expiryLabel, out _activeProgressBar, out _claimButton);
+        root.AddChild(_heroSection);
+
+        var questsTab = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            Margin = new Thickness(4),
+        };
 
         _questSectionLabel = new Label
         {
@@ -134,7 +157,7 @@ public sealed class DailyRewardWindow : DefaultWindow
             StyleClasses = { "LabelHeading" },
             Margin = new Thickness(2, 0, 0, 0)
         };
-        root.AddChild(_questSectionLabel);
+        questsTab.AddChild(_questSectionLabel);
 
         var questPanel = new PanelContainer
         {
@@ -159,14 +182,35 @@ public sealed class DailyRewardWindow : DefaultWindow
             MinSize = new Vector2(0, DailyQuestCardControl.RewardQuestCardHeight + 4),
         };
         questPanel.AddChild(_questTrack);
-        root.AddChild(questPanel);
 
-        root.AddChild(new Label
+        var questScroll = new ScrollContainer
+        {
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            HScrollEnabled = false,
+        };
+        questScroll.AddChild(questPanel);
+        questsTab.AddChild(questScroll);
+
+        _tabs.AddChild(questsTab);
+        TabContainer.SetTabTitle(questsTab, Loc.GetString("daily-quest-section-title"));
+
+        // The achievements module plugs its browser in here, so players have one rewards menu.
+        if (TryCreateAchievementsPanel() is { } achievementsPanel)
+        {
+            _tabs.AddChild(achievementsPanel);
+            TabContainer.SetTabTitle(achievementsPanel, Loc.GetString("achievements-window-title"));
+        }
+
+        root.AddChild(_tabs);
+
+        _roadTitle = new Label
         {
             Text = Loc.GetString("daily-reward-window-road-title"),
             StyleClasses = { "LabelHeading" },
             Margin = new Thickness(2, 0, 0, 0)
-        });
+        };
+        root.AddChild(_roadTitle);
 
         var rewardsPanel = new PanelContainer
         {
@@ -185,6 +229,7 @@ public sealed class DailyRewardWindow : DefaultWindow
                 ContentMarginBottomOverride = 8
             }
         };
+        _rewardsPanel = rewardsPanel;
         root.AddChild(rewardsPanel);
 
         var scroll = new ScrollContainer
@@ -375,7 +420,8 @@ public sealed class DailyRewardWindow : DefaultWindow
             _state.Rewards,
             _state.OnlineElapsed,
             _state.OnlineGrantedThresholds,
-            _state.DailyQuests);
+            _state.DailyQuests,
+            _state.TimeRewardsEnabled);
 
         UpdateActiveTimerUi(derived);
         UpdateCurrentRewardTimerUi(derived);
@@ -566,12 +612,50 @@ public sealed class DailyRewardWindow : DefaultWindow
             : FormatCooldown(state.TimeUntilNextClaim);
     }
 
+    /// <summary>
+    /// Creates the achievements panel via the client-side provider, so Content.Client keeps working
+    /// without referencing the Goobstation assemblies.
+    /// </summary>
+    private Control? TryCreateAchievementsPanel()
+    {
+        try
+        {
+            return AchievementsPanelSlot.Factory?.Invoke();
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Failed to create the achievements panel for the rewards menu: {e}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Time-based rewards (daily streak claim, playtime) can be switched off server-side. The menu
+    /// then shows only the quests and achievements tabs.
+    /// </summary>
+    private void ApplyTimeRewardsVisibility(bool enabled)
+    {
+        if (_timeRewardsVisible == enabled)
+            return;
+
+        _timeRewardsVisible = enabled;
+
+        if (_heroSection != null)
+            _heroSection.Visible = enabled;
+        if (_roadTitle != null)
+            _roadTitle.Visible = enabled;
+        if (_rewardsPanel != null)
+            _rewardsPanel.Visible = enabled;
+    }
+
     private void RefreshState(bool rebuildQuestSection)
     {
         if (_state == null)
             return;
 
         var state = _state;
+
+        ApplyTimeRewardsVisibility(state.TimeRewardsEnabled);
 
         _streakValueLabel.Text = Loc.GetString("daily-reward-window-streak-value",
             ("current", state.CurrentStreak),

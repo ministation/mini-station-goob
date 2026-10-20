@@ -161,6 +161,7 @@
   name: achievement-feat-of-strength-name
   description: achievement-feat-of-strength-desc
   category: Survival
+  rarity: Legendary
   icon: { entity: ImmovableRod }
   condition: !type:RodSurvivedCondition
 
@@ -181,6 +182,7 @@
   name: achievement-hands-off-name
   description: achievement-hands-off-desc
   category: Survival
+  rarity: Epic
   icon: { entity: ClothingOuterArmorBasic }
   condition: !type:UndamagedCondition
     requirements:
@@ -192,6 +194,7 @@
   name: achievement-were-all-gonna-die-name
   description: achievement-were-all-gonna-die-desc
   category: Survival
+  rarity: Legendary
   icon: { entity: NuclearBomb }
   condition: !type:CatastropheCondition
     requirements:
@@ -203,6 +206,7 @@
   name: achievement-singulo-food-name
   description: achievement-singulo-food-desc
   category: Survival
+  rarity: Legendary
   icon: { entity: Singularity }
   hidden: true
   condition: !type:SingularityConsumedCondition
@@ -236,6 +240,7 @@
   name: achievement-dormammu-name
   description: achievement-dormammu-desc
   category: Survival
+  rarity: Epic
   icon: { entity: CrateCoffin }
   condition: !type:KilledBySameCondition
     kills: 3

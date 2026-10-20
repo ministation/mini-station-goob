@@ -1,9 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.Achievements;
+using Content.Server._Mini.AntagTokens;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
 using Content.Server.Maps;
+using Content.Server.Popups;
 using Content.Shared.EntityConditions;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
@@ -30,6 +32,8 @@ public sealed partial class AchievementSystem : EntitySystem
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private SharedRoleSystem _roles = default!;
     [Dependency] private SharedEntityConditionsSystem _conditions = default!;
+    [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private AntagTokenSystem _antagTokens = default!;
 
     private bool _enabled;
     private bool _roundExcluded;
@@ -99,6 +103,25 @@ public sealed partial class AchievementSystem : EntitySystem
     private void OnUnlocked(ICommonSession session, AchievementPrototype proto)
     {
         RaiseNetworkEvent(new AchievementUnlockedEvent(_manager.BuildData(session, proto)), session);
+
+        // The reward goes into the same coin wallet as weekly quests. AddBalance also applies the
+        // monthly coin cap, so the granted amount can be lower than the achievement's reward.
+        var reward = proto.GetCoinReward();
+        if (reward > 0
+            && _antagTokens.AddBalance(session.UserId, reward, out var granted, out var note)
+            && granted > 0)
+        {
+            var message = Loc.GetString("achievement-coin-reward-popup",
+                ("amount", granted),
+                ("achievement", Loc.GetString(proto.Name)));
+
+            if (!string.IsNullOrWhiteSpace(note))
+                message = $"{message} {note}";
+
+            if (session.AttachedEntity is { Valid: true } uid)
+                _popup.PopupEntity(message, uid, uid);
+        }
+
         AchievementUnlocked?.Invoke(session, proto);
     }
 

@@ -1,3 +1,4 @@
+using Content.Shared._Mini.DailyQuests;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
@@ -14,7 +15,9 @@ public sealed record AchievementData(
     int Progress,
     int Target,
     DateTime? UnlockedAt,
-    float Rarity);
+    float Rarity,
+    DailyQuestRarity RarityTier,
+    int CoinReward);
 
 [Serializable, NetSerializable]
 public sealed class RequestAchievementsEvent : EntityEventArgs;

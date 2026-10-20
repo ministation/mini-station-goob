@@ -26,6 +26,7 @@
   name: achievement-ash-ascension-name
   description: achievement-ash-ascension-desc
   category: Antagonist
+  rarity: Mythic
   icon: { entity: HereticBladeAsh }
   hidden: true
   condition: !type:HereticAscensionCondition
@@ -36,6 +37,7 @@
   name: achievement-flesh-ascension-name
   description: achievement-flesh-ascension-desc
   category: Antagonist
+  rarity: Mythic
   icon: { entity: HereticBladeFlesh }
   hidden: true
   condition: !type:HereticAscensionCondition
@@ -46,6 +48,7 @@
   name: achievement-rust-ascension-name
   description: achievement-rust-ascension-desc
   category: Antagonist
+  rarity: Mythic
   icon: { entity: HereticBladeRust }
   hidden: true
   condition: !type:HereticAscensionCondition
@@ -56,6 +59,7 @@
   name: achievement-void-ascension-name
   description: achievement-void-ascension-desc
   category: Antagonist
+  rarity: Mythic
   icon: { entity: HereticBladeVoid }
   hidden: true
   condition: !type:HereticAscensionCondition
@@ -66,6 +70,7 @@
   name: achievement-blade-ascension-name
   description: achievement-blade-ascension-desc
   category: Antagonist
+  rarity: Mythic
   icon: { entity: HereticBladeBlade }
   hidden: true
   condition: !type:HereticAscensionCondition
@@ -76,6 +81,7 @@
   name: achievement-cosmos-ascension-name
   description: achievement-cosmos-ascension-desc
   category: Antagonist
+  rarity: Mythic
   icon: { entity: HereticBladeCosmos }
   hidden: true
   condition: !type:HereticAscensionCondition
@@ -86,6 +92,7 @@
   name: achievement-lock-ascension-name
   description: achievement-lock-ascension-desc
   category: Antagonist
+  rarity: Mythic
   icon: { entity: HereticBladeLock }
   hidden: true
   condition: !type:HereticAscensionCondition
@@ -96,6 +103,7 @@
   name: achievement-many-names-many-faces-name
   description: achievement-many-names-many-faces-desc
   category: Antagonist
+  rarity: Epic
   icon: { entity: ArmBladeChangeling }
   condition: !type:RoundEndCondition
     requirements:
@@ -113,6 +121,7 @@
   name: achievement-blob-everywhere-name
   description: achievement-blob-everywhere-desc
   category: Antagonist
+  rarity: Epic
   icon: { entity: MobBlobPod }
   condition: !type:RoundEndCondition
     requirements:
@@ -127,6 +136,7 @@
   name: achievement-professional-thief-name
   description: achievement-professional-thief-desc
   category: Antagonist
+  rarity: Epic
   icon: { entity: ToolboxThief }
   condition: !type:RoundEndCondition
     requirements:
@@ -141,6 +151,7 @@
   name: achievement-lights-out-name
   description: achievement-lights-out-desc
   category: Antagonist
+  rarity: Mythic
   icon: { sprite: _EinsteinEngines/Mobs/shadowling_ascend.rsi, state: shadowling_ascend }
   hidden: true
   condition: !type:ShadowlingAscensionCondition
@@ -150,6 +161,7 @@
   name: achievement-the-slasher-name
   description: achievement-the-slasher-desc
   category: Antagonist
+  rarity: Mythic
   icon: { entity: Machete }
   hidden: true
   condition: !type:SlasherAscensionCondition
@@ -159,6 +171,7 @@
   name: achievement-chosen-one-name
   description: achievement-chosen-one-desc
   category: Antagonist
+  rarity: Epic
   icon: { entity: ClothingHeadHatWizard }
   condition: !type:RoundEndCondition
     requirements:
@@ -185,6 +198,7 @@
   name: achievement-brains-name
   description: achievement-brains-desc
   category: Antagonist
+  rarity: Epic
   icon: { entity: FoodMeat }
   condition: !type:ZombieVictoryCondition
     requirements:

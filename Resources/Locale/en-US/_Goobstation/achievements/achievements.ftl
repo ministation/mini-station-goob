@@ -283,3 +283,7 @@ achievement-inglorious-life-name = Inglorious Life
 achievement-inglorious-life-desc = They aren't going to take you back.
 achievement-you-are-my-fire-name = You are...
 achievement-you-are-my-fire-desc = My fire~
+
+achievements-window-coin-reward = +{$amount}
+achievements-window-summary-coins = Unlocked {$unlocked} / {$total} · {$coins} coins earned
+achievement-coin-reward-popup = Achievement "{$achievement}": +{$amount} coins

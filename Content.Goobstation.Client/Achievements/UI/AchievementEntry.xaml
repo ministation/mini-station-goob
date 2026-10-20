@@ -30,7 +30,20 @@
                              VerticalAlignment="Center" />
                 <Label Name="ProgressLabel" StyleClasses="LabelWeak" Margin="8 0 0 0" />
             </BoxContainer>
-            <Label Name="RarityLabel" StyleClasses="LabelWeak" />
+            <BoxContainer Orientation="Horizontal" SeparationOverride="10">
+                <Label Name="RarityLabel" StyleClasses="LabelWeak" VerticalAlignment="Center" />
+                <BoxContainer Name="CoinRewardBox"
+                              Orientation="Horizontal"
+                              SeparationOverride="3"
+                              VerticalAlignment="Center"
+                              Visible="False">
+                    <TextureRect Name="CoinIcon"
+                                 SetSize="14 14"
+                                 Stretch="KeepAspectCentered"
+                                 VerticalAlignment="Center" />
+                    <Label Name="CoinRewardLabel" StyleClasses="LabelWeak" VerticalAlignment="Center" />
+                </BoxContainer>
+            </BoxContainer>
         </BoxContainer>
     </BoxContainer>
 </PanelContainer>
