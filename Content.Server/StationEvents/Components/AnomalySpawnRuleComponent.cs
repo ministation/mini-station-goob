@@ -12,5 +12,5 @@ namespace Content.Server.StationEvents.Components;
 public sealed partial class AnomalySpawnRuleComponent : Component
 {
     [DataField("anomalySpawnerPrototype")]
-    public string AnomalySpawnerPrototype = "RandomAnomalySpawner";
+    public EntProtoId AnomalySpawnerPrototype = "RandomAnomalySpawner";
 }

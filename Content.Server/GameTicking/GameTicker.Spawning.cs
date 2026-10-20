@@ -575,7 +575,7 @@ namespace Content.Server.GameTicking
 
             if (_map.MapExists(DefaultMap))
             {
-                var mapUid = _map.GetMap(DefaultMap);
+                var mapUid = _map.GetMapOrInvalid(DefaultMap);
                 if (!TerminatingOrDeleted(mapUid))
                     return new EntityCoordinates(mapUid, Vector2.Zero);
             }
@@ -583,7 +583,7 @@ namespace Content.Server.GameTicking
             // Just pick a point at this point I guess.
             foreach (var map in _map.GetAllMapIds())
             {
-                var mapUid = _map.GetMap(map);
+                var mapUid = _map.GetMapOrInvalid(map);
 
                 if (!metaQuery.TryGetComponent(mapUid, out var meta)
                     || meta.EntityPaused

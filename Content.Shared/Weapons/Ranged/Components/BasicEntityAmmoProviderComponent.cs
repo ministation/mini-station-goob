@@ -15,7 +15,7 @@ public sealed partial class BasicEntityAmmoProviderComponent : AmmoProviderCompo
 {
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("proto")]
-    public string? Proto; // Goob edit
+    public EntProtoId? Proto; // Goob edit
 
     // Goobstation
     [DataField]

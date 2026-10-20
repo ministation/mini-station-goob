@@ -2,6 +2,7 @@
 
 using Content.Shared.Tools;
 using Robust.Shared.GameStates;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.PneumaticCannon;
 
@@ -17,7 +18,7 @@ public sealed partial class PneumaticCannonComponent : Component
     public PneumaticCannonPower Power = PneumaticCannonPower.Medium;
 
     [DataField("toolModifyPower")]
-    public string ToolModifyPower = "Anchoring";
+    public ProtoId<ToolQualityPrototype> ToolModifyPower = "Anchoring";
 
     /// <summary>
     ///     How long to stun for if they shoot the pneumatic cannon at high power.

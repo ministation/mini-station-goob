@@ -81,13 +81,13 @@ public sealed partial class ZombieComponent : Component
     /// The attack arc of the zombie
     /// </summary>
     [DataField("attackArc")]
-    public string AttackAnimation = "WeaponArcBite";
+    public EntProtoId AttackAnimation = "WeaponArcBite";
 
     /// <summary>
     /// The role prototype of the zombie antag role
     /// </summary>
     [DataField("zombieRoleId")]
-    public string ZombieRoleId = "Zombie";
+    public ProtoId<AntagPrototype> ZombieRoleId = "Zombie";
 
     /// <summary>
     /// The CustomBaseLayers of the humanoid to restore in case of cloning

@@ -14,6 +14,7 @@ using Content.Shared.Chat;
 using Content.Shared.Construction;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.Roles;
 using Content.Shared.StationRecords;
@@ -147,7 +148,7 @@ public sealed class IdCardConsoleSystem : SharedIdCardConsoleSystem
         _idCard.TryChangeFullName(targetId, newFullName, player: player);
         _idCard.TryChangeJobTitle(targetId, newJobTitle, player: player);
 
-        // Client sends an empty job proto when the preset wasn't changed (access/name only).
+        // Goob - Fix (client input, no log): client sends an empty job proto when the preset wasn't changed (access/name only).
         // Use TryIndex — Resolve logs an error for empty/invalid ProtoIds.
         JobPrototype? job = null;
         if (!string.IsNullOrEmpty(newJobProto) &&

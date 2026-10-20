@@ -16,7 +16,7 @@ public sealed partial class RandomGiftComponent : Component
     /// The wrapper entity to spawn when unwrapping the gift.
     /// </summary>
     [DataField("wrapper", required: true)]
-    public string? Wrapper;
+    public EntProtoId? Wrapper;
 
     /// <summary>
     ///     A sound to play when the items are spawned. For example, gift boxes being unwrapped.

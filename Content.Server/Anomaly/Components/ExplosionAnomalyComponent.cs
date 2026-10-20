@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 using Content.Shared.Explosion;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Anomaly.Components;
 
@@ -11,7 +12,7 @@ public sealed partial class ExplosionAnomalyComponent : Component
     /// The explosion prototype to spawn
     /// </summary>
     [DataField("supercriticalExplosion", required: true)]
-    public string ExplosionPrototype = default!;
+    public ProtoId<ExplosionPrototype> ExplosionPrototype = default!;
 
     /// <summary>
     /// The total amount of intensity an explosion can achieve

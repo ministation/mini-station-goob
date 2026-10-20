@@ -4,6 +4,7 @@ using Content.Shared.DoAfter;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.VendingMachines;
 
@@ -21,7 +22,7 @@ public sealed partial class VendingMachineRestockComponent : Component
     /// This is checked against the VendingMachineComponent's pack value.
     /// </summary>
     [DataField]
-    public HashSet<string> CanRestock = [];
+    public HashSet<ProtoId<VendingMachineInventoryPrototype>> CanRestock = [];
 
     /// <summary>
     ///     Sound that plays when starting to restock a machine.

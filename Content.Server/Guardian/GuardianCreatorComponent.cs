@@ -22,7 +22,7 @@ namespace Content.Server.Guardian
         /// The prototype of the guardian entity which will be created
         /// </summary>
         [DataField("guardianProto", required: true)]
-        public string GuardianProto { get; set; } = default!;
+        public EntProtoId GuardianProto { get; set; } = default!;
 
         /// <summary>
         /// How long it takes to inject someone.

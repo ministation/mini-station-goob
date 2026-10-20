@@ -12,7 +12,7 @@ namespace Content.Server.Botany.Components;
 public sealed partial class LogComponent : Component
 {
     [DataField("spawnedPrototype")]
-    public string SpawnedPrototype = "MaterialWoodPlank1";
+    public EntProtoId SpawnedPrototype = "MaterialWoodPlank1";
 
     [DataField("spawnCount")] public int SpawnCount = 2;
 }

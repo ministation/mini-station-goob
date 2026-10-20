@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Examine;
 using Content.Shared.Construction.Components;
@@ -27,7 +26,7 @@ namespace Content.Shared.Construction.EntitySystems;
 
 public sealed partial class AnchorableSystem : EntitySystem
 {
-    [Dependency] private readonly SharedMapSystem _map = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly PullingSystem _pulling = default!;
@@ -86,7 +85,7 @@ public sealed partial class AnchorableSystem : EntitySystem
         // Log unanchor attempt (server only)
         _adminLogger.Add(LogType.Anchor, LogImpact.Low, $"{ToPrettyString(userUid):user} is trying to unanchor {ToPrettyString(uid):entity} from {transform.Coordinates:targetlocation}");
 
-        _tool.UseTool(usingUid, userUid, uid, anchorable.Delay, usingTool.Qualities.Select(q => q.Id), new TryUnanchorCompletedEvent());
+        _tool.UseTool(usingUid, userUid, uid, anchorable.Delay, usingTool.Qualities, new TryUnanchorCompletedEvent());
     }
 
     private void OnInteractUsing(EntityUid uid, AnchorableComponent anchorable, InteractUsingEvent args)
@@ -121,18 +120,24 @@ public sealed partial class AnchorableSystem : EntitySystem
         if (args.Cancelled || args.Used is not { } used)
             return;
 
+        UnanchorEntity((uid, component), args.User, used); // Goob
+    }
+
+    public void UnanchorEntity(Entity<AnchorableComponent> ent, EntityUid user, EntityUid used) // Goob
+    {
+        var uid = ent.Owner; // Goob
         var xform = Transform(uid);
 
-        RaiseLocalEvent(uid, new BeforeUnanchoredEvent(args.User, used));
+        RaiseLocalEvent(uid, new BeforeUnanchoredEvent(user, used)); // Goob
         _transformSystem.Unanchor(uid, xform);
-        RaiseLocalEvent(uid, new UserUnanchoredEvent(args.User, used));
+        RaiseLocalEvent(uid, new UserUnanchoredEvent(user, used)); // Goob
 
-        _popup.PopupClient(Loc.GetString("anchorable-unanchored"), uid, args.User);
+        _popup.PopupClient(Loc.GetString("anchorable-unanchored"), uid, user); // Goob
 
         _adminLogger.Add(
             LogType.Unanchor,
             LogImpact.Low,
-            $"{ToPrettyString(args.User):user} unanchored {ToPrettyString(uid):anchored} using {ToPrettyString(used):using}"
+            $"{ToPrettyString(user):user} unanchored {ToPrettyString(uid):anchored} using {ToPrettyString(used):using}" // Goob
         );
     }
 
@@ -141,11 +146,17 @@ public sealed partial class AnchorableSystem : EntitySystem
         if (args.Cancelled || args.Used is not { } used)
             return;
 
+        AnchorEntity((uid, component), args.User, used); // Goob
+    }
+
+    public void AnchorEntity(Entity<AnchorableComponent> ent, EntityUid user, EntityUid used) // Goob
+    {
+        var (uid, component) = ent; // Goob
         var xform = Transform(uid);
         if (TryComp<PhysicsComponent>(uid, out var anchorBody) &&
             !TileFree(xform.Coordinates, anchorBody))
         {
-            _popup.PopupClient(Loc.GetString("anchorable-occupied"), uid, args.User);
+            _popup.PopupClient(Loc.GetString("anchorable-occupied"), uid, user); // Goob
             return;
         }
 
@@ -165,26 +176,26 @@ public sealed partial class AnchorableSystem : EntitySystem
 
             if (AnyUnstackable(uid, coordinates))
             {
-                _popup.PopupClient(Loc.GetString("construction-step-condition-no-unstackable-in-tile"), uid, args.User);
+                _popup.PopupClient(Loc.GetString("construction-step-condition-no-unstackable-in-tile"), uid, user); // Goob
                 return;
             }
 
             _transformSystem.SetCoordinates(uid, coordinates);
         }
 
-        RaiseLocalEvent(uid, new BeforeAnchoredEvent(args.User, used));
+        RaiseLocalEvent(uid, new BeforeAnchoredEvent(user, used)); // Goob
 
         if (!xform.Anchored)
             _transformSystem.AnchorEntity(uid, xform);
 
-        RaiseLocalEvent(uid, new UserAnchoredEvent(args.User, used));
+        RaiseLocalEvent(uid, new UserAnchoredEvent(user, used)); // Goob
 
-        _popup.PopupClient(Loc.GetString("anchorable-anchored"), uid, args.User);
+        _popup.PopupClient(Loc.GetString("anchorable-anchored"), uid, user); // Goob
 
         _adminLogger.Add(
             LogType.Anchor,
             LogImpact.Low,
-            $"{ToPrettyString(args.User):user} anchored {ToPrettyString(uid):anchored} using {ToPrettyString(used):using}"
+            $"{ToPrettyString(user):user} anchored {ToPrettyString(uid):anchored} using {ToPrettyString(used):using}" // Goob
         );
     }
 
@@ -250,7 +261,7 @@ public sealed partial class AnchorableSystem : EntitySystem
             return;
         }
 
-        _tool.UseTool(usingUid, userUid, uid, anchorable.Delay, usingTool.Qualities.Select(q => q.Id), new TryAnchorCompletedEvent());
+        _tool.UseTool(usingUid, userUid, uid, anchorable.Delay, usingTool.Qualities, new TryAnchorCompletedEvent());
     }
 
     private bool Valid(
@@ -298,7 +309,7 @@ public sealed partial class AnchorableSystem : EntitySystem
         if (!TryComp<MapGridComponent>(gridUid, out var grid))
             return false;
 
-        var tileIndices = _map.TileIndicesFor((gridUid.Value, grid), coordinates);
+        var tileIndices = _mapSystem.TileIndicesFor(gridUid.Value, grid, coordinates);
         return TileFree((gridUid.Value, grid), tileIndices, anchorBody.CollisionLayer, anchorBody.CollisionMask);
     }
 
@@ -308,7 +319,7 @@ public sealed partial class AnchorableSystem : EntitySystem
     /// <param name="grid"></param>
     public bool TileFree(Entity<MapGridComponent> grid, Vector2i gridIndices, int collisionLayer = 0, int collisionMask = 0)
     {
-        var enumerator = _map.GetAnchoredEntitiesEnumerator(grid, grid.Comp, gridIndices);
+        var enumerator = _mapSystem.GetAnchoredEntities(grid, gridIndices);
 
         while (enumerator.MoveNext(out var ent))
         {
@@ -328,7 +339,6 @@ public sealed partial class AnchorableSystem : EntitySystem
 
         return true;
     }
-
 
     [Obsolete("Use the Entity<MapGridComponent> version")]
     public bool TileFree(MapGridComponent grid, Vector2i gridIndices, int collisionLayer = 0, int collisionMask = 0)
@@ -354,7 +364,7 @@ public sealed partial class AnchorableSystem : EntitySystem
         if (!TryComp<MapGridComponent>(gridUid, out var grid))
             return false;
 
-        var enumerator = _map.GetAnchoredEntitiesEnumerator(gridUid.Value, grid, _map.LocalToTile(gridUid.Value, grid, location));
+        var enumerator = _mapSystem.GetAnchoredEntities(gridUid.Value, grid, _mapSystem.LocalToTile(gridUid.Value, grid, location));
 
         while (enumerator.MoveNext(out var entity))
         {

@@ -2,6 +2,7 @@
 
 #nullable enable
 using Content.Shared._Arcane.CCVars;
+using Content.Goobstation.Common.CCVar;
 using Content.Shared.CCVar;
 
 namespace Content.IntegrationTests;
@@ -41,5 +42,7 @@ public static partial class PoolManager
         (CCVars.LavalandEnabled.Name, "false"), // Lavaland Change
         // Floor trash sweeper deletes Trash-tagged entities mid-test (e.g. Envelope in EntityTest).
         (ACCVars.AutoCleaningEnabled.Name, "false"),
+        (GoobCVars.DisablePathfinding.Name, "true"), // Goobstation
+        (GoobCVars.InteractionParticlesEnabled.Name, "false"), // Goobstation
     };
 }

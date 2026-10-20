@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Shared.GameTicking.Components;
 using Content.Goobstation.Common.Mind;
 using Content.Goobstation.Common.Mobs;
@@ -58,36 +59,37 @@ using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Content.Server._CorvaxGoob.Skills;
 using System.Text;
-using System.Linq;
+using Content.Shared.Damage.Systems;
+using Content.Shared.Damage.Components;
 
 namespace Content.Goobstation.Server.MisandryBox.Thunderdome;
 
-public sealed class ThunderdomeRuleSystem : EntitySystem
+public sealed partial class ThunderdomeRuleSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IServerPreferencesManager _prefs = default!;
-    [Dependency] private readonly EuiManager _euiManager = default!;
-    [Dependency] private readonly GameTicker _ticker = default!;
-    [Dependency] private readonly MindSystem _mind = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedContainerSystem _container = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly StationSpawningSystem _stationSpawning = default!;
-    [Dependency] private readonly PopupSystem _popup = default!;
-    [Dependency] private readonly AudioSystem _audio = default!;
-    [Dependency] private readonly TemporaryMindSystem _tempMind = default!;
-    [Dependency] private readonly ILocalizationManager _loc = default!;
-    [Dependency] private readonly GunSystem _gun = default!;
-    [Dependency] private readonly IChatManager _chatManager = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
-    [Dependency] private readonly SharedStackSystem _stack = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly SharedStorageSystem _storage = default!;
-    [Dependency] private readonly PvsOverrideSystem _pvsOverride = default!;
-    [Dependency] private readonly SkillsSystem _skills = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IServerPreferencesManager _prefs = default!;
+    [Dependency] private EuiManager _euiManager = default!;
+    [Dependency] private GameTicker _ticker = default!;
+    [Dependency] private MindSystem _mind = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private StationSpawningSystem _stationSpawning = default!;
+    [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private AudioSystem _audio = default!;
+    [Dependency] private TemporaryMindSystem _tempMind = default!;
+    [Dependency] private ILocalizationManager _loc = default!;
+    [Dependency] private GunSystem _gun = default!;
+    [Dependency] private IChatManager _chatManager = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutionContainer = default!;
+    [Dependency] private SharedStackSystem _stack = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private SharedStorageSystem _storage = default!;
+    [Dependency] private PvsOverrideSystem _pvsOverride = default!;
+    [Dependency] private SkillsSystem _skills = default!;
 
     private const string RulePrototype = "ThunderdomeRule";
     private EntityUid? _ruleEntity;
@@ -105,7 +107,7 @@ public sealed class ThunderdomeRuleSystem : EntitySystem
 
     private HashSet<string> _allowedSpecies = new();
 
-    private sealed class GlobalThunderdomeStats
+    private sealed partial class GlobalThunderdomeStats
     {
         public string LastCharacterName = string.Empty;
         public int Kills;

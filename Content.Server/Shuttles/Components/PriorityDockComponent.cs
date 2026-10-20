@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 using Content.Shared.Tag;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Shuttles.Components;
 
@@ -15,5 +16,5 @@ public sealed partial class PriorityDockComponent : Component
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite),
      DataField("tag")]
-    public string? Tag;
+    public ProtoId<TagPrototype>? Tag;
 }

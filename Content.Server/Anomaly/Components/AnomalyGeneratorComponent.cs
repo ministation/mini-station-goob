@@ -39,7 +39,7 @@ public sealed partial class AnomalyGeneratorComponent : Component
     /// The material needed to generate an anomaly
     /// </summary>
     [DataField("requiredMaterial"), ViewVariables(VVAccess.ReadWrite)]
-    public string RequiredMaterial = "Plasma";
+    public ProtoId<MaterialPrototype> RequiredMaterial = "Plasma";
 
     /// <summary>
     /// The amount of material needed to generate a single anomaly
@@ -51,13 +51,13 @@ public sealed partial class AnomalyGeneratorComponent : Component
     /// The random anomaly spawner entity
     /// </summary>
     [DataField("spawnerPrototype"), ViewVariables(VVAccess.ReadWrite)]
-    public string SpawnerPrototype = "RandomAnomalySpawner";
+    public EntProtoId SpawnerPrototype = "RandomAnomalySpawner";
 
     /// <summary>
     /// The radio channel for science
     /// </summary>
     [DataField("scienceChannel")]
-    public string ScienceChannel = "Science";
+    public ProtoId<RadioChannelPrototype> ScienceChannel = "Science";
 
     /// <summary>
     /// The sound looped while an anomaly generates

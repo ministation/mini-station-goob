@@ -2,6 +2,7 @@
 
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.EntityEffects;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Chemistry.Reaction;
 
@@ -12,7 +13,7 @@ public sealed partial class ReactiveComponent : Component
     ///     A dictionary of reactive groups -> methods that work on them.
     /// </summary>
     [DataField("groups", readOnly: true, serverOnly: true)]
-    public Dictionary<string, HashSet<ReactionMethod>>? ReactiveGroups;
+    public Dictionary<ProtoId<ReactiveGroupPrototype>, HashSet<ReactionMethod>>? ReactiveGroups;
 
     /// <summary>
     ///     Special reactions that this prototype can specify, outside of any that reagents already apply.
@@ -35,11 +36,11 @@ public sealed partial class ReactiveReagentEffectEntry
     public HashSet<ReactionMethod> Methods = default!;
 
     [DataField("reagents")]
-    public HashSet<string>? Reagents = null;
+    public HashSet<ProtoId<ReagentPrototype>>? Reagents = null;
 
     [DataField("effects", required: true)]
     public EntityEffect[] Effects = default!;
 
     [DataField("groups", readOnly: true, serverOnly: true)]
-    public Dictionary<string, HashSet<ReactionMethod>>? ReactiveGroups { get; private set; }
+    public Dictionary<ProtoId<ReactiveGroupPrototype>, HashSet<ReactionMethod>>? ReactiveGroups { get; private set; }
 }

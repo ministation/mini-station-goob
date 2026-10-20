@@ -13,6 +13,7 @@ namespace Content.Shared.Decals
     public abstract class SharedDecalSystem : EntitySystem
     {
         [Dependency] protected readonly IPrototypeManager PrototypeManager = default!;
+        [Dependency] protected readonly SharedMapSystem MapSystem = default!; // Goobstation
 
         protected bool PvsEnabled;
 

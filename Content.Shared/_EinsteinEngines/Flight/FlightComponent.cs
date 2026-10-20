@@ -16,7 +16,7 @@ namespace Content.Shared._EinsteinEngines.Flight;
 public sealed partial class FlightComponent : Component
 {
     [DataField]
-    public string? ToggleAction = "ActionToggleFlight";
+    public EntProtoId? ToggleAction = "ActionToggleFlight";
 
     [DataField, AutoNetworkedField]
     public EntityUid? ToggleActionEntity;

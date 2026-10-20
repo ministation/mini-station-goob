@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Shared.Chat.Prototypes;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Mobs;
 
@@ -15,7 +16,7 @@ public sealed partial class DeathgaspComponent : Component
     ///     The emote prototype to use.
     /// </summary>
     [DataField("prototype")]
-    public string Prototype = "DefaultDeathgasp";
+    public ProtoId<EmotePrototype> Prototype = "DefaultDeathgasp";
 
     /// <summary>
     ///     Goobstation: Makes sure that the deathgasp is only displayed if the entity went critical before dying

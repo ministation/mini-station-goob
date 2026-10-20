@@ -1,5 +1,6 @@
 // CorvaxGoob-DiceOfFate : Corvax Wega Port (original author: Zekins3366)
 
+using Content.Shared.Damage.Components;
 using System.Linq;
 using Content.Goobstation.Shared.Disease.Components;
 using Content.Goobstation.Shared.Disease.Systems;

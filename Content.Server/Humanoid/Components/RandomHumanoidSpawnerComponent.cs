@@ -13,5 +13,5 @@ namespace Content.Server.Humanoid.Components;
 public sealed partial class RandomHumanoidSpawnerComponent : Component
 {
     [DataField("settings")]
-    public string? SettingsPrototypeId;
+    public ProtoId<RandomHumanoidSettingsPrototype>? SettingsPrototypeId;
 }

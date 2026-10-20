@@ -19,6 +19,7 @@ using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
+using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Item;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Events;
@@ -466,6 +467,9 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
         if (!Transform(uid).Anchored)
             return false;
 
+        if (HasComp<VirtualItemComponent>(entity))
+            return false;
+
         var storable = HasComp<ItemComponent>(entity);
         if (!storable && !HasComp<MobStateComponent>(entity))
             return false;
@@ -834,7 +838,7 @@ public abstract class SharedDisposalUnitSystem : EntitySystem
 
         foreach (var entity in args.DumpQueue)
         {
-            DoInsertDisposalUnit(ent, entity, args.User);
+            DoInsertDisposalUnit(ent, entity, args.User, playSound: false); // Goob - fix trashbag sound spam
         }
     }
 }

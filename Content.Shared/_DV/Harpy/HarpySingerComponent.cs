@@ -9,7 +9,7 @@ namespace Content.Shared._DV.Harpy
     public sealed partial class HarpySingerComponent : Component
     {
         [DataField("midiActionId", serverOnly: true)]
-        public string? MidiActionId = "ActionHarpyPlayMidi";
+        public EntProtoId? MidiActionId = "ActionHarpyPlayMidi";
 
         [DataField("midiAction", serverOnly: true)] // server only, as it uses a server-BUI event !type
         public EntityUid? MidiAction;

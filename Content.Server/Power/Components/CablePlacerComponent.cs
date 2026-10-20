@@ -13,7 +13,7 @@ namespace Content.Server.Power.Components
         /// The structure prototype for the cable coil to place.
         /// </summary>
         [DataField("cablePrototypeID")]
-        public string? CablePrototypeId = "CableHV";
+        public EntProtoId? CablePrototypeId = "CableHV";
 
         /// <summary>
         /// What kind of wire prevents placing this wire over it as CableType.

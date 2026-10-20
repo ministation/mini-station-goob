@@ -110,9 +110,7 @@ public sealed partial class SmHalberdExecuteDoAfterEvent : DoAfterEvent
         RayEffect = rayEffect;
     }
 
-    public SmHalberdExecuteDoAfterEvent()
-    {
-    }
+    public SmHalberdExecuteDoAfterEvent() { }
 
     public override DoAfterEvent Clone() => this;
 }

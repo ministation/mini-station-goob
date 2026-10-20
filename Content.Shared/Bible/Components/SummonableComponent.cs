@@ -26,7 +26,7 @@ namespace Content.Shared.Bible.Components
         /// Used for a special item only the Chaplain can summon. Usually a mob, but supports regular items too.
         /// </summary>
         [DataField("specialItem")]
-        public string? SpecialItemPrototype = null;
+        public EntProtoId? SpecialItemPrototype = null;
         public bool AlreadySummoned = false;
 
         [DataField("requiresBibleUser")]
@@ -39,7 +39,7 @@ namespace Content.Shared.Bible.Components
         public EntityUid? Summon = null;
 
         [DataField("summonAction")]
-        public string SummonAction = "ActionBibleSummon";
+        public EntProtoId SummonAction = "ActionBibleSummon";
 
         [DataField("summonActionEntity")]
         public EntityUid? SummonActionEntity;

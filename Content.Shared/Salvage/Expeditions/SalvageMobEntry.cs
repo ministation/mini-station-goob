@@ -21,5 +21,5 @@ public partial record struct SalvageMobEntry() : IBudgetEntry
     public float Prob { get; set; } = 1f;
 
     [ViewVariables(VVAccess.ReadWrite), DataField("proto", required: true)]
-    public string Proto { get; set; } = string.Empty;
+    public EntProtoId Proto { get; set; } = string.Empty;
 }

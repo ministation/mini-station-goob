@@ -39,5 +39,5 @@ public sealed partial class SourcePortPrototype : DevicePortPrototype, IPrototyp
     ///     default-link functionality.
     /// </summary>
     [DataField("defaultLinks")]
-    public HashSet<string>? DefaultLinks;
+    public HashSet<ProtoId<SinkPortPrototype>>? DefaultLinks;
 }

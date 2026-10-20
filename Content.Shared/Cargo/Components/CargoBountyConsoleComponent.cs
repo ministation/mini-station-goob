@@ -14,7 +14,7 @@ public sealed partial class CargoBountyConsoleComponent : Component
     /// The id of the label entity spawned by the print label button.
     /// </summary>
     [DataField("bountyLabelId")]
-    public string BountyLabelId = "PaperCargoBountyManifest";
+    public EntProtoId BountyLabelId = "PaperCargoBountyManifest";
 
     /// <summary>
     /// The time at which the console will be able to print a label again.

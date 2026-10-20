@@ -17,11 +17,11 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Goobstation.Server.Blob;
 
-public sealed class BlobFactorySystem : EntitySystem
+public sealed partial class BlobFactorySystem : EntitySystem
 {
-    [Dependency] private readonly PopupSystem _popup = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
 
 
     public override void Initialize()
@@ -75,26 +75,32 @@ public sealed class BlobFactorySystem : EntitySystem
         }
     }
 
-        private const string Phlogiston = "Phlogiston";
+    private static readonly ProtoId<ReagentPrototype> Phlogiston = "Phlogiston";
 
-        private const string TearGas = "TearGas";
+    private static readonly ProtoId<ReagentPrototype> TearGas = "TearGas";
 
-    
-    private const string Lexorin = "Lexorin";
+    private static readonly ProtoId<ReagentPrototype> Lexorin = "Lexorin";
 
-        private const string Mold = "Mold";
+    private static readonly ProtoId<ReagentPrototype> Mold = "Mold";
 
-        private const string Bicaridine = "Bicaridine";
+    private static readonly ProtoId<ReagentPrototype> Bicaridine = "Bicaridine";
 
-        private const string ChloralHydrate = "ChloralHydrate";
-        private const string Profanol = "Profanol";
-        private const string PolytrinicAcid = "PolytrinicAcid";
-        private const string Ipecac = "Ipecac";
-        private const string Razorium = "Razorium";
-        private const string Fresium = "Fresium";
-        private const string Aluminium = "Aluminium";
-        private const string Iron = "Iron";
-        private const string Uranium = "Uranium";
+    private static readonly ProtoId<ReagentPrototype> ChloralHydrate = "ChloralHydrate";
+
+    private static readonly ProtoId<ReagentPrototype> Profanol = "Profanol";
+
+    private static readonly ProtoId<ReagentPrototype> PolytrinicAcid = "PolytrinicAcid";
+
+    private static readonly ProtoId<ReagentPrototype> Ipecac = "Ipecac";
+
+    private static readonly ProtoId<ReagentPrototype> Razorium = "Razorium";
+
+    private static readonly ProtoId<ReagentPrototype> Fresium = "Fresium";
+
+    private static readonly ProtoId<ReagentPrototype> Aluminium = "Aluminium";
+    private static readonly ProtoId<ReagentPrototype> Iron = "Iron";
+    private static readonly ProtoId<ReagentPrototype> Uranium = "Uranium";
+
     private void FillSmokeGas(Entity<BlobPodComponent> ent, BlobChemType currentChem)
     {
         var blobGas = EnsureComp<SmokeOnTriggerComponent>(ent).Solution;

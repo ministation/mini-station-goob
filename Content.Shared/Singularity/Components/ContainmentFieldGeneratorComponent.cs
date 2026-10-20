@@ -68,7 +68,7 @@ public sealed partial class ContainmentFieldGeneratorComponent : Component
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("idTag")]
-    public string IDTag = "EmitterBolt";
+    public ProtoId<TagPrototype> IDTag = "EmitterBolt";
 
     /// <summary>
     /// Which fixture ID should test collision with from the entity that powers the generator?
@@ -107,7 +107,7 @@ public sealed partial class ContainmentFieldGeneratorComponent : Component
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("createdField")]
-    public string CreatedField = "ContainmentField";
+    public EntProtoId CreatedField = "ContainmentField";
 }
 
 [Serializable, NetSerializable]

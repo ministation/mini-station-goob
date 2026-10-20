@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server.Speech.Prototypes;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Speech.Components;
 
@@ -21,7 +22,7 @@ public sealed partial class AddAccentClothingComponent : Component
     ///     Will be applied only with <see cref="ReplacementAccentComponent"/>.
     /// </summary>
     [DataField("replacement")]
-    public string? ReplacementPrototype;
+    public ProtoId<ReplacementAccentPrototype>? ReplacementPrototype;
 
     /// <summary>
     ///     Is that clothing is worn and affecting someones accent?

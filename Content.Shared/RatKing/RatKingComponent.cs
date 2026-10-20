@@ -11,7 +11,7 @@ namespace Content.Shared.RatKing;
 public sealed partial class RatKingComponent : Component
 {
     [DataField("actionRaiseArmy")]
-    public string ActionRaiseArmy = "ActionRatKingRaiseArmy";
+    public EntProtoId ActionRaiseArmy = "ActionRatKingRaiseArmy";
 
     /// <summary>
     ///     The action for the Raise Army ability
@@ -29,10 +29,10 @@ public sealed partial class RatKingComponent : Component
     ///     The entity prototype of the mob that Raise Army summons
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite), DataField("armyMobSpawnId")]
-    public string ArmyMobSpawnId = "MobRatServant";
+    public EntProtoId ArmyMobSpawnId = "MobRatServant";
 
     [DataField("actionDomain")]
-    public string ActionDomain = "ActionRatKingDomain";
+    public EntProtoId ActionDomain = "ActionRatKingDomain";
 
     /// <summary>
     ///     The action for the Domain ability
@@ -66,25 +66,25 @@ public sealed partial class RatKingComponent : Component
     public HashSet<EntityUid> Servants = new();
 
     [DataField("actionOrderStay")]
-    public string ActionOrderStay = "ActionRatKingOrderStay";
+    public EntProtoId ActionOrderStay = "ActionRatKingOrderStay";
 
     [DataField("actionOrderStayEntity")]
     public EntityUid? ActionOrderStayEntity;
 
     [DataField("actionOrderFollow")]
-    public string ActionOrderFollow = "ActionRatKingOrderFollow";
+    public EntProtoId ActionOrderFollow = "ActionRatKingOrderFollow";
 
     [DataField("actionOrderFollowEntity")]
     public EntityUid? ActionOrderFollowEntity;
 
     [DataField("actionOrderCheeseEm")]
-    public string ActionOrderCheeseEm = "ActionRatKingOrderCheeseEm";
+    public EntProtoId ActionOrderCheeseEm = "ActionRatKingOrderCheeseEm";
 
     [DataField("actionOrderCheeseEmEntity")]
     public EntityUid? ActionOrderCheeseEmEntity;
 
     [DataField("actionOrderLoose")]
-    public string ActionOrderLoose = "ActionRatKingOrderLoose";
+    public EntProtoId ActionOrderLoose = "ActionRatKingOrderLoose";
 
     [DataField("actionOrderLooseEntity")]
     public EntityUid? ActionOrderLooseEntity;

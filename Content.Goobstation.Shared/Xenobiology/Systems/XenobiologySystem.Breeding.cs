@@ -16,10 +16,9 @@ namespace Content.Goobstation.Shared.Xenobiology.Systems;
 // This handles slime breeding and mutation.
 public partial class XenobiologySystem
 {
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly StomachSystem _stomach = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutionContainer = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private StomachSystem _stomach = default!;
 
     private void SubscribeBreeding()
     {

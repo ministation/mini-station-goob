@@ -25,10 +25,10 @@
   - type: Clickable
   - type: Occluder
     polygon:
-    - "-0.5, 1.5"
-    - "0.5, 1.5"
-    - "0.5, -0.5"
-    - "-0.5, -0.5"
+    - "-0.5,1.5"
+    - "0.5,1.5"
+    - "0.5,-0.5"
+    - "-0.5,-0.5"
 
 # Large
 
@@ -459,10 +459,10 @@
     state: tartarus_l
   - type: Occluder
     polygon:
-    - "-0.5, 0.5"
-    - "0.5, 0.5"
-    - "0.5, -0.5"
-    - "-0.5, -0.5"
+    - "-0.5,0.5"
+    - "0.5,0.5"
+    - "0.5,-0.5"
+    - "-0.5,-0.5"
   - type: Fixtures
     fixtures:
       fix1:
@@ -953,10 +953,10 @@
     state: blue_b
   - type: Occluder
     polygon:
-    - "-0.5, 0.5"
-    - "0.9, 0.5"
-    - "0.9, -0.5"
-    - "-0.5, -0.5"
+    - "-0.5,0.5"
+    - "0.9,0.5"
+    - "0.9,-0.5"
+    - "-0.5,-0.5"
 
 - type: entity
   parent: RMCContainerVerticalBottom

@@ -280,7 +280,7 @@ public sealed partial class EventHorizonSystem : SharedEventHorizonSystem
     /// </summary>
     public bool CanConsumeTile(Entity<EventHorizonComponent> hungry, TileRef tile, Entity<MapGridComponent> grid)
     {
-        foreach (var blockingEntity in _mapSystem.GetAnchoredEntities(grid, tile.GridIndices))
+        foreach (var blockingEntity in _mapSystem.GetAnchoredEntities(grid.Owner, grid, tile.GridIndices))
         {
             if (!CanConsumeEntity(hungry, blockingEntity, hungry.Comp))
                 return false;

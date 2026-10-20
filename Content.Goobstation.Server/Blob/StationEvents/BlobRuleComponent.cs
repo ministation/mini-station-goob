@@ -9,7 +9,7 @@ namespace Content.Goobstation.Server.Blob.StationEvents;
 public sealed partial class BlobSpawnRuleComponent : Component
 {
     [DataField("carrierBlobProtos", required: true), ViewVariables(VVAccess.ReadWrite)]
-    public List<string> CarrierBlobProtos = new()
+    public List<EntProtoId> CarrierBlobProtos = new()
     {
         "SpawnPointGhostBlobRat"
     };

@@ -15,6 +15,7 @@
   - Harpy # Goobstation - Same with Diona
   - Plasmaman # Goobstation - Do i need to fucking say it?
   - Feroxi # Mini - no Feroxi as ERT / event humanoids
+  - Synth # Goob
   components:
     - type: RandomHumanoidAppearance
       randomizeName: false

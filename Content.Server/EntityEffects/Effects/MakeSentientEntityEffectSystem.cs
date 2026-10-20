@@ -1,4 +1,5 @@
-﻿using Content.Server.Ghost.Roles.Components;
+using Content.Shared.Damage.Systems;
+using Content.Server.Ghost.Roles.Components;
 using Content.Server.Speech.Components;
 using Content.Shared.EntityEffects;
 using Content.Shared.EntityEffects.Effects;

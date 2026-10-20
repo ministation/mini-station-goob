@@ -2,6 +2,7 @@
 
 using Content.Server.Emoting.Systems;
 using Content.Shared.Chat.Prototypes;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Emoting.Components;
 
@@ -16,7 +17,7 @@ public sealed partial class BodyEmotesComponent : Component
     ///     Emote sounds prototype id for body emotes.
     /// </summary>
     [DataField("soundsId")]
-    public string? SoundsId;
+    public ProtoId<EmoteSoundsPrototype>? SoundsId;
 
     /// <summary>
     ///     Loaded emote sounds prototype used for body emotes.

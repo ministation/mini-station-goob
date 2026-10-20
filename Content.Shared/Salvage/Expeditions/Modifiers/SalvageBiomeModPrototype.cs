@@ -28,5 +28,5 @@ public sealed partial class SalvageBiomeModPrototype : IPrototype, ISalvageMod
     public bool Weather = true;
 
     [DataField("biome", required: true)]
-    public string? BiomePrototype;
+    public ProtoId<BiomeTemplatePrototype>? BiomePrototype;
 }

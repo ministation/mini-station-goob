@@ -26,7 +26,7 @@ namespace Content.Shared.Chemistry.Reaction
         /// Reactants required for the reaction to occur.
         /// </summary>
         [DataField("reactants")]
-        public Dictionary<string, ReactantPrototype> Reactants = new();
+        public Dictionary<ProtoId<ReagentPrototype>, ReactantPrototype> Reactants = new();
 
         /// <summary>
         ///     The minimum temperature the reaction can occur at.
@@ -56,7 +56,7 @@ namespace Content.Shared.Chemistry.Reaction
         /// Reagents created when the reaction occurs.
         /// </summary>
         [DataField("products")]
-        public Dictionary<string, FixedPoint2> Products = new();
+        public Dictionary<ProtoId<ReagentPrototype>, FixedPoint2> Products = new();
 
         /// <summary>
         /// Effects to be triggered when the reaction occurs.

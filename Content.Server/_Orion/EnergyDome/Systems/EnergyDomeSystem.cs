@@ -1,3 +1,4 @@
+using Content.Shared.Damage.Systems;
 using Content.Server._Orion.EnergyDome.Components;
 using Content.Server.DeviceLinking.Systems;
 using Content.Server.Power.EntitySystems;

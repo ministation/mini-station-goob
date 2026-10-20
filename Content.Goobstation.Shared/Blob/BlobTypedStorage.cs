@@ -9,7 +9,7 @@ using Robust.Shared.Prototypes;
 namespace Content.Goobstation.Shared.Blob;
 
 #region BlobTypedStorage
-public abstract class BlobTypedStorage<T> : IEnumerable<KeyValuePair<BlobTileType, T>> where T : notnull
+public abstract partial class BlobTypedStorage<T> : IEnumerable<KeyValuePair<BlobTileType, T>> where T : notnull
 {
     public virtual T Core { get; set; } = default!;
     public virtual T Invalid { get; set; } = default!;

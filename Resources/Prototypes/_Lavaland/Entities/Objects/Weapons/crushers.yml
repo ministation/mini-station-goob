@@ -193,7 +193,7 @@
   parent: [ BaseWeaponCrusher, BaseSalvageContraband ]
   id: WeaponCrusherHammer
   name: протокинетический молот
-  description: Мощное двуручное оружие, наносящее отбрасывающий удар и более тяжёлый урон, чем дробитель.
+  description: Мощное двуручное оружие, наносящее более тяжёлый урон, чем дробитель.
   components:
   - type: Sprite
     sprite: _Lavaland/Objects/Weapons/Crushers/crusher_hammer.rsi

@@ -7,6 +7,7 @@ using Content.Client.UserInterface.Systems;
 using Content.Shared._Shitmed.Medical.Surgery.Consciousness.Components; // Shitmed Change
 using Content.Shared.Damage;
 using Content.Goobstation.Maths.FixedPoint;
+using Content.Shared.Damage.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -84,7 +85,7 @@ public sealed class EntityHealthBarOverlay : Overlay
             // we use the status icon component bounds if specified otherwise use sprite
             var bounds = _entManager.GetComponentOrNull<StatusIconComponent>(uid)?.Bounds ?? _spriteSystem.GetLocalBounds((uid, spriteComponent));
             // Mini: same interpolated position the sprite is drawn at, otherwise the bar shakes while walking.
-            var worldPos = _transform.GetRenderWorldPosition((uid, xform));
+            var worldPos = _transform.GetWorldPosition(xform);
 
             if (!bounds.Translated(worldPos).Intersects(args.WorldAABB))
                 continue;

@@ -26,8 +26,11 @@ public sealed partial class WoundSystem
     /// <param name="parentWoundableEntity">Parent of the woundable entity.</param>
     /// <param name="woundableEntity">The entity containing the vulnerable body part</param>
     /// <param name="woundableComp">Woundable component of woundableEntity.</param>
-    public void DestroyWoundable(EntityUid parentWoundableEntity, EntityUid woundableEntity, WoundableComponent woundableComp)
+    public void DestroyWoundable(EntityUid parentWoundableEntity, EntityUid woundableEntity, WoundableComponent? woundableComp)
     {
+        if (!Resolve(woundableEntity, ref woundableComp, false))
+            return;
+
         if (!TryComp<BodyPartComponent>(woundableEntity, out var bodyPart))
             return;
 
@@ -126,14 +129,33 @@ public sealed partial class WoundSystem
             return;
 
         var bodyPart = Comp<BodyPartComponent>(parentWoundableEntity);
-        if (bodyPart.Body is not { } body)
+        if (bodyPart.Body == null
+            || !_amputating.Add(woundableEntity))
             return;
+
+        try
+        {
+            AmputateWoundableInternal(parentWoundableEntity, woundableEntity, woundableComp, bodyPart);
+        }
+        finally
+        {
+            _amputating.Remove(woundableEntity);
+        }
+    }
+
+    private readonly HashSet<EntityUid> _amputating = new();
+
+    private void AmputateWoundableInternal(EntityUid parentWoundableEntity,
+        EntityUid woundableEntity,
+        WoundableComponent woundableComp,
+        BodyPartComponent bodyPart)
+    {
+        var body = bodyPart.Body!.Value;
+        _audio.PlayPvs(woundableComp.WoundableDelimbedSound, body);
 
         _amputationDepth++;
         try
         {
-            _audio.PlayPvs(woundableComp.WoundableDelimbedSound, body);
-
             // Detach first (sets Severed) so DamageOnAmputate cannot re-trigger trauma on this part.
             AmputateWoundableSafely(parentWoundableEntity, woundableEntity, woundableComp);
 
@@ -193,7 +215,7 @@ public sealed partial class WoundSystem
         WoundableComponent? woundableComp = null,
         bool amputateChildrenSafely = false)
     {
-        if (!Resolve(woundableEntity, ref woundableComp)
+        if (!Resolve(woundableEntity, ref woundableComp, false)
             || !woundableComp.CanRemove
             || woundableComp.WoundableSeverity == WoundableSeverity.Severed)
             return;

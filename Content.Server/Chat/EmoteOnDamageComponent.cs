@@ -22,6 +22,7 @@ public sealed partial class EmoteOnDamageComponent : Component
     /// A dictionary of emotes threshold that will be randomly picked from.
     /// <see cref="EmotePrototype"/>
     /// </summary>
+    // CorvaxGoob-AutoEmote : Mini replaced the flat emote set with damage thresholds
     [DataField("emotes"), ViewVariables(VVAccess.ReadWrite)]
     public Dictionary<float, HashSet<string>> EmotesThreshold = new(); // CorvaxGoob-AutoEmote : Changes
 

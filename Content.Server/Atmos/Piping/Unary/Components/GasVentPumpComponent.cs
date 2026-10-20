@@ -4,6 +4,7 @@ using Content.Shared.Atmos;
 using Content.Shared.Atmos.Piping.Unary.Components;
 using Content.Shared.DeviceLinking;
 using Content.Shared.Guidebook;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Atmos.Piping.Unary.Components
 {
@@ -140,10 +141,10 @@ namespace Content.Server.Atmos.Piping.Unary.Components
         public bool CanLink = false;
 
         [DataField]
-        public string PressurizePort = "Pressurize";
+        public ProtoId<SinkPortPrototype> PressurizePort = "Pressurize";
 
         [DataField]
-        public string DepressurizePort = "Depressurize";
+        public ProtoId<SinkPortPrototype> DepressurizePort = "Depressurize";
 
         [DataField]
         public float PressurizePressure = Atmospherics.OneAtmosphere;

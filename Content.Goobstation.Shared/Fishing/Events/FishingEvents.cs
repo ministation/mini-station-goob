@@ -10,10 +10,6 @@ public sealed partial class ThrowFishingLureActionEvent : WorldTargetActionEvent
 
 public sealed partial class PullFishingLureActionEvent : InstantActionEvent;
 
-// Orion-Start
-[ByRefEvent]
-public readonly record struct FishCaughtEvent(EntProtoId FishId);
-// Orion-End
 
 [Serializable, NetSerializable]
 public sealed class ActiveFishingSpotComponentState : ComponentState
@@ -30,4 +26,14 @@ public sealed class ActiveFishingSpotComponentState : ComponentState
         FishingStartTime = fishingStartTime;
         AttachedFishingLure = attachedFishingLure;
     }
+}
+
+// Mini/Orion: both the upstream entity payload and the Mini prototype payload are
+// carried in one event so all raise sites keep compiling.
+[ByRefEvent]
+public readonly record struct FishCaughtEvent(EntityUid? Fish, EntProtoId? FishId)
+{
+    public FishCaughtEvent(EntityUid fish) : this(fish, null) { }
+
+    public FishCaughtEvent(EntProtoId fishId) : this(null, fishId) { }
 }

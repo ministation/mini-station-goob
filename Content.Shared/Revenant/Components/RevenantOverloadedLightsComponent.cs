@@ -25,7 +25,7 @@ public sealed partial class RevenantOverloadedLightsComponent : Component
     public float ZapRange = 7f;
 
     [DataField("zapBeamEntityId")]
-    public string ZapBeamEntityId = "LightningRevenant";
+    public EntProtoId ZapBeamEntityId = "LightningRevenant";
 
     public float? OriginalEnergy;
     public bool OriginalEnabled = false;

@@ -166,7 +166,7 @@ public sealed class TypanWarCaptureZoneOverlay : Overlay
         if (zone.FlagEntity is { } flag && _ent.EntityExists(flag))
             anchor = flag;
 
-        var worldPos = _xform!.GetRenderWorldPosition(anchor);
+        var worldPos = _xform!.GetWorldPosition(anchor);
 
         var fillColor = zone.CapturingOwner switch
         {

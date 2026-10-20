@@ -48,7 +48,7 @@ public sealed partial class SingularityGeneratorComponent : Component
     ///     The prototype ID used to spawn a singularity.
     /// </summary>
     [DataField("spawnId")]
-    public string? SpawnPrototype = "Singularity";
+    public EntProtoId? SpawnPrototype = "Singularity";
 
     /// <summary>
     /// The masks the raycast should not go through

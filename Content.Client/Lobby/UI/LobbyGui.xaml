@@ -35,6 +35,7 @@
                             <Button Name="Guidebook" Text="{Loc 'server-info-guidebook-button'}" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                             <changelog:ChangelogButton Name="Changelog" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                             <vote:VoteCallMenuButton Name="CallVoteButton" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                            <cc:CommandButton Command="achievements" Text="{Loc 'achievements-button'}" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/> <!-- Goobstation - Achievements -->
                             <!-- <Button Name="Wiki" Text="Р’РёРєРё" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/> -->
                             <controls:VSpacer Spacing="25"/>
                             <TextureRect TextureScale="0.2 0.2" Stretch="KeepCentered" TexturePath="/Textures/Interface/main_logo.png" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
@@ -84,7 +85,7 @@
                         </ScrollContainer>
                     </PanelContainer>
                     <!-- Right Panel - Chat -->
-                    <PanelContainer StyleClasses="LobbyBackground" Name="RightPanel" MinWidth="300" HorizontalExpand="True" VerticalExpand="True">
+                    <PanelContainer StyleClasses="LobbyBackground" Name="RightSide" Access="Public" MinWidth="300" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Orientation="Vertical" MinWidth="300" VerticalExpand="True" HorizontalExpand="True" HorizontalAlignment="Stretch" Margin="8 8 8 8">
                             <lobbyUi:ServerListBox Name="ServerListBox" Access="Public" MinSize="0 0" VerticalExpand="False" HorizontalExpand="True" Margin="2 2 2 2" HorizontalAlignment="Stretch"/>
                             <widgets:ChatBox Name="Chat" Access="Public" MinWidth="300" VerticalExpand="True" Margin="4 0 4 4" HorizontalExpand="False" HorizontalAlignment="Stretch"/>

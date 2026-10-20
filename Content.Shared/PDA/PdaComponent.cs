@@ -25,7 +25,7 @@ namespace Content.Shared.PDA
         // PDA's and no nice way to inherit the other fields from the ItemSlot data definition, this makes the yaml much
         // nicer to read.
         [DataField("id")]
-        public string? IdCard;
+        public EntProtoId? IdCard;
 
         [ViewVariables] public EntityUid? ContainedId;
         [ViewVariables] public EntityUid? ContainedPen;//goob addition for pen

@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 
+using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Robust.Shared.Serialization;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Damage
 {
@@ -21,31 +22,11 @@ namespace Content.Shared.Damage
     public partial class DamageModifierSet
     {
         [DataField("coefficients")]
-        public Dictionary<string, float> Coefficients = new();
+        public Dictionary<ProtoId<DamageTypePrototype>, float> Coefficients = new();
 
         [DataField("flatReductions")]
-        public Dictionary<string, float> FlatReduction = new();
+        public Dictionary<ProtoId<DamageTypePrototype>, float> FlatReduction = new();
 
-        /// <summary>
-        /// Goobstation.
-        /// Whether this modifier set will ignore incoming damage partial armor penetration, positive or negative.
-        /// Used mainly for species modifier sets.
-        /// </summary>
-        [DataField(customTypeSerializer: typeof(FlagSerializer<ArmorPierceFlags>))]
-        public int IgnoreArmorPierceFlags = (int) PartialArmorPierceFlags.None;
+
     }
-
-    // Goobstation start
-    public sealed class ArmorPierceFlags;
-
-    [Flags, Serializable]
-    [FlagsFor(typeof(ArmorPierceFlags))]
-    public enum PartialArmorPierceFlags
-    {
-        None = 0,
-        Positive = 1 << 0,
-        Negative = 1 << 1,
-        All = Positive | Negative,
-    }
-    // Goobstation end
 }

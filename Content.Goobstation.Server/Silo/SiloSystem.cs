@@ -21,12 +21,12 @@ using Timer = Robust.Shared.Timing.Timer;
 
 namespace Content.Goobstation.Server.Silo;
 
-public sealed class SiloSystem : SharedSiloSystem
+public sealed partial class SiloSystem : SharedSiloSystem
 {
-    [Dependency] private readonly LatheSystem _lathe = default!;
-    [Dependency] private readonly PvsOverrideSystem _pvs = default!;
-    [Dependency] private readonly PvsSessionOverrideSystem _pvsSession = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
+    [Dependency] private LatheSystem _lathe = default!;
+    [Dependency] private PvsOverrideSystem _pvs = default!;
+    [Dependency] private PvsSessionOverrideSystem _pvsSession = default!;
+    [Dependency] private IPlayerManager _player = default!;
 
     public override void Initialize()
     {

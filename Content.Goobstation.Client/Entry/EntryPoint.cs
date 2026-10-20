@@ -7,81 +7,42 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Mini: голосовой чат клиента собирается только по флагу -p:MiniVoiceChat=True (define VOICECHAT).
-// Он держит сырые типы Lidgren/NAudio/Concentus, которые клиентская песочница движка запрещает,
-// поэтому такой клиент нужно запускать с ROBUST_DISABLE_SANDBOX=1. Обычные сборки войс не содержат
-// и стартуют нормально; в упакованные FULL_RELEASE-клиенты он не попадает.
-#if VOICECHAT
-using Content.Goobstation.Client.Voice;
-#endif
-using Content.Goobstation.Client.JoinQueue;
-using Content.Goobstation.Common.ServerCurrency;
-using Content.Shared.Input;
-using Robust.Client.Input;
+using Content.Goobstation.Client.VoiceChat;
 using Robust.Shared.ContentPack;
-using Robust.Shared.Input;
-using Robust.Shared.Input.Binding;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Goobstation.Client.Entry;
 
-public sealed class EntryPoint : GameClient
+public sealed partial class EntryPoint : GameClient
 {
-#if VOICECHAT
-    // Mini: voice chat (restored from Goobstation upstream, was deleted by CorvaxGoob)
-    [Dependency] private readonly IVoiceChatManager _voiceManager = default!;
-#endif
-    [Dependency] private readonly IInputManager _inputManager = default!;
-    // [Dependency] private readonly JoinQueueManager _joinQueue = default!; // deleted by CorvaxGoob
-    // [Dependency] private readonly PollManager _pollManager = default!; // deleted by CorvaxGoob
-    // [Dependency] private readonly ICommonCurrencyManager _currMan = default!; // deleted by CorvaxGoob
+    [Dependency] private VoiceChatManager _voiceManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    // [Dependency] private JoinQueueManager _joinQueue = default!; // deleted by CorvaxGoob
+    // [Dependency] private PollManager _pollManager = default!; // deleted by CorvaxGoob
+    // [Dependency] private ICommonCurrencyManager _currMan = default!; // deleted by CorvaxGoob
 
     public override void Init()
     {
         // ContentGoobClientIoC.Register(); CorvaxGoob
 
-#if VOICECHAT
         // Mini: register voice chat before the graph is built
-        IoCManager.Register<IVoiceChatManager, VoiceChatClientManager>();
-#endif
+        IoCManager.Register<VoiceChatManager>();
 
         IoCManager.BuildGraph();
         IoCManager.InjectDependencies(this);
 
-#if VOICECHAT
-        // Mini: push-to-talk binding
-        _inputManager.SetInputCommand(
-            ContentKeyFunctions.VoiceChatPushToTalk,
-            InputCmdHandler.FromDelegate(
-                enabled: _ => _voiceManager.SetTransmitting(true),
-                disabled: _ => _voiceManager.SetTransmitting(false)));
-#endif
+        _prototypeManager.RegisterIgnore("achievement");
     }
 
     public override void PostInit()
     {
         base.PostInit();
 
-#if VOICECHAT
-        _voiceManager.Initalize(); // Mini: voice chat
-#endif
+        _voiceManager.Initialize();
         // _joinQueue.Initialize(); // deleted by CorvaxGoob
         // _pollManager.Initialize(); // deleted by CorvaxGoob
         // _currMan.Initialize(); // deleted by CorvaxGoob
-    }
-
-    public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
-    {
-        base.Update(level, frameEventArgs);
-
-        switch (level)
-        {
-            case ModUpdateLevel.FramePreEngine:
-#if VOICECHAT
-                _voiceManager.Update(); // Mini: voice chat
-#endif
-                break;
-        }
     }
 
     protected override void Dispose(bool disposing)
@@ -89,8 +50,6 @@ public sealed class EntryPoint : GameClient
         base.Dispose(disposing);
 
         // _currMan.Shutdown(); // deleted by CorvaxGoob
-#if VOICECHAT
         _voiceManager.Shutdown(); // Mini: voice chat
-#endif
     }
 }

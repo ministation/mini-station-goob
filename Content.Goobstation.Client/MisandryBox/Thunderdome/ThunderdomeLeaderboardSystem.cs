@@ -10,11 +10,11 @@ namespace Content.Goobstation.Client.MisandryBox.Thunderdome;
 /// <summary>
 /// System that manages the Thunderdome leaderboard overlay.
 /// </summary>
-public sealed class ThunderdomeLeaderboardSystem : EntitySystem
+public sealed partial class ThunderdomeLeaderboardSystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlayMan = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private IOverlayManager _overlayMan = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
 
     private ThunderdomeLeaderboardOverlay _overlay = default!;
 

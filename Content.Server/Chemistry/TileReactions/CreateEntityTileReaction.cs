@@ -16,7 +16,7 @@ namespace Content.Server.Chemistry.TileReactions;
 public sealed partial class CreateEntityTileReaction : ITileReaction
 {
     [DataField(required: true)]
-    public string Entity = default!;
+    public EntProtoId Entity = default!;
 
     [DataField]
     public FixedPoint2 Usage = FixedPoint2.New(1);

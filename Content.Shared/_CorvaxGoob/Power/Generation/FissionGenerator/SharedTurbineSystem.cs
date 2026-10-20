@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 jhrushbe <capnmerry@gmail.com>
+// SPDX-FileCopyrightText: 2025 jhrushbe <capnmerry@gmail.com>
 // SPDX-FileCopyrightText: 2025 rottenheadphones <juaelwe@outlook.com>
 // SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
 //
@@ -7,6 +7,8 @@
 
 using Content.Shared.Administration.Logs;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Electrocution;
 using Content.Shared.Examine;
@@ -197,7 +199,7 @@ public abstract class SharedTurbineSystem : EntitySystem
         if (!_entityManager.TryGetComponent<DamageableComponent>(uid, out var damageableComponent))
             return;
 
-        _damageableSystem.SetAllDamage(uid, damageableComponent, 0);
+        _damageableSystem.SetAllDamage((uid, damageableComponent), 0);
     }
 
     protected void UpdateHealthIndicators(EntityUid uid, TurbineComponent comp)

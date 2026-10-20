@@ -17,11 +17,11 @@ namespace Content.Goobstation.Client.MisandryBox;
 /// Re-applies movement speed modifiers after game state when input-swap is active on the local player.
 /// Only runs while the smite is present, unlike the previous global resync on every state.
 /// </summary>
-public sealed class InputSwapClientSystem : EntitySystem
+public sealed partial class InputSwapClientSystem : EntitySystem
 {
-    [Dependency] private readonly MovementSpeedModifierSystem _move = default!;
-    [Dependency] private readonly IClientGameStateManager _stateMan = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
+    [Dependency] private MovementSpeedModifierSystem _move = default!;
+    [Dependency] private IClientGameStateManager _stateMan = default!;
+    [Dependency] private IPlayerManager _player = default!;
 
     public override void Initialize()
     {

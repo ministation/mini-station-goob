@@ -25,7 +25,7 @@ public sealed partial class VocalComponent : Component
 
     [DataField("screamId")]
     [AutoNetworkedField]
-    public string ScreamId = "Scream";
+    public ProtoId<EmotePrototype> ScreamId = "Scream";
 
     [DataField("wilhelm")]
     [AutoNetworkedField]
@@ -37,7 +37,7 @@ public sealed partial class VocalComponent : Component
 
     [DataField("screamAction")]
     [AutoNetworkedField]
-    public string? ScreamAction = "ActionScream";
+    public EntProtoId? ScreamAction = "ActionScream";
 
     [DataField("screamActionEntity")]
     [AutoNetworkedField]

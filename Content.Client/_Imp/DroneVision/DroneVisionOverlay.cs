@@ -107,8 +107,8 @@ public sealed class DroneVisionOverlay : Overlay
         if (xform.MapID != map || !CanSee(uid, sprite))
             return;
 
-        var position = _transform.GetRenderWorldPosition((uid, xform));
-        var rotation = _transform.GetRenderWorldRotation((uid, xform));
+        var position = _transform.GetWorldPosition(xform);
+        var rotation = _transform.GetWorldRotation(xform);
 
         var originalColor = sprite.Color;
         sprite.Color = color.WithAlpha(alpha);

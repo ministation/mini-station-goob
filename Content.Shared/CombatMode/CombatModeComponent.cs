@@ -35,7 +35,7 @@ namespace Content.Shared.CombatMode
         #endregion
 
         [DataField("combatToggleAction")]
-        public string CombatToggleAction = "ActionCombatModeToggle";
+        public EntProtoId CombatToggleAction = "ActionCombatModeToggle";
 
         [DataField, AutoNetworkedField]
         public EntityUid? CombatToggleActionEntity;

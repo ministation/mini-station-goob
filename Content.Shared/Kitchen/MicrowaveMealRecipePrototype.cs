@@ -23,13 +23,13 @@ namespace Content.Shared.Kitchen
         public string Group = "Other";
 
         [DataField("reagents")]
-        private Dictionary<string, FixedPoint2> _ingsReagents = new();
+        private Dictionary<ProtoId<ReagentPrototype>, FixedPoint2> _ingsReagents = new();
 
         [DataField("solids")]
-        private Dictionary<string, FixedPoint2> _ingsSolids = new ();
+        private Dictionary<EntProtoId, FixedPoint2> _ingsSolids = new ();
 
         [DataField("result")]
-        public string Result { get; private set; } = string.Empty;
+        public EntProtoId Result { get; private set; } = string.Empty;
 
         [DataField("time")]
         public uint CookTime { get; private set; } = 5;
@@ -37,8 +37,8 @@ namespace Content.Shared.Kitchen
         public string Name => Loc.TryGetString(_name, out var name) ? name : _name;
 
         // TODO Turn this into a ReagentQuantity[]
-        public IReadOnlyDictionary<string, FixedPoint2> IngredientsReagents => _ingsReagents;
-        public IReadOnlyDictionary<string, FixedPoint2> IngredientsSolids => _ingsSolids;
+        public IReadOnlyDictionary<ProtoId<ReagentPrototype>, FixedPoint2> IngredientsReagents => _ingsReagents;
+        public IReadOnlyDictionary<EntProtoId, FixedPoint2> IngredientsSolids => _ingsSolids;
 
         /// <summary>
         /// Is this recipe unavailable in normal circumstances?

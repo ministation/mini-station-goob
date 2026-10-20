@@ -29,7 +29,7 @@ public abstract partial class SharedLightningComponent : Component
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("lightningPrototype")]
-    public string LightningPrototype = "Lightning";
+    public EntProtoId LightningPrototype = "Lightning";
 
     /// <summary>
     /// The target that the lightning will Arc to.

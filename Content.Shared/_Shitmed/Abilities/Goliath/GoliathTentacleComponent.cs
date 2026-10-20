@@ -12,7 +12,7 @@ namespace Content.Shared._Shitmed.GoliathTentacle;
 public sealed partial class GoliathTentacleComponent : Component
 {
     [DataField]
-    public string? Action = "ActionGoliathTentacleCrew";
+    public EntProtoId? Action = "ActionGoliathTentacleCrew";
 
     [DataField, AutoNetworkedField]
     public EntityUid? ActionEntity;

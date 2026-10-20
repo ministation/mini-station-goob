@@ -325,6 +325,7 @@ namespace Content.Server.Database
 
             OnCustomModelCreating(modelBuilder);
             ModelBan.OnModelCreating(modelBuilder);
+            GoobOnModelCreating(modelBuilder); // Goob
         }
 
         public virtual IQueryable<AdminLog> SearchLogs(IQueryable<AdminLog> query, string searchText)

@@ -16,7 +16,7 @@ public sealed partial class WorldControllerComponent : Component
     ///     The prototype to use for chunks on this world map.
     /// </summary>
     [DataField("chunkProto")]
-    public string ChunkProto = "WorldChunk";
+    public EntProtoId ChunkProto = "WorldChunk";
 
     /// <summary>
     ///     An index of chunks owned by the controller.

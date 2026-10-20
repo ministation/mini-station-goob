@@ -15,13 +15,13 @@ using Robust.Shared.Timing;
 
 namespace Content.Goobstation.Client.Overlays;
 
-public sealed class ThermalVisionOverlay : Overlay
+public sealed partial class ThermalVisionOverlay : Overlay
 {
-    [Dependency] private readonly IPrototypeManager _protoMan = default!;
-    [Dependency] private readonly IEntityManager _entity = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IEyeManager _eyeManager = default!;
+    [Dependency] private IPrototypeManager _protoMan = default!;
+    [Dependency] private IEntityManager _entity = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IEyeManager _eyeManager = default!;
 
     private readonly TransformSystem _transform;
     private readonly SpriteSystem _sprite;
@@ -138,8 +138,8 @@ public sealed class ThermalVisionOverlay : Overlay
         if (xform.MapID != map || !CanSee(uid, sprite))
             return;
 
-        var position = _transform.GetRenderWorldPosition((uid, xform));
-        var rotation = _transform.GetRenderWorldRotation((uid, xform));
+        var position = _transform.GetWorldPosition(xform);
+        var rotation = _transform.GetWorldRotation(xform);
 
         var originalColor = sprite.Color;
         Dictionary<int, (ShaderInstance? shader, Color color)> layerData = new();
@@ -193,7 +193,7 @@ public sealed class ThermalVisionOverlay : Overlay
     }
 }
 
-public record struct ThermalVisionRenderEntry(
+public partial record struct ThermalVisionRenderEntry(
     Entity<SpriteComponent, TransformComponent> Ent,
     MapId? Map,
     Angle EyeRot);

@@ -24,19 +24,23 @@ using Content.Shared.Timing; // Shitmed Change
 using Content.Shared._Shitmed.Damage; // Shitmed Change
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
 using Content.Shared.WhiteDream.BloodCult.Constructs;
+using Content.Shared.Damage.Systems;
+using Content.Shared.Damage.Components;
+using Robust.Shared.Prototypes;
+using Content.Shared.Damage.Prototypes;
 
 namespace Content.Goobstation.Shared.Religion;
 
-public sealed class WeakToHolySystem : EntitySystem
+public sealed partial class WeakToHolySystem : EntitySystem
 {
-    [Dependency] private readonly DamageableSystem _damageableSystem = default!;
-    [Dependency] private readonly InventorySystem _inventorySystem = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly GoobBibleSystem _goobBible = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly WoundSystem _wound = default!;
-    [Dependency] private readonly UseDelaySystem _useDelay = default!;
-    [Dependency] private readonly HereticSystem _heretic = default!;
+    [Dependency] private DamageableSystem _damageableSystem = default!;
+    [Dependency] private InventorySystem _inventorySystem = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private GoobBibleSystem _goobBible = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private WoundSystem _wound = default!;
+    [Dependency] private UseDelaySystem _useDelay = default!;
+    [Dependency] private HereticSystem _heretic = default!;
 
 
     public override void Initialize()
@@ -68,14 +72,34 @@ public sealed class WeakToHolySystem : EntitySystem
 
     #region Holy Damage Dealing
 
+    private static readonly DamageModifierSet HolyImmunity = new()
+    {
+        Coefficients = new Dictionary<ProtoId<DamageTypePrototype>, float>
+        {
+            { "Holy", 0f },
+        },
+    };
+
     private void OnHolyDamageModify(Entity<DamageableComponent> ent, ref DamageModifyEvent args)
     {
+        if (!args.Damage.DamageDict.TryGetValue("Holy", out var holy) || holy <= 0)
+            return;
+
+        // Only filter Holy on bodies / body parts — not random damageables.
+        if (!HasComp<BodyComponent>(ent) && !HasComp<BodyPartComponent>(ent))
+            return;
+
         // Resolve the body that owns WeakToHoly / antag comps (damage often hits body parts).
         var unholyTarget = args.Target;
         if (TryComp(ent, out BodyPartComponent? part) && part.Body is { } bodyUid)
             unholyTarget = bodyUid;
         else if (HasComp<BodyComponent>(ent))
             unholyTarget = ent.Owner;
+
+        if (!TryComp<BodyComponent>(unholyTarget, out var body)
+            || !_body.TryGetRootPart(unholyTarget, out var rootPart, body: body)
+            || !HasDamageableWoundable(rootPart.Value))
+            return;
 
         var unholyEvent = new DamageUnholyEvent(unholyTarget, args.Origin);
         RaiseLocalEvent(unholyTarget, ref unholyEvent);
@@ -89,18 +113,10 @@ public sealed class WeakToHolySystem : EntitySystem
         if (!unholyEvent.ShouldTakeHoly && IsObviousUnholyAntag(unholyTarget))
             unholyEvent.ShouldTakeHoly = true;
 
-        // Only filter Holy on bodies / body parts — not random damageables.
-        if (!HasComp<BodyComponent>(ent) && !HasComp<BodyPartComponent>(ent))
+        if (unholyEvent.ShouldTakeHoly)
             return;
 
-        var holyCoefficient = unholyEvent.ShouldTakeHoly ? 1f : 0f;
-        args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, new DamageModifierSet
-        {
-            Coefficients = new Dictionary<string, float>
-            {
-                { "Holy", holyCoefficient },
-            },
-        });
+        args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, HolyImmunity);
     }
 
     private bool IsObviousUnholyAntag(EntityUid uid)
@@ -111,6 +127,17 @@ public sealed class WeakToHolySystem : EntitySystem
                || HasComp<CosmicCultComponent>(uid)
                || HasComp<DevilComponent>(uid)
                || HasComp<ShadowlingComponent>(uid);
+    }
+
+    private bool HasDamageableWoundable(EntityUid rootPart)
+    {
+        foreach (var woundable in _wound.GetAllWoundableChildren(rootPart))
+        {
+            if (HasComp<DamageableComponent>(woundable))
+                return true;
+        }
+
+        return false;
     }
 
     private void OnUnholyItemDamage(Entity<WeakToHolyComponent> uid, ref DamageUnholyEvent args)

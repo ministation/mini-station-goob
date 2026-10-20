@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 
+using Robust.Shared.Prototypes;
+
 namespace Content.Server.NPC.HTN;
 
 /// <summary>
@@ -12,5 +14,5 @@ namespace Content.Server.NPC.HTN;
 public sealed partial class HTNCompoundTask : HTNTask, IHTNCompound
 {
     [DataField("task", required: true)]
-    public string Task = string.Empty;
+    public ProtoId<HTNCompoundPrototype> Task = string.Empty;
 }

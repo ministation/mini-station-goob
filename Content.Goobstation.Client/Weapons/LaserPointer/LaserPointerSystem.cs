@@ -18,18 +18,18 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Goobstation.Client.Weapons.LaserPointer;
 
-public sealed class LaserPointerSystem : SharedLaserPointerSystem
+public sealed partial class LaserPointerSystem : SharedLaserPointerSystem
 {
     private const float UpdateInterval = 0.05f;
 
-    [Dependency] private readonly IOverlayManager _overlay = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IEyeManager _eye = default!;
-    [Dependency] private readonly IInputManager _input = default!;
-    [Dependency] private readonly IStateManager _state = default!;
-    [Dependency] private readonly TransformSystem _transform = default!;
-    [Dependency] private readonly HandsSystem _hands = default!;
+    [Dependency] private IOverlayManager _overlay = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IEyeManager _eye = default!;
+    [Dependency] private IInputManager _input = default!;
+    [Dependency] private IStateManager _state = default!;
+    [Dependency] private TransformSystem _transform = default!;
+    [Dependency] private HandsSystem _hands = default!;
 
     private float _updateAccumulator;
     private EntityUid? _lastHovered;

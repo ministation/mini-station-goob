@@ -28,7 +28,7 @@ async function main() {
     const { merged_at, body, user } = pr.data;
 
     // Remove comments from the body
-    commentlessBody = body.replace(CommentRegex, '');
+    const commentlessBody = (body || '').replace(CommentRegex, '');
 
     // Get author
     const headerMatch = HeaderRegex.exec(commentlessBody);
@@ -47,7 +47,7 @@ async function main() {
     const { mini, goob } = getChanges(commentlessBody);
 
     if (mini.length === 0 && goob.length === 0) {
-        console.log("No changes found, skipping");
+        console.log("No valid changes found, skipping");
         return;
     }
 

@@ -1,4 +1,4 @@
-﻿using Content.Shared._Lavaland.Megafauna.Components;
+using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Megafauna.Events;
 using Content.Shared.Coordinates.Helpers;
 using Robust.Shared.Audio;
@@ -15,6 +15,7 @@ public sealed class MegafaunaBlinkSystem : EntitySystem
 {
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private EntityQuery<MegafaunaBlinkComponent> _blinkQuery;

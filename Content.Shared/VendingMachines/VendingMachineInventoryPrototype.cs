@@ -13,12 +13,12 @@ namespace Content.Shared.VendingMachines
         public string ID { get; private set; } = default!;
 
         [DataField("startingInventory")]
-        public Dictionary<string, uint> StartingInventory { get; private set; } = new();
+        public Dictionary<EntProtoId, uint> StartingInventory { get; private set; } = new();
 
         [DataField("emaggedInventory")]
-        public Dictionary<string, uint>? EmaggedInventory { get; private set; }
+        public Dictionary<EntProtoId, uint>? EmaggedInventory { get; private set; }
 
         [DataField("contrabandInventory")]
-        public Dictionary<string, uint>? ContrabandInventory { get; private set; }
+        public Dictionary<EntProtoId, uint>? ContrabandInventory { get; private set; }
     }
 }

@@ -14,6 +14,8 @@ using Content.Shared.Popups;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Coordinates;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Eui;
 using Robust.Shared.Containers;
@@ -84,7 +86,7 @@ public class SharedCorticalBorerSystem : EntitySystem
         RemoveRegistryComponents(ent, comp.RemoveOnInfest);
 
         if (TryComp<DamageableComponent>(ent, out var damComp))
-            _damage.SetAllDamage(ent, damComp, 0);
+            _damage.SetAllDamage((ent, damComp), 0);
     }
 
     public bool TryEjectBorer(Entity<CorticalBorerComponent> ent)

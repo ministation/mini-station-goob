@@ -193,7 +193,7 @@ public sealed partial class MoveToOperator : HTNOperator, IHtnConditionalShutdow
                 // Mini: the owner or the target can be deleted between planning and task
                 // startup — ToMapCoordinates then logs an error with an expensive stack
                 // trace on every NPC update, so skip path pruning instead.
-                && _entManager.EntityExists(coordinates.EntityId)
+                && _entManager.EntityExists(coordinates.EntityId) // Goob - Fix (deleted target coordinates)
                 && _entManager.EntityExists(targetCoordinates.EntityId))
             {
                 var mapCoords = _transform.ToMapCoordinates(coordinates);

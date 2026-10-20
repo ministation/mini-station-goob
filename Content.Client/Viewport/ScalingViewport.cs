@@ -145,7 +145,7 @@ namespace Content.Client.Viewport
             EnsureViewportCreated();
 
             DebugTools.AssertNotNull(_viewport);
-
+            var transform = handle.DrawingHandleScreen.GetTransform(); //goobstation
             _viewport!.Render();
 
             if (_queuedScreenshots.Count != 0)
@@ -165,13 +165,12 @@ namespace Content.Client.Viewport
 
             var drawBox = GetDrawBox();
             var drawBoxGlobal = drawBox.Translated(GlobalPixelPosition);
-            var uiMatrix = handle.DrawingHandleScreen.GetTransform();
             _viewport.RenderScreenOverlaysBelow(handle, this, drawBoxGlobal);
             handle.DrawingHandleScreen.SetTransform(Matrix3x2.Identity);
             handle.DrawingHandleScreen.DrawTextureRect(_viewport.RenderTarget.Texture, drawBoxGlobal);
-            handle.DrawingHandleScreen.SetTransform(uiMatrix);
+            handle.DrawingHandleScreen.SetTransform(transform);
             _viewport.RenderScreenOverlaysAbove(handle, this, drawBoxGlobal);
-            handle.DrawingHandleScreen.SetTransform(uiMatrix);
+            handle.DrawingHandleScreen.SetTransform(transform);
         }
 
         public void Screenshot(CopyPixelsDelegate<Rgba32> callback)

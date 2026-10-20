@@ -60,6 +60,7 @@ public sealed class PopupUIController : UIController, IOnStateEntered<GameplaySt
         var updatedPosition = position - new Vector2(0f, MathF.Min(8f, 12f * (popup.TotalTime * popup.TotalTime + popup.TotalTime)));
         var font = _smallFont;
         var color = Color.White.WithAlpha(alpha);
+        var outline = new TextOutline(2f, Color.Black.WithAlpha(alpha)); // Goob
 
         switch (popup.Type)
         {
@@ -85,7 +86,7 @@ public sealed class PopupUIController : UIController, IOnStateEntered<GameplaySt
         }
 
         var dimensions = handle.GetDimensions(font, popup.Text, scale);
-        handle.DrawString(font, updatedPosition - dimensions / 2f, popup.Text, scale, color.WithAlpha(alpha));
+        handle.DrawString(font, updatedPosition - dimensions / 2f + popup.RandomOffset, popup.Text, scale, color.WithAlpha(alpha), outline); // Goob
     }
 
     /// <summary>

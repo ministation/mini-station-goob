@@ -11,16 +11,16 @@ namespace Content.Server.Tabletop
     {
 
         [DataField("prototypePieceWhite")]
-        public string PrototypePieceWhite = default!;
+        public EntProtoId PrototypePieceWhite = default!;
 
         [DataField("prototypeCrownWhite")]
-        public string PrototypeCrownWhite = default!;
+        public EntProtoId PrototypeCrownWhite = default!;
 
         [DataField("prototypePieceBlack")]
-        public string PrototypePieceBlack = default!;
+        public EntProtoId PrototypePieceBlack = default!;
 
         [DataField("prototypeCrownBlack")]
-        public string PrototypeCrownBlack = default!;
+        public EntProtoId PrototypeCrownBlack = default!;
 
         public override void SetupTabletop(TabletopSession session, IEntityManager entityManager)
         {

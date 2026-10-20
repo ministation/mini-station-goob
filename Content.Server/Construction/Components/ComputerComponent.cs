@@ -8,6 +8,6 @@ namespace Content.Server.Construction.Components
     public sealed partial class ComputerComponent : Component
     {
         [DataField("board")]
-        public string? BoardPrototype;
+        public EntProtoId? BoardPrototype;
     }
 }

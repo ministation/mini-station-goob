@@ -2,6 +2,7 @@
 
 using JetBrains.Annotations;
 using Robust.Client.Graphics;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client.IconSmoothing
 {
@@ -40,7 +41,7 @@ namespace Content.Client.IconSmoothing
         public string StateBase { get; set; } = string.Empty;
 
         [DataField("shader")]
-        public string? Shader;
+        public ProtoId<ShaderPrototype>? Shader;
 
         /// <summary>
         ///     Mode that controls how the icon should be selected.

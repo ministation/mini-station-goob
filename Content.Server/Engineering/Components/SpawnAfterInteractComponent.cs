@@ -8,7 +8,7 @@ namespace Content.Server.Engineering.Components
     public sealed partial class SpawnAfterInteractComponent : Component
     {
         [DataField("prototype")]
-        public string? Prototype { get; private set; }
+        public EntProtoId? Prototype { get; private set; }
 
         [DataField("ignoreDistance")]
         public bool IgnoreDistance { get; private set; }

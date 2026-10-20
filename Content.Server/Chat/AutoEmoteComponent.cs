@@ -4,6 +4,7 @@ namespace Content.Server.Chat;
 
 using Content.Server.Chat.Systems;
 using Content.Shared.Chat.Prototypes;
+using Robust.Shared.Prototypes;
 
 /// <summary>
 /// Causes an entity to automatically emote at a set interval.
@@ -16,7 +17,7 @@ public sealed partial class AutoEmoteComponent : Component
     /// <see cref="AutoEmotePrototype"/>
     /// </summary>
     [DataField("emotes"), ViewVariables(VVAccess.ReadOnly)]
-    public HashSet<string> Emotes = new HashSet<string>();
+    public HashSet<ProtoId<AutoEmotePrototype>> Emotes = new();
 
     /// <summary>
     /// A dictionary storing the time of the next emote attempt for each emote.

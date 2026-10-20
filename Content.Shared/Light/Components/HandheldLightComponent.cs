@@ -39,7 +39,7 @@ public sealed partial class HandheldLightComponent : Component
     public bool AddPrefix = false;
 
     [DataField("toggleAction")]
-    public string ToggleAction = "ActionToggleLight";
+    public EntProtoId ToggleAction = "ActionToggleLight";
 
     /// <summary>
     /// Whether or not the light can be toggled via standard interactions

@@ -16,12 +16,12 @@ namespace Content.Goobstation.Client.MisandryBox.Thunderdome;
 /// <summary>
 /// Overlay that renders Thunderdome leaderboards in screen space with FOV support and background.
 /// </summary>
-public sealed class ThunderdomeLeaderboardOverlay : Overlay
+public sealed partial class ThunderdomeLeaderboardOverlay : Overlay
 {
-    [Dependency] private readonly IEntityManager _entity = default!;
-    [Dependency] private readonly IResourceCache _resourceCache = default!;
-    [Dependency] private readonly IPlayerManager _playerMgr = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IEntityManager _entity = default!;
+    [Dependency] private IResourceCache _resourceCache = default!;
+    [Dependency] private IPlayerManager _playerMgr = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
 
     private readonly TransformSystem _transform;
     private readonly ExamineSystemShared _examine;

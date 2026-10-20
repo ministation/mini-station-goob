@@ -29,18 +29,18 @@ namespace Content.Goobstation.Server.Xenobiology;
 /// </summary>
 public sealed partial class XenoVacuumSystem : EntitySystem
 {
-    [Dependency] private readonly InventorySystem _inventorySystem = default!;
-    [Dependency] private readonly ThrowingSystem _throw = default!;
-    [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedStunSystem _stun = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
-    [Dependency] private readonly HTNSystem _htn = default!;
-    [Dependency] private readonly UseDelaySystem _useDelay = default!;
-    [Dependency] private readonly EntityStorageSystem _entStorage = default!;
-    [Dependency] private readonly SlimeLatchSystem _latch = default!;
+    [Dependency] private InventorySystem _inventorySystem = default!;
+    [Dependency] private ThrowingSystem _throw = default!;
+    [Dependency] private SharedContainerSystem _containerSystem = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private EntityWhitelistSystem _whitelist = default!;
+    [Dependency] private HTNSystem _htn = default!;
+    [Dependency] private UseDelaySystem _useDelay = default!;
+    [Dependency] private EntityStorageSystem _entStorage = default!;
+    [Dependency] private SlimeLatchSystem _latch = default!;
 
     private const string ReleaseDelayId = "release";
     private const string SuctionDelayId = "suction";

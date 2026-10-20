@@ -13,10 +13,10 @@ namespace Content.Server.StationEvents.Components;
 public sealed partial class BluespaceArtifactRuleComponent : Component
 {
     [DataField("artifactSpawnerPrototype")]
-    public string ArtifactSpawnerPrototype = "RandomArtifactSpawner";
+    public EntProtoId ArtifactSpawnerPrototype = "RandomArtifactSpawner";
 
     [DataField("artifactFlashPrototype")]
-    public string ArtifactFlashPrototype = "EffectFlashBluespace";
+    public EntProtoId ArtifactFlashPrototype = "EffectFlashBluespace";
 
     [DataField("possibleSightings")]
     public List<string> PossibleSighting = new()

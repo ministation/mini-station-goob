@@ -58,9 +58,7 @@ public sealed partial class CarveRuneDoAfterEvent : DoAfterEvent
         Carving = carving;
     }
 
-    public CarveRuneDoAfterEvent()
-    {
-    }
+    public CarveRuneDoAfterEvent() { }
 
     public override DoAfterEvent Clone() => this;
 }

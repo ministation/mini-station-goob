@@ -1,3 +1,5 @@
+using Content.Shared.Damage.Systems;
+using Content.Shared.Damage.Components;
 using Content.Shared.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Server.Hands.Systems;
@@ -252,7 +254,7 @@ public sealed class BloodRitesSystem : EntitySystem
             if (toHeal > healingLeft)
                 toHeal = healingLeft;
 
-            _damageable.TryChangeDamage(target, new DamageSpecifier(damageType, -toHeal));
+            _damageable.TryChangeDamage(target.AsNullable(), new DamageSpecifier(damageType, -toHeal));
 
             healingLeft -= toHeal;
             if (healingLeft == 0)

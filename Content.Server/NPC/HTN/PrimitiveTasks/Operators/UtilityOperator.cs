@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Content.Server.NPC.Queries;
 using Content.Server.NPC.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.NPC.HTN.PrimitiveTasks.Operators;
 
@@ -25,7 +26,7 @@ public sealed partial class UtilityOperator : HTNOperator
     public string KeyCoordinates = "TargetCoordinates";
 
     [DataField("proto", required: true)]
-    public string Prototype = string.Empty;
+    public ProtoId<UtilityQueryPrototype> Prototype = string.Empty;
 
     public override async Task<(bool Valid, Dictionary<string, object>? Effects)> Plan(NPCBlackboard blackboard,
         CancellationToken cancelToken)

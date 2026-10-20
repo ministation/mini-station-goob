@@ -10,7 +10,7 @@ namespace Content.Goobstation.Shared.Blob;
 
 #region BlobChemTypedStorage
 [Serializable, NetSerializable]
-public abstract class BlobChemTypedStorage<T> : IEnumerable where T : notnull
+public abstract partial class BlobChemTypedStorage<T> : IEnumerable where T : notnull
 {
     public virtual T BlazingOil { get; set; } = default!;
     public virtual T ReactiveSpines { get; set; } = default!;

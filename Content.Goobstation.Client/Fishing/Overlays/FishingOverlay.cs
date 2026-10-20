@@ -47,7 +47,6 @@ public sealed class FishingOverlay : Overlay
     {
         var handle = args.WorldHandle;
         var rotation = args.Viewport.Eye?.Rotation ?? Angle.Zero;
-
         const float scale = 1f;
         var scaleMatrix = Matrix3Helpers.CreateScale(new Vector2(scale, scale));
         var rotationMatrix = Matrix3Helpers.CreateRotation(-rotation);
@@ -77,7 +76,7 @@ public sealed class FishingOverlay : Overlay
 
             // Get the world position of the entity
             // Mini: the sprite is drawn at the interpolated render position, the bar must match it.
-            var worldPosition = _transform.GetRenderWorldPosition((uid, xform));
+            var worldPosition = _transform.GetWorldPosition(xform);
             if (!bounds.Contains(worldPosition))
                 continue;
 

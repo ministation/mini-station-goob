@@ -4,6 +4,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Store;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Mind;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Store.Conditions;
 
@@ -17,13 +18,13 @@ public sealed partial class BuyerSpeciesCondition : ListingCondition
     /// A whitelist of species that can purchase this listing.
     /// </summary>
     [DataField("whitelist")]
-    public HashSet<string>? Whitelist;
+    public HashSet<ProtoId<SpeciesPrototype>>? Whitelist;
 
     /// <summary>
     /// A blacklist of species that cannot purchase this listing.
     /// </summary>
     [DataField("blacklist")]
-    public HashSet<string>? Blacklist;
+    public HashSet<ProtoId<SpeciesPrototype>>? Blacklist;
 
     public override bool Condition(ListingConditionArgs args)
     {

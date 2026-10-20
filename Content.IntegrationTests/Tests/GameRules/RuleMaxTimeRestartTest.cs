@@ -12,6 +12,7 @@ namespace Content.IntegrationTests.Tests.GameRules
 {
     [TestFixture]
     [TestOf(typeof(MaxTimeRestartRuleSystem))]
+    [Category("GameRuleTests")]
     public sealed class RuleMaxTimeRestartTest
     {
         [Test]

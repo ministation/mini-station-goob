@@ -407,12 +407,14 @@ public struct CustomRichTextEntry
 
         // Empty content (or no line advances) leaves baseLine at its start, which would build
         // an inverted box (Top > Bottom) and trip the UIBox2 assert, killing the client.
+        var left = drawBox.Left + (margin - boxPadding) - sPixelWidth;
+        var right = drawBox.Right - (margin - boxPadding) - sPixelWidth;
         var top = baseLineBase.Y - boxPadding;
         var bottom = MathF.Max(baseLine.Y - GetLineHeight(defaultFont, uiScale, lineHeightScale) + boxPadding, top);
 
         return new UIBox2(
-                new Vector2(drawBox.Left + (margin - boxPadding) - sPixelWidth, top),
-                new Vector2(drawBox.Right - (margin - boxPadding) - sPixelWidth, bottom));
+                new Vector2(MathF.Min(left, right), MathF.Min(top, bottom)),
+                new Vector2(MathF.Max(left, right), MathF.Max(top, bottom)));
     }
 
     private readonly string ProcessNode(MarkupTagManager tagManager, MarkupNode node, MarkupDrawingContext context)

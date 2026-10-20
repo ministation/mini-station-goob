@@ -2,6 +2,7 @@
 
 using System.Linq;
 using System.Text.Json.Serialization;
+using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Content.Goobstation.Maths.FixedPoint;
 using JetBrains.Annotations;
@@ -30,12 +31,12 @@ namespace Content.Shared.Damage
         [JsonPropertyName("types")]
         [DataField("types")]
         [UsedImplicitly]
-        private Dictionary<string, FixedPoint2>? _damageTypeDictionary;
+        private Dictionary<ProtoId<DamageTypePrototype>, FixedPoint2>? _damageTypeDictionary;
 
         [JsonPropertyName("groups")]
         [DataField("groups")]
         [UsedImplicitly]
-        private Dictionary<string, FixedPoint2>? _damageGroupDictionary;
+        private Dictionary<ProtoId<DamageGroupPrototype>, FixedPoint2>? _damageGroupDictionary;
 
         /// <summary>
         ///     Main DamageSpecifier dictionary. Most DamageSpecifier functions exist to somehow modifying this.
@@ -55,8 +56,8 @@ namespace Content.Shared.Damage
 
         // Goobstation
         [DataField]
-        public Dictionary<string, FixedPoint2> WoundSeverityMultipliers { get; set; } = new();
-		
+        public Dictionary<ProtoId<DamageTypePrototype>, FixedPoint2> WoundSeverityMultipliers { get; set; } = new();
+
         // CorvaxGoob
         [DataField]
         public bool BypassFlatReductions { get; set; }
@@ -114,7 +115,7 @@ namespace Content.Shared.Damage
         // Goobstation
         public DamageSpecifier(float armorPenetration,
             float partVariation,
-            Dictionary<string, FixedPoint2> severityMultipliers)
+            Dictionary<ProtoId<DamageTypePrototype>, FixedPoint2> severityMultipliers)
         {
             ArmorPenetration = armorPenetration;
             PartDamageVariation = partVariation;
@@ -167,12 +168,16 @@ namespace Content.Shared.Damage
         ///     Only applies resistance to a damage type if it is dealing damage, not healing.
         ///     This will never convert damage into healing.
         /// </remarks>
-        public static DamageSpecifier ApplyModifierSet(DamageSpecifier damageSpec, DamageModifierSet modifierSet, bool bypassFlatReductions = false) // CorvaxGoob : bypassFlatReductions
+        // CorvaxGoob : bypassFlatReductions. When not passed explicitly, honour the flag stored on the damage specifier itself.
+        public static DamageSpecifier ApplyModifierSet(DamageSpecifier damageSpec, DamageModifierSet modifierSet, bool? bypassFlatReductions = null)
         {
+            var bypassFlat = bypassFlatReductions ?? damageSpec.BypassFlatReductions; // CorvaxGoob : bypassFlatReductions
+
             // Make a copy of the given data. Don't modify the one passed to this function. I did this before, and weapons became
             // duller as you hit walls. Neat, but not FixedPoint2ended. And confusing, when you realize your fists don't work no
             // more cause they're just bloody stumps.
             DamageSpecifier newDamage = new(damageSpec.ArmorPenetration, damageSpec.PartDamageVariation, damageSpec.WoundSeverityMultipliers); // Goob edit
+            newDamage.BypassFlatReductions = damageSpec.BypassFlatReductions; // CorvaxGoob
             newDamage.DamageDict.EnsureCapacity(damageSpec.DamageDict.Count);
 
             foreach (var (key, value) in damageSpec.DamageDict)
@@ -188,7 +193,7 @@ namespace Content.Shared.Damage
 
                 float newValue = value.Float();
 
-                if (!bypassFlatReductions && modifierSet.FlatReduction.TryGetValue(key, out var reduction)) // CorvaxGoob : bypassFlatReductions
+                if (!bypassFlat && modifierSet.FlatReduction.TryGetValue(key, out var reduction)) // CorvaxGoob : bypassFlatReductions
                     newValue = Math.Max(0f, newValue - reduction); // flat reductions can't heal you
 
                 if (modifierSet.Coefficients.TryGetValue(key, out var coefficient))

@@ -2,6 +2,7 @@
 
 using Content.Shared.Explosion.EntitySystems;
 using Robust.Shared.GameStates;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Explosion.Components;
 
@@ -43,5 +44,5 @@ public sealed partial class ExplosionResistanceComponent : Component
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("modifiers")]
-    public Dictionary<string, float> Modifiers = new();
+    public Dictionary<ProtoId<ExplosionPrototype>, float> Modifiers = new();
 }

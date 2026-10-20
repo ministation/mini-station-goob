@@ -40,6 +40,6 @@ namespace Content.Server.GameTicking.Presets
         /// If none are elligible, the global fallback will be used.
         /// </summary>
         [DataField("supportedMaps")]
-        public string? MapPool;
+        public ProtoId<GameMapPoolPrototype>? MapPool;
     }
 }

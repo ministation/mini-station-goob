@@ -12,11 +12,11 @@ public sealed partial class SpiderComponent : Component
 {
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("webPrototype")]
-    public string WebPrototype = "SpiderWeb";
+    public EntProtoId WebPrototype = "SpiderWeb";
 
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("webAction")]
-    public string WebAction = "ActionSpiderWeb";
+    public EntProtoId WebAction = "ActionSpiderWeb";
 
     [DataField] public EntityUid? Action;
 
