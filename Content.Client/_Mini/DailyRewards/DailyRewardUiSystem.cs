@@ -16,6 +16,7 @@ public sealed class DailyRewardUiSystem : EntitySystem
         base.Initialize();
 
         SubscribeNetworkEvent<DailyRewardStateEvent>(OnState);
+        SubscribeNetworkEvent<DailyRewardClaimResultEvent>(OnClaimResult);
         SubscribeNetworkEvent<DailyQuestReplaceDeniedEvent>(OnReplaceDenied);
     }
 
@@ -94,6 +95,14 @@ public sealed class DailyRewardUiSystem : EntitySystem
     private void OnClaimPressed()
     {
         RaiseNetworkEvent(new DailyRewardClaimRequestEvent());
+    }
+
+    private void OnClaimResult(DailyRewardClaimResultEvent ev)
+    {
+        // Show the outcome in the window itself. In the lobby there is no attached entity,
+        // so server popups are not visible and a silent reaction looks like a dead button.
+        if (_window is { Disposed: false })
+            _window.ShowClaimResult(ev);
     }
 
     private void OnReplaceDenied(DailyQuestReplaceDeniedEvent ev)

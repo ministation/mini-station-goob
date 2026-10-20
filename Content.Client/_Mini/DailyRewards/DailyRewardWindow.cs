@@ -78,6 +78,21 @@ public sealed class DailyRewardWindow : DefaultWindow
     private Label? _currentRewardTimerLabel;
     private TextureRect? _currentRewardTimerIcon;
 
+    /// <summary>Status line under the claim button: shows why the claim worked or was rejected.</summary>
+    private readonly Label _claimStatusLabel = new()
+    {
+        HorizontalAlignment = HAlignment.Center,
+        VerticalAlignment = VAlignment.Center,
+        ClipText = true,
+        MaxWidth = 178,
+        Visible = false,
+    };
+
+    /// <summary>True after the first authoritative state from the server has been applied.</summary>
+    private bool _hasServerState;
+    private DateTime? _claimPendingSinceUtc;
+    private DateTime? _claimStatusHideAtUtc;
+
     public DailyRewardWindow()
     {
         IoCManager.InjectDependencies(this);
@@ -192,7 +207,78 @@ public sealed class DailyRewardWindow : DefaultWindow
         };
         scroll.AddChild(_rewardTrack);
 
-        _claimButton.OnPressed += _ => OnClaimPressed?.Invoke();
+        _claimButton.OnPressed += OnClaimButtonPressed;
+    }
+
+    private void OnClaimButtonPressed(BaseButton.ButtonEventArgs args)
+    {
+        if (!_hasServerState || _claimButton.Disabled)
+            return;
+
+        // Disable immediately so a double click cannot fire two claim requests.
+        _claimPendingSinceUtc = DateTime.UtcNow;
+        _claimStatusHideAtUtc = null;
+        _claimStatusLabel.Visible = false;
+        _claimButton.Disabled = true;
+        _claimButton.Text = Loc.GetString("daily-reward-window-claim-busy");
+        OnClaimPressed?.Invoke();
+    }
+
+    /// <summary>
+    /// Shows the outcome of a claim attempt inside the window, so the button always visibly reacts
+    /// (server popups are not available in the lobby, where the menu is usually opened).
+    /// </summary>
+    public void ShowClaimResult(DailyRewardClaimResultEvent ev)
+    {
+        _claimPendingSinceUtc = null;
+
+        string message;
+        Color color;
+        if (ev.Granted)
+        {
+            if (ev.RoleName != null)
+            {
+                message = Loc.GetString("daily-reward-claim-result-role", ("role", ev.RoleName));
+            }
+            else if (ev.Amount > 0 || ev.MonthlyCapReached)
+            {
+                message = Loc.GetString(ev.MonthlyCapReached
+                    ? "daily-reward-claim-result-capped"
+                    : "daily-reward-claim-result-success", ("amount", ev.Amount));
+            }
+            else
+            {
+                message = Loc.GetString("daily-reward-claim-result-empty");
+            }
+
+            color = ClaimReadyColor;
+        }
+        else
+        {
+            var reason = string.IsNullOrWhiteSpace(ev.ReasonLocKey)
+                ? "daily-reward-claim-result-unavailable"
+                : ev.ReasonLocKey;
+
+            message = ev.RetryIn > TimeSpan.Zero
+                ? Loc.GetString(reason, ("time", FormatRetryReason(reason, ev.RetryIn)))
+                : Loc.GetString(reason);
+            color = Color.FromHex("#f0a0a0");
+        }
+
+        _claimStatusLabel.Text = message;
+        _claimStatusLabel.Modulate = color;
+        _claimStatusLabel.Visible = true;
+        _claimStatusHideAtUtc = DateTime.UtcNow + TimeSpan.FromSeconds(8);
+
+        if (_state != null)
+            UpdateActiveTimerUi(_state);
+    }
+
+    private static string FormatRetryReason(string reason, TimeSpan retryIn)
+    {
+        return reason == "daily-reward-claim-result-need-time"
+            ? FormatActiveProgress(retryIn)
+            : FormatCooldown(retryIn);
     }
 
     public void UpdateState(DailyRewardUpdateMessage state)
@@ -203,6 +289,8 @@ public sealed class DailyRewardWindow : DefaultWindow
         _stateReceivedUtc = DateTime.UtcNow;
         _lastAdvanceUtc = DateTime.UtcNow;
         _state = state;
+        _hasServerState = true;
+        _claimPendingSinceUtc = null;
         RefreshState(rebuildQuestSection);
     }
 
@@ -253,6 +341,12 @@ public sealed class DailyRewardWindow : DefaultWindow
         var nowUtc = DateTime.UtcNow;
         var realDt = MaxZero(nowUtc - _lastAdvanceUtc);
         _lastAdvanceUtc = nowUtc;
+
+        if (_claimStatusHideAtUtc is { } hideAt && nowUtc >= hideAt)
+        {
+            _claimStatusHideAtUtc = null;
+            _claimStatusLabel.Visible = false;
+        }
 
         var elapsed = MaxZero(nowUtc - _stateReceivedUtc);
 
@@ -432,10 +526,28 @@ public sealed class DailyRewardWindow : DefaultWindow
             ? Loc.GetString("daily-reward-window-expiry", ("time", FormatCooldown(state.TimeUntilExpiration)))
             : Loc.GetString("daily-reward-window-expiry-idle");
 
-        _claimButton.Disabled = !state.CanClaim;
-        _claimButton.Text = Loc.GetString(state.CanClaim
-            ? "daily-reward-window-claim-ready"
-            : "daily-reward-window-claim-locked");
+        // Only the authoritative server snapshot may enable the button. Locally extrapolated
+        // time is fine for timers, but enabling on it made clicks race the server and fail.
+        var ready = _state?.CanClaim == true;
+        var busy = _claimPendingSinceUtc is { } pendingSince
+            && DateTime.UtcNow - pendingSince < TimeSpan.FromSeconds(3);
+
+        _claimButton.Disabled = !_hasServerState || !ready || busy;
+
+        if (!_hasServerState)
+        {
+            _claimButton.Text = Loc.GetString("daily-reward-window-claim-loading");
+        }
+        else if (busy)
+        {
+            _claimButton.Text = Loc.GetString("daily-reward-window-claim-busy");
+        }
+        else
+        {
+            _claimButton.Text = Loc.GetString(ready
+                ? "daily-reward-window-claim-ready"
+                : "daily-reward-window-claim-locked");
+        }
 
         UpdateCurrentRewardTimerUi(state);
     }
@@ -699,8 +811,8 @@ public sealed class DailyRewardWindow : DefaultWindow
 
         var claimPanel = new PanelContainer
         {
-            MinSize = new Vector2(190, 72),
-            MaxSize = new Vector2(190, 72),
+            MinSize = new Vector2(190, 0),
+            MaxSize = new Vector2(190, float.PositiveInfinity),
             VerticalAlignment = VAlignment.Top,
             HorizontalAlignment = HAlignment.Right,
             PanelOverride = new StyleBoxFlat
@@ -735,12 +847,16 @@ public sealed class DailyRewardWindow : DefaultWindow
 
         claimButton = new Button
         {
-            Text = Loc.GetString("daily-reward-window-claim"),
+            // Disabled until the first authoritative state arrives: a click on an
+            // unconfirmed button used to do nothing, which looked like a broken button.
+            Text = Loc.GetString("daily-reward-window-claim-loading"),
+            Disabled = true,
             MinSize = new Vector2(168, 36),
             HorizontalExpand = true,
             Modulate = Color.White
         };
         claimBox.AddChild(claimButton);
+        claimBox.AddChild(_claimStatusLabel);
 
         var streakPanel = new PanelContainer
         {

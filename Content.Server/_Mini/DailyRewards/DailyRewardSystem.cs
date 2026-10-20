@@ -390,8 +390,23 @@ public sealed class DailyRewardSystem : EntitySystem
 
     private void ClaimReward(ICommonSession session)
     {
-        if (!_states.TryGetValue(session.UserId, out var state))
-            return;
+        // The menu can be opened before the player's database data has finished loading.
+        // The old code returned silently in that case, so the "Забрать" button looked dead.
+        // Always answer with an explicit result instead.
+        if (!_states.TryGetValue(session.UserId, out var existing))
+        {
+            var loaded = EnsureStateExists(session.UserId);
+            if (loaded == null)
+            {
+                SendClaimResult(session, new DailyRewardClaimResultEvent(
+                    false, 0, null, false, "daily-reward-claim-result-loading", TimeSpan.Zero));
+                return;
+            }
+
+            existing = loaded;
+        }
+
+        var state = existing;
 
         FlushActiveSegment(session);
         var component = GetConfigFor(session);
@@ -399,9 +414,22 @@ public sealed class DailyRewardSystem : EntitySystem
         var now = DateTime.UtcNow;
         if (!CanClaim(state.Progress, component, now, out var nextDay))
         {
-            if (session.AttachedEntity is { Valid: true } uid)
-                _popup.PopupEntity("Ежедневная награда пока недоступна.", uid, uid);
+            var cooldown = state.Progress.LastClaimTime is { } lastClaim
+                ? MaxZero(component.ClaimCooldown - (now - lastClaim))
+                : TimeSpan.Zero;
+            var activeTimeLeft = MaxZero(component.MinimumActiveTime - state.Progress.PendingActiveTime);
+            var retryIn = cooldown > TimeSpan.Zero ? cooldown : activeTimeLeft;
+            var reason = cooldown > TimeSpan.Zero
+                ? "daily-reward-claim-result-cooldown"
+                : "daily-reward-claim-result-need-time";
 
+            if (session.AttachedEntity is { Valid: true } uid)
+            {
+                _popup.PopupEntity(Loc.GetString(reason, ("time", FormatRetry(retryIn))), uid, uid);
+            }
+
+            SendClaimResult(session, new DailyRewardClaimResultEvent(
+                false, 0, null, false, reason, retryIn));
             SendState(session);
             return;
         }
@@ -411,16 +439,19 @@ public sealed class DailyRewardSystem : EntitySystem
             state.Progress.CurrentStreak = 0;
         }
 
+        var grantedAmount = 0;
+        var monthlyCapReached = false;
         var reward = GetRewardPreview(component, nextDay);
         if (reward.TokenAmount > 0)
         {
-            _antagTokens.AddBalance(session.UserId, reward.TokenAmount, out var grantedAmount, out var note);
+            _antagTokens.AddBalance(session.UserId, reward.TokenAmount, out grantedAmount, out var note);
+            monthlyCapReached = !string.IsNullOrWhiteSpace(note);
 
             if (session.AttachedEntity is { Valid: true } uid)
             {
-                var message = grantedAmount > 0
-                    ? $"Получено токенов: {grantedAmount}."
-                    : "Токены по этой награде не начислены.";
+                var message = Loc.GetString(
+                    monthlyCapReached ? "daily-reward-claim-result-capped" : "daily-reward-claim-result-success",
+                    ("amount", grantedAmount));
 
                 if (!string.IsNullOrWhiteSpace(note))
                     message = $"{message} {note}";
@@ -436,7 +467,8 @@ public sealed class DailyRewardSystem : EntitySystem
             if (session.AttachedEntity is { Valid: true } uid)
             {
                 _popup.PopupEntity(
-                    $"Получен бесплатный жетон на роль \"{reward.DisplayName}\". Доступно: {totalCredits}.",
+                    Loc.GetString("daily-reward-claim-result-role-popup",
+                        ("role", reward.DisplayName ?? string.Empty), ("credits", totalCredits)),
                     uid,
                     uid);
             }
@@ -445,7 +477,7 @@ public sealed class DailyRewardSystem : EntitySystem
         if (reward.TokenAmount <= 0 && reward.RoleUnlockRoleId == null)
         {
             if (session.AttachedEntity is { Valid: true } uid)
-                _popup.PopupEntity($"Ежедневная награда за день {nextDay} получена.", uid, uid);
+                _popup.PopupEntity(Loc.GetString("daily-reward-claim-result-empty"), uid, uid);
         }
 
         state.Progress.CurrentStreak = nextDay;
@@ -460,6 +492,33 @@ public sealed class DailyRewardSystem : EntitySystem
 
         StartTracking(session);
         SendState(session);
+
+        SendClaimResult(session, new DailyRewardClaimResultEvent(
+            true,
+            grantedAmount,
+            reward.RoleUnlockRoleId != null ? reward.DisplayName ?? string.Empty : null,
+            monthlyCapReached,
+            null,
+            TimeSpan.Zero));
+    }
+
+    private void SendClaimResult(ICommonSession session, DailyRewardClaimResultEvent result)
+    {
+        if (session.Status == SessionStatus.Disconnected)
+            return;
+
+        RaiseNetworkEvent(result, session);
+    }
+
+    private static string FormatRetry(TimeSpan span)
+    {
+        if (span <= TimeSpan.Zero)
+            return "00:00";
+
+        var totalHours = (int) span.TotalHours;
+        return totalHours > 0
+            ? $"{totalHours:00}:{span.Minutes:00}"
+            : $"{span.Minutes:00}:{span.Seconds:00}";
     }
 
     private bool CanClaim(DailyRewardProgress progress, DailyRewardComponent component, DateTime now, out int nextDay)
