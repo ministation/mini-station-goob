@@ -47341,6 +47341,8 @@ entities:
       - Sheet
       - IgnoreBindSoul
     - type: MindContainer
+    - type: Physics
+      bodyType: KinematicController
     - type: InputMover
     - type: MobMover
     - type: MovementSpeedModifier
