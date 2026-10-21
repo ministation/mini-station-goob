@@ -374,7 +374,7 @@
             border-bottom: 2px solid var(--border);
             color: var(--ink);
             font-family: var(--font-pixel);
-            font-size: 0.64rem;
+            font-size: 0.68rem;
             font-weight: 400;
             letter-spacing: 0.04em;
             line-height: 1.4;
@@ -443,10 +443,10 @@
             display: inline-block;
             margin: 0 0 14px;
             padding: 7px 13px;
-            background: rgba(255, 255, 255, 0.18);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 247, 214, 0.86);
+            border: 1px solid rgba(255, 255, 255, 0.62);
             border-radius: var(--radius-sm);
-            color: #fff;
+            color: #6b3d00;
             font-family: var(--font-pixel);
             font-size: 0.54rem;
             letter-spacing: 0.08em;
@@ -454,7 +454,6 @@
             text-transform: uppercase;
             -webkit-backdrop-filter: blur(4px);
             backdrop-filter: blur(4px);
-            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
         }
 
         .hero-title {
@@ -464,7 +463,7 @@
             font-weight: 400;
             letter-spacing: 0.03em;
             line-height: 1.45;
-            text-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
+            text-shadow: 0 3px 0 rgba(0, 0, 0, 0.18), 0 2px 8px rgba(66, 30, 0, 0.35);
         }
 
         .hero-text {
@@ -473,7 +472,7 @@
             color: rgba(255, 255, 255, 0.95);
             font-size: 0.85rem;
             line-height: 1.6;
-            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+            text-shadow: 0 1px 2px rgba(66, 30, 0, 0.45);
         }
 
         .social-links {
@@ -521,8 +520,8 @@
         }
 
         .link-btn.website {
-            background: var(--ink);
-            color: var(--bg);
+            background: #17222f;
+            color: #f3ede1;
             border-color: rgba(0, 0, 0, 0.35);
         }
 
@@ -531,8 +530,8 @@
         }
 
         .link-btn.wiki {
-            background: var(--success);
-            border-color: var(--success-deep);
+            background: #177a43;
+            border-color: #0f5c31;
         }
 
         /* === Состояние подключения === */
@@ -548,13 +547,13 @@
             padding: 11px 18px;
             background: var(--grad-warm);
             border-bottom: 2px solid var(--border);
-            color: #fff;
+            color: #3a2400;
             font-family: var(--font-pixel);
             font-size: 0.56rem;
             letter-spacing: 0.05em;
             line-height: 1.4;
             text-transform: uppercase;
-            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
         }
 
         .status-dot {
@@ -562,8 +561,8 @@
             height: 10px;
             flex: none;
             border-radius: 50%;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28);
+            background: #1f9a55;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55);
             animation: statusPulse 2.4s ease-in-out infinite;
         }
 
@@ -578,8 +577,8 @@
         }
 
         @keyframes statusPulse {
-            0%, 100% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28); }
-            50% { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.1); }
+            0%, 100% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55); }
+            50% { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2); }
         }
 
         .status-banner-title {
@@ -591,12 +590,12 @@
         }
 
         .status-banner-brand {
-            color: rgba(255, 255, 255, 0.92);
+            color: rgba(58, 36, 0, 0.75);
             white-space: nowrap;
         }
 
         .status-banner-brand span {
-            color: #fff7d6;
+            color: #8a4a00;
         }
 
         .status-body {
@@ -612,10 +611,18 @@
         }
 
         body[data-tone="warn"] .status {
-            color: var(--accent-deep);
+            color: #b45309;
         }
 
         body[data-tone="error"] .status {
+            color: var(--danger-deep);
+        }
+
+        html[data-theme="dark"] body[data-tone="warn"] .status {
+            color: var(--accent);
+        }
+
+        html[data-theme="dark"] body[data-tone="error"] .status {
             color: var(--danger);
         }
 
@@ -682,17 +689,18 @@
             flex: none;
         }
 
+        /* Тёмный текст на янтарной заливке: кнопка остаётся акцентной, но читается. */
         .btn.primary {
             background: var(--accent);
             border-color: var(--accent-deep);
-            color: #fff;
+            color: #241a08;
             box-shadow: var(--shadow-btn-color);
-            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
         }
 
         .btn.primary:hover {
             background: var(--accent-deep);
-            color: #fff;
+            color: #241a08;
         }
 
         .btn.negative {
@@ -718,8 +726,10 @@
         .btn:focus-visible,
         .top-link:focus-visible,
         .theme-toggle:focus-visible,
-        .link-btn:focus-visible {
-            outline: 2px solid var(--accent);
+        .link-btn:focus-visible,
+        .brand:focus-visible,
+        .footer a:focus-visible {
+            outline: 2px solid var(--ink);
             outline-offset: 2px;
         }
 
@@ -910,13 +920,13 @@
         .toggle-group .btn:has(input:checked) {
             background: var(--accent);
             border-color: var(--accent-deep);
-            color: #fff;
+            color: #241a08;
             box-shadow: var(--shadow-btn-color);
-            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
         }
 
         .toggle-group .btn:has(input:focus-visible) {
-            outline: 2px solid var(--accent);
+            outline: 2px solid var(--ink);
             outline-offset: 2px;
         }
 
@@ -1035,7 +1045,7 @@
 
         .slider input:focus-visible + .slider-grab,
         .slider:has(input:focus-visible) .slider-grab {
-            outline: 2px solid var(--accent);
+            outline: 2px solid var(--ink);
             outline-offset: 2px;
         }
 
@@ -1066,7 +1076,7 @@
         }
 
         .check input:focus-visible {
-            outline: 2px solid var(--accent);
+            outline: 2px solid var(--ink);
             outline-offset: 2px;
         }
 
@@ -1114,6 +1124,15 @@
             .topbar-inner {
                 gap: 10px;
                 padding: 9px 12px;
+            }
+
+            /* На телефоне ссылки сообщества уже есть крупными кнопками в герое. */
+            .top-links {
+                display: none;
+            }
+
+            .theme-toggle {
+                margin-left: auto;
             }
 
             .brand img {
@@ -1172,10 +1191,6 @@
         }
 
         @media (max-width: 430px) {
-            .brand-title {
-                display: none;
-            }
-
             .status-banner-brand {
                 display: none;
             }
@@ -1193,10 +1208,35 @@
             }
         }
 
+        @media (max-width: 380px) {
+            /* Узкий экран: три кнопки в ряд не помещаются, как и на сайте, переходим на две колонки. */
+            .social-links {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .social-links .link-btn:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
         @media (pointer: coarse) {
             .btn,
             .top-link,
-            .theme-toggle {
+            .theme-toggle,
+            .link-btn,
+            .select select,
+            .code-input {
+                min-height: 44px;
+            }
+
+            .brand img {
+                width: 44px;
+                height: 44px;
+            }
+
+            .footer a {
+                display: inline-flex;
+                align-items: center;
                 min-height: 44px;
             }
 
@@ -1331,7 +1371,7 @@
                     <button class="btn primary" id="code-submit" type="submit">Подключить</button>
                 </div>
                 <p class="code-hint">
-                    Откройте игру, нажмите Esc и выберите «Голосовой чат»: там будет код и готовая ссылка.
+                    Код привязан к игровой сессии: после выхода с сервера подключение завершится.
                 </p>
             </form>
 
