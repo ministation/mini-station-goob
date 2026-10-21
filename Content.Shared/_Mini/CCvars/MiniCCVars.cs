@@ -840,9 +840,11 @@ public sealed class MiniCCVars
         CVarDef.Create("neuroahelp.extra_prompt", "", CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
-    ///     Временно отключённые награды «за время»: ежедневные награды, билеты за наигранное время
-    ///     и монеты за онлайн. Еженедельные квесты и достижения работают всегда — у них своя награда.
+    ///     Награды «за время»: ежедневная награда со стриком, билеты за наигранное время и монеты
+    ///     за онлайн. Включены по умолчанию; cvar остаётся аварийным выключателем на случай, если
+    ///     прогрессию нужно временно приостановить. Еженедельные квесты и достижения имеют свою
+    ///     награду и от этого флага не зависят.
     /// </summary>
     public static readonly CVarDef<bool> TimeRewardsEnabled =
-        CVarDef.Create("mini.time_rewards_enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("mini.time_rewards_enabled", true, CVar.SERVERONLY | CVar.ARCHIVE);
 }

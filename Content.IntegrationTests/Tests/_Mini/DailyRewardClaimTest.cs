@@ -50,8 +50,11 @@ public sealed class DailyRewardClaimTest
 
         var session = playerMan.Sessions.Single();
 
-        // Time-based rewards are disabled by default now; this test covers the daily claim path,
-        // so it turns them back on explicitly.
+        // Daily rewards ship enabled: the menu must show the claim section without any config tweak.
+        Assert.That(server.CfgMan.GetCVar(MiniCCVars.TimeRewardsEnabled), Is.True,
+            "Time-based rewards (daily rewards) must be enabled by default");
+
+        // Pin the cvar explicitly anyway, so the test does not depend on the deployment config.
         server.CfgMan.SetCVar(MiniCCVars.TimeRewardsEnabled, true);
 
         // Force the daily reward into "ready to claim" state.
