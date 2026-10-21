@@ -32,3 +32,6 @@ ent-BaseStationNews = { "" }
     .desc = { "" }
 ent-BaseStationAllEventsEligible = { "" }
     .desc = { "" }
+
+ent-BaseStationDeliveries = { "" }
+    .desc = { "" }

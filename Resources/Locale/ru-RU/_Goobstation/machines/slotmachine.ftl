@@ -15,3 +15,23 @@ coinflipper-win = Победа! Вы выиграли { $amount } кредито
 clawmachine-fail-self = Вы облажались и выронили игрушку!
 clawmachine-fail-other = { $user } облажался и выронил игрушку!
 clawmachine-fail-generic = Плюшка выпала из крана. Какая жалость...
+
+slotmachine-win-minor = Вы выиграли 50 спесо
+
+slotmachine-win-small = Вы выиграли 100 спесо!
+
+slotmachine-win-medium = Поздравляем! Вы выиграли 500 спесо!
+
+slotmachine-win-large = Поздравляем! Вы выиграли 5000 спесо!
+
+slotmachine-win-qm-minor = Поздравляем, вы выиграли 100 000 спесо
+
+slotmachine-win-qm-jackpot = ПОЗДРАВЛЯЕМ, ВЫ ВЫИГРАЛИ 1 000 000 СПЕСО, ДЖЕКПОТ!!
+
+slotmachine-win-qm-throngler = Если СБ попытается это у вас забрать, напомните им, что они смертны.
+
+clawmachine-win-evil = Знаете ли вы, что всё в арсенале СБ принадлежит вам, ведь именно так работают налоги: вы можете свободно это забрать, и они ничего не смогут сделать. Это ЮРИДИЧЕСКАЯ консультация.
+
+blob-title = Блоб
+
+xenomorph-title = Ксеноморфы

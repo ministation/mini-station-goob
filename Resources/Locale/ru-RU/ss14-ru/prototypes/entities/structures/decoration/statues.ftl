@@ -17,3 +17,9 @@ ent-StatueIronsandSmall = статуя из железного песка
 
 ent-StatueIronsandTall = высокая статуя из железного песка
     .desc = { ent-BaseIronsandStatue.desc }
+
+ent-StatueIronsandSmall2 = небольшая статуя из железного песка
+    .desc = { ent-BaseIronsandStatue.desc }
+
+ent-StatueIronsandTall2 = высокая статуя из железного песка
+    .desc = { ent-BaseIronsandStatue.desc }

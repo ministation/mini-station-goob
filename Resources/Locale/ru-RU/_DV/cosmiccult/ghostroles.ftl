@@ -24,3 +24,9 @@ rogue-ascended-role-greeting =
     Всё закончится так, как всё и вся в этом мире. Самым добродушным проявлением будет донести эту чистейшую истину до как можно большего числа людей.
 objective-condition-maligninfection-title = Исказить { $count } умов
 objective-condition-maligninfection-description = Ваше прикосновение может искажать разум. Пробудите чистейшую истину в { $count } существах на станции.
+
+terror-colossus = Внимание, экипаж: похоже, кто-то на вашей станции привлёк внимание огромной зловещей аномалии.
+
+objective-condition-effigy-no-target = Призовите Воплощение, где пожелаете.
+
+objective-condition-effigy = Призовите Воплощение рядом с "{$location}".

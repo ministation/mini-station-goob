@@ -158,3 +158,6 @@ ent-BorgModuleDoubleEsword = модуль киборга с двухклинко
 
 ent-BorgModuleC20r = модуль киборга с C-20r ROW
     .desc = Модуль с пистолетом-пулемётом C-20r, стреляющим очередями.
+
+ent-BorgModuleConstructionMaterialPlaceholder = { ent-BaseItem }
+    .desc = { ent-BaseItem.desc }

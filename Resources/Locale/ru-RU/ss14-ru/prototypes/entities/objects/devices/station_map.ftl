@@ -13,3 +13,7 @@ ent-HandheldStationMapUnpowered = { ent-BaseHandheldStationMap }
 ent-HandheldStationMapNukeops = карта целевой станции
     .desc = Отображает показания целевой станции.
     .suffix = Ручной, Ядерный оперативник
+
+ent-HandheldStationMapStatic = { ent-HandheldStationMap }
+    .suffix = Портативная, работает вне станции
+    .desc = { ent-HandheldStationMap.desc }

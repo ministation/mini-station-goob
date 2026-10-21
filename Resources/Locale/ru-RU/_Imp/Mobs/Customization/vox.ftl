@@ -224,3 +224,7 @@ marking-VoxTailSplit = Раздвоенный
 marking-VoxTailSplit-split = Раздвоенный
 marking-VoxSunAndMoon = Солнце и Луна
 marking-VoxSunAndMoon-sunandmoon = Солнце и Луна
+
+marking-VoxTailSplit-Imp = Сдвоенный
+
+marking-VoxTailSplit-split-Imp = Сдвоенный

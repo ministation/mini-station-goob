@@ -33,3 +33,39 @@ gang-store-listing-light-armor-vest-name = Лёгкий бронежилет
 gang-store-listing-light-armor-vest-desc = Стандартный бронежилет Type I. Не бросается в глаза, но в бою поможет дышать дольше.
 gang-store-listing-tipoff-name = Наводка
 gang-store-listing-tipoff-desc = Организуй ранний сброс вещмешка с ништяками. Случайный гражданский получит наводку на место сброса через НаноЧат.
+
+roles-antag-gang-leader-name = Лидер банды
+
+roles-antag-gang-leader-objective = Докажи, что ты всё ещё на что-то способен. Захватывай территорию, копи очки и уничтожай каждую банду-соперника, вставшую на твоём пути.
+
+roles-antag-gang-name = Член банды
+
+roles-antag-gang-objective = Поддерживай своего лидера, держи свою территорию и помоги своей банде подчинить станцию раньше соперников.
+
+gangwar-crate-drop-announcement = Поступила информация: рядом с {$location} сбросили ящик банды. В нём есть особо ценные ништяки. Каждая банда на станции хочет его заполучить. Вперёд за ним.
+
+gangwar-duffelbag-drop-announcement = Поступила информация: рядом с {$location} упала сумка. Каждая банда на станции хочет её заполучить. Вперёд за ней.
+
+gangwar-tipoff-drop-announcement = Кто-то заплатил за наводку. Рядом с {$location} только что упала сумка. Слух уже разошёлся. Двигайтесь быстро.
+
+gangwar-duffelbag-drop-unknown-location = неизвестное место
+
+alerts-gang-trapped-name = Ловушка!
+
+alerts-gang-trapped-desc = Сумка была с ловушкой! Теперь вы замедлены.
+
+chat-radio-gang = Канал банды
+
+alerts-gang-bonus-name = Бонус за территорию
+
+alerts-gang-bonus-desc = Показывает, активен ли сейчас бонус за территорию.
+
+objective-issuer-gang = Босс
+
+gangwar-tipoff-nanochat-sender = Аноним
+
+gangwar-tipoff-nanochat-message = Не спрашивайте, откуда я это знаю, но рядом с {$location} припрятана сумка. Заберите её раньше банд. У вас {$seconds} секунд, пока слух не разошёлся.
+
+quickhack-no-charges = Заряды закончились.
+
+quickhack-failed = Не удалось отправить сигнал.

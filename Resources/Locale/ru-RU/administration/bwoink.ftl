@@ -39,3 +39,5 @@ admin-help-rating-chat = {$player} поставил {$stars} { $stars ->
     [1] звезду
    *[other] звёзд
 } администратору {$admin}
+
+bwoink-admin-title = Помощь администрации

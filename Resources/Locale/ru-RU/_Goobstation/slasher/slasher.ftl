@@ -42,3 +42,59 @@ slasher-massacre-already-activated = Бойня уже активна!
 slasher-relentless-grab-activate = Вы готовитесь схватить свою следующую жертву!
 alerts-slasher-seen-name = Статус наблюдения
 alerts-slasher-seen-desc = Показывает, наблюдают ли за вами в данный момент. Вы не можете входить в бестелесную форму или выходить из неё, пока за вами наблюдают.
+
+slasher-kit-select-title = Выберите свой набор
+
+slasher-kit-select-header = Выберите набор. Каждый идет с уникальной песней и уникальным видом.
+
+slasher-kit-select-button = Выбрать
+
+slasher-kit-butcher = Мясник
+
+slasher-kit-butcher-desc = Классика. Сварочная маска и фартук для безжалостной машины для убийств.
+
+slasher-kit-spring = Пружина
+
+slasher-kit-spring-desc = Идет в комплекте с особым костюмом на пружинах. Пружины выдержат... наверное.
+
+slasher-kit-billy = Билли
+
+slasher-kit-billy-desc = "О, привет"
+
+slasher-kit-cult = Культист
+
+slasher-kit-cult-desc = Идет в комплекте с особой маской. Древние божества наблюдают с огромным интересом.
+
+slasher-kit-maintenance = Техтоннели
+
+slasher-kit-maintenance-desc = Идет в комплекте с губной гармошкой. "Интересно, где я это уже видел?"
+
+slasher-kit-cannibal = Каннибал
+
+slasher-kit-cannibal-desc = Ужин подан, а секретный секретный ингредиент, космонавтики.
+
+slasher-kit-clown = Клоун
+
+slasher-kit-clown-desc = Оказывается, злить хонкомать не стоит. Хонк!
+
+slasher-kit-glutton = Обжора
+
+slasher-kit-glutton-desc = Что-то голодное бродит по коридорам. Оно носит чужую кожу и никогда не насыщается.
+
+slasher-kit-hockey = Хоккейная маска
+
+slasher-kit-hockey-desc = Хоккейная маска и мачете. Что еще нужно?
+
+slasher-soulsteal-ascendance-clown = КРИТИЧЕСКАЯ ТРЕВОГА: обнаружена беспрецедентная сила ХОНК. Всему персоналу сообщается, что на борту находится нечто совершенно безумное. Приготовьтесь к удару. ХОНК.
+
+alerts-slasher-fear-name = Страх
+
+alerts-slasher-fear-desc = Ужас, который вы сеете. Чем он выше, тем вы сильнее и тем громче ваше присутствие. Нажмите, чтобы включить или выключить свою музыкальную тему.
+
+slasher-fear-music-muted = Вы отключаете свою тему. Ваши жертвы все равно ее слышат.
+
+slasher-fear-music-unmuted = Ваша тема снова играет.
+
+alerts-slasher-fear-victim-name = Страх
+
+alerts-slasher-fear-victim-desc = Ужас, терзающий ваш разум, пока маньяк охотится за вами. Чем сильнее он растет, тем больше он замедляет и ранит вас. Уйдите с линии видимости, чтобы он угас.

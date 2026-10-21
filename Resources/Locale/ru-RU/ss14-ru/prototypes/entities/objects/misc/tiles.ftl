@@ -234,3 +234,21 @@ ent-FloorTileItemXeno = ксенопол
 
 ent-FloorTileItemDarkSquiggly = тёмная волнистая стальная плитка
     .desc = { ent-FloorTileItemDark.desc }
+
+ent-FloorTileItemIronsandConcreteMono = бетонная моно-плитка из железного песка
+    .desc = { ent-FloorTileItemIronsandConcrete.desc }
+
+ent-FloorTileItemIronsandConcreteSmooth = гладкая бетонная плитка из железного песка
+    .desc = { ent-FloorTileItemIronsandConcrete.desc }
+
+ent-FloorTileItemAstroIronsandBorderless = астро-железопесчаная плитка без рамки
+    .desc = Поддельный красный песок. Импортирован с поддельного Марса.
+
+ent-FloorTileItemXenoSteel = ксено-стальной пол
+    .desc = { ent-FloorTileItemBase.desc }
+
+ent-FloorTileItemXenoSteelCorner = ксено-стальной угловой пол
+    .desc = { ent-FloorTileItemBase.desc }
+
+ent-FloorTileItemXenoMaint = ксено-технический пол
+    .desc = { ent-FloorTileItemBase.desc }

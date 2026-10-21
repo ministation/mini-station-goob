@@ -31,3 +31,7 @@ ent-DefaultStationBeaconRuinRougeAI = { ent-DefaultStationBeaconLavalandRuin }
 ent-DefaultStationBeaconRuinSnowBiodome = { ent-DefaultStationBeaconLavalandRuin }
     .suffix = Руины снежного биодома
     .desc = { ent-DefaultStationBeaconLavalandRuin.desc }
+
+ent-DefaultStationBeaconNoWarpPoints = маяк станции
+    .desc = Небольшое устройство, передающее информацию на карты станции. Можно настроить.
+    .suffix = Общий

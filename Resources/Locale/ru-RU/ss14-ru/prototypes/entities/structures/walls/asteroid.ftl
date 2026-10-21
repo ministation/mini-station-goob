@@ -319,3 +319,7 @@ ent-WallRockAndesiteSalt = { ent-WallRockAndesite }
 ent-IronSandstone = железный песчаный камень
     .desc = { ent-AsteroidRock.desc }
     .suffix = нет руды
+
+ent-IronSandstoneMining = железный песчаный камень
+    .suffix = повышенный выход руды
+    .desc = { ent-IronSandstone.desc }

@@ -4,3 +4,5 @@ lathe-popup-material-not-used = Этот материал не использу�
 lathe-unlock-recipe-radio-broadcast = [color=gray]Новые рецепты: { $items }[/color]
 lathe-unlock-recipe-radio-broadcast-overflow = [color=gray]Новые рецепты ({ $count }): { $items }[/color]
 # CorvaxGoob End
+
+lathe-unlock-recipe-radio-broadcast-item = [bold]{$item}[/bold]

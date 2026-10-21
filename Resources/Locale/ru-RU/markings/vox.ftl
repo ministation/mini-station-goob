@@ -76,3 +76,31 @@ marking-TattooVoxUnderbelly-underbelly = Грудь
 marking-TattooVoxUnderbelly = Грудь
 
 marking-VoxTailSplit-vox_tail_split = Вокс, Хвост (Разделённый)
+
+marking-VoxVisageL-visage_l = Лицо (слева)
+
+marking-VoxVisageL = Лицо (слева)
+
+marking-VoxVisageR-visage_r = Лицо (справа)
+
+marking-VoxVisageR = Лицо (справа)
+
+marking-VoxBeakSquareCere-beak_squarecere = Клюв (квадратная восковица)
+
+marking-VoxBeakSquareCere = Клюв (квадратная восковица)
+
+marking-VoxBeakHooked-beak_hooked = Клюв (крючковатый)
+
+marking-VoxBeakHooked = Клюв (крючковатый)
+
+marking-VoxBeakShaved-beak_shaved = Клюв (бритый)
+
+marking-VoxBeakShaved = Клюв (бритый)
+
+marking-VoxBeakCoverTip-beakcover_tip = Кончик клюва
+
+marking-VoxBeakCoverTip = Кончик клюва
+
+marking-VoxBeakCoverStripe-beakcover_stripe = Полоса на клюве
+
+marking-VoxBeakCoverStripe = Полоса на клюве

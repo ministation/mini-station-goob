@@ -30,6 +30,7 @@ x64/
 x86/
 bld/
 [Bb]in/
+!Resources/Locale/ru-RU/entity-systems/bin/
 [Oo]bj/
 [Ll]og/
 
@@ -55,6 +56,9 @@ dlldata.c
 project.lock.json
 project.fragment.lock.json
 artifacts/
+
+# Локали лежат в каталогах с именами как у сборочных артефактов
+!Resources/Locale/ru-RU/artifacts/
 
 *_i.c
 *_p.c
@@ -308,9 +312,6 @@ desktop.ini
 
 # Images generated using the MapRenderer
 Resources/MapImages
-
-# Locale duplicates
-Resources/Locale/ru-RU/_Goobstation/join-queue/queue-screen.ftl
 
 ## Docfx stuff
 /Content.Docfx/api/

@@ -11,3 +11,11 @@ ent-XenobioVolatileRedExtractJelly = нестабильное красное с�
     .desc = При применение на одежде, похоже, устраняет эффекты любых замедлений. Однако субъекты в такой одежде превратились в пепел, когда учёный зажёг сигарету.
 ent-XenobioAdamantineBar = адамантиевый слиток
     .desc = Теоретически, если продать пару таких слитков, вам больше не придётся работать. Должно быть, у него есть применение, раз он стоит целое состояние. Но в чём?
+
+ent-FloorTileItemBluespace30 = { ent-FloorTileItemBluespace }
+    .suffix = 30
+    .desc = { ent-FloorTileItemBluespace.desc }
+
+ent-FloorTileItemSepia30 = { ent-FloorTileItemSepia }
+    .suffix = 30
+    .desc = { ent-FloorTileItemSepia.desc }

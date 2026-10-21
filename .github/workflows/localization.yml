@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: 2026 Mini Station contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: "CI: Localization"
+
+on:
+  pull_request:
+  push:
+    branches: [ master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  localization:
+    name: Проверка русской локализации
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pyyaml
+
+      - name: Check ru-RU key parity
+        run: python3 Tools/localize/ru_sync.py --check

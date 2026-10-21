@@ -47,3 +47,7 @@ ent-BoxSurvivalSyndicateNitrogen = { ent-BoxSurvivalSyndicate }
 ent-BoxSurvivalMilitaryDouble = { ent-BoxCardboardSmall }
     .desc = Коробка с базовым набором выживания. Согласно этикетке, она содержит двойной аварийный баллон.
     .suffix = Военный Кислород O2
+
+ent-BoxSurvivalMilitaryDoubleNitrogen = { ent-BoxSurvivalMilitaryDouble }
+    .suffix = Военный N2
+    .desc = { ent-BoxSurvivalMilitaryDouble.desc }

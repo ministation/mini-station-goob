@@ -10,3 +10,9 @@ ent-PowerCellSlotMediumItem = a
     .desc = { "" }
 ent-PowerCellSlotHighItem = { "" }
     .desc = { "" }
+
+ent-BasePaperLabelable = { "" }
+    .desc = { "" }
+
+ent-BasePaperLabelableVisualized = { ent-BasePaperLabelable }
+    .desc = { ent-BasePaperLabelable.desc }

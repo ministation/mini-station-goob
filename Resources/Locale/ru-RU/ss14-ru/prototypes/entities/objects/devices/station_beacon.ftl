@@ -320,3 +320,15 @@ ent-DefaultStationBeaconGhost = { ent-DefaultStationBeacon }
 ent-DefaultStationBeaconCentComm = { ent-DefaultStationBeaconGhost }
     .desc = { ent-DefaultStationBeaconGhost.desc }
     .suffix = Центком
+
+ent-DefaultStationBeaconCentCommAfterhours = { ent-DefaultStationBeaconGhost }
+    .suffix = Центком после смены
+    .desc = { ent-DefaultStationBeaconGhost.desc }
+
+ent-DefaultStationBeaconCentCommThunderdome = { ent-DefaultStationBeaconGhost }
+    .suffix = Центком Громовой купол
+    .desc = { ent-DefaultStationBeaconGhost.desc }
+
+ent-DefaultStationBeaconCentCommERT = { ent-DefaultStationBeaconGhost }
+    .suffix = Центком ОБР
+    .desc = { ent-DefaultStationBeaconGhost.desc }

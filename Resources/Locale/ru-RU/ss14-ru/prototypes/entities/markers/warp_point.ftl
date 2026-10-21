@@ -5,3 +5,6 @@ ent-WarpPointBeacon = warp point (beacon)
 ent-WarpPointBombing = warp point
     .suffix = Цель взрыва бомбы ниндзя
     .desc = { ent-WarpPoint.desc }
+
+ent-GhostWarpPoint = точка перемещения только для призраков
+    .desc = { ent-MarkerBase.desc }

@@ -30,3 +30,18 @@ ent-SpawnPointGhostDerelictCyborg = { ent-BaseAntagSpawner }
     .desc = { ent-BaseAntagSpawner.desc }
 ent-SpawnPointGhostAncientRogueKing = { ent-BaseAntagSpawner }
     .desc = { ent-BaseAntagSpawner.desc }
+
+ent-SpawnPointGhostDerelictEngineeringCyborg = { ent-SpawnPointGhostDerelictCyborg }
+    .desc = { ent-SpawnPointGhostDerelictCyborg.desc }
+
+ent-SpawnPointGhostDerelictJanitorCyborg = { ent-SpawnPointGhostDerelictCyborg }
+    .desc = { ent-SpawnPointGhostDerelictCyborg.desc }
+
+ent-SpawnPointGhostDerelictMedicalCyborg = { ent-SpawnPointGhostDerelictCyborg }
+    .desc = { ent-SpawnPointGhostDerelictCyborg.desc }
+
+ent-SpawnPointGhostDerelictMiningCyborg = { ent-SpawnPointGhostDerelictCyborg }
+    .desc = { ent-SpawnPointGhostDerelictCyborg.desc }
+
+ent-SpawnPointGhostDerelictSyndicateAssaultCyborg = { ent-SpawnPointGhostDerelictCyborg }
+    .desc = { ent-SpawnPointGhostDerelictCyborg.desc }

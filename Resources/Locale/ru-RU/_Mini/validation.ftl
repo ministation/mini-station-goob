@@ -26,3 +26,5 @@ job-description-centcom-operator-spawner = Оператор ЦК
 loadout-group-bso-belt = ОСЩ, пояс
 loadout-group-bso-eyes = ОСЩ, очки
 loadout-group-bso-pda = ОСЩ, КПК
+
+spawner-loadout-centcomm-operator = набор снаряжения оператора ЦК
