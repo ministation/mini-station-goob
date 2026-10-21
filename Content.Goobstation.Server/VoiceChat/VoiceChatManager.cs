@@ -400,9 +400,11 @@ public sealed partial class VoiceChatManager
                      ("voice.js", "text/javascript; charset=utf-8"),
                      ("voice-worklet.js", "text/javascript; charset=utf-8"),
                      ("voice-worker.js", "text/javascript; charset=utf-8"),
-                     ("noto-sans-regular.woff2", "font/woff2"),
-                     ("noto-sans-bold.woff2", "font/woff2"),
-                     ("boxfont-round.woff2", "font/woff2"),
+                     ("logo.png", "image/png"),
+                     ("press-start-2p-cyrillic.woff2", "font/woff2"),
+                     ("press-start-2p-latin.woff2", "font/woff2"),
+                     ("jetbrains-mono-cyrillic.woff2", "font/woff2"),
+                     ("jetbrains-mono-latin.woff2", "font/woff2"),
                  })
         {
             using var stream = assembly.GetManifestResourceStream($"VoiceChat.Web.{name}");
