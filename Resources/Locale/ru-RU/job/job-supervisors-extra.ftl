@@ -1,0 +1,1 @@
+job-supervisors-nobody = никто
