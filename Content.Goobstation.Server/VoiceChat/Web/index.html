@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-    <title>Voice Chat</title>
+    <title>Голосовой чат</title>
     <script id="voice-config" type="application/json">/*VOICE_CONFIG*/</script>
     <style>
         @font-face {
@@ -29,32 +29,38 @@
 
         :root {
             color-scheme: dark;
-            --page: #101014;
-            --window: #252631;
-            --header: #1f1f23;
-            --divider: #434451;
-            --text: #e5e5e5;
-            --text-disabled: #e5e5e581;
-            --subtext: #a9a9a9;
-            --gold: #a88b5e;
-            --button: #424565;
-            --button-hover: #4f5275;
-            --button-pressed: #126128;
-            --button-disabled: #2a2c40;
-            --negative: #991b1c;
-            --negative-hover: #b52424;
-            --slider-back: #171722;
-            --slider-outline: #494949;
-            --slider-grab: #303030;
-            --slider-fill: #287339;
-            --checkbox: #3d4059;
-            --bar-back: #404040;
-            --bar-fill: #408040;
-            --bar-idle: #6a6a6a;
-            --status-bad: #df6b6b;
-            --status-warn: #c18e36;
-            --live: #54b263;
-            --focus: #8ab4f8;
+            --page: #08070c;
+            --window: #0e0c14;
+            --header: #1a1622;
+            --card: #1e1a26;
+            --card-border: #2d3748;
+            --divider: #2d3748;
+            --text: #d7e2f4;
+            --text-disabled: #d7e2f480;
+            --subtext: #9fb4d8;
+            --accent: #9a8fb5;
+            --button: #15121d;
+            --button-border: #2d3748;
+            --button-hover: #221c2e;
+            --button-pressed: #2a2338;
+            --button-accent: #2a2338;
+            --button-accent-hover: #362c48;
+            --button-accent-border: #4a3f66;
+            --button-disabled: #14111b;
+            --negative: #5f2733;
+            --negative-hover: #7a3040;
+            --slider-back: #14111b;
+            --slider-outline: #2d3748;
+            --slider-grab: #1a1622;
+            --slider-fill: #9a8fb5;
+            --checkbox: #3a3352;
+            --bar-back: #14111b;
+            --bar-fill: #6b9e7a;
+            --bar-idle: #6f7480;
+            --status-bad: #f0a0a0;
+            --status-warn: #f0d878;
+            --live: #6b9e7a;
+            --focus: #9a8fb5;
         }
 
         * {
@@ -82,6 +88,14 @@
             width: 100%;
             max-width: 440px;
             background: var(--window);
+            box-shadow: 0 18px 60px #00000080;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            padding: 10px 12px;
+            margin-top: 10px;
         }
 
         .window-header {
@@ -94,11 +108,11 @@
         .window-title {
             margin: 0;
             font: 17px/1.4 "Boxfont Round", "Noto Sans SS14", sans-serif;
-            color: var(--gold);
+            color: var(--accent);
         }
 
         .divider {
-            height: 2px;
+            height: 1px;
             background: var(--divider);
         }
 
@@ -144,6 +158,7 @@
             padding: 2px 14px;
             border: 0;
             background: var(--button);
+            box-shadow: inset 0 0 0 1px var(--button-border);
             color: var(--text);
             cursor: pointer;
             user-select: none;
@@ -153,6 +168,13 @@
         .btn:hover { background: var(--button-hover); }
         .btn:active, .btn:has(input:checked) { background: var(--button-pressed); }
         .btn:disabled { background: var(--button-disabled); color: var(--text-disabled); cursor: default; }
+
+        .btn.primary {
+            background: var(--button-accent);
+            box-shadow: inset 0 0 0 1px var(--button-accent-border);
+        }
+
+        .btn.primary:hover { background: var(--button-accent-hover); }
 
         .btn.negative { background: var(--negative); }
         .btn.negative:hover { background: var(--negative-hover); }
@@ -215,7 +237,7 @@
             top: 0;
             bottom: 0;
             width: 2px;
-            background: var(--gold);
+            background: var(--accent);
         }
 
         .live-label {
@@ -234,7 +256,7 @@
             display: inline-block;
             margin: 20px 0 10px;
             padding: 2px 22px 5px 10px;
-            color: var(--gold);
+            color: var(--accent);
             font-size: 20px;
             font-weight: 700;
             line-height: 1.2;
@@ -247,8 +269,8 @@
             right: 0;
             top: 14px;
             bottom: 0;
-            border-bottom: 2px solid var(--gold);
-            border-right: 2px solid var(--gold);
+            border-bottom: 2px solid var(--accent);
+            border-right: 2px solid var(--accent);
         }
 
         .heading::after {
@@ -258,19 +280,19 @@
             top: 0;
             width: 16px;
             height: 16px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M7 0.5 L15 8.5 V16' fill='none' stroke='%23a88b5e' stroke-width='2'/%3E%3C/svg%3E") no-repeat;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M7 0.5 L15 8.5 V16' fill='none' stroke='%239a8fb5' stroke-width='2'/%3E%3C/svg%3E") no-repeat;
         }
 
         .field {
             display: grid;
-            grid-template-columns: 7.5em 1fr;
+            grid-template-columns: 9.5em 1fr;
             align-items: center;
             gap: 8px;
             margin-top: 8px;
         }
 
         .field.with-value {
-            grid-template-columns: 7.5em 1fr 3.5em;
+            grid-template-columns: 9.5em 1fr 3.5em;
         }
 
         .field-label {
@@ -289,9 +311,13 @@
         }
 
         .toggle-group .btn {
-            flex: 1;
+            flex: 1 1 0;
+            min-width: 0;
             position: relative;
             padding: 2px 8px;
+            white-space: normal;
+            text-align: center;
+            line-height: 1.2;
         }
 
         .slider {
@@ -433,7 +459,7 @@
         }
 
         .check input:checked {
-            background: var(--checkbox) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M4.5 10.5 L8 14 L15.5 6' fill='none' stroke='%23a88b5e' stroke-width='2.2'/%3E%3C/svg%3E") no-repeat;
+            background: var(--checkbox) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M4.5 10.5 L8 14 L15.5 6' fill='none' stroke='%239a8fb5' stroke-width='2.2'/%3E%3C/svg%3E") no-repeat;
         }
 
         .check input:focus-visible {
@@ -540,97 +566,101 @@
 <body data-tone="neutral">
 <main class="window chamfer">
     <header class="window-header">
-        <h1 class="window-title">Voice Chat</h1>
+        <h1 class="window-title">Голосовой чат</h1>
     </header>
     <div class="divider"></div>
 
     <div class="window-body">
-        <p class="status" id="status" role="status" aria-live="polite">Loading…</p>
+        <p class="status" id="status" role="status" aria-live="polite">Загрузка…</p>
         <p class="status-detail" id="status-detail"></p>
 
-        <form class="code-form" id="code-form" hidden>
-            <label class="field-label" for="code">Voice chat code</label>
+        <form class="code-form card" id="code-form" hidden>
+            <label class="field-label" for="code">Код голосового чата</label>
             <div class="code-row">
                 <input class="code-input chamfer" id="code" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="ABCD2345">
-                <button class="btn chamfer" id="code-submit" type="submit">Connect</button>
+                <button class="btn primary chamfer" id="code-submit" type="submit">Подключить</button>
             </div>
         </form>
 
-        <button class="btn big chamfer" id="start" type="button">Start</button>
-        <button class="btn big chamfer" id="retry" type="button" hidden>Reconnect here</button>
+        <button class="btn big primary chamfer" id="start" type="button">Начать</button>
+        <button class="btn big chamfer" id="retry" type="button" hidden>Переподключиться</button>
 
-        <section id="controls" hidden aria-label="Microphone">
-            <div class="live-row">
-                <div class="bar" aria-hidden="true">
-                    <div class="bar-fill" id="meter-fill"></div>
-                    <div class="bar-threshold" id="meter-threshold" hidden></div>
+        <section id="controls" hidden aria-label="Микрофон">
+            <div class="card">
+                <div class="live-row">
+                    <div class="bar" aria-hidden="true">
+                        <div class="bar-fill" id="meter-fill"></div>
+                        <div class="bar-threshold" id="meter-threshold" hidden></div>
+                    </div>
+                    <button class="btn chamfer" id="mute" type="button" aria-pressed="false">Заглушить</button>
                 </div>
-                <button class="btn chamfer" id="mute" type="button" aria-pressed="false">Mute</button>
+                <p class="live-label" id="indicator-label">Микрофон выключен</p>
             </div>
-            <p class="live-label" id="indicator-label">Microphone off</p>
 
-            <h2 class="heading">Settings</h2>
+            <h2 class="heading">Настройки</h2>
 
-            <div class="field">
-                <span class="field-label" id="mode-label">Mode</span>
-                <div class="toggle-group" role="radiogroup" aria-labelledby="mode-label">
-                    <label class="btn open-right"><input type="radio" name="mode" id="mode-ptt" value="ptt">Push to talk</label>
-                    <label class="btn open-left"><input type="radio" name="mode" id="mode-vad" value="vad">Voice activation</label>
+            <div class="card">
+                <div class="field">
+                    <span class="field-label" id="mode-label">Режим</span>
+                    <div class="toggle-group" role="radiogroup" aria-labelledby="mode-label">
+                        <label class="btn open-right"><input type="radio" name="mode" id="mode-ptt" value="ptt">По кнопке</label>
+                        <label class="btn open-left"><input type="radio" name="mode" id="mode-vad" value="vad">По голосу</label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="field with-value" id="threshold-row" hidden>
-                <label class="field-label" for="threshold">Threshold</label>
-                <div class="slider">
-                    <div class="slider-track chamfer"><div class="slider-inner chamfer"><div class="slider-fill"></div></div></div>
-                    <div class="slider-grab chamfer"></div>
-                    <input type="range" id="threshold" min="-70" max="-10" step="1">
+                <div class="field with-value" id="threshold-row" hidden>
+                    <label class="field-label" for="threshold">Порог</label>
+                    <div class="slider">
+                        <div class="slider-track chamfer"><div class="slider-inner chamfer"><div class="slider-fill"></div></div></div>
+                        <div class="slider-grab chamfer"></div>
+                        <input type="range" id="threshold" min="-70" max="-10" step="1">
+                    </div>
+                    <output id="threshold-value" for="threshold"></output>
                 </div>
-                <output id="threshold-value" for="threshold"></output>
-            </div>
 
-            <div class="field" id="effect-row" hidden>
-                <label class="field-label" for="effect">Voice changer</label>
-                <div class="select chamfer">
-                    <select id="effect">
-                        <option value="none">Off</option>
-                        <option value="robot">Robot</option>
-                        <option value="alien">Alien</option>
-                        <option value="abductor">Abductor</option>
-                        <option value="deep">Deep</option>
-                        <option value="high">High</option>
-                        <option value="whisper">Whisper</option>
-                        <option value="radio">Radio</option>
-                        <option value="muffled">Muffled</option>
-                    </select>
+                <div class="field" id="effect-row" hidden>
+                    <label class="field-label" for="effect">Изменение голоса</label>
+                    <div class="select chamfer">
+                        <select id="effect">
+                            <option value="none">Выкл.</option>
+                            <option value="robot">Робот</option>
+                            <option value="alien">Пришелец</option>
+                            <option value="abductor">Абдуктор</option>
+                            <option value="deep">Низкий</option>
+                            <option value="high">Высокий</option>
+                            <option value="whisper">Шёпот</option>
+                            <option value="radio">Рация</option>
+                            <option value="muffled">Приглушённый</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="field-label" for="device">Microphone</label>
-                <div class="select chamfer"><select id="device"></select></div>
-            </div>
-
-            <div class="field with-value">
-                <label class="field-label" for="gain">Input volume</label>
-                <div class="slider">
-                    <div class="slider-track chamfer"><div class="slider-inner chamfer"><div class="slider-fill"></div></div></div>
-                    <div class="slider-grab chamfer"></div>
-                    <input type="range" id="gain" min="0" max="300" step="5">
+                <div class="field">
+                    <label class="field-label" for="device">Микрофон</label>
+                    <div class="select chamfer"><select id="device"></select></div>
                 </div>
-                <output id="gain-value" for="gain"></output>
-            </div>
 
-            <div class="checks">
-                <label class="check"><input type="checkbox" id="noise-suppression">Noise suppression</label>
-                <label class="check"><input type="checkbox" id="echo-cancellation">Echo cancellation</label>
-                <label class="check"><input type="checkbox" id="auto-gain-control">Auto gain</label>
-                <label class="check" id="keep-awake-row"><input type="checkbox" id="keep-awake">Keep screen awake</label>
+                <div class="field with-value">
+                    <label class="field-label" for="gain">Громкость входа</label>
+                    <div class="slider">
+                        <div class="slider-track chamfer"><div class="slider-inner chamfer"><div class="slider-fill"></div></div></div>
+                        <div class="slider-grab chamfer"></div>
+                        <input type="range" id="gain" min="0" max="300" step="5">
+                    </div>
+                    <output id="gain-value" for="gain"></output>
+                </div>
+
+                <div class="checks">
+                    <label class="check"><input type="checkbox" id="noise-suppression">Подавление шума</label>
+                    <label class="check"><input type="checkbox" id="echo-cancellation">Эхоподавление</label>
+                    <label class="check"><input type="checkbox" id="auto-gain-control">Автогромкость</label>
+                    <label class="check" id="keep-awake-row"><input type="checkbox" id="keep-awake">Не гасить экран</label>
+                </div>
             </div>
         </section>
     </div>
 
-    <p class="window-footer">Keep this tab open while you play.</p>
+    <p class="window-footer">Держите эту вкладку открытой, пока играете.</p>
 </main>
 <script src="voice.js"></script>
 </body>
