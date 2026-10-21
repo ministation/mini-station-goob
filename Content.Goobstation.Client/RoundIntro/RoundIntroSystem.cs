@@ -1,3 +1,4 @@
+using System.Globalization;
 using Content.Client.Gameplay;
 using Content.Client.Lobby;
 using Content.Goobstation.Common.CCVar;
@@ -128,9 +129,9 @@ public sealed partial class RoundIntroSystem : EntitySystem
         {
             string? job = null;
             if (coworker.Job is { } jobId && _proto.TryIndex(jobId, out var jobProto))
-                job = jobProto.LocalizedName;
+                job = CapitalizeFirst(jobProto.LocalizedName);
             else if (coworker.Antag is { } antagId && _proto.TryIndex(antagId, out var antagProto))
-                job = Loc.GetString(antagProto.Name);
+                job = CapitalizeFirst(Loc.GetString(antagProto.Name));
 
             _overlay.AddCoworker(coworker.Entity, coworker.Name, job);
         }
@@ -187,5 +188,18 @@ public sealed partial class RoundIntroSystem : EntitySystem
         _hasIntro = false;
         _inGame = false;
         _enterDeadline = null;
+    }
+
+    /// <summary>
+    /// Job and antag names are stored lower-case in localized prototypes ("капитан"), which looks
+    /// wrong as a standalone line under the character name. Only the first letter is touched, so
+    /// multi-word titles keep their own casing ("глава персонала" → "Глава персонала").
+    /// </summary>
+    private static string CapitalizeFirst(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+        return char.ToUpper(text[0], CultureInfo.CurrentCulture) + text[1..];
     }
 }
