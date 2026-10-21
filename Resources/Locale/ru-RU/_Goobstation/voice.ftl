@@ -18,6 +18,8 @@ voice-link-expiry = Держите страницу открытой, пока �
 voice-link-loading = Получаем ссылку...
 voice-link-open = Открыть в браузере
 voice-link-copy = Скопировать ссылку
+voice-link-code-copy-hint = Нажмите, чтобы скопировать код
+voice-link-code-copied = Код скопирован
 voice-link-close = Закрыть
 
 voice-guide-title = Голосовой чат

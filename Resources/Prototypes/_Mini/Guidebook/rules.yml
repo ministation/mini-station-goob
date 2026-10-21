@@ -34,6 +34,7 @@
   - DefaultRule91
   - DefaultRule92
   - DefaultRule10
+  - VoiceChatRule
   - DefaultTypanRuleset
 
 - type: guideEntry
@@ -336,3 +337,10 @@
   priority: 32
   ruleEntry: true
   text: "/ServerInfo/_Mini/ServerRules/DefaultRule10.xml"
+
+- type: guideEntry
+  id: VoiceChatRule
+  name: guide-entry-voice-chat-rule
+  priority: 33
+  ruleEntry: true
+  text: "/ServerInfo/_Mini/ServerRules/VoiceChatRule.xml"

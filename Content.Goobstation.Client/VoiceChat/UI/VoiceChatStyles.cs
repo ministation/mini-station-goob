@@ -55,6 +55,17 @@ public static class VoiceChatStyles
         ContentMarginBottomOverride = 8,
     };
 
+    public static StyleBoxFlat CodeButtonStyle() => new()
+    {
+        BackgroundColor = Color.FromHex("#211c2b"),
+        BorderColor = Accent.WithAlpha(0.45f),
+        BorderThickness = new Thickness(1),
+        ContentMarginLeftOverride = 8,
+        ContentMarginTopOverride = 4,
+        ContentMarginRightOverride = 8,
+        ContentMarginBottomOverride = 4,
+    };
+
     public static StyleBoxFlat ButtonStyle(bool accent = false) => new()
     {
         BackgroundColor = accent ? Color.FromHex("#2a2338") : Color.FromHex("#15121d"),
@@ -91,6 +102,17 @@ public static class VoiceChatStyles
         StyleClasses = { "LabelSubText" },
         FontColorOverride = MutedText,
     };
+
+    public static RichTextLabel WrappedMuted(string text)
+    {
+        var label = new RichTextLabel
+        {
+            HorizontalExpand = true,
+            VerticalAlignment = Control.VAlignment.Top,
+        };
+        label.SetMessage(text, MutedText);
+        return label;
+    }
 
     public static PanelContainer CardHost(Control child, bool expand = true)
     {

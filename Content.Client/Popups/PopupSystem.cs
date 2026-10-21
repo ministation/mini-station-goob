@@ -10,6 +10,7 @@ using Content.Shared.Examine;
 using Content.Shared.GameTicking;
 using Content.Shared.Popups;
 using JetBrains.Annotations;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.Player;
@@ -37,7 +38,7 @@ namespace Content.Client.Popups
         [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
         [Dependency] private readonly IReplayRecordingManager _replayRecording = default!;
         [Dependency] private readonly ExamineSystemShared _examine = default!;
-        [Dependency] private readonly SharedTransformSystem _transform = default!;
+        [Dependency] private readonly TransformSystem _transform = default!;
 
         public IReadOnlyCollection<WorldPopupLabel> WorldLabels => _aliveWorldLabels.Values;
         public IReadOnlyCollection<CursorPopupLabel> CursorLabels => _aliveCursorLabels.Values;
@@ -123,7 +124,7 @@ namespace Content.Client.Popups
                 return;
             }
 
-            var label = new WorldPopupLabel(coordinates)
+            var label = new WorldPopupLabel(coordinates, entity)
             {
                 Text = message,
                 Type = type,
@@ -389,12 +390,14 @@ namespace Content.Client.Popups
             public int Repeats = 1;
         }
 
-        public sealed class WorldPopupLabel(EntityCoordinates coordinates) : PopupLabel
+        public sealed class WorldPopupLabel(EntityCoordinates coordinates, EntityUid? followEntity) : PopupLabel
         {
             /// <summary>
             /// The original EntityCoordinates of the label.
             /// </summary>
             public EntityCoordinates InitialPos = coordinates;
+
+            public EntityUid? FollowEntity = followEntity;
         }
 
         public sealed class CursorPopupLabel(ScreenCoordinates screenCoords) : PopupLabel

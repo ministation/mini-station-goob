@@ -18,6 +18,8 @@ voice-link-expiry = Leave the page open while you play. The code only works unti
 voice-link-loading = Getting your link...
 voice-link-open = Open in browser
 voice-link-copy = Copy link
+voice-link-code-copy-hint = Click to copy the code
+voice-link-code-copied = Code copied
 voice-link-close = Close
 
 voice-guide-title = Voice Chat

@@ -24,8 +24,8 @@ public sealed partial class VoiceChatGuideWindow : DefaultWindow
         IoCManager.InjectDependencies(this);
 
         Title = Loc.GetString("voice-guide-title");
-        SetSize = new Vector2(680, 700);
-        MinSize = new Vector2(580, 480);
+        SetSize = new Vector2(760, 700);
+        MinSize = new Vector2(640, 480);
 
         var backdrop = new PanelContainer
         {
