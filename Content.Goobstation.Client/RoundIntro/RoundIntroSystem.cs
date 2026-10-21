@@ -200,6 +200,10 @@ public sealed partial class RoundIntroSystem : EntitySystem
         if (string.IsNullOrEmpty(text))
             return text;
 
-        return char.ToUpper(text[0], CultureInfo.CurrentCulture) + text[1..];
+        // Build the string via a char array: the client sandbox forbids any ReadOnlySpan<char>
+        // usage, and the range/substring/concatenation helpers can emit span constructors.
+        var chars = text.ToCharArray();
+        chars[0] = char.ToUpper(chars[0], CultureInfo.CurrentCulture);
+        return new string(chars);
     }
 }
