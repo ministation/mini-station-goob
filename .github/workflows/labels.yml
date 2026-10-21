@@ -29,7 +29,9 @@ jobs:
       uses: eps1lon/actions-label-merge-conflict@v3.0.0
       with:
         dirtyLabel: "S: Merge Conflict"
-        repoToken: "${{ secrets.BOT_TOKEN }}"
+        # The default Actions token has pull-requests: write here, so labeling does not depend
+        # on the optional BOT_TOKEN secret (it is unset, which used to fail the whole job).
+        repoToken: "${{ github.token }}"
         commentOnDirty: "This pull request has conflicts, please resolve those before we can evaluate the pull request."
 
     - name: Label by changed files
@@ -40,7 +42,7 @@ jobs:
       if: ${{ !cancelled() && github.event_name == 'pull_request_target' && contains(fromJSON('["opened", "synchronize", "reopened"]'), github.event.action) }}
       uses: "pascalgn/size-label-action@v0.5.5"
       env:
-        GITHUB_TOKEN: "${{ secrets.BOT_TOKEN }}"
+        GITHUB_TOKEN: "${{ github.token }}"
       with:
         sizes: >
           {
