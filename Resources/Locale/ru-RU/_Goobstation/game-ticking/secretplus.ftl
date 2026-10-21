@@ -11,3 +11,7 @@ survivalplus-description = Начинается довольно спокойн�
     Заканчивается... не совсем.
 secretplus-lowpop-title = Лоупоп+
 secretplus-lowpop-description = Для малелых экипажей станции.ы
+
+secretplus-high-title = Высокий+
+
+secretplus-high-description = Неизвестные, но сбалансированные угрозы.

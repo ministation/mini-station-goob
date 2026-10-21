@@ -62,3 +62,6 @@ ent-MindRoleMothershipCore = Роль ядра материнского кора
     .desc = { ent-BaseMindRoleAntag.desc }
 ent-MindRoleXenoborg = Роль ксеноборга
     .desc = { ent-BaseMindRoleAntag.desc }
+
+ent-MindRoleSurvivor = Роль выжившего
+    .desc = { ent-BaseMindRoleAntag.desc }

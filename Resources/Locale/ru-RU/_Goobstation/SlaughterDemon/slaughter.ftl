@@ -20,3 +20,7 @@ demonic-whisper-popup = Вдруг в вашей голове раздаётся
 demonic-whisper-whisper = Вы шепчете { $name }: { $message }
 # metadata
 name-format-slaughter = { $part1 }, { $part0 }
+
+demonic-whisper-flavor = Внезапно в вашей голове звучит странный демонический голос...
+
+demonic-whisper-self = Вы шепчете {$name}: {$message}

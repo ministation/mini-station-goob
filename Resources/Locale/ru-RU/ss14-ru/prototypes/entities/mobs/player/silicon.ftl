@@ -71,3 +71,19 @@ ent-PlayerSyndicateAssaultBorgDerelict = { ent-SyndicateAssaultBorgChassisDereli
 ent-PlayerBorgSyndicateDerelictGhostRole = { ent-PlayerSyndicateAssaultBorgDerelict }
     .desc = { ent-PlayerSyndicateAssaultBorgDerelict.desc }
     .suffix = Роль призрака
+
+ent-PlayerEngineeringBorgDerelictGhostRole = { ent-PlayerEngineeringBorgDerelict }
+    .suffix = Роль призрака
+    .desc = { ent-PlayerEngineeringBorgDerelict.desc }
+
+ent-PlayerJanitorBorgDerelictGhostRole = { ent-PlayerJanitorBorgDerelict }
+    .suffix = Роль призрака
+    .desc = { ent-PlayerJanitorBorgDerelict.desc }
+
+ent-PlayerMedicalBorgDerelictGhostRole = { ent-PlayerMedicalBorgDerelict }
+    .suffix = Роль призрака
+    .desc = { ent-PlayerMedicalBorgDerelict.desc }
+
+ent-PlayerMiningBorgDerelictGhostRole = { ent-PlayerMiningBorgDerelict }
+    .suffix = Роль призрака
+    .desc = { ent-PlayerMiningBorgDerelict.desc }

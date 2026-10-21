@@ -24,3 +24,6 @@ ent-NoosphericVFX2 = { ent-BaseCosmicVFX }
     .desc = { ent-BaseCosmicVFX.desc }
 ent-NoosphericVFX1 = { ent-BaseCosmicVFX }
     .desc = { ent-BaseCosmicVFX.desc }
+
+ent-CosmicColossusAttack1Vfx = { ent-BaseCosmicVFX }
+    .desc = { ent-BaseCosmicVFX.desc }

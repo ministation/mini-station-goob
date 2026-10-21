@@ -85,3 +85,7 @@ changeling-regenerate-limbs = Наше тело издаёт громкий хр
 changeling-chameleon-start = Мы начинаем маскрироваться...
 changeling-chameleon-end = Наше тело теряет свою маскировку.
 changeling-chameleon-fire = Наша маскировка исчезает, когда пламя начинает жечь нас!
+
+changeling-darkadapt-active = Мы готовимся адаптироваться к темноте.
+
+changeling-darkadapt-inactive = Мы прекращаем готовиться к темноте.

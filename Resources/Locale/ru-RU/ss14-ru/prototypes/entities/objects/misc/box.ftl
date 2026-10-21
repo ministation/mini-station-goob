@@ -3,3 +3,6 @@ ent-BoxBase = { ent-BaseStorageItem }
 
 ent-ToteBase = коробочка печатных плат
     .desc = Коробочка для переноски печатных плат.
+
+ent-BoxBaseSmall = { ent-BoxBase }
+    .desc = { ent-BoxBase.desc }

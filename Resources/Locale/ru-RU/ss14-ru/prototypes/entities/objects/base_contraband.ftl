@@ -52,3 +52,6 @@ ent-BaseGrandTheftContraband = { "" }
     .desc = { "" }
 ent-BaseHonkraband = { "" }
     .desc = { "" }
+
+ent-BaseHighlyIllegalContraband = { "" }
+    .desc = { "" }

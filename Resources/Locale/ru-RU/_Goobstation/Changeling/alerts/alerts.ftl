@@ -18,3 +18,7 @@ alerts-changeling-panacea-name = Панацея
 alerts-changeling-panacea-desc = Нефизический урон исцеляется! Болезни, химикаты и воздействия наркотиков очищаются. [color=red]Эффекты прекратятся после контакта с огнём или смерти.[/color]
 alerts-changeling-voidadapt-name = Вакуумная адаптация
 alerts-changeling-voidadapt-desc = Происходит адаптация к экстремальным условиям. [color=yellow]Химическая регенерация остановлена[/color]. [color=red]Эффекты прекратятся после контакта с огнём.[/color]
+
+alerts-changeling-darkadapt-name = Адаптация к тьме
+
+alerts-changeling-darkadapt-desc = Ваше тело приспособлено к покрову тьмы. [color=yellow]Регенерация химикатов снижена на 15%[/color]. [color=red]Действие прекратится, если вы загоритесь.[/color]

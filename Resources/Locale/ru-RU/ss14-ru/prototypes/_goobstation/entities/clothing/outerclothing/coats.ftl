@@ -16,3 +16,9 @@ ent-ClothingOuterCoatHoPLong = длинное пальто главы персо
     .desc = Стильное длинное пальто Главы Персонала.
 ent-ClothingOuterArmoredJacketOuterCommand = куртка ТСФ
     .desc = Пурпурная куртка с очень изысканными элементами. На спине изображена эмблема ТСФ.
+
+ent-ClothingOuterArmoredJacketCentralCommand = куртка Центкома
+    .desc = Формальная зелёная куртка, напоминающая пальто, с позолоченными наплечниками и высоким воротником.
+
+ent-ClothingOuterJacketCentralCommandIke = куртка Айк Центкома
+    .desc = Утилитарная зелёно-чёрная куртка со строгим дизайном в военном стиле, которую носят в Центкоме.

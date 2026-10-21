@@ -16,3 +16,6 @@ ent-MobRespirator = { "" }
     .desc = { "" }
 ent-MobBloodstream = { "" }
     .desc = { "" }
+
+ent-BaseControllable = { "" }
+    .desc = { "" }

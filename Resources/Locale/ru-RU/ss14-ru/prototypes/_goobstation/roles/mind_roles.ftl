@@ -20,3 +20,24 @@ ent-MindRoleGhostRoleSoloAntagonistGoob = Pоль призрака (соло-а�
     .desc = { ent-BaseMindRoleAntagGhostGoob.desc }
 ent-MindRoleGhostRoleFreeAgentGoob = Pоль призрака (свободный агент)
     .desc = { ent-BaseMindRoleAntag.desc }
+
+ent-MindRoleGemini = Роль Гемини
+    .desc = { ent-MindRoleGhostRoleFamiliar.desc }
+
+ent-MindRoleGhostRoleFreeAgentEngineeringGoob = Роль призрака (свободный агент)
+    .desc = { ent-MindRoleGhostRoleFreeAgentGoob.desc }
+
+ent-MindRoleGhostRoleFreeAgentSecurityGoob = Роль призрака (свободный агент)
+    .desc = { ent-MindRoleGhostRoleFreeAgentGoob.desc }
+
+ent-MindRoleGhostRoleSoloAntagonistMimeGoob = Роль антагониста
+    .desc = { ent-MindRoleGhostRoleSoloAntagonistGoob.desc }
+
+ent-MindRoleGhostRoleSoloAntagonistPassengerGoob = Роль антагониста
+    .desc = { ent-MindRoleGhostRoleSoloAntagonistMimeGoob.desc }
+
+ent-MindRoleGhostRoleSoloAntagonistBorgGoob = Роль антагониста
+    .desc = { ent-MindRoleGhostRoleSoloAntagonistMimeGoob.desc }
+
+ent-MindRoleGhostRoleSoloAntagonistClownGoob = Роль антагониста
+    .desc = { ent-MindRoleGhostRoleSoloAntagonistMimeGoob.desc }

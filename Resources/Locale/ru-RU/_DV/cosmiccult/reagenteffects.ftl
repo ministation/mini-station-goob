@@ -7,3 +7,5 @@ entropy-effect-numb = Вы ощущаете тревожное оцепенен�
 reagent-name-entropy = жидкая энтропия
 reagent-desc-entropy = Тревожное, зловредное вещество.
 reagent-physical-desc-malign = зловещее
+
+flavor-complex-entropy = резко жутковатый

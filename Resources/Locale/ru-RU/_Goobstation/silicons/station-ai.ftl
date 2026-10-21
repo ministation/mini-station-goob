@@ -10,3 +10,15 @@ station-ai-earlyleave-menu-confirm = Подтвердить
 station-ai-earlyleave-menu-deny = Отмена
 station-ai-earlyleave-announcement = { $character } (Станционный ИИ) перешёл в спящий режим!
 station-ai-earlyleave-announcement-sender = Ядро ИИ
+
+station-ai-hologram-horror = Внешность ужаса
+
+station-ai-hologram-queen = Внешность королевы
+
+station-ai-hologram-performer = Внешность артиста
+
+station-ai-icon-blank = Пустая оболочка
+
+station-ai-icon-bingle = Бингл
+
+station-ai-icon-performer = Кумир всех

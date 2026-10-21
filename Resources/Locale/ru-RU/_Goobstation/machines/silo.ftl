@@ -12,3 +12,9 @@ signal-port-name-material-silo = Сило материалов
 signal-port-description-material-silo = Пространственное хранилище материалов станции
 signal-port-name-material-silo-utilizer = Использователь сило
 signal-port-description-material-silo-utilizer = Использователь материалного сило станции
+
+lathe-menu-mining-points-silo-not-on-same-map = [bold][color=red]ВНИМАНИЕ:[/color][/bold] Это устройство находится на другой карте, чем его сило. При сбросе руды вы НЕ получите очки руды.
+
+lathe-menu-mining-points-silo-out-of-range = [bold][color=red]ВНИМАНИЕ:[/color][/bold] Связанное сило вне зоны действия! При сбросе руды вы НЕ получите очки руды.
+
+lathe-menu-mining-points-silo-invalid = [bold][color=red]ВНИМАНИЕ:[/color][/bold] Связанное сило недействительно! При сбросе руды вы НЕ получите очки руды.

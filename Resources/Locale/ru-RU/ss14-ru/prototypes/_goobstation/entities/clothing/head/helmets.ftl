@@ -33,3 +33,9 @@ ent-ClothingHeadHatHelmetDragon = драконий капюшон
     .desc = Создание огненных шаров в комплект не входит.
 ent-ClothingHeadHatHelmetInquisitor = фуражка инквизитора
     .desc = Великолепная позолоченная фуражка. Воплощение кары, которая постигнет еретиков!
+
+ent-ClothingHeadHatHelmetBrass = латунный шлем
+    .desc = Латунный шлем, как в старые добрые времена.
+
+ent-ClothingHeadHelmetSwatBase = { ent-ClothingHeadHelmetBase }
+    .desc = { ent-ClothingHeadHelmetBase.desc }

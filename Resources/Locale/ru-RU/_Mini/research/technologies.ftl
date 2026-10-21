@@ -41,3 +41,7 @@ research-technology-syndicate-hardsuits = Скафандры Синдиката
 research-technology-elite-syndicate-hardsuits = Элитные скафандры Синдиката
 research-technology-heavy-syndicate-hardsuits = Тяжёлые скафандры Синдиката
 research-technology-defibrillator-syndicate = Дефибриллятор Синдиката
+
+research-technology-energy-barriers = Энергетические барьеры
+
+research-technology-fringe-artifact-methods = Нетрадиционные методы изучения артефактов

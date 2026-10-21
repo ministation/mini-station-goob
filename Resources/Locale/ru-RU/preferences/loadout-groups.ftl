@@ -179,3 +179,5 @@ loadout-group-survival-military = См. строку 14, никто не уви�
 loadout-group-chaplain-bible = Священная книга
 
 loadout-group-cargo-technician-id = Грузчик, ID
+
+loadout-group-bartender-shaker = Шейкер бармена

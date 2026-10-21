@@ -232,3 +232,17 @@ ratvar-ui-roundstart-title = Праведники Ратвара
 ratvar-ui-roundstart-text-1 = Вы — Праведник Ратвара!
 ratvar-ui-roundstart-text-2 = Ваша цель — провести древний ритуал и вернуть Ратвару былую силу.
 ratvar-ui-popup-confirm = Принять
+
+chat-radio-ratvar = Ратвар
+
+tool-quality-ratvar-screwing-name = Ввинчивание Ратвара
+
+tool-quality-ratvar-screwing-tool-name = Инструмент ввинчивания Ратвара
+
+tool-quality-ratvar-anchoring-name = Крепление Ратвара
+
+tool-quality-ratvar-anchoring-tool-name = Инструмент крепления Ратвара
+
+fibers-brass = латунные волокна
+
+objective-issuer-ratvar = Ратвар

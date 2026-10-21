@@ -186,3 +186,5 @@ loadout-group-plasma-tank = Баллон с плазмой
 loadout-group-security-gloves = Перчатки СБ
 # Shaft Miner
 loadout-group-shaft-miner-jumpsuit = Комбинезон шахтёра
+
+loadout-group-atmospheric-technician-belt = Пояс атмосферного техника

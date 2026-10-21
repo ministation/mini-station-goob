@@ -16,3 +16,18 @@ ent-CratePrivateCargoSecure = специальный ящик
 ent-CrateHolographic = голографический ящик
     .suffix = голографический
     .desc = { ent-CrateGeneric.desc }
+
+ent-CrateIndustrialSecure = промышленный блюспейс-ящик
+    .desc = { ent-CrateBaseSecure.desc }
+
+ent-CrateTechnologicalSecure = технологический блюспейс-ящик
+    .desc = { ent-CrateBaseSecure.desc }
+
+ent-CrateBiologicalSecure = биологический блюспейс-ящик
+    .desc = { ent-CrateBaseSecure.desc }
+
+ent-CrateDestructionSecure = блюспейс-ящик разрушения
+    .desc = { ent-CrateBaseSecure.desc }
+
+ent-CrateLimitedSecure = ограниченный блюспейс-ящик
+    .desc = { ent-CrateBaseSecure.desc }

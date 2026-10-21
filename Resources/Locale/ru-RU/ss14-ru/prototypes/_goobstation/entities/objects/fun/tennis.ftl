@@ -5,3 +5,6 @@ ent-NTTennisRacket = теннисная ракетка NanoTrasen
     .desc = Крепкая теннисная ракетка команды NanoTrasen!
 ent-SyndicateTennisRacket = теннисная ракетка Синдиката
     .desc = Крепкая теннисная ракетка команды Синдиката!
+
+ent-TennisBallGoob = теннисный мяч
+    .desc = Создан для проверки терпения СБ.

@@ -47,3 +47,7 @@ borg-type-service-transponder = борг-официант
 borg-type-security-name = Охранник
 borg-type-security-desc = Поддерживайте порядок на станции, задерживайте нарушителей и защищайте экипаж.
 borg-type-security-transponder = борг-охранник
+
+borg-module-action-name = Активировать {$moduleName}
+
+borg-module-action-description = Выберите {$moduleName}, чтобы использовать предоставляемые им инструменты.

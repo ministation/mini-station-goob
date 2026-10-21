@@ -17,3 +17,6 @@ ent-MobAdultSlimesYellow = жёлтый слайм
 ent-MobAdultSlimesYellowAngry = жёлтый слайм
     .desc = { ent-MobAdultSlimesYellow.desc }
     .suffix = Враждебный
+
+ent-BaseMobAdultSlimes = базовый слизень
+    .desc = Выглядит прямо как желе. Интересно, какое оно на вкус?

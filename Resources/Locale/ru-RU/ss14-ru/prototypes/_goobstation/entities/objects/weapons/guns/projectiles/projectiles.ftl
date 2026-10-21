@@ -34,3 +34,18 @@ ent-ProjectileMonkeyDart = дротик дартс-обезьяны
     .desc = { ent-BaseBullet.desc }
 ent-BulletMime = пуля (тихая)
     .desc = { ent-BaseBullet.desc }
+
+ent-HeavyPulse = { ent-BasicHitscan }
+    .desc = { ent-BasicHitscan.desc }
+
+ent-LightPulse = { ent-BasicHitscan }
+    .desc = { ent-BasicHitscan.desc }
+
+ent-LaserSniper = { ent-BasicHitscan }
+    .desc = { ent-BasicHitscan.desc }
+
+ent-RedMediumSplitLaser = { ent-BasicHitscan }
+    .desc = { ent-BasicHitscan.desc }
+
+ent-StunPulse = импульс оглушения
+    .desc = { ent-BasicHitscan.desc }

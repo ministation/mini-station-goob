@@ -129,3 +129,135 @@ ent-CrateBluespaceBiologicalRaceCubes = { ent-CrateBluespaceBiological }
 ent-CrateBluespaceBiologicalReagents = { ent-CrateBluespaceBiological }
     .desc = { ent-CrateBaseBluespace.desc }
     .suffix = Блюспейс харвестер, Реагенты, НЕ МАПИТЬ
+
+ent-CrateHarvesterSingularity = { ent-CrateLimitedSecure }
+    .desc = У вас нехорошее предчувствие на этот счёт.
+    .suffix = Блюспейс-харвестер, сингулярность, НЕ МАППИТЬ
+
+ent-CrateHarvesterSingularityFake = { ent-CrateLimitedSecure }
+    .desc = У вас нехорошее предчувствие на этот счёт.
+    .suffix = Блюспейс-харвестер, поддельная сингулярность
+
+ent-CrateHarvesterMaterials = { ent-CrateIndustrialSecure }
+    .suffix = Блюспейс-харвестер, материалы
+    .desc = { ent-CrateIndustrialSecure.desc }
+
+ent-CrateHarvesterPowerCell = { ent-CrateIndustrialSecure }
+    .suffix = Блюспейс-харвестер, батарея
+    .desc = { ent-CrateIndustrialSecure.desc }
+
+ent-CrateHarvesterBeer = { ent-CrateIndustrialSecure }
+    .suffix = Блюспейс-харвестер, пиво
+    .desc = { ent-CrateIndustrialSecure.desc }
+
+ent-CrateHarvesterTools = { ent-CrateIndustrialSecure }
+    .suffix = Блюспейс-харвестер, инструменты
+    .desc = { ent-CrateIndustrialSecure.desc }
+
+ent-CrateHarvesterBackpackHolding = { ent-CrateIndustrialSecure }
+    .suffix = Блюспейс-харвестер, рюкзак хранения
+    .desc = { ent-CrateIndustrialSecure.desc }
+
+ent-CrateHarvesterAmeJar = { ent-CrateIndustrialSecure }
+    .suffix = Блюспейс-харвестер, банка AME
+    .desc = { ent-CrateIndustrialSecure.desc }
+
+ent-CrateHarvesterCircuitboard = { ent-CrateIndustrialSecure }
+    .suffix = Блюспейс-харвестер, плата
+    .desc = { ent-CrateIndustrialSecure.desc }
+
+ent-CrateHarvesterResearchDisk = { ent-CrateTechnologicalSecure }
+    .suffix = Блюспейс-харвестер, диск исследований
+    .desc = { ent-CrateTechnologicalSecure.desc }
+
+ent-CrateHarvesterTechnologyDisk = { ent-CrateTechnologicalSecure }
+    .suffix = Блюспейс-харвестер, диск технологий
+    .desc = { ent-CrateTechnologicalSecure.desc }
+
+ent-CrateHarvesterAnomaly = { ent-CrateTechnologicalSecure }
+    .suffix = Блюспейс-харвестер, аномалия
+    .desc = { ent-CrateTechnologicalSecure.desc }
+
+ent-CrateHarvesterArtifact = { ent-CrateTechnologicalSecure }
+    .suffix = Блюспейс-харвестер, артефакт
+    .desc = { ent-CrateTechnologicalSecure.desc }
+
+ent-CrateHarvesterAnomalyKit = { ent-CrateTechnologicalSecure }
+    .suffix = Блюспейс-харвестер, набор аномалий
+    .desc = { ent-CrateTechnologicalSecure.desc }
+
+ent-CrateHarvesterEncryptionKey = { ent-CrateTechnologicalSecure }
+    .suffix = Блюспейс-харвестер, ключ шифрования
+    .desc = { ent-CrateTechnologicalSecure.desc }
+
+ent-CrateHarvesterBorg = { ent-CrateTechnologicalSecure }
+    .suffix = Блюспейс-харвестер, борг
+    .desc = { ent-CrateTechnologicalSecure.desc }
+
+ent-CrateHarvesterMech = { ent-CrateTechnologicalSecure }
+    .suffix = Блюспейс-харвестер, мех
+    .desc = { ent-CrateTechnologicalSecure.desc }
+
+ent-CrateHarvesterReagentSlime = { ent-CrateLimitedSecure }
+    .suffix = Блюспейс-харвестер, реагентный слайм
+    .desc = { ent-CrateLimitedSecure.desc }
+
+ent-CrateHarvesterReagentPointSource = { ent-CrateLimitedSecure }
+    .suffix = Блюспейс-харвестер, источник реагентов
+    .desc = { ent-CrateLimitedSecure.desc }
+
+ent-CrateHarvesterInjection = { ent-CrateBiologicalSecure }
+    .suffix = Блюспейс-харвестер, инъекция
+    .desc = { ent-CrateBiologicalSecure.desc }
+
+ent-CrateHarvesterImplanter = { ent-CrateBiologicalSecure }
+    .suffix = Блюспейс-харвестер, имплантер
+    .desc = { ent-CrateBiologicalSecure.desc }
+
+ent-CrateHarvesterMedkit = { ent-CrateBiologicalSecure }
+    .suffix = Блюспейс-харвестер, аптечка
+    .desc = { ent-CrateBiologicalSecure.desc }
+
+ent-CrateHarvesterRomerol = { ent-CrateLimitedSecure }
+    .suffix = Блюспейс-харвестер, Ромерол
+    .desc = { ent-CrateLimitedSecure.desc }
+
+ent-CrateHarvesterDoctorsDelight = { ent-CrateLimitedSecure }
+    .suffix = Блюспейс-харвестер, Радость доктора
+    .desc = { ent-CrateLimitedSecure.desc }
+
+ent-CrateHarvesterSeeds = { ent-CrateBiologicalSecure }
+    .suffix = Блюспейс-харвестер, семена
+    .desc = { ent-CrateBiologicalSecure.desc }
+
+ent-CrateHarvesterTurretSyndicate = { ent-CrateLimitedSecure }
+    .suffix = Блюспейс-харвестер, Бехонкер
+    .desc = { ent-CrateLimitedSecure.desc }
+
+ent-CrateHarvesterWeaponElite = { ent-CrateLimitedSecure }
+    .suffix = Блюспейс-харвестер, элитное оружие
+    .desc = { ent-CrateLimitedSecure.desc }
+
+ent-CrateHarvesterWeaponLaser = { ent-CrateDestructionSecure }
+    .suffix = Блюспейс-харвестер, лазерное оружие
+    .desc = { ent-CrateDestructionSecure.desc }
+
+ent-CrateHarvesterWeaponShotgun = { ent-CrateDestructionSecure }
+    .suffix = Блюспейс-харвестер, дробовик
+    .desc = { ent-CrateDestructionSecure.desc }
+
+ent-CrateHarvesterWeaponRifle = { ent-CrateDestructionSecure }
+    .suffix = Блюспейс-харвестер, винтовка
+    .desc = { ent-CrateDestructionSecure.desc }
+
+ent-CrateHarvesterWeaponLight = { ent-CrateDestructionSecure }
+    .suffix = Блюспейс-харвестер, лёгкое оружие
+    .desc = { ent-CrateDestructionSecure.desc }
+
+ent-CrateHarvesterWeaponDisabler = { ent-CrateDestructionSecure }
+    .suffix = Блюспейс-харвестер, дизейблер
+    .desc = { ent-CrateDestructionSecure.desc }
+
+ent-CrateHarvesterBomb = { ent-CrateDestructionSecure }
+    .suffix = Блюспейс-харвестер, бомба
+    .desc = { ent-CrateDestructionSecure.desc }

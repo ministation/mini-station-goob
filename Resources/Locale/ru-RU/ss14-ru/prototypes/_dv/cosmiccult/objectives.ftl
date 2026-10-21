@@ -12,3 +12,15 @@ ent-RogueAscendedInfectionObjective = { ent-BaseRogueAscendedObjective }
     .desc = { ent-BaseRogueAscendedObjective.desc }
 ent-RogueAscendedSurviveObjective = Выжить
     .desc = Дожить до конца всего сущего.
+
+ent-BaseCosmicColossusObjective = { ent-BaseObjective }
+    .desc = { ent-BaseObjective.desc }
+
+ent-CosmicConversionObjective = { ent-BaseCosmicCultObjective }
+    .desc = { ent-BaseCosmicCultObjective.desc }
+
+ent-ColossusSurviveObjective = ПРОДЕРЖИТЕСЬ
+    .desc = Продержитесь до конца всех вещей.
+
+ent-ColossusEffigyObjective = ПРИЗЫВ
+    .desc = Призовите изваяние энтропии.

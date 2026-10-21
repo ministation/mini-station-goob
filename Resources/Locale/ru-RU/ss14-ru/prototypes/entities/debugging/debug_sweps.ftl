@@ -17,3 +17,10 @@ ent-MeleeDebug100 = bang stick 100dmg
     .desc = { ent-MeleeDebugGib.desc }
 ent-MeleeDebug200 = bang stick 200dmg
     .desc = { ent-MeleeDebugGib.desc }
+
+ent-WeaponHitscanDebug = бах хитскан 1dmg
+    .desc = пиу-пиу!
+    .suffix = DEBUG
+
+ent-WeaponHitscanDebugGib = бах хитскан гиббер
+    .desc = { ent-WeaponHitscanDebug.desc }

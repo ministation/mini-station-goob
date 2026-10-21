@@ -8,3 +8,10 @@ ent-BlastDoorFrame = каркас гермозатвора
 
 ent-BlastDoorXeno = ксеногермозатвор
     .desc = Не потеряйте руку!
+
+ent-BlastDoorXenoOpen = { ent-BlastDoorXeno }
+    .suffix = Открыт
+    .desc = { ent-BlastDoorXeno.desc }
+
+ent-BlastDoorXenoFrame = каркас ксеногермозатвора
+    .desc = На этом написано 'BLAST DONGER'.

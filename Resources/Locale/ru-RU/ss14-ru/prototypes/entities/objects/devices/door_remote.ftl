@@ -23,3 +23,6 @@ ent-DoorRemoteAll = супер-пульт от шлюзов
     .desc = { ent-DoorRemoteDefault.desc }
 ent-DoorRemoteXenoborg = пульт от шлюзов ксеноборгов
     .desc = { ent-DoorRemoteDefault.desc }
+
+ent-DoorRemoteCanEletrifyDoors = { ent-DoorRemoteDefault }
+    .desc = { ent-DoorRemoteDefault.desc }

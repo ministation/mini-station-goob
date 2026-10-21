@@ -40,3 +40,15 @@ ent-ClothingHeadHatTinfoilHat = шапочка из фольги
     .desc = Высокотехнологичный шлем, состоящий из алюминиевой фольги.
 ent-ClothingHeadHatOuterCommandcap = фуражка офицера ТСФ
     .desc = Пурпурная позолоченная фуражка с эмблемой ТСФ.
+
+ent-ClothingHeadHatArmored = { ent-ClothingHeadBase }
+    .desc = { ent-ClothingHeadBase.desc }
+
+ent-ClothingHeadHatArmoredCC = { ent-ClothingHeadBase }
+    .desc = { ent-ClothingHeadBase.desc }
+
+ent-ClothingHeadHatGoldCentcom = золотая фуражка Центкома
+    .desc = Позолоченная золотисто-белая фуражка, которую носят высшие по званию члены Центкома.
+
+ent-ClothingHeadHatCowboyCentcom = ковбойская шляпа Центкома
+    .desc = Черно-зеленая ковбойская шляпа с золотой лентой, которую носят офицеры-«южане» Центкома.

@@ -62,3 +62,41 @@ marking-HumanHairClassicBun = Классический пучок
 marking-HumanHairLooseBun = Свободный пучок
 marking-HumanHairLowPonytail = Низкий хвост
 marking-HumanHairLongTwinTails = Длинные хвостики
+
+marking-HumanHairImpish = Озорные
+
+marking-HumanHairGloomyLonger = Мрачные удлинённые
+
+marking-HumanHairLila = Лила
+
+marking-HumanHairLongTails = Длинные хвосты
+
+marking-HumanHairStrictLong = Строгие длинные
+
+marking-HumanHairMermaid = Русалка
+
+marking-HumanHairTwinTail = Двойной хвост
+
+marking-HumanHairCubism = Кубизм
+
+marking-HumanHairDeathKid = Дитя смерти
+
+marking-HumanHairLongRoundedExtensions = Длинные округлые с наращёнными
+
+marking-HumanHairLongTuftTipped = Длинные с хохолком на концах
+
+marking-HumanHairOrb = Сфера
+
+marking-HumanHairPigtailsExtensions = Косички с наращёнными
+
+marking-HumanHairShortCurvy = Короткие и кудрявые
+
+marking-HumanHairShortRoundedExtensions = Короткие округлые с наращёнными
+
+marking-HumanHairShortTuftTipped = Короткие с хохолком на концах
+
+marking-HumanHairTriangulum = Треугольник
+
+marking-HumanHairWolfcutClean = Волкат чистый
+
+marking-HumanHairWolfcutMeow = Волкат мяу

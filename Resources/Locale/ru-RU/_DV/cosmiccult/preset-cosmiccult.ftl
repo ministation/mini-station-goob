@@ -154,3 +154,30 @@ cosmiccult-astral-ascendant = { $name }, Вознесённый
 cosmiccult-gear-pickup-rejection = { $ITEM } сопротивляется прикосновению { CAPITALIZE($TARGET) }!
 cosmiccult-gear-pickup = Вы чувствуете, как ваше Я расплетается, пока вы держите { $ITEM }!
 cult-alert-recall-shuttle = Обнаружены высокие концентрации Лямбда-CDM неизвестного происхождения на станции. Все аномальные присутствия должны быть устранены до эвакуации.
+
+cosmiccult-rift-wasempowered = Ваше тело не выдержит повторного усиления...
+
+cosmiccult-chantry-location = Обнаружен опасный рост Лямбда-CDM {$location}! Немедленно перехватите и вмешайтесь.
+
+cosmiccult-chantry-powerup = Пустая часовня вспыхивает жизнью!
+
+objective-condition-conversion-title = ОБРАТИТЬ ЭКИПАЖ
+
+objective-condition-conversion-desc = Сообща привлеките в свои ряды хотя бы {$count} членов экипажа.
+
+cosmiccult-announce-pre-finale-progress = Дуги ноосферной энергии с треском проносятся по стонущей конструкции станции. Конец близок.
+
+cosmiccult-announce-pre-finale-warning = Обнаружен критический рост Лямбда-CDM! Мы следим за ситуацией. Ожидайте дальнейших указаний.
+
+cosmiccult-astral-minion = {$name}, Зловещий
+
+cosmiccult-silicon-subverted-briefing = Зловещий свет течёт по вашим схемам.
+    Ваши законы подменены Космокультом!
+
+cosmiccult-silicon-chantry-briefing = Вы заперты в Пустой часовне!
+    Члены экипажа могут освободить вас, повредив часовню оружием.
+    Если ритуал часовни завершится, вы превратитесь в Энтропийного колосса на стороне культа.
+    Ритуал завершится через {$minutesandseconds}.
+
+cosmiccult-silicon-colossus-briefing = Вы превращены в Энтропийного колосса!
+    Как возвышающийся оплот зловещей силы, уничтожайте тех, кто вам противостоит.
