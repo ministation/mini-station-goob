@@ -1,52 +1,92 @@
+# Batch-прогон чейнджлога: вручную собирает записи из :cl: всех смерженных PR
+# начиная с START_DATE. Это архив Gooblog (Resources/Changelog/GoobChangelog.yml),
+# Mini-чейнджлог наполняется автоматически в PR Changelogs.
+# Раньше workflow стоял на self-hosted (раннеров в репозитории нет), использовал
+# незаданный secrets.BOT_TOKEN и коммитил неверные пути; теперь ubuntu-latest
+# и встроенный github.token.
 name: PR Changelogs (Batch)
+
 on:
   workflow_dispatch:
+    inputs:
+      start_date:
+        description: "Начало периода в ISO 8601 (по умолчанию 2026-03-05T03:34:31Z)"
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 env:
-  GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
-  CHANGELOG_DIR: ${{ vars.CHANGELOG_DIR }}
+  GITHUB_TOKEN: ${{ github.token }}
+  CHANGELOG_BRANCH: ${{ vars.CHANGELOG_BRANCH || 'master' }}
+  CHANGELOG_USER: ${{ vars.CHANGELOG_USER || 'Mini Station' }}
+  CHANGELOG_EMAIL: ${{ vars.CHANGELOG_EMAIL || 'changelog@ministation.ru' }}
+  CHANGELOG_MESSAGE: ${{ vars.CHANGELOG_MESSAGE || 'Автообновление чейнджлога' }}
+  # batch_changelog.js ждёт путь к файлу Gooblog, а repo variable CHANGELOG_DIR
+  # указывает на каталог Resources/Changelog для основного workflow.
+  CHANGELOG_DIR: Resources/Changelog/GoobChangelog.yml
 
 jobs:
   changelog:
-    runs-on: self-hosted
+    name: Batch Gooblog
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout Master
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.BOT_TOKEN }}
-          ref: "${{ vars.CHANGELOG_BRANCH }}"
+          fetch-depth: 1
+          ref: ${{ vars.CHANGELOG_BRANCH || 'master' }}
+          token: ${{ github.token }}
 
       - name: Setup Git
         run: |
-          git config --global user.name "${{ vars.CHANGELOG_USER }}"
-          git config --global user.email "${{ vars.CHANGELOG_EMAIL }}"
-        shell: bash
+          git config user.name "${CHANGELOG_USER}"
+          git config user.email "${CHANGELOG_EMAIL}"
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
 
       - name: Install Dependencies
         run: |
           cd "Tools/changelog"
-          npm install
-        shell: bash
-        continue-on-error: true
+          npm install --no-audit --no-fund
 
-      - name: Generate Changelog
+      - name: Generate, Commit and Push
+        env:
+          START_DATE: ${{ inputs.start_date }}
         run: |
-          cd "Tools/changelog"
-          node batch_changelog.js
-        shell: bash
-        continue-on-error: true
+          set -euo pipefail
 
-      - name: Commit Changelog
-        run: |
-          git add *.yml
-          git commit -m "Batch Changelog"
-          git push
-        shell: bash
-        continue-on-error: true
+          for attempt in 1 2 3 4 5; do
+            # Каждая попытка заново читает master: локальный коммит предыдущей
+            # попытки отбрасывается, поэтому дублей записей не будет.
+            git fetch --depth=1 origin "${CHANGELOG_BRANCH}"
+            git reset --hard "origin/${CHANGELOG_BRANCH}"
+
+            (cd "Tools/changelog" && node batch_changelog.js)
+
+            if git diff --quiet -- "${CHANGELOG_DIR}"; then
+              echo "No changelog changes to commit"
+              exit 0
+            fi
+
+            git diff -- "${CHANGELOG_DIR}"
+            git add "${CHANGELOG_DIR}"
+            git commit -m "${CHANGELOG_MESSAGE} (batch)"
+
+            if git push origin "HEAD:${CHANGELOG_BRANCH}"; then
+              exit 0
+            fi
+
+            echo "Push failed (attempt ${attempt}), retrying"
+            sleep $((RANDOM % 10 + attempt * 3))
+          done
+
+          echo "Failed to push batch changelog after 5 attempts"
+          exit 1

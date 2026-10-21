@@ -1,3 +1,10 @@
+# Публикация RSS чейнджлога на внешний сервер.
+# Раньше workflow стоял на self-hosted (раннеров в репозитории нет), поэтому
+# запуски не выполнялись; теперь публичный ubuntu-latest и github.token.
+#
+# Внимание: скрипт Tools/actions_changelog_rss.py настроен на серверы и файлы
+# Goob-Station (Resources/Changelog/GoobChangelog.yml) и требует секрет
+# CHANGELOG_RSS_KEY, которого в этом репозитории нет. Запуск только ручной.
 name: Publish Changelog (RSS)
 
 on:
@@ -7,18 +14,37 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  GITHUB_TOKEN: ${{ github.token }}
+
 jobs:
   changelog_rss:
-    runs-on: self-hosted
+    name: Publish RSS
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-    - name: Install dependencies
-      run: sudo apt-get install -y python3-paramiko python3-lxml
-      
-    - uses: actions/checkout@v3.6.0
-      with:
-        submodules: 'recursive'
-  
-    - name: Publish changelog (RSS)
-      run: Tools/actions_changelog_rss.py
-      env:
-        CHANGELOG_RSS_KEY: ${{ secrets.CHANGELOG_RSS_KEY }}
+      - name: Check secret
+        env:
+          CHANGELOG_RSS_KEY: ${{ secrets.CHANGELOG_RSS_KEY }}
+        run: |
+          if [ -z "${CHANGELOG_RSS_KEY}" ]; then
+            echo "::error::Секрет CHANGELOG_RSS_KEY не задан, публиковать RSS некуда"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-paramiko python3-lxml python3-yaml
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ github.token }}
+
+      - name: Publish changelog (RSS)
+        env:
+          CHANGELOG_RSS_KEY: ${{ secrets.CHANGELOG_RSS_KEY }}
+        run: python3 Tools/actions_changelog_rss.py
