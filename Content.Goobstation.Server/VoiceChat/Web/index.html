@@ -1,343 +1,997 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
-    <title>Голосовой чат</title>
+    <meta name="theme-color" content="#f3ede1">
+    <title>Голосовой чат | Мини-станция</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <script id="voice-config" type="application/json">/*VOICE_CONFIG*/</script>
+    <script>
+        // Тема та же, что на сайте: светлая по умолчанию, тёмная по кнопке.
+        (function () {
+            try {
+                var saved = localStorage.getItem("ms-theme");
+                document.documentElement.dataset.theme = saved === "dark" ? "dark" : "light";
+            } catch (error) {
+                document.documentElement.dataset.theme = "light";
+            }
+        })();
+    </script>
     <style>
         @font-face {
-            font-family: "Noto Sans SS14";
-            src: url("noto-sans-regular.woff2") format("woff2");
+            font-family: "Press Start 2P";
+            src: url("press-start-2p-cyrillic.woff2") format("woff2");
             font-weight: 400;
+            font-style: normal;
             font-display: swap;
+            unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
         }
 
         @font-face {
-            font-family: "Noto Sans SS14";
-            src: url("noto-sans-bold.woff2") format("woff2");
-            font-weight: 700;
+            font-family: "Press Start 2P";
+            src: url("press-start-2p-latin.woff2") format("woff2");
+            font-weight: 400;
+            font-style: normal;
             font-display: swap;
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+                U+2212, U+2215, U+FEFF, U+FFFD;
         }
 
         @font-face {
-            font-family: "Boxfont Round";
-            src: url("boxfont-round.woff2") format("woff2");
+            font-family: "JetBrains Mono";
+            src: url("jetbrains-mono-cyrillic.woff2") format("woff2");
+            font-weight: 400 700;
+            font-style: normal;
             font-display: swap;
+            unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
         }
 
+        @font-face {
+            font-family: "JetBrains Mono";
+            src: url("jetbrains-mono-latin.woff2") format("woff2");
+            font-weight: 400 700;
+            font-style: normal;
+            font-display: swap;
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+                U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+                U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        /* Палитра сайта «Мини-станция»: светлая по умолчанию, тёмная по кнопке. */
         :root {
-            color-scheme: dark;
-            --page: #08070c;
-            --window: #0e0c14;
-            --header: #1a1622;
-            --card: #1e1a26;
-            --card-border: #2d3748;
-            --divider: #2d3748;
-            --text: #d7e2f4;
-            --text-disabled: #d7e2f480;
-            --subtext: #9fb4d8;
-            --accent: #9a8fb5;
-            --button: #15121d;
-            --button-border: #2d3748;
-            --button-hover: #221c2e;
-            --button-pressed: #2a2338;
-            --button-accent: #2a2338;
-            --button-accent-hover: #362c48;
-            --button-accent-border: #4a3f66;
-            --button-disabled: #14111b;
-            --negative: #5f2733;
-            --negative-hover: #7a3040;
-            --slider-back: #14111b;
-            --slider-outline: #2d3748;
-            --slider-grab: #1a1622;
-            --slider-fill: #9a8fb5;
-            --checkbox: #3a3352;
-            --bar-back: #14111b;
-            --bar-fill: #6b9e7a;
-            --bar-idle: #6f7480;
-            --status-bad: #f0a0a0;
-            --status-warn: #f0d878;
-            --live: #6b9e7a;
-            --focus: #9a8fb5;
+            color-scheme: light;
+            --font-pixel: "Press Start 2P", "Courier New", monospace;
+            --font-body: "JetBrains Mono", "Consolas", "Courier New", monospace;
+            --radius: 10px;
+            --radius-sm: 6px;
+            --transition: 0.2s ease;
+
+            --bg: #f3ede1;
+            --panel: #fbf7ef;
+            --panel-2: #f6efe3;
+            --panel-3: #efe6d4;
+            --border: #e2d5bd;
+            --border-strong: #cdbb98;
+            --ink: #17222f;
+            --muted: #5a6b82;
+            --dim: #61748a;
+
+            --accent: #f59e0b;
+            --accent-deep: #d97706;
+            --accent-2: #ffc82e;
+            --gold: #f5b800;
+            --link: #3d6ea8;
+            --danger: #d9453a;
+            --danger-deep: #b23227;
+            --success: #1f9a55;
+            --success-deep: #177a43;
+            --discord: #5865f2;
+
+            --grad-hero: linear-gradient(135deg, #fde047 0%, #f0a91a 42%, #d97706 100%);
+            --grad-warm: linear-gradient(90deg, #f5c518 0%, #f0a91a 50%, #d97706 100%);
+            --accent-glow: rgba(245, 158, 11, 0.28);
+            --focus-ring: 0 0 0 3px var(--accent-glow);
+            --shadow-hard: 0 4px 0 rgba(23, 34, 47, 0.1), 0 10px 24px rgba(23, 34, 47, 0.08);
+            --shadow-btn: 0 3px 0 rgba(23, 34, 47, 0.14);
+            --shadow-btn-color: 0 3px 0 rgba(0, 0, 0, 0.25);
+            --shadow-lift: 0 6px 0 rgba(23, 34, 47, 0.08), 0 14px 28px rgba(23, 34, 47, 0.1);
+            --topbar-bg: rgba(255, 255, 255, 0.92);
         }
 
-        * {
+        html[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #1e1913;
+            --panel: #2a241b;
+            --panel-2: #241e17;
+            --panel-3: #3a3127;
+            --border: #4a4033;
+            --border-strong: #6a5c48;
+            --ink: #f5efe4;
+            --muted: #c4baa6;
+            --dim: #ab9f89;
+
+            --accent: #ffb020;
+            --accent-deep: #e68900;
+            --accent-2: #ffd54f;
+            --gold: #ffca28;
+            --link: #8bc0ef;
+            --danger: #ef6a5e;
+            --danger-deep: #cf4a3e;
+            --success: #3fc97c;
+            --success-deep: #2ba55f;
+
+            --grad-hero: linear-gradient(135deg, #78350f 0%, #b45309 42%, #d97706 100%);
+            --grad-warm: linear-gradient(90deg, #ffd54f 0%, #ffb300 50%, #ff9800 100%);
+            --accent-glow: rgba(255, 176, 32, 0.32);
+            --shadow-hard: 0 4px 0 rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.35);
+            --shadow-btn: 0 3px 0 rgba(0, 0, 0, 0.4);
+            --shadow-btn-color: 0 3px 0 rgba(0, 0, 0, 0.45);
+            --shadow-lift: 0 6px 0 rgba(0, 0, 0, 0.28), 0 16px 32px rgba(0, 0, 0, 0.4);
+            --topbar-bg: rgba(38, 32, 25, 0.92);
+        }
+
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
             min-height: 100vh;
+            background: var(--bg);
+            color: var(--ink);
+            font: 0.9rem/1.55 var(--font-body);
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+            background:
+                radial-gradient(900px 520px at 12% -8%, rgba(255, 200, 46, 0.18), transparent 70%),
+                radial-gradient(720px 480px at 92% 8%, rgba(240, 120, 10, 0.14), transparent 68%),
+                radial-gradient(640px 400px at 50% 110%, rgba(255, 160, 40, 0.08), transparent 60%);
+        }
+
+        html[data-theme="dark"] body::before {
+            background:
+                radial-gradient(860px 500px at 10% -10%, rgba(255, 176, 32, 0.14), transparent 70%),
+                radial-gradient(700px 440px at 94% 6%, rgba(255, 140, 40, 0.12), transparent 68%),
+                radial-gradient(600px 380px at 48% 108%, rgba(170, 132, 60, 0.06), transparent 62%);
+        }
+
+        .bg-ambient {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(64px);
+            opacity: 0.7;
+            will-change: transform;
+        }
+
+        .glow--1 {
+            width: 340px;
+            height: 340px;
+            top: 4%;
+            left: 2%;
+            background: rgba(255, 200, 46, 0.3);
+            animation: glowDrift1 28s ease-in-out infinite;
+        }
+
+        .glow--2 {
+            width: 360px;
+            height: 360px;
+            bottom: 4%;
+            right: 0;
+            background: rgba(240, 120, 10, 0.2);
+            animation: glowDrift2 38s ease-in-out infinite;
+        }
+
+        html[data-theme="dark"] .glow--1 { background: rgba(255, 176, 32, 0.18); }
+        html[data-theme="dark"] .glow--2 { background: rgba(255, 140, 40, 0.14); }
+
+        @keyframes glowDrift1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(48px, 32px) scale(1.08); }
+            66% { transform: translate(24px, 64px) scale(0.94); }
+        }
+
+        @keyframes glowDrift2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            40% { transform: translate(-56px, -40px) scale(1.1); }
+            70% { transform: translate(-24px, 28px) scale(0.92); }
+        }
+
+        a {
+            color: var(--link);
+        }
+
+        svg {
+            display: block;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        /* === Шапка сайта === */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--topbar-bg);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-bottom: 3px solid var(--accent);
+            box-shadow: 0 4px 18px rgba(23, 34, 47, 0.1);
+        }
+
+        /* Шапка выровнена по колонке карточек, чтобы страница читалась как часть сайта. */
+        .topbar-inner {
+            max-width: 760px;
+            margin: 0 auto;
             display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 48px 16px;
-            background: var(--page);
-            color: var(--text);
-            font: 16px/1.35 "Noto Sans SS14", "Noto Sans", system-ui, sans-serif;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
         }
 
-        .chamfer {
-            clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% var(--c), 100% 100%, var(--c) 100%, 0 calc(100% - var(--c)));
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            text-decoration: none;
+            color: var(--ink);
         }
 
-        .window {
-            --c: 10px;
-            width: 100%;
-            max-width: 440px;
-            background: var(--window);
-            box-shadow: 0 18px 60px #00000080;
+        .brand img {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            image-rendering: pixelated;
+            flex: none;
         }
 
-        .card {
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            padding: 10px 12px;
-            margin-top: 10px;
+        .brand-title {
+            font-family: var(--font-pixel);
+            font-size: 0.95rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .window-header {
-            --c: 10px;
-            background: var(--header);
-            padding: 4px 8px 3px;
-            clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% var(--c), 100% 100%, 0 100%);
-        }
-
-        .window-title {
-            margin: 0;
-            font: 17px/1.4 "Boxfont Round", "Noto Sans SS14", sans-serif;
+        .brand-title span {
             color: var(--accent);
         }
 
-        .divider {
-            height: 1px;
-            background: var(--divider);
+        .top-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
         }
 
-        .window-body {
-            padding: 12px 12px 4px;
+        .top-link,
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 40px;
+            padding: 8px 11px;
+            background: var(--panel);
+            color: var(--ink);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-btn);
+            font-family: var(--font-pixel);
+            font-size: 0.55rem;
+            line-height: 1.2;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background-color var(--transition), border-color var(--transition),
+                transform var(--transition), box-shadow var(--transition);
         }
 
-        .window-footer {
-            margin: 0;
-            padding: 8px 12px 12px;
-            font-size: 12px;
-            color: #9a9a9a;
+        .top-link:hover,
+        .theme-toggle:hover {
+            background: var(--panel-3);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .top-link:active,
+        .theme-toggle:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        .top-link .icon {
+            width: 15px;
+            height: 15px;
+            flex: none;
+        }
+
+        .theme-toggle {
+            width: 40px;
+            min-width: 40px;
+            padding: 0;
+            flex: none;
+        }
+
+        .theme-toggle .icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* === Страница === */
+        .page {
+            width: 100%;
+            max-width: 760px;
+            margin: 24px auto 36px;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-hard);
+            padding: 18px;
+            min-width: 0;
+        }
+
+        .card h2 {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+            color: var(--ink);
+            font-family: var(--font-pixel);
+            font-size: 0.68rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        .card h2::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 64px;
+            height: 2px;
+            background: var(--accent);
+            opacity: 0.75;
+        }
+
+        .card h2 .icon {
+            width: 15px;
+            height: 15px;
+            color: var(--muted);
+            flex: none;
+        }
+
+        /* === Баннер «Голосовой чат» === */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 26px 22px 24px;
+            text-align: center;
+            color: #fff;
+            background: var(--grad-hero);
+            border-color: var(--accent-deep);
+            box-shadow: var(--shadow-lift);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(1.5px 1.5px at 16% 30%, rgba(255, 255, 255, 0.85), transparent 100%),
+                radial-gradient(1px 1px at 34% 72%, rgba(255, 255, 255, 0.6), transparent 100%),
+                radial-gradient(1.5px 1.5px at 55% 20%, rgba(255, 255, 255, 0.7), transparent 100%),
+                radial-gradient(1px 1px at 72% 62%, rgba(255, 255, 255, 0.6), transparent 100%),
+                radial-gradient(1.5px 1.5px at 88% 34%, rgba(255, 255, 255, 0.8), transparent 100%);
+            opacity: 0.9;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 42%);
+            opacity: 0.7;
+        }
+
+        .hero > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-kicker {
+            display: inline-block;
+            margin: 0 0 14px;
+            padding: 7px 13px;
+            background: rgba(255, 247, 214, 0.86);
+            border: 1px solid rgba(255, 255, 255, 0.62);
+            border-radius: var(--radius-sm);
+            color: #6b3d00;
+            font-family: var(--font-pixel);
+            font-size: 0.54rem;
+            letter-spacing: 0.08em;
+            line-height: 1.4;
+            text-transform: uppercase;
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+        }
+
+        .hero-title {
+            margin: 0 0 12px;
+            font-family: var(--font-pixel);
+            font-size: clamp(1.02rem, 4.4vw, 1.42rem);
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            line-height: 1.45;
+            text-shadow: 0 3px 0 rgba(0, 0, 0, 0.18), 0 2px 8px rgba(66, 30, 0, 0.35);
+        }
+
+        .hero-text {
+            max-width: 520px;
+            margin: 0 auto 18px;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            text-shadow: 0 1px 2px rgba(66, 30, 0, 0.45);
+        }
+
+        .social-links {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            min-width: 0;
+            padding: 10px 8px;
+            border: 2px solid rgba(0, 0, 0, 0.25);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+            color: #fff;
+            font-family: var(--font-pixel);
+            font-size: 0.55rem;
+            line-height: 1.3;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: filter var(--transition), transform var(--transition),
+                box-shadow var(--transition);
+        }
+
+        .link-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .link-btn:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
+        .link-btn .icon {
+            width: 15px;
+            height: 15px;
+            flex: none;
+        }
+
+        .link-btn.website {
+            background: #17222f;
+            color: #f3ede1;
+            border-color: rgba(0, 0, 0, 0.35);
+        }
+
+        .link-btn.discord {
+            background: var(--discord);
+        }
+
+        .link-btn.wiki {
+            background: #177a43;
+            border-color: #0f5c31;
+        }
+
+        /* === Состояние подключения === */
+        .status-card {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .status-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 18px;
+            background: var(--grad-warm);
+            border-bottom: 2px solid var(--border);
+            color: #3a2400;
+            font-family: var(--font-pixel);
+            font-size: 0.56rem;
+            letter-spacing: 0.05em;
+            line-height: 1.4;
+            text-transform: uppercase;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            flex: none;
+            border-radius: 50%;
+            background: #1f9a55;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55);
+            animation: statusPulse 2.4s ease-in-out infinite;
+        }
+
+        body[data-tone="warn"] .status-dot {
+            background: #7a4a00;
+            box-shadow: 0 0 0 3px rgba(122, 74, 0, 0.35);
+        }
+
+        body[data-tone="error"] .status-dot {
+            background: #7c1d15;
+            box-shadow: 0 0 0 3px rgba(124, 29, 21, 0.35);
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55); }
+            50% { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2); }
+        }
+
+        .status-banner-title {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .status-banner-brand {
+            color: rgba(58, 36, 0, 0.75);
+            white-space: nowrap;
+        }
+
+        .status-banner-brand span {
+            color: #8a4a00;
+        }
+
+        .status-body {
+            padding: 16px 18px 18px;
         }
 
         .status {
             margin: 0;
+            color: var(--ink);
+            font-size: 0.98rem;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        body[data-tone="warn"] .status {
+            color: #b45309;
+        }
+
+        body[data-tone="error"] .status {
+            color: var(--danger-deep);
+        }
+
+        html[data-theme="dark"] body[data-tone="warn"] .status {
+            color: var(--accent);
+        }
+
+        html[data-theme="dark"] body[data-tone="error"] .status {
+            color: var(--danger);
         }
 
         .status-detail {
-            margin: 2px 0 0;
-            color: var(--subtext);
-            font-size: 14px;
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 0.82rem;
+            line-height: 1.5;
         }
 
         .status-detail:empty {
             display: none;
         }
 
-        body[data-tone="error"] .status { color: var(--status-bad); }
-        body[data-tone="warn"] .status { color: var(--status-warn); }
-
-        button, select, input {
-            font: inherit;
-            color: inherit;
-        }
-
+        /* === Кнопки сайта === */
         .btn {
-            --c: 10px;
+            position: relative;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 30px;
-            padding: 2px 14px;
-            border: 0;
-            background: var(--button);
-            box-shadow: inset 0 0 0 1px var(--button-border);
-            color: var(--text);
+            gap: 8px;
+            min-height: 42px;
+            padding: 10px 16px;
+            background: var(--panel);
+            color: var(--ink);
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-btn);
+            font-family: var(--font-pixel);
+            font-size: 0.58rem;
+            line-height: 1.35;
+            letter-spacing: 0.02em;
+            text-align: center;
+            text-decoration: none;
+            white-space: nowrap;
             cursor: pointer;
             user-select: none;
-            white-space: nowrap;
+            transition: background-color var(--transition), border-color var(--transition),
+                color var(--transition), transform var(--transition), box-shadow var(--transition);
         }
 
-        .btn:hover { background: var(--button-hover); }
-        .btn:active, .btn:has(input:checked) { background: var(--button-pressed); }
-        .btn:disabled { background: var(--button-disabled); color: var(--text-disabled); cursor: default; }
+        .btn:hover {
+            background: var(--panel-3);
+            transform: translateY(-1px);
+        }
 
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
+        .btn:disabled {
+            background: var(--panel-2);
+            color: var(--dim);
+            box-shadow: none;
+            cursor: default;
+            transform: none;
+            opacity: 0.75;
+        }
+
+        .btn .icon {
+            width: 16px;
+            height: 16px;
+            flex: none;
+        }
+
+        /* Тёмный текст на янтарной заливке: кнопка остаётся акцентной, но читается. */
         .btn.primary {
-            background: var(--button-accent);
-            box-shadow: inset 0 0 0 1px var(--button-accent-border);
+            background: var(--accent);
+            border-color: var(--accent-deep);
+            color: #241a08;
+            box-shadow: var(--shadow-btn-color);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
         }
 
-        .btn.primary:hover { background: var(--button-accent-hover); }
+        .btn.primary:hover {
+            background: var(--accent-deep);
+            color: #241a08;
+        }
 
-        .btn.negative { background: var(--negative); }
-        .btn.negative:hover { background: var(--negative-hover); }
+        .btn.negative {
+            background: var(--danger);
+            border-color: var(--danger-deep);
+            color: #fff;
+            box-shadow: var(--shadow-btn-color);
+        }
+
+        .btn.negative:hover {
+            background: var(--danger-deep);
+            color: #fff;
+        }
 
         .btn.big {
             width: 100%;
-            min-height: 40px;
-            margin-top: 12px;
-            font-size: 20px;
+            min-height: 46px;
+            margin-top: 14px;
+            padding: 12px 16px;
+            font-size: 0.64rem;
         }
 
-        .btn.open-right {
-            clip-path: polygon(0 0, 100% 0, 100% 100%, var(--c) 100%, 0 calc(100% - var(--c)));
-        }
-
-        .btn.open-left {
-            clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% var(--c), 100% 100%, 0 100%);
-        }
-
-        .btn input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .btn:focus-visible, .btn:has(input:focus-visible), .select:has(select:focus-visible), .slider:has(input:focus-visible) {
-            outline: 2px solid var(--focus);
+        .btn:focus-visible,
+        .top-link:focus-visible,
+        .theme-toggle:focus-visible,
+        .link-btn:focus-visible,
+        .brand:focus-visible,
+        .footer a:focus-visible {
+            outline: 2px solid var(--ink);
             outline-offset: 2px;
         }
 
-        .live-row {
+        /* === Код подключения === */
+        .code-form {
+            margin: 14px 0 0;
+            padding: 14px;
+            background: var(--panel-2);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .code-label {
+            display: block;
+            margin-bottom: 9px;
+            color: var(--muted);
+            font-family: var(--font-pixel);
+            font-size: 0.52rem;
+            letter-spacing: 0.06em;
+            line-height: 1.4;
+            text-transform: uppercase;
+        }
+
+        .code-row {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+        }
+
+        .code-input {
+            flex: 1 1 auto;
+            min-width: 0;
+            min-height: 42px;
+            padding: 8px 12px;
+            background: var(--panel);
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-sm);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-align: center;
+            text-transform: uppercase;
+            outline: none;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .code-input:focus {
+            border-color: var(--accent);
+            box-shadow: var(--focus-ring);
+        }
+
+        .code-input::placeholder {
+            color: var(--dim);
+            font-weight: 400;
+        }
+
+        .code-row .btn {
+            flex: none;
+        }
+
+        .code-hint {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 0.74rem;
+            line-height: 1.5;
+        }
+
+        /* === Микрофон и настройки === */
+        #controls {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .meter-card h2 {
+            margin-bottom: 14px;
+        }
+
+        .meter-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 12px;
         }
 
         .bar {
             position: relative;
-            flex: 1;
-            height: 14px;
-            background: var(--bar-back);
+            flex: 1 1 auto;
+            min-width: 0;
+            height: 16px;
+            background: var(--panel-3);
+            border: 2px solid var(--border);
+            border-radius: 999px;
             overflow: hidden;
         }
 
         .bar-fill {
             position: absolute;
             inset: 0;
-            background: var(--bar-idle);
+            background: var(--border-strong);
             transform-origin: left;
             transform: scaleX(0);
+            transition: transform 0.06s linear, background-color 0.15s ease;
         }
 
         body.transmitting .bar-fill {
-            background: var(--bar-fill);
+            background: var(--success);
         }
 
         .bar-threshold {
             position: absolute;
             top: 0;
             bottom: 0;
+            left: 0;
             width: 2px;
-            background: var(--accent);
+            background: var(--accent-deep);
+        }
+
+        .mute-btn {
+            flex: none;
+            min-width: 116px;
         }
 
         .live-label {
-            margin: 4px 0 0;
-            color: var(--subtext);
-            font-size: 14px;
+            margin: 9px 0 0;
+            color: var(--muted);
+            font-size: 0.78rem;
         }
 
         body.transmitting .live-label {
-            color: var(--live);
+            color: var(--success);
             font-weight: 700;
         }
 
-        .heading {
-            position: relative;
-            display: inline-block;
-            margin: 20px 0 10px;
-            padding: 2px 22px 5px 10px;
-            color: var(--accent);
-            font-size: 20px;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .heading::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 14px;
-            bottom: 0;
-            border-bottom: 2px solid var(--accent);
-            border-right: 2px solid var(--accent);
-        }
-
-        .heading::after {
-            content: "";
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 16px;
-            height: 16px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M7 0.5 L15 8.5 V16' fill='none' stroke='%239a8fb5' stroke-width='2'/%3E%3C/svg%3E") no-repeat;
+        body.transmitting .meter-card {
+            border-color: var(--success);
         }
 
         .field {
             display: grid;
-            grid-template-columns: 9.5em 1fr;
+            grid-template-columns: 8.5em minmax(0, 1fr);
             align-items: center;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 10px;
+            margin-top: 14px;
         }
 
         .field.with-value {
-            grid-template-columns: 9.5em 1fr 3.5em;
+            grid-template-columns: 8.5em minmax(0, 1fr) 3.4em;
         }
 
         .field-label {
-            color: var(--text);
+            color: var(--ink);
+            font-size: 0.8rem;
+            line-height: 1.4;
         }
 
         .field output {
-            text-align: right;
-            color: var(--subtext);
+            color: var(--muted);
+            font-size: 0.78rem;
             font-variant-numeric: tabular-nums;
+            text-align: right;
         }
 
         .toggle-group {
             display: flex;
-            gap: 2px;
+            gap: 8px;
         }
 
         .toggle-group .btn {
             flex: 1 1 0;
             min-width: 0;
-            position: relative;
-            padding: 2px 8px;
+            min-height: 40px;
+            padding: 8px;
+            font-size: 0.52rem;
+            line-height: 1.45;
             white-space: normal;
-            text-align: center;
-            line-height: 1.2;
+        }
+
+        .toggle-group input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toggle-group .btn:has(input:checked) {
+            background: var(--accent);
+            border-color: var(--accent-deep);
+            color: #241a08;
+            box-shadow: var(--shadow-btn-color);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
+        }
+
+        .toggle-group .btn:has(input:focus-visible) {
+            outline: 2px solid var(--ink);
+            outline-offset: 2px;
+        }
+
+        .select {
+            position: relative;
+            min-width: 0;
+        }
+
+        .select select {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 100%;
+            min-height: 40px;
+            padding: 8px 34px 8px 12px;
+            background: var(--panel-2);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--ink);
+            font: 0.8rem/1.45 var(--font-body);
+            text-overflow: ellipsis;
+            outline: none;
+            cursor: pointer;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .select select:hover {
+            border-color: var(--border-strong);
+        }
+
+        .select select:focus {
+            border-color: var(--accent);
+            box-shadow: var(--focus-ring);
+        }
+
+        .select option {
+            background: var(--panel);
+            color: var(--ink);
+        }
+
+        .select::after {
+            content: "";
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            width: 10px;
+            height: 6px;
+            margin-top: -2px;
+            background: var(--dim);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            pointer-events: none;
         }
 
         .slider {
             position: relative;
             height: 24px;
+            min-width: 0;
             --value: 0;
         }
 
         .slider-track {
-            --c: 8px;
             position: absolute;
             inset: 0;
-            background: var(--slider-outline);
-        }
-
-        .slider-inner {
-            --c: 7px;
-            position: absolute;
-            inset: 2px;
-            background: var(--slider-back);
+            background: var(--panel-3);
+            border: 2px solid var(--border);
+            border-radius: 999px;
             overflow: hidden;
         }
 
@@ -347,26 +1001,21 @@
             top: 0;
             bottom: 0;
             width: calc(var(--value) * 100%);
-            background: var(--slider-fill);
+            background: var(--accent);
         }
 
         .slider-grab {
-            --c: 6px;
             position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 16px;
-            left: calc(var(--value) * (100% - 16px));
-            background: var(--slider-outline);
-        }
-
-        .slider-grab::after {
-            --c: 5px;
-            content: "";
-            position: absolute;
-            inset: 2px;
-            background: var(--slider-grab);
-            clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% var(--c), 100% 100%, var(--c) 100%, 0 calc(100% - var(--c)));
+            top: 50%;
+            left: calc(1px + var(--value) * (100% - 24px));
+            width: 22px;
+            height: 22px;
+            margin-top: -11px;
+            background: var(--panel);
+            border: 2px solid var(--accent-deep);
+            border-radius: 6px;
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+            pointer-events: none;
         }
 
         .slider input {
@@ -378,127 +1027,216 @@
             opacity: 0;
             cursor: pointer;
             appearance: none;
+            -webkit-appearance: none;
         }
 
         .slider input::-webkit-slider-thumb {
             appearance: none;
-            width: 16px;
+            -webkit-appearance: none;
+            width: 24px;
             height: 24px;
         }
 
         .slider input::-moz-range-thumb {
-            width: 16px;
+            width: 24px;
             height: 24px;
             border: 0;
         }
 
-        .select {
-            --c: 10px;
-            position: relative;
-            min-width: 0;
-            background: var(--button);
-        }
-
-        .select:hover {
-            background: var(--button-hover);
-        }
-
-        .select::after {
-            content: "";
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            width: 12px;
-            height: 7px;
-            margin-top: -3px;
-            background: var(--text);
-            clip-path: polygon(0 0, 100% 0, 50% 100%);
-            pointer-events: none;
-        }
-
-        .select select {
-            appearance: none;
-            width: 100%;
-            min-height: 30px;
-            padding: 2px 32px 2px 14px;
-            border: 0;
-            background: transparent;
-            color: var(--text);
-            cursor: pointer;
-            text-overflow: ellipsis;
-        }
-
-        .select option {
-            background: #292c44;
-            color: var(--text);
+        .slider input:focus-visible + .slider-grab,
+        .slider:has(input:focus-visible) .slider-grab {
+            outline: 2px solid var(--ink);
+            outline-offset: 2px;
         }
 
         .checks {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px 16px;
-            margin-top: 12px;
+            gap: 10px 18px;
+            margin-top: 18px;
         }
 
         .check {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            color: var(--ink);
+            font-size: 0.78rem;
+            line-height: 1.4;
             cursor: pointer;
         }
 
         .check input {
-            appearance: none;
+            width: 16px;
+            height: 16px;
             flex: none;
-            width: 20px;
-            height: 20px;
             margin: 0;
-            border-radius: 3px;
-            box-shadow: inset 0 0 0 3px var(--checkbox);
+            accent-color: var(--accent);
             cursor: pointer;
         }
 
-        .check input:checked {
-            background: var(--checkbox) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M4.5 10.5 L8 14 L15.5 6' fill='none' stroke='%239a8fb5' stroke-width='2.2'/%3E%3C/svg%3E") no-repeat;
-        }
-
         .check input:focus-visible {
-            outline: 2px solid var(--focus);
+            outline: 2px solid var(--ink);
             outline-offset: 2px;
         }
 
-        .code-form {
-            margin-top: 12px;
-        }
-
-        .code-row {
+        /* === Подвал === */
+        .footer {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 6px;
-            margin-top: 4px;
+            padding: 2px 0 10px;
+            color: var(--muted);
+            font-size: 0.75rem;
+            line-height: 1.5;
+            text-align: center;
         }
 
-        .code-input {
-            --c: 8px;
-            flex: 1;
-            min-width: 0;
-            min-height: 36px;
-            padding: 2px 12px;
-            border: 0;
-            background: var(--button);
-            color: var(--text);
-            font: 20px/1.2 ui-monospace, "Noto Sans Mono", monospace;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
+        .footer p {
+            margin: 0;
         }
 
-        .code-input:focus-visible {
-            outline: 2px solid var(--focus);
-            outline-offset: 2px;
+        .footer a {
+            color: var(--link);
+            text-decoration: none;
+            border-bottom: 1px dotted currentColor;
+        }
+
+        .footer a:hover {
+            color: var(--accent-deep);
+        }
+
+        /* === Мобильная вёрстка === */
+        @media (max-width: 680px) {
+            .top-link span {
+                display: none;
+            }
+
+            .top-link {
+                width: 40px;
+                min-width: 40px;
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .topbar-inner {
+                gap: 10px;
+                padding: 9px 12px;
+            }
+
+            /* На телефоне ссылки сообщества уже есть крупными кнопками в герое. */
+            .top-links {
+                display: none;
+            }
+
+            .theme-toggle {
+                margin-left: auto;
+            }
+
+            .brand img {
+                width: 38px;
+                height: 38px;
+            }
+
+            .brand-title {
+                font-size: 0.82rem;
+            }
+
+            .page {
+                margin: 16px auto 26px;
+                padding: 0 12px;
+                gap: 14px;
+            }
+
+            .card {
+                padding: 14px;
+            }
+
+            .hero {
+                padding: 22px 16px 20px;
+            }
+
+            .status-body {
+                padding: 14px;
+            }
+
+            .status-banner {
+                padding: 10px 14px;
+                font-size: 0.5rem;
+            }
+
+            .code-form {
+                padding: 12px;
+            }
+
+            .field {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 6px;
+                margin-top: 16px;
+            }
+
+            .field.with-value {
+                grid-template-columns: minmax(0, 1fr) 3.4em;
+            }
+
+            .field.with-value .field-label {
+                grid-column: 1 / -1;
+            }
+
+            .field output {
+                align-self: center;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .status-banner-brand {
+                display: none;
+            }
+
+            .code-row {
+                flex-wrap: wrap;
+            }
+
+            .code-row .code-input {
+                flex-basis: 100%;
+            }
+
+            .code-row .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 380px) {
+            /* Узкий экран: три кнопки в ряд не помещаются, как и на сайте, переходим на две колонки. */
+            .social-links {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .social-links .link-btn:last-child {
+                grid-column: 1 / -1;
+            }
         }
 
         @media (pointer: coarse) {
             .btn,
-            .select select {
+            .top-link,
+            .theme-toggle,
+            .link-btn,
+            .select select,
+            .code-input {
+                min-height: 44px;
+            }
+
+            .brand img {
+                width: 44px;
+                height: 44px;
+            }
+
+            .footer a {
+                display: inline-flex;
+                align-items: center;
                 min-height: 44px;
             }
 
@@ -506,162 +1244,276 @@
                 min-height: 52px;
             }
 
-            .slider {
-                height: 36px;
-            }
-
-            .slider input::-webkit-slider-thumb {
-                width: 28px;
-                height: 36px;
-            }
-
-            .slider input::-moz-range-thumb {
-                width: 28px;
-                height: 36px;
-            }
-
             .check {
-                min-height: 40px;
+                min-height: 36px;
             }
 
-            .code-input,
-            .select select {
-                font-size: 18px;
-            }
-        }
-
-        @media (max-width: 440px) {
-            body {
-                padding: 12px 10px calc(12px + env(safe-area-inset-bottom));
+            .check input {
+                width: 18px;
+                height: 18px;
             }
 
-            .window-body {
-                padding: 10px 10px 4px;
-            }
-
-            .live-row .btn {
-                min-width: 80px;
-            }
-
-            .field {
-                grid-template-columns: 1fr;
-                gap: 4px;
-                margin-top: 12px;
-            }
-
-            .field.with-value {
-                grid-template-columns: 1fr 3.5em;
-            }
-
-            .field.with-value .field-label {
-                grid-column: 1 / -1;
+            .slider {
+                height: 30px;
             }
         }
 
-        [hidden] {
-            display: none !important;
+        @media (prefers-reduced-motion: reduce) {
+            .glow,
+            .status-dot {
+                animation: none !important;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body data-tone="neutral">
-<main class="window chamfer">
-    <header class="window-header">
-        <h1 class="window-title">Голосовой чат</h1>
-    </header>
-    <div class="divider"></div>
+<div class="bg-ambient" aria-hidden="true">
+    <div class="glow glow--1"></div>
+    <div class="glow glow--2"></div>
+</div>
 
-    <div class="window-body">
-        <p class="status" id="status" role="status" aria-live="polite">Загрузка…</p>
-        <p class="status-detail" id="status-detail"></p>
-
-        <form class="code-form card" id="code-form" hidden>
-            <label class="field-label" for="code">Код голосового чата</label>
-            <div class="code-row">
-                <input class="code-input chamfer" id="code" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="ABCD2345">
-                <button class="btn primary chamfer" id="code-submit" type="submit">Подключить</button>
-            </div>
-        </form>
-
-        <button class="btn big primary chamfer" id="start" type="button">Начать</button>
-        <button class="btn big chamfer" id="retry" type="button" hidden>Переподключиться</button>
-
-        <section id="controls" hidden aria-label="Микрофон">
-            <div class="card">
-                <div class="live-row">
-                    <div class="bar" aria-hidden="true">
-                        <div class="bar-fill" id="meter-fill"></div>
-                        <div class="bar-threshold" id="meter-threshold" hidden></div>
-                    </div>
-                    <button class="btn chamfer" id="mute" type="button" aria-pressed="false">Заглушить</button>
-                </div>
-                <p class="live-label" id="indicator-label">Микрофон выключен</p>
-            </div>
-
-            <h2 class="heading">Настройки</h2>
-
-            <div class="card">
-                <div class="field">
-                    <span class="field-label" id="mode-label">Режим</span>
-                    <div class="toggle-group" role="radiogroup" aria-labelledby="mode-label">
-                        <label class="btn open-right"><input type="radio" name="mode" id="mode-ptt" value="ptt">По кнопке</label>
-                        <label class="btn open-left"><input type="radio" name="mode" id="mode-vad" value="vad">По голосу</label>
-                    </div>
-                </div>
-
-                <div class="field with-value" id="threshold-row" hidden>
-                    <label class="field-label" for="threshold">Порог</label>
-                    <div class="slider">
-                        <div class="slider-track chamfer"><div class="slider-inner chamfer"><div class="slider-fill"></div></div></div>
-                        <div class="slider-grab chamfer"></div>
-                        <input type="range" id="threshold" min="-70" max="-10" step="1">
-                    </div>
-                    <output id="threshold-value" for="threshold"></output>
-                </div>
-
-                <div class="field" id="effect-row" hidden>
-                    <label class="field-label" for="effect">Изменение голоса</label>
-                    <div class="select chamfer">
-                        <select id="effect">
-                            <option value="none">Выкл.</option>
-                            <option value="robot">Робот</option>
-                            <option value="alien">Пришелец</option>
-                            <option value="abductor">Абдуктор</option>
-                            <option value="deep">Низкий</option>
-                            <option value="high">Высокий</option>
-                            <option value="whisper">Шёпот</option>
-                            <option value="radio">Рация</option>
-                            <option value="muffled">Приглушённый</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="field-label" for="device">Микрофон</label>
-                    <div class="select chamfer"><select id="device"></select></div>
-                </div>
-
-                <div class="field with-value">
-                    <label class="field-label" for="gain">Громкость входа</label>
-                    <div class="slider">
-                        <div class="slider-track chamfer"><div class="slider-inner chamfer"><div class="slider-fill"></div></div></div>
-                        <div class="slider-grab chamfer"></div>
-                        <input type="range" id="gain" min="0" max="300" step="5">
-                    </div>
-                    <output id="gain-value" for="gain"></output>
-                </div>
-
-                <div class="checks">
-                    <label class="check"><input type="checkbox" id="noise-suppression">Подавление шума</label>
-                    <label class="check"><input type="checkbox" id="echo-cancellation">Эхоподавление</label>
-                    <label class="check"><input type="checkbox" id="auto-gain-control">Автогромкость</label>
-                    <label class="check" id="keep-awake-row"><input type="checkbox" id="keep-awake">Не гасить экран</label>
-                </div>
-            </div>
-        </section>
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" href="https://ministation.ru" target="_blank" rel="noopener" title="Сайт Мини-станции" aria-label="Сайт Мини-станции">
+            <img src="logo.png" alt="">
+            <span class="brand-title">Мини<span>-</span>станция</span>
+        </a>
+        <nav class="top-links" aria-label="Ссылки Мини-станции">
+            <a class="top-link" href="https://ministation.ru" target="_blank" rel="noopener" title="Сайт Мини-станции" aria-label="Сайт Мини-станции">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M3 12h18"></path>
+                    <ellipse cx="12" cy="12" rx="4" ry="9"></ellipse>
+                </svg>
+                <span>Сайт</span>
+            </a>
+            <a class="top-link" href="https://discord.gg/mini-station" target="_blank" rel="noopener" title="Discord Мини-станции" aria-label="Discord Мини-станции">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M20.317 4.3698a19.7913 19.7913 0 0 0-4.8851-1.5152.0741.0741 0 0 0-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 0 0-.0785-.037 19.7363 19.7363 0 0 0-4.8852 1.515.0699.0699 0 0 0-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 0 0 .0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 0 0 .0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 0 0-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 0 1-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 0 1 .0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 0 1 .0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 0 1-.0066.1276 12.2986 12.2986 0 0 1-1.873.8914.0766.0766 0 0 0-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 0 0 .0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 0 0 .0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 0 0-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"></path>
+                </svg>
+                <span>Discord</span>
+            </a>
+            <a class="top-link" href="https://wiki.ministation.ru" target="_blank" rel="noopener" title="Wiki Мини-станции" aria-label="Wiki Мини-станции">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v18H6.5A2.5 2.5 0 0 1 4 18.5z"></path>
+                    <path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"></path>
+                </svg>
+                <span>Wiki</span>
+            </a>
+        </nav>
+        <button class="theme-toggle" id="theme-toggle" type="button" title="Тёмная тема" aria-label="Переключить тему">
+            <svg class="icon" id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+            </svg>
+            <svg class="icon" id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+            </svg>
+        </button>
     </div>
+</header>
 
-    <p class="window-footer">Держите эту вкладку открытой, пока играете.</p>
+<main class="page">
+    <section class="card hero" aria-label="Голосовой чат Мини-станции">
+        <p class="hero-kicker">Космическая станция 14</p>
+        <h1 class="hero-title">Голосовой чат</h1>
+        <p class="hero-text">
+            Говорите с экипажем прямо из браузера. Звук идёт напрямую между игроками,
+            сервер его не слышит.
+        </p>
+        <div class="social-links">
+            <a class="link-btn website" href="https://ministation.ru" target="_blank" rel="noopener">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M3 12h18"></path>
+                    <ellipse cx="12" cy="12" rx="4" ry="9"></ellipse>
+                </svg>
+                <span>Сайт</span>
+            </a>
+            <a class="link-btn discord" href="https://discord.gg/mini-station" target="_blank" rel="noopener">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M20.317 4.3698a19.7913 19.7913 0 0 0-4.8851-1.5152.0741.0741 0 0 0-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 0 0-.0785-.037 19.7363 19.7363 0 0 0-4.8852 1.515.0699.0699 0 0 0-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 0 0 .0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 0 0 .0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 0 0-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 0 1-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 0 1 .0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 0 1 .0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 0 1-.0066.1276 12.2986 12.2986 0 0 1-1.873.8914.0766.0766 0 0 0-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 0 0 .0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 0 0 .0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 0 0-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"></path>
+                </svg>
+                <span>Discord</span>
+            </a>
+            <a class="link-btn wiki" href="https://wiki.ministation.ru" target="_blank" rel="noopener">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v18H6.5A2.5 2.5 0 0 1 4 18.5z"></path>
+                    <path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"></path>
+                </svg>
+                <span>Wiki</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="card status-card" aria-label="Состояние подключения">
+        <div class="status-banner">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="status-banner-title">Голосовой чат</span>
+            <span class="status-banner-brand">Мини<span>-</span>станция</span>
+        </div>
+        <div class="status-body">
+            <p class="status" id="status" role="status" aria-live="polite">Загрузка…</p>
+            <p class="status-detail" id="status-detail"></p>
+
+            <form class="code-form" id="code-form" hidden>
+                <label class="code-label" for="code">Код голосового чата</label>
+                <div class="code-row">
+                    <input class="code-input" id="code" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="ABCD2345">
+                    <button class="btn primary" id="code-submit" type="submit">Подключить</button>
+                </div>
+                <p class="code-hint">
+                    Код привязан к игровой сессии: после выхода с сервера подключение завершится.
+                </p>
+            </form>
+
+            <button class="btn primary big" id="start" type="button">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="2" width="6" height="11" rx="3"></rect>
+                    <path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"></path>
+                </svg>
+                Начать
+            </button>
+            <button class="btn big" id="retry" type="button" hidden>Переподключиться</button>
+        </div>
+    </section>
+
+    <section id="controls" hidden aria-label="Микрофон">
+        <div class="card meter-card">
+            <h2>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="2" width="6" height="11" rx="3"></rect>
+                    <path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"></path>
+                </svg>
+                Микрофон
+            </h2>
+            <div class="meter-row">
+                <div class="bar" aria-hidden="true">
+                    <div class="bar-fill" id="meter-fill"></div>
+                    <div class="bar-threshold" id="meter-threshold" hidden></div>
+                </div>
+                <button class="btn mute-btn" id="mute" type="button" aria-pressed="false">Заглушить</button>
+            </div>
+            <p class="live-label" id="indicator-label">Микрофон выключен</p>
+        </div>
+
+        <div class="card">
+            <h2>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    <circle cx="9" cy="6" r="2" fill="var(--panel)"></circle>
+                    <circle cx="15" cy="12" r="2" fill="var(--panel)"></circle>
+                    <circle cx="8" cy="18" r="2" fill="var(--panel)"></circle>
+                </svg>
+                Настройки
+            </h2>
+
+            <div class="field">
+                <span class="field-label" id="mode-label">Режим</span>
+                <div class="toggle-group" role="radiogroup" aria-labelledby="mode-label">
+                    <label class="btn"><input type="radio" name="mode" id="mode-ptt" value="ptt">По кнопке</label>
+                    <label class="btn"><input type="radio" name="mode" id="mode-vad" value="vad">По голосу</label>
+                </div>
+            </div>
+
+            <div class="field with-value" id="threshold-row" hidden>
+                <label class="field-label" for="threshold">Порог</label>
+                <div class="slider">
+                    <div class="slider-track"><div class="slider-fill"></div></div>
+                    <div class="slider-grab"></div>
+                    <input type="range" id="threshold" min="-70" max="-10" step="1">
+                </div>
+                <output id="threshold-value" for="threshold"></output>
+            </div>
+
+            <div class="field" id="effect-row" hidden>
+                <label class="field-label" for="effect">Изменение голоса</label>
+                <div class="select">
+                    <select id="effect">
+                        <option value="none">Выкл.</option>
+                        <option value="robot">Робот</option>
+                        <option value="alien">Пришелец</option>
+                        <option value="abductor">Абдуктор</option>
+                        <option value="deep">Низкий</option>
+                        <option value="high">Высокий</option>
+                        <option value="whisper">Шёпот</option>
+                        <option value="radio">Рация</option>
+                        <option value="muffled">Приглушённый</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="field-label" for="device">Микрофон</label>
+                <div class="select">
+                    <select id="device"></select>
+                </div>
+            </div>
+
+            <div class="field with-value">
+                <label class="field-label" for="gain">Громкость входа</label>
+                <div class="slider">
+                    <div class="slider-track"><div class="slider-fill"></div></div>
+                    <div class="slider-grab"></div>
+                    <input type="range" id="gain" min="0" max="300" step="5">
+                </div>
+                <output id="gain-value" for="gain"></output>
+            </div>
+
+            <div class="checks">
+                <label class="check"><input type="checkbox" id="noise-suppression">Подавление шума</label>
+                <label class="check"><input type="checkbox" id="echo-cancellation">Эхоподавление</label>
+                <label class="check"><input type="checkbox" id="auto-gain-control">Автогромкость</label>
+                <label class="check" id="keep-awake-row"><input type="checkbox" id="keep-awake">Не гасить экран</label>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>Держите эту вкладку открытой, пока играете.</p>
+        <p><a href="https://ministation.ru" target="_blank" rel="noopener">На сайт Мини-станции</a></p>
+    </footer>
 </main>
+
+<script>
+    (function () {
+        var root = document.documentElement;
+        var button = document.getElementById("theme-toggle");
+        var moon = document.getElementById("icon-moon");
+        var sun = document.getElementById("icon-sun");
+        var meta = document.querySelector('meta[name="theme-color"]');
+
+        function sync() {
+            var dark = root.dataset.theme === "dark";
+            button.title = dark ? "Светлая тема" : "Тёмная тема";
+            button.setAttribute("aria-label", button.title);
+            moon.hidden = dark;
+            sun.hidden = !dark;
+            if (meta) {
+                meta.content = dark ? "#1e1913" : "#f3ede1";
+            }
+        }
+
+        button.addEventListener("click", function () {
+            root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+            try {
+                localStorage.setItem("ms-theme", root.dataset.theme);
+            } catch (error) {
+            }
+            sync();
+        });
+
+        sync();
+    })();
+</script>
 <script src="voice.js"></script>
 </body>
 </html>
