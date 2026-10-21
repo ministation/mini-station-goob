@@ -257,16 +257,15 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_physicsQuery.TryGetComponent(uid, out var physics))
                 continue;
 
-            // Mini fix: velocity relative to whatever the mob stands on (grid/shuttle). World
-            // velocity played the walk bob on a standing player inside a moving shuttle and
-            // cancelled it when walking against the shuttle's motion.
+            // Mini fix: velocity relative to whatever the mob stands on (grid/shuttle). In RT
+            // PhysicsComponent.LinearVelocity is already relative to the parent (see
+            // SharedPhysicsSystem.GetMapVelocities, which adds the parents' velocities on top),
+            // so a mob standing still on a moving shuttle has it at zero, and a walking mob has
+            // its walking speed there. Subtracting the grid's velocity is therefore wrong: on a
+            // moving shuttle it produced a fake speed ~= shuttle speed and played the walk bob
+            // on everyone standing still. The regression test
+            // Content.IntegrationTests/Tests/_Mini/FootWalkMovingGridTest guards this.
             var velocity = physics.LinearVelocity;
-            var gridUid = Transform(uid).GridUid;
-            if (gridUid is { } grid && grid != uid
-                && _physicsQuery.TryGetComponent(grid, out var gridPhysics))
-            {
-                velocity -= gridPhysics.LinearVelocity;
-            }
 
             // Cheap reject for the common idle case before CanAnimate / gravity checks.
             var moving = velocity.LengthSquared() >= walk.MinSpeedSquared

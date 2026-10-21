@@ -1,7 +1,4 @@
-ui-options-hear-self = Послушать себя (голосовой чат)
 ui-options-voice-chat-volume = Громкость голосового чата
-ui-options-voice-chat-enabled = Голосовой чат (микрофон, удержание клавиши)
-ui-options-voice-chat-enabled-tooltip = Когда включено, ваш микрофон передаёт звук игрокам рядом (удерживайте N), а речь персонажа больше не озвучивается через TTS.
 ui-options-function-voice-push-to-talk = Голосовой чат: удержание клавиши (локально)
 ui-options-function-voice-push-to-talk-radio = Голосовой чат: удержание клавиши (рация)
 

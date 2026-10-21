@@ -1,7 +1,4 @@
-ui-options-hear-self = Hear yourself in voice chat
 ui-options-voice-chat-volume = Voice Chat Volume
-ui-options-voice-chat-enabled = Voice Chat (microphone, push to talk)
-ui-options-voice-chat-enabled-tooltip = When enabled, your microphone transmits to nearby players (hold N) and your character's speech no longer uses TTS.
 ui-options-function-voice-push-to-talk = Voice Push-to-Talk (Local)
 ui-options-function-voice-push-to-talk-radio = Voice Push-to-Talk (Radio)
 

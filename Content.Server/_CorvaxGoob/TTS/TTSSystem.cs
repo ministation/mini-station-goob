@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Content.Server._EinsteinEngines.Language;
-using Content.Server._Mini.VoiceChat;
 using Content.Server.Chat.Systems;
 using Content.Server.Communications;
 using Content.Shared._CorvaxGoob.CCCVars;
@@ -11,7 +10,6 @@ using Content.Shared.GameTicking;
 using Content.Shared.Players.RateLimiting;
 using Robust.Shared.Audio;
 using Robust.Shared.Configuration;
-using Robust.Server.Player;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -29,7 +27,6 @@ public sealed partial class TTSSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _rng = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly LanguageSystem _lang = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!; // Mini: voice chat opt-in
 
     private readonly List<string> _sampleText =
         new()
@@ -91,11 +88,8 @@ public sealed partial class TTSSystem : EntitySystem
 
     private async void OnEntitySpoke(EntityUid uid, TTSComponent component, EntitySpokeEvent args)
     {
-        // Mini: players opted in to voice chat speak with their real voice — no TTS for them.
-        if (_playerManager.TryGetSessionByEntity(uid, out var speakerSession)
-            && VoiceChatOptIns.Contains(speakerSession.UserId))
-            return;
-
+        // Mini: voice chat no longer replaces TTS. Text speech is always voiced, even when the
+        // speaker has the voice chat page open and can also talk with the microphone.
         var voiceId = component.VoicePrototypeId;
         if (!_isEnabled ||
             args.Message.Length > MaxMessageChars ||

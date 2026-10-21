@@ -100,9 +100,7 @@ public sealed partial class AudioTab : Control
         Control.AddOptionCheckBox(CCCVars.CombatModeSoundEnabled, CombatModeSoundCheckBox);
         //CorvaxGoob-CombatMode-Sound-End
 
-        // Mini: voice chat (restored from Goobstation upstream)
-        Control.AddOptionCheckBox(GoobCVars.VoiceChatClientEnabled, VoiceChatEnabledCheckBox);
-        Control.AddOptionCheckBox(GoobCVars.VoiceChatHearSelf, HearSelfCheckBox);
+        // Mini: voice chat is always on, so there is no opt-in or hear-self checkbox
         Control.AddOptionCheckBox(CCVars.LobbyMusicEnabled, LobbyMusicCheckBox);
         Control.AddOptionCheckBox(CCVars.RestartSoundsEnabled, RestartSoundsCheckBox);
         Control.AddOptionCheckBox(CCVars.EventMusicEnabled, EventMusicCheckBox);

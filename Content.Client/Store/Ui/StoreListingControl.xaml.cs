@@ -116,8 +116,10 @@ public sealed partial class StoreListingControl : PanelContainer
         var stationTime = _timing.CurTime.Subtract(_ticker.RoundStartTimeSpan);
         if (_data.RestockTime > stationTime)
         {
-            var timeLeftToBuy = stationTime - _data.RestockTime;
-            BuyPriceLabel.Text = timeLeftToBuy.Duration().ToString(@"mm\:ss");
+            // RestockTime is a station time timestamp, so the remaining time is the difference.
+            // Do not use Duration(): it hides a time base mismatch behind a plausible countdown.
+            var timeLeftToBuy = _data.RestockTime - stationTime;
+            BuyPriceLabel.Text = timeLeftToBuy.ToString(@"mm\:ss");
             CurrencyIcon.Visible = false;
         }
         else

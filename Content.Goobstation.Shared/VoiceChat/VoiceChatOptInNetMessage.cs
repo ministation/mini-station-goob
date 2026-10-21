@@ -7,9 +7,9 @@ using Robust.Shared.Serialization;
 namespace Content.Goobstation.Shared.VoiceChat;
 
 /// <summary>
-/// Mini: client → server notification that the player enabled/disabled voice chat.
-/// Opted-in players transmit microphone audio and are excluded from TTS generation
-/// (voice chat or TTS — one or the other).
+/// Mini: client → server notification that the player participates in voice chat.
+/// Voice chat is always on for new clients, so this is normally true. The server uses it to
+/// accept microphone audio; TTS works independently and is no longer disabled by voice chat.
 /// </summary>
 public sealed class MsgVoiceChatOptIn : NetMessage
 {
