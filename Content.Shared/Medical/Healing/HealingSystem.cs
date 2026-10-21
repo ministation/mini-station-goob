@@ -411,6 +411,27 @@ public sealed class HealingSystem : EntitySystem
                         healedTotal += -damageChanged;
                         healingLeft += -damageChanged;
                     }
+
+                    // Mini: a body part can have zero damage while its wounds are not healed yet
+                    // (wound severity often outlives the damage value). ChangeDamage does nothing
+                    // then, so the wound healing never runs and topicals report "0 damage" while
+                    // cuts and bleeding stay. Spend the leftover healing directly on the wounds.
+                    if ((damageChanged is null || damageChanged.GetTotal() == FixedPoint2.Zero)
+                        && healingLeft.GetTotal() < FixedPoint2.Zero
+                        && TryComp<WoundableComponent>(targetedWoundable, out var woundableToHeal)
+                        && woundableToHeal.Wounds.ContainedEntities.Count > 0
+                        && _wounds.TryHealWoundsOnWoundable(targetedWoundable, healingLeft, out var woundedHealed, woundableToHeal))
+                    {
+                        foreach (var (damageType, healedAmount) in woundedHealed)
+                        {
+                            if (healingLeft.DamageDict.TryGetValue(damageType, out var left))
+                                healingLeft.DamageDict[damageType] = left + healedAmount;
+                            if (healedTotal.DamageDict.TryGetValue(damageType, out var done))
+                                healedTotal.DamageDict[damageType] = done - healedAmount;
+                            else
+                                healedTotal.DamageDict[damageType] = -healedAmount;
+                        }
+                    }
                 }
             }
 

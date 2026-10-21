@@ -5,7 +5,10 @@ using Content.Shared.Movement.Events;
 using Content.Shared.StepTrigger.Systems;
 using Content.Shared.Weapons.Misc;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Network;
+using Robust.Shared.Physics;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Timing;
 
 namespace Content.Shared.Chasm;
@@ -20,6 +23,7 @@ public sealed class ChasmSystem : EntitySystem
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedGrapplingGunSystem _grapple = default!;
+    [Dependency] private readonly EntityLookupSystem _lookup = default!;
 
     public override void Initialize()
     {
@@ -27,7 +31,54 @@ public sealed class ChasmSystem : EntitySystem
 
         SubscribeLocalEvent<ChasmComponent, StepTriggeredOffEvent>(OnStepTriggered);
         SubscribeLocalEvent<ChasmComponent, StepTriggerAttemptEvent>(OnStepTriggerAttempt);
+        SubscribeLocalEvent<ChasmComponent, MapInitEvent>(OnChasmMapInit);
         SubscribeLocalEvent<ChasmFallingComponent, UpdateCanMoveEvent>(OnUpdateCanMove);
+    }
+
+    /// <summary>
+    /// Mini: a chasm can be spawned under an entity that is already standing there (admin spawn or
+    /// a chasm opening). A sleeping physics body does not always produce a collision event for the
+    /// newly spawned floor, so such an entity would just stand on the chasm. Trigger the fall for
+    /// everyone already overlapping the chasm when it appears.
+    /// </summary>
+    private void OnChasmMapInit(EntityUid uid, ChasmComponent component, MapInitEvent args)
+    {
+        if (_net.IsClient)
+            return;
+
+        var overlapping = new HashSet<EntityUid>();
+        _lookup.GetEntitiesInRange(uid, 0.45f, overlapping);
+
+        foreach (var tripper in overlapping)
+        {
+            if (tripper == uid
+                || HasComp<ChasmFallingComponent>(tripper)
+                || !TryComp<PhysicsComponent>(tripper, out var physics)
+                || !physics.CanCollide
+                || !TryComp<FixturesComponent>(tripper, out var fixtures))
+                continue;
+
+            var hasHardFixture = false;
+            foreach (var fixture in fixtures.Fixtures.Values)
+            {
+                if (!fixture.Hard)
+                    continue;
+                hasHardFixture = true;
+                break;
+            }
+
+            if (!hasHardFixture)
+                continue;
+
+            var attempt = new StepTriggerAttemptEvent { Source = uid, Tripper = tripper };
+            RaiseLocalEvent(uid, ref attempt);
+            RaiseLocalEvent(tripper, ref attempt);
+
+            if (attempt.Cancelled || !attempt.Continue)
+                continue;
+
+            StartFalling(uid, component, tripper);
+        }
     }
 
     public override void Update(float frameTime)
