@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# CentComm intern PDA / ID — distinct from Official CentcomPDA.
+# CentComm intern PDA / ID - distinct from Official CentcomPDA.
 
 - type: entity
   parent: IDCardStandard

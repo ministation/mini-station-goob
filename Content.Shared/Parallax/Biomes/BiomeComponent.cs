@@ -70,7 +70,7 @@ public sealed partial class BiomeComponent : Component
     /// Track what markers we've loaded already to avoid double-loading.
     /// </summary>
     [DataField("loadedMarkers")]
-    public Dictionary<string, HashSet<Vector2i>> LoadedMarkers = new();
+    public Dictionary<ProtoId<BiomeMarkerLayerPrototype>, HashSet<Vector2i>> LoadedMarkers = new();
 
     [DataField]
     public HashSet<ProtoId<BiomeMarkerLayerPrototype>> MarkerLayers = new();

@@ -1,4 +1,5 @@
 using Content.Shared.DeviceLinking;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Mono.SpaceArtillery.Components;
 
@@ -34,6 +35,6 @@ public sealed partial class SpaceArtilleryComponent : Component
     /// Signal port that makes space artillery fire.
     /// </summary>
     [DataField("spaceArtilleryFirePort")]
-    public string SpaceArtilleryFirePort = "SpaceArtilleryFire";
+    public ProtoId<SinkPortPrototype> SpaceArtilleryFirePort = "SpaceArtilleryFire";
 
 }

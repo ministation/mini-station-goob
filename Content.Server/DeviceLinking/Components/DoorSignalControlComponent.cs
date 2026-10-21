@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 using Content.Shared.DeviceLinking;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.DeviceLinking.Components
 {
@@ -8,18 +9,18 @@ namespace Content.Server.DeviceLinking.Components
     public sealed partial class DoorSignalControlComponent : Component
     {
         [DataField("openPort")]
-        public string OpenPort = "Open";
+        public ProtoId<SinkPortPrototype> OpenPort = "Open";
 
         [DataField("closePort")]
-        public string ClosePort = "Close";
+        public ProtoId<SinkPortPrototype> ClosePort = "Close";
 
         [DataField("togglePort")]
-        public string TogglePort = "Toggle";
+        public ProtoId<SinkPortPrototype> TogglePort = "Toggle";
 
         [DataField("boltPort")]
-        public string InBolt = "DoorBolt";
+        public ProtoId<SinkPortPrototype> InBolt = "DoorBolt";
 
         [DataField("onOpenPort")]
-        public string OutOpen = "DoorStatus";
+        public ProtoId<SourcePortPrototype> OutOpen = "DoorStatus";
     }
 }

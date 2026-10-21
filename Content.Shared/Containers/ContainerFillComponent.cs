@@ -3,13 +3,6 @@
 using Content.Shared.Storage;
 using Content.Shared.Storage.Components;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Manager;
-using Robust.Shared.Serialization.Markdown.Mapping;
-using Robust.Shared.Serialization.Markdown.Sequence;
-using Robust.Shared.Serialization.Markdown.Validation;
-using Robust.Shared.Serialization.Markdown.Value;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Generic;
-using Robust.Shared.Serialization.TypeSerializers.Interfaces;
 
 namespace Content.Shared.Containers;
 
@@ -24,8 +17,8 @@ namespace Content.Shared.Containers;
 [RegisterComponent]
 public sealed partial class ContainerFillComponent : Component
 {
-    [DataField("containers", customTypeSerializer:typeof(ContainerFillSerializer))]
-    public Dictionary<string, List<string>> Containers = new();
+    [DataField("containers")]
+    public Dictionary<string, List<EntProtoId>> Containers = new();
 
     /// <summary>
     ///     If true, entities spawned via the construction system will not have entities spawned into containers managed
@@ -33,43 +26,4 @@ public sealed partial class ContainerFillComponent : Component
     /// </summary>
     [DataField("ignoreConstructionSpawn")]
     public bool IgnoreConstructionSpawn = true;
-}
-
-// all of this exists just to validate prototype ids.
-// it would be nice if you could specify only a type validator and not have to re-implement everything else.
-// or a dictionary serializer that accepts a custom type serializer for the dictionary values
-public sealed class ContainerFillSerializer : ITypeValidator<Dictionary<string, List<string>>, MappingDataNode>
-{
-    public ValidationNode Validate(
-        ISerializationManager serializationManager,
-        MappingDataNode node,
-        IDependencyCollection dependencies,
-        ISerializationContext? context = null)
-    {
-        var mapping = new Dictionary<ValidationNode, ValidationNode>();
-
-        foreach (var (key, val) in node.Children)
-        {
-            var listVal = (val is SequenceDataNode seq)
-                ? ValidateSequence(seq, dependencies)
-                : new ErrorNode(val, "ContainerFillComponent prototypes must be a sequence/list");
-
-            mapping.Add(new ValidatedValueNode(node.GetKeyNode(key)), listVal);
-        }
-
-        return new ValidatedMappingNode(mapping);
-    }
-
-    private static ValidationNode ValidateSequence(SequenceDataNode sequence, IDependencyCollection dependencies)
-    {
-        var nodes = new List<ValidationNode>(sequence.Sequence.Count);
-        foreach (var entry in sequence.Sequence)
-        {
-            nodes.Add(entry is ValueDataNode value
-                ? ProtoIdSerializer<EntityPrototype>.Validate(dependencies, value)
-                : new ErrorNode(entry, "ContainerFillComponent entries must be entity prototype ids"));
-        }
-
-        return new ValidatedSequenceNode(nodes);
-    }
 }

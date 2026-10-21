@@ -2,6 +2,7 @@
 
 using Robust.Shared.Noise;
 using Robust.Shared.Serialization;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Parallax.Biomes.Layers;
 
@@ -24,5 +25,5 @@ public sealed partial class BiomeMetaLayer : IBiomeLayer
     public bool Invert { get; private set; }
 
     [DataField("template", required: true)]
-    public string Template = string.Empty;
+    public ProtoId<BiomeTemplatePrototype> Template = string.Empty;
 }

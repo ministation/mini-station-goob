@@ -16,6 +16,6 @@ namespace Content.Server.Tabletop
         public abstract void SetupTabletop(TabletopSession session, IEntityManager entityManager);
 
         [DataField("boardPrototype")]
-        public string BoardPrototype = default!;
+        public EntProtoId BoardPrototype = default!;
     }
 }

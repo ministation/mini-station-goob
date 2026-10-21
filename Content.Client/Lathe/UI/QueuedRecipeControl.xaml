@@ -25,7 +25,7 @@
             Name="Delete"
             Margin="0"
             Text="✖"
-            ToolTip="{Loc 'lathe-menu-delete-item-tooltip'}"
-            StyleClasses="Caution OpenLeft" />
+            ToolTip="{Loc 'lathe-menu-delete-item-tooltip'}" StyleClasses="Caution OpenLeft">
+        </Button>
     </BoxContainer>
 </Control>

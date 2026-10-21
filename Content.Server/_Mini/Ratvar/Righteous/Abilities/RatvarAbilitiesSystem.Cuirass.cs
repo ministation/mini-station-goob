@@ -1,4 +1,5 @@
-﻿using System;
+using Content.Shared.Damage.Systems;
+using System;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Abilities.Enchantment.Armor;
 using Content.Shared.Damage;
 using Content.Shared.Inventory;

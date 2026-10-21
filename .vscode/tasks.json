@@ -11,8 +11,9 @@
                 "build",
                 "--configuration",
                 "Release",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:'ForceNoAlign;NoSummary'"
+                "/property:GenerateFullPaths=true", // Ask dotnet build to generate full paths for file names.
+                "/property:WarningLevel=0",
+                "/consoleloggerparameters:ErrorsOnly" // i love not being able to find errors because 50000000 warnings
             ],
             "group": {
                 "kind": "build",

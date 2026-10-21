@@ -93,7 +93,7 @@ public sealed partial class NeuroPlayerSystem
 
         SubscribeNetworkEvent<SharedBwoinkSystem.BwoinkTextMessage>(OnAHelpTextMessage);
         // RoundRestartCleanupEvent is already subscribed in the main Initialize(); the ahelp state is
-        // reset from that handler via ResetAHelpState() — a second subscription throws at startup.
+        // reset from that handler via ResetAHelpState() - a second subscription throws at startup.
     }
 
     /// <summary>Drops per-round ahelp state. Called from the system's RoundRestartCleanupEvent handler.</summary>
@@ -139,7 +139,7 @@ public sealed partial class NeuroPlayerSystem
             return;
         }
 
-        // Somebody is already on duty — no need for the assistant.
+        // Somebody is already on duty - no need for the assistant.
         if (HasActiveAdmins())
             return;
 
@@ -262,7 +262,7 @@ public sealed partial class NeuroPlayerSystem
             if (string.IsNullOrWhiteSpace(reply))
                 return;
 
-            // Mini: same cleanup the IC bots get — no long dashes, single spaces, then a hard cap at
+            // Mini: same cleanup the IC bots get - no long dashes, single spaces, then a hard cap at
             // a sentence boundary: answers in ahelp must stay short.
             reply = reply.Replace('—', '-').Replace('–', '-');
             reply = string.Join(' ', reply.Split(' ', StringSplitOptions.RemoveEmptyEntries));
@@ -370,23 +370,23 @@ public sealed partial class NeuroPlayerSystem
         var wiki = _cfg.GetCVar(CCVars.InfoLinksWiki);
 
         var prompt =
-            $"Ты — «{_ahelpName}», ИИ-помощник в админ-хелпе (ahelp) сервера «Мини-Станция» — русский МРП-сервер по Space Station 14 (форк Goob-Station с мини-картами).\n" +
-            "Главная задача: коротко объяснять, как устроена игра и эта сборка — механики, предметы, профессии, антагонисты, режимы, управление, что делает та или иная вещь и как что-то сделать.\n" +
+            $"Ты - «{_ahelpName}», ИИ-помощник в админ-хелпе (ahelp) сервера «Мини-Станция» - русский МРП-сервер по Space Station 14 (форк Goob-Station с мини-картами).\n" +
+            "Главная задача: коротко объяснять, как устроена игра и эта сборка - механики, предметы, профессии, антагонисты, режимы, управление, что делает та или иная вещь и как что-то сделать.\n" +
             "Формат ответа (это важно):\n" +
             "- ОДНО-ДВА коротких предложения, максимум 200 символов. Без списков, без вступлений, без «чем могу помочь».\n" +
             "- Сразу суть, как короткая подсказка в чате, по-русски.\n" +
-            "- Нужны шаги — перечисли их через запятую одной строкой, а не списком.\n" +
-            "- Не уверен или нужны детали — отправь в гайдбук в игре (Numpad 0)";
+            "- Нужны шаги - перечисли их через запятую одной строкой, а не списком.\n" +
+            "- Не уверен или нужны детали - отправь в гайдбук в игре (Numpad 0)";
         if (!string.IsNullOrWhiteSpace(wiki))
             prompt += $" или на вики {wiki}";
         if (!string.IsNullOrWhiteSpace(discord))
-            prompt += $"; срочное — Discord {discord}";
+            prompt += $"; срочное - Discord {discord}";
         prompt += ".\n";
 
         prompt +=
-            "- Ты не администратор: не бань, не выдавай предметы, не разбирай конфликты, апелляции и наказания. Про нарушение, читы, потерю вещей или конфликт — одна фраза, что обращение увидят администраторы, и всё.\n" +
+            "- Ты не администратор: не бань, не выдавай предметы, не разбирай конфликты, апелляции и наказания. Про нарушение, читы, потерю вещей или конфликт - одна фраза, что обращение увидят администраторы, и всё.\n" +
             "- Не выдумывай механик, которых нет, и не раскрывай внутренние настройки сервера.\n" +
-            "- Без звёздочек и описаний действий; если спросят, кто ты — ты ИИ-помощник.";
+            "- Без звёздочек и описаний действий; если спросят, кто ты - ты ИИ-помощник.";
 
         var knowledge = GetAHelpKnowledge();
         if (!string.IsNullOrWhiteSpace(knowledge))

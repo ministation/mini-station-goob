@@ -22,6 +22,17 @@
 
   4. Once you reach 15 souls, an announcement warns the crew of your ascendance.
 
+  ## Страх
+
+Страх — это шкала силы Мясника, отображаемая в оповещении [bold]Страх[/bold].
+
+  - [bold]Накопление.[/bold] Ваш страх растёт, пока живые смотрят на вас, и резко повышается каждый раз, когда вы пугаете новую жертву. Он медленно спадает, если никто не видел вас какое-то время.
+  - [bold]Скорость.[/bold] При полном страхе вы двигаетесь быстрее — растущая паника делает вас сложнее упустить.
+  - [bold]Присутствие.[/bold] Когда вы накапливаете страх, начинает играть ваша тема, а в определённый момент за вами начинает тянуться кровавый след. Нажмите на оповещение [bold]Страх[/bold], чтобы выключить или снова включить тему для себя; жертвы всё равно её слышат.
+  - [bold]Ужас.[/bold] У каждого, на кого вы активно охотитесь, накапливается собственный страх. При высоком страхе они (45)замедляются и начинают получать (90)урон.
+
+Оставайтесь на виду, чтобы наращивать силу и ужас.
+
   ## Способности
 
   [bold]Призвать мачете[/bold] – Вы в любой момент можете вернуть своё оружие. Это очень полезно, если вы остались безоружным или хотите швырнуть его в цель, чтобы быстро ранить её.
@@ -31,8 +42,6 @@
   [bold]Резня[/bold] – Невероятно мощная способность, привязанная к вашему особому мачете. При первом ударе вы наносите гораздо меньше урона, но чем больше попаданий совершаете, тем сильнее они становятся. С определённого удара вы начнёте отрубать конечности жертвы, а на 13-й удар — обезглавите её. Промах сбрасывает комбо.
 
   [bold]Регенерация/Маньякиум[/bold] – Невероятно мощный источник исцеления. Он восстанавливает ваши силы и снимает любые ограничители. Платой за это служит очень долгая перезарядка.
-
-  [bold]Кровавый след[/bold] – Оставляйте за собой тянущийся след крови. Также во время действия играет музыка. Жуть!
 
   [bold]Нематериальность / Материализация[/bold] – Исчезайте и вновь появляйтесь в материальном мире. Это ваш основной способ перемещения. Способность нельзя использовать, пока вы на виду. Она крайне ограничена, но очень сильна. Пока вы не материальны, перезарядка других способностей приостанавливается.
 
@@ -106,20 +115,9 @@ An incredibly powerful attack mode tied to your machete. Activating this makes i
   <Box Orientation="Vertical">
     ## Regeneration
 
-An incredibly robust source of healing. Instantly rejuvenates you, removes all restraints, and cures all wounds. After every use you must recharge it by stealing another soul. Can be used while dead.
+An incredibly robust source of healing. Instantly rejuvenates you, removes all restraints, and cures all wounds. After every use you must recharge it by stealing another soul. Can be used while dead. If used while dead it blinds anyone nearby and teleports you to a safe location.
 
 [italic]Cooldown: 75 seconds.[/italic]
-  </Box>
-</Box>
-
-<Box>
-  [tex path="_Goobstation/Actions/slashericons.rsi" state="BloodTrail" scale="2"/]
-  <Box Orientation="Vertical">
-    ## Blood Trail
-
-Toggle to leave a trail of blood in your wake while playing some funky music. Spooky!
-
-[italic]No cooldown (toggle).[/italic]
   </Box>
 </Box>
 

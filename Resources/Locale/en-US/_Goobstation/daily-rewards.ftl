@@ -1,5 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Casha
 daily-reward-window-title = Daily rewards
+daily-reward-window-title-menu = Rewards
+daily-reward-window-tab-quests = Quests
 daily-reward-window-subtitle = Log in every day, play the round, and move along the reward track.
 daily-reward-window-streak = Current streak
 daily-reward-window-streak-value = {$current} / {$max} days
@@ -39,3 +41,4 @@ daily-reward-online-title = Time rewards
 daily-reward-online-hour-stage = {$hours} h
 daily-reward-online-claimed = Claimed
 daily-reward-online-reward = +{$amount}
+daily-reward-claim-result-disabled = Time-based rewards are temporarily disabled. Weekly quests and achievements still bring coins.

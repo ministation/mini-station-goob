@@ -1,6 +1,5 @@
-
-using Content.Goobstation.Server.Voice;
-using Content.Goobstation.Common.ServerCurrency;
+using Content.Goobstation.Server.Achievements;
+using Content.Goobstation.Server.VoiceChat;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Timing;
 
@@ -9,7 +8,8 @@ namespace Content.Goobstation.Server.Entry;
 public sealed class EntryPoint : GameServer
 {
     // Mini: voice chat (restored from Goobstation upstream, was deleted by CorvaxGoob)
-    private IVoiceChatServerManager _voiceManager = default!;
+    private VoiceChatManager _voiceManager = default!;
+    private VoiceLogManager _voiceLogs = default!;
     // private ICommonCurrencyManager _curr = default!; // deleted by CorvaxGoob
     // private IJoinQueueManager _joinQueue = default!; // deleted by CorvaxGoob
 
@@ -19,12 +19,18 @@ public sealed class EntryPoint : GameServer
 
         // ServerGoobContentIoC.Register(); // deleted by CorvaxGoob
 
-        // Mini: register voice chat before the graph is built
-        IoCManager.Register<IVoiceChatServerManager, VoiceChatServerManager>();
+        // Mini: register the managers that used to live in the deleted ServerGoobContentIoC
+        IoCManager.Register<AchievementManager>();
+        IoCManager.Register<VoiceChatManager>();
+        IoCManager.Register<VoiceLogManager>();
 
         IoCManager.BuildGraph();
 
-        _voiceManager = IoCManager.Resolve<IVoiceChatServerManager>(); // Mini: voice chat
+        _voiceManager = IoCManager.Resolve<VoiceChatManager>(); // Mini: voice chat
+        _voiceManager.Initialize();
+
+        _voiceLogs = IoCManager.Resolve<VoiceLogManager>();
+        _voiceLogs.Initialize();
 
         // _joinQueue = IoCManager.Resolve<IJoinQueueManager>(); // deleted by CorvaxGoob
         // _curr = IoCManager.Resolve<ICommonCurrencyManager>(); // deleted by CorvaxGoob
@@ -37,7 +43,6 @@ public sealed class EntryPoint : GameServer
         switch (level)
         {
             case ModUpdateLevel.PreEngine:
-                _voiceManager.Update(); // Mini: voice chat relay
                 break;
         }
     }
@@ -46,6 +51,8 @@ public sealed class EntryPoint : GameServer
     {
         base.Dispose(disposing);
 
+        // _curr.Shutdown(); // deleted by CorvaxGoob
         _voiceManager.Shutdown(); // Mini: voice chat
+        _voiceLogs.Shutdown();
     }
 }

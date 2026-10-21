@@ -7,13 +7,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\bin\Content.Client\</OutputPath>
     <OutputType Condition="'$(FullRelease)' != 'True'">Exe</OutputType>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <WarningsAsErrors>nullable;RA0049;RA0051</WarningsAsErrors>
     <!-- Mini: copy NuGet package DLLs (Concentus/NAudio) to bin/Content.Client —
          the packaging tool lists them from deps.json and reads them from this folder
          (same as Content.Server.csproj for Concentus). -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <!-- Mini: голосовой чат клиента — отдельный опт-ин, а не DEVELOPMENT.
+       Legacy: the old Goobstation Voice implementation was replaced by the upstream
+       VoiceChat system during the goob/master merge; the flag is kept for compatibility
+       with local voice-chat builds and the Mini packaging docs.
        Код войса держит сырые типы Lidgren/NAudio/Concentus, а клиентская песочница движка их
        запрещает ("Access to type not allowed"), поэтому сборка с войсом не проходит типчек и
        клиент падает на старте (Content.Goobstation.Client failed type checks). Разработка в
@@ -47,4 +50,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
   <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
   <Import Project="..\RobustToolbox\MSBuild\XamlIL.targets" />
+  <Import Project="..\RobustToolbox\MSBuild\Robust.EntitySystemSubscriptionsGenerator.targets" />
 </Project>

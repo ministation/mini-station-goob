@@ -1,0 +1,14 @@
+gang-admin-title = Панель администратора банд
+gang-admin-no-selection = Выберите банду
+gang-admin-members-header = Участники:
+gang-admin-member-leader = {$name} (лидер)
+gang-admin-manual-rename = Переименовать вручную
+gang-admin-force-rename = Принудительно переименовать
+gang-admin-kick = Кикнуть
+gang-admin-set-leader = Назначить лидером
+gang-admin-add-member = Добавить участника
+gang-admin-add-member-title = Добавить игрока в банду
+gang-admin-player-in-gang = {$name} (уже в банде)
+gang-admin-points-button = {$points} очк.
+gang-admin-set-points = Задать очки
+gang-admin-points-title = Задать очки для {$name}

@@ -11,6 +11,6 @@ namespace Content.Shared.Construction.Components
     public sealed partial class ComputerBoardComponent : Component
     {
         [DataField("prototype")]
-        public string? Prototype { get; private set; }
+        public EntProtoId? Prototype { get; private set; }
     }
 }

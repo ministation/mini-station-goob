@@ -40,7 +40,7 @@ namespace Content.Server.Dragon
         [ViewVariables(VVAccess.ReadWrite), DataField("maxAccumulator")] public float RiftMaxAccumulator = 300f;
 
         [DataField("spawnRiftAction")]
-        public string SpawnRiftAction = "ActionSpawnRift";
+        public EntProtoId SpawnRiftAction = "ActionSpawnRift";
 
         /// <summary>
         /// Spawns a rift which can summon more mobs.
@@ -49,7 +49,7 @@ namespace Content.Server.Dragon
         public EntityUid? SpawnRiftActionEntity;
 
         [ViewVariables(VVAccess.ReadWrite), DataField("riftPrototype")]
-        public string RiftPrototype = "CarpRift";
+        public EntProtoId RiftPrototype = "CarpRift";
 
         [ViewVariables(VVAccess.ReadWrite), DataField("soundDeath")]
         public SoundSpecifier? SoundDeath = new SoundPathSpecifier("/Audio/Animals/space_dragon_roar.ogg");

@@ -1,6 +1,9 @@
 // SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
+using Content.Shared.Damage.Systems;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -89,7 +92,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     private const int MaxReplyLength = 200;
     private const float DirectReplyDistance = 3f;
 
-    /// <summary>A whisper is meant for the person next to you — bots only hear it point blank.</summary>
+    /// <summary>A whisper is meant for the person next to you - bots only hear it point blank.</summary>
     private const float WhisperHearRadius = 2f;
 
     /// <summary>How many extra letters a declined name form may add ("Вася" -> "Васей").</summary>
@@ -155,7 +158,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     /*
      * Resisting being handled. A live passenger is not luggage: pulls, cuffs and chairs are fought
      * off with a roll. Failing the roll means the other player simply succeeds (so security can
-     * still arrest a struggling passenger), and downed bots never resist — dragging a crit body to
+     * still arrest a struggling passenger), and downed bots never resist - dragging a crit body to
      * medbay must stay possible.
      */
 
@@ -271,7 +274,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     private bool _configWarned;
     private string? _unknownProviderWarned;
 
-    /// <summary>Word separators for name matching — substring hits inside words stopped counting.</summary>
+    /// <summary>Word separators for name matching - substring hits inside words stopped counting.</summary>
     private static readonly char[] WordSeparators =
     [
         ' ', '\t', '\n', '\r', ',', '.', '!', '?', ';', ':', '"', '\'', '(', ')', '[', ']', '{', '}', '<', '>',
@@ -393,7 +396,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
-        // EntitySpokeEvent is raised broadcast — this handler sees ALL in-character speech;
+        // EntitySpokeEvent is raised broadcast - this handler sees ALL in-character speech;
         // radio-delivered messages are handled separately via RadioReceiveEvent to avoid doubles.
         SubscribeLocalEvent<EntitySpokeEvent>(OnGlobalSpoke);
         SubscribeLocalEvent<NeuroPlayerComponent, RadioReceiveEvent>(OnRadioReceive);
@@ -407,14 +410,14 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         // breaks away from the shover instead of silently eating it.
         SubscribeLocalEvent<NeuroPlayerComponent, DisarmedEvent>(OnBotDisarmed);
         // The cuff do-after is directed at the handcuffs, so the bot's component never sees the
-        // attempt itself — listen on the item and look at who is being cuffed.
+        // attempt itself - listen on the item and look at who is being cuffed.
         SubscribeLocalEvent<HandcuffComponent, DoAfterAttemptEvent<AddCuffDoAfterEvent>>(OnHandcuffAttempt);
         // Mini: DamageableSystem raises DamageChangedEvent with RaiseLocalEvent(victim, ...), i.e.
         // directed at the damaged entity and NOT broadcast, so the old broadcast subscription
         // (SubscribeLocalEvent<DamageChangedEvent>) never fired and bots ignored every hit. The fix has
         // to hang off our own component: the engine allows exactly one directed subscription per
         // component+event pair per game, and DailyQuestSystem already owns
-        // DamageableComponent+DamageChangedEvent — a second one crashes the server at startup with
+        // DamageableComponent+DamageChangedEvent - a second one crashes the server at startup with
         // "Duplicate Subscriptions".
         SubscribeLocalEvent<NeuroPlayerComponent, DamageChangedEvent>(OnBotDamaged);
         SubscribeLocalEvent<TypanWarStartedEvent>(OnWarStarted);
@@ -466,7 +469,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
     /// <summary>
     /// Mini: a downed bot stops living its life. Previously a corpse kept hearing chat, answering
-    /// (the reply was then dropped by the speech action blocker — an already paid LLM request),
+    /// (the reply was then dropped by the speech action blocker - an already paid LLM request),
     /// crying and being scanned for danger for the rest of the round.
     /// </summary>
     private void OnBotMobStateChanged(EntityUid uid, NeuroPlayerComponent comp, MobStateChangedEvent args)
@@ -538,7 +541,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     /// <summary>
     /// Handcuffs: refuse the attempt with a coin flip. The attempt event fires when the do-after
     /// starts and again when it finishes (Mini raised its frequency for exactly this hook), so the
-    /// roll is remembered per do-after — otherwise the bot would also slip out at the last moment.
+    /// roll is remembered per do-after - otherwise the bot would also slip out at the last moment.
     /// </summary>
     private void OnHandcuffAttempt(Entity<HandcuffComponent> ent, ref DoAfterAttemptEvent<AddCuffDoAfterEvent> args)
     {
@@ -616,7 +619,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
     /// <summary>
     /// Ongoing struggle, rolled once a second: a dragged bot wriggles out of a grab and a buckled
-    /// bot gets up. Handcuffs end both — that is what they are for.
+    /// bot gets up. Handcuffs end both - that is what they are for.
     /// </summary>
     private void ResistBeingHeld()
     {
@@ -659,7 +662,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         TriggerDanger(bot, comp, _transform.GetWorldPosition(user), null, cry: false, seconds: ResistFleeSeconds);
     }
 
-    /// <summary>"Отстаньте!" — canned line with its own, much shorter cooldown than a fire cry.</summary>
+    /// <summary>"Отстаньте!" - canned line with its own, much shorter cooldown than a fire cry.</summary>
     private void CryResist(EntityUid bot, NeuroPlayerComponent comp, string[] phrases)
     {
         if (_timing.CurTime < comp.NextResistCry || !IsBotUp(bot) || IsMuted(comp))
@@ -835,7 +838,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         };
 
         // Mini: mini maps ship exactly one late-join marker, so picking a random point per bot put
-        // the whole crew on the same tile — they shoved each other, could not path out and just
+        // the whole crew on the same tile - they shoved each other, could not path out and just
         // milled around in one spot. Every bot gets a free tile of its own instead.
         var slots = DistributeSpawnPoints(points, Math.Min(Math.Max(mainStaff.Length, _botCount), 32));
         if (slots.Count < mainStaff.Length)
@@ -999,7 +1002,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         string? rootTask = null,
         Action<EntityUid>? onSpawned = null)
     {
-        // Sometimes a basic profession look (cargo tech, service worker...) — purely gear,
+        // Sometimes a basic profession look (cargo tech, service worker...) - purely gear,
         // player job slots are never consumed. Security stays player-only.
         // The persona's own profession is the default, so "Грузчик" actually looks like a cargo tech.
         var job = forcedJob
@@ -1039,9 +1042,9 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         var htn = EnsureComp<HTNComponent>(mob);
         htn.RootTask = new HTNCompoundTask { Task = rootTask ?? "IdleCompound" };
 
-        // Mini: двери бот открывает как член экипажа — своим ID из ПДА, который получает вместе со
+        // Mini: двери бот открывает как член экипажа - своим ID из ПДА, который получает вместе со
         // стартовым снаряжением профессии. Bump-open дверь открывается самим столкновением, click-open
-        // (firelock, ставни, windoor) — взаимодействием, а дверь без доступа для него тупик: он
+        // (firelock, ставни, windoor) - взаимодействием, а дверь без доступа для него тупик: он
         // перестраивает маршрут вместо того, чтобы pry'ить её. NavInteract нужен, чтобы планировщик
         // вообще считал click-open двери проходимыми: без флага GetTileCost возвращает для них 0.
         htn.Blackboard.SetValue(NPCBlackboard.NavCrewDoors, true);
@@ -1051,10 +1054,10 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         _factions.AddFactions(mob, new HashSet<ProtoId<NpcFactionPrototype>> { "NanoTrasen" });
 
         // Mini: machines (station AI turrets first of all) are not opponents a passenger can
-        // fight — bots used to open fire on a turret the moment it came in range.
+        // fight - bots used to open fire on a turret the moment it came in range.
         IgnoreMachines(mob);
 
-        // Random voice matching the bot's sex — neuro passengers speak out loud via TTS.
+        // Random voice matching the bot's sex - neuro passengers speak out loud via TTS.
         var voicePool = _prototypes.EnumeratePrototypes<TTSVoicePrototype>()
             .Where(v => v.Sex == profile.Sex)
             .ToList();
@@ -1091,8 +1094,8 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
         onSpawned?.Invoke(mob);
 
-        // Mini: the HTN component is added at runtime, so MapInitEvent — the only thing that calls
-        // NPCSystem.WakeNPC — has already fired for this entity and never reaches it again. NPCs
+        // Mini: the HTN component is added at runtime, so MapInitEvent - the only thing that calls
+        // NPCSystem.WakeNPC - has already fired for this entity and never reaches it again. NPCs
         // without ActiveNPCComponent are invisible to HTNSystem.UpdateNPC, and
         // NPCProximitySleepSystem skips bodies that hold a mind, so nothing else woke the bot
         // either: every plan (idling, fleeing, visiting) stayed dead code and the bots stood still
@@ -1122,7 +1125,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     /// Mini: CentComm (<c>NanotrasenCentralCommand</c>), Typan and Аспид (<c>StandardTypanStation</c>)
     /// are stations with their own cryo pods and job spawners, and they each have exactly one neuro
     /// player of their own (see <see cref="FindFactionStation"/>). Taking the first station the query
-    /// happens to return put the whole passenger crew on CentComm or on the second station instead —
+    /// happens to return put the whole passenger crew on CentComm or on the second station instead -
     /// the component store order is not creation order, so this is a lottery, not a rule.
     /// Those stations are not a fallback either: passengers wait for the NT station, they never
     /// spawn on a faction station.
@@ -1177,7 +1180,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (points.Count > 0)
             return points;
 
-        // Mini maps have no bare LateJoin markers — their late-join flow goes through
+        // Mini maps have no bare LateJoin markers - their late-join flow goes through
         // cryo sleep units (ContainerSpawnPoint with LateJoin type). Spawn next to those.
         var cryoQuery = EntityQueryEnumerator<ContainerSpawnPointComponent, TransformComponent>();
         while (cryoQuery.MoveNext(out var uid, out var point, out var xform))
@@ -1212,7 +1215,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
     /// <summary>
     /// Mini: hands every bot a tile of its own. Mini maps ship exactly one late-join marker, so
-    /// picking a random point per bot dropped the whole crew on the same tile — they shoved each
+    /// picking a random point per bot dropped the whole crew on the same tile - they shoved each
     /// other, could not path out and just milled around in one place.
     /// </summary>
     private List<EntityCoordinates> DistributeSpawnPoints(List<EntityCoordinates> points, int count)
@@ -1221,7 +1224,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (points.Count == 0 || count <= 0)
             return result;
 
-        // Mini: a marker that is not on a grid (parented to the map entity) has no floor under it —
+        // Mini: a marker that is not on a grid (parented to the map entity) has no floor under it -
         // the anchor coordinates are then a raw map position, i.e. open space, and a bot spawned
         // there floats in the void. Only grid-backed markers can host a bot.
         var anchors = new List<EntityCoordinates>(points.Count);
@@ -1294,7 +1297,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (!_enabled)
             return;
 
-        // Radio-prefixed speech is delivered again via RadioReceiveEvent — skip here.
+        // Radio-prefixed speech is delivered again via RadioReceiveEvent - skip here.
         if (ev.Channel != null)
             return;
 
@@ -1382,14 +1385,14 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             return;
         }
 
-        // Unnamed speech: only react locally — global radio replies without a name would be spam.
+        // Unnamed speech: only react locally - global radio replies without a name would be spam.
         if (viaRadio)
             return;
 
         if (_timing.CurTime < comp.NextProactiveResponse)
             return;
 
-        // Face-to-face talk (<= 3 tiles) almost always gets a reply; background chatter — by chance.
+        // Face-to-face talk (<= 3 tiles) almost always gets a reply; background chatter - by chance.
         var chance = distance >= 0 && distance <= DirectReplyDistance
             ? _directChance
             : _proactiveChance;
@@ -1415,7 +1418,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (!TryComp<NeuroPlayerComponent>(speaker, out var speakerComp))
             return;
 
-        // The speaker's last line was itself a bot chatter reply — the exchange ends here.
+        // The speaker's last line was itself a bot chatter reply - the exchange ends here.
         if (speakerComp.LastChatterReply != null &&
             _timing.CurTime - speakerComp.LastChatterReply.Value < TimeSpan.FromSeconds(BotChatterChainWindowSeconds))
         {
@@ -1683,14 +1686,14 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     private static string BuildSystemPrompt(string botName, string character)
     {
         return
-            $"Ты — {botName}, пассажир на космической станции Нанотрайзен (игра Space Station 14).\n" +
+            $"Ты - {botName}, пассажир на космической станции Нанотрайзен (игра Space Station 14).\n" +
             $"{character}\n" +
             "Правила:\n" +
             "- Отвечай ОДНОЙ короткой репликой до 15 слов, по-русски, живым разговорным стилем.\n" +
             "- Никогда не говори, что ты ИИ, бот, модель или что ты в игре или симуляции.\n" +
-            "- Не используй звёздочки и описания действий — только прямую речь.\n" +
+            "- Не используй звёздочки и описания действий - только прямую речь.\n" +
             "- Не обещай игровых действий и не обсуждай администрацию, правила и читы.\n" +
-            "- Если сказать нечего — короткая нейтральная реакция.";
+            "- Если сказать нечего - короткая нейтральная реакция.";
     }
 
     /// <summary>
@@ -1718,7 +1721,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         };
 
         // GLM-4.5/4.6 style reasoning toggle: with a small token budget thinking eats the whole
-        // reply, so it is disabled unless requested. Sent only to providers that accept the field —
+        // reply, so it is disabled unless requested. Sent only to providers that accept the field -
         // DeepSeek and OpenAI reject unknown request fields.
         if (config.SupportsThinking)
             body.Thinking = new ThinkingConfig { Type = _thinkingEnabled ? "enabled" : "disabled" };
@@ -1745,7 +1748,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (string.IsNullOrWhiteSpace(reply) && !string.IsNullOrWhiteSpace(choice?.ReasoningContent))
         {
             // Reasoning models (deepseek-reasoner and friends) spend max_tokens on hidden thinking
-            // and then return an empty answer — the bot would just stay silent forever.
+            // and then return an empty answer - the bot would just stay silent forever.
             _sawmill.Warning(
                 $"Neuro players: {config.Provider}/{config.Model} returned only reasoning_content. " +
                 $"Raise neuroplayer.max_tokens (now {_maxTokens}) or use a non-reasoning model.");
@@ -1790,7 +1793,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
             var reply = await SendCompletionWithFallbackAsync(config, systemPrompt, userPrompt, cts.Token);
 
-            // Mini: the bot may have died while the model was thinking — a corpse does not speak
+            // Mini: the bot may have died while the model was thinking - a corpse does not speak
             // (the request is already paid for, but at least it does not get broadcast).
             if (string.IsNullOrWhiteSpace(reply) || Deleted(bot) || Terminating(bot) || !IsBotUp(bot))
                 return;
@@ -1813,7 +1816,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
             _chat.TrySendInGameICMessage(bot, reply, InGameICChatType.Speak, hideChat: false, hideLog: true);
 
-            // Mini: bot speech used to leave no trace at all — no ActorComponent means ChatSystem
+            // Mini: bot speech used to leave no trace at all - no ActorComponent means ChatSystem
             // skips its own admin log. Record it ourselves so moderation can see what bots said.
             _adminLog.Add(LogType.Chat, LogImpact.Low, $"Say from neuro player {botName}: {reply}");
         }
@@ -1945,7 +1948,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     }
 
     /// <summary>
-    /// Mini: neuroplayer.seek_radius finally does something — a bot with nobody around walks
+    /// Mini: neuroplayer.seek_radius finally does something - a bot with nobody around walks
     /// towards the nearest real player instead of idling in an empty corridor.
     /// </summary>
     private void SeekLonelyPlayers()
@@ -1972,7 +1975,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
             var (target, coords, distance) = nearest.Value;
 
-            // Somebody is already close enough — no need to march anywhere.
+            // Somebody is already close enough - no need to march anywhere.
             if (distance <= _seekRadius)
                 continue;
 
@@ -2128,13 +2131,13 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 break;
             }
 
-            // Mini: an armed hostile turret is a hazard, not a fight — walk out of its reach
+            // Mini: an armed hostile turret is a hazard, not a fight - walk out of its reach
             // instead of standing in the line of fire waiting to be shot (and say so, so the
             // players around understand why the passenger suddenly backs off).
             if (FindArmedHostileTurret(bot, botXform) is { } turret)
                 TriggerDanger(bot, comp, _transform.GetWorldPosition(turret), TurretCries);
 
-            // Mini: somebody next to the bot is being beaten right now — cry and back off. The damage
+            // Mini: somebody next to the bot is being beaten right now - cry and back off. The damage
             // event itself cannot be hooked: the engine allows exactly one directed subscription per
             // component+event pair per game and DailyQuestSystem owns
             // DamageableComponent+DamageChangedEvent, so this is a range scan over bodies that still
@@ -2159,7 +2162,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
     /// <summary>
     /// Mini: whether something the faction system calls a hostile is a machine rather than a
-    /// living being — turrets and sentries above all. Bots do not fight machines: a machine has
+    /// living being - turrets and sentries above all. Bots do not fight machines: a machine has
     /// no fight to lose, and a bot shooting a station AI turret only collects live ammo in reply.
     /// </summary>
     private bool IsMachine(EntityUid ent)
@@ -2239,7 +2242,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     /// <remarks>
     /// Mini: the event is raised directed at the damaged entity, so this is a component subscription on
     /// the bot (<see cref="Initialize"/>). A brawl happening next to the bot is a range scan in
-    /// <see cref="ScanDangers"/> instead — the global component+event slot is already taken.
+    /// <see cref="ScanDangers"/> instead - the global component+event slot is already taken.
     /// </remarks>
     private void OnBotDamaged(EntityUid bot, NeuroPlayerComponent comp, DamageChangedEvent ev)
     {
@@ -2262,7 +2265,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
         var total = (float) ev.DamageDelta.GetTotal();
 
-        // Mini: any real hit makes the bot cry out, not only a 10+ damage one — ordinary punches and
+        // Mini: any real hit makes the bot cry out, not only a 10+ damage one - ordinary punches and
         // bullets were ignored outright. Fleeing needs a known attacker, so damage from space or a
         // stray wound only cries.
         if (total < 1f)
@@ -2320,7 +2323,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
     /// <summary>
     /// A tile away from the danger that the bot can actually see. Mini: a point behind a wall made
-    /// MoveToOperator's planning-time pathfind fail, which failed the whole flee branch — the bot
+    /// MoveToOperator's planning-time pathfind fail, which failed the whole flee branch - the bot
     /// stood still while it was being beaten. Line of sight means real floor, and a short distance
     /// means the path there exists.
     /// </summary>
@@ -2617,7 +2620,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         if (!mentionsAi)
             return false;
 
-        // "я бот", "как языковая модель", "я не человек" — self reference is what gives it away.
+        // "я бот", "как языковая модель", "я не человек" - self reference is what gives it away.
         return words.Any(w => SelfWords.Contains(w));
     }
 
@@ -2739,7 +2742,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             return $"{header}\nНЕ НАСТРОЕНО: задайте neuroplayer.api_key и neuroplayer.provider.";
 
         var systemPrompt =
-            "Ты — тестовый нейроигрок на космической станции. Ответь одной короткой фразой по-русски.";
+            "Ты - тестовый нейроигрок на космической станции. Ответь одной короткой фразой по-русски.";
         var userPrompt = string.IsNullOrWhiteSpace(prompt)
             ? "Представься одной фразой."
             : prompt;

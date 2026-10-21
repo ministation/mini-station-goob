@@ -49,7 +49,17 @@ namespace Content.Server.GameTicking
                         LobbyEnabled ? PlayerGameStatus.NotReadyToPlay : PlayerGameStatus.ReadyToPlay;
                 }
             }, true);
-            Subs.CVar(_cfg, CCVars.GameDummyTicker, value => DummyTicker = value, true);
+            Subs.CVar(_cfg, CCVars.GameDummyTicker, value =>
+            {
+                DummyTicker = value;
+
+                // A dummy ticker never runs a round or the lobby countdown, so staged map-preload state
+                // left over from a previous real round is stale. Integration tests switch the same pair
+                // between dummy and real tickers; stale MapsReady/queue state would make the pair think a
+                // round is still being prepared (see CanUpdateMap) and break e.g. the forcemap command.
+                if (value)
+                    ResetMapPreloadState();
+            }, true);
             Subs.CVar(_cfg, CCVars.GameLobbyDuration, value => LobbyDuration = TimeSpan.FromSeconds(value), true);
             Subs.CVar(_cfg, CCVars.GameDisallowLateJoins,
                 value => { DisallowLateJoin = value; UpdateLateJoinStatus(); }, true);

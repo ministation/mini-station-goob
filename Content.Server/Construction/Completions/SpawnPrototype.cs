@@ -14,7 +14,7 @@ namespace Content.Server.Construction.Completions
     public sealed partial class SpawnPrototype : IGraphAction
     {
         [DataField("prototype")]
-        public string Prototype { get; private set; } = string.Empty;
+        public EntProtoId Prototype { get; private set; } = string.Empty;
         [DataField("amount")]
         public int Amount { get; private set; } = 1;
 

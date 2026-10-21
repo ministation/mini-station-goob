@@ -10,7 +10,7 @@ namespace Content.Server.Holosign
     {
         [ViewVariables(VVAccess.ReadWrite)]
         [DataField("signProto")]
-        public string SignProto = "HolosignWetFloor";
+        public EntProtoId SignProto = "HolosignWetFloor";
 
         /// <summary>
         /// How much charge a single use expends.

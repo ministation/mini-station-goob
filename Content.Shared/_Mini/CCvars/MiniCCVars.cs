@@ -576,7 +576,7 @@ public sealed class MiniCCVars
         CVarDef.Create("ministation.additional_maps", false, CVar.SERVER | CVar.ARCHIVE);
 
     /*
-     * Connecting UI — cached coin balance from last AntagToken sync
+     * Connecting UI - cached coin balance from last AntagToken sync
      */
 
     /// <summary>
@@ -593,7 +593,7 @@ public sealed class MiniCCVars
         CVarDef.Create("ministation.cached_coin_balance_known", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /*
-     * Neuro players — LLM-driven passenger bots
+     * Neuro players - LLM-driven passenger bots
      */
 
     /// <summary>Master switch for neuro player bots.</summary>
@@ -656,7 +656,7 @@ public sealed class MiniCCVars
         CVarDef.Create("neuroplayer.deepseek.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
 
     /// <summary>
-    /// DeepSeek model. "deepseek-chat" is the non-reasoning V3 chat model — the right pick for
+    /// DeepSeek model. "deepseek-chat" is the non-reasoning V3 chat model - the right pick for
     /// one-line bot replies. "deepseek-reasoner" also works but spends the whole max_tokens
     /// budget on hidden thinking, so raise <see cref="NeuroPlayerMaxTokens"/> for it.
     /// </summary>
@@ -684,7 +684,7 @@ public sealed class MiniCCVars
     public static readonly CVarDef<string> NeuroPlayerOpenAiModel =
         CVarDef.Create("neuroplayer.openai.model", "gpt-4o-mini", CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>OpenRouter endpoint — handy to reach DeepSeek models through one key.</summary>
+    /// <summary>OpenRouter endpoint - handy to reach DeepSeek models through one key.</summary>
     public static readonly CVarDef<string> NeuroPlayerOpenRouterApiUrl =
         CVarDef.Create("neuroplayer.openrouter.api_url", "https://openrouter.ai/api/v1/chat/completions",
             CVar.SERVERONLY | CVar.CONFIDENTIAL);
@@ -777,7 +777,7 @@ public sealed class MiniCCVars
         CVarDef.Create("neuroplayer.thinking_enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /*
-     * Neuro ahelp assistant — LLM first-line responder in admin help while no admins are online.
+     * Neuro ahelp assistant - LLM first-line responder in admin help while no admins are online.
      * Uses the same LLM provider as the neuro players (neuroplayer.provider).
      */
 
@@ -838,4 +838,13 @@ public sealed class MiniCCVars
     /// </summary>
     public static readonly CVarDef<string> NeuroAHelpExtraPrompt =
         CVarDef.Create("neuroahelp.extra_prompt", "", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    ///     Награды «за время»: ежедневная награда со стриком, билеты за наигранное время и монеты
+    ///     за онлайн. Включены по умолчанию; cvar остаётся аварийным выключателем на случай, если
+    ///     прогрессию нужно временно приостановить. Еженедельные квесты и достижения имеют свою
+    ///     награду и от этого флага не зависят.
+    /// </summary>
+    public static readonly CVarDef<bool> TimeRewardsEnabled =
+        CVarDef.Create("mini.time_rewards_enabled", true, CVar.SERVERONLY | CVar.ARCHIVE);
 }

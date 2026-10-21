@@ -18,7 +18,7 @@ public sealed partial class DiskConsoleComponent : Component
     /// The prototype of what's being printed
     /// </summary>
     [DataField("diskPrototype"), ViewVariables(VVAccess.ReadWrite)]
-    public string DiskPrototype = "TechnologyDisk";
+    public EntProtoId DiskPrototype = "TechnologyDisk";
 
     /// <summary>
     /// How long it takes to print <see cref="DiskPrototype"/>

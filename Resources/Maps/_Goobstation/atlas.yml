@@ -4,8 +4,8 @@ meta:
   engineVersion: 266.0.0
   forkId: ""
   forkVersion: ""
-  time: 04/27/2026 04:50:16
-  entityCount: 9252
+  time: 08/16/2026 06:44:18
+  entityCount: 9256
 maps:
 - 1
 grids:
@@ -47341,6 +47341,8 @@ entities:
       - Sheet
       - IgnoreBindSoul
     - type: MindContainer
+    - type: Physics
+      bodyType: KinematicController
     - type: InputMover
     - type: MobMover
     - type: MovementSpeedModifier
@@ -49440,6 +49442,13 @@ entities:
     components:
     - type: Transform
       pos: -0.5,-15.5
+      parent: 2
+- proto: SpawnPointChiefMedicalOfficer
+  entities:
+  - uid: 9266
+    components:
+    - type: Transform
+      pos: 4.5,-6.5
       parent: 2
 - proto: SpawnPointClown
   entities:

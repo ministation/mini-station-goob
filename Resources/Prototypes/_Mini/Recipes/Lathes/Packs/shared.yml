@@ -1,4 +1,4 @@
-# Orion port: stock parts T2–T4 gated by research unlocks. Boards use Servo only;
+# Orion port: stock parts T2-T4 gated by research unlocks. Boards use Servo only;
 # other part types are for RPED upgrades / future machine consumers.
 - type: latheRecipePack
   id: PartsDynamic

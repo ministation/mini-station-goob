@@ -28,7 +28,7 @@ public sealed partial class SpecialRespawnComponent: Component
     /// </summary>
     [ViewVariables]
     [DataField("prototype", required:true)]
-    public string Prototype = "";
+    public EntProtoId Prototype = "";
 }
 
 public sealed class SpecialRespawnSetupEvent : EntityEventArgs

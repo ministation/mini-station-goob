@@ -10,7 +10,7 @@ namespace Content.Server._Mini.Religion;
 
 /// <summary>
 /// Unholy antagonists take holy damage. WeakToHoly without AlwaysTakeHoly zeroes Holy.
-/// Cosmic cult / heretics: do not subscribe to their ComponentStartup/MindGotAdded —
+/// Cosmic cult / heretics: do not subscribe to their ComponentStartup/MindGotAdded -
 /// those event slots are already taken; they get AlwaysTakeHoly via YAML / WeakToHolySystem.
 /// </summary>
 public sealed class CultWeakToHolySystem : EntitySystem

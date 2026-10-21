@@ -7,6 +7,7 @@ using Content.Shared.Nuke;
 using Robust.Shared.Audio;
 using Robust.Shared.Map;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Nuke
 {
@@ -100,7 +101,7 @@ namespace Content.Server.Nuke
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
         [DataField("explosionType", required: true)]
-        public string ExplosionType = default!;
+        public ProtoId<ExplosionPrototype> ExplosionType = default!;
 
         /// <summary>
         ///     The maximum intensity the explosion can have on a single time. This limits the maximum damage and tile

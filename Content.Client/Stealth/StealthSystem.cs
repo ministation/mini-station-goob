@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Client.Interactable.Components;
+using Content.Client.Graphics;
 using Content.Shared.Stealth;
 using Content.Shared.Stealth.Components;
 using Content.Goobstation.Shared.Slasher.Components;
@@ -14,7 +15,6 @@ namespace Content.Client.Stealth;
 public sealed class StealthSystem : SharedStealthSystem
 {
     private static readonly ProtoId<ShaderPrototype> Shader = "Stealth";
-    private const string StealthShaderId = "Stealth";
 
     [Dependency] private readonly IPrototypeManager _protoMan = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
@@ -42,17 +42,14 @@ public sealed class StealthSystem : SharedStealthSystem
         var query = EntityQueryEnumerator<StealthComponent, SpriteComponent>();
         while (query.MoveNext(out var uid, out var stealth, out var sprite))
         {
-            if (stealth.Enabled)
-            {
-                if (!_sprite.TryGetPostShader(sprite, StealthShaderId, out var entry)
-                    || !entry.GetScreenTexture
-                    || !entry.RaiseShaderEvent)
-                    SetShader(uid, true, stealth, sprite);
-            }
-            else if (_sprite.HasPostShader(sprite, StealthShaderId))
-            {
+            var hasStealthShader = _sprite.TryGetPostShader((uid, sprite), ContentPostShaderIds.Stealth, out var entry)
+                && entry.GetScreenTexture
+                && entry.RaiseShaderEvent;
+
+            if (stealth.Enabled && !hasStealthShader)
+                SetShader(uid, true, stealth, sprite);
+            else if (!stealth.Enabled && _sprite.HasPostShader((uid, sprite), ContentPostShaderIds.Stealth))
                 SetShader(uid, false, stealth, sprite);
-            }
         }
     }
 
@@ -71,31 +68,29 @@ public sealed class StealthSystem : SharedStealthSystem
             return;
 
         _sprite.SetColor((uid, sprite), Color.White);
-
         if (enabled)
         {
-            _sprite.SetPostShader((uid, sprite), new SpriteComponent.PostShaderArgs(StealthShaderId, _shader)
+            _sprite.SetPostShader((uid, sprite), new SpriteComponent.PostShaderArgs(ContentPostShaderIds.Stealth, _shader)
             {
                 GetScreenTexture = true,
                 RaiseShaderEvent = true,
+                Before = ContentPostShaderIds.BeforeOutlines,
             });
         }
         else
         {
-            _sprite.RemovePostShader((uid, sprite), StealthShaderId);
+            _sprite.RemovePostShader((uid, sprite), ContentPostShaderIds.Stealth);
         }
 
-        if (!enabled)
+        if (enabled)
         {
-            if (component.HadOutline && !TerminatingOrDeleted(uid))
-                EnsureComp<InteractionOutlineComponent>(uid);
-            return;
+            if (RemCompDeferred<InteractionOutlineComponent>(uid))
+                component.HadOutline = true;
         }
-
-        if (TryComp(uid, out InteractionOutlineComponent? outline))
+        else if (component.HadOutline && !TerminatingOrDeleted(uid))
         {
-            RemCompDeferred(uid, outline);
-            component.HadOutline = true;
+            EnsureComp<InteractionOutlineComponent>(uid);
+            component.HadOutline = false;
         }
     }
 
@@ -110,8 +105,11 @@ public sealed class StealthSystem : SharedStealthSystem
             SetShader(uid, false, component);
     }
 
-    private void OnShaderRender(EntityUid uid, StealthComponent component, BeforePostShaderRenderEvent args)
+    private void OnShaderRender(EntityUid uid, StealthComponent component, ref BeforePostShaderRenderEvent args)
     {
+        if (args.Id != ContentPostShaderIds.Stealth)
+            return;
+
         // Distortion effect uses screen coordinates. If a player moves, the entities appear to move on screen. this
         // makes the distortion very noticeable.
 

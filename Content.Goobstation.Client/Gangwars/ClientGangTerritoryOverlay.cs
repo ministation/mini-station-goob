@@ -54,7 +54,7 @@ public sealed class GangTerritoryOverlay(IEntityManager entManager) : Overlay
                 continue;
 
             var worldMatrix = _transform.GetRenderWorldMatrix((gridUid, gridXform));
-            var invWorldMatrix = _transform.GetInvRenderWorldMatrix((gridUid, gridXform));
+            var invWorldMatrix = _transform.GetInvWorldMatrix(gridXform);
             var key = (gridUid, territoryComp.GangColor);
 
             if (!_groups.TryGetValue(key, out var group))

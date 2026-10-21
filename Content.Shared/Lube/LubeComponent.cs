@@ -4,6 +4,7 @@ using Content.Shared.Chemistry.Reagent;
 using Content.Goobstation.Maths.FixedPoint;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Lube;
 
@@ -23,7 +24,7 @@ public sealed partial class LubeComponent : Component
     /// Reagent that will be used as glue.
     /// </summary>
     [DataField("reagent")]
-    public string Reagent = "SpaceLube";
+    public ProtoId<ReagentPrototype> Reagent = "SpaceLube";
 
     /// <summary>
     /// Reagent consumption per use.

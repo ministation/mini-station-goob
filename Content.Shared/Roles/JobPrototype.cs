@@ -20,7 +20,7 @@ namespace Content.Shared.Roles
         public string ID { get; private set; } = default!;
 
         [DataField(required: true)]
-        public string PlayTimeTracker { get; private set; } = string.Empty;
+        public ProtoId<PlayTimeTrackerPrototype> PlayTimeTracker { get; private set; } = string.Empty;
 
         /// <summary>
         ///     Who is the supervisor for this job.
@@ -121,7 +121,7 @@ namespace Content.Shared.Roles
         /// If you want to just add special attributes to a humanoid, use AddComponentSpecial instead.
         /// </summary>
         [DataField]
-        public string? JobEntity = null;
+        public EntProtoId? JobEntity = null;
 
         /// <summary>
         /// Entity to use as a preview in the lobby/character editor.

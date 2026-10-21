@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.DeviceNetwork.Components
 {
@@ -35,7 +36,7 @@ namespace Content.Shared.DeviceNetwork.Components
         ///     initialized.
         /// </summary>
         [DataField("receiveFrequencyId")]
-        public string? ReceiveFrequencyId;
+        public ProtoId<DeviceFrequencyPrototype>? ReceiveFrequencyId;
 
         /// <summary>
         ///     The frequency that this device going to try transmit on.
@@ -49,7 +50,7 @@ namespace Content.Shared.DeviceNetwork.Components
         ///     initialized.
         /// </summary>
         [DataField("transmitFrequencyId")]
-        public string? TransmitFrequencyId;
+        public ProtoId<DeviceFrequencyPrototype>? TransmitFrequencyId;
 
         /// <summary>
         ///     The address of the device, either on the network it is currently connected to or whatever address it

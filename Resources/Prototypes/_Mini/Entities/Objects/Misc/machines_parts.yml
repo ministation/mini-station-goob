@@ -1,4 +1,4 @@
-# Tier 1 — Mini/Orion: no Stack (shared stackType collapses upgraded tiers on Split)
+# Tier 1 - Mini/Orion: no Stack (shared stackType collapses upgraded tiers on Split)
 
 - type: entity
   parent: BaseStockPart

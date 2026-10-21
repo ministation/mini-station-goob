@@ -8,6 +8,7 @@ using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Fluids.Components;
 using Robust.Shared.Map;
 using System.Linq;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Chemistry.TileReactions;
 
@@ -30,7 +31,7 @@ public sealed partial class CleanTileReaction : ITileReaction
     /// What reagent to replace the tile conents with.
     /// </summary>
     [DataField("reagent")]
-    public string ReplacementReagent = "Water";
+    public ProtoId<ReagentPrototype> ReplacementReagent = "Water";
 
     FixedPoint2 ITileReaction.TileReact(TileRef tile,
         ReagentPrototype reagent,
@@ -52,7 +53,7 @@ public sealed partial class CleanTileReaction : ITileReaction
                 continue;
             }
 
-            var purgeable = solutionContainerSystem.SplitSolutionWithout(puddleSolution.Value, purgeAmount, ReplacementReagent, reagent.ID);
+            var purgeable = solutionContainerSystem.SplitSolutionWithout(puddleSolution.Value, purgeAmount, ReplacementReagent.Id, reagent.ID);
 
             purgeAmount -= purgeable.Volume;
 

@@ -11,12 +11,12 @@ using Robust.Shared.Map;
 
 namespace Content.Goobstation.Shared.Mimery;
 
-public abstract class SharedAdvancedMimerySystem : EntitySystem
+public abstract partial class SharedAdvancedMimerySystem : EntitySystem
 {
 
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly SharedMagicSystem _magic = default!;
-    [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedMagicSystem _magic = default!;
+    [Dependency] private SharedPopupSystem _popupSystem = default!;
 
     public override void Initialize()
     {

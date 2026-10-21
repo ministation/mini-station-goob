@@ -12,7 +12,7 @@ namespace Content.Goobstation.Shared.Xenobiology.Systems;
 // This handles slime extracts.
 public sealed partial class SlimeExtractSystem : EntitySystem
 {
-    [Dependency] private readonly SharedSolutionContainerSystem _solution = default!;
+    [Dependency] private SharedSolutionContainerSystem _solution = default!;
 
     public override void Initialize()
     {

@@ -1,3 +1,4 @@
+using Content.Shared.Damage.Systems;
 using Content.Shared.Roles.Components;
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
@@ -686,7 +687,7 @@ public sealed class DailyQuestSystem : EntitySystem
         if (TryGetPlayerState(uid, out var victimState) && victimState.Round.WasActivePlayer)
             victimState.Round.FailedNoDamage = true;
 
-        // NoMeleeHits is failed only via OnMeleeHit — ranged / other damage must not fail pacifist.
+        // NoMeleeHits is failed only via OnMeleeHit - ranged / other damage must not fail pacifist.
     }
 
     private void OnMeleeHit(MeleeHitEvent args)

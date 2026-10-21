@@ -20,9 +20,9 @@ public sealed partial class ModifyEnvirohelmSpecial : JobSpecial
     [DataField(required: true)]
     public ProtoId<EntityPrototype> PowerCell { get; private set; }
 
-        private const string Species = "Plasmaman";
+    private static readonly ProtoId<SpeciesPrototype> Species = "Plasmaman";
 
-        private const string Tag = "Envirohelm";
+    private static readonly ProtoId<TagPrototype> Tag = "Envirohelm";
 
     private const string Slot = "head";
 

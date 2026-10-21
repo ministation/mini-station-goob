@@ -12,6 +12,7 @@ ui-options-lock-action-bar-drag = Only allow dragging actions on the hotbar whil
 ui-options-action-bar-mode = Action bar mode:
 ui-options-action-bar-mode-flat = Flat (scroll)
 ui-options-action-bar-mode-paged = Paged (tabs)
+ui-options-inhand-interaction-particle-scale = Overhead interaction icon size
 
 ui-options-hud-theme-coscult = Cosmic Cult
 

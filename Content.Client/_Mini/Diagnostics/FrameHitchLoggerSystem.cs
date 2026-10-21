@@ -72,7 +72,7 @@ public sealed partial class FrameHitchLoggerSystem : EntitySystem
             using var stream = _res.UserData.Open(_path, FileMode.Create, FileAccess.Write, FileShare.Read);
             // Mini: без явной кодировки. Песочница Robust не пропускает типы из System.Text.Encoding.Extensions
             // (UTF8Encoding и родня), а любой такой тип-референс в IL роняет старт клиента:
-            // "Assembly Content.Client failed type checks". StreamWriter(Stream) по умолчанию пишет UTF-8 без BOM —
+            // "Assembly Content.Client failed type checks". StreamWriter(Stream) по умолчанию пишет UTF-8 без BOM -
             // ровно то же, что new UTF8Encoding(false), но без запрещённого типа.
             using var writer = new StreamWriter(stream);
             foreach (var entry in _lines)

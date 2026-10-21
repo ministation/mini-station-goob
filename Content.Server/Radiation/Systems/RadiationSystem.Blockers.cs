@@ -1,4 +1,4 @@
-﻿using Content.Server.Radiation.Components;
+using Content.Server.Radiation.Components;
 using Content.Shared.Doors;
 using Content.Shared.Doors.Components;
 using Robust.Shared.Map.Components;
@@ -98,7 +98,7 @@ public partial class RadiationSystem
 
         // save resistance into rad protection grid
         var gridId = trs.GridUid.Value;
-        var tilePos = _mapSystem.TileIndicesFor((trs.GridUid.Value, grid), trs.Coordinates);
+        var tilePos = _mapSystem.TileIndicesFor(trs.GridUid.Value, grid, trs.Coordinates);
         AddToTile(gridId, tilePos, component.RadResistance);
 
         // and remember it as last valid position

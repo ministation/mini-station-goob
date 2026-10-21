@@ -103,7 +103,7 @@ namespace Content.Shared.Containers.ItemSlots
         [DataField(readOnly: true)]
         [Access(typeof(ItemSlotsSystem), Other = AccessPermissions.ReadWriteExecute)] // FIXME Friends
         [NonSerialized]
-        public string? StartingItem;
+        public EntProtoId? StartingItem;
 
         /// <summary>
         ///     Whether or not an item can currently be ejected or inserted from this slot.

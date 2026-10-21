@@ -15,7 +15,7 @@ namespace Content.Client._Mini.TypanWar;
 /// Suppresses round ambient music while war BGM may play, and respects <see cref="MiniCCVars.WarMusicEnabled"/>.
 /// </summary>
 /// <remarks>
-/// Cannot subscribe to <see cref="AudioComponent"/> <c>ComponentStartup</c>/<c>ComponentShutdown</c> —
+/// Cannot subscribe to <see cref="AudioComponent"/> <c>ComponentStartup</c>/<c>ComponentShutdown</c> -
 /// those directed component events are exclusive to <c>Robust.Client.Audio.AudioSystem</c>.
 /// </remarks>
 public sealed class TypanWarAudioSystem : EntitySystem

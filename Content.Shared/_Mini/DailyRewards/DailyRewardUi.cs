@@ -27,7 +27,8 @@ public sealed class DailyRewardUpdateMessage(
     List<DailyRewardEntry> rewards,
     TimeSpan onlineElapsed,
     List<TimeSpan> onlineGrantedThresholds,
-    List<DailyQuestEntry> dailyQuests) : BoundUserInterfaceState
+    List<DailyQuestEntry> dailyQuests,
+    bool timeRewardsEnabled) : BoundUserInterfaceState
 {
     public int CurrentStreak { get; private set; } = currentStreak;
     public int NextRewardDay { get; private set; } = nextRewardDay;
@@ -42,6 +43,8 @@ public sealed class DailyRewardUpdateMessage(
     public TimeSpan OnlineElapsed { get; private set; } = onlineElapsed;
     public List<TimeSpan> OnlineGrantedThresholds { get; private set; } = onlineGrantedThresholds;
     public List<DailyQuestEntry> DailyQuests { get; private set; } = dailyQuests;
+    /// <summary>False while time-based rewards (daily streak, playtime) are temporarily disabled.</summary>
+    public bool TimeRewardsEnabled { get; private set; } = timeRewardsEnabled;
 }
 
 [Serializable, NetSerializable]

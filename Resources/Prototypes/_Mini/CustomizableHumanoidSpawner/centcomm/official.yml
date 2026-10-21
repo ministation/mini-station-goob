@@ -95,7 +95,7 @@
 - type: randomHumanoidSettings
   id: EventHumanoidERT
   parent: EventHumanoidMindShielded
-  # Nanotrasen are a bit racist — IPC allowed (max 1 per ERT squad)
+  # Nanotrasen are a bit racist - IPC allowed (max 1 per ERT squad)
   speciesBlacklist:
     - Diona
     - Dwarf

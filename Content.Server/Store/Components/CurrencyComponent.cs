@@ -2,6 +2,7 @@
 
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Store;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Store.Components;
 
@@ -30,5 +31,5 @@ public sealed partial class CurrencyComponent : Component
     /// </remarks>
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("price")]
-    public Dictionary<string, FixedPoint2> Price = new();
+    public Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2> Price = new();
 }

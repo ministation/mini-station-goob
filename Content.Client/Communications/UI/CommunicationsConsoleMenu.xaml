@@ -17,6 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <TextEdit Name="MessageInput" HorizontalExpand="True" VerticalExpand="True" Margin="0 0 0 5" MinHeight="100" />
         <Button Name="AnnounceButton" Text="{Loc 'comms-console-menu-announcement-button'}" ToolTip="{Loc 'comms-console-menu-announcement-button-tooltip'}" StyleClasses="OpenLeft" Access="Public"/>
         <Button Name="BroadcastButton" Text="{Loc 'comms-console-menu-broadcast-button'}" ToolTip="{Loc 'comms-console-menu-broadcast-button-tooltip'}" StyleClasses="OpenLeft" Access="Public" />
+        <Button Name="VoiceBroadcastButton"
+                Access="Public"
+                Text="{Loc 'comms-console-menu-voice-broadcast-button'}"
+                ToolTip="{Loc 'comms-console-menu-voice-broadcast-button-tooltip'}"
+                StyleClasses="OpenBoth"
+                Visible="False"/> <!-- Goobstation - Voice chat -->
 
         <Control MinSize="0 10" />
 

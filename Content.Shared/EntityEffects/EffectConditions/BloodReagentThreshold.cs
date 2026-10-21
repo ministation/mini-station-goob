@@ -44,7 +44,7 @@ public sealed partial class BloodReagentThresholdCondition : EntityConditionBase
     public FixedPoint2 Max = FixedPoint2.MaxValue;
 
     [DataField]
-    public string? Reagent = null;
+    public ProtoId<ReagentPrototype>? Reagent = null;
 
     public override string EntityConditionGuidebookText(IPrototypeManager prototype)
     {

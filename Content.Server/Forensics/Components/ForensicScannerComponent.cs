@@ -93,7 +93,7 @@ namespace Content.Server.Forensics
         /// What the machine will print
         /// </summary>
         [DataField("machineOutput")]
-        public string MachineOutput = "ForensicReportPaper";
+        public EntProtoId MachineOutput = "ForensicReportPaper";
 
     }
 }

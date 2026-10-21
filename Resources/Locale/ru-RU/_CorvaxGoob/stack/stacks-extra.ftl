@@ -1,0 +1,1 @@
+stack-ammoniapack = пакет аммиака

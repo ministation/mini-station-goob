@@ -14,13 +14,13 @@ station-goal-syndicate-ai-card-title = Special task «AI Capture»
 station-goal-syndicate-ai-card-desc =
     Objective: Gain control of the station AI core and record it to an intellicard.
     Cover: Infiltrate as an AI systems maintenance specialist.
-    Tasks: send 3–4 operatives, access the core, transport the core/intellicard to Typan.
+    Tasks: send 3-4 operatives, access the core, transport the core/intellicard to Typan.
 
 station-goal-syndicate-cargo-card-title = Special task «Expand Typan Fleet»
 station-goal-syndicate-cargo-card-desc =
     Objective: Build a combat shuttle disguised as a commercial vessel for Syndicate operations.
     Cover: Infiltrate as a shipwright or cargo specialist.
-    Tasks: send 2–3 operatives, hijack and arm a shuttle, covertly deliver it to Typan.
+    Tasks: send 2-3 operatives, hijack and arm a shuttle, covertly deliver it to Typan.
 
 station-goal-syndicate-medical-card-title = Special task «Pandemic»
 station-goal-syndicate-medical-card-desc =

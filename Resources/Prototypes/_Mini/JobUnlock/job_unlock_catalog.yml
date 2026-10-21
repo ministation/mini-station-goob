@@ -3,7 +3,7 @@
 #
 # Досрочное открытие профессий за монетки антаг-меню.
 # Цена: ceil(оставшееся_время_ч / hoursPerCoinStep) * coinsPerStep, не ниже minCost и не выше maxCost тира.
-# command: true — commandCoinsPerStep (4 монетки за 4 часа), иначе regularCoinsPerStep (2 монетки за 4 часа).
+# command: true - commandCoinsPerStep (4 монетки за 4 часа), иначе regularCoinsPerStep (2 монетки за 4 часа).
 
 - type: jobUnlockCatalog
   id: Default
@@ -44,7 +44,7 @@
     - jobs: [Lawyer]
       maxCost: 25
       command: false
-  # ОТК — руководитель техобеспечения (Typan)
+  # ОТК - руководитель техобеспечения (Typan)
     - jobs: [TypanTechnicalOperationsSupervisor]
       maxCost: 50
       command: true

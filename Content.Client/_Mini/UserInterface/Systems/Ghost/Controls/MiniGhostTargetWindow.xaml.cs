@@ -37,7 +37,7 @@ public sealed partial class MiniGhostTargetWindow : DefaultWindow
     private readonly List<GhostWarpPlayer> _ghostPlayers = [];
 
     /// <summary>
-    /// Пришли ли варпы от сервера в текущей жизни. Пустой список от сервера — тоже данные;
+    /// Пришли ли варпы от сервера в текущей жизни. Пустой список от сервера - тоже данные;
     /// до первого ответа панель пустая, чтобы нельзя было нажать кнопку прошлого раунда.
     /// </summary>
     private bool _hasData;
@@ -53,7 +53,7 @@ public sealed partial class MiniGhostTargetWindow : DefaultWindow
         RobustXamlLoader.Load(this);
 
         // Mini: подписка ровно одна на всё время жизни окна. Раньше она добавлялась на каждую
-        // пересборку — после N открытий панели один ввод в поиске прогонял N проходов по кнопкам.
+        // пересборку - после N открытий панели один ввод в поиске прогонял N проходов по кнопкам.
         SearchBar.OnTextChanged += OnSearchTextChanged;
     }
 
@@ -80,7 +80,7 @@ public sealed partial class MiniGhostTargetWindow : DefaultWindow
         PlayersAllocation();
         AddButtons();
 
-        // Пересборка сбрасывает видимость кнопок — возвращаем фильтр поиска.
+        // Пересборка сбрасывает видимость кнопок - возвращаем фильтр поиска.
         UpdateVisibleButtons();
     }
 
@@ -116,7 +116,7 @@ public sealed partial class MiniGhostTargetWindow : DefaultWindow
         _hasData = true;
         _dirty = true;
 
-        // Открытая панель обновляется сразу; закрытая — при следующем открытии.
+        // Открытая панель обновляется сразу; закрытая - при следующем открытии.
         if (IsOpen)
             Populate();
     }

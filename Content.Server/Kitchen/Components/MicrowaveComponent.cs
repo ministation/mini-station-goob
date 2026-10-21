@@ -21,7 +21,7 @@ namespace Content.Server.Kitchen.Components
         public float ObjectHeatMultiplier = 100;
 
         [DataField("failureResult")]
-        public string BadRecipeEntityId = "FoodBadRecipe";
+        public EntProtoId BadRecipeEntityId = "FoodBadRecipe";
 
         #region  audio
         [DataField("beginCookingSound")]

@@ -1,0 +1,73 @@
+<PanelContainer xmlns="https://spacestation14.io"
+                HorizontalExpand="True"
+                Margin="0 0 0 6">
+    <BoxContainer Orientation="Horizontal" SeparationOverride="0">
+        <PanelContainer Name="AccentStrip"
+                        MinSize="3 0"
+                        VerticalExpand="True" />
+        <PanelContainer Name="IconPanel"
+                        MinSize="54 54"
+                        VerticalAlignment="Center"
+                        Margin="12 0 0 0">
+            <TextureRect Name="Icon"
+                         Stretch="KeepAspectCentered"
+                         HorizontalExpand="True"
+                         VerticalExpand="True"
+                         Margin="8" />
+            <Label Name="HiddenIconLabel"
+                   Text="?"
+                   StyleClasses="LabelHeadingBigger"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Visible="False" />
+        </PanelContainer>
+        <BoxContainer Orientation="Vertical"
+                      HorizontalExpand="True"
+                      VerticalAlignment="Center"
+                      SeparationOverride="3"
+                      Margin="12 10 12 10">
+            <BoxContainer Orientation="Horizontal" SeparationOverride="10">
+                <Label Name="NameLabel"
+                       StyleClasses="LabelKeyText"
+                       HorizontalExpand="True"
+                       ClipText="True" />
+                <Label Name="StatusLabel"
+                       StyleClasses="LabelSubText"
+                       VerticalAlignment="Center" />
+            </BoxContainer>
+            <RichTextLabel Name="DescriptionLabel" HorizontalExpand="True" />
+            <BoxContainer Orientation="Horizontal" SeparationOverride="10" Margin="0 3 0 0">
+                <Label Name="RarityLabel"
+                       StyleClasses="LabelSubText"
+                       VerticalAlignment="Center" />
+                <ProgressBar Name="ProgressFill"
+                             HorizontalExpand="True"
+                             MinValue="0"
+                             MaxValue="1"
+                             SetHeight="6"
+                             VerticalAlignment="Center"
+                             Visible="False" />
+                <Label Name="ProgressLabel"
+                       StyleClasses="LabelSubText"
+                       VerticalAlignment="Center"
+                       Visible="False" />
+            </BoxContainer>
+        </BoxContainer>
+        <PanelContainer Name="CoinBadge"
+                        MinSize="72 34"
+                        VerticalAlignment="Center"
+                        Margin="0 0 12 0">
+            <BoxContainer Orientation="Horizontal"
+                          SeparationOverride="5"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Margin="9 4 11 4">
+                <Label Name="CoinRewardLabel" VerticalAlignment="Center" />
+                <TextureRect Name="CoinIcon"
+                             SetSize="18 18"
+                             Stretch="KeepAspectCentered"
+                             VerticalAlignment="Center" />
+            </BoxContainer>
+        </PanelContainer>
+    </BoxContainer>
+</PanelContainer>

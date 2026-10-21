@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using Content.Shared.Damage.Systems;
+using System.Linq;
 using System.Numerics;
 using Content.Server.Popups;
 using Content.Shared.Damage;
@@ -130,7 +131,7 @@ public sealed class PylonSystem : EntitySystem
         foreach (var target in targets)
         {
             if (HasComp<BloodCultistComponent>(target) && !_mobState.IsDead(target))
-                _damageable.TryChangeDamage(target, pylon.Comp.Healing, true);
+                _damageable.TryChangeDamage(target.Owner, pylon.Comp.Healing, true);
         }
     }
 }

@@ -19,7 +19,10 @@ public static class AntagTokenCatalog
     public const string DepositSelectionTokenId = "deposit";
     public const string DepositUsedRoleCreditEntryId = "deposit-used-role-credit";
 
-    public const string CurrencyIconPath = "/Textures/_Mini/Interface/Antags/token_currency.png";
+    // The coin icon used by every coin-facing UI (antag tokens, quests, achievements, rewards menu).
+    // Must point at a texture that actually ships with the repo: the old token_currency.png path was
+    // dead, so all coin badges silently rendered without an icon.
+    public const string CurrencyIconPath = "/Textures/_Mini/Interface/Coin.png";
 
     public const string ThiefRole = "thief";
     public const string AgentRole = "agent";

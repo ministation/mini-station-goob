@@ -4,6 +4,7 @@
 using System.IO;
 using System.Linq;
 using Content.Server.GameTicking;
+using Content.Server.GameTicking.Presets;
 using Content.Server.Preferences.Managers;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
@@ -55,6 +56,13 @@ public sealed partial class TestPair
         await testOut.WriteLineAsync($"Recycling: {Watch.Elapsed.TotalMilliseconds} ms: Setting CVar ");
         await ApplySettings(next);
         await RunTicksSync(1);
+
+        // A previous test may have left a custom game preset behind (e.g. a test-only preset whose rules
+        // require players). Starting a round with it is cancelled by the min-player rule check when no one
+        // is ready: the ticker restarts the round and delays the next start by 30 s, so the pair never
+        // reaches InRound and the next test times out. Freshly created pairs have no preset selected yet
+        // (they are born with the dummy ticker on), so restore exactly that state.
+        await Server.WaitPost(() => gameTicker.SetGamePreset((GamePresetPrototype?) null));
 
         // Restart server.
         await testOut.WriteLineAsync($"Recycling: {Watch.Elapsed.TotalMilliseconds} ms: Restarting server again");

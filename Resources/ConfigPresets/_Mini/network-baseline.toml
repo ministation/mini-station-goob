@@ -1,4 +1,4 @@
-# Network profiling preset — enable Prometheus and verbose net logging for baseline KPI capture.
+# Network profiling preset - enable Prometheus and verbose net logging for baseline KPI capture.
 # Usage: run server with --config-file pointing at this preset (optionally merged with your server config).
 
 [metrics]
@@ -20,10 +20,10 @@ log_late_msg = true
 #   net.pvs_enter_budget = 150-250
 #
 # Related Mini presets:
-#   mini-highpop.toml     — combined production high-pop (preferred)
-#   mini-network.toml     — PVS / AEAD thread / Lidgren log hygiene (not TLS)
-#   mini-server-perf.toml — footprints off + NPC budget + cheap atmos (physics stays default 60)
-#   mini-client.toml      — docs: put outline.enabled = false in *client* config.toml
+#   mini-highpop.toml     - combined production high-pop (preferred)
+#   mini-network.toml     - PVS / AEAD thread / Lidgren log hygiene (not TLS)
+#   mini-server-perf.toml - footprints off + NPC budget + cheap atmos (physics stays default 60)
+#   mini-client.toml      - docs: put outline.enabled = false in *client* config.toml
 #
 # Load high-pop: config.presets=_Mini/mini-highpop
 # Ops: Tools/highpop_server_env.sh + Tools/measure_highpop_load.sh

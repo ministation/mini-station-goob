@@ -10,16 +10,16 @@ namespace Content.Server.Tabletop
     {
 
         [DataField("redPiecePrototype")]
-        public string RedPiecePrototype { get; private set; } = "RedTabletopPiece";
+        public EntProtoId RedPiecePrototype { get; private set; } = "RedTabletopPiece";
 
         [DataField("greenPiecePrototype")]
-        public string GreenPiecePrototype { get; private set; } = "GreenTabletopPiece";
+        public EntProtoId GreenPiecePrototype { get; private set; } = "GreenTabletopPiece";
 
         [DataField("yellowPiecePrototype")]
-        public string YellowPiecePrototype { get; private set; } = "YellowTabletopPiece";
+        public EntProtoId YellowPiecePrototype { get; private set; } = "YellowTabletopPiece";
 
         [DataField("bluePiecePrototype")]
-        public string BluePiecePrototype { get; private set; } = "BlueTabletopPiece";
+        public EntProtoId BluePiecePrototype { get; private set; } = "BlueTabletopPiece";
 
         public override void SetupTabletop(TabletopSession session, IEntityManager entityManager)
         {

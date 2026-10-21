@@ -52,6 +52,15 @@ binds:
 - function: ResistGrab
   type: State
   key: B
+- function: VoicePushToTalk # Goobstation - Voice chat
+  type: State
+  key: N
+- function: VoicePushToTalkRadio # Goobstation - Voice chat
+  type: State
+  key: M
+- function: NamePeek # Goob
+  type: State
+  key: Alt
 # Shuttle
 - function: ShuttleStrafeUp
   type: State
@@ -683,6 +692,4 @@ binds:
   type: State
   key: Num3
 # CorvaxGoob-changes-end.
-- function: VoiceChatPushToTalk # Mini - voice chat push to talk (N; Alt+V is InspectEntity)
-  type: State
-  key: N
+# Mini: legacy VoiceChatPushToTalk bind removed; the upstream VoiceChat uses VoicePushToTalk (N) / VoicePushToTalkRadio (M).

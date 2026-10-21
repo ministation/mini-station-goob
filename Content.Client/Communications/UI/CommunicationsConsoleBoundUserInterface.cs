@@ -3,6 +3,8 @@
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Communications;
+using Content.Goobstation.Shared.VoiceChat; // Goobstation - Voice chat
+using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
 using Robust.Shared.Timing;
 using Content.Shared.Containers.ItemSlots;
@@ -85,6 +87,8 @@ namespace Content.Client.Communications.UI
 
             _menu = new CommunicationsConsoleMenu(this);
             _menu.OnClose += Close;
+            _menu.Console = Owner; // Goobstation - Voice chat
+            _menu.OnVoiceBroadcast += () => SendMessage(new VoiceBroadcastToggleMessage()); // Goobstation - Voice chat
             _menu.OpenCentered();
         }
 

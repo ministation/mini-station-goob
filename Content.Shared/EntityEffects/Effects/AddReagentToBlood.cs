@@ -31,7 +31,7 @@ public sealed partial class AddReagentToBloodSystem : EntityEffectSystem<Bloodst
 public sealed partial class AddReagentToBlood : EntityEffectBase<AddReagentToBlood> // TODO Goobstation move this to goobmod
 {
     [DataField]
-    public string? Reagent = null;
+    public ProtoId<ReagentPrototype>? Reagent = null;
 
     [DataField]
     public FixedPoint2 Amount = default!;

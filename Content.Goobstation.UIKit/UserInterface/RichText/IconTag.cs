@@ -16,13 +16,13 @@ namespace Content.Goobstation.UIKit.UserInterface.RichText;
 /// - <c>[icon="/Textures/_Mini/Interface/AdminIcons/..."]</c> (AHelp rank icons)
 /// - <c>[icon src="JobIconId" tooltip="..."]</c> (local/radio job icons)
 /// </summary>
-public sealed class IconTag : IMarkupTagHandler
+public sealed partial class IconTag : IMarkupTagHandler
 {
     private const string AdminIconsPrefix = "/Textures/_Mini/Interface/AdminIcons/";
 
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly IEntitySystemManager _entitySystem = default!;
-    [Dependency] private readonly IResourceCache _resourceCache = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IEntitySystemManager _entitySystem = default!;
+    [Dependency] private IResourceCache _resourceCache = default!;
     private SpriteSystem? _spriteSystem;
 
     public string Name => "icon";

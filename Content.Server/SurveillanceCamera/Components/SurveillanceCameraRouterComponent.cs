@@ -25,7 +25,7 @@ public sealed partial class SurveillanceCameraRouterComponent : Component
     // The frequency that talks to this router's subnet.
     public uint SubnetFrequency;
     [DataField("subnetFrequency")]
-    public string? SubnetFrequencyId { get; set;  }
+    public ProtoId<DeviceFrequencyPrototype>? SubnetFrequencyId { get; set;  }
 
     [DataField("setupAvailableNetworks")]
     public List<ProtoId<DeviceFrequencyPrototype>> AvailableNetworks { get; private set; } = new();

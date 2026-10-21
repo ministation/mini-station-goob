@@ -11,7 +11,7 @@ public sealed partial class StaticNodeEntity : IGraphNodeEntity
 {
     [DataField("id")]
     [ViewVariables(VVAccess.ReadWrite)]
-    public string? Id { get; private set; }
+    public EntProtoId? Id { get; private set; }
 
     public StaticNodeEntity()
     {

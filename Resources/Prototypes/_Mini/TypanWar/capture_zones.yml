@@ -57,7 +57,7 @@
     color: "#D8D8E8"
     castShadows: false
 
-# Legacy mapper markers (optional — zones are spawned automatically when combat begins).
+# Legacy mapper markers (optional - zones are spawned automatically when combat begins).
 - type: entity
   parent: MarkerBase
   id: TypanWarCaptureZoneBase

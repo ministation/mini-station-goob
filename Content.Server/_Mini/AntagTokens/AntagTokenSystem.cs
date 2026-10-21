@@ -46,7 +46,9 @@ using Content.Server.Ghost.Roles;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Ghost.Roles.Events;
 using Content.Server.Station.Systems;
+using Content.Shared._Mini.MiniCCVars;
 using Robust.Shared.Asynchronous;
+using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
@@ -74,6 +76,7 @@ public sealed class AntagTokenSystem : EntitySystem
     [Dependency] private readonly IServerPreferencesManager _preferences = default!;
     [Dependency] private readonly TypanStationWarRuleSystem _typanWar = default!;
     [Dependency] private readonly StationJobsSystem _stationJobs = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     private readonly Dictionary<NetUserId, PlayerTokenState> _states = new();
     private readonly Dictionary<NetUserId, int?> _sponsorLevelOverrides = new();
@@ -152,37 +155,11 @@ public sealed class AntagTokenSystem : EntitySystem
         if (_onlineRewardAccumulator <= 0f)
         {
             _onlineRewardAccumulator = OnlineRewardInterval;
-            var now = DateTime.UtcNow;
-            foreach (var session in _playerManager.Sessions)
-            {
-                if (!_onlineRewards.TryGetValue(session.UserId, out var rewardState))
-                    continue;
 
-                rewardState.EnsureCurrentCycle(now);
-
-                foreach (var (threshold, rewardAmount) in AntagTokenCatalog.OnlineRewardMilestones)
-                {
-                    if (rewardState.GrantedThresholds.Contains(threshold))
-                        continue;
-
-                    if (rewardState.GetElapsed(now) < threshold)
-                        continue;
-
-                    rewardState.GrantedThresholds.Add(threshold);
-                    AddBalance(session.UserId, rewardAmount, out var granted, out _);
-
-                    if (granted > 0)
-                    {
-                        var hours = (int) threshold.TotalHours;
-                        var message = Loc.GetString("antag-tokens-online-reward", ("amount", granted), ("hours", hours));
-
-                        if (session.AttachedEntity is { Valid: true } uid)
-                        {
-                            _popup.PopupEntity(message, uid, uid);
-                        }
-                    }
-                }
-            }
+            // Coins for online time are a time-based reward: pause them together with the daily
+            // rewards while weekly quests and achievements stay available.
+            if (_cfg.GetCVar(MiniCCVars.TimeRewardsEnabled))
+                GrantOnlineRewards();
         }
 
         _databaseSyncAccumulator -= frameTime;
@@ -197,6 +174,43 @@ public sealed class AntagTokenSystem : EntitySystem
         {
             _lobbyDepositCapacityEnforceAccumulator = 2f;
             EnforceSharedTokenSlotCapacity();
+        }
+    }
+
+    /// <summary>
+    /// Grants coins for online-time milestones. Only called while
+    /// <see cref="MiniCCVars.TimeRewardsEnabled"/> is on.
+    /// </summary>
+    private void GrantOnlineRewards()
+    {
+        var now = DateTime.UtcNow;
+        foreach (var session in _playerManager.Sessions)
+        {
+            if (!_onlineRewards.TryGetValue(session.UserId, out var rewardState))
+                continue;
+
+            rewardState.EnsureCurrentCycle(now);
+
+            foreach (var (threshold, rewardAmount) in AntagTokenCatalog.OnlineRewardMilestones)
+            {
+                if (rewardState.GrantedThresholds.Contains(threshold))
+                    continue;
+
+                if (rewardState.GetElapsed(now) < threshold)
+                    continue;
+
+                rewardState.GrantedThresholds.Add(threshold);
+                AddBalance(session.UserId, rewardAmount, out var granted, out _);
+
+                if (granted <= 0)
+                    continue;
+
+                var hours = (int) threshold.TotalHours;
+                var message = Loc.GetString("antag-tokens-online-reward", ("amount", granted), ("hours", hours));
+
+                if (session.AttachedEntity is { Valid: true } uid)
+                    _popup.PopupEntity(message, uid, uid);
+            }
         }
     }
 
@@ -265,7 +279,7 @@ public sealed class AntagTokenSystem : EntitySystem
     }
 
     /// <summary>
-    /// Direct balance payout (bet winnings, lootbox duplicate refunds) — bypasses the monthly earn cap.
+    /// Direct balance payout (bet winnings, lootbox duplicate refunds) - bypasses the monthly earn cap.
     /// Works for offline players by writing the balance row directly.
     /// </summary>
     public void PayBalance(NetUserId userId, int amount)
@@ -1625,7 +1639,7 @@ public sealed class AntagTokenSystem : EntitySystem
         if (role.IgnoresStationJob)
             return false;
 
-        // Only block while the player is alive on a reserved station job — ghosts/corpses keep old mind jobs.
+        // Only block while the player is alive on a reserved station job - ghosts/corpses keep old mind jobs.
         if (session.AttachedEntity is not { Valid: true } attached ||
             HasComp<GhostComponent>(attached) ||
             !TryComp<MobStateComponent>(attached, out var mobState) ||
@@ -2432,7 +2446,7 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             if (!_listings.TryGetListing(roleId, out var role))
                 continue;
 
-            // Do not include buyer/character names — ready-manifest is public and would enable metagaming.
+            // Do not include buyer/character names - ready-manifest is public and would enable metagaming.
             var roleName = Loc.GetString(role.NameLocKey);
             result.Add(new ReadyManifestAntagEntry(
                 role.Id,

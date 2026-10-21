@@ -10,7 +10,7 @@ public sealed partial class MakeUnreactiveEntityEffectSystem
 {
     private static readonly ProtoId<TagPrototype> TrashTag = "Trash";
 
-    [Dependency] private readonly TagSystem _tags = default!;
+    [Dependency] private TagSystem _tags = default!;
 
     protected override void Effect(Entity<ReactiveComponent> entity, ref EntityEffectEvent<MakeUnreactiveEntityEffect> args)
     {

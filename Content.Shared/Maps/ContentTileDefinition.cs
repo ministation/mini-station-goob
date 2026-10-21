@@ -51,7 +51,7 @@ namespace Content.Shared.Maps
         public List<ProtoId<ContentTileDefinition>> BaseWhitelist { get; private set; } = new();
 
         [DataField]
-        public HashSet<ProtoId<ToolQualityPrototype>> DeconstructTools = new();
+        public HashSet<ProtoId<ToolQualityPrototype>> DeconstructTools { get; set; } = new();
 
         /// <summary>
         /// Goobstation
@@ -104,7 +104,7 @@ namespace Content.Shared.Maps
         [DataField("heatCapacity")] public float HeatCapacity = Atmospherics.MinimumHeatCapacity;
 
         [DataField("itemDrop")]
-        public string ItemDropPrototypeName { get; private set; } = "FloorTileItemSteel";
+        public EntProtoId ItemDropPrototypeName { get; private set; } = "FloorTileItemSteel";
 
         // TODO rename data-field in yaml
         /// <summary>

@@ -39,7 +39,7 @@ public sealed partial class RevolverAmmoProviderComponent : AmmoProviderComponen
     public bool?[] Chambers = Array.Empty<bool?>();
 
     [DataField("proto")]
-    public string? FillPrototype = "CartridgeMagnum";
+    public EntProtoId? FillPrototype = "CartridgeMagnum";
 
     [DataField("soundEject")]
     public SoundSpecifier? SoundEject = new SoundPathSpecifier("/Audio/Weapons/Guns/MagOut/revolver_magout.ogg");

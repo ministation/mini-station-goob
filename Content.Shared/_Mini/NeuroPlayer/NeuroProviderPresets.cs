@@ -61,7 +61,7 @@ public static class NeuroProviderPresets
         NeuroCVars.NeuroPlayerDeepSeekModel,
         SupportsThinking: false);
 
-    /// <summary>Z.ai GLM coding plan — the fork's original provider, supports the <c>thinking</c> toggle.</summary>
+    /// <summary>Z.ai GLM coding plan - the fork's original provider, supports the <c>thinking</c> toggle.</summary>
     public static readonly NeuroProviderPreset Zai = new(
         "zai",
         "https://api.z.ai/api/paas/v4/chat/completions",
@@ -80,7 +80,7 @@ public static class NeuroProviderPresets
         NeuroCVars.NeuroPlayerOpenAiModel,
         SupportsThinking: false);
 
-    /// <summary>OpenRouter — one key for many models, including <c>deepseek/deepseek-chat</c>.</summary>
+    /// <summary>OpenRouter - one key for many models, including <c>deepseek/deepseek-chat</c>.</summary>
     public static readonly NeuroProviderPreset OpenRouter = new(
         "openrouter",
         "https://openrouter.ai/api/v1/chat/completions",

@@ -3,7 +3,6 @@
 using System.Linq;
 using Content.Shared.Construction.Components;
 using Robust.Shared.Map;
-using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using static Content.Shared.Interaction.SharedInteractionSystem;
 
@@ -11,7 +10,7 @@ namespace Content.Shared.Construction
 {
     public abstract class SharedConstructionSystem : EntitySystem
     {
-        [Dependency] private readonly SharedMapSystem _map = default!;
+        [Dependency] private readonly SharedMapSystem _mapSystem = default!;
         [Dependency] protected readonly IPrototypeManager PrototypeManager = default!;
         [Dependency] protected readonly SharedTransformSystem TransformSystem = default!;
 
@@ -23,10 +22,10 @@ namespace Content.Shared.Construction
             if (!canBuildInImpassable)
                 return null;
 
-            if (!_map.TryFindGridAt(coords, out var gridUid, out var grid))
+            if (!_mapSystem.TryFindGridAt(coords, out _, out var grid))
                 return null;
 
-            var ignored = _map.GetAnchoredEntities(gridUid, grid, coords).ToHashSet();
+            var ignored = _mapSystem.GetAnchoredEntities(grid.Owner, grid, coords).ToHashSet();
             return e => ignored.Contains(e);
         }
 

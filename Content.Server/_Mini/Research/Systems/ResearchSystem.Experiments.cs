@@ -1,3 +1,4 @@
+using Content.Shared.Damage.Components;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Goobstation.Shared.Fishing.Components;
 using Content.Server.Construction.Components;

@@ -11,6 +11,8 @@ using Content.Shared._Mini.AntagTokens;
 using Content.Shared._Mini.DailyQuests;
 using Content.Shared._Mini.DailyRewards;
 using Content.Shared._Mini.GhostRolePurchase;
+using Content.Shared._Mini.MiniCCVars;
+using Robust.Shared.Configuration;
 using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Server.Popups;
@@ -45,6 +47,13 @@ public sealed class DailyRewardSystem : EntitySystem
     [Dependency] private readonly AntagTokenSystem _antagTokens = default!;
     [Dependency] private readonly AntagTokenListingSystem _antagListings = default!;
     [Dependency] private readonly DailyQuestSystem _dailyQuests = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
+
+    /// <summary>
+    /// Time-based rewards (daily streak claim, playtime tickets) can be turned off server-wide
+    /// while weekly quests keep working. See <see cref="MiniCCVars.TimeRewardsEnabled"/>.
+    /// </summary>
+    private bool _timeRewardsEnabled;
 
     private readonly Dictionary<NetUserId, SessionRewardState> _states = new();
     private readonly DailyRewardComponent _defaultComponent = new();
@@ -65,6 +74,8 @@ public sealed class DailyRewardSystem : EntitySystem
         _userDb.AddOnLoadPlayer(LoadPlayerData);
         _userDb.AddOnFinishLoad(OnPlayerDataLoaded);
         _userDb.AddOnPlayerDisconnect(OnPlayerDisconnect);
+
+        Subs.CVar(_cfg, MiniCCVars.TimeRewardsEnabled, value => _timeRewardsEnabled = value, true);
     }
 
     public override void Shutdown()
@@ -217,15 +228,19 @@ public sealed class DailyRewardSystem : EntitySystem
         {
             _playtimeGrantAccumulator = 0f;
 
-            foreach (var session in _playerManager.Sessions)
+            // Playtime tickets are a time-based reward, so they are paused together with them.
+            if (_timeRewardsEnabled)
             {
-                if (session.Status == SessionStatus.Disconnected)
-                    continue;
+                foreach (var session in _playerManager.Sessions)
+                {
+                    if (session.Status == SessionStatus.Disconnected)
+                        continue;
 
-                if (!_states.ContainsKey(session.UserId))
-                    continue;
+                    if (!_states.ContainsKey(session.UserId))
+                        continue;
 
-                GrantTicketsForPlaytime(session);
+                    GrantTicketsForPlaytime(session);
+                }
             }
         }
 
@@ -390,6 +405,14 @@ public sealed class DailyRewardSystem : EntitySystem
 
     private void ClaimReward(ICommonSession session)
     {
+        if (!_timeRewardsEnabled)
+        {
+            SendClaimResult(session, new DailyRewardClaimResultEvent(
+                false, 0, null, false, "daily-reward-claim-result-disabled", TimeSpan.Zero));
+            SendState(session);
+            return;
+        }
+
         // The menu can be opened before the player's database data has finished loading.
         // The old code returned silently in that case, so the "Забрать" button looked dead.
         // Always answer with an explicit result instead.
@@ -601,7 +624,8 @@ public sealed class DailyRewardSystem : EntitySystem
             rewards,
             onlineElapsed,
             onlineGranted,
-            _dailyQuests.BuildQuestEntries(session))), session);
+            _dailyQuests.BuildQuestEntries(session),
+            _timeRewardsEnabled)), session);
     }
 
     private RewardDefinition GetRewardPreview(DailyRewardComponent component, int day)

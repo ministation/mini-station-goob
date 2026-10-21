@@ -24,7 +24,7 @@ public sealed partial class TechnologyDatabaseComponent : Component
     /// </summary>
     [AutoNetworkedField]
     [DataField("mainDiscipline")]
-    public string? MainDiscipline;
+    public ProtoId<TechDisciplinePrototype>? MainDiscipline;
 
     [AutoNetworkedField]
     [DataField("currentTechnologyCards")]

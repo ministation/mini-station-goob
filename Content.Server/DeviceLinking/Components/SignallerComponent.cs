@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 using Content.Shared.DeviceLinking;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.DeviceLinking.Components
 {
@@ -14,6 +15,6 @@ namespace Content.Server.DeviceLinking.Components
         ///     The port that gets signaled when the switch turns on.
         /// </summary>
         [DataField("port")]
-        public string Port = "Pressed";
+        public ProtoId<SourcePortPrototype> Port = "Pressed";
     }
 }

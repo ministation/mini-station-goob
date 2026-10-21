@@ -36,5 +36,5 @@ public sealed partial class AmbientMusicPrototype : IPrototype
     public SoundSpecifier Sound = default!;
 
     [ViewVariables(VVAccess.ReadWrite), DataField("rules", required: true)]
-    public string Rules = string.Empty;
+    public ProtoId<RulesPrototype> Rules = string.Empty;
 }

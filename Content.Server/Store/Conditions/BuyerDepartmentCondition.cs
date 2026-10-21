@@ -18,13 +18,13 @@ public sealed partial class BuyerDepartmentCondition : ListingCondition
     /// A whitelist of department prototypes that can purchase this listing. Only one needs to be found.
     /// </summary>
     [DataField("whitelist")]
-    public HashSet<string>? Whitelist;
+    public HashSet<ProtoId<DepartmentPrototype>>? Whitelist;
 
     /// <summary>
     /// A blacklist of department prototypes that can purchase this listing. Only one needs to be found.
     /// </summary>
     [DataField("blacklist")]
-    public HashSet<string>? Blacklist;
+    public HashSet<ProtoId<DepartmentPrototype>>? Blacklist;
 
     public override bool Condition(ListingConditionArgs args)
     {

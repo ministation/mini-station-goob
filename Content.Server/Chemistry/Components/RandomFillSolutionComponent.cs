@@ -2,6 +2,7 @@
 
 using Content.Server.Chemistry.EntitySystems;
 using Content.Shared.Random;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Chemistry.Components;
 
@@ -21,5 +22,5 @@ public sealed partial class RandomFillSolutionComponent : Component
     ///     Weighted random fill prototype Id. Used to pick reagent and quantity.
     /// </summary>
     [DataField("weightedRandomId", required: true)]
-    public string? WeightedRandomId;
+    public ProtoId<WeightedRandomFillSolutionPrototype>? WeightedRandomId;
 }

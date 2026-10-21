@@ -9,11 +9,11 @@ namespace Content.Shared.Random;
 /// Linter-friendly version of weightedRandom for Species prototypes.
 /// </summary>
 [Prototype]
-public sealed partial class WeightedRandomSpeciesPrototype : IWeightedRandomPrototype
+public sealed partial class WeightedRandomSpeciesPrototype : IWeightedRandomPrototype<SpeciesPrototype>
 {
     [IdDataField]
     public string ID { get; private set; } = default!;
 
     [DataField("weights")]
-    public Dictionary<string, float> Weights { get; private set; } = new();
+    public Dictionary<ProtoId<SpeciesPrototype>, float> Weights { get; private set; } = new();
 }

@@ -37,11 +37,18 @@ public sealed class RMCLinkedAccount
 public sealed class RMCPatronTier
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)] // Goob - tiers are defined by prototypes
     public int Id { get; set; }
 
     public bool ShowOnCredits { get; set; }
 
     public bool GhostColor { get; set; }
+
+    // Goob - ghost cosmetics
+    public bool GhostCosmetics { get; set; }
+
+    // Goob - ghost cosmetics
+    public bool GhostParticles { get; set; }
 
     public bool LobbyMessage { get; set; }
 
@@ -71,6 +78,12 @@ public sealed class RMCPatron
 
     public RMCPatronTier Tier { get; set; } = default!;
     public int? GhostColor { get; set; } = default!;
+    // Goob start - ghost cosmetics: selected cosmetic prototype ids
+    public string? GhostParticles { get; set; }
+    public string? GhostHat { get; set; }
+    public string? GhostMask { get; set; }
+    public string? OocIcon { get; set; }
+    // Goob end
     public RMCPatronLobbyMessage? LobbyMessage { get; set; } = default!;
     public RMCPatronRoundEndNTShoutout? RoundEndNTShoutout { get; set; } = default!;
 }

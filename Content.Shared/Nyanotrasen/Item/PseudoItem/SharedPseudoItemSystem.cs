@@ -25,8 +25,8 @@ public abstract partial class SharedPseudoItemSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly SharedActionsSystem _actions = default!;
 
-        private const string PreventTag = "PreventLabel";
-        private const string SleepActionId = "ActionSleep"; // The action used for sleeping inside bags. Currently uses the default sleep action (same as beds)
+    private static readonly ProtoId<TagPrototype> PreventTag = "PreventLabel";
+    private static readonly EntProtoId SleepActionId = "ActionSleep"; // The action used for sleeping inside bags. Currently uses the default sleep action (same as beds)
 
     public override void Initialize()
     {
@@ -138,7 +138,7 @@ public abstract partial class SharedPseudoItemSystem : EntitySystem
     }
 
     // Prevents moving within the bag :)
-    private void OnInteractAttempt(EntityUid uid, PseudoItemComponent component, InteractionAttemptEvent args)
+    private void OnInteractAttempt(EntityUid uid, PseudoItemComponent component, ref InteractionAttemptEvent args)
     {
         if (args.Uid == args.Target && component.Active)
             args.Cancelled = true;

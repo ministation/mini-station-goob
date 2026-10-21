@@ -15,12 +15,12 @@ namespace Content.Systems;
 /// <summary>
 /// This handles pocket dimensions and their portals.
 /// </summary>
-public sealed class PocketDimensionSystem : EntitySystem
+public sealed partial class PocketDimensionSystem : EntitySystem
 {
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly LinkedEntitySystem _link = default!;
-    [Dependency] private readonly MapLoaderSystem _mapLoader = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private LinkedEntitySystem _link = default!;
+    [Dependency] private MapLoaderSystem _mapLoader = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private ISawmill _sawmill = default!;
 

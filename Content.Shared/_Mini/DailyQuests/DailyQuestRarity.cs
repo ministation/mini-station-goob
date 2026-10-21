@@ -5,7 +5,7 @@ using Robust.Shared.Maths;
 namespace Content.Shared._Mini.DailyQuests;
 
 /// <summary>
-/// Brawl Stars–style quest rarities. Higher tier = harder targets, better rewards, lower drop weight.
+/// Brawl Stars-style quest rarities. Higher tier = harder targets, better rewards, lower drop weight.
 /// </summary>
 public enum DailyQuestRarity : byte
 {

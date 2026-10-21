@@ -18,3 +18,6 @@ store-preset-name-uplink-ghost = Аплинк нарушителя
 store-preset-name-spellbook-ghost = Призрачный магазин заклинаний
 
 store-preset-name-nukie-delivery = Блюспейс доставка Ядерных Оперативников
+
+# Mini: недостающие названия магазинов
+store-preset-name-changeling = Магазин ДНК

@@ -43,7 +43,7 @@ public sealed partial class FatExtractorComponent : Component
     /// Meat spawned by the extractor.
     /// </summary>
     [DataField("meatPrototype"), ViewVariables(VVAccess.ReadWrite)]
-    public string MeatPrototype = "FoodMeat";
+    public EntProtoId MeatPrototype = "FoodMeat";
 
     /// <summary>
     /// When the next update will occur

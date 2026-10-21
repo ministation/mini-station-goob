@@ -2,6 +2,7 @@
 
 using Content.Server.Atmos.Piping.Binary.EntitySystems;
 using Content.Shared.DeviceLinking;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Atmos.Piping.Binary.Components;
 
@@ -9,11 +10,11 @@ namespace Content.Server.Atmos.Piping.Binary.Components;
 public sealed partial class SignalControlledValveComponent : Component
 {
     [DataField("openPort")]
-    public string OpenPort = "Open";
+    public ProtoId<SinkPortPrototype> OpenPort = "Open";
 
     [DataField("closePort")]
-    public string ClosePort = "Close";
+    public ProtoId<SinkPortPrototype> ClosePort = "Close";
 
     [DataField("togglePort")]
-    public string TogglePort = "Toggle";
+    public ProtoId<SinkPortPrototype> TogglePort = "Toggle";
 }

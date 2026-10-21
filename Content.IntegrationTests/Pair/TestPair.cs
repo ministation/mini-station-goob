@@ -46,10 +46,14 @@ public sealed partial class TestPair : RobustIntegrationTest.TestPair
         {
             var gameTicker = Server.System<GameTicker>();
             await Server.WaitPost(() => gameTicker.RestartRound());
-            // Staged map preload may defer StartRound — wait until the round is actually InRound.
-            await PoolManager.WaitUntil(Server,
-                () => gameTicker.MapsReady && gameTicker.RunLevel == GameRunLevel.InRound,
-                maxTicks: 1200);
+            // InLobby-пара остаётся в лобби (тест сам проверяет лобби), а для
+            // обычной пары стейджированный прелоад карт может отложить StartRound.
+            if (!settings.InLobby)
+            {
+                await PoolManager.WaitUntil(Server,
+                    () => gameTicker.MapsReady && gameTicker.RunLevel == GameRunLevel.InRound,
+                    maxTicks: 1200);
+            }
         }
     }
 
@@ -87,7 +91,7 @@ public sealed partial class TestPair : RobustIntegrationTest.TestPair
             if (cfg.IsCVarRegistered(CCVars.AdminLogsEnabled.Name))
                 cfg.SetCVar(CCVars.AdminLogsEnabled, next.AdminLogsEnabled);
 
-            // NetPVS is server-authoritative — setting it on the client logs a WARN that
+            // NetPVS is server-authoritative - setting it on the client logs a WARN that
             // PoolTestLogHandler treats as failure (YAML linter / integration tests).
             if (instance is not IServerIntegrationInstance)
                 return;

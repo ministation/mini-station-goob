@@ -2,6 +2,7 @@
 
 using Content.Shared.Storage;
 using Robust.Shared.Network;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Holiday.Christmas;
 
@@ -38,5 +39,5 @@ public sealed partial class LimitedItemGiverComponent : Component
     /// The holiday required for this giver to work, if any.
     /// </summary>
     [DataField("requiredHoliday"), ViewVariables(VVAccess.ReadWrite)]
-    public string? RequiredHoliday = null;
+    public ProtoId<HolidayPrototype>? RequiredHoliday = null;
 }

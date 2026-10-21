@@ -3,6 +3,7 @@
 using Content.Server.ADT.SeedDna.Systems;
 using Content.Server.Botany.Systems;
 using Content.Shared.Botany.Components;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Botany.Components
 {
@@ -27,6 +28,6 @@ namespace Content.Server.Botany.Components
         ///     Name of a base seed prototype that is used if <see cref="Seed"/> is null.
         /// </summary>
         [DataField("seedId")]
-        public string? SeedId;
+        public ProtoId<SeedPrototype>? SeedId;
     }
 }

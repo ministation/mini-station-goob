@@ -8,8 +8,8 @@ namespace Content.Goobstation.Shared.EntityEffects;
 
 public sealed partial class CreateRQuantityEntityReactionEffectSystem : EntityEffectSystem<TransformComponent, CreateRQuantityEntityReactionEffect>
 {
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private IRobustRandom _random = default!;
 
     protected override void Effect(Entity<TransformComponent> entity, ref EntityEffectEvent<CreateRQuantityEntityReactionEffect> args)
     {
@@ -32,7 +32,7 @@ public sealed partial class CreateRQuantityEntityReactionEffect : EntityEffectBa
     ///     What entity to create.
     /// </summary>
     [DataField(required: true)]
-    public string Entity = default!;
+    public EntProtoId Entity = default!;
 
     /// <summary>
     ///     What is our maximum allowed entities to be spawned?

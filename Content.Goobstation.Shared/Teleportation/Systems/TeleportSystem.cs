@@ -142,4 +142,4 @@ public sealed partial class TeleportSystem : EntitySystem
 /// Raised on an entity being teleported, before its position is changed.
 /// </summary>
 [ByRefEvent]
-public record struct TeleportingEvent(EntityUid? User, bool Predicted);
+public partial record struct TeleportingEvent(EntityUid? User, bool Predicted);

@@ -26,7 +26,7 @@ namespace Content.Server._Mini.Networking;
 /// <remarks>
 /// Do NOT put station/drop-shuttle grids or player bodies into session overrides.
 /// Those trees are huge, share the PVS enter budget with normal chunks, and abort
-/// mid-recursion when the budget is exceeded — causing inventory LeavePvs and
+/// mid-recursion when the budget is exceeded - causing inventory LeavePvs and
 /// nearby players to appear invisible on other clients.
 /// </remarks>
 public sealed class PvsSessionOverrideSystem : EntitySystem

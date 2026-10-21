@@ -112,7 +112,7 @@ public sealed class StatusIconOverlay : Overlay
                 }
                 else
                 {
-                    // Mini: see the left column above — same rest height, so icons do not blink.
+                    // Mini: see the left column above - same rest height, so icons do not blink.
                     if (accOffsetR + texture.Height > stableHeight * EyeManager.PixelsPerMeter)
                         break;
                     if (proto.Layer == StatusIconLayer.Base)

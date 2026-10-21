@@ -9,10 +9,10 @@ using Robust.Shared.Player;
 namespace Content.Goobstation.Server.Administration.Commands;
 
 [AdminCommand(AdminFlags.Host)]
-internal sealed class SetPatronCommand : LocalizedCommands
+internal sealed partial class SetPatronCommand : LocalizedCommands
 {
-    [Dependency] private readonly LinkAccountManager _linkAccount = default!;
-    [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
+    [Dependency] private LinkAccountManager _linkAccount = default!;
+    [Dependency] private ISharedPlayerManager _playerManager = default!;
 
     public override string Command => "setpatron";
 

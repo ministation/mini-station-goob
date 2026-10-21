@@ -34,10 +34,10 @@ public sealed partial class HandTeleporterComponent : Component
     public bool AllowPortalsOnDifferentMaps;
 
     [DataField("firstPortalPrototype")]
-    public string FirstPortalPrototype = "PortalRed";
+    public EntProtoId FirstPortalPrototype = "PortalRed";
 
     [DataField("secondPortalPrototype")]
-    public string SecondPortalPrototype = "PortalBlue";
+    public EntProtoId SecondPortalPrototype = "PortalBlue";
 
     [DataField("newPortalSound")] public SoundSpecifier NewPortalSound =
         new SoundPathSpecifier("/Audio/Machines/high_tech_confirm.ogg")

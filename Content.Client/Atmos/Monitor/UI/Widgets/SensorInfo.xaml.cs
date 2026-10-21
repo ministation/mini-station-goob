@@ -29,6 +29,9 @@ public sealed partial class SensorInfo : BoxContainer
     private Dictionary<Gas, RichTextLabel> _gasLabels = new();
     private Button _copySettings => CCopySettings;
 
+    // Used when the server has no threshold configured for a gas; never triggers an alarm.
+    private static readonly AtmosAlarmThreshold NoThreshold = new();
+
     public SensorInfo(AtmosSensorData data, string address)
     {
         IoCManager.InjectDependencies(this);
@@ -60,15 +63,29 @@ public sealed partial class SensorInfo : BoxContainer
             ProtoId<GasPrototype> gasProtoId = atmosphereSystem.GetGas(gas);
             var gasName = _prototypeManager.Index(gasProtoId).Name;
 
+            // The server may not have a threshold for every gas it reports (e.g. a gas was
+            // added after the monitor prototype was written). Don't crash on it: show the gas
+            // with a neutral color, but don't create an editable threshold it doesn't have.
+            if (!data.GasThresholds.TryGetValue(gas, out var threshold))
+            {
+                label.SetMarkup(Loc.GetString("air-alarm-ui-gases-indicator",
+                    ("gas", Loc.GetString(gasName)),
+                    ("color", AirAlarmWindow.ColorForAlarm(AtmosAlarmType.Normal)),
+                    ("amount", $"{amount:0.####}"),
+                    ("percentage", $"{(100 * fractionGas):0.##}")));
+                GasContainer.AddChild(label);
+                _gasLabels.Add(gas, label);
+                continue;
+            }
+
             label.SetMarkup(Loc.GetString("air-alarm-ui-gases-indicator",
                 ("gas", Loc.GetString(gasName)),
-                ("color", AirAlarmWindow.ColorForThreshold(fractionGas, data.GasThresholds[gas])),
+                ("color", AirAlarmWindow.ColorForThreshold(fractionGas, threshold)),
                 ("amount", $"{amount:0.####}"),
                 ("percentage", $"{(100 * fractionGas):0.##}")));
             GasContainer.AddChild(label);
             _gasLabels.Add(gas, label);
 
-            var threshold = data.GasThresholds[gas];
             var gasThresholdControl = new ThresholdControl(Loc.GetString($"air-alarm-ui-thresholds-gas-title"), threshold, AtmosMonitorThresholdType.Gas, gas, 100);
             gasThresholdControl.Margin = new Thickness(20, 2, 2, 2);
             gasThresholdControl.ThresholdDataChanged += (type, alarmThreshold, arg3) =>
@@ -134,9 +151,13 @@ public sealed partial class SensorInfo : BoxContainer
             ProtoId<GasPrototype> gasProtoId = atmosphereSystem.GetGas(gas);
             var gasName = _prototypeManager.Index(gasProtoId).Name;
 
+            // See the constructor: gases without a server-side threshold still have a label.
+            if (!data.GasThresholds.TryGetValue(gas, out var threshold))
+                threshold = NoThreshold;
+
             label.SetMarkup(Loc.GetString("air-alarm-ui-gases-indicator",
                 ("gas", Loc.GetString(gasName)),
-                ("color", AirAlarmWindow.ColorForThreshold(fractionGas, data.GasThresholds[gas])),
+                ("color", AirAlarmWindow.ColorForThreshold(fractionGas, threshold)),
                 ("amount", $"{amount:0.####}"),
                 ("percentage", $"{(100 * fractionGas):0.##}")));
         }

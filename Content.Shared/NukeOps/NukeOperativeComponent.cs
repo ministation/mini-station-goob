@@ -2,6 +2,7 @@
 
 using Content.Shared.StatusIcon;
 using Robust.Shared.GameStates;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.NukeOps;
 
@@ -16,5 +17,5 @@ public sealed partial class NukeOperativeComponent : Component
     ///
     /// </summary>
     [DataField("syndStatusIcon")]
-    public string SyndStatusIcon = "SyndicateFaction";
+    public ProtoId<FactionIconPrototype> SyndStatusIcon = "SyndicateFaction";
 }

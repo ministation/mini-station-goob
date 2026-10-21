@@ -513,5 +513,7 @@ public enum LogType
     /// </summary>
     SiliconLaws = 10005, // Goobstation
 
+    Paint = 10006, // Goobstation
+
     Genetics = 20001,
 }

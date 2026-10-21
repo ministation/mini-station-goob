@@ -604,10 +604,14 @@ namespace Content.Server.Voting.Managers
         private List<GamePresetPrototype> GetEligiblePresetsForVote()
         {
             var eligible = new List<GamePresetPrototype>();
+            var ticker = _entityManager.System<GameTicker>();
 
             foreach (var preset in _prototypeManager.EnumeratePrototypes<GamePresetPrototype>())
             {
                 if (!IsPresetEligibleForVote(preset))
+                    continue;
+
+                if (ticker.IsPresetDisabled(preset))
                     continue;
 
                 if (preset.ID == _lastPickedPreset)

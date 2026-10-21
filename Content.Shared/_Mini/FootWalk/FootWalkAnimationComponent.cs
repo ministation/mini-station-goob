@@ -132,7 +132,7 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     /// <remarks>
     /// The foot bob lifts the leg and shoe layers by up to <see cref="Amplitude"/> (2.5 px) on every
-    /// step, and <c>SpriteSystem.GetLocalBounds()</c> includes layer offsets — so the sprite's bounds
+    /// step, and <c>SpriteSystem.GetLocalBounds()</c> includes layer offsets - so the sprite's bounds
     /// height (and therefore any anchor built on <c>bounds.Height / 2</c>: status icons, health bar,
     /// do-after bar) moved ~1.25 px per step even with the body bounce cancelled out.
     /// </remarks>

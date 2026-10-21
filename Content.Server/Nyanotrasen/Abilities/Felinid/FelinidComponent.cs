@@ -11,19 +11,19 @@ public sealed partial class FelinidComponent : Component
     /// The hairball prototype to use.
     /// </summary>
     [DataField("hairballPrototype")]
-    public string HairballPrototype = "Hairball";
+    public EntProtoId HairballPrototype = "Hairball";
 
     //[DataField("hairballAction")]
     //public string HairballAction = "ActionHairball";
 
     [DataField("hairballActionId")]
-    public string? HairballActionId = "ActionHairball";
+    public EntProtoId? HairballActionId = "ActionHairball";
 
     [DataField("hairballAction")]
     public EntityUid? HairballAction;
 
     [DataField("eatActionId")]
-    public string? EatActionId = "ActionEatMouse";
+    public EntProtoId? EatActionId = "ActionEatMouse";
 
     [DataField("eatAction")]
     public EntityUid? EatAction;

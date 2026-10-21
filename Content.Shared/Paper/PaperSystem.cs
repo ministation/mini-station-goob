@@ -23,7 +23,7 @@ using Content.Shared.Roles;
 
 namespace Content.Shared.Paper;
 
-public sealed class PaperSystem : EntitySystem
+public sealed partial class PaperSystem : EntitySystem // Goob
 {
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
@@ -172,6 +172,7 @@ public sealed class PaperSystem : EntitySystem
             _popupSystem.PopupClient(stampPaperSelfMessage, args.User, args.User);
 
             _audio.PlayPredicted(stampComp.Sound, entity, args.User);
+            GoobRaiseStamped(entity, args.User); // Goob
 
             UpdateUserInterface(entity);
         }

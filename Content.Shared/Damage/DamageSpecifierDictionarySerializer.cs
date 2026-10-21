@@ -8,7 +8,6 @@ using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Serialization.Markdown.Mapping;
 using Robust.Shared.Serialization.Markdown.Validation;
 using Robust.Shared.Serialization.Markdown.Value;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Generic;
 using Robust.Shared.Serialization.TypeSerializers.Interfaces;
 
 namespace Content.Shared.Damage;
@@ -22,32 +21,15 @@ public sealed class DamageSpecifierDictionarySerializer : ITypeReader<Dictionary
         var vals = new Dictionary<ValidationNode, ValidationNode>();
         if (node.TryGet<MappingDataNode>("types", out var typesNode))
         {
-            vals.Add(new ValidatedValueNode(new ValueDataNode("types")), ValidateProtoKeys<DamageTypePrototype>(typesNode, dependencies));
+            vals.Add(new ValidatedValueNode(new ValueDataNode("types")), serializationManager.ValidateNode<Dictionary<ProtoId<DamageTypePrototype>, FixedPoint2>>(typesNode, context));
         }
 
         if (node.TryGet<MappingDataNode>("groups", out var groupsNode))
         {
-            vals.Add(new ValidatedValueNode(new ValueDataNode("groups")), ValidateProtoKeys<DamageGroupPrototype>(groupsNode, dependencies));
+            vals.Add(new ValidatedValueNode(new ValueDataNode("groups")), serializationManager.ValidateNode<Dictionary<ProtoId<DamageGroupPrototype>, FixedPoint2>>(groupsNode, context));
         }
 
         return new ValidatedMappingNode(vals);
-    }
-
-    private static ValidationNode ValidateProtoKeys<TPrototype>(MappingDataNode node, IDependencyCollection dependencies)
-        where TPrototype : class, IPrototype
-    {
-        var mapping = new Dictionary<ValidationNode, ValidationNode>();
-        foreach (var (key, value) in node.Children)
-        {
-            var keyNode = node.GetKeyNode(key);
-            mapping.Add(
-                keyNode is ValueDataNode valueNode
-                    ? ProtoIdSerializer<TPrototype>.Validate(dependencies, valueNode)
-                    : new ErrorNode(keyNode, $"Damage ids must be {typeof(TPrototype)} prototype ids"),
-                new ValidatedValueNode(value));
-        }
-
-        return new ValidatedMappingNode(mapping);
     }
 
     public Dictionary<string, FixedPoint2> Read(ISerializationManager serializationManager, MappingDataNode node, IDependencyCollection dependencies,

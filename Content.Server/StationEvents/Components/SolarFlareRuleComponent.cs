@@ -22,7 +22,7 @@ public sealed partial class SolarFlareRuleComponent : Component
     ///     Channels that will be disabled for a duration of event
     /// </summary>
     [DataField("affectedChannels")]
-    public HashSet<string> AffectedChannels = new();
+    public HashSet<ProtoId<RadioChannelPrototype>> AffectedChannels = new();
 
     /// <summary>
     ///     List of extra channels that can be random disabled on top of the starting channels.

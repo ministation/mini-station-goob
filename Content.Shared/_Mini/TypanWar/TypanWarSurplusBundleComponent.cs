@@ -18,7 +18,7 @@ public sealed partial class TypanWarSurplusBundleComponent : Component
     [DataField]
     public EntProtoId FallbackItem = "MedkitFilled";
 
-    /// <summary>Owning faction of the crate — the losing side rolls bonus loot while a comeback is active. Null disables the bonus.</summary>
+    /// <summary>Owning faction of the crate - the losing side rolls bonus loot while a comeback is active. Null disables the bonus.</summary>
     [DataField]
     public TypanWarSide? Faction;
 }

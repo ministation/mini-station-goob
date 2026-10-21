@@ -6,7 +6,7 @@ namespace Content.Goobstation.Server.Xenobiology.HTN;
 
 public sealed partial class SlimeNotMergedClusterPrecondition : HTNPrecondition
 {
-    [Dependency] private readonly IEntityManager _entManager = default!;
+    [Dependency] private IEntityManager _entManager = default!;
 
     public override bool IsMet(NPCBlackboard blackboard)
     {

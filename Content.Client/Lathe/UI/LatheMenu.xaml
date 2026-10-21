@@ -133,8 +133,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                             Text="✖"
                             SetSize="38 32"
                             HorizontalAlignment="Right"
-                            ToolTip="{Loc 'lathe-menu-delete-fabricating-tooltip'}"
-                            StyleClasses="Caution OpenLeft" />
+                            ToolTip="{Loc 'lathe-menu-delete-fabricating-tooltip'}" StyleClasses="Caution OpenLeft">
+                        </Button>
                     </PanelContainer>
                 </BoxContainer>
                 <ScrollContainer VerticalExpand="True" HScrollEnabled="False">

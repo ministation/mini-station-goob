@@ -32,6 +32,3 @@ alerts-severe-pain-desc = [color=red]Боль интенсивна, и её тр
 
 alerts-excruciating-pain-name = [color=red]Невыносимая боль[/color]
 alerts-excruciating-pain-desc = [color=red]Боль нестерпима, мешая сосредоточиться на чём-либо ещё.[/color]
-
-alerts-disgust-name = [color=yellow]Тошнота[/color]
-alerts-disgust-desc = Вас подташнивает...

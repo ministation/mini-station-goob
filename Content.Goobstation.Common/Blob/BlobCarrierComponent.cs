@@ -29,7 +29,7 @@ public sealed partial class BlobCarrierComponent : Component
 
     [ViewVariables(VVAccess.ReadWrite),
      DataField("corePrototype")]
-    public string CoreBlobPrototype = "CoreBlobTile";
+    public EntProtoId CoreBlobPrototype = "CoreBlobTile";
 
     public EntityUid? TransformToBlob = null;
 }

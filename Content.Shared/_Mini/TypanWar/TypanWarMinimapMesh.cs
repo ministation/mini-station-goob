@@ -82,7 +82,7 @@ public static class TypanWarMinimapMesh
             }
         }
 
-        // Merge collinear segments — same pass as BaseShuttleControl.
+        // Merge collinear segments - same pass as BaseShuttleControl.
         var decomposed = true;
         while (decomposed)
         {

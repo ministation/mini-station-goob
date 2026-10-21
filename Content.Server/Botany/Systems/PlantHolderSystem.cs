@@ -35,7 +35,7 @@ using Content.Shared._Mini.DailyQuests;
 
 namespace Content.Server.Botany.Systems;
 
-public sealed class PlantHolderSystem : EntitySystem
+public sealed partial class PlantHolderSystem : EntitySystem // Goob
 {
     [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
     [Dependency] private readonly BotanySystem _botany = default!;
@@ -725,6 +725,7 @@ public sealed class PlantHolderSystem : EntitySystem
             }
 
             _botany.Harvest(component.Seed, user, component.YieldMod);
+            GoobRaiseHarvested(plantholder, user); // Goob
             AfterHarvest(plantholder, component);
             var harvestEv = new PlantHarvestedEvent(user);
             RaiseLocalEvent(ref harvestEv);

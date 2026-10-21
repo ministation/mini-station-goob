@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.AlertLevel;
 
@@ -18,7 +19,7 @@ public sealed partial class AlertLevelComponent : Component
 
     // Once stations are a prototype, this should be used.
     [DataField("alertLevelPrototype", required: true)]
-    public string AlertLevelPrototype = default!;
+    public ProtoId<AlertLevelPrototype> AlertLevelPrototype = default!;
 
     /// <summary>
     /// The current level on the station.

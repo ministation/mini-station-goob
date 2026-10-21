@@ -3,6 +3,7 @@
 using Content.Server.DeviceLinking.Systems;
 using Content.Shared.DeviceLinking;
 using Robust.Shared.Audio;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.DeviceLinking.Components;
 
@@ -17,20 +18,20 @@ public sealed partial class SignalSwitchComponent : Component
     ///     The port that gets signaled when the switch turns on.
     /// </summary>
     [DataField("onPort")]
-    public string OnPort = "On";
+    public ProtoId<SourcePortPrototype> OnPort = "On";
 
     /// <summary>
     ///     The port that gets signaled when the switch turns off.
     /// </summary>
     [DataField("offPort")]
-    public string OffPort = "Off";
+    public ProtoId<SourcePortPrototype> OffPort = "Off";
 
     /// <summary>
     ///     The port that gets signaled with the switch's current status.
     ///     This is only used if OnPort is different from OffPort, not in the case of a toggle switch.
     /// </summary>
     [DataField("statusPort")]
-    public string StatusPort = "Status";
+    public ProtoId<SourcePortPrototype> StatusPort = "Status";
 
     [DataField("state")]
     public bool State;

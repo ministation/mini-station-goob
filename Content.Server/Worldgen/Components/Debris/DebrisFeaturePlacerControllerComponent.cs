@@ -3,6 +3,7 @@
 using System.Numerics;
 using Content.Server.Worldgen.Prototypes;
 using Content.Server.Worldgen.Systems.Debris;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Worldgen.Components.Debris;
 
@@ -39,5 +40,5 @@ public sealed partial class DebrisFeaturePlacerControllerComponent : Component
     ///     The noise channel to use as a density controller.
     /// </summary>
     [DataField("densityNoiseChannel")]
-    public string DensityNoiseChannel { get; private set; } = default!;
+    public ProtoId<NoiseChannelPrototype> DensityNoiseChannel { get; private set; } = default!;
 }

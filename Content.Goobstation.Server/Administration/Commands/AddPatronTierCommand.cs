@@ -7,11 +7,11 @@ using Robust.Shared.Console;
 namespace Content.Goobstation.Server.Administration.Commands;
 
 [AdminCommand(AdminFlags.Host)]
-internal sealed class AddPatronTierCommand : LocalizedCommands
+internal sealed partial class AddPatronTierCommand : LocalizedCommands
 {
     private static readonly string[] BoolOptions = ["true", "false"];
 
-    [Dependency] private readonly LinkAccountManager _linkAccount = default!;
+    [Dependency] private LinkAccountManager _linkAccount = default!;
 
     public override string Command => "addpatrontier";
 

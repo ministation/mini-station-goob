@@ -11,7 +11,7 @@ public sealed partial class ProjectileAnomalyComponent : Component
     /// The prototype of the projectile that will be shot when the anomaly pulses
     /// </summary>
     [DataField("projectilePrototype", required: true), ViewVariables(VVAccess.ReadWrite)]
-    public string ProjectilePrototype = default!;
+    public EntProtoId ProjectilePrototype = default!;
 
     /// <summary>
     /// The speed <see cref="ProjectilePrototype"/> can travel

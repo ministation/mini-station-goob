@@ -3,6 +3,7 @@
 using Robust.Client.UserInterface.RichText; // Goob
 using System.Numerics;
 using Content.Client._Mini.FootWalk;
+using Content.Goobstation.Common.CCVar; // Goob
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Speech;
@@ -83,6 +84,9 @@ namespace Content.Client.Chat.UI
 
         public static SpeechBubble CreateSpeechBubble(SpeechType type, ChatMessage message, EntityUid senderEntity)
         {
+            if (IoCManager.Resolve<IConfigurationManager>().GetCVar(GoobCVars.ChatRunechat)) // Goob
+                return new RunechatSpeechBubble(message, senderEntity, type); // Goob
+
             switch (type)
             {
                 case SpeechType.Emote:
@@ -170,7 +174,7 @@ namespace Content.Client.Chat.UI
                 baseOffset = speech.SpeechBubbleOffset;
 
             // Mini: the sprite offset is part of the drawn body, but the FootWalk whole-body bounce is
-            // cosmetic and rides inside it — a bubble glued to the bounce hopped on every step. Take the
+            // cosmetic and rides inside it - a bubble glued to the bounce hopped on every step. Take the
             // bounce back out, the bubble then stays at the character's own height while it walks.
             var spriteOffsetY = _entityManager.TryGetComponent<SpriteComponent>(_senderEntity, out var sprite)
                 ? FootWalkBounce.GetAnchoredOffsetY(_senderEntity, sprite.Offset.Y)

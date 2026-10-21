@@ -1,5 +1,5 @@
 # Auto-ported from Orion: lathe recipes referenced by Mini techweb but missing after cleanup.
-# Do not expand casually — only recipes required by recipeUnlocks.
+# Do not expand casually - only recipes required by recipeUnlocks.
 
 - type: latheRecipe
   id: AntimovCircuitBoard
@@ -332,7 +332,7 @@
   materials:
     Plastic: 100
 
-# MagazineRifle762 removed — entity does not exist in this fork (use MagazineLightRifle*)
+# MagazineRifle762 removed - entity does not exist in this fork (use MagazineLightRifle*)
 
 - type: latheRecipe
   id: MechanicalPinchesAbductor

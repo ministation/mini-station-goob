@@ -38,8 +38,8 @@ public sealed partial class CargoTelepadComponent : Component
     ///     The paper-type prototype to spawn with the order information.
     /// </summary>
     [DataField("printerOutput"), ViewVariables(VVAccess.ReadWrite)]
-    public string PrinterOutput = "PaperCargoInvoice";
+    public EntProtoId PrinterOutput = "PaperCargoInvoice";
 
     [DataField("receiverPort"), ViewVariables(VVAccess.ReadWrite)]
-    public string ReceiverPort = "OrderReceiver";
+    public ProtoId<SinkPortPrototype> ReceiverPort = "OrderReceiver";
 }

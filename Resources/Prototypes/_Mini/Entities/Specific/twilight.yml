@@ -4,7 +4,7 @@
   parent: [BaseItem, BaseCentcommContraband]
   id: TwilightManual
   name: twilight combat manual
-  description: A violet-bound manual of Umbra-9 close-quarters doctrine — Twilight. The pages smell faintly of ozone.
+  description: A violet-bound manual of Umbra-9 close-quarters doctrine - Twilight. The pages smell faintly of ozone.
   components:
   - type: Sprite
     sprite: _Mini/Objects/Misc/twilight_manual.rsi

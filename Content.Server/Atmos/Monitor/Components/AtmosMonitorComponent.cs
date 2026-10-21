@@ -2,6 +2,7 @@
 
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Monitor;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Atmos.Monitor.Components;
 
@@ -23,13 +24,13 @@ public sealed partial class AtmosMonitorComponent : Component
     public bool NetEnabled = true;
 
     [DataField("temperatureThresholdId")]
-    public string? TemperatureThresholdId;
+    public ProtoId<AtmosAlarmThresholdPrototype>? TemperatureThresholdId;
 
     [DataField("temperatureThreshold")]
     public AtmosAlarmThreshold? TemperatureThreshold;
 
     [DataField("pressureThresholdId")]
-    public string? PressureThresholdId;
+    public ProtoId<AtmosAlarmThresholdPrototype>? PressureThresholdId;
 
     [DataField("pressureThreshold")]
     public AtmosAlarmThreshold? PressureThreshold;
@@ -42,7 +43,7 @@ public sealed partial class AtmosMonitorComponent : Component
     public bool MonitorFire = false;
 
     [DataField("gasThresholdPrototypes")]
-    public Dictionary<Gas, string>? GasThresholdPrototypes;
+    public Dictionary<Gas, ProtoId<AtmosAlarmThresholdPrototype>>? GasThresholdPrototypes;
 
     [DataField("gasThresholds")]
     public Dictionary<Gas, AtmosAlarmThreshold>? GasThresholds;
