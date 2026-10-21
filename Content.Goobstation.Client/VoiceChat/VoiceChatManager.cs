@@ -55,19 +55,15 @@ public sealed partial class VoiceChatManager
         _net.RegisterNetMessage<MsgVoiceChatOptIn>(); // Mini: voice chat is opt-in
 
         _net.Connected += OnConnected;
-        _cfg.OnValueChanged(GoobCVars.VoiceChatHearSelf, OnHearSelfChanged);
         _cfg.OnValueChanged(GoobCVars.VoiceChatVolume, OnVolumeChanged);
         _cfg.OnValueChanged(GoobCVars.VoiceChatRadioMuted, OnRadioMutedChanged);
-        _cfg.OnValueChanged(GoobCVars.VoiceChatClientEnabled, OnVoiceOptInChanged, true);
     }
 
     public void Shutdown()
     {
         _net.Connected -= OnConnected;
-        _cfg.UnsubValueChanged(GoobCVars.VoiceChatHearSelf, OnHearSelfChanged);
         _cfg.UnsubValueChanged(GoobCVars.VoiceChatVolume, OnVolumeChanged);
         _cfg.UnsubValueChanged(GoobCVars.VoiceChatRadioMuted, OnRadioMutedChanged);
-        _cfg.UnsubValueChanged(GoobCVars.VoiceChatClientEnabled, OnVoiceOptInChanged);
     }
 
     public static HashSet<string> ParseMutedChannels(string value)
@@ -113,12 +109,9 @@ public sealed partial class VoiceChatManager
         DeafenedChanged?.Invoke(deafened);
     }
 
-    /// <summary>Mini: whether the player opted in to voice chat on this client.</summary>
-    public bool VoiceOptedIn => _cfg.GetCVar(GoobCVars.VoiceChatClientEnabled);
-
     public bool RequestLink()
     {
-        if (!_net.IsConnected || !_cfg.GetCVar(GoobCVars.VoiceChatEnabled) || !VoiceOptedIn)
+        if (!_net.IsConnected || !_cfg.GetCVar(GoobCVars.VoiceChatEnabled))
             return false;
 
         _net.ClientSendMessage(new MsgVoiceLinkRequest());
@@ -153,26 +146,19 @@ public sealed partial class VoiceChatManager
     }
 
     /// <summary>
-    /// Mini: tell the server whether this player wants voice chat. Opted-in players transmit
-    /// their microphone and are excluded from TTS (voice chat or TTS - one or the other).
+    /// Mini: voice chat is always on for this client, so we always announce participation.
+    /// The server uses this to accept voice frames from the player.
     /// </summary>
     private void SendVoiceOptIn()
     {
         if (_net.IsConnected)
-            _net.ClientSendMessage(new MsgVoiceChatOptIn { OptedIn = VoiceOptedIn });
-    }
-
-    private void OnVoiceOptInChanged(bool optedIn)
-    {
-        SendVoiceOptIn();
-        SendMicMute();
-        SendSettings();
+            _net.ClientSendMessage(new MsgVoiceChatOptIn { OptedIn = true });
     }
 
     private void SendMicMute()
     {
         if (_net.IsConnected)
-            _net.ClientSendMessage(new MsgVoiceMicMute { Muted = MicMuted || Deafened || !VoiceOptedIn });
+            _net.ClientSendMessage(new MsgVoiceMicMute { Muted = MicMuted || Deafened });
     }
 
     private void OnStatus(MsgVoiceStatus message)
@@ -187,11 +173,6 @@ public sealed partial class VoiceChatManager
 
         WebConnected = connected;
         WebConnectedChanged?.Invoke(connected);
-    }
-
-    private void OnHearSelfChanged(bool hearSelf)
-    {
-        SendSettings();
     }
 
     private void OnRadioMutedChanged(string muted)
@@ -213,8 +194,8 @@ public sealed partial class VoiceChatManager
         _receiveDisabled = _cfg.GetCVar(GoobCVars.VoiceChatVolume) <= 0f;
         _net.ClientSendMessage(new MsgVoiceSettings
         {
-            HearSelf = _cfg.GetCVar(GoobCVars.VoiceChatHearSelf),
-            Receive = !_receiveDisabled && !Deafened && VoiceOptedIn,
+            HearSelf = false,
+            Receive = !_receiveDisabled && !Deafened,
             MutedChannels = new List<string>(ParseMutedChannels(_cfg.GetCVar(GoobCVars.VoiceChatRadioMuted))),
             MutedSpeakers = new List<ushort>(_mutedSpeakers),
         });
