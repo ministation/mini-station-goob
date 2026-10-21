@@ -212,3 +212,9 @@ thunderdome-leave-01 = { $user } исчезает, устав убивать.
 
 # Объявления об убийствах
 thunderdome-kill-announcement = { $killer } убил { $victim }! Статистика: { $kills } убийств | K/D: { $kd } | Серия: { $streak }
+
+# Mini: недостающие предметы аплинка ERT
+ent-BicaridineAutoInjectorThunderdome = автоинъектор бикаридина
+    .desc = Автоинъектор быстрого действия с 10 единицами бикаридина. Быстро лечит механические повреждения.
+ent-DermalineAutoInjectorThunderdome = автоинъектор дермалина
+    .desc = Автоинъектор быстрого действия с 10 единицами дермалина. Быстро лечит ожоги.
