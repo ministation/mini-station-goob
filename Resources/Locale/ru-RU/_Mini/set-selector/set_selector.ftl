@@ -21,7 +21,7 @@ assistant-set-selector-rich-desc =
 assistant-set-selector-welder = Набор сварщика
 assistant-set-selector-welder-desc =
     Вот и настал момент, когда нужно взяться за дело.
-    Хорошо, что ты — сварщик девятого разряда.
+    Хорошо, что ты - сварщик девятого разряда.
 
 assistant-set-selector-syndi = Набор фаната Синдиленда
 assistant-set-selector-syndi-desc =

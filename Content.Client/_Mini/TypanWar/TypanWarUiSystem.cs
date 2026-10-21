@@ -78,7 +78,7 @@ public sealed class TypanWarUiSystem : EntitySystem
 
     public void RequestStatus()
     {
-        // Avoid sending during prediction replays — those stamp past ticks and spam late MsgEntity.
+        // Avoid sending during prediction replays - those stamp past ticks and spam late MsgEntity.
         if (!_timing.IsFirstTimePredicted)
             return;
 

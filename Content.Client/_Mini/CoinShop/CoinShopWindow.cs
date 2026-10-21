@@ -271,7 +271,7 @@ public sealed class CoinShopWindow : DefaultWindow
             MinSize = new Vector2(0, size.Y + 20)
         };
 
-        // Ghost theme ".rsi" folders ship as a single png without rsi.json — they need the
+        // Ghost theme ".rsi" folders ship as a single png without rsi.json - they need the
         // texture-first loader, otherwise the RSI loader logs "Failed to load RSI".
         var tex = loader != null ? loader(iconRsi) : _system.GetItemIcon(iconRsi);
         if (tex != null)

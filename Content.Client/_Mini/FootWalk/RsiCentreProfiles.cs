@@ -11,7 +11,7 @@ namespace Content.Client._Mini.FootWalk;
 
 /// <summary>
 /// Анализ арта по пикселям для анимации ходьбы: проходит ли рисунок через центральную линию спрайта
-/// (слитные юбки, сросшиеся штанины) — такие вещи нельзя разрезать на левую и правую половины.
+/// (слитные юбки, сросшиеся штанины) - такие вещи нельзя разрезать на левую и правую половины.
 /// </summary>
 /// <remarks>
 /// Раньше это спрашивали у GPU: <c>Texture.GetPixel</c> в движке вытягивает ВЕСЬ лист атласа на
@@ -22,14 +22,14 @@ namespace Content.Client._Mini.FootWalk;
 ///
 /// Атлас загружаемого RSI лежит на CPU и живёт ровно до конца <see cref="IResourceCache.OnRsiLoaded"/>
 /// (<c>RSIResource.Load</c> диспозит его сразу после события), поэтому профиль центральных колонок
-/// снимается там же один раз на RSI. Дальше любой запрос — чтение памяти, а не обмен с видеокартой.
+/// снимается там же один раз на RSI. Дальше любой запрос - чтение памяти, а не обмен с видеокартой.
 /// </remarks>
 public sealed class RsiCentreProfiles
 {
     /// <summary>Порог альфы в байтах: 0.05 из прежней проверки по нормализованному цвету.</summary>
     private const byte AlphaThreshold = 12;
 
-    /// <summary>Профиль кадра: <c>[y]</c> — на строке <c>y</c> (0 = верх кадра) оба пикселя у центра непрозрачны.</summary>
+    /// <summary>Профиль кадра: <c>[y]</c> - на строке <c>y</c> (0 = верх кадра) оба пикселя у центра непрозрачны.</summary>
     private readonly Dictionary<Texture, bool[]> _profiles = new();
 
     public void Subscribe(IResourceCache cache)
@@ -44,7 +44,7 @@ public sealed class RsiCentreProfiles
 
     /// <summary>
     /// Есть ли у кадра непрозрачные пиксели с обеих сторон от центральной линии внутри нижней полосы
-    /// высотой <paramref name="footCut"/> (1 — весь кадр). Кадр без профиля считается не проходящим
+    /// высотой <paramref name="footCut"/> (1 - весь кадр). Кадр без профиля считается не проходящим
     /// через центр: тогда работают обычные левая/правая половины.
     /// </summary>
     public bool CrossesCentre(Texture frame, float footCut)
@@ -59,7 +59,7 @@ public sealed class RsiCentreProfiles
         var from = Math.Max(0, (int) (height * (1f - footCut)));
 
         // Прежняя проверка шла снизу вверх и останавливалась на первой же строке, где центр сомкнут:
-        // низ кадра — это как раз место, где между ногами виден просвет.
+        // низ кадра - это как раз место, где между ногами виден просвет.
         var count = height - from;
         var step = Math.Max(1, count / 4);
         for (var y = height - 1; y >= from; y -= step)
@@ -73,7 +73,7 @@ public sealed class RsiCentreProfiles
 
     private void OnRsiLoaded(RsiLoadedEventArgs args)
     {
-        // Атлас — всегда Image<Rgba32>: и папочный RSI, и .rsic грузятся в этот формат.
+        // Атлас - всегда Image<Rgba32>: и папочный RSI, и .rsic грузятся в этот формат.
         if (args.Atlas is not Image<Rgba32> sheet)
             return;
 
@@ -84,7 +84,7 @@ public sealed class RsiCentreProfiles
         }
         catch (ArgumentException)
         {
-            // Не единый буфер — читать построчно смысла нет, остаёмся на запасном поведении.
+            // Не единый буфер - читать построчно смысла нет, остаёмся на запасном поведении.
             return;
         }
 

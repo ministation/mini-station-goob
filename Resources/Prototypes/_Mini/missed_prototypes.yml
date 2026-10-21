@@ -93,7 +93,7 @@
     board: ADTSecShuttleConsoleCircuitboard
 
 # Заглушки для удалённых апстримом прототипов, на которые ещё ссылаются карты.
-# Записи о них убраны из Resources/migration.yml — иначе десериализатор карт
+# Записи о них убраны из Resources/migration.yml - иначе десериализатор карт
 # помечает их как obsolete/removed и сущности не спавнятся.
 - type: entity
   id: RipleyChassis

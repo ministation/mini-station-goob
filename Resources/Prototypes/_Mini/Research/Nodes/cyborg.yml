@@ -307,7 +307,7 @@
 
 - type: technology
   id: CyberOrgansUpgraded
-  hidden: true # empty unlocks — disabled until content exists
+  hidden: true # empty unlocks - disabled until content exists
   name: research-technology-cyber-organs-upgraded-name
   description: research-technology-cyber-organs-upgraded-desc
   icon:
@@ -330,7 +330,7 @@
 
 - type: technology
   id: AdvancedCyberOrgans
-  hidden: true # empty unlocks — disabled until content exists
+  hidden: true # empty unlocks - disabled until content exists
   name: research-technology-advanced-cyber-organs-name
   description: research-technology-advanced-cyber-organs-desc
   icon:

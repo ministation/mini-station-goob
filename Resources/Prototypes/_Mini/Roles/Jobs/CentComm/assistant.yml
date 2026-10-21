@@ -41,7 +41,7 @@
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
 
-# Unique kit only — clothes come from JobCentralCommandAssistant roleLoadout groups.
+# Unique kit only - clothes come from JobCentralCommandAssistant roleLoadout groups.
 - type: startingGear
   id: CentcomAssistantGear
   equipment:

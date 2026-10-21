@@ -83,7 +83,7 @@ public sealed class TeleportToCentCommOnTriggerSystem : EntitySystem
                 if (HasComp<PdaComponent>(item))
                     continue;
 
-                // Delete equipped gear outright — do not drop it on the floor.
+                // Delete equipped gear outright - do not drop it on the floor.
                 QueueDel(item);
             }
         }

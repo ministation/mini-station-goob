@@ -70,7 +70,7 @@ public sealed class CustomGhostSystem : EntitySystem
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
 
         // Prefer an explicit ":selected" token. Do not TryIndex the raw suffix
-        // "ThemeId:selected" — that never matches a prototype and skips the pick.
+        // "ThemeId:selected" - that never matches a prototype and skips the pick.
         string? selectedThemeId = null;
         string? fallbackThemeId = null;
 
@@ -112,7 +112,7 @@ public sealed class CustomGhostSystem : EntitySystem
             CustomGhostAppearance.AlphaOverride,
             proto.AlphaOverride > 0 ? proto.AlphaOverride : 1f);
 
-        // Do not overwrite MetaData name/description — GhostSystem already set the
+        // Do not overwrite MetaData name/description - GhostSystem already set the
         // player's character/ckey name. Theme display names belong in the shop UI only.
 
         EntityManager.AddComponents(ghostUid, proto.Components);

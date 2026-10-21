@@ -12,7 +12,7 @@
   - type: General
     amount: 12500
   technologyPrerequisites:
-  # Mini: Typan server has no Engineering/Security — use Typan equivalents of ExperimentalTools + ExoticAmmo
+  # Mini: Typan server has no Engineering/Security - use Typan equivalents of ExperimentalTools + ExoticAmmo
   - TypanAdvancedToolsTechnology
   - TypanUraniumMunitions
   requiredItemsToUnlock:
@@ -68,7 +68,7 @@
     id: illegal-technology-revealed
     technology: IllegalTechnology
   technologyPrerequisites:
-  # Mini: PartsBluespace is NT Engineering — use Typan bluespace-adjacent gate
+  # Mini: PartsBluespace is NT Engineering - use Typan bluespace-adjacent gate
   - TypanOptimizedMicrogalvanism
   - IllegalTechnology
   recipeUnlocks:

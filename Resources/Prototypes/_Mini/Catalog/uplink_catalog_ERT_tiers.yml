@@ -549,7 +549,7 @@
       tags:
       - ERTUplinkGamma
 
-# Heavy — juggernaut only
+# Heavy - juggernaut only
 - type: listing
   id: ERTCallGammaMinigun
   name: Миниган

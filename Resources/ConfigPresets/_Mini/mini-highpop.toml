@@ -35,7 +35,7 @@ max_updates = 96
 pow3r_disable_parallel = false
 
 [atmos]
-# Goob default true is O(n^2) airflow — keep off on potato / high-pop hosts.
+# Goob default true is O(n^2) airflow - keep off on potato / high-pop hosts.
 mmos_expensive_airflow = false
 superconduction = false
 space_wind = false

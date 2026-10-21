@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Lermal
 # Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 #
-# freeMinimumSponsorLevel (optional): omit — только за токены. 0 — бесплатно любому игроку (один раз за раунд).
+# freeMinimumSponsorLevel (optional): omit - только за токены. 0 - бесплатно любому игроку (один раз за раунд).
 
 - type: antagTokenCatalog
   id: Default

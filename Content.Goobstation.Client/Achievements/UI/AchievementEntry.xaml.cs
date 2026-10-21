@@ -104,7 +104,7 @@ public sealed partial class AchievementEntry : PanelContainer
         }
 
         // Rarity uses the same tiers and colors as weekly quests; the tier also sets the coin reward.
-        // Plain colored text only — no pill, border or dot. Secret achievements keep the tier hidden,
+        // Plain colored text only - no pill, border or dot. Secret achievements keep the tier hidden,
         // otherwise the reward scale would leak the secret.
         if (hidden)
         {

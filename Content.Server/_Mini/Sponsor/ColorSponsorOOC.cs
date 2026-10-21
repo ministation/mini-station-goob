@@ -1,7 +1,7 @@
 public class SponsorColor
 {
     /// <summary>
-    /// Markup color hex for sponsor nicknames (6-digit RGB only — Alpha / black breaks AHelp markup).
+    /// Markup color hex for sponsor nicknames (6-digit RGB only - Alpha / black breaks AHelp markup).
     /// </summary>
     public static string GetColorForNickname(int DonateLvl)
     {

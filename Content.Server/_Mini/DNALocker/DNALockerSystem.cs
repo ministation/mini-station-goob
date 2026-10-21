@@ -80,7 +80,7 @@ public sealed class DNALockerSystem : EntitySystem
         if (IsAuthorized(equipee, comp))
             return;
 
-        // No usable DNA on wearer: never gib — unequip if possible.
+        // No usable DNA on wearer: never gib - unequip if possible.
         if (!TryComp(equipee, out DnaComponent? dna) || string.IsNullOrEmpty(dna.DNA))
         {
             RejectNonlethal(equipment, equipee);

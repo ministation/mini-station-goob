@@ -23,12 +23,12 @@ namespace Content.Server._Mini.Ghost;
 
 /// <summary>
 /// Система, динамически выдающая <see cref="GhostPanelAntagonistMarkerComponent"/>.
-/// YAML на AntagSelection/мобах тоже может задавать маркер; PinSystem — страховка от потери при мержах.
+/// YAML на AntagSelection/мобах тоже может задавать маркер; PinSystem - страховка от потери при мержах.
 /// Культисты/зомби появляются только после видимого превращения, без лишней меты.
-/// Не помечаем «скрытых» антагов (предатель, генокрад, еретик, вор) — они остаются в списке живых.
+/// Не помечаем «скрытых» антагов (предатель, генокрад, еретик, вор) - они остаются в списке живых.
 ///
 /// Robust допускает только одну directed-подписку на пару Comp+Event на всём сервере.
-/// ComponentStartup/MapInit у многих антагов уже заняты — используем ComponentInit
+/// ComponentStartup/MapInit у многих антагов уже заняты - используем ComponentInit
 /// (у Xenomorph занят ComponentInit → MapInitEvent).
 /// </summary>
 public sealed class GhostPanelAntagonistMarkerPinSystem : EntitySystem
@@ -183,7 +183,7 @@ public sealed class GhostPanelAntagonistMarkerPinSystem : EntitySystem
     private void Pin(EntityUid uid, string name, string description, int priority)
     {
         // Mind-role entities (e.g. MindRoleAbductor*) also carry antag comps like Abductor.
-        // Markers belong on the body/spawner, not the role entity — and adding them breaks UninitializedSaveTest.
+        // Markers belong on the body/spawner, not the role entity - and adding them breaks UninitializedSaveTest.
         if (HasComp<MindRoleComponent>(uid))
             return;
 

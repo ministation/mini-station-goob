@@ -83,7 +83,7 @@
 
 - type: technology
   id: Fusion
-  hidden: true # empty unlocks — disabled until content exists
+  hidden: true # empty unlocks - disabled until content exists
   name: research-technology-fusion-name
   description: research-technology-fusion-desc
   icon:
@@ -135,7 +135,7 @@
 
 - type: technology
   id: RapidConstructionDeviceUpgrade
-  hidden: true # empty unlocks — disabled until content exists
+  hidden: true # empty unlocks - disabled until content exists
   name: research-technology-rapid-construction-device-upgrade-name
   description: research-technology-rapid-construction-device-upgrade-desc
   icon:

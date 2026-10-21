@@ -32,7 +32,7 @@ public sealed class ErtResponceConsoleSystem : EntitySystem
 
     private void OnButtonPressed(EntityUid uid, ErtResponceConsoleComponent component, ErtResponceConsoleUiButtonPressedMessage args)
     {
-        // Handheld telephones have no APC receiver — IsPowered is true when missing.
+        // Handheld telephones have no APC receiver - IsPowered is true when missing.
         if (!_powerReceiverSystem.IsPowered(uid))
             return;
 

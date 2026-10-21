@@ -53,7 +53,7 @@ public sealed class CoinShopSystem : EntitySystem
 
     public Texture? GetGhostIcon(string rsiPath)
     {
-        // Ghost theme ".rsi" folders ship as a single png without rsi.json — load the
+        // Ghost theme ".rsi" folders ship as a single png without rsi.json - load the
         // texture directly instead of going through the RSI loader. Only rooted paths
         // are attempted: relative ones make the texture loader's params lookup throw.
         foreach (var suffix in new[] { "/animated.png", "/icon.png", "/ghost.png" })

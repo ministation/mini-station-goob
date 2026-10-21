@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# Typan drobe inventories — department uniforms replace NT jumpsuits.
+# Typan drobe inventories - department uniforms replace NT jumpsuits.
 
 - type: vendingMachineInventory
   id: AtmosDrobeTypanInventory

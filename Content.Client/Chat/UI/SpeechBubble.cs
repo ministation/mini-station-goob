@@ -174,7 +174,7 @@ namespace Content.Client.Chat.UI
                 baseOffset = speech.SpeechBubbleOffset;
 
             // Mini: the sprite offset is part of the drawn body, but the FootWalk whole-body bounce is
-            // cosmetic and rides inside it — a bubble glued to the bounce hopped on every step. Take the
+            // cosmetic and rides inside it - a bubble glued to the bounce hopped on every step. Take the
             // bounce back out, the bubble then stays at the character's own height while it walks.
             var spriteOffsetY = _entityManager.TryGetComponent<SpriteComponent>(_senderEntity, out var sprite)
                 ? FootWalkBounce.GetAnchoredOffsetY(_senderEntity, sprite.Offset.Y)

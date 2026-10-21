@@ -166,7 +166,7 @@
 
 - type: technology
   id: ArtificialSelection
-  hidden: true # empty unlocks — disabled until content exists
+  hidden: true # empty unlocks - disabled until content exists
   name: research-technology-artificial-selection-name
   description: research-technology-artificial-selection-desc
   icon:

@@ -154,7 +154,7 @@ public sealed partial class VoiceChatManager
 
     /// <summary>
     /// Mini: tell the server whether this player wants voice chat. Opted-in players transmit
-    /// their microphone and are excluded from TTS (voice chat or TTS — one or the other).
+    /// their microphone and are excluded from TTS (voice chat or TTS - one or the other).
     /// </summary>
     private void SendVoiceOptIn()
     {

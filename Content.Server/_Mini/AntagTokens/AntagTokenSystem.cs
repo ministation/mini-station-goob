@@ -279,7 +279,7 @@ public sealed class AntagTokenSystem : EntitySystem
     }
 
     /// <summary>
-    /// Direct balance payout (bet winnings, lootbox duplicate refunds) — bypasses the monthly earn cap.
+    /// Direct balance payout (bet winnings, lootbox duplicate refunds) - bypasses the monthly earn cap.
     /// Works for offline players by writing the balance row directly.
     /// </summary>
     public void PayBalance(NetUserId userId, int amount)
@@ -1639,7 +1639,7 @@ public sealed class AntagTokenSystem : EntitySystem
         if (role.IgnoresStationJob)
             return false;
 
-        // Only block while the player is alive on a reserved station job — ghosts/corpses keep old mind jobs.
+        // Only block while the player is alive on a reserved station job - ghosts/corpses keep old mind jobs.
         if (session.AttachedEntity is not { Valid: true } attached ||
             HasComp<GhostComponent>(attached) ||
             !TryComp<MobStateComponent>(attached, out var mobState) ||
@@ -2446,7 +2446,7 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             if (!_listings.TryGetListing(roleId, out var role))
                 continue;
 
-            // Do not include buyer/character names — ready-manifest is public and would enable metagaming.
+            // Do not include buyer/character names - ready-manifest is public and would enable metagaming.
             var roleName = Loc.GetString(role.NameLocKey);
             result.Add(new ReadyManifestAntagEntry(
                 role.Id,

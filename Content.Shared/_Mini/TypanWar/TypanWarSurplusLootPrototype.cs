@@ -21,7 +21,7 @@ public sealed partial class TypanWarSurplusLootEntry
     [DataField(required: true)]
     public EntProtoId Item = default!;
 
-    /// <summary>Independent roll chance per crate open (0–1).</summary>
+    /// <summary>Independent roll chance per crate open (0-1).</summary>
     [DataField(required: true)]
     public float Probability;
 

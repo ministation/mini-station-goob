@@ -4,7 +4,7 @@
 #
 # Game traffic is Lidgren UDP + libsodium AEAD (XChaCha20-Poly1305), NOT OpenSSL/TLS.
 # TLS / ss14s only applies to status HTTP, hub, and reverse-proxy fronts.
-# Do not chase TLS cipher suites for the game bus — wrong stack.
+# Do not chase TLS cipher suites for the game bus - wrong stack.
 
 [net]
 pvs_range = 21

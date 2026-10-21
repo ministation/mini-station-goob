@@ -32,7 +32,7 @@ public static class DiscordAuthLink
         apiUrl = apiUrl.TrimEnd('/');
         var requestUrl = $"{apiUrl}/login/{userId.Value}";
 
-        // Client sandbox forbids System.UriKind / Uri.TryCreate — validate with a simple prefix check.
+        // Client sandbox forbids System.UriKind / Uri.TryCreate - validate with a simple prefix check.
         if (!IsHttpUrl(requestUrl))
         {
             Logger.ErrorS("discord_auth", $"Invalid auth URL: {requestUrl}");

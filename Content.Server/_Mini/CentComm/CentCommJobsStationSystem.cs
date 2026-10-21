@@ -43,7 +43,7 @@ public sealed class CentCommJobsStationSystem : EntitySystem
         if (ent.Comp.Entity is not { } centcommGrid)
             return;
 
-        // Shared CentComm across multiple stations — only set up once.
+        // Shared CentComm across multiple stations - only set up once.
         if (HasComp<StationMemberComponent>(centcommGrid))
         {
             EnsureCentCommSpawnPoints(centcommGrid);
@@ -65,7 +65,7 @@ public sealed class CentCommJobsStationSystem : EntitySystem
 
     /// <summary>
     /// Map markers can be missing or fail to load; ensure ПЦК / стажер spawners exist on the CentComm grid
-    /// at the CentCom Office warp (never grid origin — that is empty space).
+    /// at the CentCom Office warp (never grid origin - that is empty space).
     /// </summary>
     private void EnsureCentCommSpawnPoints(EntityUid centcommGrid)
     {

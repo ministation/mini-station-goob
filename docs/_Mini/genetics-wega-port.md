@@ -13,7 +13,7 @@ Keep attribution; Mini AGPL remains compatible for combined distribution.
 
 | | Modern /tg/ | Paradise / SS220 / **this port** |
 |---|---|---|
-| Loop | ATCG sequencer + discovery aliases | Hex SE blocks 1–55, irradiate subblocks |
+| Loop | ATCG sequencer + discovery aliases | Hex SE blocks 1-55, irradiate subblocks |
 | Machine | DNA Scanner + Console | DNA Modifier console + MedicalScanner bay |
 | Data | mutation sequences | SE / UI / UE hex (`EnzymesPrototypeInfo.HexCode`) |
 | Thresholds | solve pairs | DAC / BEA / 802; block 55 = monkey |
@@ -32,12 +32,12 @@ Keep attribution; Mini AGPL remains compatible for combined distribution.
 
 ## Core types
 
-- `DnaModifierComponent` — SE/UI on organics; instability
-- `DnaModifierConsole` + `DnaClient` — UI / buffers (needs `DnaServer` on R&D server)
-- MedicalScanner — subject bay (device link `MedicalScannerSender`)
-- `StructuralEnzymesPrototype` — gene catalog YAML
+- `DnaModifierComponent` - SE/UI on organics; instability
+- `DnaModifierConsole` + `DnaClient` - UI / buffers (needs `DnaServer` on R&D server)
+- MedicalScanner - subject bay (device link `MedicalScannerSender`)
+- `StructuralEnzymesPrototype` - gene catalog YAML
 - `DnaModifierInjector` / Clean SE / Disk
-- `DnaInstabilityComponent` — stages 1–3
+- `DnaInstabilityComponent` - stages 1-3
 
 ## Adaptation checklist
 
@@ -58,7 +58,7 @@ Keep attribution; Mini AGPL remains compatible for combined distribution.
   - `SpawnPointGeneticist` is always placed on a free tile **adjacent to** `SpawnPointMedicalDoctor` (first doctor spawn).
   - `MedicalScanner` + `DnaModifierConsole` go next to that doctor cluster (reuse a scanner only if it is ≤10 tiles from the primary doctor; otherwise place a new pair). Bind range ≤4.
   - Skips `Events` / `Shuttles` / `CentComm` / `Bitrun`.
-- **Loadout:** Geneticist starting gear includes `BoxDnaInjector` (`BaseAmmoProvider`, 10× empty `DnaInjector`) — same pattern as sterile swab boxes.
+- **Loadout:** Geneticist starting gear includes `BoxDnaInjector` (`BaseAmmoProvider`, 10× empty `DnaInjector`) - same pattern as sterile swab boxes.
 
 ## Known gaps / stubs
 
@@ -66,5 +66,5 @@ Keep attribution; Mini AGPL remains compatible for combined distribution.
 - Deep inventory clone / TTS / barks skipped on polymorphism clone.
 - Matter Eater / cough / height adapted to Mini APIs.
 - Strong genes (TK, mind communication) may still need playtests.
-- Do not merge Wega `ChatSystem`/`ForensicsSystem` patches wholesale — Mini job icons / forensics DNA stay.
+- Do not merge Wega `ChatSystem`/`ForensicsSystem` patches wholesale - Mini job icons / forensics DNA stay.
 - Stock / `_Goobstation` maps are out of scope for the remapper (Mini + CorvaxGoob Stations only).

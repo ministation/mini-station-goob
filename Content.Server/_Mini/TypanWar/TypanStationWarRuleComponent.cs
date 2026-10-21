@@ -123,7 +123,7 @@ public sealed partial class TypanStationWarRuleComponent : Component
 
     public string? TypanMvpName;
 
-    /// <summary>Set for technical stalemates (layout failure) where nobody fought — suppress rewards.</summary>
+    /// <summary>Set for technical stalemates (layout failure) where nobody fought - suppress rewards.</summary>
     public bool SkipRewards;
 
     /// <summary>Max capture points a faction can earn from combat kills per war.</summary>

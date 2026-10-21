@@ -314,7 +314,7 @@ public sealed class TypanWarDropShuttleSystem : EntitySystem
             if (HasWorkingDropShuttle(rule, side))
                 continue;
 
-            // Override the regular respawn delay — the war event brings the shuttle back immediately.
+            // Override the regular respawn delay - the war event brings the shuttle back immediately.
             SetRespawnAt(rule, side, _timing.CurTime);
             scheduled = true;
         }

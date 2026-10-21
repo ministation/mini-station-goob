@@ -101,7 +101,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
             if (mind.UserId is not { } userId || !_players.TryGetSessionById(userId, out var session))
                 continue;
 
-            // Stuck flag after a failed open (e.g. AttachedEntity was null) — allow retry.
+            // Stuck flag after a failed open (e.g. AttachedEntity was null) - allow retry.
             if (combat.RespawnUiOpen)
             {
                 if (session.AttachedEntity is { } actor && _ui.IsUiOpen(ghost, TypanWarRespawnUiKey.Key, actor))
@@ -325,7 +325,7 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         _ui.SetUi(ghostUid, TypanWarRespawnUiKey.Key,
             new InterfaceData("TypanWarRespawnBoundUserInterface", interactionRange: 0f, requireInputValidation: false));
 
-        // Wait until the session is actually on the ghost — otherwise OpenUi no-ops and a stuck
+        // Wait until the session is actually on the ghost - otherwise OpenUi no-ops and a stuck
         // RespawnUiOpen flag would permanently suppress TryOpenPendingRespawnUis retries.
         if (session.AttachedEntity != ghostUid)
         {

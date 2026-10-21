@@ -76,7 +76,7 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
 
     /// <summary>
     /// Loads missing NT/Typan supplemental maps when the war preset is active.
-    /// Safe to call multiple times — skips maps whose stations already exist.
+    /// Safe to call multiple times - skips maps whose stations already exist.
     /// </summary>
     public void TryEnsureSupplementalMaps(GameMapPrototype? mainMap = null)
     {
@@ -102,7 +102,7 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
     {
         if (!_prototypes.TryIndex(mapId, out var map))
         {
-            Log.Error($"Typan Station War: failed to enqueue supplemental map '{mapId}' — prototype missing.");
+            Log.Error($"Typan Station War: failed to enqueue supplemental map '{mapId}' - prototype missing.");
             return;
         }
 
@@ -152,12 +152,12 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
     {
         if (!_prototypes.TryIndex(mapId, out var map))
         {
-            Log.Error($"Typan Station War: failed to load supplemental map '{mapId}' — prototype missing.");
+            Log.Error($"Typan Station War: failed to load supplemental map '{mapId}' - prototype missing.");
             return;
         }
 
         Log.Info($"Typan Station War: loading supplemental map '{mapId}' (RoundStarting fallback).");
-        // Emergency path after staged preload — initialize immediately; not tracked in ticker's deferred list.
+        // Emergency path after staged preload - initialize immediately; not tracked in ticker's deferred list.
         _ticker.LoadGameMap(map, out _, options: new DeserializationOptions { InitializeMaps = true });
     }
 }

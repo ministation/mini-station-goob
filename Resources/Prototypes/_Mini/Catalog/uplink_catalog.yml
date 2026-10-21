@@ -247,7 +247,7 @@
     whitelist:
     - IPC
 
-# Same listing for legacy Mini ERT uplink category (do not merge categories — UI duplicates tabs)
+# Same listing for legacy Mini ERT uplink category (do not merge categories - UI duplicates tabs)
 - type: listing
   id: UplinkNanoPasteBluespaceMini
   name: uplink-nanopaste-name

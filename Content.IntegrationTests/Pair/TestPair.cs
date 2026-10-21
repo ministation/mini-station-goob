@@ -91,7 +91,7 @@ public sealed partial class TestPair : RobustIntegrationTest.TestPair
             if (cfg.IsCVarRegistered(CCVars.AdminLogsEnabled.Name))
                 cfg.SetCVar(CCVars.AdminLogsEnabled, next.AdminLogsEnabled);
 
-            // NetPVS is server-authoritative — setting it on the client logs a WARN that
+            // NetPVS is server-authoritative - setting it on the client logs a WARN that
             // PoolTestLogHandler treats as failure (YAML linter / integration tests).
             if (instance is not IServerIntegrationInstance)
                 return;

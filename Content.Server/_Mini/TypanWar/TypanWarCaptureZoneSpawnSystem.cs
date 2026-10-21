@@ -70,7 +70,7 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
         if (!TryComp<StationDataComponent>(ntStation, out var ntData) ||
             !TryComp<StationDataComponent>(typanStation, out var typanData))
         {
-            Log.Warning("Typan station war: cannot spawn capture zones — missing station data.");
+            Log.Warning("Typan station war: cannot spawn capture zones - missing station data.");
             return false;
         }
 
@@ -79,7 +79,7 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
 
         if (ntGrid == null || typanGrid == null)
         {
-            Log.Warning("Typan station war: cannot spawn capture zones — missing station grids.");
+            Log.Warning("Typan station war: cannot spawn capture zones - missing station grids.");
             return false;
         }
 
@@ -122,7 +122,7 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
         }
         else
         {
-            Log.Warning("Typan station war: no trade post grid found — spawning third zone on Typan station.");
+            Log.Warning("Typan station war: no trade post grid found - spawning third zone on Typan station.");
             targets.Add(new SpawnTarget
             {
                 Grid = typanGrid.Value,
@@ -297,7 +297,7 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
         if (!TryComp<TransformComponent>(target.Grid, out _))
             return false;
 
-        // Prefer a random valid interior tile — AABB geometric center of trade posts
+        // Prefer a random valid interior tile - AABB geometric center of trade posts
         // often lands in hangars / docks that look "outside" the capture footprint.
         return TryPickCenterTileRandom(target.Grid, grid, out center);
     }
@@ -401,7 +401,7 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
     }
 
     /// <summary>
-    /// Indestructible plastitanium barriers mark off-limits areas — zones must stay reachable.
+    /// Indestructible plastitanium barriers mark off-limits areas - zones must stay reachable.
     /// </summary>
     private bool IsNearIndestructibleWall(EntityUid gridUid, MapGridComponent grid, Vector2i center, Vector2i halfExtents)
     {

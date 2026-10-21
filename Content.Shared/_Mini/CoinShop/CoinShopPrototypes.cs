@@ -45,7 +45,7 @@ public sealed partial class CoinOocColorPrototype : IPrototype
     [IdDataField]
     public string ID { get; private set; } = default!;
 
-    /// <summary>6-digit hex markup color (no alpha — breaks OOC/AHelp markup).</summary>
+    /// <summary>6-digit hex markup color (no alpha - breaks OOC/AHelp markup).</summary>
     [DataField(required: true)]
     public string Color = default!;
 

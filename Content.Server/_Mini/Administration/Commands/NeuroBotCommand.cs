@@ -18,9 +18,9 @@ public sealed class NeuroBotCommand : IConsoleCommand
     public string Help =>
         "Usage:\n" +
         "  neurobots spawn|despawn|status|providers|list\n" +
-        "  neurobots mute <имя|NeuroPersona|all> [минут]   — без минут глушит навсегда\n" +
+        "  neurobots mute <имя|NeuroPersona|all> [минут]   - без минут глушит навсегда\n" +
         "  neurobots unmute <имя|NeuroPersona|all>\n" +
-        "  neurobots test [текст]                          — живой запрос к провайдеру";
+        "  neurobots test [текст]                          - живой запрос к провайдеру";
 
     public async void Execute(IConsoleShell shell, string argStr, string[] args)
     {

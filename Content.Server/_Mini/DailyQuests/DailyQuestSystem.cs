@@ -687,7 +687,7 @@ public sealed class DailyQuestSystem : EntitySystem
         if (TryGetPlayerState(uid, out var victimState) && victimState.Round.WasActivePlayer)
             victimState.Round.FailedNoDamage = true;
 
-        // NoMeleeHits is failed only via OnMeleeHit — ranged / other damage must not fail pacifist.
+        // NoMeleeHits is failed only via OnMeleeHit - ranged / other damage must not fail pacifist.
     }
 
     private void OnMeleeHit(MeleeHitEvent args)

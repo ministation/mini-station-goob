@@ -329,7 +329,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             var sprinting = _moverQuery.TryGetComponent(uid, out var mover) && mover.Sprinting;
 
             // Stardew-style whole-body bounce: the sprite itself hops on each footfall and every
-            // layer rides it, feet included — like the baked walk frames in Stardew. Every other
+            // layer rides it, feet included - like the baked walk frames in Stardew. Every other
             // offset below is a pure lift (>= 0), so parts can only overlap more, never separate:
             // no slits can open between limbs, naked or clothed.
             var bodyY = 0f;
@@ -359,13 +359,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             // Side near foot (the one toward the camera for E/W sprites).
             var nearY = facing == RsiDirection.East ? rightY : leftY;
 
-            // Only undo last tick's offsets — do not re-zero every lower-body layer.
+            // Only undo last tick's offsets - do not re-zero every lower-body layer.
             ResetTouchedOffsets((uid, walk), sprite);
 
             // Mini: right after the reset the layers sit in their rest pose, so this is the sprite
             // height without the walk animation. Overlays above the head (status icons, health bar,
             // do-after) anchor on it instead of the animated bounds, otherwise the raising legs moved
-            // them ~1.25 px every step — that was the «худ дёргается при ходьбе».
+            // them ~1.25 px every step - that was the «худ дёргается при ходьбе».
             walk.RestBoundsHeight = _sprite.GetLocalBounds((uid, sprite)).Height;
 
             _humanoidQuery.TryGetComponent(uid, out var humanoid);
@@ -373,7 +373,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (frontMode)
             {
                 // South: sprite left ≈ RFoot. North mirrors L/R on the sheet (clothing only).
-                // Body layers stay anatomical L/R — never invert with the camera sheet.
+                // Body layers stay anatomical L/R - never invert with the camera sheet.
                 var invert = facing == RsiDirection.North;
 
                 ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
@@ -382,7 +382,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
 
                 // Outer "splits" are the hardsuit BOOT halves (FootHalfClip keeps the boot band,
-                // not the coat body) — they are footwear and must ride the legs exactly.
+                // not the coat body) - they are footwear and must ride the legs exactly.
                 ApplySplitHalves((uid, sprite), walk, walk.OuterSplitKeys, leftY, rightY, invert);
 
                 // Pant halves ride their leg exactly; lifts are never negative, so a half can
@@ -398,7 +398,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             }
             else
             {
-                // Side: one silhouette — clothing lifts with near foot; don't alternate bare feet under boots.
+                // Side: one silhouette - clothing lifts with near foot; don't alternate bare feet under boots.
                 if (hasOuter)
                 {
                     // Full suit: legs must move with the boot band or flesh peeks through the hole.
@@ -407,7 +407,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 }
                 else if (hasJumpsuit)
                 {
-                    // Jumpsuit: the pant band rides the near leg, so both legs must follow it —
+                    // Jumpsuit: the pant band rides the near leg, so both legs must follow it -
                     // otherwise the far leg slides out of the pants on every step.
                     ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: false);
                     ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, nearY), skipFeet: false);
@@ -500,7 +500,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
     /// <summary>
     /// Joint patches: rest-pose duplicates of the moving limb layers, inserted below the torso.
-    /// When a limb lifts, its vacated pixels are filled by the patch with the same art — the
+    /// When a limb lifts, its vacated pixels are filled by the patch with the same art - the
     /// "root" of the limb stays put while the limb itself rises, so no slit can open at the
     /// joint (this is the closest a dynamic sprite rig gets to Stardew's baked overlap).
     /// </summary>
@@ -509,7 +509,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (ent.Comp.JointPatchKeys.Count > 0)
             return;
 
-        // Below the groin: the patch only shows where every upper layer is empty — exactly the
+        // Below the groin: the patch only shows where every upper layer is empty - exactly the
         // strip a lifting limb vacates.
         if (!_sprite.LayerMapTryGet((ent.Owner, sprite), HumanoidVisualLayers.Groin, out var insertAt, false))
             insertAt = 0;
@@ -546,7 +546,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     /// arm swing. Cloth is opaque over the arm, so lifting the arm out from under a static sleeve pushed
     /// bare skin out along the shoulder on every step. Cutting the sleeve out of the garment does not work
     /// either: the row it vacates at the cuff has nothing behind it and would flash a hole each step. A copy
-    /// drawn on top of the untouched garment does work — the union of both always covers the arm, so the
+    /// drawn on top of the untouched garment does work - the union of both always covers the arm, so the
     /// sleeve visibly moves with it and no skin can show.
     /// </summary>
     private void EnsureSleeveCover(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
@@ -722,7 +722,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     }
 
     /// <summary>
-    /// On-screen RSI facing — same angle sprites use (worldRotation + eyeRotation).
+    /// On-screen RSI facing - same angle sprites use (worldRotation + eyeRotation).
     /// </summary>
     private RsiDirection GetScreenFacing(EntityUid uid)
     {
@@ -750,7 +750,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             _sprite.LayerSetVisible((ent.Owner, sprite), index, !hide);
         }
 
-        // Foot markings ride with the foot layer — hide when covering clothing is on.
+        // Foot markings ride with the foot layer - hide when covering clothing is on.
         if (_humanoidQuery.TryGetComponent(ent.Owner, out var humanoid))
             SetFootMarkingsVisible((ent.Owner, sprite), humanoid, visible: !hide);
 
@@ -977,7 +977,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 _sprite.LayerSetVisible((ent.Owner, sprite), index, !frontMode || IsBandOnly(ent.Comp.BandOnlyOuterSources, key));
         }
 
-        // Jumpsuit originals (holed torso) stay visible in every mode — the pant halves/band
+        // Jumpsuit originals (holed torso) stay visible in every mode - the pant halves/band
         // only replace the region below the hip cut, so there is nothing to toggle here.
         foreach (var key in ent.Comp.JumpsuitSplitKeys)
         {
@@ -1757,14 +1757,14 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         if (_borgQuery.HasComp(uid))
             return false;
 
-        // Clown/jester shoes already play WaddleAnimation — skip foot bob.
+        // Clown/jester shoes already play WaddleAnimation - skip foot bob.
         if (_waddleQuery.HasComp(uid))
             return false;
 
         if (_mobQuery.TryGetComponent(uid, out var mob) && !_mobState.IsAlive(uid, mob))
             return false;
 
-        // No ground contact in zero-G — nothing to push off.
+        // No ground contact in zero-G - nothing to push off.
         if (_gravity.IsWeightless(uid))
             return false;
 

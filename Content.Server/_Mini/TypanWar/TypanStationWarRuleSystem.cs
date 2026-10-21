@@ -234,7 +234,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
         if (component.Phase == TypanWarPhase.Ended)
             return;
 
-        Log.Error("Typan station war: layout failed — ending war.");
+        Log.Error("Typan station war: layout failed - ending war.");
         component.SkipRewards = true;
 
         _chat.DispatchGlobalAnnouncement(
@@ -519,7 +519,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
             {
                 _minimapBroadcastAccumulator = 0f;
                 _statusBroadcastAccumulator = 0f;
-                // Full payload covers HUD fields too — shapes only when tiles changed.
+                // Full payload covers HUD fields too - shapes only when tiles changed.
                 BroadcastStatus(component, includeMinimap: true, forceShapes: false);
             }
             else if (hudDue)
@@ -755,7 +755,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
     /// <summary>
     /// Bet payouts: ×2 for the winning side, half back on a stalemate, nothing on a loss.
-    /// Paid via PayBalance (no monthly cap) — winnings are returns of staked coins, not new earnings.
+    /// Paid via PayBalance (no monthly cap) - winnings are returns of staked coins, not new earnings.
     /// </summary>
     private void ProcessBets(TypanStationWarRuleComponent component)
     {
@@ -932,7 +932,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
     private void CancelWarInsufficient(EntityUid ruleUid, TypanStationWarRuleComponent component, int ntAlive, int typanAlive)
     {
-        // Unlock midround antags / ghost roles / tokens immediately — don't wait for Ended.
+        // Unlock midround antags / ghost roles / tokens immediately - don't wait for Ended.
         component.Phase = TypanWarPhase.Ended;
         component.Winner = TypanWarWinner.Stalemate;
         IsWarActive = false;
@@ -1629,7 +1629,7 @@ public sealed class TypanStationWarRuleSystem : GameRuleSystem<TypanStationWarRu
 
     private void OnGameRuleAdded(ref GameRuleAddedEvent args)
     {
-        // Only block midround additions — roundstart rules are added in the lobby before war goes active.
+        // Only block midround additions - roundstart rules are added in the lobby before war goes active.
         if (GameTicker.RunLevel != GameRunLevel.InRound || !IsTypanWarBlocking())
             return;
 

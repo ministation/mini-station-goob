@@ -101,7 +101,7 @@ namespace Content.Server.GameTicking
 
         /// <summary>
         ///     Starts staged map preload for the round (builds a per-tick queue).
-        ///     Round start waits for <see cref="MapsReady"/> — never sync-drains.
+        ///     Round start waits for <see cref="MapsReady"/> - never sync-drains.
         /// </summary>
         /// <remarks>
         ///     Must reach MapsReady before the runlevel is set to InRound.
@@ -369,7 +369,7 @@ namespace Content.Server.GameTicking
 
             if (!MapsReady)
             {
-                // Never block the lobby tick path on map IO — but once StartRound was
+                // Never block the lobby tick path on map IO - but once StartRound was
                 // explicitly requested, finish the staged queue now so we enter InRound
                 // without waiting for Update (integration tests + force-start).
                 _sawmill.Warning("StartRound called before MapsReady; deferring to staged preload.");

@@ -60,7 +60,7 @@ public sealed partial class GhostSystem
             if (!IsEntityPanelRelevant(uid, isGhost, isMob))
                 continue;
 
-            // Mini: цель без карты (удалённое тело, только что вышедший игрок) — телепорт в nullspace.
+            // Mini: цель без карты (удалённое тело, только что вышедший игрок) - телепорт в nullspace.
             if (!IsWarpReachable(uid, xform))
                 continue;
 
@@ -94,7 +94,7 @@ public sealed partial class GhostSystem
 
     /// <summary>
     /// Mini: можно ли вообще телепортироваться к сущности. Сущности в nullspace (удаляемые тела,
-    /// остатки лобби) висят без карты — SetCoordinates туда оставляет призрака в пустоте.
+    /// остатки лобби) висят без карты - SetCoordinates туда оставляет призрака в пустоте.
     /// </summary>
     private bool IsWarpReachable(EntityUid uid, TransformComponent xform)
     {
@@ -112,7 +112,7 @@ public sealed partial class GhostSystem
             return false;
 
         // Профессия известна и без департамента: раньше такая роль снова показывалась как
-        // «неизвестно кто», хотя название работы и иконка у неё есть. Департамент — это только
+        // «неизвестно кто», хотя название работы и иконка у неё есть. Департамент - это только
         // группировка в списке, поэтому он падает в Specific, а не съедает JobId.
         job = jobPrototype.ID;
         department = _jobs.TryGetDepartment(jobPrototype.ID, out var departmentPrototype)
@@ -135,7 +135,7 @@ public sealed partial class GhostSystem
             if (!TryComp<MindContainerComponent>(uid, out var mindContainer) || !mindContainer.HasMind)
                 continue;
 
-            // Mini: антагонист без карты — тот же сломанный телепорт в пустоту.
+            // Mini: антагонист без карты - тот же сломанный телепорт в пустоту.
             if (!IsWarpReachable(uid, xform))
                 continue;
 
