@@ -104,25 +104,16 @@ public sealed partial class AchievementEntry : PanelContainer
         }
 
         // Rarity uses the same tiers and colors as weekly quests; the tier also sets the coin reward.
-        // Secret achievements keep the tier hidden, otherwise the reward scale would leak the secret.
+        // Plain colored text only — no pill, border or dot. Secret achievements keep the tier hidden,
+        // otherwise the reward scale would leak the secret.
         if (hidden)
         {
-            RarityPill.Visible = false;
+            RarityLabel.Visible = false;
         }
         else
         {
             RarityLabel.Text = Loc.GetString(data.RarityTier.GetLocId());
             RarityLabel.FontColorOverride = unlocked ? rarityColor : rarityColor.WithAlpha(0.7f);
-            RarityPill.PanelOverride = new StyleBoxFlat
-            {
-                BackgroundColor = rarityColor.WithAlpha(unlocked ? 0.18f : 0.1f),
-                BorderColor = rarityColor.WithAlpha(unlocked ? 0.45f : 0.22f),
-                BorderThickness = new Thickness(1),
-            };
-            RarityDot.PanelOverride = new StyleBoxFlat
-            {
-                BackgroundColor = unlocked ? rarityColor : rarityColor.WithAlpha(0.5f),
-            };
         }
 
         if (!unlocked && !hidden && data.Target > 1)
