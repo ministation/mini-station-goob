@@ -13,37 +13,64 @@ using Robust.Shared.Utility;
 
 namespace Content.Goobstation.Client.Achievements.UI;
 
+/// <summary>
+/// One achievement card: icon, name, description, rarity, progress and, on the right edge, the coin
+/// reward badge. The badge is gold while the reward is still pending and turns green once the
+/// achievement has been unlocked and the coins are on the player's balance.
+/// </summary>
 [GenerateTypedNameReferences]
 public sealed partial class AchievementEntry : PanelContainer
 {
-    private static readonly Color UnlockedBackground = Color.FromHex("#2A2618");
-    private static readonly Color UnlockedBorder = Color.FromHex("#C9A13B");
-    private static readonly Color LockedBackground = Color.FromHex("#1E1E22");
-    private static readonly Color LockedBorder = Color.FromHex("#35353B");
-    private static readonly Color IconBackground = Color.FromHex("#141417");
+    private static readonly Color LockedCard = Color.FromHex("#141419");
+    private static readonly Color LockedBorder = Color.FromHex("#2c2c36");
+    private static readonly Color UnlockedCard = Color.FromHex("#1a1710");
+    private static readonly Color IconBackground = Color.FromHex("#0d0d11");
+    private static readonly Color LockedIconBorder = Color.FromHex("#26262f");
+    private static readonly Color LockedName = Color.FromHex("#9fa3ad");
+    private static readonly Color DescriptionColor = Color.FromHex("#b9c1d2");
+    private static readonly Color LockedDescriptionColor = Color.FromHex("#82868f");
+    private static readonly Color StatusColor = Color.FromHex("#8f96a4");
+    private static readonly Color TrackColor = Color.FromHex("#26262f");
+
+    private static readonly Color RewardPendingBackground = Color.FromHex("#2b2411");
+    private static readonly Color RewardPendingBorder = Color.FromHex("#c9a13b");
+    private static readonly Color RewardPendingText = Color.FromHex("#eccd74");
+    private static readonly Color RewardReceivedBackground = Color.FromHex("#1f3327");
+    private static readonly Color RewardReceivedBorder = Color.FromHex("#6b9e7a");
+    private static readonly Color RewardReceivedText = Color.FromHex("#b9dfc6");
 
     public AchievementEntry(AchievementData data, SpriteSystem sprite)
     {
         RobustXamlLoader.Load(this);
 
         var unlocked = data.UnlockedAt != null;
+        var hidden = !unlocked && data.Name == null;
+        var rarityColor = data.RarityTier.GetColor();
 
         PanelOverride = new StyleBoxFlat
         {
-            BackgroundColor = unlocked ? UnlockedBackground : LockedBackground,
-            BorderColor = unlocked ? UnlockedBorder : LockedBorder,
+            BackgroundColor = unlocked ? UnlockedCard : LockedCard,
+            BorderColor = unlocked ? rarityColor.WithAlpha(0.55f) : LockedBorder,
             BorderThickness = new Thickness(1),
+        };
+
+        // A thin rarity stripe on the left edge, so the tier is readable at a glance.
+        AccentStrip.PanelOverride = new StyleBoxFlat
+        {
+            BackgroundColor = rarityColor.WithAlpha(unlocked ? 0.9f : 0.3f),
         };
 
         IconPanel.PanelOverride = new StyleBoxFlat
         {
             BackgroundColor = IconBackground,
+            BorderColor = unlocked ? rarityColor.WithAlpha(0.55f) : LockedIconBorder,
+            BorderThickness = new Thickness(1),
         };
 
         if (data.Icon is { } icon)
         {
             Icon.Texture = sprite.Frame0(icon);
-            Icon.Modulate = unlocked ? Color.White : Color.White.WithAlpha(0.3f);
+            Icon.Modulate = unlocked ? Color.White : Color.White.WithAlpha(0.35f);
         }
         else
         {
@@ -53,54 +80,90 @@ public sealed partial class AchievementEntry : PanelContainer
         NameLabel.Text = data.Name is { } name
             ? Loc.GetString(name)
             : Loc.GetString("achievements-window-hidden-name");
-
-        if (!unlocked)
-            NameLabel.FontColorOverride = Color.FromHex("#9A9AA2");
+        NameLabel.FontColorOverride = unlocked ? Color.White : LockedName;
 
         var description = data.Description is { } desc
             ? Loc.GetString(desc)
             : Loc.GetString("achievements-window-hidden-desc");
         DescriptionLabel.SetMessage(FormattedMessage.FromUnformatted(description));
+        DescriptionLabel.Modulate = unlocked ? DescriptionColor : LockedDescriptionColor;
 
         if (data.UnlockedAt is { } unlockedAt)
         {
             StatusLabel.Text = Loc.GetString("achievements-window-unlocked-on",
                 ("date", unlockedAt.ToLocalTime().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+            StatusLabel.FontColorOverride = StatusColor;
         }
-        else if (data.Target > 1)
+        else
         {
-            ProgressBox.Visible = true;
-            ProgressFill.Value = data.Progress / (float) data.Target;
-            ProgressLabel.Text = Loc.GetString("achievements-window-progress",
-                ("progress", data.Progress),
-                ("target", data.Target));
+            // Still locked: the card shows progress instead of an unlock date.
+            StatusLabel.Visible = false;
         }
 
         // Rarity uses the same tiers and colors as weekly quests; the tier also sets the coin reward.
-        var rarityColor = data.RarityTier.GetColor();
-        RarityLabel.Text = Loc.GetString(data.RarityTier.GetLocId());
-        RarityLabel.FontColorOverride = unlocked ? rarityColor : rarityColor.WithAlpha(0.55f);
-
-        if (unlocked)
+        // Secret achievements keep the tier hidden, otherwise the reward scale would leak the secret.
+        if (hidden)
         {
-            PanelOverride = new StyleBoxFlat
+            RarityPill.Visible = false;
+        }
+        else
+        {
+            RarityLabel.Text = Loc.GetString(data.RarityTier.GetLocId());
+            RarityLabel.FontColorOverride = unlocked ? rarityColor : rarityColor.WithAlpha(0.7f);
+            RarityPill.PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = UnlockedBackground,
-                BorderColor = rarityColor.WithAlpha(0.85f),
+                BackgroundColor = rarityColor.WithAlpha(unlocked ? 0.18f : 0.1f),
+                BorderColor = rarityColor.WithAlpha(unlocked ? 0.45f : 0.22f),
                 BorderThickness = new Thickness(1),
+            };
+            RarityDot.PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = unlocked ? rarityColor : rarityColor.WithAlpha(0.5f),
             };
         }
 
-        // Hidden, still-locked achievements keep their reward secret as well.
-        if (data.CoinReward > 0 && (unlocked || data.Name != null))
+        if (!unlocked && !hidden && data.Target > 1)
         {
-            var cache = IoCManager.Resolve<IResourceCache>();
-            if (cache.TryGetResource<TextureResource>(new ResPath(AntagTokenCatalog.CurrencyIconPath), out var coinRes))
-                CoinIcon.Texture = coinRes.Texture;
-
-            CoinRewardLabel.Text = Loc.GetString("achievements-window-coin-reward", ("amount", data.CoinReward));
-            CoinRewardLabel.FontColorOverride = unlocked ? Color.FromHex("#C9A13B") : Color.FromHex("#9A9AA2");
-            CoinRewardBox.Visible = true;
+            ProgressFill.Visible = true;
+            ProgressLabel.Visible = true;
+            ProgressFill.Value = System.Math.Clamp(data.Progress / (float) data.Target, 0f, 1f);
+            ProgressFill.ForegroundStyleBoxOverride = new StyleBoxFlat
+            {
+                BackgroundColor = rarityColor.WithAlpha(0.85f),
+            };
+            ProgressFill.BackgroundStyleBoxOverride = new StyleBoxFlat
+            {
+                BackgroundColor = TrackColor,
+            };
+            ProgressLabel.Text = Loc.GetString("achievements-window-progress",
+                ("progress", data.Progress),
+                ("target", data.Target));
+            ProgressLabel.FontColorOverride = StatusColor;
         }
+
+        // Hidden, still-locked achievements keep their reward secret as well.
+        if (hidden || data.CoinReward <= 0)
+        {
+            CoinBadge.Visible = false;
+            return;
+        }
+
+        var cache = IoCManager.Resolve<IResourceCache>();
+        if (cache.TryGetResource<TextureResource>(new ResPath(AntagTokenCatalog.CurrencyIconPath), out var coinRes))
+            CoinIcon.Texture = coinRes.Texture;
+
+        CoinRewardLabel.Text = Loc.GetString("achievements-window-coin-reward", ("amount", data.CoinReward));
+        CoinRewardLabel.FontColorOverride = unlocked ? RewardReceivedText : RewardPendingText;
+        CoinBadge.PanelOverride = new StyleBoxFlat
+        {
+            BackgroundColor = unlocked ? RewardReceivedBackground : RewardPendingBackground,
+            BorderColor = (unlocked ? RewardReceivedBorder : RewardPendingBorder).WithAlpha(0.9f),
+            BorderThickness = new Thickness(1),
+        };
+        CoinBadge.ToolTip = Loc.GetString(
+            unlocked
+                ? "achievements-window-coin-reward-received-tooltip"
+                : "achievements-window-coin-reward-tooltip",
+            ("amount", data.CoinReward));
     }
 }
