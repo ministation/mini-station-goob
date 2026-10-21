@@ -33,7 +33,8 @@ public sealed class PreventChasmFallingSystem : EntitySystem
         if (TryComp<UseDelayComponent>(uid, out var useDelay) && _delay.IsDelayed((uid, useDelay)))
             return;
 
-        args.Cancelled = true;
+        // Mini: do not cancel the fall before a safe landing spot is found. If the teleport
+        // search fails, the entity used to stay standing on the chasm forever; let it fall.
         var coordsValid = false;
         var coords = Transform(args.Entity).Coordinates;
 
@@ -59,6 +60,7 @@ public sealed class PreventChasmFallingSystem : EntitySystem
                 _delay.TryResetDelay((uid, useDelay));
 
             coordsValid = true;
+            args.Cancelled = true;
         }
     }
 
