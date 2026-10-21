@@ -111,3 +111,11 @@ Entries:
       message: Способности ревенанта/рейта (Wraith) снова сохраняются на хотбаре после перезахода
   id: 9
   time: '2026-07-31T17:00:00.0000000+00:00'
+- author: Mini Station
+  changes:
+    - type: Add
+      message: 'Русская локализация: перевод всех недостающих строк Goob-Station'
+    - type: Tweak
+      message: Инструмент Tools/localize/ru_sync.py и CI-проверка локализации
+  id: 10
+  time: '2026-10-21T18:46:55.0000000+00:00'
