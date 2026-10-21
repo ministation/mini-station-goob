@@ -136,7 +136,7 @@ public abstract partial class SharedBuckleSystem
 
     #region Transform
 
-    private void OnParentChanged(Entity<BuckleComponent> ent, ref EntParentChangedMessage args)
+    protected virtual void OnParentChanged(Entity<BuckleComponent> ent, ref EntParentChangedMessage args)
     {
         BuckleTransformCheck(ent, args.Transform);
     }
