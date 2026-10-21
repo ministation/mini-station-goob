@@ -47,8 +47,17 @@ public sealed partial class AchievementToast : PanelContainer
             if (cache.TryGetResource<TextureResource>(new ResPath(AntagTokenCatalog.CurrencyIconPath), out var coinRes))
                 CoinIcon.Texture = coinRes.Texture;
 
+            // The coins are already on the balance when the toast shows up, so the chip is green
+            // (same signalling as the green reward badge on the achievement card).
             CoinLabel.Text = Loc.GetString("achievements-window-coin-reward", ("amount", data.CoinReward));
-            CoinBox.Visible = true;
+            CoinLabel.FontColorOverride = Color.FromHex("#b9dfc6");
+            CoinPanel.PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = Color.FromHex("#1f3327"),
+                BorderColor = Color.FromHex("#6b9e7a"),
+                BorderThickness = new Thickness(1),
+            };
+            CoinPanel.Visible = true;
         }
     }
 

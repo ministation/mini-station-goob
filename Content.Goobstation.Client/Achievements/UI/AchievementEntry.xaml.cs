@@ -67,13 +67,16 @@ public sealed partial class AchievementEntry : PanelContainer
             BorderThickness = new Thickness(1),
         };
 
-        if (data.Icon is { } icon)
+        // Secret achievements keep their icon hidden as well: a visible picture would give the
+        // secret away even though the name is already "???".
+        if (!hidden && data.Icon is { } icon)
         {
             Icon.Texture = sprite.Frame0(icon);
             Icon.Modulate = unlocked ? Color.White : Color.White.WithAlpha(0.35f);
         }
         else
         {
+            Icon.Visible = false;
             HiddenIconLabel.Visible = true;
         }
 
