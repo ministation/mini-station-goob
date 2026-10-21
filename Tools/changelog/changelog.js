@@ -44,9 +44,9 @@ async function main() {
     }
 
     // Get all changes from the body
-    const { mini, goob } = getChanges(commentlessBody);
+    const { mini } = getChanges(commentlessBody);
 
-    if (mini.length === 0 && goob.length === 0) {
+    if (mini.length === 0) {
         console.log("No valid changes found, skipping");
         return;
     }
@@ -76,29 +76,18 @@ async function main() {
         appendChangelogEntry(MINI_CHANGELOG_DIR, miniEntry, "Name: Mini\nOrder: -2\nEntries:\n");
     }
 
-    if (goob.length > 0) {
-        const goobEntry = {
-            author: author,
-            changes: goob,
-            id: getHighestCLNumber(process.env.CHANGELOG_DIR) + 1,
-            time: time,
-        };
-
-        console.log("goob entry:", goobEntry);
-        appendChangelogEntry(process.env.CHANGELOG_DIR, goobEntry, "Name: Gooblog\nOrder: -1\nEntries:\n");
-    }
-
     console.log(`Changelog updated with changes from PR #${process.env.PR_NUMBER}`);
 }
 
 
 // Code chunking
 
-// Get all changes from the PR body, split by Mini prefix
+// Get all changes from the PR body. Entries go to the Mini changelog by default:
+// players only see that one, while Gooblog is an archive filled by upstream merges
+// and batch runs. Legacy "Mini" prefixes are stripped from the message.
 function getChanges(body) {
     const matches = [];
     const mini = [];
-    const goob = [];
 
     for (const match of body.matchAll(EntryRegex)) {
         matches.push([match[1], match[2]]);
@@ -129,22 +118,13 @@ function getChanges(body) {
             return;
         }
 
-        const message = entry[1].trim();
-        const change = {
+        mini.push({
             type: type,
-            message: MINI_PREFIX_REGEX.test(message)
-                ? message.replace(MINI_PREFIX_REGEX, "")
-                : message,
-        };
-
-        if (MINI_PREFIX_REGEX.test(message)) {
-            mini.push(change);
-        } else {
-            goob.push(change);
-        }
+            message: entry[1].trim().replace(MINI_PREFIX_REGEX, ""),
+        });
     });
 
-    return { mini, goob };
+    return { mini };
 }
 
 // Get the highest changelog number from the changelogs file
