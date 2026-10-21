@@ -46,15 +46,18 @@ public sealed class VoiceBanCommandTest
         await pair.RunTicksSync(10);
 
         // A voice chat ban is stored separately and does not kick the player from the server.
-        Assert.That(netMan.IsConnected);
+        Assert.That(netMan.IsConnected, Is.True);
         Assert.That(sBans.IsVoiceBanned(clientId), Is.True);
-        Assert.That(await sDatabase.GetBansAsync(null, clientId, null, null, true, BanType.Voice), Has.Count.EqualTo(1));
+
+        var voiceBans = await sDatabase.GetBansAsync(null, clientId, null, null, true, BanType.Voice);
+        Assert.That(voiceBans, Has.Count.EqualTo(1));
+
+        var ban = voiceBans.Single();
+        Assert.That(ban.Type, Is.EqualTo(BanType.Voice));
+        Assert.That(ban.Id, Is.Not.Null);
+
         Assert.That(await sDatabase.GetBansAsync(null, clientId, null, null, true, BanType.Server), Is.Empty);
         Assert.That(await sDatabase.GetBansAsync(null, clientId, null, null, true, BanType.Role), Is.Empty);
-
-        var ban = await sDatabase.GetBanAsync(1);
-        Assert.That(ban, Is.Not.Null);
-        Assert.That(ban!.Type, Is.EqualTo(BanType.Voice));
 
         // The client gets a ban response instead of a voice link code.
         await client.WaitPost(() => cVoice.RequestLink());
@@ -63,7 +66,7 @@ public sealed class VoiceBanCommandTest
         Assert.That(cVoice.LinkUrl, Is.Null);
         Assert.That(cVoice.VoiceBanReason, Is.EqualTo("test"));
 
-        await server.WaitPost(() => sConsole.ExecuteCommand("voiceunban 1"));
+        await server.WaitPost(() => sConsole.ExecuteCommand($"voiceunban {ban.Id!.Value}"));
         await pair.RunTicksSync(10);
 
         Assert.That(sBans.IsVoiceBanned(clientId), Is.False);
