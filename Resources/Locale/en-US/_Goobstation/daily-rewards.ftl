@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Casha
 daily-reward-window-title = Daily rewards
 daily-reward-window-title-menu = Rewards
+daily-reward-window-tab-quests = Quests
 daily-reward-window-subtitle = Log in every day, play the round, and move along the reward track.
 daily-reward-window-streak = Current streak
 daily-reward-window-streak-value = {$current} / {$max} days

@@ -139,8 +139,13 @@ public sealed class DailyRewardWindow : DefaultWindow
         Contents.AddChild(backdrop);
         backdrop.AddChild(root);
 
-        _heroSection = BuildHeroSection(out _streakValueLabel, out _activeProgressLabel, out _cooldownLabel, out _expiryLabel, out _activeProgressBar, out _claimButton);
-        root.AddChild(_heroSection);
+        // The tab bar is the first thing in the menu, so switching tabs swaps the whole content
+        // area: the achievements tab then gets the full window height instead of a strip between
+        // the daily-reward sections.
+        root.AddChild(_tabs);
+
+        var heroSection = BuildHeroSection(out _streakValueLabel, out _activeProgressLabel, out _cooldownLabel, out _expiryLabel, out _activeProgressBar, out _claimButton);
+        _heroSection = heroSection;
 
         var questsTab = new BoxContainer
         {
@@ -150,6 +155,7 @@ public sealed class DailyRewardWindow : DefaultWindow
             VerticalExpand = true,
             Margin = new Thickness(4),
         };
+        questsTab.AddChild(heroSection);
 
         _questSectionLabel = new Label
         {
@@ -193,7 +199,7 @@ public sealed class DailyRewardWindow : DefaultWindow
         questsTab.AddChild(questScroll);
 
         _tabs.AddChild(questsTab);
-        TabContainer.SetTabTitle(questsTab, Loc.GetString("daily-quest-section-title"));
+        TabContainer.SetTabTitle(questsTab, Loc.GetString("daily-reward-window-tab-quests"));
 
         // The achievements module plugs its browser in here, so players have one rewards menu.
         if (TryCreateAchievementsPanel() is { } achievementsPanel)
@@ -202,19 +208,17 @@ public sealed class DailyRewardWindow : DefaultWindow
             TabContainer.SetTabTitle(achievementsPanel, Loc.GetString("achievements-window-title"));
         }
 
-        root.AddChild(_tabs);
-
         _roadTitle = new Label
         {
             Text = Loc.GetString("daily-reward-window-road-title"),
             StyleClasses = { "LabelHeading" },
             Margin = new Thickness(2, 0, 0, 0)
         };
-        root.AddChild(_roadTitle);
+        questsTab.AddChild(_roadTitle);
 
         var rewardsPanel = new PanelContainer
         {
-            VerticalExpand = true,
+            VerticalExpand = false,
             HorizontalExpand = true,
             MinSize = new Vector2(0, 200),
             MaxSize = new Vector2(float.PositiveInfinity, 240),
@@ -230,7 +234,7 @@ public sealed class DailyRewardWindow : DefaultWindow
             }
         };
         _rewardsPanel = rewardsPanel;
-        root.AddChild(rewardsPanel);
+        questsTab.AddChild(rewardsPanel);
 
         var scroll = new ScrollContainer
         {
