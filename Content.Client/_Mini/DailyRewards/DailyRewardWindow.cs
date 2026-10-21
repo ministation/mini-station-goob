@@ -220,8 +220,8 @@ public sealed class DailyRewardWindow : DefaultWindow
         {
             VerticalExpand = false,
             HorizontalExpand = true,
-            MinSize = new Vector2(0, 200),
-            MaxSize = new Vector2(float.PositiveInfinity, 240),
+            MinSize = new Vector2(0, 170),
+            MaxSize = new Vector2(float.PositiveInfinity, 190),
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = Color.FromHex("#0f1623"),
@@ -242,8 +242,8 @@ public sealed class DailyRewardWindow : DefaultWindow
             VerticalExpand = true,
             HScrollEnabled = true,
             VScrollEnabled = false,
-            MinSize = new Vector2(0, 170),
-            MaxSize = new Vector2(float.PositiveInfinity, 220),
+            MinSize = new Vector2(0, 140),
+            MaxSize = new Vector2(float.PositiveInfinity, 170),
         };
         rewardsPanel.AddChild(scroll);
 
@@ -252,7 +252,7 @@ public sealed class DailyRewardWindow : DefaultWindow
             Orientation = LayoutOrientation.Horizontal,
             SeparationOverride = 0,
             VerticalAlignment = VAlignment.Center,
-            MinSize = new Vector2(0, 130),
+            MinSize = new Vector2(0, 112),
         };
         scroll.AddChild(_rewardTrack);
 
@@ -736,9 +736,9 @@ public sealed class DailyRewardWindow : DefaultWindow
 
             var timerPanel = new PanelContainer
             {
-                Margin = new Thickness(0, 2, 6, 0),
-                MinSize = new Vector2(RewardCardWidth, 22),
-                MaxSize = new Vector2(RewardCardWidth, 22),
+                Margin = new Thickness(0, 1, 6, 0),
+                MinSize = new Vector2(RewardCardWidth, 20),
+                MaxSize = new Vector2(RewardCardWidth, 20),
                 PanelOverride = new StyleBoxFlat
                 {
                     BackgroundColor = TimePanelColor.WithAlpha(0.9f),
@@ -855,31 +855,31 @@ public sealed class DailyRewardWindow : DefaultWindow
                 BackgroundColor = HeroPanelColor,
                 BorderColor = AccentColor,
                 BorderThickness = new Thickness(2),
-                ContentMarginLeftOverride = 14,
-                ContentMarginTopOverride = 14,
-                ContentMarginRightOverride = 14,
-                ContentMarginBottomOverride = 14
+                ContentMarginLeftOverride = 10,
+                ContentMarginTopOverride = 8,
+                ContentMarginRightOverride = 10,
+                ContentMarginBottomOverride = 8
             }
         };
 
         var content = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 10
+            SeparationOverride = 6
         };
         panel.AddChild(content);
 
         var headerRow = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
-            SeparationOverride = 12
+            SeparationOverride = 10
         };
         content.AddChild(headerRow);
 
         var titleCol = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 4,
+            SeparationOverride = 2,
             HorizontalExpand = true
         };
         headerRow.AddChild(titleCol);
@@ -894,24 +894,25 @@ public sealed class DailyRewardWindow : DefaultWindow
         titleCol.AddChild(new Label
         {
             Text = Loc.GetString("daily-reward-window-subtitle"),
-            Modulate = Color.FromHex("#c5d3ed")
+            StyleClasses = { "LabelSubText" },
+            Modulate = Color.FromHex("#9fb4d8")
         });
 
         var claimPanel = new PanelContainer
         {
-            MinSize = new Vector2(190, 0),
-            MaxSize = new Vector2(190, float.PositiveInfinity),
-            VerticalAlignment = VAlignment.Top,
+            MinSize = new Vector2(176, 0),
+            MaxSize = new Vector2(176, float.PositiveInfinity),
+            VerticalAlignment = VAlignment.Center,
             HorizontalAlignment = HAlignment.Right,
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = Color.FromHex("#0f1725"),
                 BorderColor = Color.FromHex("#455674"),
                 BorderThickness = new Thickness(1),
-                ContentMarginLeftOverride = 10,
-                ContentMarginTopOverride = 8,
-                ContentMarginRightOverride = 10,
-                ContentMarginBottomOverride = 8
+                ContentMarginLeftOverride = 8,
+                ContentMarginTopOverride = 5,
+                ContentMarginRightOverride = 8,
+                ContentMarginBottomOverride = 5
             }
         };
         headerRow.AddChild(claimPanel);
@@ -919,7 +920,7 @@ public sealed class DailyRewardWindow : DefaultWindow
         var claimBox = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 6,
+            SeparationOverride = 3,
             HorizontalAlignment = HAlignment.Center,
             VerticalAlignment = VAlignment.Center
         };
@@ -928,7 +929,7 @@ public sealed class DailyRewardWindow : DefaultWindow
         claimBox.AddChild(new Label
         {
             Text = Loc.GetString("daily-reward-window-claim-panel-title"),
-            StyleClasses = { "LabelHeading" },
+            StyleClasses = { "LabelKeyText" },
             Modulate = Color.White,
             HorizontalAlignment = HAlignment.Center
         });
@@ -939,46 +940,64 @@ public sealed class DailyRewardWindow : DefaultWindow
             // unconfirmed button used to do nothing, which looked like a broken button.
             Text = Loc.GetString("daily-reward-window-claim-loading"),
             Disabled = true,
-            MinSize = new Vector2(168, 36),
+            MinSize = new Vector2(156, 30),
             HorizontalExpand = true,
             Modulate = Color.White
         };
         claimBox.AddChild(claimButton);
         claimBox.AddChild(_claimStatusLabel);
 
-        var streakPanel = new PanelContainer
+        // Streak and today's playtime share one row: the daily block has to stay compact so the
+        // weekly quests fit into the rewards window without a scrollbar.
+        var infoPanel = new PanelContainer
         {
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = Color.FromHex("#0f1725"),
                 BorderColor = Color.FromHex("#455674"),
                 BorderThickness = new Thickness(1),
-                ContentMarginLeftOverride = 10,
-                ContentMarginTopOverride = 6,
-                ContentMarginRightOverride = 10,
-                ContentMarginBottomOverride = 6
+                ContentMarginLeftOverride = 8,
+                ContentMarginTopOverride = 4,
+                ContentMarginRightOverride = 8,
+                ContentMarginBottomOverride = 4
             }
         };
-        content.AddChild(streakPanel);
+        content.AddChild(infoPanel);
 
-        var streakBox = new BoxContainer
+        var infoRow = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
-            SeparationOverride = 8
+            SeparationOverride = 12
         };
-        streakPanel.AddChild(streakBox);
+        infoPanel.AddChild(infoRow);
 
-        streakBox.AddChild(new Label
+        infoRow.AddChild(new Label
         {
             Text = Loc.GetString("daily-reward-window-streak") + ":",
-            Modulate = Color.FromHex("#9fb4d8")
+            Modulate = Color.FromHex("#9fb4d8"),
+            VerticalAlignment = VAlignment.Center
         });
 
-        streakValueLabel = new Label { Modulate = AccentColor };
-        streakBox.AddChild(streakValueLabel);
+        streakValueLabel = new Label
+        {
+            Modulate = AccentColor,
+            VerticalAlignment = VAlignment.Center
+        };
+        infoRow.AddChild(streakValueLabel);
 
-        activeProgressLabel = new Label { Modulate = Color.White };
-        content.AddChild(CreateIconLabelRow(_clockTexture, activeProgressLabel));
+        infoRow.AddChild(new PanelContainer
+        {
+            MinSize = new Vector2(1, 14),
+            VerticalAlignment = VAlignment.Center,
+            PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#455674") }
+        });
+
+        activeProgressLabel = new Label
+        {
+            Modulate = Color.White,
+            VerticalAlignment = VAlignment.Center
+        };
+        infoRow.AddChild(CreateIconLabelRow(_clockTexture, activeProgressLabel));
 
         activeProgressBar = new PixelTiledProgressBar();
         content.AddChild(activeProgressBar);
@@ -1010,18 +1029,18 @@ public sealed class DailyRewardWindow : DefaultWindow
 
         var panel = new PanelContainer
         {
-            MinSize = new Vector2(RewardCardWidth, 124),
-            MaxSize = new Vector2(RewardCardWidth, 124),
+            MinSize = new Vector2(RewardCardWidth, 112),
+            MaxSize = new Vector2(RewardCardWidth, 112),
             Margin = new Thickness(0, 0, 6, 0),
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = backgroundColor,
                 BorderColor = borderColor,
                 BorderThickness = new Thickness(2),
-                ContentMarginLeftOverride = 8,
-                ContentMarginTopOverride = 8,
-                ContentMarginRightOverride = 8,
-                ContentMarginBottomOverride = 8
+                ContentMarginLeftOverride = 6,
+                ContentMarginTopOverride = 6,
+                ContentMarginRightOverride = 6,
+                ContentMarginBottomOverride = 6
             }
         };
 
@@ -1120,7 +1139,7 @@ public sealed class DailyRewardWindow : DefaultWindow
         return new PanelContainer
         {
             MinSize = new Vector2(10, 2),
-            Margin = new Thickness(0, 54, 0, 54),
+            Margin = new Thickness(0, 48, 0, 48),
             PanelOverride = new StyleBoxFlat { BackgroundColor = color }
         };
     }
