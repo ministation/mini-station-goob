@@ -78,7 +78,9 @@
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
-  - type: TileMovement
+  # Mini: tile movement makes the drake slide one tile at a time and overrides its facing,
+  # which looks jerky and crooked when the boss is controlled by a player. Normal movement
+  # keeps it smooth and lets it aim like other player-controlled mobs.
   - type: BossMusic
     soundId: AshDrake
   - type: Aggressive # also required component for aggro checking
