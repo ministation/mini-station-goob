@@ -1,4 +1,4 @@
-﻿<PanelContainer xmlns="https://spacestation14.io"
+<PanelContainer xmlns="https://spacestation14.io"
                 HorizontalExpand="True"
                 Margin="0 0 0 6">
     <BoxContainer Orientation="Horizontal" SeparationOverride="0">
@@ -62,11 +62,11 @@
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           Margin="9 4 11 4">
+                <Label Name="CoinRewardLabel" VerticalAlignment="Center" />
                 <TextureRect Name="CoinIcon"
                              SetSize="18 18"
                              Stretch="KeepAspectCentered"
                              VerticalAlignment="Center" />
-                <Label Name="CoinRewardLabel" VerticalAlignment="Center" />
             </BoxContainer>
         </PanelContainer>
     </BoxContainer>

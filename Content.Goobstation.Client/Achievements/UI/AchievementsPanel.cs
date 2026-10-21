@@ -159,14 +159,6 @@ public sealed partial class AchievementsPanel : BoxContainer
             ? coinRes.Texture
             : cache.GetTexture("/Textures/_Mini/Interface/Coin.png");
 
-        coinRow.AddChild(new TextureRect
-        {
-            Texture = coinTexture,
-            SetSize = new Vector2(16, 16),
-            Stretch = TextureRect.StretchMode.KeepAspectCentered,
-            VerticalAlignment = VAlignment.Center,
-        });
-
         var coinsLabel = new Label
         {
             Text = "0",
@@ -175,6 +167,14 @@ public sealed partial class AchievementsPanel : BoxContainer
         };
         coinsLabel.ToolTip = Loc.GetString("achievements-window-summary-coins-tooltip", ("coins", 0));
         coinRow.AddChild(coinsLabel);
+
+        coinRow.AddChild(new TextureRect
+        {
+            Texture = coinTexture,
+            SetSize = new Vector2(16, 16),
+            Stretch = TextureRect.StretchMode.KeepAspectCentered,
+            VerticalAlignment = VAlignment.Center,
+        });
 
         return (header, summaryLabel, summaryBar, percentLabel, coinsLabel);
     }

@@ -23,7 +23,7 @@ namespace Content.Client._Mini.DailyQuests;
 
 public sealed class DailyQuestCardControl : BoxContainer
 {
-    public const float RewardQuestCardHeight = 188f;
+    public const float RewardQuestCardHeight = 170f;
     public const float CompactQuestCardHeight = CharacterMenuCardStyle.CompactCardHeight;
 
     private static readonly Color AccentColor = Color.FromHex("#9a8fb5");
@@ -160,10 +160,10 @@ public sealed class DailyQuestCardControl : BoxContainer
                     ? ClaimReadyColor.WithAlpha(0.5f)
                     : AccentColor.WithAlpha(0.35f),
                 BorderThickness = new Thickness(1),
-                ContentMarginLeftOverride = 10,
-                ContentMarginTopOverride = 5,
-                ContentMarginRightOverride = 10,
-                ContentMarginBottomOverride = 4
+                ContentMarginLeftOverride = 8,
+                ContentMarginTopOverride = 4,
+                ContentMarginRightOverride = 8,
+                ContentMarginBottomOverride = 3
             };
 
             _cardPanel = new PanelContainer
