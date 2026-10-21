@@ -11,6 +11,7 @@ using Content.Shared.CCVar;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Roles;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
@@ -26,6 +27,7 @@ internal sealed class AdminNameOverlay : Overlay
     private readonly IEntityManager _entityManager;
     private readonly IEyeManager _eyeManager;
     private readonly EntityLookupSystem _entityLookup;
+    private readonly TransformSystem _transform;
     private readonly IUserInterfaceManager _userInterfaceManager;
     private readonly SharedRoleSystem _roles;
     private readonly IPrototypeManager _prototypeManager;
@@ -67,6 +69,7 @@ internal sealed class AdminNameOverlay : Overlay
         _entityManager = entityManager;
         _eyeManager = eyeManager;
         _entityLookup = entityLookup;
+        _transform = entityManager.System<TransformSystem>();
         _userInterfaceManager = userInterfaceManager;
         _roles = roles;
         _prototypeManager = prototypeManager;
@@ -128,13 +131,19 @@ internal sealed class AdminNameOverlay : Overlay
                 || _entityManager.GetComponent<TransformComponent>(entity.Value).MapID != args.MapId)
                 continue;
 
+            var xform = _entityManager.GetComponent<TransformComponent>(entity.Value);
             var aabb = _entityLookup.GetWorldAABB(entity.Value);
-            // if not on screen, skip
+            // Entity lookup bounds use simulation transforms; align them with the position used to render the sprite.
+            var worldPosition = _transform.GetWorldPosition(xform);
+            var renderPosition = _transform.GetRenderWorldPosition((entity.Value, xform));
+            aabb = aabb.Translated(renderPosition - worldPosition);
+
+            // if not on screen
             if (!aabb.Intersects(in viewport))
                 continue;
 
             // Get on-screen coordinates of player
-            var screenCoordinates = _eyeManager.WorldToScreen(aabb.Center).Rounded();
+            var screenCoordinates = _eyeManager.WorldToScreen(aabb.Center);
 
             sortable.Add((info, aabb, entity.Value, screenCoordinates));
         }

@@ -28,6 +28,7 @@ guide-entry-default-rule9 = Правило 9
 guide-entry-default-rule91 = Правило 9.1
 guide-entry-default-rule92 = Правило 9.2
 guide-entry-default-rule10 = Правило 10
+guide-entry-voice-chat-rule = Голосовой чат
 guide-entry-default-typan-ruleset = Правила Тайпана
 guide-entry-default-typan-rule0 = Тайпан: Правило 0
 guide-entry-default-typan-rule1 = Тайпан: Правило 1

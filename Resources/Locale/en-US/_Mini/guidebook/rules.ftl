@@ -28,6 +28,7 @@ guide-entry-default-rule9 = Rule 9
 guide-entry-default-rule91 = Rule 9.1
 guide-entry-default-rule92 = Rule 9.2
 guide-entry-default-rule10 = Rule 10
+guide-entry-voice-chat-rule = Voice Chat
 guide-entry-default-typan-ruleset = Typan Rules
 guide-entry-default-typan-rule0 = Typan: Rule 0
 guide-entry-default-typan-rule1 = Typan: Rule 1

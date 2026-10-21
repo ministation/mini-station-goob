@@ -2,6 +2,7 @@
 
 using System.Numerics;
 using Content.Shared.Examine;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
@@ -27,7 +28,7 @@ public sealed class PopupOverlay : Overlay
     private readonly PopupSystem _popup;
     private readonly PopupUIController _controller;
     private readonly ExamineSystemShared _examine;
-    private readonly SharedTransformSystem _transform;
+    private readonly TransformSystem _transform;
     private readonly ShaderInstance _shader;
 
     public override OverlaySpace Space => OverlaySpace.ScreenSpace;
@@ -40,7 +41,7 @@ public sealed class PopupOverlay : Overlay
         IUserInterfaceManager uiManager,
         PopupUIController controller,
         ExamineSystemShared examine,
-        SharedTransformSystem transform,
+        TransformSystem transform,
         PopupSystem popup)
     {
         _configManager = configManager;
@@ -81,10 +82,12 @@ public sealed class PopupOverlay : Overlay
         var ourEntity = _playerMgr.LocalEntity;
         var viewPos = new MapCoordinates(args.WorldAABB.Center, args.MapId);
         var ourPos = args.WorldBounds.Center;
-        if (ourEntity != null)
+        if (ourEntity != null &&
+            _entManager.TryGetComponent<TransformComponent>(ourEntity.Value, out var ourTransform) &&
+            ourTransform.MapID == args.MapId)
         {
-            viewPos = _transform.GetMapCoordinates(ourEntity.Value);
-            ourPos = viewPos.Position;
+            ourPos = _transform.GetRenderWorldPosition((ourEntity.Value, ourTransform));
+            viewPos = new MapCoordinates(ourPos, ourTransform.MapID);
         }
 
         foreach (var popup in _popup.WorldLabels)
@@ -94,14 +97,29 @@ public sealed class PopupOverlay : Overlay
             if (mapPos.MapId != args.MapId)
                 continue;
 
-            var distance = (mapPos.Position - ourPos).Length();
+            // Prefer the entity's interpolated pose; coordinate-only popups follow their moving parent.
+            var renderPos = mapPos.Position;
+            if (popup.FollowEntity is { } followedEntity &&
+                _entManager.TryGetComponent<TransformComponent>(followedEntity, out var followedTransform) &&
+                followedTransform.MapID == args.MapId)
+            {
+                renderPos = _transform.GetRenderWorldPosition((followedEntity, followedTransform));
+            }
+            else if (_entManager.TryGetComponent<TransformComponent>(popup.InitialPos.EntityId, out var parentTransform) &&
+                     parentTransform.MapID == args.MapId)
+            {
+                var renderMatrix = _transform.GetRenderWorldMatrix((popup.InitialPos.EntityId, parentTransform));
+                renderPos = Vector2.Transform(popup.InitialPos.Position, renderMatrix);
+            }
+
+            var distance = (renderPos - ourPos).Length();
 
             // Should handle fade here too wyci.
-            if (!args.WorldBounds.Contains(mapPos.Position) || !_examine.InRangeUnOccluded(viewPos, mapPos, distance,
+            if (!args.WorldBounds.Contains(renderPos) || !_examine.InRangeUnOccluded(viewPos, mapPos, distance,
                     e => e == popup.InitialPos.EntityId || e == ourEntity, entMan: _entManager))
                 continue;
 
-            var pos = Vector2.Transform(mapPos.Position, matrix).Rounded(); // Goob
+            var pos = Vector2.Transform(renderPos, matrix);
             _controller.DrawPopup(popup, worldHandle, pos, scale);
         }
     }
