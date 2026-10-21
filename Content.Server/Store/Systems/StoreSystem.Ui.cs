@@ -177,7 +177,6 @@ public sealed partial class StoreSystem
         }
         if (HasComp<NtrClientAccountComponent>(uid))
             RaiseLocalEvent(uid, new NtrListingPurchaseEvent(listing.Cost.First().Value));
-        OnPurchase(listing); // Goob edit - ntr shittery
 
         // Goobstation start
         var purchasedEv = new ListingPurchasedEvent(buyer, uid, listing);
@@ -330,14 +329,11 @@ public sealed partial class StoreSystem
         };
         RaiseLocalEvent(ref buyFinished);
 
+        // Goob edit - apply the restock timestamp only for a completed purchase and before
+        // the new state is sent to the client, so the timer always matches what was bought.
+        OnPurchase(listing);
         UpdateUserInterface(buyer, uid, component);
         UpdateRefundUserInterface(uid, component); // Goobstation
-        if (listing.ResetRestockOnPurchase) // goobstation edit start
-        {
-            // making sure that you cant buy some stuff endlessly if they are not meant to
-            var restockDuration = listing.RestockAfterPurchase ?? listing.RestockTime; // Just use the value directly.
-            listing.RestockTime = _timing.CurTime.Subtract(_ticker.RoundStartTimeSpan) + restockDuration;
-        } // goob edit end
 
     }
 
