@@ -2,9 +2,9 @@
 
 # Allies
 uplink-holo-carp-dehydrated-name = Обезвоженный голокарп
-uplink-holo-carp-dehydrated-desc = Похож на плюшевого карпа, но стоит добавить воды — и он станет настоящим голокарпом!
+uplink-holo-carp-dehydrated-desc = Похож на плюшевого карпа, но стоит добавить воды - и он станет настоящим голокарпом!
 uplink-magic-carp-dehydrated-name = Обезвоженный магический карп
-uplink-magic-carp-dehydrated-desc = Похож на плюшевого карпа, но стоит добавить воды — и он станет настоящим магическим карпом!
+uplink-magic-carp-dehydrated-desc = Похож на плюшевого карпа, но стоит добавить воды - и он станет настоящим магическим карпом!
 uplink-reinforcement-radio-cyborg-assault-name-trauma = Телепорт штурмового киборга
 uplink-reinforcement-radio-cyborg-medical-name = Телепорт медицинского киборга
 uplink-reinforcement-radio-cyborg-medical-desc = Вызывает легко бронированного киборга, специализирующегося на медицине.

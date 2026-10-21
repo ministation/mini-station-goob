@@ -3,7 +3,7 @@ ghost-role-information-colossus-description = Призови Воплощени�
 ghost-role-information-colossus-rules = Ты [color={role-type-team-antagonist-color}][bold]{role-type-team-antagonist-name}[/bold][/color] вместе с любыми космическими культистами, которые могут быть на станции.
 ghost-role-colossus-charactermenu = Ты должен приблизить конец всего сущего. Сей неисчислимые разрушения повсюду, что перед тобой.
 ghost-role-colossus-objective = Призови Воплощение Энтропии и продержись до конца всего сущего.
-ghost-role-colossus-briefing = Ты — Энтропийный колосс!
+ghost-role-colossus-briefing = Ты - Энтропийный колосс!
     Твои цели перечислены в меню персонажа.
     Подробнее о роли читай в записи руководства.
 ghost-role-colossus-death = Колосс рассыпается, его свет гаснет.

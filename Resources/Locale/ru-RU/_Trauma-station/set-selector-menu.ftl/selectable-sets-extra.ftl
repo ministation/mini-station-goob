@@ -11,7 +11,7 @@ selectable-set-no-russian-description = Помни, никаких русски�
     ключ шифрования Синдиката, L6 SAW и
     коробку магазинов к L6 SAW.
 selectable-set-syndicate-pirate-captain-name = Набор капитана пиратов Синдиката
-selectable-set-syndicate-pirate-captain-description = Йо-хо-хо, жизнь пирата — для меня!
+selectable-set-syndicate-pirate-captain-description = Йо-хо-хо, жизнь пирата - для меня!
     Включает: пиратские штаны, пиратскую шляпу, плащ капитана пиратов,
     магнитные ботинки Синдиката, дыхательную маску исследователя, скафандр капитана пиратов,
     повязку на глаз, полноразмерную гарнитуру фрилансера, пиратский КПК,

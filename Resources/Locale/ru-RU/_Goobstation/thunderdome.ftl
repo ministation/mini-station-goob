@@ -118,7 +118,7 @@ thunderdome-desc-head-security = Берет охраны
 thunderdome-desc-head-brigmedic = Берет бригмедика
 thunderdome-desc-head-combatmedic = Берет боевого медика
 thunderdome-desc-head-hos = Берет главы службы безопасности
-thunderdome-desc-head-brigadier = Фуражка бригадного генерала — пахнет сталью
+thunderdome-desc-head-brigadier = Фуражка бригадного генерала - пахнет сталью
 thunderdome-desc-head-chameleon = Шляпа-хамелеон, меняющая внешний вид
 
 # Шея
@@ -195,7 +195,7 @@ thunderdome-streak-4 = { $player } доминирует!
 thunderdome-streak-5 = { $player } совершил мега-убийство!
 thunderdome-streak-6 = { $player } неудержим!
 thunderdome-streak-7 = { $player } просто чудовищен!
-thunderdome-streak-8 = { $player } — монстр!
+thunderdome-streak-8 = { $player } - монстр!
 thunderdome-streak-9 = { $player } БОЖЕСТВЕННЫЙ!
 thunderdome-streak-12 = { $player } ВЫШЕ БОГОВ!
 

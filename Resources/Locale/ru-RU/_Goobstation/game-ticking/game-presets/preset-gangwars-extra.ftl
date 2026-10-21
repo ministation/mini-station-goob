@@ -1,6 +1,6 @@
-gang-leader-role-greeting = Ты — лидер банды.
+gang-leader-role-greeting = Ты - лидер банды.
     Твои боссы недовольны. Недавние провалы поставили тебя на грань, и терпение заканчивается.
-    Это твой последний шанс доказать, чего ты стоишь. Провалишься снова — следующего не будет.
+    Это твой последний шанс доказать, чего ты стоишь. Провалишься снова - следующего не будет.
     Ударь по станции как следует. Вербуй всех, кого сможешь, застолби каждый угол, до которого дотянешься, и дай понять, кто здесь хозяин.
     Но не расслабляйся. Говорят, конкурирующие банды уже идут сюда с теми же планами.
 gang-leader-action-summon-locker-name = Призвать шкаф банды
@@ -46,7 +46,7 @@ gang-crate-reward-popup = Твоя банда завладела ящиком! +
 gang-duffel-bag-untrapped = Ты порезал руку о ловушку на сумке!
 gang-duffel-bag-untrapping = Ты начинаешь обезвреживать ловушку..
 gang-locker-examine-header = [color=#D2691E][bold]Таблица лидеров банды[/bold][/color]
-gang-locker-examine-gang-entry = {$rank}. [color=#{$color}][bold]{$name}[/bold][/color] — {$score} очк.
+gang-locker-examine-gang-entry = {$rank}. [color=#{$color}][bold]{$name}[/bold][/color] - {$score} очк.
 gang-locker-examine-update-timer = [italic]Обновление через {$seconds} с[/italic]
 gang-structure-revealed = Структура банды раскрывается.
 gang-member-role-greeting = Тебя приняли в семью.
