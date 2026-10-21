@@ -37,16 +37,9 @@
             </BoxContainer>
             <RichTextLabel Name="DescriptionLabel" HorizontalExpand="True" />
             <BoxContainer Orientation="Horizontal" SeparationOverride="10" Margin="0 3 0 0">
-                <PanelContainer Name="RarityPill" VerticalAlignment="Center">
-                    <BoxContainer Orientation="Horizontal" SeparationOverride="5" Margin="7 1 7 1">
-                        <PanelContainer Name="RarityDot"
-                                        MinSize="6 6"
-                                        VerticalAlignment="Center" />
-                        <Label Name="RarityLabel"
-                               StyleClasses="LabelSubText"
-                               VerticalAlignment="Center" />
-                    </BoxContainer>
-                </PanelContainer>
+                <Label Name="RarityLabel"
+                       StyleClasses="LabelSubText"
+                       VerticalAlignment="Center" />
                 <ProgressBar Name="ProgressFill"
                              HorizontalExpand="True"
                              MinValue="0"

@@ -17,21 +17,24 @@
                       Orientation="Vertical"
                       HorizontalAlignment="Center"
                       MouseFilter="Ignore" />
-        <BoxContainer Name="CoinBox"
-                      Orientation="Horizontal"
-                      SeparationOverride="4"
-                      HorizontalAlignment="Center"
-                      MouseFilter="Ignore"
-                      Visible="False">
-            <TextureRect Name="CoinIcon"
-                         SetSize="16 16"
-                         Stretch="KeepAspectCentered"
-                         VerticalAlignment="Center"
-                         MouseFilter="Ignore" />
-            <Label Name="CoinLabel"
-                   StyleClasses="LabelWeak"
-                   VerticalAlignment="Center"
-                   MouseFilter="Ignore" />
-        </BoxContainer>
+        <PanelContainer Name="CoinPanel"
+                        HorizontalAlignment="Center"
+                        MouseFilter="Ignore"
+                        Visible="False">
+            <BoxContainer Name="CoinBox"
+                          Orientation="Horizontal"
+                          SeparationOverride="5"
+                          Margin="9 3 11 3"
+                          MouseFilter="Ignore">
+                <TextureRect Name="CoinIcon"
+                             SetSize="16 16"
+                             Stretch="KeepAspectCentered"
+                             VerticalAlignment="Center"
+                             MouseFilter="Ignore" />
+                <Label Name="CoinLabel"
+                       VerticalAlignment="Center"
+                       MouseFilter="Ignore" />
+            </BoxContainer>
+        </PanelContainer>
     </BoxContainer>
 </PanelContainer>
