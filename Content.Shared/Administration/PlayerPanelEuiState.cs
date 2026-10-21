@@ -14,6 +14,7 @@ public sealed class PlayerPanelEuiState(
     int? totalNotes,
     int? totalBans,
     int? totalRoleBans,
+    int? totalVoiceBans,
     int sharedConnections,
     bool? whitelisted,
     bool canFreeze,
@@ -29,6 +30,7 @@ public sealed class PlayerPanelEuiState(
     public readonly int? TotalNotes = totalNotes;
     public readonly int? TotalBans = totalBans;
     public readonly int? TotalRoleBans = totalRoleBans;
+    public readonly int? TotalVoiceBans = totalVoiceBans;
     public readonly int SharedConnections = sharedConnections;
     public readonly bool? Whitelisted = whitelisted;
     public readonly bool CanFreeze = canFreeze;

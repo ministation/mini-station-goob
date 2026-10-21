@@ -29,12 +29,16 @@ public sealed class BanListEui : BaseEui
 
         RoleBanControl = BanWindow.RoleBanList;
         RoleBanControl.LineIdsClicked += OnLineIdsClicked;
+
+        VoiceBanControl = BanWindow.VoiceBanList;
+        VoiceBanControl.LineIdsClicked += OnLineIdsClicked;
     }
 
     private BanListWindow BanWindow { get; }
 
     private BanListControl BanControl { get; }
     private RoleBanListControl RoleBanControl { get; }
+    private BanListControl VoiceBanControl { get; }
 
     private void OnClosed()
     {
@@ -64,6 +68,8 @@ public sealed class BanListEui : BaseEui
         s.Bans.Sort((a, b) => a.BanTime.CompareTo(b.BanTime));
         BanControl.SetBans(s.Bans);
         RoleBanControl.SetRoleBans(s.RoleBans);
+        s.VoiceBans.Sort((a, b) => a.BanTime.CompareTo(b.BanTime));
+        VoiceBanControl.SetBans(s.VoiceBans);
     }
 
     public override void Opened()

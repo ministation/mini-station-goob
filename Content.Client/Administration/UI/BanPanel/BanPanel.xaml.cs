@@ -27,6 +27,7 @@ namespace Content.Client.Administration.UI.BanPanel;
 public sealed partial class BanPanel : DefaultWindow
 {
     public event Action<Ban>? BanSubmitted;
+    public event Action<Ban>? VoiceBanSubmitted;
     public event Action<string>? PlayerChanged;
     private string? PlayerUsername { get; set; }
     private (IPAddress, int)? IpAddress { get; set; }
@@ -74,7 +75,8 @@ public sealed partial class BanPanel : DefaultWindow
     {
         None,
         Server,
-        Role
+        Role,
+        Voice
     }
 
     public BanPanel()
@@ -152,6 +154,7 @@ public sealed partial class BanPanel : DefaultWindow
         TypeOption.AddItem(Loc.GetString("ban-panel-select"), (int) Types.None);
         TypeOption.AddItem(Loc.GetString("ban-panel-server"), (int) Types.Server);
         TypeOption.AddItem(Loc.GetString("ban-panel-role"), (int) Types.Role);
+        TypeOption.AddItem(Loc.GetString("ban-panel-voice"), (int) Types.Voice);
 
         ReasonTextEdit.Placeholder = new Rope.Leaf(Loc.GetString("ban-panel-reason"));
 
@@ -495,6 +498,10 @@ public sealed partial class BanPanel : DefaultWindow
     {
         TypeOption.ModulateSelfOverride = null;
         Tabs.SetTabVisible((int) TabNumbers.Roles, TypeOption.SelectedId == (int) Types.Role);
+
+        // Voice bans never erase chat messages or the player from the round.
+        EraseCheckbox.Disabled = TypeOption.SelectedId == (int) Types.Voice;
+
             NoteSeverity? newSeverity = null;
             switch (TypeOption.SelectedId)
             {
@@ -518,6 +525,18 @@ public sealed partial class BanPanel : DefaultWindow
                     {
                         _banPanelSawmill
                             .Warning("Role ban severity could not be parsed from config!");
+                    }
+                    break;
+                case (int) Types.Voice:
+
+                    if (Enum.TryParse(_cfg.GetCVar(CCVars.VoiceBanDefaultSeverity), true, out NoteSeverity voiceSeverity))
+                    {
+                        newSeverity = voiceSeverity;
+                    }
+                    else
+                    {
+                        _banPanelSawmill
+                            .Warning("Voice ban severity could not be parsed from config!");
                     }
                     break;
             }
@@ -650,7 +669,10 @@ public sealed partial class BanPanel : DefaultWindow
             erase
         );
 
-        BanSubmitted?.Invoke(ban);
+        if (TypeOption.SelectedId == (int) Types.Voice)
+            VoiceBanSubmitted?.Invoke(ban);
+        else
+            BanSubmitted?.Invoke(ban);
     }
 
     protected override void FrameUpdate(FrameEventArgs args)

@@ -81,14 +81,17 @@ public sealed partial class PlayerPanel : FancyWindow
         }
     }
 
-    public void SetBans(int? totalBans, int? totalRoleBans)
+    public void SetBans(int? totalBans, int? totalRoleBans, int? totalVoiceBans)
     {
-        // If one value exists then so should the other.
-        DebugTools.Assert(totalBans.HasValue && totalRoleBans.HasValue || totalBans == null && totalRoleBans == null);
+        // If one value exists then so should the others.
+        DebugTools.Assert(totalBans.HasValue && totalRoleBans.HasValue && totalVoiceBans.HasValue
+            || totalBans == null && totalRoleBans == null && totalVoiceBans == null);
 
         Bans.Text = totalBans != null ? Loc.GetString("player-panel-bans", ("totalBans", totalBans)) : null;
 
         RoleBans.Text = totalRoleBans != null ? Loc.GetString("player-panel-rolebans", ("totalRoleBans", totalRoleBans)) : null;
+
+        VoiceBans.Text = totalVoiceBans != null ? Loc.GetString("player-panel-voicebans", ("totalVoiceBans", totalVoiceBans)) : null;
     }
 
     public void SetNotes(int? totalNotes)

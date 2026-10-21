@@ -65,7 +65,7 @@ public sealed class PlayerPanelEui : BaseEui
         PlayerPanel.TargetUsername = s.Username;
         PlayerPanel.SetUsername(s.Username);
         PlayerPanel.SetPlaytime(s.Playtime);
-        PlayerPanel.SetBans(s.TotalBans, s.TotalRoleBans);
+        PlayerPanel.SetBans(s.TotalBans, s.TotalRoleBans, s.TotalVoiceBans);
         PlayerPanel.SetNotes(s.TotalNotes);
         PlayerPanel.SetWhitelisted(s.Whitelisted);
         PlayerPanel.SetSharedConnections(s.SharedConnections);

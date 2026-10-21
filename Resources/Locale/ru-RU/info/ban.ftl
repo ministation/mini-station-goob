@@ -60,6 +60,7 @@ ban-panel-invalid-ip = Не удаётся спарсить IP адрес. По�
 ban-panel-select = Выбрать тип
 ban-panel-server = Серверный бан
 ban-panel-role = Бан роли
+ban-panel-voice = Бан голосового чата
 ban-panel-minutes = Минут
 ban-panel-hours = Часов
 ban-panel-days = Дней
@@ -77,6 +78,9 @@ server-ban-string-no-pii = { $admin } установил серверный ба
 cmd-ban_exemption_get-arg-player = <player>
 # Kick on ban
 ban-kick-reason = Вы были забанены
+
+# Ban list
+ban-list-voice-bans = Баны голосового чата
 
 ban-panel-expiry-error = ошибка
 

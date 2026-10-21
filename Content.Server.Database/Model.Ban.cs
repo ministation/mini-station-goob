@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Content.Shared.Database;
@@ -75,8 +75,8 @@ internal static class ModelBan
 /// </summary>
 /// <remarks>
 /// <para>
-/// Bans come in two types: <see cref="BanType.Server"/> and <see cref="BanType.Role"/>,
-/// distinguished with <see cref="Type"/>.
+/// Bans come in three types: <see cref="BanType.Server"/>, <see cref="BanType.Role"/>
+/// and <see cref="BanType.Voice"/>, distinguished with <see cref="Type"/>.
 /// </para>
 /// <para>
 /// Bans have one or more "matching data", these being <see cref="BanAddress"/>, <see cref="BanPlayer"/>,
@@ -272,7 +272,8 @@ public sealed class BanHwid : IBanSelector
 /// <remarks>
 /// <see cref="Ban"/>s of type <see cref="BanType.Role"/> should have one or more <see cref="BanRole"/>s
 /// to store which roles are actually banned.
-/// It is invalid for <see cref="BanType.Server"/> bans to have <see cref="BanRole"/> entities.
+/// It is invalid for <see cref="BanType.Server"/> and <see cref="BanType.Voice"/> bans to have
+/// <see cref="BanRole"/> entities.
 /// </remarks>
 public sealed class BanRole
 {

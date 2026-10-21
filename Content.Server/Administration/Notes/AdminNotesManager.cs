@@ -104,6 +104,7 @@ public sealed class AdminNotesManager : IAdminNotesManager, IPostInjectInit
                 break;
             case NoteType.ServerBan:
             case NoteType.RoleBan:
+            case NoteType.VoiceBan:
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown note type");
         }
@@ -140,6 +141,7 @@ public sealed class AdminNotesManager : IAdminNotesManager, IPostInjectInit
                 break;
             case NoteType.ServerBan: // Add bans using the ban panel, not note edit
             case NoteType.RoleBan:
+            case NoteType.VoiceBan:
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown note type");
         }
@@ -174,7 +176,7 @@ public sealed class AdminNotesManager : IAdminNotesManager, IPostInjectInit
             NoteType.Note => (await _db.GetAdminNote(id))?.ToShared(),
             NoteType.Watchlist => (await _db.GetAdminWatchlist(id))?.ToShared(),
             NoteType.Message => (await _db.GetAdminMessage(id))?.ToShared(),
-            NoteType.ServerBan or NoteType.RoleBan => (await _db.GetBanAsNoteAsync(id))?.ToShared(),
+            NoteType.ServerBan or NoteType.RoleBan or NoteType.VoiceBan => (await _db.GetBanAsNoteAsync(id))?.ToShared(),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown note type")
         };
     }
@@ -201,7 +203,7 @@ public sealed class AdminNotesManager : IAdminNotesManager, IPostInjectInit
             case NoteType.Message:
                 await _db.DeleteAdminMessage(noteId, deletedBy.UserId, deletedAt);
                 break;
-            case NoteType.ServerBan or NoteType.RoleBan:
+            case NoteType.ServerBan or NoteType.RoleBan or NoteType.VoiceBan:
                 await _db.HideBanFromNotes(noteId, deletedBy.UserId, deletedAt);
                 break;
             default:
@@ -278,7 +280,7 @@ public sealed class AdminNotesManager : IAdminNotesManager, IPostInjectInit
             case NoteType.Message:
                 await _db.EditAdminMessage(noteId, message, editedBy.UserId, editedAt, expiryTime);
                 break;
-            case NoteType.ServerBan or NoteType.RoleBan:
+            case NoteType.ServerBan or NoteType.RoleBan or NoteType.VoiceBan:
                 if (severity is null)
                     throw new ArgumentException("Severity cannot be null for a ban", nameof(severity));
                 await _db.EditBan(noteId, message, severity.Value, expiryTime, editedBy.UserId, editedAt);

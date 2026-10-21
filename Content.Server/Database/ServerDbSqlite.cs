@@ -115,7 +115,7 @@ namespace Content.Server.Database
             bool includeUnbanned,
             BanType type)
         {
-            var exempt = await GetBanExemptionCore(db, userId);
+            var exempt = type == BanType.Server ? await GetBanExemptionCore(db, userId) : null;
 
             var newPlayer = !await db.SqliteDbContext.Player.AnyAsync(p => p.UserId == userId);
 

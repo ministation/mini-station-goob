@@ -21,6 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
        <Label Name="Notes"/>
        <Label Name="Bans"/>
        <Label Name="RoleBans"/>
+       <Label Name="VoiceBans"/>
        <Label Name="SharedConnections"/>
        <Label Name="TrustScore"/>
 

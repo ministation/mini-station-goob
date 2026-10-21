@@ -62,6 +62,12 @@ public sealed partial class CCVars
         CVarDef.Create("admin.department_ban_default_severity", "medium", CVar.ARCHIVE | CVar.SERVER | CVar.REPLICATED);
 
     /// <summary>
+    ///     Default severity for voice chat bans
+    /// </summary>
+    public static readonly CVarDef<string> VoiceBanDefaultSeverity =
+        CVarDef.Create("admin.voice_ban_default_severity", "medium", CVar.ARCHIVE | CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
     ///     Default severity for server bans
     /// </summary>
     public static readonly CVarDef<string> ServerBanDefaultSeverity =

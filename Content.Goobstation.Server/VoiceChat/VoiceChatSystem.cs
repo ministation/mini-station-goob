@@ -3,6 +3,7 @@ using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.IntrinsicVoiceModulator.Components;
 using Content.Goobstation.Shared.Loudspeaker.Components;
 using Content.Goobstation.Shared.VoiceChat;
+using Content.Server.Administration.Managers;
 using Content.Server.Atmos.Components;
 using Content.Server.GameTicking;
 using Content.Server.Power.EntitySystems;
@@ -65,6 +66,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
     [Dependency] private VoiceRadioSystem _radioVoice = default!;
     [Dependency] private GameTicker _gameTicker = default!;
     [Dependency] private VoiceLogSystem _voiceLog = default!;
+    [Dependency] private IBanManager _bans = default!;
 
     private static readonly TimeSpan TransmissionGap = TimeSpan.FromMilliseconds(500);
     private static readonly TimeSpan PermissionRecheck = TimeSpan.FromSeconds(2);
@@ -213,6 +215,25 @@ public sealed partial class VoiceChatSystem : EntitySystem
         if (!_player.TryGetSessionById(frame.User, out var session) ||
             session.Status != SessionStatus.InGame)
         {
+            return;
+        }
+
+        // Mini: voice chat bans are enforced per frame as well as at link and WebSocket auth.
+        // This also covers lobby frames, which bypass the in-game route checks below.
+        if (_bans.IsVoiceBanned(frame.User))
+        {
+            var bannedSpeaker = GetSpeaker(frame.User);
+            var bannedLevels = bannedSpeaker.Measure(frame.Payload, out _);
+            var bannedLobby = IsInLobby(session);
+            var bannedName = string.Empty;
+            if (!bannedLobby && session.AttachedEntity is { } bannedUid)
+                bannedName = Name(bannedUid);
+
+            SendSelf(session, bannedSpeaker, bannedLevels, VoiceSelfFlags.Blocked);
+            _voiceLog.Record(session, frame,
+                bannedLobby ? VoiceLogFlags.Lobby | VoiceLogFlags.Blocked : VoiceLogFlags.Blocked,
+                bannedName,
+                string.Empty);
             return;
         }
 

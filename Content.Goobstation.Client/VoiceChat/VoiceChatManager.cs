@@ -37,6 +37,18 @@ public sealed partial class VoiceChatManager
 
     public string? LinkCode { get; private set; }
 
+    /// <summary>
+    /// Mini: the current player is banned from voice chat.
+    /// </summary>
+    public bool VoiceBanned { get; private set; }
+
+    public string VoiceBanReason { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Ban expiration as a Unix timestamp, 0 means permanent.
+    /// </summary>
+    public long VoiceBanExpiresUnix { get; private set; }
+
     public string? LinkUrl => PageUrl == null || LinkCode == null ? null : $"{PageUrl}?code={LinkCode}";
 
     public void Initialize()
@@ -138,6 +150,9 @@ public sealed partial class VoiceChatManager
         _mutedSpeakers.Clear();
         PageUrl = null;
         LinkCode = null;
+        VoiceBanned = false;
+        VoiceBanReason = string.Empty;
+        VoiceBanExpiresUnix = 0;
         LinkChanged?.Invoke();
         SetWebConnected(false);
         SendVoiceOptIn();
@@ -221,6 +236,20 @@ public sealed partial class VoiceChatManager
         }
 
         PageUrl = baseUrl;
+
+        // Mini: the server reports a voice chat ban instead of a code.
+        VoiceBanned = message.Banned;
+        if (message.Banned)
+        {
+            VoiceBanReason = message.BanReason;
+            VoiceBanExpiresUnix = message.BanExpiresUnix;
+            LinkCode = null;
+            LinkChanged?.Invoke();
+            return;
+        }
+
+        VoiceBanReason = string.Empty;
+        VoiceBanExpiresUnix = 0;
         LinkCode = message.Token;
         LinkChanged?.Invoke();
     }

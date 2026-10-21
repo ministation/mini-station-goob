@@ -31,6 +31,7 @@ public sealed class VoiceWebServer : IDisposable
     public const WebSocketCloseStatus CloseShutdown = (WebSocketCloseStatus) 4003;
     public const WebSocketCloseStatus CloseSessionEnded = (WebSocketCloseStatus) 4004;
     public const WebSocketCloseStatus CloseTooManyAttempts = (WebSocketCloseStatus) 4005;
+    public const WebSocketCloseStatus CloseBanned = (WebSocketCloseStatus) 4006;
 
     private const int FrameMessageBytes = 3 + VoiceCodec.FrameBytes;
     private const int MaxHeaderBytes = 8192;
@@ -49,6 +50,7 @@ public sealed class VoiceWebServer : IDisposable
 
     private readonly ISawmill _sawmill;
     private readonly Func<string, NetUserId?> _validateToken;
+    private readonly Func<NetUserId, bool> _isBanned;
     private readonly TcpListener _listener;
     private readonly CancellationTokenSource _cts = new();
     private readonly ConcurrentDictionary<NetUserId, Connection> _connections = new();
@@ -63,10 +65,11 @@ public sealed class VoiceWebServer : IDisposable
     private volatile int _maxConnectionsPerAddress = 6;
     private volatile HashSet<IPAddress> _trustedProxies = new();
 
-    public VoiceWebServer(IPEndPoint endpoint, Func<string, NetUserId?> validateToken, ISawmill sawmill)
+    public VoiceWebServer(IPEndPoint endpoint, Func<string, NetUserId?> validateToken, Func<NetUserId, bool> isBanned, ISawmill sawmill)
     {
         _sawmill = sawmill;
         _validateToken = validateToken;
+        _isBanned = isBanned;
         _listener = new TcpListener(endpoint);
     }
 
@@ -101,8 +104,13 @@ public sealed class VoiceWebServer : IDisposable
 
     public void Disconnect(NetUserId user)
     {
+        Disconnect(user, CloseSessionEnded, "You left the game server.");
+    }
+
+    public void Disconnect(NetUserId user, WebSocketCloseStatus status, string reason)
+    {
         if (_connections.TryGetValue(user, out var connection))
-            connection.Close(CloseSessionEnded, "You left the game server.");
+            connection.Close(status, reason);
     }
 
     public bool IsConnected(NetUserId user)
@@ -262,6 +270,12 @@ public sealed class VoiceWebServer : IDisposable
         {
             RecordAuthFailure(address);
             await CloseQuietlyAsync(socket, CloseInvalidToken, "This voice chat code is invalid or has expired.");
+            return;
+        }
+
+        if (_isBanned(user.Value))
+        {
+            await CloseQuietlyAsync(socket, CloseBanned, "You are banned from voice chat.");
             return;
         }
 

@@ -159,3 +159,40 @@ voice-deafen-off = Deafen: silence all voice chat and mute your microphone.
 voice-deafen-on = Deafened. Click to undeafen.
 voice-radio-popup-mute-all = Mute all
 voice-radio-popup-unmute-all = Unmute all
+
+# Voice chat bans
+cmd-voiceban-desc = Bans a player from voice chat
+cmd-voiceban-help = Usage: voiceban <username> <reason> [minutes] [severity]
+cmd-voiceban-invalid-arguments = You must specify a username and a reason.
+cmd-voiceban-invalid-minutes = Invalid minutes: {$minutes}
+cmd-voiceban-invalid-severity = Invalid severity: {$severity}
+cmd-voiceban-player = Can't find a player with that name or id.
+cmd-voiceban-hint = <username>
+cmd-voiceban-hint-reason = <reason>
+cmd-voiceban-hint-duration = [minutes]
+cmd-voiceban-hint-severity = [severity]
+cmd-voiceban-success = {$admin} banned {$target} from voice chat {$length}. Reason: {$reason}
+cmd-voiceban-length-inf = permanently
+cmd-voiceban-length-until = until {$expires}
+cmd-voiceunban-desc = Pardons a voice chat ban by its id
+cmd-voiceunban-help = Usage: voiceunban <ban id>
+cmd-voiceunban-unable-to-parse-id = Can't parse {$id} as a ban id. {$help}
+cmd-voiceunban-success = Pardoned voice chat ban #{$id}.
+cmd-voiceunban-hint-1 = <ban id>
+cmd-voicebanlist-desc = Shows a player's voice chat ban list
+cmd-voicebanlist-help = Usage: voicebanlist <username> [includeUnbanned]
+cmd-voicebanlist-invalid-bool = {$arg} is not a boolean.
+cmd-voicebanlist-player = Can't find a player with that name or id.
+cmd-voicebanlist-empty = That user has no voice chat bans.
+cmd-voicebanlist-entry = ID: {$id}. Reason: {$reason}
+cmd-voicebanlist-hint-1 = <username>
+cmd-voicebanlist-hint-2 = [includeUnbanned]
+
+voice-ban-message-permanent = The ban is permanent.
+voice-ban-message-expires = The ban expires {$time}.
+voice-link-banned = Banned from voice chat
+voice-link-banned-detail = Reason: {$reason} {$expires}
+voice-mic-banned = You are banned from voice chat. Click for details.
+
+admin-note-editor-type-voice-ban = Voice chat ban
+admin-notes-the-voice-chat = the voice chat

@@ -92,11 +92,25 @@ public sealed class MsgVoiceLink : NetMessage
     public string Token = string.Empty;
     public int StatusPort;
 
+    /// <summary>
+    /// Mini: the player is banned from voice chat. No code is issued in this case.
+    /// </summary>
+    public bool Banned;
+    public string BanReason = string.Empty;
+
+    /// <summary>
+    /// Ban expiration as a Unix timestamp, 0 means permanent.
+    /// </summary>
+    public long BanExpiresUnix;
+
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
         Url = buffer.ReadString();
         Token = buffer.ReadString();
         StatusPort = buffer.ReadInt32();
+        Banned = buffer.ReadBoolean();
+        BanReason = buffer.ReadString();
+        BanExpiresUnix = buffer.ReadInt64();
     }
 
     public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
@@ -104,6 +118,9 @@ public sealed class MsgVoiceLink : NetMessage
         buffer.Write(Url);
         buffer.Write(Token);
         buffer.Write(StatusPort);
+        buffer.Write(Banned);
+        buffer.Write(BanReason);
+        buffer.Write(BanExpiresUnix);
     }
 }
 
