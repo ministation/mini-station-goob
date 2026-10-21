@@ -1,15 +1,19 @@
-using Content.Client.Stylesheets;
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Maths;
 
 namespace Content.Goobstation.Client.VoiceChat.UI;
 
+/// <summary>
+/// Mini Station style connect block: two flat cards (desktop / phone) with the link, code and
+/// status, all using the same palette as the rest of the Mini windows.
+/// </summary>
 public sealed partial class VoiceChatConnectPanel : BoxContainer
 {
     [Dependency] private IClipboardManager _clipboard = default!;
     [Dependency] private VoiceChatManager _voice = default!;
-
-    private static readonly Color ConnectedColor = Color.FromHex("#5CD65C");
 
     private readonly Label _status;
     private readonly Button _open;
@@ -22,22 +26,13 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
         IoCManager.InjectDependencies(this);
 
         Orientation = LayoutOrientation.Vertical;
-        SeparationOverride = 6;
+        SeparationOverride = 8;
 
-        _status = new Label();
+        _status = new Label { StyleClasses = { "LabelHeading" } };
 
-        _open = new Button
-        {
-            Text = Loc.GetString("voice-link-open"),
-            StyleClasses = { StyleClass.ButtonOpenRight },
-            HorizontalExpand = true,
-        };
-        _copy = new Button
-        {
-            Text = Loc.GetString("voice-link-copy"),
-            StyleClasses = { StyleClass.ButtonOpenLeft },
-            HorizontalExpand = true,
-        };
+        _open = VoiceChatStyles.Button(Loc.GetString("voice-link-open"), accent: true);
+        _open.HorizontalExpand = true;
+        _copy = VoiceChatStyles.Button(Loc.GetString("voice-link-copy"));
         _open.OnPressed += _ => _voice.OpenLink();
         _copy.OnPressed += _ =>
         {
@@ -48,8 +43,7 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
         var buttons = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
-            VerticalAlignment = VAlignment.Bottom,
-            VerticalExpand = true,
+            SeparationOverride = 6,
         };
         buttons.AddChild(_open);
         buttons.AddChild(_copy);
@@ -61,25 +55,20 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
             SizeFlagsStretchRatio = 1f,
             SeparationOverride = 4,
         };
-        computer.AddChild(new Label
-        {
-            Text = Loc.GetString("voice-link-computer-title"),
-            StyleClasses = { StyleClass.LabelHeading },
-        });
-        computer.AddChild(new Label
-        {
-            Text = Loc.GetString("voice-link-computer-text"),
-            StyleClasses = { StyleClass.LabelSubText },
-        });
+        computer.AddChild(VoiceChatStyles.Heading(Loc.GetString("voice-link-computer-title")));
+        computer.AddChild(VoiceChatStyles.Muted(Loc.GetString("voice-link-computer-text")));
         computer.AddChild(buttons);
 
         _pageUrl = new Label
         {
-            StyleClasses = { StyleClass.LabelKeyText },
+            StyleClasses = { "LabelKeyText" },
+            FontColorOverride = VoiceChatStyles.Accent,
+            ClipText = true,
         };
         _code = new Label
         {
-            StyleClasses = { StyleClass.LabelHeadingBigger },
+            StyleClasses = { "LabelHeadingBigger" },
+            FontColorOverride = VoiceChatStyles.Accent,
             HorizontalAlignment = HAlignment.Center,
         };
 
@@ -90,34 +79,22 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
             SizeFlagsStretchRatio = 1f,
             SeparationOverride = 4,
         };
-        phone.AddChild(new Label
-        {
-            Text = Loc.GetString("voice-link-phone-title"),
-            StyleClasses = { StyleClass.LabelHeading },
-        });
-        phone.AddChild(new Label
-        {
-            Text = Loc.GetString("voice-link-phone-text"),
-            StyleClasses = { StyleClass.LabelSubText },
-        });
+        phone.AddChild(VoiceChatStyles.Heading(Loc.GetString("voice-link-phone-title")));
+        phone.AddChild(VoiceChatStyles.Muted(Loc.GetString("voice-link-phone-text")));
         phone.AddChild(_pageUrl);
         phone.AddChild(_code);
 
         var columns = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
-            SeparationOverride = 16,
+            SeparationOverride = 10,
         };
-        columns.AddChild(computer);
-        columns.AddChild(phone);
+        columns.AddChild(VoiceChatStyles.CardHost(computer));
+        columns.AddChild(VoiceChatStyles.CardHost(phone));
 
         AddChild(_status);
         AddChild(columns);
-        AddChild(new Label
-        {
-            Text = Loc.GetString("voice-link-expiry"),
-            StyleClasses = { StyleClass.LabelSubText },
-        });
+        AddChild(VoiceChatStyles.Muted(Loc.GetString("voice-link-expiry")));
     }
 
     protected override void EnteredTree()
@@ -147,10 +124,12 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
         var ready = _voice.LinkUrl != null;
 
         _status.Text = Loc.GetString(_voice.WebConnected ? "voice-link-connected" : "voice-link-disconnected");
-        _status.FontColorOverride = _voice.WebConnected ? ConnectedColor : null;
+        _status.FontColorOverride = _voice.WebConnected ? VoiceChatStyles.Success : VoiceChatStyles.Danger;
         _pageUrl.Text = _voice.PageUrl ?? Loc.GetString("voice-link-loading");
         _code.Text = _voice.LinkCode ?? "--------";
         _open.Disabled = !ready;
         _copy.Disabled = !ready;
+        _open.Modulate = ready ? Color.White : VoiceChatStyles.Offline;
+        _copy.Modulate = ready ? Color.White : VoiceChatStyles.Offline;
     }
 }

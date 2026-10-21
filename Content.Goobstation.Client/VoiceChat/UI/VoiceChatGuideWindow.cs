@@ -1,15 +1,17 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Numerics;
-using Content.Client.Stylesheets;
-using Content.Client.UserInterface.Controls;
 using Content.Shared.Input;
 using Robust.Client.Input;
 using Robust.Client.UserInterface.Controls;
+using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.Input;
+using Robust.Shared.Maths;
 using Robust.Shared.Utility;
 
 namespace Content.Goobstation.Client.VoiceChat.UI;
 
-public sealed partial class VoiceChatGuideWindow : FancyWindow
+public sealed partial class VoiceChatGuideWindow : DefaultWindow
 {
     [Dependency] private IInputManager _input = default!;
 
@@ -22,14 +24,33 @@ public sealed partial class VoiceChatGuideWindow : FancyWindow
         IoCManager.InjectDependencies(this);
 
         Title = Loc.GetString("voice-guide-title");
-        SetSize = new Vector2(640, 660);
-        MinSize = new Vector2(560, 440);
+        SetSize = new Vector2(680, 700);
+        MinSize = new Vector2(580, 480);
 
+        var backdrop = new PanelContainer
+        {
+            PanelOverride = VoiceChatStyles.Window(),
+            VerticalExpand = true,
+            HorizontalExpand = true,
+        };
+        Contents.AddChild(backdrop);
+
+        var root = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 10,
+            Margin = new Thickness(16, 12),
+            VerticalExpand = true,
+            HorizontalExpand = true,
+        };
+        backdrop.AddChild(root);
+
+        // Guide text lives in a dark card with the Mini accent headings.
         var guide = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
-            Margin = new Thickness(0, 0, 10, 0),
-            SeparationOverride = 4,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
         };
         guide.AddChild(CreateText(Loc.GetString("voice-guide-intro")));
 
@@ -41,12 +62,9 @@ public sealed partial class VoiceChatGuideWindow : FancyWindow
 
         foreach (var section in Sections)
         {
-            guide.AddChild(new Label
-            {
-                Text = Loc.GetString($"voice-guide-{section}-title"),
-                StyleClasses = { StyleClass.LabelHeading },
-                Margin = new Thickness(0, 8, 0, 0),
-            });
+            var heading = VoiceChatStyles.Heading(Loc.GetString($"voice-guide-{section}-title"));
+            heading.Margin = new Thickness(0, 8, 0, 0);
+            guide.AddChild(heading);
             guide.AddChild(CreateText(Loc.GetString($"voice-guide-{section}", keys)));
         }
 
@@ -54,31 +72,42 @@ public sealed partial class VoiceChatGuideWindow : FancyWindow
         {
             HScrollEnabled = false,
             VerticalExpand = true,
+            HorizontalExpand = true,
         };
         scroll.AddChild(guide);
 
-        var close = new Button
+        var guideCard = VoiceChatStyles.CardHost(scroll);
+        guideCard.VerticalExpand = true;
+        root.AddChild(guideCard);
+
+        root.AddChild(VoiceChatStyles.Divider());
+
+        root.AddChild(new Label
         {
-            Text = Loc.GetString(prompt ? "voice-prompt-later" : "voice-link-close"),
-            StyleClasses = { prompt ? StyleClass.ButtonOpenRight : StyleClass.ButtonSquare },
-        };
+            Text = Loc.GetString("voice-guide-connect-title"),
+            StyleClasses = { "LabelHeadingBigger" },
+            FontColorOverride = VoiceChatStyles.Accent,
+        });
+
+        root.AddChild(VoiceChatStyles.CardHost(new VoiceChatConnectPanel()));
+
+        var close = VoiceChatStyles.Button(
+            Loc.GetString(prompt ? "voice-prompt-later" : "voice-link-close"),
+            accent: !prompt);
         close.OnPressed += _ => Close();
 
         var buttons = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
             HorizontalAlignment = HAlignment.Right,
-            Margin = new Thickness(0, 8, 0, 0),
+            SeparationOverride = 6,
+            Margin = new Thickness(0, 4, 0, 0),
         };
         buttons.AddChild(close);
 
         if (prompt)
         {
-            var never = new Button
-            {
-                Text = Loc.GetString("voice-prompt-never"),
-                StyleClasses = { StyleClass.ButtonOpenLeft },
-            };
+            var never = VoiceChatStyles.Button(Loc.GetString("voice-prompt-never"));
             never.OnPressed += _ =>
             {
                 NeverAskPressed?.Invoke();
@@ -87,31 +116,16 @@ public sealed partial class VoiceChatGuideWindow : FancyWindow
             buttons.AddChild(never);
         }
 
-        var body = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Vertical,
-            Margin = new Thickness(8),
-        };
-        body.AddChild(scroll);
-        body.AddChild(new PanelContainer
-        {
-            StyleClasses = { StyleClass.LowDivider },
-            Margin = new Thickness(0, 8, 0, 8),
-        });
-        body.AddChild(new Label
-        {
-            Text = Loc.GetString("voice-guide-connect-title"),
-            StyleClasses = { StyleClass.LabelHeadingBigger },
-        });
-        body.AddChild(new VoiceChatConnectPanel());
-        body.AddChild(buttons);
-
-        ContentsContainer.AddChild(body);
+        root.AddChild(buttons);
     }
 
     private static RichTextLabel CreateText(string markup)
     {
-        var label = new RichTextLabel { HorizontalExpand = true };
+        var label = new RichTextLabel
+        {
+            HorizontalExpand = true,
+            Modulate = VoiceChatStyles.Text,
+        };
         label.SetMessage(FormattedMessage.FromMarkupPermissive(markup));
         return label;
     }

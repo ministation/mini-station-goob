@@ -183,7 +183,9 @@ public sealed class VoiceSpeakerEntry : Control
     private const float FadeTime = 0.4f;
     private const float MinVisibility = 0.01f;
 
-    private static readonly Color Background = Color.Black.WithAlpha(0.55f);
+    // Mini Station look: dark flat card with a thin border and a route-colored accent bar.
+    private static readonly Color Background = VoiceChatStyles.CardBackground.WithAlpha(0.8f);
+    private static readonly Color Border = VoiceChatStyles.CardBorder;
 
     private readonly float[] _history = new float[HistoryLength];
     private readonly Label _name;
@@ -210,6 +212,7 @@ public sealed class VoiceSpeakerEntry : Control
             HorizontalExpand = true,
             ClipText = true,
             VerticalAlignment = VAlignment.Center,
+            FontColorOverride = VoiceChatStyles.Text,
         };
         _route = new Label
         {
@@ -262,6 +265,12 @@ public sealed class VoiceSpeakerEntry : Control
         var width = (float) PixelWidth;
         var height = (float) PixelHeight;
         handle.DrawRect(new UIBox2(0f, 0f, width, height), Background);
+
+        // Thin Mini-style border around the card.
+        handle.DrawRect(new UIBox2(0f, 0f, width, 1f), Border);
+        handle.DrawRect(new UIBox2(0f, height - 1f, width, height), Border);
+        handle.DrawRect(new UIBox2(0f, 0f, 1f, height), Border);
+        handle.DrawRect(new UIBox2(width - 1f, 0f, width, height), Border);
 
         var fill = _color.WithAlpha(0.3f);
         var barWidth = width / (HistoryLength - 1);

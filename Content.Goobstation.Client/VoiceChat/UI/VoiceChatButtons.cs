@@ -25,11 +25,12 @@ public abstract partial class VoiceIconButton : Button
     [Dependency] protected VoiceChatManager Voice = default!;
     [Dependency] protected IEntitySystemManager Systems = default!;
 
-    protected static readonly Color OfflineColor = Color.FromHex("#6A6C7A");
-    protected static readonly Color IdleColor = Color.FromHex("#C8C8D0");
-    protected static readonly Color LiveColor = Color.FromHex("#5CD65C");
-    protected static readonly Color WarningColor = Color.FromHex("#FF9F43");
-    protected static readonly Color MutedColor = Color.FromHex("#E04545");
+    // Mini Station palette, shared with the rest of the voice chat UI.
+    protected static readonly Color OfflineColor = VoiceChatStyles.Offline;
+    protected static readonly Color IdleColor = VoiceChatStyles.Idle;
+    protected static readonly Color LiveColor = VoiceChatStyles.Live;
+    protected static readonly Color WarningColor = VoiceChatStyles.Warning;
+    protected static readonly Color MutedColor = VoiceChatStyles.Danger;
 
     protected Color IconColor = OfflineColor;
     protected bool Slashed;

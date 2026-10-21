@@ -76,7 +76,7 @@ public sealed class VoiceRadioButton : Button
         else
         {
             Text = Loc.GetString("voice-radio-button-off");
-            Modulate = Color.DarkGray;
+            Modulate = Color.FromHex("#9fb4d8");
         }
     }
 
@@ -197,7 +197,12 @@ public sealed class VoiceRadioPopup : Popup
             VerticalAlignment = VAlignment.Center,
         };
         _volume.OnValueChanged += _ => OnVolumeChanged();
-        _volumeValue = new Label { MinWidth = 40f, Align = Label.AlignMode.Right };
+        _volumeValue = new Label
+        {
+            MinWidth = 40f,
+            Align = Label.AlignMode.Right,
+            FontColorOverride = Color.FromHex("#d7e2f4"),
+        };
 
         var volumeItems = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 6, HorizontalExpand = true };
         volumeItems.AddChild(_volume);
@@ -214,12 +219,13 @@ public sealed class VoiceRadioPopup : Popup
         body.AddChild(_hearRow);
         body.AddChild(volumeRow);
 
+        // Mini Station look: dark flat panel with the muted purple accent the rest of the Mini UI uses.
         _panel = new PanelContainer
         {
             PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = Color.FromHex("#1B1B1E").WithAlpha(0.95f),
-                BorderColor = Color.FromHex("#3B3E56"),
+                BackgroundColor = Color.FromHex("#1a1622").WithAlpha(0.96f),
+                BorderColor = Color.FromHex("#9a8fb5").WithAlpha(0.55f),
                 BorderThickness = new Thickness(1),
             },
         };
@@ -280,7 +286,7 @@ public sealed class VoiceRadioPopup : Popup
         {
             Text = Loc.GetString(label),
             MinWidth = LabelWidth,
-            FontColorOverride = Color.FromHex("#A9A9B3"),
+            FontColorOverride = Color.FromHex("#9fb4d8"),
             VerticalAlignment = VAlignment.Top,
         });
         row.AddChild(items);
