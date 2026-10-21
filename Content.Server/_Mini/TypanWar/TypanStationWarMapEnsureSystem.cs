@@ -63,15 +63,24 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
 
         var mainMap = maps[0];
 
-        // typanpool.yml handles supplemental Typan for maps that declare additionalMap.
-        if (_prototypes.HasIndex<AdditionalMapPrototype>(mainMap.ID))
+        // typanpool.yml (AdditionalMapLoaderSystem) may have queued the supplemental map already, but
+        // that loader is off by default (ministation.additional_maps is false in dev builds). A war
+        // round needs both an NT and a Typan station regardless of that cvar, so skip only when the
+        // supplemental map is actually queued.
+        var isTypanMain = mainMap.ID == TypanMapId || mainMap.ID == AspidMapId;
+        if (!isTypanMain)
+        {
+            if (HasTypanStation() || maps.Any(m => m.ID == TypanMapId || m.ID == AspidMapId))
+                return;
+
+            TryAddMap(maps, SelectTypanMapId());
+            return;
+        }
+
+        if (HasNtStation() || maps.Any(m => m.ID == NtFallbackMapId))
             return;
 
-        var isTypanMain = mainMap.ID == TypanMapId || mainMap.ID == AspidMapId;
-        if (!isTypanMain && !HasTypanStation() && !maps.Any(m => m.ID == TypanMapId || m.ID == AspidMapId))
-            TryAddMap(maps, SelectTypanMapId());
-        else if (isTypanMain && !HasNtStation() && maps.All(m => m.ID != NtFallbackMapId))
-            TryAddMap(maps, NtFallbackMapId);
+        TryAddMap(maps, NtFallbackMapId);
     }
 
     /// <summary>
@@ -87,10 +96,8 @@ public sealed class TypanStationWarMapEnsureSystem : EntitySystem
         if (mainMap == null)
             return;
 
-        // typanpool.yml handles supplemental Typan for maps that declare additionalMap.
-        if (_prototypes.HasIndex<AdditionalMapPrototype>(mainMap.ID))
-            return;
-
+        // Do not assume AdditionalMapPrototype implies a loaded station: that loader is cvar-gated.
+        // Check the stations that actually exist instead (preload already created them).
         var isTypanMain = mainMap.ID == TypanMapId || mainMap.ID == AspidMapId;
         if (!isTypanMain && !HasTypanStation())
             LoadSupplemental(SelectTypanMapId());
