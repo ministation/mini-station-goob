@@ -46,7 +46,7 @@ public sealed partial class AdminNotesLinePopup : Popup
             : Loc.GetString("admin-notes-expires", ("expires", note.ExpiryTime.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")));
         NoteTextEdit.InsertAtCursor(note.Message);
 
-        if (note.NoteType is NoteType.ServerBan or NoteType.RoleBan)
+        if (note.NoteType is NoteType.ServerBan or NoteType.RoleBan or NoteType.VoiceBan)
         {
             DeleteButton.Text = Loc.GetString("admin-notes-hide");
         }

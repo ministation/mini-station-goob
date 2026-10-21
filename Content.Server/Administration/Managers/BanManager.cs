@@ -49,8 +49,11 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
     public const string DbTypeJob = "Job";
 
     private readonly Dictionary<ICommonSession, List<BanDef>> _cachedRoleBans = new();
+    private readonly Dictionary<ICommonSession, List<BanDef>> _cachedVoiceBans = new();
     // Cached ban exemption flags are used to handle
     private readonly Dictionary<ICommonSession, ServerBanExemptFlags> _cachedBanExemptions = new();
+
+    public event Action<NetUserId>? VoiceBanChanged;
 
     // Rate limit ban creation to mitigate mass-ban abuse (e.g. via external admin tools).
     private static readonly TimeSpan BanCreateRateLimitWindow = TimeSpan.FromMinutes(1);
@@ -94,9 +97,18 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
             userRoleBans.Add(ban);
         }
 
+        var voiceBans = await _db.GetBansAsync(
+            netChannel.RemoteEndPoint.Address,
+            player.UserId,
+            hwId,
+            modernHwids,
+            false,
+            type: BanType.Voice);
+
         cancel.ThrowIfCancellationRequested();
         _cachedBanExemptions[player] = flags;
         _cachedRoleBans[player] = userRoleBans;
+        _cachedVoiceBans[player] = voiceBans;
 
         SendRoleBans(player);
     }
@@ -104,6 +116,7 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
     private void ClearPlayerData(ICommonSession player)
     {
         _cachedBanExemptions.Remove(player);
+        _cachedVoiceBans.Remove(player);
     }
 
     public void Restart()
@@ -125,6 +138,23 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
         foreach (var roleBans in _cachedRoleBans.Values)
         {
             roleBans.RemoveAll(ban => DateTimeOffset.Now > ban.ExpirationTime);
+        }
+
+        var voiceToRemove = new ValueList<ICommonSession>();
+        foreach (var player in _cachedVoiceBans.Keys)
+        {
+            if (player.Status == SessionStatus.Disconnected)
+                voiceToRemove.Add(player);
+        }
+
+        foreach (var player in voiceToRemove)
+        {
+            _cachedVoiceBans.Remove(player);
+        }
+
+        foreach (var voiceBans in _cachedVoiceBans.Values)
+        {
+            voiceBans.RemoveAll(ban => DateTimeOffset.Now > ban.ExpirationTime);
         }
     }
 
@@ -306,6 +336,10 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
             roundIds = [];
         }
 
+        var defaultSeverity = type == BanType.Voice
+            ? CCVars.VoiceBanDefaultSeverity
+            : CCVars.ServerBanDefaultSeverity;
+
         return (new BanDef(
             null,
             type,
@@ -317,7 +351,7 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
             roundIds,
             await GetPlayTime(banInfo),
             banInfo.Reason,
-            GetSeverityForServerBan(banInfo, CCVars.ServerBanDefaultSeverity),
+            GetSeverityForServerBan(banInfo, defaultSeverity),
             banInfo.BanningAdmin,
             null,
             roles: roleBans), expires);
@@ -501,6 +535,153 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
 
         _sawmill.Debug($"Sent role bans to {pSession.Name}");
         _netManager.ServerSendMessage(bans, pSession.Channel);
+    }
+
+    #endregion
+
+    #region Voice Bans
+
+    public async void CreateVoiceBan(CreateVoiceBanInfo banInfo)
+    {
+        if (!CheckBanCreateRateLimit(banInfo.BanningAdmin))
+        {
+            _sawmill.Warning($"Rejected voice chat ban from {banInfo.BanningAdmin}: rate limit exceeded");
+            return;
+        }
+
+        var (banDef, expires) = await CreateBanDef(banInfo, BanType.Voice, null);
+
+        banDef = await _db.AddBanAsync(banDef);
+
+        // Match connected players so that IP/HWID-only bans also apply immediately.
+        var changedPlayers = new HashSet<NetUserId>();
+        foreach (var player in _playerManager.Sessions)
+        {
+            if (!VoiceBanMatchesPlayer(player, banDef))
+                continue;
+
+            if (_cachedVoiceBans.TryGetValue(player, out var cachedBans))
+                cachedBans.Add(banDef);
+
+            changedPlayers.Add(player.UserId);
+        }
+
+        foreach (var userId in changedPlayers)
+        {
+            VoiceBanChanged?.Invoke(userId);
+        }
+
+        var adminName = banInfo.BanningAdmin == null
+            ? Loc.GetString("system-user")
+            : (await _db.GetPlayerRecordByUserId(banInfo.BanningAdmin.Value))?.LastSeenUserName ?? Loc.GetString("system-user");
+
+        var targetName = banInfo.Users.Count == 0
+            ? "null"
+            : string.Join(", ", banInfo.Users.Select(u => $"{u.UserName} ({u.UserId})"));
+
+        var length = expires == null
+            ? Loc.GetString("cmd-voiceban-length-inf")
+            : Loc.GetString("cmd-voiceban-length-until", ("expires", expires));
+
+        var logMessage = Loc.GetString(
+            "cmd-voiceban-success",
+            ("admin", adminName),
+            ("target", targetName),
+            ("length", length),
+            ("reason", banInfo.Reason));
+
+        _sawmill.Info(logMessage);
+        _chat.SendAdminAlert(logMessage);
+    }
+
+    private static bool VoiceBanMatchesPlayer(ICommonSession player, BanDef ban)
+    {
+        var playerInfo = new BanMatcher.PlayerInfo
+        {
+            UserId = player.UserId,
+            Address = player.Channel.RemoteEndPoint.Address,
+            HWId = player.Channel.UserData.HWId,
+            ModernHWIds = player.Channel.UserData.ModernHWIds,
+            // Voice chat bans never use server ban exemptions.
+            ExemptFlags = ServerBanExemptFlags.None,
+            IsNewPlayer = false,
+        };
+
+        return BanMatcher.BanMatches(ban, playerInfo);
+    }
+
+    public BanDef? GetVoiceBan(NetUserId playerUserId)
+    {
+        if (!_playerManager.TryGetSessionById(playerUserId, out var session))
+            return null;
+
+        if (!_cachedVoiceBans.TryGetValue(session, out var bans))
+            return null;
+
+        BanDef? latest = null;
+        var now = DateTimeOffset.Now;
+        foreach (var ban in bans)
+        {
+            if (ban.ExpirationTime is { } expiration && expiration <= now)
+                continue;
+
+            if (latest == null || ban.BanTime > latest.BanTime)
+                latest = ban;
+        }
+
+        return latest;
+    }
+
+    public bool IsVoiceBanned(NetUserId playerUserId)
+    {
+        return GetVoiceBan(playerUserId) != null;
+    }
+
+    public async Task<string> PardonVoiceBan(int banId, NetUserId? unbanningAdmin, DateTimeOffset unbanTime)
+    {
+        var ban = await _db.GetBanAsync(banId);
+
+        if (ban == null)
+            return $"No ban found with id {banId}";
+
+        if (ban.Type != BanType.Voice)
+            throw new InvalidOperationException("Ban was not a voice chat ban!");
+
+        if (ban.Unban != null)
+        {
+            var response = new StringBuilder("This ban has already been pardoned");
+
+            if (ban.Unban.UnbanningAdmin != null)
+                response.Append($" by {ban.Unban.UnbanningAdmin.Value}");
+
+            response.Append($" in {ban.Unban.UnbanTime}.");
+            return response.ToString();
+        }
+
+        await _db.AddUnbanAsync(new UnbanDef(banId, unbanningAdmin, DateTimeOffset.Now));
+
+        // The ban may have matched an address or HWID only, so clear every session's cache.
+        var changedPlayers = new HashSet<NetUserId>();
+        foreach (var player in _playerManager.Sessions)
+        {
+            if (_cachedVoiceBans.TryGetValue(player, out var voiceBans)
+                && voiceBans.RemoveAll(voiceBan => voiceBan.Id == ban.Id) > 0)
+            {
+                changedPlayers.Add(player.UserId);
+            }
+        }
+
+        foreach (var user in ban.UserIds)
+        {
+            changedPlayers.Add(user);
+        }
+
+        foreach (var userId in changedPlayers)
+        {
+            VoiceBanChanged?.Invoke(userId);
+        }
+
+        return Loc.GetString("cmd-voiceunban-success", ("id", banId));
     }
 
     #endregion

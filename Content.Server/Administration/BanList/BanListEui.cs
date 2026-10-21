@@ -29,6 +29,7 @@ public sealed class BanListEui : BaseEui
     private string BanListPlayerName { get; set; } = string.Empty;
     private List<SharedBan> Bans { get; set; } = new();
     private List<SharedBan> RoleBans { get; set; } = new();
+    private List<SharedBan> VoiceBans { get; set; } = new();
 
     public override void Opened()
     {
@@ -46,7 +47,7 @@ public sealed class BanListEui : BaseEui
 
     public override EuiStateBase GetNewState()
     {
-        return new BanListEuiState(BanListPlayerName, Bans, RoleBans);
+        return new BanListEuiState(BanListPlayerName, Bans, RoleBans, VoiceBans);
     }
 
     private void OnPermsChanged(AdminPermsChangedEventArgs args)
@@ -61,6 +62,7 @@ public sealed class BanListEui : BaseEui
     {
         await LoadBansCore(userId, BanType.Server, Bans);
         await LoadBansCore(userId, BanType.Role, RoleBans);
+        await LoadBansCore(userId, BanType.Voice, VoiceBans);
     }
 
     private async Task LoadBansCore(NetUserId userId, BanType banType, List<SharedBan> list)
@@ -107,6 +109,7 @@ public sealed class BanListEui : BaseEui
     {
         Bans.Clear();
         RoleBans.Clear();
+        VoiceBans.Clear();
 
         var userId = new NetUserId(BanListPlayer);
         BanListPlayerName = (await _playerLocator.LookupIdAsync(userId))?.Username ??

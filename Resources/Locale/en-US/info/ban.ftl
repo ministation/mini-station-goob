@@ -80,6 +80,7 @@ ban-panel-invalid-ip = The IP address could not be parsed. Please try again
 ban-panel-select = Select type
 ban-panel-server = Server ban
 ban-panel-role = Role ban
+ban-panel-voice = Voice chat ban
 ban-panel-minutes = Minutes
 ban-panel-hours = Hours
 ban-panel-days = Days
@@ -99,3 +100,6 @@ server-ban-string-never = never
 
 # Kick on ban
 ban-kick-reason = You have been banned
+
+# Ban list
+ban-list-voice-bans = Voice chat bans

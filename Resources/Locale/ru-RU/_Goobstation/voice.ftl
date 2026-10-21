@@ -159,3 +159,40 @@ voice-deafen-off = Не слышать: отключить весь голосо
 voice-deafen-on = Слух отключён. Нажмите, чтобы снова слышать.
 voice-radio-popup-mute-all = Заглушить все
 voice-radio-popup-unmute-all = Включить все
+
+# Баны голосового чата
+cmd-voiceban-desc = Банит игрока в голосовом чате
+cmd-voiceban-help = Использование: voiceban <имя игрока> <причина> [минуты] [тяжесть]
+cmd-voiceban-invalid-arguments = Укажите имя игрока и причину.
+cmd-voiceban-invalid-minutes = Неверное число минут: {$minutes}
+cmd-voiceban-invalid-severity = Неверная тяжесть: {$severity}
+cmd-voiceban-player = Не удаётся найти игрока с таким именем или id.
+cmd-voiceban-hint = <имя игрока>
+cmd-voiceban-hint-reason = <причина>
+cmd-voiceban-hint-duration = [минуты]
+cmd-voiceban-hint-severity = [тяжесть]
+cmd-voiceban-success = {$admin} забанил {$target} в голосовом чате {$length}. Причина: {$reason}
+cmd-voiceban-length-inf = навсегда
+cmd-voiceban-length-until = до {$expires}
+cmd-voiceunban-desc = Снимает бан голосового чата по его id
+cmd-voiceunban-help = Использование: voiceunban <id бана>
+cmd-voiceunban-unable-to-parse-id = Не удаётся распознать {$id} как id бана. {$help}
+cmd-voiceunban-success = Бан голосового чата #{$id} снят.
+cmd-voiceunban-hint-1 = <id бана>
+cmd-voicebanlist-desc = Показывает список банов голосового чата игрока
+cmd-voicebanlist-help = Использование: voicebanlist <имя игрока> [includeUnbanned]
+cmd-voicebanlist-invalid-bool = {$arg} не является булевым значением.
+cmd-voicebanlist-player = Не удаётся найти игрока с таким именем или id.
+cmd-voicebanlist-empty = У этого игрока нет банов голосового чата.
+cmd-voicebanlist-entry = ID: {$id}. Причина: {$reason}
+cmd-voicebanlist-hint-1 = <имя игрока>
+cmd-voicebanlist-hint-2 = [includeUnbanned]
+
+voice-ban-message-permanent = Бан бессрочный.
+voice-ban-message-expires = Бан истекает {$time}.
+voice-link-banned = Забанен в голосовом чате
+voice-link-banned-detail = Причина: {$reason} {$expires}
+voice-mic-banned = Вы забанены в голосовом чате. Нажмите, чтобы посмотреть причину.
+
+admin-note-editor-type-voice-ban = Бан голосового чата
+admin-notes-the-voice-chat = в голосовом чате

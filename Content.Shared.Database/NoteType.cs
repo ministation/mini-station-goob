@@ -37,4 +37,9 @@ public enum NoteType
     ///     A role ban, converted to a shared note
     /// </summary>
     RoleBan = 4,
+
+    /// <summary>
+    ///     A voice chat ban, converted to a shared note
+    /// </summary>
+    VoiceBan = 5,
 }

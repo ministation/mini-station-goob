@@ -93,6 +93,13 @@ namespace Content.Server.Database
                         throw new ArgumentException("Role bans cannot have exempt flags", nameof(exemptFlags));
                     break;
 
+                case BanType.Voice:
+                    if (roles != null)
+                        throw new ArgumentException("Cannot specify roles for voice chat ban types", nameof(roles));
+                    if (exemptFlags != 0)
+                        throw new ArgumentException("Voice chat bans cannot have exempt flags", nameof(exemptFlags));
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type));
             }

@@ -30,6 +30,7 @@ public sealed class PlayerPanelEui : BaseEui
     private int? _notes;
     private int? _bans;
     private int? _roleBans;
+    private int? _voiceBans;
     private int _sharedConnections;
     private bool? _whitelisted;
     private TimeSpan _playtime;
@@ -67,6 +68,7 @@ public sealed class PlayerPanelEui : BaseEui
             _notes,
             _bans,
             _roleBans,
+            _voiceBans,
             _sharedConnections,
             _whitelisted,
             _canFreeze,
@@ -194,12 +196,14 @@ public sealed class PlayerPanelEui : BaseEui
             // This won't get associated ip or hwid bans but they were not placed on this account anyways
             _bans = (await _db.GetBansAsync(null, _targetPlayer.UserId, null, null)).Count;
             _roleBans = (await _db.GetBansAsync(null, _targetPlayer.UserId, null, null, type: BanType.Role)).Count();
+            _voiceBans = (await _db.GetBansAsync(null, _targetPlayer.UserId, null, null, type: BanType.Voice)).Count();
         }
         else
         {
             _whitelisted = null;
             _bans = null;
             _roleBans = null;
+            _voiceBans = null;
         }
 
         if (_player.TryGetSessionById(_targetPlayer.UserId, out var session))

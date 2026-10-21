@@ -3,6 +3,7 @@
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Maths;
+using Robust.Shared.Utility;
 
 namespace Content.Goobstation.Client.VoiceChat.UI;
 
@@ -16,6 +17,7 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
     [Dependency] private VoiceChatManager _voice = default!;
 
     private readonly Label _status;
+    private readonly RichTextLabel _detail;
     private readonly Button _open;
     private readonly Button _copy;
     private readonly Label _pageUrl;
@@ -29,6 +31,13 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
         SeparationOverride = 8;
 
         _status = new Label { StyleClasses = { "LabelHeading" } };
+
+        _detail = new RichTextLabel
+        {
+            HorizontalExpand = true,
+            Visible = false,
+            Modulate = VoiceChatStyles.Danger,
+        };
 
         _open = VoiceChatStyles.Button(Loc.GetString("voice-link-open"), accent: true);
         _open.HorizontalExpand = true;
@@ -93,6 +102,7 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
         columns.AddChild(VoiceChatStyles.CardHost(phone));
 
         AddChild(_status);
+        AddChild(_detail);
         AddChild(columns);
         AddChild(VoiceChatStyles.Muted(Loc.GetString("voice-link-expiry")));
     }
@@ -121,6 +131,27 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
 
     private void UpdateState()
     {
+        // Mini: a voice chat ban replaces the link with the ban reason and expiry.
+        if (_voice.VoiceBanned)
+        {
+            _status.Text = Loc.GetString("voice-link-banned");
+            _status.FontColorOverride = VoiceChatStyles.Danger;
+            _detail.Visible = true;
+            _detail.SetMessage(FormattedMessage.FromMarkupPermissive(
+                FormattedMessage.EscapeText(BuildBanDetail())));
+            _pageUrl.Text = _voice.PageUrl ?? Loc.GetString("voice-link-loading");
+            _pageUrl.FontColorOverride = VoiceChatStyles.Offline;
+            _code.Text = "--------";
+            _open.Disabled = true;
+            _copy.Disabled = true;
+            _open.Modulate = VoiceChatStyles.Offline;
+            _copy.Modulate = VoiceChatStyles.Offline;
+            return;
+        }
+
+        _detail.Visible = false;
+        _pageUrl.FontColorOverride = VoiceChatStyles.Accent;
+
         var ready = _voice.LinkUrl != null;
 
         _status.Text = Loc.GetString(_voice.WebConnected ? "voice-link-connected" : "voice-link-disconnected");
@@ -131,5 +162,16 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
         _copy.Disabled = !ready;
         _open.Modulate = ready ? Color.White : VoiceChatStyles.Offline;
         _copy.Modulate = ready ? Color.White : VoiceChatStyles.Offline;
+    }
+
+    private string BuildBanDetail()
+    {
+        var expires = _voice.VoiceBanExpiresUnix > 0
+            ? Loc.GetString("voice-ban-message-expires",
+                ("time", DateTimeOffset.FromUnixTimeSeconds(_voice.VoiceBanExpiresUnix).ToLocalTime().ToString("f")))
+            : Loc.GetString("voice-ban-message-permanent");
+
+        var reason = string.IsNullOrWhiteSpace(_voice.VoiceBanReason) ? "-" : _voice.VoiceBanReason;
+        return Loc.GetString("voice-link-banned-detail", ("reason", reason), ("expires", expires));
     }
 }

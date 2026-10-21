@@ -3,6 +3,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Content.Server.Database;
 using Content.Shared.Database;
 using Content.Shared.Roles;
 using Robust.Shared.Network;
@@ -114,6 +115,34 @@ public interface IBanManager
     /// </summary>
     /// <param name="pSession">Player's session</param>
     public void SendRoleBans(ICommonSession pSession);
+
+    /// <summary>
+    /// Raised when a player's voice chat ban state may have changed (placed, pardoned or expired).
+    /// </summary>
+    event Action<NetUserId>? VoiceBanChanged;
+
+    /// <summary>
+    /// Creates a voice chat ban, preventing matching players from using voice chat.
+    /// </summary>
+    public void CreateVoiceBan(CreateVoiceBanInfo banInfo);
+
+    /// <summary>
+    /// Gets the most recent active voice chat ban for a connected player, if any.
+    /// </summary>
+    public BanDef? GetVoiceBan(NetUserId playerUserId);
+
+    /// <summary>
+    /// Checks if the player is currently banned from voice chat.
+    /// </summary>
+    public bool IsVoiceBanned(NetUserId playerUserId);
+
+    /// <summary>
+    /// Pardons a voice chat ban by its ID.
+    /// </summary>
+    /// <param name="banId">The id of the voice chat ban to pardon.</param>
+    /// <param name="unbanningAdmin">The admin, if any, that pardoned the ban.</param>
+    /// <param name="unbanTime">The time at which the ban was pardoned.</param>
+    public Task<string> PardonVoiceBan(int banId, NetUserId? unbanningAdmin, DateTimeOffset unbanTime);
 }
 
 /// <summary>
@@ -342,6 +371,19 @@ public sealed class CreateServerBanInfo : CreateBanInfo
 {
     /// <param name="reason">The reason for the server ban.</param>
     public CreateServerBanInfo(string reason) : base(reason)
+    {
+    }
+}
+
+/// <summary>
+/// Stores info to create voice chat ban records.
+/// </summary>
+/// <seealso cref="IBanManager.CreateVoiceBan(CreateVoiceBanInfo)"/>
+[Access(typeof(BanManager), Other = AccessPermissions.Execute)]
+public sealed class CreateVoiceBanInfo : CreateBanInfo
+{
+    /// <param name="reason">The reason for the voice chat ban.</param>
+    public CreateVoiceBanInfo(string reason) : base(reason)
     {
     }
 }

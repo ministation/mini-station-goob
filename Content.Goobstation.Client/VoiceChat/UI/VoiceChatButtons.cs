@@ -116,7 +116,13 @@ public sealed partial class VoiceMicButton : VoiceIconButton
     protected override void UpdateState()
     {
         string tooltip;
-        if (!Voice.WebConnected)
+        if (Voice.VoiceBanned)
+        {
+            IconColor = MutedColor;
+            Slashed = true;
+            tooltip = "voice-mic-banned";
+        }
+        else if (!Voice.WebConnected)
         {
             IconColor = OfflineColor;
             Slashed = false;
@@ -172,7 +178,7 @@ public sealed partial class VoiceMicButton : VoiceIconButton
 
     private void OnClick()
     {
-        if (!Voice.WebConnected)
+        if (Voice.VoiceBanned || !Voice.WebConnected)
         {
             UserInterfaceManager.GetUIController<VoiceChatGuideUIController>().Open();
             return;

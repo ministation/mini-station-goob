@@ -122,6 +122,9 @@ public sealed partial class AdminNotesLine : BoxContainer
             case NoteType.RoleBan:
                 NoteLabel.SetMessage(FormatRoleBanMessage());
                 break;
+            case NoteType.VoiceBan:
+                NoteLabel.SetMessage(FormatVoiceBanMessage());
+                break;
             case NoteType.Note:
             case NoteType.Watchlist:
             case NoteType.Message:
@@ -151,6 +154,12 @@ public sealed partial class AdminNotesLine : BoxContainer
             (IEnumerable<BanRoleDef>?)Note.BannedRoles ?? [new BanRoleDef("what", "You should not be seeing this")]);
 
         var banMessage = new StringBuilder($"{Loc.GetString("admin-notes-banned-from")} {rolesText} ");
+        return FormatBanMessageCommon(banMessage);
+    }
+
+    private string FormatVoiceBanMessage()
+    {
+        var banMessage = new StringBuilder($"{Loc.GetString("admin-notes-banned-from")} {Loc.GetString("admin-notes-the-voice-chat")} ");
         return FormatBanMessageCommon(banMessage);
     }
 

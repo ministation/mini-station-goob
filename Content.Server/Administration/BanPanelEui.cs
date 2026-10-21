@@ -2,6 +2,7 @@
 
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
 using Content.Server.Chat.Managers;
@@ -53,6 +54,9 @@ public sealed class BanPanelEui : BaseEui
             case BanPanelEuiStateMsg.CreateBanRequest r:
                 BanPlayer(r.Ban);
                 break;
+            case BanPanelEuiStateMsg.CreateVoiceBanRequest r:
+                VoiceBanPlayer(r.Ban);
+                break;
             case BanPanelEuiStateMsg.GetPlayerInfoRequest r:
                 ChangePlayer(r.PlayerUsername);
                 break;
@@ -61,19 +65,12 @@ public sealed class BanPanelEui : BaseEui
 
     private async void BanPlayer(Ban ban)
     {
-        if (!_admins.HasAdminFlag(Player, AdminFlags.Ban))
-        {
-            _sawmill.Warning($"{Player.Name} ({Player.UserId}) tried to create a ban with no ban flag");
-
+        if (!CheckBanPermission())
             return;
-        }
 
-        if (ban.Target == null && string.IsNullOrWhiteSpace(ban.IpAddress) && ban.Hwid == null)
-        {
-            _chat.DispatchServerMessage(Player, Loc.GetString("ban-panel-no-data"));
-
+        var target = await ResolveBanTarget(ban);
+        if (target is not { } resolved)
             return;
-        }
 
         var isRoleBan = ban.BannedJobs?.Length > 0 || ban.BannedAntags?.Length > 0;
 
@@ -84,53 +81,13 @@ public sealed class BanPanelEui : BaseEui
         if (ban.BanDurationMinutes > 0)
             banInfo.WithMinutes(ban.BanDurationMinutes);
 
-        (IPAddress, int)? addressRange = null;
-        if (ban.IpAddress is not null)
-        {
-            if (!IPAddress.TryParse(ban.IpAddress, out var ipAddress) || !uint.TryParse(ban.IpAddressHid, out var hidInt) || hidInt > Ipv6_CIDR || hidInt > Ipv4_CIDR && ipAddress.AddressFamily == AddressFamily.InterNetwork)
-            {
-                _chat.DispatchServerMessage(Player, Loc.GetString("ban-panel-invalid-ip"));
-                return;
-            }
+        if (resolved.AddressRange != null)
+            banInfo.AddAddressRange(resolved.AddressRange.Value);
 
-            if (hidInt == 0)
-                hidInt = (uint) (ipAddress.AddressFamily == AddressFamily.InterNetworkV6 ? Ipv6_CIDR : Ipv4_CIDR);
+        if (resolved.TargetUid != null)
+            banInfo.AddUser(resolved.TargetUid.Value, ban.Target!);
 
-            addressRange = (ipAddress, (int) hidInt);
-        }
-
-        var targetUid = ban.Target is not null ? PlayerId : null;
-        addressRange = ban.UseLastIp && LastAddress is not null ? (LastAddress, LastAddress.AddressFamily == AddressFamily.InterNetworkV6 ? Ipv6_CIDR : Ipv4_CIDR) : addressRange;
-        var targetHWid = ban.UseLastHwid ? LastHwid : ban.Hwid;
-        if (ban.Target != null && ban.Target != PlayerName || Guid.TryParse(ban.Target, out var parsed) && parsed != PlayerId)
-        {
-            var located = await _playerLocator.LookupIdByNameOrIdAsync(ban.Target);
-            if (located == null)
-            {
-                _chat.DispatchServerMessage(Player, Loc.GetString("cmd-ban-player"));
-                return;
-            }
-            targetUid = located.UserId;
-            var targetAddress = located.LastAddress;
-            if (ban.UseLastIp && targetAddress != null)
-            {
-                if (targetAddress.IsIPv4MappedToIPv6)
-                    targetAddress = targetAddress.MapToIPv4();
-
-                // Ban /64 for IPv6, /32 for IPv4.
-                var hid = targetAddress.AddressFamily == AddressFamily.InterNetworkV6 ? Ipv6_CIDR : Ipv4_CIDR;
-                addressRange = (targetAddress, hid);
-            }
-            targetHWid = ban.UseLastHwid ? located.LastHWId : ban.Hwid;
-        }
-
-        if (addressRange != null)
-            banInfo.AddAddressRange(addressRange.Value);
-
-        if (targetUid != null)
-            banInfo.AddUser(targetUid.Value, ban.Target!);
-
-        banInfo.AddHWId(targetHWid);
+        banInfo.AddHWId(resolved.TargetHwid);
 
         if (isRoleBan)
         {
@@ -149,12 +106,12 @@ public sealed class BanPanelEui : BaseEui
         }
         else
         {
-            if (ban.Erase && targetUid is not null)
+            if (ban.Erase && resolved.TargetUid is not null)
             {
                 try
                 {
                     if (_entities.TrySystem(out AdminSystem? adminSystem))
-                        adminSystem.Erase(targetUid.Value);
+                        adminSystem.Erase(resolved.TargetUid.Value);
                 }
                 catch (Exception e)
                 {
@@ -166,6 +123,107 @@ public sealed class BanPanelEui : BaseEui
         }
 
         Close();
+    }
+
+    private async void VoiceBanPlayer(Ban ban)
+    {
+        if (!CheckBanPermission())
+            return;
+
+        var target = await ResolveBanTarget(ban);
+        if (target is not { } resolved)
+            return;
+
+        // Voice bans do not use roles and never erase chat messages or the player from the round.
+        var banInfo = new CreateVoiceBanInfo(ban.Reason);
+
+        banInfo.WithBanningAdmin(Player.UserId);
+        banInfo.WithSeverity(ban.Severity);
+        if (ban.BanDurationMinutes > 0)
+            banInfo.WithMinutes(ban.BanDurationMinutes);
+
+        if (resolved.AddressRange != null)
+            banInfo.AddAddressRange(resolved.AddressRange.Value);
+
+        if (resolved.TargetUid != null)
+            banInfo.AddUser(resolved.TargetUid.Value, ban.Target!);
+
+        banInfo.AddHWId(resolved.TargetHwid);
+
+        _banManager.CreateVoiceBan(banInfo);
+
+        Close();
+    }
+
+    private bool CheckBanPermission()
+    {
+        if (_admins.HasAdminFlag(Player, AdminFlags.Ban))
+            return true;
+
+        _sawmill.Warning($"{Player.Name} ({Player.UserId}) tried to create a ban with no ban flag");
+
+        return false;
+    }
+
+    private readonly record struct ResolvedBanTarget(
+        NetUserId? TargetUid,
+        (IPAddress Address, int Mask)? AddressRange,
+        ImmutableTypedHwid? TargetHwid);
+
+    /// <summary>
+    /// Resolves the target user, address range and HWID of a ban request from the ban panel.
+    /// Returns null and notifies the admin if the request is invalid.
+    /// </summary>
+    private async Task<ResolvedBanTarget?> ResolveBanTarget(Ban ban)
+    {
+        if (ban.Target == null && string.IsNullOrWhiteSpace(ban.IpAddress) && ban.Hwid == null)
+        {
+            _chat.DispatchServerMessage(Player, Loc.GetString("ban-panel-no-data"));
+
+            return null;
+        }
+
+        (IPAddress, int)? addressRange = null;
+        if (ban.IpAddress is not null)
+        {
+            if (!IPAddress.TryParse(ban.IpAddress, out var ipAddress) || !uint.TryParse(ban.IpAddressHid, out var hidInt) || hidInt > Ipv6_CIDR || hidInt > Ipv4_CIDR && ipAddress.AddressFamily == AddressFamily.InterNetwork)
+            {
+                _chat.DispatchServerMessage(Player, Loc.GetString("ban-panel-invalid-ip"));
+                return null;
+            }
+
+            if (hidInt == 0)
+                hidInt = (uint) (ipAddress.AddressFamily == AddressFamily.InterNetworkV6 ? Ipv6_CIDR : Ipv4_CIDR);
+
+            addressRange = (ipAddress, (int) hidInt);
+        }
+
+        var targetUid = ban.Target is not null ? PlayerId : null;
+        addressRange = ban.UseLastIp && LastAddress is not null ? (LastAddress, LastAddress.AddressFamily == AddressFamily.InterNetworkV6 ? Ipv6_CIDR : Ipv4_CIDR) : addressRange;
+        var targetHWid = ban.UseLastHwid ? LastHwid : ban.Hwid;
+        if (ban.Target != null && ban.Target != PlayerName || Guid.TryParse(ban.Target, out var parsed) && parsed != PlayerId)
+        {
+            var located = await _playerLocator.LookupIdByNameOrIdAsync(ban.Target);
+            if (located == null)
+            {
+                _chat.DispatchServerMessage(Player, Loc.GetString("cmd-ban-player"));
+                return null;
+            }
+            targetUid = located.UserId;
+            var targetAddress = located.LastAddress;
+            if (ban.UseLastIp && targetAddress != null)
+            {
+                if (targetAddress.IsIPv4MappedToIPv6)
+                    targetAddress = targetAddress.MapToIPv4();
+
+                // Ban /64 for IPv6, /32 for IPv4.
+                var hid = targetAddress.AddressFamily == AddressFamily.InterNetworkV6 ? Ipv6_CIDR : Ipv4_CIDR;
+                addressRange = (targetAddress, hid);
+            }
+            targetHWid = ban.UseLastHwid ? located.LastHWId : ban.Hwid;
+        }
+
+        return new ResolvedBanTarget(targetUid, addressRange, targetHWid);
     }
 
     public async void ChangePlayer(string playerNameOrId)

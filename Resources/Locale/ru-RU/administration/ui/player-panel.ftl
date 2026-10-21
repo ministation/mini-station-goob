@@ -3,6 +3,7 @@ player-panel-username = Имя пользователя: { $player }
 player-panel-whitelisted = В вайтлисте?:
 player-panel-bans = Всего банов: { $totalBans }
 player-panel-rolebans = Всего банов ролей: { $totalRoleBans }
+player-panel-voicebans = Всего банов голосового чата: { $totalVoiceBans }
 player-panel-notes = Всего заметок: { $totalNotes }
 player-panel-playtime = Наиграно времени: { $days }д:{ $hours }ч:{ $minutes }м
 player-panel-shared-connections = Общие соединения: { $sharedConnections }

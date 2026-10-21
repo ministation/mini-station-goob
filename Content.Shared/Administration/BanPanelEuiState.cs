@@ -31,6 +31,12 @@ public static class BanPanelEuiStateMsg
     }
 
     [Serializable, NetSerializable]
+    public sealed class CreateVoiceBanRequest(Ban ban) : EuiMessageBase
+    {
+        public Ban Ban { get; private set; } = ban;
+    }
+
+    [Serializable, NetSerializable]
     public sealed class GetPlayerInfoRequest : EuiMessageBase
     {
         public string PlayerUsername { get; set; }

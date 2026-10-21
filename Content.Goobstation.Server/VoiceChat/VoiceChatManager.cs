@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.VoiceChat;
 using Content.Server._Mini.VoiceChat;
+using Content.Server.Administration.Managers;
 using Robust.Server.Player;
 using Robust.Server.ServerStatus;
 using Robust.Shared;
@@ -26,6 +27,7 @@ public sealed partial class VoiceChatManager
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IStatusHost _statusHost = default!;
     [Dependency] private ILogManager _logManager = default!;
+    [Dependency] private IBanManager _bans = default!;
 
     private const string PagePath = "/voice";
     private const string CodeAlphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -41,6 +43,8 @@ public sealed partial class VoiceChatManager
     private readonly Dictionary<NetUserId, HashSet<string>> _mutedChannels = new();
     private readonly Dictionary<NetUserId, HashSet<ushort>> _mutedSpeakers = new();
     private readonly Dictionary<string, (byte[] Data, string ContentType)> _files = new();
+    // Mini: thread-safe snapshot of voice-banned players for the WebSocket auth thread.
+    private readonly ConcurrentDictionary<NetUserId, byte> _bannedUsers = new();
 
     private ISawmill _sawmill = default!;
     private VoiceWebServer? _server;
@@ -67,6 +71,7 @@ public sealed partial class VoiceChatManager
         _net.RegisterNetMessage<MsgVoiceMicMute>(message => MicMuteReceived?.Invoke(message.MsgChannel.UserId, message.Muted));
         _net.RegisterNetMessage<MsgVoiceChatOptIn>(OnVoiceOptIn); // Mini: voice chat opt-in
         _net.Disconnect += OnDisconnect;
+        _bans.VoiceBanChanged += OnVoiceBanChanged;
 
         LoadWebFiles();
         _statusHost.AddHandler(HandleHttpRequestAsync);
@@ -82,6 +87,7 @@ public sealed partial class VoiceChatManager
     {
         _cfg.UnsubValueChanged(GoobCVars.VoiceChatEnabled, OnEnabledChanged);
         _net.Disconnect -= OnDisconnect;
+        _bans.VoiceBanChanged -= OnVoiceBanChanged;
         StopServer();
     }
 
@@ -185,7 +191,7 @@ public sealed partial class VoiceChatManager
 
         try
         {
-            var server = new VoiceWebServer(endpoint, ValidateToken, _sawmill);
+            var server = new VoiceWebServer(endpoint, ValidateToken, _bannedUsers.ContainsKey, _sawmill);
             server.Start();
             _server = server;
             ApplyLimits();
@@ -265,6 +271,17 @@ public sealed partial class VoiceChatManager
             return;
 
         var user = message.MsgChannel.UserId;
+
+        // Mini: voice chat bans do not get a link code, the client shows the ban instead.
+        if (_bans.IsVoiceBanned(user))
+        {
+            _bannedUsers[user] = 0;
+            SendBannedLink(user, message.MsgChannel);
+            return;
+        }
+
+        _bannedUsers.TryRemove(user, out _);
+
         if (!_userTokens.TryGetValue(user, out var token))
         {
             token = CreateCode();
@@ -278,6 +295,18 @@ public sealed partial class VoiceChatManager
             Token = token,
             StatusPort = GetStatusPort(),
         }, message.MsgChannel);
+    }
+
+    private void SendBannedLink(NetUserId user, INetChannel channel)
+    {
+        var ban = _bans.GetVoiceBan(user);
+        _net.ServerSendMessage(new MsgVoiceLink
+        {
+            Url = GetPublicUrl(),
+            Banned = true,
+            BanReason = ban?.Reason ?? string.Empty,
+            BanExpiresUnix = ban?.ExpirationTime?.ToUnixTimeSeconds() ?? 0,
+        }, channel);
     }
 
     private void OnSettings(MsgVoiceSettings message)
@@ -325,6 +354,37 @@ public sealed partial class VoiceChatManager
         _notReceiving.Remove(args.Channel.UserId);
         _mutedChannels.Remove(args.Channel.UserId);
         _mutedSpeakers.Remove(args.Channel.UserId);
+        _bannedUsers.TryRemove(args.Channel.UserId, out _);
+    }
+
+    /// <summary>
+    /// Mini: a voice chat ban was placed or pardoned. A newly banned player loses the current
+    /// link code and the live web voice connection.
+    /// </summary>
+    private void OnVoiceBanChanged(NetUserId user)
+    {
+        var banned = _bans.IsVoiceBanned(user);
+
+        if (banned)
+            _bannedUsers[user] = 0;
+        else
+            _bannedUsers.TryRemove(user, out _);
+
+        if (!banned)
+        {
+            SendStatus(user);
+            return;
+        }
+
+        if (_userTokens.Remove(user, out var code))
+            _tokens.TryRemove(code, out _);
+
+        _server?.Disconnect(user, VoiceWebServer.CloseBanned, "You are banned from voice chat.");
+        SendStatus(user);
+
+        // Mini: refresh the already open guide window and mic tooltip right away.
+        if (_player.TryGetSessionById(user, out var session))
+            SendBannedLink(user, session.Channel);
     }
 
     private string GetPublicUrl()

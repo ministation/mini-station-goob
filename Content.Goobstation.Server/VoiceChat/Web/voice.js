@@ -7,6 +7,7 @@ const CLOSE_INVALID_TOKEN = 4001;
 const CLOSE_REPLACED = 4002;
 const CLOSE_SESSION_ENDED = 4004;
 const CLOSE_TOO_MANY_ATTEMPTS = 4005;
+const CLOSE_BANNED = 4006;
 const CODE_ALPHABET = /[^A-Z0-9]/g;
 const CODE_MAX_LENGTH = 12;
 const METER_FLOOR_DB = -70;
@@ -262,6 +263,11 @@ function onWorkerMessage(event) {
                 forgetToken();
                 showCodeForm(false);
                 setStatus("Слишком много неверных кодов.", "Подождите несколько минут и попробуйте снова.", "error");
+            }
+            else if (message.code === CLOSE_BANNED) {
+                forgetToken();
+                showCodeForm(false);
+                setStatus("Вас забанили в голосовом чате.", "Если вы считаете, что это ошибка, обратитесь к администрации.", "error");
             }
             else if (message.code === CLOSE_REPLACED)
                 setStatus("Открыто в другом месте.", "Голосовой чат уже работает в другой вкладке или на другом устройстве.", "error");

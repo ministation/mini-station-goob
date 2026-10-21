@@ -88,7 +88,7 @@ namespace Content.Server.Database
 
             await using var db = await GetDbImpl();
 
-            var exempt = await GetBanExemptionCore(db, userId);
+            var exempt = type == BanType.Server ? await GetBanExemptionCore(db, userId) : null;
             var newPlayer = userId == null || !await PlayerRecordExists(db, userId.Value);
             var query = MakeBanLookupQuery(address, userId, hwId, modernHWIds, db, includeUnbanned: false, exempt, newPlayer, type)
                 .OrderByDescending(b => b.BanTime);
@@ -112,7 +112,7 @@ namespace Content.Server.Database
 
             await using var db = await GetDbImpl();
 
-            var exempt = type == BanType.Role ? null : await GetBanExemptionCore(db, userId);
+            var exempt = type == BanType.Server ? await GetBanExemptionCore(db, userId) : null;
             var newPlayer = !await db.PgDbContext.Player.AnyAsync(p => p.UserId == userId);
             var query = MakeBanLookupQuery(address, userId, hwId, modernHWIds, db, includeUnbanned, exempt, newPlayer, type);
             var queryBans = await query.ToArrayAsync();

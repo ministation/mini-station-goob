@@ -674,7 +674,7 @@ namespace Content.Server.Database
                 b => b.Addresses!,
             ];
 
-            if (type != BanType.Server)
+            if (type is null or BanType.Role)
                 list.Add(b => b.Roles!);
 
             return list;
