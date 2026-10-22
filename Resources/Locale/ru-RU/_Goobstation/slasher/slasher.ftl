@@ -48,6 +48,7 @@ slasher-kit-select-title = Выберите свой набор
 slasher-kit-select-header = Выберите набор. Каждый идет с уникальной песней и уникальным видом.
 
 slasher-kit-select-button = Выбрать
+slasher-kit-guide-button = Этот вариант играет по-другому - откройте его страницу в справочнике.
 
 slasher-kit-butcher = Мясник
 
@@ -84,6 +85,10 @@ slasher-kit-glutton-desc = Что-то голодное бродит по кор
 slasher-kit-hockey = Хоккейная маска
 
 slasher-kit-hockey-desc = Хоккейная маска и мачете. Что еще нужно?
+
+slasher-kit-boogeyman = Бугимен
+
+slasher-kit-boogeyman-desc = "Интересно, а что если.. Бугимен на самом деле умеет двигаться сквозь тени.."
 
 slasher-soulsteal-ascendance-clown = КРИТИЧЕСКАЯ ТРЕВОГА: обнаружена беспрецедентная сила ХОНК. Всему персоналу сообщается, что на борту находится нечто совершенно безумное. Приготовьтесь к удару. ХОНК.
 
