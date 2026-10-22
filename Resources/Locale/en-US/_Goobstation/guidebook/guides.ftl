@@ -108,6 +108,7 @@ guide-entry-bingle = Bingle
 guide-entry-devil = Devil
 guide-entry-devil-clauses = Agreement Clauses
 guide-entry-slasher = Slasher
+guide-entry-slasher-boogeyman = Slasher: Boogeyman
 guide-entry-corporate-agents = Corporate Agent
 guide-entry-revealing-conditions = Revealing Antagonists
 guide-entry-xenobiology = Xenobiology

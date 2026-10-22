@@ -7,5 +7,5 @@
 
 - type: guideEntry
   id: SlasherBoogeyman
-  name: "Slasher: Boogeyman"
+  name: guide-entry-slasher-boogeyman
   text: "/ServerInfo/_Goobstation/Guidebook/Antagonist/Slasher_Boogeyman.xml"
