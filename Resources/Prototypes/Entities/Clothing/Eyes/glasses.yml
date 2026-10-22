@@ -64,7 +64,7 @@
     sprite: Clothing/Eyes/Glasses/meson.rsi
   - type: Clothing
     sprite: Clothing/Eyes/Glasses/meson.rsi
-  # Goob - EyeProtection removed, mesons are T-ray scanners now
+  - type: EyeProtection
   - type: IdentityBlocker
     coverage: EYES
   - type: Tag
