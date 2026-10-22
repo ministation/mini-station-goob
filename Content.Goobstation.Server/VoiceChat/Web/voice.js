@@ -49,6 +49,7 @@ const ui = {
     device: el("device"),
     effectRow: el("effect-row"),
     effect: el("effect"),
+    effectDesc: el("effect-desc"),
     noiseSuppression: el("noise-suppression"),
     echoCancellation: el("echo-cancellation"),
     autoGainControl: el("auto-gain-control"),
@@ -282,6 +283,13 @@ function sendEffect() {
         worker.postMessage({ type: "send", text: JSON.stringify({ t: "effect", effect: settings.effect }) });
 }
 
+function renderEffectDescription() {
+    const option = ui.effect.selectedOptions[0];
+    const desc = option && option.dataset.desc ? option.dataset.desc : "";
+    setText(ui.effectDesc, desc);
+    ui.effectDesc.hidden = !desc;
+}
+
 function pushConfig() {
     if (!audio)
         return;
@@ -420,6 +428,8 @@ function syncSlider(input) {
 }
 
 function render() {
+    renderEffectDescription();
+
     const transmitting = !!lastLevel.transmitting;
     document.body.classList.toggle("transmitting", transmitting);
     ui.thresholdRow.hidden = settings.mode !== "vad";
@@ -520,9 +530,11 @@ function bindControls() {
     });
 
     ui.effect.value = settings.effect;
+    renderEffectDescription();
     ui.effect.addEventListener("change", () => {
         settings.effect = ui.effect.value;
         saveSettings();
+        renderEffectDescription();
         sendEffect();
     });
 

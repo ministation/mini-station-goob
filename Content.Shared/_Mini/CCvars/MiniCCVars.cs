@@ -847,4 +847,12 @@ public sealed class MiniCCVars
     /// </summary>
     public static readonly CVarDef<bool> TimeRewardsEnabled =
         CVarDef.Create("mini.time_rewards_enabled", true, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    ///     Разрешает всем игрокам выбирать голосовой мод на странице голосового чата, а не только
+    ///     владельцам активной маски-голосоизменятеля или встроенного вокодера. По умолчанию включено:
+    ///     моды это косметика, которая делает голосовой чат разнообразнее.
+    /// </summary>
+    public static readonly CVarDef<bool> VoiceModsForEveryone =
+        CVarDef.Create("voice.mods_for_everyone", true, CVar.SERVERONLY | CVar.ARCHIVE);
 }
