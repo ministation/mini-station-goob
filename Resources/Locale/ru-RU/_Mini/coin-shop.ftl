@@ -18,7 +18,7 @@ coin-shop-color-tooltip = Цвет ника в OOC и ахелпе на 30 дн�
 
 coin-shop-lootbox-description = Случайный предмет из каталога. Дубликат вернёт часть монет.
 
-coin-shop-lootbox-button = Открыть за 25
+coin-shop-lootbox-button = Открыть за 32
 
 coin-shop-roll-new = Из ящика выпало: {$item} ({$rarity})!
 

@@ -30,7 +30,7 @@ public sealed partial class CoinCosmeticPrototype : IPrototype
     public string Slot = default!;
 
     [DataField]
-    public int Price = 15;
+    public int Price = 19;
 
     [DataField]
     public int Order;
@@ -50,7 +50,7 @@ public sealed partial class CoinOocColorPrototype : IPrototype
     public string Color = default!;
 
     [DataField]
-    public int Price = 30;
+    public int Price = 38;
 
     [DataField]
     public int Order;
