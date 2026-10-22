@@ -5,6 +5,7 @@
   hostile:
     - Typan
     - NanoTrasen
+    - CentralCommand # Goob: ERT / CentComm
     - Syndicate
     - Xeno
     - PetsNT
