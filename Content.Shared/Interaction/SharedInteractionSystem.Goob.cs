@@ -16,6 +16,13 @@ public abstract partial class SharedInteractionSystem
     private bool _interactionParticlesSuppressed;
     private bool _interactionParticlesEnabled = true;
 
+    /// <summary>
+    /// Mini: how close another player has to be to see interaction particles. The item icon that pops
+    /// above the head of the performer is only visible to the performer and to players within arm's reach,
+    /// instead of everyone whose PVS includes the performer.
+    /// </summary>
+    private const float InteractionParticleVisibilityRange = InteractionRange;
+
     private void InitializeInteractionParticles()
     {
         Subs.CVar(_cfg, GoobCVars.InteractionParticlesEnabled, v => _interactionParticlesEnabled = v, true);
@@ -49,7 +56,13 @@ public abstract partial class SharedInteractionSystem
 
         if (_net.IsServer)
         {
-            RaiseNetworkEvent(new StellarInteractionParticleEvent(GetNetEntity(uidA), GetNetEntity(used), GetNetEntity(target), false, interactionParticleType), Filter.Pvs(uidA, entityManager: EntityManager));
+            // Mini: don't broadcast interaction particles to everyone in PVS, the item icon above the head
+            // is only shown to the performer and to players standing very close to them.
+            var filter = Filter.Empty().AddInRange(_transform.GetMapCoordinates(uidA), InteractionParticleVisibilityRange, entMan: EntityManager);
+            if (TryComp(uidA, out ActorComponent? actor))
+                filter.AddPlayer(actor.PlayerSession);
+
+            RaiseNetworkEvent(new StellarInteractionParticleEvent(GetNetEntity(uidA), GetNetEntity(used), GetNetEntity(target), false, interactionParticleType), filter);
         }
         else if (predicted && _gameTiming.IsFirstTimePredicted)
         {
