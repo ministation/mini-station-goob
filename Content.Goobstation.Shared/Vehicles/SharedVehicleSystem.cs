@@ -6,6 +6,7 @@ using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Actions;
 using Content.Shared.Audio;
+using Content.Shared.Bed.Sleep;
 using Content.Shared.Buckle;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Hands;
@@ -49,6 +50,7 @@ public abstract partial class SharedVehicleSystem : EntitySystem
         SubscribeLocalEvent<VehicleComponent, StrappedEvent>(OnStrapped);
         SubscribeLocalEvent<VehicleComponent, UnstrappedEvent>(OnUnstrapped);
         SubscribeLocalEvent<VehicleComponent, VirtualItemDeletedEvent>(OnDropped);
+        SubscribeLocalEvent<SleepingComponent, ComponentStartup>(OnSleepingStartup);
 
         SubscribeLocalEvent<VehicleComponent, EntInsertedIntoContainerMessage>(OnInsert);
         SubscribeLocalEvent<VehicleComponent, EntRemovedFromContainerMessage>(OnEject);
@@ -213,6 +215,17 @@ public abstract partial class SharedVehicleSystem : EntitySystem
 
         Dismount(args.Buckle.Owner, ent);
         _appearance.SetData(ent, VehicleState.DrawOver, false);
+    }
+
+    private void OnSleepingStartup(Entity<SleepingComponent> ent, ref ComponentStartup args)
+    {
+        if (!TryComp<BuckleComponent>(ent, out var buckle)
+            || buckle.BuckledTo is not { } vehicle
+            || !TryComp<VehicleComponent>(vehicle, out var vehicleComp)
+            || vehicleComp.Driver != ent.Owner)
+            return;
+
+        _buckle.Unbuckle(ent.Owner, null);
     }
 
     private void OnDropped(Entity<VehicleComponent> ent, ref VirtualItemDeletedEvent args)
