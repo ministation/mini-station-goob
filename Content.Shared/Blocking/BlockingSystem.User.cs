@@ -57,7 +57,7 @@ public sealed partial class BlockingSystem
         if (!_toggle.IsActivated(item)) // Goobstation
             return;
 
-        var ev = new BeforeBlockingEvent(uid, args.Origin);
+        var ev = new BeforeBlockingEvent(uid, args.Origin); // Goobstation
         RaiseLocalEvent(item, ev);
         if (ev.Cancelled)
             return;

@@ -113,7 +113,7 @@ public sealed class SliceableFoodSystem : EntitySystem
         if (!Resolve(entity, ref entity.Comp1, ref entity.Comp2))
             return EntityUid.Invalid;
 
-        var sliceUid = Spawn(entity.Comp2.Slice, _transform.GetMapCoordinates((entity, entity.Comp1)));
+        var sliceUid = Spawn(entity.Comp2.Slice, _transform.GetMapCoordinates(entity.Comp1));
 
         // try putting the slice into the container if the food being sliced is in a container!
         // this lets you do things like slice a pizza up inside of a hot food cart without making a food-everywhere mess

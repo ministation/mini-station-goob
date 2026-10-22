@@ -533,6 +533,9 @@ public sealed partial class GoobCVars
     public static readonly CVarDef<float> VoiceChatVolume =
         CVarDef.Create("voice.volume", 1f, CVar.CLIENTONLY | CVar.ARCHIVE, "Voice chat playback volume, 0 to 2.");
 
+    public static readonly CVarDef<bool> VoiceChatHearSelf =
+        CVarDef.Create("voice.hear_self", false, CVar.CLIENTONLY | CVar.ARCHIVE, "Play your own voice back to you in game.");
+
     #endregion
 
     #region Queue

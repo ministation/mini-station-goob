@@ -13,6 +13,7 @@ namespace Content.Goobstation.Shared.Mimery;
 
 public abstract partial class SharedAdvancedMimerySystem : EntitySystem
 {
+    [Dependency] private SharedMapSystem _mapSystem = default!;
 
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedMagicSystem _magic = default!;

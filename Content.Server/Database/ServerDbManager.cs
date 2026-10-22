@@ -107,7 +107,7 @@ using MSLogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Content.Server.Database
 {
-    public partial interface IServerDbManager
+    public partial interface IServerDbManager // Goob
     {
         void Init();
 
@@ -469,7 +469,7 @@ namespace Content.Server.Database
         public string? Payload { get; set; }
     }
 
-    public sealed partial class ServerDbManager : IServerDbManager
+    public sealed partial class ServerDbManager : IServerDbManager // Goob
     {
         public static readonly Counter DbReadOpsMetric = Metrics.CreateCounter(
             "db_read_ops",

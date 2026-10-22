@@ -182,16 +182,15 @@ public sealed partial class TeslaBlastDoAfterEvent : DoAfterEvent
         Action = action;
     }
 
-    public TeslaBlastDoAfterEvent()
+    public TeslaBlastDoAfterEvent() : this(TimeSpan.FromSeconds(10),
+        7f,
+        1,
+        5,
+        new(15f, 50f),
+        new(1f, 8f),
+        "SuperchargedLightning",
+        NetEntity.Invalid)
     {
-        Delay = TimeSpan.FromSeconds(10);
-        Range = 7f;
-        BoltCount = 1;
-        ArcDepth = 5;
-        MinMaxDamage = new(15f, 50f);
-        MinMaxStunTime = new(1f, 8f);
-        LightningPrototype = "SuperchargedLightning";
-        Action = NetEntity.Invalid;
     }
 
     public override DoAfterEvent Clone() => this;

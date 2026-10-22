@@ -86,7 +86,7 @@ public sealed class PopupOverlay : Overlay
             _entManager.TryGetComponent<TransformComponent>(ourEntity.Value, out var ourTransform) &&
             ourTransform.MapID == args.MapId)
         {
-            ourPos = _transform.GetRenderWorldPosition((ourEntity.Value, ourTransform));
+            ourPos = _transform.GetWorldPosition(ourTransform);
             viewPos = new MapCoordinates(ourPos, ourTransform.MapID);
         }
 
@@ -103,12 +103,12 @@ public sealed class PopupOverlay : Overlay
                 _entManager.TryGetComponent<TransformComponent>(followedEntity, out var followedTransform) &&
                 followedTransform.MapID == args.MapId)
             {
-                renderPos = _transform.GetRenderWorldPosition((followedEntity, followedTransform));
+                renderPos = _transform.GetWorldPosition(followedTransform);
             }
             else if (_entManager.TryGetComponent<TransformComponent>(popup.InitialPos.EntityId, out var parentTransform) &&
                      parentTransform.MapID == args.MapId)
             {
-                var renderMatrix = _transform.GetRenderWorldMatrix((popup.InitialPos.EntityId, parentTransform));
+                var renderMatrix = _transform.GetWorldMatrix(parentTransform);
                 renderPos = Vector2.Transform(popup.InitialPos.Position, renderMatrix);
             }
 
@@ -119,7 +119,7 @@ public sealed class PopupOverlay : Overlay
                     e => e == popup.InitialPos.EntityId || e == ourEntity, entMan: _entManager))
                 continue;
 
-            var pos = Vector2.Transform(renderPos, matrix);
+            var pos = Vector2.Transform(renderPos, matrix).Rounded(); // Goob
             _controller.DrawPopup(popup, worldHandle, pos, scale);
         }
     }

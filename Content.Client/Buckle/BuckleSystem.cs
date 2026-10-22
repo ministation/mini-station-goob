@@ -30,19 +30,6 @@ internal sealed class BuckleSystem : SharedBuckleSystem
         SubscribeLocalEvent<BuckleComponent, AttemptMobCollideEvent>(OnMobCollide);
     }
 
-    /// <summary>
-    /// Buckling reparents the rider to the strap (and unbuckling reparents them back). Engine v292
-    /// (the transform lerp rework, reverted upstream in v293) starts a render interpolation for that
-    /// parent change instead of snapping, which made the buckled sprite jitter. Parent-change messages
-    /// are raised before the move event that creates the interpolation, so the engine's dedicated hook
-    /// suppresses it for good.
-    /// </summary>
-    protected override void OnParentChanged(Entity<BuckleComponent> ent, ref EntParentChangedMessage args)
-    {
-        base.OnParentChanged(ent, ref args);
-        _xformSystem.SnapRenderTransformAfterParentChange(ent.Owner, recursive: true);
-    }
-
     private void OnMobCollide(Entity<BuckleComponent> ent, ref AttemptMobCollideEvent args)
     {
         if (ent.Comp.Buckled)

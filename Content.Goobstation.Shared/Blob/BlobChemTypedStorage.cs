@@ -107,34 +107,34 @@ public abstract partial class BlobChemTypedStorage<T> : IEnumerable where T : no
 public sealed partial class BlobChemColors : BlobChemTypedStorage<Color>
 {
     [DataField]
-    public override Color BlazingOil { get; set; }
+    public override Color BlazingOil { get; set; } = default!;
 
     [DataField]
-    public override Color ReactiveSpines { get; set; }
+    public override Color ReactiveSpines { get; set; } = default!;
 
     [DataField]
-    public override Color RegenerativeMateria { get; set; }
+    public override Color RegenerativeMateria { get; set; } = default!;
 
     [DataField]
-    public override Color ExplosiveLattice { get; set; }
+    public override Color ExplosiveLattice { get; set; } = default!;
 
     [DataField]
-    public override Color ElectromagneticWeb { get; set; }
+    public override Color ElectromagneticWeb { get; set; } = default!;
 
     [DataField]
-    public override Color ComatoseFiber { get; set; }
+    public override Color ComatoseFiber { get; set; } = default!;
 
     [DataField]
-    public override Color ChainCoating { get; set; }
+    public override Color ChainCoating { get; set; } = default!;
 
     [DataField]
-    public override Color SinewyTendons { get; set; }
+    public override Color SinewyTendons { get; set; } = default!;
 
     [DataField]
-    public override Color CorrosiveSlime { get; set; }
+    public override Color CorrosiveSlime { get; set; } = default!;
 
     [DataField]
-    public override Color CryogenicPoison { get; set; }
+    public override Color CryogenicPoison { get; set; } = default!;
 }
 
 [DataDefinition, Serializable, NetSerializable]

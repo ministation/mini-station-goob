@@ -166,9 +166,11 @@ namespace Content.Client.Viewport
             var drawBox = GetDrawBox();
             var drawBoxGlobal = drawBox.Translated(GlobalPixelPosition);
             _viewport.RenderScreenOverlaysBelow(handle, this, drawBoxGlobal);
+            //goobstation edit - start
             handle.DrawingHandleScreen.SetTransform(Matrix3x2.Identity);
             handle.DrawingHandleScreen.DrawTextureRect(_viewport.RenderTarget.Texture, drawBoxGlobal);
             handle.DrawingHandleScreen.SetTransform(transform);
+            //goobstation edit - end
             _viewport.RenderScreenOverlaysAbove(handle, this, drawBoxGlobal);
             handle.DrawingHandleScreen.SetTransform(transform);
         }

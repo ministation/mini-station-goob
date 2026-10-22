@@ -465,6 +465,9 @@ public sealed partial class VoiceChatManager
                      ("press-start-2p-latin.woff2", "font/woff2"),
                      ("jetbrains-mono-cyrillic.woff2", "font/woff2"),
                      ("jetbrains-mono-latin.woff2", "font/woff2"),
+                     ("noto-sans-regular.woff2", "font/woff2"),
+                     ("noto-sans-bold.woff2", "font/woff2"),
+                     ("boxfont-round.woff2", "font/woff2"),
                  })
         {
             using var stream = assembly.GetManifestResourceStream($"VoiceChat.Web.{name}");

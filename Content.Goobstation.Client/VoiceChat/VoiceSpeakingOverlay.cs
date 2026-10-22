@@ -46,7 +46,7 @@ public sealed class VoiceSpeakingOverlay : Overlay
             // Mini: спрайты и камера рисуются по интерполированной render-позиции, а GetWorldPosition
             // отдаёт тиковую симуляционную позицию, из-за чего индикатор дёргается при ходьбе и на
             // движущемся шаттле. Берём ту же позицию, по которой рисуется спрайт.
-            var position = _transform.GetRenderWorldPosition((local, selfXform));
+            var position = _transform.GetWorldPosition(selfXform);
             if (args.WorldAABB.Contains(position))
                 DrawIndicator(handle, rotation, position, self.Levels, _voice.GetSelfColor().WithAlpha(self.Activity), self.Activity);
         }
@@ -67,7 +67,7 @@ public sealed class VoiceSpeakingOverlay : Overlay
             }
 
             // Причина та же: индикатор идёт за render-позицией источника, иначе он дрожит относительно тела.
-            var position = _transform.GetRenderWorldPosition((uid.Value, xform));
+            var position = _transform.GetWorldPosition(xform);
             if (!args.WorldAABB.Contains(position))
                 continue;
 

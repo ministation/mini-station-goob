@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Content.Server.NPC.Components;
 using Content.Server.Storage.EntitySystems;
 using Content.Shared.CombatMode;
-using Content.Shared.Storage.Components;
+using Content.Shared.Storage.Components; // Goob - Fix (non-storage containers)
 using Robust.Server.Containers;
 
 namespace Content.Server.NPC.HTN.PrimitiveTasks.Operators.Combat.Melee;
@@ -35,6 +35,7 @@ public sealed partial class EscapeOperator : HTNOperator, IHtnConditionalShutdow
         var owner = blackboard.GetValue<EntityUid>(NPCBlackboard.Owner);
         var target = blackboard.GetValue<EntityUid>(TargetKey);
 
+        // Goob - Fix (non-storage containers), handled by TryEscape below.
         if (TryEscape(owner, target))
         {
             TaskShutdown(blackboard, HTNOperatorStatus.Finished);
@@ -121,6 +122,10 @@ public sealed partial class EscapeOperator : HTNOperator, IHtnConditionalShutdow
             if (!_container.IsEntityInContainer(owner))
             {
                 status = HTNOperatorStatus.Finished;
+            }
+            else if (!_entManager.HasComponent<EntityStorageComponent>(target)) // Goob - Fix (non-storage containers)
+            {
+                status = HTNOperatorStatus.Failed;
             }
             else
             {

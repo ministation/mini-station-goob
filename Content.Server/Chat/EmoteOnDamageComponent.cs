@@ -5,6 +5,7 @@ namespace Content.Server.Chat;
 using Content.Server.Chat.Systems;
 using Content.Shared.Chat.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
+using Robust.Shared.Prototypes;
 
 /// <summary>
 /// Causes an entity to automatically emote when taking damage.
@@ -24,7 +25,7 @@ public sealed partial class EmoteOnDamageComponent : Component
     /// </summary>
     // CorvaxGoob-AutoEmote : Mini replaced the flat emote set with damage thresholds
     [DataField("emotes"), ViewVariables(VVAccess.ReadWrite)]
-    public Dictionary<float, HashSet<string>> EmotesThreshold = new(); // CorvaxGoob-AutoEmote : Changes
+    public Dictionary<float, HashSet<ProtoId<EmotePrototype>>> EmotesThreshold = new(); // CorvaxGoob-AutoEmote : Changes
 
     /// <summary>
     /// Also send the emote in chat.

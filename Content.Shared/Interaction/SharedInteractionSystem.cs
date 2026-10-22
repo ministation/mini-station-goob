@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Goobstation.Common.Interactions;
+using Content.Shared._Shitcode.Heretic.Components;
 using Content.Shared._ST.Interaction; // Goob
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration.Logs;
@@ -64,7 +66,7 @@ namespace Content.Shared.Interaction
         [Dependency] private PullingSystem _pullSystem = default!;
         [Dependency] private RotateToFaceSystem _rotateToFaceSystem = default!;
         [Dependency] private SharedContainerSystem _containerSystem = default!;
-        [Dependency] private SharedMapSystem _map = default!;
+        [Dependency] private SharedMapSystem _mapSystem = default!;
         [Dependency] private SharedPhysicsSystem _broadphase = default!;
         [Dependency] private SharedTransformSystem _transform = default!;
         [Dependency] private SharedVerbSystem _verbSystem = default!;
@@ -104,6 +106,16 @@ namespace Content.Shared.Interaction
         public override void Initialize()
         {
             InitializeInteractionParticles(); // Goob
+            _ignoreUiRangeQuery = GetEntityQuery<IgnoreUIRangeComponent>();
+            _fixtureQuery = GetEntityQuery<FixturesComponent>();
+            _itemQuery = GetEntityQuery<ItemComponent>();
+            _physicsQuery = GetEntityQuery<PhysicsComponent>();
+            _handsQuery = GetEntityQuery<HandsComponent>();
+            _relayQuery = GetEntityQuery<InteractionRelayComponent>();
+            _combatQuery = GetEntityQuery<CombatModeComponent>();
+            _wallMountQuery = GetEntityQuery<WallMountComponent>();
+            _delayQuery = GetEntityQuery<UseDelayComponent>();
+            _uiQuery = GetEntityQuery<ActivatableUIComponent>();
 
             SubscribeLocalEvent<BoundUserInterfaceCheckRangeEvent>(HandleUserInterfaceRangeCheck);
 
@@ -907,8 +919,8 @@ namespace Content.Shared.Interaction
                     ignoreAnchored = angleDelta < wallMount.Arc / 2 || Math.Tau - angleDelta < wallMount.Arc / 2;
                 }
 
-                if (ignoreAnchored && _map.TryFindGridAt(targetCoords, out var gridUid, out var grid))
-                    ignored.UnionWith(_map.GetAnchoredEntities((gridUid, grid), targetCoords));
+                if (ignoreAnchored && _mapSystem.TryFindGridAt(targetCoords, out var gridUid, out var grid))
+                    ignored.UnionWith(_mapSystem.GetAnchoredEntities((gridUid, grid), targetCoords));
             }
 
             Ignored combinedPredicate = e => e == target || (predicate?.Invoke(e) ?? false) || ignored.Contains(e);
