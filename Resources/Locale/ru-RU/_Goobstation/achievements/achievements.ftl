@@ -284,3 +284,15 @@ achievement-inglorious-life-name = Беславная жизнь
 achievement-inglorious-life-desc = Они не собираются брать тебя обратно.
 achievement-you-are-my-fire-name = Ты - ...
 achievement-you-are-my-fire-desc = Мой огонь~
+
+achievements-window-rarity = {$percent}% игроков
+
+achievements-button = Достижения
+
+achievement-toast-title = Достижение получено!
+
+cmd-achievements-desc = Открывает окно достижений.
+
+cmd-achievements-help = Использование: achievements
+
+achievements-window-tab-all = Все
