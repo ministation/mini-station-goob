@@ -20,6 +20,7 @@ using Content.Shared.Implants.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Inventory;
 using Content.Shared.Mobs.Systems;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
@@ -101,6 +102,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
     private float _range;
     private bool _lobby;
     private bool _dynamicRange;
+    private bool _voiceModsForEveryone = true;
     private float _shoutRange;
     private float _whisperRange;
     private float _shoutThreshold;
@@ -127,6 +129,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
         Subs.CVar(_cfg, GoobCVars.VoiceChatShoutThreshold, value => _shoutThreshold = value, true);
         Subs.CVar(_cfg, GoobCVars.VoiceChatWhisperThreshold, value => _whisperThreshold = value, true);
         Subs.CVar(_cfg, GoobCVars.VoiceChatBitrate, value => _format = VoiceFormats.FromBitrate(value), true);
+        Subs.CVar(_cfg, MiniCCVars.VoiceModsForEveryone, value => _voiceModsForEveryone = value, true);
 
         _voice.PushToTalkReceived += OnPushToTalk;
         _voice.MicMuteReceived += OnMicMute;
@@ -896,7 +899,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
         if (_player.TryGetSessionById(user, out var session) && session.AttachedEntity is { } uid && !_ghostQuery.HasComp(uid))
         {
             var effect = VoiceEffect.None;
-            if (speaker.SelectedEffect != VoiceEffect.None && HasVoiceChanger(uid))
+            if (speaker.SelectedEffect != VoiceEffect.None && (_voiceModsForEveryone || HasVoiceChanger(uid)))
                 effect = speaker.SelectedEffect;
             else if (TryComp<VoiceChatEffectComponent>(uid, out var builtIn))
                 effect = builtIn.Effect;
@@ -1089,7 +1092,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
             _adminMuted.Contains(user),
             speaker.PushToTalk,
             _broadcast.TryGetBroadcastConsole(uid, out _),
-            HasVoiceChanger(uid),
+            _voiceModsForEveryone || HasVoiceChanger(uid),
             _radioVoice.TryGetTransmission(uid, out var radioChannel, out _) ? radioChannel.LocalizedName : null);
     }
 

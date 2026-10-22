@@ -11,6 +11,19 @@ public enum VoiceEffect : byte
     Muffled,
     Abductor,
     Whisper,
+
+    // Mini: extra voice mods that can be picked on the voice chat web page.
+    Echo,
+    Cave,
+    Cathedral,
+    Ghost,
+    Demon,
+    Telephone,
+    Megaphone,
+    Bitcrush,
+    Underwater,
+    Vibrato,
+    OldRadio,
 }
 
 [RegisterComponent]
