@@ -896,15 +896,22 @@ public sealed partial class VoiceChatSystem : EntitySystem
         var speaker = GetSpeaker(user);
         var settings = default(VoiceEffectSettings);
 
-        if (_player.TryGetSessionById(user, out var session) && session.AttachedEntity is { } uid && !_ghostQuery.HasComp(uid))
+        if (_player.TryGetSessionById(user, out var session) && session.AttachedEntity is { } uid)
         {
+            // Mini: ghosts talk in the voice chat too (only other ghosts hear them), so a mod
+            // picked on the voice page has to work for them. Masks, megaphones and built-in
+            // mob effects are still skipped for ghosts: they have no body or inventory.
+            var ghost = _ghostQuery.HasComp(uid);
+
             var effect = VoiceEffect.None;
             if (speaker.SelectedEffect != VoiceEffect.None && (_voiceModsForEveryone || HasVoiceChanger(uid)))
                 effect = speaker.SelectedEffect;
-            else if (TryComp<VoiceChatEffectComponent>(uid, out var builtIn))
+            else if (!ghost && TryComp<VoiceChatEffectComponent>(uid, out var builtIn))
                 effect = builtIn.Effect;
 
-            settings = new VoiceEffectSettings(effect, GetMuffle(uid), HasActiveMegaphone(uid));
+            settings = ghost
+                ? new VoiceEffectSettings(effect, VoiceMuffle.None)
+                : new VoiceEffectSettings(effect, GetMuffle(uid), HasActiveMegaphone(uid));
         }
 
         if (settings == speaker.AppliedEffect)

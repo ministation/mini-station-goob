@@ -24,6 +24,12 @@ public enum VoiceEffect : byte
     Underwater,
     Vibrato,
     OldRadio,
+
+    // Mini: female voice presets for roleplay.
+    Female,
+    FemaleSoft,
+    FemaleBright,
+    FemaleLow,
 }
 
 [RegisterComponent]
