@@ -367,22 +367,25 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
                 ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
 
-                // Shoes are the only clothing piece that still bobs, and only as a whole layer.
+                // Every garment bobs as one whole piece: no copies, cuts or custom shaders,
+                // so it visibly moves with the step but cannot be drawn from a wrong atlas.
                 var singlePieceY = MathF.Max(leftY, rightY);
                 ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, singlePieceY);
+                ApplyFullSlotOffset((uid, sprite), walk, OuterSlot, singlePieceY);
+                ApplyFullSlotOffset((uid, sprite), walk, JumpsuitSlot, singlePieceY);
             }
             else
             {
                 // Side: one silhouette - clothing lifts with near foot; don't alternate bare feet under boots.
                 if (hasOuter)
                 {
-                    // Full suit: legs must move with the boot band or flesh peeks through the hole.
+                    // Full suit: legs and the suit both move with the near foot.
                     ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: true);
                     ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, nearY), skipFeet: true);
                 }
                 else if (hasJumpsuit)
                 {
-                    // The jumpsuit stays put (see EnsureClothingMode); legs move underneath it.
+                    // Clothing moves as a whole below; the legs animate underneath it.
                     ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: false);
                     ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, nearY), skipFeet: false);
                 }
@@ -400,6 +403,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 if (hasShoes)
                     ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, nearY);
+
+                if (hasOuter)
+                    ApplyFullSlotOffset((uid, sprite), walk, OuterSlot, nearY);
+
+                if (hasJumpsuit)
+                    ApplyFullSlotOffset((uid, sprite), walk, JumpsuitSlot, nearY);
             }
 
             // Sleeves and coats are static now, so a swinging bare arm would open a 1 px skin seam
