@@ -45,6 +45,7 @@ public sealed partial class AchievementManager : IPostInjectInit
             {
                 Progress = row.Progress,
                 UnlockedAt = row.UnlockedAt,
+                CoinRewardPaid = row.CoinRewardPaid,
             };
         }
 
@@ -122,6 +123,45 @@ public sealed partial class AchievementManager : IPostInjectInit
             Unlock(session, proto, entry);
     }
 
+    /// <summary>
+    /// Unlocked achievements that have no recorded coin reward payout yet, paired with their unlock time.
+    /// Rows unlocked before the coin reward mechanic reached the live server need a retroactive payment,
+    /// rows unlocked after it were paid on unlock and only need the flag persisted.
+    /// </summary>
+    public List<PendingCoinReward> GetPendingCoinRewards(ICommonSession session)
+    {
+        var result = new List<PendingCoinReward>();
+        if (!_players.TryGetValue(session.UserId, out var entries))
+            return result;
+
+        foreach (var (id, entry) in entries)
+        {
+            if (entry.UnlockedAt is not { } unlockedAt || entry.CoinRewardPaid)
+                continue;
+
+            if (_proto.TryIndex<AchievementPrototype>(id, out var proto))
+                result.Add(new PendingCoinReward(proto, unlockedAt));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Records that the one-off coin reward for <paramref name="proto"/> has been credited, so it is never
+    /// paid twice.
+    /// </summary>
+    public void MarkCoinRewardPaid(ICommonSession session, AchievementPrototype proto)
+    {
+        if (!_players.TryGetValue(session.UserId, out var entries)
+            || !entries.TryGetValue(proto.ID, out var entry)
+            || entry.CoinRewardPaid)
+            return;
+
+        entry.CoinRewardPaid = true;
+        entry.PendingCoinRewardPaid = true;
+        SaveEntry(session.UserId, proto.ID, entry);
+    }
+
     private bool TryGetEntry(ICommonSession session, AchievementPrototype proto, out AchievementEntry entry)
     {
         entry = default!;
@@ -142,12 +182,21 @@ public sealed partial class AchievementManager : IPostInjectInit
     {
         entry.UnlockedAt = DateTime.UtcNow;
         entry.PendingUnlock = true;
-        SaveEntry(session.UserId, proto.ID, entry);
 
         _unlockCounts[proto.ID] = _unlockCounts.GetValueOrDefault(proto.ID) + 1;
         _sawmill.Info($"{session.Name} unlocked achievement {proto.ID}");
 
+        // Persist the unlock before the reward listeners run, so an exception in a listener cannot swallow
+        // the achievement itself.
+        SaveEntry(session.UserId, proto.ID, entry);
+
         Unlocked?.Invoke(session, proto);
+
+        // The reward listener credits the coins. Record that the one-off reward is handled so the
+        // retroactive backfill never pays the same achievement a second time.
+        entry.CoinRewardPaid = true;
+        entry.PendingCoinRewardPaid = true;
+        SaveEntry(session.UserId, proto.ID, entry);
     }
 
     public void SaveAll()
@@ -165,19 +214,21 @@ public sealed partial class AchievementManager : IPostInjectInit
     {
         var delta = entry.PendingDelta;
         var unlockedAt = entry.PendingUnlock ? entry.UnlockedAt : null;
-        if (delta == 0 && unlockedAt == null)
+        var coinRewardPaid = entry.PendingCoinRewardPaid;
+        if (delta == 0 && unlockedAt == null && !coinRewardPaid)
             return;
 
         entry.PendingDelta = 0;
         entry.PendingUnlock = false;
-        _ = SaveAsync(user, id, delta, unlockedAt);
+        entry.PendingCoinRewardPaid = false;
+        _ = SaveAsync(user, id, delta, unlockedAt, coinRewardPaid);
     }
 
-    private async Task SaveAsync(NetUserId user, string id, int delta, DateTime? unlockedAt)
+    private async Task SaveAsync(NetUserId user, string id, int delta, DateTime? unlockedAt, bool coinRewardPaid)
     {
         try
         {
-            await _db.AddAchievementProgressAsync(user, id, delta, unlockedAt);
+            await _db.AddAchievementProgressAsync(user, id, delta, unlockedAt, coinRewardPaid);
         }
         catch (Exception e)
         {
@@ -237,11 +288,16 @@ public sealed partial class AchievementManager : IPostInjectInit
             .ToList();
     }
 
+    /// <summary>An unlocked achievement whose coin reward has not been recorded as paid yet.</summary>
+    public readonly record struct PendingCoinReward(AchievementPrototype Proto, DateTime UnlockedAt);
+
     private sealed partial class AchievementEntry
     {
         public int Progress;
         public DateTime? UnlockedAt;
+        public bool CoinRewardPaid;
         public int PendingDelta;
         public bool PendingUnlock;
+        public bool PendingCoinRewardPaid;
     }
 }

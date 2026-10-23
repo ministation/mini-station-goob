@@ -682,6 +682,7 @@ namespace Content.Server.Kitchen.EntitySystems
                         Spawn(active.PortionedRecipe.Item1.Result, coords);
                     }
 
+
                     var mealEv = new MicrowaveMealProducedEvent(uid, active.CookUser);
                     RaiseLocalEvent(ref mealEv);
 

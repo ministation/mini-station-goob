@@ -377,9 +377,9 @@ public abstract partial class SharedSurgerySystem
             return;
 
         // Adding organs is generally done for a single one at a time, so we only need to check for the first.
-        if (organComp.Organ.Count == 0)
+        var firstOrgan = organComp.Organ.Values.FirstOrDefault();
+        if (firstOrgan.Component == null)
             return;
-        var firstOrgan = organComp.Organ.Values.First();
 
         if (!HasComp(args.Tool, firstOrgan.Component.GetType())
             || !TryComp<OrganComponent>(args.Tool, out var insertedOrgan)
@@ -497,9 +497,9 @@ public abstract partial class SharedSurgerySystem
             || ent.Comp.Organ == null)
             return;
 
-        if (ent.Comp.Organ.Count == 0)
+        var organType = ent.Comp.Organ.Values.FirstOrDefault();
+        if (organType.Component == null)
             return;
-        var organType = ent.Comp.Organ.Values.First();
 
         var markingCategory = MarkingCategoriesConversion.FromHumanoidVisualLayers(ent.Comp.MarkingCategory);
 

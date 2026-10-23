@@ -106,6 +106,7 @@ guide-entry-bingle = Бингл
 guide-entry-devil = Дьявол
 guide-entry-devil-clauses = Пункты соглашений
 guide-entry-slasher = Мясник
+guide-entry-slasher-boogeyman = Мясник: Бугимен
 guide-entry-corporate-agents = Корпоративный агент
 guide-entry-revealing-conditions = Раскрытие антагонистов
 guide-entry-xenobiology = Ксенобиология

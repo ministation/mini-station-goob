@@ -18,7 +18,7 @@ coin-shop-color-tooltip = Nickname color in OOC and AHelp for 30 days. Buying ag
 
 coin-shop-lootbox-description = A random item from the catalog. Duplicates refund part of the coins.
 
-coin-shop-lootbox-button = Open for 32
+coin-shop-lootbox-button = Open for 30
 
 coin-shop-roll-new = The crate dropped: {$item} ({$rarity})!
 

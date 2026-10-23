@@ -1,4 +1,6 @@
 using System.Numerics;
+using Content.Client.Gameplay;
+using Content.Client.Lobby;
 using Content.Client.UserInterface.Controls;
 using Content.Goobstation.Client.Achievements.UI;
 using Content.Goobstation.Shared.Achievements;
@@ -14,13 +16,17 @@ using Robust.Shared.Timing;
 namespace Content.Goobstation.Client.Achievements;
 
 /// <summary>
-/// Shows unlock toasts and plays the unlock sound. The achievements browser itself lives in the
-/// shared rewards menu (see <see cref="AchievementsPanel"/> and <see cref="AchievementsPanelProvider"/>).
+/// Shows the achievements window and unlock toasts, plays the unlock sound. The achievements browser
+/// is also embedded into the shared rewards menu (see <see cref="AchievementsPanel"/>).
 /// </summary>
-public sealed partial class AchievementsUIController : UIController, IOnSystemChanged<AchievementsSystem>
+public sealed partial class AchievementsUIController : UIController,
+    IOnSystemChanged<AchievementsSystem>,
+    IOnStateExited<GameplayState>,
+    IOnStateExited<LobbyState>
 {
     [Dependency] private IGameTiming _timing = default!;
 
+    [UISystemDependency] private readonly AchievementsSystem? _achievements = default!;
     [UISystemDependency] private readonly AudioSystem? _audio = default!;
     [UISystemDependency] private readonly SpriteSystem? _sprite = default!;
 
@@ -30,16 +36,59 @@ public sealed partial class AchievementsUIController : UIController, IOnSystemCh
     private const int MaxToasts = 3;
     private const float ToastTopOffset = 0.08f;
 
+    private AchievementsWindow? _window;
     private BoxContainer? _toastStack;
 
     public void OnSystemLoaded(AchievementsSystem system)
     {
+        system.Updated += OnUpdated;
         system.Unlocked += OnUnlocked;
     }
 
     public void OnSystemUnloaded(AchievementsSystem system)
     {
+        system.Updated -= OnUpdated;
         system.Unlocked -= OnUnlocked;
+    }
+
+    public void OnStateExited(GameplayState state)
+    {
+        CloseWindow();
+    }
+
+    public void OnStateExited(LobbyState state)
+    {
+        CloseWindow();
+    }
+
+    public void ToggleWindow()
+    {
+        if (_window != null)
+        {
+            CloseWindow();
+            return;
+        }
+
+        _window = UIManager.CreateWindow<AchievementsWindow>();
+        _window.OnClose += () => _window = null;
+        _window.OpenCentered();
+
+        if (_achievements?.Achievements is { } achievements)
+            _window.UpdateAchievements(achievements);
+
+        _achievements?.RequestState();
+    }
+
+    private void CloseWindow()
+    {
+        _window?.Close();
+        _window = null;
+    }
+
+    private void OnUpdated()
+    {
+        if (_window != null && _achievements?.Achievements is { } achievements)
+            _window.UpdateAchievements(achievements);
     }
 
     private void OnUnlocked(AchievementData data)

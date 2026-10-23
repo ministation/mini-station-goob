@@ -12,12 +12,12 @@ namespace Content.Goobstation.Shared.Blob;
 public abstract partial class BlobTypedStorage<T> : IEnumerable<KeyValuePair<BlobTileType, T>> where T : notnull
 {
     public virtual T Core { get; set; } = default!;
-    public virtual T Invalid { get; set; } = default!;
-    public virtual T Resource { get; set; } = default!;
-    public virtual T Factory { get; set; } = default!;
-    public virtual T Node { get; set; } = default!;
-    public virtual T Reflective { get; set; } = default!;
-    public virtual T Strong { get; set; } = default!;
+    public virtual T Invalid  { get; set; } = default!;
+    public virtual T Resource  { get; set; } = default!;
+    public virtual T Factory  { get; set; } = default!;
+    public virtual T Node  { get; set; } = default!;
+    public virtual T Reflective  { get; set; } = default!;
+    public virtual T Strong  { get; set; } = default!;
     public virtual T Normal { get; set; } = default!;
 
     [Pure]
@@ -97,54 +97,54 @@ public abstract partial class BlobTypedStorage<T> : IEnumerable<KeyValuePair<Blo
 public sealed partial class BlobTileCosts : BlobTypedStorage<FixedPoint2>
 {
     [DataField]
-    public override FixedPoint2 Core { get; set; }
+    public override FixedPoint2 Core { get; set; } = default!;
 
     [DataField]
-    public override FixedPoint2 Invalid { get; set; }
+    public override FixedPoint2 Invalid { get; set; } = default!;
 
     [DataField]
-    public override FixedPoint2 Resource { get; set; }
+    public override FixedPoint2 Resource { get; set; } = default!;
 
     [DataField]
-    public override FixedPoint2 Factory { get; set; }
+    public override FixedPoint2 Factory { get; set; } = default!;
 
     [DataField]
-    public override FixedPoint2 Node { get; set; }
+    public override FixedPoint2 Node { get; set; } = default!;
 
     [DataField]
-    public override FixedPoint2 Reflective { get; set; }
+    public override FixedPoint2 Reflective { get; set; } = default!;
 
     [DataField]
-    public override FixedPoint2 Strong { get; set; }
+    public override FixedPoint2 Strong { get; set; } = default!;
 
     [DataField]
-    public override FixedPoint2 Normal { get; set; }
+    public override FixedPoint2 Normal { get; set; } = default!;
 }
 
 [DataDefinition]
 public sealed partial class BlobTileProto : BlobTypedStorage<EntProtoId<BlobTileComponent>>
 {
     [DataField]
-    public override EntProtoId<BlobTileComponent> Core { get; set; }
+    public override EntProtoId<BlobTileComponent> Core { get; set; } = default!;
 
     [DataField]
-    public override EntProtoId<BlobTileComponent> Invalid { get; set; }
+    public override EntProtoId<BlobTileComponent> Invalid { get; set; } = default!;
 
     [DataField]
-    public override EntProtoId<BlobTileComponent> Resource { get; set; }
+    public override EntProtoId<BlobTileComponent> Resource { get; set; } = default!;
 
     [DataField]
-    public override EntProtoId<BlobTileComponent> Factory { get; set; }
+    public override EntProtoId<BlobTileComponent> Factory { get; set; } = default!;
 
     [DataField]
-    public override EntProtoId<BlobTileComponent> Node { get; set; }
+    public override EntProtoId<BlobTileComponent> Node { get; set; } = default!;
 
     [DataField]
-    public override EntProtoId<BlobTileComponent> Reflective { get; set; }
+    public override EntProtoId<BlobTileComponent> Reflective { get; set; } = default!;
 
     [DataField]
-    public override EntProtoId<BlobTileComponent> Strong { get; set; }
+    public override EntProtoId<BlobTileComponent> Strong { get; set; } = default!;
 
     [DataField]
-    public override EntProtoId<BlobTileComponent> Normal { get; set; }
+    public override EntProtoId<BlobTileComponent> Normal { get; set; } = default!;
 }

@@ -64,7 +64,7 @@ public sealed class VentCrittersRule : StationEventSystem<VentCrittersRuleCompon
 
         var players = _antag.GetTotalPlayerCount(_player.Sessions);
         var min = comp.Min * players / comp.PlayerRatio;
-        var max = comp.Max * players / comp.PlayerRatio;
+        var max = Math.Max(comp.Max * players / comp.PlayerRatio, min); // Goob - Fix (min above max)
         // Mini: normalize the range — a prototype (or int truncation with a bad ratio) can
         // yield min > max, which makes RobustRandom.Next throw ArgumentOutOfRangeException.
         var count = Math.Max(RobustRandom.Next(Math.Min(min, max), Math.Max(min, max)), 1);

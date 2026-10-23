@@ -23,7 +23,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Goobstation.Client.VoiceChat;
 
-public readonly partial record struct VoiceSpeakerInfo(string Name, ProtoId<RadioChannelPrototype>? Channel);
+public readonly record struct VoiceSpeakerInfo(string Name, ProtoId<RadioChannelPrototype>? Channel);
 
 public sealed partial class VoiceSelfState
 {

@@ -128,6 +128,68 @@ public sealed partial class AchievementSystem : EntitySystem
     private void OnPlayerLoaded(ICommonSession session)
     {
         SessionLoaded?.Invoke(session);
+        BackfillCoinRewards(session);
+    }
+
+    /// <summary>
+    /// Moment the live server switched from a build that had achievements but no coin rewards to the
+    /// build that pays them out (2026-10-21 17:18:26 MSK, the update to bb539936a9).
+    /// Achievements unlocked on the earlier build never received coins, so they are paid retroactively.
+    /// </summary>
+    private static readonly DateTime CoinRewardBackfillCutoff = new(2026, 10, 21, 14, 18, 26, DateTimeKind.Utc);
+
+    /// <summary>
+    /// Pays the coin rewards that were missed because an achievement was unlocked before the reward
+    /// mechanic was deployed, then records the payout so it never happens twice. Unlocks created after
+    /// the cutoff were already paid on unlock, only their missing flag is persisted here.
+    /// </summary>
+    private void BackfillCoinRewards(ICommonSession session)
+    {
+        if (!_enabled)
+            return;
+
+        var pending = _manager.GetPendingCoinRewards(session);
+        if (pending.Count == 0)
+            return;
+
+        var total = 0;
+        foreach (var (proto, unlockedAt) in pending)
+        {
+            // Unlocks after the cutoff were already paid when they unlocked, so only the flag is persisted.
+            if (unlockedAt >= CoinRewardBackfillCutoff)
+            {
+                _manager.MarkCoinRewardPaid(session, proto);
+                continue;
+            }
+
+            var reward = proto.GetCoinReward();
+            if (reward <= 0)
+            {
+                _manager.MarkCoinRewardPaid(session, proto);
+                continue;
+            }
+
+            // Never pay an achievement partially: a partial payout could not be recorded per achievement and
+            // would be paid a second time on the next login. Wait until the whole reward fits under the
+            // monthly cap; the achievement stays pending and is retried on a later load.
+            if (_antagTokens.GetRemainingMonthlyReward(session.UserId) < reward)
+                continue;
+
+            if (!_antagTokens.AddBalance(session.UserId, reward, out var granted, out _)
+                || granted != reward)
+                continue;
+
+            total += granted;
+            _manager.MarkCoinRewardPaid(session, proto);
+        }
+
+        if (total <= 0)
+            return;
+
+        var message = Loc.GetString("achievement-coin-reward-backfill", ("amount", total));
+
+        if (session.AttachedEntity is { Valid: true } uid)
+            _popup.PopupEntity(message, uid, uid);
     }
 
     public EntityUid ResolveAttacker(EntityUid origin)

@@ -172,8 +172,15 @@ achievements-window-summary = {$unlocked} / {$total} unlocked
 achievements-window-loading = Loading...
 achievements-window-hidden-name = ???
 achievements-window-hidden-desc = Hidden achievement. Keep playing to discover it.
+achievements-window-rarity = {$percent}% of players
 achievements-window-unlocked-on = Unlocked {$date}
 achievements-window-progress = {$progress} / {$target}
+achievements-button = Achievements
+achievement-toast-title = Achievement Unlocked!
+
+cmd-achievements-desc = Opens the achievements window.
+cmd-achievements-help = Usage: achievements
+achievements-window-tab-all = All
 achievements-window-tab-category = {$name} ({$unlocked}/{$total})
 
 achievement-what-did-you-expect-name = What did you expect?
@@ -277,6 +284,7 @@ achievement-inglorious-life-desc = They aren't going to take you back.
 achievement-you-are-my-fire-name = You are...
 achievement-you-are-my-fire-desc = My fire~
 
+# Mini: coin reward UI
 achievements-window-coin-reward = +{$amount}
 achievements-window-summary-percent = {$percent}%
 achievements-window-summary-coins-tooltip = Coins earned from achievements: {$coins}
@@ -285,3 +293,4 @@ achievements-window-empty = No achievements to show yet.
 achievements-window-coin-reward-tooltip = Achievement reward: {$amount} coins
 achievements-window-coin-reward-received-tooltip = Reward received: {$amount} coins
 achievement-coin-reward-popup = Achievement "{$achievement}": +{$amount} coins
+achievement-coin-reward-backfill = Coins for achievements unlocked before rewards went live: +{$amount}

@@ -162,6 +162,7 @@ public sealed partial class ThunderdomeRuleSystem : EntitySystem
         SubscribeLocalEvent<ThunderdomePlayerComponent, GetAntagSelectionBlockerEvent>(OnAntagSelectionBlocker);
         SubscribeLocalEvent<ThunderdomeOriginalBodyComponent, ExaminedEvent>(OnOriginalBodyExamined);
         SubscribeLocalEvent<ThunderdomePlayerComponent, PlayerDetachedEvent>(OnPlayerDetached);
+        SubscribeLocalEvent<ShouldLogMobStateChangeEvent>(OnShouldLogStateChange);
         SubscribeLocalEvent<ThunderdomePlayerComponent, DamageChangedEvent>(OnThunderdomePlayerDamaged);
 
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;

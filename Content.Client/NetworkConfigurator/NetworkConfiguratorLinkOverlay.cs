@@ -72,8 +72,8 @@ public sealed class NetworkConfiguratorLinkOverlay : Overlay
                 }
 
                 args.WorldHandle.DrawLine(
-                    _transformSystem.GetRenderWorldPosition((uid, sourceTransform)),
-                    _transformSystem.GetRenderWorldPosition((device, linkTransform)),
+                    _transformSystem.GetWorldPosition(sourceTransform),
+                    _transformSystem.GetWorldPosition(linkTransform),
                     Colors[uid]);
             }
         }

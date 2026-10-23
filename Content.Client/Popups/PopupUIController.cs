@@ -29,6 +29,7 @@ public sealed class PopupUIController : UIController, IOnStateEntered<GameplaySt
         base.Initialize();
         var cache = IoCManager.Resolve<IResourceCache>();
 
+        // Mini: follow the selectable UI font stack (Pixeloid etc.) instead of a hardcoded popup font
         _smallFont = cache.GetStack("Regular", 10);
         _mediumFont = cache.GetStack("Regular", 12);
         _largeFont = cache.GetStack("Bold", 14);

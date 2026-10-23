@@ -455,6 +455,8 @@ public sealed partial class WoundSystem
             return false;
 
         var holdingWoundable = comp.HoldingWoundable;
+        if (!TryComp<WoundableComponent>(holdingWoundable, out var woundable))
+            return false;
 
         // Mini: the wound's woundable can already be gone (deleted body part / bot
         // cleanup) while damage events still flow — never hard-resolve it.

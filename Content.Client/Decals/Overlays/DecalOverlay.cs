@@ -82,8 +82,8 @@ namespace Content.Client.Decals.Overlays
                 return x.Id.CompareTo(y.Id);
             });
 
-            var worldRot = xformSystem.GetRenderWorldRotation((owner, xform));
-            handle.SetTransform(xformSystem.GetRenderWorldMatrix((owner, xform)));
+            var worldRot = xformSystem.GetWorldRotation(xform);
+            handle.SetTransform(xformSystem.GetWorldMatrix(xform));
 
             foreach (var (_, decal) in _decals)
             {

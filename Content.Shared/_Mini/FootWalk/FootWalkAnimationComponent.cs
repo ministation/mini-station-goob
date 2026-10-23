@@ -222,13 +222,6 @@ public sealed partial class FootWalkAnimationComponent : Component
     public readonly List<string> OuterSideBandKeys = new();
 
     /// <summary>
-    /// Runtime sleeve layers: a copy of a garment clipped to a limb's own art, keyed by layer key and
-    /// holding the limb whose swing that piece of cloth rides.
-    /// </summary>
-    [ViewVariables]
-    public readonly Dictionary<string, HumanoidVisualLayers> SleeveCoverKeys = new();
-
-    /// <summary>
     /// Outer clothing source keys whose art crosses the sprite centre inside the foot band. Long
     /// garments (coats, robes) would shear open at the cut, so they bob as one band instead.
     /// </summary>

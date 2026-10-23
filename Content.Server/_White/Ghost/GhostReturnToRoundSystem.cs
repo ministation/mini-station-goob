@@ -15,7 +15,7 @@ namespace Content.Server._White.Ghost;
 
 public sealed class GhostReturnToRoundSystem : EntitySystem
 {
-    private const int RespawnCost = 2;
+    private const int RespawnCost = 1;
     private const int RequiredPlayerCount = 20;
 
     [Dependency] private readonly IChatManager _chatManager = default!;

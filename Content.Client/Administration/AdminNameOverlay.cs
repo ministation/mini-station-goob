@@ -135,7 +135,7 @@ internal sealed class AdminNameOverlay : Overlay
             var aabb = _entityLookup.GetWorldAABB(entity.Value);
             // Entity lookup bounds use simulation transforms; align them with the position used to render the sprite.
             var worldPosition = _transform.GetWorldPosition(xform);
-            var renderPosition = _transform.GetRenderWorldPosition((entity.Value, xform));
+            var renderPosition = _transform.GetWorldPosition(xform);
             aabb = aabb.Translated(renderPosition - worldPosition);
 
             // if not on screen

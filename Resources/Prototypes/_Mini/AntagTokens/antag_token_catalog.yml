@@ -9,7 +9,7 @@
     - id: thief
       nameLocKey: antag-store-role-thief-name
       descriptionLocKey: antag-store-role-thief-description
-      cost: 2
+      cost: 1
       iconPath: /Textures/_Mini/Interface/Antags/thief.png
       mode: LobbyDeposit
       antagId: Thief
@@ -20,7 +20,7 @@
     - id: revenant
       nameLocKey: antag-store-role-revenant-name
       descriptionLocKey: antag-store-role-revenant-description
-      cost: 3
+      cost: 2
       iconPath: /Textures/_Mini/Interface/Antags/revenant.png
       mode: GhostRule
       ghostAutoJoinEntityProto: MobRevenantToken
@@ -34,7 +34,7 @@
     - id: abductor
       nameLocKey: antag-store-role-abductor-name
       descriptionLocKey: antag-store-role-abductor-description
-      cost: 4
+      cost: 3
       iconPath: /Textures/_Mini/Interface/Antags/abductor.png
       mode: GhostRule
       ghostAutoJoinEntityProto: LoneAbductorSpawnerToken
@@ -48,7 +48,7 @@
     - id: paradox_clone
       nameLocKey: antag-store-role-clone-name
       descriptionLocKey: antag-store-role-clone-description
-      cost: 4
+      cost: 3
       iconPath: /Textures/_Mini/Interface/Antags/clone.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostParadoxClone
@@ -62,7 +62,7 @@
     - id: vox
       nameLocKey: antag-store-role-vox-name
       descriptionLocKey: antag-store-role-vox-description
-      cost: 4
+      cost: 3
       iconPath: /Textures/_Mini/Interface/Antags/vox.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostVoxRaider
@@ -76,7 +76,7 @@
     - id: agent
       nameLocKey: antag-store-role-agent-name
       descriptionLocKey: antag-store-role-agent-description
-      cost: 5
+      cost: 4
       iconPath: /Textures/_Mini/Interface/Antags/traitor.png
       mode: LobbyDeposit
       antagId: Traitor
@@ -87,7 +87,7 @@
     - id: devil
       nameLocKey: antag-store-role-devil-name
       descriptionLocKey: antag-store-role-devil-description
-      cost: 5
+      cost: 4
       iconPath: /Textures/_Mini/Interface/Antags/devil.png
       mode: LobbyDeposit
       antagId: Devil
@@ -100,7 +100,7 @@
     - id: rat_king
       nameLocKey: antag-store-role-rat-king-name
       descriptionLocKey: antag-store-role-rat-king-description
-      cost: 5
+      cost: 4
       iconPath: /Textures/_Mini/Interface/Antags/rat_king.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostRatKing
@@ -114,7 +114,7 @@
     - id: borer
       nameLocKey: cortical-borer-ghostrole-name
       descriptionLocKey: antag-store-role-rat-king-description
-      cost: 5
+      cost: 4
       iconPath: /Textures/_Mini/Interface/Antags/borer.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostCorticalBorer
@@ -128,7 +128,7 @@
     - id: bingle
       nameLocKey: antag-store-role-bingle-name
       descriptionLocKey: antag-store-role-bingle-description
-      cost: 7
+      cost: 6
       iconPath: /Textures/_Mini/Interface/Antags/bingle.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostBinglePrime
@@ -142,7 +142,7 @@
     - id: ninja
       nameLocKey: antag-store-role-ninja-name
       descriptionLocKey: antag-store-role-ninja-description
-      cost: 8
+      cost: 7
       iconPath: /Textures/_Mini/Interface/Antags/ninja.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostSpaceNinjaToken
@@ -156,7 +156,7 @@
     - id: slasher
       nameLocKey: antag-store-role-slasher-name
       descriptionLocKey: antag-store-role-slasher-description
-      cost: 9
+      cost: 8
       iconPath: /Textures/_Mini/Interface/Antags/slasher.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostSlasherToken
@@ -170,7 +170,7 @@
     - id: headrev
       nameLocKey: antag-store-role-headrev-name
       descriptionLocKey: antag-store-role-headrev-description
-      cost: 9
+      cost: 8
       iconPath: /Textures/_Mini/Interface/Antags/rev.png
       mode: LobbyDeposit
       antagId: HeadRev
@@ -182,7 +182,7 @@
     - id: hastur
       nameLocKey: antag-store-role-hastur-name
       descriptionLocKey: antag-store-role-hastur-description
-      cost: 9
+      cost: 8
       iconPath: /Textures/_Mini/Interface/Antags/hastur.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostHastur
@@ -196,7 +196,7 @@
     - id: initial_infected
       nameLocKey: antag-store-role-initial-infected-name
       descriptionLocKey: antag-store-role-initial-infected-description
-      cost: 9
+      cost: 8
       iconPath: /Textures/_Mini/Interface/Antags/zombie.png
       mode: LobbyDeposit
       antagId: InitialInfected
@@ -208,7 +208,7 @@
     - id: slaughter_demon
       nameLocKey: antag-store-role-slaughter-demon-name
       descriptionLocKey: antag-store-role-slaughter-demon-description
-      cost: 10
+      cost: 9
       iconPath: /Textures/_Mini/Interface/Antags/slaughter_demon.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostSlaughterDemon
@@ -222,7 +222,7 @@
     - id: cosmic_cult
       nameLocKey: antag-store-role-cosmic-cult-name
       descriptionLocKey: antag-store-role-cosmic-cult-description
-      cost: 10
+      cost: 9
       iconPath: /Textures/_Mini/Interface/Antags/cultist.png
       mode: LobbyDeposit
       antagId: CosmicAntagCultist
@@ -236,7 +236,7 @@
     - id: ratvar_cult
       nameLocKey: antag-store-role-ratvar-cult-name
       descriptionLocKey: antag-store-role-ratvar-cult-description
-      cost: 10
+      cost: 9
       iconPath: /Textures/_Mini/Interface/Antags/ratvar_cult.png
       mode: LobbyDeposit
       antagId: RatvarRighteous
@@ -250,7 +250,7 @@
     - id: blood_cult
       nameLocKey: antag-store-role-blood-cult-name
       descriptionLocKey: antag-store-role-blood-cult-description
-      cost: 8
+      cost: 7
       iconPath: /Textures/_Mini/Interface/Antags/blood_cultist.png
       mode: LobbyDeposit
       antagId: BloodCultist
@@ -264,7 +264,7 @@
     - id: heretic
       nameLocKey: antag-store-role-heretic-name
       descriptionLocKey: antag-store-role-heretic-description
-      cost: 12
+      cost: 10
       iconPath: /Textures/_Mini/Interface/Antags/heretic.png
       mode: LobbyDeposit
       antagId: Heretic
@@ -277,7 +277,7 @@
     - id: dragon
       nameLocKey: antag-store-role-dragon-name
       descriptionLocKey: antag-store-role-dragon-description
-      cost: 13
+      cost: 12
       iconPath: /Textures/_Mini/Interface/Antags/dragon.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostDragonToken
@@ -291,7 +291,7 @@
     - id: shadowling
       nameLocKey: antag-store-role-shadowling-name
       descriptionLocKey: antag-store-role-shadowling-description
-      cost: 13
+      cost: 12
       iconPath: /Textures/_Mini/Interface/Antags/shadowling.png
       mode: LobbyDeposit
       antagId: Shadowling
@@ -303,7 +303,7 @@
     - id: xenomorph
       nameLocKey: antag-store-role-xenomorph-name
       descriptionLocKey: antag-store-role-xenomorph-description
-      cost: 15
+      cost: 14
       iconPath: /Textures/_Mini/Interface/Antags/xenomorph.png
       mode: LobbyDeposit
       antagId: XenomorphsInfestationRoundstart
@@ -316,7 +316,7 @@
     - id: mothership_core
       nameLocKey: antag-store-role-mothership-core-name
       descriptionLocKey: antag-store-role-mothership-core-description
-      cost: 15
+      cost: 14
       iconPath: /Textures/_Mini/Interface/Antags/mothership.png
       mode: LobbyDeposit
       antagId: MothershipCore
@@ -330,7 +330,7 @@
     - id: yao
       nameLocKey: antag-store-role-yao-name
       descriptionLocKey: antag-store-role-yao-description
-      cost: 18
+      cost: 16
       iconPath: /Textures/_Mini/Interface/Antags/nukie.png
       mode: Dual
       # Lobby / roundstart Nukeops operative
@@ -350,7 +350,7 @@
     - id: changeling
       nameLocKey: antag-store-role-changeling-name
       descriptionLocKey: antag-store-role-changeling-description
-      cost: 19
+      cost: 16
       iconPath: /Textures/_Mini/Interface/Antags/changeling.png
       mode: LobbyDeposit
       antagId: Changeling
@@ -363,7 +363,7 @@
     - id: wraith
       nameLocKey: antag-store-role-wraith-name
       descriptionLocKey: antag-store-role-wraith-description
-      cost: 18
+      cost: 16
       iconPath: /Textures/_Mini/Interface/Antags/wraith.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostWraith
@@ -377,7 +377,7 @@
     - id: wizard
       nameLocKey: antag-store-role-wizard-name
       descriptionLocKey: antag-store-role-wizard-description
-      cost: 23
+      cost: 20
       iconPath: /Textures/_Mini/Interface/Antags/wizard.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointWizardToken
@@ -391,7 +391,7 @@
     - id: blob
       nameLocKey: antag-store-role-blob-name
       descriptionLocKey: antag-store-role-blob-description
-      cost: 25
+      cost: 22
       iconPath: /Textures/_Mini/Interface/Antags/blob.png
       mode: GhostRule
       ghostAutoJoinEntityProto: SpawnPointGhostBlobRatToken

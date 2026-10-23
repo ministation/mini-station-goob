@@ -127,7 +127,11 @@ public abstract partial class SharedMoverController
         float movementSpeed)
     {
         var distanceToDestination = (tileMovement.Destination - tileMovement.Origin.Position).Length();
-        var minPressedTime = Math.Min((1.05f / movementSpeed) * distanceToDestination, 20);
+        float minPressedTime;
+        if (movementSpeed == 0) // Goobstation: DO FUCKING NOT!!!!!
+            minPressedTime = 0.5f;
+        else
+            minPressedTime = Math.Min((1.05f / movementSpeed) * distanceToDestination, 20);
         var destinationTolerance = movementSpeed / 100f;
         var reachedDestination = transform.LocalPosition.EqualsApprox(tileMovement.Destination, destinationTolerance);
         var stoppedPressing = pressedButtons != tileMovement.CurrentSlideMoveButtons;

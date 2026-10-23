@@ -30,6 +30,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("achievement_id");
 
+                    b.Property<bool>("CoinRewardPaid")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("coin_reward_paid");
+
                     b.Property<Guid>("PlayerUserId")
                         .HasColumnType("TEXT")
                         .HasColumnName("player_user_id");

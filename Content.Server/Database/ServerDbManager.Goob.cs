@@ -8,7 +8,12 @@ public partial interface IServerDbManager
 {
     Task<List<AchievementProgress>> GetAchievementProgressAsync(NetUserId userId, CancellationToken cancel = default);
 
-    Task AddAchievementProgressAsync(NetUserId userId, string achievementId, int delta, DateTime? unlockedAt);
+    Task AddAchievementProgressAsync(
+        NetUserId userId,
+        string achievementId,
+        int delta,
+        DateTime? unlockedAt,
+        bool coinRewardPaid = false);
 
     Task<(int Players, Dictionary<string, int> Unlocks)> GetAchievementStatsAsync(CancellationToken cancel = default);
 }
@@ -21,10 +26,15 @@ public sealed partial class ServerDbManager
         return RunDbCommand(() => _db.GetAchievementProgressAsync(userId, cancel));
     }
 
-    public Task AddAchievementProgressAsync(NetUserId userId, string achievementId, int delta, DateTime? unlockedAt)
+    public Task AddAchievementProgressAsync(
+        NetUserId userId,
+        string achievementId,
+        int delta,
+        DateTime? unlockedAt,
+        bool coinRewardPaid = false)
     {
         DbWriteOpsMetric.Inc();
-        return RunDbCommand(() => _db.AddAchievementProgressAsync(userId, achievementId, delta, unlockedAt));
+        return RunDbCommand(() => _db.AddAchievementProgressAsync(userId, achievementId, delta, unlockedAt, coinRewardPaid));
     }
 
     public Task<(int Players, Dictionary<string, int> Unlocks)> GetAchievementStatsAsync(CancellationToken cancel = default)

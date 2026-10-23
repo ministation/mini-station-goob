@@ -2,6 +2,7 @@
 
 // Fully deleted by CorvaxGoob
 /*
+using Content.Goobstation.Server.Achievements;
 using Content.Goobstation.Common.JoinQueue;
 using Content.Goobstation.Common.ServerCurrency;
 using Content.Goobstation.Server.JoinQueue;

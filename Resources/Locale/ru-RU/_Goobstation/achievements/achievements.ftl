@@ -7,6 +7,7 @@ achievements-window-unlocked-on = Получено {$date}
 achievements-window-progress = {$progress} / {$target}
 achievements-window-coin-reward = +{$amount}
 achievement-coin-reward-popup = Достижение «{$achievement}»: +{$amount} монет
+achievement-coin-reward-backfill = Монеты за достижения, открытые до появления наград: +{$amount}
 achievements-window-summary = Открыто {$unlocked} / {$total}
 achievements-window-summary-percent = {$percent}%
 achievements-window-summary-coins-tooltip = Монет получено за достижения: {$coins}
@@ -284,3 +285,15 @@ achievement-inglorious-life-name = Беславная жизнь
 achievement-inglorious-life-desc = Они не собираются брать тебя обратно.
 achievement-you-are-my-fire-name = Ты - ...
 achievement-you-are-my-fire-desc = Мой огонь~
+
+achievements-window-rarity = {$percent}% игроков
+
+achievements-button = Достижения
+
+achievement-toast-title = Достижение получено!
+
+cmd-achievements-desc = Открывает окно достижений.
+
+cmd-achievements-help = Использование: achievements
+
+achievements-window-tab-all = Все

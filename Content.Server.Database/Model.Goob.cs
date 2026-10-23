@@ -42,4 +42,7 @@ public sealed class AchievementProgress
     public int Progress { get; set; }
 
     public DateTime? UnlockedAt { get; set; }
+
+    /// <summary>Whether the one-off coin reward for unlocking this achievement has already been credited.</summary>
+    public bool CoinRewardPaid { get; set; }
 }

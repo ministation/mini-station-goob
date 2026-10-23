@@ -25,11 +25,16 @@ public abstract partial class ServerDbBase
         return list;
     }
 
-    public async Task AddAchievementProgressAsync(NetUserId userId, string achievementId, int delta, DateTime? unlockedAt)
+    public async Task AddAchievementProgressAsync(
+        NetUserId userId,
+        string achievementId,
+        int delta,
+        DateTime? unlockedAt,
+        bool coinRewardPaid = false)
     {
         await using var db = await GetDb();
 
-        if (await TryIncrementAchievement(db.DbContext, userId.UserId, achievementId, delta, unlockedAt))
+        if (await TryIncrementAchievement(db.DbContext, userId.UserId, achievementId, delta, unlockedAt, coinRewardPaid))
             return;
 
         db.DbContext.AchievementProgress.Add(new AchievementProgress
@@ -38,6 +43,7 @@ public abstract partial class ServerDbBase
             AchievementId = achievementId,
             Progress = delta,
             UnlockedAt = unlockedAt,
+            CoinRewardPaid = coinRewardPaid,
         });
 
         try
@@ -47,7 +53,7 @@ public abstract partial class ServerDbBase
         catch (DbUpdateException)
         {
             db.DbContext.ChangeTracker.Clear();
-            await TryIncrementAchievement(db.DbContext, userId.UserId, achievementId, delta, unlockedAt);
+            await TryIncrementAchievement(db.DbContext, userId.UserId, achievementId, delta, unlockedAt, coinRewardPaid);
         }
     }
 
@@ -56,13 +62,15 @@ public abstract partial class ServerDbBase
         Guid userId,
         string achievementId,
         int delta,
-        DateTime? unlockedAt)
+        DateTime? unlockedAt,
+        bool coinRewardPaid)
     {
         var updated = await context.AchievementProgress
             .Where(a => a.PlayerUserId == userId && a.AchievementId == achievementId)
             .ExecuteUpdateAsync(set => set
                 .SetProperty(a => a.Progress, a => a.Progress + delta)
-                .SetProperty(a => a.UnlockedAt, a => a.UnlockedAt ?? unlockedAt));
+                .SetProperty(a => a.UnlockedAt, a => a.UnlockedAt ?? unlockedAt)
+                .SetProperty(a => a.CoinRewardPaid, a => a.CoinRewardPaid || coinRewardPaid));
 
         return updated > 0;
     }

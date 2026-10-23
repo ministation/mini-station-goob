@@ -99,7 +99,7 @@ public sealed class ESNamePeekOverlay : Overlay
                 || sprite.Color.A <= 0f)
                 continue;
 
-            var mapPos = _transform.GetMapCoordinates((ent, xform));
+            var mapPos = _transform.GetMapCoordinates(xform);
 
             if (eye.DrawLight && eye.DrawFov
                 && _lightLevel.TryCalculateLightLevel(mapPos, out var lightLevel)
