@@ -41,6 +41,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("character varying(128)")
                         .HasColumnName("achievement_id");
 
+                    b.Property<bool>("CoinRewardPaid")
+                        .HasColumnType("boolean")
+                        .HasColumnName("coin_reward_paid");
+
                     b.Property<Guid>("PlayerUserId")
                         .HasColumnType("uuid")
                         .HasColumnName("player_user_id");

@@ -411,6 +411,22 @@ public sealed class AntagTokenSystem : EntitySystem
         return EnsureStateExists(userId)?.Balance ?? 0;
     }
 
+    /// <summary>
+    /// How many more coins the player can still earn this month before the monthly cap stops income.
+    /// Returns <see cref="int.MaxValue"/> when the cap is disabled, and zero when the state is not loaded.
+    /// </summary>
+    public int GetRemainingMonthlyReward(NetUserId userId)
+    {
+        var state = EnsureStateExists(userId);
+        if (state == null)
+            return 0;
+
+        NormalizeMonthlyState(state, DateTime.UtcNow, userId);
+
+        var cap = GetMonthlyCap(userId);
+        return cap.HasValue ? Math.Max(0, cap.Value - state.MonthlyEarned) : int.MaxValue;
+    }
+
     public bool SetBalance(NetUserId userId, int amount)
     {
         if (amount < 0)

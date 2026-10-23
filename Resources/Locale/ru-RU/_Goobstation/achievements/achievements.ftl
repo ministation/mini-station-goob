@@ -7,6 +7,7 @@ achievements-window-unlocked-on = Получено {$date}
 achievements-window-progress = {$progress} / {$target}
 achievements-window-coin-reward = +{$amount}
 achievement-coin-reward-popup = Достижение «{$achievement}»: +{$amount} монет
+achievement-coin-reward-backfill = Монеты за достижения, открытые до появления наград: +{$amount}
 achievements-window-summary = Открыто {$unlocked} / {$total}
 achievements-window-summary-percent = {$percent}%
 achievements-window-summary-coins-tooltip = Монет получено за достижения: {$coins}

@@ -293,3 +293,4 @@ achievements-window-empty = No achievements to show yet.
 achievements-window-coin-reward-tooltip = Achievement reward: {$amount} coins
 achievements-window-coin-reward-received-tooltip = Reward received: {$amount} coins
 achievement-coin-reward-popup = Achievement "{$achievement}": +{$amount} coins
+achievement-coin-reward-backfill = Coins for achievements unlocked before rewards went live: +{$amount}
