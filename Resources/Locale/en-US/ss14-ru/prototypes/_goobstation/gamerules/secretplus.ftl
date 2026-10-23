@@ -1,3 +1,5 @@
+ent-SecretPlusHigh = { ent-BaseGameRule }
+    .desc = { ent-BaseGameRule.desc }
 ent-SecretPlusMid = { ent-BaseGameRule }
     .desc = { ent-BaseGameRule.desc }
 ent-SecretPlusAdmeme = { ent-SecretPlusMid }
