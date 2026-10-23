@@ -7,13 +7,13 @@
 - type: antagUnlockCatalog
   id: Default
   pricing:
-    hoursPerCoinStep: 4
+    hoursPerCoinStep: 3.5
     minCost: 1
     regularCoinsPerStep: 2
     commandCoinsPerStep: 4
   useShopCostMultiplier: true
   shopCostMultiplier: 5
   defaultTier:
-    maxCost: 15
+    maxCost: 20
     command: false
   tiers: []

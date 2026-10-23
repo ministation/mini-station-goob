@@ -504,7 +504,7 @@ public sealed class CoinShopWindow : DefaultWindow
         left.AddChild(_rollResultLabel);
 
         row.AddChild(left);
-        row.AddChild(CreatePriceButton(25, 180, () => _system.RequestLootbox()));
+        row.AddChild(CreatePriceButton(30, 180, () => _system.RequestLootbox()));
 
         panel.AddChild(row);
         return panel;

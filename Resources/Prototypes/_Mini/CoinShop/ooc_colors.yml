@@ -2,39 +2,47 @@
 - type: coinOocColor
   id: CoinOocMint
   color: "#7fe3c1"
+  price: 35
   order: 1
 
 - type: coinOocColor
   id: CoinOocSky
   color: "#6ec6ff"
+  price: 35
   order: 2
 
 - type: coinOocColor
   id: CoinOocLavender
   color: "#c39bff"
+  price: 35
   order: 3
 
 - type: coinOocColor
   id: CoinOocRose
   color: "#ff9ecb"
+  price: 35
   order: 4
 
 - type: coinOocColor
   id: CoinOocAmber
   color: "#ffd166"
+  price: 35
   order: 5
 
 - type: coinOocColor
   id: CoinOocLime
   color: "#b8e986"
+  price: 35
   order: 6
 
 - type: coinOocColor
   id: CoinOocCoral
   color: "#ff8a7a"
+  price: 35
   order: 7
 
 - type: coinOocColor
   id: CoinOocIce
   color: "#a8d8ff"
+  price: 35
   order: 8
