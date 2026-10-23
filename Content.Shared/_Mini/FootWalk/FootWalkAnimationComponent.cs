@@ -3,6 +3,7 @@
 using System.Numerics;
 using Content.Shared.Humanoid;
 using Robust.Shared.GameStates;
+using Robust.Shared.Graphics.RSI;
 
 namespace Content.Shared._Mini.FootWalk;
 
@@ -158,6 +159,12 @@ public sealed partial class FootWalkAnimationComponent : Component
 
     [ViewVariables]
     public readonly HashSet<string> TouchedStringLayers = new();
+
+    /// <summary>
+    /// Screen facing the current clothing cut layers were built for (client-only).
+    /// </summary>
+    [ViewVariables]
+    public RsiDirection ClothingFacing;
 
     /// <summary>
     /// Runtime shoe half layers ({key}-walk-L / {key}-walk-R).
