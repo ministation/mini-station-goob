@@ -40,12 +40,6 @@ namespace Content.Client._Mini.FootWalk;
 /// </summary>
 public sealed partial class FootWalkAnimationSystem : EntitySystem
 {
-    private static readonly ProtoId<ShaderPrototype> HalfClipShader = "SpriteHalfClip";
-    private static readonly ProtoId<ShaderPrototype> FootHalfClipShader = "SpriteFootHalfClip";
-    private static readonly ProtoId<ShaderPrototype> FootHoleShader = "SpriteFootHole";
-    private static readonly ProtoId<ShaderPrototype> FootBandShader = "SpriteFootBand";
-    private static readonly ProtoId<ShaderPrototype> PantHalfClipShader = "SpritePantHalfClip";
-
     private const string ShoesSlot = "shoes";
     private const string OuterSlot = "outerClothing";
     private const string JumpsuitSlot = "jumpsuit";
@@ -59,7 +53,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private MarkingManager _markings = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
-    [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IEyeManager _eye = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IResourceCache _resourceCache = default!;
@@ -78,16 +71,16 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     private EntityQuery<InventorySlotsComponent> _invSlotsQuery;
 
     /// <summary>
-    /// Cache for <see cref="ArtCrossesCentre"/>, keyed by RSI path, state name and cut height, so a
-    /// garment's art is classified once per session.
-    /// </summary>
-    private readonly Dictionary<(string Rsi, string State, float Cut), bool> _crossesCentreCache = new();
-
-    /// <summary>
     /// Centre-column alpha of every loaded RSI frame, taken from the CPU atlas sheet: the pixel
     /// inspection below costs memory reads instead of GPU readbacks.
     /// </summary>
     private readonly RsiCentreProfiles _centreProfiles = new();
+
+    /// <summary>
+    /// Original RSI and state of clothing layers whose lower band was replaced with a cut texture
+    /// (the old shader holes), so the layer can be restored when the walk animation stops.
+    /// </summary>
+    private readonly Dictionary<EntityUid, Dictionary<string, (RSI Rsi, RSI.StateId State)>> _holedOriginals = new();
 
     // Leg+foot: IPC/cyber legs bake most of the foot into the leg sprite.
     private static readonly HumanoidVisualLayers[] LeftLayers =
@@ -282,7 +275,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             // setup for one mob is what shows up as a freeze when a new entity walks into view.
             var setupStart = Stopwatch.GetTimestamp();
 
-            EnsureClothingModeIfNeeded((uid, walk), frontMode);
+            EnsureClothingModeIfNeeded((uid, walk), frontMode, facing);
             EnsureJointPatches((uid, walk), sprite);
 
             var setupMs = (Stopwatch.GetTimestamp() - setupStart) * 1000.0 / Stopwatch.Frequency;
@@ -369,29 +362,34 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
 
-                // Outer "splits" are the hardsuit BOOT halves (FootHalfClip keeps the boot band,
-                // not the coat body) - they are footwear and must ride the legs exactly.
+                // Outer "splits" are the hardsuit BOOT halves (the cut texture keeps the boot band,
+                // not the suit body) - they are footwear and must ride the legs exactly.
                 ApplySplitHalves((uid, sprite), walk, walk.OuterSplitKeys, leftY, rightY, invert);
 
-                // Footwear and garments that cannot be split (their art has no centre gap) stay on
+                // Pant halves ride their leg exactly; lifts are never negative, so a half can
+                // only slide up over the holed torso, never open a slit at the hip.
+                ApplySplitHalves((uid, sprite), walk, walk.JumpsuitSplitKeys, leftY, rightY, invert);
+
+                // Footwear and garments that cannot be cut (their art has no centre gap) stay on
                 // the full sprite or band: one piece, bouncing on each footfall instead of shearing.
-                // The jumpsuit is not touched here, see EnsureClothingMode.
                 var singlePieceY = MathF.Max(leftY, rightY);
                 ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, singlePieceY);
                 ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, singlePieceY);
+                ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, singlePieceY);
             }
             else
             {
                 // Side: one silhouette - clothing lifts with near foot; don't alternate bare feet under boots.
                 if (hasOuter)
                 {
-                    // Full suit: legs must move with the boot band or flesh peeks through the hole.
+                    // Full suit: legs and the suit both move with the near foot.
                     ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: true);
                     ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, nearY), skipFeet: true);
                 }
                 else if (hasJumpsuit)
                 {
-                    // The jumpsuit stays put (see EnsureClothingMode); legs move underneath it.
+                    // Jumpsuit: the pant band rides the near leg, so both legs must follow it -
+                    // otherwise the far leg slides out of the pants on every step.
                     ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: false);
                     ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, nearY), skipFeet: false);
                 }
@@ -412,14 +410,16 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 if (hasOuter)
                     ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, nearY);
+
+                if (hasJumpsuit)
+                    ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, nearY);
             }
 
-            if (walk.ArmSwingAmplitude > 0f)
+            // Sleeves and coats are static now, so a swinging bare arm would open a 1 px skin seam
+            // at the shoulder or cuff. Arm swing is only visible on a bare torso anyway; with any
+            // jumpsuit or outer clothing the arms are either covered or move with the whole body.
+            if (walk.ArmSwingAmplitude > 0f && !hasJumpsuit && !hasOuter)
             {
-                // Arms rise in counter-phase with the opposite foot. Sleeve copies are intentionally not
-                // created: their mask layers used CopyToShaderParameters and could be drawn as a rectangular
-                // atlas patch behind the mob on some clients. The swing is only ~1 px, so leaving the
-                // garment in place is invisible in practice and much safer.
                 ApplySide((uid, sprite), walk, humanoid, LeftArmLayers, new Vector2(0f, leftArmY));
                 ApplySide((uid, sprite), walk, humanoid, RightArmLayers, new Vector2(0f, rightArmY));
             }
@@ -711,16 +711,19 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             SetLayerOffset(ent, walk, key, offset);
     }
 
-    private void EnsureClothingModeIfNeeded(Entity<FootWalkAnimationComponent> ent, bool frontMode)
+    private void EnsureClothingModeIfNeeded(Entity<FootWalkAnimationComponent> ent, bool frontMode, RsiDirection facing)
     {
         var desired = frontMode ? (byte) 1 : (byte) 2;
         var cutChanged = (!float.IsNaN(ent.Comp.AppliedOuterFootCut)
                           && !MathHelper.CloseToPercent(ent.Comp.AppliedOuterFootCut, ent.Comp.OuterFootCut))
                          || (!float.IsNaN(ent.Comp.AppliedJumpsuitHipCut)
                              && !MathHelper.CloseToPercent(ent.Comp.AppliedJumpsuitHipCut, ent.Comp.JumpsuitHipCut));
+        var facingChanged = ent.Comp.ClothingFacing != facing;
 
-        if (cutChanged)
+        // Cut textures are per facing, so a turn rebuilds the clothing layers from the cache.
+        if (cutChanged || (facingChanged && ent.Comp.ClothingSplitsActive))
         {
+            ClearShoeSplits(ent);
             ClearOuterSplits(ent, clearHole: false);
             ClearOuterSideBands(ent, clearHole: true);
             ClearJumpsuitSplits(ent, clearHole: false);
@@ -729,9 +732,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             ent.Comp.ClothingSplitsActive = false;
         }
 
+        if (facingChanged)
+            ent.Comp.ClothingFacing = facing;
+
         if (!ent.Comp.ClothingSplitsActive)
         {
-            EnsureClothingMode(ent, frontMode);
+            EnsureClothingMode(ent, frontMode, facing);
             return;
         }
 
@@ -742,17 +748,18 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         ent.Comp.ClothingMode = desired;
     }
 
-    private void EnsureClothingMode(Entity<FootWalkAnimationComponent> ent, bool frontMode)
+    private void EnsureClothingMode(Entity<FootWalkAnimationComponent> ent, bool frontMode, RsiDirection facing)
     {
         var desired = frontMode ? (byte) 1 : (byte) 2;
 
-        // Build both front halves and side bands once; facing only toggles visibility.
-        // The jumpsuit is deliberately left alone: its hole/half/band layers use custom shaders
-        // and could be drawn as a rectangular atlas patch behind the lower body. The uniform
-        // stays whole and rides the normal body bounce, while the legs animate underneath it.
-        EnsureShoeSplits(ent, forceRebuild: ent.Comp.ShoeSplitKeys.Count == 0);
-        EnsureOuterSplits(ent, forceRebuild: ent.Comp.OuterSplitKeys.Count == 0);
-        EnsureOuterSideBands(ent, forceRebuild: ent.Comp.OuterSideBandKeys.Count == 0);
+        // Every clothing piece is cut on the CPU into plain textures (see RsiCentreProfiles): the
+        // visuals match the old clip shaders, but no custom shader layers are created, so the v293
+        // renderer cannot draw them as a rectangular patch of neighbouring atlas sprites.
+        EnsureShoeSplits(ent, forceRebuild: ent.Comp.ShoeSplitKeys.Count == 0, facing);
+        EnsureOuterSplits(ent, forceRebuild: ent.Comp.OuterSplitKeys.Count == 0, facing);
+        EnsureOuterSideBands(ent, forceRebuild: ent.Comp.OuterSideBandKeys.Count == 0, facing);
+        EnsureJumpsuitSplits(ent, forceRebuild: ent.Comp.JumpsuitSplitKeys.Count == 0, facing);
+        EnsureJumpsuitSideBands(ent, forceRebuild: ent.Comp.JumpsuitBandKeys.Count == 0, facing);
         ent.Comp.ClothingSplitsActive = true;
         ent.Comp.AppliedOuterFootCut = ent.Comp.OuterFootCut;
         ent.Comp.AppliedJumpsuitHipCut = ent.Comp.JumpsuitHipCut;
@@ -825,7 +832,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         return sources.Contains(layerKey);
     }
 
-    private void EnsureShoeSplits(Entity<FootWalkAnimationComponent> ent, bool forceRebuild)
+    private void EnsureShoeSplits(Entity<FootWalkAnimationComponent> ent, bool forceRebuild, RsiDirection facing)
     {
         if (!_spriteQuery.TryGetComponent(ent.Owner, out var sprite)
             || !_invSlotsQuery.TryGetComponent(ent.Owner, out var slots))
@@ -855,7 +862,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             SetBaseOffset(ent.Comp, key, src.Offset);
 
             // Shoes are cut along their whole height, so any art on the centre line would tear.
-            var bandOnly = ArtCrossesCentre(src.ActualRsi, src.State, footCut: null);
+            var frame = FacingFrame(src, facing);
+            var bandOnly = frame == null || _centreProfiles.CrossesCentre(frame, 1f);
             if (bandOnly)
                 ent.Comp.BandOnlyShoeSources.Add(key);
 
@@ -873,32 +881,39 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
                 continue;
 
-            CreateHalfLayer(
-                (ent.Owner, sprite),
-                ent.Comp,
-                src,
-                key,
-                WalkLeftSuffix,
-                keepRight: false,
-                srcIndex + 1,
-                HalfClipShader,
-                ent.Comp.ShoeSplitKeys,
-                footCut: null);
+            var halvesOk = !bandOnly
+                && CreateHalfLayer(
+                    (ent.Owner, sprite),
+                    ent.Comp,
+                    src,
+                    key,
+                    WalkLeftSuffix,
+                    keepRight: false,
+                    srcIndex + 1,
+                    cut: null,
+                    facing,
+                    ent.Comp.ShoeSplitKeys);
 
-            if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out srcIndex, false))
-                continue;
+            if (halvesOk)
+            {
+                if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out srcIndex, false))
+                    continue;
 
-            CreateHalfLayer(
-                (ent.Owner, sprite),
-                ent.Comp,
-                src,
-                key,
-                WalkRightSuffix,
-                keepRight: true,
-                srcIndex + 2,
-                HalfClipShader,
-                ent.Comp.ShoeSplitKeys,
-                footCut: null);
+                halvesOk = CreateHalfLayer(
+                    (ent.Owner, sprite),
+                    ent.Comp,
+                    src,
+                    key,
+                    WalkRightSuffix,
+                    keepRight: true,
+                    srcIndex + 2,
+                    cut: null,
+                    facing,
+                    ent.Comp.ShoeSplitKeys);
+            }
+
+            if (!halvesOk)
+                ent.Comp.BandOnlyShoeSources.Add(key);
         }
 
         // Default to current mode if already known, else hide halves until SetClothingModeVisible.
@@ -916,7 +931,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         }
     }
 
-    private void EnsureOuterSplits(Entity<FootWalkAnimationComponent> ent, bool forceRebuild)
+    private void EnsureOuterSplits(Entity<FootWalkAnimationComponent> ent, bool forceRebuild, RsiDirection facing)
     {
         if (!_spriteQuery.TryGetComponent(ent.Owner, out var sprite)
             || !_invSlotsQuery.TryGetComponent(ent.Owner, out var slots))
@@ -941,41 +956,52 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            EnsureOuterHole(ent, sprite, key, slots);
+            var frame = FacingFrame(src, facing);
+            var holeOk = EnsureOuterHole(ent, sprite, key, slots, src, facing);
 
             // A hem that is one piece cannot be cut in half: the halves would pull it apart.
-            if (ArtCrossesCentre(src.ActualRsi, src.State, ent.Comp.OuterFootCut))
+            var bandOnly = !holeOk
+                || frame == null
+                || _centreProfiles.CrossesCentre(frame, ent.Comp.OuterFootCut);
+            if (bandOnly)
                 ent.Comp.BandOnlyOuterSources.Add(key);
 
             if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
                 continue;
 
-            CreateHalfLayer(
-                (ent.Owner, sprite),
-                ent.Comp,
-                src,
-                key,
-                WalkLeftSuffix,
-                keepRight: false,
-                srcIndex + 1,
-                FootHalfClipShader,
-                ent.Comp.OuterSplitKeys,
-                ent.Comp.OuterFootCut);
+            var halvesOk = !bandOnly
+                && CreateHalfLayer(
+                    (ent.Owner, sprite),
+                    ent.Comp,
+                    src,
+                    key,
+                    WalkLeftSuffix,
+                    keepRight: false,
+                    srcIndex + 1,
+                    ent.Comp.OuterFootCut,
+                    facing,
+                    ent.Comp.OuterSplitKeys);
 
-            if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out srcIndex, false))
-                continue;
+            if (halvesOk)
+            {
+                if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out srcIndex, false))
+                    continue;
 
-            CreateHalfLayer(
-                (ent.Owner, sprite),
-                ent.Comp,
-                src,
-                key,
-                WalkRightSuffix,
-                keepRight: true,
-                srcIndex + 2,
-                FootHalfClipShader,
-                ent.Comp.OuterSplitKeys,
-                ent.Comp.OuterFootCut);
+                halvesOk = CreateHalfLayer(
+                    (ent.Owner, sprite),
+                    ent.Comp,
+                    src,
+                    key,
+                    WalkRightSuffix,
+                    keepRight: true,
+                    srcIndex + 2,
+                    ent.Comp.OuterFootCut,
+                    facing,
+                    ent.Comp.OuterSplitKeys);
+            }
+
+            if (!halvesOk)
+                ent.Comp.BandOnlyOuterSources.Add(key);
         }
 
         // Hide until mode selects front.
@@ -1001,7 +1027,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         }
     }
 
-    private void EnsureOuterSideBands(Entity<FootWalkAnimationComponent> ent, bool forceRebuild)
+    private void EnsureOuterSideBands(Entity<FootWalkAnimationComponent> ent, bool forceRebuild, RsiDirection facing)
     {
         if (!_spriteQuery.TryGetComponent(ent.Owner, out var sprite)
             || !_invSlotsQuery.TryGetComponent(ent.Owner, out var slots))
@@ -1026,47 +1052,59 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            EnsureOuterHole(ent, sprite, key, slots);
+            if (!EnsureOuterHole(ent, sprite, key, slots, src, facing))
+                continue;
 
             if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
                 continue;
 
             var bandKey = key + WalkBandSuffix;
+            var bandFrame = FacingFrame(src, facing);
+            var bandTexture = bandFrame != null
+                ? _centreProfiles.GetCut(bandFrame, WalkCutMode.Band, ent.Comp.OuterFootCut)
+                : null;
+            if (bandTexture == null)
+                continue;
+
             var layer = _sprite.AddBlankLayer((ent.Owner, sprite), srcIndex + 1);
             _sprite.LayerMapSet((ent.Owner, sprite), bandKey, srcIndex + 1);
-
-            var rsi = src.ActualRsi;
-            if (rsi != null)
-                _sprite.LayerSetRsi(layer, rsi, src.State);
-            else if (src.Texture != null)
-                _sprite.LayerSetTexture(layer, src.Texture);
-
+            _sprite.LayerSetTexture(layer, bandTexture);
             _sprite.LayerSetColor(layer, src.Color);
             _sprite.LayerSetOffset(layer, src.Offset);
             _sprite.LayerSetScale(layer, src.Scale);
             _sprite.LayerSetVisible(layer, ent.Comp.ClothingMode == 2 || IsBandOnly(ent.Comp.BandOnlyOuterSources, bandKey));
-            _sprite.LayerSetAutoAnimated(layer, src.AutoAnimated);
-            _sprite.LayerSetDirOffset(layer, src.DirOffset);
 
-            var shader = _prototypes.Index(FootBandShader).InstanceUnique();
-            shader.SetParameter("footCut", ent.Comp.OuterFootCut);
-            sprite.LayerSetShader(bandKey, shader, FootBandShader.Id);
             SetBaseOffset(ent.Comp, bandKey, src.Offset);
             ent.Comp.OuterSideBandKeys.Add(bandKey);
         }
     }
 
-    private void EnsureOuterHole(
+    private bool EnsureOuterHole(
         Entity<FootWalkAnimationComponent> ent,
         SpriteComponent sprite,
         string key,
-        InventorySlotsComponent slots)
+        InventorySlotsComponent slots,
+        Layer src,
+        RsiDirection facing)
     {
         if (!ent.Comp.HoledOuterKeys.Contains(key))
         {
-            var hole = _prototypes.Index(FootHoleShader).InstanceUnique();
-            hole.SetParameter("footCut", ent.Comp.OuterFootCut);
-            sprite.LayerSetShader(key, hole, FootHoleShader.Id);
+            var frame = FacingFrame(src, facing);
+            var top = frame != null
+                ? _centreProfiles.GetCut(frame, WalkCutMode.Top, ent.Comp.OuterFootCut)
+                : null;
+
+            if (top == null)
+                return false;
+
+            if (!_holedOriginals.TryGetValue(ent.Owner, out var originals))
+            {
+                originals = new Dictionary<string, (RSI Rsi, RSI.StateId State)>();
+                _holedOriginals[ent.Owner] = originals;
+            }
+
+            originals[key] = (src.ActualRsi!, src.State);
+            _sprite.LayerSetTexture((ent.Owner, sprite), key, top);
             ent.Comp.HoledOuterKeys.Add(key);
         }
 
@@ -1077,9 +1115,11 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         {
             _sprite.LayerSetVisible((ent.Owner, sprite), displacementKey, false);
         }
+
+        return true;
     }
 
-    private void EnsureJumpsuitSplits(Entity<FootWalkAnimationComponent> ent, bool forceRebuild)
+    private void EnsureJumpsuitSplits(Entity<FootWalkAnimationComponent> ent, bool forceRebuild, RsiDirection facing)
     {
         if (!_spriteQuery.TryGetComponent(ent.Owner, out var sprite)
             || !_invSlotsQuery.TryGetComponent(ent.Owner, out var slots))
@@ -1104,11 +1144,15 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            EnsureJumpsuitHole(ent, sprite, key, slots);
+            var frame = FacingFrame(src, facing);
+            var holeOk = EnsureJumpsuitHole(ent, sprite, key, slots, src, facing);
 
             // A fused inseam or a skirt crosses the centre inside the pant region and cannot be
             // X-split; the band moves as one piece instead.
-            if (ArtCrossesCentre(src.ActualRsi, src.State, ent.Comp.JumpsuitHipCut))
+            var bandOnly = !holeOk
+                || frame == null
+                || _centreProfiles.CrossesCentre(frame, ent.Comp.JumpsuitHipCut);
+            if (bandOnly)
                 ent.Comp.BandOnlyJumpsuitSources.Add(key);
 
             ent.Comp.HiddenJumpsuitKeys.Add(key);
@@ -1117,32 +1161,39 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
                 continue;
 
-            CreateHalfLayer(
-                (ent.Owner, sprite),
-                ent.Comp,
-                src,
-                key,
-                WalkLeftSuffix,
-                keepRight: false,
-                srcIndex + 1,
-                PantHalfClipShader,
-                ent.Comp.JumpsuitSplitKeys,
-                ent.Comp.JumpsuitHipCut);
+            var halvesOk = !bandOnly
+                && CreateHalfLayer(
+                    (ent.Owner, sprite),
+                    ent.Comp,
+                    src,
+                    key,
+                    WalkLeftSuffix,
+                    keepRight: false,
+                    srcIndex + 1,
+                    ent.Comp.JumpsuitHipCut,
+                    facing,
+                    ent.Comp.JumpsuitSplitKeys);
 
-            if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out srcIndex, false))
-                continue;
+            if (halvesOk)
+            {
+                if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out srcIndex, false))
+                    continue;
 
-            CreateHalfLayer(
-                (ent.Owner, sprite),
-                ent.Comp,
-                src,
-                key,
-                WalkRightSuffix,
-                keepRight: true,
-                srcIndex + 2,
-                PantHalfClipShader,
-                ent.Comp.JumpsuitSplitKeys,
-                ent.Comp.JumpsuitHipCut);
+                halvesOk = CreateHalfLayer(
+                    (ent.Owner, sprite),
+                    ent.Comp,
+                    src,
+                    key,
+                    WalkRightSuffix,
+                    keepRight: true,
+                    srcIndex + 2,
+                    ent.Comp.JumpsuitHipCut,
+                    facing,
+                    ent.Comp.JumpsuitSplitKeys);
+            }
+
+            if (!halvesOk)
+                ent.Comp.BandOnlyJumpsuitSources.Add(key);
         }
 
         // Hide until mode selects front (band-only art keeps the holed original instead).
@@ -1167,7 +1218,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         }
     }
 
-    private void EnsureJumpsuitSideBands(Entity<FootWalkAnimationComponent> ent, bool forceRebuild)
+    private void EnsureJumpsuitSideBands(Entity<FootWalkAnimationComponent> ent, bool forceRebuild, RsiDirection facing)
     {
         if (!_spriteQuery.TryGetComponent(ent.Owner, out var sprite)
             || !_invSlotsQuery.TryGetComponent(ent.Owner, out var slots))
@@ -1192,47 +1243,59 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            EnsureJumpsuitHole(ent, sprite, key, slots);
+            if (!EnsureJumpsuitHole(ent, sprite, key, slots, src, facing))
+                continue;
 
             if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
                 continue;
 
             var bandKey = key + WalkBandSuffix;
+            var bandFrame = FacingFrame(src, facing);
+            var bandTexture = bandFrame != null
+                ? _centreProfiles.GetCut(bandFrame, WalkCutMode.Band, ent.Comp.JumpsuitHipCut)
+                : null;
+            if (bandTexture == null)
+                continue;
+
             var layer = _sprite.AddBlankLayer((ent.Owner, sprite), srcIndex + 1);
             _sprite.LayerMapSet((ent.Owner, sprite), bandKey, srcIndex + 1);
-
-            var rsi = src.ActualRsi;
-            if (rsi != null)
-                _sprite.LayerSetRsi(layer, rsi, src.State);
-            else if (src.Texture != null)
-                _sprite.LayerSetTexture(layer, src.Texture);
-
+            _sprite.LayerSetTexture(layer, bandTexture);
             _sprite.LayerSetColor(layer, src.Color);
             _sprite.LayerSetOffset(layer, src.Offset);
             _sprite.LayerSetScale(layer, src.Scale);
             _sprite.LayerSetVisible(layer, ent.Comp.ClothingMode == 2 || IsBandOnly(ent.Comp.BandOnlyJumpsuitSources, bandKey));
-            _sprite.LayerSetAutoAnimated(layer, src.AutoAnimated);
-            _sprite.LayerSetDirOffset(layer, src.DirOffset);
 
-            var shader = _prototypes.Index(FootBandShader).InstanceUnique();
-            shader.SetParameter("footCut", ent.Comp.JumpsuitHipCut);
-            sprite.LayerSetShader(bandKey, shader, FootBandShader.Id);
             SetBaseOffset(ent.Comp, bandKey, src.Offset);
             ent.Comp.JumpsuitBandKeys.Add(bandKey);
         }
     }
 
-    private void EnsureJumpsuitHole(
+    private bool EnsureJumpsuitHole(
         Entity<FootWalkAnimationComponent> ent,
         SpriteComponent sprite,
         string key,
-        InventorySlotsComponent slots)
+        InventorySlotsComponent slots,
+        Layer src,
+        RsiDirection facing)
     {
         if (!ent.Comp.HoledJumpsuitKeys.Contains(key))
         {
-            var hole = _prototypes.Index(FootHoleShader).InstanceUnique();
-            hole.SetParameter("footCut", ent.Comp.JumpsuitHipCut);
-            sprite.LayerSetShader(key, hole, FootHoleShader.Id);
+            var frame = FacingFrame(src, facing);
+            var top = frame != null
+                ? _centreProfiles.GetCut(frame, WalkCutMode.Top, ent.Comp.JumpsuitHipCut)
+                : null;
+
+            if (top == null)
+                return false;
+
+            if (!_holedOriginals.TryGetValue(ent.Owner, out var originals))
+            {
+                originals = new Dictionary<string, (RSI Rsi, RSI.StateId State)>();
+                _holedOriginals[ent.Owner] = originals;
+            }
+
+            originals[key] = (src.ActualRsi!, src.State);
+            _sprite.LayerSetTexture((ent.Owner, sprite), key, top);
             ent.Comp.HoledJumpsuitKeys.Add(key);
         }
 
@@ -1243,6 +1306,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         {
             _sprite.LayerSetVisible((ent.Owner, sprite), displacementKey, false);
         }
+
+        return true;
     }
 
     private static bool TryGetSourceKeys(
@@ -1294,7 +1359,11 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         return true;
     }
 
-    private void CreateHalfLayer(
+    /// <summary>
+    /// Adds a pre-cut half layer for a clothing piece. Returns false when no cut texture is
+    /// available: the caller then bobs the whole piece instead (the old band-only fallback).
+    /// </summary>
+    private bool CreateHalfLayer(
         Entity<SpriteComponent> ent,
         FootWalkAnimationComponent walk,
         Layer src,
@@ -1302,35 +1371,33 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         string suffix,
         bool keepRight,
         int insertAt,
-        ProtoId<ShaderPrototype> shaderId,
-        List<string> splitKeys,
-        float? footCut)
+        float? cut,
+        RsiDirection facing,
+        List<string> splitKeys)
     {
+        var frame = FacingFrame(src, facing);
+        if (frame == null)
+            return false;
+
+        var mode = cut == null
+            ? (keepRight ? WalkCutMode.HalfR : WalkCutMode.HalfL)
+            : (keepRight ? WalkCutMode.BandHalfR : WalkCutMode.BandHalfL);
+        var cutTexture = _centreProfiles.GetCut(frame, mode, cut ?? 1f);
+        if (cutTexture == null)
+            return false;
+
         var halfKey = sourceKey + suffix;
         var layer = _sprite.AddBlankLayer(ent, insertAt);
         _sprite.LayerMapSet(ent.AsNullable(), halfKey, insertAt);
-
-        var rsi = src.ActualRsi;
-        if (rsi != null)
-            _sprite.LayerSetRsi(layer, rsi, src.State);
-        else if (src.Texture != null)
-            _sprite.LayerSetTexture(layer, src.Texture);
-
+        _sprite.LayerSetTexture(layer, cutTexture);
         _sprite.LayerSetColor(layer, src.Color);
         _sprite.LayerSetOffset(layer, src.Offset);
         _sprite.LayerSetScale(layer, src.Scale);
         _sprite.LayerSetVisible(layer, true);
-        _sprite.LayerSetAutoAnimated(layer, src.AutoAnimated);
-        _sprite.LayerSetDirOffset(layer, src.DirOffset);
 
-        var shader = _prototypes.Index(shaderId).InstanceUnique();
-        shader.SetParameter("keepRight", keepRight ? 1f : 0f);
-        if (footCut != null)
-            shader.SetParameter("footCut", footCut.Value);
-
-        ent.Comp.LayerSetShader(halfKey, shader, shaderId.Id);
         SetBaseOffset(walk, halfKey, src.Offset);
         splitKeys.Add(halfKey);
+        return true;
     }
 
     private void ClearShoeSplits(Entity<FootWalkAnimationComponent> ent, SpriteComponent? sprite = null)
@@ -1407,14 +1474,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
     private void ClearOuterHoles(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
     {
-        foreach (var key in ent.Comp.HoledOuterKeys)
-        {
-            if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
-                continue;
-
-            _sprite.LayerSetVisible((ent.Owner, sprite), index, true);
-            sprite.LayerSetShader(index, shader: null, prototype: null);
-        }
+        RestoreHoledLayers(ent, sprite, ent.Comp.HoledOuterKeys);
     }
 
     private void ClearJumpsuitSplits(
@@ -1475,14 +1535,38 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
     private void ClearJumpsuitHoles(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite)
     {
-        foreach (var key in ent.Comp.HoledJumpsuitKeys)
+        RestoreHoledLayers(ent, sprite, ent.Comp.HoledJumpsuitKeys);
+    }
+
+    /// <summary>
+    /// Returns holed layers to their original RSI states and makes them visible again.
+    /// </summary>
+    private void RestoreHoledLayers(
+        Entity<FootWalkAnimationComponent> ent,
+        SpriteComponent sprite,
+        HashSet<string> keys)
+    {
+        var originals = _holedOriginals.TryGetValue(ent.Owner, out var stored) ? stored : null;
+
+        foreach (var key in keys)
         {
             if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
                 continue;
 
             _sprite.LayerSetVisible((ent.Owner, sprite), index, true);
-            sprite.LayerSetShader(index, shader: null, prototype: null);
+
+            if (originals != null && originals.TryGetValue(key, out var original))
+                _sprite.LayerSetRsi((ent.Owner, sprite), index, original.Rsi, original.State);
         }
+
+        if (originals == null)
+            return;
+
+        foreach (var key in keys)
+            originals.Remove(key);
+
+        if (originals.Count == 0)
+            _holedOriginals.Remove(ent.Owner);
     }
 
     private void SetLayerOffset(
@@ -1639,50 +1723,16 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     }
 
     /// <summary>
-    /// True when the layer art crosses the horizontal centre of the sprite, meaning a left/right cut
-    /// with the halves moving in antiphase would shear the art open. That is the case for long
-    /// garments whose hem is a single piece (coats, robes, aprons) and for the small species whose
-    /// legs sit on the centre line.
+    /// The frame of the clothing layer for the mob's current facing, or null when there is none
+    /// (a plain texture layer or an animated state, which cannot be cut reliably).
     /// </summary>
-    /// <param name="footCut">
-    /// Height of the bottom band to inspect, or null to inspect the whole frame (shoes are cut along
-    /// their full height, outer clothing only along its foot band).
-    /// </param>
-    private bool ArtCrossesCentre(RSI? rsi, RSI.StateId state, float? footCut)
+    private static Texture? FacingFrame(Layer src, RsiDirection facing)
     {
-        if (rsi == null)
-            return false;
+        var rsi = src.ActualRsi;
+        if (rsi == null || !rsi.TryGetState(src.State, out var state) || state.IsAnimated)
+            return null;
 
-        var cut = footCut ?? 1f;
-        var key = (rsi.Path.ToString(), state.Name ?? string.Empty, cut);
-        if (_crossesCentreCache.TryGetValue(key, out var cached))
-            return cached;
-
-        var result = false;
-        try
-        {
-            if (rsi.TryGetState(state, out var rsiState))
-            {
-                if (rsiState.RsiDirections == RsiDirectionType.Dir1)
-                {
-                    result = _centreProfiles.CrossesCentre(rsiState.Frame0, cut);
-                }
-                else
-                {
-                    // The cut hits both front views, so either one having no gap is enough.
-                    result = _centreProfiles.CrossesCentre(rsiState.GetFrame(RsiDirection.South, 0), cut)
-                             || _centreProfiles.CrossesCentre(rsiState.GetFrame(RsiDirection.North, 0), cut);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            // A frame with no profile keeps the plain left/right split.
-            Log.Debug($"Foot walk: cannot inspect {rsi.Path} state {state}: {e.Message}");
-        }
-
-        _crossesCentreCache[key] = result;
-        return result;
+        return state.GetFrame(facing, 0);
     }
 
     /// <summary>
