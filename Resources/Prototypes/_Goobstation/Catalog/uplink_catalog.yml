@@ -1151,6 +1151,14 @@
     Telecrystal: 6
   categories:
   - UplinkImplants
+  conditions:
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
+      - LoneOpsUplink
+      - ContractorUplink
+      - ContravendUplink
 
 - type: listing
   id: UplinkAutosurgeonRecoilAbsorber

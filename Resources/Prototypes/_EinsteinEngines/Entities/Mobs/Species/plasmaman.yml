@@ -174,8 +174,8 @@
   - type: TemperatureSpeed
     thresholds:
       243: 0.8
-  #- type: Fart  CorvaxGoob
-  # gasToFart: Plasma CorvaxGoob
+  #- type: Fart # CorvaxGoob
+  #  gas: Plasma # CorvaxGoob
 
 - type: entity
   parent: BaseSpeciesDummy
