@@ -373,16 +373,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 // not the coat body) - they are footwear and must ride the legs exactly.
                 ApplySplitHalves((uid, sprite), walk, walk.OuterSplitKeys, leftY, rightY, invert);
 
-                // Pant halves ride their leg exactly; lifts are never negative, so a half can
-                // only slide up over the holed torso, never open a slit at the hip.
-                ApplySplitHalves((uid, sprite), walk, walk.JumpsuitSplitKeys, leftY, rightY, invert);
-
                 // Footwear and garments that cannot be split (their art has no centre gap) stay on
                 // the full sprite or band: one piece, bouncing on each footfall instead of shearing.
+                // The jumpsuit is not touched here, see EnsureClothingMode.
                 var singlePieceY = MathF.Max(leftY, rightY);
                 ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, singlePieceY);
                 ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, singlePieceY);
-                ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, singlePieceY);
             }
             else
             {
@@ -395,8 +391,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 }
                 else if (hasJumpsuit)
                 {
-                    // Jumpsuit: the pant band rides the near leg, so both legs must follow it -
-                    // otherwise the far leg slides out of the pants on every step.
+                    // The jumpsuit stays put (see EnsureClothingMode); legs move underneath it.
                     ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: false);
                     ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, nearY), skipFeet: false);
                 }
@@ -417,8 +412,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 if (hasOuter)
                     ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, nearY);
-
-                ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, nearY);
             }
 
             if (walk.ArmSwingAmplitude > 0f)
@@ -754,11 +747,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         var desired = frontMode ? (byte) 1 : (byte) 2;
 
         // Build both front halves and side bands once; facing only toggles visibility.
+        // The jumpsuit is deliberately left alone: its hole/half/band layers use custom shaders
+        // and could be drawn as a rectangular atlas patch behind the lower body. The uniform
+        // stays whole and rides the normal body bounce, while the legs animate underneath it.
         EnsureShoeSplits(ent, forceRebuild: ent.Comp.ShoeSplitKeys.Count == 0);
         EnsureOuterSplits(ent, forceRebuild: ent.Comp.OuterSplitKeys.Count == 0);
         EnsureOuterSideBands(ent, forceRebuild: ent.Comp.OuterSideBandKeys.Count == 0);
-        EnsureJumpsuitSplits(ent, forceRebuild: ent.Comp.JumpsuitSplitKeys.Count == 0);
-        EnsureJumpsuitSideBands(ent, forceRebuild: ent.Comp.JumpsuitBandKeys.Count == 0);
         ent.Comp.ClothingSplitsActive = true;
         ent.Comp.AppliedOuterFootCut = ent.Comp.OuterFootCut;
         ent.Comp.AppliedJumpsuitHipCut = ent.Comp.JumpsuitHipCut;
