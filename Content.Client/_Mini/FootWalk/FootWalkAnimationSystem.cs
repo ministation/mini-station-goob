@@ -402,12 +402,11 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                     ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, nearY);
             }
 
-            if (walk.ArmSwingAmplitude > 0f)
+            // Sleeves and coats are static now, so a swinging bare arm would open a 1 px skin seam
+            // at the shoulder or cuff. Arm swing is only visible on a bare torso anyway; with any
+            // jumpsuit or outer clothing the arms are either covered or move with the whole body.
+            if (walk.ArmSwingAmplitude > 0f && !hasJumpsuit && !hasOuter)
             {
-                // Arms rise in counter-phase with the opposite foot. Sleeve copies are intentionally not
-                // created: their mask layers used CopyToShaderParameters and could be drawn as a rectangular
-                // atlas patch behind the mob on some clients. The swing is only ~1 px, so leaving the
-                // garment in place is invisible in practice and much safer.
                 ApplySide((uid, sprite), walk, humanoid, LeftArmLayers, new Vector2(0f, leftArmY));
                 ApplySide((uid, sprite), walk, humanoid, RightArmLayers, new Vector2(0f, rightArmY));
             }
