@@ -877,6 +877,14 @@
             margin-top: 14px;
         }
 
+        .field-hint {
+            grid-column: 1 / -1;
+            margin: -2px 0 0;
+            color: var(--muted);
+            font-size: 0.74rem;
+            line-height: 1.4;
+        }
+
         .field.with-value {
             grid-template-columns: 8.5em minmax(0, 1fr) 3.4em;
         }
@@ -1435,20 +1443,42 @@
             </div>
 
             <div class="field" id="effect-row" hidden>
-                <label class="field-label" for="effect">Изменение голоса</label>
+                <label class="field-label" for="effect">Голосовой мод</label>
                 <div class="select">
                     <select id="effect">
-                        <option value="none">Выкл.</option>
-                        <option value="robot">Робот</option>
-                        <option value="alien">Пришелец</option>
-                        <option value="abductor">Абдуктор</option>
-                        <option value="deep">Низкий</option>
-                        <option value="high">Высокий</option>
-                        <option value="whisper">Шёпот</option>
-                        <option value="radio">Рация</option>
-                        <option value="muffled">Приглушённый</option>
+                        <option value="none" data-desc="Без обработки: ваш обычный голос.">Выкл.</option>
+                        <optgroup label="Голос">
+                            <option value="deep" data-desc="Заметно ниже и тяжелее обычного.">Низкий</option>
+                            <option value="high" data-desc="Заметно выше обычного, почти мультяшный.">Высокий</option>
+                            <option value="whisper" data-desc="Шёпот с воздушным призвуком.">Шёпот</option>
+                            <option value="vibrato" data-desc="Плавное качание высоты голоса.">Вибрато</option>
+                        </optgroup>
+                        <optgroup label="Электроника">
+                            <option value="robot" data-desc="Металлический голос с механическим призвуком.">Робот</option>
+                            <option value="alien" data-desc="Неземное звенящее звучание с дрожанием.">Пришелец</option>
+                            <option value="abductor" data-desc="Странный модулированный голос абдуктора.">Абдуктор</option>
+                            <option value="bitcrush" data-desc="Ретро-консоль: ступенчатый 8-битный звук.">8-бит</option>
+                            <option value="telephone" data-desc="Телефонная трубка: узкая полоса и лёгкий хрип.">Телефон</option>
+                        </optgroup>
+                        <optgroup label="Мистика">
+                            <option value="ghost" data-desc="Потусторонний тянущийся голос призрака.">Призрак</option>
+                            <option value="demon" data-desc="Низкий рычащий демонический голос.">Демон</option>
+                        </optgroup>
+                        <optgroup label="Пространство">
+                            <option value="echo" data-desc="Короткое эхо, будто говорите в пустой комнате.">Эхо</option>
+                            <option value="cave" data-desc="Гулкое эхо пещеры.">Пещера</option>
+                            <option value="cathedral" data-desc="Большой храм: длинный объёмный отзвук.">Собор</option>
+                            <option value="underwater" data-desc="Глухо и ватно, будто под водой.">Под водой</option>
+                        </optgroup>
+                        <optgroup label="Радио">
+                            <option value="radio" data-desc="Узкополосная рация с помехами.">Рация</option>
+                            <option value="megaphone" data-desc="Громкий рупор с перегрузом.">Мегафон</option>
+                            <option value="oldradio" data-desc="Старое радио: треск и плавающая высота.">Старое радио</option>
+                            <option value="muffled" data-desc="Голос, будто из-под маски или из-за стены.">Приглушённый</option>
+                        </optgroup>
                     </select>
                 </div>
+                <p class="field-hint" id="effect-desc" hidden></p>
             </div>
 
             <div class="field">
