@@ -168,6 +168,35 @@ public sealed class VoiceEffectProcessor
                 Mix(new VibratoEffect(SampleRate, 0.4f, 0.002f), 0.5f, 0.6f),
                 new NoiseMixer(0.012f),
                 new GainFilter(4.5f)),
+            // Mini: female voice presets. The phase vocoder lifts the pitch, the shelf filters
+            // brighten the upper formants and the high-pass removes the male chest rumble.
+            VoiceEffect.Female => Chain(
+                new HighPassFilter(120.0 / SampleRate, 0.707),
+                PitchShift(1.2, 0.95f),
+                new HighShelfFilter(2600.0 / SampleRate, 0.707, 3.5),
+                new DcBlocker(),
+                new GainFilter(1.15f)),
+            VoiceEffect.FemaleSoft => Chain(
+                new HighPassFilter(110.0 / SampleRate, 0.707),
+                PitchShift(1.14, 0.95f),
+                new HighShelfFilter(2200.0 / SampleRate, 0.707, 2.5),
+                new LowPassFilter(7200.0 / SampleRate, 0.707),
+                new DcBlocker(),
+                new GainFilter(1.2f)),
+            VoiceEffect.FemaleBright => Chain(
+                new HighPassFilter(140.0 / SampleRate, 0.707),
+                PitchShift(1.3, 0.85f),
+                Mix(new VibratoEffect(SampleRate, 5f, 0.0015f), 1f, 0.35f),
+                new HighShelfFilter(3400.0 / SampleRate, 0.707, 4.5),
+                new DcBlocker(),
+                new GainFilter(1.25f)),
+            VoiceEffect.FemaleLow => Chain(
+                new HighPassFilter(95.0 / SampleRate, 0.707),
+                PitchShift(1.09, 1f),
+                new LowShelfFilter(320.0 / SampleRate, 0.707, 1.5),
+                new HighShelfFilter(2500.0 / SampleRate, 0.707, 2),
+                new DcBlocker(),
+                new GainFilter(1.1f)),
             _ => null,
         };
     }

@@ -89,6 +89,92 @@ public sealed class VoiceEffectProcessorTest
     }
 
     [Test]
+    public void EveryEffectStaysAudible()
+    {
+        var input = MakeSpeechLikeSignal();
+        var inputRms = Rms(input);
+
+        foreach (var effect in Enum.GetValues<VoiceEffect>())
+        {
+            var output = Process(effect, input);
+            var ratio = Rms(output) / inputRms;
+            Assert.That(ratio, Is.GreaterThan(0.05), $"{effect} is nearly silent (RMS ratio {ratio:F3})");
+            Assert.That(ratio, Is.LessThan(6), $"{effect} is too loud (RMS ratio {ratio:F3})");
+        }
+    }
+
+    private static double Rms(short[] samples)
+    {
+        double sum = 0;
+        foreach (var sample in samples)
+        {
+            var value = sample / 32768.0;
+            sum += value * value;
+        }
+
+        return Math.Sqrt(sum / samples.Length);
+    }
+
+    [Test]
+    public void FemalePresetsRaisePitch()
+    {
+        var input = MakeSpeechLikeSignal();
+        var inputPitch = EstimatePitch(input);
+        var presets = new[]
+        {
+            VoiceEffect.Female,
+            VoiceEffect.FemaleSoft,
+            VoiceEffect.FemaleBright,
+            VoiceEffect.FemaleLow,
+        };
+
+        foreach (var effect in presets)
+        {
+            var output = Process(effect, input);
+            var ratio = EstimatePitch(output) / inputPitch;
+            Assert.That(ratio, Is.GreaterThan(1.04), $"{effect} did not raise the pitch (ratio {ratio:F2})");
+            Assert.That(ratio, Is.LessThan(1.6), $"{effect} shifted the pitch too far (ratio {ratio:F2})");
+        }
+    }
+
+    private static double EstimatePitch(short[] samples)
+    {
+        const int minLag = VoiceCodec.SampleRate / 400;
+        const int maxLag = VoiceCodec.SampleRate / 70;
+        const int window = 2048;
+        var start = Math.Max(0, samples.Length / 2 - window / 2);
+
+        var bestLag = minLag;
+        var best = double.NegativeInfinity;
+        for (var lag = minLag; lag <= maxLag; lag++)
+        {
+            double correlation = 0;
+            double energyA = 0;
+            double energyB = 0;
+            for (var i = 0; i < window; i++)
+            {
+                var a = samples[start + i] / 32768.0;
+                var b = samples[start + i + lag] / 32768.0;
+                correlation += a * b;
+                energyA += a * a;
+                energyB += b * b;
+            }
+
+            if (energyA <= 0 || energyB <= 0)
+                continue;
+
+            var normalized = correlation / Math.Sqrt(energyA * energyB);
+            if (normalized > best)
+            {
+                best = normalized;
+                bestLag = lag;
+            }
+        }
+
+        return VoiceCodec.SampleRate / (double) bestLag;
+    }
+
+    [Test]
     public void MuffleAndMegaphoneCanBeCombinedWithAnyEffect()
     {
         var input = MakeSpeechLikeSignal();
