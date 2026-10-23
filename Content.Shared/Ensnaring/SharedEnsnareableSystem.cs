@@ -258,7 +258,7 @@ public abstract class SharedEnsnareableSystem : EntitySystem
 
         if (TryEnsnare(args.Target, uid, component))
         {
-            _audio.PlayPvs(component.EnsnareSound, uid);
+            _audio.PlayPredicted(component.EnsnareSound, uid, args.Component.Thrower); // Trauma - throwing is predicted
         }
     }
 
@@ -270,7 +270,7 @@ public abstract class SharedEnsnareableSystem : EntitySystem
 
         if (TryEnsnare(args.Target, uid, component))
         {
-            _audio.PlayPvs(component.EnsnareSound, uid);
+            _audio.PlayPredicted(component.EnsnareSound, uid, args.Shooter); // Trauma - projectile hits are predicted
         }
     }
 
