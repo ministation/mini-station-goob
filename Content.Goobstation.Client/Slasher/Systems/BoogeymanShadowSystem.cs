@@ -1,4 +1,5 @@
 using Content.Client._Shitcode.Heretic;
+using Content.Client.Graphics;
 using Content.Goobstation.Shared.Slasher.Components;
 using Content.Shared.StatusIcon.Components;
 using Robust.Client.GameObjects;
@@ -15,12 +16,18 @@ public sealed partial class BoogeymanShadowSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     private static readonly ProtoId<ShaderPrototype> Shader = "SlasherBoogeyman";
+    public const string PostShaderId = "boogeyman-shadow";
+
+    private ShaderInstance _shader = default!;
 
     public override void Initialize()
     {
         base.Initialize();
+
+        _shader = _proto.Index(Shader).InstanceUnique();
 
         SubscribeLocalEvent<BoogeymanShadowComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<BoogeymanShadowComponent, ComponentShutdown>(OnShutdown);
@@ -33,15 +40,22 @@ public sealed partial class BoogeymanShadowSystem : EntitySystem
         if (!TryComp<SpriteComponent>(ent, out var sprite))
             return;
 
-        sprite.PostShader = _proto.Index(Shader).InstanceUnique();
+        // Use the ordered post-shader pipeline (same slot as the stealth shader) instead of the legacy
+        // PostShader setter. The legacy path bypasses post-shader ordering and clears any other
+        // post-shaders on the entity, which breaks compositing on the pooled render target pipeline.
+        _sprite.SetPostShader((ent, sprite), new SpriteComponent.PostShaderArgs(PostShaderId, _shader)
+        {
+            Before = ContentPostShaderIds.BeforeOutlines,
+        });
     }
 
     private void OnShutdown(Entity<BoogeymanShadowComponent> ent, ref ComponentShutdown args)
     {
-        if (!TryComp<SpriteComponent>(ent, out var sprite))
+        if (Terminating(ent))
             return;
 
-        sprite.PostShader = null;
+        if (TryComp<SpriteComponent>(ent, out var sprite))
+            _sprite.RemovePostShader((ent, sprite), PostShaderId);
     }
 
     private void OnGetStatusIcons(ref GetStatusIconsEvent args)
