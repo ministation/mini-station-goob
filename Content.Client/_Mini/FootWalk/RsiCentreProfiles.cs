@@ -217,34 +217,29 @@ public sealed class RsiCentreProfiles
         if (xTo <= xFrom || yTo <= yFrom)
             return null;
 
+        // ProcessPixelRows/PixelAccessor are not on the client sandbox allowlist, so the cut is
+        // done through a plain pixel span, like the centre profiles above.
         var cutImage = frame.Clone();
-        try
+        var span = cutImage.GetPixelSpan();
+        for (var y = 0; y < height; y++)
         {
-            cutImage.ProcessPixelRows(accessor =>
+            var rowOffset = y * width;
+            if (y < yFrom || y >= yTo)
             {
-                for (var y = 0; y < height; y++)
-                {
-                    var row = accessor.GetRowSpan(y);
-                    if (y < yFrom || y >= yTo)
-                    {
-                        for (var x = 0; x < width; x++)
-                            row[x].A = 0;
-                        continue;
-                    }
+                for (var x = 0; x < width; x++)
+                    span[rowOffset + x].A = 0;
+                continue;
+            }
 
-                    for (var x = 0; x < xFrom; x++)
-                        row[x].A = 0;
-                    for (var x = xTo; x < width; x++)
-                        row[x].A = 0;
-                }
-            });
+            for (var x = 0; x < xFrom; x++)
+                span[rowOffset + x].A = 0;
+            for (var x = xTo; x < width; x++)
+                span[rowOffset + x].A = 0;
+        }
 
-            return Texture.LoadFromImage(cutImage, "walk-cut");
-        }
-        finally
-        {
-            cutImage.Dispose();
-        }
+        var texture = Texture.LoadFromImage(cutImage, "walk-cut");
+        cutImage.Dispose();
+        return texture;
     }
 
     private static bool[] BuildProfile(ReadOnlySpan<Rgba32> pixels, int sheetWidth, Texture frame)
