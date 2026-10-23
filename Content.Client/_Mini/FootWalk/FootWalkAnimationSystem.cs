@@ -367,18 +367,9 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
                 ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
 
-                ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
-
-                // Outer "splits" are the hardsuit BOOT halves (FootHalfClip keeps the boot band,
-                // not the coat body) - they are footwear and must ride the legs exactly.
-                ApplySplitHalves((uid, sprite), walk, walk.OuterSplitKeys, leftY, rightY, invert);
-
-                // Footwear and garments that cannot be split (their art has no centre gap) stay on
-                // the full sprite or band: one piece, bouncing on each footfall instead of shearing.
-                // The jumpsuit is not touched here, see EnsureClothingMode.
+                // Shoes are the only clothing piece that still bobs, and only as a whole layer.
                 var singlePieceY = MathF.Max(leftY, rightY);
                 ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, singlePieceY);
-                ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, singlePieceY);
             }
             else
             {
@@ -409,9 +400,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 if (hasShoes)
                     ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, nearY);
-
-                if (hasOuter)
-                    ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, nearY);
             }
 
             if (walk.ArmSwingAmplitude > 0f)
@@ -746,13 +734,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     {
         var desired = frontMode ? (byte) 1 : (byte) 2;
 
-        // Build both front halves and side bands once; facing only toggles visibility.
-        // The jumpsuit is deliberately left alone: its hole/half/band layers use custom shaders
-        // and could be drawn as a rectangular atlas patch behind the lower body. The uniform
-        // stays whole and rides the normal body bounce, while the legs animate underneath it.
-        EnsureShoeSplits(ent, forceRebuild: ent.Comp.ShoeSplitKeys.Count == 0);
-        EnsureOuterSplits(ent, forceRebuild: ent.Comp.OuterSplitKeys.Count == 0);
-        EnsureOuterSideBands(ent, forceRebuild: ent.Comp.OuterSideBandKeys.Count == 0);
+        // Clothing is deliberately left whole: every copy/hole/band layer needs a custom shader,
+        // and on v293 those layers can be drawn as a rectangular patch of neighbouring atlas
+        // sprites behind the mob. The sprite still bounces as a whole, body legs and arms animate
+        // under the clothes, and shoes get a plain layer offset in FrameUpdate.
         ent.Comp.ClothingSplitsActive = true;
         ent.Comp.AppliedOuterFootCut = ent.Comp.OuterFootCut;
         ent.Comp.AppliedJumpsuitHipCut = ent.Comp.JumpsuitHipCut;
