@@ -154,7 +154,8 @@ public sealed class RsiCentreProfiles
         }
         catch (Exception e)
         {
-            Logger.WarningS("footwalk", $"cannot read {rsi.Path} state {stateId}: {e}");
+            // Normal fallback path (e.g. .rsic-only clients): the piece just bobs as one part.
+            Logger.DebugS("footwalk", $"cannot read {rsi.Path} state {stateId}: {e.Message}");
         }
 
         _frames[key] = frame;

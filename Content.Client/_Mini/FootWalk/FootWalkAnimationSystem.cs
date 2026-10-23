@@ -368,8 +368,25 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 // Body layers stay anatomical L/R - never invert with the camera sheet.
                 var invert = facing == RsiDirection.North;
 
-                ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
-                ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
+                // One piece of clothing that could not be cut leaves its lower part static, so moving
+                // the legs individually underneath it would push flesh out through the cloth (the
+                // "paws out of the hardsuit" case). Move both legs with the cloth band instead.
+                var singlePieceY = MathF.Max(leftY, rightY);
+                // The outermost garment decides: the suit covers the jumpsuit underneath it.
+                var legBandOnly = hasOuter
+                    ? walk.OuterSplitKeys.Count == 0
+                    : hasJumpsuit && walk.JumpsuitSplitKeys.Count == 0;
+
+                if (legBandOnly)
+                {
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, singlePieceY), skipFeet: hasShoes || hasOuter);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, singlePieceY), skipFeet: hasShoes || hasOuter);
+                }
+                else
+                {
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
+                }
 
                 ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
 
@@ -383,7 +400,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 // Footwear and garments that cannot be cut (their art has no centre gap) stay on
                 // the full sprite or band: one piece, bouncing on each footfall instead of shearing.
-                var singlePieceY = MathF.Max(leftY, rightY);
                 ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, singlePieceY);
                 ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, singlePieceY);
                 ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, singlePieceY);
@@ -428,12 +444,18 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
             // Arms swing in counter-phase with the opposite foot. Every garment worn over an arm has a
             // sleeve copy that rides the same offset, so the cloth moves with the limb and the bare arm
-            // can never slip out from under it.
+            // can never slip out from under it. If a sleeve copy could not be built (unreadable or
+            // animated garment art), keep the arms still: a swinging arm under static cloth opens a
+            // seam and shows the limb, which is worse than a missing 1 px swing.
             if (walk.ArmSwingAmplitude > 0f)
             {
-                ApplySide((uid, sprite), walk, humanoid, LeftArmLayers, new Vector2(0f, leftArmY));
-                ApplySide((uid, sprite), walk, humanoid, RightArmLayers, new Vector2(0f, rightArmY));
-                ApplySleeveCover((uid, walk), sprite, leftArmY, rightArmY);
+                var sleevesReady = !hasJumpsuit && !hasOuter || walk.SleeveCoverComplete;
+                if (sleevesReady)
+                {
+                    ApplySide((uid, sprite), walk, humanoid, LeftArmLayers, new Vector2(0f, leftArmY));
+                    ApplySide((uid, sprite), walk, humanoid, RightArmLayers, new Vector2(0f, rightArmY));
+                    ApplySleeveCover((uid, walk), sprite, leftArmY, rightArmY);
+                }
             }
         }
     }
@@ -851,8 +873,11 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             return;
         }
 
-        // Count what the build below would create; same conditions, so a built set always matches.
+        // How many sleeve copies a complete set would have. Anything this pass cannot even describe
+        // (unreadable garment or limb art) makes the set incomplete: then the arms must stay still,
+        // otherwise they would slide out from under the untouched cloth.
         var wanted = 0;
+        var unsupported = false;
         foreach (var (slot, limbs) in SleeveSlots)
         {
             if (!TryGetSourceKeys(slots, slot, out var sourceKeys))
@@ -861,24 +886,24 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             foreach (var key in sourceKeys)
             {
                 if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false)
-                    || !TryGetCutSource(ent.Owner, key, src, out var garmentRsi, out var garmentState))
+                    || !TryGetCutSource(ent.Owner, key, src, out _, out _))
+                {
+                    unsupported = true;
                     continue;
+                }
 
                 foreach (var limb in limbs)
                 {
-                    if (!TryGetSleeveLimb(ent, sprite, limb, out var limbRsi, out var limbState))
+                    if (!TryGetSleeveLimb(ent, sprite, limb, out _, out _))
+                    {
+                        unsupported = true;
                         continue;
-
-                    if (_centreProfiles.GetSleeveCut(garmentRsi, garmentState, limbRsi, limbState, facing) == null)
-                        continue;
+                    }
 
                     wanted++;
                 }
             }
         }
-
-        if (wanted == ent.Comp.SleeveCoverKeys.Count)
-            return;
 
         ClearSleeveCover(ent, sprite);
 
@@ -917,6 +942,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 }
             }
         }
+
+        ent.Comp.SleeveCoverComplete = !unsupported
+                                       && wanted > 0
+                                       && ent.Comp.SleeveCoverKeys.Count == wanted;
     }
 
     private bool TryGetSleeveLimb(
@@ -963,6 +992,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
     private void ClearSleeveCover(Entity<FootWalkAnimationComponent> ent, SpriteComponent? sprite = null)
     {
+        ent.Comp.SleeveCoverComplete = false;
         if (ent.Comp.SleeveCoverKeys.Count == 0)
             return;
 
