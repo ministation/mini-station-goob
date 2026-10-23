@@ -3,22 +3,22 @@
 #
 # Досрочное открытие профессий за монетки антаг-меню.
 # Цена: ceil(оставшееся_время_ч / hoursPerCoinStep) * coinsPerStep, не ниже minCost и не выше maxCost тира.
-# command: true - commandCoinsPerStep (4 монетки за 3.2 часа), иначе regularCoinsPerStep (2 монетки за 3.2 часа).
+# command: true - commandCoinsPerStep (4 монетки за 4 часа), иначе regularCoinsPerStep (2 монетки за 4 часа).
 
 - type: jobUnlockCatalog
   id: Default
   pricing:
-    hoursPerCoinStep: 3.2
-    minCost: 2
+    hoursPerCoinStep: 4
+    minCost: 1
     regularCoinsPerStep: 2
     commandCoinsPerStep: 4
   defaultTier:
-    maxCost: 19
+    maxCost: 15
     command: false
   tiers:
     # --- Командование ---
     - jobs: [Captain]
-      maxCost: 69
+      maxCost: 55
       command: true
     - jobs:
         - HeadOfSecurity
@@ -28,25 +28,25 @@
         - Quartermaster
         - HeadOfPersonnel
         - NanotrasenRepresentative
-      maxCost: 57
+      maxCost: 45
       command: true
     - jobs: [BlueshieldOfficer]
-      maxCost: 125
+      maxCost: 100
       command: true
     - jobs: [NanotrasenCareerTrainer]
-      maxCost: 44
+      maxCost: 35
       command: true
 
     # --- Юридический / особые ---
     - jobs: [Magistrate]
-      maxCost: 38
+      maxCost: 30
       command: true
     - jobs: [Lawyer]
-      maxCost: 32
+      maxCost: 25
       command: false
   # ОТК - руководитель техобеспечения (Typan)
     - jobs: [TypanTechnicalOperationsSupervisor]
-      maxCost: 63
+      maxCost: 50
       command: true
 
     # --- Служба безопасности ---
@@ -58,7 +58,7 @@
         - Pilot
         - WardenHelper
         - SecurityCadet
-      maxCost: 35
+      maxCost: 28
       command: false
 
     # --- Инженерия / атмос ---
@@ -66,7 +66,7 @@
         - StationEngineer
         - AtmosphericTechnician
         - TechnicalAssistant
-      maxCost: 28
+      maxCost: 22
       command: false
 
     # --- Медицина ---
@@ -78,7 +78,7 @@
         - Virologist
         - Psychologist
         - MedicalIntern
-      maxCost: 28
+      maxCost: 22
       command: false
 
     # --- Наука ---
@@ -86,7 +86,7 @@
         - Scientist
         - Roboticist
         - ResearchAssistant
-      maxCost: 28
+      maxCost: 22
       command: false
 
     # --- Снабжение ---
@@ -95,18 +95,18 @@
         - SalvageSpecialist
         - ShaftMiner
         - Bitrunner
-      maxCost: 25
+      maxCost: 20
       command: false
 
     # --- Синдикат (Typan) ---
     - jobs: [TypanCommander]
-      maxCost: 50
+      maxCost: 40
       command: true
     - jobs:
         - TypanResearchDirector
         - TypanMedic
         - TypanPatrol
-      maxCost: 38
+      maxCost: 30
       command: false
     - jobs:
         - TypanAtmosTech
@@ -114,13 +114,13 @@
         - TypanCargotech
         - TypanChef
         - TypanScience
-      maxCost: 23
+      maxCost: 18
       command: false
 
     # --- По весу (остальные гражданские) ---
-    - maxCost: 25
+    - maxCost: 20
       minWeight: 15
       command: false
-    - maxCost: 23
+    - maxCost: 18
       minWeight: 5
       command: false
