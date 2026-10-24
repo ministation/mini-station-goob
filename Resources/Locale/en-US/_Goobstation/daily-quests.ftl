@@ -43,7 +43,7 @@ daily-quest-cargo-bounty-mythic-name = Cargo order
 daily-quest-cargo-bounty-mythic-desc = Play cargo technician and print {$count} cargo bounties.
 
 daily-quest-cargo-bounty-legendary-name = Cargo order
-daily-quest-cargo-bounty-legendary-desc = Play cargo technician and raise total station account balance to {$count} credits.
+daily-quest-cargo-bounty-legendary-desc = Play cargo technician and deposit {$count} credits into station accounts during the week.
 
 daily-quest-typan-cargo-bounty-rare-name = Taipan production
 daily-quest-typan-cargo-bounty-rare-desc = Play Taipan cargo tech and produce {$count} items on a lathe.
@@ -166,19 +166,19 @@ daily-quest-stamp-typan-commander-legendary-name = Commander stamp
 daily-quest-stamp-typan-commander-legendary-desc = Play Taipan commander and stamp {$count} times.
 
 daily-quest-mining-salvage-rare-name = Miner
-daily-quest-mining-salvage-rare-desc = Play salvage specialist and earn {$count} mining points in one round.
+daily-quest-mining-salvage-rare-desc = Play salvage specialist and earn {$count} mining points during the week.
 
 daily-quest-mining-salvage-superRare-name = Miner
-daily-quest-mining-salvage-superRare-desc = Play salvage specialist and earn {$count} mining points in one round.
+daily-quest-mining-salvage-superRare-desc = Play salvage specialist and earn {$count} mining points during the week.
 
 daily-quest-mining-salvage-epic-name = Miner
-daily-quest-mining-salvage-epic-desc = Play salvage specialist and earn {$count} mining points in one round.
+daily-quest-mining-salvage-epic-desc = Play salvage specialist and earn {$count} mining points during the week.
 
 daily-quest-mining-salvage-mythic-name = Miner
-daily-quest-mining-salvage-mythic-desc = Play salvage specialist and earn {$count} mining points in one round.
+daily-quest-mining-salvage-mythic-desc = Play salvage specialist and earn {$count} mining points during the week.
 
 daily-quest-mining-salvage-legendary-name = Miner
-daily-quest-mining-salvage-legendary-desc = Play salvage specialist and earn {$count} mining points in one round.
+daily-quest-mining-salvage-legendary-desc = Play salvage specialist and earn {$count} mining points during the week.
 
 daily-quest-cuff-security-rare-name = Detention
 daily-quest-cuff-security-rare-desc = Play security officer and cuff {$count} people.

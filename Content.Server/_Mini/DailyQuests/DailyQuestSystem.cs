@@ -456,13 +456,6 @@ public sealed class DailyQuestSystem : EntitySystem
 
         if (!string.IsNullOrEmpty(ev.JobId))
             state.Round.PlayedJobs.Add(ev.JobId);
-
-        if (state.Round.MiningPointsBaseline == 0)
-        {
-            var points = _miningPoints.GetPointComp(uid);
-            if (points?.Comp != null)
-                state.Round.MiningPointsBaseline = points.Value.Comp.Points;
-        }
     }
 
     private void OnRoundEnd(RoundEndMessageEvent ev)
@@ -738,10 +731,6 @@ public sealed class DailyQuestSystem : EntitySystem
 
     private void OnBankBalanceUpdated(ref BankBalanceUpdatedEvent ev)
     {
-        var totalBalance = 0;
-        foreach (var balance in ev.Balance.Values)
-            totalBalance += balance;
-
         foreach (var session in _playerManager.Sessions)
         {
             if (session.Status == SessionStatus.Disconnected)
@@ -764,11 +753,7 @@ public sealed class DailyQuestSystem : EntitySystem
                 if (!JobMatches(session, state, proto.RequiredJob))
                     continue;
 
-                slot.Progress = Math.Min(totalBalance, proto.TargetCount);
-                if (slot.Progress >= proto.TargetCount)
-                    CompleteSlot(session, slot, proto);
-
-                Persist(session.UserId);
+                UpdateStationBankProgress(session, state, slot, proto);
             }
         }
     }
@@ -776,17 +761,8 @@ public sealed class DailyQuestSystem : EntitySystem
     private void OnMiningPointsClaimed(ref MiningPointsClaimedEvent args)
     {
         if (!TryGetSession(args.Actor, out var session) ||
-            !_states.TryGetValue(session.UserId, out var state) ||
-            TryGetQuestTrackingEntity(session, state) is not { } uid)
+            !_states.TryGetValue(session.UserId, out var state))
             return;
-
-        var points = _miningPoints.GetPointComp(uid);
-        if (points?.Comp == null)
-            return;
-
-        var earned = points.Value.Comp.Points >= state.Round.MiningPointsBaseline
-            ? points.Value.Comp.Points - state.Round.MiningPointsBaseline
-            : 0;
 
         foreach (var slot in state.Slots)
         {
@@ -802,11 +778,7 @@ public sealed class DailyQuestSystem : EntitySystem
             if (!JobMatches(session, state, proto.RequiredJob))
                 continue;
 
-            slot.Progress = (int)Math.Min(earned, proto.TargetCount);
-            if (slot.Progress >= proto.TargetCount)
-                CompleteSlot(session, slot, proto);
-
-            Persist(session.UserId);
+            UpdateMiningProgress(session, state, slot, proto);
             return;
         }
     }
@@ -869,13 +841,17 @@ public sealed class DailyQuestSystem : EntitySystem
         if (points?.Comp == null)
             return;
 
-        var earned = points.Value.Comp.Points >= state.Round.MiningPointsBaseline
-            ? points.Value.Comp.Points - state.Round.MiningPointsBaseline
-            : 0;
+        // Weekly accumulation: count newly claimed points since the last check so
+        // mythic/legendary targets stay reachable across several rounds.
+        var current = points.Value.Comp.Points;
+        if (state.Round.MiningPointsLastSeen is { } seen && current > seen)
+        {
+            slot.Progress = Math.Min(slot.Progress + (int)(current - seen), proto.TargetCount);
+            if (slot.Progress >= proto.TargetCount)
+                CompleteSlot(session, slot, proto);
+        }
 
-        slot.Progress = (int)Math.Min(earned, proto.TargetCount);
-        if (slot.Progress >= proto.TargetCount)
-            CompleteSlot(session, slot, proto);
+        state.Round.MiningPointsLastSeen = current;
     }
 
     private void UpdateStationBankProgress(ICommonSession session, PlayerDailyQuestState state, DailyQuestSlot slot, DailyQuestPrototype proto)
@@ -891,9 +867,16 @@ public sealed class DailyQuestSystem : EntitySystem
         foreach (var balance in bank.Accounts.Values)
             totalBalance += balance;
 
-        slot.Progress = Math.Min(totalBalance, proto.TargetCount);
-        if (slot.Progress >= proto.TargetCount)
-            CompleteSlot(session, slot, proto);
+        // Weekly accumulation: only station income earned while playing cargo counts,
+        // spending does not subtract from weekly progress.
+        if (state.Round.StationBankLastSeen is { } seen && totalBalance > seen)
+        {
+            slot.Progress = Math.Min(slot.Progress + (totalBalance - seen), proto.TargetCount);
+            if (slot.Progress >= proto.TargetCount)
+                CompleteSlot(session, slot, proto);
+        }
+
+        state.Round.StationBankLastSeen = totalBalance;
     }
 
     private void TryIncrement(EntityUid user, DailyQuestType type, int amount = 1, Guid? uniquePlayerId = null)
@@ -1160,7 +1143,8 @@ public sealed class DailyQuestSystem : EntitySystem
             TrackingSince = source.TrackingSince,
             FailedNoMelee = source.FailedNoMelee,
             FailedNoDamage = source.FailedNoDamage,
-            MiningPointsBaseline = source.MiningPointsBaseline,
+            MiningPointsLastSeen = source.MiningPointsLastSeen,
+            StationBankLastSeen = source.StationBankLastSeen,
             PlayedJobs = new HashSet<ProtoId<JobPrototype>>(source.PlayedJobs),
             UniqueProgress = source.UniqueProgress.ToDictionary(
                 kvp => kvp.Key,
@@ -1497,7 +1481,8 @@ public sealed class DailyQuestSystem : EntitySystem
         public TimeSpan? TrackingSince;
         public bool FailedNoMelee;
         public bool FailedNoDamage;
-        public uint MiningPointsBaseline;
+        public uint? MiningPointsLastSeen;
+        public int? StationBankLastSeen;
         public HashSet<ProtoId<JobPrototype>> PlayedJobs = new();
         public Dictionary<string, HashSet<Guid>> UniqueProgress = new();
 
@@ -1509,7 +1494,8 @@ public sealed class DailyQuestSystem : EntitySystem
             TrackingSince = null;
             FailedNoMelee = false;
             FailedNoDamage = false;
-            MiningPointsBaseline = 0;
+            MiningPointsLastSeen = null;
+            StationBankLastSeen = null;
             PlayedJobs.Clear();
             UniqueProgress.Clear();
         }

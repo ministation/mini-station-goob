@@ -43,7 +43,7 @@ daily-quest-cargo-bounty-mythic-name = Грузовой заказ
 daily-quest-cargo-bounty-mythic-desc = Зайдите за грузчика и оформите {$count} грузовых заказа на консоли.
 
 daily-quest-cargo-bounty-legendary-name = Грузовой заказ
-daily-quest-cargo-bounty-legendary-desc = Зайдите за грузчика и доведите суммарный баланс счетов станции до {$count} кредитов.
+daily-quest-cargo-bounty-legendary-desc = Зайдите за грузчика и пополните счета станции на {$count} кредитов за неделю.
 
 daily-quest-typan-cargo-bounty-rare-name = Производство Тайпана
 daily-quest-typan-cargo-bounty-rare-desc = Зайдите за грузчика Тайпана и изготовьте {$count} изделий на фабрикаторе.
@@ -166,19 +166,19 @@ daily-quest-stamp-typan-commander-legendary-name = Печать командир
 daily-quest-stamp-typan-commander-legendary-desc = Зайдите за командира Тайпана и поставьте печать {$count} раза.
 
 daily-quest-mining-salvage-rare-name = Шахтёр
-daily-quest-mining-salvage-rare-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за раунд.
+daily-quest-mining-salvage-rare-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за неделю.
 
 daily-quest-mining-salvage-superRare-name = Шахтёр
-daily-quest-mining-salvage-superRare-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за раунд.
+daily-quest-mining-salvage-superRare-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за неделю.
 
 daily-quest-mining-salvage-epic-name = Шахтёр
-daily-quest-mining-salvage-epic-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за раунд.
+daily-quest-mining-salvage-epic-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за неделю.
 
 daily-quest-mining-salvage-mythic-name = Шахтёр
-daily-quest-mining-salvage-mythic-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за раунд.
+daily-quest-mining-salvage-mythic-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за неделю.
 
 daily-quest-mining-salvage-legendary-name = Шахтёр
-daily-quest-mining-salvage-legendary-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за раунд.
+daily-quest-mining-salvage-legendary-desc = Зайдите за утилизатора и заработайте {$count} очков утилизации за неделю.
 
 daily-quest-cuff-security-rare-name = Задержание
 daily-quest-cuff-security-rare-desc = Зайдите за офицера СБ и наденьте наручники на {$count} человек.

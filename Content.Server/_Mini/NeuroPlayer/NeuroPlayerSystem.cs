@@ -17,6 +17,8 @@ using Content.Server.Chat.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Server.NPC.HTN;
 using Content.Server.NPC.Systems;
+using Content.Shared.Humanoid;
+using Robust.Shared.Physics.Components;
 using Content.Shared.Inventory;
 using Content.Server.Radio;
 using Content.Server.Spawners.Components;
@@ -263,6 +265,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     /// <summary>Round bookkeeping: bots are spawned once per round, with retries while they are missing.</summary>
     private bool _spawnedThisRound;
     private TimeSpan _roundStartTime;
+    private bool _roundStarted;
     private TimeSpan _lastSpawnAttempt;
 
     /// <summary>Bots were despawned because a station war is running; they come back when it ends.</summary>
@@ -436,9 +439,14 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     private void OnRoundStarted(RoundStartedEvent ev)
     {
         _roundStartTime = _timing.CurTime;
+        // A round that starts during the staged preload does so at CurTime == 0, and zero is not
+        // a usable "not started" sentinel for the spawn gate - a real flag is.
+        _roundStarted = true;
         _spawnedThisRound = false;
         _warSuppressed = false;
         _spawnFailureLogged = false;
+
+        _sawmill.Info($"Neuro players: round start (enabled={_enabled}, bot_count={_botCount}).");
 
         if (!_enabled || _botCount <= 0)
             return;
@@ -461,6 +469,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         _spawnedThisRound = false;
         _warSuppressed = false;
         _roundStartTime = TimeSpan.Zero;
+        _roundStarted = false;
 
         // Ahelp assistant state lives in the partial file; the event handler is shared because a
         // system may only subscribe to an event once.
@@ -928,7 +937,9 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
         _sawmill.Info(
             $"Neuro players: spawned {spawned} bots on {Name(station.Value)} " +
-            $"({MetaData(station.Value).EntityPrototype?.ID ?? "no prototype"}, bot_count={_botCount}).");
+            $"({MetaData(station.Value).EntityPrototype?.ID ?? "no prototype"}, bot_count={_botCount}): " +
+            string.Join(", ", _bots.Select(b =>
+                $"{Name(b)} @ {Transform(b).Coordinates:O}")));
     }
 
     /// <summary>
@@ -1055,7 +1066,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
         // Mini: machines (station AI turrets first of all) are not opponents a passenger can
         // fight - bots used to open fire on a turret the moment it came in range.
-        IgnoreMachines(mob);
+        IgnoreInvalidTargets(mob);
 
         // Random voice matching the bot's sex - neuro passengers speak out loud via TTS.
         var voicePool = _prototypes.EnumeratePrototypes<TTSVoicePrototype>()
@@ -1161,6 +1172,32 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         return candidates[0];
     }
 
+    /// <summary>
+    /// Mini: whether a spawn marker stands in the open. Packed-style arrivals docks are floored
+    /// rooms held shut by directional fans instead of walls - legally floored, but open to the
+    /// void, so a bot spawned at their late-join markers asphyxiates. A marker with a space tile
+    /// a short walk away is not an indoor spawn point; the next tier (cryo, job points) is used.
+    /// </summary>
+    private bool IsOutdoorMarker(EntityUid marker, TransformComponent xform)
+    {
+        if (xform.GridUid is not { } grid || !TryComp<MapGridComponent>(grid, out var mapGrid))
+            return true;
+
+        var center = _map.CoordinatesToTile(grid, mapGrid, xform.Coordinates);
+
+        for (var dx = -SpawnSpreadRadius; dx <= SpawnSpreadRadius; dx++)
+        {
+            for (var dy = -SpawnSpreadRadius; dy <= SpawnSpreadRadius; dy++)
+            {
+                var tile = center + new Vector2i(dx, dy);
+                if (!_map.TryGetTileRef(grid, mapGrid, tile, out var tileRef) || tileRef.Tile.IsEmpty)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     private List<EntityCoordinates> FindSpawnPoints(EntityUid station)
     {
         var points = new List<EntityCoordinates>();
@@ -1172,6 +1209,9 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 continue;
 
             if (_station.GetOwningStation(uid, xform) != station)
+                continue;
+
+            if (IsOutdoorMarker(uid, xform))
                 continue;
 
             points.Add(new EntityCoordinates(uid, 0, 0));
@@ -1189,6 +1229,9 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 continue;
 
             if (_station.GetOwningStation(uid, xform) != station)
+                continue;
+
+            if (IsOutdoorMarker(uid, xform))
                 continue;
 
             points.Add(new EntityCoordinates(uid, 0, 0));
@@ -1279,17 +1322,28 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         }
 
         // Solid construction all around: the marker tile still beats not spawning at all.
+        _sawmill.Debug($"Neuro players: no free tile around {Name(anchor.EntityId)}, using the marker tile itself.");
         return anchor;
     }
 
-    /// <summary>Whether a tile can take a spawned mob: real floor with nothing anchored on top.</summary>
+    /// <summary>
+    /// Whether a tile can take a spawned mob: real floor with nothing collidable on top. A
+    /// technical bay has cables and pipes anchored on nearly every tile - walkable fixtures do
+    /// not block a spawn, only walls, machines and furniture do.
+    /// </summary>
     private bool IsTileFreeForSpawn(EntityUid grid, MapGridComponent mapGrid, Vector2i tile)
     {
         if (!_map.TryGetTileRef(grid, mapGrid, tile, out var tileRef) || tileRef.Tile.IsEmpty)
             return false;
 
         var anchored = _map.GetAnchoredEntitiesEnumerator(grid, mapGrid, tile);
-        return !anchored.MoveNext(out _);
+        while (anchored.MoveNext(out var ent))
+        {
+            if (TryComp<PhysicsComponent>(ent, out var physics) && physics.CanCollide)
+                return false;
+        }
+
+        return true;
     }
 
     private void OnGlobalSpoke(EntitySpokeEvent ev)
@@ -1929,7 +1983,7 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             return;
 
         // Nobody is on the station before the round starts, and maps need time to settle after it.
-        if (_roundStartTime == TimeSpan.Zero || _timing.CurTime - _roundStartTime < SpawnDelay)
+        if (!_roundStarted || _timing.CurTime - _roundStartTime < SpawnDelay)
             return;
 
         // A failed attempt must not be repeated every tick: it scans prototypes and logs.
@@ -2085,11 +2139,13 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 continue;
 
             // Brave enough: engage hostile-faction mobs that wander too close. Machines do not
-            // count: a turret or sentry is not an opponent a passenger can fight.
+            // count: a turret or sentry is not an opponent a passenger can fight. Disguised
+            // antagonists (heretics and other piloted humanoids) do not count either: a hostile
+            // faction tag alone is meta-knowledge no passenger has.
             var engage = false;
             foreach (var hostile in _factions.GetNearbyHostiles((bot, CompOrNull<NpcFactionMemberComponent>(bot), null), 8f))
             {
-                if (IsMachine(hostile))
+                if (IsMachine(hostile) || IsDisguisedCrew(hostile))
                     continue;
 
                 engage = true;
@@ -2100,10 +2156,10 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             {
                 if (TryComp<HTNComponent>(bot, out var attackHtn) && attackHtn.RootTask.Task != "SimpleHumanoidHostileCompound")
                 {
-                    // A fight runs through the NPC target queries, so the machine list is refreshed
+                    // A fight runs through the NPC target queries, so the exception list is refreshed
                     // right before it starts: hardware that appeared after the bot spawned (a
                     // deployed turret crate, war hardware) must not become a combat target.
-                    IgnoreMachines(bot);
+                    IgnoreInvalidTargets(bot);
 
                     SetRootTask(attackHtn, "SimpleHumanoidHostileCompound");
                 }
@@ -2219,21 +2275,35 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     }
 
     /// <summary>
-    /// Takes every machine of the map out of the bot's target lists (friendly machines are never
-    /// hostile targets anyway, so the list can be faction-agnostic). Both the danger scan and the
-    /// NPC combat target queries read the faction system's hostile lookup, and a faction exception
-    /// is the one place that covers both. Called on spawn and again whenever a bot picks a fight,
-    /// so hardware deployed mid-round is covered too (the engine allows only one ComponentStartup
-    /// subscriber per component, and the faction system already owns that one).
+    /// Takes every invalid combat target of the map out of the bot's target lists: machines and
+    /// disguised antagonists (friendly ones are never hostile targets anyway, so the list can be
+    /// faction-agnostic). Both the danger scan and the NPC combat target queries read the faction
+    /// system's hostile lookup, and a faction exception is the one place that covers both. Called
+    /// on spawn and again whenever a bot picks a fight, so hardware and heretics appearing
+    /// mid-round are covered too (the engine allows only one ComponentStartup subscriber per
+    /// component, and the faction system already owns that one).
     /// </summary>
-    private void IgnoreMachines(EntityUid bot)
+    private void IgnoreInvalidTargets(EntityUid bot)
     {
         var query = EntityQueryEnumerator<NpcFactionMemberComponent>();
         while (query.MoveNext(out var uid, out _))
         {
-            if (IsMachine(uid))
+            if (IsMachine(uid) || IsDisguisedCrew(uid))
                 _factions.IgnoreEntity(bot, uid);
         }
+    }
+
+    /// <summary>
+    /// Mini: whether a hostile-faction entity is a piloted humanoid. Heretics, changelings and
+    /// other disguised antagonists carry a hostile faction tag while looking exactly like crew,
+    /// so treating that tag as grounds for a fight gave the bots meta-knowledge. Piloted
+    /// humanoids are never auto-engaged; monstrous player roles (dragon, xenomorph) stay fair game.
+    /// </summary>
+    private bool IsDisguisedCrew(EntityUid ent)
+    {
+        return HasComp<HumanoidAppearanceComponent>(ent)
+        && _mind.TryGetMind(ent, out _, out var mind)
+        && mind.UserId != null;
     }
 
     /// <summary>
