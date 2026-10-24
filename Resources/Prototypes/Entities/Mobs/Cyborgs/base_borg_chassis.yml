@@ -569,7 +569,8 @@
     - Xenoborg
     - Binary
   - type: Repairable
-    doAfterDelay: 10 # goob - reduced to fit new values
+    doAfterDelay: 5 # Mini — в 2 раза быстрее гооба (было 10)
+    damageValue: -8 # Mini — и чуть меньше ХП за проходку (у НТ-боргов -10)
   - type: BorgChassis
     maxModules: 0
     hasMindState: robot_e
