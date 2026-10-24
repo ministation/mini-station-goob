@@ -13,6 +13,7 @@ using Content.Server.Mind;
 using Content.Server.Parallax;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Systems;
+using Content.Shared._Mini.Katorga.Components;
 using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
@@ -85,6 +86,9 @@ public sealed class KatorgaSystem : EntitySystem
     private EntityUid? _katorgaMapUid;
     private readonly List<EntityCoordinates> _spawnPoints = new();
     private readonly Dictionary<NetUserId, double> _points = new();
+
+    // Текущий срок (мгновенный взгляд сервера): уменьшается сразу при сдаче руды, в базу списывается пачками.
+    private readonly Dictionary<NetUserId, DateTimeOffset> _expiry = new();
 
     private TimeSpan _nextSafeguard = TimeSpan.Zero;
     private TimeSpan _nextFlush = TimeSpan.Zero;
@@ -181,6 +185,7 @@ public sealed class KatorgaSystem : EntitySystem
         // Накопленные очки нужно списать до очистки состояния, иначе отработка пропадёт.
         FlushPoints();
         _points.Clear();
+        _expiry.Clear();
 
         _katorgaMap = null;
         _katorgaMapUid = null;
@@ -210,6 +215,7 @@ public sealed class KatorgaSystem : EntitySystem
         if (!TryGetKatorgaBan(ev.Player, out var ban))
             return;
 
+        _expiry[ev.Player.UserId] = ban.ExpirationTime!.Value;
         ev.Handled = true;
         SendToKatorga(ev.Player, ban);
     }
@@ -225,6 +231,8 @@ public sealed class KatorgaSystem : EntitySystem
 
         if (!TryGetKatorgaBan(ev.Player, out var ban))
             return;
+
+        _expiry[ev.Player.UserId] = ban.ExpirationTime!.Value;
 
         if (HasComp<GhostComponent>(ev.Entity))
             return;
@@ -242,10 +250,15 @@ public sealed class KatorgaSystem : EntitySystem
             return;
 
         var query = EntityQueryEnumerator<KatorgaBoundComponent, TransformComponent>();
-        while (query.MoveNext(out var uid, out _, out var xform))
+        while (query.MoveNext(out var uid, out var comp, out var xform))
         {
             if (xform.MapID != _katorgaMap)
+            {
                 SendEntityToKatorga(uid);
+                continue;
+            }
+
+            RefreshInmateHudTick(uid, comp);
         }
     }
 
@@ -269,6 +282,8 @@ public sealed class KatorgaSystem : EntitySystem
 
         var remaining = (ban.ExpirationTime ?? DateTimeOffset.UtcNow) - DateTimeOffset.UtcNow;
         _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-greeting", ("time", FormatTime(remaining))));
+
+        RefreshInmateHud(session, resetTotal: true);
     }
 
     private void SendEntityToKatorga(EntityUid entity)
@@ -434,6 +449,11 @@ public sealed class KatorgaSystem : EntitySystem
 
         _points[session.UserId] = _points.GetValueOrDefault(session.UserId) + points;
 
+        var reduced = ConvertPointsToTime(points);
+        if (_expiry.ContainsKey(session.UserId))
+            _expiry[session.UserId] -= reduced;
+        AddWorkedOff(session, reduced);
+
         _popup.PopupEntity(
             Loc.GetString("katorga-time-reduced", ("time", FormatTime(ConvertPointsToTime(points)))),
             uid,
@@ -489,6 +509,9 @@ public sealed class KatorgaSystem : EntitySystem
             if (newExpiration < DateTimeOffset.UtcNow)
                 newExpiration = DateTimeOffset.UtcNow;
 
+            if (penalty && _expiry.ContainsKey(userId))
+                _expiry[userId] = newExpiration;
+
             await _db.SetBanExpirationAsync(binding.Id!.Value, newExpiration);
 
             _sawmill.Info(
@@ -522,6 +545,72 @@ public sealed class KatorgaSystem : EntitySystem
             _sawmill.Error("Каторга: не удалось изменить срок бана игроку " + userId + ": " + e);
         }
     }
+
+    #region Худ заключённого
+
+    /// <summary>
+    ///     Полностью пересобирает данные худа: при прибытии на каторгу.
+    /// </summary>
+    private void RefreshInmateHud(ICommonSession session, bool resetTotal)
+    {
+        if (session.AttachedEntity is not { } mob || Deleted(mob))
+            return;
+
+        if (!_expiry.TryGetValue(session.UserId, out var expires))
+            return;
+
+        EnsureComp<KatorgaBoundComponent>(mob, out var comp);
+
+        var remaining = expires - DateTimeOffset.UtcNow;
+        if (remaining < TimeSpan.Zero)
+            remaining = TimeSpan.Zero;
+
+        if (resetTotal || comp.SentenceTotal == TimeSpan.Zero)
+            comp.SentenceTotal = remaining;
+
+        comp.SentenceRemaining = remaining;
+        Dirty(mob, comp);
+    }
+
+    /// <summary>
+    ///     Периодическое обновление худа: срок течёт сам по себе, даже если руду не копают.
+    /// </summary>
+    private void RefreshInmateHudTick(EntityUid uid, KatorgaBoundComponent comp)
+    {
+        if (!_playerManager.TryGetSessionByEntity(uid, out var session))
+            return;
+
+        if (!_expiry.TryGetValue(session.UserId, out var expires))
+            return;
+
+        var remaining = expires - DateTimeOffset.UtcNow;
+        if (remaining < TimeSpan.Zero)
+            remaining = TimeSpan.Zero;
+
+        if ((comp.SentenceRemaining - remaining).Duration() <= TimeSpan.FromSeconds(5))
+            return;
+
+        comp.SentenceRemaining = remaining;
+        Dirty(uid, comp);
+    }
+
+    /// <summary>
+    ///     Отмечает отработку рудой в худе заключённого.
+    /// </summary>
+    private void AddWorkedOff(ICommonSession session, TimeSpan reduced)
+    {
+        if (session.AttachedEntity is not { } mob || Deleted(mob))
+            return;
+
+        EnsureComp<KatorgaBoundComponent>(mob, out var comp);
+        comp.WorkedOff += reduced;
+        comp.SentenceRemaining = comp.SentenceRemaining > reduced
+            ? comp.SentenceRemaining - reduced
+            : TimeSpan.Zero;
+        Dirty(mob, comp);
+    }
+
+    #endregion
 
     private TimeSpan ConvertPointsToTime(double points)
     {
