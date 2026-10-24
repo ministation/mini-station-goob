@@ -382,7 +382,7 @@ public sealed class KatorgaSystem : EntitySystem
 
     #region Изменение срока
 
-    private void OnKillReported(KillReportedEvent ev)
+    private void OnKillReported(ref KillReportedEvent ev)
     {
         if (!Enabled)
             return;
