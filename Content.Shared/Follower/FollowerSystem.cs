@@ -39,6 +39,12 @@ public sealed class FollowerSystem : EntitySystem
     private static readonly ProtoId<TagPrototype> ForceableFollowTag = "ForceableFollow";
     private static readonly ProtoId<TagPrototype> PreventGhostnadoWarpTag = "NotGhostnadoWarpable";
 
+    // Guards against re-entering follower cleanup. Deparenting an entity or removing its
+    // FollowerComponent can synchronously run EntityTerminatingEvent handlers, which may
+    // ask us to stop the same follower, or all followers of the same target, again.
+    private readonly HashSet<(EntityUid Follower, EntityUid Target)> _stoppingFollow = new();
+    private readonly HashSet<EntityUid> _stoppingAllFollowers = new();
+
     public override void Initialize()
     {
         base.Initialize();
@@ -253,46 +259,62 @@ public sealed class FollowerSystem : EntitySystem
     /// <param name="deparent">Should the entity deparent itself</param>
     public void StopFollowingEntity(EntityUid uid, EntityUid target, FollowedComponent? followed = null, bool deparent = true, bool removeComp = true)
     {
-        if (!Resolve(target, ref followed, false))
+        // Re-entrancy guard. The cleanup below can synchronously trigger termination
+        // handlers, which can call back into this method for the same follower/target
+        // pair. Without the guard the pair recurses until the stack overflows.
+        if (!_stoppingFollow.Add((uid, target)))
             return;
 
-        if (!TryComp<FollowerComponent>(uid, out var followerComp) || followerComp.Following != target)
-            return;
-
-        followed.Following.Remove(uid);
-        if (followed.Following.Count == 0)
-            RemComp<FollowedComponent>(target);
-
-        if (removeComp)
+        try
         {
-            RemComp<FollowerComponent>(uid);
-            RemComp<OrbitVisualsComponent>(uid);
+            if (!Resolve(target, ref followed, false))
+                return;
+
+            if (!TryComp<FollowerComponent>(uid, out var followerComp) || followerComp.Following != target)
+                return;
+
+            followed.Following.Remove(uid);
+            if (followed.Following.Count == 0)
+                RemComp<FollowedComponent>(target);
+
+            if (removeComp)
+            {
+                RemComp<FollowerComponent>(uid);
+                RemComp<OrbitVisualsComponent>(uid);
+            }
+
+            var uidEv = new StoppedFollowingEntityEvent(target, uid);
+            var targetEv = new EntityStoppedFollowingEvent(target, uid);
+
+            RaiseLocalEvent(uid, uidEv, true);
+            RaiseLocalEvent(target, targetEv, false);
+            Dirty(target, followed);
+            RaiseLocalEvent(uid, uidEv);
+            RaiseLocalEvent(target, targetEv);
+
+            // Never touch the transform of an entity that is already being deleted.
+            // AttachToGridOrMap would return early, but the null-space branch below
+            // could still queue the dying entity for deletion a second time.
+            if (!deparent || TerminatingOrDeleted(uid) || !TryComp(uid, out TransformComponent? xform))
+                return;
+
+            _transform.AttachToGridOrMap(uid, xform);
+            if (xform.MapUid != null)
+                return;
+
+            if (_netMan.IsClient)
+            {
+                _transform.DetachEntity(uid, xform);
+                return;
+            }
+
+            Log.Warning($"A follower has been detached to null-space and will be deleted. Follower: {ToPrettyString(uid)}. Followed: {ToPrettyString(target)}");
+            QueueDel(uid);
         }
-
-        var uidEv = new StoppedFollowingEntityEvent(target, uid);
-        var targetEv = new EntityStoppedFollowingEvent(target, uid);
-
-        RaiseLocalEvent(uid, uidEv, true);
-        RaiseLocalEvent(target, targetEv, false);
-        Dirty(target, followed);
-        RaiseLocalEvent(uid, uidEv);
-        RaiseLocalEvent(target, targetEv);
-
-        if (!deparent || !TryComp(uid, out TransformComponent? xform))
-            return;
-
-        _transform.AttachToGridOrMap(uid, xform);
-        if (xform.MapUid != null)
-            return;
-
-        if (_netMan.IsClient)
+        finally
         {
-            _transform.DetachEntity(uid, xform);
-            return;
+            _stoppingFollow.Remove((uid, target));
         }
-
-        Log.Warning($"A follower has been detached to null-space and will be deleted. Follower: {ToPrettyString(uid)}. Followed: {ToPrettyString(target)}");
-        QueueDel(uid);
     }
 
     /// <summary>
@@ -319,16 +341,83 @@ public sealed class FollowerSystem : EntitySystem
     /// <summary>
     ///     Forces all of an entity's followers to stop following it.
     /// </summary>
+    /// <remarks>
+    ///     Followers are collected into a stack first, so the set can be mutated while it is
+    ///     being unwound. Chains of terminating followers are unwound in the same loop instead
+    ///     of through recursive EntityTerminatingEvent calls.
+    /// </remarks>
     public void StopAllFollowers(EntityUid uid,
         FollowedComponent? followed=null)
     {
-        if (!Resolve(uid, ref followed))
+        if (!Resolve(uid, ref followed, false))
             return;
 
-        foreach (var player in followed.Following)
+        // A termination handler can call back in while this target is already being unwound.
+        // The initial call keeps going and finishes the job.
+        if (!_stoppingAllFollowers.Add(uid))
+            return;
+
+        var claimed = new List<EntityUid> { uid };
+        try
         {
-            StopFollowingEntity(player, uid, followed);
+            // Snapshot: StopFollowingEntity removes entries from followed.Following.
+            var pending = new Stack<(EntityUid Target, EntityUid Follower)>();
+            PushFollowers(uid, followed, pending);
+
+            var visited = new HashSet<(EntityUid Target, EntityUid Follower)>();
+            while (pending.TryPop(out var pair))
+            {
+                if (!visited.Add(pair))
+                    continue;
+
+                var (target, follower) = pair;
+
+                // An earlier iteration may have removed the last follower together with the component.
+                if (!TryComp<FollowedComponent>(target, out var targetFollowed))
+                    continue;
+
+                if (Deleted(follower))
+                {
+                    // The entity is gone already. Only drop the stale reference, no component
+                    // or event work is safe on a deleted entity.
+                    targetFollowed.Following.Remove(follower);
+                    if (targetFollowed.Following.Count == 0)
+                        RemComp<FollowedComponent>(target);
+                    continue;
+                }
+
+                var followerTerminating = Terminating(follower);
+
+                // A terminating follower still needs its link removed and its events raised,
+                // but it must not be deparented or queued for deletion again.
+                StopFollowingEntity(follower, target, targetFollowed, deparent: !followerTerminating);
+
+                // If the follower is itself being deleted, its own followers are part of the
+                // same cleanup. Claim them here so their termination handlers do not recurse
+                // back into this method, and process them from this loop instead.
+                if (!followerTerminating ||
+                    !TryComp<FollowedComponent>(follower, out var followerFollowed) ||
+                    !_stoppingAllFollowers.Add(follower))
+                {
+                    continue;
+                }
+
+                claimed.Add(follower);
+                PushFollowers(follower, followerFollowed, pending);
+            }
         }
+        finally
+        {
+            foreach (var claimedUid in claimed)
+                _stoppingAllFollowers.Remove(claimedUid);
+        }
+    }
+
+    private static void PushFollowers(EntityUid target, FollowedComponent followed,
+        Stack<(EntityUid Target, EntityUid Follower)> pending)
+    {
+        foreach (var follower in followed.Following)
+            pending.Push((target, follower));
     }
 
     /// <summary>
