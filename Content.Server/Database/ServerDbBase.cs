@@ -615,6 +615,21 @@ namespace Content.Server.Database
             await db.DbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        ///     Меняет только срок действия бана, не трогая автора правки и причину.
+        ///     Используется каторгой (KatorgaSystem) для сокращения срока отработкой.
+        /// </summary>
+        public async Task SetBanExpirationAsync(int id, DateTimeOffset? expiration)
+        {
+            await using var db = await GetDb();
+
+            var ban = await db.DbContext.Ban.SingleOrDefaultAsync(b => b.Id == id);
+            if (ban is null)
+                return;
+            ban.ExpirationTime = expiration?.UtcDateTime;
+            await db.DbContext.SaveChangesAsync();
+        }
+
         protected static async Task<ServerBanExemptFlags?> GetBanExemptionCore(
             DbGuard db,
             NetUserId? userId,

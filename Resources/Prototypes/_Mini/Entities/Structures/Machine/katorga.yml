@@ -1,0 +1,42 @@
+- type: entity
+  id: KatorgaOreProcessor
+  parent: BaseMachinePowered
+  suffix: Каторга
+  components:
+    - type: Sprite
+      sprite: Structures/Machines/ore_processor.rsi
+      layers:
+        - state: icon
+          map: [ "enum.LatheVisualLayers.IsRunning" ]
+        - state: unlit
+          shader: unshaded
+          map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+        - state: inserting
+          map: [ "enum.MaterialStorageVisualLayers.Inserting" ]
+        - state: panel
+          map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+    - type: MaterialStorage
+      ignoreColor: true
+      whitelist:
+        tags:
+          - Ore
+    - type: KatorgaOreProcessor
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape:
+            !type:PhysShapeAabb
+            bounds: "-0.4,-0.4,0.4,0.4"
+          density: 190
+          mask:
+            - MachineMask
+          layer:
+            - MachineLayer
+    - type: Transform
+      anchored: true
+
+- type: entity
+  id: KatorgaSpawnPoint
+  name: katorga spawn point
+  components:
+    - type: KatorgaSpawnPoint
