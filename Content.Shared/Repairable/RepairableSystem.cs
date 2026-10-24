@@ -35,7 +35,10 @@ public sealed partial class RepairableSystem : EntitySystem
 
         var ipcSaysMoreRepairies = false; // Goob
         var isBody = HasComp<BodyComponent>(ent); // Goob
-        if (isBody) // Goob
+        // Mini: borg chassis also carry a Body (bodyType: Simple) but have no wound-heal Damage
+        // specifier — routing them into the IPC path silently repaired nothing (popup played, 0 hp healed).
+        var useIpcPath = isBody && ent.Comp.Damage != null;
+        if (useIpcPath) // Goob
             ipcSaysMoreRepairies = GoobTryRepairIPC(ent, args.User);
         else if (ent.Comp.DamageValue != null)
             RepairSomeDamage((ent, damageable), ent.Comp.DamageValue.Value, args.User);
@@ -44,7 +47,7 @@ public sealed partial class RepairableSystem : EntitySystem
         else
             RepairAllDamage((ent, damageable), args.User);
 
-        args.Repeat = ent.Comp.AutoDoAfter && (isBody ? ipcSaysMoreRepairies : damageable.TotalDamage > 0); // Goob
+        args.Repeat = ent.Comp.AutoDoAfter && (useIpcPath ? ipcSaysMoreRepairies : damageable.TotalDamage > 0); // Goob
         args.Args.Event.Repeat = args.Repeat;
         args.Handled = true;
 
