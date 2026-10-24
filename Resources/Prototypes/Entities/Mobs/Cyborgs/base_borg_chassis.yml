@@ -120,7 +120,7 @@
     - Science
   - type: ZombieImmune
   - type: Repairable
-    damageValue: -10 # 10 seconds to repair from crit
+    damageValue: -20 # Mini — в 2 раза быстрее гооба (было -10): 5 секунд из крита; общий для всех боргов, включая ксеноборг
     doAfterDelay: 1
     fuelCost: 0.5
     # allowSelfRepair: false # Goobstation
@@ -568,8 +568,7 @@
     - Mothership
     - Xenoborg
     - Binary
-  - type: Repairable
-    doAfterDelay: 10 # goob - reduced to fit new values
+  # Mini: Repairable не переопределяем — ксеноборги варятся так же, как обычные борги (см. базу: -20 ХП за 1 сек).
   - type: BorgChassis
     maxModules: 0
     hasMindState: robot_e
