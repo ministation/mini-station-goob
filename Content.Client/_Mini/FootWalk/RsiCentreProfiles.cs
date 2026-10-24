@@ -1,164 +1,165 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using Robust.Client.Graphics;
-using Robust.Client.ResourceManagement;
 using Robust.Client.Utility;
+using Robust.Shared.ContentPack;
+using Robust.Shared.Graphics.RSI;
+using Robust.Shared.Log;
 using Robust.Shared.Maths;
+using Robust.Shared.Utility;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Content.Client._Mini.FootWalk;
 
 /// <summary>
-/// Каким образом вырезается одежда для покачивания при ходьбе: кадры загруженных RSI лежат на CPU
-/// ровно до конца <see cref="IResourceCache.OnRsiLoaded"/> (<c>RSIResource.Load</c> диспозит атлас
-/// сразу после события), поэтому всё, что нужно от пикселей, делается там же один раз на RSI.
+/// Нарезает одежду для покачивания при ходьбе: половины обуви, половинки штанин, боковые полосы,
+/// торс с вырезанной нижней полосой и рукава, обрезанные по рисунку руки. Это замена прежних
+/// клип-шейдеров: они на v293 могли рисоваться как прямоугольник из соседних спрайтов атласа, а
+/// обычные слои с готовыми текстурами не умеют.
 /// </summary>
 /// <remarks>
-/// Раньше это спрашивали у GPU: <c>Texture.GetPixel</c> в движке вытягивает ВЕСЬ лист атласа на
-/// каждый отдельный пиксель (<c>GL.GetTexImage</c> размером 4 * ширина * высота). Одна пара обуви
-/// требовала до восьми таких вызовов, а новая одежда, которую клиент видел впервые, вешала кадр на
-/// секунду с лишним: на живой сборке 29 чтений = 1360 мс, «MainLoop: Cannot keep up!».
-///
-/// Из атласа снимаются две вещи:
-/// 1. профиль центральных колонок каждого кадра: проходит ли рисунок через центральную линию
-///    (слитные юбки, сросшиеся штанины) - такие вещи нельзя резать на левую и правую половины;
-/// 2. для состояний одежды (<c>equipped-...</c>) копии кадров, из которых лениво нарезаются
-///    текстуры половин и полос. Это замена прежних клип-шейдеров: они на v293 могли рисоваться
-///    как прямоугольник из соседних спрайтов атласа, а обычные слои с готовыми текстурами не умеют.
+/// Клиент предзагружает ВСЕ RSI в шаге «Texture preload», который выполняется раньше инициализации
+/// систем контента. Поэтому подписка на <c>IResourceCache.OnRsiLoaded</c> из системы ходьбы не
+/// получает ни одного события (атлас к этому моменту уже загружен и выгружен), и все вырезки молча
+/// откатывались к цельной одежде. Вместо события нужный кадр читается с диска при первом показе
+/// вещи: файл состояния RSI нарезан на кадры ровно так же, как его грузит движок, и кешируется.
 /// </remarks>
 public sealed class RsiCentreProfiles
 {
     /// <summary>Порог альфы в байтах: 0.05 из прежней проверки по нормализованному цвету.</summary>
     private const byte AlphaThreshold = 12;
 
-    /// <summary>Профиль кадра: <c>[y]</c> - на строке <c>y</c> (0 = верх кадра) оба пикселя у центра непрозрачны.</summary>
-    private readonly Dictionary<Texture, bool[]> _profiles = new();
+    private IResourceManager? _resources;
 
-    /// <summary>Кадры состояний одежды, вырезанные из атласа на время жизни RSI.</summary>
-    private readonly Dictionary<Texture, Image<Rgba32>> _frames = new();
+    /// <summary>Кадры состояний, уже прочитанные с диска (null - прочитать не удалось).</summary>
+    private readonly Dictionary<(string Rsi, string State, int Dir), Image<Rgba32>?> _frames = new();
 
     /// <summary>Лениво нарезанные текстуры, в том числе неудачные: повтор не строится.</summary>
-    private readonly Dictionary<(Texture Frame, WalkCutMode Mode, float Cut), Texture?> _cuts = new();
+    private readonly Dictionary<(string Rsi, string State, int Dir, WalkCutMode Mode, float Cut), Texture?> _cuts = new();
 
-    public void Subscribe(IResourceCache cache)
+    /// <summary>Рукава: копия одежды, обрезанная по рисунку руки, в том числе неудачные.</summary>
+    private readonly Dictionary<(string Garment, string GarmentState, string Limb, string LimbState, int Dir), Texture?> _sleeves = new();
+
+    public void Initialize(IResourceManager resources)
     {
-        cache.OnRsiLoaded += OnRsiLoaded;
-    }
-
-    public void Unsubscribe(IResourceCache cache)
-    {
-        cache.OnRsiLoaded -= OnRsiLoaded;
-    }
-
-    /// <summary>
-    /// Есть ли у кадра непрозрачные пиксели с обеих сторон от центральной линии внутри нижней полосы
-    /// высотой <paramref name="footCut"/> (1 - весь кадр). Кадр без профиля считается не проходящим
-    /// через центр: тогда работают обычные левая/правая половины.
-    /// </summary>
-    public bool CrossesCentre(Texture frame, float footCut)
-    {
-        if (!_profiles.TryGetValue(frame, out var rows))
-            return false;
-
-        var height = rows.Length;
-        if (frame.Width < 4 || height < 2)
-            return false;
-
-        var from = Math.Max(0, (int) (height * (1f - footCut)));
-
-        // Прежняя проверка шла снизу вверх и останавливалась на первой же строке, где центр сомкнут:
-        // низ кадра - это как раз место, где между ногами виден просвет.
-        var count = height - from;
-        var step = Math.Max(1, count / 4);
-        for (var y = height - 1; y >= from; y -= step)
-        {
-            if (rows[y])
-                return true;
-        }
-
-        return false;
+        _resources = resources;
     }
 
     /// <summary>
-    /// Готовая вырезка кадра для покачивания: половины обуви, полосы штанин и бот, верх с вырезанной
-    /// полосой. Null, если кадр не из состояния одежды или текстуру построить не удалось: тогда
-    /// вещь качается целиком, без разрезов.
+    /// Готовая вырезка кадра для покачивания. Null, если кадр прочитать не удалось (анимированное
+    /// состояние, отсутствующий файл): тогда вещь качается целиком, без разрезов.
     /// </summary>
-    public Texture? GetCut(Texture frame, WalkCutMode mode, float cut)
+    public Texture? GetCut(RSI rsi, RSI.StateId state, RsiDirection facing, WalkCutMode mode, float cut)
     {
-        if (!_frames.TryGetValue(frame, out var image))
-            return null;
-
-        var key = (frame, mode, cut);
+        var key = (rsi.Path.ToString(), state.Name ?? string.Empty, (int) facing, mode, cut);
         if (_cuts.TryGetValue(key, out var cached))
             return cached;
 
-        var texture = BuildCut(image, mode, cut);
+        var frame = GetFrame(rsi, state, facing);
+        var texture = frame == null ? null : BuildCut(frame, mode, cut);
         _cuts[key] = texture;
         return texture;
     }
 
-    private void OnRsiLoaded(RsiLoadedEventArgs args)
+    /// <summary>
+    /// Копия одежды, обрезанная по рисунку руки: её можно двигать вместе с махом руки, и открытой кожи
+    /// у плеча не остаётся, потому что на месте остаётся исходная одежда, а копия рисуется поверх.
+    /// </summary>
+    public Texture? GetSleeveCut(
+        RSI garmentRsi,
+        RSI.StateId garmentState,
+        RSI limbRsi,
+        RSI.StateId limbState,
+        RsiDirection facing)
     {
-        // Атлас - всегда Image<Rgba32>: и папочный RSI, и .rsic грузятся в этот формат.
-        if (args.Atlas is not Image<Rgba32> sheet)
-            return;
+        var key = (
+            garmentRsi.Path.ToString(),
+            garmentState.Name ?? string.Empty,
+            limbRsi.Path.ToString(),
+            limbState.Name ?? string.Empty,
+            (int) facing);
 
-        Span<Rgba32> pixels;
-        try
+        if (_sleeves.TryGetValue(key, out var cached))
+            return cached;
+
+        var garment = GetFrame(garmentRsi, garmentState, facing);
+        var limb = GetFrame(limbRsi, limbState, facing);
+        if (garment == null || limb == null
+            || garment.Width != limb.Width || garment.Height != limb.Height)
         {
-            pixels = sheet.GetPixelSpan();
+            _sleeves[key] = null;
+            return null;
         }
-        catch (ArgumentException)
+
+        var sleeve = garment.Clone();
+        var sleevePixels = sleeve.GetPixelSpan();
+        var limbPixels = limb.GetPixelSpan();
+        for (var i = 0; i < sleevePixels.Length; i++)
         {
-            // Не единый буфер - читать построчно смысла нет, остаёмся на запасном поведении.
-            return;
+            if (limbPixels[i].A > AlphaThreshold)
+                continue;
+
+            sleevePixels[i].A = 0;
         }
 
-        var sheetWidth = sheet.Width;
-        var rsi = args.Resource.RSI;
-
-        foreach (var state in rsi)
-        {
-            var cutCandidate = state.StateId.Name?.StartsWith("equipped-", StringComparison.Ordinal) == true;
-
-            var icons = state.Icons;
-            for (var dir = 0; dir < icons.Length; dir++)
-            {
-                var frames = icons[dir];
-                if (frames.Length == 0)
-                    continue;
-
-                var frame = frames[0];
-                if (!_profiles.ContainsKey(frame))
-                    _profiles[frame] = BuildProfile(pixels, sheetWidth, frame);
-
-                if (cutCandidate && !_frames.ContainsKey(frame))
-                    _frames[frame] = CropFrame(sheet, pixels, sheetWidth, frame);
-            }
-        }
+        var texture = Texture.LoadFromImage(sleeve, "walk-sleeve");
+        sleeve.Dispose();
+        _sleeves[key] = texture;
+        return texture;
     }
 
-    private static Image<Rgba32> CropFrame(Image<Rgba32> sheet, ReadOnlySpan<Rgba32> pixels, int sheetWidth, Texture frame)
+    private Image<Rgba32>? GetFrame(RSI rsi, RSI.StateId stateId, RsiDirection dir)
     {
-        var region = frame is AtlasTexture atlas ? atlas.SubRegion : new UIBox2(0, 0, frame.Width, frame.Height);
-        var x = Math.Max(0, (int) region.Left);
-        var y = Math.Max(0, (int) region.Top);
-        var width = Math.Min((int) region.Width, sheet.Width - x);
-        var height = Math.Min((int) region.Height, sheet.Height - y);
-        if (width <= 0 || height <= 0)
-            throw new ArgumentException("Frame region is outside the sheet");
+        var key = (rsi.Path.ToString(), stateId.Name ?? string.Empty, (int) dir);
+        if (_frames.TryGetValue(key, out var cached))
+            return cached;
 
-        var crop = new Image<Rgba32>(width, height);
-        var source = pixels;
-        var target = crop.GetPixelSpan();
-        for (var row = 0; row < height; row++)
+        Image<Rgba32>? frame = null;
+        try
         {
-            source.Slice((y + row) * sheetWidth + x, width).CopyTo(target.Slice(row * width, width));
+            if (_resources != null
+                && rsi.TryGetState(stateId, out var state)
+                && !state.IsAnimated)
+            {
+                var pngPath = rsi.Path / (stateId.Name + ".png");
+                if (_resources.TryContentFileRead(pngPath, out var stream))
+                {
+                    using (stream)
+                    {
+                        using var sheet = Image.Load<Rgba32>(stream);
+                        var frameSize = rsi.Size;
+                        var columns = sheet.Width / frameSize.X;
+                        var index = (int) dir;
+                        var column = index % columns;
+                        var row = index / columns;
+                        var left = column * frameSize.X;
+                        var top = row * frameSize.Y;
+                        if (left >= 0 && top >= 0
+                            && left + frameSize.X <= sheet.Width
+                            && top + frameSize.Y <= sheet.Height)
+                        {
+                            frame = new Image<Rgba32>(frameSize.X, frameSize.Y);
+                            var source = sheet.GetPixelSpan();
+                            var target = frame.GetPixelSpan();
+                            for (var y = 0; y < frameSize.Y; y++)
+                            {
+                                source.Slice((top + y) * sheet.Width + left, frameSize.X)
+                                    .CopyTo(target.Slice(y * frameSize.X, frameSize.X));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            // Normal fallback path (e.g. .rsic-only clients): the piece just bobs as one part.
+            Logger.DebugS("footwalk", $"cannot read {rsi.Path} state {stateId}: {e.Message}");
         }
 
-        return crop;
+        _frames[key] = frame;
+        return frame;
     }
 
     private static Texture? BuildCut(Image<Rgba32> frame, WalkCutMode mode, float cut)
@@ -218,7 +219,7 @@ public sealed class RsiCentreProfiles
             return null;
 
         // ProcessPixelRows/PixelAccessor are not on the client sandbox allowlist, so the cut is
-        // done through a plain pixel span, like the centre profiles above.
+        // done through a plain pixel span.
         var cutImage = frame.Clone();
         var span = cutImage.GetPixelSpan();
         for (var y = 0; y < height; y++)
@@ -240,32 +241,6 @@ public sealed class RsiCentreProfiles
         var texture = Texture.LoadFromImage(cutImage, "walk-cut");
         cutImage.Dispose();
         return texture;
-    }
-
-    private static bool[] BuildProfile(ReadOnlySpan<Rgba32> pixels, int sheetWidth, Texture frame)
-    {
-        var region = frame is AtlasTexture atlas ? atlas.SubRegion : new UIBox2(0, 0, frame.Width, frame.Height);
-
-        var width = (int) region.Width;
-        var height = (int) region.Height;
-        var rows = new bool[height];
-        if (width < 4 || height < 2)
-            return rows;
-
-        var left = (int) region.Left + width / 2 - 1;
-        var right = (int) region.Left + width / 2;
-        var top = (int) region.Top;
-
-        for (var y = 0; y < height; y++)
-        {
-            var offset = (top + y) * sheetWidth + left;
-            if (offset < 0 || offset + 1 >= pixels.Length)
-                break;
-
-            rows[y] = pixels[offset].A > AlphaThreshold && pixels[offset + 1].A > AlphaThreshold;
-        }
-
-        return rows;
     }
 }
 

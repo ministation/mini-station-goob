@@ -229,6 +229,20 @@ public sealed partial class FootWalkAnimationComponent : Component
     public readonly List<string> OuterSideBandKeys = new();
 
     /// <summary>
+    /// Runtime sleeve layers: a copy of the garment clipped to the arm's own art, keyed by layer key
+    /// and holding the arm whose swing that piece of cloth rides.
+    /// </summary>
+    [ViewVariables]
+    public readonly Dictionary<string, HumanoidVisualLayers> SleeveCoverKeys = new();
+
+    /// <summary>
+    /// True when every wearable arm covering has a sleeve copy for the current facing. Arms are only
+    /// allowed to swing then: a moving bare arm under static cloth would open a seam at the shoulder.
+    /// </summary>
+    [ViewVariables]
+    public bool SleeveCoverComplete;
+
+    /// <summary>
     /// Outer clothing source keys whose art crosses the sprite centre inside the foot band. Long
     /// garments (coats, robes) would shear open at the cut, so they bob as one band instead.
     /// </summary>

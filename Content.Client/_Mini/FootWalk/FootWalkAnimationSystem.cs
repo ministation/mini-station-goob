@@ -46,6 +46,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     private const string WalkLeftSuffix = "-walk-L";
     private const string WalkRightSuffix = "-walk-R";
     private const string WalkBandSuffix = "-walk-band";
+    private const string SleeveSuffix = "-walk-sleeve";
 
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private StandingStateSystem _standing = default!;
@@ -105,6 +106,15 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         HumanoidVisualLayers.RArm,
     ];
 
+    /// <summary>
+    /// Garments that get sleeve layers, with the limbs each of them can cover.
+    /// </summary>
+    private static readonly (string Slot, HumanoidVisualLayers[] Limbs)[] SleeveSlots =
+    [
+        (JumpsuitSlot, [HumanoidVisualLayers.LArm, HumanoidVisualLayers.RArm]),
+        (OuterSlot, [HumanoidVisualLayers.LArm, HumanoidVisualLayers.RArm]),
+    ];
+
     public override void Initialize()
     {
         base.Initialize();
@@ -142,13 +152,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         SubscribeLocalEvent<FootWalkAnimationComponent, VisualsChangedEvent>(OnVisualsChanged,
             after: [typeof(ClientClothingSystem)]);
 
-        _centreProfiles.Subscribe(_resourceCache);
+        _centreProfiles.Initialize(_resourceCache);
     }
 
     public override void Shutdown()
     {
         base.Shutdown();
-        _centreProfiles.Unsubscribe(_resourceCache);
     }
 
     private void OnStartup(Entity<FootWalkAnimationComponent> ent, ref ComponentStartup args)
@@ -271,6 +280,11 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             var facing = GetScreenFacing(uid);
             var frontMode = facing is RsiDirection.South or RsiDirection.North;
 
+            // Undo last tick's offsets before building anything: the rebuild below records each
+            // layer's rest offset, and a layer still carrying this frame's lift would bake it into
+            // the base and then add the next lift on top, drifting a little further on every turn.
+            ResetTouchedOffsets((uid, walk), sprite);
+
             // Setting clothing layers up walks the clothing RSIs (alpha profiles, splitters); a slow
             // setup for one mob is what shows up as a freeze when a new entity walks into view.
             var setupStart = Stopwatch.GetTimestamp();
@@ -340,9 +354,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             // Side near foot (the one toward the camera for E/W sprites).
             var nearY = facing == RsiDirection.East ? rightY : leftY;
 
-            // Only undo last tick's offsets - do not re-zero every lower-body layer.
-            ResetTouchedOffsets((uid, walk), sprite);
-
             // Mini: right after the reset the layers sit in their rest pose, so this is the sprite
             // height without the walk animation. Overlays above the head (status icons, health bar,
             // do-after) anchor on it instead of the animated bounds, otherwise the raising legs moved
@@ -357,8 +368,25 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 // Body layers stay anatomical L/R - never invert with the camera sheet.
                 var invert = facing == RsiDirection.North;
 
-                ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
-                ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
+                // One piece of clothing that could not be cut leaves its lower part static, so moving
+                // the legs individually underneath it would push flesh out through the cloth (the
+                // "paws out of the hardsuit" case). Move both legs with the cloth band instead.
+                var singlePieceY = MathF.Max(leftY, rightY);
+                // The outermost garment decides: the suit covers the jumpsuit underneath it.
+                var legBandOnly = hasOuter
+                    ? walk.OuterSplitKeys.Count == 0
+                    : hasJumpsuit && walk.JumpsuitSplitKeys.Count == 0;
+
+                if (legBandOnly)
+                {
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, singlePieceY), skipFeet: hasShoes || hasOuter);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, singlePieceY), skipFeet: hasShoes || hasOuter);
+                }
+                else
+                {
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
+                }
 
                 ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
 
@@ -372,7 +400,6 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 // Footwear and garments that cannot be cut (their art has no centre gap) stay on
                 // the full sprite or band: one piece, bouncing on each footfall instead of shearing.
-                var singlePieceY = MathF.Max(leftY, rightY);
                 ApplyFullSlotOffset((uid, sprite), walk, ShoesSlot, singlePieceY);
                 ApplyBandOffset((uid, sprite), walk, walk.OuterSideBandKeys, singlePieceY);
                 ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, singlePieceY);
@@ -415,13 +442,20 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                     ApplyBandOffset((uid, sprite), walk, walk.JumpsuitBandKeys, nearY);
             }
 
-            // Sleeves and coats are static now, so a swinging bare arm would open a 1 px skin seam
-            // at the shoulder or cuff. Arm swing is only visible on a bare torso anyway; with any
-            // jumpsuit or outer clothing the arms are either covered or move with the whole body.
-            if (walk.ArmSwingAmplitude > 0f && !hasJumpsuit && !hasOuter)
+            // Arms swing in counter-phase with the opposite foot. Every garment worn over an arm has a
+            // sleeve copy that rides the same offset, so the cloth moves with the limb and the bare arm
+            // can never slip out from under it. If a sleeve copy could not be built (unreadable or
+            // animated garment art), keep the arms still: a swinging arm under static cloth opens a
+            // seam and shows the limb, which is worse than a missing 1 px swing.
+            if (walk.ArmSwingAmplitude > 0f)
             {
-                ApplySide((uid, sprite), walk, humanoid, LeftArmLayers, new Vector2(0f, leftArmY));
-                ApplySide((uid, sprite), walk, humanoid, RightArmLayers, new Vector2(0f, rightArmY));
+                var sleevesReady = !hasJumpsuit && !hasOuter || walk.SleeveCoverComplete;
+                if (sleevesReady)
+                {
+                    ApplySide((uid, sprite), walk, humanoid, LeftArmLayers, new Vector2(0f, leftArmY));
+                    ApplySide((uid, sprite), walk, humanoid, RightArmLayers, new Vector2(0f, rightArmY));
+                    ApplySleeveCover((uid, walk), sprite, leftArmY, rightArmY);
+                }
             }
         }
     }
@@ -728,6 +762,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             ClearOuterSideBands(ent, clearHole: true);
             ClearJumpsuitSplits(ent, clearHole: false);
             ClearJumpsuitSideBands(ent, clearHole: true);
+            ClearSleeveCover(ent);
             ent.Comp.ClothingMode = 0;
             ent.Comp.ClothingSplitsActive = false;
         }
@@ -760,6 +795,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         EnsureOuterSideBands(ent, forceRebuild: ent.Comp.OuterSideBandKeys.Count == 0, facing);
         EnsureJumpsuitSplits(ent, forceRebuild: ent.Comp.JumpsuitSplitKeys.Count == 0, facing);
         EnsureJumpsuitSideBands(ent, forceRebuild: ent.Comp.JumpsuitBandKeys.Count == 0, facing);
+
+        if (_spriteQuery.TryGetComponent(ent.Owner, out var sleeveSprite))
+            EnsureSleeveCover(ent, sleeveSprite, facing);
+
         ent.Comp.ClothingSplitsActive = true;
         ent.Comp.AppliedOuterFootCut = ent.Comp.OuterFootCut;
         ent.Comp.AppliedJumpsuitHipCut = ent.Comp.JumpsuitHipCut;
@@ -819,6 +858,158 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     }
 
     /// <summary>
+    /// Sleeve layers: a copy of every garment worn over an arm, clipped to that arm's own art, riding
+    /// the arm swing. Cloth is opaque over the arm, so lifting the arm out from under a static sleeve
+    /// pushed bare skin out along the shoulder on every step. Cutting the sleeve out of the garment does
+    /// not work either: the row it vacates at the cuff has nothing behind and would flash a hole each
+    /// step. A copy drawn on top of the untouched garment does work - the union of both always covers
+    /// the arm, so the sleeve visibly moves with it and no skin can show.
+    /// </summary>
+    private void EnsureSleeveCover(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite, RsiDirection facing)
+    {
+        if (ent.Comp.ArmSwingAmplitude <= 0f || !_invSlotsQuery.TryGetComponent(ent.Owner, out var slots))
+        {
+            ClearSleeveCover(ent, sprite);
+            return;
+        }
+
+        // How many sleeve copies a complete set would have. Anything this pass cannot even describe
+        // (unreadable garment or limb art) makes the set incomplete: then the arms must stay still,
+        // otherwise they would slide out from under the untouched cloth.
+        var wanted = 0;
+        var unsupported = false;
+        foreach (var (slot, limbs) in SleeveSlots)
+        {
+            if (!TryGetSourceKeys(slots, slot, out var sourceKeys))
+                continue;
+
+            foreach (var key in sourceKeys)
+            {
+                if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false)
+                    || !TryGetCutSource(ent.Owner, key, src, out _, out _))
+                {
+                    unsupported = true;
+                    continue;
+                }
+
+                foreach (var limb in limbs)
+                {
+                    if (!TryGetSleeveLimb(ent, sprite, limb, out _, out _))
+                    {
+                        unsupported = true;
+                        continue;
+                    }
+
+                    wanted++;
+                }
+            }
+        }
+
+        ClearSleeveCover(ent, sprite);
+
+        foreach (var (slot, limbs) in SleeveSlots)
+        {
+            if (!TryGetSourceKeys(slots, slot, out var sourceKeys))
+                continue;
+
+            foreach (var key in sourceKeys)
+            {
+                if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false)
+                    || !TryGetCutSource(ent.Owner, key, src, out var garmentRsi, out var garmentState)
+                    || !_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
+                    continue;
+
+                foreach (var limb in limbs)
+                {
+                    if (!TryGetSleeveLimb(ent, sprite, limb, out var limbRsi, out var limbState))
+                        continue;
+
+                    var cut = _centreProfiles.GetSleeveCut(garmentRsi, garmentState, limbRsi, limbState, facing);
+                    if (cut == null)
+                        continue;
+
+                    var sleeveKey = $"{key}{SleeveSuffix}-{limb}";
+                    var sleeve = _sprite.AddBlankLayer((ent.Owner, sprite), srcIndex + 1);
+                    _sprite.LayerMapSet((ent.Owner, sprite), sleeveKey, srcIndex + 1);
+                    _sprite.LayerSetTexture(sleeve, cut);
+                    _sprite.LayerSetColor(sleeve, src.Color);
+                    _sprite.LayerSetOffset(sleeve, src.Offset);
+                    _sprite.LayerSetScale(sleeve, src.Scale);
+                    _sprite.LayerSetVisible(sleeve, false);
+
+                    SetBaseOffset(ent.Comp, sleeveKey, src.Offset);
+                    ent.Comp.SleeveCoverKeys[sleeveKey] = limb;
+                }
+            }
+        }
+
+        ent.Comp.SleeveCoverComplete = !unsupported
+                                       && wanted > 0
+                                       && ent.Comp.SleeveCoverKeys.Count == wanted;
+    }
+
+    private bool TryGetSleeveLimb(
+        Entity<FootWalkAnimationComponent> ent,
+        SpriteComponent sprite,
+        HumanoidVisualLayers limb,
+        out RSI rsi,
+        out RSI.StateId state)
+    {
+        rsi = null!;
+        state = default;
+        if (!_sprite.LayerMapTryGet((ent.Owner, sprite), limb, out var limbIndex, false)
+            || !_sprite.TryGetLayer((ent.Owner, sprite), limbIndex, out var limbLayer, false))
+            return false;
+
+        return TryGetCutSource(limbLayer, out rsi, out state);
+    }
+
+    /// <summary>
+    /// Moves every sleeve copy with the arm it covers.
+    /// </summary>
+    private void ApplySleeveCover(
+        Entity<FootWalkAnimationComponent> ent,
+        SpriteComponent sprite,
+        float leftArmY,
+        float rightArmY)
+    {
+        foreach (var (key, limb) in ent.Comp.SleeveCoverKeys)
+        {
+            var lift = limb switch
+            {
+                HumanoidVisualLayers.LArm => leftArmY,
+                HumanoidVisualLayers.RArm => rightArmY,
+                _ => 0f,
+            };
+
+            SetLayerOffset((ent.Owner, sprite), ent.Comp, key, new Vector2(0f, lift));
+
+            // At rest the copy would only draw the garment on top of itself.
+            if (_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var index, false))
+                _sprite.LayerSetVisible((ent.Owner, sprite), index, lift != 0f);
+        }
+    }
+
+    private void ClearSleeveCover(Entity<FootWalkAnimationComponent> ent, SpriteComponent? sprite = null)
+    {
+        ent.Comp.SleeveCoverComplete = false;
+        if (ent.Comp.SleeveCoverKeys.Count == 0)
+            return;
+
+        if (sprite == null)
+            _spriteQuery.TryGetComponent(ent.Owner, out sprite);
+
+        if (sprite != null)
+        {
+            foreach (var key in ent.Comp.SleeveCoverKeys.Keys)
+                _sprite.RemoveLayer((ent.Owner, sprite), key, logMissing: false);
+        }
+
+        ForgetBaseOffsets(ent.Comp, ent.Comp.SleeveCoverKeys.Keys);
+        ent.Comp.SleeveCoverKeys.Clear();
+    }
+
+    /// <summary>
     /// True when a split or band key belongs to art that must not be cut in half.
     /// </summary>
     private static bool IsBandOnly(HashSet<string> sources, string layerKey)
@@ -862,8 +1053,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             SetBaseOffset(ent.Comp, key, src.Offset);
 
             // Shoes are cut along their whole height, so any art on the centre line would tear.
-            var frame = FacingFrame(src, facing);
-            var bandOnly = frame == null || _centreProfiles.CrossesCentre(frame, 1f);
+            var bandOnly = !TryGetCutSource(src, out _, out _);
             if (bandOnly)
                 ent.Comp.BandOnlyShoeSources.Add(key);
 
@@ -956,13 +1146,11 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            var frame = FacingFrame(src, facing);
             var holeOk = EnsureOuterHole(ent, sprite, key, slots, src, facing);
 
             // A hem that is one piece cannot be cut in half: the halves would pull it apart.
             var bandOnly = !holeOk
-                || frame == null
-                || _centreProfiles.CrossesCentre(frame, ent.Comp.OuterFootCut);
+                || !TryGetCutSource(ent.Owner, key, src, out _, out _);
             if (bandOnly)
                 ent.Comp.BandOnlyOuterSources.Add(key);
 
@@ -1059,9 +1247,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 continue;
 
             var bandKey = key + WalkBandSuffix;
-            var bandFrame = FacingFrame(src, facing);
-            var bandTexture = bandFrame != null
-                ? _centreProfiles.GetCut(bandFrame, WalkCutMode.Band, ent.Comp.OuterFootCut)
+            var bandTexture = TryGetCutSource(ent.Owner, key, src, out var bandRsi, out var bandState)
+                ? _centreProfiles.GetCut(bandRsi, bandState, facing, WalkCutMode.Band, ent.Comp.OuterFootCut)
                 : null;
             if (bandTexture == null)
                 continue;
@@ -1089,9 +1276,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     {
         if (!ent.Comp.HoledOuterKeys.Contains(key))
         {
-            var frame = FacingFrame(src, facing);
-            var top = frame != null
-                ? _centreProfiles.GetCut(frame, WalkCutMode.Top, ent.Comp.OuterFootCut)
+            var top = TryGetCutSource(src, out var topRsi, out var topState)
+                ? _centreProfiles.GetCut(topRsi, topState, facing, WalkCutMode.Top, ent.Comp.OuterFootCut)
                 : null;
 
             if (top == null)
@@ -1144,14 +1330,12 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            var frame = FacingFrame(src, facing);
             var holeOk = EnsureJumpsuitHole(ent, sprite, key, slots, src, facing);
 
             // A fused inseam or a skirt crosses the centre inside the pant region and cannot be
             // X-split; the band moves as one piece instead.
             var bandOnly = !holeOk
-                || frame == null
-                || _centreProfiles.CrossesCentre(frame, ent.Comp.JumpsuitHipCut);
+                || !TryGetCutSource(ent.Owner, key, src, out _, out _);
             if (bandOnly)
                 ent.Comp.BandOnlyJumpsuitSources.Add(key);
 
@@ -1250,9 +1434,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                 continue;
 
             var bandKey = key + WalkBandSuffix;
-            var bandFrame = FacingFrame(src, facing);
-            var bandTexture = bandFrame != null
-                ? _centreProfiles.GetCut(bandFrame, WalkCutMode.Band, ent.Comp.JumpsuitHipCut)
+            var bandTexture = TryGetCutSource(ent.Owner, key, src, out var bandRsi, out var bandState)
+                ? _centreProfiles.GetCut(bandRsi, bandState, facing, WalkCutMode.Band, ent.Comp.JumpsuitHipCut)
                 : null;
             if (bandTexture == null)
                 continue;
@@ -1280,9 +1463,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     {
         if (!ent.Comp.HoledJumpsuitKeys.Contains(key))
         {
-            var frame = FacingFrame(src, facing);
-            var top = frame != null
-                ? _centreProfiles.GetCut(frame, WalkCutMode.Top, ent.Comp.JumpsuitHipCut)
+            var top = TryGetCutSource(src, out var topRsi, out var topState)
+                ? _centreProfiles.GetCut(topRsi, topState, facing, WalkCutMode.Top, ent.Comp.JumpsuitHipCut)
                 : null;
 
             if (top == null)
@@ -1375,14 +1557,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         RsiDirection facing,
         List<string> splitKeys)
     {
-        var frame = FacingFrame(src, facing);
-        if (frame == null)
+        if (!TryGetCutSource(ent.Owner, sourceKey, src, out var rsi, out var state))
             return false;
 
         var mode = cut == null
             ? (keepRight ? WalkCutMode.HalfR : WalkCutMode.HalfL)
             : (keepRight ? WalkCutMode.BandHalfR : WalkCutMode.BandHalfL);
-        var cutTexture = _centreProfiles.GetCut(frame, mode, cut ?? 1f);
+        var cutTexture = _centreProfiles.GetCut(rsi, state, facing, mode, cut ?? 1f);
         if (cutTexture == null)
             return false;
 
@@ -1678,6 +1859,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     {
         // Patches duplicate the limb art and go stale on any appearance change; rebuilt next frame.
         ClearJointPatches(ent);
+        ClearSleeveCover(ent);
 
         if (!ent.Comp.ClothingSplitsActive
             && ent.Comp.ShoeSplitKeys.Count == 0
@@ -1723,16 +1905,33 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     }
 
     /// <summary>
-    /// The frame of the clothing layer for the mob's current facing, or null when there is none
-    /// (a plain texture layer or an animated state, which cannot be cut reliably).
+    /// RSI and state of a clothing layer when it can be cut reliably: a plain texture or an animated
+    /// state cannot (its frames are not a static per-facing image).
     /// </summary>
-    private static Texture? FacingFrame(Layer src, RsiDirection facing)
+    private static bool TryGetCutSource(Layer src, out RSI rsi, out RSI.StateId state)
     {
-        var rsi = src.ActualRsi;
-        if (rsi == null || !rsi.TryGetState(src.State, out var state) || state.IsAnimated)
-            return null;
+        state = src.State;
+        rsi = src.ActualRsi!;
+        return rsi != null
+               && rsi.TryGetState(state, out var rsiState)
+               && !rsiState.IsAnimated;
+    }
 
-        return state.GetFrame(facing, 0);
+    /// <summary>
+    /// Same, but for a layer whose lower band was already replaced with a cut texture: the texture
+    /// write invalidates the layer state, so the original RSI and state are taken from the hole cache.
+    /// </summary>
+    private bool TryGetCutSource(EntityUid owner, string key, Layer src, out RSI rsi, out RSI.StateId state)
+    {
+        if (_holedOriginals.TryGetValue(owner, out var originals)
+            && originals.TryGetValue(key, out var original))
+        {
+            rsi = original.Rsi;
+            state = original.State;
+            return rsi.TryGetState(state, out var holedState) && !holedState.IsAnimated;
+        }
+
+        return TryGetCutSource(src, out rsi, out state);
     }
 
     /// <summary>
