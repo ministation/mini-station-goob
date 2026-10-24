@@ -22,6 +22,13 @@ public sealed class CoinShopBuyOocColorRequestEvent(string colorId) : EntityEven
     public string ColorId { get; } = colorId;
 }
 
+/// <summary>Switch to an owned OOC color for free.</summary>
+[Serializable, NetSerializable]
+public sealed class CoinShopSelectOocColorRequestEvent(string colorId) : EntityEventArgs
+{
+    public string ColorId { get; } = colorId;
+}
+
 /// <summary>Pick an owned cosmetic to carry every round (null = carry nothing).</summary>
 [Serializable, NetSerializable]
 public sealed class CoinShopSelectCosmeticRequestEvent(string? cosmeticId) : EntityEventArgs

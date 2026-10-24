@@ -14,7 +14,11 @@ coin-shop-unequip = Take off
 
 coin-shop-color-active = Active
 
-coin-shop-color-tooltip = Nickname color in OOC and AHelp for 30 days. Buying again extends the term.
+coin-shop-color-tooltip = Nickname color in OOC and AHelp for 30 days. Buying again extends the term; switching between owned colors is free.
+
+coin-shop-color-owned = Owned
+
+coin-shop-color-select = Select
 
 coin-shop-lootbox-description = A random item from the catalog. Duplicates refund part of the coins.
 

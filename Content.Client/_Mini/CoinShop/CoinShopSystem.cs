@@ -42,6 +42,9 @@ public sealed class CoinShopSystem : EntitySystem
     public void RequestBuyOocColor(string colorId) =>
         RaiseNetworkEvent(new CoinShopBuyOocColorRequestEvent(colorId));
 
+    public void RequestSelectOocColor(string colorId) =>
+        RaiseNetworkEvent(new CoinShopSelectOocColorRequestEvent(colorId));
+
     public void RequestLootbox() =>
         RaiseNetworkEvent(new CoinShopLootboxRequestEvent());
 
