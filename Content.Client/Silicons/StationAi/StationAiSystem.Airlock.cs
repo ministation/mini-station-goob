@@ -13,9 +13,25 @@ public sealed partial class StationAiSystem
 
     private void InitializeAirlock()
     {
+        SubscribeLocalEvent<DoorComponent, GetStationAiRadialEvent>(OnDoorGetRadial);
         SubscribeLocalEvent<DoorBoltComponent, GetStationAiRadialEvent>(OnDoorBoltGetRadial);
         SubscribeLocalEvent<AirlockComponent, GetStationAiRadialEvent>(OnEmergencyAccessGetRadial);
         SubscribeLocalEvent<ElectrifiedComponent, GetStationAiRadialEvent>(OnDoorElectrifiedGetRadial);
+    }
+
+    // Mini: явная кнопка «Открыть/Закрыть дверь» в радиальном меню ИИ.
+    private void OnDoorGetRadial(Entity<DoorComponent> ent, ref GetStationAiRadialEvent args)
+    {
+        args.Actions.Add(
+            new StationAiRadial
+            {
+                Sprite = new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/VerbIcons/open.svg")),
+                Tooltip = ent.Comp.State == DoorState.Open
+                    ? Loc.GetString("ai-close-door")
+                    : Loc.GetString("ai-open-door"),
+                Event = new StationAiToggleDoorEvent()
+            }
+        );
     }
 
     private void OnDoorBoltGetRadial(Entity<DoorBoltComponent> ent, ref GetStationAiRadialEvent args)
