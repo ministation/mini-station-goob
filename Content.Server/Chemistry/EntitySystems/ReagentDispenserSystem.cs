@@ -120,6 +120,10 @@ namespace Content.Server.Chemistry.EntitySystems
 
         private void OnSetDispenseAmountMessage(Entity<ReagentDispenserComponent> reagentDispenser, ref ReagentDispenserSetDispenseAmountMessage message)
         {
+            // Ensure the amount is one of the defined values instead of trusting the client.
+            if (!Enum.IsDefined(message.ReagentDispenserDispenseAmount))
+                return;
+
             reagentDispenser.Comp.DispenseAmount = message.ReagentDispenserDispenseAmount;
             UpdateUiState(reagentDispenser);
             ClickSound(reagentDispenser);
