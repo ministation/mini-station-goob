@@ -92,5 +92,7 @@ public sealed class SharedConnectionBanTest
         var unrelated = await sDb.GetSharedConnectionBanAsync(
             altId, TestAddress, null, ImmutableArray.Create(HwidBytes(9)), false, true);
         Assert.That(unrelated, Is.Null);
+
+        await pair.CleanReturnAsync();
     }
 }
