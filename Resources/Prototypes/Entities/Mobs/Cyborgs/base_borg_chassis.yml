@@ -120,7 +120,7 @@
     - Science
   - type: ZombieImmune
   - type: Repairable
-    damageValue: -10 # 10 seconds to repair from crit
+    damageValue: -20 # Mini — в 2 раза быстрее гооба (было -10): 5 секунд из крита
     doAfterDelay: 1
     fuelCost: 0.5
     # allowSelfRepair: false # Goobstation
