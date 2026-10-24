@@ -178,7 +178,9 @@ namespace Content.Client.Chemistry.UI
             var output = castState.OutputContainerInfo;
             var remainingCapacity = output is null ? 0 : (output.MaxVolume - output.CurrentVolume).Int();
             var holdsReagents = output?.Reagents != null;
-            var pillNumberMax = holdsReagents ? 0 : remainingCapacity;
+            var pillNumberMax = holdsReagents
+                ? 0
+                : Math.Min(remainingCapacity, (int) SharedChemMaster.PillMaxCount);
             var bottleAmountMax = holdsReagents ? remainingCapacity : 0;
             var outputVolume = castState.DrawSource switch
             {

@@ -12,12 +12,58 @@ namespace Content.Shared.Chemistry
     public sealed class SharedChemMaster
     {
         public const uint PillTypes = 20;
+
+        /// <summary>
+        /// Absolute upper bound for the number of pills a single ChemMaster request may create.
+        /// </summary>
+        public const uint PillMaxCount = 100;
+
         public const string BufferSolutionName = "buffer";
         public const string InputSlotName = "beakerSlot";
         public const string OutputSlotName = "outputSlot";
         public const string PillSolutionName = "food";
         public const string BottleSolutionName = "drink";
         public const uint LabelMaxLength = 50;
+
+        /// <summary>
+        /// Validates a ChemMaster pill creation request and calculates the total volume it needs.
+        /// The total is computed without overflowing <see cref="uint"/> or <see cref="FixedPoint2"/>.
+        /// </summary>
+        /// <param name="dosage">Volume of a single pill.</param>
+        /// <param name="number">Number of pills requested in one action.</param>
+        /// <param name="dosageLimit">Maximum volume of a single pill supported by the machine.</param>
+        /// <param name="freePillSlots">How many more pills fit into the output container.</param>
+        /// <param name="needed">Total volume of all requested pills, or zero when the request is rejected.</param>
+        /// <returns>True if the request is valid and can be processed.</returns>
+        public static bool TryGetPillCreationVolume(
+            uint dosage,
+            uint number,
+            uint dosageLimit,
+            int freePillSlots,
+            out uint needed)
+        {
+            needed = 0;
+
+            // Reject absurd counts before any arithmetic. Without this a malicious client can
+            // ask for billions of pills and stall the server by spawning entities in a loop.
+            if (number == 0 || number > PillMaxCount)
+                return false;
+
+            if (freePillSlots <= 0 || number > (uint) freePillSlots)
+                return false;
+
+            if (dosage == 0 || dosageLimit == 0 || dosage > dosageLimit)
+                return false;
+
+            // Multiply in ulong so the check itself cannot overflow, then make sure the
+            // result still fits into FixedPoint2 (hundredths stored in a signed int).
+            var total = (ulong) dosage * number;
+            if (total > (ulong) FixedPoint2.MaxValue.Int())
+                return false;
+
+            needed = (uint) total;
+            return true;
+        }
     }
 
     [Serializable, NetSerializable]

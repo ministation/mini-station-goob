@@ -218,38 +218,55 @@ namespace Content.Server.Chemistry.EntitySystems
                 return; // output can't fit pills
             }
 
-            // Ensure the number is valid.
-            if (message.Number == 0 || !_storageSystem.HasSpace((container, storage)))
-                return;
+            var freePillSlots = storage.Grid.GetArea() - _storageSystem.GetCumulativeItemAreas((container, storage));
 
-            // Ensure the amount is valid.
-            if (message.Dosage == 0 || message.Dosage > chemMaster.Comp.PillDosageLimit)
+            // Validate the count before any arithmetic: number, dosage and the total volume are
+            // all bounded here, so a malicious client cannot overflow the multiplication or
+            // make the server spawn an unbounded number of pills.
+            if (!SharedChemMaster.TryGetPillCreationVolume(
+                    message.Dosage,
+                    message.Number,
+                    chemMaster.Comp.PillDosageLimit,
+                    freePillSlots,
+                    out var needed))
+            {
                 return;
+            }
 
             // Ensure label length is within the character limit.
             if (message.Label.Length > SharedChemMaster.LabelMaxLength)
                 return;
 
-            var needed = message.Dosage * message.Number;
-
-            if (!WithdrawFromSource(chemMaster, needed, user, out var withdrawal))
+            if (!WithdrawFromSource(chemMaster, FixedPoint2.New((int) needed), user, out var withdrawal))
                 return;
             _labelSystem.Label(container, message.Label);
 
-            for (var i = 0; i < message.Number; i++)
+            for (var i = 0u; i < message.Number; i++)
             {
+                // Re-check on every iteration: storage can change while the loop is running.
+                if (!_storageSystem.HasSpace((container, storage)))
+                    break;
+
                 var item = Spawn(PillPrototypeId, Transform(container).Coordinates);
-                _storageSystem.Insert(container, item, out _, user: user, storage);
+                if (!_storageSystem.Insert(container, item, out _, user: user, storage))
+                {
+                    QueueDel(item);
+                    break;
+                }
+
                 _labelSystem.Label(item, message.Label);
 
-                _solutionContainerSystem.EnsureSolutionEntity(item,
-                    SharedChemMaster.PillSolutionName,
-                    out var itemSolution,
-                    message.Dosage);
-                if (!itemSolution.HasValue)
-                    return;
+                if (!_solutionContainerSystem.EnsureSolutionEntity(item,
+                        SharedChemMaster.PillSolutionName,
+                        out var itemSolution,
+                        message.Dosage))
+                {
+                    QueueDel(item);
+                    break;
+                }
 
-                _solutionContainerSystem.TryAddSolution(itemSolution.Value, withdrawal.SplitSolution(message.Dosage));
+                _solutionContainerSystem.TryAddSolution(itemSolution.Value,
+                    withdrawal.SplitSolution(FixedPoint2.New((int) message.Dosage)));
 
                 var pill = EnsureComp<PillComponent>(item);
                 pill.PillType = chemMaster.Comp.PillType;
@@ -274,15 +291,20 @@ namespace Content.Server.Chemistry.EntitySystems
                 return; // output can't fit reagents
             }
 
-            // Ensure the amount is valid.
-            if (message.Dosage == 0 || message.Dosage > solution.AvailableVolume)
+            // Ensure the amount is valid. The extra bound keeps the conversion to FixedPoint2
+            // from wrapping when a malicious client sends a huge dosage.
+            if (message.Dosage == 0
+                || message.Dosage > (uint) FixedPoint2.MaxValue.Int()
+                || message.Dosage > solution.AvailableVolume)
+            {
                 return;
+            }
 
             // Ensure label length is within the character limit.
             if (message.Label.Length > SharedChemMaster.LabelMaxLength)
                 return;
 
-            if (!WithdrawFromSource(chemMaster, message.Dosage, user, out var withdrawal))
+            if (!WithdrawFromSource(chemMaster, FixedPoint2.New((int) message.Dosage), user, out var withdrawal))
                 return;
 
             _labelSystem.Label(container, message.Label);
