@@ -800,7 +800,9 @@ namespace Content.Server.Database
         /// Results from rejected connections with external API checking tools
         IPChecks = 5,
         /// Results from rejected connections who are authenticated but have no modern hwid associated with them.
-        NoHwid = 6
+        NoHwid = 6,
+        /// Mini: rejected as an alt account of a banned player (last HWID/IP matches a banned account).
+        AltBan = 7
     }
 
     public class ServerBanHit

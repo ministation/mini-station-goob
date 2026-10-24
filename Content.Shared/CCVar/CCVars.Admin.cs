@@ -197,6 +197,30 @@ public sealed partial class CCVars
     public static readonly CVarDef<bool> RequireModernHardwareId =
         CVarDef.Create("admin.require_modern_hwid", true, CVar.SERVERONLY);
 
+    // Mini: начало системы связки банов — блокировка входа с твинков (вторых аккаунтов забаненных игроков).
+    /// <summary>
+    ///     Блокировать вход, если HWID подключения совпадает с последним известным HWID
+    ///     аккаунта, у которого есть активный серверный бан.
+    /// </summary>
+    public static readonly CVarDef<bool> BanBlockSharedHwid =
+        CVarDef.Create("ban.block_shared_hwid", true, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Блокировать вход, если IP подключения совпадает с последним известным IP
+    ///     аккаунта, у которого есть активный серверный бан.
+    ///     Осторожно: возможны ложные срабатывания на общих/динамических IP.
+    /// </summary>
+    public static readonly CVarDef<bool> BanBlockSharedIp =
+        CVarDef.Create("ban.block_shared_ip", false, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     При блокировке твинка автоматически выдавать его аккаунту собственный бан,
+    ///     скопированный с бана основного аккаунта (срок и причина).
+    /// </summary>
+    public static readonly CVarDef<bool> BanBlockSharedAutoban =
+        CVarDef.Create("ban.block_shared_autoban", true, CVar.SERVERONLY);
+    // Mini: конец системы связки банов.
+
     /// <summary>
     /// If true, players are allowed to connect to multiple game servers at once.
     /// If false, they will be kicked from the first when connecting to another.

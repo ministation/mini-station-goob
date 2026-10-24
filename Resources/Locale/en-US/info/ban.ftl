@@ -103,3 +103,15 @@ ban-kick-reason = You have been banned
 
 # Ban list
 ban-list-voice-bans = Voice chat bans
+
+# Mini: linked bans — blocking alt accounts of banned players
+cmd-findalts-desc = Finds accounts whose last known IP/HWID matches the target's, and shows their active server bans.
+cmd-findalts-help = Usage: findalts <name or user ID>
+cmd-findalts-hint = <name/user ID>
+cmd-findalts-player-not-found = Unable to find player '{$target}'.
+cmd-findalts-none = No accounts sharing the last IP/HWID of {$target} were found.
+cmd-findalts-header = Accounts sharing last IP/HWID with {$target} ({$count}):
+cmd-findalts-entry = {$player} ({$userId}), last seen {$lastSeen} — {$ban}
+cmd-findalts-ban = ACTIVE BAN #{$banId}: "{$reason}"
+cmd-findalts-ban-none = no active ban
+ban-reason-linked-account = Alt account of a banned player. Ban reason of the main account: "{$reason}"

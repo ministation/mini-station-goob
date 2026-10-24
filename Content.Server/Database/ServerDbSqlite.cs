@@ -210,6 +210,11 @@ namespace Content.Server.Database
         }
         #endregion
 
+        protected override BanDef? ConvertBanCore(Ban? ban)
+        {
+            return ConvertBan(ban);
+        }
+
         [return: NotNullIfNotNull(nameof(ban))]
         private static BanDef? ConvertBan(Ban? ban)
         {

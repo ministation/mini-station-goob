@@ -46,6 +46,10 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
             subs.Event<SurveillanceCameraDisconnectMessage>(OnDisconnectMessage);
             subs.Event<SurveillanceCameraMonitorSwitchMessage>(OnSwitchMessage);
             subs.Event<BoundUIClosedEvent>(OnBoundUiClose);
+            // Mini: subnet discovery only ran on the manual "refresh subnets" button (Goob removed the
+            // ComponentStartup hook), so opening the monitor — e.g. the mothership core's camera
+            // console — showed an empty list until the player found the button. Discover on open.
+            subs.Event<BoundUIOpenedEvent>(OnBoundUiOpened);
         });
     }
 
@@ -314,6 +318,13 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
     private void OnBoundUiClose(EntityUid uid, SurveillanceCameraMonitorComponent component, BoundUIClosedEvent args)
     {
         RemoveViewer(uid, args.Actor, component);
+    }
+
+    // Mini: auto-discover subnets when the monitor UI opens (see Subs.BuiEvents note).
+    private void OnBoundUiOpened(EntityUid uid, SurveillanceCameraMonitorComponent component, BoundUIOpenedEvent args)
+    {
+        if (component.KnownSubnets.Count == 0)
+            RefreshSubnets(uid, component);
     }
 
     #endregion

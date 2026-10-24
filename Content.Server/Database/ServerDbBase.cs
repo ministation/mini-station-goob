@@ -680,6 +680,182 @@ namespace Content.Server.Database
             return list;
         }
 
+        /// <summary>
+        ///     Mini: конвертация EF-сущности бана в <see cref="BanDef"/>. Провайдер-зависима
+        ///     (например, из-за обработки DateTime в SQLite).
+        /// </summary>
+        protected abstract BanDef? ConvertBanCore(Ban? ban);
+
+        /// <summary>
+        ///     Mini: ищет активный серверный бан, у которого у какого-то из забаненных пользователей
+        ///     последний известный IP/HWID совпадает с данными подключения. Используется для блокировки
+        ///     входа с твинков (вторых аккаунтов) забаненных игроков — работает даже для старых банов,
+        ///     к которым не привязан HWID/IP.
+        /// </summary>
+        /// <param name="userId">Аккаунт, который подключается; его собственные баны игнорируются.</param>
+        /// <param name="address">IP подключения (может быть null).</param>
+        /// <param name="hwId">Legacy HWID подключения (может быть null).</param>
+        /// <param name="modernHwid">Modern HWID подключения (может быть пустым).</param>
+        /// <param name="matchIp">Сравнивать ли последний IP забаненных аккаунтов.</param>
+        /// <param name="matchHwid">Сравнивать ли последний HWID забаненных аккаунтов.</param>
+        /// <returns>Самый свежий подходящий активный серверный бан, либо null.</returns>
+        public async Task<BanDef?> GetSharedConnectionBanAsync(
+            NetUserId userId,
+            IPAddress? address,
+            ImmutableArray<byte>? hwId,
+            ImmutableArray<ImmutableArray<byte>>? modernHwid,
+            bool matchIp,
+            bool matchHwid,
+            CancellationToken cancel = default)
+        {
+            if (!matchIp && !matchHwid)
+                return null;
+
+            if (!matchIp && hwId is not { Length: > 0 } && modernHwid is not { Length: > 0 })
+                return null;
+
+            await using var db = await GetDb(cancel);
+            var ctx = db.DbContext;
+            var now = DateTime.UtcNow;
+
+            var bans = await ctx.Ban
+                .Where(b => b.Type == BanType.Server
+                            && b.Unban == null
+                            && (b.ExpirationTime == null || b.ExpirationTime > now))
+                .ApplyIncludes(GetBanDefIncludes(BanType.Server))
+                .AsSplitQuery()
+                .AsNoTracking()
+                .ToListAsync(cancel);
+
+            if (bans.Count == 0)
+                return null;
+
+            // Записи player только для пользователей из активных банов — таблица целиком не нужна.
+            var bannedUsers = bans
+                .SelectMany(b => b.Players!)
+                .Select(bp => bp.UserId)
+                .Distinct()
+                .ToList();
+
+            var lastConnections = await ctx.Player
+                .Where(p => bannedUsers.Contains(p.UserId))
+                .Select(p => new { p.UserId, p.LastSeenAddress, p.LastSeenHWId })
+                .AsNoTracking()
+                .ToListAsync(cancel);
+
+            var connectionByUser = new Dictionary<Guid, (IPAddress? Address, ImmutableTypedHwid? Hwid)>(lastConnections.Count);
+            foreach (var conn in lastConnections)
+            {
+                var hwid = conn.LastSeenHWId == null
+                    ? null
+                    : new ImmutableTypedHwid(conn.LastSeenHWId.Hwid.ToImmutableArray(), conn.LastSeenHWId.Type);
+                connectionByUser[conn.UserId] = (conn.LastSeenAddress, hwid);
+            }
+
+            Ban? found = null;
+            foreach (var ban in bans.OrderByDescending(b => b.BanTime))
+            {
+                // Баны, уже покрывающие подключающегося пользователя, обрабатываются обычной проверкой банов.
+                if (ban.Players!.Any(bp => bp.UserId == userId))
+                    continue;
+
+                foreach (var bp in ban.Players!)
+                {
+                    if (!connectionByUser.TryGetValue(bp.UserId, out var last))
+                        continue;
+
+                    if (PlayerLastConnection.MatchesConnection(
+                            last.Address, last.Hwid, address, hwId, modernHwid, matchIp, matchHwid))
+                    {
+                        found = ban;
+                        break;
+                    }
+                }
+
+                if (found != null)
+                    break;
+            }
+
+            return found == null ? null : ConvertBanCore(found);
+        }
+
+        /// <summary>
+        ///     Mini: последние известные подключения всех игроков вместе с их активными серверными банами.
+        ///     Используется админ-командой findalts для поиска твинков.
+        /// </summary>
+        public async Task<List<PlayerLastConnection>> GetPlayersWithLastConnectionAsync(CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var ctx = db.DbContext;
+            var now = DateTime.UtcNow;
+
+            var activeBans = await ctx.Ban
+                .Where(b => b.Type == BanType.Server
+                            && b.Unban == null
+                            && (b.ExpirationTime == null || b.ExpirationTime > now))
+                .Select(b => new
+                {
+                    b.Id,
+                    b.Reason,
+                    b.Severity,
+                    b.ExpirationTime,
+                    b.BanTime,
+                    UserIds = b.Players!.Select(bp => bp.UserId).ToList(),
+                })
+                .AsNoTracking()
+                .ToListAsync(cancel);
+
+            var banByUser = new Dictionary<Guid, (DateTimeOffset BanTime, LinkedBanInfo Info)>();
+            foreach (var ban in activeBans)
+            {
+                var expiration = ban.ExpirationTime == null
+                    ? (DateTimeOffset?) null
+                    : new DateTimeOffset(DateTime.SpecifyKind(ban.ExpirationTime.Value, DateTimeKind.Utc));
+                var info = new LinkedBanInfo(ban.Id, ban.Reason, ban.Severity, expiration);
+
+                foreach (var userId in ban.UserIds)
+                {
+                    var banTime = new DateTimeOffset(DateTime.SpecifyKind(ban.BanTime, DateTimeKind.Utc));
+                    if (!banByUser.TryGetValue(userId, out var existing) || banTime > existing.BanTime)
+                        banByUser[userId] = (banTime, info);
+                }
+            }
+
+            var players = await ctx.Player
+                .Select(p => new
+                {
+                    p.UserId,
+                    p.LastSeenUserName,
+                    p.LastSeenTime,
+                    p.LastSeenAddress,
+                    p.LastSeenHWId,
+                })
+                .AsNoTracking()
+                .ToListAsync(cancel);
+
+            var result = new List<PlayerLastConnection>(players.Count);
+            foreach (var p in players)
+            {
+                var lastSeen = new DateTimeOffset(DateTime.SpecifyKind(p.LastSeenTime, DateTimeKind.Utc));
+                var hwid = p.LastSeenHWId == null
+                    ? null
+                    : new ImmutableTypedHwid(p.LastSeenHWId.Hwid.ToImmutableArray(), p.LastSeenHWId.Type);
+                var activeBan = banByUser.TryGetValue(p.UserId, out var ban)
+                    ? ban.Info
+                    : null;
+
+                result.Add(new PlayerLastConnection(
+                    new NetUserId(p.UserId),
+                    p.LastSeenUserName,
+                    lastSeen,
+                    p.LastSeenAddress,
+                    hwid,
+                    activeBan));
+            }
+
+            return result;
+        }
+
         #endregion
 
         #region Playtime

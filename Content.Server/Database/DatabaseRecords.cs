@@ -121,6 +121,79 @@ public sealed record PlayerRecord(
     IPAddress? LastSeenAddress,
     ImmutableTypedHwid? HWId);
 
+/// <summary>
+///     Mini: активный серверный бан, выданный при связке аккаунтов (см. <see cref="PlayerLastConnection"/>).
+/// </summary>
+public sealed record LinkedBanInfo(
+    int BanId,
+    string Reason,
+    NoteSeverity Severity,
+    DateTimeOffset? ExpirationTime);
+
+/// <summary>
+///     Mini: последняя известная информация о подключении игрока и его активный серверный бан (если есть).
+///     Используется системой связки банов для поиска твинков забаненных игроков.
+/// </summary>
+public sealed record PlayerLastConnection(
+    NetUserId UserId,
+    string LastSeenUserName,
+    DateTimeOffset LastSeenTime,
+    IPAddress? LastSeenAddress,
+    ImmutableTypedHwid? LastSeenHWId,
+    LinkedBanInfo? ActiveBan)
+{
+    /// <summary>
+    ///     Проверяет, совпадает ли последний IP/HWID этой записи с переданными данными подключения.
+    /// </summary>
+    public bool MatchesConnection(
+        IPAddress? address,
+        ImmutableArray<byte>? hwId,
+        ImmutableArray<ImmutableArray<byte>>? modernHwid,
+        bool matchIp,
+        bool matchHwid)
+    {
+        return MatchesConnection(LastSeenAddress, LastSeenHWId, address, hwId, modernHwid, matchIp, matchHwid);
+    }
+
+    /// <summary>
+    ///     Проверяет, совпадает ли последний известный IP/HWID игрока с данными подключения.
+    ///     Совпадение засчитывается по любому из modern HWID подключения.
+    /// </summary>
+    public static bool MatchesConnection(
+        IPAddress? lastAddress,
+        ImmutableTypedHwid? lastHwid,
+        IPAddress? address,
+        ImmutableArray<byte>? hwId,
+        ImmutableArray<ImmutableArray<byte>>? modernHwid,
+        bool matchIp,
+        bool matchHwid)
+    {
+        if (matchHwid && lastHwid is { } last)
+        {
+            if (last.Type == HwidType.Legacy
+                && hwId is { Length: > 0 }
+                && hwId.Value.AsSpan().SequenceEqual(last.Hwid.AsSpan()))
+            {
+                return true;
+            }
+
+            if (last.Type == HwidType.Modern && modernHwid is { Length: > 0 })
+            {
+                foreach (var hwid in modernHwid.Value)
+                {
+                    if (hwid.AsSpan().SequenceEqual(last.Hwid.AsSpan()))
+                        return true;
+                }
+            }
+        }
+
+        return matchIp
+            && address != null
+            && lastAddress != null
+            && lastAddress.Equals(address);
+    }
+}
+
 public sealed record RoundRecord(int Id, DateTimeOffset? StartDate, ServerRecord Server);
 
 public sealed record ServerRecord(int Id, string Name);

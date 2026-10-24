@@ -5,6 +5,7 @@ using Content.Server.Station.Systems;
 using Content.Server.SurveillanceCamera;
 using Content.Shared.Silicons.StationAi;
 using Content.Shared.SurveillanceCamera.Components;
+using Content.Shared.Xenoborgs.Components; // Mini - xenoborg cameras are hostiles, not station cameras
 using Microsoft.VisualBasic;
 using Robust.Server.GameObjects;
 using Robust.Shared.Player;
@@ -64,6 +65,11 @@ public sealed partial class StationAiWarpSystem : SharedStationAiWarpSystem
 
         while (query.MoveNext(out var queryUid, out var comp))
         {
+            // Mini: the grid filter lets hostile mobile cameras (xenoborgs) that walked onto the
+            // station grid into the AI's warp menu. They are not station cameras — hide them.
+            if (HasComp<XenoborgComponent>(queryUid))
+                continue;
+
             if (_xformSystem.GetGrid(queryUid) != aiGrid || !comp.Active)
                 continue;
 
@@ -90,6 +96,10 @@ public sealed partial class StationAiWarpSystem : SharedStationAiWarpSystem
         // so we gotta check if it can still be jumped to.
 
         if (!TryComp<SurveillanceCameraComponent>(target, out var camera) || !camera.Active)
+            return;
+
+        // Mini: stale UI lists could still contain a xenoborg — never jump to hostiles.
+        if (HasComp<XenoborgComponent>(target))
             return;
 
         if (!_stationAiSystem.TryGetCore(ent.Owner, out var core) || core.Comp?.RemoteEntity == null)

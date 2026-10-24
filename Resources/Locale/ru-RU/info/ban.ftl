@@ -84,3 +84,15 @@ ban-list-voice-bans = Баны голосового чата
 
 ban-panel-expiry-error = ошибка
 
+
+# Mini: связка банов — блокировка твинков забаненных игроков
+cmd-findalts-desc = Ищет аккаунты, чей последний известный IP/HWID совпадает с целью, и показывает их активные серверные баны.
+cmd-findalts-help = Использование: findalts <имя или user ID>
+cmd-findalts-hint = <имя/user ID>
+cmd-findalts-player-not-found = Не удалось найти игрока '{ $target }'.
+cmd-findalts-none = Аккаунтов с последним IP/HWID, совпадающим с { $target }, не найдено.
+cmd-findalts-header = Аккаунты с последним IP/HWID как у { $target } ({ $count }):
+cmd-findalts-entry = { $player } ({ $userId }), последний вход { $lastSeen } — { $ban }
+cmd-findalts-ban = АКТИВНЫЙ БАН #{ $banId }: «{ $reason }»
+cmd-findalts-ban-none = активного бана нет
+ban-reason-linked-account = Твинк забаненного аккаунта. Причина бана основного аккаунта: «{ $reason }»

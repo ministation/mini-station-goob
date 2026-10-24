@@ -12,3 +12,6 @@ admin-alert-ipintel-warning = {$player} IP has a {TOSTRING($percent, "P2")} conf
 admin-alert-antag-label = {$message} [ANTAG: {$name}, {$subtype}]
 admin-alert-tp-to-players-header = Players:{" "}
 admin-alert-tp-to-coords-header = Coords:{" "}
+
+# Mini: linked bans — blocking alt accounts of banned players
+admin-alert-linked-connection = {$player} was denied entry as an alt of a banned account (ban #{$banId}, reason: "{$reason}").

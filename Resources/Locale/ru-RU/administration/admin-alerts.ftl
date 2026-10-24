@@ -6,3 +6,6 @@ admin-alert-antag-label = { $message } [АНТАГ: { $name }, { $subtype }]
 admin-alert-tp-to-players-header = Игроки:{ " " }
 
 admin-alert-tp-to-coords-header = Координаты:{ " " }
+
+# Mini: связка банов — блокировка твинков забаненных игроков
+admin-alert-linked-connection = { $player } не смог зайти: твинк забаненного аккаунта (бан #{ $banId }, причина: «{ $reason }»).
