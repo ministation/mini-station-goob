@@ -49,6 +49,26 @@
   - ERTMedical
   - ERTSecurity
   - ERTEngineer
+  # Mini: escalation-level ERT/CBURN jobs — без них в панели телепорта призрака
+  # отряды группируются как «На определённых станциях» (fallback Specific)
+  - ERTLeaderAmber
+  - ERTLeaderRed
+  - ERTLeaderGamma
+  - ERTSecurityAmber
+  - ERTSecurityRed
+  - ERTSecurityGamma
+  - ERTMedicalAmber
+  - ERTMedicalRed
+  - ERTMedicalGamma
+  - ERTJanitorAmber
+  - ERTJanitorRed
+  - ERTJanitorGamma
+  - ERTEngineerAmber
+  - ERTEngineerRed
+  - ERTEngineerGamma
+  - ERTJuggernautGamma
+  - CBURNLeader
+  - CBURNAgent
   - DeathSquad
   - HecuOperative
   - NanotrasenCareerTrainer
