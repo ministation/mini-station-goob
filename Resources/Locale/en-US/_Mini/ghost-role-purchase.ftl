@@ -36,3 +36,7 @@ ghost-shop-color-header = OOC nickname color (30 days)
 ghost-shop-color-days = Nick color for 30 days
 
 ghost-shop-color-active = Applied
+
+ghost-shop-color-owned = Owned
+
+ghost-shop-color-select = Select

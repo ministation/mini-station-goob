@@ -55,6 +55,7 @@ job-name-serviceworker = Service Worker
 job-name-centcomoff = CentComm Official
 job-name-centcom-assistant = CentComm Intern
 job-name-cburn = Centcomm Quarantine Officer
+job-name-cburn-agent = CBURN Agent
 job-name-deathsquad = Deathsquad Operative
 job-name-reporter = Reporter
 job-name-musician = Musician

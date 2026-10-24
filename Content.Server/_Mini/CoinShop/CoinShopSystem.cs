@@ -21,7 +21,8 @@ namespace Content.Server._Mini.CoinShop;
 
 /// <summary>
 /// Coin shop: cosmetic clothing, OOC nickname colors and a lootbox.
-/// Ownership is stored in player_antag_token rows (keys "cosmetic:{id}", "ooc-color:{id}", "ooc-color-expire"),
+/// Ownership is stored in player_antag_token rows (keys "cosmetic:{id}", "ooc-color:{id}",
+/// "ooc-color:{id}:selected" for the active color and "ooc-color-expire" for the shared term),
 /// spending goes through AntagTokenSystem so the in-memory balance stays authoritative.
 /// </summary>
 public sealed class CoinShopSystem : EntitySystem
@@ -33,6 +34,7 @@ public sealed class CoinShopSystem : EntitySystem
     private const string CosmeticKeyPrefix = "cosmetic:";
     private const string CosmeticSelectedSuffix = ":selected";
     private const string OocColorKeyPrefix = "ooc-color:";
+    private const string OocColorSelectedSuffix = ":selected";
     private const string OocColorExpireKey = "ooc-color-expire";
 
     private static readonly int[] RarityWeights = [40, 35, 20, 5];
@@ -48,6 +50,7 @@ public sealed class CoinShopSystem : EntitySystem
 
     private readonly Dictionary<NetUserId, HashSet<string>> _ownedCosmetics = new();
     private readonly Dictionary<NetUserId, string?> _selectedCosmetics = new();
+    private readonly Dictionary<NetUserId, HashSet<string>> _ownedOocColors = new();
     private readonly Dictionary<NetUserId, string?> _oocColorId = new();
     private readonly Dictionary<NetUserId, HashSet<string>> _ownedGhosts = new();
     private readonly Dictionary<NetUserId, string?> _selectedGhost = new();
@@ -61,6 +64,7 @@ public sealed class CoinShopSystem : EntitySystem
         SubscribeNetworkEvent<CoinShopOpenRequestEvent>(OnOpen);
         SubscribeNetworkEvent<CoinShopBuyCosmeticRequestEvent>(OnBuyCosmetic);
         SubscribeNetworkEvent<CoinShopBuyOocColorRequestEvent>(OnBuyOocColor);
+        SubscribeNetworkEvent<CoinShopSelectOocColorRequestEvent>(OnSelectOocColor);
         SubscribeNetworkEvent<CoinShopSelectCosmeticRequestEvent>(OnSelectCosmetic);
         SubscribeNetworkEvent<CoinShopLootboxRequestEvent>(OnLootbox);
         SubscribeNetworkEvent<CoinShopBuyGhostRequestEvent>(OnBuyGhost);
@@ -77,6 +81,7 @@ public sealed class CoinShopSystem : EntitySystem
 
         var owned = new HashSet<string>();
         string? selected = null;
+        var ownedColors = new HashSet<string>();
         string? colorId = null;
         var expireDay = 0;
         var ownedGhosts = new HashSet<string>();
@@ -107,7 +112,11 @@ public sealed class CoinShopSystem : EntitySystem
             }
             else if (token.TokenId.StartsWith(OocColorKeyPrefix))
             {
-                colorId = token.TokenId[OocColorKeyPrefix.Length..];
+                var key = token.TokenId[OocColorKeyPrefix.Length..];
+                if (key.EndsWith(OocColorSelectedSuffix))
+                    colorId = key[..^OocColorSelectedSuffix.Length];
+                else
+                    ownedColors.Add(key);
             }
             else if (token.TokenId == OocColorExpireKey)
             {
@@ -115,8 +124,12 @@ public sealed class CoinShopSystem : EntitySystem
             }
         }
 
+        // Legacy rows: colors bought before the ":selected" key existed have none.
+        colorId ??= ownedColors.FirstOrDefault();
+
         _ownedCosmetics[player.UserId] = owned;
         _selectedCosmetics[player.UserId] = selected;
+        _ownedOocColors[player.UserId] = ownedColors;
         _oocColorId[player.UserId] = colorId;
         _ownedGhosts[player.UserId] = ownedGhosts;
         _selectedGhost[player.UserId] = selectedGhost;
@@ -137,6 +150,7 @@ public sealed class CoinShopSystem : EntitySystem
     {
         _ownedCosmetics.Remove(player.UserId);
         _selectedCosmetics.Remove(player.UserId);
+        _ownedOocColors.Remove(player.UserId);
         _oocColorId.Remove(player.UserId);
         _ownedGhosts.Remove(player.UserId);
         _selectedGhost.Remove(player.UserId);
@@ -208,21 +222,56 @@ public sealed class CoinShopSystem : EntitySystem
             return;
         }
 
-        // Renew an active purchase from its expiry date; a new color starts fresh and replaces the old one.
+        // Renewal extends from the current expiry; a first purchase (or an expired one) starts fresh.
         var newExpire = (CoinOocColorCache.TryGetExpire(userId, out var currentExpire) ? currentExpire : CoinOocColorCache.Today)
             + OocColorDays;
 
-        var oldColorId = _oocColorId.TryGetValue(userId, out var value) ? value : null;
-        if (oldColorId != null && oldColorId != msg.ColorId)
-            await _db.SetPlayerAntagTokenAmount(userId.UserId, OocColorKeyPrefix + oldColorId, 0);
-
+        // Owned colors are never removed - buying another color keeps the previous ones selectable.
         await _db.SetPlayerAntagTokenAmount(userId.UserId, OocColorKeyPrefix + msg.ColorId, 1);
         await _db.SetPlayerAntagTokenAmount(userId.UserId, OocColorExpireKey, newExpire);
+        await SelectOocColor(userId, msg.ColorId, newExpire);
 
-        _oocColorId[userId] = msg.ColorId;
-        CoinOocColorCache.Set(userId, proto.Color, newExpire);
         SendState(args.SenderSession);
     }
+
+    private async void OnSelectOocColor(CoinShopSelectOocColorRequestEvent msg, EntitySessionEventArgs args)
+    {
+        var userId = args.SenderSession.UserId;
+
+        // Free switching between colors of an active subscription.
+        if (!IsOocColorOwned(userId, msg.ColorId) ||
+            !CoinOocColorCache.TryGetExpire(userId, out var expire))
+        {
+            SendState(args.SenderSession);
+            return;
+        }
+
+        await SelectOocColor(userId, msg.ColorId, expire);
+        SendState(args.SenderSession);
+    }
+
+    private async Task SelectOocColor(NetUserId userId, string colorId, int expireDay)
+    {
+        var oldColorId = _oocColorId.TryGetValue(userId, out var value) ? value : null;
+        if (oldColorId != null && oldColorId != colorId)
+            await _db.SetPlayerAntagTokenAmount(userId.UserId, OocColorKeyPrefix + oldColorId + OocColorSelectedSuffix, 0);
+
+        await _db.SetPlayerAntagTokenAmount(userId.UserId, OocColorKeyPrefix + colorId + OocColorSelectedSuffix, 1);
+
+        if (!_ownedOocColors.TryGetValue(userId, out var ownedSet))
+        {
+            ownedSet = new HashSet<string>();
+            _ownedOocColors[userId] = ownedSet;
+        }
+        ownedSet.Add(colorId);
+        _oocColorId[userId] = colorId;
+
+        if (_prototypes.TryIndex<CoinOocColorPrototype>(colorId, out var proto))
+            CoinOocColorCache.Set(userId, proto.Color, expireDay);
+    }
+
+    private bool IsOocColorOwned(NetUserId userId, string colorId) =>
+        _ownedOocColors.TryGetValue(userId, out var owned) && owned.Contains(colorId);
 
     private async void OnLootbox(CoinShopLootboxRequestEvent msg, EntitySessionEventArgs args)
     {
@@ -373,6 +422,7 @@ public sealed class CoinShopSystem : EntitySystem
         _ownedCosmetics.TryGetValue(userId, out var owned);
         _selectedCosmetics.TryGetValue(userId, out var selected);
         _oocColorId.TryGetValue(userId, out var colorId);
+        _ownedOocColors.TryGetValue(userId, out var ownedColors);
         var colorActive = CoinOocColorCache.TryGet(userId, out _);
 
         var cosmetics = _prototypes.EnumeratePrototypes<CoinCosmeticPrototype>()
@@ -383,7 +433,12 @@ public sealed class CoinShopSystem : EntitySystem
 
         var colors = _prototypes.EnumeratePrototypes<CoinOocColorPrototype>()
             .OrderBy(p => p.Order)
-            .Select(p => new CoinShopColorEntry(p.ID, p.Color, p.Price, colorId == p.ID && colorActive, colorId == p.ID && colorActive))
+            .Select(p => new CoinShopColorEntry(
+                p.ID,
+                p.Color,
+                p.Price,
+                colorActive && (ownedColors?.Contains(p.ID) ?? false),
+                colorActive && colorId == p.ID))
             .ToList();
 
         _ownedGhosts.TryGetValue(userId, out var ghostOwned);

@@ -51,6 +51,11 @@ public sealed class GhostShopSystem : EntitySystem
         RaiseNetworkEvent(new GhostShopBuyColorRequestEvent(colorId));
     }
 
+    public void RequestSelectColor(string colorId)
+    {
+        RaiseNetworkEvent(new GhostShopSelectColorRequestEvent(colorId));
+    }
+
     public Texture? GetIconTexture(string rsiPath, string state)
     {
         // Most theme folders ship a bare png without rsi.json - try textures FIRST so the

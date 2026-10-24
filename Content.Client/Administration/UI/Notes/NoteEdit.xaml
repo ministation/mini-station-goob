@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <TextEdit Name="NoteTextEdit" Access="Public" HorizontalExpand="True" VerticalExpand="True" />
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
             <Label Name="ExpiryLabel" Text="{Loc admin-note-editor-expiry-label}" Visible="False" />
+            <OptionButton Name="ExpiryDurationOption" Visible="False" HorizontalExpand="True" />
             <HistoryLineEdit Name="ExpiryLineEdit" PlaceHolder="{Loc admin-note-editor-expiry-placeholder}"
                              Visible="False" HorizontalExpand="True" />
         </BoxContainer>

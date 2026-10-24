@@ -23,6 +23,7 @@ job-name-serviceworker = сервисный работник
 job-name-centcomoff = представитель ЦК
 job-name-centcom-assistant = стажер ЦК
 job-name-cburn = агент карантинной службы ЦК
+job-name-cburn-agent = агент РХБЗЗ
 job-name-deathsquad = агент ЦК
 job-name-reporter = репортёр
 job-name-musician = музыкант

@@ -28,6 +28,7 @@ public sealed class CustomGhostSystem : EntitySystem
         SubscribeNetworkEvent<GhostShopBuyRequestEvent>(OnShopBuy);
         SubscribeNetworkEvent<GhostShopSelectRequestEvent>(OnShopSelect);
         SubscribeNetworkEvent<GhostShopBuyColorRequestEvent>(OnShopBuyColor);
+        SubscribeNetworkEvent<GhostShopSelectColorRequestEvent>(OnShopSelectColor);
     }
 
     private async void OnPlayerAttached(EntityUid uid, GhostComponent component, PlayerAttachedEvent args)
@@ -180,18 +181,48 @@ public sealed class CustomGhostSystem : EntitySystem
             return;
         }
 
+        // Renewal extends from the current expiry; a first purchase (or an expired one) starts fresh.
         var newExpire = (CoinOocColorCache.TryGetExpire(userId, out var currentExpire) ? currentExpire : CoinOocColorCache.Today) + 30;
 
-        var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
-        var oldColorRow = tokens.FirstOrDefault(tk => tk.Amount > 0 && tk.TokenId.StartsWith("ooc-color:"));
-        if (oldColorRow != null && oldColorRow.TokenId != "ooc-color:" + msg.ColorId)
-            await _db.SetPlayerAntagTokenAmount(userId.UserId, oldColorRow.TokenId, 0);
-
+        // Owned colors are never removed - buying another color keeps the previous ones selectable.
         await _db.SetPlayerAntagTokenAmount(userId.UserId, "ooc-color:" + msg.ColorId, 1);
         await _db.SetPlayerAntagTokenAmount(userId.UserId, "ooc-color-expire", newExpire);
+        await SelectColor(userId, msg.ColorId, newExpire);
 
-        CoinOocColorCache.Set(userId, proto.Color, newExpire);
         SendShopState(args.SenderSession);
+    }
+
+    private async void OnShopSelectColor(GhostShopSelectColorRequestEvent msg, EntitySessionEventArgs args)
+    {
+        var userId = args.SenderSession.UserId;
+        var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
+
+        // Free switching between colors of an active subscription.
+        if (!tokens.Any(tk => tk.Amount > 0 && tk.TokenId == "ooc-color:" + msg.ColorId) ||
+            !CoinOocColorCache.TryGetExpire(userId, out var expire))
+        {
+            SendShopState(args.SenderSession);
+            return;
+        }
+
+        await SelectColor(userId, msg.ColorId, expire);
+        SendShopState(args.SenderSession);
+    }
+
+    private async Task SelectColor(NetUserId userId, string colorId, int expireDay)
+    {
+        var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
+
+        foreach (var token in tokens)
+        {
+            if (token.Amount > 0 && token.TokenId.StartsWith("ooc-color:") && token.TokenId.EndsWith(":selected"))
+                await _db.SetPlayerAntagTokenAmount(userId.UserId, token.TokenId, 0);
+        }
+
+        await _db.SetPlayerAntagTokenAmount(userId.UserId, "ooc-color:" + colorId + ":selected", 1);
+
+        if (_prototypeManager.TryIndex<CoinOocColorPrototype>(colorId, out var proto))
+            CoinOocColorCache.Set(userId, proto.Color, expireDay);
     }
 
     private async void OnShopSelect(GhostShopSelectRequestEvent msg, EntitySessionEventArgs args)
@@ -314,6 +345,7 @@ public sealed class CustomGhostSystem : EntitySystem
 
     private List<GhostColorEntry> BuildColorEntries(List<PlayerAntagToken> tokens, NetUserId userId)
     {
+        var ownedColors = new List<string>();
         string? colorId = null;
         var expireDay = 0;
 
@@ -323,17 +355,33 @@ public sealed class CustomGhostSystem : EntitySystem
                 continue;
 
             if (token.TokenId.StartsWith("ooc-color:"))
-                colorId = token.TokenId["ooc-color:".Length..];
+            {
+                var key = token.TokenId["ooc-color:".Length..];
+                if (key.EndsWith(":selected"))
+                    colorId = key[..^":selected".Length];
+                else
+                    ownedColors.Add(key);
+            }
             else if (token.TokenId == "ooc-color-expire")
+            {
                 expireDay = token.Amount;
+            }
         }
+
+        // Legacy rows: colors bought before the ":selected" key existed have none.
+        colorId ??= ownedColors.FirstOrDefault();
 
         var active = colorId != null && expireDay > CoinOocColorCache.Today &&
                      _prototypeManager.TryIndex<CoinOocColorPrototype>(colorId, out _);
 
         return _prototypeManager.EnumeratePrototypes<CoinOocColorPrototype>()
             .OrderBy(p => p.Order)
-            .Select(p => new GhostColorEntry(p.ID, p.Color, p.Price, active && colorId == p.ID))
+            .Select(p => new GhostColorEntry(
+                p.ID,
+                p.Color,
+                p.Price,
+                active && ownedColors.Contains(p.ID),
+                active && colorId == p.ID))
             .ToList();
     }
 }

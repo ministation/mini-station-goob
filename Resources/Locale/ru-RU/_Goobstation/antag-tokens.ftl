@@ -40,6 +40,7 @@ antag-store-status-lobby-only = Недоступно в раунде
 antag-store-status-last-round-purchased = Недоступно
 antag-store-status-job-blocked = Профессия не подходит
 antag-store-status-species-blocked = Раса не подходит
+antag-store-status-jobban = Роль заблокирована администрацией
 antag-store-unavailable-yao = Для этой роли не задан настоящий прототип в этой сборке.
 
 antag-store-role-thief-name = Вор

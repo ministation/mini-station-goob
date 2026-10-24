@@ -14,7 +14,11 @@ coin-shop-unequip = Снять
 
 coin-shop-color-active = Активен
 
-coin-shop-color-tooltip = Цвет ника в OOC и ахелпе на 30 дней. Повторная покупка продлевает срок.
+coin-shop-color-tooltip = Цвет ника в OOC и ахелпе на 30 дней. Повторная покупка продлевает срок, а переключаться между купленными цветами можно бесплатно.
+
+coin-shop-color-owned = Куплено
+
+coin-shop-color-select = Выбрать
 
 coin-shop-lootbox-description = Случайный предмет из каталога. Дубликат вернёт часть монет.
 

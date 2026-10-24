@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Content.Server._Mini.AntagUnlock;
 using Content.Server._Mini.JobUnlock;
 using Content.Server._Mini.TypanWar;
+using Content.Server.Administration.Managers;
 using Content.Server.Popups;
 using Content.Server.Sponsors;
 using Content.Server.Antag;
@@ -77,6 +78,7 @@ public sealed class AntagTokenSystem : EntitySystem
     [Dependency] private readonly TypanStationWarRuleSystem _typanWar = default!;
     [Dependency] private readonly StationJobsSystem _stationJobs = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly IBanManager _ban = default!;
 
     private readonly Dictionary<NetUserId, PlayerTokenState> _states = new();
     private readonly Dictionary<NetUserId, int?> _sponsorLevelOverrides = new();
@@ -406,6 +408,20 @@ public sealed class AntagTokenSystem : EntitySystem
         return EntityManager.System<PlayTimeTrackingSystem>().IsAllowed(session, antagId);
     }
 
+    /// <summary>
+    /// Mini: забанен ли игроку антаг-прототип роль-баном (джоббаном на антагониста).
+    /// </summary>
+    private bool IsAntagJobBanned(NetUserId userId, string? antagId)
+    {
+        if (string.IsNullOrWhiteSpace(antagId))
+            return false;
+
+        if (!_playerManager.TryGetSessionById(userId, out var session))
+            return false;
+
+        return _ban.IsRoleBanned(session, new List<ProtoId<AntagPrototype>> { antagId });
+    }
+
     public int GetBalance(NetUserId userId)
     {
         return EnsureStateExists(userId)?.Balance ?? 0;
@@ -541,6 +557,13 @@ public sealed class AntagTokenSystem : EntitySystem
             !HasAntagPlaytimeAccess(session, antagProto.ID))
         {
             error = Loc.GetString("antag-unlock-error-playtime-required");
+            return false;
+        }
+
+        // Mini: джоббан на антага запрещает и покупку (обе механики: депозит и ghost-роль).
+        if (IsAntagJobBanned(session.UserId, playtimeAntagId))
+        {
+            error = Loc.GetString("antag-store-status-jobban");
             return false;
         }
 
@@ -1806,6 +1829,14 @@ public sealed class AntagTokenSystem : EntitySystem
         statusLocKey = null;
 
         role = AntagTokenCatalog.ResolveEffectiveRole(role, cache.InPreRoundLobby, cache.InRound);
+
+        // Mini: джоббан блокирует и покупку, и выдачу уже оплаченной роли
+        // (бан мог быть выдан между покупкой и началом раунда).
+        if (IsAntagJobBanned(userId, role.AntagId))
+        {
+            statusLocKey = "antag-store-status-jobban";
+            return false;
+        }
 
         if (role.Mode == AntagPurchaseMode.Unavailable)
         {

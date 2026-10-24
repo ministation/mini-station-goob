@@ -406,9 +406,10 @@ public sealed class CoinShopWindow : DefaultWindow
         {
             MinSize = new Vector2(220, 200),
             MaxSize = new Vector2(220, 200),
+            ToolTip = Loc.GetString("coin-shop-color-tooltip"),
             PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = CardBackgroundColor,
+                BackgroundColor = entry.Active ? SelectedCardColor : CardBackgroundColor,
                 BorderColor = entry.Active ? SelectedBorderColor : Color.Transparent,
                 BorderThickness = new Thickness(1),
                 ContentMarginLeftOverride = 14,
@@ -438,20 +439,29 @@ public sealed class CoinShopWindow : DefaultWindow
         };
         root.AddChild(swatch);
 
+        var statusKey = entry.Active
+            ? "coin-shop-color-active"
+            : entry.Owned ? "coin-shop-color-owned" : "coin-shop-color-days";
+
         root.AddChild(new Label
         {
-            Text = entry.Active ? Loc.GetString("coin-shop-color-active") : Loc.GetString("coin-shop-color-days", ("days", 30)),
+            Text = Loc.GetString(statusKey, ("days", 30)),
             Modulate = entry.Active ? SelectedBorderColor : SubtitleColor,
             HorizontalAlignment = HAlignment.Center
         });
 
+        root.AddChild(new Control { VerticalExpand = true });
+
         if (entry.Active)
+            return panel;
+
+        if (entry.Owned)
         {
-            root.AddChild(new Control { VerticalExpand = true });
+            root.AddChild(CreateActionButton("coin-shop-color-select", 192,
+                () => _system.RequestSelectOocColor(entry.Id)));
             return panel;
         }
 
-        root.AddChild(new Control { VerticalExpand = true });
         root.AddChild(CreatePriceButton(entry.Price, 192, () => _system.RequestBuyOocColor(entry.Id)));
 
         return panel;
