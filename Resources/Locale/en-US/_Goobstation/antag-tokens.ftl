@@ -40,6 +40,7 @@ antag-store-status-lobby-only = This role can only be queued from the preround l
 antag-store-status-last-round-purchased = Already purchased last round
 antag-store-status-job-blocked = Job not allowed
 antag-store-status-species-blocked = Species not allowed
+antag-store-status-jobban = Role banned by admins
 antag-store-unavailable-yao = This role still needs its real prototype ID in the fork.
 
 antag-store-role-thief-name = Thief
