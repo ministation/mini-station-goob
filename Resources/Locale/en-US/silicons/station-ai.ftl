@@ -35,6 +35,9 @@ emergency-access-off = Disable emergency access
 electrify-door-on = Enable overcharge
 electrify-door-off = Disable overcharge
 
+ai-open-door = Open door
+ai-close-door = Close door
+
 toggle-light = Toggle light
 
 ai-device-not-responding = Device is not responding

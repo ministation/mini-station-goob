@@ -3,7 +3,10 @@
 using Content.Shared._CorvaxNext.Silicons.Borgs.Components;
 using Content.Shared.Actions;
 using Content.Shared.Mind;
+using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Silicons.StationAi;
+using Content.Shared.StationAi;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._CorvaxNext.Silicons.Borgs;
@@ -44,6 +47,34 @@ public abstract class SharedAiRemoteControlSystem : EntitySystem
         remoteComp.LinkedMind = null;
 
         _xformSystem.SetCoordinates(stationAiCore.Comp.RemoteEntity.Value, Transform(entity).Coordinates);
+
+        // Mini: если ИИ вошёл без платы B.O.R.I.S., убираем временную связь при выходе:
+        // корпус снова обычный борг (можно эмагнуть, он не висит в списке устройств).
+        RemoveTemporaryController(entity);
+    }
+
+    private void RemoveTemporaryController(EntityUid entity)
+    {
+        if (!TryComp<AiRemoteControllerComponent>(entity, out var remoteComp))
+            return;
+
+        // Убираем только «живой» компонент: если он уже выключается (снос корпуса), не трогаем.
+        if (remoteComp.LifeStage != ComponentLifeStage.Running)
+            return;
+
+        if (remoteComp.AiHolder != null)
+            return; // ИИ всё ещё внутри
+
+        // Настоящая плата B.O.R.I.S. внутри корпуса: постоянная связь остаётся.
+        if (TryComp<BorgChassisComponent>(entity, out var chassis)
+            && chassis.BrainEntity is { } brain
+            && HasComp<AiRemoteBrainComponent>(brain))
+        {
+            return;
+        }
+
+        RemComp<AiRemoteControllerComponent>(entity);
+        RemComp<StationAiVisionComponent>(entity);
     }
 }
 

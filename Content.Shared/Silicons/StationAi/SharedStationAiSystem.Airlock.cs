@@ -15,9 +15,41 @@ public abstract partial class SharedStationAiSystem
 
     private void InitializeAirlock()
     {
+        SubscribeLocalEvent<DoorComponent, StationAiToggleDoorEvent>(OnDoorToggle);
         SubscribeLocalEvent<DoorBoltComponent, StationAiBoltEvent>(OnAirlockBolt);
         SubscribeLocalEvent<AirlockComponent, StationAiEmergencyAccessEvent>(OnAirlockEmergencyAccess);
         SubscribeLocalEvent<ElectrifiedComponent, StationAiElectrifiedEvent>(OnElectrified);
+    }
+
+    /// <summary>
+    /// Attempts to open or close the door via the Station AI radial.
+    /// Mini: explicit open/close toggle so the AI always has an obvious way to operate doors.
+    /// </summary>
+    private void OnDoorToggle(Entity<DoorComponent> ent, ref StationAiToggleDoorEvent args)
+    {
+        if (!PowerReceiver.IsPowered(ent.Owner))
+        {
+            ShowDeviceNotRespondingPopup(args.User);
+            _adminLogger.Add(LogType.Action,
+                $"{args.User} was unable to toggle {ent} using the Station AI radial because it was unpowered.");
+            return;
+        }
+
+        if (!_access.IsAllowed(args.User, ent.Owner))
+        {
+            ShowDeviceNoAccessPopup(args.User);
+            _adminLogger.Add(LogType.Action,
+                $"{args.User} was unable to toggle {ent} using the Station AI radial because they had no access.");
+            return;
+        }
+
+        if (!_doors.TryToggleDoor(ent.Owner, ent.Comp, args.User, predicted: true))
+        {
+            _adminLogger.Add(LogType.Action, $"{args.User} was unable to toggle {ent} using the Station AI radial.");
+            return;
+        }
+
+        _adminLogger.Add(LogType.Action, $"{args.User} toggled {ent} using the Station AI radial.");
     }
 
     /// <summary>
@@ -107,6 +139,12 @@ public abstract partial class SharedStationAiSystem
             : component.AirlockElectrifyDisabled;
         _audio.PlayLocal(soundToPlay, ent, args.User);
     }
+}
+
+/// <summary> Event for StationAI attempt at toggling a door open/closed. </summary>
+[Serializable, NetSerializable]
+public sealed class StationAiToggleDoorEvent : BaseStationAiAction
+{
 }
 
 /// <summary> Event for StationAI attempt at bolting/unbolting door. </summary>
