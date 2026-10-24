@@ -481,7 +481,9 @@ public sealed partial class CloneProjectorSystem : SharedCloneProjectorSystem
             || !TryComp<ActionComponent>(actionEntity, out var actionComp))
             return;
 
-        _actions.SetCooldown(projector.Owner, _timing.CurTime + projector.Comp.DestroyedCooldown);
+        // Mini: SetCooldown expects the action entity, not the projector — EntityUid implicitly converts to
+        // Entity<ActionComponent?>, so passing the projector just failed the resolve and silently dropped the cooldown.
+        _actions.SetCooldown(actionEntity, _timing.CurTime + projector.Comp.DestroyedCooldown);
 
         _actions.UpdateAction((actionEntity, actionComp));
         Dirty(actionEntity, actionComp);

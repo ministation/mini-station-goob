@@ -285,6 +285,12 @@ public sealed class ToggleableClothingSystem : EntitySystem
         if (_transferringInventory.Contains(args.Equipee)) // Goobstation
             return;
 
+        // Mini: if this event fires because the suit or the wearer is being deleted, all of the fixup below is
+        // pointless, and inserting parts back into the suit's container hits "entity is terminating" (the suit's
+        // recursive delete then trips over the half-moved parts with "Can't resolve MetaDataComponent" spam).
+        if (TerminatingOrDeleted(toggleable.Owner) || TerminatingOrDeleted(args.Equipee))
+            return;
+
         _clothing.SetEquippedPrefix(toggleable, null);
 
         // Check if container exists and we have linked clothings
@@ -430,6 +436,11 @@ public sealed class ToggleableClothingSystem : EntitySystem
             return;
 
         if (comp.LifeStage > ComponentLifeStage.Running)
+            return;
+
+        // Mini: same as OnToggleableUnequip — a wearer that is going away drags everything with it,
+        // re-equipping stored clothing onto it just errors and breaks the recursive delete.
+        if (TerminatingOrDeleted(args.Equipee))
             return;
 
         if (!TryComp(comp.AttachedUid, out ToggleableClothingComponent? toggleableComp))
@@ -613,6 +624,9 @@ public sealed class ToggleableClothingSystem : EntitySystem
     private void UnequipClothing(EntityUid user, Entity<ToggleableClothingComponent> toggleable, EntityUid clothing, string slot)
     {
         var parent = Transform(toggleable.Owner).ParentUid;
+        // Mini: wearer gone (or suit detached to nullspace mid-deletion) — nothing to unequip onto.
+        if (TerminatingOrDeleted(parent))
+            return;
         var clothingQuery = GetEntityQuery<ClothingComponent>();
         if (_inventorySystem.TryUnequip(parent, slot, force: true))
         {
