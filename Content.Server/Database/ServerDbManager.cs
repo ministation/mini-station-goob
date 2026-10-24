@@ -182,6 +182,25 @@ namespace Content.Server.Database
             bool includeUnbanned=true,
             BanType type = BanType.Server);
 
+        /// <summary>
+        ///     Mini: активный серверный бан, связанный с последним известным IP/HWID забаненного
+        ///     аккаунта. Используется для блокировки входа с твинков забаненных игроков.
+        /// </summary>
+        Task<BanDef?> GetSharedConnectionBanAsync(
+            NetUserId userId,
+            IPAddress? address,
+            ImmutableArray<byte>? hwId,
+            ImmutableArray<ImmutableArray<byte>>? modernHwid,
+            bool matchIp,
+            bool matchHwid,
+            CancellationToken cancel = default);
+
+        /// <summary>
+        ///     Mini: последние известные подключения всех игроков вместе с их активными серверными
+        ///     банами. Используется админ-командой findalts.
+        /// </summary>
+        Task<List<PlayerLastConnection>> GetPlayersWithLastConnectionAsync(CancellationToken cancel = default);
+
         Task<BanDef> AddBanAsync(BanDef ban);
         Task AddUnbanAsync(UnbanDef ban);
 
@@ -622,6 +641,25 @@ namespace Content.Server.Database
         {
             DbReadOpsMetric.Inc();
             return RunDbCommand(() => _db.GetBansAsync(address, userId, hwId, modernHWIds, includeUnbanned, type));
+        }
+
+        public Task<BanDef?> GetSharedConnectionBanAsync(
+            NetUserId userId,
+            IPAddress? address,
+            ImmutableArray<byte>? hwId,
+            ImmutableArray<ImmutableArray<byte>>? modernHwid,
+            bool matchIp,
+            bool matchHwid,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetSharedConnectionBanAsync(userId, address, hwId, modernHwid, matchIp, matchHwid, cancel));
+        }
+
+        public Task<List<PlayerLastConnection>> GetPlayersWithLastConnectionAsync(CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetPlayersWithLastConnectionAsync(cancel));
         }
 
         public Task<BanDef> AddBanAsync(BanDef ban)

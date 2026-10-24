@@ -11,6 +11,7 @@ using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Server.Preferences.Managers;
 using Content.Shared.CCVar;
+using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Players.PlayTimeTracking;
 using Robust.Server.Player;
@@ -68,6 +69,7 @@ namespace Content.Server.Connection
         [Dependency] private readonly IChatManager _chatManager = default!;
         [Dependency] private readonly IHttpClientHolder _http = default!;
         [Dependency] private readonly IAdminManager _adminManager = default!;
+        [Dependency] private readonly IBanManager _bans = default!; // Mini: связка банов — авто-бан твинков
         private ISharedSponsorsManager? _sponsorsMgr; // CorvaxGoob-Sponsors
         private IServerVPNGuardManager? _vpnGuardMgr; // Corvax-VPNGuard
 
@@ -244,13 +246,44 @@ namespace Content.Server.Connection
                 return (ConnectionDenyReason.Ban, message, bans);
             }
 
+            var adminData = await _db.GetAdminDataForAsync(e.UserId);
+
+            // Mini-Start: связка банов — блокировка входа с твинков (вторых аккаунтов) забаненных игроков.
+            // Бан основного аккаунта связывается с твинком по последнему известному HWID/IP,
+            // поэтому срабатывает даже для старых банов, к которым не привязан HWID/IP.
+            var matchHwid = _cfg.GetCVar(CCVars.BanBlockSharedHwid);
+            var matchIp = _cfg.GetCVar(CCVars.BanBlockSharedIp);
+            if ((matchHwid || matchIp) && adminData == null)
+            {
+                var exemptFlags = await _db.GetBanExemption(userId);
+                if (exemptFlags == ServerBanExemptFlags.None)
+                {
+                    var linkedBan = await _db.GetSharedConnectionBanAsync(userId, addr, hwId, modernHwid, matchIp, matchHwid);
+                    if (linkedBan != null)
+                    {
+                        _sawmill.Info(
+                            "User {UserId} ({UserName}) denied as an alt of a banned account: ban #{BanId} ({Reason})",
+                            userId, e.UserName, linkedBan.Id, linkedBan.Reason);
+
+                        _chatManager.SendAdminAlert(_loc.GetString("admin-alert-linked-connection",
+                            ("player", e.UserName),
+                            ("banId", linkedBan.Id!.Value),
+                            ("reason", linkedBan.Reason)));
+
+                        if (_cfg.GetCVar(CCVars.BanBlockSharedAutoban))
+                            await AutoBanLinkedAlt(userId, e.UserName, linkedBan);
+
+                        return (ConnectionDenyReason.AltBan, linkedBan.FormatBanMessage(_cfg, _loc), [linkedBan]);
+                    }
+                }
+            }
+            // Mini-End
+
             if (HasTemporaryBypass(userId))
             {
                 _sawmill.Verbose("User {UserId} has temporary bypass, skipping further connection checks", userId);
                 return null;
             }
-
-            var adminData = await _db.GetAdminDataForAsync(e.UserId);
 
             // CorvaxGoob-Start: Allow privileged players bypass bunker
             var isPrivileged = await HavePrivilegedJoin(e.UserId);
@@ -383,6 +416,29 @@ namespace Content.Server.Connection
             }
 
             return null;
+        }
+
+        /// <summary>
+        ///     Mini: выдаёт аккаунту-твинку собственный бан, скопированный с бана основного
+        ///     аккаунта (причина и остаток срока). После этого твинк ловится обычной проверкой
+        ///     банов даже со сменой HWID/IP — бан связан с его userId.
+        /// </summary>
+        private async Task AutoBanLinkedAlt(NetUserId userId, string userName, BanDef linkedBan)
+        {
+            // Не дублируем бан, если у твинка уже появился свой активный бан
+            // (например, из-за гонки при нескольких попытках входа подряд).
+            var existing = await _db.GetBanAsync(null, userId, null, null, BanType.Server);
+            if (existing != null)
+                return;
+
+            var info = new CreateServerBanInfo(_loc.GetString("ban-reason-linked-account", ("reason", linkedBan.Reason)));
+            info.AddUser(userId, userName);
+            info.WithSeverity(linkedBan.Severity);
+
+            if (linkedBan.ExpirationTime is { } expiration && expiration > DateTimeOffset.UtcNow)
+                info.WithMinutes((uint) Math.Ceiling((expiration - DateTimeOffset.UtcNow).TotalMinutes));
+
+            _bans.CreateServerBan(info);
         }
 
         private bool HasTemporaryBypass(NetUserId user)
