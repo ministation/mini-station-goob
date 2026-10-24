@@ -36,3 +36,7 @@ ghost-shop-color-header = Цвет ника в OOC (30 дней)
 ghost-shop-color-days = Цвет ника на 30 дней
 
 ghost-shop-color-active = Применён
+
+ghost-shop-color-owned = Куплено
+
+ghost-shop-color-select = Выбрать

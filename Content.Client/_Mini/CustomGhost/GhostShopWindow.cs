@@ -190,7 +190,9 @@ public sealed class GhostShopWindow : DefaultWindow
 
         root.AddChild(new Label
         {
-            Text = entry.Active ? Loc.GetString("ghost-shop-color-active") : Loc.GetString("ghost-shop-color-days"),
+            Text = entry.Active
+                ? Loc.GetString("ghost-shop-color-active")
+                : entry.Owned ? Loc.GetString("ghost-shop-color-owned") : Loc.GetString("ghost-shop-color-days"),
             Modulate = entry.Active ? SelectedBorderColor : SubtitleColor,
             HorizontalAlignment = HAlignment.Center
         });
@@ -198,16 +200,18 @@ public sealed class GhostShopWindow : DefaultWindow
         if (entry.Active)
         {
             root.AddChild(new Control { VerticalExpand = true });
+            return panel;
         }
-        else
+
+        if (entry.Owned)
         {
-            var button = new Button
+            var selectButton = new Button
             {
                 MinSize = new Vector2(176, 36),
                 MaxSize = new Vector2(176, 36)
             };
 
-            var content = new BoxContainer
+            var selectContent = new BoxContainer
             {
                 Orientation = LayoutOrientation.Horizontal,
                 SeparationOverride = 6,
@@ -215,27 +219,56 @@ public sealed class GhostShopWindow : DefaultWindow
                 VerticalAlignment = VAlignment.Center
             };
 
-            content.AddChild(new Label
+            selectContent.AddChild(new Label
             {
-                Text = entry.Price.ToString(),
+                Text = Loc.GetString("ghost-shop-color-select"),
                 Modulate = Color.White,
                 StyleClasses = { "LabelHeading" },
                 VerticalAlignment = VAlignment.Center
             });
 
-            content.AddChild(new TextureRect
-            {
-                Texture = _coinTexture,
-                MinSize = new Vector2(16, 16),
-                MaxSize = new Vector2(16, 16),
-                TextureScale = new Vector2(0.4f, 0.4f),
-                VerticalAlignment = VAlignment.Center
-            });
-
-            button.AddChild(content);
-            button.OnPressed += _ => _system.RequestBuyColor(entry.Id);
-            root.AddChild(button);
+            selectButton.AddChild(selectContent);
+            selectButton.OnPressed += _ => _system.RequestSelectColor(entry.Id);
+            root.AddChild(selectButton);
+            return panel;
         }
+
+        root.AddChild(new Control { VerticalExpand = true });
+
+        var button = new Button
+        {
+            MinSize = new Vector2(176, 36),
+            MaxSize = new Vector2(176, 36)
+        };
+
+        var content = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+            HorizontalAlignment = HAlignment.Center,
+            VerticalAlignment = VAlignment.Center
+        };
+
+        content.AddChild(new Label
+        {
+            Text = entry.Price.ToString(),
+            Modulate = Color.White,
+            StyleClasses = { "LabelHeading" },
+            VerticalAlignment = VAlignment.Center
+        });
+
+        content.AddChild(new TextureRect
+        {
+            Texture = _coinTexture,
+            MinSize = new Vector2(16, 16),
+            MaxSize = new Vector2(16, 16),
+            TextureScale = new Vector2(0.4f, 0.4f),
+            VerticalAlignment = VAlignment.Center
+        });
+
+        button.AddChild(content);
+        button.OnPressed += _ => _system.RequestBuyColor(entry.Id);
+        root.AddChild(button);
 
         return panel;
     }

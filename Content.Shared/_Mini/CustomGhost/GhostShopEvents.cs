@@ -56,16 +56,25 @@ public sealed class GhostColorEntry(
     string id,
     string colorHex,
     int price,
+    bool owned,
     bool active)
 {
     public string Id { get; } = id;
     public string ColorHex { get; } = colorHex;
     public int Price { get; } = price;
+    public bool Owned { get; } = owned;
     public bool Active { get; } = active;
 }
 
 [Serializable, NetSerializable]
 public sealed class GhostShopBuyColorRequestEvent(string colorId) : EntityEventArgs
+{
+    public string ColorId { get; } = colorId;
+}
+
+/// <summary>Switch to an owned OOC color for free.</summary>
+[Serializable, NetSerializable]
+public sealed class GhostShopSelectColorRequestEvent(string colorId) : EntityEventArgs
 {
     public string ColorId { get; } = colorId;
 }

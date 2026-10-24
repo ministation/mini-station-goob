@@ -23,6 +23,10 @@
   # Corvax-Goob-GreySpecies-end
 
   - type: Abductor
+  # Mini: все навыки сразу, без тренировок (навыки хранятся на теле)
+  - type: EntitySkills
+    skills:
+    - All
   - type: ActionGrant
     actions:
       - ActionReturnToShip
