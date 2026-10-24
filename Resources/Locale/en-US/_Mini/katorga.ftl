@@ -14,3 +14,11 @@ katorga-penalty-message = Killing a fellow inmate has extended your sentence by 
 katorga-penalty-admin = Katorga: player { $user } killed a fellow inmate, sentence extended by { $time }.
 
 katorga-map-missing = The katorga map is unavailable, connection is not possible. Contact the administration.
+
+katorga-hud-title = KATORGA
+
+katorga-hud-remaining = Remaining: { $time }
+
+katorga-hud-worked = Worked off: { $time }
+
+katorga-hud-free = You are free!

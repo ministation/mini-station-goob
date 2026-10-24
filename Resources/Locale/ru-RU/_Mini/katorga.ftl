@@ -14,3 +14,11 @@ katorga-penalty-message = За убийство сокамерника ваш с
 katorga-penalty-admin = Каторга: игрок { $user } убил сокамерника, срок увеличен на { $time }.
 
 katorga-map-missing = Карта каторги недоступна, вход невозможен. Обратитесь к администрации.
+
+katorga-hud-title = КАТОРГА
+
+katorga-hud-remaining = Осталось: { $time }
+
+katorga-hud-worked = Отработано рудой: { $time }
+
+katorga-hud-free = Ты свободен!

@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     xmlns:inventory="clr-namespace:Content.Client.UserInterface.Systems.Inventory.Widgets"
     xmlns:targeting="clr-namespace:Content.Client._Shitmed.UserInterface.Systems.Targeting.Widgets"
     xmlns:typan="clr-namespace:Content.Client._Mini.TypanWar"
+    xmlns:ktg="clr-namespace:Content.Client._Mini.Katorga"
     Name="DefaultHud"
     VerticalExpand="False"
     VerticalAlignment="Bottom"
@@ -22,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <LayoutContainer Name="ViewportContainer" HorizontalExpand="True" VerticalExpand="True">
         <controls:MainViewport Name="MainViewport"/>
         <typan:TypanWarHudControl Name="TypanWarHud" Access="Protected" MinWidth="580" MaxWidth="580" />
+        <ktg:KatorgaHudControl Name="KatorgaHud" Access="Protected" MinWidth="580" MaxWidth="580" />
     </LayoutContainer>
     <BoxContainer Name="TopLeft" Access="Protected" Orientation="Vertical">
         <BoxContainer Orientation="Horizontal">

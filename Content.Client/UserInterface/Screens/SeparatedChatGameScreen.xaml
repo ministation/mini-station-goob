@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     xmlns:inventory="clr-namespace:Content.Client.UserInterface.Systems.Inventory.Widgets"
     xmlns:targeting="clr-namespace:Content.Client._Shitmed.UserInterface.Systems.Targeting.Widgets"
     xmlns:typan="clr-namespace:Content.Client._Mini.TypanWar"
+    xmlns:ktg="clr-namespace:Content.Client._Mini.Katorga"
     xmlns:us="clr-namespace:Content.Client._Shitcode.UserActions"
     Name="SeparatedChatHud"
     VerticalExpand="False"
@@ -25,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <LayoutContainer Name="ViewportContainer" HorizontalExpand="True" VerticalExpand="True">
             <controls:MainViewport Name="MainViewport"/>
             <typan:TypanWarHudControl Name="TypanWarHud" Access="Protected" MinWidth="580" MaxWidth="580" />
+        <ktg:KatorgaHudControl Name="KatorgaHud" Access="Protected" MinWidth="580" MaxWidth="580" />
             <widgets:GhostGui Name="Ghost" Access="Protected" />
             <inventory:InventoryGui Name="Inventory" Access="Protected"/>
             <hotbar:HotbarGui Name="Hotbar" Access="Protected"/>
