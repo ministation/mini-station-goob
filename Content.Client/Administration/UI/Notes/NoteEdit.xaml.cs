@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Linq;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.Administration.Notes;
 using Content.Shared.Database;
@@ -16,6 +17,23 @@ namespace Content.Client.Administration.UI.Notes;
 [GenerateTypedNameReferences]
 public sealed partial class NoteEdit : FancyWindow
 {
+    private const int ExpiryDurationCustom = -1;
+
+    // Mini: preset expiry durations relative to now, so admins don't have to type absolute dates.
+    private static readonly (int Id, string Loc, Func<DateTime, DateTime> AddTime)[] ExpiryDurations =
+    {
+        (0, "admin-note-editor-expiry-duration-1h", static t => t.AddHours(1)),
+        (1, "admin-note-editor-expiry-duration-1d", static t => t.AddDays(1)),
+        (2, "admin-note-editor-expiry-duration-3d", static t => t.AddDays(3)),
+        (3, "admin-note-editor-expiry-duration-1w", static t => t.AddDays(7)),
+        (4, "admin-note-editor-expiry-duration-2w", static t => t.AddDays(14)),
+        (5, "admin-note-editor-expiry-duration-1mo", static t => t.AddMonths(1)),
+        (6, "admin-note-editor-expiry-duration-3mo", static t => t.AddMonths(3)),
+        (7, "admin-note-editor-expiry-duration-6mo", static t => t.AddMonths(6)),
+        (8, "admin-note-editor-expiry-duration-1y", static t => t.AddYears(1)),
+        (ExpiryDurationCustom, "admin-note-editor-expiry-duration-custom", static t => t),
+    };
+
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly IClientConsoleHost _console = default!;
 
@@ -52,6 +70,11 @@ public sealed partial class NoteEdit : FancyWindow
         SubmitButton.OnMouseEntered += OnSubmitButtonMouseEntered;
         SubmitButton.OnMouseExited += OnSubmitButtonMouseExited;
 
+        foreach (var (id, loc, _) in ExpiryDurations)
+            ExpiryDurationOption.AddItem(Loc.GetString(loc), id);
+        ExpiryDurationOption.SelectId(3); // 1 week — sane default so unchecking "permanent" needs no typing
+        ExpiryDurationOption.OnItemSelected += OnExpiryDurationChanged;
+
         if (note is null && !canCreate)
         {
             TypeOption.Disabled = true;
@@ -83,6 +106,8 @@ public sealed partial class NoteEdit : FancyWindow
             if (ExpiryTime is not null)
             {
                 PermanentCheckBox.Pressed = false;
+                // Mini: an existing expiry is an arbitrary date, preselect "custom" so it stays in the LineEdit.
+                ExpiryDurationOption.SelectId(ExpiryDurationCustom);
                 UpdatePermanentCheckboxFields();
                 ExpiryLineEdit.Text = ExpiryTime.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
             }
@@ -172,12 +197,28 @@ public sealed partial class NoteEdit : FancyWindow
         UpdatePermanentCheckboxFields();
     }
 
+    private void OnExpiryDurationChanged(OptionButton.ItemSelectedEventArgs args)
+    {
+        ExpiryDurationOption.SelectId(args.Id);
+        ExpiryLineEdit.ModulateSelfOverride = null;
+        UpdateExpiryLineEditVisibility();
+    }
+
     private void UpdatePermanentCheckboxFields()
     {
-        ExpiryLabel.Visible = !PermanentCheckBox.Pressed;
-        ExpiryLineEdit.Visible = !PermanentCheckBox.Pressed;
+        var expiry = !PermanentCheckBox.Pressed;
+        ExpiryLabel.Visible = expiry;
+        ExpiryDurationOption.Visible = expiry;
+        UpdateExpiryLineEditVisibility();
 
-        ExpiryLineEdit.Text = !PermanentCheckBox.Pressed ? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") : string.Empty;
+        if (!expiry)
+            ExpiryLineEdit.Text = string.Empty;
+    }
+
+    // Mini: the date LineEdit is only needed for the custom duration; presets compute it themselves.
+    private void UpdateExpiryLineEditVisibility()
+    {
+        ExpiryLineEdit.Visible = !PermanentCheckBox.Pressed && ExpiryDurationOption.SelectedId == ExpiryDurationCustom;
     }
 
     private void OnSecretPressed(BaseButton.ButtonEventArgs _)
@@ -267,6 +308,15 @@ public sealed partial class NoteEdit : FancyWindow
             return true;
         }
 
+        // Mini: preset durations are relative to now — always valid, no parsing.
+        if (ExpiryDurationOption.SelectedId != ExpiryDurationCustom)
+        {
+            ExpiryTime = ExpiryDurations.First(d => d.Id == ExpiryDurationOption.SelectedId)
+                .AddTime(DateTime.UtcNow);
+            ExpiryLineEdit.ModulateSelfOverride = null;
+            return true;
+        }
+
         if (string.IsNullOrWhiteSpace(ExpiryLineEdit.Text) || !DateTime.TryParse(ExpiryLineEdit.Text, out var result) || DateTime.UtcNow > result)
         {
             ExpiryLineEdit.ModulateSelfOverride = Color.Red;
@@ -289,6 +339,7 @@ public sealed partial class NoteEdit : FancyWindow
 
         PermanentCheckBox.OnPressed -= OnPermanentPressed;
         SecretCheckBox.OnPressed -= OnSecretPressed;
+        ExpiryDurationOption.OnItemSelected -= OnExpiryDurationChanged;
         SubmitButton.OnPressed -= OnSubmitButtonPressed;
         SubmitButton.OnMouseEntered -= OnSubmitButtonMouseEntered;
         SubmitButton.OnMouseExited -= OnSubmitButtonMouseExited;

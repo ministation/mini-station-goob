@@ -72,7 +72,18 @@ admin-note-editor-expiry-checkbox-tooltip = Check this to make it expire
 admin-note-editor-expiry-label = Expires on:
 admin-note-editor-expiry-label-params = Expires on: {$date} (in {$expiresIn})
 admin-note-editor-expiry-label-expired = Expired
-admin-note-editor-expiry-placeholder = Enter expiration date (yyyy-MM-dd HH:mm:ss)
+admin-note-editor-expiry-placeholder = Custom expiry date (yyyy-MM-dd HH:mm:ss)
+admin-note-editor-expiry-duration-1h = 1 hour
+admin-note-editor-expiry-duration-1d = 1 day
+admin-note-editor-expiry-duration-3d = 3 days
+admin-note-editor-expiry-duration-1w = 1 week
+admin-note-editor-expiry-duration-2w = 2 weeks
+admin-note-editor-expiry-duration-1mo = 1 month
+admin-note-editor-expiry-duration-3mo = 3 months
+admin-note-editor-expiry-duration-6mo = 6 months
+admin-note-editor-expiry-duration-1y = 1 year
+admin-note-editor-expiry-duration-custom = Custom…
+
 admin-note-editor-submit = Submit
 admin-note-editor-submit-confirm = Are you sure?
 
