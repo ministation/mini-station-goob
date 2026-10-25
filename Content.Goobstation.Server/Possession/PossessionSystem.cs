@@ -101,7 +101,8 @@ public sealed partial class PossessionSystem : EntitySystem
             return;
 
         // if polymorphed, undo
-        _polymorph.Revert(uid);
+        if (comp.PolymorphEntity && HasComp<PolymorphedEntityComponent>(uid))
+            _polymorph.Revert(uid);
         RemCompDeferred(uid, comp);
 
         args.Handled = true;

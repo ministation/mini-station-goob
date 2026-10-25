@@ -221,13 +221,18 @@ public sealed partial class AchievementManager : IPostInjectInit
         entry.PendingDelta = 0;
         entry.PendingUnlock = false;
         entry.PendingCoinRewardPaid = false;
-        _ = SaveAsync(user, id, delta, unlockedAt, coinRewardPaid);
+
+        // Chain the save onto the previous one for the same row. The database layer inserts when the
+        // row is missing and updates otherwise, so two concurrent passes race on the unique index and
+        // the losing insert logs a duplicate-key error.
+        entry.SaveTask = SaveAsync(entry.SaveTask, user, id, delta, unlockedAt, coinRewardPaid);
     }
 
-    private async Task SaveAsync(NetUserId user, string id, int delta, DateTime? unlockedAt, bool coinRewardPaid)
+    private async Task SaveAsync(Task previous, NetUserId user, string id, int delta, DateTime? unlockedAt, bool coinRewardPaid)
     {
         try
         {
+            await previous;
             await _db.AddAchievementProgressAsync(user, id, delta, unlockedAt, coinRewardPaid);
         }
         catch (Exception e)
@@ -299,5 +304,8 @@ public sealed partial class AchievementManager : IPostInjectInit
         public int PendingDelta;
         public bool PendingUnlock;
         public bool PendingCoinRewardPaid;
+
+        /// <summary>Tail of the serialized save chain for this row.</summary>
+        public Task SaveTask = Task.CompletedTask;
     }
 }

@@ -79,7 +79,12 @@ namespace Content.Server.EUI
         public void CloseEui(BaseEui eui)
         {
             eui.Shutdown();
-            _playerData[eui.Player].OpenUIs.Remove(eui.Id);
+            if (_playerData.TryGetValue(eui.Player, out var data))
+                data.OpenUIs.Remove(eui.Id);
+
+            // The session is already gone (disconnect), the channel is closed; nothing to notify.
+            if (eui.Player.Status == SessionStatus.Disconnected)
+                return;
 
             var msg = new MsgEuiCtl();
             msg.Id = eui.Id;

@@ -115,11 +115,15 @@ public abstract partial class SharedFishingSystem : EntitySystem
         var fishingSpots = EntityQueryEnumerator<ActiveFishingSpotComponent>();
         while (fishingSpots.MoveNext(out var activeSpotComp))
         {
-            if (currentTime < activeSpotComp.FishingStartTime || activeSpotComp.IsActive || activeSpotComp.FishingStartTime == null)
-                continue;
-
-            // Trigger start of the fishing process
+            // The lure was deleted without StopFishing running, drop the stale spot so it can be fished again.
             if (TerminatingOrDeleted(activeSpotComp.AttachedFishingLure))
+            {
+                if (Net.IsServer)
+                    RemCompDeferred<ActiveFishingSpotComponent>(activeSpotComp.Owner);
+                continue;
+            }
+
+            if (currentTime < activeSpotComp.FishingStartTime || activeSpotComp.IsActive || activeSpotComp.FishingStartTime == null)
                 continue;
 
             // Get fishing lure, then rod, then player... ReCurse.

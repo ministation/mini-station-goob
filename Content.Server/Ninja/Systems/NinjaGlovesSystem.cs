@@ -38,7 +38,8 @@ public sealed class NinjaGlovesSystem : SharedNinjaGlovesSystem
             // if it's not tied to an objective always add them anyway
             if (!_mind.TryFindObjective((mindId, mind), objId, out var obj))
             {
-                Log.Error($"Ninja glove ability of {ent} referenced missing objective {ability.Objective} of {_mind.MindOwnerLoggingString(mind)}");
+                // Mini: цель могла быть уже выполнена и удалена, а способность осталась в прототипе.
+                // Это штатная ситуация: просто не выдаём способность.
                 continue;
             }
 

@@ -148,7 +148,8 @@ public sealed class PredictedProjectileSystem : EntitySystem
             return;
 
         // lag compensated hits don't go through PreventCollideEvent
-        if (component.IgnoredEntities.Contains(target))
+        var netTarget = GetNetEntity(target);
+        if (component.IgnoredEntities.Contains(netTarget))
             return;
 
         // it's here so this check is only done once before possible hit
@@ -205,9 +206,9 @@ public sealed class PredictedProjectileSystem : EntitySystem
         }
 
         // Trauma - don't hit the same thing twice if it keeps going, e.g. from lag compensation then actually colliding
-        if (!component.ProjectileSpent && !component.IgnoredEntities.Contains(target))
+        if (!component.ProjectileSpent && !component.IgnoredEntities.Contains(netTarget))
         {
-            component.IgnoredEntities.Add(target);
+            component.IgnoredEntities.Add(netTarget);
             Dirty(uid, component);
         }
 

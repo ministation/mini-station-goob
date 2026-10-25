@@ -106,6 +106,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         SubscribeAllEvent<RequestShootEvent>(OnShootRequest);
         SubscribeAllEvent<RequestStopShootEvent>(OnStopShootRequest);
         SubscribeLocalEvent<GunComponent, MeleeHitEvent>(OnGunMelee);
+        SubscribeLocalEvent<EntityTerminatingEvent>(OnTargetTerminating); // Goob - clear projectile targets that are being deleted
 
         // Ammo providers
         InitializeBallistic();
@@ -544,7 +545,7 @@ public abstract partial class SharedGunSystem : EntitySystem
             // Goob - unless you are aiming at yourself on purpose, IgnoredEntities is checked before GunCanAimShooter
             if (!TryComp<TargetedProjectileComponent>(uid, out var targeted) || targeted.Target != userUid)
             {
-                projectile.IgnoredEntities.Add(userUid);
+                projectile.IgnoredEntities.Add(GetNetEntity(userUid));
                 Dirty(uid, projectile);
             }
 
@@ -756,6 +757,25 @@ public abstract partial class SharedGunSystem : EntitySystem
             comp.BurstCooldownModified = ev.BurstCooldown;
             DirtyField(gun, nameof(GunComponent.BurstCooldownModified));
         }  // Goobstation - end
+    }
+
+    // Goob - a targeted projectile must not keep a reference to a deleted target, otherwise it is
+    // networked (and fails to resolve) every PVS tick until the projectile itself is deleted.
+    private void OnTargetTerminating(ref EntityTerminatingEvent args)
+    {
+        if (!_netManager.IsServer)
+            return;
+
+        var terminated = args.Entity.Owner;
+        var query = EntityQueryEnumerator<TargetedProjectileComponent>();
+        while (query.MoveNext(out var uid, out var targeted))
+        {
+            if (targeted.Target != terminated)
+                continue;
+
+            targeted.Target = null;
+            Dirty(uid, targeted);
+        }
     }
 
      // Goobstation

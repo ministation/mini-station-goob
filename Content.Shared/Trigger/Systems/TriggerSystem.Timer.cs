@@ -169,6 +169,9 @@ public sealed partial class TriggerSystem
             if (timer.NextTrigger <= curTime)
             {
                 var user = TerminatingOrDeleted(timer.User) ? null : timer.User;
+                if (_net.IsServer)
+                    timer.User = null; // The activator is one-shot, don't keep a stale uid in networked state.
+
                 Trigger(uid, user, timer.KeyOut);
                 // Remove after triggering to prevent it from starting the timer again
                 RemComp<ActiveTimerTriggerComponent>(uid);

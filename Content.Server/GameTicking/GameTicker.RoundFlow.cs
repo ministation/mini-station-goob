@@ -623,6 +623,11 @@ namespace Content.Server.GameTicking
                         ("gamemode", gamemodeTitle));
                 }
 
+                // Discord rejects message content longer than 2000 characters, the round end manifest can exceed it.
+                const int maxDiscordContent = 2000;
+                if (content.Length > maxDiscordContent)
+                    content = content[..(maxDiscordContent - 1)] + "…";
+
                 var payload = new WebhookPayload { Content = content };
 
                 await _discord.CreateMessage(_webhookIdentifier.Value, payload);

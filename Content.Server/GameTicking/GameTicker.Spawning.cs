@@ -500,6 +500,12 @@ namespace Content.Server.GameTicking
                 makeObserver = true;
             }
 
+            // Mini: реконнект/observe с активным визитом (дух с возвратом в тело): TransferTo на нового
+            // наблюдателя оставляет визит и не привязывает сессию, из-за чего SpawnObserver возвращает
+            // false и игрок уезжает в лобби. Снимаем визит заранее.
+            if (TryComp<MindComponent>(mind.Value, out var visitingMind) && visitingMind.VisitingEntity != null)
+                _mind.UnVisit(mind.Value, visitingMind);
+
             var ghost = _ghost.SpawnGhost(mind.Value);
             if (ghost == null)
             {

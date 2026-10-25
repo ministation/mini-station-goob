@@ -121,8 +121,9 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
 
             foreach (var ally in allies)
             {
-                if (!proj.IgnoredEntities.Contains(ally))
-                    proj.IgnoredEntities.Add(ally);
+                var netAlly = GetNetEntity(ally);
+                if (!proj.IgnoredEntities.Contains(netAlly))
+                    proj.IgnoredEntities.Add(netAlly);
             }
 
             Dirty(projectile, proj);

@@ -112,7 +112,10 @@ namespace Content.Server.GameTicking
                     }
                     else
                     {
-                        if (_playerManager.SetAttachedEntity(session, mind.CurrentEntity))
+                        // Mini: после реконнекта на сущности может висеть ActorComponent прошлой сессии,
+                        // тогда обычный attach отказывает и игрока выбрасывает в лобби. Сущность принадлежит
+                        // mind этого игрока, поэтому забираем её принудительно (старая сессия отключается).
+                        if (_playerManager.SetAttachedEntity(session, mind.CurrentEntity, force: true))
                         {
                             PlayerJoinGame(session);
                         }

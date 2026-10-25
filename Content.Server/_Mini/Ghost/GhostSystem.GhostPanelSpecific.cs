@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Content.Shared._Mini.Ghost;
 using Content.Shared.Bed.Cryostorage;
 using Content.Shared.Ghost;
+using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Roles;
@@ -70,6 +71,11 @@ public sealed partial class GhostSystem
                 continue;
 
             var playerMind = mind.Mind ?? mind.LastMindStored;
+            // Mini: LastMindStored может указывать на уже удалённый mind (тело и ум вычистили при выходе).
+            // Без проверки _jobs.MindTryGetJob резолвит MindComponent на удалённом uid и пишет ошибку.
+            if (playerMind != null && !TryComp<MindComponent>(playerMind.Value, out _))
+                playerMind = null;
+
             TryGetPlayerJobInfo(playerMind, out var playerJobId, out var playerDepartmentId);
 
             var hasAnyMind = playerMind != null;

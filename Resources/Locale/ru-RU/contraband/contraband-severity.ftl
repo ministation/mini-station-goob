@@ -16,6 +16,6 @@ comp-hands-examine-and = и
 
 contraband-examine-text-Highly-Illegal =
     { $type ->
-        *[item] [color={$color}]Этот предмет является крайне незаконной контрабандой![/color]
-        [reagent] [color={$color}]Этот реагент является крайне незаконной контрабандой![/color]
+        *[item] [color=crimson]Этот предмет является крайне незаконной контрабандой![/color]
+        [reagent] [color=crimson]Этот реагент является крайне незаконной контрабандой![/color]
     }

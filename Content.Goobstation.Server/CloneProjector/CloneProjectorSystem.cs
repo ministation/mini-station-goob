@@ -34,6 +34,7 @@ using Content.Shared.Throwing;
 using Content.Shared.Verbs;
 using Content.Shared.Whitelist;
 using Robust.Shared.Containers;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -470,7 +471,9 @@ public sealed partial class CloneProjectorSystem : SharedCloneProjectorSystem
         foreach (var pocketItem in _inventory.GetHandOrInventoryEntities(clone, SlotFlags.POCKET))
         {
             _container.TryRemoveFromContainer(pocketItem);
-            _physics.ApplyAngularImpulse(pocketItem, ThrowingSystem.ThrowAngularImpulse);
+            // Mini: виртуальные предметы (VirtualItem) не имеют физики, импульс им не применить.
+            if (TryComp<PhysicsComponent>(pocketItem, out _))
+                _physics.ApplyAngularImpulse(pocketItem, ThrowingSystem.ThrowAngularImpulse);
         }
 
     }
