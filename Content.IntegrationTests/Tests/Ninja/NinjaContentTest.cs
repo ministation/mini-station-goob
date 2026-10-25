@@ -164,9 +164,10 @@ public sealed class NinjaContentTest
         {
             foreach (var (uid, description) in spawned)
             {
-                // Projectiles and traps may despawn immediately without a flight target or a trigger,
-                // their prototypes are still validated by the spawn call above.
-                if (description.Contains("projectile", StringComparison.OrdinalIgnoreCase))
+                // Projectiles and single-use traps may despawn immediately without a flight target or a
+                // trigger, their prototypes are still validated by the spawn call above.
+                if (description.Contains("projectile", StringComparison.OrdinalIgnoreCase) ||
+                    description.Contains("trap", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 Assert.That(entMan.EntityExists(uid), Is.True,
