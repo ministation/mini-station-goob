@@ -23,12 +23,12 @@
   - type: SubGamemodes
     rules:
     - id: Thief
-      prob: 0.4 # CorvaxGoob-GameRulesTweak
+      prob: 0.5 # Mini: шансы как в версии мини-станции
     # Mini: Heretic removed from calm/standard/light/lowpop (SubGamemodes on those presets)
     - id: Devil # Goob
-      prob: 0.1 # CorvaxGoob-GameRulesTweak
+      prob: 0.02 # Mini: шансы как в версии мини-станции
     - id: Shadowling # Goob
-      prob: 0.05 # CorvaxGoob-GameRulesTweak
+      prob: 0.02 # Mini: шансы как в версии мини-станции
     - id: Xenoborgs
       prob: 0.05
     #- id: SubWizard # Goob
