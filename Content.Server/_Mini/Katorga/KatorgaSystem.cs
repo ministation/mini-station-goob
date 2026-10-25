@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Content.Server._Mini.Katorga.Components;
 using Content.Server.Administration.Managers;
@@ -34,6 +35,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Asynchronous;
 using Robust.Shared.Network;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
@@ -63,6 +65,7 @@ public sealed class KatorgaSystem : EntitySystem
     [Dependency] private readonly AdminSystem _adminSystem = default!;
     [Dependency] private readonly IAdminManager _adminManager = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly BiomeSystem _biome = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
@@ -81,6 +84,7 @@ public sealed class KatorgaSystem : EntitySystem
     [Dependency] private readonly IServerPreferencesManager _preferences = default!;
     [Dependency] private readonly StationSpawningSystem _stationSpawning = default!;
     [Dependency] private readonly ThrowingSystem _throwing = default!;
+    [Dependency] private readonly ITaskManager _taskManager = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     private ISawmill _sawmill = default!;
@@ -89,6 +93,13 @@ public sealed class KatorgaSystem : EntitySystem
     private EntityUid? _katorgaMapUid;
     private readonly List<EntityCoordinates> _spawnPoints = new();
     private readonly Dictionary<NetUserId, double> _points = new();
+
+    // Кэш отрабатываемого бана по игроку. Единственное место, где каторга смотрит в базу —
+    // асинхронное обновление кэша при входе в лобби; все игровые пути (спавн, наблюдение,
+    // гост-роли) читают только кэш. Для игроков без бана каторга не делает НИЧЕГО:
+    // блокирующий запрос к БД на главном потоке здесь раньше намертво вешал сервер.
+    private readonly Dictionary<NetUserId, BanDef> _banCache = new();
+    private readonly HashSet<NetUserId> _banCacheChecked = new();
 
     // Текущий срок (мгновенный взгляд сервера): уменьшается сразу при сдаче руды, в базу списывается пачками.
     private readonly Dictionary<NetUserId, DateTimeOffset> _expiry = new();
@@ -145,34 +156,43 @@ public sealed class KatorgaSystem : EntitySystem
         _katorgaMap = null;
         _katorgaMapUid = null;
         _spawnPoints.Clear();
+        // Кэш раундовый: баны перечитываются при входе в лобби нового раунда.
+        // Иначе устаревший (уже отработанный) бан из прошлого раунда «сажает» игрока заново.
+        _banCache.Clear();
+        _banCacheChecked.Clear();
 
         if (!Enabled)
             return;
 
-        var opts = new MapLoadOptions
-        {
-            DeserializationOptions = DeserializationOptions.Default with { PauseMaps = false },
-            ExpectedCategory = FileCategory.Map
-        };
+        // Файл карты хранит только грид (как карты станций), поэтому грузим его на свежую карту:
+        // TryLoadGrid + биом + InitializeMap в конце, по образцу SetupArrivalsStation.
+        _mapSystem.CreateMap(out var mapId, runMapInit: false);
+        var mapUid = _mapSystem.GetMap(mapId);
+        _katorgaMap = mapId;
+        _katorgaMapUid = mapUid;
 
-        if (!_mapLoader.TryLoadGeneric(KatorgaMapPath, out var result, opts) || !result.Maps.TryFirstOrNull(out var map))
+        if (!_mapLoader.TryLoadGrid(mapId, KatorgaMapPath, out _, DeserializationOptions.Default with { PauseMaps = false }))
         {
             _sawmill.Error("Каторга: не удалось загрузить карту " + KatorgaMapPath + ", каторга в этом раунде недоступна");
+            _mapSystem.DeleteMap(mapId);
+            _katorgaMap = null;
+            _katorgaMapUid = null;
             return;
         }
 
-        _katorgaMapUid = map.Value.Owner;
-        _katorgaMap = map.Value.Comp.MapId;
-        _metaData.SetEntityName(_katorgaMapUid.Value, "Katorga");
+        _metaData.SetEntityName(mapUid, "Katorga");
 
         if (_prototype.TryIndex<BiomeTemplatePrototype>(KatorgaBiomeId, out var biome))
         {
-            _biome.EnsurePlanet(_katorgaMapUid.Value, biome);
+            _biome.EnsurePlanet(mapUid, biome);
         }
         else
         {
             _sawmill.Error("Каторга: не найден биом " + KatorgaBiomeId);
         }
+
+        // Mapinit после биома: атмосфера, машины и генерация астероида стартуют вместе с картой.
+        _mapSystem.InitializeMap(mapId);
 
         var query = EntityQueryEnumerator<KatorgaSpawnPointComponent, TransformComponent>();
         while (query.MoveNext(out _, out _, out var xform))
@@ -205,10 +225,8 @@ public sealed class KatorgaSystem : EntitySystem
         if (!Enabled)
             return;
 
-        if (!TryGetKatorgaBan(ev.PlayerSession, out _))
-            return;
-
-        _chatManager.DispatchServerMessage(ev.PlayerSession, Loc.GetString("katorga-lobby-message"));
+        // Проверка банов уходит в фон: игроки без бана не должны ждать (и тем более висеть) из-за каторги.
+        _ = RefreshBanCacheAsync(ev.PlayerSession);
     }
 
     private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
@@ -216,10 +234,13 @@ public sealed class KatorgaSystem : EntitySystem
         if (!Enabled)
             return;
 
-        if (!TryGetKatorgaBan(ev.Player, out var ban))
+        if (!_banCache.TryGetValue(ev.Player.UserId, out var ban))
             return;
 
-        _expiry[ev.Player.UserId] = ban.ExpirationTime!.Value;
+        // Отработанный (истёкший) бан не сажает: между проверками срок мог дотечь до конца.
+        if (ban.ExpirationTime <= DateTimeOffset.UtcNow)
+            return;
+
         ev.Handled = true;
         SendToKatorga(ev.Player, ban);
     }
@@ -233,10 +254,19 @@ public sealed class KatorgaSystem : EntitySystem
         if (_katorgaMap == null)
             return;
 
-        if (!TryGetKatorgaBan(ev.Player, out var ban))
+        if (!_banCache.TryGetValue(ev.Player.UserId, out var ban))
+        {
+            // Кэш ещё не собран (каторгу включили после входа игрока) — проверим один раз, асинхронно.
+            if (_banCacheChecked.Add(ev.Player.UserId))
+                _ = RefreshBanCacheAsync(ev.Player);
+            return;
+        }
+
+        if (ban.ExpirationTime <= DateTimeOffset.UtcNow)
             return;
 
-        _expiry[ev.Player.UserId] = ban.ExpirationTime!.Value;
+        // Живой остаток срока (уменьшается сдачей руды) важнее снапшота из кэша.
+        _expiry.TryAdd(ev.Player.UserId, ban.ExpirationTime!.Value);
 
         if (HasComp<GhostComponent>(ev.Entity))
             return;
@@ -262,12 +292,35 @@ public sealed class KatorgaSystem : EntitySystem
                 continue;
             }
 
+            if (!_playerManager.TryGetSessionByEntity(uid, out var session))
+                continue;
+
+            // Срок отработан (или потерян) — выпускаем: снимаем компонент заключённого,
+            // после чего снова доступны гостование, гост-роли и наблюдение.
+            if (!_expiry.TryGetValue(session.UserId, out var expires) ||
+                expires <= DateTimeOffset.UtcNow)
+            {
+                ReleaseInmate(uid, session);
+                continue;
+            }
+
             RefreshInmateHudTick(uid, comp);
         }
     }
 
+    private void ReleaseInmate(EntityUid uid, ICommonSession session)
+    {
+        RemComp<KatorgaBoundComponent>(uid);
+        _banCache.Remove(session.UserId);
+        _expiry.Remove(session.UserId);
+
+        _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-released"));
+        _sawmill.Info("Каторга: " + session.Name + " отработал срок и выпущен");
+    }
+
     public void SendToKatorga(ICommonSession session, BanDef ban)
     {
+        // Всегда пишем срок текущего бана: прежнее значение могло остаться от старого бана.
         _expiry[session.UserId] = ban.ExpirationTime!.Value;
 
         if (_katorgaMapUid == null || _katorgaMap == null)
@@ -286,7 +339,9 @@ public sealed class KatorgaSystem : EntitySystem
             SpawnKatorgaPlayer(session);
         }
 
-        var remaining = (ban.ExpirationTime ?? DateTimeOffset.UtcNow) - DateTimeOffset.UtcNow;
+        // Остаток срока берём из живого счётчика: за время между проверками руда могла списать часть срока.
+        var expires = _expiry.TryGetValue(session.UserId, out var live) ? live : ban.ExpirationTime!.Value;
+        var remaining = expires - DateTimeOffset.UtcNow;
         _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-greeting", ("time", FormatTime(remaining))));
 
         RefreshInmateHud(session, resetTotal: true);
@@ -357,10 +412,11 @@ public sealed class KatorgaSystem : EntitySystem
 
     /// <summary>
     ///     Находится ли игрок на каторге (есть отрабатываемый временный бан).
+    ///     Читает только кэш: без обращений к базе и блокировок главного потока.
     /// </summary>
     public bool IsConfined(ICommonSession session)
     {
-        return Enabled && TryGetKatorgaBan(session, out _);
+        return Enabled && _banCache.ContainsKey(session.UserId);
     }
 
     /// <summary>
@@ -371,12 +427,12 @@ public sealed class KatorgaSystem : EntitySystem
         return IsConfined(session) && !_adminManager.IsAdmin(session);
     }
 
-        /// <summary>
-    ///     Отправляет заключённого на каторгу, если у него есть отрабатываемый бан.
+    /// <summary>
+    ///     Отправляет заключённого на каторгу, если у него есть отрабатываемый бан (по данным кэша).
     /// </summary>
     public bool TryConfine(ICommonSession session)
     {
-        if (!Enabled || !TryGetKatorgaBan(session, out var ban))
+        if (!Enabled || !_banCache.TryGetValue(session.UserId, out var ban))
             return false;
 
         SendToKatorga(session, ban);
@@ -408,47 +464,98 @@ public sealed class KatorgaSystem : EntitySystem
     #region Проверка банов
 
     /// <summary>
-    ///     Ищет активный серверный бан игрока, который можно отработать на каторге.
-    ///     Возвращает false, если банов нет или среди них есть перманентный:
-    ///     пермабаны отработке не подлежат, их отсекает ещё ConnectionManager.
-    ///     Если временных банов несколько, отрабатывается самый долгий (связывающий) срок.
+    ///     Асинхронно проверяет баны игрока и обновляет кэш. Единственное обращение каторги к базе:
+    ///     вызывается при входе в лобби (и один раз при аттаче, если каторгу включили позже входа).
+    ///     Сама проверка идёт в фоне, результат применяется на главном потоке — игровой путь
+    ///     игроков без бана каторга не задевает вовсе.
     /// </summary>
-    public bool TryGetKatorgaBan(ICommonSession session, out BanDef ban)
+    private async Task RefreshBanCacheAsync(ICommonSession session)
     {
-        ban = null!;
-
+        // Данные канала читаем на главном потоке, до ухода в фон.
+        var address = session.Channel.RemoteEndPoint.Address;
+        var userId = session.UserId;
         var hwId = session.Channel.UserData.HWId.Length == 0
             ? null
             : (ImmutableArray<byte>?)session.Channel.UserData.HWId;
         var modernHwIds = session.Channel.UserData.ModernHWIds;
 
-        var bans = _db.GetBansAsync(
-            session.Channel.RemoteEndPoint.Address,
-            session.UserId,
+        BanDef? binding = null;
+        try
+        {
+            binding = await LookupBindingBanAsync(address, userId, hwId, modernHwIds);
+        }
+        catch (Exception e)
+        {
+            _sawmill.Error("Каторга: не удалось проверить баны игрока " + userId + ": " + e.Message);
+            return;
+        }
+
+        _taskManager.RunOnMainThread(() =>
+        {
+            _banCacheChecked.Add(userId);
+
+            // Пока шёл запрос, игрок мог выйти.
+            if (!_playerManager.TryGetSessionById(userId, out var player))
+                return;
+
+            if (binding == null || binding.ExpirationTime <= DateTimeOffset.UtcNow)
+            {
+                _banCache.Remove(userId);
+                return;
+            }
+
+            _banCache[userId] = binding;
+            // Срок текущего бана: перечитывание ресинхронизирует живой счётчик с базой.
+            _expiry[userId] = binding.ExpirationTime!.Value;
+
+            if (!Enabled)
+                return;
+
+            // Уже в раунде (зашёл мимо лобби или бан выдали во время игры) — отправляем отбывать.
+            if (player.AttachedEntity is { } attached && !TerminatingOrDeleted(attached) &&
+                !HasComp<GhostComponent>(attached))
+            {
+                SendToKatorga(player, binding);
+            }
+            else
+            {
+                _chatManager.DispatchServerMessage(player, Loc.GetString("katorga-lobby-message"));
+            }
+        });
+    }
+
+    /// <summary>
+    ///     Ищет активный серверный бан игрока, который можно отработать на каторге.
+    ///     Возвращает null, если банов нет или среди них есть перманентный:
+    ///     пермабаны отработке не подлежат, их отсекает ещё ConnectionManager.
+    ///     Если временных банов несколько, отрабатывается самый долгий (связывающий) срок.
+    /// </summary>
+    private async Task<BanDef?> LookupBindingBanAsync(
+        IPAddress? address,
+        NetUserId userId,
+        ImmutableArray<byte>? hwId,
+        ImmutableArray<ImmutableArray<byte>>? modernHwIds)
+    {
+        var bans = await _db.GetBansAsync(
+            address,
+            userId,
             hwId,
             modernHwIds,
             includeUnbanned: false,
-            BanType.Server).GetAwaiter().GetResult();
-
-        if (bans.Count == 0)
-            return false;
+            BanType.Server);
 
         BanDef? binding = null;
         foreach (var b in bans)
         {
             // Перманентный бан отработке не подлежит.
             if (b.ExpirationTime == null)
-                return false;
+                return null;
 
             if (binding == null || b.ExpirationTime.Value > binding.ExpirationTime!.Value)
                 binding = b;
         }
 
-        if (binding?.ExpirationTime == null)
-            return false;
-
-        ban = binding;
-        return true;
+        return binding;
     }
 
     #endregion
