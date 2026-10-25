@@ -3728,8 +3728,6 @@ entities:
     - type: Transform
       pos: 11.5,0.5
       parent: 818
-    - type: Advertise
-      enabled: False
 - proto: VendingMachineChefvend
   entities:
   - uid: 796
@@ -3737,8 +3735,6 @@ entities:
     - type: Transform
       pos: 11.5,-0.5
       parent: 818
-    - type: Advertise
-      enabled: False
 - proto: VendingMachineChemDrobe
   entities:
   - uid: 440
@@ -3746,8 +3742,6 @@ entities:
     - type: Transform
       pos: -7.5,-5.5
       parent: 818
-    - type: Advertise
-      enabled: False
 - proto: VendingMachineCondiments
   entities:
   - uid: 703
@@ -3756,8 +3750,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 9.5,-3.5
       parent: 818
-    - type: Advertise
-      enabled: False
 - proto: VendingMachineMedical
   entities:
   - uid: 435
@@ -3765,8 +3757,6 @@ entities:
     - type: Transform
       pos: -9.5,1.5
       parent: 818
-    - type: Advertise
-      enabled: False
 - proto: VendingMachineNutri
   entities:
   - uid: 793
@@ -3774,8 +3764,6 @@ entities:
     - type: Transform
       pos: 2.5,5.5
       parent: 818
-    - type: Advertise
-      enabled: False
 - proto: VendingMachineSeedsUnlocked
   entities:
   - uid: 464
@@ -3783,8 +3771,6 @@ entities:
     - type: Transform
       pos: 3.5,5.5
       parent: 818
-    - type: Advertise
-      enabled: False
 - proto: VendingMachineTankDispenserEVA
   entities:
   - uid: 707
