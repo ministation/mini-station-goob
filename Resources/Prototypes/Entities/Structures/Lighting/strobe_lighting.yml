@@ -57,16 +57,17 @@
     damageContainer: Inorganic
     damageModifierSet: Metallic
   - type: Destructible
+    # mini-station: стробные светильники прочнее в 3 раза (было 25/100)
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 100
+        damage: 300
       behaviors: #excess damage, don't spawn entities.
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
     - trigger:
         !type:DamageTrigger
-        damage: 25
+        damage: 75
       behaviors:
       - !type:EmptyAllContainersBehaviour
       - !type:SpawnEntitiesBehavior

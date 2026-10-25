@@ -43,16 +43,17 @@
     damageContainer: Inorganic
     damageModifierSet: Metallic
   - type: Destructible
+    # mini-station: столбы освещения прочнее в 3 раза (было 100/200)
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 200
+        damage: 600
       behaviors:
         - !type:DoActsBehavior
           acts: [ "Destruction" ]
     - trigger:
         !type:DamageTrigger
-        damage: 100
+        damage: 300
       behaviors:
       - !type:DoActsBehavior
         acts: ["Destruction"]

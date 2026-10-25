@@ -26,16 +26,17 @@
       types:
         Blunt: 5
   - type: Destructible
+    # mini-station: лампы прочнее в 3 раза (было 5/10/100)
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 100
+        damage: 300
       behaviors: #excess damage (nuke?). avoid computational cost of spawning entities.
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
     - trigger:
         !type:DamageTrigger
-        damage: 5
+        damage: 15
       behaviors:
       - !type:PlaySoundBehavior
         sound:
@@ -46,7 +47,7 @@
         acts: [ "Breakage" ]
     - trigger:
         !type:DamageTrigger
-        damage: 10
+        damage: 30
       behaviors:
       - !type:PlaySoundBehavior
         sound:
@@ -87,16 +88,17 @@
   - type: LightBulb
     bulb: Tube
   - type: Destructible
+    # mini-station: трубки прочнее в 3 раза (было 5/10/100)
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 100
+        damage: 300
       behaviors: #excess damage (nuke?). avoid computational cost of spawning entities.
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
     - trigger:
         !type:DamageTrigger
-        damage: 5
+        damage: 15
       behaviors:
       - !type:PlaySoundBehavior
         sound:
@@ -105,7 +107,7 @@
         acts: [ "Breakage" ]
     - trigger:
         !type:DamageTrigger
-        damage: 10
+        damage: 30
       behaviors:
       - !type:PlaySoundBehavior
         sound:

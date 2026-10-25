@@ -231,10 +231,11 @@
     damageContainer: StructuralInorganic
     damageModifierSet: Metallic
   - type: Destructible
+    # mini-station: прожектор прочнее в 3 раза (было 10)
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 10
+        damage: 30
       behaviors:
       - !type:PlaySoundBehavior
         sound:
