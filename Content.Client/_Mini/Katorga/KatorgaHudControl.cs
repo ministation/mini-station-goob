@@ -18,7 +18,9 @@ namespace Content.Client._Mini.Katorga;
 public sealed class KatorgaHudControl : PanelContainer
 {
     public const float PreferredWidth = 580f;
-    private const float BarWidth = 360f;
+    // Панель зажата XAML-ом в 580px: 88 (заголовок) + 295 (полоса) + 150 (подпись)
+    // + 20 (разделители) + 24 (поля) = 577. Больше — подпись вылезает за рамку.
+    private const float BarWidth = 295f;
 
     private static readonly Color PanelBackground = Color.FromHex("#14141C").WithAlpha(0.72f);
     private static readonly Color TextColor = Color.FromHex("#E8E6F0");
