@@ -186,6 +186,7 @@ public sealed partial class NinjaGhostDisguiseMenuEvent : InstantActionEvent;
 /// <summary>
 /// Raised when the scan do-after finishes.
 /// </summary>
+[Serializable, NetSerializable]
 public sealed partial class NinjaGhostDisguiseScanDoAfterEvent : DoAfterEvent
 {
     public override DoAfterEvent Clone() => this;
@@ -194,6 +195,7 @@ public sealed partial class NinjaGhostDisguiseScanDoAfterEvent : DoAfterEvent
 /// <summary>
 /// Raised when the apply do-after finishes.
 /// </summary>
+[Serializable, NetSerializable]
 public sealed partial class NinjaGhostDisguiseApplyDoAfterEvent : DoAfterEvent
 {
     public override DoAfterEvent Clone() => this;

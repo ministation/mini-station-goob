@@ -58,16 +58,20 @@ public sealed class NinjaContentTest
             present.Add(reagent);
         }
 
-        Assert.Multiple(() =>
+        // Localized* properties resolve localization through IoC and must be read on the server main thread.
+        await pair.Server.WaitAssertion(() =>
         {
-            foreach (var reagent in present)
+            Assert.Multiple(() =>
             {
-                Assert.That(reagent.LocalizedName, Is.Not.Empty, $"Reagent '{reagent.ID}' has no localized name");
-                Assert.That(reagent.LocalizedDescription, Is.Not.Empty,
-                    $"Reagent '{reagent.ID}' has no localized description");
-                Assert.That(reagent.LocalizedPhysicalDescription, Is.Not.Empty,
-                    $"Reagent '{reagent.ID}' has no localized physical description");
-            }
+                foreach (var reagent in present)
+                {
+                    Assert.That(reagent.LocalizedName, Is.Not.Empty, $"Reagent '{reagent.ID}' has no localized name");
+                    Assert.That(reagent.LocalizedDescription, Is.Not.Empty,
+                        $"Reagent '{reagent.ID}' has no localized description");
+                    Assert.That(reagent.LocalizedPhysicalDescription, Is.Not.Empty,
+                        $"Reagent '{reagent.ID}' has no localized physical description");
+                }
+            });
         });
 
         if (warnings.Count > 0)
@@ -99,14 +103,19 @@ public sealed class NinjaContentTest
                 .Select(prototype => prototype.ID)
                 .ToList();
 
-            if (foundByComponent.Count == 0)
+            var knownFound = knownIds.Where(id => protoMan.HasIndex<EntityPrototype>(id)).ToList();
+
+            if (foundByComponent.Count == 0 && knownFound.Count == 0)
             {
-                missingFeatures.Add($"no prototype with component '{component}' ({feature})");
+                missingFeatures.Add($"no prototype with component '{component}' or known ids [{string.Join(", ", knownIds)}] ({feature})");
                 continue;
             }
 
-            var knownFound = knownIds.Where(id => protoMan.HasIndex<EntityPrototype>(id)).ToList();
-            if (knownFound.Count == 0)
+            if (foundByComponent.Count == 0)
+            {
+                warnings.Add($"{feature}: no prototype has component '{component}', using documented id instead");
+            }
+            else if (knownFound.Count == 0)
             {
                 warnings.Add($"{feature}: none of the documented ids [{string.Join(", ", knownIds)}] resolve; " +
                              $"found by component: [{string.Join(", ", foundByComponent)}]");

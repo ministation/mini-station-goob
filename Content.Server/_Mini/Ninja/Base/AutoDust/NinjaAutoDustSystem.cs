@@ -41,7 +41,6 @@ public sealed class NinjaAutoDustSystem : SharedNinjaAutoDustSystem
     {
         var marker = EnsureComp<NinjaAutoDustMarkerComponent>(args.Wearer);
         marker.Suit = ent.Owner;
-        Dirty(args.Wearer, marker);
     }
 
     private void OnUnequipped(Entity<NinjaAutoDustComponent> ent, ref ClothingGotUnequippedEvent args)

@@ -131,26 +131,31 @@ public sealed class NinjaSuitTest
 
         await server.WaitRunTicks(2);
 
-        Assert.That(entMan.GetComponent<MetaDataComponent>(suit).EntityPrototype?.ID, Is.EqualTo(SuitPrototypeId));
-
         var powerCell = server.System<PowerCellSystem>();
-        Assert.That(powerCell.TryGetBatteryFromSlot(suit, out var battery), Is.True,
-            $"Suit '{SuitPrototypeId}' did not spawn a power cell in its cell slot");
-
-        var batteryMeta = entMan.GetComponent<MetaDataComponent>(battery!.Value.Owner);
-        Assert.That(batteryMeta.EntityPrototype?.ID, Is.EqualTo("PowerCellSmall"),
-            "The suit must start with the PowerCellSmall cell");
-        Assert.That(entMan.GetComponent<BatteryComponent>(battery.Value.Owner).MaxCharge, Is.GreaterThan(0f),
-            "The starting power cell has no capacity");
-
-        // Both UIs declared on the suit must be registered and openable.
         var ui = server.System<UserInterfaceSystem>();
-        Assert.Multiple(() =>
+
+        // Entity and UI access has to happen on the server main thread.
+        await server.WaitAssertion(() =>
         {
-            Assert.That(ui.TryOpenUi(suit, NinjaOsUiKey.Key, wearer), Is.True,
-                "The suit does not open the NinjaOsUiKey interface");
-            Assert.That(ui.TryOpenUi(suit, HealthAnalyzerUiKey.Key, wearer), Is.True,
-                "The suit does not open the HealthAnalyzerUiKey interface");
+            Assert.That(entMan.GetComponent<MetaDataComponent>(suit).EntityPrototype?.ID, Is.EqualTo(SuitPrototypeId));
+
+            Assert.That(powerCell.TryGetBatteryFromSlot(suit, out var battery), Is.True,
+                $"Suit '{SuitPrototypeId}' did not spawn a power cell in its cell slot");
+
+            var batteryMeta = entMan.GetComponent<MetaDataComponent>(battery!.Value.Owner);
+            Assert.That(batteryMeta.EntityPrototype?.ID, Is.EqualTo("PowerCellSmall"),
+                "The suit must start with the PowerCellSmall cell");
+            Assert.That(entMan.GetComponent<BatteryComponent>(battery.Value.Owner).MaxCharge, Is.GreaterThan(0f),
+                "The starting power cell has no capacity");
+
+            // Both UIs declared on the suit must be registered and openable.
+            Assert.Multiple(() =>
+            {
+                Assert.That(ui.TryOpenUi(suit, NinjaOsUiKey.Key, wearer), Is.True,
+                    "The suit does not open the NinjaOsUiKey interface");
+                Assert.That(ui.TryOpenUi(suit, HealthAnalyzerUiKey.Key, wearer), Is.True,
+                    "The suit does not open the HealthAnalyzerUiKey interface");
+            });
         });
 
         await pair.CleanReturnAsync();
