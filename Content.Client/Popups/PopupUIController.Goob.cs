@@ -1,3 +1,4 @@
+using Content.Client.Resources;
 using Content.Client.Chat.UI;
 using Content.Goobstation.Common.CCVar;
 using Content.Shared.Popups;
