@@ -37,6 +37,7 @@ public sealed partial class AchievementSystem : EntitySystem
 
     private bool _enabled;
     private bool _roundExcluded;
+    private bool _roundEnded;
     private TimeSpan _saveInterval;
     private TimeSpan _nextSave;
 
@@ -50,6 +51,7 @@ public sealed partial class AchievementSystem : EntitySystem
         SubscribeNetworkEvent<RequestAchievementsEvent>(OnRequest);
         SubscribeLocalEvent<RoundStartingEvent>(OnRoundStarting);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<RoundEndMessageEvent>(OnRoundEndMessage);
 
         Subs.CVar(_cfg, GoobCVars.AchievementsEnabled, value => _enabled = value, true);
         Subs.CVar(_cfg, GoobCVars.AchievementsSaveInterval, value => _saveInterval = TimeSpan.FromSeconds(value), true);
@@ -92,7 +94,13 @@ public sealed partial class AchievementSystem : EntitySystem
         _roundExcluded = (_ticker.CurrentPreset ?? _ticker.Preset) is { } preset && Array.IndexOf(presets, preset.ID) >= 0
                          || _gameMap.GetSelectedMap() is { } map && Array.IndexOf(maps, map.ID) >= 0;
 
+        _roundEnded = false;
         _ = _manager.RefreshStats();
+    }
+
+    private void OnRoundEndMessage(RoundEndMessageEvent ev)
+    {
+        _roundEnded = true;
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
@@ -212,6 +220,7 @@ public sealed partial class AchievementSystem : EntitySystem
 
         if (!_enabled
             || _roundExcluded
+            || _roundEnded
             || HasComp<GhostComponent>(player)
             || !_mind.TryGetMind(player, out var mindId, out var mind)
             || !_player.TryGetSessionById(mind.UserId, out session))
@@ -238,7 +247,7 @@ public sealed partial class AchievementSystem : EntitySystem
 
     public void AddProgress(ICommonSession session, AchievementPrototype proto, int amount = 1)
     {
-        if (!CanProgress(session) || _roundExcluded)
+        if (!CanProgress(session) || _roundExcluded || _roundEnded)
             return;
 
         _manager.AddProgress(session, proto, amount);
