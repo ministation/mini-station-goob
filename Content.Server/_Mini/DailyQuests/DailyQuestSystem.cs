@@ -69,7 +69,7 @@ public sealed class DailyQuestSystem : EntitySystem
     private const int DailyQuestCount = 2;
 
     /// <summary>Coin cost of a quest replace after the free daily one.</summary>
-    private const int PaidReplaceCost = 1;
+    private const int PaidReplaceCost = 2;
     /// <summary>Periodic sweep for week rollover + live quest timers (not every second).</summary>
     private const float UiRefreshInterval = 5f;
 

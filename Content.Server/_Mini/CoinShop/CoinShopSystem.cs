@@ -27,7 +27,7 @@ namespace Content.Server._Mini.CoinShop;
 /// </summary>
 public sealed class CoinShopSystem : EntitySystem
 {
-    public const int LootboxCost = 30;
+    public const int LootboxCost = CoinShopPricing.LootboxCost;
     private const int OocColorDays = 30;
     private const int DuplicateRefundPercent = 40;
     private const int DuplicateRefundMin = 5;

@@ -3,17 +3,18 @@
 #
 # Досрочное открытие антагов в лобби и магазине токенов.
 # Для ролей из магазина maxCost не ниже shopCost * shopCostMultiplier.
+# Поднято ещё на +20%: шаг 2.9 часа вместо 3.5, minCost 2, множитель магазина 6.
 
 - type: antagUnlockCatalog
   id: Default
   pricing:
-    hoursPerCoinStep: 3.5
-    minCost: 1
+    hoursPerCoinStep: 2.9
+    minCost: 2
     regularCoinsPerStep: 2
     commandCoinsPerStep: 4
   useShopCostMultiplier: true
-  shopCostMultiplier: 5
+  shopCostMultiplier: 6
   defaultTier:
-    maxCost: 20
+    maxCost: 25
     command: false
   tiers: []

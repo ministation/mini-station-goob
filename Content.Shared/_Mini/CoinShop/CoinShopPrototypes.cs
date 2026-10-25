@@ -30,7 +30,7 @@ public sealed partial class CoinCosmeticPrototype : IPrototype
     public string Slot = default!;
 
     [DataField]
-    public int Price = 20;
+    public int Price = 25;
 
     [DataField]
     public int Order;
@@ -50,7 +50,7 @@ public sealed partial class CoinOocColorPrototype : IPrototype
     public string Color = default!;
 
     [DataField]
-    public int Price = 35;
+    public int Price = 40;
 
     [DataField]
     public int Order;
@@ -62,4 +62,13 @@ public enum CoinRarity : byte
     Rare = 1,
     Epic = 2,
     Legendary = 3,
+}
+
+/// <summary>
+/// Coin prices shared by the server (charging) and the client (display).
+/// </summary>
+public static class CoinShopPricing
+{
+    /// <summary>Price of one lootbox roll in coins.</summary>
+    public const int LootboxCost = 35;
 }
