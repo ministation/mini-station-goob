@@ -7,3 +7,5 @@ synth-battery-emp = Внимание! Обнаружен электромагн�
 surgery-popup-procedure-SurgeryRemoveSynthPowerCell-step-SurgeryStepRemoveOrgan = {$user} извлекает энергоячейку из {$part} {$target}!
 
 surgery-popup-procedure-SurgeryInsertSynthPowerCell-step-SurgeryStepInsertOrgan = {$user} вставляет энергоячейку в {$part} {$target}!
+
+synth-injection-denied = У синтетического покрытия нет порта для инъекций!
