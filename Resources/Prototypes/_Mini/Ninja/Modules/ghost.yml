@@ -60,6 +60,9 @@
   id: NinjaDisguiseEmptyClothing
   categories: [ HideSpawnMenu ]
   components:
+  - type: Sprite
+    sprite: _Mini/Ninja/Disguise/empty.rsi
+    state: icon
   - type: Clothing
     slots: NONE
     sprite: _Mini/Ninja/Disguise/empty.rsi
