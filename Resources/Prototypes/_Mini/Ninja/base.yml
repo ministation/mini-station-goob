@@ -1,0 +1,63 @@
+# Base modules of the ninja suit (reference parity).
+
+- type: entity
+  parent: BaseAction
+  id: NinjaActionToggleJetpack
+  name: toggle built-in jetpack
+  description: Toggles the jetpack built into the suit, giving extra mobility in space.
+  components:
+  - type: Action
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: jetpack-off
+    iconOn:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: jetpack-on
+    useDelay: 1
+    itemIconStyle: BigAction
+  - type: InstantAction
+    event: !type:ToggleJetpackEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaAutoDust
+  name: Auto-Dust
+  description: "Cycles the auto-dust program of the suit: off, dust on critical state, dust on death."
+  components:
+  - type: Action
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: dust
+    useDelay: 1
+    itemIconStyle: BigAction
+    priority: -10
+  - type: InstantAction
+    event: !type:NinjaToggleAutoDustEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaSelfAnalyze
+  name: health analyzer
+  description: Instantly scans the wearer of the suit to detect health problems.
+  components:
+  - type: Action
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: healthstatus
+    itemIconStyle: BigAction
+    priority: -10
+  - type: InstantAction
+    event: !type:NinjaSelfAnalyzeEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionCycleNinjaVisor
+  name: cycle visor mode
+  description: Switches the visor between flash protection, thermal vision and night vision.
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: BigAction
+    priority: -9
+  - type: InstantAction
+    event: !type:NinjaCycleVisorEvent

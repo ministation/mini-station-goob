@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: 2026 Mini Station
+# Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+
+# Steel path reagents. Velaxin is injected by the suit adrenaline surge module (Steel tier 2).
+
+- type: reagent
+  id: Velaxin
+  name: reagent-name-velaxin
+  group: Narcotics
+  desc: reagent-desc-velaxin
+  physicalDesc: reagent-physical-desc-translucent
+  flavor: bitter
+  color: "#E8D44D"
+  boilingPoint: 300.0
+  meltingPoint: -5.0
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.5
+      effects:
+      # Main effect: the body is pushed to the limit, roughly like the adrenaline implant, but longer.
+      - !type:MovementSpeedModifier
+        walkSpeedModifier: 1.4
+        sprintSpeedModifier: 1.4
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectStunned
+        time: 3
+        type: Remove
+      - !type:ModifyKnockdown
+        time: 3
+        type: Remove
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectStimulantsStamina
+        time: 3
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectForcedSleeping
+        time: 3
+        type: Remove
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectDrowsiness
+        time: 3
+        type: Remove
+      # Wakes the body up and burns the sedatives out of the blood.
+      - !type:AdjustReagent
+        conditions:
+        - !type:ReagentCondition
+          reagent: ChloralHydrate
+          min: 1
+        reagent: ChloralHydrate
+        amount: -10
+      # An overdose shakes the body.
+      - !type:Jitter
+        conditions:
+        - !type:ReagentCondition
+          reagent: Velaxin
+          min: 5

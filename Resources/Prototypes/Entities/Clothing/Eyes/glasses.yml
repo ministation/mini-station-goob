@@ -347,14 +347,14 @@
   name: ninja visor
   description: An advanced visor protecting a ninja's eyes from flashing lights.
   components:
+  - type: NinjaSuitItem # Mini: Spider OS hardware
   - type: Sprite
     sprite: Clothing/Eyes/Glasses/ninjavisor.rsi
   - type: Clothing
     sprite: Clothing/Eyes/Glasses/ninjavisor.rsi
   - type: FlashImmunity
+  - type: NinjaVisionModule # Mini: protective / thermal / night vision modes
     # Goob start
-  - type: NightVision
-    isEquipment: true
   - type: Armor
     coverage:
     - Head

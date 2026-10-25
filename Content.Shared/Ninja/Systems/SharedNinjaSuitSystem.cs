@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Goobstation.Common.Effects;
+using Content.Shared._Mini.Ninja;
 using Content.Shared.Actions;
 using Content.Shared.Clothing;
 using Content.Shared.Clothing.Components;
@@ -58,7 +59,7 @@ public abstract class SharedNinjaSuitSystem : EntitySystem
     {
         var (uid, comp) = ent;
         _actionContainer.EnsureAction(uid, ref comp.RecallKatanaActionEntity, comp.RecallKatanaAction);
-        _actionContainer.EnsureAction(uid, ref comp.EmpActionEntity, comp.EmpAction);
+        _actionContainer.EnsureAction(uid, ref comp.OpenNinjaOsActionEntity, comp.OpenNinjaOsAction); // Mini: Spider OS
         Dirty(uid, comp);
     }
 
@@ -67,12 +68,12 @@ public abstract class SharedNinjaSuitSystem : EntitySystem
     /// </summary>
     private void OnGetItemActions(Entity<NinjaSuitComponent> ent, ref GetItemActionsEvent args)
     {
-        if (!_ninja.IsNinja(args.User))
+        // Mini: the Spider OS is always reachable from the worn suit so a fresh ninja can configure it.
+        if (args.InHands)
             return;
 
         var comp = ent.Comp;
-        args.AddAction(ref comp.RecallKatanaActionEntity, comp.RecallKatanaAction);
-        args.AddAction(ref comp.EmpActionEntity, comp.EmpAction);
+        args.AddAction(ref comp.OpenNinjaOsActionEntity, comp.OpenNinjaOsAction);
     }
 
     /// <summary>
@@ -116,14 +117,13 @@ public abstract class SharedNinjaSuitSystem : EntitySystem
             return;
 
         var uid = ent.Owner;
-        var comp = ent.Comp;
-        if (!_toggle.TryDeactivate(uid, user) || !disable) // Goob edit
-            return;
 
-        // previously cloaked, disable abilities for a short time
-        // _audio.PlayPredicted(comp.RevealSound, uid, user); // Goob edit
-        // Popup.PopupClient(Loc.GetString("ninja-revealed"), user, user, PopupType.MediumCaution); // Goob edit
-        _useDelay.TryResetDelay(uid, id: comp.DisableDelayId);
+        // Mini: active suit modules (ghost cloak, disguise) disable themselves on reveal.
+        var ev = new NinjaSuitRevealedEvent(uid, user);
+        RaiseLocalEvent(uid, ref ev);
+
+        if (disable)
+            _useDelay.TryResetDelay(uid, id: ent.Comp.DisableDelayId);
     }
 
     private void OnActivateAttempt(Entity<NinjaSuitComponent> ent, ref ItemToggleActivateAttemptEvent args)

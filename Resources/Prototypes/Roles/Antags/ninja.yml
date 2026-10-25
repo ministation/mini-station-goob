@@ -30,22 +30,10 @@
     ears: ClothingHeadsetNinja
     pocket1: SpiderCharge
     pocket2: PinpointerStation
-    belt: EnergyKatana
-  inhand:
-    - JetpackBlackFilled
-    - NinjutsuScroll # Goobstation
+    belt: ClothingBeltNinjaSheath # катана стартует в ножнах (ContainerFill)
   storage:
-    back: # belt holds katana so satchel has the tools for sabotaging things
-    - Crowbar
-    - Wrench
-    - Screwdriver
-    - Wirecutter
-    - Welder
-    - Multitool
-    - EmergencyMedipen
-    - Flare
-    - FoodSnackNutribrick
-    - DrinkWaterBottleFull
+    back:
+    - BoxMRE
 
 - type: chameleonOutfit
   id: NinjaChameleonOutfit

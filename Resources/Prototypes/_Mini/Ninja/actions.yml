@@ -1,0 +1,14 @@
+# Core Spider OS action, granted by the ninja suit.
+- type: entity
+  parent: BaseAction
+  id: ActionOpenNinjaOs
+  name: Spider OS
+  description: Open the suit operating system to configure modules and power.
+  components:
+  - type: Action
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: spider
+    priority: -13
+  - type: InstantAction
+    event: !type:OpenNinjaOsEvent

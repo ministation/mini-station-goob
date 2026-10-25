@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Shared._Mini.Ninja.Components;
 using Content.Shared.Ninja.Components;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Ranged.Events;
@@ -108,6 +109,10 @@ public abstract class SharedSpaceNinjaSystem : EntitySystem
     /// </summary>
     private void OnShotAttempted(Entity<SpaceNinjaComponent> ent, ref ShotAttemptedEvent args)
     {
+        // Mini: suit-integrated ninja weapons (shuriken emitter, johyo) are allowed.
+        if (HasComp<NinjaWeaponComponent>(args.Used))
+            return;
+
         Popup.PopupClient(Loc.GetString("gun-disabled"), ent, ent);
         args.Cancel();
     }

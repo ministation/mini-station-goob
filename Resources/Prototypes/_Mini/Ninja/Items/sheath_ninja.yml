@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ножны для энергокатаны ниндзя. Порт из Dead Space 14 (только YAML-данные прототипа, без кода).
+
+- type: entity
+  parent: [ ClothingBeltBase, ClothingSlotBase ]
+  id: ClothingBeltNinjaSheath
+  components:
+  - type: Sprite
+    sprite: _Mini/Ninja/Clothing/Belt/sheath_ninja.rsi
+    state: sheath
+  - type: Clothing
+    sprite: _Mini/Ninja/Clothing/Belt/sheath_ninja.rsi
+  - type: ItemSlots
+    slots:
+      item:
+        name: clothing-belt-ninja-sheath-slot
+        insertVerbText: sheath-insert-verb
+        ejectVerbText: sheath-eject-verb
+        insertSound: /Audio/Items/sheath.ogg
+        ejectSound: /Audio/Items/unsheath.ogg
+        whitelist:
+          components:
+          - EnergyKatana
+  - type: ItemMapper
+    mapLayers:
+      sheath-sabre:
+        whitelist:
+          components:
+          - EnergyKatana
+  - type: Appearance
+  - type: ContainerFill
+    containers:
+      item:
+      - EnergyKatana
+  - type: StaticPrice
+    price: 500

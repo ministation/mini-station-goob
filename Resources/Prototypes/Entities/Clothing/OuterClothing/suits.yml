@@ -247,33 +247,38 @@
         Slash: 0.8
         Piercing: 0.8
         Heat: 0.8
-  # phase cloak
-  - type: ToggleClothing
-    action: ActionTogglePhaseCloak
-    disableOnUnequip: true
-  - type: ComponentToggler
-    parent: true
-    components:
-    - type: Stealth
-      maxVisibility: 0.1
-      hadOutline: true
-      thermalsImmune: true # Goobstation
-    - type: StealthOnMove
-      invisibilityPenalty: 3
-      maxInvisibilityPenalty: 1.6
-      passiveVisibilityRate: -1 # cloak very fast
-      movementVisibilityRate: 0.15 # only some cloak if moving
-  - type: PowerCellDraw
-    drawRate: 3.6 # 100 seconds on the default cell # Goob edit
-  - type: ToggleCellDraw
-  # throwing star ability
-  - type: ItemCreator
-    action: ActionCreateThrowingStar
-    charge: 14.4
-    spawnedPrototype: ThrowingStarNinja
-    noPowerPopup: ninja-no-power
+  # Mini: reference parity resistances
+  - type: StaminaResistance
+    damageCoefficient: 0.5
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: Appearance
   # core ninja suit stuff
   - type: NinjaSuit
+  # Mini: Spider OS (three paths, module activation) and suit hardware marker
+  - type: NinjaOs
+  - type: NinjaSuitItem
+  # Mini: base suit modules (reference parity)
+  - type: NinjaAutoDust
+  - type: NinjaSelfHealthAnalyzer
+  - type: HealthAnalyzer
+  - type: NinjaSuitRefill
+    actionMaterials:
+      ActionNinjaHealingCocktail:
+        stack: Plasma
+        amount: 10
+      ActionNinjaAdrenal:
+        stack: Uranium
+        amount: 10
+  - type: Jetpack
+    requiresGas: false
+    toggleAction: NinjaActionToggleJetpack
+  - type: UserInterface
+    interfaces:
+      enum.NinjaOsUiKey.Key:
+        type: NinjaOsBoundUserInterface
+      enum.HealthAnalyzerUiKey.Key:
+        type: HealthAnalyzerBoundUserInterface
   - type: EmpResistance
     strengthMultiplier: 0
   - type: UseDelay
@@ -289,7 +294,7 @@
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
-        startingItem: PowerCellSmall
+        startingItem: PowerCellSmall # Mini: 1:1 with the reference (360 units)
         disableEject: true
         whitelist:
           tags:

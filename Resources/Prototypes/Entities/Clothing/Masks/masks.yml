@@ -957,6 +957,7 @@
   name: ninja mask
   description: A close-fitting nano-enhanced mask that acts both as an air filter and a post-modern fashion statement.
   components:
+  - type: NinjaSuitItem # Mini: Spider OS hardware
   - type: Sprite
     sprite: Clothing/Mask/ninja.rsi
   - type: Clothing

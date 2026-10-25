@@ -13,7 +13,7 @@ namespace Content.Server.Medical.Components;
 /// Requires <c>ItemToggleComponent</c>.
 /// </remarks>
 [RegisterComponent, AutoGenerateComponentPause]
-[Access(typeof(HealthAnalyzerSystem), typeof(CryoPodSystem))]
+[Access(typeof(HealthAnalyzerSystem), typeof(CryoPodSystem), typeof(Content.Server._Mini.Ninja.Base.HealthAnalyzer.NinjaSelfHealthAnalyzerSystem))]
 public sealed partial class HealthAnalyzerComponent : Component
 {
     /// <summary>

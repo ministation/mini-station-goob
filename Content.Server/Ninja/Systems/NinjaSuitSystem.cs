@@ -34,7 +34,6 @@ public sealed class NinjaSuitSystem : SharedNinjaSuitSystem
 
         SubscribeLocalEvent<NinjaSuitComponent, ContainerIsInsertingAttemptEvent>(OnSuitInsertAttempt);
         SubscribeLocalEvent<NinjaSuitComponent, RecallKatanaEvent>(OnRecallKatana);
-        SubscribeLocalEvent<NinjaSuitComponent, NinjaEmpEvent>(OnEmp);
     }
 
     protected override void NinjaEquipped(Entity<NinjaSuitComponent> ent, Entity<SpaceNinjaComponent> user)
@@ -138,22 +137,4 @@ public sealed class NinjaSuitSystem : SharedNinjaSuitSystem
         Popup.PopupEntity(Loc.GetString(message), user, user);
     }
 
-    private void OnEmp(Entity<NinjaSuitComponent> ent, ref NinjaEmpEvent args)
-    {
-        var (uid, comp) = ent;
-        args.Handled = true;
-
-        var user = args.Performer;
-        if (!_ninja.TryUseCharge(user, comp.EmpCharge))
-        {
-            Popup.PopupEntity(Loc.GetString("ninja-no-power"), user, user);
-            return;
-        }
-
-        // Goob edit
-        // if (CheckDisabled(ent, user))
-        //   return;
-
-        _emp.EmpPulse(Transform(user).Coordinates, comp.EmpRange, comp.EmpConsumption, comp.EmpDuration, user);
-    }
 }

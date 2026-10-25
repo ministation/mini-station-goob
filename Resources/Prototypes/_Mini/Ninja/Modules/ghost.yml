@@ -1,0 +1,300 @@
+# SPDX-FileCopyrightText: 2026 Mini Station
+# Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+
+# Ghost path modules (tier 1..5) of the ninja suit.
+
+# Tier 1: smoke screen.
+- type: ninjaModule
+  id: NinjaModuleGhostSmoke
+  path: Ghost
+  tier: 1
+  name: ninja-module-ghost-smoke
+  description: ninja-module-ghost-smoke-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: smoke
+  components:
+  - type: NinjaGhostSmoke
+    spreadAmount: 10
+    autoModeSpreadAmount: 5
+  actions:
+  - ActionNinjaGhostSmoke
+  - ActionNinjaGhostSmokeAuto
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaGhostSmoke
+  name: Smoke screen
+  description: Deploy a cloud of smoke that hides you from sight.
+  components:
+  - type: Action
+    useDelay: 3
+    itemIconStyle: BigAction
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: smoke
+  - type: InstantAction
+    event: !type:NinjaGhostSmokeEvent
+
+- type: entity
+  parent: BaseToggleAction
+  id: ActionNinjaGhostSmokeAuto
+  name: Automatic smoke
+  description: Deploy a weakened cloud automatically when using some other abilities.
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: BigAction
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: smokeauto-off
+    iconOn:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: smokeauto-on
+  - type: InstantAction
+    event: !type:NinjaGhostSmokeAutoToggleEvent
+
+# Stealth effect applied to the wearer while the ghost cloak is active.
+- type: entity
+  id: NinjaGhostCloakEffect
+  abstract: true
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Stealth
+    maxVisibility: 0.1
+    hadOutline: true
+    thermalsImmune: true
+  - type: StealthOnMove
+    invisibilityPenalty: 3
+    maxInvisibilityPenalty: 1.6
+    passiveVisibilityRate: -1
+    movementVisibilityRate: 0.15
+
+# Tier 2: phase cloak.
+- type: ninjaModule
+  id: NinjaModuleGhostCloak
+  path: Ghost
+  tier: 2
+  name: ninja-module-ghost-cloak
+  description: ninja-module-ghost-cloak-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: cloak
+  components:
+  - type: NinjaGhostCloak
+  actions:
+  - ActionNinjaGhostCloak
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaGhostCloak
+  name: Phase cloak
+  description: Turn invisible. The suit heats up while the cloak is active.
+  components:
+  - type: Action
+    useDelay: 10
+    itemIconStyle: BigAction
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: cloak
+  - type: InstantAction
+    event: !type:NinjaGhostCloakEvent
+
+# Tier 3: holographic clones.
+- type: ninjaModule
+  id: NinjaModuleGhostClones
+  path: Ghost
+  tier: 3
+  name: ninja-module-ghost-clones
+  description: ninja-module-ghost-clones-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: clones
+  components:
+  - type: NinjaGhostClones
+  actions:
+  - ActionNinjaGhostClones
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaGhostClones
+  name: Holographic clones
+  description: Create several holographic copies of yourself and swap places with one of them.
+  components:
+  - type: Action
+    useDelay: 5
+    itemIconStyle: BigAction
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: clones
+  - type: InstantAction
+    event: !type:NinjaGhostClonesEvent
+
+- type: entity
+  id: NinjaGhostHologram
+  name: holographic ninja clone
+  parent: SimpleSpaceMobBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    layers:
+    - state: clones
+  - type: NoSlip
+  - type: Magboots
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: NinjaGhostCloneCompound
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 6
+    baseSprintSpeed: 6
+    baseWeightlessModifier: 1
+  - type: MovementAlwaysTouching
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
+    angle: 0
+    attackRate: 1
+    animation: WeaponArcStatic
+    damage:
+      types:
+        Heat: 2.5
+  - type: MobState
+    allowedStates:
+    - Alive
+    - Dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      40: Dead
+  - type: NinjaGhostClone
+    cloningChance: 0.35
+    minSpawnRadius: 1
+    maxSpawnRadius: 2
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+    - FootstepSound
+  - type: TimedDespawn
+    lifetime: 5
+
+# Targeting of the holographic clones: random nearby hostile, mindshielded targets first.
+- type: htnCompound
+  id: NinjaGhostCloneCompound
+  branches:
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:NinjaGhostCloneTargetOperator
+            range: 10
+        - !type:HTNCompoundTask
+          task: NinjaGhostCloneAttackCompound
+    - tasks:
+        - !type:HTNCompoundTask
+          task: IdleCompound
+
+- type: htnCompound
+  id: NinjaGhostCloneAttackCompound
+  branches:
+    - preconditions:
+        - !type:KeyExistsPrecondition
+          key: Target
+      tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:MoveToOperator
+            shutdownState: PlanFinished
+            pathfindInPlanning: true
+            removeKeyOnFinish: false
+            targetKey: TargetCoordinates
+            pathfindKey: TargetPathfind
+            rangeKey: MeleeRange
+        - !type:HTNPrimitiveTask
+          operator: !type:MeleeOperator
+            targetKey: Target
+          preconditions:
+            - !type:KeyExistsPrecondition
+              key: Target
+            - !type:TargetInRangePrecondition
+              targetKey: Target
+              rangeKey: MeleeRange
+# Tier 4: chameleon.
+- type: ninjaModule
+  id: NinjaModuleGhostDisguise
+  path: Ghost
+  tier: 4
+  name: ninja-module-ghost-disguise
+  description: ninja-module-ghost-disguise-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: scanner
+  components:
+  - type: NinjaGhostDisguise
+  actions:
+  - ActionNinjaGhostDisguiseScan
+  - ActionNinjaGhostDisguiseMenu
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaGhostDisguiseScan
+  name: Appearance scanner
+  description: Scan a nearby crew member and save their appearance.
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+    priority: -14
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: scanner
+  - type: TargetAction
+    range: 2.5
+    interactOnMiss: false
+  - type: EntityTargetAction
+    event: !type:NinjaGhostDisguiseScanEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaGhostDisguiseMenu
+  name: Chameleon
+  description: Apply the last scanned appearance, or reset the current disguise.
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+    priority: -14
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: scanner
+  - type: InstantAction
+    event: !type:NinjaGhostDisguiseMenuEvent
+
+# Tier 5: spirit form.
+- type: ninjaModule
+  id: NinjaModuleGhostSpiritForm
+  path: Ghost
+  tier: 5
+  name: ninja-module-ghost-spiritform
+  description: ninja-module-ghost-spiritform-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: spiritform
+  components:
+  - type: NinjaGhostSpiritForm
+  actions:
+  - ActionNinjaGhostSpiritForm
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaGhostSpiritForm
+  name: Spirit form
+  description: Become a ghost that can pass through walls.
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: BigAction
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: spiritform
+  - type: InstantAction
+    event: !type:NinjaGhostSpiritFormEvent

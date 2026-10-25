@@ -1,0 +1,4 @@
+# Spider OS of the ninja suit: three paths, one module per tier.
+- type: ninjaOs
+  id: NinjaOs
+  maxTier: 5
