@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Chat.Managers;
 using Content.Server.Database;
+using Content.Server._Mini.Katorga;
 using Content.Server.GameTicking;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
@@ -232,11 +233,20 @@ public sealed partial class BanManager : IBanManager, IPostInjectInit
     {
         foreach (var player in _playerManager.Sessions)
         {
-            if (BanMatchesPlayer(player, def))
+            if (!BanMatchesPlayer(player, def))
+                continue;
+
+            // Mini Station: каторга. Временный бан онлайн-игроку не кикает его с сервера,
+            // а отправляет отбывать срок. Перманентные баны и админов кикаем как обычно.
+            var katorga = _systems.GetEntitySystemOrNull<KatorgaSystem>();
+            if (katorga != null && katorga.TryConfineOnBan(player, def))
             {
-                KickForBanDef(player, def);
-                _sawmill.Info($"Kicked player {player.Name} ({player.UserId}) through {source}");
+                _sawmill.Info($"Player {player.Name} ({player.UserId}) sent to katorga through {source}");
+                continue;
             }
+
+            KickForBanDef(player, def);
+            _sawmill.Info($"Kicked player {player.Name} ({player.UserId}) through {source}");
         }
     }
 

@@ -78,6 +78,7 @@ public sealed class KatorgaSystem : EntitySystem
     [Dependency] private readonly MindSystem _mind = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private readonly UserDbDataManager _userDbData = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -123,6 +124,9 @@ public sealed class KatorgaSystem : EntitySystem
         SubscribeLocalEvent<KillReportedEvent>(OnKillReported);
         SubscribeLocalEvent<GhostAttemptHandleEvent>(OnGhostAttempt);
         SubscribeLocalEvent<KatorgaOreProcessorComponent, MaterialEntityInsertedEvent>(OnOreInserted);
+
+        // После реконнекта бан перепроверяется заново: игрок мог получить бан, уже находясь в игре.
+        _userDbData.AddOnPlayerDisconnect(OnPlayerDisconnected);
     }
 
     public override void Update(float frameTime)
@@ -235,7 +239,19 @@ public sealed class KatorgaSystem : EntitySystem
             return;
 
         if (!_banCache.TryGetValue(ev.Player.UserId, out var ban))
-            return;
+        {
+            // Кэш не успел наполниться (быстрый заход из лобби): проверяем синхронно один раз,
+            // иначе забаненный успеет заспавниться на станции обычным игроком.
+            ban = LookupBindingBanSync(ev.Player);
+            if (ban == null)
+            {
+                _banCache.Remove(ev.Player.UserId);
+                return;
+            }
+
+            _banCache[ev.Player.UserId] = ban;
+            _expiry[ev.Player.UserId] = ban.ExpirationTime!.Value;
+        }
 
         // Отработанный (истёкший) бан не сажает: между проверками срок мог дотечь до конца.
         if (ban.ExpirationTime <= DateTimeOffset.UtcNow)
@@ -256,9 +272,10 @@ public sealed class KatorgaSystem : EntitySystem
 
         if (!_banCache.TryGetValue(ev.Player.UserId, out var ban))
         {
-            // Кэш ещё не собран (каторгу включили после входа игрока) — проверим один раз, асинхронно.
-            if (_banCacheChecked.Add(ev.Player.UserId))
-                _ = RefreshBanCacheAsync(ev.Player);
+            // Кэш пуст: игрок мог переподключиться в своё старое тело уже с баном,
+            // либо каторгу включили после его входа. Проверяем в фоне, результат применится
+            // на главном потоке: забаненного отправят на каторгу.
+            _ = RefreshBanCacheAsync(ev.Player);
             return;
         }
 
@@ -322,6 +339,7 @@ public sealed class KatorgaSystem : EntitySystem
     {
         // Всегда пишем срок текущего бана: прежнее значение могло остаться от старого бана.
         _expiry[session.UserId] = ban.ExpirationTime!.Value;
+        _banCache[session.UserId] = ban;
 
         if (_katorgaMapUid == null || _katorgaMap == null)
         {
@@ -428,6 +446,19 @@ public sealed class KatorgaSystem : EntitySystem
     }
 
     /// <summary>
+    ///     Онлайн-игрок только что получил бан. Если бан временный и каторга включена,
+    ///     вместо кика отправляем его отбывать срок. Пермабаны и админов не трогаем.
+    /// </summary>
+    public bool TryConfineOnBan(ICommonSession player, BanDef ban)
+    {
+        if (!Enabled || ban.ExpirationTime == null || _adminManager.IsAdmin(player))
+            return false;
+
+        SendToKatorga(player, ban);
+        return true;
+    }
+
+    /// <summary>
     ///     Отправляет заключённого на каторгу, если у него есть отрабатываемый бан (по данным кэша).
     /// </summary>
     public bool TryConfine(ICommonSession session)
@@ -462,6 +493,35 @@ public sealed class KatorgaSystem : EntitySystem
     #endregion
 
     #region Проверка банов
+
+    private void OnPlayerDisconnected(ICommonSession session)
+    {
+        // Следующий вход/аттач перепроверит баны заново.
+        _banCacheChecked.Remove(session.UserId);
+    }
+
+    /// <summary>
+    ///     Синхронный поиск отрабатываемого бана. Используется только как fallback в момент
+    ///     спавна, когда фоновый кэш ещё не успел наполниться.
+    /// </summary>
+    private BanDef? LookupBindingBanSync(ICommonSession session)
+    {
+        try
+        {
+            var address = session.Channel.RemoteEndPoint.Address;
+            var hwId = session.Channel.UserData.HWId.Length == 0
+                ? null
+                : (ImmutableArray<byte>?)session.Channel.UserData.HWId;
+            var modernHwIds = session.Channel.UserData.ModernHWIds;
+
+            return LookupBindingBanAsync(address, session.UserId, hwId, modernHwIds).GetAwaiter().GetResult();
+        }
+        catch (Exception e)
+        {
+            _sawmill.Error("Каторга: синхронная проверка бана не удалась: " + e.Message);
+            return null;
+        }
+    }
 
     /// <summary>
     ///     Асинхронно проверяет баны игрока и обновляет кэш. Единственное обращение каторги к базе:
