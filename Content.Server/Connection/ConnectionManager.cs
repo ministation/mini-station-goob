@@ -25,6 +25,7 @@ using Content.Goobstation.Common.CCVar;
 using Content.Corvax.Interfaces.Shared;
 using Content.Corvax.Interfaces.Server;
 using Content.Shared._CorvaxGoob.CCCVars; // CorvaxGoob - Queue
+using Content.Shared._Mini.MiniCCVars;
 
 /*
  * TODO: Remove baby jail code once a more mature gateway process is established. This code is only being issued as a stopgap to help with potential tiding in the immediate future.
@@ -241,9 +242,15 @@ namespace Content.Server.Connection
             var bans = await _db.GetBansAsync(addr, userId, hwId, modernHwid, includeUnbanned: false);
             if (bans.Count > 0)
             {
-                var firstBan = bans[0];
-                var message = firstBan.FormatBanMessage(_cfg, _loc);
-                return (ConnectionDenyReason.Ban, message, bans);
+                // Mini Station: каторга. Когда включена, вход разрешён игрокам, у которых все
+                // активные баны временные: они отработают срок на каторге (KatorgaSystem).
+                // Перманентные баны отработке не подлежат и запрещают вход как обычно.
+                if (!_cfg.GetCVar(MiniCCVars.KatorgaEnabled) || bans.Any(b => b.ExpirationTime == null))
+                {
+                    var firstBan = bans[0];
+                    var message = firstBan.FormatBanMessage(_cfg, _loc);
+                    return (ConnectionDenyReason.Ban, message, bans);
+                }
             }
 
             var adminData = await _db.GetAdminDataForAsync(e.UserId);

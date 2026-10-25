@@ -854,4 +854,24 @@ public sealed class MiniCCVars
     /// </summary>
     public static readonly CVarDef<bool> VoiceModsForEveryone =
         CVarDef.Create("voice.mods_for_everyone", true, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    ///     Включает систему каторги: игроки с активными временными банами могут зайти на сервер,
+    ///     но попадают на каторгу и сокращают срок добычей руды. Перманентные баны работают как обычно.
+    /// </summary>
+    public static readonly CVarDef<bool> KatorgaEnabled =
+        CVarDef.Create("mini.katorga.enabled", false, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Сколько секунд срока снимает одна единица цены добытой руды.
+    ///     <c>секунды = цена_руды / значение</c>, поэтому меньшее значение = щедрее.
+    /// </summary>
+    public static readonly CVarDef<double> KatorgaPointsToTime =
+        CVarDef.Create("mini.katorga.points_to_time", 0.01d, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     На сколько минут увеличивается срок за убийство сокамерника на каторге.
+    /// </summary>
+    public static readonly CVarDef<int> KatorgaKillPenaltyMinutes =
+        CVarDef.Create("mini.katorga.kill_penalty_minutes", 1440, CVar.SERVERONLY);
 }

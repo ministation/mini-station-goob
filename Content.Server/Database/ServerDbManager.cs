@@ -213,6 +213,12 @@ namespace Content.Server.Database
             DateTimeOffset editedAt);
 
         /// <summary>
+        ///     Меняет срок действия бана, не трогая автора правки и причину.
+        ///     Используется каторгой (KatorgaSystem) для сокращения срока отработкой.
+        /// </summary>
+        Task SetBanExpirationAsync(int id, DateTimeOffset? expiration);
+
+        /// <summary>
         /// Update ban exemption information for a player.
         /// </summary>
         /// <remarks>
@@ -678,6 +684,12 @@ namespace Content.Server.Database
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.EditBan(id, reason, severity, expiration, editedBy, editedAt));
+        }
+
+        public Task SetBanExpirationAsync(int id, DateTimeOffset? expiration)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SetBanExpirationAsync(id, expiration));
         }
 
         public Task UpdateBanExemption(NetUserId userId, ServerBanExemptFlags flags)

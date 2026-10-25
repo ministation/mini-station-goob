@@ -1,0 +1,69 @@
+# Биом астероида вокруг каторги. По мотивам gulag_biomes.yml сервера Amour
+# (frosty-dev/ss14-amour), адаптирован под прототипы Mini Station.
+- type: biomeTemplate
+  id: KatorgaBiome
+  layers:
+    - !type:BiomeEntityLayer
+      threshold: 0.85
+      noise:
+        seed: 2
+        noiseType: OpenSimplex2
+        fractalType: PingPong
+      allowedTiles:
+        - FloorAsteroidSand
+      entities:
+        - CrystalGreen
+        - CrystalPink
+        - CrystalOrange
+        - CrystalBlue
+        - CrystalCyan
+    - !type:BiomeEntityLayer
+      threshold: -0.5
+      invert: true
+      noise:
+        seed: 0
+        noiseType: Perlin
+        fractalType: Ridged
+        octaves: 1
+        frequency: 0.1
+        gain: 0.5
+      allowedTiles:
+        - FloorAsteroidSand
+      entities:
+        - KatorgaWallRock
+    - !type:BiomeDummyLayer
+      id: Loot
+    - !type:BiomeTileLayer
+      threshold: -1.0
+      tile: FloorAsteroidSand
+      variants:
+        - 0
+    - !type:BiomeTileLayer
+      threshold: 0.5
+      noise:
+        seed: 1
+        noiseType: OpenSimplex2
+        frequency: 2
+      tile: FloorAsteroidSand
+
+- type: entity
+  id: KatorgaWallRock
+  parent: WallRock
+  name: rock
+  suffix: planetmap
+  components:
+    - type: OreVein
+      oreChance: 0.25
+      oreRarityPrototypeId: RandomKatorgaOreDistributionStandard
+
+- type: weightedRandomOre
+  id: RandomKatorgaOreDistributionStandard
+  weights:
+    OreSteel: 10
+    OreCoal: 10
+    OreSpaceQuartz: 8
+    OreGold: 2
+    OrePlasma: 4
+    OreSilver: 1
+    OreUranium: 1
+    OreBananium: 0.5

@@ -4,6 +4,7 @@ using Content.Server._CorvaxGoob.Skills;
 using Content.Server._Mini.TypanWar;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
+using Content.Server._Mini.Katorga;
 using Content.Server.EUI;
 using Content.Server.GameTicking.Events;
 using Content.Server.Ghost.Roles.Components;
@@ -65,6 +66,7 @@ public sealed class GhostRoleSystem : EntitySystem
     [Dependency] private readonly SharedRoleSystem _roleSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
+    [Dependency] private readonly KatorgaSystem _katorga = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly SkillsSystem _skillsSystem = default!; // CorvaxGoob-Skills
     [Dependency] private readonly GhostSystem _ghost = default!; // CorvaxGoob-GhostBarMoreFeatures
@@ -517,6 +519,13 @@ public sealed class GhostRoleSystem : EntitySystem
         {
             if (player.AttachedEntity is { Valid: true } blockedEntity)
                 _popupSystem.PopupEntity(Loc.GetString("typan-war-ghost-roles-blocked"), blockedEntity, player);
+            return;
+        }
+
+        if (_katorga != null && _katorga.IsConfined(player))
+        {
+            if (player.AttachedEntity is { Valid: true } blockedEntity)
+                _popupSystem.PopupEntity(Loc.GetString("katorga-ghost-roles-blocked"), blockedEntity, player);
             return;
         }
 

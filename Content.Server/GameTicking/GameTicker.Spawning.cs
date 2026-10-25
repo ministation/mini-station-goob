@@ -12,6 +12,7 @@ using Content.Server.Speech.Components;
 using Content.Server.Station.Components;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
+using Content.Server._Mini.Katorga;
 using Content.Shared.GameTicking;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
@@ -40,6 +41,7 @@ namespace Content.Server.GameTicking
         [Dependency] private readonly IAdminManager _adminManager = default!;
         [Dependency] private readonly SharedJobSystem _jobs = default!;
         [Dependency] private readonly AdminSystem _admin = default!;
+        [Dependency] private readonly KatorgaSystem _katorga = default!;
         [Dependency] private readonly SkillsSystem _skills = default!; // CorvaxGoob-Skills
         [Dependency] private readonly TTStationHandleJobSystem _ttStationHandleJob = default!;
         [Dependency] private readonly TypanWarBalanceSystem _typanWarBalance = default!;
@@ -441,6 +443,15 @@ namespace Content.Server.GameTicking
             // Can't spawn players with a dummy ticker!
             if (DummyTicker)
                 return;
+
+            // Каторга: заключённый не может стать наблюдателем на общей карте,
+            // отправляем его отбывать срок (админы не ограничены).
+            if (_katorga.IsConfinedNonAdmin(player))
+            {
+                _katorga.TryConfine(player);
+                PlayerJoinGame(player, silent: true);
+                return;
+            }
 
             // Spawn before marking JoinedGame so a failed spawn never leaves the client
             // InGame with a null eye (black screen).
