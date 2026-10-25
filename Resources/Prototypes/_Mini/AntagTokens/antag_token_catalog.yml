@@ -287,6 +287,7 @@
       minimumPlayers: 20
       requiresInRound: true
       minimumTimeFromRoundStart: 1800
+      major: true
 
     - id: shadowling
       nameLocKey: antag-store-role-shadowling-name
@@ -299,6 +300,7 @@
       tagLocKey: antag-token-window-tag-queue
       minimumPlayers: 25
       requiresPreRoundLobby: true
+      major: true
 
     - id: xenomorph
       nameLocKey: antag-store-role-xenomorph-name
@@ -312,6 +314,7 @@
       minimumPlayers: 20
       requiresPreRoundLobby: true
       ignoresStationJob: true
+      major: true
 
     - id: mothership_core
       nameLocKey: antag-store-role-mothership-core-name
@@ -326,6 +329,7 @@
       minimumPlayers: 30
       requiresPreRoundLobby: true
       ignoresStationJob: true
+      major: true
 
     - id: yao
       nameLocKey: antag-store-role-yao-name
@@ -346,6 +350,7 @@
       ghostTagLocKey: antag-token-window-tag-ghost
       minimumPlayers: 25
       minimumTimeFromRoundStart: 2700
+      major: true
 
     - id: changeling
       nameLocKey: antag-store-role-changeling-name
@@ -359,6 +364,7 @@
       minimumPlayers: 25
       requiresPreRoundLobby: true
       speciesBlacklist: [IPC]
+      major: true
 
     - id: wraith
       nameLocKey: antag-store-role-wraith-name
@@ -373,6 +379,7 @@
       minimumPlayers: 30
       requiresInRound: true
       minimumTimeFromRoundStart: 2400
+      major: true
 
     - id: wizard
       nameLocKey: antag-store-role-wizard-name
@@ -387,6 +394,7 @@
       minimumPlayers: 30
       requiresInRound: true
       minimumTimeFromRoundStart: 2100
+      major: true
 
     - id: blob
       nameLocKey: antag-store-role-blob-name
@@ -401,3 +409,4 @@
       minimumPlayers: 30
       requiresInRound: true
       minimumTimeFromRoundStart: 2700
+      major: true

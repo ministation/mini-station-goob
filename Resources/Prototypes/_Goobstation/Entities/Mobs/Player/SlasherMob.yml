@@ -191,7 +191,7 @@
     - type: MobThresholds
       thresholds:
         0: Alive
-        150: Dead
+        120: Dead # Mini: -20% к живучести (было 150)
     - type: RandomMetadata
       nameSegments:
       - NamesSlasherTitle

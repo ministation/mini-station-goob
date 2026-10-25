@@ -84,6 +84,12 @@ public sealed partial class AntagTokenListingEntry
     [DataField]
     public string? GhostTagLocKey;
 
+    /// <summary>
+    /// Крупный антаг (дракон, блоб, визард...). Один на раунд на весь сервер.
+    /// </summary>
+    [DataField]
+    public bool Major;
+
     public AntagRoleDefinition ToDefinition()
     {
         return new AntagRoleDefinition(
@@ -109,7 +115,8 @@ public sealed partial class AntagTokenListingEntry
             RequiresPresetGameRuleId,
             IgnoresStationJob,
             GhostGameRuleId,
-            GhostTagLocKey);
+            GhostTagLocKey,
+            Major);
     }
 }
 

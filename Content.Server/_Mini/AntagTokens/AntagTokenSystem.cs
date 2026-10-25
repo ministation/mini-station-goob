@@ -88,6 +88,8 @@ public sealed class AntagTokenSystem : EntitySystem
     private readonly HashSet<string> _globallyClaimedGhostRoles = new(StringComparer.Ordinal);
     private readonly HashSet<string> _currentRoundPurchasedRoles = new(StringComparer.Ordinal);
     private readonly HashSet<string> _lastRoundPurchasedRoles = new(StringComparer.Ordinal);
+    // Mini: id купленного за раунд крупного антага (major: true). Один на раунд на весь сервер.
+    private string? _majorAntagPurchasedThisRound;
     private float _databaseSyncAccumulator;
     private float _lobbyDepositCapacityEnforceAccumulator;
     private float _onlineRewardAccumulator;
@@ -550,6 +552,13 @@ public sealed class AntagTokenSystem : EntitySystem
             return false;
         }
 
+        // Mini: крупный антаг уже куплен в этом раунде - другие крупные недоступны.
+        if (role.Major && _majorAntagPurchasedThisRound != null)
+        {
+            error = Loc.GetString("antag-store-status-major-taken");
+            return false;
+        }
+
         // Dual ghost projection clears AntagId; still enforce lobby antag playtime (e.g. yao → Nukeops).
         var playtimeAntagId = role.AntagId ?? catalogRole.AntagId;
         if (!string.IsNullOrWhiteSpace(playtimeAntagId) &&
@@ -671,6 +680,11 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingDepositQueuedAtUtc = DateTime.UtcNow;
             state.PendingDepositUsedRoleCredit = useRoleCredit;
             state.PendingDepositUsedFree = usePublicRoundFree;
+            if (role.Major)
+            {
+                _majorAntagPurchasedThisRound = role.Id;
+                BroadcastAntagTokenUiRefresh();
+            }
             PersistState(session.UserId, state);
             SendState(session.UserId);
             RaiseLocalEvent(new AntagTokenQueueChangedEvent());
@@ -692,6 +706,8 @@ public sealed class AntagTokenSystem : EntitySystem
             state.PendingGhostAutoQueuedAtUtc = DateTime.UtcNow;
             state.PendingGhostAutoUsedRoleCredit = useRoleCredit;
             state.PendingGhostAutoUsedFree = usePublicRoundFree;
+            if (role.Major)
+                _majorAntagPurchasedThisRound = role.Id;
         }
 
         var ruleStarted = false;
@@ -1183,6 +1199,7 @@ public sealed class AntagTokenSystem : EntitySystem
     {
         _ghostMinimumTimeRandomBonusByRole.Clear();
         _globallyClaimedGhostRoles.Clear();
+        _majorAntagPurchasedThisRound = null;
         _lastRoundPurchasedRoles.Clear();
         foreach (var roleId in _currentRoundPurchasedRoles)
             _lastRoundPurchasedRoles.Add(roleId);
@@ -1847,6 +1864,13 @@ public sealed class AntagTokenSystem : EntitySystem
         if (!purchased && HasConsumedTokenAntagGrantThisRound(userId))
         {
             statusLocKey = "antag-tokens-error-round-limit";
+            return false;
+        }
+
+        // Mini: крупный антаг уже куплен другим игроком - карточка помечается в магазине.
+        if (!purchased && role.Major && _majorAntagPurchasedThisRound != null)
+        {
+            statusLocKey = "antag-store-status-major-taken";
             return false;
         }
 
@@ -2525,6 +2549,9 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         }
 
         RefundRolePurchase(state, role, state.PendingDepositUsedRoleCredit, state.PendingDepositUsedFree);
+        // Mini: возврат крупного антага снова открывает покупку других крупных в этом раунде.
+        if (_majorAntagPurchasedThisRound == state.PendingDepositRoleId)
+            _majorAntagPurchasedThisRound = null;
         state.PendingDepositRoleId = null;
         state.PendingDepositQueuedAtUtc = null;
         state.PendingDepositUsedRoleCredit = false;
@@ -2851,6 +2878,8 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         if (!_listings.TryGetListing(pendingId, out var role))
         {
             ClearPendingGhostAuto(state);
+            if (_majorAntagPurchasedThisRound == pendingId)
+                _majorAntagPurchasedThisRound = null;
             if (_globallyClaimedGhostRoles.Remove(pendingId))
                 BroadcastAntagTokenUiRefresh();
             return;
@@ -2858,6 +2887,8 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
 
         RefundRolePurchase(state, role, state.PendingGhostAutoUsedRoleCredit, state.PendingGhostAutoUsedFree);
         ClearPendingGhostAuto(state);
+        if (_majorAntagPurchasedThisRound == pendingId)
+            _majorAntagPurchasedThisRound = null;
         if (_globallyClaimedGhostRoles.Remove(pendingId))
             BroadcastAntagTokenUiRefresh();
     }
