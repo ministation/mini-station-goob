@@ -147,6 +147,15 @@
         shader: unshaded
   - type: NoSlip
   - type: Magboots # always have gravity because le suction cups
+  - type: Armor # Mini: полный комплект ниндзя даёт броню на всю экипировку, видно в examine
+    coverage:
+    - Foot
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
   - type: ClothingSpeedModifier
     # ninja are masters of sneaking around relatively quickly, won't break cloak
     walkModifier: 1.3 # Goob Edit

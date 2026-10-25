@@ -107,6 +107,12 @@
   stage: 9
   ritualPrototypes:
   - AscensionAsh
+  # The heretic of the Ash path must not burn while getting the ascension ready,
+  # so the fire immunity is given as soon as the ascension ritual is bought.
+  event: !type:HereticAscensionAshEvent
+    addedComponents:
+    - type: FireImmunity
+    - type: SpecialHighTempImmunity
 
 - type: hereticKnowledge
   id: AshlordRite

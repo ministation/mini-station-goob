@@ -64,7 +64,8 @@
     sprite: Clothing/Eyes/Glasses/meson.rsi
   - type: Clothing
     sprite: Clothing/Eyes/Glasses/meson.rsi
-  # Goob - EyeProtection removed, mesons are T-ray scanners now
+  - type: EyeProtection # Mini: вернули защиту от сварки (Goob её убирал), protectionTime как у остальных очков
+    protectionTime: 5
   - type: IdentityBlocker
     coverage: EYES
   - type: Tag

@@ -913,6 +913,18 @@
     sprite: Clothing/Uniforms/Jumpsuit/ninja.rsi
   - type: Clothing
     sprite: Clothing/Uniforms/Jumpsuit/ninja.rsi
+  - type: Armor # Mini: полный комплект ниндзя даёт броню на всю экипировку, видно в examine
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95
+        Heat: 0.95
 
 - type: entity
   parent: [ClothingUniformBase, ClothingUniformFoldableBase] # Goob

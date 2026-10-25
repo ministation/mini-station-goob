@@ -492,6 +492,7 @@
     receiveFrequencyId: CrewMonitor
   - type: WirelessNetworkConnection
     range: 1200
+  - type: StationLimitedNetwork # Mini: консоль не должна принимать датчики чужой станции (ЦК)
 
 - type: entity
   parent: BaseComputerAiAccess

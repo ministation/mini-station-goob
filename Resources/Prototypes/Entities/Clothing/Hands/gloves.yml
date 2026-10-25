@@ -244,6 +244,16 @@
           True: {state: icon-green}
           False: {state: icon}
   - type: Insulated
+  - type: Armor # Mini: полный комплект ниндзя даёт броню на всю экипировку, видно в examine
+    coverage:
+    - Hand
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+        Shock: 0.8
   - type: Fiber
     fiberMaterial: fibers-nanomachines
   - type: FingerprintMask
@@ -423,6 +433,7 @@
     sprite: Clothing/Hands/Gloves/northstar.rsi
   - type: Clothing
     sprite: Clothing/Hands/Gloves/northstar.rsi
+  - type: Insulated # Mini: перчатки боевого стиля, изоляция как в референсе (в Goob-порте компонент потерялся)
   - type: MeleeWeapon
     autoAttack: true
     attackRate: 5

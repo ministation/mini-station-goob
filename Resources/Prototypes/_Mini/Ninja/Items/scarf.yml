@@ -15,3 +15,11 @@
   - type: NinjaAppearanceItem
     itemType: Scarf
   - type: NinjaSuitItem
+  - type: Armor # Mini: полный комплект ниндзя даёт броню на всю экипировку, видно в examine
+    coverage:
+    - Head
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95

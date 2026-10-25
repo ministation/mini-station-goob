@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Content.Server.Chat.Systems;
 using Content.Server.Radio;
 using Content.Shared._CorvaxGoob.TTS;
 using Robust.Shared.Enums;
@@ -46,7 +45,9 @@ public sealed partial class TTSSystem
             !TryComp<ActorComponent>(uid, out var actor))
             return;
 
-        if (IsInDirectSpeechRange(args.MessageSource, uid))
+        // Voice the radio message itself. Proximity does not matter: radio is heard by everyone
+        // on the channel, and radio speech is not spoken aloud, so there is no duplicate voice.
+        if (args.MessageSource == uid)
             return;
 
         if (!TryGetRadioVoice(args.MessageSource, out var speaker, out var pitch))
@@ -125,25 +126,6 @@ public sealed partial class TTSSystem
         {
             return message;
         }
-    }
-
-    private bool IsInDirectSpeechRange(EntityUid source, EntityUid receiver)
-    {
-        if (source == receiver)
-            return true;
-
-        // Cheap distance check only — Filter.Pvs() per radio listener was causing
-        // severe server lag when many players were on the same channel.
-        var xformQuery = GetEntityQuery<TransformComponent>();
-        if (!xformQuery.TryComp(source, out var sourceXform) ||
-            !xformQuery.TryComp(receiver, out var receiverXform) ||
-            sourceXform.MapID != receiverXform.MapID)
-            return false;
-
-        var sourcePos = _xforms.GetWorldPosition(sourceXform, xformQuery);
-        var receiverPos = _xforms.GetWorldPosition(receiverXform, xformQuery);
-        var range = ChatSystem.VoiceRange;
-        return (sourcePos - receiverPos).LengthSquared() <= range * range;
     }
 
     private void PruneRadioRequests(uint currentTick)
