@@ -37,7 +37,7 @@
                     </BoxContainer>
                 </PanelContainer>
                 <Control VerticalExpand="True"/>
-                <Button Name="CloseButton" Text="{Loc 'ninja-os-close'}"/>
+                <Button Name="NinjaCloseButton" Text="{Loc 'ninja-os-close'}"/>
             </BoxContainer>
         </BoxContainer>
         <PanelContainer Name="BootPanel" Visible="False" MinHeight="160" MaxHeight="200">

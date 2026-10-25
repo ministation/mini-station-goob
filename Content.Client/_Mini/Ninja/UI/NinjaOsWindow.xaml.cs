@@ -69,7 +69,7 @@ public sealed partial class NinjaOsWindow : FancyWindow
         _sprite = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<SpriteSystem>();
 
         PowerButton.OnPressed += _ => OnSuitPowerPressed?.Invoke();
-        CloseButton.OnPressed += _ => Close();
+        NinjaCloseButton.OnPressed += _ => Close();
 
         UpdatePower(false);
         StatusLabel.Text = Loc.GetString("ninja-os-loading");

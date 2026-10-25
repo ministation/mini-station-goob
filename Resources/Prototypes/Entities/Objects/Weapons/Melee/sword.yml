@@ -162,6 +162,10 @@
     severity: HighlyIllegal
   - type: Sprite
     sprite: Objects/Weapons/Melee/energykatana.rsi
+    layers: # Mini: MK14 sprite parity (glow layer)
+    - state: icon
+    - state: icon-unshaded
+      shader: unshaded
   - type: MeleeWeapon
     wideAnimationRotation: -60
     damage:
@@ -170,6 +174,15 @@
       woundSeverityMultipliers:
         Slash: 2
   - type: Item
+    inhandVisuals: # Mini: MK14 sprite parity (glow layer)
+      left:
+      - state: inhand-left
+      - state: inhand-left-unshaded
+        shader: unshaded
+      right:
+      - state: inhand-right
+      - state: inhand-right-unshaded
+        shader: unshaded
     storedSprite:
       state: storage
       sprite: Objects/Weapons/Melee/energykatana_storage_64x.rsi #Done in 64x64 because it looks way too puny in 32x32
