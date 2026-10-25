@@ -128,8 +128,9 @@ public sealed class MindSystem : SharedMindSystem
 
         if (mind.VisitingEntity != null)
         {
-            Log.Error($"Attempted to visit an entity ({ToPrettyString(entity)}) while already visiting another ({ToPrettyString(mind.VisitingEntity.Value)}).");
-            return;
+            // Mini: переключение визита (смена наблюдаемого, возврат временного разума) - не ошибка:
+            // закрываем предыдущий визит и продолжаем, иначе новый визит молча терялся.
+            UnVisit(mindId, mind);
         }
 
         if (HasComp<VisitingMindComponent>(entity))

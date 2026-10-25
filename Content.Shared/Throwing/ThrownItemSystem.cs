@@ -40,6 +40,7 @@ namespace Content.Shared.Throwing
             SubscribeLocalEvent<ThrownItemComponent, StartCollideEvent>(HandleCollision);
             SubscribeLocalEvent<ThrownItemComponent, PreventCollideEvent>(PreventCollision);
             SubscribeLocalEvent<ThrownItemComponent, ThrowEvent>(ThrowItem);
+            SubscribeLocalEvent<EntityTerminatingEvent>(OnThrowerTerminating); // Goob - don't network a thrower that is being deleted
 
             SubscribeLocalEvent<PullStartedMessage>(HandlePullStarted);
         }
@@ -95,6 +96,31 @@ namespace Content.Shared.Throwing
             // TODO: this isn't directed so things have to be done the bad way
             if (TryComp(message.PulledUid, out ThrownItemComponent? thrownItemComponent))
                 StopThrow(message.PulledUid, thrownItemComponent);
+        }
+
+        // Goob - a thrown item must not keep a reference to a thrower that is being deleted, the
+        // networked state would fail to resolve it on every PVS tick until the throw ends.
+        private void OnThrowerTerminating(ref EntityTerminatingEvent args)
+        {
+            if (!_netMan.IsServer)
+                return;
+
+            var terminated = args.Entity.Owner;
+            var query = EntityQueryEnumerator<ThrownItemComponent>();
+            while (query.MoveNext(out var uid, out var thrown))
+            {
+                if (thrown.Thrower != terminated)
+                    continue;
+
+                thrown.Thrower = null;
+                Dirty(uid, thrown);
+
+                if (TryComp(uid, out PredictedThrownItemComponent? predicted))
+                {
+                    predicted.Thrower = null;
+                    Dirty(uid, predicted);
+                }
+            }
         }
 
         public void StopThrow(EntityUid uid, ThrownItemComponent thrownItemComponent)

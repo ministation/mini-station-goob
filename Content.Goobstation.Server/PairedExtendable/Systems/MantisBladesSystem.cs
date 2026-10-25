@@ -74,14 +74,19 @@ public sealed partial class MantisBladesSystem : EntitySystem
 
     private void OnShutdown(Entity<MantisBladeArmComponent> ent, ref ComponentShutdown args)
     {
-        Del(ent.Comp.BladeUid);
-        Del(ent.Comp.ActionUid);
+        // Mini: клинок мог быть удалён вместе с рукой/телом, повторный Del пишет ошибку.
+        if (!TerminatingOrDeleted(ent.Comp.BladeUid))
+            Del(ent.Comp.BladeUid);
+        if (!TerminatingOrDeleted(ent.Comp.ActionUid))
+            Del(ent.Comp.ActionUid);
     }
 
     private void OnDetach(Entity<MantisBladeArmComponent> ent, ref BodyPartRemovedEvent args)
     {
-        Del(ent.Comp.BladeUid);
-        Del(ent.Comp.ActionUid);
+        if (!TerminatingOrDeleted(ent.Comp.BladeUid))
+            Del(ent.Comp.BladeUid);
+        if (!TerminatingOrDeleted(ent.Comp.ActionUid))
+            Del(ent.Comp.ActionUid);
     }
 
     private void OnEmpPulse(EntityUid uid, MantisBladeArmComponent comp, ref EmpPulseEvent args)

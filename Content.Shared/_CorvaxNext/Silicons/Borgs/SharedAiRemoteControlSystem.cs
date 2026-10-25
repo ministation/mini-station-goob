@@ -46,7 +46,9 @@ public abstract class SharedAiRemoteControlSystem : EntitySystem
         remoteComp.AiHolder = null;
         remoteComp.LinkedMind = null;
 
-        _xformSystem.SetCoordinates(stationAiCore.Comp.RemoteEntity.Value, Transform(entity).Coordinates);
+        // Mini: при удалении корпуса (OnShutdown) сущность уже Terminating - око ИИ туда не телепортируем.
+        if (!TerminatingOrDeleted(entity))
+            _xformSystem.SetCoordinates(stationAiCore.Comp.RemoteEntity.Value, Transform(entity).Coordinates);
 
         // Mini: если ИИ вошёл без платы B.O.R.I.S., убираем временную связь при выходе:
         // корпус снова обычный борг (можно эмагнуть, он не висит в списке устройств).

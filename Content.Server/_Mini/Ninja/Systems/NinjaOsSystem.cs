@@ -321,6 +321,11 @@ public sealed class NinjaOsSystem : SharedNinjaOsSystem
             if (TryComp<RetractableItemActionComponent>(contained, out var retractable))
                 _retractable.TryRetractRetractableItem(wearer, (contained, retractable));
 
+            // Действие могло быть уже снято другим путём (смена тела, повторная деактивация).
+            // RemoveProvidedAction для такого действия пишет ошибку "never attached".
+            if (!TryComp<ActionComponent>(contained, out var actionComp) || actionComp.AttachedEntity != wearer)
+                continue;
+
             _actions.RemoveProvidedAction(wearer, suitUid, contained);
         }
     }

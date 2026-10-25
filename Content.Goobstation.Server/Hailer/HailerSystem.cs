@@ -58,7 +58,12 @@ public sealed partial class HailerSystem : EntitySystem
     {
         if (args.SlotFlags == SlotFlags.MASK)
         {
-            _actionsSystem.RemoveAction(args.Equipee, component.HailActionEntity);
+            // Действие могло быть уже снято раньше (повторное снятие маски): не просим снять его снова.
+            if (TryComp<ActionComponent>(component.HailActionEntity, out var action)
+                && action.AttachedEntity == args.Equipee)
+            {
+                _actionsSystem.RemoveAction(args.Equipee, component.HailActionEntity);
+            }
         }
     }
 

@@ -36,6 +36,10 @@ public sealed partial class HasturDevourSystem : EntitySystem
 
     private void OnTryDevour(Entity<HasturDevourComponent> ent, ref HasturDevourEvent args)
     {
+        // Target can be gone by the time the event arrives, popups and do-afters need its transform.
+        if (TerminatingOrDeleted(args.Target))
+            return;
+
         // Stun the target first
         _stun.TryUpdateStunDuration(args.Target, ent.Comp.StunDuration);
 

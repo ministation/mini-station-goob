@@ -292,7 +292,7 @@ public sealed class SurveillanceCameraSystem : SharedSurveillanceCameraSystem
     {
         if (!Resolve(camera, ref component)
             || !component.Active
-            || !Resolve(player, ref actor))
+            || !Resolve(player, ref actor, false)) // Goob - Fix (disconnected viewers)
         {
             return;
         }

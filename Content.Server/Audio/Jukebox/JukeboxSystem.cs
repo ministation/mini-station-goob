@@ -117,6 +117,13 @@ public sealed class JukeboxSystem : SharedJukeboxSystem
         var query = EntityQueryEnumerator<JukeboxComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
+            // The audio stream entity is deleted once the song ends, don't keep a stale uid in networked state.
+            if (comp.AudioStream is { } audioStream && TerminatingOrDeleted(audioStream))
+            {
+                comp.AudioStream = null;
+                Dirty(uid, comp);
+            }
+
             if (comp.Selecting)
             {
                 comp.SelectAccumulator += frameTime;

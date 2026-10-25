@@ -95,6 +95,12 @@ public sealed class AntagTokenSystem : EntitySystem
     /// </summary>
     private readonly ConcurrentDictionary<NetUserId, int> _pendingPersists = new();
 
+    /// <summary>
+    /// Serializes persist passes per player: two overlapping passes both see a row as missing and
+    /// the losing insert hits the unique index on (player, token).
+    /// </summary>
+    private readonly ConcurrentDictionary<NetUserId, SemaphoreSlim> _persistGates = new();
+
     private readonly Dictionary<NetUserId, int?> _sponsorLevelOverrides = new();
     private readonly Dictionary<NetUserId, OnlineRewardState> _onlineRewards = new();
     private readonly HashSet<NetUserId> _roundGrantedLobbyAntag = new();
@@ -2364,7 +2370,21 @@ public sealed class AntagTokenSystem : EntitySystem
         return true;
     }
 
-private async Task PersistStateAsync(NetUserId userId, PlayerTokenState state)
+    private async Task PersistStateAsync(NetUserId userId, PlayerTokenState state)
+    {
+        var gate = _persistGates.GetOrAdd(userId, static _ => new SemaphoreSlim(1, 1));
+        await gate.WaitAsync();
+        try
+        {
+            await PersistStateCoreAsync(userId, state);
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
+private async Task PersistStateCoreAsync(NetUserId userId, PlayerTokenState state)
 {
     var tasks = new List<Task>
     {

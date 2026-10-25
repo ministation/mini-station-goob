@@ -275,7 +275,9 @@ public sealed partial class ActivatableUISystem : EntitySystem
         RaiseLocalEvent(uiEntity, bae);
 
         SetCurrentSingleUser(uiEntity, user, aui);
-        _uiSystem.OpenUi(uiEntity, aui.Key, user);
+        // The open can be cancelled (range/access checks), don't leave a stale single-user lock behind.
+        if (!_uiSystem.TryOpenUi(uiEntity, aui.Key, user))
+            SetCurrentSingleUser(uiEntity, null, aui);
 
         //Let the component know a user opened it so it can do whatever it needs to do
         var aae = new AfterActivatableUIOpenEvent(user);

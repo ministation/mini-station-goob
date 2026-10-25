@@ -436,7 +436,9 @@ internal sealed partial class ChatManager : IChatManager
         var clients = new List<INetChannel>();
         foreach (var recipient in filter.Recipients)
         {
-            clients.Add(recipient.Channel);
+            // Filters can keep sessions that already disconnected, never send to their closed channel.
+            if (recipient.Channel.IsConnected)
+                clients.Add(recipient.Channel);
         }
 
         ChatMessageToMany(channel, message, wrappedMessage, source, hideChat, recordReplay, clients, colorOverride, audioPath, audioVolume);

@@ -12,8 +12,9 @@ public sealed partial class SlaughterDemonComponent : Component
 {
     /// <summary>
     /// The list of mobs that the entity has devoured/consumed.
+    /// Server-only, not networked.
     /// </summary>
-    [DataField, AutoNetworkedField]
+    [DataField]
     public List<EntityUid> ConsumedMobs { get; set; } = new();
 
     /// <summary>

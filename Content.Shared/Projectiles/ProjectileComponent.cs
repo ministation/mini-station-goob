@@ -115,8 +115,10 @@ public sealed partial class ProjectileComponent : Component
     [DataField(customTypeSerializer: typeof(FlagSerializer<CollisionMask>))]
     public int NoPenetrateMask = 0;
 
-    [AutoNetworkedField] // Trauma - networked for prediction
-    public List<EntityUid> IgnoredEntities = new();
+    // Trauma - networked for prediction. NetEntity, not EntityUid, so that entities deleted
+    // after this list is filled don't spam resolve errors every PVS tick.
+    [AutoNetworkedField]
+    public List<NetEntity> IgnoredEntities = new();
 
     [DataField]
     public Vector2 TargetCoordinates;
