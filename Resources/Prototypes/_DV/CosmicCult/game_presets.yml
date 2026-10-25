@@ -8,7 +8,7 @@
   #cooldown: 1
   rules:
     - CosmicCult
-    - SubGamemodesRule
+    - SubGamemodesRuleNoWizardNoXenoborg # Mini: only Thief as sub-antag in cosmic cult
     #- MeteorSwarmScheduler - Goob Edit
     - SpaceTrafficControlEventScheduler
     - BasicRoundstartVariation
@@ -24,7 +24,7 @@
   showInVote: false
   rules:
     - CosmicCult
-    - SubGamemodesRule
+    - SubGamemodesRuleNoWizardNoXenoborg # Mini: only Thief as sub-antag in cosmic cult
     #- MeteorSwarmScheduler - Goob Edit
     - SpaceTrafficControlEventScheduler
     - BasicRoundstartVariation

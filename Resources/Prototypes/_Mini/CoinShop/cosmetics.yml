@@ -1,13 +1,13 @@
 # Магазин за монетки: косметика (выдаётся с собой каждый раунд, экип в слот)
-# Ценовая политика: единый индекс около +12% к прежним ценам (столько даёт разовый
-# пул наград за достижения). Цены до 50 округляются до 5, от 50 до 10.
+# Ценовая политика: единый индекс около +20% к прежним ценам (поднято повторно).
+# Цены от 15 до 99 округляются до кратных 5, от 100 до кратных 10.
 - type: coinCosmetic
   id: CoinHatBowler
   icon: "Clothing/Head/Hats/bowler_hat.rsi"
   name: Шляпа-боулер
   item: ClothingHeadHatBowlerHat
   slot: head
-  price: 20
+  price: 25
   order: 1
   rarity: Common
 
@@ -17,7 +17,7 @@
   name: Феска
   item: ClothingHeadHatFez
   slot: head
-  price: 20
+  price: 25
   order: 2
   rarity: Common
 
@@ -27,7 +27,7 @@
   name: Французский берет
   item: ClothingHeadHatBeretFrench
   slot: head
-  price: 20
+  price: 25
   order: 3
   rarity: Common
 
@@ -37,7 +37,7 @@
   name: Плащ мотылька
   item: ClothingNeckCloakMoth
   slot: neck
-  price: 20
+  price: 25
   order: 4
   rarity: Common
 
@@ -47,7 +47,7 @@
   name: Коричневая федора
   item: ClothingHeadHatFedoraBrown
   slot: head
-  price: 35
+  price: 40
   order: 5
   rarity: Rare
 
@@ -57,7 +57,7 @@
   name: Шляпа outlaw
   item: ClothingHeadHatOutlawHat
   slot: head
-  price: 35
+  price: 40
   order: 6
   rarity: Rare
 
@@ -67,7 +67,7 @@
   name: Плащ голиафа
   item: ClothingNeckCloakGoliathCloak
   slot: neck
-  price: 35
+  price: 40
   order: 7
   rarity: Rare
 
@@ -77,7 +77,7 @@
   name: Ведьминская шляпа
   item: ClothingHeadHatWitch1
   slot: head
-  price: 35
+  price: 40
   order: 8
   rarity: Rare
 
@@ -87,7 +87,7 @@
   name: Плащ Нанотрайзен
   item: ClothingNeckCloakNanotrasen
   slot: neck
-  price: 50
+  price: 60
   order: 9
   rarity: Epic
 
@@ -97,7 +97,7 @@
   name: Шляпа чумного доктора
   item: ClothingHeadHatPlaguedoctor
   slot: head
-  price: 50
+  price: 60
   order: 10
   rarity: Epic
 
@@ -107,7 +107,7 @@
   name: Плащ пирата
   item: ClothingNeckCloakPirateCap
   slot: neck
-  price: 50
+  price: 60
   order: 11
   rarity: Epic
 
@@ -117,7 +117,7 @@
   name: Пустотный плащ
   item: ClothingNeckCloakVoid
   slot: neck
-  price: 70
+  price: 85
   order: 12
   rarity: Legendary
 
@@ -127,7 +127,7 @@
   name: Плащ великого утилизатора
   item: ClothingNeckCloakSalvagerSupreme
   slot: neck
-  price: 70
+  price: 85
   order: 13
   rarity: Legendary
 
@@ -137,6 +137,6 @@
   name: Плащ герольда
   item: ClothingNeckCloakHerald
   slot: neck
-  price: 70
+  price: 85
   order: 14
   rarity: Legendary

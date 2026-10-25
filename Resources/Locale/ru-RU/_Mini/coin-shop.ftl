@@ -22,7 +22,7 @@ coin-shop-color-select = Выбрать
 
 coin-shop-lootbox-description = Случайный предмет из каталога. Дубликат вернёт часть монет.
 
-coin-shop-lootbox-button = Открыть за 30
+coin-shop-lootbox-button = Открыть за 35
 
 coin-shop-roll-new = Из ящика выпало: {$item} ({$rarity})!
 

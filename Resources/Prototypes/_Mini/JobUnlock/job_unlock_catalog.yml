@@ -3,22 +3,23 @@
 #
 # Досрочное открытие профессий за монетки антаг-меню.
 # Цена: ceil(оставшееся_время_ч / hoursPerCoinStep) * coinsPerStep, не ниже minCost и не выше maxCost тира.
-# command: true - commandCoinsPerStep (4 монетки за 3.5 часа), иначе regularCoinsPerStep (2 монетки за 3.5 часа).
+# command: true - commandCoinsPerStep (4 монетки за 2.9 часа), иначе regularCoinsPerStep (2 монетки за 2.9 часа).
+# Поднято ещё на +20%: шаг 2.9 часа вместо 3.5, minCost 2, maxCost тиров пересчитаны.
 
 - type: jobUnlockCatalog
   id: Default
   pricing:
-    hoursPerCoinStep: 3.5
-    minCost: 1
+    hoursPerCoinStep: 2.9
+    minCost: 2
     regularCoinsPerStep: 2
     commandCoinsPerStep: 4
   defaultTier:
-    maxCost: 20
+    maxCost: 25
     command: false
   tiers:
     # --- Командование ---
     - jobs: [Captain]
-      maxCost: 60
+      maxCost: 70
       command: true
     - jobs:
         - HeadOfSecurity
@@ -28,25 +29,25 @@
         - Quartermaster
         - HeadOfPersonnel
         - NanotrasenRepresentative
-      maxCost: 50
+      maxCost: 60
       command: true
     - jobs: [BlueshieldOfficer]
-      maxCost: 110
+      maxCost: 130
       command: true
     - jobs: [NanotrasenCareerTrainer]
-      maxCost: 40
+      maxCost: 50
       command: true
 
     # --- Юридический / особые ---
     - jobs: [Magistrate]
-      maxCost: 35
+      maxCost: 40
       command: true
     - jobs: [Lawyer]
-      maxCost: 30
+      maxCost: 35
       command: false
   # ОТК - руководитель техобеспечения (Typan)
     - jobs: [TypanTechnicalOperationsSupervisor]
-      maxCost: 60
+      maxCost: 70
       command: true
 
     # --- Служба безопасности ---
@@ -58,7 +59,7 @@
         - Pilot
         - WardenHelper
         - SecurityCadet
-      maxCost: 30
+      maxCost: 35
       command: false
 
     # --- Инженерия / атмос ---
@@ -66,7 +67,7 @@
         - StationEngineer
         - AtmosphericTechnician
         - TechnicalAssistant
-      maxCost: 25
+      maxCost: 30
       command: false
 
     # --- Медицина ---
@@ -78,7 +79,7 @@
         - Virologist
         - Psychologist
         - MedicalIntern
-      maxCost: 25
+      maxCost: 30
       command: false
 
     # --- Наука ---
@@ -86,7 +87,7 @@
         - Scientist
         - Roboticist
         - ResearchAssistant
-      maxCost: 25
+      maxCost: 30
       command: false
 
     # --- Снабжение ---
@@ -95,18 +96,18 @@
         - SalvageSpecialist
         - ShaftMiner
         - Bitrunner
-      maxCost: 25
+      maxCost: 30
       command: false
 
     # --- Синдикат (Typan) ---
     - jobs: [TypanCommander]
-      maxCost: 45
+      maxCost: 55
       command: true
     - jobs:
         - TypanResearchDirector
         - TypanMedic
         - TypanPatrol
-      maxCost: 35
+      maxCost: 40
       command: false
     - jobs:
         - TypanAtmosTech
@@ -114,13 +115,13 @@
         - TypanCargotech
         - TypanChef
         - TypanScience
-      maxCost: 20
+      maxCost: 25
       command: false
 
     # --- По весу (остальные гражданские) ---
-    - maxCost: 25
+    - maxCost: 30
       minWeight: 15
       command: false
-    - maxCost: 20
+    - maxCost: 25
       minWeight: 5
       command: false

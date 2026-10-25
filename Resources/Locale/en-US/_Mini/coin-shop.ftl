@@ -22,7 +22,7 @@ coin-shop-color-select = Select
 
 coin-shop-lootbox-description = A random item from the catalog. Duplicates refund part of the coins.
 
-coin-shop-lootbox-button = Open for 30
+coin-shop-lootbox-button = Open for 35
 
 coin-shop-roll-new = The crate dropped: {$item} ({$rarity})!
 
