@@ -74,6 +74,10 @@ public sealed class DailyQuestReplaceNoChargeTest
 
         Assert.That(balanceBefore, Is.EqualTo(5),
             "A rejected quest replacement must not spend the player's coins");
+
+        // Return the pair through the clean path. A dirty return only warns, but CI runs the
+        // integration suite with NUnit.MapWarningTo=Failed, so the warning fails the test.
+        await pair.CleanReturnAsync();
     }
 
     private static void SeedQuestState(DailyQuestSystem quests, ICommonSession session, string questId, int progress)
