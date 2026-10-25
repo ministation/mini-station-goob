@@ -183,11 +183,11 @@
   description: A premium, semi-automatic shotgun platform designed for law enforcement and counter-terrorism use. Reliable as a pump action, even in extreme conditions. Loads 7 rounds of 12 Gauge. # Goobstation
   components: # intend for Enforcer to have wider choke for semi-auto function
   - type: Sprite
-    sprite: _Goobstation/Objects/Weapons/Guns/Shotguns/enforcer.rsi #GoobStation resprite
+    sprite: Objects/Weapons/Guns/Shotguns/enforcer.rsi
   - type: Clothing
-    sprite: _Goobstation/Objects/Weapons/Guns/Shotguns/enforcer.rsi #GoobStation resprite
+    sprite: Objects/Weapons/Guns/Shotguns/enforcer.rsi
   - type: Item
-    sprite: _Goobstation/Objects/Weapons/Guns/Shotguns/enforcer.rsi #GoobStation resprite
+    sprite: Objects/Weapons/Guns/Shotguns/enforcer_inhands_64x.rsi
     shape: # Goobstation
     - 0,0,4,1
   - type: BallisticAmmoProvider
@@ -210,11 +210,11 @@
   description: An old and faithful pump action, the Kammerer is cheap, light, and would probably still function if you left it in the burn chamber for a week. Popular for civilian use, and loved by NanoTrasen for its minuscule price tag. Loads 7 rounds of 12 Gauge. # Goobstation
   components: # intend for Kammerer to have tighter choke for slower fire rate and/or manual cycling
   - type: Item
-    sprite: _Goobstation/Objects/Weapons/Guns/Shotguns/pump.rsi #GoobStation resprite
+    sprite: Objects/Weapons/Guns/Shotguns/pump_inhands_64x.rsi
   - type: Sprite
-    sprite: _Goobstation/Objects/Weapons/Guns/Shotguns/pump.rsi #GoobStation resprite
+    sprite: Objects/Weapons/Guns/Shotguns/pump.rsi
   - type: Clothing
-    sprite: _Goobstation/Objects/Weapons/Guns/Shotguns/pump.rsi #GoobStation resprite
+    sprite: Objects/Weapons/Guns/Shotguns/pump.rsi
   - type: GunRequiresWield #remove when inaccuracy on spreads is fixed
   - type: Gun
     # fireRate: 1 # goob
