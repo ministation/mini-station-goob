@@ -82,7 +82,9 @@
     # Applied to the wearer while the cloak is active.
     cloakComponents:
     - type: Stealth
-      maxVisibility: 0.1
+      # Mini: full invisibility for everyone but the wearer, even while moving. The stealth shader
+      # keeps a readable distortion for the cloaked player only (see client StealthSystem).
+      maxVisibility: 0
       hadOutline: true
       thermalsImmune: true
     - type: StealthOnMove

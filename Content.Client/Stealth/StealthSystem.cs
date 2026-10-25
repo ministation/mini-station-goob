@@ -122,8 +122,10 @@ public sealed class StealthSystem : SharedStealthSystem
         var parentXform = Transform(parent);
         var reference = args.Viewport.WorldToLocal(_transformSystem.GetWorldPosition(parentXform));
         reference.X = -reference.X;
-        var visibility = GetVisibility(uid, component);
-        if (_player.LocalEntity == uid &&
+        var visibleToLocal = IsVisibleToLocalPlayer(uid);
+        var visibility = GetRenderedVisibility(GetVisibility(uid, component), visibleToLocal);
+
+        if (visibleToLocal &&
             TryComp<SlasherIncorporealComponent>(uid, out var slasher) &&
             slasher.IsIncorporeal)
         {
@@ -140,5 +142,46 @@ public sealed class StealthSystem : SharedStealthSystem
 
         visibility = MathF.Max(0, visibility);
         _sprite.SetColor((uid, args.Sprite), new Color(visibility, visibility, 1, 1));
+    }
+
+    /// <summary>
+    /// Visibility that actually gets rendered for one client. Fully hidden sprites leave a distortion
+    /// smear on the screen, which is how other players used to spot an "invisible" entity: show that
+    /// effect only to the entity's own player, and render untouched screen (nothing at all) for everyone
+    /// else. At -1.5 the shader's distortion is zero, so the sprite blends into the background.
+    /// </summary>
+    public static float GetRenderedVisibility(float visibility, bool visibleToLocalPlayer)
+    {
+        if (visibility > 0f)
+            return visibility;
+
+        return visibleToLocalPlayer ? MathF.Max(visibility, -0.5f) : -1.5f;
+    }
+
+    /// <summary>
+    /// Whether the local player is the cloaked entity itself, or holds/contains it. Used to keep the
+    /// distortion effect readable for the cloaked player while everyone else sees nothing.
+    /// </summary>
+    private bool IsVisibleToLocalPlayer(EntityUid uid)
+    {
+        if (_player.LocalEntity is not { } local)
+            return false;
+
+        if (local == uid)
+            return true;
+
+        for (var current = Transform(local).ParentUid; current.IsValid(); current = Transform(current).ParentUid)
+        {
+            if (current == uid)
+                return true;
+        }
+
+        for (var current = Transform(uid).ParentUid; current.IsValid(); current = Transform(current).ParentUid)
+        {
+            if (current == local)
+                return true;
+        }
+
+        return false;
     }
 }

@@ -74,8 +74,10 @@ public sealed class NinjaGhostAbilitiesTest
             "The cloak did not add a StealthComponent to the wearer");
         var stealth = entMan.GetComponent<StealthComponent>(human);
         var visibility = stealthSystem.GetVisibility(human, stealth);
-        Assert.That(visibility, Is.LessThan(0.5f),
-            $"The wearer stayed visible after cloaking (visibility {visibility})");
+        Assert.That(stealth.MaxVisibility, Is.LessThanOrEqualTo(0f),
+            "The cloak must not allow any visibility, otherwise moving would leave a visible shimmer");
+        Assert.That(visibility, Is.LessThanOrEqualTo(0f),
+            $"The wearer stayed visible to other players after cloaking (visibility {visibility})");
 
         await server.WaitPost(() => actions.PerformAction((human, default(ActionsComponent)), cloakAction));
         await server.WaitRunTicks(2);

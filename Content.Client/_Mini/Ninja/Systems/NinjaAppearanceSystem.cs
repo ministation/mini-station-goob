@@ -3,6 +3,7 @@
 
 using System.Linq;
 using Content.Client.Clothing;
+using Content.Client.Items.Systems;
 using Content.Shared._Mini.Ninja.Appearance;
 using Content.Shared.Clothing;
 using Content.Shared.Hands;
@@ -52,7 +53,8 @@ public sealed class NinjaAppearanceSystem : EntitySystem
         SubscribeLocalEvent<NinjaAppearanceItemComponent, AppearanceChangeEvent>(OnItemAppearanceChanged);
         SubscribeLocalEvent<NinjaAppearanceItemComponent, GetEquipmentVisualsEvent>(OnGetEquipmentVisuals,
             after: new[] { typeof(ClientClothingSystem) });
-        SubscribeLocalEvent<NinjaAppearanceItemComponent, GetInhandVisualsEvent>(OnGetInhandVisuals);
+        SubscribeLocalEvent<NinjaAppearanceItemComponent, GetInhandVisualsEvent>(OnGetInhandVisuals,
+            after: new[] { typeof(ItemSystem) });
     }
 
     private void OnSuitState(Entity<NinjaAppearanceComponent> ent, ref AfterAutoHandleStateEvent args)
