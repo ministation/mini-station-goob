@@ -307,20 +307,7 @@ public sealed class DailyQuestSystem : EntitySystem
             return;
         }
 
-        var paidReplace = false;
-        if (state.DailyReplaceUsed)
-        {
-            if (!_antagTokens.TrySpendBalance(session.UserId, PaidReplaceCost, out _))
-            {
-                DenyQuestReplace(session, questId,
-                    Loc.GetString("daily-quest-replace-denied-coins", ("cost", PaidReplaceCost)),
-                    "insufficient-balance");
-                return;
-            }
-
-            paidReplace = true;
-        }
-
+        // Validate the request before charging: a denied replacement must not eat coins.
         if (!CanReplaceSlot(state, slot, proto))
         {
             var detail = IsTimeBasedQuest(proto)
@@ -336,6 +323,20 @@ public sealed class DailyQuestSystem : EntitySystem
         {
             DenyQuestReplace(session, questId, Loc.GetString("daily-quest-replace-empty-pool"), "empty-pool");
             return;
+        }
+
+        var paidReplace = false;
+        if (state.DailyReplaceUsed)
+        {
+            if (!_antagTokens.TrySpendBalance(session.UserId, PaidReplaceCost, out _))
+            {
+                DenyQuestReplace(session, questId,
+                    Loc.GetString("daily-quest-replace-denied-coins", ("cost", PaidReplaceCost)),
+                    "insufficient-balance");
+                return;
+            }
+
+            paidReplace = true;
         }
 
         slot.QuestId = pick;
