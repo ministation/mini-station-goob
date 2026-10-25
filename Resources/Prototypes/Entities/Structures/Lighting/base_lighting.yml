@@ -59,10 +59,11 @@
         layer:
         - TabletopMachineLayer
   - type: Destructible
+    # mini-station: настенные светильники прочнее в 3 раза (было 50/200)
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 200
+        damage: 600
       behaviors: #excess damage, don't spawn entities.
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -71,7 +72,7 @@
           collection: GlassBreak
     - trigger:
         !type:DamageTrigger
-        damage: 50
+        damage: 150
       behaviors:
       - !type:EmptyAllContainersBehaviour
       - !type:SpawnEntitiesBehavior
@@ -290,16 +291,17 @@
     - type: Damageable
       damageContainer: Inorganic
     - type: Destructible
+      # mini-station: малые светильники прочнее в 3 раза (было 25/100)
       thresholds:
       - trigger:
           !type:DamageTrigger
-          damage: 100
+          damage: 300
         behaviors: #excess damage, don't spawn entities.
         - !type:DoActsBehavior
           acts: [ "Destruction" ]
       - trigger:
           !type:DamageTrigger
-          damage: 25
+          damage: 75
         behaviors:
         - !type:EmptyAllContainersBehaviour
         - !type:SpawnEntitiesBehavior
@@ -485,10 +487,11 @@
     graph: LightFixture
     node: emergencyLight
   - type: Destructible
+    # mini-station: аварийные светильники прочнее в 3 раза (было 25/100)
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 100
+        damage: 300
       behaviors: #excess damage, don't spawn entities.
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -497,7 +500,7 @@
           collection: GlassBreak
     - trigger:
         !type:DamageTrigger
-        damage: 25
+        damage: 75
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
