@@ -19,17 +19,19 @@
     angle: 38
     animationRotation: -45
     wideAnimationRotation: -135
+    # Mini: -20% урона (было 15)
     damage:
       types:
-        Slash: 15
+        Slash: 12
     soundHit:
       path: /Audio/_Goobstation/Weapons/Melee/slashermachetehit.ogg
       params:
         volume: -6
+  # Mini: -20% урона в полёте (было 30)
   - type: DamageOtherOnHit
     damage:
       types:
-        Slash: 30
+        Slash: 24
   - type: Item
     size: Large
     storedSprite:

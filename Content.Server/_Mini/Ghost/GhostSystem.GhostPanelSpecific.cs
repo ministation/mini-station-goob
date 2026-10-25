@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared._Mini.Ghost;
+using Content.Shared.Bed.Cryostorage;
 using Content.Shared.Ghost;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Components;
@@ -56,6 +57,10 @@ public sealed partial class GhostSystem
         {
             var isGhost = HasComp<GhostComponent>(uid);
             var isMob = HasComp<MobStateComponent>(uid);
+
+            // Mini: ушедшие в криосторедж (в капсуле или уже на пауз-мапе) - не цель для телепорта.
+            if (HasComp<CryostorageContainedComponent>(uid))
+                continue;
 
             if (!IsEntityPanelRelevant(uid, isGhost, isMob))
                 continue;
@@ -133,6 +138,10 @@ public sealed partial class GhostSystem
         {
             // Пустые оболочки без активного игрока не показываем в телепорте.
             if (!TryComp<MindContainerComponent>(uid, out var mindContainer) || !mindContainer.HasMind)
+                continue;
+
+            // Mini: антагонист в криосторедже тоже не цель для телепорта.
+            if (HasComp<CryostorageContainedComponent>(uid))
                 continue;
 
             // Mini: антагонист без карты - тот же сломанный телепорт в пустоту.

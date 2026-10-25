@@ -200,4 +200,5 @@ public sealed record AntagRoleDefinition(
     string? RequiresPresetGameRuleId = null,
     bool IgnoresStationJob = false,
     string? GhostGameRuleId = null,
-    string? GhostTagLocKey = null);
+    string? GhostTagLocKey = null,
+    bool Major = false);
