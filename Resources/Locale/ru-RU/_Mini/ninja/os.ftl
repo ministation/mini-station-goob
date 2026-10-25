@@ -17,6 +17,17 @@ ninja-os-status-locked = модуль зафиксирован
 ninja-os-status-installed = модуль установлен
 ninja-os-modules-incomplete = Установлены не все модули.
 ninja-os-close = Закрыть
+ninja-os-personalization = персонализация костюма
+ninja-os-color = цвет
+ninja-os-color-green = Зелёный
+ninja-os-color-red = Красный
+ninja-os-color-blue = Синий
+ninja-os-style = стиль
+ninja-os-style-old = Старый
+ninja-os-style-new = Новый
+ninja-os-head = голова
+ninja-os-head-helmet = Шлем
+ninja-os-head-scarf = Шарф
 ninja-os-boot-title = Активация костюма
 ninja-os-shutdown-title = Деактивация костюма
 

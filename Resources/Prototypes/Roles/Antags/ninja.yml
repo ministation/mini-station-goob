@@ -30,7 +30,8 @@
     ears: ClothingHeadsetNinja
     pocket1: SpiderCharge
     pocket2: PinpointerStation
-    belt: ClothingBeltNinjaSheath # катана стартует в ножнах (ContainerFill)
+    belt: ClothingBeltNinjaSheath
+    neck: ClothingNeckScarfNinja # катана стартует в ножнах (ContainerFill)
   storage:
     back:
     - BoxMRE

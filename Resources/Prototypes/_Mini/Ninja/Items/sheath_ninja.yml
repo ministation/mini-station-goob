@@ -32,5 +32,6 @@
     containers:
       item:
       - EnergyKatana
+  - type: NinjaAppearanceItem
   - type: StaticPrice
     price: 500

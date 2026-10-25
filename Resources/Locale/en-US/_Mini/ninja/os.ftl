@@ -17,6 +17,17 @@ ninja-os-status-locked = module is locked
 ninja-os-status-installed = module is installed
 ninja-os-modules-incomplete = Not all modules are installed.
 ninja-os-close = Close
+ninja-os-personalization = suit personalization
+ninja-os-color = colour
+ninja-os-color-green = Green
+ninja-os-color-red = Red
+ninja-os-color-blue = Blue
+ninja-os-style = style
+ninja-os-style-old = Old
+ninja-os-style-new = New
+ninja-os-head = head
+ninja-os-head-helmet = Helmet
+ninja-os-head-scarf = Scarf
 ninja-os-boot-title = Suit activation
 ninja-os-shutdown-title = Suit deactivation
 

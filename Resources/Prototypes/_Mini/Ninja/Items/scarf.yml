@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2026 Mini Station
+# Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+
+# Spider Clan scarf, shown by the chameleon of the suit instead of the helmet.
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckScarfNinja
+  name: ninja scarf
+  description: A Spider Clan scarf woven from nanofibers. Its colour matches the rest of your gear.
+  components:
+  - type: Sprite
+    sprite: _Mini/Ninja/Clothing/Neck/spaceninja.rsi
+  - type: Clothing
+    sprite: _Mini/Ninja/Clothing/Neck/spaceninja.rsi
+  - type: NinjaAppearanceItem
+    itemType: Scarf
+  - type: NinjaSuitItem

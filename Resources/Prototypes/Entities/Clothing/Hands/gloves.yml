@@ -228,6 +228,7 @@
   description: These black nano-enhanced gloves insulate from electricity and provide fire resistance.
   components:
   - type: NinjaSuitItem # Mini: Spider OS hardware
+  - type: NinjaAppearanceItem
   - type: Sprite
     sprite: Clothing/Hands/Gloves/spaceninja.rsi
     layers:

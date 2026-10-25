@@ -37,6 +37,8 @@ public sealed class NinjaOsBoundUserInterface : BoundUserInterface
 
         _window = new NinjaOsWindow();
         _window.OnModuleSelected += (tier, path) => SendMessage(new NinjaOsSelectModuleMessage(tier, path));
+        _window.OnAppearanceSelected += (colorway, style, helmet) =>
+            SendMessage(new NinjaOsSetAppearanceMessage(colorway, style, helmet));
         _window.OnSuitPowerPressed += OnSuitPowerPressed;
         _window.OnClose += Close;
         _window.OpenCentered();

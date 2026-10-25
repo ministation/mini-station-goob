@@ -135,6 +135,7 @@
   description: A pair of nano-enhanced boots with built-in magnetic suction cups.
   components:
   - type: NinjaSuitItem # Mini: Spider OS hardware
+  - type: NinjaAppearanceItem
   - type: Sprite
     sprite: Clothing/Shoes/Specific/spaceninja.rsi
   - type: Clothing

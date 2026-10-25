@@ -22,6 +22,32 @@
             </BoxContainer>
             <BoxContainer Orientation="Vertical" MinWidth="240" MaxWidth="280" VerticalExpand="True" SeparationOverride="6">
                 <controls:StripeBack>
+                    <Label Text="{Loc 'ninja-os-personalization'}" StyleClasses="LabelHeading" Margin="8 4"/>
+                </controls:StripeBack>
+                <PanelContainer>
+                    <PanelContainer.PanelOverride>
+                        <gfx:StyleBoxFlat BackgroundColor="#101318" BorderThickness="1" BorderColor="#2A313C"/>
+                    </PanelContainer.PanelOverride>
+                    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="4">
+                        <Label Text="{Loc 'ninja-os-color'}" StyleClasses="LabelSubText"/>
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="4" HorizontalExpand="True">
+                            <Button Name="ColorGreenButton" Text="{Loc 'ninja-os-color-green'}" HorizontalExpand="True"/>
+                            <Button Name="ColorRedButton" Text="{Loc 'ninja-os-color-red'}" HorizontalExpand="True"/>
+                            <Button Name="ColorBlueButton" Text="{Loc 'ninja-os-color-blue'}" HorizontalExpand="True"/>
+                        </BoxContainer>
+                        <Label Text="{Loc 'ninja-os-style'}" StyleClasses="LabelSubText"/>
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="4" HorizontalExpand="True">
+                            <Button Name="StyleOldButton" Text="{Loc 'ninja-os-style-old'}" HorizontalExpand="True"/>
+                            <Button Name="StyleNewButton" Text="{Loc 'ninja-os-style-new'}" HorizontalExpand="True"/>
+                        </BoxContainer>
+                        <Label Text="{Loc 'ninja-os-head'}" StyleClasses="LabelSubText"/>
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="4" HorizontalExpand="True">
+                            <Button Name="HeadHelmetButton" Text="{Loc 'ninja-os-head-helmet'}" HorizontalExpand="True"/>
+                            <Button Name="HeadScarfButton" Text="{Loc 'ninja-os-head-scarf'}" HorizontalExpand="True"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                </PanelContainer>
+                <controls:StripeBack>
                     <Label Text="{Loc 'ninja-os-power-title'}" StyleClasses="LabelHeading" Margin="8 4"/>
                 </controls:StripeBack>
                 <PanelContainer>

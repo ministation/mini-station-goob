@@ -4,6 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._Mini.Ninja;
+using Content.Shared._Mini.Ninja.Appearance;
 using Content.Shared._Mini.Ninja.Components;
 using Content.Shared._Mini.Ninja.Prototypes;
 using Content.Shared._Mini.Ninja.Systems;
@@ -30,6 +31,7 @@ public sealed class NinjaOsSystem : SharedNinjaOsSystem
     [Dependency] private readonly SharedActionsSystem _actions = default!;
     [Dependency] private readonly SharedBatterySystem _battery = default!;
     [Dependency] private readonly RetractableItemActionSystem _retractable = default!;
+    [Dependency] private readonly NinjaAppearanceSystem _appearance = default!;
 
     /// <summary>
     /// Items that were made unremoveable by an active suit, per suit.
@@ -44,6 +46,7 @@ public sealed class NinjaOsSystem : SharedNinjaOsSystem
         {
             subs.Event<NinjaOsSelectModuleMessage>(OnSelectModule);
             subs.Event<NinjaOsSetSuitPowerMessage>(OnSetSuitPower);
+            subs.Event<NinjaOsSetAppearanceMessage>(OnSetAppearance);
         });
 
         SubscribeLocalEvent<NinjaOsComponent, BoundUIOpenedEvent>(OnUiOpened);
@@ -114,6 +117,30 @@ public sealed class NinjaOsSystem : SharedNinjaOsSystem
 
         comp.SelectedModules[args.Tier] = args.Path;
         comp.LockedTiers.Add(args.Tier);
+
+        Dirty(suitUid, comp);
+        UpdateUi(suitUid, comp);
+    }
+
+    private void OnSetAppearance(Entity<NinjaOsComponent> suit, ref NinjaOsSetAppearanceMessage args)
+    {
+        var (suitUid, comp) = suit;
+
+        if (!IsAuthorized(suitUid, args.Actor) || comp.SuitActivated)
+            return;
+
+        if (!Enum.IsDefined(args.Colorway) || !Enum.IsDefined(args.Style))
+            return;
+
+        // The new style always shows the helmet, the scarf is only available for the old style.
+        var helmet = args.Style == NinjaStyle.New || args.Helmet;
+
+        if (comp.PendingColorway == args.Colorway && comp.PendingStyle == args.Style && comp.PendingHelmet == helmet)
+            return;
+
+        comp.PendingColorway = args.Colorway;
+        comp.PendingStyle = args.Style;
+        comp.PendingHelmet = helmet;
 
         Dirty(suitUid, comp);
         UpdateUi(suitUid, comp);
@@ -193,6 +220,7 @@ public sealed class NinjaOsSystem : SharedNinjaOsSystem
 
         LockAll(wearer, suitUid);
         _actions.GrantContainedActions(wearer, suitUid);
+        _appearance.ApplyAppearance(suitUid, wearer, comp.PendingColorway, comp.PendingStyle, comp.PendingHelmet);
 
         var ev = new NinjaSuitPowerChangedEvent(suitUid, wearer, true);
         RaiseLocalEvent(suitUid, ref ev);
@@ -345,7 +373,10 @@ public sealed class NinjaOsSystem : SharedNinjaOsSystem
             comp.ActivatedTiers,
             comp.SuitActivated,
             comp.ActivationBoot.Id,
-            comp.DeactivationBoot.Id);
+            comp.DeactivationBoot.Id,
+            comp.PendingColorway,
+            comp.PendingStyle,
+            comp.PendingHelmet);
 
         _ui.SetUiState(suitUid, NinjaOsUiKey.Key, state);
     }
