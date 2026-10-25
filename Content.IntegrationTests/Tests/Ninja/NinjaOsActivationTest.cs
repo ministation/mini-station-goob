@@ -64,7 +64,7 @@ public sealed class NinjaOsActivationTest
 
         await server.WaitPost(() =>
         {
-            actions.PerformAction((setup.Human, (ActionsComponent?) null), openOsActions[0]);
+            actions.PerformAction((setup.Human, default(ActionsComponent)), openOsActions[0]);
             Assert.That(ui.IsAnyUiOpen(setup.Suit), Is.True,
                 "Performing ActionOpenNinjaOs did not open the Spider OS for the wearer");
         });

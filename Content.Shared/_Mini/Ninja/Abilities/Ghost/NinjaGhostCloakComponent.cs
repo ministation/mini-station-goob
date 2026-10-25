@@ -57,12 +57,11 @@ public sealed partial class NinjaGhostCloakComponent : Component
     public EntProtoId EffectPrototype = "EffectSparks";
 
     /// <summary>
-    /// Abstract entity prototype whose components (Stealth and StealthOnMove) are copied to the wearer
-    /// while the cloak is active. The stealth fields are write protected outside of the stealth system,
-    /// so the values come from the prototype.
+    /// Components (Stealth and StealthOnMove) copied to the wearer while the cloak is active.
+    /// The stealth fields are write protected outside of the stealth system, so the values come from YAML.
     /// </summary>
     [DataField]
-    public EntProtoId CloakEffect = "NinjaGhostCloakEffect";
+    public ComponentRegistry CloakComponents = new();
 
     /// <summary>
     /// Current heat, kept on the suit. Not networked: the client does not draw any heat visuals.

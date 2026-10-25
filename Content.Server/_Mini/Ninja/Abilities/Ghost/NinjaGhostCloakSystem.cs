@@ -29,7 +29,6 @@ public sealed class NinjaGhostCloakSystem : EntitySystem
     [Dependency] private readonly SharedActionsSystem _actions = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     /// <summary>
     /// Wearer currently cloaked by each suit. Suits without an entry are uncloaked.
@@ -131,8 +130,8 @@ public sealed class NinjaGhostCloakSystem : EntitySystem
 
     private void ApplyStealth(NinjaGhostCloakComponent comp, EntityUid wearer)
     {
-        if (!HasComp<StealthComponent>(wearer) && _proto.TryIndex(comp.CloakEffect, out EntityPrototype? effect))
-            EntityManager.AddComponents(wearer, effect.Components);
+        if (comp.CloakComponents.Count > 0)
+            EntityManager.AddComponents(wearer, comp.CloakComponents);
 
         if (TryComp<StealthComponent>(wearer, out var stealth))
             _stealth.SetVisibility(wearer, 1f, stealth);
