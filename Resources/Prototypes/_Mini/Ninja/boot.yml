@@ -1,0 +1,102 @@
+# Boot scripts of the ninja suit Spider OS.
+# Delays are shortened compared to the reference so that the player is not stuck in the UI,
+# the log order and every boot check are kept identical.
+- type: ninjaOsBoot
+  id: NinjaOsActivationBoot
+  steps:
+  - delay: 0.5
+    log: ninja-os-boot-self-test
+    check: SelfTest
+  - delay: 0.5
+    log: ninja-os-boot-verify-identity
+    check: Authorized
+  - delay: 0.4
+    log: ninja-os-boot-neuro-sync
+  - delay: 0.4
+    log: ninja-os-boot-driver-setup-init
+  - delay: 0.2
+    log: ninja-os-boot-driver-setup-10
+  - delay: 0.2
+    log: ninja-os-boot-driver-setup-20
+  - delay: 0.2
+    log: ninja-os-boot-driver-setup-30
+  - delay: 0.2
+    log: ninja-os-boot-driver-setup-40
+  - delay: 0.2
+    log: ninja-os-boot-driver-setup-50
+  - delay: 0.2
+    log: ninja-os-boot-driver-setup-67
+  - delay: 0.2
+    log: ninja-os-boot-driver-setup-70
+  - delay: 0.2
+    log: ninja-os-boot-driver-setup-80
+  - delay: 0.2
+    log: ninja-os-boot-driver-setup-90
+  - delay: 0.3
+    log: ninja-os-boot-driver-setup-95
+  - delay: 0.3
+    log: ninja-os-boot-driver-setup-96
+  - delay: 0.3
+    log: ninja-os-boot-driver-setup-97
+  - delay: 0.3
+    log: ninja-os-boot-driver-setup-98
+  - delay: 0.3
+    log: ninja-os-boot-driver-setup-99
+  - delay: 0.5
+    log: ninja-os-boot-driver-setup-complete
+  - delay: 0.4
+    log: ninja-os-boot-locking-suit
+    check: SuitFasten
+  - delay: 0.4
+    log: ninja-os-boot-locking-visor
+    check: VisorSecure
+  - delay: 0.4
+    log: ninja-os-boot-locking-helmet
+    check: HelmetSecure
+  - delay: 0.4
+    log: ninja-os-boot-locking-mask
+    check: MaskSecure
+  - delay: 0.4
+    log: ninja-os-boot-locking-gloves
+    check: GlovesSecure
+  - delay: 0.4
+    log: ninja-os-boot-locking-boots
+    check: BootsSecure
+  - delay: 0.5
+    log: ninja-os-boot-lock-modules
+    check: ModulesReady
+  - delay: 0.5
+    log: ninja-os-boot-power-up
+    check: NotActivated
+  - delay: 0.5
+    log: ninja-os-boot-battery-capacity
+    check: BatteryReport
+  - delay: 0.5
+    log: ninja-os-boot-final
+
+- type: ninjaOsBoot
+  id: NinjaOsDeactivationBoot
+  steps:
+  - delay: 0.2
+    log: ninja-os-boot-unlocking-suit
+    check: SuitFasten
+  - delay: 0.2
+    log: ninja-os-boot-releasing-boots
+    check: BootsSecure
+  - delay: 0.2
+    log: ninja-os-boot-releasing-gloves
+    check: GlovesSecure
+  - delay: 0.2
+    log: ninja-os-boot-releasing-mask
+    check: MaskSecure
+  - delay: 0.2
+    log: ninja-os-boot-releasing-helmet
+    check: HelmetSecure
+  - delay: 0.2
+    log: ninja-os-boot-releasing-visor
+    check: VisorSecure
+  - delay: 0.2
+    log: ninja-os-boot-shutdown
+    check: Authorized
+  - delay: 0.3
+    log: ninja-os-boot-offline

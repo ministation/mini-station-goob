@@ -1,0 +1,228 @@
+# SPDX-FileCopyrightText: 2026 Mini Station
+# Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+
+# Steel path modules (tier 1..4) of the ninja suit. The reference implementation has no tier 5.
+# All modules are granted and powered by the suit operating system, see NinjaOsSystem.
+
+# Tier 1: shuriken emitter.
+- type: ninjaModule
+  id: NinjaModuleSteelShuriken
+  path: Steel
+  tier: 1
+  name: ninja-module-steel-shuriken
+  description: ninja-module-steel-shuriken-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: shuriken
+  actions:
+  - ActionNinjaShuriken
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaShuriken
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: BigAction
+    raiseOnAction: true
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: shuriken
+  - type: InstantAction
+    event: !type:OnRetractableItemActionEvent
+  - type: RetractableItemAction
+    spawnedPrototype: WeaponNinjaShuriken
+
+# The emitter is a real gun, but it shoots suit-powered hitscan projectiles instead of cartridges.
+- type: entity
+  parent: BaseItem
+  id: WeaponNinjaShuriken
+  components:
+  - type: Sprite
+    sprite: /Textures/_Mini/Ninja/Objects/Weapons/ninja.rsi
+    layers:
+    - state: shuriken_emitter
+  - type: Gun
+    fireRate: 1
+    shotsPerBurst: 3
+    burstFireRate: 6
+    burstCooldown: 2
+    selectedMode: Burst
+    availableModes:
+    - Burst
+    angleIncrease: 0
+    minAngle: 0
+    maxAngle: 0
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/silenced.ogg
+      params:
+        volume: -14
+  - type: NinjaWeapon
+  - type: NinjaSuitAmmoProvider
+    proto: ShurikenProjectile
+    energyPerShoot: 10
+
+# Hitscan shuriken. The Opaque mask lets the beam pass through glass windows.
+- type: entity
+  parent: BasicHitscan
+  id: ShurikenProjectile
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: HitscanBasicRaycast
+    maxDistance: 40
+    collisionMask: Opaque
+  - type: HitscanBasicVisuals
+    muzzleFlash:
+      sprite: /Textures/_Mini/Ninja/Objects/Weapons/ninja.rsi
+      state: shuriken_projectile
+    travelFlash:
+      sprite: /Textures/_Mini/Ninja/Objects/Weapons/ninja.rsi
+      state: shuriken_projectile
+    impactFlash:
+      sprite: /Textures/_Mini/Ninja/Objects/Weapons/ninja.rsi
+      state: shuriken_projectile
+  - type: HitscanBasicDamage
+    damage:
+      types:
+        Heat: 15
+  - type: HitscanStaminaDamage
+    staminaDamage: 30
+
+# Tier 2: adrenaline surge.
+- type: ninjaModule
+  id: NinjaModuleSteelAdrenaline
+  path: Steel
+  tier: 2
+  name: ninja-module-steel-adrenaline
+  description: ninja-module-steel-adrenaline-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: adrenal
+  components:
+  - type: NinjaAdrenal
+  actions:
+  - ActionNinjaAdrenal
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaAdrenal
+  components:
+  - type: Action
+    useDelay: 120
+    itemIconStyle: BigAction
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: adrenal
+    sound:
+      path: /Audio/Items/hypospray.ogg
+  - type: InstantAction
+    event: !type:NinjaAdrenalEvent
+  - type: LimitedCharges
+    maxCharges: 3
+
+# Tier 3: EMP burst.
+- type: ninjaModule
+  id: NinjaModuleSteelEmp
+  path: Steel
+  tier: 3
+  name: ninja-module-steel-emp
+  description: ninja-module-steel-emp-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: emp
+  components:
+  - type: NinjaEmpAbility
+  actions:
+  - ActionNinjaEmp
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaEmp
+  components:
+  - type: Action
+    useDelay: 60
+    itemIconStyle: BigAction
+    priority: -13
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: emp
+  - type: InstantAction
+    event: !type:NinjaEmpAbilityEvent
+
+# Tier 4: energy net.
+- type: ninjaModule
+  id: NinjaModuleSteelNet
+  path: Steel
+  tier: 4
+  name: ninja-module-steel-net
+  description: ninja-module-steel-net-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: energynet
+  actions:
+  - ActionNinjaNet
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaNet
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: BigAction
+    raiseOnAction: true
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: energynet
+  - type: InstantAction
+    event: !type:OnRetractableItemActionEvent
+  - type: RetractableItemAction
+    spawnedPrototype: WeaponNinjaNet
+
+- type: entity
+  parent: BaseItem
+  id: WeaponNinjaNet
+  components:
+  - type: Sprite
+    sprite: /Textures/_Mini/Ninja/Objects/Weapons/ninja.rsi
+    layers:
+    - state: net_emitter
+  - type: NinjaEnergyNetGun
+
+# The net itself. Static strap, cannot be taken off, breaks after 50 damage or 10 seconds.
+- type: entity
+  id: NinjaNet
+  components:
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Animateable
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.2
+        density: 100
+        mask:
+        - TableMask
+  - type: Sprite
+    noRot: true
+    sprite: /Textures/_Mini/Ninja/Objects/Weapons/ninja.rsi
+    layers:
+    - state: net
+  - type: Strap
+    position: Stand
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 50
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: TimedDespawn
+    lifetime: 10
+  - type: NinjaEnergyNet

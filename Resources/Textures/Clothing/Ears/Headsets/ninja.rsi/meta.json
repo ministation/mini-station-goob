@@ -1,7 +1,7 @@
 {
     "version": 1,
     "license": "CC-BY-SA-3.0",
-    "copyright": "Taken from tgstation at commit https://github.com/tgstation/tgstation/commit/f8f4aeda930fcd0805ca4cc76d9bc9412a5b3428 and recolored by Alwayswannahunt(github)",
+    "copyright": "Taken from tgstation at commit https://github.com/tgstation/tgstation/commit/f8f4aeda930fcd0805ca4cc76d9bc9412a5b3428 and recolored by Alwayswannahunt(github), resprite by nasdfx (discord) for space station 14 server Мёртвый космос",
     "size": {
         "x": 32,
         "y": 32
@@ -14,13 +14,42 @@
                 0.5,
                 0.35,
                 0.3,
+                0.3
+                ]
+            ]
+        },
+        {
+            "name": "red-icon",
+            "delays": [
+                [
+                0.5,
+                0.35,
                 0.3,
-                0.35
+                0.3
+                ]
+            ]
+        },
+        {
+            "name": "blue-icon",
+            "delays": [
+                [
+                0.5,
+                0.35,
+                0.3,
+                0.3
                 ]
             ]
         },
         {
             "name": "equipped-EARS",
+            "directions": 4
+        },
+        {
+            "name": "red-equipped-EARS",
+            "directions": 4
+        },
+        {
+            "name": "blue-equipped-EARS",
             "directions": 4
         }
     ]

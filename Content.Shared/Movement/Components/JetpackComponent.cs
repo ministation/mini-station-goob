@@ -26,4 +26,10 @@ public sealed partial class JetpackComponent : Component
 
     [ViewVariables(VVAccess.ReadWrite), DataField("weightlessModifier")]
     public float WeightlessModifier = 1.2f;
+
+    /// <summary>
+    /// Mini: whether this jetpack needs a gas tank to work. Suit-integrated jetpacks set this to false.
+    /// </summary>
+    [DataField]
+    public bool RequiresGas = true;
 }

@@ -134,10 +134,16 @@
   name: space ninja shoes
   description: A pair of nano-enhanced boots with built-in magnetic suction cups.
   components:
+  - type: NinjaSuitItem # Mini: Spider OS hardware
   - type: Sprite
     sprite: Clothing/Shoes/Specific/spaceninja.rsi
   - type: Clothing
     sprite: Clothing/Shoes/Specific/spaceninja.rsi
+    clothingVisuals: # Mini: MK14 sprite parity (glow layer)
+      feet:
+      - state: equipped-FEET
+      - state: equipped-FEET-unshaded
+        shader: unshaded
   - type: NoSlip
   - type: Magboots # always have gravity because le suction cups
   - type: ClothingSpeedModifier

@@ -17,8 +17,14 @@ public sealed class JetpackSystem : SharedJetpackSystem
 
     protected override bool CanEnable(EntityUid uid, JetpackComponent component)
     {
-        return base.CanEnable(uid, component) &&
-               TryComp<GasTankComponent>(uid, out var gasTank) &&
+        if (!base.CanEnable(uid, component))
+            return false;
+
+        // Mini: suit-integrated jetpacks do not consume gas at all.
+        if (!component.RequiresGas)
+            return true;
+
+        return TryComp<GasTankComponent>(uid, out var gasTank) &&
                !(gasTank.Air.TotalMoles < component.MoleUsage);
     }
 

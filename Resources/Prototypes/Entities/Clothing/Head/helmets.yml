@@ -248,10 +248,28 @@
   name: space ninja helmet
   description: What may appear to be a simple black garment is in fact a highly sophisticated nano-weave helmet. Standard issue ninja gear.
   components:
+  - type: NinjaSuitItem # Mini: Spider OS hardware
   - type: Sprite
     sprite: Clothing/Head/Helmets/spaceninja.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/spaceninja.rsi
+    clothingVisuals: # Mini: MK14 sprite parity (glow layer)
+      head:
+      - state: equipped-HELMET
+      - state: equipped-head-unshaded
+        shader: unshaded
+      head-vox:
+      - state: equipped-HELMET-vox
+      - state: equipped-head-unshaded-vox
+        shader: unshaded
+      head-vulpkanin:
+      - state: equipped-HELMET-vulpkanin
+      - state: equipped-head-unshaded-vulpkanin
+        shader: unshaded
+      head-reptilian:
+      - state: equipped-HELMET-reptilian
+      - state: equipped-head-unshaded-reptilian
+        shader: unshaded
   - type: Tag
     tags:
     - WhitelistChameleon

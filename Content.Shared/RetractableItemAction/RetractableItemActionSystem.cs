@@ -100,6 +100,20 @@ public sealed class RetractableItemActionSystem : EntitySystem
         RetractRetractableItem(action.Comp.AttachedEntity.Value, ent, action.Owner);
     }
 
+    /// <summary>
+    /// Mini: retract the summoned item back into the action (used when the action is removed, e.g. on suit deactivation).
+    /// </summary>
+    public void TryRetractRetractableItem(EntityUid holder, Entity<RetractableItemActionComponent?> action)
+    {
+        if (!Resolve(action.Owner, ref action.Comp, false))
+            return;
+
+        if (action.Comp.ActionItemUid is not { } item || TerminatingOrDeleted(item))
+            return;
+
+        RetractRetractableItem(holder, item, action);
+    }
+
     private void PopulateActionItem(Entity<RetractableItemActionComponent?> ent)
     {
         if (!Resolve(ent.Owner, ref ent.Comp, false) || TerminatingOrDeleted(ent))

@@ -1,0 +1,266 @@
+# Path of the Snake: chain kunai, healing cocktail, emergency teleport, energy caltrops and second chance.
+
+# T1: chain kunai (johyo).
+- type: ninjaModule
+  id: NinjaModuleSnakeJohyo
+  path: Snake
+  tier: 1
+  name: ninja-module-snake-johyo
+  description: ninja-module-snake-johyo-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: kunai
+  actions:
+  - ToggleNinjaJohyoAbility
+
+- type: entity
+  parent: BaseAction
+  id: ToggleNinjaJohyoAbility
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: BigAction
+    raiseOnAction: true
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: kunai
+  - type: InstantAction
+    event: !type:OnRetractableItemActionEvent
+  - type: RetractableItemAction
+    spawnedPrototype: NinjaJohyo
+
+- type: entity
+  parent: BaseItem
+  id: NinjaJohyo
+  components:
+  - type: Sprite
+    sprite: /Textures/_Mini/Ninja/Objects/Weapons/ninja.rsi
+    layers:
+    - state: kunai
+  - type: Gun
+    fireRate: 0.25
+    resetOnHandSelected: false
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/silenced.ogg
+  - type: NinjaSuitAmmoProvider
+    proto: NinjaJohyoProjectile
+    energyPerShoot: 100
+  - type: NinjaWeapon
+  - type: NinjaJohyo
+    pullAcceleration: 400
+    maxPullSpeed: 15
+    arrivalDistance: 1
+    maxDistance: 10
+    chainSprite:
+      sprite: /Textures/_Mini/Ninja/Objects/Weapons/ninja.rsi
+      state: chain
+    shotPhrases:
+    - johyo-phrase-1
+    - johyo-phrase-2
+
+- type: entity
+  parent: BaseBullet
+  id: NinjaJohyoProjectile
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: EmbeddableProjectile
+    deleteOnRemove: true
+  - type: InteractionOutline
+  - type: Sprite
+    noRot: false
+    sprite: /Textures/_Mini/Ninja/Objects/Weapons/ninja.rsi
+    rotation: 180
+    layers:
+    - state: kunai_projectile
+  - type: Physics
+    bodyType: Dynamic
+    linearDamping: 0
+    angularDamping: 0
+  - type: Projectile
+    deleteOnCollide: false
+    damage:
+      types:
+        Slash: 5
+    soundHit:
+      path: /Audio/Weapons/Guns/Hits/bullet_hit.ogg
+  - type: NinjaJohyoProjectile
+  - type: StunOnCollide
+    stunAmount: 1
+    knockdownAmount: 1.5
+    drop: true
+
+# T2: healing cocktail.
+- type: ninjaModule
+  id: NinjaModuleSnakeHealingCocktail
+  path: Snake
+  tier: 2
+  name: ninja-module-snake-healing-cocktail
+  description: ninja-module-snake-healing-cocktail-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: cheminjector
+  components:
+  - type: NinjaHealingCocktail
+  actions:
+  - ActionNinjaHealingCocktail
+
+- type: entity
+  parent: BaseAction
+  id: ActionNinjaHealingCocktail
+  components:
+  - type: Action
+    useDelay: 60
+    itemIconStyle: BigAction
+    sound: /Audio/Items/hypospray.ogg
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: cheminjector
+  - type: InstantAction
+    event: !type:NinjaHealingCocktailEvent
+  - type: LimitedCharges
+    maxCharges: 3
+
+# T3: emergency teleport.
+- type: ninjaModule
+  id: NinjaModuleSnakeEmergencyTeleport
+  path: Snake
+  tier: 3
+  name: ninja-module-snake-emergency-teleport
+  description: ninja-module-snake-emergency-teleport-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: emergencyblink
+  components:
+  - type: NinjaEmergencyTeleport
+  actions:
+  - NinjaEmergencyTeleportAction
+
+- type: entity
+  parent: BaseAction
+  id: NinjaEmergencyTeleportAction
+  components:
+  - type: Action
+    useDelay: 180
+    itemIconStyle: BigAction
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: emergencyblink
+  - type: InstantAction
+    event: !type:NinjaEmergencyTeleportEvent
+
+# T4: energy caltrops.
+- type: ninjaModule
+  id: NinjaModuleSnakeCaltrop
+  path: Snake
+  tier: 4
+  name: ninja-module-snake-caltrop
+  description: ninja-module-snake-caltrop-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: caltrop
+  components:
+  - type: NinjaCaltrop
+  actions:
+  - NinjaCaltropAction
+
+- type: entity
+  parent: BaseAction
+  id: NinjaCaltropAction
+  components:
+  - type: Action
+    useDelay: 10
+    itemIconStyle: BigAction
+    icon:
+      sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+      state: caltrop
+  - type: InstantAction
+    event: !type:NinjaCaltropAbilityEvent
+
+- type: entity
+  id: NinjaCaltrop
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: /Textures/_Mini/Ninja/Objects/Misc/ninjaCaltrop.rsi
+    state: caltrop
+  - type: Physics
+  - type: Fixtures
+    fixtures:
+      fix1:
+        hard: false
+        density: 7
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - ItemMask
+        layer:
+        - MidImpassable
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 15
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: DamageContacts
+    damage:
+      types:
+        Heat: 10
+  - type: StunOnContact
+    fixtureId: fix1
+    duration: 2
+  - type: TriggerOnCollide
+    fixtureID: fix1
+    maxTriggers: 1
+  - type: TimedDespawn
+    lifetime: 5
+
+# T5: second chance.
+- type: ninjaModule
+  id: NinjaModuleSnakeSecondChance
+  path: Snake
+  tier: 5
+  name: ninja-module-snake-second-chance
+  description: ninja-module-snake-second-chance-desc
+  icon:
+    sprite: /Textures/_Mini/Ninja/Actions/ninja_actions.rsi
+    state: ninjasecondchance
+  transferOnSecondChance: false
+  components:
+  - type: NinjaSecondChance
+
+# Reagent of the healing cocktail.
+- type: reagent
+  id: Chiyurizine
+  name: reagent-name-chiyurizine
+  group: Medicine
+  desc: reagent-desc-chiyurizine
+  physicalDesc: reagent-physical-desc-translucent
+  flavor: medicine
+  color: "#6fdc8c"
+  metabolisms:
+    Medicine:
+      effects:
+      - !type:EvenHealthChange
+        damage:
+          Burn: -4
+          Brute: -3
+          Toxin: -2
+      - !type:HealthChange
+        damage:
+          types:
+            Bloodloss: -3
+            Radiation: -1
+      - !type:ModifyBloodLevel
+        amount: 3
+      - !type:ModifyBleed
+        amount: -1.5
