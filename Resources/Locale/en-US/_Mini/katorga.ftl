@@ -22,3 +22,7 @@ katorga-hud-remaining = Remaining: { $time }
 katorga-hud-worked = Worked off: { $time }
 
 katorga-hud-free = You are free!
+
+katorga-ghost-blocked = No leaving the katorga early: serve your sentence or reconnect to get a new body on the katorga.
+
+katorga-ghost-roles-blocked = Katorga inmates cannot take ghost roles.

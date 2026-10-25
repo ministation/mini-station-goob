@@ -2921,13 +2921,6 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -9.5,-1.5
       parent: 818
-- proto: Gateway
-  entities:
-  - uid: 726
-    components:
-    - type: Transform
-      pos: -8.5,-10.5
-      parent: 818
 - proto: GeneratorBasic15kW
   entities:
   - uid: 303

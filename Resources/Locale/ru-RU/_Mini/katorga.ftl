@@ -22,3 +22,7 @@ katorga-hud-remaining = Осталось: { $time }
 katorga-hud-worked = Отработано рудой: { $time }
 
 katorga-hud-free = Ты свободен!
+
+katorga-ghost-blocked = С каторги не уходят: дождитесь конца срока или переподключитесь, чтобы получить новое тело на каторге.
+
+katorga-ghost-roles-blocked = Заключённым каторги гост-роли недоступны.

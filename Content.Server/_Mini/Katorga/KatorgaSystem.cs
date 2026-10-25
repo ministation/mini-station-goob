@@ -2,11 +2,13 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Content.Server._Mini.Katorga.Components;
+using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
 using Content.Server.Chat.Managers;
 using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
+using Content.Server.Ghost;
 using Content.Server.KillTracking;
 using Content.Server.Materials;
 using Content.Server.Mind;
@@ -59,6 +61,7 @@ public sealed class KatorgaSystem : EntitySystem
     private static readonly TimeSpan FlushInterval = TimeSpan.FromMinutes(1);
 
     [Dependency] private readonly AdminSystem _adminSystem = default!;
+    [Dependency] private readonly IAdminManager _adminManager = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly BiomeSystem _biome = default!;
@@ -107,6 +110,7 @@ public sealed class KatorgaSystem : EntitySystem
         SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
         SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnJoinedLobby);
         SubscribeLocalEvent<KillReportedEvent>(OnKillReported);
+        SubscribeLocalEvent<GhostAttemptHandleEvent>(OnGhostAttempt);
         SubscribeLocalEvent<KatorgaOreProcessorComponent, MaterialEntityInsertedEvent>(OnOreInserted);
     }
 
@@ -264,6 +268,8 @@ public sealed class KatorgaSystem : EntitySystem
 
     public void SendToKatorga(ICommonSession session, BanDef ban)
     {
+        _expiry[session.UserId] = ban.ExpirationTime!.Value;
+
         if (_katorgaMapUid == null || _katorgaMap == null)
         {
             _sawmill.Error("Каторга: карта недоступна, игрок " + session.Name + " отключён");
@@ -343,6 +349,58 @@ public sealed class KatorgaSystem : EntitySystem
             return new EntityCoordinates(_katorgaMapUid.Value, System.Numerics.Vector2.Zero);
 
         return EntityCoordinates.Invalid;
+    }
+
+    #endregion
+
+    #region Изоляция заключённых
+
+    /// <summary>
+    ///     Находится ли игрок на каторге (есть отрабатываемый временный бан).
+    /// </summary>
+    public bool IsConfined(ICommonSession session)
+    {
+        return Enabled && TryGetKatorgaBan(session, out _);
+    }
+
+    /// <summary>
+    ///     Находится ли игрок на каторге и при этом не админ (админам можно гостоваться и наблюдать).
+    /// </summary>
+    public bool IsConfinedNonAdmin(ICommonSession session)
+    {
+        return IsConfined(session) && !_adminManager.IsAdmin(session);
+    }
+
+        /// <summary>
+    ///     Отправляет заключённого на каторгу, если у него есть отрабатываемый бан.
+    /// </summary>
+    public bool TryConfine(ICommonSession session)
+    {
+        if (!Enabled || !TryGetKatorgaBan(session, out var ban))
+            return false;
+
+        SendToKatorga(session, ban);
+        return true;
+    }
+
+    /// <summary>
+    ///     Заключённым запрещено гостоваться: мёртвое тело лежит на каторге,
+    ///     новое тело можно получить переподключением. Админы не ограничены.
+    /// </summary>
+    private void OnGhostAttempt(GhostAttemptHandleEvent ev)
+    {
+        if (!Enabled || ev.Handled)
+            return;
+
+        if (ev.Mind.UserId == null || !_playerManager.TryGetSessionById(ev.Mind.UserId, out var session))
+            return;
+
+        if (!IsConfined(session) || _adminManager.IsAdmin(session))
+            return;
+
+        ev.Handled = true;
+        ev.Result = false;
+        _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-ghost-blocked"));
     }
 
     #endregion
