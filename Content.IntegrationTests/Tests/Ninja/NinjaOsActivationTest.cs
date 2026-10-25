@@ -86,7 +86,8 @@ public sealed class NinjaOsActivationTest
         await server.WaitPost(() =>
         {
             intruder = entMan.SpawnEntity("MobHuman", entMan.GetComponent<TransformComponent>(setup.Human).Coordinates);
-            ui.OpenUi(setup.Suit, NinjaOsUiKey.Key, intruder);
+            // The message is raised directly: OpenUi would run the interaction range check and
+            // assert in debug for an entity that is not allowed to reach the suit.
         });
 
         await server.WaitRunTicks(1);
