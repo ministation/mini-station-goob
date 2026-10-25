@@ -2008,7 +2008,7 @@
   description: uplink-contractor-baton-desc
   productEntity: ContractorBaton
   cost:
-    Telecrystal: 7
+    Telecrystal: 5 # mini-station: было 7, −25%
   categories:
   - TypanUplinkWeaponry
 

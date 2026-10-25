@@ -17,6 +17,10 @@
     sprite: _Goobstation/Objects/Weapons/Melee/contractor_baton.rsi
   #- type: TelescopicBaton #FUCK OFF
   #  alwaysDropItems: true #FUCK THE FUCK OFF
+  # mini-station: оружие из рук не выбивать вообще — в том числе в первые 1.8 с после раскрытия
+  # (унаследованный KnockdownOnHit с dropItems: true выбивал предметы при ударе сразу после активации)
+  - type: KnockdownOnHit
+    dropItems: false
   - type: UseDelay
     delays:
       default:
@@ -40,6 +44,7 @@
   - type: MeleeWeapon
     bluntStaminaDamageFactor: 0
   - type: StaminaDamageOnHit
-    damage: 85
+    # mini-station: 3×30=90 < 100 ≤ 4×30 — стаминакрит ровно с 4-го удара (при 85 крит приходил со 2-го)
+    damage: 30
   - type: StunBorgsOnHit
   - type: TogglePreventStaminaDamage
