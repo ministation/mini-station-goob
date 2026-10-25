@@ -53,15 +53,15 @@
   - type: StationEvent
     isSelectable: false
 
-#- type: entity
-#  parent: RevenantSpawn
-#  id: TokenRevenantSpawn
-#  components:
-#  - type: RandomSpawnRule
-#    prototype: MobRevenantToken
-#  - type: StationEvent
-#    isSelectable: false
-#    weight: 0 # This will prevent it from being selected - fuck revenants
+- type: entity
+  parent: BaseGameRule
+  id: TokenRevenantSpawn
+  components:
+  # Mini: RevenantSpawn отключён апстримом, поэтому правило самодостаточное (как TokenBingleSpawn).
+  - type: RandomSpawnRule
+    prototype: MobRevenantToken
+  - type: StationEvent
+    isSelectable: false
 
 - type: entity
   parent: LoneOpsSpawn

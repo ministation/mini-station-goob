@@ -17,9 +17,20 @@
       tagLocKey: antag-token-window-tag-queue
       requiresPreRoundLobby: true
 
-    # Ревенант не продаётся: TokenRevenantSpawn удалён из
-    # Resources/Prototypes/_Goobstation/GameRules/Admeme/token.yml вместе с RevenantSpawn
-    # (апстрим "Disable Revenant from spawning until future remake").
+    - id: revenant
+      nameLocKey: antag-store-role-revenant-name
+      descriptionLocKey: antag-store-role-revenant-description
+      cost: 2
+      iconPath: /Textures/_Mini/Interface/Antags/revenant.png
+      mode: GhostRule
+      ghostAutoJoinEntityProto: MobRevenantToken
+      ghostRulesLocKey: ghost-role-information-antagonist-rules
+      gameRuleId: TokenRevenantSpawn
+      tagLocKey: antag-token-window-tag-ghost
+      requiresInRound: true
+      minimumPlayers: 10
+      minimumTimeFromRoundStart: 1800
+
     - id: abductor
       nameLocKey: antag-store-role-abductor-name
       descriptionLocKey: antag-store-role-abductor-description
