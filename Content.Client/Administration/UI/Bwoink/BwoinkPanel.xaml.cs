@@ -109,10 +109,12 @@ namespace Content.Client.Administration.UI.Bwoink
                 Unread++;
 
             var formatted = new FormattedMessage(1);
-            var markup = $"[color=gray]{message.SentAt.ToShortTimeString()}[/color] {message.Text}";
+            // Mini edit start: URLs in AHelp messages become clickable links.
+            var markup = $"[color=gray]{message.SentAt.ToShortTimeString()}[/color] {AHelpLinkHelper.Linkify(message.Text)}";
             if (!formatted.TryAddMarkup(markup, out _))
                 formatted.AddMarkupPermissive(markup);
-            TextOutput.AddMessage(formatted);
+            TextOutput.AddMessage(formatted, AHelpLinkHelper.AllowedTags);
+            // Mini edit end
             LastMessage = message.SentAt;
         }
 
