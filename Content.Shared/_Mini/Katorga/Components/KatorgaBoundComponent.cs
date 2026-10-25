@@ -6,7 +6,7 @@ namespace Content.Shared._Mini.Katorga.Components;
 ///     Компонент заключённого каторги. Сервер удерживает игрока на карте каторги,
 ///     клиент по этим полям рисует худ с прогрессом отработки срока.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
 public sealed partial class KatorgaBoundComponent : Component
 {
     /// <summary>

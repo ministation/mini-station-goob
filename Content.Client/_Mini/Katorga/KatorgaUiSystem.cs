@@ -19,7 +19,9 @@ public sealed class KatorgaUiSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<KatorgaBoundComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<KatorgaBoundComponent, ComponentHandleState>(OnHandleState);
+        // ComponentHandleState занят авто-стейтом (AutoGenerateComponentState),
+        // поэтому подписываемся на событие после его обработки.
+        SubscribeLocalEvent<KatorgaBoundComponent, AfterAutoHandleStateEvent>(OnHandleState);
         SubscribeLocalEvent<KatorgaBoundComponent, ComponentRemove>(OnRemove);
     }
 
@@ -28,9 +30,9 @@ public sealed class KatorgaUiSystem : EntitySystem
         Notify(uid);
     }
 
-    private void OnHandleState(EntityUid uid, KatorgaBoundComponent component, ref ComponentHandleState args)
+    private void OnHandleState(Entity<KatorgaBoundComponent> ent, ref AfterAutoHandleStateEvent args)
     {
-        Notify(uid);
+        Notify(ent);
     }
 
     private void OnRemove(EntityUid uid, KatorgaBoundComponent component, ComponentRemove args)
