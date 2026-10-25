@@ -21,8 +21,8 @@
 - type: entity
   parent: BaseAction
   id: ActionNinjaAutoDust
-  name: Auto-Dust
-  description: "Cycles the auto-dust program of the suit: off, dust on critical state, dust on death."
+  name: auto-dust
+  description: "Toggles the suit self-destruct program: the body turns to dust on critical state or death so the equipment cannot be recovered."
   components:
   - type: Action
     icon:
