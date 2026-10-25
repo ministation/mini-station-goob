@@ -23,6 +23,8 @@ katorga-hud-worked = Worked off: { $time }
 
 katorga-hud-free = You are free!
 
+katorga-released = Sentence served. You are free: you can ghost and observe, and next round you will join as a regular player.
+
 katorga-ghost-blocked = No leaving the katorga early: serve your sentence or reconnect to get a new body on the katorga.
 
 katorga-ghost-roles-blocked = Katorga inmates cannot take ghost roles.
