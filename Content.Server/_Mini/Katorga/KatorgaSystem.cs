@@ -156,6 +156,10 @@ public sealed class KatorgaSystem : EntitySystem
         _katorgaMap = null;
         _katorgaMapUid = null;
         _spawnPoints.Clear();
+        // Кэш раундовый: баны перечитываются при входе в лобби нового раунда.
+        // Иначе устаревший (уже отработанный) бан из прошлого раунда «сажает» игрока заново.
+        _banCache.Clear();
+        _banCacheChecked.Clear();
 
         if (!Enabled)
             return;
@@ -210,9 +214,6 @@ public sealed class KatorgaSystem : EntitySystem
         _katorgaMap = null;
         _katorgaMapUid = null;
         _spawnPoints.Clear();
-        // Кэш банов переживает рестарт (баны действуют и в следующем раунде),
-        // но при входе в лобби он всё равно перечитается. Сбрасываем только метки проверок.
-        _banCacheChecked.Clear();
     }
 
     #endregion
@@ -236,6 +237,10 @@ public sealed class KatorgaSystem : EntitySystem
         if (!_banCache.TryGetValue(ev.Player.UserId, out var ban))
             return;
 
+        // Отработанный (истёкший) бан не сажает: между проверками срок мог дотечь до конца.
+        if (ban.ExpirationTime <= DateTimeOffset.UtcNow)
+            return;
+
         ev.Handled = true;
         SendToKatorga(ev.Player, ban);
     }
@@ -256,6 +261,9 @@ public sealed class KatorgaSystem : EntitySystem
                 _ = RefreshBanCacheAsync(ev.Player);
             return;
         }
+
+        if (ban.ExpirationTime <= DateTimeOffset.UtcNow)
+            return;
 
         // Живой остаток срока (уменьшается сдачей руды) важнее снапшота из кэша.
         _expiry.TryAdd(ev.Player.UserId, ban.ExpirationTime!.Value);
@@ -284,13 +292,36 @@ public sealed class KatorgaSystem : EntitySystem
                 continue;
             }
 
+            if (!_playerManager.TryGetSessionByEntity(uid, out var session))
+                continue;
+
+            // Срок отработан (или потерян) — выпускаем: снимаем компонент заключённого,
+            // после чего снова доступны гостование, гост-роли и наблюдение.
+            if (!_expiry.TryGetValue(session.UserId, out var expires) ||
+                expires <= DateTimeOffset.UtcNow)
+            {
+                ReleaseInmate(uid, session);
+                continue;
+            }
+
             RefreshInmateHudTick(uid, comp);
         }
     }
 
+    private void ReleaseInmate(EntityUid uid, ICommonSession session)
+    {
+        RemComp<KatorgaBoundComponent>(uid);
+        _banCache.Remove(session.UserId);
+        _expiry.Remove(session.UserId);
+
+        _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-released"));
+        _sawmill.Info("Каторга: " + session.Name + " отработал срок и выпущен");
+    }
+
     public void SendToKatorga(ICommonSession session, BanDef ban)
     {
-        _expiry.TryAdd(session.UserId, ban.ExpirationTime!.Value);
+        // Всегда пишем срок текущего бана: прежнее значение могло остаться от старого бана.
+        _expiry[session.UserId] = ban.ExpirationTime!.Value;
 
         if (_katorgaMapUid == null || _katorgaMap == null)
         {
@@ -467,14 +498,15 @@ public sealed class KatorgaSystem : EntitySystem
             if (!_playerManager.TryGetSessionById(userId, out var player))
                 return;
 
-            if (binding == null)
+            if (binding == null || binding.ExpirationTime <= DateTimeOffset.UtcNow)
             {
                 _banCache.Remove(userId);
                 return;
             }
 
             _banCache[userId] = binding;
-            _expiry.TryAdd(userId, binding.ExpirationTime!.Value);
+            // Срок текущего бана: перечитывание ресинхронизирует живой счётчик с базой.
+            _expiry[userId] = binding.ExpirationTime!.Value;
 
             if (!Enabled)
                 return;
