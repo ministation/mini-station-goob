@@ -2,6 +2,7 @@
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -81,6 +82,19 @@ public sealed class AntagTokenSystem : EntitySystem
     [Dependency] private readonly IBanManager _ban = default!;
 
     private readonly Dictionary<NetUserId, PlayerTokenState> _states = new();
+
+    /// <summary>
+    /// Bumped on every local wallet mutation. The periodic database sync captures the value before
+    /// it reads the database and refuses to apply the (by then stale) snapshot if it changed.
+    /// </summary>
+    private readonly ConcurrentDictionary<NetUserId, long> _stateVersions = new();
+
+    /// <summary>
+    /// Number of fire-and-forget persist passes currently queued for a player. While one is in
+    /// flight the database snapshot cannot be trusted: it may not contain the pending write yet.
+    /// </summary>
+    private readonly ConcurrentDictionary<NetUserId, int> _pendingPersists = new();
+
     private readonly Dictionary<NetUserId, int?> _sponsorLevelOverrides = new();
     private readonly Dictionary<NetUserId, OnlineRewardState> _onlineRewards = new();
     private readonly HashSet<NetUserId> _roundGrantedLobbyAntag = new();
@@ -1008,13 +1022,23 @@ public sealed class AntagTokenSystem : EntitySystem
     private void ApplyDbSnapshotToOnlineUser(
         NetUserId userId,
         List<PlayerAntagToken> tokenEntries,
-        PlayerAntagTokenSelection? selection)
+        PlayerAntagTokenSelection? selection,
+        long expectedVersion)
     {
         if (!_states.ContainsKey(userId))
             return;
 
         if (!_playerManager.TryGetSessionById(userId, out _))
             return;
+
+        // The snapshot was read asynchronously. If the wallet changed while the read was in flight,
+        // or a persist pass is still queued, the snapshot is already stale. Applying it would roll
+        // back freshly granted coins, and the next persist would write that rollback to the database.
+        if (_stateVersions.GetValueOrDefault(userId) != expectedVersion
+            || _pendingPersists.GetValueOrDefault(userId) > 0)
+        {
+            return;
+        }
 
         var newState = BuildPlayerTokenStateFromRows(tokenEntries, selection);
         var prevMonthlyYear = newState.MonthlyYear;
@@ -1045,14 +1069,15 @@ public sealed class AntagTokenSystem : EntitySystem
     private Task WaitMainThreadApplyAsync(
         NetUserId userId,
         List<PlayerAntagToken> tokenEntries,
-        PlayerAntagTokenSelection? selection)
+        PlayerAntagTokenSelection? selection,
+        long expectedVersion)
     {
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         _taskManager.RunOnMainThread(() =>
         {
             try
             {
-                ApplyDbSnapshotToOnlineUser(userId, tokenEntries, selection);
+                ApplyDbSnapshotToOnlineUser(userId, tokenEntries, selection, expectedVersion);
                 tcs.SetResult();
             }
             catch (Exception e)
@@ -1080,6 +1105,13 @@ public sealed class AntagTokenSystem : EntitySystem
                 if (!_userDb.IsLoadComplete(session))
                     continue;
 
+                var expectedVersion = _stateVersions.GetValueOrDefault(session.UserId);
+
+                // A persist that was already queued when this pass started may not be visible in the
+                // database yet. Skip this player for now; the next pass picks the state up.
+                if (_pendingPersists.GetValueOrDefault(session.UserId) > 0)
+                    continue;
+
                 List<PlayerAntagToken> tokenEntries;
                 PlayerAntagTokenSelection? selection;
 
@@ -1094,7 +1126,7 @@ public sealed class AntagTokenSystem : EntitySystem
                     continue;
                 }
 
-                await WaitMainThreadApplyAsync(session.UserId, tokenEntries, selection);
+                await WaitMainThreadApplyAsync(session.UserId, tokenEntries, selection, expectedVersion);
             }
         }
         finally
@@ -1114,6 +1146,10 @@ public sealed class AntagTokenSystem : EntitySystem
     private async Task RequestAntagTokenDatabaseSyncAsync(ICommonSession session)
     {
         var userId = session.UserId;
+        var expectedVersion = _stateVersions.GetValueOrDefault(userId);
+
+        if (_pendingPersists.GetValueOrDefault(userId) > 0)
+            return;
 
         List<PlayerAntagToken> tokenEntries;
         PlayerAntagTokenSelection? selection;
@@ -1129,27 +1165,44 @@ public sealed class AntagTokenSystem : EntitySystem
             return;
         }
 
-        await WaitMainThreadApplyAsync(userId, tokenEntries, selection);
+        await WaitMainThreadApplyAsync(userId, tokenEntries, selection, expectedVersion);
     }
 
     private async void OnPlayerDisconnect(ICommonSession player)
     {
         if (_states.TryGetValue(player.UserId, out var state))
         {
-             await PersistStateAsync(player.UserId, state);
+            try
+            {
+                await PersistStateAsync(player.UserId, state);
+            }
+            catch (Exception e)
+            {
+                Logger.ErrorS("AntagTokens", $"Failed to save state on disconnect for {player.UserId}: {e}");
+            }
+
+            // A fast reconnect may have already installed a fresh state for this user while the
+            // persist above was in flight. Remove the state only if it is still the one we saved,
+            // otherwise the new session would be left without a wallet and the next persist would
+            // write its empty placeholder over the real balance.
+            if (_states.TryGetValue(player.UserId, out var current) && ReferenceEquals(current, state))
+                _states.Remove(player.UserId);
         }
 
         if (_onlineRewards.TryGetValue(player.UserId, out var rewardState))
             rewardState.Pause(DateTime.UtcNow);
-
-        _states.Remove(player.UserId);
     }
     private void PersistState(NetUserId userId, PlayerTokenState state)
     {
+        _stateVersions.AddOrUpdate(userId, 1, static (_, version) => version + 1);
+        _pendingPersists.AddOrUpdate(userId, 1, static (_, count) => count + 1);
+
         _ = PersistStateAsync(userId, state).ContinueWith(t =>
         {
+            _pendingPersists.AddOrUpdate(userId, 0, static (_, count) => Math.Max(0, count - 1));
+
             if (t.IsFaulted)
-            Logger.ErrorS("AntagTokens", $"Failed to save state for {userId}: {t.Exception}");
+                Logger.ErrorS("AntagTokens", $"Failed to save state for {userId}: {t.Exception}");
         });
 }
     private void OnJoinedLobby(PlayerJoinedLobbyEvent ev)
@@ -2354,7 +2407,14 @@ private async Task PersistStateAsync(NetUserId userId, PlayerTokenState state)
         if (_states.TryGetValue(userId, out var state))
             return state;
 
-        if (!_playerManager.TryGetSessionById(userId, out _))
+        if (!_playerManager.TryGetSessionById(userId, out var session))
+            return null;
+
+        // Never materialise an empty placeholder before the database load has finished. Such a
+        // placeholder has Balance = 0, and the next persist (disconnect, round cleanup, save all)
+        // would write that zero over the real wallet. Coin grants that arrive while the load is in
+        // flight fall back to the offline database write path instead.
+        if (!_userDb.IsLoadComplete(session))
             return null;
 
         state = new PlayerTokenState();
