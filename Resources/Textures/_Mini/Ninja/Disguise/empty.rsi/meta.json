@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Mini Station",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "icon",
+      "directions": 1
+    },
+    {
+      "name": "equipped-HEAD",
+      "directions": 1
+    },
+    {
+      "name": "equipped-MASK",
+      "directions": 1
+    },
+    {
+      "name": "equipped-EYES",
+      "directions": 1
+    },
+    {
+      "name": "equipped-INNERCLOTHING",
+      "directions": 1
+    },
+    {
+      "name": "equipped-OUTERCLOTHING",
+      "directions": 1
+    },
+    {
+      "name": "equipped-HAND",
+      "directions": 1
+    },
+    {
+      "name": "equipped-FEET",
+      "directions": 1
+    },
+    {
+      "name": "equipped-EARS",
+      "directions": 1
+    },
+    {
+      "name": "equipped-BACKPACK",
+      "directions": 1
+    },
+    {
+      "name": "equipped-BELT",
+      "directions": 1
+    },
+    {
+      "name": "equipped-NECK",
+      "directions": 1
+    },
+    {
+      "name": "inhand-left",
+      "directions": 1
+    },
+    {
+      "name": "inhand-right",
+      "directions": 1
+    }
+  ]
+}

@@ -353,6 +353,7 @@
 - type: entity
   parent: [ClothingHeadset, BaseMajorContraband]
   id: ClothingHeadsetNinja
+  # Mini: follows the suit colourway
   name: green headset
   description: Who could refuse to wear this stylish black and green headset?
   components:
@@ -364,3 +365,4 @@
     color: "#1a8f3c"
   - type: EmpResistance
     strengthMultiplier: 0
+  - type: NinjaAppearanceItem

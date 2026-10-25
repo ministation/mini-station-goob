@@ -267,6 +267,10 @@
   # Mini: Spider OS (three paths, module activation) and suit hardware marker
   - type: NinjaOs
   - type: NinjaSuitItem
+  - type: NinjaAppearance
+  - type: NinjaAppearanceItem
+    frozenColor: Green
+    frozenStyle: Old
   # Mini: base suit modules (reference parity)
   - type: NinjaAutoDust
   - type: NinjaSelfHealthAnalyzer

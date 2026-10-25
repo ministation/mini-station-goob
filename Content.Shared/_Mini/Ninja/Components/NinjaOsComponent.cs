@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Mini Station
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
+using Content.Shared._Mini.Ninja.Appearance;
 using Content.Shared._Mini.Ninja.Prototypes;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -42,6 +43,18 @@ public sealed partial class NinjaOsComponent : Component
 
     [DataField]
     public ProtoId<NinjaOsBootPrototype> DeactivationBoot = "NinjaOsDeactivationBoot";
+
+    /// <summary>
+    /// Appearance selected in the Spider OS, applied when the suit is activated.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public NinjaColorway PendingColorway = NinjaColorway.Green;
+
+    [DataField, AutoNetworkedField]
+    public NinjaStyle PendingStyle = NinjaStyle.Old;
+
+    [DataField, AutoNetworkedField]
+    public bool PendingHelmet = true;
 
     /// <summary>
     /// Suit power drain per second while the suit is activated.

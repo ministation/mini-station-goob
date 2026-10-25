@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Mini Station
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
+using Content.Shared._Mini.Ninja.Appearance;
 using Content.Shared.Actions;
 using Robust.Shared.Serialization;
 
@@ -22,6 +23,9 @@ public sealed class NinjaOsBoundUserInterfaceState : BoundUserInterfaceState
     public bool SuitActivated;
     public string ActivationBoot = "NinjaOsActivationBoot";
     public string DeactivationBoot = "NinjaOsDeactivationBoot";
+    public NinjaColorway PendingColorway = NinjaColorway.Green;
+    public NinjaStyle PendingStyle = NinjaStyle.Old;
+    public bool PendingHelmet = true;
 
     public NinjaOsBoundUserInterfaceState()
     {
@@ -34,8 +38,14 @@ public sealed class NinjaOsBoundUserInterfaceState : BoundUserInterfaceState
         HashSet<int> activatedTiers,
         bool suitActivated,
         string activationBoot,
-        string deactivationBoot)
+        string deactivationBoot,
+        NinjaColorway pendingColorway,
+        NinjaStyle pendingStyle,
+        bool pendingHelmet)
     {
+        PendingColorway = pendingColorway;
+        PendingStyle = pendingStyle;
+        PendingHelmet = pendingHelmet;
         Os = os;
         SelectedModules = selectedModules;
         LockedTiers = lockedTiers;
@@ -60,6 +70,25 @@ public sealed class NinjaOsSelectModuleMessage : BoundUserInterfaceMessage
     {
         Tier = tier;
         Path = path;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class NinjaOsSetAppearanceMessage : BoundUserInterfaceMessage
+{
+    public NinjaColorway Colorway;
+    public NinjaStyle Style;
+    public bool Helmet;
+
+    public NinjaOsSetAppearanceMessage()
+    {
+    }
+
+    public NinjaOsSetAppearanceMessage(NinjaColorway colorway, NinjaStyle style, bool helmet)
+    {
+        Colorway = colorway;
+        Style = style;
+        Helmet = helmet;
     }
 }
 

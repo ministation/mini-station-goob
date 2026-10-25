@@ -95,7 +95,7 @@ public static class NinjaTestHelpers
     /// <summary>
     /// Checks that a sprite specifier points to an existing texture or to an existing RSI state.
     /// </summary>
-    public static void AssertSpriteExists(IResourceManager resMan, SpriteSpecifier? icon, string context)
+    public static void AssertSpriteExists(IResourceManager resMan, SpriteSpecifier icon, string context)
     {
         Assert.That(icon, Is.Not.Null, $"{context}: icon is not set");
 

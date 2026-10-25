@@ -83,6 +83,12 @@ public sealed partial class NinjaGhostDisguiseComponent : Component
     [ViewVariables]
     public NinjaGhostDisguiseEntry? Original;
 
+    /// <summary>
+    /// Items whose clothing visuals were replaced by the disguise, restored when it is dropped.
+    /// </summary>
+    [ViewVariables]
+    public List<EntityUid> DisguisedItems = new();
+
     [ViewVariables]
     public DoAfterId? ActiveDoAfter;
 
@@ -119,6 +125,12 @@ public sealed partial class NinjaGhostDisguiseEntry
 
     [DataField]
     public ProtoId<JobPrototype>? IdCardJobPrototype;
+
+    /// <summary>
+    /// Clothing prototype worn by the scanned target per inventory slot, used to mimic the outfit.
+    /// </summary>
+    [DataField]
+    public Dictionary<string, EntProtoId> Clothing = new();
 }
 
 /// <summary>

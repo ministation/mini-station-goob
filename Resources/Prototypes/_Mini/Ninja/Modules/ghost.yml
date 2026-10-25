@@ -54,21 +54,18 @@
   - type: InstantAction
     event: !type:NinjaGhostSmokeAutoToggleEvent
 
-# Stealth effect applied to the wearer while the ghost cloak is active.
+# Invisible clothing used by the chameleon to hide slots the scanned target has no item in.
 - type: entity
-  id: NinjaGhostCloakEffect
-  abstract: true
+  parent: BaseItem
+  id: NinjaDisguiseEmptyClothing
   categories: [ HideSpawnMenu ]
   components:
-  - type: Stealth
-    maxVisibility: 0.1
-    hadOutline: true
-    thermalsImmune: true
-  - type: StealthOnMove
-    invisibilityPenalty: 3
-    maxInvisibilityPenalty: 1.6
-    passiveVisibilityRate: -1
-    movementVisibilityRate: 0.15
+  - type: Sprite
+    sprite: _Mini/Ninja/Disguise/empty.rsi
+    state: icon
+  - type: Clothing
+    slots: NONE
+    sprite: _Mini/Ninja/Disguise/empty.rsi
 
 # Tier 2: phase cloak.
 - type: ninjaModule
@@ -82,6 +79,17 @@
     state: cloak
   components:
   - type: NinjaGhostCloak
+    # Applied to the wearer while the cloak is active.
+    cloakComponents:
+    - type: Stealth
+      maxVisibility: 0.1
+      hadOutline: true
+      thermalsImmune: true
+    - type: StealthOnMove
+      invisibilityPenalty: 3
+      maxInvisibilityPenalty: 1.6
+      passiveVisibilityRate: -1
+      movementVisibilityRate: 0.15
   actions:
   - ActionNinjaGhostCloak
 

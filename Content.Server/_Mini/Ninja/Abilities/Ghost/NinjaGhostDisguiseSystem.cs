@@ -7,15 +7,20 @@ using Content.Shared._Mini.Ninja.Abilities.Ghost;
 using Content.Shared._Mini.Ninja.Components;
 using Content.Shared._Mini.Ninja.Systems;
 using Content.Shared.Access.Systems;
+using Content.Shared.Clothing.Components;
+using Content.Shared.Clothing.EntitySystems;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
+using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
+using Content.Shared.Item;
 using Content.Shared.Ninja.Components;
 using Content.Shared.Popups;
 using Content.Shared.Roles;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Mini.Ninja.Abilities.Ghost;
@@ -28,7 +33,31 @@ public sealed class NinjaGhostDisguiseSystem : EntitySystem
 {
     private const float RevealDamageThreshold = 5f;
 
+    private const string InvisibleClothing = "NinjaDisguiseEmptyClothing";
+
+    /// <summary>
+    /// Inventory slots whose clothing visuals are copied from the scanned target.
+    /// </summary>
+    private static readonly string[] DisguiseSlots =
+    {
+        "outerClothing",
+        "jumpsuit",
+        "head",
+        "mask",
+        "eyes",
+        "gloves",
+        "shoes",
+        "ears",
+        "back",
+        "belt",
+        "neck",
+    };
+
     [Dependency] private readonly NinjaSuitPowerSystem _suitPower = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private readonly ClothingSystem _clothing = default!;
+    [Dependency] private readonly SharedItemSystem _item = default!;
+    [Dependency] private readonly IComponentFactory _factory = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
     [Dependency] private readonly SharedHumanoidAppearanceSystem _humanoid = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
@@ -226,6 +255,7 @@ public sealed class NinjaGhostDisguiseSystem : EntitySystem
             comp.Original = CaptureEntry(wearer);
 
         ApplyEntry(wearer, entry);
+        MimicClothing(ent, wearer, entry);
 
         comp.Disguised = true;
         comp.ActiveIndex = index;
@@ -249,6 +279,8 @@ public sealed class NinjaGhostDisguiseSystem : EntitySystem
 
         if (!comp.Disguised)
             return;
+
+        RestoreClothing(ent, wearer);
 
         if (wearer.IsValid() && comp.Original is { } original)
             ApplyEntry(wearer, original);
@@ -280,6 +312,15 @@ public sealed class NinjaGhostDisguiseSystem : EntitySystem
             entry.IdCardName = card.Comp.FullName;
             entry.IdCardJobTitle = card.Comp.JobTitle?.Id;
             entry.IdCardJobPrototype = card.Comp.JobPrototype;
+        }
+
+        foreach (var slot in DisguiseSlots)
+        {
+            if (_inventory.TryGetSlotEntity(target, slot, out var item) &&
+                MetaData(item.Value).EntityPrototype is { } prototype)
+            {
+                entry.Clothing[slot] = prototype.ID;
+            }
         }
 
         return entry;
@@ -345,6 +386,75 @@ public sealed class NinjaGhostDisguiseSystem : EntitySystem
             _humanoid.SetTTSVoice(wearer, appearance.Voice.Id, humanoid);
 
         Dirty(wearer, humanoid);
+    }
+
+    /// <summary>
+    /// Copies the clothing visuals of the scanned target onto the worn suit parts, or makes the part
+    /// invisible when the target has nothing in that slot. Only visuals are copied, no item behaviour changes.
+    /// </summary>
+    private void MimicClothing(Entity<NinjaGhostDisguiseComponent> ent, EntityUid wearer, NinjaGhostDisguiseEntry entry)
+    {
+        RestoreClothing(ent, wearer);
+
+        foreach (var slot in DisguiseSlots)
+        {
+            if (!_inventory.TryGetSlotEntity(wearer, slot, out var item))
+                continue;
+
+            var protoId = InvisibleClothing;
+            if (entry.Clothing.TryGetValue(slot, out var scanned))
+            {
+                protoId = scanned.Id;
+            }
+            else if (slot == "outerClothing" && entry.Clothing.TryGetValue("jumpsuit", out var inner))
+            {
+                // The reference ninja suit covers the jumpsuit layer, so its outer clothing falls back to the inner one.
+                protoId = inner.Id;
+            }
+
+            CopyClothingVisuals(item.Value, protoId);
+            ent.Comp.DisguisedItems.Add(item.Value);
+        }
+
+        Dirty(ent);
+    }
+
+    private void CopyClothingVisuals(EntityUid item, string protoId)
+    {
+        if (!_proto.TryIndex(protoId, out EntityPrototype? prototype))
+            return;
+
+        if (TryComp<ClothingComponent>(item, out var clothing) &&
+            prototype.TryGetComponent<ClothingComponent>(out var otherClothing, _factory))
+        {
+            _clothing.CopyVisuals(item, otherClothing, clothing);
+        }
+
+        if (TryComp<ItemComponent>(item, out var itemComp) &&
+            prototype.TryGetComponent<ItemComponent>(out var otherItem, _factory))
+        {
+            _item.CopyVisuals(item, otherItem, itemComp);
+        }
+    }
+
+    private void RestoreClothing(Entity<NinjaGhostDisguiseComponent> ent, EntityUid wearer)
+    {
+        if (ent.Comp.DisguisedItems.Count == 0)
+            return;
+
+        foreach (var item in ent.Comp.DisguisedItems)
+        {
+            if (TerminatingOrDeleted(item))
+                continue;
+
+            if (MetaData(item).EntityPrototype is not { } prototype)
+                continue;
+
+            CopyClothingVisuals(item, prototype.ID);
+        }
+
+        ent.Comp.DisguisedItems.Clear();
+        Dirty(ent);
     }
 
     private void MimicIdCard(EntityUid wearer, NinjaGhostDisguiseEntry entry)
