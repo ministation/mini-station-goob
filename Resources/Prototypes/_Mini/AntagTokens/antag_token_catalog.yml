@@ -326,7 +326,7 @@
       gameRuleId: Xenoborgs
       requiresPresetGameRuleId: Xenoborgs
       tagLocKey: antag-token-window-tag-queue
-      minimumPlayers: 30
+      minimumPlayers: 20 # Mini: xenoborgs from 20 online
       requiresPreRoundLobby: true
       ignoresStationJob: true
       major: true
