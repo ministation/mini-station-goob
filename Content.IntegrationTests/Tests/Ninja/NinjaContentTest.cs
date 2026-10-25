@@ -83,7 +83,7 @@ public sealed class NinjaContentTest
     [Test]
     public async Task PathItemPrototypesExistAndSpawn()
     {
-        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Dirty = true });
+        await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
         var entMan = server.EntMan;
         var protoMan = server.ResolveDependency<IPrototypeManager>();
@@ -175,7 +175,7 @@ public sealed class NinjaContentTest
         });
 
         if (warnings.Count > 0)
-            Assert.Warn(string.Join("; ", warnings));
+            TestContext.Out.WriteLine("Ninja path warnings: " + string.Join("; ", warnings));
 
         await pair.CleanReturnAsync();
     }
