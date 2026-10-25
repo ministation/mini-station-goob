@@ -7,7 +7,7 @@ ninja-module-ghost-cloak-desc = Turns you invisible. The suit heats up while the
 ninja-module-ghost-clones = Holographic clones
 ninja-module-ghost-clones-desc = Spawns several holographic copies of you and swaps your position with one of them. The copies live for five seconds, attack your enemies and split on attacks.
 ninja-module-ghost-disguise = Chameleon
-ninja-module-ghost-disguise-desc = Scans a crew member and copies their appearance, name and voice. The disguise is dropped on damage and drains suit power while it lasts.
+ninja-module-ghost-disguise-desc = Scans a crew member and fully transforms you: appearance, clothing in every slot, name, description and ID. The disguise is dropped on damage and drains suit power while it lasts.
 ninja-module-ghost-spiritform = Spirit form
 ninja-module-ghost-spiritform-desc = Turns your body into a ghost that passes through walls. Costs a large part of the suit charge on activation and every second, and turns off when the charge runs out.
 
@@ -20,7 +20,7 @@ ent-ActionNinjaGhostCloak = Phase cloak
 ent-ActionNinjaGhostClones = Holographic clones
     .desc = Create several holographic copies of yourself and swap places with one of them.
 ent-ActionNinjaGhostDisguiseScan = Appearance scanner
-    .desc = Scan a nearby crew member and save their appearance.
+    .desc = Scan a nearby crew member and save their appearance and clothing.
 ent-ActionNinjaGhostDisguiseMenu = Chameleon
     .desc = Apply the last scanned appearance, or reset the current disguise.
 ent-ActionNinjaGhostSpiritForm = Spirit form

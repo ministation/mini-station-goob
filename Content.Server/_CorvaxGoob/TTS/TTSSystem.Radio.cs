@@ -142,7 +142,10 @@ public sealed partial class TTSSystem
 
         var sourcePos = _xforms.GetWorldPosition(sourceXform, xformQuery);
         var receiverPos = _xforms.GetWorldPosition(receiverXform, xformQuery);
-        var range = ChatSystem.VoiceRange;
+        // Radio speech is also delivered as a whisper to nearby listeners, but the whisper TTS only
+        // reaches WhisperClearRange. Skipping radio TTS up to VoiceRange left everyone in between
+        // with the radio text but no voice at all.
+        var range = ChatSystem.WhisperClearRange;
         return (sourcePos - receiverPos).LengthSquared() <= range * range;
     }
 

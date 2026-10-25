@@ -72,6 +72,9 @@
     deviceNetId: Wireless
     receiveFrequencyId: CrewMonitor
     transmitFrequencyId: ShuttleTimer
+  - type: WirelessNetworkConnection # Mini: без него ИИ принимал broadcast с любой карты
+    range: 500
+  - type: StationLimitedNetwork # Mini: не показываем ИИ датчики чужой станции (ЦК)
   - type: RadarConsole
     followEntity: false
   - type: VoiceBroadcastConsole # Goobstation

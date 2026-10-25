@@ -173,6 +173,11 @@
         Slash: 30
       woundSeverityMultipliers:
         Slash: 2
+    soundHit: # Mini: энергетический звук удара вместо дефолтного bladeslice
+      path: /Audio/_Mini/Ninja/Weapons/energykatana_hit.ogg
+      params:
+        volume: -2
+        variation: 0.05
   - type: Item
     inhandVisuals: # Mini: MK14 sprite parity (glow layer)
       left:

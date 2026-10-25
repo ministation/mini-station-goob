@@ -107,7 +107,7 @@
   description: uplink-mimejutsu-desc
   productEntity: MimejutsuManual
   cost:
-    Telecrystal: 50
+    Telecrystal: 10 # Mini: было 50, поделили на 5 (апстрим не поправил)
   categories:
   - UplinkJob
   conditions:

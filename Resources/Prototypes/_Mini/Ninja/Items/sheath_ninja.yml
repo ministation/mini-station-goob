@@ -33,5 +33,13 @@
       item:
       - EnergyKatana
   - type: NinjaAppearanceItem
+  - type: Armor # Mini: полный комплект ниндзя даёт броню на всю экипировку, видно в examine
+    coverage:
+    - Groin
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95
   - type: StaticPrice
     price: 500

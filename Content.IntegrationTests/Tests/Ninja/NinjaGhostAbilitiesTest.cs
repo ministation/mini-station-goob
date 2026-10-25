@@ -145,34 +145,36 @@ public sealed class NinjaGhostAbilitiesTest
             Assert.That(humanLook.SkinColor, Is.EqualTo(targetLook.SkinColor),
                 "The chameleon did not copy the target skin colour");
 
-        var protoMan = server.ResolveDependency<IPrototypeManager>();
-        Assert.That(protoMan.TryIndex<EntityPrototype>("ClothingOuterSuitSpaceNinja", out var suitProto), Is.True);
-        var originalSuitClothing = (ClothingComponent) suitProto!.Components["Clothing"].Component;
-
+        // The outfit of the disguise must reach the clients: they draw the scanned clothing over the ninja.
         await server.WaitAssertion(() =>
         {
-            var suitClothing = entMan.GetComponent<ClothingComponent>(suit);
-            var targetClothing = entMan.GetComponent<ClothingComponent>(targetJumpsuit);
-            Assert.That(suitClothing.RsiPath, Is.EqualTo(targetClothing.RsiPath),
-                "The suit did not mimic the scanned jumpsuit");
+            var jumpsuit = disguise.ActiveOutfit.FirstOrDefault(clothing => clothing.Slot == "jumpsuit");
+            Assert.That(jumpsuit, Is.Not.Null, "The scanned jumpsuit was not replicated to the clients");
+            Assert.That(jumpsuit!.Prototype.Id, Is.EqualTo("ClothingUniformJumpsuitCargo"),
+                "The replicated outfit points at the wrong jumpsuit");
 
-            var inventory = server.System<InventorySystem>();
-            Assert.That(inventory.TryGetSlotEntity(human, "shoes", out var shoes), Is.True,
-                "The ninja has no shoes to hide");
-            Assert.That(entMan.GetComponent<ClothingComponent>(shoes!.Value).RsiPath,
-                Does.Contain("Disguise/empty.rsi"),
-                "The shoes were not hidden by the disguise");
+            Assert.That(disguise.ActiveOutfit.Any(clothing => clothing.Slot == "shoes"), Is.False,
+                "The outfit must not contain slots the scanned target had nothing in");
+
+            // The server no longer repaints the worn gear: the clothing visuals of an item are not networked,
+            // so the visuals of the real suit must stay untouched and the client does the drawing.
+            var protoMan = server.ResolveDependency<IPrototypeManager>();
+            Assert.That(protoMan.TryIndex<EntityPrototype>("ClothingOuterSuitSpaceNinja", out var suitProto), Is.True);
+            var originalSuitClothing = (ClothingComponent) suitProto!.Components["Clothing"].Component;
+            Assert.That(entMan.GetComponent<ClothingComponent>(suit).RsiPath,
+                Is.EqualTo(originalSuitClothing.RsiPath),
+                "The server changed the visuals of the real suit, the clients can not see that");
         });
 
-        // Dropping the disguise must restore the original suit visuals.
+        // Dropping the disguise must clear the replicated outfit so the clients restore the real gear.
         await server.WaitPost(() => actions.PerformAction((human, default(ActionsComponent)), menuAction));
         await server.WaitRunTicks(90);
 
         Assert.That(disguise.Disguised, Is.False, "The chameleon did not reset the disguise");
         await server.WaitAssertion(() =>
         {
-            Assert.That(entMan.GetComponent<ClothingComponent>(suit).RsiPath,
-                Is.EqualTo(originalSuitClothing.RsiPath), "The suit visuals were not restored after the disguise");
+            Assert.That(disguise.ActiveOutfit, Is.Empty,
+                "The replicated outfit was not cleared when the disguise was dropped");
         });
 
         await pair.CleanReturnAsync();

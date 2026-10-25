@@ -16,6 +16,8 @@ public sealed partial class SlasherSystem : EntitySystem
     [Dependency] private SharedBodySystem _body = default!;
     [Dependency] private StandingStateSystem _standing = default!;
 
+    private const string BrainSlot = "brain";
+
     public override void Initialize()
     {
         base.Initialize();
@@ -38,19 +40,37 @@ public sealed partial class SlasherSystem : EntitySystem
 
         var brain = brains[0];
 
+        // Only move a brain that actually sits in the head slot, the way standard humanoid bodies are built.
+        // Species such as slimes keep their brain elsewhere, a slime core in the groin. Pulling such an organ
+        // out debrains the body and hands the mind over to the organ itself, so non-standard anatomy is left
+        // untouched instead.
+        if (_body.GetParentPartOrNull(brain.Owner) is not { } head
+            || !TryComp<BodyPartComponent>(head, out var headPart)
+            || headPart.PartType != BodyPartType.Head
+            || brain.Comp2.SlotId != BrainSlot)
+            return;
+
         EntityUid? chestPart = null;
-        foreach (var (partId, part) in _body.GetBodyChildrenOfType(ent.Owner, BodyPartType.Chest, bodyComp))
+        foreach (var (partId, _) in _body.GetBodyChildrenOfType(ent.Owner, BodyPartType.Chest, bodyComp))
         {
             chestPart = partId;
             break;
         }
 
-        if (chestPart == null)
+        if (chestPart is not { } chest || !_body.TryCreateOrganSlot(chest, BrainSlot, out _))
             return;
 
-        _body.RemoveOrgan(brain.Owner, brain.Comp2);
-        _body.TryCreateOrganSlot(chestPart, "brain", out _, null);
-        _body.InsertOrgan(chestPart.Value, brain.Owner, "brain");
+        if (!_body.RemoveOrgan(brain.Owner, brain.Comp2))
+            return;
+
+        // Never leave the slasher debrained with their brain on the floor: if the organ cannot be
+        // inserted into the chest, put it back into the slot it came from.
+        if (!_body.InsertOrgan(chest, brain.Owner, BrainSlot))
+        {
+            _body.InsertOrgan(head, brain.Owner, brain.Comp2.SlotId, headPart, brain.Comp2);
+            return;
+        }
+
         _standing.Stand(ent.Owner, force: true);
     }
 }

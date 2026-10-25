@@ -365,4 +365,12 @@
     color: "#1a8f3c"
   - type: EmpResistance
     strengthMultiplier: 0
+  - type: Armor # Mini: полный комплект ниндзя даёт броню на всю экипировку, видно в examine
+    coverage:
+    - Head
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95
   - type: NinjaAppearanceItem

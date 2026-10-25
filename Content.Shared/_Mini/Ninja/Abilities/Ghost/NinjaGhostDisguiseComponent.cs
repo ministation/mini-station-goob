@@ -20,7 +20,12 @@ namespace Content.Shared._Mini.Ninja.Abilities.Ghost;
 /// Ghost tier 4: the chameleon. Scans a crew member and copies their appearance, name and voice,
 /// draining the suit cell while the disguise is active. The component lives on the suit.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+/// <remarks>
+/// The outfit of the active disguise is replicated to every client: the server can not repaint the worn
+/// gear (the clothing visuals of an item are not networked), so the client hides the real gear layers
+/// and draws the scanned clothing instead. See <c>NinjaGhostDisguiseClientSystem</c>.
+/// </remarks>
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
 public sealed partial class NinjaGhostDisguiseComponent : Component
 {
     /// <summary>
@@ -72,7 +77,14 @@ public sealed partial class NinjaGhostDisguiseComponent : Component
     public int ActiveIndex = -1;
 
     /// <summary>
-    /// Scanned appearances. Server only: the client does not render the disguise database.
+    /// Clothing prototypes of the active disguise per inventory slot. Networked: the client needs the
+    /// list of worn prototypes to draw the scanned outfit over the ninja.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public List<NinjaGhostDisguiseClothing> ActiveOutfit = new();
+
+    /// <summary>
+    /// Scanned appearances. Server only: the client only receives the outfit of the active disguise.
     /// </summary>
     [DataField]
     public List<NinjaGhostDisguiseEntry> Entries = new();
@@ -82,12 +94,6 @@ public sealed partial class NinjaGhostDisguiseComponent : Component
     /// </summary>
     [ViewVariables]
     public NinjaGhostDisguiseEntry? Original;
-
-    /// <summary>
-    /// Items whose clothing visuals were replaced by the disguise, restored when it is dropped.
-    /// </summary>
-    [ViewVariables]
-    public List<EntityUid> DisguisedItems = new();
 
     [ViewVariables]
     public DoAfterId? ActiveDoAfter;
@@ -127,10 +133,23 @@ public sealed partial class NinjaGhostDisguiseEntry
     public ProtoId<JobPrototype>? IdCardJobPrototype;
 
     /// <summary>
-    /// Clothing prototype worn by the scanned target per inventory slot, used to mimic the outfit.
+    /// Clothing prototype worn by the scanned target per inventory slot, used by the client to mimic the outfit.
     /// </summary>
     [DataField]
     public Dictionary<string, EntProtoId> Clothing = new();
+}
+
+/// <summary>
+/// Clothing prototype of the disguise for one inventory slot, replicated to the clients.
+/// </summary>
+[DataDefinition, Serializable, NetSerializable]
+public sealed partial class NinjaGhostDisguiseClothing
+{
+    [DataField]
+    public string Slot = string.Empty;
+
+    [DataField]
+    public EntProtoId Prototype;
 }
 
 /// <summary>
