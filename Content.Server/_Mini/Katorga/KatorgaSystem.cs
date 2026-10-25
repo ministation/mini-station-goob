@@ -63,6 +63,7 @@ public sealed class KatorgaSystem : EntitySystem
     [Dependency] private readonly AdminSystem _adminSystem = default!;
     [Dependency] private readonly IAdminManager _adminManager = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly BiomeSystem _biome = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
@@ -149,30 +150,35 @@ public sealed class KatorgaSystem : EntitySystem
         if (!Enabled)
             return;
 
-        var opts = new MapLoadOptions
-        {
-            DeserializationOptions = DeserializationOptions.Default with { PauseMaps = false },
-            ExpectedCategory = FileCategory.Map
-        };
+        // Файл карты хранит только грид (как карты станций), поэтому грузим его на свежую карту:
+        // TryLoadGrid + биом + InitializeMap в конце, по образцу SetupArrivalsStation.
+        _mapSystem.CreateMap(out var mapId, runMapInit: false);
+        var mapUid = _mapSystem.GetMap(mapId);
+        _katorgaMap = mapId;
+        _katorgaMapUid = mapUid;
 
-        if (!_mapLoader.TryLoadGeneric(KatorgaMapPath, out var result, opts) || !result.Maps.TryFirstOrNull(out var map))
+        if (!_mapLoader.TryLoadGrid(mapId, KatorgaMapPath, out _, DeserializationOptions.Default with { PauseMaps = false }))
         {
             _sawmill.Error("Каторга: не удалось загрузить карту " + KatorgaMapPath + ", каторга в этом раунде недоступна");
+            _mapSystem.DeleteMap(mapId);
+            _katorgaMap = null;
+            _katorgaMapUid = null;
             return;
         }
 
-        _katorgaMapUid = map.Value.Owner;
-        _katorgaMap = map.Value.Comp.MapId;
-        _metaData.SetEntityName(_katorgaMapUid.Value, "Katorga");
+        _metaData.SetEntityName(mapUid, "Katorga");
 
         if (_prototype.TryIndex<BiomeTemplatePrototype>(KatorgaBiomeId, out var biome))
         {
-            _biome.EnsurePlanet(_katorgaMapUid.Value, biome);
+            _biome.EnsurePlanet(mapUid, biome);
         }
         else
         {
             _sawmill.Error("Каторга: не найден биом " + KatorgaBiomeId);
         }
+
+        // Mapinit после биома: атмосфера, машины и генерация астероида стартуют вместе с картой.
+        _mapSystem.InitializeMap(mapId);
 
         var query = EntityQueryEnumerator<KatorgaSpawnPointComponent, TransformComponent>();
         while (query.MoveNext(out _, out _, out var xform))
