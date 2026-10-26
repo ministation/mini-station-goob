@@ -15,6 +15,8 @@ katorga-penalty-admin = Каторга: игрок { $user } убил сокам
 
 katorga-map-missing = Карта каторги недоступна, вход невозможен. Обратитесь к администрации.
 
+katorga-ban-check-failed = Не удалось проверить баны, вход отменён. Попробуйте переподключиться позже.
+
 katorga-hud-title = КАТОРГА
 
 katorga-hud-remaining = Осталось: { $time }

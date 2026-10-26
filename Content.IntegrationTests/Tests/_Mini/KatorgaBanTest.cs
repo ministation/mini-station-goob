@@ -52,6 +52,18 @@ public sealed class KatorgaBanTest
         await pair.RunTicksSync(10);
 
         var player = playerMan.Sessions.Single();
+
+        // Спавн может быть отложен до фоновой проверки бана (каторга включается после
+        // подключения игрока), поэтому ждём, пока проверка завершится и игрок появится в мире.
+        for (var i = 0; i < 100; i++)
+        {
+            if (player.Status == SessionStatus.InGame && player.AttachedEntity != null)
+                break;
+
+            await pair.RunTicksSync(1);
+            await Task.Delay(20);
+        }
+
         Assert.That(player.Status, Is.EqualTo(SessionStatus.InGame));
         Assert.That(player.AttachedEntity, Is.Not.Null);
 
