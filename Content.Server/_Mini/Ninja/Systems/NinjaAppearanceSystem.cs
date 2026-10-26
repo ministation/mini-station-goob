@@ -2,8 +2,6 @@
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using Content.Shared._Mini.Ninja.Appearance;
-using Content.Shared.Clothing.Components;
-using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Robust.Shared.Containers;
@@ -11,14 +9,14 @@ using Robust.Shared.Containers;
 namespace Content.Server._Mini.Ninja.Systems;
 
 /// <summary>
-/// Server side of the suit personalisation: stores the selected colour/style on the suit,
-/// freezes the look of the suit parts when they are dropped and restores the hair layers when the helmet is hidden.
-/// The sprites themselves are recoloured on the client.
+/// Server side of the suit personalisation: stores the selected colour/style on the suit and
+/// freezes the look of the suit parts when they are dropped. The sprites themselves are
+/// recoloured on the client. Hair stays hidden while the helmet is worn, even when only the
+/// scarf is shown: the suit must not expose the ninja's identity.
 /// </summary>
 public sealed class NinjaAppearanceSystem : EntitySystem
 {
     [Dependency] private readonly InventorySystem _inventory = default!;
-    [Dependency] private readonly SharedHumanoidAppearanceSystem _humanoid = default!;
 
     public override void Initialize()
     {
@@ -29,7 +27,7 @@ public sealed class NinjaAppearanceSystem : EntitySystem
     }
 
     /// <summary>
-    /// Applies the selected appearance to the suit and updates the helmet hair layers.
+    /// Applies the selected appearance to the suit.
     /// </summary>
     public void ApplyAppearance(EntityUid suit, EntityUid wearer, NinjaColorway colorway, NinjaStyle style, bool helmetShown)
     {
@@ -45,79 +43,6 @@ public sealed class NinjaAppearanceSystem : EntitySystem
             suitItem.FrozenColor = colorway;
             suitItem.FrozenStyle = style;
             Dirty(suit, suitItem);
-        }
-
-        UpdateHelmetLayers(suit, wearer, helmetShown);
-    }
-
-    private void UpdateHelmetLayers(EntityUid suit, EntityUid wearer, bool shown)
-    {
-        if (!wearer.IsValid() || !TryComp<HumanoidAppearanceComponent>(wearer, out var humanoid))
-            return;
-
-        foreach (var item in EnumerateWearerItems(wearer))
-        {
-            if (!TryComp<NinjaAppearanceItemComponent>(item, out var itemComp) ||
-                itemComp.ItemType != NinjaAppearanceItemType.Helmet)
-            {
-                continue;
-            }
-
-            if (shown)
-                RestoreHideLayerClothing(wearer, item, itemComp, humanoid.HideLayersOnEquip);
-            else
-                RemoveHideLayerClothing(wearer, item, itemComp, humanoid.HideLayersOnEquip);
-
-            return;
-        }
-    }
-
-    private void RemoveHideLayerClothing(EntityUid wearer, EntityUid helmet,
-        NinjaAppearanceItemComponent comp, HashSet<HumanoidVisualLayers> hideable)
-    {
-        if (comp.SavedHideLayers != null || !TryComp<HideLayerClothingComponent>(helmet, out var hide))
-            return;
-
-        var inSlot = TryComp<ClothingComponent>(helmet, out var clothing)
-            ? clothing.InSlotFlag ?? SlotFlags.NONE
-            : SlotFlags.NONE;
-
-        if (inSlot == SlotFlags.NONE)
-            return;
-
-        comp.SavedHideLayers = new Dictionary<HumanoidVisualLayers, SlotFlags>(hide.Layers);
-        ToggleHiddenLayers(wearer, hide.Layers, hideable, inSlot, hidden: false);
-        RemComp<HideLayerClothingComponent>(helmet);
-    }
-
-    private void RestoreHideLayerClothing(EntityUid wearer, EntityUid helmet,
-        NinjaAppearanceItemComponent comp, HashSet<HumanoidVisualLayers> hideable)
-    {
-        if (comp.SavedHideLayers is not { } saved)
-            return;
-
-        var inSlot = TryComp<ClothingComponent>(helmet, out var clothing)
-            ? clothing.InSlotFlag ?? SlotFlags.NONE
-            : SlotFlags.NONE;
-
-        if (inSlot == SlotFlags.NONE)
-            return;
-
-        var hide = EnsureComp<HideLayerClothingComponent>(helmet);
-        hide.Layers = saved;
-        Dirty(helmet, hide);
-        comp.SavedHideLayers = null;
-
-        ToggleHiddenLayers(wearer, saved, hideable, inSlot, hidden: true);
-    }
-
-    private void ToggleHiddenLayers(EntityUid wearer, Dictionary<HumanoidVisualLayers, SlotFlags> layers,
-        HashSet<HumanoidVisualLayers> hideable, SlotFlags inSlot, bool hidden)
-    {
-        foreach (var (layer, validSlots) in layers)
-        {
-            if (hideable.Contains(layer) && validSlots.HasFlag(inSlot))
-                _humanoid.SetLayerVisibility(wearer, layer, visible: !hidden, source: inSlot);
         }
     }
 

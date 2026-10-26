@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Mini Station
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
-using Content.Shared.Humanoid;
-using Content.Shared.Inventory;
 using Robust.Shared.GameStates;
 
 namespace Content.Shared._Mini.Ninja.Appearance;
@@ -24,7 +22,4 @@ public sealed partial class NinjaAppearanceItemComponent : Component
 
     [DataField, AutoNetworkedField]
     public NinjaStyle? FrozenStyle;
-
-    [ViewVariables]
-    public Dictionary<HumanoidVisualLayers, SlotFlags>? SavedHideLayers;
 }

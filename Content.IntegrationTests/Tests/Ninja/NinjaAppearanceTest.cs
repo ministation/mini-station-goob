@@ -10,6 +10,7 @@ using Content.Shared._Mini.Ninja.Components;
 using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Ninja.Components;
 using Robust.Server.GameObjects;
@@ -96,6 +97,11 @@ public sealed class NinjaAppearanceTest
             Assert.That(appearance.Style, Is.EqualTo(NinjaStyle.Old), "The suit style was not applied");
             Assert.That(appearance.ScarfShown, Is.True, "The scarf was not shown");
             Assert.That(appearance.HelmetShown, Is.False, "The helmet was not hidden");
+
+            // Hair must stay under the suit even when the scarf is shown instead of the helmet.
+            var humanoid = entMan.GetComponent<HumanoidAppearanceComponent>(human);
+            Assert.That(humanoid.HiddenLayers, Does.ContainKey(HumanoidVisualLayers.Hair),
+                "Hair is visible over the ninja suit in the scarf look");
         });
 
         // The suit parts and the scarf must be marked for the client-side recolouring.

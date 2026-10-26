@@ -164,7 +164,7 @@ public sealed class StealthSystem : SharedStealthSystem
     /// </summary>
     private bool IsVisibleToLocalPlayer(EntityUid uid)
     {
-        if (_player.LocalEntity is not { } local)
+        if (_player.LocalEntity is not { Valid: true } local)
             return false;
 
         if (local == uid)
