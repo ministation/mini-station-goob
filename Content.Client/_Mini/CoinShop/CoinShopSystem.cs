@@ -7,6 +7,7 @@ using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
+using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Utility;
 
 namespace Content.Client._Mini.CoinShop;
@@ -56,24 +57,23 @@ public sealed class CoinShopSystem : EntitySystem
 
     public Texture? GetGhostIcon(string rsiPath)
     {
-        // Ghost theme ".rsi" folders ship as a single png without rsi.json - load the
-        // texture directly instead of going through the RSI loader. Only rooted paths
-        // are attempted: relative ones make the texture loader's params lookup throw.
-        foreach (var suffix in new[] { "/animated.png", "/icon.png", "/ghost.png" })
+        // Theme folders are ordinary RSI directories: take one frame instead of the raw png, which
+        // would draw the whole sheet (all directions and animation frames) on the shop card.
+        var path = new ResPath(rsiPath);
+        if (_resourceCache.TryGetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / path, out var rsi)
+            && rsi.RSI.TryGetState("animated", out _))
+        {
+            return _sprite.Frame0(new SpriteSpecifier.Rsi(path, "animated"));
+        }
+
+        foreach (var suffix in new[] { "/icon.png", "/animated.png", "/ghost.png" })
         {
             if (_resourceCache.TryGetResource<TextureResource>(
                     new ResPath(CustomGhost.GhostShopSystem.ToTexturePath(rsiPath) + suffix), out var res))
                 return res.Texture;
         }
 
-        try
-        {
-            return _sprite.Frame0(new SpriteSpecifier.Rsi(new ResPath(rsiPath), "animated"));
-        }
-        catch
-        {
-            return null;
-        }
+        return null;
     }
 
     public Texture? GetItemIcon(string rsiPath)
