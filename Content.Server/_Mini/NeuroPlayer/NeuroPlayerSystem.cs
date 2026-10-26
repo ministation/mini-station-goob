@@ -69,6 +69,7 @@ using Content.Shared.Roles;
 using Content.Shared.SSDIndicator;
 using Content.Shared.Radio.Components;
 using Content.Shared.Interaction;
+using Content.Shared.Doors.Systems;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
 using Content.Shared.Turrets;
@@ -76,6 +77,7 @@ using Content.Shared.Weapons.Ranged.Components;
 using Content.Server.NPC;
 using Content.Shared.NPC.Systems;
 using Content.Shared.StationRecords;
+using Content.Shared.Tag;
 using Robust.Shared.Configuration;
 using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
@@ -214,6 +216,9 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     [Dependency] private readonly PullingSystem _pulling = default!;
     [Dependency] private readonly SharedBuckleSystem _buckle = default!;
     [Dependency] private readonly SharedCuffableSystem _cuffable = default!;
+    [Dependency] private readonly SharedInteractionSystem _interaction = default!;
+    [Dependency] private readonly SharedDoorSystem _doors = default!;
+    [Dependency] private readonly TagSystem _tags = default!;
 
     private ISawmill _sawmill = default!;
     private readonly HttpClient _httpClient = new();
@@ -257,6 +262,17 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     private int _fallbacks;
     private int _requestsRateLimited;
     private int _blockedReplies;
+
+    /// <summary>Primary-provider failures in a row that make the fallback the first choice.</summary>
+    private const int FallbackSwitchFailures = 3;
+
+    /// <summary>How long the fallback stays the first choice after such a streak.</summary>
+    private static readonly TimeSpan FallbackPreferredWindow = TimeSpan.FromMinutes(10);
+
+    /// <summary>Written from request tasks, hence Interlocked.</summary>
+    private int _primaryFailures;
+
+    private DateTime _fallbackPreferredUntil;
 
     private float _dangerScanAccumulator;
     private float _seekAccumulator;
@@ -1432,6 +1448,12 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             return;
         }
 
+        // Мини: короткий приказ игрока ("иди за мной", "стой", "убери мусор") - детерминированный
+        // разбор без LLM. Команду понимает бот рядом со спикером (или названный по имени), на
+        // безымянную соглашается только ближайший, иначе на приказ сорвалась бы вся группа.
+        if (TryHandleOrder(bot, comp, persona, speaker, message, viaRadio, distance))
+            return;
+
         // Named address: always answer (both local and radio).
         if (MatchesName(persona.Name, message))
         {
@@ -1638,6 +1660,12 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
     /// Sends a request through the active provider and, if it fails, once more through
     /// neuroplayer.fallback_provider. Returns the reply text or null.
     /// </summary>
+    /// <remarks>
+    /// Мини: живой Z.ai-эндпоинт стабильно отваливался по таймауту, и каждая реплика ждала два
+    /// таймаута подряд: ответ приходил через 20+ секунд или не приходил вовсе, поэтому игроки
+    /// видели в основном молчание и заготовленные крики. После трех отказов основного провайдера
+    /// подряд резервный на время становится первым, а успех основного сбрасывает счетчик.
+    /// </remarks>
     private async Task<string?> SendCompletionWithFallbackAsync(
         NeuroProviderConfig primary,
         string systemPrompt,
@@ -1645,35 +1673,61 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         CancellationToken cancel,
         int? maxTokens = null)
     {
+        var first = primary;
+        var second = default(NeuroProviderConfig);
+        var hasSecond = TryResolveFallback(primary, out second);
+
+        if (hasSecond && DateTime.UtcNow < _fallbackPreferredUntil)
+        {
+            (first, second) = (second, primary);
+            _sawmill.Debug($"Neuro players: fallback {first.Provider}/{first.Model} is the first choice for now.");
+        }
+
         try
         {
-            var reply = await SendCompletionAsync(primary, systemPrompt, userPrompt, cancel, maxTokens);
+            var reply = await SendCompletionAsync(first, systemPrompt, userPrompt, cancel, maxTokens);
             Interlocked.Increment(ref _requestsOk);
+
+            if (first.Provider == primary.Provider)
+                Interlocked.Exchange(ref _primaryFailures, 0);
+
             return reply;
         }
-        catch (Exception primaryError)
+        catch (Exception firstError)
         {
             Interlocked.Increment(ref _requestsFailed);
-            _sawmill.Warning($"Neuro player request failed on {primary.Provider}/{primary.Model}: {primaryError.Message}");
 
-            if (!TryResolveFallback(primary, out var fallback))
+            if (first.Provider == primary.Provider &&
+                Interlocked.Increment(ref _primaryFailures) >= FallbackSwitchFailures)
+            {
+                _fallbackPreferredUntil = DateTime.UtcNow + FallbackPreferredWindow;
+                Interlocked.Exchange(ref _primaryFailures, 0);
+            }
+
+            _sawmill.Warning($"Neuro player request failed on {first.Provider}/{first.Model}: {firstError.Message}");
+
+            if (!hasSecond)
                 return null;
 
             try
             {
                 Interlocked.Increment(ref _fallbacks);
-                _sawmill.Info($"Neuro players: retrying on {fallback.Provider}/{fallback.Model}.");
+                _sawmill.Info($"Neuro players: retrying on {second.Provider}/{second.Model}.");
 
                 using var fallbackCts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
-                var reply = await SendCompletionAsync(fallback, systemPrompt, userPrompt, fallbackCts.Token, maxTokens);
+                var reply = await SendCompletionAsync(second, systemPrompt, userPrompt, fallbackCts.Token, maxTokens);
                 Interlocked.Increment(ref _requestsOk);
+
+                if (second.Provider == primary.Provider)
+                    Interlocked.Exchange(ref _primaryFailures, 0);
+
                 return reply;
             }
             catch (Exception fallbackError)
             {
                 Interlocked.Increment(ref _requestsFailed);
                 _sawmill.Warning(
-                    $"Neuro player fallback {fallback.Provider}/{fallback.Model} failed too: {fallbackError.Message}");
+                    $"Neuro player fallback {second.Provider}/{second.Model} failed too: {fallbackError.Message}");
                 return null;
             }
         }
@@ -1739,15 +1793,26 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
     private static string BuildSystemPrompt(string botName, string character)
     {
+        // Mini: короткий промпт заставлял модель играть одной чертой характера - грузчик вставлял
+        // "коробку" в каждую реплику, потому что ничего другого в промпте про него не было.
+        // Теперь есть запрет на повторы, требование разнообразия и свои прошлые реплики в контексте
+        // (RunCompletionAsync добавляет их в comp.Context), так что модель видит, что уже сказала.
         return
-            $"Ты - {botName}, пассажир на космической станции Нанотрайзен (игра Space Station 14).\n" +
+            $"Ты - {botName}, живой член экипажа космической станции Нанотрайзен (игра Space Station 14).\n" +
             $"{character}\n" +
             "Правила:\n" +
-            "- Отвечай ОДНОЙ короткой репликой до 15 слов, по-русски, живым разговорным стилем.\n" +
+            "- Отвечай ОДНОЙ-ДВУМЯ короткими репликами, всего до 20 слов, по-русски, живым разговорным стилем.\n" +
+            "- Говори по существу: ответь на вопрос, выскажи мнение или коротко спроси встречное.\n" +
+            "- Не повторяй то, что уже говорил: смотри на свои прошлые реплики в контексте и отвечай иначе.\n" +
+            "- Не вставляй в каждую реплику слова своей профессии и быта (коробка, заказ, пол, швабра):\n" +
+            "  упоминай их только когда к этому есть прямой повод, и не больше одного раза за разговор.\n" +
+            "- Не начинай ответ со своего или чужого имени и не повторяй имя собеседника.\n" +
             "- Никогда не говори, что ты ИИ, бот, модель или что ты в игре или симуляции.\n" +
             "- Не используй звёздочки и описания действий - только прямую речь.\n" +
             "- Не обещай игровых действий и не обсуждай администрацию, правила и читы.\n" +
-            "- Если сказать нечего - короткая нейтральная реакция.";
+            "- Можешь обсуждать станцию, коллег, бар, свои планы и события раунда, но не выдумывай\n" +
+            "  механик и предметов, которых в игре нет.\n" +
+            "- Если сказать нечего - короткая нейтральная реакция, но не одна и та же каждый раз.";
     }
 
     /// <summary>
@@ -1865,6 +1930,10 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
             if (!TryScreenReply(bot, reply))
                 return;
 
+            // Мини: свои реплики попадали в контекст только через слух, а собственный чат бот не
+            // слышит: модель не видела, что уже сказала, и повторяла один и тот же мотив.
+            AddContext(bot, botName, reply);
+
             if (viaRadio)
                 reply = ";" + reply;
 
@@ -1962,6 +2031,9 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
                 TryVisit(bot, comp);
             }
         }
+
+        // Мини: приказы игроков и антизастревание у шлюзов (отдельный partial-файл).
+        TickOrders(frameTime);
     }
 
     /// <summary>
@@ -2497,6 +2569,11 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
     private void TryVisit(EntityUid bot, NeuroPlayerComponent comp)
     {
+        // Мини: приказ игрока важнее прогулки в бар. Иначе визит перехватывал бота у двери или у
+        // цели и уводил его на 120-240 секунд.
+        if (comp.Order != NeuroOrderKind.None)
+            return;
+
         if (!TryComp<HTNComponent>(bot, out var htn))
             return;
 

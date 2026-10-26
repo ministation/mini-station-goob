@@ -7,11 +7,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Administration.Managers;
+using Content.Server.Administration.Notes;
 using Content.Server.Administration.Systems;
+using Content.Server.Chat.Managers;
+using Content.Server.Database;
 using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
+using Content.Shared.Roles.Jobs;
+using Robust.Shared.Asynchronous;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
@@ -19,8 +24,9 @@ using Robust.Shared.Utility;
 namespace Content.Server._Mini.NeuroPlayer;
 
 /// <summary>
-/// Admin-help (ahelp) assistant: while no admins are online, an LLM answers the player right in the
-/// ahelp channel, and the exchange goes to the admin log for the staff to read later.
+/// Admin-help (ahelp) entry point: collects player messages, decides when the AI administrator may
+/// step in, and keeps the ticket context for the agent loop in <see cref="NeuroPlayerSystem"/>
+/// (see NeuroPlayerSystem.AdminAI.cs).
 /// </summary>
 /// <remarks>
 /// Reuses the neuro player LLM plumbing (provider presets, fallback provider, blocked words,
@@ -30,9 +36,9 @@ namespace Content.Server._Mini.NeuroPlayer;
 public sealed partial class NeuroPlayerSystem
 {
     /// <summary>Hard ceiling for an ahelp answer, even if neuroahelp.max_reply_chars is set higher.</summary>
-    private const int MaxAHelpReplyLength = 400;
+    private const int MaxAHelpReplyLength = 700;
 
-    /// <summary>Colour of the assistant's name in the ahelp window.</summary>
+    /// <summary>Colour of the AI administrator's name in the ahelp window.</summary>
     private const string AHelpColor = "#8ab4f8";
 
     private enum AHelpSpeaker : byte
@@ -43,17 +49,31 @@ public sealed partial class NeuroPlayerSystem
     }
 
     [Dependency] private readonly IAdminManager _adminManager = default!;
+    [Dependency] private readonly IAdminNotesManager _adminNotes = default!;
+    [Dependency] private readonly IBanManager _banManager = default!;
     [Dependency] private readonly BwoinkSystem _bwoink = default!;
+    [Dependency] private readonly IChatManager _chatManager = default!;
+    [Dependency] private readonly IServerDbManager _db = default!;
     [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
+    [Dependency] private readonly ITaskManager _taskManager = default!;
+    [Dependency] private readonly SharedJobSystem _jobs = default!;
 
     private bool _ahelpEnabled;
-    private string _ahelpName = "Нейропомощник";
+    private string _ahelpName = "Нейроадминистратор";
     private int _ahelpDelaySeconds;
+    private int _ahelpNoAdminDelaySeconds;
+    private int _ahelpAdminSilenceSeconds;
     private int _ahelpCooldownSeconds;
     private int _ahelpMaxContext;
     private int _ahelpMaxTokens;
     private int _ahelpMaxReplyChars;
     private int _ahelpRequestsPerMinute;
+    private int _ahelpMaxActionSteps;
+    private int _ahelpActionTimeoutSeconds;
+    private int _ahelpMaxLogLines;
+    private int _ahelpMaxBanHours;
+    private bool _ahelpBansEnabled;
+    private bool _ahelpWarningsEnabled;
     private string _ahelpExtraPrompt = string.Empty;
     private string _ahelpKnowledgeFile = string.Empty;
     private int _ahelpKnowledgeMaxChars;
@@ -68,25 +88,39 @@ public sealed partial class NeuroPlayerSystem
     private readonly List<PendingAHelp> _ahelpQueue = new();
     private readonly Queue<TimeSpan> _ahelpRequestTimes = new();
 
+    /// <summary>When the AI last warned a player. Shared with the agent loop, hence concurrent.</summary>
+    private readonly ConcurrentDictionary<NetUserId, DateTime> _ahelpWarnTimes = new();
+
+    /// <summary>Players whose ticket is being handled right now, so one player never gets two agents.</summary>
+    private readonly HashSet<NetUserId> _ahelpAgentUsers = new();
+
     /// <summary>
     /// Assistant lines produced by finished requests. The request task runs on a thread pool thread,
     /// so the shared ahelp context is only touched from the game loop: the task enqueues, Update drains.
     /// </summary>
     private readonly ConcurrentQueue<(NetUserId UserId, string Text)> _ahelpAssistantLines = new();
 
-    /// <summary>A player message waiting out the grace period before the assistant steps in.</summary>
-    private sealed record PendingAHelp(NetUserId UserId, string PlayerName, TimeSpan AskedAt, TimeSpan ReadyAt);
+    /// <summary>A player message waiting out the admin grace period before the AI steps in.</summary>
+    private sealed record PendingAHelp(NetUserId UserId, string PlayerName, TimeSpan AskedAt);
 
     private void InitializeAHelp()
     {
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpEnabled, v => _ahelpEnabled = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpName, v => _ahelpName = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpDelaySeconds, v => _ahelpDelaySeconds = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpNoAdminDelaySeconds, v => _ahelpNoAdminDelaySeconds = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpAdminSilenceSeconds, v => _ahelpAdminSilenceSeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpCooldownSeconds, v => _ahelpCooldownSeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxContext, v => _ahelpMaxContext = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxTokens, v => _ahelpMaxTokens = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxReplyChars, v => _ahelpMaxReplyChars = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpRequestsPerMinute, v => _ahelpRequestsPerMinute = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxActionSteps, v => _ahelpMaxActionSteps = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpActionTimeoutSeconds, v => _ahelpActionTimeoutSeconds = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxLogLines, v => _ahelpMaxLogLines = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxBanHours, v => _ahelpMaxBanHours = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpBansEnabled, v => _ahelpBansEnabled = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpWarningsEnabled, v => _ahelpWarningsEnabled = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpExtraPrompt, v => _ahelpExtraPrompt = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpKnowledgeFile, v => _ahelpKnowledgeFile = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpKnowledgeMaxChars, v => _ahelpKnowledgeMaxChars = v, true);
@@ -104,12 +138,14 @@ public sealed partial class NeuroPlayerSystem
         _ahelpLastReply.Clear();
         _ahelpQueue.Clear();
         _ahelpRequestTimes.Clear();
+        _ahelpWarnTimes.Clear();
+        _ahelpAgentUsers.Clear();
         _ahelpKnowledgeWarned = false;
     }
 
     /// <summary>
-    /// Sees every ahelp line (players and admins). Player lines queue an answer, staff lines make
-    /// the assistant back off the ticket.
+    /// Sees every ahelp line (players and admins). Player lines queue an AI answer, staff lines make
+    /// the AI back off the ticket.
     /// </summary>
     private void OnAHelpTextMessage(SharedBwoinkSystem.BwoinkTextMessage message, EntitySessionEventArgs args)
     {
@@ -139,17 +175,12 @@ public sealed partial class NeuroPlayerSystem
             return;
         }
 
-        // Somebody is already on duty - no need for the assistant.
-        if (HasActiveAdmins())
-            return;
-
-        // One pending answer per player, always for the newest message.
+        // One pending answer per player, always for the newest message. The delay depends on whether
+        // a live admin is online: with admins the AI waits admin_silence_seconds, otherwise only
+        // no_admin_delay_seconds. It is recomputed in TickAHelp, so an admin coming online later
+        // extends the wait instead of cancelling the ticket.
         _ahelpQueue.RemoveAll(pending => pending.UserId == message.UserId);
-        _ahelpQueue.Add(new PendingAHelp(
-            message.UserId,
-            session.Name,
-            _timing.CurTime,
-            _timing.CurTime + TimeSpan.FromSeconds(Math.Max(0, _ahelpDelaySeconds))));
+        _ahelpQueue.Add(new PendingAHelp(message.UserId, session.Name, _timing.CurTime));
     }
 
     /// <summary>Whether any non-de-adminned admin is connected right now.</summary>
@@ -171,9 +202,7 @@ public sealed partial class NeuroPlayerSystem
             context.RemoveAt(0);
     }
 
-    /// <summary>
-    /// Grace period expired: re-check that nobody picked the ticket up, then ask the model.
-    /// </summary>
+    /// <summary>Grace period expired: re-check that no admin took the ticket, then start the agent.</summary>
     private void TickAHelp()
     {
         if (!_ahelpEnabled)
@@ -187,19 +216,25 @@ public sealed partial class NeuroPlayerSystem
             return;
 
         var now = _timing.CurTime;
+        var adminsOnline = HasActiveAdmins();
+        var delay = adminsOnline
+            ? TimeSpan.FromSeconds(Math.Max(0, _ahelpAdminSilenceSeconds))
+            : TimeSpan.FromSeconds(Math.Max(0, _ahelpNoAdminDelaySeconds > 0 ? _ahelpNoAdminDelaySeconds : _ahelpDelaySeconds));
 
         for (var i = _ahelpQueue.Count - 1; i >= 0; i--)
         {
             var pending = _ahelpQueue[i];
-            if (now < pending.ReadyAt)
+            if (now - pending.AskedAt < delay)
+                continue;
+
+            // The agent for this player is still working: keep the ticket queued instead of starting
+            // a second one.
+            if (_ahelpAgentUsers.Contains(pending.UserId))
                 continue;
 
             _ahelpQueue.RemoveAt(i);
 
-            // An admin came online (or answered) while the ticket was waiting.
-            if (HasActiveAdmins())
-                continue;
-
+            // A live admin really answered this ticket after the player's message.
             if (_ahelpLastStaffMessage.TryGetValue(pending.UserId, out var staffAt) && staffAt > pending.AskedAt)
                 continue;
 
@@ -209,7 +244,7 @@ public sealed partial class NeuroPlayerSystem
                 continue;
             }
 
-            if (!_playerManager.TryGetSessionById(pending.UserId, out var session))
+            if (!_playerManager.TryGetSessionById(pending.UserId, out _))
                 continue;
 
             if (!TryTakeAHelpRequestSlot())
@@ -217,11 +252,12 @@ public sealed partial class NeuroPlayerSystem
 
             // Mark the request immediately so a spamming player cannot queue several at once.
             _ahelpLastReply[pending.UserId] = now;
-            _ = AnswerAHelpAsync(session, pending.UserId);
+            _ahelpAgentUsers.Add(pending.UserId);
+            _ = RunAdminAgentAsync(pending.UserId, pending.PlayerName, pending.AskedAt);
         }
     }
 
-    /// <summary>Sliding-window budget for the assistant (neuroahelp.requests_per_minute, 0 = unlimited).</summary>
+    /// <summary>Sliding-window budget for the AI (neuroahelp.requests_per_minute, 0 = unlimited).</summary>
     private bool TryTakeAHelpRequestSlot()
     {
         if (_ahelpRequestsPerMinute <= 0)
@@ -239,66 +275,6 @@ public sealed partial class NeuroPlayerSystem
 
         _ahelpRequestTimes.Enqueue(now);
         return true;
-    }
-
-    private async Task AnswerAHelpAsync(ICommonSession session, NetUserId userId)
-    {
-        try
-        {
-            var config = ResolveProvider();
-            if (!config.IsConfigured)
-            {
-                WarnUnconfigured(config);
-                return;
-            }
-
-            var systemPrompt = BuildAHelpSystemPrompt();
-            var userPrompt = BuildAHelpUserPrompt(userId, session.Name);
-
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_timeoutSeconds));
-            var reply = await SendCompletionWithFallbackAsync(config, systemPrompt, userPrompt, cts.Token,
-                maxTokens: _ahelpMaxTokens);
-
-            if (string.IsNullOrWhiteSpace(reply))
-                return;
-
-            // Mini: same cleanup the IC bots get - no long dashes, single spaces, then a hard cap at
-            // a sentence boundary: answers in ahelp must stay short.
-            reply = reply.Replace('—', '-').Replace('–', '-');
-            reply = string.Join(' ', reply.Split(' ', StringSplitOptions.RemoveEmptyEntries));
-            reply = TrimAHelpReply(reply, Math.Min(_ahelpMaxReplyChars, MaxAHelpReplyLength));
-
-            // Blocked words still apply, but unlike the IC bots the assistant is supposed to admit
-            // that it is an AI, so that part of the screen is off.
-            if (!TryScreenText($"ahelp/{session.Name}", reply, blockAiTalk: false))
-                return;
-
-            // An admin could have come online while the model was thinking.
-            if (HasActiveAdmins())
-            {
-                _sawmill.Info($"Neuro ahelp: admin came online, answer to {session.Name} dropped.");
-                return;
-            }
-
-            if (!_playerManager.TryGetSessionById(userId, out var stillConnected))
-                return;
-
-            var text =
-                $"[color={AHelpColor}][bold]{FormattedMessage.EscapeText(_ahelpName)}[/bold][/color]: " +
-                FormattedMessage.EscapeText(reply);
-
-            _bwoink.SendPlayerChannelSystemMessage(userId, text);
-            _adminLog.Add(LogType.AdminMessage, LogImpact.Low,
-                $"Neuro ahelp answered {stillConnected.Name}: {reply}");
-
-            // Keep our own line in context so follow-up questions make sense. The context itself is
-            // game-loop state, so the line is handed over through a queue instead of being added here.
-            _ahelpAssistantLines.Enqueue((userId, reply));
-        }
-        catch (Exception e)
-        {
-            _sawmill.Warning($"Neuro ahelp request failed: {e.Message}");
-        }
     }
 
     /// <summary>Answer length cap: cut at the last sentence end (or word) inside the budget.</summary>
@@ -362,62 +338,5 @@ public sealed partial class NeuroPlayerSystem
 
         _ahelpKnowledgeWarned = true;
         _sawmill.Warning($"Neuro ahelp: {reason}.");
-    }
-
-    private string BuildAHelpSystemPrompt()
-    {
-        var discord = _cfg.GetCVar(CCVars.InfoLinksDiscord);
-        var wiki = _cfg.GetCVar(CCVars.InfoLinksWiki);
-
-        var prompt =
-            $"Ты - «{_ahelpName}», ИИ-помощник в админ-хелпе (ahelp) сервера «Мини-Станция» - русский МРП-сервер по Space Station 14 (форк Goob-Station с мини-картами).\n" +
-            "Главная задача: коротко объяснять, как устроена игра и эта сборка - механики, предметы, профессии, антагонисты, режимы, управление, что делает та или иная вещь и как что-то сделать.\n" +
-            "Формат ответа (это важно):\n" +
-            "- ОДНО-ДВА коротких предложения, максимум 200 символов. Без списков, без вступлений, без «чем могу помочь».\n" +
-            "- Сразу суть, как короткая подсказка в чате, по-русски.\n" +
-            "- Нужны шаги - перечисли их через запятую одной строкой, а не списком.\n" +
-            "- Не уверен или нужны детали - отправь в гайдбук в игре (Numpad 0)";
-        if (!string.IsNullOrWhiteSpace(wiki))
-            prompt += $" или на вики {wiki}";
-        if (!string.IsNullOrWhiteSpace(discord))
-            prompt += $"; срочное - Discord {discord}";
-        prompt += ".\n";
-
-        prompt +=
-            "- Ты не администратор: не бань, не выдавай предметы, не разбирай конфликты, апелляции и наказания. Про нарушение, читы, потерю вещей или конфликт - одна фраза, что обращение увидят администраторы, и всё.\n" +
-            "- Не выдумывай механик, которых нет, и не раскрывай внутренние настройки сервера.\n" +
-            "- Без звёздочек и описаний действий; если спросят, кто ты - ты ИИ-помощник.";
-
-        var knowledge = GetAHelpKnowledge();
-        if (!string.IsNullOrWhiteSpace(knowledge))
-            prompt += "\n\nФакты про эту сборку (используй их, а не догадки):\n" + knowledge;
-
-        if (!string.IsNullOrWhiteSpace(_ahelpExtraPrompt))
-            prompt += "\n\nДополнительные указания сервера:\n" + _ahelpExtraPrompt;
-
-        return prompt;
-    }
-
-    private string BuildAHelpUserPrompt(NetUserId userId, string playerName)
-    {
-        var lines = new List<string>();
-
-        if (_ahelpContext.TryGetValue(userId, out var context))
-        {
-            foreach (var (speaker, text) in context)
-            {
-                var who = speaker switch
-                {
-                    AHelpSpeaker.Player => $"{playerName} (игрок)",
-                    AHelpSpeaker.Staff => "Администратор",
-                    _ => _ahelpName,
-                };
-
-                lines.Add($"{who}: {text}");
-            }
-        }
-
-        return "Обращение в админ-хелп:\n" + string.Join("\n", lines) +
-               "\n\nОтветь игроку одной короткой репликой по сути (механика/факт), без вступлений.";
     }
 }

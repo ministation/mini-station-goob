@@ -780,7 +780,8 @@ public sealed class MiniCCVars
         CVarDef.Create("neuroplayer.thinking_enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /*
-     * Neuro ahelp assistant - LLM first-line responder in admin help while no admins are online.
+     * Neuro ahelp - AI administrator in admin help. It answers when no live admin picks the ticket
+     * up, checks facts in the round logs, warns and, in the worst case, bans.
      * Uses the same LLM provider as the neuro players (neuroplayer.provider).
      */
 
@@ -788,34 +789,42 @@ public sealed class MiniCCVars
     public static readonly CVarDef<bool> NeuroAHelpEnabled =
         CVarDef.Create("neuroahelp.enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>Name the assistant introduces itself with; also used as the message prefix.</summary>
+    /// <summary>Name the AI administrator introduces itself with; also used as the message prefix.</summary>
     public static readonly CVarDef<string> NeuroAHelpName =
-        CVarDef.Create("neuroahelp.name", "Нейропомощник", CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroahelp.name", "Нейроадминистратор", CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>
-    /// Grace period before answering a ticket: a live admin gets the first shot at it, and the
-    /// assistant only steps in if nobody picked the ticket up.
-    /// </summary>
+    /// <summary>Legacy grace period, kept as a fallback for neuroahelp.no_admin_delay_seconds.</summary>
     public static readonly CVarDef<int> NeuroAHelpDelaySeconds =
         CVarDef.Create("neuroahelp.delay_seconds", 8, CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>Per-player cooldown between assistant answers (anti-spam and anti-cost).</summary>
+    /// <summary>Delay before the AI answers when no admin is online.</summary>
+    public static readonly CVarDef<int> NeuroAHelpNoAdminDelaySeconds =
+        CVarDef.Create("neuroahelp.no_admin_delay_seconds", 3, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// How long the AI waits after a player message while admins are online: a live admin gets the
+    /// first shot at the ticket, and a real admin reply cancels the AI answer.
+    /// </summary>
+    public static readonly CVarDef<int> NeuroAHelpAdminSilenceSeconds =
+        CVarDef.Create("neuroahelp.admin_silence_seconds", 180, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Per-player cooldown between AI answers (anti-spam and anti-cost).</summary>
     public static readonly CVarDef<int> NeuroAHelpCooldownSeconds =
-        CVarDef.Create("neuroahelp.cooldown_seconds", 120, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroahelp.cooldown_seconds", 30, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>How many recent ahelp lines are sent to the model as context.</summary>
     public static readonly CVarDef<int> NeuroAHelpMaxContext =
         CVarDef.Create("neuroahelp.max_context_messages", 8, CVar.SERVERONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<int> NeuroAHelpMaxTokens =
-        CVarDef.Create("neuroahelp.max_tokens", 120, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroahelp.max_tokens", 500, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Hard cap for an assistant answer in characters. The model is asked for 1-2 short sentences,
     /// and anything longer is cut at a sentence (or word) boundary.
     /// </summary>
     public static readonly CVarDef<int> NeuroAHelpMaxReplyChars =
-        CVarDef.Create("neuroahelp.max_reply_chars", 260, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("neuroahelp.max_reply_chars", 700, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Text/markdown file with facts about this build (mechanics, modes, jobs, controls). Relative
@@ -841,6 +850,30 @@ public sealed class MiniCCVars
     /// </summary>
     public static readonly CVarDef<string> NeuroAHelpExtraPrompt =
         CVarDef.Create("neuroahelp.extra_prompt", "", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Maximum number of model calls (actions) in one ticket.</summary>
+    public static readonly CVarDef<int> NeuroAHelpMaxActionSteps =
+        CVarDef.Create("neuroahelp.max_action_steps", 6, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Timeout of one action step (one model call), seconds.</summary>
+    public static readonly CVarDef<int> NeuroAHelpActionTimeoutSeconds =
+        CVarDef.Create("neuroahelp.action_timeout_seconds", 40, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>How many log lines are shown to the model in one read_logs result.</summary>
+    public static readonly CVarDef<int> NeuroAHelpMaxLogLines =
+        CVarDef.Create("neuroahelp.max_log_lines", 40, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Upper bound for an AI-issued server ban, hours.</summary>
+    public static readonly CVarDef<int> NeuroAHelpMaxBanHours =
+        CVarDef.Create("neuroahelp.max_ban_hours", 12, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Whether the AI may issue server bans at all.</summary>
+    public static readonly CVarDef<bool> NeuroAHelpBansEnabled =
+        CVarDef.Create("neuroahelp.bans_enabled", true, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Whether the AI may issue warnings (notes with Medium severity).</summary>
+    public static readonly CVarDef<bool> NeuroAHelpWarningsEnabled =
+        CVarDef.Create("neuroahelp.warnings_enabled", true, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
     ///     Награды «за время»: ежедневная награда со стриком, билеты за наигранное время и монеты

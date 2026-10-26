@@ -11,6 +11,7 @@ using Content.Shared.Administration.Notes;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
 using Content.Shared.Players.PlayTimeTracking;
+using Robust.Shared.Asynchronous;
 using Robust.Shared.Configuration;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -25,6 +26,7 @@ public sealed class AdminNotesManager : IAdminNotesManager, IPostInjectInit
     [Dependency] private readonly EuiManager _euis = default!;
     [Dependency] private readonly IEntitySystemManager _systems = default!;
     [Dependency] private readonly IConfigurationManager _config = default!;
+    [Dependency] private readonly ITaskManager _taskManager = default!;
 
     public const string SawmillId = "admin.notes";
 
@@ -167,6 +169,47 @@ public sealed class AdminNotesManager : IAdminNotesManager, IPostInjectInit
             seen
         );
         NoteAdded?.Invoke(note);
+    }
+
+    public async Task AddAiRemark(Guid player, NoteType type, string message, NoteSeverity severity, bool secret, DateTime? expiryTime)
+    {
+        message = message.Trim();
+
+        if (type != NoteType.Note)
+            throw new ArgumentOutOfRangeException(nameof(type), type, "The AI administrator only writes plain notes");
+
+        // Same foreign key constraint as in AddAdminRemark: no player record, no note.
+        if (await _db.GetPlayerRecordByUserId((NetUserId) player) is null)
+            return;
+
+        var aiName = Loc.GetString("ai-admin-name");
+        var sb = new StringBuilder($"{aiName} added a");
+
+        if (secret)
+            sb.Append(" secret");
+
+        sb.Append($" {type} with message {message} with {severity} severity");
+
+        if (expiryTime is not null)
+            sb.Append($" which expires on {expiryTime.Value.ToUniversalTime(): yyyy-MM-dd HH:mm:ss} UTC");
+
+        _sawmill.Info(sb.ToString());
+
+        _systems.TryGetEntitySystem(out GameTicker? ticker);
+        int? roundId = ticker == null || ticker.RoundId == 0 ? null : ticker.RoundId;
+        var createdAt = DateTime.UtcNow;
+        var playtime = (await _db.GetPlayTimes(player)).Find(p => p.Tracker == PlayTimeTrackingShared.TrackerOverall)?.TimeSpent ?? TimeSpan.Zero;
+
+        // A null author is what marks the note as AI-written; the notes panel renders it as the AI name.
+        var noteId = await _db.AddAdminNote(roundId, player, playtime, message, severity, secret, null, createdAt, expiryTime);
+
+        var record = await _db.GetAdminNote(noteId);
+        if (record == null)
+            return;
+
+        // AddAiRemark is called from the agent's thread pool task, but NoteAdded handlers live in the
+        // notes EUI and mutate its state, so the event is raised on the game loop.
+        _taskManager.RunOnMainThread(() => NoteAdded?.Invoke(record.ToShared()));
     }
 
     private async Task<SharedAdminNote?> GetAdminRemark(int id, NoteType type)

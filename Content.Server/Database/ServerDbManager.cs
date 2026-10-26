@@ -378,7 +378,7 @@ namespace Content.Server.Database
 
         #region Admin Notes
 
-        Task<int> AddAdminNote(int? roundId, Guid player, TimeSpan playtimeAtNote, string message, NoteSeverity severity, bool secret, Guid createdBy, DateTimeOffset createdAt, DateTimeOffset? expiryTime);
+        Task<int> AddAdminNote(int? roundId, Guid player, TimeSpan playtimeAtNote, string message, NoteSeverity severity, bool secret, Guid? createdBy, DateTimeOffset createdAt, DateTimeOffset? expiryTime);
         Task<int> AddAdminWatchlist(int? roundId, Guid player, TimeSpan playtimeAtNote, string message, Guid createdBy, DateTimeOffset createdAt, DateTimeOffset? expiryTime);
         Task<int> AddAdminMessage(int? roundId, Guid player, TimeSpan playtimeAtNote, string message, Guid createdBy, DateTimeOffset createdAt, DateTimeOffset? expiryTime);
         Task<AdminNoteRecord?> GetAdminNote(int id);
@@ -1043,7 +1043,7 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.SetLastReadRules(player, time));
         }
 
-        public Task<int> AddAdminNote(int? roundId, Guid player, TimeSpan playtimeAtNote, string message, NoteSeverity severity, bool secret, Guid createdBy, DateTimeOffset createdAt, DateTimeOffset? expiryTime)
+        public Task<int> AddAdminNote(int? roundId, Guid player, TimeSpan playtimeAtNote, string message, NoteSeverity severity, bool secret, Guid? createdBy, DateTimeOffset createdAt, DateTimeOffset? expiryTime)
         {
             DbWriteOpsMetric.Inc();
             var note = new AdminNote
