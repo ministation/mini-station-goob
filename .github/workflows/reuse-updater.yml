@@ -104,13 +104,24 @@ jobs:
             --pr-head-sha ${{ github.event.pull_request.head.sha }}
         working-directory: ${{ github.workspace }}
 
-      - name: Fork PR needs BOT_TOKEN to push
-        if: github.event.pull_request.head.repo.full_name != github.repository && secrets.BOT_TOKEN == ''
+      # secrets нельзя подставлять в if:, иначе GitHub считает файл воркфлоу невалидным и запуск
+      # падает без задач. Поэтому проверка токена вынесена в отдельный шаг.
+      - name: Check push access
+        id: push_access
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
         run: |
-          echo "::notice::Пуш в форк недоступен через GITHUB_TOKEN. Добавьте в secrets репозитория-получателя PAT с правом push в ${{ github.event.pull_request.head.repo.full_name }} (имя BOT_TOKEN) либо обновите заголовки REUSE локально."
+          if [ "$HEAD_REPO" = "$BASE_REPO" ] || [ -n "$BOT_TOKEN" ]; then
+            echo "can_push=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "can_push=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Пуш в форк недоступен через GITHUB_TOKEN. Добавьте в secrets репозитория-получателя PAT с правом push в $HEAD_REPO (имя BOT_TOKEN) либо обновите заголовки REUSE локально."
+          fi
 
       - name: Commit changes
-        if: github.event.pull_request.head.repo.full_name == github.repository || secrets.BOT_TOKEN != ''
+        if: steps.push_access.outputs.can_push == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: Automatically update REUSE headers"
