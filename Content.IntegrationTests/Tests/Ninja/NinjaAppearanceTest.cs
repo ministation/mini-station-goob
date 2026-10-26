@@ -7,6 +7,10 @@ using Content.IntegrationTests.Pair;
 using Content.Shared._Mini.Ninja;
 using Content.Shared._Mini.Ninja.Appearance;
 using Content.Shared._Mini.Ninja.Components;
+using Content.Shared.Hands;
+using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Ninja.Components;
 using Robust.Server.GameObjects;
@@ -93,6 +97,11 @@ public sealed class NinjaAppearanceTest
             Assert.That(appearance.Style, Is.EqualTo(NinjaStyle.Old), "The suit style was not applied");
             Assert.That(appearance.ScarfShown, Is.True, "The scarf was not shown");
             Assert.That(appearance.HelmetShown, Is.False, "The helmet was not hidden");
+
+            // Hair must stay under the suit even when the scarf is shown instead of the helmet.
+            var humanoid = entMan.GetComponent<HumanoidAppearanceComponent>(human);
+            Assert.That(humanoid.HiddenLayers, Does.ContainKey(HumanoidVisualLayers.Hair),
+                "Hair is visible over the ninja suit in the scarf look");
         });
 
         // The suit parts and the scarf must be marked for the client-side recolouring.
@@ -112,6 +121,55 @@ public sealed class NinjaAppearanceTest
         Assert.That(protoMan.TryIndex<EntityPrototype>("ClothingNeckScarfNinja", out var scarf), Is.True);
         var scarfItem = (NinjaAppearanceItemComponent) scarf!.Components["NinjaAppearanceItem"].Component;
         Assert.That(scarfItem.ItemType, Is.EqualTo(NinjaAppearanceItemType.Scarf), "The scarf has the wrong appearance type");
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task KatanaInhandFollowsSuitColor()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true, Dirty = true });
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var inventory = server.System<InventorySystem>();
+        var hands = server.System<SharedHandsSystem>();
+        var map = await pair.CreateTestMap();
+
+        EntityUid human = default;
+        EntityUid suit = default;
+        EntityUid katana = default;
+
+        await server.WaitPost(() =>
+        {
+            human = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            entMan.EnsureComponent<SpaceNinjaComponent>(human);
+            server.PlayerMan.SetAttachedEntity(pair.Player, human, true);
+
+            suit = entMan.SpawnEntity("ClothingOuterSuitSpaceNinja", map.GridCoords);
+            Assert.That(inventory.TryEquip(human, suit, "outerClothing", force: true), Is.True,
+                "Could not equip the ninja suit");
+
+            katana = entMan.SpawnEntity("EnergyKatana", map.GridCoords);
+            Assert.That(hands.TryPickupAnyHand(human, katana), Is.True, "Could not put the katana in hand");
+
+            var appearance = entMan.EnsureComponent<NinjaAppearanceComponent>(suit);
+            appearance.Colorway = NinjaColorway.Red;
+            appearance.Style = NinjaStyle.Old;
+            entMan.Dirty(suit, appearance);
+        });
+
+        await pair.RunTicksSync(10);
+
+        await pair.Client.WaitAssertion(() =>
+        {
+            var cKatana = pair.ToClientUid(katana);
+            var ev = new GetInhandVisualsEvent(pair.ToClientUid(human), HandLocation.Right);
+            pair.Client.EntMan.EventBus.RaiseLocalEvent(cKatana, ev);
+
+            var states = ev.Layers.Select(layer => layer.Item2.State).ToList();
+            Assert.That(states, Has.Some.StartsWith("red-inhand-right"),
+                $"The katana in hand did not follow the red colourway, layers: {string.Join(", ", states)}");
+        });
 
         await pair.CleanReturnAsync();
     }
