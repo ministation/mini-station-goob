@@ -14,11 +14,14 @@ namespace Content.Server._Mini.CustomGhost;
 
 public sealed class CustomGhostSystem : EntitySystem
 {
+    public const string ThemeTokenPrefix = "ghost-theme:";
+
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
     [Dependency] private readonly AntagTokenSystem _antagTokens = default!;
+    [Dependency] private readonly HalloweenPlaytimeSystem _halloween = default!;
 
     public override void Initialize()
     {
@@ -138,6 +141,13 @@ public sealed class CustomGhostSystem : EntitySystem
             return;
         }
 
+        // Темы за наигранное время не списывают монеты - вместо цены проверяется трекер Halloween.
+        if (proto.PlaytimeHours > 0)
+        {
+            BuyWithPlaytime(args.SenderSession, proto);
+            return;
+        }
+
         var tokenId = $"ghost-theme:{msg.ThemeId}";
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
 
@@ -168,6 +178,55 @@ public sealed class CustomGhostSystem : EntitySystem
         var selectedTheme = selectedToken?.TokenId["ghost-theme:".Length..].Replace(":selected", "");
 
         SendShopState(args.SenderSession, _antagTokens.GetBalance(userId), ownedThemes, selectedTheme);
+    }
+
+    /// <summary>
+    /// Покупка темы за наигранное время: монеты не тратятся, нужно набрать достаточно
+    /// часов ПОСЛЕ хэллоуин-апдейта (тот же счётчик, что у достижения за 10 часов).
+    /// </summary>
+    private async void BuyWithPlaytime(ICommonSession session, CustomGhostPrototype proto)
+    {
+        var userId = session.UserId;
+        var owned = false;
+        var halloween = _halloween.GetHalloweenPlaytime(session);
+
+        if (halloween >= TimeSpan.FromHours(proto.PlaytimeHours))
+        {
+            var tokenId = $"{ThemeTokenPrefix}{proto.ID}";
+            var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
+            owned = tokens.Any(t => t.TokenId == tokenId && t.Amount > 0);
+
+            if (!owned)
+                await _db.SetPlayerAntagTokenAmount(userId.UserId, tokenId, 1);
+        }
+
+        var (balance, ownedThemes, selectedTheme, _) = await GetPlayerShopData(userId);
+        var error = owned
+            ? null
+            : Loc.GetString("ghost-shop-playtime-error",
+                ("hours", proto.PlaytimeHours),
+                ("current", (int) halloween.TotalHours));
+
+        SendShopState(session, balance, ownedThemes, selectedTheme, error);
+    }
+
+    /// <summary>
+    /// Выдаёт тему как ownership-токен (покупка за время или награда достижения).
+    /// Повторный вызов для уже выданной темы ничего не меняет.
+    /// </summary>
+    public async Task<bool> TryGrantTheme(NetUserId userId, string themeId)
+    {
+        if (!_prototypeManager.TryIndex<CustomGhostPrototype>(themeId, out _))
+            return false;
+
+        var tokenId = $"{ThemeTokenPrefix}{themeId}";
+        var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
+
+        if (tokens.Any(t => t.TokenId == tokenId && t.Amount > 0))
+            return true;
+
+        await _db.SetPlayerAntagTokenAmount(userId.UserId, tokenId, 1);
+        return true;
     }
 
     private async void OnShopBuyColor(GhostShopBuyColorRequestEvent msg, EntitySessionEventArgs args)
@@ -230,6 +289,20 @@ public sealed class CustomGhostSystem : EntitySystem
         var userId = args.SenderSession.UserId;
         var themeId = msg.ThemeId == "GhostThemeDefault" ? null : msg.ThemeId;
         var tokens = await _db.GetPlayerAntagTokens(userId.UserId);
+
+        // Без этой проверки клиент мог выбрать любую тему, не покупая её, - вместе со
+        // спрайтом применились бы и компоненты темы вроде способности тыквенного призрака.
+        if (themeId != null)
+        {
+            if (!_prototypeManager.TryIndex<CustomGhostPrototype>(themeId, out var selProto)
+                || !string.IsNullOrEmpty(selProto.Ckey)
+                || !tokens.Any(t => t.TokenId == $"{ThemeTokenPrefix}{themeId}" && t.Amount > 0))
+            {
+                SendShopState(args.SenderSession);
+                return;
+            }
+        }
+
         string? oldSelectedThemeId = null;
 
         foreach (var token in tokens)
@@ -285,7 +358,7 @@ public sealed class CustomGhostSystem : EntitySystem
         SendShopState(session, balance, ownedThemes, selectedTheme);
     }
 
-    private async void SendShopState(ICommonSession session, int balance, List<string>? ownedThemes = null, string? selectedTheme = null)
+    private async void SendShopState(ICommonSession session, int balance, List<string>? ownedThemes = null, string? selectedTheme = null, string? error = null)
     {
         var colors = (await GetPlayerShopData(session.UserId)).colors;
 
@@ -294,8 +367,10 @@ public sealed class CustomGhostSystem : EntitySystem
             .OrderBy(p => p.Order)
             .Select(proto =>
             {
-                var owned = proto.Price == 0 || (ownedThemes?.Contains(proto.ID) ?? false);
-                var selected = proto.Price == 0
+                // Тема за playtime имеет price 0, но не является "всегда доступной" по умолчанию.
+                var isDefault = proto.Price == 0 && proto.PlaytimeHours <= 0;
+                var owned = isDefault || (ownedThemes?.Contains(proto.ID) ?? false);
+                var selected = isDefault
                     ? selectedTheme == null
                     : selectedTheme == proto.ID;
                 return new GhostThemeEntry(
@@ -303,6 +378,7 @@ public sealed class CustomGhostSystem : EntitySystem
                     proto.Name,
                     proto.Description,
                     proto.Price,
+                    proto.PlaytimeHours,
                     owned,
                     selected,
                     proto.CustomSpritePath.ToString(),
@@ -311,7 +387,7 @@ public sealed class CustomGhostSystem : EntitySystem
             })
             .ToList();
 
-        RaiseNetworkEvent(new GhostShopStateEvent(balance, themes, colors ?? new List<GhostColorEntry>()), session);
+        RaiseNetworkEvent(new GhostShopStateEvent(balance, themes, colors ?? new List<GhostColorEntry>(), error), session);
     }
 
     private async Task<(int balance, List<string> ownedThemes, string? selectedTheme, List<GhostColorEntry> colors)> GetPlayerShopData(NetUserId userId)

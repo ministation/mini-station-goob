@@ -36,6 +36,9 @@ public sealed class GhostShopStateEvent : EntityEventArgs
     public List<GhostThemeEntry> Themes { get; }
     public List<GhostColorEntry> Colors { get; }
 
+    /// <summary>Непустой текст — ошибка последнего действия, показывается в окне магазина.</summary>
+    public string? Error { get; }
+
     public GhostShopStateEvent(int balance, List<GhostThemeEntry> themes)
     {
         Balance = balance;
@@ -43,11 +46,12 @@ public sealed class GhostShopStateEvent : EntityEventArgs
         Colors = new List<GhostColorEntry>();
     }
 
-    public GhostShopStateEvent(int balance, List<GhostThemeEntry> themes, List<GhostColorEntry> colors)
+    public GhostShopStateEvent(int balance, List<GhostThemeEntry> themes, List<GhostColorEntry> colors, string? error = null)
     {
         Balance = balance;
         Themes = themes;
         Colors = colors;
+        Error = error;
     }
 }
 
@@ -86,17 +90,20 @@ public sealed class GhostThemeEntry
     public string Name { get; }
     public string Description { get; }
     public int Price { get; }
+    /// <summary>Больше нуля — покупка за наигранные часы, а не за монеты.</summary>
+    public int PlaytimeHours { get; }
     public bool Owned { get; }
     public bool Selected { get; }
     public string IconRsiPath { get; }
     public string IconRsiState { get; }
 
-    public GhostThemeEntry(string id, string name, string description, int price, bool owned, bool selected, string iconRsiPath, string iconRsiState)
+    public GhostThemeEntry(string id, string name, string description, int price, int playtimeHours, bool owned, bool selected, string iconRsiPath, string iconRsiState)
     {
         Id = id;
         Name = name;
         Description = description;
         Price = price;
+        PlaytimeHours = playtimeHours;
         Owned = owned;
         Selected = selected;
         IconRsiPath = iconRsiPath;

@@ -34,6 +34,17 @@
     count: 10
 
 - type: achievement
+  id: PumpkinGhost
+  name: achievement-pumpkin-ghost-name
+  description: achievement-pumpkin-ghost-desc
+  category: Milestones
+  icon: { sprite: _Mini/Ghosts/pumpkin_ghost.rsi, state: icon }
+  rarity: Epic
+  condition: !type:HalloweenPlaytimeCondition
+    count: 10
+  ghostReward: GhostThemePumpkin
+
+- type: achievement
   id: PlaytimeHundred
   name: achievement-playtime-hundred-name
   description: achievement-playtime-hundred-desc

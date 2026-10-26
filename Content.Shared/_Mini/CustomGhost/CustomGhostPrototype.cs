@@ -32,6 +32,12 @@ public sealed partial class CustomGhostPrototype : IPrototype
     [DataField("price")]
     public int Price { get; private set; } = 0;
 
+    /// <summary>
+    /// Больше нуля — тема покупается за наигранное время (часы, трекер Overall), а не за монеты.
+    /// </summary>
+    [DataField("playtimeHours")]
+    public int PlaytimeHours { get; private set; } = 0;
+
     [DataField]
     public string Ckey { get; private set; } = string.Empty;
 

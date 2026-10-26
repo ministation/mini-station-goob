@@ -17,7 +17,8 @@ public sealed record AchievementData(
     DateTime? UnlockedAt,
     float Rarity,
     DailyQuestRarity RarityTier,
-    int CoinReward);
+    int CoinReward,
+    string? GhostReward = null);
 
 [Serializable, NetSerializable]
 public sealed class RequestAchievementsEvent : EntityEventArgs;

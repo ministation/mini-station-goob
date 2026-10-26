@@ -30,6 +30,7 @@ public sealed class GhostShopWindow : DefaultWindow
     private readonly Texture _coinTexture;
 
     private Label _balanceValueLabel = null!;
+    private Label _statusLabel = null!;
     private BoxContainer _themeRow = null!;
     private BoxContainer _colorRow = null!;
 
@@ -66,6 +67,14 @@ public sealed class GhostShopWindow : DefaultWindow
             Margin = new Thickness(4, 0, 0, 0),
             Modulate = Color.FromHex("#adbac7")
         });
+
+        _statusLabel = new Label
+        {
+            Visible = false,
+            Margin = new Thickness(4, 0, 0, 0),
+            Modulate = Color.FromHex("#f0883e")
+        };
+        root.AddChild(_statusLabel);
 
         var gridPanel = new PanelContainer
         {
@@ -140,6 +149,9 @@ public sealed class GhostShopWindow : DefaultWindow
     public void UpdateState(GhostShopStateEvent state)
     {
         _balanceValueLabel.Text = state.Balance.ToString();
+
+        _statusLabel.Visible = !string.IsNullOrEmpty(state.Error);
+        _statusLabel.Text = state.Error ?? "";
 
         _themeRow.RemoveAllChildren();
         foreach (var entry in state.Themes)
@@ -481,22 +493,37 @@ public sealed class GhostShopWindow : DefaultWindow
                 actionButton.Disabled = true;
                 _system.RequestBuy(entry.Id);
             };
-            buttonContent.AddChild(new Label
+
+            if (entry.PlaytimeHours > 0)
             {
-                Text = entry.Price.ToString(),
-                Modulate = Color.White,
-                StyleClasses = { "LabelHeading" },
-                VerticalAlignment = VAlignment.Center
-            });
-            buttonContent.AddChild(new TextureRect
+                // Цена такой темы - наигранное время, а не монеты.
+                buttonContent.AddChild(new Label
+                {
+                    Text = Loc.GetString("ghost-shop-price-playtime", ("hours", entry.PlaytimeHours)),
+                    Modulate = Color.White,
+                    StyleClasses = { "LabelHeading" },
+                    VerticalAlignment = VAlignment.Center
+                });
+            }
+            else
             {
-                Texture = _coinTexture,
-                MinSize = new Vector2(16, 16),
-                MaxSize = new Vector2(16, 16),
-                TextureScale = new Vector2(0.4f, 0.4f),
-                Stretch = TextureRect.StretchMode.KeepCentered,
-                VerticalAlignment = VAlignment.Center
-            });
+                buttonContent.AddChild(new Label
+                {
+                    Text = entry.Price.ToString(),
+                    Modulate = Color.White,
+                    StyleClasses = { "LabelHeading" },
+                    VerticalAlignment = VAlignment.Center
+                });
+                buttonContent.AddChild(new TextureRect
+                {
+                    Texture = _coinTexture,
+                    MinSize = new Vector2(16, 16),
+                    MaxSize = new Vector2(16, 16),
+                    TextureScale = new Vector2(0.4f, 0.4f),
+                    Stretch = TextureRect.StretchMode.KeepCentered,
+                    VerticalAlignment = VAlignment.Center
+                });
+            }
         }
 
         actionButton.AddChild(buttonContent);

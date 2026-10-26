@@ -56,6 +56,13 @@ public sealed partial class AchievementPrototype : IPrototype
 
     /// <summary>Coins granted once when the achievement is unlocked.</summary>
     public int GetCoinReward() => GetRarity().GetDefaultReward();
+
+    /// <summary>
+    /// Идентификатор прототипа customGhost, выдаваемого вместо монет, когда достижение открыто.
+    /// Когда задан, монетная награда не начисляется вовсе.
+    /// </summary>
+    [DataField]
+    public string? GhostReward;
 }
 
 [ImplicitDataDefinitionForInheritors]
