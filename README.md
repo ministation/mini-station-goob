@@ -6,6 +6,10 @@
 </p>
 
 <p align="center">
+  <b>Русский</b> | <a href="README.en.md">English</a>
+</p>
+
+<p align="center">
   <a href="https://cdn.ministation.ru/fork/ministation"><img alt="Скачать сборку" src="https://img.shields.io/badge/Скачать_сборку-Windows_|_Linux_|_macOS-ffb020?style=for-the-badge&logo=windows&logoColor=white"></a>
   <a href="https://discord.gg/mini-station"><img alt="Discord" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscord.com%2Fapi%2Fv10%2Finvites%2Fmini-station%3Fwith_counts%3Dtrue&query=%24.approximate_member_count&label=Discord&style=for-the-badge&logo=discord&logoColor=white&color=5865F2"></a>
   <a href="https://t.me/mini_station"><img alt="Telegram" src="https://img.shields.io/badge/Telegram-@mini__station-26A5E4?style=for-the-badge&logo=telegram&logoColor=white"></a>
@@ -104,6 +108,18 @@ sh Scripts/sh/runQuickAll.sh
 Весь код в репозитории распространяется под [AGPL-3.0-or-later](LICENSES/AGPL-3.0-or-later.txt), кроме собственного кода Мини-станции: он лицензируется по [лицензионному соглашению Мини-станции](LICENSE.TXT). Файлы содержат заголовки по спецификации REUSE или отдельные `.license` файлы, которые указывают на двойное лицензирование. Это упрощает использование кода в проектах, которые не работают по AGPL.
 
 Большинство медиа-активов лицензированы по [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), если в метаданных не указано иное. Часть активов использует некоммерческие лицензии вроде [CC-BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) или аналогичные: их нужно удалить, если вы планируете использовать проект в коммерческих целях.
+
+Русский текст [LICENSE.TXT](LICENSE.TXT) является основным.
+
+### Ответственность за нарушение
+
+Использование собственного кода Мини-станции за пределами прав, предоставленных лицензией, или иное нарушение её условий может повлечь ответственность по законодательству РФ:
+
+- **Гражданская.** Компенсация от 10 000 до 10 000 000 ₽ либо двукратная стоимость права использования или контрафактных экземпляров (ст. 1237, 1252, 1252.1, 1301 ГК РФ).
+- **Административная.** При незаконном использовании в целях извлечения дохода: штраф от 1 500 до 2 000 ₽ для граждан, от 10 000 до 20 000 ₽ для должностных лиц, от 30 000 до 40 000 ₽ для юридических лиц с конфискацией (ст. 7.12 КоАП РФ).
+- **Уголовная.** При крупном размере (свыше 500 000 ₽) по ст. 146 УК РФ: штраф до 200 000 ₽ или иные наказания. При особо крупном размере (свыше 2 000 000 ₽): до 6 лет лишения свободы и штраф до 500 000 ₽.
+
+Суммы указаны по действующим редакциям законов на октябрь 2026 года. Это общая информация, а не юридическая консультация. Конкретные последствия зависят от обстоятельств.
 
 <div align="center">
 
