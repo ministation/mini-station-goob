@@ -197,6 +197,11 @@ namespace Content.Server.GameTicking
             var originalCharacter = character;
             // CorvaxGoob-GoLobby-end
 
+            // Каторга: если бан игрока ещё не проверен, не блокируем главный поток,
+            // а откладываем спавн до ответа БД. Продолжение вызовет MakeJoinGame.
+            if (_katorga.TryDeferPlayerSpawn(player, station, jobId, lateJoin, silent))
+                return;
+
             if (station == EntityUid.Invalid)
             {
                 var stations = GetSpawnableStations();
@@ -424,7 +429,13 @@ namespace Content.Server.GameTicking
         /// <param name="station">The station they're spawning on</param>
         /// <param name="jobId">An optional job for them to spawn as</param>
         /// <param name="silent">Whether or not the player should be greeted upon joining</param>
-        public void MakeJoinGame(ICommonSession player, EntityUid station, string? jobId = null, bool silent = false)
+        /// <param name="lateJoin">Whether this is a late join. Preserved when a spawn is deferred for a ban check.</param>
+        public void MakeJoinGame(
+            ICommonSession player,
+            EntityUid station,
+            string? jobId = null,
+            bool silent = false,
+            bool lateJoin = true)
         {
             if (!_playerGameStatuses.ContainsKey(player.UserId))
                 return;
@@ -432,7 +443,7 @@ namespace Content.Server.GameTicking
             if (!_userDb.IsLoadComplete(player))
                 return;
 
-            SpawnPlayer(player, station, jobId, silent: silent);
+            SpawnPlayer(player, station, jobId, lateJoin, silent: silent);
         }
 
         /// <summary>

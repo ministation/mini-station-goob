@@ -15,6 +15,8 @@ katorga-penalty-admin = Katorga: player { $user } killed a fellow inmate, senten
 
 katorga-map-missing = The katorga map is unavailable, connection is not possible. Contact the administration.
 
+katorga-ban-check-failed = Could not check your bans, connection cancelled. Please reconnect later.
+
 katorga-hud-title = KATORGA
 
 katorga-hud-remaining = Remaining: { $time }

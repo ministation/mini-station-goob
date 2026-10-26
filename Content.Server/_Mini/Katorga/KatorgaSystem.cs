@@ -62,6 +62,10 @@ public sealed class KatorgaSystem : EntitySystem
     private static readonly TimeSpan SafeguardInterval = TimeSpan.FromSeconds(10);
     private static readonly TimeSpan FlushInterval = TimeSpan.FromMinutes(1);
 
+    // Сколько раз повторяем фоновую проверку бана, прежде чем не пустить игрока в раунд.
+    private const int MaxBanCheckAttempts = 3;
+    private static readonly TimeSpan BanCheckRetryDelay = TimeSpan.FromSeconds(5);
+
     [Dependency] private readonly AdminSystem _adminSystem = default!;
     [Dependency] private readonly IAdminManager _adminManager = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
@@ -96,11 +100,23 @@ public sealed class KatorgaSystem : EntitySystem
     private readonly Dictionary<NetUserId, double> _points = new();
 
     // Кэш отрабатываемого бана по игроку. Единственное место, где каторга смотрит в базу —
-    // асинхронное обновление кэша при входе в лобби; все игровые пути (спавн, наблюдение,
-    // гост-роли) читают только кэш. Для игроков без бана каторга не делает НИЧЕГО:
-    // блокирующий запрос к БД на главном потоке здесь раньше намертво вешал сервер.
+    // асинхронная проверка при входе в лобби и перед спавном; все игровые пути (спавн, наблюдение,
+    // гост-роли) читают только кэш. Синхронных запросов к БД в игровом потоке нет: если к моменту
+    // спавна проверка ещё не закончилась, спавн откладывается до её результата.
     private readonly Dictionary<NetUserId, BanDef> _banCache = new();
     private readonly HashSet<NetUserId> _banCacheChecked = new();
+    private readonly HashSet<NetUserId> _banChecksInFlight = new();
+    private readonly Dictionary<NetUserId, PendingSpawn> _pendingSpawns = new();
+
+    private sealed class PendingSpawn
+    {
+        public EntityUid Station;
+        public string? JobId;
+        public bool LateJoin;
+        public bool Silent;
+        public int Attempts;
+        public TimeSpan RetryAt;
+    }
 
     // Текущий срок (мгновенный взгляд сервера): уменьшается сразу при сдаче руды, в базу списывается пачками.
     private readonly Dictionary<NetUserId, DateTimeOffset> _expiry = new();
@@ -133,6 +149,8 @@ public sealed class KatorgaSystem : EntitySystem
     {
         base.Update(frameTime);
 
+        ProcessPendingBanChecks();
+
         if (!Enabled)
             return;
 
@@ -160,10 +178,9 @@ public sealed class KatorgaSystem : EntitySystem
         _katorgaMap = null;
         _katorgaMapUid = null;
         _spawnPoints.Clear();
-        // Кэш раундовый: баны перечитываются при входе в лобби нового раунда.
-        // Иначе устаревший (уже отработанный) бан из прошлого раунда «сажает» игрока заново.
-        _banCache.Clear();
-        _banCacheChecked.Clear();
+        // Кэш банов здесь НЕ чистим: игроки уже прошли лобби и их баны проверены там.
+        // RoundStartingEvent приходит прямо перед спавном, и очистка заставляла бы
+        // заново ходить в БД на игровом тике (это и вешало сервер).
 
         if (!Enabled)
             return;
@@ -218,6 +235,12 @@ public sealed class KatorgaSystem : EntitySystem
         _katorgaMap = null;
         _katorgaMapUid = null;
         _spawnPoints.Clear();
+
+        // Кэш раундовый: чистим в конце раунда, а не перед спавном. Игроки заново
+        // проверяются при входе в лобби следующего раунда.
+        _banCache.Clear();
+        _banCacheChecked.Clear();
+        _pendingSpawns.Clear();
     }
 
     #endregion
@@ -230,7 +253,7 @@ public sealed class KatorgaSystem : EntitySystem
             return;
 
         // Проверка банов уходит в фон: игроки без бана не должны ждать (и тем более висеть) из-за каторги.
-        _ = RefreshBanCacheAsync(ev.PlayerSession);
+        StartBanCheck(ev.PlayerSession);
     }
 
     private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
@@ -238,24 +261,29 @@ public sealed class KatorgaSystem : EntitySystem
         if (!Enabled)
             return;
 
-        if (!_banCache.TryGetValue(ev.Player.UserId, out var ban))
+        var userId = ev.Player.UserId;
+        if (!_banCache.TryGetValue(userId, out var ban))
         {
-            // Кэш не успел наполниться (быстрый заход из лобби): проверяем синхронно один раз,
-            // иначе забаненный успеет заспавниться на станции обычным игроком.
-            ban = LookupBindingBanSync(ev.Player);
-            if (ban == null)
+            // Сюда не должны попадать без готового кэша: GameTicker откладывает такой спавн
+            // до ответа БД (TryDeferPlayerSpawn). Если проверка всё же не завершилась,
+            // не выпускаем непроверенного игрока в раунд.
+            if (!_banCacheChecked.Contains(userId))
             {
-                _banCache.Remove(ev.Player.UserId);
-                return;
+                _sawmill.Error("Каторга: спавн игрока " + userId + " без проверки бана, вход отклонён");
+                ev.Handled = true;
+                ev.Player.Channel.Disconnect(Loc.GetString("katorga-ban-check-failed"));
             }
 
-            _banCache[ev.Player.UserId] = ban;
-            _expiry[ev.Player.UserId] = ban.ExpirationTime!.Value;
+            return;
         }
 
         // Отработанный (истёкший) бан не сажает: между проверками срок мог дотечь до конца.
         if (ban.ExpirationTime <= DateTimeOffset.UtcNow)
+        {
+            _banCache.Remove(userId);
+            _expiry.Remove(userId);
             return;
+        }
 
         ev.Handled = true;
         SendToKatorga(ev.Player, ban);
@@ -270,17 +298,28 @@ public sealed class KatorgaSystem : EntitySystem
         if (_katorgaMap == null)
             return;
 
-        if (!_banCache.TryGetValue(ev.Player.UserId, out var ban))
+        var userId = ev.Player.UserId;
+
+        // Игрок уже в мире: отложенный спавн больше не нужен.
+        _pendingSpawns.Remove(userId);
+
+        if (!_banCache.TryGetValue(userId, out var ban))
         {
             // Кэш пуст: игрок мог переподключиться в своё старое тело уже с баном,
             // либо каторгу включили после его входа. Проверяем в фоне, результат применится
             // на главном потоке: забаненного отправят на каторгу.
-            _ = RefreshBanCacheAsync(ev.Player);
+            if (!_banCacheChecked.Contains(userId))
+                StartBanCheck(ev.Player);
+
             return;
         }
 
         if (ban.ExpirationTime <= DateTimeOffset.UtcNow)
+        {
+            _banCache.Remove(userId);
+            _expiry.Remove(userId);
             return;
+        }
 
         // Живой остаток срока (уменьшается сдачей руды) важнее снапшота из кэша.
         _expiry.TryAdd(ev.Player.UserId, ban.ExpirationTime!.Value);
@@ -434,7 +473,9 @@ public sealed class KatorgaSystem : EntitySystem
     /// </summary>
     public bool IsConfined(ICommonSession session)
     {
-        return Enabled && _banCache.ContainsKey(session.UserId);
+        return Enabled &&
+               _banCache.TryGetValue(session.UserId, out var ban) &&
+               ban.ExpirationTime > DateTimeOffset.UtcNow;
     }
 
     /// <summary>
@@ -463,8 +504,12 @@ public sealed class KatorgaSystem : EntitySystem
     /// </summary>
     public bool TryConfine(ICommonSession session)
     {
-        if (!Enabled || !_banCache.TryGetValue(session.UserId, out var ban))
+        if (!Enabled ||
+            !_banCache.TryGetValue(session.UserId, out var ban) ||
+            ban.ExpirationTime <= DateTimeOffset.UtcNow)
+        {
             return false;
+        }
 
         SendToKatorga(session, ban);
         return true;
@@ -496,92 +541,252 @@ public sealed class KatorgaSystem : EntitySystem
 
     private void OnPlayerDisconnected(ICommonSession session)
     {
-        // Следующий вход/аттач перепроверит баны заново.
-        _banCacheChecked.Remove(session.UserId);
+        // Следующий вход/аттач перепроверит баны заново. Кэш и отложенный спавн
+        // прошлой сессии не должны пережить переподключение.
+        var userId = session.UserId;
+        _banCache.Remove(userId);
+        _banCacheChecked.Remove(userId);
+        _pendingSpawns.Remove(userId);
     }
 
     /// <summary>
-    ///     Синхронный поиск отрабатываемого бана. Используется только как fallback в момент
-    ///     спавна, когда фоновый кэш ещё не успел наполниться.
+    ///     Вызывается GameTicker перед спавном. Если бан игрока ещё не проверен, откладывает
+    ///     спавн и запускает проверку в фоне. Возвращает true, если спавн нужно прервать:
+    ///     он продолжится из ApplyBanCheck после ответа БД.
     /// </summary>
-    private BanDef? LookupBindingBanSync(ICommonSession session)
+    public bool TryDeferPlayerSpawn(
+        ICommonSession session,
+        EntityUid station,
+        string? jobId,
+        bool lateJoin,
+        bool silent)
     {
+        if (!Enabled)
+            return false;
+
+        var userId = session.UserId;
+        if (_banCacheChecked.Contains(userId) || _banCache.ContainsKey(userId))
+            return false;
+
+        if (!_pendingSpawns.TryGetValue(userId, out var pending))
+        {
+            pending = new PendingSpawn();
+            _pendingSpawns[userId] = pending;
+        }
+
+        pending.Station = station;
+        pending.JobId = jobId;
+        pending.LateJoin = lateJoin;
+        pending.Silent = silent;
+
+        // Если предыдущая попытка упала с ошибкой БД, ждём RetryAt, иначе стартуем сразу.
+        if (pending.RetryAt <= _timing.CurTime)
+            StartBanCheck(session);
+
+        return true;
+    }
+
+    private void StartBanCheck(ICommonSession session)
+    {
+        if (!_banChecksInFlight.Add(session.UserId))
+            return;
+
+        _ = RefreshBanCacheAsync(session);
+    }
+
+    /// <summary>
+    ///     Повторяет проверки, которые упали с ошибкой БД. Работает на главном потоке,
+    ///     поэтому отложенные спавны и кэш не трогаются из фоновых потоков.
+    /// </summary>
+    private void ProcessPendingBanChecks()
+    {
+        if (_pendingSpawns.Count == 0)
+            return;
+
+        // Каторгу выключили, пока игроки ждали проверку: задерживать спавн больше незачем.
+        if (!Enabled)
+        {
+            ReleasePendingSpawns();
+            return;
+        }
+
+        var now = _timing.CurTime;
+        List<NetUserId>? due = null;
+        foreach (var (userId, pending) in _pendingSpawns)
+        {
+            if (pending.RetryAt > now || _banChecksInFlight.Contains(userId))
+                continue;
+
+            (due ??= new List<NetUserId>()).Add(userId);
+        }
+
+        if (due == null)
+            return;
+
+        foreach (var userId in due)
+        {
+            if (!_playerManager.TryGetSessionById(userId, out var session))
+            {
+                _pendingSpawns.Remove(userId);
+                continue;
+            }
+
+            StartBanCheck(session);
+        }
+    }
+
+    /// <summary>
+    ///     Продолжает отложенные спавны, когда каторга выключена: проверка бана больше не нужна,
+    ///     обычные правила входа отработали ещё на подключении.
+    /// </summary>
+    private void ReleasePendingSpawns()
+    {
+        var pending = _pendingSpawns.ToList();
+        _pendingSpawns.Clear();
+
+        foreach (var (userId, spawn) in pending)
+        {
+            if (!_playerManager.TryGetSessionById(userId, out var session))
+                continue;
+
+            EntityManager.System<GameTicker>().MakeJoinGame(
+                session,
+                spawn.Station,
+                spawn.JobId,
+                spawn.Silent,
+                spawn.LateJoin);
+        }
+    }
+
+    /// <summary>
+    ///     Асинхронно проверяет баны игрока и обновляет кэш. Единственное обращение каторги к базе:
+    ///     вызывается при входе в лобби и, если кэш ещё не готов, перед спавном. Сама проверка идёт
+    ///     в фоне, результат применяется на главном потоке: игровой поток не блокируется.
+    /// </summary>
+    private async Task RefreshBanCacheAsync(ICommonSession session)
+    {
+        var userId = session.UserId;
+        BanDef? binding = null;
+        Exception? error = null;
+
         try
         {
+            // Данные канала читаем на главном потоке, до ухода в фон.
             var address = session.Channel.RemoteEndPoint.Address;
             var hwId = session.Channel.UserData.HWId.Length == 0
                 ? null
                 : (ImmutableArray<byte>?)session.Channel.UserData.HWId;
             var modernHwIds = session.Channel.UserData.ModernHWIds;
 
-            return LookupBindingBanAsync(address, session.UserId, hwId, modernHwIds).GetAwaiter().GetResult();
-        }
-        catch (Exception e)
-        {
-            _sawmill.Error("Каторга: синхронная проверка бана не удалась: " + e.Message);
-            return null;
-        }
-    }
-
-    /// <summary>
-    ///     Асинхронно проверяет баны игрока и обновляет кэш. Единственное обращение каторги к базе:
-    ///     вызывается при входе в лобби (и один раз при аттаче, если каторгу включили позже входа).
-    ///     Сама проверка идёт в фоне, результат применяется на главном потоке — игровой путь
-    ///     игроков без бана каторга не задевает вовсе.
-    /// </summary>
-    private async Task RefreshBanCacheAsync(ICommonSession session)
-    {
-        // Данные канала читаем на главном потоке, до ухода в фон.
-        var address = session.Channel.RemoteEndPoint.Address;
-        var userId = session.UserId;
-        var hwId = session.Channel.UserData.HWId.Length == 0
-            ? null
-            : (ImmutableArray<byte>?)session.Channel.UserData.HWId;
-        var modernHwIds = session.Channel.UserData.ModernHWIds;
-
-        BanDef? binding = null;
-        try
-        {
             binding = await LookupBindingBanAsync(address, userId, hwId, modernHwIds);
         }
         catch (Exception e)
         {
-            _sawmill.Error("Каторга: не удалось проверить баны игрока " + userId + ": " + e.Message);
+            error = e;
+        }
+
+        _taskManager.RunOnMainThread(() => ApplyBanCheck(userId, binding, error));
+    }
+
+    /// <summary>
+    ///     Применяет результат фоновой проверки на главном потоке. Ошибки БД не роняют раунд:
+    ///     отложенный спавн повторяется несколько раз, после чего непроверенный игрок
+    ///     не допускается в раунд.
+    /// </summary>
+    private void ApplyBanCheck(NetUserId userId, BanDef? binding, Exception? error)
+    {
+        _banChecksInFlight.Remove(userId);
+
+        if (error != null)
+        {
+            _sawmill.Error("Каторга: не удалось проверить баны игрока " + userId + ": " + error);
+
+            if (!_pendingSpawns.TryGetValue(userId, out var retry))
+                return;
+
+            // Каторгу выключили, пока шла проверка: больше не задерживаем спавн.
+            if (!Enabled)
+            {
+                if (_pendingSpawns.Remove(userId, out var disabledPending) &&
+                    _playerManager.TryGetSessionById(userId, out var disabledPlayer))
+                {
+                    EntityManager.System<GameTicker>().MakeJoinGame(
+                        disabledPlayer,
+                        disabledPending.Station,
+                        disabledPending.JobId,
+                        disabledPending.Silent,
+                        disabledPending.LateJoin);
+                }
+
+                return;
+            }
+
+            retry.Attempts++;
+            if (retry.Attempts < MaxBanCheckAttempts)
+            {
+                retry.RetryAt = _timing.CurTime + BanCheckRetryDelay;
+                return;
+            }
+
+            _pendingSpawns.Remove(userId);
+            if (_playerManager.TryGetSessionById(userId, out var failed))
+            {
+                _chatManager.DispatchServerMessage(failed, Loc.GetString("katorga-ban-check-failed"));
+                failed.Channel.Disconnect(Loc.GetString("katorga-ban-check-failed"));
+            }
+
             return;
         }
 
-        _taskManager.RunOnMainThread(() =>
+        // Пока шёл запрос, игрок мог выйти.
+        if (!_playerManager.TryGetSessionById(userId, out var player))
         {
-            _banCacheChecked.Add(userId);
+            _pendingSpawns.Remove(userId);
+            return;
+        }
 
-            // Пока шёл запрос, игрок мог выйти.
-            if (!_playerManager.TryGetSessionById(userId, out var player))
-                return;
+        _banCacheChecked.Add(userId);
 
-            if (binding == null || binding.ExpirationTime <= DateTimeOffset.UtcNow)
-            {
-                _banCache.Remove(userId);
-                return;
-            }
-
+        if (binding == null || binding.ExpirationTime <= DateTimeOffset.UtcNow)
+        {
+            _banCache.Remove(userId);
+            _expiry.Remove(userId);
+        }
+        else
+        {
             _banCache[userId] = binding;
             // Срок текущего бана: перечитывание ресинхронизирует живой счётчик с базой.
             _expiry[userId] = binding.ExpirationTime!.Value;
+        }
 
-            if (!Enabled)
-                return;
+        // Если игрок ждал проверку перед спавном, продолжаем прерванный спавн.
+        // Повторный вход в SpawnPlayer увидит готовый кэш: забаненный уйдёт на каторгу,
+        // остальные заспавнятся обычным путём.
+        if (_pendingSpawns.Remove(userId, out var pending))
+        {
+            EntityManager.System<GameTicker>().MakeJoinGame(
+                player,
+                pending.Station,
+                pending.JobId,
+                pending.Silent,
+                pending.LateJoin);
 
-            // Уже в раунде (зашёл мимо лобби или бан выдали во время игры) — отправляем отбывать.
-            if (player.AttachedEntity is { } attached && !TerminatingOrDeleted(attached) &&
-                !HasComp<GhostComponent>(attached))
-            {
-                SendToKatorga(player, binding);
-            }
-            else
-            {
-                _chatManager.DispatchServerMessage(player, Loc.GetString("katorga-lobby-message"));
-            }
-        });
+            return;
+        }
+
+        if (!Enabled || binding == null || binding.ExpirationTime <= DateTimeOffset.UtcNow)
+            return;
+
+        // Уже в раунде (зашёл мимо лобби или бан выдали во время игры), отправляем отбывать.
+        if (player.AttachedEntity is { } attached && !TerminatingOrDeleted(attached) &&
+            !HasComp<GhostComponent>(attached))
+        {
+            SendToKatorga(player, binding);
+        }
+        else
+        {
+            _chatManager.DispatchServerMessage(player, Loc.GetString("katorga-lobby-message"));
+        }
     }
 
     /// <summary>
