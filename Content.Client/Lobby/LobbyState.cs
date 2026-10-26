@@ -1,9 +1,15 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Client._Mini.Latejoin;
 using Content.Client._Mini.ReadyManifest;
 using Content.Client.Audio;
 using Content.Client._Donate.UI;
 using Content.Client.GameTicking.Managers;
 using Content.Client._Mini.CharacterBlock;
+using Content.Client._Mini.Katorga;
+using Content.Shared._Mini.Katorga;
 using Content.Client.LateJoin;
 using Content.Client.Lobby.UI;
 using Content.Client.Message;
@@ -41,6 +47,7 @@ namespace Content.Client.Lobby
         [Dependency] private readonly IPrototypeManager _protoMan = default!; // Goobstation - credits
         [Dependency] private readonly ClientsidePlaytimeTrackingManager _playtimeTracking = default!;
         [Dependency] private readonly CharacterBlockManager _characterBlockManager = default!;
+        [Dependency] private readonly KatorgaBanManager _katorgaBans = default!;
         [Dependency] private readonly IClientPreferencesManager _clientPreferences = default!;
 
         private ISawmill _sawmill = default!; // Goobstation
@@ -158,6 +165,8 @@ namespace Content.Client.Lobby
 
         public override void FrameUpdate(FrameEventArgs e)
         {
+            UpdateBanTimePanel();
+
             if (_gameTicker.IsGameStarted)
             {
                 Lobby!.StartTime.Text = string.Empty;
@@ -197,6 +206,24 @@ namespace Content.Client.Lobby
             }
 
             Lobby!.StartTime.Text = Loc.GetString("lobby-state-round-start-countdown-text", ("timeLeft", text));
+        }
+
+        /// <summary>
+        ///     Временно забаненному вместо кнопки персонализации показываем остаток срока,
+        ///     чтобы он видел, сколько осталось до возврата обычных возможностей.
+        /// </summary>
+        private void UpdateBanTimePanel()
+        {
+            var banned = _katorgaBans.TryGetActiveBan(out var remaining);
+
+            Lobby!.CharacterSetup.Visible = !banned;
+            Lobby!.BanTimePanel.Visible = banned;
+            if (!banned)
+                return;
+
+            var text = Loc.GetString("katorga-ban-lobby", ("time", KatorgaTime.Format(remaining)));
+            if (Lobby.BanTimeLabel.Text != text)
+                Lobby.BanTimeLabel.Text = text;
         }
 
         private void LobbyStatusUpdated()

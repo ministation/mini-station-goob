@@ -33,3 +33,9 @@ katorga-released = Sentence served. You are free: you can ghost and observe, and
 katorga-ghost-blocked = No leaving the katorga early: serve your sentence or reconnect to get a new body on the katorga.
 
 katorga-ghost-roles-blocked = Katorga inmates cannot take ghost roles.
+
+katorga-ban-lobby = Ban time left: { $time }
+
+katorga-ban-lobby-tooltip = Character customization is unavailable while your ban is active. Work it off at the katorga.
+
+katorga-ban-latejoin = Your ban time left: { $time }

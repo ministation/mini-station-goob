@@ -78,6 +78,10 @@
                                 <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public" Text="{Loc 'ui-lobby-observe-button'}" WindowType="{x:Type lobbyUi:ObserveWarningWindow}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48" Visible="False"/>
                             </BoxContainer>
                             <Button Name="CharacterSetup" Access="Public" Text="{Loc 'lobby-character-preview-panel-character-setup-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
+                            <!-- Временно забаненным вместо персонализации показываем остаток срока -->
+                            <controls:StripeBack Name="BanTimePanel" Access="Public" Visible="False" MinSize="250 48" MaxSize="280 48" ToolTip="{Loc 'katorga-ban-lobby-tooltip'}">
+                                <Label Name="BanTimeLabel" Access="Public" Align="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontColorOverride="{x:Static maths:Color.Gold}"/>
+                            </controls:StripeBack>
                             <Button Name="OptionsButton" Access="Public" Text="{Loc 'ui-lobby-options-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
                             <Button Name="AuthorizationDiscordButton" StyleClasses="ButtonColorYellow" Access="Public" Text="Авторизация" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48"/>
                             <Button Name="LeaveButton" StyleClasses="ButtonColorRed" Access="Public" Text="{Loc 'ui-lobby-leave-button'}" HorizontalAlignment="Stretch" MinSize="250 48" MaxSize="280 48" />

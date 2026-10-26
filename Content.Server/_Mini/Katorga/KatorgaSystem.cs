@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
@@ -15,7 +19,9 @@ using Content.Server.Materials;
 using Content.Server.Mind;
 using Content.Server.Parallax;
 using Content.Server.Preferences.Managers;
+using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
+using Content.Shared._Mini.Katorga;
 using Content.Shared._Mini.Katorga.Components;
 using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Database;
@@ -81,6 +87,7 @@ public sealed class KatorgaSystem : EntitySystem
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly MapLoaderSystem _mapLoader = default!;
+    [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly SharedMaterialStorageSystem _materialStorage = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly MindSystem _mind = default!;
@@ -91,6 +98,7 @@ public sealed class KatorgaSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IServerPreferencesManager _preferences = default!;
+    [Dependency] private readonly StationJobsSystem _stationJobs = default!;
     [Dependency] private readonly StationSpawningSystem _stationSpawning = default!;
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly ITaskManager _taskManager = default!;
@@ -144,6 +152,11 @@ public sealed class KatorgaSystem : EntitySystem
         SubscribeLocalEvent<KillReportedEvent>(OnKillReported);
         SubscribeLocalEvent<GhostAttemptHandleEvent>(OnGhostAttempt);
         SubscribeLocalEvent<KatorgaOreProcessorComponent, MaterialEntityInsertedEvent>(OnOreInserted);
+        // После штатной инициализации работ: заключённый есть на любой станции и без лимита.
+        SubscribeLocalEvent<StationInitializedEvent>(OnStationInitialized, after: new[] { typeof(StationJobsSystem) });
+        SubscribeLocalEvent<IsRoleAllowedEvent>(OnIsRoleAllowed);
+
+        _net.RegisterNetMessage<KatorgaBanStatusMessage>();
 
         // После реконнекта бан перепроверяется заново: игрок мог получить бан, уже находясь в игре.
         _userDbData.AddOnPlayerDisconnect(OnPlayerDisconnected);
@@ -260,6 +273,42 @@ public sealed class KatorgaSystem : EntitySystem
         StartBanCheck(ev.PlayerSession);
     }
 
+    /// <summary>
+    ///     Заключённый есть на каждой станции и без лимита: в late join он единственная должность
+    ///     для временно забаненного, а количество одновременно отбывающих не ограничено.
+    /// </summary>
+    private void OnStationInitialized(StationInitializedEvent ev)
+    {
+        if (!Enabled || !HasComp<StationJobsComponent>(ev.Station))
+            return;
+
+        _stationJobs.MakeJobUnlimited(ev.Station, KatorgaJobs.Prisoner);
+    }
+
+    /// <summary>
+    ///     Должность заключённого не выдают обычным игрокам: клиентская команда joingame может
+    ///     назвать любой job id, поэтому проверяем бан до того, как игрок превратится в заключённого.
+    /// </summary>
+    private void OnIsRoleAllowed(ref IsRoleAllowedEvent ev)
+    {
+        if (ev.Jobs is not { } jobs || !jobs.Contains(KatorgaJobs.Prisoner))
+            return;
+
+        // Каторга выключена: заключённого не существует, роль недоступна.
+        if (!Enabled)
+        {
+            ev.Cancelled = true;
+            return;
+        }
+
+        // Забанен - его всё равно отправит на каторгу OnBeforeSpawn. Ещё не проверен - пусть
+        // спавн отложится (TryDeferPlayerSpawn) и решит после ответа базы.
+        if (IsConfined(ev.Player) || !_banCacheChecked.Contains(ev.Player.UserId))
+            return;
+
+        ev.Cancelled = true;
+    }
+
     private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
     {
         if (!Enabled)
@@ -373,6 +422,7 @@ public sealed class KatorgaSystem : EntitySystem
         RemComp<KatorgaBoundComponent>(uid);
         _banCache.Remove(session.UserId);
         _expiry.Remove(session.UserId);
+        NotifyBanStatus(session, null);
 
         _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-released"));
         _sawmill.Info("Каторга: " + session.Name + " отработал срок и выпущен");
@@ -409,10 +459,12 @@ public sealed class KatorgaSystem : EntitySystem
             SpawnKatorgaPlayer(session);
         }
 
+        NotifyBanStatus(session, ban);
+
         // Остаток срока берём из живого счётчика: за время между проверками руда могла списать часть срока.
         var expires = _expiry.TryGetValue(session.UserId, out var live) ? live : ban.ExpirationTime!.Value;
         var remaining = expires - DateTimeOffset.UtcNow;
-        _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-greeting", ("time", FormatTime(remaining))));
+        _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-greeting", ("time", KatorgaTime.Format(remaining))));
 
         RefreshInmateHud(session, resetTotal: true);
     }
@@ -570,6 +622,23 @@ public sealed class KatorgaSystem : EntitySystem
         _banCache.Remove(userId);
         _banCacheChecked.Remove(userId);
         _pendingSpawns.Remove(userId);
+    }
+
+    /// <summary>
+    ///     Сообщает клиенту остаток бана для лобби. Нулевой остаток значит "бана нет":
+    ///     клиент вернёт кнопку персонализации и обычный late join.
+    /// </summary>
+    private void NotifyBanStatus(ICommonSession session, BanDef? ban)
+    {
+        var remaining = TimeSpan.Zero;
+        if (ban?.ExpirationTime is { } expires)
+        {
+            remaining = expires - DateTimeOffset.UtcNow;
+            if (remaining < TimeSpan.Zero)
+                remaining = TimeSpan.Zero;
+        }
+
+        _net.ServerSendMessage(new KatorgaBanStatusMessage { Remaining = remaining }, session.Channel);
     }
 
     /// <summary>
@@ -782,6 +851,8 @@ public sealed class KatorgaSystem : EntitySystem
             _expiry[userId] = binding.ExpirationTime!.Value;
         }
 
+        NotifyBanStatus(player, binding);
+
         // Если игрок ждал проверку перед спавном, продолжаем прерванный спавн.
         // Повторный вход в SpawnPlayer увидит готовый кэш: забаненный уйдёт на каторгу,
         // остальные заспавнятся обычным путём.
@@ -908,7 +979,7 @@ public sealed class KatorgaSystem : EntitySystem
         AddWorkedOff(session, reduced);
 
         _popup.PopupEntity(
-            Loc.GetString("katorga-time-reduced", ("time", FormatTime(ConvertPointsToTime(points)))),
+            Loc.GetString("katorga-time-reduced", ("time", KatorgaTime.Format(ConvertPointsToTime(points)))),
             uid,
             args.User,
             PopupType.Medium);
@@ -976,12 +1047,12 @@ public sealed class KatorgaSystem : EntitySystem
                 if (penalty)
                 {
                     _chatManager.DispatchServerMessage(session,
-                        Loc.GetString("katorga-penalty-message", ("time", FormatTime(delta))));
+                        Loc.GetString("katorga-penalty-message", ("time", KatorgaTime.Format(delta))));
                 }
                 else
                 {
                     _chatManager.DispatchServerMessage(session,
-                        Loc.GetString("katorga-time-reduced", ("time", FormatTime(-delta))));
+                        Loc.GetString("katorga-time-reduced", ("time", KatorgaTime.Format(-delta))));
                 }
             }
 
@@ -990,7 +1061,7 @@ public sealed class KatorgaSystem : EntitySystem
                 _chatManager.SendAdminAlert(Loc.GetString(
                     "katorga-penalty-admin",
                     ("user", userId.ToString()),
-                    ("time", FormatTime(delta))));
+                    ("time", KatorgaTime.Format(delta))));
             }
         }
         catch (Exception e)
@@ -1068,18 +1139,6 @@ public sealed class KatorgaSystem : EntitySystem
     private TimeSpan ConvertPointsToTime(double points)
     {
         return TimeSpan.FromSeconds(points / Math.Max(_pointsToTime, 0.0001));
-    }
-
-    private static string FormatTime(TimeSpan time)
-    {
-        time = time.Duration();
-        if (time.TotalDays >= 1)
-            return string.Format("{0} д {1} ч", (int)time.TotalDays, time.Hours);
-        if (time.TotalHours >= 1)
-            return string.Format("{0} ч {1} мин", (int)time.TotalHours, time.Minutes);
-        if (time.TotalMinutes >= 1)
-            return string.Format("{0} мин {1} с", (int)time.TotalMinutes, time.Seconds);
-        return string.Format("{0} с", (int)time.TotalSeconds);
     }
 
     #endregion

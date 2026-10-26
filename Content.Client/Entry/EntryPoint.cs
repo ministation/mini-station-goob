@@ -11,6 +11,7 @@ using Content.Client.GameTicking.Managers;
 using Content.Client.GhostKick;
 using Content.Client.Guidebook;
 using Content.Client._Mini.CharacterBlock;
+using Content.Client._Mini.Katorga;
 using Content.Client.Input;
 using Content.Client.IoC;
 using Content.Client.Launcher;
@@ -83,6 +84,7 @@ namespace Content.Client.Entry
         [Dependency] private readonly IEntitySystemManager _entitySystemManager = default!;
         [Dependency] private readonly ClientsidePlaytimeTrackingManager _clientsidePlaytimeManager = default!;
         [Dependency] private readonly CharacterBlockManager _characterBlock = default!; //  edit1
+        [Dependency] private readonly KatorgaBanManager _katorgaBans = default!;
 
         public override void PreInit()
         {
@@ -198,6 +200,7 @@ namespace Content.Client.Entry
             _documentParsingManager.Initialize();
             _titleWindowManager.Initialize();
             _characterBlock.Initialize(); //  edit
+            _katorgaBans.Initialize();
 
             _baseClient.RunLevelChanged += (_, args) =>
             {
