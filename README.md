@@ -1,32 +1,120 @@
-<p align="center"> <img alt="Space Station 14" width="880" height="300" src="https://raw.githubusercontent.com/space-wizards/asset-dump/de329a7898bb716b9d5ba9a0cd07f38e61f1ed05/github-logo.svg" /></p>
+<h1 align="center">Мини-станция</h1>
 
-Мини-станция - это активно модифицируемый и основывающийся форк от всем известного репозитория Goob Station, направленный на его перевод и создание собственного контента.
+<p align="center">
+  <b>Русскоязычный форк <a href="https://github.com/Goob-Station/Goob-Station">Goob Station</a> для <a href="https://spacestation14.com/">Space Station 14</a>.</b><br>
+  Переводим игру на русский, добавляем свой контент и играем на собственном сервере.
+</p>
 
-## Ссылки
+<p align="center">
+  <a href="https://cdn.ministation.ru/fork/ministation"><img alt="Скачать сборку" src="https://img.shields.io/badge/Скачать_сборку-Windows_|_Linux_|_macOS-ffb020?style=for-the-badge&logo=windows&logoColor=white"></a>
+  <a href="https://discord.gg/mini-station"><img alt="Discord" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscord.com%2Fapi%2Fv10%2Finvites%2Fmini-station%3Fwith_counts%3Dtrue&query=%24.approximate_member_count&label=Discord&style=for-the-badge&logo=discord&logoColor=white&color=5865F2"></a>
+  <a href="https://t.me/mini_station"><img alt="Telegram" src="https://img.shields.io/badge/Telegram-@mini__station-26A5E4?style=for-the-badge&logo=telegram&logoColor=white"></a>
+</p>
 
-[Наш Discord](https://discord.gg/mini-station) | [Наша Вики](https://wiki.ministation.ru/) | [Steam](https://store.steampowered.com/app/1255460/Space_Station_14/) | [Клиент без Steam](https://spacestation14.io/about/nightlies/) | [Основной репозиторий](https://github.com/space-wizards/space-station-14) | [Основной репозиторий Goob Station](https://github.com/Goob-Station/Goob-Station)
+<p align="center">
+  <a href="https://ministation.ru"><img alt="Сайт" src="https://img.shields.io/badge/Сайт-ministation.ru-ffb020?style=flat-square&logo=firefoxbrowser&logoColor=white"></a>
+  <a href="https://wiki.ministation.ru"><img alt="Вики" src="https://img.shields.io/badge/Вики-wiki.ministation.ru-9b6dff?style=flat-square&logo=gitbook&logoColor=white"></a>
+  <a href="https://ministation.ru/donate"><img alt="Донат" src="https://img.shields.io/badge/Донат-поддержать_проект-ff5e5b?style=flat-square&logo=buymeacoffee&logoColor=white"></a>
+  <a href="https://github.com/deepseek-ai/deepseek-harness"><img alt="powered by dsh" src="https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white"></a>
+  <a href="https://github.com/ministation/mini-station-goob/actions/workflows/validate.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/ministation/mini-station-goob/validate.yml?branch=master&style=flat-square&label=CI&color=12b886"></a>
+  <a href="LICENSE.TXT"><img alt="Лицензия" src="https://img.shields.io/badge/лицензия-AGPL--3.0--or--later-gold?style=flat-square"></a>
+</p>
 
-## Документация
+---
 
-На официальном сайте с [документацией](https://docs.spacestation14.io/) имеется вся необходимая информация о контенте SS14, движке, дизайне игры и многом другом. Также имеется много информации для начинающих разработчиков.
+<div align="center">
+
+## О проекте
+
+</div>
+
+**Мини-станция** - некоммерческий русскоязычный проект по Space Station 14. Мы развиваем собственный билд игры: переводим контент, добавляем новые механики и предметы, правим баланс и поддерживаем сервер для нашего сообщества.
+
+Билд основан на [Goob Station](https://github.com/Goob-Station/Goob-Station) и работает на движке [RobustToolbox](https://github.com/space-wizards/RobustToolbox). Всё, что появляется в репозитории, сначала обсуждается и тестируется сообществом.
+
+- **Русский язык.** Локализация игры, вики и общение в сообществе.
+- **Свой контент.** Ежедневные и еженедельные квесты, озвучка текста (ТТС), новые предметы, роли и события.
+- **Готовые сборки.** Версии для Windows, Linux и macOS обновляются каждую ночь.
+- **ИИ в проекте.** Глубоко интегрируем искусственный интеллект: он помогает нам разрабатывать, переводить и поддерживать сервер.
+- **Открытая разработка.** Любой может предложить изменение через pull request.
+
+<div align="center">
+
+## Как поиграть
+
+</div>
+
+1. Скачайте сборку для своей системы со [страницы билдов](https://cdn.ministation.ru/fork/ministation).
+2. Распакуйте архив и запустите клиент.
+3. Подключитесь к серверу по адресу `ss14://ss14.ministation.ru:1214` или найдите **Мини-станцию** в списке серверов.
+
+Игра бесплатная, а сервер открыт для всех.
+
+<div align="center">
+
+## Сборка из исходников
+
+</div>
+
+Понадобятся [.NET SDK 10.0.100+](https://dotnet.microsoft.com/download), Python 3.5+ и Git.
+
+```shell
+git clone https://github.com/ministation/mini-station-goob.git
+cd mini-station-goob
+python RUN_THIS.py
+```
+
+`RUN_THIS.py` скачает движок и подмодули. В Linux и macOS команда может называться `python3`.
+
+**Windows**
+
+```bat
+cd Scripts\bat
+runQuickAll-Debug.bat
+```
+
+**Linux и macOS**
+
+```shell
+sh Scripts/sh/buildAllDebug.sh
+sh Scripts/sh/runQuickAll.sh
+```
+
+Оба варианта собирают игру и запускают локальный сервер с клиентом. После запуска подключитесь к `localhost` в окне клиента.
+
+> [!TIP]
+> Если `RUN_THIS.py` не смог скачать движок, выполните `git submodule update --init --recursive`. Подробности про окружение есть в [документации Space Station 14](https://docs.spacestation14.com/en/general-development/setup.html).
+
+<div align="center">
 
 ## Контрибьют
 
-Если Вы желаете помочь в улучшении репозитория, решением проблем или создания нового контента, мы рады принять вклад от любого человека. Заходите в Discord, если хотите помочь. Не бойтесь просить о помощи!
-Только убедитесь, что ваши изменения и PRы соответствуют [руководству по контрибьюту](https://docs.spacestation14.com/en/general-development/codebase-info/pull-request-guidelines.html).
+</div>
 
-## Запуск
+Мы рады вкладу в любом виде: код, перевод, спрайты, звук, карты, тесты и документация. Заходите в [Discord](https://discord.gg/mini-station), чтобы обсудить идеи и попросить помощи.
 
-1. Склонируйте этот репозиторий локально
-2. Запустите `buildAllRelease.bat` из директории `Scripts/bat` для инициализации подмодулей и скачивания движка.
-3. Запустите `runQuickAll.bat` из директории `Scripts/bat` для запуска локального сервера.
+Перед началом стоит заглянуть в [CONTRIBUTING.md](CONTRIBUTING.md), а открытые задачи собраны в [issues](https://github.com/ministation/mini-station-goob/issues).
 
-[Более подробная инструкция по запуску проекта.](https://docs.spacestation14.com/en/general-development/setup.html)
+<div align="center">
 
 ## Лицензия
 
-Весь код в этой кодовой базе распространяется под лицензией AGPL-3.0-or-later, кроме Собственного кода, созданного контрибьюторами проекта "Мини-станция", который распостраняется в соответствии с условиями [лицензионного соглашения Мини-станции](https://github.com/ministation/mini-station-goob/blob/master/LICENSE.TXT). Каждый файл содержит заголовки в соответствии со Спецификацией REUSE или отдельные файлы `.license`, которые указывают на опцию двойного лицензирования. Это двойное лицензирование предоставлено для упрощения процесса для проектов, которые не используют AGPL, позволяя им использовать соответствующие части кода по альтернативной лицензии. Вы можете ознакомиться с полными текстами этих лицензий в каталоге `LICENSES/`.
+</div>
 
-Большинство медиа-активов лицензированы по [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), если не указано иное. Информация о лицензии и авторских правах для активов находится в файле метаданных. [Пример](https://github.com/space-wizards/space-station-14/blob/master/Resources/Textures/Objects/Tools/crowbar.rsi/meta.json).
+Весь код в репозитории распространяется под [AGPL-3.0-or-later](LICENSES/AGPL-3.0-or-later.txt), кроме собственного кода Мини-станции: он лицензируется по [лицензионному соглашению Мини-станции](LICENSE.TXT). Файлы содержат заголовки по спецификации REUSE или отдельные `.license` файлы, которые указывают на двойное лицензирование. Это упрощает использование кода в проектах, которые не работают по AGPL.
 
-Обратите внимание, что некоторые активы лицензированы по некоммерческой лицензии [CC-BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) или аналогичным некоммерческим лицензиям, и их необходимо удалить, если вы планируете использовать этот проект в коммерческих целях.
+Большинство медиа-активов лицензированы по [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), если в метаданных не указано иное. Часть активов использует некоммерческие лицензии вроде [CC-BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) или аналогичные: их нужно удалить, если вы планируете использовать проект в коммерческих целях.
+
+<div align="center">
+
+## Благодарности
+
+</div>
+
+Спасибо [Space Station 14](https://github.com/space-wizards/space-station-14) и [RobustToolbox](https://github.com/space-wizards/RobustToolbox) за игру и движок, [Goob Station](https://github.com/Goob-Station/Goob-Station) за основу билда и всем [контрибьюторам](https://github.com/ministation/mini-station-goob/graphs/contributors), которые делают Мини-станцию лучше.
+
+<div align="center">
+
+Если хочется поддержать проект: [донат](https://ministation.ru/donate) и [Telegram](https://t.me/mini_station).
+
+</div>
