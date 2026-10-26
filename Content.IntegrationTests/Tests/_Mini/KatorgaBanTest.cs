@@ -5,12 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Content.Server._Mini.Katorga;
 using Content.Server.Administration.Managers;
+using Content.Server.Atmos.EntitySystems;
 using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Server.Ghost;
 using Content.Shared._Mini.Katorga.Components;
 using Content.Shared._Mini.MiniCCVars;
+using Content.Shared.Inventory;
 using Content.Shared.Mind;
+using Content.Shared.Mining.Components;
 using NUnit.Framework;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
@@ -98,6 +101,14 @@ public sealed class KatorgaBanTest
         return player.AttachedEntity is { } mob && entMan.HasComponent<KatorgaBoundComponent>(mob);
     }
 
+    private static string? GetSlotProto(IEntityManager entMan, EntityUid mob, string slot)
+    {
+        return entMan.System<InventorySystem>().TryGetSlotEntity(mob, slot, out var item) &&
+               entMan.TryGetComponent(item, out MetaDataComponent? meta)
+            ? meta.EntityPrototype?.ID
+            : null;
+    }
+
     [Test]
     public async Task TimedBanSendsOnlinePlayerToKatorgaInsteadOfKick()
     {
@@ -120,6 +131,34 @@ public sealed class KatorgaBanTest
         var mapId = entMan.GetComponent<TransformComponent>(mob).MapID;
         Assert.That(mapId, Is.Not.EqualTo(ticker.DefaultMap));
 
+        // Заключённый не голый: выдаётся комплект утилизатора, сканер минералов лежит в кармане.
+        Assert.Multiple(() =>
+        {
+            Assert.That(GetSlotProto(entMan, mob, "outerClothing"), Is.EqualTo("ClothingOuterHardsuitSalvage"),
+                "заключённому должен выдаваться комбинезон утилизатора");
+            Assert.That(GetSlotProto(entMan, mob, "pocket1"), Is.EqualTo("KatorgaMineralScanner"),
+                "сканер минералов должен лежать в кармане");
+        });
+
+        // Каторга дышит: точка спавна не в вакууме и на станционном гриде есть достижимая руда.
+        await pair.RunTicksSync(120);
+        var atmos = entMan.System<AtmosphereSystem>();
+        var mix = atmos.GetTileMixture(mob);
+        Assert.That(mix?.TotalMoles ?? 0f, Is.GreaterThan(50f), "точка спавна каторги не должна быть в вакууме");
+
+        var mineRocksWithOre = 0;
+        var rocks = entMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+        while (rocks.MoveNext(out var uid, out var meta, out var xform))
+        {
+            if (xform.MapID != mapId || meta.EntityPrototype?.ID != "KatorgaMineRock")
+                continue;
+
+            if (entMan.TryGetComponent<OreVeinComponent>(uid, out var vein) && vein.CurrentOre != null)
+                mineRocksWithOre++;
+        }
+
+        Assert.That(mineRocksWithOre, Is.GreaterThanOrEqualTo(10), "у выхода на каторгу должна быть руда");
+
         await pair.CleanReturnAsync();
     }
 
@@ -132,6 +171,9 @@ public sealed class KatorgaBanTest
         var playerMan = server.ResolveDependency<IPlayerManager>();
 
         var name = player.Name;
+        var oldEntity = player.AttachedEntity;
+        Assert.That(oldEntity, Is.Not.Null);
+        var oldCoords = entMan.GetComponent<TransformComponent>(oldEntity!.Value).Coordinates;
 
         // Реконнект: бан-гейт должен пропустить (бан временный), а игрок вернуться на каторгу.
         var netManager = pair.Client.ResolveDependency<Robust.Shared.Network.IClientNetManager>();
@@ -148,6 +190,15 @@ public sealed class KatorgaBanTest
         {
             Assert.That(newPlayer.Status, Is.EqualTo(SessionStatus.InGame), "реконнект не должен упираться в бан");
             Assert.That(IsConfined(entMan, newPlayer), Is.True, "после реконнекта игрок снова на каторге");
+
+            // Реконнект не должен пересоздавать персонажа и раздевать его: тело и вещи остаются.
+            Assert.That(newPlayer.AttachedEntity, Is.EqualTo(oldEntity), "после реконнекта должно остаться то же тело");
+            Assert.That(GetSlotProto(entMan, newPlayer.AttachedEntity!.Value, "outerClothing"),
+                Is.EqualTo("ClothingOuterHardsuitSalvage"), "снаряжение должно остаться на персонаже");
+            Assert.That(GetSlotProto(entMan, newPlayer.AttachedEntity!.Value, "pocket1"),
+                Is.EqualTo("KatorgaMineralScanner"), "сканер должен остаться в кармане");
+            Assert.That(entMan.GetComponent<TransformComponent>(newPlayer.AttachedEntity!.Value).Coordinates,
+                Is.EqualTo(oldCoords), "реконнект не должен телепортировать заключённого");
         });
 
         await pair.CleanReturnAsync();
