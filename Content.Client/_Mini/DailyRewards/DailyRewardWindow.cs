@@ -180,11 +180,14 @@ public sealed class DailyRewardWindow : DefaultWindow
                 ContentMarginBottomOverride = 6,
             }
         };
+        // Секция тянется на всю высоту вьюпорта скролла: центрируем карточки,
+        // чтобы запас места делился сверху и снизу, а не копился под ними.
         _questTrack = new GridContainer
         {
             Columns = 2,
             HorizontalExpand = true,
             VerticalExpand = false,
+            VerticalAlignment = VAlignment.Center,
             MinSize = new Vector2(0, DailyQuestCardControl.RewardQuestCardHeight + 4),
         };
         questPanel.AddChild(_questTrack);
