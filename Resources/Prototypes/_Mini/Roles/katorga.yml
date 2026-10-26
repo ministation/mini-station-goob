@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # Снаряжение заключённого каторги: комплект утилизатора, чтобы на каторгу не попадали голыми.
 - type: startingGear
   id: KatorgaInmateGear
@@ -12,3 +16,16 @@
     pocket1: KatorgaMineralScanner
   inhand:
     - Pickaxe
+
+# Должность заключённого: единственная роль в late join у временно забаненных.
+# Слоты без лимита выдаются сервером на каждой станции (KatorgaSystem.OnStationInitialized).
+- type: playTimeTracker
+  id: JobPrisoner
+
+- type: job
+  id: Prisoner
+  name: job-name-prisoner
+  playTimeTracker: JobPrisoner
+  icon: "JobIconPrisoner"
+  setPreference: false
+  canBeAntag: false

@@ -1,7 +1,12 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System;
 using System.Numerics;
 using Content.Client.Resources;
 using Content.Client.UserInterface;
+using Content.Shared._Mini.Katorga;
 using Content.Shared._Mini.Katorga.Components;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
@@ -126,30 +131,18 @@ public sealed class KatorgaHudControl : PanelContainer
         }
         else
         {
-            _remainingLabel.Text = Loc.GetString("katorga-hud-remaining", ("time", FormatTime(remaining)));
+            _remainingLabel.Text = Loc.GetString("katorga-hud-remaining", ("time", KatorgaTime.Format(remaining)));
             _remainingLabel.FontColorOverride = TimerColor;
         }
 
         _workedLabel.Text = comp.WorkedOff > TimeSpan.Zero
-            ? Loc.GetString("katorga-hud-worked", ("time", FormatTime(comp.WorkedOff)))
+            ? Loc.GetString("katorga-hud-worked", ("time", KatorgaTime.Format(comp.WorkedOff)))
             : string.Empty;
     }
 
     public void HideHud()
     {
         Visible = false;
-    }
-
-    private static string FormatTime(TimeSpan time)
-    {
-        time = time.Duration();
-        if (time.TotalDays >= 1)
-            return string.Format("{0} д {1} ч", (int) time.TotalDays, time.Hours);
-        if (time.TotalHours >= 1)
-            return string.Format("{0} ч {1} мин", (int) time.TotalHours, time.Minutes);
-        if (time.TotalMinutes >= 1)
-            return string.Format("{0} мин {1} с", (int) time.TotalMinutes, time.Seconds);
-        return string.Format("{0} с", (int) time.TotalSeconds);
     }
 }
 
