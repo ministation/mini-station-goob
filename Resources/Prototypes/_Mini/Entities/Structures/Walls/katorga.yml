@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Неразрушимые укреплённые стены и окна каторги: у заключённого кирка, и периметр
+# лагеря не должен вскрываться шахтёрским инструментом. Обычные WallReinforced и
+# окна внутри зданий каторги не используются.
+- type: entity
+  id: KatorgaWallReinforced
+  parent: WallReinforced
+  suffix: каторга, неразрушимая
+  components:
+  - type: Destructible
+    thresholds: []
+
+- type: entity
+  id: KatorgaReinforcedWindow
+  parent: ReinforcedWindow
+  suffix: каторга, неразрушимое
+  components:
+  - type: Destructible
+    thresholds: []
+
+- type: entity
+  id: KatorgaReinforcedPlasmaWindow
+  parent: ReinforcedPlasmaWindow
+  suffix: каторга, неразрушимое
+  components:
+  - type: Destructible
+    thresholds: []
+
+- type: entity
+  id: KatorgaWindowReinforcedDirectional
+  parent: WindowReinforcedDirectional
+  suffix: каторга, неразрушимое
+  components:
+  - type: Destructible
+    thresholds: []
