@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Diagnostics;
@@ -20,7 +24,6 @@ using Content.Shared.Standing;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
-using Robust.Client.Utility;
 using Robust.Shared.Configuration;
 using Robust.Shared.Graphics.RSI;
 using Robust.Shared.Maths;
@@ -586,12 +589,19 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     }
 
     /// <summary>
-    /// On-screen RSI facing - same angle sprites use (worldRotation + eyeRotation).
+    /// On-screen RSI facing - same angle sprites use (worldRotation + eyeRotation) and the same
+    /// rounding: <see cref="SpriteComponent.Layer.GetDirection"/> biases 4-directional sprites, so
+    /// an exact 135° / 315° diagonal renders E/W, not N/S. A plain cardinal round said N/S there
+    /// and the clothing was cut from the wrong direction's art (head one way, hardsuit the other).
     /// </summary>
     private RsiDirection GetScreenFacing(EntityUid uid)
     {
-        var angle = (_xform.GetWorldRotation(uid) + _eye.CurrentEye.Rotation).Reduced().FlipPositive();
-        return angle.ToRsiDirection(RsiDirectionType.Dir4);
+        return ScreenFacing(_xform.GetWorldRotation(uid) + _eye.CurrentEye.Rotation);
+    }
+
+    internal static RsiDirection ScreenFacing(Angle angle)
+    {
+        return SpriteComponent.Layer.GetDirection(RsiDirectionType.Dir4, angle.Reduced().FlipPositive());
     }
 
     private bool HasSlotVisuals(EntityUid uid, string slot)
