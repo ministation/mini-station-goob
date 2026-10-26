@@ -8,6 +8,7 @@ using Content.Shared._Mini.Ninja;
 using Content.Shared._Mini.Ninja.Abilities.Ghost;
 using Content.Shared._Mini.Ninja.Components;
 using Content.Shared.Clothing.Components;
+using Content.Shared.Access.Systems;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Humanoid;
@@ -119,6 +120,28 @@ public sealed class NinjaGhostAbilitiesTest
                 humanoid.SkinColor = Color.Red;
         });
 
+        // Both sides need a named ID card: the disguise copies the card, and the card rename helpers
+        // must never rename the wearer (a regression renamed the ninja itself to "ID card <name>").
+        const string humanCardName = "Ninja Tester";
+        const string targetCardName = "Scanned Target ID";
+        var idCards = server.System<SharedIdCardSystem>();
+        await server.WaitPost(() =>
+        {
+            var inventory = server.System<InventorySystem>();
+            var humanPda = entMan.SpawnEntity("NinjaPDA", coords);
+            var targetPda = entMan.SpawnEntity("PassengerPDA", coords);
+            Assert.That(inventory.TryEquip(human, humanPda, "id", force: true), Is.True,
+                "Could not equip the ninja PDA");
+            Assert.That(inventory.TryEquip(target, targetPda, "id", force: true), Is.True,
+                "Could not equip the target PDA");
+            Assert.That(idCards.TryFindIdCard(human, out var humanCard), Is.True, "The ninja PDA has no ID card");
+            idCards.TryChangeFullName(humanCard.Owner, humanCardName, humanCard);
+            Assert.That(idCards.TryFindIdCard(target, out var targetCard), Is.True, "The target PDA has no ID card");
+            idCards.TryChangeFullName(targetCard.Owner, targetCardName, targetCard);
+        });
+
+        var humanName = entMan.GetComponent<MetaDataComponent>(human).EntityName;
+
         var scanAction = FindAction(entMan, actions, human, "ActionNinjaGhostDisguiseScan");
         Assert.That(scanAction.Owner.IsValid(), Is.True, "ActionNinjaGhostDisguiseScan was not granted");
 
@@ -140,7 +163,10 @@ public sealed class NinjaGhostAbilitiesTest
 
         Assert.That(disguise.Disguised, Is.True, "The chameleon did not apply the scanned appearance");
         Assert.That(entMan.GetComponent<MetaDataComponent>(human).EntityName, Is.EqualTo(targetName),
-            "The chameleon did not copy the target name");
+            "The chameleon did not copy the target name, or renamed the ninja to the ID card text");
+        Assert.That(idCards.TryFindIdCard(human, out var disguisedCard), Is.True);
+        Assert.That(disguisedCard.Comp.FullName, Is.EqualTo(targetCardName),
+            "The chameleon did not copy the target ID card name onto the ID card");
 
         var humanLook = entMan.GetComponent<HumanoidAppearanceComponent>(human);
         if (entMan.TryGetComponent<HumanoidAppearanceComponent>(target, out var targetLook))
@@ -173,6 +199,11 @@ public sealed class NinjaGhostAbilitiesTest
         await server.WaitRunTicks(90);
 
         Assert.That(disguise.Disguised, Is.False, "The chameleon did not reset the disguise");
+        Assert.That(entMan.GetComponent<MetaDataComponent>(human).EntityName, Is.EqualTo(humanName),
+            "Dropping the disguise did not restore the ninja name");
+        Assert.That(idCards.TryFindIdCard(human, out var restoredCard), Is.True);
+        Assert.That(restoredCard.Comp.FullName, Is.EqualTo(humanCardName),
+            "Dropping the disguise did not restore the ninja ID card name");
         await server.WaitAssertion(() =>
         {
             Assert.That(disguise.ActiveOutfit, Is.Empty,

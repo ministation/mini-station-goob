@@ -219,6 +219,14 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             ClearJumpsuitSideBands(ent, clearHole: true);
             ent.Comp.ClothingMode = 0;
         }
+
+        // Feet are hidden for the covering clothes and only unhidden on a moving frame, so taking
+        // off the boots or the suit while standing still left them missing until the next step.
+        if (args.Slot is ShoesSlot or OuterSlot
+            && _spriteQuery.TryGetComponent(ent.Owner, out var sprite))
+        {
+            SetBodyFeetHidden(ent, sprite, hide: false);
+        }
     }
 
     private void OnVisualsChanged(Entity<FootWalkAnimationComponent> ent, ref VisualsChangedEvent args)
@@ -303,8 +311,11 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             var hasShoes = HasSlotVisuals(uid, ShoesSlot);
             var hasOuter = HasSlotVisuals(uid, OuterSlot);
             var hasJumpsuit = HasSlotVisuals(uid, JumpsuitSlot);
-            // Never show bare feet under shoes or a hardsuit boot band/hole.
-            SetBodyFeetHidden((uid, walk), sprite, hide: hasShoes || hasOuter);
+            // Bare feet hide only under clothes that really draw over them: shoes and hardsuit boots
+            // do, a coat, jacket or armour vest does not. Hiding them under any outer clothing left
+            // barefoot characters without feet.
+            var feetCovered = hasShoes || OuterCoversFeet(uid, walk, facing);
+            SetBodyFeetHidden((uid, walk), sprite, hide: feetCovered);
 
             var speed = velocity.Length();
             walk.Phase += frameTime * walk.CycleSpeed * GetStepRate(uid, walk, speed);
@@ -379,13 +390,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
                 if (legBandOnly)
                 {
-                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, singlePieceY), skipFeet: hasShoes || hasOuter);
-                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, singlePieceY), skipFeet: hasShoes || hasOuter);
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, singlePieceY), skipFeet: feetCovered);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, singlePieceY), skipFeet: feetCovered);
                 }
                 else
                 {
-                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: hasShoes || hasOuter);
-                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: hasShoes || hasOuter);
+                    ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, leftY), skipFeet: feetCovered);
+                    ApplySide((uid, sprite), walk, humanoid, RightLayers, new Vector2(0f, rightY), skipFeet: feetCovered);
                 }
 
                 ApplySplitHalves((uid, sprite), walk, walk.ShoeSplitKeys, leftY, rightY, invert);
@@ -407,7 +418,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             else
             {
                 // Side: one silhouette - clothing lifts with near foot; don't alternate bare feet under boots.
-                if (hasOuter)
+                // Only a garment that really covers the feet (hardsuit boots) pins the legs to its band.
+                if (hasOuter && feetCovered)
                 {
                     // Full suit: legs and the suit both move with the near foot.
                     ApplySide((uid, sprite), walk, humanoid, LeftLayers, new Vector2(0f, nearY), skipFeet: true);
@@ -587,6 +599,41 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         return _invSlotsQuery.TryGetComponent(uid, out var slots)
                && slots.VisualLayerKeys.TryGetValue(slot, out var keys)
                && keys.Count > 0;
+    }
+
+    /// <summary>
+    /// True when the worn outer garment paints over the feet in this facing. Hardsuits with their
+    /// boot band do; coats, jackets and vests stop higher. Art that cannot be read is treated as
+    /// covering, which is the old conservative rule.
+    /// </summary>
+    private bool OuterCoversFeet(EntityUid uid, FootWalkAnimationComponent walk, RsiDirection facing)
+    {
+        if (!_invSlotsQuery.TryGetComponent(uid, out var slots)
+            || !slots.VisualLayerKeys.TryGetValue(OuterSlot, out var keys))
+        {
+            return false;
+        }
+
+        if (!_spriteQuery.TryGetComponent(uid, out var sprite))
+            return true;
+
+        // Runs on every walking frame, so it walks the keys in place instead of building a list.
+        foreach (var key in keys)
+        {
+            if (key.EndsWith("-displacement", StringComparison.Ordinal))
+                continue;
+
+            if (!_sprite.TryGetLayer((uid, sprite), key, out var src, false)
+                || !TryGetCutSource(uid, key, src, out var rsi, out var state))
+            {
+                return true;
+            }
+
+            if (_centreProfiles.CoversFootBand(rsi, state, facing, walk.OuterFootCut) != false)
+                return true;
+        }
+
+        return false;
     }
 
     private void SetBodyFeetHidden(Entity<FootWalkAnimationComponent> ent, SpriteComponent sprite, bool hide)

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Shared.Hands;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Ninja.Components;
 
@@ -17,6 +18,7 @@ public sealed class EnergyKatanaSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<EnergyKatanaComponent, GotEquippedEvent>(OnEquipped);
+        SubscribeLocalEvent<EnergyKatanaComponent, GotEquippedHandEvent>(OnEquippedInHand);
         SubscribeLocalEvent<EnergyKatanaComponent, CheckDashEvent>(OnCheckDash);
     }
 
@@ -26,6 +28,16 @@ public sealed class EnergyKatanaSystem : EntitySystem
     private void OnEquipped(Entity<EnergyKatanaComponent> ent, ref GotEquippedEvent args)
     {
         _ninja.BindKatana(args.Equipee, ent);
+    }
+
+    /// <summary>
+    /// The katana starts inside the sheath, which is not an equipment slot, so the hand equip is
+    /// the first moment the ninja can be bound to it. Without this the recall action silently
+    /// does nothing until the katana happens to be put into an equipment slot.
+    /// </summary>
+    private void OnEquippedInHand(Entity<EnergyKatanaComponent> ent, ref GotEquippedHandEvent args)
+    {
+        _ninja.BindKatana(args.User, ent);
     }
 
     private void OnCheckDash(Entity<EnergyKatanaComponent> ent, ref CheckDashEvent args)

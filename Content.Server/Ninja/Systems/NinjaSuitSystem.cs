@@ -111,12 +111,19 @@ public sealed class NinjaSuitSystem : SharedNinjaSuitSystem
     {
         var (uid, comp) = ent;
         var user = args.Performer;
-        if (!_ninja.NinjaQuery.TryComp(user, out var ninja) || ninja.Katana == null)
+        if (!_ninja.NinjaQuery.TryComp(user, out var ninja))
+            return;
+
+        // Mini: a katana that starts in the sheath is never equipped as a hand item, so it may
+        // still be unbound. Look for a katana carried by the ninja before giving up silently.
+        if (ninja.Katana == null && TryFindKatana(user, out var found))
+            _ninja.BindKatana((user, ninja), found);
+
+        if (ninja.Katana is not { } katana || TerminatingOrDeleted(katana))
             return;
 
         args.Handled = true;
 
-        var katana = ninja.Katana.Value;
         var coords = _transform.GetWorldPosition(katana);
         var distance = (_transform.GetWorldPosition(user) - coords).Length();
         var chargeNeeded = distance * comp.RecallCharge;
@@ -137,4 +144,27 @@ public sealed class NinjaSuitSystem : SharedNinjaSuitSystem
         Popup.PopupEntity(Loc.GetString(message), user, user);
     }
 
+    /// <summary>
+    /// Finds an energy katana carried by the user, including one stored inside the sheath.
+    /// The katana is a child of the sheath, which is itself inside the belt slot of the user.
+    /// </summary>
+    private bool TryFindKatana(EntityUid user, out EntityUid katana)
+    {
+        katana = default;
+
+        var query = EntityQueryEnumerator<EnergyKatanaComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out var xform))
+        {
+            for (var parent = xform.ParentUid; parent.IsValid(); parent = Transform(parent).ParentUid)
+            {
+                if (parent != user)
+                    continue;
+
+                katana = uid;
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

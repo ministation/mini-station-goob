@@ -211,7 +211,10 @@
       behaviors:
       - !type:DoActsBehavior
         acts: ["Destruction"]
-  - type: DamageContacts
+  # Damage is dealt once by the trigger itself. A DamageContacts component would copy the damage
+  # onto the victim until an EndCollide that never comes when the trap is deleted, burning forever.
+  - type: DamageOnTrigger
+    targetUser: true
     damage:
       types:
         Heat: 10

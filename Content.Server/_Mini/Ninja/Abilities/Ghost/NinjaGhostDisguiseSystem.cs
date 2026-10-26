@@ -385,16 +385,18 @@ public sealed partial class NinjaGhostDisguiseSystem : EntitySystem
 
         if (entry.HasIdCard)
         {
-            _idCard.TryChangeFullName(wearer, entry.IdCardName, card);
-            _idCard.TryChangeJobTitle(wearer, entry.IdCardJobTitle, card);
+            // These helpers also rename the entity they are given, so pass the card itself:
+            // passing the wearer renames the ninja to "ID card <name>" instead of the card.
+            _idCard.TryChangeFullName(card.Owner, entry.IdCardName, card);
+            _idCard.TryChangeJobTitle(card.Owner, entry.IdCardJobTitle, card);
 
             if (entry.IdCardJobPrototype is { } jobProto && _proto.TryIndex(jobProto, out JobPrototype? job))
-                _idCard.TryChangeJobDepartment(wearer, job, card);
+                _idCard.TryChangeJobDepartment(card.Owner, job, card);
         }
         else
         {
-            _idCard.TryChangeFullName(wearer, null, card);
-            _idCard.TryChangeJobTitle(wearer, null, card);
+            _idCard.TryChangeFullName(card.Owner, null, card);
+            _idCard.TryChangeJobTitle(card.Owner, null, card);
         }
 
         card.Comp.JobPrototype = entry.HasIdCard ? entry.IdCardJobPrototype : null;
