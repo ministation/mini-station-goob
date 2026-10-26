@@ -69,7 +69,7 @@ public sealed class DailyQuestSystem : EntitySystem
     private const int DailyQuestCount = 2;
 
     /// <summary>Coin cost of a quest replace after the free daily one.</summary>
-    private const int PaidReplaceCost = 2;
+    private const int PaidReplaceCost = 1;
     /// <summary>Periodic sweep for week rollover + live quest timers (not every second).</summary>
     private const float UiRefreshInterval = 5f;
 
@@ -243,6 +243,9 @@ public sealed class DailyQuestSystem : EntitySystem
         if (!preview && slot.Status >= DailyQuestStatus.Completed)
             nextQuestResetUtc = DailyQuestWeek.GetNextResetUtc(state.QuestDate);
 
+        // После бесплатной замены замена платная: клиент показывает цену на кнопке.
+        var replaceCostCoins = canReplace && state.DailyReplaceUsed ? PaidReplaceCost : 0;
+
         return new DailyQuestEntry(
             slot.QuestId,
             Loc.GetString(proto.Name),
@@ -259,7 +262,8 @@ public sealed class DailyQuestSystem : EntitySystem
             isTimeBased,
             canReplace,
             proto.Rarity,
-            nextQuestResetUtc);
+            nextQuestResetUtc,
+            replaceCostCoins);
     }
 
     public void TryReplaceQuest(ICommonSession session, string questId, int slotIndex = -1)

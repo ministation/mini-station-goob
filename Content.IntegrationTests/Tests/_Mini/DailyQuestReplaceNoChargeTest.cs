@@ -80,7 +80,53 @@ public sealed class DailyQuestReplaceNoChargeTest
         await pair.CleanReturnAsync();
     }
 
-    private static void SeedQuestState(DailyQuestSystem quests, ICommonSession session, string questId, int progress)
+    [Test]
+    public async Task ReplaceCostIsReportedOnlyAfterFreeReplaceIsUsed()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            Connected = true,
+            DummyTicker = true,
+            Destructive = true,
+        });
+
+        var server = pair.Server;
+        await server.WaitIdleAsync();
+        await pair.RunTicksSync(10);
+
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var playerMan = server.ResolveDependency<IPlayerManager>();
+        var protoMan = server.ResolveDependency<IPrototypeManager>();
+        var quests = entMan.System<DailyQuestSystem>();
+
+        var session = playerMan.Sessions.Single();
+        var questId = protoMan.EnumeratePrototypes<DailyQuestPrototype>()
+            .First(p => p.QuestType is not (DailyQuestType.SurviveRound
+                or DailyQuestType.NoMeleeHits
+                or DailyQuestType.NoDamageTaken)).ID;
+
+        await server.WaitPost(() =>
+        {
+            SeedQuestState(quests, session, questId, progress: 0, dailyReplaceUsed: true);
+            var paid = quests.BuildQuestEntries(session).Single(e => e.QuestId == questId);
+            Assert.That(paid.ReplaceCostCoins, Is.GreaterThan(0),
+                "After the free replacement is used, the quest entry must report a coin price");
+
+            SeedQuestState(quests, session, questId, progress: 0, dailyReplaceUsed: false);
+            var free = quests.BuildQuestEntries(session).Single(e => e.QuestId == questId);
+            Assert.That(free.ReplaceCostCoins, Is.Zero,
+                "The free replacement must be reported without a coin price");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    private static void SeedQuestState(
+        DailyQuestSystem quests,
+        ICommonSession session,
+        string questId,
+        int progress,
+        bool dailyReplaceUsed = true)
     {
         var systemType = typeof(DailyQuestSystem);
         var stateType = systemType.GetNestedType("PlayerDailyQuestState", BindingFlags.NonPublic)
@@ -102,7 +148,7 @@ public sealed class DailyQuestReplaceNoChargeTest
         stateType.GetField("LoadedFromDb")!.SetValue(state, true);
         stateType.GetField("PlayerId")!.SetValue(state, session.UserId.UserId);
         stateType.GetField("QuestDate")!.SetValue(state, DailyQuestWeek.GetCurrentWeekStart());
-        stateType.GetField("DailyReplaceUsed")!.SetValue(state, true);
+        stateType.GetField("DailyReplaceUsed")!.SetValue(state, dailyReplaceUsed);
         stateType.GetField("Slots")!.SetValue(state, slots);
 
         var states = (IDictionary)systemType

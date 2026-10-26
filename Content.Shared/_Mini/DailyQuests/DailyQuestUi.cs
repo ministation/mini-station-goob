@@ -22,6 +22,8 @@ public sealed class DailyQuestEntry
     public string? IconState { get; set; }
     public bool IsTimeBased { get; set; }
     public bool CanReplace { get; set; }
+    /// <summary>Coin cost of the replacement while the weekly free one is used up. 0 means free.</summary>
+    public int ReplaceCostCoins { get; set; }
     public DailyQuestRarity Rarity { get; set; }
     /// <summary>UTC time when the next daily quest assignment becomes available.</summary>
     public DateTime? NextQuestResetUtc { get; set; }
@@ -46,7 +48,8 @@ public sealed class DailyQuestEntry
         bool isTimeBased,
         bool canReplace,
         DailyQuestRarity rarity = DailyQuestRarity.Rare,
-        DateTime? nextQuestResetUtc = null)
+        DateTime? nextQuestResetUtc = null,
+        int replaceCostCoins = 0)
     {
         QuestId = questId;
         Title = title;
@@ -62,6 +65,7 @@ public sealed class DailyQuestEntry
         IconState = iconState;
         IsTimeBased = isTimeBased;
         CanReplace = canReplace;
+        ReplaceCostCoins = replaceCostCoins;
         Rarity = rarity;
         NextQuestResetUtc = nextQuestResetUtc;
     }

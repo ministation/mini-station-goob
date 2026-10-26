@@ -53,6 +53,7 @@ public sealed class DailyQuestCardControl : BoxContainer
     private string? _boundQuestId;
     private bool _boundClaimed;
     private bool _boundShowReplace;
+    private int _boundReplaceCost;
     private PanelContainer? _cardPanel;
     private StyleBoxFlat? _cardStyle;
     private Button? _replaceButton;
@@ -132,7 +133,8 @@ public sealed class DailyQuestCardControl : BoxContainer
             && _boundQuestId == quest.QuestId
             && ChildCount > 0
             && _boundClaimed == quest.IsClaimed
-            && _boundShowReplace == showReplace)
+            && _boundShowReplace == showReplace
+            && _boundReplaceCost == quest.ReplaceCostCoins)
         {
             UpdateProgressDisplay(quest, smoothTimeExtra);
             UpdateStatusLabel(quest);
@@ -142,6 +144,7 @@ public sealed class DailyQuestCardControl : BoxContainer
         _boundQuestId = quest.QuestId;
         _boundClaimed = quest.IsClaimed;
         _boundShowReplace = showReplace;
+        _boundReplaceCost = quest.ReplaceCostCoins;
         _cardPanel = null;
         _cardStyle = null;
         _replaceButton = null;
@@ -339,7 +342,7 @@ public sealed class DailyQuestCardControl : BoxContainer
                 };
                 _replaceButton = new Button
                 {
-                    Text = Loc.GetString("daily-quest-replace"),
+                    Text = quest.ReplaceCostCoins > 0 ? null : Loc.GetString("daily-quest-replace"),
                     MinSize = new Vector2(168, 26),
                     HorizontalAlignment = HAlignment.Center,
                     StyleClasses = { "OpenBoth" },
@@ -347,6 +350,39 @@ public sealed class DailyQuestCardControl : BoxContainer
                     Modulate = Color.FromHex("#eef2fb"),
                 };
                 _replaceButton.MouseFilter = MouseFilterMode.Stop;
+
+                if (quest.ReplaceCostCoins > 0)
+                {
+                    // Платная замена: рядом с надписью показываем цену числом и монеткой.
+                    var priceContent = new BoxContainer
+                    {
+                        Orientation = LayoutOrientation.Horizontal,
+                        SeparationOverride = 6,
+                        HorizontalAlignment = HAlignment.Center,
+                        VerticalAlignment = VAlignment.Center,
+                    };
+                    priceContent.AddChild(new Label
+                    {
+                        Text = Loc.GetString("daily-quest-replace"),
+                        StyleClasses = { "button" },
+                        VerticalAlignment = VAlignment.Center,
+                    });
+                    priceContent.AddChild(new Label
+                    {
+                        Text = quest.ReplaceCostCoins.ToString(),
+                        StyleClasses = { "button" },
+                        VerticalAlignment = VAlignment.Center,
+                    });
+                    priceContent.AddChild(new TextureRect
+                    {
+                        Texture = _antagCoinTexture,
+                        MinSize = new Vector2(18, 18),
+                        TextureScale = new Vector2(0.38f, 0.38f),
+                        Stretch = TextureRect.StretchMode.KeepAspectCentered,
+                        VerticalAlignment = VAlignment.Center,
+                    });
+                    _replaceButton.AddChild(new CenterContainer { Children = { priceContent } });
+                }
                 replaceRow.AddChild(_replaceButton);
                 AttachReplaceHandler();
                 column.AddChild(replaceRow);
