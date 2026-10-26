@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Mini: новый акцент луам отдельной чертой, дефолтный акцент нианов остаётся как есть.
+
+- type: trait
+  id: HiveAccent
+  name: trait-hive-accent-name
+  description: trait-hive-accent-desc
+  category: SpeechTraits
+  cost: 1
+  includedSpecies:
+  - Moth
+  components:
+  # На мобе может быть только один ReplacementAccent, поэтому сначала снимаем
+  # видовой акцент нианов, а затем добавляем акцент улья. Порядок компонентов важен.
+  - type: Accentless
+    removes:
+    - type: ReplacementAccent
+      accent: moth
+  - type: ReplacementAccent
+    accent: hive

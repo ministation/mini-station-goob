@@ -111,3 +111,6 @@ trait-newyork-desc = You speak with a thick New York accent. I'm fuckin' walkin'
 
 trait-british-name = British accent
 trait-british-desc = You speak proper, unlike those bloody yanks.
+
+trait-hive-accent-name = Hive accent
+trait-hive-accent-desc = You speak like a luam: some everyday words are replaced with hive words. Replaces the default Nian accent.

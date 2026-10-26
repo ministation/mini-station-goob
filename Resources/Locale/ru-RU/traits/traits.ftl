@@ -49,6 +49,8 @@ trait-newyork-desc = Таки мы здесь ни пгхи чём!
 trait-painnumbness-desc = Вы не чувствуете боли и не осознаёте, насколько вы ранены.
 trait-british-name = Британский акцент
 trait-british-desc = Изысканная речь, превозносящая вас над смердом.
+trait-hive-accent-name = Акцент улья
+trait-hive-accent-desc = Вы говорите как луам из улья: часть привычных слов заменяется словами улья. Заменяет обычный акцент нианов.
 
 trait-hemophilia-name = Гемофилия
 
