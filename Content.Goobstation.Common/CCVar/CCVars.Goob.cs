@@ -780,9 +780,10 @@ public sealed partial class GoobCVars
 
     /// <summary>
     /// Whether speech bubbles are drawn SS13 runechat style
+    /// Mini: keep false - the pixel font has no Cyrillic, Russian speech renders empty; the old fancy bubbles stay.
     /// </summary>
     public static readonly CVarDef<bool> ChatRunechat =
-        CVarDef.Create("chat.runechat", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("chat.runechat", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Point size of normal runechat text.
