@@ -57,6 +57,17 @@ public static class AdminNotesExtensions
                 throw new ArgumentOutOfRangeException(nameof(type), note.GetType(), "Unknown note type");
         }
 
+        // A note without an author was written by the AI administrator (AddAiRemark uses a null
+        // createdBy on purpose). Bans may legitimately have no author (automatic bans), so they keep
+        // the system label.
+        var createdByName = note.CreatedBy?.LastSeenUserName;
+        if (createdByName == null)
+        {
+            createdByName = type is NoteType.Note or NoteType.Watchlist or NoteType.Message
+                ? Loc.GetString("ai-admin-name")
+                : Loc.GetString("system-user");
+        }
+
         // There may be bans without a user, but why would we ever be converting them to shared notes?
         if (note.Players.Length == 0)
             throw new ArgumentNullException(nameof(note), "Player user ID cannot be empty for a note");
@@ -71,7 +82,7 @@ public static class AdminNotesExtensions
             note.Message,
             severity,
             secret,
-            note.CreatedBy?.LastSeenUserName ?? Loc.GetString("system-user"),
+            createdByName,
             note.LastEditedBy?.LastSeenUserName ?? string.Empty,
             note.CreatedAt.UtcDateTime,
             note.LastEditedAt?.UtcDateTime,

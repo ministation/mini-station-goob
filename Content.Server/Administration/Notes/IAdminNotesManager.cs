@@ -22,6 +22,11 @@ public interface IAdminNotesManager
     Task OpenEui(ICommonSession admin, NetUserId notedPlayer);
     Task OpenUserNotesEui(ICommonSession player);
     Task AddAdminRemark(ICommonSession createdBy, Guid player, NoteType type, string message, NoteSeverity? severity, bool secret, DateTime? expiryTime);
+    /// <summary>
+    /// Adds a remark written by the AI administrator: the note has no admin author, so the notes
+    /// panel shows the AI name instead.
+    /// </summary>
+    Task AddAiRemark(Guid player, NoteType type, string message, NoteSeverity severity, bool secret, DateTime? expiryTime);
     Task DeleteAdminRemark(int noteId, NoteType type, ICommonSession deletedBy);
     Task ModifyAdminRemark(int noteId, NoteType type, ICommonSession editedBy, string message, NoteSeverity? severity, bool secret, DateTime? expiryTime);
     /// <summary>

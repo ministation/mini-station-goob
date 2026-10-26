@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -77,4 +81,59 @@ public sealed partial class NeuroPlayerComponent : Component
 
     [ViewVariables]
     public float PoiAccumulator;
+
+    /// <summary>Текущий приказ игрока; None - живет своей жизнью (см. NeuroPlayerSystem.Orders.cs).</summary>
+    [ViewVariables]
+    public NeuroOrderKind Order;
+
+    /// <summary>Follow: за кем идти. CleanTrash: что нести или куда выбросить.</summary>
+    [ViewVariables]
+    public EntityUid? OrderTarget;
+
+    /// <summary>Мусор в руках, этап "донести до утиля".</summary>
+    [ViewVariables]
+    public EntityUid? OrderItem;
+
+    /// <summary>Когда приказ истекает (Follow: 180 с).</summary>
+    [ViewVariables]
+    public TimeSpan OrderUntil;
+
+    /// <summary>Когда истекает текущий этап CleanTrash (60 с).</summary>
+    [ViewVariables]
+    public TimeSpan OrderStageUntil;
+
+    /// <summary>Следующий тик размышления над приказом (примерно раз в 0.75 с).</summary>
+    [ViewVariables]
+    public TimeSpan NextOrderThink;
+
+    /// <summary>Точка прошлого планирования: для Follow - где была цель, для антизастревания - цель объезда.</summary>
+    [ViewVariables]
+    public Vector2? LastOrderPoint;
+
+    /// <summary>Когда маршрут по приказу планировался в последний раз (не дергать план каждый тик).</summary>
+    [ViewVariables]
+    public TimeSpan LastOrderThink;
+
+    /// <summary>Антизастревание: позиция и время прошлой проверки.</summary>
+    [ViewVariables]
+    public Vector2 LastStuckPos;
+
+    [ViewVariables]
+    public TimeSpan LastStuckCheck;
+
+    /// <summary>Сколько проверок подряд бот не сдвинулся.</summary>
+    [ViewVariables]
+    public byte StuckTries;
+
+    /// <summary>Когда началась текущая серия неудач (окно 6 с).</summary>
+    [ViewVariables]
+    public TimeSpan StuckFirstAt;
+
+    /// <summary>Пауза после трех неудач подряд: бот стоит, не перепланируя.</summary>
+    [ViewVariables]
+    public TimeSpan StuckPauseUntil;
+
+    /// <summary>Первый случай застревания за раунд уже залогирован.</summary>
+    [ViewVariables]
+    public bool StuckLogged;
 }
