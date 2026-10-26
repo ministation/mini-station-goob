@@ -136,7 +136,7 @@ public sealed class RsicFrameExtractionTest
         Assert.That(RsiCentreProfiles.ReadRsicMetadata(new byte[] { 1, 2, 3 }), Is.Null);
     }
 
-    private static void AssertFrame(Image<Rgba32>? frame, int expectedFrameIndex)
+    private static void AssertFrame(Image<Rgba32> frame, int expectedFrameIndex)
     {
         Assert.That(frame, Is.Not.Null);
         using (frame)
