@@ -238,8 +238,8 @@ entities:
         - volume: 2500
           temperature: 293.15
           moles:
-          - 0
-          - 0
+          - 21.824879
+          - 82.10312
           - 0
           - 0
           - 0
@@ -5013,5 +5013,273 @@ entities:
     - type: Transform
       pos: -5.5,-7.5
       parent: 818
+- proto: KatorgaMineRock
+  entities:
+  - uid: 900001
+    components:
+    - type: Transform
+      pos: -12.5,-15.5
+      parent: 818
+  - uid: 900002
+    components:
+    - type: Transform
+      pos: -11.5,-15.5
+      parent: 818
+  - uid: 900003
+    components:
+    - type: Transform
+      pos: -10.5,-15.5
+      parent: 818
+  - uid: 900004
+    components:
+    - type: Transform
+      pos: -9.5,-15.5
+      parent: 818
+  - uid: 900005
+    components:
+    - type: Transform
+      pos: -8.5,-15.5
+      parent: 818
+  - uid: 900006
+    components:
+    - type: Transform
+      pos: -7.5,-15.5
+      parent: 818
+  - uid: 900007
+    components:
+    - type: Transform
+      pos: -6.5,-15.5
+      parent: 818
+  - uid: 900008
+    components:
+    - type: Transform
+      pos: -5.5,-15.5
+      parent: 818
+  - uid: 900009
+    components:
+    - type: Transform
+      pos: 1.5,-15.5
+      parent: 818
+  - uid: 900010
+    components:
+    - type: Transform
+      pos: 2.5,-15.5
+      parent: 818
+  - uid: 900011
+    components:
+    - type: Transform
+      pos: 3.5,-15.5
+      parent: 818
+  - uid: 900012
+    components:
+    - type: Transform
+      pos: 4.5,-15.5
+      parent: 818
+  - uid: 900013
+    components:
+    - type: Transform
+      pos: 5.5,-15.5
+      parent: 818
+  - uid: 900014
+    components:
+    - type: Transform
+      pos: 6.5,-15.5
+      parent: 818
+  - uid: 900015
+    components:
+    - type: Transform
+      pos: 7.5,-15.5
+      parent: 818
+  - uid: 900016
+    components:
+    - type: Transform
+      pos: 8.5,-15.5
+      parent: 818
+  - uid: 900017
+    components:
+    - type: Transform
+      pos: 9.5,-15.5
+      parent: 818
+  - uid: 900018
+    components:
+    - type: Transform
+      pos: 10.5,-15.5
+      parent: 818
+  - uid: 900019
+    components:
+    - type: Transform
+      pos: 11.5,-15.5
+      parent: 818
+  - uid: 900020
+    components:
+    - type: Transform
+      pos: 12.5,-15.5
+      parent: 818
+  - uid: 900021
+    components:
+    - type: Transform
+      pos: -12.5,-14.5
+      parent: 818
+  - uid: 900022
+    components:
+    - type: Transform
+      pos: -11.5,-14.5
+      parent: 818
+  - uid: 900023
+    components:
+    - type: Transform
+      pos: -10.5,-14.5
+      parent: 818
+  - uid: 900024
+    components:
+    - type: Transform
+      pos: -9.5,-14.5
+      parent: 818
+  - uid: 900025
+    components:
+    - type: Transform
+      pos: -8.5,-14.5
+      parent: 818
+  - uid: 900026
+    components:
+    - type: Transform
+      pos: -7.5,-14.5
+      parent: 818
+  - uid: 900027
+    components:
+    - type: Transform
+      pos: -6.5,-14.5
+      parent: 818
+  - uid: 900028
+    components:
+    - type: Transform
+      pos: -5.5,-14.5
+      parent: 818
+  - uid: 900029
+    components:
+    - type: Transform
+      pos: 1.5,-14.5
+      parent: 818
+  - uid: 900030
+    components:
+    - type: Transform
+      pos: 2.5,-14.5
+      parent: 818
+  - uid: 900031
+    components:
+    - type: Transform
+      pos: 3.5,-14.5
+      parent: 818
+  - uid: 900032
+    components:
+    - type: Transform
+      pos: 4.5,-14.5
+      parent: 818
+  - uid: 900033
+    components:
+    - type: Transform
+      pos: 5.5,-14.5
+      parent: 818
+  - uid: 900034
+    components:
+    - type: Transform
+      pos: 6.5,-14.5
+      parent: 818
+  - uid: 900035
+    components:
+    - type: Transform
+      pos: 7.5,-14.5
+      parent: 818
+  - uid: 900036
+    components:
+    - type: Transform
+      pos: 8.5,-14.5
+      parent: 818
+  - uid: 900037
+    components:
+    - type: Transform
+      pos: 9.5,-14.5
+      parent: 818
+  - uid: 900038
+    components:
+    - type: Transform
+      pos: 10.5,-14.5
+      parent: 818
+  - uid: 900039
+    components:
+    - type: Transform
+      pos: 11.5,-14.5
+      parent: 818
+  - uid: 900040
+    components:
+    - type: Transform
+      pos: 12.5,-14.5
+      parent: 818
+  - uid: 900041
+    components:
+    - type: Transform
+      pos: 0.5,-13.5
+      parent: 818
+  - uid: 900042
+    components:
+    - type: Transform
+      pos: 1.5,-13.5
+      parent: 818
+  - uid: 900043
+    components:
+    - type: Transform
+      pos: 2.5,-13.5
+      parent: 818
+  - uid: 900044
+    components:
+    - type: Transform
+      pos: 3.5,-13.5
+      parent: 818
+  - uid: 900045
+    components:
+    - type: Transform
+      pos: 4.5,-13.5
+      parent: 818
+  - uid: 900046
+    components:
+    - type: Transform
+      pos: 5.5,-13.5
+      parent: 818
+  - uid: 900047
+    components:
+    - type: Transform
+      pos: 6.5,-13.5
+      parent: 818
+  - uid: 900048
+    components:
+    - type: Transform
+      pos: 7.5,-13.5
+      parent: 818
+  - uid: 900049
+    components:
+    - type: Transform
+      pos: 8.5,-13.5
+      parent: 818
+  - uid: 900050
+    components:
+    - type: Transform
+      pos: 9.5,-13.5
+      parent: 818
+  - uid: 900051
+    components:
+    - type: Transform
+      pos: 10.5,-13.5
+      parent: 818
+  - uid: 900052
+    components:
+    - type: Transform
+      pos: 11.5,-13.5
+      parent: 818
+  - uid: 900053
+    components:
+    - type: Transform
+      pos: 12.5,-13.5
+      parent: 818
+
 ...
 

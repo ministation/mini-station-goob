@@ -56,6 +56,15 @@
       oreChance: 0.25
       oreRarityPrototypeId: RandomKatorgaOreDistributionStandard
 
+# Камни, расставленные на станционном гриде каторги: руда прямо у выхода на двор.
+- type: entity
+  id: KatorgaMineRock
+  parent: KatorgaWallRock
+  components:
+    - type: OreVein
+      oreChance: 0.5
+      oreRarityPrototypeId: RandomKatorgaOreDistributionStandard
+
 - type: weightedRandomOre
   id: RandomKatorgaOreDistributionStandard
   weights:

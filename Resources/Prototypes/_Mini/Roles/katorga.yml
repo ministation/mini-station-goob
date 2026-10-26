@@ -1,0 +1,14 @@
+# Снаряжение заключённого каторги: комплект утилизатора, чтобы на каторгу не попадали голыми.
+- type: startingGear
+  id: KatorgaInmateGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSalvageSpecialist
+    outerClothing: ClothingOuterHardsuitSalvage
+    head: ClothingHeadHelmetHardsuitSalvage
+    shoes: ClothingShoesBootsSalvage
+    belt: OreBag
+    back: ClothingBackpackDuffelSalvage
+    suitstorage: OxygenTankFilled
+    pocket1: KatorgaMineralScanner
+  inhand:
+    - Pickaxe

@@ -1,0 +1,5 @@
+# Сканер минералов для заключённых каторги: всегда запитан, заряд не тратится.
+- type: entity
+  id: KatorgaMineralScanner
+  parent: MineralScannerUnpowered
+  suffix: Каторга

@@ -28,6 +28,7 @@ using Content.Shared.Materials;
 using Content.Shared.Parallax.Biomes;
 using Content.Shared.Popups;
 using Content.Shared.Preferences;
+using Content.Shared.Roles;
 using Content.Shared.Throwing;
 using Robust.Server.Player;
 using Robust.Shared.Collections;
@@ -58,6 +59,9 @@ public sealed class KatorgaSystem : EntitySystem
 {
     private static readonly ResPath KatorgaMapPath = new("/Maps/_Mini/katorga.yml");
     private const string KatorgaBiomeId = "KatorgaBiome";
+
+    // Снаряжение заключённого: комплект утилизатора и сканер в кармане.
+    private static readonly ProtoId<StartingGearPrototype> InmateGear = "KatorgaInmateGear";
 
     private static readonly TimeSpan SafeguardInterval = TimeSpan.FromSeconds(10);
     private static readonly TimeSpan FlushInterval = TimeSpan.FromMinutes(1);
@@ -389,7 +393,16 @@ public sealed class KatorgaSystem : EntitySystem
 
         if (session.AttachedEntity is { } attached && !TerminatingOrDeleted(attached))
         {
-            SendEntityToKatorga(attached);
+            // Переподключение в уже заключённое тело: не раздеваем и не телепортируем заново,
+            // иначе снаряжение падает на пол, а персонаж оказывается на другой точке спавна.
+            if (HasComp<KatorgaBoundComponent>(attached) && Transform(attached).MapID == _katorgaMap)
+            {
+                EnsureComp<KillTrackerComponent>(attached);
+            }
+            else
+            {
+                SendEntityToKatorga(attached);
+            }
         }
         else
         {
@@ -436,6 +449,7 @@ public sealed class KatorgaSystem : EntitySystem
 
         EnsureComp<KatorgaBoundComponent>(entity);
         EnsureComp<KillTrackerComponent>(entity);
+        EquipInmate(entity);
     }
 
     private void SpawnKatorgaPlayer(ICommonSession session)
@@ -450,6 +464,15 @@ public sealed class KatorgaSystem : EntitySystem
 
         EnsureComp<KatorgaBoundComponent>(mob);
         EnsureComp<KillTrackerComponent>(mob);
+        EquipInmate(mob);
+    }
+
+    /// <summary>
+    ///     Выдаёт заключённому снаряжение утилизатора: голыми на каторгу не попадают.
+    /// </summary>
+    private void EquipInmate(EntityUid mob)
+    {
+        _stationSpawning.EquipStartingGear(mob, InmateGear);
     }
 
     private EntityCoordinates GetSpawnPosition()
