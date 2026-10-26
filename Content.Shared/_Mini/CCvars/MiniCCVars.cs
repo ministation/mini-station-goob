@@ -556,11 +556,15 @@ public sealed class MiniCCVars
         CVarDef.Create("accessibility.foot_walk_animation", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
-    /// Client toggle for the Stardew-style whole-body walk bounce. Disabled by default because
-    /// it lifts the shoes on top of the per-leg foot bob. The foot bob and arm swing remain active.
+    /// Client toggle for the Stardew-style whole-body walk bounce: torso, head and every piece of
+    /// clothing hop on each footfall. The per-leg foot bob and the arm swing stay under
+    /// <see cref="FootWalkAnimationEnabled"/>.
+    /// On by default: it was switched off as a workaround for boots drifting upwards, but that was
+    /// the layer base-offset bug, fixed in the clothing rebuild (#464), and the HUD anchors no
+    /// longer ride the bounce (#430), so nothing else has to compensate for it.
     /// </summary>
     public static readonly CVarDef<bool> FootWalkBodyBounceEnabled =
-        CVarDef.Create("accessibility.foot_walk_body_bounce", false, CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("accessibility.foot_walk_body_bounce", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<bool> HoldLookUp =
         CVarDef.Create("scope.hold_look_up", true, CVar.CLIENT | CVar.ARCHIVE);

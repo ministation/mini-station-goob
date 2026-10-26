@@ -53,6 +53,12 @@ public sealed class RsiCentreProfiles
     /// <summary>Рукава: копия одежды, обрезанная по рисунку руки, в том числе неудачные.</summary>
     private readonly Dictionary<(string Garment, string GarmentState, string Limb, string LimbState, int Dir), Texture?> _sleeves = new();
 
+    /// <summary>
+    /// Закрывает ли кадр одежды нижнюю полосу (ступни), в том числе неудачные чтения. Ключ держит
+    /// сам RSI, а не путь: проверка идёт каждый кадр ходьбы и не должна собирать строки.
+    /// </summary>
+    private readonly Dictionary<(RSI Rsi, RSI.StateId State, int Dir, float Cut), bool?> _footCoverage = new();
+
     public void Initialize(IResourceManager resources)
     {
         _resources = resources;
@@ -119,6 +125,50 @@ public sealed class RsiCentreProfiles
         sleeve.Dispose();
         _sleeves[key] = texture;
         return texture;
+    }
+
+    /// <summary>
+    /// Рисует ли одежда поверх ступней в этом ракурсе: непрозрачные пиксели в нижней полосе кадра,
+    /// то есть в той самой полосе, которую нарезка для покачивания вырезает и двигает с ногой.
+    /// Скафандр и сапоги закрывают ступни, куртка или бронежилет - нет, и прятать под ними босые
+    /// ступни нельзя, иначе босой персонаж выглядит безногим.
+    /// Null - кадр прочитать не удалось (анимированное состояние, нет файла): вызывающий решает сам.
+    /// </summary>
+    public bool? CoversFootBand(RSI rsi, RSI.StateId state, RsiDirection facing, float cut)
+    {
+        var key = (rsi, state, (int) facing, cut);
+        if (_footCoverage.TryGetValue(key, out var cached))
+            return cached;
+
+        bool? covers = null;
+        var frame = GetFrame(rsi, state, facing);
+        if (frame != null && frame.Width >= 4 && frame.Height >= 4)
+            covers = FrameCoversFootBand(frame, cut);
+
+        _footCoverage[key] = covers;
+        return covers;
+    }
+
+    /// <summary>
+    /// True if the lower band of the frame has any opaque pixel. The band is the same strip the walk
+    /// cut removes and moves with the leg, so an opaque strip means the garment paints over the feet.
+    /// </summary>
+    public static bool FrameCoversFootBand(Image<Rgba32> frame, float cut)
+    {
+        var bandHeight = Math.Min(frame.Height - 1, Math.Max(1, (int) MathF.Round(frame.Height * cut)));
+        var pixels = frame.GetPixelSpan();
+
+        for (var y = frame.Height - bandHeight; y < frame.Height; y++)
+        {
+            var row = y * frame.Width;
+            for (var x = 0; x < frame.Width; x++)
+            {
+                if (pixels[row + x].A > AlphaThreshold)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private Image<Rgba32>? GetFrame(RSI rsi, RSI.StateId stateId, RsiDirection dir)

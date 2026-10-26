@@ -136,6 +136,24 @@ public sealed class RsicFrameExtractionTest
         Assert.That(RsiCentreProfiles.ReadRsicMetadata(new byte[] { 1, 2, 3 }), Is.Null);
     }
 
+    [Test]
+    public void FootBandCoverageReadsOnlyTheBottomStrip()
+    {
+        using var empty = new Image<Rgba32>(4, 4);
+        Assert.That(RsiCentreProfiles.FrameCoversFootBand(empty, 0.25f), Is.False,
+            "A fully transparent frame must not be treated as covering the feet");
+
+        using var upperOnly = new Image<Rgba32>(4, 4);
+        upperOnly[1, 1] = new Rgba32(255, 255, 255, 255);
+        Assert.That(RsiCentreProfiles.FrameCoversFootBand(upperOnly, 0.25f), Is.False,
+            "A jacket that ends above the feet must not hide bare feet");
+
+        using var bootBand = new Image<Rgba32>(4, 4);
+        bootBand[1, 3] = new Rgba32(255, 255, 255, 255);
+        Assert.That(RsiCentreProfiles.FrameCoversFootBand(bootBand, 0.25f), Is.True,
+            "A hardsuit boot band in the bottom strip must cover the feet");
+    }
+
     private static void AssertFrame(Image<Rgba32> frame, int expectedFrameIndex)
     {
         Assert.That(frame, Is.Not.Null);
