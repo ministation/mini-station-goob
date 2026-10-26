@@ -71,8 +71,6 @@ sh Scripts/sh/buildAllDebug.sh
 sh Scripts/sh/runQuickAll.sh
 ```
 
-Both options build the game and launch a local server with a client. After launch, connect to `localhost` in the client window.
-
 > [!TIP]
 > If `RUN_THIS.py` fails to download the engine, run `git submodule update --init --recursive`. See the [Space Station 14 documentation](https://docs.spacestation14.com/en/general-development/setup.html) for environment details.
 

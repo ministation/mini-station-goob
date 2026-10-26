@@ -71,8 +71,6 @@ sh Scripts/sh/buildAllDebug.sh
 sh Scripts/sh/runQuickAll.sh
 ```
 
-Оба варианта собирают игру и запускают локальный сервер с клиентом. После запуска подключитесь к `localhost` в окне клиента.
-
 > [!TIP]
 > Если `RUN_THIS.py` не смог скачать движок, выполните `git submodule update --init --recursive`. Подробности про окружение есть в [документации Space Station 14](https://docs.spacestation14.com/en/general-development/setup.html).
 
