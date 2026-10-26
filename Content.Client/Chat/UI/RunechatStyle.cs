@@ -1,3 +1,4 @@
+using Content.Client.Resources;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
@@ -22,7 +23,8 @@ public static class RunechatStyle
             return font;
 
         var cache = IoCManager.Resolve<IResourceCache>();
-        font = new VectorFont(cache.GetResource<FontResource>(path), size);
+        // Мини: пиксельный шрифт без кириллицы, поэтому после него идёт Noto Sans fallback.
+        font = cache.GetFont(MiniFonts.StackWithPrimary(path), size);
         Fonts[(path, size)] = font;
         return font;
     }
