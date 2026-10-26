@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Numerics;
-using System.Text.RegularExpressions;
 using Content.Server._CorvaxGoob.Announcer;
 using Content.Server.Announcements;
 using Content.Server.Discord;
@@ -600,43 +599,49 @@ namespace Content.Server.GameTicking
                 var textEv = new RoundEndTextAppendEvent();
                 RaiseLocalEvent(textEv);
 
-                var manifest = Regex.Replace(textEv.Text, @"\[/\.*?\]", "");
-                manifest = Regex.Replace(manifest, @"\[.*?\]", "");
+                var manifest = DiscordRoundEndFormatter.StripMarkup(textEv.Text).Trim();
 
-                var content = Loc.GetString("discord-round-notifications-end",
-                    ("id", RoundId),
-                    ("hours", Math.Truncate(duration.TotalHours)),
-                    ("minutes", duration.Minutes),
-                    ("seconds", duration.Seconds),
-                    ("playerCount", playerCount),
-                    ("gamemode", gamemodeTitle),
-                    ("manifest", manifest));
-
-                if (textEv.Text == string.Empty)
+                string MakeContent()
                 {
-                    content = Loc.GetString("discord-round-notifications-end-no-manifest",
+                    if (manifest.Length == 0)
+                    {
+                        return Loc.GetString("discord-round-notifications-end-no-manifest",
+                            ("id", RoundId),
+                            ("hours", Math.Truncate(duration.TotalHours)),
+                            ("minutes", duration.Minutes),
+                            ("seconds", duration.Seconds),
+                            ("playerCount", playerCount),
+                            ("gamemode", gamemodeTitle));
+                    }
+
+                    return Loc.GetString("discord-round-notifications-end",
                         ("id", RoundId),
                         ("hours", Math.Truncate(duration.TotalHours)),
                         ("minutes", duration.Minutes),
                         ("seconds", duration.Seconds),
                         ("playerCount", playerCount),
-                        ("gamemode", gamemodeTitle));
+                        ("gamemode", gamemodeTitle),
+                        ("manifest", manifest));
                 }
 
-                // Discord rejects message content longer than 2000 characters, the round end manifest can exceed it.
-                const int maxDiscordContent = 2000;
-                if (content.Length > maxDiscordContent)
-                    content = content[..(maxDiscordContent - 1)] + "…";
+                var content = MakeContent();
 
-                var payload = new WebhookPayload { Content = content };
+                // Discord rejects message content longer than 2000 characters. Cut the manifest at a line end so the
+                // message fits and its code fence is always closed.
+                if (content.Length > DiscordRoundEndFormatter.MaxMessageLength)
+                {
+                    var overhead = content.Length - manifest.Length;
+                    manifest = DiscordRoundEndFormatter.TruncateAtLine(manifest,
+                        DiscordRoundEndFormatter.MaxMessageLength - overhead);
+                    content = MakeContent();
+                }
 
-                await _discord.CreateMessage(_webhookIdentifier.Value, payload);
+                await _discord.CreateMessage(_webhookIdentifier.Value, new WebhookPayload { Content = content });
 
                 content = Loc.GetString("discord-round-notifications-end-ping",
                     ("playerCount", playerCount));
-                payload = new WebhookPayload { Content = content };
 
-                await _discord.CreateMessage(_webhookIdentifier.Value, payload);
+                await _discord.CreateMessage(_webhookIdentifier.Value, new WebhookPayload { Content = content });
             }
             catch (Exception e)
             {
