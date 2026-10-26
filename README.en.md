@@ -34,25 +34,12 @@
 
 **Mini Station** is a non-commercial Russian-language Space Station 14 project. We maintain our own build: we translate content, add new mechanics and items, adjust balance, and run a server for our community.
 
-The build is based on [Goob Station](https://github.com/Goob-Station/Goob-Station) and runs on the [RobustToolbox](https://github.com/space-wizards/RobustToolbox) engine. Everything that appears in the repository is first discussed and tested by the community.
+The build is based on [Goob Station](https://github.com/Goob-Station/Goob-Station) and runs on the [RobustToolbox](https://github.com/space-wizards/RobustToolbox) engine.
 
 - **Russian language.** Game localization, wiki, and community communication.
 - **Original content.** Daily and weekly quests, text-to-speech (TTS), new items, roles, and events.
 - **Ready builds.** Windows, Linux, and macOS builds are updated every night.
 - **AI in the project.** We deeply integrate artificial intelligence: it helps us develop, translate, and maintain the server.
-- **Open development.** Anyone can propose a change through a pull request.
-
-<div align="center">
-
-## How to play
-
-</div>
-
-1. Download the build for your system from the [builds page](https://cdn.ministation.ru/fork/ministation).
-2. Unpack the archive and launch the client.
-3. Connect to `ss14://ss14.ministation.ru:1214` or find **Mini Station** in the server list.
-
-The game is free, and the server is open to everyone.
 
 <div align="center">
 
@@ -108,29 +95,3 @@ Before you start, check [CONTRIBUTING.md](CONTRIBUTING.md); open tasks are liste
 All code in the repository is licensed under [AGPL-3.0-or-later](LICENSES/AGPL-3.0-or-later.txt), except original Mini Station code, which is licensed under the [Mini Station license agreement](LICENSE.TXT). Files contain REUSE headers or separate `.license` files that indicate dual licensing. This makes it easier to use the code in projects that do not use AGPL.
 
 Most media assets are licensed under [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) unless stated otherwise in the metadata. Some assets use non-commercial licenses such as [CC-BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) or similar; they must be removed if you plan to use the project commercially.
-
-The Russian text of [LICENSE.TXT](LICENSE.TXT) is the authoritative version.
-
-### Liability for violations
-
-Using original Mini Station code outside the rights granted by the license, or otherwise breaching its terms, may result in liability under the laws of the Russian Federation:
-
-- **Civil liability.** Compensation from RUB 10,000 to RUB 10,000,000, or double the cost of the right to use the work or of counterfeit copies (Articles 1237, 1252, 1252.1, and 1301 of the Civil Code).
-- **Administrative liability.** For income-generating illegal use: fines of RUB 1,500 to 2,000 for individuals, RUB 10,000 to 20,000 for officials, and RUB 30,000 to 40,000 for legal entities, with confiscation (Article 7.12 of the Code of Administrative Offences).
-- **Criminal liability.** For large-scale infringement (over RUB 500,000) under Article 146 of the Criminal Code: a fine of up to RUB 200,000 or other penalties. For especially large-scale infringement (over RUB 2,000,000): imprisonment for up to 6 years and a fine of up to RUB 500,000.
-
-The amounts are based on the laws in force as of October 2026. This is general information, not legal advice. The actual consequences depend on the circumstances.
-
-<div align="center">
-
-## Credits
-
-</div>
-
-Thanks to [Space Station 14](https://github.com/space-wizards/space-station-14) and [RobustToolbox](https://github.com/space-wizards/RobustToolbox) for the game and the engine, [Goob Station](https://github.com/Goob-Station/Goob-Station) for the base build, and all [contributors](https://github.com/ministation/mini-station-goob/graphs/contributors) who make Mini Station better.
-
-<div align="center">
-
-Want to support the project? Use [donations](https://ministation.ru/donate) or [Telegram](https://t.me/mini_station).
-
-</div>
