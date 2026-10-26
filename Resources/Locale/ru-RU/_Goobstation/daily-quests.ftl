@@ -22,7 +22,6 @@ daily-quest-replace-denied-progress = Заменить можно только �
 daily-quest-replace-denied-used = Замену заданий можно использовать только один раз в неделю.
 daily-quest-replace-used-today = Замена заданий на эту неделю уже использована.
 daily-quest-replace-empty-pool = На этой неделе больше нет доступных квестов для замены.
-daily-quest-replace-success = Задание заменено.
 
 daily-quest-rarity-rare = Редкий
 daily-quest-rarity-super-rare = Сверхредкий
@@ -617,4 +616,3 @@ daily-quest-untouchable-legendary-desc = За раунд не получите �
 
 daily-quest-replace-denied-coins = Недостаточно монеток: замена задания стоит {$cost}.
 
-daily-quest-replace-success-paid = Задание заменено за {$cost} монетку.

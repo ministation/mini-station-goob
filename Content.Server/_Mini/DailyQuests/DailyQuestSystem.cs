@@ -329,7 +329,6 @@ public sealed class DailyQuestSystem : EntitySystem
             return;
         }
 
-        var paidReplace = false;
         if (state.DailyReplaceUsed)
         {
             if (!_antagTokens.TrySpendBalance(session.UserId, PaidReplaceCost, out _))
@@ -339,8 +338,6 @@ public sealed class DailyQuestSystem : EntitySystem
                     "insufficient-balance");
                 return;
             }
-
-            paidReplace = true;
         }
 
         slot.QuestId = pick;
@@ -352,11 +349,6 @@ public sealed class DailyQuestSystem : EntitySystem
         Persist(session.UserId, refreshUi: true);
 
         Log.Info($"Daily quest replaced for {session.Name}: {questId} -> {pick} (slot {slotIndex})");
-
-        if (session.AttachedEntity is { Valid: true } uid)
-            _popup.PopupEntity(
-                Loc.GetString(paidReplace ? "daily-quest-replace-success-paid" : "daily-quest-replace-success"),
-                uid, session);
     }
 
     private void DenyQuestReplace(ICommonSession session, string questId, string reason, string detail)
@@ -366,9 +358,6 @@ public sealed class DailyQuestSystem : EntitySystem
         RaiseNetworkEvent(new DailyQuestReplaceDeniedEvent(questId, reason), session);
 
         EntityManager.System<DailyRewardSystem>().RefreshUi(session.UserId);
-
-        if (session.AttachedEntity is { Valid: true } uid)
-            _popup.PopupEntity(reason, uid, session);
     }
 
     private static bool CanReplaceSlot(

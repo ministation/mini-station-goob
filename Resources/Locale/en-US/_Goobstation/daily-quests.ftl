@@ -22,7 +22,6 @@ daily-quest-replace-denied-progress = Only quests with no progress can be replac
 daily-quest-replace-denied-used = Quest replacement can only be used once per week.
 daily-quest-replace-used-today = This week's quest replacement has already been used.
 daily-quest-replace-empty-pool = No more quests are available for replacement this week.
-daily-quest-replace-success = Quest replaced.
 
 daily-quest-rarity-rare = Rare
 daily-quest-rarity-super-rare = Super Rare
@@ -617,4 +616,3 @@ daily-quest-untouchable-legendary-desc = Take no damage during the round. Requir
 
 daily-quest-replace-denied-coins = Not enough coins: replacing a quest costs {$cost}.
 
-daily-quest-replace-success-paid = Quest replaced for {$cost} coin.
