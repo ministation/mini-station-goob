@@ -169,12 +169,13 @@ public sealed class DailyQuestCardControl : BoxContainer
                 ContentMarginBottomOverride = 3
             };
 
+            // Без потолка по высоте: двухстрочный статус или кнопка замены
+            // вылезают за границу карточки, если зажимать её в 170px.
             _cardPanel = new PanelContainer
             {
                 HorizontalExpand = true,
                 VerticalExpand = false,
                 MinSize = new Vector2(0, RewardQuestCardHeight),
-                MaxSize = new Vector2(float.PositiveInfinity, RewardQuestCardHeight),
                 PanelOverride = _cardStyle
             };
 
