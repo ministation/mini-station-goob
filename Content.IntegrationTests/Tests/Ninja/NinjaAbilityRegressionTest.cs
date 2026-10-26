@@ -196,7 +196,7 @@ public sealed class NinjaAbilityRegressionTest
         await server.WaitRunTicks(2);
 
         var battery = entMan.GetComponent<BatteryComponent>(cell);
-        var chargeBefore = batteries.GetCharge((cell, (BatteryComponent?) battery));
+        var chargeBefore = batteries.GetCharge((cell, (BatteryComponent) battery));
         Assert.That(chargeBefore, Is.GreaterThan(0f), "The test battery is empty");
 
         Entity<ActionComponent>? emp = null;
@@ -214,7 +214,7 @@ public sealed class NinjaAbilityRegressionTest
         await server.WaitPost(() => actions.PerformAction((human, default(ActionsComponent)), emp!.Value));
         await server.WaitRunTicks(4);
 
-        var chargeAfter = batteries.GetCharge((cell, (BatteryComponent?) battery));
+        var chargeAfter = batteries.GetCharge((cell, (BatteryComponent) battery));
         Assert.That(chargeAfter, Is.LessThan(chargeBefore),
             "The EMP pulse did not drain the nearby battery");
 

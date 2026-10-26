@@ -101,10 +101,10 @@ public sealed class KatorgaBanTest
         return player.AttachedEntity is { } mob && entMan.HasComponent<KatorgaBoundComponent>(mob);
     }
 
-    private static string? GetSlotProto(IEntityManager entMan, EntityUid mob, string slot)
+    private static string GetSlotProto(IEntityManager entMan, EntityUid mob, string slot)
     {
         return entMan.System<InventorySystem>().TryGetSlotEntity(mob, slot, out var item) &&
-               entMan.TryGetComponent(item, out MetaDataComponent? meta)
+               entMan.TryGetComponent(item, out MetaDataComponent meta)
             ? meta.EntityPrototype?.ID
             : null;
     }
