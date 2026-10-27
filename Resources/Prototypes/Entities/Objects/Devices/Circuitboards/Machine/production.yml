@@ -1047,7 +1047,7 @@
   - type: Sprite
     state: supply
   - type: MachineBoard
-    prototype: MachineMaterialSilo
+    prototype: MaterialSilo
     partRequirements: # Mini: Orion MachineParts
       Servo: 4
     stackRequirements:

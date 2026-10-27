@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Map
@@ -18050,6 +18054,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
   - uid: 26775
     components:
     - type: Transform
@@ -18065,6 +18071,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
 - proto: BackgammonBoard
   entities:
   - uid: 4234
@@ -54355,6 +54363,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
 - proto: Carpet
   entities:
   - uid: 3526
@@ -64409,6 +64419,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
 - proto: ClawMachine
   entities:
   - uid: 17188
@@ -80231,6 +80243,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
 - proto: Envelope
   entities:
   - uid: 11537
@@ -80270,6 +80284,8 @@ entities:
     - type: Transform
       parent: 2
       pos: -30.5,13.5
+    - type: SiloUtilizer
+      silo: 16579
 - proto: ExteriorLightTube
   entities:
   - uid: 644
@@ -123170,7 +123186,7 @@ entities:
     - type: Transform
       parent: 2
       pos: -55.5,-3.5
-- proto: MachineMaterialSilo
+- proto: MaterialSilo
   entities:
   - uid: 16579
     components:
@@ -124323,6 +124339,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
 - proto: MedkitAdvancedFilled
   entities:
   - uid: 17616
@@ -125562,6 +125580,8 @@ entities:
     - type: Transform
       parent: 2
       pos: 52.5,3.5
+    - type: SiloUtilizer
+      silo: 16579
 - proto: OrganDwarfLiver
   entities:
   - uid: 21078
@@ -133616,6 +133636,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
   - uid: 26776
     components:
     - type: Transform
@@ -133631,6 +133653,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
 - proto: ProtolatheMachineCircuitboard
   entities:
   - uid: 18769
@@ -140265,6 +140289,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
 - proto: ScrapAirlock1
   entities:
   - uid: 21437
@@ -140670,6 +140696,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
 - proto: SeedExtractor
   entities:
   - uid: 9566
@@ -140716,6 +140744,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16579
 - proto: ShardCrystalRed
   entities:
   - uid: 20111

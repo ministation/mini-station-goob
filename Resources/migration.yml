@@ -1060,7 +1060,7 @@ AshBush: FloraAshBush
 
 # 2026-02-14 Goobstation, upstreaming. wild.
 MailTeleporter: CargoMailTeleporter
-MaterialSilo: MachineMaterialSilo
+# Mini: сило (MaterialSilo) оставлен в сборке и стоит на картах, поэтому не мигрируем его в MachineMaterialSilo.
 BoxMailCapsulePrimed: null
 VendingMachineMailDrobe: null
 MailMetricsCartridge: null

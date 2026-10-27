@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Map
@@ -18117,6 +18121,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
   - uid: 11700
     components:
     - type: Transform
@@ -18132,6 +18138,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: BananaSeeds
   entities:
   - uid: 15930
@@ -51825,6 +51833,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: Carpet
   entities:
   - uid: 1158
@@ -61392,6 +61402,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: ClawMachine
   entities:
   - uid: 20601
@@ -72365,6 +72377,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: ExosuitFabricator
   entities:
   - uid: 19196
@@ -72382,6 +72396,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: ExtinguisherCabinet
   entities:
   - uid: 22169
@@ -105364,7 +105380,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 104.5,40.5
       parent: 1
-- proto: MachineMaterialSilo
+- proto: MaterialSilo
   entities:
   - uid: 16351
     components:
@@ -106154,6 +106170,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: MedkitAdvancedFilled
   entities:
   - uid: 4967
@@ -106749,6 +106767,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: OxygenAndNitrousOxideCanister
   entities:
   - uid: 4615
@@ -113025,6 +113045,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: PsychBed
   entities:
   - uid: 4993
@@ -120877,6 +120899,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: ScrapBucket
   entities:
   - uid: 17279
@@ -121037,6 +121061,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 16351
 - proto: SeedExtractor
   entities:
   - uid: 3820
