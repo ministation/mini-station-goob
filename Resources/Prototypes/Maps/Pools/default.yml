@@ -6,7 +6,7 @@
   maps:
   # Highpop 55+
   - MiniAstra
-  #- MiniAvrite
+  - MiniAvrite
   - MiniBox
   - MiniChloris
   - MiniDelta
@@ -14,17 +14,17 @@
   - MiniPilgrim
 
   # Midpop 25–55
-  # - MiniAmber
+  - MiniAmber
   - MiniBagel
-  #- MiniMarathon
+  - MiniMarathon
   - MiniMascara
   - MiniOutpost
   - MiniPaper
-  #- MiniPearl
+  - MiniPearl
   - MiniVoid
 
   # Lowpop 0–25
-  #- MiniMaus
+  - MiniMaus
   - MiniOmega
   - MiniPacked
   - MiniSilly
