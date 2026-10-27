@@ -1577,6 +1577,7 @@ namespace Content.Client.Lobby.UI
             UpdateHeightWidthSliders();
             UpdateWeight();
             // end Goobstation: port EE height/width sliders */
+            RefreshTraits(); // Goobstation: ported from DeltaV - Species trait exclusion
         }
 
         private void SetName(string newName)
