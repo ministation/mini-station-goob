@@ -183,6 +183,7 @@ public sealed class CustomGhostSystem : EntitySystem
     /// <summary>
     /// Покупка темы за наигранное время: монеты не тратятся, нужно набрать достаточно
     /// часов ПОСЛЕ хэллоуин-апдейта (тот же счётчик, что у достижения за 10 часов).
+    /// Недобор не показывает ошибок - в карточке темы уже тикает таймер остатка.
     /// </summary>
     private async void BuyWithPlaytime(ICommonSession session, CustomGhostPrototype proto)
     {
@@ -201,13 +202,7 @@ public sealed class CustomGhostSystem : EntitySystem
         }
 
         var (balance, ownedThemes, selectedTheme, _) = await GetPlayerShopData(userId);
-        var error = owned
-            ? null
-            : Loc.GetString("ghost-shop-playtime-error",
-                ("hours", proto.PlaytimeHours),
-                ("current", (int) halloween.TotalHours));
-
-        SendShopState(session, balance, ownedThemes, selectedTheme, error);
+        SendShopState(session, balance, ownedThemes, selectedTheme);
     }
 
     /// <summary>
@@ -361,6 +356,7 @@ public sealed class CustomGhostSystem : EntitySystem
     private async void SendShopState(ICommonSession session, int balance, List<string>? ownedThemes = null, string? selectedTheme = null, string? error = null)
     {
         var colors = (await GetPlayerShopData(session.UserId)).colors;
+        var playtimeSeconds = _halloween.GetHalloweenPlaytime(session).TotalSeconds;
 
         var themes = _prototypeManager.EnumeratePrototypes<CustomGhostPrototype>()
             .Where(p => p.Price >= 0 && string.IsNullOrEmpty(p.Ckey))
@@ -387,7 +383,7 @@ public sealed class CustomGhostSystem : EntitySystem
             })
             .ToList();
 
-        RaiseNetworkEvent(new GhostShopStateEvent(balance, themes, colors ?? new List<GhostColorEntry>(), error), session);
+        RaiseNetworkEvent(new GhostShopStateEvent(balance, themes, colors ?? new List<GhostColorEntry>(), error, playtimeSeconds), session);
     }
 
     private async Task<(int balance, List<string> ownedThemes, string? selectedTheme, List<GhostColorEntry> colors)> GetPlayerShopData(NetUserId userId)
@@ -449,15 +445,18 @@ public sealed class CustomGhostSystem : EntitySystem
 
         var active = colorId != null && expireDay > CoinOocColorCache.Today &&
                      _prototypeManager.TryIndex<CoinOocColorPrototype>(colorId, out _);
+        var daysLeft = active ? Math.Max(0, expireDay - CoinOocColorCache.Today) : 0;
 
         return _prototypeManager.EnumeratePrototypes<CoinOocColorPrototype>()
             .OrderBy(p => p.Order)
             .Select(p => new GhostColorEntry(
                 p.ID,
+                p.Name,
                 p.Color,
                 p.Price,
                 active && ownedColors.Contains(p.ID),
-                active && colorId == p.ID))
+                active && colorId == p.ID,
+                active && ownedColors.Contains(p.ID) ? daysLeft : 0))
             .ToList();
     }
 }

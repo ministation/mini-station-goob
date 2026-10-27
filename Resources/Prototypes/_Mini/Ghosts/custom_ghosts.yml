@@ -7,7 +7,7 @@
 - type: customGhost
   id: GhostThemePumpkin
   name: "Тыквенный призрак"
-  description: "Дух Хэллоуина. Раз в 5 минут гасит одну лампочку поблизости."
+  description: "Дух Хэллоуина. Гасит лампочки."
   price: 0
   playtimeHours: 10
   order: 0

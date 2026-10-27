@@ -5,8 +5,8 @@ ghost-shop-balance-label = Balance:
 ghost-shop-btn-selected = Selected
 ghost-shop-btn-select = Select
 ghost-shop-btn-buy = Buy
-ghost-shop-price-playtime = {$hours} h this Halloween
-ghost-shop-playtime-error = Not enough playtime since the Halloween update: {$hours} h in rounds required, you have {$current} h.
+ghost-shop-btn-claim = Claim
+ghost-shop-playtime-left = Time left: {$time}
 
 # Pumpkin ghost
 pumpkin-ghost-light-broken = The pumpkin spirit smashes a lightbulb with a crash!

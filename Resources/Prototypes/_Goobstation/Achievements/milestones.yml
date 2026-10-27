@@ -42,7 +42,8 @@
   rarity: Epic
   condition: !type:HalloweenPlaytimeCondition
     count: 10
-  ghostReward: GhostThemePumpkin
+  # Тема призрака больше не выдаётся автоматически: в магазине призраков
+  # появляется кнопка "Собрать" (покупка за наигранное время).
 
 - type: achievement
   id: PlaytimeHundred

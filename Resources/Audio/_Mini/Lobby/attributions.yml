@@ -5,6 +5,11 @@
 # Myuu (thedarkpiano.com) - CC BY-NC 3.0.
 # Исторические записи классики - Public domain, оформлены как Custom.
 
+- files: ["spooky_skeletons.ogg"]
+  license: "Custom"
+  copyright: "\"Spooky, Scary Skeletons\" by Andrew Gold. Трек предоставлен владельцем сервера для некоммерческого использования в лобби Мини-станции; права на композицию и запись принадлежат правообладателям."
+  source: "NA"
+
 - files: ["danse_macabre.ogg"]
   license: "CC-BY-3.0"
   copyright: "Danse Macabre by Kevin MacLeod. Converted from MP3 to OGG."

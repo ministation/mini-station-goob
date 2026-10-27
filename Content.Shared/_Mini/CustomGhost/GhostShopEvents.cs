@@ -36,6 +36,9 @@ public sealed class GhostShopStateEvent : EntityEventArgs
     public List<GhostThemeEntry> Themes { get; }
     public List<GhostColorEntry> Colors { get; }
 
+    /// <summary>Наигранное время по хэллоуинскому трекеру, секунды - для таймера в карточках.</summary>
+    public double PlaytimeSeconds { get; }
+
     /// <summary>Непустой текст — ошибка последнего действия, показывается в окне магазина.</summary>
     public string? Error { get; }
 
@@ -46,28 +49,37 @@ public sealed class GhostShopStateEvent : EntityEventArgs
         Colors = new List<GhostColorEntry>();
     }
 
-    public GhostShopStateEvent(int balance, List<GhostThemeEntry> themes, List<GhostColorEntry> colors, string? error = null)
+    public GhostShopStateEvent(int balance, List<GhostThemeEntry> themes, List<GhostColorEntry> colors, string? error = null, double playtimeSeconds = 0)
     {
         Balance = balance;
         Themes = themes;
         Colors = colors;
         Error = error;
+        PlaytimeSeconds = playtimeSeconds;
     }
 }
 
 [Serializable, NetSerializable]
 public sealed class GhostColorEntry(
     string id,
+    string name,
     string colorHex,
     int price,
     bool owned,
-    bool active)
+    bool active,
+    int daysLeft)
 {
     public string Id { get; } = id;
+
+    /// <summary>Русское название цвета из прототипа, пусто если не задано.</summary>
+    public string Name { get; } = name;
     public string ColorHex { get; } = colorHex;
     public int Price { get; } = price;
     public bool Owned { get; } = owned;
     public bool Active { get; } = active;
+
+    /// <summary>Сколько дней осталось у подписки на цвет, 0 - если она не активна.</summary>
+    public int DaysLeft { get; } = daysLeft;
 }
 
 [Serializable, NetSerializable]

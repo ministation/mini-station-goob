@@ -1,48 +1,56 @@
 # Магазин за монетки: цвет ника в OOC/AHelp на 30 дней (спонсорские цвета всегда приоритетнее)
 - type: coinOocColor
   id: CoinOocMint
+  name: "Мятный"
   color: "#7fe3c1"
   price: 40
   order: 1
 
 - type: coinOocColor
   id: CoinOocSky
+  name: "Небесный"
   color: "#6ec6ff"
   price: 40
   order: 2
 
 - type: coinOocColor
   id: CoinOocLavender
+  name: "Лавандовый"
   color: "#c39bff"
   price: 40
   order: 3
 
 - type: coinOocColor
   id: CoinOocRose
+  name: "Розовый"
   color: "#ff9ecb"
   price: 40
   order: 4
 
 - type: coinOocColor
   id: CoinOocAmber
+  name: "Янтарный"
   color: "#ffd166"
   price: 40
   order: 5
 
 - type: coinOocColor
   id: CoinOocLime
+  name: "Лаймовый"
   color: "#b8e986"
   price: 40
   order: 6
 
 - type: coinOocColor
   id: CoinOocCoral
+  name: "Коралловый"
   color: "#ff8a7a"
   price: 40
   order: 7
 
 - type: coinOocColor
   id: CoinOocIce
+  name: "Ледяной"
   color: "#a8d8ff"
   price: 40
   order: 8

@@ -9,6 +9,7 @@ using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
+using Robust.Shared.Timing;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 
 namespace Content.Client._Mini.CustomGhost;
@@ -33,6 +34,13 @@ public sealed class GhostShopWindow : DefaultWindow
     private Label _statusLabel = null!;
     private BoxContainer _themeRow = null!;
     private BoxContainer _colorRow = null!;
+
+    /// <summary>Хэллоуинское наигранное время с сервера, секунды (синхронизируется каждым состоянием).</summary>
+    private double _playtimeSeconds;
+    private double _tickAccumulator;
+
+    /// <summary>Метка таймера в карточке темы за наигранное время -> сколько всего секунд нужно набрать.</summary>
+    private readonly List<(Label Label, double RequiredSeconds)> _timerLabels = new();
 
     public GhostShopWindow(GhostShopSystem system)
     {
@@ -153,6 +161,10 @@ public sealed class GhostShopWindow : DefaultWindow
         _statusLabel.Visible = !string.IsNullOrEmpty(state.Error);
         _statusLabel.Text = state.Error ?? "";
 
+        // Сервер прислал свежий счётчик - локальный тик таймера стартует от него.
+        _playtimeSeconds = state.PlaytimeSeconds;
+        _timerLabels.Clear();
+
         _themeRow.RemoveAllChildren();
         foreach (var entry in state.Themes)
         {
@@ -164,12 +176,40 @@ public sealed class GhostShopWindow : DefaultWindow
             _colorRow.AddChild(CreateColorCard(entry));
     }
 
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+
+        if (_timerLabels.Count == 0)
+            return;
+
+        // Таймер тикает раз в секунду; истина приходит с сервера при каждом обновлении окна.
+        _tickAccumulator += args.DeltaSeconds;
+        if (_tickAccumulator < 1)
+            return;
+
+        _tickAccumulator -= 1;
+        _playtimeSeconds = Math.Max(0, _playtimeSeconds - 1);
+
+        foreach (var (label, required) in _timerLabels)
+            label.Text = Loc.GetString("ghost-shop-playtime-left",
+                ("time", FormatPlaytimeLeft(required - _playtimeSeconds)));
+    }
+
+    private static string FormatPlaytimeLeft(double secondsLeft)
+    {
+        var ts = TimeSpan.FromSeconds(Math.Max(0, secondsLeft));
+        return ts.TotalHours >= 1
+            ? $"{(int) ts.TotalHours} ч {ts.Minutes:00} мин"
+            : $"{ts.Minutes} мин";
+    }
+
     private Control CreateColorCard(GhostColorEntry entry)
     {
         var panel = new PanelContainer
         {
-            MinSize = new Vector2(200, 120),
-            MaxSize = new Vector2(200, 120),
+            MinSize = new Vector2(200, 150),
+            MaxSize = new Vector2(200, 150),
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = entry.Active ? SelectedCardColor : CardBackgroundColor,
@@ -185,26 +225,50 @@ public sealed class GhostShopWindow : DefaultWindow
         var root = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 8
+            SeparationOverride = 6
         };
         panel.AddChild(root);
 
-        root.AddChild(new PanelContainer
+        if (!string.IsNullOrEmpty(entry.Name))
+        {
+            root.AddChild(new Label
+            {
+                Text = entry.Name,
+                StyleClasses = { "LabelHeading" },
+                Modulate = Color.White,
+                HorizontalAlignment = HAlignment.Center
+            });
+        }
+
+        // Живое превью: как ник будет выглядеть в OOC - текст прямо цветом темы.
+        var preview = new PanelContainer
         {
             MinSize = new Vector2(0, 44),
             PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = Color.TryFromHex(entry.ColorHex, out var parsed) ? parsed : Color.Gray,
-                BorderColor = Color.FromHex("#121824"),
-                BorderThickness = new Thickness(2)
+                BackgroundColor = Color.FromHex("#121824"),
+                BorderColor = Color.TryFromHex(entry.ColorHex, out var border) ? border : Color.Gray,
+                BorderThickness = new Thickness(2),
+                ContentMarginLeftOverride = 8,
+                ContentMarginRightOverride = 8
             }
+        };
+        preview.AddChild(new Label
+        {
+            Text = Loc.GetString("ghost-shop-color-preview"),
+            Modulate = Color.TryFromHex(entry.ColorHex, out var parsed) ? parsed : Color.Gray,
+            HorizontalAlignment = HAlignment.Center,
+            VerticalAlignment = VAlignment.Center
         });
+        root.AddChild(preview);
+
+        var status = entry.Active
+            ? Loc.GetString("ghost-shop-color-active-days", ("days", entry.DaysLeft))
+            : entry.Owned ? Loc.GetString("ghost-shop-color-owned") : Loc.GetString("ghost-shop-color-days");
 
         root.AddChild(new Label
         {
-            Text = entry.Active
-                ? Loc.GetString("ghost-shop-color-active")
-                : entry.Owned ? Loc.GetString("ghost-shop-color-owned") : Loc.GetString("ghost-shop-color-days"),
+            Text = status,
             Modulate = entry.Active ? SelectedBorderColor : SubtitleColor,
             HorizontalAlignment = HAlignment.Center
         });
@@ -496,14 +560,40 @@ public sealed class GhostShopWindow : DefaultWindow
 
             if (entry.PlaytimeHours > 0)
             {
-                // Цена такой темы - наигранное время, а не монеты.
-                buttonContent.AddChild(new Label
+                // Тема за наигранное время: пока часы не набраны - тикающий таймер остатка,
+                // после набора - кнопка "Собрать". Монеты не участвуют.
+                var requiredSeconds = entry.PlaytimeHours * 3600.0;
+                var remaining = requiredSeconds - _playtimeSeconds;
+
+                if (remaining > 0)
                 {
-                    Text = Loc.GetString("ghost-shop-price-playtime", ("hours", entry.PlaytimeHours)),
-                    Modulate = Color.White,
-                    StyleClasses = { "LabelHeading" },
-                    VerticalAlignment = VAlignment.Center
-                });
+                    actionButton.Disabled = true;
+                    var timerLabel = new Label
+                    {
+                        Text = Loc.GetString("ghost-shop-playtime-left",
+                            ("time", FormatPlaytimeLeft(remaining))),
+                        Modulate = Color.White,
+                        StyleClasses = { "LabelHeading" },
+                        VerticalAlignment = VAlignment.Center
+                    };
+                    _timerLabels.Add((timerLabel, requiredSeconds));
+                    buttonContent.AddChild(timerLabel);
+                }
+                else
+                {
+                    actionButton.OnPressed += _ =>
+                    {
+                        actionButton.Disabled = true;
+                        _system.RequestBuy(entry.Id);
+                    };
+                    buttonContent.AddChild(new Label
+                    {
+                        Text = Loc.GetString("ghost-shop-btn-claim"),
+                        Modulate = SelectedBorderColor,
+                        StyleClasses = { "LabelHeading" },
+                        VerticalAlignment = VAlignment.Center
+                    });
+                }
             }
             else
             {

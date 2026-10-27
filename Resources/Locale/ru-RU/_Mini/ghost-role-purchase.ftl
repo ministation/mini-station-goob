@@ -33,10 +33,12 @@ ghost-role-purchase-milestone-30days = 30 дней стрика
 
 ghost-shop-color-header = Цвет ника в OOC (30 дней)
 
-ghost-shop-color-days = Цвет ника на 30 дней
+ghost-shop-color-days = На 30 дней
 
 ghost-shop-color-active = Применён
 
 ghost-shop-color-owned = Куплено
 
 ghost-shop-color-select = Выбрать
+ghost-shop-color-active-days = Применён · осталось {$days} дн.
+ghost-shop-color-preview = Ник: всем привет!
