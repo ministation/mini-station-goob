@@ -1,3 +1,6 @@
+gangwars-title = Gang Wars
+gangwars-description = Two to four gang leaders fight for control of the station. Claim territory, earn points, and crush every rival gang.
+
 roles-antag-gang-leader-name = Gang Leader
 roles-antag-gang-leader-objective = Prove you still have what it takes. Claim territory, rack up points, and crush every rival gang standing in your way.
 

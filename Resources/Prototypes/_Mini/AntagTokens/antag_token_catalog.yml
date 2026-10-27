@@ -139,6 +139,18 @@
       requiresInRound: true
       minimumTimeFromRoundStart: 3000
 
+    - id: gang_leader
+      nameLocKey: antag-store-role-gang-leader-name
+      descriptionLocKey: antag-store-role-gang-leader-description
+      cost: 8
+      iconPath: /Textures/_Mini/Interface/Antags/gang_leader.png
+      mode: LobbyDeposit
+      antagId: GangLeader
+      gameRuleId: Gangwars
+      tagLocKey: antag-token-window-tag-queue
+      minimumPlayers: 20
+      requiresPreRoundLobby: true
+
     - id: ninja
       nameLocKey: antag-store-role-ninja-name
       descriptionLocKey: antag-store-role-ninja-description
