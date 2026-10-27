@@ -9,7 +9,6 @@
   equipment:
     jumpsuit: ClothingUniformJumpsuitSalvageSpecialist
     outerClothing: ClothingOuterHardsuitSalvage
-    head: ClothingHeadHelmetHardsuitSalvage
     shoes: ClothingShoesBootsSalvage
     belt: OreBag
     back: ClothingBackpackDuffelSalvage
