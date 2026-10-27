@@ -71,6 +71,9 @@ antag-store-role-yao-description = In lobby on the Nukeops preset — queue for 
 antag-store-role-headrev-name = Head Revolutionary
 antag-store-role-headrev-description = Roundstart deposit for Head Revolutionary. Revolution mode only.
 
+antag-store-role-gang-leader-name = Gang Leader
+antag-store-role-gang-leader-description = Roundstart deposit for a gang leader. Queued in the lobby; starts the Gang Wars mode if it is not running yet.
+
 antag-store-role-cosmic-cult-name = Cosmic Cultist
 antag-store-role-cosmic-cult-description = Roundstart deposit for Cosmic Cultist. Cosmic cult mode only.
 

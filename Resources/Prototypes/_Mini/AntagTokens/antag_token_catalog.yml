@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # SPDX-FileCopyrightText: 2026 Lermal
 # Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 #
@@ -138,6 +142,18 @@
       minimumPlayers: 20
       requiresInRound: true
       minimumTimeFromRoundStart: 3000
+
+    - id: gang_leader
+      nameLocKey: antag-store-role-gang-leader-name
+      descriptionLocKey: antag-store-role-gang-leader-description
+      cost: 8
+      iconPath: /Textures/_Mini/Interface/Antags/gang_leader.png
+      mode: LobbyDeposit
+      antagId: GangLeader
+      gameRuleId: Gangwars
+      tagLocKey: antag-token-window-tag-queue
+      minimumPlayers: 20
+      requiresPreRoundLobby: true
 
     - id: ninja
       nameLocKey: antag-store-role-ninja-name

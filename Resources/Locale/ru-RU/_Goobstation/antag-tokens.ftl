@@ -71,6 +71,9 @@ antag-store-role-yao-description = В лобби на пресете Nukeops —
 antag-store-role-headrev-name = Глава революции
 antag-store-role-headrev-description = Очередь на главу восстания. Выбирается заранее в лобби. Только режим революции.
 
+antag-store-role-gang-leader-name = Лидер банды
+antag-store-role-gang-leader-description = Очередь на лидера банды. Выбирается заранее в лобби; запускает режим войны банд, если его ещё нет.
+
 antag-store-role-cosmic-cult-name = Космо-культист
 antag-store-role-cosmic-cult-description = Очередь на космического культиста. Выбирается заранее в лобби. Только космокульт.
 

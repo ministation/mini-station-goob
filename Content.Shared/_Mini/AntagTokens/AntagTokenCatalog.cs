@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -33,6 +37,7 @@ public static class AntagTokenCatalog
     public const string RevenantRole = "revenant";
     public const string YaoRole = "yao";
     public const string HeadRevRole = "headrev";
+    public const string GangLeaderRole = "gang_leader";
     public const string CosmicCultRole = "cosmic_cult";
     public const string DevilRole = "devil";
     public const string BlobRole = "blob";

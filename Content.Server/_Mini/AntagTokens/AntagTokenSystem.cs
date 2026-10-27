@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -132,6 +136,7 @@ public sealed class AntagTokenSystem : EntitySystem
         "NukeLing",
         "Honkops",
         "TypanStationWar",
+        "Gangwars",
     };
 
     private static void EvaluateFreePurchaseFlags(
@@ -1977,8 +1982,12 @@ public sealed class AntagTokenSystem : EntitySystem
             role.Mode is AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.GhostRule)
         {
             // Roles that join an existing preset rule (e.g. Nukeops on Nukeops preset) stay available.
-            var allowedOnBlockedPreset = !string.IsNullOrEmpty(role.RequiresPresetGameRuleId) &&
-                                        !IsPresetMissingRequiredGameRule(role.RequiresPresetGameRuleId);
+            // Мини: в войне банд остаётся только лидер банды, остальные антаги отключены.
+            var gangLeaderInGangwars = role.Id == AntagTokenCatalog.GangLeaderRole &&
+                                       !IsPresetMissingRequiredGameRule("Gangwars");
+            var allowedOnBlockedPreset = gangLeaderInGangwars ||
+                                        (!string.IsNullOrEmpty(role.RequiresPresetGameRuleId) &&
+                                         !IsPresetMissingRequiredGameRule(role.RequiresPresetGameRuleId));
             if (!allowedOnBlockedPreset)
             {
                 statusLocKey = "antag-store-status-unavailable";
