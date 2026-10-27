@@ -905,6 +905,31 @@ public sealed class MiniCCVars
         CVarDef.Create("neuroahelp.staff_mute_minutes", 30, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
+    /// Whether the assistant may search build content (prototypes, ru locale, guidebook, server
+    /// rules) with the search_build action, so it verifies mechanics instead of inventing them.
+    /// </summary>
+    public static readonly CVarDef<bool> NeuroAHelpBuildSearch =
+        CVarDef.Create("neuroahelp.build_search", true, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Whether the assistant may fetch whitelisted web pages (wiki) via the read_url action.</summary>
+    public static readonly CVarDef<bool> NeuroAHelpWebEnabled =
+        CVarDef.Create("neuroahelp.web_enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Comma-separated domain allowlist for read_url (example: "wiki.example.com,docs.example.net").
+    /// The host of the effective wiki link is always allowed. Empty list = only the wiki host.
+    /// </summary>
+    public static readonly CVarDef<string> NeuroAHelpWebDomains =
+        CVarDef.Create("neuroahelp.web_domains", "", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Wiki link the assistant gives to players. Empty falls back to infolinks.wiki. Set this when
+    /// infolinks.wiki points somewhere else than the player-facing wiki.
+    /// </summary>
+    public static readonly CVarDef<string> NeuroAHelpWikiUrl =
+        CVarDef.Create("neuroahelp.wiki_url", "", CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
     ///     Награды «за время»: ежедневная награда со стриком, билеты за наигранное время и монеты
     ///     за онлайн. Включены по умолчанию; cvar остаётся аварийным выключателем на случай, если
     ///     прогрессию нужно временно приостановить. Еженедельные квесты и достижения имеют свою

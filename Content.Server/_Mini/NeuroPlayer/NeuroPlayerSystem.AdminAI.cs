@@ -79,6 +79,7 @@ public sealed partial class NeuroPlayerSystem
         public int? Hours { get; set; }
         public string[]? Types { get; set; }
         public string? Search { get; set; }
+        public string? Url { get; set; }
         public string? Message { get; set; }
         public string? Reason { get; set; }
     }
@@ -303,6 +304,12 @@ public sealed partial class NeuroPlayerSystem
             case "list_players":
                 AddAdminJournal(ticket, name, await ListAdminPlayersAsync());
                 return false;
+            case "search_build":
+                AddAdminJournal(ticket, name, await SearchBuildForAdminAsync(action));
+                return false;
+            case "read_url":
+                AddAdminJournal(ticket, name, await ReadUrlForAdminAsync(action));
+                return false;
             case "read_logs":
                 AddAdminJournal(ticket, name, await ReadAdminLogsAsync(ticket, action));
                 return false;
@@ -337,7 +344,7 @@ public sealed partial class NeuroPlayerSystem
                 BroadcastAHelpStatus(ticket.UserId, NeuroAHelpState.Done, "тикет закрыт без ответа");
                 return true;
             default:
-                AddAdminJournal(ticket, name, $"Неизвестное действие '{name}'. Доступные действия: list_players, read_logs, get_notes, warn, ban, escalate, reply, done.");
+                AddAdminJournal(ticket, name, $"Неизвестное действие '{name}'. Доступные действия: list_players, search_build, read_url, read_logs, get_notes, warn, ban, escalate, reply, done.");
                 return false;
         }
     }
@@ -348,6 +355,8 @@ public sealed partial class NeuroPlayerSystem
         return action switch
         {
             "list_players" => "смотрю, кто в сети",
+            "search_build" => "проверяю по сборке",
+            "read_url" => "читаю вики",
             "read_logs" => "читаю логи раунда",
             "get_notes" => "читаю заметки и баны",
             "warn" => "выдаю предупреждение",
@@ -914,7 +923,7 @@ public sealed partial class NeuroPlayerSystem
     /// </summary>
     private string BuildAdminSystemPrompt()
     {
-        var wiki = _cfg.GetCVar(CCVars.InfoLinksWiki);
+        var wiki = EffectiveWikiUrl;
         var discord = _cfg.GetCVar(CCVars.InfoLinksDiscord);
         var maxHours = Math.Max(1, _ahelpMaxBanHours);
 
@@ -944,6 +953,10 @@ public sealed partial class NeuroPlayerSystem
         prompt.AppendLine("Каждый твой ответ - РОВНО ОДИН JSON-объект, без markdown и без текста вокруг. В одном ответе только одно действие.");
         prompt.AppendLine("Действия и поля:");
         prompt.AppendLine("- {\"action\":\"list_players\"}: список онлайн игроков (ckey, имя персонажа, профессия).");
+        if (_ahelpBuildSearch)
+            prompt.AppendLine("- {\"action\":\"search_build\",\"query\":\"хлеб\"}: поиск по фактам этой сборки (прототипы, русские названия, гайдбук, правила сервера). Ищи по точному названию предмета, профессии, механики или словам из правила, по-русски или по-английски. Вернет файл и строки из сборки.");
+        if (_ahelpWebEnabled)
+            prompt.AppendLine("- {\"action\":\"read_url\",\"url\":\"https://...\"}: прочитать страницу вики как текст. Разрешены только домены вики и разрешенные сервером домены. Для MediaWiki-вики добавляй ?action=raw к адресу страницы, так чище.");
         prompt.AppendLine("- {\"action\":\"read_logs\",\"ckey\":\"ivan\",\"minutes\":10,\"types\":[\"Chat\",\"Damaged\"],\"search\":\"убили\"}: логи текущего раунда по игроку. minutes 1..60 (по умолчанию 10). types можно не указывать, тогда берутся основные боевые и чат-логи. search ищет по тексту лога.");
         prompt.AppendLine("- {\"action\":\"get_notes\",\"ckey\":\"ivan\"}: заметки и баны игрока.");
         prompt.AppendLine("- {\"action\":\"warn\",\"ckey\":\"ivan\",\"reason\":\"...\"}: предупреждение игроку и заметка. Не чаще одного раза в 10 минут на игрока.");
@@ -956,12 +969,19 @@ public sealed partial class NeuroPlayerSystem
         prompt.AppendLine("Не делай больше 3-4 read_logs подряд и не повторяй одно и то же действие без новой информации.");
         prompt.AppendLine("Типы логов: Chat, AdminMessage, Damaged, MeleeHit, BulletHit, AttackUnarmedClick, AttackUnarmedWide, Throw, Pickup, Drop, DisarmedAction, InteractHand, Mind.");
         prompt.AppendLine("Если игрок спрашивает про механику, отвечай по фактам сборки и не выдумывай механик.");
+        if (_ahelpBuildSearch)
+        {
+            prompt.AppendLine("Перед ответом про предмет, профессию, рецепт или режим проверь себя через search_build: сначала ищи русское название, при неудаче - английское. Нашел факт - отвечай по нему. Ничего не нашел - честно скажи, что не уверен, и эскалируй.");
+            prompt.AppendLine("Про правила сервера тоже проверяй search_build: текст правил лежит в сборке и ищется по словам.");
+        }
+
+        prompt.AppendLine("Ссылки игроку давай ТОЛЬКО те, что перечислены в этом промпте, или полученные через read_url. Никогда не придумывай и не изменяй адреса: неверная ссылка хуже отсутствия.");
 
         if (!string.IsNullOrWhiteSpace(wiki) || !string.IsNullOrWhiteSpace(discord))
         {
-            prompt.Append("Полезные ссылки для игроков:");
+            prompt.Append("Полезные ссылки для игроков (единственные разрешенные адреса):");
             if (!string.IsNullOrWhiteSpace(wiki))
-                prompt.Append($" вики {wiki};");
+                prompt.Append($" вики {wiki} (проверить содержание страницы можно через read_url);");
             if (!string.IsNullOrWhiteSpace(discord))
                 prompt.Append($" Discord {discord};");
             prompt.AppendLine(" гайдбук в игре открывается по Numpad 0.");
