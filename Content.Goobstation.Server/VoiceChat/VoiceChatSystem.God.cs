@@ -253,6 +253,9 @@ public sealed partial class VoiceChatSystem
                 SendGodCue(god, recipient, now);
         }
 
+        // Mini: статус сессии отстаёт от состояния канала - отсекаем мёртвые каналы перед отправкой,
+        // иначе ERRO "Tried to send message ... to disconnected channel".
+        god.Channels.RemoveAll(c => !c.IsConnected);
         if (god.Channels.Count == 0)
             return true;
 

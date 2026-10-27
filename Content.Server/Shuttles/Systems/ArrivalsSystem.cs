@@ -575,6 +575,12 @@ public sealed class ArrivalsSystem : EntitySystem
                     continue;
                 }
 
+                // Mini: паром уже в гиперпрыжке или стыкуется. Очередная нога подождёт до
+                // завершения рейса, иначе FTLToDock до передачи планов логирует
+                // "Tried queuing NT-Arrivals which already has FTLComponent" на каждом тике.
+                if (HasComp<FTLComponent>(uid))
+                    continue;
+
                 var tripTime = _shuttles.DefaultTravelTime + _shuttles.DefaultStartupTime;
 
                 // Go back to arrivals source

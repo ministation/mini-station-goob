@@ -242,6 +242,12 @@ public sealed class VoiceRadioMixer(string channel, IServerNetManager net, Func<
             if (recipients.Count == 0)
                 continue;
 
+            // Mini: цели собираются при Push, отправка идет позже - за это время часть
+            // каналов отключается, и каждое такое попадание дает WARN в лог.
+            recipients.RemoveAll(c => !c.IsConnected);
+            if (recipients.Count == 0)
+                continue;
+
             net.ServerSendToMany(new MsgVoiceFrame
             {
                 Source = target.Source,
