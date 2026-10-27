@@ -41,3 +41,7 @@ admin-help-rating-chat = {$player} поставил {$stars} { $stars ->
 } администратору {$admin}
 
 bwoink-admin-title = Помощь администрации
+
+# Мини: кольцо-индикатор нейропомощника в окне ахелпа
+neuro-ahelp-assistant-name = Нейроадминистратор
+neuro-ahelp-status-label = {$name}: [color={$color}]{$glyph} {$detail}[/color]

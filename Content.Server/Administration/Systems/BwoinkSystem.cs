@@ -36,6 +36,7 @@ using Content.Shared.Database;
 using Robust.Shared.Prototypes;
 using Content.Shared._Amour.Stickers;
 using Content.Server._Amour.Stickers;
+using Content.Server._Mini.NeuroPlayer;
 using Content.Shared._Mini.CoinShop;
 
 namespace Content.Server.Administration.Systems
@@ -717,6 +718,14 @@ namespace Content.Server.Administration.Systems
             if (!authorized)
             {
                 // Unauthorized bwoink (log?)
+                return;
+            }
+
+            // Мини: "/ai ..." от админа - команда нейропомощнику. Она не должна дойти ни до игрока,
+            // ни до Discord-вебхука, поэтому перехватываем до релея и отдаем в NeuroPlayerSystem.
+            if (senderAHelpAdmin && NeuroAHelpCommands.IsCommand(message.Text))
+            {
+                RaiseLocalEvent(new AHelpAdminCommandEvent(senderSession, message.Text, message.UserId));
                 return;
             }
 

@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:amour="clr-namespace:Content.Client._Amour.Stickers.UI"
     xmlns:goobcontrols="clr-namespace:Content.Goobstation.UIKit.UserInterface.Controls;assembly=Content.Goobstation.UIKit"
+    xmlns:neuro="clr-namespace:Content.Client._Mini.NeuroAHelp"
     Orientation="Vertical"
     HorizontalExpand="True"
     VerticalExpand="True"
@@ -25,6 +26,11 @@ SPDX-License-Identifier: MIT
             SeparationOverride="4"
             HorizontalExpand="True"
             VerticalExpand="True">
+            <!-- Мини: кольцо-индикатор нейропомощника с контекстом его работы в тикете. -->
+            <BoxContainer Name="NeuroStatusHost" Orientation="Horizontal" Visible="False" Margin="8 8 8 0" SeparationOverride="6">
+                <neuro:NeuroRingControl Name="NeuroRing" />
+                <RichTextLabel Name="NeuroStatusLabel" VerticalAlignment="Center" HorizontalExpand="True" />
+            </BoxContainer>
             <goobcontrols:CustomOutputPanel
                 Name="TextOutput"
                 StyleClasses="StyleNano.StyleClassChatOutput"

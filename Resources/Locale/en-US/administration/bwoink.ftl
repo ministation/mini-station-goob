@@ -66,3 +66,7 @@ admin-help-rating-chat = {$player} rated {$admin} {$stars} { $stars ->
     [1] star
    *[other] stars
 }
+
+# Mini: neuro assistant ring indicator in the ahelp window
+neuro-ahelp-assistant-name = Neuro Administrator
+neuro-ahelp-status-label = {$name}: [color={$color}]{$glyph} {$detail}[/color]
