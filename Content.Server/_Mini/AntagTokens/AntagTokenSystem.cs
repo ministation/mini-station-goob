@@ -3020,8 +3020,8 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         if (entityProtoId.Contains("Token", StringComparison.Ordinal))
             return true;
 
-        return listing != null
-            && listing.GameRuleId.StartsWith("Token", StringComparison.Ordinal);
+        return listing is not null
+            && listing.GameRuleId?.StartsWith("Token", StringComparison.Ordinal) == true;
     }
 
     /// <summary>
