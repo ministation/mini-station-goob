@@ -448,6 +448,8 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
 
         // Admin-help assistant (partial file): answers ahelp while no admins are online.
         InitializeAHelp();
+        // Build search + wiki reader for the assistant (partial file).
+        InitializeBuildSearch();
     }
 
     public override void Shutdown()
