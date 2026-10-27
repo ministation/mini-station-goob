@@ -1,3 +1,4 @@
 - files: ["pumpkin_screech.ogg"]
   license: "CC-BY-SA-3.0"
   copyright: "Procedurally generated for Mini Station (Halloween 2026, pumpkin ghost light-break ability)."
+  source: "https://github.com/ministation/mini-station-goob"
