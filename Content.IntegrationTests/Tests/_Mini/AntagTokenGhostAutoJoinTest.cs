@@ -7,7 +7,9 @@
 using System.Linq;
 using System.Numerics;
 using Content.IntegrationTests.Pair;
+using Content.Server.Ghost;
 using Content.Server.Mind;
+using Content.Shared.Ghost;
 using Content.Server._Mini.AntagTokens;
 using NUnit.Framework;
 using Robust.Server.GameObjects;
@@ -61,6 +63,52 @@ public sealed class AntagTokenGhostAutoJoinTest
             Is.EqualTo(RevenantProto),
             "player must control the purchased revenant entity");
         Assert.That(sEntMan.EntityExists(revenant), Is.True, "delivered revenant must stay alive");
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Основной сценарий с прода: игрок ушёл призраком из тела (mind.VisitingEntity),
+    /// затем купил роль. Auto-join должен доставить его в купленную сущность,
+    /// а не вернуть в тело с потерей монеток.
+    /// </summary>
+    [Test]
+    public async Task GhostedFromBodyPlayerReceivesRevenant()
+    {
+        var (pair, server, session) = await Setup("MobHuman");
+        var sEntMan = server.ResolveDependency<IEntityManager>();
+        var tokens = sEntMan.System<AntagTokenSystem>();
+        var ghosts = sEntMan.EntitySysManager.GetEntitySystem<GhostSystem>();
+
+        await server.WaitPost(() =>
+        {
+            var mindSys = sEntMan.System<MindSystem>();
+            Assert.That(mindSys.TryGetMind(session, out var mindId, out var mindComp), Is.True,
+                "player must have a mind in the body");
+            Assert.That(ghosts.OnGhostAttempt(mindId, true, mind: mindComp), Is.True,
+                "ghosting must succeed");
+        });
+        await server.WaitRunTicks(5);
+        Assert.That(sEntMan.HasComponent<GhostComponent>(session.AttachedEntity), Is.True,
+            "player must be a ghost after OnGhostAttempt");
+
+        EntityUid? revenant = null;
+        await server.WaitPost(() =>
+        {
+            tokens.TestSetupPendingGhostAuto(session, RevenantRoleId, 0);
+            revenant = SpawnOnTestMap(server, RevenantProto);
+        });
+        await server.WaitRunTicks(5);
+
+        var state = tokens.TestGetState(session.UserId);
+        Assert.That(state, Is.Not.Null, "token state must be loaded");
+        Assert.That(state!.PendingGhostAutoRoleId, Is.Null, "pending must be cleared after delivery");
+        Assert.That(state.Balance, Is.EqualTo(0), "balance must not change on successful delivery");
+        Assert.That(session.AttachedEntity, Is.Not.Null, "player must not stay in the old body");
+        Assert.That(
+            sEntMan.GetComponent<MetaDataComponent>(session.AttachedEntity!.Value).EntityPrototype?.ID,
+            Is.EqualTo(RevenantProto),
+            "player must control the purchased revenant entity");
 
         await pair.CleanReturnAsync();
     }

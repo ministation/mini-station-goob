@@ -646,6 +646,11 @@ public sealed class GhostRoleSystem : EntitySystem
         if (!_ghostRoles.TryGetValue(identifier, out var role))
             return false;
 
+        // Mini: takeover только для текущего призрака. Иначе выдача вытирает разум
+        // и выбрасывает игрока из тела, а роль сгорает - покупатель теряет монетки.
+        if (!IsSessionGhostRoleTaker(player))
+            return false;
+
         var ev = new TakeGhostRoleEvent(player);
         RaiseLocalEvent(role, ref ev);
 
@@ -667,6 +672,19 @@ public sealed class GhostRoleSystem : EntitySystem
         // CorvaxGoob-GhostBar-End
 
         return true;
+    }
+
+    /// <summary>
+    /// Mini: сейчас ли сессия может забрать ghost-роль: attached-сущность -
+    /// призрак с CanTakeGhostRoles, либо сущность ghost-бара.
+    /// </summary>
+    private bool IsSessionGhostRoleTaker(ICommonSession player)
+    {
+        if (player.AttachedEntity is not { Valid: true } attached)
+            return false;
+
+        return TryComp(attached, out GhostComponent? ghost) && ghost.CanTakeGhostRoles
+            || HasComp<GhostBarPlayerComponent>(attached);
     }
 
     public void Follow(ICommonSession player, uint identifier)
