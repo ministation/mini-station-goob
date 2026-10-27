@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 
 using Content.Server.Chat.Systems;
 using Content.Server.Humanoid.Components;
@@ -24,6 +28,7 @@ using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Robust.Shared.Timing;
 using Content.Shared.Pinpointer;
+using Content.Server._Mini.Pinpointer.Systems;
 using Content.Server._Mini.ERT.Components;
 using Content.Server.Station.Systems;
 using Content.Server.GameTicking;
@@ -62,6 +67,7 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly RandomHumanoidSystem _randomHumanoid = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
+    [Dependency] private readonly ErtShuttlePinpointerSystem _ertPinpointer = default!; // Mini: переключение цели пинпоинтера ОБР
 
     private static readonly HashSet<string> IpcSpeciesBlacklist = ["IPC"];
 
@@ -273,14 +279,19 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
         }
 
         // Устанавливаем pinpointer target для всех пинпоинтеров на карте ERT
-        if (ent.Comp.PinpointerTarget != null && EntityManager.EntityExists(ent.Comp.PinpointerTarget.Value))
+        // и даём им маркер шаттла ОБР: игрок сам переключает цель (бомба <-> шаттл).
+        var shuttleMarker = spawnPoints.Count > 0 ? spawnPoints[0] : (EntityUid?)null;
+        var pinQuery = EntityQueryEnumerator<PinpointerComponent, TransformComponent>();
+        while (pinQuery.MoveNext(out var pinUid, out var pin, out var pinXform))
         {
-            var pinQuery = EntityQueryEnumerator<PinpointerComponent, TransformComponent>();
-            while (pinQuery.MoveNext(out var pinUid, out var pin, out var pinXform))
-            {
-                if (pinXform.MapID == args.Map)
-                    _pinpointerSystem.SetTarget(pinUid, ent.Comp.PinpointerTarget.Value, pin);
-            }
+            if (pinXform.MapID != args.Map)
+                continue;
+
+            if (shuttleMarker != null)
+                _ertPinpointer.AttachShuttleTarget(pinUid, shuttleMarker.Value, ent.Comp.PinpointerTarget);
+
+            if (ent.Comp.PinpointerTarget != null && EntityManager.EntityExists(ent.Comp.PinpointerTarget.Value))
+                _pinpointerSystem.SetTarget(pinUid, ent.Comp.PinpointerTarget.Value, pin);
         }
 
         var queryStaff = EntityQueryEnumerator<ErtStaffComponent, TransformComponent>();
@@ -479,12 +490,12 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
     }
 
     /// <summary>
-    /// Spawns an ERT/CBURN squad with at most one IPC. One member per spawn point when possible;
+    /// Spawns an ERT/CBURN squad without IPCs (КПБ): штатная медицина ОБР их не поднимает,
+    /// поэтому в отряде они только мешают. One member per spawn point when possible;
     /// cryo capsules (<see cref="ErtSpawnPointComponent"/> on a sleeper) receive the body in storage.
     /// </summary>
     private void SpawnErtSquad(List<string> spawnProtos, List<EntityUid> spawnPoints)
     {
-        var ipcUsed = false;
         var available = new List<EntityUid>(spawnPoints);
         EntityCoordinates? fallbackCoords = spawnPoints.Count > 0
             ? Transform(spawnPoints[0]).Coordinates
@@ -513,18 +524,11 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
             else
             {
                 var name = Loc.GetString(entProto.Name);
-                var extraBlacklist = ipcUsed ? IpcSpeciesBlacklist : null;
                 spawned = _randomHumanoid.SpawnRandomHumanoid(
                     spawner.SettingsPrototypeId,
                     coords,
                     name,
-                    extraBlacklist);
-
-                if (TryComp(spawned, out HumanoidAppearanceComponent? appearance) &&
-                    appearance.Species == "IPC")
-                {
-                    ipcUsed = true;
-                }
+                    IpcSpeciesBlacklist);
             }
 
             if (spawnPoint is { } insertPoint)
