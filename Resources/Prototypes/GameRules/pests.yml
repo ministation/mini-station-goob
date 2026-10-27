@@ -29,6 +29,7 @@
     earliestStart: 15
     weight: 6
     duration: 30 # DeltaV: was 50, used as a delay now
+    maxOccurrences: 2 # Mini: не больше двух волн за раунд, иначе за 1,5-2 часа мыши заполняют станцию
     chaos: # Goobstation
       Mess: 10 # there's 15 morbillion mice usually and they're easy to kill
     eventType: Neutral # Goobstation
@@ -36,6 +37,9 @@
   - type: GameRule
     chaosScore: 20
   - type: VentCrittersRule
+    min: 1 # Mini: меньше мышей за волну (было 2)
+    max: 2 # Mini: меньше мышей за волну (было 3)
+    playerRatio: 30 # Mini: и с меньшим шагом по онлайну (было 25)
     table: !type:GroupSelector # DeltaV: EntityTable instead of spawn entries
       children:
       - id: SpawnMobMouse
@@ -55,6 +59,7 @@
     weight: 6
     duration: 30 # DeltaV: was 50, used as a delay now
     minimumPlayers: 30 # Hopefully this is enough for the Rat King's potential Army (it was not, raised from 15 -> 30)
+    maxOccurrences: 1 # Mini: армия крысиного короля тоже не бесконечная
     chaos: # Goobstation
       Mess: 10
       Hostile: 1 # low chance to spawn rat king
@@ -63,6 +68,9 @@
   - type: GameRule
     chaosScore: 25
   - type: VentCrittersRule
+    min: 2 # Mini: меньше мышей за волну (было 2, но шаг по онлайну меньше)
+    max: 3 # Mini
+    playerRatio: 40 # Mini: было 25
     table: !type:GroupSelector # DeltaV: EntityTable instead of spawn entries
       children:
       # Goobstation
@@ -107,6 +115,7 @@
       path: /Audio/Announcements/attention.ogg
     weight: 6
     duration: 30 # DeltaV: was 50, used as a delay now
+    maxOccurrences: 2 # Mini: не больше двух волн за раунд, иначе тараканы заполняют станцию
     chaos: # Goobstation
       Mess: 15
       Hostile: 2
@@ -115,6 +124,9 @@
   - type: GameRule
     chaosScore: 20
   - type: VentCrittersRule
+    min: 1 # Mini: меньше тараканов за волну (было 2)
+    max: 2 # Mini: меньше тараканов за волну (было 3)
+    playerRatio: 30 # Mini: и с меньшим шагом по онлайну (было 25)
     table: !type:GroupSelector # DeltaV: EntityTable instead of spawn entries
       children:
       - id: MobCockroach
