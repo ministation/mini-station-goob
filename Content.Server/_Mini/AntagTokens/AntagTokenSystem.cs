@@ -1681,8 +1681,6 @@ public sealed class AntagTokenSystem : EntitySystem
 
         if (TryResolveGameRuleForTokenRole(role, out ruleEntity))
         {
-            NeutralizeTokenRuleSelection(role, ruleEntity);
-
             if (!_gameTicker.IsGameRuleActive(ruleEntity) && !_gameTicker.StartGameRule(ruleEntity))
             {
                 error = Loc.GetString("antag-tokens-error-event-start-failed");
@@ -1699,8 +1697,6 @@ public sealed class AntagTokenSystem : EntitySystem
         }
 
         ruleEntity = _gameTicker.AddGameRule(role.GameRuleId);
-        NeutralizeTokenRuleSelection(role, ruleEntity);
-
         if (!_gameTicker.StartGameRule(ruleEntity))
         {
             error = Loc.GetString("antag-tokens-error-event-start-failed");
@@ -1708,28 +1704,6 @@ public sealed class AntagTokenSystem : EntitySystem
         }
 
         return true;
-    }
-
-    /// <summary>
-    /// Мини: роль из магазина на станции добавляет только покупателя, без полного состава правила
-    /// и без антагов, которых правило добирает на позднем входе.
-    /// </summary>
-    private void NeutralizeTokenRuleSelection(AntagRoleDefinition role, EntityUid ruleEntity)
-    {
-        // Мини: у токена Агента намеренно оставлено прежнее поведение с полным составом правила.
-        if (role.Id == AntagTokenCatalog.AgentRole ||
-            role.IgnoresStationJob ||
-            !TryComp<AntagSelectionComponent>(ruleEntity, out var selection))
-            return;
-
-        selection.AssignmentComplete = true;
-
-        for (var i = 0; i < selection.Definitions.Count; i++)
-        {
-            var definition = selection.Definitions[i];
-            definition.LateJoinAdditional = false;
-            selection.Definitions[i] = definition;
-        }
     }
 
     private bool WasAntagAssignmentSuccessful(ICommonSession session, Entity<AntagSelectionComponent> rule)
