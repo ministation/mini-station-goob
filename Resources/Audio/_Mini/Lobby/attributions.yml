@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Хэллоуинская ротация лобби (PR Halloween): 10 треков Kevin MacLeod.
+# Все файлы взяты с Wikimedia Commons (зеркало проекта All The Music), лицензия CC BY 3.0.
+
+- files:
+  - "danse_macabre.ogg"
+  license: "CC-BY-3.0"
+  copyright: "Danse Macabre by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Danse_Macabre_(ISRC_USUAN1100546).mp3"
+
+- files:
+  - "hall_of_the_mountain_king.ogg"
+  license: "CC-BY-3.0"
+  copyright: "Hall of the Mountain King by Kevin MacLeod; original composition by Edvard Grieg. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Hall_of_the_Mountain_King_(ISRC_USUAN1200072).mp3"
+
+- files:
+  - "zombie_hoodoo.ogg"
+  license: "CC-BY-3.0"
+  copyright: "Zombie Hoodoo by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Zombie_Hoodoo_(ISRC_USUAN1100004).mp3"
+
+- files:
+  - "house_of_leaves.ogg"
+  license: "CC-BY-3.0"
+  copyright: "The House of Leaves by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:The_House_of_Leaves_(ISRC_USUAN1100710).mp3"
+
+- files:
+  - "ossuary_beginning.ogg"
+  license: "CC-BY-3.0"
+  copyright: "Ossuary 1 - A Beginning by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Ossuary_1_-_A_Beginning_(ISRC_USUAN1500043).mp3"
+
+- files:
+  - "the_dread.ogg"
+  license: "CC-BY-3.0"
+  copyright: "The Dread by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:The_Dread_(ISRC_USUAN1100048).mp3"
+
+- files:
+  - "grave_blow.ogg"
+  license: "CC-BY-3.0"
+  copyright: "Grave Blow by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Grave_Blow_(ISRC_USUAN1100402).mp3"
+
+- files:
+  - "ominous_intro.ogg"
+  license: "CC-BY-3.0"
+  copyright: "Ominous Intro by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Ominous_Intro_(ISRC_USUAN1100125).mp3"
+
+- files:
+  - "amazing_plan.ogg"
+  license: "CC-BY-3.0"
+  copyright: "Amazing Plan by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Amazing_Plan_(ISRC_USUAN1100737).mp3"
+
+- files:
+  - "sneaky_snitch.ogg"
+  license: "CC-BY-3.0"
+  copyright: "Sneaky Snitch by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Sneaky_Snitch_(ISRC_USUAN1100772).mp3"

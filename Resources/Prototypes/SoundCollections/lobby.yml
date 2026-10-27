@@ -19,7 +19,7 @@
 #    - /Audio/Lobby/atomicamnesiammx.ogg
 #    # Goobstation - Custom lobby music
 #    - /Audio/Lobby/skubstep.ogg
-    - /Audio/Lobby/sneedsfeedandseed.ogg
+#    - /Audio/Lobby/sneedsfeedandseed.ogg
 #    - /Audio/Lobby/clownalwayswins.ogg
 #    - /Audio/Lobby/clownwmv.ogg
 #    - /Audio/Lobby/dawsonschristian.ogg
@@ -32,15 +32,25 @@
 #    - /Audio/Lobby/marhaba.ogg
 #    - /Audio/Lobby/the_future_soon.ogg
 #    - /Audio/Lobby/horn.ogg
-    # Mini - Custom lobby music
-    - /Audio/_Mini/Lobby/komarovo.ogg
-    - /Audio/_Mini/Lobby/tom_tom.ogg
-    - /Audio/_Mini/Lobby/xed_eyes.ogg
-    - /Audio/_Mini/Lobby/komarovo.ogg
-    - /Audio/_Mini/Lobby/tancy.ogg
-    - /Audio/_Mini/Lobby/metamorphosis.ogg
-    - /Audio/_Mini/Lobby/batarei.ogg
-    - /Audio/_Mini/Lobby/dispozal_unit.ogg
-    - /Audio/_Mini/Lobby/dead_blonde.ogg
+#    # Mini - Custom lobby music
+#    - /Audio/_Mini/Lobby/komarovo.ogg
+#    - /Audio/_Mini/Lobby/tom_tom.ogg
+#    - /Audio/_Mini/Lobby/xed_eyes.ogg
+#    - /Audio/_Mini/Lobby/tancy.ogg
+#    - /Audio/_Mini/Lobby/metamorphosis.ogg
+#    - /Audio/_Mini/Lobby/batarei.ogg
+#    - /Audio/_Mini/Lobby/dispozal_unit.ogg
+#    - /Audio/_Mini/Lobby/dead_blonde.ogg
+#    # Mini - Halloween lobby rotation
+    - /Audio/_Mini/Lobby/danse_macabre.ogg
+    - /Audio/_Mini/Lobby/hall_of_the_mountain_king.ogg
+    - /Audio/_Mini/Lobby/zombie_hoodoo.ogg
+    - /Audio/_Mini/Lobby/house_of_leaves.ogg
+    - /Audio/_Mini/Lobby/ossuary_beginning.ogg
+    - /Audio/_Mini/Lobby/the_dread.ogg
+    - /Audio/_Mini/Lobby/grave_blow.ogg
+    - /Audio/_Mini/Lobby/ominous_intro.ogg
+    - /Audio/_Mini/Lobby/amazing_plan.ogg
+    - /Audio/_Mini/Lobby/sneaky_snitch.ogg
 
 
