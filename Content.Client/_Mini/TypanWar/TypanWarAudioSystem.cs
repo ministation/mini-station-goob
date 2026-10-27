@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -26,6 +30,7 @@ public sealed class TypanWarAudioSystem : EntitySystem
 
     private bool _warMusicEnabled = true;
     private bool _warActive;
+    private float _sweepAccumulator;
 
     public override void Initialize()
     {
@@ -42,6 +47,12 @@ public sealed class TypanWarAudioSystem : EntitySystem
         // Server-replicated war BGM keeps coming back unless we continuously stop it while disabled.
         if (_warMusicEnabled || !_warActive)
             return;
+
+        // Полный проход по аудио-компонентам нужен, но не каждый кадр
+        _sweepAccumulator += frameTime;
+        if (_sweepAccumulator < 0.5f)
+            return;
+        _sweepAccumulator = 0f;
 
         StopWarMusicStreams();
     }

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -18,12 +22,18 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
 
     [Dependency] private readonly SharedPopupSystem _popup = default!;
 
+    private readonly Dictionary<TypanWarSide, List<EntityUid>> _allyCache = new();
+    private bool _alliesDirty = true;
+
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<TypanWarFriendlyFireComponent, ToggleActionEvent>(OnToggle);
         SubscribeLocalEvent<TypanWarFriendlyFireComponent, AmmoShotUserEvent>(OnAmmoShot);
+        // ComponentStartup тут нельзя: направленная подписка на (компонент, событие) в дереве одна,
+        // её уже занимает PvsSessionOverrideSystem. Состав меняется через SetFaction/RemoveCombatant и Shutdown.
+        SubscribeLocalEvent<TypanWarFactionComponent, ComponentShutdown>((_, _, _) => _alliesDirty = true);
     }
 
     public void SetFaction(EntityUid uid, TypanWarSide side)
@@ -31,6 +41,7 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
         var faction = EnsureComp<TypanWarFactionComponent>(uid);
         faction.Side = side;
         Dirty(uid, faction);
+        _alliesDirty = true;
     }
 
     public void SetupCombatant(EntityUid uid, TypanWarSide side, bool enabled = true)
@@ -56,6 +67,7 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
 
         RemComp<TypanWarFriendlyFireComponent>(uid);
         RemComp<TypanWarFactionComponent>(uid);
+        _alliesDirty = true;
     }
 
     public bool ShouldPassThrough(EntityUid shooter, EntityUid target)
@@ -130,16 +142,22 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
         }
     }
 
+    // Кеш союзников: выстрелы частые, полный проход по фракциям нужен только после изменения состава
     private List<EntityUid> GetAllies(TypanWarSide side)
     {
-        var allies = new List<EntityUid>();
-        var query = EntityQueryEnumerator<TypanWarFactionComponent>();
-        while (query.MoveNext(out var uid, out var faction))
+        if (_alliesDirty)
         {
-            if (faction.Side == side)
-                allies.Add(uid);
+            _allyCache.Clear();
+            var query = EntityQueryEnumerator<TypanWarFactionComponent>();
+            while (query.MoveNext(out var uid, out var faction))
+            {
+                if (!_allyCache.TryGetValue(faction.Side, out var list))
+                    _allyCache[faction.Side] = list = new List<EntityUid>();
+                list.Add(uid);
+            }
+            _alliesDirty = false;
         }
 
-        return allies;
+        return _allyCache.TryGetValue(side, out var allies) ? allies : new List<EntityUid>();
     }
 }

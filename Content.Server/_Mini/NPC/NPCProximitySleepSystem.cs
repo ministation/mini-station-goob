@@ -69,7 +69,7 @@ public sealed class NPCProximitySleepSystem : EntitySystem
 
         _nextCheck = _timing.CurTime + TimeSpan.FromSeconds(CheckIntervalSeconds);
 
-        var playerPositions = new List<(Vector2 pos, MapId map)>();
+        var playersByMap = new Dictionary<MapId, List<Vector2>>();
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is not { Valid: true } player)
@@ -78,7 +78,10 @@ public sealed class NPCProximitySleepSystem : EntitySystem
             if (!TryComp(player, out TransformComponent? xform))
                 continue;
 
-            playerPositions.Add((_xform.GetWorldPosition(xform), xform.MapID));
+            var map = xform.MapID;
+            if (!playersByMap.TryGetValue(map, out var positions))
+                playersByMap[map] = positions = new List<Vector2>();
+            positions.Add(_xform.GetWorldPosition(xform));
         }
 
         var query = EntityQueryEnumerator<HTNComponent, TransformComponent, MetaDataComponent>();
@@ -97,14 +100,11 @@ public sealed class NPCProximitySleepSystem : EntitySystem
                 continue;
 
             var nearPlayer = false;
-            if (playerPositions.Count > 0)
+            if (playersByMap.TryGetValue(xform.MapID, out var mapPlayers))
             {
                 var npcPos = _xform.GetWorldPosition(xform);
-                foreach (var (pos, map) in playerPositions)
+                foreach (var pos in mapPlayers)
                 {
-                    if (map != xform.MapID)
-                        continue;
-
                     if ((pos - npcPos).LengthSquared() <= _distanceSq)
                     {
                         nearPlayer = true;
