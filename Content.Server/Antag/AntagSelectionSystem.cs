@@ -21,6 +21,7 @@ using Content.Server.Roles;
 using Content.Server.Roles.Jobs;
 using Content.Server.Shuttles.Systems;
 using Content.Shared.Administration.Logs;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Antag;
 using Content.Shared.Clothing;
 using Content.Shared.Database;
@@ -37,6 +38,7 @@ using Content.Shared.Whitelist;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
@@ -52,6 +54,7 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
     [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly IBanManager _ban = default!;
     [Dependency] private readonly IChatManager _chat = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!; // Mini: mini.antag_count_scale
     [Dependency] private readonly GhostRoleSystem _ghostRole = default!;
     [Dependency] private readonly JobSystem _jobs = default!;
     [Dependency] private readonly LoadoutSystem _loadout = default!;
@@ -224,9 +227,11 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
                 continue;
 
             // Goobstation
+            // Mini: шанс latejoin-антага тоже умножается на mini.antag_count_scale.
+            var antagScale = Math.Max(_cfg.GetCVar(MiniCCVars.AntagCountScale), 0.01f);
             if (!RobustRandom.Prob(def.Value.PlayerRatio == 0
                     ? LateJoinRandomChance
-                    : Math.Clamp(1f / def.Value.PlayerRatio, 0f, 1f)))
+                    : Math.Clamp(antagScale / def.Value.PlayerRatio, 0f, 1f)))
                 continue;
 
             if (TryMakeAntag((uid, antag), session, def.Value))

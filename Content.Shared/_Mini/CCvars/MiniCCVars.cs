@@ -400,6 +400,22 @@ public sealed class MiniCCVars
     public static readonly CVarDef<float> BunnyHopMinSpeedThreshold =
         CVarDef.Create("bunny_hop.min_speed_threshold", 4.0f, CVar.SERVER | CVar.REPLICATED);
 
+    /**
+     * Balance: мягкое уменьшение числа антагонистов.
+     */
+
+    /// <summary>
+    ///     Глобальный множитель количества антагонистов: целевое число антагов
+    ///     (playerRatio) считается от уменьшенного онлайна, а вес мидраунд-событий
+    ///     типа HostilesSpawn умножается на это значение. Минимальные составы (Min)
+    ///     и лимиты (Max) не меняются, поэтому режимы не ломаются.
+    ///     0.6 - примерно на 40% спокойнее, 1 - поведение апстрима.
+    ///     Стартовый бюджет хаоса SecretPlus настраивается отдельно
+    ///     (gamedirector.roundstart_chaos_score_multiplier).
+    /// </summary>
+    public static readonly CVarDef<float> AntagCountScale =
+        CVarDef.Create("mini.antag_count_scale", 1f, CVar.SERVERONLY);
+
     public static readonly CVarDef<float> BunnyHopSpeedBoostWindow =
         CVarDef.Create("bunny_hop.speed_boost_window", 0.610f, CVar.SERVER | CVar.REPLICATED);
 
