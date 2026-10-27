@@ -120,6 +120,42 @@ public sealed class FailAndStartPresetTest
         server.System<TestRuleSystem>().Run = false;
         await pair.CleanReturnAsync();
     }
+
+    /// <summary>
+    ///     A rule's minPlayers used to cancel the whole round start attempt, so with too few
+    ///     players the round fell back to the lobby. Now the round starts anyway and the antag
+    ///     count is scaled down to the current player count by AntagSelection.
+    /// </summary>
+    [Test]
+    public async Task StartRoundWithTooFewPlayersForRuleMinPlayers()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            Dirty = true,
+            DummyTicker = false,
+            Connected = true,
+            InLobby = true
+        });
+
+        var server = pair.Server;
+        var client = pair.Client;
+        var ticker = server.System<GameTicker>();
+
+        // Disable fallbacks so that, before the fix, a cancelled attempt really left the round in the lobby.
+        server.CfgMan.SetCVar(CCVars.GameLobbyFallbackEnabled, false);
+        server.CfgMan.SetCVar(CCVars.GridFill, true);
+
+        // One ready player, the rule wants ten.
+        await pair.WaitClientCommand("toggleready True");
+        await pair.WaitCommand("setgamepreset TestPresetTenPlayers 9999");
+        await pair.WaitCommand("startround");
+        await pair.RunTicksSync(10);
+
+        Assert.That(ticker.RunLevel, Is.EqualTo(GameRunLevel.InRound));
+        Assert.That(client.EntMan.EntityExists(client.AttachedEntity));
+
+        await pair.CleanReturnAsync();
+    }
 }
 
 public sealed class TestRuleSystem : EntitySystem
