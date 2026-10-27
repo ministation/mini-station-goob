@@ -41,7 +41,7 @@ antag-store-status-last-round-purchased = Already purchased last round
 antag-store-status-job-blocked = Job not allowed
 antag-store-status-species-blocked = Species not allowed
 antag-store-status-jobban = Role banned by admins
-antag-store-status-major-taken = A major antagonist has already been purchased this round
+antag-store-status-major-taken = Major antag already taken
 antag-store-unavailable-yao = This role still needs its real prototype ID in the fork.
 
 antag-store-role-thief-name = Thief
