@@ -3,8 +3,39 @@ ent-KatorgaOreProcessor = katorga ore receiver
 
 ent-KatorgaSpawnPoint = katorga spawn point
 
+ent-KatorgaSpawnPointMiners = katorga spawn point
+    .desc = Where more than one sentence has begun. Miners faction.
+    .suffix = Miners
+
+ent-KatorgaSpawnPointFreemen = katorga spawn point
+    .desc = Freemen spawn point: no pickaxe, but plenty of nerve. Freemen faction.
+    .suffix = Freemen
+
 ent-KatorgaMineralScanner = katorga mineral scanner
     .desc = Scans surrounding rock for useful minerals. Always powered, works from a pocket.
+
+katorga-grid-miners = Miners Camp
+katorga-grid-freemen = Freemen Camp
+
+katorga-faction-ui-title = Katorga faction choice
+katorga-faction-ui-countdown = Auto-assignment in { $seconds } s. Your faction defines your gear, camp and kill rules.
+katorga-faction-ui-assigning = Assigning faction...
+
+katorga-faction-selected = You have joined the "{ $faction }" faction.
+katorga-faction-assigned = Time is up: you have been assigned to the "{ $faction }" faction.
+katorga-faction-examine = Faction: "{ $faction }".
+
+katorga-faction-miners-name = Miners
+katorga-faction-miners-feature = Miner kit: meson glasses spot ore through rock, GPS in the backpack. Ore and the receiver are your trade.
+
+katorga-faction-freemen-name = Freemen
+katorga-faction-freemen-feature = Freemen kit: survival knife and a lantern in the backpack. Asteroid beasts and the hunt are your trade.
+
+katorga-fauna-reward = Beast killed, your sentence is reduced by { $time }.
+
+katorga-cross-kill-reward = An inmate of another faction killed, your sentence is reduced by { $time }.
+
+katorga-acceleration-note = While you are alive on the katorga, your sentence flows { $multiplier }x faster.
 
 katorga-lobby-message = Welcome to the server. For your violations you have been given a chance to redeem yourself with hard labor: after the round starts you will be sent to the katorga, where mining ore reduces your ban duration. Killing a fellow inmate extends it. Permanent bans cannot be worked off.
 

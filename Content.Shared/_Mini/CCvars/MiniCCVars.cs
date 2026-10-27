@@ -915,4 +915,24 @@ public sealed class MiniCCVars
     /// </summary>
     public static readonly CVarDef<int> KatorgaKillPenaltyMinutes =
         CVarDef.Create("mini.katorga.kill_penalty_minutes", 1440, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Во сколько раз быстрее течёт срок заключённого, пока он жив на карте каторги.
+    ///     1.0 - без ускорения.
+    /// </summary>
+    public static readonly CVarDef<double> KatorgaSentenceMultiplier =
+        CVarDef.Create("mini.katorga.sentence_multiplier", 2.0d, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     На сколько минут сокращается срок за убийство заключённого чужой фракции.
+    ///     0 - награды выключены.
+    /// </summary>
+    public static readonly CVarDef<int> KatorgaCrossKillRewardMinutes =
+        CVarDef.Create("mini.katorga.cross_kill_reward_minutes", 2, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Сколько секунд даётся на выбор фракции в лобби, после чего фракция назначается автоматически.
+    /// </summary>
+    public static readonly CVarDef<int> KatorgaFactionSelectionSeconds =
+        CVarDef.Create("mini.katorga.faction_selection_seconds", 20, CVar.SERVERONLY);
 }

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System.Numerics;
@@ -53,6 +57,16 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     [DataField]
     public float OuterFootCut = 0.2f;
+
+    /// <summary>
+    /// UV height of the leg region (hip line measured from sprite bottom) used to cut hardsuits
+    /// instead of <see cref="OuterFootCut"/>. With the low boot band the opaque suit torso hid
+    /// every moving leg pixel, so a hardsuit walk read as a plain whole-body bounce; the hip cut
+    /// lets the suit's leg halves walk with the legs. Coats and robes keep the boot band: their
+    /// one-piece art would shear at the hip line.
+    /// </summary>
+    [DataField]
+    public float OuterLegCut = 0.42f;
 
     /// <summary>
     /// UV height of the pant region on the jumpsuit (hip line measured from sprite bottom).
@@ -281,6 +295,12 @@ public sealed partial class FootWalkAnimationComponent : Component
     /// </summary>
     [ViewVariables]
     public float AppliedOuterFootCut = float.NaN;
+
+    /// <summary>
+    /// OuterLegCut last applied to hardsuit hole/band/half cuts (forces rebuild on change).
+    /// </summary>
+    [ViewVariables]
+    public float AppliedOuterLegCut = float.NaN;
 
     /// <summary>
     /// JumpsuitHipCut last applied to jumpsuit hole/band/half shaders (forces rebuild on change).

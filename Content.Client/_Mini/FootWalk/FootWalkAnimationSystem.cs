@@ -13,6 +13,7 @@ using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Gravity;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
+using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
 using Content.Shared.Mobs.Components;
@@ -60,6 +61,10 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     [Dependency] private IEyeManager _eye = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IResourceCache _resourceCache = default!;
+    [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+
+    private EntityQuery<MetaDataComponent> _metaQuery;
 
     private bool _enabled = true;
     private bool _bodyBounce = true;
@@ -131,6 +136,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         _moveSpeedQuery = GetEntityQuery<MovementSpeedModifierComponent>();
         _humanoidQuery = GetEntityQuery<HumanoidAppearanceComponent>();
         _invSlotsQuery = GetEntityQuery<InventorySlotsComponent>();
+        _metaQuery = GetEntityQuery<MetaDataComponent>();
 
         _cfg.OnValueChanged(MiniCCVars.FootWalkAnimationEnabled, enabled =>
         {
@@ -612,6 +618,52 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     }
 
     /// <summary>
+    /// Cut height for the worn outer garment. Hardsuits are cut at the hip line so their leg
+    /// halves walk with the legs - the low boot band left the opaque suit torso covering every
+    /// moving leg pixel, and the walk read as a plain bounce. Coats and robes keep the boot band.
+    /// </summary>
+    private float OuterCutFor(Entity<FootWalkAnimationComponent> ent)
+    {
+        if (_inventory.TryGetSlotEntity(ent.Owner, OuterSlot, out var garment) && IsHardsuitLike(garment.Value))
+            return ent.Comp.OuterLegCut;
+
+        return ent.Comp.OuterFootCut;
+    }
+
+    /// <summary>
+    /// True when the garment descends from <see cref="HardsuitBasePrototype"/>, i.e. it is a sealed
+    /// full-body suit whose art ends in boots, not a coat hem.
+    /// </summary>
+    private bool IsHardsuitLike(EntityUid garment)
+    {
+        if (!_metaQuery.TryGetComponent(garment, out var meta) || meta.EntityPrototype == null)
+            return false;
+
+        var seen = new HashSet<string>();
+        var pending = new Stack<string>();
+        pending.Push(meta.EntityPrototype.ID);
+        while (pending.Count > 0)
+        {
+            var id = pending.Pop();
+            if (id == HardsuitBasePrototype)
+                return true;
+
+            if (!seen.Add(id) || !_prototypes.TryIndex<EntityPrototype>(id, out var proto))
+                continue;
+
+            if (proto.Parents == null)
+                continue;
+
+            foreach (var parent in proto.Parents)
+                pending.Push(parent);
+        }
+
+        return false;
+    }
+
+    private const string HardsuitBasePrototype = "ClothingOuterHardsuitBase";
+
+    /// <summary>
     /// True when the worn outer garment paints over the feet in this facing. Hardsuits with their
     /// boot band do; coats, jackets and vests stop higher. Art that cannot be read is treated as
     /// covering, which is the old conservative rule.
@@ -807,6 +859,8 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         var desired = frontMode ? (byte) 1 : (byte) 2;
         var cutChanged = (!float.IsNaN(ent.Comp.AppliedOuterFootCut)
                           && !MathHelper.CloseToPercent(ent.Comp.AppliedOuterFootCut, ent.Comp.OuterFootCut))
+                         || (!float.IsNaN(ent.Comp.AppliedOuterLegCut)
+                             && !MathHelper.CloseToPercent(ent.Comp.AppliedOuterLegCut, ent.Comp.OuterLegCut))
                          || (!float.IsNaN(ent.Comp.AppliedJumpsuitHipCut)
                              && !MathHelper.CloseToPercent(ent.Comp.AppliedJumpsuitHipCut, ent.Comp.JumpsuitHipCut));
         var facingChanged = ent.Comp.ClothingFacing != facing;
@@ -858,6 +912,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
         ent.Comp.ClothingSplitsActive = true;
         ent.Comp.AppliedOuterFootCut = ent.Comp.OuterFootCut;
+        ent.Comp.AppliedOuterLegCut = ent.Comp.OuterLegCut;
         ent.Comp.AppliedJumpsuitHipCut = ent.Comp.JumpsuitHipCut;
 
         if (ent.Comp.ClothingMode == desired)
@@ -1198,12 +1253,14 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
         ClearOuterSplits(ent, sprite, clearHole: false);
 
+        var cut = OuterCutFor(ent);
+
         foreach (var key in sourceKeys)
         {
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            var holeOk = EnsureOuterHole(ent, sprite, key, slots, src, facing);
+            var holeOk = EnsureOuterHole(ent, sprite, key, slots, src, facing, cut);
 
             // A hem that is one piece cannot be cut in half: the halves would pull it apart.
             var bandOnly = !holeOk
@@ -1223,7 +1280,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                     WalkLeftSuffix,
                     keepRight: false,
                     srcIndex + 1,
-                    ent.Comp.OuterFootCut,
+                    cut,
                     facing,
                     ent.Comp.OuterSplitKeys);
 
@@ -1240,7 +1297,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
                     WalkRightSuffix,
                     keepRight: true,
                     srcIndex + 2,
-                    ent.Comp.OuterFootCut,
+                    cut,
                     facing,
                     ent.Comp.OuterSplitKeys);
             }
@@ -1292,12 +1349,14 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
         ClearOuterSideBands(ent, sprite, clearHole: false);
 
+        var cut = OuterCutFor(ent);
+
         foreach (var key in sourceKeys)
         {
             if (!_sprite.TryGetLayer((ent.Owner, sprite), key, out var src, false))
                 continue;
 
-            if (!EnsureOuterHole(ent, sprite, key, slots, src, facing))
+            if (!EnsureOuterHole(ent, sprite, key, slots, src, facing, cut))
                 continue;
 
             if (!_sprite.LayerMapTryGet((ent.Owner, sprite), key, out var srcIndex, false))
@@ -1305,7 +1364,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
             var bandKey = key + WalkBandSuffix;
             var bandTexture = TryGetCutSource(ent.Owner, key, src, out var bandRsi, out var bandState)
-                ? _centreProfiles.GetCut(bandRsi, bandState, facing, WalkCutMode.Band, ent.Comp.OuterFootCut)
+                ? _centreProfiles.GetCut(bandRsi, bandState, facing, WalkCutMode.Band, cut)
                 : null;
             if (bandTexture == null)
                 continue;
@@ -1329,12 +1388,13 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         string key,
         InventorySlotsComponent slots,
         Layer src,
-        RsiDirection facing)
+        RsiDirection facing,
+        float cut)
     {
         if (!ent.Comp.HoledOuterKeys.Contains(key))
         {
             var top = TryGetCutSource(src, out var topRsi, out var topState)
-                ? _centreProfiles.GetCut(topRsi, topState, facing, WalkCutMode.Top, ent.Comp.OuterFootCut)
+                ? _centreProfiles.GetCut(topRsi, topState, facing, WalkCutMode.Top, cut)
                 : null;
 
             if (top == null)
@@ -1938,6 +1998,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         ent.Comp.ClothingSplitsActive = false;
         ent.Comp.ClothingMode = 0;
         ent.Comp.AppliedOuterFootCut = float.NaN;
+        ent.Comp.AppliedOuterLegCut = float.NaN;
         ent.Comp.AppliedJumpsuitHipCut = float.NaN;
 
         if (_spriteQuery.TryGetComponent(ent.Owner, out var sprite))

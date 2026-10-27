@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Mini Station
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -146,15 +150,28 @@ public sealed class KatorgaBanTest
         var mix = atmos.GetTileMixture(mob);
         Assert.That(mix?.TotalMoles ?? 0f, Is.GreaterThan(50f), "точка спавна каторги не должна быть в вакууме");
 
+        // Руда у выхода: ручные камни KatorgaMineRock (если расставлены на карте) плюс
+        // биомные KatorgaWallRock, которые биом генерирует в открытых тайлах вокруг игрока.
+        // Биому нужно несколько тиков на генерацию чанков вокруг точки спавна - ждём.
         var mineRocksWithOre = 0;
-        var rocks = entMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
-        while (rocks.MoveNext(out var uid, out var meta, out var xform))
+        for (var attempt = 0; attempt < 40 && mineRocksWithOre < 10; attempt++)
         {
-            if (xform.MapID != mapId || meta.EntityPrototype?.ID != "KatorgaMineRock")
-                continue;
+            await pair.RunTicksSync(15);
 
-            if (entMan.TryGetComponent<OreVeinComponent>(uid, out var vein) && vein.CurrentOre != null)
-                mineRocksWithOre++;
+            mineRocksWithOre = 0;
+            var rocks = entMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (rocks.MoveNext(out var uid, out var meta, out var xform))
+            {
+                var protoId = meta.EntityPrototype?.ID;
+                if (xform.MapID != mapId ||
+                    (protoId != "KatorgaMineRock" && protoId != "KatorgaWallRock"))
+                {
+                    continue;
+                }
+
+                if (entMan.TryGetComponent<OreVeinComponent>(uid, out var vein) && vein.CurrentOre != null)
+                    mineRocksWithOre++;
+            }
         }
 
         Assert.That(mineRocksWithOre, Is.GreaterThanOrEqualTo(10), "у выхода на каторгу должна быть руда");

@@ -31,6 +31,8 @@ using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Materials;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Parallax.Biomes;
 using Content.Shared.Popups;
 using Content.Shared.Preferences;
@@ -39,6 +41,7 @@ using Content.Shared.Throwing;
 using Robust.Server.Player;
 using Robust.Shared.Collections;
 using Robust.Shared.Configuration;
+using Robust.Shared.Enums;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
@@ -64,7 +67,9 @@ namespace Content.Server._Mini.Katorga;
 public sealed class KatorgaSystem : EntitySystem
 {
     private static readonly ResPath KatorgaMapPath = new("/Maps/_Mini/katorga.yml");
+    private static readonly ResPath KatorgaFreeMapPath = new("/Maps/_Mini/katorga_free.yml");
     private const string KatorgaBiomeId = "KatorgaBiome";
+    private const string KatorgaFaunaId = "KatorgaFauna";
 
     // Снаряжение заключённого: комплект утилизатора и сканер в кармане.
     private static readonly ProtoId<StartingGearPrototype> InmateGear = "KatorgaInmateGear";
@@ -83,6 +88,7 @@ public sealed class KatorgaSystem : EntitySystem
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly BiomeSystem _biome = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
+    [Dependency] private readonly KatorgaFactionSystem _factionSystem = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -108,8 +114,15 @@ public sealed class KatorgaSystem : EntitySystem
 
     private MapId? _katorgaMap;
     private EntityUid? _katorgaMapUid;
-    private readonly List<EntityCoordinates> _spawnPoints = new();
+
+    // Точки спавна по фракции: ключ "" - общие точки (подходят любой фракции).
+    private readonly Dictionary<string, List<EntityCoordinates>> _spawnPoints = new();
     private readonly Dictionary<NetUserId, double> _points = new();
+
+    // Ускорение срока: пока заключённый жив на карте каторги, срок течёт быстрее.
+    // Накопленные секунды раз в минуту списываются с бана в базе (молча, без сообщений).
+    private double _sentenceMultiplier = 1.0;
+    private readonly Dictionary<NetUserId, double> _accelPending = new();
 
     // Кэш отрабатываемого бана по игроку. Единственное место, где каторга смотрит в базу —
     // асинхронная проверка при входе в лобби и перед спавном; все игровые пути (спавн, наблюдение,
@@ -143,6 +156,7 @@ public sealed class KatorgaSystem : EntitySystem
 
         _sawmill = Logger.GetSawmill("katorga");
         _cfg.OnValueChanged(MiniCCVars.KatorgaPointsToTime, v => _pointsToTime = v, true);
+        _cfg.OnValueChanged(MiniCCVars.KatorgaSentenceMultiplier, v => _sentenceMultiplier = Math.Clamp(v, 1.0, 3.0), true);
 
         SubscribeLocalEvent<RoundStartingEvent>(OnRoundStarting);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
@@ -182,7 +196,30 @@ public sealed class KatorgaSystem : EntitySystem
         if (now >= _nextFlush)
         {
             _nextFlush = now + FlushInterval;
+            FlushAcceleration();
             FlushPoints();
+        }
+
+        // Ускорение срока: пока заключённый жив на карте каторги, срок течёт быстрее.
+        // Сразу отражаем на живом счётчике, в базу списываем раз в минуту.
+        if (_sentenceMultiplier > 1.0)
+        {
+            var bonus = TimeSpan.FromSeconds(frameTime * (_sentenceMultiplier - 1.0));
+            var query = EntityQueryEnumerator<KatorgaBoundComponent, TransformComponent, MobStateComponent>();
+            while (query.MoveNext(out var uid, out _, out var xform, out var mobState))
+            {
+                if (xform.MapID != _katorgaMap || mobState.CurrentState == MobState.Dead)
+                    continue;
+
+                if (!_playerManager.TryGetSessionByEntity(uid, out var session) ||
+                    !_expiry.TryGetValue(session.UserId, out var expires))
+                {
+                    continue;
+                }
+
+                _expiry[session.UserId] = expires - bonus;
+                _accelPending[session.UserId] = _accelPending.GetValueOrDefault(session.UserId) + bonus.TotalSeconds;
+            }
         }
     }
 
@@ -195,6 +232,7 @@ public sealed class KatorgaSystem : EntitySystem
         _katorgaMap = null;
         _katorgaMapUid = null;
         _spawnPoints.Clear();
+        _accelPending.Clear();
         // Кэш банов здесь НЕ чистим: игроки уже прошли лобби и их баны проверены там.
         // RoundStartingEvent приходит прямо перед спавном, и очистка заставляла бы
         // заново ходить в БД на игровом тике (это и вешало сервер).
@@ -202,20 +240,37 @@ public sealed class KatorgaSystem : EntitySystem
         if (!Enabled)
             return;
 
-        // Файл карты хранит только грид (как карты станций), поэтому грузим его на свежую карту:
+        // Файлы карт хранят только гриды (как карты станций), поэтому грузим их на свежую карту:
         // TryLoadGrid + биом + InitializeMap в конце, по образцу SetupArrivalsStation.
         _mapSystem.CreateMap(out var mapId, runMapInit: false);
         var mapUid = _mapSystem.GetMap(mapId);
         _katorgaMap = mapId;
         _katorgaMapUid = mapUid;
 
-        if (!_mapLoader.TryLoadGrid(mapId, KatorgaMapPath, out _, DeserializationOptions.Default with { PauseMaps = false }))
+        var options = DeserializationOptions.Default with { PauseMaps = false };
+
+        // Лагерь Горняков - основная карта каторги, без неё каторга недоступна.
+        if (!_mapLoader.TryLoadGrid(mapId, KatorgaMapPath, out var minersGrid, options))
         {
             _sawmill.Error("Каторга: не удалось загрузить карту " + KatorgaMapPath + ", каторга в этом раунде недоступна");
             _mapSystem.DeleteMap(mapId);
             _katorgaMap = null;
             _katorgaMapUid = null;
             return;
+        }
+
+        _metaData.SetEntityName(minersGrid.Value, Loc.GetString("katorga-grid-miners"));
+
+        // Лагерь Вольных - второй гряд, при неудаче раунд продолжается с одним лагерем.
+        EntityUid? freemenGrid = null;
+        if (_mapLoader.TryLoadGrid(mapId, KatorgaFreeMapPath, out var freeGrid, options, offset: new System.Numerics.Vector2(120f, 0f)))
+        {
+            freemenGrid = freeGrid.Value;
+            _metaData.SetEntityName(freemenGrid.Value, Loc.GetString("katorga-grid-freemen"));
+        }
+        else
+        {
+            _sawmill.Error("Каторга: не удалось загрузить карту " + KatorgaFreeMapPath + ", второй лагерь недоступен");
         }
 
         _metaData.SetEntityName(mapUid, "Katorga");
@@ -229,22 +284,45 @@ public sealed class KatorgaSystem : EntitySystem
             _sawmill.Error("Каторга: не найден биом " + KatorgaBiomeId);
         }
 
+        // Фауна вокруг лагерей: настройки из прототипа спавнера.
+        if (_prototype.TryIndex<KatorgaFaunaSpawnerPrototype>(KatorgaFaunaId, out var faunaSpawner))
+        {
+            var population = EnsureComp<KatorgaFaunaPopulationComponent>(mapUid);
+            population.InitialRemaining = faunaSpawner.InitialCount;
+            population.Bases.Add(minersGrid.Value.Owner);
+            if (freemenGrid is { } freeUid)
+                population.Bases.Add(freeUid);
+            population.NextSpawnTime = _timing.CurTime + TimeSpan.FromSeconds(10);
+        }
+        else
+        {
+            _sawmill.Error("Каторга: не найден спавнер фауны " + KatorgaFaunaId);
+        }
+
         // Mapinit после биома: атмосфера, машины и генерация астероида стартуют вместе с картой.
         _mapSystem.InitializeMap(mapId);
 
         var query = EntityQueryEnumerator<KatorgaSpawnPointComponent, TransformComponent>();
-        while (query.MoveNext(out _, out _, out var xform))
+        while (query.MoveNext(out _, out var spawn, out var xform))
         {
-            if (xform.MapID == _katorgaMap)
-                _spawnPoints.Add(xform.Coordinates);
+            if (xform.MapID != _katorgaMap)
+                continue;
+
+            var key = spawn.Faction?.Id ?? "";
+            if (!_spawnPoints.TryGetValue(key, out var list))
+                _spawnPoints[key] = list = new List<EntityCoordinates>();
+
+            list.Add(xform.Coordinates);
         }
 
-        _sawmill.Info("Каторга: карта загружена, точек спавна: " + _spawnPoints.Count);
+        var totalSpawns = _spawnPoints.Values.Sum(list => list.Count);
+        _sawmill.Info("Каторга: карты загружены, точек спавна: " + totalSpawns);
     }
 
     private void OnRoundRestartCleanup(RoundRestartCleanupEvent ev)
     {
         // Накопленные очки нужно списать до очистки состояния, иначе отработка пропадёт.
+        FlushAcceleration();
         FlushPoints();
         _points.Clear();
         _expiry.Clear();
@@ -252,6 +330,7 @@ public sealed class KatorgaSystem : EntitySystem
         _katorgaMap = null;
         _katorgaMapUid = null;
         _spawnPoints.Clear();
+        _accelPending.Clear();
 
         // Кэш раундовый: чистим в конце раунда, а не перед спавном. Игроки заново
         // проверяются при входе в лобби следующего раунда.
@@ -397,7 +476,11 @@ public sealed class KatorgaSystem : EntitySystem
         {
             if (xform.MapID != _katorgaMap)
             {
-                SendEntityToKatorga(uid);
+                ProtoId<KatorgaFactionPrototype>? faction = null;
+                if (_playerManager.TryGetSessionByEntity(uid, out var escaped))
+                    faction = _factionSystem.GetFaction(escaped.UserId) ?? _factionSystem.AssignFaction(escaped);
+
+                SendEntityToKatorga(uid, faction);
                 continue;
             }
 
@@ -422,6 +505,7 @@ public sealed class KatorgaSystem : EntitySystem
         RemComp<KatorgaBoundComponent>(uid);
         _banCache.Remove(session.UserId);
         _expiry.Remove(session.UserId);
+        _factionSystem.ClearFaction(session.UserId);
         NotifyBanStatus(session, null);
 
         _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-released"));
@@ -441,6 +525,9 @@ public sealed class KatorgaSystem : EntitySystem
             return;
         }
 
+        // Фракция выбирается в лобби; если игрок не выбрал (или не успел), назначаем сами.
+        var faction = _factionSystem.GetFaction(session.UserId) ?? _factionSystem.AssignFaction(session);
+
         if (session.AttachedEntity is { } attached && !TerminatingOrDeleted(attached))
         {
             // Переподключение в уже заключённое тело: не раздеваем и не телепортируем заново,
@@ -451,12 +538,12 @@ public sealed class KatorgaSystem : EntitySystem
             }
             else
             {
-                SendEntityToKatorga(attached);
+                SendEntityToKatorga(attached, faction);
             }
         }
         else
         {
-            SpawnKatorgaPlayer(session);
+            SpawnKatorgaPlayer(session, faction);
         }
 
         NotifyBanStatus(session, ban);
@@ -466,10 +553,16 @@ public sealed class KatorgaSystem : EntitySystem
         var remaining = expires - DateTimeOffset.UtcNow;
         _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-greeting", ("time", KatorgaTime.Format(remaining))));
 
+        if (_sentenceMultiplier > 1.0)
+        {
+            _chatManager.DispatchServerMessage(session,
+                Loc.GetString("katorga-acceleration-note", ("multiplier", _sentenceMultiplier.ToString("0.##"))));
+        }
+
         RefreshInmateHud(session, resetTotal: true);
     }
 
-    private void SendEntityToKatorga(EntityUid entity)
+    private void SendEntityToKatorga(EntityUid entity, ProtoId<KatorgaFactionPrototype>? faction)
     {
         // Снимаем экипировку и выбрасываем содержимое рук: заключённый приходит на каторгу с пустыми руками.
         if (_inventory.TryGetContainerSlotEnumerator(entity, out var slots))
@@ -496,41 +589,56 @@ public sealed class KatorgaSystem : EntitySystem
             }
         }
 
-        _transform.SetCoordinates(entity, GetSpawnPosition());
+        _transform.SetCoordinates(entity, GetSpawnPosition(faction));
         _transform.AttachToGridOrMap(entity);
 
         EnsureComp<KatorgaBoundComponent>(entity);
         EnsureComp<KillTrackerComponent>(entity);
-        EquipInmate(entity);
+        EquipInmate(entity, faction);
     }
 
-    private void SpawnKatorgaPlayer(ICommonSession session)
+    private void SpawnKatorgaPlayer(ICommonSession session, ProtoId<KatorgaFactionPrototype> faction)
     {
         var profile = _preferences.GetPreferences(session.UserId).SelectedCharacter as HumanoidCharacterProfile;
 
         var mind = _mind.CreateMind(session.UserId, profile?.Name);
         _mind.SetUserId(mind, session.UserId);
 
-        var mob = _stationSpawning.SpawnPlayerMob(GetSpawnPosition(), null, profile, null);
+        var mob = _stationSpawning.SpawnPlayerMob(GetSpawnPosition(faction), null, profile, null);
         _mind.TransferTo(mind, mob);
 
         EnsureComp<KatorgaBoundComponent>(mob);
         EnsureComp<KillTrackerComponent>(mob);
-        EquipInmate(mob);
+        EquipInmate(mob, faction);
     }
 
     /// <summary>
-    ///     Выдаёт заключённому снаряжение утилизатора: голыми на каторгу не попадают.
+    ///     Выдаёт заключённому базовый комплект утилизатора и снаряжение фракции.
     /// </summary>
-    private void EquipInmate(EntityUid mob)
+    private void EquipInmate(EntityUid mob, ProtoId<KatorgaFactionPrototype>? faction)
     {
         _stationSpawning.EquipStartingGear(mob, InmateGear);
+
+        if (_prototype.TryIndex(faction, out var factionProto))
+        {
+            EnsureComp<KatorgaFactionMemberComponent>(mob).Faction = factionProto.ID;
+            _stationSpawning.EquipStartingGear(mob, factionProto.Gear);
+        }
     }
 
-    private EntityCoordinates GetSpawnPosition()
+    private EntityCoordinates GetSpawnPosition(ProtoId<KatorgaFactionPrototype>? faction)
     {
-        if (_spawnPoints.Count > 0)
-            return _random.Pick(_spawnPoints);
+        if (faction != null &&
+            _spawnPoints.TryGetValue(faction.Value.Id, out var factionPoints) &&
+            factionPoints.Count > 0)
+        {
+            return _random.Pick(factionPoints);
+        }
+
+        // У фракции нет своих точек (второй лагерь не загрузился): общие или любые точки.
+        var any = _spawnPoints.Values.SelectMany(list => list).ToList();
+        if (any.Count > 0)
+            return _random.Pick(any);
 
         if (_katorgaMapUid != null)
             return new EntityCoordinates(_katorgaMapUid.Value, System.Numerics.Vector2.Zero);
@@ -853,6 +961,14 @@ public sealed class KatorgaSystem : EntitySystem
 
         NotifyBanStatus(player, binding);
 
+        // Ждёт в лобби с отрабатываемым баном: предлагаем выбрать фракцию каторги.
+        // До выбора (или автоназначения по таймеру) игрок просто остаётся в лобби.
+        if (binding != null && binding.ExpirationTime > DateTimeOffset.UtcNow &&
+            !EntityManager.System<GameTicker>().UserHasJoinedGame(player))
+        {
+            _factionSystem.BeginSelection(player);
+        }
+
         // Если игрок ждал проверку перед спавном, продолжаем прерванный спавн.
         // Повторный вход в SpawnPlayer увидит готовый кэш: забаненный уйдёт на каторгу,
         // остальные заспавнятся обычным путём.
@@ -926,6 +1042,14 @@ public sealed class KatorgaSystem : EntitySystem
         if (!Enabled)
             return;
 
+        // Фауна каторги: убийство сокращает срок тому, кто убил.
+        if (TryComp<KatorgaFaunaComponent>(ev.Entity, out var fauna))
+        {
+            if (!ev.Suicide && ev.Primary is KillPlayerSource faunaKiller)
+                ApplyFaunaReward(faunaKiller.PlayerId, fauna.RewardMinutes);
+            return;
+        }
+
         if (!HasComp<KatorgaBoundComponent>(ev.Entity))
             return;
 
@@ -936,11 +1060,52 @@ public sealed class KatorgaSystem : EntitySystem
         if (ev.Primary is not KillPlayerSource source)
             return;
 
+        // Правила фракций: убийство одноФракционника - штраф, чужоФракционника - награда.
+        // Убийца не заключённый (админ на карте) - обычный штраф, как и раньше.
+        if (_playerManager.TryGetSessionById(source.PlayerId, out var killerSession) &&
+            killerSession.AttachedEntity is { } killer &&
+            HasComp<KatorgaBoundComponent>(killer) &&
+            TryComp<KatorgaFactionMemberComponent>(killer, out var killerFaction) &&
+            TryComp(ev.Entity, out KatorgaFactionMemberComponent? victimFaction) &&
+            killerFaction.Faction != victimFaction.Faction)
+        {
+            var rewardMinutes = _cfg.GetCVar(MiniCCVars.KatorgaCrossKillRewardMinutes);
+            if (rewardMinutes > 0)
+                ApplySentenceReward(source.PlayerId, TimeSpan.FromMinutes(rewardMinutes), "katorga-cross-kill-reward");
+
+            return;
+        }
+
         var minutes = _cfg.GetCVar(MiniCCVars.KatorgaKillPenaltyMinutes);
         if (minutes <= 0)
             return;
 
         _ = ChangeBanTimeAsync(source.PlayerId, TimeSpan.FromMinutes(minutes), penalty: true);
+    }
+
+    /// <summary>
+    ///     Награда за убитую тварь: сокращает живой счётчик срока и списывает в базу.
+    /// </summary>
+    private void ApplyFaunaReward(NetUserId userId, int minutes)
+    {
+        ApplySentenceReward(userId, TimeSpan.FromMinutes(minutes), "katorga-fauna-reward");
+    }
+
+    /// <summary>
+    ///     Сокращает срок наградой: живой счётчик сразу, база - фоном. Ничего не делает,
+    ///     если игрок сейчас не отрабатывает бан.
+    /// </summary>
+    private void ApplySentenceReward(NetUserId userId, TimeSpan reduced, string messageKey)
+    {
+        if (reduced <= TimeSpan.Zero || !_expiry.ContainsKey(userId))
+            return;
+
+        _expiry[userId] -= reduced;
+
+        if (_playerManager.TryGetSessionById(userId, out var session))
+            AddWorkedOff(session, reduced);
+
+        _ = ChangeBanTimeAsync(userId, -reduced, penalty: false, messageKey: messageKey);
     }
 
     private void OnOreInserted(EntityUid uid, KatorgaOreProcessorComponent component, ref MaterialEntityInsertedEvent args)
@@ -986,6 +1151,27 @@ public sealed class KatorgaSystem : EntitySystem
     }
 
     /// <summary>
+    ///     Списывает накопленное ускорение срока: живой счётчик уже уменьшен,
+    ///     в базу уходит молча, без сообщений игроку.
+    /// </summary>
+    private void FlushAcceleration()
+    {
+        if (_accelPending.Count == 0)
+            return;
+
+        var snapshot = new Dictionary<NetUserId, double>(_accelPending);
+        _accelPending.Clear();
+
+        foreach (var (userId, seconds) in snapshot)
+        {
+            if (seconds < 1)
+                continue;
+
+            _ = ChangeBanTimeAsync(userId, TimeSpan.FromSeconds(-seconds), penalty: false, silent: true);
+        }
+    }
+
+    /// <summary>
     ///     Списывает накопленные очки в базу: уменьшает срок бана каждому отрабатывающему.
     /// </summary>
     private void FlushPoints()
@@ -1009,7 +1195,12 @@ public sealed class KatorgaSystem : EntitySystem
     /// <summary>
     ///     Меняет срок самого долгого активного временного бана игрока. Перманентные баны не трогает.
     /// </summary>
-    private async Task ChangeBanTimeAsync(NetUserId userId, TimeSpan delta, bool penalty)
+    private async Task ChangeBanTimeAsync(
+        NetUserId userId,
+        TimeSpan delta,
+        bool penalty,
+        bool silent = false,
+        string? messageKey = null)
     {
         try
         {
@@ -1033,6 +1224,8 @@ public sealed class KatorgaSystem : EntitySystem
             if (newExpiration < DateTimeOffset.UtcNow)
                 newExpiration = DateTimeOffset.UtcNow;
 
+            // Штраф увеличивает срок в базе: живой счётчик нужно подтянуть.
+            // Награды и ускорение уже уменьшили счётчик заранее, переприсвоение им не нужно.
             if (penalty && _expiry.ContainsKey(userId))
                 _expiry[userId] = newExpiration;
 
@@ -1042,18 +1235,18 @@ public sealed class KatorgaSystem : EntitySystem
                 "Каторга: бан " + binding.Id + " игрока " + userId + " изменён на " + delta.TotalSeconds.ToString("N0")
                 + " с, новый срок: " + newExpiration.ToString("u"));
 
-            if (_playerManager.TryGetSessionById(userId, out var session))
+            if (silent || !_playerManager.TryGetSessionById(userId, out var session))
+                return;
+
+            if (penalty)
             {
-                if (penalty)
-                {
-                    _chatManager.DispatchServerMessage(session,
-                        Loc.GetString("katorga-penalty-message", ("time", KatorgaTime.Format(delta))));
-                }
-                else
-                {
-                    _chatManager.DispatchServerMessage(session,
-                        Loc.GetString("katorga-time-reduced", ("time", KatorgaTime.Format(-delta))));
-                }
+                _chatManager.DispatchServerMessage(session,
+                    Loc.GetString("katorga-penalty-message", ("time", KatorgaTime.Format(delta))));
+            }
+            else
+            {
+                _chatManager.DispatchServerMessage(session,
+                    Loc.GetString(messageKey ?? "katorga-time-reduced", ("time", KatorgaTime.Format(-delta))));
             }
 
             if (penalty)
