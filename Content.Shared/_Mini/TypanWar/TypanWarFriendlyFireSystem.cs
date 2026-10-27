@@ -31,7 +31,8 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
 
         SubscribeLocalEvent<TypanWarFriendlyFireComponent, ToggleActionEvent>(OnToggle);
         SubscribeLocalEvent<TypanWarFriendlyFireComponent, AmmoShotUserEvent>(OnAmmoShot);
-        SubscribeLocalEvent<TypanWarFactionComponent, ComponentStartup>((_, _, _) => _alliesDirty = true);
+        // ComponentStartup тут нельзя: направленная подписка на (компонент, событие) в дереве одна,
+        // её уже занимает PvsSessionOverrideSystem. Состав меняется через SetFaction/RemoveCombatant и Shutdown.
         SubscribeLocalEvent<TypanWarFactionComponent, ComponentShutdown>((_, _, _) => _alliesDirty = true);
     }
 
