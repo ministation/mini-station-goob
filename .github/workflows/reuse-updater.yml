@@ -18,6 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # Джоба чекаутит код PR из форка и запускает скрипт из этого чекаута. Новый
+    # actions/checkout по умолчанию отказывается чекаутить форк-код из
+    # pull_request_target ("pwn request": форк может подменить скрипт и украсть
+    # токен записи), поэтому проходим только для доверенных авторов —
+    # коллабораторов, у которых и так есть право записи в базовое репо.
+    # У чужих форк-PR джоба пропускается, заголовки REUSE добавляются в PR вручную.
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository ||
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -26,6 +35,9 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
           token: ${{ secrets.BOT_TOKEN || github.token }}
+          # Безопасно только вместе с гейтом if: выше — сюда попадает код форка
+          # исключительно доверенных авторов.
+          allow-unsafe-pr-checkout: true
 
       - name: Setup Python
         uses: actions/setup-python@v5
