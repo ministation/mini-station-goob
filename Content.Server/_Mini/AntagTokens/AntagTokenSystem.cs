@@ -1247,6 +1247,29 @@ public sealed class AntagTokenSystem : EntitySystem
         state.LastDonorBonusClaimUtc = utc;
     }
 
+    /// <summary>
+    /// Test seam: имитирует состояние сразу после покупки ghost-роли (монеты списаны,
+    /// ожидание авто-джойна). Используется интеграционными тестами AntagTokenGhostAutoJoinTest.
+    /// </summary>
+    internal void TestSetupPendingGhostAuto(ICommonSession session, string roleId, int balanceAfterPurchase)
+    {
+        if (!_states.TryGetValue(session.UserId, out var state))
+            throw new InvalidOperationException("Antag token state is not loaded for this user.");
+
+        state.Balance = balanceAfterPurchase;
+        state.PendingGhostAutoRoleId = roleId;
+        state.PendingGhostAutoQueuedAtUtc = DateTime.UtcNow;
+        _globallyClaimedGhostRoles.Add(roleId);
+    }
+
+    /// <summary>
+    /// Test seam: текущее состояние токенов игрока из кеша системы.
+    /// </summary>
+    internal PlayerTokenState? TestGetState(NetUserId userId)
+    {
+        return _states.TryGetValue(userId, out var state) ? state : null;
+    }
+
     private void OnRoundStarting(RoundStartingEvent _)
     {
         _ghostMinimumTimeRandomBonusByRole.Clear();
@@ -2777,26 +2800,26 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             return;
 
         var session = args.Player;
-        if (!_states.TryGetValue(session.UserId, out var state))
-            return;
+        var granted = false;
 
-        if (state.PendingGhostAutoRoleId == null)
-            return;
-
-        if (!_listings.TryGetListing(state.PendingGhostAutoRoleId, out var listing) ||
-            !AntagTokenCatalog.SupportsGhostAutoJoin(listing))
+        if (_states.TryGetValue(session.UserId, out var state) && state.PendingGhostAutoRoleId != null)
         {
-            return;
+            if (_listings.TryGetListing(state.PendingGhostAutoRoleId, out var listing) &&
+                AntagTokenCatalog.SupportsGhostAutoJoin(listing) &&
+                IsGhostAutoJoinPrototypeMatch(MetaData(uid).EntityPrototype?.ID, listing.GhostAutoJoinEntityProto))
+            {
+                var grantedRoleId = listing.Id;
+                ClearPendingGhostAuto(state);
+                MarkGhostRuleTokenGranted(session.UserId, grantedRoleId);
+                PersistState(session.UserId, state);
+                SendState(session.UserId);
+                granted = true;
+            }
         }
 
-        if (!IsGhostAutoJoinPrototypeMatch(MetaData(uid).EntityPrototype?.ID, listing.GhostAutoJoinEntityProto))
-            return;
-
-        var grantedRoleId = listing.Id;
-        ClearPendingGhostAuto(state);
-        MarkGhostRuleTokenGranted(session.UserId, grantedRoleId);
-        PersistState(session.UserId, state);
-        SendState(session.UserId);
+        // Mini: роль занял не тот, кто её купил - возвращаем монетки зависшим покупателям сразу.
+        if (!granted)
+            RefundPendingBuyersForProto(MetaData(uid).EntityPrototype?.ID, session);
     }
 
     private void OnGhostRoleRegistered(Entity<GhostRoleComponent> ent, ref GhostRoleRegisteredEvent args)
@@ -2840,6 +2863,43 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             candidates.Add(session);
         }
 
+        // Mini: покупатель есть, но сейчас не призрак (вернулся в тело и т.п.) - не держим
+        // оплаченную роль до конца раунда: сразу возвращаем монетки и убираем сущность.
+        if (candidates.Count == 0 && !ghostRole.Taken)
+        {
+            var pending = FindPendingGhostAutoBuyer(protoId, null);
+            if (pending != null && _states.TryGetValue(pending.UserId, out var pendingState))
+            {
+                AntagRoleDefinition? pendingListing = null;
+                if (pendingState.PendingGhostAutoRoleId != null)
+                    _listings.TryGetListing(pendingState.PendingGhostAutoRoleId, out pendingListing);
+
+                Logger.InfoS("AntagTokens",
+                    $"Ghost auto-join buyer not eligible, refunding: user={pending.Name} protoRole={protoId}");
+                RefundPendingGhostAuto(pending.UserId, pendingState);
+                PersistState(pending.UserId, pendingState);
+                SendState(pending.UserId);
+
+                if (IsTokenExclusiveDelivery(pendingListing, protoId))
+                {
+                    Logger.InfoS("AntagTokens", $"Deleting undelivered token ghost role {protoId}");
+                    QueueDel(uid);
+                }
+
+                return;
+            }
+
+            // Mini: покупателя нет вовсе, а сущность купленная и токен-эксклюзивная -
+            // не оставляем её как бесплатную раздачу призракам.
+            if (IsTokenExclusiveDelivery(null, protoId))
+            {
+                Logger.InfoS("AntagTokens", $"Deleting orphan token ghost role {protoId}");
+                QueueDel(uid);
+            }
+
+            return;
+        }
+
         candidates.Sort((a, b) =>
         {
             var ta = _states.TryGetValue(a.UserId, out var sa) ? sa.PendingGhostAutoQueuedAtUtc : null;
@@ -2861,33 +2921,130 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
             if (roleDef.GhostAutoJoinEntityProto != protoId)
                 continue;
 
-            TryGhostAutoJoin(session, state, ghostRole);
+            if (TryGhostAutoJoin(session, state, ghostRole) == GhostAutoJoinResult.Granted)
+                return;
         }
     }
 
-    private void TryGhostAutoJoin(ICommonSession session, PlayerTokenState state, GhostRoleComponent ghostRole)
+    private GhostAutoJoinResult TryGhostAutoJoin(ICommonSession session, PlayerTokenState state, GhostRoleComponent ghostRole)
     {
         if (ghostRole.Taken)
-            return;
+        {
+            // Mini: роль успел занять другой призрак, возвращаем монетки сразу, а не в конце раунда.
+            Logger.WarningS("AntagTokens",
+                $"Ghost auto-join role taken by another player, refunding: user={session.Name} protoRole={state.PendingGhostAutoRoleId}");
+            RefundPendingGhostAuto(session.UserId, state);
+            PersistState(session.UserId, state);
+            SendState(session.UserId);
+            return GhostAutoJoinResult.Taken;
+        }
+
+        if (!_listings.TryGetListing(state.PendingGhostAutoRoleId!, out var listing))
+        {
+            RefundPendingGhostAuto(session.UserId, state);
+            PersistState(session.UserId, state);
+            SendState(session.UserId);
+            return GhostAutoJoinResult.Failed;
+        }
 
         Logger.InfoS("AntagTokens",
             $"Ghost auto-join attempt: user={session.Name} protoRole={state.PendingGhostAutoRoleId} ghostId={ghostRole.Identifier} raffle={(ghostRole.RaffleConfig != null)}");
 
-        if (_ghostRoles.Takeover(session, ghostRole.Identifier))
+        if (!_ghostRoles.Takeover(session, ghostRole.Identifier))
         {
-            var grantedRoleId = state.PendingGhostAutoRoleId!;
-            ClearPendingGhostAuto(state);
-            MarkGhostRuleTokenGranted(session.UserId, grantedRoleId);
+            Logger.WarningS("AntagTokens", $"Ghost auto-join instant takeover failed: user={session.Name}");
+            // Mini: недоставленную купленную роль не оставляем бесплатной, если она
+            // существует только для покупок (Token-прототипы и Token-правила).
+            if (!ghostRole.Taken && IsTokenExclusiveDelivery(listing, MetaData(ghostRole.Owner).EntityPrototype?.ID ?? ""))
+                QueueDel(ghostRole.Owner);
+
+            RefundPendingGhostAuto(session.UserId, state);
             PersistState(session.UserId, state);
             SendState(session.UserId);
-            Logger.InfoS("AntagTokens", $"Ghost auto-join instant takeover ok: user={session.Name}");
-            return;
+            return GhostAutoJoinResult.Failed;
         }
 
-        Logger.WarningS("AntagTokens", $"Ghost auto-join instant takeover failed: user={session.Name}");
-        RefundPendingGhostAuto(session.UserId, state);
+        // Mini: Takeover бывает "успешен", а игрок остаётся в теле или уходит в наблюдателя.
+        // Для ролей, где сама сущность и есть купленный персонаж (MobRevenantToken),
+        // проверяем фактическую доставку: не та сущность - откат, рефанд и удаление роли.
+        var directDelivery = IsGhostAutoJoinPrototypeMatch(
+            MetaData(ghostRole.Owner).EntityPrototype?.ID, listing.GhostAutoJoinEntityProto);
+        if (directDelivery)
+        {
+            var delivered = session.AttachedEntity is { Valid: true } attached
+                && IsGhostAutoJoinPrototypeMatch(MetaData(attached).EntityPrototype?.ID, listing.GhostAutoJoinEntityProto);
+            if (!delivered)
+            {
+                var attachedProto = session.AttachedEntity is { Valid: true } a
+                    ? MetaData(a).EntityPrototype?.ID ?? "null"
+                    : "null";
+                Logger.WarningS("AntagTokens",
+                    $"Ghost auto-join delivered wrong entity for {session.Name}: attached={attachedProto} expected={listing.GhostAutoJoinEntityProto}, refunding");
+                if (IsTokenExclusiveDelivery(listing, MetaData(ghostRole.Owner).EntityPrototype?.ID ?? ""))
+                    QueueDel(ghostRole.Owner);
+
+                RefundPendingGhostAuto(session.UserId, state);
+                PersistState(session.UserId, state);
+                SendState(session.UserId);
+                return GhostAutoJoinResult.Failed;
+            }
+        }
+
+        var grantedRoleId = state.PendingGhostAutoRoleId!;
+        ClearPendingGhostAuto(state);
+        MarkGhostRuleTokenGranted(session.UserId, grantedRoleId);
         PersistState(session.UserId, state);
         SendState(session.UserId);
+        Logger.InfoS("AntagTokens", $"Ghost auto-join instant takeover ok: user={session.Name}");
+        return GhostAutoJoinResult.Granted;
+    }
+
+    /// <summary>
+    /// Mini: исход попытки выдать купленную ghost-роль. Taken - роль занял кто-то другой,
+    /// она не наша, покупателю всё равно нужен рефанд.
+    /// </summary>
+    private enum GhostAutoJoinResult : byte
+    {
+        Granted,
+        Taken,
+        Failed,
+    }
+
+    /// <summary>
+    /// Mini: принадлежит ли недоставленная сущность системе токенов и её можно удалять.
+    /// Общие с натуральными событиями прототипы (SpawnPointGhostParadoxClone и т.п.)
+    /// не трогаем, чтобы не ломать обычные ивенты.
+    /// </summary>
+    private bool IsTokenExclusiveDelivery(AntagRoleDefinition? listing, string entityProtoId)
+    {
+        if (entityProtoId.Contains("Token", StringComparison.Ordinal))
+            return true;
+
+        return listing != null
+            && listing.GameRuleId.StartsWith("Token", StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Mini: покупатель с активной оплатой под данный прототип, независимо от того,
+    /// призрак он сейчас или нет.
+    /// </summary>
+    private ICommonSession? FindPendingGhostAutoBuyer(string protoId, ICommonSession? except)
+    {
+        foreach (var session in _playerManager.Sessions)
+        {
+            if (session == except)
+                continue;
+
+            if (!_states.TryGetValue(session.UserId, out var state)
+                || state.PendingGhostAutoRoleId == null
+                || !_listings.TryGetListing(state.PendingGhostAutoRoleId, out var roleDef)
+                || roleDef.GhostAutoJoinEntityProto != protoId)
+                continue;
+
+            return session;
+        }
+
+        return null;
     }
 
     private static void ClearPendingGhostAuto(PlayerTokenState state)
@@ -2951,6 +3108,34 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         Logger.InfoS("AntagTokens", $"Ghost auto-pending stale: no slot for proto {proto}, refund user {userId}");
         RefundPendingGhostAuto(userId, state);
         return true;
+    }
+
+    /// <summary>
+    /// Mini: возвращает монетки всем покупателям, чья оплаченная роль под данный
+    /// прототип была занята кем-то другим.
+    /// </summary>
+    private void RefundPendingBuyersForProto(string? protoId, ICommonSession? except)
+    {
+        if (string.IsNullOrEmpty(protoId))
+            return;
+
+        foreach (var session in _playerManager.Sessions)
+        {
+            if (session == except)
+                continue;
+
+            if (!_states.TryGetValue(session.UserId, out var state)
+                || state.PendingGhostAutoRoleId == null
+                || !_listings.TryGetListing(state.PendingGhostAutoRoleId, out var roleDef)
+                || roleDef.GhostAutoJoinEntityProto != protoId)
+                continue;
+
+            Logger.InfoS("AntagTokens",
+                $"Ghost role taken by another player, refunding pending buyer: user={session.Name} protoRole={protoId}");
+            RefundPendingGhostAuto(session.UserId, state);
+            PersistState(session.UserId, state);
+            SendState(session.UserId);
+        }
     }
 
     private void RefundPendingGhostAuto(NetUserId userId, PlayerTokenState state)
