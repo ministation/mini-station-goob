@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 using System;
@@ -6,12 +10,6 @@ using Content.Shared._Mini.DailyQuests;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._Mini.DailyRewards;
-
-[Serializable, NetSerializable]
-public enum DailyRewardUiKey : byte
-{
-    Key
-}
 
 [Serializable, NetSerializable]
 public sealed class DailyRewardUpdateMessage(
