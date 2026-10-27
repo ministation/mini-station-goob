@@ -1256,9 +1256,15 @@ public sealed class AntagTokenSystem : EntitySystem
         if (!_states.TryGetValue(session.UserId, out var state))
             throw new InvalidOperationException("Antag token state is not loaded for this user.");
 
+        // Шов имитирует состояние сразу после покупки: метка выдачи и флаги рефанда должны быть
+        // чистыми. Пул интеграционных тестов переиспользует пару (БД переживает рестарт сервера),
+        // поэтому от предыдущего теста может остаться метка успешной выдачи.
         state.Balance = balanceAfterPurchase;
         state.PendingGhostAutoRoleId = roleId;
         state.PendingGhostAutoQueuedAtUtc = DateTime.UtcNow;
+        state.GhostAntagConsumedMark = false;
+        state.PendingGhostAutoUsedRoleCredit = false;
+        state.PendingGhostAutoUsedFree = false;
         _globallyClaimedGhostRoles.Add(roleId);
     }
 
