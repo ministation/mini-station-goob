@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Client.Resources;
 using Content.Client.Chat.UI;
 using Content.Goobstation.Common.CCVar;
@@ -45,6 +49,6 @@ public sealed partial class PopupUIController
 
         fontSize = Math.Clamp(fontSize, RunechatStyle.MinFontSize, RunechatStyle.MaxFontSize);
         var size = RunechatStyle.ScaleSize(baseSize, fontSize);
-        return (RunechatStyle.GetFont(RunechatStyle.FontPath, size), color, 2f * size / baseSize * outlineScale);
+        return (RunechatStyle.GetFont(size), color, 2f * size / baseSize * outlineScale);
     }
 }
