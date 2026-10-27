@@ -22,15 +22,16 @@
   components:
   - type: SubGamemodes
     rules:
+    # Mini: побочные антаги на 40% реже (0.5 -> 0.3, 0.02 -> 0.012, 0.05 -> 0.03)
     - id: Thief
-      prob: 0.5 # Mini: шансы как в версии мини-станции
+      prob: 0.3 # Mini: шансы как в версии мини-станции, минус 40%
     # Mini: Heretic removed from calm/standard/light/lowpop (SubGamemodes on those presets)
     - id: Devil # Goob
-      prob: 0.02 # Mini: шансы как в версии мини-станции
+      prob: 0.012 # Mini: шансы как в версии мини-станции, минус 40%
     - id: Shadowling # Goob
-      prob: 0.02 # Mini: шансы как в версии мини-станции
+      prob: 0.012 # Mini: шансы как в версии мини-станции, минус 40%
     - id: Xenoborgs
-      prob: 0.05
+      prob: 0.03 # Mini
     #- id: SubWizard # Goob
     #  prob: 0.05
 
@@ -41,13 +42,13 @@
   - type: SubGamemodes
     rules:
     - id: Thief
-      prob: 0.5
+      prob: 0.3 # Mini
     - id: Devil # Goob
-      prob: 0.02
+      prob: 0.012 # Mini
     - id: Shadowling # Goob
-      prob: 0.02
+      prob: 0.012 # Mini
     - id: Xenoborgs
-      prob: 0.05
+      prob: 0.03 # Mini
 
 - type: entity
   parent: BaseGameRule
@@ -56,7 +57,7 @@
   - type: SubGamemodes
     rules:
     - id: Thief
-      prob: 0.5
+      prob: 0.3 # Mini
 
 - type: entity
   parent: BaseGameRule

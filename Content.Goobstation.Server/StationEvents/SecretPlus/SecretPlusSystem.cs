@@ -2,6 +2,7 @@
 
 using System.Linq;
 using Content.Goobstation.Common.CCVar;
+using Content.Goobstation.Common.StationEvents.SecretPlus;
 using Content.Goobstation.Server.StationEvents.Components;
 using Content.Server._Mini.TypanWar;
 using Content.Goobstation.Shared.StationEvents;
@@ -13,6 +14,7 @@ using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Server.StationEvents;
 using Content.Server.StationEvents.Components;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Database;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Ghost;
@@ -79,6 +81,7 @@ public sealed partial class SecretPlusSystem : GameRuleSystem<SecretPlusComponen
     // cvars
     private float _minimumTimeUntilFirstEvent;
     private float _roundstartChaosScoreMultiplier;
+    private float _antagEventScale = 1f; // Mini: множитель веса мидраунд-событий HostilesSpawn
 
     private ISawmill _sawmill = default!;
 
@@ -90,6 +93,7 @@ public sealed partial class SecretPlusSystem : GameRuleSystem<SecretPlusComponen
 
         Subs.CVar(_cfg, GoobCVars.MinimumTimeUntilFirstEvent, value => _minimumTimeUntilFirstEvent = value, true);
         Subs.CVar(_cfg, GoobCVars.RoundstartChaosScoreMultiplier, value => _roundstartChaosScoreMultiplier = value, true);
+        Subs.CVar(_cfg, MiniCCVars.AntagCountScale, value => _antagEventScale = Math.Max(value, 0.01f), true); // Mini
     }
 
     protected override void Added(EntityUid uid, SecretPlusComponent scheduler, GameRuleComponent gameRule, GameRuleAddedEvent args)
@@ -465,7 +469,15 @@ public sealed partial class SecretPlusSystem : GameRuleSystem<SecretPlusComponen
             weight += scheduler.Comp.ChaosOffset; // offset negative-chaos events upwards too else they never happen
             weight += weight < 0f ? -scheduler.Comp.ChaosThreshold : scheduler.Comp.ChaosThreshold; // make sure it's not in (-1, 1) to not get absurdly low event probabilities
             var delta = ChaosDelta(-scheduler.Comp.ChaosScore, weight, scheduler.Comp.ChaosMatching, scheduler.Comp.ChaosThreshold * scheduler.Comp.ChaosThreshold);
-            weights[ev] = ev.EvComp.Weight / (delta + 1f);
+            // Mini: события со спавном враждебных антагов (HostilesSpawn) реже при mini.antag_count_scale < 1.
+            var evWeight = ev.EvComp.Weight;
+            if (_antagEventScale != 1f)
+            {
+                ProtoId<EventTypePrototype> hostiles = "HostilesSpawn";
+                if (ev.EvComp.EventType == hostiles)
+                    evWeight *= _antagEventScale;
+            }
+            weights[ev] = evWeight / (delta + 1f);
         }
 
         return weights.Count == 0 ? null : _random.Pick(weights);

@@ -11,7 +11,8 @@
       name: ghost-role-information-revenant-name-token
       description: ghost-role-information-description-token-generic
       rules: ghost-role-information-antagonist-rules
-      raffle:
-        settings: default
+      # Mini: без раффла, как у bingle. Роль куплена за токены конкретным игроком,
+      # публичный раффл превращал промах авто-джойна в бесплатную раздачу случайному призраку.
+      raffle: null
       mindRoles:
         - MindRoleGhostRoleSoloAntagonistGoob

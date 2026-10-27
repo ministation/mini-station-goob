@@ -2,10 +2,12 @@
 
 using System.Linq;
 using Content.Goobstation.Common.CCVar; // Goobstation
+using Content.Goobstation.Common.StationEvents.SecretPlus;
 using Content.Server.GameTicking;
 using Content.Server.RoundEnd;
 using Content.Server.StationEvents.Components;
 using Content.Shared.CCVar;
+using Content.Shared._Mini.MiniCCVars;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
@@ -31,6 +33,9 @@ public sealed class EventManagerSystem : EntitySystem
     public float EventSpeedup = 1f; // Goobstation
     public int PlayerCountBias = 0; // Goobstation
 
+    // Mini: множитель веса мидраунд-событий со спавном враждебных антагов (HostilesSpawn).
+    private float _antagEventScale = 1f;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -38,6 +43,7 @@ public sealed class EventManagerSystem : EntitySystem
         Subs.CVar(_configurationManager, CCVars.EventsEnabled, SetEnabled, true);
         Subs.CVar(_configurationManager, GoobCVars.StationEventSpeedup, (value) => EventSpeedup = value, true); // Goobstation
         Subs.CVar(_configurationManager, GoobCVars.StationEventPlayerBias, (value) => PlayerCountBias = value, true); // Goobstation
+        Subs.CVar(_configurationManager, MiniCCVars.AntagCountScale, (value) => _antagEventScale = Math.Max(value, 0.01f), true); // Mini
     }
 
     /// <summary>
@@ -176,14 +182,14 @@ public sealed class EventManagerSystem : EntitySystem
 
         foreach (var stationEvent in availableEvents.Values)
         {
-            sumOfWeights += stationEvent.Weight;
+            sumOfWeights += EventWeight(stationEvent);
         }
 
         sumOfWeights = _random.NextFloat(sumOfWeights);
 
         foreach (var (proto, stationEvent) in availableEvents)
         {
-            sumOfWeights -= stationEvent.Weight;
+            sumOfWeights -= EventWeight(stationEvent);
 
             if (sumOfWeights <= 0.0f)
             {
@@ -193,6 +199,21 @@ public sealed class EventManagerSystem : EntitySystem
 
         Log.Error("Event was not found after weighted pick process!");
         return null;
+    }
+
+    /// <summary>
+    /// Mini: вес события с учётом mini.antag_count_scale, применяемого только к
+    /// событиям со спавном враждебных антагов (HostilesSpawn).
+    /// </summary>
+    private float EventWeight(StationEventComponent stationEvent)
+    {
+        if (_antagEventScale == 1f)
+            return stationEvent.Weight;
+
+        ProtoId<EventTypePrototype> hostiles = "HostilesSpawn";
+        return stationEvent.EventType == hostiles
+            ? stationEvent.Weight * _antagEventScale
+            : stationEvent.Weight;
     }
 
     /// <summary>

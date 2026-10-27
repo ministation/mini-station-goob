@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Antag.Components;
 using Content.Server.GameTicking.Rules.Components;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Antag;
 using Content.Shared.Chat;
 using Content.Shared.GameTicking.Components;
@@ -109,6 +110,13 @@ public sealed partial class AntagSelectionSystem
         // Review uses and ensure that people are INTENTIONALLY including players in the lobby if this is a mid-round
         // antag selection.
         var poolSize = playerCount ?? GetTotalPlayerCount(_playerManager.Sessions);
+
+        // Mini: mini.antag_count_scale - мягкое уменьшение числа антагов (0.6 = примерно на 40% меньше).
+        // Правило видит уменьшенное количество игроков, поэтому Min (минимальные составы команд)
+        // и Max (лимиты) не меняются и режимы не ломаются.
+        var antagScale = Math.Max(_cfg.GetCVar(MiniCCVars.AntagCountScale), 0.01f);
+        if (antagScale != 1f)
+            poolSize = (int) MathF.Round(poolSize * antagScale);
 
         // factor in other definitions' affect on the count.
         var countOffset = 0;
