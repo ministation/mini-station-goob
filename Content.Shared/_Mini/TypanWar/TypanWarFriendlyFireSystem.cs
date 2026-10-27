@@ -18,12 +18,17 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
 
     [Dependency] private readonly SharedPopupSystem _popup = default!;
 
+    private readonly Dictionary<TypanWarSide, List<EntityUid>> _allyCache = new();
+    private bool _alliesDirty = true;
+
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<TypanWarFriendlyFireComponent, ToggleActionEvent>(OnToggle);
         SubscribeLocalEvent<TypanWarFriendlyFireComponent, AmmoShotUserEvent>(OnAmmoShot);
+        SubscribeLocalEvent<TypanWarFactionComponent, ComponentStartup>((_, _, _) => _alliesDirty = true);
+        SubscribeLocalEvent<TypanWarFactionComponent, ComponentShutdown>((_, _, _) => _alliesDirty = true);
     }
 
     public void SetFaction(EntityUid uid, TypanWarSide side)
@@ -31,6 +36,7 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
         var faction = EnsureComp<TypanWarFactionComponent>(uid);
         faction.Side = side;
         Dirty(uid, faction);
+        _alliesDirty = true;
     }
 
     public void SetupCombatant(EntityUid uid, TypanWarSide side, bool enabled = true)
@@ -56,6 +62,7 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
 
         RemComp<TypanWarFriendlyFireComponent>(uid);
         RemComp<TypanWarFactionComponent>(uid);
+        _alliesDirty = true;
     }
 
     public bool ShouldPassThrough(EntityUid shooter, EntityUid target)
@@ -130,16 +137,22 @@ public sealed class TypanWarFriendlyFireSystem : EntitySystem
         }
     }
 
+    // Кеш союзников: выстрелы частые, полный проход по фракциям нужен только после изменения состава
     private List<EntityUid> GetAllies(TypanWarSide side)
     {
-        var allies = new List<EntityUid>();
-        var query = EntityQueryEnumerator<TypanWarFactionComponent>();
-        while (query.MoveNext(out var uid, out var faction))
+        if (_alliesDirty)
         {
-            if (faction.Side == side)
-                allies.Add(uid);
+            _allyCache.Clear();
+            var query = EntityQueryEnumerator<TypanWarFactionComponent>();
+            while (query.MoveNext(out var uid, out var faction))
+            {
+                if (!_allyCache.TryGetValue(faction.Side, out var list))
+                    _allyCache[faction.Side] = list = new List<EntityUid>();
+                list.Add(uid);
+            }
+            _alliesDirty = false;
         }
 
-        return allies;
+        return _allyCache.TryGetValue(side, out var allies) ? allies : new List<EntityUid>();
     }
 }

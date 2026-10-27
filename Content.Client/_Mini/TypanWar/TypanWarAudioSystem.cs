@@ -26,6 +26,7 @@ public sealed class TypanWarAudioSystem : EntitySystem
 
     private bool _warMusicEnabled = true;
     private bool _warActive;
+    private float _sweepAccumulator;
 
     public override void Initialize()
     {
@@ -42,6 +43,12 @@ public sealed class TypanWarAudioSystem : EntitySystem
         // Server-replicated war BGM keeps coming back unless we continuously stop it while disabled.
         if (_warMusicEnabled || !_warActive)
             return;
+
+        // Полный проход по аудио-компонентам нужен, но не каждый кадр
+        _sweepAccumulator += frameTime;
+        if (_sweepAccumulator < 0.5f)
+            return;
+        _sweepAccumulator = 0f;
 
         StopWarMusicStreams();
     }
