@@ -8,12 +8,6 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._Mini.DailyRewards;
 
 [Serializable, NetSerializable]
-public enum DailyRewardUiKey : byte
-{
-    Key
-}
-
-[Serializable, NetSerializable]
 public sealed class DailyRewardUpdateMessage(
     int currentStreak,
     int nextRewardDay,

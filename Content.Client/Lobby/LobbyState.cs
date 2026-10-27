@@ -5,7 +5,6 @@
 using Content.Client._Mini.Latejoin;
 using Content.Client._Mini.ReadyManifest;
 using Content.Client.Audio;
-using Content.Client._Donate.UI;
 using Content.Client.GameTicking.Managers;
 using Content.Client._Mini.CharacterBlock;
 using Content.Client._Mini.Katorga;
@@ -111,7 +110,6 @@ namespace Content.Client.Lobby
 
         // private void OnDonatePressed(BaseButton.ButtonEventArgs obj)
         // {
-        //     var controller = _userInterfaceManager.GetUIController<DonateShopUIController>();
         //     controller.ToggleWindow();
         // }
 
