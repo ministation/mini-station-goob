@@ -9,7 +9,6 @@ using System.Linq;
 
 using Content.Server.Chat.Managers;
 using Content.Shared.GameTicking;
-using Content.Server.EUI;
 using Content.Server._Mini.Katorga.Components;
 using Content.Shared._Mini.Katorga;
 using Robust.Server.Player;
@@ -24,17 +23,16 @@ using Robust.Shared.Timing;
 namespace Content.Server._Mini.Katorga;
 
 /// <summary>
-///     Фракции каторги: заключённый выбирает фракцию в лобби (EUI, с таймером),
-///     фракция определяет снаряжение и точку спавна. Убийство одноФракционника
-///     наказывается, чужоФракционника — вознаграждается (правила килов в KatorgaSystem).
-///     Если игрок не выбрал фракцию за отведённое время или ушёл в раунд раньше,
-///     фракция назначается автоматически: в наименее населённую.
+///     Фракции каторги: заключённый с отрабатываемым баном выбирает фракцию в окне позднего
+///     подключения, фракция определяет снаряжение и точку спавна. Отсчёт на выбор идёт с момента,
+///     когда игрок открыл late join, после чего фракция назначается автоматически: в наименее
+///     населённую. Убийство одноФракционника наказывается, чужоФракционника — вознаграждается
+///     (правила килов в KatorgaSystem).
 /// </summary>
 public sealed class KatorgaFactionSystem : EntitySystem
 {
     [Dependency] private readonly IChatManager _chat = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly EuiManager _eui = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
@@ -43,16 +41,19 @@ public sealed class KatorgaFactionSystem : EntitySystem
     // Фракция живёт до конца раунда: переподключение выбор не сбрасывает.
     private readonly Dictionary<NetUserId, ProtoId<KatorgaFactionPrototype>> _factions = new();
     private readonly Dictionary<NetUserId, TimeSpan> _deadlines = new();
-    private readonly Dictionary<NetUserId, KatorgaFactionEui> _euis = new();
+
+    // Игрок с отрабатываемым баном в лобби: выбор фракции открыт ему в late join.
+    private readonly HashSet<NetUserId> _eligible = new();
 
     private int _selectionSeconds;
-    private TimeSpan _nextRefresh;
 
     public override void Initialize()
     {
         base.Initialize();
 
         Subs.CVar(_cfg, MiniCCVars.KatorgaFactionSelectionSeconds, v => _selectionSeconds = Math.Clamp(v, 5, 120), true);
+        SubscribeNetworkEvent<KatorgaFactionStateRequestEvent>(OnStateRequest);
+        SubscribeNetworkEvent<KatorgaFactionSelectEvent>(OnSelect);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
     }
 
@@ -60,10 +61,8 @@ public sealed class KatorgaFactionSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        if (_deadlines.Count == 0 || _timing.CurTime < _nextRefresh)
+        if (_deadlines.Count == 0)
             return;
-
-        _nextRefresh = _timing.CurTime + TimeSpan.FromSeconds(1);
 
         foreach (var (userId, deadline) in _deadlines.ToArray())
         {
@@ -74,16 +73,10 @@ public sealed class KatorgaFactionSystem : EntitySystem
             }
 
             if (_timing.CurTime < deadline)
-            {
-                if (_euis.TryGetValue(userId, out var eui) && !eui.IsShutDown)
-                    eui.StateDirty();
                 continue;
-            }
 
-            // Время вышло: назначаем сами и закрываем окно.
+            // Время вышло: назначаем сами, клиент получит новое состояние и перестанет ждать.
             AssignFaction(session);
-            if (_euis.Remove(userId, out var expired) && !expired.IsShutDown)
-                expired.Close();
         }
     }
 
@@ -95,22 +88,17 @@ public sealed class KatorgaFactionSystem : EntitySystem
         return null;
     }
 
-    /// <summary>
-    ///     Открывает окно выбора фракции в лобби. Выбор уже сделан — ничего не делает.
-    /// </summary>
-    public void BeginSelection(ICommonSession session)
+    /// <summary>Игрок с отрабатываемым баном в лобби: ему можно выбирать фракцию в late join.</summary>
+    public void MakeEligible(ICommonSession session)
     {
-        var userId = session.UserId;
-        if (_factions.ContainsKey(userId) || _deadlines.ContainsKey(userId))
-            return;
+        _eligible.Add(session.UserId);
+    }
 
-        if (_euis.TryGetValue(userId, out var existing) && !existing.IsShutDown)
-            return;
-
-        _deadlines[userId] = _timing.CurTime + TimeSpan.FromSeconds(_selectionSeconds);
-        var eui = new KatorgaFactionEui(this, session);
-        _euis[userId] = eui;
-        _eui.OpenEui(eui, session);
+    /// <summary>Бан закончился или игрок ушёл: выбор фракции в late join больше не предлагаем.</summary>
+    public void ClearEligible(NetUserId userId)
+    {
+        _eligible.Remove(userId);
+        _deadlines.Remove(userId);
     }
 
     /// <summary>
@@ -120,7 +108,10 @@ public sealed class KatorgaFactionSystem : EntitySystem
     public ProtoId<KatorgaFactionPrototype> AssignFaction(ICommonSession session)
     {
         if (_factions.TryGetValue(session.UserId, out var assigned))
+        {
+            _deadlines.Remove(session.UserId);
             return assigned;
+        }
 
         var available = new List<ProtoId<KatorgaFactionPrototype>>();
         foreach (var faction in _prototype.EnumeratePrototypes<KatorgaFactionPrototype>())
@@ -156,6 +147,7 @@ public sealed class KatorgaFactionSystem : EntitySystem
 
         var proto = _prototype.Index(picked);
         _chat.DispatchServerMessage(session, Loc.GetString("katorga-faction-assigned", ("faction", Loc.GetString(proto.Name))));
+        SendState(session);
 
         return picked;
     }
@@ -163,11 +155,12 @@ public sealed class KatorgaFactionSystem : EntitySystem
     public bool TrySelectFaction(ICommonSession session, string factionId)
     {
         var userId = session.UserId;
-        if (!_factions.TryGetValue(userId, out var selected) &&
-            !_deadlines.ContainsKey(userId))
-        {
+        if (!_eligible.Contains(userId))
             return false;
-        }
+
+        // Выбор ещё не открывался: сначала игрок должен открыть late join.
+        if (!_factions.ContainsKey(userId) && !_deadlines.ContainsKey(userId))
+            return false;
 
         if (!_prototype.TryIndex<KatorgaFactionPrototype>(factionId, out var faction) ||
             !HasSpawnPoints(faction.ID))
@@ -176,49 +169,19 @@ public sealed class KatorgaFactionSystem : EntitySystem
         }
 
         // Уже выбрал другую фракцию (или автоназначение уже произошло) — перебирать нельзя.
-        if (_factions.TryGetValue(userId, out var existing) && existing != faction.ID)
+        var current = GetFaction(userId);
+        if (current != null && current.Value != faction.ID)
             return false;
 
-        if (selected != faction.ID)
+        if (current == null)
         {
             _factions[userId] = faction.ID;
             _deadlines.Remove(userId);
             _chat.DispatchServerMessage(session, Loc.GetString("katorga-faction-selected", ("faction", Loc.GetString(faction.Name))));
         }
 
-        if (_euis.Remove(userId, out var eui) && !eui.IsShutDown)
-            eui.Close();
-
+        SendState(session);
         return true;
-    }
-
-    public KatorgaFactionEuiState GetEuiState(ICommonSession session)
-    {
-        var options = _prototype.EnumeratePrototypes<KatorgaFactionPrototype>()
-            .OrderBy(faction => faction.Order)
-            .ThenBy(faction => faction.ID)
-            .Select(faction => new KatorgaFactionOption(
-                faction.ID,
-                Loc.GetString(faction.Name),
-                Loc.GetString(faction.Feature),
-                faction.Color))
-            .ToList();
-
-        var seconds = 0;
-        if (_deadlines.TryGetValue(session.UserId, out var deadline))
-            seconds = Math.Max(0, (int) Math.Ceiling((deadline - _timing.CurTime).TotalSeconds));
-
-        return new KatorgaFactionEuiState
-        {
-            Options = options,
-            SecondsRemaining = seconds,
-        };
-    }
-
-    internal void OnEuiClosed(ICommonSession session, KatorgaFactionEui eui)
-    {
-        if (_euis.GetValueOrDefault(session.UserId) == eui)
-            _euis.Remove(session.UserId);
     }
 
     /// <summary>Снимает заключённого с учёта фракций: игрок отработал срок и выпущен.</summary>
@@ -226,8 +189,55 @@ public sealed class KatorgaFactionSystem : EntitySystem
     {
         _factions.Remove(userId);
         _deadlines.Remove(userId);
-        if (_euis.Remove(userId, out var eui) && !eui.IsShutDown)
-            eui.Close();
+        _eligible.Remove(userId);
+    }
+
+    private void OnStateRequest(KatorgaFactionStateRequestEvent ev, EntitySessionEventArgs args)
+    {
+        var session = args.SenderSession;
+        if (!_eligible.Contains(session.UserId))
+            return;
+
+        // Первое открытие late join запускает отсчёт: в лобби до начала раунда он бы
+        // сгорал зря, и игрок не успевал ничего выбрать.
+        if (!_factions.ContainsKey(session.UserId) && !_deadlines.ContainsKey(session.UserId))
+            _deadlines[session.UserId] = _timing.CurTime + TimeSpan.FromSeconds(_selectionSeconds);
+
+        SendState(session);
+    }
+
+    private void OnSelect(KatorgaFactionSelectEvent ev, EntitySessionEventArgs args)
+    {
+        TrySelectFaction(args.SenderSession, ev.FactionId);
+    }
+
+    /// <summary>
+    ///     Отправляет клиенту варианты, остаток времени и выбранную фракцию.
+    ///     Клиент считает остаток сам по своим часам, поэтому расхождение времени не мешает.
+    /// </summary>
+    private void SendState(ICommonSession session)
+    {
+        var options = _prototype.EnumeratePrototypes<KatorgaFactionPrototype>()
+            .OrderBy(faction => faction.Order)
+            .ThenBy(faction => faction.ID)
+            .Select(faction => new KatorgaFactionChoice
+            {
+                Id = faction.ID,
+                Name = Loc.GetString(faction.Name),
+                Feature = Loc.GetString(faction.Feature),
+            })
+            .ToList();
+
+        var seconds = 0;
+        if (_deadlines.TryGetValue(session.UserId, out var deadline))
+            seconds = Math.Max(0, (int) Math.Ceiling((deadline - _timing.CurTime).TotalSeconds));
+
+        RaiseNetworkEvent(new KatorgaFactionStateEvent
+        {
+            Options = options,
+            SecondsRemaining = seconds,
+            Selected = _factions.TryGetValue(session.UserId, out var selected) ? selected.Id : null,
+        }, session);
     }
 
     private bool HasSpawnPoints(ProtoId<KatorgaFactionPrototype> faction)
@@ -244,14 +254,8 @@ public sealed class KatorgaFactionSystem : EntitySystem
 
     private void OnRoundRestartCleanup(RoundRestartCleanupEvent ev)
     {
-        foreach (var eui in _euis.Values.ToArray())
-        {
-            if (!eui.IsShutDown)
-                eui.Close();
-        }
-
         _factions.Clear();
         _deadlines.Clear();
-        _euis.Clear();
+        _eligible.Clear();
     }
 }

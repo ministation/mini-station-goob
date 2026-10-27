@@ -17,6 +17,8 @@
         <ScrollContainer  SizeFlagsStretchRatio="1" HorizontalExpand="True">
             <BoxContainer Name="JobList" Orientation="Vertical" Margin="4 4" HorizontalExpand="True" SizeFlagsStretchRatio="1">
                 <Label Name="BanNotice" Visible="False" HorizontalExpand="True" Margin="4 0 4 8" Align="Center" FontColorOverride="{x:Static maths:Color.Gold}"/>
+                <Label Name="FactionNotice" Visible="False" HorizontalExpand="True" Margin="4 0 4 4" Align="Center" FontColorOverride="{x:Static maths:Color.Gold}"/>
+                <BoxContainer Name="FactionList" Orientation="Vertical" Visible="False" Margin="4 0 4 8"/>
                 <Label Name="BalanceNotice" Visible="False" HorizontalExpand="True" Margin="4 0 4 8"/>
                 <Button Name="CrewManifestButton" Text="Манифест экипажа" HorizontalAlignment="Center" Visible="False"/>
             </BoxContainer>

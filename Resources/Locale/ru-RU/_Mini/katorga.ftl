@@ -17,9 +17,8 @@ ent-KatorgaMineralScanner = сканер минералов каторги
 katorga-grid-miners = Лагерь Горняков
 katorga-grid-freemen = Лагерь Вольных
 
-katorga-faction-ui-title = Выбор фракции каторги
-katorga-faction-ui-countdown = Автоназначение через { $seconds } с. Фракция определяет снаряжение, лагерь и правила килов.
-katorga-faction-ui-assigning = Фракция назначается...
+katorga-faction-latejoin-countdown = Выберите фракцию: автоназначение через { $seconds } с.
+katorga-faction-latejoin-assigning = Фракция назначается...
 
 katorga-faction-selected = Вы вступили во фракцию «{ $faction }».
 katorga-faction-assigned = Время выбора вышло: вы определены во фракцию «{ $faction }».

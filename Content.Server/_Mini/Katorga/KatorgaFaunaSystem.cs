@@ -189,6 +189,12 @@ public sealed class KatorgaFaunaSystem : EntitySystem
             var direction = _random.NextAngle().ToVec();
             var distance = _random.NextFloat(spawner.MinBaseDistance, spawner.MaxBaseDistance);
             var point = center + direction * distance;
+
+            // Стены лагеря живут на своём гриде, поэтому проверка блокировки по гриду карты
+            // их не видит: мобы спавнились прямо в помещениях. Тайлы лагеря проверяем отдельно.
+            if (IsInsideBase(population, point))
+                continue;
+
             var indices = _map.WorldToTile(mapUid, grid, point);
 
             // Тайл должен быть уже сгенерирован (биом растёт вокруг игроков и баз):
@@ -210,6 +216,25 @@ public sealed class KatorgaFaunaSystem : EntitySystem
 
             coordinates = _map.GridTileToLocal(mapUid, grid, indices);
             return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    ///     Точка попадает на непустой тайл одного из лагерей (пол, стена, решётка),
+    ///     то есть внутрь аванпоста, а не на астероид вокруг него.
+    /// </summary>
+    private bool IsInsideBase(KatorgaFaunaPopulationComponent population, Vector2 point)
+    {
+        foreach (var baseUid in population.Bases)
+        {
+            if (!TryComp<MapGridComponent>(baseUid, out var baseGrid))
+                continue;
+
+            var indices = _map.WorldToTile(baseUid, baseGrid, point);
+            if (_map.TryGetTileRef(baseUid, baseGrid, indices, out var baseTile) && !baseTile.Tile.IsEmpty)
+                return true;
         }
 
         return false;

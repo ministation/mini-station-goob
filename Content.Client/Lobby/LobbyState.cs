@@ -53,6 +53,7 @@ namespace Content.Client.Lobby
         private ISawmill _sawmill = default!; // Goobstation
         private ClientGameTicker _gameTicker = default!;
         private ContentAudioSystem _contentAudioSystem = default!;
+        private bool _katorgaLateJoinOpened;
 
         protected override Type? LinkedScreenType => typeof(LobbyGui);
         public LobbyGui? Lobby;
@@ -100,6 +101,10 @@ namespace Content.Client.Lobby
             _gameTicker.InfoBlobUpdated += UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated += LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated += LobbyLateJoinStatusUpdated;
+            _katorgaBans.BanStatusChanged += OnKatorgaBanStatusChanged;
+
+            _katorgaLateJoinOpened = false;
+            TryOpenKatorgaLateJoin();
 
             // _serverCur.BalanceChange += UpdatePlayerBalance; // Goobstation - Goob Coin
         }
@@ -117,6 +122,7 @@ namespace Content.Client.Lobby
             _gameTicker.InfoBlobUpdated -= UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated -= LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated -= LobbyLateJoinStatusUpdated;
+            _katorgaBans.BanStatusChanged -= OnKatorgaBanStatusChanged;
             //_contentAudioSystem.LobbySoundtrackChanged -= UpdateLobbySoundtrackInfo;
             // _serverCur.BalanceChange -= UpdatePlayerBalance; // Goobstation - Goob Coin
             _voteManager.ClearPopupContainer();
@@ -161,6 +167,27 @@ namespace Content.Client.Lobby
         private void OnManifestPressed(BaseButton.ButtonEventArgs args)
         {
             _entityManager.System<ReadyManifestSystem>().RequestReadyManifest();
+        }
+
+        private void OnKatorgaBanStatusChanged()
+        {
+            TryOpenKatorgaLateJoin();
+        }
+
+        /// <summary>
+        ///     Временно забаненному окно позднего подключения открывается само: там выбор фракции
+        ///     каторги и единственная должность - заключённый. Один раз за заход в лобби.
+        /// </summary>
+        private void TryOpenKatorgaLateJoin()
+        {
+            if (_katorgaLateJoinOpened || Lobby == null || !_gameTicker.IsGameStarted)
+                return;
+
+            if (!_katorgaBans.TryGetActiveBan(out _))
+                return;
+
+            _katorgaLateJoinOpened = true;
+            new NFLateJoinGui().OpenCentered();
         }
 
         public override void FrameUpdate(FrameEventArgs e)
@@ -229,6 +256,8 @@ namespace Content.Client.Lobby
         private void LobbyStatusUpdated()
         {
             UpdateLobbyUi();
+            // Раунд начался: забаненному пора открыть late join с выбором фракции.
+            TryOpenKatorgaLateJoin();
         }
 
         private void LobbyLateJoinStatusUpdated()

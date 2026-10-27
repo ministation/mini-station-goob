@@ -10,6 +10,7 @@
   name: katorga-faction-miners-name
   feature: katorga-faction-miners-feature
   gear: KatorgaMinersGear
+  icon: KatorgaFactionMinersIcon
   color: "#C87F35"
   order: 0
 
@@ -18,5 +19,6 @@
   name: katorga-faction-freemen-name
   feature: katorga-faction-freemen-feature
   gear: KatorgaFreemenGear
+  icon: KatorgaFactionFreemenIcon
   color: "#8C3B47"
   order: 1

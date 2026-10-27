@@ -33,16 +33,19 @@ public sealed partial class NFLateJoinGui : FancyWindow
 
     private ClientGameTicker _gameTicker;
     private TypanWarUiSystem _warUi;
+    private KatorgaUiSystem _katorgaUi;
     [Dependency] private readonly KatorgaBanManager _katorgaBans = default!;
 
     private NetEntity _lastSelection;
 
     private readonly Dictionary<string, BoxContainer> _jobCategories;
     private readonly Dictionary<string, NewFrontierLateJoinJobButton> _buttons = new();
+    private readonly List<Button> _factionButtons = new();
 
     // Временно забаненный видит только должность заключённого и никаких станций.
     private bool _prisonerMode;
     private int _lastBanSecond = -1;
+    private int _lastFactionSecond = -1;
 
     public NFLateJoinGui()
     {
@@ -50,9 +53,11 @@ public sealed partial class NFLateJoinGui : FancyWindow
         IoCManager.InjectDependencies(this);
         _gameTicker = EntitySystem.Get<ClientGameTicker>();
         _warUi = EntitySystem.Get<TypanWarUiSystem>();
+        _katorgaUi = EntitySystem.Get<KatorgaUiSystem>();
         _gameTicker.LobbyJobsAvailableUpdated += UpdateUi;
         _warUi.BalanceUpdated += OnBalanceUpdated;
         _katorgaBans.BanStatusChanged += OnBanStatusChanged;
+        _katorgaUi.FactionStateChanged += OnFactionStateChanged;
 
         _jobCategories = new Dictionary<string, BoxContainer>();
         StationSelection.StationsItemList.OnItemSelected += args =>
@@ -67,6 +72,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
         _lastSelection = _gameTicker.JobsAvailable.Keys.FirstOrNull() ?? NetEntity.Invalid;
 
         _warUi.RequestBalanceStatus();
+        _katorgaUi.RequestFactionState();
         UpdateUi(_gameTicker.JobsAvailable);
         UpdateBalanceNotice();
     }
@@ -77,11 +83,18 @@ public sealed partial class NFLateJoinGui : FancyWindow
         _gameTicker.LobbyJobsAvailableUpdated -= UpdateUi;
         _warUi.BalanceUpdated -= OnBalanceUpdated;
         _katorgaBans.BanStatusChanged -= OnBanStatusChanged;
+        _katorgaUi.FactionStateChanged -= OnFactionStateChanged;
     }
 
     private void OnBanStatusChanged()
     {
         UpdateUi(_gameTicker.JobsAvailable);
+    }
+
+    private void OnFactionStateChanged()
+    {
+        if (_prisonerMode)
+            RebuildFactionUi();
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
@@ -114,6 +127,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
             _prisonerMode = false;
             _lastBanSecond = -1;
             BanNotice.Visible = false;
+            HideFactionUi();
             ClearJobList();
             _lastSelection = NetEntity.Invalid;
         }
@@ -256,10 +270,13 @@ public sealed partial class NFLateJoinGui : FancyWindow
         {
             _prisonerMode = true;
             ClearJobList();
+            RebuildFactionUi();
         }
-        else if (_buttons.Count > 0)
+        else
         {
-            return;
+            UpdateFactionCountdown();
+            if (_buttons.Count > 0)
+                return;
         }
 
         var station = obj
@@ -289,6 +306,83 @@ public sealed partial class NFLateJoinGui : FancyWindow
 
         JobList.AddChild(button);
         _buttons[KatorgaJobs.Prisoner] = button;
+    }
+
+    /// <summary>
+    ///     Выбор фракции каторги в окне позднего подключения: кнопки с названием и описанием
+    ///     и отсчёт до автоназначения. Фракция уже выбрана - показываем её без кнопок.
+    /// </summary>
+    private void RebuildFactionUi()
+    {
+        FactionList.RemoveAllChildren();
+        _factionButtons.Clear();
+        _lastFactionSecond = -1;
+
+        var state = _katorgaUi.FactionState;
+        if (state == null || state.Options.Count == 0)
+        {
+            HideFactionUi();
+            return;
+        }
+
+        FactionNotice.Visible = true;
+        FactionList.Visible = true;
+
+        if (state.Selected != null)
+        {
+            var selected = state.Options.FirstOrDefault(option => option.Id == state.Selected);
+            FactionNotice.Text = Loc.GetString("katorga-faction-selected", ("faction", selected?.Name ?? state.Selected));
+            FactionList.Visible = false;
+            return;
+        }
+
+        foreach (var option in state.Options)
+        {
+            var choice = option;
+            var button = new Button
+            {
+                Text = choice.Name,
+                MinHeight = 34,
+            };
+            button.OnPressed += _ => _katorgaUi.RequestFactionSelect(choice.Id);
+            FactionList.AddChild(button);
+            _factionButtons.Add(button);
+
+            var feature = new RichTextLabel();
+            feature.SetMessage(FormattedMessage.FromMarkupPermissive(choice.Feature));
+            FactionList.AddChild(feature);
+        }
+
+        UpdateFactionCountdown();
+    }
+
+    /// <summary>Обновляет строку отсчёта и гасит кнопки, когда время на выбор вышло.</summary>
+    private void UpdateFactionCountdown()
+    {
+        var state = _katorgaUi.FactionState;
+        if (state == null || state.Selected != null || _factionButtons.Count == 0)
+            return;
+
+        var second = _katorgaUi.FactionSecondsRemaining;
+        if (second == _lastFactionSecond)
+            return;
+
+        _lastFactionSecond = second;
+        FactionNotice.Text = second > 0
+            ? Loc.GetString("katorga-faction-latejoin-countdown", ("seconds", second))
+            : Loc.GetString("katorga-faction-latejoin-assigning");
+
+        foreach (var button in _factionButtons)
+            button.Disabled = second <= 0;
+    }
+
+    private void HideFactionUi()
+    {
+        FactionNotice.Visible = false;
+        FactionList.Visible = false;
+        FactionList.RemoveAllChildren();
+        _factionButtons.Clear();
+        _lastFactionSecond = -1;
     }
 
     private void ClearJobList()

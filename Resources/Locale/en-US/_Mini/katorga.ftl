@@ -17,9 +17,8 @@ ent-KatorgaMineralScanner = katorga mineral scanner
 katorga-grid-miners = Miners Camp
 katorga-grid-freemen = Freemen Camp
 
-katorga-faction-ui-title = Katorga faction choice
-katorga-faction-ui-countdown = Auto-assignment in { $seconds } s. Your faction defines your gear, camp and kill rules.
-katorga-faction-ui-assigning = Assigning faction...
+katorga-faction-latejoin-countdown = Choose a faction: auto-assignment in { $seconds } s.
+katorga-faction-latejoin-assigning = Assigning faction...
 
 katorga-faction-selected = You have joined the "{ $faction }" faction.
 katorga-faction-assigned = Time is up: you have been assigned to the "{ $faction }" faction.
