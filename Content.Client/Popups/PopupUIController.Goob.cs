@@ -45,6 +45,6 @@ public sealed partial class PopupUIController
 
         fontSize = Math.Clamp(fontSize, RunechatStyle.MinFontSize, RunechatStyle.MaxFontSize);
         var size = RunechatStyle.ScaleSize(baseSize, fontSize);
-        return (RunechatStyle.GetFont(RunechatStyle.FontPath, size), color, 2f * size / baseSize * outlineScale);
+        return (RunechatStyle.GetFont(size), color, 2f * size / baseSize * outlineScale);
     }
 }

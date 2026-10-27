@@ -104,8 +104,8 @@ public sealed class ESNamePeekOverlay : Overlay
         if (_cfg.GetCVar(GoobCVars.ChatRunechat))
         {
             var size = Math.Clamp(_cfg.GetCVar(GoobCVars.ChatRunechatFontSize), RunechatStyle.MinFontSize, RunechatStyle.MaxFontSize);
-            font = RunechatStyle.GetFont(RunechatStyle.FontPath, size);
-            smallFont = RunechatStyle.GetFont(RunechatStyle.WhisperFontPath, size);
+            font = RunechatStyle.GetFont(size);
+            smallFont = RunechatStyle.GetFont(RunechatStyle.ScaleSize(10, size));
             outline = new TextOutline(RunechatStyle.GetOutline(size, _cfg.GetCVar(GoobCVars.ChatRunechatOutlineScale)), Color.Black);
         }
         else

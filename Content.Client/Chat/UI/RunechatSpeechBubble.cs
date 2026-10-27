@@ -94,7 +94,12 @@ public sealed class RunechatSpeechBubble : SpeechBubble
     public static RichTextLabel CreateLabel(string text, Color color, bool whisper, bool loud, int fontSize, float outlineScale)
     {
         fontSize = Math.Clamp(fontSize, RunechatStyle.MinFontSize, RunechatStyle.MaxFontSize);
-        var size = loud && !whisper ? RunechatStyle.GetLoudSize(fontSize) : fontSize;
+        var size = loud && !whisper
+            ? RunechatStyle.GetLoudSize(fontSize)
+            : whisper
+                ? RunechatStyle.ScaleSize(9, fontSize)
+                : fontSize;
+        var font = RunechatStyle.GetFont(size);
 
         var msg = new FormattedMessage();
         msg.AddMarkupPermissive($"[color={color.ToHex()}]{FormattedMessage.EscapeText(text.Trim())}[/color]");
@@ -107,7 +112,7 @@ public sealed class RunechatSpeechBubble : SpeechBubble
             OutlineThicknessOverride = outline,
             OutlineColorOverride = Color.Black,
             Margin = new Thickness(pad, pad, pad, pad + 2),
-            Stylesheet = RunechatStyle.GetStylesheet(whisper ? RunechatStyle.WhisperFontPath : RunechatStyle.FontPath, size),
+            Stylesheet = RunechatStyle.GetStylesheet(font),
         };
         label.SetMessage(msg, AllowedTags);
 
