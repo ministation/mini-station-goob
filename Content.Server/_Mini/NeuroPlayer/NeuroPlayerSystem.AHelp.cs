@@ -8,6 +8,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Administration.Managers;
@@ -16,6 +17,7 @@ using Content.Server.Administration.Systems;
 using Content.Server.Chat.Managers;
 using Content.Server.Database;
 using Content.Shared._Mini.MiniCCVars;
+using Content.Shared._Mini.NeuroAHelp;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
@@ -67,6 +69,7 @@ public sealed partial class NeuroPlayerSystem
     private int _ahelpDelaySeconds;
     private int _ahelpNoAdminDelaySeconds;
     private int _ahelpAdminSilenceSeconds;
+    private int _ahelpStaffMuteMinutes;
     private int _ahelpCooldownSeconds;
     private int _ahelpMaxContext;
     private int _ahelpMaxTokens;
@@ -85,6 +88,15 @@ public sealed partial class NeuroPlayerSystem
     private string _ahelpKnowledgeCache = string.Empty;
     private DateTime _ahelpKnowledgeStamp = DateTime.MinValue;
     private bool _ahelpKnowledgeWarned;
+
+    /// <summary>Аварийный выключатель ассистента командой /global off (до рестарта сервера).</summary>
+    private bool _ahelpGlobalOff;
+
+    /// <summary>Тикеты, где ИИ замучен командой /stop (до времени или до конца раунда).</summary>
+    private readonly Dictionary<NetUserId, TimeSpan> _ahelpTicketMutedUntil = new();
+
+    /// <summary>Тикеты с форсированным ответом (/answer): один раз игнорирует тишину админа.</summary>
+    private readonly HashSet<NetUserId> _ahelpForcedTickets = new();
 
     private readonly Dictionary<NetUserId, List<(AHelpSpeaker Speaker, string Text)>> _ahelpContext = new();
     private readonly Dictionary<NetUserId, TimeSpan> _ahelpLastStaffMessage = new();
@@ -105,7 +117,7 @@ public sealed partial class NeuroPlayerSystem
     private readonly ConcurrentQueue<(NetUserId UserId, string Text)> _ahelpAssistantLines = new();
 
     /// <summary>A player message waiting out the admin grace period before the AI steps in.</summary>
-    private sealed record PendingAHelp(NetUserId UserId, string PlayerName, TimeSpan AskedAt);
+    private sealed record PendingAHelp(NetUserId UserId, string PlayerName, TimeSpan AskedAt, bool Force = false);
 
     private void InitializeAHelp()
     {
@@ -114,6 +126,7 @@ public sealed partial class NeuroPlayerSystem
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpDelaySeconds, v => _ahelpDelaySeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpNoAdminDelaySeconds, v => _ahelpNoAdminDelaySeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpAdminSilenceSeconds, v => _ahelpAdminSilenceSeconds = v, true);
+        Subs.CVar(_cfg, MiniCCVars.NeuroAHelpStaffMuteMinutes, v => _ahelpStaffMuteMinutes = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpCooldownSeconds, v => _ahelpCooldownSeconds = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxContext, v => _ahelpMaxContext = v, true);
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpMaxTokens, v => _ahelpMaxTokens = v, true);
@@ -130,6 +143,8 @@ public sealed partial class NeuroPlayerSystem
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpKnowledgeMaxChars, v => _ahelpKnowledgeMaxChars = v, true);
 
         SubscribeNetworkEvent<SharedBwoinkSystem.BwoinkTextMessage>(OnAHelpTextMessage);
+        // Команды админов ("/stop", "/status", ...) приходят из BwoinkSystem: он их перехватывает до релея игроку.
+        SubscribeLocalEvent<AHelpAdminCommandEvent>(OnAHelpAdminCommand);
         // RoundRestartCleanupEvent is already subscribed in the main Initialize(); the ahelp state is
         // reset from that handler via ResetAHelpState() - a second subscription throws at startup.
     }
@@ -144,6 +159,8 @@ public sealed partial class NeuroPlayerSystem
         _ahelpRequestTimes.Clear();
         _ahelpWarnTimes.Clear();
         _ahelpAgentUsers.Clear();
+        _ahelpTicketMutedUntil.Clear();
+        _ahelpForcedTickets.Clear();
         _ahelpKnowledgeWarned = false;
     }
 
@@ -171,11 +188,23 @@ public sealed partial class NeuroPlayerSystem
         if (fromPlayer && senderAdmin != null)
             return;
 
+        // Команды ассистенту исполняются через AHelpAdminCommandEvent (см. BwoinkSystem), в контекст
+        // тикета и очередь ответов они попадать не должны.
+        if (fromStaff && NeuroAHelpCommands.IsCommand(message.Text))
+            return;
+
         AddAHelpContext(message.UserId, fromPlayer ? AHelpSpeaker.Player : AHelpSpeaker.Staff, message.Text);
 
         if (fromStaff)
         {
             _ahelpLastStaffMessage[message.UserId] = _timing.CurTime;
+
+            // Тикет забрал живой админ: кольцо в окне ахелпа переводится в режим «молчит».
+            var mute = TimeSpan.FromMinutes(Math.Max(0, _ahelpStaffMuteMinutes));
+            BroadcastAHelpStatus(message.UserId, NeuroAHelpState.Silent,
+                mute > TimeSpan.Zero
+                    ? $"тихо: тикет взял администратор, ИИ молчит {Math.Max(1, (int) mute.TotalMinutes)} мин"
+                    : "тихо: тикет взял администратор");
             return;
         }
 
@@ -184,13 +213,177 @@ public sealed partial class NeuroPlayerSystem
         // no_admin_delay_seconds. It is recomputed in TickAHelp, so an admin coming online later
         // extends the wait instead of cancelling the ticket.
         _ahelpQueue.RemoveAll(pending => pending.UserId == message.UserId);
-        _ahelpQueue.Add(new PendingAHelp(message.UserId, session.Name, _timing.CurTime));
+        // Форсированный разбор (/answer) должен переживать новые сообщения игрока.
+        var force = _ahelpForcedTickets.Contains(message.UserId);
+        _ahelpQueue.Add(new PendingAHelp(message.UserId, session.Name, _timing.CurTime, force));
     }
 
     /// <summary>Whether any non-de-adminned admin is connected right now.</summary>
     private bool HasActiveAdmins()
     {
         return _adminManager.ActiveAdmins.Any();
+    }
+
+    /// <summary>Кольцо-индикатор нейропомощника у админов: одно сообщение на смену состояния.</summary>
+    private void BroadcastAHelpStatus(NetUserId userId, NeuroAHelpState state, string detail)
+    {
+        // Агент работает в потоковом пуле: доступ к админам только из основного потока.
+        _taskManager.RunOnMainThread(() =>
+        {
+            foreach (var admin in _adminManager.ActiveAdmins)
+            {
+                if (_adminManager.GetAdminData(admin) is not { } data || !data.HasFlag(AdminFlags.Adminhelp))
+                    continue;
+
+                RaiseNetworkEvent(new NeuroAHelpStatusMessage(userId, state, _ahelpName, detail), admin.Channel);
+            }
+        });
+    }
+
+    /// <summary>
+    /// Системная строка для админов в тикете (результаты команд /stop, /status, ...). Игроку и в вебхук не уходит.
+    /// </summary>
+    private void SendAHelpAdminNote(NetUserId userId, string text)
+    {
+        var line = $"[color={AHelpColor}]{FormattedMessage.EscapeText(text)}[/color]";
+
+        foreach (var admin in _adminManager.ActiveAdmins)
+        {
+            if (_adminManager.GetAdminData(admin) is not { } data || !data.HasFlag(AdminFlags.Adminhelp))
+                continue;
+
+            RaiseNetworkEvent(new SharedBwoinkSystem.BwoinkTextMessage(
+                userId, SharedBwoinkSystem.SystemUserId, line, playSound: false, adminOnly: true), admin.Channel);
+        }
+    }
+
+    private void OnAHelpAdminCommand(AHelpAdminCommandEvent ev)
+    {
+        // На случай прямого поднятия события без проверки прав в BwoinkSystem.
+        var senderAdmin = _adminManager.GetAdminData(ev.Sender);
+        if (senderAdmin == null || !senderAdmin.HasFlag(AdminFlags.Adminhelp))
+            return;
+
+        if (!NeuroAHelpCommands.TryParse(ev.Text, out var command, out var error))
+        {
+            SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] {error}");
+            return;
+        }
+
+        var now = _timing.CurTime;
+        var online = _playerManager.TryGetSessionById(ev.Channel, out var targetSession);
+
+        switch (command.Kind)
+        {
+            case NeuroAHelpCommandKind.Help:
+                SendAHelpAdminNote(ev.Channel,
+                    $"[{_ahelpName}] команды в ахелпе: /stop [минут] - молчать в этом тикете (без числа - до конца раунда); " +
+                    "/on - снова отвечать в тикете; /answer (или /go) - ответить сейчас, не дожидаясь тишины; " +
+                    "/reset - забыть переписку тикета; /status - что я делаю; /global off|on - выключить/включить меня совсем.");
+                break;
+
+            case NeuroAHelpCommandKind.Status:
+            {
+                var state = _ahelpGlobalOff
+                    ? "выключен глобально (/global on)"
+                    : _ahelpEnabled
+                        ? "включен"
+                        : "выключен сервером (neuroahelp.enabled)";
+                var adminOnline = HasActiveAdmins() ? "админы в сети" : "админов нет";
+                var context = _ahelpContext.TryGetValue(ev.Channel, out var lines) ? lines.Count : 0;
+                var busy = _ahelpAgentUsers.Contains(ev.Channel) ? "агент разбирает тикет" : "агент свободен";
+
+                var ticket = new StringBuilder($"{busy}, строк в контексте: {context}");
+                if (_ahelpTicketMutedUntil.TryGetValue(ev.Channel, out var mutedUntil))
+                {
+                    ticket.Append(mutedUntil == TimeSpan.MaxValue
+                        ? ", ИИ замучен до конца раунда"
+                        : $", ИИ замучен ещё {Math.Ceiling((mutedUntil - now).TotalMinutes)} мин");
+                }
+
+                if (_ahelpLastStaffMessage.TryGetValue(ev.Channel, out var staffAt))
+                {
+                    ticket.Append($", админ отвечал {(int) (now - staffAt).TotalMinutes} мин назад");
+                }
+
+                if (_ahelpLastReply.TryGetValue(ev.Channel, out var replyAt))
+                {
+                    ticket.Append($", ИИ отвечал {(int) (now - replyAt).TotalMinutes} мин назад");
+                }
+
+                ticket.Append(online ? $", игрок «{targetSession!.Name}» в сети" : ", игрок не в сети");
+                SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] {state}, {adminOnline}. {ticket}");
+                break;
+            }
+
+            case NeuroAHelpCommandKind.Off:
+                _ahelpQueue.RemoveAll(pending => pending.UserId == ev.Channel);
+                _ahelpForcedTickets.Remove(ev.Channel);
+                _ahelpTicketMutedUntil[ev.Channel] =
+                    command.Minutes > 0 ? now + TimeSpan.FromMinutes(command.Minutes) : TimeSpan.MaxValue;
+                BroadcastAHelpStatus(ev.Channel, NeuroAHelpState.Muted,
+                    command.Minutes > 0
+                        ? $"выключен админом на {command.Minutes} мин"
+                        : "выключен админом до конца раунда");
+                SendAHelpAdminNote(ev.Channel,
+                    command.Minutes > 0
+                        ? $"[{_ahelpName}] молчу в этом тикете {command.Minutes} мин. Вернуть: /on."
+                        : $"[{_ahelpName}] молчу в этом тикете до конца раунда. Вернуть: /on.");
+                _sawmill.Info($"Neuro ahelp: {ev.Sender.Name} muted the assistant in the ticket of {ev.Channel} ({command.Minutes} min).");
+                break;
+
+            case NeuroAHelpCommandKind.On:
+                if (_ahelpTicketMutedUntil.Remove(ev.Channel))
+                {
+                    BroadcastAHelpStatus(ev.Channel, NeuroAHelpState.Idle, string.Empty);
+                    SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] снова отвечаю в этом тикете.");
+                }
+                else
+                {
+                    SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] в этом тикете я и не был выключен.");
+                }
+                break;
+
+            case NeuroAHelpCommandKind.Answer:
+                if (!online)
+                {
+                    SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] игрок не в сети, отвечать некому.");
+                    break;
+                }
+
+                if (_ahelpGlobalOff || !_ahelpEnabled)
+                {
+                    SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] ассистент выключен, сначала /global on.");
+                    break;
+                }
+
+                _ahelpForcedTickets.Add(ev.Channel);
+                _ahelpQueue.RemoveAll(pending => pending.UserId == ev.Channel);
+                // AskedAt в нуле: форсированный тикет проходит любую задержку в TickAHelp.
+                _ahelpQueue.Add(new PendingAHelp(ev.Channel, targetSession!.Name, TimeSpan.Zero, Force: true));
+                SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] разбираю тикет прямо сейчас, несмотря на ответ админа.");
+                break;
+
+            case NeuroAHelpCommandKind.Reset:
+                _ahelpContext.Remove(ev.Channel);
+                _ahelpQueue.RemoveAll(pending => pending.UserId == ev.Channel);
+                _ahelpLastReply.Remove(ev.Channel);
+                SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] переписку тикета забыл, контекст очищен.");
+                break;
+
+            case NeuroAHelpCommandKind.GlobalOff:
+                _ahelpGlobalOff = true;
+                SendAHelpAdminNote(ev.Channel,
+                    $"[{_ahelpName}] выключен для всех тикетов до рестарта сервера или /global on.");
+                _sawmill.Info($"Neuro ahelp: {ev.Sender.Name} disabled the assistant globally.");
+                break;
+
+            case NeuroAHelpCommandKind.GlobalOn:
+                _ahelpGlobalOff = false;
+                SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] снова работаю во всех тикетах.");
+                _sawmill.Info($"Neuro ahelp: {ev.Sender.Name} enabled the assistant globally.");
+                break;
+        }
     }
 
     private void AddAHelpContext(NetUserId userId, AHelpSpeaker speaker, string text)
@@ -209,7 +402,7 @@ public sealed partial class NeuroPlayerSystem
     /// <summary>Grace period expired: re-check that no admin took the ticket, then start the agent.</summary>
     private void TickAHelp()
     {
-        if (!_ahelpEnabled)
+        if (!_ahelpEnabled || _ahelpGlobalOff)
             return;
 
         // Lines from finished requests land in the context here, on the game loop thread.
@@ -224,11 +417,14 @@ public sealed partial class NeuroPlayerSystem
         var delay = adminsOnline
             ? TimeSpan.FromSeconds(Math.Max(0, _ahelpAdminSilenceSeconds))
             : TimeSpan.FromSeconds(Math.Max(0, _ahelpNoAdminDelaySeconds > 0 ? _ahelpNoAdminDelaySeconds : _ahelpDelaySeconds));
+        var staffMute = TimeSpan.FromMinutes(Math.Max(0, _ahelpStaffMuteMinutes));
 
         for (var i = _ahelpQueue.Count - 1; i >= 0; i--)
         {
             var pending = _ahelpQueue[i];
-            if (now - pending.AskedAt < delay)
+
+            // Форсированный тикет (/answer) проходит и задержку, и тишину после админа.
+            if (!pending.Force && now - pending.AskedAt < delay)
                 continue;
 
             // The agent for this player is still working: keep the ticket queued instead of starting
@@ -236,28 +432,60 @@ public sealed partial class NeuroPlayerSystem
             if (_ahelpAgentUsers.Contains(pending.UserId))
                 continue;
 
-            _ahelpQueue.RemoveAt(i);
-
-            // A live admin really answered this ticket after the player's message.
-            if (_ahelpLastStaffMessage.TryGetValue(pending.UserId, out var staffAt) && staffAt > pending.AskedAt)
-                continue;
-
-            if (_ahelpLastReply.TryGetValue(pending.UserId, out var repliedAt) &&
-                now - repliedAt < TimeSpan.FromSeconds(Math.Max(0, _ahelpCooldownSeconds)))
+            if (pending.Force)
             {
-                continue;
+                _ahelpQueue.RemoveAt(i);
             }
+            else
+            {
+                // Команда /stop: ИИ молчит в тикете до времени или до конца раунда.
+                if (_ahelpTicketMutedUntil.TryGetValue(pending.UserId, out var mutedUntil) && now < mutedUntil)
+                {
+                    _ahelpQueue.RemoveAt(i);
+                    continue;
+                }
 
-            if (!_playerManager.TryGetSessionById(pending.UserId, out _))
-                continue;
+                // A live admin really answered this ticket after the player's message.
+                if (_ahelpLastStaffMessage.TryGetValue(pending.UserId, out var staffAt) && staffAt > pending.AskedAt)
+                {
+                    _ahelpQueue.RemoveAt(i);
+                    continue;
+                }
 
-            if (!TryTakeAHelpRequestSlot())
-                continue;
+                // И админ вообще отвечал недавно: пока идет окно тишины, игрок общается с человеком,
+                // и ИИ не встревает между ними даже на новые сообщения.
+                if (staffMute > TimeSpan.Zero &&
+                    _ahelpLastStaffMessage.TryGetValue(pending.UserId, out var lastStaff) &&
+                    now - lastStaff < staffMute)
+                {
+                    _ahelpQueue.RemoveAt(i);
+                    continue;
+                }
+
+                if (_ahelpLastReply.TryGetValue(pending.UserId, out var repliedAt) &&
+                    now - repliedAt < TimeSpan.FromSeconds(Math.Max(0, _ahelpCooldownSeconds)))
+                {
+                    continue;
+                }
+
+                if (!_playerManager.TryGetSessionById(pending.UserId, out _))
+                {
+                    _ahelpQueue.RemoveAt(i);
+                    continue;
+                }
+
+                // Бюджет запросов кончился: тикет остается в очереди и попробует еще раз на
+                // следующем тике, а не пропадает.
+                if (!TryTakeAHelpRequestSlot())
+                    continue;
+
+                _ahelpQueue.RemoveAt(i);
+            }
 
             // Mark the request immediately so a spamming player cannot queue several at once.
             _ahelpLastReply[pending.UserId] = now;
             _ahelpAgentUsers.Add(pending.UserId);
-            _ = RunAdminAgentAsync(pending.UserId, pending.PlayerName, pending.AskedAt);
+            _ = RunAdminAgentAsync(pending.UserId, pending.PlayerName, pending.AskedAt, pending.Force);
         }
     }
 

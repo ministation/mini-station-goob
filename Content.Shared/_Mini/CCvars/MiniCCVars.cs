@@ -880,6 +880,15 @@ public sealed class MiniCCVars
         CVarDef.Create("neuroahelp.warnings_enabled", true, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
+    /// How long the assistant stays silent in a ticket after any admin reply, minutes. While the
+    /// window is running the player keeps talking to the human, and the AI only answers again
+    /// after it expires (or after a forced /ai answer). 0 = only the classic rule "an admin
+    /// answered after this message" applies.
+    /// </summary>
+    public static readonly CVarDef<int> NeuroAHelpStaffMuteMinutes =
+        CVarDef.Create("neuroahelp.staff_mute_minutes", 30, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
     ///     Награды «за время»: ежедневная награда со стриком, билеты за наигранное время и монеты
     ///     за онлайн. Включены по умолчанию; cvar остаётся аварийным выключателем на случай, если
     ///     прогрессию нужно временно приостановить. Еженедельные квесты и достижения имеют свою

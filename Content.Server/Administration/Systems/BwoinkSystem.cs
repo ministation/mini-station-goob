@@ -36,6 +36,7 @@ using Content.Shared.Database;
 using Robust.Shared.Prototypes;
 using Content.Shared._Amour.Stickers;
 using Content.Server._Amour.Stickers;
+using Content.Server._Mini.NeuroPlayer;
 using Content.Shared._Mini.CoinShop;
 
 namespace Content.Server.Administration.Systems
@@ -717,6 +718,16 @@ namespace Content.Server.Administration.Systems
             if (!authorized)
             {
                 // Unauthorized bwoink (log?)
+                return;
+            }
+
+            // Мини: короткие слэш-команды админа ("/stop", "/status", ...) - это команды
+            // нейропомощнику. Они не должны дойти ни до игрока, ни до Discord-вебхука, поэтому
+            // перехватываем до релея и отдаем в NeuroPlayerSystem. Нераспознанная "/"-строка
+            // уходит игроку как обычное сообщение.
+            if (senderAHelpAdmin && NeuroAHelpCommands.IsCommand(message.Text))
+            {
+                RaiseLocalEvent(new AHelpAdminCommandEvent(senderSession, message.Text, message.UserId));
                 return;
             }
 

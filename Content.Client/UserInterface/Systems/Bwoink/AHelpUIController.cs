@@ -26,6 +26,7 @@ using System.Numerics;
 using Content.Client.Administration.Managers;
 using Content.Client.Administration.Systems;
 using Content.Client.Administration.UI.Bwoink;
+using Content.Client._Mini.NeuroAHelp;
 using Content.Client.Gameplay;
 using Content.Client.Lobby;
 using Content.Client.Lobby.UI;
@@ -44,7 +45,9 @@ using Robust.Client.UserInterface.Controllers;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.Configuration;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Input.Binding;
+using Robust.Shared.IoC;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
@@ -506,6 +509,13 @@ public sealed class AdminAHelpUIHandler : IAHelpUIHandler
         existingPanel.Visible = false;
         if (!Control!.BwoinkArea.Children.Contains(existingPanel))
             Control.BwoinkArea.AddChild(existingPanel);
+
+        // Мини: статус нейропомощника мог прийти до того, как тикет открыли в UI.
+        if (IoCManager.Resolve<IEntitySystemManager>().TryGetEntitySystem<NeuroAHelpIndicatorSystem>(out var neuro) &&
+            neuro.TryGetStatus(channelId, out var status))
+        {
+            existingPanel.SetNeuroStatus(status.State, status.Name, status.Detail);
+        }
 
         return existingPanel;
     }

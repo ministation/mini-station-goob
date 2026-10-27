@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.Database;
+using Content.Shared._Mini.NeuroAHelp;
 using Content.Shared.Administration.Logs;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
@@ -54,6 +55,9 @@ public sealed partial class NeuroPlayerSystem
         public required string PlayerName { get; init; }
         public required TimeSpan AskedAt { get; init; }
         public DateTime StartedUtc { get; init; } = DateTime.UtcNow;
+
+        /// <summary>Запущен принудительно (/ai answer): ответ живого админа его не снимает.</summary>
+        public bool Forced { get; init; }
 
         public int Steps { get; set; }
         public bool Replied { get; set; }
@@ -123,14 +127,17 @@ public sealed partial class NeuroPlayerSystem
     }
 
     /// <summary>Main entry point called from <c>TickAHelp</c> when the grace period is over.</summary>
-    private async Task RunAdminAgentAsync(NetUserId userId, string playerName, TimeSpan askedAt)
+    private async Task RunAdminAgentAsync(NetUserId userId, string playerName, TimeSpan askedAt, bool forced = false)
     {
         var ticket = new AdminTicket
         {
             UserId = userId,
             PlayerName = playerName,
             AskedAt = askedAt,
+            Forced = forced,
         };
+
+        BroadcastAHelpStatus(userId, NeuroAHelpState.Working, "разбираю обращение");
 
         try
         {
@@ -144,7 +151,7 @@ public sealed partial class NeuroPlayerSystem
 
             var systemPrompt = BuildAdminSystemPrompt();
             var adminCount = await RunAdminMainThreadAsync(() => _adminManager.ActiveAdmins.Count());
-            _sawmill.Info($"Neuro ahelp: admin agent started for {playerName} (admins={adminCount})");
+            _sawmill.Info($"Neuro ahelp: admin agent started for {playerName} (admins={adminCount}, forced={forced})");
 
             var maxSteps = Math.Clamp(_ahelpMaxActionSteps, 1, 12);
             for (var step = 1; step <= maxSteps; step++)
@@ -155,9 +162,11 @@ public sealed partial class NeuroPlayerSystem
                     return;
                 }
 
-                if (await AdminAlreadyAnsweredAsync(ticket))
+                // Форсированный тикет админ попросил явно, поэтому ответ живого админа его не снимает.
+                if (!forced && await AdminAlreadyAnsweredAsync(ticket))
                 {
                     _sawmill.Info($"Neuro ahelp: admin answered the ticket of {playerName}, agent stopped.");
+                    BroadcastAHelpStatus(userId, NeuroAHelpState.Silent, "тихо: тикет взял администратор");
                     return;
                 }
 
@@ -197,10 +206,30 @@ public sealed partial class NeuroPlayerSystem
                     return;
                 }
 
+                raw = StripAdminCodeFences(raw);
+
                 if (!TryParseAdminAction(raw, out var action))
                 {
-                    // The model ignored the JSON protocol. Treat its text as a normal answer, as the
-                    // brief asks, instead of dropping the ticket.
+                    // Модель вернула JSON, но побитый или обрезанный: игроку такой мусор не
+                    // показываем, вместо этого просим модель переформулировать (журнал уйдет в
+                    // следующий шаг) и только на последнем шаге молча передаем тикет админам.
+                    if (LooksLikeAdminActionJson(raw))
+                    {
+                        _sawmill.Info($"Neuro ahelp: model returned broken JSON for {playerName} (step {step}).");
+                        if (step < maxSteps)
+                        {
+                            AddAdminJournal(ticket, "формат",
+                                "Твой прошлый ответ был не валидным JSON или обрезался. " +
+                                "Верни ровно один JSON-объект действия, компактно, без переносов внутри полей.");
+                            continue;
+                        }
+
+                        await FailAdminTicketAsync(ticket, "модель вернула обрезанный JSON");
+                        return;
+                    }
+
+                    // The model ignored the JSON protocol with plain prose: treat its text as a
+                    // normal answer, as the brief asks, instead of dropping the ticket.
                     _sawmill.Info($"Neuro ahelp: model returned plain text for {playerName}, using it as the reply.");
                     await ReplyAdminAsync(ticket, raw);
                     return;
@@ -221,8 +250,38 @@ public sealed partial class NeuroPlayerSystem
         {
             // Fire and forget on purpose: this only clears the "agent is running" flag, and awaiting
             // the game loop here could hang if the round is shutting down.
-            _taskManager.RunOnMainThread(() => _ahelpAgentUsers.Remove(userId));
+            _taskManager.RunOnMainThread(() =>
+            {
+                _ahelpAgentUsers.Remove(userId);
+                _ahelpForcedTickets.Remove(userId);
+            });
         }
+    }
+
+    /// <summary>Убирает markdown-ограждения ```json ... ``` вокруг действия, если модель их прислала.</summary>
+    private static string StripAdminCodeFences(string raw)
+    {
+        var trimmed = raw.Trim();
+        if (!trimmed.StartsWith("```"))
+            return raw;
+
+        // Срезаем первую строку (``` или ```json) и хвостовую решетку.
+        var firstLineEnd = trimmed.IndexOf('\n');
+        if (firstLineEnd < 0)
+            return trimmed;
+
+        var body = trimmed[(firstLineEnd + 1)..].TrimEnd();
+        if (body.EndsWith("```"))
+            body = body[..^3];
+
+        return body.Trim();
+    }
+
+    /// <summary>Похоже ли на действие в JSON: не отправляем такое игроку даже как «простой текст».</summary>
+    private static bool LooksLikeAdminActionJson(string raw)
+    {
+        var trimmed = raw.TrimStart();
+        return trimmed.StartsWith('{') || trimmed.Contains("\"action\"", StringComparison.OrdinalIgnoreCase);
     }
 
     private Task<bool> AdminAlreadyAnsweredAsync(AdminTicket ticket)
@@ -236,6 +295,8 @@ public sealed partial class NeuroPlayerSystem
     {
         var name = (action.Action ?? string.Empty).Trim().ToLowerInvariant();
         _sawmill.Info($"Neuro ahelp: action {name} (ticket {ticket.PlayerName}, step {ticket.Steps})");
+
+        BroadcastAHelpStatus(ticket.UserId, NeuroAHelpState.Working, DescribeAdminAction(name));
 
         switch (name)
         {
@@ -256,6 +317,7 @@ public sealed partial class NeuroPlayerSystem
                 return true;
             case "escalate":
                 AddAdminJournal(ticket, name, await EscalateAdminAsync(ticket, action));
+                BroadcastAHelpStatus(ticket.UserId, NeuroAHelpState.Done, "передал тикет администраторам");
                 return true;
             case "reply":
             {
@@ -272,11 +334,29 @@ public sealed partial class NeuroPlayerSystem
             }
             case "done":
                 AddAdminJournal(ticket, name, "Тикет завершен без ответа.");
+                BroadcastAHelpStatus(ticket.UserId, NeuroAHelpState.Done, "тикет закрыт без ответа");
                 return true;
             default:
                 AddAdminJournal(ticket, name, $"Неизвестное действие '{name}'. Доступные действия: list_players, read_logs, get_notes, warn, ban, escalate, reply, done.");
                 return false;
         }
+    }
+
+    /// <summary>Человекочитаемый статус действия для тултипа кольца у админов.</summary>
+    private static string DescribeAdminAction(string action)
+    {
+        return action switch
+        {
+            "list_players" => "смотрю, кто в сети",
+            "read_logs" => "читаю логи раунда",
+            "get_notes" => "читаю заметки и баны",
+            "warn" => "выдаю предупреждение",
+            "ban" => "рассматриваю бан",
+            "escalate" => "зову живого администратора",
+            "reply" => "пишу ответ игроку",
+            "done" => "завершаю тикет",
+            _ => "разбираю обращение",
+        };
     }
 
     private static void AddAdminJournal(AdminTicket ticket, string action, string result)
@@ -644,6 +724,7 @@ public sealed partial class NeuroPlayerSystem
             return;
 
         _sawmill.Warning($"Neuro ahelp: admin agent failed for {ticket.PlayerName}: {reason}");
+        BroadcastAHelpStatus(ticket.UserId, NeuroAHelpState.Failed, $"не разобрал обращение: {reason}");
 
         try
         {
@@ -678,9 +759,12 @@ public sealed partial class NeuroPlayerSystem
         var sent = await RunAdminMainThreadAsync(() =>
         {
             // A live admin could have answered while the model was thinking: then the AI stays quiet.
-            if (_ahelpLastStaffMessage.TryGetValue(ticket.UserId, out var staffAt) && staffAt > ticket.AskedAt)
+            // Форсированный тикет (/ai answer) админ запустил явно - его ответ живого админа не снимает.
+            if (!ticket.Forced &&
+                _ahelpLastStaffMessage.TryGetValue(ticket.UserId, out var staffAt) && staffAt > ticket.AskedAt)
             {
                 _sawmill.Info($"Neuro ahelp: admin answered {ticket.PlayerName} first, AI reply dropped.");
+                BroadcastAHelpStatus(ticket.UserId, NeuroAHelpState.Silent, "тихо: тикет взял администратор");
                 return false;
             }
 
@@ -700,7 +784,10 @@ public sealed partial class NeuroPlayerSystem
         });
 
         if (sent)
+        {
             ticket.Replied = true;
+            BroadcastAHelpStatus(ticket.UserId, NeuroAHelpState.Done, "ответ отправлен");
+        }
     }
 
     /// <summary>A short ahelp line from the AI, without ending the ticket (used by warn).</summary>
@@ -728,7 +815,14 @@ public sealed partial class NeuroPlayerSystem
     private string CleanAdminReply(string text)
     {
         text = text.Replace('—', '-').Replace('–', '-');
-        text = string.Join(' ', text.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        // Markdown-артефакты: выделения жирным/курсивом и ограждения кода игроку не нужны.
+        text = text.Replace('*', ' ').Replace('`', '"');
+        // Модель иногда начинает ответ с собственного имени: в чате имя и так нарисовано.
+        var namePrefix = _ahelpName + ":";
+        while (text.TrimStart().StartsWith(namePrefix, StringComparison.OrdinalIgnoreCase))
+            text = text.TrimStart()[namePrefix.Length..].TrimStart();
+
+        text = string.Join(' ', text.Split(' ', StringSplitOptions.RemoveEmptyEntries)).Trim();
         return TrimAHelpReply(text, Math.Min(_ahelpMaxReplyChars, MaxAHelpReplyLength));
     }
 
