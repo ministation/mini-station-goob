@@ -33,6 +33,7 @@ public static class AntagTokenCatalog
     public const string RevenantRole = "revenant";
     public const string YaoRole = "yao";
     public const string HeadRevRole = "headrev";
+    public const string GangLeaderRole = "gang_leader";
     public const string CosmicCultRole = "cosmic_cult";
     public const string DevilRole = "devil";
     public const string BlobRole = "blob";

@@ -17,7 +17,7 @@
     definitions:
     - prefRoles: [ GangLeader ]
       max: 4
-      playerRatio: 15
+      playerRatio: 10 # Mini: максимум 1 главарь на 10 игроков
       jobBlacklist: [ Captain, HeadOfPersonnel, HeadOfSecurity, ChiefEngineer, ChiefMedicalOfficer, ResearchDirector, BlueshieldOfficer, NanotrasenRepresentative ] # QM / Det should be allowed
       blacklist:
         components:

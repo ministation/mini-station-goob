@@ -296,8 +296,8 @@
     selectionTime: IntraPlayerSpawn
     definitions:
     - prefRoles: [ Traitor ]
-      max: 8
-      playerRatio: 10
+      max: 6 # Mini: меньше антагов на высоком онлайне
+      playerRatio: 13 # Mini: один трейтор на 13 игроков
       chaosScore: 150 # Goobstation
       skills: # CorvaxGoob-Skills
       - All

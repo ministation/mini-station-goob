@@ -19,7 +19,7 @@
     selectionTime: IntraPlayerSpawn
     definitions:
     - prefRoles: [ Thief ]
-      max: 3
+      max: 2 # Mini: меньше воров в побочном режиме
       playerRatio: 15
       chaosScore: 100 # Goobstation
       lateJoinAdditional: true

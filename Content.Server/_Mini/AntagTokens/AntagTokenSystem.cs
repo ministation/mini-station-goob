@@ -132,6 +132,7 @@ public sealed class AntagTokenSystem : EntitySystem
         "NukeLing",
         "Honkops",
         "TypanStationWar",
+        "Gangwars",
     };
 
     private static void EvaluateFreePurchaseFlags(
@@ -1676,6 +1677,8 @@ public sealed class AntagTokenSystem : EntitySystem
 
         if (TryResolveGameRuleForTokenRole(role, out ruleEntity))
         {
+            NeutralizeTokenRuleSelection(role, ruleEntity);
+
             if (!_gameTicker.IsGameRuleActive(ruleEntity) && !_gameTicker.StartGameRule(ruleEntity))
             {
                 error = Loc.GetString("antag-tokens-error-event-start-failed");
@@ -1692,6 +1695,8 @@ public sealed class AntagTokenSystem : EntitySystem
         }
 
         ruleEntity = _gameTicker.AddGameRule(role.GameRuleId);
+        NeutralizeTokenRuleSelection(role, ruleEntity);
+
         if (!_gameTicker.StartGameRule(ruleEntity))
         {
             error = Loc.GetString("antag-tokens-error-event-start-failed");
@@ -1699,6 +1704,25 @@ public sealed class AntagTokenSystem : EntitySystem
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Мини: роль из магазина на станции добавляет только покупателя, без полного состава правила
+    /// и без антагов, которых правило добирает на позднем входе.
+    /// </summary>
+    private void NeutralizeTokenRuleSelection(AntagRoleDefinition role, EntityUid ruleEntity)
+    {
+        if (role.IgnoresStationJob || !TryComp<AntagSelectionComponent>(ruleEntity, out var selection))
+            return;
+
+        selection.AssignmentComplete = true;
+
+        for (var i = 0; i < selection.Definitions.Count; i++)
+        {
+            var definition = selection.Definitions[i];
+            definition.LateJoinAdditional = false;
+            selection.Definitions[i] = definition;
+        }
     }
 
     private bool WasAntagAssignmentSuccessful(ICommonSession session, Entity<AntagSelectionComponent> rule)
@@ -1977,8 +2001,12 @@ public sealed class AntagTokenSystem : EntitySystem
             role.Mode is AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.GhostRule)
         {
             // Roles that join an existing preset rule (e.g. Nukeops on Nukeops preset) stay available.
-            var allowedOnBlockedPreset = !string.IsNullOrEmpty(role.RequiresPresetGameRuleId) &&
-                                        !IsPresetMissingRequiredGameRule(role.RequiresPresetGameRuleId);
+            // Мини: в войне банд остаётся только лидер банды, остальные антаги отключены.
+            var gangLeaderInGangwars = role.Id == AntagTokenCatalog.GangLeaderRole &&
+                                       !IsPresetMissingRequiredGameRule("Gangwars");
+            var allowedOnBlockedPreset = gangLeaderInGangwars ||
+                                        (!string.IsNullOrEmpty(role.RequiresPresetGameRuleId) &&
+                                         !IsPresetMissingRequiredGameRule(role.RequiresPresetGameRuleId));
             if (!allowedOnBlockedPreset)
             {
                 statusLocKey = "antag-store-status-unavailable";

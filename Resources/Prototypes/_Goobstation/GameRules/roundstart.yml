@@ -35,8 +35,8 @@
     agentName: changeling-roundend-name
     definitions:
     - prefRoles: [ Changeling ]
-      max: 4
-      playerRatio: 12
+      max: 3 # Mini: меньше генокрадов
+      playerRatio: 16 # Mini
       chaosScore: 200
       jobBlacklist: [ Chaplain ] # GOOBSTATION
       skills: # CorvaxGoob-Skills

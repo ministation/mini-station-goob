@@ -5,7 +5,7 @@
 # SPDX-FileCopyrightText: 2026 Mini Station
 # Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
-# Войны банд в пуле голосования. Двое-четверо главарей набираются только с 30 игроков.
+# Войны банд в пуле голосования. Максимум 1 главарь на 10 игроков, остальные антаги в режиме отключены.
 - type: gamePreset
   id: Gangwars
   alias:
@@ -15,10 +15,10 @@
   name: gangwars-title
   description: gangwars-description
   showInVote: true
-  minPlayers: 30
+  minPlayers: 20
   rules:
   - Gangwars
-  - BasicStationEventScheduler
+  - BasicStationEventSchedulerNoAntag
   - MeteorSwarmScheduler
-  - SpaceTrafficControlEventScheduler
+  - SpaceTrafficControlFriendlyEventScheduler
   - BasicRoundstartVariation
