@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Фракции каторги: игрок выбирает фракцию в лобби (или её назначают автоматически
+# в наименее населённую). Фракция даёт снаряжение, точку спавна и правила килов:
+# убийство одноФракционника увеличивает срок, чужоФракционника - сокращает.
+- type: katorgaFaction
+  id: KatorgaFactionMiners
+  name: katorga-faction-miners-name
+  feature: katorga-faction-miners-feature
+  gear: KatorgaMinersGear
+  color: "#C87F35"
+  order: 0
+
+- type: katorgaFaction
+  id: KatorgaFactionFreemen
+  name: katorga-faction-freemen-name
+  feature: katorga-faction-freemen-feature
+  gear: KatorgaFreemenGear
+  color: "#8C3B47"
+  order: 1

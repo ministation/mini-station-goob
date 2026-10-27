@@ -40,3 +40,20 @@
   name: katorga spawn point
   components:
     - type: KatorgaSpawnPoint
+
+# Фракционные точки спавна: стоят в соответствующем лагере на карте каторги.
+- type: entity
+  id: KatorgaSpawnPointMiners
+  parent: KatorgaSpawnPoint
+  suffix: Горняки
+  components:
+    - type: KatorgaSpawnPoint
+      faction: KatorgaFactionMiners
+
+- type: entity
+  id: KatorgaSpawnPointFreemen
+  parent: KatorgaSpawnPoint
+  suffix: Вольные
+  components:
+    - type: KatorgaSpawnPoint
+      faction: KatorgaFactionFreemen

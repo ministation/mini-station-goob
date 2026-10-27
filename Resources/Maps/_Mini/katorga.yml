@@ -1,11 +1,7 @@
-# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
-#
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 meta:
   format: 7
   category: Grid
-  engineVersion: 293.0.0.0
+  engineVersion: 276.0.0-ds14-local
   forkId: ""
   forkVersion: ""
   time: 07/30/2026 18:24:19
@@ -17390,7 +17386,7 @@ entities:
     - type: Transform
       pos: -2.5,0.5
       parent: 2
-- proto: KatorgaSpawnPoint
+- proto: KatorgaSpawnPointMiners
   entities:
   - uid: 1
     components:

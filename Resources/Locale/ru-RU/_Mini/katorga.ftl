@@ -3,8 +3,39 @@ ent-KatorgaOreProcessor = приёмник руды с каторги
 
 ent-KatorgaSpawnPoint = точка спавна каторги
 
+ent-KatorgaSpawnPointMiners = точка спавна каторги
+    .desc = Отсюда начинали не один срок. Фракция Горняков.
+    .suffix = Горняки
+
+ent-KatorgaSpawnPointFreemen = точка спавна каторги
+    .desc = Точка спавна вольных: без кирки, но с характером. Фракция Вольных.
+    .suffix = Вольные
+
 ent-KatorgaMineralScanner = сканер минералов каторги
     .desc = Показывает полезные ископаемые в породе. Заряд не тратится, в кармане работает.
+
+katorga-grid-miners = Лагерь Горняков
+katorga-grid-freemen = Лагерь Вольных
+
+katorga-faction-ui-title = Выбор фракции каторги
+katorga-faction-ui-countdown = Автоназначение через { $seconds } с. Фракция определяет снаряжение, лагерь и правила килов.
+katorga-faction-ui-assigning = Фракция назначается...
+
+katorga-faction-selected = Вы вступили во фракцию «{ $faction }».
+katorga-faction-assigned = Время выбора вышло: вы определены во фракцию «{ $faction }».
+katorga-faction-examine = Фракция: «{ $faction }».
+
+katorga-faction-miners-name = Горняки
+katorga-faction-miners-feature = Снаряжение шахтёра: мезон-очки видят руду сквозь породу, GPS в рюкзаке. Ваше дело - руда и приёмник.
+
+katorga-faction-freemen-name = Вольные
+katorga-faction-freemen-feature = Снаряжение вольного: нож выживания и фонарь в рюкзаке. Ваше дело - твари астероида и охота.
+
+katorga-fauna-reward = Тварь убита, ваш срок сокращён на { $time }.
+
+katorga-cross-kill-reward = Заключённый чужой фракции убит, ваш срок сокращён на { $time }.
+
+katorga-acceleration-note = Пока вы живы на каторге, срок течёт в { $multiplier } раза быстрее.
 
 katorga-lobby-message = Добро пожаловать на сервер. За ваши нарушения вам предоставлен шанс искупить вину тяжёлым трудом: после начала раунда вы будете отправлены на каторгу, где добыча руды сокращает срок вашего бана. За убийство сокамерника срок увеличивается. Перманентный бан отработке не подлежит.
 

@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# Снаряжение заключённого каторги: комплект утилизатора, чтобы на каторгу не попадали голыми.
+# Снаряжение заключённого каторги: комплект утилизатора и набор выживания,
+# чтобы на каторгу не попадали голыми и без медикаментов.
 - type: startingGear
   id: KatorgaInmateGear
   equipment:
@@ -16,6 +17,38 @@
     pocket1: KatorgaMineralScanner
   inhand:
     - Pickaxe
+  storage:
+    back:
+    - BoxSurvival
+    - FlashlightLantern
+    - FoodSnackNutribrick
+    - DrinkWaterBottleFull
+    - Brutepack
+    - Ointment
+    - Gauze
+
+# Фракционное снаряжение каторжников: выдаётся поверх базового комплекта.
+# Астероид за периметром в вакууме, поэтому скафандр остаётся у всех,
+# фракции различаются полезным снаряжением.
+- type: startingGear
+  id: KatorgaMinersGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorOrange
+    neck: ClothingNeckScarfStripedBrown
+    eyes: ClothingEyesGlassesMeson
+  storage:
+    back:
+    - HandheldGPSBasic
+
+- type: startingGear
+  id: KatorgaFreemenGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorMaroon
+    neck: ClothingNeckScarfStripedBlack
+  storage:
+    back:
+    - SurvivalKnife
+    - FlashlightLantern
 
 # Должность заключённого: единственная роль в late join у временно забаненных.
 # Слоты без лимита выдаются сервером на каждой станции (KatorgaSystem.OnStationInitialized).

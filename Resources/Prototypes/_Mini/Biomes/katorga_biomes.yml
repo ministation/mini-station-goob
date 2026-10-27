@@ -76,3 +76,43 @@
     OreSilver: 1
     OreUranium: 1
     OreBananium: 0.5
+
+# Фауна каторги: мобы живут на астероиде вокруг лагерей. Убийство моба
+# сокращает срок заключённому на rewardMinutes минут (KatorgaFaunaSystem).
+- type: katorgaFaunaSpawner
+  id: KatorgaFauna
+  initialCount: 14
+  initialBatchSize: 4
+  softCap: 80
+  hardCap: 110
+  spawnInterval: 75
+  spawnBatchMin: 2
+  spawnBatchMax: 4
+  minPlayerDistance: 18
+  minBaseDistance: 20
+  maxBaseDistance: 100
+  spawns:
+  - prototype: MobWatcherLavaland
+    weight: 30
+    maxCount: 30
+    rewardMinutes: 1
+  - prototype: MobWatcherMagmawing
+    weight: 12
+    maxCount: 20
+    rewardMinutes: 2
+  - prototype: MobBasilisk
+    weight: 18
+    maxCount: 20
+    rewardMinutes: 2
+  - prototype: MobHivelord
+    weight: 15
+    maxCount: 15
+    rewardMinutes: 2
+  - prototype: MobLavalandGoliath
+    weight: 12
+    maxCount: 12
+    rewardMinutes: 3
+  - prototype: MobLegion
+    weight: 4
+    maxCount: 6
+    rewardMinutes: 5
