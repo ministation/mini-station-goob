@@ -1716,7 +1716,10 @@ public sealed class AntagTokenSystem : EntitySystem
     /// </summary>
     private void NeutralizeTokenRuleSelection(AntagRoleDefinition role, EntityUid ruleEntity)
     {
-        if (role.IgnoresStationJob || !TryComp<AntagSelectionComponent>(ruleEntity, out var selection))
+        // Мини: у токена Агента намеренно оставлено прежнее поведение с полным составом правила.
+        if (role.Id == AntagTokenCatalog.AgentRole ||
+            role.IgnoresStationJob ||
+            !TryComp<AntagSelectionComponent>(ruleEntity, out var selection))
             return;
 
         selection.AssignmentComplete = true;
