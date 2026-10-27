@@ -26,11 +26,6 @@ SPDX-License-Identifier: MIT
             SeparationOverride="4"
             HorizontalExpand="True"
             VerticalExpand="True">
-            <!-- Мини: кольцо-индикатор нейропомощника с контекстом его работы в тикете. -->
-            <BoxContainer Name="NeuroStatusHost" Orientation="Horizontal" Visible="False" Margin="8 8 8 0" SeparationOverride="6">
-                <neuro:NeuroRingControl Name="NeuroRing" />
-                <RichTextLabel Name="NeuroStatusLabel" VerticalAlignment="Center" HorizontalExpand="True" />
-            </BoxContainer>
             <goobcontrols:CustomOutputPanel
                 Name="TextOutput"
                 StyleClasses="StyleNano.StyleClassChatOutput"
@@ -47,6 +42,16 @@ SPDX-License-Identifier: MIT
         HorizontalExpand="True"
         SeparationOverride="4"
         Margin="2 0 2 2">
+        <!-- Мини: индикатор нейропомощника слева от ввода, как строка контекста агента. -->
+        <BoxContainer
+            Name="NeuroStatusHost"
+            Orientation="Horizontal"
+            Visible="False"
+            SeparationOverride="6"
+            VerticalAlignment="Center">
+            <neuro:NeuroRingControl Name="NeuroRing" />
+            <Label Name="NeuroStatusLabel" VerticalAlignment="Center" ClipText="True" MaxWidth="280" />
+        </BoxContainer>
         <HistoryLineEdit
             Name="SenderLineEdit"
             HorizontalExpand="True"

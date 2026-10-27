@@ -124,6 +124,7 @@ using Robust.Client.Console;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Network;
 using Robust.Shared.Configuration;
 using Robust.Shared.Utility;
@@ -140,10 +141,15 @@ namespace Content.Client.Administration.UI.Bwoink
         [Dependency] private readonly IClientConsoleHost _console = default!;
         [Dependency] private readonly IUserInterfaceManager _ui = default!;
         [Dependency] private readonly IConfigurationManager _cfg = default!;
-        [Dependency] private readonly NeuroAHelpIndicatorSystem _neuroIndicator = default!;
         public AdminAHelpUIHandler AHelpHelper = default!;
 
         private PlayerInfo? _currentPlayer;
+
+        // Клиентские EntitySystem не живут в IoC: достаем через менеджер систем.
+        private readonly NeuroAHelpIndicatorSystem? _neuroIndicator =
+            IoCManager.Resolve<IEntitySystemManager>().TryGetEntitySystem<NeuroAHelpIndicatorSystem>(out var neuro)
+                ? neuro
+                : null;
 
         public BwoinkControl()
         {
@@ -151,11 +157,14 @@ namespace Content.Client.Administration.UI.Bwoink
             IoCManager.InjectDependencies(this);
 
             // Мини: статус нейропомощника менялся - символ ◉ в списке каналов перерисовывается.
-            _neuroIndicator.OnStatusUpdated += _ =>
+            if (_neuroIndicator != null)
             {
-                if (!Disposed)
-                    ChannelSelector.PlayerListContainer.DirtyList();
-            };
+                _neuroIndicator.OnStatusUpdated += _ =>
+                {
+                    if (!Disposed)
+                        ChannelSelector.PlayerListContainer.DirtyList();
+                };
+            }
 
             var newPlayerThreshold = 0;
             _cfg.OnValueChanged(CCVars.NewPlayerThreshold, (val) => { newPlayerThreshold = val; }, true);
@@ -198,7 +207,8 @@ namespace Content.Client.Administration.UI.Bwoink
                 }
 
                 // Мини: агент нейропомощника сейчас работает по этому тикету.
-                if (_neuroIndicator.TryGetStatus(info.SessionId, out var neuroStatus) &&
+                if (_neuroIndicator != null &&
+                    _neuroIndicator.TryGetStatus(info.SessionId, out var neuroStatus) &&
                     neuroStatus.State == NeuroAHelpState.Working)
                 {
                     sb.Append(new Rune(0x25C9)); // ◉

@@ -721,8 +721,10 @@ namespace Content.Server.Administration.Systems
                 return;
             }
 
-            // Мини: "/ai ..." от админа - команда нейропомощнику. Она не должна дойти ни до игрока,
-            // ни до Discord-вебхука, поэтому перехватываем до релея и отдаем в NeuroPlayerSystem.
+            // Мини: короткие слэш-команды админа ("/stop", "/status", ...) - это команды
+            // нейропомощнику. Они не должны дойти ни до игрока, ни до Discord-вебхука, поэтому
+            // перехватываем до релея и отдаем в NeuroPlayerSystem. Нераспознанная "/"-строка
+            // уходит игроку как обычное сообщение.
             if (senderAHelpAdmin && NeuroAHelpCommands.IsCommand(message.Text))
             {
                 RaiseLocalEvent(new AHelpAdminCommandEvent(senderSession, message.Text, message.UserId));

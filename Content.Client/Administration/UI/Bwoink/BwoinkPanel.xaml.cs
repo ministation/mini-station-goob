@@ -167,8 +167,9 @@ namespace Content.Client.Administration.UI.Bwoink
         private int _neuroStatusVersion;
 
         /// <summary>
-        /// Показывает состояние нейропомощника в тикете: кольцо с цветом состояния и контекстом
-        /// работы («читаю логи раунда»). Idle скрывает полосу; Done гаснет сам через 15 секунд.
+        /// Строка контекста агента слева от ввода: кольцо состояния и то, чем нейропомощник занят
+        /// прямо сейчас («читаю логи раунда»). Полный текст - в тултипе. Idle скрывает полосу;
+        /// Done гаснет сам через 15 секунд.
         /// </summary>
         public void SetNeuroStatus(NeuroAHelpState state, string assistantName, string detail)
         {
@@ -181,29 +182,26 @@ namespace Content.Client.Administration.UI.Bwoink
                 return;
             }
 
-            var (color, glyph) = state switch
+            var color = state switch
             {
-                NeuroAHelpState.Working => ("#8ab4f8", "◐"),
-                NeuroAHelpState.Done => ("#41f097", "●"),
-                NeuroAHelpState.Failed => ("#f0a041", "●"),
-                NeuroAHelpState.Silent => ("#8a8ab0", "○"),
-                NeuroAHelpState.Muted => ("#b05555", "○"),
-                _ => ("#8a8ab0", "○"),
+                NeuroAHelpState.Working => Color.FromHex("#8ab4f8"),
+                NeuroAHelpState.Done => Color.FromHex("#41f097"),
+                NeuroAHelpState.Failed => Color.FromHex("#f0a041"),
+                NeuroAHelpState.Silent => Color.FromHex("#8a8ab0"),
+                NeuroAHelpState.Muted => Color.FromHex("#b05555"),
+                _ => Color.FromHex("#8a8ab0"),
             };
 
             NeuroRing.SetState(state);
             NeuroStatusHost.Visible = true;
-            NeuroStatusHost.ToolTip = detail;
 
             if (string.IsNullOrWhiteSpace(assistantName))
                 assistantName = Loc.GetString("neuro-ahelp-assistant-name");
 
-            var label = Loc.GetString("neuro-ahelp-status-label",
-                ("name", assistantName), ("color", color), ("glyph", glyph), ("detail", detail));
-            var msg = new FormattedMessage();
-            if (!msg.TryAddMarkup(label, out _))
-                msg.AddMarkupPermissive(label);
-            NeuroStatusLabel.SetMessage(msg);
+            NeuroStatusHost.ToolTip = $"{assistantName}: {detail}";
+
+            NeuroStatusLabel.Text = detail;
+            NeuroStatusLabel.FontColorOverride = color;
 
             if (state == NeuroAHelpState.Done)
             {

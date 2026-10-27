@@ -10,7 +10,7 @@ using Robust.Shared.Player;
 
 namespace Content.Server._Mini.NeuroPlayer;
 
-/// <summary>Какую команду /ai ввел админ в ахелпе.</summary>
+/// <summary>Какую команду ввел админ в ахелпе.</summary>
 public enum NeuroAHelpCommandKind : byte
 {
     None,
@@ -24,7 +24,7 @@ public enum NeuroAHelpCommandKind : byte
     Answer,
     /// <summary>Стереть контекст тикета.</summary>
     Reset,
-    /// <summary>Выключить ассистента совсем (до рестарта сервера или /ai global on).</summary>
+    /// <summary>Выключить ассистента совсем (до рестарта сервера или включения обратно).</summary>
     GlobalOff,
     /// <summary>Включить ассистента обратно.</summary>
     GlobalOn,
@@ -34,8 +34,10 @@ public enum NeuroAHelpCommandKind : byte
 public sealed record NeuroAHelpCommand(NeuroAHelpCommandKind Kind, int Minutes);
 
 /// <summary>
-/// Мини: команды админов нейропомощнику, вводимые прямо в ахелпе ("/ai off", "/ai status").
-/// Разбор детерминированный, без LLM; строки нечувствительны к регистру.
+/// Мини: команды админов нейропомощнику, вводимые прямо в ахелпе коротким слэшем: "/stop",
+/// "/on", "/answer", "/reset", "/status", "/global off". Разбор детерминированный, без LLM;
+/// строки нечувствительны к регистру. Префикс "/ai" оставлен как совместимый алиас ("/ai stop").
+/// Нераспознанная строка командой не считается и уходит игроку как обычное сообщение.
 /// </summary>
 public static class NeuroAHelpCommands
 {
@@ -45,31 +47,39 @@ public static class NeuroAHelpCommands
     /// <summary>Является ли строка командой ассистенту (проверяется до отправки игроку и в вебхук).</summary>
     public static bool IsCommand(string text)
     {
-        return MatchesPrefix(text, Prefix) || MatchesPrefix(text, PrefixRu);
+        return TryParse(text, out _, out _);
     }
 
     /// <summary>
-    /// Разбирает команду. minutes знает только Off; отрицательное число или мусор - ошибка.
+    /// Разбирает команду: "/stop 30", "/on", "/answer", "/reset", "/status", "/global off|on".
+    /// minutes знает только stop; отрицательное число или мусор - ошибка.
     /// </summary>
     public static bool TryParse(string text, out NeuroAHelpCommand command, out string error)
     {
         command = new NeuroAHelpCommand(NeuroAHelpCommandKind.None, 0);
         error = string.Empty;
 
-        var body = MatchesPrefix(text, PrefixRu)
-            ? text[PrefixRu.Length..]
-            : MatchesPrefix(text, Prefix)
-                ? text[Prefix.Length..]
-                : null;
-
-        if (body == null)
+        if (!text.StartsWith('/'))
         {
             error = "Это не команда ассистенту.";
             return false;
         }
 
+        var body = text[1..].Trim();
+
+        // Совместимость со старым префиксом: "/ai stop", "/нейро status".
+        foreach (var alias in (string[])[Prefix[1..], PrefixRu[1..]])
+        {
+            if (body.StartsWith(alias, StringComparison.OrdinalIgnoreCase) &&
+                (body.Length == alias.Length || !char.IsLetterOrDigit(body[alias.Length])))
+            {
+                body = body[alias.Length..].Trim();
+                break;
+            }
+        }
+
         // Регистр, ё/е и лишние пробелы не должны ломать разбор.
-        body = body.Trim().Replace('ё', 'е').ToLowerInvariant();
+        body = body.Replace('ё', 'е').ToLowerInvariant();
 
         if (body.Length == 0 || body == "help" || body == "помощь" || body == "?")
         {
@@ -89,7 +99,7 @@ public static class NeuroAHelpCommands
             return true;
         }
 
-        if (body == "answer" || body == "ответ")
+        if (body == "answer" || body == "go" || body == "ответ")
         {
             command = command with { Kind = NeuroAHelpCommandKind.Answer };
             return true;
@@ -101,31 +111,25 @@ public static class NeuroAHelpCommands
             return true;
         }
 
-        if (body == "global off" || body == "офф глобально" || body == "globalOff")
+        if (body == "global off" || body == "глобально выкл" || body == "globaloff")
         {
             command = command with { Kind = NeuroAHelpCommandKind.GlobalOff };
             return true;
         }
 
-        if (body == "global on" || body == "вкл глобально" || body == "globalOn")
+        if (body == "global on" || body == "глобально вкл" || body == "globalon")
         {
             command = command with { Kind = NeuroAHelpCommandKind.GlobalOn };
             return true;
         }
 
-        if (body == "off" || body == "выкл")
-        {
-            command = command with { Kind = NeuroAHelpCommandKind.Off };
-            return true;
-        }
-
-        // "off 45" / "выкл 45" - мут на N минут; число может прийти и до слова ("/ai 45 off").
-        if (body.StartsWith("off") || body.StartsWith("выкл") ||
-            body.EndsWith("off") || body.EndsWith("выкл"))
+        // "stop" / "stop 45" / "45 stop" - ИИ молчит в тикете, число = минуты.
+        if (body.StartsWith("stop") || body.StartsWith("стоп") ||
+            body.EndsWith("stop") || body.EndsWith("стоп"))
         {
             var minutesPart = body
-                .Replace("off", string.Empty)
-                .Replace("выкл", string.Empty)
+                .Replace("stop", string.Empty)
+                .Replace("стоп", string.Empty)
                 .Trim();
             if (minutesPart.Length == 0)
             {
@@ -139,21 +143,12 @@ public static class NeuroAHelpCommands
                 return true;
             }
 
-            error = "Не поняла минуты. Пример: /ai off 45 (или /ai off - до конца раунда).";
+            error = "Не поняла минуты. Пример: /stop 45 (или /stop - до конца раунда).";
             return false;
         }
 
-        error = "Неизвестная команда. Список: /ai help.";
+        error = "Неизвестная команда. Список: /stop [минут], /on, /answer, /reset, /status, /global off|on.";
         return false;
-    }
-
-    /// <summary>Префикс с границей слова: "/ai" ловится, "/airlock rule" - нет.</summary>
-    private static bool MatchesPrefix(string text, string prefix)
-    {
-        if (!text.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        return text.Length == prefix.Length || !char.IsLetterOrDigit(text[prefix.Length]);
     }
 }
 

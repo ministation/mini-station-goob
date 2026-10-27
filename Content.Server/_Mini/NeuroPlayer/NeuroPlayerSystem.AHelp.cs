@@ -89,13 +89,13 @@ public sealed partial class NeuroPlayerSystem
     private DateTime _ahelpKnowledgeStamp = DateTime.MinValue;
     private bool _ahelpKnowledgeWarned;
 
-    /// <summary>Аварийный выключатель ассистента командой /ai global off (до рестарта сервера).</summary>
+    /// <summary>Аварийный выключатель ассистента командой /global off (до рестарта сервера).</summary>
     private bool _ahelpGlobalOff;
 
-    /// <summary>Тикеты, где ИИ замучен командой /ai off (до времени или до конца раунда).</summary>
+    /// <summary>Тикеты, где ИИ замучен командой /stop (до времени или до конца раунда).</summary>
     private readonly Dictionary<NetUserId, TimeSpan> _ahelpTicketMutedUntil = new();
 
-    /// <summary>Тикеты с форсированным ответом (/ai answer): один раз игнорирует тишину админа.</summary>
+    /// <summary>Тикеты с форсированным ответом (/answer): один раз игнорирует тишину админа.</summary>
     private readonly HashSet<NetUserId> _ahelpForcedTickets = new();
 
     private readonly Dictionary<NetUserId, List<(AHelpSpeaker Speaker, string Text)>> _ahelpContext = new();
@@ -143,7 +143,7 @@ public sealed partial class NeuroPlayerSystem
         Subs.CVar(_cfg, MiniCCVars.NeuroAHelpKnowledgeMaxChars, v => _ahelpKnowledgeMaxChars = v, true);
 
         SubscribeNetworkEvent<SharedBwoinkSystem.BwoinkTextMessage>(OnAHelpTextMessage);
-        // Команды админов "/ai ..." приходят из BwoinkSystem: он их перехватывает до релея игроку.
+        // Команды админов ("/stop", "/status", ...) приходят из BwoinkSystem: он их перехватывает до релея игроку.
         SubscribeLocalEvent<AHelpAdminCommandEvent>(OnAHelpAdminCommand);
         // RoundRestartCleanupEvent is already subscribed in the main Initialize(); the ahelp state is
         // reset from that handler via ResetAHelpState() - a second subscription throws at startup.
@@ -213,7 +213,7 @@ public sealed partial class NeuroPlayerSystem
         // no_admin_delay_seconds. It is recomputed in TickAHelp, so an admin coming online later
         // extends the wait instead of cancelling the ticket.
         _ahelpQueue.RemoveAll(pending => pending.UserId == message.UserId);
-        // Форсированный разбор (/ai answer) должен переживать новые сообщения игрока.
+        // Форсированный разбор (/answer) должен переживать новые сообщения игрока.
         var force = _ahelpForcedTickets.Contains(message.UserId);
         _ahelpQueue.Add(new PendingAHelp(message.UserId, session.Name, _timing.CurTime, force));
     }
@@ -241,7 +241,7 @@ public sealed partial class NeuroPlayerSystem
     }
 
     /// <summary>
-    /// Системная строка для админов в тикете (результаты команд /ai). Игроку и в вебхук не уходит.
+    /// Системная строка для админов в тикете (результаты команд /stop, /status, ...). Игроку и в вебхук не уходит.
     /// </summary>
     private void SendAHelpAdminNote(NetUserId userId, string text)
     {
@@ -277,15 +277,15 @@ public sealed partial class NeuroPlayerSystem
         {
             case NeuroAHelpCommandKind.Help:
                 SendAHelpAdminNote(ev.Channel,
-                    $"[{_ahelpName}] команды: /ai status; /ai off [минут] - молчать в тикете (без числа - до конца раунда); " +
-                    "/ai on - вернуть ИИ в тикет; /ai answer - ответить сейчас, не дожидаясь тишины; " +
-                    "/ai reset - забыть переписку тикета; /ai global off|on - выключить/включить ассистента совсем.");
+                    $"[{_ahelpName}] команды в ахелпе: /stop [минут] - молчать в этом тикете (без числа - до конца раунда); " +
+                    "/on - снова отвечать в тикете; /answer (или /go) - ответить сейчас, не дожидаясь тишины; " +
+                    "/reset - забыть переписку тикета; /status - что я делаю; /global off|on - выключить/включить меня совсем.");
                 break;
 
             case NeuroAHelpCommandKind.Status:
             {
                 var state = _ahelpGlobalOff
-                    ? "выключен глобально (/ai global on)"
+                    ? "выключен глобально (/global on)"
                     : _ahelpEnabled
                         ? "включен"
                         : "выключен сервером (neuroahelp.enabled)";
@@ -327,8 +327,8 @@ public sealed partial class NeuroPlayerSystem
                         : "выключен админом до конца раунда");
                 SendAHelpAdminNote(ev.Channel,
                     command.Minutes > 0
-                        ? $"[{_ahelpName}] молчу в этом тикете {command.Minutes} мин. Вернуть: /ai on."
-                        : $"[{_ahelpName}] молчу в этом тикете до конца раунда. Вернуть: /ai on.");
+                        ? $"[{_ahelpName}] молчу в этом тикете {command.Minutes} мин. Вернуть: /on."
+                        : $"[{_ahelpName}] молчу в этом тикете до конца раунда. Вернуть: /on.");
                 _sawmill.Info($"Neuro ahelp: {ev.Sender.Name} muted the assistant in the ticket of {ev.Channel} ({command.Minutes} min).");
                 break;
 
@@ -353,7 +353,7 @@ public sealed partial class NeuroPlayerSystem
 
                 if (_ahelpGlobalOff || !_ahelpEnabled)
                 {
-                    SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] ассистент выключен, сначала /ai global on.");
+                    SendAHelpAdminNote(ev.Channel, $"[{_ahelpName}] ассистент выключен, сначала /global on.");
                     break;
                 }
 
@@ -374,7 +374,7 @@ public sealed partial class NeuroPlayerSystem
             case NeuroAHelpCommandKind.GlobalOff:
                 _ahelpGlobalOff = true;
                 SendAHelpAdminNote(ev.Channel,
-                    $"[{_ahelpName}] выключен для всех тикетов до рестарта сервера или /ai global on.");
+                    $"[{_ahelpName}] выключен для всех тикетов до рестарта сервера или /global on.");
                 _sawmill.Info($"Neuro ahelp: {ev.Sender.Name} disabled the assistant globally.");
                 break;
 
@@ -423,7 +423,7 @@ public sealed partial class NeuroPlayerSystem
         {
             var pending = _ahelpQueue[i];
 
-            // Форсированный тикет (/ai answer) проходит и задержку, и тишину после админа.
+            // Форсированный тикет (/answer) проходит и задержку, и тишину после админа.
             if (!pending.Force && now - pending.AskedAt < delay)
                 continue;
 
@@ -438,7 +438,7 @@ public sealed partial class NeuroPlayerSystem
             }
             else
             {
-                // Команда /ai off: ИИ молчит в тикете до времени или до конца раунда.
+                // Команда /stop: ИИ молчит в тикете до времени или до конца раунда.
                 if (_ahelpTicketMutedUntil.TryGetValue(pending.UserId, out var mutedUntil) && now < mutedUntil)
                 {
                     _ahelpQueue.RemoveAt(i);

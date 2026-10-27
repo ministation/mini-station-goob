@@ -45,6 +45,7 @@ using Robust.Client.UserInterface.Controllers;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.Configuration;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.IoC;
 using Robust.Shared.Network;
@@ -510,9 +511,11 @@ public sealed class AdminAHelpUIHandler : IAHelpUIHandler
             Control.BwoinkArea.AddChild(existingPanel);
 
         // Мини: статус нейропомощника мог прийти до того, как тикет открыли в UI.
-        var neuro = IoCManager.Resolve<NeuroAHelpIndicatorSystem>();
-        if (neuro.TryGetStatus(channelId, out var status))
+        if (IoCManager.Resolve<IEntitySystemManager>().TryGetEntitySystem<NeuroAHelpIndicatorSystem>(out var neuro) &&
+            neuro.TryGetStatus(channelId, out var status))
+        {
             existingPanel.SetNeuroStatus(status.State, status.Name, status.Detail);
+        }
 
         return existingPanel;
     }
