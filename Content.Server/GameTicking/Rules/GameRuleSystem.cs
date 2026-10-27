@@ -24,42 +24,10 @@ public abstract partial class GameRuleSystem<T> : EntitySystem where T : ICompon
     {
         base.Initialize();
 
-        SubscribeLocalEvent<RoundStartAttemptEvent>(OnStartAttempt);
         SubscribeLocalEvent<T, GameRuleAddedEvent>(OnGameRuleAdded);
         SubscribeLocalEvent<T, GameRuleStartedEvent>(OnGameRuleStarted);
         SubscribeLocalEvent<T, GameRuleEndedEvent>(OnGameRuleEnded);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEndTextAppend);
-    }
-
-    private void OnStartAttempt(RoundStartAttemptEvent args)
-    {
-        if (args.Forced || args.Cancelled)
-            return;
-
-        var query = QueryAllRules();
-        while (query.MoveNext(out var uid, out _, out var gameRule))
-        {
-            var minPlayers = gameRule.MinPlayers;
-            var name = ToPrettyString(uid);
-
-            if (args.Players.Length >= minPlayers)
-                continue;
-
-            if (gameRule.CancelPresetOnTooFewPlayers)
-            {
-                ChatManager.SendAdminAnnouncement(Loc.GetString("preset-not-enough-ready-players",
-                    ("readyPlayersCount", args.Players.Length),
-                    ("minimumPlayers", minPlayers),
-                    ("presetName", name)));
-                args.Cancel();
-                //TODO remove this once announcements are logged
-                Log.Info($"Rule '{name}' requires {minPlayers} players, but only {args.Players.Length} are ready.");
-            }
-            else
-            {
-                ForceEndSelf(uid, gameRule);
-            }
-        }
     }
 
     private void OnGameRuleAdded(EntityUid uid, T component, ref GameRuleAddedEvent args)
