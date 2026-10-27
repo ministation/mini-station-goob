@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Numerics;
 using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.IntrinsicVoiceModulator.Components;
@@ -265,7 +269,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
         if (_adminMuted.Contains(frame.User))
         {
             SendSelf(session, speaker, levels, VoiceSelfFlags.Blocked);
-            _voiceLog.Record(session, frame, VoiceLogFlags.Blocked, Name(uid), string.Empty);
+            _voiceLog.Record(session, frame, VoiceLogFlags.Blocked, SpeakerName(uid), string.Empty);
             return;
         }
 
@@ -275,7 +279,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
         if (!CanTransmit(speaker, uid, now, newTransmission))
         {
             SendSelf(session, speaker, levels, VoiceSelfFlags.Blocked);
-            _voiceLog.Record(session, frame, VoiceLogFlags.Blocked, Name(uid), string.Empty);
+            _voiceLog.Record(session, frame, VoiceLogFlags.Blocked, SpeakerName(uid), string.Empty);
             return;
         }
 
@@ -317,7 +321,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
             selfFlags |= VoiceSelfFlags.Whisper;
 
         SendSelf(session, speaker, levels, selfFlags);
-        _voiceLog.Record(session, frame, ToLogFlags(selfFlags), Name(uid), route.RadioChannel ?? string.Empty);
+        _voiceLog.Record(session, frame, ToLogFlags(selfFlags), SpeakerName(uid), route.RadioChannel ?? string.Empty);
 
         foreach (var transmission in route.Radio)
         {
@@ -330,6 +334,10 @@ public sealed partial class VoiceChatSystem : EntitySystem
 
         foreach (var group in route.Groups)
         {
+            // Mini: каналы собираются на маршрут, а уходят между кадрами; отправка в
+            // отключённый канал дает ERRO "Tried to send message ... to disconnected channel".
+            group.Channels.RemoveAll(c => !c.IsConnected);
+
             _net.ServerSendToMany(new MsgVoiceFrame
             {
                 Source = group.Source,
@@ -429,6 +437,11 @@ public sealed partial class VoiceChatSystem : EntitySystem
         }
 
         if (_lobbyChannels.Count == 0 || speaker.Outgoing(frame.Payload, _format) is not { } payload)
+            return;
+
+        // Mini: за время кадра кто-то мог отключиться - отсекаем до рассылки статов и звука.
+        _lobbyChannels.RemoveAll(c => !c.IsConnected);
+        if (_lobbyChannels.Count == 0)
             return;
 
         UpdateSpeakerInfo(speaker, session.Name, string.Empty);
@@ -548,13 +561,23 @@ public sealed partial class VoiceChatSystem : EntitySystem
 
     private string GetSpeakerName(EntityUid uid)
     {
-        var nameEv = new TransformSpeakerNameEvent(uid, Name(uid));
+        var nameEv = new TransformSpeakerNameEvent(uid, SpeakerName(uid));
         RaiseLocalEvent(uid, nameEv);
 
         if (_aiHeldQuery.HasComp(uid) && nameEv.VoiceName == Prototype(uid)?.Name)
             return Loc.GetString("job-name-station-ai");
 
         return nameEv.VoiceName;
+    }
+
+    /// <summary>
+    /// Mini: клиент продолжает слать кадры и после удаления сущности говорящего (тело исчезло,
+    /// призрачный fallback и т.п.), а Name() по несуществующей сущности сыплет
+    /// "Can't resolve MetaDataComponent" на каждый кадр.
+    /// </summary>
+    private string SpeakerName(EntityUid uid)
+    {
+        return Deleted(uid) ? string.Empty : Name(uid);
     }
 
     private float GetDirectRange(VoiceLoudness loudness)

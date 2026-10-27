@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Text;
 using Content.Goobstation.Shared.VoiceChat;
 using Robust.Shared.Network;
@@ -239,6 +243,12 @@ public sealed class VoiceRadioMixer(string channel, IServerNetManager net, Func<
 
         foreach (var (target, recipients) in _targets)
         {
+            if (recipients.Count == 0)
+                continue;
+
+            // Mini: цели собираются при Push, отправка идет позже - за это время часть
+            // каналов отключается, и каждое такое попадание дает WARN в лог.
+            recipients.RemoveAll(c => !c.IsConnected);
             if (recipients.Count == 0)
                 continue;
 

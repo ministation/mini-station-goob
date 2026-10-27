@@ -19,6 +19,7 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
 
     private DoAfter[] _doAfters = Array.Empty<DoAfter>();
+    private readonly List<(EntityUid Uid, ActiveDoAfterComponent Active, DoAfterComponent Comp)> _updateList = new();
 
     public override void Update(float frameTime)
     {
@@ -28,8 +29,15 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
         var xformQuery = GetEntityQuery<TransformComponent>();
         var handsQuery = GetEntityQuery<HandsComponent>();
 
+        // Обработчики завершённого do-after могут стартовать новый или отменить текущий,
+        // добавляя/убирая ActiveDoAfterComponent и меняя результат запроса во время обхода
+        // ("Collection was modified"). Сначала собираем снимок, потом обновляем.
+        _updateList.Clear();
         var enumerator = EntityQueryEnumerator<ActiveDoAfterComponent, DoAfterComponent>();
         while (enumerator.MoveNext(out var uid, out var active, out var comp))
+            _updateList.Add((uid, active, comp));
+
+        foreach (var (uid, active, comp) in _updateList)
         {
             Update(uid, active, comp, time, xformQuery, handsQuery);
         }
