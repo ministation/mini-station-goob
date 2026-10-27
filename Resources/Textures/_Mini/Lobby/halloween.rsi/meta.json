@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "license": "Custom",
-    "copyright": "Mini Station Halloween lobby animation (2026). Базовый пиксель-арт предоставлен владельцем сервера, анимация сгенерирована процедурно (пульс гало, туман, тыквы, светлячки).",
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Mini Station Halloween lobby animation (2026). Base pixel-art scene provided by the server owner; animation generated procedurally (moon glow pulse, fog drift, pumpkin flicker, fireflies).",
     "size": {
         "x": 626,
         "y": 352
