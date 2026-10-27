@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Метки фракций каторги рядом с заключёнными: кирка шахтёра и ящик грузчика.
+# Показываются всем, чтобы заключённые различали своих и чужих.
+
+- type: factionIcon
+  id: KatorgaFactionMinersIcon
+  priority: 0
+  locationPreference: Left
+  hideOnStealth: false
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: ShaftMiner
+  color: "#C77DFF"
+
+- type: factionIcon
+  id: KatorgaFactionFreemenIcon
+  priority: 0
+  locationPreference: Left
+  hideOnStealth: false
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: CargoTechnician
+  color: "#8C3B47"

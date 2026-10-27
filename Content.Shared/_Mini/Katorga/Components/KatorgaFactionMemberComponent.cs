@@ -5,17 +5,18 @@
 // SPDX-FileCopyrightText: 2026 Mini Station
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
-using Content.Shared._Mini.Katorga;
+using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server._Mini.Katorga.Components;
+namespace Content.Shared._Mini.Katorga.Components;
 
 /// <summary>
-///     Фракция, к которой приписан заключённый каторги.
+///     Фракция, к которой приписан заключённый каторги. Синхронизируется клиенту:
+///     по ней рисуется метка фракции рядом с заключённым, как на войне станций.
 /// </summary>
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class KatorgaFactionMemberComponent : Component
 {
-    [DataField]
+    [DataField, AutoNetworkedField]
     public ProtoId<KatorgaFactionPrototype> Faction = default!;
 }

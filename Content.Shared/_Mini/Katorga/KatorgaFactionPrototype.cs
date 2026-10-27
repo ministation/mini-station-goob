@@ -6,6 +6,7 @@
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using Content.Shared.Roles;
+using Content.Shared.StatusIcon;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Mini.Katorga;
@@ -31,6 +32,10 @@ public sealed partial class KatorgaFactionPrototype : IPrototype
     /// <summary>Фракционное снаряжение поверх базового комплекта заключённого.</summary>
     [DataField(required: true)]
     public ProtoId<StartingGearPrototype> Gear;
+
+    /// <summary>Метка фракции рядом с заключённым.</summary>
+    [DataField]
+    public ProtoId<FactionIconPrototype> Icon = default!;
 
     /// <summary>Цвет фракции в окне выбора.</summary>
     [DataField]

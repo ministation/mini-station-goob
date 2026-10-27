@@ -525,7 +525,7 @@ public sealed class KatorgaSystem : EntitySystem
             return;
         }
 
-        // Фракция выбирается в лобби; если игрок не выбрал (или не успел), назначаем сами.
+        // Фракция выбирается в late join; если игрок не выбрал (или не успел), назначаем сами.
         var faction = _factionSystem.GetFaction(session.UserId) ?? _factionSystem.AssignFaction(session);
 
         if (session.AttachedEntity is { } attached && !TerminatingOrDeleted(attached))
@@ -621,7 +621,9 @@ public sealed class KatorgaSystem : EntitySystem
 
         if (_prototype.TryIndex(faction, out var factionProto))
         {
-            EnsureComp<KatorgaFactionMemberComponent>(mob).Faction = factionProto.ID;
+            var member = EnsureComp<KatorgaFactionMemberComponent>(mob);
+            member.Faction = factionProto.ID;
+            Dirty(mob, member);
             _stationSpawning.EquipStartingGear(mob, factionProto.Gear);
         }
     }
@@ -730,6 +732,7 @@ public sealed class KatorgaSystem : EntitySystem
         _banCache.Remove(userId);
         _banCacheChecked.Remove(userId);
         _pendingSpawns.Remove(userId);
+        _factionSystem.ClearEligible(userId);
     }
 
     /// <summary>
@@ -961,12 +964,16 @@ public sealed class KatorgaSystem : EntitySystem
 
         NotifyBanStatus(player, binding);
 
-        // Ждёт в лобби с отрабатываемым баном: предлагаем выбрать фракцию каторги.
-        // До выбора (или автоназначения по таймеру) игрок просто остаётся в лобби.
+        // Ждёт в лобби с отрабатываемым баном: выбор фракции каторги откроется в late join.
+        // Пока окно не открыто, отсчёт не идёт: иначе он сгорал бы ещё до начала раунда.
         if (binding != null && binding.ExpirationTime > DateTimeOffset.UtcNow &&
             !EntityManager.System<GameTicker>().UserHasJoinedGame(player))
         {
-            _factionSystem.BeginSelection(player);
+            _factionSystem.MakeEligible(player);
+        }
+        else
+        {
+            _factionSystem.ClearEligible(userId);
         }
 
         // Если игрок ждал проверку перед спавном, продолжаем прерванный спавн.
