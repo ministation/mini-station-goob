@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Map
@@ -26009,11 +26013,15 @@ entities:
     - type: Transform
       pos: 19.5,0.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 12645
   - uid: 624
     components:
     - type: Transform
       pos: -21.5,18.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 12645
   - uid: 19428
     components:
     - type: Transform
@@ -26029,6 +26037,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 12645
 - proto: AutolatheMachineCircuitboard
   entities:
   - uid: 625
@@ -49358,6 +49368,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 12645
 - proto: Carpet
   entities:
   - uid: 4853
@@ -54480,6 +54492,8 @@ entities:
     - type: Transform
       pos: 20.5,0.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 12645
 - proto: CleanerDispenser
   entities:
   - uid: 5730
@@ -66439,6 +66453,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 12645
 - proto: ExosuitFabricator
   entities:
   - uid: 7237
@@ -66446,6 +66462,8 @@ entities:
     - type: Transform
       pos: 24.5,15.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 12645
 - proto: ExtinguisherCabinetDirectionalFilled
   entities:
   - uid: 727
@@ -97188,17 +97206,13 @@ entities:
     - type: Transform
       pos: 28.5,-52.5
       parent: 2
-- proto: MachineMaterialSilo
+- proto: MaterialSilo
   entities:
   - uid: 12645
     components:
     - type: Transform
       pos: 23.5,0.5
       parent: 2
-    - type: DeviceLinkSource
-      linkedPorts: {}
-      lastSignals: {}
-      ports: []
 - proto: MagazineLightRifle
   entities:
   - uid: 823
@@ -97829,6 +97843,8 @@ entities:
     - type: Transform
       pos: 11.5,-34.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 12645
 - proto: MedkitAdvancedFilled
   entities:
   - uid: 10849
@@ -98328,6 +98344,8 @@ entities:
     - type: Transform
       pos: -9.5,39.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 12645
 - proto: OrganHumanKidneys
   entities:
   - uid: 6140
@@ -104101,6 +104119,8 @@ entities:
     - type: Transform
       pos: 21.5,0.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 12645
 - proto: ProtolatheMachineCircuitboard
   entities:
   - uid: 11465
@@ -107015,6 +107035,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 12645
 - proto: SciFlash
   entities:
   - uid: 12028
@@ -107058,6 +107080,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 12645
 - proto: SeedExtractor
   entities:
   - uid: 12036
@@ -107087,6 +107111,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 12645
 - proto: ShardCrystalBlue
   entities:
   - uid: 12038

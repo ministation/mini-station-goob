@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Map
@@ -32308,21 +32312,29 @@ entities:
     - type: Transform
       pos: 122.5,22.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 36355
   - uid: 1698
     components:
     - type: Transform
       pos: 122.5,64.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 36355
   - uid: 1699
     components:
     - type: Transform
       pos: 59.5,82.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 36355
   - uid: 1700
     components:
     - type: Transform
       pos: 106.5,76.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 36355
 - proto: AutolatheMachineCircuitboard
   entities:
   - uid: 1701
@@ -93263,6 +93275,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 36355
 - proto: Carpet
   entities:
   - uid: 13709
@@ -115201,11 +115215,15 @@ entities:
     - type: Transform
       pos: 57.5,82.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 36355
   - uid: 17433
     components:
     - type: Transform
       pos: 59.5,74.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 36355
 - proto: CleanerDispenser
   entities:
   - uid: 17434
@@ -142181,6 +142199,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 36355
 - proto: Envelope
   entities:
   - uid: 21729
@@ -142251,6 +142271,8 @@ entities:
     - type: Transform
       pos: 58.5,74.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 36355
 - proto: ExplosivePayload
   entities:
   - uid: 2615
@@ -251561,17 +251583,13 @@ entities:
     - type: Transform
       pos: 151.5,139.5
       parent: 2
-- proto: MachineMaterialSilo
+- proto: MaterialSilo
   entities:
   - uid: 36355
     components:
     - type: Transform
       pos: 89.5,103.5
       parent: 2
-    - type: DeviceLinkSource
-      linkedPorts: {}
-      lastSignals: {}
-      ports: []
 - proto: MachinePowerTransmissionLaser
   entities:
   - uid: 36177
@@ -252934,6 +252952,8 @@ entities:
         Durathread: 200
         Plasma: 200
     - type: InsertingMaterialStorage
+    - type: SiloUtilizer
+      silo: 36355
 - proto: MedicatedSuture
   entities:
   - uid: 36392
@@ -254975,6 +254995,8 @@ entities:
     - type: Transform
       pos: 65.5,35.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 36355
 - proto: OrganDwarfLiver
   entities:
   - uid: 36592
@@ -280812,6 +280834,8 @@ entities:
     - type: Transform
       pos: 58.5,82.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 36355
 - proto: ProximitySensor
   entities:
   - uid: 38454
@@ -289201,6 +289225,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 36355
 - proto: SciFlash
   entities:
   - uid: 39926
@@ -289969,6 +289995,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 36355
 - proto: SeedExtractor
   entities:
   - uid: 40048
@@ -290024,6 +290052,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 36355
 - proto: ShardGlass
   entities:
   - uid: 40053

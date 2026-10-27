@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Map
@@ -111482,17 +111486,13 @@ entities:
     - type: Transform
       parent: 1
       pos: 160.5,86.5
-- proto: MachineMaterialSilo
+- proto: MaterialSilo
   entities:
   - uid: 8024
     components:
     - type: Transform
       parent: 1
       pos: 141.5,92.5
-    - type: DeviceLinkSource
-      ports: []
-      linkedPorts: {}
-      lastSignals: {}
 - proto: MagazineBoxAntiMateriel
   entities:
   - uid: 9418

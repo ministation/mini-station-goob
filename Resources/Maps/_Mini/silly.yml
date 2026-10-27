@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Map
@@ -47103,18 +47107,24 @@ entities:
     - type: Transform
       parent: 2
       pos: 13.5,-0.5
+    - type: SiloUtilizer
+      silo: 4777
   - uid: 269
     paused: false
     components:
     - type: Transform
       parent: 2
       pos: 14.5,-2.5
+    - type: SiloUtilizer
+      silo: 4777
   - uid: 270
     paused: false
     components:
     - type: Transform
       parent: 2
       pos: -33.5,10.5
+    - type: SiloUtilizer
+      silo: 4777
 - proto: BackgammonBoard
   entities:
   - uid: 271
@@ -71358,6 +71368,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 4777
 - proto: Carpet
   entities:
   - uid: 2043
@@ -76159,6 +76171,8 @@ entities:
     - type: Transform
       parent: 2
       pos: 16.5,-2.5
+    - type: SiloUtilizer
+      silo: 4777
 - proto: ClockworkGrille
   entities:
   - uid: 9499
@@ -88194,6 +88208,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 4777
 - proto: ExGrenade
   entities:
   - uid: 8645
@@ -88212,6 +88228,8 @@ entities:
     - type: Transform
       parent: 2
       pos: 22.5,-4.5
+    - type: SiloUtilizer
+      silo: 4777
 - proto: ExplosivePayload
   entities:
   - uid: 8646
@@ -144582,7 +144600,7 @@ entities:
       - TauCetiBasic
       currentLanguage: TauCetiBasic
     - type: Unremoveable
-- proto: MachineMaterialSilo
+- proto: MaterialSilo
   entities:
   - uid: 4777
     paused: false
@@ -145010,6 +145028,8 @@ entities:
     - type: Transform
       parent: 2
       pos: 8.5,17.5
+    - type: SiloUtilizer
+      silo: 4777
 - proto: Medkit
   entities:
   - uid: 13081
@@ -147396,6 +147416,8 @@ entities:
       pos: 26.5,15.5
     - type: MaterialStorageMagnetPickup
       nextScan: 4684.1331024
+    - type: SiloUtilizer
+      silo: 4777
 - proto: OxygenCanister
   entities:
   - uid: 4844
@@ -241266,6 +241288,8 @@ entities:
     - type: Transform
       parent: 2
       pos: 15.5,-2.5
+    - type: SiloUtilizer
+      silo: 4777
 - proto: PsychBed
   entities:
   - uid: 5211
@@ -248646,6 +248670,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 4777
 - proto: ScrapCamera
   entities:
   - uid: 13099
@@ -249167,6 +249193,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 4777
 - proto: SecurityWhistle
   entities:
   - uid: 9567
@@ -249206,6 +249234,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 4777
 - proto: ShardCrystalCyan
   entities:
   - uid: 8863

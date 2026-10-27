@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Map
@@ -14148,6 +14152,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: BananaPhoneInstrument
   entities:
   - uid: 9600
@@ -37850,6 +37856,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: Carpet
   entities:
   - uid: 316
@@ -43116,6 +43124,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: CleanerDispenser
   entities:
   - uid: 6875
@@ -51211,6 +51221,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: EvidenceMarkerFour
   entities:
   - uid: 11089
@@ -51258,6 +51270,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: ExtinguisherCabinetDirectionalFilled
   entities:
   - uid: 5352
@@ -79889,7 +79903,7 @@ entities:
     - type: Transform
       parent: 2
       pos: -0.5,-30.5
-- proto: MachineMaterialSilo
+- proto: MaterialSilo
   entities:
   - uid: 6631
     components:
@@ -80220,6 +80234,8 @@ entities:
     - type: Transform
       parent: 2
       pos: 73.5,8.5
+    - type: SiloUtilizer
+      silo: 6631
 - proto: MedkitAdvancedFilled
   entities:
   - uid: 11919
@@ -80717,6 +80733,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: OrganHumanEyes
   entities:
   - uid: 16200
@@ -85301,6 +85319,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: ProtolatheMachineCircuitboard
   entities:
   - uid: 12658
@@ -88914,6 +88934,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: ScrapBucket
   entities:
   - uid: 16191
@@ -89124,6 +89146,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: SeedExtractor
   entities:
   - uid: 1014
@@ -89158,6 +89182,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 6631
 - proto: ShardGlass
   entities:
   - uid: 10809
