@@ -3,8 +3,8 @@
     "license": "CC-BY-SA-3.0",
     "copyright": "Pumpkin ghost sprite made for mini-station (Halloween 2026), redrawn by the owner.",
     "size": {
-        "x": 48,
-        "y": 48
+        "x": 30,
+        "y": 42
     },
     "states": [
         {
@@ -14,14 +14,6 @@
         {
             "name": "icon",
             "directions": 1
-        },
-        {
-            "name": "inhand-left",
-            "directions": 4
-        },
-        {
-            "name": "inhand-right",
-            "directions": 4
         }
     ]
 }

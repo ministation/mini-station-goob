@@ -32,8 +32,8 @@ public sealed class GhostShopWindow : DefaultWindow
 
     private Label _balanceValueLabel = null!;
     private Label _statusLabel = null!;
-    private BoxContainer _themeRow = null!;
-    private BoxContainer _colorRow = null!;
+    private GridContainer _themeRow = null!;
+    private GridContainer _colorRow = null!;
 
     /// <summary>Хэллоуинское наигранное время с сервера, секунды (синхронизируется каждым состоянием).</summary>
     private double _playtimeSeconds;
@@ -59,11 +59,22 @@ public sealed class GhostShopWindow : DefaultWindow
             Margin = new Thickness(24, 16)
         };
 
+        // Один вертикальный скролл на всё окно. Раньше темы и цвета ехали горизонтальными
+        // лентами со скроллбарами, а нижний ряд цветных карточек обрезался окном.
+        var pageScroll = new ScrollContainer
+        {
+            VerticalExpand = true,
+            HorizontalExpand = true,
+            HScrollEnabled = false,
+            VScrollEnabled = true
+        };
+        Contents.AddChild(pageScroll);
+
         var backdrop = new PanelContainer
         {
             PanelOverride = new StyleBoxFlat { BackgroundColor = WindowBackgroundColor }
         };
-        Contents.AddChild(backdrop);
+        pageScroll.AddChild(backdrop);
         backdrop.AddChild(root);
 
         root.AddChild(BuildHero());
@@ -84,37 +95,13 @@ public sealed class GhostShopWindow : DefaultWindow
         };
         root.AddChild(_statusLabel);
 
-        var gridPanel = new PanelContainer
+        _themeRow = new GridContainer
         {
-            VerticalExpand = true,
-            PanelOverride = new StyleBoxFlat
-            {
-                BackgroundColor = Color.FromHex("#10141c"),
-                BorderColor = Color.FromHex("#2d3748").WithAlpha(0.3f),
-                BorderThickness = new Thickness(1),
-                ContentMarginLeftOverride = 12,
-                ContentMarginTopOverride = 12,
-                ContentMarginRightOverride = 12,
-                ContentMarginBottomOverride = 12
-            }
+            Columns = 3,
+            HSeparationOverride = 16,
+            VSeparationOverride = 16
         };
-        root.AddChild(gridPanel);
-
-        var themeScroll = new ScrollContainer
-        {
-            VerticalExpand = true,
-            HorizontalExpand = true,
-            HScrollEnabled = true,
-            VScrollEnabled = false
-        };
-        gridPanel.AddChild(themeScroll);
-
-        _themeRow = new BoxContainer
-        {
-            Orientation = LayoutOrientation.Horizontal,
-            SeparationOverride = 16
-        };
-        themeScroll.AddChild(_themeRow);
+        root.AddChild(_themeRow);
 
         var colorHeader = new Label
         {
@@ -125,25 +112,13 @@ public sealed class GhostShopWindow : DefaultWindow
         };
         root.AddChild(colorHeader);
 
-        // ScrollContainer reports a zero desired height by default - without these the
-        // whole color section collapses into an empty strip under its header.
-        var colorScroll = new ScrollContainer
+        _colorRow = new GridContainer
         {
-            HorizontalExpand = true,
-            HScrollEnabled = true,
-            VScrollEnabled = false,
-            ReturnMeasure = true,
-            MinHeight = 150,
-            MaxHeight = 150
+            Columns = 4,
+            HSeparationOverride = 16,
+            VSeparationOverride = 16
         };
-        root.AddChild(colorScroll);
-
-        _colorRow = new BoxContainer
-        {
-            Orientation = LayoutOrientation.Horizontal,
-            SeparationOverride = 16
-        };
-        colorScroll.AddChild(_colorRow);
+        root.AddChild(_colorRow);
     }
 
     protected override DragMode GetDragModeFor(Vector2 relativeMousePos)
@@ -208,8 +183,8 @@ public sealed class GhostShopWindow : DefaultWindow
     {
         var panel = new PanelContainer
         {
-            MinSize = new Vector2(200, 150),
-            MaxSize = new Vector2(200, 150),
+            MinSize = new Vector2(200, 190),
+            MaxSize = new Vector2(200, 190),
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = entry.Active ? SelectedCardColor : CardBackgroundColor,
@@ -380,15 +355,7 @@ public sealed class GhostShopWindow : DefaultWindow
         };
         content.AddChild(left);
 
-        left.AddChild(new Label
-        {
-            Text = "Магазин призраков",
-            StyleClasses = { "LabelHeading" },
-            Modulate = Color.White,
-            HorizontalExpand = true,
-            VerticalAlignment = VAlignment.Center
-        });
-
+        // Заголовок окна уже говорит "Магазин призраков" - в панели остаётся только подзаголовок.
         left.AddChild(new Label
         {
             Text = Loc.GetString("ghost-shop-hero-subtitle"),
@@ -437,9 +404,8 @@ public sealed class GhostShopWindow : DefaultWindow
     {
         var panel = new PanelContainer
         {
-            MinSize = new Vector2(290, 0),
-            MaxSize = new Vector2(290, 1000),
-            VerticalExpand = true,
+            MinSize = new Vector2(290, 285),
+            MaxSize = new Vector2(290, 285),
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = entry.Selected ? SelectedCardColor : CardBackgroundColor,
