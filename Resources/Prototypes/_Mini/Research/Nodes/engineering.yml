@@ -123,6 +123,28 @@
   position: 8,7
 
 - type: technology
+  id: TurboRechargers
+  name: research-technology-turbo-rechargers-name
+  description: research-technology-turbo-rechargers-desc
+  icon:
+    sprite: Structures/Power/turbo_recharger.rsi
+    state: empty
+  discipline: Engineering
+  tier: 1
+  announceChannels:
+  - Engineering
+  pointCosts:
+  - type: General
+    amount: 7500
+  technologyPrerequisites:
+  - AdvancedParts
+  recipeUnlocks:
+  - TurboItemRechargerCircuitboard
+  - PowerCellHyper
+  - PowerCellMicroreactor
+  position: 8,9
+
+- type: technology
   id: PartsVortex
   hidden: true # empty unlocks - disabled until content exists
   name: research-technology-parts-vortex-name

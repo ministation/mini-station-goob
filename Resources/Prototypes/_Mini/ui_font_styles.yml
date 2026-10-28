@@ -30,13 +30,6 @@
   order: 2
 
 - type: uiFontStyle
-  id: Bedstead
-  name: ui-options-font-style-bedstead
-  regular: /Fonts/Bedstead/Bedstead.otf
-  mono: /Fonts/Bedstead/Bedstead.otf
-  order: 3
-
-- type: uiFontStyle
   id: Pixeloid
   name: ui-options-font-style-pixeloid
   regular: /Fonts/_Mini/Pixeloid/PixeloidSans.ttf
