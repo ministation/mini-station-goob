@@ -1,7 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.Achievements;
 using Content.Server._Mini.AntagTokens;
+using Content.Server._Mini.CustomGhost;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
 using Content.Server.Maps;
@@ -10,6 +12,7 @@ using Content.Shared.EntityConditions;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
+using Content.Shared._Mini.CustomGhost;
 using Content.Shared.Projectiles;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Components;
@@ -34,6 +37,8 @@ public sealed partial class AchievementSystem : EntitySystem
     [Dependency] private SharedEntityConditionsSystem _conditions = default!;
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private AntagTokenSystem _antagTokens = default!;
+    [Dependency] private CustomGhostSystem _ghosts = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
 
     private bool _enabled;
     private bool _roundExcluded;
@@ -112,6 +117,14 @@ public sealed partial class AchievementSystem : EntitySystem
     {
         RaiseNetworkEvent(new AchievementUnlockedEvent(_manager.BuildData(session, proto)), session);
 
+        // Достижения с наградой-призраком монеты не получают: вместо кошелька открывается тема.
+        if (!string.IsNullOrEmpty(proto.GhostReward))
+        {
+            _ = GrantGhostReward(session, proto);
+            AchievementUnlocked?.Invoke(session, proto);
+            return;
+        }
+
         // The reward goes into the same coin wallet as weekly quests. AddBalance also applies the
         // monthly coin cap, so the granted amount can be lower than the achievement's reward.
         var reward = proto.GetCoinReward();
@@ -131,6 +144,28 @@ public sealed partial class AchievementSystem : EntitySystem
         }
 
         AchievementUnlocked?.Invoke(session, proto);
+    }
+
+    /// <summary>
+    /// Выдаёт тему призрака за достижение. Токен владения идемпотичен, поэтому повторная
+    /// выдача (например, тема уже куплена в магазине за то же время) безопасна.
+    /// </summary>
+    private async Task GrantGhostReward(ICommonSession session, AchievementPrototype proto)
+    {
+        var themeId = proto.GhostReward!;
+        if (!await _ghosts.TryGrantTheme(session.UserId, themeId))
+            return;
+
+        var ghostName = _proto.TryIndex<CustomGhostPrototype>(themeId, out var theme)
+            ? theme.Name
+            : themeId;
+
+        var message = Loc.GetString("achievement-ghost-reward-popup",
+            ("achievement", Loc.GetString(proto.Name)),
+            ("ghost", ghostName));
+
+        if (session.AttachedEntity is { Valid: true } uid)
+            _popup.PopupEntity(message, uid, uid);
     }
 
     private void OnPlayerLoaded(ICommonSession session)
@@ -163,6 +198,14 @@ public sealed partial class AchievementSystem : EntitySystem
         var total = 0;
         foreach (var (proto, unlockedAt) in pending)
         {
+            // Награда-призрак монет не касается: недостающую выдачу компенсирует токен темы.
+            if (!string.IsNullOrEmpty(proto.GhostReward))
+            {
+                _ = _ghosts.TryGrantTheme(session.UserId, proto.GhostReward);
+                _manager.MarkCoinRewardPaid(session, proto);
+                continue;
+            }
+
             // Unlocks after the cutoff were already paid when they unlocked, so only the flag is persisted.
             if (unlockedAt >= CoinRewardBackfillCutoff)
             {

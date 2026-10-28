@@ -20,11 +20,31 @@ public sealed class GhostShopSystem : EntitySystem
     [Dependency] private readonly SpriteSystem _sprite = default!;
 
     private GhostShopWindow? _window;
+    private float _pollAccumulator;
+
+    /// <summary>Пока магазин открыт - перепросить состояние раз в 30 секунд, чтобы таймер
+    /// карточки за наигранное время синхронизировался с серверным счётчиком.</summary>
+    private const float ShopPollInterval = 30f;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeNetworkEvent<GhostShopStateEvent>(OnShopState);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_window is not { IsOpen: true })
+            return;
+
+        _pollAccumulator += frameTime;
+        if (_pollAccumulator < ShopPollInterval)
+            return;
+
+        _pollAccumulator = 0;
+        RaiseNetworkEvent(new GhostShopOpenRequestEvent());
     }
 
     public void OpenShop()

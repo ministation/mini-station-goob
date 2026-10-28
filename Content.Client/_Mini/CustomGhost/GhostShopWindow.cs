@@ -9,6 +9,7 @@ using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
+using Robust.Shared.Timing;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 
 namespace Content.Client._Mini.CustomGhost;
@@ -30,8 +31,16 @@ public sealed class GhostShopWindow : DefaultWindow
     private readonly Texture _coinTexture;
 
     private Label _balanceValueLabel = null!;
+    private Label _statusLabel = null!;
     private BoxContainer _themeRow = null!;
     private BoxContainer _colorRow = null!;
+
+    /// <summary>Хэллоуинское наигранное время с сервера, секунды (синхронизируется каждым состоянием).</summary>
+    private double _playtimeSeconds;
+    private double _tickAccumulator;
+
+    /// <summary>Метка таймера в карточке темы за наигранное время -> сколько всего секунд нужно набрать.</summary>
+    private readonly List<(Label Label, double RequiredSeconds)> _timerLabels = new();
 
     public GhostShopWindow(GhostShopSystem system)
     {
@@ -39,9 +48,9 @@ public sealed class GhostShopWindow : DefaultWindow
         _coinTexture = IoCManager.Resolve<IResourceCache>().GetTexture(CoinIconPath);
 
         Title = "Магазин призраков";
-        MinSize = new Vector2(1000, 700);
+        MinSize = new Vector2(1000, 760);
         MaxSize = new Vector2(1000, float.PositiveInfinity);
-        SetSize = new Vector2(1000, 800);
+        SetSize = new Vector2(1000, 880);
 
         var root = new BoxContainer
         {
@@ -66,6 +75,14 @@ public sealed class GhostShopWindow : DefaultWindow
             Margin = new Thickness(4, 0, 0, 0),
             Modulate = Color.FromHex("#adbac7")
         });
+
+        _statusLabel = new Label
+        {
+            Visible = false,
+            Margin = new Thickness(4, 0, 0, 0),
+            Modulate = Color.FromHex("#f0883e")
+        };
+        root.AddChild(_statusLabel);
 
         var gridPanel = new PanelContainer
         {
@@ -108,16 +125,15 @@ public sealed class GhostShopWindow : DefaultWindow
         };
         root.AddChild(colorHeader);
 
-        // ScrollContainer reports a zero desired height by default - without these the
-        // whole color section collapses into an empty strip under its header.
+        // Высота ленты = высоте цветной карточки (190), иначе нижняя кромка кнопок срезается.
         var colorScroll = new ScrollContainer
         {
             HorizontalExpand = true,
             HScrollEnabled = true,
             VScrollEnabled = false,
             ReturnMeasure = true,
-            MinHeight = 150,
-            MaxHeight = 150
+            MinHeight = 195,
+            MaxHeight = 195
         };
         root.AddChild(colorScroll);
 
@@ -141,6 +157,13 @@ public sealed class GhostShopWindow : DefaultWindow
     {
         _balanceValueLabel.Text = state.Balance.ToString();
 
+        _statusLabel.Visible = !string.IsNullOrEmpty(state.Error);
+        _statusLabel.Text = state.Error ?? "";
+
+        // Сервер прислал свежий счётчик - локальный тик таймера стартует от него.
+        _playtimeSeconds = state.PlaytimeSeconds;
+        _timerLabels.Clear();
+
         _themeRow.RemoveAllChildren();
         foreach (var entry in state.Themes)
         {
@@ -152,12 +175,40 @@ public sealed class GhostShopWindow : DefaultWindow
             _colorRow.AddChild(CreateColorCard(entry));
     }
 
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+
+        if (_timerLabels.Count == 0)
+            return;
+
+        // Таймер тикает раз в секунду; истина приходит с сервера при каждом обновлении окна.
+        _tickAccumulator += args.DeltaSeconds;
+        if (_tickAccumulator < 1)
+            return;
+
+        _tickAccumulator -= 1;
+        _playtimeSeconds = Math.Max(0, _playtimeSeconds - 1);
+
+        foreach (var (label, required) in _timerLabels)
+            label.Text = Loc.GetString("ghost-shop-playtime-left",
+                ("time", FormatPlaytimeLeft(required - _playtimeSeconds)));
+    }
+
+    private static string FormatPlaytimeLeft(double secondsLeft)
+    {
+        var ts = TimeSpan.FromSeconds(Math.Max(0, secondsLeft));
+        return ts.TotalHours >= 1
+            ? $"{(int) ts.TotalHours} ч {ts.Minutes:00} мин"
+            : $"{ts.Minutes} мин";
+    }
+
     private Control CreateColorCard(GhostColorEntry entry)
     {
         var panel = new PanelContainer
         {
-            MinSize = new Vector2(200, 120),
-            MaxSize = new Vector2(200, 120),
+            MinSize = new Vector2(200, 190),
+            MaxSize = new Vector2(200, 190),
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = entry.Active ? SelectedCardColor : CardBackgroundColor,
@@ -173,26 +224,50 @@ public sealed class GhostShopWindow : DefaultWindow
         var root = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 8
+            SeparationOverride = 6
         };
         panel.AddChild(root);
 
-        root.AddChild(new PanelContainer
+        if (!string.IsNullOrEmpty(entry.Name))
+        {
+            root.AddChild(new Label
+            {
+                Text = entry.Name,
+                StyleClasses = { "LabelHeading" },
+                Modulate = Color.White,
+                HorizontalAlignment = HAlignment.Center
+            });
+        }
+
+        // Живое превью: как ник будет выглядеть в OOC - текст прямо цветом темы.
+        var preview = new PanelContainer
         {
             MinSize = new Vector2(0, 44),
             PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = Color.TryFromHex(entry.ColorHex, out var parsed) ? parsed : Color.Gray,
-                BorderColor = Color.FromHex("#121824"),
-                BorderThickness = new Thickness(2)
+                BackgroundColor = Color.FromHex("#121824"),
+                BorderColor = Color.TryFromHex(entry.ColorHex, out var border) ? border : Color.Gray,
+                BorderThickness = new Thickness(2),
+                ContentMarginLeftOverride = 8,
+                ContentMarginRightOverride = 8
             }
+        };
+        preview.AddChild(new Label
+        {
+            Text = Loc.GetString("ghost-shop-color-preview"),
+            Modulate = Color.TryFromHex(entry.ColorHex, out var parsed) ? parsed : Color.Gray,
+            HorizontalAlignment = HAlignment.Center,
+            VerticalAlignment = VAlignment.Center
         });
+        root.AddChild(preview);
+
+        var status = entry.Active
+            ? Loc.GetString("ghost-shop-color-active-days", ("days", entry.DaysLeft))
+            : entry.Owned ? Loc.GetString("ghost-shop-color-owned") : Loc.GetString("ghost-shop-color-days");
 
         root.AddChild(new Label
         {
-            Text = entry.Active
-                ? Loc.GetString("ghost-shop-color-active")
-                : entry.Owned ? Loc.GetString("ghost-shop-color-owned") : Loc.GetString("ghost-shop-color-days"),
+            Text = status,
             Modulate = entry.Active ? SelectedBorderColor : SubtitleColor,
             HorizontalAlignment = HAlignment.Center
         });
@@ -300,24 +375,10 @@ public sealed class GhostShopWindow : DefaultWindow
         {
             Orientation = LayoutOrientation.Vertical,
             SeparationOverride = 8,
-            HorizontalExpand = true
-        };
-        content.AddChild(left);
-
-        left.AddChild(new Label
-        {
-            Text = "Магазин призраков",
-            StyleClasses = { "LabelHeading" },
-            Modulate = Color.White,
             HorizontalExpand = true,
             VerticalAlignment = VAlignment.Center
-        });
-
-        left.AddChild(new Label
-        {
-            Text = Loc.GetString("ghost-shop-hero-subtitle"),
-            Modulate = Color.FromHex("#8b949e")
-        });
+        };
+        content.AddChild(left);
 
         var infoRow = new BoxContainer
         {
@@ -457,7 +518,7 @@ public sealed class GhostShopWindow : DefaultWindow
             actionButton.Disabled = true;
             buttonContent.AddChild(new Label
             {
-                Text = "✓",
+                Text = Loc.GetString("ghost-shop-btn-selected"),
                 Modulate = Color.White,
                 StyleClasses = { "LabelHeading" },
                 VerticalAlignment = VAlignment.Center
@@ -481,22 +542,63 @@ public sealed class GhostShopWindow : DefaultWindow
                 actionButton.Disabled = true;
                 _system.RequestBuy(entry.Id);
             };
-            buttonContent.AddChild(new Label
+
+            if (entry.PlaytimeHours > 0)
             {
-                Text = entry.Price.ToString(),
-                Modulate = Color.White,
-                StyleClasses = { "LabelHeading" },
-                VerticalAlignment = VAlignment.Center
-            });
-            buttonContent.AddChild(new TextureRect
+                // Тема за наигранное время: пока часы не набраны - тикающий таймер остатка,
+                // после набора - кнопка "Собрать". Монеты не участвуют.
+                var requiredSeconds = entry.PlaytimeHours * 3600.0;
+                var remaining = requiredSeconds - _playtimeSeconds;
+
+                if (remaining > 0)
+                {
+                    actionButton.Disabled = true;
+                    var timerLabel = new Label
+                    {
+                        Text = Loc.GetString("ghost-shop-playtime-left",
+                            ("time", FormatPlaytimeLeft(remaining))),
+                        Modulate = Color.White,
+                        StyleClasses = { "LabelHeading" },
+                        VerticalAlignment = VAlignment.Center
+                    };
+                    _timerLabels.Add((timerLabel, requiredSeconds));
+                    buttonContent.AddChild(timerLabel);
+                }
+                else
+                {
+                    actionButton.OnPressed += _ =>
+                    {
+                        actionButton.Disabled = true;
+                        _system.RequestBuy(entry.Id);
+                    };
+                    buttonContent.AddChild(new Label
+                    {
+                        Text = Loc.GetString("ghost-shop-btn-claim"),
+                        Modulate = SelectedBorderColor,
+                        StyleClasses = { "LabelHeading" },
+                        VerticalAlignment = VAlignment.Center
+                    });
+                }
+            }
+            else
             {
-                Texture = _coinTexture,
-                MinSize = new Vector2(16, 16),
-                MaxSize = new Vector2(16, 16),
-                TextureScale = new Vector2(0.4f, 0.4f),
-                Stretch = TextureRect.StretchMode.KeepCentered,
-                VerticalAlignment = VAlignment.Center
-            });
+                buttonContent.AddChild(new Label
+                {
+                    Text = entry.Price.ToString(),
+                    Modulate = Color.White,
+                    StyleClasses = { "LabelHeading" },
+                    VerticalAlignment = VAlignment.Center
+                });
+                buttonContent.AddChild(new TextureRect
+                {
+                    Texture = _coinTexture,
+                    MinSize = new Vector2(16, 16),
+                    MaxSize = new Vector2(16, 16),
+                    TextureScale = new Vector2(0.4f, 0.4f),
+                    Stretch = TextureRect.StretchMode.KeepCentered,
+                    VerticalAlignment = VAlignment.Center
+                });
+            }
         }
 
         actionButton.AddChild(buttonContent);

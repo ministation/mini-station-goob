@@ -31,12 +31,14 @@ ghost-role-purchase-milestone-4hours = 4 hours of playtime
 ghost-role-purchase-milestone-15days = 15 day streak
 ghost-role-purchase-milestone-30days = 30 day streak
 
-ghost-shop-color-header = OOC nickname color (30 days)
+ghost-shop-color-header = Nick color
 
-ghost-shop-color-days = Nick color for 30 days
+ghost-shop-color-days = For 30 days
 
 ghost-shop-color-active = Applied
 
 ghost-shop-color-owned = Owned
 
 ghost-shop-color-select = Select
+ghost-shop-color-active-days = Applied · {$days} d
+ghost-shop-color-preview = Nick: hi everyone!

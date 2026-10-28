@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Хэллоуинская ротация лобби (PR Halloween).
+# Kevin MacLeod - с Wikimedia Commons (зеркало All The Music), CC BY 3.0.
+# Myuu (thedarkpiano.com) - CC BY-NC 3.0.
+# Исторические записи классики - Public domain, оформлены как Custom.
+
+- files: ["spooky_skeletons.ogg"]
+  license: "Custom"
+  copyright: "\"Spooky, Scary Skeletons\" by Andrew Gold. Трек предоставлен владельцем сервера для некоммерческого использования в лобби Мини-станции; права на композицию и запись принадлежат правообладателям."
+  source: "NA"
+
+- files: ["danse_macabre.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Danse Macabre by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Danse_Macabre_(ISRC_USUAN1100546).mp3"
+
+- files: ["hall_of_the_mountain_king.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Hall of the Mountain King by Kevin MacLeod; original composition by Edvard Grieg. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Hall_of_the_Mountain_King_(ISRC_USUAN1200072).mp3"
+
+- files: ["toccata_fugue.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Toccata and Fugue in D Minor by Kevin MacLeod; original composition by Johann Sebastian Bach (BWV 565). Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Toccata_and_Fugue_in_D_Minor_(ISRC_USUAN1100350).mp3"
+
+- files: ["night_on_bald_mountain.ogg"]
+  license: "Custom"
+  copyright: "Night on Bald Mountain by Modest Mussorgsky (composition 1886), public domain recording from Wikimedia Commons. Re-encoded to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Modest_Mussorgsky_-_night_on_bald_mountain.ogg"
+
+- files: ["funeral_marionette.ogg"]
+  license: "Custom"
+  copyright: "Funeral March of a Marionette by Charles Gounod; San Francisco Symphony conducted by Alfred Hertz, 1920s HMV recording, public domain (pre-1930). Converted from FLAC to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:PDP-CH_-_San_Francisco_Symphony_-_Alfred_Hertz_-_Funeral_March_of_a_Marionette_-_Charles_Gounod_-_Hmv-d1286-5-0602.flac"
+
+- files: ["sugar_plum_fairy.ogg"]
+  license: "CC-BY-NC-3.0"
+  copyright: "Dance of the Sugar Plum Fairy, classical cover by Myuu (thedarkpiano.com); original composition by Pyotr Tchaikovsky (public domain). Converted from MP3 to OGG."
+  source: "https://www.thedarkpiano.com/mp3/cover/Myuu-Dance-of-the-Sugar-Plum-Fairy-Classical-Cover.mp3"
+
+- files: ["spook_box.ogg"]
+  license: "CC-BY-NC-3.0"
+  copyright: "Spook Box by Myuu (thedarkpiano.com). Converted from MP3 to OGG."
+  source: "https://thedarkpiano.com/mp3/Myuu-Spook-Box.mp3"
+
+- files: ["pop_goes_the_weasel.ogg"]
+  license: "CC-BY-NC-3.0"
+  copyright: "Pop Goes The Weasel, traditional cover by Myuu (thedarkpiano.com); traditional composition, public domain. Converted from MP3 to OGG."
+  source: "https://thedarkpiano.com/mp3/cover/Myuu-Pop-Goes-the-Weasel-Traditional-Cover.mp3"
+

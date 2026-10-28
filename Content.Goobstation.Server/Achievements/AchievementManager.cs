@@ -283,7 +283,8 @@ public sealed partial class AchievementManager : IPostInjectInit
             entry?.UnlockedAt,
             GetRarity(proto.ID),
             proto.GetRarity(),
-            proto.GetCoinReward());
+            proto.GetCoinReward(),
+            proto.GhostReward);
     }
 
     public List<AchievementData> BuildState(ICommonSession session)

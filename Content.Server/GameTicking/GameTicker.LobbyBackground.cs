@@ -10,8 +10,11 @@ public sealed partial class GameTicker
 {
     private static readonly string[] MiniLobbyBackgroundPaths =
     [
-        "/Textures/_Mini/Lobby/mars.rsi",
-        "/Textures/_OS/Lobby/space-hole.rsi",
+        // Mini: на время хэллоуинского события лобби одно - анимированное кладбище.
+        // После события вернуть ротацию mars/space-hole.
+        "/Textures/_Mini/Lobby/halloween.rsi",
+        // "/Textures/_Mini/Lobby/mars.rsi",
+        // "/Textures/_OS/Lobby/space-hole.rsi",
     ];
 
     private int _lobbyBackgroundIndex;

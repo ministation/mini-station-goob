@@ -1,0 +1,38 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Mini Station Halloween lobby animation (2026). Base pixel-art scene provided by the server owner; animation generated procedurally (moon glow pulse, fog drift, pumpkin flicker, fireflies).",
+    "size": {
+        "x": 626,
+        "y": 352
+    },
+    "states": [
+        {
+            "name": "1",
+            "delays": [
+                [
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25,
+                    0.25
+                ]
+            ]
+        }
+    ]
+}

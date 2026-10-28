@@ -1,0 +1,48 @@
+# Уникальная способность тыквенного призрака (GhostThemePumpkin):
+# раз в 5 минут разбивать одну целую лампочку поблизости.
+- type: entity
+  parent: BaseMentalAction
+  id: ActionPumpkinBreakLight
+  name: Погасить лампочку
+  description: Дух Хэллоуина не любит свет. Разбей одну лампочку поблизости.
+  components:
+  - type: Action
+    icon: { sprite: _Mini/Ghosts/pumpkin_ghost.rsi, state: icon }
+    checkCanInteract: false
+    useDelay: 300
+  - type: InstantAction
+    event: !type:PumpkinBreakLightActionEvent
+
+# Всплеск на месте разбитой лампочки: искры, оранжевая вспышка и хоррор-звук,
+# который слышат все вокруг - и живые, и призраки.
+- type: entity
+  id: EffectPumpkinBulbBurst
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.6
+  - type: Sprite
+    drawdepth: Effects
+    noRot: true
+    layers:
+    - shader: unshaded
+      map: [ "enum.EffectLayers.Unshaded" ]
+      sprite: Effects/sparks.rsi
+      state: sparks
+  - type: EffectVisuals
+  - type: Tag
+    tags:
+    - HideContextMenu
+  - type: AnimationPlayer
+  - type: PointLight
+    netsync: false
+    radius: 2
+    energy: 3
+    color: "#ff8c2e"
+    enabled: true
+  - type: EmitSoundOnSpawn
+    sound:
+      path: /Audio/_Mini/Ghosts/pumpkin_screech.ogg
+      params:
+        variation: 0.12
+        volume: -10

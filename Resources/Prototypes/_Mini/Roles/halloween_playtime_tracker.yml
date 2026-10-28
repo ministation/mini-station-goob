@@ -1,0 +1,4 @@
+# Хэллоуинское наигранное время: тикает только когда игрок жив и участвует в раунде
+# (лобби, призраки и AFK не считаются). См. HalloweenPlaytimeSystem.
+- type: playTimeTracker
+  id: Halloween
