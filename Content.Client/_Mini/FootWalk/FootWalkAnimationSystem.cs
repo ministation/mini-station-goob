@@ -51,6 +51,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     private const string WalkRightSuffix = "-walk-R";
     private const string WalkBandSuffix = "-walk-band";
     private const string SleeveSuffix = "-walk-sleeve";
+    private const string HipPatchSuffix = "-walk-hip";
 
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private StandingStateSystem _standing = default!;
@@ -624,10 +625,16 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
     /// </summary>
     private float OuterCutFor(Entity<FootWalkAnimationComponent> ent)
     {
-        if (_inventory.TryGetSlotEntity(ent.Owner, OuterSlot, out var garment) && IsHardsuitLike(garment.Value))
-            return ent.Comp.OuterLegCut;
+        return UsesHardsuitHipCut(ent) ? ent.Comp.OuterLegCut : ent.Comp.OuterFootCut;
+    }
 
-        return ent.Comp.OuterFootCut;
+    /// <summary>
+    /// True when the worn outer garment is a hardsuit, i.e. it is cut at the hip and its lower
+    /// band moves with the legs.
+    /// </summary>
+    private bool UsesHardsuitHipCut(Entity<FootWalkAnimationComponent> ent)
+    {
+        return _inventory.TryGetSlotEntity(ent.Owner, OuterSlot, out var garment) && IsHardsuitLike(garment.Value);
     }
 
     /// <summary>
@@ -1350,6 +1357,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
         ClearOuterSideBands(ent, sprite, clearHole: false);
 
         var cut = OuterCutFor(ent);
+        var hipCut = UsesHardsuitHipCut(ent);
 
         foreach (var key in sourceKeys)
         {
@@ -1379,6 +1387,23 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
 
             SetBaseOffset(ent.Comp, bandKey, src.Offset);
             ent.Comp.OuterSideBandKeys.Add(bandKey);
+
+            // Hardsuit: the same band again, static, directly under the sliding one. Its own
+            // transparent gaps then stay at rest instead of riding up over the bare hands/pelvis.
+            if (!hipCut)
+                continue;
+
+            var patchKey = key + HipPatchSuffix;
+            var patch = _sprite.AddBlankLayer((ent.Owner, sprite), srcIndex + 1);
+            _sprite.LayerMapSet((ent.Owner, sprite), patchKey, srcIndex + 1);
+            _sprite.LayerSetTexture(patch, bandTexture);
+            _sprite.LayerSetColor(patch, src.Color);
+            _sprite.LayerSetOffset(patch, src.Offset);
+            _sprite.LayerSetScale(patch, src.Scale);
+            _sprite.LayerSetVisible(patch, true);
+
+            SetBaseOffset(ent.Comp, patchKey, src.Offset);
+            ent.Comp.OuterHipPatchKeys.Add(patchKey);
         }
     }
 
@@ -1760,12 +1785,17 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             foreach (var key in ent.Comp.OuterSideBandKeys)
                 _sprite.RemoveLayer((ent.Owner, sprite), key, logMissing: false);
 
+            foreach (var key in ent.Comp.OuterHipPatchKeys)
+                _sprite.RemoveLayer((ent.Owner, sprite), key, logMissing: false);
+
             if (clearHole)
                 ClearOuterHoles(ent, sprite);
         }
 
         ForgetBaseOffsets(ent.Comp, ent.Comp.OuterSideBandKeys);
+        ForgetBaseOffsets(ent.Comp, ent.Comp.OuterHipPatchKeys);
         ent.Comp.OuterSideBandKeys.Clear();
+        ent.Comp.OuterHipPatchKeys.Clear();
         if (clearHole)
             ent.Comp.HoledOuterKeys.Clear();
     }
@@ -1982,6 +2012,7 @@ public sealed partial class FootWalkAnimationSystem : EntitySystem
             && ent.Comp.ShoeSplitKeys.Count == 0
             && ent.Comp.OuterSplitKeys.Count == 0
             && ent.Comp.OuterSideBandKeys.Count == 0
+            && ent.Comp.OuterHipPatchKeys.Count == 0
             && ent.Comp.JumpsuitSplitKeys.Count == 0
             && ent.Comp.JumpsuitBandKeys.Count == 0)
         {

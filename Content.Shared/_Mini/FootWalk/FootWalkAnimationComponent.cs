@@ -243,6 +243,14 @@ public sealed partial class FootWalkAnimationComponent : Component
     public readonly List<string> OuterSideBandKeys = new();
 
     /// <summary>
+    /// Rest-pose copies of the lower hardsuit band, drawn under the moving halves/band. The suit art
+    /// is not opaque everywhere (crotch, armholes); those gaps ride up with the sliding band and
+    /// would flash the bare hands and pelvis behind it for a couple of pixels on every step.
+    /// </summary>
+    [ViewVariables]
+    public readonly List<string> OuterHipPatchKeys = new();
+
+    /// <summary>
     /// Runtime sleeve layers: a copy of the garment clipped to the arm's own art, keyed by layer key
     /// and holding the arm whose swing that piece of cloth rides.
     /// </summary>
