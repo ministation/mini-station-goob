@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Shared.Random;
+using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Mining.Components;
@@ -8,7 +9,7 @@ namespace Content.Shared.Mining.Components;
 /// <summary>
 /// Defines an entity that will drop a random ore after being destroyed.
 /// </summary>
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class OreVeinComponent : Component
 {
     /// <summary>
@@ -34,6 +35,6 @@ public sealed partial class OreVeinComponent : Component
     /// The ore that this entity holds.
     /// If set in the prototype, it will not be overriden.
     /// </summary>
-    [DataField]
+    [DataField, AutoNetworkedField]
     public ProtoId<OrePrototype>? CurrentOre;
 }

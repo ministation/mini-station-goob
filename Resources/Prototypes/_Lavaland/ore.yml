@@ -1,2 +1,9 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: ore
   id: OreGibtonite
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: gibtonite_inactive

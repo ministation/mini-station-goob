@@ -8,18 +8,27 @@
   oreEntity: SteelOre1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 5
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_tin
 
 - type: ore
   id: OreSpaceQuartz
   oreEntity: SpaceQuartz1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 5
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_quartz
 
 - type: ore
   id: OreCoal
   oreEntity: Coal1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 5
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_coal
 
 # Medium yields
 - type: ore
@@ -27,18 +36,27 @@
   oreEntity: GoldOre1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 3
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_gold
 
 - type: ore
   id: OreSilver
   oreEntity: SilverOre1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 3
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_silver
 
 - type: ore
   id: OreSalt
   oreEntity: Salt1
   minOreYield: 1
   maxOreYield: 3
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_salt
 
 # Low yields
 - type: ore
@@ -46,24 +64,36 @@
   oreEntity: PlasmaOre1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 2
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_phoron
 
 - type: ore
   id: OreUranium
   oreEntity: UraniumOre1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 2
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_uranium
 
 - type: ore
   id: OreBananium
   oreEntity: BananiumOre1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 3
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_bananium
 
 - type: ore
   id: OreDiamond
   oreEntity: DiamondOre1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 1
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_diamond
 
 - type: ore
   id: OreQuartzCrab
@@ -98,6 +128,9 @@
   oreEntity: ArtifactFragmentOre1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 3
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_artifact_fragment
 
 - type: weightedRandomOre
   id: RandomOreDistributionStandard

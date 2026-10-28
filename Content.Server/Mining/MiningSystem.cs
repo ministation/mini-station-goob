@@ -51,5 +51,8 @@ public sealed class MiningSystem : EntitySystem
             return;
 
         component.CurrentOre = _proto.Index<WeightedRandomOrePrototype>(component.OreRarityPrototypeId).Pick(_random);
+        // Клиент рисует подсветку сканера по выбранной руде: без этого в камнях со случайной
+        // рудой (каторга, лаваленд) сканер не показывает вообще ничего.
+        Dirty(uid, component);
     }
 }
