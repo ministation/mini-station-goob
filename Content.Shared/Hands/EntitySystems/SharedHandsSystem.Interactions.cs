@@ -150,6 +150,11 @@ public abstract partial class SharedHandsSystem : EntitySystem
                     return false;
             }
             var activeHand = GetActiveHand(session.AttachedEntity.Value);
+
+            // the client may drop at coordinates of an entity that has already been deleted
+            if (!coords.EntityId.IsValid() || TerminatingOrDeleted(coords.EntityId))
+                coords = Transform(ent).Coordinates;
+
             TryDrop(ent, activeHand!, coords); // Supress nullable, because if active hand has something, it exists.
             // Goobstation end
         }

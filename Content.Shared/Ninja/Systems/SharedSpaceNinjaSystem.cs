@@ -28,6 +28,40 @@ public abstract class SharedSpaceNinjaSystem : EntitySystem
         SubscribeLocalEvent<SpaceNinjaComponent, AttackedEvent>(OnNinjaAttacked);
         SubscribeLocalEvent<SpaceNinjaComponent, MeleeAttackEvent>(OnNinjaAttack);
         SubscribeLocalEvent<SpaceNinjaComponent, ShotAttemptedEvent>(OnShotAttempted);
+        SubscribeLocalEvent<EntityTerminatingEvent>(OnEquipmentTerminating);
+    }
+
+    // Suit/gloves/katana may be deleted while the ninja is alive (destroyed, QDEL) and the
+    // networked refs would point at a deleted entity every PVS tick.
+    private void OnEquipmentTerminating(ref EntityTerminatingEvent args)
+    {
+        var terminated = args.Entity.Owner;
+        var query = EntityQueryEnumerator<SpaceNinjaComponent>();
+        while (query.MoveNext(out var uid, out var ninja))
+        {
+            var dirty = false;
+
+            if (ninja.Suit == terminated)
+            {
+                ninja.Suit = null;
+                dirty = true;
+            }
+
+            if (ninja.Gloves == terminated)
+            {
+                ninja.Gloves = null;
+                dirty = true;
+            }
+
+            if (ninja.Katana == terminated)
+            {
+                ninja.Katana = null;
+                dirty = true;
+            }
+
+            if (dirty)
+                Dirty(uid, ninja);
+        }
     }
 
     public bool IsNinja([NotNullWhen(true)] EntityUid? uid)

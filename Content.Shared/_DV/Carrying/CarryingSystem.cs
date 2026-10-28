@@ -367,6 +367,8 @@ public sealed class CarryingSystem : EntitySystem
             HasComp<MapGridComponent>(Transform(carrier).ParentUid) &&
             // no tower of spacemen or stack overflow
             !HasComp<BeingCarriedComponent>(carrier) &&
+            // spectral/ghost mobs have no DoAfterComponent, so a timed carry would fail with an invalid user
+            HasComp<DoAfterComponent>(carrier) &&
             !HasComp<BeingCarriedComponent>(carried) &&
             // finally check that there are enough free hands
             _hands.CountFreeHands(carrier) >= carried.Comp.FreeHandsRequired;

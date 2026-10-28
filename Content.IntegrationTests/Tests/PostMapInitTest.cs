@@ -44,7 +44,8 @@ namespace Content.IntegrationTests.Tests
         private static readonly string[] Grids =
         {
             "/Maps/centcomm.yml",
-            AdminTestArenaSystem.ArenaMapPath
+            AdminTestArenaSystem.ArenaMapPath,
+            "/Maps/_CorvaxGoob/Stations/Maus/Shuttles/corvax_emergency_maus.yml", // was saved as a map, so Maus had no evac shuttle
         };
 
         /// <summary>

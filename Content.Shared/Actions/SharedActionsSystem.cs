@@ -392,6 +392,13 @@ public abstract partial class SharedActionsSystem : EntitySystem
 
         var target = GetEntity(netTarget);
 
+        // the client may target an entity that has already been deleted
+        if (!target.IsValid() || TerminatingOrDeleted(target))
+        {
+            args.Invalid = true;
+            return;
+        }
+
         var targetWorldPos = _transform.GetWorldPosition(target);
 
         if (ent.Comp.RotateOnUse)
@@ -418,6 +425,13 @@ public abstract partial class SharedActionsSystem : EntitySystem
         }
 
         var target = GetCoordinates(netTarget);
+
+        // the client may target coordinates whose entity has already been deleted
+        if (!target.EntityId.IsValid() || TerminatingOrDeleted(target.EntityId))
+        {
+            args.Invalid = true;
+            return;
+        }
 
         if (ent.Comp.RotateOnUse)
             _rotateToFace.TryFaceCoordinates(user, _transform.ToMapCoordinates(target).Position);

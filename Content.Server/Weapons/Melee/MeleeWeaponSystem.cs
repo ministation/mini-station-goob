@@ -73,7 +73,16 @@ public sealed class MeleeWeaponSystem : SharedMeleeWeaponSystem
 
     protected override void DoDamageEffect(List<EntityUid> targets, EntityUid? user, TransformComponent targetXform)
     {
-        var filter = Filter.Pvs(targetXform.Coordinates, entityMan: EntityManager).RemoveWhereAttachedEntity(o => o == user);
+        targets.RemoveAll(t => TerminatingOrDeleted(t));
+
+        if (targets.Count == 0)
+            return;
+
+        // targets can be deleted by the damage itself, so resolve a fresh transform for the PVS filter
+        if (!TryComp(targets[0], out TransformComponent? xform))
+            return;
+
+        var filter = Filter.Pvs(xform.Coordinates, entityMan: EntityManager).RemoveWhereAttachedEntity(o => o == user);
         _color.RaiseEffect(Color.Red, targets, filter);
     }
 

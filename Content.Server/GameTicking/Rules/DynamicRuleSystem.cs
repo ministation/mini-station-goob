@@ -140,7 +140,7 @@ public sealed class DynamicRuleSystem : GameRuleSystem<DynamicRuleComponent>
 
     public float? GetRuleBudget(Entity<DynamicRuleComponent?> entity)
     {
-        if (!Resolve(entity, ref entity.Comp))
+        if (!Resolve(entity, ref entity.Comp, false))
             return null;
 
         UpdateBudget((entity.Owner, entity.Comp));
@@ -149,7 +149,7 @@ public sealed class DynamicRuleSystem : GameRuleSystem<DynamicRuleComponent>
 
     public float? AdjustBudget(Entity<DynamicRuleComponent?> entity, float amount)
     {
-        if (!Resolve(entity, ref entity.Comp))
+        if (!Resolve(entity, ref entity.Comp, false))
             return null;
 
         UpdateBudget((entity.Owner, entity.Comp));
@@ -159,7 +159,7 @@ public sealed class DynamicRuleSystem : GameRuleSystem<DynamicRuleComponent>
 
     public float? SetBudget(Entity<DynamicRuleComponent?> entity, float amount)
     {
-        if (!Resolve(entity, ref entity.Comp))
+        if (!Resolve(entity, ref entity.Comp, false))
             return null;
 
         entity.Comp.LastBudgetUpdate = Timing.CurTime;
@@ -169,7 +169,7 @@ public sealed class DynamicRuleSystem : GameRuleSystem<DynamicRuleComponent>
 
     public IEnumerable<EntProtoId> DryRun(Entity<DynamicRuleComponent?> entity)
     {
-        if (!Resolve(entity, ref entity.Comp))
+        if (!Resolve(entity, ref entity.Comp, false))
             return new List<EntProtoId>();
 
         return GetRuleSpawns((entity.Owner, entity.Comp));
@@ -177,7 +177,7 @@ public sealed class DynamicRuleSystem : GameRuleSystem<DynamicRuleComponent>
 
     public IEnumerable<EntityUid> ExecuteNow(Entity<DynamicRuleComponent?> entity)
     {
-        if (!Resolve(entity, ref entity.Comp))
+        if (!Resolve(entity, ref entity.Comp, false))
             return new List<EntityUid>();
 
         return Execute((entity.Owner, entity.Comp));
@@ -185,7 +185,7 @@ public sealed class DynamicRuleSystem : GameRuleSystem<DynamicRuleComponent>
 
     public IEnumerable<EntityUid> Rules(Entity<DynamicRuleComponent?> entity)
     {
-        if (!Resolve(entity, ref entity.Comp))
+        if (!Resolve(entity, ref entity.Comp, false))
             return new List<EntityUid>();
 
         return entity.Comp.Rules;

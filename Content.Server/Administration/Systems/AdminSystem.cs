@@ -28,6 +28,7 @@ using Content.Shared.Roles.Jobs;
 using Content.Shared.StationRecords;
 using Content.Shared.Throwing;
 using Robust.Server.GameObjects;
+using Robust.Shared.Physics.Components;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -444,8 +445,10 @@ public sealed class AdminSystem : EntitySystem
             {
                 while (enumerator.NextItem(out var item, out var slot))
                 {
-                    if (_inventory.TryUnequip(entity, entity, slot.Name, true, true))
-                        _physics.ApplyAngularImpulse(item, ThrowingSystem.ThrowAngularImpulse);
+                    // inventory items are not guaranteed to have physics (e.g. hardsuit helmets)
+                    if (_inventory.TryUnequip(entity, entity, slot.Name, true, true) &&
+                        TryComp<PhysicsComponent>(item, out var itemPhysics))
+                        _physics.ApplyAngularImpulse(item, ThrowingSystem.ThrowAngularImpulse, body: itemPhysics);
                 }
             }
 

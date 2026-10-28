@@ -41,7 +41,6 @@ public sealed partial class StoreComponent : Component
     /// The person/mind who "owns" the store/account. Used if you want the listings to be fixed
     /// regardless of who activated it. I.E. role specific items for uplinks.
     /// </summary>
-    [DataField]
     public EntityUid? AccountOwner = null;
 
     /// <summary>
@@ -59,7 +58,7 @@ public sealed partial class StoreComponent : Component
     /// <summary>
     ///     All current entities bought from this shop. Useful for keeping track of refunds and upgrades.
     /// </summary>
-    [ViewVariables, DataField]
+    [ViewVariables]
     public List<EntityUid> BoughtEntities = new();
 
     // CorvaxGoob-SparksEffect
@@ -91,7 +90,6 @@ public sealed partial class StoreComponent : Component
     /// <summary>
     ///     The map the store was originally from, used to block refunds if the map is changed
     /// </summary>
-    [DataField]
     public EntityUid? StartingMap;
 
     #region audio

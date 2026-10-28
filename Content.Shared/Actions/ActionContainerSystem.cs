@@ -98,7 +98,7 @@ public sealed class ActionContainerSystem : EntitySystem
         {
             if (!comp.Container.Contains(actionId.Value))
             {
-                Log.Error($"Action {ToPrettyString(actionId.Value)} is not contained in the expected container {ToPrettyString(uid)}");
+                Log.Warning($"Action {ToPrettyString(actionId.Value)} is not contained in the expected container {ToPrettyString(uid)}");
                 return false;
             }
 

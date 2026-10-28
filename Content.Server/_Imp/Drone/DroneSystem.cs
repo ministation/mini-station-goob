@@ -201,10 +201,9 @@ namespace Content.Server._Imp.Drone
                     // imp change. this filters out all dead entities.
                     if (TryComp<MobStateComponent>(entity, out var entityMobState) && _mobStateSystem.IsDead(entity, entityMobState))
                         continue;
-                    if (_gameTiming.IsFirstTimePredicted)
-                    {
-                        component.NearestEnt = Identity.Entity(entity, EntityManager); // imp. instead of doing popups in here, set a variable to the nearest entity for use elsewhere.
-                    }
+                    // imp. instead of doing popups in here, set a variable to the nearest entity for use elsewhere.
+                    // set it unconditionally: this is a server-only system, and a stale default value breaks the popup loc
+                    component.NearestEnt = Identity.Entity(entity, EntityManager);
                     return true;
                 }
             }

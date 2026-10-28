@@ -756,7 +756,13 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem // Goob - p
         if (!TryComp(user, out TransformComponent? userXform))
             return false;
 
-        var targetMap = TransformSystem.ToMapCoordinates(GetCoordinates(ev.Coordinates));
+        var attackCoords = GetCoordinates(ev.Coordinates);
+
+        // the client may still reference an entity that has already been deleted
+        if (!TryComp<TransformComponent>(attackCoords.EntityId, out _))
+            return false;
+
+        var targetMap = TransformSystem.ToMapCoordinates(attackCoords);
 
         if (targetMap.MapId != userXform.MapID)
             return false;
