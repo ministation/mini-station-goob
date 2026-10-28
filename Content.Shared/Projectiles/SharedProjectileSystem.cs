@@ -12,6 +12,7 @@ using Content.Shared._Mini.TypanWar;
 using Content.Shared.Tag;
 using Content.Shared.Throwing;
 using Content.Shared.Weapons.Ranged.Components;
+using Content.Shared._Trauma.Projectiles;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -52,6 +53,39 @@ public abstract partial class SharedProjectileSystem : EntitySystem
         SubscribeLocalEvent<EmbeddableProjectileComponent, ComponentShutdown>(OnEmbeddableCompShutdown);
 
         SubscribeLocalEvent<EmbeddedContainerComponent, EntityTerminatingEvent>(OnEmbeddableTermination);
+        SubscribeLocalEvent<EntityTerminatingEvent>(OnEntityTerminating);
+    }
+
+    // Goob - снаряд или хитскан может пережить стрелка и оружие. Ссылки на удалённые сущности
+    // в сетевом состоянии дают resolve-ошибку на каждом PVS-тике, поэтому чистим их сразу.
+    private void OnEntityTerminating(ref EntityTerminatingEvent args)
+    {
+        var terminated = args.Entity.Owner;
+
+        var projectiles = EntityQueryEnumerator<ProjectileComponent>();
+        while (projectiles.MoveNext(out var uid, out var projectile))
+        {
+            if (projectile.Shooter != terminated && projectile.Weapon != terminated)
+                continue;
+
+            if (projectile.Shooter == terminated)
+                projectile.Shooter = null;
+
+            if (projectile.Weapon == terminated)
+                projectile.Weapon = null;
+
+            Dirty(uid, projectile);
+        }
+
+        var predicted = EntityQueryEnumerator<PredictedShooterComponent>();
+        while (predicted.MoveNext(out var uid, out var shooter))
+        {
+            if (shooter.Shooter != terminated)
+                continue;
+
+            shooter.Shooter = null;
+            Dirty(uid, shooter);
+        }
     }
 
     private void OnEmbedActivate(Entity<EmbeddableProjectileComponent> embeddable, ref ActivateInWorldEvent args)

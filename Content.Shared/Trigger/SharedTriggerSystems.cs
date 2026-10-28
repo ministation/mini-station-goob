@@ -1,4 +1,4 @@
-﻿using Content.Shared.Trigger.Components.Effects;
+using Content.Shared.Trigger.Components.Effects;
 using Content.Shared.Trigger.Systems;
 
 namespace Content.Shared.Trigger;
@@ -32,6 +32,11 @@ public abstract class XOnTriggerSystem<T> : EntitySystem where T : BaseXOnTrigge
         var target = ent.Comp.TargetUser ? args.User : ent.Owner;
 
         if (target is not { } uid)
+            return;
+
+        // Goob - триггер мог сработать из таймера после удаления себя или пользователя,
+        // и производный OnTrigger упал бы в GetNetEntity на таком uid.
+        if (TerminatingOrDeleted(uid) || TerminatingOrDeleted(ent.Owner))
             return;
 
         OnTrigger(ent, uid, ref args);

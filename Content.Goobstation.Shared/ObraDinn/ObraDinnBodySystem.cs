@@ -13,18 +13,13 @@ namespace Content.Goobstation.Shared.ObraDinn;
 public sealed partial class ObraDinnBodySystem : EntitySystem
 {
     [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
 
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<ObraDinnBodyComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<ObraDinnBodyComponent, MobStateChangedEvent>(OnDeath);
-    }
-
-    private void OnStartup(Entity<ObraDinnBodyComponent> ent, ref ComponentStartup args)
-    {
-        ent.Comp.Location = Transform(ent.Owner).Coordinates;
     }
 
     private void OnDeath(Entity<ObraDinnBodyComponent> ent, ref MobStateChangedEvent args)
@@ -37,10 +32,11 @@ public sealed partial class ObraDinnBodySystem : EntitySystem
         if (args.NewMobState != MobState.Dead || TerminatingOrDeleted(ent))
             return;
 
-        ent.Comp.Location = Transform(ent.Owner).Coordinates;
-        ent.Comp.Map = Transform(ent.Owner).MapID;
+        var mapCoords = _transform.GetMapCoordinates(ent.Owner);
+        ent.Comp.Location = mapCoords.Position;
+        ent.Comp.Map = mapCoords.MapId;
 
-        var list = _lookup.GetEntitiesInRange(ent.Comp.Location.Value, ent.Comp.WitnessRange);
+        var list = _lookup.GetEntitiesInRange(mapCoords, ent.Comp.WitnessRange);
 
         foreach (var possibleWitness in list)
         {

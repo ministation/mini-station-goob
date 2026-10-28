@@ -20,6 +20,26 @@ public partial class SharedMartialArtsSystem
         SubscribeLocalEvent<CanPerformComboComponent, SaveLastAttacksEvent>(OnSave);
         SubscribeLocalEvent<CanPerformComboComponent, ResetLastAttacksEvent>(OnReset);
         SubscribeLocalEvent<CanPerformComboComponent, LoadLastAttacksEvent>(OnLoad);
+        SubscribeLocalEvent<EntityTerminatingEvent>(OnComboTargetTerminating);
+    }
+
+    // Goob - цель комбо может удалиться раньше, чем сбросится CurrentTarget,
+    // и тогда сетевое поле ссылается на удалённую сущность.
+    private void OnComboTargetTerminating(ref EntityTerminatingEvent args)
+    {
+        if (!_netManager.IsServer)
+            return;
+
+        var terminated = args.Entity.Owner;
+        var query = EntityQueryEnumerator<CanPerformComboComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            if (comp.CurrentTarget != terminated)
+                continue;
+
+            comp.CurrentTarget = null;
+            Dirty(uid, comp);
+        }
     }
 
     private void OnLoad(Entity<CanPerformComboComponent> ent, ref LoadLastAttacksEvent args)

@@ -83,8 +83,9 @@ public sealed partial class NinjaGhostCloneComponent : Component
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
 public sealed partial class NinjaGhostCloneVisualComponent : Component
 {
+    // NetEntity, чтобы удаление ниндзя не оставляло в сетевом состоянии ссылку на него.
     [DataField, AutoNetworkedField]
-    public EntityUid? Source;
+    public NetEntity? Source;
 }
 
 /// <summary>

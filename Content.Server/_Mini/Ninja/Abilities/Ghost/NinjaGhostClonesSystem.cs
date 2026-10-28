@@ -111,7 +111,7 @@ public sealed class NinjaGhostClonesSystem : EntitySystem
         _metaData.SetEntityName(clone, MetaData(source).EntityName);
 
         var visual = EnsureComp<NinjaGhostCloneVisualComponent>(clone);
-        visual.Source = source;
+        visual.Source = GetNetEntity(source);
         Dirty(clone, visual);
 
         if (TryComp<TimedDespawnComponent>(source, out var despawn))

@@ -776,6 +776,17 @@ public abstract partial class SharedGunSystem : EntitySystem
             targeted.Target = null;
             Dirty(uid, targeted);
         }
+
+        // Goob - крюк гарпуна удаляется при сматывании, а ссылка на него остаётся в пушке
+        var grappling = EntityQueryEnumerator<GrapplingGunComponent>();
+        while (grappling.MoveNext(out var uid, out var gun))
+        {
+            if (gun.Projectile != terminated)
+                continue;
+
+            gun.Projectile = null;
+            Dirty(uid, gun);
+        }
     }
 
      // Goobstation

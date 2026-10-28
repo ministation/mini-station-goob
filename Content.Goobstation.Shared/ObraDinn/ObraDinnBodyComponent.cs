@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Mobs;
 using Robust.Shared.GameStates;
@@ -22,10 +23,11 @@ public sealed partial class ObraDinnBodyComponent : Component
     public List<ObraDinnWitness> Witnesses = new List<ObraDinnWitness>();
 
     /// <summary>
-    /// Where it happened
+    /// Where it happened. Позиция на карте, а не EntityCoordinates: сетка/карта к этому моменту
+    /// может быть удалена, и сетевое состояние ссылалось бы на несуществующую сущность.
     /// </summary>
     [DataField,AutoNetworkedField]
-    public EntityCoordinates? Location;
+    public Vector2? Location;
 
     /// <summary>
     /// Map where it happened

@@ -23,6 +23,26 @@ public sealed class DeviceListSystem : SharedDeviceListSystem
         SubscribeLocalEvent<DeviceListComponent, BeforeBroadcastAttemptEvent>(OnBeforeBroadcast);
         SubscribeLocalEvent<DeviceListComponent, BeforePacketSentEvent>(OnBeforePacketSent);
         SubscribeLocalEvent<BeforeSerializationEvent>(OnMapSave);
+        SubscribeLocalEvent<EntityTerminatingEvent>(OnDeviceTerminating);
+    }
+
+    // Устройство может выпасть из обратной ссылки DeviceNetworkComponent.DeviceLists (карты,
+    // загруженные до синхронизации), и тогда его uid навсегда остаётся в списке. Чистим все
+    // списки при удалении самого устройства, иначе каждый PVS-тик пишет resolve-ошибку.
+    private void OnDeviceTerminating(ref EntityTerminatingEvent args)
+    {
+        var terminated = args.Entity.Owner;
+        if (!HasComp<DeviceNetworkComponent>(terminated))
+            return;
+
+        var lists = AllEntityQuery<DeviceListComponent>();
+        while (lists.MoveNext(out var uid, out var list))
+        {
+            if (!list.Devices.Remove(terminated))
+                continue;
+
+            Dirty(uid, list);
+        }
     }
 
     // Goobstation - Fix desync of configurator lists

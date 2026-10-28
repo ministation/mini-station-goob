@@ -15,6 +15,7 @@ namespace Content.Shared._Trauma.Projectiles;
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class PredictedShooterComponent : Component
 {
+    // Null, если стрелок удалён до того, как снаряд/хитскан дожил до конца.
     [DataField, AutoNetworkedField]
-    public EntityUid Shooter;
+    public EntityUid? Shooter;
 }

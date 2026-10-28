@@ -22,16 +22,18 @@ public sealed class NinjaGhostCloneVisualSystem : EntitySystem
 
     private void OnState(Entity<NinjaGhostCloneVisualComponent> ent, ref AfterAutoHandleStateEvent args)
     {
-        if (ent.Comp.Source is not { } source || source == ent.Owner || !Exists(source))
+        if (ent.Comp.Source is not { } sourceNet ||
+            !TryGetEntity(sourceNet, out var source) ||
+            source == ent.Owner)
             return;
 
-        if (!TryComp<SpriteComponent>(source, out var sourceSprite) ||
+        if (!TryComp<SpriteComponent>(source.Value, out var sourceSprite) ||
             !TryComp<SpriteComponent>(ent.Owner, out var cloneSprite))
         {
             return;
         }
 
-        _sprite.CopySprite((source, sourceSprite), (ent.Owner, cloneSprite));
+        _sprite.CopySprite((source.Value, sourceSprite), (ent.Owner, cloneSprite));
         cloneSprite.Visible = true;
     }
 }
