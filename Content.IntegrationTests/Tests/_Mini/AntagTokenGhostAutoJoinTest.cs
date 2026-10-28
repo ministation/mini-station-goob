@@ -7,6 +7,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.IntegrationTests.Pair;
+using Content.Server.GameTicking;
 using Content.Server.Ghost;
 using Content.Server.Mind;
 using Content.Shared.Ghost;
@@ -33,6 +34,13 @@ public sealed class AntagTokenGhostAutoJoinTest
     private const string RevenantProto = "MobRevenantToken";
     private const string RevenantRoleId = "revenant";
     private const int RevenantCost = 3;
+
+    private const string RatKingRoleId = "rat_king";
+    private const string RatKingSpawnerProto = "SpawnPointGhostRatKing";
+    private const string RatKingMobProto = "MobRatKing";
+
+    private const string NinjaRoleId = "ninja";
+    private const string NinjaRuleId = "TokenNinjaSpawn";
 
     /// <summary>
     /// Призрак купил ревенанта: роль выдаётся, монетки не меняются, метка раунда ставится.
@@ -143,16 +151,85 @@ public sealed class AntagTokenGhostAutoJoinTest
     }
 
     /// <summary>
+    /// Спавнер-роль (крысиный король) создаёт отдельную сущность, поэтому прототип
+    /// призрачной роли не совпадает с телом игрока. Проверяем, что выдача через
+    /// GhostRoleMobSpawner не считается провалом доставки и монетки не возвращаются.
+    /// </summary>
+    [Test]
+    public async Task SpawnerGhostRoleKeepsCoins()
+    {
+        var (pair, server, session) = await Setup("MobObserver");
+        var sEntMan = server.ResolveDependency<IEntityManager>();
+        var tokens = sEntMan.System<AntagTokenSystem>();
+
+        await server.WaitPost(() =>
+        {
+            tokens.TestSetupPendingGhostAuto(session, RatKingRoleId, 0);
+            SpawnOnTestMap(server, RatKingSpawnerProto);
+        });
+        await server.WaitRunTicks(5);
+
+        var state = tokens.TestGetState(session.UserId);
+        Assert.That(state, Is.Not.Null, "token state must be loaded");
+        Assert.That(state!.PendingGhostAutoRoleId, Is.Null, "pending must be cleared after delivery");
+        Assert.That(state.GhostAntagConsumedMark, Is.True, "round mark must be set after delivery");
+        Assert.That(state.Balance, Is.EqualTo(0), "coins must not be refunded when a spawner role is delivered");
+        Assert.That(session.AttachedEntity, Is.Not.Null, "player must be attached to the spawned role");
+        Assert.That(
+            sEntMan.GetComponent<MetaDataComponent>(session.AttachedEntity!.Value).EntityPrototype?.ID,
+            Is.EqualTo(RatKingMobProto),
+            "player must control the entity spawned by the ghost role spawner");
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Роль-спавнер из AntagSelection (ниндзя). Здесь TookRole выставляет обработчик AntagSelection,
+    /// который может отработать уже после обработчика токенов, поэтому pending ещё активен,
+    /// когда проверяется доставка. Раньше проверка прототипа спавнера с телом всегда падала:
+    /// монетки возвращались за уже выданную роль (регрессия бесконечных клонов).
+    /// </summary>
+    [Test]
+    public async Task AntagSelectionGhostRoleKeepsCoins()
+    {
+        var (pair, server, session) = await Setup("MobObserver", destructive: true);
+        var sEntMan = server.ResolveDependency<IEntityManager>();
+        var tokens = sEntMan.System<AntagTokenSystem>();
+        var ticker = sEntMan.System<GameTicker>();
+        var previous = session.AttachedEntity;
+
+        await server.WaitPost(() =>
+        {
+            tokens.TestSetupPendingGhostAuto(session, NinjaRoleId, 0);
+            Assert.That(ticker.StartGameRule(NinjaRuleId), Is.True, "ninja token rule must start");
+        });
+        await server.WaitRunTicks(10);
+
+        var state = tokens.TestGetState(session.UserId);
+        Assert.That(state, Is.Not.Null, "token state must be loaded");
+        Assert.That(state!.PendingGhostAutoRoleId, Is.Null, "pending must be cleared after delivery");
+        Assert.That(state.GhostAntagConsumedMark, Is.True, "round mark must be set after delivery");
+        Assert.That(state.Balance, Is.EqualTo(0), "coins must not be refunded after a successful antag-selection delivery");
+        Assert.That(session.AttachedEntity, Is.Not.Null, "player must be attached to the spawned role");
+        Assert.That(session.AttachedEntity, Is.Not.EqualTo(previous), "player must be moved into the spawned role");
+        Assert.That(sEntMan.HasComponent<GhostComponent>(session.AttachedEntity!.Value), Is.False,
+            "player must not remain a ghost");
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
     /// Подключает сессию выбранной сущностью (призрак или тело) на тестовой карте.
     /// Пара живёт до конца теста, поэтому возвращается вместе с результатом.
     /// </summary>
     private static async Task<(TestPair Pair, RobustIntegrationTest.ServerIntegrationInstance Server, ICommonSession Session)>
-        Setup(string playerProto)
+        Setup(string playerProto, bool destructive = false)
     {
         var pair = await PoolManager.GetServerClient(new PoolSettings
         {
             DummyTicker = false,
             Connected = true,
+            Destructive = destructive,
         });
         var server = pair.Server;
         var sEntMan = server.ResolveDependency<IServerEntityManager>();
