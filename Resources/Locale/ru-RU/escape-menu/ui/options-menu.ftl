@@ -22,7 +22,6 @@ ui-options-font-style = Шрифт интерфейса:
 ui-options-font-style-default = Noto Sans
 ui-options-font-style-epilepsy-sans = Epilepsy Sans (пиксельный)
 ui-options-font-style-cozette = Cozette (пиксельный)
-ui-options-font-style-bedstead = Bedstead (пиксельный)
 ui-options-font-style-pixeloid = Pixeloid Sans
 ui-options-general-discord = Discord
 ui-options-general-cursor = Курсор
