@@ -38,16 +38,27 @@ public abstract class SharedAiRemoteControlSystem : EntitySystem
         if (!TryComp<StationAiHeldComponent>(remoteComp.AiHolder.Value, out var stationAiHeldComp))
             return;
 
+        // Mini: ядро ИИ уже удаляется, минд в него не возвращаем.
+        if (TerminatingOrDeleted(remoteComp.AiHolder.Value) || TerminatingOrDeleted(stationAiCore.Owner))
+            return;
+
         stationAiHeldComp.CurrentConnectedEntity = null;
 
         _mind.TransferTo(remoteComp.LinkedMind.Value, remoteComp.AiHolder);
 
-        _stationAiSystem.SwitchRemoteEntityMode(stationAiCore, true);
+        // Mini: при удалении карты старое око висит на Terminating сущности, SwitchRemoteEntityMode на этом падает.
+        var eyeParentTerminating = stationAiCore.Comp!.RemoteEntity is { } oldEye
+            && TryComp(oldEye, out TransformComponent? eyeXform)
+            && TerminatingOrDeleted(eyeXform.ParentUid);
+
+        if (!eyeParentTerminating)
+            _stationAiSystem.SwitchRemoteEntityMode(stationAiCore, true);
+
         remoteComp.AiHolder = null;
         remoteComp.LinkedMind = null;
 
         // Mini: при удалении корпуса (OnShutdown) сущность уже Terminating - око ИИ туда не телепортируем.
-        if (!TerminatingOrDeleted(entity))
+        if (!eyeParentTerminating && !TerminatingOrDeleted(entity))
             _xformSystem.SetCoordinates(stationAiCore.Comp.RemoteEntity.Value, Transform(entity).Coordinates);
 
         // Mini: если ИИ вошёл без платы B.O.R.I.S., убираем временную связь при выходе:

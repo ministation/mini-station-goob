@@ -469,6 +469,13 @@ public sealed partial class EmergencyShuttleSystem : SharedEmergencyShuttleSyste
                 dockResults.Add(dockResult);
         }
 
+        // Mini: если у станции нет пристыкованных шаттлов, Max по пустому списку кидает исключение.
+        if (dockResults.Count == 0)
+        {
+            _commsConsole.UpdateCommsConsoleInterface();
+            return;
+        }
+
         // Make the shuttle wait longer if it couldn't dock in the normal spot.
         // We have to handle the possibility of there being multiple stations, so since the shuttle timer is global,
         // use the WORST value we have.

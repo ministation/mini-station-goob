@@ -443,6 +443,10 @@ public sealed class ToggleableClothingSystem : EntitySystem
         if (TerminatingOrDeleted(args.Equipee))
             return;
 
+        // Mini: удаляемая часть скафандра или сам скафандр в контейнер не вставляем.
+        if (TerminatingOrDeleted(attached.Owner) || TerminatingOrDeleted(comp.AttachedUid))
+            return;
+
         if (!TryComp(comp.AttachedUid, out ToggleableClothingComponent? toggleableComp))
             return;
 

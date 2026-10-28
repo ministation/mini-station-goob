@@ -415,7 +415,8 @@ namespace Content.Server.Kitchen.EntitySystems
 
         private void OnAnchorChanged(EntityUid uid, MicrowaveComponent component, ref AnchorStateChangedEvent args)
         {
-            if (!args.Anchored)
+            // Mini: при удалении микроволновки её содержимое уже Terminating, EmptyContainer на нём только логирует ошибку.
+            if (!args.Anchored && !TerminatingOrDeleted(uid))
                 _container.EmptyContainer(component.Storage);
         }
 

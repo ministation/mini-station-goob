@@ -2,7 +2,7 @@ using Content.Goobstation.Common.Effects;
 using Content.Server._CorvaxGoob.Animation;
 using Content.Shared._CorvaxGoob.Events.Animation;
 using Content.Shared._CorvaxGoob.Events.StatusEffects;
-using Content.Shared.StatusEffect;
+using Content.Shared.StatusEffectNew;
 using Robust.Server.GameObjects;
 
 namespace Content.Server._CorvaxGoob.Events;
@@ -35,9 +35,6 @@ public sealed class TargetEventsSystem : EntitySystem
 
     private void OnApplyStatusEffect(ApplyStatusEffectTargetEvent ev)
     {
-        if (ev.ComponentType is null)
-            return;
-
-        _statusEffects.TryAddStatusEffect(ev.Target, ev.Key, TimeSpan.FromSeconds(ev.Time), ev.Refresh, ev.ComponentType);
+        _statusEffects.TryUpdateStatusEffectDuration(ev.Target, ev.Effect, TimeSpan.FromSeconds(ev.Time));
     }
 }

@@ -186,7 +186,10 @@ internal sealed partial class ChatManager : IChatManager
 
     public void SendAdminAlertNoFormatOrEscape(string message)
     {
-        var clients = _adminManager.ActiveAdmins.Select(p => p.Channel);
+        // Mini: администратор мог отключиться, пока ждали БД, в закрытый канал не шлём.
+        var clients = _adminManager.ActiveAdmins
+            .Where(p => p.Channel.IsConnected)
+            .Select(p => p.Channel);
 
         ChatMessageToMany(ChatChannel.AdminAlert, message, message, default, false, true, clients);
     }

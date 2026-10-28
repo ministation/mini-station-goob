@@ -80,8 +80,16 @@ public sealed partial class RespiratorSystem : EntitySystem // Goob - made parti
         base.Update(frameTime);
 
         var query = EntityQueryEnumerator<RespiratorComponent, BodyComponent>();
-        while (query.MoveNext(out var uid, out var respirator, out var body))
+        var respirators = new List<(EntityUid Uid, RespiratorComponent Respirator)>();
+        while (query.MoveNext(out var uid, out var respirator, out _))
+            respirators.Add((uid, respirator));
+
+        // Mini: события дыхания могут менять набор компонентов, обходим снапшот, а не query.
+        foreach (var (uid, respirator) in respirators)
         {
+            if (TerminatingOrDeleted(uid))
+                continue;
+
             if (_gameTiming.CurTime < respirator.NextUpdate)
                 continue;
 

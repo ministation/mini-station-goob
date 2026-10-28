@@ -37,7 +37,12 @@ public sealed partial class TTSSystem
         _isPlaying = false;
 
         foreach (var recipient in _filterToSend.Recipients)
+        {
+            if (!recipient.Channel.IsConnected)
+                continue;
+
             RaiseNetworkEvent(new TTSAnnouncedEvent(_soundDataToSend!), recipient);
+        }
 
         _soundDataToSend = null;
         _filterToSend = null;
