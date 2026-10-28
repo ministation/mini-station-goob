@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Map
@@ -14385,6 +14389,8 @@ entities:
     - type: Transform
       pos: -21.5,-44.5
       parent: 30
+    - type: SiloUtilizer
+      silo: 23077
   - uid: 11726
     components:
     - type: Transform
@@ -54408,6 +54414,13 @@ entities:
     - type: Transform
       pos: 13.5,-22.5
       parent: 30
+- proto: MaterialSilo
+  entities:
+  - uid: 23077
+    components:
+    - type: Transform
+      parent: 30
+      pos: 28.5,22.5
 - proto: computerBodyScanner
   entities:
   - uid: 1746
@@ -110164,6 +110177,8 @@ entities:
       - Plastic
       - Wood
       - Gold
+    - type: SiloUtilizer
+      silo: 23077
   - uid: 13971
     components:
     - type: Transform

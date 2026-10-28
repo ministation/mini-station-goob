@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Map
@@ -47189,6 +47193,8 @@ entities:
     - type: Transform
       pos: 12.5,47.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 21491
   - uid: 401
     components:
     - type: Transform
@@ -47204,6 +47210,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 21491
   - uid: 402
     components:
     - type: Transform
@@ -47219,6 +47227,8 @@ entities:
       - Robotics
       - Medical
       - Service
+    - type: SiloUtilizer
+      silo: 21491
 - proto: BackgammonBoard
   entities:
   - uid: 403
@@ -73969,6 +73979,13 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 85.5,25.5
       parent: 2
+- proto: MaterialSilo
+  entities:
+  - uid: 21491
+    components:
+    - type: Transform
+      parent: 2
+      pos: 14.5,38.5
 - proto: computerBodyScanner
   entities:
   - uid: 4971
@@ -142250,6 +142267,8 @@ entities:
     - type: Transform
       pos: 11.5,47.5
       parent: 2
+    - type: SiloUtilizer
+      silo: 21491
 - proto: PsychBed
   entities:
   - uid: 15093
