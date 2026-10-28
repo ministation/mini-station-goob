@@ -70,6 +70,8 @@ public sealed class GhostShopWindowTest
             window.Dispose();
         });
 
+        await pair.CleanReturnAsync();
+
         Assert.Multiple(() =>
         {
             Assert.That(tabCount, Is.EqualTo(2), "должно быть две вкладки: темы и цвет ника");
