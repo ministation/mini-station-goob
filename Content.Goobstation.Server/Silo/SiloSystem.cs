@@ -33,6 +33,8 @@ public sealed partial class SiloSystem : SharedSiloSystem
         base.Initialize();
 
         SubscribeLocalEvent<BecomesStationComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<SiloComponent, MapInitEvent>(OnSiloInit);
+        SubscribeLocalEvent<SiloUtilizerComponent, MapInitEvent>(OnUtilizerInit);
         SubscribeLocalEvent<SiloComponent, MaterialAmountChangedEvent>(OnMaterialAmountChanged);
         SubscribeLocalEvent<SiloComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<SiloComponent, ComponentShutdown>(OnShutdown);
@@ -48,6 +50,70 @@ public sealed partial class SiloSystem : SharedSiloSystem
         foreach (var session in _player.Sessions)
         {
             _pvs.RemoveSessionOverride(ent, session);
+        }
+
+        // Сило разобрали или взорвали: ссылки лат на него становятся мусором, из-за чего
+        // фабы перестают видеть общие материалы, а каждый пакет состояния сыпет ошибкой
+        // "Can't resolve MetaDataComponent". Чистим ссылки, пока сущность ещё жива.
+        ClearUtilizerLinks(ent.Owner);
+    }
+
+    /// <summary>
+    /// Свежепостроенное (или перенесённое) сило подключает к себе латы на своём гриде,
+    /// у которых ссылки ещё нет. Иначе после разборки старого сило новый никто не видит.
+    /// </summary>
+    private void OnSiloInit(Entity<SiloComponent> ent, ref MapInitEvent args)
+    {
+        if (!TryComp(ent, out TransformComponent? xform) || xform.GridUid is not { } grid)
+            return;
+
+        var utilizers = AllEntityQuery<SiloUtilizerComponent, TransformComponent>();
+        while (utilizers.MoveNext(out var utilizerUid, out var utilizer, out var utilizerXform))
+        {
+            if (utilizerXform.GridUid != grid)
+                continue;
+
+            if (utilizer.Silo != null && !TerminatingOrDeleted(utilizer.Silo.Value))
+                continue;
+
+            utilizer.Silo = ent.Owner;
+            Dirty(utilizerUid, utilizer);
+        }
+    }
+
+    /// <summary>
+    /// Новый фаб на станции сразу подхватывает сило с того же грида.
+    /// </summary>
+    private void OnUtilizerInit(Entity<SiloUtilizerComponent> ent, ref MapInitEvent args)
+    {
+        if (ent.Comp.Silo != null && !TerminatingOrDeleted(ent.Comp.Silo.Value))
+            return;
+
+        if (!TryComp(ent, out TransformComponent? xform) || xform.GridUid is not { } grid)
+            return;
+
+        var silos = AllEntityQuery<SiloComponent, TransformComponent>();
+        while (silos.MoveNext(out var siloUid, out _, out var siloXform))
+        {
+            if (siloXform.GridUid != grid)
+                continue;
+
+            ent.Comp.Silo = siloUid;
+            Dirty(ent.Owner, ent.Comp);
+            return;
+        }
+    }
+
+    private void ClearUtilizerLinks(EntityUid silo)
+    {
+        var utilizers = AllEntityQuery<SiloUtilizerComponent>();
+        while (utilizers.MoveNext(out var utilizerUid, out var utilizer))
+        {
+            if (utilizer.Silo != silo)
+                continue;
+
+            utilizer.Silo = null;
+            Dirty(utilizerUid, utilizer);
         }
     }
 

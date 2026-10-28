@@ -36,6 +36,17 @@
   - type: MaterialStorage
     ignoreColor: true
   - type: Silo
+  # Mini: у прежнего хранилища материалов было окно (список материалов, выдача листов,
+  # подключение лат вручную). Возвращаем его, чтобы сило можно было нормально использовать.
+  - type: OreSilo
+    range: 3000
+  - type: ActivatableUI
+    key: enum.OreSiloUiKey.Key
+  - type: ActivatableUIRequiresPower
+  - type: UserInterface
+    interfaces:
+      enum.OreSiloUiKey.Key:
+        type: OreSiloBoundUserInterface
   - type: DeviceLinkSink
     ports:
       - FillbotAnyItem
