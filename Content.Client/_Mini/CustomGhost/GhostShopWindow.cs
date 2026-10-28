@@ -518,7 +518,7 @@ public sealed class GhostShopWindow : DefaultWindow
             actionButton.Disabled = true;
             buttonContent.AddChild(new Label
             {
-                Text = "✓",
+                Text = Loc.GetString("ghost-shop-btn-selected"),
                 Modulate = Color.White,
                 StyleClasses = { "LabelHeading" },
                 VerticalAlignment = VAlignment.Center
