@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Numerics;
 using Content.Client.Resources;
 using Content.Shared._Mini.CustomGhost;
@@ -10,6 +14,7 @@ using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 
 namespace Content.Client._Mini.CustomGhost;
@@ -26,6 +31,10 @@ public sealed class GhostShopWindow : DefaultWindow
     private static readonly Color SelectedBorderColor = Color.FromHex("#3fb950").WithAlpha(0.8f);
 
     private const string CoinIconPath = "/Textures/_Mini/Interface/Coin.png";
+
+    /// <summary>Иконка идущих часов для таймера тем за наигранное время.</summary>
+    private static readonly SpriteSpecifier ClockIcon = new SpriteSpecifier.Rsi(
+        new ResPath("/Textures/_Mini/Interface/daily_rewards.rsi"), "clock_animated");
 
     private readonly GhostShopSystem _system;
     private readonly Texture _coinTexture;
@@ -48,15 +57,15 @@ public sealed class GhostShopWindow : DefaultWindow
         _coinTexture = IoCManager.Resolve<IResourceCache>().GetTexture(CoinIconPath);
 
         Title = "Магазин призраков";
-        MinSize = new Vector2(1000, 760);
-        MaxSize = new Vector2(1000, float.PositiveInfinity);
-        SetSize = new Vector2(1000, 880);
+        MinSize = new Vector2(820, 500);
+        MaxSize = new Vector2(820, float.PositiveInfinity);
+        SetSize = new Vector2(820, 560);
 
         var root = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 24,
-            Margin = new Thickness(24, 16)
+            SeparationOverride = 10,
+            Margin = new Thickness(16, 12)
         };
 
         var backdrop = new PanelContainer
@@ -68,14 +77,6 @@ public sealed class GhostShopWindow : DefaultWindow
 
         root.AddChild(BuildHero());
 
-        root.AddChild(new Label
-        {
-            Text = Loc.GetString("ghost-shop-window-subtitle"),
-            StyleClasses = { "LabelHeading" },
-            Margin = new Thickness(4, 0, 0, 0),
-            Modulate = Color.FromHex("#adbac7")
-        });
-
         _statusLabel = new Label
         {
             Visible = false,
@@ -84,22 +85,20 @@ public sealed class GhostShopWindow : DefaultWindow
         };
         root.AddChild(_statusLabel);
 
-        var gridPanel = new PanelContainer
+        // Темы и OOC-цвет ника живут в отдельных вкладках, как достижения в наградах: раньше
+        // обе ленты висели друг под другом, и окно растягивалось на весь экран.
+        var tabs = new TabContainer
         {
             VerticalExpand = true,
-            PanelOverride = new StyleBoxFlat
-            {
-                BackgroundColor = Color.FromHex("#10141c"),
-                BorderColor = Color.FromHex("#2d3748").WithAlpha(0.3f),
-                BorderThickness = new Thickness(1),
-                ContentMarginLeftOverride = 12,
-                ContentMarginTopOverride = 12,
-                ContentMarginRightOverride = 12,
-                ContentMarginBottomOverride = 12
-            }
+            HorizontalExpand = true
         };
-        root.AddChild(gridPanel);
+        root.AddChild(tabs);
 
+        _themeRow = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 16
+        };
         var themeScroll = new ScrollContainer
         {
             VerticalExpand = true,
@@ -107,42 +106,25 @@ public sealed class GhostShopWindow : DefaultWindow
             HScrollEnabled = true,
             VScrollEnabled = false
         };
-        gridPanel.AddChild(themeScroll);
-
-        _themeRow = new BoxContainer
-        {
-            Orientation = LayoutOrientation.Horizontal,
-            SeparationOverride = 16
-        };
         themeScroll.AddChild(_themeRow);
-
-        var colorHeader = new Label
-        {
-            Text = Loc.GetString("ghost-shop-color-header"),
-            StyleClasses = { "LabelHeading" },
-            Modulate = AccentColor,
-            Margin = new Thickness(4, 12, 0, 0)
-        };
-        root.AddChild(colorHeader);
-
-        // Высота ленты = высоте цветной карточки (190), иначе нижняя кромка кнопок срезается.
-        var colorScroll = new ScrollContainer
-        {
-            HorizontalExpand = true,
-            HScrollEnabled = true,
-            VScrollEnabled = false,
-            ReturnMeasure = true,
-            MinHeight = 195,
-            MaxHeight = 195
-        };
-        root.AddChild(colorScroll);
+        tabs.AddChild(themeScroll);
+        TabContainer.SetTabTitle(themeScroll, Loc.GetString("ghost-shop-window-subtitle"));
 
         _colorRow = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             SeparationOverride = 16
         };
+        var colorScroll = new ScrollContainer
+        {
+            VerticalExpand = true,
+            HorizontalExpand = true,
+            HScrollEnabled = true,
+            VScrollEnabled = false
+        };
         colorScroll.AddChild(_colorRow);
+        tabs.AddChild(colorScroll);
+        TabContainer.SetTabTitle(colorScroll, Loc.GetString("ghost-shop-color-header"));
     }
 
     protected override DragMode GetDragModeFor(Vector2 relativeMousePos)
@@ -191,16 +173,16 @@ public sealed class GhostShopWindow : DefaultWindow
         _playtimeSeconds = Math.Max(0, _playtimeSeconds - 1);
 
         foreach (var (label, required) in _timerLabels)
-            label.Text = Loc.GetString("ghost-shop-playtime-left",
-                ("time", FormatPlaytimeLeft(required - _playtimeSeconds)));
+            label.Text = FormatPlaytimeLeft(required - _playtimeSeconds);
     }
 
+    /// <summary>Таймер без подписи: 10:00:00, рядом в карточке идут часы.</summary>
     private static string FormatPlaytimeLeft(double secondsLeft)
     {
         var ts = TimeSpan.FromSeconds(Math.Max(0, secondsLeft));
         return ts.TotalHours >= 1
-            ? $"{(int) ts.TotalHours} ч {ts.Minutes:00} мин"
-            : $"{ts.Minutes} мин";
+            ? $"{(int) ts.TotalHours}:{ts.Minutes:00}:{ts.Seconds:00}"
+            : $"{ts.Minutes}:{ts.Seconds:00}";
     }
 
     private Control CreateColorCard(GhostColorEntry entry)
@@ -418,13 +400,33 @@ public sealed class GhostShopWindow : DefaultWindow
         return panel;
     }
 
+    /// <summary>Идущие часы (RSI-анимация 64 px), ужатые до размера строки кнопки.</summary>
+    private static Control CreateClockIcon()
+    {
+        var slot = new Control
+        {
+            MinSize = new Vector2(16, 16),
+            MaxSize = new Vector2(16, 16),
+            VerticalAlignment = VAlignment.Center
+        };
+
+        var clock = new AnimatedTextureRect
+        {
+            HorizontalAlignment = HAlignment.Center,
+            VerticalAlignment = VAlignment.Center
+        };
+        clock.SetFromSpriteSpecifier(ClockIcon);
+        clock.DisplayRect.TextureScale = new Vector2(0.25f, 0.25f);
+        slot.AddChild(clock);
+        return slot;
+    }
+
     private Control CreateThemeCard(GhostThemeEntry entry)
     {
         var panel = new PanelContainer
         {
             MinSize = new Vector2(290, 0),
-            MaxSize = new Vector2(290, 1000),
-            VerticalExpand = true,
+            MaxSize = new Vector2(290, float.PositiveInfinity),
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = entry.Selected ? SelectedCardColor : CardBackgroundColor,
@@ -440,8 +442,7 @@ public sealed class GhostShopWindow : DefaultWindow
         var root = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 8,
-            VerticalExpand = true
+            SeparationOverride = 8
         };
         panel.AddChild(root);
 
@@ -553,10 +554,10 @@ public sealed class GhostShopWindow : DefaultWindow
                 if (remaining > 0)
                 {
                     actionButton.Disabled = true;
+                    buttonContent.AddChild(CreateClockIcon());
                     var timerLabel = new Label
                     {
-                        Text = Loc.GetString("ghost-shop-playtime-left",
-                            ("time", FormatPlaytimeLeft(remaining))),
+                        Text = FormatPlaytimeLeft(remaining),
                         Modulate = Color.White,
                         StyleClasses = { "LabelHeading" },
                         VerticalAlignment = VAlignment.Center
