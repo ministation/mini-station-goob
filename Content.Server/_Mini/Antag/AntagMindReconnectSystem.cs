@@ -45,6 +45,12 @@ public sealed class AntagMindReconnectSystem : EntitySystem
 
     private void OnPlayerAttached(PlayerAttachedEvent args)
     {
+        // Ghost-role takeover binds a fresh mind to its mob before attaching the session: that
+        // attach is deliberate, restoring the richer antag mind here yanks the player back out.
+        if (_mind.TryGetMind(args.Player.UserId, out _, out var currentMind)
+            && currentMind.OwnedEntity == args.Entity)
+            return;
+
         TryRestoreAntagMind(args.Player);
     }
 
