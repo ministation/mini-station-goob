@@ -94,7 +94,7 @@ jobs:
       run: ln -s $(pwd)/bin/Content.IntegrationTests/runtimes bin/Content.Tests/
 
     - name: Run Content.Tests
-      run: dotnet test bin/Content.Tests/Content.Tests.dll --filter "FullyQualifiedName!~Content.Tests.Client.Stylesheets.StyleGlassStylesheetTests" -- NUnit.ConsoleOut=0
+      run: dotnet test bin/Content.Tests/Content.Tests.dll -- NUnit.ConsoleOut=0
 
   test-integration:
     name: test-integration (${{ matrix.shard.name }})
@@ -104,10 +104,14 @@ jobs:
     timeout-minutes: 30
     strategy:
       fail-fast: false
+      # _Mini (тесты форка) идёт отдельным шардом: 23 теста дают ~230 секунд,
+      # без выделения они растягивают main и общий прогон упирается в них.
       matrix:
         shard:
           - name: main
-            filter: cat != MapTests && cat != GameRuleTests && cat != PrototypeSweepTests
+            filter: cat != MapTests && cat != GameRuleTests && cat != PrototypeSweepTests && namespace !~ /_Mini/
+          - name: mini
+            filter: namespace =~ /_Mini/
           - name: prototype-sweep
             filter: cat == PrototypeSweepTests
           - name: maps-gamerules

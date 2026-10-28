@@ -1,4 +1,4 @@
-name: "CI: YAML Linter & Map Renderer"
+name: "CI: YAML Linter"
 
 on:
   push:
@@ -31,13 +31,12 @@ jobs:
         uses: actions/setup-dotnet@v6.0.0
         with:
           dotnet-version: 10.0.403
+      # Собираем только линтер, а не весь solution: так шаг короче и не тянет
+      # Content.MapRenderer, который в CI больше не нужен.
+      # Карты рендерил MapRenderer, но их загрузку и так проверяют тесты (MapTests).
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore Content.YAMLLinter/Content.YAMLLinter.csproj
       - name: Build
-        id: build
-        run: dotnet build --configuration Release --no-restore /p:WarningsAsErrors= /m
+        run: dotnet build Content.YAMLLinter/Content.YAMLLinter.csproj --configuration Release --no-restore /p:WarningsAsErrors= /m
       - name: Run Linter
         run: dotnet run --project Content.YAMLLinter/Content.YAMLLinter.csproj --configuration Release --no-build
-      - name: Run Map Renderer
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        run: dotnet run --project Content.MapRenderer/Content.MapRenderer.csproj --configuration Release --no-build -- Dev

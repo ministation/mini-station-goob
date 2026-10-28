@@ -76,8 +76,10 @@ jobs:
             ADDED_FILES=""
             MODIFIED_FILES=""
           else
-            ADDED_FILES=$(echo "$PR_FILES" | grep "^added" | grep -E '\.(cs|ya?ml)$' | sed 's/^added //' | xargs) || true
-            MODIFIED_FILES=$(echo "$PR_FILES" | grep "^modified" | grep -E '\.(cs|ya?ml)$' | sed 's/^modified //' | xargs) || true
+            # Файлы .github/workflows бот всё равно не может запушить: GitHub App без
+            # права workflows отклоняет такой push. Пропускаем их, чтобы проверка не краснела.
+            ADDED_FILES=$(echo "$PR_FILES" | grep "^added" | grep -E '\.(cs|ya?ml)$' | sed 's/^added //' | grep -v '^\.github/workflows/' | xargs) || true
+            MODIFIED_FILES=$(echo "$PR_FILES" | grep "^modified" | grep -E '\.(cs|ya?ml)$' | sed 's/^modified //' | grep -v '^\.github/workflows/' | xargs) || true
           fi
 
           echo "Added Files: $ADDED_FILES"
@@ -132,11 +134,13 @@ jobs:
             echo "::notice::Пуш в форк недоступен через GITHUB_TOKEN. Добавьте в secrets репозитория-получателя PAT с правом push в $HEAD_REPO (имя BOT_TOKEN) либо обновите заголовки REUSE локально."
           fi
 
+      # Бот правит только SPDX-заголовки, поэтому его коммит не должен перезапускать
+      # весь CI на новом head: иначе полный набор проверок PR прогоняется дважды.
       - name: Commit changes
         if: steps.push_access.outputs.can_push == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: Automatically update REUSE headers"
+          commit_message: "chore: Automatically update REUSE headers [skip ci]"
           commit_user_name: ${{ vars.CHANGELOG_USER || 'github-actions[bot]' }}
           commit_user_email: ${{ vars.CHANGELOG_EMAIL || '41898282+github-actions[bot]@users.noreply.github.com' }}
           commit_author: ${{ format('{0} <{1}>', vars.CHANGELOG_USER || 'github-actions[bot]', vars.CHANGELOG_EMAIL || '41898282+github-actions[bot]@users.noreply.github.com') }}

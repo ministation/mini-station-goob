@@ -8,7 +8,9 @@ on:
       - '**.csproj'
       - '**.sln'
       - '**.git**'
-      - '**.yml'
+      - 'Directory.Build.*'
+      - 'Content.Packaging/**'
+      - '.github/workflows/test-packaging.yml'
       # no docs on which one of these is supposed to work, so
       # why not just do both
       - 'RobustToolbox'
@@ -22,7 +24,9 @@ on:
       - '**.csproj'
       - '**.sln'
       - '**.git**'
-      - '**.yml'
+      - 'Directory.Build.*'
+      - 'Content.Packaging/**'
+      - '.github/workflows/test-packaging.yml'
       - 'RobustToolbox'
       - 'RobustToolbox/**'
 
@@ -37,14 +41,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # Windows/macOS серверные пакеты никто не использует, а ночная Publish
+      # всё равно собирает все платформы, поэтому на PR проверяем только то,
+      # что реально деплоится: linux-сервер и клиент.
       matrix:
         target:
-          - name: windows
-            args: server --platform win-x64 --platform win-arm64
           - name: linux
             args: server --platform linux-x64 --platform linux-arm64
-          - name: macos
-            args: server --platform osx-x64 --platform osx-arm64
           - name: client
             args: client
 
