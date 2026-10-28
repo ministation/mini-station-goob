@@ -31,7 +31,7 @@ ghost-role-purchase-milestone-4hours = 4 часа игры
 ghost-role-purchase-milestone-15days = 15 дней стрика
 ghost-role-purchase-milestone-30days = 30 дней стрика
 
-ghost-shop-color-header = Цвет ника в OOC (30 дней)
+ghost-shop-color-header = Цвет ника
 
 ghost-shop-color-days = На 30 дней
 

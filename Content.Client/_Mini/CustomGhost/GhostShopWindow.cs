@@ -48,9 +48,9 @@ public sealed class GhostShopWindow : DefaultWindow
         _coinTexture = IoCManager.Resolve<IResourceCache>().GetTexture(CoinIconPath);
 
         Title = "Магазин призраков";
-        MinSize = new Vector2(1000, 700);
+        MinSize = new Vector2(1000, 760);
         MaxSize = new Vector2(1000, float.PositiveInfinity);
-        SetSize = new Vector2(1000, 800);
+        SetSize = new Vector2(1000, 880);
 
         var root = new BoxContainer
         {
@@ -375,16 +375,10 @@ public sealed class GhostShopWindow : DefaultWindow
         {
             Orientation = LayoutOrientation.Vertical,
             SeparationOverride = 8,
-            HorizontalExpand = true
+            HorizontalExpand = true,
+            VerticalAlignment = VAlignment.Center
         };
         content.AddChild(left);
-
-        // Заголовок окна уже говорит "Магазин призраков" - в панели остаётся только подзаголовок.
-        left.AddChild(new Label
-        {
-            Text = Loc.GetString("ghost-shop-hero-subtitle"),
-            Modulate = Color.FromHex("#8b949e")
-        });
 
         var infoRow = new BoxContainer
         {

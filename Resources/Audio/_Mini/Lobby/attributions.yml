@@ -20,11 +20,6 @@
   copyright: "Hall of the Mountain King by Kevin MacLeod; original composition by Edvard Grieg. Converted from MP3 to OGG."
   source: "https://commons.wikimedia.org/wiki/File:Hall_of_the_Mountain_King_(ISRC_USUAN1200072).mp3"
 
-- files: ["zombie_hoodoo.ogg"]
-  license: "CC-BY-3.0"
-  copyright: "Zombie Hoodoo by Kevin MacLeod. Converted from MP3 to OGG."
-  source: "https://commons.wikimedia.org/wiki/File:Zombie_Hoodoo_(ISRC_USUAN1100004).mp3"
-
 - files: ["toccata_fugue.ogg"]
   license: "CC-BY-3.0"
   copyright: "Toccata and Fugue in D Minor by Kevin MacLeod; original composition by Johann Sebastian Bach (BWV 565). Converted from MP3 to OGG."
@@ -55,7 +50,3 @@
   copyright: "Pop Goes The Weasel, traditional cover by Myuu (thedarkpiano.com); traditional composition, public domain. Converted from MP3 to OGG."
   source: "https://thedarkpiano.com/mp3/cover/Myuu-Pop-Goes-the-Weasel-Traditional-Cover.mp3"
 
-- files: ["raging_ghosts.ogg"]
-  license: "CC-BY-NC-3.0"
-  copyright: "Raging Ghosts by Myuu (thedarkpiano.com). Converted from MP3 to OGG."
-  source: "https://www.thedarkpiano.com/mp3/Myuu-Raging-Ghosts-Horror-Soundscape.mp3"
