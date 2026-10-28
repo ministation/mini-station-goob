@@ -4,9 +4,18 @@
 name: "CI: Localization"
 
 on:
+  # Проверка сверяет только ключи локалей, поэтому и запускается только на их правки.
   pull_request:
+    paths:
+      - 'Resources/Locale/**'
+      - 'Tools/localize/**'
+      - '.github/workflows/localization.yml'
   push:
     branches: [ master ]
+    paths:
+      - 'Resources/Locale/**'
+      - 'Tools/localize/**'
+      - '.github/workflows/localization.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
