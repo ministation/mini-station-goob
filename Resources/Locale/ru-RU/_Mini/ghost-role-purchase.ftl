@@ -40,5 +40,5 @@ ghost-shop-color-active = Применён
 ghost-shop-color-owned = Куплено
 
 ghost-shop-color-select = Выбрать
-ghost-shop-color-active-days = Применён · осталось {$days} дн.
+ghost-shop-color-active-days = Применён · {$days} дн.
 ghost-shop-color-preview = Ник: всем привет!

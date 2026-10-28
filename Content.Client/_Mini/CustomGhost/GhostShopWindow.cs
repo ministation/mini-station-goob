@@ -32,8 +32,8 @@ public sealed class GhostShopWindow : DefaultWindow
 
     private Label _balanceValueLabel = null!;
     private Label _statusLabel = null!;
-    private GridContainer _themeRow = null!;
-    private GridContainer _colorRow = null!;
+    private BoxContainer _themeRow = null!;
+    private BoxContainer _colorRow = null!;
 
     /// <summary>Хэллоуинское наигранное время с сервера, секунды (синхронизируется каждым состоянием).</summary>
     private double _playtimeSeconds;
@@ -59,22 +59,11 @@ public sealed class GhostShopWindow : DefaultWindow
             Margin = new Thickness(24, 16)
         };
 
-        // Один вертикальный скролл на всё окно. Раньше темы и цвета ехали горизонтальными
-        // лентами со скроллбарами, а нижний ряд цветных карточек обрезался окном.
-        var pageScroll = new ScrollContainer
-        {
-            VerticalExpand = true,
-            HorizontalExpand = true,
-            HScrollEnabled = false,
-            VScrollEnabled = true
-        };
-        Contents.AddChild(pageScroll);
-
         var backdrop = new PanelContainer
         {
             PanelOverride = new StyleBoxFlat { BackgroundColor = WindowBackgroundColor }
         };
-        pageScroll.AddChild(backdrop);
+        Contents.AddChild(backdrop);
         backdrop.AddChild(root);
 
         root.AddChild(BuildHero());
@@ -95,13 +84,37 @@ public sealed class GhostShopWindow : DefaultWindow
         };
         root.AddChild(_statusLabel);
 
-        _themeRow = new GridContainer
+        var gridPanel = new PanelContainer
         {
-            Columns = 3,
-            HSeparationOverride = 16,
-            VSeparationOverride = 16
+            VerticalExpand = true,
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = Color.FromHex("#10141c"),
+                BorderColor = Color.FromHex("#2d3748").WithAlpha(0.3f),
+                BorderThickness = new Thickness(1),
+                ContentMarginLeftOverride = 12,
+                ContentMarginTopOverride = 12,
+                ContentMarginRightOverride = 12,
+                ContentMarginBottomOverride = 12
+            }
         };
-        root.AddChild(_themeRow);
+        root.AddChild(gridPanel);
+
+        var themeScroll = new ScrollContainer
+        {
+            VerticalExpand = true,
+            HorizontalExpand = true,
+            HScrollEnabled = true,
+            VScrollEnabled = false
+        };
+        gridPanel.AddChild(themeScroll);
+
+        _themeRow = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 16
+        };
+        themeScroll.AddChild(_themeRow);
 
         var colorHeader = new Label
         {
@@ -112,13 +125,24 @@ public sealed class GhostShopWindow : DefaultWindow
         };
         root.AddChild(colorHeader);
 
-        _colorRow = new GridContainer
+        // Высота ленты = высоте цветной карточки (190), иначе нижняя кромка кнопок срезается.
+        var colorScroll = new ScrollContainer
         {
-            Columns = 4,
-            HSeparationOverride = 16,
-            VSeparationOverride = 16
+            HorizontalExpand = true,
+            HScrollEnabled = true,
+            VScrollEnabled = false,
+            ReturnMeasure = true,
+            MinHeight = 195,
+            MaxHeight = 195
         };
-        root.AddChild(_colorRow);
+        root.AddChild(colorScroll);
+
+        _colorRow = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 16
+        };
+        colorScroll.AddChild(_colorRow);
     }
 
     protected override DragMode GetDragModeFor(Vector2 relativeMousePos)
@@ -404,8 +428,9 @@ public sealed class GhostShopWindow : DefaultWindow
     {
         var panel = new PanelContainer
         {
-            MinSize = new Vector2(290, 285),
-            MaxSize = new Vector2(290, 285),
+            MinSize = new Vector2(290, 0),
+            MaxSize = new Vector2(290, 1000),
+            VerticalExpand = true,
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = entry.Selected ? SelectedCardColor : CardBackgroundColor,

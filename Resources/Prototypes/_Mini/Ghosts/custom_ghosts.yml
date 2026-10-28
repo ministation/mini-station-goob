@@ -12,6 +12,7 @@
   playtimeHours: 10
   order: 0
   sprite: _Mini/Ghosts/pumpkin_ghost.rsi
+  alpha: 0.7
   ghostName: "Тыквенный призрак"
   components:
   - type: PumpkinGhost

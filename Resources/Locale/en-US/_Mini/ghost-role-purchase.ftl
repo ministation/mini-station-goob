@@ -40,5 +40,5 @@ ghost-shop-color-active = Applied
 ghost-shop-color-owned = Owned
 
 ghost-shop-color-select = Select
-ghost-shop-color-active-days = Applied · {$days} d left
+ghost-shop-color-active-days = Applied · {$days} d
 ghost-shop-color-preview = Nick: hi everyone!
