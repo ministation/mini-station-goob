@@ -1,2 +1,5 @@
 - type: ore
   id: OreGibtonite
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: gibtonite_inactive

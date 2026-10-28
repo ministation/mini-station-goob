@@ -5,3 +5,6 @@
   oreEntity: MaterialBSCrystal1Unprocessed # Lavaland Change
   minOreYield: 1
   maxOreYield: 2
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_bluespace_crystal
