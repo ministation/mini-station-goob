@@ -94,9 +94,15 @@ public sealed partial class FishingRodEquipmentWindow : FancyWindow
         {
             Root = new BoxContainer
             {
+                Orientation = BoxContainer.LayoutOrientation.Vertical,
+                HorizontalExpand = true,
+                Margin = new Thickness(4f, 3f),
+            };
+
+            var header = new BoxContainer
+            {
                 Orientation = BoxContainer.LayoutOrientation.Horizontal,
                 HorizontalExpand = true,
-                Margin = new Thickness(4f, 2f),
             };
 
             var texture = new TextureRect
@@ -106,15 +112,16 @@ public sealed partial class FishingRodEquipmentWindow : FancyWindow
                 Texture = icon,
                 VerticalAlignment = Control.VAlignment.Center,
             };
-            Root.AddChild(texture);
+            header.AddChild(texture);
 
+            // ClipText keeps long item names from pushing the eject button out of the row.
             var texts = new BoxContainer
             {
                 Orientation = BoxContainer.LayoutOrientation.Vertical,
                 HorizontalExpand = true,
                 Margin = new Thickness(6f, 0f),
             };
-            texts.AddChild(new Label { Text = slotName });
+            texts.AddChild(new Label { Text = slotName, ClipText = true });
 
             var eject = new Button
             {
@@ -130,24 +137,28 @@ public sealed partial class FishingRodEquipmentWindow : FancyWindow
                 {
                     Text = Loc.GetString("fishing-rod-slot-empty"),
                     FontColorOverride = Color.Gray,
+                    ClipText = true,
                 });
                 eject.Disabled = true;
             }
             else
             {
-                texts.AddChild(new Label { Text = itemName });
-
-                if (!string.IsNullOrEmpty(itemDescription))
-                {
-                    texts.AddChild(new RichTextLabel
-                    {
-                        Text = itemDescription,
-                    });
-                }
+                texts.AddChild(new Label { Text = itemName, ClipText = true });
             }
 
-            Root.AddChild(texts);
-            Root.AddChild(eject);
+            header.AddChild(texts);
+            header.AddChild(eject);
+            Root.AddChild(header);
+
+            // The description gets a full width line of its own, so it never competes with the button.
+            if (itemName != null && !string.IsNullOrEmpty(itemDescription))
+            {
+                Root.AddChild(new RichTextLabel
+                {
+                    Text = itemDescription,
+                    Margin = new Thickness(46f, 2f, 4f, 0f),
+                });
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ achievement-category-survival = Выживание
 achievement-category-medical = Медицина
 achievement-category-lavaland = Лаваленд
 achievement-category-antagonist = Антагонисты
+achievement-category-fishing = Рыбалка
 
 achievement-welcome-aboard-name = Добро пожаловать на борт
 achievement-welcome-aboard-desc = Отметься на свою первую смену.
@@ -156,6 +157,14 @@ achievement-gone-fishing-name = Ушёл на рыбалку
 achievement-gone-fishing-desc = Поймай рыбу.
 achievement-legendary-fisher-name = Легендарный рыбак
 achievement-legendary-fisher-desc = Дай космонавту рыбу - и накормишь его на время; научи космонавта рыбачить - и накормишь его до прибытия шаттла.
+achievement-rare-catch-name = Редкий улов
+achievement-rare-catch-desc = Поймай рыбу, которую трудно найти.
+achievement-nessie-catch-name = Ловля Несси
+achievement-nessie-catch-desc = Поймай несси-рыбу.
+achievement-chainsaw-catch-name = Ловля бензорыбы
+achievement-chainsaw-catch-desc = Поймай бензорыбу.
+achievement-big-catch-name = Большой улов
+achievement-big-catch-desc = Поймай рыбу длиной не меньше 90.
 achievement-lavaland-tourist-name = Турист на Лаваленде
 achievement-lavaland-tourist-desc = Чудесная погода, если любишь пепел.
 

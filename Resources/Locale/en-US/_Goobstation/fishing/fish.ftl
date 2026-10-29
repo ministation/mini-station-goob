@@ -289,3 +289,8 @@ fish-evolution-mastodon-conditions = The fish (and its mate) needs to be unusual
 fish-evolution-moonfish-conditions = Requires the dwarf moonfish to be big enough.
 fish-evolution-nessie-name = ???
 fish-evolution-nessie-conditions = The final stage of fritterfish growth. It gotta be big!
+
+# Fish examine: what the fish gives.
+fish-examine-fillet = Butchering yields { $amount }x { $fillet }.
+fish-examine-beauty = Beauty: { $beauty }.
+fish-examine-traits = Traits: { $traits }.

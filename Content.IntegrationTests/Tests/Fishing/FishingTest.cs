@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Numerics;
 using Content.Goobstation.Shared.Fishing;
 using Content.Goobstation.Shared.Fishing.Components;
 using Content.IntegrationTests.Tests.Interaction;
@@ -63,6 +64,46 @@ public sealed class FishingTest : InteractionTest
         });
 
         Assert.That(fishCount, Is.GreaterThan(0), "Finishing the minigame did not spawn any fish.");
+    }
+
+    /// <summary>
+    /// Walking away from the float must snap the line and stop the challenge.
+    /// </summary>
+    [Test]
+    public async Task LineSnapsWhenWalkingAwayTest()
+    {
+        await SpawnTarget("FloorWaterEntity");
+        await PlaceInHands("FishingRod");
+        await Interact();
+        await RunTicks(5);
+
+        var player = ToServer(Player);
+        Assert.That(SEntMan.TryGetComponent(player, out FishingChallengeComponent? challenge),
+            "Casting a rod at water did not start a fishing challenge.");
+
+        var lure = challenge!.Lure;
+        Assert.That(lure, Is.Not.Null, "Casting a rod did not spawn a lure.");
+
+        await Server.WaitPost(() =>
+        {
+            var mapCoords = Transform.GetMapCoordinates(player);
+            Transform.SetWorldPosition(player, mapCoords.Position + new Vector2(30f, 0f));
+        });
+
+        await RunTicks(5);
+
+        Assert.That(SEntMan.HasComponent<FishingChallengeComponent>(player), Is.False,
+            "Walking far away from the float did not stop the fishing challenge.");
+
+        await Server.WaitPost(() =>
+        {
+            var rod = SEntMan.EntityQueryEnumerator<FishingRodComponent>();
+            while (rod.MoveNext(out _, out var rodComp))
+                Assert.That(rodComp.FishingLure, Is.Null, "The rod still references the lure after the line snapped.");
+
+            var lures = SEntMan.EntityQueryEnumerator<FishingLureComponent>();
+            Assert.That(lures.MoveNext(out _, out _), Is.False, "The lure was not deleted after the line snapped.");
+        });
     }
 
     /// <summary>

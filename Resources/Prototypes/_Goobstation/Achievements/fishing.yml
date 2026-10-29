@@ -1,0 +1,58 @@
+- type: achievement
+  id: GoneFishing
+  name: achievement-gone-fishing-name
+  description: achievement-gone-fishing-desc
+  category: Fishing
+  icon: { entity: FishingRod }
+  condition: !type:FishCaughtCondition
+
+- type: achievement
+  id: LegendaryFisher
+  name: achievement-legendary-fisher-name
+  description: achievement-legendary-fisher-desc
+  category: Fishing
+  icon: { entity: FishingRod }
+  condition: !type:FishCaughtCondition
+    count: 100
+
+- type: achievement
+  id: RareCatch
+  name: achievement-rare-catch-name
+  description: achievement-rare-catch-desc
+  category: Fishing
+  rarity: SuperRare
+  icon: { entity: FishSwordfish }
+  condition: !type:FishRarityCondition
+    maxRarity: 200
+
+- type: achievement
+  id: NessieCatch
+  name: achievement-nessie-catch-name
+  description: achievement-nessie-catch-desc
+  category: Fishing
+  rarity: Mythic
+  icon: { entity: FishFryishNessie }
+  condition: !type:FishPrototypeCaughtCondition
+    fish:
+    - FishFryishNessie
+
+- type: achievement
+  id: ChainsawCatch
+  name: achievement-chainsaw-catch-name
+  description: achievement-chainsaw-catch-desc
+  category: Fishing
+  rarity: Mythic
+  icon: { entity: FishChainsawfish }
+  condition: !type:FishPrototypeCaughtCondition
+    fish:
+    - FishChainsawfish
+
+- type: achievement
+  id: BigCatch
+  name: achievement-big-catch-name
+  description: achievement-big-catch-desc
+  category: Fishing
+  rarity: Epic
+  icon: { entity: FishMastodon }
+  condition: !type:FishSizeCondition
+    minSize: 90

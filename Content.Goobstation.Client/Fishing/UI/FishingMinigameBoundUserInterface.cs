@@ -7,24 +7,37 @@ using Robust.Client.UserInterface;
 
 namespace Content.Goobstation.Client.Fishing.UI;
 
+/// <summary>
+/// There is no window any more: the minigame bar is drawn in the world next to the float by the overlay,
+/// and this BUI only owns the invisible input control that collects mouse wheel notches.
+/// </summary>
 [UsedImplicitly]
-public sealed class FishingMinigameBoundUserInterface(EntityUid owner, Enum uiKey) : BoundUserInterface(owner, uiKey)
+public sealed partial class FishingMinigameBoundUserInterface(EntityUid owner, Enum uiKey) : BoundUserInterface(owner, uiKey)
 {
-    private FishingMinigameWindow? _window;
+    [Dependency] private IUserInterfaceManager _ui = default!;
+
+    private FishingMinigameInputControl? _input;
 
     protected override void Open()
     {
         base.Open();
 
-        _window = this.CreateWindow<FishingMinigameWindow>();
-        _window.OnReel += direction => SendMessage(new FishingMinigameReelMessage(direction));
+        _input = new FishingMinigameInputControl(Owner);
+        _input.OnReel += direction => SendMessage(new FishingMinigameReelMessage(direction));
+        _ui.StateRoot.AddChild(_input);
     }
 
-    protected override void UpdateState(BoundUserInterfaceState state)
+    protected override void Dispose(bool disposing)
     {
-        base.UpdateState(state);
+        base.Dispose(disposing);
 
-        if (state is FishingMinigameBoundUserInterfaceState fishingState)
-            _window?.UpdateState(fishingState);
+        if (!disposing || _input == null)
+            return;
+
+        if (_input.Parent != null)
+            _input.Orphan();
+
+        _input.Dispose();
+        _input = null;
     }
 }

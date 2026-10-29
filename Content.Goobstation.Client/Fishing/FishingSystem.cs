@@ -13,7 +13,7 @@ public sealed partial class FishingSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        _overlay.AddOverlay(new FishingOverlay(EntityManager));
+        _overlay.AddOverlay(new FishingOverlay());
     }
 
     public override void Shutdown()

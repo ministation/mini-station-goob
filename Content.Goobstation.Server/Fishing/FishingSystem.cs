@@ -8,11 +8,13 @@ using Content.Goobstation.Shared.Fishing.Components;
 using Content.Goobstation.Shared.Fishing.Events;
 using Content.Goobstation.Shared.Fishing.Prototypes;
 using Content.Goobstation.Shared.Fishing.Systems;
+using Robust.Shared.Audio.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Popups;
 using Content.Shared.UserInterface;
+using Robust.Shared.Audio;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -35,6 +37,12 @@ public sealed partial class FishingSystem : EntitySystem
     private const float MaxWaitPenalty = 30f;
     private const float FishFriction = 0.9f;
     private const float FishTargetMinDistance = 6f;
+    /// <summary>Extra line length past the rod cast range before the line snaps.</summary>
+    private const float MaxLineSlack = 3f;
+    /// <summary>How long one reel input (one wheel notch) keeps moving the bait.</summary>
+    private const float ReelHoldTime = 0.25f;
+
+    private static readonly SoundSpecifier SplashSound = new SoundPathSpecifier("/Audio/Effects/Fluids/watersplash.ogg");
 
     [Dependency] private FishingSourceSystem _sources = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
@@ -45,6 +53,7 @@ public sealed partial class FishingSystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private INetManager _net = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
 
     public override void Initialize()
     {
@@ -90,6 +99,8 @@ public sealed partial class FishingSystem : EntitySystem
 
         lureComp.Rod = ent.Owner;
         lureComp.SourceEntity = args.Target;
+        lureComp.Biting = false;
+        Dirty(lure, lureComp);
         ent.Comp.FishingLure = lure;
         Dirty(ent, ent.Comp);
 
@@ -116,7 +127,6 @@ public sealed partial class FishingSystem : EntitySystem
         if (TryComp<ActorComponent>(user, out var actor))
             _ui.OpenUi(ent.Owner, FishingMinigameUiKey.Key, actor.PlayerSession);
 
-        UpdateUi(ent.Owner, user, challenge);
         args.Handled = true;
     }
 
@@ -162,10 +172,23 @@ public sealed partial class FishingSystem : EntitySystem
                 continue;
             }
 
-            if (challenge.Lure is { } lureUid && TerminatingOrDeleted(lureUid))
+            if (challenge.Lure is { } lureUid)
             {
-                StopChallenge(user, challenge, false, Loc.GetString("fishing-line-snapped"));
-                continue;
+                if (TerminatingOrDeleted(lureUid))
+                {
+                    StopChallenge(user, challenge, false, Loc.GetString("fishing-line-snapped"));
+                    continue;
+                }
+
+                // Walking away from the float snaps the line like in tg.
+                var userCoords = _xform.GetMapCoordinates(user);
+                var lureCoords = _xform.GetMapCoordinates(lureUid);
+                if (userCoords.MapId != lureCoords.MapId ||
+                    (userCoords.Position - lureCoords.Position).Length() > rod.CastRange + MaxLineSlack)
+                {
+                    StopChallenge(user, challenge, false, Loc.GetString("fishing-line-snapped"));
+                    continue;
+                }
             }
 
             switch (challenge.Phase)
@@ -179,6 +202,10 @@ public sealed partial class FishingSystem : EntitySystem
                         StartWaiting(user, challenge, true);
                     break;
                 case FishingPhase.Minigame:
+                    // A wheel notch only keeps the bait moving for a short while.
+                    if (challenge.ReelDirection != 0 && _timing.CurTime >= challenge.ReelHoldUntil)
+                        challenge.ReelDirection = 0;
+
                     challenge.TickAccumulator += frameTime;
                     while (challenge.TickAccumulator >= MinigameTick && !challenge.IsFinishing)
                     {
@@ -186,7 +213,6 @@ public sealed partial class FishingSystem : EntitySystem
                         StepMinigame(user, challenge, rodUid);
                     }
 
-                    UpdateUi(rodUid, user, challenge);
                     break;
             }
         }
@@ -208,8 +234,7 @@ public sealed partial class FishingSystem : EntitySystem
         challenge.NextPhaseTime = _timing.CurTime + TimeSpan.FromSeconds(wait);
         Dirty(user, challenge);
 
-        if (challenge.Rod is { } rodUid)
-            UpdateUi(rodUid, user, challenge);
+        SetLureBiting(challenge.Lure, false);
     }
 
     private void StartBiting(EntityUid user, FishingChallengeComponent challenge, FishingRodComponent rod)
@@ -226,8 +251,11 @@ public sealed partial class FishingSystem : EntitySystem
         challenge.NextPhaseTime = _timing.CurTime + TimeSpan.FromSeconds(BiteWindow);
         Dirty(user, challenge);
 
+        SetLureBiting(challenge.Lure, true);
+        if (challenge.Lure is { } lureUid && !TerminatingOrDeleted(lureUid))
+            _audio.PlayPvs(SplashSound, lureUid);
+
         _popup.PopupEntity(Loc.GetString("fishing-bite"), user, user);
-        UpdateUi(rod.Owner, user, challenge);
     }
 
     private void StartMinigame(EntityUid user, FishingChallengeComponent challenge, FishingRodComponent rod)
@@ -293,8 +321,9 @@ public sealed partial class FishingSystem : EntitySystem
         challenge.NextPhaseTime = TimeSpan.MaxValue;
         Dirty(user, challenge);
 
+        SetLureBiting(challenge.Lure, false);
+
         _popup.PopupEntity(Loc.GetString("fishing-minigame-start"), user, user);
-        UpdateUi(rod.Owner, user, challenge);
     }
 
     #endregion
@@ -600,7 +629,16 @@ public sealed partial class FishingSystem : EntitySystem
                 StartMinigame(user, challenge, ent.Comp);
                 break;
             case FishingPhase.Minigame:
-                challenge.ReelDirection = args.Direction;
+                if (args.Direction == 0)
+                {
+                    challenge.ReelDirection = 0;
+                }
+                else
+                {
+                    challenge.ReelDirection = Math.Sign(args.Direction);
+                    challenge.ReelHoldUntil = _timing.CurTime + TimeSpan.FromSeconds(ReelHoldTime);
+                }
+
                 Dirty(user, challenge);
                 break;
         }
@@ -621,22 +659,16 @@ public sealed partial class FishingSystem : EntitySystem
         StopChallenge(user, challenge, false, Loc.GetString("fishing-gave-up"));
     }
 
-    private void UpdateUi(EntityUid rodUid, EntityUid user, FishingChallengeComponent challenge)
+    private void SetLureBiting(EntityUid? lureUid, bool biting)
     {
-        if (!TryComp<UserInterfaceComponent>(rodUid, out _))
+        if (lureUid is not { } lure || TerminatingOrDeleted(lure) || !TryComp<FishingLureComponent>(lure, out var comp))
             return;
 
-        _ui.SetUiState(rodUid, FishingMinigameUiKey.Key, new FishingMinigameBoundUserInterfaceState(
-            challenge.Phase,
-            challenge.Completion,
-            challenge.BaitPosition,
-            challenge.FishPosition,
-            challenge.BaitHeight,
-            challenge.FishHeight,
-            challenge.Background,
-            challenge.FishIcon,
-            challenge.FrameState,
-            challenge.Rules));
+        if (comp.Biting == biting)
+            return;
+
+        comp.Biting = biting;
+        Dirty(lure, comp);
     }
 
     #endregion

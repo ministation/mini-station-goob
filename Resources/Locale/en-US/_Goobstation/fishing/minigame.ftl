@@ -1,10 +1,6 @@
-fishing-minigame-title = Fishing
-fishing-ui-waiting = Waiting for a bite...
-fishing-ui-bite = Bite! Click to reel in!
-fishing-ui-reel = Hold LMB to reel up, RMB to feed down
 fishing-start = You cast the line and start fishing.
-fishing-bite = Something is biting! Click now!
-fishing-minigame-start = The fight begins!
+fishing-bite = Something is biting! Roll the mouse wheel to hook it!
+fishing-minigame-start = The fight begins! Roll the mouse wheel up and down to reel the fish in.
 fishing-gave-up = You gave up on this fish.
 fishing-got-away = It got away!
 fishing-nothing-caught = Nothing was caught.

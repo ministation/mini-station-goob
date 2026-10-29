@@ -4,6 +4,7 @@ achievement-category-survival = Survival
 achievement-category-medical = Medical
 achievement-category-lavaland = Lavaland
 achievement-category-antagonist = Antagonist
+achievement-category-fishing = Fishing
 
 achievement-welcome-aboard-name = Welcome Aboard
 achievement-welcome-aboard-desc = Clock in for your first shift.
@@ -135,6 +136,14 @@ achievement-gone-fishing-name = Gone Fishin'
 achievement-gone-fishing-desc = Catch a fish.
 achievement-legendary-fisher-name = Legendary Fisher
 achievement-legendary-fisher-desc = Give a spaceman a fish and you feed him for a while; teach a spaceman to fish and you feed him until the shuttle arrives.
+achievement-rare-catch-name = Rare Catch
+achievement-rare-catch-desc = Catch a fish that is hard to find.
+achievement-nessie-catch-name = Nessie Catch
+achievement-nessie-catch-desc = Catch a nessiefish.
+achievement-chainsaw-catch-name = Chainsaw Catch
+achievement-chainsaw-catch-desc = Catch a chainsawfish.
+achievement-big-catch-name = Big Catch
+achievement-big-catch-desc = Catch a fish at least 90 units long.
 achievement-lavaland-tourist-name = Lavaland Tourist
 achievement-lavaland-tourist-desc = Lovely weather, if you like ash.
 

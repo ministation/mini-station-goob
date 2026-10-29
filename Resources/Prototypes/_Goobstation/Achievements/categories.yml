@@ -27,3 +27,8 @@
   id: Antagonist
   name: achievement-category-antagonist
   priority: 50
+
+- type: achievementCategory
+  id: Fishing
+  name: achievement-category-fishing
+  priority: 60

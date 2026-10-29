@@ -19,4 +19,10 @@ public sealed partial class FishingLureComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public EntityUid? SourceEntity;
+
+    /// <summary>
+    /// Whether a fish is currently nibbling the float. Drives the bobber animation.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool Biting;
 }

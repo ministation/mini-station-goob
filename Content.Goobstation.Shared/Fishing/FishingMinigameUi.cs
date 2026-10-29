@@ -22,47 +22,8 @@ public enum FishingMinigameUiKey : byte
     Key,
 }
 
-[Serializable, NetSerializable]
-public sealed class FishingMinigameBoundUserInterfaceState : BoundUserInterfaceState
-{
-    public readonly FishingPhase Phase;
-    public readonly float Completion;
-    public readonly float BaitPosition;
-    public readonly float FishPosition;
-    public readonly float BaitHeight;
-    public readonly float FishHeight;
-    public readonly string Background;
-    public readonly string FishIcon;
-    public readonly string FrameState;
-    public readonly FishingMinigameRules Rules;
-
-    public FishingMinigameBoundUserInterfaceState(
-        FishingPhase phase,
-        float completion,
-        float baitPosition,
-        float fishPosition,
-        float baitHeight,
-        float fishHeight,
-        string background,
-        string fishIcon,
-        string frameState,
-        FishingMinigameRules rules)
-    {
-        Phase = phase;
-        Completion = completion;
-        BaitPosition = baitPosition;
-        FishPosition = fishPosition;
-        BaitHeight = baitHeight;
-        FishHeight = fishHeight;
-        Background = background;
-        FishIcon = fishIcon;
-        FrameState = frameState;
-        Rules = rules;
-    }
-}
-
 /// <summary>
-/// Sent by the client while the reel button is held (1 = reel up, -1 = feed down, 0 = released).
+/// Sent by the client for every reel input (1 = reel up, -1 = feed down, 0 = stop).
 /// </summary>
 [Serializable, NetSerializable]
 public sealed class FishingMinigameReelMessage : BoundUserInterfaceMessage

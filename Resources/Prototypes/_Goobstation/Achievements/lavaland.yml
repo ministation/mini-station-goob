@@ -81,23 +81,6 @@
       - MiningScannerViewable
 
 - type: achievement
-  id: GoneFishing
-  name: achievement-gone-fishing-name
-  description: achievement-gone-fishing-desc
-  category: Lavaland
-  icon: { entity: FishingRod }
-  condition: !type:FishCaughtCondition
-
-- type: achievement
-  id: LegendaryFisher
-  name: achievement-legendary-fisher-name
-  description: achievement-legendary-fisher-desc
-  category: Lavaland
-  icon: { entity: FishingRod }
-  condition: !type:FishCaughtCondition
-    count: 100
-
-- type: achievement
   id: LavalandTourist
   name: achievement-lavaland-tourist-name
   description: achievement-lavaland-tourist-desc

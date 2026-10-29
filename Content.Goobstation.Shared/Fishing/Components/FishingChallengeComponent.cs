@@ -85,6 +85,12 @@ public sealed partial class FishingChallengeComponent : Component
     [DataField]
     public int ReelDirection;
 
+    /// <summary>
+    /// When the current reel input expires. One wheel notch only reels for a short burst.
+    /// </summary>
+    [DataField]
+    public TimeSpan ReelHoldUntil;
+
     // Difficulty and physics tuning.
 
     [DataField]
