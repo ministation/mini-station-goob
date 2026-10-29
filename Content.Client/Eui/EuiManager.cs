@@ -56,11 +56,32 @@ namespace Content.Client.Eui
                 return;
 
             // Will open/re-open the window if the server wants the eui opened.
-            var euiType = _refl.LooseGetType(message.OpenType);
+            var euiType = FindExactEuiType(message.OpenType, _refl.FindAllTypes())
+                ?? _refl.LooseGetType(message.OpenType);
             var instance = _dtf.CreateInstance<BaseEui>(euiType);
             instance.Initialize(this, message.Id);
             instance.Opened();
             _openUis.Add(message.Id, new EuiData(instance));
+        }
+
+        /// <summary>
+        /// Finds the client EUI type whose name exactly matches the type name sent by the server.
+        /// </summary>
+        /// <remarks>
+        /// The server only sends <see cref="Type.Name"/>, hence an exact match is what it means.
+        /// <see cref="IReflectionManager.LooseGetType"/> (used as a fallback) matches by suffix, which can return
+        /// an unrelated EUI whose name merely ends with the requested one: for example "DeconvertedEui"
+        /// (revolutionary deconversion) also matches "CosmicDeconvertedEui" (cosmic cult deconversion).
+        /// </remarks>
+        internal static Type? FindExactEuiType(string name, IEnumerable<Type> types)
+        {
+            foreach (var type in types)
+            {
+                if (type.Name == name && !type.IsAbstract && typeof(BaseEui).IsAssignableFrom(type))
+                    return type;
+            }
+
+            return null;
         }
 
         private sealed class EuiData
