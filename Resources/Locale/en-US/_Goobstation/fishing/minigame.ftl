@@ -1,6 +1,6 @@
 fishing-start = You cast the line and start fishing.
-fishing-bite = Something is biting! Roll the mouse wheel to hook it!
-fishing-minigame-start = The fight begins! Roll the mouse wheel up and down to reel the fish in.
+fishing-bite = Something is biting!
+fishing-minigame-start = The fight begins!
 fishing-gave-up = You gave up on this fish.
 fishing-got-away = It got away!
 fishing-nothing-caught = Nothing was caught.

@@ -313,11 +313,16 @@ public sealed partial class FishingOverlay : Overlay
         if (TryTex(challenge.Background) is { } background)
             handle.DrawTextureRect(background, bar);
 
-        // Bait zone.
-        var baitBottom = bar.Bottom + Math.Clamp(challenge.BaitPosition / Area, 0f, 1f) * fieldHeight;
+        // The 32x96 hud texture keeps the playfield track in rows 16..91, so the minigame area starts
+        // 4 px above the bottom of the sprite. Anchoring the bait to the sprite bottom would draw it
+        // below the frame.
+        var trackBottom = bar.Top - 92f * HudScale;
+
+        // Bait zone: the bottom edge is the bait position, the zone grows upwards from it.
+        var baitBottom = trackBottom + Math.Clamp(challenge.BaitPosition / Area, 0f, 1f) * fieldHeight;
         var baitHeight = Math.Clamp(BaitBasePixelHeight * challenge.BaitHeight / BaitBaseHeight, 6f, 40f) * HudScale;
         var baitRect = Box2.FromDimensions(
-            new Vector2(bar.Left, baitBottom - baitHeight),
+            new Vector2(bar.Left, baitBottom),
             new Vector2(PlayfieldWidth * HudScale, baitHeight));
         handle.DrawRect(baitRect, BaitColor);
         handle.DrawRect(new Box2(baitRect.Left, baitRect.Bottom, baitRect.Right, baitRect.Bottom + HudScale), BaitEdgeColor);
@@ -330,19 +335,52 @@ public sealed partial class FishingOverlay : Overlay
             DrawClipped(handle, fishIcon, fishRect, bar);
         }
 
-        // Completion column on the right. It is 80 px tall in tg, not the full 96 px sprite.
+        // Completion column: the tg art is 6 px wide at x 20..25 and 80 px tall at rows 14..93.
         var completion = Math.Clamp(challenge.Completion / 100f, 0f, 1f);
         var completionHeight = CompletionBarHeight * HudScale * completion;
         var completionColor = new Color(1f - completion, 0.35f + completion * 0.55f, 0.2f + completion * 0.2f, 0.95f);
+        var completionBottom = bar.Top - 93f * HudScale;
         var completionRect = new Box2(
-            bar.Right - 8f * HudScale,
-            bar.Bottom,
-            bar.Right - 2f * HudScale,
-            bar.Bottom + completionHeight);
+            bar.Left + 20f * HudScale,
+            completionBottom,
+            bar.Left + 26f * HudScale,
+            completionBottom + completionHeight);
         handle.DrawRect(completionRect, completionColor);
 
         if (TryTex(challenge.FrameState) is { } frame)
             handle.DrawTextureRect(frame, bar);
+
+        DrawWheelHint(handle, panel);
+    }
+
+    /// <summary>
+    /// A mouse with a wheel and up/down arrows next to the panel, instead of a hint in the chat.
+    /// </summary>
+    private static void DrawWheelHint(DrawingHandleWorld handle, Box2 panel)
+    {
+        var px = HudScale;
+        var x = panel.Right + 6f * px;
+
+        // Mouse body with the wheel slot.
+        var body = new Box2(x, -8f * px, x + 10f * px, 8f * px);
+        handle.DrawRect(body, PanelColor);
+        handle.DrawRect(body, PanelBorder, filled: false);
+        handle.DrawRect(Box2.FromDimensions(new Vector2(x + 4f * px, 0f), new Vector2(2f * px, 5f * px)), LineColor);
+
+        DrawArrow(handle, new Vector2(x + 5f * px, 10f * px), 1f);
+        DrawArrow(handle, new Vector2(x + 5f * px, -10f * px), -1f);
+    }
+
+    private static void DrawArrow(DrawingHandleWorld handle, Vector2 origin, float direction)
+    {
+        for (var i = 0; i < 3; i++)
+        {
+            var width = (5f - 2f * i) * HudScale;
+            var y = origin.Y + direction * i * HudScale;
+            handle.DrawRect(
+                Box2.FromDimensions(new Vector2(origin.X - width * 0.5f, y), new Vector2(width, HudScale)),
+                LineColor);
+        }
     }
 
     private static Vector2 Quadratic(Vector2 start, Vector2 control, Vector2 end, float t)

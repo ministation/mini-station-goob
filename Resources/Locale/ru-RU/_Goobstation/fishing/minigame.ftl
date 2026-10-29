@@ -1,6 +1,6 @@
 fishing-start = Ты забрасываешь леску и начинаешь рыбачить.
-fishing-bite = Что-то клюнуло! Крути колёсико мыши, чтобы подсечь!
-fishing-minigame-start = Борьба началась! Крути колёсико мыши вверх и вниз, чтобы вытащить рыбу.
+fishing-bite = Что-то клюнуло!
+fishing-minigame-start = Борьба началась!
 fishing-gave-up = Ты бросил эту рыбу.
 fishing-got-away = Она сорвалась!
 fishing-nothing-caught = Ничего не поймано.
