@@ -8,6 +8,7 @@
 
 - type: fishingSource
   id: FishingSourceOcean
+  radialState: seaboat
   difficulty: 30
   flags: ExplosiveMalus
   table: !type:GroupSelector
@@ -43,6 +44,7 @@
 
 - type: fishingSource
   id: FishingSourceOceanBeach
+  radialState: palm_beach
   difficulty: 30
   flags: ExplosiveMalus
   catalogDescription: fishing-source-ocean-beach
@@ -79,6 +81,7 @@
 
 - type: fishingSource
   id: FishingSourceIce
+  radialState: ice
   difficulty: 45
   background: background_ice
   catalogDescription: fishing-source-ice
@@ -98,6 +101,7 @@
 
 - type: fishingSource
   id: FishingSourceRiver
+  radialState: river
   difficulty: 30
   catalogDescription: fishing-source-river
   flags: ExplosiveMalus
@@ -130,6 +134,7 @@
 
 - type: fishingSource
   id: FishingSourceSand
+  radialState: palm_beach
   difficulty: 45
   catalogDescription: fishing-source-sand
   flags: ExplosiveMalus
@@ -148,6 +153,7 @@
 
 - type: fishingSource
   id: FishingSourceHotSpring
+  radialState: onsen
   difficulty: 45
   catalogDescription: fishing-source-hot-spring
   flags: ExplosiveMalus
@@ -164,6 +170,7 @@
 
 - type: fishingSource
   id: FishingSourceTizira
+  radialState: planet
   difficulty: 35
   catalogDescription: fishing-source-tizira
   flags: ExplosiveMalus
@@ -184,6 +191,7 @@
 
 - type: fishingSource
   id: FishingSourceMoistureTrap
+  radialState: ground_hole
   difficulty: 35
   background: background_dank
   catalogDescription: fishing-source-moisture-trap
@@ -198,6 +206,7 @@
 
 - type: fishingSource
   id: FishingSourceToilet
+  radialState: toilet
   difficulty: 20
   background: background_dank
   catalogDescription: fishing-source-toilet
@@ -212,6 +221,7 @@
 
 - type: fishingSource
   id: FishingSourceHolographic
+  radialState: space_rocket
   difficulty: 20
   catalogDescription: fishing-source-holographic
   table: !type:GroupSelector
@@ -233,6 +243,7 @@
 
 - type: fishingSource
   id: FishingSourceHydroTray
+  radialState: hydro
   difficulty: 15
   background: background_tray
   catalogDescription: fishing-source-hydro-tray
@@ -245,6 +256,7 @@
 
 - type: fishingSource
   id: FishingSourceDeepFryer
+  radialState: fryer
   difficulty: 38
   background: background_lavaland
   catalogDescription: fishing-source-deep-fryer
@@ -261,6 +273,7 @@
 
 - type: fishingSource
   id: FishingSourceAquarium
+  radialState: fish_tank
   difficulty: 15
   catalogDescription: fishing-source-aquarium
   table: !type:GroupSelector
@@ -270,6 +283,7 @@
 
 - type: fishingSource
   id: FishingSourceVending
+  radialState: vending
   difficulty: 10
   background: background_chasm
   catalogDescription: fishing-source-vending
@@ -280,6 +294,7 @@
 
 - type: fishingSource
   id: FishingSourceCarpRift
+  radialState: carp
   difficulty: 43
   background: background_carp_rift
   catalogDescription: fishing-source-carp-rift
@@ -296,6 +311,7 @@
 
 - type: fishingSource
   id: FishingSourceDimensionalRift
+  radialState: cursed
   difficulty: 50
   background: background_mansus
   table: !type:GroupSelector
@@ -315,6 +331,7 @@
 
 - type: fishingSource
   id: FishingSourceCursedSpring
+  radialState: cursed
   difficulty: 50
   flags: ExplosiveMalus
   table: !type:GroupSelector
@@ -328,6 +345,7 @@
 
 - type: fishingSource
   id: FishingSourceChasm
+  radialState: ground_hole
   difficulty: 30
   background: background_chasm
   catalogDescription: fishing-source-chasm
@@ -340,6 +358,7 @@
 
 - type: fishingSource
   id: FishingSourceLava
+  radialState: lava
   difficulty: 35
   background: background_lavaland
   catalogDescription: fishing-source-lava
@@ -357,6 +376,7 @@
 
 - type: fishingSource
   id: FishingSourcePlasma
+  radialState: plasma
   difficulty: 35
   background: background_plasma
   catalogDescription: fishing-source-plasma
@@ -373,6 +393,7 @@
 
 - type: fishingSource
   id: FishingSourceOilWell
+  radialState: oil
   difficulty: 40
   background: background_oil_well
   catalogDescription: fishing-source-oil-well
@@ -389,6 +410,7 @@
 
 - type: fishingSource
   id: FishingSourceSurgery
+  radialState: innards
   difficulty: -10
   waitTimeMin: 6
   waitTimeMax: 12

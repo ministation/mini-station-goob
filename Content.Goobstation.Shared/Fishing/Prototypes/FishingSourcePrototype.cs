@@ -53,4 +53,10 @@ public sealed partial class FishingSourcePrototype : IPrototype
 
     [DataField]
     public FishingSourceFlags Flags = FishingSourceFlags.None;
+
+    /// <summary>
+    /// Icon state from the fishing radial RSI, shown by the fish-porter machine.
+    /// </summary>
+    [DataField]
+    public string RadialState = "default";
 }
