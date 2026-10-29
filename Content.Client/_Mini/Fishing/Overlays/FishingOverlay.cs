@@ -270,7 +270,7 @@ public sealed partial class FishingOverlay : Overlay
         if (TryTex(challenge.FishIcon) is { } fishIcon)
         {
             var fishOffset = Math.Clamp(challenge.FishPosition / Area, 0f, 1f) * fieldHeight;
-            var fishRect = new Box2(bar.Left, bar.Bottom - fishOffset, bar.Right, bar.Top - fishOffset);
+            var fishRect = new Box2(bar.Left, bar.Bottom + fishOffset, bar.Right, bar.Top + fishOffset);
             DrawClipped(handle, fishIcon, fishRect, bar);
         }
 

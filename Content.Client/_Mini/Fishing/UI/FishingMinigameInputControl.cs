@@ -6,6 +6,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Input;
+using Robust.Shared.Timing;
 
 namespace Content.Client._Mini.Fishing.UI;
 
@@ -20,7 +21,8 @@ public sealed class FishingMinigameInputControl : Control
 
     public FishingMinigameInputControl()
     {
-        MouseFilter = MouseFilterMode.Pass;
+        MouseFilter = MouseFilterMode.Stop;
+        MinSize = new Vector2(3000f, 3000f);
         LayoutContainer.SetAnchorPreset(this, LayoutContainer.LayoutPreset.Wide);
 
         OnKeyBindDown += args =>
@@ -31,6 +33,14 @@ public sealed class FishingMinigameInputControl : Control
             args.Handle();
             OnHook?.Invoke();
         };
+    }
+
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+
+        if (Parent is { } parent && Size != parent.Size)
+            SetSize = parent.Size;
     }
 
     protected override void MouseWheel(GUIMouseWheelEventArgs args)
