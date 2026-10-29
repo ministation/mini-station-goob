@@ -19,8 +19,10 @@ using Content.Server.Materials;
 using Content.Server.Mind;
 using Content.Server.Parallax;
 using Content.Server.Preferences.Managers;
+using Content.Server.Roles;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
+using Content.Server.StationRecords.Systems;
 using Content.Shared._Mini.Katorga;
 using Content.Shared._Mini.Katorga.Components;
 using Content.Shared._Mini.MiniCCVars;
@@ -37,6 +39,7 @@ using Content.Shared.Parallax.Biomes;
 using Content.Shared.Popups;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
+using Content.Shared.StationRecords;
 using Content.Shared.Throwing;
 using Robust.Server.Player;
 using Robust.Shared.Collections;
@@ -77,6 +80,10 @@ public sealed class KatorgaSystem : EntitySystem
     private static readonly TimeSpan SafeguardInterval = TimeSpan.FromSeconds(10);
     private static readonly TimeSpan FlushInterval = TimeSpan.FromMinutes(1);
 
+    // Пауза перед возвращением в лагерь: даём доиграть смерти и килл-трекингу,
+    // чтобы тело и вещи не удалялись посреди обработки события.
+    private static readonly TimeSpan RespawnDelay = TimeSpan.FromSeconds(3);
+
     // Сколько раз повторяем фоновую проверку бана, прежде чем не пустить игрока в раунд.
     private const int MaxBanCheckAttempts = 3;
     private static readonly TimeSpan BanCheckRetryDelay = TimeSpan.FromSeconds(5);
@@ -103,8 +110,10 @@ public sealed class KatorgaSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly RoleSystem _roles = default!;
     [Dependency] private readonly IServerPreferencesManager _preferences = default!;
     [Dependency] private readonly StationJobsSystem _stationJobs = default!;
+    [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
     [Dependency] private readonly StationSpawningSystem _stationSpawning = default!;
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly ITaskManager _taskManager = default!;
@@ -132,6 +141,9 @@ public sealed class KatorgaSystem : EntitySystem
     private readonly HashSet<NetUserId> _banCacheChecked = new();
     private readonly HashSet<NetUserId> _banChecksInFlight = new();
     private readonly Dictionary<NetUserId, PendingSpawn> _pendingSpawns = new();
+
+    // Погибшие заключённые: тело убирается, вещи остаются на месте, игрок возвращается в лагерь.
+    private readonly Dictionary<EntityUid, TimeSpan> _pendingRespawns = new();
 
     private sealed class PendingSpawn
     {
@@ -164,6 +176,7 @@ public sealed class KatorgaSystem : EntitySystem
         SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
         SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnJoinedLobby);
         SubscribeLocalEvent<KillReportedEvent>(OnKillReported);
+        SubscribeLocalEvent<KatorgaBoundComponent, MobStateChangedEvent>(OnInmateMobStateChanged);
         SubscribeLocalEvent<GhostAttemptHandleEvent>(OnGhostAttempt);
         SubscribeLocalEvent<KatorgaOreProcessorComponent, MaterialEntityInsertedEvent>(OnOreInserted);
         // После штатной инициализации работ: заключённый есть на любой станции и без лимита.
@@ -184,6 +197,8 @@ public sealed class KatorgaSystem : EntitySystem
 
         if (!Enabled)
             return;
+
+        ProcessPendingRespawns();
 
         var now = _timing.CurTime;
 
@@ -337,6 +352,7 @@ public sealed class KatorgaSystem : EntitySystem
         _banCache.Clear();
         _banCacheChecked.Clear();
         _pendingSpawns.Clear();
+        _pendingRespawns.Clear();
     }
 
     #endregion
@@ -564,7 +580,22 @@ public sealed class KatorgaSystem : EntitySystem
 
     private void SendEntityToKatorga(EntityUid entity, ProtoId<KatorgaFactionPrototype>? faction)
     {
-        // Снимаем экипировку и выбрасываем содержимое рук: заключённый приходит на каторгу с пустыми руками.
+        // Заключённый приходит на каторгу с пустыми руками.
+        DropAllItems(entity);
+
+        _transform.SetCoordinates(entity, GetSpawnPosition(faction));
+        _transform.AttachToGridOrMap(entity);
+
+        EnsureComp<KatorgaBoundComponent>(entity);
+        EnsureComp<KillTrackerComponent>(entity);
+        EquipInmate(entity, faction);
+    }
+
+    /// <summary>
+    ///     Снимает экипировку и выбрасывает содержимое рук на пол под сущностью.
+    /// </summary>
+    private void DropAllItems(EntityUid entity)
+    {
         if (_inventory.TryGetContainerSlotEnumerator(entity, out var slots))
         {
             var toRemove = new List<(EntityUid Item, string Slot)>();
@@ -581,20 +612,13 @@ public sealed class KatorgaSystem : EntitySystem
             }
         }
 
-        if (TryComp<HandsComponent>(entity, out var hands))
+        if (!TryComp<HandsComponent>(entity, out var hands))
+            return;
+
+        foreach (var hand in _hands.EnumerateHands((entity, hands)).ToList())
         {
-            foreach (var hand in _hands.EnumerateHands((entity, hands)).ToList())
-            {
-                _hands.TryDrop((entity, hands), hand, checkActionBlocker: false, doDropInteraction: false);
-            }
+            _hands.TryDrop((entity, hands), hand, checkActionBlocker: false, doDropInteraction: false);
         }
-
-        _transform.SetCoordinates(entity, GetSpawnPosition(faction));
-        _transform.AttachToGridOrMap(entity);
-
-        EnsureComp<KatorgaBoundComponent>(entity);
-        EnsureComp<KillTrackerComponent>(entity);
-        EquipInmate(entity, faction);
     }
 
     private void SpawnKatorgaPlayer(ICommonSession session, ProtoId<KatorgaFactionPrototype> faction)
@@ -619,12 +643,50 @@ public sealed class KatorgaSystem : EntitySystem
     {
         _stationSpawning.EquipStartingGear(mob, InmateGear);
 
+        var job = KatorgaJobs.Prisoner;
         if (_prototype.TryIndex(faction, out var factionProto))
         {
             var member = EnsureComp<KatorgaFactionMemberComponent>(mob);
             member.Faction = factionProto.ID;
             Dirty(mob, member);
             _stationSpawning.EquipStartingGear(mob, factionProto.Gear);
+            job = factionProto.Job;
+        }
+
+        ReplaceJob(mob, job);
+    }
+
+    /// <summary>
+    ///     Меняет прежнюю должность заключённого на фракционную. Без этого в манифесте станции
+    ///     и в телепорте призраков оставалась работа, с которой игрок попал на каторгу.
+    /// </summary>
+    private void ReplaceJob(EntityUid mob, ProtoId<JobPrototype> job)
+    {
+        if (_mind.TryGetMind(mob, out var mindId, out var mind))
+            _roles.MindAddJobRole(mindId, mind, silent: true, job.Id);
+
+        if (!_prototype.TryIndex(job, out var jobProto))
+            return;
+
+        var name = MetaData(mob).EntityName;
+        var stations = EntityQueryEnumerator<StationRecordsComponent>();
+        while (stations.MoveNext(out var station, out _))
+        {
+            if (_stationRecords.GetRecordByName(station, name) is not { } id)
+                continue;
+
+            var key = new StationRecordKey(id, station);
+            if (!_stationRecords.TryGetRecord<GeneralStationRecord>(key, out var record) ||
+                record.JobPrototype == job.Id)
+            {
+                continue;
+            }
+
+            record.JobTitle = jobProto.LocalizedName;
+            record.JobIcon = jobProto.Icon.Id;
+            record.JobPrototype = job.Id;
+            record.DisplayPriority = jobProto.RealDisplayWeight;
+            _stationRecords.Synchronize(key);
         }
     }
 
@@ -646,6 +708,82 @@ public sealed class KatorgaSystem : EntitySystem
             return new EntityCoordinates(_katorgaMapUid.Value, System.Numerics.Vector2.Zero);
 
         return EntityCoordinates.Invalid;
+    }
+
+    #endregion
+
+    #region Смерть и возврат в лагерь
+
+    private void OnInmateMobStateChanged(EntityUid uid, KatorgaBoundComponent component, MobStateChangedEvent args)
+    {
+        if (args.NewMobState == MobState.Dead)
+            _pendingRespawns[uid] = _timing.CurTime + RespawnDelay;
+    }
+
+    private void ProcessPendingRespawns()
+    {
+        if (_pendingRespawns.Count == 0)
+            return;
+
+        List<EntityUid>? due = null;
+        foreach (var (mob, at) in _pendingRespawns)
+        {
+            if (at <= _timing.CurTime)
+                (due ??= new List<EntityUid>()).Add(mob);
+        }
+
+        if (due == null)
+            return;
+
+        foreach (var mob in due)
+        {
+            _pendingRespawns.Remove(mob);
+            RespawnInmate(mob);
+        }
+    }
+
+    /// <summary>
+    ///     Возвращает погибшего заключённого в лагерь: тело удаляется, вещи остаются на месте смерти.
+    /// </summary>
+    private void RespawnInmate(EntityUid mob)
+    {
+        if (TerminatingOrDeleted(mob) || !TryComp<KatorgaBoundComponent>(mob, out var old))
+            return;
+
+        // Ожившего (успели поднять) не трогаем.
+        if (!TryComp<MobStateComponent>(mob, out var mobState) || mobState.CurrentState != MobState.Dead)
+            return;
+
+        // Вещи снимаем на землю до удаления тела, иначе они удалятся вместе с ним.
+        DropAllItems(mob);
+
+        if (!_playerManager.TryGetSessionByEntity(mob, out var session) ||
+            !_mind.TryGetMind(mob, out var mindId, out var mind))
+        {
+            QueueDel(mob);
+            return;
+        }
+
+        var faction = _factionSystem.GetFaction(session.UserId) ?? _factionSystem.AssignFaction(session);
+        var profile = _preferences.GetPreferences(session.UserId).SelectedCharacter as HumanoidCharacterProfile;
+
+        var newMob = _stationSpawning.SpawnPlayerMob(GetSpawnPosition(faction), null, profile, null);
+        _mind.TransferTo(mindId, newMob);
+
+        // Срок переезжает в новое тело: худ и отработка не должны обнулиться.
+        var bound = EnsureComp<KatorgaBoundComponent>(newMob);
+        bound.SentenceTotal = old.SentenceTotal;
+        bound.SentenceRemaining = old.SentenceRemaining;
+        bound.WorkedOff = old.WorkedOff;
+        Dirty(newMob, bound);
+
+        EnsureComp<KillTrackerComponent>(newMob);
+        EquipInmate(newMob, faction);
+
+        QueueDel(mob);
+        RefreshInmateHud(session, resetTotal: false);
+
+        _chatManager.DispatchServerMessage(session, Loc.GetString("katorga-death-respawn"));
     }
 
     #endregion

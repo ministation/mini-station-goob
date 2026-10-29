@@ -33,6 +33,10 @@ public sealed partial class KatorgaFactionPrototype : IPrototype
     [DataField(required: true)]
     public ProtoId<StartingGearPrototype> Gear;
 
+    /// <summary>Должность фракции: заключённому её выдают вместо прежней работы.</summary>
+    [DataField(required: true)]
+    public ProtoId<JobPrototype> Job;
+
     /// <summary>Метка фракции рядом с заключённым.</summary>
     [DataField]
     public ProtoId<FactionIconPrototype> Icon = default!;

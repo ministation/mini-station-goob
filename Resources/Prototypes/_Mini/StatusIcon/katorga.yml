@@ -24,3 +24,25 @@
     sprite: /Textures/Interface/Misc/job_icons.rsi
     state: CargoTechnician
   color: "#8C3B47"
+
+# Иконки должностей фракций: те же спрайты, что у меток фракций, чтобы в манифесте
+# станции и в телепорте призраков было видно, к какому лагерю относится заключённый.
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconKatorgaMiners
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: ShaftMiner
+  jobName: job-name-katorga-miner
+  allowSelection: false
+  isCrewJob: false
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconKatorgaFreemen
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: CargoTechnician
+  jobName: job-name-katorga-freemen
+  allowSelection: false
+  isCrewJob: false
