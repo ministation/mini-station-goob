@@ -94,6 +94,19 @@ public enum FishingMinigameRules : uint
 }
 
 /// <summary>
+/// Sources that build their loot from the machine or structure they are attached to.
+/// </summary>
+public enum FishingDynamicSource : byte
+{
+    None,
+    Vending,
+    HydroTray,
+    DeepFryer,
+    Surgery,
+    Aquarium,
+}
+
+/// <summary>
 /// Extra properties of a fishing source.
 /// </summary>
 [Flags]

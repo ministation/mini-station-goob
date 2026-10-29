@@ -33,6 +33,16 @@ public sealed class FishAnalyzerEntry
     public string? Catcher;
 
     /// <summary>
+    /// All traits of this fish instance: species traits minus removed ones plus injected ones.
+    /// </summary>
+    public List<string> Traits = new();
+
+    /// <summary>
+    /// True when some traits were added by genetic engineering.
+    /// </summary>
+    public bool HasExtraTraits;
+
+    /// <summary>
     /// Minutes into the shift the fish was caught, or -1 if unknown.
     /// </summary>
     public float CatchMinutes = -1f;

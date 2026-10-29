@@ -75,20 +75,23 @@ public sealed partial class FishAnalyzerWindow : DefaultWindow
         if (fish.Beauty != 0)
             AddLine(msg, Loc.GetString("fishing-analyzer-beauty", ("beauty", fish.Beauty)));
 
-        if (fish.Traits.Count > 0)
+        if (entry.Traits.Count > 0)
         {
             msg.PushNewline();
             AddLine(msg, Loc.GetString("fishing-analyzer-traits-title"));
 
-            foreach (var traitId in fish.Traits)
+            foreach (var traitId in entry.Traits)
             {
-                if (!_proto.TryIndex(traitId, out FishTraitPrototype? trait))
+                if (!_proto.TryIndex<FishTraitPrototype>(traitId, out var trait))
                     continue;
 
                 msg.AddMarkupOrThrow("  - ");
                 msg.AddText(Loc.GetString(trait.CatalogDescription));
                 msg.PushNewline();
             }
+
+            if (entry.HasExtraTraits)
+                AddLine(msg, Loc.GetString("fishing-analyzer-traits-genetic"));
         }
 
         if (fish.EvolutionTypes.Count > 0)

@@ -109,6 +109,61 @@ public sealed partial class FishSystem : EntitySystem
         return GetProto(comp)?.Sprite;
     }
 
+    /// <summary>
+    /// All traits of this fish instance: species traits minus removed ones plus injected ones.
+    /// </summary>
+    public IEnumerable<ProtoId<FishTraitPrototype>> GetTraits(FishComponent comp)
+    {
+        var proto = GetProto(comp);
+
+        if (proto != null)
+        {
+            foreach (var trait in proto.Traits)
+            {
+                if (!comp.RemovedTraits.Contains(trait))
+                    yield return trait;
+            }
+        }
+
+        foreach (var trait in comp.ExtraTraits)
+        {
+            if (!comp.RemovedTraits.Contains(trait))
+                yield return trait;
+        }
+    }
+
+    public bool HasTrait(FishComponent comp, ProtoId<FishTraitPrototype> trait)
+    {
+        foreach (var current in GetTraits(comp))
+        {
+            if (current == trait)
+                return true;
+        }
+
+        return false;
+    }
+
+    public void AddTrait(Entity<FishComponent> ent, ProtoId<FishTraitPrototype> trait)
+    {
+        ent.Comp.RemovedTraits.Remove(trait);
+
+        if (!ent.Comp.ExtraTraits.Contains(trait))
+            ent.Comp.ExtraTraits.Add(trait);
+
+        Dirty(ent, ent.Comp);
+    }
+
+    public void RemoveTrait(Entity<FishComponent> ent, ProtoId<FishTraitPrototype> trait)
+    {
+        ent.Comp.ExtraTraits.Remove(trait);
+
+        var proto = GetProto(ent.Comp);
+        if (proto != null && proto.Traits.Contains(trait) && !ent.Comp.RemovedTraits.Contains(trait))
+            ent.Comp.RemovedTraits.Add(trait);
+
+        Dirty(ent, ent.Comp);
+    }
+
     public void Randomize(Entity<FishComponent> ent, FishPrototype proto)
     {
         ent.Comp.Size = MathF.Max(1f, proto.AverageSize * (1f + _random.NextFloat(-proto.SizeDeviation, proto.SizeDeviation)));

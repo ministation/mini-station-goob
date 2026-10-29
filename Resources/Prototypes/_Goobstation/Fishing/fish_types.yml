@@ -353,6 +353,8 @@
   - FishFryishNessie
   spawnTypes:
   - FishFryish
+  evolutionTypes:
+  - fritterish
   fillet: FoodMeatFish
 
 - type: fish
@@ -373,6 +375,8 @@
   - FishFryishNessie
   spawnTypes:
   - FishFryish
+  evolutionTypes:
+  - nessie
   fillet: FoodMeatFish
 
 - type: fish
@@ -1242,4 +1246,3 @@
   - electrogenesis
   stablePopulation: 3
   fillet: FoodMeatFish
-

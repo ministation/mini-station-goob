@@ -5,6 +5,7 @@ using System.Linq;
 using Content.Goobstation.Shared.Fishing;
 using Content.Goobstation.Shared.Fishing.Aquarium;
 using Content.Goobstation.Shared.Fishing.Components;
+using Content.Goobstation.Shared.Fishing.Events;
 using Content.Goobstation.Shared.Fishing.Prototypes;
 using Content.Goobstation.Shared.Fishing.Systems;
 using Content.Shared.Chemistry.Reagent;
@@ -37,6 +38,9 @@ public sealed partial class AquariumSystem : EntitySystem
     private const float GrowthMultiplier = 0.38f;
     private const float GrowthHungerPeak = 0.45f;
     private const float MaxDeviation = 2.5f;
+    private const float GrowthTickRate = 0.001f;
+    private const float GrowthEvolutionThreshold = 0.95f;
+    private const float GrowthEvolutionChance = 0.02f;
     private const float DefaultBreedingTime = 120f;
     private const float BreedRetryDelay = 10f;
     private const int BluespaceMaxFishMultiplier = 5;
@@ -89,6 +93,7 @@ public sealed partial class AquariumSystem : EntitySystem
         SubscribeLocalEvent<AquariumComponent, AquariumSetModeMessage>(OnSetMode);
         SubscribeLocalEvent<AquariumComponent, AquariumRemoveMessage>(OnRemove);
         SubscribeLocalEvent<AquariumComponent, AquariumFeedMessage>(OnFeed);
+        SubscribeLocalEvent<AquariumComponent, FishingDynamicRewardEvent>(OnDynamicReward);
 
         _proto.PrototypesReloaded += OnPrototypesReloaded;
     }
@@ -210,9 +215,122 @@ public sealed partial class AquariumSystem : EntitySystem
         if (proto == null || health < MaxHealth * 0.8f || hunger >= 1f)
             return;
 
+        GrowFish(fish, proto, seconds);
+
+        if (TryGrowthEvolution(aquarium, fish, proto, now))
+            return;
+
         if (_breedAt.TryGetValue(uid, out var breedAt) && now >= breedAt && !TryBreed(aquarium, fish, proto, now))
             _breedAt[uid] = now + TimeSpan.FromSeconds(BreedRetryDelay);
     }
+
+    #region Growth
+
+    /// <summary>
+    /// A fed and healthy fish slowly grows towards the maximum the species can reach.
+    /// </summary>
+    private void GrowFish(Entity<FishComponent> fish, FishPrototype proto, float seconds)
+    {
+        var maxSize = proto.AverageSize * MaxDeviation;
+        var maxWeight = proto.AverageWeight * MaxDeviation;
+        var factor = 1f - MathF.Exp(-GrowthTickRate * seconds);
+
+        var size = fish.Comp.Size;
+        var weight = fish.Comp.Weight;
+        var newSize = size < maxSize ? MathF.Min(maxSize, size + (maxSize - size) * factor) : size;
+        var newWeight = weight < maxWeight ? MathF.Min(maxWeight, weight + (maxWeight - weight) * factor) : weight;
+
+        if (MathF.Abs(newSize - size) < 0.01f && MathF.Abs(newWeight - weight) < 0.01f)
+            return;
+
+        fish.Comp.Size = newSize;
+        fish.Comp.Weight = newWeight;
+        Dirty(fish.Owner, fish.Comp);
+    }
+
+    /// <summary>
+    /// A fish that is almost at its maximum size may turn into the growth evolution of its species.
+    /// </summary>
+    private bool TryGrowthEvolution(Entity<AquariumComponent> aquarium, Entity<FishComponent> fish,
+        FishPrototype proto, TimeSpan now)
+    {
+        if (proto.EvolutionTypes.Count == 0)
+            return false;
+
+        var maxSize = proto.AverageSize * MaxDeviation;
+        var maxWeight = proto.AverageWeight * MaxDeviation;
+        if (fish.Comp.Size < maxSize * GrowthEvolutionThreshold ||
+            fish.Comp.Weight < maxWeight * GrowthEvolutionThreshold)
+            return false;
+
+        foreach (var id in proto.EvolutionTypes)
+        {
+            if (!_proto.TryIndex(id, out FishEvolutionPrototype? evolution) || !evolution.Growth)
+                continue;
+
+            if (aquarium.Comp.Temperature < evolution.TemperatureMin ||
+                aquarium.Comp.Temperature > evolution.TemperatureMax)
+                continue;
+
+            if (!_random.Prob(GrowthEvolutionChance))
+                continue;
+
+            if (_proto.TryIndex(evolution.EvolvesTo, out FishPrototype? evolved) &&
+                TryGetFishEntityProto(evolved, fish, out var entityProto))
+                EvolveFish(aquarium, fish, evolved, evolution, entityProto, now);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void EvolveFish(Entity<AquariumComponent> aquarium, Entity<FishComponent> fish, FishPrototype evolved,
+        FishEvolutionPrototype evolution, EntProtoId entityProto, TimeSpan now)
+    {
+        var newFish = Spawn(entityProto.Id, Transform(aquarium).Coordinates);
+        if (!TryComp<FishComponent>(newFish, out var newComp))
+        {
+            QueueDel(newFish);
+            return;
+        }
+
+        newComp.Fish = evolved.ID;
+        newComp.Size = fish.Comp.Size;
+        newComp.Weight = fish.Comp.Weight;
+        newComp.Catcher = fish.Comp.Catcher;
+        newComp.CatchDate = fish.Comp.CatchDate;
+        newComp.LastFed = now;
+        newComp.Initialized = true;
+        newComp.ExtraTraits = new List<ProtoId<FishTraitPrototype>>(fish.Comp.ExtraTraits);
+        newComp.RemovedTraits = new List<ProtoId<FishTraitPrototype>>(fish.Comp.RemovedTraits);
+        Dirty(newFish, newComp);
+
+        var evolvedEnt = new Entity<FishComponent>(newFish, newComp);
+        foreach (var trait in evolution.NewTraits)
+            _fish.AddTrait(evolvedEnt, trait);
+
+        foreach (var trait in evolution.RemovedTraits)
+            _fish.RemoveTrait(evolvedEnt, trait);
+
+        if (_aquarium.TryGetFishContainer(aquarium, out var container))
+        {
+            _container.Insert(newFish, container);
+            _container.Remove(fish.Owner, container);
+        }
+
+        _health.Remove(fish.Owner);
+        _breedAt.Remove(fish.Owner);
+        _health[newFish] = MaxHealth;
+        _breedAt[newFish] = now + TimeSpan.FromSeconds(evolved.BreedingTime * 2f);
+
+        QueueDel(fish.Owner);
+
+        _aquarium.UpdateBeauty(aquarium);
+        _aquarium.UpdateUi(aquarium);
+    }
+
+    #endregion
 
     /// <summary>
     /// Picks the fluid most fish in the tank can live in. Runs only in assisted mode.
@@ -944,6 +1062,33 @@ public sealed partial class AquariumSystem : EntitySystem
         }
 
         _popup.PopupEntity(Loc.GetString("aquarium-need-feed"), ent, user);
+    }
+
+    #endregion
+
+    #region Fishing
+
+    /// <summary>
+    /// Fishing in the tank gives out one of the living fish inside instead of rolling the loot table.
+    /// </summary>
+    private void OnDynamicReward(Entity<AquariumComponent> ent, ref FishingDynamicRewardEvent args)
+    {
+        args.Handled = true;
+
+        if (ent.Comp.GlassBroken)
+            return;
+
+        var alive = new List<Entity<FishComponent>>();
+        foreach (var fish in _aquarium.GetFish(ent))
+        {
+            if (fish.Comp.Alive)
+                alive.Add(fish);
+        }
+
+        if (alive.Count == 0)
+            return;
+
+        args.ExistingCatch = _random.Pick(alive).Owner;
     }
 
     #endregion

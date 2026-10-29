@@ -25,6 +25,29 @@
     sprite: _Goobstation/Objects/Specific/Fishing/fishing_rod_inhand.rsi
     heldPrefix: rod
     size: Normal
+    inhandVisuals:
+      left:
+      - state: rod-inhand-left
+        map: ["rod-inhand-left"]
+      - state: reel_overlay-inhand-left
+        map: ["reel_overlay-inhand-left"]
+      - state: line_overlay-inhand-left
+        visible: false
+        map: ["line_overlay-inhand-left"]
+      - state: hook_overlay-inhand-left
+        visible: false
+        map: ["hook_overlay-inhand-left"]
+      right:
+      - state: rod-inhand-right
+        map: ["rod-inhand-right"]
+      - state: reel_overlay-inhand-right
+        map: ["reel_overlay-inhand-right"]
+      - state: line_overlay-inhand-right
+        visible: false
+        map: ["line_overlay-inhand-right"]
+      - state: hook_overlay-inhand-right
+        visible: false
+        map: ["hook_overlay-inhand-right"]
   - type: UseDelay # Just for visuals and to prevent autoclickers
     delay: 0.08 # 12,5 CPS at max
   - type: MeleeWeapon
@@ -62,6 +85,8 @@
     interfaces:
       enum.FishingMinigameUiKey.Key:
         type: FishingMinigameBoundUserInterface
+      enum.FishingRodEquipmentUiKey.Key:
+        type: FishingRodEquipmentBoundUserInterface
 
 # Variation of a normal rod
 - type: entity

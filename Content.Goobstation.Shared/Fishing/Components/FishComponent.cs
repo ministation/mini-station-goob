@@ -59,6 +59,24 @@ public sealed partial class FishComponent : Component
     public float TimeOutOfWater;
 
     /// <summary>
+    /// Traits added to this fish instance by genetic engineering.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public List<ProtoId<FishTraitPrototype>> ExtraTraits = new();
+
+    /// <summary>
+    /// Set after the first gene-gun operation. The next one kills the fish.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool GeneGunned;
+
+    /// <summary>
+    /// Traits removed from this fish instance by genetic engineering.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public List<ProtoId<FishTraitPrototype>> RemovedTraits = new();
+
+    /// <summary>
     /// True once size and weight have been rolled, so they are not rolled twice on load.
     /// </summary>
     [DataField]

@@ -5,6 +5,7 @@ using System.Linq;
 using Content.Goobstation.Shared.Fishing.Components;
 using Content.Goobstation.Shared.Fishing.Events;
 using Content.Goobstation.Shared.Fishing.Prototypes;
+using Robust.Shared.Containers;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.EntityTable;
 using Content.Shared.Maps;
@@ -36,14 +37,78 @@ public sealed partial class FishingSourceSystem : EntitySystem
     [Dependency] private INetManager _net = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
 
     private readonly Dictionary<string, ProtoId<FishingSourcePrototype>> _tileSources = new();
+
+    // Runtime limited fish counts, server only.
+    private readonly Dictionary<string, Dictionary<EntProtoId, int>> _remaining = new();
+    private readonly Dictionary<string, Dictionary<EntProtoId, float>> _regenTimers = new();
+    private float _regenAccumulator;
 
     public override void Initialize()
     {
         base.Initialize();
         _proto.PrototypesReloaded += OnPrototypesReloaded;
         RebuildTileCache();
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (!_net.IsServer)
+        {
+            _regenAccumulator = 0f;
+            return;
+        }
+
+        _regenAccumulator += frameTime;
+        while (_regenAccumulator >= 1f)
+        {
+            _regenAccumulator -= 1f;
+            RegenCounts();
+        }
+    }
+
+    private void RegenCounts()
+    {
+        foreach (var source in _proto.EnumeratePrototypes<FishingSourcePrototype>())
+        {
+            if (!_regenTimers.TryGetValue(source.ID, out var timers))
+                continue;
+
+            foreach (var (fish, timeLeft) in timers.ToList())
+            {
+                var next = timeLeft - 1f;
+                if (next > 0f)
+                {
+                    timers[fish] = next;
+                    continue;
+                }
+
+                timers.Remove(fish);
+
+                if (!_remaining.TryGetValue(source.ID, out var counts) || !counts.TryGetValue(fish, out var current))
+                    continue;
+
+                var max = source.FishCounts.TryGetValue(fish, out var initial) ? initial : current + 1;
+                counts[fish] = Math.Min(current + 1, max);
+
+                if (counts[fish] < max && source.FishCountRegen.TryGetValue(fish, out var regen))
+                    timers[fish] = regen;
+            }
+        }
+    }
+
+    private Dictionary<EntProtoId, int> GetRemaining(FishingSourcePrototype source)
+    {
+        if (_remaining.TryGetValue(source.ID, out var counts))
+            return counts;
+
+        counts = new Dictionary<EntProtoId, int>(source.FishCounts);
+        _remaining[source.ID] = counts;
+        return counts;
     }
 
     public override void Shutdown()
@@ -157,39 +222,134 @@ public sealed partial class FishingSourceSystem : EntitySystem
     }
 
     /// <summary>
-    /// Rolls the loot table of the source without spawning anything. Used at the biting phase
-    /// so the minigame already knows what it fights for.
+    /// Rolls the loot of the source without spawning anything. Used at the biting phase so the
+    /// minigame already knows what it fights for. Dynamic sources build the loot from their host.
     /// </summary>
-    public EntProtoId? RollReward(ProtoId<FishingSourcePrototype> sourceId, EntityUid user, EntityUid rod)
+    public bool TryRollReward(
+        EntityUid sourceEntity,
+        ProtoId<FishingSourcePrototype> sourceId,
+        EntityUid user,
+        EntityUid rod,
+        out EntProtoId? reward,
+        out EntityUid? existingCatch)
     {
+        reward = null;
+        existingCatch = null;
+
         if (!_net.IsServer)
-            return null;
+            return false;
 
         if (!_proto.TryIndex(sourceId, out FishingSourcePrototype? source))
-            return null;
+            return false;
 
         var lootEv = new FishLootModifiersEvent(user, rod, sourceId);
         RaiseLocalEvent(rod, ref lootEv);
 
-        var spawns = _tables.GetSpawns(source.Table, _random.GetRandom()).ToList();
+        var counts = GetRemaining(source);
+
+        if (source.Dynamic != FishingDynamicSource.None)
+        {
+            var dynamicEv = new FishingDynamicRewardEvent(user, rod, sourceEntity);
+            RaiseLocalEvent(sourceEntity, ref dynamicEv);
+
+            if (dynamicEv.ExistingCatch is { } existing && !TerminatingOrDeleted(existing))
+            {
+                existingCatch = existing;
+                return true;
+            }
+
+            var candidates = dynamicEv.Candidates
+                .Where(c => !source.FishCounts.ContainsKey(c) ||
+                            (counts.TryGetValue(c, out var left) && left > 0))
+                .ToList();
+
+            if (!dynamicEv.Handled || candidates.Count == 0)
+                return true;
+
+            reward = candidates[_random.Next(candidates.Count)];
+            return true;
+        }
+
+        var spawns = RollTable(source, lootEv, counts).ToList();
 
         for (var i = 0; i < lootEv.DudRerolls && spawns.Count == 0; i++)
         {
-            spawns = _tables.GetSpawns(source.Table, _random.GetRandom()).ToList();
+            spawns = RollTable(source, lootEv, counts).ToList();
         }
 
-        return spawns.Count == 0 ? (EntProtoId?) null : spawns[_random.Next(spawns.Count)];
+        if (spawns.Count == 0)
+            return true;
+
+        reward = spawns[_random.Next(spawns.Count)];
+        return true;
+    }
+
+    private IEnumerable<EntProtoId> RollTable(FishingSourcePrototype source, FishLootModifiersEvent lootEv, Dictionary<EntProtoId, int> counts)
+    {
+        foreach (var spawn in _tables.GetSpawns(source.Table, _random.GetRandom()))
+        {
+            if (source.FishCounts.ContainsKey(spawn) &&
+                (!counts.TryGetValue(spawn, out var left) || left <= 0))
+                continue;
+
+            yield return spawn;
+        }
     }
 
     /// <summary>
-    /// Spawns the given catch and hands it to the user.
+    /// Spawns the given catch and hands it to the user. Existing catch is used by sources like
+    /// aquariums, which hand out the actual fish that lives in the tank.
     /// </summary>
-    public EntityUid? CatchFish(EntityUid user, EntityUid rod, EntProtoId reward, EntityCoordinates coords)
+    public EntityUid? CatchFish(
+        EntityUid user,
+        EntityUid rod,
+        EntProtoId? reward,
+        EntityCoordinates coords,
+        ProtoId<FishingSourcePrototype>? sourceId = null,
+        EntityUid? existingCatch = null)
     {
         if (!_net.IsServer)
             return null;
 
-        var caught = Spawn(reward, coords);
+        EntityUid caught;
+
+        if (existingCatch is { } existing && !TerminatingOrDeleted(existing))
+        {
+            if (_container.TryGetContainingContainer((existing, null, null), out var container))
+                _container.Remove(existing, container);
+
+            _xform.SetCoordinates(existing, coords);
+            caught = existing;
+        }
+        else if (reward is { } rewardId)
+        {
+            caught = Spawn(rewardId, coords);
+        }
+        else
+        {
+            return null;
+        }
+
+        if (sourceId is { } id &&
+            _proto.TryIndex(id, out FishingSourcePrototype? source) &&
+            reward is { } rewardId2 &&
+            source.FishCounts.ContainsKey(rewardId2))
+        {
+            var counts = GetRemaining(source);
+            if (counts.TryGetValue(rewardId2, out var left) && left > 0)
+                counts[rewardId2] = left - 1;
+
+            if (source.FishCountRegen.TryGetValue(rewardId2, out var regen))
+            {
+                if (!_regenTimers.TryGetValue(source.ID, out var timers))
+                {
+                    timers = new Dictionary<EntProtoId, float>();
+                    _regenTimers[source.ID] = timers;
+                }
+
+                timers.TryAdd(rewardId2, regen);
+            }
+        }
 
         if (TryComp<FishComponent>(caught, out var fish))
         {

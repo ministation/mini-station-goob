@@ -4,13 +4,21 @@
 # Weights are taken from the DM fish tables. A dud roll is a NoneSelector entry.
 # Items that have no SS14 counterpart are omitted, so the relative chance of the
 # remaining entries is slightly higher than in tg. Dynamic sources (aquarium,
-# vending machine, hydroponics tray, surgery) keep a dud only fallback table.
+# vending machine, hydroponics tray) build their loot from the host they are attached
+# to, so their table is a dud only fallback. Deep fryer and surgery have no matching
+# host in SS14, they use static tables instead.
 
 - type: fishingSource
   id: FishingSourceOcean
   radialState: seaboat
   difficulty: 30
   flags: ExplosiveMalus
+  fishCounts:
+    FishClownfishLube: 2
+    FishSwordfish: 2
+  fishCountRegen:
+    FishClownfishLube: 180
+    FishSwordfish: 300
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -48,6 +56,12 @@
   difficulty: 30
   flags: ExplosiveMalus
   catalogDescription: fishing-source-ocean-beach
+  fishCounts:
+    FishClownfishLube: 2
+    FishSwordfish: 2
+  fishCountRegen:
+    FishClownfishLube: 180
+    FishSwordfish: 300
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -105,6 +119,10 @@
   difficulty: 30
   catalogDescription: fishing-source-river
   flags: ExplosiveMalus
+  fishCounts:
+    FishPike: 3
+  fishCountRegen:
+    FishPike: 240
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -157,6 +175,10 @@
   difficulty: 45
   catalogDescription: fishing-source-hot-spring
   flags: ExplosiveMalus
+  fishCounts:
+    FishSacabambaspis: 5
+  fishCountRegen:
+    FishSacabambaspis: 240
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -247,6 +269,7 @@
   difficulty: 15
   background: background_tray
   catalogDescription: fishing-source-hydro-tray
+  dynamic: HydroTray
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -260,10 +283,20 @@
   difficulty: 38
   background: background_lavaland
   catalogDescription: fishing-source-deep-fryer
+  fishCounts:
+    FishFryish: 10
+    FishFryishFritterish: 4
+    FishFryishNessie: 1
+  fishCountRegen:
+    FishFryish: 120
+    FishFryishFritterish: 360
+    FishFryishNessie: 1320
   table: !type:GroupSelector
     children:
     - id: FoodBadRecipe
       weight: 15
+    - id: FoodBakedNugget
+      weight: 5
     - id: FishFryish
       weight: 40
     - id: FishFryishFritterish
@@ -276,6 +309,7 @@
   radialState: fish_tank
   difficulty: 15
   catalogDescription: fishing-source-aquarium
+  dynamic: Aquarium
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -287,6 +321,7 @@
   difficulty: 10
   background: background_chasm
   catalogDescription: fishing-source-vending
+  dynamic: Vending
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -314,6 +349,12 @@
   radialState: cursed
   difficulty: 50
   background: background_mansus
+  fishCounts:
+    FishMossglob: 3
+    FishBabbelfish: 1
+  fishCountRegen:
+    FishMossglob: 180
+    FishBabbelfish: 300
   table: !type:GroupSelector
     children:
     - id: FishStarfishChrystarfish
@@ -397,6 +438,10 @@
   difficulty: 40
   background: background_oil_well
   catalogDescription: fishing-source-oil-well
+  fishCounts:
+    FishMastodon: 1
+  fishCountRegen:
+    FishMastodon: 480
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -418,5 +463,13 @@
   catalogDescription: fishing-source-surgery
   table: !type:GroupSelector
     children:
-    - !type:NoneSelector
+    - id: OrganHumanAppendix
+      weight: 10
+    - id: OrganHumanStomach
+      weight: 10
+    - id: OrganHumanLiver
+      weight: 10
+    - id: OrganHumanKidneys
+      weight: 10
+    - id: OrganHumanHeart
       weight: 10

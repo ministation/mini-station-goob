@@ -393,3 +393,48 @@
     baitPrototype: BaitDoughballSuper
     maxUses: 12
     usesLeft: 12
+
+# Gene gun and trait injectors
+
+- type: entity
+  id: FishingGeneGun
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: fish_gun
+  - type: Item
+    size: Small
+  - type: MeleeWeapon
+    wideAnimationRotation: 45
+    attackRate: 1.0
+    damage:
+      types:
+        Piercing: 7
+  - type: FishingGeneGun
+  - type: ItemSlots
+    slots:
+      injector:
+        name: fishing-gene-gun-slot
+        insertOnInteract: false
+        ejectOnUse: false
+        whitelist:
+          tags:
+          - Syringe
+          components:
+          - FishGeneInjector
+  - type: ContainerContainer
+    containers:
+      injector: !type:ContainerSlot
+
+- type: entity
+  id: FishGeneInjector
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: fish_trait_injector
+  - type: Item
+    size: Tiny
+  - type: FishGeneInjector
+

@@ -18,6 +18,7 @@ public sealed partial class FishAnalyzerSystem : EntitySystem
 {
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private FishSystem _fish = default!;
     [Dependency] private INetManager _net = default!;
 
     public override void Initialize()
@@ -97,6 +98,12 @@ public sealed partial class FishAnalyzerSystem : EntitySystem
             entry.Alive = comp.Alive;
             entry.Catcher = comp.Catcher;
             entry.CatchMinutes = comp.CatchDate is { } date ? (float) date.TotalMinutes : -1f;
+            entry.HasExtraTraits = comp.ExtraTraits.Count > 0;
+
+            foreach (var trait in _fish.GetTraits(comp))
+            {
+                entry.Traits.Add(trait.Id);
+            }
         }
 
         return new FishAnalyzerBoundUserInterfaceState(new List<FishAnalyzerEntry> { entry });

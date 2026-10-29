@@ -55,6 +55,24 @@ public sealed partial class FishingSourcePrototype : IPrototype
     public FishingSourceFlags Flags = FishingSourceFlags.None;
 
     /// <summary>
+    /// If set, the loot is built from the entity the spot is attached to instead of the table.
+    /// </summary>
+    [DataField]
+    public FishingDynamicSource Dynamic = FishingDynamicSource.None;
+
+    /// <summary>
+    /// Limited amount of each catch for this source. Missing keys are unlimited.
+    /// </summary>
+    [DataField]
+    public Dictionary<EntProtoId, int> FishCounts = new();
+
+    /// <summary>
+    /// Seconds it takes to regenerate one limited catch, per catch prototype.
+    /// </summary>
+    [DataField]
+    public Dictionary<EntProtoId, float> FishCountRegen = new();
+
+    /// <summary>
     /// Icon state from the fishing radial RSI, shown by the fish-porter machine.
     /// </summary>
     [DataField]

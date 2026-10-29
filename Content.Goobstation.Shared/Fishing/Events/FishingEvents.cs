@@ -117,3 +117,25 @@ public struct FishCaughtWithRodEvent
         Reward = reward;
     }
 }
+/// <summary>
+/// Raised on the entity a dynamic fishing source is attached to (vending machine, tray, aquarium...)
+/// so the host can provide its own loot. Set Handled to true even when the host has nothing.
+/// </summary>
+[ByRefEvent]
+public struct FishingDynamicRewardEvent
+{
+    public EntityUid User;
+    public EntityUid Rod;
+    public EntityUid SourceEntity;
+
+    public List<EntProtoId> Candidates = new();
+    public EntityUid? ExistingCatch;
+    public bool Handled;
+
+    public FishingDynamicRewardEvent(EntityUid user, EntityUid rod, EntityUid sourceEntity)
+    {
+        User = user;
+        Rod = rod;
+        SourceEntity = sourceEntity;
+    }
+}

@@ -10,6 +10,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.Prototypes;
+using Content.Shared.Verbs;
 using Robust.Shared.Containers;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
@@ -32,6 +33,7 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedUserInterfaceSystem _ui = default!;
 
     public override void Initialize()
     {
@@ -46,6 +48,21 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
         SubscribeLocalEvent<FishingLineComponent, EntGotRemovedFromContainerMessage>(OnLineRemoved);
         SubscribeLocalEvent<FishingLineComponent, EntityTerminatingEvent>(OnLineTerminating);
         SubscribeLocalEvent<FishingBaitCanComponent, UseInHandEvent>(OnBaitCanUse);
+
+        SubscribeLocalEvent<FishingRodComponent, GetVerbsEvent<InteractionVerb>>(OnGetEquipmentVerbs);
+        SubscribeLocalEvent<FishingRodComponent, BoundUIOpenedEvent>(OnEquipmentUiOpened);
+
+        // The client visuals system owns the rod container events on its side.
+        if (_net.IsServer)
+        {
+            SubscribeLocalEvent<FishingRodComponent, EntInsertedIntoContainerMessage>(OnEquipmentInserted);
+            SubscribeLocalEvent<FishingRodComponent, EntRemovedFromContainerMessage>(OnEquipmentRemoved);
+        }
+
+        Subs.BuiEvents<FishingRodComponent>(FishingRodEquipmentUiKey.Key, subs =>
+        {
+            subs.Event<FishingRodEquipmentEjectMessage>(OnEquipmentEject);
+        });
     }
 
     #region Slots helpers
@@ -278,6 +295,92 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
 
         bait = Spawn(comp.BaitPrototype, Transform(can).Coordinates);
         return true;
+    }
+
+    #endregion
+
+    #region Equipment window
+
+    private static bool IsEquipmentSlot(string containerId)
+    {
+        return containerId == LineSlotId || containerId == HookSlotId || containerId == BaitSlotId;
+    }
+
+    private void OnGetEquipmentVerbs(Entity<FishingRodComponent> ent, ref GetVerbsEvent<InteractionVerb> args)
+    {
+        if (!args.CanAccess || !args.CanInteract)
+            return;
+
+        var user = args.User;
+
+        args.Verbs.Add(new InteractionVerb
+        {
+            Text = Loc.GetString("fishing-rod-equipment-verb"),
+            Act = () => _ui.TryToggleUi(ent.Owner, FishingRodEquipmentUiKey.Key, user),
+        });
+    }
+
+    private void OnEquipmentUiOpened(Entity<FishingRodComponent> ent, ref BoundUIOpenedEvent args)
+    {
+        if (args.UiKey is not FishingRodEquipmentUiKey)
+            return;
+
+        _ui.SetUiState(ent.Owner, FishingRodEquipmentUiKey.Key, BuildEquipmentState(ent.Owner));
+    }
+
+    private void OnEquipmentInserted(Entity<FishingRodComponent> ent, ref EntInsertedIntoContainerMessage args)
+    {
+        UpdateEquipmentState(ent.Owner, args.Container.ID);
+    }
+
+    private void OnEquipmentRemoved(Entity<FishingRodComponent> ent, ref EntRemovedFromContainerMessage args)
+    {
+        UpdateEquipmentState(ent.Owner, args.Container.ID);
+    }
+
+    private void UpdateEquipmentState(EntityUid rod, string containerId)
+    {
+        if (!_net.IsServer || !IsEquipmentSlot(containerId))
+            return;
+
+        if (_ui.IsUiOpen(rod, FishingRodEquipmentUiKey.Key))
+            _ui.SetUiState(rod, FishingRodEquipmentUiKey.Key, BuildEquipmentState(rod));
+    }
+
+    private void OnEquipmentEject(Entity<FishingRodComponent> ent, ref FishingRodEquipmentEjectMessage args)
+    {
+        if (!IsEquipmentSlot(args.Slot))
+            return;
+
+        if (!_slots.TryGetSlot(ent.Owner, args.Slot, out var slot))
+            return;
+
+        _slots.TryEjectToHands(ent.Owner, slot, args.Actor, excludeUserAudio: true);
+    }
+
+    private FishingRodEquipmentBoundUserInterfaceState BuildEquipmentState(EntityUid rod)
+    {
+        return new FishingRodEquipmentBoundUserInterfaceState(new List<FishingRodEquipmentSlotState>
+        {
+            GetSlotState(rod, LineSlotId, "fishing-rod-slot-line"),
+            GetSlotState(rod, HookSlotId, "fishing-rod-slot-hook"),
+            GetSlotState(rod, BaitSlotId, "fishing-rod-slot-bait"),
+        });
+    }
+
+    private FishingRodEquipmentSlotState GetSlotState(EntityUid rod, string slotId, string name)
+    {
+        string? prototype = null;
+
+        if (_slots.TryGetSlot(rod, slotId, out var slot) && slot.Item is { } item)
+            prototype = Prototype(item)?.ID;
+
+        return new FishingRodEquipmentSlotState
+        {
+            Slot = slotId,
+            Name = name,
+            Prototype = prototype,
+        };
     }
 
     #endregion

@@ -8,6 +8,8 @@
   description: Just add capitalism!
   abstract: true
   components:
+  - type: FishingSource
+    source: FishingSourceVending
   - type: ActionGrant
     actions:
     - ActionVendingThrow

@@ -14,5 +14,6 @@ fishing-analyzer-fluid = Fluid: {fluid}
 fishing-analyzer-temperature = Temperature: {min} to {max} C
 fishing-analyzer-beauty = Beauty: {beauty}
 fishing-analyzer-traits-title = Traits:
+fishing-analyzer-traits-genetic = Some of these traits are the result of genetic engineering.
 fishing-analyzer-evolutions-title = Evolutions:
 fishing-analyzer-evolution = {fish} ({probability}% chance)

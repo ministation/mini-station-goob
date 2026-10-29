@@ -215,7 +215,14 @@ public sealed partial class FishingSystem : EntitySystem
     private void StartBiting(EntityUid user, FishingChallengeComponent challenge, FishingRodComponent rod)
     {
         challenge.Phase = FishingPhase.Biting;
-        challenge.Reward = _sources.RollReward(challenge.Source, user, rod.Owner);
+        challenge.Reward = null;
+        challenge.RewardEntity = null;
+
+        var host = challenge.SourceEntity ?? rod.Owner;
+        _sources.TryRollReward(host, challenge.Source, user, rod.Owner, out var reward, out var existing);
+        challenge.Reward = reward;
+        challenge.RewardEntity = existing;
+
         challenge.NextPhaseTime = _timing.CurTime + TimeSpan.FromSeconds(BiteWindow);
         Dirty(user, challenge);
 
@@ -234,9 +241,15 @@ public sealed partial class FishingSystem : EntitySystem
         }
 
         ProtoId<FishPrototype>? fishProtoId = null;
-        if (challenge.Reward is { } rewardProto &&
-            _proto.TryIndex(rewardProto, out EntityPrototype? rewardEnt) &&
-            rewardEnt.TryGetComponent<FishComponent>(out var rewardFish, EntityManager.ComponentFactory))
+
+        if (challenge.RewardEntity is { } existingReward &&
+            TryComp<FishComponent>(existingReward, out var existingFish))
+        {
+            fishProtoId = existingFish.Fish;
+        }
+        else if (challenge.Reward is { } rewardProto &&
+                 _proto.TryIndex(rewardProto, out EntityPrototype? rewardEnt) &&
+                 rewardEnt.TryGetComponent<FishComponent>(out var rewardFish, EntityManager.ComponentFactory))
         {
             fishProtoId = rewardFish.Fish;
         }
@@ -487,19 +500,21 @@ public sealed partial class FishingSystem : EntitySystem
         challenge.Completion = 100f;
 
         var reward = challenge.Reward;
+        var rewardEntity = challenge.RewardEntity;
+        var source = challenge.Source;
         var coords = challenge.CastCoordinates;
 
         StopChallenge(user, challenge, false, null);
 
-        if (reward is not { } rewardId)
+        if (reward == null && rewardEntity == null)
         {
             _popup.PopupEntity(Loc.GetString("fishing-nothing-caught"), user, user);
             return;
         }
 
-        if (_sources.CatchFish(user, rodUid, rewardId, coords) != null)
+        if (_sources.CatchFish(user, rodUid, reward, coords, source, rewardEntity) != null)
         {
-            var caughtEv = new FishCaughtWithRodEvent(user, rewardId);
+            var caughtEv = new FishCaughtWithRodEvent(user, reward);
             RaiseLocalEvent(rodUid, ref caughtEv);
         }
     }

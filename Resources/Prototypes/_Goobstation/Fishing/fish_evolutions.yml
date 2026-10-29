@@ -33,6 +33,7 @@
 
 - type: fishEvolution
   id: fritterish
+  growth: true
   evolvesTo: FishFryishFritterish
   probability: 0
   removedTraits:
@@ -81,6 +82,7 @@
 
 - type: fishEvolution
   id: nessie
+  growth: true
   evolvesTo: FishFryishNessie
   probability: 0
   name: fish-evolution-nessie-name
@@ -108,4 +110,3 @@
   probability: 3
   newTraits:
   - recessive
-

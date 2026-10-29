@@ -23,6 +23,12 @@ public sealed partial class FishEvolutionPrototype : IPrototype
     [DataField(required: true)]
     public ProtoId<FishPrototype> EvolvesTo = default!;
 
+    /// <summary>
+    /// When true this evolution happens through aquarium growth instead of breeding.
+    /// </summary>
+    [DataField]
+    public bool Growth;
+
     [DataField]
     public float Probability;
 

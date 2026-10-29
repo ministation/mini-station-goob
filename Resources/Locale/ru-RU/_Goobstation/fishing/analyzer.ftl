@@ -14,5 +14,6 @@ fishing-analyzer-fluid = Жидкость: {fluid}
 fishing-analyzer-temperature = Температура: от {min} до {max} C
 fishing-analyzer-beauty = Красота: {beauty}
 fishing-analyzer-traits-title = Особенности:
+fishing-analyzer-traits-genetic = Часть этих особенностей получена в результате генной инженерии.
 fishing-analyzer-evolutions-title = Эволюции:
 fishing-analyzer-evolution = {fish} (шанс {probability}%)

@@ -39,6 +39,8 @@
   - type: Damageable
     damageContainer: StructuralInorganic
   - type: Aquarium
+  - type: FishingSource
+    source: FishingSourceAquarium
   - type: ContainerContainer
     containers:
       fish: !type:Container

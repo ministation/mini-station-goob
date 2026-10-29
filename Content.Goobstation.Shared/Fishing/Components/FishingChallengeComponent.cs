@@ -44,6 +44,12 @@ public sealed partial class FishingChallengeComponent : Component
     [DataField]
     public EntProtoId? Reward;
 
+    /// <summary>
+    /// Existing entity reward, used by aquariums that hand out a fish living in the tank.
+    /// </summary>
+    [DataField]
+    public EntityUid? RewardEntity;
+
     // Minigame state.
 
     [DataField, AutoNetworkedField]
