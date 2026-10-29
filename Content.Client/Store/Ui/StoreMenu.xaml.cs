@@ -162,9 +162,9 @@ public sealed partial class StoreMenu : DefaultWindow
         }
 
         var accent = GetCategoryAccent(CurrentCategory);
-        var (priceText, currencyTex) = GetListingPriceDisplay(listing, spriteSys);
+        var (priceText, currencyTex, priceToolTip) = GetListingPriceDisplay(listing, spriteSys);
         var discount = GetDiscountString(listing);
-        var newListing = new StoreListingControl(listing, priceText, discount, hasBalance, texture, accent, currencyTex, productProto);
+        var newListing = new StoreListingControl(listing, priceText, discount, hasBalance, texture, accent, currencyTex, productProto, priceToolTip);
         // <Trauma>
         if (discount != string.Empty)
             newListing.StoreItemBuyButton.AddStyleClass(StyleClass.Negative);
@@ -196,9 +196,15 @@ public sealed partial class StoreMenu : DefaultWindow
         return true;
     }
 
-    private (string Text, Texture? Icon) GetListingPriceDisplay(ListingDataWithCostModifiers listing, SpriteSystem spriteSys)    {
+    private (string Text, Texture? Icon, string ToolTip) GetListingPriceDisplay(ListingDataWithCostModifiers listing, SpriteSystem spriteSys)
+    {
         if (listing.Cost.Count < 1)
-            return (Loc.GetString("store-currency-free"), null);
+        {
+            var free = Loc.GetString("store-currency-free");
+            return (free, null, free);
+        }
+
+        var fullPrice = GetListingPriceString(listing);
 
         // Prefer a single currency amount + icon (e.g. telecrystal sprite next to "2").
         if (listing.Cost.Count == 1)
@@ -213,18 +219,19 @@ public sealed partial class StoreMenu : DefaultWindow
                 icon = spriteSys.GetPrototypeIcon(cashProto.Id).Default;
             }
 
-            if (icon != null)
-                return (amount.ToString(), icon);
-
-            return (Loc.GetString(
-                "store-ui-price-display",
-                ("amount", amount),
-                ("currency", Loc.GetString(currency.DisplayName, ("amount", amount)))
-            ), null);
+            var (text, toolTip) = FormatListingPrice(amount, fullPrice);
+            return (text, icon, toolTip);
         }
 
-        return (GetListingPriceString(listing), null);
+        return (fullPrice, null, fullPrice);
     }
+
+    /// <summary>
+    ///     The buy button on a listing card is only 56px wide, so it shows the amount alone.
+    ///     The full "amount currency" price goes to the button tooltip instead.
+    /// </summary>
+    public static (string Text, string ToolTip) FormatListingPrice(FixedPoint2 amount, string fullPrice)
+        => (amount.ToString(), fullPrice);
 
     private string GetListingPriceString(ListingDataWithCostModifiers listing)    {
         var text = string.Empty;
