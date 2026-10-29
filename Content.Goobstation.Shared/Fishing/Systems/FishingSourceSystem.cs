@@ -5,6 +5,7 @@ using System.Linq;
 using Content.Goobstation.Shared.Fishing.Components;
 using Content.Goobstation.Shared.Fishing.Events;
 using Content.Goobstation.Shared.Fishing.Prototypes;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.EntityTable;
 using Content.Shared.Maps;
 using Content.Shared.Popups;
@@ -34,6 +35,7 @@ public sealed partial class FishingSourceSystem : EntitySystem
     [Dependency] private ITileDefinitionManager _tileDefs = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private ItemSlotsSystem _itemSlots = default!;
 
     private readonly Dictionary<string, ProtoId<FishingSourcePrototype>> _tileSources = new();
 
@@ -130,11 +132,28 @@ public sealed partial class FishingSourceSystem : EntitySystem
                 if (_proto.TryIndex(traitId, out FishTraitPrototype? trait))
                     difficulty += trait.AddedDifficulty;
             }
+
+            // tg: favorite bait makes the fight easier, disliked bait makes it harder.
+            if (GetBait(rod) is { } bait)
+            {
+                if (fish.FavoriteBaits.Contains(bait))
+                    difficulty -= 5f;
+                else if (fish.DislikedBaits.Contains(bait))
+                    difficulty += 15f;
+            }
         }
 
         var ev = new FishFightModifiersEvent(difficulty);
         RaiseLocalEvent(rod, ref ev);
         return ev.Difficulty;
+    }
+
+    private EntProtoId? GetBait(EntityUid rod)
+    {
+        if (!_itemSlots.TryGetSlot(rod, "bait", out var slot) || slot.Item is not { } baitItem)
+            return null;
+
+        return MetaData(baitItem).EntityPrototype?.ID;
     }
 
     /// <summary>

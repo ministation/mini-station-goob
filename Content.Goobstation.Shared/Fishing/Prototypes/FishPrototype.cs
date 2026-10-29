@@ -25,6 +25,12 @@ public sealed partial class FishPrototype : IPrototype
     public SpriteSpecifier Sprite = default!;
 
     /// <summary>
+    /// Icon used when the fish is dead, if the species has a custom dead sprite.
+    /// </summary>
+    [DataField]
+    public SpriteSpecifier? DeadSprite;
+
+    /// <summary>
     /// Icon used when the fish swims inside an aquarium. Falls back to <see cref="Sprite"/>.
     /// </summary>
     [DataField]

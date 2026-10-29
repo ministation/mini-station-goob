@@ -11,7 +11,7 @@ namespace Content.Goobstation.Shared.Fishing.Components;
 /// <summary>
 /// The fish itself. Fish are items with a size and a weight that are rolled when they spawn.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
 public sealed partial class FishComponent : Component
 {
     public const float DefaultDifficulty = 0.021f;

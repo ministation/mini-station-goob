@@ -3,7 +3,7 @@
 
 # Gameplay data of every fish species. The item entities live in
 # Resources/Prototypes/_Goobstation/Entities/Objects/Specific/Fishing/fish/.
-# TODO: favoriteBaits and dislikedBaits are filled once the bait prototypes are final.
+# TODO: only concrete item baits are ported; trait/foodtype/reagent bait preferences are not.
 
 - type: fish
   id: FishAngelfish
@@ -152,6 +152,7 @@
   id: FishChainsawfish
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: chainsawfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: chainsawfish_small }
+  deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: chainsawfish_dead }
   averageSize: 85
   averageWeight: 2500
   temperatureMin: 291.15
@@ -306,6 +307,9 @@
   temperatureMax: 301.15
   movement: zippy
   stablePopulation: 3
+  dislikedBaits:
+  - BaitDoughball
+  - BaitWorm
   fillet: FoodMeatFish
 
 - type: fish
@@ -416,6 +420,8 @@
   evolutionTypes:
   - three_eyes
   - chainsawfish
+  favoriteBaits:
+  - BaitWorm
   fillet: FoodMeatFish
 
 - type: fish
@@ -440,6 +446,8 @@
   evolutionTypes:
   - three_eyes
   - chainsawfish
+  favoriteBaits:
+  - BaitWorm
   fillet: FoodMeatFish
 
 - type: fish
@@ -1028,6 +1036,7 @@
   id: FishSlimefish
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: slimefish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: slimefish_small }
+  deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: slimefish_dead }
   fluid: Anadromous
   temperatureMin: 293.15
   rarity: 200
@@ -1127,6 +1136,7 @@
   id: FishStarfish
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish_small }
+  deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish_dead }
   averageSize: 30
   averageWeight: 300
   fluid: Air
@@ -1218,6 +1228,7 @@
   id: FishZipzap
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: zipzap }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: zipzap_small }
+  deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: zipzap_dead }
   averageSize: 30
   averageWeight: 500
   temperatureMin: 291.15
