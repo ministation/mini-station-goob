@@ -12,6 +12,7 @@ using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Input;
 
 namespace Content.IntegrationTests.Tests._Mini.Fishing;
 
@@ -137,9 +138,11 @@ public sealed class FishingTest : InteractionTest
 
             var ui = Client.Resolve<IUserInterfaceManager>();
             var input = ui.StateRoot.Children.OfType<FishingMinigameInputControl>().FirstOrDefault();
-            Assert.That(input, Is.Not.Null, "The wheel input control was not created during the bite window.");
+            Assert.That(input, Is.Not.Null, "The input control was not created during the bite window.");
+            Assert.That(input!.Size.X, Is.GreaterThan(0f), "The input control has zero width.");
+            Assert.That(input.Size.Y, Is.GreaterThan(0f), "The input control has zero height.");
 
-            ScrollWheel(input!, 1f);
+            ClickLmb(input);
         });
 
         await RunTicks(5);
@@ -149,6 +152,15 @@ public sealed class FishingTest : InteractionTest
             Assert.That(SEntMan.GetComponent<FishingChallengeComponent>(player).Phase, Is.EqualTo(FishingPhase.Minigame),
                 "Scrolling the mouse wheel did not start the minigame.");
         });
+    }
+
+    private static void ClickLmb(Control control)
+    {
+        var method = typeof(Control).GetMethod("KeyBindDown", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(method, Is.Not.Null, "Control.KeyBindDown was not found.");
+
+        var args = new GUIBoundKeyEventArgs(EngineKeyFunctions.UIClick, BoundKeyState.Down, default, true, Vector2.Zero, Vector2.Zero);
+        method!.Invoke(control, new object[] { args });
     }
 
     private static void ScrollWheel(Control control, float y)

@@ -4,6 +4,8 @@
 using System.Numerics;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
+using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
@@ -98,7 +100,7 @@ public sealed partial class FishingOverlay : Overlay
             if (lureXform.MapID != args.MapId)
                 continue;
 
-            var lurePos = _transform.GetWorldPosition(lureXform) + new Vector2(TileCenter, TileCenter + 0.08f);
+            var lurePos = _transform.GetWorldPosition(lureXform) + new Vector2(TileCenter, TileCenter);
 
             Vector2? lineStart = null;
             if (lure.Rod is { } rod &&
@@ -109,12 +111,14 @@ public sealed partial class FishingOverlay : Overlay
             }
 
             // The local fisherman always gets a line from the tip of their rod, even if the
-            // lure's Rod field has not arrived on this client yet.
+            // lure's Rod field has not arrived on this client yet. The offset follows the
+            // player's rotation and the hand holding the rod, so turning around keeps the line attached.
             if (localLure == lureUid && localPlayer != EntityUid.Invalid)
             {
-                var delta = lurePos - localPlayerPos;
-                var direction = delta.LengthSquared() > 0.0001f ? Vector2.Normalize(delta) : new Vector2(1f, 0f);
-                lineStart = localPlayerPos + direction * 0.5f + new Vector2(0f, 0.25f);
+                var playerCenter = _transform.GetWorldPosition(localPlayer) + new Vector2(TileCenter, TileCenter);
+                var rodHand = localChallenge?.Rod is { } rodUid ? GetRodHandSign(localPlayer, rodUid) : 1;
+                var playerRot = _transform.GetWorldRotation(localPlayer);
+                lineStart = playerCenter + playerRot.RotateVec(new Vector2(0.8f * rodHand, 0.6f));
             }
 
             if (lineStart is { } start && (bounds.Contains(start) || bounds.Contains(lurePos)))
@@ -142,6 +146,26 @@ public sealed partial class FishingOverlay : Overlay
         {
             DrawMinigame(handle, localPlayerPos, localChallenge, eyeRot);
         }
+    }
+
+    private int GetRodHandSign(EntityUid player, EntityUid rod)
+    {
+        if (!_ent.TryGetComponent<HandsComponent>(player, out var hands))
+            return 1;
+
+        var handsSystem = _ent.System<SharedHandsSystem>();
+        foreach (var handId in hands.SortedHands)
+        {
+            if (!handsSystem.TryGetHeldItem((player, hands), handId, out var held) || held != rod)
+                continue;
+
+            if (!handsSystem.TryGetHand((player, hands), handId, out var hand))
+                continue;
+
+            return hand.Value.Location == HandLocation.Right ? 1 : -1;
+        }
+
+        return 1;
     }
 
     private static void SetAnchorTransform(DrawingHandleWorld handle, Vector2 anchor, Angle eyeRot)

@@ -81,6 +81,17 @@ public sealed partial class FishingSystem : EntitySystem
         if (args.Target == user || !_hands.IsHolding(user, ent.Owner))
             return;
 
+        // Bite window: any click with the rod hooks the fish. This works even when the
+        // client UI input control is not available for some reason.
+        if (TryComp<FishingChallengeComponent>(user, out var active) && active.Rod == ent.Owner)
+        {
+            if (!active.IsFinishing && active.Phase == FishingPhase.Biting)
+                StartMinigame(user, active, ent.Comp);
+
+            args.Handled = true;
+            return;
+        }
+
         if (ent.Comp.FishingLure != null || HasComp<FishingChallengeComponent>(user))
             return;
 
