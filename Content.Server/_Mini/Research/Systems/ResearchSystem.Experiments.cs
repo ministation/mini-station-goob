@@ -1,6 +1,6 @@
 using Content.Shared.Damage.Components;
 using Content.Goobstation.Maths.FixedPoint;
-using Content.Goobstation.Shared.Fishing.Components;
+using Content.Shared._Mini.Fishing.Components;
 using Content.Server.Construction.Components;
 using Content.Server.Research.Components;
 using Content.Shared._EinsteinEngines.Silicon.Components;

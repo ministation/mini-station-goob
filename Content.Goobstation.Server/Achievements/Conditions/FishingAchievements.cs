@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Linq;
-using Content.Goobstation.Shared.Fishing.Components;
-using Content.Goobstation.Shared.Fishing.Events;
-using Content.Goobstation.Shared.Fishing.Prototypes;
+using Content.Shared._Mini.Fishing.Components;
+using Content.Shared._Mini.Fishing.Events;
+using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Prototypes;
 

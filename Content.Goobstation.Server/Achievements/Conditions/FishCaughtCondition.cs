@@ -1,4 +1,4 @@
-using Content.Goobstation.Shared.Fishing.Events;
+using Content.Shared._Mini.Fishing.Events;
 using Robust.Shared.Player;
 
 namespace Content.Goobstation.Server.Achievements.Conditions;
