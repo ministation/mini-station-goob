@@ -28,7 +28,12 @@ public sealed partial class FishingOverlay : Overlay
     private readonly TransformSystem _transform;
     private readonly RSI _hud;
 
-    private const float HudScale = 1f;
+    // World space uses meters, one tile is one meter, and sprites are drawn at 32 px per meter.
+    // All UI pixel sizes below are converted into meters with HudScale.
+    private const float Pixel = 1f / 32f;
+    private const float HudScale = Pixel;
+    private const float TileCenter = 0.5f;
+
     private const float Area = 1000f;
 
     // Same pixel geometry as tg's fishing HUD: 76 px of travel for fish and bait,
@@ -38,8 +43,9 @@ public sealed partial class FishingOverlay : Overlay
     private const float BaitBaseHeight = 360f;
     private const float BaitBasePixelHeight = 27f;
     private const float PlayfieldWidth = 24f;
-    private const float TileCenter = 16f;
     private const float PanelPadding = 4f;
+
+    private static readonly float[] LineOffsets = { -1.6f, -0.8f, 0f, 0.8f, 1.6f };
 
     private static readonly Color LineColor = Color.FromHex("#f4ecd2");
     private static readonly Color LineShadow = Color.FromHex("#241f13dd");
@@ -61,7 +67,8 @@ public sealed partial class FishingOverlay : Overlay
     protected override void Draw(in OverlayDrawArgs args)
     {
         var handle = args.WorldHandle;
-        var bounds = args.WorldAABB.Enlarged(8f);
+        var eyeRot = args.Viewport.Eye?.Rotation ?? Angle.Zero;
+        var bounds = args.WorldAABB.Enlarged(0.25f);
 
         FishingChallengeComponent? localChallenge = null;
         var localPlayer = EntityUid.Invalid;
@@ -107,7 +114,7 @@ public sealed partial class FishingOverlay : Overlay
                 lineStart = localPlayerPos;
 
             if (lineStart is { } start && (bounds.Contains(start) || bounds.Contains(lurePos)))
-                DrawLine(handle, start, lurePos);
+                DrawLine(handle, start, lurePos, eyeRot);
 
             if (localChallenge == null || localLure != lureUid)
                 continue;
@@ -115,10 +122,10 @@ public sealed partial class FishingOverlay : Overlay
             switch (localChallenge.Phase)
             {
                 case FishingPhase.Biting:
-                    DrawBiteMarker(handle, lurePos);
+                    DrawBiteMarker(handle, lurePos, eyeRot);
                     break;
                 case FishingPhase.Minigame:
-                    DrawMinigame(handle, lurePos, localChallenge);
+                    DrawMinigame(handle, lurePos, localChallenge, eyeRot);
                     panelDrawn = true;
                     break;
             }
@@ -129,69 +136,94 @@ public sealed partial class FishingOverlay : Overlay
             localChallenge is { Phase: FishingPhase.Minigame } &&
             localPlayer != EntityUid.Invalid)
         {
-            DrawMinigame(handle, localPlayerPos, localChallenge);
+            DrawMinigame(handle, localPlayerPos, localChallenge, eyeRot);
         }
     }
 
-    private static void DrawLine(DrawingHandleWorld handle, Vector2 start, Vector2 end)
+    private static void SetAnchorTransform(DrawingHandleWorld handle, Vector2 anchor, Angle eyeRot)
+    {
+        // The world handle applies the camera rotation; undo it so the UI and the rope stay upright.
+        var matrix = Matrix3x2.Multiply(Matrix3Helpers.CreateRotation(-eyeRot), Matrix3x2.CreateTranslation(anchor));
+        handle.SetTransform(matrix);
+    }
+
+    private static Vector2 ToLocal(Vector2 world, Vector2 anchor, Angle eyeRot)
+    {
+        return Vector2.Transform(world - anchor, Matrix3Helpers.CreateRotation(eyeRot));
+    }
+
+    private static void DrawLine(DrawingHandleWorld handle, Vector2 start, Vector2 end, Angle eyeRot)
     {
         var distance = (end - start).Length();
-        if (distance < 0.5f || distance > 200f)
+        if (distance < 0.02f || distance > 20f)
             return;
 
-        // A little sag makes the line read as a rope and not as a UI artefact.
-        var control = (start + end) * 0.5f - new Vector2(0f, MathF.Min(distance * 0.06f, 1.4f));
+        SetAnchorTransform(handle, start, eyeRot);
+        var localEnd = ToLocal(end, start, eyeRot);
 
-        var previous = start;
+        // A little sag makes the line read as a rope and not as a UI artefact.
+        var control = localEnd * 0.5f - new Vector2(0f, MathF.Min(distance * 0.06f, 0.15f));
+
+        var previous = Vector2.Zero;
         const int steps = 10;
         for (var i = 1; i <= steps; i++)
         {
             var t = i / (float) steps;
-            var point = Quadratic(start, control, end, t);
+            var point = Quadratic(Vector2.Zero, control, localEnd, t);
             var delta = point - previous;
             var length = delta.Length();
-            if (length > 0.001f)
+            if (length > 0.0001f)
             {
-                var perpendicular = new Vector2(-delta.Y, delta.X) / length * 1.3f;
-                handle.DrawLine(previous - perpendicular, point - perpendicular, LineShadow);
-                handle.DrawLine(previous + perpendicular, point + perpendicular, LineShadow);
-                handle.DrawLine(previous, point, LineColor);
+                var perpendicular = new Vector2(-delta.Y, delta.X) / length;
+                foreach (var offset in LineOffsets)
+                {
+                    var shift = perpendicular * (offset * HudScale);
+                    handle.DrawLine(previous + shift, point + shift, MathF.Abs(offset) >= 1.4f ? LineShadow : LineColor);
+                }
             }
 
             previous = point;
         }
     }
 
-    private void DrawBiteMarker(DrawingHandleWorld handle, Vector2 lurePos)
+    private void DrawBiteMarker(DrawingHandleWorld handle, Vector2 anchor, Angle eyeRot)
     {
+        SetAnchorTransform(handle, anchor, eyeRot);
+
         var time = (float) _timing.RealTime.TotalSeconds;
         var bounce = MathF.Abs(MathF.Sin(time * 8f));
         var color = BiteColor.WithAlpha(0.65f + 0.35f * bounce);
-        var origin = lurePos + new Vector2(10f, 18f + bounce * 4f);
+        var origin = new Vector2(10f * HudScale, (18f + bounce * 4f) * HudScale);
 
-        handle.DrawRect(Box2.FromDimensions(origin - new Vector2(1f, 1f), new Vector2(8f, 20f)), LineShadow);
-        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 24f), new Vector2(6f, 6f)), LineShadow);
-        handle.DrawRect(Box2.FromDimensions(origin, new Vector2(6f, 18f)), color);
-        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 23f), new Vector2(6f, 6f)), color);
+        var shadow = 1f * HudScale;
+        handle.DrawRect(Box2.FromDimensions(origin - new Vector2(shadow, shadow), new Vector2(8f, 20f) * HudScale), LineShadow);
+        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 24f * HudScale), new Vector2(6f, 6f) * HudScale), LineShadow);
+        handle.DrawRect(Box2.FromDimensions(origin, new Vector2(6f, 18f) * HudScale), color);
+        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 23f * HudScale), new Vector2(6f, 6f) * HudScale), color);
     }
 
-    private void DrawMinigame(DrawingHandleWorld handle, Vector2 anchor, FishingChallengeComponent challenge)
+    private void DrawMinigame(DrawingHandleWorld handle, Vector2 anchor, FishingChallengeComponent challenge, Angle eyeRot)
     {
+        SetAnchorTransform(handle, anchor, eyeRot);
+
         var barWidth = 32f * HudScale;
         var barHeight = 96f * HudScale;
-        var bar = Box2.FromDimensions(anchor + new Vector2(20f, -barHeight * 0.5f), new Vector2(barWidth, barHeight));
+        var bar = Box2.FromDimensions(
+            new Vector2(20f * HudScale, -barHeight * 0.5f),
+            new Vector2(barWidth, barHeight));
         var fieldHeight = SliderHeight * HudScale;
 
         // A dark panel behind the tg sprites makes this read as an interface and not as a wooden
         // object lying above the water.
+        var padding = PanelPadding * HudScale;
         var panel = new Box2(
-            bar.Left - PanelPadding,
-            bar.Bottom - PanelPadding,
-            bar.Right + PanelPadding,
-            bar.Top + PanelPadding);
+            bar.Left - padding,
+            bar.Bottom - padding,
+            bar.Right + padding,
+            bar.Top + padding);
         handle.DrawRect(panel, PanelColor);
         handle.DrawRect(panel, PanelBorder, filled: false);
-        handle.DrawLine(anchor, new Vector2(panel.Left, anchor.Y), LineShadow);
+        handle.DrawLine(Vector2.Zero, new Vector2(panel.Left, 0f), LineShadow);
 
         if (TryTex(challenge.Background) is { } background)
             handle.DrawTextureRect(background, bar);
@@ -203,7 +235,7 @@ public sealed partial class FishingOverlay : Overlay
             new Vector2(bar.Left, baitBottom - baitHeight),
             new Vector2(PlayfieldWidth * HudScale, baitHeight));
         handle.DrawRect(baitRect, BaitColor);
-        handle.DrawRect(new Box2(baitRect.Left, baitRect.Bottom, baitRect.Right, baitRect.Bottom + 1f), BaitEdgeColor);
+        handle.DrawRect(new Box2(baitRect.Left, baitRect.Bottom, baitRect.Right, baitRect.Bottom + HudScale), BaitEdgeColor);
 
         // Fish sprite, its position inside the 32x96 hud texture is shifted by the minigame position.
         if (TryTex(challenge.FishIcon) is { } fishIcon)
