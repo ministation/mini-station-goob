@@ -38,7 +38,7 @@ public sealed partial class FishingSystem : EntitySystem
     private const float FishFriction = 0.9f;
     private const float FishTargetMinDistance = 6f;
     /// <summary>Extra line length past the rod cast range before the line snaps.</summary>
-    private const float MaxLineSlack = 3f;
+    private const float MaxLineSlack = 1f;
     /// <summary>How long one reel input (one wheel notch) keeps moving the bait.</summary>
     private const float ReelHoldTime = 0.25f;
 

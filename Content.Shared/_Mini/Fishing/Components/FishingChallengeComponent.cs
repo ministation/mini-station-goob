@@ -11,7 +11,7 @@ namespace Content.Shared._Mini.Fishing.Components;
 /// <summary>
 /// Full state of a fishing challenge (waiting, biting or the minigame) on the fisherman.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
 public sealed partial class FishingChallengeComponent : Component
 {
     [DataField, AutoNetworkedField]

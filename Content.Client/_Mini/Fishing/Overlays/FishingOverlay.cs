@@ -10,14 +10,13 @@ using Robust.Client.Player;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
-using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Timing;
 
 namespace Content.Client._Mini.Fishing.Overlays;
 
 /// <summary>
-/// Draws the fishing line from the rod to the float and the minigame bar right next to the float.
+/// Draws the fishing line from the rod to the float and the minigame panel right next to the float.
 /// </summary>
 public sealed partial class FishingOverlay : Overlay
 {
@@ -27,8 +26,9 @@ public sealed partial class FishingOverlay : Overlay
     [Dependency] private IGameTiming _timing = default!;
 
     private readonly TransformSystem _transform;
+    private readonly RSI _hud;
 
-    private const float HudScale = 0.7f;
+    private const float HudScale = 1f;
     private const float Area = 1000f;
 
     // Same pixel geometry as tg's fishing HUD: 76 px of travel for fish and bait,
@@ -39,16 +39,17 @@ public sealed partial class FishingOverlay : Overlay
     private const float BaitBasePixelHeight = 27f;
     private const float PlayfieldWidth = 24f;
     private const float TileCenter = 16f;
+    private const float PanelPadding = 4f;
 
-    private static readonly Color LineColor = Color.FromHex("#e8e1c8dd");
-    private static readonly Color LineShadow = Color.FromHex("#8a806acc");
-    private static readonly Color BaitColor = Color.FromHex("#7bc96f33");
-    private static readonly Color BaitEdgeColor = Color.FromHex("#7bc96faa");
-    private static readonly Color BiteColor = Color.FromHex("#e04a3a");
+    private static readonly Color LineColor = Color.FromHex("#f4ecd2");
+    private static readonly Color LineShadow = Color.FromHex("#241f13dd");
+    private static readonly Color PanelColor = Color.FromHex("#121212dd");
+    private static readonly Color PanelBorder = Color.FromHex("#a89d82");
+    private static readonly Color BaitColor = Color.FromHex("#7bc96f44");
+    private static readonly Color BaitEdgeColor = Color.FromHex("#9be38d");
+    private static readonly Color BiteColor = Color.FromHex("#ff4b3a");
 
-    private readonly RSI _hud;
-
-    public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowFOV;
+    public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
     public FishingOverlay()
     {
@@ -63,12 +64,26 @@ public sealed partial class FishingOverlay : Overlay
         var bounds = args.WorldAABB.Enlarged(8f);
 
         FishingChallengeComponent? localChallenge = null;
-        EntityUid? localLure = null;
+        var localPlayer = EntityUid.Invalid;
         if (_player.LocalEntity is { } local && _ent.TryGetComponent<FishingChallengeComponent>(local, out var challenge))
         {
             localChallenge = challenge;
-            localLure = challenge.Lure;
+            localPlayer = local;
         }
+
+        EntityUid? localLure = localChallenge?.Lure;
+        if (localLure == null &&
+            localChallenge?.Rod is { } localRod &&
+            _ent.TryGetComponent<FishingRodComponent>(localRod, out var localRodComp))
+        {
+            localLure = localRodComp.FishingLure;
+        }
+
+        var localPlayerPos = localPlayer != EntityUid.Invalid
+            ? _transform.GetWorldPosition(localPlayer) + new Vector2(TileCenter, TileCenter)
+            : Vector2.Zero;
+
+        var panelDrawn = false;
 
         var query = _ent.EntityQueryEnumerator<FishingLureComponent, TransformComponent>();
         while (query.MoveNext(out var lureUid, out var lure, out var lureXform))
@@ -76,25 +91,23 @@ public sealed partial class FishingOverlay : Overlay
             if (lureXform.MapID != args.MapId)
                 continue;
 
-            var lurePos = _transform.GetWorldPosition(lureXform);
+            var lurePos = _transform.GetWorldPosition(lureXform) + new Vector2(TileCenter, TileCenter);
 
+            Vector2? lineStart = null;
             if (lure.Rod is { } rod &&
                 _ent.TryGetComponent<TransformComponent>(rod, out var rodXform) &&
                 rodXform.MapID == args.MapId)
             {
-                var rodPos = _transform.GetWorldPosition(rodXform);
-                if (bounds.Contains(lurePos) || bounds.Contains(rodPos))
-                {
-                    DrawLine(
-                        handle,
-                        rodPos + new Vector2(TileCenter, TileCenter),
-                        lurePos + new Vector2(TileCenter, TileCenter));
-                }
+                lineStart = _transform.GetWorldPosition(rodXform) + new Vector2(TileCenter, TileCenter);
             }
-            else if (!bounds.Contains(lurePos))
-            {
-                continue;
-            }
+
+            // The local fisherman always gets a line from their own hands, even if the
+            // lure's Rod field has not arrived on this client yet.
+            if (localLure == lureUid && localPlayer != EntityUid.Invalid)
+                lineStart = localPlayerPos;
+
+            if (lineStart is { } start && (bounds.Contains(start) || bounds.Contains(lurePos)))
+                DrawLine(handle, start, lurePos);
 
             if (localChallenge == null || localLure != lureUid)
                 continue;
@@ -106,18 +119,27 @@ public sealed partial class FishingOverlay : Overlay
                     break;
                 case FishingPhase.Minigame:
                     DrawMinigame(handle, lurePos, localChallenge);
+                    panelDrawn = true;
                     break;
             }
+        }
+
+        // The panel must be visible even if the lure briefly fell out of the client's view.
+        if (!panelDrawn &&
+            localChallenge is { Phase: FishingPhase.Minigame } &&
+            localPlayer != EntityUid.Invalid)
+        {
+            DrawMinigame(handle, localPlayerPos, localChallenge);
         }
     }
 
     private static void DrawLine(DrawingHandleWorld handle, Vector2 start, Vector2 end)
     {
         var distance = (end - start).Length();
-        if (distance < 0.5f)
+        if (distance < 0.5f || distance > 200f)
             return;
 
-        // A little sag makes the line read as a line and not as a UI artefact.
+        // A little sag makes the line read as a rope and not as a UI artefact.
         var control = (start + end) * 0.5f - new Vector2(0f, MathF.Min(distance * 0.06f, 1.4f));
 
         var previous = start;
@@ -130,7 +152,7 @@ public sealed partial class FishingOverlay : Overlay
             var length = delta.Length();
             if (length > 0.001f)
             {
-                var perpendicular = new Vector2(-delta.Y, delta.X) / length * 0.65f;
+                var perpendicular = new Vector2(-delta.Y, delta.X) / length * 1.3f;
                 handle.DrawLine(previous - perpendicular, point - perpendicular, LineShadow);
                 handle.DrawLine(previous + perpendicular, point + perpendicular, LineShadow);
                 handle.DrawLine(previous, point, LineColor);
@@ -144,21 +166,32 @@ public sealed partial class FishingOverlay : Overlay
     {
         var time = (float) _timing.RealTime.TotalSeconds;
         var bounce = MathF.Abs(MathF.Sin(time * 8f));
-        var color = BiteColor.WithAlpha(0.55f + 0.45f * bounce);
-        var origin = lurePos + new Vector2(18f, 28f + bounce * 4f);
+        var color = BiteColor.WithAlpha(0.65f + 0.35f * bounce);
+        var origin = lurePos + new Vector2(10f, 18f + bounce * 4f);
 
-        handle.DrawRect(Box2.FromDimensions(origin, new Vector2(5f, 14f)), color);
-        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 18f), new Vector2(5f, 5f)), color);
+        handle.DrawRect(Box2.FromDimensions(origin - new Vector2(1f, 1f), new Vector2(8f, 20f)), LineShadow);
+        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 24f), new Vector2(6f, 6f)), LineShadow);
+        handle.DrawRect(Box2.FromDimensions(origin, new Vector2(6f, 18f)), color);
+        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 23f), new Vector2(6f, 6f)), color);
     }
 
-    private void DrawMinigame(DrawingHandleWorld handle, Vector2 lurePos, FishingChallengeComponent challenge)
+    private void DrawMinigame(DrawingHandleWorld handle, Vector2 anchor, FishingChallengeComponent challenge)
     {
         var barWidth = 32f * HudScale;
         var barHeight = 96f * HudScale;
-        var bar = Box2.FromDimensions(
-            lurePos + new Vector2(20f, TileCenter - barHeight * 0.5f),
-            new Vector2(barWidth, barHeight));
+        var bar = Box2.FromDimensions(anchor + new Vector2(20f, -barHeight * 0.5f), new Vector2(barWidth, barHeight));
         var fieldHeight = SliderHeight * HudScale;
+
+        // A dark panel behind the tg sprites makes this read as an interface and not as a wooden
+        // object lying above the water.
+        var panel = new Box2(
+            bar.Left - PanelPadding,
+            bar.Bottom - PanelPadding,
+            bar.Right + PanelPadding,
+            bar.Top + PanelPadding);
+        handle.DrawRect(panel, PanelColor);
+        handle.DrawRect(panel, PanelBorder, filled: false);
+        handle.DrawLine(anchor, new Vector2(panel.Left, anchor.Y), LineShadow);
 
         if (TryTex(challenge.Background) is { } background)
             handle.DrawTextureRect(background, bar);
@@ -183,7 +216,7 @@ public sealed partial class FishingOverlay : Overlay
         // Completion column on the right. It is 80 px tall in tg, not the full 96 px sprite.
         var completion = Math.Clamp(challenge.Completion / 100f, 0f, 1f);
         var completionHeight = CompletionBarHeight * HudScale * completion;
-        var completionColor = new Color(1f - completion, 0.35f + completion * 0.55f, 0.2f + completion * 0.2f, 0.9f);
+        var completionColor = new Color(1f - completion, 0.35f + completion * 0.55f, 0.2f + completion * 0.2f, 0.95f);
         var completionRect = new Box2(
             bar.Right - 8f * HudScale,
             bar.Bottom,

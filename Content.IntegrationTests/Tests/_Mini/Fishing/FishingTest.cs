@@ -1,9 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Linq;
 using System.Numerics;
+using System.Reflection;
+using Content.Client._Mini.Fishing.Overlays;
+using Content.Client._Mini.Fishing.UI;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
 using Content.IntegrationTests.Tests.Interaction;
+using Robust.Client.Graphics;
+using Robust.Client.UserInterface;
+using Robust.Client.UserInterface.Controls;
 using Robust.Shared.GameObjects;
 
 namespace Content.IntegrationTests.Tests._Mini.Fishing;
@@ -64,6 +71,93 @@ public sealed class FishingTest : InteractionTest
         });
 
         Assert.That(fishCount, Is.GreaterThan(0), "Finishing the minigame did not spawn any fish.");
+    }
+
+    /// <summary>
+    /// The client must receive the challenge, the lure and the lure's rod, otherwise the line and
+    /// the minigame indicator next to the float cannot be drawn.
+    /// </summary>
+    [Test]
+    public async Task ClientSeesFishingLineStateTest()
+    {
+        await SpawnTarget("FloorWaterEntity");
+        await PlaceInHands("FishingRod");
+        await Interact();
+        await RunTicks(5);
+
+        await Client.WaitAssertion(() =>
+        {
+            Assert.That(CEntMan.TryGetComponent<FishingChallengeComponent>(CPlayer, out var challenge), Is.True,
+                "The client player has no fishing challenge.");
+
+            Assert.That(challenge!.Rod, Is.Not.Null, "The challenge rod was not synced to the client.");
+            Assert.That(challenge.Lure, Is.Not.Null, "The challenge lure was not synced to the client.");
+
+            var lure = challenge.Lure!.Value;
+            Assert.That(CEntMan.TryGetComponent<FishingLureComponent>(lure, out var lureComp), Is.True,
+                "The client has no FishingLureComponent on the lure entity.");
+            Assert.That(lureComp!.Rod, Is.Not.Null, "The lure's rod was not synced to the client.");
+
+            var overlay = Client.Resolve<IOverlayManager>();
+            Assert.That(overlay.HasOverlay<FishingOverlay>(), Is.True,
+                "The fishing overlay is not registered on the client.");
+        });
+    }
+
+    /// <summary>
+    /// The bite window must install the wheel input control, and one wheel notch has to start the fight.
+    /// </summary>
+    [Test]
+    public async Task ClientWheelStartsMinigameTest()
+    {
+        await SpawnTarget("FloorWaterEntity");
+        await PlaceInHands("FishingRod");
+        await Interact();
+        await RunTicks(5);
+
+        var player = ToServer(Player);
+        var challenge = SEntMan.GetComponent<FishingChallengeComponent>(player);
+
+        await Client.WaitAssertion(() =>
+        {
+            var ui = Client.Resolve<IUserInterfaceManager>();
+            Assert.That(ui.StateRoot.Children.OfType<FishingMinigameInputControl>().Any(), Is.False,
+                "The wheel input control must not exist while waiting for a bite, the HUD has to stay usable.");
+        });
+
+        await Server.WaitPost(() => challenge.NextPhaseTime = STiming.CurTime - TimeSpan.FromSeconds(1));
+        await RunTicks(5);
+
+        await Client.WaitAssertion(() =>
+        {
+            Assert.That(CEntMan.TryGetComponent<FishingChallengeComponent>(CPlayer, out var clientChallenge), Is.True,
+                "The client player has no fishing challenge.");
+            Assert.That(clientChallenge!.Phase, Is.EqualTo(FishingPhase.Biting),
+                "The client did not see the bite window.");
+
+            var ui = Client.Resolve<IUserInterfaceManager>();
+            var input = ui.StateRoot.Children.OfType<FishingMinigameInputControl>().FirstOrDefault();
+            Assert.That(input, Is.Not.Null, "The wheel input control was not created during the bite window.");
+
+            ScrollWheel(input!, 1f);
+        });
+
+        await RunTicks(5);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.GetComponent<FishingChallengeComponent>(player).Phase, Is.EqualTo(FishingPhase.Minigame),
+                "Scrolling the mouse wheel did not start the minigame.");
+        });
+    }
+
+    private static void ScrollWheel(Control control, float y)
+    {
+        var method = typeof(Control).GetMethod("MouseWheel", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(method, Is.Not.Null, "Control.MouseWheel was not found.");
+
+        var args = new GUIMouseWheelEventArgs(new Vector2(0f, y), control, Vector2.Zero, default, Vector2.Zero, Vector2.Zero);
+        method!.Invoke(control, new object[] { args });
     }
 
     /// <summary>
