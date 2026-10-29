@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Numerics;
 using Content.Client._RMC14.LinkAccount;
 using Content.Client.Administration.UI.CustomControls;
