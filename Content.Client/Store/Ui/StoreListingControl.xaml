@@ -63,7 +63,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 RectClipContent="False"
                 Access="Public">
                 <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" SeparationOverride="2">
-                    <Label Name="BuyPriceLabel" Align="Center" VAlign="Center" />
+                    <!-- The button is a fixed 56px wide, so clip long price text instead of letting it spill over the card. -->
+                    <Label Name="BuyPriceLabel" Align="Center" VAlign="Center" RectClipContent="True" />
                     <!-- Layout slot stays small so the button size doesn't grow; KeepCentered + TextureScale draws larger and overflows. -->
                     <TextureRect
                         Name="CurrencyIcon"

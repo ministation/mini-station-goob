@@ -43,7 +43,8 @@ public sealed partial class StoreListingControl : PanelContainer
         Texture? texture = null,
         Color? accent = null,
         Texture? currencyTexture = null,
-        EntProtoId? productPrototype = null)    {        IoCManager.InjectDependencies(this);
+        EntProtoId? productPrototype = null,
+        string? priceToolTip = null)    {        IoCManager.InjectDependencies(this);
         RobustXamlLoader.Load(this);
 
         _ticker = _entity.System<ClientGameTicker>();
@@ -84,6 +85,7 @@ public sealed partial class StoreListingControl : PanelContainer
         }
 
         UpdateBuyButtonText();
+        StoreItemBuyButton.ToolTip = priceToolTip;
         StoreItemBuyButton.Disabled = !CanBuy();
         if (CanBuy())
             StoreItemBuyButton.ModulateSelfOverride = _accent;
