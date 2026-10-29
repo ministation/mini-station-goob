@@ -1,0 +1,4 @@
+- type: entity
+  parent: StatusEffectSlowdown
+  id: EmoteSlowdownStatusEffect
+  name: emote slowdown

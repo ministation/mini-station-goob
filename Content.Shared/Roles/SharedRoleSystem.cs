@@ -186,7 +186,8 @@ public abstract class SharedRoleSystem : EntitySystem
         {
             //TODO: This is not tied to the player on the Admin Log filters.
             //Probably only happens when Job Role is added on initial spawn, before the mind entity is put in a mob
-            Log.Error($"{ToPrettyString(mindId)} does not have an OwnedEntity!");
+            // expected on initial spawn, before the mind is put into a mob
+            Log.Debug($"{ToPrettyString(mindId)} does not have an OwnedEntity!");
             _adminLogger.Add(LogType.Mind,
                 LogImpact.Low,
                 $"{name} added to {ToPrettyString(mindId)}");
@@ -270,7 +271,8 @@ public abstract class SharedRoleSystem : EntitySystem
 
         if (comp.OwnedEntity is null)
         {
-            Log.Error($"{ToPrettyString(mind)} does not have an OwnedEntity!");
+            // expected on initial spawn, before the mind is put into a mob
+            Log.Debug($"{ToPrettyString(mind)} does not have an OwnedEntity!");
             _adminLogger.Add(LogType.Mind,
                 LogImpact.Medium,
                 $"Role Type of {ToPrettyString(mind)} changed to {roleTypeId}, {subtype}");

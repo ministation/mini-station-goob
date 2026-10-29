@@ -517,7 +517,7 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
                 RemoveSessionByUserId(ent.Comp.AssignedSessions, session);
                 RemoveSessionByUserId(ent.Comp.PreSelectedSessions[def], session);
 
-                Log.Error($"Attempted to make {session} antagonist in gamerule {ToPrettyString(ent)} but there was no valid entity for player.");
+                Log.Debug($"Attempted to make {session} antagonist in gamerule {ToPrettyString(ent)} but there was no valid entity for player.");
                 _adminLogger.Add(LogType.AntagSelection, $"Attempted to make {session} antagonist in gamerule {ToPrettyString(ent)} but there was no valid entity for player.");
             }
             // </Trauma>

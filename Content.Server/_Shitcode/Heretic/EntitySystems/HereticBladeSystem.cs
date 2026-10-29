@@ -1,8 +1,13 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Body.Systems;
 using Content.Shared._Shitcode.Heretic.Systems;
 using Content.Shared.Teleportation;
 using Content.Server.Fluids.EntitySystems;
+using Content.Shared.Atmos.Components;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Goobstation.Shared.Teleportation.Systems;
@@ -22,7 +27,10 @@ public sealed class HereticBladeSystem : SharedHereticBladeSystem
     {
         base.ApplyAshBladeEffect(target);
 
-        _flammable.AdjustFireStacks(target, 2.5f, null, true, 0.5f);
+        if (!TryComp<FlammableComponent>(target, out var flammable))
+            return;
+
+        _flammable.AdjustFireStacks(target, 2.5f, flammable, true, 0.5f);
     }
 
     protected override void ApplyFleshBladeEffect(EntityUid target)

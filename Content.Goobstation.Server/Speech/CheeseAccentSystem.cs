@@ -21,6 +21,10 @@ public sealed partial class CheeseAccentSystem : EntitySystem
 
         message = _replacement.ApplyReplacements(message, "cheese");
 
+        // the message can be empty after replacements (e.g. a lone punctuation mark)
+        if (message.Length == 0)
+            return;
+
         // Sanitize capital again, in case we substituted a word that should be capitalized
         message = message[0].ToString().ToUpper() + message.Remove(0, 1);
 

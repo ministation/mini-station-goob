@@ -1,5 +1,10 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared.Popups;
 using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.Actions.Events;
 using Content.Shared.Alert;
 using Content.Shared.Coordinates.Helpers;
@@ -154,7 +159,10 @@ public sealed class MimePowersSystem : EntitySystem
 
         _alertsSystem.ClearAlert(uid, mimePowers.VowAlert);
         _alertsSystem.ShowAlert(uid, mimePowers.VowBrokenAlert);
-        _actionsSystem.RemoveAction(uid, mimePowers.InvisibleWallActionEntity);
+        if (mimePowers.InvisibleWallActionEntity is { } wallAction &&
+            TryComp<ActionComponent>(wallAction, out var wallActionComp) &&
+            wallActionComp.AttachedEntity == uid)
+            _actionsSystem.RemoveAction(uid, wallAction);
     }
 
     /// <summary>

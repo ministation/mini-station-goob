@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Interaction;
@@ -20,6 +24,7 @@ public sealed partial class ObraDinnClockSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
     [Dependency] private SharedHumanoidAppearanceSystem _humanoidAppearance = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {
@@ -44,12 +49,13 @@ public sealed partial class ObraDinnClockSystem : EntitySystem
             _popup.PopupPredicted(Loc.GetString("obradinn-activate-fail-map"),args.User,args.User);
             return;
         }
-        if (ent.Comp.Location == null  || !Transform(args.User).Coordinates.TryDistance(EntityManager, ent.Comp.Location.Value, out var distance))
+        if (ent.Comp.Location is not { } location)
         {
             _popup.PopupPredicted(Loc.GetString("obradinn-activate-fail-no-distance"),args.User,args.User);
             return;
         }
 
+        var distance = (_transform.GetMapCoordinates(args.User).Position - location).Length();
         if (distance > ent.Comp.DistanceFromCrimeScene)
         {
             _popup.PopupPredicted(Loc.GetString("obradinn-activate-fail-distance", ("distance",Math.Round(distance))),args.User,args.User);

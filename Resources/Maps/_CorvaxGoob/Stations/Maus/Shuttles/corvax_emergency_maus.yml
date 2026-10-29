@@ -1,16 +1,16 @@
 meta:
   format: 7
-  category: Map
+  category: Grid
   engineVersion: 270.1.0
   forkId: syndicate-goob
   forkVersion: 11e5e5e3019412076ebe10f26f83e1ae2d620aed
   time: 08/22/2026 18:28:47
-  entityCount: 838
-maps:
-- 784
+  entityCount: 837
+maps: []
 grids:
 - 1
-orphans: []
+orphans:
+- 1
 nullspace: []
 tilemap:
   0: Space
@@ -43,7 +43,6 @@ entities:
     - type: MetaData
       name: EVAC - "Der Zug"- NT533
     - type: Transform
-      parent: 784
     - type: MapGrid
       chunks:
         0,2:
@@ -1120,16 +1119,6 @@ entities:
       chunkHistory: {}
     - type: ImplicitRoof
     - type: ExplosionAirtightGrid
-  - uid: 784
-    components:
-    - type: MetaData
-      name: Map Entity
-    - type: Transform
-    - type: Map
-      mapPaused: True
-    - type: GridTree
-    - type: Broadphase
-    - type: OccluderTree
 - proto: AirAlarm
   entities:
   - uid: 2

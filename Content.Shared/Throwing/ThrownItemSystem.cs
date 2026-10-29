@@ -114,12 +114,18 @@ namespace Content.Shared.Throwing
 
                 thrown.Thrower = null;
                 Dirty(uid, thrown);
+            }
 
-                if (TryComp(uid, out PredictedThrownItemComponent? predicted))
-                {
-                    predicted.Thrower = null;
-                    Dirty(uid, predicted);
-                }
+            // Goob - Thrower в ThrownItemComponent и PredictedThrownItemComponent может разойтись:
+            // гарпун/трос перезаписывают Thrower первого, не трогая второй. Чистим их независимо.
+            var predictedQuery = EntityQueryEnumerator<PredictedThrownItemComponent>();
+            while (predictedQuery.MoveNext(out var uid, out var predicted))
+            {
+                if (predicted.Thrower != terminated)
+                    continue;
+
+                predicted.Thrower = null;
+                Dirty(uid, predicted);
             }
         }
 

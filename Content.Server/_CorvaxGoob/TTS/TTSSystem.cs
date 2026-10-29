@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Threading.Tasks;
 using Content.Server._EinsteinEngines.Language;
 using Content.Server.Chat.Systems;
@@ -120,8 +124,15 @@ public sealed partial class TTSSystem : EntitySystem
 
     private async void HandleSay(EntityUid uid, string message, string obfMessage, LanguagePrototype language, string speaker, float? pitch = null)
     {
+        if (TerminatingOrDeleted(uid))
+            return;
+
         var originalSoundData = await GenerateTTS(message, speaker);
         var obfuscatedSoundData = await GenerateTTS(obfMessage, speaker);
+
+        // Mini: за время генерации TTS сущность могли удалить, Filter.Pvs и GetNetEntity на ней падают.
+        if (TerminatingOrDeleted(uid))
+            return;
 
         foreach (var pvsSession in Filter.Pvs(uid).Recipients)
         {

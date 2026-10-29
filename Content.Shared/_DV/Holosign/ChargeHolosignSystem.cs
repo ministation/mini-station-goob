@@ -36,6 +36,25 @@ public sealed class ChargeHolosignSystem : EntitySystem
         SubscribeLocalEvent<ChargeHolosignProjectorComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<ChargeHolosignProjectorComponent, BeforeRangedInteractEvent>(OnBeforeInteract);
         SubscribeLocalEvent<ChargeHolosignProjectorComponent, UseInHandEvent>(OnUseInHand);
+        SubscribeLocalEvent<EntityTerminatingEvent>(OnSignTerminating);
+    }
+
+    // Goob - знак могли удалить снаружи (взрыв, деконструкция), и тогда проектор
+    // сетевой ссылкой в Signs держал бы удалённую сущность.
+    private void OnSignTerminating(ref EntityTerminatingEvent args)
+    {
+        if (!_net.IsServer)
+            return;
+
+        var terminated = args.Entity.Owner;
+        var query = EntityQueryEnumerator<ChargeHolosignProjectorComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            if (!comp.Signs.Remove(terminated))
+                continue;
+
+            Dirty(uid, comp);
+        }
     }
 
     private void OnInit(Entity<ChargeHolosignProjectorComponent> ent, ref ComponentInit args)

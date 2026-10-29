@@ -13,8 +13,7 @@
   - !type:PlayAnimationTargetEvent
     animationID: EmoteDanceFromTheFloor
   - !type:ApplyStatusEffectTargetEvent
-    key: SlowedDown
-    componentType: SlowedDown
+    effect: EmoteSlowdownStatusEffect
     time: 5
 
 - type: emote
@@ -32,8 +31,7 @@
   - !type:PlayAnimationTargetEvent
     animationID: EmoteSpinningOnHead
   - !type:ApplyStatusEffectTargetEvent
-    key: SlowedDown
-    componentType: SlowedDown
+    effect: EmoteSlowdownStatusEffect
     time: 6.5
 
 - type: emote
@@ -60,6 +58,5 @@
   - !type:PlayAnimationTargetEvent
     animationID: EmoteDance
   - !type:ApplyStatusEffectTargetEvent
-    key: SlowedDown
-    componentType: SlowedDown
+    effect: EmoteSlowdownStatusEffect
     time: 6

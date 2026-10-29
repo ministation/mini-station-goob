@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using System.Numerics;
 using Robust.Shared.GameStates;
 using Robust.Shared.Map;
 
@@ -32,7 +37,7 @@ public sealed partial class ObraDinnClockComponent : Component
     [DataField]
     public List<ObraDinnWitness> Witnesses = new List<ObraDinnWitness>();
     [DataField,AutoNetworkedField]
-    public EntityCoordinates? Location = null;
+    public Vector2? Location = null;
     [DataField,AutoNetworkedField]
     public MapId? Map = null;
 }

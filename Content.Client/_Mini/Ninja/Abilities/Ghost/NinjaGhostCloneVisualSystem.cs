@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Mini Station
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -22,16 +26,18 @@ public sealed class NinjaGhostCloneVisualSystem : EntitySystem
 
     private void OnState(Entity<NinjaGhostCloneVisualComponent> ent, ref AfterAutoHandleStateEvent args)
     {
-        if (ent.Comp.Source is not { } source || source == ent.Owner || !Exists(source))
+        if (ent.Comp.Source is not { } sourceNet ||
+            !TryGetEntity(sourceNet, out var source) ||
+            source == ent.Owner)
             return;
 
-        if (!TryComp<SpriteComponent>(source, out var sourceSprite) ||
+        if (!TryComp<SpriteComponent>(source.Value, out var sourceSprite) ||
             !TryComp<SpriteComponent>(ent.Owner, out var cloneSprite))
         {
             return;
         }
 
-        _sprite.CopySprite((source, sourceSprite), (ent.Owner, cloneSprite));
+        _sprite.CopySprite((source.Value, sourceSprite), (ent.Owner, cloneSprite));
         cloneSprite.Visible = true;
     }
 }

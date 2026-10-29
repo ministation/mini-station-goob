@@ -175,6 +175,10 @@ public sealed partial class CloneProjectorSystem : SharedCloneProjectorSystem
         _actions.RemoveProvidedActions(args.Equipee, projector);
         TryInsertClone(projector);
 
+        // Mini: тело уже удаляется, оглушение и попап на нём не нужны.
+        if (TerminatingOrDeleted(args.Equipee))
+            return;
+
         var popup = Loc.GetString(projector.Comp.UnequippedMessage);
         _popup.PopupEntity(popup, args.Equipee, args.Equipee);
 
