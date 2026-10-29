@@ -79,10 +79,21 @@ public sealed partial class FishingSystem : EntitySystem
         {
             _input = new FishingMinigameInputControl();
             _input.OnReel += SendReel;
+            _input.OnHook += TryHook;
             _ui.StateRoot.AddChild(_input);
         }
 
         _inputRod = rodUid;
+    }
+
+    private void TryHook()
+    {
+        if (_player.LocalEntity is not { } local ||
+            !TryComp<FishingChallengeComponent>(local, out var challenge) ||
+            challenge.Phase != FishingPhase.Biting)
+            return;
+
+        SendReel(1);
     }
 
     private void SendReel(int direction)

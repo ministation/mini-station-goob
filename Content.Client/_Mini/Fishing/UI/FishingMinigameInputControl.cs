@@ -5,6 +5,7 @@ using System.Numerics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Input;
 
 namespace Content.Client._Mini.Fishing.UI;
 
@@ -15,11 +16,21 @@ namespace Content.Client._Mini.Fishing.UI;
 public sealed class FishingMinigameInputControl : Control
 {
     public event Action<int>? OnReel;
+    public event Action? OnHook;
 
     public FishingMinigameInputControl()
     {
         MouseFilter = MouseFilterMode.Pass;
         LayoutContainer.SetAnchorPreset(this, LayoutContainer.LayoutPreset.Wide);
+
+        OnKeyBindDown += args =>
+        {
+            if (args.Function != EngineKeyFunctions.UIClick)
+                return;
+
+            args.Handle();
+            OnHook?.Invoke();
+        };
     }
 
     protected override void MouseWheel(GUIMouseWheelEventArgs args)

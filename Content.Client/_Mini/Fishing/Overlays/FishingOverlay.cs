@@ -45,7 +45,7 @@ public sealed partial class FishingOverlay : Overlay
     private const float PlayfieldWidth = 24f;
     private const float PanelPadding = 4f;
 
-    private static readonly float[] LineOffsets = { -1.6f, -0.8f, 0f, 0.8f, 1.6f };
+    private static readonly float[] LineOffsets = { -0.7f, 0f, 0.7f };
 
     private static readonly Color LineColor = Color.FromHex("#f4ecd2");
     private static readonly Color LineShadow = Color.FromHex("#241f13dd");
@@ -98,7 +98,7 @@ public sealed partial class FishingOverlay : Overlay
             if (lureXform.MapID != args.MapId)
                 continue;
 
-            var lurePos = _transform.GetWorldPosition(lureXform) + new Vector2(TileCenter, TileCenter);
+            var lurePos = _transform.GetWorldPosition(lureXform) + new Vector2(TileCenter, TileCenter + 0.08f);
 
             Vector2? lineStart = null;
             if (lure.Rod is { } rod &&
@@ -108,10 +108,14 @@ public sealed partial class FishingOverlay : Overlay
                 lineStart = _transform.GetWorldPosition(rodXform) + new Vector2(TileCenter, TileCenter);
             }
 
-            // The local fisherman always gets a line from their own hands, even if the
+            // The local fisherman always gets a line from the tip of their rod, even if the
             // lure's Rod field has not arrived on this client yet.
             if (localLure == lureUid && localPlayer != EntityUid.Invalid)
-                lineStart = localPlayerPos;
+            {
+                var delta = lurePos - localPlayerPos;
+                var direction = delta.LengthSquared() > 0.0001f ? Vector2.Normalize(delta) : new Vector2(1f, 0f);
+                lineStart = localPlayerPos + direction * 0.5f + new Vector2(0f, 0.25f);
+            }
 
             if (lineStart is { } start && (bounds.Contains(start) || bounds.Contains(lurePos)))
                 DrawLine(handle, start, lurePos, eyeRot);
@@ -178,7 +182,7 @@ public sealed partial class FishingOverlay : Overlay
                 foreach (var offset in LineOffsets)
                 {
                     var shift = perpendicular * (offset * HudScale);
-                    handle.DrawLine(previous + shift, point + shift, MathF.Abs(offset) >= 1.4f ? LineShadow : LineColor);
+                    handle.DrawLine(previous + shift, point + shift, MathF.Abs(offset) >= 0.7f ? LineShadow : LineColor);
                 }
             }
 
@@ -193,13 +197,14 @@ public sealed partial class FishingOverlay : Overlay
         var time = (float) _timing.RealTime.TotalSeconds;
         var bounce = MathF.Abs(MathF.Sin(time * 8f));
         var color = BiteColor.WithAlpha(0.65f + 0.35f * bounce);
-        var origin = new Vector2(10f * HudScale, (18f + bounce * 4f) * HudScale);
+        // Sit the mark right above the bobber, not next to it.
+        var origin = new Vector2(-3f * HudScale, (14f + bounce * 3f) * HudScale);
 
         var shadow = 1f * HudScale;
-        handle.DrawRect(Box2.FromDimensions(origin - new Vector2(shadow, shadow), new Vector2(8f, 20f) * HudScale), LineShadow);
-        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 24f * HudScale), new Vector2(6f, 6f) * HudScale), LineShadow);
-        handle.DrawRect(Box2.FromDimensions(origin, new Vector2(6f, 18f) * HudScale), color);
-        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 23f * HudScale), new Vector2(6f, 6f) * HudScale), color);
+        handle.DrawRect(Box2.FromDimensions(origin - new Vector2(shadow, shadow), new Vector2(8f, 18f) * HudScale), LineShadow);
+        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 20f * HudScale), new Vector2(6f, 6f) * HudScale), LineShadow);
+        handle.DrawRect(Box2.FromDimensions(origin, new Vector2(6f, 16f) * HudScale), color);
+        handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 19f * HudScale), new Vector2(6f, 6f) * HudScale), color);
     }
 
     private void DrawMinigame(DrawingHandleWorld handle, Vector2 anchor, FishingChallengeComponent challenge, Angle eyeRot)
