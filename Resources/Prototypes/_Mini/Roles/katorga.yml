@@ -16,6 +16,7 @@
     pocket1: KatorgaMineralScanner
   inhand:
     - KatorgaProtoKineticAccelerator
+    - Pickaxe
   storage:
     back:
     - BoxSurvival
