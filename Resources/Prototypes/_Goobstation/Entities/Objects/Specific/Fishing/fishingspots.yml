@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
 - type: entity
   id: BaseFishingSpot
@@ -8,11 +9,8 @@
   placement:
     mode: SnapgridCenter
   components:
-  - type: FishingSpot
-    fishList: !type:NestedSelector
-      tableId: WaterFishingLootTable
-    fishDefaultTimer: 25.0
-    fishTimerVariety: 15.0
+  - type: FishingSource
+    source: FishingSourceOceanBeach
   - type: Physics
     bodyType: Static
   - type: Fixtures
@@ -33,7 +31,6 @@
   - type: Clickable
   - type: InteractionOutline
   - type: PhysicsGunBlacklist
-  # TODO: change visuals when it's active
   - type: Sprite
     sprite: _Goobstation/Objects/Specific/Fishing/fishing_spot.rsi
     state: water

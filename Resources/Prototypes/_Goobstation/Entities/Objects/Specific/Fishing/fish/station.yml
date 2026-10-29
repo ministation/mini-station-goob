@@ -1,0 +1,75 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishFryish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: fryish
+  - type: Fish
+    fish: FishFryish
+
+- type: entity
+  id: FishFryishFritterish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: fritterish
+  - type: Fish
+    fish: FishFryishFritterish
+
+- type: entity
+  id: FishFryishNessie
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi
+    state: nessiefish
+  - type: Fish
+    fish: FishFryishNessie
+  - type: Item
+    size: Huge
+
+- type: entity
+  id: FishRatfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: ratfish
+  - type: Fish
+    fish: FishRatfish
+
+- type: entity
+  id: FishSlimefish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: slimefish
+  - type: Fish
+    fish: FishSlimefish
+
+- type: entity
+  id: FishSludgefish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: sludgefish
+  - type: Fish
+    fish: FishSludgefish
+
+- type: entity
+  id: FishSludgefishPurple
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: sludgefish_purple
+  - type: Fish
+    fish: FishSludgefishPurple
+

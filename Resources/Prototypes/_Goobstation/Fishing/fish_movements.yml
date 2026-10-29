@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+# Movement patterns of fish on the fishing minigame bar.
+
+- type: fishMovement
+  id: slow
+  movementType: Slow
+  shortJumpChance: 0
+  longJumpChance: 1.5
+  longJumpVelocityLimit: 150
+  canInterruptMove: false
+
+- type: fishMovement
+  id: zippy
+  movementType: Zippy
+  shortJumpChance: 6.75
+
+- type: fishMovement
+  id: accelerando
+  movementType: Accelerando
+  accelerationTimeCap: 30
+
+- type: fishMovement
+  id: choppy
+  movementType: Choppy
+
+- type: fishMovement
+  id: plunger
+  movementType: Plunger
+  plungingSpeed: -22
+

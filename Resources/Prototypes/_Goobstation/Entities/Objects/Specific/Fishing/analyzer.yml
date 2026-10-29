@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  parent: BaseItem
+  id: FishAnalyzer
+  name: fish analyzer
+  description: A fish-shaped scanner used to monitor fish status and evolutionary traits.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Medical/healthanalyzer.rsi
+    state: analyzer
+  - type: Item
+    size: Small
+  - type: FishAnalyzer
+  - type: UserInterface
+    interfaces:
+      enum.FishAnalyzerUiKey.Key:
+        type: FishAnalyzerBoundUserInterface
+  - type: StaticPrice
+    price: 300

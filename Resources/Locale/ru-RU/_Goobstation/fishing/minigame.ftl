@@ -1,0 +1,13 @@
+fishing-minigame-title = Рыбалка
+fishing-ui-waiting = Ждём поклёвку...
+fishing-ui-bite = Клюёт! Нажми, чтобы подсечь!
+fishing-ui-reel = ЛКМ тянет вверх, ПКМ опускает вниз
+fishing-start = Ты забрасываешь леску и начинаешь рыбачить.
+fishing-bite = Что-то клюнуло! Нажимай!
+fishing-minigame-start = Борьба началась!
+fishing-gave-up = Ты бросил эту рыбу.
+fishing-got-away = Она сорвалась!
+fishing-nothing-caught = Ничего не поймано.
+fishing-caught-fish = Ты поймал: { $fish }!
+fishing-reeled-in = Ты сматываешь леску.
+fishing-line-snapped = Леска оборвалась.

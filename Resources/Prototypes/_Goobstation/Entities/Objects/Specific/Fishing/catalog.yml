@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  parent: BaseItem
+  id: FishCatalog
+  name: fish encyclopedia
+  description: Indexes all fish known to mankind (and related species).
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: fishing_bag
+  - type: Item
+    size: Small
+  - type: FishCatalog
+  - type: UserInterface
+    interfaces:
+      enum.FishCatalogUiKey.Key:
+        type: FishCatalogBoundUserInterface
+  - type: ActivatableUI
+    key: enum.FishCatalogUiKey.Key
+    inHandsOnly: true
+  - type: StaticPrice
+    price: 200

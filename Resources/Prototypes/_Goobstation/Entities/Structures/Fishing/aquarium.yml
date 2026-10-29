@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: Aquarium
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+    layers:
+    - state: aquarium_base
+      map: [ "base" ]
+    - state: aquarium_glass_water
+      map: [ "glass" ]
+    - state: aquarium_borders
+      map: [ "borders" ]
+  - type: Icon
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+    state: aquarium_map
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 1000
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Anchorable
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Aquarium
+  - type: ContainerContainer
+    containers:
+      fish: !type:Container
+      props: !type:Container
+  - type: UserInterface
+    interfaces:
+      enum.AquariumUiKey.Key:
+        type: AquariumBoundUserInterface
+  - type: ActivatableUI
+    key: enum.AquariumUiKey.Key

@@ -1,0 +1,395 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+# Lines
+
+- type: entity
+  id: BaseFishingLine
+  abstract: true
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: reel_white
+  - type: Item
+    size: Small
+  - type: Tag
+    tags:
+    - FishingLine
+  - type: FishingLine
+
+- type: entity
+  id: FishingLine
+  parent: BaseFishingLine
+
+- type: entity
+  id: FishingLineReinforced
+  parent: BaseFishingLine
+  components:
+  - type: Sprite
+    state: reel_green
+  - type: FishingLine
+    lineColor: "#2aae34"
+
+- type: entity
+  id: FishingLineCloaked
+  parent: BaseFishingLine
+  components:
+  - type: Sprite
+    state: reel_white
+  - type: FishingLine
+    lineColor: "#82cfdd20"
+    difficultyModifier: -3
+
+- type: entity
+  id: FishingLineBouncy
+  parent: BaseFishingLine
+  components:
+  - type: Sprite
+    state: reel_red
+  - type: FishingLine
+    lineColor: "#af221f"
+    completionLossMultiplier: 0.6
+    castRangeBonus: 3
+
+- type: entity
+  id: FishingLineSinew
+  parent: BaseFishingLine
+  components:
+  - type: Sprite
+    state: reel_sinew
+  - type: FishingLine
+    lineColor: "#d1cca3"
+    difficultyModifier: 5
+
+- type: entity
+  id: FishingLineAutoReel
+  parent: BaseFishingLine
+  components:
+  - type: Sprite
+    state: reel_auto
+  - type: FishingLine
+    lineColor: "#F88414"
+    rules:
+    - Autoreel
+
+- type: entity
+  id: FishingLineBluespace
+  parent: BaseFishingLine
+  components:
+  - type: Sprite
+    state: reel_bluespace
+  - type: FishingLine
+    lineColor: "#0000ff"
+    castRangeBonus: 6
+
+# Hooks
+
+- type: entity
+  id: BaseFishingHook
+  abstract: true
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: hook
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags:
+    - FishingHook
+  - type: FishingHook
+
+- type: entity
+  id: FishingHook
+  parent: BaseFishingHook
+
+- type: entity
+  id: FishingHookMagnet
+  parent: BaseFishingHook
+  components:
+  - type: Sprite
+    state: treasure
+  - type: FishingHook
+    rodOverlayState: hook_treasure_overlay
+    fishWeightMultiplier: 0.2
+    dudRerolls: 1
+
+- type: entity
+  id: FishingHookShiny
+  parent: BaseFishingHook
+  components:
+  - type: Sprite
+    state: gold_shiny
+  - type: FishingHook
+    rodOverlayState: fishing_rod_hook_shiny_overlay
+
+- type: entity
+  id: FishingHookAnomaly
+  parent: BaseFishingHook
+  components:
+  - type: Sprite
+    state: anom
+
+- type: entity
+  id: FishingHookWeighted
+  parent: BaseFishingHook
+  components:
+  - type: Sprite
+    state: weighted
+  - type: FishingHook
+    rodOverlayState: hook_weighted_overlay
+    bouncinessMultiplier: 0.5
+
+- type: entity
+  id: FishingHookRescue
+  parent: BaseFishingHook
+  components:
+  - type: Sprite
+    state: rescue
+  - type: FishingHook
+    rodOverlayState: hook_rescue_overlay
+    fishWeightMultiplier: 0
+    rules:
+    - NoEscape
+
+- type: entity
+  id: FishingHookBone
+  parent: BaseFishingHook
+  components:
+  - type: Sprite
+    state: hook_bone
+
+- type: entity
+  id: FishingHookGyro
+  parent: BaseFishingHook
+  components:
+  - type: Sprite
+    state: gyro
+  - type: FishingHook
+    rodOverlayState: hook_gyro_overlay
+    gravityMultiplier: 0
+    rules:
+    - Bidirectional
+
+- type: entity
+  id: FishingHookJaws
+  parent: BaseFishingHook
+  components:
+  - type: Sprite
+    state: jaws
+  - type: Item
+    size: Normal
+  - type: FishingHook
+    rodOverlayState: hook_jaws_overlay
+    rules:
+    - NoEscape
+    - Kill
+
+# Baits
+
+- type: entity
+  id: BaseFishingBait
+  abstract: true
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: worm
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags:
+    - FishingBait
+  - type: FishingBait
+
+- type: entity
+  id: BaitWorm
+  parent: BaseFishingBait
+
+- type: entity
+  id: BaitWormPremium
+  parent: BaseFishingBait
+  components:
+  - type: FishingBait
+    quality: Good
+
+- type: entity
+  id: BaitDoughball
+  parent: BaseFishingBait
+  components:
+  - type: Sprite
+    state: doughball
+  - type: FishingBait
+    rodOverlayState: dough_overlay
+
+- type: entity
+  id: BaitDoughballBlue
+  parent: BaseFishingBait
+  components:
+  - type: Sprite
+    state: doughball_blue
+  - type: FishingBait
+    rodOverlayState: dough_blue_overlay
+    quality: Good
+
+- type: entity
+  id: BaitDoughballSuper
+  parent: BaseFishingBait
+  components:
+  - type: Sprite
+    state: doughball
+  - type: FishingBait
+    rodOverlayState: dough_overlay
+    quality: Great
+
+- type: entity
+  id: FishingBaitSynthetic
+  parent: BaseFishingBait
+  components:
+  - type: Sprite
+    state: doughball
+  - type: FishingBait
+    rodOverlayState: dough_overlay
+    quality: Great
+    consumable: false
+
+# Artificial lures, they are never used up
+
+- type: entity
+  id: BaseFishingLureBait
+  abstract: true
+  parent: BaseFishingBait
+  components:
+  - type: FishingBait
+    consumable: false
+
+- type: entity
+  id: FishingLureMinnow
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: minnow
+
+- type: entity
+  id: FishingLurePlug
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: plug
+
+- type: entity
+  id: FishingLureDropping
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: dropping
+
+- type: entity
+  id: FishingLureSpoon
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: spoon
+
+- type: entity
+  id: FishingLureArtificialFly
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: artificial_fly
+
+- type: entity
+  id: FishingLureLed
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: led
+  - type: PointLight
+    enabled: true
+    radius: 1.5
+    energy: 1.5
+    color: "#4de4ff"
+
+- type: entity
+  id: FishingLureLuckyCoin
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: lucky_coin
+
+- type: entity
+  id: FishingLureAlgae
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: algae
+
+- type: entity
+  id: FishingLureGrub
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: grub
+
+- type: entity
+  id: FishingLureBuzzbait
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: buzzbait
+
+- type: entity
+  id: FishingLureSpinnerbait
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: spinnerbait
+
+- type: entity
+  id: FishingLureDaisyChain
+  parent: BaseFishingLureBait
+  components:
+  - type: Sprite
+    state: daisy_chain
+
+# Bait cans
+
+- type: entity
+  id: BaseBaitCan
+  abstract: true
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: bait_can
+  - type: Item
+    size: Small
+  - type: FishingBaitCan
+
+- type: entity
+  id: BaitCan
+  parent: BaseBaitCan
+
+- type: entity
+  id: BaitCanWorm
+  parent: BaseBaitCan
+  components:
+  - type: FishingBaitCan
+    baitPrototype: BaitWorm
+
+- type: entity
+  id: BaitCanWormPremium
+  parent: BaseBaitCan
+  components:
+  - type: FishingBaitCan
+    baitPrototype: BaitWormPremium
+
+- type: entity
+  id: BaitCanSuper
+  parent: BaseBaitCan
+  components:
+  - type: FishingBaitCan
+    baitPrototype: BaitDoughballSuper
+    maxUses: 12
+    usesLeft: 12

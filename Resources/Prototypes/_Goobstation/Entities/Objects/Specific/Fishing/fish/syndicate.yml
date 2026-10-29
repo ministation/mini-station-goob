@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishChainsawfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi
+    state: chainsawfish
+  - type: Fish
+    fish: FishChainsawfish
+  - type: Item
+    size: Large
+
+- type: entity
+  id: FishDonkfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: donkfish
+  - type: Fish
+    fish: FishDonkfish
+
+- type: entity
+  id: FishEmulsijack
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: emulsijack
+  - type: Fish
+    fish: FishEmulsijack
+
+- type: entity
+  id: FishJumpercable
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: jumpercable
+  - type: Fish
+    fish: FishJumpercable
+  - type: Item
+    size: Large
+
+- type: entity
+  id: FishPikeArmored
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi
+    state: armored_pike
+  - type: Fish
+    fish: FishPikeArmored
+  - type: Item
+    size: Large
+

@@ -1,0 +1,12 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<DefaultWindow xmlns="https://spacestation14.io"
+               Title="{Loc fishing-analyzer-title}">
+  <BoxContainer Orientation="Vertical"
+                MinSize="380 320"
+                Margin="4"
+                SeparationOverride="4">
+    <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
+      <RichTextLabel Name="FishInfo" />
+    </ScrollContainer>
+  </BoxContainer>
+</DefaultWindow>

@@ -1,0 +1,69 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishBabbelfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi
+    state: babbelfish
+  - type: Fish
+    fish: FishBabbelfish
+
+- type: entity
+  id: FishDolphish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi
+    state: dolphish
+  - type: Fish
+    fish: FishDolphish
+  - type: Item
+    size: Huge
+
+- type: entity
+  id: FishFlumpulus
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi
+    state: flumpulus
+  - type: Fish
+    fish: FishFlumpulus
+  - type: Item
+    size: Large
+
+- type: entity
+  id: FishGullion
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi
+    state: gullion
+  - type: Fish
+    fish: FishGullion
+
+- type: entity
+  id: FishMossglob
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi
+    state: mossglob
+  - type: Fish
+    fish: FishMossglob
+  - type: Item
+    size: Huge
+
+- type: entity
+  id: FishStarfishChrystarfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi
+    state: chrystarfish
+  - type: Fish
+    fish: FishStarfishChrystarfish
+

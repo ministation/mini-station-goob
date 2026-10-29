@@ -1,0 +1,43 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "tgstation (SS13): https://github.com/tgstation/tgstation",
+    "size": {
+        "x": 64,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "mastodon"
+        },
+        {
+            "name": "swordfish"
+        },
+        {
+            "name": "chainsawfish",
+            "delays": [
+                [
+                    0.33,
+                    0.33,
+                    0.33,
+                    0.33
+                ]
+            ]
+        },
+        {
+            "name": "chainsawfish_dead"
+        },
+        {
+            "name": "pike"
+        },
+        {
+            "name": "armored_pike"
+        },
+        {
+            "name": "nessiefish"
+        },
+        {
+            "name": "dolphish"
+        }
+    ]
+}

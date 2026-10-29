@@ -1,0 +1,203 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "tgstation (SS13): https://github.com/tgstation/tgstation",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "fish_small-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "fish_normal-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "fish_bulky-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "fish_huge-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "fish_huge_wielded-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "swordfish-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "swordfish_wielded-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "chainsawfish-inhand-left",
+            "directions": 4,
+            "delays": [
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "name": "chainsawfish_wielded-inhand-left",
+            "directions": 4,
+            "delays": [
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "name": "chainsawfish_dead-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "chainsawfish_dead_wielded-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "pike-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "pike_wielded-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "armored_pike-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "armored_pike_wielded-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "fish_small-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "fish_normal-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "fish_bulky-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "fish_huge-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "fish_huge_wielded-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "swordfish-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "swordfish_wielded-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "chainsawfish-inhand-right",
+            "directions": 4,
+            "delays": [
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "name": "chainsawfish_wielded-inhand-right",
+            "directions": 4,
+            "delays": [
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "name": "chainsawfish_dead-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "chainsawfish_dead_wielded-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "pike-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "pike_wielded-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "armored_pike-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "armored_pike_wielded-inhand-right",
+            "directions": 4
+        }
+    ]
+}

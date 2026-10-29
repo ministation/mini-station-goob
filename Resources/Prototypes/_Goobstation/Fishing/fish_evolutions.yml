@@ -1,0 +1,111 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+# Offspring mutations of aquarium fish.
+
+- type: fishEvolution
+  id: armored_pike
+  evolvesTo: FishPikeArmored
+  probability: 75
+  conditionsNote: fish-evolution-armored_pike-conditions
+
+- type: fishEvolution
+  id: chainsawfish
+  evolvesTo: FishChainsawfish
+  probability: 30
+  newTraits:
+  - predator
+  - territorial
+  conditionsNote: fish-evolution-chainsawfish-conditions
+
+- type: fishEvolution
+  id: chasm_chrab
+  evolvesTo: FishChasmCrab
+  probability: 50
+  temperatureMin: 287.15
+  temperatureMax: 288.15
+
+- type: fishEvolution
+  id: dwarf_moonfish
+  evolvesTo: FishMoonfishDwarf
+  probability: 200
+  conditionsNote: fish-evolution-dwarf_moonfish-conditions
+
+- type: fishEvolution
+  id: fritterish
+  evolvesTo: FishFryishFritterish
+  probability: 0
+  removedTraits:
+  - no_mating
+  conditionsNote: fish-evolution-fritterish-conditions
+
+- type: fishEvolution
+  id: ice_chrab
+  evolvesTo: FishChasmCrabIce
+  probability: 50
+  temperatureMin: 282.15
+  temperatureMax: 283.15
+
+- type: fishEvolution
+  id: lavaloop
+  evolvesTo: FishLavaloop
+  probability: 85
+  temperatureMin: 333.15
+
+- type: fishEvolution
+  id: lubefish
+  evolvesTo: FishClownfishLube
+  probability: 25
+  newTraits:
+  - lubed
+  conditionsNote: fish-evolution-lubefish-conditions
+
+- type: fishEvolution
+  id: mastodon
+  evolvesTo: FishMastodon
+  probability: 40
+  newTraits:
+  - heavy
+  - amphibious
+  - predator
+  - territorial
+  name: fish-evolution-mastodon-name
+  conditionsNote: fish-evolution-mastodon-conditions
+  showResultOnWiki: false
+
+- type: fishEvolution
+  id: moonfish
+  evolvesTo: FishMoonfish
+  probability: 200
+  conditionsNote: fish-evolution-moonfish-conditions
+
+- type: fishEvolution
+  id: nessie
+  evolvesTo: FishFryishNessie
+  probability: 0
+  name: fish-evolution-nessie-name
+  conditionsNote: fish-evolution-nessie-conditions
+  showResultOnWiki: false
+
+- type: fishEvolution
+  id: plasmaloop
+  evolvesTo: FishLavaloopPlasmaRiver
+  probability: 85
+  temperatureMax: 333.15
+
+- type: fishEvolution
+  id: purple_sludgefish
+  evolvesTo: FishSludgefishPurple
+  probability: 5
+  newTraits:
+  - recessive
+  removedTraits:
+  - no_mating
+
+- type: fishEvolution
+  id: three_eyes
+  evolvesTo: FishGoldfishThreeEyes
+  probability: 3
+  newTraits:
+  - recessive
+

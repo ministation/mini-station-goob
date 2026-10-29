@@ -1,0 +1,19 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<DefaultWindow xmlns="https://spacestation14.io"
+               Title="{Loc fishing-catalog-title}">
+  <BoxContainer Orientation="Vertical"
+                MinSize="640 480"
+                Margin="4"
+                SeparationOverride="4">
+    <LineEdit Name="SearchBar" PlaceHolder="{Loc fishing-catalog-search}" />
+    <BoxContainer Orientation="Horizontal"
+                  HorizontalExpand="True"
+                  VerticalExpand="True"
+                  SeparationOverride="6">
+      <ItemList Name="FishList" MinSize="240 0" VerticalExpand="True" />
+      <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
+        <RichTextLabel Name="Details" Text="{Loc fishing-catalog-select}" />
+      </ScrollContainer>
+    </BoxContainer>
+  </BoxContainer>
+</DefaultWindow>

@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  parent: BaseWallmount
+  id: FishMount
+  name: fish mount
+  description: A mount for trophy fish, to show off your proudest catch.
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/mount.rsi
+    state: fish_mount
+  - type: FishMount
+  - type: ContainerContainer
+    containers:
+      fishMount: !type:ContainerSlot
+  - type: StaticPrice
+    price: 100

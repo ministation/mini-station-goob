@@ -1,9 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+// Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
 using Content.Shared.EntityTable.EntitySelectors;
+using Robust.Shared.Prototypes;
 
 namespace Content.Goobstation.Shared.Fishing.Components;
 
+/// <summary>
+/// Legacy Goob fishing spot. New spots use <see cref="FishingSourceComponent"/>.
+/// </summary>
 [RegisterComponent]
 public sealed partial class FishingSpotComponent : Component
 {

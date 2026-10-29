@@ -1,0 +1,239 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+# Fish traits. catalogDescription keys live in Locale/*/_Goobstation/fishing/fish.ftl.
+
+- type: fishTrait
+  id: amphibious
+  flags:
+  - Amphibious
+  name: fish-trait-amphibious-name
+  catalogDescription: fish-trait-amphibious
+
+- type: fishTrait
+  id: antigrav
+  flags:
+  - Antigrav
+  addedDifficulty: 20
+  name: fish-trait-antigrav-name
+  catalogDescription: fish-trait-antigrav
+
+- type: fishTrait
+  id: anxiety
+  flags:
+  - Anxiety
+  name: fish-trait-anxiety-name
+  catalogDescription: fish-trait-anxiety
+
+- type: fishTrait
+  id: camouflage
+  flags:
+  - Camouflage
+  addedDifficulty: 5
+  name: fish-trait-camouflage-name
+  catalogDescription: fish-trait-camouflage
+
+- type: fishTrait
+  id: carnivore
+  flags:
+  - Carnivore
+  name: fish-trait-carnivore-name
+  catalogDescription: fish-trait-carnivore
+
+- type: fishTrait
+  id: crossbreeder
+  flags:
+  - Crossbreeder
+  name: fish-trait-crossbreeder-name
+  catalogDescription: fish-trait-crossbreeder
+
+- type: fishTrait
+  id: electrogenesis
+  flags:
+  - Electrogenesis
+  name: fish-trait-electrogenesis-name
+  catalogDescription: fish-trait-electrogenesis
+
+- type: fishTrait
+  id: emulsijack
+  flags:
+  - Emulsijack
+  name: fish-trait-emulsijack-name
+  catalogDescription: fish-trait-emulsijack
+
+- type: fishTrait
+  id: emulsijack_psychic
+  flags:
+  - Emulsijack
+  name: fish-trait-emulsijack_psychic-name
+  catalogDescription: fish-trait-emulsijack_psychic
+
+- type: fishTrait
+  id: hallucinogenic
+  flags:
+  - Hallucinogenic
+  name: fish-trait-hallucinogenic-name
+  catalogDescription: fish-trait-hallucinogenic
+
+- type: fishTrait
+  id: heavy
+  flags:
+  - Heavy
+  name: fish-trait-heavy-name
+  catalogDescription: fish-trait-heavy
+
+- type: fishTrait
+  id: ink
+  flags:
+  - Ink
+  name: fish-trait-ink-name
+  catalogDescription: fish-trait-ink
+
+- type: fishTrait
+  id: lubed
+  flags:
+  - Lubed
+  addedDifficulty: 5
+  name: fish-trait-lubed-name
+  catalogDescription: fish-trait-lubed
+
+- type: fishTrait
+  id: mixotroph
+  flags:
+  - Mixotroph
+  name: fish-trait-mixotroph-name
+  catalogDescription: fish-trait-mixotroph
+
+- type: fishTrait
+  id: necrophage
+  flags:
+  - Necrophage
+  name: fish-trait-necrophage-name
+  catalogDescription: fish-trait-necrophage
+
+- type: fishTrait
+  id: no_mating
+  flags:
+  - NoMating
+  name: fish-trait-no_mating-name
+  catalogDescription: fish-trait-no_mating
+
+- type: fishTrait
+  id: nocturnal
+  flags:
+  - Nocturnal
+  name: fish-trait-nocturnal-name
+  catalogDescription: fish-trait-nocturnal
+
+- type: fishTrait
+  id: parthenogenesis
+  flags:
+  - Parthenogenesis
+  name: fish-trait-parthenogenesis-name
+  catalogDescription: fish-trait-parthenogenesis
+
+- type: fishTrait
+  id: picky_eater
+  flags:
+  - PickyEater
+  name: fish-trait-picky_eater-name
+  catalogDescription: fish-trait-picky_eater
+
+- type: fishTrait
+  id: predator
+  flags:
+  - Predator
+  name: fish-trait-predator-name
+  catalogDescription: fish-trait-predator
+
+- type: fishTrait
+  id: recessive
+  flags:
+  - Recessive
+  name: fish-trait-recessive-name
+  catalogDescription: fish-trait-recessive
+
+- type: fishTrait
+  id: revival
+  flags:
+  - Revival
+  name: fish-trait-revival-name
+  catalogDescription: fish-trait-revival
+
+- type: fishTrait
+  id: shiny_lover
+  flags:
+  - ShinyLover
+  name: fish-trait-shiny_lover-name
+  catalogDescription: fish-trait-shiny_lover
+
+- type: fishTrait
+  id: stinger
+  flags:
+  - Stinger
+  name: fish-trait-stinger-name
+  catalogDescription: fish-trait-stinger
+
+- type: fishTrait
+  id: stunted
+  flags:
+  - Stunted
+  name: fish-trait-stunted-name
+  catalogDescription: fish-trait-stunted
+
+- type: fishTrait
+  id: territorial
+  flags:
+  - Territorial
+  name: fish-trait-territorial-name
+  catalogDescription: fish-trait-territorial
+
+- type: fishTrait
+  id: toxic
+  flags:
+  - Toxic
+  name: fish-trait-toxic-name
+  catalogDescription: fish-trait-toxic
+
+- type: fishTrait
+  id: toxic_carpotoxin
+  flags:
+  - Toxic
+  name: fish-trait-toxic_carpotoxin-name
+  catalogDescription: fish-trait-toxic_carpotoxin
+
+- type: fishTrait
+  id: toxic_barbs
+  flags:
+  - ToxicBarbs
+  name: fish-trait-toxic_barbs-name
+  catalogDescription: fish-trait-toxic_barbs
+
+- type: fishTrait
+  id: toxin_immunity
+  flags:
+  - ToxinImmunity
+  name: fish-trait-toxin_immunity-name
+  catalogDescription: fish-trait-toxin_immunity
+
+- type: fishTrait
+  id: vegan
+  flags:
+  - Vegan
+  name: fish-trait-vegan-name
+  catalogDescription: fish-trait-vegan
+
+- type: fishTrait
+  id: wary
+  flags:
+  - Wary
+  name: fish-trait-wary-name
+  catalogDescription: fish-trait-wary
+
+- type: fishTrait
+  id: yucky
+  flags:
+  - Yucky
+  name: fish-trait-yucky-name
+  catalogDescription: fish-trait-yucky
+
