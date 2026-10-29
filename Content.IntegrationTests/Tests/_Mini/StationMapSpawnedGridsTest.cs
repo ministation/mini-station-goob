@@ -66,5 +66,7 @@ public sealed class StationMapSpawnedGridsTest
         });
 
         Assert.That(failed, Is.Empty, string.Join("\n", failed));
+
+        await pair.CleanReturnAsync();
     }
 }
