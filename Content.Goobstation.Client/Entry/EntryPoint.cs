@@ -9,7 +9,6 @@
 
 using Content.Client.UserInterface.Systems.Chat.Controls;
 using Content.Goobstation.Client.VoiceChat;
-using Content.Goobstation.Client.News;
 using Content.Goobstation.Client.VoiceChat.UI;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Prototypes;
@@ -20,7 +19,6 @@ namespace Content.Goobstation.Client.Entry;
 public sealed partial class EntryPoint : GameClient
 {
     [Dependency] private VoiceChatManager _voiceManager = default!;
-    [Dependency] private NewsManager _news = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     // [Dependency] private JoinQueueManager _joinQueue = default!; // deleted by CorvaxGoob
     // [Dependency] private PollManager _pollManager = default!; // deleted by CorvaxGoob
@@ -32,7 +30,6 @@ public sealed partial class EntryPoint : GameClient
 
         // Mini: register voice chat before the graph is built
         IoCManager.Register<VoiceChatManager>();
-        IoCManager.Register<NewsManager>();
         // Mini: mic/deafen buttons next to the chat box come from the Goobstation client module
         IoCManager.Register<IChatVoiceControls, ChatVoiceControls>();
 
@@ -50,7 +47,6 @@ public sealed partial class EntryPoint : GameClient
         // _joinQueue.Initialize(); // deleted by CorvaxGoob
         // _pollManager.Initialize(); // deleted by CorvaxGoob
         // _currMan.Initialize(); // deleted by CorvaxGoob
-        _news.Initialize();
     }
 
     protected override void Dispose(bool disposing)

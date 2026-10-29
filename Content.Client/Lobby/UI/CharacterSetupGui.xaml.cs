@@ -46,13 +46,15 @@ namespace Content.Client.Lobby.UI
             RobustXamlLoader.Load(this);
             IoCManager.InjectDependencies(this);
 
-            // Goob
+            BackgroundPanel.PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = LobbyUiStyles.GlassSetupBackground,
+                BorderThickness = new Thickness(0),
+            };
 
             _createNewCharacterButton = new Button
             {
                 Text = Loc.GetString("character-setup-gui-create-new-character-button"),
-                StyleClasses = { "HullPlate" }, // Goob
-                MinWidth = 120, // Goob
             };
 
             _createNewCharacterButton.OnPressed += args =>

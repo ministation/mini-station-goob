@@ -32,7 +32,6 @@ public sealed partial class RequirementsSelector : BoxContainer
     private readonly RadioOptions<int> _options;
     private readonly StripeBack _lockStripe;
     private readonly RoleLockIcon _lockIcon;
-    private readonly Label _lockReason; // Goob
     private readonly List<(Button Button, Color Color)> _coloredButtons = [];
     private Dictionary<int, Color>? _buttonColors;
     private List<ProtoId<GuideEntryPrototype>>? _guides;
@@ -49,9 +48,9 @@ public sealed partial class RequirementsSelector : BoxContainer
         RobustXamlLoader.Load(this);
         _options = new RadioOptions<int>(RadioOptionsLayout.Horizontal)
         {
-            FirstButtonStyle = "HullTab", // Goob
-            ButtonStyle = "HullTab", // Goob
-            LastButtonStyle = "HullTab", // Goob
+            FirstButtonStyle = StyleBase.ButtonOpenRight,
+            ButtonStyle = StyleBase.ButtonOpenBoth,
+            LastButtonStyle = StyleBase.ButtonOpenLeft,
             HorizontalExpand = true,
         };
         _options.GenerateItem = GenerateButton;
@@ -67,7 +66,6 @@ public sealed partial class RequirementsSelector : BoxContainer
         {
             Visible = true,
         };
-        _lockReason = new Label { HorizontalExpand = true, ClipText = true, Margin = new Thickness(6, 0), StyleClasses = { "HullFieldLabel" } }; // Goob
 
         _lockStripe = new StripeBack()
         {
@@ -77,11 +75,9 @@ public sealed partial class RequirementsSelector : BoxContainer
             MouseFilter = MouseFilterMode.Stop,
             Children =
             {
-                new BoxContainer
+                new CenterContainer
                 {
-                    Orientation = BoxContainer.LayoutOrientation.Horizontal,
-                    VerticalAlignment = VAlignment.Center,
-                    Children = { requirementsLabel, _lockReason },
+                    Children = { requirementsLabel },
                 },
             }
         };
@@ -146,18 +142,9 @@ public sealed partial class RequirementsSelector : BoxContainer
         OptionsContainer.AddChild(_lockStripe);
     }
 
-    public bool Locked => _lockStripe.Visible; // Goob
-
     public void LockRequirements(FormattedMessage requirements)
     {
         _lockIcon.SetRequirements(requirements);
-        var lines = requirements.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries); // Goob
-        _lockReason.Text = lines.Length switch // Goob
-        {
-            0 => Loc.GetString("role-timer-locked"),
-            1 => lines[0],
-            _ => Loc.GetString("humanoid-profile-editor-job-requirements-more", ("first", lines[0]), ("count", lines.Length - 1)),
-        };
         _lockStripe.Visible = true;
         _options.Visible = false;
     }

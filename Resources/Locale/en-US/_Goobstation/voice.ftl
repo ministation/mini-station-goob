@@ -1,4 +1,3 @@
-ui-options-hear-self = Hear yourself in voice chat
 ui-options-voice-chat-volume = Voice Chat Volume
 ui-options-function-voice-push-to-talk = Voice Push-to-Talk (Local)
 ui-options-function-voice-push-to-talk-radio = Voice Push-to-Talk (Radio)

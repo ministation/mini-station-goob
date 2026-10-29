@@ -14,8 +14,6 @@ using Content.Goobstation.Common.ServerCurrency;
 using Content.Goobstation.Shared.MisandryBox.JumpScare;
 using Robust.Shared.IoC;
 
-using Content.Goobstation.Client.News;
-
 namespace Content.Goobstation.Client.IoC;
 
 internal static class ContentGoobClientIoC
@@ -27,7 +25,6 @@ internal static class ContentGoobClientIoC
         collection.Register<RedialManager>();
         collection.Register<PollManager>();
         collection.Register<VoiceChatManager>();
-        collection.Register<NewsManager>();
         collection.Register<IChatVoiceControls, ChatVoiceControls>();
         collection.Register<JoinQueueManager>();
         collection.Register<IFullScreenImageJumpscare, ClientFullScreenImageJumpscare>();

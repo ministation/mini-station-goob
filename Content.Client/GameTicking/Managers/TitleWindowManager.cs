@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using Content.Goobstation.Common.CCVar; // Goob
 using Content.Shared.CCVar;
 using Robust.Client;
 using Robust.Client.Graphics;
@@ -20,7 +19,6 @@ public sealed class TitleWindowManager
     {
         _cfg.OnValueChanged(CVars.GameHostName, _ => OnHostnameChange(), true);
         _cfg.OnValueChanged(CCVars.GameHostnameInTitlebar, _ => OnHostnameChange(), true);
-        _cfg.OnValueChanged(GoobCVars.WindowTitle, _ => OnHostnameChange(), true); // Goob
 
         _client.RunLevelChanged += (_, _) => OnHostnameChange();
     }
@@ -38,13 +36,9 @@ public sealed class TitleWindowManager
             return;
         }
 
-        // Goob
-        var windowTitle = _cfg.GetCVar(GoobCVars.WindowTitle);
-        var hostname = string.IsNullOrWhiteSpace(windowTitle) ? _cfg.GetCVar(CVars.GameHostName) : windowTitle;
-
         _clyde.SetWindowTitle(
             _cfg.GetCVar(CCVars.GameHostnameInTitlebar)
-                ? hostname + " - " + defaultWindowTitle
+                ? _cfg.GetCVar(CVars.GameHostName) + " - " + defaultWindowTitle
                 : defaultWindowTitle);
     }
     // You thought I would remove the :3 from this code? You were wrong.

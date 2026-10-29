@@ -1,6 +1,5 @@
 using System.Numerics;
 using Content.Client.UserInterface.Systems.Chat.Controls;
-using Content.Goobstation.Client.News.UI;
 using Content.Goobstation.Common.CCVar;
 using Content.Goobstation.Shared.VoiceChat;
 using Robust.Client.Graphics;
@@ -181,7 +180,7 @@ public sealed partial class VoiceMicButton : VoiceIconButton
     {
         if (Voice.VoiceBanned || !Voice.WebConnected)
         {
-            UserInterfaceManager.GetUIController<NewsUIController>().Open(VoiceChatManager.NewsEntry);
+            UserInterfaceManager.GetUIController<VoiceChatGuideUIController>().Open();
             return;
         }
 

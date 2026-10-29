@@ -120,6 +120,3 @@ enabled = false
 
 [biomass]
 easy_mode = false
-
-[news]
-pinned = "PatreonSupport"

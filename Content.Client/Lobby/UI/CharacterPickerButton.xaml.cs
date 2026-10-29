@@ -60,8 +60,7 @@ public sealed partial class CharacterPickerButton : ContainerButton
             if (highPriorityJob != default)
             {
                 var jobName = prototypeManager.Index(highPriorityJob).LocalizedName;
-                JobLabel.Text = jobName; // Goob
-                JobLabel.Visible = true; // Goob
+                description = $"{description}\n{jobName}";
             }
         }
 
