@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 //using Content.Server._Impstation.Drone.Components;
 using Content.Server.Body.Systems;
 using Content.Server.Ghost.Roles.Components;
