@@ -5,6 +5,8 @@
 // SPDX-FileCopyrightText: 2026 Mini Station
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
+#nullable enable
+
 using System.Collections.Generic;
 using System.Numerics;
 using Content.Client._Mini.CustomGhost;

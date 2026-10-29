@@ -66,7 +66,7 @@ public sealed class FootWalkHardsuitPatchTest
                 "слой неподвижной копии не создан");
             Assert.That(spriteSystem.TryGetLayer((cMob, sprite), patchIndex, out var patchLayer, false), Is.True,
                 "слой неподвижной копии не читается");
-            patchVisible = patchLayer.Visible;
+            patchVisible = patchLayer!.Visible;
             patchOffset = patchLayer.Offset;
 
             // Оригинальный слой скафандра остаётся в позе покоя: копия обязана совпадать с ним.
@@ -76,7 +76,7 @@ public sealed class FootWalkHardsuitPatchTest
                 "не найден оригинальный слой скафандра");
             Assert.That(spriteSystem.TryGetLayer((cMob, sprite), suitIndex, out var suitLayer, false), Is.True,
                 "оригинальный слой скафандра не читается");
-            suitOffset = suitLayer.Offset;
+            suitOffset = suitLayer!.Offset;
         });
 
         Assert.Multiple(() =>
