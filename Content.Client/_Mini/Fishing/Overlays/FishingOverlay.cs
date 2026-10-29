@@ -12,6 +12,8 @@ using Robust.Client.Player;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Graphics.RSI;
+using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Timing;
 
@@ -34,7 +36,6 @@ public sealed partial class FishingOverlay : Overlay
     // All UI pixel sizes below are converted into meters with HudScale.
     private const float Pixel = 1f / 32f;
     private const float HudScale = Pixel;
-    private const float TileCenter = 0.5f;
 
     private const float Area = 1000f;
 
@@ -48,6 +49,29 @@ public sealed partial class FishingOverlay : Overlay
     private const float PanelPadding = 4f;
 
     private static readonly float[] LineOffsets = { -0.7f, 0f, 0.7f };
+
+    // Where the rod tip is drawn, in screen meters from the center of the fisher sprite.
+    // The rod in hand uses fishing_rod_inhand.rsi, where every direction is a 64x64 px quadrant of a
+    // 128x128 px state drawn as a 2x2 meter quad centered on the fisher. Index follows RsiDirection:
+    // 0 = south, 1 = north, 2 = east, 3 = west. Values are the rod tip pixels of each quadrant.
+    private static readonly Vector2[] RodTipRightHand =
+    {
+        new(0.391f, 0.484f),
+        new(-0.422f, 0.484f),
+        new(0.547f, 0.484f),
+        new(-0.734f, 0.547f),
+    };
+
+    private static readonly Vector2[] RodTipLeftHand =
+    {
+        new(-0.422f, 0.484f),
+        new(0.391f, 0.484f),
+        new(0.734f, 0.547f),
+        new(-0.547f, 0.484f),
+    };
+
+    // Top of the float art: fishing_equipment.rsi state float, 32x32 px frame, art ends at pixel row 11.
+    private static readonly Vector2 FloatTopOffset = new(0f, 0.14f);
 
     private static readonly Color LineColor = Color.FromHex("#f4ecd2");
     private static readonly Color LineShadow = Color.FromHex("#241f13dd");
@@ -70,7 +94,6 @@ public sealed partial class FishingOverlay : Overlay
     {
         var handle = args.WorldHandle;
         var eyeRot = args.Viewport.Eye?.Rotation ?? Angle.Zero;
-        var bounds = args.WorldAABB.Enlarged(0.25f);
 
         FishingChallengeComponent? localChallenge = null;
         var localPlayer = EntityUid.Invalid;
@@ -88,10 +111,6 @@ public sealed partial class FishingOverlay : Overlay
             localLure = localRodComp.FishingLure;
         }
 
-        var localPlayerPos = localPlayer != EntityUid.Invalid
-            ? _transform.GetWorldPosition(localPlayer) + new Vector2(TileCenter, TileCenter)
-            : Vector2.Zero;
-
         var panelDrawn = false;
 
         var query = _ent.EntityQueryEnumerator<FishingLureComponent, TransformComponent>();
@@ -100,29 +119,19 @@ public sealed partial class FishingOverlay : Overlay
             if (lureXform.MapID != args.MapId)
                 continue;
 
-            var lurePos = _transform.GetWorldPosition(lureXform) + new Vector2(TileCenter, TileCenter);
+            var lurePos = _transform.GetWorldPosition(lureXform);
 
-            Vector2? lineStart = null;
-            if (lure.Rod is { } rod &&
-                _ent.TryGetComponent<TransformComponent>(rod, out var rodXform) &&
-                rodXform.MapID == args.MapId)
-            {
-                lineStart = _transform.GetWorldPosition(rodXform) + new Vector2(TileCenter, TileCenter);
-            }
+            // The float bobs and shakes by moving its sprite, so the line has to follow the sprite.
+            var lureOffset = _ent.TryGetComponent<SpriteComponent>(lureUid, out var lureSprite)
+                ? lureSprite.Offset
+                : Vector2.Zero;
 
-            // The local fisherman always gets a line from the tip of their rod, even if the
-            // lure's Rod field has not arrived on this client yet. The offset follows the
-            // player's rotation and the hand holding the rod, so turning around keeps the line attached.
-            if (localLure == lureUid && localPlayer != EntityUid.Invalid)
-            {
-                var playerCenter = _transform.GetWorldPosition(localPlayer) + new Vector2(TileCenter, TileCenter);
-                var rodHand = localChallenge?.Rod is { } rodUid ? GetRodHandSign(localPlayer, rodUid) : 1;
-                var playerRot = _transform.GetWorldRotation(localPlayer);
-                lineStart = playerCenter + playerRot.RotateVec(new Vector2(0.8f * rodHand, 0.6f));
-            }
+            var rod = lure.Rod;
+            if (rod == null && localLure == lureUid)
+                rod = localChallenge?.Rod;
 
-            if (lineStart is { } start && (bounds.Contains(start) || bounds.Contains(lurePos)))
-                DrawLine(handle, start, lurePos, eyeRot);
+            if (TryGetLineStart(rod, lurePos, args.MapId, eyeRot, out var lineStart))
+                DrawLine(handle, lurePos, eyeRot, lineStart, lureOffset + FloatTopOffset);
 
             if (localChallenge == null || localLure != lureUid)
                 continue;
@@ -130,7 +139,7 @@ public sealed partial class FishingOverlay : Overlay
             switch (localChallenge.Phase)
             {
                 case FishingPhase.Biting:
-                    DrawBiteMarker(handle, lurePos, eyeRot);
+                    DrawBiteMarker(handle, lurePos, eyeRot, lureOffset);
                     break;
                 case FishingPhase.Minigame:
                     DrawMinigame(handle, lurePos, localChallenge, eyeRot);
@@ -144,8 +153,47 @@ public sealed partial class FishingOverlay : Overlay
             localChallenge is { Phase: FishingPhase.Minigame } &&
             localPlayer != EntityUid.Invalid)
         {
-            DrawMinigame(handle, localPlayerPos, localChallenge, eyeRot);
+            DrawMinigame(handle, _transform.GetWorldPosition(localPlayer), localChallenge, eyeRot);
         }
+    }
+
+    /// <summary>
+    /// Screen space (relative to the float) point where the fishing line leaves the rod tip.
+    /// </summary>
+    private bool TryGetLineStart(
+        EntityUid? rod,
+        Vector2 lurePos,
+        MapId mapId,
+        Angle eyeRot,
+        out Vector2 start)
+    {
+        start = default;
+
+        if (rod is not { } rodUid ||
+            !_ent.TryGetComponent<TransformComponent>(rodUid, out var rodXform) ||
+            rodXform.MapID != mapId)
+            return false;
+
+        var holder = rodXform.ParentUid;
+        if (holder == EntityUid.Invalid ||
+            !_ent.TryGetComponent<TransformComponent>(holder, out var holderXform) ||
+            holderXform.MapID != mapId)
+        {
+            // Without a fisher to measure the hand from, fall back to the center of the rod.
+            start = ToLocal(_transform.GetWorldPosition(rodXform), lurePos, eyeRot);
+            return true;
+        }
+
+        // Same direction the sprite renderer picks, so the line starts at the rod tip that is on screen.
+        var angle = (_transform.GetWorldRotation(holderXform) + eyeRot).Reduced().FlipPositive();
+        var direction = (int) SpriteComponent.Layer.GetDirection(RsiDirectionType.Dir4, angle);
+        var tip = GetRodHandSign(holder, rodUid) > 0
+            ? RodTipRightHand[direction]
+            : RodTipLeftHand[direction];
+
+        // Non-rotating sprites are drawn upright, so this hand offset is a plain screen offset.
+        start = ToLocal(_transform.GetWorldPosition(holderXform), lurePos, eyeRot) + tip;
+        return true;
     }
 
     private int GetRodHandSign(EntityUid player, EntityUid rod)
@@ -170,7 +218,7 @@ public sealed partial class FishingOverlay : Overlay
 
     private static void SetAnchorTransform(DrawingHandleWorld handle, Vector2 anchor, Angle eyeRot)
     {
-        // The world handle applies the camera rotation; undo it so the UI and the rope stay upright.
+        // The world handle applies the camera rotation; undo it so the UI and the line stay upright.
         var matrix = Matrix3x2.Multiply(Matrix3Helpers.CreateRotation(-eyeRot), Matrix3x2.CreateTranslation(anchor));
         handle.SetTransform(matrix);
     }
@@ -180,29 +228,34 @@ public sealed partial class FishingOverlay : Overlay
         return Vector2.Transform(world - anchor, Matrix3Helpers.CreateRotation(eyeRot));
     }
 
-    private static void DrawLine(DrawingHandleWorld handle, Vector2 start, Vector2 end, Angle eyeRot)
+    private static void DrawLine(
+        DrawingHandleWorld handle,
+        Vector2 anchor,
+        Angle eyeRot,
+        Vector2 start,
+        Vector2 end)
     {
-        var distance = (end - start).Length();
+        var delta = end - start;
+        var distance = delta.Length();
         if (distance < 0.02f || distance > 20f)
             return;
 
-        SetAnchorTransform(handle, start, eyeRot);
-        var localEnd = ToLocal(end, start, eyeRot);
+        SetAnchorTransform(handle, anchor, eyeRot);
 
         // A little sag makes the line read as a rope and not as a UI artefact.
-        var control = localEnd * 0.5f - new Vector2(0f, MathF.Min(distance * 0.06f, 0.15f));
+        var control = (start + end) * 0.5f - new Vector2(0f, MathF.Min(distance * 0.06f, 0.15f));
 
-        var previous = Vector2.Zero;
+        var previous = start;
         const int steps = 10;
         for (var i = 1; i <= steps; i++)
         {
             var t = i / (float) steps;
-            var point = Quadratic(Vector2.Zero, control, localEnd, t);
-            var delta = point - previous;
-            var length = delta.Length();
+            var point = Quadratic(start, control, end, t);
+            var segment = point - previous;
+            var length = segment.Length();
             if (length > 0.0001f)
             {
-                var perpendicular = new Vector2(-delta.Y, delta.X) / length;
+                var perpendicular = new Vector2(-segment.Y, segment.X) / length;
                 foreach (var offset in LineOffsets)
                 {
                     var shift = perpendicular * (offset * HudScale);
@@ -212,17 +265,20 @@ public sealed partial class FishingOverlay : Overlay
 
             previous = point;
         }
+
+        // The line has to end inside the bobber, not next to it.
+        handle.DrawRect(Box2.CenteredAround(end, new Vector2(2f, 2f) * HudScale), LineColor);
     }
 
-    private void DrawBiteMarker(DrawingHandleWorld handle, Vector2 anchor, Angle eyeRot)
+    private void DrawBiteMarker(DrawingHandleWorld handle, Vector2 anchor, Angle eyeRot, Vector2 spriteOffset)
     {
         SetAnchorTransform(handle, anchor, eyeRot);
 
         var time = (float) _timing.RealTime.TotalSeconds;
         var bounce = MathF.Abs(MathF.Sin(time * 8f));
         var color = BiteColor.WithAlpha(0.65f + 0.35f * bounce);
-        // Sit the mark right above the bobber, not next to it.
-        var origin = new Vector2(-3f * HudScale, (14f + bounce * 3f) * HudScale);
+        // Sit the mark right above the bobber, not next to it, and follow the bobber as it shakes.
+        var origin = spriteOffset + new Vector2(-3f * HudScale, (14f + bounce * 3f) * HudScale);
 
         var shadow = 1f * HudScale;
         handle.DrawRect(Box2.FromDimensions(origin - new Vector2(shadow, shadow), new Vector2(8f, 18f) * HudScale), LineShadow);
