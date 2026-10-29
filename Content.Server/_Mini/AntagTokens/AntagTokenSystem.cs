@@ -51,6 +51,7 @@ using Content.Server.Chat.Systems;
 using Content.Server.Ghost.Roles;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Ghost.Roles.Events;
+using Content.Shared.Ghost.Roles.Components;
 using Content.Server.Station.Systems;
 using Content.Shared._Mini.MiniCCVars;
 using Robust.Shared.Asynchronous;
@@ -2956,6 +2957,8 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         Logger.InfoS("AntagTokens",
             $"Ghost auto-join attempt: user={session.Name} protoRole={state.PendingGhostAutoRoleId} ghostId={ghostRole.Identifier} raffle={(ghostRole.RaffleConfig != null)}");
 
+        var previousEntity = session.AttachedEntity;
+
         if (!_ghostRoles.Takeover(session, ghostRole.Identifier))
         {
             Logger.WarningS("AntagTokens", $"Ghost auto-join instant takeover failed: user={session.Name}");
@@ -2972,28 +2975,36 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
 
         // Mini: Takeover бывает "успешен", а игрок остаётся в теле или уходит в наблюдателя.
         // Для ролей, где сама сущность и есть купленный персонаж (MobRevenantToken),
-        // проверяем фактическую доставку: не та сущность - откат, рефанд и удаление роли.
-        var directDelivery = IsGhostAutoJoinPrototypeMatch(
-            MetaData(ghostRole.Owner).EntityPrototype?.ID, listing.GhostAutoJoinEntityProto);
-        if (directDelivery)
-        {
-            var delivered = session.AttachedEntity is { Valid: true } attached
-                && IsGhostAutoJoinPrototypeMatch(MetaData(attached).EntityPrototype?.ID, listing.GhostAutoJoinEntityProto);
-            if (!delivered)
-            {
-                var attachedProto = session.AttachedEntity is { Valid: true } a
-                    ? MetaData(a).EntityPrototype?.ID ?? "null"
-                    : "null";
-                Logger.WarningS("AntagTokens",
-                    $"Ghost auto-join delivered wrong entity for {session.Name}: attached={attachedProto} expected={listing.GhostAutoJoinEntityProto}, refunding");
-                if (IsTokenExclusiveDelivery(listing, MetaData(ghostRole.Owner).EntityPrototype?.ID ?? ""))
-                    QueueDel(ghostRole.Owner);
+        // проверяем, что игрок реально оказался именно в ней.
+        // Спавнер-роли (GhostRoleMobSpawner/GhostRoleAntagSpawner: клон, крысиный король,
+        // ниндзя и т.п.) создают отдельную сущность, поэтому прототип призрачной роли с ней
+        // не совпадает. Раньше такая проверка всегда "проваливалась", монетки возвращались,
+        // а роль оставалась доступной - можно было бесконечно брать клонов бесплатно.
+        var isSpawnerRole = HasComp<GhostRoleMobSpawnerComponent>(ghostRole.Owner)
+                            || HasComp<GhostRoleAntagSpawnerComponent>(ghostRole.Owner);
 
-                RefundPendingGhostAuto(session.UserId, state);
-                PersistState(session.UserId, state);
-                SendState(session.UserId);
-                return GhostAutoJoinResult.Failed;
-            }
+        var delivered = false;
+        if (session.AttachedEntity is { Valid: true } attached)
+        {
+            delivered = isSpawnerRole
+                ? attached != previousEntity && !HasComp<GhostComponent>(attached)
+                : IsGhostAutoJoinPrototypeMatch(MetaData(attached).EntityPrototype?.ID, listing.GhostAutoJoinEntityProto);
+        }
+
+        if (!delivered)
+        {
+            var attachedProto = session.AttachedEntity is { Valid: true } a
+                ? MetaData(a).EntityPrototype?.ID ?? "null"
+                : "null";
+            Logger.WarningS("AntagTokens",
+                $"Ghost auto-join delivered wrong entity for {session.Name}: attached={attachedProto} expected={listing.GhostAutoJoinEntityProto} spawnerRole={isSpawnerRole}, refunding");
+            if (IsTokenExclusiveDelivery(listing, MetaData(ghostRole.Owner).EntityPrototype?.ID ?? ""))
+                QueueDel(ghostRole.Owner);
+
+            RefundPendingGhostAuto(session.UserId, state);
+            PersistState(session.UserId, state);
+            SendState(session.UserId);
+            return GhostAutoJoinResult.Failed;
         }
 
         var grantedRoleId = state.PendingGhostAutoRoleId!;
