@@ -476,6 +476,468 @@
         },
         {
             "name": "fish_gun_extract"
+        },
+        {
+            "name": "fish_trait_injector_amphibious",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_antigrav",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_anxiety",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_camouflage",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_carnivore",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_crossbreeder",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_electrogenesis",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_emulsijack",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_emulsijack_psychic",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_hallucinogenic",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_heavy",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_ink",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_lubed",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_mixotroph",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_necrophage",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_no_mating",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_nocturnal",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_parthenogenesis",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_picky_eater",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_predator",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_recessive",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_revival",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_shiny_lover",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_stinger",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_stunted",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_territorial",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_toxic",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_toxic_carpotoxin",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_toxic_barbs",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_toxin_immunity",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_vegan",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_wary",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
+        },
+        {
+            "name": "fish_trait_injector_yucky",
+            "delays": [
+                [
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            ]
         }
     ]
 }

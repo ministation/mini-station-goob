@@ -107,6 +107,8 @@ fishing-rod-slot-eject = Вынуть
 fishing-rod-slot-empty = Пусто
 
 fishing-gene-gun-slot = инъектор
+fishing-gene-gun-title = Извлечение рыбьего трейта
+fishing-gene-gun-pick-trait = Выберите трейт для извлечения:
 fishing-gene-gun-empty = Ген-ган пуст!
 fishing-gene-gun-full = В ген-гане уже что-то заряжено.
 fishing-gene-gun-loaded = Вы заряжаете ген-ган.

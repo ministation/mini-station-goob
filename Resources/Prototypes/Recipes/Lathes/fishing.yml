@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: latheRecipe
+  id: FishingGeneGun
+  result: FishingGeneGun
+  categories:
+  - Medical
+  completetime: 10
+  materials:
+    Steel: 500
+    Glass: 400
+    Plasteel: 300
+    Diamond: 200

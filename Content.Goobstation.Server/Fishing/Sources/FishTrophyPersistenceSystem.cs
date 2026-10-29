@@ -19,8 +19,8 @@ public sealed partial class FishTrophyPersistenceSystem : EntitySystem
 {
     private const int MaxRecords = 100;
 
-    // Every new mount gets a trophy back. Lower this if empty mounts should stay empty more often.
-    private const float RestoreChance = 1f;
+    // Not every empty mount gets a trophy back; most stay empty.
+    private const float RestoreChance = 0.35f;
 
     private static readonly ResPath StoragePath = new("/fish_trophies.json");
 

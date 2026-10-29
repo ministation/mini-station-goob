@@ -111,6 +111,24 @@ public sealed partial class FishPrototype : IPrototype
     [DataField]
     public List<EntProtoId> DislikedBaits = new();
 
+    /// <summary>
+    /// Bait reagents the fish likes, with the minimum amount required.
+    /// </summary>
+    [DataField]
+    public Dictionary<ProtoId<ReagentPrototype>, float> FavoriteReagents = new();
+
+    [DataField]
+    public Dictionary<ProtoId<ReagentPrototype>, float> DislikedReagents = new();
+
+    /// <summary>
+    /// Traits on a bait fish that this fish likes.
+    /// </summary>
+    [DataField]
+    public List<ProtoId<FishTraitPrototype>> FavoriteBaitTraits = new();
+
+    [DataField]
+    public List<ProtoId<FishTraitPrototype>> DislikedBaitTraits = new();
+
     // Aquarium breeding.
 
     [DataField]

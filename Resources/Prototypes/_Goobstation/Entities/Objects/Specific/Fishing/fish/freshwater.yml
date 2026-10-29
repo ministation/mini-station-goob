@@ -32,6 +32,9 @@
     state: goldfish
   - type: Fish
     fish: FishGoldfish
+  - type: Tag
+    tags:
+    - FishingBait
 
 - type: entity
   id: FishGoldfishGill
@@ -42,6 +45,9 @@
     state: goldfish
   - type: Fish
     fish: FishGoldfishGill
+  - type: Tag
+    tags:
+    - FishingBait
 
 - type: entity
   id: FishGoldfishThreeEyes
@@ -52,6 +58,9 @@
     state: three_eyes
   - type: Fish
     fish: FishGoldfishThreeEyes
+  - type: Tag
+    tags:
+    - FishingBait
 
 - type: entity
   id: FishGoldfishThreeEyesGill
@@ -62,6 +71,9 @@
     state: three_eyes
   - type: Fish
     fish: FishGoldfishThreeEyesGill
+  - type: Tag
+    tags:
+    - FishingBait
 
 - type: entity
   id: FishGuppy
@@ -92,6 +104,9 @@
     state: plastetra
   - type: Fish
     fish: FishPlasmatetra
+  - type: Tag
+    tags:
+    - FishingBait
 
 - type: entity
   id: FishSacabambaspis

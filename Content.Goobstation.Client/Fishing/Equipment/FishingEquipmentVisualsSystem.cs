@@ -43,6 +43,8 @@ public sealed partial class FishingEquipmentVisualsSystem : EntitySystem
         SubscribeLocalEvent<FishingGeneGunComponent, ComponentStartup>(OnGeneGunStartup);
         SubscribeLocalEvent<FishingGeneGunComponent, EntInsertedIntoContainerMessage>(OnGeneGunInserted);
         SubscribeLocalEvent<FishingGeneGunComponent, EntRemovedFromContainerMessage>(OnGeneGunRemoved);
+        SubscribeLocalEvent<FishGeneInjectorComponent, ComponentStartup>(OnInjectorStartup);
+        SubscribeLocalEvent<FishGeneInjectorComponent, AfterAutoHandleStateEvent>(OnInjectorState);
     }
 
     private void OnRodStartup(Entity<FishingRodComponent> ent, ref ComponentStartup args)
@@ -208,6 +210,42 @@ public sealed partial class FishingEquipmentVisualsSystem : EntitySystem
 
         if (_slots.TryGetSlot(uid, FishingGeneGunComponent.InjectorSlotId, out var slot) && slot.Item is { } item)
             state = HasComp<FishGeneInjectorComponent>(item) ? "fish_gun_inject" : "fish_gun_extract";
+
+        _sprite.LayerSetRsiState((uid, sprite), 0, state);
+    }
+
+    #endregion
+
+    #region Trait injector
+
+    private void OnInjectorStartup(Entity<FishGeneInjectorComponent> ent, ref ComponentStartup args)
+    {
+        UpdateInjector(ent.Owner);
+    }
+
+    private void OnInjectorState(Entity<FishGeneInjectorComponent> ent, ref AfterAutoHandleStateEvent args)
+    {
+        UpdateInjector(ent.Owner);
+    }
+
+    /// <summary>
+    /// Uses the injector sprite generated for the stored trait, or the empty one when nothing is stored.
+    /// </summary>
+    private void UpdateInjector(EntityUid uid)
+    {
+        if (!TryComp<SpriteComponent>(uid, out var sprite) ||
+            !TryComp<FishGeneInjectorComponent>(uid, out var injector) ||
+            !_sprite.LayerExists((uid, sprite), 0))
+            return;
+
+        var state = "fish_trait_injector";
+
+        if (injector.Trait is { } trait)
+        {
+            var traited = $"fish_trait_injector_{trait.Id}";
+            if (sprite.BaseRSI?.TryGetState(traited, out _) == true)
+                state = traited;
+        }
 
         _sprite.LayerSetRsiState((uid, sprite), 0, state);
     }

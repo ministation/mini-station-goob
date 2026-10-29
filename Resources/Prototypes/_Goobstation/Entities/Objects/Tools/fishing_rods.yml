@@ -76,6 +76,9 @@
         whitelist:
           tags:
           - FishingBait
+          components:
+          - Edible
+          - Fish
   - type: ContainerContainer
     containers:
       line: !type:ContainerSlot

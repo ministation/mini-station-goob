@@ -105,6 +105,8 @@ public sealed partial class AquariumWindow : FancyWindow
         BrokenLabel.Visible = state.GlassBroken;
         FeedButton.Disabled = state.GlassBroken;
 
+        Tank.SetFish(state.Fish, state.GlassBroken, state.Fluid);
+
         UpdateFish(state);
         UpdateProps(state);
 

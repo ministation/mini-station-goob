@@ -10,7 +10,7 @@ namespace Content.Goobstation.Shared.Fishing.Components;
 /// <summary>
 /// Single use injector that carries one fish trait.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
 public sealed partial class FishGeneInjectorComponent : Component
 {
     /// <summary>

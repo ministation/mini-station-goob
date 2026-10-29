@@ -6,9 +6,10 @@ Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 <controls:FancyWindow xmlns="https://spacestation14.io"
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls;assembly=Content.Client"
                       xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      xmlns:aquarium="clr-namespace:Content.Goobstation.Client.Fishing.Aquarium"
                       Title="{Loc 'aquarium-window-title'}"
-                      SetSize="680 540"
-                      MinSize="600 460">
+                      SetSize="700 620"
+                      MinSize="600 480">
     <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" Margin="8">
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
             <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="0 0 6 0">
@@ -34,6 +35,12 @@ Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
             <Button Name="FeedButton" Text="{Loc 'aquarium-window-feed'}"/>
         </BoxContainer>
         <Label Name="BrokenLabel" Visible="False" Margin="0 4 0 0"/>
+        <PanelContainer MinHeight="150" HorizontalExpand="True" Margin="0 6 0 0">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#101018"/>
+            </PanelContainer.PanelOverride>
+            <aquarium:AquariumTankControl Name="Tank" HorizontalExpand="True" VerticalExpand="True" Margin="2"/>
+        </PanelContainer>
         <Label Text="{Loc 'aquarium-window-fish'}" Margin="0 8 0 2"/>
         <PanelContainer VerticalExpand="True" HorizontalExpand="True">
             <PanelContainer.PanelOverride>

@@ -426,6 +426,10 @@
   - type: ContainerContainer
     containers:
       injector: !type:ContainerSlot
+  - type: UserInterface
+    interfaces:
+      enum.FishingGeneGunUiKey.Key:
+        type: FishingGeneGunBoundUserInterface
 
 - type: entity
   id: FishGeneInjector

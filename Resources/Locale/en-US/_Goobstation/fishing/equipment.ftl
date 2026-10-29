@@ -107,6 +107,8 @@ fishing-rod-slot-eject = Take out
 fishing-rod-slot-empty = Empty
 
 fishing-gene-gun-slot = injector
+fishing-gene-gun-title = Fish trait extraction
+fishing-gene-gun-pick-trait = Choose the trait to extract:
 fishing-gene-gun-empty = The gene-gun is empty!
 fishing-gene-gun-full = The gene-gun is already loaded.
 fishing-gene-gun-loaded = You load the gene-gun.

@@ -3,7 +3,7 @@
 
 # Gameplay data of every fish species. The item entities live in
 # Resources/Prototypes/_Goobstation/Entities/Objects/Specific/Fishing/fish/.
-# TODO: only concrete item baits are ported; trait/foodtype/reagent bait preferences are not.
+# TODO: bait preferences: items, reagents and bait traits are ported; DM Foodtype entries have no SS14 equivalent and are skipped.
 
 - type: fish
   id: FishAngelfish
@@ -186,6 +186,8 @@
   - FishChasmCrabIce
   evolutionTypes:
   - ice_chrab
+  favoriteBaits:
+  - FishLavaloop
   fillet: FoodMeatCrab
 
 - type: fish
@@ -202,6 +204,8 @@
   - FishChasmCrab
   evolutionTypes:
   - chasm_chrab
+  favoriteBaits:
+  - FishLavaloop
   fillet: FoodMeatCrab
 
 - type: fish
@@ -480,6 +484,8 @@
   evolutionTypes:
   - three_eyes
   - chainsawfish
+  favoriteReagents:
+    UnstableMutagen: 3
   fillet: FoodMeatFish
 
 - type: fish
@@ -507,6 +513,8 @@
   evolutionTypes:
   - three_eyes
   - chainsawfish
+  favoriteReagents:
+    UnstableMutagen: 3
   fillet: FoodMeatFish
 
 - type: fish
@@ -557,6 +565,9 @@
   traits:
   - hallucinogenic
   stablePopulation: 4
+  favoriteBaits:
+  - FishArmorfish
+  - FishNeedlefish
   fillet: FoodMeatFish
 
 - type: fish
@@ -790,6 +801,9 @@
   - FishMoonfishDwarf
   evolutionTypes:
   - dwarf_moonfish
+  favoriteBaits:
+  - FishArmorfish
+  - FishNeedlefish
   fillet: FoodMeatFish
 
 - type: fish
@@ -809,6 +823,9 @@
   - FishMoonfishDwarf
   evolutionTypes:
   - moonfish
+  favoriteBaits:
+  - FishArmorfish
+  - FishNeedlefish
   fillet: FoodMeatFish
 
 - type: fish
@@ -861,6 +878,29 @@
   temperatureMin: 278.15
   temperatureMax: 299.15
   stablePopulation: 7
+  favoriteBaits:
+  - FishArmorfish
+  - FishFryish
+  - FishGoldfish
+  - FishGoldfishGill
+  - FishGoldfishThreeEyes
+  - FishGoldfishThreeEyesGill
+  - FishLavaloop
+  - FishLavaloopPlasmaRiver
+  - FishNeedlefish
+  - FishPlasmatetra
+  - FishingLureAlgae
+  - FishingLureArtificialFly
+  - FishingLureBuzzbait
+  - FishingLureDaisyChain
+  - FishingLureDropping
+  - FishingLureGrub
+  - FishingLureLed
+  - FishingLureLuckyCoin
+  - FishingLureMinnow
+  - FishingLurePlug
+  - FishingLureSpinnerbait
+  - FishingLureSpoon
   fillet: FoodMeatFish
 
 - type: fish
@@ -887,6 +927,17 @@
   - FishPikeArmored
   evolutionTypes:
   - armored_pike
+  favoriteBaits:
+  - FishArmorfish
+  - FishFryish
+  - FishGoldfish
+  - FishGoldfishGill
+  - FishGoldfishThreeEyes
+  - FishGoldfishThreeEyesGill
+  - FishLavaloop
+  - FishLavaloopPlasmaRiver
+  - FishNeedlefish
+  - FishPlasmatetra
   fillet: FoodMeatFish
 
 - type: fish
@@ -914,6 +965,17 @@
   breedingTime: 300
   compatibleTypes:
   - FishPike
+  favoriteBaits:
+  - FishArmorfish
+  - FishFryish
+  - FishGoldfish
+  - FishGoldfishGill
+  - FishGoldfishThreeEyes
+  - FishGoldfishThreeEyesGill
+  - FishLavaloop
+  - FishLavaloopPlasmaRiver
+  - FishNeedlefish
+  - FishPlasmatetra
   fillet: FoodMeatFish
 
 - type: fish
@@ -1049,6 +1111,8 @@
   - toxin_immunity
   - crossbreeder
   stablePopulation: 4
+  favoriteReagents:
+    Toxin: 5
   fillet: FoodMeatSlime
 
 - type: fish
@@ -1212,6 +1276,17 @@
   difficultyModifier: 25
   stablePopulation: 3
   breedingTime: 270
+  favoriteBaits:
+  - FishArmorfish
+  - FishFryish
+  - FishGoldfish
+  - FishGoldfishGill
+  - FishGoldfishThreeEyes
+  - FishGoldfishThreeEyesGill
+  - FishLavaloop
+  - FishLavaloopPlasmaRiver
+  - FishNeedlefish
+  - FishPlasmatetra
   fillet: FoodMeatFish
 
 - type: fish
@@ -1246,3 +1321,4 @@
   - electrogenesis
   stablePopulation: 3
   fillet: FoodMeatFish
+

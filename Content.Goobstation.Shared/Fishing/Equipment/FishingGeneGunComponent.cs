@@ -12,4 +12,16 @@ namespace Content.Goobstation.Shared.Fishing.Components;
 public sealed partial class FishingGeneGunComponent : Component
 {
     public const string InjectorSlotId = "injector";
+
+    /// <summary>
+    /// Fish the player is extracting a trait from, waiting for the trait picker.
+    /// </summary>
+    [ViewVariables]
+    public EntityUid? PendingFish;
+
+    /// <summary>
+    /// Player that opened the trait picker.
+    /// </summary>
+    [ViewVariables]
+    public EntityUid? PendingUser;
 }

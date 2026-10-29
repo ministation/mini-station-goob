@@ -168,6 +168,13 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
         if (!_slots.TryGetSlot(ent, BaitSlotId, out var slot) || slot.Item is not { } baitItem)
             return;
 
+        // A fish used as bait is always used up, lures and food are not necessarily consumable.
+        if (HasComp<FishComponent>(baitItem))
+        {
+            QueueDel(baitItem);
+            return;
+        }
+
         if (!TryComp<FishingBaitComponent>(baitItem, out var bait) || !bait.Consumable)
             return;
 

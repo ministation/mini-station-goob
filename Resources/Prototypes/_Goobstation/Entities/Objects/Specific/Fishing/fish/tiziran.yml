@@ -10,6 +10,9 @@
     state: armorfish
   - type: Fish
     fish: FishArmorfish
+  - type: Tag
+    tags:
+    - FishingBait
 
 - type: entity
   id: FishGunnerJellyfish
@@ -52,4 +55,7 @@
     state: needlefish
   - type: Fish
     fish: FishNeedlefish
+  - type: Tag
+    tags:
+    - FishingBait
 

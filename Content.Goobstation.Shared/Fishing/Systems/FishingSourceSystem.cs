@@ -6,6 +6,8 @@ using Content.Goobstation.Shared.Fishing.Components;
 using Content.Goobstation.Shared.Fishing.Events;
 using Content.Goobstation.Shared.Fishing.Prototypes;
 using Robust.Shared.Containers;
+using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.EntityTable;
 using Content.Shared.Maps;
@@ -38,6 +40,7 @@ public sealed partial class FishingSourceSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private ItemSlotsSystem _itemSlots = default!;
     [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
 
     private readonly Dictionary<string, ProtoId<FishingSourcePrototype>> _tileSources = new();
 
@@ -199,11 +202,11 @@ public sealed partial class FishingSourceSystem : EntitySystem
             }
 
             // tg: favorite bait makes the fight easier, disliked bait makes it harder.
-            if (GetBait(rod) is { } bait)
+            if (GetBaitItem(rod) is { } bait)
             {
-                if (fish.FavoriteBaits.Contains(bait))
+                if (IsFavoriteBait(fish, bait))
                     difficulty -= 5f;
-                else if (fish.DislikedBaits.Contains(bait))
+                else if (IsDislikedBait(fish, bait))
                     difficulty += 15f;
             }
         }
@@ -213,12 +216,92 @@ public sealed partial class FishingSourceSystem : EntitySystem
         return ev.Difficulty;
     }
 
-    private EntProtoId? GetBait(EntityUid rod)
+    private EntityUid? GetBaitItem(EntityUid rod)
     {
-        if (!_itemSlots.TryGetSlot(rod, "bait", out var slot) || slot.Item is not { } baitItem)
+        if (!_itemSlots.TryGetSlot(rod, "bait", out var slot))
             return null;
 
-        return MetaData(baitItem).EntityPrototype?.ID;
+        return slot.Item;
+    }
+
+    private bool IsFavoriteBait(FishPrototype fish, EntityUid baitItem)
+    {
+        if (MatchesBaitItem(fish.FavoriteBaits, baitItem))
+            return true;
+
+        if (MatchesBaitReagents(fish.FavoriteReagents, baitItem))
+            return true;
+
+        return MatchesBaitTraits(fish.FavoriteBaitTraits, baitItem);
+    }
+
+    private bool IsDislikedBait(FishPrototype fish, EntityUid baitItem)
+    {
+        if (MatchesBaitItem(fish.DislikedBaits, baitItem))
+            return true;
+
+        if (MatchesBaitReagents(fish.DislikedReagents, baitItem))
+            return true;
+
+        return MatchesBaitTraits(fish.DislikedBaitTraits, baitItem);
+    }
+
+    private bool MatchesBaitItem(List<EntProtoId> baits, EntityUid baitItem)
+    {
+        if (baits.Count == 0)
+            return false;
+
+        var protoId = MetaData(baitItem).EntityPrototype?.ID;
+        if (protoId == null)
+            return false;
+
+        foreach (var bait in baits)
+        {
+            if (bait.Id == protoId)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool MatchesBaitReagents(Dictionary<ProtoId<ReagentPrototype>, float> reagents, EntityUid baitItem)
+    {
+        foreach (var (reagent, amount) in reagents)
+        {
+            if (_solutions.GetTotalPrototypeQuantity(baitItem, reagent.Id) >= amount)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool MatchesBaitTraits(List<ProtoId<FishTraitPrototype>> traits, EntityUid baitItem)
+    {
+        if (traits.Count == 0 || !TryComp<FishComponent>(baitItem, out var baitFish))
+            return false;
+
+        if (baitFish.Fish is not { } species || !_proto.TryIndex(species, out FishPrototype? baitProto))
+            return false;
+
+        foreach (var trait in baitProto.Traits)
+        {
+            if (baitFish.RemovedTraits.Contains(trait))
+                continue;
+
+            if (traits.Contains(trait))
+                return true;
+        }
+
+        foreach (var trait in baitFish.ExtraTraits)
+        {
+            if (baitFish.RemovedTraits.Contains(trait))
+                continue;
+
+            if (traits.Contains(trait))
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>

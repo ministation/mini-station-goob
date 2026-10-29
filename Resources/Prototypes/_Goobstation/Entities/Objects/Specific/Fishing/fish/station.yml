@@ -10,6 +10,9 @@
     state: fryish
   - type: Fish
     fish: FishFryish
+  - type: Tag
+    tags:
+    - FishingBait
 
 - type: entity
   id: FishFryishFritterish
