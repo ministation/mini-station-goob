@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Maths.FixedPoint;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -55,6 +59,9 @@ public sealed partial class TraumaTypePrototype : IPrototype
     /// </summary>
     [DataField]
     public List<TraumaCause>? Causes;
+
+    [DataField]
+    public int? MaxPerBody;
 
     /// <summary>
     /// How this trauma can be treated / removed. Null means it is not treatable on its own (e.g. it clears when the underlying bone/organ heals).
