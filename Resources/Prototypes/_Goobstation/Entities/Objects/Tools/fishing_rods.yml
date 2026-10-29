@@ -86,8 +86,6 @@
       bait: !type:ContainerSlot
   - type: UserInterface
     interfaces:
-      enum.FishingMinigameUiKey.Key:
-        type: FishingMinigameBoundUserInterface
       enum.FishingRodEquipmentUiKey.Key:
         type: FishingRodEquipmentBoundUserInterface
 

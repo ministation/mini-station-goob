@@ -14,7 +14,6 @@ using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
 using Content.Shared.Popups;
-using Content.Shared.UserInterface;
 using Robust.Shared.Audio;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -49,7 +48,6 @@ public sealed partial class FishingSystem : EntitySystem
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
-    [Dependency] private SharedUserInterfaceSystem _ui = default!;
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
@@ -62,9 +60,7 @@ public sealed partial class FishingSystem : EntitySystem
 
         SubscribeLocalEvent<FishingRodComponent, AfterInteractEvent>(OnAfterInteract);
         SubscribeLocalEvent<FishingRodComponent, UseInHandEvent>(OnUseInHand);
-        SubscribeLocalEvent<FishingRodComponent, FishingMinigameReelMessage>(OnReelMessage);
-        SubscribeLocalEvent<FishingRodComponent, FishingMinigameStopMessage>(OnStopMessage);
-        SubscribeLocalEvent<FishingRodComponent, BoundUIClosedEvent>(OnUiClosed);
+        SubscribeNetworkEvent<FishingReelInputEvent>(OnReelInput);
         SubscribeLocalEvent<FishingLureComponent, GettingPickedUpAttemptEvent>(OnLureGettingPickedUp);
         SubscribeLocalEvent<ActorComponent, AttackAttemptEvent>(OnAttackAttempt);
         SubscribeLocalEvent<FishingChallengeComponent, ComponentShutdown>(OnChallengeShutdown);
@@ -136,10 +132,6 @@ public sealed partial class FishingSystem : EntitySystem
         Dirty(user, challenge);
 
         _popup.PopupEntity(Loc.GetString("fishing-start"), user, user);
-
-        EnsureComp<UserInterfaceComponent>(ent);
-        if (TryComp<ActorComponent>(user, out var actor))
-            _ui.OpenUi(ent.Owner, FishingMinigameUiKey.Key, actor.PlayerSession);
 
         args.Handled = true;
     }
@@ -583,9 +575,6 @@ public sealed partial class FishingSystem : EntitySystem
         {
             rodComp.FishingLure = null;
             Dirty(rod, rodComp);
-
-            if (TryComp<UserInterfaceComponent>(rod, out _))
-                _ui.CloseUi(rod, FishingMinigameUiKey.Key, user);
         }
 
         if (lureUid is { } lure && !TerminatingOrDeleted(lure))
@@ -619,71 +608,41 @@ public sealed partial class FishingSystem : EntitySystem
         }
     }
 
-    private void OnUiClosed(Entity<FishingRodComponent> ent, ref BoundUIClosedEvent args)
-    {
-        var user = args.Actor;
-        if (args.UiKey is not FishingMinigameUiKey)
-            return;
-
-        if (!TryComp<FishingChallengeComponent>(user, out var challenge) || challenge.IsFinishing)
-            return;
-
-        if (challenge.Rod != ent.Owner)
-            return;
-
-        StopChallenge(user, challenge, false, Loc.GetString("fishing-gave-up"));
-    }
-
     #endregion
 
     #region UI
 
-    private void OnReelMessage(Entity<FishingRodComponent> ent, ref FishingMinigameReelMessage args)
+    private void OnReelInput(FishingReelInputEvent ev, EntitySessionEventArgs args)
     {
-        if (!TryComp<ActorComponent>(args.Actor, out var actor))
+        if (args.SenderSession.AttachedEntity is not { } user)
             return;
 
-        var user = args.Actor;
         if (!TryComp<FishingChallengeComponent>(user, out var challenge) || challenge.IsFinishing)
             return;
 
-        if (challenge.Rod != ent.Owner)
+        // Only the owner of the rod can reel its line.
+        if (challenge.Rod is not { } rodUid || !TryComp<FishingRodComponent>(rodUid, out var rod))
             return;
 
         switch (challenge.Phase)
         {
-            case FishingPhase.Biting when args.Direction != 0:
-                StartMinigame(user, challenge, ent.Comp);
+            case FishingPhase.Biting when ev.Direction != 0:
+                StartMinigame(user, challenge, rod);
                 break;
             case FishingPhase.Minigame:
-                if (args.Direction == 0)
+                if (ev.Direction == 0)
                 {
                     challenge.ReelDirection = 0;
                 }
                 else
                 {
-                    challenge.ReelDirection = Math.Sign(args.Direction);
+                    challenge.ReelDirection = Math.Sign(ev.Direction);
                     challenge.ReelHoldUntil = _timing.CurTime + TimeSpan.FromSeconds(ReelHoldTime);
                 }
 
                 Dirty(user, challenge);
                 break;
         }
-
-        // Kept to make the actor variable purposeful for BUI session resolution.
-        _ = actor;
-    }
-
-    private void OnStopMessage(Entity<FishingRodComponent> ent, ref FishingMinigameStopMessage args)
-    {
-        var user = args.Actor;
-        if (!TryComp<FishingChallengeComponent>(user, out var challenge) || challenge.IsFinishing)
-            return;
-
-        if (challenge.Rod != ent.Owner)
-            return;
-
-        StopChallenge(user, challenge, false, Loc.GetString("fishing-gave-up"));
     }
 
     private void SetLureBiting(EntityUid? lureUid, bool biting)

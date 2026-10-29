@@ -8,6 +8,7 @@ using Content.Shared._Mini.Fishing.Components;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
+using Robust.Client.UserInterface.Controls;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Player;
@@ -19,10 +20,8 @@ public sealed partial class FishingSystem : EntitySystem
     [Dependency] private IOverlayManager _overlay = default!;
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IUserInterfaceManager _ui = default!;
-    [Dependency] private SharedUserInterfaceSystem _uiSystem = default!;
 
     private FishingMinigameInputControl? _input;
-    private EntityUid? _inputRod;
 
     public override void Initialize()
     {
@@ -51,7 +50,7 @@ public sealed partial class FishingSystem : EntitySystem
         // Only grab the mouse wheel for the short bite window and the fight itself.
         // Holding the rod otherwise must not affect the HUD.
         if (ent.Comp.Phase is FishingPhase.Biting or FishingPhase.Minigame)
-            EnsureInput(ent.Comp.Rod);
+            EnsureInput();
         else
             RemoveInput();
     }
@@ -67,23 +66,25 @@ public sealed partial class FishingSystem : EntitySystem
         RemoveInput();
     }
 
-    private void EnsureInput(EntityUid? rod)
+    private void EnsureInput()
     {
-        if (rod is not { } rodUid)
-        {
-            RemoveInput();
-            return;
-        }
-
         if (_input == null)
         {
             _input = new FishingMinigameInputControl();
             _input.OnReel += SendReel;
             _input.OnHook += TryHook;
-            _ui.StateRoot.AddChild(_input);
         }
 
-        _inputRod = rodUid;
+        // The game viewport is a full screen control and it sits above StateRoot, so a catcher
+        // parented there would never be the control under the cursor and would never get the wheel.
+        // The active screen is above the viewport, and being its last child puts the catcher on top
+        // of the HUD too, which is fine for the short bite window and the fight.
+        var parent = (Control?) _ui.ActiveScreen ?? _ui.StateRoot;
+        if (_input.Parent != parent)
+        {
+            _input.Orphan();
+            parent.AddChild(_input);
+        }
     }
 
     private void TryHook()
@@ -98,16 +99,11 @@ public sealed partial class FishingSystem : EntitySystem
 
     private void SendReel(int direction)
     {
-        if (_inputRod is not { } rod || !TryComp<UserInterfaceComponent>(rod, out var uiComp))
-            return;
-
-        _uiSystem.ClientSendUiMessage((rod, uiComp), FishingMinigameUiKey.Key, new FishingMinigameReelMessage(direction));
+        RaiseNetworkEvent(new FishingReelInputEvent(direction));
     }
 
     private void RemoveInput()
     {
-        _inputRod = null;
-
         if (_input == null)
             return;
 

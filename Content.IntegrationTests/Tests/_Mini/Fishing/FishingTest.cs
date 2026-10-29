@@ -122,7 +122,7 @@ public sealed class FishingTest : InteractionTest
         await Client.WaitAssertion(() =>
         {
             var ui = Client.Resolve<IUserInterfaceManager>();
-            Assert.That(ui.StateRoot.Children.OfType<FishingMinigameInputControl>().Any(), Is.False,
+            Assert.That(FindInputControl(ui), Is.Null,
                 "The wheel input control must not exist while waiting for a bite, the HUD has to stay usable.");
         });
 
@@ -137,7 +137,7 @@ public sealed class FishingTest : InteractionTest
                 "The client did not see the bite window.");
 
             var ui = Client.Resolve<IUserInterfaceManager>();
-            var input = ui.StateRoot.Children.OfType<FishingMinigameInputControl>().FirstOrDefault();
+            var input = FindInputControl(ui);
             Assert.That(input, Is.Not.Null, "The input control was not created during the bite window.");
             Assert.That(input!.Size.X, Is.GreaterThan(0f), "The input control has zero width.");
             Assert.That(input.Size.Y, Is.GreaterThan(0f), "The input control has zero height.");
@@ -152,6 +152,14 @@ public sealed class FishingTest : InteractionTest
             Assert.That(SEntMan.GetComponent<FishingChallengeComponent>(player).Phase, Is.EqualTo(FishingPhase.Minigame),
                 "Scrolling the mouse wheel did not start the minigame.");
         });
+    }
+
+    private static FishingMinigameInputControl? FindInputControl(IUserInterfaceManager ui)
+    {
+        // The catcher lives on the active screen, above the game viewport, so it gets the wheel.
+        return (ui.ActiveScreen?.Children ?? ui.StateRoot.Children)
+            .OfType<FishingMinigameInputControl>()
+            .FirstOrDefault();
     }
 
     private static void ClickLmb(Control control)

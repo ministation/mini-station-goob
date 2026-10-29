@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
+using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._Mini.Fishing;
@@ -16,28 +17,17 @@ public enum FishingPhase : byte
     Minigame,
 }
 
-[Serializable, NetSerializable]
-public enum FishingMinigameUiKey : byte
-{
-    Key,
-}
-
 /// <summary>
-/// Sent by the client for every reel input (1 = reel up, -1 = feed down, 0 = stop).
+/// Client to server reel input for the minigame: 1 reels up, -1 feeds line down.
+/// A plain network event because the minigame has no window, it is drawn by the client overlay.
 /// </summary>
 [Serializable, NetSerializable]
-public sealed class FishingMinigameReelMessage : BoundUserInterfaceMessage
+public sealed class FishingReelInputEvent : EntityEventArgs
 {
-    public readonly int Direction;
+    public int Direction;
 
-    public FishingMinigameReelMessage(int direction)
+    public FishingReelInputEvent(int direction)
     {
         Direction = direction;
     }
 }
-
-/// <summary>
-/// Sent when the player closes the minigame window, meaning they give up.
-/// </summary>
-[Serializable, NetSerializable]
-public sealed class FishingMinigameStopMessage : BoundUserInterfaceMessage;
