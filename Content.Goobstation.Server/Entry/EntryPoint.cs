@@ -1,6 +1,7 @@
 using Content.Goobstation.Server.Achievements;
 using Content.Goobstation.Server.VoiceChat;
 using Robust.Shared.ContentPack;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Goobstation.Server.Entry;
@@ -25,6 +26,8 @@ public sealed class EntryPoint : GameServer
         IoCManager.Register<VoiceLogManager>();
 
         IoCManager.BuildGraph();
+
+        IoCManager.Resolve<IPrototypeManager>().RegisterIgnore("newsEntry");
 
         _voiceManager = IoCManager.Resolve<VoiceChatManager>(); // Mini: voice chat
         _voiceManager.Initialize();

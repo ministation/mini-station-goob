@@ -362,7 +362,8 @@ namespace Content.Client.Lobby.UI
 
             #region Appearance
 
-            TabContainer.SetTabTitle(0, Loc.GetString("humanoid-profile-editor-appearance-tab"));
+            TabContainer.SetTabTitle(0, Loc.GetString("humanoid-profile-editor-identity-tab")); // Goob
+            TabContainer.SetTabTitle(1, Loc.GetString("humanoid-profile-editor-appearance-tab")); // Goob
 
             #region Sex
 
@@ -497,7 +498,7 @@ namespace Content.Client.Lobby.UI
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithHairColor(newColor.marking.MarkingColors[0]));
                 UpdateCMarkingsHair();
-                ReloadPreview();
+                ReloadProfilePreview(); // Goob
             };
 
             FacialHairPicker.OnMarkingSelect += newStyle =>
@@ -516,7 +517,7 @@ namespace Content.Client.Lobby.UI
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithFacialHairColor(newColor.marking.MarkingColors[0]));
                 UpdateCMarkingsFacialHair();
-                ReloadPreview();
+                ReloadProfilePreview(); // Goob
             };
 
             HairStylePicker.OnSlotRemove += _ =>
@@ -585,6 +586,10 @@ namespace Content.Client.Lobby.UI
 
             #endregion Hair
 
+            InitializeHairGoob(); // Goob
+            InitializeAgeGoob(); // Goob
+            InitializeColorsGoob(); // Goob
+
             #region SpawnPriority
 
             foreach (var value in Enum.GetValues<SpawnPriorityPreference>())
@@ -618,13 +623,13 @@ namespace Content.Client.Lobby.UI
 
             #region Jobs
 
-            TabContainer.SetTabTitle(1, Loc.GetString("humanoid-profile-editor-jobs-tab"));
+            TabContainer.SetTabTitle(2, Loc.GetString("humanoid-profile-editor-jobs-tab")); // Goob
 
             PreferenceUnavailableButton.AddItem(
-                Loc.GetString("humanoid-profile-editor-preference-unavailable-stay-in-lobby-button"),
+                Loc.GetString("humanoid-profile-editor-unavailable-stay"), // Goob
                 (int) PreferenceUnavailableMode.StayInLobby);
             PreferenceUnavailableButton.AddItem(
-                Loc.GetString("humanoid-profile-editor-preference-unavailable-spawn-as-overflow-button",
+                Loc.GetString("humanoid-profile-editor-unavailable-overflow", // Goob
                               ("overflowJob", Loc.GetString(SharedGameTicker.FallbackOverflowJobName))),
                 (int) PreferenceUnavailableMode.SpawnAsOverflow);
 
@@ -642,7 +647,7 @@ namespace Content.Client.Lobby.UI
 
             #endregion Jobs
 
-            TabContainer.SetTabTitle(2, Loc.GetString("humanoid-profile-editor-antags-tab"));
+            TabContainer.SetTabTitle(3, Loc.GetString("humanoid-profile-editor-antags-tab")); // Goob
 
             RefreshTraits();
 
@@ -650,7 +655,7 @@ namespace Content.Client.Lobby.UI
 
             #region Markings
 
-            TabContainer.SetTabTitle(4, Loc.GetString("humanoid-profile-editor-markings-tab"));
+            TabContainer.SetTabTitle(5, Loc.GetString("humanoid-profile-editor-markings-tab")); // Goob
 
             Markings.OnMarkingAdded += OnMarkingChange;
             Markings.OnMarkingRemoved += OnMarkingChange;
@@ -871,11 +876,7 @@ namespace Content.Client.Lobby.UI
                 // Selection counter
                 if (category is { MaxTraitPoints: >= 0 })
                 {
-                    TraitsList.AddChild(new Label
-                    {
-                        Text = Loc.GetString("humanoid-profile-editor-trait-count-hint", ("current", selectionCount), ("max", category.MaxTraitPoints)),
-                        FontColorOverride = Color.Gray
-                    });
+                    TraitsList.AddChild(CreateTraitBudget(selectionCount, category.MaxTraitPoints.Value)); // Goob
                 }
 
                 foreach (var selector in selectors)
@@ -911,6 +912,8 @@ namespace Content.Client.Lobby.UI
             _species.Clear();
 
             _species.AddRange(_prototypeManager.EnumeratePrototypes<SpeciesPrototype>().Where(o => o.RoundStart));
+            _species.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase));
+            SpeciesButton.SetSpeciesList(_species); // Goob
             var speciesIds = _species.Select(o => o.ID).ToList();
 
             for (var i = 0; i < _species.Count; i++)
@@ -1058,6 +1061,7 @@ namespace Content.Client.Lobby.UI
 
         private void SetDirty()
         {
+            UpdateMarkingTileColors(); // Goob
             // If it equals default then reset the button.
             if (Profile == null || _preferencesManager.Preferences?.SelectedCharacter.MemberwiseEquals(Profile) == true)
             {
@@ -1355,9 +1359,11 @@ namespace Content.Client.Lobby.UI
                     jobContainer.AddChild(selector);
                     jobContainer.AddChild(highLightsWindowBtn);
                     category.JobsContent.AddChild(jobContainer);
-                }            }
+            }
+            }
 
             UpdateJobPriorities();
+            ApplyJobFilter(); // Goob
         }
 
         private Texture? GetDepartmentIcon(DepartmentPrototype department)
@@ -1429,6 +1435,7 @@ namespace Content.Client.Lobby.UI
                 return;
 
             UpdateJobPriorities();
+            ApplyJobFilter(); // Goob
         }
 
         private void OnFlavorTextChange(string content)
@@ -1642,12 +1649,14 @@ namespace Content.Client.Lobby.UI
             if (_flavorTextEdit != null)
             {
                 _flavorTextEdit.TextRope = new Rope.Leaf(Profile?.FlavorText ?? "");
+                _flavorText?.UpdatePreview(); // Goob
             }
         }
 
         private void UpdateAgeEdit()
         {
             AgeEdit.Text = Profile?.Age.ToString() ?? "";
+            UpdateAgeSlider(); // Goob
         }
 
         /// <summary>
@@ -1703,6 +1712,8 @@ namespace Content.Client.Lobby.UI
         {
             if (Profile == null)
                 return;
+
+            UpdateSkinTrack(); // Goob
 
             var skin = _prototypeManager.Index<SpeciesPrototype>(Profile.Species).SkinColoration;
             var strategy = _prototypeManager.Index(skin).Strategy;
@@ -1908,6 +1919,7 @@ namespace Content.Client.Lobby.UI
                 facialHairMarking,
                 Profile.Species,
                 1);
+            UpdateHairTabs(); // Goob
         }
 
         private void UpdateCMarkingsHair()

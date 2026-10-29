@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Diagnostics.CodeAnalysis;
+using Content.Client.Guidebook.Richtext;
 using Content.Client.Popups;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -12,7 +14,7 @@ namespace Content.Goobstation.Client.VoiceChat.UI;
 /// Mini Station style connect block: two flat cards (desktop / phone) with the link, code and
 /// status, all using the same palette as the rest of the Mini windows.
 /// </summary>
-public sealed partial class VoiceChatConnectPanel : BoxContainer
+public sealed partial class VoiceChatConnectPanel : BoxContainer, IDocumentTag
 {
     [Dependency] private IClipboardManager _clipboard = default!;
     [Dependency] private IEntityManager _entityManager = default!;
@@ -121,12 +123,29 @@ public sealed partial class VoiceChatConnectPanel : BoxContainer
         AddChild(VoiceChatStyles.WrappedMuted(Loc.GetString("voice-link-expiry")));
     }
 
+    public bool TryParseTag(Dictionary<string, string> args, [NotNullWhen(true)] out Control? control)
+    {
+        control = this;
+        return true;
+    }
+
+    public bool TryParseTag(Dictionary<string, string> args, [NotNullWhen(true)] out Control? control)
+    {
+        control = this;
+        return true;
+    }
+
     protected override void EnteredTree()
     {
         base.EnteredTree();
 
         _voice.LinkChanged += UpdateState;
         _voice.WebConnectedChanged += OnWebConnectedChanged;
+
+        _voice.RequestLink();
+
+        _voice.RequestLink();
+
         UpdateState();
     }
 
