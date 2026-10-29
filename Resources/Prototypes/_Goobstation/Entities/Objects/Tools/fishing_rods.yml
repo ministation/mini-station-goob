@@ -53,6 +53,11 @@
         whitelist:
           tags:
           - FishingBait
+  - type: ContainerContainer
+    containers:
+      line: !type:ContainerSlot
+      hook: !type:ContainerSlot
+      bait: !type:ContainerSlot
   - type: UserInterface
     interfaces:
       enum.FishingMinigameUiKey.Key:

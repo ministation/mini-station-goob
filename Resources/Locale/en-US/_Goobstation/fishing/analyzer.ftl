@@ -1,5 +1,5 @@
 ent-FishAnalyzer = fish analyzer
-ent-FishAnalyzer.desc = A fish-shaped scanner used to monitor fish status and evolutionary traits.
+    .desc = A fish-shaped scanner used to monitor fish status and evolutionary traits.
 
 fishing-analyzer-title = Fish Analyzer
 fishing-analyzer-examine = Use it on a fish to scan it.

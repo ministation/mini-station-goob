@@ -1,7 +1,7 @@
 ent-FishMount = fish mount
-ent-FishMount.desc = A mount for trophy fish, to show off your proudest catch.
+    .desc = A mount for trophy fish, to show off your proudest catch.
 ent-FishMountItem = fish mount frame
-ent-FishMountItem.desc = The frame of a mount for trophy fish, to show off your proudest catch.
+    .desc = The frame of a mount for trophy fish, to show off your proudest catch.
 
 fish-mount-occupied = There is already a fish mounted here.
 fish-mount-mounted = You mount the fish.

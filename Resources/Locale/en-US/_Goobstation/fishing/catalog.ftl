@@ -1,5 +1,5 @@
 ent-FishCatalog = fish encyclopedia
-ent-FishCatalog.desc = Indexes all fish known to mankind (and related species).
+    .desc = Indexes all fish known to mankind (and related species).
 
 fishing-catalog-title = Fish Encyclopedia
 fishing-catalog-search = Search...
