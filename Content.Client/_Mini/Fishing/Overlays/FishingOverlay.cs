@@ -45,7 +45,6 @@ public sealed partial class FishingOverlay : Overlay
     private const float CompletionBarHeight = 80f;
     private const float BaitBaseHeight = 360f;
     private const float BaitBasePixelHeight = 27f;
-    private const float PlayfieldWidth = 24f;
     private const float PanelPadding = 4f;
 
     private static readonly float[] LineOffsets = { -0.7f, 0f, 0.7f };
@@ -313,17 +312,21 @@ public sealed partial class FishingOverlay : Overlay
         if (TryTex(challenge.Background) is { } background)
             handle.DrawTextureRect(background, bar);
 
-        // The 32x96 hud texture keeps the playfield track in rows 16..91, so the minigame area starts
-        // 4 px above the bottom of the sprite. Anchoring the bait to the sprite bottom would draw it
-        // below the frame.
+        // The frame goes right after the background, the fish, bait and completion column are drawn
+        // above it. Otherwise the opaque part of the frame would hide the completion column.
+        if (TryTex(challenge.FrameState) is { } frame)
+            handle.DrawTextureRect(frame, bar);
+
+        // The playfield track of the 32x96 hud texture is columns 4..14 and rows 16..91, so the
+        // minigame area starts 4 px above the sprite bottom and 4 px right of its left edge.
         var trackBottom = bar.Top - 92f * HudScale;
 
         // Bait zone: the bottom edge is the bait position, the zone grows upwards from it.
         var baitBottom = trackBottom + Math.Clamp(challenge.BaitPosition / Area, 0f, 1f) * fieldHeight;
         var baitHeight = Math.Clamp(BaitBasePixelHeight * challenge.BaitHeight / BaitBaseHeight, 6f, 40f) * HudScale;
         var baitRect = Box2.FromDimensions(
-            new Vector2(bar.Left, baitBottom),
-            new Vector2(PlayfieldWidth * HudScale, baitHeight));
+            new Vector2(bar.Left + 4f * HudScale, baitBottom),
+            new Vector2(11f * HudScale, baitHeight));
         handle.DrawRect(baitRect, BaitColor);
         handle.DrawRect(new Box2(baitRect.Left, baitRect.Bottom, baitRect.Right, baitRect.Bottom + HudScale), BaitEdgeColor);
 
@@ -339,16 +342,13 @@ public sealed partial class FishingOverlay : Overlay
         var completion = Math.Clamp(challenge.Completion / 100f, 0f, 1f);
         var completionHeight = CompletionBarHeight * HudScale * completion;
         var completionColor = new Color(1f - completion, 0.35f + completion * 0.55f, 0.2f + completion * 0.2f, 0.95f);
-        var completionBottom = bar.Top - 93f * HudScale;
+        var completionBottom = bar.Top - 94f * HudScale;
         var completionRect = new Box2(
             bar.Left + 20f * HudScale,
             completionBottom,
             bar.Left + 26f * HudScale,
             completionBottom + completionHeight);
         handle.DrawRect(completionRect, completionColor);
-
-        if (TryTex(challenge.FrameState) is { } frame)
-            handle.DrawTextureRect(frame, bar);
 
         DrawWheelHint(handle, panel);
     }
