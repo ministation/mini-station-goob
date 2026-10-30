@@ -61,14 +61,16 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: _Goobstation/Objects/Specific/Fishing/treasure_chest.rsi
+    sprite: _Orion/Structures/Storage/Crates/treasure.rsi
     offset: 0, 0.25
     layers:
-    - state: treasure
+    - state: base
       map: [ "base" ]
+    - state: closed
+      map: [ "lid" ]
   - type: Icon
-    sprite: _Goobstation/Objects/Specific/Fishing/treasure_chest.rsi
-    state: treasure
+    sprite: _Orion/Structures/Storage/Crates/treasure.rsi
+    state: icon
   - type: FishingTreasureChest
     table: FishingTreasureChestLoot
 
@@ -79,6 +81,38 @@
   - type: Sprite
     noRot: true
     drawdepth: Effects
-    sprite: _Goobstation/Objects/Specific/Fishing/treasure_chest.rsi
-    state: treasure
+    sprite: _Orion/Structures/Storage/Crates/treasure.rsi
+    state: icon
   - type: FishingTreasureChestPrize
+
+- type: entity
+  parent: CrateGolden
+  id: FishingCrateGold
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    offset: 0, 0.25
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: IngotGold1
+          amount: 4
+        - id: TreasureCoinGold
+          amount: 3
+
+- type: entity
+  parent: CrateSilver
+  id: FishingCrateSilver
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    offset: 0, 0.25
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: IngotSilver1
+          amount: 6
+        - id: TreasureCoinSilver
+          amount: 4
