@@ -412,6 +412,10 @@
   background: background_lavaland
   catalogDescription: fishing-source-lava
   flags: ExplosiveMalus
+  fishCounts:
+    LavalandCrateNecropolisFilled: 1
+  fishCountRegen:
+    LavalandCrateNecropolisFilled: 1620
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -422,6 +426,8 @@
       weight: 15
     - id: MaterialGoliathHide
       weight: 15
+    - id: LavalandCrateNecropolisFilled
+      weight: 1
 
 - type: fishingSource
   id: FishingSourcePlasma
@@ -429,6 +435,10 @@
   difficulty: 35
   background: background_plasma
   catalogDescription: fishing-source-plasma
+  fishCounts:
+    LavalandCrateNecropolisFilled: 1
+  fishCountRegen:
+    LavalandCrateNecropolisFilled: 1800
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -439,6 +449,8 @@
       weight: 30
     - id: PlasmaOre
       weight: 6
+    - id: LavalandCrateNecropolisFilled
+      weight: 1
 
 - type: fishingSource
   id: FishingSourceOilWell
