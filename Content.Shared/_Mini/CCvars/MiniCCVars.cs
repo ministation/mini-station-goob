@@ -981,6 +981,13 @@ public sealed class MiniCCVars
         CVarDef.Create("mini.katorga.cross_kill_reward_minutes", 2, CVar.SERVERONLY);
 
     /// <summary>
+    ///     На сколько минут сокращается срок за каждую пойманную на каторге рыбу.
+    ///     0 - награды за рыбалку выключены.
+    /// </summary>
+    public static readonly CVarDef<int> KatorgaFishRewardMinutes =
+        CVarDef.Create("mini.katorga.fish_reward_minutes", 1, CVar.SERVERONLY);
+
+    /// <summary>
     ///     Сколько секунд даётся на выбор фракции в лобби, после чего фракция назначается автоматически.
     /// </summary>
     public static readonly CVarDef<int> KatorgaFactionSelectionSeconds =

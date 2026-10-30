@@ -306,7 +306,6 @@ public sealed partial class FishingOverlay : Overlay
             bar.Right + padding,
             bar.Top + padding);
         handle.DrawRect(panel, PanelColor);
-        handle.DrawRect(panel, PanelBorder, filled: false);
         handle.DrawLine(Vector2.Zero, new Vector2(panel.Left, 0f), LineShadow);
 
         if (TryTex(challenge.Background) is { } background)

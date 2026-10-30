@@ -24,7 +24,7 @@ public sealed partial class AquariumTankControl : Control
     /// <summary>
     /// Height of one fish relative to the tank height.
     /// </summary>
-    private const float FishHeightFraction = 0.12f;
+    private const float FishHeightFraction = 0.22f;
 
     /// <summary>
     /// Part of the tank height the fish may swim in, on top of the sand.
@@ -113,15 +113,23 @@ public sealed partial class AquariumTankControl : Control
         var fishHeight = height * FishHeightFraction;
         var minX = left + 4f;
         var minY = top + height * VerticalMargin;
-        var maxY = sandTop - fishHeight - 4f;
 
         foreach (var fish in _fish)
         {
             if (fish.Texture is not { } texture)
                 continue;
 
-            var fishWidth = fishHeight * fish.Aspect;
+            // Wide fish are scaled down as a whole, otherwise they would overflow the glass.
+            var heightCurrent = fishHeight;
+            var fishWidth = heightCurrent * fish.Aspect;
+            if (fishWidth > width - 8f)
+            {
+                heightCurrent *= (width - 8f) / fishWidth;
+                fishWidth = width - 8f;
+            }
+
             var maxX = right - fishWidth - 4f;
+            var maxY = sandTop - heightCurrent - 4f;
             var spanX = MathF.Max(0f, maxX - minX);
             var spanY = MathF.Max(0f, maxY - minY);
 
@@ -139,11 +147,11 @@ public sealed partial class AquariumTankControl : Control
             else
             {
                 x = minX + fish.SeedX * spanX;
-                y = sandTop - fishHeight + 2f;
+                y = sandTop - heightCurrent + 2f;
             }
 
             var modulate = fish.Alive ? fish.Color : DeadColor;
-            handle.DrawTextureRect(texture, new UIBox2(x, y, x + fishWidth, y + fishHeight), modulate);
+            handle.DrawTextureRect(texture, new UIBox2(x, y, x + fishWidth, y + heightCurrent), modulate);
         }
 
         handle.DrawRect(water, GlassColor, false);

@@ -34,6 +34,8 @@ katorga-fauna-reward = Beast killed, your sentence is reduced by { $time }.
 
 katorga-cross-kill-reward = An inmate of another faction killed, your sentence is reduced by { $time }.
 
+katorga-fish-reward = Fish caught, your sentence is reduced by { $time }.
+
 katorga-acceleration-note = While you are alive on the katorga, your sentence flows { $multiplier }x faster.
 
 katorga-lobby-message = Welcome to the server. For your violations you have been given a chance to redeem yourself with hard labor: after the round starts you will be sent to the katorga, where mining ore reduces your ban duration. Killing a fellow inmate extends it. Permanent bans cannot be worked off.

@@ -61,8 +61,6 @@ public sealed partial class FishingSystem : EntitySystem
         SubscribeLocalEvent<FishingRodComponent, AfterInteractEvent>(OnAfterInteract);
         SubscribeLocalEvent<FishingRodComponent, UseInHandEvent>(OnUseInHand);
         SubscribeNetworkEvent<FishingReelInputEvent>(OnReelInput);
-        SubscribeLocalEvent<FishingLureComponent, GettingPickedUpAttemptEvent>(OnLureGettingPickedUp);
-        SubscribeLocalEvent<ActorComponent, AttackAttemptEvent>(OnAttackAttempt);
         SubscribeLocalEvent<FishingChallengeComponent, ComponentShutdown>(OnChallengeShutdown);
     }
 
@@ -581,19 +579,6 @@ public sealed partial class FishingSystem : EntitySystem
             QueueDel(lure);
 
         RemCompDeferred<FishingChallengeComponent>(user);
-    }
-
-    private void OnAttackAttempt(Entity<ActorComponent> ent, ref AttackAttemptEvent args)
-    {
-        // No melee swings with a fishing rod: the lunge animation copies the rod sprite next to the float.
-        if (args.Weapon is { } weapon && HasComp<FishingRodComponent>(weapon.Owner))
-            args.Cancel();
-    }
-
-    private void OnLureGettingPickedUp(Entity<FishingLureComponent> ent, ref GettingPickedUpAttemptEvent args)
-    {
-        // A float that is in the water belongs to the rod, not to the hands of passers-by.
-        args.Cancel();
     }
 
     private void OnChallengeShutdown(Entity<FishingChallengeComponent> ent, ref ComponentShutdown args)
