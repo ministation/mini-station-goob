@@ -243,11 +243,28 @@ public sealed class VoicePlaybackStream : IDisposable
             return;
 
         if (available > MaxLatencySamples)
+        {
+            // Mini: накопившийся хвост старше 250мс отбрасываем, иначе он уходит в
+            // повтор уже проигранного звука и слушатели слышат сказанное дважды.
+            DropBacklog(PcmEnd - TargetSamples);
             start = PcmEnd - TargetSamples;
+        }
 
         var chunk = CreateChunk(start, PcmEnd, false);
         if (chunk != null)
             Play(chunk, 0);
+    }
+
+    private void DropBacklog(long keepFrom)
+    {
+        keepFrom = Math.Clamp(keepFrom, _pcmStart, PcmEnd);
+        var discard = (int) (keepFrom - _pcmStart);
+        if (discard <= 0)
+            return;
+
+        _pcmLength -= discard;
+        Array.Copy(_pcm, discard, _pcm, 0, _pcmLength);
+        _pcmStart = keepFrom;
     }
 
     private void Play(Chunk chunk, long offsetSamples)

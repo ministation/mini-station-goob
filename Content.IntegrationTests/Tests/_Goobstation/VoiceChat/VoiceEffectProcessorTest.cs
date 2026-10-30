@@ -175,6 +175,33 @@ public sealed class VoiceEffectProcessorTest
     }
 
     [Test]
+    public void LoudPresetsDoNotHardClip()
+    {
+        var input = MakeSpeechLikeSignal();
+        var presets = new[]
+        {
+            VoiceEffect.Megaphone,
+            VoiceEffect.Telephone,
+            VoiceEffect.OldRadio,
+            VoiceEffect.Demon,
+            VoiceEffect.Cave,
+        };
+
+        foreach (var effect in presets)
+        {
+            var output = Process(effect, input);
+            var clipped = 0;
+            foreach (var sample in output)
+            {
+                if (sample is short.MinValue or short.MaxValue)
+                    clipped++;
+            }
+
+            Assert.That(clipped, Is.LessThan(output.Length / 100), $"{effect} hard-clips {clipped} samples");
+        }
+    }
+
+    [Test]
     public void MuffleAndMegaphoneCanBeCombinedWithAnyEffect()
     {
         var input = MakeSpeechLikeSignal();
