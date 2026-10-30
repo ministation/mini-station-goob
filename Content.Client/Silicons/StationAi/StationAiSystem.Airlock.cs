@@ -25,7 +25,7 @@ public sealed partial class StationAiSystem
         args.Actions.Add(
             new StationAiRadial
             {
-                Sprite = new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/VerbIcons/open.svg")),
+                Sprite = new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/VerbIcons/open.svg.192dpi.png")),
                 Tooltip = ent.Comp.State == DoorState.Open
                     ? Loc.GetString("ai-close-door")
                     : Loc.GetString("ai-open-door"),
