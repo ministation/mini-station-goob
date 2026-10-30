@@ -10,7 +10,7 @@ namespace Content.Goobstation.Server.VoiceChat;
 
 public readonly record struct VoiceMixTarget(NetEntity Source, VoiceRoute Route, bool Global, float Range);
 
-public sealed class VoiceRadioMixer(string channel, IServerNetManager net, Func<ushort> allocateStreamId)
+public sealed class VoiceRadioMixer(string channel, IServerNetManager net, Func<ushort> allocateStreamId, Action<ushort> releaseStreamId)
 {
     private static readonly TimeSpan FrameDuration = TimeSpan.FromMilliseconds(20);
     private static readonly TimeSpan StartDelay = TimeSpan.FromMilliseconds(60);
@@ -89,7 +89,8 @@ public sealed class VoiceRadioMixer(string channel, IServerNetManager net, Func<
 
         foreach (var key in _staleVariants)
         {
-            _variants.Remove(key);
+            if (_variants.Remove(key, out var removed))
+                releaseStreamId(removed.StreamId);
             _groups.Remove(key);
         }
     }

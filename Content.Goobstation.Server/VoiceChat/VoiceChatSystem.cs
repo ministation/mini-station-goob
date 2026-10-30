@@ -90,6 +90,10 @@ public sealed partial class VoiceChatSystem : EntitySystem
     private readonly Dictionary<string, VoiceRadioMixer> _mixers = new();
     private readonly List<string> _idleMixers = new();
     private readonly HashSet<ushort> _speakerIds = new();
+
+    // Mini: ids выданные микшерам радио и голосу бога. Без реестра они переиспользовались,
+    // и два потока с одним id клиент складывал в один, получая двойной звук и шум.
+    private readonly HashSet<ushort> _issuedStreamIds = new();
     private readonly HashSet<Entity<StationAiVisionComponent>> _cameras = new();
     private readonly List<ICommonSession> _lobbySessions = new();
     private readonly List<INetChannel> _lobbyChannels = new();
@@ -373,7 +377,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
     {
         if (!_mixers.TryGetValue(channel, out var mixer))
         {
-            mixer = new VoiceRadioMixer(channel, _net, AllocateStreamId);
+            mixer = new VoiceRadioMixer(channel, _net, AllocateStreamId, ReleaseStreamId);
             _mixers[channel] = mixer;
         }
 
@@ -1143,11 +1147,16 @@ public sealed partial class VoiceChatSystem : EntitySystem
         {
             var id = _nextSpeakerId;
             _nextSpeakerId = _nextSpeakerId == ushort.MaxValue ? (ushort) 1 : (ushort) (_nextSpeakerId + 1);
-            if (!_speakerIds.Contains(id))
+            if (!_speakerIds.Contains(id) && _issuedStreamIds.Add(id))
                 return id;
         }
 
         return _nextSpeakerId;
+    }
+
+    private void ReleaseStreamId(ushort id)
+    {
+        _issuedStreamIds.Remove(id);
     }
 
     private readonly partial record struct Relay(EntityUid Emitter, MapCoordinates Origin, float Range, VoiceRoute Route);

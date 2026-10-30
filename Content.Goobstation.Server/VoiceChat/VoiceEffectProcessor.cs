@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Shared.VoiceChat;
 using NWaves.Effects;
 using NWaves.Effects.Base;
@@ -72,8 +76,21 @@ public sealed class VoiceEffectProcessor
             if (_muffleFilter != null)
                 sample = _muffleFilter.Process(sample);
 
-            buffer[i] = (short) Math.Clamp(sample * 32767f, short.MinValue, short.MaxValue);
+            // Mini: мягкий ограничитель в конце цепочки: пресеты с усиленем больше
+            // единицы иначе уходят в жесткий клип и звучат как треск.
+            buffer[i] = (short) Math.Clamp(Limit(sample) * 32767f, short.MinValue, short.MaxValue);
         }
+    }
+
+    private static float Limit(float sample)
+    {
+        const float knee = 0.8f;
+        var magnitude = MathF.Abs(sample);
+        if (magnitude <= knee)
+            return sample;
+
+        var limited = knee + (1f - knee) * MathF.Tanh((magnitude - knee) / (1f - knee));
+        return MathF.CopySign(limited, sample);
     }
 
     private static IOnlineFilter? CreateVoice(VoiceEffect effect)
@@ -110,7 +127,7 @@ public sealed class VoiceEffectProcessor
                 Mix(new EchoEffect(SampleRate, 0.3f, 0.52f, InterpolationMode.Linear, 0.6f), 0.8f),
                 new LowPassFilter(2600.0 / SampleRate, 0.707),
                 new DcBlocker(),
-                new GainFilter(1.7f)),
+                new GainFilter(1.4f)),
             VoiceEffect.Cathedral => Chain(
                 new HighPassFilter(200.0 / SampleRate, 0.707),
                 Mix(new EchoEffect(SampleRate, 0.05f, 0.4f, InterpolationMode.Linear, 0.2f), 0.5f, 0.7f),
@@ -132,20 +149,20 @@ public sealed class VoiceEffectProcessor
                 Mix(new DistortionEffect(DistortionMode.SoftClipping, 2.5f, -3f), 1f),
                 Mix(new EchoEffect(SampleRate, 0.16f, 0.32f, InterpolationMode.Linear, 0.4f), 0.3f),
                 new DcBlocker(),
-                new GainFilter(2.2f)),
+                new GainFilter(1.5f)),
             VoiceEffect.Telephone => Chain(
                 new HighPassFilter(400.0 / SampleRate, 1.2),
                 new LowPassFilter(3000.0 / SampleRate, 1.2),
                 Mix(new BitCrusherEffect(8), 1f),
                 Mix(new DistortionEffect(DistortionMode.SoftClipping, 2f, -4f), 1f),
-                new GainFilter(3.2f)),
+                new GainFilter(1.8f)),
             VoiceEffect.Megaphone => Chain(
                 new HighPassFilter(500.0 / SampleRate, 0.9),
                 new LowPassFilter(4000.0 / SampleRate, 0.9),
                 Mix(new DistortionEffect(DistortionMode.HardClipping, 8f, -8f), 1f),
                 Mix(new EchoEffect(SampleRate, 0.006f, 0.3f, InterpolationMode.Linear, 0.05f), 0.45f),
                 new DcBlocker(),
-                new GainFilter(8f)),
+                new GainFilter(2.5f)),
             VoiceEffect.Bitcrush => Chain(
                 Mix(new BitCrusherEffect(6), 1f),
                 new HighPassFilter(150.0 / SampleRate, 0.707),
@@ -167,7 +184,7 @@ public sealed class VoiceEffectProcessor
                 Mix(new BitCrusherEffect(9), 1f),
                 Mix(new VibratoEffect(SampleRate, 0.4f, 0.002f), 0.5f, 0.6f),
                 new NoiseMixer(0.012f),
-                new GainFilter(4.5f)),
+                new GainFilter(2f)),
             // Mini: female voice presets. The phase vocoder lifts the pitch, the shelf filters
             // brighten the upper formants and the high-pass removes the male chest rumble.
             VoiceEffect.Female => Chain(

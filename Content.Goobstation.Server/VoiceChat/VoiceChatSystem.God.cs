@@ -80,7 +80,9 @@ public sealed partial class VoiceChatSystem
 
     public void StartGodVoice(ICommonSession admin, VoiceGodTarget target, bool hearSelf = false)
     {
-        _godVoices.Remove(admin.UserId);
+        if (_godVoices.Remove(admin.UserId, out var previous))
+            ReleaseStreamId(previous.StreamId);
+
         _godVoices[admin.UserId] = new GodVoice(admin.UserId, target, AllocateStreamId(), hearSelf);
 
         _adminLog.Add(LogType.AdminMessage, LogImpact.Low, $"{admin.Name} started speaking to {target.Description} as the voice of god");
@@ -97,6 +99,7 @@ public sealed partial class VoiceChatSystem
         if (!_godVoices.Remove(admin.UserId, out var god))
             return;
 
+        ReleaseStreamId(god.StreamId);
         _adminLog.Add(LogType.AdminMessage, LogImpact.Low, $"{admin.Name} stopped speaking to {god.Target.Description} as the voice of god");
         _chatManager.DispatchServerMessage(admin, Loc.GetString("voice-god-stopped"));
     }
@@ -328,7 +331,9 @@ public sealed partial class VoiceChatSystem
         if (args.NewStatus != SessionStatus.Disconnected)
             return;
 
-        _godVoices.Remove(args.Session.UserId);
+        if (_godVoices.Remove(args.Session.UserId, out var disconnected))
+            ReleaseStreamId(disconnected.StreamId);
+
         foreach (var god in _godVoices.Values)
         {
             god.InfoSent.Remove(args.Session.UserId);
