@@ -10,7 +10,9 @@ using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.EntityTable;
+using Content.Shared.Item;
 using Content.Shared.Maps;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.Throwing;
 using Robust.Shared.Map;
@@ -440,17 +442,26 @@ public sealed partial class FishingSourceSystem : EntitySystem
             fish.CatchDate = _timing.CurTime;
             Dirty(caught, fish);
 
-            var caughtEv = new FishCaughtEvent(caught);
+            var caughtEv = new FishCaughtEvent(caught, sourceId);
             RaiseLocalEvent(user, ref caughtEv);
 
             _popup.PopupEntity(Loc.GetString("fishing-caught-fish", ("fish", Name(caught))), user, user);
         }
 
-        var userPos = _xform.GetWorldPosition(user);
-        var catchPos = _xform.GetWorldPosition(caught);
-        var direction = userPos - catchPos;
-        if (direction.LengthSquared() > 0.01f)
-            _throwing.TryThrow(caught, direction, 4f, user);
+        // Items and mobs are pulled out of the water towards the fisher. A structure like a
+        // treasure chest would only topple over, so it is set down next to the fisher instead.
+        if (HasComp<ItemComponent>(caught) || HasComp<MobStateComponent>(caught))
+        {
+            var userPos = _xform.GetWorldPosition(user);
+            var catchPos = _xform.GetWorldPosition(caught);
+            var direction = userPos - catchPos;
+            if (direction.LengthSquared() > 0.01f)
+                _throwing.TryThrow(caught, direction, 4f, user);
+        }
+        else
+        {
+            _xform.SetCoordinates(caught, Transform(user).Coordinates);
+        }
 
         return caught;
     }

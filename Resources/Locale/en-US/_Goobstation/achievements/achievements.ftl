@@ -144,6 +144,36 @@ achievement-chainsaw-catch-name = Chainsaw Catch
 achievement-chainsaw-catch-desc = Catch a chainsawfish.
 achievement-big-catch-name = Big Catch
 achievement-big-catch-desc = Catch a fish at least 90 units long.
+
+achievement-fishing-apprentice-name = Fishing Apprentice
+achievement-fishing-apprentice-desc = Catch 10 fish.
+achievement-fishing-veteran-name = Seasoned Fisher
+achievement-fishing-veteran-desc = Catch 250 fish.
+achievement-fishing-legend-name = Fishing Legend
+achievement-fishing-legend-desc = Catch 1000 fish.
+achievement-deep-sea-catch-name = Deep Sea Catch
+achievement-deep-sea-catch-desc = Catch a fish that is rarely seen.
+achievement-abyss-catch-name = Abyssal Catch
+achievement-abyss-catch-desc = Catch a fish that is almost impossible to find.
+achievement-giant-catch-name = Giant Catch
+achievement-giant-catch-desc = Catch a fish at least 150 units long.
+achievement-colossal-catch-name = Colossal Catch
+achievement-colossal-catch-desc = Catch a fish at least 200 units long.
+achievement-treasure-diver-name = Treasure Diver
+achievement-treasure-diver-desc = Pull an item out of a treasure chest.
+achievement-treasure-hoarder-name = Treasure Hoarder
+achievement-treasure-hoarder-desc = Pull 25 items out of treasure chests.
+achievement-toilet-angler-name = Toilet Angler
+achievement-toilet-angler-desc = Catch a fish in a toilet.
+achievement-lava-angler-name = Lava Angler
+achievement-lava-angler-desc = Catch a fish in lava.
+achievement-zap-catch-name = Zappy Catch
+achievement-zap-catch-desc = Catch a fish with the electrogenesis trait.
+achievement-camo-catcher-name = Invisible Catch
+achievement-camo-catcher-desc = Catch a fish with the camouflage trait.
+achievement-three-eyed-catch-name = Three Eyed Catch
+achievement-three-eyed-catch-desc = Catch a three eyed goldfish.
+
 achievement-lavaland-tourist-name = Lavaland Tourist
 achievement-lavaland-tourist-desc = Lovely weather, if you like ash.
 

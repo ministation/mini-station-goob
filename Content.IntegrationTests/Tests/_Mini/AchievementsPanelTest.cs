@@ -151,6 +151,11 @@ public sealed class AchievementsPanelTest
 
     private static void CollectEntries(Control control, List<AchievementEntry> entries)
     {
+        // Every achievement is shown twice: in the "All" tab and in its category tab.
+        // Only walk the currently visible tab so every card is counted once.
+        if (!control.Visible)
+            return;
+
         if (control is AchievementEntry entry)
             entries.Add(entry);
 

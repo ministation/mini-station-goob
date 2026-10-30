@@ -33,12 +33,22 @@ public sealed class ActiveFishingSpotComponentState : ComponentState
 // Mini/Orion: both the upstream entity payload and the Mini prototype payload are
 // carried in one event so all raise sites keep compiling.
 [ByRefEvent]
-public readonly record struct FishCaughtEvent(EntityUid? Fish, EntProtoId? FishId)
+public readonly record struct FishCaughtEvent(
+    EntityUid? Fish,
+    EntProtoId? FishId,
+    ProtoId<FishingSourcePrototype>? Source = null)
 {
     public FishCaughtEvent(EntityUid fish) : this(fish, null) { }
 
+    public FishCaughtEvent(EntityUid fish, ProtoId<FishingSourcePrototype>? source) : this(fish, null, source) { }
+
     public FishCaughtEvent(EntProtoId fishId) : this(null, fishId) { }
 }
+
+/// <summary>
+/// Raised on the player who pulls an item out of a fishing treasure chest.
+/// </summary>
+public sealed class FishingTreasureChestPullEvent : EntityEventArgs;
 
 /// <summary>
 /// Raised on the fishing rod right before the minigame starts so equipment can tweak it.

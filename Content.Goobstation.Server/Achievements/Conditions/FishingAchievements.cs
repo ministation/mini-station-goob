@@ -29,6 +29,20 @@ public sealed partial class FishSizeCondition : AchievementCondition
     public float MinSize = 90;
 }
 
+public sealed partial class FishTraitCaughtCondition : AchievementCondition
+{
+    [DataField]
+    public ProtoId<FishTraitPrototype> Trait;
+}
+
+public sealed partial class FishSourceCaughtCondition : AchievementCondition
+{
+    [DataField]
+    public List<ProtoId<FishingSourcePrototype>> Sources = new();
+}
+
+public sealed partial class FishingTreasureChestCondition : AchievementCondition;
+
 /// <summary>
 /// Checks every fishing achievement condition. The event bus allows a single handler per
 /// component and event, and ActorComponent plus FishCaughtEvent is already used by
@@ -44,6 +58,7 @@ public sealed partial class FishingAchievementSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<MobStateComponent, FishCaughtEvent>(OnFishCaught);
+        SubscribeLocalEvent<MobStateComponent, FishingTreasureChestPullEvent>(OnTreasurePulled);
     }
 
     private void OnFishCaught(Entity<MobStateComponent> ent, ref FishCaughtEvent args)
@@ -52,6 +67,7 @@ public sealed partial class FishingAchievementSystem : EntitySystem
         string? fishId = null;
         string? entityId = args.FishId?.Id;
         var size = 0f;
+        var traits = new HashSet<ProtoId<FishTraitPrototype>>();
 
         if (args.Fish is { } fishUid && !TerminatingOrDeleted(fishUid) && TryComp<FishComponent>(fishUid, out var fish))
         {
@@ -60,7 +76,18 @@ public sealed partial class FishingAchievementSystem : EntitySystem
             entityId = MetaData(fishUid).EntityPrototype?.ID ?? entityId;
 
             if (fish.Fish is { } fishProtoId && _proto.TryIndex(fishProtoId, out FishPrototype? fishPrototype))
+            {
                 rarity = fishPrototype.Rarity;
+                foreach (var trait in fishPrototype.Traits)
+                    traits.Add(trait);
+            }
+
+            // Gene engineering can add or remove traits on a single fish instance.
+            foreach (var trait in fish.ExtraTraits)
+                traits.Add(trait);
+
+            foreach (var trait in fish.RemovedTraits)
+                traits.Remove(trait);
         }
         else if (args.FishId is { } id && _proto.TryIndex(id, out EntityPrototype? fishEntity))
         {
@@ -69,7 +96,11 @@ public sealed partial class FishingAchievementSystem : EntitySystem
             if (fishEntity.TryGetComponent<FishComponent>(out var fishComp, EntityManager.ComponentFactory) &&
                 fishComp.Fish is { } fishProtoId &&
                 _proto.TryIndex(fishProtoId, out FishPrototype? fishPrototype))
+            {
                 rarity = fishPrototype.Rarity;
+                foreach (var trait in fishPrototype.Traits)
+                    traits.Add(trait);
+            }
         }
 
         foreach (var achievement in _proto.EnumeratePrototypes<AchievementPrototype>())
@@ -79,9 +110,20 @@ public sealed partial class FishingAchievementSystem : EntitySystem
                 case FishRarityCondition rarityCondition when rarity is { } value && value <= rarityCondition.MaxRarity:
                 case FishPrototypeCaughtCondition caughtCondition when caughtCondition.Fish.Any(id => id.Id == fishId || id.Id == entityId):
                 case FishSizeCondition sizeCondition when size >= sizeCondition.MinSize:
+                case FishTraitCaughtCondition traitCondition when traits.Contains(traitCondition.Trait):
+                case FishSourceCaughtCondition sourceCondition when args.Source is { } source && sourceCondition.Sources.Contains(source):
                     _achievements.AddProgress(ent.Owner, achievement);
                     break;
             }
+        }
+    }
+
+    private void OnTreasurePulled(Entity<MobStateComponent> ent, ref FishingTreasureChestPullEvent args)
+    {
+        foreach (var achievement in _proto.EnumeratePrototypes<AchievementPrototype>())
+        {
+            if (achievement.Condition is FishingTreasureChestCondition)
+                _achievements.AddProgress(ent.Owner, achievement);
         }
     }
 }

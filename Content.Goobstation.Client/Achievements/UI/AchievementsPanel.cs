@@ -25,13 +25,11 @@ public sealed partial class AchievementsPanel : BoxContainer
 {
     private static readonly Color HeaderBackground = Color.FromHex("#15151c");
     private static readonly Color HeaderBorder = Color.FromHex("#2c2c36");
-    private static readonly Color DividerColor = Color.FromHex("#26262f");
     private static readonly Color TrackColor = Color.FromHex("#26262f");
     private static readonly Color GoldColor = Color.FromHex("#c9a13b");
     private static readonly Color GoldText = Color.FromHex("#eccd74");
     private static readonly Color GoldBackground = Color.FromHex("#2b2411");
     private static readonly Color MutedText = Color.FromHex("#8f96a4");
-    private static readonly Color AccentColor = Color.FromHex("#9a8fb5");
 
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private IEntityManager _entMan = default!;
@@ -42,7 +40,7 @@ public sealed partial class AchievementsPanel : BoxContainer
     private readonly ProgressBar _summaryBar;
     private readonly Label _percentLabel;
     private readonly Label _coinsLabel;
-    private readonly BoxContainer _list;
+    private readonly TabContainer _tabs;
 
     public AchievementsPanel()
     {
@@ -64,20 +62,13 @@ public sealed partial class AchievementsPanel : BoxContainer
         _coinsLabel = coinsLabel;
         AddChild(header);
 
-        _list = new BoxContainer
+        // Category tabs sit under the summary, like the standalone achievements window had them.
+        _tabs = new TabContainer
         {
-            Orientation = LayoutOrientation.Vertical,
-            HorizontalExpand = true,
-        };
-
-        var scroll = new ScrollContainer
-        {
-            HScrollEnabled = false,
             HorizontalExpand = true,
             VerticalExpand = true,
         };
-        scroll.AddChild(_list);
-        AddChild(scroll);
+        AddChild(_tabs);
     }
 
     private (Control Header, Label Summary, ProgressBar Bar, Label Percent, Label Coins) BuildSummary()
@@ -206,7 +197,8 @@ public sealed partial class AchievementsPanel : BoxContainer
 
     public void UpdateAchievements(List<AchievementData> achievements)
     {
-        _list.RemoveAllChildren();
+        var previousTab = _tabs.CurrentTab;
+        _tabs.RemoveAllChildren();
 
         var unlocked = achievements.Count(a => a.UnlockedAt != null);
         var coins = achievements.Where(a => a.UnlockedAt != null).Sum(a => a.CoinReward);
@@ -220,76 +212,82 @@ public sealed partial class AchievementsPanel : BoxContainer
         _coinsLabel.Text = coins.ToString();
         _coinsLabel.ToolTip = Loc.GetString("achievements-window-summary-coins-tooltip", ("coins", coins));
 
-        if (achievements.Count == 0)
+        // Same ordering as the standalone achievements window: unlocked first, then by
+        // progress, with hidden achievements at the end of their group.
+        var sorted = achievements
+            .OrderByDescending(a => a.UnlockedAt != null)
+            .ThenByDescending(a => a.UnlockedAt)
+            .ThenBy(a => a.Name == null)
+            .ThenByDescending(a => a.Target == 0 ? 0f : a.Progress / (float) a.Target)
+            .ToList();
+
+        AddTab(Loc.GetString("achievements-window-tab-all"), sorted);
+
+        if (achievements.Count > 0)
         {
-            _list.AddChild(new Label
+            var categories = _proto.EnumeratePrototypes<AchievementCategoryPrototype>()
+                .OrderBy(c => c.Priority);
+
+            foreach (var category in categories)
+            {
+                var entries = sorted.Where(a => a.Category == category.ID).ToList();
+                if (entries.Count == 0)
+                    continue;
+
+                var categoryUnlocked = entries.Count(a => a.UnlockedAt != null);
+                AddTab(Loc.GetString("achievements-window-tab-category",
+                        ("name", Loc.GetString(category.Name)),
+                        ("unlocked", categoryUnlocked),
+                        ("total", entries.Count)),
+                    entries);
+            }
+        }
+
+        if (previousTab >= 0 && previousTab < _tabs.ChildCount)
+        {
+            _tabs.CurrentTab = previousTab;
+        }
+        else if (_tabs.ChildCount > 0 && _tabs.CurrentTab >= _tabs.ChildCount)
+        {
+            // The selected category may have disappeared after an unlock, fall back to the first tab.
+            _tabs.CurrentTab = 0;
+        }
+    }
+
+    private void AddTab(string title, List<AchievementData> entries)
+    {
+        var list = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            HorizontalExpand = true,
+            Margin = new Thickness(4),
+        };
+
+        if (entries.Count == 0)
+        {
+            list.AddChild(new Label
             {
                 Text = Loc.GetString("achievements-window-empty"),
                 Modulate = MutedText,
                 HorizontalAlignment = HAlignment.Center,
                 Margin = new Thickness(0, 24, 0, 0),
             });
-            return;
         }
-
-        var categories = _proto.EnumeratePrototypes<AchievementCategoryPrototype>()
-            .OrderBy(c => c.Priority);
-
-        foreach (var category in categories)
+        else
         {
-            var entries = achievements
-                .Where(a => a.Category == category.ID)
-                .OrderByDescending(a => a.UnlockedAt != null)
-                .ThenByDescending(a => a.UnlockedAt)
-                .ToList();
-
-            if (entries.Count == 0)
-                continue;
-
-            var categoryUnlocked = entries.Count(a => a.UnlockedAt != null);
-
-            _list.AddChild(new PanelContainer
-            {
-                HorizontalExpand = true,
-                MinSize = new Vector2(0, 1),
-                Margin = new Thickness(2, 12, 2, 0),
-                PanelOverride = new StyleBoxFlat { BackgroundColor = DividerColor },
-            });
-
-            var categoryRow = new BoxContainer
-            {
-                Orientation = LayoutOrientation.Horizontal,
-                SeparationOverride = 8,
-                Margin = new Thickness(2, 6, 4, 4),
-            };
-            _list.AddChild(categoryRow);
-
-            categoryRow.AddChild(new PanelContainer
-            {
-                MinSize = new Vector2(4, 15),
-                VerticalAlignment = VAlignment.Center,
-                PanelOverride = new StyleBoxFlat { BackgroundColor = AccentColor.WithAlpha(0.8f) },
-            });
-
-            categoryRow.AddChild(new Label
-            {
-                Text = Loc.GetString(category.Name),
-                StyleClasses = { "LabelHeading" },
-                HorizontalExpand = true,
-            });
-
-            categoryRow.AddChild(new Label
-            {
-                Text = Loc.GetString("achievements-window-category-count",
-                    ("unlocked", categoryUnlocked),
-                    ("total", entries.Count)),
-                StyleClasses = { "LabelSubText" },
-                Modulate = MutedText,
-                VerticalAlignment = VAlignment.Center,
-            });
-
             foreach (var entry in entries)
-                _list.AddChild(new AchievementEntry(entry, _sprite));
+                list.AddChild(new AchievementEntry(entry, _sprite));
         }
+
+        var scroll = new ScrollContainer
+        {
+            HScrollEnabled = false,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+        };
+        scroll.AddChild(list);
+
+        _tabs.AddChild(scroll);
+        TabContainer.SetTabTitle(scroll, title);
     }
 }

@@ -16,9 +16,11 @@
   fishCounts:
     FishClownfishLube: 2
     FishSwordfish: 2
+    FishingTreasureChest: 1
   fishCountRegen:
     FishClownfishLube: 180
     FishSwordfish: 300
+    FishingTreasureChest: 1920
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -49,6 +51,8 @@
       weight: 5
     - id: FishSwordfish
       weight: 5
+    - id: FishingTreasureChest
+      weight: 2
 
 - type: fishingSource
   id: FishingSourceOceanBeach
@@ -59,9 +63,11 @@
   fishCounts:
     FishClownfishLube: 2
     FishSwordfish: 2
+    FishingTreasureChest: 1
   fishCountRegen:
     FishClownfishLube: 180
     FishSwordfish: 300
+    FishingTreasureChest: 1920
   table: !type:GroupSelector
     children:
     - !type:NoneSelector
@@ -92,6 +98,8 @@
       weight: 5
     - id: FishSwordfish
       weight: 5
+    - id: FishingTreasureChest
+      weight: 2
 
 - type: fishingSource
   id: FishingSourceIce
