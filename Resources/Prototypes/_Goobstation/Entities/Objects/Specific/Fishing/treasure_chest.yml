@@ -96,10 +96,21 @@
     containers:
       entity_storage: !type:AllSelector
         children:
+        - id: FishingRodGolden
+        - id: FishingLineBluespace
+        - id: FishingHookJaws
+        - id: BaitCanSuper
+        - id: FishAnalyzer
+        - !type:GroupSelector
+          children:
+          - id: FishingLureLuckyCoin
+          - id: FishingLureDaisyChain
+          - id: BaitWormPremium
+          - id: BaitDoughballSuper
         - id: IngotGold1
-          amount: 4
+          amount: 2
         - id: TreasureCoinGold
-          amount: 3
+          amount: 2
 
 - type: entity
   parent: CrateSilver
@@ -112,7 +123,19 @@
     containers:
       entity_storage: !type:AllSelector
         children:
+        - id: FishingRodTelescopic
+        - id: FishingLineAutoReel
+        - id: FishingHookAnomaly
+        - id: BaitCanWormPremium
+        - id: AquariumKit
+        - !type:GroupSelector
+          children:
+          - id: FishingLurePlug
+          - id: FishingLureArtificialFly
+          - id: FishingLureAlgae
+          - id: FishingHookMagnet
+          - id: FishingBaitSynthetic
         - id: IngotSilver1
-          amount: 6
+          amount: 3
         - id: TreasureCoinSilver
-          amount: 4
+          amount: 2
