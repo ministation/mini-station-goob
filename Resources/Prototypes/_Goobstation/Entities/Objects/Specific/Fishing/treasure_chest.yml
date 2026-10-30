@@ -61,14 +61,14 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: Structures/Storage/Crates/piratechest.rsi
+    sprite: _Goobstation/Objects/Specific/Fishing/treasure_chest.rsi
+    offset: 0, 0.25
     layers:
-    - state: crate
-    - state: crate_door
-      map: [ "lid" ]
+    - state: treasure
+      map: [ "base" ]
   - type: Icon
-    sprite: Structures/Storage/Crates/piratechest.rsi
-    state: crate_icon
+    sprite: _Goobstation/Objects/Specific/Fishing/treasure_chest.rsi
+    state: treasure
   - type: FishingTreasureChest
     table: FishingTreasureChestLoot
 
@@ -79,6 +79,6 @@
   - type: Sprite
     noRot: true
     drawdepth: Effects
-    sprite: Structures/Storage/Crates/piratechest.rsi
-    state: crate_icon
+    sprite: _Goobstation/Objects/Specific/Fishing/treasure_chest.rsi
+    state: treasure
   - type: FishingTreasureChestPrize

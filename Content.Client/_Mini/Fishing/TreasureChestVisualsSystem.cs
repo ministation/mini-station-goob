@@ -14,7 +14,7 @@ namespace Content.Client._Mini.Fishing;
 /// </summary>
 public sealed partial class FishingTreasureChestVisualsSystem : EntitySystem
 {
-    private const string LidLayer = "lid";
+    private const string BaseLayer = "base";
 
     [Dependency] private SpriteSystem _sprite = default!;
 
@@ -41,10 +41,10 @@ public sealed partial class FishingTreasureChestVisualsSystem : EntitySystem
     private void UpdateChest(Entity<FishingTreasureChestComponent> ent)
     {
         if (!TryComp<SpriteComponent>(ent, out var sprite) ||
-            !_sprite.LayerMapTryGet((ent, sprite), LidLayer, out var layer, false))
+            !_sprite.LayerMapTryGet((ent, sprite), BaseLayer, out var layer, false))
             return;
 
-        var state = ent.Comp.State == FishingTreasureChestState.Closed ? "crate_door" : "crate_open";
+        var state = ent.Comp.State == FishingTreasureChestState.Closed ? "treasure" : "treasureopen";
         _sprite.LayerSetRsiState((ent, sprite), layer, state);
     }
 
