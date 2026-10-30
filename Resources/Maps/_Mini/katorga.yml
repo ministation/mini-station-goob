@@ -1,16 +1,16 @@
 meta:
   format: 7
-  category: Map
+  category: Grid
   engineVersion: 293.0.0
   forkId: ""
   forkVersion: ""
   time: 10/30/2026 00:34:45
-  entityCount: 3040
-maps:
-- 2613
+  entityCount: 3039
+maps: []
 grids:
 - 2
-orphans: []
+orphans:
+- 2
 nullspace: []
 tilemap:
   2: Space
@@ -43,7 +43,7 @@ entities:
     - type: MetaData
       name: grid
     - type: Transform
-      parent: 2613
+      parent: invalid
       pos: -0.26041603,-0.21875
     - type: MapGrid
       chunks:
@@ -1915,18 +1915,6 @@ entities:
     - type: ChunkContainer
       chunkEntities: []
     - type: FTLDrive
-  - uid: 2613
-    components:
-    - type: MetaData
-      name: Map Entity
-    - type: Transform
-    - type: Map
-      mapPaused: True
-    - type: GridTree
-    - type: Broadphase
-    - type: ChunkContainer
-      chunkEntities: []
-    - type: OccluderTree
 - proto: AirAlarm
   entities:
   - uid: 513
