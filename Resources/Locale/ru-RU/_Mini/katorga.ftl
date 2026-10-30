@@ -14,6 +14,9 @@ ent-KatorgaSpawnPointFreemen = точка спавна каторги
 ent-KatorgaMineralScanner = сканер минералов каторги
     .desc = Показывает полезные ископаемые в породе. Заряд не тратится, в кармане работает.
 
+ent-KatorgaProtoKineticAccelerator = протокинетический ускоритель
+    .desc = Стреляет кинетическими снарядами и бьёт руду. Настроен на давление планеты, а не на вакуум.
+
 katorga-grid-miners = Лагерь Горняков
 katorga-grid-freemen = Лагерь Вольных
 
@@ -29,6 +32,9 @@ katorga-faction-miners-feature = Снаряжение шахтёра: мезон
 
 katorga-faction-freemen-name = Вольные
 katorga-faction-freemen-feature = Снаряжение вольного: нож выживания и фонарь в рюкзаке. Ваше дело - твари астероида и охота.
+
+job-name-katorga-miner = горняк
+job-name-katorga-freemen = вольный
 
 katorga-fauna-reward = Тварь убита, ваш срок сокращён на { $time }.
 
@@ -61,6 +67,8 @@ katorga-hud-worked = Отработано рудой: { $time }
 katorga-hud-free = Ты свободен!
 
 katorga-released = Срок отработан. Ты свободен: можешь гостоваться и наблюдать, а следующий раунд зайдёшь как обычный игрок.
+
+katorga-death-respawn = Вы погибли на каторге. Тело убрано, вещи остались на месте гибели, вы снова в лагере.
 
 katorga-ghost-blocked = С каторги не уходят: дождитесь конца срока или переподключитесь, чтобы получить новое тело на каторге.
 

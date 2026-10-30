@@ -14,6 +14,9 @@ ent-KatorgaSpawnPointFreemen = katorga spawn point
 ent-KatorgaMineralScanner = katorga mineral scanner
     .desc = Scans surrounding rock for useful minerals. Always powered, works from a pocket.
 
+ent-KatorgaProtoKineticAccelerator = proto-kinetic accelerator
+    .desc = Fires kinetic bolts and mines ore. Tuned for planet pressure, not for vacuum.
+
 katorga-grid-miners = Miners Camp
 katorga-grid-freemen = Freemen Camp
 
@@ -29,6 +32,9 @@ katorga-faction-miners-feature = Miner kit: meson glasses spot ore through rock,
 
 katorga-faction-freemen-name = Freemen
 katorga-faction-freemen-feature = Freemen kit: survival knife and a lantern in the backpack. Asteroid beasts and the hunt are your trade.
+
+job-name-katorga-miner = Miner
+job-name-katorga-freemen = Freeman
 
 katorga-fauna-reward = Beast killed, your sentence is reduced by { $time }.
 
@@ -61,6 +67,8 @@ katorga-hud-worked = Worked off: { $time }
 katorga-hud-free = You are free!
 
 katorga-released = Sentence served. You are free: you can ghost and observe, and next round you will join as a regular player.
+
+katorga-death-respawn = You died on the katorga. Your body is gone, your belongings stay where you fell, and you are back at the camp.
 
 katorga-ghost-blocked = No leaving the katorga early: serve your sentence or reconnect to get a new body on the katorga.
 

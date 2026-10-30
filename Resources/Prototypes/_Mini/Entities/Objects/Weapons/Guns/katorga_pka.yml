@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Протокинетический ускоритель заключённого: обычная планетарная версия, не космическая.
+# Штатный бонус урона рассчитан на давление Лавы (0.2..0.5 атм), а каторга живёт при
+# обычном атмосферном давлении около 1 атм, поэтому границы давления расширены до 2 атм.
+- type: entity
+  id: KatorgaProtoKineticAccelerator
+  parent: WeaponProtoKineticAccelerator
+  suffix: Каторга
+  components:
+  - type: PressureDamageChange
+    lowerBound: 20.265
+    upperBound: 202.65

@@ -15,6 +15,7 @@
     suitstorage: OxygenTankFilled
     pocket1: KatorgaMineralScanner
   inhand:
+    - KatorgaProtoKineticAccelerator
     - Pickaxe
   storage:
     back:
@@ -62,5 +63,29 @@
   name: job-name-prisoner
   playTimeTracker: JobPrisoner
   icon: "JobIconPrisoner"
+  setPreference: false
+  canBeAntag: false
+
+# Должности фракций: заключённому меняют прежнюю работу на фракционную,
+# чтобы в манифесте станции и телепорте призраков не висела старая должность.
+- type: playTimeTracker
+  id: JobKatorgaMiner
+
+- type: job
+  id: KatorgaMiner
+  name: job-name-katorga-miner
+  playTimeTracker: JobKatorgaMiner
+  icon: JobIconKatorgaMiners
+  setPreference: false
+  canBeAntag: false
+
+- type: playTimeTracker
+  id: JobKatorgaFreeman
+
+- type: job
+  id: KatorgaFreeman
+  name: job-name-katorga-freemen
+  playTimeTracker: JobKatorgaFreeman
+  icon: JobIconKatorgaFreemen
   setPreference: false
   canBeAntag: false
