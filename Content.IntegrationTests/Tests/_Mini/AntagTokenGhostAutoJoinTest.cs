@@ -230,6 +230,9 @@ public sealed class AntagTokenGhostAutoJoinTest
             DummyTicker = false,
             Connected = true,
             Destructive = destructive,
+            // Игрок остаётся в купленной сущности, а призраки и спавнер-тела никуда не деваются:
+            // без пересборки пара тащит этот мусор в следующий тест (падал AntagReconnectGhostRoleTest).
+            Dirty = true,
         });
         var server = pair.Server;
         var sEntMan = server.ResolveDependency<IServerEntityManager>();
