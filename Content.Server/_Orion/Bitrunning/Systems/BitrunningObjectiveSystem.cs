@@ -1,5 +1,5 @@
 using Content.Goobstation.Common.Effects;
-using Content.Goobstation.Shared.Fishing.Events;
+using Content.Shared._Mini.Fishing.Events;
 using Content.Shared._Orion.Bitrunning;
 using Content.Shared._Orion.Bitrunning.Components;
 using Content.Shared.Interaction;

@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: latheRecipePack
+  id: FishingStatic
+  recipes:
+  - FishingGeneGun
+
+- type: latheRecipePack
+  id: FishingDynamic
+  recipes:
+  - FishingRod
+  - FishingLine
+  - FishingHook
+  - BaitCanWorm
+  - FishAnalyzer
+  - FishingRodTelescopic
+  - FishingRodScience
+  - AquariumKit

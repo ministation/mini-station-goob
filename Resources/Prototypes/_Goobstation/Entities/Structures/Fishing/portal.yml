@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishingPortalGenerator
+  parent: BaseMachine
+  name: fish-porter 3000
+  description: Fishing anywhere, anytime... anyway, what was I talking about?
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: portal
+    layers:
+    - state: portal
+    - state: portal_on
+      map: [ "active" ]
+      visible: false
+    - state: portal_emissive
+      map: [ "emissive" ]
+      visible: false
+      shader: unshaded
+  - type: FishingPortal
+  - type: ActivatableUI
+    key: enum.FishingPortalUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FishingPortalUiKey.Key:
+        type: FishingPortalBoundUserInterface

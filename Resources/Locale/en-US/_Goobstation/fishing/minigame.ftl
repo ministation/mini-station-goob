@@ -1,0 +1,9 @@
+fishing-start = You cast the line and start fishing.
+fishing-bite = Something is biting!
+fishing-minigame-start = The fight begins!
+fishing-gave-up = You gave up on this fish.
+fishing-got-away = It got away!
+fishing-nothing-caught = Nothing was caught.
+fishing-caught-fish = You caught { $fish }!
+fishing-reeled-in = You reel the line back in.
+fishing-line-snapped = The fishing line snapped.

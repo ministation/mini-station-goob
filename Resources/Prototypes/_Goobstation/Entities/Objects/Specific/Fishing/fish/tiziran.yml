@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishArmorfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: armorfish
+  - type: Fish
+    fish: FishArmorfish
+  - type: Tag
+    tags:
+    - FishingBait
+
+- type: entity
+  id: FishGunnerJellyfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: gunner_jellyfish
+  - type: Fish
+    fish: FishGunnerJellyfish
+
+- type: entity
+  id: FishMoonfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: tizira_moonfish
+  - type: Fish
+    fish: FishMoonfish
+  - type: Item
+    size: Large
+
+- type: entity
+  id: FishMoonfishDwarf
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: dwarf_moonfish
+  - type: Fish
+    fish: FishMoonfishDwarf
+
+- type: entity
+  id: FishNeedlefish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: needlefish
+  - type: Fish
+    fish: FishNeedlefish
+  - type: Tag
+    tags:
+    - FishingBait
+

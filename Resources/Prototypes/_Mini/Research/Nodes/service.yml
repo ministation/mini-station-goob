@@ -235,11 +235,13 @@
     amount: 500
   recipeUnlocks:
   - FishingRod
+  - FishingLine
+  - FishingHook
+  - BaitCanWorm
   position: 5,13
 
 - type: technology
   id: FishingEquipAdv
-  hidden: true # empty unlocks - disabled until content exists
   name: research-technology-fishing-equip-adv-name
   description: research-technology-fishing-equip-adv-desc
   icon:
@@ -254,12 +256,14 @@
   - FishingEquip
   requiredExperiments:
   - ScanningFish
-  # TODO
+  recipeUnlocks:
+  - FishingRodTelescopic
+  - FishingRodScience
+  - FishAnalyzer
   position: 5,12
 
 - type: technology
   id: MarineUtility
-  hidden: true # empty unlocks - disabled until content exists
   name: research-technology-marine-utility-name
   description: research-technology-marine-utility-desc
   icon:
@@ -276,5 +280,6 @@
   - ScanningFishSecond
   discountExperimentCosts:
     ScanningFishSecond: 7500
-  # TODO
+  recipeUnlocks:
+  - AquariumKit
   position: 6,12

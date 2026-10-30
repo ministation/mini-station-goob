@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishBoned
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: bonemass
+  - type: Fish
+    fish: FishBoned
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: FishChasmCrab
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: chrab
+  - type: Fish
+    fish: FishChasmCrab
+
+- type: entity
+  id: FishChasmCrabIce
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: arctic_chrab
+  - type: Fish
+    fish: FishChasmCrabIce
+
+- type: entity
+  id: FishLavaloop
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: lava_loop
+  - type: Fish
+    fish: FishLavaloop
+  - type: Tag
+    tags:
+    - FishingBait
+
+- type: entity
+  id: FishLavaloopPlasmaRiver
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: plasma_loop
+  - type: Fish
+    fish: FishLavaloopPlasmaRiver
+  - type: Tag
+    tags:
+    - FishingBait
+

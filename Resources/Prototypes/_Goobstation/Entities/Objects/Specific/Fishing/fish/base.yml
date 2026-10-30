@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: BaseFish
+  parent: BaseItem
+  abstract: true
+  description: A water-born creature. Or at least it used to be in the water.
+  components:
+  - type: Fish
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_inhand.rsi
+  - type: Butcherable
+    butcherDelay: 3
+    spawned:
+    - id: FoodMeatFish
+      amount: 1
+  - type: StaticPrice
+    price: 100

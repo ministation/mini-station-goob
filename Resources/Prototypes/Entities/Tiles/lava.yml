@@ -34,11 +34,8 @@
       sprintSpeedModifier: 0.6
   # Lavaland Change end
   # Goobstation - fishing
-  - type: FishingSpot
-    fishList: !type:NestedSelector
-      tableId: LavaFishingLootTable
-    fishDefaultTimer: 25.0
-    fishTimerVariety: 15.0
+  - type: FishingSource
+    source: FishingSourceLava
   # Goobstation - fishing
   - type: Transform
     anchored: true

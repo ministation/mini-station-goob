@@ -1,0 +1,25 @@
+ent-FishAnalyzer = анализатор рыбы
+    .desc = Сканер в форме рыбы для наблюдения за состоянием и особенностями рыбы.
+
+fishing-analyzer-title = Анализатор рыбы
+fishing-analyzer-examine = Используйте на рыбе или в аквариуме, чтобы просканировать рыбу.
+fishing-analyzer-verb = Просканировать анализатором
+fishing-analyzer-no-data = Нет данных об образце.
+fishing-analyzer-lost = Образец слишком далеко, данные потеряны.
+fishing-analyzer-empty-tank = В аквариуме нет рыбы.
+fishing-analyzer-alive = жива
+fishing-analyzer-dead = мертва
+fishing-analyzer-genetic-badge = изменена
+fishing-analyzer-catcher = Поймал: { $catcher }
+fishing-analyzer-date = Поймана на { $minutes } минуте смены
+fishing-analyzer-stat-size = Размер
+fishing-analyzer-size-value = { $size } см
+fishing-analyzer-stat-weight = Вес
+fishing-analyzer-weight-value = { $weight } кг
+fishing-analyzer-stat-fluid = Жидкость
+fishing-analyzer-stat-temperature = Температура
+fishing-analyzer-temperature-value = от { $min } до { $max } C
+fishing-analyzer-stat-beauty = Красота
+fishing-analyzer-traits-title = особенности
+fishing-analyzer-traits-genetic = Часть этих особенностей получена в результате генной инженерии.
+fishing-analyzer-evolutions-title = эволюции

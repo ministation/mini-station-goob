@@ -1,0 +1,128 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: AquariumKit
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_supplies.rsi
+    state: construction_kit
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_supplies.rsi
+  - type: SpawnAfterInteract
+    prototype: Aquarium
+    removeOnInteract: true
+    doAfter: 2
+  - type: StaticPrice
+    price: 100
+
+- type: entity
+  id: FishFeed
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_supplies.rsi
+    state: fish_feed
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_supplies.rsi
+  - type: FishFeed
+  - type: StaticPrice
+    price: 25
+
+- type: entity
+  id: AquariumPropRocks
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+    state: rocks
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+  - type: AquariumProp
+    beauty: 150
+  - type: StaticPrice
+    price: 15
+
+- type: entity
+  id: AquariumPropSeaweed
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+    state: seaweeds_back
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+  - type: AquariumProp
+    beauty: 150
+  - type: StaticPrice
+    price: 15
+
+- type: entity
+  id: AquariumPropSeaweedTop
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+    state: seaweeds_front
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+  - type: AquariumProp
+    beauty: 150
+  - type: StaticPrice
+    price: 15
+
+- type: entity
+  id: AquariumPropSand
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+    state: sand
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+  - type: AquariumProp
+    beauty: 100
+  - type: StaticPrice
+    price: 15
+
+- type: entity
+  id: AquariumPropTreasure
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+    state: treasure
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+  - type: AquariumProp
+    beauty: 250
+  - type: StaticPrice
+    price: 50
+
+- type: entity
+  id: AquariumUpgradeBioelectric
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_supplies.rsi
+    state: bioelec_kit
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_supplies.rsi
+  - type: AquariumUpgrade
+    upgrade: BioelectricGenerator
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  id: AquariumUpgradeBluespace
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_supplies.rsi
+    state: bluespace_kit
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_supplies.rsi
+  - type: AquariumUpgrade
+    upgrade: BluespaceCapacity
+  - type: StaticPrice
+    price: 500

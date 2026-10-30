@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  parent: BaseItem
+  id: FishMountItem
+  name: fish mount frame
+  description: The frame of a mount for trophy fish, to show off your proudest catch.
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/mount.rsi
+    state: fish_mount_item
+  - type: Item
+    size: Normal
+  - type: FishMountItem
+  - type: StaticPrice
+    price: 100

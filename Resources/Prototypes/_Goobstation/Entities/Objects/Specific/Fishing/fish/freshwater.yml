@@ -1,0 +1,140 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishAngelfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: angelfish
+  - type: Fish
+    fish: FishAngelfish
+
+- type: entity
+  id: FishCatfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: catfish
+  - type: Fish
+    fish: FishCatfish
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: FishGoldfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: goldfish
+  - type: Fish
+    fish: FishGoldfish
+  - type: Tag
+    tags:
+    - FishingBait
+
+- type: entity
+  id: FishGoldfishGill
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: goldfish
+  - type: Fish
+    fish: FishGoldfishGill
+  - type: Tag
+    tags:
+    - FishingBait
+
+- type: entity
+  id: FishGoldfishThreeEyes
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: three_eyes
+  - type: Fish
+    fish: FishGoldfishThreeEyes
+  - type: Tag
+    tags:
+    - FishingBait
+
+- type: entity
+  id: FishGoldfishThreeEyesGill
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: three_eyes
+  - type: Fish
+    fish: FishGoldfishThreeEyesGill
+  - type: Tag
+    tags:
+    - FishingBait
+
+- type: entity
+  id: FishGuppy
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: guppy
+  - type: Fish
+    fish: FishGuppy
+
+- type: entity
+  id: FishPerch
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: perch
+  - type: Fish
+    fish: FishPerch
+
+- type: entity
+  id: FishPlasmatetra
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: plastetra
+  - type: Fish
+    fish: FishPlasmatetra
+  - type: Tag
+    tags:
+    - FishingBait
+
+- type: entity
+  id: FishSacabambaspis
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: sacabambaspis
+  - type: Fish
+    fish: FishSacabambaspis
+
+- type: entity
+  id: FishTadpole
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: tadpole
+  - type: Fish
+    fish: FishTadpole
+
+- type: entity
+  id: FishZipzap
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: zipzap
+  - type: Fish
+    fish: FishZipzap
+

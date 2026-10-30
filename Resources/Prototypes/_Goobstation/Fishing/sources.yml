@@ -1,0 +1,475 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+#
+# Weights are taken from the DM fish tables. A dud roll is a NoneSelector entry.
+# Items that have no SS14 counterpart are omitted, so the relative chance of the
+# remaining entries is slightly higher than in tg. Dynamic sources (aquarium,
+# vending machine, hydroponics tray) build their loot from the host they are attached
+# to, so their table is a dud only fallback. Deep fryer and surgery have no matching
+# host in SS14, they use static tables instead.
+
+- type: fishingSource
+  id: FishingSourceOcean
+  radialState: seaboat
+  difficulty: 30
+  flags: ExplosiveMalus
+  fishCounts:
+    FishClownfishLube: 2
+    FishSwordfish: 2
+  fishCountRegen:
+    FishClownfishLube: 180
+    FishSwordfish: 300
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 10
+    - id: SpaceCash
+      weight: 6
+    - id: FishClownfish
+      weight: 11
+    - id: FishPufferfish
+      weight: 11
+    - id: FishCardinal
+      weight: 11
+    - id: FishGreenchromis
+      weight: 11
+    - id: FishSquid
+      weight: 11
+    - id: FishStingray
+      weight: 8
+    - id: FishPlaice
+      weight: 8
+    - id: FishMonkfish
+      weight: 5
+    - id: FishLanternfish
+      weight: 7
+    - id: FishZipzap
+      weight: 7
+    - id: FishClownfishLube
+      weight: 5
+    - id: FishSwordfish
+      weight: 5
+
+- type: fishingSource
+  id: FishingSourceOceanBeach
+  radialState: palm_beach
+  difficulty: 30
+  flags: ExplosiveMalus
+  catalogDescription: fishing-source-ocean-beach
+  fishCounts:
+    FishClownfishLube: 2
+    FishSwordfish: 2
+  fishCountRegen:
+    FishClownfishLube: 180
+    FishSwordfish: 300
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 10
+    - id: SpaceCash
+      weight: 6
+    - id: FishClownfish
+      weight: 11
+    - id: FishPufferfish
+      weight: 11
+    - id: FishCardinal
+      weight: 11
+    - id: FishGreenchromis
+      weight: 11
+    - id: FishSquid
+      weight: 11
+    - id: FishStingray
+      weight: 8
+    - id: FishPlaice
+      weight: 8
+    - id: FishMonkfish
+      weight: 5
+    - id: FishLanternfish
+      weight: 7
+    - id: FishZipzap
+      weight: 7
+    - id: FishClownfishLube
+      weight: 5
+    - id: FishSwordfish
+      weight: 5
+
+- type: fishingSource
+  id: FishingSourceIce
+  radialState: ice
+  difficulty: 45
+  background: background_ice
+  catalogDescription: fishing-source-ice
+  flags: ExplosiveMalus
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 4
+    - id: FishArcticChar
+      weight: 5
+    - id: FishSockeyeSalmon
+      weight: 5
+    - id: FishChasmCrabIce
+      weight: 2
+    - id: FishBoned
+      weight: 1
+
+- type: fishingSource
+  id: FishingSourceRiver
+  radialState: river
+  difficulty: 30
+  catalogDescription: fishing-source-river
+  flags: ExplosiveMalus
+  fishCounts:
+    FishPike: 3
+  fishCountRegen:
+    FishPike: 240
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 4
+    - id: FishGoldfish
+      weight: 5
+    - id: FishGuppy
+      weight: 5
+    - id: FishPlasmatetra
+      weight: 4
+    - id: FishPerch
+      weight: 4
+    - id: FishAngelfish
+      weight: 4
+    - id: FishCatfish
+      weight: 4
+    - id: FishSlimefish
+      weight: 2
+    - id: FishSockeyeSalmon
+      weight: 1
+    - id: FishArcticChar
+      weight: 1
+    - id: FishPike
+      weight: 1
+    - id: FishGoldfishThreeEyes
+      weight: 1
+
+- type: fishingSource
+  id: FishingSourceSand
+  radialState: palm_beach
+  difficulty: 45
+  catalogDescription: fishing-source-sand
+  flags: ExplosiveMalus
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 8
+    - id: FishSandCrab
+      weight: 10
+    - id: FishSandSurfer
+      weight: 10
+    - id: FishBumpy
+      weight: 10
+    - id: SpaceCash
+      weight: 3
+
+- type: fishingSource
+  id: FishingSourceHotSpring
+  radialState: onsen
+  difficulty: 45
+  catalogDescription: fishing-source-hot-spring
+  flags: ExplosiveMalus
+  fishCounts:
+    FishSacabambaspis: 5
+  fishCountRegen:
+    FishSacabambaspis: 240
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 20
+    - id: FishBumpy
+      weight: 10
+    - id: FishSacabambaspis
+      weight: 10
+    - id: MobFrog
+      weight: 2
+
+- type: fishingSource
+  id: FishingSourceTizira
+  radialState: planet
+  difficulty: 35
+  catalogDescription: fishing-source-tizira
+  flags: ExplosiveMalus
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 10
+    - id: FishNeedlefish
+      weight: 5
+    - id: FishArmorfish
+      weight: 5
+    - id: FishGunnerJellyfish
+      weight: 4
+    - id: FishMoonfishDwarf
+      weight: 2
+    - id: FishMoonfish
+      weight: 2
+
+- type: fishingSource
+  id: FishingSourceMoistureTrap
+  radialState: ground_hole
+  difficulty: 35
+  background: background_dank
+  catalogDescription: fishing-source-moisture-trap
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 20
+    - id: FishRatfish
+      weight: 10
+    - id: FishSlimefish
+      weight: 4
+
+- type: fishingSource
+  id: FishingSourceToilet
+  radialState: toilet
+  difficulty: 20
+  background: background_dank
+  catalogDescription: fishing-source-toilet
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 18
+    - id: FishSludgefish
+      weight: 18
+    - id: FishSlimefish
+      weight: 4
+
+- type: fishingSource
+  id: FishingSourceHolographic
+  radialState: space_rocket
+  difficulty: 20
+  catalogDescription: fishing-source-holographic
+  table: !type:GroupSelector
+    children:
+    - id: FishHolo
+      weight: 10
+    - id: FishHoloCrab
+      weight: 10
+    - id: FishHoloPuffer
+      weight: 10
+    - id: FishHoloAngel
+      weight: 10
+    - id: FishHoloClown
+      weight: 10
+    - id: FishHoloCheckered
+      weight: 5
+    - id: FishHoloHalffish
+      weight: 5
+
+- type: fishingSource
+  id: FishingSourceHydroTray
+  radialState: hydro
+  difficulty: 15
+  background: background_tray
+  catalogDescription: fishing-source-hydro-tray
+  dynamic: HydroTray
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 25
+    - id: MobFrog
+      weight: 1
+
+- type: fishingSource
+  id: FishingSourceDeepFryer
+  radialState: fryer
+  difficulty: 38
+  background: background_lavaland
+  catalogDescription: fishing-source-deep-fryer
+  fishCounts:
+    FishFryish: 10
+    FishFryishFritterish: 4
+    FishFryishNessie: 1
+  fishCountRegen:
+    FishFryish: 120
+    FishFryishFritterish: 360
+    FishFryishNessie: 1320
+  table: !type:GroupSelector
+    children:
+    - id: FoodBadRecipe
+      weight: 15
+    - id: FoodBakedNugget
+      weight: 5
+    - id: FishFryish
+      weight: 40
+    - id: FishFryishFritterish
+      weight: 4
+    - id: FishFryishNessie
+      weight: 1
+
+- type: fishingSource
+  id: FishingSourceAquarium
+  radialState: fish_tank
+  difficulty: 15
+  catalogDescription: fishing-source-aquarium
+  dynamic: Aquarium
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 10
+
+- type: fishingSource
+  id: FishingSourceVending
+  radialState: vending
+  difficulty: 10
+  background: background_chasm
+  catalogDescription: fishing-source-vending
+  dynamic: Vending
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 10
+
+- type: fishingSource
+  id: FishingSourceCarpRift
+  radialState: carp
+  difficulty: 43
+  background: background_carp_rift
+  catalogDescription: fishing-source-carp-rift
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 3
+    - id: FishBabyCarp
+      weight: 5
+    - id: MobCarp
+      weight: 3
+    - id: PlushieCarp
+      weight: 1
+
+- type: fishingSource
+  id: FishingSourceDimensionalRift
+  radialState: cursed
+  difficulty: 50
+  background: background_mansus
+  fishCounts:
+    FishMossglob: 3
+    FishBabbelfish: 1
+  fishCountRegen:
+    FishMossglob: 180
+    FishBabbelfish: 300
+  table: !type:GroupSelector
+    children:
+    - id: FishStarfishChrystarfish
+      weight: 7
+    - id: FishDolphish
+      weight: 7
+    - id: FishFlumpulus
+      weight: 7
+    - id: FishGullion
+      weight: 7
+    - id: FishMossglob
+      weight: 3
+    - id: FishBabbelfish
+      weight: 1
+
+- type: fishingSource
+  id: FishingSourceCursedSpring
+  radialState: cursed
+  difficulty: 50
+  flags: ExplosiveMalus
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 2
+    - id: FishSoul
+      weight: 3
+    - id: FishSkinCrab
+      weight: 3
+
+- type: fishingSource
+  id: FishingSourceChasm
+  radialState: ground_hole
+  difficulty: 30
+  background: background_chasm
+  catalogDescription: fishing-source-chasm
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 5
+    - id: FishChasmCrab
+      weight: 15
+
+- type: fishingSource
+  id: FishingSourceLava
+  radialState: lava
+  difficulty: 35
+  background: background_lavaland
+  catalogDescription: fishing-source-lava
+  flags: ExplosiveMalus
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 5
+    - id: FishLavaloop
+      weight: 15
+    - id: MaterialBones
+      weight: 15
+    - id: MaterialGoliathHide
+      weight: 15
+
+- type: fishingSource
+  id: FishingSourcePlasma
+  radialState: plasma
+  difficulty: 35
+  background: background_plasma
+  catalogDescription: fishing-source-plasma
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 5
+    - id: FishChasmCrabIce
+      weight: 30
+    - id: FishLavaloopPlasmaRiver
+      weight: 30
+    - id: PlasmaOre
+      weight: 6
+
+- type: fishingSource
+  id: FishingSourceOilWell
+  radialState: oil
+  difficulty: 40
+  background: background_oil_well
+  catalogDescription: fishing-source-oil-well
+  fishCounts:
+    FishMastodon: 1
+  fishCountRegen:
+    FishMastodon: 480
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 5
+    - id: FishBoned
+      weight: 10
+    - id: MaterialBones
+      weight: 2
+    - id: FishMastodon
+      weight: 1
+
+- type: fishingSource
+  id: FishingSourceSurgery
+  radialState: innards
+  difficulty: -10
+  waitTimeMin: 6
+  waitTimeMax: 12
+  background: background_lavaland
+  catalogDescription: fishing-source-surgery
+  table: !type:GroupSelector
+    children:
+    - id: OrganHumanAppendix
+      weight: 10
+    - id: OrganHumanStomach
+      weight: 10
+    - id: OrganHumanLiver
+      weight: 10
+    - id: OrganHumanKidneys
+      weight: 10
+    - id: OrganHumanHeart
+      weight: 10

@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishArcticChar
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: arctic_char
+  - type: Fish
+    fish: FishArcticChar
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: FishPike
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi
+    state: pike
+  - type: Fish
+    fish: FishPike
+  - type: Item
+    size: Large
+
+- type: entity
+  id: FishSockeyeSalmon
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: sockeye
+  - type: Fish
+    fish: FishSockeyeSalmon
+

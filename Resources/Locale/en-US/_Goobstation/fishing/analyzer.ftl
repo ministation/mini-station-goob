@@ -1,0 +1,25 @@
+ent-FishAnalyzer = fish analyzer
+    .desc = A fish-shaped scanner used to monitor fish status and evolutionary traits.
+
+fishing-analyzer-title = Fish Analyzer
+fishing-analyzer-examine = Use it on a fish or a fish tank to scan it.
+fishing-analyzer-verb = Scan with fish analyzer
+fishing-analyzer-no-data = No specimen data.
+fishing-analyzer-lost = The specimen is too far away, data lost.
+fishing-analyzer-empty-tank = There is no fish in the tank.
+fishing-analyzer-alive = alive
+fishing-analyzer-dead = dead
+fishing-analyzer-genetic-badge = modified
+fishing-analyzer-catcher = Caught by: { $catcher }
+fishing-analyzer-date = Caught { $minutes } minutes into the shift
+fishing-analyzer-stat-size = Size
+fishing-analyzer-size-value = { $size } cm
+fishing-analyzer-stat-weight = Weight
+fishing-analyzer-weight-value = { $weight } kg
+fishing-analyzer-stat-fluid = Fluid
+fishing-analyzer-stat-temperature = Temperature
+fishing-analyzer-temperature-value = { $min } to { $max } C
+fishing-analyzer-stat-beauty = Beauty
+fishing-analyzer-traits-title = traits
+fishing-analyzer-traits-genetic = Some of these traits are the result of genetic engineering.
+fishing-analyzer-evolutions-title = evolutions

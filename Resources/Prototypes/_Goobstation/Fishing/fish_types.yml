@@ -1,0 +1,1324 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+# Gameplay data of every fish species. The item entities live in
+# Resources/Prototypes/_Goobstation/Entities/Objects/Specific/Fishing/fish/.
+# TODO: bait preferences: items, reagents and bait traits are ported; DM Foodtype entries have no SS14 equivalent and are skipped.
+
+- type: fish
+  id: FishAngelfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: angelfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: angelfish_small }
+  averageSize: 30
+  averageWeight: 500
+  temperatureMin: 295.15
+  temperatureMax: 303.15
+  traits:
+  - territorial
+  stablePopulation: 3
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishArcticChar
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: arctic_char }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: arctic_char_small }
+  averageSize: 60
+  averageWeight: 1200
+  sizeDeviation: 0.5
+  weightDeviation: 0.5
+  fluid: Anadromous
+  temperatureMin: 276.15
+  temperatureMax: 292.15
+  stablePopulation: 6
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishArmorfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: armorfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: armorfish_small }
+  averageSize: 25
+  averageWeight: 350
+  fluid: Saltwater
+  temperatureMin: 283.15
+  temperatureMax: 305.15
+  movement: slow
+  stablePopulation: 10
+  breedingTime: 75
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishBabbelfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: babbelfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: babbelfish_small }
+  averageSize: 30
+  averageWeight: 2000
+  rarity: 0
+  beauty: 0
+  traits:
+  - wary
+  - picky_eater
+  - heavy
+  - emulsijack_psychic
+  - necrophage
+  movement: slow
+  difficultyModifier: 15
+  stablePopulation: 3
+  fillet: FoodMeatFish
+  fillets: 2
+
+- type: fish
+  id: FishBabyCarp
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: baby_carp }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: baby_carp_small }
+  averageSize: 35
+  averageWeight: 550
+  fluid: AnyWater
+  temperatureMin: 0
+  temperatureMax: 473.15
+  rarity: 200
+  beauty: 600
+  traits:
+  - carnivore
+  - territorial
+  - predator
+  - necrophage
+  - no_mating
+  - toxic_carpotoxin
+  stablePopulation: 7
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishBoned
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: bonemass }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: bonemass_small }
+  averageSize: 70
+  averageWeight: 2000
+  fluid: AnyWater
+  rarity: 50
+  beauty: -300
+  traits:
+  - revival
+  - carnivore
+  movement: zippy
+  stablePopulation: 3
+  evolutionTypes:
+  - mastodon
+  fillet: MaterialBones
+  fillets: 2
+
+- type: fish
+  id: FishBumpy
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: bumpy }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: bumpy_small }
+  fluid: AnyWater
+  temperatureMin: 288.15
+  temperatureMax: 313.15
+  beauty: -200
+  traits:
+  - amphibious
+  - vegan
+  stablePopulation: 4
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishCardinal
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: cardinalfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: cardinalfish_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: Saltwater
+  temperatureMin: 295.15
+  temperatureMax: 303.15
+  traits:
+  - vegan
+  stablePopulation: 4
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishCatfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: catfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: catfish_small }
+  averageSize: 80
+  averageWeight: 1600
+  sizeDeviation: 0.35
+  weightDeviation: 0.35
+  temperatureMin: 285.15
+  temperatureMax: 303.15
+  beauty: 450
+  stablePopulation: 3
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishChainsawfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: chainsawfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: chainsawfish_small }
+  deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: chainsawfish_dead }
+  averageSize: 85
+  averageWeight: 2500
+  temperatureMin: 291.15
+  temperatureMax: 299.15
+  feedingFrequency: 180
+  rarity: 50
+  beauty: 600
+  traits:
+  - territorial
+  - carnivore
+  - predator
+  - stinger
+  movement: accelerando
+  inhandPrefix: chainsawfish
+  difficultyModifier: 30
+  stablePopulation: 3
+  breedingTime: 255
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishChasmCrab
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: chrab }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: chrab_small }
+  temperatureMin: 282.15
+  temperatureMax: 400
+  feedingFrequency: 600
+  rarity: 400
+  beauty: 450
+  stablePopulation: 4
+  compatibleTypes:
+  - FishChasmCrabIce
+  evolutionTypes:
+  - ice_chrab
+  favoriteBaits:
+  - FishLavaloop
+  fillet: FoodMeatCrab
+
+- type: fish
+  id: FishChasmCrabIce
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: arctic_chrab }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: arctic_chrab_small }
+  temperatureMin: 160
+  temperatureMax: 288.15
+  feedingFrequency: 600
+  rarity: 400
+  beauty: 600
+  stablePopulation: 4
+  compatibleTypes:
+  - FishChasmCrab
+  evolutionTypes:
+  - chasm_chrab
+  favoriteBaits:
+  - FishLavaloop
+  fillet: FoodMeatCrab
+
+- type: fish
+  id: FishClownfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: clownfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: clownfish_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: Saltwater
+  temperatureMin: 295.15
+  temperatureMax: 303.15
+  traits:
+  - picky_eater
+  stablePopulation: 4
+  compatibleTypes:
+  - FishClownfishLube
+  evolutionTypes:
+  - lubefish
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishClownfishLube
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lubefish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lubefish_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: Saltwater
+  temperatureMin: 295.15
+  temperatureMax: 303.15
+  food: SpaceLube
+  rarity: 200
+  beauty: 600
+  traits:
+  - picky_eater
+  - lubed
+  difficultyModifier: 5
+  stablePopulation: 4
+  compatibleTypes:
+  - FishClownfish
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishDolphish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: dolphish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: dolphish_small }
+  averageSize: 150
+  averageWeight: 2750
+  sizeDeviation: 0.5
+  weightDeviation: 0.5
+  fluid: Air
+  temperatureMin: 270.15
+  temperatureMax: 340.15
+  food: Blood
+  rarity: 50
+  beauty: 600
+  traits:
+  - wary
+  - carnivore
+  - necrophage
+  - predator
+  - territorial
+  - stinger
+  movement: choppy
+  difficultyModifier: 30
+  stablePopulation: 3
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishDonkfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: donkfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: donkfish_small }
+  temperatureMin: 288.15
+  temperatureMax: 301.15
+  rarity: 200
+  beauty: 700
+  traits:
+  - yucky
+  stablePopulation: 4
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishEmulsijack
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: emulsijack }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: emulsijack_small }
+  fluid: Anadromous
+  temperatureMin: 278.15
+  temperatureMax: 313.15
+  rarity: 50
+  beauty: -200
+  traits:
+  - emulsijack
+  stablePopulation: 3
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishFirefish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: firefish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: firefish_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: Saltwater
+  temperatureMin: 296.15
+  temperatureMax: 301.15
+  movement: zippy
+  stablePopulation: 3
+  dislikedBaits:
+  - BaitDoughball
+  - BaitWorm
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishFlumpulus
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: flumpulus }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: flumpulus_small }
+  averageSize: 100
+  averageWeight: 500
+  sizeDeviation: 0.6
+  weightDeviation: 0.6
+  fluid: Air
+  temperatureMin: 0
+  food: Fat
+  rarity: 50
+  beauty: -300
+  movement: slow
+  difficultyModifier: 22
+  stablePopulation: 2
+  fillet: FoodMeatSlime
+  fillets: 2
+
+- type: fish
+  id: FishFryish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fryish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fryish_small }
+  averageSize: 20
+  averageWeight: 400
+  fluid: AnyWater
+  temperatureMin: 323.15
+  temperatureMax: 493.15
+  rarity: 200
+  beauty: 450
+  traits:
+  - picky_eater
+  - no_mating
+  movement: zippy
+  difficultyModifier: -5
+  stablePopulation: 8
+  compatibleTypes:
+  - FishFryishFritterish
+  - FishFryishNessie
+  spawnTypes:
+  - FishFryish
+  evolutionTypes:
+  - fritterish
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishFryishFritterish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fritterish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fritterish_small }
+  fluid: AnyWater
+  temperatureMin: 323.15
+  temperatureMax: 493.15
+  rarity: 200
+  beauty: 450
+  traits:
+  - picky_eater
+  difficultyModifier: -5
+  stablePopulation: 5
+  compatibleTypes:
+  - FishFryish
+  - FishFryishNessie
+  spawnTypes:
+  - FishFryish
+  evolutionTypes:
+  - nessie
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishFryishNessie
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: nessiefish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: nessiefish_small }
+  averageSize: 150
+  averageWeight: 6000
+  fluid: AnyWater
+  temperatureMin: 323.15
+  temperatureMax: 493.15
+  rarity: 0
+  beauty: 700
+  traits:
+  - picky_eater
+  - predator
+  difficultyModifier: 45
+  showInCatalog: false
+  stablePopulation: 3
+  breedingTime: 300
+  compatibleTypes:
+  - FishFryish
+  - FishFryishFritterish
+  spawnTypes:
+  - FishFryishFritterish
+  fillet: FoodMeatFish
+  fillets: 2
+
+- type: fish
+  id: FishGoldfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: goldfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
+  aquariumColor: "#D8540D"
+  averageSize: 20
+  averageWeight: 200
+  sizeDeviation: 0.35
+  weightDeviation: 0.35
+  temperatureMin: 291.15
+  temperatureMax: 299.15
+  stablePopulation: 9
+  compatibleTypes:
+  - FishGoldfishGill
+  - FishGoldfishThreeEyes
+  - FishGoldfishThreeEyesGill
+  evolutionTypes:
+  - three_eyes
+  - chainsawfish
+  favoriteBaits:
+  - BaitWorm
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishGoldfishGill
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: goldfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
+  aquariumColor: "#D8540D"
+  averageSize: 20
+  averageWeight: 200
+  sizeDeviation: 0.35
+  weightDeviation: 0.35
+  temperatureMin: 291.15
+  temperatureMax: 299.15
+  rarity: 0
+  beauty: 450
+  traits:
+  - recessive
+  showInCatalog: false
+  compatibleTypes:
+  - FishGoldfish
+  - FishGoldfishThreeEyes
+  evolutionTypes:
+  - three_eyes
+  - chainsawfish
+  favoriteBaits:
+  - BaitWorm
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishGoldfishThreeEyes
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: three_eyes }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
+  aquariumColor: "#D8540D"
+  averageSize: 20
+  averageWeight: 200
+  sizeDeviation: 0.35
+  weightDeviation: 0.35
+  temperatureMin: 291.15
+  temperatureMax: 299.15
+  food: UnstableMutagen
+  rarity: 200
+  beauty: 450
+  traits:
+  - recessive
+  - shiny_lover
+  difficultyModifier: 10
+  stablePopulation: 4
+  compatibleTypes:
+  - FishGoldfish
+  - FishGoldfishGill
+  - FishGoldfishThreeEyesGill
+  evolutionTypes:
+  - three_eyes
+  - chainsawfish
+  favoriteReagents:
+    UnstableMutagen: 3
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishGoldfishThreeEyesGill
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: three_eyes }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
+  aquariumColor: "#D8540D"
+  averageSize: 20
+  averageWeight: 200
+  sizeDeviation: 0.35
+  weightDeviation: 0.35
+  temperatureMin: 291.15
+  temperatureMax: 299.15
+  food: UnstableMutagen
+  rarity: 0
+  beauty: 600
+  traits:
+  - recessive
+  - shiny_lover
+  difficultyModifier: 10
+  showInCatalog: false
+  compatibleTypes:
+  - FishGoldfish
+  - FishGoldfishThreeEyes
+  evolutionTypes:
+  - three_eyes
+  - chainsawfish
+  favoriteReagents:
+    UnstableMutagen: 3
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishGreenchromis
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: greenchromis }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: greenchromis_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: Saltwater
+  temperatureMin: 296.15
+  temperatureMax: 301.15
+  difficultyModifier: 5
+  stablePopulation: 5
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishGullion
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: gullion }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: gullion_small }
+  averageSize: 30
+  averageWeight: 2000
+  sizeDeviation: 0.3
+  weightDeviation: 0.3
+  fluid: SulphWater
+  temperatureMin: 0
+  temperatureMax: 340.15
+  food: Silicon
+  feedingFrequency: 30
+  rarity: 50
+  beauty: 700
+  traits:
+  - heavy
+  - parthenogenesis
+  movement: slow
+  difficultyModifier: 22
+  stablePopulation: 3
+  fillet: MaterialDiamond
+  fillets: 2
+
+- type: fish
+  id: FishGunnerJellyfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: gunner_jellyfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: gunner_jellyfish_small }
+  fluid: Saltwater
+  temperatureMin: 297.15
+  temperatureMax: 305.15
+  beauty: 450
+  traits:
+  - hallucinogenic
+  stablePopulation: 4
+  favoriteBaits:
+  - FishArmorfish
+  - FishNeedlefish
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishGuppy
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: guppy }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: guppy_small }
+  averageSize: 30
+  averageWeight: 500
+  temperatureMin: 293.15
+  temperatureMax: 301.15
+  stablePopulation: 6
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishHolo
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: goldfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
+  aquariumColor: "#D8540D"
+  averageSize: 20
+  averageWeight: 200
+  fluid: Anadromous
+  rarity: 0
+  traits:
+  - no_mating
+  showInCatalog: false
+
+- type: fish
+  id: FishHoloAngel
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: angelfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: angelfish_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: Anadromous
+  rarity: 0
+  traits:
+  - no_mating
+  showInCatalog: false
+
+- type: fish
+  id: FishHoloCheckered
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: checkered }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: checkered_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: Anadromous
+  rarity: 0
+  beauty: 0
+  traits:
+  - no_mating
+  showInCatalog: false
+
+- type: fish
+  id: FishHoloClown
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: holo_clownfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: holo_clownfish_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: Saltwater
+  rarity: 0
+  traits:
+  - no_mating
+  showInCatalog: false
+
+- type: fish
+  id: FishHoloCrab
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: crab }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: crab_small }
+  averageSize: 30
+  fluid: Anadromous
+  rarity: 0
+  beauty: 450
+  traits:
+  - no_mating
+  showInCatalog: false
+
+- type: fish
+  id: FishHoloHalffish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: half_fish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: half_fish_small }
+  averageWeight: 500
+  fluid: Anadromous
+  rarity: 0
+  beauty: -300
+  traits:
+  - no_mating
+  showInCatalog: false
+
+- type: fish
+  id: FishHoloPuffer
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pufferfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pufferfish_small }
+  averageSize: 60
+  fluid: Anadromous
+  rarity: 0
+  beauty: 450
+  traits:
+  - no_mating
+  showInCatalog: false
+
+- type: fish
+  id: FishJumpercable
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: jumpercable }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: jumpercable_small }
+  averageSize: 110
+  averageWeight: 6000
+  temperatureMin: 283.15
+  temperatureMax: 303.15
+  rarity: 50
+  beauty: -300
+  traits:
+  - parthenogenesis
+  - mixotroph
+  - electrogenesis
+  stablePopulation: 12
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishLanternfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lanternfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lanternfish_small }
+  fluid: Saltwater
+  temperatureMin: 275.15
+  temperatureMax: 291.15
+  rarity: 200
+  beauty: 0
+  traits:
+  - nocturnal
+  stablePopulation: 3
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishLavaloop
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lava_loop }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lava_loop_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: AnyWater
+  temperatureMin: 313.15
+  temperatureMax: 1273.15
+  beauty: 450
+  traits:
+  - carnivore
+  - heavy
+  movement: zippy
+  stablePopulation: 5
+  compatibleTypes:
+  - FishLavaloopPlasmaRiver
+  evolutionTypes:
+  - plasmaloop
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishLavaloopPlasmaRiver
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: plasma_loop }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lava_loop_small }
+  averageSize: 30
+  averageWeight: 500
+  fluid: AnyWater
+  temperatureMin: 173.15
+  temperatureMax: 353.15
+  beauty: 450
+  traits:
+  - carnivore
+  - heavy
+  movement: zippy
+  stablePopulation: 5
+  compatibleTypes:
+  - FishLavaloop
+  evolutionTypes:
+  - lavaloop
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishMastodon
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: mastodon }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: mastodon_small }
+  averageSize: 180
+  averageWeight: 5000
+  fluid: AnyWater
+  feedingFrequency: 120
+  rarity: 0
+  beauty: -200
+  traits:
+  - heavy
+  - amphibious
+  - revival
+  - carnivore
+  - predator
+  - territorial
+  difficultyModifier: 30
+  showInCatalog: false
+  stablePopulation: 2
+  breedingTime: 300
+  fillet: MaterialBones
+  fillets: 2
+
+- type: fish
+  id: FishMonkfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: monkfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: monkfish_small }
+  averageSize: 60
+  averageWeight: 1400
+  fluid: Saltwater
+  temperatureMin: 275.15
+  temperatureMax: 296.15
+  beauty: -300
+  traits:
+  - heavy
+  stablePopulation: 4
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishMoonfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: tizira_moonfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: tizira_moonfish_small }
+  averageSize: 95
+  averageWeight: 2000
+  sizeDeviation: 0.1
+  weightDeviation: 0.1
+  fluid: Saltwater
+  temperatureMin: 293.15
+  temperatureMax: 303.15
+  rarity: 400
+  beauty: 450
+  traits:
+  - predator
+  difficultyModifier: 10
+  stablePopulation: 2
+  compatibleTypes:
+  - FishMoonfish
+  - FishMoonfishDwarf
+  evolutionTypes:
+  - dwarf_moonfish
+  favoriteBaits:
+  - FishArmorfish
+  - FishNeedlefish
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishMoonfishDwarf
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: dwarf_moonfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: dwarf_moonfish_small }
+  averageWeight: 950
+  sizeDeviation: 0.1
+  weightDeviation: 0.1
+  fluid: Saltwater
+  temperatureMin: 293.15
+  temperatureMax: 303.15
+  beauty: 450
+  stablePopulation: 3
+  compatibleTypes:
+  - FishMoonfish
+  - FishMoonfishDwarf
+  evolutionTypes:
+  - moonfish
+  favoriteBaits:
+  - FishArmorfish
+  - FishNeedlefish
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishMossglob
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: mossglob }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: mossglob_small }
+  averageSize: 150
+  averageWeight: 5000
+  fluid: AnyWater
+  temperatureMin: 0
+  rarity: 0
+  beauty: -500
+  traits:
+  - wary
+  - nocturnal
+  - emulsijack
+  - yucky
+  - lubed
+  - revival
+  - toxin_immunity
+  - hallucinogenic
+  - stinger
+  - toxic_barbs
+  movement: slow
+  difficultyModifier: -35
+  stablePopulation: 2
+  fillet: FoodBadRecipe
+
+- type: fish
+  id: FishNeedlefish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: needlefish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: needlefish_small }
+  averageSize: 20
+  averageWeight: 300
+  fluid: Saltwater
+  temperatureMin: 283.15
+  temperatureMax: 305.15
+  traits:
+  - carnivore
+  stablePopulation: 12
+  breedingTime: 60
+
+- type: fish
+  id: FishPerch
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: perch }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
+  aquariumColor: "#9D8C64"
+  averageSize: 25
+  averageWeight: 400
+  temperatureMin: 278.15
+  temperatureMax: 299.15
+  stablePopulation: 7
+  favoriteBaits:
+  - FishArmorfish
+  - FishFryish
+  - FishGoldfish
+  - FishGoldfishGill
+  - FishGoldfishThreeEyes
+  - FishGoldfishThreeEyesGill
+  - FishLavaloop
+  - FishLavaloopPlasmaRiver
+  - FishNeedlefish
+  - FishPlasmatetra
+  - FishingLureAlgae
+  - FishingLureArtificialFly
+  - FishingLureBuzzbait
+  - FishingLureDaisyChain
+  - FishingLureDropping
+  - FishingLureGrub
+  - FishingLureLed
+  - FishingLureLuckyCoin
+  - FishingLureMinnow
+  - FishingLurePlug
+  - FishingLureSpinnerbait
+  - FishingLureSpoon
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishPike
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: pike }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pike_small }
+  averageSize: 100
+  averageWeight: 2000
+  fluid: Anadromous
+  temperatureMin: 285.15
+  temperatureMax: 300.15
+  rarity: 400
+  beauty: 450
+  traits:
+  - carnivore
+  - predator
+  - territorial
+  movement: plunger
+  inhandPrefix: pike
+  difficultyModifier: 10
+  stablePopulation: 4
+  breedingTime: 240
+  compatibleTypes:
+  - FishPikeArmored
+  evolutionTypes:
+  - armored_pike
+  favoriteBaits:
+  - FishArmorfish
+  - FishFryish
+  - FishGoldfish
+  - FishGoldfishGill
+  - FishGoldfishThreeEyes
+  - FishGoldfishThreeEyesGill
+  - FishLavaloop
+  - FishLavaloopPlasmaRiver
+  - FishNeedlefish
+  - FishPlasmatetra
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishPikeArmored
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: armored_pike }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: armored_pike_small }
+  averageSize: 100
+  averageWeight: 3000
+  fluid: Anadromous
+  temperatureMin: 285.15
+  temperatureMax: 300.15
+  feedingFrequency: 240
+  rarity: 50
+  beauty: 600
+  traits:
+  - carnivore
+  - predator
+  - territorial
+  - picky_eater
+  - stinger
+  movement: plunger
+  inhandPrefix: armored_pike
+  difficultyModifier: 20
+  stablePopulation: 3
+  breedingTime: 300
+  compatibleTypes:
+  - FishPike
+  favoriteBaits:
+  - FishArmorfish
+  - FishFryish
+  - FishGoldfish
+  - FishGoldfishGill
+  - FishGoldfishThreeEyes
+  - FishGoldfishThreeEyesGill
+  - FishLavaloop
+  - FishLavaloopPlasmaRiver
+  - FishNeedlefish
+  - FishPlasmatetra
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishPlaice
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: plaice }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: plaice_small }
+  averageSize: 40
+  averageWeight: 700
+  fluid: Saltwater
+  temperatureMin: 275.15
+  temperatureMax: 291.15
+  traits:
+  - heavy
+  stablePopulation: 5
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishPlasmatetra
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: plastetra }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: plastetra_small }
+  averageSize: 20
+  averageWeight: 180
+  temperatureMin: 293.15
+  temperatureMax: 301.15
+  stablePopulation: 3
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishPufferfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pufferfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pufferfish_small }
+  averageSize: 60
+  fluid: Saltwater
+  temperatureMin: 296.15
+  temperatureMax: 301.15
+  beauty: 450
+  traits:
+  - heavy
+  - toxic
+  stablePopulation: 3
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishRatfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: ratfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: ratfish_small }
+  temperatureMin: 288.15
+  temperatureMax: 308.15
+  rarity: 400
+  beauty: -500
+  traits:
+  - necrophage
+  movement: zippy
+  stablePopulation: 10
+  fillet: FoodMeatRotten
+
+- type: fish
+  id: FishSacabambaspis
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sacabambaspis }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sacabambaspis_small }
+  averageSize: 27
+  averageWeight: 500
+  temperatureMin: 293.15
+  temperatureMax: 318.15
+  rarity: 50
+  beauty: 450
+  traits:
+  - necrophage
+  - wary
+  stablePopulation: 7
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishSandCrab
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: crab }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: crab_small }
+  averageSize: 60
+  sizeDeviation: 0.1
+  weightDeviation: 0.1
+  fluid: Saltwater
+  temperatureMin: 293.15
+  temperatureMax: 313.15
+  traits:
+  - amphibious
+  - shiny_lover
+  - carnivore
+  movement: slow
+  stablePopulation: 5
+  fillet: FoodMeatCrab
+
+- type: fish
+  id: FishSandSurfer
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sand_surfer }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sand_surfer_small }
+  averageSize: 65
+  averageWeight: 1100
+  sizeDeviation: 0.35
+  weightDeviation: 0.35
+  fluid: Air
+  temperatureMin: 298.15
+  temperatureMax: 333.15
+  rarity: 400
+  beauty: 450
+  traits:
+  - shiny_lover
+  movement: plunger
+  difficultyModifier: 5
+  stablePopulation: 5
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishSkinCrab
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: skin_crab }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: skin_crab_small }
+  averageSize: 40
+  averageWeight: 750
+  rarity: 0
+  beauty: 600
+  showInCatalog: false
+  stablePopulation: 5
+  fillet: FoodMeatCrab
+
+- type: fish
+  id: FishSlimefish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: slimefish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: slimefish_small }
+  deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: slimefish_dead }
+  fluid: Anadromous
+  temperatureMin: 293.15
+  rarity: 200
+  beauty: 600
+  traits:
+  - toxin_immunity
+  - crossbreeder
+  stablePopulation: 4
+  favoriteReagents:
+    Toxin: 5
+  fillet: FoodMeatSlime
+
+- type: fish
+  id: FishSludgefish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sludgefish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sludgefish_small }
+  averageSize: 20
+  averageWeight: 400
+  fluid: SulphWater
+  temperatureMin: 283.15
+  temperatureMax: 313.15
+  beauty: 0
+  traits:
+  - parthenogenesis
+  - no_mating
+  stablePopulation: 8
+  breedingTime: 150
+  evolutionTypes:
+  - purple_sludgefish
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishSludgefishPurple
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sludgefish_purple }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sludgefish_purple_small }
+  averageSize: 20
+  averageWeight: 400
+  fluid: SulphWater
+  temperatureMin: 283.15
+  temperatureMax: 313.15
+  rarity: 0
+  beauty: 0
+  traits:
+  - parthenogenesis
+  stablePopulation: 8
+  breedingTime: 150
+  evolutionTypes:
+  - purple_sludgefish
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishSockeyeSalmon
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sockeye }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sockeye_small }
+  fluid: Anadromous
+  temperatureMin: 276.15
+  temperatureMax: 292.15
+  beauty: 450
+  stablePopulation: 6
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishSoul
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: soulfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: soulfish_small }
+  averageSize: 60
+  averageWeight: 1200
+  temperatureMin: 276.15
+  temperatureMax: 311.15
+  rarity: 0
+  beauty: 700
+  movement: choppy
+  showInCatalog: false
+  stablePopulation: 4
+  fillet: FoodMeatHuman
+
+- type: fish
+  id: FishSquid
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: squid }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: squid_small }
+  averageWeight: 500
+  sizeDeviation: 0.5
+  weightDeviation: 0.5
+  fluid: Saltwater
+  temperatureMin: 278.15
+  temperatureMax: 299.15
+  beauty: 450
+  traits:
+  - heavy
+  - carnivore
+  - predator
+  - ink
+  - camouflage
+  - wary
+  stablePopulation: 6
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishStarfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish_small }
+  deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish_dead }
+  averageSize: 30
+  averageWeight: 300
+  fluid: Air
+  temperatureMin: 0
+  rarity: 0
+  beauty: 600
+  traits:
+  - antigrav
+  - mixotroph
+  stablePopulation: 3
+  compatibleTypes:
+  - FishStarfishChrystarfish
+
+- type: fish
+  id: FishStarfishChrystarfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: chrystarfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: chrystarfish_small }
+  averageSize: 40
+  averageWeight: 1500
+  fluid: Air
+  temperatureMin: 0
+  feedingFrequency: 600
+  rarity: 50
+  beauty: 700
+  traits:
+  - antigrav
+  movement: accelerando
+  difficultyModifier: 15
+  stablePopulation: 3
+  compatibleTypes:
+  - FishStarfish
+  fillet: MaterialBSCrystal
+  fillets: 3
+
+- type: fish
+  id: FishStingray
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: stingray }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: stingray_small }
+  averageSize: 60
+  averageWeight: 700
+  fluid: Saltwater
+  rarity: 400
+  beauty: 600
+  traits:
+  - stinger
+  - toxic_barbs
+  - wary
+  - carnivore
+  - predator
+  stablePopulation: 4
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishSwordfish
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: swordfish }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: swordfish_small }
+  averageSize: 140
+  averageWeight: 4000
+  fluid: Saltwater
+  feedingFrequency: 240
+  rarity: 50
+  beauty: 700
+  traits:
+  - carnivore
+  - predator
+  - stinger
+  movement: plunger
+  inhandPrefix: swordfish
+  difficultyModifier: 25
+  stablePopulation: 3
+  breedingTime: 270
+  favoriteBaits:
+  - FishArmorfish
+  - FishFryish
+  - FishGoldfish
+  - FishGoldfishGill
+  - FishGoldfishThreeEyes
+  - FishGoldfishThreeEyesGill
+  - FishLavaloop
+  - FishLavaloopPlasmaRiver
+  - FishNeedlefish
+  - FishPlasmatetra
+  fillet: FoodMeatFish
+
+- type: fish
+  id: FishTadpole
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: tadpole }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: tadpole_small }
+  averageSize: 3
+  averageWeight: 10
+  temperatureMin: 288.15
+  temperatureMax: 293.15
+  feedingFrequency: 90
+  rarity: 0
+  beauty: 0
+  traits:
+  - no_mating
+
+- type: fish
+  id: FishZipzap
+  sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: zipzap }
+  aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: zipzap_small }
+  deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: zipzap_dead }
+  averageSize: 30
+  averageWeight: 500
+  temperatureMin: 291.15
+  temperatureMax: 299.15
+  rarity: 200
+  beauty: 450
+  traits:
+  - no_mating
+  - wary
+  - anxiety
+  - electrogenesis
+  stablePopulation: 3
+  fillet: FoodMeatFish
+

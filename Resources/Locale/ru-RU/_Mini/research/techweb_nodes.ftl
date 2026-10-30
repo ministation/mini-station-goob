@@ -236,3 +236,5 @@ research-technology-heavy-weaponry-desc = Системы вооружения т
 research-technology-energy-barriers-desc = Переносные и стационарные системы проецируемых энергетических барьеров.
 research-technology-mini-lathe-parity-name = Паритет рецептов лате
 research-technology-mini-lathe-parity-desc = Скрытый узел для динамических рецептов лате, не покрытых деревом исследований Mini.
+research-technology-typan-fishing-name = Рыболовство
+research-technology-typan-fishing-desc = Снасти, удочки и аквариум для разведения рыбы на Тайпане.

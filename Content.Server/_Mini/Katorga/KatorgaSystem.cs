@@ -23,6 +23,7 @@ using Content.Server.Roles;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords.Systems;
+using Content.Shared._Mini.Fishing.Events;
 using Content.Shared._Mini.Katorga;
 using Content.Shared._Mini.Katorga.Components;
 using Content.Shared._Mini.MiniCCVars;
@@ -161,6 +162,7 @@ public sealed class KatorgaSystem : EntitySystem
     private TimeSpan _nextSafeguard = TimeSpan.Zero;
     private TimeSpan _nextFlush = TimeSpan.Zero;
     private double _pointsToTime;
+    private int _fishRewardMinutes;
 
     public override void Initialize()
     {
@@ -169,6 +171,7 @@ public sealed class KatorgaSystem : EntitySystem
         _sawmill = Logger.GetSawmill("katorga");
         _cfg.OnValueChanged(MiniCCVars.KatorgaPointsToTime, v => _pointsToTime = v, true);
         _cfg.OnValueChanged(MiniCCVars.KatorgaSentenceMultiplier, v => _sentenceMultiplier = Math.Clamp(v, 1.0, 3.0), true);
+        _cfg.OnValueChanged(MiniCCVars.KatorgaFishRewardMinutes, v => _fishRewardMinutes = v, true);
 
         SubscribeLocalEvent<RoundStartingEvent>(OnRoundStarting);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
@@ -179,6 +182,7 @@ public sealed class KatorgaSystem : EntitySystem
         SubscribeLocalEvent<KatorgaBoundComponent, MobStateChangedEvent>(OnInmateMobStateChanged);
         SubscribeLocalEvent<GhostAttemptHandleEvent>(OnGhostAttempt);
         SubscribeLocalEvent<KatorgaOreProcessorComponent, MaterialEntityInsertedEvent>(OnOreInserted);
+        SubscribeLocalEvent<KatorgaBoundComponent, FishingCatchCompletedEvent>(OnFishCaught);
         // После штатной инициализации работ: заключённый есть на любой станции и без лимита.
         SubscribeLocalEvent<StationInitializedEvent>(OnStationInitialized, after: new[] { typeof(StationJobsSystem) });
         SubscribeLocalEvent<IsRoleAllowedEvent>(OnIsRoleAllowed);
@@ -1291,6 +1295,30 @@ public sealed class KatorgaSystem : EntitySystem
         _popup.PopupEntity(
             Loc.GetString("katorga-time-reduced", ("time", KatorgaTime.Format(ConvertPointsToTime(points)))),
             uid,
+            args.User,
+            PopupType.Medium);
+    }
+
+    /// <summary>
+    ///     Рыбалка на каторге тоже отрабатывает срок: каждая пойманная рыба его сокращает.
+    /// </summary>
+    private void OnFishCaught(Entity<KatorgaBoundComponent> ent, ref FishingCatchCompletedEvent args)
+    {
+        if (!Enabled || _fishRewardMinutes <= 0)
+            return;
+
+        if (!_playerManager.TryGetSessionByEntity(args.User, out var session))
+            return;
+
+        var reduced = TimeSpan.FromMinutes(_fishRewardMinutes);
+        if (!_expiry.ContainsKey(session.UserId))
+            return;
+
+        ApplySentenceReward(session.UserId, reduced, "katorga-fish-reward");
+
+        _popup.PopupEntity(
+            Loc.GetString("katorga-time-reduced", ("time", KatorgaTime.Format(reduced))),
+            args.User,
             args.User,
             PopupType.Medium);
     }

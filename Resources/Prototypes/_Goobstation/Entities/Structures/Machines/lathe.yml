@@ -247,7 +247,9 @@
     - ScienceExplosives # Goobstation - Roundstart Grenade Tech
     - GrenadeTriggersStatic # Goobstation - Roundstart Grenade Tech
     - MiscSignallersStatic
+    - FishingStatic
     dynamicPacks:
+    - FishingDynamic
     - PartsDynamic
     - AdvancedTools
     - ScienceEquipment

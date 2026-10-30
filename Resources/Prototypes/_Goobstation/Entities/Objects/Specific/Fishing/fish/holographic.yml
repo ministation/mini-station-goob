@@ -1,0 +1,75 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishHolo
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: goldfish
+  - type: Fish
+    fish: FishHolo
+
+- type: entity
+  id: FishHoloAngel
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: angelfish
+  - type: Fish
+    fish: FishHoloAngel
+
+- type: entity
+  id: FishHoloCheckered
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: checkered
+  - type: Fish
+    fish: FishHoloCheckered
+
+- type: entity
+  id: FishHoloClown
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: holo_clownfish
+  - type: Fish
+    fish: FishHoloClown
+
+- type: entity
+  id: FishHoloCrab
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: crab
+  - type: Fish
+    fish: FishHoloCrab
+
+- type: entity
+  id: FishHoloHalffish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: half_fish
+  - type: Fish
+    fish: FishHoloHalffish
+
+- type: entity
+  id: FishHoloPuffer
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: pufferfish
+  - type: Fish
+    fish: FishHoloPuffer
+  - type: Item
+    size: Normal
+

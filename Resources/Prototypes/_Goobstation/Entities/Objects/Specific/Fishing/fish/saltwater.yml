@@ -1,0 +1,131 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  id: FishCardinal
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: cardinalfish
+  - type: Fish
+    fish: FishCardinal
+
+- type: entity
+  id: FishClownfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: clownfish
+  - type: Fish
+    fish: FishClownfish
+
+- type: entity
+  id: FishClownfishLube
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: lubefish
+  - type: Fish
+    fish: FishClownfishLube
+
+- type: entity
+  id: FishFirefish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: firefish
+  - type: Fish
+    fish: FishFirefish
+
+- type: entity
+  id: FishGreenchromis
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: greenchromis
+  - type: Fish
+    fish: FishGreenchromis
+
+- type: entity
+  id: FishLanternfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: lanternfish
+  - type: Fish
+    fish: FishLanternfish
+
+- type: entity
+  id: FishMonkfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: monkfish
+  - type: Fish
+    fish: FishMonkfish
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: FishPlaice
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: plaice
+  - type: Fish
+    fish: FishPlaice
+
+- type: entity
+  id: FishPufferfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: pufferfish
+  - type: Fish
+    fish: FishPufferfish
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: FishSquid
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: squid
+  - type: Fish
+    fish: FishSquid
+
+- type: entity
+  id: FishStingray
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
+    state: stingray
+  - type: Fish
+    fish: FishStingray
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: FishSwordfish
+  parent: BaseFish
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi
+    state: swordfish
+  - type: Fish
+    fish: FishSwordfish
+  - type: Item
+    size: Huge
+

@@ -1,4 +1,8 @@
-using Content.Goobstation.Shared.Fishing.Events;
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using Content.Shared._Mini.Fishing.Events;
 using Robust.Shared.Player;
 
 namespace Content.Goobstation.Server.Achievements.Conditions;
