@@ -109,8 +109,6 @@
           - id: BaitDoughballSuper
         - id: IngotGold1
           amount: 2
-        - id: TreasureCoinGold
-          amount: 2
 
 - type: entity
   parent: CrateSilver
@@ -137,5 +135,3 @@
           - id: FishingBaitSynthetic
         - id: IngotSilver1
           amount: 3
-        - id: TreasureCoinSilver
-          amount: 2
