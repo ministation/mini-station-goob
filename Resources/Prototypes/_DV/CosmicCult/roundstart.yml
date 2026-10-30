@@ -23,6 +23,7 @@
       min: 2
       max: 6
       playerRatio: 10
+      useAntagCountScale: false # Mini: культу нужен полный стартовый состав, множитель антагов его не трогает
       jobBlacklist: [ Chaplain ] # GOOBSTATION
       skills: # CorvaxGoob-Skills
       - All

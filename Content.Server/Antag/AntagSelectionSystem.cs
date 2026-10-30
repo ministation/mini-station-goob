@@ -227,8 +227,11 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
                 continue;
 
             // Goobstation
-            // Mini: шанс latejoin-антага тоже умножается на mini.antag_count_scale.
-            var antagScale = Math.Max(_cfg.GetCVar(MiniCCVars.AntagCountScale), 0.01f);
+            // Mini: шанс latejoin-антага тоже умножается на mini.antag_count_scale,
+            // если определение не освобождено от множителя (культы).
+            var antagScale = def.Value.UseAntagCountScale
+                ? Math.Max(_cfg.GetCVar(MiniCCVars.AntagCountScale), 0.01f)
+                : 1f;
             if (!RobustRandom.Prob(def.Value.PlayerRatio == 0
                     ? LateJoinRandomChance
                     : Math.Clamp(antagScale / def.Value.PlayerRatio, 0f, 1f)))
