@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # TODO: make more categories
 # Guns
 
@@ -349,22 +353,6 @@
     Telecrystal: 6
   categories:
   - TypanUplinkChemicals
-
-- type: listing
-  id: TypanUplinkZombieBundle
-  name: uplink-zombie-bundle-name
-  description: uplink-zombie-bundle-desc
-  icon: { sprite: /Textures/Structures/Wallmounts/signs.rsi, state: bio }
-  productEntity: ClothingBackpackDuffelZombieBundle
-  cost:
-    Telecrystal: 60
-  categories:
-  - TypanUplinkChemicals
-  conditions:
-  - !type:BuyerWhitelistCondition
-    blacklist:
-      components:
-      - SurplusBundle
 
 - type: listing
   id: TypanUplinkNocturineChemistryBottle
