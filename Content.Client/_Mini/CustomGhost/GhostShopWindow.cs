@@ -538,12 +538,6 @@ public sealed class GhostShopWindow : DefaultWindow
         }
         else
         {
-            actionButton.OnPressed += _ =>
-            {
-                actionButton.Disabled = true;
-                _system.RequestBuy(entry.Id);
-            };
-
             if (entry.PlaytimeHours > 0)
             {
                 // Тема за наигранное время: пока часы не набраны - тикающий таймер остатка,
@@ -583,6 +577,11 @@ public sealed class GhostShopWindow : DefaultWindow
             }
             else
             {
+                actionButton.OnPressed += _ =>
+                {
+                    actionButton.Disabled = true;
+                    _system.RequestBuy(entry.Id);
+                };
                 buttonContent.AddChild(new Label
                 {
                     Text = entry.Price.ToString(),
