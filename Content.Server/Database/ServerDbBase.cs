@@ -1108,46 +1108,22 @@ namespace Content.Server.Database
         {
             await using var db = await GetDb();
 
-            var existing = await db.DbContext.PlayerAntagTokens
-                .SingleOrDefaultAsync(p => p.PlayerId == playerId && p.TokenId == tokenId);
-
+            // Single-statement upsert/delete: the previous read-then-insert raced with every other
+            // writer of the same (player, token) row (two shop clicks, achievement backfill plus
+            // shop), so the INSERT hit IX_player_antag_token_player_id_token_id and EF logged 23505.
             if (amount <= 0)
             {
-                if (existing != null)
-                    db.DbContext.PlayerAntagTokens.Remove(existing);
-
-                await db.DbContext.SaveChangesAsync();
+                await db.DbContext.PlayerAntagTokens
+                    .Where(p => p.PlayerId == playerId && p.TokenId == tokenId)
+                    .ExecuteDeleteAsync();
                 return;
             }
 
-            if (existing == null)
-            {
-                db.DbContext.PlayerAntagTokens.Add(new PlayerAntagToken
-                {
-                    PlayerId = playerId,
-                    TokenId = tokenId,
-                    Amount = amount
-                });
-
-                try
-                {
-                    await db.DbContext.SaveChangesAsync();
-                    return;
-                }
-                catch (DbUpdateException)
-                {
-                    // A concurrent writer already inserted the (player, token) row — update it instead.
-                    db.DbContext.ChangeTracker.Clear();
-                    existing = await db.DbContext.PlayerAntagTokens
-                        .SingleOrDefaultAsync(p => p.PlayerId == playerId && p.TokenId == tokenId);
-                    if (existing == null)
-                        throw;
-                }
-            }
-
-            existing.Amount = amount;
-
-            await db.DbContext.SaveChangesAsync();
+            await db.DbContext.Database.ExecuteSqlAsync($"""
+INSERT INTO player_antag_token (player_id, token_id, amount)
+VALUES ({playerId}, {tokenId}, {amount})
+ON CONFLICT (player_id, token_id) DO UPDATE SET amount = EXCLUDED.amount
+""");
         }
 
         public async Task SetPlayerAntagTokenSelection(Guid playerId, string tokenId, string antagId)

@@ -84,6 +84,76 @@ public sealed class GhostShopWindowTest
         });
     }
 
+
+    /// <summary>
+    /// Регрессия: у кнопки "Собрать" темы за наигранное время было два обработчика OnPressed
+    /// (общий и ветки playtime), поэтому одно нажатие слало два GhostShopBuyRequestEvent.
+    /// Второй запрос вставлял ту же строку player_antag_token и падал на unique-индексе.
+    /// </summary>
+    [Test]
+    public async Task ClaimButtonHasSingleBuyHandler()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var shop = pair.Client.System<GhostShopSystem>();
+
+        var handlerCount = -1;
+        await pair.Client.WaitAssertion(() =>
+        {
+            using var window = new GhostShopWindow(shop);
+            window.UpdateState(new GhostShopStateEvent(
+                0,
+                new List<GhostThemeEntry>
+                {
+                    new("GhostThemePumpkin", "Тыквенный", "", 0, 10, false, false, "", ""),
+                },
+                new List<GhostColorEntry>(),
+                null,
+                10 * 3600));
+
+            var claim = FindButton(window.Contents, Loc.GetString("ghost-shop-btn-claim"));
+            Assert.That(claim, Is.Not.Null, "кнопка получения темы за наигранное время не найдена");
+
+            var field = typeof(BaseButton).GetField("OnPressed",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null, "у BaseButton нет поля события OnPressed");
+            var handler = (Action<BaseButton.ButtonEventArgs>?) field!.GetValue(claim);
+            handlerCount = handler?.GetInvocationList().Length ?? 0;
+        });
+
+        await pair.CleanReturnAsync();
+
+        Assert.That(handlerCount, Is.EqualTo(1),
+            "одно нажатие 'Собрать' должно отправлять один запрос покупки");
+    }
+
+    private static Button? FindButton(Control root, string labelText)
+    {
+        if (root is Button button && ContainsLabel(button, labelText))
+            return button;
+
+        foreach (var child in root.Children)
+        {
+            if (FindButton(child, labelText) is { } nested)
+                return nested;
+        }
+
+        return null;
+    }
+
+    private static bool ContainsLabel(Control root, string text)
+    {
+        if (root is Label label && label.Text == text)
+            return true;
+
+        foreach (var child in root.Children)
+        {
+            if (ContainsLabel(child, text))
+                return true;
+        }
+
+        return false;
+    }
+
     private static TabContainer? FindTabs(Control root)
     {
         foreach (var child in root.Children)
