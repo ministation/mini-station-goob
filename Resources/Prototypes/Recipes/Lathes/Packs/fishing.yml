@@ -4,3 +4,15 @@
   id: FishingStatic
   recipes:
   - FishingGeneGun
+
+- type: latheRecipePack
+  id: FishingDynamic
+  recipes:
+  - FishingRod
+  - FishingLine
+  - FishingHook
+  - BaitCanWorm
+  - FishAnalyzer
+  - FishingRodTelescopic
+  - FishingRodScience
+  - AquariumKit

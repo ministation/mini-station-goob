@@ -8,9 +8,10 @@
   description: A fish-shaped scanner used to monitor fish status and evolutionary traits.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Medical/healthanalyzer.rsi
-    state: analyzer
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_analyzer.rsi
+    state: icon
   - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/fish_analyzer.rsi
     size: Small
   - type: FishAnalyzer
   - type: UserInterface

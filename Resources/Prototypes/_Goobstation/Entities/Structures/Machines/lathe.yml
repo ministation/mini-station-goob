@@ -249,6 +249,7 @@
     - MiscSignallersStatic
     - FishingStatic
     dynamicPacks:
+    - FishingDynamic
     - PartsDynamic
     - AdvancedTools
     - ScienceEquipment

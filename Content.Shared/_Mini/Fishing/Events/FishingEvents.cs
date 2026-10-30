@@ -118,6 +118,21 @@ public struct FishCaughtWithRodEvent
     }
 }
 /// <summary>
+/// Raised on the fisher after a won minigame, regardless of what was pulled out of the water.
+/// Minigame outcomes are not always fish, and other catch events are already taken by achievements.
+/// </summary>
+public sealed class FishingCatchCompletedEvent : EntityEventArgs
+{
+    public readonly EntityUid User;
+    public readonly EntProtoId? Reward;
+
+    public FishingCatchCompletedEvent(EntityUid user, EntProtoId? reward)
+    {
+        User = user;
+        Reward = reward;
+    }
+}
+/// <summary>
 /// Raised on the entity a dynamic fishing source is attached to (vending machine, tray, aquarium...)
 /// so the host can provide its own loot. Set Handled to true even when the host has nothing.
 /// </summary>

@@ -6,13 +6,14 @@ using Robust.Shared.GameStates;
 namespace Content.Shared._Mini.Fishing.Components;
 
 /// <summary>
-/// A handheld scanner that reads the status and the traits of a caught fish.
+/// A handheld scanner that reads the status and the traits of caught fish.
 /// </summary>
 [RegisterComponent, NetworkedComponent]
 public sealed partial class FishAnalyzerComponent : Component
 {
     /// <summary>
-    /// The last fish scanned by this analyzer. Server side only.
+    /// Fish read by the last scan, in the order they are shown in the window.
+    /// Server side only: the window state is rebuilt from this list on every open.
     /// </summary>
-    public EntityUid? Scanned;
+    public List<EntityUid> ScannedFish = new();
 }

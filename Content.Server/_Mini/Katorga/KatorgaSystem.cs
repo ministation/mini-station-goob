@@ -21,7 +21,6 @@ using Content.Server.Parallax;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
-using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Events;
 using Content.Shared._Mini.Katorga;
 using Content.Shared._Mini.Katorga.Components;
@@ -170,7 +169,7 @@ public sealed class KatorgaSystem : EntitySystem
         SubscribeLocalEvent<KillReportedEvent>(OnKillReported);
         SubscribeLocalEvent<GhostAttemptHandleEvent>(OnGhostAttempt);
         SubscribeLocalEvent<KatorgaOreProcessorComponent, MaterialEntityInsertedEvent>(OnOreInserted);
-        SubscribeLocalEvent<FishingRodComponent, FishCaughtWithRodEvent>(OnFishCaught);
+        SubscribeLocalEvent<KatorgaBoundComponent, FishingCatchCompletedEvent>(OnFishCaught);
         // После штатной инициализации работ: заключённый есть на любой станции и без лимита.
         SubscribeLocalEvent<StationInitializedEvent>(OnStationInitialized, after: new[] { typeof(StationJobsSystem) });
         SubscribeLocalEvent<IsRoleAllowedEvent>(OnIsRoleAllowed);
@@ -1165,7 +1164,7 @@ public sealed class KatorgaSystem : EntitySystem
     /// <summary>
     ///     Рыбалка на каторге тоже отрабатывает срок: каждая пойманная рыба его сокращает.
     /// </summary>
-    private void OnFishCaught(Entity<FishingRodComponent> ent, ref FishCaughtWithRodEvent args)
+    private void OnFishCaught(Entity<KatorgaBoundComponent> ent, ref FishingCatchCompletedEvent args)
     {
         if (!Enabled || _fishRewardMinutes <= 0)
             return;

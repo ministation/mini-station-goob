@@ -234,3 +234,5 @@ research-technology-heavy-weaponry-desc = Heavy-class weapon systems and support
 research-technology-energy-barriers-desc = Portable and mounted systems for projected energy barriers.
 research-technology-mini-lathe-parity-name = Lathe Recipe Parity
 research-technology-mini-lathe-parity-desc = Hidden catch-all for dynamic lathe recipes not covered by the Mini tech tree.
+research-technology-typan-fishing-name = Fishing
+research-technology-typan-fishing-desc = Tackle, rods and an aquarium for breeding fish on Typan.

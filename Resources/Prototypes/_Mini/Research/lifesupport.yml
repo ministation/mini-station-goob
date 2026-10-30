@@ -378,3 +378,26 @@
   technologyPrerequisites:
   - TypanMeatManipulation
   # Goobstation R&D Console rework end
+
+- type: technology
+  id: TypanFishing
+  name: research-technology-typan-fishing-name
+  description: research-technology-typan-fishing-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Fishing/aquarium_tank.rsi
+    state: aquarium_map
+  discipline: TypanLifeSupport
+  tier: 1
+  pointCosts:
+  - type: General
+    amount: 7500
+  recipeUnlocks:
+  - AquariumKit
+  - FishingRod
+  - FishingRodTelescopic
+  - FishAnalyzer
+  # Goobstation R&D Console rework start
+  position: 13,31
+  technologyPrerequisites:
+  - TypanHydroponics
+  # Goobstation R&D Console rework end

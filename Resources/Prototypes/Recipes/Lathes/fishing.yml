@@ -12,3 +12,81 @@
     Glass: 400
     Plasteel: 300
     Diamond: 200
+
+# Mini-start: craftable fishing gear.
+# FishingRod is already defined in Resources/Prototypes/_Mini/Recipes/Lathes/orion_missing.yml.
+- type: latheRecipe
+  id: FishingLine
+  result: FishingLine
+  categories:
+  - Tools
+  completetime: 3
+  materials:
+    Steel: 100
+    Plastic: 100
+
+- type: latheRecipe
+  id: FishingHook
+  result: FishingHook
+  categories:
+  - Tools
+  completetime: 3
+  materials:
+    Steel: 100
+
+- type: latheRecipe
+  id: BaitCanWorm
+  result: BaitCanWorm
+  categories:
+  - Tools
+  completetime: 3
+  materials:
+    Steel: 150
+    Plastic: 150
+
+- type: latheRecipe
+  id: FishAnalyzer
+  result: FishAnalyzer
+  categories:
+  - Tools
+  completetime: 5
+  materials:
+    Steel: 200
+    Plastic: 200
+    Glass: 200
+
+- type: latheRecipe
+  id: FishingRodTelescopic
+  result: FishingRodTelescopic
+  categories:
+  - Tools
+  completetime: 6
+  materials:
+    Steel: 400
+    Plastic: 200
+    Glass: 100
+
+- type: latheRecipe
+  id: FishingRodScience
+  result: FishingRodScience
+  categories:
+  - Tools
+  completetime: 8
+  materials:
+    Steel: 500
+    Plastic: 300
+    Glass: 200
+    Plasteel: 100
+
+- type: latheRecipe
+  id: AquariumKit
+  result: AquariumKit
+  categories:
+  - Tools
+  completetime: 8
+  materials:
+    Steel: 500
+    Plastic: 300
+    Glass: 500
+    Plasteel: 100
+# Mini-end

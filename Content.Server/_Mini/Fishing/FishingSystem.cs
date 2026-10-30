@@ -549,6 +549,7 @@ public sealed partial class FishingSystem : EntitySystem
         {
             var caughtEv = new FishCaughtWithRodEvent(user, reward);
             RaiseLocalEvent(rodUid, ref caughtEv);
+            RaiseLocalEvent(user, new FishingCatchCompletedEvent(user, reward));
         }
     }
 
