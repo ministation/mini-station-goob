@@ -35,12 +35,15 @@ public sealed partial class FishAnalyzerWindow : FancyWindow
     private const string MutedHex = "#93a4b3";
 
     [Dependency] private IPrototypeManager _proto = default!;
-    [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private IEntityManager _ent = default!;
+
+    private readonly SpriteSystem _sprite;
 
     public FishAnalyzerWindow()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
+        _sprite = _ent.System<SpriteSystem>();
     }
 
     public void UpdateState(FishAnalyzerBoundUserInterfaceState state)
