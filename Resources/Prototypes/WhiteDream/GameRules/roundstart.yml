@@ -1,4 +1,8 @@
-﻿- type: entity
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
   id: BloodCult
   parent: BaseGameRule
   categories: [ HideSpawnMenu ]
@@ -14,6 +18,7 @@
       max: 4
       min: 2
       playerRatio: 15
+      useAntagCountScale: false # Mini: культу нужен полный стартовый состав, множитель антагов его не трогает
       briefing:
         text: blood-cult-role-greeting
         color: Red

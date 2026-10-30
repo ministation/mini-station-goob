@@ -409,12 +409,14 @@ public sealed class MiniCCVars
     ///     (playerRatio) считается от уменьшенного онлайна, а вес мидраунд-событий
     ///     типа HostilesSpawn умножается на это значение. Минимальные составы (Min)
     ///     и лимиты (Max) не меняются, поэтому режимы не ломаются.
-    ///     0.6 - примерно на 40% спокойнее, 1 - поведение апстрима.
+    ///     0.5 - вдвое меньше антагов, 1 - поведение апстрима.
+    ///     Культы (кровавый и космический) от множителя освобождены через
+    ///     useAntagCountScale: false, иначе им не хватает состава на конверсию.
     ///     Стартовый бюджет хаоса SecretPlus настраивается отдельно
     ///     (gamedirector.roundstart_chaos_score_multiplier).
     /// </summary>
     public static readonly CVarDef<float> AntagCountScale =
-        CVarDef.Create("mini.antag_count_scale", 1f, CVar.SERVERONLY);
+        CVarDef.Create("mini.antag_count_scale", 0.5f, CVar.SERVERONLY);
 
     public static readonly CVarDef<float> BunnyHopSpeedBoostWindow =
         CVarDef.Create("bunny_hop.speed_boost_window", 0.610f, CVar.SERVER | CVar.REPLICATED);

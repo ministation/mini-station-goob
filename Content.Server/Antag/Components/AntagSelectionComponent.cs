@@ -140,6 +140,14 @@ public partial struct AntagSelectionDefinition()
     public int PlayerRatio = 10;
 
     /// <summary>
+    /// Mini: should mini.antag_count_scale reduce this definition's target count?
+    /// Cult modes set this to false: they need their full starting composition
+    /// to convert the crew, and the minimum alone is not enough to play them.
+    /// </summary>
+    [DataField]
+    public bool UseAntagCountScale = true;
+
+    /// <summary>
     /// Whether or not players should be picked to inhabit this antag or not.
     /// If no players are left and <see cref="SpawnerPrototype"/> is set, it will make a ghost role.
     /// </summary>

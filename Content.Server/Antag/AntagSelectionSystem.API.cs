@@ -111,10 +111,13 @@ public sealed partial class AntagSelectionSystem
         // antag selection.
         var poolSize = playerCount ?? GetTotalPlayerCount(_playerManager.Sessions);
 
-        // Mini: mini.antag_count_scale - мягкое уменьшение числа антагов (0.6 = примерно на 40% меньше).
+        // Mini: mini.antag_count_scale - мягкое уменьшение числа антагов (0.5 = вдвое меньше).
         // Правило видит уменьшенное количество игроков, поэтому Min (минимальные составы команд)
-        // и Max (лимиты) не меняются и режимы не ломаются.
-        var antagScale = Math.Max(_cfg.GetCVar(MiniCCVars.AntagCountScale), 0.01f);
+        // и Max (лимиты) не меняются и режимы не ломаются. Культы выключают множитель
+        // (useAntagCountScale: false), иначе конверсии не хватает людей для игры.
+        var antagScale = def.UseAntagCountScale
+            ? Math.Max(_cfg.GetCVar(MiniCCVars.AntagCountScale), 0.01f)
+            : 1f;
         if (antagScale != 1f)
             poolSize = (int) MathF.Round(poolSize * antagScale);
 
