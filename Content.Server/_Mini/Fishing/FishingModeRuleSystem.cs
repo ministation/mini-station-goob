@@ -70,6 +70,7 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
             Loc.GetString("fishing-mode-announce-sender"));
 
         BroadcastStatus(component);
+        RemoveForeignSources(component);
 
         // Round start spawns the water later, from RoundStartedEvent, when the maps exist.
         if (GameTicker.RunLevel == GameRunLevel.InRound)
@@ -239,6 +240,27 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
         }
 
         return leader;
+    }
+
+    /// <summary>
+    /// Fishing mode is about water: toilets, vending machines, hydroponics trays and
+    /// aquariums stop being fishing sources, otherwise bait can be cast from spawn.
+    /// </summary>
+    private void RemoveForeignSources(FishingModeRuleComponent component)
+    {
+        if (component.AllowedSources.Count == 0)
+            return;
+
+        var foreign = new List<EntityUid>();
+        var query = EntityQueryEnumerator<FishingSourceComponent>();
+        while (query.MoveNext(out var uid, out var source))
+        {
+            if (!component.AllowedSources.Contains(source.Source))
+                foreign.Add(uid);
+        }
+
+        foreach (var uid in foreign)
+            RemComp<FishingSourceComponent>(uid);
     }
 
     /// <summary>

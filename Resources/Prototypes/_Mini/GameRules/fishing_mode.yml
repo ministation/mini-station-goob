@@ -24,6 +24,11 @@
     - BaitDoughballBlue
     - BaitDoughballSuper
     - FishingBaitSynthetic
+    allowedSources:
+    - FishingSourceOceanBeach
+    - FishingSourceOcean
+    - FishingSourceLava
+    - FishingSourcePlasma
 
 - type: gamePreset
   id: FishingMode
