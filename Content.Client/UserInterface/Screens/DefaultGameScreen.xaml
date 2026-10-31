@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     xmlns:targeting="clr-namespace:Content.Client._Shitmed.UserInterface.Systems.Targeting.Widgets"
     xmlns:typan="clr-namespace:Content.Client._Mini.TypanWar"
     xmlns:ktg="clr-namespace:Content.Client._Mini.Katorga"
+    xmlns:fishing="clr-namespace:Content.Client._Mini.Fishing"
     Name="DefaultHud"
     VerticalExpand="False"
     VerticalAlignment="Bottom"
@@ -24,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <controls:MainViewport Name="MainViewport"/>
         <typan:TypanWarHudControl Name="TypanWarHud" Access="Protected" MinWidth="580" MaxWidth="580" />
         <ktg:KatorgaHudControl Name="KatorgaHud" Access="Protected" MinWidth="580" MaxWidth="580" />
+        <fishing:FishingModeHudControl Name="FishingModeHud" Access="Protected" MinWidth="520" MaxWidth="520" />
     </LayoutContainer>
     <BoxContainer Name="TopLeft" Access="Protected" Orientation="Vertical">
         <BoxContainer Orientation="Horizontal">
