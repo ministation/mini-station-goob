@@ -87,7 +87,7 @@ jobs:
           # в argv/env docker-экшена (E2BIG: "Argument list too long"). Бот
           # косметический (комментарий с превью) — на таких PR пропускаем его.
           cap=400
-          total=$(( ${#added[@]+"${#added[@]}"} + ${#modified[@]+"${#modified[@]}"} + ${#removed[@]+"${#removed[@]}"} ))
+          total=$(( ${#added[@]} + ${#modified[@]} + ${#removed[@]} ))
           if (( total > cap )); then
             echo "RSI files changed: ${total} > cap ${cap} — skipping RSI diff"
             echo "skip=true" >> "$GITHUB_OUTPUT"
