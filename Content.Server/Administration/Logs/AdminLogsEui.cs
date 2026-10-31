@@ -198,6 +198,14 @@ public sealed class AdminLogsEui : BaseEui
 
         var message = new NewLogs(logs, replace, logs.Count >= filter.Limit);
 
+        // Upstream: last-chance cancellation check right before sending, so a
+        // superseded query cannot deliver its batch after a newer request.
+        if (filter.CancellationToken.IsCancellationRequested)
+        {
+            _adminLogListPool.Return(logs);
+            return;
+        }
+
         SendMessage(message);
 
         _sawmill.Info($"Sent {logs.Count} logs to {Player.Name} in {stopwatch.Elapsed.TotalMilliseconds} ms");

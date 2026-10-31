@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Collections.Frozen;
-using Content.Goobstation.Common.MisandryBox;
 using Content.Shared._EinsteinEngines.Language.Components;
 using Content.Shared._Mini.DailyQuests;
 using Content.Shared.Chat.Prototypes;
@@ -101,7 +100,16 @@ public abstract partial class SharedChatSystem
         if (!forceEmote && !AllowedToUseEmote(source, emote))
             return false;
 
-        var didEmote = TryEmoteWithoutChat(source, emote, ignoreActionBlocker, voluntary: !forceEmote);
+        var didEmote = TryEmoteWithoutChat(source, emote, ignoreActionBlocker);
+
+        // Mini: player-initiated emote → daily quests. The voluntary plumbing was removed
+        // upstream with the emotespam system (#7464); this reproduces the old
+        // "voluntary: !forceEmote" raise.
+        if (didEmote && !forceEmote && _net.IsServer)
+        {
+            var performed = new EmotePerformedEvent(source);
+            RaiseLocalEvent(ref performed);
+        }
 
         // check if proto has valid message for chat
         if (didEmote && emote.ChatMessages.Count != 0)
@@ -129,13 +137,12 @@ public abstract partial class SharedChatSystem
     /// <returns>True if an emote was performed. False if the emote is unvailable, cancelled, etc.</returns>
     public bool TryEmoteWithoutChat(EntityUid uid,
         string emoteId,
-        bool ignoreActionBlocker = false,
-        bool voluntary = false) // Goob - emotespam
+        bool ignoreActionBlocker = false)
     {
         if (!_prototypeManager.Resolve<EmotePrototype>(emoteId, out var proto))
             return false;
 
-        return TryEmoteWithoutChat(uid, proto, ignoreActionBlocker, voluntary); // Goob - emotespam
+        return TryEmoteWithoutChat(uid, proto, ignoreActionBlocker);
     }
 
     /// <summary>
@@ -144,13 +151,12 @@ public abstract partial class SharedChatSystem
     /// <returns>True if an emote was performed. False if the emote is unvailable, cancelled, etc.</returns>
     public bool TryEmoteWithoutChat(EntityUid uid,
         EmotePrototype proto,
-        bool ignoreActionBlocker = false,
-        bool voluntary = false) // Goob - emotespam
+        bool ignoreActionBlocker = false)
     {
         if (!_actionBlocker.CanEmote(uid) && !ignoreActionBlocker)
             return false;
 
-        return TryInvokeEmoteEvent(uid, proto, voluntary); // Goob - emotespam
+        return TryInvokeEmoteEvent(uid, proto);
     }
 
     /// <summary>
@@ -189,12 +195,6 @@ public abstract partial class SharedChatSystem
         // optional override params > general params for all sounds in set > individual sound params
         var param = audioParams ?? proto.GeneralParams ?? sound.Params;
 
-        // Goobstation/MisandryBox - Emote spam countermeasures
-        var ev = new EmoteSoundPitchShiftEvent();
-        RaiseLocalEvent(uid, ref ev);
-
-        param.Pitch += ev.Pitch;
-        // Goobstation/MisandryBox
 
         _audio.PlayPvs(sound, uid, param);
         return true;
@@ -206,7 +206,7 @@ public abstract partial class SharedChatSystem
     /// <param name="source">The entity that is speaking</param>
     /// <param name="textInput">Formatted emote message.</param>
     /// <returns>True if the chat message should be displayed (because the emote was explicitly cancelled), false if it should not be.</returns>
-    protected bool TryEmoteChatInput(EntityUid source, string textInput, bool forced = false) // goob edit - add forced argument
+    protected bool TryEmoteChatInput(EntityUid source, string textInput)
     {
         var actionTrimmedLower = TrimPunctuation(textInput.ToLower());
         if (!_wordEmoteDict.TryGetValue(actionTrimmedLower, out var emote))
@@ -215,7 +215,16 @@ public abstract partial class SharedChatSystem
         if (!AllowedToUseEmote(source, emote))
             return true;
 
-        return TryInvokeEmoteEvent(source, emote, voluntary: !forced);
+        // Mini: typed word-emotes are always player-initiated → daily quests
+        // (old code raised with "voluntary: !forced", forced was always false here).
+        var didEmote = TryInvokeEmoteEvent(source, emote);
+        if (didEmote && _net.IsServer)
+        {
+            var performed = new EmotePerformedEvent(source);
+            RaiseLocalEvent(ref performed);
+        }
+
+        return didEmote;
 
     }
     /// <summary>
@@ -256,7 +265,7 @@ public abstract partial class SharedChatSystem
     /// <param name="uid">The entity which is emoting</param>
     /// <param name="proto">The emote which is being performed</param>
     /// <returns>True if the emote was performed, false otherwise.</returns>
-    private bool TryInvokeEmoteEvent(EntityUid uid, EmotePrototype proto, bool voluntary = false)
+    private bool TryInvokeEmoteEvent(EntityUid uid, EmotePrototype proto)
     {
         var beforeEv = new BeforeEmoteEvent(uid, proto);
         RaiseLocalEvent(uid, ref beforeEv);
@@ -294,14 +303,8 @@ public abstract partial class SharedChatSystem
             return false;
         }
 
-        var ev = new EmoteEvent(proto, voluntary);
+        var ev = new EmoteEvent(proto);
         RaiseLocalEvent(uid, ref ev);
-
-        if (_net.IsServer && voluntary)
-        {
-            var performed = new EmotePerformedEvent(uid);
-            RaiseLocalEvent(ref performed);
-        }
 
         return true;
     }

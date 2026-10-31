@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Goobstation.Shared.Disease;
 using Content.Goobstation.Shared.Disease.Components;
@@ -51,7 +55,7 @@ public sealed partial class DiseaseSystem
         if (ent.Comp.WithChat)
             _chat.TryEmoteWithChat(args.Ent, emote, forceEmote: true);
         else
-            _chat.TryEmoteWithoutChat(args.Ent, emote, voluntary: false);
+            _chat.TryEmoteWithoutChat(args.Ent, emote);
     }
 
     private void OnGenericEffect(Entity<DiseaseGenericEffectComponent> ent, ref DiseaseEffectEvent args)

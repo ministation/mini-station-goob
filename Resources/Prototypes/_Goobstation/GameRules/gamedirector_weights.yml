@@ -16,6 +16,16 @@
     Ratvar: 0.05
     BloodCult: 0.02
 
+- type: weightedRandom
+  id: GameDirectorWatcher
+  weights:
+    Traitor: 0.45
+    Changeling: 0.2
+    Heretic: 0.2
+    BlobGameMode: 0.05
+    Wizard: 0.05
+    CosmicCult: 0.05
+
 
 - type: incompatibleModes
   id: Nukeops

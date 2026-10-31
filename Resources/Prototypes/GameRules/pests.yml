@@ -31,6 +31,7 @@
     duration: 30 # DeltaV: was 50, used as a delay now
     maxOccurrences: 2 # Mini: не больше двух волн за раунд, иначе за 1,5-2 часа мыши заполняют станцию
     chaos: # Goobstation
+      Infestation: 40
       Mess: 10 # there's 15 morbillion mice usually and they're easy to kill
     eventType: Neutral # Goobstation
   # Goobstation
@@ -61,6 +62,7 @@
     minimumPlayers: 30 # Hopefully this is enough for the Rat King's potential Army (it was not, raised from 15 -> 30)
     maxOccurrences: 1 # Mini: армия крысиного короля тоже не бесконечная
     chaos: # Goobstation
+      Infestation: 30
       Mess: 10
       Hostile: 1 # low chance to spawn rat king
     eventType: HostilesSpawn # Goobstation
@@ -117,8 +119,8 @@
     duration: 30 # DeltaV: was 50, used as a delay now
     maxOccurrences: 2 # Mini: не больше двух волн за раунд, иначе тараканы заполняют станцию
     chaos: # Goobstation
+      Infestation: 30
       Mess: 15
-      Hostile: 2
     eventType: Neutral # Goobstation
   # Goobstation
   - type: GameRule
@@ -159,7 +161,7 @@
     weight: 6
     duration: 30 # DeltaV: was 50, used as a delay now
     chaos: # Goobstation
-      Friend: -5
+      Infestation: 10
       Mess: 5
     eventType: Neutral # Goobstation
   # Goobstation
@@ -185,6 +187,7 @@
     duration: 30 # DeltaV: was 50, used as a delay now
     minimumPlayers: 30
     chaos: # Goobstation
+      Infestation: 15
       Mess: 5
       Hostile: 1 # the very low gib snail prob
     eventType: Chaotic # Goobstation

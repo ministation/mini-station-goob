@@ -1,0 +1,29 @@
+# Ported from https://github.com/ArcaneSS14/arcane/tree/349326398f687b35dc56ae3b1325fa56f740ecd0
+
+- type: marking
+  id: PiercingBellybutton
+  bodyPart: Chest
+  markingCategory: Overlay
+  speciesRestriction: [Dwarf, Felinid, Human, Oni]
+  sprites:
+  - sprite: _Goobstation/Mobs/Customization/Ported/Arcane/_Arcane/Mobs/Customization/piercing.rsi
+    state: piercing_bellybutton
+
+- type: marking
+  id: PiercingLeftEar
+  bodyPart: HeadSide
+  markingCategory: Overlay
+  speciesRestriction: [Dwarf, Felinid, Human, Oni, Rodentia, Shadowkin, Tajaran, Vulpkanin]
+  sprites:
+  - sprite: _Goobstation/Mobs/Customization/Ported/Arcane/_Arcane/Mobs/Customization/piercing.rsi
+    state: piercing_left_ear
+
+- type: marking
+  id: PiercingRightEar
+  bodyPart: HeadSide
+  markingCategory: Overlay
+  speciesRestriction: [Dwarf, Felinid, Human, Oni, Rodentia, Shadowkin, Tajaran, Vulpkanin]
+  sprites:
+  - sprite: _Goobstation/Mobs/Customization/Ported/Arcane/_Arcane/Mobs/Customization/piercing.rsi
+    state: piercing_right_ear
+

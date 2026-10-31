@@ -93,6 +93,7 @@
   - type: HumanoidAppearance
     species: Human
   - type: FootWalkAnimation # Mini: subtle foot bob while walking
+  - type: Wagging # Goob
   - type: TypingIndicator
   - type: SlowOnDamage
     speedModifierThresholds:

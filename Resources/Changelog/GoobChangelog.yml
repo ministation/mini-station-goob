@@ -26800,3 +26800,81 @@ Entries:
       message: slightly increased the spawnrate of skeletons.
   id: 3007
   time: '2026-10-28T19:42:18.0000000+00:00'
+- author: Durk
+  changes:
+    - type: Add
+      message: >-
+        Trying a new font for the new lobby ui, if everyone hates it i will
+        revert it.
+    - type: Add
+      message: >-
+        added a super secret easter egg to the lobby UI, you totally wont find
+        it easily :smile:
+    - type: Tweak
+      message: >-
+        Made a lot of the UI in the character customization properly use our
+        sprites.
+  id: 3008
+  time: '2026-10-29T02:08:18.0000000+00:00'
+- author: Durk
+  changes:
+    - type: Add
+      message: Added 2000 new markings!
+    - type: Add
+      message: Added ability to view animated markings in the customization menu.
+    - type: Tweak
+      message: >-
+        Any mob with a tail that has an animated variant now automatically gets
+        the tail wag action, instead of it being set per species.
+  id: 3009
+  time: '2026-10-29T02:09:01.0000000+00:00'
+- author: Aidenkrz
+  changes:
+    - type: Add
+      message: Ported several emotes from other forks
+    - type: Remove
+      message: >-
+        Hard nerfed harpies, they can no longer use all emotes, 500 harpy mains
+        crying in chat tonight.
+    - type: Remove
+      message: >-
+        Removed the emote spam system, if u guys get too uppity and start
+        spamming them i may return it.
+    - type: Fix
+      message: Fixed juice that makes you hew not playing sounds.
+  id: 3010
+  time: '2026-10-29T17:18:09.0000000+00:00'
+- author: loksill
+  changes:
+    - type: Tweak
+      message: The Plasmaman helmet no longer requires a battery
+    - type: Tweak
+      message: >-
+        The flashlight on Plasmaman's helmet now shines in the color of
+        plasmaman
+    - type: Add
+      message: >-
+        Plasmamens now glow passively, but hardsuits and envirosuits suppress
+        this light
+  id: 3011
+  time: '2026-10-30T00:43:32.0000000+00:00'
+- author: Beanyboi69
+  changes:
+    - type: Fix
+      message: Fixed candy buckets fitting in bags.
+  id: 3012
+  time: '2026-10-30T12:48:34.0000000+00:00'
+- author: Durk
+  changes:
+    - type: Add
+      message: Added two new game director modes, read the news post.
+    - type: Add
+      message: Added two new (helpful) midround events, read the news post.
+    - type: Tweak
+      message: >-
+        Various changes to game director to make it suck less, read the news
+        post.
+    - type: Tweak
+      message: Temporarily disabled non game director modes, read the news post.
+  id: 3013
+  time: '2026-10-30T19:04:20.0000000+00:00'

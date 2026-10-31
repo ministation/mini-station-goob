@@ -74,3 +74,27 @@ marking-TajaranEarsTorn-torn_inner = Внутреннее ухо
 marking-TajaranEarsWide = Широкие уши
 marking-TajaranEarsWide-wide_outer = Внешнее ухо
 marking-TajaranEarsWide-wide_inner = Внутреннее ухо
+
+marking-TajaranLeopardChest = Леопардовые пятна (грудь)
+
+marking-TajaranLeopardChest-leopard_chest = Пятна
+
+marking-TajaranLeopardAltChest = Леопардовые пятна (грудь, альт.)
+
+marking-TajaranLeopardAltChest-leopard_alt_chest = Пятна
+
+marking-TajaranLeopardLArm = Леопардовые пятна (левая рука)
+
+marking-TajaranLeopardLArm-leopard_l_arm = Пятна
+
+marking-TajaranLeopardRArm = Леопардовые пятна (правая рука)
+
+marking-TajaranLeopardRArm-leopard_r_arm = Пятна
+
+marking-TajaranLeopardLHand = Леопардовые пятна (левая кисть)
+
+marking-TajaranLeopardLHand-leopard_l_hand = Пятна
+
+marking-TajaranLeopardRHand = Леопардовые пятна (правая кисть)
+
+marking-TajaranLeopardRHand-leopard_r_hand = Пятна

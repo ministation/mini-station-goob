@@ -188,3 +188,47 @@ marking-VulpFacialHairRuff = Воротник
 marking-VulpFacialHairElder = Старейшина
 marking-VulpFacialHairElderChin = Борода старейшины
 marking-VulpFacialHairKita = Кито
+
+marking-VulpTailLongWag-long-wagging = Длинный хвост (основной)
+
+marking-VulpTailLongWag-long-wagging-tip = Длинный хвост (кончик)
+
+marking-VulpTailLongWag = Длинный (виляющий)
+
+marking-VulpTailCorgi-corgi = Хвост корги
+
+marking-VulpTailCorgi = Корги
+
+marking-VulpTailHusky-husky = Хвост хаски (основной)
+
+marking-VulpTailHuskyWag-husky-wagging = Хвост хаски (основной)
+
+marking-VulpTailHuskyWag-husky-wagging-inner = Хвост хаски (внутри)
+
+marking-VulpTailHuskyWag-husky-wagging-outer = Хвост хаски (снаружи)
+
+marking-VulpTailHuskyWag = Вульпканин (хаски, виляние)
+
+marking-VulpTailHuskyAltWag-husky-wagging = Хвост хаски
+
+marking-VulpTailHuskyAltWag = Вульпканин (хаски, альт., виляние)
+
+marking-VulpTailFennec-fennec-tip = Хвост фенека (кончик)
+
+marking-VulpTailFennecWag-fennec-wagging = Хвост фенека (основной)
+
+marking-VulpTailFennecWag-fennec-wagging-tip = Хвост фенека (кончик)
+
+marking-VulpTailFennecWag = Вульпканин (фенек, виляние)
+
+marking-VulpTailFluffy-fluffy-tip = Пушистый хвост (кончик)
+
+marking-VulpTailFluffyWag-fluffy-wagging = Пушистый хвост (основной)
+
+marking-VulpTailFluffyWag-fluffy-wagging-tip = Пушистый хвост (кончик)
+
+marking-VulpTailFluffyWag = Вульпканин (пушистый, виляние)
+
+marking-VulpTailDalmatian-dalmatian = Хвост далматина
+
+marking-VulpTailDalmatian = Вульпканин (далматин)
