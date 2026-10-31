@@ -201,8 +201,9 @@ public sealed class FishingModeHudControl : PanelContainer
 
         _emptyLabel.Visible = leaders.Length == 0;
 
-        // The leader's bar is always full, the others are relative to the leader.
-        var leaderScore = leaders.Length > 0 ? Math.Max(1, leaders[0].Score) : 1;
+        // Полоска показывает количество рыб из подписи строки, а не скрытые очки:
+        // при равном числе рыб полоски равные, даже если очки за редкость различаются.
+        var leaderFish = leaders.Length > 0 ? Math.Max(1, leaders[0].Fish) : 1;
 
         for (var i = 0; i < LeaderCount; i++)
         {
@@ -217,7 +218,7 @@ public sealed class FishingModeHudControl : PanelContainer
             row.Container.Visible = true;
             row.Name.Text = leader.Name;
             row.Count.Text = Loc.GetString("fishing-mode-hud-fish", ("count", leader.Fish));
-            row.Bar.Value = Math.Clamp(leader.Score / (float) leaderScore, 0f, 1f);
+            row.Bar.Value = Math.Clamp(leader.Fish / (float) leaderFish, 0f, 1f);
         }
     }
 }
