@@ -2,7 +2,6 @@
 
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
-using Content.Goobstation.UIKit.UserInterface.Lobby; // Goob
 
 namespace Content.Client.Humanoid;
 
@@ -31,7 +30,6 @@ public sealed class EyeColorPicker : Control
 
         vBox.AddChild(_colorSelectors = new ColorSelectorSliders());
         _colorSelectors.SelectorType = ColorSelectorSliders.ColorSelectorType.Hsv; // defaults color selector to HSV
-        HullStyler.Apply(_colorSelectors); // Goob
 
         _colorSelectors.OnColorChanged += ColorValueChanged;
     }
