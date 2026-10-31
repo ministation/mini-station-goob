@@ -102,6 +102,15 @@ public abstract partial class SharedChatSystem
 
         var didEmote = TryEmoteWithoutChat(source, emote, ignoreActionBlocker);
 
+        // Mini: player-initiated emote → daily quests. The voluntary plumbing was removed
+        // upstream with the emotespam system (#7464); this reproduces the old
+        // "voluntary: !forceEmote" raise.
+        if (didEmote && !forceEmote && _net.IsServer)
+        {
+            var performed = new EmotePerformedEvent(source);
+            RaiseLocalEvent(ref performed);
+        }
+
         // check if proto has valid message for chat
         if (didEmote && emote.ChatMessages.Count != 0)
         {
@@ -206,7 +215,16 @@ public abstract partial class SharedChatSystem
         if (!AllowedToUseEmote(source, emote))
             return true;
 
-        return TryInvokeEmoteEvent(source, emote);
+        // Mini: typed word-emotes are always player-initiated → daily quests
+        // (old code raised with "voluntary: !forced", forced was always false here).
+        var didEmote = TryInvokeEmoteEvent(source, emote);
+        if (didEmote && _net.IsServer)
+        {
+            var performed = new EmotePerformedEvent(source);
+            RaiseLocalEvent(ref performed);
+        }
+
+        return didEmote;
 
     }
     /// <summary>
@@ -287,12 +305,6 @@ public abstract partial class SharedChatSystem
 
         var ev = new EmoteEvent(proto);
         RaiseLocalEvent(uid, ref ev);
-
-        if (_net.IsServer && voluntary)
-        {
-            var performed = new EmotePerformedEvent(uid);
-            RaiseLocalEvent(ref performed);
-        }
 
         return true;
     }
