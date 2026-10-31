@@ -46,7 +46,7 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
     /// <summary>
     /// Coin rewards for the top three fishers, paid at round end.
     /// </summary>
-    private static readonly int[] PlaceRewards = { 3, 2, 1 };
+    private static readonly int[] PlaceRewards = { 5, 3, 2 };
 
     [Dependency] private readonly AntagTokenSystem _antagTokens = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
