@@ -206,7 +206,8 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using Direction = Robust.Shared.Maths.Direction;
-
+// Mini: no Content.Goobstation usings here — the Goob lobby editor partial is removed and
+// the Barks region below is commented out (CorvaxGoob-Clearing).
 namespace Content.Client.Lobby.UI
 {
     [GenerateTypedNameReferences]
@@ -1560,7 +1561,10 @@ namespace Content.Client.Lobby.UI
         private void SetSpecies(string newSpecies)
         {
             Profile = Profile?.WithSpecies(newSpecies);
+            EnsureAppearanceForSpecies(); // Goob
             OnSkinColorOnValueChanged(); // Species may have special color prefs, make sure to update it.
+            UpdateMarkings(); // Goob
+            UpdateHairPickers(); // Goob
             Markings.SetSpecies(newSpecies); // Repopulate the markings tab as well.
             // In case there's job restrictions for the species
             RefreshJobs();
@@ -1578,6 +1582,39 @@ namespace Content.Client.Lobby.UI
             UpdateWeight();
             // end Goobstation: port EE height/width sliders */
             RefreshTraits(); // Goobstation: ported from DeltaV - Species trait exclusion
+        }
+
+        // Goob: species-change appearance fix, ported from the removed HumanoidProfileEditor.Goob.cs
+        // partial (upstream #7464 era). EnsureValid takes the CorvaxGoob sponsor prototype list here.
+        private void EnsureAppearanceForSpecies()
+        {
+            if (Profile == null)
+                return;
+
+            var sponsorPrototypes = _sponsorsManager?.GetClientPrototypes()?.ToArray() ?? []; //Sponsor think
+            var appearance = HumanoidCharacterAppearance.EnsureValid(Profile.Appearance, Profile.Species, Profile.Sex, sponsorPrototypes);
+
+            if (!SpeciesAllows(MarkingCategories.Hair, appearance.HairStyleId, HairStyles.DefaultHairStyle))
+                appearance = appearance.WithHairStyleName(HairStyles.DefaultHairStyle);
+
+            if (!SpeciesAllows(MarkingCategories.FacialHair, appearance.FacialHairStyleId, HairStyles.DefaultFacialHairStyle))
+                appearance = appearance.WithFacialHairStyleName(HairStyles.DefaultFacialHairStyle);
+
+            Profile = Profile.WithCharacterAppearance(appearance);
+        }
+
+        private bool SpeciesAllows(MarkingCategories category, string styleId, string defaultStyle)
+        {
+            if (Profile == null || styleId == defaultStyle)
+                return true;
+
+            var species = _prototypeManager.Index<SpeciesPrototype>(Profile.Species);
+            if (_prototypeManager.TryIndex(species.MarkingPoints, out var points)
+                && points.Points.TryGetValue(category, out var categoryPoints)
+                && categoryPoints.Points == 0)
+                return false;
+
+            return _markingManager.MarkingsByCategoryAndSpecies(category, Profile.Species).ContainsKey(styleId);
         }
 
         private void SetName(string newName)

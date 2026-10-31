@@ -17,6 +17,8 @@ public static class RunechatStyle
     public const int MaxFontSize = 24;
     private const float DesignPixelsPerEm = 8f;
 
+    // Mini: the explicit-path font cache lives in the RunechatFontCache IoC singleton (Goob);
+    // the UI-font stack cache below is Mini-only and keyed by the active font style.
     private static readonly Dictionary<(string Key, int Size), Font> Fonts = new();
     private static readonly Dictionary<Font, Stylesheet> Sheets = new();
 
@@ -41,15 +43,11 @@ public static class RunechatStyle
     /// <summary>Explicit font file, e.g. the NamePeek overlay when runechat is off.</summary>
     public static Font GetFont(string path, int size)
     {
-        if (Fonts.TryGetValue((path, size), out var font))
-            return font;
-
-        var cache = IoCManager.Resolve<IResourceCache>();
-        font = new VectorFont(cache.GetResource<FontResource>(path), size);
-        Fonts[(path, size)] = font;
-        return font;
+        return IoCManager.Resolve<RunechatFontCache>().GetFont(path, size);
     }
 
+    // Mini: takes a Font (usually from GetFont(int), which has no file path) rather than
+    // Goob's (path, size) pair, so it keeps its own cache instead of RunechatFontCache.
     public static Stylesheet GetStylesheet(Font font)
     {
         if (Sheets.TryGetValue(font, out var sheet))

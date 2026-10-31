@@ -91,7 +91,7 @@ public sealed class EmoteOnDamageSystem : EntitySystem
             }
             else
             {
-                _chatSystem.TryEmoteWithoutChat(uid, selectedEmote, voluntary: false);
+                _chatSystem.TryEmoteWithoutChat(uid, selectedEmote); // goob: voluntary arg removed in emote ports
             }
 
             emoteOnDamage.LastEmoteTime = _gameTiming.CurTime;
