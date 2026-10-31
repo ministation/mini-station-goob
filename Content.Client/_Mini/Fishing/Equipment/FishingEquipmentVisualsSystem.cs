@@ -131,9 +131,25 @@ public sealed partial class FishingEquipmentVisualsSystem : EntitySystem
                 continue;
 
             var suffix = hand.Value.Location.ToString().ToLowerInvariant();
+            SetHeldRodState(holder, sprite, rod, suffix);
             SetHeldLayerVisible(holder, sprite, $"line_overlay-inhand-{suffix}", hasAnything);
             SetHeldLayerVisible(holder, sprite, $"hook_overlay-inhand-{suffix}", hasHook);
         }
+    }
+
+    /// <summary>
+    /// Shows the rod art of this rod type in the hand instead of the default one.
+    /// </summary>
+    private void SetHeldRodState(EntityUid holder, SpriteComponent sprite, EntityUid rod, string suffix)
+    {
+        if (!TryComp<FishingRodComponent>(rod, out var rodComp) || rodComp.InhandState == null)
+            return;
+
+        var key = $"rod-inhand-{suffix}";
+        if (!_sprite.LayerMapTryGet((holder, sprite), key, out var layer, false))
+            return;
+
+        _sprite.LayerSetRsiState((holder, sprite), layer, $"{rodComp.InhandState}-inhand-{suffix}");
     }
 
     private void SetHeldLayerVisible(EntityUid holder, SpriteComponent sprite, string key, bool visible)

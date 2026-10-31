@@ -105,4 +105,11 @@ public sealed partial class FishingRodComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public EntityUid? FishingLure;
+
+    /// <summary>
+    /// In-hand state prefix for this rod type, so rods in hands are not all the same.
+    /// The art lives next to the basic rod states in fishing_rod_inhand.rsi.
+    /// </summary>
+    [DataField]
+    public string? InhandState;
 }
