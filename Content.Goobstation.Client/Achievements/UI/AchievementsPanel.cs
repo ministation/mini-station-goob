@@ -16,6 +16,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -200,6 +201,20 @@ public sealed partial class AchievementsPanel : BoxContainer
     }
 
     public void UpdateAchievements(List<AchievementData> achievements)
+    {
+        // Ошибка на одной ачивке не должна ронять всё меню наград: в Release-клиенте
+        // исключение глотается молча и выглядит как "меню не открывается".
+        try
+        {
+            UpdateAchievementsInner(achievements);
+        }
+        catch (Exception e)
+        {
+            Logger.GetSawmill("achievements").Error($"Failed to update the achievements panel: {e}");
+        }
+    }
+
+    private void UpdateAchievementsInner(List<AchievementData> achievements)
     {
         var previousTab = _tabs.CurrentTab;
         _tabs.RemoveAllChildren();

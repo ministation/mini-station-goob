@@ -280,6 +280,7 @@
     - id: heretic
       nameLocKey: antag-store-role-heretic-name
       descriptionLocKey: antag-store-role-heretic-description
+      major: true
       cost: 12
       iconPath: /Textures/_Mini/Interface/Antags/heretic.png
       mode: LobbyDeposit

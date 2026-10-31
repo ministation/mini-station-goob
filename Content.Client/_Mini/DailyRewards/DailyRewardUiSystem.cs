@@ -2,11 +2,16 @@
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 using Content.Shared._Mini.DailyRewards;
 using Robust.Shared.Localization;
+using Robust.Shared.Log;
 
 namespace Content.Client._Mini.DailyRewards;
 
 public sealed class DailyRewardUiSystem : EntitySystem
 {
+    // Release-клиент глотает исключения в UI-обработчиках (EXCEPTION_TOLERANCE): без
+    // своих try/catch сломанное состояние выглядело бы как "меню то открывается, то нет".
+    private readonly ISawmill _sawmill = Logger.GetSawmill("daily_rewards");
+
     private DailyRewardWindow? _window;
     private DailyRewardUpdateMessage? _cachedState;
     private bool _awaitingOpen;
@@ -25,10 +30,24 @@ public sealed class DailyRewardUiSystem : EntitySystem
         _awaitingOpen = true;
         EnsureWindow();
 
-        if (_cachedState != null)
-            _window!.UpdateState(_cachedState);
+        if (_window == null || _window.Disposed)
+            return;
 
-        _window!.OpenCentered();
+        // Кэшированное состояние может быть любым: окно обязано открыться,
+        // свежие данные придут с сервера следом.
+        if (_cachedState != null)
+        {
+            try
+            {
+                _window.UpdateState(_cachedState);
+            }
+            catch (Exception e)
+            {
+                _sawmill.Error($"Failed to apply the cached daily rewards state: {e}");
+            }
+        }
+
+        _window.OpenCentered();
         RaiseNetworkEvent(new DailyRewardOpenRequestEvent());
     }
 
@@ -70,7 +89,15 @@ public sealed class DailyRewardUiSystem : EntitySystem
 
         if (_window != null && !_window.Disposed)
         {
-            _window.UpdateState(ev.State);
+            try
+            {
+                _window.UpdateState(ev.State);
+            }
+            catch (Exception e)
+            {
+                _sawmill.Error($"Failed to refresh the daily rewards window: {e}");
+            }
+
             return;
         }
 
@@ -78,8 +105,19 @@ public sealed class DailyRewardUiSystem : EntitySystem
             return;
 
         EnsureWindow();
-        _window?.UpdateState(ev.State);
-        _window?.OpenCentered();
+        if (_window is { Disposed: false })
+        {
+            try
+            {
+                _window.UpdateState(ev.State);
+            }
+            catch (Exception e)
+            {
+                _sawmill.Error($"Failed to refresh the daily rewards window: {e}");
+            }
+
+            _window.OpenCentered();
+        }
     }
 
     private void EnsureWindow()
@@ -87,7 +125,19 @@ public sealed class DailyRewardUiSystem : EntitySystem
         if (_window != null && !_window.Disposed)
             return;
 
-        var window = new DailyRewardWindow();
+        DailyRewardWindow window;
+        try
+        {
+            window = new DailyRewardWindow();
+        }
+        catch (Exception e)
+        {
+            // Сломанная постройка окна повторится и на следующий раз: пишем в лог,
+            // чтобы причина была видна в клиентском логе сразу.
+            _sawmill.Error($"Failed to create the daily rewards window: {e}");
+            return;
+        }
+
         // The window hosts weekly quests and achievements, so it is the generic rewards menu.
         window.Title = Loc.GetString("daily-reward-window-title-menu");
         AttachWindow(window);

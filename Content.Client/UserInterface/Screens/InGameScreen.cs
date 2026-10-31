@@ -21,6 +21,15 @@ public abstract class InGameScreen : UIScreen
     /// </summary>
     public event Action<GUIMouseWheelEventArgs>? WheelScrolled;
 
+    public InGameScreen()
+    {
+        // The wheel dispatch skips controls with the Ignore filter, and that is the
+        // default for the screen, so the screen-wide wheel event would never fire.
+        // Pass keeps the screen in the chain without swallowing anything: clicks and
+        // scrolls still go to the controls under the cursor and to the world.
+        MouseFilter = MouseFilterMode.Pass;
+    }
+
     public abstract ChatBox ChatBox { get; }
 
     public abstract void SetChatSize(Vector2 size);

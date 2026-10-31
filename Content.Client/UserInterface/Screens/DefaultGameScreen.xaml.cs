@@ -29,8 +29,9 @@ public sealed partial class DefaultGameScreen : InGameScreen
         SetMarginLeft(TypanWarHud, TypanWarHud.GetValue<float>(MarginLeftProperty) - 290);
         SetAnchorAndMarginPreset(KatorgaHud, LayoutPreset.CenterBottom, margin: 205);
         SetMarginLeft(KatorgaHud, KatorgaHud.GetValue<float>(MarginLeftProperty) - 290);
-        // Ниже верхней панели меню, чтобы худ рыбалки не заезжал под интерфейс.
-        SetAnchorAndMarginPreset(FishingModeHud, LayoutPreset.CenterTop, margin: 48);
+        // Низ по центру, рядом с худами войны Тайпана и каторги: верх экрана занят
+        // меню, голосованием и чатом, туда худ рыбалки заезжал.
+        SetAnchorAndMarginPreset(FishingModeHud, LayoutPreset.CenterBottom, margin: 122);
 
         Chat.OnResized += ChatOnResized;
         Chat.OnChatResizeFinish += ChatOnResizeFinish;
