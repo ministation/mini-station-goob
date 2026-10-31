@@ -185,5 +185,7 @@
   roles:
   - RadioHost # Goobstation
   - Reporter
-  - Psychologist
+  # Mini: психолог только в Medical. В Specific он тоже был, но TryGetDepartment
+  # берёт отдел с большим весом (Specific 5 > Medical 0), и в панели телепорта
+  # призраков психолог падал в Specific вместо Медицины.
   primary: false

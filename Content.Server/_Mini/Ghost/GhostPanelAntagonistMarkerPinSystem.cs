@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Shared.Bingle;
 using Content.Goobstation.Shared.Blob.Components;
 using Content.Goobstation.Shared.DarkLord;
@@ -17,6 +21,7 @@ using Content.Shared.NukeOps;
 using Content.Shared.Revenant.Components;
 using Content.Shared.Roles.Components;
 using Content.Shared.WhiteDream.BloodCult.Components;
+using Content.Shared.Xenoborgs.Components;
 using Content.Shared.Zombies;
 
 namespace Content.Server._Mini.Ghost;
@@ -54,6 +59,10 @@ public sealed class GhostPanelAntagonistMarkerPinSystem : EntitySystem
         SubscribeLocalEvent<ShadowlingComponent, ComponentInit>(OnShadowling);
         // XenomorphComponent.ComponentInit already claimed by XenomorphsRuleSystem.
         SubscribeLocalEvent<XenomorphComponent, MapInitEvent>(OnXenomorph);
+
+        // Mini: ксеноборги (апстрим-волна 31.10.2026) без маркера попадали в «Живые» как обычные борги.
+        SubscribeLocalEvent<XenoborgComponent, ComponentInit>(OnXenoborg);
+        SubscribeLocalEvent<MothershipCoreComponent, ComponentInit>(OnMothershipCore);
 
         SubscribeLocalEvent<MetaDataComponent, EntityZombifiedEvent>(OnZombify);
 
@@ -138,6 +147,18 @@ public sealed class GhostPanelAntagonistMarkerPinSystem : EntitySystem
             "ghost-panel-antagonist-xenomorph-name",
             "ghost-panel-antagonist-xenomorph-description",
             priority: 22);
+
+    private void OnXenoborg(Entity<XenoborgComponent> ent, ref ComponentInit args)
+        => PinUnlessPresent(ent.Owner,
+            "ghost-panel-antagonist-xenoborg-name",
+            "ghost-panel-antagonist-xenoborg-description",
+            priority: 23);
+
+    private void OnMothershipCore(Entity<MothershipCoreComponent> ent, ref ComponentInit args)
+        => PinUnlessPresent(ent.Owner,
+            "ghost-panel-antagonist-xenoborg-name",
+            "ghost-panel-antagonist-mothership-core-description",
+            priority: 23);
 
     private void OnDevil(Entity<DevilComponent> ent, ref ComponentInit args)
         => PinUnlessPresent(ent.Owner,
