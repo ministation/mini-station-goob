@@ -614,6 +614,9 @@ namespace Content.Server.Voting.Managers
                 if (ticker.IsPresetDisabled(preset))
                     continue;
 
+                if (ticker.IsPresetOnRoundCooldown(preset)) // Goob
+                    continue;
+
                 if (preset.ID == _lastPickedPreset)
                     continue;
 

@@ -29,7 +29,7 @@
 - type: entity
   id: SpawnDropPodSyndicateRedspaceRaider
   name: SpawnDropPodSyndicateRedspaceRaider
-  parent: SpawnSupplyEmpty
+  parent: DropPod
   components:
   - type: SpawnOnDespawn
     prototype: MobSyndicateRedspaceRaider
