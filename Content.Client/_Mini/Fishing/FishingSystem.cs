@@ -42,6 +42,7 @@ public sealed partial class FishingSystem : EntitySystem
         base.Initialize();
 
         _overlay.AddOverlay(new FishingOverlay());
+        _overlay.AddOverlay(new FishingLineOverlay());
 
         SubscribeLocalEvent<FishingChallengeComponent, AfterAutoHandleStateEvent>(OnChallengeState);
         SubscribeLocalEvent<FishingChallengeComponent, ComponentShutdown>(OnChallengeShutdown);
@@ -52,6 +53,7 @@ public sealed partial class FishingSystem : EntitySystem
     {
         base.Shutdown();
 
+        _overlay.RemoveOverlay<FishingLineOverlay>();
         _overlay.RemoveOverlay<FishingOverlay>();
         RemoveInput();
     }
