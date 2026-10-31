@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using Content.Goobstation.Common.CCVar;
+using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._ST.Interaction;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
@@ -153,6 +154,11 @@ public sealed partial class StellarInteractionParticleSystem : EntitySystem
         }
 
         if (type == StellarInteractionParticleType.InHand && _inHandScale <= 0f)
+            return null;
+
+        // The particle copies the used item sprite and animates it over the target. On a fishing
+        // cast the target is the float, so the rod would look like it is swinging in the water.
+        if (HasComp<FishingRodComponent>(type == StellarInteractionParticleType.InHand ? target : used))
             return null;
 
         if ((performerXform.GridUid ?? performerXform.MapUid) is not { } frame)

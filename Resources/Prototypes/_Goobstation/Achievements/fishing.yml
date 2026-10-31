@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Goob Station Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: achievement
   id: GoneFishing
   name: achievement-gone-fishing-name
@@ -56,3 +60,144 @@
   icon: { entity: FishMastodon }
   condition: !type:FishSizeCondition
     minSize: 90
+
+- type: achievement
+  id: FishingApprentice
+  name: achievement-fishing-apprentice-name
+  description: achievement-fishing-apprentice-desc
+  category: Fishing
+  icon: { entity: FishingRod }
+  condition: !type:FishCaughtCondition
+    count: 10
+
+- type: achievement
+  id: FishingVeteran
+  name: achievement-fishing-veteran-name
+  description: achievement-fishing-veteran-desc
+  category: Fishing
+  rarity: Epic
+  icon: { entity: FishingRodMaster }
+  condition: !type:FishCaughtCondition
+    count: 250
+
+- type: achievement
+  id: FishingLegend
+  name: achievement-fishing-legend-name
+  description: achievement-fishing-legend-desc
+  category: Fishing
+  rarity: Legendary
+  icon: { entity: FishingRodGolden }
+  condition: !type:FishCaughtCondition
+    count: 1000
+
+- type: achievement
+  id: DeepSeaCatch
+  name: achievement-deep-sea-catch-name
+  description: achievement-deep-sea-catch-desc
+  category: Fishing
+  rarity: Mythic
+  icon: { entity: FishSwordfish }
+  condition: !type:FishRarityCondition
+    maxRarity: 100
+
+- type: achievement
+  id: AbyssCatch
+  name: achievement-abyss-catch-name
+  description: achievement-abyss-catch-desc
+  category: Fishing
+  rarity: Legendary
+  icon: { entity: FishBabbelfish }
+  condition: !type:FishRarityCondition
+    maxRarity: 0
+
+- type: achievement
+  id: GiantCatch
+  name: achievement-giant-catch-name
+  description: achievement-giant-catch-desc
+  category: Fishing
+  rarity: Epic
+  icon: { entity: FishMastodon }
+  condition: !type:FishSizeCondition
+    minSize: 150
+
+- type: achievement
+  id: ColossalCatch
+  name: achievement-colossal-catch-name
+  description: achievement-colossal-catch-desc
+  category: Fishing
+  rarity: Mythic
+  icon: { entity: FishMastodon }
+  condition: !type:FishSizeCondition
+    minSize: 200
+
+- type: achievement
+  id: TreasureDiver
+  name: achievement-treasure-diver-name
+  description: achievement-treasure-diver-desc
+  category: Fishing
+  rarity: Rare
+  icon: { entity: CratePirate }
+  condition: !type:FishingTreasureChestCondition
+
+- type: achievement
+  id: TreasureHoarder
+  name: achievement-treasure-hoarder-name
+  description: achievement-treasure-hoarder-desc
+  category: Fishing
+  rarity: Epic
+  icon: { entity: CratePirate }
+  condition: !type:FishingTreasureChestCondition
+    count: 25
+
+- type: achievement
+  id: ToiletAngler
+  name: achievement-toilet-angler-name
+  description: achievement-toilet-angler-desc
+  category: Fishing
+  rarity: Rare
+  icon: { entity: FishSludgefish }
+  condition: !type:FishSourceCaughtCondition
+    sources:
+    - FishingSourceToilet
+
+- type: achievement
+  id: LavaAngler
+  name: achievement-lava-angler-name
+  description: achievement-lava-angler-desc
+  category: Fishing
+  rarity: Epic
+  icon: { entity: FishLavaloop }
+  condition: !type:FishSourceCaughtCondition
+    sources:
+    - FishingSourceLava
+
+- type: achievement
+  id: ZapCatch
+  name: achievement-zap-catch-name
+  description: achievement-zap-catch-desc
+  category: Fishing
+  rarity: Rare
+  icon: { entity: FishZipzap }
+  condition: !type:FishTraitCaughtCondition
+    trait: electrogenesis
+
+- type: achievement
+  id: CamoCatcher
+  name: achievement-camo-catcher-name
+  description: achievement-camo-catcher-desc
+  category: Fishing
+  rarity: Rare
+  icon: { entity: FishSquid }
+  condition: !type:FishTraitCaughtCondition
+    trait: camouflage
+
+- type: achievement
+  id: ThreeEyedCatch
+  name: achievement-three-eyed-catch-name
+  description: achievement-three-eyed-catch-desc
+  category: Fishing
+  rarity: Rare
+  icon: { entity: FishGoldfishThreeEyes }
+  condition: !type:FishPrototypeCaughtCondition
+    fish:
+    - FishGoldfishThreeEyes

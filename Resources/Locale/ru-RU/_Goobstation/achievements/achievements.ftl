@@ -165,6 +165,36 @@ achievement-chainsaw-catch-name = Ловля бензорыбы
 achievement-chainsaw-catch-desc = Поймай бензорыбу.
 achievement-big-catch-name = Большой улов
 achievement-big-catch-desc = Поймай рыбу длиной не меньше 90.
+
+achievement-fishing-apprentice-name = Рыболов-новичок
+achievement-fishing-apprentice-desc = Поймай 10 рыб.
+achievement-fishing-veteran-name = Бывалый рыбак
+achievement-fishing-veteran-desc = Поймай 250 рыб.
+achievement-fishing-legend-name = Легенда рыбалки
+achievement-fishing-legend-desc = Поймай 1000 рыб.
+achievement-deep-sea-catch-name = Глубоководный улов
+achievement-deep-sea-catch-desc = Поймай рыбу, которую редко встретишь.
+achievement-abyss-catch-name = Улов из бездны
+achievement-abyss-catch-desc = Поймай рыбу, которую почти невозможно найти.
+achievement-giant-catch-name = Гигантский улов
+achievement-giant-catch-desc = Поймай рыбу длиной не меньше 150.
+achievement-colossal-catch-name = Колоссальный улов
+achievement-colossal-catch-desc = Поймай рыбу длиной не меньше 200.
+achievement-treasure-diver-name = Кладоискатель
+achievement-treasure-diver-desc = Достань предмет из сундука с сокровищами.
+achievement-treasure-hoarder-name = Коллекционер сокровищ
+achievement-treasure-hoarder-desc = Достань 25 предметов из сундуков с сокровищами.
+achievement-toilet-angler-name = Рыбалка в унитазе
+achievement-toilet-angler-desc = Поймай рыбу в унитазе.
+achievement-lava-angler-name = Рыбалка в лаве
+achievement-lava-angler-desc = Поймай рыбу в лаве.
+achievement-zap-catch-name = Электрический улов
+achievement-zap-catch-desc = Поймай рыбу с трейтом электрогенеза.
+achievement-camo-catcher-name = Невидимый улов
+achievement-camo-catcher-desc = Поймай рыбу с трейтом маскировки.
+achievement-three-eyed-catch-name = Трёхглазый улов
+achievement-three-eyed-catch-desc = Поймай трёхглазую золотую рыбку.
+
 achievement-lavaland-tourist-name = Турист на Лаваленде
 achievement-lavaland-tourist-desc = Чудесная погода, если любишь пепел.
 

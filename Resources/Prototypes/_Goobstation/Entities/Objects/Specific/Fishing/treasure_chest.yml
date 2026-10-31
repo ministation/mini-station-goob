@@ -1,0 +1,137 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+#
+# The fishing treasure chest and its pirate themed loot. Items that have no SS14
+# counterpart are replaced with the closest station item, so the list stays useful.
+
+- type: entityTable
+  id: FishingTreasureChestLoot
+  table: !type:GroupSelector
+    children:
+    - id: SpaceCash1000
+      weight: 6
+    - id: CannonBall
+      weight: 6
+    - id: CannonBallGrapeshot
+      weight: 4
+    - id: ClothingHeadHatPirate
+      weight: 6
+    - id: ClothingHeadHatPirateTricord
+      weight: 3
+    - id: ClothingUniformJumpsuitPirate
+      weight: 5
+    - id: ClothingOuterCoatPirate
+      weight: 4
+    - id: ClothingNeckCloakPirateCap
+      weight: 2
+    - id: DrinkRumBottleFull
+      weight: 6
+    - id: Cutlass
+      weight: 4
+    - id: Musket
+      weight: 2
+    - id: BaitCanSuper
+      weight: 3
+    - id: FishingLineBluespace
+      weight: 1
+    - id: FishingHookJaws
+      weight: 2
+    - id: FishingHookAnomaly
+      weight: 2
+    - id: FishingRodGolden
+      weight: 1
+    - id: FishingRodMaster
+      weight: 1
+    - id: FishingRodTelescopic
+      weight: 2
+    - id: FishingRodScience
+      weight: 1
+    - id: FishAnalyzer
+      weight: 3
+    - id: AquariumKit
+      weight: 2
+    - id: FishingGeneGun
+      weight: 1
+    - id: PlushieCarp
+      weight: 2
+
+- type: entity
+  id: FishingTreasureChest
+  parent: BaseStructureDynamic
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Orion/Structures/Storage/Crates/treasure.rsi
+    offset: 0, 0.25
+    layers:
+    - state: base
+      map: [ "base" ]
+    - state: closed
+      map: [ "lid" ]
+  - type: Icon
+    sprite: _Orion/Structures/Storage/Crates/treasure.rsi
+    state: icon
+  - type: FishingTreasureChest
+    table: FishingTreasureChestLoot
+
+- type: entity
+  id: FishingTreasureChestPrize
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    noRot: true
+    drawdepth: Effects
+    sprite: _Orion/Structures/Storage/Crates/treasure.rsi
+    state: icon
+  - type: FishingTreasureChestPrize
+
+- type: entity
+  parent: CrateGolden
+  id: FishingCrateGold
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    offset: 0, 0.25
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: FishingRodGolden
+        - id: FishingLineBluespace
+        - id: FishingHookJaws
+        - id: BaitCanSuper
+        - id: FishAnalyzer
+        - !type:GroupSelector
+          children:
+          - id: FishingLureLuckyCoin
+          - id: FishingLureDaisyChain
+          - id: BaitWormPremium
+          - id: BaitDoughballSuper
+        - id: IngotGold1
+          amount: 2
+
+- type: entity
+  parent: CrateSilver
+  id: FishingCrateSilver
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    offset: 0, 0.25
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: FishingRodTelescopic
+        - id: FishingLineAutoReel
+        - id: FishingHookAnomaly
+        - id: BaitCanWormPremium
+        - id: AquariumKit
+        - !type:GroupSelector
+          children:
+          - id: FishingLurePlug
+          - id: FishingLureArtificialFly
+          - id: FishingLureAlgae
+          - id: FishingHookMagnet
+          - id: FishingBaitSynthetic
+        - id: IngotSilver1
+          amount: 3

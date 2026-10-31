@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -151,6 +155,11 @@ public sealed class AchievementsPanelTest
 
     private static void CollectEntries(Control control, List<AchievementEntry> entries)
     {
+        // Every achievement is shown twice: in the "All" tab and in its category tab.
+        // Only walk the currently visible tab so every card is counted once.
+        if (!control.Visible)
+            return;
+
         if (control is AchievementEntry entry)
             entries.Add(entry);
 
