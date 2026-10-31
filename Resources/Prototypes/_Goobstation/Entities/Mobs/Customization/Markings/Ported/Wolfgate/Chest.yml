@@ -1,15 +1,6 @@
 # Ported from https://github.com/VanguardControl/Wolfgate/tree/f629218f44001244bddf67dc3fd46affd3a56e2f
 
 - type: marking
-  id: FoxBelly
-  bodyPart: Chest
-  markingCategory: Chest
-  speciesRestriction: [Vulpkanin]
-  sprites:
-  - sprite: _Goobstation/Mobs/Customization/Ported/Wolfgate/_Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
-    state: vulp_belly-torso
-
-- type: marking
   id: SynthChestCore
   bodyPart: Chest
   markingCategory: Chest
