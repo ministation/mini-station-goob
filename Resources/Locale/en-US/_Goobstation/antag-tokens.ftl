@@ -122,7 +122,6 @@ antag-store-role-wraith-description = A Wraith ghost role.
 # Server (AntagTokenSystem)
 antag-tokens-online-reward = You received {$amount} ticket(s) for {$hours} hours on the server!
 antag-tokens-sponsor-bonus-popup = Sponsor bonus: +{$amount} tickets (tier {$tier})!
-antag-tokens-error-monthly-cap-note = Monthly ticket cap reached for your support tier.
 antag-tokens-error-currency-not-loaded = Your ticket profile has not loaded yet.
 antag-tokens-error-not-enough-tokens = Not enough tickets. Required: {$required}.
 antag-tokens-error-store-disabled = The antagonist store is disabled by an administrator.

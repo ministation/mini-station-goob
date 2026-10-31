@@ -233,9 +233,7 @@ public sealed class AntagTokenWindow : DefaultWindow
             _lastServerCooldownRemaining[r.RoleId] = r.PurchaseCooldownSecondsRemaining;
 
         _balanceValueLabel.Text = state.Balance.ToString();
-        _capValueLabel.Text = state.MonthlyCap.HasValue
-            ? $"{state.MonthlyEarned} / {state.MonthlyCap.Value}"
-            : $"{state.MonthlyEarned}";
+        _capValueLabel.Text = state.MonthlyEarned.ToString();
 
         _depositLabel.Text = state.ActiveDepositRoleId != null &&
                              _entitySystems.GetEntitySystem<AntagTokenListingSystem>().TryGetListing(state.ActiveDepositRoleId, out var role)
@@ -385,7 +383,7 @@ public sealed class AntagTokenWindow : DefaultWindow
         };
         capBox.AddChild(new Label
         {
-            Text = "Лимит:",
+            Text = "За месяц:",
             Modulate = Color.FromHex("#8b949e")
         });
 

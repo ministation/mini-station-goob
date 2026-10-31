@@ -33,13 +33,11 @@ public sealed class AntagTokenStateEvent(AntagTokenState state) : EntityEventArg
 public sealed class AntagTokenState(
     int balance,
     int monthlyEarned,
-    int? monthlyCap,
     string? activeDepositRoleId,
     List<AntagTokenRoleEntry> roles) : BoundUserInterfaceState
 {
     public int Balance { get; private set; } = balance;
     public int MonthlyEarned { get; private set; } = monthlyEarned;
-    public int? MonthlyCap { get; private set; } = monthlyCap;
     public string? ActiveDepositRoleId { get; private set; } = activeDepositRoleId;
     public List<AntagTokenRoleEntry> Roles { get; private set; } = roles;
 }

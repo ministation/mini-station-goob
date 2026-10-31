@@ -64,9 +64,6 @@ public static class AntagTokenCatalog
 
     public static readonly (TimeSpan Threshold, int RewardAmount)[] OnlineRewardMilestones = [];
 
-    /// <summary>Monthly token earning cap, the same for sponsors and regular players.</summary>
-    public const int MonthlyTokenCap = 100;
-
     public static string GetRoleCreditEntryId(string roleId)
     {
         return $"role-credit:{roleId}";

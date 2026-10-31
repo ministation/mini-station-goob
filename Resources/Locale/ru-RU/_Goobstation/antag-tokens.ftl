@@ -134,7 +134,6 @@ antag-store-role-blood-cult-description = Очередь на раундстар
 # Server (AntagTokenSystem)
 antag-tokens-online-reward = Вы получили {$amount} билет(ов) за {$hours} ч. на сервере!
 antag-tokens-sponsor-bonus-popup = Донатерский бонус: +{$amount} билет(ов) (уровень {$tier})!
-antag-tokens-error-monthly-cap-note = Достигнут месячный лимит билетов для вашего уровня поддержки.
 antag-tokens-error-currency-not-loaded = Профиль билетов ещё не загружен.
 antag-tokens-error-not-enough-tokens = Недостаточно билетов. Нужно: {$required}.
 antag-tokens-error-store-disabled = Магазин антагонистов отключён администратором.
