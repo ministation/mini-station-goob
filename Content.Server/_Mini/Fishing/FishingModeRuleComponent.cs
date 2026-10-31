@@ -8,7 +8,6 @@
 using Robust.Shared.Prototypes;
 
 using Content.Shared._Mini.DailyQuests;
-using Content.Shared._Mini.Fishing.Prototypes;
 
 namespace Content.Server._Mini.Fishing;
 
@@ -33,13 +32,6 @@ public sealed partial class FishingModeRuleComponent : Component
 
     [DataField]
     public float HudIntervalSeconds = 1f;
-
-    /// <summary>
-    /// Only these fishing sources work in the mode: toilets, vending machines,
-    /// hydroponics trays and aquariums lose their FishingSource on rule start.
-    /// </summary>
-    [DataField]
-    public List<ProtoId<FishingSourcePrototype>> AllowedSources = new();
 
     /// <summary>
     /// Scores per fisher mob. Lives on the rule so it is dropped with the rule entity.
