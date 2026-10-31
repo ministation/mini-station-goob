@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 Name: Mini
 Order: -2
 Entries:
@@ -961,3 +965,9 @@ Entries:
       message: Добавлен перевод для ActionToggleTrayScanner и ActionToggleWeldingMask
   id: 98
   time: '2026-10-31T10:40:35.0000000+00:00'
+- author: Mini Station
+  changes:
+    - type: Tweak
+      message: Пассивная генерация очков РнД теперь засчитывается только от первого сервера сети - дополнительные построенные серверы больше не увеличивают доход очков
+  id: 99
+  time: '2026-10-31T15:17:59.0000000+00:00'
