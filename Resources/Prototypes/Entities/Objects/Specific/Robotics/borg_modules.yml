@@ -1280,6 +1280,7 @@
     hands:
     - item: Stunbaton
     - item: WeaponLaserStunnerBorg
+    - item: WeaponLaserCarbineBorg # Mini: лазерная пушка с подзарядкой в модуле СБ-борга
     - item: JawsOfLife
     - item: Handcuffs
   - type: BorgModuleIcon

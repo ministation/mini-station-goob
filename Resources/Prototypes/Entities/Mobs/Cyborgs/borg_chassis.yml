@@ -108,6 +108,15 @@
     selectedBorgType: security
   - type: BorgSwitchableSubtype # Goobstation
     borgSubtype: security_default
+  # Mini: боевой борг — чуть прочнее обычного
+  - type: Damageable
+    damageContainer: Silicon
+    damageModifierSet: SiliconCombat
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Critical
+      300: Dead
 
 - type: entity
   id: BorgChassisSyndicateAssault
@@ -126,6 +135,12 @@
           shader: unshaded
           map: ["light"]
           visible: false
+    # Mini: боевой борг — живучее (крит позже); свой сет SiliconProtected не трогаем
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        200: Critical
+        300: Dead
     - type: BorgChassis
       maxModules: 7 # Trauma - was 3
       moduleWhitelist:

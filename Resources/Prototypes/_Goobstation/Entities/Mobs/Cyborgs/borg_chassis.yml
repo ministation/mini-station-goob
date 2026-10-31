@@ -165,6 +165,15 @@
         name: power-cell-slot-component-slot-name-default
         startingItem: PowerCellHigh
   - type: SecurityCyborg
+  # Mini: боевой борг — чуть прочнее обычного
+  - type: Damageable
+    damageContainer: Silicon
+    damageModifierSet: SiliconCombat
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Critical
+      300: Dead
   - type: Explosive
     explosionType: Default
     totalIntensity: 30
