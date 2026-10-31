@@ -10,6 +10,8 @@ fishing-mode-hud-no-fishers = Nobody has caught anything yet
 fishing-mode-hud-rank = { $rank }.
 fishing-mode-hud-fish = { $count } fish
 
+fishing-mode-hud-collapse = Collapse the fishing leaderboard
+fishing-mode-hud-expand = Expand the fishing leaderboard
 fishing-mode-round-end-title = Top fishers
 fishing-mode-round-end-line = { $rank }. { $name } - { $count } fish, { $score } points
 fishing-mode-round-end-reward = +{ $amount } { $amount ->

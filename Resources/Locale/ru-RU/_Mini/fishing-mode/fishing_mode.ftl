@@ -10,6 +10,8 @@ fishing-mode-hud-no-fishers = Пока никто ничего не поймал
 fishing-mode-hud-rank = { $rank }.
 fishing-mode-hud-fish = { $count } рыб
 
+fishing-mode-hud-collapse = Свернуть топ рыбалки
+fishing-mode-hud-expand = Развернуть топ рыбалки
 fishing-mode-round-end-title = Топ рыбаков
 fishing-mode-round-end-line = { $rank }. { $name } - { $fish } рыб, { $score } очков
 fishing-mode-round-end-reward = +{ $amount } { $amount ->

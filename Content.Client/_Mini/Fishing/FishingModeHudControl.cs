@@ -19,7 +19,7 @@ namespace Content.Client._Mini.Fishing;
 /// <summary>
 /// Fishing mode HUD: the three leaders with their fish score bars, in the same
 /// pixel-art bar style as the vote timer and the war HUD. Sits at the top of the
-/// screen below the top menu bar.
+/// screen below the top menu bar and can be collapsed to just the header.
 /// </summary>
 public sealed class FishingModeHudControl : PanelContainer
 {
@@ -39,8 +39,12 @@ public sealed class FishingModeHudControl : PanelContainer
         Color.FromHex("#D08A4B"),
     };
 
+    private readonly BoxContainer _body;
     private readonly Label _emptyLabel;
+    private readonly Button _toggleButton;
     private readonly LeaderRow[] _rows = new LeaderRow[LeaderCount];
+
+    private bool _collapsed;
 
     private sealed class LeaderRow
     {
@@ -52,7 +56,7 @@ public sealed class FishingModeHudControl : PanelContainer
 
     public FishingModeHudControl()
     {
-        MinHeight = 42;
+        MinHeight = 26;
         MaxHeight = 128;
         MouseFilter = MouseFilterMode.Ignore;
         PanelOverride = new StyleBoxFlat
@@ -73,11 +77,39 @@ public sealed class FishingModeHudControl : PanelContainer
         };
         AddChild(column);
 
-        column.AddChild(new Label
+        // Шапка: заголовок и кнопка свернуть/развернуть — сворачивается только тело.
+        var header = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+        };
+        column.AddChild(header);
+
+        header.AddChild(new Label
         {
             Text = Loc.GetString("fishing-mode-hud-title"),
             FontColorOverride = TextColor,
+            HorizontalExpand = true,
+            VerticalAlignment = VAlignment.Center,
         });
+
+        _toggleButton = new Button
+        {
+            Text = "▲",
+            ToolTip = Loc.GetString("fishing-mode-hud-collapse"),
+            MinWidth = 28,
+            MinHeight = 20,
+            Modulate = MutedTextColor,
+        };
+        _toggleButton.OnPressed += _ => SetCollapsed(!_collapsed);
+        header.AddChild(_toggleButton);
+
+        _body = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 3,
+        };
+        column.AddChild(_body);
 
         _emptyLabel = new Label
         {
@@ -85,12 +117,22 @@ public sealed class FishingModeHudControl : PanelContainer
             FontColorOverride = MutedTextColor,
             Visible = false,
         };
-        column.AddChild(_emptyLabel);
+        _body.AddChild(_emptyLabel);
 
         for (var i = 0; i < LeaderCount; i++)
-            _rows[i] = BuildRow(column, i);
+            _rows[i] = BuildRow(_body, i);
 
         Visible = false;
+    }
+
+    private void SetCollapsed(bool collapsed)
+    {
+        _collapsed = collapsed;
+        _body.Visible = !collapsed;
+        _toggleButton.Text = collapsed ? "▼" : "▲";
+        _toggleButton.ToolTip = Loc.GetString(collapsed
+            ? "fishing-mode-hud-expand"
+            : "fishing-mode-hud-collapse");
     }
 
     private static LeaderRow BuildRow(BoxContainer column, int index)
