@@ -955,3 +955,9 @@ Entries:
       message: таблица лучших рыбаков в манифесте в конце раунда
   id: 97
   time: '2026-10-31T01:56:37.0000000+00:00'
+- author: mojokelp
+  changes:
+    - type: Add
+      message: Добавлен перевод для ActionToggleTrayScanner и ActionToggleWeldingMask
+  id: 98
+  time: '2026-10-31T10:40:35.0000000+00:00'
