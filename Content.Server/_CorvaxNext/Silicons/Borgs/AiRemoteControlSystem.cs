@@ -12,6 +12,7 @@ using Content.Shared.Silicons.Laws.Components;
 using Content.Shared.Silicons.StationAi;
 using Content.Shared.StationAi;
 using Content.Shared.Verbs;
+using Content.Shared.Xenoborgs.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.Player;
 
@@ -88,6 +89,10 @@ public sealed class AiRemoteControlSystem : SharedAiRemoteControlSystem
     {
         var user = args.User;
 
+        // Mini: ксеноборгами ИИ не управляет, глагол им не нужен.
+        if (HasComp<XenoborgComponent>(entity))
+            return;
+
         if (!TryComp<StationAiHeldComponent>(user, out var stationAiHeldComp))
             return;
 
@@ -110,6 +115,10 @@ public sealed class AiRemoteControlSystem : SharedAiRemoteControlSystem
     {
         if (HasComp<AiRemoteControllerComponent>(target))
             return; // уже есть обычный глагол у устройств с платой
+
+        // Mini: ксеноборги враждебны станции, ИИ не занимает даже их пустые оболочки.
+        if (HasComp<XenoborgComponent>(target))
+            return;
 
         var user = args.User;
 
@@ -135,6 +144,10 @@ public sealed class AiRemoteControlSystem : SharedAiRemoteControlSystem
             return;
 
         if (_mind.TryGetMind(entity, out _, out _)) // Don't take control of device with mind already. Would ghost them
+            return;
+
+        // Mini: пустыми оболочками ксеноборгов ИИ не управляет.
+        if (HasComp<XenoborgComponent>(entity))
             return;
 
         if (!TryComp<StationAiHeldComponent>(ai, out var stationAiHeldComp))
@@ -203,7 +216,7 @@ public sealed class AiRemoteControlSystem : SharedAiRemoteControlSystem
         }
 
         // Mini: в списке устройств ИИ видны и свободные кремнии без платы B.O.R.I.S.:
-        // пустые корпуса боргов (в роботике, на карте) и незанятые дроны.
+        // пустые корпуса боргов (в роботике, на карте) и незанятые дроны (ксеноборгов отсекает AddRemoteDevice).
         var borgQuery = EntityManager.EntityQueryEnumerator<BorgChassisComponent>();
         while (borgQuery.MoveNext(out var borgUid, out _))
         {
@@ -227,6 +240,10 @@ public sealed class AiRemoteControlSystem : SharedAiRemoteControlSystem
         if (Terminating(uid) || Deleted(uid))
             return;
 
+        // Mini: пустые оболочки ксеноборгов в списке устройств ИИ не показываем.
+        if (HasComp<XenoborgComponent>(uid))
+            return;
+
         var netEntity = GetNetEntity(uid);
         if (!seen.Add(netEntity))
             return;
@@ -244,6 +261,10 @@ public sealed class AiRemoteControlSystem : SharedAiRemoteControlSystem
             return;
 
         var target = GetEntity(msg.RemoteAction?.Target);
+
+        // Mini: к пустым оболочкам ксеноборгов ИИ не прыгает и не занимает их.
+        if (HasComp<XenoborgComponent>(target))
+            return;
 
         // Mini: кроме плат B.O.R.I.S. ИИ может взять под контроль пустой корпус борга или дрон.
         if (!HasComp<AiRemoteControllerComponent>(target)
