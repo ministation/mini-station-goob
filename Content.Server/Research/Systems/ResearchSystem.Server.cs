@@ -288,6 +288,10 @@ public sealed partial class ResearchSystem
             return new List<ResearchPointAmount>();
 
         var generation = new Dictionary<string, int>();
+        // Mini: passive income from a server's own ResearchPointSource only counts for the
+        // network authority (oldest server, lowest Id) — otherwise every extra RND server
+        // built by players multiplies income (points-per-second abuse).
+        var authority = GetNetworkAuthority(uid, component);
         foreach (var networkServer in GetNetworkServers(uid, component))
         {
             var ev = new ResearchServerGetPointsPerSecondByTypeEvent(networkServer, new());
@@ -300,7 +304,8 @@ public sealed partial class ResearchSystem
                 }
             }
 
-            RaiseLocalEvent(networkServer, ref ev);
+            if (networkServer == authority)
+                RaiseLocalEvent(networkServer, ref ev);
 
             foreach (var amount in ev.Points)
             {
