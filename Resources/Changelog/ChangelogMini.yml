@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 Name: Mini
 Order: -2
 Entries:
@@ -1015,3 +1019,11 @@ Entries:
       message: Психолог снова отображается в медицинском отделе панели телепорта призраков
   id: 102
   time: '2026-10-31T17:32:33.0000000+00:00'
+- author: Mini Station
+  changes:
+    - type: Fix
+      message: Скафандр джаггернаута снова замедляет дион - иммунитет дион к замедлению одежды из апстрима убран
+    - type: Fix
+      message: Абдукторы (одиночка, учёный, агент) получают все навыки при заселении в тело
+  id: 103
+  time: '2026-10-31T18:05:00.0000000+00:00'

@@ -130,7 +130,10 @@
     whitelist:
       types:
       - Shard
-  - type: SpeedModifierImmunity
+  # Mini: SpeedModifierImmunity (иммунитет к замедлению одеждой) приехал в волне
+  # #557 и делал джаггернаут «не замедляющим» для дион. Убираем: тяжёлые
+  # скафандры обязаны замедлять всех.
+  # - type: SpeedModifierImmunity
   - type: Rootable
 
 - type: entity

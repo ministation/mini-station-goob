@@ -190,6 +190,10 @@
     - MindRoleLoneAbductor
     raffle:
       settings: default
+    # Mini: при takeover скиллы берутся именно отсюда (GhostRole.skills),
+    # поле skills из AntagSelection-определения при pickPlayer: false не применяется.
+    skills:
+    - All
   - type: Sprite
     sprite: Markers/jobs.rsi
     layers:
@@ -223,6 +227,8 @@
     - MindRoleAbductorAgent
     raffle:
       settings: default
+    skills:
+    - All
   - type: Sprite
     sprite: Markers/jobs.rsi
     layers:
@@ -256,6 +262,8 @@
     - MindRoleAbductorScientist
     raffle:
       settings: default
+    skills:
+    - All
   - type: Sprite
     sprite: Markers/jobs.rsi
     layers:
