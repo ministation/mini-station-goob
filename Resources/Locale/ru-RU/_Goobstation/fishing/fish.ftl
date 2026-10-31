@@ -291,6 +291,8 @@ fish-evolution-nessie-name = ???
 fish-evolution-nessie-conditions = Последняя стадия роста фритериша. Она должна быть большой!
 
 # Fish examine: what the fish gives.
+fish-examine-rarity = Редкость: [color={$color}]{$tier}[/color].
+
 fish-examine-fillet = При разделке получится { $amount } шт. { $fillet }.
 fish-examine-beauty = Красота: { $beauty }.
 fish-examine-traits = Трейты: { $traits }.

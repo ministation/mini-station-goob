@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -33,13 +37,11 @@ public sealed class AntagTokenStateEvent(AntagTokenState state) : EntityEventArg
 public sealed class AntagTokenState(
     int balance,
     int monthlyEarned,
-    int? monthlyCap,
     string? activeDepositRoleId,
     List<AntagTokenRoleEntry> roles) : BoundUserInterfaceState
 {
     public int Balance { get; private set; } = balance;
     public int MonthlyEarned { get; private set; } = monthlyEarned;
-    public int? MonthlyCap { get; private set; } = monthlyCap;
     public string? ActiveDepositRoleId { get; private set; } = activeDepositRoleId;
     public List<AntagTokenRoleEntry> Roles { get; private set; } = roles;
 }

@@ -9,7 +9,6 @@ using System;
 
 using Content.Client._Mini.Fishing;
 using Content.Client.Stylesheets;
-using Content.Shared._Mini.DailyQuests;
 using Content.Shared._Mini.Fishing;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Maths;
@@ -56,26 +55,20 @@ public sealed partial class RoundEndSummaryWindow
         for (var i = 0; i < shown; i++)
         {
             var leader = leaders[i];
+
+            var line = Loc.GetString("fishing-mode-round-end-line",
+                ("rank", i + 1),
+                ("name", leader.Name),
+                ("fish", leader.Fish),
+                ("score", leader.Score));
+
+            if (leader.Reward > 0)
+                line += " " + Loc.GetString("fishing-mode-round-end-reward", ("amount", leader.Reward));
+
             column.AddChild(new Label
             {
-                Text = Loc.GetString("fishing-mode-round-end-line",
-                    ("rank", i + 1),
-                    ("name", leader.Name),
-                    ("fish", leader.Fish),
-                    ("score", leader.Score)),
+                Text = line,
                 FontColorOverride = i < FishingManifestBestShown ? FishingRankColor : Color.White,
-            });
-
-            if (i >= FishingManifestBestShown || leader.BestFish.Length == 0)
-                continue;
-
-            column.AddChild(new Label
-            {
-                Text = Loc.GetString("fishing-mode-round-end-best",
-                    ("rarity", Loc.GetString(leader.BestFishRarity.GetLocId())),
-                    ("fish", leader.BestFish)),
-                FontColorOverride = leader.BestFishRarity.GetColor(),
-                Margin = new Thickness(16, -2, 0, 2),
             });
         }
 

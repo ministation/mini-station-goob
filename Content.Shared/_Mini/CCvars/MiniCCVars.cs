@@ -418,6 +418,16 @@ public sealed class MiniCCVars
     public static readonly CVarDef<float> AntagCountScale =
         CVarDef.Create("mini.antag_count_scale", 0.5f, CVar.SERVERONLY);
 
+    /// <summary>
+    ///     Сколько игроков сервера дают один слот антага за монетки.
+    ///     Бюджет общий для депозитов в лобби и гост-ролей: одновременно купленных
+    ///     антагов не больше max(1, онлайн / значение). Лишние депозиты
+    ///     возвращаются монетками в порядке очереди.
+    ///     Мажорные антаги поверх этого лимита не больше одного за раунд.
+    /// </summary>
+    public static readonly CVarDef<int> AntagTokensPlayersPerSlot =
+        CVarDef.Create("antag.tokens_players_per_slot", 12, CVar.SERVERONLY);
+
     public static readonly CVarDef<float> BunnyHopSpeedBoostWindow =
         CVarDef.Create("bunny_hop.speed_boost_window", 0.610f, CVar.SERVER | CVar.REPLICATED);
 

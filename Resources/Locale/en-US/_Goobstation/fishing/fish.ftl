@@ -291,6 +291,8 @@ fish-evolution-nessie-name = ???
 fish-evolution-nessie-conditions = The final stage of fritterfish growth. It gotta be big!
 
 # Fish examine: what the fish gives.
+fish-examine-rarity = Rarity: [color={$color}]{$tier}[/color].
+
 fish-examine-fillet = Butchering yields { $amount }x { $fillet }.
 fish-examine-beauty = Beauty: { $beauty }.
 fish-examine-traits = Traits: { $traits }.

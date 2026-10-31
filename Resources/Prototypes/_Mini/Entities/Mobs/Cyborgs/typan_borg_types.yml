@@ -173,8 +173,9 @@
   radioChannels:
   - Typan
   inventoryTemplateId: borgTall
+  # Mini: spriteBodyMovementState убран — sec_moving в RSI нарисован другим дизайном,
+  # при повороте/движении визуал борга «менялся». Борг всегда в статичном sec.
   spriteBodyState: sec
-  spriteBodyMovementState: sec_moving
   spriteHasMindState: sec_e
   spriteNoMindState: sec_e_r
   spriteToggleLightState: sec_l

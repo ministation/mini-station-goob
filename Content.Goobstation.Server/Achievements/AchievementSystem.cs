@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Content.Goobstation.Common.CCVar;
@@ -220,12 +224,7 @@ public sealed partial class AchievementSystem : EntitySystem
                 continue;
             }
 
-            // Never pay an achievement partially: a partial payout could not be recorded per achievement and
-            // would be paid a second time on the next login. Wait until the whole reward fits under the
-            // monthly cap; the achievement stays pending and is retried on a later load.
-            if (_antagTokens.GetRemainingMonthlyReward(session.UserId) < reward)
-                continue;
-
+            // Mini: месячного лимита заработка монеток больше нет, награда начисляется целиком.
             if (!_antagTokens.AddBalance(session.UserId, reward, out var granted, out _)
                 || granted != reward)
                 continue;

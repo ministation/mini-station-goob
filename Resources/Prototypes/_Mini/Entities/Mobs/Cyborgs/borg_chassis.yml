@@ -332,13 +332,17 @@
           visible: false
     - type: BorgSwitchableType
       selectedBorgType: typan-security
-    - type: SpriteMovement
-      movementLayers:
-        movement:
-          state: sec_moving
-      noMovementLayers:
-        movement:
-          state: sec
+    # Mini: SpriteMovement убран — в chassis.rsi state sec_moving нарисован чужим
+    # дизайном (шипастый синдикат-борг), при движении визуал «перещёлкивался».
+    # Борг теперь всегда в статичном sec, как и задумано в тайпановском RSI.
+    - type: Damageable
+      damageContainer: Silicon
+      damageModifierSet: SiliconCombat
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        200: Critical
+        300: Dead
     - type: BorgTransponder
       sprite:
         sprite: _Mini/Mobs/Silicon/chassis.rsi

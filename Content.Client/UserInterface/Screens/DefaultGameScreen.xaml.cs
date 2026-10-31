@@ -29,6 +29,9 @@ public sealed partial class DefaultGameScreen : InGameScreen
         SetMarginLeft(TypanWarHud, TypanWarHud.GetValue<float>(MarginLeftProperty) - 290);
         SetAnchorAndMarginPreset(KatorgaHud, LayoutPreset.CenterBottom, margin: 205);
         SetMarginLeft(KatorgaHud, KatorgaHud.GetValue<float>(MarginLeftProperty) - 290);
+        // Верх по центру: верхняя панель меню высотой 64px, плюс зазор.
+        // Свернуть/развернуть можно кнопкой в шапке худа.
+        SetAnchorAndMarginPreset(FishingModeHud, LayoutPreset.CenterTop, margin: 70);
 
         Chat.OnResized += ChatOnResized;
         Chat.OnChatResizeFinish += ChatOnResizeFinish;

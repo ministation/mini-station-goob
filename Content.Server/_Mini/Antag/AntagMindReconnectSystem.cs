@@ -51,6 +51,16 @@ public sealed class AntagMindReconnectSystem : EntitySystem
             && currentMind.OwnedEntity == args.Entity)
             return;
 
+        // Mini: MindSystem.TransferTo сначала отщепляет ум от старого тела (OwnedEntity = null)
+        // и только ПОСЛЕ SetAttachedEntity привязывает его к новому. Поэтому здесь OwnedEntity
+        // ещё null у осознанного переноса ума — заход за джобу/борга, вставление позитронного
+        // мозга. Реставрация в этот момент перехватывает ум обратно (вложенные SetUserId и
+        // SetAttachedEntity внутри чужого трансфера) и ломает спавн: чёрный экран, при
+        // перезаходе игрок в призраке. Восстановление при реконнекте обслуживает
+        // PlayerStatusChanged и этот гвард не задевает.
+        if (currentMind != null && currentMind.OwnedEntity == null)
+            return;
+
         TryRestoreAntagMind(args.Player);
     }
 

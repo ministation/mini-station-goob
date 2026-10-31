@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Casha
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 using System;
@@ -233,9 +237,7 @@ public sealed class AntagTokenWindow : DefaultWindow
             _lastServerCooldownRemaining[r.RoleId] = r.PurchaseCooldownSecondsRemaining;
 
         _balanceValueLabel.Text = state.Balance.ToString();
-        _capValueLabel.Text = state.MonthlyCap.HasValue
-            ? $"{state.MonthlyEarned} / {state.MonthlyCap.Value}"
-            : $"{state.MonthlyEarned}";
+        _capValueLabel.Text = state.MonthlyEarned.ToString();
 
         _depositLabel.Text = state.ActiveDepositRoleId != null &&
                              _entitySystems.GetEntitySystem<AntagTokenListingSystem>().TryGetListing(state.ActiveDepositRoleId, out var role)
@@ -385,7 +387,7 @@ public sealed class AntagTokenWindow : DefaultWindow
         };
         capBox.AddChild(new Label
         {
-            Text = "Лимит:",
+            Text = "За месяц:",
             Modulate = Color.FromHex("#8b949e")
         });
 

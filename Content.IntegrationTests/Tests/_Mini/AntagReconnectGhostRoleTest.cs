@@ -128,4 +128,80 @@ public sealed class AntagReconnectGhostRoleTest
 
         await pair.CleanReturnAsync();
     }
+
+    /// <summary>
+    /// Регрессия чёрного экрана при заходе за борга (и любом осознанном переносе ума):
+    /// MindSystem.TransferTo отщепляет ум ДО SetAttachedEntity, поэтому OwnedEntity у текущего
+    /// разума в момент PlayerAttachedEvent ещё null. Реставрация осиротевшего антаг-разума на
+    /// таком аттаче перехватывала ум обратно (вложенные SetUserId + SetAttachedEntity) и
+    /// выкидывала сессию из нового тела — чёрный экран, при перезаходе призрак.
+    /// </summary>
+    [Test]
+    public async Task AntagMindDoesNotHijackDeliberateMindTransfer()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            Dirty = true,
+            DummyTicker = false,
+            Connected = true
+        });
+        var server = pair.Server;
+        var mapData = await pair.CreateTestMap();
+
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var sPlayerMan = server.ResolveDependency<IPlayerManager>();
+        var mindSystem = entMan.System<SharedMindSystem>();
+        var roleSystem = entMan.System<RoleSystem>();
+        var session = sPlayerMan.Sessions.Single();
+
+        var currentMindId = session.ContentData()!.Mind!.Value;
+        EntityUid currentMob = default;
+        await server.WaitPost(() =>
+        {
+            currentMob = entMan.SpawnEntity(TestMobProtoId, mapData.GridCoords);
+            mindSystem.TransferTo(currentMindId, currentMob, true);
+        });
+        await pair.RunTicksSync(10);
+        Assert.That(session.AttachedEntity, Is.EqualTo(currentMob));
+
+        // Осиротевший антаг-разум с высоким score, как после смерти антага в раунде.
+        var antagMindId = default(EntityUid);
+        EntityUid antagMob = default;
+        await server.WaitPost(() =>
+        {
+            antagMob = entMan.SpawnEntity(TestMobProtoId, mapData.GridCoords);
+            antagMindId = mindSystem.CreateMind(null, "TestAntag");
+            mindSystem.TransferTo(antagMindId, antagMob);
+            roleSystem.MindAddRoles(antagMindId, new List<EntProtoId> { "TestAntagMindRoleMini" });
+            var rule = entMan.SpawnEntity(null, mapData.GridCoords);
+            entMan.AddComponent<AntagSelectionComponent>(rule).AssignedMinds.Add((antagMindId, "test"));
+        });
+        await pair.RunTicksSync(10);
+
+        // Осознанный перенос ума в новое тело (заход за борга/джобу, вставление позитронного мозга).
+        EntityUid newMob = default;
+        await server.WaitPost(() =>
+        {
+            newMob = entMan.SpawnEntity(TestMobProtoId, mapData.GridCoords);
+            mindSystem.TransferTo(currentMindId, newMob, true);
+        });
+        await pair.RunTicksSync(10);
+
+        var antagMind = entMan.GetComponent<MindComponent>(antagMindId);
+        Assert.Multiple(() =>
+        {
+            // Сессия осталась в новом теле, разум привязан к нему.
+            Assert.That(session.AttachedEntity, Is.EqualTo(newMob));
+            Assert.That(entMan.GetComponent<MindComponent>(currentMindId).OwnedEntity, Is.EqualTo(newMob));
+
+            // Реставрация не тронула антаг-разум: ни userId, ни тело.
+            Assert.That(antagMind.UserId, Is.Null);
+            Assert.That(antagMind.OwnedEntity, Is.EqualTo(antagMob));
+
+            // Фоллбек-гост не должен был заспавниться.
+            Assert.That(entMan.Count<GhostComponent>(), Is.Zero);
+        });
+
+        await pair.CleanReturnAsync();
+    }
 }

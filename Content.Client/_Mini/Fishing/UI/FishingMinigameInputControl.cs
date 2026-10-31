@@ -11,13 +11,13 @@ using Robust.Shared.Maths;
 namespace Content.Client._Mini.Fishing.UI;
 
 /// <summary>
-/// Small invisible control that follows the float and turns mouse wheel notches into reel
-/// input, plus a left click into a hook. It covers only the fishing marker area, so the rest
-/// of the screen, the HUD and open windows stay clickable while the minigame runs.
+/// Small invisible control that follows the float and turns a left click into a hook.
+/// Only the reel wheel is global now (the screen event), so this control covers just the
+/// fishing marker area: the rest of the screen, the HUD and open windows stay clickable
+/// while the minigame runs.
 /// </summary>
 public sealed class FishingMinigameInputControl : Control
 {
-    public event Action<int>? OnReel;
     public event Action? OnHook;
 
     public FishingMinigameInputControl()
@@ -48,16 +48,5 @@ public sealed class FishingMinigameInputControl : Control
         LayoutContainer.SetMarginTop(this, position.Y);
         LayoutContainer.SetMarginRight(this, 0f);
         LayoutContainer.SetMarginBottom(this, 0f);
-    }
-
-    protected override void MouseWheel(GUIMouseWheelEventArgs args)
-    {
-        base.MouseWheel(args);
-
-        if (args.Delta.Y == 0f)
-            return;
-
-        args.Handle();
-        OnReel?.Invoke(args.Delta.Y > 0f ? 1 : -1);
     }
 }

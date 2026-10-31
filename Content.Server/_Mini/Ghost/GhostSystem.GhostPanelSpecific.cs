@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared._Mini.Ghost;
 using Content.Shared.Bed.Cryostorage;
@@ -58,6 +62,10 @@ public sealed partial class GhostSystem
         {
             var isGhost = HasComp<GhostComponent>(uid);
             var isMob = HasComp<MobStateComponent>(uid);
+
+            // Mini: призраков в меню телепорта не показываем - варпиться к призраку незачем.
+            if (isGhost)
+                continue;
 
             // Mini: ушедшие в криосторедж (в капсуле или уже на пауз-мапе) - не цель для телепорта.
             if (HasComp<CryostorageContainedComponent>(uid))

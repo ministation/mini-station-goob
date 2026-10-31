@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server._Mini.AntagUnlock;
+using Content.Server._Mini.Fishing;
 using Content.Server._Mini.JobUnlock;
 using Content.Server._Mini.TypanWar;
 using Content.Server.Administration.Managers;
@@ -33,6 +34,7 @@ using Content.Shared._Mini.AntagTokens;
 using Content.Shared._Mini.JobUnlock;
 using Content.Shared._Mini.ReadyManifest;
 using Content.Shared.GameTicking;
+using Content.Shared.GameTicking.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Roles;
 using Robust.Server.Player;
@@ -122,7 +124,14 @@ public sealed class AntagTokenSystem : EntitySystem
     private bool _storeEnabled = true;
     private const float DatabaseSyncInterval = 30f;
     private const float OnlineRewardInterval = 30f;
-    private const int SharedTokenSlotsPlayersPerSlot = 8;
+    /// <summary>
+    /// Сколько игроков сервера дают один слот антага за монетки
+    /// (cvar antag.tokens_players_per_slot). Бюджет общий для трека депозитов
+    /// и трека гост-ролей: одновременно купленных антагов не больше
+    /// max(1, онлайн / значение).
+    /// </summary>
+    private int SharedTokenSlotsPlayersPerSlot =>
+        Math.Max(1, _cfg.GetCVar(MiniCCVars.AntagTokensPlayersPerSlot));
     private bool _enforcingSharedTokenSlotCapacity;
     private readonly Dictionary<string, int> _ghostMinimumTimeRandomBonusByRole = new();
     private static readonly HashSet<string> BlockedRoundstartRolePresets = new(StringComparer.OrdinalIgnoreCase)
@@ -250,12 +259,15 @@ public sealed class AntagTokenSystem : EntitySystem
         note = null;
 
         if (amount <= 0)
+        {
+            note = null;
             return false;
+        }
 
         var state = EnsureStateExists(userId);
         if (state == null)
         {
-            // Offline player: write the balance row directly (monthly cap can't be tracked without state).
+            // Offline player: write the balance row directly.
             PayBalanceOffline(userId, amount);
             grantedAmount = amount;
             return true;
@@ -263,23 +275,15 @@ public sealed class AntagTokenSystem : EntitySystem
 
         NormalizeMonthlyState(state, DateTime.UtcNow, userId);
 
-        var cap = GetMonthlyCap(userId);
-        var available = cap.HasValue ? Math.Max(0, cap.Value - state.MonthlyEarned) : amount;
-        grantedAmount = Math.Min(amount, available);
-
-        if (grantedAmount > 0)
-        {
-            state.Balance += grantedAmount;
-            if (cap.HasValue)
-                state.MonthlyEarned += grantedAmount;
-        }
-
-        if (grantedAmount < amount)
-            note = Loc.GetString("antag-tokens-error-monthly-cap-note");
+        // Месячный лимит заработка монеток убран: начисляем целиком,
+        // MonthlyEarned остаётся только статистикой месяца.
+        state.Balance += amount;
+        state.MonthlyEarned += amount;
+        grantedAmount = amount;
 
         PersistState(userId, state);
         SendState(userId);
-        return grantedAmount > 0 || note != null;
+        return true;
     }
 
     public bool TrySpendBalance(NetUserId userId, int amount, out string? error)
@@ -455,22 +459,6 @@ public sealed class AntagTokenSystem : EntitySystem
         return EnsureStateExists(userId)?.Balance ?? 0;
     }
 
-    /// <summary>
-    /// How many more coins the player can still earn this month before the monthly cap stops income.
-    /// Returns <see cref="int.MaxValue"/> when the cap is disabled, and zero when the state is not loaded.
-    /// </summary>
-    public int GetRemainingMonthlyReward(NetUserId userId)
-    {
-        var state = EnsureStateExists(userId);
-        if (state == null)
-            return 0;
-
-        NormalizeMonthlyState(state, DateTime.UtcNow, userId);
-
-        var cap = GetMonthlyCap(userId);
-        return cap.HasValue ? Math.Max(0, cap.Value - state.MonthlyEarned) : int.MaxValue;
-    }
-
     public bool SetBalance(NetUserId userId, int amount)
     {
         if (amount < 0)
@@ -554,6 +542,22 @@ public sealed class AntagTokenSystem : EntitySystem
         return _storeEnabled;
     }
 
+    /// <summary>
+    /// Mini: идёт ли сейчас мирный режим рыбалки. В нём запрещены покупки антагонов
+    /// и назначение купленных ролей на старте раунда.
+    /// </summary>
+    private bool IsFishingModeActive()
+    {
+        var query = EntityQueryEnumerator<FishingModeRuleComponent, GameRuleComponent>();
+        while (query.MoveNext(out var uid, out _, out var gameRule))
+        {
+            if (_gameTicker.IsGameRuleActive(uid, gameRule))
+                return true;
+        }
+
+        return false;
+    }
+
     public bool TryPurchaseForSession(ICommonSession session, string roleId, out string? error)
     {
         error = null;
@@ -561,6 +565,13 @@ public sealed class AntagTokenSystem : EntitySystem
         if (!_storeEnabled)
         {
             error = Loc.GetString("antag-tokens-error-store-disabled");
+            return false;
+        }
+
+        // Mini: в режиме рыбалки антагонистов нет - покупки недоступны.
+        if (IsFishingModeActive())
+        {
+            error = Loc.GetString("antag-tokens-error-fishing-mode");
             return false;
         }
 
@@ -1346,6 +1357,13 @@ public sealed class AntagTokenSystem : EntitySystem
             if (!TryGetPendingLobbyRole(session.UserId, out var role) || !role.IgnoresStationJob)
                 continue;
 
+            // Mini: в раунде рыбалки антагоны не назначаются, депозит возвращается.
+            if (IsFishingModeActive())
+            {
+                RefundFishingModeDeposit(session);
+                continue;
+            }
+
             var state = EnsureStateExists(session.UserId);
             if (state == null)
                 continue;
@@ -1435,6 +1453,13 @@ public sealed class AntagTokenSystem : EntitySystem
         {
             if (!TryGetPendingLobbyRole(session.UserId, out var role) || role.IgnoresStationJob)
                 continue;
+
+            // Mini: в раунде рыбалки антагоны не назначаются, депозит возвращается.
+            if (IsFishingModeActive())
+            {
+                RefundFishingModeDeposit(session);
+                continue;
+            }
 
             // Players with no job assignment are in the event but were not spawned.
             if (session.AttachedEntity is not { Valid: true })
@@ -2135,109 +2160,80 @@ public sealed class AntagTokenSystem : EntitySystem
         try
         {
             var max = Math.Max(1, _playerManager.PlayerCount / SharedTokenSlotsPlayersPerSlot);
-            EnforceAntagTrackPending(max);
-            EnforceGhostTrackPending(max);
+
+            // Один общий бюджет на оба трека: депозитные антаги и гост-роли вместе
+            // занимают слоты, по отдельности каждый трек мог бы удвоить лимит.
+            var living = 0;
+            foreach (var uid in _roundGrantedLobbyAntag)
+            {
+                if (StillOccupiesAntagTrack(uid))
+                    living++;
+            }
+
+            foreach (var uid in _roundGrantedGhostRule)
+            {
+                if (StillOccupiesGhostRuleGrant(uid))
+                    living++;
+            }
+
+            var pending = new List<(NetUserId UserId, DateTime QueuedAt, bool GhostTrack)>();
+            foreach (var (userId, state) in _states)
+            {
+                if (state.PendingDepositRoleId != null &&
+                    _listings.TryGetListing(state.PendingDepositRoleId, out var depRole) &&
+                    depRole.Mode is AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.Dual)
+                {
+                    pending.Add((userId, state.PendingDepositQueuedAtUtc ?? DateTime.MinValue, false));
+                    continue;
+                }
+
+                if (state.PendingGhostAutoRoleId != null)
+                    pending.Add((userId, state.PendingGhostAutoQueuedAtUtc ?? DateTime.MinValue, true));
+            }
+
+            pending.Sort(static (a, b) => a.QueuedAt.CompareTo(b.QueuedAt));
+            var slotForPending = max - living;
+            if (slotForPending < 0)
+                slotForPending = 0;
+
+            var raisedQueueChanged = false;
+            for (var i = slotForPending; i < pending.Count; i++)
+            {
+                var (userId, _, ghostTrack) = pending[i];
+                if (!_states.TryGetValue(userId, out var state))
+                    continue;
+
+                if (ghostTrack)
+                {
+                    if (state.PendingGhostAutoRoleId == null)
+                        continue;
+
+                    RefundPendingGhostAuto(userId, state);
+                }
+                else
+                {
+                    if (state.PendingDepositRoleId == null)
+                        continue;
+
+                    RefundPendingDeposit(userId, state);
+                }
+
+                PersistState(userId, state);
+                SendState(userId);
+                raisedQueueChanged = true;
+
+                if (_playerManager.TryGetSessionById(userId, out var session))
+                {
+                    ShowPopup(session, Loc.GetString("antag-tokens-popup-deposit-refunded-queue-cap"));
+                }
+            }
+
+            if (raisedQueueChanged)
+                RaiseLocalEvent(new AntagTokenQueueChangedEvent());
         }
         finally
         {
             _enforcingSharedTokenSlotCapacity = false;
-        }
-    }
-
-    private void EnforceAntagTrackPending(int max)
-    {
-        var living = 0;
-        foreach (var uid in _roundGrantedLobbyAntag)
-        {
-            if (StillOccupiesAntagTrack(uid))
-                living++;
-        }
-
-        var pending = new List<(NetUserId UserId, DateTime QueuedAt)>();
-        foreach (var (userId, state) in _states)
-        {
-            if (state.PendingDepositRoleId == null)
-                continue;
-
-            if (!_listings.TryGetListing(state.PendingDepositRoleId, out var depRole) ||
-                depRole.Mode is not (AntagPurchaseMode.LobbyDeposit or AntagPurchaseMode.Dual))
-            {
-                continue;
-            }
-
-            pending.Add((userId, state.PendingDepositQueuedAtUtc ?? DateTime.MinValue));
-        }
-
-        pending.Sort(static (a, b) => a.QueuedAt.CompareTo(b.QueuedAt));
-        var slotForPending = max - living;
-        if (slotForPending < 0)
-            slotForPending = 0;
-
-        if (pending.Count <= slotForPending)
-            return;
-
-        var raisedQueueChanged = false;
-        for (var i = slotForPending; i < pending.Count; i++)
-        {
-            var uid = pending[i].UserId;
-            if (!_states.TryGetValue(uid, out var state) || state.PendingDepositRoleId == null)
-                continue;
-
-            RefundPendingDeposit(uid, state);
-            PersistState(uid, state);
-            SendState(uid);
-            raisedQueueChanged = true;
-
-            if (_playerManager.TryGetSessionById(uid, out var session))
-            {
-                ShowPopup(session, Loc.GetString("antag-tokens-popup-deposit-refunded-queue-cap"));
-            }
-        }
-
-        if (raisedQueueChanged)
-            RaiseLocalEvent(new AntagTokenQueueChangedEvent());
-    }
-
-    private void EnforceGhostTrackPending(int max)
-    {
-        var living = 0;
-        foreach (var uid in _roundGrantedGhostRule)
-        {
-            if (StillOccupiesGhostRuleGrant(uid))
-                living++;
-        }
-
-        var pending = new List<(NetUserId UserId, DateTime QueuedAt)>();
-        foreach (var (userId, state) in _states)
-        {
-            if (state.PendingGhostAutoRoleId == null)
-                continue;
-
-            pending.Add((userId, state.PendingGhostAutoQueuedAtUtc ?? DateTime.MinValue));
-        }
-
-        pending.Sort(static (a, b) => a.QueuedAt.CompareTo(b.QueuedAt));
-        var slotForPending = max - living;
-        if (slotForPending < 0)
-            slotForPending = 0;
-
-        if (pending.Count <= slotForPending)
-            return;
-
-        for (var i = slotForPending; i < pending.Count; i++)
-        {
-            var uid = pending[i].UserId;
-            if (!_states.TryGetValue(uid, out var state) || state.PendingGhostAutoRoleId == null)
-                continue;
-
-            RefundPendingGhostAuto(uid, state);
-            PersistState(uid, state);
-            SendState(uid);
-
-            if (_playerManager.TryGetSessionById(uid, out var session))
-            {
-                ShowPopup(session, Loc.GetString("antag-tokens-popup-deposit-refunded-queue-cap"));
-            }
         }
     }
 
@@ -2256,12 +2252,13 @@ public sealed class AntagTokenSystem : EntitySystem
 
     private static bool IsAntagTrackGloballySaturated(in AntagSendStateCache cache)
     {
-        return cache.ExternalAntagSlotTotal >= cache.MaxSharedTokenSlots;
+        // Один общий бюджет: депозитные и гост-трековые антаги делят одни и те же слоты.
+        return cache.ExternalAntagSlotTotal + cache.ExternalGhostSlotTotal >= cache.MaxSharedTokenSlots;
     }
 
     private static bool IsGhostTrackGloballySaturated(in AntagSendStateCache cache)
     {
-        return cache.ExternalGhostSlotTotal >= cache.MaxSharedTokenSlots;
+        return cache.ExternalAntagSlotTotal + cache.ExternalGhostSlotTotal >= cache.MaxSharedTokenSlots;
     }
 
     private readonly struct AntagSendStateCache
@@ -2364,7 +2361,6 @@ public sealed class AntagTokenSystem : EntitySystem
         var payload = new AntagTokenState(
             state.Balance,
             state.MonthlyEarned,
-            GetMonthlyCap(userId),
             state.PendingDepositRoleId,
             roles);
 
@@ -2519,12 +2515,6 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
     state.MonthlyEarned = 0;
 }
 
-    private int? GetMonthlyCap(NetUserId userId)
-    {
-        // Same monthly cap for everyone; sponsors no longer get an unlimited cap.
-        return AntagTokenCatalog.MonthlyTokenCap;
-    }
-
     private bool IsRoundstartRoleBlockedByPreset()
     {
         if (_typanWar.IsTypanWarBlocking())
@@ -2646,6 +2636,22 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Mini: депозит антагона возвращается, когда раунд начался в режиме рыбалки:
+    /// антагоны там не спавнятся.
+    /// </summary>
+    private void RefundFishingModeDeposit(ICommonSession session)
+    {
+        var state = EnsureStateExists(session.UserId);
+        if (state == null)
+            return;
+
+        RefundPendingDeposit(session.UserId, state);
+        PersistState(session.UserId, state);
+        SendState(session.UserId);
+        ShowPopup(session, Loc.GetString("antag-tokens-popup-deposit-fishing-refund"));
     }
 
     private void RefundPendingDeposit(NetUserId userId, PlayerTokenState state)

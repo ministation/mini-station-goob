@@ -4,6 +4,7 @@
 using System.Numerics;
 using Content.Client._Mini.Fishing.Overlays;
 using Content.Client._Mini.Fishing.UI;
+using Content.Client.UserInterface.Screens;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
 using Robust.Client.Graphics;
@@ -34,6 +35,7 @@ public sealed partial class FishingSystem : EntitySystem
     private static readonly Vector2 BiteSize = new(5f, 5f);
 
     private FishingMinigameInputControl? _input;
+    private InGameScreen? _wheelScreen;
 
     public override void Initialize()
     {
@@ -117,7 +119,6 @@ public sealed partial class FishingSystem : EntitySystem
         if (_input == null)
         {
             _input = new FishingMinigameInputControl();
-            _input.OnReel += SendReel;
             _input.OnHook += TryHook;
         }
 
@@ -129,6 +130,33 @@ public sealed partial class FishingSystem : EntitySystem
             _input.Orphan();
             parent.AddChild(_input);
         }
+
+        // The reel itself listens on the whole screen: wheel notches count everywhere,
+        // unless a scrollable control (chat, lists) consumed them first. Nothing is
+        // marked handled, so all other actions keep working while the fight runs.
+        if (_ui.ActiveScreen is InGameScreen screen && _wheelScreen != screen)
+        {
+            UnsubscribeWheelScreen();
+            screen.WheelScrolled += OnScreenWheel;
+            _wheelScreen = screen;
+        }
+    }
+
+    private void OnScreenWheel(GUIMouseWheelEventArgs args)
+    {
+        if (args.Delta.Y == 0f)
+            return;
+
+        SendReel(args.Delta.Y > 0f ? 1 : -1);
+    }
+
+    private void UnsubscribeWheelScreen()
+    {
+        if (_wheelScreen == null)
+            return;
+
+        _wheelScreen.WheelScrolled -= OnScreenWheel;
+        _wheelScreen = null;
     }
 
     private MapCoordinates GetAnchor(FishingChallengeComponent challenge, EntityUid local)
@@ -164,5 +192,7 @@ public sealed partial class FishingSystem : EntitySystem
 
         _input.Dispose();
         _input = null;
+
+        UnsubscribeWheelScreen();
     }
 }
