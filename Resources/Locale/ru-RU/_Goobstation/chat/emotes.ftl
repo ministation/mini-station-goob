@@ -35,3 +35,73 @@ emote-fart-inhale-notice = ...
 emote-fart-inhale-disarm-notice = ...
 chat-emote-name-boop = Буп
 chat-emote-name-whirr = Жужжать
+
+chat-emote-name-blink = Моргнуть
+
+chat-emote-name-scree = Верещание
+
+chat-emote-name-call = Крик
+
+chat-emote-name-squawk = Клекот
+
+chat-emote-name-quack = Кряк
+
+chat-emote-name-snort = Фырканье
+
+chat-emote-name-squee = Писк
+
+chat-emote-name-stomp = Топнуть
+
+chat-emote-name-gekker = Геккер
+
+chat-emote-name-yap = Тявканье
+
+chat-emote-name-gurgle = Бульканье
+
+chat-emote-name-liss = Лисс
+
+chat-emote-name-lurr = Лурр
+
+chat-emote-name-snicker = Хихиканье
+
+chat-emote-name-multichirp = Хоровой щебет
+
+chat-emote-name-synth-laugh = Синтетический смех
+
+chat-emote-name-hum = Гудение
+
+chat-emote-name-sniff = Шмыгать
+
+chat-emote-msg-blink = моргает.
+
+chat-emote-msg-scree = верещит!
+
+chat-emote-msg-call = кричит!
+
+chat-emote-msg-squawk = клекочет!
+
+chat-emote-msg-quack = крякает.
+
+chat-emote-msg-snort = фыркает.
+
+chat-emote-msg-squee = пищит!
+
+chat-emote-msg-stomp = топает {POSS-ADJ($entity)} ногой.
+
+chat-emote-msg-gekker = геккерит!
+
+chat-emote-msg-yap = тявкает!
+
+chat-emote-msg-gurgle = булькает.
+
+chat-emote-msg-liss = шипит.
+
+chat-emote-msg-lurr = мурлычет.
+
+chat-emote-msg-snicker = хихикает.
+
+chat-emote-msg-multichirp = чирикает хором!
+
+chat-emote-msg-hum = напевает.
+
+chat-emote-msg-sniff = шмыгает.
