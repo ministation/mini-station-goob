@@ -4,6 +4,7 @@
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared.Examine;
+using Content.Shared._Mini.DailyQuests;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Mini.Fishing.Systems;
@@ -30,6 +31,12 @@ public sealed partial class FishExamineSystem : EntitySystem
         var proto = _fish.GetProto(ent.Comp);
         if (proto == null)
             return;
+
+        // First line: the rarity, colored like the achievements and the weekly quests.
+        var tier = FishingModeRarity.GetTier(proto.Rarity);
+        args.PushMarkup(Loc.GetString("fish-examine-rarity",
+            ("tier", Loc.GetString(tier.GetLocId())),
+            ("color", tier.GetColor().ToHex())));
 
         // Same formula as FishSystem.UpdateButcherable.
         if (proto.Fillet is { } fillet)

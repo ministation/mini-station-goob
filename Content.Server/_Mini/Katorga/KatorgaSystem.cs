@@ -477,7 +477,18 @@ public sealed class KatorgaSystem : EntitySystem
         _expiry.TryAdd(ev.Player.UserId, ban.ExpirationTime!.Value);
 
         if (HasComp<GhostComponent>(ev.Entity))
+        {
+            // Реконнект в призрака (забанен, пока гостовал): выдаём тело на каторге,
+            // иначе забаненный остаётся гостом и свободно летает по станции.
+            if (!_adminManager.IsAdmin(ev.Player))
+            {
+                var ghostFaction = _factionSystem.GetFaction(userId) ?? _factionSystem.AssignFaction(ev.Player);
+                SpawnKatorgaPlayer(ev.Player, ghostFaction);
+                NotifyBanStatus(ev.Player, ban);
+            }
+
             return;
+        }
 
         var xform = Transform(ev.Entity);
         if (xform.MapID == _katorgaMap)
@@ -548,7 +559,7 @@ public sealed class KatorgaSystem : EntitySystem
         // Фракция выбирается в late join; если игрок не выбрал (или не успел), назначаем сами.
         var faction = _factionSystem.GetFaction(session.UserId) ?? _factionSystem.AssignFaction(session);
 
-        if (session.AttachedEntity is { } attached && !TerminatingOrDeleted(attached))
+        if (session.AttachedEntity is { } attached && !TerminatingOrDeleted(attached) && !HasComp<GhostComponent>(attached))
         {
             // Переподключение в уже заключённое тело: не раздеваем и не телепортируем заново,
             // иначе снаряжение падает на пол, а персонаж оказывается на другой точке спавна.
@@ -563,6 +574,8 @@ public sealed class KatorgaSystem : EntitySystem
         }
         else
         {
+            // Гост или стёртый админом игрок: выдаём тело на каторге. Призрак телепортом
+            // не сажается — он остаётся призраком и просто улетает с карты варпом.
             SpawnKatorgaPlayer(session, faction);
         }
 
@@ -629,11 +642,20 @@ public sealed class KatorgaSystem : EntitySystem
     {
         var profile = _preferences.GetPreferences(session.UserId).SelectedCharacter as HumanoidCharacterProfile;
 
-        var mind = _mind.CreateMind(session.UserId, profile?.Name);
-        _mind.SetUserId(mind, session.UserId);
-
         var mob = _stationSpawning.SpawnPlayerMob(GetSpawnPosition(faction), null, profile, null);
-        _mind.TransferTo(mind, mob);
+
+        // Живой ум (забанен в гостах) пересаживается в тело целиком, стёртый админом
+        // ("удалить из раунда") или лишённый ума игрок получает новый.
+        if (_mind.TryGetMind(session, out var mindId, out var mind))
+        {
+            _mind.TransferTo(mindId, mob);
+        }
+        else
+        {
+            var created = _mind.CreateMind(session.UserId, profile?.Name);
+            _mind.SetUserId(created, session.UserId);
+            _mind.TransferTo(created, mob);
+        }
 
         EnsureComp<KatorgaBoundComponent>(mob);
         EnsureComp<KillTrackerComponent>(mob);

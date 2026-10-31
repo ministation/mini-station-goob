@@ -44,6 +44,11 @@ public sealed partial class FishingModeRuleComponent : Component
     /// Last announced leader, so leader changes are announced once.
     /// </summary>
     public EntityUid? Leader;
+
+    /// <summary>
+    /// Round end coin rewards are paid once per round.
+    /// </summary>
+    public bool RewardsPaid;
 }
 
 public struct FishingModePlayerScore

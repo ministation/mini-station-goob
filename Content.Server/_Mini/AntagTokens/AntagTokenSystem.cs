@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server._Mini.AntagUnlock;
+using Content.Server._Mini.Fishing;
 using Content.Server._Mini.JobUnlock;
 using Content.Server._Mini.TypanWar;
 using Content.Server.Administration.Managers;
@@ -33,6 +34,7 @@ using Content.Shared._Mini.AntagTokens;
 using Content.Shared._Mini.JobUnlock;
 using Content.Shared._Mini.ReadyManifest;
 using Content.Shared.GameTicking;
+using Content.Shared.GameTicking.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Roles;
 using Robust.Server.Player;
@@ -554,6 +556,22 @@ public sealed class AntagTokenSystem : EntitySystem
         return _storeEnabled;
     }
 
+    /// <summary>
+    /// Mini: идёт ли сейчас мирный режим рыбалки. В нём запрещены покупки антагонов
+    /// и назначение купленных ролей на старте раунда.
+    /// </summary>
+    private bool IsFishingModeActive()
+    {
+        var query = EntityQueryEnumerator<FishingModeRuleComponent, GameRuleComponent>();
+        while (query.MoveNext(out var uid, out _, out var gameRule))
+        {
+            if (_gameTicker.IsGameRuleActive(uid, gameRule))
+                return true;
+        }
+
+        return false;
+    }
+
     public bool TryPurchaseForSession(ICommonSession session, string roleId, out string? error)
     {
         error = null;
@@ -561,6 +579,13 @@ public sealed class AntagTokenSystem : EntitySystem
         if (!_storeEnabled)
         {
             error = Loc.GetString("antag-tokens-error-store-disabled");
+            return false;
+        }
+
+        // Mini: в режиме рыбалки антагонистов нет - покупки недоступны.
+        if (IsFishingModeActive())
+        {
+            error = Loc.GetString("antag-tokens-error-fishing-mode");
             return false;
         }
 
@@ -1346,6 +1371,13 @@ public sealed class AntagTokenSystem : EntitySystem
             if (!TryGetPendingLobbyRole(session.UserId, out var role) || !role.IgnoresStationJob)
                 continue;
 
+            // Mini: в раунде рыбалки антагоны не назначаются, депозит возвращается.
+            if (IsFishingModeActive())
+            {
+                RefundFishingModeDeposit(session);
+                continue;
+            }
+
             var state = EnsureStateExists(session.UserId);
             if (state == null)
                 continue;
@@ -1435,6 +1467,13 @@ public sealed class AntagTokenSystem : EntitySystem
         {
             if (!TryGetPendingLobbyRole(session.UserId, out var role) || role.IgnoresStationJob)
                 continue;
+
+            // Mini: в раунде рыбалки антагоны не назначаются, депозит возвращается.
+            if (IsFishingModeActive())
+            {
+                RefundFishingModeDeposit(session);
+                continue;
+            }
 
             // Players with no job assignment are in the event but were not spawned.
             if (session.AttachedEntity is not { Valid: true })
@@ -2646,6 +2685,22 @@ private void NormalizeMonthlyState(PlayerTokenState state, DateTime nowUtc, NetU
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Mini: депозит антагона возвращается, когда раунд начался в режиме рыбалки:
+    /// антагоны там не спавнятся.
+    /// </summary>
+    private void RefundFishingModeDeposit(ICommonSession session)
+    {
+        var state = EnsureStateExists(session.UserId);
+        if (state == null)
+            return;
+
+        RefundPendingDeposit(session.UserId, state);
+        PersistState(session.UserId, state);
+        SendState(session.UserId);
+        ShowPopup(session, Loc.GetString("antag-tokens-popup-deposit-fishing-refund"));
     }
 
     private void RefundPendingDeposit(NetUserId userId, PlayerTokenState state)

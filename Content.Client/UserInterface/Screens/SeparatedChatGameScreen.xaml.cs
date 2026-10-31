@@ -34,6 +34,8 @@ public sealed partial class SeparatedChatGameScreen : InGameScreen
         SetMarginLeft(TypanWarHud, TypanWarHud.GetValue<float>(MarginLeftProperty) - 290);
         SetAnchorAndMarginPreset(KatorgaHud, LayoutPreset.CenterBottom, margin: 205);
         SetMarginLeft(KatorgaHud, KatorgaHud.GetValue<float>(MarginLeftProperty) - 290);
+        // Ниже верхней панели меню, чтобы худ рыбалки не заезжал под интерфейс.
+        SetAnchorAndMarginPreset(FishingModeHud, LayoutPreset.CenterTop, margin: 48);
 
         ScreenContainer.OnSplitResizeFinished += () =>
             OnChatResized?.Invoke(new Vector2(ScreenContainer.SplitFraction, 0));

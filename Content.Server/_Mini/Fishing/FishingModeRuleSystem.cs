@@ -6,11 +6,15 @@
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
+using Content.Server._Mini.AntagTokens;
+using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
+using Content.Server.Mind;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Events;
@@ -24,6 +28,7 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Station.Components;
 using Content.Shared.Storage.EntitySystems;
 using Robust.Server.GameObjects;
+using Robust.Server.Player;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
@@ -38,10 +43,19 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
     private const string PlatingTileId = "Plating";
     private const string WaterEntity = "FloorWaterEntity";
 
+    /// <summary>
+    /// Coin rewards for the top three fishers, paid at round end.
+    /// </summary>
+    private static readonly int[] PlaceRewards = { 3, 2, 1 };
+
+    [Dependency] private readonly AntagTokenSystem _antagTokens = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
+    [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly ITileDefinitionManager _tiles = default!;
     [Dependency] private readonly MapSystem _map = default!;
+    [Dependency] private readonly MindSystem _mind = default!;
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly SharedStorageSystem _storage = default!;
@@ -173,7 +187,8 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
     }
 
     /// <summary>
-    /// Sends the final table before the round end window opens, so the manifest can show it.
+    /// Sends the final table before the round end window opens, so the manifest can show it,
+    /// and pays coin rewards to the top three fishers.
     /// </summary>
     protected override void AppendRoundEndText(EntityUid uid,
         FishingModeRuleComponent component,
@@ -185,7 +200,64 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
         if (component.Scores.Count == 0)
             return;
 
+        PayRewards(component);
         RaiseNetworkEvent(new FishingModeRoundEndEvent(BuildLeaders(component, 15)));
+    }
+
+    /// <summary>
+    /// Pays the top three fishers their coin reward and tells online winners about it.
+    /// </summary>
+    private void PayRewards(FishingModeRuleComponent component)
+    {
+        if (component.RewardsPaid)
+            return;
+
+        component.RewardsPaid = true;
+
+        foreach (var (mob, reward) in TopMobs(component, PlaceRewards.Length))
+        {
+            if (reward <= 0)
+                continue;
+
+            if (!_mind.TryGetMind(mob, out var mindId, out var mind) || mind.UserId == null)
+                continue;
+
+            var userId = mind.UserId.Value;
+            _antagTokens.PayBalance(userId, reward);
+
+            if (_playerManager.TryGetSessionById(userId, out var session))
+            {
+                _chatManager.DispatchServerMessage(session,
+                    Loc.GetString("fishing-mode-reward-message", ("amount", reward)));
+            }
+        }
+    }
+
+    /// <summary>
+    /// The best fisher mobs with their place reward, best first.
+    /// </summary>
+    private List<(EntityUid Mob, int Reward)> TopMobs(FishingModeRuleComponent component, int count)
+    {
+        var result = new List<(EntityUid, int)>();
+
+        foreach (var mob in SortedMobs(component))
+        {
+            if (result.Count >= count)
+                break;
+
+            result.Add((mob, PlaceRewards[result.Count]));
+        }
+
+        return result;
+    }
+
+    private IEnumerable<EntityUid> SortedMobs(FishingModeRuleComponent component)
+    {
+        return component.Scores
+            .Where(kv => !Deleted(kv.Key))
+            .OrderByDescending(kv => kv.Value.Score)
+            .ThenByDescending(kv => kv.Value.Fish)
+            .Select(kv => kv.Key);
     }
 
     private void OnStatusRequest(FishingModeStatusRequestEvent args, EntitySessionEventArgs ev)
@@ -206,22 +278,19 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
 
     private FishingModeLeader[] BuildLeaders(FishingModeRuleComponent component, int count)
     {
-        var leaders = new List<FishingModeLeader>(component.Scores.Count);
-        foreach (var (mob, score) in component.Scores)
+        var leaders = new List<FishingModeLeader>();
+        foreach (var mob in SortedMobs(component).Take(count))
         {
-            if (Deleted(mob))
-                continue;
-
-            leaders.Add(new FishingModeLeader(Name(mob), score.Fish, score.Score, score.BestFish ?? string.Empty, score.BestFishRarity));
+            var score = component.Scores[mob];
+            var place = leaders.Count;
+            leaders.Add(new FishingModeLeader(
+                Name(mob),
+                score.Fish,
+                score.Score,
+                place < PlaceRewards.Length ? PlaceRewards[place] : 0));
         }
 
-        leaders.Sort((a, b) =>
-        {
-            var byScore = b.Score.CompareTo(a.Score);
-            return byScore != 0 ? byScore : b.Fish.CompareTo(a.Fish);
-        });
-
-        return leaders.Take(count).ToArray();
+        return leaders.ToArray();
     }
 
     private EntityUid? GetLeader(FishingModeRuleComponent component)

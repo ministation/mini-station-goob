@@ -7,8 +7,8 @@
 
 using System;
 
-using Content.Shared._Mini.DailyQuests;
 using Content.Shared._Mini.Fishing;
+using Content.Client.UserInterface;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.Graphics;
@@ -17,21 +17,20 @@ using Robust.Shared.Maths;
 namespace Content.Client._Mini.Fishing;
 
 /// <summary>
-/// Fishing mode HUD: the three leaders with their fish score bars and the rarity of
-/// their best fish. Sits on top of the screen, a bit smaller than the war HUD.
+/// Fishing mode HUD: the three leaders with their fish score bars, in the same
+/// pixel-art bar style as the vote timer and the war HUD. Sits at the top of the
+/// screen below the top menu bar.
 /// </summary>
 public sealed class FishingModeHudControl : PanelContainer
 {
     public const float PreferredWidth = 520f;
 
     private const int LeaderCount = 3;
-    private const float BarWidth = 150f;
 
     private static readonly Color PanelBackground = Color.FromHex("#14141C").WithAlpha(0.72f);
     private static readonly Color BorderColor = Color.FromHex("#6E6A82").WithAlpha(0.45f);
     private static readonly Color TextColor = Color.FromHex("#E8E6F0");
     private static readonly Color MutedTextColor = Color.FromHex("#9A97A8");
-    private static readonly Color TrackColor = Color.FromHex("#252530").WithAlpha(0.7f);
 
     private static readonly Color[] RankColors =
     {
@@ -47,8 +46,7 @@ public sealed class FishingModeHudControl : PanelContainer
     {
         public BoxContainer Container = null!;
         public Label Name = null!;
-        public Label Best = null!;
-        public ProgressBar Bar = null!;
+        public PixelTiledProgressBar Bar = null!;
         public Label Count = null!;
     }
 
@@ -56,9 +54,6 @@ public sealed class FishingModeHudControl : PanelContainer
     {
         MinHeight = 42;
         MaxHeight = 128;
-        HorizontalAlignment = HAlignment.Center;
-        VerticalAlignment = VAlignment.Top;
-        Margin = new Thickness(0, 6, 0, 0);
         MouseFilter = MouseFilterMode.Ignore;
         PanelOverride = new StyleBoxFlat
         {
@@ -78,22 +73,11 @@ public sealed class FishingModeHudControl : PanelContainer
         };
         AddChild(column);
 
-        var header = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Horizontal,
-            SeparationOverride = 8,
-        };
-        column.AddChild(header);
-
-        header.AddChild(new Label
+        column.AddChild(new Label
         {
             Text = Loc.GetString("fishing-mode-hud-title"),
             FontColorOverride = TextColor,
-            MinWidth = 76,
-            MaxWidth = 76,
         });
-
-        header.AddChild(BuildRarityLegend());
 
         _emptyLabel = new Label
         {
@@ -107,37 +91,6 @@ public sealed class FishingModeHudControl : PanelContainer
             _rows[i] = BuildRow(column, i);
 
         Visible = false;
-    }
-
-    private static Control BuildRarityLegend()
-    {
-        var legend = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Horizontal,
-            SeparationOverride = 6,
-        };
-
-        var first = true;
-        foreach (var tier in Enum.GetValues<DailyQuestRarity>())
-        {
-            if (!first)
-            {
-                legend.AddChild(new Label
-                {
-                    Text = Loc.GetString("fishing-mode-hud-rarity-separator"),
-                    FontColorOverride = MutedTextColor,
-                });
-            }
-
-            first = false;
-            legend.AddChild(new Label
-            {
-                Text = Loc.GetString(tier.GetLocId()),
-                FontColorOverride = tier.GetColor(),
-            });
-        }
-
-        return legend;
     }
 
     private static LeaderRow BuildRow(BoxContainer column, int index)
@@ -161,52 +114,38 @@ public sealed class FishingModeHudControl : PanelContainer
         var name = new Label
         {
             FontColorOverride = TextColor,
-            MinWidth = 112,
-            MaxWidth = 112,
+            MinWidth = 150,
+            MaxWidth = 150,
             ClipText = true,
             VerticalAlignment = VAlignment.Center,
         };
         row.AddChild(name);
 
-        var bar = new ProgressBar
+        // The same tiled pixel bar the votes and daily quests use.
+        var bar = new PixelTiledProgressBar(
+            MiniSliderStyles.LongWhiteTrackPath,
+            scale: 2f,
+            fillModulate: RankColors[index].WithAlpha(0.9f))
         {
-            MinValue = 0f,
-            MaxValue = 1f,
             Value = 0f,
-            MinWidth = BarWidth,
-            MaxWidth = BarWidth,
-            MinHeight = 8,
-            MaxHeight = 8,
             VerticalAlignment = VAlignment.Center,
-            BackgroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = TrackColor },
-            ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = RankColors[index].WithAlpha(0.9f) },
+            HorizontalExpand = true,
         };
         row.AddChild(bar);
 
         var count = new Label
         {
             FontColorOverride = RankColors[index],
-            MinWidth = 58,
-            MaxWidth = 58,
+            MinWidth = 64,
+            MaxWidth = 64,
             Align = Label.AlignMode.Right,
         };
         row.AddChild(count);
-
-        var best = new Label
-        {
-            FontColorOverride = MutedTextColor,
-            MinWidth = 132,
-            MaxWidth = 132,
-            ClipText = true,
-            VerticalAlignment = VAlignment.Center,
-        };
-        row.AddChild(best);
 
         return new LeaderRow
         {
             Container = row,
             Name = name,
-            Best = best,
             Bar = bar,
             Count = count,
         };
@@ -237,17 +176,6 @@ public sealed class FishingModeHudControl : PanelContainer
             row.Name.Text = leader.Name;
             row.Count.Text = Loc.GetString("fishing-mode-hud-fish", ("count", leader.Fish));
             row.Bar.Value = Math.Clamp(leader.Score / (float) leaderScore, 0f, 1f);
-
-            if (leader.BestFish.Length == 0)
-            {
-                row.Best.Text = string.Empty;
-                continue;
-            }
-
-            row.Best.Text = Loc.GetString("fishing-mode-hud-best-fish",
-                ("rarity", Loc.GetString(leader.BestFishRarity.GetLocId())),
-                ("fish", leader.BestFish));
-            row.Best.FontColorOverride = leader.BestFishRarity.GetColor();
         }
     }
 }

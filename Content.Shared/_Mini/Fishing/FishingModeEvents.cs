@@ -23,19 +23,16 @@ public readonly struct FishingModeLeader
     public readonly int Score;
 
     /// <summary>
-    /// Name of the rarest fish this player caught, empty when they caught nothing.
+    /// Coins awarded for this place at round end, zero outside the rewarded places.
     /// </summary>
-    public readonly string BestFish;
+    public readonly int Reward;
 
-    public readonly DailyQuestRarity BestFishRarity;
-
-    public FishingModeLeader(string name, int fish, int score, string bestFish, DailyQuestRarity bestFishRarity)
+    public FishingModeLeader(string name, int fish, int score, int reward)
     {
         Name = name;
         Fish = fish;
         Score = score;
-        BestFish = bestFish;
-        BestFishRarity = bestFishRarity;
+        Reward = reward;
     }
 }
 

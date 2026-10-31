@@ -9,9 +9,14 @@ fishing-mode-hud-title = Fishing
 fishing-mode-hud-no-fishers = Nobody has caught anything yet
 fishing-mode-hud-rank = { $rank }.
 fishing-mode-hud-fish = { $count } fish
-fishing-mode-hud-best-fish = { $rarity }: { $fish }
-fishing-mode-hud-rarity-separator = ·
 
 fishing-mode-round-end-title = Top fishers
 fishing-mode-round-end-line = { $rank }. { $name } - { $count } fish, { $score } points
-fishing-mode-round-end-best = Best fish: { $rarity }, { $fish }
+fishing-mode-round-end-reward = +{ $amount } { $amount ->
+    [one] coin
+    *[other] coins
+}
+fishing-mode-reward-message = Fishing reward: { $amount } { $amount ->
+    [one] coin
+    *[other] coins
+} for your catch.

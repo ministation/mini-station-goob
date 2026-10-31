@@ -9,9 +9,16 @@ fishing-mode-hud-title = Рыбалка
 fishing-mode-hud-no-fishers = Пока никто ничего не поймал
 fishing-mode-hud-rank = { $rank }.
 fishing-mode-hud-fish = { $count } рыб
-fishing-mode-hud-best-fish = { $rarity }: { $fish }
-fishing-mode-hud-rarity-separator = ·
 
 fishing-mode-round-end-title = Топ рыбаков
 fishing-mode-round-end-line = { $rank }. { $name } - { $fish } рыб, { $score } очков
-fishing-mode-round-end-best = Лучшая рыба: { $rarity }, { $fish }
+fishing-mode-round-end-reward = +{ $amount } { $amount ->
+    [one] монетка
+    [few] монетки
+    *[many] монет
+}
+fishing-mode-reward-message = Награда за рыбалку: { $amount } { $amount ->
+    [one] монетка
+    [few] монетки
+    *[many] монет
+} за улов.
