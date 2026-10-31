@@ -4,6 +4,7 @@
 using System.Numerics;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
+using Content.Shared._Mini.Fishing.Systems;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Robust.Client.GameObjects;
@@ -13,6 +14,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Graphics.RSI;
+using Robust.Shared.Light;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Timing;
@@ -21,8 +23,10 @@ namespace Content.Client._Mini.Fishing.Overlays;
 
 /// <summary>
 /// Draws the fishing line from the rod to the float and the minigame panel right next to the float.
+/// The line has its own <see cref="FishingLineOverlay"/> so it can go under the lighting and under
+/// the panel.
 /// </summary>
-public sealed partial class FishingOverlay : Overlay
+public partial class FishingOverlay : Overlay
 {
     [Dependency] private IEntityManager _ent = default!;
     [Dependency] private IPlayerManager _player = default!;
@@ -30,6 +34,8 @@ public sealed partial class FishingOverlay : Overlay
     [Dependency] private IGameTiming _timing = default!;
 
     private readonly TransformSystem _transform;
+    private readonly FishingEquipmentSystem _equipment;
+    private readonly LightLevelSystem? _light;
     private readonly RSI _hud;
 
     // World space uses meters, one tile is one meter, and sprites are drawn at 32 px per meter.
@@ -80,12 +86,19 @@ public sealed partial class FishingOverlay : Overlay
     private static readonly Color BaitEdgeColor = Color.FromHex("#9be38d");
     private static readonly Color BiteColor = Color.FromHex("#ff4b3a");
 
-    public override OverlaySpace Space => OverlaySpace.WorldSpace;
+    public override OverlaySpace Space => LinesOnly ? OverlaySpace.WorldSpaceBelowFOV : OverlaySpace.WorldSpace;
+
+    /// <summary>
+    /// Draws only the line, in a space that takes the lighting and sits under the minigame panel.
+    /// </summary>
+    protected virtual bool LinesOnly => false;
 
     public FishingOverlay()
     {
         IoCManager.InjectDependencies(this);
         _transform = _ent.EntitySysManager.GetEntitySystem<TransformSystem>();
+        _equipment = _ent.System<FishingEquipmentSystem>();
+        _light = _ent.EntitySysManager.GetEntitySystemOrNull<LightLevelSystem>();
         _hud = _cache.GetResource<RSIResource>("/Textures/_Goobstation/Interface/Fishing/fishing_hud.rsi").RSI;
     }
 
@@ -129,8 +142,16 @@ public sealed partial class FishingOverlay : Overlay
             if (rod == null && localLure == lureUid)
                 rod = localChallenge?.Rod;
 
-            if (TryGetLineStart(rod, lurePos, args.MapId, eyeRot, out var lineStart))
-                DrawLine(handle, lurePos, eyeRot, lineStart, lureOffset + FloatTopOffset);
+            if (LinesOnly)
+            {
+                if (TryGetLineStart(rod, lurePos, args.MapId, eyeRot, out var lineStart))
+                {
+                    var color = GetLineColor(lureUid, rod);
+                    DrawLine(handle, lurePos, eyeRot, lineStart, lureOffset + FloatTopOffset, color);
+                }
+
+                continue;
+            }
 
             if (localChallenge == null || localLure != lureUid)
                 continue;
@@ -148,7 +169,8 @@ public sealed partial class FishingOverlay : Overlay
         }
 
         // The panel must be visible even if the lure briefly fell out of the client's view.
-        if (!panelDrawn &&
+        if (!LinesOnly &&
+            !panelDrawn &&
             localChallenge is { Phase: FishingPhase.Minigame } &&
             localPlayer != EntityUid.Invalid)
         {
@@ -232,7 +254,8 @@ public sealed partial class FishingOverlay : Overlay
         Vector2 anchor,
         Angle eyeRot,
         Vector2 start,
-        Vector2 end)
+        Vector2 end,
+        Color color)
     {
         var delta = end - start;
         var distance = delta.Length();
@@ -258,7 +281,7 @@ public sealed partial class FishingOverlay : Overlay
                 foreach (var offset in LineOffsets)
                 {
                     var shift = perpendicular * (offset * HudScale);
-                    handle.DrawLine(previous + shift, point + shift, MathF.Abs(offset) >= 0.7f ? LineShadow : LineColor);
+                    handle.DrawLine(previous + shift, point + shift, MathF.Abs(offset) >= 0.7f ? LineShadow : color);
                 }
             }
 
@@ -266,7 +289,27 @@ public sealed partial class FishingOverlay : Overlay
         }
 
         // The line has to end inside the bobber, not next to it.
-        handle.DrawRect(Box2.CenteredAround(end, new Vector2(2f, 2f) * HudScale), LineColor);
+        handle.DrawRect(Box2.CenteredAround(end, new Vector2(2f, 2f) * HudScale), color);
+    }
+
+    /// <summary>
+    /// Colour of the line in the world: the same tint the rod sprite uses for its line layer,
+    /// dimmed by the light level at the float, because drawing primitives cannot use the sprite
+    /// light shader.
+    /// shortcut: one light level for the whole line, per-point light would need a shader.
+    /// </summary>
+    private Color GetLineColor(EntityUid lure, EntityUid? rod)
+    {
+        // Same tint the rod sprite uses for its line layer.
+        var color = rod is { } rodUid && _equipment.GetLine(rodUid) is { } line
+            ? line.LineColor
+            : LineColor;
+
+        if (_light == null || !_light.TryCalculateLightLevel(lure, out var level))
+            return color;
+
+        level = Math.Clamp(level, 0f, 1f);
+        return new Color(color.R * level, color.G * level, color.B * level, color.A);
     }
 
     private void DrawBiteMarker(DrawingHandleWorld handle, Vector2 anchor, Angle eyeRot, Vector2 spriteOffset)
