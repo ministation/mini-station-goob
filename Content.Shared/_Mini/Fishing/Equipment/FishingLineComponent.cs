@@ -47,4 +47,10 @@ public sealed partial class FishingLineComponent : Component
     /// </summary>
     [DataField]
     public bool IsCloaked;
+
+    /// <summary>
+    /// Whether the line survives lava and liquid plasma. Only the reinforced and sinew lines do.
+    /// </summary>
+    [DataField]
+    public bool LavaUsable;
 }

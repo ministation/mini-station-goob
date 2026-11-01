@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared._Mini.Fishing.Systems;
+using Content.Shared._Mini.Fishing.Traits;
 using Content.Shared.Chemistry.Reagent;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
@@ -22,6 +23,12 @@ public sealed partial class SharedAquariumSystem : EntitySystem
     /// Fallback feeding frequency for legacy fish that have no species prototype.
     /// </summary>
     public const float DefaultFeedingFrequency = 300f;
+
+    /// <summary>
+    /// How many times slower aquarium fish get hungry compared to the tg feeding frequency.
+    /// The aquarium is a display tank, not a farm, so fish should not starve while the crew is away.
+    /// </summary>
+    public const float HungerRateDivisor = 3f;
 
     /// <summary>
     /// Reagent the generic fish feed is made of. Fish without a special food eat this.
@@ -44,6 +51,7 @@ public sealed partial class SharedAquariumSystem : EntitySystem
     private const int MaxHappiness = 4;
 
     [Dependency] private FishSystem _fish = default!;
+    [Dependency] private SharedFishTraitSystem _traits = default!;
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
@@ -137,6 +145,10 @@ public sealed partial class SharedAquariumSystem : EntitySystem
     /// </summary>
     public float GetHunger(FishComponent fish, FishPrototype? proto, TimeSpan now)
     {
+        // tg TRAIT_FISH_NO_HUNGER: a mixotroph feeds itself and never starves.
+        if (_traits.HasTrait(fish, FishTraitFlags.Mixotroph))
+            return 0f;
+
         if (fish.LastFed is not { } fed)
             return 0f;
 
@@ -144,7 +156,7 @@ public sealed partial class SharedAquariumSystem : EntitySystem
         if (frequency <= 0f)
             return 0f;
 
-        return Math.Clamp((float) (now - fed).TotalSeconds / frequency, 0f, 2f);
+        return Math.Clamp((float) (now - fed).TotalSeconds / (frequency * HungerRateDivisor), 0f, 2f);
     }
 
     public bool CanEat(FishPrototype? proto, ProtoId<ReagentPrototype> reagent)

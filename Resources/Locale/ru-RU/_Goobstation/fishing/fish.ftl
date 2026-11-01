@@ -296,4 +296,6 @@ fish-examine-rarity = Редкость: [color={$color}]{$tier}[/color].
 fish-examine-fillet = При разделке получится { $amount } шт. { $fillet }.
 fish-examine-beauty = Красота: { $beauty }.
 fish-examine-traits = Трейты: { $traits }.
+fish-trait-revival-revived = { $fish } дёргается. Он снова жив!
+fish-trait-ink-splat = { $fish } обливает вас чернилами!
 

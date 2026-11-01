@@ -13,6 +13,14 @@ public sealed partial class ThrowFishingLureActionEvent : WorldTargetActionEvent
 
 public sealed partial class PullFishingLureActionEvent : InstantActionEvent;
 
+/// <summary>
+/// Raised after a fish finished its map initialization, so other systems can add trait components.
+/// </summary>
+public sealed class FishInitializedEvent(EntityUid fish) : EntityEventArgs
+{
+    public readonly EntityUid Fish = fish;
+}
+
 [Serializable, NetSerializable]
 public sealed class ActiveFishingSpotComponentState : ComponentState
 {

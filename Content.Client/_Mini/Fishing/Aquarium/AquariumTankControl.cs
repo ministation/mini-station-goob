@@ -24,7 +24,7 @@ public sealed partial class AquariumTankControl : Control
     /// <summary>
     /// Height of one fish relative to the tank height.
     /// </summary>
-    private const float FishHeightFraction = 0.22f;
+    private const float FishHeightFraction = 0.66f;
 
     /// <summary>
     /// Part of the tank height the fish may swim in, on top of the sand.

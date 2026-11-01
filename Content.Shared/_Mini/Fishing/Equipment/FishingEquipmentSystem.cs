@@ -5,11 +5,13 @@ using System;
 
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Events;
+using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
+using Content.Shared.Materials;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.Prototypes;
@@ -17,6 +19,7 @@ using Content.Shared.Verbs;
 using Robust.Shared.Containers;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Shared._Mini.Fishing.Systems;
@@ -29,6 +32,13 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
     public const string LineSlotId = "line";
     public const string HookSlotId = "hook";
     public const string BaitSlotId = "bait";
+    public const string AnomalySlotId = "anomaly";
+
+    /// <summary>tg: a gravity anomaly core makes the lure fall slower during the fight.</summary>
+    private const float AnomalyGravityMultiplier = 0.4f;
+
+    /// <summary>Base chance, in percent, that an anomalous hook uses its core effect on a catch.</summary>
+    private const float AnomalyBaseChance = 25f;
 
     [Dependency] private ItemSlotsSystem _slots = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
@@ -38,6 +48,8 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
     [Dependency] private IComponentFactory _factory = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private FishSystem _fish = default!;
 
     public override void Initialize()
     {
@@ -57,6 +69,9 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
         SubscribeLocalEvent<FishingRodComponent, BoundUIOpenedEvent>(OnEquipmentUiOpened);
         SubscribeLocalEvent<FishingRodComponent, ExaminedEvent>(OnRodExamined);
         SubscribeLocalEvent<FishingBaitComponent, ExaminedEvent>(OnBaitExamined);
+        SubscribeLocalEvent<FishingHookComponent, ExaminedEvent>(OnHookExamined);
+        SubscribeLocalEvent<FishingHookComponent, EntInsertedIntoContainerMessage>(OnHookCoreInserted);
+        SubscribeLocalEvent<FishingHookComponent, EntRemovedFromContainerMessage>(OnHookCoreRemoved);
         _proto.PrototypesReloaded += OnPrototypesReloaded;
 
         // The client visuals system owns the rod container events on its side.
@@ -104,6 +119,17 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
         return TryComp<FishingBaitComponent>(item, out var bait) ? bait : null;
     }
 
+    /// <summary>
+    /// Hook entity currently slotted into the rod, if any.
+    /// </summary>
+    public EntityUid? GetHookItem(EntityUid rod)
+    {
+        if (!_slots.TryGetSlot(rod, HookSlotId, out var slot))
+            return null;
+
+        return slot.Item;
+    }
+
     #endregion
 
     #region Modifiers
@@ -133,6 +159,12 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
             args.Gravity *= hook.GravityMultiplier;
             args.Rules |= hook.Rules;
         }
+
+        if (GetHookItem(ent.Owner) is { } hookItem &&
+            GetAnomalyEffect(hookItem) == FishingAnomalyEffect.Gravity)
+        {
+            args.Gravity *= AnomalyGravityMultiplier;
+        }
     }
 
     /// <summary>tg: without bait fish are fifteen times less likely to bite.</summary>
@@ -148,6 +180,10 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
         {
             args.FishWeightMultiplier *= hook.FishWeightMultiplier;
             args.DudRerolls += hook.DudRerolls;
+
+            // tg's magnetic hook removes duds from the table outright.
+            if (hook.RemoveDuds)
+                args.RemoveDuds = true;
         }
 
         if (GetBait(ent) is not { } bait)
@@ -181,6 +217,183 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
                 args.ExtraCatchChance += 0.1f;
                 break;
         }
+    }
+
+    #endregion
+
+    #region Anomaly hook
+
+    /// <summary>
+    /// tg material table for the dimensional anomaly effect: gold and silver are the most common.
+    /// </summary>
+    private static readonly (string Material, float Weight)[] AnomalyMaterials =
+    {
+        ("Gold", 20f),
+        ("Silver", 20f),
+        ("Plastic", 10f),
+        ("Uranium", 5f),
+        ("Plasma", 5f),
+    };
+
+    /// <summary>
+    /// Anomaly core currently slotted into the hook, if any.
+    /// </summary>
+    public EntityUid? GetAnomalyCore(EntityUid hookItem)
+    {
+        if (!_slots.TryGetSlot(hookItem, AnomalySlotId, out var slot))
+            return null;
+
+        return slot.Item;
+    }
+
+    /// <summary>
+    /// Effect granted by the core inside the hook. Cores without a counterpart in Mini have none.
+    /// </summary>
+    public FishingAnomalyEffect GetAnomalyEffect(EntityUid hookItem)
+    {
+        if (GetAnomalyCore(hookItem) is not { } core || TerminatingOrDeleted(core))
+            return FishingAnomalyEffect.None;
+
+        return Prototype(core)?.ID switch
+        {
+            "AnomalyCoreGravity" => FishingAnomalyEffect.Gravity,
+            "AnomalyCoreBluespace" => FishingAnomalyEffect.DimensionalMaterials,
+            "AnomalyCoreFlesh" => FishingAnomalyEffect.Bioscramble,
+            _ => FishingAnomalyEffect.None,
+        };
+    }
+
+    /// <summary>
+    /// tg rolls the anomaly core effect chance from 25 percent plus a bait quality bonus.
+    /// </summary>
+    public float GetAnomalyEffectChance(EntityUid rod)
+    {
+        if (GetBait(rod) is not { } bait)
+            return AnomalyBaseChance;
+
+        return AnomalyBaseChance + bait.Quality switch
+        {
+            FishingBaitQuality.Good => 8f,
+            FishingBaitQuality.Great => 16f,
+            _ => 4f,
+        };
+    }
+
+    /// <summary>
+    /// Rolls the anomalous lure hook core effect for a fresh catch and applies it.
+    /// </summary>
+    public bool TryApplyAnomalyCatchEffect(EntityUid rod, EntityUid caught)
+    {
+        if (!_net.IsServer ||
+            !TryComp<FishComponent>(caught, out var fish) ||
+            GetHookItem(rod) is not { } hookItem)
+            return false;
+
+        var effect = GetAnomalyEffect(hookItem);
+        if (effect is FishingAnomalyEffect.None or FishingAnomalyEffect.Gravity)
+            return false;
+
+        if (_random.NextFloat() * 100f >= GetAnomalyEffectChance(rod))
+            return false;
+
+        switch (effect)
+        {
+            case FishingAnomalyEffect.DimensionalMaterials:
+                ApplyDimensionalMaterials((caught, fish));
+                break;
+            case FishingAnomalyEffect.Bioscramble:
+                ApplyBioscramble((caught, fish));
+                break;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// tg: a dimensional core can give the catch the composition of a few random materials.
+    /// </summary>
+    private void ApplyDimensionalMaterials(Entity<FishComponent> fish)
+    {
+        // Number of materials: one with 16/20, two with 3/20, three with 1/20.
+        var count = _random.NextFloat() switch
+        {
+            < 0.8f => 1,
+            < 0.95f => 2,
+            _ => 3,
+        };
+
+        var available = new List<(string Material, float Weight)>(AnomalyMaterials);
+        var amount = Math.Max(1, (int) MathF.Round(fish.Comp.Weight / count));
+        var composition = EnsureComp<PhysicalCompositionComponent>(fish);
+
+        composition.MaterialComposition.Clear();
+
+        for (var i = 0; i < count && available.Count > 0; i++)
+        {
+            var total = 0f;
+            foreach (var entry in available)
+                total += entry.Weight;
+
+            var roll = _random.NextFloat() * total;
+            var index = 0;
+            for (; index < available.Count - 1; index++)
+            {
+                roll -= available[index].Weight;
+                if (roll <= 0f)
+                    break;
+            }
+
+            composition.MaterialComposition[available[index].Material] = amount;
+            available.RemoveAt(index);
+        }
+    }
+
+    /// <summary>
+    /// tg: a bioscrambler core can resize the catch and give it a random fish trait.
+    /// </summary>
+    private void ApplyBioscramble(Entity<FishComponent> fish)
+    {
+        var multiplier = _random.Pick(new[] { 0.6f, 0.8f, 1f, 1.2f, 1.4f });
+        fish.Comp.Size = MathF.Max(1f, fish.Comp.Size * multiplier);
+        fish.Comp.Weight = MathF.Max(1f, fish.Comp.Weight * multiplier);
+        Dirty(fish.Owner, fish.Comp);
+
+        // shortcut: Mini has no per-trait bioscramble weights, so any fish trait can be rolled.
+        var traits = new List<ProtoId<FishTraitPrototype>>();
+        foreach (var trait in _proto.EnumeratePrototypes<FishTraitPrototype>())
+            traits.Add(trait.ID);
+
+        if (traits.Count > 0)
+            _fish.AddTrait(fish, _random.Pick(traits));
+    }
+
+    private void OnHookCoreInserted(Entity<FishingHookComponent> ent, ref EntInsertedIntoContainerMessage args)
+    {
+        if (!_net.IsServer || args.Container.ID != AnomalySlotId)
+            return;
+
+        ent.Comp.AnomalyCoreInstalled = true;
+        Dirty(ent.Owner, ent.Comp);
+    }
+
+    private void OnHookCoreRemoved(Entity<FishingHookComponent> ent, ref EntRemovedFromContainerMessage args)
+    {
+        if (!_net.IsServer || args.Container.ID != AnomalySlotId)
+            return;
+
+        ent.Comp.AnomalyCoreInstalled = false;
+        Dirty(ent.Owner, ent.Comp);
+    }
+
+    private void OnHookExamined(Entity<FishingHookComponent> ent, ref ExaminedEvent args)
+    {
+        if (!_slots.TryGetSlot(ent.Owner, AnomalySlotId, out _))
+            return;
+
+        if (GetAnomalyCore(ent.Owner) is { } core && !TerminatingOrDeleted(core))
+            args.PushMarkup(Loc.GetString("fishing-anomaly-core-examine", ("core", Name(core))));
+
+        args.PushMarkup(Loc.GetString("fishing-anomaly-core-effects"));
     }
 
     #endregion

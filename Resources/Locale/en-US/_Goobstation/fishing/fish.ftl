@@ -296,3 +296,5 @@ fish-examine-rarity = Rarity: [color={$color}]{$tier}[/color].
 fish-examine-fillet = Butchering yields { $amount }x { $fillet }.
 fish-examine-beauty = Beauty: { $beauty }.
 fish-examine-traits = Traits: { $traits }.
+fish-trait-revival-revived = { $fish } twitches. It is alive again!
+fish-trait-ink-splat = You have been inked by { $fish }!

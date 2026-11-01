@@ -2,6 +2,7 @@
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
 using Content.Shared._Mini.Fishing.Components;
+using Content.Shared._Mini.Fishing.Events;
 using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Item;
@@ -50,6 +51,8 @@ public sealed partial class FishSystem : EntitySystem
         UpdateButcherable(ent, proto);
         ent.Comp.FishDifficulty = proto.Rarity <= 400 ? 0.035f : FishComponent.DefaultDifficulty;
         Dirty(ent, ent.Comp);
+
+        RaiseLocalEvent(ent.Owner, new FishInitializedEvent(ent.Owner), broadcast: true);
     }
 
     public override void Update(float frameTime)

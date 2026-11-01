@@ -79,4 +79,10 @@ public sealed partial class FishingBaitComponent : Component
     /// </summary>
     [DataField]
     public bool AttractsShinyLovers;
+
+    /// <summary>
+    /// tg: poisonous bait kills any caught fish that does not have it as a favorite bait.
+    /// </summary>
+    [DataField]
+    public bool Poisonous;
 }

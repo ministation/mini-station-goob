@@ -28,6 +28,13 @@ public sealed partial class FishingSourcePrototype : IPrototype
     public LocId? CatalogDescription;
 
     /// <summary>
+    /// Short name shown in the fish-porter radial menu. Falls back to
+    /// <see cref="CatalogDescription"/> when it is not set.
+    /// </summary>
+    [DataField]
+    public LocId? RadialName;
+
+    /// <summary>
     /// Base difficulty of the minigame at this source.
     /// </summary>
     [DataField]

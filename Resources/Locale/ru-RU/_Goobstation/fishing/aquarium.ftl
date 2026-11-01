@@ -32,6 +32,7 @@ aquarium-window-feed = Покормить рыб
 aquarium-window-remove = Вынуть
 aquarium-window-fish-info = Голод: { $hunger }%. Счастье: { $happiness }/4. Размер: { $size } см. Вес: { $weight }.
 aquarium-window-fish-dead = Мертва
+aquarium-window-fish-starving = [color=#ff5555]Голодает! Покормите рыбу, пока она не умерла.[/color]
 aquarium-window-prop-info = { $name } (красота { $beauty })
 aquarium-fluid-freshwater = Пресная вода
 aquarium-fluid-saltwater = Соленая вода
@@ -62,3 +63,6 @@ aquarium-glass-needs-glass = Чтобы починить аквариум, ну�
 aquarium-glass-repaired = Вы чините стекло аквариума.
 aquarium-glass-broken = Стекло аквариума разлетается на осколки!
 aquarium-removed = Вы вынимаете содержимое из аквариума.
+aquarium-fish-anxiety = { $fish } на мгновение впадает в панику, а затем замирает...
+aquarium-fish-eaten = { $predator } поедает тушку { $prey }.
+aquarium-fish-attacked = { $aggressor } набрасывается на { $victim }!
