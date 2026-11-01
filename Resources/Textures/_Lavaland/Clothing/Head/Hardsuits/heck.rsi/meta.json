@@ -12,6 +12,12 @@
     },
     {
       "name": "hostile_env-equipped-HEAD"
+    },
+    {
+      "name": "icon"
+    },
+    {
+      "name": "icon-flash"
     }
   ]
 }
