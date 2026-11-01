@@ -392,6 +392,8 @@ namespace Content.IntegrationTests.Tests
                 "BloodDrunkDenSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "EliteTumorSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "AshwalkerDenSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
+                "SeedVaultSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
+                "WishgranterSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "ClockworkGuardSpawner", // Mini: the list holds component names, not entity ids
                 "Area", // map tests spawn ~every area anyway, this fails from trying to spawn an area in space
                 "StatusEffect", // doesnt make sense to spawn unattached, fails test with weather schedulers

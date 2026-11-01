@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: startingGear
+  id: LavalandSeedVaultKeeperGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHydroponics
+    outerClothing: ClothingOuterApronBotanist
+    gloves: ClothingHandsGlovesLeather
+    shoes: ClothingShoesColorGreen

@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG wish granter: a dark cube that grants a single twisted wish.
+
+- type: entity
+  id: LavalandWishgranter
+  parent: BaseStructure
+  name: wish granter
+  description: You're not so sure about this, anymore...
+  suffix: Lavaland
+  components:
+  - type: Wishgranter
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: red_cube
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 500
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  id: LavalandWishgranterSpawner
+  parent: MarkerBase
+  name: wish granter spawner
+  suffix: Lavaland
+  components:
+  - type: WishgranterSpawner
+
+- type: entity
+  id: MindRoleWishgranter
+  parent: BaseMindRoleAntag
+  name: Wishgranter Avatar
+  components:
+  - type: MindRole
+    antagPrototype: GenericAntagonist
+    roleType: SoloAntagonist
