@@ -5,7 +5,11 @@ using System.Linq;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Prototypes;
+using Content.Shared.Popups;
 using Content.Shared.UserInterface;
+using Content.Shared.Verbs;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -18,6 +22,8 @@ public sealed partial class FishingPortalSystem : EntitySystem
 {
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
     [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     public override void Initialize()
     {
@@ -25,6 +31,35 @@ public sealed partial class FishingPortalSystem : EntitySystem
 
         SubscribeLocalEvent<FishingPortalComponent, BoundUIOpenedEvent>(OnUiOpened);
         SubscribeLocalEvent<FishingPortalComponent, FishingPortalSelectMessage>(OnSelect);
+        SubscribeLocalEvent<FishingPortalComponent, GetVerbsEvent<InteractionVerb>>(OnGetVerbs);
+    }
+
+    private void OnGetVerbs(Entity<FishingPortalComponent> ent, ref GetVerbsEvent<InteractionVerb> args)
+    {
+        if (!args.CanAccess || !args.CanInteract)
+            return;
+
+        if (args.Using is not { } fish || !HasComp<FishComponent>(fish))
+            return;
+
+        var user = args.User;
+        args.Verbs.Add(new InteractionVerb
+        {
+            Text = Loc.GetString("fishing-portal-release-verb"),
+            Act = () => ReleaseFish(ent.Owner, fish, user),
+        });
+    }
+
+    private void ReleaseFish(EntityUid portal, EntityUid fish, EntityUid user)
+    {
+        if (!Exists(fish))
+            return;
+
+        _audio.PlayPvs(new SoundPathSpecifier("/Audio/Effects/Fluids/watersplash.ogg"), portal);
+        _popup.PopupEntity(
+            Loc.GetString("fishing-portal-release-done", ("fish", Name(fish)), ("target", Name(portal))),
+            user, user);
+        QueueDel(fish);
     }
 
     private void OnUiOpened(Entity<FishingPortalComponent> ent, ref BoundUIOpenedEvent args)

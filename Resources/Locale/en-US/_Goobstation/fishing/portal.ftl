@@ -9,3 +9,6 @@ fishing-portal-source-ocean = Ocean
 fishing-portal-source-hyperspace = Hyperspace
 fishing-portal-source-syndicate = Syndicate
 fishing-portal-source-random = Randomizer
+
+fishing-portal-release-verb = Release fish
+fishing-portal-release-done = You release { $fish } into { $target }.

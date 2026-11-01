@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 using Content.Shared.Clothing;
+using Content.Shared._Mini.Fishing.Systems;
 using Robust.Shared.GameStates;
 
 namespace Content.Shared.Item;
@@ -13,7 +14,7 @@ namespace Content.Shared.Item;
 /// shouldn't do that when just held in hand.
 /// </remarks>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
-[Access(typeof(HeldSpeedModifierSystem))]
+[Access(typeof(HeldSpeedModifierSystem), typeof(FishPhysicalSystem))]
 public sealed partial class HeldSpeedModifierComponent : Component
 {
     /// <summary>

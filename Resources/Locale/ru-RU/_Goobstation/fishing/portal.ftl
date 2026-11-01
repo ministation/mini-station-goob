@@ -9,3 +9,6 @@ fishing-portal-source-ocean = Океан
 fishing-portal-source-hyperspace = Гиперпространство
 fishing-portal-source-syndicate = Синдикат
 fishing-portal-source-random = Рандомайзер
+
+fishing-portal-release-verb = Выпустить рыбу
+fishing-portal-release-done = Вы выпускаете { $fish } в { $target }.
