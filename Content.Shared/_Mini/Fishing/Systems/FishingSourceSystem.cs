@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Events;
@@ -14,6 +15,7 @@ using Content.Shared.Item;
 using Content.Shared.Maps;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
+using Content.Shared.Prototypes;
 using Content.Shared.Throwing;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -199,8 +201,14 @@ public sealed partial class FishingSourceSystem : EntitySystem
 
             foreach (var traitId in fish.Traits)
             {
-                if (_proto.TryIndex(traitId, out FishTraitPrototype? trait))
-                    difficulty += trait.AddedDifficulty;
+                if (!_proto.TryIndex(traitId, out FishTraitPrototype? trait))
+                    continue;
+
+                difficulty += trait.AddedDifficulty;
+
+                // Wary fish see ordinary lines and are harder to fight.
+                if ((trait.Flags & FishTraitFlags.Wary) != 0 && !HasCloakedLine(rod))
+                    difficulty += 5f;
             }
 
             // tg: favorite bait makes the fight easier, disliked bait makes it harder.
@@ -218,12 +226,43 @@ public sealed partial class FishingSourceSystem : EntitySystem
         return ev.Difficulty;
     }
 
-    private EntityUid? GetBaitItem(EntityUid rod)
+    /// <summary>
+    /// Bait or lure currently slotted into the rod, if any.
+    /// </summary>
+    public EntityUid? GetBaitItem(EntityUid rod)
     {
-        if (!_itemSlots.TryGetSlot(rod, "bait", out var slot))
+        return GetSlotItem(rod, "bait");
+    }
+
+    /// <summary>
+    /// Hook currently slotted into the rod, if any.
+    /// </summary>
+    public EntityUid? GetHookItem(EntityUid rod)
+    {
+        return GetSlotItem(rod, "hook");
+    }
+
+    /// <summary>
+    /// Fishing line currently slotted into the rod, if any.
+    /// </summary>
+    public EntityUid? GetLineItem(EntityUid rod)
+    {
+        return GetSlotItem(rod, "line");
+    }
+
+    private EntityUid? GetSlotItem(EntityUid rod, string slotId)
+    {
+        if (!_itemSlots.TryGetSlot(rod, slotId, out var slot))
             return null;
 
         return slot.Item;
+    }
+
+    private bool HasCloakedLine(EntityUid rod)
+    {
+        return GetLineItem(rod) is { } lineItem &&
+               TryComp<FishingLineComponent>(lineItem, out var line) &&
+               line.IsCloaked;
     }
 
     private bool IsFavoriteBait(FishPrototype fish, EntityUid baitItem)
@@ -307,6 +346,125 @@ public sealed partial class FishingSourceSystem : EntitySystem
     }
 
     /// <summary>
+    /// Weight multiplier of a fish species for this rod and bait, from its traits. Zero means
+    /// the fish will not take the bait at all, like a picky eater on plain bait.
+    /// </summary>
+    public float GetTraitCatchWeightMultiplier(FishPrototype fish, EntityUid rod, EntityUid? baitItem)
+    {
+        var multiplier = 1f;
+        FishingBaitComponent? baitComp = null;
+        if (baitItem is { } baitUid)
+            TryComp(baitUid, out baitComp);
+
+        var shinyHook = false;
+        if (GetHookItem(rod) is { } hookItem && TryComp<FishingHookComponent>(hookItem, out var hook))
+            shinyHook = hook.AttractsShinyLovers;
+
+        foreach (var traitId in fish.Traits)
+        {
+            if (!_proto.TryIndex(traitId, out FishTraitPrototype? trait))
+                continue;
+
+            // Shiny lovers are twice as hard to find without a shiny hook.
+            if ((trait.Flags & FishTraitFlags.ShinyLover) != 0 && !shinyHook)
+                multiplier *= 0.5f;
+
+            if ((trait.Flags & FishTraitFlags.PickyEater) != 0)
+            {
+                if (baitItem is not { } pickyBait)
+                    return 0f;
+
+                if (IsFavoriteBait(fish, pickyBait))
+                    continue;
+
+                // Good bait or an artificial lure satisfies a picky eater.
+                var acceptable = baitComp != null &&
+                                 ((baitComp.Flags & FishingBaitFlags.Artificial) != 0 ||
+                                  baitComp.Quality != FishingBaitQuality.Basic);
+
+                if (baitComp != null && !acceptable)
+                    return 0f;
+            }
+
+            if ((trait.Flags & FishTraitFlags.Carnivore) != 0)
+            {
+                if (baitItem == null)
+                    return 0f;
+
+                if (baitComp != null &&
+                    (baitComp.Flags & (FishingBaitFlags.Meat | FishingBaitFlags.Artificial)) == 0)
+                    return 0f;
+            }
+
+            if ((trait.Flags & FishTraitFlags.Vegan) != 0)
+            {
+                if (baitItem == null)
+                    return 0f;
+
+                if (baitComp != null &&
+                    (baitComp.Flags & (FishingBaitFlags.Produce | FishingBaitFlags.Artificial)) == 0)
+                    return 0f;
+            }
+        }
+
+        return multiplier;
+    }
+
+    /// <summary>
+    /// Additional minigame rules granted by the traits of the caught fish.
+    /// </summary>
+    public FishingMinigameRules GetTraitMinigameRules(FishPrototype fish)
+    {
+        var rules = FishingMinigameRules.None;
+
+        foreach (var traitId in fish.Traits)
+        {
+            if (!_proto.TryIndex(traitId, out FishTraitPrototype? trait))
+                continue;
+
+            if ((trait.Flags & FishTraitFlags.Camouflage) != 0)
+                rules |= FishingMinigameRules.Camo;
+
+            if ((trait.Flags & FishTraitFlags.Antigrav) != 0)
+                rules |= FishingMinigameRules.Antigrav;
+        }
+
+        return rules;
+    }
+
+    /// <summary>
+    /// Sum of the idle velocity changes the traits of this fish apply in the minigame.
+    /// </summary>
+    public float GetTraitIdleVelocityBonus(FishPrototype fish)
+    {
+        var bonus = 0f;
+
+        foreach (var traitId in fish.Traits)
+        {
+            if (_proto.TryIndex(traitId, out FishTraitPrototype? trait))
+                bonus += trait.IdleVelocityBonus;
+        }
+
+        return bonus;
+    }
+
+    /// <summary>
+    /// Product of the bait control speed multipliers of the traits of this fish.
+    /// </summary>
+    public float GetTraitControlSpeedMultiplier(FishPrototype fish)
+    {
+        var multiplier = 1f;
+
+        foreach (var traitId in fish.Traits)
+        {
+            if (_proto.TryIndex(traitId, out FishTraitPrototype? trait))
+                multiplier *= trait.ControlSpeedMultiplier;
+        }
+
+        return multiplier;
+    }
+
+    /// <summary>
     /// Rolls the loot of the source without spawning anything. Used at the biting phase so the
     /// minigame already knows what it fights for. Dynamic sources build the loot from their host.
     /// </summary>
@@ -355,18 +513,83 @@ public sealed partial class FishingSourceSystem : EntitySystem
             return true;
         }
 
-        var spawns = RollTable(source, lootEv, counts).ToList();
+        reward = RollTableReward(source, lootEv, rod, counts);
+        return true;
+    }
 
-        for (var i = 0; i < lootEv.DudRerolls && spawns.Count == 0; i++)
+    /// <summary>
+    /// How many table rolls one catch may take. A high fish weight multiplier rejects most
+    /// non-fish rolls, so the loop is bounded instead of running until a fish shows up.
+    /// </summary>
+    private const int MaxRollAttempts = 64;
+
+    private EntProtoId? RollTableReward(
+        FishingSourcePrototype source,
+        FishLootModifiersEvent lootEv,
+        EntityUid rod,
+        Dictionary<EntProtoId, int> counts)
+    {
+        var fishMultiplier = MathF.Max(0f, lootEv.FishWeightMultiplier);
+        // Multipliers above one are simulated by accepting other entries less often.
+        var scale = MathF.Max(1f, fishMultiplier);
+        var bait = GetBaitItem(rod);
+
+        for (var attempt = 0; attempt < MaxRollAttempts; attempt++)
         {
-            spawns = RollTable(source, lootEv, counts).ToList();
+            var spawns = RollTable(source, lootEv, counts).ToList();
+
+            if (spawns.Count == 0)
+            {
+                if (lootEv.RemoveDuds)
+                    continue;
+
+                if (lootEv.DudRerolls > 0)
+                {
+                    lootEv.DudRerolls--;
+                    continue;
+                }
+
+                return null;
+            }
+
+            var picked = spawns[_random.Next(spawns.Count)];
+            var weight = 1f;
+
+            if (TryGetCaughtFish(picked, out var fish))
+                weight = fishMultiplier * GetTraitCatchWeightMultiplier(fish, rod, bait);
+            else if (IsLivingCatch(picked))
+                weight = fishMultiplier;
+
+            if (weight <= 0f)
+                continue;
+
+            if (_random.NextFloat() * scale < weight)
+                return picked;
         }
 
-        if (spawns.Count == 0)
-            return true;
+        return null;
+    }
 
-        reward = spawns[_random.Next(spawns.Count)];
-        return true;
+    /// <summary>
+    /// Fish species of a caught prototype, if that prototype has species data.
+    /// </summary>
+    public bool TryGetCaughtFish(EntProtoId id, [NotNullWhen(true)] out FishPrototype? fish)
+    {
+        fish = default!;
+
+        if (!_proto.TryIndex(id, out EntityPrototype? proto) ||
+            !proto.TryGetComponent<FishComponent>(out var comp, EntityManager.ComponentFactory) ||
+            comp.Fish is not { } fishId)
+        {
+            return false;
+        }
+
+        return _proto.TryIndex(fishId, out fish);
+    }
+
+    private bool IsLivingCatch(EntProtoId id)
+    {
+        return _proto.TryIndex(id, out EntityPrototype? proto) && proto.HasComponent<MobStateComponent>();
     }
 
     private IEnumerable<EntProtoId> RollTable(FishingSourcePrototype source, FishLootModifiersEvent lootEv, Dictionary<EntProtoId, int> counts)

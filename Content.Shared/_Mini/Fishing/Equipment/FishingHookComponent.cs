@@ -46,4 +46,10 @@ public sealed partial class FishingHookComponent : Component
     /// </summary>
     [DataField]
     public float GravityMultiplier = 1f;
+
+    /// <summary>
+    /// Shiny hooks make fish with the shiny lover trait easier to find and catch.
+    /// </summary>
+    [DataField]
+    public bool AttractsShinyLovers;
 }

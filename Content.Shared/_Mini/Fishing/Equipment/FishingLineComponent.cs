@@ -41,4 +41,10 @@ public sealed partial class FishingLineComponent : Component
     /// </summary>
     [DataField]
     public FishingMinigameRules Rules = FishingMinigameRules.None;
+
+    /// <summary>
+    /// Cloaked lines are invisible to wary fish, so they lose their difficulty bonus.
+    /// </summary>
+    [DataField]
+    public bool IsCloaked;
 }

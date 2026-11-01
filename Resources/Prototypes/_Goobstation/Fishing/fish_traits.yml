@@ -79,6 +79,7 @@
   id: heavy
   flags:
   - Heavy
+  idleVelocityBonus: -10
   name: fish-trait-heavy-name
   catalogDescription: fish-trait-heavy
 
@@ -94,6 +95,7 @@
   flags:
   - Lubed
   addedDifficulty: 5
+  controlSpeedMultiplier: 1.4
   name: fish-trait-lubed-name
   catalogDescription: fish-trait-lubed
 

@@ -134,6 +134,13 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
         }
     }
 
+    /// <summary>tg: without bait fish are fifteen times less likely to bite.</summary>
+    private const float NoBaitFishWeightMultiplier = 0.15f;
+
+    private const float BasicBaitFishWeightMultiplier = 2f;
+    private const float GoodBaitFishWeightMultiplier = 3.5f;
+    private const float GreatBaitFishWeightMultiplier = 9f;
+
     private void OnLootModifiers(Entity<FishingRodComponent> ent, ref FishLootModifiersEvent args)
     {
         if (GetHook(ent) is { } hook)
@@ -143,7 +150,21 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
         }
 
         if (GetBait(ent) is not { } bait)
+        {
+            args.FishWeightMultiplier *= NoBaitFishWeightMultiplier;
             return;
+        }
+
+        args.FishWeightMultiplier *= bait.Quality switch
+        {
+            FishingBaitQuality.Good => GoodBaitFishWeightMultiplier,
+            FishingBaitQuality.Great => GreatBaitFishWeightMultiplier,
+            _ => BasicBaitFishWeightMultiplier,
+        };
+
+        // Normal bait removes duds from the table. Artificial lures leave them in.
+        if (bait.Consumable)
+            args.RemoveDuds = true;
 
         switch (bait.Quality)
         {
@@ -175,6 +196,9 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
 
     private void OnRodExamined(Entity<FishingRodComponent> ent, ref ExaminedEvent args)
     {
+        if (GetBait(ent) == null)
+            args.PushMarkup(Loc.GetString("fishing-rod-no-bait-examine"));
+
         var best = GetBestEfficiency();
         if (best <= 0f)
             return;

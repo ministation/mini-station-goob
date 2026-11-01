@@ -16,6 +16,21 @@ public enum FishingBaitQuality : byte
 }
 
 /// <summary>
+/// What the bait is made of. Fish traits like carnivore or herbivore only bite matching bait.
+/// </summary>
+[Flags]
+public enum FishingBaitFlags : byte
+{
+    None = 0,
+    Meat = 1 << 0,
+    Produce = 1 << 1,
+    /// <summary>
+    /// Lures and synthetic bait: every fish accepts it, like tg's omni bait.
+    /// </summary>
+    Artificial = 1 << 2,
+}
+
+/// <summary>
 /// Bait or an artificial lure that can be slotted into a fishing rod.
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
@@ -35,4 +50,7 @@ public sealed partial class FishingBaitComponent : Component
     /// </summary>
     [DataField]
     public bool Consumable = true;
+
+    [DataField]
+    public FishingBaitFlags Flags = FishingBaitFlags.None;
 }
