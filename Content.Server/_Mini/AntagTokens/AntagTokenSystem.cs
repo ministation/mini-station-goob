@@ -1249,6 +1249,10 @@ public sealed class AntagTokenSystem : EntitySystem
         var now = DateTime.UtcNow;
         _onlineRewards.TryAdd(ev.PlayerSession.UserId, new OnlineRewardState());
         _onlineRewards[ev.PlayerSession.UserId].Resume(now);
+
+        // The sponsor list loads from the database asynchronously, so send the donor level again
+        // once the player is in the lobby instead of relying on the first user data load alone.
+        EntityManager.System<AntagUnlockSystem>().SendDonateSponsorLevel(ev.PlayerSession);
     }
 
     internal void TestSetLastDonorBonusClaimUtc(NetUserId userId, DateTime? utc)

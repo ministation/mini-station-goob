@@ -250,6 +250,9 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
         if (tokens.HasJobUnlock(player.UserId, job))
             return true;
 
+        if (HasDonateSponsorBypass(player))
+            return true;
+
         if (!_tracking.TryGetTrackerTimes(player, out var playTimes))
         {
             Log.Error($"Unable to check playtimes {Environment.StackTrace}");
@@ -281,6 +284,9 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
         if (tokens.HasAntagUnlock(player.UserId, antag))
             return true;
 
+        if (HasDonateSponsorBypass(player))
+            return true;
+
         if (!_tracking.TryGetTrackerTimes(player, out var playTimes))
         {
             Log.Error($"Unable to check playtimes {Environment.StackTrace}");
@@ -301,6 +307,9 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
     {
         var roles = new HashSet<ProtoId<JobPrototype>>();
         if (!_cfg.GetCVar(CCVars.GameRoleTimers))
+            return roles;
+
+        if (HasDonateSponsorBypass(player))
             return roles;
 
         if (!_tracking.TryGetTrackerTimes(player, out var playTimes))
@@ -337,6 +346,10 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
             return;
         }
 
+        // Donors get every job regardless of playtime requirements, same as the client check.
+        if (HasDonateSponsorBypass(player))
+            return;
+
         if (!_tracking.TryGetTrackerTimes(player, out var playTimes))
         {
             // Sorry mate but your playtimes haven't loaded.
@@ -362,5 +375,14 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
     public void PlayerRolesChanged(ICommonSession player)
     {
         _tracking.QueueRefreshTrackers(player);
+    }
+
+    /// <summary>
+    /// Donors skip playtime requirements. The client UI uses the same sponsor level, so both
+    /// sides agree on which roles are open.
+    /// </summary>
+    private bool HasDonateSponsorBypass(ICommonSession player)
+    {
+        return EntityManager.System<AntagTokenSystem>().GetEffectiveSponsorLevel(player.UserId) > 0;
     }
 }
