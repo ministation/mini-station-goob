@@ -58,6 +58,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
         _warUi.BalanceUpdated += OnBalanceUpdated;
         _katorgaBans.BanStatusChanged += OnBanStatusChanged;
         _katorgaUi.FactionStateChanged += OnFactionStateChanged;
+        _playManager.Updated += OnRequirementsUpdated;
 
         _jobCategories = new Dictionary<string, BoxContainer>();
         StationSelection.StationsItemList.OnItemSelected += args =>
@@ -84,6 +85,12 @@ public sealed partial class NFLateJoinGui : FancyWindow
         _warUi.BalanceUpdated -= OnBalanceUpdated;
         _katorgaBans.BanStatusChanged -= OnBanStatusChanged;
         _katorgaUi.FactionStateChanged -= OnFactionStateChanged;
+        _playManager.Updated -= OnRequirementsUpdated;
+    }
+
+    private void OnRequirementsUpdated()
+    {
+        UpdateUi(_gameTicker.JobsAvailable);
     }
 
     private void OnBanStatusChanged()
@@ -445,7 +452,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
 
         if (!_playManager.IsAllowed(job, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var denyReason))
         {
-            button.Disabled = true;
+            button.SetBlocked(true);
             button.ToolTip = denyReason.ToString();
             return;
         }
@@ -456,7 +463,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
             var blocked = isTypan ? !_warUi.AllowTypan : !_warUi.AllowNanotrasen;
             if (blocked)
             {
-                button.Disabled = true;
+                button.SetBlocked(true);
                 button.ToolTip = Loc.GetString("typan-war-balance-job-denied");
                 return;
             }
@@ -464,12 +471,13 @@ public sealed partial class NFLateJoinGui : FancyWindow
 
         if (IsJobSlotFull(jobId))
         {
+            button.SetBlocked(false);
             button.Disabled = true;
             button.ToolTip = Loc.GetString("late-join-gui-job-slot-full");
             return;
         }
 
-        button.Disabled = false;
+        button.SetBlocked(false);
         button.ToolTip = null;
     }
 
