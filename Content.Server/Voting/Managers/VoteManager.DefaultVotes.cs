@@ -654,7 +654,7 @@ namespace Content.Server.Voting.Managers
                 return false;
             if (preset.ModeTitle == "blood-cult-title" && playerCount < 20)
                 return false;
-            if (preset.ModeTitle == "survivalplus-title" && playerCount < 10)
+            if (preset.ModeTitle == "survivalplus-title" && playerCount < 15)
                 return false;
             if (preset.ModeTitle == "secretplus-mid-title" && playerCount < 10)
                 return false;
