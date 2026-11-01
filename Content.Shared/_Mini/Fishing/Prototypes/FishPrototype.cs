@@ -167,6 +167,19 @@ public sealed partial class FishPrototype : IPrototype
     public List<string> Taste = new() { "raw-fish", "scales" };
 
     /// <summary>
+    /// tg TRAIT_FISH_SHOULD_TWOHANDED: big enough fish of this species always need both hands.
+    /// </summary>
+    [DataField]
+    public bool ShouldTwoHanded;
+
+    /// <summary>
+    /// Inhand prefix used instead of <see cref="InhandPrefix"/> while the fish is dead, for example
+    /// the chainsawfish dead sprite in tg update_icon_state.
+    /// </summary>
+    [DataField]
+    public string? DeadInhandPrefix;
+
+    /// <summary>
     /// Edible reagents per bite on top of the default protein and blood. Fluid saltwater fish also get salt.
     /// </summary>
     [DataField]

@@ -13,13 +13,20 @@ public sealed class FishTwoHandsTest : InteractionTest
     [Test]
     public async Task BigFishNeedsBothHands()
     {
-        var swordfish = SEntMan.GetEntity(await Spawn("FishSwordfish"));
+        var mastodon = SEntMan.GetEntity(await Spawn("FishMastodon"));
+        var pike = SEntMan.GetEntity(await Spawn("FishPike"));
         var goldfish = SEntMan.GetEntity(await Spawn("FishGoldfish"));
 
         await Server.WaitPost(() =>
         {
-            Assert.That(SEntMan.HasComponent<MultiHandedItemComponent>(swordfish), Is.True,
-                "A huge fish must need both hands, like tg require_twohands");
+            // tg FISH_SIZE_TWO_HANDS_REQUIRED is 135, the mastodon is always above it.
+            Assert.That(SEntMan.HasComponent<MultiHandedItemComponent>(mastodon), Is.True,
+                "A fish above the two hands size must need both hands");
+
+            // tg TRAIT_FISH_SHOULD_TWOHANDED: pikes need both hands once bulky.
+            Assert.That(SEntMan.HasComponent<MultiHandedItemComponent>(pike), Is.True,
+                "A bulky fish with the two hands trait must need both hands");
+
             Assert.That(SEntMan.HasComponent<MultiHandedItemComponent>(goldfish), Is.False,
                 "A small fish fits in one hand");
         });

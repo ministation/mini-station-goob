@@ -23,9 +23,14 @@ public sealed partial class FishSystem : EntitySystem
     private const float SuffocationTime = 100f;
 
     /// <summary>
-    /// Fish at least this big need both hands to be picked up, like tg require_twohands.
+    /// tg FISH_SIZE_TWO_HANDS_REQUIRED: this big fish need both hands to be picked up.
     /// </summary>
-    private const float TwoHandsSize = 80f;
+    private const float TwoHandsSize = 135f;
+
+    /// <summary>
+    /// tg WEIGHT_CLASS_BULKY, the smallest size for which TRAIT_FISH_SHOULD_TWOHANDED applies.
+    /// </summary>
+    private const float BulkSize = 80f;
 
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -39,6 +44,15 @@ public sealed partial class FishSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<FishComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<FishComponent, FishStatusChangedEvent>(OnStatusChanged);
+    }
+
+    private void OnStatusChanged(Entity<FishComponent> ent, ref FishStatusChangedEvent args)
+    {
+        if (!_net.IsServer || GetProto(ent.Comp) is not { } proto)
+            return;
+
+        UpdateHeldPrefix(ent, proto);
     }
 
     private void OnMapInit(Entity<FishComponent> ent, ref MapInitEvent args)
@@ -57,7 +71,7 @@ public sealed partial class FishSystem : EntitySystem
 
         Randomize(ent, proto);
         UpdateHeldPrefix(ent, proto);
-        UpdateTwoHands(ent);
+        UpdateTwoHands(ent, proto);
         UpdateButcherable(ent, proto);
         ent.Comp.FishDifficulty = proto.Rarity <= 400 ? 0.035f : FishComponent.DefaultDifficulty;
         Dirty(ent, ent.Comp);
@@ -189,7 +203,7 @@ public sealed partial class FishSystem : EntitySystem
         if (!TryComp<ItemComponent>(ent, out var item))
             return;
 
-        var prefix = proto.InhandPrefix;
+        var prefix = !ent.Comp.Alive && proto.DeadInhandPrefix != null ? proto.DeadInhandPrefix : proto.InhandPrefix;
         if (prefix == null)
         {
             prefix = ent.Comp.Size switch
@@ -204,12 +218,15 @@ public sealed partial class FishSystem : EntitySystem
         _item.SetHeldPrefix(ent, prefix, false, item);
     }
 
-    private void UpdateTwoHands(Entity<FishComponent> ent)
+    private void UpdateTwoHands(Entity<FishComponent> ent, FishPrototype proto)
     {
         if (!_net.IsServer)
             return;
 
-        if (ent.Comp.Size >= TwoHandsSize)
+        var twoHands = ent.Comp.Size > TwoHandsSize
+                       || (proto.ShouldTwoHanded && ent.Comp.Size >= BulkSize);
+
+        if (twoHands)
             EnsureComp<MultiHandedItemComponent>(ent);
         else
             RemCompDeferred<MultiHandedItemComponent>(ent);

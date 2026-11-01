@@ -152,6 +152,7 @@
 
 - type: fish
   id: FishChainsawfish
+  deadInhandPrefix: chainsawfish_dead
   taste:
   - raw-fish
   - anger
@@ -963,6 +964,7 @@
 
 - type: fish
   id: FishPike
+  shouldTwoHanded: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: pike }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pike_small }
   averageSize: 100
@@ -1000,6 +1002,7 @@
 
 - type: fish
   id: FishPikeArmored
+  shouldTwoHanded: true
   taste:
   - raw-fish
   - metallic
