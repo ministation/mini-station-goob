@@ -1,8 +1,13 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Port of TG's Legion megafauna: the boss splits into smaller legions on death.
+# The big one uses the data-driven megafauna AI, smaller tiers are plain HTN minions.
+
 - type: entity
   name: Legion
   id: LavalandBossMegaLegion
   parent: LavalandMobBase
-  description: One of many.
+  description: One of many. For now.
   components:
   - type: EmitSoundOnSpawn
     sound:
@@ -28,10 +33,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
-  - type: HTN
-    rootTask:
-      task: SimpleHostileCompound
   - type: Sprite
+    noRot: true
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Bosses/96x96.rsi
     layers:
@@ -52,7 +55,7 @@
     - CannotSuicide
   - type: CombatMode
   - type: MovementSpeedModifier
-    baseWalkSpeed: 5
+    baseWalkSpeed: 4.5
     baseSprintSpeed: 5
   - type: MobThresholds
     thresholds:
@@ -61,10 +64,206 @@
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
-  - type: TileMovement
   - type: BossMusic
-    soundId: AshDrake
+    soundId: Miniboss
   - type: Aggressive # also required component for aggro checking
     forgiveRange: 20.0
   - type: CombatPower # Goobstation
     factor: 25 # times more dangerous than a crew-member
+  # Megafauna AI wiring, same driver as Hierophant
+  - type: InputMover
+  - type: Input
+    context: "human"
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.8
+    selector: !type:NestedMegafaunaSelector
+      id: Legion
+  - type: AngerPlayerScaling
+    angerScale: 1.1
+    hpScale: 1.2
+  - type: MegafaunaBlink
+    spawnOnTarget: LavalandLegionChargeBurst
+    spawnOnUsed: LavalandLegionChargeBurst
+  - type: MegafaunaRejuvenate
+  # Death split chain: boss -> medium x3 -> small x3 each
+  - type: LegionSplit
+    spawnOnDeath: LavalandBossLegionMedium
+    spawnCount: 3
+    splitsRemaining: 2
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: LavalandStaffOfStorms
+      - id: MaterialBones1
+      - id: MaterialBones1
+      - id: MaterialBones1
+    deleteOnDeath: true
+
+# Mid tier: spawns from the boss split, splits once more.
+- type: entity
+  name: Legion
+  id: LavalandBossLegionMedium
+  parent: LavalandMobBase
+  description: One of many.
+  components:
+  - type: EmitSoundOnSpawn
+    sound:
+      path: /Audio/_Lavaland/Mobs/legion_spawn.ogg
+      params:
+          volume: 0
+          maxDistance: 30
+  - type: Physics
+    bodyType: KinematicController
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 500
+        mask:
+        - LargeMobMask
+        layer:
+        - LargeMobLayer
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/legion.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: legion
+    scale: 0.8, 0.8
+  - type: MeleeWeapon
+    altDisarm: false
+    angle: 0
+    soundHit:
+      collection: AlienClaw
+    animation: WeaponArcBite
+    damage:
+        types:
+          Blunt: 20
+          Structural: 120
+  - type: Tag
+    tags:
+    - CannotSuicide
+  - type: CombatMode
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 4
+    baseSprintSpeed: 4.5
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      400: Dead
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Hierophant
+  - type: TileMovement
+  - type: Aggressive
+    forgiveRange: 20.0
+  - type: CombatPower
+    factor: 15
+  - type: LegionSplit
+    spawnOnDeath: LavalandBossLegionSmall
+    spawnCount: 3
+    splitsRemaining: 1
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: MaterialBones1
+    deleteOnDeath: true
+
+# Smallest tier: no more splits, just bones.
+- type: entity
+  name: Legion
+  id: LavalandBossLegionSmall
+  parent: LavalandMobBase
+  description: One of many. The last one, probably.
+  components:
+  - type: EmitSoundOnSpawn
+    sound:
+      path: /Audio/_Lavaland/Mobs/legion_spawn.ogg
+      params:
+          volume: -5
+          maxDistance: 30
+  - type: Physics
+    bodyType: KinematicController
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.35,-0.35,0.35,0.35"
+        density: 200
+        mask:
+        - LargeMobMask
+        layer:
+        - LargeMobLayer
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/legion.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: legion
+    scale: 0.6, 0.6
+  - type: MeleeWeapon
+    altDisarm: false
+    angle: 0
+    soundHit:
+      collection: AlienClaw
+    animation: WeaponArcBite
+    damage:
+        types:
+          Blunt: 15
+          Structural: 80
+  - type: Tag
+    tags:
+    - CannotSuicide
+  - type: CombatMode
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 4.5
+    baseSprintSpeed: 5
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Dead
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Hierophant
+  - type: TileMovement
+  - type: Aggressive
+    forgiveRange: 20.0
+  - type: CombatPower
+    factor: 8
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: MaterialBones1
+    deleteOnDeath: true

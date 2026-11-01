@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# legion damaging thing, spawned by the boss charge
+- type: entity
+  id: LavalandLegionSkullBlast
+  categories: [ DoNotMap ]
+  name: legion blast
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Mobs/legion.rsi
+    state: legion-skull
+  - type: Transform
+    anchored: true
+  - type: TimedDespawn
+    lifetime: 1
+  - type: DamageSquare
+    damageDelay: 0.5
+    damage:
+      types:
+        Blunt: 8
+        Heat: 8
+    damageWhitelist:
+      components:
+      - MobState

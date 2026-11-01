@@ -385,6 +385,8 @@ namespace Content.IntegrationTests.Tests
                 "Slime",
                 "Anomaly", // they can spawn spark effects
                 "LabyrinthPortal", // it randomly spawns things
+                "NecropolisGateSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
+                "BubblegumLairSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "Area", // map tests spawn ~every area anyway, this fails from trying to spawn an area in space
                 "StatusEffect", // doesnt make sense to spawn unattached, fails test with weather schedulers
                 "AshJaunt", // spawns jaunt end animation

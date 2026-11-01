@@ -22,6 +22,25 @@ public sealed partial class LavalandMarkerRuinPrototype : IPrototype
     [DataField]
     public int SpawnAttempts = 8;
 
+    /// <summary>
+    /// Overrides the pool's MinDistance for this specific ruin.
+    /// </summary>
+    [DataField]
+    public int? MinDistance;
+
+    /// <summary>
+    /// Overrides the pool's MaxDistance for this specific ruin.
+    /// </summary>
+    [DataField]
+    public int? MaxDistance;
+
+    /// <summary>
+    /// Guaranteed ruins are placed before all others and retried with relaxed
+    /// constraints if no eligible spot is found, TG-style always_place.
+    /// </summary>
+    [DataField]
+    public bool Guaranteed;
+
     [DataField(required: true)]
     public int Priority = int.MinValue;
 }
