@@ -26,7 +26,6 @@
     Wizard: 0.05
     CosmicCult: 0.05
 
-
 - type: incompatibleModes
   id: Nukeops
   modes:
