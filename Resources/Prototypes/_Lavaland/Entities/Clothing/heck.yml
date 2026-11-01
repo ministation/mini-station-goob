@@ -1,0 +1,53 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# H.E.C.K. suit from TG lavaland: hostile environment suit cursed by Bubblegum.
+
+- type: entity
+  parent: ClothingOuterHardsuitSalvage
+  id: ClothingOuterHardsuitHECK
+  name: H.E.C.K. suit
+  description: "Hostile Environment Cross-Kinetic Suit: A suit designed to withstand the wide variety of hazards from Lavaland. It wasn't enough for its last owner."
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Clothing/OuterClothing/Hardsuits/heck.rsi
+    state: hostile_env
+  - type: Clothing
+    sprite: _Lavaland/Clothing/OuterClothing/Hardsuits/heck.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.6
+        Heat: 0.0
+        Shock: 0.8
+        Caustic: 0.0
+  - type: ExplosionResistance
+    damageCoefficient: 0.5
+  - type: ClothingSpeedModifier
+    walkModifier: 1.0
+    sprintModifier: 1.0
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: ClothingHeadHelmetHECK
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitSalvage
+  id: ClothingHeadHelmetHECK
+  name: H.E.C.K. helmet
+  description: "Hostile Environment Cross-Kinetic Helmet: A helmet designed to withstand the wide variety of hazards from Lavaland. It wasn't enough for its last owner."
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Clothing/Head/Hardsuits/heck.rsi
+    state: hostile_env
+  - type: Clothing
+    sprite: _Lavaland/Clothing/Head/Hardsuits/heck.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.6
+        Heat: 0.0
+        Shock: 0.8
+        Caustic: 0.0

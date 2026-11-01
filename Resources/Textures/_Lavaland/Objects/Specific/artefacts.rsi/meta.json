@@ -1,0 +1,715 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "red_cube",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "blue_cube",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "chain",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "hook",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "talisman",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "ship_bottle",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "potionflask",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "potionflask_cap",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "potion_fill1",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "hierophant_tele_off",
+      "delays": [
+        [
+          4.0,
+          1.5,
+          1.25,
+          1.0,
+          1.0,
+          0.75,
+          0.5,
+          0.5
+        ]
+      ]
+    },
+    {
+      "name": "hierophant_tele_on",
+      "delays": [
+        [
+          1.0,
+          0.8,
+          0.6,
+          0.4,
+          1.0,
+          3.0,
+          1.5,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "goliath_tentacle",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "watcher_wing",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "ice_wing",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "magma_wing",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "legion_skull",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "hunter_eye",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "tail_spike",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "blaster_tubes",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "demon_claws",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "vortex_talisman",
+      "delays": [
+        [
+          20.0,
+          2.5,
+          2.25,
+          2.0,
+          1.75,
+          1.5,
+          1.25,
+          1.0,
+          0.75,
+          0.5,
+          2.5,
+          0.9,
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "lobster_claw",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "brimdemon_fang",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "bileworm_spewlet",
+      "delays": [
+        [
+          30.0,
+          3.0,
+          3.0
+        ]
+      ]
+    },
+    {
+      "name": "cleaving_saw",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "cleaving_saw_on",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "asclepius_dormant",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "asclepius_active",
+      "delays": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          50.0
+        ]
+      ]
+    },
+    {
+      "name": "memento_mori",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "memento_mori_active",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "puzzle_pillar",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "prison_cube",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "crevice_shard",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "ice_trap_talisman",
+      "delays": [
+        [
+          20.0,
+          2.5,
+          2.25,
+          2.0,
+          1.75,
+          1.5,
+          1.25,
+          1.0,
+          0.75,
+          0.5,
+          2.5,
+          0.9,
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "dustyshard",
+      "delays": [
+        [
+          20.0,
+          20.0,
+          20.0,
+          20.0
+        ]
+      ]
+    },
+    {
+      "name": "wolf_ear",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "wendigo_horn",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "bear_paw",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "skeleton_key",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "paradox_bag",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "freeze_cube",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "freeze_cube_thrown",
+      "delays": [
+        [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      ]
+    },
+    {
+      "name": "cursed_katana",
+      "delays": [
+        [
+          5.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "cursed_katana_organ",
+      "delays": [
+        [
+          5.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "soulscythe",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "soulscythe_gem",
+      "delays": [
+        [
+          10.0,
+          0.5,
+          0.5,
+          0.5
+        ]
+      ]
+    },
+    {
+      "name": "soulstone",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "soulstone2",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "purified_soulstone",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "purified_soulstone2",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "mystic_soulstone",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "mystic_soulstone2",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "vial",
+      "delays": [
+        [
+          8.0,
+          1.0,
+          3.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "necrostone",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "lovestone",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "dark_seed",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "dark_seed_inert",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "greentext",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "ice_crystal",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "wendigo_skull",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "clockwork_alloy",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "ice_demon_cube",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "swapper",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "swapper-linked",
+      "delays": [
+        [
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ]
+      ]
+    },
+    {
+      "name": "glob",
+      "delays": [
+        [
+          3.0,
+          13.0
+        ]
+      ]
+    },
+    {
+      "name": "cain_and_abel",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "raptor_feather",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "hierophant_club",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "hierophant_ready",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "hierophant_beacon",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "bilehorn",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    }
+  ]
+}
