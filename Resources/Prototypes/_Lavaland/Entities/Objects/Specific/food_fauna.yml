@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Meat from lavaland fauna.
+- type: entity
+  parent: FoodMeatRawBase
+  id: FoodMeatGutshank
+  name: gutshank
+  description: A bird leg of questionable origin. Surprisingly filling.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/gutshank.rsi
+    state: gutshank
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        reagents:
+        - ReagentId: UncookedAnimalProteins
+          Quantity: 7
+        - ReagentId: Nutriment
+          Quantity: 6
+
+- type: entity
+  parent: FoodMeatRawBase
+  id: FoodMeatLobster
+  name: lobster meat
+  description: Rich meat from a monstrous lobster. The lava gave it a spicy aftertaste.
+  components:
+  - type: Sprite
+    state: plain
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        reagents:
+        - ReagentId: UncookedAnimalProteins
+          Quantity: 8
+        - ReagentId: CapsaicinOil
+          Quantity: 2

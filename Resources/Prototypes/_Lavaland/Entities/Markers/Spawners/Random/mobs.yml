@@ -11,6 +11,10 @@
         weight: 99
       - id: MobLavalandGoliathAncient
         weight: 1
+    - id: MobLavalandLobstrosity
+      weight: 5
+    - id: MobLavalandHivelord
+      weight: 5
 
 - type: entityTable
   id: LavalandLightMobs
@@ -22,6 +26,10 @@
       - id: MobWatcherLavaland
       - id: MobWatcherMagmawing
       - id: MobWatcherIcewing
+    - id: MobLavalandBasilisk
+      weight: 2
+    - id: MobLavalandGutlunch
+      weight: 2
 
 - type: entity
   name: lavaland heavy mob spawner
