@@ -155,9 +155,9 @@ namespace Content.Client.RoundEnd
                 Orientation = LayoutOrientation.Vertical
             };
 
-            // Fishing mode: the round leaderboard sits on top of the player list.
-            if (TryMakeFishingTop() is { } fishingTop)
-                playerInfoContainer.AddChild(fishingTop);
+            // Fishing mode: the round leaderboard sits on top of the player list, right where antagonists go.
+            foreach (var fishingRow in MakeFishingTopRows())
+                playerInfoContainer.AddChild(fishingRow);
 
             //Put observers at the bottom of the list. Put antags on top.
             var sortedPlayersInfo = playersInfo.OrderBy(p => p.Observer).ThenBy(p => !p.Antag);

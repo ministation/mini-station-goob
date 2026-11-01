@@ -42,6 +42,7 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
 {
     private const string PlatingTileId = "Plating";
     private const string WaterEntity = "FloorWaterEntity";
+    private const string SuspiciousWavesEntity = "FishingSpotWater";
 
     /// <summary>
     /// Coin rewards for the top three fishers, paid at round end.
@@ -311,7 +312,7 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
     }
 
     /// <summary>
-    /// Places water tiles on plating, which is what maintenance tunnels are made of.
+    /// Places a water tile and a suspicious waves spot on plating, which is what maintenance tunnels are made of.
     /// shortcut: maintenance is detected by the plating tile, upgrade to map areas when they are available on the server.
     /// </summary>
     private void SpawnWater(FishingModeRuleComponent component)
@@ -342,7 +343,11 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
         RobustRandom.Shuffle(candidates);
         var amount = Math.Min(component.WaterPools, candidates.Count);
         for (var i = 0; i < amount; i++)
-            Spawn(WaterEntity, _map.GridTileToLocal(gridUid, grid, candidates[i]));
+        {
+            var coords = _map.GridTileToLocal(gridUid, grid, candidates[i]);
+            Spawn(WaterEntity, coords);
+            Spawn(SuspiciousWavesEntity, coords);
+        }
     }
 
     private bool HasAnchoredEntity(EntityUid gridUid, MapGridComponent grid, Vector2i indices)

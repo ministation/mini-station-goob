@@ -68,7 +68,7 @@ public sealed partial class FishingEquipmentVisualsSystem : EntitySystem
         var hook = GetComp<FishingHookComponent>(uid, FishingEquipmentSystem.HookSlotId);
         var bait = GetComp<FishingBaitComponent>(uid, FishingEquipmentSystem.BaitSlotId);
 
-        UpdateHeldOverlays(uid, line != null || hook != null || bait != null, hook != null);
+        UpdateHeldOverlays(uid, line, hook != null, bait != null);
 
         if (!TryComp<SpriteComponent>(uid, out var sprite))
             return;
@@ -105,13 +105,14 @@ public sealed partial class FishingEquipmentVisualsSystem : EntitySystem
         var hook = GetComp<FishingHookComponent>(ent.Owner, FishingEquipmentSystem.HookSlotId);
         var bait = GetComp<FishingBaitComponent>(ent.Owner, FishingEquipmentSystem.BaitSlotId);
 
-        UpdateHeldOverlays(ent.Owner, line != null || hook != null || bait != null, hook != null);
+        UpdateHeldOverlays(ent.Owner, line, hook != null, bait != null);
     }
 
     /// <summary>
-    /// Shows or hides the line and hook layers that the rod added to the sprite of whoever holds it.
+    /// Shows or hides the line and hook layers that the rod added to the sprite of whoever holds it
+    /// and tints the line and reel overlays with the color of the slotted line, like the world sprite.
     /// </summary>
-    private void UpdateHeldOverlays(EntityUid rod, bool hasAnything, bool hasHook)
+    private void UpdateHeldOverlays(EntityUid rod, FishingLineComponent? line, bool hasHook, bool hasBait)
     {
         if (!_container.TryGetContainingContainer(rod, out var container))
             return;
@@ -121,6 +122,9 @@ public sealed partial class FishingEquipmentVisualsSystem : EntitySystem
         if (!TryComp<HandsComponent>(holder, out var hands) ||
             !TryComp<SpriteComponent>(holder, out var sprite))
             return;
+
+        var hasAnything = line != null || hasHook || hasBait;
+        var lineColor = line?.LineColor ?? Color.Gray;
 
         foreach (var handId in hands.SortedHands)
         {
@@ -134,6 +138,8 @@ public sealed partial class FishingEquipmentVisualsSystem : EntitySystem
             SetHeldRodState(holder, sprite, rod, suffix);
             SetHeldLayerVisible(holder, sprite, $"line_overlay-inhand-{suffix}", hasAnything);
             SetHeldLayerVisible(holder, sprite, $"hook_overlay-inhand-{suffix}", hasHook);
+            SetHeldLayerColor(holder, sprite, $"line_overlay-inhand-{suffix}", lineColor);
+            SetHeldLayerColor(holder, sprite, $"reel_overlay-inhand-{suffix}", lineColor);
         }
     }
 
@@ -158,6 +164,14 @@ public sealed partial class FishingEquipmentVisualsSystem : EntitySystem
 
         if (_sprite.LayerMapTryGet(ent, key, out var layer, false))
             _sprite.LayerSetVisible(ent, layer, visible);
+    }
+
+    private void SetHeldLayerColor(EntityUid holder, SpriteComponent sprite, string key, Color color)
+    {
+        var ent = new Entity<SpriteComponent?>(holder, sprite);
+
+        if (_sprite.LayerMapTryGet(ent, key, out var layer, false))
+            _sprite.LayerSetColor(ent, layer, color);
     }
 
     #endregion

@@ -6,10 +6,14 @@
 // Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
 using System;
+using System.Collections.Generic;
+using System.Numerics;
 
 using Content.Client._Mini.Fishing;
+using Content.Client.Administration.UI.CustomControls;
 using Content.Client.Stylesheets;
 using Content.Shared._Mini.Fishing;
+using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Maths;
 
@@ -17,58 +21,88 @@ namespace Content.Client.RoundEnd;
 
 public sealed partial class RoundEndSummaryWindow
 {
-    private const int FishingManifestTop = 10;
-    private const int FishingManifestBestShown = 3;
+    private const int FishingManifestPlaces = 3;
 
-    private static readonly Color FishingRankColor = Color.FromHex("#F0D890");
+    private static readonly Color[] FishingPlaceColors =
+    {
+        Color.FromHex("#F0D890"),
+        Color.FromHex("#C9D1DA"),
+        Color.FromHex("#D08A4E"),
+    };
 
     /// <summary>
-    /// Fishing mode round leaderboard, shown on top of the player manifest.
+    /// Fishing mode leaderboard, rendered as the first rows of the player manifest, where antagonists go.
     /// </summary>
-    private Control? TryMakeFishingTop()
+    private IEnumerable<Control> MakeFishingTopRows()
     {
         var leaders = _entityManager.System<FishingModeUiSystem>().RoundEndLeaders;
         if (leaders.Length == 0)
-            return null;
+            yield break;
 
+        yield return new Label
+        {
+            Text = Loc.GetString("fishing-mode-round-end-title"),
+            StyleClasses = { StyleNano.StyleClassLabelSubText },
+            Margin = new Thickness(2, 0, 0, 4),
+        };
+
+        var shown = Math.Min(FishingManifestPlaces, leaders.Length);
+        for (var i = 0; i < shown; i++)
+            yield return MakeFishingRow(leaders[i], i);
+
+        yield return new HSeparator { Margin = new Thickness(0, 2, 0, 8) };
+    }
+
+    private static Control MakeFishingRow(FishingModeLeader leader, int place)
+    {
         var panel = new PanelContainer
         {
             StyleClasses = { StyleNano.StyleClassBackgroundBaseDark },
-            Margin = new Thickness(0, 0, 0, 8),
-        };
-
-        var column = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Vertical,
-            Margin = new Thickness(8, 6, 8, 6),
-        };
-        panel.AddChild(column);
-
-        column.AddChild(new Label
-        {
-            Text = Loc.GetString("fishing-mode-round-end-title"),
-            StyleClasses = { StyleNano.StyleClassLabelHeading },
             Margin = new Thickness(0, 0, 0, 4),
+        };
+
+        var row = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            Margin = new Thickness(8, 3, 8, 3),
+        };
+        panel.AddChild(row);
+
+        row.AddChild(new Label
+        {
+            Text = $"{place + 1}.",
+            StyleClasses = { StyleNano.StyleClassLabelHeading },
+            FontColorOverride = FishingPlaceColors[place],
+            MinSize = new Vector2(26, 0),
+            VerticalAlignment = Control.VAlignment.Center,
         });
 
-        var shown = Math.Min(FishingManifestTop, leaders.Length);
-        for (var i = 0; i < shown; i++)
+        row.AddChild(new Label
         {
-            var leader = leaders[i];
+            Text = leader.Name,
+            StyleClasses = { StyleNano.StyleClassLabelHeading },
+            HorizontalExpand = true,
+            ClipText = true,
+            VerticalAlignment = Control.VAlignment.Center,
+        });
 
-            var line = Loc.GetString("fishing-mode-round-end-line",
-                ("rank", i + 1),
-                ("name", leader.Name),
-                ("fish", leader.Fish),
-                ("score", leader.Score));
+        row.AddChild(new Label
+        {
+            Text = Loc.GetString("fishing-mode-hud-fish", ("count", leader.Fish)),
+            StyleClasses = { StyleNano.StyleClassLabelSubText },
+            VerticalAlignment = Control.VAlignment.Center,
+            Margin = new Thickness(6, 0, 0, 0),
+        });
 
-            if (leader.Reward > 0)
-                line += " " + Loc.GetString("fishing-mode-round-end-reward", ("amount", leader.Reward));
-
-            column.AddChild(new Label
+        if (leader.Reward > 0)
+        {
+            row.AddChild(new Label
             {
-                Text = line,
-                FontColorOverride = i < FishingManifestBestShown ? FishingRankColor : Color.White,
+                Text = Loc.GetString("fishing-mode-round-end-reward", ("amount", leader.Reward)),
+                StyleClasses = { StyleNano.StyleClassLabelSubText },
+                FontColorOverride = FishingPlaceColors[0],
+                VerticalAlignment = Control.VAlignment.Center,
+                Margin = new Thickness(8, 0, 0, 0),
             });
         }
 
