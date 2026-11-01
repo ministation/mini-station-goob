@@ -28,10 +28,10 @@
     - SimpleHostile
   - type: Sprite
     drawdepth: Mobs
-    sprite: _Lavaland/Mobs/Bosses/64x64.rsi
+    sprite: _Lavaland/Mobs/Bosses/blood_drunk.rsi
     layers:
     - map: ["enum.DamageStateVisualLayers.Base"]
-      state: blood_drunk
+      state: miner
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
