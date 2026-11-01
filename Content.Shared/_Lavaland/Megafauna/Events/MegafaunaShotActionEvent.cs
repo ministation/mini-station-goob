@@ -65,6 +65,12 @@ public sealed partial class MegafaunaShotActionEvent : WorldTargetActionEvent
     /// </summary>
     [DataField]
     public float SpinSpeed = 150f;
+
+    /// <summary>
+    /// Spiral pattern: how many spirals to fire at once, rotating in opposite directions.
+    /// </summary>
+    [DataField]
+    public int SpiralCount = 1;
 }
 
 /// <summary>
@@ -85,7 +91,9 @@ public sealed partial class MegafaunaSpiralComponent : Component
     [DataField]
     public float SpinSpeed = 150f;
 
+    public int SpiralCount = 1;
     public Angle Angle;
+    public Angle CounterAngle;
     public TimeSpan NextShot;
     public TimeSpan EndTime;
 }

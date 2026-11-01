@@ -45,8 +45,12 @@ public sealed class MegafaunaShotSystem : EntitySystem
             }
 
             spiral.NextShot = now + TimeSpan.FromSeconds(spiral.Interval);
+            var step = Angle.FromDegrees(spiral.SpinSpeed * spiral.Interval);
             FireProjectile(uid, spiral.Projectile, spiral.Angle, spiral.Speed);
-            spiral.Angle += Angle.FromDegrees(spiral.SpinSpeed * spiral.Interval);
+            if (spiral.SpiralCount > 1)
+                FireProjectile(uid, spiral.Projectile, spiral.CounterAngle, spiral.Speed);
+            spiral.Angle += step;
+            spiral.CounterAngle -= step;
         }
     }
 
@@ -89,6 +93,8 @@ public sealed class MegafaunaShotSystem : EntitySystem
                 comp.Interval = args.Interval;
                 comp.SpinSpeed = args.SpinSpeed;
                 comp.Angle = baseAngle;
+                comp.CounterAngle = baseAngle + Angle.FromDegrees(180);
+                comp.SpiralCount = args.SpiralCount;
                 comp.NextShot = _timing.CurTime;
                 comp.EndTime = _timing.CurTime + TimeSpan.FromSeconds(args.Duration);
                 break;
