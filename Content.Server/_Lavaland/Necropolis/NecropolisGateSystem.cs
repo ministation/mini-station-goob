@@ -51,8 +51,9 @@ public sealed class NecropolisGateSystem : EntitySystem
 
     private void OnSpawnerMapInit(Entity<NecropolisGateSpawnerComponent> ent, ref MapInitEvent args)
     {
+        // No self-delete: the prototype sweep spawns every entity and asserts it can be
+        // deleted afterwards, plus the spawner is invisible and harmless on the planet.
         BuildStructure(ent);
-        QueueDel(ent);
     }
 
     private void BuildStructure(Entity<NecropolisGateSpawnerComponent> ent)

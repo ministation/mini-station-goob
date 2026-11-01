@@ -31,12 +31,13 @@ public sealed class NecropolisGateTest
 
         await server.WaitRunTicks(5);
 
-        // Structure built: gate exists, spawner cleaned itself up.
+        // Structure built: gate exists, spawner keeps existing (no self-delete, the
+        // prototype sweep requires every entity to stay deletable).
         EntityUid gate = default;
         EntityCoordinates gateCoords = default;
         await server.WaitAssertion(() =>
         {
-            Assert.That(entMan.Deleted(spawner), Is.True, "spawner should delete itself after building");
+            Assert.That(entMan.Deleted(spawner), Is.False, "spawner should keep existing after building");
 
             var gates = new List<Entity<NecropolisGateComponent>>();
             var query = entMan.EntityQueryEnumerator<NecropolisGateComponent>();

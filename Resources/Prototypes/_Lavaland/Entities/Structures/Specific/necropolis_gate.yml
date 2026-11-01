@@ -17,57 +17,29 @@
     sprite: _Lavaland/Tiles/boss_floors.rsi
     layers:
     - map: ["tile"]
-      state: pristine_tile1
+      state: pristine_slab1
   - type: RandomSprite
     available:
     - tile:
-        pristine_tile1: null
+        pristine_slab1: null
     - tile:
-        pristine_tile2: null
+        pristine_slab2: null
     - tile:
-        pristine_tile3: null
+        pristine_slab3: null
     - tile:
-        pristine_tile4: null
+        pristine_slab4: null
     - tile:
-        pristine_tile5: null
+        pristine_center1: null
     - tile:
-        pristine_tile6: null
+        pristine_center2: null
     - tile:
-        pristine_tile7: null
+        pristine_center3: null
     - tile:
-        pristine_tile8: null
+        pristine_center4: null
     - tile:
-        pristine_tile9: null
+        pristine_surrounding1: null
     - tile:
-        pristine_tile10: null
-    - tile:
-        pristine_tile11: null
-    - tile:
-        pristine_tile12: null
-    - tile:
-        pristine_tile13: null
-    - tile:
-        pristine_tile14: null
-    - tile:
-        pristine_tile15: null
-    - tile:
-        pristine_tile16: null
-    - tile:
-        pristine_tile17: null
-    - tile:
-        pristine_tile18: null
-    - tile:
-        pristine_tile19: null
-    - tile:
-        pristine_tile20: null
-    - tile:
-        pristine_tile21: null
-    - tile:
-        pristine_tile22: null
-    - tile:
-        pristine_tile23: null
-    - tile:
-        pristine_tile24: null
+        pristine_surrounding2: null
 
 - type: entity
   id: LavalandNecropolisGate
