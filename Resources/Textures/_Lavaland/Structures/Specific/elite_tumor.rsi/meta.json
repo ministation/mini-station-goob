@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca.",
+  "size": {
+    "x": 64,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "advanced_tumor",
+      "delays": [
+        [
+          3.0,
+          3.0
+        ]
+      ]
+    },
+    {
+      "name": "tumor",
+      "delays": [
+        [
+          3.0,
+          3.0
+        ]
+      ]
+    },
+    {
+      "name": "tumor_popped",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    }
+  ]
+}

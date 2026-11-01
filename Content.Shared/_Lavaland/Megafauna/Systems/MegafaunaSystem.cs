@@ -1,8 +1,13 @@
-﻿using Content.Shared._Lavaland.Aggression;
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Megafauna.Selectors;
 using Content.Shared.Mobs.Systems;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -41,6 +46,10 @@ public sealed partial class MegafaunaSystem : EntitySystem
         while (query.MoveNext(out var uid, out var ai))
         {
             if (!ai.Active)
+                continue;
+
+            // A player (or ghost takeover) controls this boss: AI steps aside.
+            if (HasComp<ActorComponent>(uid))
                 continue;
 
             // TODO when there's more than just hierophant make this a CPU job or make it parallel idk whatever is faster
