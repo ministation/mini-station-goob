@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: ActionDrakeFireCone
+  parent: BaseAction
+  name: Fire Breath
+  description: Breathes a cone of fire towards the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandDrakeFlame
+      count: 7
+      spread: 70
+      speed: 12
+      pattern: Cone
+
+- type: entity
+  id: ActionDrakeLavaPools
+  parent: BaseAction
+  name: Lava Pools
+  description: Causes lava to pool around the target position.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandLavaPoolBurst
+      attachToTarget: true
+
+- type: entity
+  id: ActionDrakeSlam
+  parent: BaseAction
+  name: Swoop Slam
+  description: Swoops at the target position and slams the ground.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaBlinkActionEvent

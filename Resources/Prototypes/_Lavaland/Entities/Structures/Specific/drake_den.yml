@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Ash drake den landmark and its loot.
+
+- type: entity
+  id: LavalandStoneTileBurnt
+  name: stone tile
+  description: A scorched stone tile, part of some ancient necropolis construction.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Lavaland/Tiles/boss_floors.rsi
+    layers:
+    - map: ["tile"]
+      state: burnt_slab1
+  - type: RandomSprite
+    available:
+    - tile:
+        burnt_slab1: null
+    - tile:
+        burnt_slab2: null
+    - tile:
+        burnt_slab3: null
+    - tile:
+        burnt_slab4: null
+    - tile:
+        burnt_center1: null
+    - tile:
+        burnt_center2: null
+    - tile:
+        burnt_center3: null
+    - tile:
+        burnt_center4: null
+    - tile:
+        burnt_surrounding1: null
+    - tile:
+        burnt_surrounding2: null
+
+- type: entity
+  id: LavalandDrakeDenSpawner
+  parent: MarkerBase
+  name: drake den spawner
+  suffix: Lavaland
+  components:
+  - type: DrakeDenSpawner
+
+- type: entity
+  parent: LavalandCrateNecropolis
+  id: LavalandCrateDragon
+  name: dragon chest
+  description: A chest of the drake's hoard. It glows with inner heat.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: DragonChestLoot
+
+- type: entityTable
+  id: DragonChestLoot
+  table: !type:GroupSelector
+    children:
+    - id: LavalandStaffOfLava
+    - id: LavalandSpectralBlade
+    - id: LavalandSpellbookSacredFlame
+    - id: LavalandDragonsBlood
+
+# Crusher trophy
+- type: entity
+  id: LavalandDrakeTailSpike
+  parent: BaseItem
+  name: drake tail spike
+  description: A trophy taken from the tail of an ash drake.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/trophies.rsi
+    state: tail_spike
