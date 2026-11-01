@@ -134,3 +134,5 @@ ent-FishingGeneGun = fish gene-gun
     .desc = A device designed to inject or extract traits to and from fish. It takes an empty syringe and turns it into a fish trait injector. Repeated applications may kill the fish.
 ent-FishGeneInjector = fish trait injector
     .desc = A single-use injector containing a fish trait. It can be applied directly to a living fish, or loaded into a gene-gun.
+
+fishing-lure-spin-examine = It has to be clicked { $min } to { $max } seconds after the cast, while the light above the float is green.

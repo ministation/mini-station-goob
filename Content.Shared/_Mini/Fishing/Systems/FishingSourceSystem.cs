@@ -356,9 +356,9 @@ public sealed partial class FishingSourceSystem : EntitySystem
         if (baitItem is { } baitUid)
             TryComp(baitUid, out baitComp);
 
-        var shinyHook = false;
+        var shinyHook = baitComp?.AttractsShinyLovers ?? false;
         if (GetHookItem(rod) is { } hookItem && TryComp<FishingHookComponent>(hookItem, out var hook))
-            shinyHook = hook.AttractsShinyLovers;
+            shinyHook |= hook.AttractsShinyLovers;
 
         foreach (var traitId in fish.Traits)
         {
@@ -408,6 +408,78 @@ public sealed partial class FishingSourceSystem : EntitySystem
         }
 
         return multiplier;
+    }
+
+    /// <summary>tg FISH_BEAUTY_DISGUSTING.</summary>
+    private const int DisgustingBeauty = -500;
+
+    private static readonly ProtoId<FishingSourcePrototype> ToiletSource = "FishingSourceToilet";
+    private static readonly ProtoId<FishingSourcePrototype> MoistureTrapSource = "FishingSourceMoistureTrap";
+
+    /// <summary>
+    /// Weight multiplier of a fish species for the artificial lure on this rod. Zero means the
+    /// lure cannot catch it at all, a matching fish gets tg's ten times the weight.
+    /// </summary>
+    public float GetLureCatchWeightMultiplier(
+        FishPrototype fish,
+        EntityUid rod,
+        EntityUid? baitItem,
+        ProtoId<FishingSourcePrototype> sourceId)
+    {
+        if (baitItem is not { } baitUid ||
+            !TryComp<FishingBaitComponent>(baitUid, out var bait) ||
+            bait.LureFilter is not { } filter)
+            return 1f;
+
+        return MatchesLureFilter(fish, filter, sourceId) ? filter.WeightMultiplier : 0f;
+    }
+
+    private bool MatchesLureFilter(FishPrototype fish, FishingLureFilter filter, ProtoId<FishingSourcePrototype> sourceId)
+    {
+        if (fish.AverageSize < filter.MinSize || fish.AverageSize > filter.MaxSize)
+            return false;
+
+        // The plastic dropping also catches the junk of the toilet and of the moisture trap.
+        if (filter.JunkFish &&
+            fish.Beauty > DisgustingBeauty &&
+            sourceId != ToiletSource &&
+            sourceId != MoistureTrapSource)
+            return false;
+
+        var flags = GetFishTraitFlags(fish);
+
+        if ((flags & filter.ExcludedTraits) != 0)
+            return false;
+
+        if ((flags & filter.RequiredTraits) != filter.RequiredTraits)
+            return false;
+
+        if (filter.RequiredAnyTraits != FishTraitFlags.None && (flags & filter.RequiredAnyTraits) == 0)
+            return false;
+
+        if (filter.Fluids is { } fluids)
+        {
+            if (!fluids.Contains(fish.Fluid))
+                return false;
+
+            // tg: an air fish only bites a lure when it is amphibious.
+            if (fish.Fluid == AquariumFluid.Air && (flags & FishTraitFlags.Amphibious) == 0)
+                return false;
+        }
+
+        return true;
+    }
+
+    private FishTraitFlags GetFishTraitFlags(FishPrototype fish)
+    {
+        var flags = FishTraitFlags.None;
+        foreach (var traitId in fish.Traits)
+        {
+            if (_proto.TryIndex(traitId, out FishTraitPrototype? trait))
+                flags |= trait.Flags;
+        }
+
+        return flags;
     }
 
     /// <summary>
@@ -556,7 +628,11 @@ public sealed partial class FishingSourceSystem : EntitySystem
             var weight = 1f;
 
             if (TryGetCaughtFish(picked, out var fish))
-                weight = fishMultiplier * GetTraitCatchWeightMultiplier(fish, rod, bait);
+            {
+                weight = fishMultiplier *
+                         GetTraitCatchWeightMultiplier(fish, rod, bait) *
+                         GetLureCatchWeightMultiplier(fish, rod, bait, new ProtoId<FishingSourcePrototype>(source.ID));
+            }
             else if (IsLivingCatch(picked))
                 weight = fishMultiplier;
 

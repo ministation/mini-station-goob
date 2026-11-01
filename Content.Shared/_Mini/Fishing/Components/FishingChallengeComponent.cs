@@ -165,6 +165,35 @@ public sealed partial class FishingChallengeComponent : Component
     [DataField]
     public float Difficulty = 15f;
 
+    // Lure spinning QTE.
+
+    /// <summary>
+    /// Whether the slotted artificial lure has to be spun while waiting for a bite.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool SpinActive;
+
+    /// <summary>
+    /// Whether the lure light is green and a click spins the lure without a penalty.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool SpinReady;
+
+    /// <summary>
+    /// Server-side timers of the current spin window.
+    /// </summary>
+    [DataField]
+    public TimeSpan SpinReadyTime;
+
+    [DataField]
+    public TimeSpan SpinMissTime;
+
+    /// <summary>
+    /// A quick double click must not count as an early spin.
+    /// </summary>
+    [DataField]
+    public TimeSpan NextSpinClickTime;
+
     [DataField]
     public bool IsFinishing;
 

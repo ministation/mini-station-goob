@@ -53,4 +53,30 @@ public sealed partial class FishingBaitComponent : Component
 
     [DataField]
     public FishingBaitFlags Flags = FishingBaitFlags.None;
+
+    /// <summary>
+    /// Seconds from the start of the wait until an artificial lure can be spun. Zero means the
+    /// bait is not a lure and does not need spinning.
+    /// </summary>
+    [DataField]
+    public float SpinFrequencyMin;
+
+    /// <summary>
+    /// Seconds from the start of the wait after which an unspun lure stops spinning and the wait
+    /// grows by a few seconds.
+    /// </summary>
+    [DataField]
+    public float SpinFrequencyMax;
+
+    /// <summary>
+    /// Fish a lure is able to catch. Null for normal bait, which is not picky about the species.
+    /// </summary>
+    [DataField]
+    public FishingLureFilter? LureFilter;
+
+    /// <summary>
+    /// Whether the bait attracts shiny-loving fish like the shiny hook does.
+    /// </summary>
+    [DataField]
+    public bool AttractsShinyLovers;
 }

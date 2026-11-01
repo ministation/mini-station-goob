@@ -9,3 +9,8 @@ fishing-reeled-in = You reel the line back in.
 fishing-line-snapped = The fishing line snapped.
 fishing-catch-extra = Something else grabs the bait too!
 fishing-catch-killed = The jawed hook finishes the catch off.
+
+fishing-spin-hint = The lure has to be clicked while the light above the float is green.
+fishing-spun = You spin the lure.
+fishing-spin-miss = The lure stopped playing!
+fishing-spin-too-early = Too early! You jerk the lure.

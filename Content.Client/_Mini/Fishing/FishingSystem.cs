@@ -67,7 +67,8 @@ public sealed partial class FishingSystem : EntitySystem
             !TryComp<FishingChallengeComponent>(local, out var challenge))
             return;
 
-        if (challenge.Phase is not (FishingPhase.Biting or FishingPhase.Minigame))
+        var isSpin = challenge.Phase == FishingPhase.Waiting && challenge.SpinActive;
+        if (challenge.Phase is not (FishingPhase.Biting or FishingPhase.Minigame) && !isSpin)
             return;
 
         var anchor = GetAnchor(challenge, local);
@@ -86,8 +87,9 @@ public sealed partial class FishingSystem : EntitySystem
         var meterUi = meterPx / scale;
 
         var isBite = challenge.Phase == FishingPhase.Biting;
-        var size = (isBite ? BiteSize : PanelSize) * meterUi;
-        var center = anchorUi + (isBite ? Vector2.Zero : PanelOffset) * meterUi;
+        var compact = isBite || isSpin;
+        var size = (compact ? BiteSize : PanelSize) * meterUi;
+        var center = anchorUi + (compact ? Vector2.Zero : PanelOffset) * meterUi;
 
         _input.SetRect(center - size * 0.5f, size);
     }
@@ -97,9 +99,10 @@ public sealed partial class FishingSystem : EntitySystem
         if (_player.LocalEntity != ent.Owner)
             return;
 
-        // Only the bite window and the fight need the wheel, and the catcher is small, so the
-        // HUD and open windows stay usable the whole time.
-        if (ent.Comp.Phase is FishingPhase.Biting or FishingPhase.Minigame)
+        // Only the bite window, the fight and the lure spin need input, and the catcher is small,
+        // so the HUD and open windows stay usable the whole time.
+        var spin = ent.Comp.Phase == FishingPhase.Waiting && ent.Comp.SpinActive;
+        if (ent.Comp.Phase is FishingPhase.Biting or FishingPhase.Minigame || spin)
             EnsureInput();
         else
             RemoveInput();
@@ -172,8 +175,19 @@ public sealed partial class FishingSystem : EntitySystem
     private void TryHook()
     {
         if (_player.LocalEntity is not { } local ||
-            !TryComp<FishingChallengeComponent>(local, out var challenge) ||
-            challenge.Phase != FishingPhase.Biting)
+            !TryComp<FishingChallengeComponent>(local, out var challenge))
+            return;
+
+        if (challenge.Phase == FishingPhase.Waiting)
+        {
+            // Clicking the float spins the lure; direction zero tells the server it is not a reel.
+            if (challenge.SpinActive)
+                SendReel(0);
+
+            return;
+        }
+
+        if (challenge.Phase != FishingPhase.Biting)
             return;
 
         SendReel(1);
