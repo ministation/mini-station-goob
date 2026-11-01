@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "pristine_slab1",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "pristine_slab2",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "pristine_slab3",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "pristine_slab4",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "pristine_center1",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "pristine_center2",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "pristine_center3",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "pristine_center4",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "pristine_surrounding1",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "pristine_surrounding2",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "cracked_center1",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "cracked_center2",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "cracked_center3",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "cracked_center4",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_slab1",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_slab2",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_slab3",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_slab4",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_center1",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_center2",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_center3",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_center4",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_surrounding1",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "burnt_surrounding2",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "boss",
+      "delays": [
+        0.1
+      ]
+    }
+  ]
+}

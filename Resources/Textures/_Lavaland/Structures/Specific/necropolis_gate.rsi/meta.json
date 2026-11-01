@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca.",
+  "size": {
+    "x": 96,
+    "y": 96
+  },
+  "states": [
+    {
+      "name": "gate_bottom",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "gate_dais",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "gate_top",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "gate_blocker",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "door",
+      "delays": [
+        0.1
+      ]
+    },
+    {
+      "name": "door_opening",
+      "delays": [
+        2.5,
+        7.0,
+        2.0,
+        1.75,
+        1.5,
+        1.25,
+        1.0,
+        1.0,
+        1.5,
+        1.0,
+        1.25,
+        1.0,
+        1.0,
+        1.5,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "door_closing",
+      "delays": [
+        1.0,
+        0.85,
+        0.7,
+        0.55,
+        0.4,
+        0.25,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ]
+    }
+  ]
+}

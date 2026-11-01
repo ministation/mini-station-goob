@@ -1,6 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: lavalandMarkerRuin
+  id: NecropolisGate
+  boundary: 16,16
+  spawnedMarker: LavalandNecropolisGateSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 120
+
+- type: lavalandMarkerRuin
   id: CommonRuin5x5
   boundary: 5,5
   spawnedMarker: LavalandInteriorRoomMarker
