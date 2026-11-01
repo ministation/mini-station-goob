@@ -40,6 +40,13 @@ public sealed partial class LavalandGridRuinPrototype : IPrototype
     public int Priority = int.MinValue;
 
     /// <summary>
+    /// Guaranteed ruins are placed before all others and retried with relaxed
+    /// constraints if no eligible spot is found, TG-style always_place.
+    /// </summary>
+    [DataField]
+    public bool Guaranteed;
+
+    /// <summary>
     /// List of components to grant to entities that enter the ruin.
     /// </summary>
     [DataField]

@@ -49,11 +49,11 @@ public sealed partial class LavalandSystem
         _ruinCoords = coords;
 
         _ruinGridList = GetGridRuinProtos(pool.GridRuins);
-        _ruinGridList.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+        _ruinGridList.Sort(CompareGridRuins);
         _ruinDungeonList = GetDungeonRuinProtos(pool.DungeonRuins);
         _ruinDungeonList.Sort((x, y) => x.Priority.CompareTo(y.Priority));
         _ruinMarkerList = GetMarkerRuinProtos(pool.MarkerRuins);
-        _ruinMarkerList.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+        _ruinMarkerList.Sort(CompareMarkerRuins);
 
         _ruinGridIndex = 0;
         _ruinDungeonIndex = 0;
@@ -113,6 +113,24 @@ public sealed partial class LavalandSystem
         }
     }
 
+    /// <summary>
+    /// Sorts grid ruins: guaranteed ones first (TG-style always_place), then by priority.
+    /// </summary>
+    private static int CompareGridRuins(LavalandGridRuinPrototype x, LavalandGridRuinPrototype y)
+    {
+        var guaranteed = y.Guaranteed.CompareTo(x.Guaranteed);
+        return guaranteed != 0 ? guaranteed : x.Priority.CompareTo(y.Priority);
+    }
+
+    /// <summary>
+    /// Sorts marker ruins: guaranteed ones first (TG-style always_place), then by priority.
+    /// </summary>
+    private static int CompareMarkerRuins(LavalandMarkerRuinPrototype x, LavalandMarkerRuinPrototype y)
+    {
+        var guaranteed = y.Guaranteed.CompareTo(x.Guaranteed);
+        return guaranteed != 0 ? guaranteed : x.Priority.CompareTo(y.Priority);
+    }
+
     private void CleanupRuinsBatch()
     {
         _ruinLavaland = null;
@@ -163,7 +181,7 @@ public sealed partial class LavalandSystem
     {
         // Get and sort all ruins, because we can't sort dictionaries
         var list = GetGridRuinProtos(ruins);
-        list.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+        list.Sort(CompareGridRuins);
 
         Log.Debug($"Spawning {list.Count} Grid Ruins on {ToPrettyString(lavaland)} planet.");
         foreach (var ruin in list)
@@ -199,7 +217,7 @@ public sealed partial class LavalandSystem
     {
         // Get and sort all ruins, because we can't sort dictionaries
         var list = GetMarkerRuinProtos(ruins);
-        list.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+        list.Sort(CompareMarkerRuins);
 
         Log.Debug($"Spawning {list.Count} Marker Ruins on {ToPrettyString(lavaland)} planet.");
         foreach (var ruin in list)
@@ -259,7 +277,9 @@ public sealed partial class LavalandSystem
         var spawned = spawnedBoundedGrid.Value;
         var ruinBox = spawned.Comp.LocalAABB;
 
-        if (!TryPlaceRuin(ruinBox, ruin.SpawnAttempts, ruin.MinDistance, ruin.MaxDistance, coords, usedSpace, out var coord))
+        if (!TryPlaceRuin(ruinBox, ruin.SpawnAttempts, ruin.MinDistance, ruin.MaxDistance, coords, usedSpace, out var coord)
+            && !(ruin.Guaranteed
+                && TryPlaceRuin(ruinBox, ruin.SpawnAttempts * 4, ruin.MinDistance, ruin.MaxDistance, coords, usedSpace, out coord, ignoreIntersections: true)))
         {
             Log.Warning($"Failed to load ruin {ruin.ID} on {ToPrettyString(lavaland)} planet's surface: all attempts have failed and no eligible spot was found!");
             Del(spawnedBoundedGrid);
@@ -325,7 +345,9 @@ public sealed partial class LavalandSystem
 
         var ruinBox = Box2.CentredAroundZero(ruin.Boundary);
 
-        if (!TryPlaceRuin(ruinBox, ruin.SpawnAttempts, null, null, coords, usedSpace, out var coord))
+        if (!TryPlaceRuin(ruinBox, ruin.SpawnAttempts, ruin.MinDistance, ruin.MaxDistance, coords, usedSpace, out var coord)
+            && !(ruin.Guaranteed
+                && TryPlaceRuin(ruinBox, ruin.SpawnAttempts * 4, ruin.MinDistance, ruin.MaxDistance, coords, usedSpace, out coord, ignoreIntersections: true)))
         {
             Log.Warning($"Failed to load ruin {ruin.ID} on {ToPrettyString(lavaland)} planet's surface: all attempts have failed and no eligible spot was found!");
             return;
@@ -348,6 +370,7 @@ public sealed partial class LavalandSystem
     /// <param name="coords">A list of all eligible planet coordinates. Has to be shuffled to be as efficient as possible.</param>
     /// <param name="usedSpace">A list of bounding boxes of already placed ruins, translated relative to their position.</param>
     /// <param name="pickedCoord">Picked coordinates that we can safely put a ruin at.</param>
+    /// <param name="ignoreIntersections">Skip the overlap check, used by guaranteed ruins as a last resort.</param>
     /// <returns></returns>
     private bool TryPlaceRuin(
         Box2 ruinBox,
@@ -356,7 +379,8 @@ public sealed partial class LavalandSystem
         int? maxDistance,
         List<Vector2i> coords,
         List<Box2> usedSpace,
-        [NotNullWhen(true)] out Vector2i? pickedCoord)
+        [NotNullWhen(true)] out Vector2i? pickedCoord,
+        bool ignoreIntersections = false)
     {
         pickedCoord = null;
         for (var i = 0; i < coords.Count && i < spawnAttempts; i++)
@@ -369,13 +393,16 @@ public sealed partial class LavalandSystem
                 continue;
 
             bool intersects = false;
-            var translated = ruinBox.Translated(pos);
-            foreach (var used in usedSpace)
+            if (!ignoreIntersections)
             {
-                if (translated.Intersects(used))
+                var translated = ruinBox.Translated(pos);
+                foreach (var used in usedSpace)
                 {
-                    intersects = true;
-                    break;
+                    if (translated.Intersects(used))
+                    {
+                        intersects = true;
+                        break;
+                    }
                 }
             }
 

@@ -1,0 +1,112 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Port of TG's necropolis gate landmark: stone arena, indestructible tower and the gate itself.
+
+- type: entity
+  id: LavalandStoneTilePristine
+  name: stone tile
+  description: A pristine stone tile, part of some ancient necropolis construction.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Lavaland/Tiles/boss_floors.rsi
+    layers:
+    - map: ["tile"]
+      state: pristine_slab1
+  - type: RandomSprite
+    available:
+    - tile:
+        pristine_slab1: null
+    - tile:
+        pristine_slab2: null
+    - tile:
+        pristine_slab3: null
+    - tile:
+        pristine_slab4: null
+    - tile:
+        pristine_center1: null
+    - tile:
+        pristine_center2: null
+    - tile:
+        pristine_center3: null
+    - tile:
+        pristine_center4: null
+    - tile:
+        pristine_surrounding1: null
+    - tile:
+        pristine_surrounding2: null
+
+- type: entity
+  id: LavalandNecropolisGate
+  parent: BaseStructure
+  name: necropolis gate
+  description: A tremendous, impossibly large gateway, set into a massive tower of stone.
+  components:
+  - type: NecropolisGate
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Walls
+    sprite: _Lavaland/Structures/Specific/necropolis_gate.rsi
+    layers:
+    - state: gate_dais
+    - state: gate_bottom
+    - map: ["door"]
+      state: door
+    - state: gate_top
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.49,0.49,0.49"
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+        density: 200
+  - type: PointLight
+    radius: 6
+    energy: 2
+    softness: 1
+    color: "#FFAA66"
+  - type: Appearance
+  - type: InteractionOutline
+  - type: Clickable
+
+- type: entity
+  id: LavalandNecropolisArch
+  parent: BaseStructure
+  name: necropolis arch
+  description: A massive arch over the necropolis gate, set into a massive tower of stone.
+  components:
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: WallTops
+    offset: 0, -0.5
+    sprite: _Lavaland/Structures/Specific/necropolis_arch.rsi
+    layers:
+    - state: arch_bottom
+    - state: arch_top
+  - type: Clickable
+  - type: InteractionOutline
+
+- type: entity
+  id: LavalandNecropolisGateSpawner
+  parent: MarkerBase
+  name: necropolis gate spawner
+  suffix: Lavaland
+  components:
+  - type: NecropolisGateSpawner
