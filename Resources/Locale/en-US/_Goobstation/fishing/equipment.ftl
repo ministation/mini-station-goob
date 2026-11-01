@@ -101,6 +101,8 @@ ent-FishingRodMaster = master fishing rod
     .desc = The mythical rod of a lost fisher king. Said to be imbued with unparalleled fishing power.
 ent-FishingRodMaterial = material fishing rod
     .desc = A custom fishing rod from your local autolathe.
+
+fishing-rod-luck-examine = Catch luck: { $percent }% of the best rod.
 fishing-rod-equipment-verb = Inspect equipment
 fishing-rod-equipment-title = Rod equipment
 fishing-rod-slot-eject = Take out

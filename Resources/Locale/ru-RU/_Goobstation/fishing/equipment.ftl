@@ -101,6 +101,8 @@ ent-FishingRodMaster = удочка мастера
     .desc = Мифическая удочка потерянного короля рыбаков. Говорят, в ней заключена беспримерная сила рыбалки.
 ent-FishingRodMaterial = удочка из материала
     .desc = Удочка на заказ с местного автолата.
+
+fishing-rod-luck-examine = Удача улова: { $percent }% от лучшей удочки.
 fishing-rod-equipment-verb = Осмотреть снаряжение
 fishing-rod-equipment-title = Снаряжение удочки
 fishing-rod-slot-eject = Вынуть

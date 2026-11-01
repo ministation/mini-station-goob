@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
+using System;
+
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Events;
 using Content.Shared.Containers.ItemSlots;
+using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
@@ -34,6 +37,7 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
     [Dependency] private INetManager _net = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
+    [Dependency] private IComponentFactory _factory = default!;
 
     public override void Initialize()
     {
@@ -51,6 +55,8 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
 
         SubscribeLocalEvent<FishingRodComponent, GetVerbsEvent<InteractionVerb>>(OnGetEquipmentVerbs);
         SubscribeLocalEvent<FishingRodComponent, BoundUIOpenedEvent>(OnEquipmentUiOpened);
+        SubscribeLocalEvent<FishingRodComponent, ExaminedEvent>(OnRodExamined);
+        _proto.PrototypesReloaded += OnPrototypesReloaded;
 
         // The client visuals system owns the rod container events on its side.
         if (_net.IsServer)
@@ -63,6 +69,12 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
         {
             subs.Event<FishingRodEquipmentEjectMessage>(OnEquipmentEject);
         });
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        _proto.PrototypesReloaded -= OnPrototypesReloaded;
     }
 
     #region Slots helpers
@@ -147,6 +159,46 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
                 args.ExtraCatchChance += 0.1f;
                 break;
         }
+    }
+
+    #endregion
+
+    #region Catch luck
+
+    private float _bestEfficiency;
+    private bool _bestEfficiencyCached;
+
+    private void OnPrototypesReloaded(PrototypesReloadedEventArgs args)
+    {
+        _bestEfficiencyCached = false;
+    }
+
+    private void OnRodExamined(Entity<FishingRodComponent> ent, ref ExaminedEvent args)
+    {
+        var best = GetBestEfficiency();
+        if (best <= 0f)
+            return;
+
+        var percent = (int) MathF.Round(ent.Comp.Efficiency / best * 100f);
+        args.PushMarkup(Loc.GetString("fishing-rod-luck-examine", ("percent", percent)));
+    }
+
+    /// <summary>
+    /// The highest <see cref="FishingRodComponent.Efficiency"/> among all rod prototypes, the 100% mark.
+    /// </summary>
+    private float GetBestEfficiency()
+    {
+        if (_bestEfficiencyCached)
+            return _bestEfficiency;
+
+        foreach (var proto in _proto.EnumeratePrototypes<EntityPrototype>())
+        {
+            if (proto.TryGetComponent<FishingRodComponent>(out var rod, _factory) && rod.Efficiency > _bestEfficiency)
+                _bestEfficiency = rod.Efficiency;
+        }
+
+        _bestEfficiencyCached = true;
+        return _bestEfficiency;
     }
 
     #endregion
