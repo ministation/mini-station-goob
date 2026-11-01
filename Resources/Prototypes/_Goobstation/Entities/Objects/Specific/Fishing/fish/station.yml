@@ -26,6 +26,16 @@
     state: fritterish
   - type: Fish
     fish: FishFryishFritterish
+  # tg randomizes one of three cosmetic forms on spawn.
+  - type: FishVariant
+    variants:
+    - spriteState: fritterish
+    - spriteState: bernardfish
+      name: fish-variant-fritterish-bernard-name
+      description: fish-variant-fritterish-bernard-desc
+    - spriteState: matthewfish
+      name: fish-variant-fritterish-matthew-name
+      description: fish-variant-fritterish-matthew-desc
 
 - type: entity
   id: FishFryishNessie

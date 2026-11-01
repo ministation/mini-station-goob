@@ -21,6 +21,15 @@ public sealed class FishInitializedEvent(EntityUid fish) : EntityEventArgs
     public readonly EntityUid Fish = fish;
 }
 
+/// <summary>
+/// Raised on a fish when it dies or is revived.
+/// </summary>
+public sealed class FishStatusChangedEvent(EntityUid fish, bool alive) : EntityEventArgs
+{
+    public readonly EntityUid Fish = fish;
+    public readonly bool Alive = alive;
+}
+
 [Serializable, NetSerializable]
 public sealed class ActiveFishingSpotComponentState : ComponentState
 {

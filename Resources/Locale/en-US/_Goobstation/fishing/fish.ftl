@@ -15,6 +15,9 @@ ent-FishArmorfish = armorfish
 ent-FishBabbelfish = babbelfish
     .desc = Babbelfish are both visually -and- psychically unsettling - their psychic wails damage the minds of those nearby. The effect is negligible on humans, but deadly for fish. It is said that splitting one in two and inserting the pieces into each ear unlocks your psychic potential.
 
+fish-psychic-wail = The babbelfish lets out a psychic wail!
+fish-psychic-wail-kills = The psychic wail kills $count fish nearby!
+
 ent-FishBabyCarp = baby space carp
     .desc = A juvenile spawn of the dreaded space carp. Don't let the innocent looks fool you, they're aggressive little bastards.
 
@@ -65,6 +68,12 @@ ent-FishFryish = fryish
 
 ent-FishFryishFritterish = fritterish
     .desc = A deliciously extremophile alien fish. This one looks like a taiyaki.
+
+fish-variant-fritterish-bernard-name = bernard-fish
+fish-variant-fritterish-bernard-desc = A deliciously extremophile alien fish shaped like a dinosaur. Children love it.
+
+fish-variant-fritterish-matthew-name = matthew-fish
+fish-variant-fritterish-matthew-desc = A deliciously extremophile alien fish shaped like a pterodactyl. Children love it.
 
 ent-FishFryishNessie = nessie-fish
     .desc = A deliciously extremophile alien fish. This one is so big, you could write legends about it.

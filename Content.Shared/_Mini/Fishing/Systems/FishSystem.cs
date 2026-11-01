@@ -215,5 +215,6 @@ public sealed partial class FishSystem : EntitySystem
         ent.Comp.Alive = alive;
         ent.Comp.TimeOutOfWater = 0;
         Dirty(ent, ent.Comp);
+        RaiseLocalEvent(ent, new FishStatusChangedEvent(ent, alive));
     }
 }
