@@ -41,5 +41,9 @@ public sealed partial class FishVisualsSystem : EntitySystem
 
         var sprite = ent.Comp.Alive ? proto.Sprite : proto.DeadSprite ?? proto.Sprite;
         _sprite.LayerSetSprite(ent.Owner, 0, sprite);
+
+        // The cosmostarfish glows while alive, like tg emissive_appearance.
+        if (_sprite.LayerMapTryGet(ent.Owner, "emissive", out var emissive, false))
+            _sprite.LayerSetVisible(ent.Owner, emissive, ent.Comp.Alive);
     }
 }

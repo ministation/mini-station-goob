@@ -31,6 +31,12 @@ public sealed partial class FishPrototype : IPrototype
     public SpriteSpecifier? DeadSprite;
 
     /// <summary>
+    /// Glow overlay drawn while the fish is alive, like the cosmostarfish in tg.
+    /// </summary>
+    [DataField]
+    public SpriteSpecifier? EmissiveSprite;
+
+    /// <summary>
     /// Icon used when the fish swims inside an aquarium. Falls back to <see cref="Sprite"/>.
     /// </summary>
     [DataField]

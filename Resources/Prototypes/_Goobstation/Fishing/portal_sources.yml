@@ -8,6 +8,7 @@
 
 - type: fishingSource
   id: FishingSourcePortal
+  portalDestination: true
   radialState: fish_tank
   radialName: fishing-portal-source-aquarium
   catalogDescription: fishing-source-portal-aquarium
@@ -30,6 +31,7 @@
 
 - type: fishingSource
   id: FishingSourcePortalBeach
+  portalDestination: true
   radialState: palm_beach
   radialName: fishing-portal-source-beach
   catalogDescription: fishing-source-portal-beach
@@ -52,6 +54,7 @@
 
 - type: fishingSource
   id: FishingSourcePortalChasm
+  portalDestination: true
   radialState: ground_hole
   radialName: fishing-portal-source-chasm
   catalogDescription: fishing-source-portal-chasm
@@ -70,6 +73,7 @@
 
 - type: fishingSource
   id: FishingSourcePortalOcean
+  portalDestination: true
   radialState: seaboat
   radialName: fishing-portal-source-ocean
   catalogDescription: fishing-source-portal-ocean
@@ -107,6 +111,7 @@
 
 - type: fishingSource
   id: FishingSourcePortalHyperspace
+  portalDestination: true
   radialState: space_rocket
   radialName: fishing-portal-source-hyperspace
   catalogDescription: fishing-source-portal-hyperspace
@@ -125,6 +130,8 @@
 
 - type: fishingSource
   id: FishingSourcePortalSyndicate
+  portalDestination: true
+  requiresEmag: true
   radialState: syndi_snake
   radialName: fishing-portal-source-syndicate
   catalogDescription: fishing-source-portal-syndicate

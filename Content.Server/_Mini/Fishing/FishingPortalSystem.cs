@@ -5,6 +5,7 @@ using System.Linq;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Prototypes;
+using Content.Shared.Emag.Systems;
 using Content.Shared.Popups;
 using Content.Shared.UserInterface;
 using Content.Shared.Verbs;
@@ -32,6 +33,18 @@ public sealed partial class FishingPortalSystem : EntitySystem
         SubscribeLocalEvent<FishingPortalComponent, BoundUIOpenedEvent>(OnUiOpened);
         SubscribeLocalEvent<FishingPortalComponent, FishingPortalSelectMessage>(OnSelect);
         SubscribeLocalEvent<FishingPortalComponent, GetVerbsEvent<InteractionVerb>>(OnGetVerbs);
+        SubscribeLocalEvent<FishingPortalComponent, GotEmaggedEvent>(OnEmagged);
+    }
+
+    private void OnEmagged(Entity<FishingPortalComponent> ent, ref GotEmaggedEvent args)
+    {
+        if (ent.Comp.Emagged)
+            return;
+
+        // tg unlocks the syndicate dimension when the fish-porter is emagged.
+        ent.Comp.Emagged = true;
+        Dirty(ent.Owner, ent.Comp);
+        args.Handled = true;
     }
 
     private void OnGetVerbs(Entity<FishingPortalComponent> ent, ref GetVerbsEvent<InteractionVerb> args)
@@ -64,10 +77,22 @@ public sealed partial class FishingPortalSystem : EntitySystem
 
     private void OnUiOpened(Entity<FishingPortalComponent> ent, ref BoundUIOpenedEvent args)
     {
+        _ui.SetUiState(ent.Owner, FishingPortalUiKey.Key, new FishingPortalBoundUserInterfaceState(GetOptions(ent)));
+    }
+
+    /// <summary>
+    /// The destinations the fish-porter currently offers. Only real portal dimensions, never the
+    /// world fishing spots, and the syndicate dimension stays hidden until the machine is emagged.
+    /// </summary>
+    public List<FishingPortalOption> GetOptions(Entity<FishingPortalComponent> ent)
+    {
         var options = new List<FishingPortalOption>();
 
         foreach (var source in _proto.EnumeratePrototypes<FishingSourcePrototype>().OrderBy(p => p.ID))
         {
+            if (!IsAvailable(source, ent.Comp.Emagged))
+                continue;
+
             var name = source.RadialName is { } radial
                 ? Loc.GetString(radial)
                 : source.CatalogDescription is { } key
@@ -80,7 +105,12 @@ public sealed partial class FishingPortalSystem : EntitySystem
                 new SpriteSpecifier.Rsi(new ResPath("_Goobstation/Interface/Fishing/radial.rsi"), source.RadialState)));
         }
 
-        _ui.SetUiState(ent.Owner, FishingPortalUiKey.Key, new FishingPortalBoundUserInterfaceState(options));
+        return options;
+    }
+
+    private static bool IsAvailable(FishingSourcePrototype source, bool emagged)
+    {
+        return source.PortalDestination && (!source.RequiresEmag || emagged);
     }
 
     private void OnSelect(Entity<FishingPortalComponent> ent, ref FishingPortalSelectMessage args)
@@ -93,7 +123,7 @@ public sealed partial class FishingPortalSystem : EntitySystem
             return;
         }
 
-        if (!_proto.TryIndex(args.SourceId, out FishingSourcePrototype? selected))
+        if (!_proto.TryIndex(args.SourceId, out FishingSourcePrototype? selected) || !IsAvailable(selected, ent.Comp.Emagged))
             return;
 
         var source = EnsureComp<FishingSourceComponent>(ent.Owner);

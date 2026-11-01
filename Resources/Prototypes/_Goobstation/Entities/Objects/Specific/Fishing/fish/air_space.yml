@@ -54,7 +54,12 @@
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
-    state: starfish
+    layers:
+    - state: starfish
+    - state: starfish_emissive
+      map: ["emissive"]
+      shader: unshaded
+      visible: false
   - type: Fish
     fish: FishStarfish
 

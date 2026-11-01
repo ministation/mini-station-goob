@@ -1289,6 +1289,7 @@
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish_small }
   deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish_dead }
+  emissiveSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish_emissive }
   averageSize: 30
   averageWeight: 300
   fluid: Air

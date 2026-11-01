@@ -35,6 +35,18 @@ public sealed partial class FishingSourcePrototype : IPrototype
     public LocId? RadialName;
 
     /// <summary>
+    /// Can be picked as a destination of the fish-porter, like tg portal sources.
+    /// </summary>
+    [DataField]
+    public bool PortalDestination;
+
+    /// <summary>
+    /// Needs an emag on the fish-porter to show up, like the syndicate dimension in tg.
+    /// </summary>
+    [DataField]
+    public bool RequiresEmag;
+
+    /// <summary>
     /// Base difficulty of the minigame at this source.
     /// </summary>
     [DataField]
