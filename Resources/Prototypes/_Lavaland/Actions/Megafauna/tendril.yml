@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: ActionTendrilSpikes
+  parent: BaseAction
+  name: Spike Cross
+  description: Raises spikes of necropolis around the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandTendrilSpikeCross
+      attachToTarget: true
+
+- type: entity
+  id: ActionTendrilChasers
+  parent: BaseAction
+  name: Chaser Spikes
+  description: Sends crawling spikes after the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandTendrilChaser
+      spawnAtUser: true

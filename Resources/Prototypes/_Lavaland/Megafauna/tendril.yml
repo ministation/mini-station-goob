@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Tendril selector: spikes and chasers around the aggressor.
+- type: megafaunaSelector
+  id: Tendril
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: TendrilActions
+
+- type: megafaunaSelector
+  id: TendrilActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionTendrilSpikes
+    - id: ActionTendrilChasers
+
+- type: megafaunaSelector
+  id: ActionTendrilSpikes
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 2.0,5.0
+      inverse: true
+    actionId: ActionTendrilSpikes
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionTendrilSpikes
+
+- type: megafaunaSelector
+  id: ActionTendrilChasers
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 4.0,8.0
+    actionId: ActionTendrilChasers
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionTendrilChasers
