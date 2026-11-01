@@ -22,6 +22,11 @@ public sealed partial class FishSystem : EntitySystem
 {
     private const float SuffocationTime = 100f;
 
+    /// <summary>
+    /// Fish at least this big need both hands to be picked up, like tg require_twohands.
+    /// </summary>
+    private const float TwoHandsSize = 80f;
+
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedItemSystem _item = default!;
@@ -52,6 +57,7 @@ public sealed partial class FishSystem : EntitySystem
 
         Randomize(ent, proto);
         UpdateHeldPrefix(ent, proto);
+        UpdateTwoHands(ent);
         UpdateButcherable(ent, proto);
         ent.Comp.FishDifficulty = proto.Rarity <= 400 ? 0.035f : FishComponent.DefaultDifficulty;
         Dirty(ent, ent.Comp);
@@ -196,6 +202,17 @@ public sealed partial class FishSystem : EntitySystem
         }
 
         _item.SetHeldPrefix(ent, prefix, false, item);
+    }
+
+    private void UpdateTwoHands(Entity<FishComponent> ent)
+    {
+        if (!_net.IsServer)
+            return;
+
+        if (ent.Comp.Size >= TwoHandsSize)
+            EnsureComp<MultiHandedItemComponent>(ent);
+        else
+            RemCompDeferred<MultiHandedItemComponent>(ent);
     }
 
     private void UpdateButcherable(Entity<FishComponent> ent, FishPrototype proto)
