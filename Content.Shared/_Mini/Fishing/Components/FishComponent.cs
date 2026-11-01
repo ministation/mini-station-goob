@@ -87,4 +87,16 @@ public sealed partial class FishComponent : Component
     /// </summary>
     [DataField]
     public bool Initialized;
+
+    /// <summary>
+    /// True once the fish was cooked on a grill: no blood left, more protein, cooked taste.
+    /// </summary>
+    [DataField]
+    public bool Cooked;
+
+    /// <summary>
+    /// Seconds the fish has spent on a working grill.
+    /// </summary>
+    [DataField]
+    public float CookTime;
 }

@@ -54,3 +54,8 @@
   id: chuddy
   flavorType: Base
   description: flavor-base-chuddy
+
+- type: flavor
+  id: cooked-fish
+  flavorType: Base
+  description: flavor-base-cooked-fish
