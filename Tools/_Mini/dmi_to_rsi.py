@@ -140,14 +140,15 @@ def convert(input_path: Path, output_path: Path, wanted: list[str] | None):
             frames_png.save(output_path / f"{state['name']}.png")
             meta_states.append({
                 "name": state["name"],
-                "delays": state["delays"],
+                # SS14 RSI delays are nested: one list of frame delays per direction.
+                "delays": [state["delays"]],
             })
         cell_index += cells
 
     meta = {
         "version": 1,
         "license": "CC-BY-SA-3.0",
-        "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 3435f7c8b0b.",
+        "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca.",
         "size": {"x": width, "y": height},
         "states": meta_states,
     }

@@ -10,13 +10,17 @@
     {
       "name": "arch_bottom",
       "delays": [
-        0.1
+        [
+          0.1
+        ]
       ]
     },
     {
       "name": "arch_top",
       "delays": [
-        0.1
+        [
+          0.1
+        ]
       ]
     }
   ]
