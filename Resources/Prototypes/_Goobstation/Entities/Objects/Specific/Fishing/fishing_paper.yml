@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  parent: Paper
+  id: FishingTip
+  components:
+  - type: FishingTip
+
+- type: entity
+  parent: Paper
+  id: LuresInstructions
+  components:
+  - type: FishingTip
+    instructions: true
+
+- type: entity
+  parent: BaseItem
+  id: HazardWarningLava
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_hazard.rsi
+    state: hazard_warning_lava
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_hazard.rsi
+    size: Small
+  - type: StaticPrice
+    price: 10
+
+- type: entity
+  parent: BaseItem
+  id: HazardWarningPlasma
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_hazard.rsi
+    state: hazard_warning_plasma
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_hazard.rsi
+    size: Small
+  - type: StaticPrice
+    price: 10
