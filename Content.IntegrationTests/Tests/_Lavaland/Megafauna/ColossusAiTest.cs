@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Linq;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Megafauna.Systems;
 using Robust.Shared.Containers;
@@ -41,12 +42,16 @@ public sealed class ColossusAiTest
             Assert.That(ai.Schedule, Is.Not.Empty);
             megafaunaSystem.ShutdownMegafauna((colossus, ai));
 
-            // The colossus chest filled with exactly one loot entry.
+            // The loot table picks exactly one group: the Cain & Abel pair, or one of the single rewards.
             Assert.That(entMan.TryGetComponent<ContainerManagerComponent>(chest, out var containers));
-            var found = 0;
-            foreach (var container in containers.Containers.Values)
-                found += container.ContainedEntities.Count;
-            Assert.That(found, Is.EqualTo(1), "colossus chest should contain exactly one loot group");
+            var found = containers.Containers.Values
+                .SelectMany(container => container.ContainedEntities)
+                .Select(entity => entMan.GetComponent<MetaDataComponent>(entity).EntityPrototype!.ID)
+                .OrderBy(id => id, StringComparer.Ordinal)
+                .ToArray();
+            var daggerPair = found is ["LavalandAbelDagger", "LavalandCainDagger"];
+            var singleReward = found is ["LavalandVocalCords"] or ["LavalandRenewalCrystal"];
+            Assert.That(daggerPair || singleReward, Is.True, "colossus chest should contain exactly one loot group");
         });
 
         await pair.CleanReturnAsync();
