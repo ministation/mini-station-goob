@@ -3649,7 +3649,6 @@ entities:
     - type: Transform
       pos: -11.5,10.5
       parent: 2
-...
 - proto: LavalandClockworkGuardSpawner
   entities:
   - uid: 1000
@@ -3657,10 +3656,9 @@ entities:
     - type: Transform
       pos: -8.5,8.5
       parent: 2
-- proto: LavalandClockworkGuardSpawner
-  entities:
   - uid: 1001
     components:
     - type: Transform
       pos: -13.5,3.5
       parent: 2
+...
