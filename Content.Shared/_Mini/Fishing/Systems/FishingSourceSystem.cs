@@ -265,7 +265,10 @@ public sealed partial class FishingSourceSystem : EntitySystem
                line.IsCloaked;
     }
 
-    private bool IsFavoriteBait(FishPrototype fish, EntityUid baitItem)
+    /// <summary>
+    /// Whether the bait or lure is a favorite of this fish species.
+    /// </summary>
+    public bool IsFavoriteBait(FishPrototype fish, EntityUid baitItem)
     {
         if (MatchesBaitItem(fish.FavoriteBaits, baitItem))
             return true;
@@ -470,7 +473,10 @@ public sealed partial class FishingSourceSystem : EntitySystem
         return true;
     }
 
-    private FishTraitFlags GetFishTraitFlags(FishPrototype fish)
+    /// <summary>
+    /// Flags of every trait of this fish species.
+    /// </summary>
+    public FishTraitFlags GetFishTraitFlags(FishPrototype fish)
     {
         var flags = FishTraitFlags.None;
         foreach (var traitId in fish.Traits)

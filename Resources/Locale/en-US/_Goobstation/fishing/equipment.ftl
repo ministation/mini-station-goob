@@ -138,3 +138,13 @@ ent-FishGeneInjector = fish trait injector
     .desc = A single-use injector containing a fish trait. It can be applied directly to a living fish, or loaded into a gene-gun.
 
 fishing-lure-spin-examine = It has to be clicked { $min } to { $max } seconds after the cast, while the light above the float is green.
+
+fishing-need-reinforced-line = The line will burn in there. Only reinforced or sinew line can fish in lava.
+fishing-catch-poisoned = The bait was poisonous! { $fish } does not survive.
+
+fishing-anomaly-core-slot = anomaly core
+fishing-anomaly-core-invalid = This hook only accepts an anomaly core.
+fishing-anomaly-core-installed = The core clicks into place.
+fishing-anomaly-core-examine = There is { $core } slotted into it.
+fishing-anomaly-core-effects = An active core can add a special effect to the catch. Gravity cores make the lure sink slower, bluespace cores alter the catch materials, and flesh cores alter the catch size, weight and traits.
+

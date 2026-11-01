@@ -46,6 +46,15 @@ public sealed partial class FishingSystem : EntitySystem
     private const float ReelHoldTime = 0.25f;
     /// <summary>tg: the auto-reel line starts the fight with more progress.</summary>
     private const float AutoreelCompletionMultiplier = 1.3f;
+
+    /// <summary>
+    /// Sources that only a lava proof line can fish, tg's TRAIT_ROD_LAVA_USABLE check.
+    /// </summary>
+    private static readonly ProtoId<FishingSourcePrototype>[] LavaSources =
+    {
+        "FishingSourceLava",
+        "FishingSourcePlasma",
+    };
     /// <summary>Effects that switch on and off during the fight instead of lasting all of it.</summary>
     private const FishingMinigameRules ActiveEffectMask =
         FishingMinigameRules.Antigrav | FishingMinigameRules.Flip | FishingMinigameRules.Camo;
@@ -147,6 +156,13 @@ public sealed partial class FishingSystem : EntitySystem
                 return;
             }
 
+            if (!CanFishInSource(ent.Owner, source))
+            {
+                _popup.PopupEntity(Loc.GetString("fishing-need-reinforced-line"), user, user);
+                args.Handled = true;
+                return;
+            }
+
             Cast(user, ent, args.Target, coords, source);
             args.Handled = true;
             return;
@@ -158,6 +174,17 @@ public sealed partial class FishingSystem : EntitySystem
             HookAtom(user, ent, hooked);
             args.Handled = true;
         }
+    }
+
+    /// <summary>
+    /// tg: lava and liquid plasma burn ordinary lines, only reinforced and sinew lines survive them.
+    /// </summary>
+    public bool CanFishInSource(EntityUid rodUid, ProtoId<FishingSourcePrototype> source)
+    {
+        if (!LavaSources.Contains(source))
+            return true;
+
+        return _equipment.GetLine(rodUid)?.LavaUsable ?? false;
     }
 
     private void Cast(
@@ -223,6 +250,10 @@ public sealed partial class FishingSystem : EntitySystem
         Dirty(ent, ent.Comp);
 
         _popup.PopupEntity(Loc.GetString("fishing-snag-hooked", ("target", Name(target))), user, user);
+
+        // The auto-reel line pulls the snagged item in without a second click.
+        if ((GetLineRules(ent.Owner) & FishingMinigameRules.Autoreel) != 0)
+            ReelHooked(user, ent, lureComp);
     }
 
     /// <summary>
@@ -874,6 +905,17 @@ public sealed partial class FishingSystem : EntitySystem
                 _popup.PopupEntity(Loc.GetString("fishing-catch-killed"), user, user);
             }
 
+            // The anomalous lure hook can alter a freshly caught fish.
+            if (rewardEntity == null)
+                _equipment.TryApplyAnomalyCatchEffect(rodUid, caught);
+
+            // Poisonous bait kills fish that do not favor it, like tg.
+            if (ShouldPoisonKillCatch(rodUid, caught) && TryComp<FishComponent>(caught, out var poisonedFish))
+            {
+                _fish.SetAlive((caught, poisonedFish), false);
+                _popup.PopupEntity(Loc.GetString("fishing-catch-poisoned", ("fish", Name(caught))), user, user);
+            }
+
             var caughtEv = new FishCaughtWithRodEvent(user, reward);
             RaiseLocalEvent(rodUid, ref caughtEv);
             RaiseLocalEvent(user, new FishingCatchCompletedEvent(user, reward));
@@ -881,6 +923,26 @@ public sealed partial class FishingSystem : EntitySystem
 
         if (extraChance > 0f && _random.NextFloat() < extraChance)
             CatchExtra(user, rodUid, sourceEntity, source, coords);
+    }
+
+    /// <summary>
+    /// tg: poisonous bait kills a caught fish unless the fish is toxin immune or favors that bait.
+    /// </summary>
+    public bool ShouldPoisonKillCatch(EntityUid rodUid, EntityUid caught)
+    {
+        if (_sources.GetBaitItem(rodUid) is not { } baitItem ||
+            !TryComp<FishingBaitComponent>(baitItem, out var bait) ||
+            !bait.Poisonous)
+            return false;
+
+        if (!TryComp<FishComponent>(caught, out var fish) ||
+            _fish.GetProto(fish) is not { } proto)
+            return false;
+
+        if ((_sources.GetFishTraitFlags(proto) & FishTraitFlags.ToxinImmunity) != 0)
+            return false;
+
+        return !_sources.IsFavoriteBait(proto, baitItem);
     }
 
     /// <summary>

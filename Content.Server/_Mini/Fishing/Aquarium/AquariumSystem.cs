@@ -135,7 +135,7 @@ public sealed partial class AquariumSystem : EntitySystem
         }
     }
 
-    private void TickAquarium(Entity<AquariumComponent> ent, float seconds, TimeSpan now)
+    internal void TickAquarium(Entity<AquariumComponent> ent, float seconds, TimeSpan now)
     {
         var fishes = _aquarium.GetFish(ent);
 
@@ -158,6 +158,8 @@ public sealed partial class AquariumSystem : EntitySystem
         }
 
         var blocked = IsBlocked(ent, fishes, now);
+
+        TickTraitEffects(ent, fishes, seconds, now);
 
         foreach (var fish in fishes)
             TickFish(ent, fish, seconds, blocked, now);
@@ -186,6 +188,13 @@ public sealed partial class AquariumSystem : EntitySystem
 
         if (blocked)
         {
+            // Stasis suspends the fish metabolism too, so hunger does not creep up while the tank is frozen.
+            if (aquarium.Comp.Mode == AquariumMode.Stasis && fish.Comp.LastFed is { } lastFed)
+            {
+                fish.Comp.LastFed = lastFed + TimeSpan.FromSeconds(seconds);
+                Dirty(fish, fish.Comp);
+            }
+
             _health[uid] = health;
             return;
         }
@@ -213,6 +222,10 @@ public sealed partial class AquariumSystem : EntitySystem
         }
 
         if (proto == null || health < MaxHealth * 0.8f || hunger >= 1f)
+            return;
+
+        // A stunted fish never reaches adulthood, so it neither grows nor evolves.
+        if (_traits.HasTrait(fish.Comp, FishTraitFlags.Stunted))
             return;
 
         GrowFish(fish, proto, seconds);

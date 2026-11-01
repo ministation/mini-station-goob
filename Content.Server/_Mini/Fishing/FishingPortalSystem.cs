@@ -33,9 +33,11 @@ public sealed partial class FishingPortalSystem : EntitySystem
 
         foreach (var source in _proto.EnumeratePrototypes<FishingSourcePrototype>().OrderBy(p => p.ID))
         {
-            var name = source.CatalogDescription is { } key
-                ? Loc.GetString(key)
-                : Loc.GetString("fishing-source-secret");
+            var name = source.RadialName is { } radial
+                ? Loc.GetString(radial)
+                : source.CatalogDescription is { } key
+                    ? Loc.GetString(key)
+                    : Loc.GetString("fishing-source-secret");
 
             options.Add(new FishingPortalOption(
                 source.ID,

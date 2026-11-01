@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
+using Content.Shared.Chemistry.Reagent;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Mini.Fishing.Prototypes;
@@ -40,4 +41,29 @@ public sealed partial class FishTraitPrototype : IPrototype
 
     [DataField]
     public LocId CatalogDescription = default!;
+
+    /// <summary>
+    /// Components added to a fish carrying this trait when it spawns, from tg apply_to_fish.
+    /// </summary>
+    [DataField]
+    public ComponentRegistry? Components;
+
+    /// <summary>
+    /// Reagent injected when the stinger of a fish carrying this trait hits someone, from tg reagents_to_add.
+    /// Only works together with the Stinger trait.
+    /// </summary>
+    [DataField]
+    public ProtoId<ReagentPrototype>? Venom;
+
+    /// <summary>
+    /// Venom dose multiplier per unit of weight for a living fish, from tg add_venom.
+    /// </summary>
+    [DataField]
+    public float VenomLiveMultiplier = 0.25f;
+
+    /// <summary>
+    /// Venom dose multiplier per unit of weight for a dead fish, from tg change_venom.
+    /// </summary>
+    [DataField]
+    public float VenomDeadMultiplier = 0.1f;
 }
