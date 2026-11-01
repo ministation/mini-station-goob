@@ -48,6 +48,10 @@ public sealed partial class FishingSystem : EntitySystem
         FishingMinigameRules.Antigrav | FishingMinigameRules.Flip | FishingMinigameRules.Camo;
 
     private static readonly SoundSpecifier SplashSound = new SoundPathSpecifier("/Audio/Effects/Fluids/watersplash.ogg");
+    private static readonly SoundSpecifier LureReadySound = new SoundPathSpecifier("/Audio/Machines/beep.ogg");
+
+    /// <summary>tg gives the player a quarter of a second to not be punished for a double click.</summary>
+    private static readonly TimeSpan SpinClickCooldown = TimeSpan.FromSeconds(0.25);
 
     [Dependency] private FishingSourceSystem _sources = default!;
     [Dependency] private FishingEquipmentSystem _equipment = default!;
@@ -141,9 +145,12 @@ public sealed partial class FishingSystem : EntitySystem
             challenge.Background = sourceProto.Background;
 
         challenge.FrameState = ent.Comp.FrameState;
+        ResetSpinWindow(user, challenge);
         Dirty(user, challenge);
 
         _popup.PopupEntity(Loc.GetString("fishing-start"), user, user);
+        if (challenge.SpinActive)
+            _popup.PopupEntity(Loc.GetString("fishing-spin-hint"), user, user);
 
         args.Handled = true;
     }
@@ -212,6 +219,32 @@ public sealed partial class FishingSystem : EntitySystem
             switch (challenge.Phase)
             {
                 case FishingPhase.Waiting:
+                    if (challenge.SpinActive)
+                    {
+                        if (_timing.CurTime >= challenge.SpinMissTime)
+                        {
+                            _popup.PopupEntity(Loc.GetString("fishing-spin-miss"), user, user);
+                            StartWaiting(user, challenge, true);
+                            break;
+                        }
+
+                        if (!challenge.SpinReady && _timing.CurTime >= challenge.SpinReadyTime)
+                        {
+                            // The auto-reel line spins the lure for the player.
+                            if ((GetLineRules(rodUid) & FishingMinigameRules.Autoreel) != 0)
+                            {
+                                ResetSpinWindow(user, challenge);
+                                break;
+                            }
+
+                            challenge.SpinReady = true;
+                            Dirty(user, challenge);
+
+                            if (challenge.Lure is { } spinLure && !TerminatingOrDeleted(spinLure))
+                                _audio.PlayPvs(LureReadySound, spinLure);
+                        }
+                    }
+
                     if (_timing.CurTime >= challenge.NextPhaseTime)
                         StartBiting(user, challenge, rod);
                     break;
@@ -255,9 +288,51 @@ public sealed partial class FishingSystem : EntitySystem
             wait = MathF.Min(wait + _random.NextFloat(3f, 5f), MaxWaitPenalty);
 
         challenge.NextPhaseTime = _timing.CurTime + TimeSpan.FromSeconds(wait);
+        ResetSpinWindow(user, challenge);
         Dirty(user, challenge);
 
         SetLureBiting(challenge.Lure, false);
+    }
+
+    /// <summary>
+    /// Restarts the ready and miss timers of the lure spin window.
+    /// </summary>
+    private void ResetSpinWindow(EntityUid user, FishingChallengeComponent challenge)
+    {
+        challenge.SpinReady = false;
+
+        if (challenge.Rod is not { } rodUid || _equipment.GetBait(rodUid) is not { SpinFrequencyMin: > 0f, SpinFrequencyMax: > 0f } bait)
+        {
+            challenge.SpinActive = false;
+            Dirty(user, challenge);
+            return;
+        }
+
+        challenge.SpinActive = true;
+        challenge.SpinReadyTime = _timing.CurTime + TimeSpan.FromSeconds(bait.SpinFrequencyMin);
+        challenge.SpinMissTime = _timing.CurTime + TimeSpan.FromSeconds(bait.SpinFrequencyMax);
+        Dirty(user, challenge);
+    }
+
+    /// <summary>
+    /// A click during the waiting phase: spinning in the green window avoids the wait penalty.
+    /// </summary>
+    private void TrySpinLure(EntityUid user, FishingChallengeComponent challenge)
+    {
+        if (!challenge.SpinActive || challenge.IsFinishing || _timing.CurTime < challenge.NextSpinClickTime)
+            return;
+
+        challenge.NextSpinClickTime = _timing.CurTime + SpinClickCooldown;
+
+        if (!challenge.SpinReady)
+        {
+            _popup.PopupEntity(Loc.GetString("fishing-spin-too-early"), user, user);
+            StartWaiting(user, challenge, true);
+            return;
+        }
+
+        _popup.PopupEntity(Loc.GetString("fishing-spun"), user, user);
+        ResetSpinWindow(user, challenge);
     }
 
     private void StartBiting(EntityUid user, FishingChallengeComponent challenge, FishingRodComponent rod)
@@ -472,7 +547,9 @@ public sealed partial class FishingSystem : EntitySystem
 
         if (fishOnBait)
         {
-            challenge.Completion += challenge.CompletionGain * MinigameTick;
+            // The green center of the bait zone lands the fish twice as fast as the red edges.
+            var zoneMultiplier = FishingBaitZones.GetCompletionMultiplier(FishingBaitZones.GetCenterDistance(challenge));
+            challenge.Completion += challenge.CompletionGain * zoneMultiplier * MinigameTick;
             if (challenge.Completion >= 100f)
             {
                 CompleteMinigame(user, challenge, rodUid);
@@ -760,6 +837,9 @@ public sealed partial class FishingSystem : EntitySystem
 
         switch (challenge.Phase)
         {
+            case FishingPhase.Waiting when ev.Direction == 0:
+                TrySpinLure(user, challenge);
+                break;
             case FishingPhase.Biting when ev.Direction != 0:
                 StartMinigame(user, challenge, rod);
                 break;

@@ -281,6 +281,13 @@
   components:
   - type: Sprite
     state: minnow
+  - type: FishingBait
+    spinFrequencyMin: 2
+    spinFrequencyMax: 3
+    lureFilter:
+      minSize: 15
+      maxSize: 80
+      excludedTraits: [Vegan, PickyEater, Nocturnal, Heavy]
 
 - type: entity
   id: FishingLurePlug
@@ -288,6 +295,12 @@
   components:
   - type: Sprite
     state: plug
+  - type: FishingBait
+    spinFrequencyMin: 2
+    spinFrequencyMax: 3
+    lureFilter:
+      minSize: 50
+      excludedTraits: [Vegan, PickyEater, Nocturnal, Heavy]
 
 - type: entity
   id: FishingLureDropping
@@ -295,6 +308,11 @@
   components:
   - type: Sprite
     state: dropping
+  - type: FishingBait
+    spinFrequencyMin: 1.5
+    spinFrequencyMax: 2.8
+    lureFilter:
+      junkFish: true
 
 - type: entity
   id: FishingLureSpoon
@@ -302,6 +320,14 @@
   components:
   - type: Sprite
     state: spoon
+  - type: FishingBait
+    spinFrequencyMin: 1.25
+    spinFrequencyMax: 2.25
+    lureFilter:
+      minSize: 31
+      maxSize: 80
+      excludedTraits: [Vegan, PickyEater, Nocturnal, Heavy]
+      fluids: [Freshwater, Anadromous, AnyWater]
 
 - type: entity
   id: FishingLureArtificialFly
@@ -309,6 +335,11 @@
   components:
   - type: Sprite
     state: artificial_fly
+  - type: FishingBait
+    spinFrequencyMin: 1.1
+    spinFrequencyMax: 2
+    lureFilter:
+      requiredAnyTraits: [PickyEater]
 
 - type: entity
   id: FishingLureLed
@@ -316,6 +347,11 @@
   components:
   - type: Sprite
     state: led
+  - type: FishingBait
+    spinFrequencyMin: 3
+    spinFrequencyMax: 3.8
+    lureFilter:
+      requiredAnyTraits: [Nocturnal, Heavy]
   - type: PointLight
     enabled: true
     radius: 1.5
@@ -328,6 +364,12 @@
   components:
   - type: Sprite
     state: lucky_coin
+  - type: FishingBait
+    spinFrequencyMin: 1.5
+    spinFrequencyMax: 2.7
+    attractsShinyLovers: true
+    lureFilter:
+      requiredAnyTraits: [ShinyLover]
 
 - type: entity
   id: FishingLureAlgae
@@ -335,6 +377,11 @@
   components:
   - type: Sprite
     state: algae
+  - type: FishingBait
+    spinFrequencyMin: 3
+    spinFrequencyMax: 5
+    lureFilter:
+      requiredAnyTraits: [Vegan]
 
 - type: entity
   id: FishingLureGrub
@@ -342,6 +389,12 @@
   components:
   - type: Sprite
     state: grub
+  - type: FishingBait
+    spinFrequencyMin: 1
+    spinFrequencyMax: 2.7
+    lureFilter:
+      maxSize: 50
+      excludedTraits: [Vegan, PickyEater]
 
 - type: entity
   id: FishingLureBuzzbait
@@ -349,6 +402,11 @@
   components:
   - type: Sprite
     state: buzzbait
+  - type: FishingBait
+    spinFrequencyMin: 0.8
+    spinFrequencyMax: 1.7
+    lureFilter:
+      requiredAnyTraits: [Electrogenesis]
 
 - type: entity
   id: FishingLureSpinnerbait
@@ -356,6 +414,12 @@
   components:
   - type: Sprite
     state: spinnerbait
+  - type: FishingBait
+    spinFrequencyMin: 2
+    spinFrequencyMax: 4
+    lureFilter:
+      requiredTraits: [Predator]
+      fluids: [Freshwater, Anadromous, AnyWater]
 
 - type: entity
   id: FishingLureDaisyChain
@@ -363,6 +427,12 @@
   components:
   - type: Sprite
     state: daisy_chain
+  - type: FishingBait
+    spinFrequencyMin: 2
+    spinFrequencyMax: 4
+    lureFilter:
+      requiredTraits: [Predator]
+      fluids: [Saltwater, Anadromous, AnyWater]
 
 # Bait cans
 

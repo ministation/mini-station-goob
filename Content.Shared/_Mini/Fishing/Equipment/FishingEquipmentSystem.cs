@@ -56,6 +56,7 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
         SubscribeLocalEvent<FishingRodComponent, GetVerbsEvent<InteractionVerb>>(OnGetEquipmentVerbs);
         SubscribeLocalEvent<FishingRodComponent, BoundUIOpenedEvent>(OnEquipmentUiOpened);
         SubscribeLocalEvent<FishingRodComponent, ExaminedEvent>(OnRodExamined);
+        SubscribeLocalEvent<FishingBaitComponent, ExaminedEvent>(OnBaitExamined);
         _proto.PrototypesReloaded += OnPrototypesReloaded;
 
         // The client visuals system owns the rod container events on its side.
@@ -205,6 +206,17 @@ public sealed partial class FishingEquipmentSystem : EntitySystem
 
         var percent = (int) MathF.Round(ent.Comp.Efficiency / best * 100f);
         args.PushMarkup(Loc.GetString("fishing-rod-luck-examine", ("percent", percent)));
+    }
+
+    private void OnBaitExamined(Entity<FishingBaitComponent> ent, ref ExaminedEvent args)
+    {
+        var bait = ent.Comp;
+        if (bait.SpinFrequencyMin <= 0f || bait.SpinFrequencyMax <= 0f)
+            return;
+
+        args.PushMarkup(Loc.GetString("fishing-lure-spin-examine",
+            ("min", bait.SpinFrequencyMin.ToString("0.#")),
+            ("max", bait.SpinFrequencyMax.ToString("0.#"))));
     }
 
     /// <summary>

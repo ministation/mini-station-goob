@@ -82,9 +82,15 @@ public partial class FishingOverlay : Overlay
     private static readonly Color LineShadow = Color.FromHex("#241f13dd");
     private static readonly Color PanelColor = Color.FromHex("#121212dd");
     private static readonly Color PanelBorder = Color.FromHex("#a89d82");
-    private static readonly Color BaitColor = Color.FromHex("#7bc96f44");
-    private static readonly Color BaitEdgeColor = Color.FromHex("#9be38d");
+    private static readonly Color BaitGreen = Color.FromHex("#7bc96f55");
+    private static readonly Color BaitYellow = Color.FromHex("#e0c34144");
+    private static readonly Color BaitRed = Color.FromHex("#d9534f3b");
+    private static readonly Color BaitGreenEdge = Color.FromHex("#9be38d");
+    private static readonly Color BaitYellowEdge = Color.FromHex("#e0c341");
+    private static readonly Color BaitRedEdge = Color.FromHex("#d9534f");
     private static readonly Color BiteColor = Color.FromHex("#ff4b3a");
+    private static readonly Color SpinReadyColor = Color.FromHex("#3bff6e");
+    private static readonly Color SpinWaitColor = Color.FromHex("#ff3b30");
 
     public override OverlaySpace Space => LinesOnly ? OverlaySpace.WorldSpaceBelowFOV : OverlaySpace.WorldSpace;
 
@@ -160,6 +166,9 @@ public partial class FishingOverlay : Overlay
             {
                 case FishingPhase.Biting:
                     DrawBiteMarker(handle, lurePos, eyeRot, lureOffset);
+                    break;
+                case FishingPhase.Waiting when localChallenge.SpinActive:
+                    DrawLureLight(handle, lurePos, eyeRot, lureOffset, localChallenge.SpinReady);
                     break;
                 case FishingPhase.Minigame:
                     DrawMinigame(handle, lurePos, localChallenge, eyeRot);
@@ -312,6 +321,23 @@ public partial class FishingOverlay : Overlay
         return new Color(color.R * level, color.G * level, color.B * level, color.A);
     }
 
+    private static void DrawBaitBand(
+        DrawingHandleWorld handle,
+        Box2 baitRect,
+        ref float bottom,
+        float height,
+        Color fill,
+        Color edge)
+    {
+        if (height <= 0f)
+            return;
+
+        var band = new Box2(baitRect.Left, bottom, baitRect.Right, bottom + height);
+        handle.DrawRect(band, fill);
+        handle.DrawRect(new Box2(band.Left, band.Bottom, band.Right, band.Bottom + HudScale), edge);
+        bottom += height;
+    }
+
     private void DrawBiteMarker(DrawingHandleWorld handle, Vector2 anchor, Angle eyeRot, Vector2 spriteOffset)
     {
         SetAnchorTransform(handle, anchor, eyeRot);
@@ -327,6 +353,33 @@ public partial class FishingOverlay : Overlay
         handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 20f * HudScale), new Vector2(6f, 6f) * HudScale), LineShadow);
         handle.DrawRect(Box2.FromDimensions(origin, new Vector2(6f, 16f) * HudScale), color);
         handle.DrawRect(Box2.FromDimensions(origin + new Vector2(0f, 19f * HudScale), new Vector2(6f, 6f) * HudScale), color);
+    }
+
+    /// <summary>
+    /// The lure light of tg: red while the lure cannot be spun, green with a click hint when it can.
+    /// </summary>
+    private void DrawLureLight(DrawingHandleWorld handle, Vector2 anchor, Angle eyeRot, Vector2 spriteOffset, bool ready)
+    {
+        SetAnchorTransform(handle, anchor, eyeRot);
+
+        var time = (float) _timing.RealTime.TotalSeconds;
+        var pulse = 0.6f + 0.4f * (0.5f + 0.5f * MathF.Sin(time * (ready ? 12f : 3f)));
+        var color = (ready ? SpinReadyColor : SpinWaitColor).WithAlpha(pulse);
+        var px = HudScale;
+
+        // Sit the light right above the bobber and follow it as it bobs.
+        var origin = spriteOffset + new Vector2(-3f, 16f) * px;
+
+        handle.DrawRect(Box2.FromDimensions(origin - new Vector2(px, px), new Vector2(8f, 8f) * px), LineShadow);
+        handle.DrawRect(Box2.FromDimensions(origin, new Vector2(6f, 6f) * px), color);
+
+        if (!ready)
+            return;
+
+        // A mouse with its left button lit: the lure has to be clicked right now.
+        var hint = origin + new Vector2(8f, -5f) * px;
+        handle.DrawRect(Box2.FromDimensions(hint, new Vector2(7f, 11f) * px), LineColor);
+        handle.DrawRect(Box2.FromDimensions(hint + new Vector2(0.5f, 0.5f) * px, new Vector2(3f, 4f) * px), BiteColor);
     }
 
     private void DrawMinigame(DrawingHandleWorld handle, Vector2 anchor, FishingChallengeComponent challenge, Angle eyeRot)
@@ -385,8 +438,19 @@ public partial class FishingOverlay : Overlay
         var baitRect = Box2.FromDimensions(
             new Vector2(bar.Left + 4f * HudScale, baitBottom),
             new Vector2(11f * HudScale, baitHeight));
-        handle.DrawRect(baitRect, BaitColor);
-        handle.DrawRect(new Box2(baitRect.Left, baitRect.Bottom, baitRect.Right, baitRect.Bottom + HudScale), BaitEdgeColor);
+
+        // Five bands: red at the edges, yellow around the green middle. Holding the fish in the
+        // green band fills the completion column twice as fast as the red ones.
+        var redBand = (1f - FishingBaitZones.YellowDistance) * baitHeight * 0.5f;
+        var yellowBand = (FishingBaitZones.YellowDistance - FishingBaitZones.GreenDistance) * baitHeight * 0.5f;
+        var greenBand = FishingBaitZones.GreenDistance * baitHeight;
+
+        var bandBottom = baitRect.Bottom;
+        DrawBaitBand(handle, baitRect, ref bandBottom, redBand, BaitRed, BaitRedEdge);
+        DrawBaitBand(handle, baitRect, ref bandBottom, yellowBand, BaitYellow, BaitYellowEdge);
+        DrawBaitBand(handle, baitRect, ref bandBottom, greenBand, BaitGreen, BaitGreenEdge);
+        DrawBaitBand(handle, baitRect, ref bandBottom, yellowBand, BaitYellow, BaitYellowEdge);
+        DrawBaitBand(handle, baitRect, ref bandBottom, redBand, BaitRed, BaitRedEdge);
 
         // Fish sprite, its position inside the 32x96 hud texture is shifted by the minigame position.
         if (TryTex(challenge.FishIcon) is { } fishIcon)
