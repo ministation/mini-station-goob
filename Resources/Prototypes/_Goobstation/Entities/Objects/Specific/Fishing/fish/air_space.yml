@@ -10,6 +10,9 @@
     state: baby_carp
   - type: Fish
     fish: FishBabyCarp
+  - type: FishGrowth
+    result: MobCarp
+    growthTime: 270
 
 - type: entity
   id: FishBumpy

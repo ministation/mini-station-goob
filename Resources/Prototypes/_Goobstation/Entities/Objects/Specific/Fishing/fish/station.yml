@@ -10,6 +10,9 @@
     state: fryish
   - type: Fish
     fish: FishFryish
+  - type: FishGrowth
+    result: FishFryishFritterish
+    growthTime: 210
   - type: Tag
     tags:
     - FishingBait
