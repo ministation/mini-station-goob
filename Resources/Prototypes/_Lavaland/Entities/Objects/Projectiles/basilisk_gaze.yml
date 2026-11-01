@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Basilisk's petrifying stare: a heavy chilling bolt, TG-style.
+- type: entity
+  name: basilisk gaze
+  id: BasiliskGaze
+  parent: WatcherBolt
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    impactEffect: BulletImpactEffectDisabler
+    damage:
+      types:
+        Cold: 15
+  - type: ChangeTemperatureOnCollide
+    heat: -60000

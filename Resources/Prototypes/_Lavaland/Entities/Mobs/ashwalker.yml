@@ -1,0 +1,112 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Ashwalkers from TG lavaland: a tribal lizard tribe living around their nest.
+
+# Playable ashwalker, spawned from the nest eggs.
+- type: entity
+  name: ash walker
+  id: MobAshwalker
+  parent: MobReptilian
+  description: A mutated creature born from the Necropolis. It is hostile to strangers.
+  components:
+  - type: GhostRole
+    allowMovement: true
+    allowSpeech: true
+    makeSentient: true
+    name: ghost-role-information-ashwalker-name
+    description: ghost-role-information-ashwalker-description
+    rules: ghost-role-information-antagonist-rules
+    mindRoles:
+    - MindRoleGhostRoleSoloAntagonist
+    raffle:
+      settings: default
+  - type: GhostTakeoverAvailable
+  - type: LavaImmunity # Mini: heat damage is nullified, fire does nothing
+  - type: MeleeWeapon
+    altDisarm: false
+    angle: 0
+    soundHit:
+      collection: AlienClaw
+    animation: WeaponArcClaw
+    damage:
+      types:
+        Slash: 12
+
+- type: entity
+  id: LavalandAshwalkerEgg
+  parent: BaseStructure
+  name: ash walker egg
+  description: A large, veiny egg. Something is stirring inside.
+  components:
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Objects/Specific/ashwalker_egg.rsi
+    state: large_egg
+  - type: GhostRole
+    allowMovement: true
+    allowSpeech: true
+    makeSentient: true
+    name: ghost-role-information-ashwalker-name
+    description: ghost-role-information-ashwalker-description
+    rules: ghost-role-information-antagonist-rules
+    mindRoles:
+    - MindRoleGhostRoleSoloAntagonist
+    raffle:
+      settings: default
+  - type: GhostRoleMobSpawner
+    prototype: MobAshwalker
+  - type: Damageable
+    damageContainer: Biological
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialBones1:
+            min: 1
+            max: 2
+
+# The nest: consumes corpses, hatches eggs.
+- type: entity
+  id: LavalandAshwalkerNest
+  parent: BaseStructure
+  name: ash walker nest
+  description: A pulsating tendril nest, wreathed in ash. It hungers for corpses.
+  components:
+  - type: AshwalkerNest
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Structures/Specific/ashwalker_nest.rsi
+    state: ash_walker_nest
+    offset: 0, 0.5
+  - type: Damageable
+    damageContainer: Biological
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  id: LavalandAshwalkerDenSpawner
+  parent: MarkerBase
+  name: ash walker den spawner
+  suffix: Lavaland
+  components:
+  - type: AshwalkerDenSpawner

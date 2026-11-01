@@ -13,3 +13,10 @@
   radius: 32
   maxCount: 96
   size: 128
+
+- type: biomeMarkerLayer
+  id: RandomLightMobLavaland
+  prototype: SpawnerRandomLightMobLavaland
+  radius: 32
+  maxCount: 96
+  size: 128
