@@ -33,6 +33,14 @@
   minDistance: 170
 
 - type: lavalandMarkerRuin
+  id: BloodDrunkDen
+  boundary: 10,10
+  spawnedMarker: LavalandBloodDrunkDenSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 140
+
+- type: lavalandMarkerRuin
   id: CommonRuin5x5
   boundary: 5,5
   spawnedMarker: LavalandInteriorRoomMarker
