@@ -1,0 +1,88 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Dragon chest loot items (port of TG megafauna loot).
+
+# Staff of lava: summons a ring of lava pools, second use removes them.
+- type: entity
+  id: LavalandStaffOfLava
+  parent: BaseItem
+  name: staff of lava
+  description: An ancient staff that radiates blistering heat.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: hierophant_club
+  - type: Item
+    size: Normal
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: StaticPrice
+    price: 5000
+  - type: StaffOfLava
+  - type: ActionGrant
+    actions:
+    - ActionStaffOfLava
+  - type: ItemActionGrant
+    actions:
+    - ActionStaffOfLava
+
+- type: entity
+  id: ActionStaffOfLava
+  parent: BaseAction
+  name: Lava pool
+  description: Surrounds you with lava, or removes nearby lava pools.
+  components:
+  - type: Action
+    icon:
+      sprite: _Lavaland/Objects/Specific/artefacts.rsi
+      state: hierophant_club
+    useDelay: 10
+  - type: InstantAction
+    event: !type:StaffOfLavaActionEvent
+
+# Spectral blade: a sword empowered by the restless dead.
+- type: entity
+  id: LavalandSpectralBlade
+  parent: BaseItem
+  name: spectral blade
+  description: A ghostly sword that hums with the whispers of the dead.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: cursed_katana
+  - type: Item
+    size: Normal
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.0
+    damage:
+      types:
+        Slash: 18
+        Heat: 7
+  - type: StaticPrice
+    price: 3000
+
+# Sacred flame spellbook: teaches the fireball spell.
+- type: entity
+  id: LavalandSpellbookSacredFlame
+  parent: FireballSpellbook
+  name: sacred flame spellbook
+  description: The contents of this book sear with holy fire.
+
+# Dragon's blood: drink at your own risk.
+- type: entity
+  id: LavalandDragonsBlood
+  parent: BaseItem
+  name: bottle of dragon's blood
+  description: Blood of an ash drake. Drinking it grants a random boon, or a curse.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: potionflask
+  - type: DragonsBlood
+
+- type: polymorph
+  id: DragonsBloodSkeleton
+  configuration:
+    entity: MobSkeletonPerson
+    forced: true

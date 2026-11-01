@@ -1,0 +1,105 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Ash drake flame projectile: heat damage and fire stacks on hit.
+- type: entity
+  id: LavalandDrakeFlame
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  name: flame
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 10
+  - type: FlameProjectile
+    fireStacks: 3
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: fireball
+      shader: unshaded
+  - type: PointLight
+    color: "#E25822"
+    radius: 1.5
+    energy: 3.0
+
+# Lava pool: burning ground that damages and ignites everything on it.
+- type: entity
+  id: LavalandLavaPool
+  categories: [ DoNotMap ]
+  name: lava pool
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: /Textures/Effects/fire.rsi
+    state: fire
+    drawdepth: SmallMobs
+  - type: PointLight
+    color: "#FF6B2B"
+    radius: 2
+    energy: 3
+  - type: TimedDespawn
+    lifetime: 8
+  - type: DamageSquare
+    damageDelay: 1.0
+    damage:
+      types:
+        Heat: 6
+    damageWhitelist:
+      components:
+      - MobState
+
+# Burst spawners
+- type: entity
+  parent: MarkerBase
+  id: LavalandLavaPoolBurst
+  name: lava pool burst spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: LavalandLavaPool
+    shape: !type:NestedEntityShape
+      id: BoxFilled
+      size: 3
+
+- type: entity
+  parent: MarkerBase
+  id: LavalandDrakeSlamBurst
+  name: drake slam burst spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: LavalandDrakeSlamDamage
+    shape: !type:NestedEntityShape
+      id: BoxFilled
+      size: 3
+
+- type: entity
+  id: LavalandDrakeSlamDamage
+  categories: [ DoNotMap ]
+  name: slam burst
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: TimedDespawn
+    lifetime: 1
+  - type: DamageSquare
+    damageDelay: 0.2
+    damage:
+      types:
+        Blunt: 20
+        Heat: 8
+    damageWhitelist:
+      components:
+      - MobState
+    sound:
+      path: /Audio/_Lavaland/Effects/meteorimpact.ogg

@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Root selector
+- type: megafaunaSelector
+  id: AshDrake
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: AshDrakeActions
+
+# Actions
+- type: megafaunaSelector
+  id: AshDrakeActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionDrakeFireCone
+    - id: ActionDrakeLavaPools
+    - id: ActionDrakeSlam
+
+- type: megafaunaSelector
+  id: ActionDrakeFireCone
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 1.0,4.0
+      inverse: true
+    actionId: ActionDrakeFireCone
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionDrakeFireCone
+
+- type: megafaunaSelector
+  id: ActionDrakeLavaPools
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 5.0,10.0
+      inverse: true
+    actionId: ActionDrakeLavaPools
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionDrakeLavaPools
+
+- type: megafaunaSelector
+  id: ActionDrakeSlam
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 0.5,2.5
+      inverse: true
+    actionId: ActionDrakeSlam
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionDrakeSlam
