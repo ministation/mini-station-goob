@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Server._Mini.AntagUnlock;
 using Content.Shared.GameTicking;
 using Npgsql;
+using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
@@ -17,6 +20,7 @@ public sealed class SponsorSystem : EntitySystem
 {
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
 
     private float _updateTimer;
     private const float UpdateInterval = 30f;
@@ -26,6 +30,7 @@ public sealed class SponsorSystem : EntitySystem
     private TimeSpan _nextRetryAt = TimeSpan.Zero;
     private int _loadInProgress;
     private bool _dbUnavailable;
+    private bool _sponsorsChanged;
 
     public record struct SponsorInfo(string Uid, int Level);
     public ImmutableList<SponsorInfo> Sponsors { get; private set; } = ImmutableList<SponsorInfo>.Empty;
@@ -51,6 +56,8 @@ public sealed class SponsorSystem : EntitySystem
         // Пропускаем обновление, если игра приостановлена
         if (!_timing.IsFirstTimePredicted)
             return;
+
+        PushSponsorBypassIfChanged();
 
         _updateTimer += frameTime;
 
@@ -123,6 +130,7 @@ public sealed class SponsorSystem : EntitySystem
                 ));
             }
 
+            _sponsorsChanged = !Sponsors.SequenceEqual(tempList);
             Sponsors = tempList.ToImmutableList();
             var legacy = new List<SponsorInfoComponent.SponsorInfo>(tempList.Count);
             foreach (var s in tempList)
@@ -150,6 +158,21 @@ public sealed class SponsorSystem : EntitySystem
 
             return false;
         }
+    }
+
+    /// <summary>
+    /// Sends the refreshed donor level and role unlocks to players who are already online,
+    /// so a donor who connected before the sponsor list loaded does not stay locked out.
+    /// </summary>
+    private void PushSponsorBypassIfChanged()
+    {
+        if (!_sponsorsChanged)
+            return;
+
+        _sponsorsChanged = false;
+        var unlock = EntityManager.System<AntagUnlockSystem>();
+        foreach (var session in _playerManager.Sessions)
+            unlock.SendDonateSponsorLevel(session);
     }
 
     private static bool IsPostgresUnconfigured(NpgsqlConnectionStringBuilder builder)
