@@ -50,6 +50,8 @@
 
 - type: fish
   id: FishBabbelfish
+  suicideMessage: fishing-suicide-babbelfish
+  suicideDamage: Poison
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: babbelfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: babbelfish_small }
   averageSize: 30
@@ -70,6 +72,9 @@
 
 - type: fish
   id: FishBabyCarp
+  suicideMessage: fishing-suicide-baby_carp
+  suicideDamage: Asphyxiation
+  suicideConsumes: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: baby_carp }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: baby_carp_small }
   averageSize: 35
@@ -91,6 +96,9 @@
 
 - type: fish
   id: FishBoned
+  suicideMessage: fishing-suicide-boned
+  suicideDamage: Blunt
+  suicideConsumes: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: bonemass }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: bonemass_small }
   averageSize: 70
@@ -152,6 +160,8 @@
 
 - type: fish
   id: FishChainsawfish
+  suicideMessage: fishing-suicide-chainsawfish
+  suicideDamage: Slash
   deadInhandPrefix: chainsawfish_dead
   taste:
   - raw-fish
@@ -241,6 +251,9 @@
 
 - type: fish
   id: FishClownfishLube
+  suicideMessage: fishing-suicide-lube
+  suicideDamage: Asphyxiation
+  suicideConsumes: true
   taste:
   - raw-fish
   - something-funny
@@ -291,6 +304,9 @@
 
 - type: fish
   id: FishDonkfish
+  suicideMessage: fishing-suicide-donkfish
+  suicideDamage: Poison
+  suicideConsumes: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: donkfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: donkfish_small }
   temperatureMin: 288.15
@@ -337,6 +353,9 @@
 
 - type: fish
   id: FishFlumpulus
+  suicideMessage: fishing-suicide-flumpulus
+  suicideDamage: Poison
+  suicideConsumes: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: flumpulus }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: flumpulus_small }
   averageSize: 100
@@ -356,6 +375,9 @@
 
 - type: fish
   id: FishFryish
+  suicideMessage: fishing-suicide-fryish
+  suicideDamage: Asphyxiation
+  suicideConsumes: true
   taste:
   - fried-fish
   edibleReagents:
@@ -388,6 +410,9 @@
 
 - type: fish
   id: FishFryishFritterish
+  suicideMessage: fishing-suicide-fryish
+  suicideDamage: Asphyxiation
+  suicideConsumes: true
   taste:
   - fried-fish
   edibleReagents:
@@ -416,6 +441,9 @@
 
 - type: fish
   id: FishFryishNessie
+  suicideMessage: fishing-suicide-fryish
+  suicideDamage: Asphyxiation
+  suicideConsumes: true
   taste:
   - fried-fish
   edibleReagents:
@@ -578,6 +606,9 @@
 
 - type: fish
   id: FishGullion
+  suicideMessage: fishing-suicide-gullion
+  suicideDamage: Asphyxiation
+  suicideConsumes: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: gullion }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: gullion_small }
   averageSize: 30
@@ -631,6 +662,9 @@
 
 - type: fish
   id: FishHolo
+  suicideMessage: fishing-suicide-holo
+  suicideDamage: Asphyxiation
+  suicideConsumes: true
   edible: false
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: goldfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
@@ -658,6 +692,9 @@
 
 - type: fish
   id: FishHoloCheckered
+  suicideMessage: fishing-suicide-holo_checkered
+  suicideDamage: Poison
+  suicideConsumes: true
   edible: false
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: checkered }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: checkered_small }
@@ -724,6 +761,8 @@
 
 - type: fish
   id: FishJumpercable
+  suicideMessage: fishing-suicide-jumpercable
+  suicideDamage: Shock
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: jumpercable }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: jumpercable_small }
   averageSize: 110
@@ -801,6 +840,9 @@
 
 - type: fish
   id: FishMastodon
+  suicideMessage: fishing-suicide-mastodon
+  suicideDamage: Blunt
+  suicideConsumes: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: mastodon }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: mastodon_small }
   averageSize: 180
@@ -889,6 +931,8 @@
 
 - type: fish
   id: FishMossglob
+  suicideMessage: fishing-suicide-mossglob
+  suicideDamage: Asphyxiation
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: mossglob }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: mossglob_small }
   averageSize: 150
@@ -1069,6 +1113,8 @@
 
 - type: fish
   id: FishPufferfish
+  suicideMessage: fishing-suicide-pufferfish
+  suicideDamage: Poison
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pufferfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pufferfish_small }
   averageSize: 60
@@ -1157,6 +1203,8 @@
 
 - type: fish
   id: FishSkinCrab
+  suicideMessage: fishing-suicide-skincrab
+  suicideDamage: Blunt
   taste:
   - raw-crab
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: skin_crab }
@@ -1248,6 +1296,9 @@
 
 - type: fish
   id: FishSoul
+  suicideMessage: fishing-suicide-soul
+  suicideDamage: Poison
+  suicideConsumes: true
   taste:
   - meaty
   - soulfulness
@@ -1266,6 +1317,8 @@
 
 - type: fish
   id: FishSquid
+  suicideMessage: fishing-suicide-squid
+  suicideDamage: Asphyxiation
   taste:
   - raw-mollusk
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: squid }
@@ -1289,6 +1342,8 @@
 
 - type: fish
   id: FishStarfish
+  suicideMessage: fishing-suicide-starfish
+  suicideDamage: Asphyxiation
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish_small }
   deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: starfish_dead }
@@ -1308,6 +1363,9 @@
 
 - type: fish
   id: FishStarfishChrystarfish
+  suicideMessage: fishing-suicide-chrystarfish
+  suicideDamage: Asphyxiation
+  suicideConsumes: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: chrystarfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_rift.rsi, state: chrystarfish_small }
   averageSize: 40

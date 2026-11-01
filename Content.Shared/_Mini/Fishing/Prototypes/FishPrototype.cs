@@ -2,6 +2,8 @@
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Damage.Prototypes;
+using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -178,6 +180,24 @@ public sealed partial class FishPrototype : IPrototype
     /// </summary>
     [DataField]
     public string? DeadInhandPrefix;
+
+    /// <summary>
+    /// Message shown when someone uses this fish to commit suicide, like tg suicide_act.
+    /// </summary>
+    [DataField]
+    public LocId? SuicideMessage;
+
+    /// <summary>
+    /// Damage type of the suicide, tg OXYLOSS, TOXLOSS and BRUTELOSS map to these.
+    /// </summary>
+    [DataField]
+    public ProtoId<DamageTypePrototype> SuicideDamage = "Blunt";
+
+    /// <summary>
+    /// Whether the fish is destroyed by the suicide, like tg qdel(src) after swallowing.
+    /// </summary>
+    [DataField]
+    public bool SuicideConsumes;
 
     /// <summary>
     /// Edible reagents per bite on top of the default protein and blood. Fluid saltwater fish also get salt.
