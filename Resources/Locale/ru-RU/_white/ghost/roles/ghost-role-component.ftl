@@ -12,3 +12,7 @@ ghost-role-information-xenomorph-queen-name = Королева Ксеномор�
 ghost-role-information-xenomorph-queen-description = Вы — Королева Ксеноморфов. Производите потомство и управляйте ульем, и самое главное — НЕ УМРИТЕ.
 ghost-role-information-xenomorph-sentinel-name = Ксеноморф Плевальщик
 ghost-role-information-xenomorph-sentinel-description = Вы — Плевальщик. Помогайте преторианцу защищать улей и атакуйте гуманоидов по необходимости.
+
+ghost-role-information-xenomorph-facehugger-name = Ксеноморф Лицехват
+
+ghost-role-information-xenomorph-facehugger-description = Вы лицехват. Найдите гуманоидов и заразите их, чтобы ваш улей стал сильнее.

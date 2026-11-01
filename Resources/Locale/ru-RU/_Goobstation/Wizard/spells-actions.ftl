@@ -40,3 +40,5 @@ action-speech-spell-rathen = АРС НАТХ!!!
 action-speech-spell-cluwne-goob = НВОЛК ЭГНЕВЕР!!!
 
 action-speech-spell-charge-goob = ДИ'РИ КЕЛ!!!
+
+action-speech-spell-summon-supermatter = ГИ'Т ОХ'О РИ'ЛЕР!!!
