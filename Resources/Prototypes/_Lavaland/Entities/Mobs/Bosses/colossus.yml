@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Colossus, port of TG's megafauna: armor-piercing death bolts in spirals, rings and spreads.
 - type: entity
   name: Colossus
   id: LavalandBossColossus
@@ -22,31 +25,12 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
-  - type: HTN
-    rootTask:
-      task: SimpleRangedHostileCompound
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Bosses/96x96.rsi
     layers:
     - map: ["enum.DamageStateVisualLayers.Base"]
       state: eva
-  - type: BatteryAmmoProvider
-    proto: BulletKineticShuttle
-    fireCost: 50
-  - type: BatterySelfRecharger
-    autoRechargeRate: 50
-  - type: Battery
-    maxCharge: 1000
-    startingCharge: 1000
-  - type: Gun
-    projectileSpeed: 20
-    fireRate: 0.65
-    useKey: false
-    selectedMode: SemiAuto
-    availableModes:
-    - SemiAuto
-    soundGunshot: /Audio/Weapons/plasma_cutter.ogg
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Effects/demon_attack1.ogg
@@ -78,10 +62,49 @@
       path: /Audio/_Lavaland/Effects/meteorimpact.ogg
       params:
         volume: 5
-  - type: TileMovement
   - type: BossMusic
     soundId: Colossus
   - type: CombatPower # Goobstation
     factor: 25 # times more dangerous than a crew-member
   - type: Aggressive # also required component for aggro checking
     forgiveRange: 20.0
+  # Megafauna AI wiring, same driver as Hierophant
+  - type: InputMover
+  - type: Input
+    context: "human"
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.8
+    selector: !type:NestedMegafaunaSelector
+      id: Colossus
+  - type: AngerPlayerScaling
+    angerScale: 1.1
+    hpScale: 1.2
+  - type: MobPhases
+    phaseThresholds:
+      0:    1
+      1650: 2 # below 33% HP: double counter-spiral
+  - type: MegafaunaAnchor
+  - type: MegafaunaGodmode
+  - type: MegafaunaRejuvenate
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: LavalandCrateColossus
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandBlasterTubes
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    deleteOnDeath: true

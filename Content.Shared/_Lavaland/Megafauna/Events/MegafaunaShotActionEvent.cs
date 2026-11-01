@@ -65,13 +65,20 @@ public sealed partial class MegafaunaShotActionEvent : WorldTargetActionEvent
     /// </summary>
     [DataField]
     public float SpinSpeed = 150f;
+
+    /// <summary>
+    /// Spiral pattern: how many emitters to spawn. 2 emitters with opposite
+    /// spin give TG Colossus' counter-spiral.
+    /// </summary>
+    [DataField]
+    public int SpiralCount = 1;
 }
 
 /// <summary>
-/// Component for bosses that are currently emitting a spiral pattern.
+/// Server-side emitter entity that fires a spiral of projectiles around its boss.
 /// </summary>
 [RegisterComponent]
-public sealed partial class MegafaunaSpiralComponent : Component
+public sealed partial class MegafaunaSpiralEmitterComponent : Component
 {
     [DataField]
     public EntProtoId Projectile = default!;
@@ -84,6 +91,9 @@ public sealed partial class MegafaunaSpiralComponent : Component
 
     [DataField]
     public float SpinSpeed = 150f;
+
+    [DataField]
+    public EntityUid Boss;
 
     public Angle Angle;
     public TimeSpan NextShot;

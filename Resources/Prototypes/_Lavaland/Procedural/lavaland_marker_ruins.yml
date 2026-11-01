@@ -25,6 +25,14 @@
   minDistance: 150
 
 - type: lavalandMarkerRuin
+  id: ColossusArena
+  boundary: 14,14
+  spawnedMarker: LavalandColossusArenaSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 170
+
+- type: lavalandMarkerRuin
   id: CommonRuin5x5
   boundary: 5,5
   spawnedMarker: LavalandInteriorRoomMarker
