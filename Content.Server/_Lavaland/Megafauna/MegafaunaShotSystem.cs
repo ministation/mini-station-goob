@@ -17,6 +17,7 @@ namespace Content.Server._Lavaland.Megafauna;
 public sealed class MegafaunaShotSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
 
@@ -32,23 +33,19 @@ public sealed class MegafaunaShotSystem : EntitySystem
         base.Update(frameTime);
 
         var now = _timing.CurTime;
-        var query = EntityQueryEnumerator<MegafaunaSpiralEmitterComponent>();
+        var query = EntityQueryEnumerator<MegafaunaSpiralComponent>();
         while (query.MoveNext(out var uid, out var spiral))
         {
-            if (TerminatingOrDeleted(spiral.Boss) || now >= spiral.EndTime)
+            if (now < spiral.NextShot)
+                continue;
+            if (now >= spiral.EndTime)
             {
-                QueueDel(uid);
+                RemComp<MegafaunaSpiralComponent>(uid);
                 continue;
             }
 
-            // The emitter follows its boss around.
-            _xform.SetCoordinates(uid, Transform(spiral.Boss).Coordinates);
-
-            if (now < spiral.NextShot)
-                continue;
-
             spiral.NextShot = now + TimeSpan.FromSeconds(spiral.Interval);
-            FireProjectile(spiral.Boss, spiral.Projectile, spiral.Angle, spiral.Speed);
+            FireProjectile(uid, spiral.Projectile, spiral.Angle, spiral.Speed);
             spiral.Angle += Angle.FromDegrees(spiral.SpinSpeed * spiral.Interval);
         }
     }
@@ -86,24 +83,18 @@ public sealed class MegafaunaShotSystem : EntitySystem
             }
             case MegafaunaShotPattern.Spiral:
             {
-                for (var i = 0; i < args.SpiralCount; i++)
-                {
-                    var emitter = Spawn(null, Transform(shooter).Coordinates);
-                    var comp = EnsureComp<MegafaunaSpiralEmitterComponent>(emitter);
-                    comp.Projectile = args.Projectile;
-                    comp.Speed = args.Speed;
-                    comp.Interval = args.Interval;
-                    comp.SpinSpeed = args.SpinSpeed;
-                    comp.Boss = shooter;
-                    // Counter-spiral: emitters spin in opposite directions.
-                    comp.Angle = baseAngle + Angle.FromDegrees(i * 180f);
-                    comp.SpinSpeed = i % 2 == 0 ? args.SpinSpeed : -args.SpinSpeed;
-                    comp.NextShot = _timing.CurTime;
-                    comp.EndTime = _timing.CurTime + TimeSpan.FromSeconds(args.Duration);
-                }
+                var comp = EnsureComp<MegafaunaSpiralComponent>(shooter);
+                comp.Projectile = args.Projectile;
+                comp.Speed = args.Speed;
+                comp.Interval = args.Interval;
+                comp.SpinSpeed = args.SpinSpeed;
+                comp.Angle = baseAngle;
+                comp.NextShot = _timing.CurTime;
+                comp.EndTime = _timing.CurTime + TimeSpan.FromSeconds(args.Duration);
                 break;
             }
         }
+
     }
 
     private void FireProjectile(EntityUid shooter, EntProtoId proto, Angle angle, float speed)
