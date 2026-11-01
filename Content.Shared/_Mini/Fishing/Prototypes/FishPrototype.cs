@@ -146,6 +146,32 @@ public sealed partial class FishPrototype : IPrototype
     [DataField]
     public List<ProtoId<FishEvolutionPrototype>> EvolutionTypes = new();
 
+    // Eating.
+
+    /// <summary>
+    /// Whether the fish can be eaten. Holographic fish cannot, like in tg.
+    /// </summary>
+    [DataField]
+    public bool Edible = true;
+
+    /// <summary>
+    /// Flavor ids of the raw fish, tg get_fish_taste.
+    /// </summary>
+    [DataField]
+    public List<string> Taste = new() { "raw-fish", "scales" };
+
+    /// <summary>
+    /// Edible reagents per bite on top of the default protein and blood. Fluid saltwater fish also get salt.
+    /// </summary>
+    [DataField]
+    public Dictionary<ProtoId<ReagentPrototype>, float> EdibleReagents = new();
+
+    /// <summary>
+    /// When true, <see cref="EdibleReagents"/> replaces the default protein and blood instead of adding to them.
+    /// </summary>
+    [DataField]
+    public bool ReplaceEdibleReagents;
+
     // Butchering.
 
     [DataField]

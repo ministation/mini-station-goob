@@ -46,6 +46,91 @@
   description: flavor-base-fishy
 
 - type: flavor
+  id: raw-fish
+  flavorType: Base
+  description: flavor-base-raw-fish
+
+- type: flavor
+  id: scales
+  flavorType: Base
+  description: flavor-base-scales
+
+- type: flavor
+  id: raw-crab
+  flavorType: Base
+  description: flavor-base-raw-crab
+
+- type: flavor
+  id: objection
+  flavorType: Base
+  description: flavor-base-objection
+
+- type: flavor
+  id: chemical-waste
+  flavorType: Base
+  description: flavor-base-chemical-waste
+
+- type: flavor
+  id: anxiety
+  flavorType: Base
+  description: flavor-base-anxiety
+
+- type: flavor
+  id: vermin
+  flavorType: Base
+  description: flavor-base-vermin
+
+- type: flavor
+  id: maintenance
+  flavorType: Base
+  description: flavor-base-maintenance
+
+- type: flavor
+  id: eau-de-toilet
+  flavorType: Base
+  description: flavor-base-eau-de-toilet
+
+- type: flavor
+  id: fried-fish
+  flavorType: Base
+  description: flavor-base-fried-fish
+
+- type: flavor
+  id: soulfulness
+  flavorType: Base
+  description: flavor-base-soulfulness
+
+- type: flavor
+  id: raw-mollusk
+  flavorType: Base
+  description: flavor-base-raw-mollusk
+
+- type: flavor
+  id: something-funny
+  flavorType: Base
+  description: flavor-base-something-funny
+
+- type: flavor
+  id: anger
+  flavorType: Base
+  description: flavor-base-anger
+
+- type: flavor
+  id: cold-jelly
+  flavorType: Base
+  description: flavor-base-cold-jelly
+
+- type: flavor
+  id: raw-prawn
+  flavorType: Base
+  description: flavor-base-raw-prawn
+
+- type: flavor
+  id: chewy-fish
+  flavorType: Base
+  description: flavor-base-chewy-fish
+
+- type: flavor
   id: crabby
   flavorType: Base
   description: flavor-base-crabby

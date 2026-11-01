@@ -44,7 +44,11 @@ public sealed partial class FishSystem : EntitySystem
         ent.Comp.Initialized = true;
         var proto = GetProto(ent.Comp);
         if (proto == null)
+        {
+            // Legacy fish still raise this so edible and other systems see them.
+            RaiseLocalEvent(ent.Owner, new FishInitializedEvent(ent.Owner), broadcast: true);
             return;
+        }
 
         Randomize(ent, proto);
         UpdateHeldPrefix(ent, proto);

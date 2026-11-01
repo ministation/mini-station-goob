@@ -34,6 +34,8 @@
 
 - type: fish
   id: FishArmorfish
+  taste:
+  - raw-prawn
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: armorfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: armorfish_small }
   averageSize: 25
@@ -150,6 +152,9 @@
 
 - type: fish
   id: FishChainsawfish
+  taste:
+  - raw-fish
+  - anger
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: chainsawfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: chainsawfish_small }
   deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: chainsawfish_dead }
@@ -174,6 +179,8 @@
 
 - type: fish
   id: FishChasmCrab
+  taste:
+  - raw-crab
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: chrab }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: chrab_small }
   temperatureMin: 282.15
@@ -192,6 +199,8 @@
 
 - type: fish
   id: FishChasmCrabIce
+  taste:
+  - raw-crab
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: arctic_chrab }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: arctic_chrab_small }
   temperatureMin: 160
@@ -210,6 +219,9 @@
 
 - type: fish
   id: FishClownfish
+  taste:
+  - raw-fish
+  - something-funny
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: clownfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: clownfish_small }
   averageSize: 30
@@ -228,6 +240,9 @@
 
 - type: fish
   id: FishClownfishLube
+  taste:
+  - raw-fish
+  - something-funny
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lubefish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lubefish_small }
   averageSize: 30
@@ -288,6 +303,9 @@
 
 - type: fish
   id: FishEmulsijack
+  taste:
+  - raw-fish
+  - acid
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: emulsijack }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: emulsijack_small }
   fluid: Anadromous
@@ -337,6 +355,12 @@
 
 - type: fish
   id: FishFryish
+  taste:
+  - fried-fish
+  edibleReagents:
+    Protein: 2
+    Fat: 1.5
+  replaceEdibleReagents: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fryish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fryish_small }
   averageSize: 20
@@ -363,6 +387,12 @@
 
 - type: fish
   id: FishFryishFritterish
+  taste:
+  - fried-fish
+  edibleReagents:
+    Protein: 2
+    Fat: 1.5
+  replaceEdibleReagents: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fritterish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fritterish_small }
   fluid: AnyWater
@@ -385,6 +415,12 @@
 
 - type: fish
   id: FishFryishNessie
+  taste:
+  - fried-fish
+  edibleReagents:
+    Protein: 2
+    Fat: 1.5
+  replaceEdibleReagents: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: nessiefish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: nessiefish_small }
   averageSize: 150
@@ -434,6 +470,9 @@
 
 - type: fish
   id: FishGoldfishGill
+  taste:
+  - raw-fish
+  - objection
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: goldfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
   aquariumColor: "#D8540D"
@@ -460,6 +499,9 @@
 
 - type: fish
   id: FishGoldfishThreeEyes
+  taste:
+  - raw-fish
+  - chemical-waste
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: three_eyes }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
   aquariumColor: "#D8540D"
@@ -490,6 +532,9 @@
 
 - type: fish
   id: FishGoldfishThreeEyesGill
+  taste:
+  - raw-fish
+  - objection
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: three_eyes }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
   aquariumColor: "#D8540D"
@@ -556,6 +601,8 @@
 
 - type: fish
   id: FishGunnerJellyfish
+  taste:
+  - cold-jelly
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: gunner_jellyfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: gunner_jellyfish_small }
   fluid: Saltwater
@@ -583,6 +630,7 @@
 
 - type: fish
   id: FishHolo
+  edible: false
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: goldfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: fish_greyscale }
   aquariumColor: "#D8540D"
@@ -596,6 +644,7 @@
 
 - type: fish
   id: FishHoloAngel
+  edible: false
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: angelfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: angelfish_small }
   averageSize: 30
@@ -608,6 +657,7 @@
 
 - type: fish
   id: FishHoloCheckered
+  edible: false
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: checkered }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: checkered_small }
   averageSize: 30
@@ -621,6 +671,7 @@
 
 - type: fish
   id: FishHoloClown
+  edible: false
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: holo_clownfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: holo_clownfish_small }
   averageSize: 30
@@ -633,6 +684,7 @@
 
 - type: fish
   id: FishHoloCrab
+  edible: false
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: crab }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: crab_small }
   averageSize: 30
@@ -645,6 +697,7 @@
 
 - type: fish
   id: FishHoloHalffish
+  edible: false
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: half_fish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: half_fish_small }
   averageWeight: 500
@@ -657,6 +710,7 @@
 
 - type: fish
   id: FishHoloPuffer
+  edible: false
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pufferfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: pufferfish_small }
   averageSize: 60
@@ -700,6 +754,8 @@
 
 - type: fish
   id: FishLavaloop
+  taste:
+  - chewy-fish
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lava_loop }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lava_loop_small }
   averageSize: 30
@@ -721,6 +777,8 @@
 
 - type: fish
   id: FishLavaloopPlasmaRiver
+  taste:
+  - chewy-fish
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: plasma_loop }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: lava_loop_small }
   averageSize: 30
@@ -942,6 +1000,9 @@
 
 - type: fish
   id: FishPikeArmored
+  taste:
+  - raw-fish
+  - metallic
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish_wide.rsi, state: armored_pike }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: armored_pike_small }
   averageSize: 100
@@ -1020,6 +1081,9 @@
 
 - type: fish
   id: FishRatfish
+  taste:
+  - vermin
+  - maintenance
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: ratfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: ratfish_small }
   temperatureMin: 288.15
@@ -1050,6 +1114,8 @@
 
 - type: fish
   id: FishSandCrab
+  taste:
+  - raw-crab
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: crab }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: crab_small }
   averageSize: 60
@@ -1088,6 +1154,8 @@
 
 - type: fish
   id: FishSkinCrab
+  taste:
+  - raw-crab
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: skin_crab }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: skin_crab_small }
   averageSize: 40
@@ -1100,6 +1168,9 @@
 
 - type: fish
   id: FishSlimefish
+  edibleReagents:
+    Toxin: 5
+  replaceEdibleReagents: true
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: slimefish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: slimefish_small }
   deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: slimefish_dead }
@@ -1117,6 +1188,9 @@
 
 - type: fish
   id: FishSludgefish
+  taste:
+  - raw-fish
+  - eau-de-toilet
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sludgefish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sludgefish_small }
   averageSize: 20
@@ -1136,6 +1210,9 @@
 
 - type: fish
   id: FishSludgefishPurple
+  taste:
+  - raw-fish
+  - eau-de-toilet
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sludgefish_purple }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sludgefish_purple_small }
   averageSize: 20
@@ -1155,6 +1232,8 @@
 
 - type: fish
   id: FishSockeyeSalmon
+  edibleReagents:
+    Fat: 1
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sockeye }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: sockeye_small }
   fluid: Anadromous
@@ -1166,6 +1245,9 @@
 
 - type: fish
   id: FishSoul
+  taste:
+  - meaty
+  - soulfulness
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: soulfish }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: soulfish_small }
   averageSize: 60
@@ -1181,6 +1263,8 @@
 
 - type: fish
   id: FishSquid
+  taste:
+  - raw-mollusk
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: squid }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: squid_small }
   averageWeight: 500
@@ -1305,6 +1389,9 @@
 
 - type: fish
   id: FishZipzap
+  taste:
+  - raw-fish
+  - anxiety
   sprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: zipzap }
   aquariumSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: zipzap_small }
   deadSprite: { sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi, state: zipzap_dead }

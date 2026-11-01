@@ -1,7 +1,8 @@
-﻿using Content.Shared.Body.Components;
+using Content.Shared.Body.Components;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Nutrition.Prototypes;
+using Content.Shared._Mini.Fishing.Systems;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -12,7 +13,7 @@ namespace Content.Shared.Nutrition.Components;
 /// This is used on an entity with a solution container to flag a specific solution as being able to have its
 /// reagents consumed directly.
 /// </summary>
-[RegisterComponent, NetworkedComponent, Access(typeof(IngestionSystem))]
+[RegisterComponent, NetworkedComponent, Access(typeof(IngestionSystem), typeof(FishEdibleSystem))]
 public sealed partial class EdibleComponent : Component
 {
     /// <summary>
