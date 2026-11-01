@@ -152,6 +152,8 @@
   - type: FishingHook
     rodOverlayState: hook_rescue_overlay
     fishWeightMultiplier: 0
+    canHookLiving: true
+    canFish: false
     rules:
     - NoEscape
 
@@ -184,6 +186,7 @@
     size: Normal
   - type: FishingHook
     rodOverlayState: hook_jaws_overlay
+    canHookLiving: true
     rules:
     - NoEscape
     - Kill

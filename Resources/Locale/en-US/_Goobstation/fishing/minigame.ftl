@@ -14,3 +14,13 @@ fishing-spin-hint = The lure has to be clicked while the light above the float i
 fishing-spun = You spin the lure.
 fishing-spin-miss = The lure stopped playing!
 fishing-spin-too-early = Too early! You jerk the lure.
+
+fishing-snag-hooked = You hook { $target }. Use the rod in hand to reel it in.
+fishing-snag-pulled = You reel in { $target }.
+fishing-snag-stuck = { $target } won't budge!
+fishing-snag-slipped = The line slips free.
+fishing-hook-no-fishing = This hook was not meant for traditional fishing.
+fishing-rod-extend-first = You need to extend the rod first.
+fishing-rod-reel-first = Reel the line in first.
+fishing-rod-extended = You extend the rod.
+fishing-rod-folded = You fold the rod.

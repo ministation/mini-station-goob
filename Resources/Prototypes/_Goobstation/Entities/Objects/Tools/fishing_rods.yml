@@ -249,6 +249,8 @@
   - type: FishingRod
     frameState: frame_telescopic
     inhandState: rod_telescopic
+    extendable: true
+    extended: false
     completionSpeedMultiplier: 1.1
     baitSpeedMultiplier: 1.1
     decelerationMultiplier: 1.1
@@ -276,6 +278,8 @@
   - type: FishingRod
     frameState: frame_master
     inhandState: rod_master
+    extendable: true
+    extended: false
     castRange: 5
     difficultyModifier: -10
     completionSpeedMultiplier: 1.55
@@ -309,6 +313,33 @@
     damage:
       types:
         Piercing: 13
+
+- type: entity
+  id: FishingRodRescue
+  parent: FishingRod
+  components:
+  - type: ItemSlots
+    slots:
+      line:
+        name: fishing-rod-slot-line
+        startingItem: FishingLineReinforced
+        whitelist:
+          tags:
+          - FishingLine
+      hook:
+        name: fishing-rod-slot-hook
+        startingItem: FishingHookRescue
+        whitelist:
+          tags:
+          - FishingHook
+      bait:
+        name: fishing-rod-slot-bait
+        whitelist:
+          tags:
+          - FishingBait
+          components:
+          - Edible
+          - Fish
 
 - type: entity
   id: FishingRodMaterial

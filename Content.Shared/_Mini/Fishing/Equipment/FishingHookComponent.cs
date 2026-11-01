@@ -52,4 +52,16 @@ public sealed partial class FishingHookComponent : Component
     /// </summary>
     [DataField]
     public bool AttractsShinyLovers;
+
+    /// <summary>
+    /// Whether this hook can grab living creatures, not only items. The rescue and jawed hooks can.
+    /// </summary>
+    [DataField]
+    public bool CanHookLiving;
+
+    /// <summary>
+    /// Whether this hook can be used for regular fishing. The rescue hook cannot.
+    /// </summary>
+    [DataField]
+    public bool CanFish = true;
 }
