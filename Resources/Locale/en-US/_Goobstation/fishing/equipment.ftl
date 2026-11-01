@@ -9,6 +9,8 @@ fishing-bait-can-empty = The can is empty!
 fishing-bait-can-wait = You need to wait a bit before taking more.
 fishing-bait-slot-full = There is already bait on this rod.
 fishing-bait-not-bait = This rod cannot take that bait.
+fishing-rod-no-bait-examine = It does not have any bait attached. Fishing will be more tedious.
+fishing-no-hook = Install a hook on this rod first!
 
 ent-FishingLine = fishing line reel
     .desc = A fishing line. In spite of its simplicity, the added length makes casting a bit easier.

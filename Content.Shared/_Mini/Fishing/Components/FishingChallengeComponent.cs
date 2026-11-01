@@ -80,6 +80,30 @@ public sealed partial class FishingChallengeComponent : Component
     public FishingMinigameRules Rules = FishingMinigameRules.None;
 
     /// <summary>
+    /// Temporary effect currently active in the minigame, like antigravity or camouflage.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public FishingMinigameRules ActiveEffect = FishingMinigameRules.None;
+
+    /// <summary>
+    /// When the current effect ends or the next one may start.
+    /// </summary>
+    [DataField]
+    public TimeSpan NextEffectTime;
+
+    /// <summary>
+    /// Chance to pull a second catch out of the same source, granted by good bait.
+    /// </summary>
+    [DataField]
+    public float ExtraCatchChance;
+
+    /// <summary>
+    /// Added to the fish idle velocity by fish traits.
+    /// </summary>
+    [DataField]
+    public float FishIdleVelocityBonus;
+
+    /// <summary>
     /// -1 feed down, 0 idle, 1 reel up.
     /// </summary>
     [DataField]

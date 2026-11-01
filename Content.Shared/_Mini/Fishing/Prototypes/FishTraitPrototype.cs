@@ -26,6 +26,18 @@ public sealed partial class FishTraitPrototype : IPrototype
     [DataField]
     public float AddedDifficulty;
 
+    /// <summary>
+    /// Added to the idle velocity of the fish in the minigame. Demersal fish stay near the bottom.
+    /// </summary>
+    [DataField]
+    public float IdleVelocityBonus;
+
+    /// <summary>
+    /// Multiplies the bait control speeds in the minigame. Slippery fish move the bait faster.
+    /// </summary>
+    [DataField]
+    public float ControlSpeedMultiplier = 1f;
+
     [DataField]
     public LocId CatalogDescription = default!;
 }

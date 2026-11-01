@@ -7,3 +7,5 @@ fishing-nothing-caught = Ничего не поймано.
 fishing-caught-fish = Ты поймал: { $fish }!
 fishing-reeled-in = Ты сматываешь леску.
 fishing-line-snapped = Леска оборвалась.
+fishing-catch-extra = Что-то ещё хватает приманку!
+fishing-catch-killed = Зубастый крючок добивает улов.

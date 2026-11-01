@@ -41,10 +41,17 @@ public sealed partial class FishingSystem : EntitySystem
     private const float MaxLineSlack = 1f;
     /// <summary>How long one reel input (one wheel notch) keeps moving the bait.</summary>
     private const float ReelHoldTime = 0.25f;
+    /// <summary>tg: the auto-reel line starts the fight with more progress.</summary>
+    private const float AutoreelCompletionMultiplier = 1.3f;
+    /// <summary>Effects that switch on and off during the fight instead of lasting all of it.</summary>
+    private const FishingMinigameRules ActiveEffectMask =
+        FishingMinigameRules.Antigrav | FishingMinigameRules.Flip | FishingMinigameRules.Camo;
 
     private static readonly SoundSpecifier SplashSound = new SoundPathSpecifier("/Audio/Effects/Fluids/watersplash.ogg");
 
     [Dependency] private FishingSourceSystem _sources = default!;
+    [Dependency] private FishingEquipmentSystem _equipment = default!;
+    [Dependency] private FishSystem _fish = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
@@ -82,6 +89,13 @@ public sealed partial class FishingSystem : EntitySystem
             if (!active.IsFinishing && active.Phase == FishingPhase.Biting)
                 StartMinigame(user, active, ent.Comp);
 
+            args.Handled = true;
+            return;
+        }
+
+        if (_equipment.GetHook(ent.Owner) == null)
+        {
+            _popup.PopupEntity(Loc.GetString("fishing-no-hook"), user, user);
             args.Handled = true;
             return;
         }
@@ -210,6 +224,8 @@ public sealed partial class FishingSystem : EntitySystem
                     if (challenge.ReelDirection != 0 && _timing.CurTime >= challenge.ReelHoldUntil)
                         challenge.ReelDirection = 0;
 
+                    UpdateActiveEffect(user, challenge);
+
                     challenge.TickAccumulator += frameTime;
                     while (challenge.TickAccumulator >= MinigameTick && !challenge.IsFinishing)
                     {
@@ -230,6 +246,9 @@ public sealed partial class FishingSystem : EntitySystem
     {
         challenge.Phase = FishingPhase.Waiting;
         challenge.Reward = null;
+        challenge.ExtraCatchChance = 0f;
+        challenge.ActiveEffect = FishingMinigameRules.None;
+        challenge.NextEffectTime = TimeSpan.MaxValue;
 
         var wait = _sources.GetWaitTime(challenge.Source);
         if (penalty)
@@ -252,6 +271,11 @@ public sealed partial class FishingSystem : EntitySystem
         challenge.Reward = reward;
         challenge.RewardEntity = existing;
 
+        // Good bait can pull a second catch out of the same spot.
+        var lootEv = new FishLootModifiersEvent(user, rod.Owner, challenge.Source);
+        RaiseLocalEvent(rod.Owner, ref lootEv);
+        challenge.ExtraCatchChance = lootEv.ExtraCatchChance;
+
         challenge.NextPhaseTime = _timing.CurTime + TimeSpan.FromSeconds(BiteWindow);
         Dirty(user, challenge);
 
@@ -259,10 +283,22 @@ public sealed partial class FishingSystem : EntitySystem
         if (challenge.Lure is { } lureUid && !TerminatingOrDeleted(lureUid))
             _audio.PlayPvs(SplashSound, lureUid);
 
+        // The auto-reel line skips the bite window and starts the fight right away.
+        if ((GetLineRules(rod.Owner) & FishingMinigameRules.Autoreel) != 0)
+        {
+            StartMinigame(user, challenge, rod, autoReel: true);
+            return;
+        }
+
         _popup.PopupEntity(Loc.GetString("fishing-bite"), user, user);
     }
 
-    private void StartMinigame(EntityUid user, FishingChallengeComponent challenge, FishingRodComponent rod)
+    private FishingMinigameRules GetLineRules(EntityUid rod)
+    {
+        return _equipment.GetLine(rod)?.Rules ?? FishingMinigameRules.None;
+    }
+
+    private void StartMinigame(EntityUid user, FishingChallengeComponent challenge, FishingRodComponent rod, bool autoReel = false)
     {
         challenge.Phase = FishingPhase.Minigame;
 
@@ -286,23 +322,51 @@ public sealed partial class FishingSystem : EntitySystem
             fishProtoId = rewardFish.Fish;
         }
 
+        var fishProto = fishProtoId is { } fishProtoIndex && _proto.TryIndex(fishProtoIndex, out FishPrototype? indexedFish)
+            ? indexedFish
+            : null;
+
         var difficulty = MathF.Max(MinDifficulty, _sources.CalculateDifficulty(challenge.Source, fishProtoId, rod.Owner, user));
         challenge.Difficulty = difficulty;
 
         var mods = new FishFightModifiersEvent(difficulty);
         RaiseLocalEvent(rod.Owner, ref mods);
 
-        challenge.Rules = mods.Rules;
+        var rules = mods.Rules;
+        if (fishProto != null)
+            rules |= _sources.GetTraitMinigameRules(fishProto);
+
+        challenge.Rules = rules;
         challenge.Completion = 30f;
         if (difficulty > 15f)
             challenge.Completion -= 15f * difficulty * 0.01f;
+
+        // A fast reaction to the bite gives a much better start, tg scales it the same way.
+        if (autoReel)
+        {
+            challenge.Completion *= AutoreelCompletionMultiplier;
+        }
+        else
+        {
+            var timeLeft = (float) (challenge.NextPhaseTime - _timing.CurTime).TotalSeconds;
+            if (timeLeft < 1f)
+                challenge.Completion *= 0.65f;
+            else if (timeLeft < 2f)
+                challenge.Completion *= 0.82f;
+            else if (timeLeft is >= 3f and < 3.5f)
+                challenge.Completion *= 1.2f;
+            else if (timeLeft is >= 3.5f and <= BiteWindow)
+                challenge.Completion *= 1.4f;
+        }
+
+        var controlSpeed = fishProto != null ? _sources.GetTraitControlSpeedMultiplier(fishProto) : 1f;
 
         challenge.FishHeight = 50f;
         challenge.BaitHeight = Math.Clamp(360f * mods.BaitHeight - difficulty * 1.3f, 100f, 500f);
         challenge.CompletionGain = mods.CompletionGain;
         challenge.CompletionLoss = mods.CompletionLoss;
-        challenge.ReelingSpeed = 1200f * mods.BaitSpeed;
-        challenge.Gravity = -800f * mods.Gravity;
+        challenge.ReelingSpeed = 1200f * mods.BaitSpeed * controlSpeed;
+        challenge.Gravity = -800f * mods.Gravity * controlSpeed;
         challenge.Bounciness = 0.6f * mods.Bounciness;
         challenge.Deceleration = 1.8f * mods.Deceleration;
 
@@ -320,7 +384,13 @@ public sealed partial class FishingSystem : EntitySystem
         challenge.TicksFired = 0;
         challenge.IsPlunging = true;
         challenge.ReelDirection = 0;
-        challenge.Movement = fishProtoId is { } id && _proto.TryIndex(id, out FishPrototype? fish) ? fish.Movement : null;
+        challenge.Movement = fishProto?.Movement;
+        challenge.FishIdleVelocityBonus = fishProto != null ? _sources.GetTraitIdleVelocityBonus(fishProto) : 0f;
+
+        challenge.ActiveEffect = FishingMinigameRules.None;
+        challenge.NextEffectTime = (rules & ActiveEffectMask) != 0
+            ? _timing.CurTime + TimeSpan.FromSeconds(_random.NextFloat(5f, 9f))
+            : TimeSpan.MaxValue;
 
         challenge.NextPhaseTime = TimeSpan.MaxValue;
         Dirty(user, challenge);
@@ -380,6 +450,9 @@ public sealed partial class FishingSystem : EntitySystem
 
         velocityChange *= (fishOnBait ? challenge.OverlapVelocityMult : 1f) * MinigameTick;
 
+        if (challenge.ActiveEffect == FishingMinigameRules.Antigrav)
+            velocityChange = -velocityChange;
+
         if (challenge.BaitVelocity > 0f && velocityChange < 0f)
             challenge.BaitVelocity += MathF.Max(-challenge.BaitVelocity, velocityChange * challenge.Deceleration);
         else if (challenge.BaitVelocity < 0f && velocityChange > 0f)
@@ -428,7 +501,7 @@ public sealed partial class FishingSystem : EntitySystem
         var difficulty = challenge.Difficulty;
 
         var area = MinigameArea - challenge.FishHeight;
-        var idleVelocity = movement?.FishIdleVelocity ?? 0f;
+        var idleVelocity = (movement?.FishIdleVelocity ?? 0f) + challenge.FishIdleVelocityBonus;
         var shortLimit = (movement?.ShortJumpVelocityLimit ?? 400f) * (1f + difficulty * 0.01f);
         var longLimit = (movement?.LongJumpVelocityLimit ?? 200f) * (1f + difficulty * 0.01f);
 
@@ -536,6 +609,9 @@ public sealed partial class FishingSystem : EntitySystem
         var rewardEntity = challenge.RewardEntity;
         var source = challenge.Source;
         var coords = challenge.CastCoordinates;
+        var rules = challenge.Rules;
+        var extraChance = challenge.ExtraCatchChance;
+        var sourceEntity = challenge.SourceEntity ?? rodUid;
 
         StopChallenge(user, challenge, false, null);
 
@@ -545,12 +621,84 @@ public sealed partial class FishingSystem : EntitySystem
             return;
         }
 
-        if (_sources.CatchFish(user, rodUid, reward, coords, source, rewardEntity) != null)
+        if (_sources.CatchFish(user, rodUid, reward, coords, source, rewardEntity) is { } caught)
         {
+            // The jawed hook wins the fight by killing the fish.
+            if ((rules & FishingMinigameRules.Kill) != 0 && TryComp<FishComponent>(caught, out var caughtFish))
+            {
+                _fish.SetAlive((caught, caughtFish), false);
+                _popup.PopupEntity(Loc.GetString("fishing-catch-killed"), user, user);
+            }
+
             var caughtEv = new FishCaughtWithRodEvent(user, reward);
             RaiseLocalEvent(rodUid, ref caughtEv);
             RaiseLocalEvent(user, new FishingCatchCompletedEvent(user, reward));
         }
+
+        if (extraChance > 0f && _random.NextFloat() < extraChance)
+            CatchExtra(user, rodUid, sourceEntity, source, coords);
+    }
+
+    /// <summary>
+    /// Pulls a second catch out of the same source, which good bait sometimes allows.
+    /// </summary>
+    private void CatchExtra(
+        EntityUid user,
+        EntityUid rodUid,
+        EntityUid sourceEntity,
+        ProtoId<FishingSourcePrototype> source,
+        EntityCoordinates coords)
+    {
+        if (!_sources.TryRollReward(sourceEntity, source, user, rodUid, out var extra, out var existing))
+            return;
+
+        // Dynamic sources like aquariums hand out the fish that swims inside them.
+        // A bonus catch must never steal that fish.
+        if (existing != null || extra == null)
+            return;
+
+        if (_sources.CatchFish(user, rodUid, extra, coords, source) != null)
+            _popup.PopupEntity(Loc.GetString("fishing-catch-extra"), user, user);
+    }
+
+    /// <summary>
+    /// Switches the temporary minigame effects on and off, like tg's antigrav, flip and camo.
+    /// </summary>
+    private void UpdateActiveEffect(EntityUid user, FishingChallengeComponent challenge)
+    {
+        var available = challenge.Rules & ActiveEffectMask;
+        if (available == FishingMinigameRules.None)
+            return;
+
+        if (_timing.CurTime < challenge.NextEffectTime)
+            return;
+
+        if (challenge.ActiveEffect == FishingMinigameRules.None)
+        {
+            var effects = new List<FishingMinigameRules>(3);
+
+            if ((available & FishingMinigameRules.Antigrav) != 0)
+                effects.Add(FishingMinigameRules.Antigrav);
+
+            if ((available & FishingMinigameRules.Flip) != 0)
+                effects.Add(FishingMinigameRules.Flip);
+
+            if ((available & FishingMinigameRules.Camo) != 0)
+                effects.Add(FishingMinigameRules.Camo);
+
+            if (effects.Count == 0)
+                return;
+
+            challenge.ActiveEffect = effects[_random.Next(effects.Count)];
+            challenge.NextEffectTime = _timing.CurTime + TimeSpan.FromSeconds(_random.NextFloat(6f, 9f));
+        }
+        else
+        {
+            challenge.ActiveEffect = FishingMinigameRules.None;
+            challenge.NextEffectTime = _timing.CurTime + TimeSpan.FromSeconds(_random.NextFloat(8f, 13f));
+        }
+
+        Dirty(user, challenge);
     }
 
     #endregion

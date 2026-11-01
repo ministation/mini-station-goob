@@ -40,6 +40,7 @@
   - type: FishingLine
     lineColor: "#82cfdd20"
     difficultyModifier: -3
+    isCloaked: true
 
 - type: entity
   id: FishingLineBouncy
@@ -123,6 +124,7 @@
     state: gold_shiny
   - type: FishingHook
     rodOverlayState: fishing_rod_hook_shiny_overlay
+    attractsShinyLovers: true
 
 - type: entity
   id: FishingHookAnomaly
@@ -206,6 +208,9 @@
 - type: entity
   id: BaitWorm
   parent: BaseFishingBait
+  components:
+  - type: FishingBait
+    flags: [Meat]
 
 - type: entity
   id: BaitWormPremium
@@ -213,6 +218,7 @@
   components:
   - type: FishingBait
     quality: Good
+    flags: [Meat]
 
 - type: entity
   id: BaitDoughball
@@ -222,6 +228,7 @@
     state: doughball
   - type: FishingBait
     rodOverlayState: dough_overlay
+    flags: [Produce]
 
 - type: entity
   id: BaitDoughballBlue
@@ -232,6 +239,7 @@
   - type: FishingBait
     rodOverlayState: dough_blue_overlay
     quality: Good
+    flags: [Produce]
 
 - type: entity
   id: BaitDoughballSuper
@@ -242,6 +250,7 @@
   - type: FishingBait
     rodOverlayState: dough_overlay
     quality: Great
+    flags: [Produce]
 
 - type: entity
   id: FishingBaitSynthetic
@@ -253,6 +262,7 @@
     rodOverlayState: dough_overlay
     quality: Great
     consumable: false
+    flags: [Artificial]
 
 # Artificial lures, they are never used up
 
@@ -263,6 +273,7 @@
   components:
   - type: FishingBait
     consumable: false
+    flags: [Artificial]
 
 - type: entity
   id: FishingLureMinnow

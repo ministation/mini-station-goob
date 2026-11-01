@@ -351,8 +351,20 @@ public partial class FishingOverlay : Overlay
         handle.DrawRect(panel, PanelColor);
         handle.DrawLine(Vector2.Zero, new Vector2(panel.Left, 0f), LineShadow);
 
-        if (TryTex(challenge.Background) is { } background)
-            handle.DrawTextureRect(background, bar);
+        var effect = challenge.ActiveEffect;
+        var flip = (effect & FishingMinigameRules.Flip) != 0;
+
+        // tg's hud switches its background while a temporary effect is active.
+        var background = effect switch
+        {
+            FishingMinigameRules.Flip => "background_flip",
+            FishingMinigameRules.Antigrav => "background_antigrav",
+            FishingMinigameRules.Camo => "background_camo",
+            _ => challenge.Background,
+        };
+
+        if (TryTex(background) is { } backgroundTexture)
+            handle.DrawTextureRect(backgroundTexture, bar);
 
         // The frame goes right after the background, the fish, bait and completion column are drawn
         // above it. Otherwise the opaque part of the frame would hide the completion column.
@@ -364,8 +376,12 @@ public partial class FishingOverlay : Overlay
         var trackBottom = bar.Top - 92f * HudScale;
 
         // Bait zone: the bottom edge is the bait position, the zone grows upwards from it.
-        var baitBottom = trackBottom + Math.Clamp(challenge.BaitPosition / Area, 0f, 1f) * fieldHeight;
+        // The flip effect mirrors the playfield vertically.
+        var baitOffset = Math.Clamp(challenge.BaitPosition / Area, 0f, 1f) * fieldHeight;
         var baitHeight = Math.Clamp(BaitBasePixelHeight * challenge.BaitHeight / BaitBaseHeight, 6f, 40f) * HudScale;
+        var baitBottom = flip
+            ? trackBottom + fieldHeight - baitOffset - baitHeight
+            : trackBottom + baitOffset;
         var baitRect = Box2.FromDimensions(
             new Vector2(bar.Left + 4f * HudScale, baitBottom),
             new Vector2(11f * HudScale, baitHeight));
@@ -376,8 +392,21 @@ public partial class FishingOverlay : Overlay
         if (TryTex(challenge.FishIcon) is { } fishIcon)
         {
             var fishOffset = Math.Clamp(challenge.FishPosition / Area, 0f, 1f) * fieldHeight;
+            if (flip)
+                fishOffset = fieldHeight - fishOffset + 3f * HudScale;
+
             var fishRect = new Box2(bar.Left, bar.Bottom + fishOffset, bar.Right, bar.Top + fishOffset);
-            DrawClipped(handle, fishIcon, fishRect, bar);
+
+            // Camouflage fades the fish in and out, like tg animates the hud fish alpha.
+            Color? modulate = null;
+            if ((effect & FishingMinigameRules.Camo) != 0)
+            {
+                var time = (float) _timing.RealTime.TotalSeconds;
+                var alpha = 0.1f + 0.45f * (1f + MathF.Sin(time * 4f));
+                modulate = new Color(1f, 1f, 1f, alpha);
+            }
+
+            DrawClipped(handle, fishIcon, fishRect, bar, modulate);
         }
 
         // Completion column: the tg art is 6 px wide at x 20..25 and 80 px tall at rows 14..93.
@@ -431,7 +460,7 @@ public partial class FishingOverlay : Overlay
         return inverse * inverse * start + 2f * inverse * t * control + t * t * end;
     }
 
-    private static void DrawClipped(DrawingHandleWorld handle, Texture texture, Box2 dest, Box2 clip)
+    private static void DrawClipped(DrawingHandleWorld handle, Texture texture, Box2 dest, Box2 clip, Color? modulate = null)
     {
         var intersection = dest.Intersect(clip);
         if (intersection.Width <= 0f || intersection.Height <= 0f)
@@ -443,7 +472,7 @@ public partial class FishingOverlay : Overlay
             (intersection.Right - dest.Left) / dest.Width * texture.Width,
             (dest.Top - intersection.Bottom) / dest.Height * texture.Height);
 
-        handle.DrawTextureRectRegion(texture, intersection, subRegion: subRegion);
+        handle.DrawTextureRectRegion(texture, intersection, modulate, subRegion);
     }
 
     private Texture? TryTex(string stateName)

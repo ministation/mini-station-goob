@@ -105,6 +105,12 @@ public struct FishLootModifiersEvent
     /// </summary>
     public float ExtraCatchChance;
 
+    /// <summary>
+    /// Normal bait no longer rolls duds, like in tg, where baits remove duds from the table.
+    /// Artificial lures leave duds alone.
+    /// </summary>
+    public bool RemoveDuds;
+
     public FishLootModifiersEvent(EntityUid user, EntityUid rod, ProtoId<FishingSourcePrototype> source)
     {
         User = user;
