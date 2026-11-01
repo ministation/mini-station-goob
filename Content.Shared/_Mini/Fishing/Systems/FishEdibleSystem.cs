@@ -24,7 +24,7 @@ public sealed class FishEdibleSystem : EntitySystem
 
     private static readonly ProtoId<ReagentPrototype> Protein = "Protein";
     private static readonly ProtoId<ReagentPrototype> Blood = "Blood";
-    private static readonly ProtoId<ReagentPrototype> Salt = "Salt";
+    private static readonly ProtoId<ReagentPrototype> Salt = "TableSalt";
 
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;

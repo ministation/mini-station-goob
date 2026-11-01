@@ -37,7 +37,7 @@ public sealed class FishEdibleTest : InteractionTest
             // tg adds salt to every saltwater fish.
             Assert.That(SEntMan.TryGetComponent<SolutionContainerManagerComponent>(monkfish, out var monkfishManager), Is.True);
             Assert.That(solutions.TryGetSolution(new Entity<SolutionContainerManagerComponent?>(monkfish, monkfishManager), "food", out _, out var monkfishFood), Is.True);
-            Assert.That(monkfishFood!.GetTotalPrototypeQuantity("Salt").Float(), Is.GreaterThan(0f));
+            Assert.That(monkfishFood!.GetTotalPrototypeQuantity("TableSalt").Float(), Is.GreaterThan(0f));
 
             // tg holographic fish override make_edible and stay inedible.
             Assert.That(SEntMan.HasComponent<EdibleComponent>(holo), Is.False);

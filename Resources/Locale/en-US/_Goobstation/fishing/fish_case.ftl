@@ -1,0 +1,14 @@
+ent-FishCase = stasis fish case
+    .desc = A resizable case keeping the fish inside in stasis.
+ent-FishCaseFreshwater = freshwater fish case
+    .desc = A resizable case keeping a freshwater fish inside in stasis.
+ent-FishCaseSaltwater = saltwater fish case
+    .desc = A resizable case keeping a saltwater fish inside in stasis.
+ent-FishCaseSyndicate = ominous fish case
+    .desc = A resizable case keeping the fish inside in stasis. It smells faintly of gunpowder.
+ent-FishCaseTiziran = imported fish case
+    .desc = A resizable case keeping a Tiziran fish inside in stasis.
+ent-FishCaseBlackmarket = ominous fish case
+    .desc = A resizable case keeping the fish inside in stasis. This one holds a faint cadaverine smell.
+ent-FishCaseBluespace = bluespace fish case
+    .desc = An improved fish case to keep large fish in stasis in a compact little space.
