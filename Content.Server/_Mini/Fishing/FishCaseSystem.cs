@@ -5,6 +5,7 @@ using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared._Mini.Fishing.Systems;
+using Content.Shared.Storage;
 using Content.Shared.Storage.EntitySystems;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
@@ -32,7 +33,8 @@ public sealed class FishCaseSystem : EntitySystem
 
     private void OnMapInit(Entity<FishCaseComponent> ent, ref MapInitEvent args)
     {
-        if (!_net.IsServer || Pick(ent.Comp) is not { } fishId)
+        // The one to one component test adds this component to a bare entity without storage.
+        if (!_net.IsServer || !HasComp<StorageComponent>(ent.Owner) || Pick(ent.Comp) is not { } fishId)
             return;
 
         var fish = Spawn(fishId, Transform(ent).Coordinates);
