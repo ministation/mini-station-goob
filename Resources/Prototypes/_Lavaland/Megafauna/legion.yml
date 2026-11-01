@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Root selector
+- type: megafaunaSelector
+  id: Legion
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: LegionActions
+
+# Actions
+- type: megafaunaSelector
+  id: LegionActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionLegionSkulls
+    - id: ActionLegionCharge
+    - id: ActionLegionSentinel
+
+- type: megafaunaSelector
+  id: ActionLegionSkulls
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 2.0,6.0
+      inverse: true
+    actionId: ActionLegionSkulls
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionLegionSkulls
+
+- type: megafaunaSelector
+  id: ActionLegionCharge
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 3.0,8.0
+      inverse: true
+    actionId: ActionLegionCharge
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionLegionCharge
+
+- type: megafaunaSelector
+  id: ActionLegionSentinel
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 10.0,20.0
+      inverse: true
+    actionId: ActionLegionSentinel
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionLegionSentinel
