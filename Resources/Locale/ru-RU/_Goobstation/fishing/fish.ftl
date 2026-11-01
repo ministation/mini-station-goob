@@ -308,3 +308,9 @@ fish-examine-traits = Трейты: { $traits }.
 fish-trait-revival-revived = { $fish } дёргается. Он снова жив!
 fish-trait-ink-splat = { $fish } обливает вас чернилами!
 
+
+fish-pet-verb = Погладить
+fish-pet = Вы гладите { $fish }.
+fish-pet-squirm = { $fish } вырывается из-под вашего пальца.
+fish-pet-bite = { $fish } кусает ваш палец!
+fish-eat-flinch = { $fish } выскальзывает у вас из рук от боли!

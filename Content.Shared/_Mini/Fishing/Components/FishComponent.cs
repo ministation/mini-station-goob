@@ -53,6 +53,12 @@ public sealed partial class FishComponent : Component
     public TimeSpan? LastFed;
 
     /// <summary>
+    /// When the fish was last petted, tg FISH_FLAG_PETTED.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan? LastPetted;
+
+    /// <summary>
     /// How long the fish has been lying on dry land.
     /// </summary>
     [DataField, AutoNetworkedField]

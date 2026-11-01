@@ -307,3 +307,9 @@ fish-examine-beauty = Beauty: { $beauty }.
 fish-examine-traits = Traits: { $traits }.
 fish-trait-revival-revived = { $fish } twitches. It is alive again!
 fish-trait-ink-splat = You have been inked by { $fish }!
+
+fish-pet-verb = Pet
+fish-pet = You pet { $fish }.
+fish-pet-squirm = { $fish } squirms away from your finger.
+fish-pet-bite = { $fish } bites your finger!
+fish-eat-flinch = { $fish } slips out of your hands in pain!

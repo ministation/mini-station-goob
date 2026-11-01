@@ -175,6 +175,10 @@ public sealed partial class SharedAquariumSystem : EntitySystem
         if (GetHunger(fish, proto, now) < 0.5f)
             value++;
 
+        // tg FISH_FLAG_PETTED lasts 30 seconds.
+        if (fish.LastPetted is { } petted && now - petted < TimeSpan.FromSeconds(30))
+            value++;
+
         if (proto == null || IsFluidCompatible(proto, fluid))
             value++;
 
