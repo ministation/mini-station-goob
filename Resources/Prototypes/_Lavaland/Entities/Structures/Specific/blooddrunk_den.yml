@@ -1,0 +1,70 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Blood-drunk den landmark and the miner's gear.
+
+- type: entity
+  id: LavalandBloodDrunkDenSpawner
+  parent: MarkerBase
+  name: blood-drunk den spawner
+  suffix: Lavaland
+  components:
+  - type: BloodDrunkDenSpawner
+
+# The miner's cleaving saw.
+- type: entity
+  id: LavalandCleavingSaw
+  parent: BaseItem
+  name: cleaving saw
+  description: A bloody saw that seems to endlessly whisper to its owner.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: cleaving_saw
+  - type: Item
+    size: Normal
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: MeleeWeapon
+    wideAnimationRotation: -60
+    attackRate: 1.0
+    angle: 60
+    damage:
+      types:
+        Slash: 14
+        Structural: 30
+  - type: StaticPrice
+    price: 3000
+
+# Modified kinetic accelerator: bigger, faster, stronger.
+- type: entity
+  parent: WeaponProtoKineticAccelerator
+  id: LavalandKineticAcceleratorModified
+  name: modified kinetic accelerator
+  description: A heavily modified proto-kinetic accelerator. It hits much harder than the standard model.
+  components:
+  - type: Gun
+    projectileSpeed: 30
+  - type: BasicEntityAmmoProvider
+    proto: LavalandBulletKineticModified
+
+- type: entity
+  parent: BulletKinetic
+  id: LavalandBulletKineticModified
+  categories: [ HideSpawnMenu ]
+  name: kinetic bolt
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 20
+        Structural: 30
+
+# Trophy: the miner's eye, taken by a crusher.
+- type: entity
+  id: LavalandMinerEye
+  parent: BaseItem
+  name: miner's eye
+  description: The eye of a blood-drunk miner. It still looks around.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/trophies.rsi
+    state: hunter_eye

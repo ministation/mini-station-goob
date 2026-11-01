@@ -1,0 +1,120 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Blood-Drunk Miner, port of TG's lavaland miniboss: endless hunt, cleaving saw.
+# One of the three variants is picked at random by the den spawner.
+- type: entity
+  name: blood-drunk miner
+  id: LavalandBossBloodDrunk
+  parent: LavalandMobBase
+  description: A very crazed miner. He's able to do more damage the more he hurts.
+  components:
+  - type: Physics
+    bodyType: KinematicController
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 400
+        mask:
+        - LargeMobMask
+        layer:
+        - LargeMobLayer
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/Bosses/64x64.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: blood_drunk
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+    damage:
+      types:
+        Slash: 15
+        Structural: 40
+  - type: Tag
+    tags:
+    - CannotSuicide
+  - type: CombatMode
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 4.5
+    baseSprintSpeed: 5.5
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      1300: Dead
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Hierophant
+  - type: BossMusic
+    soundId: Miniboss
+  - type: Aggressive
+    forgiveRange: 30.0
+  - type: CombatPower
+    factor: 15
+  # Megafauna AI wiring
+  - type: InputMover
+  - type: Input
+    context: "human"
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    selector: !type:NestedMegafaunaSelector
+      id: BloodDrunk
+  - type: AngerPlayerScaling
+    angerScale: 1.2
+    hpScale: 1.2
+  - type: MegafaunaBlink
+    spawnOnTarget: LavalandBdhDashBurst
+    spawnOnUsed: LavalandBdhDashBurst
+  - type: MegafaunaRejuvenate
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: LavalandCleavingSaw
+      - id: LavalandKineticAcceleratorModified
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandMinerEye
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    deleteOnDeath: true
+
+# Guidance variant: the saw whispers, healing the miner with every wound he deals.
+- type: entity
+  parent: LavalandBossBloodDrunk
+  id: LavalandBossBloodDrunkGuidance
+  suffix: Guidance
+  components:
+  - type: VampiricMelee
+    healFraction: 0.5
+
+# Hunter variant: chains dashes after strikes.
+- type: entity
+  parent: LavalandBossBloodDrunk
+  id: LavalandBossBloodDrunkHunter
+  suffix: Hunter
+  components:
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    selector: !type:NestedMegafaunaSelector
+      id: BloodDrunkHunter
