@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Base/Guidance selector: fast dashes, occasional saw barrage.
+- type: megafaunaSelector
+  id: BloodDrunk
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: BloodDrunkActions
+
+- type: megafaunaSelector
+  id: BloodDrunkActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionBdhDash
+    - id: ActionBdhSawBarrage
+
+- type: megafaunaSelector
+  id: ActionBdhDash
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 0.5,2.0
+      inverse: true
+    actionId: ActionBdhDash
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionBdhDash
+
+- type: megafaunaSelector
+  id: ActionBdhSawBarrage
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 4.0,8.0
+      inverse: true
+    actionId: ActionBdhSawBarrage
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionBdhSawBarrage
+
+# Hunter variant: an extra dash chain on top of the base actions.
+- type: megafaunaSelector
+  id: BloodDrunkHunter
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: BloodDrunkHunterActions
+
+- type: megafaunaSelector
+  id: BloodDrunkHunterActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionBdhDash
+    - id: ActionBdhSawBarrage
+    - id: ActionBdhDashChain
+
+- type: megafaunaSelector
+  id: ActionBdhDashChain
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 2.0,4.0
+      inverse: true
+    actionId: ActionBdhDashChain
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionBdhDashChain

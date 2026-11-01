@@ -389,6 +389,7 @@ namespace Content.IntegrationTests.Tests
                 "BubblegumLairSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "DrakeDenSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "ColossusArenaSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
+                "BloodDrunkDenSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "Area", // map tests spawn ~every area anyway, this fails from trying to spawn an area in space
                 "StatusEffect", // doesnt make sense to spawn unattached, fails test with weather schedulers
                 "AshJaunt", // spawns jaunt end animation

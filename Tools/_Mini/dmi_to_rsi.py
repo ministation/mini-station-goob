@@ -123,26 +123,43 @@ def convert(input_path: Path, output_path: Path, wanted: list[str] | None):
     for state in states:
         cells = state["dirs"] * state["frames"]
         if state["name"] in wanted:
-            if state["dirs"] != 1:
+            if state["dirs"] not in (1, 4):
                 raise SystemExit(
-                    f"state {state['name']} is directional ({state['dirs']} dirs) - refusing, "
-                    "extend the tool with direction remapping first"
+                    f"state {state['name']} has {state['dirs']} dirs - only 1 and 4 supported"
                 )
 
-            frames_png = Image.new("RGBA", (width * state["frames"], height), (0, 0, 0, 0))
-            for frame in range(state["frames"]):
-                index = cell_index + frame
-                x = (index % cols_total) * width
-                y = (index // cols_total) * height
-                cell = image.crop((x, y, x + width, y + height))
-                frames_png.paste(cell, (frame * width, 0))
+            if state["dirs"] == 1:
+                png = Image.new("RGBA", (width * state["frames"], height), (0, 0, 0, 0))
+                for frame in range(state["frames"]):
+                    index = cell_index + frame
+                    x = (index % cols_total) * width
+                    y = (index // cols_total) * height
+                    png.paste(image.crop((x, y, x + width, y + height)), (frame * width, 0))
+                directions = None
+            else:
+                # 4-dir: BYOND cell order is N,S,E,W; SS14 RSI rows are S,N,E,W.
+                # Frames run horizontally inside each direction row.
+                png = Image.new("RGBA", (width * state["frames"], height * 4), (0, 0, 0, 0))
+                dmi_order = [0, 1, 2, 3]  # N,S,E,W offsets inside the state's cells
+                rsi_order = [1, 0, 2, 3]  # S,N,E,W -> destination rows
+                for row in range(4):
+                    for frame in range(state["frames"]):
+                        index = cell_index + dmi_order[row] * state["frames"] + frame
+                        x = (index % cols_total) * width
+                        y = (index // cols_total) * height
+                        cell = image.crop((x, y, x + width, y + height))
+                        png.paste(cell, (frame * width, rsi_order[row] * height))
+                directions = 4
 
-            frames_png.save(output_path / f"{state['name']}.png")
-            meta_states.append({
+            png.save(output_path / f"{state['name']}.png")
+            entry = {
                 "name": state["name"],
                 # SS14 RSI delays are nested: one list of frame delays per direction.
-                "delays": [state["delays"]],
-            })
+                "delays": [state["delays"]] * (state["dirs"] if directions else 1),
+            }
+            if directions:
+                entry["directions"] = directions
+            meta_states.append(entry)
         cell_index += cells
 
     meta = {

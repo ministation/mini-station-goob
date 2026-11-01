@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Blood-drunk miner's spinning saw projectile and dash burst.
+- type: entity
+  id: LavalandCleavingSawProjectile
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  name: cleaving saw
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Slash: 12
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: cleaving_saw
+  - type: PointLight
+    color: "#FF4444"
+    radius: 1.5
+    energy: 2.0
+
+- type: entity
+  parent: MarkerBase
+  id: LavalandBdhDashBurst
+  name: saw dash burst spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: LavalandBdhSawSlash
+    shape: !type:NestedEntityShape
+      id: BoxFilled
+      size: 3
+
+- type: entity
+  id: LavalandBdhSawSlash
+  categories: [ DoNotMap ]
+  name: saw slash
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: TimedDespawn
+    lifetime: 1
+  - type: DamageSquare
+    damageDelay: 0.2
+    damage:
+      types:
+        Slash: 14
+    damageWhitelist:
+      components:
+      - MobState
+    sound:
+      path: /Audio/Weapons/bladeslice.ogg
