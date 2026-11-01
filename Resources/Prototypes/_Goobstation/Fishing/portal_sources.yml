@@ -32,6 +32,7 @@
 - type: fishingSource
   id: FishingSourcePortalBeach
   portalDestination: true
+  requiredExperiment: ScanningFish
   radialState: palm_beach
   radialName: fishing-portal-source-beach
   catalogDescription: fishing-source-portal-beach
@@ -55,6 +56,7 @@
 - type: fishingSource
   id: FishingSourcePortalChasm
   portalDestination: true
+  requiredExperiment: ScanningFishThird
   radialState: ground_hole
   radialName: fishing-portal-source-chasm
   catalogDescription: fishing-source-portal-chasm
@@ -74,6 +76,7 @@
 - type: fishingSource
   id: FishingSourcePortalOcean
   portalDestination: true
+  requiredExperiment: ScanningFishSecond
   radialState: seaboat
   radialName: fishing-portal-source-ocean
   catalogDescription: fishing-source-portal-ocean
@@ -112,6 +115,7 @@
 - type: fishingSource
   id: FishingSourcePortalHyperspace
   portalDestination: true
+  requiredExperiment: ScanningFishFourth
   radialState: space_rocket
   radialName: fishing-portal-source-hyperspace
   catalogDescription: fishing-source-portal-hyperspace

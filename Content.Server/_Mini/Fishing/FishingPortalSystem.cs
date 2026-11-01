@@ -5,7 +5,9 @@ using System.Linq;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Prototypes;
+using Content.Shared._Mini.Research.Prototypes;
 using Content.Shared.Emag.Systems;
+using Content.Server.Research.Systems;
 using Content.Shared.Popups;
 using Content.Shared.UserInterface;
 using Content.Shared.Verbs;
@@ -25,6 +27,7 @@ public sealed partial class FishingPortalSystem : EntitySystem
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private ResearchSystem _research = default!;
 
     public override void Initialize()
     {
@@ -86,11 +89,20 @@ public sealed partial class FishingPortalSystem : EntitySystem
     /// </summary>
     public List<FishingPortalOption> GetOptions(Entity<FishingPortalComponent> ent)
     {
+        return GetOptions(ent, IsExperimentCompleted);
+    }
+
+    /// <summary>
+    /// Same as the plain GetOptions overload, with the completed experiment check
+    /// injected so tests can unlock dimensions without touching the restricted research database.
+    /// </summary>
+    public List<FishingPortalOption> GetOptions(Entity<FishingPortalComponent> ent, Func<ProtoId<ResearchExperimentPrototype>, bool> isCompleted)
+    {
         var options = new List<FishingPortalOption>();
 
         foreach (var source in _proto.EnumeratePrototypes<FishingSourcePrototype>().OrderBy(p => p.ID))
         {
-            if (!IsAvailable(source, ent.Comp.Emagged))
+            if (!IsAvailable(source, ent.Comp.Emagged, isCompleted))
                 continue;
 
             var name = source.RadialName is { } radial
@@ -108,9 +120,17 @@ public sealed partial class FishingPortalSystem : EntitySystem
         return options;
     }
 
-    private static bool IsAvailable(FishingSourcePrototype source, bool emagged)
+    private static bool IsAvailable(FishingSourcePrototype source, bool emagged, Func<ProtoId<ResearchExperimentPrototype>, bool> isCompleted)
     {
-        return source.PortalDestination && (!source.RequiresEmag || emagged);
+        if (!source.PortalDestination || (source.RequiresEmag && !emagged))
+            return false;
+
+        return source.RequiredExperiment is not { } experiment || isCompleted(experiment);
+    }
+
+    private bool IsExperimentCompleted(ProtoId<ResearchExperimentPrototype> experiment)
+    {
+        return _research.IsExperimentCompleted(experiment.Id);
     }
 
     private void OnSelect(Entity<FishingPortalComponent> ent, ref FishingPortalSelectMessage args)
@@ -123,7 +143,8 @@ public sealed partial class FishingPortalSystem : EntitySystem
             return;
         }
 
-        if (!_proto.TryIndex(args.SourceId, out FishingSourcePrototype? selected) || !IsAvailable(selected, ent.Comp.Emagged))
+        if (!_proto.TryIndex(args.SourceId, out FishingSourcePrototype? selected) ||
+            !IsAvailable(selected, ent.Comp.Emagged, IsExperimentCompleted))
             return;
 
         var source = EnsureComp<FishingSourceComponent>(ent.Owner);
