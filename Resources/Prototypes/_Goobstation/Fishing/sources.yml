@@ -420,6 +420,8 @@
       weight: 5
     - id: FishChasmCrab
       weight: 15
+    - id: MaterialBones
+      weight: 8
 
 - type: fishingSource
   id: FishingSourceLava

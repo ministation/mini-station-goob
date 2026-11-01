@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using Content.Shared._Mini.Fishing;
@@ -8,6 +9,8 @@ using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Events;
 using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared._Mini.Fishing.Systems;
+using Content.Shared.Buckle.Components;
+using Content.Shared.Mobs.Components;
 using Robust.Shared.Audio.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
@@ -49,6 +52,8 @@ public sealed partial class FishingSystem : EntitySystem
 
     private static readonly SoundSpecifier SplashSound = new SoundPathSpecifier("/Audio/Effects/Fluids/watersplash.ogg");
     private static readonly SoundSpecifier LureReadySound = new SoundPathSpecifier("/Audio/Machines/beep.ogg");
+    private static readonly SoundSpecifier ExtendSound =
+        new SoundPathSpecifier("/Audio/_Goobstation/Weapons/Baton/contractorbatonextend.ogg");
 
     /// <summary>tg gives the player a quarter of a second to not be punished for a double click.</summary>
     private static readonly TimeSpan SpinClickCooldown = TimeSpan.FromSeconds(0.25);
@@ -73,6 +78,8 @@ public sealed partial class FishingSystem : EntitySystem
         SubscribeLocalEvent<FishingRodComponent, UseInHandEvent>(OnUseInHand);
         SubscribeNetworkEvent<FishingReelInputEvent>(OnReelInput);
         SubscribeLocalEvent<FishingChallengeComponent, ComponentShutdown>(OnChallengeShutdown);
+        SubscribeLocalEvent<FishingRodComponent, ComponentShutdown>(OnRodShutdown);
+        SubscribeLocalEvent<FishingLureComponent, ComponentShutdown>(OnLureShutdown);
     }
 
     #region Cast
@@ -97,7 +104,22 @@ public sealed partial class FishingSystem : EntitySystem
             return;
         }
 
-        if (_equipment.GetHook(ent.Owner) == null)
+        // A cast that hooked something is reeled in by clicking with the rod again.
+        if (TryGetSnaggedLure(ent, out _, out var snaggedComp))
+        {
+            ReelHooked(user, ent, snaggedComp);
+            args.Handled = true;
+            return;
+        }
+
+        if (ent.Comp.Extendable && !ent.Comp.Extended)
+        {
+            _popup.PopupEntity(Loc.GetString("fishing-rod-extend-first"), user, user);
+            args.Handled = true;
+            return;
+        }
+
+        if (_equipment.GetHook(ent.Owner) is not { } hook)
         {
             _popup.PopupEntity(Loc.GetString("fishing-no-hook"), user, user);
             args.Handled = true;
@@ -111,21 +133,48 @@ public sealed partial class FishingSystem : EntitySystem
         if (args.Target is { } target)
             coords = Transform(target).Coordinates;
 
-        if (!_sources.TryGetSource(coords, args.Target, out var source))
-            return;
-
         var userPos = _xform.GetWorldPosition(user);
         var castPos = _xform.ToWorldPosition(coords);
         if ((userPos - castPos).Length() > ent.Comp.CastRange + 0.5f)
             return;
 
+        if (_sources.TryGetSource(coords, args.Target, out var source))
+        {
+            if (!hook.CanFish)
+            {
+                _popup.PopupEntity(Loc.GetString("fishing-hook-no-fishing"), user, user);
+                args.Handled = true;
+                return;
+            }
+
+            Cast(user, ent, args.Target, coords, source);
+            args.Handled = true;
+            return;
+        }
+
+        // There is no fishing source there, so the hook grabs an item or a creature instead.
+        if (args.Target is { } hooked && CanHook(hooked, hook))
+        {
+            HookAtom(user, ent, hooked);
+            args.Handled = true;
+        }
+    }
+
+    private void Cast(
+        EntityUid user,
+        Entity<FishingRodComponent> ent,
+        EntityUid? sourceEntity,
+        EntityCoordinates coords,
+        ProtoId<FishingSourcePrototype> source)
+    {
         var lure = Spawn(ent.Comp.LurePrototype, coords);
         if (!TryComp<FishingLureComponent>(lure, out var lureComp))
             lureComp = EnsureComp<FishingLureComponent>(lure);
 
         lureComp.Rod = ent.Owner;
-        lureComp.SourceEntity = args.Target;
+        lureComp.SourceEntity = sourceEntity;
         lureComp.Biting = false;
+        lureComp.Snagged = false;
         Dirty(lure, lureComp);
         ent.Comp.FishingLure = lure;
         Dirty(ent, ent.Comp);
@@ -134,7 +183,7 @@ public sealed partial class FishingSystem : EntitySystem
         challenge.Rod = ent.Owner;
         challenge.Lure = lure;
         challenge.Source = source;
-        challenge.SourceEntity = args.Target;
+        challenge.SourceEntity = sourceEntity;
         challenge.CastCoordinates = coords;
         challenge.Phase = FishingPhase.Waiting;
         challenge.NextPhaseTime = _timing.CurTime + TimeSpan.FromSeconds(_sources.GetWaitTime(source));
@@ -151,8 +200,110 @@ public sealed partial class FishingSystem : EntitySystem
         _popup.PopupEntity(Loc.GetString("fishing-start"), user, user);
         if (challenge.SpinActive)
             _popup.PopupEntity(Loc.GetString("fishing-spin-hint"), user, user);
+    }
 
-        args.Handled = true;
+    private bool CanHook(EntityUid target, FishingHookComponent hook)
+    {
+        if (HasComp<MobStateComponent>(target))
+            return hook.CanHookLiving;
+
+        return HasComp<ItemComponent>(target);
+    }
+
+    private void HookAtom(EntityUid user, Entity<FishingRodComponent> ent, EntityUid target)
+    {
+        var lure = Spawn(ent.Comp.LurePrototype, Transform(target).Coordinates);
+        var lureComp = EnsureComp<FishingLureComponent>(lure);
+        lureComp.Rod = ent.Owner;
+        lureComp.SourceEntity = target;
+        lureComp.Biting = false;
+        lureComp.Snagged = true;
+        Dirty(lure, lureComp);
+        ent.Comp.FishingLure = lure;
+        Dirty(ent, ent.Comp);
+
+        _popup.PopupEntity(Loc.GetString("fishing-snag-hooked", ("target", Name(target))), user, user);
+    }
+
+    /// <summary>
+    /// A cast that did not find a fishing source and instead caught onto an item or a creature.
+    /// </summary>
+    private bool TryGetSnaggedLure(
+        Entity<FishingRodComponent> ent,
+        out EntityUid lure,
+        [NotNullWhen(true)] out FishingLureComponent? comp)
+    {
+        lure = default;
+        comp = null;
+
+        if (ent.Comp.FishingLure is not { } lureUid ||
+            TerminatingOrDeleted(lureUid) ||
+            !TryComp<FishingLureComponent>(lureUid, out var lureComp) ||
+            !lureComp.Snagged)
+            return false;
+
+        lure = lureUid;
+        comp = lureComp;
+        return true;
+    }
+
+    private void ReelHooked(EntityUid user, Entity<FishingRodComponent> ent, FishingLureComponent lureComp)
+    {
+        var target = lureComp.SourceEntity;
+        if (target is not { } hooked || TerminatingOrDeleted(hooked))
+        {
+            ClearLure(ent);
+            _popup.PopupEntity(Loc.GetString("fishing-snag-slipped"), user, user);
+            return;
+        }
+
+        if (Transform(hooked).Anchored ||
+            TryComp<BuckleComponent>(hooked, out var buckle) && buckle.BuckledTo != null)
+        {
+            _popup.PopupEntity(Loc.GetString("fishing-snag-stuck", ("target", Name(hooked))), user, user);
+            return;
+        }
+
+        ClearLure(ent);
+
+        if (HasComp<ItemComponent>(hooked) && _hands.TryPickupAnyHand(user, hooked))
+        {
+            _popup.PopupEntity(Loc.GetString("fishing-snag-pulled", ("target", Name(hooked))), user, user);
+            return;
+        }
+
+        // Drag the catch to the fisher. Mobs stay alive, items just land on the floor.
+        var userPos = _xform.GetWorldPosition(user);
+        var hookedPos = _xform.GetWorldPosition(hooked);
+        var dir = userPos - hookedPos;
+        if (dir.LengthSquared() < 0.01f)
+            dir = new Vector2(0.5f, 0f);
+
+        _xform.SetWorldPosition(hooked, userPos - Vector2.Normalize(dir) * 0.75f);
+        _popup.PopupEntity(Loc.GetString("fishing-snag-pulled", ("target", Name(hooked))), user, user);
+    }
+
+    private void ClearLure(Entity<FishingRodComponent> ent)
+    {
+        if (ent.Comp.FishingLure is { } lure && !TerminatingOrDeleted(lure))
+            QueueDel(lure);
+
+        ent.Comp.FishingLure = null;
+        Dirty(ent, ent.Comp);
+    }
+
+    private void ToggleExtended(EntityUid user, Entity<FishingRodComponent> ent)
+    {
+        if (ent.Comp.FishingLure != null)
+        {
+            _popup.PopupEntity(Loc.GetString("fishing-rod-reel-first"), user, user);
+            return;
+        }
+
+        ent.Comp.Extended = !ent.Comp.Extended;
+        Dirty(ent, ent.Comp);
+        _popup.PopupEntity(Loc.GetString(ent.Comp.Extended ? "fishing-rod-extended" : "fishing-rod-folded"), user, user);
+        _audio.PlayPvs(ExtendSound, user);
     }
 
     private void OnUseInHand(Entity<FishingRodComponent> ent, ref UseInHandEvent args)
@@ -160,11 +311,27 @@ public sealed partial class FishingSystem : EntitySystem
         if (args.Handled)
             return;
 
-        if (!TryComp<FishingChallengeComponent>(args.User, out var challenge))
+        var user = args.User;
+
+        if (TryComp<FishingChallengeComponent>(user, out var challenge) && challenge.Rod == ent.Owner)
+        {
+            // Using the rod in hand reels the line back in.
+            StopChallenge(user, challenge, false, Loc.GetString("fishing-reeled-in"));
+            args.Handled = true;
+            return;
+        }
+
+        if (TryGetSnaggedLure(ent, out _, out var snaggedComp))
+        {
+            ReelHooked(user, ent, snaggedComp);
+            args.Handled = true;
+            return;
+        }
+
+        if (!ent.Comp.Extendable)
             return;
 
-        // Using the rod in hand reels the line back in.
-        StopChallenge(args.User, challenge, false, Loc.GetString("fishing-reeled-in"));
+        ToggleExtended(user, ent);
         args.Handled = true;
     }
 
@@ -813,6 +980,23 @@ public sealed partial class FishingSystem : EntitySystem
             QueueDel(lure);
 
         if (ent.Comp.Rod is { } rod && TryComp<FishingRodComponent>(rod, out var rodComp))
+        {
+            rodComp.FishingLure = null;
+            Dirty(rod, rodComp);
+        }
+    }
+
+    private void OnRodShutdown(Entity<FishingRodComponent> ent, ref ComponentShutdown args)
+    {
+        if (ent.Comp.FishingLure is { } lure && !TerminatingOrDeleted(lure))
+            QueueDel(lure);
+    }
+
+    private void OnLureShutdown(Entity<FishingLureComponent> ent, ref ComponentShutdown args)
+    {
+        if (ent.Comp.Rod is { } rod &&
+            TryComp<FishingRodComponent>(rod, out var rodComp) &&
+            rodComp.FishingLure == ent.Owner)
         {
             rodComp.FishingLure = null;
             Dirty(rod, rodComp);

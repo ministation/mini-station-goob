@@ -14,3 +14,13 @@ fishing-spin-hint = Блесну нужно подкручивать, пока �
 fishing-spun = Ты подкручиваешь блесну.
 fishing-spin-miss = Блесна перестала играть!
 fishing-spin-too-early = Слишком рано! Ты дёргаешь блесну.
+
+fishing-snag-hooked = Ты зацепил: { $target }. Используй удочку в руке, чтобы подтянуть.
+fishing-snag-pulled = Ты подтягиваешь: { $target }.
+fishing-snag-stuck = { $target } не поддаётся!
+fishing-snag-slipped = Леска соскальзывает.
+fishing-hook-no-fishing = Этот крючок не для обычной рыбалки.
+fishing-rod-extend-first = Сначала нужно выдвинуть удочку.
+fishing-rod-reel-first = Сначала смотай леску.
+fishing-rod-extended = Ты выдвигаешь удочку.
+fishing-rod-folded = Ты складываешь удочку.

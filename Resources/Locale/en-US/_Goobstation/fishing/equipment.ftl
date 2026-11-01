@@ -101,6 +101,8 @@ ent-FishingRodTelescopic = telescopic fishing rod
     .desc = A lightweight, ergonomic, easy to store telescopic fishing rod.
 ent-FishingRodMaster = master fishing rod
     .desc = The mythical rod of a lost fisher king. Said to be imbued with unparalleled fishing power.
+ent-FishingRodRescue = rescue fishing rod
+    .desc = A mining order console rod with a rescue hook. It can pull people and items out of places you cannot reach.
 ent-FishingRodMaterial = material fishing rod
     .desc = A custom fishing rod from your local autolathe.
 

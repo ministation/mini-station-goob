@@ -25,4 +25,10 @@ public sealed partial class FishingLureComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public bool Biting;
+
+    /// <summary>
+    /// Whether this lure is snagged onto an item or creature instead of fishing.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool Snagged;
 }
