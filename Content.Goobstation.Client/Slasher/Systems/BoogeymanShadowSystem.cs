@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Client._Shitcode.Heretic;
 using Content.Client.Graphics;
 using Content.Goobstation.Shared.Slasher.Components;
@@ -19,15 +23,21 @@ public sealed partial class BoogeymanShadowSystem : EntitySystem
     [Dependency] private SpriteSystem _sprite = default!;
 
     private static readonly ProtoId<ShaderPrototype> Shader = "SlasherBoogeyman";
-    public const string PostShaderId = "boogeyman-shadow";
+    public const string PostShaderId = "slasher-boogeyman";
 
-    private ShaderInstance _shader = default!;
+    private static readonly string[] RunAfter =
+    [
+        ContentPostShaderIds.Stealth,
+        ContentPostShaderIds.FloorOcclusion,
+        ContentPostShaderIds.Holopad,
+        ContentPostShaderIds.InteractionOutline,
+        ContentPostShaderIds.TargetOutline,
+        ContentPostShaderIds.DragDropOutline,
+    ];
 
     public override void Initialize()
     {
         base.Initialize();
-
-        _shader = _proto.Index(Shader).InstanceUnique();
 
         SubscribeLocalEvent<BoogeymanShadowComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<BoogeymanShadowComponent, ComponentShutdown>(OnShutdown);
@@ -37,16 +47,8 @@ public sealed partial class BoogeymanShadowSystem : EntitySystem
 
     private void OnStartup(Entity<BoogeymanShadowComponent> ent, ref ComponentStartup args)
     {
-        if (!TryComp<SpriteComponent>(ent, out var sprite))
-            return;
-
-        // Use the ordered post-shader pipeline (same slot as the stealth shader) instead of the legacy
-        // PostShader setter. The legacy path bypasses post-shader ordering and clears any other
-        // post-shaders on the entity, which breaks compositing on the pooled render target pipeline.
-        _sprite.SetPostShader((ent, sprite), new SpriteComponent.PostShaderArgs(PostShaderId, _shader)
-        {
-            Before = ContentPostShaderIds.BeforeOutlines,
-        });
+        if (TryComp<SpriteComponent>(ent, out var sprite))
+            ApplyShader((ent.Owner, sprite));
     }
 
     private void OnShutdown(Entity<BoogeymanShadowComponent> ent, ref ComponentShutdown args)
@@ -55,7 +57,16 @@ public sealed partial class BoogeymanShadowSystem : EntitySystem
             return;
 
         if (TryComp<SpriteComponent>(ent, out var sprite))
-            _sprite.RemovePostShader((ent, sprite), PostShaderId);
+            _sprite.RemovePostShader((ent.Owner, sprite), PostShaderId);
+    }
+
+    private void ApplyShader(Entity<SpriteComponent> sprite)
+    {
+        _sprite.SetPostShader((sprite.Owner, sprite.Comp),
+            new SpriteComponent.PostShaderArgs(PostShaderId, _proto.Index(Shader).InstanceUnique())
+            {
+                After = RunAfter,
+            });
     }
 
     private void OnGetStatusIcons(ref GetStatusIconsEvent args)

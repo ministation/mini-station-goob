@@ -20,9 +20,12 @@
     - VelesBookSet
     # Corvax-Goob-Bibles-start
     - BibleDruidSet
+    - BibleCommunistSet
+    - BibleSatanicSet
     - BibleNarsieSet
     - BibleNanoTrasenSet
     - BibleHonkSet
+    - BibleRatvarSet
     # Corvax-Goob-Bibles-end
     maxSelectedSets: 1
 
@@ -91,6 +94,36 @@
     state: icon
   content:
   - BibleVelesBook
+
+- type: selectableSet
+  id: BibleCommunistSet
+  name: "Communist Manifesto"
+  description: "Remove the mask of humanity from Capital."
+  sprite:
+    sprite: Objects/Specific/Chapel/communistmanifesto.rsi
+    state: icon
+  content:
+  - BibleCommunistManifesto
+
+- type: selectableSet
+  id: BibleSatanicSet
+  name: "Satanic Bible"
+  description: "What could possibly go wrong?"
+  sprite:
+    sprite: Objects/Specific/Chapel/satanicbible.rsi
+    state: icon
+  content:
+  - BibleSatanic
+
+- type: selectableSet
+  id: BibleRatvarSet
+  name: Tablet of Ratvar
+  description: "A holy relic of the Clockwork Cult, blessed by the Clockwork Justice, Ratvar."
+  sprite:
+    sprite: Objects/Specific/Chapel/ratvartablet.rsi
+    state: icon
+  content:
+  - BibleRatvar
 ##END SET SELECTION
 
 - type: entity

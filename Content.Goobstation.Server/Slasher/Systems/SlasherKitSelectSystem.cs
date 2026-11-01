@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Linq;
 using Content.Goobstation.Shared.Slasher.Components;
 using Content.Goobstation.Shared.Slasher.Systems;
@@ -121,6 +125,9 @@ public sealed partial class SlasherKitSelectSystem : EntitySystem
                 {
                     jumpscareSound
                 };
+
+            if (selectedKit.JumpscareFear is { } jumpscareFear)
+                fearComp.JumpscareFear = jumpscareFear;
 
             if (selectedKit.BloodTrailReagent is { } bloodReagent)
                 fearComp.BloodTrailReagent = bloodReagent;

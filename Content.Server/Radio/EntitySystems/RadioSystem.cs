@@ -34,6 +34,7 @@ using Content.Shared.Access.Components;
 using System.Text.RegularExpressions;
 using Content.Shared.StatusIcon; // Goobstation
 using Content.Goobstation.Shared.Radio; // Goobstation
+using Content.Shared.Ghost; // Nuclear-14
 
 namespace Content.Server.Radio.EntitySystems;
 
@@ -95,6 +96,18 @@ public sealed partial class RadioSystem : EntitySystem
         }
     }
 
+    //Nuclear-14
+    /// <summary>
+    /// Gets the message frequency, if there is no such frequency, returns the standard channel frequency.
+    /// </summary>
+    public int GetFrequency(EntityUid source, RadioChannelPrototype channel)
+    {
+        if (TryComp<RadioMicrophoneComponent>(source, out var radioMicrophone))
+            return radioMicrophone.Frequency;
+
+        return channel.Frequency;
+    }
+
     private void OnIntrinsicReceive(EntityUid uid, IntrinsicRadioReceiverComponent component, ref RadioReceiveEvent args)
     {
         if (TryComp(uid, out ActorComponent? actor))
@@ -128,10 +141,11 @@ public sealed partial class RadioSystem : EntitySystem
         string message,
         ProtoId<RadioChannelPrototype> channel,
         EntityUid radioSource,
+        int? frequency = null, // Nuclear-14
         LanguagePrototype? language = null,
         bool escapeMarkup = true)
     {
-        SendRadioMessage(messageSource, message, _prototype.Index(channel), radioSource, escapeMarkup: escapeMarkup, language: language); // Einstein Engines - Language
+        SendRadioMessage(messageSource, message, _prototype.Index(channel), radioSource, escapeMarkup: escapeMarkup, frequency: frequency, language: language); // Einstein Engines - Language | Nuclear-14 - Frequency
     }
 
     /// <summary>
@@ -145,6 +159,7 @@ public sealed partial class RadioSystem : EntitySystem
         RadioChannelPrototype channel,
         EntityUid radioSource,
         LanguagePrototype? language = null,
+        int? frequency = null, // Nuclear-14
         bool escapeMarkup = true)
     {
         // Einstein Engines - Language begin
@@ -222,7 +237,7 @@ public sealed partial class RadioSystem : EntitySystem
 
         content = Highlight(content);
 
-        var wrappedMessage = WrapRadioMessage(messageSource, channel, name, content, language, jobIcon, jobName, headsetColor, job);
+        var wrappedMessage = WrapRadioMessage(messageSource, channel, name, content, language, jobIcon, jobName, headsetColor, job, frequency); // Nuclear-14 - Frequency
 
         // most radios are relayed to chat, so lets parse the chat message beforehand
         // var chat = new ChatMessage(
@@ -241,7 +256,7 @@ public sealed partial class RadioSystem : EntitySystem
         var obfuscated = _language.ObfuscateSpeech(content, language);
         // Goobstation - Chat Pings
         // Added GetNetEntity(messageSource), to source
-        var obfuscatedWrapped = WrapRadioMessage(messageSource, channel, name, obfuscated, language, jobIcon, jobName, headsetColor, job);
+        var obfuscatedWrapped = WrapRadioMessage(messageSource, channel, name, obfuscated, language, jobIcon, jobName, headsetColor, job, frequency); // Nuclear-14 - Frequency
         var notUdsMsg = new ChatMessage(ChatChannel.Radio, obfuscated, obfuscatedWrapped, GetNetEntity(messageSource), null);
         var ev = new RadioReceiveEvent(messageSource, channel, msg, notUdsMsg, language, radioSource);
         // Einstein Engines - Language end
@@ -259,6 +274,10 @@ public sealed partial class RadioSystem : EntitySystem
         var transmitterByMap = new Dictionary<MapId, bool> { [sourceMapId] = sourceHasTransmitter };
 
         var radioQuery = EntityQueryEnumerator<ActiveRadioComponent, TransformComponent>();
+
+        if (frequency == null) // Nuclear-14
+            frequency = GetFrequency(messageSource, channel);
+
         while (canSend && radioQuery.MoveNext(out var receiver, out var radio, out var transform))
         {
             if (!radio.ReceiveAllChannels)
@@ -267,6 +286,8 @@ public sealed partial class RadioSystem : EntitySystem
                                                              !intercom.SupportedChannels.Contains(channel.ID)))
                     continue;
             }
+            if (!HasComp<GhostComponent>(receiver) && GetFrequency(receiver, channel) != frequency) // Nuclear-14
+                continue;
 
             if (!channel.LongRange && transform.MapID != sourceMapId && !radio.GlobalReceive)
             {
@@ -382,7 +403,8 @@ public sealed partial class RadioSystem : EntitySystem
         ProtoId<JobIconPrototype>? jobIcon, // Goob edit
         string? jobName, // Gaby Radio icons
         Color headsetColor,
-        string job)
+        string job,
+        int? frequency = null) // Nuclear-14
     {
         // TODO: code duplication with ChatSystem.WrapMessage
         var speech = _chat.GetSpeechVerb(source, message);
@@ -421,6 +443,14 @@ public sealed partial class RadioSystem : EntitySystem
             }
 
         var nameString = name;
+
+        // Nuclear-14 start
+        string channelText;
+        if (channel.ShowFrequency && frequency.HasValue)
+            channelText = $"\\[{frequency}\\]";
+        else
+            channelText = $"\\[{channel.LocalizedName}\\]";
+        // Nuclear-14 end
 
         return Loc.GetString(wrapId,
             ("channel-color", channel.Color),

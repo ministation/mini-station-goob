@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Server.StationEvents.Metric.Components;
 using Content.Server.Atmos.Components;
 using Content.Server.GameTicking;
@@ -90,8 +94,8 @@ public sealed partial class StationAtmosMetricSystem : ChaosMetricSystem<Station
             component.BaselineCaptured = true;
 
         var atmosChaos = spaced * component.SpacedTileCost
-                         + fire * component.FireTileCost
                          + toxic * component.ToxicTileCost;
+        var fireChaos = fire * component.FireTileCost;
 
         TilesTotal.Set(tiles);
         BaselineTiles.Set(component.BaselineTiles.Count);
@@ -103,6 +107,7 @@ public sealed partial class StationAtmosMetricSystem : ChaosMetricSystem<Station
         return new ChaosMetrics(new Dictionary<ChaosMetric, double>
         {
             { ChaosMetric.Atmos, atmosChaos },
+            { ChaosMetric.Fire, fireChaos },
         });
     }
 

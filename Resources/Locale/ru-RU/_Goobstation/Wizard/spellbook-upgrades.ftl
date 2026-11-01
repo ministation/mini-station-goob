@@ -68,3 +68,7 @@ spellbook-upgrade-simians-name = Улучшение "Призыв обезьян
 spellbook-upgrade-simians-desc = Позволяет улучшить "Призыв обезьян" до максимального 5-го уровня!
 spellbook-upgrade-rathen-name = Улучшение "Секрета Ратена"
 spellbook-upgrade-rathen-desc = Улучшает "Секрет Ратена" до максимального 3-го уровня!
+
+spellbook-upgrade-summon-supermatter-name = Улучшение "Призыв суперматерии"
+
+spellbook-upgrade-summon-supermatter-desc = Позволяет улучшить "Призыв суперматерии" до максимального 5-го уровня! Каждый уровень сокращает перезарядку на одну минуту.

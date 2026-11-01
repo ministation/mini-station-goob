@@ -293,6 +293,7 @@
   goal:
     Anomaly: 40
     Atmos: 40
+    Fire: 0
     Power: 30
     Infestation: 20
     Medical: 60
@@ -429,6 +430,7 @@
     Hostile: 20
     Security: 0
     Atmos: 0
+    Fire: 0
     Medical: 0
   endIfAllBetter:
     Atmos: 150
@@ -447,6 +449,7 @@
   description: Repair that station
   goal:
     Atmos: 0
+    Fire: 0
     Power: 0
     Medical: 0
   endIfAllBetter:
@@ -466,6 +469,7 @@
     Hostile: 0
     Security: 0
     Atmos: 0
+    Fire: 0
     Power: 0
     Medical: 0
   minSecs: 0
@@ -474,5 +478,6 @@
   eventDelayMax: 480
   maxDestruction: 0
   allowCalmEvents: false
+  helpOnly: true
   blockedEventTypes:
   - HostilesSpawn

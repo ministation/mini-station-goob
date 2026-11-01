@@ -159,4 +159,7 @@ public sealed partial class StoryBeatPrototype : IPrototype
 
     [DataField]
     public bool AllowReinforcements;
+
+    [DataField]
+    public bool HelpOnly;
 }
