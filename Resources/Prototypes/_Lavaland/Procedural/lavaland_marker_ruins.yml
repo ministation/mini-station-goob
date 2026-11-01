@@ -9,6 +9,14 @@
   minDistance: 120
 
 - type: lavalandMarkerRuin
+  id: BubblegumLair
+  boundary: 12,12
+  spawnedMarker: LavalandBubblegumLairSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 150
+
+- type: lavalandMarkerRuin
   id: CommonRuin5x5
   boundary: 5,5
   spawnedMarker: LavalandInteriorRoomMarker
