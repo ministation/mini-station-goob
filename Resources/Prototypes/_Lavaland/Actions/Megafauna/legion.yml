@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: ActionLegionSkulls
+  parent: BaseAction
+  name: Skull Volley
+  description: Spawns a volley of legion skulls around the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandLegionSkullVolley
+      attachToTarget: true
+
+- type: entity
+  id: ActionLegionCharge
+  parent: BaseAction
+  name: Legion Charge
+  description: Charges towards the target position.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaBlinkActionEvent
+
+- type: entity
+  id: ActionLegionSentinel
+  parent: BaseAction
+  name: Summon Sentinel
+  description: Summons a roaming legion to fight for the boss.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: MobLegion
+      spawnAtUser: true

@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Staff of storms from TG lavaland: calls or disperses an ash storm.
+- type: entity
+  id: LavalandStaffOfStorms
+  parent: BaseItem
+  name: staff of storms
+  description: An ancient staff that trembles at the merest thought of a storm.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Weapons/staff_of_storms.rsi
+    state: bostaff0
+  - type: Item
+    size: Normal
+    sprite: _Lavaland/Objects/Weapons/staff_of_storms.rsi
+  - type: StaticPrice
+    price: 5000
+  - type: StaffOfStorms
+  - type: ActionGrant
+    actions:
+    - ActionStaffOfStorms
+  - type: ItemActionGrant
+    actions:
+    - ActionStaffOfStorms
+
+- type: entity
+  id: ActionStaffOfStorms
+  parent: BaseAction
+  name: Call the storm
+  description: Summons or disperses an ash storm over lavaland.
+  components:
+  - type: Action
+    icon:
+      sprite: _Lavaland/Objects/Weapons/staff_of_storms.rsi
+      state: bostaff0
+    useDelay: 30
+  - type: InstantAction
+    event: !type:StaffOfStormsActionEvent

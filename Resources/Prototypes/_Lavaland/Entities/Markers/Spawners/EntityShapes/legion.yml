@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Legion attack shapes
+- type: entity
+  parent: MarkerBase
+  id: BaseLegionShape
+  name: legion attack spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  abstract: true
+  components:
+  - type: Sprite
+    state: red
+
+- type: entity
+  parent: BaseLegionShape
+  id: LavalandLegionSkullVolley
+  name: legion skull volley spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: MobLegionSkull
+    shape: !type:NestedEntityShape
+      id: RookCross
+      size: 3
+
+- type: entity
+  parent: BaseLegionShape
+  id: LavalandLegionChargeBurst
+  name: legion charge burst spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: LavalandLegionSkullBlast
+    shape: !type:NestedEntityShape
+      id: BoxFilled
+      size: 3
