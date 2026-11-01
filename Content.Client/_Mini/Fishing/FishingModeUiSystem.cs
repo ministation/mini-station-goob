@@ -23,17 +23,14 @@ public sealed class FishingModeUiSystem : EntitySystem
 
     public bool Active { get; private set; }
     public FishingModeLeader[] Leaders { get; private set; } = Array.Empty<FishingModeLeader>();
-    public FishingModeLeader[] RoundEndLeaders { get; private set; } = Array.Empty<FishingModeLeader>();
 
     public event Action? LeadersUpdated;
-    public event Action? RoundEndUpdated;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeNetworkEvent<FishingModeStatusEvent>(OnStatus);
-        SubscribeNetworkEvent<FishingModeRoundEndEvent>(OnRoundEnd);
         SubscribeNetworkEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
@@ -52,17 +49,10 @@ public sealed class FishingModeUiSystem : EntitySystem
         LeadersUpdated?.Invoke();
     }
 
-    private void OnRoundEnd(FishingModeRoundEndEvent ev)
-    {
-        RoundEndLeaders = ev.Leaders;
-        RoundEndUpdated?.Invoke();
-    }
-
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         Active = false;
         Leaders = Array.Empty<FishingModeLeader>();
-        RoundEndLeaders = Array.Empty<FishingModeLeader>();
         LeadersUpdated?.Invoke();
     }
 }

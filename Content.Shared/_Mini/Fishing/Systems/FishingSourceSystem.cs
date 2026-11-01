@@ -563,6 +563,15 @@ public sealed partial class FishingSourceSystem : EntitySystem
         if (!_proto.TryIndex(sourceId, out FishingSourcePrototype? source))
             return false;
 
+        // Sources like a chasm can hand over something that already exists there.
+        var detritusEv = new FishingDetritusEvent(sourceEntity, user, rod, sourceId);
+        RaiseLocalEvent(sourceEntity, ref detritusEv, broadcast: true);
+        if (detritusEv.ExistingCatch is { } detritus && !TerminatingOrDeleted(detritus))
+        {
+            existingCatch = detritus;
+            return true;
+        }
+
         var lootEv = new FishLootModifiersEvent(user, rod, sourceId);
         RaiseLocalEvent(rod, ref lootEv);
 

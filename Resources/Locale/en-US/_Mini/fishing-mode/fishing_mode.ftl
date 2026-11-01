@@ -13,10 +13,8 @@ fishing-mode-hud-fish = { $count } fish
 fishing-mode-hud-collapse = Collapse the fishing leaderboard
 fishing-mode-hud-expand = Expand the fishing leaderboard
 fishing-mode-round-end-title = Top fishers
-fishing-mode-round-end-reward = +{ $amount } { $amount ->
-    [one] coin
-    *[other] coins
-}
+fishing-mode-round-end-line = { $place }. { $name }: { $fish } fish
+fishing-mode-round-end-line-reward = { $place }. { $name }: { $fish } fish, +{ $reward } coins
 fishing-mode-reward-message = Fishing reward: { $amount } { $amount ->
     [one] coin
     *[other] coins
