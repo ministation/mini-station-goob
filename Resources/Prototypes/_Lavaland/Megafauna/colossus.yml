@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Root selector
+- type: megafaunaSelector
+  id: Colossus
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: ColossusActions
+
+# Actions
+- type: megafaunaSelector
+  id: ColossusActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionColossusBoltsSpread
+    - id: ActionColossusBoltsRing
+    - id: ActionColossusBoltsSpiral
+    - id: ActionColossusCounterSpiral
+
+- type: megafaunaSelector
+  id: ActionColossusBoltsSpread
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 1.5,4.0
+      inverse: true
+    actionId: ActionColossusBoltsSpread
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionColossusBoltsSpread
+
+- type: megafaunaSelector
+  id: ActionColossusBoltsRing
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 3.0,6.0
+      inverse: true
+    actionId: ActionColossusBoltsRing
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionColossusBoltsRing
+
+- type: megafaunaSelector
+  id: ActionColossusBoltsSpiral
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 5.0,9.0
+      inverse: true
+    actionId: ActionColossusBoltsSpiral
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionColossusBoltsSpiral
+
+# Below 33% HP only: TG's double counter-spiral.
+- type: megafaunaSelector
+  id: ActionColossusCounterSpiral
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 4.0,8.0
+      inverse: true
+    actionId: ActionColossusCounterSpiral
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionColossusCounterSpiral
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2

@@ -1,0 +1,83 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Colossus chest loot items (port of TG megafauna loot, adapted subset).
+
+# Cain & Abel: twin daggers.
+- type: entity
+  id: LavalandCainDagger
+  parent: BaseItem
+  name: Cain
+  description: The elder twin. It hungers for its brother's company.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: cain_and_abel
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.2
+    damage:
+      types:
+        Slash: 14
+  - type: StaticPrice
+    price: 2000
+
+- type: entity
+  id: LavalandAbelDagger
+  parent: LavalandCainDagger
+  name: Abel
+  description: The younger twin. It hungers for its brother's blood.
+
+# Divine vocal cords: a voice that commands obedience.
+- type: entity
+  id: LavalandVocalCords
+  parent: BaseItem
+  name: divine vocal cords
+  description: The vocal cords of a god. Holding them to your throat lets you speak with authority.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: dustyshard
+  - type: StaticPrice
+    price: 3000
+  - type: ActionGrant
+    actions:
+    - ActionVoiceOfGod
+  - type: ItemActionGrant
+    actions:
+    - ActionVoiceOfGod
+
+- type: entity
+  id: ActionVoiceOfGod
+  parent: BaseAction
+  name: Voice of God
+  description: Speak a word of command. The target is forced to its knees.
+  components:
+  - type: Action
+    icon:
+      sprite: Objects/Magic/magicactions.rsi
+      state: knock
+    useDelay: 30
+  - type: TargetAction
+    range: 10
+    checkCanAccess: false
+  - type: EntityTargetAction
+    event: !type:VoiceOfGodActionEvent
+
+# Anomalous crystal of renewal: single-use, revives the dead or fully heals the user.
+- type: entity
+  id: LavalandRenewalCrystal
+  parent: BaseItem
+  name: anomalous crystal of renewal
+  description: A humming crystal that pulses with life-giving energy. Use it near a corpse to breathe life back into it.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: dustyshard
+  - type: PointLight
+    color: "#7CFC00"
+    radius: 2
+    energy: 2
+  - type: RenewalCrystal

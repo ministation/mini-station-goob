@@ -1,0 +1,91 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: ActionColossusBoltsSpread
+  parent: BaseAction
+  name: Bolt Spread
+  description: Fires a spread of armor-piercing bolts at the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandColossusBolt
+      count: 5
+      spread: 35
+      speed: 18
+      pattern: Cone
+
+- type: entity
+  id: ActionColossusBoltsRing
+  parent: BaseAction
+  name: Bolt Ring
+  description: Fires bolts in all directions.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandColossusBolt
+      count: 8
+      speed: 14
+      pattern: Ring
+
+- type: entity
+  id: ActionColossusBoltsSpiral
+  parent: BaseAction
+  name: Bolt Spiral
+  description: Fires a rotating spiral of bolts.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandColossusBolt
+      speed: 14
+      pattern: Spiral
+      duration: 3
+      interval: 0.2
+      spinSpeed: 90
+
+- type: entity
+  id: ActionColossusCounterSpiral
+  parent: BaseAction
+  name: Counter Spiral
+  description: Fires two counter-rotating spirals of bolts.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandColossusBolt
+      speed: 14
+      pattern: Spiral
+      duration: 4
+      interval: 0.18
+      spinSpeed: 120
+      spiralCount: 2

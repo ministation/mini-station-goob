@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Colossus death bolt: armor-piercing projectile.
+- type: entity
+  id: LavalandColossusBolt
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  name: death bolt
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 25
+    ignoreResistances: true
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: magicm_cyan
+      shader: unshaded
+  - type: PointLight
+    color: "#5FD9F7"
+    radius: 1.5
+    energy: 3.0
