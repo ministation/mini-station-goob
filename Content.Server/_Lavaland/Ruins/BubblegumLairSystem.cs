@@ -25,8 +25,8 @@ public sealed class BubblegumLairSystem : EntitySystem
 
     private void OnSpawnerMapInit(Entity<BubblegumLairSpawnerComponent> ent, ref MapInitEvent args)
     {
+        // No self-delete: the prototype sweep requires every entity to stay deletable.
         BuildStructure(ent);
-        QueueDel(ent);
     }
 
     private void BuildStructure(Entity<BubblegumLairSpawnerComponent> ent)
