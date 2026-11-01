@@ -14,6 +14,8 @@
     sprite: _Goobstation/Objects/Specific/Fishing/fish_analyzer.rsi
     size: Small
   - type: FishAnalyzer
+  - type: HeldFishingDifficulty
+    difficulty: -3
   - type: UserInterface
     interfaces:
       enum.FishAnalyzerUiKey.Key:

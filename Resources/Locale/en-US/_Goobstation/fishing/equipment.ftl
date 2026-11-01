@@ -132,6 +132,11 @@ fishing-gene-injector-empty = This injector has no trait stored in it.
 fishing-gene-injector-examine = It contains the { $trait } trait.
 fishing-gene-injector-named = fish trait injector ({ $trait })
 
+ent-FishingBag = fishing bag
+    .desc = A vibrant bag for storing caught fish.
+ent-FishingBagCarpskin = carpskin fishing bag
+    .desc = A dapper fishing bag made from carpskin. The pockets between the larger scales fit quite a lot of gear.
+
 ent-FishingGeneGun = fish gene-gun
     .desc = A device designed to inject or extract traits to and from fish. It takes an empty syringe and turns it into a fish trait injector. Repeated applications may kill the fish.
 ent-FishGeneInjector = fish trait injector

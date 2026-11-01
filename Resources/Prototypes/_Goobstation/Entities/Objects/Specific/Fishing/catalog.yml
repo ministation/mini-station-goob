@@ -13,6 +13,8 @@
   - type: Item
     size: Small
   - type: FishCatalog
+  - type: HeldFishingDifficulty
+    difficulty: -7
   - type: UserInterface
     interfaces:
       enum.FishCatalogUiKey.Key:

@@ -599,7 +599,16 @@ public sealed partial class FishingSystem : EntitySystem
             ? indexedFish
             : null;
 
-        var difficulty = MathF.Max(MinDifficulty, _sources.CalculateDifficulty(challenge.Source, fishProtoId, rod.Owner, user));
+        var difficulty = _sources.CalculateDifficulty(challenge.Source, fishProtoId, rod.Owner, user);
+
+        // Fishing bags, the fish encyclopedia and similar gear make the minigame easier while held.
+        foreach (var held in _hands.EnumerateHeld(user))
+        {
+            if (TryComp<HeldFishingDifficultyComponent>(held, out var heldDifficulty))
+                difficulty += heldDifficulty.Difficulty;
+        }
+
+        difficulty = MathF.Max(MinDifficulty, difficulty);
         challenge.Difficulty = difficulty;
 
         var mods = new FishFightModifiersEvent(difficulty);

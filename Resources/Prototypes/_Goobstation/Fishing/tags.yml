@@ -8,3 +8,9 @@
 
 - type: Tag
   id: FishingBait
+
+- type: Tag
+  id: FishingRod
+
+- type: Tag
+  id: Fish

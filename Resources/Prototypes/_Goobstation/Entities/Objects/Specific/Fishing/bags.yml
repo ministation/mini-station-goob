@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  parent: BaseStorageItem
+  id: FishingBag
+  name: fishing bag
+  description: A vibrant bag for storing caught fish.
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: fishing_bag
+  - type: Item
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+  - type: Storage
+    maxItemSize: Normal
+    grid:
+    - 0,0,6,4
+    quickInsert: true
+    whitelist:
+      tags:
+      - Fish
+      - FishingLine
+      - FishingHook
+      - FishingBait
+      - FishingRod
+  - type: Dumpable
+  - type: HeldFishingDifficulty
+    difficulty: -2
+  - type: StaticPrice
+    price: 300
+
+- type: entity
+  parent: FishingBag
+  id: FishingBagCarpskin
+  name: carpskin fishing bag
+  description: A dapper fishing bag made from carpskin. The pockets between the larger scales fit quite a lot of gear.
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: fishing_bag_carpskin
+  - type: Storage
+    grid:
+    - 0,0,8,5
+  - type: HeldFishingDifficulty
+    difficulty: -4
+  - type: StaticPrice
+    price: 600

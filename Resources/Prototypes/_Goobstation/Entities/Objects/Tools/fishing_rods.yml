@@ -57,6 +57,9 @@
       types:
         Piercing: 4
   - type: FishingRod
+  - type: Tag
+    tags:
+    - FishingRod
   - type: ItemSlots
     slots:
       line:
