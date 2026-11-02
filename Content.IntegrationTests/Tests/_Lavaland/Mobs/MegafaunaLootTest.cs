@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Content.Goobstation.Shared.GPS.Components;
 using Content.Shared.Actions;
+using Content.Shared.Clothing.Components;
 using Content.Shared.Actions.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
@@ -107,6 +108,44 @@ public sealed class MegafaunaLootTest
     }
 
     [Test]
+    public async Task BubblegumSarcophagusDropsSuitWithItsOwnHelmetOnly()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+
+        var server = pair.Server;
+        var testMap = await pair.CreateTestMap();
+        var entMan = server.ResolveDependency<IEntityManager>();
+
+        EntityUid bubblegum = default;
+
+        await server.WaitPost(() => bubblegum = entMan.SpawnEntity("LavalandBossBubblegum", testMap.GridCoords));
+        await server.WaitRunTicks(5);
+
+        await server.WaitPost(() => server.System<MobStateSystem>().ChangeMobState(bubblegum, MobState.Dead));
+        await server.WaitRunTicks(5);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(CountPrototypes(entMan, "ClothingOuterHardsuitHECK"), Is.EqualTo(1),
+                "bubblegum sarcophagus must drop one H.E.C.K. suit");
+            Assert.That(CountPrototypes(entMan, "ClothingHeadHelmetHECK"), Is.EqualTo(1),
+                "the suit drops its helmet by itself, the sarcophagus must not add a second loose one");
+
+            var query = entMan.EntityQueryEnumerator<MetaDataComponent>();
+            while (query.MoveNext(out var uid, out var meta))
+            {
+                if (meta.EntityPrototype?.ID != "ClothingHeadHelmetHECK")
+                    continue;
+
+                Assert.That(entMan.HasComponent<AttachedClothingComponent>(uid), Is.True,
+                    "the helmet must be attached to the suit, not a separately pickable item");
+            }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task BossesAndTendrilsHaveGps()
     {
         await using var pair = await PoolManager.GetServerClient();
@@ -185,6 +224,19 @@ public sealed class MegafaunaLootTest
         }
 
         await pair.CleanReturnAsync();
+    }
+
+    private static int CountPrototypes(IEntityManager entMan, string id)
+    {
+        var count = 0;
+        var query = entMan.EntityQueryEnumerator<MetaDataComponent>();
+        while (query.MoveNext(out _, out var meta))
+        {
+            if (meta.EntityPrototype?.ID == id)
+                count++;
+        }
+
+        return count;
     }
 
     private static bool FindPrototype(IEntityManager entMan, string id)

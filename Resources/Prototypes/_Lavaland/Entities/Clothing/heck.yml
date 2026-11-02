@@ -13,6 +13,7 @@
     state: hostile_env
   - type: Clothing
     sprite: _Lavaland/Clothing/OuterClothing/Hardsuits/heck.rsi
+    equippedState: hostile_env-equipped-OUTERCLOTHING
   - type: Armor
     modifiers:
       coefficients:
@@ -42,6 +43,7 @@
     state: hostile_env
   - type: Clothing
     sprite: _Lavaland/Clothing/Head/Hardsuits/heck.rsi
+    equippedState: hostile_env-equipped-HEAD
   - type: Armor
     modifiers:
       coefficients:
