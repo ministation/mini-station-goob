@@ -264,6 +264,10 @@
       weight: 18
     - id: FishSlimefish
       weight: 4
+    # tg's toilet table also holds a wallet (weight 2) and the fishing spot capsule
+    # (weight 1). The wallet has no fishing loot port here, the capsule is ported.
+    - id: FishingSpotCapsule
+      weight: 1
 
 - type: fishingSource
   id: FishingSourceHolographic
