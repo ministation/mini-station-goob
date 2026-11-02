@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
+#nullable enable
+
 using Content.IntegrationTests.Tests.Interaction;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Aquarium;
