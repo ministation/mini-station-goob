@@ -26,7 +26,7 @@
     factions:
     - SimpleHostile
   - type: MegafaunaStage
-    maxStage: 1
+    maxStage: 3 # MobPhases stages, the last one is the final judgement
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Bosses/96x96.rsi

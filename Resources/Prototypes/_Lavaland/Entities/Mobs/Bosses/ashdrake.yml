@@ -121,4 +121,4 @@
       components:
       - MegafaunaWeaponLooter
     dropBoth: true
-    deleteOnDeath: true
+    # TG keeps the corpse so the butcher results (hide, diamonds, bones) are reachable.

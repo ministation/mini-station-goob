@@ -19,9 +19,9 @@ public sealed partial class SpawnLootOnDeathComponent : Component
     public EntityTableSelector? SpecialTable;
 
     /// <summary>
-    /// Whitelist for a weapon that is always checked when hitting the target.
-    /// If target was damaged by something that doesn't pass this whitelist,
-    /// the mob doesn't drop special loot and fallbacks to normal loot instead.
+    /// Whitelist for the weapon that has to deal the killing blow for the special loot to drop.
+    /// Melee, projectile and other direct weapon damage are checked, environmental damage never passes.
+    /// When the killing blow does not pass, the mob falls back to the normal loot table.
     /// </summary>
     [DataField("weaponWhitelist")]
     public EntityWhitelist? SpecialWeaponWhitelist;
@@ -37,9 +37,9 @@ public sealed partial class SpawnLootOnDeathComponent : Component
     public bool DropBoth;
 
     /// <summary>
-    /// Check if the boss got damaged by crusher only.
-    /// True by default. Will immediately switch to false if anything else hit it. Even the environmental stuff.
+    /// True when the last hit that damaged this entity came from a weapon passing
+    /// <see cref="SpecialWeaponWhitelist"/>, in other words when the mob was killed with a crusher.
     /// </summary>
     [ViewVariables]
-    public bool DoSpecialLoot = true;
+    public bool DoSpecialLoot;
 }

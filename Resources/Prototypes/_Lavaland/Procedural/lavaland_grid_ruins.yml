@@ -96,13 +96,6 @@
   priority: 11
 
 - type: lavalandGridRuin
-  id: SeedVault
-  name: lavaland-ruin-seed-vault
-  path: /Maps/_Lavaland/Lavaland/ruin_seed_vault.yml
-  priority: 13
-  patchToPlanet: false
-
-- type: lavalandGridRuin
   id: Graveyard
   name: lavaland-ruin-seed-graveyard
   path: /Maps/_Lavaland/Lavaland/ruin_graveyard.yml

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # Important Note!
 # Crusher upgrade entities have the exact same ID as their respective TagPrototype.
 # Remember to take this into account when adding new upgrades!
@@ -34,29 +38,8 @@
   - type: ItemUpgrade
     name: gun-upgrade-crusher-kinetic-marker-name
     uniqueGroup: mainUpgrade
-  - type: GunUpgradeComponents
-    components:
-    - type: AmmoCounter
-    - type: UseDelayOnShoot
-    - type: GunRequiresWield
-    - type: Gun
-      soundGunshot: /Audio/Weapons/plasma_cutter.ogg
-      fireRate: 1
-      useKey: false
-    - type: MapRestricted
-      mapWhitelist:
-        components:
-        - Biome
-    - type: MapRestrictedGun
-      popupOnBlock: gun-lavaland-restricted-message
-    - type: RechargeBasicEntityAmmo
-      rechargeCooldown: 1
-      rechargeSound:
-        path: /Audio/Weapons/Guns/MagIn/kinetic_reload.ogg
-    - type: BasicEntityAmmoProvider
-      proto: BulletCharge
-      capacity: 1
-      count: 1
+  # The kinetic marker is built into the base crusher now, so this capsule no longer grants
+  # any components. It stays as a legacy loot item for existing maps and boss loot tables.
   - type: Tag
     tags:
     - CrusherUpgradeMain
@@ -77,22 +60,17 @@
   - type: ItemUpgrade
     name: gun-upgrade-crusher-rude-buster-name
     uniqueGroup: mainUpgrade
+  - type: KineticMarkerUpgrade
+  # Only the parts that differ from the built in kinetic marker: AmmoCounter, UseDelayOnShoot,
+  # GunRequiresWield, MapRestricted and MapRestrictedGun already sit on the crusher itself.
+  # The marker system restores the gun components after this upgrade is ejected.
   - type: GunUpgradeComponents
     components:
-    - type: AmmoCounter
-    - type: UseDelayOnShoot
-    - type: GunRequiresWield
     - type: Gun
       projectileSpeed: 12 # Needed for the trail to look good
       soundGunshot: /Audio/Weapons/plasma_cutter.ogg
       fireRate: 10
       useKey: false
-    - type: MapRestricted
-      mapWhitelist:
-        components:
-        - Biome
-    - type: MapRestrictedGun
-      popupOnBlock: gun-lavaland-restricted-message
     - type: RechargeBasicEntityAmmo
       rechargeCooldown: 8
       rechargeSound:
@@ -281,7 +259,6 @@
   id: CrusherUpgradesMain
   table: !type:GroupSelector
     children:
-    - id: CrusherUpgradeMainMarker
     - id: CrusherUpgradeMainRudeBuster
 
 - type: entityTable

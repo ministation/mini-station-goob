@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: entity
   name: Ash Whelp
   id: LavalandMobAshWhelp
@@ -145,6 +149,10 @@
     damageModifierSet: Hierophant
   - type: CombatPower # Goobstation
     factor: 4 # times more dangerous than a crew-member
+  - type: Butcherable
+    spawned:
+    - id: FoodMeat
+      amount: 2
 
 - type: entity
   name: Rabble

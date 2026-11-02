@@ -81,7 +81,7 @@
       1250: 2 # below 50% HP: enraged crosses and blink spam
       2000: 3
   - type: MegafaunaStage
-    maxStage: 1 # MobPhases handles the enrage, but nothing writes it back to the HUD stage yet.
+    maxStage: 3 # MobPhases stages, phase 2 is the enrage
   - type: BossMusic
     soundId: Hierophant
   - type: TileMovement
@@ -90,7 +90,7 @@
     table: !type:AllSelector
       children:
       - id: LavalandHierophantClub
-      - id: CrusherUpgradeMainMarker
+      - id: CrusherUpgradeMainRudeBuster
     specialTable: !type:AllSelector
       children:
       - id: LavalandVortexTalisman

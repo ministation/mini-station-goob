@@ -3,6 +3,7 @@
 using System.Numerics;
 using Content.Shared._Lavaland.Necropolis;
 using Content.Shared.Damage.Systems;
+using Content.Shared.EntityTable;
 using Content.Shared.Ghost;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs;
@@ -25,10 +26,12 @@ namespace Content.Server._Lavaland.Necropolis;
 public sealed class EliteTumorSystem : EntitySystem
 {
     private static readonly EntProtoId GhostRoleTemplate = "LavalandEliteTumorGhostRole";
+    private static readonly ProtoId<EntityTablePrototype> TendrilLootTable = "LavalandLootTendril";
 
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedContainerSystem _containers = default!;
     [Dependency] private readonly DamageableSystem _damageable = default!;
+    [Dependency] private readonly EntityTableSystem _entityTable = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -177,7 +180,17 @@ public sealed class EliteTumorSystem : EntitySystem
 
     private void DropLoot(Entity<EliteTumorComponent> tumor)
     {
-        var crate = Spawn(tumor.Comp.LootCrate, Transform(tumor).Coordinates);
+        var coords = Transform(tumor).Coordinates;
+        var crate = Spawn(tumor.Comp.LootCrate, coords);
+        _containers.TryGetContainer(crate, "entity_storage", out var container);
+
+        // TG parity: the crate always rolls tendril loot, boosting only adds the trophy roll.
+        if (container != null)
+        {
+            foreach (var spawn in _entityTable.GetSpawns(_proto.Index(TendrilLootTable)))
+                _containers.Insert(Spawn(spawn, coords), container);
+        }
+
         if (!tumor.Comp.Boosted)
             return;
 
@@ -189,8 +202,8 @@ public sealed class EliteTumorSystem : EntitySystem
             lootProto = trophy;
         }
 
-        var loot = Spawn(lootProto, Transform(tumor).Coordinates);
-        if (_containers.TryGetContainer(crate, "entity_storage", out var container))
+        var loot = Spawn(lootProto, coords);
+        if (container != null)
             _containers.Insert(loot, container);
     }
 

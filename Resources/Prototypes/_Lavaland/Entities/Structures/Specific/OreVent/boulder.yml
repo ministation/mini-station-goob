@@ -66,23 +66,13 @@
     - id: UraniumOre1Unprocessed
       weight: 1
 
+# TG artifact boulders always hold a real relic for science plus bonus minerals.
 - type: entityTable
   id: LavalandOreVentArtifactBoulderLoot
   table: !type:AllSelector
     children:
-    - id: ArtifactFragmentOre1Unprocessed
-    - !type:GroupSelector
+    - id: ComplexXenoArtifactItem
+    - id: DiamondOre1Unprocessed
+      rolls: 2, 3
+    - id: MaterialBSCrystal1Unprocessed
       rolls: 1, 2
-      children:
-      - id: GoldOre1Unprocessed
-        weight: 3
-      - id: SilverOre1Unprocessed
-        weight: 3
-      - id: PlasmaOre1Unprocessed
-        weight: 2
-      - id: UraniumOre1Unprocessed
-        weight: 2
-      - id: BananiumOre1Unprocessed
-        weight: 1
-      - id: DiamondOre1Unprocessed
-        weight: 1
