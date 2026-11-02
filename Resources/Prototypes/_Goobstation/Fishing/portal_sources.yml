@@ -1,0 +1,244 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+#
+# The dimensions of the fish-porter 3000. In tg these sources exist only inside the
+# fishing portal generator and have no water turf of their own. Loot that has no SS14
+# counterpart (message in a bottle, survival capsule, bluespace ore) is omitted, so the
+# remaining entries are slightly more likely than in tg.
+
+- type: fishingSource
+  id: FishingSourcePortal
+  portalDestination: true
+  radialState: fish_tank
+  radialName: fishing-portal-source-aquarium
+  catalogDescription: fishing-source-portal-aquarium
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 7
+    - id: FishGoldfish
+      weight: 10
+    - id: FishGuppy
+      weight: 10
+    - id: FishAngelfish
+      weight: 10
+    - id: FishPerch
+      weight: 5
+    - id: FishGoldfishThreeEyes
+      weight: 3
+    - id: FishPlasmatetra
+      weight: 3
+
+- type: fishingSource
+  id: FishingSourcePortalBeach
+  portalDestination: true
+  requiredExperiment: ScanningFish
+  radialState: palm_beach
+  radialName: fishing-portal-source-beach
+  catalogDescription: fishing-source-portal-beach
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 7
+    - id: FishClownfish
+      weight: 10
+    - id: FishPufferfish
+      weight: 10
+    - id: FishCardinal
+      weight: 10
+    - id: FishGreenchromis
+      weight: 10
+    - id: FishSquid
+      weight: 8
+    - id: FishPlaice
+      weight: 8
+
+- type: fishingSource
+  id: FishingSourcePortalChasm
+  portalDestination: true
+  requiredExperiment: ScanningFishThird
+  radialState: ground_hole
+  radialName: fishing-portal-source-chasm
+  catalogDescription: fishing-source-portal-chasm
+  background: background_chasm
+  difficulty: 35
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 5
+    - id: FishChasmCrab
+      weight: 10
+    - id: FishBoned
+      weight: 5
+    - id: MaterialBones
+      weight: 5
+
+- type: fishingSource
+  id: FishingSourcePortalOcean
+  portalDestination: true
+  requiredExperiment: ScanningFishSecond
+  radialState: seaboat
+  radialName: fishing-portal-source-ocean
+  catalogDescription: fishing-source-portal-ocean
+  difficulty: 35
+  fishCounts:
+    FishSwordfish: 2
+  fishCountRegen:
+    FishSwordfish: 300
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 3
+    - id: FishLanternfish
+      weight: 5
+    - id: FishFirefish
+      weight: 5
+    - id: FishGunnerJellyfish
+      weight: 5
+    - id: FishMoonfishDwarf
+      weight: 4
+    - id: FishNeedlefish
+      weight: 5
+    - id: FishArmorfish
+      weight: 5
+    - id: FishZipzap
+      weight: 5
+    - id: FishStingray
+      weight: 4
+    - id: FishMonkfish
+      weight: 4
+    - id: FishSwordfish
+      weight: 3
+    - id: FishMoonfish
+      weight: 1
+
+- type: fishingSource
+  id: FishingSourcePortalHyperspace
+  portalDestination: true
+  requiredExperiment: ScanningFishFourth
+  radialState: space_rocket
+  radialName: fishing-portal-source-hyperspace
+  catalogDescription: fishing-source-portal-hyperspace
+  background: background_space
+  difficulty: 35
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 5
+    - id: FishStarfish
+      weight: 6
+    - id: FishBabyCarp
+      weight: 6
+    - id: MobCarp
+      weight: 2
+
+- type: fishingSource
+  id: FishingSourcePortalSyndicate
+  portalDestination: true
+  requiresEmag: true
+  radialState: syndi_snake
+  radialName: fishing-portal-source-syndicate
+  catalogDescription: fishing-source-portal-syndicate
+  background: background_lavaland
+  difficulty: 40
+  fishCounts:
+    FishChainsawfish: 1
+    FishPikeArmored: 1
+  fishCountRegen:
+    FishChainsawfish: 420
+    FishPikeArmored: 420
+  table: !type:GroupSelector
+    children:
+    - !type:NoneSelector
+      weight: 5
+    - id: FishDonkfish
+      weight: 5
+    - id: FishEmulsijack
+      weight: 5
+    - id: FishJumpercable
+      weight: 5
+    - id: FishChainsawfish
+      weight: 2
+    - id: FishPikeArmored
+      weight: 2
+
+# The randomizer catches the union of every other portal and never rolls a dud, as in tg.
+# tg rolls a fresh weight between 1 and 4 for every entry when the source is first used,
+# a fixed weight of 2, the middle of that range, keeps the catch pool identical without
+# touching prototype data at runtime.
+- type: fishingSource
+  id: FishingSourcePortalRandom
+  radialState: misaligned_question_mark
+  radialName: fishing-portal-source-random
+  table: !type:GroupSelector
+    children:
+    - id: FishHoloCheckered
+      weight: 1
+    - id: FishGoldfish
+      weight: 2
+    - id: FishGuppy
+      weight: 2
+    - id: FishAngelfish
+      weight: 2
+    - id: FishPerch
+      weight: 2
+    - id: FishGoldfishThreeEyes
+      weight: 2
+    - id: FishPlasmatetra
+      weight: 2
+    - id: FishClownfish
+      weight: 2
+    - id: FishPufferfish
+      weight: 2
+    - id: FishCardinal
+      weight: 2
+    - id: FishGreenchromis
+      weight: 2
+    - id: FishSquid
+      weight: 2
+    - id: FishPlaice
+      weight: 2
+    - id: FishChasmCrab
+      weight: 2
+    - id: FishBoned
+      weight: 2
+    - id: MaterialBones
+      weight: 2
+    - id: FishLanternfish
+      weight: 2
+    - id: FishFirefish
+      weight: 2
+    - id: FishGunnerJellyfish
+      weight: 2
+    - id: FishMoonfishDwarf
+      weight: 2
+    - id: FishNeedlefish
+      weight: 2
+    - id: FishArmorfish
+      weight: 2
+    - id: FishZipzap
+      weight: 2
+    - id: FishStingray
+      weight: 2
+    - id: FishMonkfish
+      weight: 2
+    - id: FishSwordfish
+      weight: 2
+    - id: FishMoonfish
+      weight: 2
+    - id: FishStarfish
+      weight: 2
+    - id: FishBabyCarp
+      weight: 2
+    - id: MobCarp
+      weight: 2
+    - id: FishDonkfish
+      weight: 2
+    - id: FishEmulsijack
+      weight: 2
+    - id: FishJumpercable
+      weight: 2
+    - id: FishChainsawfish
+      weight: 2
+    - id: FishPikeArmored
+      weight: 2

@@ -8,6 +8,9 @@
   description: A water-born creature. Or at least it used to be in the water.
   components:
   - type: Fish
+  - type: Tag
+    tags:
+    - Fish
   - type: Item
     sprite: _Goobstation/Objects/Specific/Fishing/fish_inhand.rsi
   - type: Butcherable

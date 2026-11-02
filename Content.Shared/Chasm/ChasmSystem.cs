@@ -4,7 +4,9 @@ using Content.Shared.ActionBlocker;
 using Content.Shared.Movement.Events;
 using Content.Shared.StepTrigger.Systems;
 using Content.Shared.Weapons.Misc;
+using Content.Shared.Item;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Network;
 using Robust.Shared.Physics;
@@ -24,6 +26,7 @@ public sealed class ChasmSystem : EntitySystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedGrapplingGunSystem _grapple = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
+    [Dependency] private readonly SharedContainerSystem _container = default!;
 
     public override void Initialize()
     {
@@ -106,6 +109,19 @@ public sealed class ChasmSystem : EntitySystem
             }
             // Lavaland Change end: Jaunter
 
+            // tg keeps whatever falls in the chasm, so it can be fished back out.
+            if (chasm.Source is { } chasmUid && !Deleted(chasmUid) && HasComp<ItemComponent>(uid))
+            {
+                var storage = EnsureComp<ChasmStorageComponent>(chasmUid);
+                var container = _container.EnsureContainer<Container>(chasmUid, ChasmStorageComponent.ContainerId);
+                if (_container.Insert(uid, container))
+                {
+                    RemComp<ChasmFallingComponent>(uid);
+                    _blocker.UpdateCanMove(uid);
+                    continue;
+                }
+            }
+
             QueueDel(uid);
         }
     }
@@ -123,6 +139,7 @@ public sealed class ChasmSystem : EntitySystem
     {
         var falling = AddComp<ChasmFallingComponent>(tripper);
 
+        falling.Source = chasm;
         falling.NextDeletionTime = _timing.CurTime + falling.DeletionTime;
         _blocker.UpdateCanMove(tripper);
 

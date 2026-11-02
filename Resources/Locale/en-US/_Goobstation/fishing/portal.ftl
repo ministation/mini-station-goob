@@ -2,3 +2,13 @@ ent-FishingPortalGenerator = fish-porter 3000
     .desc = Fishing anywhere, anytime... anyway, what was I talking about?
 fishing-portal-turn-off = Turn off
 fishing-source-secret = Unknown source
+fishing-portal-source-aquarium = Aquarium
+fishing-portal-source-beach = Beach
+fishing-portal-source-chasm = Chasm
+fishing-portal-source-ocean = Ocean
+fishing-portal-source-hyperspace = Hyperspace
+fishing-portal-source-syndicate = Syndicate
+fishing-portal-source-random = Randomizer
+
+fishing-portal-release-verb = Release fish
+fishing-portal-release-done = You release { $fish } into { $target }.

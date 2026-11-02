@@ -202,7 +202,20 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
             return;
 
         PayRewards(component);
-        RaiseNetworkEvent(new FishingModeRoundEndEvent(BuildLeaders(component, 15)));
+
+        args.AddLine("");
+        args.AddLine($"[bold]{Loc.GetString("fishing-mode-round-end-title")}[/bold]");
+
+        var leaders = BuildLeaders(component, 15);
+        for (var i = 0; i < leaders.Length; i++)
+        {
+            var leader = leaders[i];
+            args.AddLine(leader.Reward > 0
+                ? Loc.GetString("fishing-mode-round-end-line-reward",
+                    ("place", i + 1), ("name", leader.Name), ("fish", leader.Fish), ("reward", leader.Reward))
+                : Loc.GetString("fishing-mode-round-end-line",
+                    ("place", i + 1), ("name", leader.Name), ("fish", leader.Fish)));
+        }
     }
 
     /// <summary>

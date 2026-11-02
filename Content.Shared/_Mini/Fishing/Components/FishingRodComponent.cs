@@ -112,4 +112,16 @@ public sealed partial class FishingRodComponent : Component
     /// </summary>
     [DataField]
     public string? InhandState;
+
+    /// <summary>
+    /// Whether the rod can be extended and collapsed like a telescopic rod.
+    /// </summary>
+    [DataField]
+    public bool Extendable;
+
+    /// <summary>
+    /// Whether an extendable rod is currently extended. A collapsed rod cannot be cast.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool Extended = true;
 }

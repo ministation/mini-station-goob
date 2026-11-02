@@ -15,6 +15,9 @@ ent-FishArmorfish = рыба-панцирь
 ent-FishBabbelfish = рыба-болтун
     .desc = Болтун неприятен и на вид, и на слух: его психические вопли бьют по разуму всех вокруг. На человека влияние ничтожно, а для рыбы смертельно. Говорят, если расщепить его пополам и засунуть куски в уши, откроется психический потенциал.
 
+fish-psychic-wail = Рыба-болтун издаёт психический вопль!
+fish-psychic-wail-kills = Психический вопль убивает рядом рыб: $count!
+
 ent-FishBabyCarp = карпёныш
     .desc = Детёныш грозного космического карпа. Не дайте себя обмануть невинным видом, это агрессивные маленькие мерзавцы.
 
@@ -65,6 +68,12 @@ ent-FishFryish = жаренёк
 
 ent-FishFryishFritterish = фритериш
     .desc = Вкуснейшая экстремофильная инопланетная рыба. Эта выглядит как тайяки.
+
+fish-variant-fritterish-bernard-name = рыба-бернард
+fish-variant-fritterish-bernard-desc = Вкуснейшая экстремофильная инопланетная рыба в форме динозавра. Дети её обожают.
+
+fish-variant-fritterish-matthew-name = рыба-мэтью
+fish-variant-fritterish-matthew-desc = Вкуснейшая экстремофильная инопланетная рыба в форме птеродактиля. Дети её обожают.
 
 ent-FishFryishNessie = рыба Несси
     .desc = Вкуснейшая экстремофильная инопланетная рыба. Эта настолько велика, что о ней можно слагать легенды.
@@ -296,4 +305,12 @@ fish-examine-rarity = Редкость: [color={$color}]{$tier}[/color].
 fish-examine-fillet = При разделке получится { $amount } шт. { $fillet }.
 fish-examine-beauty = Красота: { $beauty }.
 fish-examine-traits = Трейты: { $traits }.
+fish-trait-revival-revived = { $fish } дёргается. Он снова жив!
+fish-trait-ink-splat = { $fish } обливает вас чернилами!
 
+
+fish-pet-verb = Погладить
+fish-pet = Вы гладите { $fish }.
+fish-pet-squirm = { $fish } вырывается из-под вашего пальца.
+fish-pet-bite = { $fish } кусает ваш палец!
+fish-eat-flinch = { $fish } выскальзывает у вас из рук от боли!

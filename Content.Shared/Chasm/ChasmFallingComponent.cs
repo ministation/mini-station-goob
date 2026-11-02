@@ -29,6 +29,11 @@ public sealed partial class ChasmFallingComponent : Component
     public TimeSpan NextDeletionTime = TimeSpan.Zero;
 
     /// <summary>
+    /// The chasm the entity fell into, used to store items instead of deleting them.
+    /// </summary>
+    public EntityUid? Source;
+
+    /// <summary>
     ///     Original scale of the object so it can be restored if the component is removed in the middle of the animation
     /// </summary>
     public Vector2 OriginalScale = Vector2.Zero;

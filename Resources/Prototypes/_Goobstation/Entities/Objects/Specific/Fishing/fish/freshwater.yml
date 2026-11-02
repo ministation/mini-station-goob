@@ -127,6 +127,9 @@
     state: tadpole
   - type: Fish
     fish: FishTadpole
+  - type: FishGrowth
+    result: MobFrog
+    growthTime: 150
 
 - type: entity
   id: FishZipzap

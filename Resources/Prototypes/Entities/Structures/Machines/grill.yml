@@ -28,6 +28,7 @@
     whitelist:
       components:
       - Temperature
+      - Fish
   - type: PlaceableSurface
   - type: Machine
     board: ElectricGrillMachineCircuitboard

@@ -265,7 +265,10 @@ public sealed partial class FishingSourceSystem : EntitySystem
                line.IsCloaked;
     }
 
-    private bool IsFavoriteBait(FishPrototype fish, EntityUid baitItem)
+    /// <summary>
+    /// Whether the bait or lure is a favorite of this fish species.
+    /// </summary>
+    public bool IsFavoriteBait(FishPrototype fish, EntityUid baitItem)
     {
         if (MatchesBaitItem(fish.FavoriteBaits, baitItem))
             return true;
@@ -470,7 +473,10 @@ public sealed partial class FishingSourceSystem : EntitySystem
         return true;
     }
 
-    private FishTraitFlags GetFishTraitFlags(FishPrototype fish)
+    /// <summary>
+    /// Flags of every trait of this fish species.
+    /// </summary>
+    public FishTraitFlags GetFishTraitFlags(FishPrototype fish)
     {
         var flags = FishTraitFlags.None;
         foreach (var traitId in fish.Traits)
@@ -556,6 +562,15 @@ public sealed partial class FishingSourceSystem : EntitySystem
 
         if (!_proto.TryIndex(sourceId, out FishingSourcePrototype? source))
             return false;
+
+        // Sources like a chasm can hand over something that already exists there.
+        var detritusEv = new FishingDetritusEvent(sourceEntity, user, rod, sourceId);
+        RaiseLocalEvent(sourceEntity, ref detritusEv, broadcast: true);
+        if (detritusEv.ExistingCatch is { } detritus && !TerminatingOrDeleted(detritus))
+        {
+            existingCatch = detritus;
+            return true;
+        }
 
         var lootEv = new FishLootModifiersEvent(user, rod, sourceId);
         RaiseLocalEvent(rod, ref lootEv);

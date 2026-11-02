@@ -101,6 +101,8 @@ ent-FishingRodTelescopic = telescopic fishing rod
     .desc = A lightweight, ergonomic, easy to store telescopic fishing rod.
 ent-FishingRodMaster = master fishing rod
     .desc = The mythical rod of a lost fisher king. Said to be imbued with unparalleled fishing power.
+ent-FishingRodRescue = rescue fishing rod
+    .desc = A mining order console rod with a rescue hook. It can pull people and items out of places you cannot reach.
 ent-FishingRodMaterial = material fishing rod
     .desc = A custom fishing rod from your local autolathe.
 
@@ -130,9 +132,24 @@ fishing-gene-injector-empty = This injector has no trait stored in it.
 fishing-gene-injector-examine = It contains the { $trait } trait.
 fishing-gene-injector-named = fish trait injector ({ $trait })
 
+ent-FishingBag = fishing bag
+    .desc = A vibrant bag for storing caught fish.
+ent-FishingBagCarpskin = carpskin fishing bag
+    .desc = A dapper fishing bag made from carpskin. The pockets between the larger scales fit quite a lot of gear.
+
 ent-FishingGeneGun = fish gene-gun
     .desc = A device designed to inject or extract traits to and from fish. It takes an empty syringe and turns it into a fish trait injector. Repeated applications may kill the fish.
 ent-FishGeneInjector = fish trait injector
     .desc = A single-use injector containing a fish trait. It can be applied directly to a living fish, or loaded into a gene-gun.
 
 fishing-lure-spin-examine = It has to be clicked { $min } to { $max } seconds after the cast, while the light above the float is green.
+
+fishing-need-reinforced-line = The line will burn in there. Only reinforced or sinew line can fish in lava.
+fishing-catch-poisoned = The bait was poisonous! { $fish } does not survive.
+
+fishing-anomaly-core-slot = anomaly core
+fishing-anomaly-core-invalid = This hook only accepts an anomaly core.
+fishing-anomaly-core-installed = The core clicks into place.
+fishing-anomaly-core-examine = There is { $core } slotted into it.
+fishing-anomaly-core-effects = An active core can add a special effect to the catch. Gravity cores make the lure sink slower, bluespace cores alter the catch materials, and flesh cores alter the catch size, weight and traits.
+

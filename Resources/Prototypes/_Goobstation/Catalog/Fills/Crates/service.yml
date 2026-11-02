@@ -12,6 +12,9 @@
       - id: FishingRodGoon
       - id: ClothingHeadFishCap
       - id: DrinkBeerBottleFull
+      - id: FishCatalog
+      - id: FishingBag
+      - id: FishingBagCarpskin
 
 - type: entity
   id: CrateSlotMachine

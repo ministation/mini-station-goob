@@ -13,6 +13,23 @@ public sealed partial class ThrowFishingLureActionEvent : WorldTargetActionEvent
 
 public sealed partial class PullFishingLureActionEvent : InstantActionEvent;
 
+/// <summary>
+/// Raised after a fish finished its map initialization, so other systems can add trait components.
+/// </summary>
+public sealed class FishInitializedEvent(EntityUid fish) : EntityEventArgs
+{
+    public readonly EntityUid Fish = fish;
+}
+
+/// <summary>
+/// Raised on a fish when it dies or is revived.
+/// </summary>
+public sealed class FishStatusChangedEvent(EntityUid fish, bool alive) : EntityEventArgs
+{
+    public readonly EntityUid Fish = fish;
+    public readonly bool Alive = alive;
+}
+
 [Serializable, NetSerializable]
 public sealed class ActiveFishingSpotComponentState : ComponentState
 {
@@ -148,6 +165,28 @@ public sealed class FishingCatchCompletedEvent : EntityEventArgs
         Reward = reward;
     }
 }
+/// <summary>
+/// Raised on the entity the cast landed on, so a source can hand over something that already exists
+/// instead of rolling its loot table. Chasm detritus uses this.
+/// </summary>
+[ByRefEvent]
+public struct FishingDetritusEvent
+{
+    public EntityUid SourceEntity;
+    public EntityUid User;
+    public EntityUid Rod;
+    public ProtoId<FishingSourcePrototype> Source;
+    public EntityUid? ExistingCatch;
+
+    public FishingDetritusEvent(EntityUid sourceEntity, EntityUid user, EntityUid rod, ProtoId<FishingSourcePrototype> source)
+    {
+        SourceEntity = sourceEntity;
+        User = user;
+        Rod = rod;
+        Source = source;
+    }
+}
+
 /// <summary>
 /// Raised on the entity a dynamic fishing source is attached to (vending machine, tray, aquarium...)
 /// so the host can provide its own loot. Set Handled to true even when the host has nothing.

@@ -2,6 +2,7 @@
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
 using Content.Shared._Mini.Fishing.Components;
+using Content.Shared._Mini.Fishing.Events;
 using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Item;
@@ -21,6 +22,16 @@ public sealed partial class FishSystem : EntitySystem
 {
     private const float SuffocationTime = 100f;
 
+    /// <summary>
+    /// tg FISH_SIZE_TWO_HANDS_REQUIRED: this big fish need both hands to be picked up.
+    /// </summary>
+    private const float TwoHandsSize = 135f;
+
+    /// <summary>
+    /// tg WEIGHT_CLASS_BULKY, the smallest size for which TRAIT_FISH_SHOULD_TWOHANDED applies.
+    /// </summary>
+    private const float BulkSize = 80f;
+
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedItemSystem _item = default!;
@@ -33,6 +44,15 @@ public sealed partial class FishSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<FishComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<FishComponent, FishStatusChangedEvent>(OnStatusChanged);
+    }
+
+    private void OnStatusChanged(Entity<FishComponent> ent, ref FishStatusChangedEvent args)
+    {
+        if (!_net.IsServer || GetProto(ent.Comp) is not { } proto)
+            return;
+
+        UpdateHeldPrefix(ent, proto);
     }
 
     private void OnMapInit(Entity<FishComponent> ent, ref MapInitEvent args)
@@ -43,13 +63,20 @@ public sealed partial class FishSystem : EntitySystem
         ent.Comp.Initialized = true;
         var proto = GetProto(ent.Comp);
         if (proto == null)
+        {
+            // Legacy fish still raise this so edible and other systems see them.
+            RaiseLocalEvent(ent.Owner, new FishInitializedEvent(ent.Owner), broadcast: true);
             return;
+        }
 
         Randomize(ent, proto);
         UpdateHeldPrefix(ent, proto);
+        UpdateTwoHands(ent, proto);
         UpdateButcherable(ent, proto);
         ent.Comp.FishDifficulty = proto.Rarity <= 400 ? 0.035f : FishComponent.DefaultDifficulty;
         Dirty(ent, ent.Comp);
+
+        RaiseLocalEvent(ent.Owner, new FishInitializedEvent(ent.Owner), broadcast: true);
     }
 
     public override void Update(float frameTime)
@@ -176,7 +203,7 @@ public sealed partial class FishSystem : EntitySystem
         if (!TryComp<ItemComponent>(ent, out var item))
             return;
 
-        var prefix = proto.InhandPrefix;
+        var prefix = !ent.Comp.Alive && proto.DeadInhandPrefix != null ? proto.DeadInhandPrefix : proto.InhandPrefix;
         if (prefix == null)
         {
             prefix = ent.Comp.Size switch
@@ -189,6 +216,20 @@ public sealed partial class FishSystem : EntitySystem
         }
 
         _item.SetHeldPrefix(ent, prefix, false, item);
+    }
+
+    private void UpdateTwoHands(Entity<FishComponent> ent, FishPrototype proto)
+    {
+        if (!_net.IsServer)
+            return;
+
+        var twoHands = ent.Comp.Size > TwoHandsSize
+                       || (proto.ShouldTwoHanded && ent.Comp.Size >= BulkSize);
+
+        if (twoHands)
+            EnsureComp<MultiHandedItemComponent>(ent);
+        else
+            RemCompDeferred<MultiHandedItemComponent>(ent);
     }
 
     private void UpdateButcherable(Entity<FishComponent> ent, FishPrototype proto)
@@ -212,5 +253,6 @@ public sealed partial class FishSystem : EntitySystem
         ent.Comp.Alive = alive;
         ent.Comp.TimeOutOfWater = 0;
         Dirty(ent, ent.Comp);
+        RaiseLocalEvent(ent, new FishStatusChangedEvent(ent, alive));
     }
 }

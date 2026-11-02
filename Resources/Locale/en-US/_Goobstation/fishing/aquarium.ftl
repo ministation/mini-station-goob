@@ -32,6 +32,7 @@ aquarium-window-feed = Feed the fish
 aquarium-window-remove = Take out
 aquarium-window-fish-info = Hunger: { $hunger }%. Happiness: { $happiness }/4. Size: { $size } cm. Weight: { $weight }.
 aquarium-window-fish-dead = Dead
+aquarium-window-fish-starving = [color=#ff5555]Starving! Feed it before it dies.[/color]
 aquarium-window-prop-info = { $name } (beauty { $beauty })
 aquarium-fluid-freshwater = Freshwater
 aquarium-fluid-saltwater = Saltwater
@@ -62,3 +63,6 @@ aquarium-glass-needs-glass = You need two sheets of glass to repair the aquarium
 aquarium-glass-repaired = You repair the aquarium glass.
 aquarium-glass-broken = The aquarium glass shatters!
 aquarium-removed = You take the contents out of the aquarium.
+aquarium-fish-anxiety = { $fish } freaks out for a moment, then stops moving...
+aquarium-fish-eaten = { $predator } eats { $prey }'s carcass.
+aquarium-fish-attacked = { $aggressor } attacks { $victim }!

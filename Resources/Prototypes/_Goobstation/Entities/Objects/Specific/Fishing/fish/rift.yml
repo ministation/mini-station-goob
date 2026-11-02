@@ -10,6 +10,7 @@
     state: babbelfish
   - type: Fish
     fish: FishBabbelfish
+  - type: FishPsychicWail
 
 - type: entity
   id: FishDolphish

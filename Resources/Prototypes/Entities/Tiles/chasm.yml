@@ -10,6 +10,8 @@
     - Wall
   components:
   - type: Chasm
+  - type: FishingSource
+    source: FishingSourceChasm
   - type: StepTrigger
     requiredTriggeredSpeed: 0
     intersectRatio: 0.4

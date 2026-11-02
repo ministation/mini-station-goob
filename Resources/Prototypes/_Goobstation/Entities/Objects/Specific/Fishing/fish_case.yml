@@ -1,0 +1,117 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+
+- type: entity
+  parent: BaseStorageItem
+  id: FishCase
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishcase.rsi
+    state: fishbox
+  - type: Item
+    size: Large
+  - type: Storage
+    grid:
+    - 0,0,9,9
+    maxItemSize: Ginormous
+    whitelist:
+      components:
+      - Fish
+  - type: FishCase
+  - type: StaticPrice
+    price: 200
+
+- type: entity
+  parent: FishCase
+  id: FishCaseFreshwater
+  components:
+  - type: FishCase
+    fluid: Freshwater
+
+- type: entity
+  parent: FishCase
+  id: FishCaseSaltwater
+  components:
+  - type: FishCase
+    fluid: Saltwater
+
+- type: entity
+  parent: FishCase
+  id: FishCaseSyndicate
+  components:
+  - type: FishCase
+    fish:
+    - FishDonkfish
+    - FishDonkfish
+    - FishDonkfish
+    - FishDonkfish
+    - FishDonkfish
+    - FishEmulsijack
+    - FishEmulsijack
+    - FishEmulsijack
+    - FishEmulsijack
+    - FishEmulsijack
+    - FishJumpercable
+    - FishJumpercable
+    - FishJumpercable
+    - FishJumpercable
+    - FishJumpercable
+    - FishChainsawfish
+    - FishChainsawfish
+    - FishPikeArmored
+    - FishPikeArmored
+
+- type: entity
+  parent: FishCase
+  id: FishCaseTiziran
+  components:
+  - type: FishCase
+    fish:
+    - FishMoonfishDwarf
+    - FishMoonfishDwarf
+    - FishGunnerJellyfish
+    - FishGunnerJellyfish
+    - FishNeedlefish
+    - FishNeedlefish
+    - FishArmorfish
+    - FishArmorfish
+    - FishMoonfish
+
+- type: entity
+  parent: FishCase
+  id: FishCaseBlackmarket
+  components:
+  - type: FishCase
+    dead: true
+    fish:
+    - FishClownfishLube
+    - FishClownfishLube
+    - FishPufferfish
+    - FishPufferfish
+    - FishEmulsijack
+    - FishEmulsijack
+    - FishSludgefishPurple
+    - FishSludgefishPurple
+    - FishSlimefish
+    - FishSlimefish
+    - FishRatfish
+    - FishRatfish
+    - FishZipzap
+    - FishZipzap
+    - FishJumpercable
+    - FishJumpercable
+    - FishChasmCrabIce
+    - FishChasmCrab
+    - FishBoned
+    - FishPike
+    - FishSwordfish
+
+- type: entity
+  parent: FishCase
+  id: FishCaseBluespace
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/fishcase.rsi
+    state: fishbox_bluespace
+  - type: Item
+    size: Normal

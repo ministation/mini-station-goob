@@ -53,20 +53,6 @@ public sealed class FishingModeStatusEvent : EntityEventArgs
 public sealed class FishingModeStatusRequestEvent : EntityEventArgs;
 
 /// <summary>
-/// Final table, sent before the round end window opens so the manifest can show it.
-/// </summary>
-[Serializable, NetSerializable]
-public sealed class FishingModeRoundEndEvent : EntityEventArgs
-{
-    public FishingModeLeader[] Leaders;
-
-    public FishingModeRoundEndEvent(FishingModeLeader[] leaders)
-    {
-        Leaders = leaders;
-    }
-}
-
-/// <summary>
 /// Fish rarity, the same tiers and colors as achievements and weekly quests.
 /// </summary>
 public static class FishingModeRarity

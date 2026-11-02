@@ -17,6 +17,12 @@ public sealed partial class FishingPortalComponent : Component
     public ProtoId<FishingSourcePrototype>? ActiveSource;
 
     /// <summary>
+    /// The machine was emagged and now also offers the syndicate dimension.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool Emagged;
+
+    /// <summary>
     /// Sprite layer that is shown while the portal is connected to a source.
     /// </summary>
     [DataField]

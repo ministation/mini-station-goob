@@ -2,6 +2,8 @@
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Damage.Prototypes;
+using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -29,6 +31,12 @@ public sealed partial class FishPrototype : IPrototype
     /// </summary>
     [DataField]
     public SpriteSpecifier? DeadSprite;
+
+    /// <summary>
+    /// Glow overlay drawn while the fish is alive, like the cosmostarfish in tg.
+    /// </summary>
+    [DataField]
+    public SpriteSpecifier? EmissiveSprite;
 
     /// <summary>
     /// Icon used when the fish swims inside an aquarium. Falls back to <see cref="Sprite"/>.
@@ -145,6 +153,63 @@ public sealed partial class FishPrototype : IPrototype
 
     [DataField]
     public List<ProtoId<FishEvolutionPrototype>> EvolutionTypes = new();
+
+    // Eating.
+
+    /// <summary>
+    /// Whether the fish can be eaten. Holographic fish cannot, like in tg.
+    /// </summary>
+    [DataField]
+    public bool Edible = true;
+
+    /// <summary>
+    /// Flavor ids of the raw fish, tg get_fish_taste.
+    /// </summary>
+    [DataField]
+    public List<string> Taste = new() { "raw-fish", "scales" };
+
+    /// <summary>
+    /// tg TRAIT_FISH_SHOULD_TWOHANDED: big enough fish of this species always need both hands.
+    /// </summary>
+    [DataField]
+    public bool ShouldTwoHanded;
+
+    /// <summary>
+    /// Inhand prefix used instead of <see cref="InhandPrefix"/> while the fish is dead, for example
+    /// the chainsawfish dead sprite in tg update_icon_state.
+    /// </summary>
+    [DataField]
+    public string? DeadInhandPrefix;
+
+    /// <summary>
+    /// Message shown when someone uses this fish to commit suicide, like tg suicide_act.
+    /// </summary>
+    [DataField]
+    public LocId? SuicideMessage;
+
+    /// <summary>
+    /// Damage type of the suicide, tg OXYLOSS, TOXLOSS and BRUTELOSS map to these.
+    /// </summary>
+    [DataField]
+    public ProtoId<DamageTypePrototype> SuicideDamage = "Blunt";
+
+    /// <summary>
+    /// Whether the fish is destroyed by the suicide, like tg qdel(src) after swallowing.
+    /// </summary>
+    [DataField]
+    public bool SuicideConsumes;
+
+    /// <summary>
+    /// Edible reagents per bite on top of the default protein and blood. Fluid saltwater fish also get salt.
+    /// </summary>
+    [DataField]
+    public Dictionary<ProtoId<ReagentPrototype>, float> EdibleReagents = new();
+
+    /// <summary>
+    /// When true, <see cref="EdibleReagents"/> replaces the default protein and blood instead of adding to them.
+    /// </summary>
+    [DataField]
+    public bool ReplaceEdibleReagents;
 
     // Butchering.
 

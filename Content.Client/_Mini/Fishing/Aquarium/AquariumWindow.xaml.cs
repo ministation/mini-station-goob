@@ -229,11 +229,16 @@ public sealed partial class AquariumWindow : FancyWindow
 
             if (data.Alive)
             {
-                _info.SetMarkup(Loc.GetString("aquarium-window-fish-info",
+                var info = Loc.GetString("aquarium-window-fish-info",
                     ("hunger", (int) (data.Hunger * 100)),
                     ("happiness", data.Happiness),
                     ("size", (int) data.Size),
-                    ("weight", (int) data.Weight)));
+                    ("weight", (int) data.Weight));
+
+                if (data.Hunger >= 1f)
+                    info += "\n" + Loc.GetString("aquarium-window-fish-starving");
+
+                _info.SetMarkup(info);
             }
             else
             {

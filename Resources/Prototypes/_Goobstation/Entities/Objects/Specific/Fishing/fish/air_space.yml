@@ -10,6 +10,9 @@
     state: baby_carp
   - type: Fish
     fish: FishBabyCarp
+  - type: FishGrowth
+    result: MobCarp
+    growthTime: 270
 
 - type: entity
   id: FishBumpy
@@ -51,7 +54,12 @@
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Specific/Fishing/fish.rsi
-    state: starfish
+    layers:
+    - state: starfish
+    - state: starfish_emissive
+      map: ["emissive"]
+      shader: unshaded
+      visible: false
   - type: Fish
     fish: FishStarfish
 

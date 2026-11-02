@@ -358,3 +358,21 @@ flavor-hew = как хев
 flavor-complex-canned-tuna = как консервированный тунец
 
 
+
+flavor-base-raw-fish = сырой рыбой
+flavor-base-scales = чешуёй
+flavor-base-raw-crab = сырым крабом
+flavor-base-objection = возражением
+flavor-base-chemical-waste = химическими отходами
+flavor-base-anxiety = тревогой
+flavor-base-vermin = грызунами
+flavor-base-maintenance = техтуннелями
+flavor-base-eau-de-toilet = туалетной водой
+flavor-base-fried-fish = жареной рыбой
+flavor-base-soulfulness = одухотворённостью
+flavor-base-raw-mollusk = сырым моллюском
+flavor-base-something-funny = чем-то смешным
+flavor-base-anger = злостью
+flavor-base-cold-jelly = холодным желе
+flavor-base-raw-prawn = сырой креветкой
+flavor-base-chewy-fish = жёсткой рыбой

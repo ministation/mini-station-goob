@@ -2,3 +2,13 @@ ent-FishingPortalGenerator = рыбопорт 3000
     .desc = Рыбачь где угодно и когда угодно... так, о чём я?
 fishing-portal-turn-off = Выключить
 fishing-source-secret = Неизвестный источник
+fishing-portal-source-aquarium = Аквариум
+fishing-portal-source-beach = Пляж
+fishing-portal-source-chasm = Бездна
+fishing-portal-source-ocean = Океан
+fishing-portal-source-hyperspace = Гиперпространство
+fishing-portal-source-syndicate = Синдикат
+fishing-portal-source-random = Рандомайзер
+
+fishing-portal-release-verb = Выпустить рыбу
+fishing-portal-release-done = Вы выпускаете { $fish } в { $target }.

@@ -47,6 +47,38 @@
       amount: 150
 
 - type: researchExperiment
+  id: ScanningFishThird
+  name: research-experiment-scanning-fish-third-name
+  description: research-experiment-scanning-fish-third-desc
+  category: Scanning
+  objective: !type:ScanSamplesExperimentObjective
+    requiredConditions:
+    - AnyFish
+    target: 5
+  reward:
+    pointRewards:
+    - type: General
+      amount: 1000
+    - type: Experimental
+      amount: 300
+
+- type: researchExperiment
+  id: ScanningFishFourth
+  name: research-experiment-scanning-fish-fourth-name
+  description: research-experiment-scanning-fish-fourth-desc
+  category: Scanning
+  objective: !type:ScanSamplesExperimentObjective
+    requiredConditions:
+    - AnyFish
+    target: 7
+  reward:
+    pointRewards:
+    - type: General
+      amount: 1500
+    - type: Experimental
+      amount: 450
+
+- type: researchExperiment
   id: ScanningPeopleAndroid
   name: research-experiment-scanning-people-android-name
   description: research-experiment-scanning-people-android-desc

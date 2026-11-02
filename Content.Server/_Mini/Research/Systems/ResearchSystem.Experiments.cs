@@ -28,6 +28,22 @@ namespace Content.Server.Research.Systems;
 
 public sealed partial class ResearchSystem
 {
+    /// <summary>
+    /// Whether any research database on the station has completed this experiment.
+    /// Used by gated content such as the fishing portal generator.
+    /// </summary>
+    public bool IsExperimentCompleted(string experimentId)
+    {
+        var query = EntityQueryEnumerator<TechnologyDatabaseComponent>();
+        while (query.MoveNext(out _, out var database))
+        {
+            if (database.CompletedExperiments.Contains(experimentId))
+                return true;
+        }
+
+        return false;
+    }
+
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solution = default!;
     [Dependency] private readonly SharedBodySystem _body = default!;

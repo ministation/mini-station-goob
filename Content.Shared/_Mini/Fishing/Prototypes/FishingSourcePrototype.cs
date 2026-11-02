@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
+using Content.Shared._Mini.Research.Prototypes;
 using Content.Shared.EntityTable.EntitySelectors;
 using Content.Shared.Maps;
 using Robust.Shared.Prototypes;
@@ -26,6 +27,32 @@ public sealed partial class FishingSourcePrototype : IPrototype
 
     [DataField]
     public LocId? CatalogDescription;
+
+    /// <summary>
+    /// Short name shown in the fish-porter radial menu. Falls back to
+    /// <see cref="CatalogDescription"/> when it is not set.
+    /// </summary>
+    [DataField]
+    public LocId? RadialName;
+
+    /// <summary>
+    /// Can be picked as a destination of the fish-porter, like tg portal sources.
+    /// </summary>
+    [DataField]
+    public bool PortalDestination;
+
+    /// <summary>
+    /// Needs an emag on the fish-porter to show up, like the syndicate dimension in tg.
+    /// </summary>
+    [DataField]
+    public bool RequiresEmag;
+
+    /// <summary>
+    /// Research experiment that has to be completed before the fish-porter offers this dimension,
+    /// like the fish scanning experiments in tg.
+    /// </summary>
+    [DataField]
+    public ProtoId<ResearchExperimentPrototype>? RequiredExperiment;
 
     /// <summary>
     /// Base difficulty of the minigame at this source.

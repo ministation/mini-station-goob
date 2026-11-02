@@ -2,6 +2,7 @@
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
 using Robust.Shared.GameStates;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared._Mini.Fishing.Components;
 
@@ -52,4 +53,57 @@ public sealed partial class FishingHookComponent : Component
     /// </summary>
     [DataField]
     public bool AttractsShinyLovers;
+
+    /// <summary>
+    /// Whether this hook can grab living creatures, not only items. The rescue and jawed hooks can.
+    /// </summary>
+    [DataField]
+    public bool CanHookLiving;
+
+    /// <summary>
+    /// Whether this hook can be used for regular fishing. The rescue hook cannot.
+    /// </summary>
+    [DataField]
+    public bool CanFish = true;
+
+    /// <summary>
+    /// tg's magnet hook removes duds from the loot table entirely instead of only rerolling them.
+    /// </summary>
+    [DataField]
+    public bool RemoveDuds;
+
+    /// <summary>
+    /// Set while an anomaly core sits in the hook's core slot, drives its overlay.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool AnomalyCoreInstalled;
+}
+
+/// <summary>
+/// Extra effect an anomaly core grants to the anomalous lure hook.
+/// </summary>
+public enum FishingAnomalyEffect : byte
+{
+    None,
+    /// <summary>
+    /// Gravity core: the lure sinks slower in the minigame.
+    /// </summary>
+    Gravity,
+    /// <summary>
+    /// Bluespace core: the catch may inherit a random material composition.
+    /// </summary>
+    DimensionalMaterials,
+    /// <summary>
+    /// Flesh core: the catch may be resized and gain a random fish trait.
+    /// </summary>
+    Bioscramble,
+}
+
+/// <summary>
+/// Visualizer keys for the anomalous lure hook overlay.
+/// </summary>
+[Serializable, NetSerializable]
+public enum FishingAnomalyCoreVisuals : byte
+{
+    Installed,
 }
