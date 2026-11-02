@@ -1,0 +1,144 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Ported from tgstation/tgstation (code/modules/fishing/fishing_equipment.dm,
+# code/modules/mining/shelters.dm, AGPL-3.0-or-later).
+#
+# tg deploys shelter templates (small domes) from the capsule. We have no shelter
+# system in SS14, so the capsule deploys the fishing spot itself, one tile wide.
+
+- type: entity
+  parent: BaseItem
+  id: FishingSpotCapsule
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Specific/Fishing/capsule.rsi
+    state: capsule_fishing
+  - type: Item
+    size: Small
+  - type: Contraband
+    severity: Minor
+  - type: UseDelay
+  - type: UserInterface
+    interfaces:
+      enum.FishingSpotCapsuleUiKey.Key:
+        type: FishingSpotCapsuleBoundUserInterface
+  - type: FishingSpotCapsule
+    selectedSource: FishingSourceRiver
+    spots:
+    - source: FishingSourceRiver
+      spot: FishingSpotCapsuleRiver
+      radialState: river
+      name: fishing-spot-capsule-option-river
+      description: fishing-spot-capsule-option-river-desc
+    - source: FishingSourceOceanBeach
+      spot: FishingSpotCapsuleSeawater
+      radialState: seaboat
+      name: fishing-spot-capsule-option-seawater
+      description: fishing-spot-capsule-option-seawater-desc
+    - source: FishingSourceTizira
+      spot: FishingSpotCapsuleTizira
+      radialState: planet
+      name: fishing-spot-capsule-option-tizira
+      description: fishing-spot-capsule-option-tizira-desc
+    - source: FishingSourceHotSpring
+      spot: FishingSpotCapsuleHotSpring
+      radialState: onsen
+      name: fishing-spot-capsule-option-hot-spring
+      description: fishing-spot-capsule-option-hot-spring-desc
+    - source: FishingSourceIce
+      spot: FishingSpotCapsuleIce
+      radialState: ice
+      name: fishing-spot-capsule-option-ice
+      description: fishing-spot-capsule-option-ice-desc
+    - source: FishingSourceLava
+      spot: FishingSpotCapsuleLava
+      waterOverlay: false
+      radialState: lava
+      name: fishing-spot-capsule-option-lava
+      description: fishing-spot-capsule-option-lava-desc
+      safe: false
+    - source: FishingSourcePlasma
+      spot: FishingSpotCapsulePlasma
+      waterOverlay: false
+      radialState: plasma
+      name: fishing-spot-capsule-option-plasma
+      description: fishing-spot-capsule-option-plasma-desc
+      safe: false
+    - source: FishingSourceOcean
+      spot: FishingSpotCapsuleDepths
+      radialState: depths
+      name: fishing-spot-capsule-option-depths
+      description: fishing-spot-capsule-option-depths-desc
+      safe: false
+
+# tg: /obj/item/survivalcapsule/fishing/hacked ships with the safeties already disabled.
+- type: entity
+  parent: FishingSpotCapsule
+  id: FishingSpotCapsuleHacked
+  suffix: emagged
+  components:
+  - type: FishingSpotCapsule
+    emagged: true
+
+# Deployed spots. tg's templates are tinted per biome (freshwater, seawater, tiziran,
+# hot spring, ice hole, lava, plasma, deep ocean); we tint the waves sprite instead.
+- type: entity
+  id: FishingSpotCapsuleRiver
+  parent: BaseFishingSpot
+  components:
+  - type: FishingSource
+    source: FishingSourceRiver
+
+- type: entity
+  id: FishingSpotCapsuleSeawater
+  parent: BaseFishingSpot
+  components:
+  - type: FishingSource
+    source: FishingSourceOceanBeach
+
+- type: entity
+  id: FishingSpotCapsuleTizira
+  parent: BaseFishingSpot
+  components:
+  - type: FishingSource
+    source: FishingSourceTizira
+
+- type: entity
+  id: FishingSpotCapsuleHotSpring
+  parent: BaseFishingSpot
+  components:
+  - type: FishingSource
+    source: FishingSourceHotSpring
+
+- type: entity
+  id: FishingSpotCapsuleIce
+  parent: BaseFishingSpot
+  components:
+  - type: FishingSource
+    source: FishingSourceIce
+
+- type: entity
+  id: FishingSpotCapsuleLava
+  parent: BaseFishingSpot
+  components:
+  - type: FishingSource
+    source: FishingSourceLava
+  - type: Sprite
+    color: "#e35325"
+
+- type: entity
+  id: FishingSpotCapsulePlasma
+  parent: BaseFishingSpot
+  components:
+  - type: FishingSource
+    source: FishingSourcePlasma
+  - type: Sprite
+    color: "#b626ff"
+
+- type: entity
+  id: FishingSpotCapsuleDepths
+  parent: BaseFishingSpot
+  components:
+  - type: FishingSource
+    source: FishingSourceOcean
+  - type: Sprite
+    color: "#20329c"
