@@ -8,6 +8,7 @@ using Content.Shared._Lavaland.Procedural.Components;
 using Content.Shared._Lavaland.Procedural.Prototypes;
 using Content.Shared.Decals;
 using Content.Shared.Maps;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
@@ -100,6 +101,7 @@ public sealed partial class LavalandSystem
                 case 3:
                     if (_ruinMarkerIndex >= _ruinMarkerList!.Count)
                     {
+                        MapInitLateRuins(_ruinLavaland!.Value);
                         CleanupRuinsBatch();
                         return true;
                     }
@@ -129,6 +131,42 @@ public sealed partial class LavalandSystem
     {
         var guaranteed = y.Guaranteed.CompareTo(x.Guaranteed);
         return guaranteed != 0 ? guaranteed : x.Priority.CompareTo(y.Priority);
+    }
+
+    /// <summary>
+    /// The staged-preload path places ruins after the planet map was already initialized,
+    /// so MapInit never fires for grid-ruin contents (spawners stay dead, mobs get no AI).
+    /// The sync path initializes them together with the planet instead. Raise MapInit
+    /// manually for everything that arrived late - same end state as the sync path.
+    /// </summary>
+    private void MapInitLateRuins(Entity<LavalandMapComponent> lavaland)
+    {
+        if (!_map.IsInitialized(lavaland))
+            return;
+
+        var mapUid = lavaland.Owner;
+        var query = EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+        var toInit = new List<EntityUid>();
+        while (query.MoveNext(out var uid, out var meta, out var xform))
+        {
+            if (meta.EntityLifeStage >= EntityLifeStage.MapInitialized)
+                continue;
+            if (TerminatingOrDeleted(uid) || xform.MapUid != mapUid)
+                continue;
+            toInit.Add(uid);
+        }
+
+        var metaQuery = EntityManager.GetEntityQuery<MetaDataComponent>();
+        foreach (var uid in toInit)
+        {
+            if (!metaQuery.TryComp(uid, out var meta))
+                continue;
+            if (meta.EntityLifeStage != EntityLifeStage.Initialized)
+                continue;
+            EntityManager.RunMapInit(uid, meta);
+        }
+
+        Log.Debug($"Map-initialized late ruin contents on {ToPrettyString(lavaland)}: {toInit.Count} entities.");
     }
 
     private void CleanupRuinsBatch()
