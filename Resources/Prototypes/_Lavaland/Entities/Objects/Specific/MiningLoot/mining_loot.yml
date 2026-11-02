@@ -249,7 +249,7 @@
 # Paradox bag: a bag that is somehow bigger on the inside.
 - type: entity
   id: LavalandParadoxBag
-  parent: BaseItem
+  parent: BaseStorageItem
   name: paradox bag
   description: A bag folded through itself. Its other half is still missing.
   components:

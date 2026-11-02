@@ -173,7 +173,8 @@ public sealed class ResonatorSystem : EntitySystem
                 continue;
             }
 
-            if (field.BurstAt != TimeSpan.MaxValue && _timing.CurTime >= field.BurstAt)
+            // Fields spawned directly (not by a resonator) have no burst timer.
+            if (field.BurstAt != TimeSpan.Zero && field.BurstAt != TimeSpan.MaxValue && _timing.CurTime >= field.BurstAt)
                 (due ??= new()).Add((uid, field));
         }
 
