@@ -277,3 +277,6 @@
   - type: Sprite
     sprite: Objects/Consumable/Food/bowl.rsi
     state: bowl
+  - type: Construction
+    graph: LavalandMushroomBowl
+    node: bowl

@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System;
+using Content.Shared.DoAfter;
 using Content.Shared.EntityTable;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared._Lavaland.OreVent;
 
@@ -113,3 +116,9 @@ public sealed partial class OreVentComponent : Component
     public EntityUid? NodeDrone;
     public readonly HashSet<EntityUid> SpawnedMobs = new();
 }
+
+/// <summary>
+/// Finishes the scan after a do-after so the vent cannot be tapped by a single click.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed partial class OreVentTapDoAfterEvent : SimpleDoAfterEvent;

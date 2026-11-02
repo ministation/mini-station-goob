@@ -16,6 +16,9 @@
     shape:
     - 0,0,1,0
   - type: Resonator
+  - type: Construction
+    graph: LavalandResonatorConstructionGraph
+    node: resonator
   - type: StaticPrice
     price: 500
 
@@ -30,6 +33,9 @@
     quickBurstMod: 1
     addingFailure: 30
     matrixMode: true
+  - type: Construction
+    graph: LavalandResonatorUpgradedConstructionGraph
+    node: resonator
   - type: StaticPrice
     price: 1500
 

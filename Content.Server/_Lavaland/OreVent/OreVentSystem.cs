@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System;
 using System.Numerics;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared._Lavaland.OreVent;
@@ -338,10 +339,7 @@ public sealed class OreVentSystem : EntitySystem
     }
 }
 
-/// <summary>
-/// Finishes the scan after a do-after so the vent cannot be tapped by a single click.
-/// </summary>
-public sealed partial class OreVentTapDoAfterEvent : SimpleDoAfterEvent;
+
 
 [RegisterComponent]
 public sealed partial class OreVentSpawnerComponent : Component
