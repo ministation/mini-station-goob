@@ -16,6 +16,8 @@
     - id: ActionDrakeFireCone
     - id: ActionDrakeLavaPools
     - id: ActionDrakeSlam
+    - id: ActionDrakeMeteors
+    - id: ActionDrakeMassFire
 
 - type: megafaunaSelector
   id: ActionDrakeFireCone
@@ -49,3 +51,25 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionDrakeSlam
+
+- type: megafaunaSelector
+  id: ActionDrakeMeteors
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 4.0,8.0
+      inverse: true
+    actionId: ActionDrakeMeteors
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionDrakeMeteors
+
+- type: megafaunaSelector
+  id: ActionDrakeMassFire
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 8.0,14.0
+      inverse: true
+    actionId: ActionDrakeMassFire
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionDrakeMassFire

@@ -117,3 +117,19 @@ seeds-lavaland-inozhakust-name = иножакуст
 seeds-lavaland-inozhakust-display-name = иножакуст
 seeds-lavaland-plasma-flower-name = плазменный цветок
 seeds-lavaland-plasma-flower-display-name = плазменный цветок
+
+ent-FloraAshSeraka = грибы серянки
+    .desc = Скопление грибов серянки, слабо светящихся изнутри.
+ent-FloraAshFonarstolbe = фонарстолбе
+    .desc = Хемотрофное растение с плодом в форме фонаря, который слабо освещает пепел вокруг.
+
+ent-FoodAshSerakaCap = шляпка серянки
+    .desc = Маленькие, очень вкусные грибы, родом с Тизиры.
+ent-FoodAshFonarstolbe = плод фонарстолбе
+    .desc = Плод фонарстолбе в форме фонаря. Светится мягким синим светом.
+
+ent-LavalandFonarstolbeSeeds = пакет семян (фонарстолбе)
+    .desc = Из этих семян вырастает фонарстолбе.
+
+seeds-lavaland-fonarstolbe-name = фонарстолбе
+seeds-lavaland-fonarstolbe-display-name = фонарстолбе

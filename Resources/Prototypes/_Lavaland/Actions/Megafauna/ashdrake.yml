@@ -57,3 +57,97 @@
     range: 30
   - type: WorldTargetAction
     event: !type:MegafaunaBlinkActionEvent
+
+# Meteor shower: a 3x3 volley of meteors slams down around the target position.
+- type: entity
+  id: ActionDrakeMeteors
+  parent: BaseAction
+  name: Meteor Shower
+  description: Calls down a shower of burning meteors on the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandDrakeMeteorBurst
+
+# Mass fire: a wide carpet of fire around the target position.
+- type: entity
+  id: ActionDrakeMassFire
+  parent: BaseAction
+  name: Mass Fire
+  description: Sets the ground around the target ablaze.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandDrakeMassFireBurst
+
+# Effect prototypes used by the two actions above.
+
+# Meteor called down by the drake: burns up while falling, then leaves a slam crater.
+- type: entity
+  id: LavalandDrakeMeteor
+  name: meteor
+  description: A falling meteor.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: Objects/Misc/meteor.rsi
+    layers:
+    - state: medium
+      shader: unshaded
+      offset: 0,1.5
+  - type: PointLight
+    color: "#FF6B2B"
+    radius: 2.5
+    energy: 3
+  - type: TimedDespawn
+    lifetime: 0.5
+  - type: SpawnOnDespawn
+    prototype: LavalandDrakeSlamDamage
+
+- type: entity
+  parent: MarkerBase
+  id: LavalandDrakeMeteorBurst
+  name: drake meteor burst spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: LavalandDrakeMeteor
+    alignCoords: true
+    shape: !type:NestedEntityShape
+      id: BoxFilled
+      size: 3
+  - type: TimedDespawn
+    lifetime: 1
+
+- type: entity
+  parent: MarkerBase
+  id: LavalandDrakeMassFireBurst
+  name: drake mass fire spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: LavalandLavaPool
+    alignCoords: true
+    shape: !type:NestedEntityShape
+      id: BoxFilled
+      size: 5
+  - type: TimedDespawn
+    lifetime: 1

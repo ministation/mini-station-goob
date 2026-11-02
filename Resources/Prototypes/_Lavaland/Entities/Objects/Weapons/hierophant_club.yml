@@ -30,15 +30,27 @@
     actions:
     - ActionHierophantClubTileMovement
     - ActionHierophantClubBlink
+    - ActionHierophantClubBox
+    - ActionHierophantClubCrosses
   - type: ItemActionGrant
     actions:
     - ActionHierophantClubTileMovement
     - ActionHierophantClubBlink
+    - ActionHierophantClubBox
+    - ActionHierophantClubCrosses
   - type: HeldGrantComponent
     components:
     - type: MegafaunaBlink
       spawnOnTarget: HierophantShapeBlinkSafe
       spawnOnUsed: HierophantShapeBlinkSafe
+
+# Club blast tile: inherits the boss blast and digs through the rock on its own tile.
+- type: entity
+  parent: LavalandHierophantSquare
+  id: LavalandHierophantClubBlast
+  name: hierophant club blast
+  components:
+  - type: HierophantClubDrill
 
 - type: entity
   id: LavalandHierophantMarker

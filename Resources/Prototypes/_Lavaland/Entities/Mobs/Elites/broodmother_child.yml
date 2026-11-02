@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Spawned by the broodmother's Spawn Brood action.
+- type: entity
+  id: MobLavalandGoliathChild
+  parent: MobLavalandGoliath
+  name: brood goliath
+  description: A juvenile goliath, already as mean as its mother.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: ScaleVisuals
+    scale: 0.6, 0.6
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Dead
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 8
+        Slash: 8
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile

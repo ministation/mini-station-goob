@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Content.Goobstation.Maths.FixedPoint;
+using Content.Goobstation.Shared.GPS.Components;
 using Content.Server._Lavaland.OreVent;
 using Content.Shared._Lavaland.OreVent;
 using Content.Shared._Lavaland.UnclaimedOre;
@@ -208,6 +209,78 @@ public sealed class OreVentTest
                 "artifact boulder must drop one real xeno artifact");
             Assert.That(CountUnclaimedOre(entMan), Is.GreaterThanOrEqualTo(3),
                 "artifact boulder must also drop diamonds and bluespace");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task VentStartsUndiscoveredAndScanRevealsIt()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var testMap = await pair.CreateTestMap();
+        var entMan = server.ResolveDependency<IEntityManager>();
+
+        EntityUid vent = default;
+        OreVentComponent ventComp = null!;
+        await server.WaitPost(() =>
+        {
+            vent = entMan.SpawnAtPosition("LavalandOreVent", testMap.GridCoords);
+            ventComp = entMan.GetComponent<OreVentComponent>(vent);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(ventComp.Discovered, Is.False, "vents start undiscovered");
+                Assert.That(ventComp.Size, Is.EqualTo(OreVentSize.Medium), "vents default to medium size");
+                Assert.That(ventComp.Minerals, Has.Count.EqualTo(4), "a vent rolls four minerals");
+            });
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.System<OreVentSystem>().TryDiscover((vent, ventComp)), Is.True,
+                "an undiscovered vent should accept the scan");
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(ventComp.Discovered, Is.True, "the scan should reveal the vent");
+            Assert.That(entMan.TryGetComponent<GPSComponent>(vent, out var gps), Is.True,
+                "a discovered vent gets a GPS signal");
+            Assert.That(gps!.Enabled, Is.True, "the vent GPS signal is enabled");
+            Assert.That(gps.GpsName, Is.Not.Empty, "the GPS signal has a name");
+        });
+
+        // Size drives the NODE drone: large vents get the 500 HP drone.
+        await server.WaitAssertion(() =>
+        {
+            ventComp.Size = OreVentSize.Large;
+            ventComp.ArtifactBoulderChance = 0;
+            Assert.That(entMan.System<OreVentSystem>().TryStartDefense((vent, ventComp)), Is.True,
+                "a discovered vent should accept a tap");
+        });
+
+        await server.WaitRunTicks(5);
+
+        await server.WaitAssertion(() =>
+        {
+            var drones = CollectPrototypes(entMan, "LavalandNodeDrone");
+            Assert.That(drones, Has.Count.EqualTo(1), "exactly one NODE drone should guard the vent");
+
+            var thresholds = entMan.GetComponent<MobThresholdsComponent>(drones[0]);
+            var maxHp = FixedPoint2.Zero;
+            foreach (var hp in thresholds.Thresholds.Keys)
+            {
+                if (hp > maxHp)
+                    maxHp = hp;
+            }
+
+            Assert.That(maxHp, Is.EqualTo(FixedPoint2.New(500)), "a large vent gets a 500 HP drone");
+            Assert.That(ventComp.WavesRemaining, Is.EqualTo(4), "a large vent gets four waves");
         });
 
         await pair.CleanReturnAsync();

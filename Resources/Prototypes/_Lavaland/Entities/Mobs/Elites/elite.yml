@@ -78,6 +78,7 @@
     forgiveRange: 20.0
   - type: CombatPower # Goobstation
     factor: 8 # times more dangerous than a crew-member
+  - type: LavalandElite
 
 - type: entity
   name: Legionnaire
@@ -145,6 +146,7 @@
     - ActionEliteLegionnaireDash
     - ActionEliteLegionnaireSummon
     - ActionEliteLegionnaireSkulls
+    - ActionEliteLegionnaireTurret
   - type: GPS
     gpsName: Crumbling Signal
     enabled: true
@@ -272,6 +274,7 @@
       - MegafaunaWeaponLooter
     dropBoth: true
     deleteOnDeath: false
+  - type: LavalandElite
 
 - type: entity
   name: Herald
@@ -339,6 +342,7 @@
     actions:
     - ActionEliteHeraldOmni
     - ActionEliteHeraldTri
+    - ActionEliteHeraldTeleshot
   - type: GPS
     gpsName: Radiant Signal
     enabled: true
@@ -427,6 +431,7 @@
     actions:
     - ActionEliteBroodSlam
     - ActionEliteBroodSpawn
+    - ActionEliteBroodTentacle
   - type: GPS
     gpsName: Unknown Signal
     enabled: true

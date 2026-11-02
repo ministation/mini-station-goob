@@ -15,6 +15,7 @@
     - id: ActionEliteLegionnaireDash
     - id: ActionEliteLegionnaireSummon
     - id: ActionEliteLegionnaireSkulls
+    - id: ActionEliteLegionnaireTurret
 
 - type: megafaunaSelector
   id: ActionEliteLegionnaireDash
@@ -48,6 +49,17 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionEliteLegionnaireSkulls
+
+- type: megafaunaSelector
+  id: ActionEliteLegionnaireTurret
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 6.0,12.0
+      inverse: true
+    actionId: ActionEliteLegionnaireTurret
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteLegionnaireTurret
 
 # Pandora: hierophant-style box and crosses
 - type: megafaunaSelector
@@ -112,6 +124,7 @@
     children:
     - id: ActionEliteHeraldTri
     - id: ActionEliteHeraldOmni
+    - id: ActionEliteHeraldTeleshot
 
 - type: megafaunaSelector
   id: ActionEliteHeraldTri
@@ -135,6 +148,17 @@
     - !type:ActionAvailableCondition
       actionId: ActionEliteHeraldOmni
 
+- type: megafaunaSelector
+  id: ActionEliteHeraldTeleshot
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 5.0,10.0
+      inverse: true
+    actionId: ActionEliteHeraldTeleshot
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteHeraldTeleshot
+
 # Broodmother: slam and goliath brood
 - type: megafaunaSelector
   id: EliteBroodmother
@@ -149,6 +173,7 @@
     children:
     - id: ActionEliteBroodSlam
     - id: ActionEliteBroodSpawn
+    - id: ActionEliteBroodTentacle
 
 - type: megafaunaSelector
   id: ActionEliteBroodSlam
@@ -171,3 +196,14 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionEliteBroodSpawn
+
+- type: megafaunaSelector
+  id: ActionEliteBroodTentacle
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 2.0,5.0
+      inverse: true
+    actionId: ActionEliteBroodTentacle
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteBroodTentacle

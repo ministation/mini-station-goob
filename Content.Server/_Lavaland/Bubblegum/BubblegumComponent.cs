@@ -2,6 +2,7 @@ using Content.Shared._Goobstation.Wizard.Projectiles;
 using Content.Shared.Damage;
 using Content.Goobstation.Maths.FixedPoint;
 using Robust.Shared.Audio;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Lavaland.Bubblegum;
 
@@ -34,6 +35,18 @@ public sealed partial class BubblegumComponent : Component
 
     [DataField]
     public TimeSpan BloodReactionCooldown = TimeSpan.FromSeconds(1.85);
+
+    /// <summary>
+    /// How long Bubblegum stays enraged after a blood warp.
+    /// </summary>
+    [DataField]
+    public TimeSpan EnrageDuration = TimeSpan.FromSeconds(7);
+
+    [DataField]
+    public float EnrageSpeedMultiplier = 1.5f;
+
+    [DataField]
+    public EntProtoId EnrageCloudPrototype = "LavalandBubblegumEnrageCloud";
 
     [DataField]
     public TimeSpan BloodSprayStepDelay = TimeSpan.FromSeconds(0.055);
@@ -295,6 +308,12 @@ public sealed partial class BubblegumComponent : Component
 
     [ViewVariables]
     public TrailComponent? ChargeTrail;
+
+    [ViewVariables]
+    public bool Enraged;
+
+    [ViewVariables]
+    public TimeSpan EnrageUntil;
 }
 
 public sealed class BubblegumPendingBloodTile

@@ -9,6 +9,8 @@
   parent: FoodProduceBase
   description: A flower from a fire blossom.
   components:
+  - type: Produce
+    seedId: lavalandFireblossom
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: fireblossom
@@ -31,6 +33,8 @@
   parent: FoodProduceBase
   description: A thick sheet of glowing fungi.
   components:
+  - type: Produce
+    seedId: lavalandGlowgrowth
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: glowgrowth
@@ -53,6 +57,8 @@
   parent: FoodProduceBase
   description: The mashed up vines of an inozhakust.
   components:
+  - type: Produce
+    seedId: lavalandInozhakust
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: inozhakust
@@ -74,6 +80,8 @@
   parent: FoodProduceBase
   description: A bit of vine connected to a crystallized plasma flower.
   components:
+  - type: Produce
+    seedId: lavalandPlasmaFlower
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: plasmaflower
@@ -97,6 +105,8 @@
   parent: FoodProduceBase
   description: A bunch of spotted podsneyzka flowers. They smell a bit like rotten meat.
   components:
+  - type: Produce
+    seedId: lavalandPodsneyzka
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: podsneyzka
@@ -120,6 +130,8 @@
   parent: FoodProduceBase
   description: Bunched together vahrezjia stalks. Surprisingly coarse in texture.
   components:
+  - type: Produce
+    seedId: lavalandVahrezjia
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: vahrezjia
@@ -164,6 +176,8 @@
   parent: FoodProduceBase
   description: A spikey, round cluster of prickly star cacti.
   components:
+  - type: Produce
+    seedId: lavalandStarCactus
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: starcactus
@@ -187,6 +201,8 @@
   parent: FoodProduceBase
   description: Some shavings from a large mushroom. With enough, might serve as a bowl.
   components:
+  - type: Produce
+    seedId: lavalandPolypore
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: mushroom_shavings
@@ -210,6 +226,8 @@
   parent: FoodProduceBase
   description: A leaf, from a mushroom.
   components:
+  - type: Produce
+    seedId: lavalandPorcini
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: mushroom_leaf
@@ -232,6 +250,8 @@
   parent: FoodProduceBase
   description: The cap of a large mushroom.
   components:
+  - type: Produce
+    seedId: lavalandInocybe
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: mushroom_cap
@@ -252,6 +272,8 @@
   parent: FoodProduceBase
   description: A long mushroom stem. It is slightly glowing.
   components:
+  - type: Produce
+    seedId: lavalandEmber
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
     state: mushroom_stem
@@ -280,3 +302,35 @@
   - type: Construction
     graph: LavalandMushroomBowl
     node: bowl
+
+- type: entity
+  id: FoodAshSerakaCap
+  parent: FoodMealSerakaCap
+  components:
+  - type: Produce
+    seedId: lavalandSeraka
+
+- type: entity
+  name: fonarstolbe fruit
+  id: FoodAshFonarstolbe
+  parent: FoodProduceBase
+  description: A lantern-shaped fruit from a fonarstolbe. It glows a soft blue.
+  components:
+  - type: Produce
+    seedId: lavalandFonarstolbe
+  - type: Sprite
+    sprite: _Lavaland/Objects/Decoration/Flora/Plants/lavashroom.rsi
+    state: shroom1
+  - type: FlavorProfile
+    flavors:
+    - sweet
+    - sour
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 2
+        - ReagentId: Water
+          Quantity: 1

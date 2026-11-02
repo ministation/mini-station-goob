@@ -37,3 +37,38 @@
     range: 10
   - type: WorldTargetAction
     event: !type:MegafaunaBlinkActionEvent
+
+# Club attacks: the same entity shapes the hierophant itself uses, but digging through rock.
+- type: entity
+  id: ActionHierophantClubBox
+  parent: ActionBaseHierophant
+  name: Expanding Box
+  description: Spawns an expanding box of hierophant blasts on the target position, digging through rock.
+  components:
+  - type: Action
+    raiseOnUser: true
+    priority: -25
+    useDelay: 15
+  - type: TargetAction
+    checkCanAccess: false
+    range: 6
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: HierophantClubShapeExpandingBox
+
+- type: entity
+  id: ActionHierophantClubCrosses
+  parent: ActionBaseHierophant
+  name: Sequence Crosses
+  description: Spawns a sequence of hierophant crosses on the target position, digging through rock.
+  components:
+  - type: Action
+    raiseOnUser: true
+    priority: -26
+    useDelay: 15
+  - type: TargetAction
+    checkCanAccess: false
+    range: 6
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: HierophantClubShapeRandomCross

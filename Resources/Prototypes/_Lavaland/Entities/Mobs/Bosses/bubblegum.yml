@@ -109,3 +109,42 @@
     deleteOnDeath: true
   - type: NoSlip
   - type: RequireProjectileTarget
+
+# Blood cloud left behind by an enraged Bubblegum. Damages and knocks back whoever steps into it.
+- type: entity
+  id: LavalandBubblegumEnrageCloud
+  name: blood cloud
+  description: A cloud of boiling blood. Touching it hurts and throws you around.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      slips:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        hard: false
+        layer:
+        - LowImpassable
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: Effects/spookysmoke.rsi
+    layers:
+    - state: spookysmoke
+      color: "#8c1116"
+  - type: PointLight
+    color: "#8c1116"
+    radius: 2
+    energy: 2
+  - type: StepTrigger
+    requiredTriggeredSpeed: 0
+    intersectRatio: 0.1
+    stepOn: true
+  - type: BubblegumEnrageCloud
+  - type: TimedDespawn
+    lifetime: 3

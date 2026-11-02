@@ -37,3 +37,23 @@
     event: !type:SpawnEntityActionEvent
       spawn: LavalandTendrilChaser
       spawnAtUser: true
+
+# TG parity: when the tendril is hit in melee it lashes out with spikes in all 8 directions.
+- type: entity
+  id: ActionTendrilLash
+  parent: BaseAction
+  name: Tendril Lash
+  description: Lashes out with necropolis spikes in all eight directions.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -22
+    useDelay: 3
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandTendrilLash
+      spawnAtUser: true

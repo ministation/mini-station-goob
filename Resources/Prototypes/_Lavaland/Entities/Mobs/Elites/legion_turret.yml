@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Placed by the legionnaire's bone turret action.
+- type: entity
+  id: LavalandLegionBoneTurret
+  name: bone turret
+  description: A legion skull bound to the ground, spitting bolts at anything that moves.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _Lavaland/Mobs/legion.rsi
+    state: legion-skull
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: LegionTurret
+    projectile: LavalandHeraldBolt
+    fireRate: 1.2
+    range: 9
+  # shortcut: the turret is indestructible and expires after 20 seconds,
+  # add Damageable and Destructible when players need a way to clear it early
+  - type: TimedDespawn
+    lifetime: 20
+  - type: PointLight
+    color: "#B24BF3"
+    radius: 2
+    energy: 1

@@ -9,9 +9,14 @@
   - type: Sprite
     state: red
   - type: ShapeSpawner
-    spawn: LavalandHierophantSquare
-    shape: !type:NestedEntityShape
-      id: BoxHollow
+    spawn: LavalandHierophantClubBlast
+    alignCoords: true
+    shape: !type:AllEntityShape
+      children:
+      # The aimed tile itself is hit too, the hollow box only covers the ring.
+      - id: BoxFilled
+        size: 1
+      - id: BoxHollow
   - type: ShapeSpawnerCounter
     maxCounter: 3
     spawnPeriod: 0.6
@@ -29,10 +34,15 @@
   - type: Sprite
     state: red
   - type: ShapeSpawner
-    spawn: LavalandHierophantSquare
+    spawn: LavalandHierophantClubBlast
+    alignCoords: true
     shape: !type:GroupEntityShape
       children:
       - id: BishopCross
         size: 4
       - id: RookCross
         size: 4
+  # Spawns three crosses in a row, then deletes itself. Without a counter it would never delete itself.
+  - type: ShapeSpawnerCounter
+    maxCounter: 3
+    spawnPeriod: 0.4

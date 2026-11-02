@@ -117,3 +117,19 @@ seeds-lavaland-inozhakust-name = inozhakust
 seeds-lavaland-inozhakust-display-name = inozhakust
 seeds-lavaland-plasma-flower-name = plasma flower
 seeds-lavaland-plasma-flower-display-name = plasma flower
+
+ent-FloraAshSeraka = seraka mushrooms
+    .desc = A cluster of seraka mushrooms, faintly glowing from within.
+ent-FloraAshFonarstolbe = fonarstolbe
+    .desc = A chemotrophic plant with a lantern-like fruit that faintly lights the ash around it.
+
+ent-FoodAshSerakaCap = seraka cap
+    .desc = Small, deeply flavourful mushrooms originally native to Tizira.
+ent-FoodAshFonarstolbe = fonarstolbe fruit
+    .desc = A lantern-shaped fruit from a fonarstolbe. It glows a soft blue.
+
+ent-LavalandFonarstolbeSeeds = packet of fonarstolbe seeds
+    .desc = These seeds grow into fonarstolbe.
+
+seeds-lavaland-fonarstolbe-name = fonarstolbe
+seeds-lavaland-fonarstolbe-display-name = fonarstolbe

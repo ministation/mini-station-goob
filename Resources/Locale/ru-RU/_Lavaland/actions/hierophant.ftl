@@ -13,3 +13,8 @@ action-hierophant-spawn-cross-desc = Создаёт крест, наносящи
 action-hierophant-tile-movement = Движение по плиткам
 action-hierophant-tile-movement-desc = Дарует указанной цели возможность движения по плиткам и бонус к скорости.
 action-hierophant-tile-movement-cast = ПЛ'ТКО'С!
+
+ent-ActionHierophantClubBox = Расширяющийся куб
+    .desc = Создаёт в указанной точке расширяющийся куб взрывов Иерофанта, пробивающий камень.
+ent-ActionHierophantClubCrosses = Череда крестов
+    .desc = Создаёт в указанной точке череду крестов Иерофанта, пробивающих камень.
