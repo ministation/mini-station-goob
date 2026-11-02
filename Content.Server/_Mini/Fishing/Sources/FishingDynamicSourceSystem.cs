@@ -4,8 +4,11 @@
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Events;
 using Content.Shared._Mini.Fishing.Prototypes;
+using Content.Shared._Mini.Fishing.Systems;
 using Content.Server.Botany;
 using Content.Server.Botany.Components;
+using Content.Server.Cargo.Components;
+using Content.Server.Cargo.Systems;
 using Content.Shared.Item;
 using Content.Shared.VendingMachines;
 using Robust.Shared.Prototypes;
@@ -22,8 +25,20 @@ public sealed partial class FishingDynamicSourceSystem : EntitySystem
 {
     private const int HydroSeedCandidates = 8;
 
+    /// <summary>
+    /// Fake price of a product with no price of its own. Cheap products stay common.
+    /// </summary>
+    private const float DefaultProductValue = 100f;
+
+    /// <summary>
+    /// tg multiplies the weight ratios by 1000 for accuracy.
+    /// </summary>
+    private const float WeightAccuracy = 1000f;
+
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private PricingSystem _pricing = default!;
+    [Dependency] private FishingSourceSystem _fishing = default!;
 
     private List<EntProtoId>? _seeds;
 
@@ -56,14 +71,28 @@ public sealed partial class FishingDynamicSourceSystem : EntitySystem
         if (!_proto.TryIndex(ent.Comp.PackPrototypeId, out VendingMachineInventoryPrototype? pack))
             return;
 
+        // tg: the closer the product price is to the bait value, the more likely it is.
+        // Fishing with a worm out of the captain's vendor is not a retirement plan.
+        var baitValue = 1f;
+        if (_fishing.GetBaitItem(args.Rod) is { } bait)
+            baitValue = MathF.Max(1f, (float)_pricing.GetPrice(bait));
+
         foreach (var product in pack.StartingInventory.Keys)
         {
-            if (_proto.TryIndex(product, out EntityPrototype? proto)
-                && !proto.Abstract
-                && proto.TryGetComponent<ItemComponent>(out _, EntityManager.ComponentFactory))
+            if (!_proto.TryIndex(product, out EntityPrototype? proto)
+                || proto.Abstract
+                || !proto.TryGetComponent<ItemComponent>(out _, EntityManager.ComponentFactory))
             {
-                args.Candidates.Add(product);
+                continue;
             }
+
+            var price = proto.TryGetComponent<StaticPriceComponent>(out var staticPrice, EntityManager.ComponentFactory)
+                ? MathF.Max(1f, (float)staticPrice.Price)
+                : DefaultProductValue;
+
+            var low = MathF.Min(price, baitValue);
+            var high = MathF.Max(price, baitValue);
+            args.WeightedCandidates[product] = low / high * WeightAccuracy;
         }
     }
 
