@@ -12,5 +12,5 @@ ent-LavalandAshwalkerDenSpawner = ash walker den spawner
     .desc = { ent-MarkerBase.desc }
 
 ghost-role-information-ashwalker-name = Ash Walker
-ghost-role-information-ashwalker-description = You are a member of the ash walker tribe. Guard the nest, feed it corpses of intruders, and drive miners away from your lands.
+ghost-role-information-ashwalker-description = You are a member of the ash walker tribe. Lavaland's air is your air, so you need no internals. Guard the nest, feed it corpses of intruders, and drive miners away from your lands.
 ashwalker-nest-destroyed = The nest collapses in a burst of ash!

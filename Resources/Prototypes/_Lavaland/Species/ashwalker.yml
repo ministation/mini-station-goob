@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG ashwalkers are a separate lizard subspecies: ashen grey, digitigrade, hornless
+# and able to breathe Lavaland's thin, toxic air.
+- type: skinColoration
+  id: Ashwalker
+  strategy: !type:ClampedHsvColoration
+    saturation: [0, 0.15]
+    value: [0.18, 0.45]
+
+- type: species
+  id: Ashwalker
+  name: species-name-ashwalker
+  roundStart: false
+  prototype: MobAshwalker
+  sprites: MobReptilianSprites
+  defaultSkinTone: "#3c3a37"
+  markingLimits: MobReptilianMarkingLimits
+  dollPrototype: MobReptilianDummy
+  skinColoration: Ashwalker
+  maleFirstNames: NamesReptilianMale
+  femaleFirstNames: NamesReptilianFemale
+  naming: FirstDashFirst
