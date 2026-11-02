@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: BaseMutation
+  id: MutationRegeneration
+  name: Regeneration
+  description: The subject's body is able to regenerate lost limbs or organs while sleeping, given ample rest and nutrients.
+  components:
+  - type: Mutation
+    instability: 25
+    difficulty: 20
+    rarity: Rare
+  - type: ComponentMutation
+    added:
+    - type: LimbRegeneration

@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: BaseMutation
+  id: MutationChemicalAllergy
+  name: Chemical Allergy
+  description: The subject's body is allergic to almost all forms of medicine or drugs, causing severe irritation, toxin buildup and other side effects.
+  components:
+  - type: Mutation
+    instability: -40
+    difficulty: 20
+    rarity: Common
+  - type: ComponentMutation
+    added:
+    - type: ChemicalAllergy

@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: BaseMutation
+  id: MutationVenomousStrikes
+  name: Venomous
+  description: The subject's body produces a minor toxin that can be injected into others through scratches or bites. They will also filter out the same variety of toxin from their own bloodstream should they be exposed to it themselves.
+  components:
+  - type: Mutation
+    instability: 25
+    rarity: Rare
+  - type: ComponentMutation
+    added:
+    - type: VenomousStrikes
