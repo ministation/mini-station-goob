@@ -52,6 +52,9 @@
       weight: 8
     - id: FishPlaice
       weight: 8
+    # tg: /obj/item/survivalcapsule/fishing, weight 1
+    - id: FishingSpotCapsule
+      weight: 1
 
 - type: fishingSource
   id: FishingSourcePortalChasm
