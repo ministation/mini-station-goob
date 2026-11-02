@@ -1,0 +1,471 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG lavaland mining loot artifacts. Effects that cannot be done with existing
+# components live in Content.Server/_Lavaland/Loot and Content.Shared/_Lavaland/Loot.
+
+# Eye of God: meson goggles that burrow into the skull.
+- type: entity
+  id: LavalandEyeOfGod
+  parent: ClothingEyesBase
+  name: eye of god
+  description: A disembodied eye that stares unblinking. It seems to want a new home.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: hunter_eye
+  - type: Clothing
+    sprite: Clothing/Eyes/Glasses/meson.rsi
+  - type: TrayScanner
+  - type: TrayScannerToggle
+    soundOn:
+      path: /Audio/Items/flashlight_on.ogg
+    soundOff:
+      path: /Audio/Items/flashlight_off.ogg
+  - type: GoggleShader
+    color: '#5AB43CCC'
+  - type: ShowHealthBars
+  - type: ShowHealthIcons
+  - type: FlashImmunity
+  - type: StaticPrice
+    price: 4000
+
+# Rod of Asclepius: heals everyone near the holder.
+- type: entity
+  id: LavalandRodOfAsclepius
+  parent: BaseItem
+  name: rod of asclepius
+  description: A wooden rod with a serpent carved around it. It mends the wounds of those who hold it.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: asclepius_dormant
+  - type: Item
+    size: Normal
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: RodOfAsclepiusAura
+  - type: StaticPrice
+    price: 5000
+
+# Immortality talisman: a short window of absolute invulnerability.
+- type: entity
+  id: LavalandImmortalityTalisman
+  parent: BaseItem
+  name: immortality talisman
+  description: An obsidian talisman of a dead god. For a few seconds nothing in this world can touch you.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: talisman
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: ImmortalityTalisman
+  - type: UseDelay
+    delay: 60
+  - type: StaticPrice
+    price: 5000
+
+# Book of Babel: teaches every known language.
+- type: entity
+  id: LavalandBookOfBabel
+  parent: BaseItem
+  name: book of babel
+  description: A book written in every language at once. Reading it untangles them all.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#1e3a8a"
+    - state: decor_wingette
+      color: "#60a5fa"
+    - state: icon_magic
+      color: "#e0e7ff"
+  - type: Item
+    size: Small
+  - type: BookOfBabel
+  - type: StaticPrice
+    price: 4000
+
+# Jacob's ladder: there are no z-levels in this fork, so it is a collectible.
+- type: entity
+  id: LavalandJacobsLadder
+  parent: BaseItem
+  name: jacob's ladder
+  description: A length of celestial ladder that extends far beyond the visible world.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: chain
+  - type: Item
+    size: Normal
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: StaticPrice
+    price: 4000
+
+# Memento mori: your life is tied to the pendant.
+- type: entity
+  id: LavalandMementoMori
+  parent: ClothingNeckBase
+  name: memento mori necklace
+  description: A skull shaped pendant that refuses to let its wearer die. Taking it off breaks the pact.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: memento_mori
+  - type: Clothing
+    sprite: Clothing/Neck/Medals/gold.rsi
+  - type: MementoMori
+  - type: StaticPrice
+    price: 5000
+
+# Concussive gauntlets: mining tool in hand, unarmed weapon when worn.
+- type: entity
+  id: LavalandConcussiveGauntlets
+  parent: ClothingHandsBase
+  name: concussive gauntlets
+  description: Heavy mining gauntlets. Punch rocks and people with equal enthusiasm.
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/combat.rsi
+    state: icon
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/combat.rsi
+  - type: MeleeWeapon
+    attackRate: 0.8
+    mustBeEquippedToUse: true
+    damage:
+      types:
+        Blunt: 20
+        Structural: 45
+  - type: Tag
+    tags:
+    - Pickaxe
+  - type: Armor
+    coverage:
+    - Hand
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.6
+        Heat: 0.9
+  - type: StaticPrice
+    price: 4000
+
+# Berserker armor and helmet.
+- type: entity
+  id: LavalandBerserkerArmor
+  parent: ClothingOuterArmorBase
+  name: berserker armor
+  description: Armor made from the cracked hide of a fire giant. It burns with the rage of its maker.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Armor/scrap_armor.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Armor/scrap_armor.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.6
+        Heat: 0
+        Cold: 0
+        Caustic: 0.2
+  - type: StaticPrice
+    price: 5000
+
+- type: entity
+  id: LavalandBerserkerHelmet
+  parent: ClothingHeadHelmetArmoredBase
+  name: berserker helmet
+  description: A horned helmet that howls with its wearer.
+  components:
+  - type: Sprite
+    sprite: Clothing/Head/Helmets/scrap_helmet.rsi
+  - type: Clothing
+    sprite: Clothing/Head/Helmets/scrap_helmet.rsi
+  - type: Armor
+    coverage:
+    - Head
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.6
+        Heat: 0
+        Cold: 0
+  - type: StaticPrice
+    price: 4000
+
+# Dark shard: use it to draw out the cursed katana.
+- type: entity
+  id: LavalandDarkShard
+  parent: BaseItem
+  name: dark shard
+  description: A shard of singing black glass. It wants to be held, and it wants to cut.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: cursed_katana_organ
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: SpawnItemsOnUse
+    items:
+    - id: LavalandCursedKatana
+  - type: StaticPrice
+    price: 4000
+
+- type: entity
+  id: LavalandCursedKatana
+  parent: BaseItem
+  name: cursed katana
+  description: A blade with a hunger of its own. It cuts deeper than any steel should.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: cursed_katana
+  - type: Item
+    size: Normal
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 0.9
+    damage:
+      types:
+        Slash: 26
+        Structural: 10
+  - type: StaticPrice
+    price: 4000
+
+# Paradox bag: a bag that is somehow bigger on the inside.
+- type: entity
+  id: LavalandParadoxBag
+  parent: BaseItem
+  name: paradox bag
+  description: A bag folded through itself. Its other half is still missing.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: paradox_bag
+  - type: Item
+    size: Normal
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: Storage
+    grid:
+    - 0,0,6,2
+  - type: StaticPrice
+    price: 4000
+
+# Warp cubes: two linked cubes that teleport their user to each other.
+- type: entity
+  id: LavalandWarpCubeRed
+  parent: BaseItem
+  name: red warp cube
+  description: A warm red cube that hums with bluespace. It wants to go home to its twin.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: red_cube
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: WarpCube
+    partnerProto: LavalandWarpCubeBlue
+  - type: UseDelay
+    delay: 3
+  - type: StaticPrice
+    price: 3000
+
+- type: entity
+  id: LavalandWarpCubeBlue
+  parent: LavalandWarpCubeRed
+  name: blue warp cube
+  description: A cold blue cube that hums with bluespace. It wants to go home to its twin.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: blue_cube
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: WarpCube
+    partnerProto: null
+
+# Strange elixir: the TG flight potion.
+- type: entity
+  id: LavalandStrangeElixir
+  parent: BaseItem
+  name: strange elixir
+  description: A bubbling flask of a brew that tastes like a storm. It makes your feet leave the ground.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    layers:
+    - state: potionflask
+    - state: potion_fill1
+      color: "#7fe0ff"
+    - state: potionflask_cap
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: FlightPotion
+  - type: UseDelay
+    delay: 2
+  - type: StaticPrice
+    price: 5000
+
+# Spooky lantern: home to a friendly wisp.
+- type: entity
+  id: LavalandSpookyLantern
+  parent: BaseItem
+  name: spooky lantern
+  description: This lantern gives off no light of its own, but something inside it is very happy to see you.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/lantern.rsi
+    layers:
+    - state: lantern
+  - type: Item
+    sprite: Objects/Tools/lantern.rsi
+    heldPrefix: off
+  - type: WispLantern
+    wispProto: LavalandFriendlyWisp
+  - type: StaticPrice
+    price: 3000
+
+- type: entity
+  id: LavalandFriendlyWisp
+  name: friendly wisp
+  description: A small ball of light. It is very proud of its lantern.
+  components:
+  - type: Sprite
+    sprite: _DV/CosmicCult/Mobs/wisp.rsi
+    state: wisp
+  - type: PointLight
+    color: "#79f1ff"
+    radius: 6
+    energy: 2
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+# Ship in a bottle: a tiny ship that will never sail anywhere.
+- type: entity
+  id: LavalandShipInABottle
+  parent: BaseItem
+  name: ship in a bottle
+  description: A tiny ship trapped inside a glass bottle. It looks surprisingly comfortable in there.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: ship_bottle
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: StaticPrice
+    price: 2000
+
+# Mining soulstone: there is no soulstone system in this fork yet.
+- type: entity
+  id: LavalandMiningSoulstone
+  parent: BaseItem
+  name: mining soulstone
+  description: A cloudy gem that whispers encouragement. It would make a fine trophy.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: soulstone
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: StaticPrice
+    price: 3000
+
+# Prison cube: a sealed puzzle cube.
+- type: entity
+  id: LavalandPrisonCube
+  parent: BaseItem
+  name: prison cube
+  description: A cube of alien glass. Something inside it is trying to get out.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: prison_cube
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: StaticPrice
+    price: 3000
+
+# Miner guardian creator: the TG miner holoparasite.
+- type: entity
+  id: LavalandGuardianCreatorMiner
+  parent: [BaseItem, BaseMagicalContraband]
+  name: miner guardian creator
+  description: A handheld device that hosts a small guardian spirit. It prefers rocks to people.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Medical/hypospray.rsi
+    state: combat_hypo
+  - type: Item
+    size: Small
+  - type: GuardianCreator
+    guardianProto: MobHoloparasiteGuardian
+  - type: StaticPrice
+    price: 5000
+
+# Summon item spellbook: teaches the instant summons spell.
+- type: entity
+  id: LavalandSummonItemSpellbook
+  parent: BaseItem
+  name: spellbook of summoning
+  description: A thin spellbook that describes how to call a lost item back to your hand.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#4a1d6e"
+    - state: decor_wingette_flat
+      color: "#a855f7"
+    - state: icon_stars
+      color: "#f5d0fe"
+  - type: Item
+    size: Small
+  - type: ActionGrant
+    actions:
+    - ActionInstantSummons
+  - type: ItemActionGrant
+    actions:
+    - ActionInstantSummons
+  - type: StaticPrice
+    price: 5000
+
+# Wildhunter's butchering knife.
+- type: entity
+  id: LavalandWildhunterKnife
+  parent: [BaseSecurityCargoContraband, CombatKnife]
+  name: wildhunter's butchering knife
+  description: A knife worn from a lifetime of butchery. It finds the weak spots in any hide.
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/combat_knife.rsi
+    state: icon
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.2
+    damage:
+      types:
+        Slash: 14
+  - type: StaticPrice
+    price: 3000

@@ -77,6 +77,9 @@
   - type: DoAfter
   - type: RequireProjectileTarget
     active: False
+  - type: GPS
+    gpsName: Berserk Signal
+    enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.5
@@ -102,6 +105,7 @@
     weaponWhitelist:
       components:
       - MegafaunaWeaponLooter
+    dropBoth: true
     deleteOnDeath: true
 
 # Guidance variant: the saw whispers, healing the miner with every wound he deals.

@@ -236,6 +236,53 @@
       frequency: 2
     entities:
     - SerakaMushroom
+  # Ash flora: TG mushroom variants
+  - !type:BiomeEntityLayer
+    allowedTiles:
+    - FloorBasaltLavaland
+    - FloorPlanetAsh
+    threshold: 0.93
+    noise:
+      seed: 21
+      noiseType: OpenSimplex2
+      fractalType: PingPong
+      frequency: 2
+    entities:
+    - FloraAshLargeMushrooms
+    - FloraAshLeafyMushrooms
+    - FloraAshTallMushrooms
+    - FloraAshNumerousMushrooms
+  # Ash flora: TG flowers and glowing fungi
+  - !type:BiomeEntityLayer
+    allowedTiles:
+    - FloorBasaltLavaland
+    - FloorPlanetAsh
+    threshold: 0.92
+    noise:
+      seed: 22
+      noiseType: OpenSimplex2
+      fractalType: PingPong
+      frequency: 2
+    entities:
+    - FloraAshFireBlossom
+    - FloraAshPlasmaFlower
+    - FloraAshPodsneyzka
+    - FloraAshVahrezjia
+    - FloraAshGlowgrowth
+  # Ash flora: beets, star cacti and inozhakust
+  - !type:BiomeEntityLayer
+    allowedTiles:
+    - FloorBasaltLavaland
+    - FloorPlanetAsh
+    threshold: 0.95
+    noise:
+      seed: 23
+      noiseType: OpenSimplex2
+      fractalType: PingPong
+    entities:
+    - FloraAshDrakeBeet
+    - FloraAshStarCacti
+    - FloraAshInozhakust
   # Flowers
   - !type:BiomeEntityLayer
     allowedTiles:
@@ -606,6 +653,53 @@
       frequency: 2
     entities:
     - SerakaMushroom
+  # Ash flora: TG mushroom variants
+  - !type:BiomeEntityLayer
+    allowedTiles:
+    - FloorBasaltLavaland
+    - FloorPlanetGrassLight
+    threshold: 0.93
+    noise:
+      seed: 21
+      noiseType: OpenSimplex2
+      fractalType: PingPong
+      frequency: 2
+    entities:
+    - FloraAshLargeMushrooms
+    - FloraAshLeafyMushrooms
+    - FloraAshTallMushrooms
+    - FloraAshNumerousMushrooms
+  # Ash flora: TG flowers and glowing fungi
+  - !type:BiomeEntityLayer
+    allowedTiles:
+    - FloorBasaltLavaland
+    - FloorPlanetGrassLight
+    threshold: 0.92
+    noise:
+      seed: 22
+      noiseType: OpenSimplex2
+      fractalType: PingPong
+      frequency: 2
+    entities:
+    - FloraAshFireBlossom
+    - FloraAshPlasmaFlower
+    - FloraAshPodsneyzka
+    - FloraAshVahrezjia
+    - FloraAshGlowgrowth
+  # Ash flora: beets, star cacti and inozhakust
+  - !type:BiomeEntityLayer
+    allowedTiles:
+    - FloorBasaltLavaland
+    - FloorPlanetGrassLight
+    threshold: 0.95
+    noise:
+      seed: 23
+      noiseType: OpenSimplex2
+      fractalType: PingPong
+    entities:
+    - FloraAshDrakeBeet
+    - FloraAshStarCacti
+    - FloraAshInozhakust
   # Sprouts
   - !type:BiomeEntityLayer
     allowedTiles:

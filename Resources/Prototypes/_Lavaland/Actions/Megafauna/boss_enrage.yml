@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Enrage moves for the colossus and the hierophant, unlocked by MobPhases.
+
+# Colossus below 10% HP: one final lance of death bolts.
+- type: entity
+  id: ActionColossusFinale
+  parent: BaseAction
+  name: Final Judgement
+  description: Fires a lance of death bolts in a straight line.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 120 # TG makes this a once per fight attack
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandColossusBolt
+      count: 3
+      spread: 15
+      speed: 30
+      pattern: Cone
+
+# Hierophant below 50% HP: cross blasts in all directions.
+- type: entity
+  id: ActionHierophantCrossesEnraged
+  parent: ActionBaseHierophant
+  name: Enraged Crosses
+  description: Spawns cross blasts in all eight directions on the target position.
+  components:
+  - type: AngerDelayAction
+    minDelay: 0.5
+    maxDelay: 1.5
+    inverse: true
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: HierophantShapeCrossSequenceEnraged
+      attachToTarget: true
+
+# Hierophant below 50% HP: blinks on a much shorter cooldown.
+- type: entity
+  id: ActionHierophantBlinkSpam
+  parent: ActionBaseHierophant
+  name: Blink Spam
+  description: Teleports you to the target position with almost no delay.
+  components:
+  - type: Action
+    useDelay: 1
+  - type: AngerDelayAction
+    minDelay: 0.5
+    maxDelay: 2.0
+    inverse: true
+  - type: WorldTargetAction
+    event: !type:MegafaunaBlinkActionEvent

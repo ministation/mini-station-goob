@@ -73,6 +73,24 @@
   minDistance: 140
 
 - type: lavalandMarkerRuin
+  id: OreVent
+  boundary: 8,8
+  spawnedMarker: LavalandOreVentSpawner
+  priority: 0
+  spawnAttempts: 16
+  guaranteed: false
+  minDistance: 75
+
+- type: lavalandMarkerRuin
+  id: MiningCache
+  boundary: 3,3
+  spawnedMarker: LavalandMiningCacheSpawner
+  priority: 0
+  spawnAttempts: 6
+  guaranteed: false
+  minDistance: 75
+
+- type: lavalandMarkerRuin
   id: CommonRuin5x5
   boundary: 5,5
   spawnedMarker: LavalandInteriorRoomMarker

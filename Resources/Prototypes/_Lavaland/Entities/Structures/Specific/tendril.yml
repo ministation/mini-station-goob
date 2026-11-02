@@ -19,7 +19,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 250
+        damage: 800 # TG tendril health
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -51,6 +51,9 @@
         layer:
         - MobLayer
         density: 200
+  - type: GPS
+    gpsName: Eerie Signal
+    enabled: true
   - type: TriggerOnProximity
     cooldown: 10.0
     requiresAnchored: false
@@ -83,7 +86,7 @@
     selector: !type:NestedMegafaunaSelector
       id: Tendril
   - type: Anger
-    totalHp: 250
+    totalHp: 800 # TG tendril health
   - type: MegafaunaRejuvenate
 
 - type: entity

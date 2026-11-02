@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# Bubblegum lair landmark: stone arena with the boss and an ancient sarcophagus.
+# Bubblegum lair landmark: stone arena with the boss. The sarcophagus is dropped on boss death.
 
 - type: entity
   id: LavalandBubblegumLairSpawner
@@ -19,20 +19,7 @@
   - type: EntityTableContainerFill
     containers:
       entity_storage: !type:NestedSelector
-        tableId: BubblegumSarcophagusLoot
-
-- type: entityTable
-  id: BubblegumSarcophagusLoot
-  table: !type:AllSelector
-    children:
-    - !type:AllSelector
-      children:
-      - id: ClothingOuterHardsuitHECK
-      - id: ClothingHeadHelmetHECK
-    - !type:GroupSelector
-      children:
-      - id: LavalandMayhemBottle
-      - id: LavalandSoulscythe
+        tableId: LavalandLootBubblegum
 
 # Mayhem in a bottle, adapted: drives all aggressive fauna nearby into a frenzy.
 - type: entity

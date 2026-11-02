@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation.",
+  "size": {
+    "x": 72,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "raptor_red",
+      "directions": 4
+    },
+    {
+      "name": "raptor_red_dead"
+    },
+    {
+      "name": "young_red",
+      "directions": 4
+    },
+    {
+      "name": "young_red_dead"
+    },
+    {
+      "name": "raptor_white",
+      "directions": 4
+    },
+    {
+      "name": "raptor_white_dead"
+    },
+    {
+      "name": "young_white",
+      "directions": 4
+    },
+    {
+      "name": "young_white_dead"
+    },
+    {
+      "name": "raptor_purple",
+      "directions": 4
+    },
+    {
+      "name": "raptor_purple_dead"
+    },
+    {
+      "name": "young_purple",
+      "directions": 4
+    },
+    {
+      "name": "young_purple_dead"
+    },
+    {
+      "name": "raptor_green",
+      "directions": 4
+    },
+    {
+      "name": "raptor_green_dead"
+    },
+    {
+      "name": "young_green",
+      "directions": 4
+    },
+    {
+      "name": "young_green_dead"
+    },
+    {
+      "name": "raptor_yellow",
+      "directions": 4
+    },
+    {
+      "name": "raptor_yellow_dead"
+    },
+    {
+      "name": "young_yellow",
+      "directions": 4
+    },
+    {
+      "name": "young_yellow_dead"
+    },
+    {
+      "name": "raptor_blue",
+      "directions": 4
+    },
+    {
+      "name": "raptor_blue_dead"
+    },
+    {
+      "name": "young_blue",
+      "directions": 4
+    },
+    {
+      "name": "young_blue_dead"
+    },
+    {
+      "name": "raptor_black",
+      "directions": 4
+    },
+    {
+      "name": "raptor_black_dead"
+    },
+    {
+      "name": "young_black",
+      "directions": 4
+    },
+    {
+      "name": "young_black_dead"
+    }
+  ]
+}

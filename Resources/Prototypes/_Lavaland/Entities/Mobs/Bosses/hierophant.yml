@@ -65,15 +65,20 @@
     - ActionHierophantCrosses
     - ActionHierophantChasers
     - ActionHierophantBlink
+    - ActionHierophantCrossesEnraged
+    - ActionHierophantBlinkSpam
   - type: Fauna
   - type: Anger
     totalHp: 2500
   - type: Aggressive
     forgiveRange: 25
+  - type: GPS
+    gpsName: Zealous Signal
+    enabled: true
   - type: MobPhases
     phaseThresholds:
       0:    1
-      1000: 2
+      1250: 2 # below 50% HP: enraged crosses and blink spam
       2000: 3
   - type: BossMusic
     soundId: Hierophant
@@ -84,6 +89,13 @@
       children:
       - id: LavalandHierophantClub
       - id: CrusherUpgradeMainMarker
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandVortexTalisman
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    dropBoth: true
     deleteOnDeath: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector

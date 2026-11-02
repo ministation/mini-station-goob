@@ -84,10 +84,21 @@
   - type: CombatPower
     factor: 25
   - type: Bubblegum
+  - type: GPS
+    gpsName: Bloody Signal
+    enabled: true
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:
-      - id: OrganSlaughterHeart
+      - id: LavalandCrateSarcophagus
+      - id: OrganSlaughterHeart # Goobstation reward, kept alongside the TG sarcophagus
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandDemonClaws
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    dropBoth: true
     deleteOnDeath: true
   - type: NoSlip
   - type: RequireProjectileTarget

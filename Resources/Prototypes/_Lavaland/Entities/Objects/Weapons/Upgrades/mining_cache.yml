@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# A random kinetic accelerator modkit lying in a mining cache on Lavaland.
+- type: entity
+  id: LavalandMiningCacheSpawner
+  parent: MarkerBase
+  name: mining cache
+  suffix: Lavaland
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - PKAUpgradeCooldown
+    - PKAUpgradeMiningExplosion
+    - PKAUpgradeOffensiveExplosion
+    - PKAUpgradeOffensiveMiningExplosion
+    - PKAUpgradeRepeater
+    - PKAUpgradeInfernalRepeater
+    - PKAUpgradeLifesteal
+    - PKAUpgradeResonatorBlast
+    - PKAUpgradeDeathSyphon
+    - PKAUpgradeHumanPassthrough
+    - PKAUpgradeSuperChassis
+    - PKAUpgradeHyperChassis
+    - PKAUpgradeTracer

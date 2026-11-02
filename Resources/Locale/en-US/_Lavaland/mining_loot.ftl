@@ -1,0 +1,64 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+ent-LavalandEyeOfGod = eye of god
+    .desc = A disembodied eye that stares unblinking. It seems to want a new home.
+ent-LavalandRodOfAsclepius = rod of asclepius
+    .desc = A wooden rod with a serpent carved around it. It mends the wounds of those who hold it.
+ent-LavalandImmortalityTalisman = immortality talisman
+    .desc = An obsidian talisman of a dead god. For a few seconds nothing in this world can touch you.
+ent-LavalandBookOfBabel = book of babel
+    .desc = A book written in every language at once. Reading it untangles them all.
+ent-LavalandJacobsLadder = jacob's ladder
+    .desc = A length of celestial ladder that extends far beyond the visible world.
+ent-LavalandMementoMori = memento mori necklace
+    .desc = A skull shaped pendant that refuses to let its wearer die. Taking it off breaks the pact.
+ent-LavalandConcussiveGauntlets = concussive gauntlets
+    .desc = Heavy mining gauntlets. Punch rocks and people with equal enthusiasm.
+ent-LavalandBerserkerArmor = berserker armor
+    .desc = Armor made from the cracked hide of a fire giant. It burns with the rage of its maker.
+ent-LavalandBerserkerHelmet = berserker helmet
+    .desc = A horned helmet that howls with its wearer.
+ent-LavalandDarkShard = dark shard
+    .desc = A shard of singing black glass. It wants to be held, and it wants to cut.
+ent-LavalandCursedKatana = cursed katana
+    .desc = A blade with a hunger of its own. It cuts deeper than any steel should.
+ent-LavalandParadoxBag = paradox bag
+    .desc = A bag folded through itself. Its other half is still missing.
+ent-LavalandWarpCubeRed = red warp cube
+    .desc = A warm red cube that hums with bluespace. It wants to go home to its twin.
+ent-LavalandWarpCubeBlue = blue warp cube
+    .desc = A cold blue cube that hums with bluespace. It wants to go home to its twin.
+ent-LavalandStrangeElixir = strange elixir
+    .desc = A bubbling flask of a brew that tastes like a storm. It makes your feet leave the ground.
+ent-LavalandSpookyLantern = spooky lantern
+    .desc = This lantern gives off no light of its own, but something inside it is very happy to see you.
+ent-LavalandFriendlyWisp = friendly wisp
+    .desc = A small ball of light. It is very proud of its lantern.
+ent-LavalandShipInABottle = ship in a bottle
+    .desc = A tiny ship trapped inside a glass bottle. It looks surprisingly comfortable in there.
+ent-LavalandMiningSoulstone = mining soulstone
+    .desc = A cloudy gem that whispers encouragement. It would make a fine trophy.
+ent-LavalandPrisonCube = prison cube
+    .desc = A cube of alien glass. Something inside it is trying to get out.
+ent-LavalandGuardianCreatorMiner = miner guardian creator
+    .desc = A handheld device that hosts a small guardian spirit. It prefers rocks to people.
+ent-LavalandSummonItemSpellbook = spellbook of summoning
+    .desc = A thin spellbook that describes how to call a lost item back to your hand.
+ent-LavalandWildhunterKnife = wildhunter's butchering knife
+    .desc = A knife worn from a lifetime of butchery. It finds the weak spots in any hide.
+
+immortality-talisman-active-already = You are already untouchable.
+immortality-talisman-activated = The world goes quiet. Nothing can touch you now.
+immortality-talisman-expired = The talisman grows cold. The world comes back.
+memento-mori-already-bound = You are already bound to a pendant.
+memento-mori-bound = The pendant grows warm. Your life is tied to it now.
+memento-mori-refused-death = The pendant drags you back from the brink.
+memento-mori-pact-broken = The pact is broken. Your body turns to dust.
+strange-elixir-drunk = The brew fizzes in your chest. Your feet leave the ground.
+book-of-babel-read = The words untangle themselves in your head.
+wisp-lantern-released = A wisp drifts out of the lantern and circles you.
+wisp-lantern-returned = The wisp slips back into the lantern.
+warp-cube-unlinked = The cube is dull and silent. Its twin is gone.
+warp-cube-teleported = Bluespace yanks you across the world.

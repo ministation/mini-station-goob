@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Ash drake hide is turned into drake armour and a drake helm.
+# TG uses an intermediate "drake remains" item made of hide and bone; this port
+# skips it because the repo has no sinew material to finish the TG recipe with.
+
+- type: constructionGraph
+  id: DrakeArmour
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: armour
+      steps:
+      - material: AshDrakeHide
+        amount: 5
+        doAfter: 2
+      - material: Bones
+        amount: 10
+        doAfter: 2
+  - node: armour
+    entity: LavalandEquipmentDrakeArmour
+
+- type: constructionGraph
+  id: DrakeHelm
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: helm
+      steps:
+      - material: AshDrakeHide
+        amount: 2
+        doAfter: 2
+      - material: Bones
+        amount: 5
+        doAfter: 2
+  - node: helm
+    entity: LavalandEquipmentDrakeHelm

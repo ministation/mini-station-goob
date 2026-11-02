@@ -1,0 +1,77 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Drake armour and drake helm, ported from TG. Crafted from ash drake hide.
+
+- type: entity
+  parent: ClothingOuterBaseToggleable
+  id: LavalandEquipmentDrakeArmour
+  name: drake armour
+  description: A suit of armour crafted from the hide of an ash drake. It is warm to the touch and shrugs off flames.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Hardsuits/goliath.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Hardsuits/goliath.rsi
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: LavalandEquipmentDrakeHelm
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    - Hand
+    - Foot
+    modifiers:
+      coefficients:
+        Blunt: 0.35
+        Slash: 0.35
+        Piercing: 0.85
+        Heat: 0.5
+        Caustic: 0.2
+        Radiation: 0.5
+  - type: ExplosionResistance
+    damageCoefficient: 0.3
+  - type: FireProtection
+    reduction: 0.7
+  - type: TemperatureProtection
+    heatingCoefficient: 0.01
+    coolingCoefficient: 0.05
+  - type: Construction
+    graph: DrakeArmour
+    node: armour
+
+- type: entity
+  parent: ClothingHeadBase
+  id: LavalandEquipmentDrakeHelm
+  name: drake helm
+  description: The skull of an ash drake, worn as a helmet. Its empty sockets stare forward.
+  components:
+  - type: Sprite
+    sprite: _ShitChap/Clothing/Head/Misc/dragonskull.rsi
+  - type: Clothing
+    sprite: _ShitChap/Clothing/Head/Misc/dragonskull.rsi
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+  - type: Armor
+    coverage:
+    - Head
+    modifiers:
+      coefficients:
+        Blunt: 0.35
+        Slash: 0.35
+        Piercing: 0.85
+        Heat: 0.5
+        Caustic: 0.2
+  - type: FireProtection
+    reduction: 0.5
+  - type: Construction
+    graph: DrakeHelm
+    node: helm

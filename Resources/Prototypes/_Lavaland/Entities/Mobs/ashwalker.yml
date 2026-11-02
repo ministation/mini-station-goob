@@ -17,7 +17,7 @@
     description: ghost-role-information-ashwalker-description
     rules: ghost-role-information-antagonist-rules
     mindRoles:
-    - MindRoleGhostRoleSoloAntagonist
+    - MindRoleGhostRoleTeamAntagonist
     raffle:
       settings: default
   - type: GhostTakeoverAvailable
@@ -32,6 +32,7 @@
   # TG ashwalkers have Lavaland lungs and breathe the local air without internals.
   - type: BreathingImmunity
   - type: LavaImmunity # Mini: heat damage is nullified, fire does nothing
+  - type: AshwalkerTribeMember # joins the tribe of the nearest nest when it gets a mind
   - type: MeleeWeapon
     altDisarm: false
     angle: 0
@@ -64,7 +65,7 @@
     description: ghost-role-information-ashwalker-description
     rules: ghost-role-information-antagonist-rules
     mindRoles:
-    - MindRoleGhostRoleSoloAntagonist
+    - MindRoleGhostRoleTeamAntagonist
     raffle:
       settings: default
   - type: GhostRoleMobSpawner

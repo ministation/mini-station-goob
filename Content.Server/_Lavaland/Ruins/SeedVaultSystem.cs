@@ -16,6 +16,7 @@ public sealed class SeedVaultSystem : EntitySystem
     private const string Wall = "WallReinforced";
     private const string Floor = "LavalandStoneTileBurnt";
     private const string Spawner = "LavalandSeedVaultSpawner";
+    private const string LavalandSeedCache = "LavalandSeedCache";
 
     private static readonly EntProtoId[] Seeds =
     [
@@ -54,7 +55,11 @@ public sealed class SeedVaultSystem : EntitySystem
         // The keeper, guarding the goods.
         Spawn("LavalandSeedVaultKeeperPod", baseCoords.Offset(new System.Numerics.Vector2(0, half - 1)));
 
-        // A cache of seed packets, scattered in the middle.
+        // The lavaland seed cache, the reason miners dig this ruin out.
+        for (var i = 0; i < comp.LavalandSeedCacheCount; i++)
+            Spawn(LavalandSeedCache, baseCoords);
+
+        // A few ordinary seed packets scattered around, so the vault still feels farmed.
         for (var i = 0; i < comp.SeedCount; i++)
         {
             var proto = _random.Pick(Seeds);
@@ -73,8 +78,14 @@ public sealed partial class SeedVaultSpawnerComponent : Component
     public int RoomRadius = 4;
 
     /// <summary>
-    /// How many random seed packets the vault holds.
+    /// How many lavaland seed caches the vault holds.
     /// </summary>
     [DataField]
-    public int SeedCount = 10;
+    public int LavalandSeedCacheCount = 1;
+
+    /// <summary>
+    /// How many random normal seed packets the vault holds.
+    /// </summary>
+    [DataField]
+    public int SeedCount = 4;
 }

@@ -21,26 +21,15 @@
   - type: EntityTableContainerFill
     containers:
       entity_storage: !type:NestedSelector
-        tableId: NecropolisChestLoot
+        tableId: LavalandLootTendril
 
+# Kept as an alias for anything that still points at the old table id.
 - type: entityTable
   id: NecropolisChestLoot
   table: !type:GroupSelector
     children:
-    - id: LavalandCursedHeart
-    - id: ClothingOuterArmorCult
-    - id: LavalandVampirismCrystal
-    - id: LavalandBookOfGreentext # CorvaxGoob-BookOfGreentext
-    # TODO add more interesting obtain methods for crusher upgrades (from megafauna, ruins, etc.)
-    - id: CrusherUpgradeMainRudeBuster
-
     - !type:NestedSelector
-      weight: 2
-      tableId: LavalandMaterialRare
-    - !type:AllSelector
-      children:
-      - id: ClothingOuterRobesCult
-      - id: BedsheetCult
+      tableId: LavalandLootTendril
 
 - type: entityTable
   id: LavalandMaterialRare

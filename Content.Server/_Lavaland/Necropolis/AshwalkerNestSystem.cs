@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Server._Lavaland.Ashwalker;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Necropolis;
 using Content.Shared.Destructible;
@@ -22,6 +23,7 @@ public sealed class AshwalkerNestSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly AshwalkerTribeSystem _tribe = default!;
 
     private const string Egg = "LavalandAshwalkerEgg";
     private const int MeatForEgg = 100;
@@ -42,10 +44,12 @@ public sealed class AshwalkerNestSystem : EntitySystem
     {
         // The nest starts with some meat so a first egg comes quickly.
         ent.Comp.Meat = 40;
+        _tribe.EnsureTribe(ent.Owner);
     }
 
     private void OnDestroyed(Entity<AshwalkerNestComponent> ent, ref DestructionEventArgs args)
     {
+        _tribe.NotifyNestDestroyed(ent.Owner);
         var coords = Transform(ent).Coordinates;
         _popup.PopupCoordinates(Loc.GetString("ashwalker-nest-destroyed"), coords);
         Spawn("MaterialBones1", coords.Offset(new System.Numerics.Vector2(-0.5f, 0)));
@@ -75,6 +79,7 @@ public sealed class AshwalkerNestSystem : EntitySystem
                 var meat = HasComp<MegafaunaAiComponent>(mob) ? MeatPerMegafauna : MeatPerCorpse;
                 QueueDel(mob);
                 nest.Meat += meat;
+                _tribe.RegisterSacrifice(uid);
                 Spawn("MaterialBones1", coords.Offset(_random.NextVector2Box(-0.4f, -0.4f, 0.4f, 0.4f)));
             }
 
@@ -83,6 +88,7 @@ public sealed class AshwalkerNestSystem : EntitySystem
             {
                 nest.Meat -= MeatForEgg;
                 nest.Eggs++;
+                _tribe.RegisterEgg(uid);
                 Spawn(Egg, coords.Offset(_random.NextVector2Box(-1.5f, -1.5f, 1.5f, 1.5f)));
             }
         }

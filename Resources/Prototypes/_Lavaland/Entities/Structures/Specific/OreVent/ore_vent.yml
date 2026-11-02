@@ -1,0 +1,80 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG ore vent: scan it with a mining scanner to start the defense event,
+# keep the NODE drone alive through the waves, then break the boulders it produces.
+- type: entity
+  id: LavalandOreVent
+  parent: BaseStructure
+  name: ore vent
+  description: An ore vent, brimming with underground ore. Scan it with a mining scanner to start extracting ore from it.
+  suffix: Lavaland
+  components:
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    noRot: true
+    drawdepth: WallTops
+    sprite: _Lavaland/Objects/Decoration/Rocks/medium.rsi
+    state: rock3
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 2000
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: OreVent
+    boulderBudget: 8
+    waveMobTable: LavalandOreVentMobs
+    waveCount: 3
+    mobsPerWave: 2
+    waveInterval: 15
+    tapDuration: 3
+    nodeDroneProto: LavalandNodeDrone
+    boulderInterval: 15
+    boulderProtos:
+    - LavalandOreBoulder
+    - LavalandOreBoulderRock
+    - LavalandOreBoulderStone
+    artifactBoulderChance: 0.12
+    artifactBoulderProto: LavalandOreBoulderArtifact
+    depletionRewardTable: LavalandOreVentReward
+    retryCooldown: 30
+
+- type: entity
+  id: LavalandOreVentSpawner
+  parent: MarkerBase
+  name: ore vent spawner
+  suffix: Lavaland
+  components:
+  - type: OreVentSpawner
+    ventProto: LavalandOreVent
+    radius: 3
+    minBoulders: 6
+    maxBoulders: 12
+
+# Fauna that defends a vent. All of these are hostile to the NanoTrasen faction of the drone.
+- type: entityTable
+  id: LavalandOreVentMobs
+  table: !type:GroupSelector
+    children:
+    - id: MobLavalandGoliath
+      weight: 3
+    - id: MobLegion
+      weight: 2
+    - id: MobWatcherLavaland
+      weight: 2
+    - id: MobLavalandLobstrosity
+      weight: 2
+    - id: LavalandMobBrimdemon
+      weight: 1
+
+# Left behind once the vent has no boulders left.
+- type: entityTable
+  id: LavalandOreVentReward
+  table: !type:GroupSelector
+    children:
+    - id: LavalandCrateNecropolisFilled

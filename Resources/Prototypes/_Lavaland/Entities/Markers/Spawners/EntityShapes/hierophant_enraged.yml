@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Enraged hierophant cross blasts: all eight directions at once.
+- type: entity
+  parent: MarkerBase
+  id: HierophantShapeCrossSequenceEnraged
+  name: hierophant enraged cross spawner
+  suffix: Anger
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: Sprite
+    state: red
+  - type: ShapeSpawner
+    spawn: LavalandHierophantSquare
+    shape: !type:NestedEntityShape
+      id: QueenCross
+      size: 11
+  - type: ShapeSpawnerCounter
+  - type: AngerShapeSpawner
+    counterRange: 2,4
+    periodRange: 0.7,1.2
+    inversePeriod: true
+  - type: ExpandingShapeSpawner

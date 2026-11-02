@@ -58,24 +58,21 @@
   - type: EntityTableContainerFill
     containers:
       entity_storage: !type:NestedSelector
-        tableId: DragonChestLoot
-
-- type: entityTable
-  id: DragonChestLoot
-  table: !type:GroupSelector
-    children:
-    - id: LavalandStaffOfLava
-    - id: LavalandSpectralBlade
-    - id: LavalandSpellbookSacredFlame
-    - id: LavalandDragonsBlood
+        tableId: LavalandLootDragon
 
 # Crusher trophy
 - type: entity
   id: LavalandDrakeTailSpike
-  parent: BaseItem
+  parent: BaseLavalandCrusherTrophy
   name: drake tail spike
   description: A trophy taken from the tail of an ash drake.
   components:
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/trophies.rsi
     state: tail_spike
+  - type: ItemUpgrade
+    name: crusher-trophy-drake-tail-spike-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+    detonationHeatDamage: 5
+    detonationPushRadius: 2

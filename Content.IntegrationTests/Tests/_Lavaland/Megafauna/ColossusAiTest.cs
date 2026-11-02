@@ -42,16 +42,16 @@ public sealed class ColossusAiTest
             Assert.That(ai.Schedule, Is.Not.Empty);
             megafaunaSystem.ShutdownMegafauna((colossus, ai));
 
-            // The loot table picks exactly one group: the Cain & Abel pair, or one of the single rewards.
+            // TG gives every reward at once: both daggers, the vocal cords and a random crystal.
             Assert.That(entMan.TryGetComponent<ContainerManagerComponent>(chest, out var containers));
             var found = containers.Containers.Values
                 .SelectMany(container => container.ContainedEntities)
                 .Select(entity => entMan.GetComponent<MetaDataComponent>(entity).EntityPrototype!.ID)
-                .OrderBy(id => id, StringComparer.Ordinal)
                 .ToArray();
-            var daggerPair = found is ["LavalandAbelDagger", "LavalandCainDagger"];
-            var singleReward = found is ["LavalandVocalCords"] or ["LavalandRenewalCrystal"];
-            Assert.That(daggerPair || singleReward, Is.True, "colossus chest should contain exactly one loot group");
+            Assert.That(found, Does.Contain("LavalandCainDagger"));
+            Assert.That(found, Does.Contain("LavalandAbelDagger"));
+            Assert.That(found, Does.Contain("LavalandVocalCords"));
+            Assert.That(found, Does.Contain("LavalandRenewalCrystal"));
         });
 
         await pair.CleanReturnAsync();

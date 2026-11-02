@@ -81,6 +81,7 @@
     - ActionColossusBoltsRing
     - ActionColossusBoltsSpiral
     - ActionColossusCounterSpiral
+    - ActionColossusFinale
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0
@@ -88,6 +89,9 @@
   - type: DoAfter
   - type: RequireProjectileTarget
     active: False
+  - type: GPS
+    gpsName: Angelic Signal
+    enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.8
@@ -102,6 +106,7 @@
     phaseThresholds:
       0:    1
       1650: 2 # below 33% HP: double counter-spiral
+      2250: 3 # below 10% HP: final judgement
   - type: MegafaunaAnchor
   - type: MegafaunaGodmode
   - type: MegafaunaRejuvenate
@@ -115,4 +120,5 @@
     weaponWhitelist:
       components:
       - MegafaunaWeaponLooter
+    dropBoth: true
     deleteOnDeath: true
