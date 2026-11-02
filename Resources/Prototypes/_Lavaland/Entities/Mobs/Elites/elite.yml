@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: entity
   name: Elite
   id: LavalandEliteBase
@@ -136,11 +140,18 @@
   - type: DoAfter
   - type: RequireProjectileTarget
     active: False
+  - type: ActionGrant
+    actions:
+    - ActionEliteLegionnaireDash
+    - ActionEliteLegionnaireSummon
+    - ActionEliteLegionnaireSkulls
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.7
     selector: !type:NestedMegafaunaSelector
       id: EliteLegionnaire
+  - type: Anger
+    totalHp: 1000
   - type: MegafaunaBlink
     spawnOnTarget: LavalandLegionChargeBurst
     spawnOnUsed: LavalandLegionChargeBurst
@@ -232,11 +243,18 @@
     soundId: Hierophant
   - type: Fauna
   # Megafauna AI wiring
+  - type: ActionGrant
+    actions:
+    - ActionElitePandoraBlink
+    - ActionElitePandoraBox
+    - ActionElitePandoraCrosses
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.7
     selector: !type:NestedMegafaunaSelector
       id: ElitePandora
+  - type: Anger
+    totalHp: 1000
   - type: MegafaunaBlink
     spawnOnTarget: HierophantShapeBlink
     spawnOnUsed: HierophantShapeBlink
@@ -249,7 +267,7 @@
     allowMovement: true
     makeSentient: true
     name: ghost-role-information-elite-pandora-name
-    description: ghost-role-information-elite-pandora-name-desc
+    description: ghost-role-information-elite-pandora-desc
     rules: ghost-role-information-antagonist-rules
     mindRoles:
     - MindRoleGhostRoleSoloAntagonist
@@ -320,11 +338,17 @@
   - type: DoAfter
   - type: RequireProjectileTarget
     active: False
+  - type: ActionGrant
+    actions:
+    - ActionEliteHeraldOmni
+    - ActionEliteHeraldTri
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.6
     selector: !type:NestedMegafaunaSelector
       id: EliteHerald
+  - type: Anger
+    totalHp: 1000
   - type: MegafaunaRejuvenate
   - type: SpawnLootOnDeath
     table: !type:NestedSelector
@@ -334,7 +358,7 @@
     allowMovement: true
     makeSentient: true
     name: ghost-role-information-elite-herald-name
-    description: ghost-role-information-elite-herald-name-desc
+    description: ghost-role-information-elite-herald-desc
     rules: ghost-role-information-antagonist-rules
     mindRoles:
     - MindRoleGhostRoleSoloAntagonist
@@ -403,11 +427,17 @@
   - type: DoAfter
   - type: RequireProjectileTarget
     active: False
+  - type: ActionGrant
+    actions:
+    - ActionEliteBroodSlam
+    - ActionEliteBroodSpawn
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.9
     selector: !type:NestedMegafaunaSelector
       id: EliteBroodmother
+  - type: Anger
+    totalHp: 1000
   - type: MegafaunaBlink
     spawnOnTarget: LavalandLegionChargeBurst
     spawnOnUsed: LavalandLegionChargeBurst
@@ -420,7 +450,7 @@
     allowMovement: true
     makeSentient: true
     name: ghost-role-information-elite-broodmother-name
-    description: ghost-role-information-elite-broodmother-name-desc
+    description: ghost-role-information-elite-broodmother-desc
     rules: ghost-role-information-antagonist-rules
     mindRoles:
     - MindRoleGhostRoleSoloAntagonist

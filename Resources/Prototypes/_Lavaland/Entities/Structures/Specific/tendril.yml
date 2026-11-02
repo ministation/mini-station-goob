@@ -73,11 +73,17 @@
   - type: Aggressive
     forgiveRange: 12.0
   - type: Actions
+  - type: ActionGrant
+    actions:
+    - ActionTendrilSpikes
+    - ActionTendrilChasers
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 1.0
     selector: !type:NestedMegafaunaSelector
       id: Tendril
+  - type: Anger
+    totalHp: 250
   - type: MegafaunaRejuvenate
 
 - type: entity

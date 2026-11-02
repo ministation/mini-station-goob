@@ -3,11 +3,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
+using Content.Server.Parallax;
 using Content.Server.Procedural;
 using Content.Shared._Lavaland.Procedural.Components;
 using Content.Shared._Lavaland.Procedural.Prototypes;
 using Content.Shared.Decals;
 using Content.Shared.Maps;
+using Content.Shared.Parallax.Biomes;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -30,7 +32,15 @@ public sealed partial class LavalandSystem
     private int _ruinDungeonIndex;
     private List<LavalandMarkerRuinPrototype>? _ruinMarkerList;
     private int _ruinMarkerIndex;
-    private int _ruinPhase; // 0 idle, 1 grid, 2 dungeon, 3 marker
+    private int _ruinPhase; // 0 idle, 1 guaranteed markers, 2 grid, 3 dungeon, 4 marker
+
+    // Tile -> would the biome put lava or a chasm there. Cached for the current ruin batch.
+    private readonly Dictionary<Vector2i, bool> _terrainBlocked = new();
+    private readonly List<EntityUid> _ruinBlockers = new();
+
+    private const float MaxBlockedTerrainFraction = 0.25f;
+    private const int TerrainSamplesPerAxis = 6;
+    private const float RuinPadding = 2f;
 
     /// <summary>
     /// Prepares the ruin placement plan for batched processing (same order and filters as
@@ -56,6 +66,7 @@ public sealed partial class LavalandSystem
         _ruinMarkerList = GetMarkerRuinProtos(pool.MarkerRuins);
         _ruinMarkerList.Sort(CompareMarkerRuins);
 
+        _terrainBlocked.Clear();
         _ruinGridIndex = 0;
         _ruinDungeonIndex = 0;
         _ruinMarkerIndex = 0;
@@ -78,27 +89,39 @@ public sealed partial class LavalandSystem
         {
             switch (_ruinPhase)
             {
+                // Guaranteed marker ruins go first so the landmarks get clean spots,
+                // everything else is placed around them afterwards.
                 case 1:
-                    if (_ruinGridIndex >= _ruinGridList!.Count)
+                    if (_ruinMarkerIndex >= _ruinMarkerList!.Count || !_ruinMarkerList[_ruinMarkerIndex].Guaranteed)
                     {
                         _ruinPhase = 2;
                         _ruinCoords = _ruinCoords!.Where(coord => !_ruinUsedSpace!.Any(usedBox => usedBox.Contains(coord))).ToList();
                         continue;
                     }
 
-                    LoadGridRuin(_ruinGridList[_ruinGridIndex++], _ruinLavaland!.Value, _ruinPreloader!.Value, ref _ruinUsedSpace, ref _ruinCoords);
+                    LoadMarkerRuin(_ruinMarkerList[_ruinMarkerIndex++], _ruinLavaland!.Value, ref _ruinUsedSpace, ref _ruinCoords);
                     break;
                 case 2:
-                    if (_ruinDungeonIndex >= _ruinDungeonList!.Count)
+                    if (_ruinGridIndex >= _ruinGridList!.Count)
                     {
                         _ruinPhase = 3;
                         _ruinCoords = _ruinCoords!.Where(coord => !_ruinUsedSpace!.Any(usedBox => usedBox.Contains(coord))).ToList();
                         continue;
                     }
 
-                    LoadDungeonRuin(_ruinDungeonList[_ruinDungeonIndex++], _ruinLavaland!.Value, _ruinPreloader!.Value, _ruinRandom!, ref _ruinUsedSpace, ref _ruinCoords);
+                    LoadGridRuin(_ruinGridList[_ruinGridIndex++], _ruinLavaland!.Value, _ruinPreloader!.Value, ref _ruinUsedSpace, ref _ruinCoords);
                     break;
                 case 3:
+                    if (_ruinDungeonIndex >= _ruinDungeonList!.Count)
+                    {
+                        _ruinPhase = 4;
+                        _ruinCoords = _ruinCoords!.Where(coord => !_ruinUsedSpace!.Any(usedBox => usedBox.Contains(coord))).ToList();
+                        continue;
+                    }
+
+                    LoadDungeonRuin(_ruinDungeonList[_ruinDungeonIndex++], _ruinLavaland!.Value, _ruinPreloader!.Value, _ruinRandom!, ref _ruinUsedSpace, ref _ruinCoords);
+                    break;
+                case 4:
                     if (_ruinMarkerIndex >= _ruinMarkerList!.Count)
                     {
                         MapInitLateRuins(_ruinLavaland!.Value);
@@ -182,6 +205,7 @@ public sealed partial class LavalandSystem
         _ruinGridIndex = 0;
         _ruinDungeonIndex = 0;
         _ruinMarkerIndex = 0;
+        _terrainBlocked.Clear();
         _ruinPhase = 0;
     }
 
@@ -191,11 +215,17 @@ public sealed partial class LavalandSystem
             return;
 
         var random = new Random(lavaland.Comp.Seed);
+        _terrainBlocked.Clear();
 
         var usedSpace = GetOutpostBoundary(lavaland);
         var coords = GetCoordinates(pool.RuinDistance, pool.MaxDistance, pool.MinDistance);
 
         random.Shuffle(coords);
+
+        // Guaranteed marker ruins first: landmarks get the cleanest spots, everything else avoids them.
+        SetupMarkerRuins(pool.MarkerRuins, lavaland, ref coords, ref usedSpace, guaranteed: true);
+
+        coords = coords.Where(coord => !usedSpace.Any(usedBox => usedBox.Contains(coord))).ToList();
 
         SetupGridRuins(pool.GridRuins, lavaland, preloader, ref coords, ref usedSpace);
 
@@ -207,7 +237,7 @@ public sealed partial class LavalandSystem
         // Do that again
         coords = coords.Where(coord => !usedSpace.Any(usedBox => usedBox.Contains(coord))).ToList();
 
-        SetupMarkerRuins(pool.MarkerRuins, lavaland, ref coords, ref usedSpace);
+        SetupMarkerRuins(pool.MarkerRuins, lavaland, ref coords, ref usedSpace, guaranteed: false);
     }
 
     private void SetupGridRuins(
@@ -251,17 +281,24 @@ public sealed partial class LavalandSystem
         Dictionary<ProtoId<LavalandMarkerRuinPrototype>, ushort> ruins,
         Entity<LavalandMapComponent> lavaland,
         ref List<Vector2i> coords,
-        ref List<Box2> usedSpace)
+        ref List<Box2> usedSpace,
+        bool guaranteed)
     {
         // Get and sort all ruins, because we can't sort dictionaries
         var list = GetMarkerRuinProtos(ruins);
         list.Sort(CompareMarkerRuins);
 
-        Log.Debug($"Spawning {list.Count} Marker Ruins on {ToPrettyString(lavaland)} planet.");
+        var count = 0;
         foreach (var ruin in list)
         {
+            if (ruin.Guaranteed != guaranteed)
+                continue;
+
             LoadMarkerRuin(ruin, lavaland, ref usedSpace, ref coords);
+            count++;
         }
+
+        Log.Debug($"Spawning {count} Marker Ruins (guaranteed: {guaranteed}) on {ToPrettyString(lavaland)} planet.");
     }
 
     private List<Box2> GetOutpostBoundary(Entity<LavalandMapComponent> lavaland)
@@ -315,9 +352,11 @@ public sealed partial class LavalandSystem
         var spawned = spawnedBoundedGrid.Value;
         var ruinBox = spawned.Comp.LocalAABB;
 
-        if (!TryPlaceRuin(ruinBox, ruin.SpawnAttempts, ruin.MinDistance, ruin.MaxDistance, coords, usedSpace, out var coord)
-            && !(ruin.Guaranteed
-                && TryPlaceRuin(ruinBox, ruin.SpawnAttempts * 4, ruin.MinDistance, ruin.MaxDistance, coords, usedSpace, out coord, ignoreIntersections: true)))
+        // Guaranteed ruins scan every remaining lattice point instead of overlapping something.
+        var attempts = ruin.Guaranteed ? coords.Count : ruin.SpawnAttempts;
+        // Fall back to a full scan (still no overlapping) so a bad random streak never drops the ruin.
+        if (!TryPlaceRuin(ruinBox, attempts, ruin.MinDistance, ruin.MaxDistance, lavaland, coords, usedSpace, out var coord)
+            && !TryPlaceRuin(ruinBox, coords.Count, ruin.MinDistance, ruin.MaxDistance, lavaland, coords, usedSpace, out coord))
         {
             Log.Warning($"Failed to load ruin {ruin.ID} on {ToPrettyString(lavaland)} planet's surface: all attempts have failed and no eligible spot was found!");
             Del(spawnedBoundedGrid);
@@ -329,6 +368,9 @@ public sealed partial class LavalandSystem
         // only sample the first few entries of the list, so leftover points inside occupied boxes
         // would make them burn all spawn attempts and fail to place (seen on MiningPost/Generator).
         coords.RemoveAll(c => ruinBox.Translated(coord.Value).Contains(new Vector2(c.X, c.Y)));
+
+        // Clear the biome before the ruin lands there, so ruin-owned rock walls are not deleted.
+        ReserveRuinTerrain(lavaland, ruinBox.Translated(coord.Value));
 
         // Teleport it into place on preloader map
         _transform.SetCoordinates(spawned, new EntityCoordinates(preloader, coord.Value));
@@ -383,13 +425,18 @@ public sealed partial class LavalandSystem
 
         var ruinBox = Box2.CentredAroundZero(ruin.Boundary);
 
-        if (!TryPlaceRuin(ruinBox, ruin.SpawnAttempts, ruin.MinDistance, ruin.MaxDistance, coords, usedSpace, out var coord)
-            && !(ruin.Guaranteed
-                && TryPlaceRuin(ruinBox, ruin.SpawnAttempts * 4, ruin.MinDistance, ruin.MaxDistance, coords, usedSpace, out coord, ignoreIntersections: true)))
+        // Guaranteed ruins scan every remaining lattice point instead of overlapping something.
+        var attempts = ruin.Guaranteed ? coords.Count : ruin.SpawnAttempts;
+        // Fall back to a full scan (still no overlapping) so a bad random streak never drops the ruin.
+        if (!TryPlaceRuin(ruinBox, attempts, ruin.MinDistance, ruin.MaxDistance, lavaland, coords, usedSpace, out var coord)
+            && !TryPlaceRuin(ruinBox, coords.Count, ruin.MinDistance, ruin.MaxDistance, lavaland, coords, usedSpace, out coord))
         {
             Log.Warning($"Failed to load ruin {ruin.ID} on {ToPrettyString(lavaland)} planet's surface: all attempts have failed and no eligible spot was found!");
             return;
         }
+
+        // Clear the biome before the marker spawns its structure, so its own rock walls are not deleted.
+        ReserveRuinTerrain(lavaland, ruinBox.Translated(coord.Value));
 
         Spawn(ruin.SpawnedMarker, new EntityCoordinates(lavaland, coord.Value));
 
@@ -399,26 +446,27 @@ public sealed partial class LavalandSystem
     }
 
     /// <summary>
-    /// Tries to find a spot on a surface of a planet where a ruin can fit without intersecting other ruins.
+    /// Tries to find a spot on a surface of a planet where a ruin can fit on solid ground
+    /// without intersecting (or visually touching) other ruins.
     /// </summary>
     /// <param name="ruinBox">Boundaries of a ruin, confined inside a box</param>
     /// <param name="spawnAttempts">The maximum amount of spawn attempts we make before giving up on generating that ruin.</param>
     /// <param name="minDistance">Optional override of the pool's min distance from the map center, for this specific ruin.</param>
     /// <param name="maxDistance">Optional override of the pool's max distance from the map center, for this specific ruin.</param>
+    /// <param name="lavaland">The planet the ruin is placed on, used for terrain checks.</param>
     /// <param name="coords">A list of all eligible planet coordinates. Has to be shuffled to be as efficient as possible.</param>
     /// <param name="usedSpace">A list of bounding boxes of already placed ruins, translated relative to their position.</param>
     /// <param name="pickedCoord">Picked coordinates that we can safely put a ruin at.</param>
-    /// <param name="ignoreIntersections">Skip the overlap check, used by guaranteed ruins as a last resort.</param>
     /// <returns></returns>
     private bool TryPlaceRuin(
         Box2 ruinBox,
         int spawnAttempts,
         int? minDistance,
         int? maxDistance,
+        Entity<LavalandMapComponent> lavaland,
         List<Vector2i> coords,
         List<Box2> usedSpace,
-        [NotNullWhen(true)] out Vector2i? pickedCoord,
-        bool ignoreIntersections = false)
+        [NotNullWhen(true)] out Vector2i? pickedCoord)
     {
         pickedCoord = null;
         for (var i = 0; i < coords.Count && i < spawnAttempts; i++)
@@ -430,21 +478,13 @@ public sealed partial class LavalandSystem
             if (distance < minDistance || distance > maxDistance)
                 continue;
 
-            bool intersects = false;
-            if (!ignoreIntersections)
-            {
-                var translated = ruinBox.Translated(pos);
-                foreach (var used in usedSpace)
-                {
-                    if (translated.Intersects(used))
-                    {
-                        intersects = true;
-                        break;
-                    }
-                }
-            }
-
+            // Pad the candidate so neighboring buildings never visually touch.
+            var translated = ruinBox.Enlarged(RuinPadding).Translated(pos);
+            var intersects = usedSpace.Any(used => translated.Intersects(used));
             if (intersects)
+                continue;
+
+            if (!IsTerrainSuitable(lavaland, ruinBox, pos))
                 continue;
 
             pickedCoord = pos;
@@ -452,6 +492,144 @@ public sealed partial class LavalandSystem
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Rejects spots where the biome would put lava or a chasm under the ruin,
+    /// so landmarks do not end up in the middle of a lava lake or over a hole.
+    /// </summary>
+    private bool IsTerrainSuitable(Entity<LavalandMapComponent> lavaland, Box2 ruinBox, Vector2i pos)
+    {
+        var grid = Comp<MapGridComponent>(lavaland.Owner);
+        var biome = Comp<BiomeComponent>(lavaland.Owner);
+
+        var box = ruinBox.Translated(pos);
+        if (IsTerrainBlocked(lavaland, grid, biome, box.Center.Floored()))
+            return false;
+
+        var minX = (int) MathF.Floor(box.Left);
+        var minY = (int) MathF.Floor(box.Bottom);
+        var maxX = (int) MathF.Ceiling(box.Right);
+        var maxY = (int) MathF.Ceiling(box.Top);
+
+        // Sampled on purpose: the full biome prediction is too slow to run for every tile
+        // of every candidate during the round-start batch, and a lava lake is many tiles wide.
+        var stepX = Math.Max(2, (maxX - minX) / TerrainSamplesPerAxis);
+        var stepY = Math.Max(2, (maxY - minY) / TerrainSamplesPerAxis);
+        var blocked = 0;
+        var total = 0;
+        for (var x = minX; x < maxX; x += stepX)
+        {
+            for (var y = minY; y < maxY; y += stepY)
+            {
+                total++;
+                if (IsTerrainBlocked(lavaland, grid, biome, new Vector2i(x, y)))
+                    blocked++;
+            }
+        }
+
+        return total > 0 && blocked < total * MaxBlockedTerrainFraction;
+    }
+
+    /// <summary>
+    /// True if the tile is, or would be, covered by lava or a chasm.
+    /// </summary>
+    private bool IsTerrainBlocked(
+        Entity<LavalandMapComponent> lavaland,
+        MapGridComponent grid,
+        BiomeComponent biome,
+        Vector2i indices)
+    {
+        if (_terrainBlocked.TryGetValue(indices, out var blocked))
+            return blocked;
+
+        blocked = false;
+
+        // Terrain may already exist if the map was loaded the non-batched way.
+        var anchored = _map.GetAnchoredEntitiesEnumerator(lavaland.Owner, grid, indices);
+        while (anchored.MoveNext(out var uid))
+        {
+            var prototype = MetaData(uid.Value).EntityPrototype;
+            if (prototype == null || !IsBlockingTerrain(prototype.ID))
+                continue;
+
+            blocked = true;
+            break;
+        }
+
+        // The staged preload path has no biome chunks yet, so ask the biome what it would spawn here.
+        if (!blocked
+            && _biome.TryGetEntity(indices, biome, (lavaland.Owner, grid), out var terrain)
+            && terrain != null
+            && IsBlockingTerrain(terrain))
+        {
+            blocked = true;
+        }
+
+        _terrainBlocked[indices] = blocked;
+        return blocked;
+    }
+
+    private static bool IsBlockingTerrain(string prototypeId)
+    {
+        return prototypeId is "FloorLavaEntity" or "FloorChasmEntity";
+    }
+
+    /// <summary>
+    /// Clears biome terrain from the ruin footprint: deletes blockers that were already loaded,
+    /// and reserves the tiles so a later chunk load never spawns lava, rock, ores or decals there.
+    /// </summary>
+    private void ReserveRuinTerrain(Entity<LavalandMapComponent> lavaland, Box2 worldBox)
+    {
+        var grid = Comp<MapGridComponent>(lavaland.Owner);
+        var minX = (int) MathF.Floor(worldBox.Left);
+        var minY = (int) MathF.Floor(worldBox.Bottom);
+        var maxX = (int) MathF.Ceiling(worldBox.Right);
+        var maxY = (int) MathF.Ceiling(worldBox.Top);
+
+        // The chunk may already be loaded, in which case the biome has spawned its entities here.
+        for (var x = minX; x < maxX; x++)
+        {
+            for (var y = minY; y < maxY; y++)
+            {
+                var anchored = _map.GetAnchoredEntitiesEnumerator(lavaland.Owner, grid, new Vector2i(x, y));
+                while (anchored.MoveNext(out var uid))
+                {
+                    var prototype = MetaData(uid.Value).EntityPrototype;
+                    if (prototype != null && IsBiomeBlocker(prototype.ID))
+                        _ruinBlockers.Add(uid.Value);
+                }
+            }
+        }
+
+        foreach (var uid in _ruinBlockers)
+        {
+            if (!Deleted(uid))
+                Del(uid);
+        }
+
+        _ruinBlockers.Clear();
+
+        _tiles.Clear();
+        _biome.ReserveTiles(lavaland.Owner, worldBox, _tiles);
+        _tiles.Clear();
+    }
+
+    /// <summary>
+    /// Surface clutter the biome spawns, which must never stay inside a ruin.
+    /// </summary>
+    private static bool IsBiomeBlocker(string prototypeId)
+    {
+        return prototypeId is "FloorLavaEntity"
+            or "FloorChasmEntity"
+            or "WallRockBasalt"
+            or "FloraRockSolid"
+            or "FruitCactus"
+            or "BasaltOne"
+            or "BasaltTwo"
+            or "BasaltThree"
+            or "BasaltFour"
+            or "BasaltFive";
     }
 
     /// <summary>

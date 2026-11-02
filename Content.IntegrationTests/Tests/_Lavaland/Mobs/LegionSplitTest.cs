@@ -46,8 +46,13 @@ public sealed class LegionSplitTest
         await server.WaitAssertion(() =>
         {
             Assert.That(entMan.Deleted(boss), Is.True, "boss should die and delete itself");
-            Assert.That(CountPrototypes(entMan, "LavalandBossLegionMedium"), Is.EqualTo(3),
-                "boss death should spawn 3 medium legions");
+            // TG parity: the boss splits into the left half, the right half and the eye.
+            Assert.That(CountPrototypes(entMan, "LavalandBossLegionMedium"), Is.EqualTo(1),
+                "boss death should spawn the left medium legion");
+            Assert.That(CountPrototypes(entMan, "LavalandBossLegionMediumRight"), Is.EqualTo(1),
+                "boss death should spawn the right medium legion");
+            Assert.That(CountPrototypes(entMan, "LavalandBossLegionMediumEye"), Is.EqualTo(1),
+                "boss death should spawn the eye medium legion");
             Assert.That(CountPrototypes(entMan, "LavalandBossLegionSmall"), Is.EqualTo(0),
                 "medium legions should not split yet");
         });
@@ -55,7 +60,7 @@ public sealed class LegionSplitTest
         // Kill one medium -> 3 small legions.
         await server.WaitPost(() =>
         {
-            foreach (var uid in EnumeratePrototypes(entMan, "LavalandBossLegionMedium"))
+            foreach (var uid in EnumerateLegionMedium(entMan))
             {
                 entMan.System<DamageableSystem>().TryChangeDamage(
                     uid,
@@ -69,7 +74,7 @@ public sealed class LegionSplitTest
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(CountPrototypes(entMan, "LavalandBossLegionMedium"), Is.EqualTo(2),
+            Assert.That(CountLegionMedium(entMan), Is.EqualTo(2),
                 "one medium legion should have died");
             Assert.That(CountPrototypes(entMan, "LavalandBossLegionSmall"), Is.EqualTo(3),
                 "medium death should spawn 3 small legions");
@@ -78,7 +83,7 @@ public sealed class LegionSplitTest
         // Kill the remaining mediums, then all smalls -> the chain stops.
         await server.WaitPost(() =>
         {
-            foreach (var uid in EnumeratePrototypes(entMan, "LavalandBossLegionMedium"))
+            foreach (var uid in EnumerateLegionMedium(entMan))
             {
                 entMan.System<DamageableSystem>().TryChangeDamage(
                     uid,
@@ -104,12 +109,36 @@ public sealed class LegionSplitTest
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(CountPrototypes(entMan, "LavalandBossLegionMedium"), Is.EqualTo(0));
+            Assert.That(CountLegionMedium(entMan), Is.EqualTo(0));
             Assert.That(CountPrototypes(entMan, "LavalandBossLegionSmall"), Is.EqualTo(0),
                 "small legions have no splits left, the chain must stop");
         });
 
         await pair.CleanReturnAsync();
+    }
+
+    private static readonly string[] MediumLegionProtos =
+    {
+        "LavalandBossLegionMedium",
+        "LavalandBossLegionMediumRight",
+        "LavalandBossLegionMediumEye",
+    };
+
+    private static int CountLegionMedium(IEntityManager entMan)
+    {
+        var count = 0;
+        foreach (var proto in MediumLegionProtos)
+            count += CountPrototypes(entMan, proto);
+        return count;
+    }
+
+    private static IEnumerable<EntityUid> EnumerateLegionMedium(IEntityManager entMan)
+    {
+        foreach (var proto in MediumLegionProtos)
+        {
+            foreach (var uid in EnumeratePrototypes(entMan, proto))
+                yield return uid;
+        }
     }
 
     private static int CountPrototypes(IEntityManager entMan, string protoId)

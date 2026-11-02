@@ -12,5 +12,5 @@ ent-LavalandAshwalkerDenSpawner = спавнер логова ашвокеров
     .desc = { ent-MarkerBase.desc }
 
 ghost-role-information-ashwalker-name = Ашвокер
-ghost-role-information-ashwalker-description = Вы - член племени ашвокеров. Охраняйте гнездо, кормите его трупами чужаков и прогоняйте шахтёров со своих земель.
+ghost-role-information-ashwalker-description = Вы - член племени ашвокеров. Воздух Лавалэнда вам не вредит, так что дыхательная маска не нужна. Охраняйте гнездо, кормите его трупами чужаков и прогоняйте шахтёров со своих земель.
 ashwalker-nest-destroyed = Гнездо обрушивается в облаке пепла!

@@ -11,6 +11,8 @@ using Content.Shared.Popups;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
@@ -39,7 +41,22 @@ public sealed class NecropolisGateSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
+    [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+
+    // Biome decoration that must never stay inside the landmark: lava, rock walls and ash rock.
+    private static readonly HashSet<string> ArenaBlockers = new()
+    {
+        "FloorLavaEntity",
+        "WallRockBasalt",
+        "FloraRockSolid",
+        "FruitCactus",
+        "BasaltOne",
+        "BasaltTwo",
+        "BasaltThree",
+        "BasaltFour",
+        "BasaltFive",
+    };
 
     public override void Initialize()
     {
@@ -61,6 +78,10 @@ public sealed class NecropolisGateSystem : EntitySystem
         var comp = ent.Comp;
         var baseCoords = Transform(ent).Coordinates;
         var gateCoords = baseCoords.Offset(comp.GateOffset);
+
+        // The landmark can land on a lava lake or inside basalt rocks: clear them first so the
+        // arena is always walkable and the gate is never buried.
+        ClearArenaBlockers(baseCoords, comp);
 
         // Stone arena patch under the whole landmark.
         for (var x = -comp.ArenaRadius; x <= comp.ArenaRadius; x++)
@@ -91,6 +112,32 @@ public sealed class NecropolisGateSystem : EntitySystem
 
         Spawn(Gate, gateCoords);
         Spawn(Arch, gateCoords);
+    }
+
+    private void ClearArenaBlockers(EntityCoordinates baseCoords, NecropolisGateSpawnerComponent comp)
+    {
+        if (!TryComp<MapGridComponent>(baseCoords.EntityId, out var grid))
+            return;
+
+        var toDelete = new List<EntityUid>();
+        for (var x = -comp.ArenaRadius - 1; x <= comp.ArenaRadius + 1; x++)
+        {
+            for (var y = -comp.ArenaRadius - 1; y <= comp.ArenaRadius + comp.TowerHeight + 1; y++)
+            {
+                var tile = _map.TileIndicesFor(baseCoords.EntityId, grid, baseCoords.Offset(new Vector2(x, y)));
+                foreach (var uid in _map.GetAnchoredEntities(baseCoords.EntityId, grid, tile))
+                {
+                    var meta = MetaData(uid);
+                    if (meta.EntityPrototype != null && ArenaBlockers.Contains(meta.EntityPrototype.ID))
+                        toDelete.Add(uid);
+                }
+            }
+        }
+
+        foreach (var uid in toDelete)
+        {
+            QueueDel(uid);
+        }
     }
 
     private void OnGateInteract(Entity<NecropolisGateComponent> ent, ref InteractHandEvent args)

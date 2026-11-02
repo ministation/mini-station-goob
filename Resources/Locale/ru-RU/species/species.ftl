@@ -10,4 +10,5 @@ species-name-moth = Ниан
 species-name-skeleton = Скелет
 species-name-vox = Вокс
 species-name-aroind = Ароинд
+species-name-ashwalker = Пеплоход
 snail-hurt-by-salt-popup = Солевой раствор жжёт как кислота!

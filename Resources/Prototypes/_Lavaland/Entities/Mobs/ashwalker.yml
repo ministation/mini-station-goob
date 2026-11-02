@@ -21,6 +21,16 @@
     raffle:
       settings: default
   - type: GhostTakeoverAvailable
+  # Own species instead of a plain Unathi copy: ashen grey and digitigrade.
+  - type: HumanoidAppearance
+    species: Ashwalker
+    hideLayersOnEquip:
+    - Snout
+    - HeadSide
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  # TG ashwalkers have Lavaland lungs and breathe the local air without internals.
+  - type: BreathingImmunity
   - type: LavaImmunity # Mini: heat damage is nullified, fire does nothing
   - type: MeleeWeapon
     altDisarm: false
