@@ -14,6 +14,7 @@ using Content.Shared.Examine;
 using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
@@ -58,11 +59,19 @@ public sealed partial class SharedMultishotSystem : EntitySystem
         var shootCoords = GetCoordinates(msg.Coordinates);
         var target = GetEntity(msg.Target);
 
+        // Mini: у борга предметы модулей всегда в руках, поэтому дуал-вилд здесь
+        // стрелял бы из обоих стволов сразу. Боргу стреляем только выбранным оружием.
+        var requestedGun = GetEntity(msg.Gun);
+        var isBorg = HasComp<BorgChassisComponent>(user.Value);
+
         foreach(var gun in gunsEnumerator)
         {
             var (gunEnt, gunComp, _) = gun;
 
-            if (!HasComp<MultishotComponent>(GetEntity(msg.Gun)) && gunEnt != GetEntity(msg.Gun))
+            if (isBorg && gunEnt != requestedGun)
+                continue;
+
+            if (!HasComp<MultishotComponent>(GetEntity(msg.Gun)) && gunEnt != requestedGun)
                 continue;
 
             if (gunComp.Target == null || !gunComp.BurstActivated || !gunComp.LockOnTargetBurst)
@@ -131,6 +140,10 @@ public sealed partial class SharedMultishotSystem : EntitySystem
 
     private void OnEquipWeapon(Entity<MultishotComponent> multishotWeapon, ref GotEquippedHandEvent args)
     {
+        // Mini: у борга стволы из модулей всегда в руках, дуал-вилд дебаффы ему не нужны.
+        if (HasComp<BorgChassisComponent>(args.User))
+            return;
+
         var gunsEnumerator = GetMultishotGuns(args.User);
 
         if (gunsEnumerator.Count < 2)

@@ -101,7 +101,8 @@
 
 - type: entity
   id: BorgChassisSecurity
-  parent: BorgChassisSelectable
+  # Mini: ShowSecurityIcons — СБ-HUD: иконки профессий, статус розыска, контрабанда
+  parent: [BorgChassisSelectable, ShowSecurityIcons]
   name: security cyborg
   components:
   - type: BorgSwitchableType

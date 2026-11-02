@@ -1283,6 +1283,7 @@
     - item: WeaponLaserCarbineBorg # Mini: лазерная пушка с подзарядкой в модуле СБ-борга
     - item: JawsOfLife
     - item: Handcuffs
+      forceRemovable: true # Mini: иначе Unremoveable блокирует CanDrop, и наручники нельзя надеть
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: syndicate-weapon-module }
 
