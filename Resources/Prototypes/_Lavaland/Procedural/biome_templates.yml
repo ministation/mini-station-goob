@@ -14,17 +14,6 @@
       noiseType: OpenSimplex2
       fractalType: FBm
   - !type:BiomeMetaLayer
-    template: PaleForest
-    threshold: -0.33
-    noise:
-      seed: 10
-      frequency: 0.02
-      gain: 0.1
-      noiseType: OpenSimplex2
-      fractalType: FBm
-      octaves: 2
-      lacunarity: 2
-  - !type:BiomeMetaLayer
     template: LavaCaves
     threshold: -0.2
     noise:
@@ -44,7 +33,7 @@
       fractalType: FBm
   - !type:BiomeMetaLayer
     template: LavaLakes
-    threshold: 0.66
+    threshold: 0.75
     noise:
       seed: 10
       frequency: 0.02
