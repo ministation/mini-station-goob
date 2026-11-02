@@ -72,10 +72,7 @@
   id: LavalandLootBubblegum
   table: !type:AllSelector
     children:
-    - !type:AllSelector
-      children:
-      - id: ClothingOuterHardsuitHECK
-      - id: ClothingHeadHelmetHECK
+    - id: ClothingOuterHardsuitHECK # the suit spawns its own matching helmet (ToggleableClothing)
     - !type:GroupSelector
       children:
       - id: LavalandMayhemBottle
