@@ -30,9 +30,10 @@ public sealed class CrusherKineticMarkerSystem : EntitySystem
     private void OnMarkerUpgradeEjected(Entity<KineticMarkerUpgradeComponent> ent,
         ref EntGotRemovedFromContainerMessage args)
     {
-        if (!HasComp<MegafaunaWeaponLooterComponent>(args.Container.Owner))
+        var owner = args.Container.Owner;
+        if (TerminatingOrDeleted(owner) || !HasComp<MegafaunaWeaponLooterComponent>(owner))
             return;
 
-        EntityManager.AddComponents(args.Container.Owner, _proto.Index(MarkerPrototype), removeExisting: false);
+        EntityManager.AddComponents(owner, _proto.Index(MarkerPrototype), removeExisting: false);
     }
 }
