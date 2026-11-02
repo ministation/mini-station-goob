@@ -105,13 +105,11 @@
     nameSegments:
       - AbductorAgentPrefix
       - AbductorNames
-  - type: Tag # Ignore AbductorScientist tag
-    tags:
-      - Abductor
-      - CanPilot
-      - FootstepSound
-      - DoorBumpOpener
-  - type: AbductorScientist # Should be removed when we have proper teleportation system
+  - type: AbductorScientist
+  - type: SurgeryIgnoreClothing
+  - type: Sanitized
+  - type: SurgerySpeedModifier
+    speedModifier: 1.5
   - type: Loadout
     prototypes:
       - AbductorAgentGear
