@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Popups;
 using Robust.Shared.Audio;
@@ -48,6 +49,15 @@ public sealed class LegionSplitSystem : EntitySystem
         {
             var offset = _random.NextVector2Box(-0.8f, -0.8f, 0.8f, 0.8f);
             var child = Spawn(protoId, coords.Offset(offset));
+
+            // Shards that track a fight stage start it at the final stage.
+            // Plain split mobs (hivelord broods) have no stage component and are left alone.
+            if (TryComp<MegafaunaStageComponent>(child, out var stage))
+            {
+                stage.Stage = 2;
+                stage.MaxStage = 2;
+                Dirty(child, stage);
+            }
 
             if (TryComp<LegionSplitComponent>(child, out var childSplit))
                 childSplit.SplitsRemaining = comp.SplitsRemaining - 1;

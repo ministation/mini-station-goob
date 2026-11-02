@@ -25,6 +25,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+  - type: MegafaunaStage
+    maxStage: 1
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Bosses/96x96.rsi
@@ -45,7 +47,7 @@
   - type: CombatMode
   - type: MovementSpeedModifier
     baseWalkSpeed: 3
-    baseSprintSpeed: 3
+    baseSprintSpeed: 3.5
   - type: MobThresholds
     thresholds:
       0: Alive
@@ -69,9 +71,6 @@
   - type: Aggressive # also required component for aggro checking
     forgiveRange: 20.0
   # Megafauna AI wiring, same driver as Hierophant
-  - type: InputMover
-  - type: Input
-    context: "human"
   - type: MobMover
   - type: LagCompensation
   - type: Actions

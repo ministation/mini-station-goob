@@ -34,6 +34,8 @@ public sealed partial class SeparatedChatGameScreen : InGameScreen
         SetMarginLeft(TypanWarHud, TypanWarHud.GetValue<float>(MarginLeftProperty) - 290);
         SetAnchorAndMarginPreset(KatorgaHud, LayoutPreset.CenterBottom, margin: 205);
         SetMarginLeft(KatorgaHud, KatorgaHud.GetValue<float>(MarginLeftProperty) - 290);
+        SetAnchorAndMarginPreset(BossHud, LayoutPreset.CenterBottom, margin: 205);
+        SetMarginLeft(BossHud, BossHud.GetValue<float>(MarginLeftProperty) - 290);
         // Слева под верхней панелью: по центру топ рыбалки уходит под чат.
         // Свернуть/развернуть можно кнопкой в шапке худа.
         SetAnchorAndMarginPreset(FishingModeHud, LayoutPreset.TopLeft, margin: 96);

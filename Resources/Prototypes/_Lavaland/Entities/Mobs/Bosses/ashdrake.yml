@@ -25,6 +25,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+  - type: MegafaunaStage
+    maxStage: 1
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Bosses/96x96.rsi
@@ -76,9 +78,6 @@
     factor: 25 # times more dangerous than a crew-member
   # Megafauna AI wiring, same driver as Hierophant. Normal movement keeps the
   # drake smooth when a player takes control of it (no TileMovement).
-  - type: InputMover
-  - type: Input
-    context: "human"
   - type: MobMover
   - type: LagCompensation
   - type: Actions

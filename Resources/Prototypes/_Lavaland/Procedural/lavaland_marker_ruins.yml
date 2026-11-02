@@ -6,7 +6,7 @@
   spawnedMarker: LavalandNecropolisGateSpawner
   priority: -2
   guaranteed: true
-  minDistance: 120
+  minDistance: 70
 
 - type: lavalandMarkerRuin
   id: BubblegumLair
@@ -14,7 +14,7 @@
   spawnedMarker: LavalandBubblegumLairSpawner
   priority: -2
   guaranteed: true
-  minDistance: 150
+  minDistance: 75
 
 - type: lavalandMarkerRuin
   id: DrakeDen
@@ -22,7 +22,7 @@
   spawnedMarker: LavalandDrakeDenSpawner
   priority: -2
   guaranteed: true
-  minDistance: 150
+  minDistance: 75
 
 - type: lavalandMarkerRuin
   id: ColossusArena
@@ -30,7 +30,7 @@
   spawnedMarker: LavalandColossusArenaSpawner
   priority: -2
   guaranteed: true
-  minDistance: 170
+  minDistance: 85
 
 - type: lavalandMarkerRuin
   id: BloodDrunkDen
@@ -38,7 +38,7 @@
   spawnedMarker: LavalandBloodDrunkDenSpawner
   priority: -2
   guaranteed: true
-  minDistance: 140
+  minDistance: 70
 
 - type: lavalandMarkerRuin
   id: EliteTumor
@@ -46,7 +46,7 @@
   spawnedMarker: LavalandEliteTumorSpawner
   priority: -2
   guaranteed: true
-  minDistance: 130
+  minDistance: 65
 
 - type: lavalandMarkerRuin
   id: AshwalkerDen
@@ -54,7 +54,7 @@
   spawnedMarker: LavalandAshwalkerDenSpawner
   priority: -2
   guaranteed: true
-  minDistance: 160
+  minDistance: 80
 
 - type: lavalandMarkerRuin
   id: SeedVault
@@ -62,7 +62,7 @@
   spawnedMarker: LavalandSeedVaultSpawner
   priority: -2
   guaranteed: true
-  minDistance: 150
+  minDistance: 75
 
 - type: lavalandMarkerRuin
   id: WishgranterShrine
@@ -70,7 +70,7 @@
   spawnedMarker: LavalandWishgranterSpawner
   priority: -2
   guaranteed: true
-  minDistance: 140
+  minDistance: 65
 
 - type: lavalandMarkerRuin
   id: OreVent

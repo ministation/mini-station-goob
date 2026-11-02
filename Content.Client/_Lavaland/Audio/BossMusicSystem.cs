@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Client.Audio;
+using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.Audio;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
@@ -67,7 +68,34 @@ public sealed class BossMusicSystem : SharedBossMusicSystem
         if (!_timing.IsFirstTimePredicted)
             return;
 
+        UpdateBossMusic();
         UpdateFade(frameTime);
+    }
+
+    /// <summary>
+    /// Boss music is started by whoever added the aggressor, but that is almost always the server
+    /// (damage is not always predicted, and Bubblegum adds aggressors from its own blood step code).
+    /// The server never plays music, it only replicates who is aggressive towards us, so follow the
+    /// synced aggressor list instead of relying on local events.
+    /// </summary>
+    private void UpdateBossMusic()
+    {
+        if (_player.LocalEntity is not { } local)
+            return;
+
+        if (TryComp<AggressorComponent>(local, out var aggressor))
+        {
+            foreach (var uid in aggressor.Aggressives)
+            {
+                if (!TryComp<BossMusicComponent>(uid, out var music))
+                    continue;
+
+                StartBossMusic(new Entity<BossMusicComponent?>(uid, music));
+                return;
+            }
+        }
+
+        EndAllMusic();
     }
 
     private void BossVolumeCVarChanged(float obj)

@@ -33,6 +33,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+  - type: MegafaunaStage
+    maxStage: 2
   - type: Sprite
     noRot: true
     drawdepth: Mobs
@@ -71,9 +73,6 @@
   - type: CombatPower # Goobstation
     factor: 25 # times more dangerous than a crew-member
   # Megafauna AI wiring, same driver as Hierophant
-  - type: InputMover
-  - type: Input
-    context: "human"
   - type: MobMover
   - type: LagCompensation
   - type: Actions
@@ -184,6 +183,9 @@
     thresholds:
       0: Alive
       400: Dead
+  - type: MegafaunaStage
+    stage: 2
+    maxStage: 2
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -290,6 +292,9 @@
     thresholds:
       0: Alive
       200: Dead
+  - type: MegafaunaStage
+    stage: 2
+    maxStage: 2
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
