@@ -1,8 +1,8 @@
 - type: entity
   id: MobLegion
   parent: BaseMobAsteroid
-  name: чудовище легиона
-  description: Органическое существо, пропитанное энергией легиона. Излучает враждебность ко всему живому.
+  name: legion humanoid
+  description: You can still see what was once a human under the shifting mass of corruption.
   components:
   - type: Sprite
     sprite: _Lavaland/Mobs/legion.rsi
@@ -64,8 +64,8 @@
 - type: entity
   id: MobLegionSkull
   parent: [ BaseMobAsteroid, FlyingMobBase ]
-  name: фрагмент легиона
-  description: Фрагмент органической материи, пропитанной энергией легиона.
+  name: legion skull
+  description: A fragment of the original legion, rallying behind its original. One isn't much of a threat, but...
   components:
   - type: Sprite
     sprite: _Lavaland/Mobs/legion.rsi

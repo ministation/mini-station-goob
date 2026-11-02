@@ -71,6 +71,8 @@
       params:
         volume: -5
   - type: TileMovement
+  - type: MegafaunaStage
+    maxStage: 1 # No code changes the stage on Bubblegum yet.
   - type: BossMusic
     soundId: Bubblegum
   - type: Aggressive
