@@ -69,6 +69,16 @@
     userWhitelist:
       components:
       - Actor
+  # Combat AI: the tendril fights back with spikes when damaged (port of TG tendril combat)
+  - type: Aggressive
+    forgiveRange: 12.0
+  - type: Actions
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 1.0
+    selector: !type:NestedMegafaunaSelector
+      id: Tendril
+  - type: MegafaunaRejuvenate
 
 - type: entity
   parent: LavalandTendrilBase

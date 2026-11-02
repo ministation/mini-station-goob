@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Tendril combat: necropolis spikes and crawling chasers.
+- type: entity
+  id: LavalandTendrilSpike
+  categories: [ DoNotMap ]
+  name: necropolis spike
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: TimedDespawn
+    lifetime: 1.5
+  - type: DamageSquare
+    damageDelay: 0.5
+    damage:
+      types:
+        Blunt: 10
+    damageWhitelist:
+      components:
+      - MobState
+  - type: Sprite
+    sprite: _Lavaland/Effects/tendril_spikes.rsi
+    state: spikes_stabbing
+
+- type: entity
+  parent: MarkerBase
+  id: LavalandTendrilSpikeCross
+  name: tendril spike cross spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: LavalandTendrilSpike
+    shape: !type:NestedEntityShape
+      id: QueenCross
+      size: 9
+
+- type: entity
+  id: LavalandTendrilChaser
+  suffix: DO NOT MAP
+  categories: [ DoNotMap ]
+  name: tendril chaser
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: TileChaser
+    spawn: LavalandTendrilSpike
+  - type: AngerTileChaser
+    speedRange: 2,4
+    stepsRange: 10,25

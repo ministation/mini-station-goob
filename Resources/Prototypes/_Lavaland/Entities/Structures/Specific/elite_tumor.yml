@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Pulsating tumor from TG lavaland: wakes up when a miner gets close
+# and releases one of the four elite monsters.
+- type: entity
+  id: LavalandEliteTumor
+  parent: BaseStructure
+  name: pulsating tumor
+  description: A repulsive tumor that grows into the rock. It is breathing.
+  components:
+  - type: EliteTumor
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Structures/Specific/elite_tumor.rsi
+    state: tumor
+    offset: 0, 0.5
+  - type: Damageable
+    damageContainer: Biological
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialBones1:
+            min: 1
+            max: 2
+          MaterialLegionSkull1:
+            min: 0
+            max: 1
+  - type: Appearance
+  - type: PointLight
+    color: "#D64C9E"
+    radius: 2
+    energy: 2
+
+- type: entity
+  id: LavalandEliteTumorSpawner
+  parent: MarkerBase
+  name: elite tumor spawner
+  suffix: Lavaland
+  components:
+  - type: EliteTumorSpawner

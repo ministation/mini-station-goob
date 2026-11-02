@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: ActionBdhDash
+  parent: BaseAction
+  name: Saw Dash
+  description: Dashes at the target, cleaving everything on the way.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaBlinkActionEvent
+
+- type: entity
+  id: ActionBdhSawBarrage
+  parent: BaseAction
+  name: Saw Barrage
+  description: Throws a ring of spinning saws.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandCleavingSawProjectile
+      count: 6
+      speed: 10
+      pattern: Ring
+
+- type: entity
+  id: ActionBdhDashChain
+  parent: ActionBdhDash
+  name: Chain Dash
+  description: Dashes again right after a hit.

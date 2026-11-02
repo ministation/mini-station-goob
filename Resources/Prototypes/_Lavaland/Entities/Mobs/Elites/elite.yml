@@ -23,9 +23,20 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
-  - type: HTN
-    rootTask:
-      task: SimpleHostileCompound
+  # Megafauna AI wiring (works for NPC control; a ghost takeover pauses it)
+  - type: InputMover
+  - type: Input
+    context: "human"
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Elites/32x64.rsi
@@ -57,7 +68,6 @@
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
-  - type: TileMovement
   - type: BossMusic
     soundId: Miniboss
   - type: Aggressive # also required component for aggro checking
@@ -71,9 +81,6 @@
   parent: LavalandEliteBase
   description: A towering skeleton, embodying the terrifying power of Legion.
   components:
-  - type: HTN
-    rootTask:
-      task: SimpleHostileCompound
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Elites/32x64.rsi
@@ -115,6 +122,44 @@
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
+  # Megafauna AI wiring (works for NPC control; a ghost takeover pauses it)
+  - type: InputMover
+  - type: Input
+    context: "human"
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.7
+    selector: !type:NestedMegafaunaSelector
+      id: EliteLegionnaire
+  - type: MegafaunaBlink
+    spawnOnTarget: LavalandLegionChargeBurst
+    spawnOnUsed: LavalandLegionChargeBurst
+  - type: MegafaunaRejuvenate
+  - type: SpawnLootOnDeath
+    table: !type:NestedSelector
+      tableId: LavalandMaterialRare
+    deleteOnDeath: false
+  - type: GhostRole
+    allowMovement: true
+    makeSentient: true
+    name: ghost-role-information-elite-legionnaire-name
+    description: ghost-role-information-elite-legionnaire-description
+    rules: ghost-role-information-antagonist-rules
+    mindRoles:
+    - MindRoleGhostRoleSoloAntagonist
+    raffle:
+      settings: default
+  - type: GhostTakeoverAvailable
 
 - type: entity
   id: LavalandElitePandora #Just a hierophant resprite, all of these are templates anyway.
@@ -186,6 +231,32 @@
   - type: BossMusic
     soundId: Hierophant
   - type: Fauna
+  # Megafauna AI wiring
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.7
+    selector: !type:NestedMegafaunaSelector
+      id: ElitePandora
+  - type: MegafaunaBlink
+    spawnOnTarget: HierophantShapeBlink
+    spawnOnUsed: HierophantShapeBlink
+  - type: MegafaunaRejuvenate
+  - type: SpawnLootOnDeath
+    table: !type:NestedSelector
+      tableId: LavalandMaterialRare
+    deleteOnDeath: false
+  - type: GhostRole
+    allowMovement: true
+    makeSentient: true
+    name: ghost-role-information-elite-pandora-name
+    description: ghost-role-information-elite-pandora-name-desc
+    rules: ghost-role-information-antagonist-rules
+    mindRoles:
+    - MindRoleGhostRoleSoloAntagonist
+    raffle:
+      settings: default
+  - type: GhostTakeoverAvailable
+
 
 - type: entity
   name: Herald
@@ -193,9 +264,6 @@
   parent: LavalandEliteBase
   description: A monstrous beast which fires deadly projectiles at threats and prey.
   components:
-  - type: HTN
-    rootTask:
-      task: SimpleRangedHostileCompound
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Elites/64x64.rsi
@@ -208,22 +276,6 @@
         Base: herald
       Dead:
         Base: herald_dying
-  - type: BatteryAmmoProvider
-    proto: BulletKineticShuttle
-    fireCost: 50
-  - type: BatterySelfRecharger
-    autoRechargeRate: 50
-  - type: Battery
-    maxCharge: 1000
-    startingCharge: 1000
-  - type: Gun
-    projectileSpeed: 20
-    fireRate: 0.9
-    useKey: false
-    selectedMode: SemiAuto
-    availableModes:
-    - SemiAuto
-    soundGunshot: /Audio/Weapons/plasma_cutter.ogg
   - type: MeleeWeapon
     altDisarm: false
     angle: 0
@@ -254,6 +306,41 @@
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
+  # Megafauna AI wiring
+  - type: InputMover
+  - type: Input
+    context: "human"
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.6
+    selector: !type:NestedMegafaunaSelector
+      id: EliteHerald
+  - type: MegafaunaRejuvenate
+  - type: SpawnLootOnDeath
+    table: !type:NestedSelector
+      tableId: LavalandMaterialRare
+    deleteOnDeath: false
+  - type: GhostRole
+    allowMovement: true
+    makeSentient: true
+    name: ghost-role-information-elite-herald-name
+    description: ghost-role-information-elite-herald-name-desc
+    rules: ghost-role-information-antagonist-rules
+    mindRoles:
+    - MindRoleGhostRoleSoloAntagonist
+    raffle:
+      settings: default
+  - type: GhostTakeoverAvailable
 
 - type: entity
   name: Broodmother
@@ -261,9 +348,6 @@
   parent: LavalandEliteBase
   description: An example of sexual dimorphism, this female goliath looks much different than the males of her species.  She is, however, just as dangerous, if not more.
   components:
-  - type: HTN
-    rootTask:
-      task: SimpleRangedHostileCompound
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Elites/64x64.rsi
@@ -305,4 +389,42 @@
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
+  # Megafauna AI wiring
+  - type: InputMover
+  - type: Input
+    context: "human"
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.9
+    selector: !type:NestedMegafaunaSelector
+      id: EliteBroodmother
+  - type: MegafaunaBlink
+    spawnOnTarget: LavalandLegionChargeBurst
+    spawnOnUsed: LavalandLegionChargeBurst
+  - type: MegafaunaRejuvenate
+  - type: SpawnLootOnDeath
+    table: !type:NestedSelector
+      tableId: LavalandMaterialRare
+    deleteOnDeath: false
+  - type: GhostRole
+    allowMovement: true
+    makeSentient: true
+    name: ghost-role-information-elite-broodmother-name
+    description: ghost-role-information-elite-broodmother-name-desc
+    rules: ghost-role-information-antagonist-rules
+    mindRoles:
+    - MindRoleGhostRoleSoloAntagonist
+    raffle:
+      settings: default
+  - type: GhostTakeoverAvailable
 

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Ash drake, port of TG's megafauna: fire breath cone, lava pools, swoop slams.
 - type: entity
   name: ash drake
   id: LavalandBossAshDrake
@@ -22,9 +25,6 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
-  - type: HTN
-    rootTask:
-      task: SimpleRangedHostileCompound
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Bosses/96x96.rsi
@@ -37,22 +37,6 @@
         Base: dragon
       Dead:
         Base: dragon_dead
-  - type: BatteryAmmoProvider
-    proto: ProjectileFireball
-    fireCost: 50
-  - type: BatterySelfRecharger
-    autoRechargeRate: 50
-  - type: Battery
-    maxCharge: 1000
-    startingCharge: 1000
-  - type: Gun
-    projectileSpeed: 10
-    fireRate: 0.3
-    useKey: false
-    selectedMode: SemiAuto
-    availableModes:
-    - SemiAuto
-    soundGunshot: /Audio/Magic/fireball.ogg
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
@@ -66,7 +50,7 @@
   - type: CombatMode
   - type: MovementSpeedModifier
     baseWalkSpeed: 3
-    baseSprintSpeed: 3
+    baseSprintSpeed: 3.5
   - type: MobThresholds
     thresholds:
       0: Alive
@@ -78,12 +62,47 @@
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
-  # Mini: tile movement makes the drake slide one tile at a time and overrides its facing,
-  # which looks jerky and crooked when the boss is controlled by a player. Normal movement
-  # keeps it smooth and lets it aim like other player-controlled mobs.
   - type: BossMusic
     soundId: AshDrake
   - type: Aggressive # also required component for aggro checking
     forgiveRange: 20.0
   - type: CombatPower # Goobstation
     factor: 25 # times more dangerous than a crew-member
+  # Megafauna AI wiring, same driver as Hierophant. Normal movement keeps the
+  # drake smooth when a player takes control of it (no TileMovement).
+  - type: InputMover
+  - type: Input
+    context: "human"
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.7
+    selector: !type:NestedMegafaunaSelector
+      id: AshDrake
+  - type: AngerPlayerScaling
+    angerScale: 1.1
+    hpScale: 1.2
+  - type: MegafaunaBlink
+    spawnOnTarget: LavalandDrakeSlamBurst
+    spawnOnUsed: LavalandDrakeSlamBurst
+  - type: MegafaunaRejuvenate
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: LavalandCrateDragon
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandDrakeTailSpike
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    deleteOnDeath: true

@@ -9,6 +9,70 @@
   minDistance: 120
 
 - type: lavalandMarkerRuin
+  id: BubblegumLair
+  boundary: 12,12
+  spawnedMarker: LavalandBubblegumLairSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 150
+
+- type: lavalandMarkerRuin
+  id: DrakeDen
+  boundary: 12,12
+  spawnedMarker: LavalandDrakeDenSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 150
+
+- type: lavalandMarkerRuin
+  id: ColossusArena
+  boundary: 14,14
+  spawnedMarker: LavalandColossusArenaSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 170
+
+- type: lavalandMarkerRuin
+  id: BloodDrunkDen
+  boundary: 10,10
+  spawnedMarker: LavalandBloodDrunkDenSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 140
+
+- type: lavalandMarkerRuin
+  id: EliteTumor
+  boundary: 10,10
+  spawnedMarker: LavalandEliteTumorSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 130
+
+- type: lavalandMarkerRuin
+  id: AshwalkerDen
+  boundary: 12,12
+  spawnedMarker: LavalandAshwalkerDenSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 160
+
+- type: lavalandMarkerRuin
+  id: SeedVault
+  boundary: 10,10
+  spawnedMarker: LavalandSeedVaultSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 150
+
+- type: lavalandMarkerRuin
+  id: WishgranterShrine
+  boundary: 8,8
+  spawnedMarker: LavalandWishgranterSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 140
+
+- type: lavalandMarkerRuin
   id: CommonRuin5x5
   boundary: 5,5
   spawnedMarker: LavalandInteriorRoomMarker

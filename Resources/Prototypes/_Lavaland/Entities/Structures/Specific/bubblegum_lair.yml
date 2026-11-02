@@ -1,0 +1,71 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Bubblegum lair landmark: stone arena with the boss and an ancient sarcophagus.
+
+- type: entity
+  id: LavalandBubblegumLairSpawner
+  parent: MarkerBase
+  name: bubblegum lair spawner
+  suffix: Lavaland
+  components:
+  - type: BubblegumLairSpawner
+
+- type: entity
+  parent: LavalandCrateNecropolis
+  id: LavalandCrateSarcophagus
+  name: ancient sarcophagus
+  description: A massive stone sarcophagus. Something valuable is sealed inside, the last owner did not need it anymore.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: BubblegumSarcophagusLoot
+
+- type: entityTable
+  id: BubblegumSarcophagusLoot
+  table: !type:AllSelector
+    children:
+    - !type:AllSelector
+      children:
+      - id: ClothingOuterHardsuitHECK
+      - id: ClothingHeadHelmetHECK
+    - !type:GroupSelector
+      children:
+      - id: LavalandMayhemBottle
+      - id: LavalandSoulscythe
+
+# Mayhem in a bottle, adapted: drives all aggressive fauna nearby into a frenzy.
+- type: entity
+  id: LavalandMayhemBottle
+  parent: BaseItem
+  name: mayhem in a bottle
+  description: A magically infused bottle of blood, the scent of which will drive anyone nearby into a murderous frenzy.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: vial
+  - type: MayhemBottle
+
+# Soulscythe
+- type: entity
+  id: LavalandSoulscythe
+  parent: BaseItem
+  name: soulscythe
+  description: A wicked scythe that seems to whisper with every swing.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: soulscythe
+  - type: Item
+    size: Large
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+  - type: MeleeWeapon
+    wideAnimationRotation: -60
+    attackRate: 0.75
+    angle: 60
+    damage:
+      types:
+        Slash: 18
+        Structural: 60
+  - type: StaticPrice
+    price: 3000

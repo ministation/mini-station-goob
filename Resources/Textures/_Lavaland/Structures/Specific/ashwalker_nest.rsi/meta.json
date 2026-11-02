@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca.",
+  "size": {
+    "x": 32,
+    "y": 64
+  },
+  "states": [
+    {
+      "name": "tombstone",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "hole",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "tendril",
+      "delays": [
+        [
+          5.0,
+          2.0,
+          2.0,
+          2.0,
+          2.0
+        ]
+      ]
+    },
+    {
+      "name": "ash_walker_nest",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "nether",
+      "delays": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "bubblegum",
+      "delays": [
+        [
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "dragon",
+      "delays": [
+        [
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "blood_drunk",
+      "delays": [
+        [
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "colossus",
+      "delays": [
+        [
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "hierophant",
+      "delays": [
+        [
+          1.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "legion",
+      "delays": [
+        [
+          1.0,
+          1.0
+        ]
+      ]
+    }
+  ]
+}

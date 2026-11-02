@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Colossus arena landmark and its loot.
+
+- type: entity
+  id: LavalandColossusArenaSpawner
+  parent: MarkerBase
+  name: colossus arena spawner
+  suffix: Lavaland
+  components:
+  - type: ColossusArenaSpawner
+
+- type: entity
+  parent: LavalandCrateNecropolis
+  id: LavalandCrateColossus
+  name: colossus chest
+  description: A pristine chest guarded by the ancient arms dealer.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: ColossusChestLoot
+
+- type: entityTable
+  id: ColossusChestLoot
+  table: !type:GroupSelector
+    children:
+    - !type:AllSelector
+      children:
+      - id: LavalandCainDagger
+      - id: LavalandAbelDagger
+    - id: LavalandVocalCords
+    - id: LavalandRenewalCrystal
+
+# Crusher trophy
+- type: entity
+  id: LavalandBlasterTubes
+  parent: BaseItem
+  name: blaster tubes
+  description: Trophy tubes taken from a colossus.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/trophies.rsi
+    state: blaster_tubes

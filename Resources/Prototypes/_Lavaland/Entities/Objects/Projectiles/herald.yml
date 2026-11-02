@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Herald's bolt.
+- type: entity
+  id: LavalandHeraldBolt
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  name: herald bolt
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 15
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: magicm
+      shader: unshaded
+  - type: PointLight
+    color: "#B24BF3"
+    radius: 1.5
+    energy: 2.0

@@ -1,0 +1,189 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: ActionEliteLegionnaireDash
+  parent: BaseAction
+  name: Legionnaire Charge
+  description: Charges at the target position.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaBlinkActionEvent
+
+- type: entity
+  id: ActionEliteLegionnaireSummon
+  parent: BaseAction
+  name: Call Legion
+  description: Summons a roaming legion.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: MobLegion
+      spawnAtUser: true
+
+- type: entity
+  id: ActionEliteLegionnaireSkulls
+  parent: BaseAction
+  name: Skull Volley
+  description: Throws a volley of legion skulls at the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandLegionSkullVolley
+      attachToTarget: true
+
+- type: entity
+  id: ActionElitePandoraBox
+  parent: BaseAction
+  name: Expanding Box
+  description: Spawns an expanding box of blasts on the target position.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: HierophantShapeBoxExpanding
+
+- type: entity
+  id: ActionElitePandoraCrosses
+  parent: BaseAction
+  name: Sequence Crosses
+  description: Spawns a sequence of crosses on the target position.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: HierophantShapeCrossSequence
+      attachToTarget: true
+
+- type: entity
+  id: ActionElitePandoraBlink
+  parent: BaseAction
+  name: Blink
+  description: Teleports to the target position.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaBlinkActionEvent
+
+- type: entity
+  id: ActionEliteHeraldTri
+  parent: BaseAction
+  name: Bolt Tri-shot
+  description: Fires three deadly bolts at the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandHeraldBolt
+      count: 3
+      spread: 20
+      speed: 18
+      pattern: Cone
+
+- type: entity
+  id: ActionEliteHeraldOmni
+  parent: BaseAction
+  name: Bolt Spread
+  description: Fires bolts in all directions.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandHeraldBolt
+      count: 8
+      speed: 14
+      pattern: Ring
+
+- type: entity
+  id: ActionEliteBroodSlam
+  parent: BaseAction
+  name: Brood Slam
+  description: Charges at the target and slams the ground.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaBlinkActionEvent
+
+- type: entity
+  id: ActionEliteBroodSpawn
+  parent: BaseAction
+  name: Spawn Brood
+  description: Spawns a goliath of her brood.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: MobLavalandGoliath
+      spawnAtUser: true

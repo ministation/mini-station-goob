@@ -1,0 +1,72 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Clockwork defenders from TG: simple clockwork knights guarding the Dead God ruin.
+- type: entity
+  name: clockwork defender
+  id: MobClockworkDefender
+  parent: LavalandMobBase
+  description: A metal guardian built to protect Ratvar's remains.
+  components:
+  - type: Physics
+    bodyType: KinematicController
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.45,0.4,0.45"
+        density: 300
+        mask:
+        - LargeMobMask
+        layer:
+        - LargeMobLayer
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/clockwork.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: clockwork_defender
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Weapons/smash.ogg
+    damage:
+      types:
+        Blunt: 20
+  - type: Tag
+    tags:
+    - CannotSuicide
+  - type: CombatMode
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.5
+    baseSprintSpeed: 4
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      300: Dead
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Aggressive
+    forgiveRange: 15.0
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: SheetBrass1
+      - id: SheetBrass1
+    deleteOnDeath: true
+
+- type: entity
+  id: LavalandClockworkGuardSpawner
+  parent: MarkerBase
+  name: clockwork guard spawner
+  suffix: Lavaland
+  components:
+  - type: ClockworkGuardSpawner

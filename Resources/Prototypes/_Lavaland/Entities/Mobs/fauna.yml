@@ -1,0 +1,251 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Regular lavaland fauna from TG: hivelord, gutlunch, basilisk, lobstrosity.
+
+# Floating acid blob: fast melee attacker, splits into broods on death.
+- type: entity
+  name: hivelord
+  id: MobLavalandHivelord
+  parent: [ SimpleSpaceMobBase, FlyingMobBase ]
+  suffix: Lavaland
+  description: A truly vile creature that spews from tendril nests and carpet mines alike.
+  components:
+  - type: WeatherImmune # Lavaland change
+  - type: Fauna # Lavaland change
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/hivelord.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: hivelord
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.30
+        density: 80
+        mask:
+        - FlyingMobMask
+        layer:
+        - FlyingMobLayer
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: hivelord
+      Dead:
+        Base: hivelord_dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      75: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 1.2
+    baseSprintSpeed: 1.2
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcBite
+    damage:
+      types:
+        Slash: 15
+  - type: LegionSplit # Lavaland: hivelord death spawns a swarm of broods
+    spawnOnDeath: MobLavalandHivelordBrood
+    spawnCount: 3
+    splitsRemaining: 1
+
+# Weak fast offspring of a dead hivelord.
+- type: entity
+  name: hivelord brood
+  id: MobLavalandHivelordBrood
+  parent: MobLavalandHivelord
+  suffix: Lavaland
+  description: A fresh spawn of the hivelord, still weak but quick and angry.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/hivelord.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: hivelord_brood
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: hivelord_brood
+      Dead:
+        Base: hivelord_dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      25: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 1.0
+    baseSprintSpeed: 1.0
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcBite
+    damage:
+      types:
+        Slash: 8
+
+# Harmless scavenger bird, a snack for a hungry miner.
+- type: entity
+  name: gutlunch
+  id: MobLavalandGutlunch
+  parent: SimpleSpaceMobBase
+  suffix: Lavaland
+  description: Named by the first miner to witness one of them gobble down a goliath's exposed guts.
+  components:
+  - type: Fauna # Lavaland change
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/gutlunch.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: gutlunch
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: gutlunch
+      Dead:
+        Base: gutlunch
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      15: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.0
+    baseSprintSpeed: 2.0
+  - type: InteractionPopup
+    successChance: 0.5
+    interactSuccessString: petting-success-gutlunch
+    interactFailureString: petting-failure-generic
+    interactSuccessSound:
+      path: /Audio/Animals/lizard_happy.ogg
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatGutshank
+
+# Ranged floater whose petrifying stare chills its prey to the bone.
+- type: entity
+  name: basilisk
+  id: MobLavalandBasilisk
+  parent: [ SimpleSpaceMobBase, FlyingMobBase ]
+  suffix: Lavaland
+  description: A territorial creature that keeps its victims frozen in place.
+  components:
+  - type: WeatherImmune # Lavaland change
+  - type: Fauna # Lavaland change
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: SimpleRangedHostileCompound
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/basilisk.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: basilisk
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.30
+        density: 80
+        mask:
+        - FlyingMobMask
+        layer:
+        - FlyingMobLayer
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: basilisk
+      Dead:
+        Base: basilisk_dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      140: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 1.65
+    baseSprintSpeed: 1.65
+  - type: BatteryAmmoProvider
+    proto: BasiliskGaze
+    fireCost: 50
+  - type: BatterySelfRecharger
+    autoRechargeRate: 50
+  - type: Battery
+    maxCharge: 1000
+    startingCharge: 1000
+  - type: Gun
+    projectileSpeed: 10
+    fireRate: 0.2
+    useKey: false
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot: /Audio/Weapons/Guns/Gunshots/taser2.ogg
+  - type: CombatMode
+  - type: LaserAbsorb # Lavaland: shooting it with lasers just chills it further
+
+# Aggressive armored lobster of the lava fields.
+- type: entity
+  name: lobstrosity
+  id: MobLavalandLobstrosity
+  parent: LavalandMobBase
+  suffix: Lavaland
+  description: A monstrous lobster corrupted by lava and radiation, always hungry.
+  components:
+  - type: Fauna # Lavaland change
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    blackboard:
+      VisionRadius: !type:Single
+        8
+      AggroVisionRadius: !type:Single
+        9
+      NavSmash: !type:Bool
+        true
+    rootTask:
+      task: SimpleHostileCompound
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/lobstrosity.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: lobstrosity
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: lobstrosity
+      Dead:
+        Base: lobstrosity_dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.2
+    baseSprintSpeed: 2.6
+  - type: MeleeWeapon
+    soundHit:
+      collection: AlienClaw
+    animation: WeaponArcClaw
+    angle: 0
+    damage:
+      types:
+        Slash: 20
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatLobster
+      maxAmount: 2

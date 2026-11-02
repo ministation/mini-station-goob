@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG seed vault: keepers of a vault left by a benevolent ancient race.
+
+- type: entity
+  name: seed vault keeper
+  id: MobLavalandSeedVaultKeeper
+  parent: MobHuman
+  description: A green-skinned guardian of the vault, left behind by its creators to aid fledgling civilizations.
+  suffix: Lavaland
+  components:
+  - type: Loadout
+    prototypes:
+    - LavalandSeedVaultKeeperGear
+
+- type: entity
+  id: LavalandSeedVaultKeeperPod
+  parent: BaseStructure
+  name: seed vault keeper pod
+  description: A strange, plant-woven cradle. Something green stirs inside.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Objects/Specific/ashwalker_egg.rsi
+    state: large_egg
+    color: "#7fd45c"
+  - type: GhostRole
+    allowMovement: true
+    allowSpeech: true
+    makeSentient: true
+    name: ghost-role-information-seed-vault-keeper-name
+    description: ghost-role-information-seed-vault-keeper-description
+    rules: ghost-role-information-friendlies-rules
+    mindRoles:
+    - MindRoleGhostRoleNeutral
+    raffle:
+      settings: default
+  - type: GhostRoleMobSpawner
+    prototype: MobLavalandSeedVaultKeeper
+  - type: Damageable
+    damageContainer: Biological
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  id: LavalandSeedVaultSpawner
+  parent: MarkerBase
+  name: seed vault spawner
+  suffix: Lavaland
+  components:
+  - type: SeedVaultSpawner

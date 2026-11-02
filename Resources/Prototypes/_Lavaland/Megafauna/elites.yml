@@ -1,0 +1,173 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Legionnaire: charge, summon legions, skull volley
+- type: megafaunaSelector
+  id: EliteLegionnaire
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: EliteLegionnaireActions
+
+- type: megafaunaSelector
+  id: EliteLegionnaireActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionEliteLegionnaireDash
+    - id: ActionEliteLegionnaireSummon
+    - id: ActionEliteLegionnaireSkulls
+
+- type: megafaunaSelector
+  id: ActionEliteLegionnaireDash
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 1.0,3.0
+      inverse: true
+    actionId: ActionEliteLegionnaireDash
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteLegionnaireDash
+
+- type: megafaunaSelector
+  id: ActionEliteLegionnaireSummon
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 8.0,15.0
+      inverse: true
+    actionId: ActionEliteLegionnaireSummon
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteLegionnaireSummon
+
+- type: megafaunaSelector
+  id: ActionEliteLegionnaireSkulls
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 3.0,6.0
+      inverse: true
+    actionId: ActionEliteLegionnaireSkulls
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteLegionnaireSkulls
+
+# Pandora: hierophant-style box and crosses
+- type: megafaunaSelector
+  id: ElitePandora
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: ElitePandoraActions
+
+- type: megafaunaSelector
+  id: ElitePandoraActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionElitePandoraBox
+    - id: ActionElitePandoraCrosses
+    - id: ActionElitePandoraBlink
+
+- type: megafaunaSelector
+  id: ActionElitePandoraBox
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 1.5,4.0
+      inverse: true
+    actionId: ActionElitePandoraBox
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionElitePandoraBox
+
+- type: megafaunaSelector
+  id: ActionElitePandoraCrosses
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 2.0,5.0
+      inverse: true
+    actionId: ActionElitePandoraCrosses
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionElitePandoraCrosses
+
+- type: megafaunaSelector
+  id: ActionElitePandoraBlink
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 3.0,7.0
+      inverse: true
+    actionId: ActionElitePandoraBlink
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionElitePandoraBlink
+
+# Herald: tri-shot and omni-spread of bolts
+- type: megafaunaSelector
+  id: EliteHerald
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: EliteHeraldActions
+
+- type: megafaunaSelector
+  id: EliteHeraldActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionEliteHeraldTri
+    - id: ActionEliteHeraldOmni
+
+- type: megafaunaSelector
+  id: ActionEliteHeraldTri
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 1.0,3.0
+      inverse: true
+    actionId: ActionEliteHeraldTri
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteHeraldTri
+
+- type: megafaunaSelector
+  id: ActionEliteHeraldOmni
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 4.0,8.0
+      inverse: true
+    actionId: ActionEliteHeraldOmni
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteHeraldOmni
+
+# Broodmother: slam and goliath brood
+- type: megafaunaSelector
+  id: EliteBroodmother
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: EliteBroodmotherActions
+
+- type: megafaunaSelector
+  id: EliteBroodmotherActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ActionEliteBroodSlam
+    - id: ActionEliteBroodSpawn
+
+- type: megafaunaSelector
+  id: ActionEliteBroodSlam
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 1.5,4.0
+      inverse: true
+    actionId: ActionEliteBroodSlam
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteBroodSlam
+
+- type: megafaunaSelector
+  id: ActionEliteBroodSpawn
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 10.0,18.0
+      inverse: true
+    actionId: ActionEliteBroodSpawn
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionEliteBroodSpawn
