@@ -38,8 +38,13 @@ public sealed partial class LavalandSystem
     private readonly Dictionary<Vector2i, bool> _terrainBlocked = new();
     private readonly List<EntityUid> _ruinBlockers = new();
 
-    private const float MaxBlockedTerrainFraction = 0.25f;
-    private const int TerrainSamplesPerAxis = 6;
+    // A ruin may have a little scattered rock in its footprint, but not a lava lake or
+    // a cave wall: the footprint and the ring around it are both checked.
+    private const int RuinTerrainMargin = 1;
+    private const int RuinAccessRing = 2;
+    private const float MaxBlockedFootprintFraction = 0.4f;
+    // The ring around the ruin must be mostly open, so a ruin cannot be walled in.
+    private const float MaxBlockedAccessFraction = 0.5f;
     private const float RuinPadding = 2f;
 
     /// <summary>
@@ -370,7 +375,8 @@ public sealed partial class LavalandSystem
         coords.RemoveAll(c => ruinBox.Translated(coord.Value).Contains(new Vector2(c.X, c.Y)));
 
         // Clear the biome before the ruin lands there, so ruin-owned rock walls are not deleted.
-        ReserveRuinTerrain(lavaland, ruinBox.Translated(coord.Value));
+        // The padding is cleared too: a ruin must not be fenced in by lava or basalt right at its edge.
+        ReserveRuinTerrain(lavaland, ruinBox.Translated(coord.Value).Enlarged(RuinPadding));
 
         // Teleport it into place on preloader map
         _transform.SetCoordinates(spawned, new EntityCoordinates(preloader, coord.Value));
@@ -436,7 +442,8 @@ public sealed partial class LavalandSystem
         }
 
         // Clear the biome before the marker spawns its structure, so its own rock walls are not deleted.
-        ReserveRuinTerrain(lavaland, ruinBox.Translated(coord.Value));
+        // The padding is cleared too: a ruin must not be fenced in by lava or basalt right at its edge.
+        ReserveRuinTerrain(lavaland, ruinBox.Translated(coord.Value).Enlarged(RuinPadding));
 
         Spawn(ruin.SpawnedMarker, new EntityCoordinates(lavaland, coord.Value));
 
@@ -495,8 +502,9 @@ public sealed partial class LavalandSystem
     }
 
     /// <summary>
-    /// Rejects spots where the biome would put lava or a chasm under the ruin,
-    /// so landmarks do not end up in the middle of a lava lake or over a hole.
+    /// Rejects spots where the biome would put lava, a chasm, a rock wall or a solid
+    /// rock under the ruin, so landmarks never end up inside a lava lake or a cave wall.
+    /// A footprint may hold a little scattered rock, but not a lake and not a cave pocket.
     /// </summary>
     private bool IsTerrainSuitable(Entity<LavalandMapComponent> lavaland, Box2 ruinBox, Vector2i pos)
     {
@@ -507,20 +515,19 @@ public sealed partial class LavalandSystem
         if (IsTerrainBlocked(lavaland, grid, biome, box.Center.Floored()))
             return false;
 
-        var minX = (int) MathF.Floor(box.Left);
-        var minY = (int) MathF.Floor(box.Bottom);
-        var maxX = (int) MathF.Ceiling(box.Right);
-        var maxY = (int) MathF.Ceiling(box.Top);
+        var padded = box.Enlarged(RuinTerrainMargin);
+        var minX = (int) MathF.Floor(padded.Left);
+        var minY = (int) MathF.Floor(padded.Bottom);
+        var maxX = (int) MathF.Ceiling(padded.Right);
+        var maxY = (int) MathF.Ceiling(padded.Top);
 
-        // Sampled on purpose: the full biome prediction is too slow to run for every tile
-        // of every candidate during the round-start batch, and a lava lake is many tiles wide.
-        var stepX = Math.Max(2, (maxX - minX) / TerrainSamplesPerAxis);
-        var stepY = Math.Max(2, (maxY - minY) / TerrainSamplesPerAxis);
+        // Full resolution for the footprint plus one tile of margin. Most of the
+        // predictions are cached after the first few candidates, so this is affordable.
         var blocked = 0;
         var total = 0;
-        for (var x = minX; x < maxX; x += stepX)
+        for (var x = minX; x < maxX; x++)
         {
-            for (var y = minY; y < maxY; y += stepY)
+            for (var y = minY; y < maxY; y++)
             {
                 total++;
                 if (IsTerrainBlocked(lavaland, grid, biome, new Vector2i(x, y)))
@@ -528,7 +535,51 @@ public sealed partial class LavalandSystem
             }
         }
 
-        return total > 0 && blocked < total * MaxBlockedTerrainFraction;
+        if (total == 0 || blocked > total * MaxBlockedFootprintFraction)
+            return false;
+
+        // A dry pocket surrounded by cave walls or a lava lake is still useless:
+        // the ring around the ruin has to be mostly open so it can be reached.
+        return HasOpenApproach(lavaland, grid, biome, padded);
+    }
+
+    /// <summary>
+    /// True if the ring around the padded ruin box is mostly free of blocking terrain.
+    /// </summary>
+    private bool HasOpenApproach(
+        Entity<LavalandMapComponent> lavaland,
+        MapGridComponent grid,
+        BiomeComponent biome,
+        Box2 padded)
+    {
+        var ring = padded.Enlarged(RuinAccessRing);
+        var minX = (int) MathF.Floor(ring.Left);
+        var maxX = (int) MathF.Ceiling(ring.Right);
+        var minY = (int) MathF.Floor(ring.Bottom);
+        var maxY = (int) MathF.Ceiling(ring.Top);
+
+        var free = 0;
+        var total = 0;
+        void Check(Vector2i indices)
+        {
+            total++;
+            if (!IsTerrainBlocked(lavaland, grid, biome, indices))
+                free++;
+        }
+
+        for (var x = minX; x < maxX; x += 2)
+        {
+            Check(new Vector2i(x, minY));
+            Check(new Vector2i(x, maxY - 1));
+        }
+
+        for (var y = minY; y < maxY; y += 2)
+        {
+            Check(new Vector2i(minX, y));
+            Check(new Vector2i(maxX - 1, y));
+        }
+
+        return total > 0 && free >= total * (1f - MaxBlockedAccessFraction);
     }
 
     /// <summary>
@@ -572,7 +623,11 @@ public sealed partial class LavalandSystem
 
     private static bool IsBlockingTerrain(string prototypeId)
     {
-        return prototypeId is "FloorLavaEntity" or "FloorChasmEntity";
+        return prototypeId is "FloorLavaEntity"
+            or "FloorChasmEntity"
+            or "WallRockBasalt"
+            or "WallRockBasaltGibtonite"
+            or "FloraRockSolid";
     }
 
     /// <summary>
@@ -623,6 +678,7 @@ public sealed partial class LavalandSystem
         return prototypeId is "FloorLavaEntity"
             or "FloorChasmEntity"
             or "WallRockBasalt"
+            or "WallRockBasaltGibtonite"
             or "FloraRockSolid"
             or "FruitCactus"
             or "BasaltOne"

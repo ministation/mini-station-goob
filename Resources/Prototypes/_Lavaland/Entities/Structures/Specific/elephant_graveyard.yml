@@ -1,0 +1,82 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG lavaland wave 2: props of the elephant graveyard. TG bone statue and
+# headpike art is not ported yet, so the graveyard reuses the ashwalker
+# tombstone and the shared bone sprites.
+
+# Grave marker of the miners buried at the dig site.
+- type: entity
+  parent: BaseStructure
+  id: LavalandGraveTombstone
+  name: tombstone
+  description: A weathered tombstone. Whatever name it carried is long worn away.
+  suffix: Lavaland
+  components:
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Structures/Specific/ashwalker_nest.rsi
+    state: tombstone
+    offset: 0, 0.5
+
+# Loose bones half buried by the dig.
+- type: entity
+  id: LavalandBonePile
+  name: bone pile
+  description: Bleached bones, half buried in the ash.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: Objects/Materials/materials.rsi
+    state: bones
+
+# A skull left on the necropolis platform.
+- type: entity
+  id: LavalandBoneSkull
+  name: skull
+  description: A human skull, picked clean by the ash.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: Mobs/Species/Skeleton/parts.rsi
+    state: skull_icon
+
+# Most graves are empty, but a few still hold the bones and ore of the miners
+# buried in them. Uses the existing rare material table from the necropolis loot.
+- type: entity
+  parent: CrateStoneGrave
+  id: LavalandCrateGraveFilled
+  name: filled grave
+  description: The miners were buried with their last haul. It rattles when you shake it.
+  suffix: Lavaland
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: LavalandMaterialRare
+
+# The lead researcher was buried with the ruin's puzzle loot.
+- type: entity
+  parent: CrateStoneGrave
+  id: LavalandCrateGraveLeadResearcher
+  name: researcher's grave
+  description: The grave of the expedition's lead researcher. Something still rattles inside.
+  suffix: Lavaland
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: LavalandLootPuzzle

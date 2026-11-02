@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG lavaland wave 2 marker entities. The rebuild itself lives in
+# Content.Server/_Lavaland/Ruins; marker ruin entries and pool weights are
+# wired by the lead in the shared procedural registries.
+
+- type: entity
+  id: LavalandElephantGraveyardSpawner
+  parent: MarkerBase
+  name: elephant graveyard spawner
+  suffix: Lavaland
+  categories: [ Spawner ]
+  components:
+  - type: ElephantGraveyardSpawner
+
+- type: entity
+  id: LavalandSurvivalPodSpawner
+  parent: MarkerBase
+  name: survival pod spawner
+  suffix: Lavaland
+  categories: [ Spawner ]
+  components:
+  - type: SurvivalPodSpawner
+  # TG's pod computer is a locating beacon; the marker carries the signal.
+  - type: GPS
+    gpsName: Survival Pod
+    enabled: true

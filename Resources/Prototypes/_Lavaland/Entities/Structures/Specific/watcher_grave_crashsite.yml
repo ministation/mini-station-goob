@@ -1,0 +1,192 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Props for the TG watcher grave and crash site ruins.
+# TG sprites are not in this fork, so everything here reuses existing RSI states.
+
+# Watcher grave mosaic. TG has separate stone_tile/slab, /cracked and
+# /surrounding/cracked floor objects; the boss_floors states are the closest match.
+- type: entity
+  id: LavalandGraveTileSlab
+  name: grave slab
+  description: A weathered stone slab, part of an old grave mosaic.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Lavaland/Tiles/boss_floors.rsi
+    layers:
+    - map: ["tile"]
+      state: pristine_slab1
+  - type: RandomSprite
+    available:
+    - tile:
+        pristine_slab1: null
+    - tile:
+        pristine_slab2: null
+    - tile:
+        pristine_slab3: null
+    - tile:
+        pristine_slab4: null
+
+- type: entity
+  id: LavalandGraveTileCracked
+  name: cracked grave slab
+  description: A cracked stone slab, part of an old grave mosaic.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Lavaland/Tiles/boss_floors.rsi
+    layers:
+    - map: ["tile"]
+      state: cracked_center1
+  - type: RandomSprite
+    available:
+    - tile:
+        cracked_center1: null
+    - tile:
+        cracked_center2: null
+    - tile:
+        cracked_center3: null
+    - tile:
+        cracked_center4: null
+
+- type: entity
+  id: LavalandGraveTileCenter
+  name: grave mosaic
+  description: The worn center of an old grave mosaic.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Lavaland/Tiles/boss_floors.rsi
+    layers:
+    - map: ["tile"]
+      state: pristine_center1
+  - type: RandomSprite
+    available:
+    - tile:
+        pristine_center1: null
+    - tile:
+        pristine_center2: null
+    - tile:
+        pristine_center3: null
+    - tile:
+        pristine_center4: null
+
+- type: entity
+  id: LavalandGraveTileSurrounding
+  name: grave border
+  description: The outer ring of an old grave mosaic.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Lavaland/Tiles/boss_floors.rsi
+    layers:
+    - map: ["tile"]
+      state: pristine_surrounding1
+  - type: RandomSprite
+    available:
+    - tile:
+        pristine_surrounding1: null
+    - tile:
+        pristine_surrounding2: null
+
+# TG watcher egg. The ashwalker egg sprite is the closest existing one.
+- type: entity
+  parent: FoodEggBase
+  id: LavalandWatcherEgg
+  name: watcher egg
+  description: A heavy, leathery egg. Something inside it is still alive.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/ashwalker_egg.rsi
+    layers:
+    - state: large_egg
+
+# TG mob_spawn/corpse/watcher and /corpse/goliath, as static decoration.
+- type: entity
+  parent: BaseStructure
+  id: LavalandCorpseWatcher
+  name: dead watcher
+  description: A watcher, crushed and long dead. Its eye still stares at the grave.
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    sprite: Mobs/Aliens/Lavaland/watcher.rsi
+    layers:
+    - state: dead
+    - state: dead-unshaded
+      shader: unshaded
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeCircle
+          radius: 0.3
+        density: 0
+        hard: false
+
+- type: entity
+  parent: BaseStructure
+  id: LavalandCorpseGoliath
+  name: dead goliath
+  description: A goliath that lost a fight with something worse. Its hide is torn open.
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    sprite: _Lavaland/Mobs/goliath.rsi
+    layers:
+    - state: goliath_dead
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeCircle
+          radius: 0.4
+        density: 0
+        hard: false
+
+# Watcher grave cache, using the fixed lavaland material table as grave goods.
+- type: entity
+  parent: CrateStoneGrave
+  id: LavalandGraveCache
+  name: grave goods
+  description: The stone lid hides a small offering for the dead.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: LavalandMaterialRare
+
+# Crash site supply cache. TG has a bitrunning PKA mods disk on the pod chair,
+# so the cache rolls the fixed PKA modkit table.
+- type: entity
+  parent: CrateGenericSteel
+  id: LavalandCrashPodCache
+  name: crash pod supply cache
+  description: The survival pod's supply locker, torn open on impact.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: LavalandLootPkaMods

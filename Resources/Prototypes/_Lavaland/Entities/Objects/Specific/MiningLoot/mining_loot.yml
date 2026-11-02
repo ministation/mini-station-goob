@@ -11,10 +11,7 @@
   description: A disembodied eye that stares unblinking. It seems to want a new home.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: hunter_eye
-  - type: Clothing
-    sprite: Clothing/Eyes/Glasses/meson.rsi
+    sprite: _Lavaland/Clothing/Eyes/Glasses/godeye.rsi
   - type: TrayScanner
   - type: TrayScannerToggle
     soundOn:
@@ -73,15 +70,8 @@
   description: A book written in every language at once. Reading it untangles them all.
   components:
   - type: Sprite
-    sprite: Objects/Misc/books.rsi
-    layers:
-    - state: paper
-    - state: cover_base
-      color: "#1e3a8a"
-    - state: decor_wingette
-      color: "#60a5fa"
-    - state: icon_magic
-      color: "#e0e7ff"
+    sprite: _Lavaland/Objects/Specific/lavaland_loot.rsi
+    state: book1
   - type: Item
     size: Small
   - type: BookOfBabel
@@ -96,11 +86,11 @@
   description: A length of celestial ladder that extends far beyond the visible world.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: chain
+    sprite: _Lavaland/Objects/Specific/lavaland_loot.rsi
+    state: ladder00
   - type: Item
     size: Normal
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    sprite: _Lavaland/Objects/Specific/lavaland_loot.rsi
   - type: StaticPrice
     price: 4000
 
@@ -112,10 +102,7 @@
   description: A skull shaped pendant that refuses to let its wearer die. Taking it off breaks the pact.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: memento_mori
-  - type: Clothing
-    sprite: Clothing/Neck/Medals/gold.rsi
+    sprite: _Lavaland/Clothing/Neck/memento_mori.rsi
   - type: MementoMori
   - type: StaticPrice
     price: 5000
@@ -128,10 +115,10 @@
   description: Heavy mining gauntlets. Punch rocks and people with equal enthusiasm.
   components:
   - type: Sprite
-    sprite: Clothing/Hands/Gloves/combat.rsi
+    sprite: _Lavaland/Clothing/Hands/Gloves/concussive_gauntlets.rsi
     state: icon
   - type: Clothing
-    sprite: Clothing/Hands/Gloves/combat.rsi
+    sprite: _Lavaland/Clothing/Hands/Gloves/concussive_gauntlets.rsi
   - type: MeleeWeapon
     attackRate: 0.8
     mustBeEquippedToUse: true
@@ -162,9 +149,9 @@
   description: Armor made from the cracked hide of a fire giant. It burns with the rage of its maker.
   components:
   - type: Sprite
-    sprite: Clothing/OuterClothing/Armor/scrap_armor.rsi
+    sprite: _Lavaland/Clothing/OuterClothing/Armor/berserker.rsi
   - type: Clothing
-    sprite: Clothing/OuterClothing/Armor/scrap_armor.rsi
+    sprite: _Lavaland/Clothing/OuterClothing/Armor/berserker.rsi
   - type: Armor
     coverage:
     - Chest
@@ -189,9 +176,9 @@
   description: A horned helmet that howls with its wearer.
   components:
   - type: Sprite
-    sprite: Clothing/Head/Helmets/scrap_helmet.rsi
+    sprite: _Lavaland/Clothing/Head/Helmets/berserker.rsi
   - type: Clothing
-    sprite: Clothing/Head/Helmets/scrap_helmet.rsi
+    sprite: _Lavaland/Clothing/Head/Helmets/berserker.rsi
   - type: Armor
     coverage:
     - Head
@@ -331,12 +318,11 @@
   description: This lantern gives off no light of its own, but something inside it is very happy to see you.
   components:
   - type: Sprite
-    sprite: Objects/Tools/lantern.rsi
+    sprite: _Lavaland/Objects/Specific/lavaland_loot.rsi
     layers:
-    - state: lantern
+    - state: lantern-blue-on
   - type: Item
-    sprite: Objects/Tools/lantern.rsi
-    heldPrefix: off
+    sprite: _Lavaland/Objects/Specific/wisp_lantern-inhands.rsi
   - type: WispLantern
     wispProto: LavalandFriendlyWisp
   - type: StaticPrice
@@ -348,8 +334,8 @@
   description: A small ball of light. It is very proud of its lantern.
   components:
   - type: Sprite
-    sprite: _DV/CosmicCult/Mobs/wisp.rsi
-    state: wisp
+    sprite: _Lavaland/Objects/Specific/lavaland_loot.rsi
+    state: orb
   - type: PointLight
     color: "#79f1ff"
     radius: 6
@@ -459,7 +445,7 @@
   description: A knife worn from a lifetime of butchery. It finds the weak spots in any hide.
   components:
   - type: Sprite
-    sprite: Objects/Weapons/Melee/combat_knife.rsi
+    sprite: _Lavaland/Objects/Weapons/Melee/wildhunter_knife.rsi
     state: icon
   - type: MeleeWeapon
     wideAnimationRotation: -135

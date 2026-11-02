@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG lavaland ruin markers for the watcher grave and the crash site.
+# The procedural builders live in Content.Server/_Lavaland/Ruins and run on MapInit.
+
+- type: entity
+  id: LavalandWatcherGraveSpawner
+  parent: MarkerBase
+  name: watcher grave spawner
+  suffix: Lavaland
+  categories: [ Spawner ]
+  components:
+  - type: WatcherGraveSpawner
+
+- type: entity
+  id: LavalandCrashsiteSpawner
+  parent: MarkerBase
+  name: crash site spawner
+  suffix: Lavaland
+  categories: [ Spawner ]
+  components:
+  - type: CrashsiteSpawner

@@ -68,7 +68,7 @@
   description: A trophy taken from the tail of an ash drake.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/trophies.rsi
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
     state: tail_spike
   - type: ItemUpgrade
     name: crusher-trophy-drake-tail-spike-name

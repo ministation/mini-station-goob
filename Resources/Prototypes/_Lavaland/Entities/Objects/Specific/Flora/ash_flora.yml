@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Ash flora ported from TG: code/modules/mining/lavaland/ash_flora.dm
-# World sprites reuse existing hydroponics plant RSIs (no new binary assets).
+# Sprites are TG icons/obj/mining_zones/ash_flora.dmi converted to RSI, with the
+# TG random variant choice kept through RandomSprite.
 # Each plant is a Gatherable structure: click with an empty hand to collect the
 # produce, with a 10% bonus chance to also get the matching seed pack.
 
@@ -12,8 +13,15 @@
   description: An odd flower that grows commonly near bodies of lava.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/poppy.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: fireblossom1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        fireblossom1: ""
+        fireblossom2: ""
   - type: PointLight
     color: "#e8b923"
     radius: 1.5
@@ -36,8 +44,16 @@
   description: A colony of bioluminescent fungi growing on a hot air vent.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/fly_amanita.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: glowgrowth1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        glowgrowth1: ""
+        glowgrowth2: ""
+        glowgrowth3: ""
   - type: PointLight
     color: "#67b6a5"
     radius: 1.7
@@ -60,8 +76,17 @@
   description: A plant that looks like roots growing into the sky.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/glasstle.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: shrub1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        shrub1: ""
+        shrub2: ""
+        shrub3: ""
+        shrub4: ""
   - type: Gatherable
     toolWhitelist:
       components:
@@ -80,8 +105,15 @@
   description: Vines surrounding a clustered bunch of plasma flowers.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/spacemans_trumpet.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: plasma_flower1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        plasma_flower1: ""
+        plasma_flower2: ""
   - type: PointLight
     color: "#a94ce0"
     radius: 1.5
@@ -104,8 +136,17 @@
   description: A bunch of flowering podsneyzkas whose roots hunt for decomposing corpses.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/lily.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: flower1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        flower1: ""
+        flower2: ""
+        flower3: ""
+        flower4: ""
   - type: Gatherable
     toolWhitelist:
       components:
@@ -124,8 +165,17 @@
   description: Bright blue stalks emerging from purple flowery pods.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/aloe.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: flowerpod1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        flowerpod1: ""
+        flowerpod2: ""
+        flowerpod3: ""
+        flowerpod4: ""
   - type: Gatherable
     toolWhitelist:
       components:
@@ -144,8 +194,15 @@
   description: A mutated beet that vaguely mimics the appearance of a drake.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/blood_tomato.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: drakebeet1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        drakebeet1: ""
+        drakebeet2: ""
   - type: Gatherable
     toolWhitelist:
       components:
@@ -155,6 +212,7 @@
         children:
         - id: FoodAshDrakeBeet
 
+
 - type: entity
   name: star cacti
   id: FloraAshStarCacti
@@ -162,8 +220,17 @@
   description: A spikey, round cluster of prickly star cacti.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Decoration/Flora/Plants/fruiting_cactus.rsi
-    state: cactus2
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: cactus1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        cactus1: ""
+        cactus2: ""
+        cactus3: ""
+        cactus4: ""
   - type: Gatherable
     toolWhitelist:
       components:
@@ -182,8 +249,17 @@
   description: A number of large mushrooms, covered in a faint layer of ash and spores.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/chanterelle.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: l_mushroom1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        l_mushroom1: ""
+        l_mushroom2: ""
+        l_mushroom3: ""
+        l_mushroom4: ""
   - type: Gatherable
     toolWhitelist:
       components:
@@ -202,8 +278,17 @@
   description: A number of mushrooms, each surrounding a greenish sporangium.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/steelcap.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: s_mushroom1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        s_mushroom1: ""
+        s_mushroom2: ""
+        s_mushroom3: ""
+        s_mushroom4: ""
   - type: Gatherable
     toolWhitelist:
       components:
@@ -222,8 +307,17 @@
   description: Several mushrooms with a ring of conks at the midpoint of their stems.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/lingzhi.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: r_mushroom1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        r_mushroom1: ""
+        r_mushroom2: ""
+        r_mushroom3: ""
+        r_mushroom4: ""
   - type: Gatherable
     toolWhitelist:
       components:
@@ -242,8 +336,17 @@
   description: A large number of mushrooms, some with long fleshy stems. They radiate light.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/towercap.rsi
-    state: harvest
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: t_mushroom1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        t_mushroom1: ""
+        t_mushroom2: ""
+        t_mushroom3: ""
+        t_mushroom4: ""
   - type: PointLight
     color: "#d8e08a"
     radius: 1.5
