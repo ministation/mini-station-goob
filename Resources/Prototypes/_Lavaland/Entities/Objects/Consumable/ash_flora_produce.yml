@@ -10,8 +10,8 @@
   description: A flower from a fire blossom.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/poppy.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: fireblossom
   - type: FlavorProfile
     flavors:
     - bitter
@@ -32,8 +32,8 @@
   description: A thick sheet of glowing fungi.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/fly_amanita.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: glowgrowth
   - type: FlavorProfile
     flavors:
     - strange
@@ -54,8 +54,8 @@
   description: The mashed up vines of an inozhakust.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/glasstle.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: inozhakust
   - type: FlavorProfile
     flavors:
     - slimy
@@ -75,8 +75,8 @@
   description: A bit of vine connected to a crystallized plasma flower.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/spacemans_trumpet.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: plasmaflower
   - type: FlavorProfile
     flavors:
     - spicy
@@ -98,8 +98,8 @@
   description: A bunch of spotted podsneyzka flowers. They smell a bit like rotten meat.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/lily.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: podsneyzka
   - type: FlavorProfile
     flavors:
     - meaty
@@ -121,8 +121,8 @@
   description: Bunched together vahrezjia stalks. Surprisingly coarse in texture.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/aloe.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: vahrezjia
   - type: FlavorProfile
     flavors:
     - sour
@@ -143,8 +143,8 @@
   description: A mutated beet. Probably still tasty.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/blood_tomato.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: drakebeet
   - type: FlavorProfile
     flavors:
     - sweet
@@ -165,8 +165,8 @@
   description: A spikey, round cluster of prickly star cacti.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/pyrotton.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: starcactus
   - type: FlavorProfile
     flavors:
     - bitter
@@ -188,8 +188,8 @@
   description: Some shavings from a large mushroom. With enough, might serve as a bowl.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/chanterelle.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: mushroom_shavings
   - type: FlavorProfile
     flavors:
     - nutty
@@ -211,8 +211,8 @@
   description: A leaf, from a mushroom.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/steelcap.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: mushroom_leaf
   - type: FlavorProfile
     flavors:
     - leafy
@@ -233,8 +233,8 @@
   description: The cap of a large mushroom.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/lingzhi.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: mushroom_cap
   - type: FlavorProfile
     flavors:
     - savory
@@ -253,8 +253,8 @@
   description: A long mushroom stem. It is slightly glowing.
   components:
   - type: Sprite
-    sprite: Objects/Specific/Hydroponics/towercap.rsi
-    state: produce
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    state: mushroom_stem
   - type: FlavorProfile
     flavors:
     - savory

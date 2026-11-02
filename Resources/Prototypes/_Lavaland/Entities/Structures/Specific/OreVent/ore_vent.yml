@@ -14,8 +14,8 @@
   - type: Sprite
     noRot: true
     drawdepth: WallTops
-    sprite: _Lavaland/Objects/Decoration/Rocks/medium.rsi
-    state: rock3
+    sprite: _Lavaland/Structures/Specific/ore_vent.rsi
+    state: ore_vent
   - type: Fixtures
     fixtures:
       fix1:

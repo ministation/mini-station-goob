@@ -95,3 +95,57 @@
   boundary: 5,5
   spawnedMarker: LavalandInteriorRoomMarker
   priority: 0
+
+- type: lavalandMarkerRuin
+  id: MookVillage
+  boundary: 20,20
+  spawnedMarker: LavalandMookVillageSpawner
+  priority: 0
+  spawnAttempts: 16
+  guaranteed: false
+  minDistance: 100
+
+- type: lavalandMarkerRuin
+  id: WatcherGrave
+  boundary: 15,13
+  spawnedMarker: LavalandWatcherGraveSpawner
+  priority: 0
+  spawnAttempts: 8
+  guaranteed: false
+  minDistance: 90
+
+- type: lavalandMarkerRuin
+  id: Crashsite
+  boundary: 25,25
+  spawnedMarker: LavalandCrashsiteSpawner
+  priority: 0
+  spawnAttempts: 16
+  guaranteed: false
+  minDistance: 100
+
+- type: lavalandMarkerRuin
+  id: ElephantGraveyard
+  boundary: 19,19
+  spawnedMarker: LavalandElephantGraveyardSpawner
+  priority: 0
+  spawnAttempts: 16
+  guaranteed: false
+  minDistance: 90
+
+- type: lavalandMarkerRuin
+  id: SurvivalPod
+  boundary: 10,11
+  spawnedMarker: LavalandSurvivalPodSpawner
+  priority: 0
+  spawnAttempts: 8
+  guaranteed: false
+  minDistance: 75
+
+- type: lavalandMarkerRuin
+  id: SlidingPuzzle
+  boundary: 3,3
+  spawnedMarker: LavalandPuzzleRoomSpawner
+  priority: 0
+  spawnAttempts: 8
+  guaranteed: false
+  minDistance: 75

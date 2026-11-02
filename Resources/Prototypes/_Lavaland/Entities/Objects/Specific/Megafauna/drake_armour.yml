@@ -9,9 +9,9 @@
   description: A suit of armour crafted from the hide of an ash drake. It is warm to the touch and shrugs off flames.
   components:
   - type: Sprite
-    sprite: Clothing/OuterClothing/Hardsuits/goliath.rsi
+    sprite: _Lavaland/Clothing/OuterClothing/Armor/drake.rsi
   - type: Clothing
-    sprite: Clothing/OuterClothing/Hardsuits/goliath.rsi
+    sprite: _Lavaland/Clothing/OuterClothing/Armor/drake.rsi
   - type: ToggleableClothing
     clothingPrototypes:
       head: LavalandEquipmentDrakeHelm
@@ -49,9 +49,9 @@
   description: The skull of an ash drake, worn as a helmet. Its empty sockets stare forward.
   components:
   - type: Sprite
-    sprite: _ShitChap/Clothing/Head/Misc/dragonskull.rsi
+    sprite: _Lavaland/Clothing/Head/Helmets/drake.rsi
   - type: Clothing
-    sprite: _ShitChap/Clothing/Head/Misc/dragonskull.rsi
+    sprite: _Lavaland/Clothing/Head/Helmets/drake.rsi
   - type: HideLayerClothing
     slots:
     - Hair

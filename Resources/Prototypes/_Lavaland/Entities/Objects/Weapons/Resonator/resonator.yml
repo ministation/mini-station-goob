@@ -7,11 +7,11 @@
   description: A handheld tool that creates resonance fields that crush rock and ore.
   components:
   - type: Sprite
-    sprite: Objects/Weapons/Guns/Basic/kinetic_accelerator.rsi
+    sprite: _Lavaland/Objects/Weapons/Resonator/resonator.rsi
     layers:
     - state: icon
   - type: Item
-    sprite: Objects/Weapons/Guns/Basic/kinetic_accelerator.rsi
+    sprite: _Lavaland/Objects/Weapons/Resonator/resonator-inhands.rsi
     size: Normal
     shape:
     - 0,0,1,0
@@ -28,6 +28,11 @@
   name: upgraded resonator
   description: An improved resonator with a larger field limit and a matrix mode that turns fields into traps.
   components:
+  - type: Sprite
+    layers:
+    - state: icon-upgraded
+  - type: Item
+    sprite: _Lavaland/Objects/Weapons/Resonator/resonator_u-inhands.rsi
   - type: Resonator
     fieldLimit: 6
     quickBurstMod: 1
@@ -46,11 +51,11 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: Objects/Weapons/effects.rsi
+    sprite: _Lavaland/Objects/Weapons/Resonator/resonance_field.rsi
     noRot: true
     drawdepth: Effects
     layers:
-    - state: shield2
+    - state: shield1
       shader: unshaded
   - type: PointLight
     color: "#2ee6ff"

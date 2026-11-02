@@ -1,0 +1,75 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG lavaland wave 2: mook village pieces and the sliding puzzle room.
+
+# Planks the mooks trampled flat inside their huts.
+- type: entity
+  id: LavalandMookWoodFloor
+  name: wooden floor
+  description: Rough planks beaten flat by generations of feet.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Corvax/Objects/Tiles/wood.rsi
+    state: wood_dark
+
+# Carved stone marker of mook territory.
+- type: entity
+  parent: BaseStructure
+  id: LavalandMookTotem
+  name: mook totem
+  description: A stack of carved bone and ashwood. It smells of old mushroom soup.
+  suffix: Lavaland
+  components:
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Structures/Specific/ashwalker_nest.rsi
+    state: tombstone
+
+# TG mook material stand: the village share box for ore.
+- type: entity
+  parent: TableWood
+  id: LavalandMookMaterialStand
+  name: material stand
+  description: Is everyone free to use this thing?
+  suffix: Lavaland
+
+# One piece of the sliding puzzle. The TG artwork is not ported, so every piece
+# uses the shared puzzle pillar sprite.
+- type: entity
+  parent: BaseStructure
+  id: LavalandPuzzlePillar
+  name: puzzle pillar
+  description: A stone pillar with a carved picture on it. It could slide, with some effort.
+  suffix: Lavaland
+  components:
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: puzzle_pillar
+
+# TG puzzling chest: the reward of the sliding puzzle.
+- type: entity
+  parent: LavalandCrateNecropolis
+  id: LavalandPuzzleCrate
+  name: puzzling chest
+  description: A chest that clicks open when the pieces line up.
+  suffix: Lavaland
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: LavalandLootPuzzle

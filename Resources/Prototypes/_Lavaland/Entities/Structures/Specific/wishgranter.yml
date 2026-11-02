@@ -16,8 +16,8 @@
   - type: Sprite
     noRot: true
     drawdepth: Mobs
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: red_cube
+    sprite: _Lavaland/Structures/Specific/wishgranter.rsi
+    state: syndbeacon
   - type: Damageable
     damageContainer: Inorganic
   - type: Destructible

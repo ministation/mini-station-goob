@@ -10,8 +10,8 @@
   components:
   - type: Sprite
     noRot: true
-    sprite: _Lavaland/Objects/Decoration/Rocks/small.rsi
-    state: rock1
+    sprite: _Lavaland/Objects/Specific/Mining/boulders.rsi
+    state: boulder_medium
   - type: Item
     size: Huge
   - type: Damageable
@@ -25,14 +25,14 @@
   id: LavalandOreBoulderRock
   components:
   - type: Sprite
-    state: rock2
+    state: rock_medium
 
 - type: entity
   parent: LavalandOreBoulder
   id: LavalandOreBoulderStone
   components:
   - type: Sprite
-    state: rock3
+    state: stone_medium
 
 - type: entity
   parent: LavalandOreBoulder
@@ -41,8 +41,7 @@
   description: A chunk of rock torn out of an ore vent, humming faintly. Swing a pickaxe or a crusher at it to get at what is inside.
   components:
   - type: Sprite
-    state: rock1
-    color: "#a98ae0"
+    state: boulder_artifact
   - type: OreBoulder
     hitsRemaining: 4
     lootTable: LavalandOreVentArtifactBoulderLoot

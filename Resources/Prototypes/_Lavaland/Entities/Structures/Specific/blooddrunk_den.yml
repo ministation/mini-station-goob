@@ -66,7 +66,7 @@
   description: The eye of a blood-drunk miner. It still looks around.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/trophies.rsi
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
     state: hunter_eye
   - type: ItemUpgrade
     name: crusher-trophy-miner-eye-name

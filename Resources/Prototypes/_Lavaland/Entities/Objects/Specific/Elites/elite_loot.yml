@@ -22,7 +22,7 @@
   description: A set of razor sharp claws torn from a demon. Fits into a crusher trophy slot.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/trophies.rsi
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
     state: demon_claws
   - type: ItemUpgrade
     name: crusher-trophy-demon-claws-name
@@ -55,8 +55,8 @@
   description: A muscular tongue covered in goliath slime. Fits into a crusher trophy slot.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: glob
+    sprite: _Lavaland/Objects/Specific/elite_trophies.rsi
+    state: broodmother_tongue
   - type: ItemUpgrade
     name: crusher-trophy-broodmother-tongue-name
     uniqueGroup: crusherTrophy
@@ -75,8 +75,8 @@
   description: A spine still rattling with Legion's will. Fits into a crusher trophy slot.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: legion_skull
+    sprite: _Lavaland/Objects/Specific/elite_trophies.rsi
+    state: legionnaire_spine
   - type: ItemUpgrade
     name: crusher-trophy-legionnaire-spine-name
     uniqueGroup: crusherTrophy
@@ -94,7 +94,7 @@
   description: A tattered cloak woven from the light of the Necropolis. It feels warm.
   components:
   - type: Sprite
-    sprite: Clothing/Neck/Cloaks/herald.rsi
+    sprite: _Lavaland/Clothing/Neck/Cloaks/herald_cloak.rsi
   - type: StaticPrice
     price: 1000
 
@@ -105,8 +105,8 @@
   description: A warm stone that hums with a promise of something better. Keep it close.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: necrostone
+    sprite: _Lavaland/Objects/Specific/elite_trophies.rsi
+    state: hope
   - type: StaticPrice
     price: 1000
 

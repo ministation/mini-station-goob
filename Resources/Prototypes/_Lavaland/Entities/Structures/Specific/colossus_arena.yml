@@ -29,7 +29,7 @@
   description: Trophy tubes taken from a colossus.
   components:
   - type: Sprite
-    sprite: _Lavaland/Objects/Specific/trophies.rsi
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
     state: blaster_tubes
   - type: ItemUpgrade
     name: crusher-trophy-blaster-tubes-name

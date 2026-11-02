@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG lavaland wave 2 ruin markers. The procedural builders live in
+# Content.Server/_Lavaland/Ruins and run on MapInit of these markers.
+
+- type: entity
+  id: LavalandMookVillageSpawner
+  parent: MarkerBase
+  name: mook village spawner
+  suffix: Lavaland
+  categories: [ Spawner ]
+  components:
+  - type: MookVillageSpawner
+
+- type: entity
+  id: LavalandPuzzleRoomSpawner
+  parent: MarkerBase
+  name: puzzle room spawner
+  suffix: Lavaland
+  categories: [ Spawner ]
+  components:
+  - type: PuzzleRoomSpawner

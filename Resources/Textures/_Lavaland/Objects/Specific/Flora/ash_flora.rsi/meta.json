@@ -1,0 +1,173 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "l_mushroom1"
+    },
+    {
+      "name": "l_mushroom2"
+    },
+    {
+      "name": "l_mushroom3"
+    },
+    {
+      "name": "l_mushroom4"
+    },
+    {
+      "name": "s_mushroom1"
+    },
+    {
+      "name": "s_mushroom2"
+    },
+    {
+      "name": "s_mushroom3"
+    },
+    {
+      "name": "s_mushroom4"
+    },
+    {
+      "name": "r_mushroom1"
+    },
+    {
+      "name": "r_mushroom2"
+    },
+    {
+      "name": "r_mushroom3"
+    },
+    {
+      "name": "r_mushroom4"
+    },
+    {
+      "name": "t_mushroom1"
+    },
+    {
+      "name": "t_mushroom2"
+    },
+    {
+      "name": "t_mushroom3"
+    },
+    {
+      "name": "t_mushroom4"
+    },
+    {
+      "name": "cactus1"
+    },
+    {
+      "name": "cactus2"
+    },
+    {
+      "name": "cactus3"
+    },
+    {
+      "name": "cactus4"
+    },
+    {
+      "name": "flowerpod1"
+    },
+    {
+      "name": "flowerpod2"
+    },
+    {
+      "name": "flowerpod3"
+    },
+    {
+      "name": "flowerpod4"
+    },
+    {
+      "name": "flower1"
+    },
+    {
+      "name": "flower2"
+    },
+    {
+      "name": "flower3"
+    },
+    {
+      "name": "flower4"
+    },
+    {
+      "name": "shrub1"
+    },
+    {
+      "name": "shrub2"
+    },
+    {
+      "name": "shrub3"
+    },
+    {
+      "name": "shrub4"
+    },
+    {
+      "name": "fireblossom1"
+    },
+    {
+      "name": "fireblossom2"
+    },
+    {
+      "name": "glowgrowth1"
+    },
+    {
+      "name": "glowgrowth2"
+    },
+    {
+      "name": "glowgrowth3"
+    },
+    {
+      "name": "plasma_flower1"
+    },
+    {
+      "name": "plasma_flower2"
+    },
+    {
+      "name": "drakebeet1"
+    },
+    {
+      "name": "drakebeet2"
+    },
+    {
+      "name": "mushroom_shavings"
+    },
+    {
+      "name": "mushroom_leaf"
+    },
+    {
+      "name": "mushroom_cap"
+    },
+    {
+      "name": "mushroom_stem"
+    },
+    {
+      "name": "cactus_fruit"
+    },
+    {
+      "name": "fireblossom"
+    },
+    {
+      "name": "glowgrowth"
+    },
+    {
+      "name": "vahrezjia"
+    },
+    {
+      "name": "podsneyzka"
+    },
+    {
+      "name": "inozhakust"
+    },
+    {
+      "name": "plasmaflower"
+    },
+    {
+      "name": "starcactus"
+    },
+    {
+      "name": "drakebeet"
+    }
+  ]
+}
