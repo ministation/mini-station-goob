@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: BaseMutation
+  id: MutationNightVision
+  name: Night Vision
+  description: The subject can see in the dark.
+  components:
+  - type: Mutation
+    instability: 35
+    rarity: Mythical
+  - type: ComponentMutation
+    added:
+    - type: NightVision
+      isActive: true
+      toggleAction: null # passive like in tg, no need for a toggle
