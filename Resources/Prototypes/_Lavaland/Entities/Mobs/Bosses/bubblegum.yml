@@ -76,7 +76,8 @@
         volume: -5
   - type: TileMovement
   - type: MegafaunaStage
-    maxStage: 1 # No code changes the stage on Bubblegum yet.
+    maxStage: 2
+    nextStageHealthFraction: 0.5 # enrages at half health
   - type: BossMusic
     soundId: Bubblegum
   - type: Aggressive

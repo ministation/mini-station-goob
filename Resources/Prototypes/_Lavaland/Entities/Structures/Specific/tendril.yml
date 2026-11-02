@@ -28,6 +28,8 @@
           LavalandCrateNecropolisFilled:
             min: 1
             max: 1
+      # TG parity: the chest must not vanish into the hole it sits on. Necropolis chests
+      # inherit PreventChasmFalling, so they climb out instead of being deleted by the chasm.
       - !type:SpawnEntityShapeBehavior
         toSpawn: FloorChasmOpeningSpawner
         shape: !type:NestedEntityShape

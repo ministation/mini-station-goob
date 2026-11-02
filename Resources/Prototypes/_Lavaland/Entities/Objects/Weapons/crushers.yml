@@ -1,8 +1,34 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# TG parity: the kinetic marker is built into every crusher instead of being a main upgrade.
 - type: entity
   abstract: true
-  parent: BaseItem
+  id: BaseWeaponCrusherMarker
+  components:
+  - type: AmmoCounter
+  - type: UseDelayOnShoot
+  - type: Gun
+    soundGunshot: /Audio/Weapons/plasma_cutter.ogg
+    fireRate: 1
+    useKey: false
+  - type: MapRestricted
+    mapWhitelist:
+      components:
+      - Biome
+  - type: MapRestrictedGun
+    popupOnBlock: gun-lavaland-restricted-message
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 1
+    rechargeSound:
+      path: /Audio/Weapons/Guns/MagIn/kinetic_reload.ogg
+  - type: BasicEntityAmmoProvider
+    proto: BulletCharge
+    capacity: 1
+    count: 1
+
+- type: entity
+  abstract: true
+  parent: [BaseItem, BaseWeaponCrusherMarker]
   id: BaseWeaponCrusher
   name: crusher
   description: An early design of the proto-kinetic accelerator.

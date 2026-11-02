@@ -136,6 +136,7 @@ public sealed class ResonatorSystem : EntitySystem
 
         var autoDelay = 2f;
         var matrixLifetime = 60f;
+        var manualLifetime = 60f; // shortcut: hardcoded TG 60 s, add a ResonatorComponent field if it needs tuning.
 
         if (resonator is { } resonatorUid && TryComp<ResonatorComponent>(resonatorUid, out var resonatorComp))
         {
@@ -149,7 +150,7 @@ public sealed class ResonatorSystem : EntitySystem
         {
             ResonatorMode.Auto => _timing.CurTime + TimeSpan.FromSeconds(autoDelay),
             ResonatorMode.Matrix => _timing.CurTime + TimeSpan.FromSeconds(matrixLifetime),
-            _ => TimeSpan.MaxValue,
+            _ => _timing.CurTime + TimeSpan.FromSeconds(manualLifetime),
         };
 
         return field;

@@ -12,7 +12,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 120 # TG makes this a once per fight attack
+    useDelay: 1800 # TG: once per fight, longer than any colossus fight
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false

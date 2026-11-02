@@ -9,6 +9,10 @@
   description: A repulsive tumor that grows into the rock. It is breathing.
   components:
   - type: EliteTumor
+  # TG parity: the tumor is a GPS target so the elite fight can be found.
+  - type: GPS
+    gpsName: Menacing Signal
+    enabled: true
   - type: Transform
     noRot: true
     anchored: true

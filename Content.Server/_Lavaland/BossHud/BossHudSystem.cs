@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System;
+using System.Linq;
 using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.BossHud;
 using Content.Shared._Lavaland.Megafauna.Components;
+using Content.Shared._Lavaland.MobPhases;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
@@ -18,6 +20,7 @@ namespace Content.Server._Lavaland.BossHud;
 /// </summary>
 public sealed class BossHudSystem : EntitySystem
 {
+    [Dependency] private readonly MobPhasesSystem _phases = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
 
@@ -74,14 +77,62 @@ public sealed class BossHudSystem : EntitySystem
                      && TryComp<AggressiveComponent>(ent, out var aggressive)
                      && aggressive.Aggressors.Count > 0;
 
+        var stage = 1;
+        var maxStage = 1;
+        if (TryComp<MegafaunaStageComponent>(ent, out var stageComp))
+            UpdateStage(ent, stageComp, damageable, hasThreshold ? maxHealth : 0f, out stage, out maxStage);
+
         if (ent.Comp.Active == active
             && MathF.Abs(ent.Comp.Health - health) < 0.01f
             && MathF.Abs(ent.Comp.MaxHealth - maxHealth) < 0.01f)
+        {
+            if (stageComp != null)
+                TryUpdateStageComponent(ent, stageComp, stage, maxStage);
             return;
+        }
 
         ent.Comp.Active = active;
         ent.Comp.Health = health;
         ent.Comp.MaxHealth = maxHealth;
         Dirty(ent);
+
+        if (stageComp != null)
+            TryUpdateStageComponent(ent, stageComp, stage, maxStage);
+    }
+
+    private void UpdateStage(EntityUid uid, MegafaunaStageComponent stageComp, DamageableComponent damageable,
+        float deathThreshold, out int stage, out int maxStage)
+    {
+        stage = 1;
+        maxStage = Math.Max(1, stageComp.MaxStage);
+
+        if (TryComp<MobPhasesComponent>(uid, out var phases))
+        {
+            // Phase updates share the damage event, resolve the phase before reading it.
+            _phases.UpdatePhases((uid, phases, damageable));
+
+            var highest = phases.PhaseThresholds.Count > 0
+                ? phases.PhaseThresholds.Values.Max()
+                : phases.CurrentPhase;
+            maxStage = Math.Max(maxStage, highest);
+            stage = Math.Clamp(phases.CurrentPhase, 1, maxStage);
+            return;
+        }
+
+        if (stageComp.NextStageHealthFraction is not { } threshold || deathThreshold <= 0f)
+            return;
+
+        var fraction = 1f - Math.Clamp(damageable.TotalDamage.Float() / deathThreshold, 0f, 1f);
+        stage = fraction <= threshold ? maxStage : 1;
+    }
+
+    private void TryUpdateStageComponent(EntityUid uid, MegafaunaStageComponent stageComp, int stage, int maxStage)
+    {
+        if (stageComp.Stage == stage && stageComp.MaxStage == maxStage)
+            return;
+
+        stageComp.Stage = stage;
+        stageComp.MaxStage = maxStage;
+        Dirty(uid, stageComp);
     }
 }

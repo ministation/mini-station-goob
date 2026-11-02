@@ -112,10 +112,10 @@
     - LavalandBossLegionMediumRight
     - LavalandBossLegionMediumEye
     splitsRemaining: 2
+  - type: LegionBossLoot
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:
-      - id: LavalandStaffOfStorms
       - id: MaterialBones1
       - id: MaterialBones1
       - id: MaterialBones1
@@ -194,6 +194,7 @@
     forgiveRange: 20.0
   - type: CombatPower
     factor: 15
+  - type: LegionBossLoot
   - type: LegionSplit
     spawnOnDeath: LavalandBossLegionSmall
     spawnCount: 3
@@ -303,6 +304,7 @@
     forgiveRange: 20.0
   - type: CombatPower
     factor: 8
+  - type: LegionBossLoot
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:

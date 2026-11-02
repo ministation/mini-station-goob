@@ -172,6 +172,47 @@ public sealed class OreVentTest
         await pair.CleanReturnAsync();
     }
 
+    [Test]
+    public async Task ArtifactBoulderDropsRealArtifact()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var testMap = await pair.CreateTestMap();
+        var entMan = server.ResolveDependency<IEntityManager>();
+
+        EntityUid boulder = default;
+        EntityUid pickaxe = default;
+        await server.WaitPost(() =>
+        {
+            var coords = testMap.GridCoords.Offset(new Vector2(3, 0));
+            boulder = entMan.SpawnAtPosition("LavalandOreBoulderArtifact", coords);
+            pickaxe = entMan.SpawnAtPosition("Pickaxe", coords);
+        });
+
+        await server.WaitRunTicks(2);
+
+        // Artifact boulders take four hits.
+        await server.WaitPost(() =>
+        {
+            var coords = entMan.GetComponent<TransformComponent>(boulder).Coordinates;
+            for (var i = 0; i < 4; i++)
+                entMan.EventBus.RaiseLocalEvent(boulder, new AttackedEvent(pickaxe, pickaxe, coords));
+        });
+
+        await server.WaitRunTicks(5);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.Deleted(boulder), Is.True, "artifact boulder should crumble after four pickaxe hits");
+            Assert.That(CollectPrototypes(entMan, "ComplexXenoArtifactItem").Count, Is.EqualTo(1),
+                "artifact boulder must drop one real xeno artifact");
+            Assert.That(CountUnclaimedOre(entMan), Is.GreaterThanOrEqualTo(3),
+                "artifact boulder must also drop diamonds and bluespace");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
     private static int CountAliveWaveMobs(IEntityManager entMan, OreVentComponent ventComp)
     {
         var alive = 0;

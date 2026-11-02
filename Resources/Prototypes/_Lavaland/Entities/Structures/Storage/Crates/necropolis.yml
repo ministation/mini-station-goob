@@ -10,6 +10,12 @@
     sprite: _Lavaland/Structures/Storage/Crates/necropolechest.rsi
   - type: Sprite
     sprite: _Lavaland/Structures/Storage/Crates/necropolechest.rsi
+  # TG parity: necropolis chests are lava, fire and acid proof.
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: LavalandNecropolisChest
+  # TG parity: the chest must not vanish into a chasm that opens under it.
+  - type: PreventChasmFalling
 
 - type: entity
   parent: LavalandCrateNecropolis
@@ -46,3 +52,18 @@
       - id: MaterialLegionSkull1
       - id: MaterialBones1
         rolls: 2, 3
+
+# TG parity: Metallic crate resistances with fire, lava and acid immunity.
+- type: damageModifierSet
+  id: LavalandNecropolisChest
+  coefficients:
+    Blunt: 0.7
+    Slash: 0.5
+    Piercing: 0.7
+    Shock: 1.2
+    Structural: 0.5
+    Heat: 0.0
+    Caustic: 0.0
+  flatReductions:
+    Blunt: 5
+
