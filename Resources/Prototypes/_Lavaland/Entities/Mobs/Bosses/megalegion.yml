@@ -203,8 +203,6 @@
     table: !type:AllSelector
       children:
       - id: MaterialBones1
-      - id: LavalandCrateNecropolisFilled
-        prob: 0.2
     deleteOnDeath: true
 
 # Mid tier right half, spawned by the boss split next to the left one.
@@ -309,6 +307,4 @@
     table: !type:AllSelector
       children:
       - id: MaterialBones1
-      - id: LavalandCrateNecropolisFilled
-        prob: 0.2
     deleteOnDeath: true

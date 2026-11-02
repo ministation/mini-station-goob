@@ -112,6 +112,8 @@ public sealed class LegionSplitTest
             Assert.That(CountLegionMedium(entMan), Is.EqualTo(0));
             Assert.That(CountPrototypes(entMan, "LavalandBossLegionSmall"), Is.EqualTo(0),
                 "small legions have no splits left, the chain must stop");
+            Assert.That(CountPrototypes(entMan, "LavalandCrateNecropolisFilled"), Is.EqualTo(0),
+                "legion tiers must not drop necropolis chests");
         });
 
         await pair.CleanReturnAsync();
