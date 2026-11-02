@@ -593,8 +593,23 @@ public sealed partial class FishingSourceSystem : EntitySystem
                             (counts.TryGetValue(c, out var left) && left > 0))
                 .ToList();
 
-            if (!dynamicEv.Handled || candidates.Count == 0)
+            if (!dynamicEv.Handled || candidates.Count == 0 && dynamicEv.WeightedCandidates.Count == 0)
                 return true;
+
+            // Weighted sources (vending machines) pick by price-vs-bait affinity, like tg.
+            if (dynamicEv.WeightedCandidates.Count > 0)
+            {
+                var weighted = dynamicEv.WeightedCandidates
+                    .Where(c => !source.FishCounts.ContainsKey(c.Key) ||
+                                (counts.TryGetValue(c.Key, out var left) && left > 0))
+                    .ToDictionary(c => c.Key, c => c.Value);
+
+                if (weighted.Count == 0)
+                    return true;
+
+                reward = WeightedPick(weighted);
+                return true;
+            }
 
             reward = candidates[_random.Next(candidates.Count)];
             return true;
@@ -602,6 +617,26 @@ public sealed partial class FishingSourceSystem : EntitySystem
 
         reward = RollTableReward(source, lootEv, rod, counts);
         return true;
+    }
+
+    private EntProtoId WeightedPick(Dictionary<EntProtoId, float> weighted)
+    {
+        var total = 0f;
+        foreach (var weight in weighted.Values)
+            total += weight;
+
+        var roll = _random.NextFloat() * total;
+        foreach (var (id, weight) in weighted)
+        {
+            roll -= weight;
+            if (roll <= 0f)
+                return id;
+        }
+
+        foreach (var (id, _) in weighted)
+            return id;
+
+        return default!;
     }
 
     /// <summary>

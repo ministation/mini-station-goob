@@ -199,6 +199,12 @@ public struct FishingDynamicRewardEvent
     public EntityUid SourceEntity;
 
     public List<EntProtoId> Candidates = new();
+
+    /// <summary>
+    /// Candidates with explicit weights; when filled, the reward is picked from here
+    /// instead of the uniform <see cref="Candidates"/> list.
+    /// </summary>
+    public Dictionary<EntProtoId, float> WeightedCandidates = new();
     public EntityUid? ExistingCatch;
     public bool Handled;
 
