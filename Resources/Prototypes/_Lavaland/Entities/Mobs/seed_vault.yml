@@ -35,7 +35,7 @@
     makeSentient: true
     name: ghost-role-information-seed-vault-keeper-name
     description: ghost-role-information-seed-vault-keeper-description
-    rules: ghost-role-information-friendlies-rules
+    rules: ghost-role-information-nonantagonist-rules
     mindRoles:
     - MindRoleGhostRoleNeutral
     raffle:

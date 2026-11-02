@@ -12,10 +12,17 @@ namespace Content.Server._Lavaland.Mobs;
 public sealed partial class LegionSplitComponent : Component
 {
     /// <summary>
-    /// What to spawn on death.
+    /// What to spawn on death. Used when <see cref="SpawnOnDeathList"/> is not set.
     /// </summary>
-    [DataField(required: true)]
-    public EntProtoId SpawnOnDeath;
+    [DataField]
+    public EntProtoId? SpawnOnDeath;
+
+    /// <summary>
+    /// What to spawn on death, one entity per entry.
+    /// Takes priority over <see cref="SpawnOnDeath"/> and <see cref="SpawnCount"/>.
+    /// </summary>
+    [DataField]
+    public List<EntProtoId>? SpawnOnDeathList;
 
     /// <summary>
     /// How many entities to spawn on death.

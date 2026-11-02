@@ -76,6 +76,11 @@
   - type: MobMover
   - type: LagCompensation
   - type: Actions
+  - type: ActionGrant
+    actions:
+    - ActionDrakeFireCone
+    - ActionDrakeLavaPools
+    - ActionDrakeSlam
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0
@@ -88,6 +93,8 @@
       value: 0.7
     selector: !type:NestedMegafaunaSelector
       id: AshDrake
+  - type: Anger
+    totalHp: 2500
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2

@@ -75,6 +75,12 @@
   - type: MobMover
   - type: LagCompensation
   - type: Actions
+  - type: ActionGrant
+    actions:
+    - ActionColossusBoltsSpread
+    - ActionColossusBoltsRing
+    - ActionColossusBoltsSpiral
+    - ActionColossusCounterSpiral
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0
@@ -87,6 +93,8 @@
       value: 0.8
     selector: !type:NestedMegafaunaSelector
       id: Colossus
+  - type: Anger
+    totalHp: 2500
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2

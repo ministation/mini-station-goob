@@ -4,6 +4,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Popups;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
 namespace Content.Server._Lavaland.Mobs;
@@ -30,10 +31,20 @@ public sealed class LegionSplitSystem : EntitySystem
             return;
 
         var comp = ent.Comp;
-        var protoId = comp.SpawnOnDeath;
         var coords = Transform(ent).Coordinates;
 
-        for (var i = 0; i < comp.SpawnCount; i++)
+        var protos = comp.SpawnOnDeathList;
+        if (protos is not { Count: > 0 })
+        {
+            if (comp.SpawnOnDeath is not { } protoId)
+                return;
+
+            protos = new List<EntProtoId>(comp.SpawnCount);
+            for (var i = 0; i < comp.SpawnCount; i++)
+                protos.Add(protoId);
+        }
+
+        foreach (var protoId in protos)
         {
             var offset = _random.NextVector2Box(-0.8f, -0.8f, 0.8f, 0.8f);
             var child = Spawn(protoId, coords.Offset(offset));

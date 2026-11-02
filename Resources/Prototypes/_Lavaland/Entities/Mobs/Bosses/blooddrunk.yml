@@ -66,6 +66,10 @@
   - type: MobMover
   - type: LagCompensation
   - type: Actions
+  - type: ActionGrant
+    actions:
+    - ActionBdhDash
+    - ActionBdhSawBarrage
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0
@@ -78,6 +82,8 @@
       value: 0.5
     selector: !type:NestedMegafaunaSelector
       id: BloodDrunk
+  - type: Anger
+    totalHp: 1300
   - type: AngerPlayerScaling
     angerScale: 1.2
     hpScale: 1.2
@@ -118,3 +124,7 @@
       value: 0.5
     selector: !type:NestedMegafaunaSelector
       id: BloodDrunkHunter
+  # Parent ActionGrant is inherited and its actions list is appended to this one.
+  - type: ActionGrant
+    actions:
+    - ActionBdhDashChain

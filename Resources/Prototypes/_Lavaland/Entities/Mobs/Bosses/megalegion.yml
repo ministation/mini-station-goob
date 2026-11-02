@@ -77,6 +77,11 @@
   - type: MobMover
   - type: LagCompensation
   - type: Actions
+  - type: ActionGrant
+    actions:
+    - ActionLegionSkulls
+    - ActionLegionCharge
+    - ActionLegionSentinel
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0
@@ -89,6 +94,8 @@
       value: 0.8
     selector: !type:NestedMegafaunaSelector
       id: Legion
+  - type: Anger
+    totalHp: 700
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
@@ -96,10 +103,12 @@
     spawnOnTarget: LavalandLegionChargeBurst
     spawnOnUsed: LavalandLegionChargeBurst
   - type: MegafaunaRejuvenate
-  # Death split chain: boss -> medium x3 -> small x3 each
+  # Death split chain: boss -> medium left/eye/right -> small x3 each
   - type: LegionSplit
-    spawnOnDeath: LavalandBossLegionMedium
-    spawnCount: 3
+    spawnOnDeathList:
+    - LavalandBossLegionMedium
+    - LavalandBossLegionMediumRight
+    - LavalandBossLegionMediumEye
     splitsRemaining: 2
   - type: SpawnLootOnDeath
     table: !type:AllSelector
@@ -147,11 +156,10 @@
   - type: Sprite
     noRot: true
     drawdepth: Mobs
-    sprite: _Lavaland/Mobs/legion.rsi
+    sprite: _Lavaland/Mobs/Bosses/64x64.rsi
     layers:
     - map: ["enum.DamageStateVisualLayers.Base"]
-      state: legion
-    scale: 0.8, 0.8
+      state: mega_legion_left
   - type: MeleeWeapon
     altDisarm: false
     angle: 0
@@ -191,6 +199,30 @@
       - id: MaterialBones1
     deleteOnDeath: true
 
+# Mid tier right half, spawned by the boss split next to the left one.
+- type: entity
+  name: Legion
+  id: LavalandBossLegionMediumRight
+  parent: LavalandBossLegionMedium
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Mobs/Bosses/64x64.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: mega_legion_right
+
+# Mid tier eye, spawned by the boss split with the two halves.
+- type: entity
+  name: Legion
+  id: LavalandBossLegionMediumEye
+  parent: LavalandBossLegionMedium
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Mobs/Bosses/64x64.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: mega_legion_eye
+
 # Smallest tier: no more splits, just bones.
 - type: entity
   name: Legion
@@ -228,11 +260,10 @@
   - type: Sprite
     noRot: true
     drawdepth: Mobs
-    sprite: _Lavaland/Mobs/legion.rsi
+    sprite: _Lavaland/Mobs/lavaland_monsters.rsi
     layers:
     - map: ["enum.DamageStateVisualLayers.Base"]
-      state: legion
-    scale: 0.6, 0.6
+      state: mega_legion
   - type: MeleeWeapon
     altDisarm: false
     angle: 0
