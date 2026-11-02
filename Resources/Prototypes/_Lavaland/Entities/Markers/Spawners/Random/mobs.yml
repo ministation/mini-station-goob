@@ -15,6 +15,31 @@
       weight: 5
     - id: MobLavalandHivelord
       weight: 5
+    - id: LavalandMobBrimdemon
+      weight: 5
+    # TG biome weights: bileworm 10-35, goldgrub 15-35, raptor 15-20.
+    # Scaled to the brimdemon weight above (TG brimdemon is 0-40 per biome).
+    - id: LavalandMobBileworm
+      weight: 4
+    - id: LavalandMobGoldgrub
+      weight: 6
+    - !type:GroupSelector
+      weight: 5
+      children:
+      - id: LavalandMobRaptorRed
+        weight: 25
+      - id: LavalandMobRaptorWhite
+        weight: 25
+      - id: LavalandMobRaptorPurple
+        weight: 25
+      - id: LavalandMobRaptorGreen
+        weight: 25
+      - id: LavalandMobRaptorYellow
+        weight: 25
+      - id: LavalandMobRaptorBlue
+        weight: 25
+      - id: LavalandMobRaptorBlack
+        weight: 1
 
 - type: entityTable
   id: LavalandLightMobs
@@ -30,6 +55,25 @@
       weight: 2
     - id: MobLavalandGutlunch
       weight: 2
+    # TG young raptors are spawned by breeding, not by the biome spawner.
+    # Keep a small chance so the young variants are reachable in the world.
+    - !type:GroupSelector
+      weight: 2
+      children:
+      - id: LavalandMobRaptorYoungRed
+        weight: 25
+      - id: LavalandMobRaptorYoungWhite
+        weight: 25
+      - id: LavalandMobRaptorYoungPurple
+        weight: 25
+      - id: LavalandMobRaptorYoungGreen
+        weight: 25
+      - id: LavalandMobRaptorYoungYellow
+        weight: 25
+      - id: LavalandMobRaptorYoungBlue
+        weight: 25
+      - id: LavalandMobRaptorYoungBlack
+        weight: 1
 
 - type: entity
   name: lavaland heavy mob spawner

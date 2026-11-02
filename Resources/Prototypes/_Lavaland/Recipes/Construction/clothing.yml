@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: construction
+  id: DrakeArmourConstruction
+  graph: DrakeArmour
+  category: construction-category-clothing
+  targetNode: armour
+  objectType: Item
+
+- type: construction
+  id: DrakeHelmConstruction
+  graph: DrakeHelm
+  category: construction-category-clothing
+  targetNode: helm
+  objectType: Item

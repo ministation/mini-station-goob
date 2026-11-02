@@ -5,13 +5,12 @@ using System.Numerics;
 namespace Content.Server._Lavaland.Ruins;
 
 /// <summary>
-/// Builds the bubblegum lair landmark: a stone arena with the boss
-/// and an ancient sarcophagus with its loot.
+/// Builds the bubblegum lair landmark: a stone arena with the boss.
+/// The sarcophagus is dropped by the boss on death, not pre-placed.
 /// </summary>
 public sealed class BubblegumLairSystem : EntitySystem
 {
     private const string StoneTile = "LavalandStoneTilePristine";
-    private const string Sarcophagus = "LavalandCrateSarcophagus";
     private const string Boss = "LavalandBossBubblegum";
 
     [Dependency] private readonly IComponentFactory _factory = default!;
@@ -43,7 +42,6 @@ public sealed class BubblegumLairSystem : EntitySystem
         }
 
         Spawn(Boss, baseCoords);
-        Spawn(Sarcophagus, baseCoords.Offset(comp.SarcophagusOffset));
     }
 }
 
@@ -55,10 +53,4 @@ public sealed partial class BubblegumLairSpawnerComponent : Component
     /// </summary>
     [DataField]
     public int ArenaRadius = 5;
-
-    /// <summary>
-    /// Offset of the sarcophagus from the spawner, in tiles.
-    /// </summary>
-    [DataField]
-    public Vector2i SarcophagusOffset = (0, 3);
 }

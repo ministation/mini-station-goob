@@ -1,0 +1,123 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Crusher trophies and unique elite loot from TG lavaland.
+
+- type: entity
+  abstract: true
+  parent: BaseItem
+  id: BaseLavalandCrusherTrophy
+  name: crusher trophy
+  description: A grisly trophy that can be fitted into a crusher.
+  components:
+  - type: Tag
+    tags:
+    - CrusherTrophy
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  id: LavalandDemonClaws
+  parent: BaseLavalandCrusherTrophy
+  name: demon claws
+  description: A set of razor sharp claws torn from a demon. Fits into a crusher trophy slot.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/trophies.rsi
+    state: demon_claws
+  - type: ItemUpgrade
+    name: crusher-trophy-demon-claws-name
+    uniqueGroup: crusherTrophy
+  - type: WeaponUpgradeDamage
+    modifier: 1.15
+  - type: CrusherTrophy
+    meleeHeal: 1
+    detonationHeal: 4
+
+- type: entity
+  id: LavalandVortexTalisman
+  parent: BaseLavalandCrusherTrophy
+  name: vortex talisman
+  description: A strange talisman humming with hierophant energy. Fits into a crusher trophy slot.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: vortex_talisman
+  - type: ItemUpgrade
+    name: crusher-trophy-vortex-talisman-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+    detonationChaser: LavalandHierophantChaser
+
+- type: entity
+  id: LavalandBroodmotherTongue
+  parent: BaseLavalandCrusherTrophy
+  name: broodmother tongue
+  description: A muscular tongue covered in goliath slime. Fits into a crusher trophy slot.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: glob
+  - type: ItemUpgrade
+    name: crusher-trophy-broodmother-tongue-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+    detonationSpawn: GoliathTentacle
+    detonationSpawnChance: 0.1
+    detonationSpawnPatch: true
+    detonationSpawnAtTarget: true
+    lavaImmunityDuration: 10
+    lavaImmunityCooldown: 60
+
+- type: entity
+  id: LavalandLegionnaireSpine
+  parent: BaseLavalandCrusherTrophy
+  name: legionnaire spine
+  description: A spine still rattling with Legion's will. Fits into a crusher trophy slot.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: legion_skull
+  - type: ItemUpgrade
+    name: crusher-trophy-legionnaire-spine-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+    detonationSpawn: MobLegionSkull
+    detonationSpawnChance: 0.2
+    useSpawn: MobLegionSkull
+    useSpawnCooldown: 4
+
+# Unique elite loot
+- type: entity
+  id: LavalandHeraldCloak
+  parent: ClothingNeckBase
+  name: cloak of the prophet
+  description: A tattered cloak woven from the light of the Necropolis. It feels warm.
+  components:
+  - type: Sprite
+    sprite: Clothing/Neck/Cloaks/herald.rsi
+  - type: StaticPrice
+    price: 1000
+
+- type: entity
+  id: LavalandPandoraHope
+  parent: BaseItem
+  name: pandora's hope
+  description: A warm stone that hums with a promise of something better. Keep it close.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: necrostone
+  - type: StaticPrice
+    price: 1000
+
+- type: entity
+  id: LavalandTumorShard
+  parent: BaseItem
+  name: tumor shard
+  description: A fragment of a pulsating tumor. It twitches faintly.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: crevice_shard
+  - type: StaticPrice
+    price: 100

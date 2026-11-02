@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG NODE drone: deployed by an ore vent when it is tapped. It is passive,
+# so the lavaland fauna attacks it and the miners have to keep it alive.
+- type: entity
+  id: LavalandNodeDrone
+  parent: BaseSimpleMob
+  name: NODE drone
+  description: Standard in-atmosphere drone, used by Nanotrasen to operate and excavate valuable ore vents. Protect it while it works.
+  suffix: Lavaland
+  components:
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: Mobs/Silicon/drone.rsi
+    state: drone
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 300
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      500: Dead
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 0
+    baseSprintSpeed: 0
+  - type: PointLight
+    color: "#7ec8ff"
+    radius: 3
+    energy: 1.5

@@ -31,6 +31,8 @@
     - id: ActionHierophantCrosses
     - id: ActionHierophantChasers
     - id: ActionHierophantBlink
+    - id: ActionHierophantCrossesEnraged
+    - id: ActionHierophantBlinkSpam
 
 # Anger delays are needed so hierophant doesn't wait for 4 seconds and then uses all actions at once.
 # TODO: add support for actions to have a shared delay so we can remove AngerNumberSelector
@@ -77,3 +79,34 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionHierophantBlink
+
+# Below 50% HP only: all-direction cross blasts and blink spam.
+- type: megafaunaSelector
+  id: ActionHierophantCrossesEnraged
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 0.5,1.5
+      inverse: true
+    actionId: ActionHierophantCrossesEnraged
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionHierophantCrossesEnraged
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+      - 3
+
+- type: megafaunaSelector
+  id: ActionHierophantBlinkSpam
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 0.2,1.0
+      inverse: true
+    actionId: ActionHierophantBlinkSpam
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionHierophantBlinkSpam
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+      - 3

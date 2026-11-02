@@ -1,0 +1,282 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Produce of the TG ash flora (ash_flora.dm). Item sprites reuse the existing
+# hydroponics plant RSIs' produce state.
+
+- type: entity
+  name: fire blossom
+  id: FoodAshFireBlossom
+  parent: FoodProduceBase
+  description: A flower from a fire blossom.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/poppy.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - bitter
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 2
+        - ReagentId: Vitamin
+          Quantity: 1
+
+- type: entity
+  name: glowgrowth sheet
+  id: FoodAshGlowgrowthSheet
+  parent: FoodProduceBase
+  description: A thick sheet of glowing fungi.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/fly_amanita.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - strange
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 1
+        - ReagentId: Sugar
+          Quantity: 2
+
+- type: entity
+  name: inozhakust mash
+  id: FoodAshInozhakustMash
+  parent: FoodProduceBase
+  description: The mashed up vines of an inozhakust.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/glasstle.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - slimy
+    - bitter
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 3
+
+- type: entity
+  name: plasma flower
+  id: FoodAshPlasmaFlower
+  parent: FoodProduceBase
+  description: A bit of vine connected to a crystallized plasma flower.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/spacemans_trumpet.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - spicy
+    - chemical-waste
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 1
+        - ReagentId: Toxin
+          Quantity: 1
+
+- type: entity
+  name: podsneyzka bunch
+  id: FoodAshPodsneyzkaBunch
+  parent: FoodProduceBase
+  description: A bunch of spotted podsneyzka flowers. They smell a bit like rotten meat.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/lily.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - meaty
+    - bitter
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 3
+        - ReagentId: Vitamin
+          Quantity: 1
+
+- type: entity
+  name: vahrezjia stalks
+  id: FoodAshVahrezjiaStalks
+  parent: FoodProduceBase
+  description: Bunched together vahrezjia stalks. Surprisingly coarse in texture.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/aloe.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - sour
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 2
+        - ReagentId: Water
+          Quantity: 2
+
+- type: entity
+  name: drake beet
+  id: FoodAshDrakeBeet
+  parent: FoodProduceBase
+  description: A mutated beet. Probably still tasty.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/blood_tomato.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - sweet
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 3
+        - ReagentId: Sugar
+          Quantity: 1
+
+- type: entity
+  name: star cacti
+  id: FoodAshStarCactus
+  parent: FoodProduceBase
+  description: A spikey, round cluster of prickly star cacti.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/pyrotton.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - bitter
+    - sour
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 2
+        - ReagentId: Water
+          Quantity: 2
+
+- type: entity
+  name: mushroom shavings
+  id: FoodAshMushroomShavings
+  parent: FoodProduceBase
+  description: Some shavings from a large mushroom. With enough, might serve as a bowl.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/chanterelle.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - nutty
+  - type: Tag
+    tags:
+    - Fungus
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 2
+
+- type: entity
+  name: mushroom leaf
+  id: FoodAshMushroomLeaf
+  parent: FoodProduceBase
+  description: A leaf, from a mushroom.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/steelcap.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - leafy
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 2
+        - ReagentId: Vitamin
+          Quantity: 1
+
+- type: entity
+  name: mushroom cap
+  id: FoodAshMushroomCap
+  parent: FoodProduceBase
+  description: The cap of a large mushroom.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/lingzhi.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - savory
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 2
+
+- type: entity
+  name: mushroom stem
+  id: FoodAshMushroomStem
+  parent: FoodProduceBase
+  description: A long mushroom stem. It is slightly glowing.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/towercap.rsi
+    state: produce
+  - type: FlavorProfile
+    flavors:
+    - savory
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 2
+        - ReagentId: Vitamin
+          Quantity: 1
+
+- type: entity
+  name: mushroom bowl
+  id: LavalandMushroomBowl
+  parent: FoodBowlBig
+  description: A bowl made out of mushrooms. Not food, though it might have contained some at some point.
+  components:
+  - type: Sprite
+    sprite: Objects/Consumable/Food/bowl.rsi
+    state: bowl
+  - type: Construction
+    graph: LavalandMushroomBowl
+    node: bowl

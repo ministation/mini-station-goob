@@ -61,10 +61,15 @@
 # Trophy: the miner's eye, taken by a crusher.
 - type: entity
   id: LavalandMinerEye
-  parent: BaseItem
+  parent: BaseLavalandCrusherTrophy
   name: miner's eye
   description: The eye of a blood-drunk miner. It still looks around.
   components:
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/trophies.rsi
     state: hunter_eye
+  - type: ItemUpgrade
+    name: crusher-trophy-miner-eye-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+    detonationDamageReductionDuration: 1

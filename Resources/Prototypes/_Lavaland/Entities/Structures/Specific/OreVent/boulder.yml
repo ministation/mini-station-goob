@@ -1,0 +1,89 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Boulders produced by an ore vent. Break them with a pickaxe or a crusher.
+- type: entity
+  id: LavalandOreBoulder
+  parent: BaseItem
+  name: boulder
+  description: A chunk of rock torn out of an ore vent. Swing a pickaxe or a crusher at it to get at the ore inside.
+  suffix: Lavaland
+  components:
+  - type: Sprite
+    noRot: true
+    sprite: _Lavaland/Objects/Decoration/Rocks/small.rsi
+    state: rock1
+  - type: Item
+    size: Huge
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: OreBoulder
+    hitsRemaining: 2
+    lootTable: LavalandOreVentBoulderLoot
+
+- type: entity
+  parent: LavalandOreBoulder
+  id: LavalandOreBoulderRock
+  components:
+  - type: Sprite
+    state: rock2
+
+- type: entity
+  parent: LavalandOreBoulder
+  id: LavalandOreBoulderStone
+  components:
+  - type: Sprite
+    state: rock3
+
+- type: entity
+  parent: LavalandOreBoulder
+  id: LavalandOreBoulderArtifact
+  name: artifact boulder
+  description: A chunk of rock torn out of an ore vent, humming faintly. Swing a pickaxe or a crusher at it to get at what is inside.
+  components:
+  - type: Sprite
+    state: rock1
+    color: "#a98ae0"
+  - type: OreBoulder
+    hitsRemaining: 4
+    lootTable: LavalandOreVentArtifactBoulderLoot
+
+- type: entityTable
+  id: LavalandOreVentBoulderLoot
+  table: !type:GroupSelector
+    rolls: 1, 2
+    children:
+    - id: SteelOre1Unprocessed
+      weight: 5
+    - id: SpaceQuartz1Unprocessed
+      weight: 3
+    - id: Coal1Unprocessed
+      weight: 3
+    - id: GoldOre1Unprocessed
+      weight: 2
+    - id: SilverOre1Unprocessed
+      weight: 2
+    - id: PlasmaOre1Unprocessed
+      weight: 1
+    - id: UraniumOre1Unprocessed
+      weight: 1
+
+- type: entityTable
+  id: LavalandOreVentArtifactBoulderLoot
+  table: !type:AllSelector
+    children:
+    - id: ArtifactFragmentOre1Unprocessed
+    - !type:GroupSelector
+      rolls: 1, 2
+      children:
+      - id: GoldOre1Unprocessed
+        weight: 3
+      - id: SilverOre1Unprocessed
+        weight: 3
+      - id: PlasmaOre1Unprocessed
+        weight: 2
+      - id: UraniumOre1Unprocessed
+        weight: 2
+      - id: BananiumOre1Unprocessed
+        weight: 1
+      - id: DiamondOre1Unprocessed
+        weight: 1

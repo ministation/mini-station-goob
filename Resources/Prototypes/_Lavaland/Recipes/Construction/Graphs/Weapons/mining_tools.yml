@@ -1,0 +1,50 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: constructionGraph
+  id: LavalandResonatorConstructionGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: resonator
+      steps:
+      - material: Steel
+        amount: 8
+        doAfter: 4
+      - material: Glass
+        amount: 4
+        doAfter: 2
+      - material: Silver
+        amount: 2
+        doAfter: 2
+      - material: Uranium
+        amount: 2
+        doAfter: 2
+  - node: resonator
+    entity: LavalandResonator
+
+- type: constructionGraph
+  id: LavalandResonatorUpgradedConstructionGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: resonator
+      steps:
+      - material: Steel
+        amount: 10
+        doAfter: 4
+      - material: Glass
+        amount: 5
+        doAfter: 2
+      - material: Silver
+        amount: 4
+        doAfter: 2
+      - material: Uranium
+        amount: 4
+        doAfter: 2
+      - material: Diamond
+        amount: 2
+        doAfter: 2
+  - node: resonator
+    entity: LavalandResonatorUpgraded

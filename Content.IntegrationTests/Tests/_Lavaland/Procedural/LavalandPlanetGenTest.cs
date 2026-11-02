@@ -77,7 +77,8 @@ public sealed class LavalandPlanetGenTest
             Expect("LavalandBossColossus", "colossus");
             Expect("LavalandCrateColossus", "colossus chest");
             Expect("LavalandBossBubblegum", "bubblegum");
-            Expect("LavalandCrateSarcophagus", "ancient sarcophagus");
+            // The sarcophagus is not pre-placed anymore: bubblegum drops it on death,
+            // see MegafaunaLootTest.BubblegumDropsSarcophagusOnDeath.
             Assert.That(
                 found.Contains("LavalandBossBloodDrunk") ||
                 found.Contains("LavalandBossBloodDrunkGuidance") ||

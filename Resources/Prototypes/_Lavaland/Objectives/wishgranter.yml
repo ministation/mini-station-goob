@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Wish granter objective from TG: the wish turns the wisher into a station hijacker.
+
+- type: entity
+  parent: BaseObjective
+  id: WishgranterHijackObjective
+  name: Hijack the station
+  description: The wish gave you power, now take everything. Escape on the emergency shuttle with no loyal crew left alive on board.
+  components:
+  - type: Objective
+    difficulty: 5
+    issuer: objective-issuer-wishgranter
+    icon:
+      sprite: Objects/Tools/emag.rsi
+      state: icon
+  - type: HijackShuttleCondition

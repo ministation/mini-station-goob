@@ -1,0 +1,303 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Kinetic accelerator modkits ported from TG. All of them reuse the existing PKA upgrade system.
+
+- type: entity
+  id: PKAUpgradeCooldown
+  parent: BasePKAUpgrade
+  name: PKA modkit (cooldown)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#3bd1ff"
+    - state: overlay-2
+      color: "#0a67a8"
+    - state: overlay-3
+      color: "#8be9ff"
+  - type: ItemUpgrade
+    name: gun-upgrade-cooldown-name
+    uniqueGroup: pka-cooldown
+  - type: GunUpgradeFireRate
+    coefficient: 1.35
+
+- type: entity
+  id: PKAUpgradeMiningExplosion
+  parent: BasePKAUpgrade
+  name: PKA modkit (mining explosion)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#ffb43b"
+    - state: overlay-2
+      color: "#a85b0a"
+    - state: overlay-3
+      color: "#ffd98b"
+  - type: ItemUpgrade
+    name: gun-upgrade-mining-explosion-name
+    uniqueGroup: pka-aoe
+  - type: GunUpgradeProjectileComponents
+    components:
+    - type: PkaProjectileExplosion
+      turfs: true
+  - type: GunUpgradeFireRate
+    coefficient: 0.75
+
+- type: entity
+  id: PKAUpgradeOffensiveExplosion
+  parent: BasePKAUpgrade
+  name: PKA modkit (offensive explosion)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#ff5a3b"
+    - state: overlay-2
+      color: "#a80a0a"
+    - state: overlay-3
+      color: "#ff9a8b"
+  - type: ItemUpgrade
+    name: gun-upgrade-offensive-explosion-name
+    uniqueGroup: pka-aoe
+  - type: GunUpgradeProjectileComponents
+    components:
+    - type: PkaProjectileExplosion
+      mobDamageModifier: 1
+
+- type: entity
+  id: PKAUpgradeOffensiveMiningExplosion
+  parent: BasePKAUpgrade
+  name: PKA modkit (offensive mining explosion)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#ff3b8b"
+    - state: overlay-2
+      color: "#7a0aa8"
+    - state: overlay-3
+      color: "#ff8bce"
+  - type: ItemUpgrade
+    name: gun-upgrade-offensive-mining-explosion-name
+    uniqueGroup: pka-aoe
+  - type: GunUpgradeProjectileComponents
+    components:
+    - type: PkaProjectileExplosion
+      turfs: true
+      mobDamageModifier: 1
+
+- type: entity
+  id: PKAUpgradeRepeater
+  parent: BasePKAUpgrade
+  name: PKA modkit (rapid repeater)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#c6ff3b"
+    - state: overlay-2
+      color: "#4aa80a"
+    - state: overlay-3
+      color: "#e6ff8b"
+  - type: ItemUpgrade
+    name: gun-upgrade-repeater-name
+    uniqueGroup: pka-repeater
+  - type: GunUpgradeFireRate
+    coefficient: 0.5
+  - type: GunUpgradeProjectileComponents
+    components:
+    - type: PkaProjectileRepeater
+      cooldownFactor: 0.25
+
+- type: entity
+  id: PKAUpgradeInfernalRepeater
+  parent: BasePKAUpgrade
+  name: PKA modkit (infernal repeater)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#ff2b2b"
+    - state: overlay-2
+      color: "#5a0000"
+    - state: overlay-3
+      color: "#ff7b7b"
+  - type: ItemUpgrade
+    name: gun-upgrade-infernal-repeater-name
+    uniqueGroup: pka-repeater
+  - type: GunUpgradeFireRate
+    coefficient: 0.4
+  - type: GunUpgradeProjectileComponents
+    components:
+    - type: PkaProjectileRepeater
+      cooldownFactor: 0.2
+
+- type: entity
+  id: PKAUpgradeLifesteal
+  parent: BasePKAUpgrade
+  name: PKA modkit (lifesteal)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#ff3b3b"
+    - state: overlay-2
+      color: "#7a0000"
+    - state: overlay-3
+      color: "#ff8b8b"
+  - type: ItemUpgrade
+    name: gun-upgrade-lifesteal-name
+    uniqueGroup: pka-lifesteal
+  - type: GunUpgradeVampirism
+    damageOnHit:
+      types:
+        Slash: -1.5
+        Piercing: -1.5
+        Blunt: -1.5
+
+- type: entity
+  id: PKAUpgradeResonatorBlast
+  parent: BasePKAUpgrade
+  name: PKA modkit (resonator blast)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#3bffe6"
+    - state: overlay-2
+      color: "#0a7aa8"
+    - state: overlay-3
+      color: "#8bfff2"
+  - type: ItemUpgrade
+    name: gun-upgrade-resonator-blast-name
+    uniqueGroup: pka-resonator-blast
+  - type: GunUpgradeProjectileComponents
+    components:
+    - type: PkaProjectileResonatorBlast
+      multiplier: 0.25
+
+- type: entity
+  id: PKAUpgradeDeathSyphon
+  parent: BasePKAUpgrade
+  name: PKA modkit (death syphon)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#b53bff"
+    - state: overlay-2
+      color: "#4a0a7a"
+    - state: overlay-3
+      color: "#d98bff"
+  - type: ItemUpgrade
+    name: gun-upgrade-death-syphon-name
+    uniqueGroup: pka-death-syphon
+  - type: GunUpgradeComponents
+    components:
+    - type: PkaDeathSyphon
+  - type: GunUpgradeProjectileComponents
+    components:
+    - type: PkaProjectileSyphon
+
+- type: entity
+  id: PKAUpgradeHumanPassthrough
+  parent: BasePKAUpgrade
+  name: PKA modkit (human passthrough)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#c6c6c6"
+    - state: overlay-2
+      color: "#5a5a5a"
+    - state: overlay-3
+      color: "#e6e6e6"
+  - type: ItemUpgrade
+    name: gun-upgrade-human-passthrough-name
+    uniqueGroup: pka-passthrough
+  - type: GunUpgradeProjectileComponents
+    components:
+    - type: PkaProjectilePassthrough
+
+- type: entity
+  id: PKAUpgradeSuperChassis
+  parent: BasePKAUpgrade
+  name: PKA modkit (super chassis)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#ffd83d"
+    - state: overlay-2
+      color: "#a88b0a"
+    - state: overlay-3
+      color: "#ffe98b"
+  - type: ItemUpgrade
+    name: gun-upgrade-super-chassis-name
+    uniqueGroup: pka-chassis
+  - type: GunUpgradeComponents
+    components:
+    - type: PointLight
+      color: "#ffd83d"
+      radius: 1.1
+      energy: 0.8
+
+- type: entity
+  id: PKAUpgradeHyperChassis
+  parent: BasePKAUpgrade
+  name: PKA modkit (hyper chassis)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#ff7b1f"
+    - state: overlay-2
+      color: "#a83a0a"
+    - state: overlay-3
+      color: "#ffb37b"
+  - type: ItemUpgrade
+    name: gun-upgrade-hyper-chassis-name
+    uniqueGroup: pka-chassis
+  - type: GunUpgradeComponents
+    components:
+    - type: PointLight
+      color: "#ff7b1f"
+      radius: 1.4
+      energy: 1.2
+
+- type: entity
+  id: PKAUpgradeTracer
+  parent: BasePKAUpgrade
+  name: PKA modkit (tracer bolts)
+  components:
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay-1
+      color: "#e8faff"
+    - state: overlay-2
+      color: "#8bd9ff"
+    - state: overlay-3
+      color: "#ffffff"
+  - type: ItemUpgrade
+    name: gun-upgrade-tracer-name
+    uniqueGroup: pka-tracer
+  - type: GunUpgradeProjectileComponents
+    components:
+    - type: PointLight
+      color: "#e8faff"
+      radius: 1.2
+      energy: 1.6

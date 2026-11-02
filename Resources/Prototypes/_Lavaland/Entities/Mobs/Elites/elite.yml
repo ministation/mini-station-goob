@@ -145,6 +145,9 @@
     - ActionEliteLegionnaireDash
     - ActionEliteLegionnaireSummon
     - ActionEliteLegionnaireSkulls
+  - type: GPS
+    gpsName: Crumbling Signal
+    enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.7
@@ -159,18 +162,14 @@
   - type: SpawnLootOnDeath
     table: !type:NestedSelector
       tableId: LavalandMaterialRare
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandLegionnaireSpine
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    dropBoth: true
     deleteOnDeath: false
-  - type: GhostRole
-    allowMovement: true
-    makeSentient: true
-    name: ghost-role-information-elite-legionnaire-name
-    description: ghost-role-information-elite-legionnaire-description
-    rules: ghost-role-information-antagonist-rules
-    mindRoles:
-    - MindRoleGhostRoleSoloAntagonist
-    raffle:
-      settings: default
-  - type: GhostTakeoverAvailable
 
 - type: entity
   id: LavalandElitePandora #Just a hierophant resprite, all of these are templates anyway.
@@ -248,6 +247,9 @@
     - ActionElitePandoraBlink
     - ActionElitePandoraBox
     - ActionElitePandoraCrosses
+  - type: GPS
+    gpsName: Blinking Signal
+    enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.7
@@ -262,19 +264,14 @@
   - type: SpawnLootOnDeath
     table: !type:NestedSelector
       tableId: LavalandMaterialRare
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandPandoraHope
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    dropBoth: true
     deleteOnDeath: false
-  - type: GhostRole
-    allowMovement: true
-    makeSentient: true
-    name: ghost-role-information-elite-pandora-name
-    description: ghost-role-information-elite-pandora-desc
-    rules: ghost-role-information-antagonist-rules
-    mindRoles:
-    - MindRoleGhostRoleSoloAntagonist
-    raffle:
-      settings: default
-  - type: GhostTakeoverAvailable
-
 
 - type: entity
   name: Herald
@@ -342,6 +339,9 @@
     actions:
     - ActionEliteHeraldOmni
     - ActionEliteHeraldTri
+  - type: GPS
+    gpsName: Radiant Signal
+    enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.6
@@ -353,18 +353,14 @@
   - type: SpawnLootOnDeath
     table: !type:NestedSelector
       tableId: LavalandMaterialRare
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandHeraldCloak
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    dropBoth: true
     deleteOnDeath: false
-  - type: GhostRole
-    allowMovement: true
-    makeSentient: true
-    name: ghost-role-information-elite-herald-name
-    description: ghost-role-information-elite-herald-desc
-    rules: ghost-role-information-antagonist-rules
-    mindRoles:
-    - MindRoleGhostRoleSoloAntagonist
-    raffle:
-      settings: default
-  - type: GhostTakeoverAvailable
 
 - type: entity
   name: Broodmother
@@ -431,6 +427,9 @@
     actions:
     - ActionEliteBroodSlam
     - ActionEliteBroodSpawn
+  - type: GPS
+    gpsName: Unknown Signal
+    enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.9
@@ -445,16 +444,12 @@
   - type: SpawnLootOnDeath
     table: !type:NestedSelector
       tableId: LavalandMaterialRare
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandBroodmotherTongue
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    dropBoth: true
     deleteOnDeath: false
-  - type: GhostRole
-    allowMovement: true
-    makeSentient: true
-    name: ghost-role-information-elite-broodmother-name
-    description: ghost-role-information-elite-broodmother-desc
-    rules: ghost-role-information-antagonist-rules
-    mindRoles:
-    - MindRoleGhostRoleSoloAntagonist
-    raffle:
-      settings: default
-  - type: GhostTakeoverAvailable
 

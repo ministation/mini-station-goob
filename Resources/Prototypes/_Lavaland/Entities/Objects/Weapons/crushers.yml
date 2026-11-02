@@ -41,6 +41,7 @@
       upgrade_slot_main: !type:ContainerSlot
       upgrade_slot_blade: !type:ContainerSlot
       upgrade_slot_handle: !type:ContainerSlot
+      upgrade_slot_trophy: !type:ContainerSlot
   - type: ItemSlots
     slots:
       flashlight:
@@ -83,6 +84,16 @@
         whitelist:
           tags:
           - CrusherUpgradeBlade
+      # Trophy slot holds one unique megafauna trophy
+      upgrade_slot_trophy:
+        name: weapon-upgrade-slot-name-trophy
+        swap: false
+        priority: 2
+        insertDelay: 2.4
+        ejectDelay: 1.2
+        whitelist:
+          tags:
+          - CrusherTrophy
   - type: ItemMapper
     # Imagine if this would support displacement maps.
     # Not that important, but probably required if gun upgrades will become a major mechanic

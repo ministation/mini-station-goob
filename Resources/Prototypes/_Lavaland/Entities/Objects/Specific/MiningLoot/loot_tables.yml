@@ -1,0 +1,129 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Lavaland loot tables. Ids are stable cross-stream contracts:
+# LavalandLootTendril is the tendril/necropolis chest content,
+# LavalandLootDragon / LavalandLootBubblegum / LavalandLootColossus are the
+# contents of the respective megafauna chests (loose items, not containers).
+
+# Rare PKA modkits from TG, reusing the existing PKA upgrade prototypes.
+- type: entityTable
+  id: LavalandLootPkaMods
+  table: !type:GroupSelector
+    children:
+    - id: PKAUpgradeDamage
+    - id: PKAUpgradeRange
+    - id: PKAUpgradeFireRate
+    - id: PKAUpgradePressure
+    - id: PKAUpgradeSpace
+
+# Demonic chest contents.
+- type: entityTable
+  id: LavalandLootDemonic
+  table: !type:GroupSelector
+    children:
+    - id: LavalandParadoxBag
+    - id: LavalandMiningSoulstone
+    - id: LavalandEyeOfGod
+    - id: LavalandStrangeElixir
+    - id: LavalandConcussiveGauntlets
+    - id: LavalandRodOfAsclepius
+    - id: LavalandCursedHeart
+    - id: LavalandJacobsLadder
+    - id: LavalandGuardianCreatorMiner
+    - id: WelderAbductor
+    - id: LavalandWarpCubeRed
+    - id: LavalandImmortalityTalisman
+    - id: LavalandSummonItemSpellbook
+    - id: LavalandMementoMori
+    - id: LavalandSpellbookSacredFlame
+
+# Puzzle chest contents.
+- type: entityTable
+  id: LavalandLootPuzzle
+  table: !type:GroupSelector
+    children:
+    - id: LavalandMiningSoulstone
+    - id: LavalandSpookyLantern
+    - id: LavalandPrisonCube
+
+# Dragon chest: one of four.
+- type: entityTable
+  id: LavalandLootDragon
+  table: !type:GroupSelector
+    children:
+    - id: LavalandStaffOfLava
+    - id: LavalandSpectralBlade
+    - id: LavalandSpellbookSacredFlame
+    - id: LavalandDragonsBlood
+
+# Bubblegum sarcophagus: the suit and one weapon.
+- type: entityTable
+  id: LavalandLootBubblegum
+  table: !type:AllSelector
+    children:
+    - !type:AllSelector
+      children:
+      - id: ClothingOuterHardsuitHECK
+      - id: ClothingHeadHelmetHECK
+    - !type:GroupSelector
+      children:
+      - id: LavalandMayhemBottle
+      - id: LavalandSoulscythe
+
+# Colossus chest: all three drops, no random roll.
+- type: entityTable
+  id: LavalandLootColossus
+  table: !type:AllSelector
+    children:
+    - !type:AllSelector
+      children:
+      - id: LavalandCainDagger
+      - id: LavalandAbelDagger
+    - id: LavalandVocalCords
+    - id: LavalandRenewalCrystal
+
+# Tendril chest: TG generic mining loot plus the items this fork already had.
+- type: entityTable
+  id: LavalandLootTendril
+  table: !type:GroupSelector
+    children:
+    # TG generic mining_loot list.
+    - id: LavalandWarpCubeRed
+    - id: LavalandMiningSoulstone
+    - id: LavalandEyeOfGod
+    - id: LavalandStrangeElixir
+    - id: LavalandConcussiveGauntlets
+    - !type:NestedSelector
+      tableId: LavalandLootPkaMods
+    - id: LavalandRodOfAsclepius
+    - id: LavalandCursedHeart
+    - id: LavalandShipInABottle
+    - id: LavalandBerserkerArmor
+    - id: LavalandJacobsLadder
+    - id: LavalandGuardianCreatorMiner
+    - id: LavalandParadoxBag
+    - id: LavalandSpookyLantern
+    - id: LavalandImmortalityTalisman
+    - id: LavalandSummonItemSpellbook
+    - id: LavalandBookOfBabel
+    - id: LavalandMementoMori
+    # Extras that only exist in this fork's tables, kept reachable.
+    - id: LavalandBerserkerHelmet
+    - id: LavalandDarkShard
+    - id: LavalandPrisonCube
+    - id: LavalandWildhunterKnife
+    - id: ClothingOuterArmorCult
+    - id: LavalandVampirismCrystal
+    - id: LavalandBookOfGreentext
+    - id: CrusherUpgradeMainRudeBuster
+    - !type:AllSelector
+      children:
+      - id: ClothingOuterRobesCult
+      - id: BedsheetCult
+    - !type:NestedSelector
+      weight: 2
+      tableId: LavalandMaterialRare
+    # A demonic chest is a rarer roll inside the regular one.
+    - !type:NestedSelector
+      weight: 0.3
+      tableId: LavalandLootDemonic

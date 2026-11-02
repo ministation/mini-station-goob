@@ -1,0 +1,53 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Ash drake hide, butchered from an ash drake. Drake armour is crafted from it.
+
+- type: stack
+  parent: BaseMediumStack
+  id: AshDrakeHide
+  name: stack-ashdrake-hide
+  icon: { sprite: /Textures/Objects/Materials/hide.rsi, state: goliath_hide }
+  spawn: LavalandAshDrakeHide1
+
+- type: entity
+  parent: MaterialBase
+  id: LavalandAshDrakeHide
+  name: ash drake hide
+  description: Thick plates of hide torn from an ash drake. They still radiate heat.
+  suffix: Full
+  components:
+  - type: Sprite
+    sprite: Objects/Materials/hide.rsi
+    color: "#c06a3a"
+    layers:
+    - state: goliath_hide
+      map: [ "base" ]
+  - type: Appearance
+  - type: Stack
+    stackType: AshDrakeHide
+    baseLayer: base
+    layerStates:
+    - goliath_hide
+    - goliath_hide_2
+    - goliath_hide_3
+  # Goobstation - Custom stack splitting dialog
+  - type: UserInterface
+    interfaces:
+      enum.StackCustomSplitUiKey.Key:
+        type: StackCustomSplitBoundUserInterface
+  - type: Item
+    size: Large
+    heldPrefix: goliathhide
+    sprite: Objects/Materials/hide.rsi
+  - type: StaticPrice
+    price: 0
+  - type: StackPrice
+    price: 1500
+
+- type: entity
+  parent: LavalandAshDrakeHide
+  id: LavalandAshDrakeHide1
+  suffix: 1
+  components:
+  - type: Stack
+    count: 1

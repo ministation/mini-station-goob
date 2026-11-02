@@ -1,0 +1,545 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Seeds of the TG ash flora (ash_flora.dm). Plant sprites reuse existing
+# hydroponics plant RSIs with matching growth stage counts.
+
+- type: seed
+  id: lavalandCactus
+  name: seeds-lavaland-cactus-name
+  noun: seeds-noun-seeds
+  displayName: seeds-lavaland-cactus-display-name
+  plantRsi: Objects/Specific/Hydroponics/blood_tomato.rsi
+  packetPrototype: LavalandCactusSeeds
+  productPrototypes:
+  - FoodMealCactusFruit
+  growthStages: 6
+  lifespan: 50
+  maturation: 7
+  production: 6
+  yield: 2
+  potency: 10
+  idealLight: 8
+  nutrientConsumption: 0.4
+  waterConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 20
+    Vitamin:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandStarCactus
+  name: seeds-lavaland-star-cactus-name
+  noun: seeds-noun-seeds
+  displayName: seeds-lavaland-star-cactus-display-name
+  plantRsi: Objects/Specific/Hydroponics/pyrotton.rsi
+  packetPrototype: LavalandStarCactusSeeds
+  productPrototypes:
+  - FoodAshStarCactus
+  growthStages: 3
+  lifespan: 60
+  maturation: 7
+  production: 6
+  yield: 3
+  potency: 15
+  idealLight: 8
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 20
+    Water:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandPolypore
+  name: seeds-lavaland-polypore-name
+  noun: seeds-noun-spores
+  displayName: seeds-lavaland-polypore-display-name
+  plantRsi: Objects/Specific/Hydroponics/chanterelle.rsi
+  packetPrototype: LavalandPolyporeMycelium
+  productPrototypes:
+  - FoodAshMushroomShavings
+  growthStages: 3
+  lifespan: 50
+  maturation: 7
+  production: 4
+  yield: 3
+  potency: 10
+  idealLight: 6
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandPorcini
+  name: seeds-lavaland-porcini-name
+  noun: seeds-noun-spores
+  displayName: seeds-lavaland-porcini-display-name
+  plantRsi: Objects/Specific/Hydroponics/steelcap.rsi
+  packetPrototype: LavalandPorciniMycelium
+  productPrototypes:
+  - FoodAshMushroomLeaf
+  growthStages: 3
+  lifespan: 50
+  maturation: 7
+  production: 4
+  yield: 3
+  potency: 10
+  idealLight: 6
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandInocybe
+  name: seeds-lavaland-inocybe-name
+  noun: seeds-noun-spores
+  displayName: seeds-lavaland-inocybe-display-name
+  plantRsi: Objects/Specific/Hydroponics/lingzhi.rsi
+  packetPrototype: LavalandInocybeMycelium
+  productPrototypes:
+  - FoodAshMushroomCap
+  growthStages: 3
+  lifespan: 50
+  maturation: 7
+  production: 4
+  yield: 3
+  potency: 10
+  idealLight: 6
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandEmber
+  name: seeds-lavaland-ember-name
+  noun: seeds-noun-spores
+  displayName: seeds-lavaland-ember-display-name
+  plantRsi: Objects/Specific/Hydroponics/towercap.rsi
+  packetPrototype: LavalandEmberMycelium
+  productPrototypes:
+  - FoodAshMushroomStem
+  growthStages: 3
+  lifespan: 50
+  maturation: 7
+  production: 4
+  yield: 3
+  potency: 10
+  idealLight: 6
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandSeraka
+  name: seeds-lavaland-seraka-name
+  noun: seeds-noun-spores
+  displayName: seeds-lavaland-seraka-display-name
+  plantRsi: Objects/Specific/Hydroponics/fly_amanita.rsi
+  packetPrototype: LavalandSerakaMycelium
+  productPrototypes:
+  - FoodMealSerakaCap
+  growthStages: 2
+  lifespan: 50
+  maturation: 7
+  production: 4
+  yield: 3
+  potency: 10
+  idealLight: 6
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandFireblossom
+  name: seeds-lavaland-fireblossom-name
+  noun: seeds-noun-seeds
+  displayName: seeds-lavaland-fireblossom-display-name
+  plantRsi: Objects/Specific/Hydroponics/poppy.rsi
+  packetPrototype: LavalandFireBlossomSeeds
+  productPrototypes:
+  - FoodAshFireBlossom
+  growthStages: 3
+  lifespan: 40
+  maturation: 6
+  production: 4
+  yield: 2
+  potency: 10
+  idealLight: 8
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+    Vitamin:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandGlowgrowth
+  name: seeds-lavaland-glowgrowth-name
+  noun: seeds-noun-spores
+  displayName: seeds-lavaland-glowgrowth-display-name
+  plantRsi: Objects/Specific/Hydroponics/fly_amanita.rsi
+  packetPrototype: LavalandGlowgrowthMycelium
+  productPrototypes:
+  - FoodAshGlowgrowthSheet
+  growthStages: 2
+  lifespan: 40
+  maturation: 6
+  production: 4
+  yield: 2
+  potency: 10
+  idealLight: 4
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+    Sugar:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandVahrezjia
+  name: seeds-lavaland-vahrezjia-name
+  noun: seeds-noun-seeds
+  displayName: seeds-lavaland-vahrezjia-display-name
+  plantRsi: Objects/Specific/Hydroponics/spacemans_trumpet.rsi
+  packetPrototype: LavalandVahrezjiaSeeds
+  productPrototypes:
+  - FoodAshVahrezjiaStalks
+  growthStages: 4
+  lifespan: 40
+  maturation: 6
+  production: 4
+  yield: 3
+  potency: 10
+  idealLight: 8
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+    Water:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandPodsneyzka
+  name: seeds-lavaland-podsneyzka-name
+  noun: seeds-noun-seeds
+  displayName: seeds-lavaland-podsneyzka-display-name
+  plantRsi: Objects/Specific/Hydroponics/lily.rsi
+  packetPrototype: LavalandPodsneyzkaSeeds
+  productPrototypes:
+  - FoodAshPodsneyzkaBunch
+  growthStages: 3
+  lifespan: 30
+  maturation: 6
+  production: 4
+  yield: 5
+  potency: 10
+  idealLight: 8
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+    Vitamin:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandInozhakust
+  name: seeds-lavaland-inozhakust-name
+  noun: seeds-noun-seeds
+  displayName: seeds-lavaland-inozhakust-display-name
+  plantRsi: Objects/Specific/Hydroponics/glasstle.rsi
+  packetPrototype: LavalandInozhakustSeeds
+  productPrototypes:
+  - FoodAshInozhakustMash
+  growthStages: 3
+  lifespan: 40
+  maturation: 6
+  production: 4
+  yield: 3
+  potency: 10
+  idealLight: 8
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 20
+
+- type: seed
+  id: lavalandPlasmaFlower
+  name: seeds-lavaland-plasma-flower-name
+  noun: seeds-noun-seeds
+  displayName: seeds-lavaland-plasma-flower-display-name
+  plantRsi: Objects/Specific/Hydroponics/aloe.rsi
+  packetPrototype: LavalandPlasmaFlowerSeeds
+  productPrototypes:
+  - FoodAshPlasmaFlower
+  growthStages: 5
+  lifespan: 40
+  maturation: 6
+  production: 5
+  yield: 3
+  potency: 20
+  idealLight: 8
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 5
+      PotencyDivisor: 20
+    Toxin:
+      Min: 1
+      Max: 3
+      PotencyDivisor: 20
+
+# Seed packets
+
+- type: entity
+  parent: SeedBase
+  name: packet of fruiting cactus seeds
+  id: LavalandCactusSeeds
+  description: These seeds grow into fruiting cacti.
+  components:
+  - type: Seed
+    seedId: lavalandCactus
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/blood_tomato.rsi
+
+- type: entity
+  parent: SeedBase
+  name: packet of star cacti seeds
+  id: LavalandStarCactusSeeds
+  description: These seeds grow into star cacti.
+  components:
+  - type: Seed
+    seedId: lavalandStarCactus
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/pyrotton.rsi
+
+- type: entity
+  parent: SeedBase
+  name: polypore mycelium pack
+  id: LavalandPolyporeMycelium
+  description: This mycelium grows into bracket mushrooms, also known as polypores.
+  components:
+  - type: Seed
+    seedId: lavalandPolypore
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/chanterelle.rsi
+
+- type: entity
+  parent: SeedBase
+  name: porcini mycelium pack
+  id: LavalandPorciniMycelium
+  description: This mycelium grows into porcini mushrooms.
+  components:
+  - type: Seed
+    seedId: lavalandPorcini
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/steelcap.rsi
+
+- type: entity
+  parent: SeedBase
+  name: inocybe mycelium pack
+  id: LavalandInocybeMycelium
+  description: This mycelium grows into inocybe mushrooms.
+  components:
+  - type: Seed
+    seedId: lavalandInocybe
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/lingzhi.rsi
+
+- type: entity
+  parent: SeedBase
+  name: embershroom mycelium pack
+  id: LavalandEmberMycelium
+  description: This mycelium grows into bioluminescent embershrooms.
+  components:
+  - type: Seed
+    seedId: lavalandEmber
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/towercap.rsi
+
+- type: entity
+  parent: SeedBase
+  name: seraka mycelium pack
+  id: LavalandSerakaMycelium
+  description: This mycelium grows into seraka mushrooms.
+  components:
+  - type: Seed
+    seedId: lavalandSeraka
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/fly_amanita.rsi
+
+- type: entity
+  parent: SeedBase
+  name: packet of fire blossom seeds
+  id: LavalandFireBlossomSeeds
+  description: These seeds grow into fire blossoms.
+  components:
+  - type: Seed
+    seedId: lavalandFireblossom
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/poppy.rsi
+
+- type: entity
+  parent: SeedBase
+  name: glowgrowth mycelium pack
+  id: LavalandGlowgrowthMycelium
+  description: This mycelium grows into glowgrowth fungi.
+  components:
+  - type: Seed
+    seedId: lavalandGlowgrowth
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/fly_amanita.rsi
+
+- type: entity
+  parent: SeedBase
+  name: packet of vahrezjia seeds
+  id: LavalandVahrezjiaSeeds
+  description: These seeds grow into vahrezjia.
+  components:
+  - type: Seed
+    seedId: lavalandVahrezjia
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/spacemans_trumpet.rsi
+
+- type: entity
+  parent: SeedBase
+  name: packet of podsneyzka seeds
+  id: LavalandPodsneyzkaSeeds
+  description: These seeds grow into podsneyzkas.
+  components:
+  - type: Seed
+    seedId: lavalandPodsneyzka
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/lily.rsi
+
+- type: entity
+  parent: SeedBase
+  name: packet of inozhakust seeds
+  id: LavalandInozhakustSeeds
+  description: These seeds grow into an inozhakust.
+  components:
+  - type: Seed
+    seedId: lavalandInozhakust
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/glasstle.rsi
+
+- type: entity
+  parent: SeedBase
+  name: packet of plasma flower seeds
+  id: LavalandPlasmaFlowerSeeds
+  description: These seeds grow into plasma flowers.
+  components:
+  - type: Seed
+    seedId: lavalandPlasmaFlower
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/aloe.rsi
+
+# A cache of lavaland seeds, handed out by the seed vault ruin.
+
+- type: entityTable
+  id: LavalandSeedCacheLoot
+  table: !type:AllSelector
+    children:
+    - id: LavalandFireBlossomSeeds
+    - id: LavalandPolyporeMycelium
+    - id: LavalandPodsneyzkaSeeds
+    - !type:GroupSelector
+      children:
+      - id: LavalandCactusSeeds
+      - id: LavalandStarCactusSeeds
+      - id: LavalandPorciniMycelium
+      - id: LavalandInocybeMycelium
+      - id: LavalandEmberMycelium
+      - id: LavalandSerakaMycelium
+      - id: LavalandGlowgrowthMycelium
+      - id: LavalandVahrezjiaSeeds
+      - id: LavalandInozhakustSeeds
+      - id: LavalandPlasmaFlowerSeeds
+
+- type: entity
+  parent: BaseStorageItem
+  id: LavalandSeedCache
+  name: lavaland seed cache
+  description: A sealed cache of seeds from the ash wastes, kept by the seed vault keepers.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/seeds.rsi
+    state: seed
+  - type: Item
+    size: Small
+  - type: Storage
+    grid:
+    - 0,0,3,1
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:NestedSelector
+        tableId: LavalandSeedCacheLoot
+
+# Mushroom bowl, TG crafts it from five mushroom shavings.
+
+- type: constructionGraph
+  id: LavalandMushroomBowl
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: bowl
+      steps:
+      - tag: Fungus
+        icon:
+          sprite: Objects/Specific/Hydroponics/chanterelle.rsi
+          state: produce
+        name: construction-graph-tag-fungus
+        doAfter: 1
+  - node: bowl
+    entity: LavalandMushroomBowl
+
+- type: construction
+  id: LavalandMushroomBowl
+  graph: LavalandMushroomBowl
+  startNode: start
+  targetNode: bowl
+  category: construction-category-misc
+  objectType: Item

@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  id: LavalandResonator
+  parent: BaseItem
+  name: resonator
+  description: A handheld tool that creates resonance fields that crush rock and ore.
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Basic/kinetic_accelerator.rsi
+    layers:
+    - state: icon
+  - type: Item
+    sprite: Objects/Weapons/Guns/Basic/kinetic_accelerator.rsi
+    size: Normal
+    shape:
+    - 0,0,1,0
+  - type: Resonator
+  - type: Construction
+    graph: LavalandResonatorConstructionGraph
+    node: resonator
+  - type: StaticPrice
+    price: 500
+
+- type: entity
+  id: LavalandResonatorUpgraded
+  parent: LavalandResonator
+  name: upgraded resonator
+  description: An improved resonator with a larger field limit and a matrix mode that turns fields into traps.
+  components:
+  - type: Resonator
+    fieldLimit: 6
+    quickBurstMod: 1
+    addingFailure: 30
+    matrixMode: true
+  - type: Construction
+    graph: LavalandResonatorUpgradedConstructionGraph
+    node: resonator
+  - type: StaticPrice
+    price: 1500
+
+- type: entity
+  id: LavalandResonanceField
+  name: resonance field
+  description: A humming field of resonating energy.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/effects.rsi
+    noRot: true
+    drawdepth: Effects
+    layers:
+    - state: shield2
+      shader: unshaded
+  - type: PointLight
+    color: "#2ee6ff"
+    radius: 1.6
+    energy: 1.5
+  - type: ResonanceField
+    damage:
+      types:
+        Blunt: 20

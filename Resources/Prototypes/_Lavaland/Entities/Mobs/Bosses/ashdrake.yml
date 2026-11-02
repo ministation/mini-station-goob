@@ -55,10 +55,16 @@
     thresholds:
       0: Alive
       2500: Dead
+  # TG butcher results. TG also yields 5 sinew; the repo has no sinew material,
+  # so those 5 are folded into the bone stack.
   - type: Butcherable
     spawned:
-    - id: FireballSpellbook
-      amount: 1
+    - id: LavalandAshDrakeHide1
+      amount: 10
+    - id: MaterialDiamond1
+      amount: 5
+    - id: MaterialBones1
+      amount: 35
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -88,6 +94,9 @@
   - type: DoAfter
   - type: RequireProjectileTarget
     active: False
+  - type: GPS
+    gpsName: Fiery Signal
+    enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.7
@@ -112,4 +121,5 @@
     weaponWhitelist:
       components:
       - MegafaunaWeaponLooter
+    dropBoth: true
     deleteOnDeath: true

@@ -1,0 +1,260 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Ash flora ported from TG: code/modules/mining/lavaland/ash_flora.dm
+# World sprites reuse existing hydroponics plant RSIs (no new binary assets).
+# Each plant is a Gatherable structure: click with an empty hand to collect the
+# produce, with a 10% bonus chance to also get the matching seed pack.
+
+- type: entity
+  name: fire blossom
+  id: FloraAshFireBlossom
+  parent: BaseLavalandFlora
+  description: An odd flower that grows commonly near bodies of lava.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/poppy.rsi
+    state: harvest
+  - type: PointLight
+    color: "#e8b923"
+    radius: 1.5
+    energy: 1.2
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshFireBlossom
+        - id: LavalandFireBlossomSeeds
+          prob: 0.1
+
+- type: entity
+  name: glowgrowth colony
+  id: FloraAshGlowgrowth
+  parent: BaseLavalandFlora
+  description: A colony of bioluminescent fungi growing on a hot air vent.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/fly_amanita.rsi
+    state: harvest
+  - type: PointLight
+    color: "#67b6a5"
+    radius: 1.7
+    energy: 1.2
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshGlowgrowthSheet
+        - id: LavalandGlowgrowthMycelium
+          prob: 0.1
+
+- type: entity
+  name: inozhakust
+  id: FloraAshInozhakust
+  parent: BaseLavalandFlora
+  description: A plant that looks like roots growing into the sky.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/glasstle.rsi
+    state: harvest
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshInozhakustMash
+        - id: LavalandInozhakustSeeds
+          prob: 0.1
+
+- type: entity
+  name: plasma flower
+  id: FloraAshPlasmaFlower
+  parent: BaseLavalandFlora
+  description: Vines surrounding a clustered bunch of plasma flowers.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/spacemans_trumpet.rsi
+    state: harvest
+  - type: PointLight
+    color: "#a94ce0"
+    radius: 1.5
+    energy: 1.2
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshPlasmaFlower
+        - id: LavalandPlasmaFlowerSeeds
+          prob: 0.1
+
+- type: entity
+  name: podsneyzka flower
+  id: FloraAshPodsneyzka
+  parent: BaseLavalandFlora
+  description: A bunch of flowering podsneyzkas whose roots hunt for decomposing corpses.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/lily.rsi
+    state: harvest
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshPodsneyzkaBunch
+        - id: LavalandPodsneyzkaSeeds
+          prob: 0.1
+
+- type: entity
+  name: vahrezjia flowers
+  id: FloraAshVahrezjia
+  parent: BaseLavalandFlora
+  description: Bright blue stalks emerging from purple flowery pods.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/aloe.rsi
+    state: harvest
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshVahrezjiaStalks
+        - id: LavalandVahrezjiaSeeds
+          prob: 0.1
+
+- type: entity
+  name: drake beet
+  id: FloraAshDrakeBeet
+  parent: BaseLavalandFlora
+  description: A mutated beet that vaguely mimics the appearance of a drake.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/blood_tomato.rsi
+    state: harvest
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshDrakeBeet
+
+- type: entity
+  name: star cacti
+  id: FloraAshStarCacti
+  parent: BaseLavalandFlora
+  description: A spikey, round cluster of prickly star cacti.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Decoration/Flora/Plants/fruiting_cactus.rsi
+    state: cactus2
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshStarCactus
+        - id: LavalandStarCactusSeeds
+          prob: 0.1
+
+- type: entity
+  name: large mushrooms
+  id: FloraAshLargeMushrooms
+  parent: BaseLavalandFlora
+  description: A number of large mushrooms, covered in a faint layer of ash and spores.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/chanterelle.rsi
+    state: harvest
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshMushroomShavings
+        - id: LavalandPolyporeMycelium
+          prob: 0.1
+
+- type: entity
+  name: leafy mushrooms
+  id: FloraAshLeafyMushrooms
+  parent: BaseLavalandFlora
+  description: A number of mushrooms, each surrounding a greenish sporangium.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/steelcap.rsi
+    state: harvest
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshMushroomLeaf
+        - id: LavalandPorciniMycelium
+          prob: 0.1
+
+- type: entity
+  name: tall mushrooms
+  id: FloraAshTallMushrooms
+  parent: BaseLavalandFlora
+  description: Several mushrooms with a ring of conks at the midpoint of their stems.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/lingzhi.rsi
+    state: harvest
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshMushroomCap
+        - id: LavalandInocybeMycelium
+          prob: 0.1
+
+- type: entity
+  name: numerous mushrooms
+  id: FloraAshNumerousMushrooms
+  parent: BaseLavalandFlora
+  description: A large number of mushrooms, some with long fleshy stems. They radiate light.
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/towercap.rsi
+    state: harvest
+  - type: PointLight
+    color: "#d8e08a"
+    radius: 1.5
+    energy: 1.5
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshMushroomStem
+        - id: LavalandEmberMycelium
+          prob: 0.1

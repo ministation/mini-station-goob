@@ -58,6 +58,9 @@
   id: CrusherUpgradeHandleWeights
 
 - type: Tag
+  id: CrusherTrophy
+
+- type: Tag
   id: CrusherUpgradeHandleLightweight
 
 - type: Tag

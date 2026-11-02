@@ -17,6 +17,7 @@
     - id: ActionColossusBoltsRing
     - id: ActionColossusBoltsSpiral
     - id: ActionColossusCounterSpiral
+    - id: ActionColossusFinale
 
 - type: megafaunaSelector
   id: ActionColossusBoltsSpread
@@ -50,6 +51,21 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionColossusBoltsSpiral
+
+# Below 10% HP only: TG's final attack.
+- type: megafaunaSelector
+  id: ActionColossusFinale
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 2.0,5.0
+      inverse: true
+    actionId: ActionColossusFinale
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionColossusFinale
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 3
 
 # Below 33% HP only: TG's double counter-spiral.
 - type: megafaunaSelector
