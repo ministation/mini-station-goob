@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Linq;
 using System.Numerics;
 using Content.Client.Resources;
@@ -130,7 +134,7 @@ public sealed partial class ReadyManifestUi : DefaultWindow
 
         foreach (var department in departments)
         {
-            var departmentName = Loc.GetString($"department-{department.ID}");
+            var departmentName = Loc.GetString(department.Name);
             BoxContainer? category = null;
 
             var jobs = department.Roles
@@ -162,7 +166,7 @@ public sealed partial class ReadyManifestUi : DefaultWindow
                     stripe.AddChild(new Label
                     {
                         StyleClasses = { "LabelBig" },
-                        Text = Loc.GetString($"department-{department.ID}"),
+                        Text = departmentName,
                         Align = Label.AlignMode.Center,
                     });
                     category.AddChild(stripe);
