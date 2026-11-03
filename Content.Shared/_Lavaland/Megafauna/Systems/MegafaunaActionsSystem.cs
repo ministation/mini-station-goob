@@ -1,4 +1,8 @@
-﻿using System.Numerics;
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using System.Numerics;
 using Content.Shared._Lavaland.Megafauna.Events;
 using Content.Shared._Lavaland.Movement;
 using Content.Shared.Actions.Components;
@@ -43,6 +47,9 @@ public sealed class MegafaunaActionsSystem : EntitySystem
 
         // We run MapInitEvent only after SpawnedByActionEvent so all values are already set properly.
         EntityManager.InitializeEntity(spawned);
+        // InitializeEntity doesn't start components: without this no ComponentStartup fires,
+        // and spawned mobs get no NPC owner blackboard and no faction caches.
+        EntityManager.StartEntity(spawned);
         EntityManager.RunMapInit(spawned, MetaData(spawned)); // InitializeEntity doesn't trigger MapInit event by itself....
 
         if (args.Entity != null && args.AttachToTarget)

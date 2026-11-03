@@ -11,6 +11,7 @@ using Content.Shared._Shitmed.Medical.Surgery.Wounds;
 using Content.Shared._Shitmed.Medical.Surgery.Wounds.Components;
 using Content.Shared._Shitmed.Medical.Surgery.Wounds.Systems;
 using Content.Shared._Shitmed.PartStatus.Events;
+using Content.Shared.Body.Components;
 using Content.Shared.Body.Part;
 using Content.Shared.Chat;
 using Content.Shared.Mobs.Systems;
@@ -74,6 +75,7 @@ public sealed class PartStatusSystem : EntitySystem
 
         if (_mobStateSystem.IsIncapacitated(entity) ||
             !TryComp<ActorComponent>(entity, out var actor) ||
+            !HasComp<BodyComponent>(entity) || // bodyless mobs (lavaland fauna) have no part status
             !_bodySystem.TryGetRootPart(entity, out var rootPart))
             return;
 
@@ -96,6 +98,10 @@ public sealed class PartStatusSystem : EntitySystem
     private void OnGetExamineVerbs(EntityUid uid, HealthExaminableComponent component, GetVerbsEvent<ExamineVerb> args)
     {
         if (!TryComp<DamageableComponent>(uid, out var damage))
+            return;
+
+        // No body means no part status: skip instead of logging resolve errors on every examine.
+        if (!HasComp<BodyComponent>(uid))
             return;
 
         var detailsRange = _examineSystem.IsInDetailsRange(args.User, uid);

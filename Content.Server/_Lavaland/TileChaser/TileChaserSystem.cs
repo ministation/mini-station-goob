@@ -102,8 +102,8 @@ public sealed class TileChaserSystem : EntitySystem
             // This monstrosity is to make snake-like movement
             if (tileTargetPos.Y != tilePos.Y)
                 tileTargetPos.X = tilePos.X;
-            else if (tileTargetPos.Y != tilePos.Y)
-                tileTargetPos.X = tilePos.X;
+            else if (tileTargetPos.X != tilePos.X)
+                tileTargetPos.Y = tilePos.Y;
             else
                 tileTargetPos += _random.Pick(Directions);
 

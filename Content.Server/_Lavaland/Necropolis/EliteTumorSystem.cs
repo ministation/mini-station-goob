@@ -312,7 +312,15 @@ public sealed class EliteTumorSystem : EntitySystem
             if (tumor.State != EliteTumorState.Active)
                 continue;
 
-            if (tumor.SpawnedElite == null || TerminatingOrDeleted(tumor.SpawnedElite))
+            if (tumor.SpawnedElite is { } elite && TerminatingOrDeleted(elite))
+            {
+                // The elite vanished without dying (admin delete, chasm): end the fight,
+                // otherwise the tumor respawns a fresh elite forever.
+                OnEliteDied((uid, tumor));
+                continue;
+            }
+
+            if (tumor.SpawnedElite == null)
             {
                 if (_timing.CurTime < tumor.SpawnAt)
                     continue;
