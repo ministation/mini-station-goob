@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared.Roles;
 using Robust.Shared.Prototypes;
 
@@ -24,6 +28,7 @@ public static class DepartmentRepresentativeJobs
         ["Typan2"] = "TypanBorg",
         ["Legal"] = "Lawyer",
         ["Specific"] = "Reporter",
+        ["Ashwalker"] = "AshWalker",
     };
 
     public static ProtoId<JobPrototype>? TryGetRepresentative(string departmentId)

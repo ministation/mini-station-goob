@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Ashwood, the building material of the Lavaland tribes. There is no ashwood
+# structure artwork in the repo, so the station wood textures are reused with
+# the grey tint of the ash wastes.
+
+- type: entity
+  parent: WallWood
+  id: LavalandAshwoodWall
+  name: ashwood wall
+  description: Rough planks of ashwood, greyed and hardened by the Lavaland wind.
+  suffix: Lavaland
+  components:
+  - type: Sprite
+    sprite: Structures/Walls/wood.rsi
+    color: "#8b8077"
+  - type: Icon
+    sprite: Structures/Walls/wood.rsi
+
+- type: entity
+  id: LavalandAshwoodFloor
+  name: ashwood floor
+  description: Ashwood planks, trampled flat and dusted with ash.
+  suffix: Lavaland
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Corvax/Objects/Tiles/wood.rsi
+    state: wood_dark
+    color: "#8b8077"

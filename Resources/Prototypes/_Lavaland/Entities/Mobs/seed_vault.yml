@@ -5,13 +5,9 @@
 - type: entity
   name: seed vault keeper
   id: MobLavalandSeedVaultKeeper
-  parent: MobHuman
-  description: A green-skinned guardian of the vault, left behind by its creators to aid fledgling civilizations.
+  parent: MobAshwalkerPlayable
+  description: An ash walker guardian of the vault, left behind by its creators to aid fledgling civilizations.
   suffix: Lavaland
-  components:
-  - type: Loadout
-    prototypes:
-    - LavalandSeedVaultKeeperGear
 
 - type: entity
   id: LavalandSeedVaultKeeperPod
