@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._Shitmed.Medical.Surgery.Pain.Components;
@@ -423,7 +427,8 @@ public sealed partial class WoundSystem
         WoundableComponent? woundableComponent = null,
         WoundComponent? woundComponent = null)
     {
-        if (!_timing.IsFirstTimePredicted
+        if (TerminatingOrDeleted(target)
+            || !_timing.IsFirstTimePredicted
             || !Resolve(target, ref woundableComponent)
             || !Resolve(wound, ref woundComponent)
             || woundableComponent.Wounds == null

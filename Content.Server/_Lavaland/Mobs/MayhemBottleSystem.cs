@@ -60,7 +60,7 @@ public sealed class MayhemBottleSystem : EntitySystem
             }
         }
 
-        _audio.PlayPvs("/Audio/Effects/glassbr1.ogg", ent, AudioParams.Default.WithVolume(-2f));
+        _audio.PlayPvs("/Audio/Effects/glass_break1.ogg", ent, AudioParams.Default.WithVolume(-2f));
         _popup.PopupEntity(Loc.GetString("mayhem-bottle-shattered"), ent);
         _adminLogger.Add(LogType.Action, LogImpact.Medium,
             $"{ToPrettyString(args.User):user} shattered a mayhem bottle at {coords:coords}, enraging {alive.Count} fauna");

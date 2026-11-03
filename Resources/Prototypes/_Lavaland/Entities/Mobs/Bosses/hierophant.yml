@@ -83,6 +83,7 @@
       2160: 3
   - type: MegafaunaStage
     maxStage: 3 # MobPhases stages, phase 2 is the enrage
+  - type: MegafaunaDodge
   - type: BossMusic
     soundId: Hierophant
   - type: TileMovement

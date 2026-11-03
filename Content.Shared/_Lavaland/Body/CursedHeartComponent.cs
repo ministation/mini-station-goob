@@ -1,15 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Shared.Actions;
-using Robust.Shared.GameStates;
 
 namespace Content.Shared._Lavaland.Body;
 
-[RegisterComponent, NetworkedComponent]
-[AutoGenerateComponentState]
+[RegisterComponent]
 public sealed partial class CursedHeartComponent : Component
 {
-    [AutoNetworkedField]
     public EntityUid? PumpActionEntity;
 
     public TimeSpan LastPump = TimeSpan.Zero;

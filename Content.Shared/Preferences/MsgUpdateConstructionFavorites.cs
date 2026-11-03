@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared.Construction.Prototypes;
 using Lidgren.Network;
 using Robust.Shared.Network;
@@ -17,8 +21,15 @@ public sealed class MsgUpdateConstructionFavorites : NetMessage
 
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
-        var length = buffer.ReadVariableInt32();
         Favorites.Clear();
+
+        var length = buffer.ReadVariableInt32();
+
+        // A modified client can claim a huge count and stall the main loop for minutes while
+        // the loop allocates empty entries. Every favorite takes at least one byte on the wire.
+        if (length <= 0 || length > (buffer.LengthBits - buffer.Position) / 8)
+            return;
+
         for (var i = 0; i < length; i++)
         {
             Favorites.Add(new ProtoId<ConstructionPrototype>(buffer.ReadString()));

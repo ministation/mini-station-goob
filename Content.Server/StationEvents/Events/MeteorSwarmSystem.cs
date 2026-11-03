@@ -9,6 +9,7 @@ using Content.Shared.GameTicking.Components;
 using Content.Shared.Random.Helpers;
 using Robust.Server.Audio;
 using Robust.Shared.Map;
+using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
@@ -63,6 +64,10 @@ public sealed class MeteorSwarmSystem : GameRuleSystem<MeteorSwarmComponent>
 
         var station = RobustRandom.Pick(_station.GetStations());
         if (_station.GetLargestGrid(station) is not { } grid)
+            return;
+
+        // Planet maps (Lavaland) have a map grid but no physics body, GetWorldAABB would spam resolve errors.
+        if (!HasComp<FixturesComponent>(grid) || !HasComp<PhysicsComponent>(grid))
             return;
 
         var mapId = Transform(grid).MapID;

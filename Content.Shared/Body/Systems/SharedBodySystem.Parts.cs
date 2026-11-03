@@ -479,7 +479,7 @@ public partial class SharedBodySystem
     public bool TryGetRootPart(EntityUid bodyId, [NotNullWhen(true)] out Entity<BodyPartComponent>? rootPart, BodyComponent? body = null)
     {
         rootPart = null;
-        if (!Resolve(bodyId, ref body)
+        if (!Resolve(bodyId, ref body, false)
             || body.RootContainer?.ContainedEntity is not { } rootContainedEntity
             || !TryComp<BodyPartComponent>(rootContainedEntity, out var bodyPartComponent))
             return false;
