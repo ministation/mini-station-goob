@@ -436,6 +436,11 @@ public sealed partial class WoundSystem
             || !woundableComponent.AllowWounds)
             return false;
 
+        // Spawning the wound can fire nested events that terminate the target (e.g. a corpse gibbed
+        // mid-attack); attaching a wound to a terminating entity logs a transform error.
+        if (TerminatingOrDeleted(target))
+            return false;
+
         _transform.SetParent(wound, target);
         woundComponent.HoldingWoundable = target;
         woundComponent.DamageGroup = damageGroup;

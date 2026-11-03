@@ -9,6 +9,7 @@ using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Objectives.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Lavaland.Ashwalker;
 
@@ -84,7 +85,17 @@ public sealed class AshwalkerTribeSystem : EntitySystem
     // Gear is applied once per body at spawn: a re-taken ghost role must not stack a second kit.
     private void OnMemberMapInit(Entity<AshwalkerTribeMemberComponent> ent, ref MapInitEvent args)
     {
-        _outfit.SetOutfit(ent.Owner, TribalGear);
+        // The body's hands (child body parts) are only added to HandsComponent after this entity's
+        // own MapInit, so SetOutfit right here cannot put the bone spear inhand: TryPickup fails and
+        // the spear is left orphaned at the coordinates (it also breaks the prototype sweep count).
+        // Defer by one tick, when the body is fully initialized.
+        Timer.Spawn(TimeSpan.Zero, () =>
+        {
+            if (!EntityManager.EntityExists(ent))
+                return;
+
+            _outfit.SetOutfit(ent, TribalGear);
+        });
     }
 
     private void OnMindAdded(Entity<AshwalkerTribeMemberComponent> ent, ref MindAddedMessage args)

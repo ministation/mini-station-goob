@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Content.Server._Lavaland.Ashwalker;
 using Content.Server._Lavaland.Ruins;
 using Content.Shared._Lavaland.Ashwalker;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Robust.Shared.GameObjects;
 
@@ -55,6 +56,17 @@ public sealed class AshwalkerSpawnTest
                     Assert.That(entMan.GetComponent<MetaDataComponent>(equipped!.Value).EntityPrototype?.ID,
                         Is.EqualTo(prototype), $"ash walker slot {slot} holds the wrong item");
                 }
+
+                // The bone spear must be IN a hand: an orphaned spear at the spawn coordinates
+                // (failed inhand pickup) leaks past deletion and breaks the prototype sweep count.
+                var hands = entMan.System<SharedHandsSystem>();
+                var heldSpear = false;
+                foreach (var held in hands.EnumerateHeld(ashwalker))
+                {
+                    if (entMan.GetComponent<MetaDataComponent>(held).EntityPrototype?.ID == "SpearBone")
+                        heldSpear = true;
+                }
+                Assert.That(heldSpear, Is.True, "ash walker must hold the bone spear inhand");
             });
         });
 
