@@ -7,6 +7,7 @@ fishing-nothing-caught = Nothing was caught.
 fishing-caught-fish = You caught { $fish }!
 fishing-reeled-in = You reel the line back in.
 fishing-line-snapped = The fishing line snapped.
+fishing-source-gone = The fishing spot is gone and the float disappears.
 fishing-catch-extra = Something else grabs the bait too!
 fishing-catch-killed = The jawed hook finishes the catch off.
 

@@ -49,6 +49,13 @@ public sealed partial class FishingLineComponent : Component
     public bool IsCloaked;
 
     /// <summary>
+    /// tg's FISHING_LINE_PHASE: the line passes through walls and other obstructions.
+    /// Only the bluespace line has it.
+    /// </summary>
+    [DataField]
+    public bool PhasesThroughWalls;
+
+    /// <summary>
     /// Whether the line survives lava and liquid plasma. Only the reinforced and sinew lines do.
     /// </summary>
     [DataField]

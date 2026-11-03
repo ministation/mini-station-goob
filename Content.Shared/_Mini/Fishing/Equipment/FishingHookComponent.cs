@@ -67,6 +67,12 @@ public sealed partial class FishingHookComponent : Component
     public bool CanFish = true;
 
     /// <summary>
+    /// Hook snaps a trap onto hooked creatures, using the ensnaring system. Only the jawed hook does.
+    /// </summary>
+    [DataField]
+    public bool EnsnareLiving;
+
+    /// <summary>
     /// tg's magnet hook removes duds from the loot table entirely instead of only rerolling them.
     /// </summary>
     [DataField]

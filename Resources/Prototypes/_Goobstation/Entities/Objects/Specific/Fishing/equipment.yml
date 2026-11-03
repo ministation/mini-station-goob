@@ -64,6 +64,9 @@
     lineColor: "#d1cca3"
     difficultyModifier: 5
     lavaUsable: true
+  - type: Construction
+    graph: FishingLineSinew
+    node: sinewLine
 
 - type: entity
   id: FishingLineAutoReel
@@ -85,6 +88,7 @@
   - type: FishingLine
     lineColor: "#0000ff"
     castRangeBonus: 6
+    phasesThroughWalls: true
 
 # Hooks
 
@@ -220,9 +224,26 @@
   - type: FishingHook
     rodOverlayState: hook_jaws_overlay
     canHookLiving: true
+    ensnareLiving: true
     rules:
     - NoEscape
     - Kill
+
+# Trap the jawed hook snaps onto caught creatures.
+- type: entity
+  id: FishingHookJawsSnare
+  hideSpawnMenu: true
+  name: jawed hook trap
+  description: The jawed hook's trap, clamped onto whatever it caught.
+  components:
+  - type: Ensnaring
+    freeTime: 4
+    breakoutTime: 10
+    walkSpeed: 0.7
+    sprintSpeed: 0.7
+    staminaDamage: 0
+    maxEnsnares: 1
+    destroyOnRemove: true
 
 # Baits
 

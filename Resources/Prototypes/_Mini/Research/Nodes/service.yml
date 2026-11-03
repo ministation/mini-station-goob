@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: technology
   id: OfficeEquipment
   name: research-technology-office-equipment-name
@@ -283,3 +287,23 @@
   recipeUnlocks:
   - AquariumKit
   position: 6,12
+
+- type: technology
+  id: FishingPortal
+  name: research-technology-fishing-portal-name
+  description: research-technology-fishing-portal-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: portal
+  discipline: Service
+  tier: 3
+  pointCosts:
+  - type: General
+    amount: 10000
+  technologyPrerequisites:
+  - FishingEquipAdv
+  requiredExperiments:
+  - ScanningFishThird
+  recipeUnlocks:
+  - FishingPortalMachineCircuitboard
+  position: 6,13

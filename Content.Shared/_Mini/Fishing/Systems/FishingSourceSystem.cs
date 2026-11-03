@@ -143,15 +143,22 @@ public sealed partial class FishingSourceSystem : EntitySystem
     }
 
     /// <summary>
-    /// Finds the fish source at the given coordinates. A directly clicked entity takes priority.
+    /// Finds the fish source at the given coordinates and the entity that hosts it, if any.
+    /// A directly clicked entity takes priority.
     /// </summary>
-    public bool TryGetSource(EntityCoordinates coords, EntityUid? target, out ProtoId<FishingSourcePrototype> source)
+    public bool TryGetSource(
+        EntityCoordinates coords,
+        EntityUid? target,
+        out ProtoId<FishingSourcePrototype> source,
+        out EntityUid? host)
     {
         source = default;
+        host = null;
 
         if (target is { } targetUid && TryComp<FishingSourceComponent>(targetUid, out var targetSource))
         {
             source = targetSource.Source;
+            host = targetUid;
             return true;
         }
 
@@ -161,6 +168,7 @@ public sealed partial class FishingSourceSystem : EntitySystem
                 continue;
 
             source = spot.Source;
+            host = ent;
             return true;
         }
 
@@ -171,9 +179,14 @@ public sealed partial class FishingSourceSystem : EntitySystem
         return _tileSources.TryGetValue(tile.ID, out source);
     }
 
+    public bool TryGetSource(EntityCoordinates coords, EntityUid? target, out ProtoId<FishingSourcePrototype> source)
+    {
+        return TryGetSource(coords, target, out source, out _);
+    }
+
     public bool TryGetSource(EntityCoordinates coords, out ProtoId<FishingSourcePrototype> source)
     {
-        return TryGetSource(coords, null, out source);
+        return TryGetSource(coords, null, out source, out _);
     }
 
     public float GetWaitTime(ProtoId<FishingSourcePrototype> sourceId)

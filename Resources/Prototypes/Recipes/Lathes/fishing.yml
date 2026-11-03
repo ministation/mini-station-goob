@@ -89,4 +89,10 @@
     Plastic: 300
     Glass: 500
     Plasteel: 100
+
+- type: latheRecipe
+  parent: [ BaseSilverCircuitboardRecipe, BaseServiceMachineRecipeCategory ]
+  id: FishingPortalMachineCircuitboard
+  icon: { sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi, state: portal }
+  result: FishingPortalMachineCircuitboard
 # Mini-end

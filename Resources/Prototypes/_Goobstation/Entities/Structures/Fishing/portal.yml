@@ -19,6 +19,8 @@
       map: [ "emissive" ]
       visible: false
       shader: unshaded
+  - type: Machine
+    board: FishingPortalMachineCircuitboard
   - type: FishingPortal
   - type: ActivatableUI
     key: enum.FishingPortalUiKey.Key
@@ -26,3 +28,15 @@
     interfaces:
       enum.FishingPortalUiKey.Key:
         type: FishingPortalBoundUserInterface
+
+- type: entity
+  id: FishingPortalMachineCircuitboard
+  parent: BaseMachineCircuitboard
+  name: fish-porter machine board
+  description: A machine printed circuit board for a fish-porter 3000.
+  components:
+  - type: MachineBoard
+    prototype: FishingPortalGenerator
+    partRequirements: # Mini: Orion MachineParts
+      Servo: 2
+      Capacitor: 2

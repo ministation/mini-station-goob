@@ -31,4 +31,10 @@ public sealed partial class FishingLureComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public bool Snagged;
+
+    /// <summary>
+    /// Trap applied to a creature by the jawed hook, freed when the line is reeled in or snaps.
+    /// </summary>
+    [DataField]
+    public EntityUid? Snare;
 }
