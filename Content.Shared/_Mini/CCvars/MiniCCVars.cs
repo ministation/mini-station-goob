@@ -1004,4 +1004,16 @@ public sealed class MiniCCVars
     /// </summary>
     public static readonly CVarDef<int> KatorgaFactionSelectionSeconds =
         CVarDef.Create("mini.katorga.faction_selection_seconds", 20, CVar.SERVERONLY);
+
+    /*
+     * Хэллоуин
+     */
+
+    /// <summary>
+    ///     Включает хэллоуинский трекер наигранного времени (тема призрака и достижение
+    ///     включаются отдельно, раскомментированием прототипов). По умолчанию выключен
+    ///     до следующего Хэллоуина.
+    /// </summary>
+    public static readonly CVarDef<bool> HalloweenEnabled =
+        CVarDef.Create("mini.halloween.enabled", false, CVar.SERVERONLY);
 }

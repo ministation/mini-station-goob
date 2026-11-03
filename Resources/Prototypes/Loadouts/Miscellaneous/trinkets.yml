@@ -10,10 +10,10 @@
       time: 1h
 
 # Goob - Happy Halloween!
-- type: loadout
-  id: CandyBucket
-  inhand:
-    - CandyBucket
+#- type: loadout
+#  id: CandyBucket
+#  inhand:
+#    - CandyBucket
 
 # Flowers
 - type: loadout

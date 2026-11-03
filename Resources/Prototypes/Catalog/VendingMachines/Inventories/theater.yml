@@ -3,7 +3,7 @@
 - type: vendingMachineInventory
   id: AutoDrobeInventory
   startingInventory:
-    CandyBucket: 8 #Goobstation - Halloween
+    #CandyBucket: 8 #Goobstation - Halloween
     ClothingHeadHatJester: 1
     ClothingUniformJumpsuitJester: 1
     ClothingHeadHatJesterAlt: 1
