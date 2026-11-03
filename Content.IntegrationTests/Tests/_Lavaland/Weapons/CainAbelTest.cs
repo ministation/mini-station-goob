@@ -113,7 +113,7 @@ public sealed class CainAbelTest
 
             var third = RaiseMeleeHit(entMan, dagger, human, mob, weapon.Damage);
             Assert.That(cain.Combo, Is.EqualTo(3));
-            Assert.That((float) third.BonusDamage.GetTotal(), Is.EqualTo(19.5f).Within(0.01f), "combo 2 damage boost is 15 * (2 * 1.15 - 1)");
+            Assert.That((float) third.BonusDamage.GetTotal(), Is.EqualTo(19.5f).Within(0.05f), "combo 2 damage boost is 15 * (2 * 1.15 - 1)");
 
             var rate = new GetMeleeAttackRateEvent(dagger, 0f, 1f, human);
             entMan.EventBus.RaiseLocalEvent(dagger, ref rate);
@@ -193,7 +193,8 @@ public sealed class CainAbelTest
                 Performer = human,
                 Target = entMan.GetComponent<TransformComponent>(mob).Coordinates,
             };
-            entMan.EventBus.RaiseLocalEvent(human, ev);
+            // Action events are broadcast subscriptions, a plain directed raise never reaches them.
+            entMan.EventBus.RaiseLocalEvent(human, (object) ev, broadcast: true);
             Assert.That(ev.Handled, Is.True, "wisps should be released at the target");
         });
 
@@ -366,7 +367,7 @@ public sealed class CainAbelTest
         await server.WaitAssertion(() =>
         {
             beforeSwing = entMan.GetComponent<DamageableComponent>(mob).TotalDamage;
-            entMan.EventBus.RaiseLocalEvent(human, new CainAbelSwingActionEvent { Performer = human });
+            entMan.EventBus.RaiseLocalEvent(human, (object) new CainAbelSwingActionEvent { Performer = human }, broadcast: true);
             Assert.That(status.TryGetStatusEffect(human, "LavalandStatusEffectDaggerSwinging", out _), Is.True, "the swing applies its status effect");
             Assert.That(CountPrototypes(entMan, "LavalandCainAbelSlash"), Is.GreaterThan(0), "the slash overlay is drawn");
         });

@@ -100,6 +100,8 @@ public sealed class TribeBonfireSystem : EntitySystem
                 if (other == uid || !HasComp<FlammableComponent>(other))
                     continue;
 
+                // shortcut: the SS14 flammable system puts fires out in an oxygenless environment, and the
+                // Lavaland surface is a vacuum, so the burn tick only sustains fire indoors or in a pressurised room.
                 _flammable.AdjustFireStacks(other, bonfire.FireStacksPerSecond * seconds, ignite: true);
             }
         }

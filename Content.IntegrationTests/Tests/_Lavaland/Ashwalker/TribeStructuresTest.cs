@@ -137,6 +137,10 @@ public sealed class TribeStructuresTest
         {
             bonfire = entMan.SpawnEntity("TribeBonfirePrelit", testMap.GridCoords);
             mob = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
+
+            // The test map is a vacuum and the engine puts out fires in an oxygenless
+            // environment, so the extinguish path is disabled to test the ignite path itself.
+            entMan.GetComponent<FlammableComponent>(mob).CanExtinguish = false;
         });
         await server.WaitRunTicks(130);
 
