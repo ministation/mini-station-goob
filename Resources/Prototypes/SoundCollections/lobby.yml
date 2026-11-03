@@ -19,7 +19,7 @@
 #    - /Audio/Lobby/atomicamnesiammx.ogg
 #    # Goobstation - Custom lobby music
 #    - /Audio/Lobby/skubstep.ogg
-    - /Audio/Lobby/sneedsfeedandseed.ogg
+#    - /Audio/Lobby/sneedsfeedandseed.ogg
 #    - /Audio/Lobby/clownalwayswins.ogg
 #    - /Audio/Lobby/clownwmv.ogg
 #    - /Audio/Lobby/dawsonschristian.ogg
@@ -32,15 +32,15 @@
 #    - /Audio/Lobby/marhaba.ogg
 #    - /Audio/Lobby/the_future_soon.ogg
 #    - /Audio/Lobby/horn.ogg
-    # Mini - Custom lobby music
-    - /Audio/_Mini/Lobby/komarovo.ogg
-    - /Audio/_Mini/Lobby/tom_tom.ogg
-    - /Audio/_Mini/Lobby/xed_eyes.ogg
-    - /Audio/_Mini/Lobby/tancy.ogg
-    - /Audio/_Mini/Lobby/metamorphosis.ogg
-    - /Audio/_Mini/Lobby/batarei.ogg
-    - /Audio/_Mini/Lobby/dispozal_unit.ogg
-    - /Audio/_Mini/Lobby/dead_blonde.ogg
+#    # Mini - Custom lobby music. Выключена на время сезона Лавалэнда.
+#    - /Audio/_Mini/Lobby/komarovo.ogg
+#    - /Audio/_Mini/Lobby/tom_tom.ogg
+#    - /Audio/_Mini/Lobby/xed_eyes.ogg
+#    - /Audio/_Mini/Lobby/tancy.ogg
+#    - /Audio/_Mini/Lobby/metamorphosis.ogg
+#    - /Audio/_Mini/Lobby/batarei.ogg
+#    - /Audio/_Mini/Lobby/dispozal_unit.ogg
+#    - /Audio/_Mini/Lobby/dead_blonde.ogg
 #    # Mini - Halloween lobby rotation. Выключена до Хэллоуина: тогда раскомментировать вместо обычной музыки.
 #    - /Audio/_Mini/Lobby/spooky_skeletons.ogg
 #    - /Audio/_Mini/Lobby/danse_macabre.ogg
@@ -51,3 +51,13 @@
 #    - /Audio/_Mini/Lobby/sugar_plum_fairy.ogg
 #    - /Audio/_Mini/Lobby/spook_box.ogg
 #    - /Audio/_Mini/Lobby/pop_goes_the_weasel.ogg
+    # Mini - Сезонная ротация лобби Лавалэнда (ад и лава). После сезона вернуть обычную музыку.
+    - /Audio/_Mini/Lobby/volatile_reaction.ogg
+    - /Audio/_Mini/Lobby/devastation_and_revenge.ogg
+    - /Audio/_Mini/Lobby/crusade.ogg
+    - /Audio/_Mini/Lobby/five_armies.ogg
+    - /Audio/_Mini/Lobby/clash_defiant.ogg
+    - /Audio/_Mini/Lobby/impact_lento.ogg
+    - /Audio/_Mini/Lobby/rynos_theme.ogg
+    - /Audio/_Mini/Lobby/killers.ogg
+    - /Audio/_Mini/Lobby/curse_of_the_scarab.ogg
