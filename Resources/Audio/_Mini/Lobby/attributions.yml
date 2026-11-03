@@ -50,3 +50,52 @@
   copyright: "Pop Goes The Weasel, traditional cover by Myuu (thedarkpiano.com); traditional composition, public domain. Converted from MP3 to OGG."
   source: "https://thedarkpiano.com/mp3/cover/Myuu-Pop-Goes-the-Weasel-Traditional-Cover.mp3"
 
+# Сезонная ротация лобби Лавалэнда (ад и лава).
+# Kevin MacLeod - с Wikimedia Commons, CC BY 3.0.
+
+- files: ["volatile_reaction.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Volatile Reaction by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Volatile_Reaction_(ISRC_USUAN1400039).mp3"
+
+- files: ["devastation_and_revenge.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Devastation and Revenge by Kevin MacLeod."
+  source: "https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_Devastation_and_Revenge.ogg"
+
+- files: ["crusade.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Crusade by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Crusade_(ISRC_USUAN1100884).mp3"
+
+- files: ["five_armies.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Five Armies by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Five_Armies_(ISRC_USUAN1100875).mp3"
+
+- files: ["clash_defiant.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Clash Defiant by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Clash_Defiant_(ISRC_USUAN1600003).mp3"
+
+- files: ["impact_lento.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Impact Lento by Kevin MacLeod."
+  source: "https://commons.wikimedia.org/wiki/File:Kevin_MacLeod_-_06_-_Impact_Lento.ogg"
+
+- files: ["rynos_theme.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Rynos Theme by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Rynos_Theme_(ISRC_USUAN1600016).mp3"
+
+- files: ["killers.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Killers by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Killers_(ISRC_USUAN1600024).mp3"
+
+- files: ["curse_of_the_scarab.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Curse of the Scarab by Kevin MacLeod. Converted from MP3 to OGG."
+  source: "https://commons.wikimedia.org/wiki/File:Curse_of_the_Scarab_(ISRC_USUAN1600014).mp3"
+
+
