@@ -73,7 +73,9 @@ public sealed class LavalandPlanetGenTest
 
             // What those spawners build on map init.
             Expect("LavalandBossAshDrake", "ash drake");
-            Expect("LavalandCrateDragon", "dragon chest");
+            // The chest is not pre-placed: it drops on death, see the drake loot tests.
+            Assert.That(found, Does.Not.Contain("LavalandCrateDragon"),
+                "the dragon chest must not be pre-placed on the planet");
             Expect("LavalandBossColossus", "colossus");
             // The chest is not pre-placed: it drops on death, see MegafaunaLootTest.ColossusDropsChestOnDeath.
             Assert.That(found, Does.Not.Contain("LavalandCrateColossus"),
