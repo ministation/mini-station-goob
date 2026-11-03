@@ -108,6 +108,38 @@ public sealed class MegafaunaLootTest
     }
 
     [Test]
+    public async Task ColossusDropsChestOnDeath()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+
+        var server = pair.Server;
+        var testMap = await pair.CreateTestMap();
+        var entMan = server.ResolveDependency<IEntityManager>();
+
+        EntityUid colossus = default;
+
+        await server.WaitPost(() => colossus = entMan.SpawnEntity("LavalandBossColossus", testMap.GridCoords));
+        await server.WaitRunTicks(5);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(CountPrototypes(entMan, "LavalandCrateColossus"), Is.EqualTo(0),
+                "the chest must not stand next to the boss before it dies");
+        });
+
+        await server.WaitPost(() => server.System<MobStateSystem>().ChangeMobState(colossus, MobState.Dead));
+        await server.WaitRunTicks(5);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(CountPrototypes(entMan, "LavalandCrateColossus"), Is.EqualTo(1),
+                "the colossus death must drop exactly one chest");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task BubblegumSarcophagusDropsSuitWithItsOwnHelmetOnly()
     {
         await using var pair = await PoolManager.GetServerClient();

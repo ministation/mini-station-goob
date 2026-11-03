@@ -3,7 +3,7 @@
 # Drake armour and drake helm, ported from TG. Crafted from ash drake hide.
 
 - type: entity
-  parent: ClothingOuterBaseToggleable
+  parent: [ ClothingOuterBaseToggleable, AllowSuitStorageClothingGasTanks ]
   id: LavalandEquipmentDrakeArmour
   name: drake armour
   description: A suit of armour crafted from the hide of an ash drake. It is warm to the touch and shrugs off flames.
