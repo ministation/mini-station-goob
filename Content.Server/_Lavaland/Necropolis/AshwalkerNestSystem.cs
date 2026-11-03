@@ -1,13 +1,24 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Numerics;
+using Content.Goobstation.Maths.FixedPoint;
 using Content.Server._Lavaland.Ashwalker;
+using Content.Server.Body.Systems;
+using Content.Server.Destructible;
+using Content.Shared._Lavaland.Ashwalker;
+using Content.Shared._Lavaland.EntityShapes;
+using Content.Shared._Lavaland.EntityShapes.Shapes;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Necropolis;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Destructible;
-using Content.Shared.Maps;
+using Content.Shared.Destructible.Thresholds.Triggers;
+using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -15,7 +26,7 @@ namespace Content.Server._Lavaland.Necropolis;
 
 /// <summary>
 /// Ashwalker nest from TG lavaland: consumes nearby corpses to grow meat,
-/// and hatches ashwalker eggs (ghost roles) from the accumulated meat.
+/// heals itself and hatches ashwalker eggs (ghost roles) from the accumulated meat.
 /// </summary>
 public sealed class AshwalkerNestSystem : EntitySystem
 {
@@ -24,11 +35,35 @@ public sealed class AshwalkerNestSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly AshwalkerTribeSystem _tribe = default!;
+    [Dependency] private readonly BodySystem _body = default!;
+    [Dependency] private readonly DamageableSystem _damageable = default!;
+    [Dependency] private readonly SharedMindSystem _mind = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly MetaDataSystem _metaData = default!;
 
     private const string Egg = "LavalandAshwalkerEgg";
-    private const int MeatForEgg = 100;
-    private const int MeatPerCorpse = 10;
-    private const int MeatPerMegafauna = 25;
+    private const string Ashwalker = "MobAshwalker";
+    private const string SalvagePending = "ashwalker-nest-salvage-pending";
+    private const string SalvageReturn = "ashwalker-nest-salvage-return";
+
+    /// <summary>
+    /// TG drops a live anomaly core when the nest dies; the inert versions are the sane SS14 stand-in.
+    /// </summary>
+    private static readonly string[] AnomalyCores =
+    {
+        "AnomalyCorePyroclasticInert",
+        "AnomalyCoreGravityInert",
+        "AnomalyCoreRockInert",
+        "AnomalyCoreIceInert",
+        "AnomalyCoreBluespaceInert",
+        "AnomalyCoreElectricityInert",
+    };
+
+    /// <summary>
+    /// Dead ash walkers waiting for the soul salvage, with the time they are reborn.
+    /// While pending they are not eaten as ordinary corpses.
+    /// </summary>
+    private readonly Dictionary<EntityUid, (TimeSpan At, EntityUid Nest)> _pendingSalvage = new();
 
     private TimeSpan _nextScan = TimeSpan.Zero;
 
@@ -42,18 +77,28 @@ public sealed class AshwalkerNestSystem : EntitySystem
 
     private void OnMapInit(Entity<AshwalkerNestComponent> ent, ref MapInitEvent args)
     {
-        // The nest starts with some meat so a first egg comes quickly.
-        ent.Comp.Meat = 40;
+        ent.Comp.Meat = ent.Comp.InitialMeat;
         _tribe.EnsureTribe(ent.Owner);
     }
 
     private void OnDestroyed(Entity<AshwalkerNestComponent> ent, ref DestructionEventArgs args)
     {
         _tribe.NotifyNestDestroyed(ent.Owner);
-        var coords = Transform(ent).Coordinates;
+        var coords = Transform(ent.Owner).Coordinates;
+
         _popup.PopupCoordinates(Loc.GetString("ashwalker-nest-destroyed"), coords);
-        Spawn("MaterialBones1", coords.Offset(new System.Numerics.Vector2(-0.5f, 0)));
-        Spawn("MaterialBones1", coords.Offset(new System.Numerics.Vector2(0.5f, 0)));
+
+        // TG drops a random anomaly core. Spawn the loot outside the 5x5 that the chasm eats.
+        Spawn(_random.Pick(AnomalyCores), coords.Offset(new Vector2(3f, 0f)));
+        Spawn("MaterialBones1", coords.Offset(new Vector2(3f, 0.5f)));
+        Spawn("MaterialBones1", coords.Offset(new Vector2(3f, -0.5f)));
+
+        // TG: RANGE_TURFS(2, src) turns into a lavaland chasm.
+        EntityManager.System<EntityShapeSystem>().SpawnEntityShape(
+            new NestedEntityShape { Id = "BoxFilled", Size = 5 },
+            coords,
+            "FloorChasmOpeningSpawner",
+            out _);
     }
 
     public override void Update(float frameTime)
@@ -61,6 +106,8 @@ public sealed class AshwalkerNestSystem : EntitySystem
         base.Update(frameTime);
 
         var now = _timing.CurTime;
+        RespawnSalvaged(now);
+
         if (now < _nextScan)
             return;
         _nextScan = now + TimeSpan.FromSeconds(2);
@@ -68,29 +115,123 @@ public sealed class AshwalkerNestSystem : EntitySystem
         var query = EntityQueryEnumerator<AshwalkerNestComponent>();
         while (query.MoveNext(out var uid, out var nest))
         {
-            var coords = Transform(uid).Coordinates;
+            var nestXform = Transform(uid);
 
-            // Consume corpses lying near the nest.
-            foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(coords, nest.ConsumeRadius))
+            // TG consumes everything unconscious or dead in a 3x3 area around the nest.
+            foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(nestXform.Coordinates, nest.ConsumeRadius))
             {
-                if (mob.Comp.CurrentState != MobState.Dead || mob.Owner == uid)
+                if (mob.Comp.CurrentState is not (MobState.Dead or MobState.Critical))
                     continue;
 
-                var meat = HasComp<MegafaunaAiComponent>(mob) ? MeatPerMegafauna : MeatPerCorpse;
-                QueueDel(mob);
-                nest.Meat += meat;
+                // TG ignores mobs standing on the nest tile itself.
+                var mobXform = Transform(mob.Owner);
+                if ((_transform.GetWorldPosition(mobXform) - _transform.GetWorldPosition(nestXform)).LengthSquared() < 0.25f)
+                    continue;
+
+                if (_pendingSalvage.ContainsKey(mob.Owner))
+                    continue;
+
+                // A dead tribe member whose player is still attached is returned to the nest instead of eaten.
+                if (mob.Comp.CurrentState == MobState.Dead
+                    && HasComp<AshwalkerTribeMemberComponent>(mob.Owner)
+                    && _mind.TryGetMind(mob.Owner, out _, out var mind)
+                    && mind.UserId != null)
+                {
+                    _pendingSalvage[mob.Owner] = (now + TimeSpan.FromSeconds(nest.SalvageDelay), uid);
+                    _popup.PopupEntity(Loc.GetString(SalvagePending), mob.Owner, mob.Owner);
+                    continue;
+                }
+
+                nest.Meat += HasComp<MegafaunaAiComponent>(mob.Owner) ? nest.MeatPerMegafauna : nest.MeatPerCorpse;
                 _tribe.RegisterSacrifice(uid);
-                Spawn("MaterialBones1", coords.Offset(_random.NextVector2Box(-0.4f, -0.4f, 0.4f, 0.4f)));
+
+                // TG gibs with remains instead of silently deleting the body.
+                _body.GibBody(mob.Owner, true);
+                QueueDel(mob.Owner);
+
+                HealNest(uid, nest);
             }
 
-            // Hatch an egg once enough meat is gathered.
-            if (nest.Meat >= MeatForEgg && nest.Eggs < nest.MaxEggs)
+            // TG has no egg cap and hatches everything it can afford at once.
+            while (nest.Meat >= nest.MeatPerEgg && (nest.MaxEggs <= 0 || nest.Eggs < nest.MaxEggs))
             {
-                nest.Meat -= MeatForEgg;
+                nest.Meat -= nest.MeatPerEgg;
                 nest.Eggs++;
                 _tribe.RegisterEgg(uid);
-                Spawn(Egg, coords.Offset(_random.NextVector2Box(-1.5f, -1.5f, 1.5f, 1.5f)));
+                Spawn(Egg, nestXform.Coordinates.Offset(_random.NextVector2Box(-1.5f, -1.5f, 1.5f, 1.5f)));
             }
         }
+    }
+
+    private void RespawnSalvaged(TimeSpan now)
+    {
+        if (_pendingSalvage.Count == 0)
+            return;
+
+        List<EntityUid>? finished = null;
+        foreach (var (corpse, pending) in _pendingSalvage)
+        {
+            if (now < pending.At)
+                continue;
+
+            (finished ??= new()).Add(corpse);
+
+            if (TerminatingOrDeleted(corpse))
+                continue;
+
+            // The player might have ghosted or disconnected while the body was in the nest.
+            if (!_mind.TryGetMind(corpse, out var mindId, out _))
+            {
+                QueueDel(corpse);
+                continue;
+            }
+
+            var nestCoords = TryComp<TransformComponent>(pending.Nest, out var nestXform)
+                ? nestXform.Coordinates
+                : Transform(corpse).Coordinates;
+            var reborn = Spawn(Ashwalker, nestCoords.Offset(_random.NextVector2Box(-1f, -1f, 1f, 1f)));
+            _metaData.SetEntityName(reborn, Name(corpse));
+            _mind.TransferTo(mindId, reborn);
+            _popup.PopupEntity(Loc.GetString(SalvageReturn), reborn, reborn);
+            QueueDel(corpse);
+        }
+
+        if (finished == null)
+            return;
+
+        foreach (var corpse in finished)
+            _pendingSalvage.Remove(corpse);
+    }
+
+    private void HealNest(EntityUid uid, AshwalkerNestComponent nest)
+    {
+        if (!TryComp<DamageableComponent>(uid, out var damageable))
+            return;
+
+        var total = (float) damageable.TotalDamage;
+        var max = GetMaxHealth(uid);
+        if (total <= 0f || max <= 0f)
+            return;
+
+        var heal = max * nest.HealPerCorpse;
+        if (heal > total)
+            heal = total;
+
+        _damageable.TryChangeDamage(uid, damageable.Damage * (-heal / total), true);
+    }
+
+    private float GetMaxHealth(EntityUid uid)
+    {
+        if (!TryComp<DestructibleComponent>(uid, out var destructible))
+            return 0f;
+
+        var max = FixedPoint2.Zero;
+        foreach (var threshold in destructible.Thresholds)
+        {
+            if (threshold.Trigger is DamageTrigger trigger && trigger.Damage > max)
+                max = trigger.Damage;
+        }
+
+        return (float) max;
     }
 }

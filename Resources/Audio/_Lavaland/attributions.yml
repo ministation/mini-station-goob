@@ -4,3 +4,19 @@
   license: "CC-BY-SA-3.0"
   copyright: "made by whateverusername0"
   source: "https://knowyourmeme.com/memes/source-i-made-it-up"
+
+- files:
+  - Weapons/CainAbel/blood_wisp_explode.ogg
+  - Weapons/CainAbel/crystal_dagger_sound.ogg
+  - Weapons/CainAbel/dagger_slash_1.ogg
+  - Weapons/CainAbel/dagger_slash_2.ogg
+  - Weapons/CainAbel/dagger_slash_3.ogg
+  - Weapons/CainAbel/dagger_slash_4.ogg
+  - Weapons/CainAbel/dagger_slash_5.ogg
+  - Weapons/CainAbel/dagger_slash_6.ogg
+  - Weapons/CainAbel/fwoosh.ogg
+  - Weapons/CainAbel/parry.ogg
+  - Weapons/CainAbel/zipline_hit.ogg
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca."
+  source: "https://github.com/tgstation/tgstation"

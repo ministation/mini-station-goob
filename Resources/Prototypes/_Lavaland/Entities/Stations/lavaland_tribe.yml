@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Ash walker tribe station. It is created on the Lavaland planet at round start by
+# LavalandTribeStationSystem and exists only to give the AshWalker job its slots,
+# crew manifest entry and spawn points.
+# save: false because StationJobs rewrites JobList/TotalJobs on init, which breaks PrototypeSaveTest.
+- type: entity
+  id: LavalandTribeStation
+  parent:
+  - BaseStation
+  - BaseStationJobsSpawning
+  categories: [ HideSpawnMenu ]
+  save: false
+  components:
+  - type: StationJobs
+    availableJobs:
+      AshWalker: [ 2, 2 ] # 2 round start slots, 2 slots total

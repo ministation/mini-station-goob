@@ -2,25 +2,14 @@
 
 # Ashwalkers from TG lavaland: a tribal lizard tribe living around their nest.
 
-# Playable ashwalker, spawned from the nest eggs.
+# Body shared by every ash walker, both the ghost role one and the job one.
 - type: entity
+  abstract: true
   name: ash walker
-  id: MobAshwalker
+  id: MobAshwalkerBase
   parent: MobReptilian
   description: A mutated creature born from the Necropolis. It is hostile to strangers.
   components:
-  - type: GhostRole
-    allowMovement: true
-    allowSpeech: true
-    makeSentient: true
-    name: ghost-role-information-ashwalker-name
-    description: ghost-role-information-ashwalker-description
-    rules: ghost-role-information-antagonist-rules
-    mindRoles:
-    - MindRoleGhostRoleTeamAntagonist
-    raffle:
-      settings: default
-  - type: GhostTakeoverAvailable
   # Own species instead of a plain Unathi copy: ashen grey and digitigrade.
   - type: HumanoidAppearance
     species: Ashwalker
@@ -43,6 +32,32 @@
       types:
         Slash: 12
 
+# Ashwalker body of the nest eggs. The ghost role also gives the Ash Walker job,
+# so egg born tribe members show up in the crew manifest.
+- type: entity
+  parent: MobAshwalkerBase
+  id: MobAshwalker
+  components:
+  - type: GhostRole
+    allowMovement: true
+    allowSpeech: true
+    makeSentient: true
+    name: ghost-role-information-ashwalker-name
+    description: ghost-role-information-ashwalker-description
+    rules: ghost-role-information-antagonist-rules
+    mindRoles:
+    - MindRoleGhostRoleTeamAntagonist
+    raffle:
+      settings: default
+    job: AshWalker
+  - type: GhostTakeoverAvailable
+
+# Ashwalker body used as the JobEntity of the AshWalker job.
+# No ghost role: the job system creates the mind when the player spawns.
+- type: entity
+  parent: MobAshwalkerBase
+  id: MobAshwalkerPlayable
+
 - type: entity
   id: LavalandAshwalkerEgg
   parent: BaseStructure
@@ -52,6 +67,7 @@
   - type: Transform
     noRot: true
     anchored: true
+  - type: PreventChasmFalling
   - type: Sprite
     noRot: true
     drawdepth: Mobs
@@ -68,15 +84,17 @@
     - MindRoleGhostRoleTeamAntagonist
     raffle:
       settings: default
+    job: AshWalker
   - type: GhostRoleMobSpawner
     prototype: MobAshwalker
   - type: Damageable
     damageContainer: Biological
+    damageModifierSet: LavalandAshwalkerStructure
   - type: Destructible
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 100
+        damage: 80 # TG ash walker egg integrity
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -94,6 +112,7 @@
   description: A pulsating tendril nest, wreathed in ash. It hungers for corpses.
   components:
   - type: AshwalkerNest
+  - type: PreventChasmFalling
   - type: Transform
     noRot: true
     anchored: true
@@ -105,11 +124,12 @@
     offset: 0, 0.5
   - type: Damageable
     damageContainer: Biological
+    damageModifierSet: LavalandAshwalkerStructure
   - type: Destructible
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 200
+        damage: 200 # TG ash walker nest integrity
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -121,3 +141,10 @@
   suffix: Lavaland
   components:
   - type: AshwalkerDenSpawner
+
+# TG parity: the nest and its eggs are fire, lava and freeze proof.
+- type: damageModifierSet
+  id: LavalandAshwalkerStructure
+  coefficients:
+    Heat: 0.0
+    Cold: 0.0

@@ -2,51 +2,7 @@
 
 # Colossus chest loot items (port of TG megafauna loot, adapted subset).
 
-# Cain & Abel: twin daggers. TG stats: 15 force, attack speed 6 (about 1.7 hits per
-# second) and two tiles of reach. The combo counter, wisps and TG's special throw
-# modes need new server systems, so only the weapon itself is ported.
-# shortcut: no combo/wisp/special throw mechanics, upgrade when the dagger systems are ported.
-- type: entity
-  id: LavalandCainDagger
-  parent: BaseKnife
-  name: Cain
-  description: The elder twin. It hungers for its brother's company.
-  components:
-  - type: Sprite
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: cain_and_abel
-  - type: Item
-    size: Small
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    inhandVisuals:
-      left:
-      - state: cain_and_abel
-      right:
-      - state: cain_and_abel
-  - type: MeleeWeapon
-    wideAnimationRotation: -135
-    attackRate: 1.7
-    range: 2
-    damage:
-      types:
-        Slash: 15
-  # TG lets you throw the daggers at a target; a thrown dagger hits as hard as a swing.
-  - type: EmbeddableProjectile
-    sound: /Audio/Weapons/star_hit.ogg
-    offset: -0.15,0.0
-  - type: LandAtCursor
-  - type: DamageOtherOnHit
-    damage:
-      types:
-        Slash: 15
-  - type: StaticPrice
-    price: 2000
-
-- type: entity
-  id: LavalandAbelDagger
-  parent: LavalandCainDagger
-  name: Abel
-  description: The younger twin. It hungers for its brother's blood.
+# Cain and Abel live in cain_and_abel.yml together with their mechanics.
 
 # Divine vocal cords: a voice that commands obedience.
 - type: entity
