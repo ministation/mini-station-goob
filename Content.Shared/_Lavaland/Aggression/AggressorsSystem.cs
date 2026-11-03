@@ -82,6 +82,11 @@ public sealed class AggressorsSystem : EntitySystem
         if (!ent.Comp.AutoAddOnDamage)
             return;
 
+        // A corpse is not a threat: shooting a dead megafauna must not restart its AI,
+        // bring its boss music back or let the rejuvenate on shutdown revive it.
+        if (_mobState.IsDead(ent.Owner))
+            return;
+
         var aggro = args.Origin;
 
         if (aggro == null
