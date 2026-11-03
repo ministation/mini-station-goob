@@ -178,9 +178,11 @@
   equipment:
     jumpsuit: ClothingUniformJumpsuitGladiator
     outerClothing: ClothingOuterArmorBone
-    back: SpearBone
+    back: AshwalkerBasket
     head: ClothingHeadHelmetBone
     shoes: ClothingShoesCult
+  inhand:
+  - SpearBone
 
 #Banana Clown
 - type: startingGear

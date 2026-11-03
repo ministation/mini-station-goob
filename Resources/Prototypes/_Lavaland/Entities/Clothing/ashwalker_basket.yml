@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Carry bag of the ash walker tribe. Reuses the leather satchel sprite until a
+# dedicated woven basket texture exists.
+- type: entity
+  name: woven basket
+  description: A basket woven from the reeds around the tribe's nest.
+  parent: ClothingBackpackSatchelLeather
+  id: AshwalkerBasket
