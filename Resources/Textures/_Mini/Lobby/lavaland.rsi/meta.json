@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Mini Station lobby: Lavaland update scene. Background made with Stable Diffusion web, edited in Mini Station; bosses, ashwalkers, elites and lobstrosity sprites taken from /tg/station (CC-BY-3.0) and the Goobstation Lavaland port.",
+  "size": {
+    "x": 1008,
+    "y": 549
+  },
+  "states": [
+    {
+      "name": "1",
+      "delays": [
+        [
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14,
+          0.14
+        ]
+      ]
+    }
+  ]
+}
