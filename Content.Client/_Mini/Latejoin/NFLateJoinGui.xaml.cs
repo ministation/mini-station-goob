@@ -172,7 +172,7 @@ public sealed partial class NFLateJoinGui : FancyWindow
 
         foreach (var department in departments)
         {
-            var departmentName = Loc.GetString($"department-{department.ID}");
+            var departmentName = Loc.GetString(department.Name);
 
             var hasRole = false;
             foreach (var (jobId, _) in jobs)
