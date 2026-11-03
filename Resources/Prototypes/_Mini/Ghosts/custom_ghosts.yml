@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # Кастомные темы призраков, покупаемые за монеты в магазине призраков
 # Price = 0 = обычный призрак (всегда доступен)
 # Price > 0 = покупается в магазине
