@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca.",
+  "copyright": "Resprite made in Mini Station from the salvage hardsuit helmet by /tg/station (CC-BY-SA-3.0).",
   "size": {
     "x": 32,
     "y": 32
@@ -11,7 +11,8 @@
       "name": "hostile_env"
     },
     {
-      "name": "hostile_env-equipped-HEAD"
+      "name": "hostile_env-equipped-HEAD",
+      "directions": 4
     },
     {
       "name": "icon"
