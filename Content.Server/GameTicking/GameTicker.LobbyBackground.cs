@@ -5,14 +5,15 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server.GameTicking;
 
-// Mini Station - alternating lobby backgrounds (Mars / space hole)
+// Mini Station - lobby background selection
 public sealed partial class GameTicker
 {
     private static readonly string[] MiniLobbyBackgroundPaths =
     [
-        // Mini: на время хэллоуинского события лобби одно - анимированное кладбище.
-        // После события вернуть ротацию mars/space-hole.
-        "/Textures/_Mini/Lobby/halloween.rsi",
+        // Mini: обновление Лавалэнда - анимированное лобби с Колоссом.
+        // Хэллоуинское кладбище вернуть на время события.
+        "/Textures/_Mini/Lobby/lavaland.rsi",
+        // "/Textures/_Mini/Lobby/halloween.rsi",
         // "/Textures/_Mini/Lobby/mars.rsi",
         // "/Textures/_OS/Lobby/space-hole.rsi",
     ];
