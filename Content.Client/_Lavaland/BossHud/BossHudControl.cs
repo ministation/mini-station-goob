@@ -12,8 +12,9 @@ using Robust.Client.UserInterface.Controls;
 namespace Content.Client._Lavaland.BossHud;
 
 /// <summary>
-/// Boss fight panel at the bottom of the screen: boss name, red health bar, current
-/// and max health and the fight stage. Styled like the Katorga and Typan war HUDs.
+/// Boss fight panel at the bottom of the screen: boss name, red health bar with a grey
+/// armor tail, current health and armor and the fight stage. Styled like the Katorga and
+/// Typan war HUDs.
 /// </summary>
 public sealed class BossHudControl : PanelContainer
 {
@@ -23,9 +24,11 @@ public sealed class BossHudControl : PanelContainer
     private static readonly Color PanelBackground = Color.FromHex("#14141C").WithAlpha(0.72f);
     private static readonly Color TextColor = Color.FromHex("#E8E6F0");
     private static readonly Color StageColor = Color.FromHex("#B7B2C8");
+    private static readonly Color ArmorColor = Color.FromHex("#9A97A5");
 
     private readonly Label _nameLabel;
     private readonly Label _healthLabel;
+    private readonly Label _armorLabel;
     private readonly Label _stageLabel;
     private readonly BossHudBarControl _bar;
 
@@ -92,6 +95,11 @@ public sealed class BossHudControl : PanelContainer
         {
             VerticalAlignment = VAlignment.Center,
         };
+        _armorLabel = new Label
+        {
+            FontColorOverride = ArmorColor,
+            VerticalAlignment = VAlignment.Center,
+        };
         _healthLabel = new Label
         {
             FontColorOverride = TextColor,
@@ -100,12 +108,14 @@ public sealed class BossHudControl : PanelContainer
             VerticalAlignment = VAlignment.Center,
         };
         barRow.AddChild(_bar);
+        barRow.AddChild(_armorLabel);
         barRow.AddChild(_healthLabel);
 
         Visible = false;
     }
 
-    public void ShowHud(string name, float health, float maxHealth, int stage, int maxStage)
+    public void ShowHud(string name, float health, float maxHealth, float armor, float maxArmor,
+        bool armorBroken, int stage, int maxStage)
     {
         Visible = true;
 
@@ -118,7 +128,32 @@ public sealed class BossHudControl : PanelContainer
             ("current", (int) MathF.Ceiling(health)),
             ("max", (int) MathF.Ceiling(maxHealth)));
 
-        _bar.SetProgress(maxHealth > 0f ? health / maxHealth : 0f);
+        // Bosses without an armor pool get no grey segment and no armor label.
+        var hasArmor = maxArmor > 0f;
+        _armorLabel.Visible = hasArmor;
+        if (hasArmor)
+        {
+            _armorLabel.Text = armorBroken
+                ? Loc.GetString("boss-hud-armor-broken")
+                : Loc.GetString("boss-hud-armor",
+                    ("current", (int) MathF.Ceiling(armor)),
+                    ("max", (int) MathF.Ceiling(maxArmor)));
+        }
+
+        var healthProgress = maxHealth > 0f ? health / maxHealth : 0f;
+        var armorProgress = 0f;
+        // With armor up the bar shows the combined pool: red health, grey armor.
+        if (hasArmor && armor > 0f)
+        {
+            var total = maxHealth + maxArmor;
+            if (total > 0f)
+            {
+                healthProgress = health / total;
+                armorProgress = armor / total;
+            }
+        }
+
+        _bar.SetProgress(healthProgress, armorProgress);
     }
 
     public void HideHud()
@@ -128,14 +163,15 @@ public sealed class BossHudControl : PanelContainer
 }
 
 /// <summary>
-/// Red health bar: dim track and a left to right fill, same track texture as the
-/// other mini station HUD bars.
+/// Red health bar with a grey armor tail: dim track, a left to right red fill and the
+/// armor as a grey segment after it, same track texture as the other mini station HUD bars.
 /// </summary>
 public sealed class BossHudBarControl : Control
 {
     private const float BarScale = 2f;
 
     private static readonly Color FillColor = Color.FromHex("#C43B3B").WithAlpha(0.95f);
+    private static readonly Color ArmorFillColor = Color.FromHex("#8F8C9C").WithAlpha(0.95f);
     private static readonly Color TrackColor = Color.FromHex("#252530").WithAlpha(0.55f);
 
     [Dependency] private readonly IResourceCache _cache = default!;
@@ -143,6 +179,7 @@ public sealed class BossHudBarControl : Control
     private readonly StyleBoxTexture _trackStyle;
     private readonly float _width;
     private float _progress;
+    private float _armorProgress;
 
     public BossHudBarControl(float width)
     {
@@ -158,9 +195,10 @@ public sealed class BossHudBarControl : Control
         _trackStyle = MiniSliderStyles.CreateLongTrackBox(tex, BarScale);
     }
 
-    public void SetProgress(float progress)
+    public void SetProgress(float progress, float armorProgress)
     {
         _progress = Math.Clamp(progress, 0f, 1f);
+        _armorProgress = Math.Clamp(armorProgress, 0f, 1f);
     }
 
     protected override void Draw(DrawingHandleScreen handle)
@@ -179,6 +217,13 @@ public sealed class BossHudBarControl : Control
         {
             var fill = new StyleBoxTexture(_trackStyle) { Modulate = FillColor };
             fill.Draw(handle, UIBox2.FromDimensions(box.Left, box.Top, fillWidth, box.Height), UIScale);
+        }
+
+        var armorWidth = MathF.Min(box.Width * _armorProgress, box.Width - fillWidth);
+        if (armorWidth > 0.5f)
+        {
+            var armorFill = new StyleBoxTexture(_trackStyle) { Modulate = ArmorFillColor };
+            armorFill.Draw(handle, UIBox2.FromDimensions(box.Left + fillWidth, box.Top, armorWidth, box.Height), UIScale);
         }
     }
 

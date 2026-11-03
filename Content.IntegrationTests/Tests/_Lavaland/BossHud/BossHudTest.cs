@@ -130,7 +130,11 @@ public sealed class BossHudTest
             Assert.That(entMan.TryGetComponent<MegafaunaStageComponent>(boss, out var stage), Is.True,
                 "the blood drunk miner must declare a stage for the boss HUD");
             if (stage != null)
-                Assert.That(stage.MaxStage, Is.EqualTo(1), "the miner has no stage counter");
+            {
+                // The second stage is the low health enrage at 35 percent HP.
+                Assert.That(stage.MaxStage, Is.EqualTo(2), "the enrage must be a second HUD stage");
+                Assert.That(stage.Stage, Is.EqualTo(1), "the miner starts in the calm stage");
+            }
 
             Assert.That(entMan.HasComponent<BossHudComponent>(boss), Is.True,
                 "the boss HUD system must attach to the blood drunk miner");

@@ -54,7 +54,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2500: Dead
+      2700: Dead
   - type: Tag
     tags:
     - CannotSuicide
@@ -67,9 +67,10 @@
     - ActionHierophantBlink
     - ActionHierophantCrossesEnraged
     - ActionHierophantBlinkSpam
+    - ActionHierophantBlinkSlam
   - type: Fauna
   - type: Anger
-    totalHp: 2500
+    totalHp: 2700
   - type: Aggressive
     forgiveRange: 25
   - type: GPS
@@ -78,8 +79,8 @@
   - type: MobPhases
     phaseThresholds:
       0:    1
-      1250: 2 # below 50% HP: enraged crosses and blink spam
-      2000: 3
+      1350: 2 # below 50% HP: enraged crosses and blink spam
+      2160: 3
   - type: MegafaunaStage
     maxStage: 3 # MobPhases stages, phase 2 is the enrage
   - type: BossMusic
@@ -116,6 +117,11 @@
   - type: MegafaunaBlink
     spawnOnTarget: HierophantShapeBlink
     spawnOnUsed: HierophantShapeBlink
+  # The blink slam action lands on a random tile near the target and blasts it on arrival.
+  - type: HierophantBlinkSlam
+    slam: HierophantShapeBlinkSlam
+    radius: 2.5
+    slamDelay: 0.9
   - type: MegafaunaBlinkInactive
   - type: MegafaunaGodmode
   - type: MegafaunaRejuvenate

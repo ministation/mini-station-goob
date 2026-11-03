@@ -75,3 +75,60 @@
     inverse: true
   - type: WorldTargetAction
     event: !type:MegafaunaBlinkActionEvent
+
+# Blink slam: lands on a random spot near the target, then blasts the landing area.
+- type: entity
+  id: ActionHierophantBlinkSlam
+  parent: ActionBaseHierophant
+  name: Blink Slam
+  description: Blinks to a spot near the target and slams the area on arrival.
+  components:
+  - type: AngerDelayAction
+    minDelay: 4.0
+    maxDelay: 9.0
+    inverse: true
+  - type: WorldTargetAction
+    event: !type:MegafaunaBlinkActionEvent
+
+# Blink slam spawner: wide blast that follows the hierophant's blink.
+- type: entity
+  parent: BaseHierophantShape
+  id: HierophantShapeBlinkSlam
+  name: hierophant attack blink slam spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    alignCoords: true
+    spawn: LavalandHierophantBlinkSlamSquare
+    shape: !type:NestedEntityShape
+      id: BoxFilled
+      size: 5
+  - type: TimedDespawn
+    lifetime: 1
+
+# Stronger blast used by the blink slam action.
+- type: entity
+  id: LavalandHierophantBlinkSlamSquare
+  categories: [ DoNotMap ]
+  name: hierophant blink slam
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _Lavaland/Effects/mob_effects.rsi
+    state: hierophant_blast
+  - type: TimedDespawn
+    lifetime: 1
+  - type: DamageSquare
+    damageDelay: 0.4
+    damage:
+      types:
+        Blunt: 15
+        Heat: 15
+    damageWhitelist:
+      components:
+      - MobState

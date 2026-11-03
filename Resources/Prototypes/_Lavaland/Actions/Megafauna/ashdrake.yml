@@ -96,7 +96,26 @@
     event: !type:SpawnEntityActionEvent
       spawn: LavalandDrakeMassFireBurst
 
-# Effect prototypes used by the two actions above.
+# Eruption: a spreading blast of lava that erupts out of the target tile.
+- type: entity
+  id: ActionDrakeEruption
+  parent: BaseAction
+  name: Lava Eruption
+  description: Erupts a spreading blast of lava out of the target tile.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandDrakeEruptionBurst
+
+# Effect prototypes used by the actions above.
 
 # Meteor called down by the drake: burns up while falling, then leaves a slam crater.
 - type: entity
@@ -179,3 +198,86 @@
     spawnPeriod: 1.5
   - type: TimedDespawn
     lifetime: 5
+
+# Lava eruption spawner: expanding blasts of burning ground around the target.
+- type: entity
+  parent: MarkerBase
+  id: LavalandDrakeEruptionBurst
+  name: drake lava eruption spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: LavalandDrakeEruptionTile
+    alignCoords: true
+    shape: !type:NestedEntityShape
+      id: BoxFilled
+      size: 3
+  - type: ShapeSpawnerCounter
+    maxCounter: 3
+    spawnPeriod: 0.7
+  - type: ExpandingShapeSpawner
+    counterSize: 1
+  - type: TimedDespawn
+    lifetime: 3
+
+# Eruption tile: fire thrown up by the eruption, stronger than the mass fire pools.
+- type: entity
+  id: LavalandDrakeEruptionTile
+  categories: [ DoNotMap ]
+  name: lava eruption
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: /Textures/Effects/fire.rsi
+    state: fire
+    drawdepth: SmallMobs
+  - type: PointLight
+    color: "#FF6B2B"
+    radius: 1.5
+    energy: 2.5
+  - type: TimedDespawn
+    lifetime: 3
+  - type: DamageSquare
+    damageDelay: 0.3
+    damage:
+      types:
+        Heat: 25
+    damageWhitelist:
+      components:
+      - MobState
+
+# Fire trail tile: left behind by the drake's dash, burns for a few seconds.
+- type: entity
+  id: LavalandDrakeFireTrail
+  categories: [ DoNotMap ]
+  name: drake fire trail
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: /Textures/Effects/fire.rsi
+    state: fire
+    drawdepth: SmallMobs
+  - type: PointLight
+    color: "#E25822"
+    radius: 1.5
+    energy: 2.5
+  - type: TimedDespawn
+    lifetime: 4
+  - type: DamageSquare
+    damageDelay: 0.3
+    damage:
+      types:
+        Heat: 15
+    damageWhitelist:
+      components:
+      - MobState
