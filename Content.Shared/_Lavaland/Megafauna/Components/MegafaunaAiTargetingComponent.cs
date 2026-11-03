@@ -1,4 +1,3 @@
-﻿using Robust.Shared.GameStates;
 using Robust.Shared.Map;
 
 namespace Content.Shared._Lavaland.Megafauna.Components;
@@ -6,10 +5,10 @@ namespace Content.Shared._Lavaland.Megafauna.Components;
 /// <summary>
 /// Component that stores data for what Megafauna is currently targeting.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent]
 public sealed partial class MegafaunaAiTargetingComponent : Component
 {
-    [DataField, AutoNetworkedField]
+    [DataField]
     public EntityUid? TargetEnt;
 
     /// <summary>

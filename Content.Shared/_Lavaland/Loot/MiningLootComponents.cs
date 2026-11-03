@@ -86,13 +86,13 @@ public sealed partial class WispLanternComponent : Component
 /// <summary>
 /// Warp cube: teleports its user to its linked twin. The red cube spawns the blue one.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent]
 public sealed partial class WarpCubeComponent : Component
 {
     [DataField]
     public EntProtoId? PartnerProto;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public EntityUid? Partner;
 
     [ViewVariables]
