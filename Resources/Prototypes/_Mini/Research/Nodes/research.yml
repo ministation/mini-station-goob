@@ -113,6 +113,28 @@
   position: 0,2
 
 - type: technology
+  id: BluespaceMining
+  name: research-technology-bluespace-mining-name
+  description: research-technology-bluespace-mining-desc
+  icon:
+    sprite: _CorvaxGoob/Bluespace/harvester.rsi
+    state: tap_0
+  discipline: Scientific
+  tier: 3
+  announceChannels:
+  - Science
+  - Supply
+  pointCosts:
+  - type: General
+    amount: 7500
+  technologyPrerequisites:
+  - BluespaceTheory
+  recipeUnlocks:
+  - MachineBluespaceHarvesterCircuitboard
+  - MachineBluespaceTransitorCircuitboard
+  position: 2,1
+
+- type: technology
   id: AnomalyResearch
   name: research-technology-anomaly-research-name
   description: research-technology-anomaly-research-desc
@@ -136,6 +158,7 @@
   - Pinpointer
   - PinpointerArtifact
   - PinpointerAnomaly
+  - AnomalyPayload # CorvaxGoob-AnomalyGrenades
   position: 2,2
 
 - type: technology

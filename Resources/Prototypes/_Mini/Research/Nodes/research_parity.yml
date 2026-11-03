@@ -16,7 +16,6 @@
     amount: 1
   recipeUnlocks:
   - AdvancedJetInjector
-  - AnomalyPayload
   - CableDetStack1
   - ChefBelt
   - ChiefEngineerBelt
@@ -34,8 +33,6 @@
   - JanitorBelt
   - LatheUpgradeKitCryo
   - LatheUpgradeKitHyper
-  - MachineBluespaceHarvesterCircuitboard
-  - MachineBluespaceTransitorCircuitboard
   - MachineMedipenRefillerCircuitboard
   - MedicalBelt
   - MedicalEMTBelt
