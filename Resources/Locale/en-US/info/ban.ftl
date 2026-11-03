@@ -115,3 +115,4 @@ cmd-findalts-entry = {$player} ({$userId}), last seen {$lastSeen} — {$ban}
 cmd-findalts-ban = ACTIVE BAN #{$banId}: "{$reason}"
 cmd-findalts-ban-none = no active ban
 ban-reason-linked-account = Alt account of a banned player. Ban reason of the main account: "{$reason}"
+ban-reason-malformed-packet = Malformed network packets (modified client)
