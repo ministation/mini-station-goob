@@ -21,6 +21,13 @@
       shader: unshaded
   - type: Machine
     board: FishingPortalMachineCircuitboard
+  # BaseMachine (unlike ConstructibleMachine) does not declare the machine board
+  # containers; without this the entity gains a ContainerContainer on spawn and
+  # fails UninitializedSaveTest.
+  - type: ContainerContainer
+    containers:
+      machine_board: !type:Container
+      machine_parts: !type:Container
   - type: FishingPortal
   - type: ActivatableUI
     key: enum.FishingPortalUiKey.Key
