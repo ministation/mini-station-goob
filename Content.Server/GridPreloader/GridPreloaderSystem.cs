@@ -13,6 +13,7 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
 using System.Numerics;
 using Content.Server.GameTicking;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.GameTicking;
 using JetBrains.Annotations;
 using Robust.Shared.EntitySerialization.Systems;
@@ -34,6 +35,7 @@ public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
     public bool PreloadingEnabled;
 
     private float _globalXOffset;
+    private bool _syncPreloadDone;
 
     public override void Initialize()
     {
@@ -49,6 +51,7 @@ public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         _globalXOffset = 0f;
+        _syncPreloadDone = false;
         var ent = GetPreloaderEntity();
         if (ent == null)
             return;
@@ -58,8 +61,33 @@ public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
 
     private void OnPostGameMapLoad(PostGameMapLoad ev)
     {
-        // Lightweight: map shell only. Grid YAML copies are staged via GameTicker.
-        EnsureEmptyPreloaderMap();
+        if (!EnsureEmptyPreloaderMap())
+            return;
+
+        // With staged preload on, GameTicker queues grid copies and they are loaded across ticks.
+        // With it off, still honor the grid preload switch by loading every copy synchronously.
+        if (!_cfg.GetCVar(MiniCCVars.MapPreloadEnabled) &&
+            _cfg.GetCVar(MiniCCVars.MapPreloadGrids))
+        {
+            PreloadAllGrids();
+        }
+    }
+
+    /// <summary>
+    /// Synchronously loads every configured <see cref="PreloadedGridPrototype"/> copy. Used by the
+    /// non-staged fallback path; safe to call more than once per round.
+    /// </summary>
+    public void PreloadAllGrids()
+    {
+        if (_syncPreloadDone)
+            return;
+
+        _syncPreloadDone = true;
+
+        foreach (var gridId in EnumeratePreloadJobs())
+        {
+            TryLoadOnePreloadedGrid(gridId);
+        }
     }
 
     /// <summary>
@@ -190,5 +218,26 @@ public sealed class GridPreloaderSystem : SharedGridPreloaderSystem
             preloader.PreloadedGrids.Remove(proto);
 
         return true;
+    }
+
+    /// <summary>
+    /// Takes a preloaded copy if one exists, otherwise loads the prototype on demand. This keeps
+    /// event shuttles working when lobby grid preloading is disabled: memory is only paid for the
+    /// grids a rule actually asks for.
+    /// </summary>
+    public bool TryGetOrLoadPreloadedGrid(ProtoId<PreloadedGridPrototype> proto,
+        [NotNullWhen(true)] out EntityUid? preloadedGrid,
+        GridPreloaderComponent? preloader = null)
+    {
+        if (TryGetPreloadedGrid(proto, out preloadedGrid, preloader))
+            return true;
+
+        if (!PreloadingEnabled)
+            return false;
+
+        if (!TryLoadOnePreloadedGrid(proto))
+            return false;
+
+        return TryGetPreloadedGrid(proto, out preloadedGrid, preloader);
     }
 }

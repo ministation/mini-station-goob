@@ -7,6 +7,7 @@ using Content.Server.Parallax;
 using Content.Server.Procedural;
 using Content.Server.Shuttles.Systems;
 using Content.Shared._Lavaland.Procedural.Components;
+using Content.Shared._Lavaland.Procedural.Prototypes;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
 using Content.Shared.Mobs.Components;
@@ -67,12 +68,28 @@ public sealed partial class LavalandSystem : EntitySystem
     private void OnLoadingMaps(LoadingMapsEvent ev)
     {
         EnsurePreloaderMap();
+
+        // Staged preload queues the planet and its ruins across ticks. Without it, generate the
+        // planet right here, the same way the round did before the preload feature.
+        var staged = _gameTicker.StagedLavalandPreloadEnabled;
+        var planets = new HashSet<ProtoId<LavalandMapPrototype>>();
+
         foreach (var gameMap in ev.Maps)
         {
             foreach (var planetEntry in gameMap.Planets)
             {
-                // Default "Lavaland" is usually already early-queued; extras still enqueue here.
-                _gameTicker.EnqueueLavalandPlanet(planetEntry);
+                if (!planets.Add(planetEntry))
+                    continue;
+
+                if (staged)
+                {
+                    // Default "Lavaland" is usually already early-queued; extras still enqueue here.
+                    _gameTicker.EnqueueLavalandPlanet(planetEntry);
+                }
+                else
+                {
+                    SetupLavalandPlanet(planetEntry, out _, withRuins: true);
+                }
             }
         }
     }

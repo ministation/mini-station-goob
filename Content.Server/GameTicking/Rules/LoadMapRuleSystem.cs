@@ -80,9 +80,9 @@ public sealed class LoadMapRuleSystem : StationEventSystem<LoadMapRuleComponent>
         else if (comp.PreloadedGrid is {} preloaded)
         {
             // TODO: If there are no preloaded grids left, any rule announcements will still go off!
-            if (!_gridPreloader.TryGetPreloadedGrid(preloaded, out var loadedShuttle))
+            if (!_gridPreloader.TryGetOrLoadPreloadedGrid(preloaded, out var loadedShuttle))
             {
-                Log.Error($"Failed to get a preloaded grid with {preloaded}!");
+                Log.Error($"Failed to get or load a preloaded grid with {preloaded}!");
                 ForceEndSelf(uid, rule);
                 return;
             }

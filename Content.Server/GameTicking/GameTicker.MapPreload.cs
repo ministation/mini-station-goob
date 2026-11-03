@@ -6,6 +6,7 @@ using Content.Server.GridPreloader;
 using Content.Server.Maps;
 using Content.Shared._Lavaland.Procedural.Components;
 using Content.Shared._Lavaland.Procedural.Prototypes;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.GridPreloader.Prototypes;
 using Content.Shared.Maps;
 using Robust.Shared.Map;
@@ -20,6 +21,18 @@ public sealed partial class GameTicker
     [Dependency] private readonly IServerNetManager _netManager = default!;
 
     private static readonly ProtoId<LavalandMapPrototype> DefaultLavalandPlanet = "Lavaland";
+
+    /// <summary>Staged preload master switch, from <see cref="MiniCCVars.MapPreloadEnabled"/>.</summary>
+    [ViewVariables]
+    public bool StagedMapPreloadEnabled => _mapPreloadEnabled;
+
+    /// <summary>Lavaland is staged during the lobby countdown only when both preload switches are on.</summary>
+    public bool StagedLavalandPreloadEnabled => _mapPreloadEnabled && _mapPreloadLavaland;
+
+    private bool _mapPreloadEnabled;
+    private bool _mapPreloadLavaland;
+    private bool _mapPreloadGrids;
+    private int _mapPreloadMaxStations = 2;
 
     /// <summary>
     /// True once station maps + late preload stages have finished.
@@ -77,6 +90,11 @@ public sealed partial class GameTicker
     /// </summary>
     public void EnqueueLavalandPlanet(ProtoId<LavalandMapPrototype> planet)
     {
+        // Only staged mode queues planets. Otherwise LavalandSystem loads the planet synchronously
+        // from LoadingMapsEvent, which is the pre-feature round-start path.
+        if (!StagedLavalandPreloadEnabled)
+            return;
+
         // Every gameMap prototype defaults to Planets = { Lavaland }, so maps queue it even when
         // Lavaland is off (lavaland.enabled = false, e.g. the dev preset). SetupLavalandPlanet
         // would bail out on that cvar and the stage would only log a warning, so don't queue at all.
@@ -100,6 +118,10 @@ public sealed partial class GameTicker
 
         _earlyLavalandStarted = true;
 
+        // Without the master switch Lavaland is generated synchronously at T-RoundPreloadTime.
+        if (!StagedLavalandPreloadEnabled)
+            return;
+
         var lavaland = EntityManager.System<LavalandSystem>();
         if (!lavaland.LavalandEnabled)
             return;
@@ -111,6 +133,8 @@ public sealed partial class GameTicker
 
     /// <summary>
     /// Station maps + grid preloader + finalize. Only after map vote window (T-RoundPreloadTime).
+    /// With <see cref="MiniCCVars.MapPreloadEnabled"/> off this loads everything synchronously,
+    /// which is the pre-feature path: the round still starts, it just blocks one tick longer.
     /// </summary>
     private void BeginMapPreload()
     {
@@ -123,6 +147,69 @@ public sealed partial class GameTicker
             return;
         }
 
+        var maps = SelectStationMaps();
+        _loadedStationMapIds.Clear();
+
+        if (maps.Count == 0)
+        {
+            _map.CreateMap(out var mapId, runMapInit: false);
+            DefaultMap = mapId;
+            _loadedStationMapIds.Add(mapId);
+
+            if (_mapPreloadEnabled)
+                _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.Finalize));
+            else
+                MapsReady = true;
+
+            _mapLoadQueueBuilt = true;
+            return;
+        }
+
+        if (!_mapPreloadEnabled)
+        {
+            LoadStationMapsSynchronously(maps);
+            return;
+        }
+
+        // Never let a bug or an over-eager LoadingMapsEvent handler turn the lobby into a
+        // "load every map at once" memory spike. Extra maps are loaded now, not dropped, so
+        // war presets still get their second station.
+        var stagedCount = Math.Min(maps.Count, Math.Max(1, _mapPreloadMaxStations));
+        for (var i = 0; i < stagedCount; i++)
+        {
+            _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.GameMap, GameMap: maps[i], IsMain: i == 0));
+        }
+
+        if (stagedCount < maps.Count)
+        {
+            _sawmill.Warning($"Staged map preload is limited to {stagedCount} station map(s); " +
+                             $"loading {maps.Count - stagedCount} extra map(s) synchronously.");
+
+            for (var i = stagedCount; i < maps.Count; i++)
+                LoadStationMapSynchronously(maps[i], isMain: false);
+        }
+
+        var gridPreloader = EntityManager.System<GridPreloaderSystem>();
+        if (_mapPreloadGrids && gridPreloader.PreloadingEnabled)
+        {
+            _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.GridPreloadCreate));
+            foreach (var gridId in gridPreloader.EnumeratePreloadJobs())
+            {
+                _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.GridPreloadOne, PreloadedGrid: gridId));
+            }
+        }
+
+        _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.Finalize));
+        _mapLoadQueueBuilt = true;
+
+        _sawmill.Info($"Late map preload: station/grid stages queued ({_mapLoadQueue.Count} total in queue).");
+    }
+
+    /// <summary>
+    /// Picks the station maps for this round and lets game rules/Lavaland add their own.
+    /// </summary>
+    private List<GameMapPrototype> SelectStationMaps()
+    {
         AddGamePresetRules();
 
         var maps = new List<GameMapPrototype>();
@@ -155,40 +242,36 @@ public sealed partial class GameTicker
             SendServerMessage(msg);
         }
 
-        // May enqueue extra planets (skipped if already early-loaded / queued).
+        // May add extra planets/stations (skipped if already early-loaded / queued).
         RaiseLocalEvent(new LoadingMapsEvent(maps));
 
-        _loadedStationMapIds.Clear();
+        return maps;
+    }
 
-        if (maps.Count == 0)
-        {
-            _map.CreateMap(out var mapId, runMapInit: false);
-            DefaultMap = mapId;
-            _loadedStationMapIds.Add(mapId);
-            _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.Finalize));
-            _mapLoadQueueBuilt = true;
-            return;
-        }
-
+    private void LoadStationMapsSynchronously(List<GameMapPrototype> maps)
+    {
         for (var i = 0; i < maps.Count; i++)
         {
-            _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.GameMap, GameMap: maps[i], IsMain: i == 0));
+            LoadStationMapSynchronously(maps[i], isMain: i == 0);
         }
 
-        var gridPreloader = EntityManager.System<GridPreloaderSystem>();
-        if (gridPreloader.PreloadingEnabled)
-        {
-            _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.GridPreloadCreate));
-            foreach (var gridId in gridPreloader.EnumeratePreloadJobs())
-            {
-                _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.GridPreloadOne, PreloadedGrid: gridId));
-            }
-        }
-
-        _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.Finalize));
         _mapLoadQueueBuilt = true;
+        MapsReady = true;
 
-        _sawmill.Info($"Late map preload: station/grid stages queued ({_mapLoadQueue.Count} total in queue).");
+        _sawmill.Info($"Synchronous map load complete ({maps.Count} station map(s)).");
+    }
+
+    private void LoadStationMapSynchronously(GameMapPrototype gameMap, bool isMain)
+    {
+        _sawmill.Info($"Map preload: game map '{gameMap.ID}' (synchronous)");
+
+        MapId mapId = default;
+        SlowOpLog.Run(_sawmill, $"Map preload: game map '{gameMap.ID}'", () => LoadGameMap(gameMap, out mapId));
+        DebugTools.Assert(!_map.IsInitialized(mapId));
+
+        _loadedStationMapIds.Add(mapId);
+        if (isMain)
+            DefaultMap = mapId;
     }
 
     private void RequestStartRound(bool force = false)
@@ -318,6 +401,15 @@ public sealed partial class GameTicker
             SlowOpLog.Run(_sawmill, $"Map init: map {mapId}", () => _map.InitializeMap(mapId));
             YieldNetworkDuringMapLoad();
         }
+    }
+
+    private void InitializeMapPreloadCVars()
+    {
+        Subs.CVar(_cfg, MiniCCVars.MapPreloadEnabled, value => _mapPreloadEnabled = value, true);
+        Subs.CVar(_cfg, MiniCCVars.MapPreloadLavaland, value => _mapPreloadLavaland = value, true);
+        Subs.CVar(_cfg, MiniCCVars.MapPreloadGrids, value => _mapPreloadGrids = value, true);
+        Subs.CVar(_cfg, MiniCCVars.MapPreloadMaxStations,
+            value => _mapPreloadMaxStations = Math.Max(1, value), true);
     }
 
     private void ResetMapPreloadState()

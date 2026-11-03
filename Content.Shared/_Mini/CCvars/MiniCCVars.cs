@@ -611,6 +611,41 @@ public sealed class MiniCCVars
         CVarDef.Create("ministation.additional_maps", false, CVar.SERVER | CVar.ARCHIVE);
 
     /*
+     * Map preload
+     */
+
+    /// <summary>
+    /// Master switch for the staged lobby map preload. When disabled (the default), maps,
+    /// Lavaland and grids are loaded synchronously at T-RoundPreloadTime exactly like before
+    /// the preload feature, so a round still starts, only slower.
+    /// </summary>
+    public static readonly CVarDef<bool> MapPreloadEnabled =
+        CVarDef.Create("game.map_preload", false, CVar.SERVER | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Preload the Lavaland planet during the lobby countdown instead of generating it at
+    /// T-RoundPreloadTime. Only has an effect when <see cref="MapPreloadEnabled"/> is true.
+    /// Kept off by default: Lavaland is the largest part of the preload working set.
+    /// </summary>
+    public static readonly CVarDef<bool> MapPreloadLavaland =
+        CVarDef.Create("game.map_preload_lavaland", false, CVar.SERVER | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Maximum number of station maps queued for staged preload. Extra maps (for example the
+    /// second war station) are loaded synchronously when the queue is built, so they are never
+    /// silently dropped. Two covers a normal station plus the Typan/Aspid supplement.
+    /// </summary>
+    public static readonly CVarDef<int> MapPreloadMaxStations =
+        CVarDef.Create("game.map_preload_max_stations", 2, CVar.SERVER | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Preload event/ERT shuttle grids during the lobby. Off by default: grids are loaded on
+    /// demand from their prototype when a game rule actually asks for one.
+    /// </summary>
+    public static readonly CVarDef<bool> MapPreloadGrids =
+        CVarDef.Create("game.map_preload_grids", false, CVar.SERVER | CVar.ARCHIVE);
+
+    /*
      * Connecting UI - cached coin balance from last AntagToken sync
      */
 
