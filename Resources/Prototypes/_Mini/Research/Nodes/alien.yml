@@ -1,32 +1,6 @@
-- type: technology # AYYYYYYYYLMAOO
-  id: AlienTechnology
-  name: research-technology-alien-technology-name
-  description: research-technology-alien-technology-desc
-  icon:
-    sprite: _Shitmed/Objects/Weapons/Melee/wonderprod.rsi
-    state: stun-icon
-  discipline: Scientific
-  tier: 2
-  hidden: true
-  pointCosts:
-  - type: General
-    amount: 5000
-  technologyPrerequisites:
-  - BluespaceTravel
-  requiredItemsToUnlock:
-  - CrowbarAbductor
-  - WeaponAlien
-  - Wonderprod
-  - MultitoolAbductor
-  - EnergyScalpelAbductor
-  - SearingToolAbductor # TODO: Make normal abductor surgery tools
-  - MechanicalPinchesAbductor # TODO: Make normal abductor surgery tools
-  - BoneManipulatorAbductor # TODO: Make normal abductor surgery tools
-  - ScrewdriverAbductor
-  - WelderAbductor
-  - WirecutterAbductor
-  - WrenchAbductor
-  position: 0,5
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: technology
   id: AlienEngineering
@@ -44,7 +18,7 @@
   - type: General
     amount: 5000
   technologyPrerequisites:
-  - AlienTechnology
+  - BluespaceTravel
   - ExperimentalTools
   requiredItemsToUnlock:
   - CrowbarAbductor
@@ -79,7 +53,7 @@
   - type: General
     amount: 12500
   technologyPrerequisites:
-  - AlienTechnology
+  - BluespaceTravel
   - SurgeryTools
   discountExperiments:
   - ScanningPointsSlimeHard

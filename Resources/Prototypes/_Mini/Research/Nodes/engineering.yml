@@ -165,7 +165,6 @@
     amount: 12000
   technologyPrerequisites:
   - PartsBluespace
-  - AlienTechnology
   discountExperiments:
   - ScanningPointsMachineryTieredScanTier3Any
   discountExperimentCosts:

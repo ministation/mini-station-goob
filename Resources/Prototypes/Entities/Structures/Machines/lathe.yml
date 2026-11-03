@@ -413,6 +413,10 @@
     - ToolAugments
     # Mini-start
     - PartsDynamic
+    # Mech central modules: printable here after research instead of only on departmental techfabs
+    - MechBoardsCargo
+    - MechBoardsScience
+    - MechBoardsCivilian
     # Mini-end
     - PowerCells
   - type: EmagLatheRecipes # Goobstation
@@ -421,6 +425,7 @@
     emagDynamicPacks:
     - MechWeaponsSalvage
     - MechWeaponsSecurityLight
+    - MechBoardsSecurity # Mini: combat mech central modules via emag
   - type: MaterialStorage
     whitelist: *StandardMaterialWhitelist
   - type: OreSiloClient
