@@ -3,6 +3,7 @@
 using Content.Server.Discord;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
+using Content.Shared._Mini.MiniCCVars;
 
 namespace Content.Server.GameTicking
 {
@@ -61,6 +62,7 @@ namespace Content.Server.GameTicking
                     ResetMapPreloadState();
             }, true);
             Subs.CVar(_cfg, CCVars.GameLobbyDuration, value => LobbyDuration = TimeSpan.FromSeconds(value), true);
+            InitializeMapPreloadCVars();
             Subs.CVar(_cfg, CCVars.GameDisallowLateJoins,
                 value => { DisallowLateJoin = value; UpdateLateJoinStatus(); }, true);
             Subs.CVar(_cfg, CCVars.AdminLogsServerName, value =>
