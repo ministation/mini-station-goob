@@ -223,7 +223,7 @@
       fractalType: PingPong
     entities:
     - Lavashroom
-  # Fruit (seraka mushrooms)
+  # Fruit (seraka mushrooms and fonarstolbe)
   - !type:BiomeEntityLayer
     allowedTiles:
     - FloorBasaltLavaland
@@ -235,7 +235,8 @@
       fractalType: PingPong
       frequency: 2
     entities:
-    - SerakaMushroom
+    - FloraAshSeraka
+    - FloraAshFonarstolbe
   # Ash flora: TG mushroom variants
   - !type:BiomeEntityLayer
     allowedTiles:
@@ -640,7 +641,7 @@
       fractalType: PingPong
     entities:
     - Lavashroom
-  # Fruit (seraka mushrooms)
+  # Fruit (seraka mushrooms and fonarstolbe)
   - !type:BiomeEntityLayer
     allowedTiles:
     - FloorBasaltLavaland
@@ -652,7 +653,8 @@
       fractalType: PingPong
       frequency: 2
     entities:
-    - SerakaMushroom
+    - FloraAshSeraka
+    - FloraAshFonarstolbe
   # Ash flora: TG mushroom variants
   - !type:BiomeEntityLayer
     allowedTiles:

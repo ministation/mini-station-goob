@@ -95,6 +95,11 @@
   components:
   - type: Sprite
     sprite: _Lavaland/Clothing/Neck/Cloaks/herald_cloak.rsi
+  - type: HeraldCloak
+    chance: 0.2
+    projectile: LavalandHeraldBolt
+    count: 8
+    speed: 14
   - type: StaticPrice
     price: 1000
 
@@ -102,11 +107,27 @@
   id: LavalandPandoraHope
   parent: BaseItem
   name: pandora's hope
-  description: A warm stone that hums with a promise of something better. Keep it close.
+  description: A warm stone that hums with a promise of something better. Wearing it softens the blows of the Necropolis.
   components:
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/elite_trophies.rsi
     state: hope
+  - type: Clothing
+    slots:
+    - neck
+    equippedState: hope
+  # shortcut: this fork has no mood system, a light armour buff stands in for the mood effect
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95
+        Heat: 0.9
+        Caustic: 0.9
   - type: StaticPrice
     price: 1000
 
@@ -114,10 +135,11 @@
   id: LavalandTumorShard
   parent: BaseItem
   name: tumor shard
-  description: A fragment of a pulsating tumor. It twitches faintly.
+  description: A fragment of a pulsating tumor. Press it against a dead elite to bring it back, calmer than before.
   components:
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/artefacts.rsi
     state: crevice_shard
+  - type: TumorShard
   - type: StaticPrice
     price: 100

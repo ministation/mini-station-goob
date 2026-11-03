@@ -34,8 +34,11 @@
       All: !type:AllSelector
         children:
         - id: FoodAshFireBlossom
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandFireBlossomSeeds
           prob: 0.1
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: glowgrowth colony
@@ -66,8 +69,11 @@
       All: !type:AllSelector
         children:
         - id: FoodAshGlowgrowthSheet
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandGlowgrowthMycelium
           prob: 0.1
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: inozhakust
@@ -95,8 +101,11 @@
       All: !type:AllSelector
         children:
         - id: FoodAshInozhakustMash
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandInozhakustSeeds
           prob: 0.1
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: plasma flower
@@ -126,8 +135,11 @@
       All: !type:AllSelector
         children:
         - id: FoodAshPlasmaFlower
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandPlasmaFlowerSeeds
           prob: 0.1
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: podsneyzka flower
@@ -155,8 +167,11 @@
       All: !type:AllSelector
         children:
         - id: FoodAshPodsneyzkaBunch
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandPodsneyzkaSeeds
           prob: 0.1
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: vahrezjia flowers
@@ -184,8 +199,11 @@
       All: !type:AllSelector
         children:
         - id: FoodAshVahrezjiaStalks
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandVahrezjiaSeeds
           prob: 0.1
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: drake beet
@@ -211,7 +229,9 @@
       All: !type:AllSelector
         children:
         - id: FoodAshDrakeBeet
-
+          amount: !type:RangeNumberSelector
+            range: 1, 3
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: star cacti
@@ -239,8 +259,24 @@
       All: !type:AllSelector
         children:
         - id: FoodAshStarCactus
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandStarCactusSeeds
           prob: 0.1
+  - type: LavalandFloraRegrow
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.2
+        hard: false
+        layer:
+        - SlipLayer
+  - type: StepTrigger
+    requiredTriggeredSpeed: 0
+    intersectRatio: 0.1
+  - type: LavalandFloraCaltrop
 
 - type: entity
   name: large mushrooms
@@ -268,8 +304,11 @@
       All: !type:AllSelector
         children:
         - id: FoodAshMushroomShavings
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandPolyporeMycelium
           prob: 0.1
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: leafy mushrooms
@@ -297,8 +336,11 @@
       All: !type:AllSelector
         children:
         - id: FoodAshMushroomLeaf
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandPorciniMycelium
           prob: 0.1
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: tall mushrooms
@@ -326,8 +368,11 @@
       All: !type:AllSelector
         children:
         - id: FoodAshMushroomCap
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandInocybeMycelium
           prob: 0.1
+  - type: LavalandFloraRegrow
 
 - type: entity
   name: numerous mushrooms
@@ -359,5 +404,79 @@
       All: !type:AllSelector
         children:
         - id: FoodAshMushroomStem
+          amount: !type:RangeNumberSelector
+            range: 1, 3
         - id: LavalandEmberMycelium
           prob: 0.1
+  - type: LavalandFloraRegrow
+
+- type: entity
+  name: seraka mushrooms
+  id: FloraAshSeraka
+  parent: BaseLavalandFlora
+  description: A cluster of seraka mushrooms, faintly glowing from within.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Decoration/Flora/Plants/seraka_mushroom.rsi
+    layers:
+    - state: seraka_mushroom1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        seraka_mushroom1: ""
+        seraka_mushroom2: ""
+  - type: PointLight
+    color: "#a4c8ff"
+    radius: 1.5
+    energy: 1.2
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshSerakaCap
+          amount: !type:RangeNumberSelector
+            range: 1, 3
+        - id: LavalandSerakaMycelium
+          prob: 0.1
+  - type: LavalandFloraRegrow
+    harvestedState: seraka_mushroom1p
+
+- type: entity
+  name: fonarstolbe
+  id: FloraAshFonarstolbe
+  parent: BaseLavalandFlora
+  description: A chemotrophic plant with a lantern-like fruit that faintly lights the ash around it.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+    layers:
+    - state: flowerpod1
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        flowerpod1: ""
+        flowerpod2: ""
+        flowerpod3: ""
+        flowerpod4: ""
+  - type: PointLight
+    color: "#7fb2ff"
+    radius: 1.7
+    energy: 1.4
+  - type: Gatherable
+    toolWhitelist:
+      components:
+      - Hands
+    loot:
+      All: !type:AllSelector
+        children:
+        - id: FoodAshFonarstolbe
+          amount: !type:RangeNumberSelector
+            range: 1, 3
+        - id: LavalandFonarstolbeSeeds
+          prob: 0.1
+  - type: LavalandFloraRegrow

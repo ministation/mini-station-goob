@@ -1,4 +1,9 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Numerics;
+using Content.Goobstation.Shared.Projectiles;
 using Content.Server.Fluids.EntitySystems;
 using Content.Shared._Goobstation.Wizard.Projectiles;
 using Content.Shared._Lavaland.Aggression;
@@ -74,6 +79,7 @@ public sealed class BubblegumSystem : EntitySystem
         SubscribeLocalEvent<BubblegumComponent, MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<BubblegumComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovementSpeed);
         SubscribeLocalEvent<PuddleComponent, StepTriggeredOnEvent>(OnBloodPuddleStepped);
+        SubscribeLocalEvent<BubblegumEnrageCloudComponent, StepTriggeredOnEvent>(OnEnrageCloudStepped);
     }
 
     public override void Update(float frameTime)
@@ -94,6 +100,7 @@ public sealed class BubblegumSystem : EntitySystem
             }
 
             PruneTracked(bubblegum);
+            ProcessEnrage(uid, bubblegum, now);
             ProcessActiveClones(bubblegum, now);
             ProcessCloneCharges(bubblegum, gridUid, grid, now);
             ProcessPendingBloodTiles(bubblegum, gridUid, grid, now);
@@ -248,7 +255,68 @@ public sealed class BubblegumSystem : EntitySystem
 
         var rage = CalculateRage(uid);
         var modifier = Math.Clamp(1f + rage * 0.025f, 1f, 1.5f);
+        if (component.Enraged)
+            modifier *= component.EnrageSpeedMultiplier;
+
         args.ModifySpeed(modifier, modifier);
+    }
+
+    /// <summary>
+    /// Blood warp enrage: projectile immunity, a speed boost and a blood cloud at both ends of the warp.
+    /// </summary>
+    private void StartEnrage(
+        EntityUid boss,
+        BubblegumComponent bubblegum,
+        EntityUid gridUid,
+        MapGridComponent grid,
+        Vector2i from,
+        Vector2i to)
+    {
+        var now = _timing.CurTime;
+        bubblegum.Enraged = true;
+        bubblegum.EnrageUntil = now + bubblegum.EnrageDuration;
+
+        var immunity = EnsureComp<ProjectileImmunityComponent>(boss);
+        immunity.ExpireTime = bubblegum.EnrageUntil;
+        Dirty(boss, immunity);
+
+        _movement.RefreshMovementSpeedModifiers(boss);
+
+        // The cloud marks both ends of the warp: where it vanished and where it reappeared.
+        SpawnEnrageCloud(bubblegum, gridUid, grid, from);
+        if (to != from)
+            SpawnEnrageCloud(bubblegum, gridUid, grid, to);
+    }
+
+    private void ProcessEnrage(EntityUid boss, BubblegumComponent bubblegum, TimeSpan now)
+    {
+        if (!bubblegum.Enraged || now < bubblegum.EnrageUntil)
+            return;
+
+        bubblegum.Enraged = false;
+        bubblegum.EnrageUntil = TimeSpan.Zero;
+        _movement.RefreshMovementSpeedModifiers(boss);
+    }
+
+    private void SpawnEnrageCloud(BubblegumComponent bubblegum, EntityUid gridUid, MapGridComponent grid, Vector2i tile)
+    {
+        Spawn(bubblegum.EnrageCloudPrototype, _map.GridTileToLocal(gridUid, grid, tile));
+    }
+
+    private void OnEnrageCloudStepped(Entity<BubblegumEnrageCloudComponent> ent, ref StepTriggeredOnEvent args)
+    {
+        var tripper = args.Tripper;
+        if (!HasComp<MobStateComponent>(tripper) || IsDead(tripper) || HasComp<BubblegumComponent>(tripper))
+            return;
+
+        var cloudXform = Transform(ent.Owner);
+        var tripperXform = Transform(tripper);
+        var direction = _transform.GetWorldPosition(tripperXform) - _transform.GetWorldPosition(cloudXform);
+        if (direction.LengthSquared() < 0.01f)
+            direction = _random.NextVector2();
+
+        _throwing.TryThrow(tripper, direction.Normalized() * ent.Comp.KnockbackDistance, ent.Comp.KnockbackSpeed, ent.Owner, playSound: false, doSpin: false);
+        _damageable.TryChangeDamage(tripper, ent.Comp.Damage, origin: ent.Owner);
     }
 
     private void RunAttack(
@@ -660,7 +728,7 @@ public sealed class BubblegumSystem : EntitySystem
         return queued;
     }
 
-    private bool TryBloodWarp(
+    internal bool TryBloodWarp(
         EntityUid boss,
         BubblegumComponent bubblegum,
         EntityUid gridUid,
@@ -698,6 +766,7 @@ public sealed class BubblegumSystem : EntitySystem
         _transform.SetCoordinates(boss, _map.GridTileToLocal(gridUid, grid, destination));
         SpawnAnchored(bubblegum.BloodSplatterPrototype, gridUid, grid, destination);
         _audio.PlayPvs(bubblegum.ExitBloodSound, boss, AudioParams.Default.WithVolume(-2f));
+        StartEnrage(boss, bubblegum, gridUid, grid, bossTile.Value, destination);
         return true;
     }
 
@@ -1645,6 +1714,8 @@ public sealed class BubblegumSystem : EntitySystem
         bubblegum.CloneCharges.Clear();
         bubblegum.NextCloneSwap = TimeSpan.Zero;
         bubblegum.LastMovementAt = TimeSpan.Zero;
+        bubblegum.Enraged = false;
+        bubblegum.EnrageUntil = TimeSpan.Zero;
 
         bubblegum.SpilledPuddles.Clear();
 

@@ -3,13 +3,17 @@
 using System;
 using System.Numerics;
 using Content.Goobstation.Maths.FixedPoint;
+using Content.Goobstation.Shared.GPS.Components;
 using Content.Shared._Lavaland.OreVent;
 using Content.Shared.DoAfter;
 using Content.Shared.EntityTable;
+using Content.Shared.Examine;
 using Content.Shared.Interaction;
+using Content.Shared.Mining;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Stacks;
 using Content.Shared.Tag;
 using Content.Shared.Weapons.Melee.Events;
 using Robust.Shared.Prototypes;
@@ -28,6 +32,10 @@ public sealed class OreVentSystem : EntitySystem
     private const string StoneTileBurnt = "LavalandStoneTileBurnt";
     private const string PickaxeTag = "Pickaxe";
     private const string ScannerTag = "MineralScanner";
+    private const int MineralsPerVent = 4;
+    private const int BoulderMinerals = 3;
+    private const string DroneExplosionEffect = "ExplosionEffectGrenade";
+    private const string DroneSmokeEffect = "ExplosionEffectGrenadeSmoke";
 
     [Dependency] private readonly EntityTableSystem _entityTable = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
@@ -37,6 +45,7 @@ public sealed class OreVentSystem : EntitySystem
     [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly SharedStackSystem _stack = default!;
     [Dependency] private readonly TagSystem _tags = default!;
 
     public override void Initialize()
@@ -45,6 +54,8 @@ public sealed class OreVentSystem : EntitySystem
 
         SubscribeLocalEvent<OreVentComponent, MapInitEvent>(OnVentMapInit);
         SubscribeLocalEvent<OreVentComponent, InteractUsingEvent>(OnVentInteractUsing);
+        SubscribeLocalEvent<OreVentComponent, ExaminedEvent>(OnVentExamined);
+        SubscribeLocalEvent<OreVentComponent, OreVentScanDoAfterEvent>(OnScanDoAfter);
         SubscribeLocalEvent<OreVentComponent, OreVentTapDoAfterEvent>(OnTapDoAfter);
         SubscribeLocalEvent<OreBoulderComponent, InteractUsingEvent>(OnBoulderInteractUsing);
         SubscribeLocalEvent<OreBoulderComponent, AttackedEvent>(OnBoulderAttacked);
@@ -53,8 +64,80 @@ public sealed class OreVentSystem : EntitySystem
 
     private void OnVentMapInit(Entity<OreVentComponent> ent, ref MapInitEvent args)
     {
-        if (ent.Comp.BouldersRemaining < 0)
-            ent.Comp.BouldersRemaining = ent.Comp.BoulderBudget;
+        var comp = ent.Comp;
+
+        if (comp.BouldersRemaining < 0)
+            comp.BouldersRemaining = comp.BoulderBudget;
+
+        if (comp.Minerals.Count == 0 && comp.MineralPool.Count > 0)
+            RollMinerals(comp);
+
+        if (comp.Discovered)
+            AddGps(ent);
+    }
+
+    /// <summary>
+    /// Rolls the four distinct minerals this vent can produce, same idea as TG's generate_mineral_breakdown.
+    /// </summary>
+    private void RollMinerals(OreVentComponent comp)
+    {
+        var pool = new List<ProtoId<OrePrototype>>(comp.MineralPool);
+        for (var i = 0; i < MineralsPerVent && pool.Count > 0; i++)
+            comp.Minerals.Add(_random.PickAndTake(pool));
+    }
+
+    /// <summary>
+    /// Discovery hands the vent a GPS signal, like TG's gps component on scan.
+    /// </summary>
+    private void AddGps(EntityUid uid)
+    {
+        var gps = EnsureComp<GPSComponent>(uid);
+        gps.GpsName = Loc.GetString("ore-vent-gps-signal");
+        gps.Enabled = true;
+        Dirty(uid, gps);
+    }
+
+    /// <summary>
+    /// Marks the vent as discovered. The first scan runs a longer do-after before this.
+    /// </summary>
+    public bool TryDiscover(Entity<OreVentComponent> ent)
+    {
+        if (ent.Comp.Discovered)
+            return false;
+
+        ent.Comp.Discovered = true;
+        AddGps(ent);
+        _popup.PopupCoordinates(Loc.GetString("ore-vent-discovered"), Transform(ent).Coordinates, PopupType.Medium);
+        return true;
+    }
+
+    private void OnVentExamined(Entity<OreVentComponent> ent, ref ExaminedEvent args)
+    {
+        var comp = ent.Comp;
+        if (!comp.Discovered)
+        {
+            args.PushMarkup(Loc.GetString("ore-vent-examine-undiscovered"));
+            return;
+        }
+
+        var names = new List<string>(comp.Minerals.Count);
+        foreach (var mineral in comp.Minerals)
+            names.Add(Loc.GetString($"ore-vent-mineral-{mineral.Id}"));
+
+        args.PushMarkup(Loc.GetString("ore-vent-examine-discovered",
+            ("size", Loc.GetString(SizeLocKey(comp.Size))),
+            ("minerals", string.Join(", ", names))));
+    }
+
+    private void OnScanDoAfter(Entity<OreVentComponent> ent, ref OreVentScanDoAfterEvent args)
+    {
+        if (args.Cancelled || args.Handled)
+            return;
+
+        args.Handled = true;
+
+        if (!TryDiscover(ent))
+            _popup.PopupEntity(Loc.GetString("ore-vent-cannot-tap"), ent, args.User);
     }
 
     private void OnVentInteractUsing(Entity<OreVentComponent> ent, ref InteractUsingEvent args)
@@ -79,6 +162,21 @@ public sealed class OreVentSystem : EntitySystem
         if (_timing.CurTime < ent.Comp.CooldownEnd)
         {
             _popup.PopupEntity(Loc.GetString("ore-vent-recovering"), ent, args.User);
+            return;
+        }
+
+        if (!ent.Comp.Discovered)
+        {
+            var scan = new DoAfterArgs(EntityManager, args.User, ent.Comp.DiscoveryDuration, new OreVentScanDoAfterEvent(), ent)
+            {
+                BreakOnDamage = true,
+                BreakOnMove = true,
+                NeedHand = true,
+            };
+
+            if (_doAfter.TryStartDoAfter(scan))
+                _popup.PopupEntity(Loc.GetString("ore-vent-scanning"), ent, args.User);
+
             return;
         }
 
@@ -116,15 +214,15 @@ public sealed class OreVentSystem : EntitySystem
             return false;
 
         comp.Defending = true;
-        comp.WavesRemaining = Math.Max(1, comp.WaveCount);
+        comp.WavesRemaining = Math.Max(1, comp.WaveCount > 0 ? comp.WaveCount : WavesForSize(comp.Size));
         comp.SpawnedMobs.Clear();
 
         var coords = Transform(ent).Coordinates;
         var drone = Spawn(comp.NodeDroneProto, coords.Offset(new Vector2(0, 1)));
         comp.NodeDrone = drone;
 
-        // Bigger vents get a sturdier drone, same idea as TG scaling max health by boulder size.
-        var health = comp.NodeDroneBaseHealth + comp.NodeDroneHealthPerBoulder * Math.Max(1, comp.BoulderBudget);
+        // Bigger vents get a sturdier drone: 300/400/500 HP for small/medium/large.
+        var health = comp.NodeDroneBaseHealth + comp.NodeDroneHealthPerSize * (int) comp.Size;
         _mobThreshold.SetMobStateThreshold(drone, FixedPoint2.New(health), MobState.Dead);
 
         // A short windup so players can see the drone before the first wave.
@@ -237,6 +335,15 @@ public sealed class OreVentSystem : EntitySystem
         comp.WavesRemaining = 0;
         comp.CooldownEnd = _timing.CurTime + comp.RetryCooldown;
         comp.SpawnedMobs.Clear();
+
+        // TG drones go out with a bang and a cloud of smoke.
+        if (comp.NodeDrone is { } drone && !TerminatingOrDeleted(drone))
+        {
+            var droneCoords = Transform(drone).Coordinates;
+            Spawn(DroneExplosionEffect, droneCoords);
+            Spawn(DroneSmokeEffect, droneCoords);
+        }
+
         DeleteDrone(comp);
 
         _popup.PopupCoordinates(Loc.GetString("ore-vent-failed"), Transform(ent).Coordinates, PopupType.MediumCaution);
@@ -263,9 +370,17 @@ public sealed class OreVentSystem : EntitySystem
             ? comp.ArtifactBoulderProto
             : _random.Pick(comp.BoulderProtos);
 
-        Spawn(boulderProto, coords.Offset(_random.NextVector2(1.5f, 2.5f)));
+        var boulder = Spawn(boulderProto, coords.Offset(_random.NextVector2(1.5f, 2.5f)));
         comp.BouldersRemaining--;
         comp.NextBoulderAt = _timing.CurTime + comp.BoulderInterval;
+
+        // Artifact boulders keep their own artifact table. Normal boulders drop the vent's minerals
+        // and take 2 to boulder_size hits depending on the vent size.
+        if (!artifact && TryComp<OreBoulderComponent>(boulder, out var boulderComp))
+        {
+            boulderComp.HitsRemaining = _random.Next(2, BoulderHitsForSize(comp.Size) + 1);
+            boulderComp.OreLoot = RollBoulderOre(comp);
+        }
 
         if (comp.BouldersRemaining > 0)
             return;
@@ -277,6 +392,23 @@ public sealed class OreVentSystem : EntitySystem
         }
 
         _popup.PopupCoordinates(Loc.GetString("ore-vent-depleted"), coords, PopupType.Medium);
+    }
+
+    /// <summary>
+    /// Picks up to three of the vent's minerals and turns them into ore entities for a boulder.
+    /// </summary>
+    private List<EntProtoId> RollBoulderOre(OreVentComponent comp)
+    {
+        var loot = new List<EntProtoId>(BoulderMinerals);
+        var pool = new List<ProtoId<OrePrototype>>(comp.Minerals);
+
+        for (var i = 0; i < BoulderMinerals && pool.Count > 0; i++)
+        {
+            if (_proto.Index(_random.PickAndTake(pool)).OreEntity is { } ore)
+                loot.Add(ore);
+        }
+
+        return loot;
     }
 
     private void OnBoulderInteractUsing(Entity<OreBoulderComponent> ent, ref InteractUsingEvent args)
@@ -309,11 +441,64 @@ public sealed class OreVentSystem : EntitySystem
         }
 
         var coords = Transform(ent).Coordinates;
-        foreach (var lootProto in _entityTable.GetSpawns(_proto.Index(ent.Comp.LootTable)))
-            Spawn(lootProto, coords.Offset(_random.NextVector2(0.3f)));
+
+        if (ent.Comp.OreLoot.Count > 0)
+        {
+            // Vent boulders drop their vent's minerals, 2 to 5 ore per mineral. TG uses a
+            // log-scaled count, a flat roll is close enough and keeps the entity count low.
+            foreach (var oreProto in ent.Comp.OreLoot)
+            {
+                var ore = Spawn(oreProto, coords.Offset(_random.NextVector2(0.3f)));
+                if (TryComp<StackComponent>(ore, out var stack))
+                    _stack.SetCount(ore, _random.Next(2, 6), stack);
+            }
+        }
+        else
+        {
+            foreach (var lootProto in _entityTable.GetSpawns(_proto.Index(ent.Comp.LootTable)))
+                Spawn(lootProto, coords.Offset(_random.NextVector2(0.3f)));
+        }
 
         _popup.PopupEntity(Loc.GetString("ore-vent-boulder-broken"), ent, user);
         QueueDel(ent);
+    }
+
+    // TG sizes: small vents get 2 waves and 300 HP drones, medium 3 and 400, large 4 and 500.
+
+    private static int WavesForSize(OreVentSize size) => size switch
+    {
+        OreVentSize.Small => 2,
+        OreVentSize.Medium => 3,
+        _ => 4,
+    };
+
+    /// <summary>
+    /// Largest boulder durability a vent of this size produces. Boulders roll 2 to this value.
+    /// </summary>
+    private static int BoulderHitsForSize(OreVentSize size) => size switch
+    {
+        OreVentSize.Small => 3,
+        OreVentSize.Medium => 4,
+        _ => 5,
+    };
+
+    private static string SizeLocKey(OreVentSize size) => size switch
+    {
+        OreVentSize.Small => "ore-vent-size-small",
+        OreVentSize.Medium => "ore-vent-size-medium",
+        _ => "ore-vent-size-large",
+    };
+
+    /// <summary>
+    /// Rolls a vent size with TG's weights: small 7, medium 5, large 3.
+    /// </summary>
+    private OreVentSize RollVentSize()
+    {
+        var roll = _random.Next(7 + 5 + 3);
+        if (roll < 7)
+            return OreVentSize.Small;
+
+        return roll < 12 ? OreVentSize.Medium : OreVentSize.Large;
     }
 
     private void OnSpawnerMapInit(Entity<OreVentSpawnerComponent> ent, ref MapInitEvent args)
@@ -336,10 +521,9 @@ public sealed class OreVentSystem : EntitySystem
         var budget = _random.Next(comp.MinBoulders, comp.MaxBoulders + 1);
         ventComp.BoulderBudget = budget;
         ventComp.BouldersRemaining = budget;
+        ventComp.Size = RollVentSize();
     }
 }
-
-
 
 [RegisterComponent]
 public sealed partial class OreVentSpawnerComponent : Component

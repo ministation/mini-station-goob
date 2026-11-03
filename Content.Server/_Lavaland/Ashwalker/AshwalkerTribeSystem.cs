@@ -138,6 +138,17 @@ public sealed class AshwalkerTribeSystem : EntitySystem
             args.AddLine(Loc.GetString("ashwalker-tribe-roundend-counters",
                 ("sacrifices", tribe.Sacrifices),
                 ("eggs", tribe.EggsCreated)));
+
+            // TG prints the tribe roster at round end, the names make the report useful.
+            var names = new List<string>();
+            foreach (var member in tribe.Members)
+            {
+                if (!TerminatingOrDeleted(member))
+                    names.Add(Name(member));
+            }
+
+            if (names.Count > 0)
+                args.AddLine(Loc.GetString("ashwalker-tribe-roundend-members", ("members", string.Join(", ", names))));
         }
     }
 }

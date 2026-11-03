@@ -10,6 +10,14 @@
     size: Large
     shape:
     - 0,0,1,1
+  - type: UnpoweredFlashlight # TG parity: the accelerator has a built in toggleable light
+    toggleAction: ActionTogglePKALight
+  - type: PointLight
+    enabled: false
+    radius: 1.7
+    falloff: 3
+    softness: 5
+    autoRot: true
   - type: PressureDamageChange
     applyToMelee: false
   - type: ItemUpgradeable

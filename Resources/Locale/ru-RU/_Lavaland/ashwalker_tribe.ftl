@@ -9,3 +9,4 @@ ashwalker-tribe-roundend-header = В пустошах обитало племя 
 ashwalker-tribe-roundend-standing = Некрополь выстоял. Слава пепельным ходокам.
 ashwalker-tribe-roundend-fallen = Некрополь разрушен. Племя пало.
 ashwalker-tribe-roundend-counters = Племя совершило { $sacrifices } жертв Некрополю и вывело { $eggs } яиц.
+ashwalker-tribe-roundend-members = В племя входили: { $members }.

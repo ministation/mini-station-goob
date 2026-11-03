@@ -82,6 +82,10 @@
     actions:
     - ActionTendrilSpikes
     - ActionTendrilChasers
+    - ActionTendrilLash
+  # TG parity: melee retaliation and infection of the surrounding rock on death.
+  # The heartbeat (regen after death) and mob respawn blocking are not ported yet.
+  - type: NecropolisTendril
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 1.0
@@ -156,3 +160,21 @@
       id: MobCarpDungeon
   - type: TriggerCounterLimit
     maxCount: 7
+
+# 8 directional spike lash, used by the tendril's melee retaliation.
+- type: entity
+  parent: MarkerBase
+  id: LavalandTendrilLash
+  name: tendril lash spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: ShapeSpawner
+    spawn: LavalandTendrilSpike
+    alignCoords: true
+    shape: !type:NestedEntityShape
+      id: QueenCross
+  - type: ShapeSpawnerCounter
+    maxCounter: 5
+    spawnPeriod: 0.15
+  - type: ExpandingShapeSpawner
+    counterSize: 1

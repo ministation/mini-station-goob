@@ -29,9 +29,9 @@
   - type: OreVent
     boulderBudget: 8
     waveMobTable: LavalandOreVentMobs
-    waveCount: 3
     mobsPerWave: 2
     waveInterval: 15
+    discoveryDuration: 4
     tapDuration: 3
     nodeDroneProto: LavalandNodeDrone
     boulderInterval: 15
@@ -43,6 +43,33 @@
     artifactBoulderProto: LavalandOreBoulderArtifact
     depletionRewardTable: LavalandOreVentReward
     retryCooldown: 30
+    mineralPool:
+    - OreSteel
+    - OreSpaceQuartz
+    - OreCoal
+    - OreGold
+    - OreSilver
+    - OrePlasma
+    - OreUranium
+    - OreBananium
+    - OreDiamond
+
+# Starter vent preset used for the mining outpost: iron and glass, already scanned so
+# it can be tapped right away. Size, waves and drone stay the same as a small vent.
+- type: entity
+  parent: LavalandOreVent
+  id: LavalandOreVentStarter
+  name: active ore vent
+  description: An ore vent, brimming with underground ore. This one is already supplying the outpost with iron and glass.
+  suffix: Lavaland
+  components:
+  - type: OreVent
+    size: Small
+    discovered: true
+    artifactBoulderChance: 0
+    minerals:
+    - OreSteel
+    - OreSpaceQuartz
 
 - type: entity
   id: LavalandOreVentSpawner

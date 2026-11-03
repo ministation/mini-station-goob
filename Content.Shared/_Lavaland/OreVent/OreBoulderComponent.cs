@@ -23,4 +23,10 @@ public sealed partial class OreBoulderComponent : Component
     /// </summary>
     [DataField(required: true)]
     public ProtoId<EntityTablePrototype> LootTable;
+
+    /// <summary>
+    /// Ores this boulder drops instead of <see cref="LootTable"/> when set by the vent that produced it.
+    /// Empty for boulders spawned by hand or by admin, which keep their loot table.
+    /// </summary>
+    public List<EntProtoId> OreLoot = new();
 }

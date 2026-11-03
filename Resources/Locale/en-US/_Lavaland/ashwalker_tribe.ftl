@@ -9,3 +9,4 @@ ashwalker-tribe-roundend-header = An Ash Walker Tribe inhabited the wastes...
 ashwalker-tribe-roundend-standing = The Necropolis stands. Glory to the ash walkers.
 ashwalker-tribe-roundend-fallen = The Necropolis was destroyed. The tribe has fallen.
 ashwalker-tribe-roundend-counters = The tribe made { $sacrifices } sacrifices to the Necropolis and hatched { $eggs } eggs.
+ashwalker-tribe-roundend-members = The tribe consisted of: { $members }.

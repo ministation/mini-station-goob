@@ -56,6 +56,25 @@
       attachToTarget: true
 
 - type: entity
+  id: ActionEliteLegionnaireTurret
+  parent: BaseAction
+  name: Bone Turret
+  description: Plants a legion bone turret that fires at anything that moves. Only two can stand at once.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 6
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnTurretActionEvent
+      turret: LavalandLegionBoneTurret
+      maxTurrets: 2
+
+- type: entity
   id: ActionElitePandoraBox
   parent: BaseAction
   name: Expanding Box
@@ -153,6 +172,27 @@
       pattern: Ring
 
 - type: entity
+  id: ActionEliteHeraldTeleshot
+  parent: BaseAction
+  name: Teleshot
+  description: Fires a golden bolt and teleports to the shot's impact point.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 6
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandHeraldTeleshot
+      count: 1
+      speed: 20
+      pattern: Cone
+
+- type: entity
   id: ActionEliteBroodSlam
   parent: BaseAction
   name: Brood Slam
@@ -184,6 +224,25 @@
     checkCanAccess: false
     range: 30
   - type: WorldTargetAction
-    event: !type:SpawnEntityActionEvent
-      spawn: MobLavalandGoliath
-      spawnAtUser: true
+    event: !type:SpawnBroodActionEvent
+      child: MobLavalandGoliathChild
+      count: 2
+      maxChildren: 8
+
+- type: entity
+  id: ActionEliteBroodTentacle
+  parent: BaseAction
+  name: Tentacle Patch
+  description: Sows a patch of tentacles at the target position.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 4
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnTentaclePatchActionEvent
+      tentacle: GoliathTentacle

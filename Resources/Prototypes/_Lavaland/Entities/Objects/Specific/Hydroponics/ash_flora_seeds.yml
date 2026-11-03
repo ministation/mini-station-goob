@@ -493,6 +493,7 @@
       - id: LavalandInocybeMycelium
       - id: LavalandEmberMycelium
       - id: LavalandSerakaMycelium
+      - id: LavalandFonarstolbeSeeds
       - id: LavalandGlowgrowthMycelium
       - id: LavalandVahrezjiaSeeds
       - id: LavalandInozhakustSeeds
@@ -529,10 +530,34 @@
       steps:
       - tag: Fungus
         icon:
-          sprite: Objects/Specific/Hydroponics/chanterelle.rsi
-          state: produce
+          sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+          state: mushroom_shavings
         name: construction-graph-tag-fungus
-        doAfter: 1
+        doAfter: 0.6
+      - tag: Fungus
+        icon:
+          sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+          state: mushroom_shavings
+        name: construction-graph-tag-fungus
+        doAfter: 0.6
+      - tag: Fungus
+        icon:
+          sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+          state: mushroom_shavings
+        name: construction-graph-tag-fungus
+        doAfter: 0.6
+      - tag: Fungus
+        icon:
+          sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+          state: mushroom_shavings
+        name: construction-graph-tag-fungus
+        doAfter: 0.6
+      - tag: Fungus
+        icon:
+          sprite: _Lavaland/Objects/Specific/Flora/ash_flora.rsi
+          state: mushroom_shavings
+        name: construction-graph-tag-fungus
+        doAfter: 0.6
   - node: bowl
     entity: LavalandMushroomBowl
 
@@ -543,3 +568,39 @@
   targetNode: bowl
   category: construction-category-misc
   objectType: Item
+
+# Fonarstolbe seed and seed packet
+
+- type: seed
+  id: lavalandFonarstolbe
+  name: seeds-lavaland-fonarstolbe-name
+  noun: seeds-noun-spores
+  displayName: seeds-lavaland-fonarstolbe-display-name
+  plantRsi: Objects/Specific/Hydroponics/fly_amanita.rsi
+  packetPrototype: LavalandFonarstolbeSeeds
+  productPrototypes:
+  - FoodAshFonarstolbe
+  growthStages: 2
+  lifespan: 50
+  maturation: 7
+  production: 4
+  yield: 2
+  potency: 10
+  idealLight: 4
+  nutrientConsumption: 0.4
+  chemicals:
+    Nutriment:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 20
+
+- type: entity
+  parent: SeedBase
+  name: packet of fonarstolbe seeds
+  id: LavalandFonarstolbeSeeds
+  description: These seeds grow into fonarstolbe.
+  components:
+  - type: Seed
+    seedId: lavalandFonarstolbe
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/fly_amanita.rsi

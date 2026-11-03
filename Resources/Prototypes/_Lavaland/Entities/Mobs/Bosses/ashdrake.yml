@@ -86,6 +86,8 @@
     - ActionDrakeFireCone
     - ActionDrakeLavaPools
     - ActionDrakeSlam
+    - ActionDrakeMeteors
+    - ActionDrakeMassFire
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0
