@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 using System.IO;
+using Content.Shared.Network;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -20,7 +21,7 @@ namespace Content.Shared.Preferences
         public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
         {
             Slot = buffer.ReadInt32();
-            var length = buffer.ReadVariableInt32();
+            var length = buffer.ReadBoundedLength();
             using var stream = new MemoryStream(length);
             buffer.ReadAlignedMemory(stream, length);
             Profile = serializer.Deserialize<ICharacterProfile>(stream);
