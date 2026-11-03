@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System;
+using Content.Server._Lavaland.Megafauna.Systems;
 using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.BossHud;
 using Content.Shared._Lavaland.Megafauna.Components;
@@ -33,6 +34,7 @@ public sealed class BossHudSystem : EntitySystem
 
         SubscribeLocalEvent<BossHudComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<BossHudComponent, DamageChangedEvent>(OnDamageChanged);
+        SubscribeLocalEvent<BossHudComponent, MegafaunaArmorChangedEvent>(OnArmorChanged);
         SubscribeLocalEvent<BossHudComponent, AggressorAddedEvent>(OnAggressorAdded);
         SubscribeLocalEvent<BossHudComponent, AggressorRemovedEvent>(OnAggressorRemoved);
         SubscribeLocalEvent<BossHudComponent, MobStateChangedEvent>(OnMobStateChanged);
@@ -45,6 +47,9 @@ public sealed class BossHudSystem : EntitySystem
         => Refresh(ent);
 
     private void OnDamageChanged(Entity<BossHudComponent> ent, ref DamageChangedEvent args)
+        => Refresh(ent);
+
+    private void OnArmorChanged(Entity<BossHudComponent> ent, ref MegafaunaArmorChangedEvent args)
         => Refresh(ent);
 
     private void OnAggressorAdded(Entity<BossHudComponent> ent, ref AggressorAddedEvent args)
@@ -72,6 +77,18 @@ public sealed class BossHudSystem : EntitySystem
             maxHealth = MathF.Max(threshold!.Value.Float(), 1f);
 
         var health = hasThreshold ? Math.Clamp(maxHealth - totalDamage, 0f, maxHealth) : maxHealth;
+
+        // Armor is optional, only bosses with a MegafaunaArmor component show it.
+        var armor = 0f;
+        var maxArmor = 0f;
+        var armorBroken = false;
+        if (TryComp<MegafaunaArmorComponent>(ent, out var armorComp))
+        {
+            armor = armorComp.Armor;
+            maxArmor = armorComp.MaxArmor;
+            armorBroken = armorComp.Broken;
+        }
+
         var active = _mobState.IsAlive(ent)
                      && TryComp<AggressiveComponent>(ent, out var aggressive)
                      && aggressive.Aggressors.Count > 0;
@@ -83,7 +100,10 @@ public sealed class BossHudSystem : EntitySystem
 
         if (ent.Comp.Active == active
             && MathF.Abs(ent.Comp.Health - health) < 0.01f
-            && MathF.Abs(ent.Comp.MaxHealth - maxHealth) < 0.01f)
+            && MathF.Abs(ent.Comp.MaxHealth - maxHealth) < 0.01f
+            && MathF.Abs(ent.Comp.Armor - armor) < 0.01f
+            && MathF.Abs(ent.Comp.MaxArmor - maxArmor) < 0.01f
+            && ent.Comp.ArmorBroken == armorBroken)
         {
             if (stageComp != null)
                 TryUpdateStageComponent(ent, stageComp, stage, maxStage);
@@ -93,6 +113,9 @@ public sealed class BossHudSystem : EntitySystem
         ent.Comp.Active = active;
         ent.Comp.Health = health;
         ent.Comp.MaxHealth = maxHealth;
+        ent.Comp.Armor = armor;
+        ent.Comp.MaxArmor = maxArmor;
+        ent.Comp.ArmorBroken = armorBroken;
         Dirty(ent);
 
         if (stageComp != null)

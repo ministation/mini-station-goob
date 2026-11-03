@@ -102,7 +102,8 @@ public sealed class BossHudController : UIController, IOnStateEntered<GameplaySt
         }
 
         var name = EntityManager.GetComponent<MetaDataComponent>(bossUid).EntityName;
-        hud.ShowHud(LocExtensions.LocalizeOrRaw(name), bossComp.Health, bossComp.MaxHealth, stage, maxStage);
+        hud.ShowHud(LocExtensions.LocalizeOrRaw(name), bossComp.Health, bossComp.MaxHealth,
+            bossComp.Armor, bossComp.MaxArmor, bossComp.ArmorBroken, stage, maxStage);
     }
 
     private BossHudControl? TryFindHud()

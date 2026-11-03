@@ -44,8 +44,8 @@
     attackRate: 0.8
     damage:
       types:
-        Slash: 40
-        Structural: 40
+        Slash: 45
+        Structural: 45
   - type: Tag
     tags:
     - CannotSuicide
@@ -57,7 +57,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2500: Dead
+      2750: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -84,7 +84,7 @@
     autoAddOnDamage: false
     forgiveRange: 40.0
   - type: Anger
-    totalHp: 2500
+    totalHp: 2750
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2

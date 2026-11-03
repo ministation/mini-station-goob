@@ -221,10 +221,24 @@ public sealed class DockingConsoleSystem : SharedDockingConsoleSystem
         Timer.Spawn(TimeSpan.FromSeconds(15), () => _mapSystem.DeleteMap(dummyMap));
     }
 
-    private EntityUid? FindLargestGrid(MapId map)
+    /// <summary>
+    /// The grid a docking console should target on the given map: the Lavaland outpost when
+    /// there is one, otherwise the largest station grid, otherwise the largest grid.
+    /// </summary>
+    public EntityUid? FindLargestGrid(MapId map)
     {
         EntityUid? largestGrid = null;
         var largestSize = 0f;
+
+        // The outpost is the intended docking target and must win over the station check below:
+        // the planet grid belongs to the ash walker tribe station, so the station branch would
+        // return the planet instead and the shuttle would find no docks on it.
+        var outposts = EntityQueryEnumerator<LavalandStationComponent>();
+        while (outposts.MoveNext(out var outpostUid, out _))
+        {
+            if (Transform(outpostUid).MapID == map)
+                return outpostUid;
+        }
 
         var query = EntityQueryEnumerator<MapGridComponent, TransformComponent>();
         while (query.MoveNext(out var gridUid, out var grid, out var xform))
@@ -235,9 +249,6 @@ public sealed class DockingConsoleSystem : SharedDockingConsoleSystem
             if (TryComp<StationMemberComponent>(gridUid, out var stationMember) &&
                 TryComp<StationDataComponent>(stationMember.Station, out _))
                 return _station.GetLargestGrid(stationMember.Station);
-
-            if (HasComp<LavalandStationComponent>(gridUid))
-                return gridUid;
 
             var size = grid.LocalAABB.Size.LengthSquared();
             if (size < largestSize)

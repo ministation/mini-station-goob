@@ -18,6 +18,7 @@
     - id: ActionDrakeSlam
     - id: ActionDrakeMeteors
     - id: ActionDrakeMassFire
+    - id: ActionDrakeEruption
 
 - type: megafaunaSelector
   id: ActionDrakeFireCone
@@ -73,3 +74,14 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionDrakeMassFire
+
+- type: megafaunaSelector
+  id: ActionDrakeEruption
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 6.0,11.0
+      inverse: true
+    actionId: ActionDrakeEruption
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionDrakeEruption

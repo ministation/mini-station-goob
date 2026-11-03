@@ -59,8 +59,19 @@
     forgiveRange: 30.0
   - type: CombatPower
     factor: 15
-  # The boss HUD attaches to this component; the miner has no fight stages.
+  # The boss HUD attaches to this component. The second stage is the low health enrage.
   - type: MegafaunaStage
+    maxStage: 2
+    nextStageHealthFraction: 0.35
+  # Below 35% HP the miner moves and attacks faster. The roar plus the second HUD
+  # stage make the enrage visible before the extra speed matters.
+  - type: BossEnrage
+    healthFraction: 0.35
+    speedMultiplier: 1.35
+    attackRateMultiplier: 1.3
+    actionDelay: 0.25
+    sound:
+      path: /Audio/Effects/demon_attack1.ogg
   # Megafauna AI wiring
   - type: InputMover
   - type: Input

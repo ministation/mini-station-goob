@@ -108,7 +108,7 @@
       Dead:
         Base: brimdemon_dead
   - type: BatteryAmmoProvider
-    proto: ProjectileFireball
+    proto: LavalandProjectileBrimstone
     fireCost: 50
   - type: BatterySelfRecharger
     autoRechargeRate: 50
@@ -131,7 +131,7 @@
     animation: WeaponArcBite
     damage:
         types:
-          Slash: 15
+          Slash: 10
           Structural: 25
   - type: Tag
     tags:

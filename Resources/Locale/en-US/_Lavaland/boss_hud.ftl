@@ -6,3 +6,5 @@
 
 boss-hud-health = {$current}/{$max}
 boss-hud-stage = Stage {$stage}/{$max}
+boss-hud-armor = Armor {$current}/{$max}
+boss-hud-armor-broken = Armor broken

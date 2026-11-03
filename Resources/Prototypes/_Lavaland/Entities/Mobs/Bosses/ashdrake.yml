@@ -44,7 +44,7 @@
       path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
     damage:
       types:
-        Slash: 40
+        Slash: 45
   - type: Tag
     tags:
     - CannotSuicide
@@ -55,7 +55,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2500: Dead
+      2800: Dead
   # TG butcher results. TG also yields 5 sinew; the repo has no sinew material,
   # so those 5 are folded into the bone stack.
   - type: Butcherable
@@ -87,6 +87,7 @@
     - ActionDrakeSlam
     - ActionDrakeMeteors
     - ActionDrakeMassFire
+    - ActionDrakeEruption
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0
@@ -103,13 +104,17 @@
     selector: !type:NestedMegafaunaSelector
       id: AshDrake
   - type: Anger
-    totalHp: 2500
+    totalHp: 2800
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
   - type: MegafaunaBlink
     spawnOnTarget: LavalandDrakeSlamBurst
     spawnOnUsed: LavalandDrakeSlamBurst
+  # Every swoop dash leaves burning ground along the path it crossed.
+  - type: MegafaunaFireTrail
+    trail: LavalandDrakeFireTrail
+    step: 1.5
   - type: MegafaunaRejuvenate
   - type: SpawnLootOnDeath
     table: !type:AllSelector

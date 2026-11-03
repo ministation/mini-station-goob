@@ -14,12 +14,12 @@
     state: cain_and_abel
   - type: Item
     size: Small
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    sprite: _Lavaland/Objects/Specific/cain_and_abel-inhands.rsi
     inhandVisuals:
       left:
-      - state: cain_and_abel
+      - state: inhand-left
       right:
-      - state: cain_and_abel
+      - state: inhand-right
   - type: MeleeWeapon
     wideAnimationRotation: -135
     attackRate: 1.6667

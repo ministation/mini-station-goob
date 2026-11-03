@@ -53,6 +53,11 @@
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
+  # Regenerating armor pool, the grey segment on the boss HUD. Breaks for good once depleted.
+  - type: MegafaunaArmor
+    maxArmor: 600
+    regenDelay: 8
+    regenRate: 40
   - type: Advertise
     pack: ColossusWords
     minimumWait: 15

@@ -32,7 +32,7 @@
   id: ActionLegionCharge
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 3.0,8.0
+      range: 2.0,5.0
       inverse: true
     actionId: ActionLegionCharge
     conditions:

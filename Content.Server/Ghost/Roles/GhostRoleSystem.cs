@@ -985,6 +985,10 @@ public sealed class GhostRoleSystem : EntitySystem
         EnsureComp<MindContainerComponent>(mob);
 
         GhostRoleInternalCreateMindAndTransfer(args.Player, uid, mob, ghostRole);
+        // Spawned mobs never go through the takeover path, so their ghost role skills must be applied here.
+        _skillsSystem.GrantSkill(mob,
+            new HashSet<Content.Shared._CorvaxGoob.Skills.Skills>(ghostRole.Skills),
+            true); // CorvaxGoob-Skills
 
         if (++component.CurrentTakeovers < component.AvailableTakeovers)
         {

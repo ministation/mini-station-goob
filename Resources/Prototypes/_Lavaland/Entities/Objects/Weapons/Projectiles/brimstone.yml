@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Brimdemon attack. Heat only: the wizard fireball's Blunt and Slash damage was
+# tearing limbs off through the Shitmed wound system.
+- type: explosion
+  id: LavalandBrimstone
+  damagePerIntensity:
+    types:
+      Heat: 5
+  tileBreakChance: [0]
+  tileBreakIntensity: [0]
+  lightColor: Orange
+  fireColor: Orange
+  texturePath: /Textures/Effects/fire.rsi
+  fireStates: 3
+
+- type: entity
+  id: LavalandProjectileBrimstone
+  parent: BulletRocket
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: fireball
+      shader: unshaded
+  - type: Projectile
+    damage:
+      types:
+        Heat: 10
+  - type: Explosive
+    explosionType: LavalandBrimstone
+    maxIntensity: 4
+    intensitySlope: 2
+    totalIntensity: 12
+    maxTileBreak: 0
+  - type: PointLight
+    color: "#E25822"
+    radius: 2.0
+    energy: 5.0

@@ -6,3 +6,5 @@
 
 boss-hud-health = {$current}/{$max}
 boss-hud-stage = Стадия {$stage}/{$max}
+boss-hud-armor = Броня {$current}/{$max}
+boss-hud-armor-broken = Броня разрушена

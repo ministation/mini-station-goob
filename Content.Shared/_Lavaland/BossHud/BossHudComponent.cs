@@ -22,4 +22,19 @@ public sealed partial class BossHudComponent : Component
 
     [DataField, AutoNetworkedField]
     public float MaxHealth = 1f;
+
+    /// <summary>
+    /// Armor left on the boss, absorbed before health. Zero for bosses without armor.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float Armor;
+
+    [DataField, AutoNetworkedField]
+    public float MaxArmor;
+
+    /// <summary>
+    /// True once the armor pool broke, a broken pool never regenerates.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool ArmorBroken;
 }
