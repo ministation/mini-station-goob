@@ -20709,7 +20709,7 @@ entities:
     - type: Transform
       parent: 2
       pos: -24.554338,-31.386244
-- proto: BoxDnaFisk
+- proto: BoxGeneticsDisk
   entities:
   - uid: 20038
     components:
@@ -79097,7 +79097,7 @@ entities:
       parent: 2
       rot: -1.5707963267948966 rad
       pos: 44.5,6.5
-- proto: DnaModifierConsole
+- proto: ComputerGeneticsConsole
   entities:
   - uid: 18232
     components:

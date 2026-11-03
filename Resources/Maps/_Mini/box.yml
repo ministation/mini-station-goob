@@ -30308,7 +30308,7 @@ entities:
       parent: 2
       rot: 1.5707963267948966 rad
       pos: 34.310143,-52.355255
-- proto: BoxDnaFisk
+- proto: BoxGeneticsDisk
   entities:
   - uid: 10699
     components:
@@ -30320,7 +30320,7 @@ entities:
     - type: Transform
       parent: 2
       pos: 44.60158,-36.259132
-- proto: BoxDnaInjector
+- proto: BoxGeneticsDisk
   entities:
   - uid: 13378
     components:
@@ -103346,7 +103346,7 @@ entities:
     - type: Transform
       parent: 2
       pos: -14.5,12.5
-- proto: DnaModifierConsole
+- proto: ComputerGeneticsConsole
   entities:
   - uid: 13377
     components:
