@@ -5,5 +5,8 @@
 - type: entity
   name: woven basket
   description: A basket woven from the reeds around the tribe's nest.
-  parent: ClothingBackpackSatchelLeather
+  parent: ClothingBackpack
   id: AshwalkerBasket
+  components:
+  - type: Sprite
+    sprite: Clothing/Back/Satchels/leather.rsi
