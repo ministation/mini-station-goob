@@ -6,16 +6,16 @@ using Robust.Shared.Random;
 namespace Content.Server._Lavaland.Ruins;
 
 /// <summary>
-/// Builds the seed vault landmark: a small metal room with hydroponics
-/// gear, a cache of seed packets, and a keeper ghost role spawner.
+/// Builds the seed vault landmark: a small ashwood hut with hydroponics
+/// gear and a cache of seed packets. The keeper lives with the ash walker
+/// tribe now, the vault itself is left for passing miners.
 /// TG flavor: the benevolent creators hoped to aid fledgling
 /// civilizations; the keepers mostly grow drugs.
 /// </summary>
 public sealed class SeedVaultSystem : EntitySystem
 {
-    private const string Wall = "WallReinforced";
-    private const string Floor = "LavalandStoneTileBurnt";
-    private const string Spawner = "LavalandSeedVaultSpawner";
+    private const string Wall = "LavalandAshwoodWall";
+    private const string Floor = "LavalandAshwoodFloor";
     private const string LavalandSeedCache = "LavalandSeedCache";
 
     private static readonly EntProtoId[] Seeds =
@@ -51,9 +51,6 @@ public sealed class SeedVaultSystem : EntitySystem
                 Spawn(isWall && !isDoor ? Wall : Floor, baseCoords.Offset(new System.Numerics.Vector2(x, y)));
             }
         }
-
-        // The keeper, guarding the goods.
-        Spawn("LavalandSeedVaultKeeperPod", baseCoords.Offset(new System.Numerics.Vector2(0, half - 1)));
 
         // The lavaland seed cache, the reason miners dig this ruin out.
         for (var i = 0; i < comp.LavalandSeedCacheCount; i++)
