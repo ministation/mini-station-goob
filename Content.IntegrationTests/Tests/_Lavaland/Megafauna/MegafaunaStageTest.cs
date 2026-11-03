@@ -8,8 +8,9 @@ using Robust.Shared.GameObjects;
 namespace Content.IntegrationTests.Tests._Lavaland.Megafauna;
 
 /// <summary>
-/// Guards that the boss HUD stage reflects the real fight state: mob phases for the
-/// colossus and hierophant, the half health enrage for Bubblegum, the split for the legion.
+/// Guards that the boss HUD stage reflects the real fight state: the half health enrage
+/// for Bubblegum and the stages declared by the prototype, while the colossus and the
+/// legion keep their internal MobPhases (AI gating) without a stage counter on the HUD.
 /// </summary>
 [TestFixture]
 public sealed class MegafaunaStageTest
@@ -60,7 +61,7 @@ public sealed class MegafaunaStageTest
     }
 
     [Test]
-    public async Task PhaseBossesExposeAllStages()
+    public async Task HudStagesMatchPrototypes()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -88,11 +89,11 @@ public sealed class MegafaunaStageTest
             Assert.Multiple(() =>
             {
                 Assert.That(colossusStage.Stage, Is.EqualTo(1), "colossus starts in the first phase");
-                Assert.That(colossusStage.MaxStage, Is.EqualTo(3), "colossus has three phases");
+                Assert.That(colossusStage.MaxStage, Is.EqualTo(1), "colossus has no stage counter on the HUD");
                 Assert.That(hierophantStage.Stage, Is.EqualTo(1), "hierophant starts in the first phase");
                 Assert.That(hierophantStage.MaxStage, Is.EqualTo(3), "hierophant has three phases");
                 Assert.That(legionStage.Stage, Is.EqualTo(1), "legion starts in the first stage");
-                Assert.That(legionStage.MaxStage, Is.EqualTo(2), "legion has a second stage after the split");
+                Assert.That(legionStage.MaxStage, Is.EqualTo(1), "legion has no stage counter on the HUD");
             });
         });
 

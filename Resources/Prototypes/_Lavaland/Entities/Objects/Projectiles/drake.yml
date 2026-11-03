@@ -10,7 +10,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 10
+        Heat: 20
   - type: FlameProjectile
     fireStacks: 3
   - type: Sprite
@@ -23,7 +23,7 @@
     radius: 1.5
     energy: 3.0
 
-# Lava pool: burning ground that damages and ignites everything on it.
+# Lava pool: burning ground, the burst spawner keeps refreshing the tiles.
 - type: entity
   id: LavalandLavaPool
   categories: [ DoNotMap ]
@@ -46,10 +46,10 @@
   - type: TimedDespawn
     lifetime: 8
   - type: DamageSquare
-    damageDelay: 1.0
+    damageDelay: 0.5
     damage:
       types:
-        Heat: 6
+        Heat: 20
     damageWhitelist:
       components:
       - MobState
@@ -63,9 +63,15 @@
   components:
   - type: ShapeSpawner
     spawn: LavalandLavaPool
+    alignCoords: true
     shape: !type:NestedEntityShape
       id: BoxFilled
       size: 3
+  - type: ShapeSpawnerCounter
+    maxCounter: 4
+    spawnPeriod: 1
+  - type: TimedDespawn
+    lifetime: 5
 
 - type: entity
   parent: MarkerBase
@@ -96,8 +102,8 @@
     damageDelay: 0.2
     damage:
       types:
-        Blunt: 20
-        Heat: 8
+        Blunt: 60
+        Heat: 15
     damageWhitelist:
       components:
       - MobState

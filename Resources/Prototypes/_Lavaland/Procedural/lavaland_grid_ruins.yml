@@ -5,7 +5,8 @@
   name: lavaland-ruin-hierophant
   path: /Maps/_Lavaland/Lavaland/ruin_hierophant_arena.yml
   priority: -1 # highest priority
-  minDistance: 180
+  minDistance: 100
+  maxDistance: 150
   spawnAttempts: 20
   patchToPlanet: false
   componentsToGrant:

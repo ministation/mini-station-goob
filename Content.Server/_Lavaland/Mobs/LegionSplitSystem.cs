@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using Content.Shared._Lavaland.Megafauna.Components;
+using Content.Shared._Lavaland.Aggression;
 using Content.Shared.Mobs;
 using Content.Shared.Popups;
 using Robust.Shared.Audio;
@@ -15,6 +15,7 @@ namespace Content.Server._Lavaland.Mobs;
 /// </summary>
 public sealed class LegionSplitSystem : EntitySystem
 {
+    [Dependency] private readonly AggressorsSystem _aggressors = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
@@ -50,13 +51,13 @@ public sealed class LegionSplitSystem : EntitySystem
             var offset = _random.NextVector2Box(-0.8f, -0.8f, 0.8f, 0.8f);
             var child = Spawn(protoId, coords.Offset(offset));
 
-            // Shards that track a fight stage start it at the final stage.
-            // Plain split mobs (hivelord broods) have no stage component and are left alone.
-            if (TryComp<MegafaunaStageComponent>(child, out var stage))
+            // The boss HUD follows the nearest boss with live aggressors, so the shards have
+            // to inherit the fight instead of looking like a finished boss.
+            if (TryComp<AggressiveComponent>(ent, out var aggressive)
+                && TryComp<AggressiveComponent>(child, out var childAggressive))
             {
-                stage.Stage = 2;
-                stage.MaxStage = 2;
-                Dirty(child, stage);
+                foreach (var aggressor in aggressive.Aggressors)
+                    _aggressors.AddAggressor((child, childAggressive), aggressor);
             }
 
             if (TryComp<LegionSplitComponent>(child, out var childSplit))

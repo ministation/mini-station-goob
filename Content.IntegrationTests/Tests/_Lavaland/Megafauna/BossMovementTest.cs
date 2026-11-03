@@ -133,7 +133,7 @@ public sealed class BossMovementTest
     }
 
     [Test]
-    public async Task LegionShardsAreAtFinalStage()
+    public async Task LegionShardsKeepTheBossHud()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -171,7 +171,7 @@ public sealed class BossMovementTest
                     continue;
 
                 shards++;
-                if (stage.Stage != 2 || stage.MaxStage != 2)
+                if (stage.Stage != 1 || stage.MaxStage != 1)
                 {
                     var protoId = entMan.GetComponent<MetaDataComponent>(uid).EntityPrototype?.ID;
                     wrongStage.Add(protoId + " is at stage " + stage.Stage + " of " + stage.MaxStage);
@@ -179,7 +179,7 @@ public sealed class BossMovementTest
             }
 
             Assert.That(shards, Is.GreaterThanOrEqualTo(3), "the legion boss did not split into shards");
-            Assert.That(wrongStage, Is.Empty, "split shards should start at the final stage: " + string.Join("; ", wrongStage));
+            Assert.That(wrongStage, Is.Empty, "split shards should keep the HUD without a stage counter: " + string.Join("; ", wrongStage));
         });
 
         await pair.CleanReturnAsync();

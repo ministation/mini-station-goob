@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Server.Clothing.Systems;
 using Content.Server.GameTicking;
 using Content.Shared._Lavaland.Ashwalker;
 using Content.Shared._Lavaland.Necropolis;
@@ -19,8 +20,10 @@ public sealed class AshwalkerTribeSystem : EntitySystem
 {
     [Dependency] private readonly SharedMindSystem _mind = default!;
     [Dependency] private readonly SharedObjectivesSystem _objectives = default!;
+    [Dependency] private readonly OutfitSystem _outfit = default!;
 
     private const string ProtectObjective = "AshwalkerProtectNecropolisObjective";
+    private const string TribalGear = "AshWalker";
 
     /// <summary>
     /// How far from a nest an ash walker may spawn and still join its tribe.
@@ -31,6 +34,7 @@ public sealed class AshwalkerTribeSystem : EntitySystem
     {
         base.Initialize();
 
+        SubscribeLocalEvent<AshwalkerTribeMemberComponent, MapInitEvent>(OnMemberMapInit);
         SubscribeLocalEvent<AshwalkerTribeMemberComponent, MindAddedMessage>(OnMindAdded);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEnd);
     }
@@ -75,6 +79,12 @@ public sealed class AshwalkerTribeSystem : EntitySystem
         fallen.Members.UnionWith(tribe.Members);
         fallen.Sacrifices = tribe.Sacrifices;
         fallen.EggsCreated = tribe.EggsCreated;
+    }
+
+    // Gear is applied once per body at spawn: a re-taken ghost role must not stack a second kit.
+    private void OnMemberMapInit(Entity<AshwalkerTribeMemberComponent> ent, ref MapInitEvent args)
+    {
+        _outfit.SetOutfit(ent.Owner, TribalGear);
     }
 
     private void OnMindAdded(Entity<AshwalkerTribeMemberComponent> ent, ref MindAddedMessage args)

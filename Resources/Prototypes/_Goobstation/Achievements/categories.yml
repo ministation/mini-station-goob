@@ -24,6 +24,11 @@
   priority: 40
 
 - type: achievementCategory
+  id: LavalandBosses
+  name: achievement-category-lavaland-bosses
+  priority: 41
+
+- type: achievementCategory
   id: Antagonist
   name: achievement-category-antagonist
   priority: 50

@@ -447,6 +447,11 @@ public sealed partial class LavalandSystem
 
         Spawn(ruin.SpawnedMarker, new EntityCoordinates(lavaland, coord.Value));
 
+        // Guaranteed landmarks are only a handful per planet, and knowing where they landed
+        // is what turns "the bosses did not spawn" into a checkable statement.
+        if (ruin.Guaranteed)
+            Log.Info($"Guaranteed ruin {ruin.ID} placed at {coord.Value} on {ToPrettyString(lavaland)}");
+
         usedSpace.Add(ruinBox.Translated(coord.Value));
         // Same as in LoadGridRuin: purge all covered lattice points, not just the center.
         coords.RemoveAll(c => ruinBox.Translated(coord.Value).Contains(new Vector2(c.X, c.Y)));

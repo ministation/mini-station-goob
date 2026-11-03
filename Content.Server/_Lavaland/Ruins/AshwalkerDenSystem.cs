@@ -6,7 +6,7 @@ namespace Content.Server._Lavaland.Ruins;
 
 /// <summary>
 /// Builds the ashwalker den landmark: a scorched camp with the nest
-/// and a first egg.
+/// and its clutch of eggs.
 /// </summary>
 public sealed class AshwalkerDenSystem : EntitySystem
 {
@@ -35,8 +35,12 @@ public sealed class AshwalkerDenSystem : EntitySystem
             }
         }
 
-        Spawn(Nest, baseCoords.Offset(new Vector2(0, comp.CampRadius - 1)));
-        Spawn(Egg, baseCoords.Offset(new Vector2(-2, 0)));
+        var nestCoords = baseCoords.Offset(new Vector2(0, comp.CampRadius - 1));
+        Spawn(Nest, nestCoords);
+
+        // TG lets the den start with a clutch around the nest instead of a single egg.
+        foreach (var offset in new[] { new Vector2(-1, 0), new Vector2(1, 0), new Vector2(0, -1) })
+            Spawn(Egg, nestCoords.Offset(offset));
     }
 }
 

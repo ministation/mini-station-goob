@@ -4,6 +4,7 @@ using Content.Server._Lavaland.BossHud;
 using Content.Server._Lavaland.Mobs;
 using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.BossHud;
+using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
@@ -106,6 +107,33 @@ public sealed class BossHudTest
 
             if (entMan.TryGetComponent<BossHudComponent>(boss, out var hud))
                 Assert.That(hud.Active, Is.False, "boss HUD must hide after death");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task BloodDrunkMinerGetsBossHud()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid boss = default;
+        await server.WaitPost(() => boss = entMan.SpawnEntity("LavalandBossBloodDrunk", testMap.GridCoords));
+
+        await server.WaitRunTicks(5);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.TryGetComponent<MegafaunaStageComponent>(boss, out var stage), Is.True,
+                "the blood drunk miner must declare a stage for the boss HUD");
+            if (stage != null)
+                Assert.That(stage.MaxStage, Is.EqualTo(1), "the miner has no stage counter");
+
+            Assert.That(entMan.HasComponent<BossHudComponent>(boss), Is.True,
+                "the boss HUD system must attach to the blood drunk miner");
         });
 
         await pair.CleanReturnAsync();

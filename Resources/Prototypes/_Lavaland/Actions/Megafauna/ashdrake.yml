@@ -58,7 +58,7 @@
   - type: WorldTargetAction
     event: !type:MegafaunaBlinkActionEvent
 
-# Meteor shower: a 3x3 volley of meteors slams down around the target position.
+# Meteor shower: a 5x5 volley of meteors slams down around the target position.
 - type: entity
   id: ActionDrakeMeteors
   parent: BaseAction
@@ -120,7 +120,7 @@
   - type: TimedDespawn
     lifetime: 0.5
   - type: SpawnOnDespawn
-    prototype: LavalandDrakeSlamDamage
+    prototype: LavalandDrakeMeteorDamage
 
 - type: entity
   parent: MarkerBase
@@ -133,9 +133,34 @@
     alignCoords: true
     shape: !type:NestedEntityShape
       id: BoxFilled
-      size: 3
+      size: 5
   - type: TimedDespawn
     lifetime: 1
+
+# Meteor impact: TG's meteors deal fire loss, unlike the swoop slam.
+- type: entity
+  id: LavalandDrakeMeteorDamage
+  categories: [ DoNotMap ]
+  name: meteor impact
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Transform
+    anchored: true
+  - type: TimedDespawn
+    lifetime: 1
+  - type: DamageSquare
+    damageDelay: 0.2
+    damage:
+      types:
+        Heat: 40
+    damageWhitelist:
+      components:
+      - MobState
+    sound:
+      path: /Audio/_Lavaland/Effects/meteorimpact.ogg
 
 - type: entity
   parent: MarkerBase
@@ -149,5 +174,8 @@
     shape: !type:NestedEntityShape
       id: BoxFilled
       size: 5
+  - type: ShapeSpawnerCounter
+    maxCounter: 3
+    spawnPeriod: 1.5
   - type: TimedDespawn
-    lifetime: 1
+    lifetime: 5
