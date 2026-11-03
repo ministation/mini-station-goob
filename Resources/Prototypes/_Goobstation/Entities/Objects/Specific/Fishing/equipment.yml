@@ -232,7 +232,7 @@
 # Trap the jawed hook snaps onto caught creatures.
 - type: entity
   id: FishingHookJawsSnare
-  hideSpawnMenu: true
+  categories: [ HideSpawnMenu ]
   name: jawed hook trap
   description: The jawed hook's trap, clamped onto whatever it caught.
   components:
