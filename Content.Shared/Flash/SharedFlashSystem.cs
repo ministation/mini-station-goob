@@ -231,6 +231,9 @@ public abstract class SharedFlashSystem : EntitySystem
         _entityLookup.GetEntitiesInRange(transform.Coordinates, range, _entSet);
         foreach (var entity in _entSet)
         {
+            if (TerminatingOrDeleted(entity))
+                continue;
+
             // TODO: Use RandomPredicted https://github.com/space-wizards/RobustToolbox/pull/5849
             var seed = SharedRandomExtensions.HashCodeCombine((int)_timing.CurTick.Value, GetNetEntity(entity).Id);
             var rand = new System.Random(seed);
