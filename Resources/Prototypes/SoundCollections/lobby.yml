@@ -41,20 +41,15 @@
 #    - /Audio/_Mini/Lobby/batarei.ogg
 #    - /Audio/_Mini/Lobby/dispozal_unit.ogg
 #    - /Audio/_Mini/Lobby/dead_blonde.ogg
-#    # Mini - Halloween lobby rotation (вернуть на время события)
-#    - /Audio/_Mini/Lobby/spooky_skeletons.ogg
-#    - /Audio/_Mini/Lobby/danse_macabre.ogg
-#    - /Audio/_Mini/Lobby/hall_of_the_mountain_king.ogg
-#    - /Audio/_Mini/Lobby/toccata_fugue.ogg
-#    - /Audio/_Mini/Lobby/night_on_bald_mountain.ogg
-#    - /Audio/_Mini/Lobby/funeral_marionette.ogg
-#    - /Audio/_Mini/Lobby/sugar_plum_fairy.ogg
-#    - /Audio/_Mini/Lobby/spook_box.ogg
-#    - /Audio/_Mini/Lobby/pop_goes_the_weasel.ogg
-#    # Mini - Lavaland update lobby rotation
-    - /Audio/_Lavaland/Mobs/Bosses/bubblegum.ogg
-    - /Audio/_Lavaland/Mobs/Bosses/hierophant.ogg
-    - /Audio/_Lavaland/Mobs/Bosses/miniboss_fight.ogg
-    - /Audio/_Lavaland/Mobs/Bosses/Parabellum.ogg
+#    # Mini - Halloween lobby rotation
+    - /Audio/_Mini/Lobby/spooky_skeletons.ogg
+    - /Audio/_Mini/Lobby/danse_macabre.ogg
+    - /Audio/_Mini/Lobby/hall_of_the_mountain_king.ogg
+    - /Audio/_Mini/Lobby/toccata_fugue.ogg
+    - /Audio/_Mini/Lobby/night_on_bald_mountain.ogg
+    - /Audio/_Mini/Lobby/funeral_marionette.ogg
+    - /Audio/_Mini/Lobby/sugar_plum_fairy.ogg
+    - /Audio/_Mini/Lobby/spook_box.ogg
+    - /Audio/_Mini/Lobby/pop_goes_the_weasel.ogg
 
 
