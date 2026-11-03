@@ -61,12 +61,28 @@ public sealed partial class WeatherEffectsSystem : EntitySystem
         if (weather.Damage is not {} damage)
             return;
 
+        // Collect targets first: weather damage can kill mobs, and death handlers spawn or
+        // delete entities (death loot, legion splits), which invalidates a live enumerator.
+        var targets = new List<EntityUid>();
         var query = EntityQueryEnumerator<MobStateComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var mob, out var xform))
         {
             // don't give dead bodies 10000 burn, that's not fun for anyone
             if (xform.MapUid != map || mob.CurrentState == MobState.Dead)
                 continue;
+
+            targets.Add(uid);
+        }
+
+        foreach (var uid in targets)
+        {
+            if (TerminatingOrDeleted(uid))
+                continue;
+
+            if (!TryComp<MobStateComponent>(uid, out var mob) || mob.CurrentState == MobState.Dead)
+                continue;
+
+            var xform = Transform(uid);
 
             // if not in space, check for being indoors
             if (xform.GridUid is {} gridUid && _gridQuery.TryComp(gridUid, out var grid))

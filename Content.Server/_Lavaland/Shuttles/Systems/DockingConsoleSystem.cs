@@ -143,7 +143,7 @@ public sealed class DockingConsoleSystem : SharedDockingConsoleSystem
         if (ent.Comp.Shuttle is not {} shuttle || !TryComp<DockingShuttleComponent>(shuttle, out var docking))
             return;
 
-        if (args.Index < 0 || args.Index > docking.Destinations.Count)
+        if (args.Index < 0 || args.Index >= docking.Destinations.Count)
             return;
 
         var dest = docking.Destinations[args.Index];
@@ -184,35 +184,37 @@ public sealed class DockingConsoleSystem : SharedDockingConsoleSystem
 
         // Load grid
         _mapSystem.CreateMap(out var dummyMap);
-        if (!_mapLoader.TryLoadGrid(dummyMap, _miningShuttlePath, out var shuttle))
+        if (!_mapLoader.TryLoadGrid(dummyMap, _miningShuttlePath, out var shuttle) || shuttle is not { } shuttleUid)
         {
             Log.Error("Failed to call Mining shuttle since it failed to load.");
+            _mapSystem.DeleteMap(dummyMap);
             return;
         }
 
         // Find the mining shuttle
-        if (!TryComp<DockingShuttleComponent>(shuttle, out var docking))
+        if (!TryComp<DockingShuttleComponent>(shuttleUid, out var docking))
         {
             Log.Error("Loaded mining shuttle had no DockingShuttleComponent!");
+            _mapSystem.DeleteMap(dummyMap);
             return;
         }
 
         // Add the station of the calling console
-        var shuttleUid = ent.Comp.Shuttle;
-        if (!TryComp<DockingShuttleComponent>(shuttleUid, out var shuttleComp))
-            return;
-        if (shuttleComp.Station == null)
+        if (docking.Station == null)
         {
             var targetUid = Transform(ent).MapUid;
 
             if (targetUid == null)
+            {
+                _mapSystem.DeleteMap(dummyMap);
                 return;
+            }
 
-            RaiseLocalEvent(shuttleUid.Value, new ShuttleAddStationEvent(targetUid.Value, targetMap), false);
+            RaiseLocalEvent(shuttleUid, new ShuttleAddStationEvent(targetUid.Value, targetMap), false);
         }
 
         // Finally FTL
-        _shuttle.FTLToDock(shuttle.Value, Comp<ShuttleComponent>(shuttle.Value), grid, priorityTag: docking.DockTag);
+        _shuttle.FTLToDock(shuttleUid, Comp<ShuttleComponent>(shuttleUid), grid, priorityTag: docking.DockTag);
         UpdateShuttle(ent);
         UpdateUI(ent);
         Dirty(ent);

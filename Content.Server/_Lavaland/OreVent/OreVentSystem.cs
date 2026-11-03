@@ -433,6 +433,11 @@ public sealed class OreVentSystem : EntitySystem
 
     private void DigBoulder(Entity<OreBoulderComponent> ent, EntityUid user)
     {
+        // The deletion from the breaking hit is deferred to the end of the tick; without this
+        // guard a second hit in the same tick would run the loot roll again.
+        if (ent.Comp.HitsRemaining <= 0)
+            return;
+
         ent.Comp.HitsRemaining--;
         if (ent.Comp.HitsRemaining > 0)
         {

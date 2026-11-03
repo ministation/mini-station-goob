@@ -193,7 +193,10 @@ public sealed class AggressorsSystem : EntitySystem
                 RemoveAggressor((aggressive, aggressors), aggressor);
         }
 
-        RemComp(aggressor, aggressor.Comp);
+        // RemoveAggressor already removes the component when the last aggression is gone;
+        // removing it again would log a spurious "already deleted" warning on every death.
+        if (!aggressor.Comp.Deleted)
+            RemComp(aggressor, aggressor.Comp);
     }
 
     #endregion

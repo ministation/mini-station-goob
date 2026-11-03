@@ -43,6 +43,9 @@ public sealed class MegafaunaActionsSystem : EntitySystem
 
         // We run MapInitEvent only after SpawnedByActionEvent so all values are already set properly.
         EntityManager.InitializeEntity(spawned);
+        // InitializeEntity doesn't start components: without this no ComponentStartup fires,
+        // and spawned mobs get no NPC owner blackboard and no faction caches.
+        EntityManager.StartEntity(spawned);
         EntityManager.RunMapInit(spawned, MetaData(spawned)); // InitializeEntity doesn't trigger MapInit event by itself....
 
         if (args.Entity != null && args.AttachToTarget)

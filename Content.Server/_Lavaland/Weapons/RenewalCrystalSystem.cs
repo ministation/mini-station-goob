@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Shared.Administration.Systems;
+using Content.Shared._Lavaland.Megafauna.Components;
+using Content.Shared._Lavaland.Mobs;
 using Content.Shared._Lavaland.Weapons.Voice;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Mobs;
@@ -44,11 +46,16 @@ public sealed class RenewalCrystalSystem : EntitySystem
             if (mob.Comp.CurrentState != MobState.Dead || mob.Owner == args.User)
                 continue;
 
+            // Megafauna and wild fauna revive at full health and immediately re-engage;
+            // the crystal is meant to bring back crew, not the boss the party just killed.
+            if (HasComp<MegafaunaAiComponent>(mob.Owner) || HasComp<FaunaComponent>(mob.Owner))
+                continue;
+
             revived = mob;
             break;
         }
 
-        _audio.PlayPvs("/Audio/Effects/radiation.ogg", ent, AudioParams.Default.WithVolume(-2f));
+        _audio.PlayPvs("/Audio/Effects/radpulse9.ogg", ent, AudioParams.Default.WithVolume(-2f));
 
         if (revived != null)
         {

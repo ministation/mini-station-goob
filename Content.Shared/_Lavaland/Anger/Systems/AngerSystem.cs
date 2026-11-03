@@ -127,8 +127,9 @@ public sealed class AngerSystem : EntitySystem
         var maxAnger = ent.Comp.MaxAnger;
         var anger = ent.Comp.CurrentAnger;
         var progress = anger / maxAnger;
+        // Same semantics as the TimeSpan overload: inverse falls as anger rises.
         return inverse
-            ? max + (min - max) * (1f - progress)
+            ? max + (min - max) * progress
             : min + (max - min) * progress;
     }
 
@@ -143,8 +144,9 @@ public sealed class AngerSystem : EntitySystem
         var maxAnger = ent.Comp.MaxAnger;
         var anger = Math.Max(ent.Comp.CurrentAnger - ent.Comp.DefaultMinAnger, 0f);
         var progress = anger / maxAnger;
+        // Same semantics as the TimeSpan overload: inverse falls as anger rises.
         return inverse
-            ? (int) Math.Round(max + (min - max) * (1f - progress))
+            ? (int) Math.Round(max + (min - max) * progress)
             : (int) Math.Round(min + (max - min) * progress);
     }
 
@@ -161,7 +163,7 @@ public sealed class AngerSystem : EntitySystem
         var progress = anger / maxAnger;
         return inverse
             ? max + (min - max) * progress
-            : min + (max - min) * (1f - progress);
+            : min + (max - min) * progress;
     }
 
     #region Event Handling

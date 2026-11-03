@@ -127,7 +127,10 @@ public sealed partial class LavalandSystem : EntitySystem
         if (args.OldParent != null
             && TryComp<LavalandGridGrantComponent>(args.OldParent.Value, out var toRemove))
             EntityManager.RemoveComponents(ent.Owner, toRemove.ComponentsToGrant);
-        else if (TryComp<LavalandGridGrantComponent>(Transform(ent.Owner).GridUid, out var toGrant))
+
+        // Not else-if: a player can leave one granting grid and land on another in the same
+        // parent change, and the new grid's grants must still apply.
+        if (TryComp<LavalandGridGrantComponent>(Transform(ent.Owner).GridUid, out var toGrant))
             EntityManager.AddComponents(ent.Owner, toGrant.ComponentsToGrant);
     }
 
