@@ -10,6 +10,8 @@ using Content.Shared._Mini.Fishing.Events;
 using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared._Mini.Fishing.Systems;
 using Content.Shared.Buckle.Components;
+using Content.Shared.Ensnaring;
+using Content.Shared.Ensnaring.Components;
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Audio.Systems;
 using Content.Shared.Hands.EntitySystems;
@@ -78,6 +80,7 @@ public sealed partial class FishingSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedEnsnareableSystem _ensnare = default!;
 
     public override void Initialize()
     {
@@ -95,7 +98,9 @@ public sealed partial class FishingSystem : EntitySystem
 
     private void OnAfterInteract(Entity<FishingRodComponent> ent, ref AfterInteractEvent args)
     {
-        if (args.Handled || !args.CanReach)
+        // The bluespace line phases through walls, so it may reach what a normal line cannot.
+        if (args.Handled ||
+            (!args.CanReach && _equipment.GetLine(ent.Owner)?.PhasesThroughWalls != true))
             return;
 
         var user = args.User;
@@ -147,7 +152,7 @@ public sealed partial class FishingSystem : EntitySystem
         if ((userPos - castPos).Length() > ent.Comp.CastRange + 0.5f)
             return;
 
-        if (_sources.TryGetSource(coords, args.Target, out var source))
+        if (_sources.TryGetSource(coords, args.Target, out var source, out var sourceHost))
         {
             if (!hook.CanFish)
             {
@@ -163,7 +168,7 @@ public sealed partial class FishingSystem : EntitySystem
                 return;
             }
 
-            Cast(user, ent, args.Target, coords, source);
+            Cast(user, ent, sourceHost, coords, source);
             args.Handled = true;
             return;
         }
@@ -171,7 +176,7 @@ public sealed partial class FishingSystem : EntitySystem
         // There is no fishing source there, so the hook grabs an item or a creature instead.
         if (args.Target is { } hooked && CanHook(hooked, hook))
         {
-            HookAtom(user, ent, hooked);
+            HookAtom(user, ent, hooked, hook);
             args.Handled = true;
         }
     }
@@ -190,7 +195,7 @@ public sealed partial class FishingSystem : EntitySystem
     private void Cast(
         EntityUid user,
         Entity<FishingRodComponent> ent,
-        EntityUid? sourceEntity,
+        EntityUid? sourceHost,
         EntityCoordinates coords,
         ProtoId<FishingSourcePrototype> source)
     {
@@ -199,7 +204,7 @@ public sealed partial class FishingSystem : EntitySystem
             lureComp = EnsureComp<FishingLureComponent>(lure);
 
         lureComp.Rod = ent.Owner;
-        lureComp.SourceEntity = sourceEntity;
+        lureComp.SourceEntity = sourceHost;
         lureComp.Biting = false;
         lureComp.Snagged = false;
         Dirty(lure, lureComp);
@@ -210,7 +215,7 @@ public sealed partial class FishingSystem : EntitySystem
         challenge.Rod = ent.Owner;
         challenge.Lure = lure;
         challenge.Source = source;
-        challenge.SourceEntity = sourceEntity;
+        challenge.SourceEntity = sourceHost;
         challenge.CastCoordinates = coords;
         challenge.Phase = FishingPhase.Waiting;
         challenge.NextPhaseTime = _timing.CurTime + TimeSpan.FromSeconds(_sources.GetWaitTime(source));
@@ -237,7 +242,7 @@ public sealed partial class FishingSystem : EntitySystem
         return HasComp<ItemComponent>(target);
     }
 
-    private void HookAtom(EntityUid user, Entity<FishingRodComponent> ent, EntityUid target)
+    private void HookAtom(EntityUid user, Entity<FishingRodComponent> ent, EntityUid target, FishingHookComponent hook)
     {
         var lure = Spawn(ent.Comp.LurePrototype, Transform(target).Coordinates);
         var lureComp = EnsureComp<FishingLureComponent>(lure);
@@ -248,6 +253,24 @@ public sealed partial class FishingSystem : EntitySystem
         Dirty(lure, lureComp);
         ent.Comp.FishingLure = lure;
         Dirty(ent, ent.Comp);
+
+        // tg: the jawed hook snaps onto living prey like a beartrap and slows it down,
+        // the trap goes away together with the line.
+        if (hook.EnsnareLiving &&
+            HasComp<MobStateComponent>(target) &&
+            TryComp<EnsnareableComponent>(target, out _))
+        {
+            var snare = Spawn("FishingHookJawsSnare", Transform(target).Coordinates);
+            if (TryComp<EnsnaringComponent>(snare, out var ensnaring) && _ensnare.TryEnsnare(target, snare, ensnaring))
+            {
+                lureComp.Snare = snare;
+                Dirty(lure, lureComp);
+            }
+            else
+            {
+                QueueDel(snare);
+            }
+        }
 
         _popup.PopupEntity(Loc.GetString("fishing-snag-hooked", ("target", Name(target))), user, user);
 
@@ -412,6 +435,14 @@ public sealed partial class FishingSystem : EntitySystem
                     StopChallenge(user, challenge, false, Loc.GetString("fishing-line-snapped"));
                     continue;
                 }
+            }
+
+            // The spot was deconstructed or switched off while the float was still out.
+            if (challenge.SourceEntity is { } sourceUid &&
+                (TerminatingOrDeleted(sourceUid) || !HasComp<FishingSourceComponent>(sourceUid)))
+            {
+                StopChallenge(user, challenge, false, Loc.GetString("fishing-source-gone"));
+                continue;
             }
 
             switch (challenge.Phase)
@@ -689,6 +720,14 @@ public sealed partial class FishingSystem : EntitySystem
     private void StepMinigame(EntityUid user, FishingChallengeComponent challenge, EntityUid rodUid)
     {
         MoveFish(challenge);
+
+        // The auto-reel line plays the fight on its own and keeps the bait on the fish.
+        if ((challenge.Rules & FishingMinigameRules.Autoreel) != 0)
+        {
+            var baitCenter = challenge.BaitPosition + challenge.BaitHeight * 0.5f;
+            var fishCenter = challenge.FishPosition + challenge.FishHeight * 0.5f;
+            challenge.ReelDirection = fishCenter > baitCenter ? 1 : -1;
+        }
 
         var fishOnBait = (challenge.FishPosition + challenge.FishHeight >= challenge.BaitPosition) &&
                          (challenge.BaitPosition + challenge.BaitHeight >= challenge.FishPosition);
@@ -1065,6 +1104,10 @@ public sealed partial class FishingSystem : EntitySystem
 
     private void OnLureShutdown(Entity<FishingLureComponent> ent, ref ComponentShutdown args)
     {
+        // A jawed trap is freed when the line is reeled in or snaps.
+        if (ent.Comp.Snare is { } snare && !TerminatingOrDeleted(snare))
+            QueueDel(snare);
+
         if (ent.Comp.Rod is { } rod &&
             TryComp<FishingRodComponent>(rod, out var rodComp) &&
             rodComp.FishingLure == ent.Owner)

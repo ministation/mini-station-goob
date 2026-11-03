@@ -6,3 +6,10 @@
   targetNode: makeshiftRod
   category: construction-category-misc
   objectType: Item
+
+- type: construction
+  id: FishingLineSinew
+  graph: FishingLineSinew
+  targetNode: sinewLine
+  category: construction-category-misc
+  objectType: Item

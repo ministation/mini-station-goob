@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: constructionGraph
+  id: FishingLineSinew
+  graph:
+    - node: start
+      edges:
+        - to: sinewLine
+          steps:
+            - material: Bones
+              amount: 2
+              doAfter: 2
+            - material: GoliathHide
+              amount: 1
+              doAfter: 2
+    - node: sinewLine
+      entity: FishingLineSinew
