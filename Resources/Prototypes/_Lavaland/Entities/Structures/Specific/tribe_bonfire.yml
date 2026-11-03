@@ -1,0 +1,181 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG ash walker tribal bonfire: starts unlit, gets lit by a hot item and burns everything
+# standing on its tile. One metal rod turns it into a stake, as in TG.
+
+- type: entity
+  abstract: true
+  parent: BaseStructure
+  id: BaseTribeBonfire
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        # TG base bonfire is not dense: you can walk into the fire (and burn).
+        hard: false
+        mask:
+        - Impassable
+        layer:
+        - Opaque
+        - BulletImpassable
+  - type: Sprite
+    noRot: true
+    sprite: Structures/Decoration/bonfire.rsi
+    layers:
+    - state: bonfire
+      map: ["base"]
+    - sprite: _Lavaland/Structures/Specific/tribe_bonfire.rsi
+      state: bonfire_on_fire
+      map: ["fire"]
+      visible: false
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.TribeBonfireVisuals.Lit:
+        fire:
+          "False": { visible: false }
+          "True": { visible: true }
+  - type: PointLight
+    enabled: false
+    radius: 6
+    energy: 3
+    color: "#FFC90C"
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Wood
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 50
+        behaviors:
+        - !type:PlaySoundBehavior
+          sound:
+            collection: WoodDestroy
+        - !type:DoActsBehavior
+          acts: [ "Destruction" ]
+  - type: AmbientSound
+    enabled: false
+    volume: -5
+    range: 5
+    sound:
+      path: /Audio/Ambience/Objects/fireplace.ogg
+  - type: IgnitionSource
+    temperature: 1000
+  - type: TribeBonfire
+
+- type: entity
+  parent: BaseTribeBonfire
+  id: TribeBonfire
+  name: tribal bonfire
+  description: A pile of ash wood, ready to take a spark.
+  components:
+  - type: Construction
+    graph: TribeBonfire
+    node: bonfire
+
+- type: entity
+  parent: TribeBonfire
+  id: TribeBonfirePrelit
+  suffix: Lit
+  components:
+  - type: TribeBonfire
+    lit: true
+
+- type: entity
+  parent: TribeBonfire
+  id: TribeBonfireStake
+  name: tribal bonfire with stake
+  description: A tribal bonfire with a metal rod for... ceremonial purposes.
+  components:
+  - type: Sprite
+    noRot: true
+    sprite: Structures/Decoration/bonfire.rsi
+    layers:
+    - state: bonfire
+      map: ["base"]
+    - sprite: _Lavaland/Structures/Specific/tribe_bonfire.rsi
+      state: bonfire_rod
+      offset: "0, 0.5"
+      map: ["rod"]
+    - sprite: _Lavaland/Structures/Specific/tribe_bonfire.rsi
+      state: bonfire_on_fire
+      map: ["fire"]
+      visible: false
+  - type: Strap
+    position: Stand
+    buckleOffset: "0, 0.5"
+    buckleDoafterTime: 5
+  - type: IgniteOnBuckle
+  - type: Construction
+    graph: TribeBonfire
+    node: bonfireStake
+
+- type: constructionGraph
+  id: TribeBonfire
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: bonfire
+      steps:
+      - material: AshwoodPlank
+        amount: 10
+        doAfter: 4
+  - node: bonfire
+    entity: TribeBonfire
+    edges:
+    - to: start
+      completed:
+      - !type:SpawnPrototype
+        prototype: MaterialAshwoodPlank1
+        amount: 10
+      - !type:DeleteEntity { }
+      steps:
+      - tool: Prying
+        doAfter: 4
+    - to: bonfireStake
+      steps:
+      - material: MetalRod
+        amount: 1
+        doAfter: 2
+  - node: bonfireStake
+    entity: TribeBonfireStake
+    edges:
+    - to: bonfire
+      completed:
+      - !type:SpawnPrototype
+        prototype: PartRodMetal1
+        amount: 1
+      steps:
+      - tool: Prying
+        doAfter: 2
+
+- type: construction
+  id: TribeBonfire
+  graph: TribeBonfire
+  startNode: start
+  targetNode: bonfire
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: TribeBonfireStake
+  graph: TribeBonfire
+  startNode: start
+  targetNode: bonfireStake
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked

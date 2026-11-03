@@ -2,33 +2,7 @@
 
 # Colossus chest loot items (port of TG megafauna loot, adapted subset).
 
-# Cain & Abel: twin daggers.
-- type: entity
-  id: LavalandCainDagger
-  parent: BaseItem
-  name: Cain
-  description: The elder twin. It hungers for its brother's company.
-  components:
-  - type: Sprite
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: cain_and_abel
-  - type: Item
-    size: Small
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-  - type: MeleeWeapon
-    wideAnimationRotation: -135
-    attackRate: 1.2
-    damage:
-      types:
-        Slash: 14
-  - type: StaticPrice
-    price: 2000
-
-- type: entity
-  id: LavalandAbelDagger
-  parent: LavalandCainDagger
-  name: Abel
-  description: The younger twin. It hungers for its brother's blood.
+# Cain and Abel live in cain_and_abel.yml together with their mechanics.
 
 # Divine vocal cords: a voice that commands obedience.
 - type: entity

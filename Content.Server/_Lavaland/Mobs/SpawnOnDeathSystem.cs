@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Server._Lavaland.Weapons.CainAbel;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.EntityTable;
@@ -16,6 +17,7 @@ namespace Content.Server._Lavaland.Mobs;
 
 public sealed class SpawnOnDeathSystem : EntitySystem
 {
+    [Dependency] private readonly CainAbelEffectsSystem _cainAbel = default!;
     [Dependency] private readonly EntityTableSystem _entityTable = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
@@ -35,9 +37,14 @@ public sealed class SpawnOnDeathSystem : EntitySystem
         comp.DoSpecialLoot = _whitelist.IsWhitelistPassOrNull(comp.SpecialWeaponWhitelist, args.Used);
     }
 
-    // Projectile damage only reports the shooter as its origin, so the weapon comes from the projectile itself.
+    // Single handler of ProjectileComponent/ProjectileHitEvent in this fork: the dagger swing parry
+    // also lives here, because the event bus allows one handler per component and event pair.
     private void OnProjectileHit(Entity<ProjectileComponent> ent, ref ProjectileHitEvent args)
     {
+        if (_cainAbel.TryParry(ent, ref args))
+            return;
+
+        // Projectile damage only reports the shooter as its origin, so the weapon comes from the projectile itself.
         if (!args.Damage.AnyPositive() || !TryComp<SpawnLootOnDeathComponent>(args.Target, out var comp))
             return;
 

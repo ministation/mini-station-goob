@@ -24,6 +24,7 @@ achievement-category-general = Общие
 achievement-category-survival = Выживание
 achievement-category-medical = Медицина
 achievement-category-lavaland = Лаваленд
+achievement-category-lavaland-bosses = Боссы Лаваленда
 achievement-category-antagonist = Антагонисты
 achievement-category-fishing = Рыбалка
 

@@ -34,7 +34,7 @@
     factions:
     - SimpleHostile
   - type: MegafaunaStage
-    maxStage: 2
+    maxStage: 1 # no stage counter, the HUD follows the living shard after the split
   - type: Sprite
     noRot: true
     drawdepth: Mobs
@@ -50,7 +50,7 @@
     animation: WeaponArcBite
     damage:
         types:
-          Blunt: 35
+          Blunt: 25
           Structural: 200
   - type: Tag
     tags:
@@ -182,10 +182,9 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      400: Dead
+      350: Dead
   - type: MegafaunaStage
-    stage: 2
-    maxStage: 2
+    maxStage: 1
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -292,8 +291,7 @@
       0: Alive
       200: Dead
   - type: MegafaunaStage
-    stage: 2
-    maxStage: 2
+    maxStage: 1
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant

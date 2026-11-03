@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System;
-using System.Linq;
 using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.BossHud;
 using Content.Shared._Lavaland.Megafauna.Components;
@@ -111,10 +110,8 @@ public sealed class BossHudSystem : EntitySystem
             // Phase updates share the damage event, resolve the phase before reading it.
             _phases.UpdatePhases((uid, phases, damageable));
 
-            var highest = phases.PhaseThresholds.Count > 0
-                ? phases.PhaseThresholds.Values.Max()
-                : phases.CurrentPhase;
-            maxStage = Math.Max(maxStage, highest);
+            // MobPhases gates the AI attack pattern, it does not dictate how many stages
+            // the HUD shows: that is declared by MegafaunaStage.
             stage = Math.Clamp(phases.CurrentPhase, 1, maxStage);
             return;
         }

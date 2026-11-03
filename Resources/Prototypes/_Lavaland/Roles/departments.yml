@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Needed so the AshWalker job shows up in the character priority menu. The tribe only
+# ever has slots on the Lavaland tribe station, never on the main station.
+- type: department
+  id: Ashwalker
+  name: department-ashwalker
+  description: department-ashwalker-description
+  color: "#5c4a3d"
+  weight: -20
+  antagObjectiveImmune: true
+  roles:
+  - AshWalker

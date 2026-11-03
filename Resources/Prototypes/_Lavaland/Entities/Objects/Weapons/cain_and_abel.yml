@@ -1,0 +1,293 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Cain and Abel, the colossus twin daggers (TG port). Combo counter, blood wisps, crystal and
+# launch throw modes and the dagger swing ability are implemented in Content.Server/_Lavaland.
+
+- type: entity
+  id: LavalandCainDagger
+  parent: BaseKnife
+  name: Cain
+  description: The elder twin. It hungers for its brother's company.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: cain_and_abel
+  - type: Item
+    size: Small
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    inhandVisuals:
+      left:
+      - state: cain_and_abel
+      right:
+      - state: cain_and_abel
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.6667
+    range: 2
+    damage:
+      types:
+        Slash: 15
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+  - type: PointLight
+    color: "#3db9db"
+    radius: 3
+    energy: 2
+  - type: CainAbel
+  - type: ActionGrant
+    actions:
+    - ActionCainAbelSwing
+    - ActionCainAbelReleaseWisps
+  - type: ItemActionGrant
+    actions:
+    - ActionCainAbelSwing
+    - ActionCainAbelReleaseWisps
+  - type: StaticPrice
+    price: 2000
+
+- type: entity
+  id: LavalandAbelDagger
+  parent: LavalandCainDagger
+  name: Abel
+  description: The younger twin. It hungers for its brother's blood.
+
+- type: entity
+  id: ActionCainAbelSwing
+  parent: BaseAction
+  name: Dagger swing
+  description: Slash everything around you with a flurry of six strikes.
+  components:
+  - type: Action
+    useDelay: 20
+    icon:
+      sprite: _Lavaland/Objects/Specific/artefacts.rsi
+      state: cain_and_abel
+  - type: InstantAction
+    event: !type:CainAbelSwingActionEvent
+
+- type: entity
+  id: ActionCainAbelReleaseWisps
+  parent: BaseAction
+  name: Release wisps
+  description: Fire the stored blood wisps at a target up to nine tiles away.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: _Lavaland/Objects/Specific/artefacts.rsi
+      state: cain_and_abel
+  - type: TargetAction
+    range: 9
+    checkCanAccess: false
+  - type: WorldTargetAction
+    event: !type:CainAbelReleaseWispsActionEvent
+
+# Spaced wisp visual, one per combo point. Parenting is done by the server system.
+- type: entity
+  id: LavalandCainAbelWisp
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Effects/effects.rsi
+    drawdepth: Effects
+    layers:
+    - state: blood_wisp
+      shader: unshaded
+  - type: PointLight
+    color: "#d74e63"
+    radius: 2
+    energy: 2
+  - type: Tag
+    tags: [ HideContextMenu ]
+
+- type: entity
+  parent: BaseBullet
+  id: LavalandCainAbelWispProjectile
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Slash: 25
+    ignoreResistances: true
+    impactEffect: LavalandCainAbelWispHit
+    soundHit:
+      path: /Audio/_Lavaland/Weapons/CainAbel/blood_wisp_explode.ogg
+    forceSound: true
+  - type: Sprite
+    sprite: _Lavaland/Effects/effects.rsi
+    layers:
+    - state: blood_wisp
+      shader: unshaded
+  - type: PointLight
+    color: "#d74e63"
+    radius: 2
+    energy: 2
+  - type: TimedDespawn
+    lifetime: 2
+  - type: Tag
+    tags: [ HideContextMenu ]
+
+- type: entity
+  id: LavalandCainAbelWispHit
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Effects/effects.rsi
+    drawdepth: Effects
+    layers:
+    - state: wisp_hit
+      shader: unshaded
+  - type: PointLight
+    color: "#d74e63"
+    radius: 2
+    energy: 2
+  - type: TimedDespawn
+    lifetime: 0.5
+  - type: Tag
+    tags: [ HideContextMenu ]
+
+- type: entity
+  parent: BaseBullet
+  id: LavalandCainAbelThrowProjectile
+  abstract: true
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Slash: 10
+    soundHit:
+      path: /Audio/_Lavaland/Weapons/CainAbel/zipline_hit.ogg
+    forceSound: true
+  - type: Sprite
+    sprite: _Lavaland/Effects/effects.rsi
+    layers:
+    - state: cain_abel_attack
+      shader: unshaded
+  - type: PointLight
+    color: "#589ac9"
+    radius: 2
+    energy: 2
+  - type: TimedDespawn
+    lifetime: 2
+  - type: Tag
+    tags: [ HideContextMenu ]
+
+- type: entity
+  parent: LavalandCainAbelThrowProjectile
+  id: LavalandCainAbelThrowProjectileCrystal
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: CainAbelThrowProjectile
+    launch: false
+
+- type: entity
+  parent: LavalandCainAbelThrowProjectile
+  id: LavalandCainAbelThrowProjectileLaunch
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: CainAbelThrowProjectile
+    launch: true
+
+- type: entity
+  id: LavalandCainAbelEngraved
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Effects/effects.rsi
+    drawdepth: FloorObjects
+    layers:
+    - state: cain_abel_engraved
+      shader: unshaded
+  - type: PointLight
+    color: "#5767e1"
+    radius: 2
+    energy: 2
+  - type: TimedDespawn
+    lifetime: 3
+  - type: Tag
+    tags: [ HideContextMenu ]
+
+- type: entity
+  id: LavalandCainAbelCrystal
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Effects/effects.rsi
+    drawdepth: FloorObjects
+    layers:
+    - state: cain_abel_crystal
+      shader: unshaded
+  - type: PointLight
+    color: "#3db9db"
+    radius: 3
+    energy: 2
+  - type: CainAbelCrystal
+  - type: TimedDespawn
+    lifetime: 3
+  - type: Tag
+    tags: [ HideContextMenu ]
+
+- type: entity
+  id: LavalandCainAbelSlash
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Effects/dagger_slash.rsi
+    drawdepth: Effects
+    layers:
+    - state: dagger_slash
+      shader: unshaded
+  - type: TimedDespawn
+    lifetime: 1.75
+  - type: Tag
+    tags: [ HideContextMenu ]
+
+- type: entity
+  id: LavalandCainAbelStunVisual
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Effects/effects.rsi
+    drawdepth: Effects
+    layers:
+    - state: lightning
+      shader: unshaded
+  - type: PointLight
+    color: "#dfe8ff"
+    radius: 2
+    energy: 2
+  - type: TimedDespawn
+    lifetime: 2
+  - type: Tag
+    tags: [ HideContextMenu ]
+
+- type: entity
+  id: LavalandCainAbelChainBeam
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    drawdepth: Effects
+    layers:
+    - state: chain
+      shader: unshaded
+  - type: Physics
+    canCollide: false
+  - type: Beam
+  - type: TimedDespawn
+    lifetime: 1.5
+  - type: Tag
+    tags: [ HideContextMenu ]
+
+- type: entity
+  parent: MobStatusEffectBase
+  id: LavalandStatusEffectDaggerSwinging
+  components:
+  - type: DaggerSwinging
+
+- type: entity
+  parent: MobStatusEffectBase
+  id: LavalandStatusEffectDaggerStun
+  name: dagger stun

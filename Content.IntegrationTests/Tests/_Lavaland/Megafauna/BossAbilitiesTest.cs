@@ -226,8 +226,8 @@ public sealed class BossAbilitiesTest
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(CountPrototype(entMan, "LavalandDrakeMeteor"), Is.GreaterThanOrEqualTo(9),
-                "the meteor shower should call down a 3x3 volley of meteors");
+            Assert.That(CountPrototype(entMan, "LavalandDrakeMeteor"), Is.GreaterThanOrEqualTo(25),
+                "the meteor shower should call down a 5x5 volley of meteors");
             Assert.That(CountPrototype(entMan, "LavalandLavaPool"), Is.GreaterThanOrEqualTo(25),
                 "mass fire should cover a 5x5 area with fire");
         });

@@ -3,6 +3,7 @@ achievement-category-general = General
 achievement-category-survival = Survival
 achievement-category-medical = Medical
 achievement-category-lavaland = Lavaland
+achievement-category-lavaland-bosses = Lavaland bosses
 achievement-category-antagonist = Antagonist
 achievement-category-fishing = Fishing
 

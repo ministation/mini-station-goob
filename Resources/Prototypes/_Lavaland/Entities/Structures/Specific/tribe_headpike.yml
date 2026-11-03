@@ -1,0 +1,83 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG head pike: a bone spear that a severed head can be put on as a trophy.
+
+- type: entity
+  parent: BaseStructure
+  id: TribeHeadPike
+  name: bone head pike
+  description: A bone spear with room for a grisly trophy.
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        mask:
+        - Impassable
+        layer:
+        - Opaque
+        - BulletImpassable
+  - type: Sprite
+    noRot: true
+    sprite: _Lavaland/Structures/Specific/tribe_headpike.rsi
+    layers:
+    - state: headpike-bone
+      map: ["base"]
+    - sprite: Mobs/Species/Skeleton/parts.rsi
+      state: skull_icon
+      offset: "0, 0.4"
+      map: ["head"]
+      visible: false
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.HeadPikeVisuals.HasHead:
+        head:
+          "False": { visible: false }
+          "True": { visible: true }
+  - type: ContainerContainer
+    containers:
+      head: !type:ContainerSlot
+  - type: HeadPike
+  - type: Construction
+    graph: TribeHeadPike
+    node: pike
+
+- type: constructionGraph
+  id: TribeHeadPike
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: pike
+      steps:
+      - material: Bones
+        amount: 4
+        doAfter: 2
+  - node: pike
+    entity: TribeHeadPike
+    edges:
+    - to: start
+      completed:
+      - !type:SpawnPrototype
+        prototype: MaterialBones1
+        amount: 4
+      - !type:DeleteEntity { }
+      steps:
+      - tool: Prying
+        doAfter: 2
+
+- type: construction
+  id: TribeHeadPike
+  graph: TribeHeadPike
+  startNode: start
+  targetNode: pike
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked

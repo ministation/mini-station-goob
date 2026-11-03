@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from /tg/station at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "bonfire_on_fire",
+      "delays": [
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "bonfire_rod"
+    },
+    {
+      "name": "bonfire_grill"
+    }
+  ]
+}

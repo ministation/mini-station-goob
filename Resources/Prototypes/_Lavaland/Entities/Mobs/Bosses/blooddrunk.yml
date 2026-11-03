@@ -59,6 +59,8 @@
     forgiveRange: 30.0
   - type: CombatPower
     factor: 15
+  # The boss HUD attaches to this component; the miner has no fight stages.
+  - type: MegafaunaStage
   # Megafauna AI wiring
   - type: InputMover
   - type: Input

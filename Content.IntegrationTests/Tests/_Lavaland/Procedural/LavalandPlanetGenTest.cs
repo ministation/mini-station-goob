@@ -75,7 +75,9 @@ public sealed class LavalandPlanetGenTest
             Expect("LavalandBossAshDrake", "ash drake");
             Expect("LavalandCrateDragon", "dragon chest");
             Expect("LavalandBossColossus", "colossus");
-            Expect("LavalandCrateColossus", "colossus chest");
+            // The chest is not pre-placed: it drops on death, see MegafaunaLootTest.ColossusDropsChestOnDeath.
+            Assert.That(found, Does.Not.Contain("LavalandCrateColossus"),
+                "the colossus chest must not be pre-placed on the planet");
             Expect("LavalandBossBubblegum", "bubblegum");
             // The sarcophagus is not pre-placed anymore: bubblegum drops it on death,
             // see MegafaunaLootTest.BubblegumDropsSarcophagusOnDeath.

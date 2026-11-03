@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Round start spawn point of the AshWalker job. Spawned next to the nest by AshwalkerDenSystem.
+- type: entity
+  id: SpawnPointJobAshWalker
+  parent: SpawnPointJobBase
+  name: ash walker
+  suffix: Lavaland
+  components:
+  - type: SpawnPoint
+    job_id: AshWalker
+  - type: Sprite
+    layers:
+    - state: green

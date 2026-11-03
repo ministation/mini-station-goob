@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Goob Station Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: achievementCategory
   id: Milestones
   name: achievement-category-milestones
@@ -22,6 +26,11 @@
   id: Lavaland
   name: achievement-category-lavaland
   priority: 40
+
+- type: achievementCategory
+  id: LavalandBosses
+  name: achievement-category-lavaland-bosses
+  priority: 41
 
 - type: achievementCategory
   id: Antagonist

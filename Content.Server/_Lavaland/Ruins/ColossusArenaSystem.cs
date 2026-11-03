@@ -5,13 +5,12 @@ using System.Numerics;
 namespace Content.Server._Lavaland.Ruins;
 
 /// <summary>
-/// Builds the colossus arena landmark: a pristine stone arena with the boss
-/// and its chest.
+/// Builds the colossus arena landmark: a pristine stone arena with the boss.
+/// The chest is not put here, it drops only when the boss dies.
 /// </summary>
 public sealed class ColossusArenaSystem : EntitySystem
 {
     private const string StoneTile = "LavalandStoneTilePristine";
-    private const string Chest = "LavalandCrateColossus";
     private const string Boss = "LavalandBossColossus";
 
     public override void Initialize()
@@ -36,7 +35,6 @@ public sealed class ColossusArenaSystem : EntitySystem
         }
 
         Spawn(Boss, baseCoords);
-        Spawn(Chest, baseCoords.Offset(comp.ChestOffset));
     }
 }
 
@@ -48,10 +46,4 @@ public sealed partial class ColossusArenaSpawnerComponent : Component
     /// </summary>
     [DataField]
     public int ArenaRadius = 6;
-
-    /// <summary>
-    /// Offset of the chest from the spawner, in tiles.
-    /// </summary>
-    [DataField]
-    public Vector2i ChestOffset = (0, 4);
 }

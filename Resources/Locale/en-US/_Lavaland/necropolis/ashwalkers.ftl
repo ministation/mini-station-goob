@@ -4,12 +4,17 @@
 
 ent-MobAshwalker = ash walker
     .desc = A mutated creature born from the Necropolis. It is hostile to strangers.
+ent-MobAshwalkerPlayable = ash walker
+    .desc = A mutated creature born from the Necropolis. It is hostile to strangers.
 ent-LavalandAshwalkerEgg = ash walker egg
     .desc = A large, veiny egg. Something is stirring inside.
 ent-LavalandAshwalkerNest = ash walker nest
     .desc = A pulsating tendril nest, wreathed in ash. It hungers for corpses.
 ent-LavalandAshwalkerDenSpawner = ash walker den spawner
     .desc = { ent-MarkerBase.desc }
+ent-SpawnPointJobAshWalker = ash walker spawn point
+    .desc = { ent-MarkerBase.desc }
+ent-LavalandTribeStation = Ash Walker Tribe
 
 ghost-role-information-ashwalker-name = Ash Walker
 ghost-role-information-ashwalker-description = You are a member of the ash walker tribe. Lavaland's air is your air, so you need no internals. Guard the nest, feed it corpses of intruders, and drive miners away from your lands.

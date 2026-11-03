@@ -44,8 +44,7 @@
       path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
     damage:
       types:
-        Slash: 20
-        Structural: 150
+        Slash: 40
   - type: Tag
     tags:
     - CannotSuicide

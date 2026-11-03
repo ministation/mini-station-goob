@@ -111,6 +111,8 @@
     cost: 3500
   - id: MiningDrillDiamond
     cost: 4000 #Mostly for flexing
+  - id: ClothingOuterHardsuitMaxim
+    cost: 6000 # stronger armor and no slowdown than the luxury suit, so it sits above it
   - id: ClothingNeckEnsembleSalvager #Earn. It.
     cost: 10000
   - id: CrateCargoClarkeAssembly

@@ -26,7 +26,7 @@
     factions:
     - SimpleHostile
   - type: MegafaunaStage
-    maxStage: 3 # MobPhases stages, the last one is the final judgement
+    maxStage: 1 # no stage counter on the HUD, MobPhases still gates the AI attacks
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Bosses/96x96.rsi
@@ -38,9 +38,7 @@
       path: /Audio/Effects/demon_attack1.ogg
     damage:
       types:
-        Blunt: 20
-        Slash: 15
-        Structural: 150
+        Blunt: 40
   - type: Tag
     tags:
     - CannotSuicide

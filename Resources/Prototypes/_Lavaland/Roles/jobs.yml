@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: playTimeTracker
+  id: JobAshWalker
+
+# Round start role of the ash walker tribe. The body comes from MobAshwalkerPlayable,
+# the gear is applied by AshwalkerTribeSystem to every tribe member.
+- type: job
+  id: AshWalker
+  name: job-name-ashwalker
+  description: job-description-ashwalker
+  playTimeTracker: JobAshWalker
+  startingGear: AshWalker
+  jobEntity: MobAshwalkerPlayable
+  icon: JobIconAshwalker
+  setPreference: true
+  joinNotifyCrew: false
+  canBeAntag: false # the tribe is not part of the station crew
+  supervisors: job-supervisors-nobody

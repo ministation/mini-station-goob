@@ -224,7 +224,8 @@ public sealed class EliteParityTest
                     Child = "MobLavalandGoliathChild",
                     Count = 2,
                 };
-                entMan.EventBus.RaiseLocalEvent(broodmother, ev);
+                // Action events are broadcast subscriptions, a plain directed raise never reaches them.
+                entMan.EventBus.RaiseLocalEvent(broodmother, (object) ev, broadcast: true);
             }
         });
 
@@ -273,7 +274,8 @@ public sealed class EliteParityTest
                     Target = coords.Offset(new Vector2(i + 1, 0)),
                     Turret = "LavalandLegionBoneTurret",
                 };
-                entMan.EventBus.RaiseLocalEvent(legionnaire, ev);
+                // Action events are broadcast subscriptions, a plain directed raise never reaches them.
+                entMan.EventBus.RaiseLocalEvent(legionnaire, (object) ev, broadcast: true);
             }
         });
 

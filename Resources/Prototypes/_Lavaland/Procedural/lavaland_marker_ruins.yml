@@ -7,6 +7,7 @@
   priority: -2
   guaranteed: true
   minDistance: 70
+  maxDistance: 120
 
 - type: lavalandMarkerRuin
   id: BubblegumLair
@@ -15,6 +16,7 @@
   priority: -2
   guaranteed: true
   minDistance: 75
+  maxDistance: 120
 
 - type: lavalandMarkerRuin
   id: DrakeDen
@@ -23,6 +25,7 @@
   priority: -2
   guaranteed: true
   minDistance: 75
+  maxDistance: 120
 
 - type: lavalandMarkerRuin
   id: ColossusArena
@@ -31,6 +34,7 @@
   priority: -2
   guaranteed: true
   minDistance: 85
+  maxDistance: 120
 
 - type: lavalandMarkerRuin
   id: BloodDrunkDen
@@ -39,6 +43,7 @@
   priority: -2
   guaranteed: true
   minDistance: 70
+  maxDistance: 120
 
 - type: lavalandMarkerRuin
   id: EliteTumor
@@ -47,6 +52,7 @@
   priority: -2
   guaranteed: true
   minDistance: 65
+  maxDistance: 120
 
 - type: lavalandMarkerRuin
   id: AshwalkerDen
@@ -55,6 +61,7 @@
   priority: -2
   guaranteed: true
   minDistance: 80
+  maxDistance: 120
 
 - type: lavalandMarkerRuin
   id: SeedVault
@@ -63,6 +70,7 @@
   priority: -2
   guaranteed: true
   minDistance: 75
+  maxDistance: 120
 
 - type: lavalandMarkerRuin
   id: WishgranterShrine
@@ -71,6 +79,7 @@
   priority: -2
   guaranteed: true
   minDistance: 65
+  maxDistance: 120
 
 - type: lavalandMarkerRuin
   id: OreVent
