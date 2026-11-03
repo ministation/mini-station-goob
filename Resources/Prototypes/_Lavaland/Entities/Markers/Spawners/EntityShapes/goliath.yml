@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Broodmother slam: a patch of goliath tentacles erupts where she lands,
+# instead of the legion skull blast she used to borrow.
+- type: entity
+  parent: MarkerBase
+  id: LavalandBroodmotherTentaclePatch
+  name: broodmother tentacle patch spawner
+  categories: [ HideSpawnMenu, Spawner ]
+  components:
+  - type: Sprite
+    state: red
+  - type: ShapeSpawner
+    spawn: EffectGoliathTentacleSpawn
+    alignCoords: true
+    shape: !type:NestedEntityShape
+      id: RookCross
+      size: 3

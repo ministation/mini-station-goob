@@ -398,6 +398,7 @@
   - type: Tag
     tags:
     - CannotSuicide
+    - Goliath # does not stun herself with her own tentacle patch
   - type: CombatMode
   - type: MovementSpeedModifier
     baseWalkSpeed: 3
@@ -443,8 +444,8 @@
   - type: Anger
     totalHp: 1000
   - type: MegafaunaBlink
-    spawnOnTarget: LavalandLegionChargeBurst
-    spawnOnUsed: LavalandLegionChargeBurst
+    spawnOnTarget: LavalandBroodmotherTentaclePatch
+    spawnOnUsed: LavalandBroodmotherTentaclePatch
   - type: MegafaunaRejuvenate
   - type: SpawnLootOnDeath
     table: !type:NestedSelector
