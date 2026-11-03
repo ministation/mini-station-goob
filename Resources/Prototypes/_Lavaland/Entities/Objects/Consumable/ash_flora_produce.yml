@@ -176,6 +176,7 @@
   parent: FoodProduceBase
   description: A spikey, round cluster of prickly star cacti.
   components:
+  - type: Edible
   - type: Produce
     seedId: lavalandStarCactus
   - type: Sprite
@@ -188,12 +189,14 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 10
+        maxVol: 14
         reagents:
         - ReagentId: Nutriment
           Quantity: 2
         - ReagentId: Water
           Quantity: 2
+        - ReagentId: VitriumFroth
+          Quantity: 10
 
 - type: entity
   name: mushroom shavings

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: entity
   name: fruiting cacti
   parent: FoodProduceBase
@@ -21,4 +25,4 @@
         - ReagentId: Water # Uhh, cacti are juicy, right?
           Quantity: 5
         - ReagentId: VitriumFroth
-          Quantity: 8
+          Quantity: 12

@@ -5,13 +5,12 @@ using System.Numerics;
 namespace Content.Server._Lavaland.Ruins;
 
 /// <summary>
-/// Builds the ash drake den landmark: a scorched stone arena with the boss
-/// and a dragon chest with its hoard.
+/// Builds the ash drake den landmark: a scorched stone arena with the boss.
+/// The chest is not put here, it drops only when the boss dies.
 /// </summary>
 public sealed class DrakeDenSystem : EntitySystem
 {
     private const string StoneTileBurnt = "LavalandStoneTileBurnt";
-    private const string DragonChest = "LavalandCrateDragon";
     private const string Boss = "LavalandBossAshDrake";
 
     public override void Initialize()
@@ -36,7 +35,6 @@ public sealed class DrakeDenSystem : EntitySystem
         }
 
         Spawn(Boss, baseCoords);
-        Spawn(DragonChest, baseCoords.Offset(comp.ChestOffset));
     }
 }
 
@@ -48,10 +46,4 @@ public sealed partial class DrakeDenSpawnerComponent : Component
     /// </summary>
     [DataField]
     public int ArenaRadius = 4;
-
-    /// <summary>
-    /// Offset of the dragon chest from the spawner, in tiles.
-    /// </summary>
-    [DataField]
-    public Vector2i ChestOffset = (0, 3);
 }

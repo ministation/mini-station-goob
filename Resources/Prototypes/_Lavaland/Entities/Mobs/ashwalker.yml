@@ -20,6 +20,11 @@
     randomizeName: false
   # TG ashwalkers have Lavaland lungs and breathe the local air without internals.
   - type: BreathingImmunity
+  - type: NightVision # Goobstation - ashwalkers see in the Lavaland night
+    color: "#808080"
+    activateSound: null
+    deactivateSound: null
+    isActive: true
   - type: LavaImmunity # Mini: heat damage is nullified, fire does nothing
   - type: AshwalkerTribeMember # joins the tribe of the nearest nest when it gets a mind
   - type: MeleeWeapon
