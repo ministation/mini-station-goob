@@ -423,7 +423,8 @@ public sealed partial class WoundSystem
         WoundableComponent? woundableComponent = null,
         WoundComponent? woundComponent = null)
     {
-        if (!_timing.IsFirstTimePredicted
+        if (TerminatingOrDeleted(target)
+            || !_timing.IsFirstTimePredicted
             || !Resolve(target, ref woundableComponent)
             || !Resolve(wound, ref woundComponent)
             || woundableComponent.Wounds == null
