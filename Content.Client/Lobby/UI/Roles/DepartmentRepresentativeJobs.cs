@@ -24,6 +24,7 @@ public static class DepartmentRepresentativeJobs
         ["Typan2"] = "TypanBorg",
         ["Legal"] = "Lawyer",
         ["Specific"] = "Reporter",
+        ["Ashwalker"] = "AshWalker",
     };
 
     public static ProtoId<JobPrototype>? TryGetRepresentative(string departmentId)
