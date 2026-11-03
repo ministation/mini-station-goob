@@ -39,6 +39,9 @@ jobs:
       uses: actions/labeler@v5
 
     - name: Label size
+      # Cosmetic label; GitHub returns 422 "diff is taking too long" for very large PRs
+      # (e.g. map updates), which must not fail the whole Labels job.
+      continue-on-error: true
       if: ${{ !cancelled() && github.event_name == 'pull_request_target' && contains(fromJSON('["opened", "synchronize", "reopened"]'), github.event.action) }}
       uses: "pascalgn/size-label-action@v0.5.5"
       env:
