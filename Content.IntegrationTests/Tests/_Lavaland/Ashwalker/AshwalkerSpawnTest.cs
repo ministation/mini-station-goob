@@ -21,7 +21,7 @@ public sealed class AshwalkerSpawnTest
     {
         ("jumpsuit", "ClothingUniformJumpsuitGladiator"),
         ("outerClothing", "ClothingOuterArmorBone"),
-        ("back", "SpearBone"),
+        ("back", "AshwalkerSatchel"),
         ("head", "ClothingHeadHelmetBone"),
         ("shoes", "ClothingShoesCult"),
     };
