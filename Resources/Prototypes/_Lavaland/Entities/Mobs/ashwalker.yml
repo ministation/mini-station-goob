@@ -26,6 +26,10 @@
     deactivateSound: null
     isActive: true
   - type: LavaImmunity # Mini: heat damage is nullified, fire does nothing
+  - type: StepTriggerImmune # Mini: TG ashwalkers walk over lava without the slow or the ignite
+    whitelist:
+      types:
+      - Lava
   - type: AshwalkerTribeMember # joins the tribe of the nearest nest when it gets a mind
   - type: MeleeWeapon
     altDisarm: false
