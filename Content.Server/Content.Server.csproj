@@ -15,6 +15,7 @@
     <PackageReference Include="NetCord" />
     <PackageReference Include="prometheus-net" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" />
+    <PackageReference Include="Serilog" /> <!-- Mini: перехват логов net для автобана -->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Content.Packaging\Content.Packaging.csproj" />

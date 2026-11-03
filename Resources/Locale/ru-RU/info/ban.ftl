@@ -96,3 +96,4 @@ cmd-findalts-entry = { $player } ({ $userId }), последний вход { $l
 cmd-findalts-ban = АКТИВНЫЙ БАН #{ $banId }: «{ $reason }»
 cmd-findalts-ban-none = активного бана нет
 ban-reason-linked-account = Твинк забаненного аккаунта. Причина бана основного аккаунта: «{ $reason }»
+ban-reason-malformed-packet = Мусорные сетевые пакеты (модифицированный клиент)
