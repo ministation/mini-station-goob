@@ -87,11 +87,11 @@ public sealed partial class SkillsSystem : SharedSkillsSystem
 
     private void EnsureSkillsInstance(EntityUid uid, EntitySkillsComponent skills)
     {
-        if (_ownedSkillSets.Add(skills.Skills))
-            return;
-
-        skills.Skills = new HashSet<SkillTypes>(skills.Skills);
-        Dirty(uid, skills);
+        // HashSet<HashSet<T>> compares by reference, so a false Add() only means this exact
+        // instance is already owned. Cloning and Dirty()-ing here (the old behavior) made
+        // every HasSkill call - including MoverController's per-tick shuttle pilot check -
+        // allocate a new set, mark the component dirty for PVS and grow _ownedSkillSets
+        // without bound, ballooning the heap until the watchdog killed the server.
         _ownedSkillSets.Add(skills.Skills);
     }
 
