@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Goob Station Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: achievement
   id: WelcomeAboard
   name: achievement-welcome-aboard-name
@@ -33,17 +37,18 @@
   condition: !type:PlaytimeCondition
     count: 10
 
-- type: achievement
-  id: PumpkinGhost
-  name: achievement-pumpkin-ghost-name
-  description: achievement-pumpkin-ghost-desc
-  category: Milestones
-  icon: { sprite: _Mini/Ghosts/pumpkin_ghost.rsi, state: icon }
-  rarity: Epic
-  condition: !type:HalloweenPlaytimeCondition
-    count: 10
-  # Тема призрака больше не выдаётся автоматически: в магазине призраков
-  # появляется кнопка "Собрать" (покупка за наигранное время).
+# Хэллоуинское достижение выключено до праздника, лежит на будущее.
+#- type: achievement
+#  id: PumpkinGhost
+#  name: achievement-pumpkin-ghost-name
+#  description: achievement-pumpkin-ghost-desc
+#  category: Milestones
+#  icon: { sprite: _Mini/Ghosts/pumpkin_ghost.rsi, state: icon }
+#  rarity: Epic
+#  condition: !type:HalloweenPlaytimeCondition
+#    count: 10
+#  # Тема призрака больше не выдаётся автоматически: в магазине призраков
+#  # появляется кнопка "Собрать" (покупка за наигранное время).
 
 - type: achievement
   id: PlaytimeHundred

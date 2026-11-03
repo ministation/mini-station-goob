@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Mini Station - собственные фоны лобби.
-- type: lobbyBackground
-  id: miniHalloween
-  background: /Textures/_Mini/Lobby/halloween.rsi
-  name: Halloween Graveyard
-  artist: Mini Station
+# Хэллоуинское кладбище выключено до праздника, профиль лежит на будущее.
+#- type: lobbyBackground
+#  id: miniHalloween
+#  background: /Textures/_Mini/Lobby/halloween.rsi
+#  name: Halloween Graveyard
+#  artist: Mini Station

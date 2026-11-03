@@ -1,22 +1,28 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # Кастомные темы призраков, покупаемые за монеты в магазине призраков
 # Price = 0 = обычный призрак (всегда доступен)
 # Price > 0 = покупается в магазине
 # playtimeHours > 0 = покупается за наигранное время, а не за монеты
 # Ценовая политика: единый индекс около +20% к прежним ценам, цены от 15 до 99 кратны 5, от 100 кратны 10.
 
-- type: customGhost
-  id: GhostThemePumpkin
-  name: "Тыквенный призрак"
-  description: "Дух Хэллоуина. Гасит лампочки."
-  price: 0
-  playtimeHours: 10
-  order: 0
-  sprite: _Mini/Ghosts/pumpkin_ghost.rsi
-  alpha: 0.7
-  ghostName: "Тыквенный призрак"
-  components:
-  - type: PumpkinGhost
-    action: ActionPumpkinBreakLight
+# Хэллоуинская тема выключена до праздника. Способность "Погасить лампочку"
+# удалена по просьбе владельца, для возврата темы нужна новая способность.
+#- type: customGhost
+#  id: GhostThemePumpkin
+#  name: "Тыквенный призрак"
+#  description: "Дух Хэллоуина. Гасит лампочки."
+#  price: 0
+#  playtimeHours: 10
+#  order: 0
+#  sprite: _Mini/Ghosts/pumpkin_ghost.rsi
+#  alpha: 0.7
+#  ghostName: "Тыквенный призрак"
+#  components:
+#  - type: PumpkinGhost
+#    action: ActionPumpkinBreakLight
 
 - type: customGhost
   id: GhostThemeDefault

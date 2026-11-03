@@ -1,8 +1,14 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Server.Afk;
 using Content.Server.Players.PlayTimeTracking;
+using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Players.PlayTimeTracking;
+using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 
 namespace Content.Server._Mini.CustomGhost;
@@ -20,6 +26,7 @@ public sealed class HalloweenPlaytimeSystem : EntitySystem
 
     [Dependency] private readonly PlayTimeTrackingManager _playTime = default!;
     [Dependency] private readonly IAfkManager _afk = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     public override void Initialize()
     {
@@ -39,6 +46,10 @@ public sealed class HalloweenPlaytimeSystem : EntitySystem
     // админ в лобби или призраком хэллоуинское время не набирает.
     private void CalcTrackers(ICommonSession player, HashSet<string> trackers)
     {
+        // Хэллоуин выключен до праздника: время не набирается, трекер не нужен.
+        if (!_cfg.GetCVar(MiniCCVars.HalloweenEnabled))
+            return;
+
         if (_afk.IsAfk(player))
             return;
 
