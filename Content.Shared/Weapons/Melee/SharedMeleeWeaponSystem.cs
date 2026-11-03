@@ -758,9 +758,10 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem // Goob - p
 
         var attackCoords = GetCoordinates(ev.Coordinates);
 
-        // the client may still reference an entity that has already been deleted
+        // the client may still reference an entity that has already been deleted;
+        // fall back to the user so the swing still happens instead of silently disappearing
         if (!TryComp<TransformComponent>(attackCoords.EntityId, out _))
-            return false;
+            attackCoords = userXform.Coordinates;
 
         var targetMap = TransformSystem.ToMapCoordinates(attackCoords);
 
