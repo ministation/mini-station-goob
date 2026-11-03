@@ -313,7 +313,12 @@ public sealed class GhostRoleSystem : EntitySystem
     private void RemoveRaffleAndUpdateEui(EntityUid entityUid, GhostRoleRaffleComponent raffle)
     {
         _ghostRoleRaffles.Remove(raffle.Identifier);
-        RemComp(entityUid, raffle);
+
+        // Takeover can already remove the raffle while the raffle update loop still holds the old
+        // component reference, and removing it again logs "already deleted component" on every win.
+        if (!raffle.Deleted)
+            RemComp(entityUid, raffle);
+
         UpdateAllEui();
     }
 
