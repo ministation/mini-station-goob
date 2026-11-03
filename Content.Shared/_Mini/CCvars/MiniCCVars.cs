@@ -36,6 +36,29 @@ public sealed class MiniCCVars
         CVarDef.Create("gcf_auto.frequency", 300f);
 
     /*
+	* Автобан за мусорные пакеты Lidgren (#615)
+	*/
+
+    /// <summary>
+    ///     Банить ли IP, с которого сыплются мусорные пакеты Lidgren.
+    /// </summary>
+    public static readonly CVarDef<bool> NetMalformedAutoban =
+        CVarDef.Create("net.malformed_autoban", true, CVar.SERVER);
+
+    /// <summary>
+    ///     Сколько мусорных пакетов с одного IP за окно времени ведут к бану.
+    ///     Один битый в пути пакет или разовый скан порога не набирают.
+    /// </summary>
+    public static readonly CVarDef<int> NetMalformedAutobanThreshold =
+        CVarDef.Create("net.malformed_autoban_threshold", 3, CVar.SERVER);
+
+    /// <summary>
+    ///     Окно подсчёта мусорных пакетов, секунды.
+    /// </summary>
+    public static readonly CVarDef<int> NetMalformedAutobanWindow =
+        CVarDef.Create("net.malformed_autoban_window", 600, CVar.SERVER);
+
+    /*
 	* InfoLinks
 	*/
 
