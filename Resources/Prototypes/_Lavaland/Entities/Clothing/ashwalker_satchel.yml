@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Carry bag of the ash walker tribe: a rugged brown satchel, the closest bag
+# sprite the repo has to a tribal hide bag. No dedicated basket texture exists.
+- type: entity
+  name: ashwalker satchel
+  description: A rugged hide satchel for carrying the tribe's catch.
+  parent: ClothingBackpack
+  id: AshwalkerSatchel
+  components:
+  - type: Sprite
+    sprite: Clothing/Back/Satchels/salvage.rsi

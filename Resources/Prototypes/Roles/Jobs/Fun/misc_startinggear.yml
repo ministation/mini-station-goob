@@ -178,7 +178,7 @@
   equipment:
     jumpsuit: ClothingUniformJumpsuitGladiator
     outerClothing: ClothingOuterArmorBone
-    back: AshwalkerBasket
+    back: AshwalkerSatchel
     head: ClothingHeadHelmetBone
     shoes: ClothingShoesCult
   inhand:
