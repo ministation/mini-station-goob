@@ -114,7 +114,14 @@ public abstract class SharedRoleSystem : EntitySystem
 
         // Can't have someone get paid for two jobs now, can we
         if (MindHasRole<JobRoleComponent>((mindId, mind), out var jobRole)
-            && jobRole.Value.Comp1.JobPrototype != jobPrototype)
+            && jobRole.Value.Comp1.JobPrototype == jobPrototype)
+        {
+            // The mind already carries exactly this job role; adding another entity would stack
+            // duplicates when a mind re-attaches to a body (e.g. an ash walker returned by the nest).
+            return;
+        }
+
+        if (jobRole is not null && jobRole.Value.Comp1.JobPrototype != jobPrototype)
         {
             _adminLogger.Add(LogType.Mind,
                 LogImpact.Low,
