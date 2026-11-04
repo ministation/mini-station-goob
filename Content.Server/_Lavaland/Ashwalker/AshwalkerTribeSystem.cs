@@ -85,14 +85,16 @@ public sealed class AshwalkerTribeSystem : EntitySystem
     // Gear is applied once per body at spawn: a re-taken ghost role must not stack a second kit.
     private void OnMemberMapInit(Entity<AshwalkerTribeMemberComponent> ent, ref MapInitEvent args)
     {
-        // Body parts come from the body's own MapInit, so hands do not exist yet. Apply the kit
-        // one tick later, otherwise the in-hand spear is left lying on the floor.
+        // The body's hands (child body parts) are only added to HandsComponent after this entity's
+        // own MapInit, so SetOutfit right here cannot put the bone spear inhand: TryPickup fails and
+        // the spear is left orphaned at the coordinates (it also breaks the prototype sweep count).
+        // Defer by one tick, when the body is fully initialized.
         Timer.Spawn(TimeSpan.Zero, () =>
         {
-            if (TerminatingOrDeleted(ent.Owner))
+            if (!EntityManager.EntityExists(ent))
                 return;
 
-            _outfit.SetOutfit(ent.Owner, TribalGear);
+            _outfit.SetOutfit(ent, TribalGear);
         });
     }
 

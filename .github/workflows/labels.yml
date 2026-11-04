@@ -35,6 +35,9 @@ jobs:
         commentOnDirty: "This pull request has conflicts, please resolve those before we can evaluate the pull request."
 
     - name: Label by changed files
+      # Cosmetic label; GitHub returns 422 "diff is taking too long" for very large PRs
+      # (e.g. map updates), which must not fail the whole Labels job.
+      continue-on-error: true
       if: ${{ !cancelled() && github.event_name == 'pull_request_target' && contains(fromJSON('["opened", "synchronize", "reopened"]'), github.event.action) }}
       uses: actions/labeler@v5
 

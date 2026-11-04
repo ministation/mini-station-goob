@@ -38,6 +38,11 @@ public sealed class PuzzleRoomTest
 
             foreach (var uid in entMan.GetEntities())
             {
+                // The pool is shared with other tests: only count entities on this test's map,
+                // otherwise leftovers from other tests inflate the counts.
+                if (entMan.GetComponent<TransformComponent>(uid).MapID != testMap.MapId)
+                    continue;
+
                 if (!entMan.TryGetComponent<MetaDataComponent>(uid, out var meta) || meta.EntityPrototype is not { } proto)
                     continue;
 
