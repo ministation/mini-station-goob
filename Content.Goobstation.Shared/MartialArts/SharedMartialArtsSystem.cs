@@ -109,6 +109,7 @@ public abstract partial class SharedMartialArtsSystem : EntitySystem
         InitializeNinjutsu();
         InitializeHellRip();
         InitializeTwilight();
+        InitializeHosBoxing(); // Mini
         InitializeMimejutsu(); // CorvaxGoob
         InitializeCanPerformCombo();
 

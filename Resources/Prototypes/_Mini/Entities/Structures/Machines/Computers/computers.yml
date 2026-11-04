@@ -425,3 +425,27 @@
     radius: 1.5
     energy: 1.6
     color: "#f4ffad"
+
+# mini-station: терминал арсенала ГСБ — одноразовый выбор между DT-2 «Правосудие» и боксом «Кулак Правосудия»
+- type: entity
+  parent: [BaseComputer, BaseSetSelector]
+  id: MiniHosArsenalTerminal
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: security
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: SetSelector
+    possibleSets:
+    - MiniHosJusticeSet
+    - MiniHosBoxingSet
+    maxSelectedSets: 1
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#c94242"

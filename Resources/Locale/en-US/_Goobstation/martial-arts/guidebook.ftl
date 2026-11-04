@@ -9,3 +9,5 @@ guide-entry-capoeira = Capoeira
 guide-entry-ninjutsu = Ninjutsu
 guide-entry-dragon-kung-fu = Dragon Kung Fu
 guide-entry-twilight = Twilight
+
+guide-entry-hosboxing = Fist of Justice
