@@ -47,10 +47,12 @@ public sealed class MiniCCVars
 
     /// <summary>
     ///     Сколько мусорных пакетов с одного IP за окно времени ведут к бану.
-    ///     Один битый в пути пакет или разовый скан порога не набирают.
+    ///     Lidgren схлопывает одинаковые строки до 5 штук за 10 секунд на адрес,
+    ///     поэтому 200 это минимум ~3 минуты непрерывного флуда с адреса: одиночная
+    ///     битая датаграмма, скан портов или всплеск от обычного клиента не набирают.
     /// </summary>
     public static readonly CVarDef<int> NetMalformedAutobanThreshold =
-        CVarDef.Create("net.malformed_autoban_threshold", 3, CVar.SERVER);
+        CVarDef.Create("net.malformed_autoban_threshold", 200, CVar.SERVER);
 
     /// <summary>
     ///     Окно подсчёта мусорных пакетов, секунды.

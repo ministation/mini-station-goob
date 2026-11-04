@@ -23,11 +23,12 @@ namespace Content.Server._Mini.Administration;
 ///     Named library-сообщения обычных клиентов (Ping, Pong, Acknowledge) не трогаем,
 ///     иначе пришлось бы банить всех.
 ///
-///     Хардненинг против ложных банов: срабатывает не с первого пакета, а после
-///     порога ударов за окно времени (одна битая в пути датаграмма или разовый
-///     скан бан не дают), гейтится CVar'ом и пишет в лог подключённых с этого
-///     адреса игроков. Флуд с адреса живой сессии банится на общих основаниях —
-///     модифицированный клиент обычно и есть автор флуда.
+///     Хардненинг против ложных банов: источник UDP можно подделать, а мусор на
+///     игровой порт шлют и обычные клиенты (например, HTTP/3-запросы к тому же
+///     порту), поэтому бан выдаётся только за астрономический флуд: порог ударов
+///     за окно времени держится выше того, что даёт всплеск от обычного клиента,
+///     а сам бан временный, чтобы ошибочное срабатывание сходило само и его мог
+///     снять админ. В лог пишутся подключённые с адреса игроки.
 /// </summary>
 public sealed class MalformedPacketAutoBanSystem : EntitySystem
 {
@@ -46,8 +47,11 @@ public sealed class MalformedPacketAutoBanSystem : EntitySystem
     private static readonly Regex EndPointRx =
         new(@"from (?:\[([0-9a-fA-F:.]+)\]|([0-9.]+)):\d+", RegexOptions.Compiled);
 
+    // Временный бан: ложное срабатывание не должно оставлять игрока в пермаче.
+    private const int BanMinutes = 30;
+
     private readonly ConcurrentQueue<IPAddress> _pending = new();
-    private readonly HashSet<IPAddress> _banned = new();
+    private readonly Dictionary<IPAddress, long> _bannedUntil = new();
 
     private readonly object _strikesLock = new();
     private readonly Dictionary<IPAddress, List<long>> _strikes = new();
@@ -84,6 +88,12 @@ public sealed class MalformedPacketAutoBanSystem : EntitySystem
                 stamps.RemoveAll(t => t < now - window);
                 if (stamps.Count == 0)
                     _strikes.Remove(address);
+            }
+
+            foreach (var (address, until) in _bannedUntil)
+            {
+                if (until <= now)
+                    _bannedUntil.Remove(address);
             }
         }
     }
@@ -123,8 +133,14 @@ public sealed class MalformedPacketAutoBanSystem : EntitySystem
     private void Ban(IPAddress address, int threshold)
     {
         // Повторные пакеты с того же адреса не должны плодить записи в базе.
-        if (!_banned.Add(address))
-            return;
+        var now = Environment.TickCount64;
+        lock (_strikesLock)
+        {
+            if (_bannedUntil.TryGetValue(address, out var until) && until > now)
+                return;
+
+            _bannedUntil[address] = now + BanMinutes * 60_000L;
+        }
 
         // Прибинтим к бану всех, кто подключён с этого адреса: админ видит,
         // кого задело, и может снять бан при ложном срабатывании.
@@ -153,6 +169,7 @@ public sealed class MalformedPacketAutoBanSystem : EntitySystem
         foreach (var (id, name) in connected)
             info.AddUser(id, name);
         info.WithSeverity(NoteSeverity.High);
+        info.WithMinutes(BanMinutes);
         _bans.CreateServerBan(info);
     }
 
