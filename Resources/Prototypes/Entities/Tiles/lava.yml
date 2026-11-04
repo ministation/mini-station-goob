@@ -41,20 +41,19 @@
     anchored: true
   - type: SyncSprite
   - type: Clickable
+  # Mini: upstream SS14 liquid lava sprites (CC-BY-SA-4.0, vladimir.s) with corner smoothing.
   - type: Sprite
-    sprite: Tiles/Planet/lava.rsi
+    sprite: Tiles/TileEntities/liquid-lava.rsi
     drawdepth: BelowFloor
-    layers:
-      - state: lava
-        shader: unshaded
   - type: Icon
-    sprite: Tiles/Planet/lava.rsi
+    sprite: Tiles/TileEntities/liquid-lava.rsi
     state: full
   - type: IconSmooth
     key: floor
     additionalKeys:
     - walls
-    base: lava
+    base: water # liquid-lava.rsi state names are water0..7, same as upstream
+    shader: unshaded
   - type: Physics
     bodyType: Static
   - type: Fixtures
