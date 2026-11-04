@@ -1,0 +1,167 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Demonic frost miner attacks, ported from TG's demonic_frost_miner.dm.
+# TG picks one of three attacks and, with 80% chance (60% while enraged), uses its easy form.
+# The enraged easy forms only double projectile speed, TG's hard forms keep their base speed.
+
+# Frost orbs: slow homing-ish orbs that burst into shrapnel after two seconds.
+- type: entity
+  id: ActionFrostMinerFrostOrbs
+  parent: BaseAction
+  name: Frost Orbs
+  description: Barrages the target with frost orbs that burst into ice shrapnel.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 6
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandFrostOrb
+      volleys: 8
+      interval: 1
+      randomSpread: 180
+      speed: 3.5
+
+- type: entity
+  id: ActionFrostMinerFrostOrbsStrong
+  parent: ActionFrostMinerFrostOrbs
+  name: Frost Orbs
+  suffix: Strong
+  components:
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandFrostOrb
+      volleys: 16
+      interval: 0.5
+      randomSpread: 180
+      speed: 3.5
+
+- type: entity
+  id: ActionFrostMinerFrostOrbsEnraged
+  parent: ActionFrostMinerFrostOrbs
+  name: Frost Orbs
+  suffix: Enraged
+  components:
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandFrostOrb
+      volleys: 8
+      interval: 1
+      randomSpread: 180
+      speed: 7
+
+# Snowball machine gun: a long spray of weak snowballs.
+- type: entity
+  id: ActionFrostMinerSnowballGun
+  parent: BaseAction
+  name: Snowball Machine Gun
+  description: Sprays a burst of snowballs at the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 1.5
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandSnowball
+      volleys: 60
+      interval: 0.1
+      randomSpread: 45
+      speed: 10.5
+
+- type: entity
+  id: ActionFrostMinerSnowballGunEnraged
+  parent: ActionFrostMinerSnowballGun
+  name: Snowball Machine Gun
+  suffix: Enraged
+  components:
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandSnowball
+      volleys: 60
+      interval: 0.1
+      randomSpread: 45
+      speed: 21
+
+# Hard snowball: dash next to the target and fire a kinetic accelerator shot.
+- type: entity
+  id: ActionFrostMinerHardSnowball
+  parent: BaseAction
+  name: Snowball Dash
+  description: Dashes at the target and fires a kinetic blast.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 12
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandFrostMinerKineticBolt
+      volleys: 1
+      interval: 1
+      speed: 18
+      blinkDelay: 0.9
+
+# Ice shotguns: alternating spread patterns, five volleys each.
+- type: entity
+  id: ActionFrostMinerIceShotgun
+  parent: BaseAction
+  name: Ice Shotgun
+  description: Fires alternating shotgun spreads of ice.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandIceBlast
+      volleys: 5
+      interval: 0.8
+      speed: 10.5
+      patterns: [[-30, -10, 10, 30], [-40, -20, 0, 20, 40]]
+
+- type: entity
+  id: ActionFrostMinerIceShotgunEnraged
+  parent: ActionFrostMinerIceShotgun
+  name: Ice Shotgun
+  suffix: Enraged
+  components:
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandIceBlast
+      volleys: 5
+      interval: 0.8
+      speed: 21
+      patterns: [[-30, -10, 10, 30], [-40, -20, 0, 20, 40]]
+
+- type: entity
+  id: ActionFrostMinerIceShotgunHard
+  parent: ActionFrostMinerIceShotgun
+  name: Circular Ice Shotgun
+  suffix: Hard
+  components:
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandIceBlast
+      volleys: 5
+      interval: 0.8
+      speed: 10.5
+      patterns: [[-30, -15, 0, 15, 30], [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]]

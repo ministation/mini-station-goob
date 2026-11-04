@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation), icons/obj/weapons/guns/projectiles.dmi",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "frost_orb"
+    },
+    {
+      "name": "ice_blast"
+    },
+    {
+      "name": "kinetic_bolt"
+    },
+    {
+      "name": "snowball"
+    }
+  ]
+}

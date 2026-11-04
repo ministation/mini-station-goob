@@ -26,6 +26,7 @@ public sealed class AggressorsSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<AggressiveComponent, DamageChangedEvent>(OnDamageChanged);
+        SubscribeLocalEvent<AggressiveComponent, DamageModifyEvent>(OnDamageModified);
         SubscribeLocalEvent<AggressiveComponent, EntityTerminatingEvent>(OnDeleted);
         SubscribeLocalEvent<AggressiveComponent, MobStateChangedEvent>(OnStateChange);
 
@@ -94,6 +95,24 @@ public sealed class AggressorsSystem : EntitySystem
             return;
 
         AddAggressor(ent, aggro.Value);
+    }
+
+    // An armor pool can eat the whole hit, then no DamageChangedEvent is raised and the boss
+    // never learns about the attacker. Hook the modify step, which runs for absorbed hits too.
+    private void OnDamageModified(Entity<AggressiveComponent> ent, ref DamageModifyEvent args)
+    {
+        // OriginalDamage keeps the incoming hit even if another handler already absorbed it.
+        if (!ent.Comp.AutoAddOnDamage
+            || _mobState.IsDead(ent.Owner)
+            || args.OriginalDamage.GetTotal() <= 0)
+            return;
+
+        if (args.Origin is not { } aggro
+            || !HasComp<ActorComponent>(aggro)
+            || ent.Comp.Aggressors.Contains(aggro))
+            return;
+
+        AddAggressor(ent, aggro);
     }
 
     private void OnDeleted(Entity<AggressiveComponent> ent, ref EntityTerminatingEvent args)

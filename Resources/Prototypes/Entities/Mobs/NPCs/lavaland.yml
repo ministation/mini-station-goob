@@ -83,6 +83,14 @@
   id: MobWatcherLavaland
   parent: MobWatcherBase
   components:
+  # Mini: crusher trophy, TG gates it on the killing blow being a crusher hit.
+  - type: SpawnLootOnDeath
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandCrusherTrophyWatcherWing
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -106,6 +114,14 @@
   parent: MobWatcherBase
   name: icewing watcher
   components:
+  # Mini: crusher trophy, TG gates it on the killing blow being a crusher hit.
+  - type: SpawnLootOnDeath
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandCrusherTrophyIceWing
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -132,6 +148,14 @@
   parent: MobWatcherBase
   name: magmawing watcher
   components:
+  # Mini: crusher trophy, TG gates it on the killing blow being a crusher hit.
+  - type: SpawnLootOnDeath
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandCrusherTrophyMagmaWing
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# Ash drake, port of TG's megafauna: fire breath cone, lava pools, swoop slams.
+# Ash drake, port of TG's megafauna: fire breath cone, lava pools, swoop slams,
+# and a phase two firestorm of counter-rotating flame spirals.
 - type: entity
   name: ash drake
   id: LavalandBossAshDrake
@@ -25,8 +26,10 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+  - type: PreventChasmFalling
+    deleteOnUse: false
   - type: MegafaunaStage
-    maxStage: 1
+    maxStage: 2 # phase 2 at half health, see MobPhases below
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Bosses/96x96.rsi
@@ -44,14 +47,16 @@
       path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
     damage:
       types:
-        Slash: 45
+        Slash: 50
+        Heat: 15
+      armorPenetration: 0.35 # TG's drake has 40% melee armor piercing, 35% here
   - type: Tag
     tags:
     - CannotSuicide
   - type: CombatMode
   - type: MovementSpeedModifier
-    baseWalkSpeed: 3
-    baseSprintSpeed: 3.5
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 4
   - type: MobThresholds
     thresholds:
       0: Alive
@@ -88,6 +93,7 @@
     - ActionDrakeMeteors
     - ActionDrakeMassFire
     - ActionDrakeEruption
+    - ActionDrakeFirestorm
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0
@@ -108,13 +114,17 @@
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
+  - type: MobPhases
+    phaseThresholds:
+      0: 1
+      1400: 2 # below half health the drake enrages and unlocks the firestorm
   - type: MegafaunaBlink
     spawnOnTarget: LavalandDrakeSlamBurst
     spawnOnUsed: LavalandDrakeSlamBurst
   # Every swoop dash leaves burning ground along the path it crossed.
   - type: MegafaunaFireTrail
     trail: LavalandDrakeFireTrail
-    step: 1.5
+    step: 1
   - type: MegafaunaRejuvenate
   - type: SpawnLootOnDeath
     table: !type:AllSelector

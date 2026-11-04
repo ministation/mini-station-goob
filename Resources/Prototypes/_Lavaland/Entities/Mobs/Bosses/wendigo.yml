@@ -1,0 +1,140 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Wendigo, port of TG's icemoon megafauna: expands a ground slam around itself,
+# teleports next to its target, fires shockwave patterns from the arena center and
+# screams a dizzying roar before every shockwave. It stomps the ground while moving.
+- type: entity
+  name: wendigo
+  id: LavalandBossWendigo
+  parent: LavalandMobBase
+  description: A mythological man-eating beast, its empty eye sockets track you with unsatiated hunger.
+  components:
+  - type: Physics
+    bodyType: KinematicController
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1,-1,1,1"
+        density: 1000
+        mask:
+        - LargeMobMask
+        layer:
+        - LargeMobLayer
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: PreventChasmFalling
+    deleteOnUse: false
+  - type: MegafaunaStage
+    maxStage: 2 # phase 2 at half health, see MobPhases below
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/Bosses/wendigo.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: wendigo
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: wendigo
+      Dead:
+        Base: wendigo_dead
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Effects/demon_attack1.ogg
+    damage:
+      types:
+        Slash: 40
+      armorPenetration: 0.4 # TG's wendigo has 40% melee armor piercing
+  - type: Tag
+    tags:
+    - CannotSuicide
+  - type: CombatMode
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 4
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      2500: Dead
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Hierophant
+  - type: BossMusic # TG has no wendigo track, the shared miniboss theme fits
+    soundId: Miniboss
+  - type: WeatherImmune # TG wendigo is immune to the icemoon snowstorm
+  # The fork gives every staged boss a projectile dodge, TG's wendigo has none.
+  - type: MegafaunaDodge
+    enabled: false
+  - type: CombatPower # Goobstation
+    factor: 25 # times more dangerous than a crew-member
+  - type: Aggressive # also required component for aggro checking
+    forgiveRange: 20.0
+  # Megafauna AI wiring, same driver as the other lavaland bosses.
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: ActionGrant
+    actions:
+    - ActionWendigoGroundSlam
+    - ActionWendigoTeleport
+    - ActionWendigoCircle
+    - ActionWendigoCircleEnraged
+    - ActionWendigoSpiral
+    - ActionWendigoSpiralEnraged
+    - ActionWendigoWave
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: GPS
+    gpsName: Berserk Signal
+    enabled: true
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.7
+    selector: !type:NestedMegafaunaSelector
+      id: Wendigo
+  - type: Anger
+    totalHp: 2500
+  - type: AngerPlayerScaling
+    angerScale: 1.1
+    hpScale: 1.2
+  - type: MobPhases
+    phaseThresholds:
+      0: 1
+      1250: 2 # below half health the wendigo enrages, like TG's WENDIGO_ENRAGED
+  - type: BossEnrage
+    healthFraction: 0.5
+    speedMultiplier: 1.5 # TG drops its move delay from 6 to 4
+    attackRateMultiplier: 1
+    sound:
+      path: /Audio/Effects/demon_dies.ogg
+  - type: MegafaunaRejuvenate
+  # Stomp shockwave spawned every tile of movement.
+  - type: WendigoBoss
+    stompBurst: LavalandWendigoStompBurst
+  - type: Butcherable
+    spawned:
+    - id: LavalandWendigoBlood
+    - id: LavalandWendigoSkull
+  # TG gives the wendigo no chest; the fork's boss arenas all pay out a necropolis
+  # chest, so the wendigo drops one with its horn as the crusher trophy.
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: LavalandCrateWendigo
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandWendigoHorn
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    dropBoth: true

@@ -210,6 +210,14 @@
   suffix: Lavaland
   description: A monstrous lobster corrupted by lava and radiation, always hungry.
   components:
+  # Mini: crusher trophy, TG gates it on the killing blow being a crusher hit.
+  - type: SpawnLootOnDeath
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandCrusherTrophyLobsterClaw
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
   - type: Fauna # Lavaland change
   - type: NpcFactionMember
     factions:

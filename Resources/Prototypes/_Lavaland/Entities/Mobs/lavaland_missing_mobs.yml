@@ -31,6 +31,14 @@
   parent: LavalandMobBase
   description: Bileworms are dangerous detritivores that attack with the highly acidic bile they produce from consuming detritus.
   components:
+  # Mini: crusher trophy, TG gates it on the killing blow being a crusher hit.
+  - type: SpawnLootOnDeath
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandCrusherTrophyBilewormSpewlet
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
   - type: Fauna # Lavaland change
   - type: Physics
     bodyType: KinematicController
