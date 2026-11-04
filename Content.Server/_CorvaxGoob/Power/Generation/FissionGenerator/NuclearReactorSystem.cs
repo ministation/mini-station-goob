@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2025 jhrushbe <capnmerry@gmail.com>
+// SPDX-FileCopyrightText: 2025 jhrushbe <capnmerry@gmail.com>
 // SPDX-FileCopyrightText: 2025 rottenheadphones <juaelwe@outlook.com>
 // SPDX-FileCopyrightText: 2025 taydeo <td12233a@gmail.com>
 //
@@ -69,7 +69,6 @@ public sealed partial class NuclearReactorSystem : SharedNuclearReactorSystem
     [Dependency] private readonly NodeContainerSystem _nodeContainer = default!;
     [Dependency] private readonly RadioSystem _radioSystem = default!;
     [Dependency] private readonly ReactorPartSystem _partSystem = default!;
-    [Dependency] private readonly ServerGlobalSoundSystem _soundSystem = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly StationSystem _station = default!;

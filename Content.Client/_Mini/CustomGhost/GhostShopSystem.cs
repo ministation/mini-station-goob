@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared._Mini.CustomGhost;
 using Content.Client.Resources;
 using Robust.Client.Console;
@@ -13,10 +17,7 @@ namespace Content.Client._Mini.CustomGhost;
 
 public sealed class GhostShopSystem : EntitySystem
 {
-    [Dependency] private readonly IClientConsoleHost _console = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IResourceCache _resourceCache = default!;
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
 
     private GhostShopWindow? _window;

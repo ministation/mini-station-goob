@@ -75350,4 +75350,13 @@ entities:
       pos: -11.55456,-17.46911
     - type: Physics
       canCollide: False
+
+# mini-station: терминал арсенала ГСБ
+- proto: MiniHosArsenalTerminal
+  entities:
+  - uid: 11192
+    components:
+    - type: Transform
+      parent: 2
+      pos: -22.5,-20.5
 ...

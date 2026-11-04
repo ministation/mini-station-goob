@@ -7,6 +7,7 @@ using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Prototypes;
 using Content.Shared._Mini.Research.Prototypes;
 using Content.Shared.Emag.Systems;
+using Content.Shared.Interaction;
 using Content.Server.Research.Systems;
 using Content.Shared.Popups;
 using Content.Shared.UserInterface;
@@ -36,6 +37,7 @@ public sealed partial class FishingPortalSystem : EntitySystem
         SubscribeLocalEvent<FishingPortalComponent, BoundUIOpenedEvent>(OnUiOpened);
         SubscribeLocalEvent<FishingPortalComponent, FishingPortalSelectMessage>(OnSelect);
         SubscribeLocalEvent<FishingPortalComponent, GetVerbsEvent<InteractionVerb>>(OnGetVerbs);
+        SubscribeLocalEvent<FishingPortalComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<FishingPortalComponent, GotEmaggedEvent>(OnEmagged);
     }
 
@@ -64,6 +66,15 @@ public sealed partial class FishingPortalSystem : EntitySystem
             Text = Loc.GetString("fishing-portal-release-verb"),
             Act = () => ReleaseFish(ent.Owner, fish, user),
         });
+    }
+
+    private void OnInteractUsing(Entity<FishingPortalComponent> ent, ref InteractUsingEvent args)
+    {
+        if (args.Handled || !HasComp<FishComponent>(args.Used))
+            return;
+
+        ReleaseFish(ent.Owner, args.Used, args.User);
+        args.Handled = true;
     }
 
     private void ReleaseFish(EntityUid portal, EntityUid fish, EntityUid user)

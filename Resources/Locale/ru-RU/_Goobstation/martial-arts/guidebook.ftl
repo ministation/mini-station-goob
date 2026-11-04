@@ -8,3 +8,5 @@ guide-entry-capoeira = Капоэйра
 guide-entry-ninjutsu = Ниндзюцу
 guide-entry-dragon-kung-fu = Стиль Дракона (Кунг-фу)
 guide-entry-twilight = Сумрак
+
+guide-entry-hosboxing = Кулак Правосудия

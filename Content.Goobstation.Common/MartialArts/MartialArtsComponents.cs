@@ -52,5 +52,6 @@ public enum MartialArtsForms
     Ninjutsu,
     HellRip,
     Twilight,
+    HeadOfSecurityBoxing, // Mini
     Mimejutsu, // CorvaxGoob - Mimejutsu
 }

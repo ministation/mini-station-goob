@@ -31,7 +31,6 @@ using Content.Shared.Access.Systems;
 using Content.Shared.Atmos.Components; // Goob - Check for pipe layer
 using Content.Shared.Doors.Components;
 using Content.Shared.Doors.Systems;
-using Content.Shared.Doors.Components; // Goob - Check for Door Bolt
 
 namespace Content.Shared.RCD.Systems;
 

@@ -119,3 +119,13 @@ public sealed partial class GrantTwilightComponent : GrantMartialArtKnowledgeCom
 
     public override LocId? LearnMessage { get; set; } = "twilight-success-learned";
 }
+
+// Mini - "Кулак Правосудия", бокс ГСБ
+[RegisterComponent]
+public sealed partial class GrantHosBoxingComponent : GrantMartialArtKnowledgeComponent
+{
+    [DataField]
+    public override MartialArtsForms MartialArtsForm { get; set; } = MartialArtsForms.HeadOfSecurityBoxing;
+
+    public override LocId? LearnMessage { get; set; } = "hosbox-success-learned";
+}

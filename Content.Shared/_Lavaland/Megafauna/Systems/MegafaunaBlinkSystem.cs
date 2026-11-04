@@ -15,7 +15,6 @@ public sealed class MegafaunaBlinkSystem : EntitySystem
 {
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private EntityQuery<MegafaunaBlinkComponent> _blinkQuery;

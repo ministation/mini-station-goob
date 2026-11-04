@@ -5,7 +5,6 @@ using Content.Shared._NF.Shuttles.Events;
 using Content.Shared.DeviceLinking;
 using Content.Shared.Shuttles.Components;
 using Robust.Shared.Prototypes;
-using Content.Shared.DeviceLinking;
 
 namespace Content.Server.Shuttles.Components
 {

@@ -43,7 +43,6 @@ public sealed class CoinShopSystem : EntitySystem
     [Dependency] private readonly CustomGhostSystem _customGhost = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly UserDbDataManager _userDb = default!;

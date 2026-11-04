@@ -17,7 +17,6 @@ public sealed class GhostRolePurchaseSystem : EntitySystem
     [Dependency] private readonly AntagTokenSystem _antagTokens = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
 
     private static readonly HashSet<string> AnyModePresets = new(StringComparer.OrdinalIgnoreCase)
     {

@@ -12,7 +12,6 @@ namespace Content.Server.Speech.EntitySystems
 {
     public sealed class StutteringSystem : SharedStutteringSystem
     {
-        [Dependency] private readonly Content.Shared.StatusEffectNew.StatusEffectsSystem _statusEffectsSystem = default!;
         [Dependency] private readonly IRobustRandom _random = default!;
 
         // Regex of characters to stutter.

@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Mini - наставление "Кулак Правосудия": активировать в руке, чтобы освоить бокс ГСБ. Сгорает после изучения.
+
+- type: entity
+  parent: [BaseItem, BaseCommandContraband]
+  id: MiniHosBoxingManual
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Misc/cqc_manual.rsi
+    state: icon-hos
+  - type: Item
+    size: Small
+  - type: StaticPrice
+    price: 1500
+  - type: GrantHosBoxing
+  - type: GuideHelp
+    guides:
+    - HosBoxing

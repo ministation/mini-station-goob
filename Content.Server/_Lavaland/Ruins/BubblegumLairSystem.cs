@@ -13,7 +13,6 @@ public sealed class BubblegumLairSystem : EntitySystem
     private const string StoneTile = "LavalandStoneTilePristine";
     private const string Boss = "LavalandBossBubblegum";
 
-    [Dependency] private readonly IComponentFactory _factory = default!;
 
     public override void Initialize()
     {

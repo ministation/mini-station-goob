@@ -35,8 +35,8 @@
                 <PanelContainer MinWidth="2" VerticalExpand="True" StyleClasses="LowDivider" />
                 <Label Text="{Loc 'corvax-lobby-server-hub-online-heading'}"
                        StyleClasses="LabelKeyText"
-                       MinWidth="64"
-                       MaxWidth="64"
+                       MinWidth="72"
+                       MaxWidth="72"
                        Align="Right" />
             </BoxContainer>
             <ScrollContainer Name="ServerScroll"

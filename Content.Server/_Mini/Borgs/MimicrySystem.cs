@@ -12,8 +12,6 @@ namespace Content.Server.Borgs
 {
     public sealed class MimicrySystem : EntitySystem
     {
-        [Dependency] private readonly IComponentFactory _factory = default!;
-        [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly ActionsSystem _actions = default!;
         [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
         [Dependency] private readonly SharedPopupSystem _popup = default!;

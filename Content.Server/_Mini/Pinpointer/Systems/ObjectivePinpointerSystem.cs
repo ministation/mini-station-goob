@@ -4,14 +4,12 @@ using Content.Shared.Objectives.Components;
 using Content.Server.Popups;
 using Content.Shared.Interaction;
 using Content.Shared.Mind;
-using Content.Shared.Objectives.Components;
 using Content.Shared.Pinpointer;
 using Content.Shared._Mini.Pinpointer;
 using Content.Shared.Verbs;
 using Robust.Server.GameObjects;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
-using Content.Shared.Objectives.Components;
 
 namespace Content.Server._Mini.Pinpointer.Systems;
 
@@ -21,7 +19,6 @@ public sealed class ObjectivePinpointerSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SharedPinpointerSystem _pinpointer = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     public override void Initialize()
     {

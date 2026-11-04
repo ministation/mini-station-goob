@@ -2,7 +2,6 @@
 
 using Content.Shared.Light.EntitySystems;
 using Content.Shared.DeviceLinking;
-using Content.Shared.Light.EntitySystems;
 using Robust.Shared.Audio;
 using Robust.Shared.Containers;
 using Robust.Shared.GameStates;

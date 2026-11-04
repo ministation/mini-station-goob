@@ -41,12 +41,10 @@ namespace Content.Server.Cargo.Systems
         [Dependency] private readonly IGameTiming _timing = default!;
 
         // CorvaxGoob-CargoFeatures-Start
-        [Dependency] private readonly IdCardSystem _idCard = default!;
         [Dependency] private readonly EntityStorageSystem _entityStorage = default!;
         [Dependency] private readonly EntityTableSystem _entityTable = default!;
         // CorvaxGoob-CargoFeatures-End
 
-        [Dependency] private readonly StorageSystem _storage = default!;
         private ISawmill _sawmill = default!;
 
         private void InitializeConsole()

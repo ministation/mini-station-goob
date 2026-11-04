@@ -32,7 +32,6 @@ public sealed class HereticCombatMarkSystem : SharedHereticCombatMarkSystem
     [Dependency] private readonly SharedDoorSystem _door = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly BloodstreamSystem _blood = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedStaminaSystem _stamina = default!;
     [Dependency] private readonly ProtectiveBladeSystem _pbs = default!;

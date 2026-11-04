@@ -6,7 +6,7 @@
                 xmlns:customControls="clr-namespace:Content.Client.Administration.UI.CustomControls;assembly=Content.Client"
                 MinSize="512 350"
                 SetSize="550 400"
-                Title="Мастерская Ратвара">
+                Title="{Loc 'ratvar-workshop-title'}">
 
     <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True">
 
@@ -18,22 +18,22 @@
 
             <BoxContainer Orientation="Vertical">
 
-                <Label Text="Материалы" StyleClasses="LabelKeyText" />
+                <Label Text="{Loc 'ratvar-workshop-materials'}" StyleClasses="LabelKeyText" />
 
                 <customControls:HSeparator StyleClasses="LowDivider" Margin="0 8 0 8" />
 
                 <BoxContainer Orientation="Horizontal">
-                    <Label Text="Латунь: " StyleClasses="LabelKeyText" />
+                    <Label Text="{Loc 'ratvar-workshop-brass'}" StyleClasses="LabelKeyText" />
                     <Label Name="BrassCount" StyleClasses="LabelSubText" />
                 </BoxContainer>
 
                 <BoxContainer Orientation="Horizontal">
-                    <Label Text="Энергия: " StyleClasses="LabelKeyText" />
+                    <Label Text="{Loc 'ratvar-workshop-power'}" StyleClasses="LabelKeyText" />
                     <Label Name="PowerCount" StyleClasses="LabelSubText" />
                 </BoxContainer>
 
                 <BoxContainer Orientation="Horizontal">
-                    <Label Text="Статус: " StyleClasses="LabelKeyText" />
+                    <Label Text="{Loc 'ratvar-workshop-status'}" StyleClasses="LabelKeyText" />
                     <Label Name="ProgressState" StyleClasses="LabelSubText" />
                 </BoxContainer>
 

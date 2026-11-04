@@ -89,7 +89,6 @@ public sealed class KatorgaSystem : EntitySystem
     private const int MaxBanCheckAttempts = 3;
     private static readonly TimeSpan BanCheckRetryDelay = TimeSpan.FromSeconds(5);
 
-    [Dependency] private readonly AdminSystem _adminSystem = default!;
     [Dependency] private readonly IAdminManager _adminManager = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
@@ -116,7 +115,6 @@ public sealed class KatorgaSystem : EntitySystem
     [Dependency] private readonly StationJobsSystem _stationJobs = default!;
     [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
     [Dependency] private readonly StationSpawningSystem _stationSpawning = default!;
-    [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly ITaskManager _taskManager = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 

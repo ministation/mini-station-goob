@@ -1,5 +1,10 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: entity
-  parent: FloorWaterEntity
+  # Mini: FloorWaterEntity теперь вешает угловое сглаживание под новый спрайт, аквамариновой воде оно не подходит.
+  parent: BaseFloorWaterEntity
   id: FloorAzureWaterEntity
   name: azure water
   description: A real thirst quencher. Corals are not included!

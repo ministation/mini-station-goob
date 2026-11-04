@@ -19,7 +19,6 @@ using Content.Shared._Goobstation.Wizard.BindSoul;
 using Content.Shared.Tag;
 
 // Goobstation
-using Content.Shared._Goobstation.Wizard.BindSoul;
 using Content.Shared.Mobs.Components;
 using Content.Goobstation.Shared.Mind.Components;
 using Content.Goobstation.Shared.MisandryBox.Thunderdome;

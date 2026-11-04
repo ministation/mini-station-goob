@@ -29,14 +29,12 @@ namespace Content.Shared._CorvaxGoob.Power.Generation.FissionGenerator;
 
 public abstract class SharedTurbineSystem : EntitySystem
 {
-    [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] protected readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly SharedToolSystem _toolSystem = default!;
     [Dependency] private readonly EntityManager _entityManager = default!;
     [Dependency] private readonly DamageableSystem _damageableSystem = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     public override void Initialize()
     {

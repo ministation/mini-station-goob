@@ -13,7 +13,6 @@ namespace Content.Client._Shitmed.Antags.Abductor;
 [UsedImplicitly]
 public sealed class AbductorConsoleBui : BoundUserInterface
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
 
     [ViewVariables]
     private AbductorConsoleWindow? _window;

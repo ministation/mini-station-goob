@@ -3,7 +3,7 @@
 
 - type: entity
   id: FishingPortalGenerator
-  parent: ConstructibleMachine
+  parent: [ BaseMachine, ConstructibleMachine ]
   name: fish-porter 3000
   description: Fishing anywhere, anytime... anyway, what was I talking about?
   components:
@@ -21,6 +21,7 @@
       shader: unshaded
   - type: Machine
     board: FishingPortalMachineCircuitboard
+  - type: WiresPanel
   - type: FishingPortal
   - type: ActivatableUI
     key: enum.FishingPortalUiKey.Key

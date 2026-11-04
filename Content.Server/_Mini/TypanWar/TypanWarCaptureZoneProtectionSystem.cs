@@ -21,7 +21,6 @@ public sealed class TypanWarCaptureZoneProtectionSystem : EntitySystem
     public const int BuildBlockedTileMargin = 3;
 
     [Dependency] private readonly SharedMapSystem _map = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {

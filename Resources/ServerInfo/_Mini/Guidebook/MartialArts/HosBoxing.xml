@@ -1,0 +1,65 @@
+<Document>
+
+  # Кулак Правосудия (бокс ГСБ)
+
+  <Box>
+    <GuideEntityEmbed Entity="MiniHosBoxingManual" Caption=""/>
+  </Box>
+
+  «Кулак Правосудия» — фирменный бокс главы службы безопасности. Работа на голых кулаках: два приёма выматывают цель стаминой, два наносят урон, финальный приём отправляет цель в нокдаун. Осваивается с наставления, выданного терминалом арсенала ГСБ.
+
+  ## Приёмы
+
+  ### Двойка в челюсть
+
+  <Box>
+    <GuideEntityEmbed Entity="GuidebookHarm" Caption=""/>
+    <GuideEntityEmbed Entity="GuidebookHarm" Caption=""/>
+  </Box>
+
+  Стамина в голову (25). Быстрый способ вымотать цель.
+
+  ### Хук в печень
+
+  <Box>
+    <GuideEntityEmbed Entity="GuidebookDisarm" Caption=""/>
+    <GuideEntityEmbed Entity="GuidebookHarm" Caption=""/>
+  </Box>
+
+  Стамина в корпус (30).
+
+  ### Пробивной кросс
+
+  <Box>
+    <GuideEntityEmbed Entity="GuidebookHarm" Caption=""/>
+    <GuideEntityEmbed Entity="GuidebookDisarm" Caption=""/>
+    <GuideEntityEmbed Entity="GuidebookHarm" Caption=""/>
+  </Box>
+
+  Урон в голову (18 бланта).
+
+  ### Апперкот в корпус
+
+  <Box>
+    <GuideEntityEmbed Entity="GuidebookDisarm" Caption=""/>
+    <GuideEntityEmbed Entity="GuidebookDisarm" Caption=""/>
+    <GuideEntityEmbed Entity="GuidebookHarm" Caption=""/>
+  </Box>
+
+  Урон в корпус (20 бланта).
+
+  ### Нокаут
+
+  <Box>
+    <GuideEntityEmbed Entity="GuidebookGrab" Caption=""/>
+    <GuideEntityEmbed Entity="GuidebookHarm" Caption=""/>
+    <GuideEntityEmbed Entity="GuidebookHarm" Caption=""/>
+  </Box>
+
+  Нокдаун (3.5 с) и стамина в голову. Финишер: выбейте дыхание нарушителю.
+
+  ## Пассивка
+
+  Кулаки становятся твёрже (+4 бланта к базовому удару). Все приёмы требуют свободных рук — оружие в руках блокирует связки.
+
+</Document>

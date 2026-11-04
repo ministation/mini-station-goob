@@ -12,7 +12,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 // Shitmed Change
-using Content.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Shared.Inventory;

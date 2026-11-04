@@ -10,3 +10,4 @@ ashwalker-tribe-roundend-standing = Некрополь выстоял. Слав�
 ashwalker-tribe-roundend-fallen = Некрополь разрушен. Племя пало.
 ashwalker-tribe-roundend-counters = Племя совершило { $sacrifices } жертв Некрополю и вывело { $eggs } яиц.
 ashwalker-tribe-roundend-members = В племя входили: { $members }.
+ashwalker-tribe-roundend-unnamed = безымянный пеплоходец

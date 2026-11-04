@@ -9,7 +9,6 @@ using Content.Shared.Magic.Events;
 using Content.Shared.Tag;
 using Robust.Shared.Prototypes;
 using Content.Shared.Mind;
-using Content.Shared.Tag;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server.Magic;

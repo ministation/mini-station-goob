@@ -31,7 +31,6 @@ using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-using Content.Server.Preferences.Managers;
 using Content.Shared.Database;
 using Robust.Shared.Prototypes;
 using Content.Shared._Amour.Stickers;

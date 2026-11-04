@@ -38,7 +38,6 @@ public abstract partial class SharedStunSystem : EntitySystem
 {
     public static readonly EntProtoId StunId = "StatusEffectStunned";
 
-    [Dependency] private readonly IComponentFactory _componentFactory = default!;
     [Dependency] protected readonly ActionBlockerSystem Blocker = default!;
     [Dependency] protected readonly AlertsSystem Alerts = default!;
     [Dependency] protected readonly IGameTiming GameTiming = default!;

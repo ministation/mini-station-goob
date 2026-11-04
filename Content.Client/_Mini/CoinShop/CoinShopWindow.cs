@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -329,7 +333,7 @@ public sealed class CoinShopWindow : DefaultWindow
             HorizontalAlignment = HAlignment.Center,
             MaxWidth = 208,
             ClipText = true,
-            ToolTip = Loc.GetString($"coin-shop-rarity-{entry.Rarity.ToString().ToLower()}"),
+            ToolTip = entry.Name,
         });
 
         root.AddChild(BuildPriceRow(entry.Price, center: true));

@@ -40,13 +40,11 @@ public abstract class SharedMansusGraspSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IComponentFactory _compFactory = default!;
     [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
 
     [Dependency] private readonly SharedDoorSystem _door = default!;
     [Dependency] private readonly DamageableSystem _damage = default!;
     [Dependency] private readonly MobThresholdSystem _threshold = default!;
     [Dependency] private readonly StatusEffectsSystem _statusEffect = default!;
-    [Dependency] private readonly StatusEffectNew.StatusEffectsSystem _statusNew = default!;
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly BackStabSystem _backstab = default!;
@@ -56,7 +54,6 @@ public abstract class SharedMansusGraspSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SharedStarMarkSystem _starMark = default!;
-    [Dependency] private readonly NpcFactionSystem _faction = default!;
 
     public bool TryApplyGraspEffectAndMark(EntityUid user,
         HereticComponent hereticComp,

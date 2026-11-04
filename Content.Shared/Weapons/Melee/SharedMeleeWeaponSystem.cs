@@ -15,7 +15,6 @@ using Content.Shared.CombatMode;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
-using Content.Shared.Damage.Components; // DeltaV - Melee Stamina Resistance Override
 using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Goobstation.Maths.FixedPoint;
@@ -63,9 +62,7 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem // Goob - p
 {
     [Dependency] protected readonly IGameTiming Timing = default!;
     [Dependency] protected readonly SharedMapSystem MapSystem = default!;
-    [Dependency] private   readonly INetManager _netMan = default!;
     [Dependency] private   readonly IPrototypeManager _protoManager = default!;
-    [Dependency] private   readonly IRobustRandom _random = default!;
     [Dependency] protected readonly ISharedAdminLogManager AdminLogger = default!;
     [Dependency] protected readonly ActionBlockerSystem Blocker = default!;
     [Dependency] protected readonly DamageableSystem Damageable = default!;

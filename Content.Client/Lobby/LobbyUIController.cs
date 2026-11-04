@@ -93,6 +93,9 @@ using Content.Corvax.Interfaces.Shared;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
 using Content.Shared.GameTicking;
+using Content.Client.Hands.Systems;
+using Content.Shared.Hands.Components;
+using Content.Shared.Inventory;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
@@ -128,6 +131,7 @@ public sealed class LobbyUIController : UIController, IOnStateEntered<LobbyState
     [UISystemDependency] private readonly ClientInventorySystem _inventory = default!;
     [UISystemDependency] private readonly StationSpawningSystem _spawn = default!;
     [UISystemDependency] private readonly GuidebookSystem _guide = default!;
+    [UISystemDependency] private readonly HandsSystem _hands = default!;
 
     private CharacterSetupGui? _characterSetup;
     private HumanoidProfileEditor? _profileEditor;
@@ -559,6 +563,17 @@ public sealed class LobbyUIController : UIController, IOnStateEntered<LobbyState
                 _inventory.TryEquip(dummy, item, slot.Name, true, true);
             }
         }
+
+        // Inhand items (e.g. the ash walker bone spear) are separate from slots.
+        if (EntityManager.TryGetComponent(dummy, out HandsComponent? hands))
+        {
+            foreach (var proto in gear.Inhand)
+            {
+                var item = EntityManager.SpawnEntity(proto, MapCoordinates.Nullspace);
+                if (!_hands.TryPickupAnyHand(dummy, item, checkActionBlocker: false, handsComp: hands))
+                    EntityManager.DeleteEntity(item);
+            }
+        }
     }
 
     /// <summary>
@@ -580,6 +595,13 @@ public sealed class LobbyUIController : UIController, IOnStateEntered<LobbyState
         {
             // Special type like borg or AI, do not spawn a human just spawn the entity.
             dummyEnt = EntityManager.SpawnEntity(previewEntity, MapCoordinates.Nullspace);
+
+            // Humanoid-like job entities (ash walker) normally get their kit from the server-side
+            // tribe system, which does not run in the lobby preview - the dummy stayed naked.
+            // Equip the job's starting gear here so the preview shows armor.
+            if (humanoid != null && EntityManager.HasComponent<InventoryComponent>(dummyEnt))
+                GiveDummyJobClothes(dummyEnt, humanoid, job!);
+
             return dummyEnt;
         }
         else if (humanoid is not null)

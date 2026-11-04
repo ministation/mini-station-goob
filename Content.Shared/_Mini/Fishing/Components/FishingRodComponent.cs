@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
+using Content.Shared.Item;
 using Robust.Shared.Prototypes;
 using Robust.Shared.GameStates;
 using Robust.Shared.Utility;
@@ -124,4 +125,28 @@ public sealed partial class FishingRodComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public bool Extended = true;
+
+    /// <summary>
+    /// Item size of an extendable rod while it is extended.
+    /// </summary>
+    [DataField]
+    public ProtoId<ItemSizePrototype> ExtendedSize = "Huge";
+
+    /// <summary>
+    /// Storage shape of an extendable rod while it is extended.
+    /// </summary>
+    [DataField]
+    public List<Box2i> ExtendedShape = new() { new Box2i(0, 0, 4, 0) };
+
+    /// <summary>
+    /// Item size of an extendable rod while it is folded.
+    /// </summary>
+    [DataField]
+    public ProtoId<ItemSizePrototype> FoldedSize = "Normal";
+
+    /// <summary>
+    /// Storage shape of an extendable rod while it is folded.
+    /// </summary>
+    [DataField]
+    public List<Box2i> FoldedShape = new() { new Box2i(0, 0, 1, 0) };
 }

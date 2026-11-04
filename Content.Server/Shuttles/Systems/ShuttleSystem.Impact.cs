@@ -22,7 +22,6 @@ using Robust.Shared.Physics.Dynamics;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
-using System.Numerics;
 using Content.Shared.Damage.Components;
 
 namespace Content.Server.Shuttles.Systems;

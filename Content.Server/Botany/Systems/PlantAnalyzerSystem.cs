@@ -30,7 +30,6 @@ public sealed class PlantAnalyzerSystem : AbstractAnalyzerSystem<PlantAnalyzerCo
     [Dependency] private readonly PaperSystem _paperSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly LabelSystem _labelSystem = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
 
     public override void Initialize()
     {

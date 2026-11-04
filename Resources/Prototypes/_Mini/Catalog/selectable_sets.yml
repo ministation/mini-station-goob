@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Mini - наборы для терминала арсенала ГСБ
+
+- type: selectableSet
+  id: MiniHosJusticeSet
+  name: selectable-set-mini-hos-justice-name
+  description: selectable-set-mini-hos-justice-description
+  sprite:
+    sprite: _Goobstation/Clothing/Belt/hossheath.rsi
+    state: sheath
+  content:
+  - ClothingBeltSheathHeadOfSecurityFilled
+
+- type: selectableSet
+  id: MiniHosBoxingSet
+  name: selectable-set-mini-hos-boxing-name
+  description: selectable-set-mini-hos-boxing-description
+  sprite:
+    sprite: Clothing/Hands/Gloves/Boxing/boxingred.rsi
+    state: icon
+  content:
+  - MiniHosBoxingManual

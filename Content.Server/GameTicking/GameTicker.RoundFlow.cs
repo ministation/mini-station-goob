@@ -91,8 +91,10 @@ namespace Content.Server.GameTicking
             if (DummyTicker)
                 return true;
 
-            // Once staged preload has started (or finished), changing the map would desync the queue.
-            if (RunLevel != GameRunLevel.PreRoundLobby || MapLoadInProgress || MapsReady)
+            // Once station stages are queued (or the maps are ready), changing the map would
+            // desync the queue. Lavaland is staged independently of the station map, so early
+            // Lavaland staging must not block votes or forcemap.
+            if (RunLevel != GameRunLevel.PreRoundLobby || _mapLoadQueueBuilt || MapsReady)
                 return false;
 
             // No lobby countdown yet (DummyTicker / tests / idle): map is still free to change.

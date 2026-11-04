@@ -1,13 +1,13 @@
 <Control xmlns="https://spacestation14.io" xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client">
     <BoxContainer Orientation="Vertical" HorizontalExpand="True">
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="5">
-            <LineEdit Name="SearchEdit" MinWidth="600" PlaceHolder="{Loc 'humanoid-profile-editor-voice-placeholder'}"/>
+            <LineEdit Name="SearchEdit" MinWidth="300" HorizontalExpand="True" PlaceHolder="{Loc 'humanoid-profile-editor-voice-placeholder'}"/>
             <Label Name="ResultsLabel" MinWidth="100" HorizontalExpand="True" HorizontalAlignment="Right"/>
         </BoxContainer>
         
         <PanelContainer HorizontalExpand="True" VerticalExpand="False" MinSize="0 200" Margin="0 5 0 20">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BackgroundColor="#1A1A1A" />
+                <graphics:StyleBoxFlat BackgroundColor="#2A2A38" />
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="5">
                 <Label Text="{Loc 'humanoid-profile-editor-voice-categories'}" StyleClasses="LabelHeading" HorizontalAlignment="Center" Margin="0 0 0 5"/>

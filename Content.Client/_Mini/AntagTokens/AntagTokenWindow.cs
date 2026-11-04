@@ -63,7 +63,6 @@ public sealed class AntagTokenWindow : DefaultWindow
     [Dependency] private readonly IEntitySystemManager _entitySystems = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IClientPreferencesManager _preferencesManager = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly JobRequirementsManager _requirements = default!;
 
     private readonly IResourceCache _resourceCache;

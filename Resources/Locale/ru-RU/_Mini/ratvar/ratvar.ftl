@@ -2,3 +2,8 @@
 # construction-recipe-pinion-airlock-desc = Построить дверь из латуни. Требуется приверженность Ратвару.
 # construction-recipe-pinion-airlock-glass = Стеклянный шестерёнчатый шлюз
 # construction-recipe-pinion-airlock-glass-desc = Построить стеклянную дверь из латуни. Требуется приверженность Ратвару.
+ratvar-workshop-title = Мастерская Ратвара
+ratvar-workshop-materials = Материалы
+ratvar-workshop-brass = Латунь: 
+ratvar-workshop-power = Энергия: 
+ratvar-workshop-status = Статус: 

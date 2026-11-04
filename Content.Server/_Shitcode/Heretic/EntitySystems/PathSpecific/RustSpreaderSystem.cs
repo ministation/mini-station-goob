@@ -14,7 +14,6 @@ public sealed class RustSpreaderSystem : EntitySystem
 {
     [Dependency] private readonly ITileDefinitionManager _tileDefinitionManager = default!;
 
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly HereticAbilitySystem _ability = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;

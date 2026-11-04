@@ -19,7 +19,6 @@ public sealed class StaffOfLavaSystem : EntitySystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
 
     private const string LavaPool = "LavalandLavaPool";
 

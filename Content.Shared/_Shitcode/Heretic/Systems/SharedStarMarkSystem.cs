@@ -29,7 +29,6 @@ namespace Content.Shared._Shitcode.Heretic.Systems;
 public abstract class SharedStarMarkSystem : EntitySystem
 {
     [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     [Dependency] private readonly EntityLookupSystem _lookup = default!;

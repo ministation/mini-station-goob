@@ -24,7 +24,6 @@ using Content.Shared.Examine;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Verbs;
-using Robust.Shared.Utility;
 using Content.Shared.HealthExaminable;
 using Robust.Shared.Prototypes;
 using Content.Shared.Damage.Components;
@@ -36,7 +35,6 @@ public sealed class PartStatusSystem : EntitySystem
     [Dependency] private readonly WoundSystem _woundSystem = default!;
     [Dependency] private readonly BodySystem _bodySystem = default!;
     [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
-    [Dependency] private readonly TraumaSystem _trauma = default!;
     [Dependency] private readonly IChatManager _chat = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly ExamineSystemShared _examineSystem = default!;

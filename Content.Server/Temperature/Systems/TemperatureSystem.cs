@@ -30,7 +30,6 @@ public sealed partial class TemperatureSystem : SharedTemperatureSystem
 
     private EntityQuery<TemperatureImmunityComponent> _immuneQuery; // DeltaV
 
-    [Dependency] private readonly SpellbladeSystem _spellblade = default!; // Goobstation
 
     public override void Initialize()
     {

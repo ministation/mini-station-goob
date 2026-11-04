@@ -640,20 +640,22 @@ public sealed class MiniCCVars
      */
 
     /// <summary>
-    /// Master switch for the staged lobby map preload. When disabled (the default), maps,
-    /// Lavaland and grids are loaded synchronously at T-RoundPreloadTime exactly like before
-    /// the preload feature, so a round still starts, only slower.
+    /// Master switch for the staged lobby map preload of station maps and grids. When disabled
+    /// (the default), station maps are loaded synchronously at T-RoundPreloadTime exactly like
+    /// before the preload feature, so a round still starts, only slower. Lavaland has its own
+    /// switch (<see cref="MapPreloadLavaland"/>) because it is generated for every round anyway.
     /// </summary>
     public static readonly CVarDef<bool> MapPreloadEnabled =
         CVarDef.Create("game.map_preload", false, CVar.SERVER | CVar.ARCHIVE);
 
     /// <summary>
-    /// Preload the Lavaland planet during the lobby countdown instead of generating it at
-    /// T-RoundPreloadTime. Only has an effect when <see cref="MapPreloadEnabled"/> is true.
-    /// Kept off by default: Lavaland is the largest part of the preload working set.
+    /// Generate the Lavaland planet during the lobby and place its ruins in time-budgeted
+    /// batches, instead of one synchronous multi-second spawn storm at T-RoundPreloadTime that
+    /// can starve the watchdog. Independent of <see cref="MapPreloadEnabled"/>: the planet is
+    /// needed by every round, so staging it does not raise the round's memory peak.
     /// </summary>
     public static readonly CVarDef<bool> MapPreloadLavaland =
-        CVarDef.Create("game.map_preload_lavaland", false, CVar.SERVER | CVar.ARCHIVE);
+        CVarDef.Create("game.map_preload_lavaland", true, CVar.SERVER | CVar.ARCHIVE);
 
     /// <summary>
     /// Maximum number of station maps queued for staged preload. Extra maps (for example the

@@ -8,7 +8,6 @@ namespace Content.Shared.Physics;
 
 public sealed class FrictionRemoverSystem : EntitySystem
 {
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
 
 
     public override void Initialize()

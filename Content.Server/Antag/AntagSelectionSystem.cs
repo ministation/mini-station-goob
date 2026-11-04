@@ -67,7 +67,6 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
     [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
     [Dependency] private readonly InventorySystem _inventory = default!; // Goobstation
     //[Dependency] private readonly LastRolledAntagManager _lastRolled = default!; // Goobstation CorvaxGoob-Deleted
-    [Dependency] private readonly PlayTimeTrackingManager _playTimeManager = default!;
     [Dependency] private readonly SkillsSystem _skills = default!; // CorvaxGoob-Skills
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly TTStationHandleJobSystem _ttStationHandleJob = default!;

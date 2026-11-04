@@ -13,7 +13,6 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Mind;
 using Content.Shared.Mindshield.Components;
 using Content.Shared.Light.Components;
-using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;

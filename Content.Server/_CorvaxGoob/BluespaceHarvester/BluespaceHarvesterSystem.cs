@@ -17,7 +17,6 @@ namespace Content.Server._CorvaxGoob.BluespaceHarvester;
 
 public sealed class BluespaceHarvesterSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;

@@ -28,7 +28,6 @@ public sealed class PrayerSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popupSystem = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly QuickDialogSystem _quickDialog = default!;
-    [Dependency] private readonly AudioSystem _audio = default!; // Goobstation - Admin Notifications
     [Dependency] private readonly IAdminManager _admin = default!; // Goobstation - Admin Notifications
 
     public override void Initialize()

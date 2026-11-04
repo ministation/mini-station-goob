@@ -1,6 +1,8 @@
 name: Notify channel (PR changelog)
 
 on:
+  pull_request_target:
+    types: [closed]
   workflow_dispatch:
     inputs:
       pr_body:

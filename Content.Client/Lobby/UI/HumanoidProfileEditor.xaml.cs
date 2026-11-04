@@ -202,9 +202,6 @@ using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
-using System.IO;
-using System.Linq;
-using System.Numerics;
 using Direction = Robust.Shared.Maths.Direction;
 // Mini: no Content.Goobstation usings here — the Goob lobby editor partial is removed and
 // the Barks region below is commented out (CorvaxGoob-Clearing).

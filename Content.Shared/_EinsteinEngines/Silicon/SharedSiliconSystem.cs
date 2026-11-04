@@ -14,7 +14,6 @@ namespace Content.Shared._EinsteinEngines.Silicon.Systems;
 public sealed class SharedSiliconChargeSystem : EntitySystem
 {
     [Dependency] private readonly AlertsSystem _alertsSystem = default!;
-    [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
 
     public override void Initialize()
     {
