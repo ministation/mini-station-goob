@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Goobstation.Shared.GPS.Components;
@@ -135,7 +136,10 @@ public sealed class OreVentTest
 
         await server.WaitAssertion(() =>
         {
-            var vents = CollectPrototypes(entMan, "LavalandOreVent");
+            // Only count vents on this test map: the server may still hold maps from earlier tests.
+            var vents = CollectPrototypes(entMan, "LavalandOreVent")
+                .Where(v => entMan.GetComponent<TransformComponent>(v).MapID == testMap.MapId)
+                .ToList();
             Assert.That(vents.Count, Is.EqualTo(1), "the marker spawner should build exactly one vent");
 
             var ventComp = entMan.GetComponent<OreVentComponent>(vents[0]);

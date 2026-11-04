@@ -3,7 +3,7 @@
 
 - type: entity
   id: FishingPortalGenerator
-  parent: BaseMachine
+  parent: ConstructibleMachine
   name: fish-porter 3000
   description: Fishing anywhere, anytime... anyway, what was I talking about?
   components:

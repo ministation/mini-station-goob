@@ -9,6 +9,7 @@ using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Objectives.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Lavaland.Ashwalker;
 
@@ -84,7 +85,15 @@ public sealed class AshwalkerTribeSystem : EntitySystem
     // Gear is applied once per body at spawn: a re-taken ghost role must not stack a second kit.
     private void OnMemberMapInit(Entity<AshwalkerTribeMemberComponent> ent, ref MapInitEvent args)
     {
-        _outfit.SetOutfit(ent.Owner, TribalGear);
+        // Body parts come from the body's own MapInit, so hands do not exist yet. Apply the kit
+        // one tick later, otherwise the in-hand spear is left lying on the floor.
+        Timer.Spawn(TimeSpan.Zero, () =>
+        {
+            if (TerminatingOrDeleted(ent.Owner))
+                return;
+
+            _outfit.SetOutfit(ent.Owner, TribalGear);
+        });
     }
 
     private void OnMindAdded(Entity<AshwalkerTribeMemberComponent> ent, ref MindAddedMessage args)
