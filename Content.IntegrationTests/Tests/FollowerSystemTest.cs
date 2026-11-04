@@ -8,6 +8,7 @@ using Content.Shared.Follower.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Log;
 using Robust.Shared.Map;
+using Robust.Shared.Physics.Components;
 
 namespace Content.IntegrationTests.Tests;
 
@@ -135,6 +136,41 @@ public sealed class FollowerSystemTest
 
             Assert.That(entMan.HasComponent<FollowedComponent>(uid), Is.False);
             Assert.That(entMan.HasComponent<FollowerComponent>(uid), Is.False);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    ///     A follower without a physics body must still start following. Visual followers such as
+    ///     the friendly wisp from the Lavaland spooky lantern have no PhysicsComponent, and asking
+    ///     the physics system to stop one used to log a resolve error on the server.
+    /// </summary>
+    [Test]
+    public async Task PhysicslessFollowerTest()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var sysMan = server.ResolveDependency<IEntitySystemManager>();
+        var mapSys = server.System<SharedMapSystem>();
+
+        await server.WaitAssertion(() =>
+        {
+            var followerSystem = sysMan.GetEntitySystem<FollowerSystem>();
+
+            mapSys.CreateMap(out var map);
+
+            var followed = entMan.SpawnEntity(GameTicker.ObserverPrototypeName, new MapCoordinates(0, 0, map));
+            var follower = entMan.SpawnEntity(null, new MapCoordinates(0, 0, map));
+
+            Assert.That(entMan.HasComponent<PhysicsComponent>(follower), Is.False);
+
+            followerSystem.StartFollowingEntity(follower, followed);
+
+            Assert.That(entMan.GetComponent<FollowerComponent>(follower).Following, Is.EqualTo(followed));
+            Assert.That(entMan.GetComponent<FollowedComponent>(followed).Following, Does.Contain(follower));
         });
 
         await pair.CleanReturnAsync();
