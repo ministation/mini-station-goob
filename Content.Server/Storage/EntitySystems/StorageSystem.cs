@@ -31,7 +31,11 @@ public sealed partial class StorageSystem : SharedStorageSystem
     public override void PlayPickupAnimation(EntityUid uid, EntityCoordinates initialCoordinates, EntityCoordinates finalCoordinates,
         Angle initialRotation, EntityUid? user = null)
     {
-        var filter = Filter.Pvs(uid).RemoveWhereAttachedEntity(e => e == user);
+        // Mini: при дисконнекте сессия ещё висит в PVS, а канал уже отключён, и движок
+        // пишет ERRO "Tried to send message ... to disconnected channel". Мёртвые каналы отсекаем.
+        var filter = Filter.Pvs(uid)
+            .RemoveWhereAttachedEntity(e => e == user)
+            .RemoveWhere(session => !session.Channel.IsConnected);
         RaiseNetworkEvent(new PickupAnimationEvent(GetNetEntity(uid), GetNetCoordinates(initialCoordinates), GetNetCoordinates(finalCoordinates), initialRotation), filter);
     }
 }
