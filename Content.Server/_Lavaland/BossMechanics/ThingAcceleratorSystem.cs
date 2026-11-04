@@ -8,6 +8,7 @@ using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 
 namespace Content.Server._Lavaland.BossMechanics;
@@ -39,7 +40,16 @@ public sealed class ThingAcceleratorSystem : EntitySystem
     private void OnMapInit(Entity<ThingAcceleratorComponent> ent, ref MapInitEvent args)
     {
         _appearance.SetData(ent, ThingAcceleratorVisuals.State, "retracted");
-        _physics.SetCanCollide(ent, false);
+        SetCollide(ent, false);
+    }
+
+    /// <summary>
+    /// The prototype test adds components to bare entities, keep the physics calls tolerant of that.
+    /// </summary>
+    private void SetCollide(EntityUid uid, bool value)
+    {
+        if (TryComp<PhysicsComponent>(uid, out var body))
+            _physics.SetCanCollide(uid, value, body: body);
     }
 
     private void OnInteractHand(Entity<ThingAcceleratorComponent> ent, ref InteractHandEvent args)
@@ -91,7 +101,7 @@ public sealed class ThingAcceleratorSystem : EntitySystem
         args.Handled = true;
         ent.Comp.Functional = false;
         _appearance.SetData(ent, ThingAcceleratorVisuals.State, "broken");
-        _physics.SetCanCollide(ent, false);
+        SetCollide(ent, false);
 
         _audio.PlayPvs(ShockSound, ent);
         Spawn("EffectSparks", Transform(ent).Coordinates);
@@ -121,7 +131,7 @@ public sealed class ThingAcceleratorSystem : EntitySystem
 
             comp.Deployed = deployed;
             _appearance.SetData(uid, ThingAcceleratorVisuals.State, deployed ? "deployed" : "retracted");
-            _physics.SetCanCollide(uid, deployed);
+            SetCollide(uid, deployed);
         }
     }
 }
