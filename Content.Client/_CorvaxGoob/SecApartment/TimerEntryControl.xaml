@@ -13,7 +13,7 @@
 
             <Label Name="TimerLabel"
                    HorizontalExpand="True"
-                   FontColorOverride="#ff9999"
+                   FontColorOverride="#d4a0a0"
                    Margin="0 0 10 0" />
 
             <Label Name="TimeLabel"
@@ -34,7 +34,7 @@
                       VerticalAlignment="Center">
 
             <Label Text="{Loc 'sec-apartment-ui-timers-total-time'}"
-                   FontColorOverride="#ff8888"
+                   FontColorOverride="#c98c8c"
                    Margin="0 0 5 0" />
 
             <Label Name="TotalTimeLabel"
@@ -45,7 +45,7 @@
 
         <PanelContainer StyleClasses="LowDivider" HorizontalExpand="True" Margin="0 2 0 2" SetHeight="1">
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BackgroundColor="#ff4444" />
+                <gfx:StyleBoxFlat BackgroundColor="#74464A" />
             </PanelContainer.PanelOverride>
         </PanelContainer>
 

@@ -40,9 +40,9 @@
                             <controls:VSpacer Spacing="25"/>
                             <TextureRect TextureScale="0.2 0.2" Stretch="KeepCentered" TexturePath="/Textures/Interface/main_logo.png" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                             <controls:VSpacer Spacing="25"/>
-                            <Button Name="Site" Access="Public" Text="Сайт" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                            <Button Name="Discord" Text="Дискорд" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                            <Button Name="Telegram" Text="Телеграм" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                            <Button Name="Site" Access="Public" Text="{Loc 'ui-lobby-site-button'}" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                            <Button Name="Discord" Text="{Loc 'ui-lobby-discord-button'}" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                            <Button Name="Telegram" Text="{Loc 'ui-lobby-telegram-button'}" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                             <Button Name="AHelpButton" Access="Public" Text="{Loc 'ui-lobby-ahelp-button'}" MinSize="125 10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                             </BoxContainer>
                         </BoxContainer>
@@ -59,7 +59,7 @@
                                 <info:ServerInfo Name="ServerInfo" Access="Public" MinSize="0 30" VerticalExpand="True" HorizontalExpand="False" HorizontalAlignment="Stretch"/>
                             </BoxContainer>
                             <Label Name="StationTime" Access="Public" FontColorOverride="{x:Static maths:Color.LightGray}" HorizontalAlignment="Left"/>
-                            <controls:HLine Color="#404040" Thickness="1" Margin="0 5"/>
+                            <controls:HLine StyleClasses="LowDivider" Margin="0 5"/>
                             <BoxContainer Orientation="Vertical" SeparationOverride="4" Name="VoteContainer" Access="Public" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 8"/>
                         </BoxContainer>
                     </PanelContainer>

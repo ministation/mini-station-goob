@@ -35,3 +35,4 @@ ghost-roles-window-rules-footer = Кнопка станет доступна ч�
 ghost-return-to-body-title = Вернуться в тело
 ghost-return-to-body-text = Вас воскрешают! Вернуться в своё тело?
 ghost-gui-return-to-round-button = Переродиться
+ghost-target-window-search-placeholder = Поиск
