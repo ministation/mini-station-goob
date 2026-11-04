@@ -29,6 +29,10 @@ public sealed class NPCUseActionOnTargetSystem : EntitySystem
         if (!Resolve(user, ref user.Comp, false))
             return false;
 
+        // The blackboard target may have been deleted since it was set.
+        if (TerminatingOrDeleted(target))
+            return false;
+
         if (_actions.GetAction(user.Comp.ActionEnt) is not {} action)
             return false;
 
