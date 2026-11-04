@@ -11,6 +11,7 @@ import os
 import re
 import requests
 import subprocess
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Iterable
 
 PUBLISH_TOKEN = os.environ["PUBLISH_TOKEN"].strip()
@@ -18,6 +19,9 @@ VERSION = os.environ["GITHUB_SHA"].strip()
 FORK_ID = os.environ["FORK_ID"].strip()
 
 RELEASE_DIR = "release"
+
+# Аплоад упирается в скорость одного TCP-соединения, а не в CPU раннера.
+UPLOAD_THREADS = 4
 
 #
 # CONFIGURATION PARAMETERS
@@ -61,17 +65,34 @@ def main():
     _check(resp, "publish/start")
     print("Publish successfully started, adding files...")
 
-    for file in get_files_to_publish():
-        print(f"Publishing {file}")
-        with open(file, "rb") as f:
-            headers = {
-                "Content-Type": "application/octet-stream",
-                "Robust-Cdn-Publish-File": os.path.basename(file),
-                "Robust-Cdn-Publish-Version": VERSION
-            }
-            resp = session.post(f"{ROBUST_CDN_URL}fork/{fork_id}/publish/file", data=f, headers=headers)
+    files = sorted(get_files_to_publish(), key=os.path.getsize, reverse=True)
+    print(f"Publishing {len(files)} files in {UPLOAD_THREADS} parallel uploads...")
 
-        _check(resp, f"publish/file ({os.path.basename(file)})")
+    def upload(file: str) -> str:
+        name = os.path.basename(file)
+        headers = {
+            "Authorization": f"Bearer {PUBLISH_TOKEN}",
+            "Content-Type": "application/octet-stream",
+            "Robust-Cdn-Publish-File": name,
+            "Robust-Cdn-Publish-Version": VERSION,
+        }
+        with open(file, "rb") as f:
+            resp = requests.post(
+                f"{ROBUST_CDN_URL}fork/{fork_id}/publish/file",
+                data=f,
+                headers=headers,
+                timeout=(30, 300),
+            )
+        _check(resp, f"publish/file ({name})")
+        return name
+
+    # Файлы независимы: сервер пишет каждый в свой путь, publish фиксируется
+    # только в finish. Параллельная заливка убирает ~230с последовательной
+    # отправки ~1.8G с критического пути ночного паблиша.
+    with ThreadPoolExecutor(max_workers=UPLOAD_THREADS) as pool:
+        futures = [pool.submit(upload, file) for file in files]
+        for future in as_completed(futures):
+            print(f"Published {future.result()}")
 
     print("Successfully pushed files, finishing publish...")
 
