@@ -79,17 +79,3 @@
   - type: Construction
     graph: portableChemicalMixerGraph
     node: end
-
-- type: entity
-  id: portableChemicalMixerIncomplete
-  parent: BaseItem
-  name: Incomplete portable chemical mixer
-  description: A incompleted "Tider" grade chemical manipulator
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: Sprite
-    sprite: _Goobstation/Objects/Tools/chemical_mixer.rsi
-    layers:
-      - state: incomplete
-  - type: Item
-    size: Huge

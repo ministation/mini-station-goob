@@ -43,13 +43,3 @@
   - type: Tag
     tags:
     - SpecialMech
-
-- type: entity
-  id: SmallMechEquipment
-  abstract: true
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: Tag
-    tags:
-    - SmallMech
-# TODO: Make medical mech with equipment.

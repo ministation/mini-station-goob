@@ -1,10 +1,8 @@
-ent-BaseMobSlimeXenobio = базовый слайм
-    .desc = Очень похож на желешку. Может, такой же на вкус?
-ent-MobSlimeXenobioBaby = слайм
-    .desc = Очень похож на желешку. Может, такой же на вкус?
-    .suffix = Малыш
-ent-MobSlimeXenobioAdult = слайм
-    .desc = Очень похож на желешку. Может, такой же на вкус?
-    .suffix = Взрослый
-ent-MobSlimeXenobioBabyPending = неопределённый слайм
-    .desc = { ent-MobSlimeXenobioBaby.desc }
+ent-BaseMobSlimeXenobio = базовый слайм
+    .desc = Очень похож на желешку. Может, такой же на вкус?
+ent-MobSlimeXenobioBaby = слайм
+    .desc = Очень похож на желешку. Может, такой же на вкус?
+    .suffix = Малыш
+
+ent-MobSlimeXenobioBabyPending = неопределённый слайм
+    .desc = { ent-MobSlimeXenobioBaby.desc }

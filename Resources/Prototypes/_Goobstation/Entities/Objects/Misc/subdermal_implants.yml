@@ -101,20 +101,6 @@
 
 - type: entity
   parent: BaseSubdermalImplant
-  id: AutoinjectorImplant
-  name: autoinjector implant
-  description: This implant allows the user to inject themselves with a chemical on use. Ephedrine by default.
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: SubdermalImplant
-    implantAction: ActionActivateAutoinjector
-  - type: Tag
-    tags:
-    - SubdermalImplant
-    - HideContextMenu
-
-- type: entity
-  parent: BaseSubdermalImplant
   id: NutrimentPumpImplant
   name: nutriment pump implant
   description: This implant allows prevents the user from getting hungry or thirsty.
@@ -165,18 +151,6 @@
   - type: ComponentsImplant
     added:
     - type: Clumsy
-
-- type: entity
-  parent: BaseSubdermalImplant
-  id: ShadowmindImplant
-  name: shadowmind implant
-  description: This implant allows the user to access Shadowmind channel (use +q).
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: SubdermalImplant
-    permanent: true
-  - type: ImplantGrantCollectiveMind
-    collectiveMind: Shadowmind
 
 - type: entity
   parent: BaseSubdermalImplant
