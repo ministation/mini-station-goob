@@ -38,6 +38,14 @@ public sealed partial class AbductorSystem : SharedAbductorSystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedVirtualItemSystem _virtualItem = default!;
 
+    // Mini: these stations are off-limits to abductor teleports (CentCom, Taipan, Lavaland tribe).
+    private static readonly HashSet<string> OffLimitStations =
+    [
+        "NanotrasenCentralCommand",
+        "StandardTypanStation",
+        "LavalandTribeStation",
+    ];
+
     public override void Initialize()
     {
         SubscribeLocalEvent<AbductorHumanObservationConsoleComponent, BeforeActivatableUIOpenEvent>(OnBeforeActivatableUIOpen);
@@ -151,6 +159,11 @@ public sealed partial class AbductorSystem : SharedAbductorSystem
 
         foreach (var station in stations)
         {
+            // Mini: no camera beacons on CentCom, Taipan or Lavaland, so no abduction trips there.
+            if (MetaData(station).EntityPrototype?.ID is { } stationProto
+                && OffLimitStations.Contains(stationProto))
+                continue;
+
             if (_stationSystem.GetLargestGrid(station) is not { } grid
                 || !TryComp(station, out MetaDataComponent? stationMetaData))
                 return;
