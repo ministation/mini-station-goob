@@ -19,16 +19,15 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - &swap
-      name: Enlarge swap
+    # Раньше здесь был 12G swap-файл, и restore периодически падал с
+    # "No space left on device" (run 41893971226). Сборке на 16G раннере swap
+    # не нужен: он остался только в test-integration, где реально нужна память.
+    # Освобождаем место, которое на ubuntu-раннере занимают Android SDK, GHC,
+    # CodeQL и Swift: сборке .NET они не нужны, а запас под NuGet и bin лишним не будет.
+    - name: Free disk space
       run: |
-        sudo swapoff -a
-        sudo rm -f /mnt/swapfile
-        sudo fallocate -l 12G /mnt/swapfile
-        sudo chmod 600 /mnt/swapfile
-        sudo mkswap /mnt/swapfile
-        sudo swapon /mnt/swapfile
-        free -h
+        sudo rm -rf /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/share/swift
+        df -h /
 
     - &checkout
       name: Checkout Master
@@ -104,20 +103,47 @@ jobs:
     timeout-minutes: 30
     strategy:
       fail-fast: false
-      # Два шарда вместо четырёх: кастомные тестовые деревья форка удалены.
+      # В Content.IntegrationTests параллелятся фикстуры (классы), а тесты
+      # внутри фикстуры идут последовательно: AssemblyInfo.cs задаёт
+      # ParallelScope.Children + LevelOfParallelism(2). Поэтому режем не только
+      # по категориям, но и по методам: PostMapInitTest (309.5с целиком) разбит
+      # на две части по ~155с, а EntityTest.SpawnAndDeleteEntityCountTest
+      # (159.5с) идёт отдельно, в паре с лёгкой другой фикстурой.
+      # Замеры по trx прогона 41888601359; было два шарда: prototype-sweep
+      # 407с wall и main 135с. Ожидаемые wall: map-slow 154.8с, map-rest
+      # 154.7с, entity-big 159.5с (PrototypeSaveTest 29.8с параллельно),
+      # rules ~154с (256.4с CPU на двух полосах). Фильтры взаимно исключающие:
+      # в объединении дают ровно старый sweep-шард (42 теста) плюс main (507).
       matrix:
         shard:
           - name: main
             filter: cat != MapTests && cat != GameRuleTests && cat != PrototypeSweepTests
-          - name: prototype-sweep
-            filter: cat == PrototypeSweepTests || cat == MapTests || cat == GameRuleTests
+          - name: map-slow
+            filter: cat == MapTests && (test == 'Content.IntegrationTests.Tests.PostMapInitTest.NoSavedPostMapInitTest' || test == 'Content.IntegrationTests.Tests.PostMapInitTest.NonGameMapsLoadableTest')
+          - name: map-rest
+            filter: cat == MapTests && class != 'Content.IntegrationTests.Tests.SaveLoadSaveTest' && class != 'Content.IntegrationTests.Tests.SaveLoadMapTest' && test != 'Content.IntegrationTests.Tests.PostMapInitTest.NoSavedPostMapInitTest' && test != 'Content.IntegrationTests.Tests.PostMapInitTest.NonGameMapsLoadableTest'
+          - name: entity-big
+            filter: (class == 'Content.IntegrationTests.Tests.EntityTest' && test == 'Content.IntegrationTests.Tests.EntityTest.SpawnAndDeleteEntityCountTest') || (cat == PrototypeSweepTests && class == 'Content.IntegrationTests.Tests.PrototypeSaveTest')
+          - name: rules
+            filter: cat == GameRuleTests || (cat == MapTests && (class == 'Content.IntegrationTests.Tests.SaveLoadSaveTest' || class == 'Content.IntegrationTests.Tests.SaveLoadMapTest')) || (cat == PrototypeSweepTests && class == 'Content.IntegrationTests.Tests.PrototypeTests.PrototypeTests') || (cat == PrototypeSweepTests && class == 'Content.IntegrationTests.Tests.EntityTest' && test != 'Content.IntegrationTests.Tests.EntityTest.SpawnAndDeleteEntityCountTest')
 
     env:
       DOTNET_gcServer: 1
       DOTNET_TieredPGO: 0
 
     steps:
-    - *swap
+    # Swap нужен только тестам (две параллельные пары server+client); сборке
+    # на 16G раннере он не нужен, а 12G файла на диске роняли restore.
+    # 12G оставляем без изменений: уменьшать вслепую нельзя.
+    - name: Enlarge swap
+      run: |
+        sudo swapoff -a
+        sudo rm -f /mnt/swapfile
+        sudo fallocate -l 12G /mnt/swapfile
+        sudo chmod 600 /mnt/swapfile
+        sudo mkswap /mnt/swapfile
+        sudo swapon /mnt/swapfile
+        free -h
     - *checkout
     - *submodule
     - *submodule_pull
@@ -131,6 +157,21 @@ jobs:
           --logger "trx;LogFileName=${{ matrix.shard.name }}.trx" --results-directory TestResults -- \
           NUnit.Where="${{ matrix.shard.filter }}" \
           NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
+
+    # Опечатка в NUnit.Where не должна пройти незамеченной: пустой шард
+    # валит job. Точное число тестов не сверяем, иначе любой PR с новым
+    # тестом краснел бы на этом шаге.
+    - name: Verify shard selected tests
+      run: |
+        python3 - "${{ matrix.shard.name }}" TestResults/${{ matrix.shard.name }}.trx <<'PY'
+        import sys
+        import xml.etree.ElementTree as ET
+        name, path = sys.argv[1], sys.argv[2]
+        ns = {"t": "http://microsoft.com/schemas/VisualStudio/TeamTest/2010"}
+        count = len(ET.parse(path).getroot().findall("t:Results/t:UnitTestResult", ns))
+        print(f"{name}: {count} tests")
+        sys.exit(0 if count > 0 else 1)
+        PY
 
     - name: Upload test results
       if: always()
