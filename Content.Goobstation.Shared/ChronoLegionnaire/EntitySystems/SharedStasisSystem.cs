@@ -209,7 +209,11 @@ public abstract partial class SharedStasisSystem : EntitySystem
         if (HasComp<StasisImmunityComponent>(args.EntityUid))
             return;
 
-        TryStasis((args.EntityUid, null), true, null);
+        // Observers, ghosts and items have no status effects, and stasis cannot be applied to them.
+        if (!TryComp<StatusEffectsComponent>(args.EntityUid, out var status))
+            return;
+
+        TryStasis((args.EntityUid, status), true, null);
     }
 
     /// <summary>
