@@ -6,7 +6,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using System.Numerics;
-using Robust.Client.GameObjects;
 
 namespace Content.Goobstation.Client.Projectiles;
 

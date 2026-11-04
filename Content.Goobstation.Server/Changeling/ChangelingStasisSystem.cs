@@ -4,7 +4,6 @@ using Content.Shared.Atmos.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Polymorph.Systems;
 using Content.Server.Temperature.Systems;
-using Content.Shared.Atmos.Components;
 using Content.Shared.Polymorph;
 using Content.Shared.Temperature.Components;
 

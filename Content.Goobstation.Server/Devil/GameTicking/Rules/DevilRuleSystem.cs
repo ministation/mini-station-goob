@@ -3,7 +3,6 @@
 using System.Text;
 using Content.Goobstation.Shared.Devil.Roles;
 using Content.Goobstation.Shared.Devil;
-using Content.Goobstation.Shared.Devil.Roles;
 using Content.Server.Antag;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Mind;

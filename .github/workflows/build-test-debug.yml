@@ -33,6 +33,9 @@ jobs:
     - &checkout
       name: Checkout Master
       uses: actions/checkout@v4.2.2
+      with:
+        # история репозитория не нужна ни одному шагу - экономит 1-3 минуты
+        fetch-depth: 1
 
     - name: Setup Submodule
       run: git submodule update --init --recursive
@@ -51,6 +54,15 @@ jobs:
       uses: actions/setup-dotnet@v6.0.0
       with:
         dotnet-version: 10.0.403
+
+    - &nuget_cache
+      name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: nuget-ubuntu-${{ hashFiles('**/nuget.config', '**/*.props') }}
+        restore-keys: |
+          nuget-ubuntu-
 
     - name: Install dependencies
       run: dotnet restore Content.IntegrationTests/Content.IntegrationTests.csproj
