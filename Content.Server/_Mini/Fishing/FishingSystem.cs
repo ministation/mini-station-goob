@@ -73,6 +73,7 @@ public sealed partial class FishingSystem : EntitySystem
     [Dependency] private FishingEquipmentSystem _equipment = default!;
     [Dependency] private FishSystem _fish = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedItemSystem _item = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private IPrototypeManager _proto = default!;
@@ -356,6 +357,8 @@ public sealed partial class FishingSystem : EntitySystem
 
         ent.Comp.Extended = !ent.Comp.Extended;
         Dirty(ent, ent.Comp);
+        _item.SetSize(ent.Owner, ent.Comp.Extended ? ent.Comp.ExtendedSize : ent.Comp.FoldedSize);
+        _item.SetShape(ent.Owner, ent.Comp.Extended ? ent.Comp.ExtendedShape : ent.Comp.FoldedShape);
         _popup.PopupEntity(Loc.GetString(ent.Comp.Extended ? "fishing-rod-extended" : "fishing-rod-folded"), user, user);
         _audio.PlayPvs(ExtendSound, user);
     }

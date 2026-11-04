@@ -24,7 +24,9 @@
   - type: Item
     sprite: _Goobstation/Objects/Specific/Fishing/fishing_rod_inhand.rsi
     heldPrefix: rod
-    size: Normal
+    size: Huge
+    shape:
+    - 0,0,4,0
     inhandVisuals:
       left:
       - state: rod-inhand-left
@@ -249,6 +251,10 @@
     - state: worm_overlay
       visible: false
       map: [ "bait" ]
+  - type: Item
+    size: Normal
+    shape:
+    - 0,0,1,0
   - type: FishingRod
     frameState: frame_telescopic
     inhandState: rod_telescopic
@@ -278,6 +284,10 @@
     - state: worm_overlay
       visible: false
       map: [ "bait" ]
+  - type: Item
+    size: Normal
+    shape:
+    - 0,0,1,0
   - type: FishingRod
     frameState: frame_master
     inhandState: rod_master
