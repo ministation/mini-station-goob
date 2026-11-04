@@ -1,0 +1,213 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Demonic frost miner AI selector tree.
+# TG rolls one of three attacks, and before enraging picks its easy form 80% of the time,
+# after enraging only 40% of the time. The group below mirrors those odds with weights,
+# and every attack is gated on the matching MobPhases phase.
+
+- type: megafaunaSelector
+  id: FrostMiner
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: FrostMinerActions
+
+- type: megafaunaSelector
+  id: FrostMinerActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    # Phase 1: easy attacks weigh 4 each against 1 for every hard attack.
+    - id: ActionFrostMinerFrostOrbs
+      weight: 4
+    - id: ActionFrostMinerSnowballGun
+      weight: 4
+    - id: ActionFrostMinerIceShotgun
+      weight: 4
+    - id: ActionFrostMinerFrostOrbsStrong
+      weight: 1
+    - id: ActionFrostMinerHardSnowball
+      weight: 1
+    - id: ActionFrostMinerIceShotgunHard
+      weight: 1
+    # Phase 2: the enraged easy forms weigh 2 each, hard attacks weigh 3 each.
+    - id: ActionFrostMinerFrostOrbsEnraged
+      weight: 2
+    - id: ActionFrostMinerSnowballGunEnraged
+      weight: 2
+    - id: ActionFrostMinerIceShotgunEnraged
+      weight: 2
+    - id: ActionFrostMinerFrostOrbsStrongPhase2
+      weight: 3
+    - id: ActionFrostMinerHardSnowballPhase2
+      weight: 3
+    - id: ActionFrostMinerIceShotgunHardPhase2
+      weight: 3
+
+- type: megafaunaSelector
+  id: ActionFrostMinerFrostOrbs
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerFrostOrbs
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerFrostOrbs
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 1
+
+- type: megafaunaSelector
+  id: ActionFrostMinerSnowballGun
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerSnowballGun
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerSnowballGun
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 1
+
+- type: megafaunaSelector
+  id: ActionFrostMinerIceShotgun
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerIceShotgun
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerIceShotgun
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 1
+
+- type: megafaunaSelector
+  id: ActionFrostMinerFrostOrbsStrong
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerFrostOrbsStrong
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerFrostOrbsStrong
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 1
+
+- type: megafaunaSelector
+  id: ActionFrostMinerHardSnowball
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerHardSnowball
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerHardSnowball
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 1
+
+- type: megafaunaSelector
+  id: ActionFrostMinerIceShotgunHard
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerIceShotgunHard
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerIceShotgunHard
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 1
+
+- type: megafaunaSelector
+  id: ActionFrostMinerFrostOrbsEnraged
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerFrostOrbsEnraged
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerFrostOrbsEnraged
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+
+- type: megafaunaSelector
+  id: ActionFrostMinerSnowballGunEnraged
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerSnowballGunEnraged
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerSnowballGunEnraged
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+
+- type: megafaunaSelector
+  id: ActionFrostMinerIceShotgunEnraged
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerIceShotgunEnraged
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerIceShotgunEnraged
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+
+- type: megafaunaSelector
+  id: ActionFrostMinerFrostOrbsStrongPhase2
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerFrostOrbsStrong
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerFrostOrbsStrong
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+
+- type: megafaunaSelector
+  id: ActionFrostMinerHardSnowballPhase2
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerHardSnowball
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerHardSnowball
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+
+- type: megafaunaSelector
+  id: ActionFrostMinerIceShotgunHardPhase2
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    failDelay: 0.5
+    actionId: ActionFrostMinerIceShotgunHard
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionFrostMinerIceShotgunHard
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+

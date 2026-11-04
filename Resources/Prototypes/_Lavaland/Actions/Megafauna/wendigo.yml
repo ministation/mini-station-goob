@@ -1,0 +1,209 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Wendigo abilities. Use delays follow TG's 10 second mob cooldowns, so the AI
+# cannot chain the same attack and the shockwave patterns share the scream cooldown.
+
+- type: entity
+  id: ActionWendigoGroundSlam
+  parent: BaseAction
+  name: Ground Slam
+  description: Slams the ground, sending an expanding shockwave of force around itself.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandWendigoSlamBurst
+      spawnAtUser: true
+
+- type: entity
+  id: ActionWendigoTeleport
+  parent: BaseAction
+  name: Teleport
+  description: Teleports next to the target. When enraged it follows up with a shotgun spread.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:WendigoTeleportActionEvent
+      radius: 6
+      enragedProjectile: LavalandWendigoShockwave
+      enragedCount: 5
+      enragedSpread: 40
+      enragedSpeed: 3.5
+
+# Shockwave attacks: the boss returns to the arena center and screams first.
+- type: entity
+  id: ActionWendigoCircle
+  parent: BaseAction
+  name: Shockwave Circle
+  description: Fires rings of shockwaves around itself.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:WendigoShockwaveActionEvent
+      projectile: LavalandWendigoShockwave
+      pattern: Alternating
+      count: 24
+      repeats: 8
+      interval: 0.6
+      speed: 9.2
+
+- type: entity
+  id: ActionWendigoCircleEnraged
+  parent: BaseAction
+  name: Enraged Shockwave Circle
+  description: Fires dense rings of shockwaves around itself.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:WendigoShockwaveActionEvent
+      projectile: LavalandWendigoShockwave
+      pattern: Alternating
+      count: 24
+      repeats: 8
+      interval: 0.4
+      speed: 14
+
+- type: entity
+  id: ActionWendigoSpiral
+  parent: BaseAction
+  name: Shockwave Spiral
+  description: Fires a rotating spiral of shockwaves towards the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:WendigoShockwaveActionEvent
+      projectile: LavalandWendigoSpiralShockwave
+      pattern: Spiral
+      count: 5
+      repeats: 40
+      interval: 0.1
+      speed: 14
+      step: 5
+
+- type: entity
+  id: ActionWendigoSpiralEnraged
+  parent: BaseAction
+  name: Enraged Shockwave Spiral
+  description: Fires a dense rotating spiral of shockwaves towards the target.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:WendigoShockwaveActionEvent
+      projectile: LavalandWendigoSpiralShockwave
+      pattern: Spiral
+      count: 2
+      repeats: 40
+      interval: 0.1
+      speed: 14
+      step: 5
+      growth: 0.1667
+
+- type: entity
+  id: ActionWendigoWave
+  parent: BaseAction
+  name: Shockwave Wave
+  description: Fires a slowly rotating ring of shockwaves.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:WendigoShockwaveActionEvent
+      projectile: LavalandWendigoShockwave
+      pattern: Wave
+      count: 6
+      repeats: 12
+      interval: 0.6
+      speed: 3.5
+      step: 5
+
+# Bear form granted by the bottled wendigo blood.
+- type: entity
+  id: ActionWendigoBearForm
+  parent: BaseActionPolymorph
+  name: Bear Form
+  description: Take on the form of a beast.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: Mobs/Animals/bear.rsi
+      state: bear
+  - type: InstantAction
+    event: !type:PolymorphActionEvent
+      protoId: BitrunningAvatarBearPolymorph
+
+# Effect prototypes used by the slam action above.
+- type: entity
+  parent: MarkerBase
+  id: LavalandWendigoSlamBurst
+  name: wendigo ground slam
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: WendigoGroundSlam
+    range: 5
+    delay: 0.3
+    anchorUser: true
+    damage:
+      types:
+        Blunt: 20
+
+- type: entity
+  parent: MarkerBase
+  id: LavalandWendigoStompBurst
+  name: wendigo stomp
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: WendigoGroundSlam
+    range: 1
+    delay: 0.1
+    damage:
+      types:
+        Blunt: 20

@@ -1,0 +1,143 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Crusher trophies dropped by the regular lava fauna. TG gates these drops on the kill being
+# mostly crusher damage; here SpawnLootOnDeath drops them only when the killing blow came from
+# a crusher (MegafaunaWeaponLooter). Effects: Content.Server/_Lavaland/Crusher/FaunaCrusherTrophySystem.
+
+- type: entity
+  id: LavalandCrusherTrophyWatcherWing
+  parent: BaseLavalandCrusherTrophy
+  name: watcher wing
+  description: A wing torn from a watcher. Suitable as a trophy for a kinetic crusher.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: watcher_wing
+  - type: ItemUpgrade
+    name: crusher-trophy-watcher-wing-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+  - type: FaunaCrusherTrophy
+    rangedChargeDrain: 50
+
+- type: entity
+  id: LavalandCrusherTrophyMagmaWing
+  parent: BaseLavalandCrusherTrophy
+  name: magmawing wing
+  description: A smouldering wing torn from a magmawing watcher. Suitable as a trophy for a kinetic crusher.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: magma_wing
+  - type: ItemUpgrade
+    name: crusher-trophy-magma-wing-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+  - type: FaunaCrusherTrophy
+    detonateOnTargetAttack: true
+
+- type: entity
+  id: LavalandCrusherTrophyIceWing
+  parent: BaseLavalandCrusherTrophy
+  name: icewing wing
+  description: A frozen wing torn from an icewing watcher. Suitable as a trophy for a kinetic crusher.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: ice_wing
+  - type: ItemUpgrade
+    name: crusher-trophy-ice-wing-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+  - type: FaunaCrusherTrophy
+    backstepTiles: 1
+
+- type: entity
+  id: LavalandCrusherTrophyLegionSkull
+  parent: BaseLavalandCrusherTrophy
+  name: legion skull
+  description: A dead and lifeless legion skull. Suitable as a trophy for a kinetic crusher.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: legion_skull
+  - type: ItemUpgrade
+    name: crusher-trophy-legion-skull-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+  - type: FaunaCrusherTrophy
+    rechargeCooldownModifier: 0.7
+
+- type: entity
+  id: LavalandCrusherTrophyGoliathTentacle
+  parent: BaseLavalandCrusherTrophy
+  name: goliath tentacle
+  description: A sliced-off goliath tentacle. Suitable as a trophy for a kinetic crusher.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: goliath_tentacle
+  - type: ItemUpgrade
+    name: crusher-trophy-goliath-tentacle-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+  - type: FaunaCrusherTrophy
+    detonationMissingHealthDamage: 0.2
+
+- type: entity
+  id: LavalandCrusherTrophyLobsterClaw
+  parent: BaseLavalandCrusherTrophy
+  name: lobster claw
+  description: A claw from a lobstrosity. Suitable as a trophy for a kinetic crusher.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: lobster_claw
+  - type: ItemUpgrade
+    name: crusher-trophy-lobster-claw-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+  # shortcut: TG rebukes by increasing the click cooldown, this fork cancels the next attack instead.
+  - type: FaunaCrusherTrophy
+    rebukeDuration: 1
+
+- type: entity
+  id: LavalandCrusherTrophyBrimdemonFang
+  parent: BaseLavalandCrusherTrophy
+  name: brimdemon's fang
+  description: A fang from a brimdemon's corpse. Suitable as a trophy for a kinetic crusher.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: brimdemon_fang
+  - type: ItemUpgrade
+    name: crusher-trophy-brimdemon-fang-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+  - type: FaunaCrusherTrophy
+    detonationSound:
+      path: /Audio/_Lavaland/Mobs/brimdemon_crush.ogg
+    detonationPopups:
+    - fauna-trophy-brimdemon-boom
+    - fauna-trophy-brimdemon-bang
+    - fauna-trophy-brimdemon-kaboom
+    - fauna-trophy-brimdemon-pow
+    - fauna-trophy-brimdemon-wham
+
+- type: entity
+  id: LavalandCrusherTrophyBilewormSpewlet
+  parent: BaseLavalandCrusherTrophy
+  name: bileworm spewlet
+  description: A baby bileworm. Suitable as a trophy for a kinetic crusher.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: bileworm_spewlet
+  - type: ItemUpgrade
+    name: crusher-trophy-bileworm-spewlet-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+  # shortcut: TG hides this behind its own action button; this fork fires the acid on every detonation.
+  - type: FaunaCrusherTrophy
+    detonationProjectile: LavalandBilewormAcid
+    projectileSpeed: 20

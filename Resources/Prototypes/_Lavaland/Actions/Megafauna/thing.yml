@@ -1,0 +1,112 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# The Thing actions. Every attack is a single event with a kind, implemented in
+# Content.Server/_Lavaland/BossMechanics/ThingActionsSystem.cs.
+
+- type: entity
+  id: ActionThingDecimate
+  parent: BaseAction
+  name: Decimate
+  description: Turns the ground around the boss into blades.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:ThingAttackActionEvent
+      attack: Decimate
+
+- type: entity
+  id: ActionThingCharge
+  parent: BaseAction
+  name: Charge
+  description: Lunges at a target, twice in the last phase.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 1
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:ThingAttackActionEvent
+      attack: Charge
+
+- type: entity
+  id: ActionThingShriek
+  parent: BaseAction
+  name: Shriek
+  description: Screams at everyone close by, making them drop their items.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:ThingAttackActionEvent
+      attack: Shriek
+
+- type: entity
+  id: ActionThingCardinalTendrils
+  parent: BaseAction
+  name: Tendrils
+  description: Sends lines of blades along the four cardinal directions.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:ThingAttackActionEvent
+      attack: CardinalTendrils
+
+- type: entity
+  id: ActionThingBigTendrils
+  parent: BaseAction
+  name: Tendril Burst
+  description: Sends a burst of blades under a target, bigger in the last phase.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 5
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:ThingAttackActionEvent
+      attack: BigTendrils
+
+- type: entity
+  id: ActionThingAcidSpit
+  parent: BaseAction
+  name: Acid Spit
+  description: Spits acid around itself. Last phase only.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 10
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:ThingAttackActionEvent
+      attack: AcidSpit

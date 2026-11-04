@@ -1,0 +1,68 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# The Thing arena: a stone lab with the boss, two single use molecular accelerators and a
+# small storage room locked behind the boss keycard. Built by ThingArenaSystem.
+
+- type: entity
+  id: LavalandThingArenaSpawner
+  parent: MarkerBase
+  name: The Thing arena spawner
+  suffix: Lavaland
+  components:
+  - type: ThingArenaSpawner
+    arenaRadius: 6
+
+# Molecular accelerator: pops out of the floor while the boss is down and overloads it.
+- type: entity
+  id: ThingMolecularAccelerator
+  name: molecular accelerator
+  description: Weird lab equipment. It hums, waiting for something to overload.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    noRot: true
+    sprite: _Lavaland/Structures/Specific/thing_depleter.rsi
+    layers:
+    - map: ["base"]
+      state: thingdepleter_infloor
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ThingAcceleratorVisuals.State:
+        retracted:
+          base: { state: thingdepleter_infloor }
+        deployed:
+          base: { state: thingdepleter }
+        broken:
+          base: { state: thingdepleter_broken }
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 100
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: DoAfter
+  - type: ThingAccelerator
+
+# Storage room door, opened with the keycard dropped by the boss.
+- type: entity
+  parent: Airlock
+  id: ThingStorageDoor
+  name: storage room 2 door
+  suffix: Locked
+  components:
+  - type: AccessReader
+    containerAccessProvider: null
+    access: [["LavalandThingStorage"]]

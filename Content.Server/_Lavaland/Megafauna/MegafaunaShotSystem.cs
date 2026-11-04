@@ -6,6 +6,7 @@ using Content.Shared.Projectiles;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Lavaland.Megafauna;
@@ -18,6 +19,7 @@ public sealed class MegafaunaShotSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
 
@@ -81,6 +83,15 @@ public sealed class MegafaunaShotSystem : EntitySystem
                 for (var i = 0; i < args.Count; i++)
                 {
                     var angle = Angle.FromDegrees(i * 360f / args.Count);
+                    FireProjectile(shooter, args.Projectile, angle, args.Speed);
+                }
+                break;
+            }
+            case MegafaunaShotPattern.Random:
+            {
+                for (var i = 0; i < args.Count; i++)
+                {
+                    var angle = Angle.FromDegrees(_random.NextFloat(0f, 360f));
                     FireProjectile(shooter, args.Projectile, angle, args.Speed);
                 }
                 break;

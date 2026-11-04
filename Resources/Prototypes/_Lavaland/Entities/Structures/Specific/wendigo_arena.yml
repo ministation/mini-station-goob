@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Wendigo arena landmark. The arena is a stone patch with the boss in the middle,
+# same as the colossus arena. Desired placement: one per planet, far from the
+# landing zone (see the report to the lead for distance and uniqueness values).
+
+- type: entity
+  id: LavalandWendigoArenaSpawner
+  parent: MarkerBase
+  name: wendigo arena spawner
+  suffix: Lavaland
+  components:
+  - type: WendigoArenaSpawner

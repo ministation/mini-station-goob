@@ -1,0 +1,128 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Demonic frost miner, port of TG's icemoon megafauna.
+# Three attacks (frost orb barrage, snowball machine gun, ice shotgun), each with an easy and a
+# hard form; below a quarter health it heals to full and enrages, doubling the easy forms' speed.
+- type: entity
+  name: demonic frost miner
+  id: LavalandBossDemonicFrostMiner
+  parent: LavalandMobBase
+  description: A miner possessed by a demon of ice, wielding a frozen mining rig.
+  components:
+  - type: Physics
+    bodyType: KinematicController
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 1000
+        mask:
+        - LargeMobMask
+        layer:
+        - LargeMobLayer
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: PreventChasmFalling
+    deleteOnUse: false
+  - type: MegafaunaStage
+    maxStage: 2 # phase 2 below a quarter health, see MobPhases below
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/Bosses/frost_miner.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: demonic_miner
+  # TG swaps icon_state to demonic_miner_phase2 while enraging. This fork has no server-side
+  # sprite visualizer for megafauna, so the enrage system reuses the networked RandomSprite
+  # component to push the second state to the client (FrostMinerEnrageSystem).
+  - type: RandomSprite
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
+    attackRate: 2 # TG rapid_melee 4, one hit every half second
+    damage:
+      types:
+        Blunt: 10
+      armorPenetration: 1 # TG armour_penetration 100
+  - type: VampiricMelee
+    healFraction: 0.5 # TG lifesteal 50
+  - type: Tag
+    tags:
+    - CannotSuicide
+  - type: CombatMode
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.5
+    baseSprintSpeed: 3
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      1500: Dead
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Hierophant
+  - type: BossMusic
+    # TG uses bdm_boss.ogg, this fork does not ship it; the shared miniboss track is the stand-in.
+    soundId: Miniboss
+  - type: Aggressive
+    forgiveRange: 20.0
+  - type: CombatPower
+    factor: 30
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: ActionGrant
+    actions:
+    - ActionFrostMinerFrostOrbs
+    - ActionFrostMinerFrostOrbsStrong
+    - ActionFrostMinerFrostOrbsEnraged
+    - ActionFrostMinerSnowballGun
+    - ActionFrostMinerSnowballGunEnraged
+    - ActionFrostMinerHardSnowball
+    - ActionFrostMinerIceShotgun
+    - ActionFrostMinerIceShotgunEnraged
+    - ActionFrostMinerIceShotgunHard
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: GPS
+    gpsName: Bloodchilling Signal
+    enabled: true
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.5
+    selector: !type:NestedMegafaunaSelector
+      id: FrostMiner
+  - type: Anger
+    totalHp: 1500
+  - type: AngerPlayerScaling
+    angerScale: 1.2
+    hpScale: 1.2
+  - type: MobPhases
+    phaseThresholds:
+      0: 1
+      375: 2 # TG enrages at 25% health
+  - type: FrostMinerEnrage
+  - type: MegafaunaBlink
+  - type: MegafaunaRejuvenate
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: LavalandCrateFrostMiner
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandIceBlockTalisman
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    dropBoth: true
+    # TG deletes the corpse (del_on_death), so no butcher results are reachable.
+    deleteOnDeath: true

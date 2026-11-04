@@ -18,6 +18,8 @@
     - id: ActionColossusBoltsSpiral
     - id: ActionColossusCounterSpiral
     - id: ActionColossusFinale
+    - id: ActionColossusBoltRain
+    - id: ActionColossusBoulderToss
 
 - type: megafaunaSelector
   id: ActionColossusBoltsSpread
@@ -51,6 +53,28 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionColossusBoltsSpiral
+
+- type: megafaunaSelector
+  id: ActionColossusBoltRain
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 4.0,7.0
+      inverse: true
+    actionId: ActionColossusBoltRain
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionColossusBoltRain
+
+- type: megafaunaSelector
+  id: ActionColossusBoulderToss
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 3.5,6.5
+      inverse: true
+    actionId: ActionColossusBoulderToss
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionColossusBoulderToss
 
 # Below 10% HP only: TG's final attack.
 - type: megafaunaSelector

@@ -75,6 +75,8 @@
       params:
         volume: -5
   - type: TileMovement
+  - type: PreventChasmFalling
+    deleteOnUse: false
   - type: MegafaunaStage
     maxStage: 2
     nextStageHealthFraction: 0.5 # enrages at half health

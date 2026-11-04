@@ -81,6 +81,35 @@
   minDistance: 65
   maxDistance: 120
 
+# The three bosses ported from TG's icemoon/icebox. They live on Lavaland here, farther
+# out than the original five so their big labs do not crowd the near ring.
+- type: lavalandMarkerRuin
+  id: ThingArena
+  boundary: 12,12
+  spawnedMarker: LavalandThingArenaSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 150
+  maxDistance: 215
+
+- type: lavalandMarkerRuin
+  id: WendigoArena
+  boundary: 12,12
+  spawnedMarker: LavalandWendigoArenaSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 170
+  maxDistance: 230
+
+- type: lavalandMarkerRuin
+  id: FrostMinerArena
+  boundary: 12,12
+  spawnedMarker: LavalandFrostMinerArenaSpawner
+  priority: -2
+  guaranteed: true
+  minDistance: 190
+  maxDistance: 250
+
 - type: lavalandMarkerRuin
   id: OreVent
   boundary: 8,8

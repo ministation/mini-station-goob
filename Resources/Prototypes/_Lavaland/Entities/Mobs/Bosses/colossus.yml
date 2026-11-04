@@ -25,6 +25,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+  - type: PreventChasmFalling
+    deleteOnUse: false
   - type: MegafaunaStage
     maxStage: 1 # no stage counter on the HUD, MobPhases still gates the AI attacks
   - type: Sprite
@@ -84,6 +86,8 @@
     - ActionColossusBoltsSpiral
     - ActionColossusCounterSpiral
     - ActionColossusFinale
+    - ActionColossusBoltRain
+    - ActionColossusBoulderToss
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0

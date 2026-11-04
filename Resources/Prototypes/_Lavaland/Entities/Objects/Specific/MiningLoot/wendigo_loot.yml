@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Wendigo loot. TG gives the wendigo no chest: its reward is the guaranteed butcher
+# results and the crusher horn. A necropolis chest with the usual tendril loot is
+# added here so the arena kill pays off like the other lavaland boss arenas.
+
+- type: entity
+  parent: LavalandCrateNecropolis
+  id: LavalandCrateWendigo
+  name: wendigo chest
+  description: A necropolis chest dragged out of the wendigo's lair.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: LavalandLootTendril
+
+# Crusher trophy: TG doubles the crusher melee damage while it is fitted.
+- type: entity
+  id: LavalandWendigoHorn
+  parent: BaseLavalandCrusherTrophy
+  name: wendigo horn
+  description: A gnarled horn ripped from the skull of a wendigo.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: wendigo_horn
+  - type: ItemUpgrade
+    name: crusher-trophy-wendigo-horn-name
+    uniqueGroup: crusherTrophy
+  - type: WeaponUpgradeDamage
+    modifier: 2
+  - type: CrusherTrophy
+
+# Guaranteed butcher results.
+- type: entity
+  id: LavalandWendigoBlood
+  parent: BaseItem
+  name: bottle of wendigo blood
+  description: Still warm blood of a wendigo. Drinking it turns you into a beast.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: vial
+  - type: WendigoBlood
+  - type: StaticPrice
+    price: 1500
+
+- type: entity
+  id: LavalandWendigoSkull
+  parent: BaseItem
+  name: wendigo skull
+  description: A horned skull, still cold to the touch.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: wendigo_skull
+  - type: StaticPrice
+    price: 2000

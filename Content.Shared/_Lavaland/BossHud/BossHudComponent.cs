@@ -14,27 +14,33 @@ public sealed partial class BossHudComponent : Component
     /// <summary>
     /// True while the fight is active and the HUD should be displayed.
     /// </summary>
-    [DataField, AutoNetworkedField]
+    // Runtime snapshot only, not a prototype field, so saving a spawned HUD is a no-op.
+    [AutoNetworkedField]
     public bool Active;
 
-    [DataField, AutoNetworkedField]
+    // Runtime snapshot only, not a prototype field, so saving a spawned HUD is a no-op.
+    [AutoNetworkedField]
     public float Health;
 
-    [DataField, AutoNetworkedField]
+    // Runtime snapshot only, not a prototype field, so saving a spawned HUD is a no-op.
+    [AutoNetworkedField]
     public float MaxHealth = 1f;
 
     /// <summary>
     /// Armor left on the boss, absorbed before health. Zero for bosses without armor.
     /// </summary>
-    [DataField, AutoNetworkedField]
+    // Runtime snapshot only, not a prototype field, so saving a spawned HUD is a no-op.
+    [AutoNetworkedField]
     public float Armor;
 
-    [DataField, AutoNetworkedField]
+    // Runtime snapshot only, not a prototype field, so saving a spawned HUD is a no-op.
+    [AutoNetworkedField]
     public float MaxArmor;
 
     /// <summary>
     /// True once the armor pool broke, a broken pool never regenerates.
     /// </summary>
-    [DataField, AutoNetworkedField]
+    // Runtime snapshot only, not a prototype field, so saving a spawned HUD is a no-op.
+    [AutoNetworkedField]
     public bool ArmorBroken;
 }

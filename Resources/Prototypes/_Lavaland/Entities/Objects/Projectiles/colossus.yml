@@ -10,7 +10,7 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 25
+        Piercing: 15
     ignoreResistances: true
   - type: RockBreakingProjectile
   - type: Sprite
@@ -22,3 +22,24 @@
     color: "#5FD9F7"
     radius: 1.5
     energy: 3.0
+
+# Colossus boulder: slow and heavy, smashes through rock on the way to the target.
+- type: entity
+  id: LavalandColossusBoulder
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  name: boulder
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 40
+  - type: RockBreakingProjectile
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/meteor.rsi
+    layers:
+    - state: large
+  - type: PointLight
+    color: "#B08968"
+    radius: 1.5
+    energy: 1.5

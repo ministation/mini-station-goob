@@ -89,3 +89,45 @@
       interval: 0.18
       spinSpeed: 120
       spiralCount: 2
+
+- type: entity
+  id: ActionColossusBoltRain
+  parent: BaseAction
+  name: Bolt Rain
+  description: Blankets the arena with death bolts in random directions.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 3
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandColossusBolt
+      count: 12
+      speed: 12
+      pattern: Random
+
+- type: entity
+  id: ActionColossusBoulderToss
+  parent: BaseAction
+  name: Boulder Toss
+  description: Hurls a boulder that smashes through rock, walls and bones.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 4.5
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandColossusBoulder
+      count: 1
+      speed: 9
+      pattern: Cone

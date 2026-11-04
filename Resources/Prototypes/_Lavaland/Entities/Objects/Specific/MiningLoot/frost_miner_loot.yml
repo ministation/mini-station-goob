@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Demonic frost miner loot and crusher trophy, ported from TG's demonic_frost_miner.dm.
+
+# TG always drops remains and an ice energy crystal, plus one random item out of
+# resurrection crystal / cursed ice hiking boots / demonic jackhammer.
+# This fork has no cursed boots and no demonic jackhammer, so the chest contains the
+# ice energy crystal and the closest stand-in it does have, the crystal of renewal.
+- type: entityTable
+  id: LavalandLootFrostMiner
+  table: !type:AllSelector
+    children:
+    - id: LavalandIceEnergyCrystal
+    - id: LavalandRenewalCrystal
+
+- type: entity
+  parent: LavalandCrateNecropolis
+  id: LavalandCrateFrostMiner
+  name: frost miner chest
+  description: A frozen chest left behind by the demonic frost miner.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: LavalandLootFrostMiner
+
+- type: entity
+  id: LavalandIceEnergyCrystal
+  parent: BaseItem
+  name: ice energy crystal
+  description: Remnants of the demonic frost miner's ice energy.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: ice_crystal
+  - type: PointLight
+    color: "#5FD9F7"
+    radius: 2
+    energy: 2
+
+# Crusher trophy: mark detonation freezes the target in an ice cube for four seconds.
+- type: entity
+  id: LavalandIceBlockTalisman
+  parent: BaseLavalandCrusherTrophy
+  name: ice block talisman
+  description: A glowing trinket that a demonic miner had on him, it seems he couldn't utilize it for whatever reason.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: ice_trap_talisman
+  - type: ItemUpgrade
+    name: crusher-trophy-ice-block-talisman-name
+    uniqueGroup: crusherTrophy
+  - type: CrusherTrophy
+  - type: IceBlockTalisman
