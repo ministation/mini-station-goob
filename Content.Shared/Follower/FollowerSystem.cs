@@ -19,6 +19,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Events;
 using Robust.Shared.Network;
 using Robust.Shared.Physics;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -240,7 +241,9 @@ public sealed class FollowerSystem : EntitySystem
             _transform.SetCoordinates(follower, xform, new EntityCoordinates(entity, Vector2.Zero), rotation: Angle.Zero);
         }
 
-        _physicsSystem.SetLinearVelocity(follower, Vector2.Zero);
+        // Visual followers (the Lavaland wisp, for one) have no physics body to stop.
+        if (TryComp<PhysicsComponent>(follower, out var body))
+            _physicsSystem.SetLinearVelocity(follower, Vector2.Zero, body: body);
 
         EnsureComp<OrbitVisualsComponent>(follower);
 
