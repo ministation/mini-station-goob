@@ -15,9 +15,6 @@
     damage:
       types:
         Heat: 0.5
-  - type: EntitySkills
-    skills:
-    - All
   - type: CollectiveMind
     defaultChannel: AbductormindAntag
     canUseInCrit: true
