@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: entity
-  id: FloorWaterEntity
+  id: BaseFloorWaterEntity
+  abstract: true
   name: water
   description: A real thirst quencher.
   placement:
@@ -14,11 +15,6 @@
     anchored: true
   - type: SyncSprite
   - type: Clickable
-  - type: Sprite
-    sprite: Tiles/Planet/water.rsi
-    drawdepth: BelowFloor
-    layers:
-      - state: shoreline_water
   - type: SolutionContainerManager
     solutions:
       pool:
@@ -86,3 +82,18 @@
   # Goobstation - fishing
   - type: CosmicCorruptible # DeltaV - Cosmic Cult
     convertTo: FloorCosmicDecay
+
+# Mini: спрайт и угловое сглаживание из апстрима SS14 (CC-BY-SA-4.0, vladimir.s).
+# Сглаживание живёт здесь, а не в BaseFloorWaterEntity, потому что у FloorAzureWaterEntity (Corvax) своя RSI без угловых состояний.
+- type: entity
+  parent: BaseFloorWaterEntity
+  id: FloorWaterEntity
+  components:
+  - type: Sprite
+    sprite: Tiles/TileEntities/liquid-water.rsi
+    drawdepth: BelowFloor
+  - type: IconSmooth
+    key: water
+    additionalKeys:
+    - walls
+    base: water

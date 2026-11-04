@@ -1,5 +1,6 @@
 - type: entity
-  parent: FloorWaterEntity
+  # Mini: FloorWaterEntity теперь вешает угловое сглаживание под новый спрайт, аквамариновой воде оно не подходит.
+  parent: BaseFloorWaterEntity
   id: FloorAzureWaterEntity
   name: azure water
   description: A real thirst quencher. Corals are not included!
