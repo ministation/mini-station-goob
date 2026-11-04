@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Acid spat by the bileworm spewlet crusher trophy.
+- type: entity
+  id: LavalandBilewormAcid
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Projectiles/bile_glob.rsi
+    layers:
+    - state: bile_glob
+  - type: Projectile
+    damage:
+      types:
+        Caustic: 20
+  - type: TimedDespawn
+    lifetime: 3

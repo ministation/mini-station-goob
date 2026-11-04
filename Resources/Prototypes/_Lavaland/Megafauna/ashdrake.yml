@@ -19,6 +19,7 @@
     - id: ActionDrakeMeteors
     - id: ActionDrakeMassFire
     - id: ActionDrakeEruption
+    - id: ActionDrakeFirestorm
 
 - type: megafaunaSelector
   id: ActionDrakeFireCone
@@ -85,3 +86,18 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionDrakeEruption
+
+# Below half health only: the firestorm spins two flame spirals in opposite directions.
+- type: megafaunaSelector
+  id: ActionDrakeFirestorm
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 9.0,15.0
+      inverse: true
+    actionId: ActionDrakeFirestorm
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionDrakeFirestorm
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2

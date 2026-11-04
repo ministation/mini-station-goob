@@ -17,10 +17,36 @@
   - type: WorldTargetAction
     event: !type:MegafaunaShotActionEvent
       projectile: LavalandDrakeFlame
-      count: 7
-      spread: 70
-      speed: 12
+      count: 9
+      spread: 85
+      speed: 15
       pattern: Cone
+
+# Firestorm: two counter-rotating spirals of flame. The selector only rolls it
+# in the second phase, so the fight escalates once the drake is below half health.
+- type: entity
+  id: ActionDrakeFirestorm
+  parent: BaseAction
+  name: Firestorm
+  description: Spins two counter-rotating spirals of flame around itself.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaShotActionEvent
+      projectile: LavalandDrakeFlame
+      pattern: Spiral
+      duration: 3
+      interval: 0.15
+      spinSpeed: 150
+      speed: 12
+      spiralCount: 2
 
 - type: entity
   id: ActionDrakeLavaPools
@@ -58,7 +84,7 @@
   - type: WorldTargetAction
     event: !type:MegafaunaBlinkActionEvent
 
-# Meteor shower: a 5x5 volley of meteors slams down around the target position.
+# Meteor shower: a 7x7 volley of meteors slams down around the target position.
 - type: entity
   id: ActionDrakeMeteors
   parent: BaseAction
@@ -152,7 +178,7 @@
     alignCoords: true
     shape: !type:NestedEntityShape
       id: BoxFilled
-      size: 5
+      size: 7
   - type: TimedDespawn
     lifetime: 1
 
@@ -174,7 +200,7 @@
     damageDelay: 0.2
     damage:
       types:
-        Heat: 40
+        Heat: 55
     damageWhitelist:
       components:
       - MobState
@@ -213,8 +239,8 @@
       id: BoxFilled
       size: 3
   - type: ShapeSpawnerCounter
-    maxCounter: 3
-    spawnPeriod: 0.7
+    maxCounter: 4
+    spawnPeriod: 0.6
   - type: ExpandingShapeSpawner
     counterSize: 1
   - type: TimedDespawn
@@ -246,7 +272,7 @@
     damageDelay: 0.3
     damage:
       types:
-        Heat: 25
+        Heat: 35
     damageWhitelist:
       components:
       - MobState
@@ -277,7 +303,7 @@
     damageDelay: 0.3
     damage:
       types:
-        Heat: 15
+        Heat: 20
     damageWhitelist:
       components:
       - MobState

@@ -1,0 +1,246 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# The Thing, port of TG's icemoon Outpost 31 megafauna: a three phase boss that has to be
+# pushed forward by overloading the molecular accelerators of its arena.
+- type: entity
+  name: The Thing
+  id: LavalandBossThing
+  parent: LavalandMobBase
+  description: A shifting mass of flesh and tendrils. It should not be here.
+  components:
+  - type: Physics
+    bodyType: KinematicController
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1,-1,1,1"
+        density: 1000
+        # Passes through its own spikes, which check for Impassable and LowImpassable only.
+        mask:
+        - Impassable
+        - LowImpassable
+        layer:
+        - LargeMobLayer
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: PreventChasmFalling
+    deleteOnUse: false
+  - type: MegafaunaStage
+    maxStage: 3 # one stage per phase, see MobPhases below
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/Bosses/thething.rsi
+    layers:
+    - map: ["base"]
+      state: p1
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ThingVisuals.State:
+        p1:
+          base: { state: p1 }
+        p2:
+          base: { state: p2 }
+        p3:
+          base: { state: p3 }
+        dead:
+          base: { state: dead }
+  - type: ThingBoss
+    phaseHealth: 600
+    maxPhases: 3
+    phaseInvulnerabilityTime: 10
+    recoverHeal: 300
+    depletedSound: /Audio/Effects/explosion_small3.ogg
+    overloadSound: /Audio/_Lavaland/Mobs/Bosses/hiero_blast.ogg
+    recoveredSound: /Audio/Effects/pop_high.ogg
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Effects/demon_attack1.ogg
+    angle: 0
+    animation: WeaponArcBite
+    damage:
+      types:
+        Slash: 30
+      armorPenetration: 0.4 # TG's Thing has 40 armor piercing on melee
+  - type: Tag
+    tags:
+    - CannotSuicide
+  - type: CombatMode
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 3.5
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      1800: Dead
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Hierophant
+  - type: BossMusic
+    soundId: Miniboss
+  - type: Aggressive # also required component for aggro checking
+    forgiveRange: 20.0
+  - type: CombatPower # Goobstation
+    factor: 25 # times more dangerous than a crew-member
+  # Megafauna AI wiring, same driver as the other Lavaland bosses.
+  - type: MobMover
+  - type: LagCompensation
+  - type: Actions
+  - type: ActionGrant
+    actions:
+    - ActionThingDecimate
+    - ActionThingCharge
+    - ActionThingShriek
+    - ActionThingCardinalTendrils
+    - ActionThingBigTendrils
+    - ActionThingAcidSpit
+  - type: RotationVisuals
+    defaultRotation: 0
+    horizontalRotation: 0
+  - type: DoAfter
+  - type: RequireProjectileTarget
+    active: False
+  - type: GPS
+    gpsName: L-4 Biohazard Beacon
+    enabled: true
+  - type: MegafaunaAi
+    actionDelay: !type:MegafaunaConstantNumberSelector
+      value: 0.8
+    selector: !type:NestedMegafaunaSelector
+      id: Thing
+  - type: Anger
+    totalHp: 1800
+  # Phases follow the damage budget. The accelerator overload advances the real phase in
+  # ThingBoss while this component only gates which attacks the AI may pick.
+  - type: MobPhases
+    canSwitchBack: true
+    phaseThresholds:
+      0: 1
+      600: 2
+      1200: 3
+  - type: SpawnLootOnDeath
+    table: !type:AllSelector
+      children:
+      - id: LavalandCrateThing
+      - id: LavalandThingKeycard
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandCrusherTrophyFleshGlob
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
+    dropBoth: true
+    deleteOnDeath: true
+
+# Spike field spawned by decimate and the tendril attacks. Blocks players only, the boss walks
+# through it, and a single hit destroys the spike.
+- type: entity
+  id: ThingTendrilSpike
+  name: blades
+  description: A spike of hardened flesh sticking out of the ground.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Lavaland/Effects/thing_spikes.rsi
+    state: thingspike
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 100
+        # Blocks mobs: their mask contains the impassable groups. The boss mask does not.
+        mask: []
+        layer:
+        - MidImpassable
+        - HighImpassable
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 1
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: TimedDespawn
+    lifetime: 10
+  - type: ThingSpike
+
+# Telegraph markers. They show the tile the attack is about to hit.
+- type: entity
+  id: ThingTelegraph
+  name: warning
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: Effects
+    sprite: _Lavaland/Effects/thing_telegraph.rsi
+    state: exclamation
+  - type: TimedDespawn
+    lifetime: 1.5
+
+- type: entity
+  id: ThingTelegraphShort
+  parent: ThingTelegraph
+  name: warning
+  components:
+  - type: TimedDespawn
+    lifetime: 0.5
+
+- type: entity
+  id: ThingTelegraphLarge
+  parent: ThingTelegraph
+  name: warning
+  components:
+  - type: Sprite
+    noRot: true
+    drawdepth: Effects
+    sprite: _Lavaland/Effects/thing_telegraph_large.rsi
+    state: target_largebox
+  - type: TimedDespawn
+    lifetime: 2
+
+# Acid glob that falls for a moment and then splashes into a patch of acid.
+- type: entity
+  id: ThingAcidGlob
+  name: acid
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Effects/thing_acid_glob.rsi
+    state: toxin
+  - type: ThingAcidGlob
+  - type: TimedDespawn
+    lifetime: 1.5
+
+# Acid puddle. Stepping into it burns.
+- type: entity
+  id: ThingAcid
+  name: acid
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+    sprite: _Lavaland/Effects/thing_acid.rsi
+    state: default
+  - type: ThingAcid
+  - type: TimedDespawn
+    lifetime: 5

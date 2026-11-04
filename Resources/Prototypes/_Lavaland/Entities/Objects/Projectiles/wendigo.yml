@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Wendigo shockwave projectile: TG's colossus bolt variant, armor piercing and slow.
+- type: entity
+  id: LavalandWendigoShockwave
+  parent: LavalandColossusBolt
+  categories: [ HideSpawnMenu ]
+  name: wendigo shockwave
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 25
+    ignoreResistances: true
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: chronobolt
+      shader: unshaded
+
+# Spiral variant deals less damage, TG gives it its own projectile.
+- type: entity
+  id: LavalandWendigoSpiralShockwave
+  parent: LavalandWendigoShockwave
+  name: wendigo shockwave
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 15
+    ignoreResistances: true

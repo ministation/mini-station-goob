@@ -60,6 +60,8 @@
   - type: CombatPower
     factor: 15
   # The boss HUD attaches to this component. The second stage is the low health enrage.
+  - type: PreventChasmFalling
+    deleteOnUse: false
   - type: MegafaunaStage
     maxStage: 2
     nextStageHealthFraction: 0.35

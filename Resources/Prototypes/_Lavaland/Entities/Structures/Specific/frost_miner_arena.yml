@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Demonic frost miner arena landmark. Placed by a lavalandMarkerRuin, see the report
+# for the marker ruin and ruin pool entries the Lead has to add.
+
+- type: entity
+  id: LavalandFrostMinerArenaSpawner
+  parent: MarkerBase
+  name: frost miner arena spawner
+  suffix: Lavaland
+  components:
+  - type: FrostMinerArenaSpawner
+
+# TG's frost miner light prism: indestructible decoration, it dims when the miner dies.
+- type: entity
+  id: LavalandFrostMinerPrism
+  name: frost miner light prism
+  description: A magical crystal enhanced by a demonic presence.
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: ice_crystal
+    drawdepth: WallTops
+  - type: PointLight
+    color: "#5FD9F7"
+    radius: 4
+    energy: 2
+  - type: Tag
+    tags: [ HideContextMenu ]

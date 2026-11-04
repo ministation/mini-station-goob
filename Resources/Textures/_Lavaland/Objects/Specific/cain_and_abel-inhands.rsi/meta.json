@@ -1,17 +1,19 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Split from the tgstation cain_and_abel sprite (Resources/Textures/_Lavaland/Objects/Specific/artefacts.rsi) for Mini Station",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca, cain_and_abel inhands split to a single dagger per hand for Mini Station.",
   "size": {
     "x": 32,
     "y": 32
   },
   "states": [
     {
-      "name": "inhand-left"
+      "name": "inhand-left",
+      "directions": 4
     },
     {
-      "name": "inhand-right"
+      "name": "inhand-right",
+      "directions": 4
     }
   ]
 }

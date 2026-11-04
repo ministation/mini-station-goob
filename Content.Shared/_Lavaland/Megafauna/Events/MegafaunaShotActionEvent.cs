@@ -18,6 +18,11 @@ public enum MegafaunaShotPattern
     Ring,
 
     /// <summary>
+    /// Fires <see cref="Count"/> projectiles in random directions, ignoring the target.
+    /// </summary>
+    Random,
+
+    /// <summary>
     /// Fires single projectiles for <see cref="Duration"/> seconds,
     /// rotating the emitter by <see cref="SpinSpeed"/> degrees per second.
     /// </summary>

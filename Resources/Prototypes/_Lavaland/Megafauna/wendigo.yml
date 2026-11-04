@@ -1,0 +1,123 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Wendigo AI selector tree, a port of TG's OpenFire branch.
+# TG picks one of three attacks: a ground slam, a teleport (plus an enraged
+# shotgun follow up) or a shockwave fired from the arena center. The scream
+# cooldown gates the shockwave branch, which the 10 second action delays mirror.
+
+- type: megafaunaSelector
+  id: Wendigo
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: WendigoAttackPlans
+
+- type: megafaunaSelector
+  id: WendigoAttackPlans
+  selector: !type:GroupMegafaunaSelector
+    children:
+    # Attacks one and two: the ground slam sits between them.
+    - id: WendigoSlamPlan
+      weight: 2
+    - id: WendigoTeleportPlan
+      weight: 2
+    # Attack three: shockwaves from the center, unlocked by phase and scream cooldown.
+    - id: WendigoCirclePlan
+    - id: WendigoCircleEnragedPlan
+    - id: WendigoSpiralPlan
+    - id: WendigoSpiralEnragedPlan
+    - id: WendigoWavePlan
+
+- type: megafaunaSelector
+  id: WendigoSlamPlan
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 4.0,9.0
+      inverse: true
+    failDelay: 0.5
+    actionId: ActionWendigoGroundSlam
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionWendigoGroundSlam
+
+- type: megafaunaSelector
+  id: WendigoTeleportPlan
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 4.0,9.0
+      inverse: true
+    failDelay: 0.5
+    actionId: ActionWendigoTeleport
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionWendigoTeleport
+
+- type: megafaunaSelector
+  id: WendigoCirclePlan
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 8
+    failDelay: 0.5
+    actionId: ActionWendigoCircle
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionWendigoCircle
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 1
+
+- type: megafaunaSelector
+  id: WendigoCircleEnragedPlan
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 6.5
+    failDelay: 0.5
+    actionId: ActionWendigoCircleEnraged
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionWendigoCircleEnraged
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+
+- type: megafaunaSelector
+  id: WendigoSpiralPlan
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 7
+    failDelay: 0.5
+    actionId: ActionWendigoSpiral
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionWendigoSpiral
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 1
+
+- type: megafaunaSelector
+  id: WendigoSpiralEnragedPlan
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 7
+    failDelay: 0.5
+    actionId: ActionWendigoSpiralEnraged
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionWendigoSpiralEnraged
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+
+- type: megafaunaSelector
+  id: WendigoWavePlan
+  selector: !type:PerformActionSelector
+    delay: !type:MegafaunaConstantNumberSelector
+      value: 10
+    failDelay: 0.5
+    actionId: ActionWendigoWave
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionWendigoWave
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2

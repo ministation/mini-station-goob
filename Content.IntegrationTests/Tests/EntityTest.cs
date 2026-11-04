@@ -330,6 +330,9 @@ namespace Content.IntegrationTests.Tests
                 "AshwalkerDenSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "SeedVaultSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "WishgranterSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
+                "ThingArenaSpawner", // Mini: lavaland arena builder, spawns a whole arena on mapinit
+                "WendigoArenaSpawner", // Mini: lavaland arena builder, spawns a whole arena on mapinit
+                "FrostMinerArenaSpawner", // Mini: lavaland arena builder, spawns a whole arena on mapinit
                 "OreVentSpawner", // Mini: lavaland landmark builder, spawns a whole structure on mapinit
                 "WarpCube", // Mini: spawns its linked twin cube on mapinit
                 "ClockworkGuardSpawner", // Mini: the list holds component names, not entity ids

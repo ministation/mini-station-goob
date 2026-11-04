@@ -114,9 +114,47 @@ public sealed class BossHudControl : PanelContainer
         Visible = false;
     }
 
+    private string? _shownName;
+    private int _shownHealth = -1;
+    private int _shownMaxHealth = -1;
+    private int _shownArmor = -1;
+    private int _shownMaxArmor = -1;
+    private int _shownStage = -1;
+    private int _shownMaxStage = -1;
+    private bool _shownArmorBroken;
+    private bool _shown;
+
     public void ShowHud(string name, float health, float maxHealth, float armor, float maxArmor,
         bool armorBroken, int stage, int maxStage)
     {
+        var shownHealth = (int) MathF.Ceiling(health);
+        var shownMaxHealth = (int) MathF.Ceiling(maxHealth);
+        var shownArmor = (int) MathF.Ceiling(armor);
+        var shownMaxArmor = (int) MathF.Ceiling(maxArmor);
+
+        // The HUD is polled every frame, and every label write relayouts the whole UI.
+        // Skip the work while nothing the player can see changed.
+        if (_shown
+            && _shownName == name
+            && _shownHealth == shownHealth
+            && _shownMaxHealth == shownMaxHealth
+            && _shownArmor == shownArmor
+            && _shownMaxArmor == shownMaxArmor
+            && _shownArmorBroken == armorBroken
+            && _shownStage == stage
+            && _shownMaxStage == maxStage)
+            return;
+
+        _shown = true;
+        _shownName = name;
+        _shownHealth = shownHealth;
+        _shownMaxHealth = shownMaxHealth;
+        _shownArmor = shownArmor;
+        _shownMaxArmor = shownMaxArmor;
+        _shownArmorBroken = armorBroken;
+        _shownStage = stage;
+        _shownMaxStage = maxStage;
+
         Visible = true;
 
         _nameLabel.Text = name;
@@ -158,6 +196,7 @@ public sealed class BossHudControl : PanelContainer
 
     public void HideHud()
     {
+        _shown = false;
         Visible = false;
     }
 }

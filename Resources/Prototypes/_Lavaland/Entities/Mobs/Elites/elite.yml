@@ -79,6 +79,8 @@
   - type: CombatPower # Goobstation
     factor: 8 # times more dangerous than a crew-member
   - type: LavalandElite
+  # Bosses get the HUD from MegafaunaStage, elites are not staged so they declare it here.
+  - type: BossHud
 
 - type: entity
   name: Legionnaire
@@ -275,6 +277,7 @@
     dropBoth: true
     deleteOnDeath: false
   - type: LavalandElite
+  - type: BossHud
 
 - type: entity
   name: Herald

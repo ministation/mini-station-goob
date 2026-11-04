@@ -33,6 +33,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+  - type: PreventChasmFalling
+    deleteOnUse: false
   - type: MegafaunaStage
     maxStage: 1 # no stage counter, the HUD follows the living shard after the split
   - type: Sprite

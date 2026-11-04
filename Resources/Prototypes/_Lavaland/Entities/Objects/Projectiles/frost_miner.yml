@@ -1,0 +1,115 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Demonic frost miner projectiles, ported from TG's demonic_frost_miner.dm.
+# TG's armour_penetration 100 is full armour penetration, so damage ignores resistances.
+# Speeds are TG's projectile speed scaled to this fork's units (TG 1.25 is about 40 here).
+
+- type: entity
+  id: LavalandFrostOrb
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  name: frost orb
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 20
+    ignoreResistances: true
+  - type: RockBreakingProjectile
+  # TG: the orb bursts into a ring of ice blasts after two seconds instead of hitting.
+  - type: ShrapnelProjectile
+    spawn: LavalandIceBlast
+    count: 6
+    spread: 60
+    speed: 10.5
+    delay: 2
+  - type: Sprite
+    sprite: _Lavaland/Objects/Projectiles/frost_miner.rsi
+    layers:
+    - state: frost_orb
+      shader: unshaded
+  - type: PointLight
+    color: "#5FD9F7"
+    radius: 2
+    energy: 3
+
+- type: entity
+  id: LavalandIceBlast
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  name: ice blast
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 15
+    ignoreResistances: true
+  - type: RockBreakingProjectile
+  - type: Sprite
+    sprite: _Lavaland/Objects/Projectiles/frost_miner.rsi
+    layers:
+    - state: ice_blast
+      shader: unshaded
+  - type: PointLight
+    color: "#5FD9F7"
+    radius: 1.5
+    energy: 2
+
+- type: entity
+  id: LavalandSnowball
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  name: machine-gun snowball
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 5
+    ignoreResistances: true
+  - type: Sprite
+    sprite: _Lavaland/Objects/Projectiles/frost_miner.rsi
+    layers:
+    - state: snowball
+      shader: unshaded
+  - type: PointLight
+    color: "#D8F4FF"
+    radius: 1.5
+    energy: 2
+
+# TG's hard snowball: dash next to the target and fire a proto-kinetic accelerator shot.
+- type: entity
+  id: LavalandFrostMinerKineticBolt
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  name: kinetic force
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 18
+  - type: RockBreakingProjectile
+  - type: Sprite
+    sprite: _Lavaland/Objects/Projectiles/frost_miner.rsi
+    layers:
+    - state: kinetic_bolt
+      shader: unshaded
+  - type: PointLight
+    color: "#9BD8FF"
+    radius: 1.5
+    energy: 2
+
+# Ice cube overlay spawned on victims of the ice block talisman trophy.
+# shortcut: the lifetime is copied from IceBlockTalismanComponent.Duration, keep them in sync.
+- type: entity
+  id: LavalandIceBlock
+  name: ice block
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: freeze_cube
+    drawdepth: OverMobs
+  - type: TimedDespawn
+    lifetime: 4
+  - type: Tag
+    tags: [ HideContextMenu ]

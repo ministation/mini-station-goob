@@ -74,6 +74,14 @@
   parent: LavalandMobBase
   description: A volatile creature resembling an enormous horned skull. Its response to almost any stimulus is to unleash a beam of infernal energy.
   components:
+  # Mini: crusher trophy, TG gates it on the killing blow being a crusher hit.
+  - type: SpawnLootOnDeath
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandCrusherTrophyBrimdemonFang
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
   - type: Physics
     bodyType: KinematicController
   - type: Clickable

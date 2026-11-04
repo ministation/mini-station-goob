@@ -1,0 +1,85 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Root selector of The Thing.
+- type: megafaunaSelector
+  id: Thing
+  selector: !type:AllMegafaunaSelector
+    children:
+    - id: PickTargetSimple
+    - id: ThingActions
+
+# Attacks. Phase gates: decimate and charge in every phase, the close range and tendril
+# attacks from the second phase, acid only in the last one.
+- type: megafaunaSelector
+  id: ThingActions
+  selector: !type:GroupMegafaunaSelector
+    children:
+    - id: ThingDecimate
+    - id: ThingCharge
+    - id: ThingShriek
+    - id: ThingCardinalTendrils
+    - id: ThingBigTendrils
+    - id: ThingAcidSpit
+
+- type: megafaunaSelector
+  id: ThingDecimate
+  selector: !type:PerformActionSelector
+    actionId: ActionThingDecimate
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionThingDecimate
+
+- type: megafaunaSelector
+  id: ThingCharge
+  selector: !type:PerformActionSelector
+    actionId: ActionThingCharge
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionThingCharge
+
+- type: megafaunaSelector
+  id: ThingShriek
+  selector: !type:PerformActionSelector
+    actionId: ActionThingShriek
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionThingShriek
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+      - 3
+
+- type: megafaunaSelector
+  id: ThingCardinalTendrils
+  selector: !type:PerformActionSelector
+    actionId: ActionThingCardinalTendrils
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionThingCardinalTendrils
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+      - 3
+
+- type: megafaunaSelector
+  id: ThingBigTendrils
+  selector: !type:PerformActionSelector
+    actionId: ActionThingBigTendrils
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionThingBigTendrils
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+      - 3
+
+- type: megafaunaSelector
+  id: ThingAcidSpit
+  selector: !type:PerformActionSelector
+    actionId: ActionThingAcidSpit
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionThingAcidSpit
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 3

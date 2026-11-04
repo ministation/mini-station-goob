@@ -3,6 +3,14 @@
   parent: MobGoliath
   suffix: Lavaland
   components:
+  # Mini: crusher trophy, TG gates it on the killing blow being a crusher hit.
+  - type: SpawnLootOnDeath
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandCrusherTrophyGoliathTentacle
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
   - type: Sprite
     sprite: _Lavaland/Mobs/goliath.rsi
     layers:

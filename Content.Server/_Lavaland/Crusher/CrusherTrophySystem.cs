@@ -16,6 +16,7 @@ using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
 using Content.Shared.NPC.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Stunnable;
 using Content.Shared.Weapons.Melee.Events;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
@@ -48,6 +49,7 @@ public sealed class CrusherTrophySystem : EntitySystem
     [Dependency] private readonly NpcFactionSystem _factions = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly SharedStunSystem _stun = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
 
     public override void Initialize()
@@ -91,8 +93,26 @@ public sealed class CrusherTrophySystem : EntitySystem
         foreach (var upgrade in _upgrades.GetCurrentUpgrades((args.Weapon, upgradeable)))
         {
             if (TryComp<CrusherTrophyComponent>(upgrade.Owner, out var trophy))
+            {
                 Detonate(trophy, args.User, target.Owner);
+                continue;
+            }
+
+            // The ice block talisman is a trophy too, it freezes the marked target instead of blasting it.
+            if (TryComp<IceBlockTalismanComponent>(upgrade.Owner, out var talisman))
+                Freeze(talisman, target.Owner);
         }
+    }
+
+    private void Freeze(IceBlockTalismanComponent talisman, EntityUid target)
+    {
+        if (TerminatingOrDeleted(target))
+            return;
+
+        // TG only blocks movement, the stun also stops attacks and is the closest this fork has.
+        _stun.TryAddStunDuration(target, talisman.Duration);
+        Spawn(talisman.Cube, Transform(target).Coordinates);
+        _popup.PopupEntity(Loc.GetString("frost-miner-ice-block"), target, target);
     }
 
     private void Detonate(CrusherTrophyComponent trophy, EntityUid user, EntityUid target)
