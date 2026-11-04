@@ -209,7 +209,11 @@ public sealed class OreVentTest
         await server.WaitAssertion(() =>
         {
             Assert.That(entMan.Deleted(boulder), Is.True, "artifact boulder should crumble after four pickaxe hits");
-            Assert.That(CollectPrototypes(entMan, "ComplexXenoArtifactItem").Count, Is.EqualTo(1),
+            // Only count artifacts on this test map: the server may still hold maps from earlier tests.
+            var artifacts = CollectPrototypes(entMan, "ComplexXenoArtifactItem")
+                .Where(a => entMan.GetComponent<TransformComponent>(a).MapID == testMap.MapId)
+                .ToList();
+            Assert.That(artifacts.Count, Is.EqualTo(1),
                 "artifact boulder must drop one real xeno artifact");
             Assert.That(CountUnclaimedOre(entMan), Is.GreaterThanOrEqualTo(3),
                 "artifact boulder must also drop diamonds and bluespace");
