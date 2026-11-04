@@ -1,9 +1,9 @@
-ent-RifleBulletEnergyGunLethal = Rifle energy bolt
-    .desc = { ent-BaseBullet.desc }
-ent-RifleBulletEnergyGunIon = Rifle ion bolt
-    .desc = { ent-BaseBullet.desc }
-ent-RifleBulletEnergyGunDisabler = Rifle disabler bolt
-    .desc = { ent-BaseBullet.desc }
+ent-RifleBulletEnergyGunLethal = Rifle energy bolt
+    .desc = { ent-BaseBullet.desc }
+ent-RifleBulletEnergyGunIon = Rifle ion bolt
+    .desc = { ent-BaseBullet.desc }
+ent-RifleBulletEnergyGunDisabler = Rifle disabler bolt
+    .desc = { ent-BaseBullet.desc }
 
-ent-RifleBulletEnergyGunOverchargeLethal = overcharge rifle energy bolt
-    .desc = { ent-BaseBulletIncendiary.desc }
+ent-RifleBulletEnergyGunOverchargeLethal = overcharge rifle energy bolt
+    .desc = { ent-BaseBulletIncendiary.desc }
