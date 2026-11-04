@@ -135,34 +135,12 @@ public partial class ChatBox : UIWidget
 
     // Goobstation moved to .Goob.cs
     #region Moved to .Goob.cs
-    /*
-    public void Repopulate()
-    {
-        Contents.Clear();
+    
 
-        foreach (var message in _controller.History)
-        {
-            OnMessageAdded(message.Item2);
-        }
-    }
-    */
 
-    /*
-    private void OnChannelFilter(ChatChannel channel, bool active)
-    {
-        Contents.Clear();
+    
 
-        foreach (var message in _controller.History)
-        {
-            OnMessageAdded(message.Item2);
-        }
 
-        if (active)
-        {
-            _controller.ClearUnfilteredUnreads(channel);
-        }
-    }
-    */
     #endregion
 
 

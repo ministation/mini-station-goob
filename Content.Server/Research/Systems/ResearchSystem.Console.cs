@@ -151,12 +151,8 @@ public sealed partial class ResearchSystem
         if (TryGetClientServer(uid, out var serverUid, out var server, clientComponent) &&
             TryComp<TechnologyDatabaseComponent>(serverUid, out var db))
         {
-/* // Orion-Edit
-            var unlockedTechs = new HashSet<ProtoId<TechnologyPrototype>>(db.UnlockedTechnologies);
-            techList = allTechs.ToDictionary(
-                proto => proto.ID,
-                proto =>
-*/
+
+
             // Orion-Start
             syncedDb = db;
             networkId = server.NetworkId;
@@ -174,10 +170,6 @@ public sealed partial class ResearchSystem
                     if (researched.Contains(techId)) // Orion-Edit
                         return ResearchAvailability.Researched;
 
-/* // Orion-Edit
-                    var prereqsMet = proto.TechnologyPrerequisites.All(p => unlockedTechs.Contains(p));
-                    var canAfford = server.Points >= proto.Cost;
-*/
 
                     // Orion-Start
                     if (!available.Contains(techId))
@@ -303,18 +295,6 @@ public sealed partial class ResearchSystem
         UpdateConsoleInterface(uid, component);
     }
 
-/* // Orion-Edit
-    private void OnEmagged(Entity<ResearchConsoleComponent> ent, ref GotEmaggedEvent args)
-    {
-        if (!_emag.CompareFlag(args.Type, EmagType.Interaction))
-            return;
-
-        if (_emag.CheckFlag(ent, EmagType.Interaction))
-            return;
-
-        args.Handled = true;
-    }
-*/
 
     // Orion-Start
     private static string BuildCorruptedMessage(string message)

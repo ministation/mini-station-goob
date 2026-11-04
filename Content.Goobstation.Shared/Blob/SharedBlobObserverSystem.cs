@@ -26,13 +26,8 @@ public abstract partial class SharedBlobObserverSystem : EntitySystem
             args.Used = ent.Comp.VirtualItem;
     }
 
-    /*private void OnUpdateCanMove(EntityUid uid, BlobObserverComponent component, UpdateCanMoveEvent args)
-    {
-        if (component.CanMove)
-            return;
+    
 
-        args.Cancel();
-    }*/
 
     public (EntityUid? nearestEntityUid, float nearestDistance) CalculateNearestBlobTileDistance(MapCoordinates position)
     {

@@ -110,11 +110,8 @@ public sealed class SiliconDeathSystem : SharedSiliconDeathSystem
 
         // Goobstation Start - Energycrit
 
-        /*
-        EntityManager.EnsureComponent<SleepingComponent>(uid);
-        // Im too lazy to rewrite fucking stupid API so instead of sleeping infinitely IPCs will sleep for 2 damn days.
-        _status.TryAddStatusEffectDuration(uid, "StatusEffectForcedSleeping", TimeSpan.FromDays(2));
-        */
+        
+
 
         // Disable sprinting.
         if (TryComp<SprinterComponent>(uid, out var sprint))

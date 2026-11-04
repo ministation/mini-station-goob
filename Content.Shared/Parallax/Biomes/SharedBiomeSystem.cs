@@ -34,16 +34,9 @@ public abstract class SharedBiomeSystem : EntitySystem
         }
     }
 
-    /* CorvaxGoob-Reverts : Вызывает краши. Требует фикса
-    // Goob - Cache Noise
-    private readonly ConcurrentDictionary<(FastNoiseLite, int), FastNoiseLite> _noiseCache = new();
+    
 
-    protected void ClearNoiseCache()
-    {
-        _noiseCache.Clear();
-    }
 
-    */
     private T Pick<T>(List<T> collection, float value)
     {
         // Listen I don't need this exact and I'm too lazy to finetune just for random ent picking.

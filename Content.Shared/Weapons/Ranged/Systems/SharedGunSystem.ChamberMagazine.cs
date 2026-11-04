@@ -220,18 +220,9 @@ public abstract partial class SharedGunSystem
                 UpdateAmmoCount(uid);
 
                 // Clientside reconciliation things
-                /* Trauma - spawns are predicted now, deleting it here would delete the chambered round
-                if (_netManager.IsClient)
-                {
-                    foreach (var (ent, _) in relayedArgs.Ammo)
-                    {
-                        if (!IsClientSide(ent!.Value))
-                            continue;
+                
 
-                        Del(ent.Value);
-                    }
-                }
-                */
+
             }
             else
             {

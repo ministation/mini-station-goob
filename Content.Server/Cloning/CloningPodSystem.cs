@@ -91,11 +91,8 @@ public sealed class CloningPodSystem : EntitySystem
      internal void TransferMindToClone(EntityUid mindId, MindComponent mind)
     {
         // Goobstation start
-        /*if (!ClonesWaitingForMind.TryGetValue(mind, out var entity) ||
-            !EntityManager.EntityExists(entity) ||
-            !TryComp<MindContainerComponent>(entity, out var mindComp) ||
-            mindComp.Mind != null)
-            return;*/
+        
+
 
         // find first mob this player is meant to use and doesn't already have a mind via alternate means
         var query = EntityQueryEnumerator<BeingClonedComponent, MindContainerComponent>();
@@ -175,18 +172,8 @@ public sealed class CloningPodSystem : EntitySystem
 
         var mind = mindEnt.Comp;
         // Goobstation - allowing cloning living people
-        /*
-        if (ClonesWaitingForMind.TryGetValue(mind, out var clone))
-        {
-            if (EntityManager.EntityExists(clone) &&
-                !_mobStateSystem.IsDead(clone) &&
-                TryComp<MindContainerComponent>(clone, out var cloneMindComp) &&
-                (cloneMindComp.Mind == null || cloneMindComp.Mind == mindEnt))
-                return false; // Mind already has clone
+        
 
-            ClonesWaitingForMind.Remove(mind);
-        }
-        */
 
         // Goobstation - allowing cloning living people
         /*

@@ -80,17 +80,8 @@ namespace Content.Client.Info
             AddInfoButton("server-info-wiki-button", CCVars.InfoLinksWiki);
             AddInfoButton("server-info-forum-button", CCVars.InfoLinksForum);
             AddInfoButton("server-info-telegram-button", CCVars.InfoLinksTelegram);
-            /* CorvaxGoob-Coins-start
-            AddInfoButton("rmc-ui-patreon", CCVars.InfoLinksPatreon);
+            
 
-            var linkAccount = UserInterfaceManager.GetUIController<LinkAccountUIController>();
-            var linkAccountButton = new Button
-            {
-                Text = Loc.GetString("rmc-ui-link-discord-account"),
-            };
-            linkAccountButton.OnPressed += _ => linkAccount.ToggleWindow();
-            buttons.AddChild(linkAccountButton);
-            CorvaxGoob-Coins-end */
 
             var guidebookController = UserInterfaceManager.GetUIController<GuidebookUIController>();
             var guidebookButton = new Button() { Text = Loc.GetString("server-info-guidebook-button") };

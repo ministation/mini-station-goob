@@ -394,13 +394,8 @@ public sealed partial class StationRecordsSystem : SharedStationRecordsSystem
         };
     }
 
-    /* Goobstation - Criminal Records Wildcard
-    // Refer to StationRecordsSystem.Goob.cs for implementation
-    private bool IsFilterWithSomeCodeValue(string value, string filter)
-    {
-        return !value.ToLower().StartsWith(filter);
-    }
-    */
+    
+
 
     /// <summary>
     /// Build a record listing of id to name for a station and filter.

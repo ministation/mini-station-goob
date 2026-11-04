@@ -406,11 +406,7 @@ namespace Content.Client.Lobby.UI
             #region Barks
 
             // CorvaxGoob-Revert : DB conflicts
-/*            if (configurationManager.GetCVar(GoobCVars.BarksEnabled))
-            {
-                BarksContainer.Visible = true;
-                InitializeBarkVoice();
-            }*/
+
 
             #endregion
 
@@ -425,33 +421,8 @@ namespace Content.Client.Lobby.UI
                 // UpdateHeightWidthSliders(); // Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
             };
 
-            /*// begin Goobstation: port EE height/width sliders
-            #region Height and Width
+            
 
-            var prototype = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-
-            UpdateHeightWidthSliders(); // CorvaxGoob-Clearing
-            UpdateDimensions(SliderUpdate.Both);
-
-            HeightSlider.OnValueChanged += _ => UpdateDimensions(SliderUpdate.Height);
-            WidthSlider.OnValueChanged += _ => UpdateDimensions(SliderUpdate.Width);
-
-            HeightReset.OnPressed += _ =>
-            {
-                var prototype = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-                HeightSlider.Value = prototype.DefaultHeight;
-                UpdateDimensions(SliderUpdate.Height);
-            };
-
-            WidthReset.OnPressed += _ =>
-            {
-                var prototype = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-                WidthSlider.Value = prototype.DefaultWidth;
-                UpdateDimensions(SliderUpdate.Width);
-            };
-
-            #endregion Height and Width
-            // end Goobstation: port EE height/width sliders*/
 
             #region Skin
 
@@ -1573,14 +1544,9 @@ namespace Content.Client.Lobby.UI
             UpdateSexControls(); // update sex for new species
             UpdateSpeciesGuidebookIcon();
             ReloadPreview();
-            /*
-            // begin Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
-            UpdateBarkVoice(); // Goob Station - Barks
-            // begin Goobstation: port EE height/width sliders
-            // Changing species provides inaccurate sliders without these
-            UpdateHeightWidthSliders();
-            UpdateWeight();
-            // end Goobstation: port EE height/width sliders */
+            
+
+
             RefreshTraits(); // Goobstation: ported from DeltaV - Species trait exclusion
         }
 
@@ -1634,21 +1600,9 @@ namespace Content.Client.Lobby.UI
             SetDirty();
         }
 
-        /*// begin Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
-        private void SetProfileHeight(float height)
-        {
-            Profile = Profile?.WithHeight(height);
-            ReloadProfilePreview();
-            IsDirty = true;
-        }
+        
 
-        private void SetProfileWidth(float width)
-        {
-            Profile = Profile?.WithWidth(width);
-            ReloadProfilePreview();
-            IsDirty = true;
-        }
-        // end Goobstation: port EE height/width sliders*/
+
         // private void SetBarkVoice(BarkPrototype newVoice)
         // {
         //     Profile = Profile?.WithBarkVoice(newVoice);
@@ -1822,106 +1776,8 @@ namespace Content.Client.Lobby.UI
             SpawnPriorityButton.SelectId((int) Profile.SpawnPriority);
         }
 
-        /*// begin Goobstation: port EE height/width sliders // CorvaxGoob-Clearing
-        private void UpdateHeightWidthSliders()
-        {
-            if (Profile is null)
-                return;
+        
 
-            var species = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-
-            // we increase the min/max values of the sliders before we set their value, just so that we don't accidentally clamp down on a value loaded from a profile when we shouldn't
-            HeightSlider.MinValue = 0;
-            HeightSlider.MaxValue = 2;
-            HeightSlider.SetValueWithoutEvent(Profile?.Height ?? species.DefaultHeight);
-            HeightSlider.MinValue = species.MinHeight;
-            HeightSlider.MaxValue = species.MaxHeight;
-
-            WidthSlider.MinValue = 0;
-            WidthSlider.MaxValue = 2;
-            WidthSlider.SetValueWithoutEvent(Profile?.Width ?? species.DefaultWidth);
-            WidthSlider.MinValue = species.MinWidth;
-            WidthSlider.MaxValue = species.MaxWidth;
-
-            var height = MathF.Round(species.AverageHeight * HeightSlider.Value);
-            HeightLabel.Text = Loc.GetString("humanoid-profile-editor-height-label", ("height", (int) height));
-
-            var width = MathF.Round(species.AverageWidth * WidthSlider.Value);
-            WidthLabel.Text = Loc.GetString("humanoid-profile-editor-width-label", ("width", (int) width));
-
-            UpdateDimensions(SliderUpdate.Both);
-        }
-
-        private enum SliderUpdate
-        {
-            Height,
-            Width,
-            Both
-        }
-
-        private void UpdateDimensions(SliderUpdate updateType)
-        {
-            if (Profile == null)
-                return;
-
-            var species = _species.Find(x => x.ID == Profile?.Species) ?? _species.First();
-
-            var heightValue = Math.Clamp(HeightSlider.Value, species.MinHeight, species.MaxHeight);
-            var widthValue = Math.Clamp(WidthSlider.Value, species.MinWidth, species.MaxWidth);
-            var sizeRatio = species.SizeRatio;
-            var ratio = heightValue / widthValue;
-
-            if (updateType == SliderUpdate.Height || updateType == SliderUpdate.Both)
-                if (ratio < 1 / sizeRatio || ratio > sizeRatio)
-                    widthValue = heightValue / (ratio < 1 / sizeRatio ? (1 / sizeRatio) : sizeRatio);
-
-            if (updateType == SliderUpdate.Width || updateType == SliderUpdate.Both)
-                if (ratio < 1 / sizeRatio || ratio > sizeRatio)
-                    heightValue = widthValue * (ratio < 1 / sizeRatio ? (1 / sizeRatio) : sizeRatio);
-
-            heightValue = Math.Clamp(heightValue, species.MinHeight, species.MaxHeight);
-            widthValue = Math.Clamp(widthValue, species.MinWidth, species.MaxWidth);
-
-            HeightSlider.SetValueWithoutEvent(heightValue);
-            WidthSlider.SetValueWithoutEvent(widthValue);
-
-            SetProfileHeight(heightValue);
-            SetProfileWidth(widthValue);
-
-            var height = MathF.Round(species.AverageHeight * HeightSlider.Value);
-            HeightLabel.Text = Loc.GetString("humanoid-profile-editor-height-label", ("height", (int) height));
-
-            var width = MathF.Round(species.AverageWidth * WidthSlider.Value);
-            WidthLabel.Text = Loc.GetString("humanoid-profile-editor-width-label", ("width", (int) width));
-
-            UpdateWeight();
-        }
-
-        private void UpdateWeight()
-        {
-            if (Profile == null)
-                return;
-
-            var species = _species.Find(x => x.ID == Profile.Species) ?? _species.First();
-            //  TODO: Remove obsolete method
-            _prototypeManager.Index(species.Prototype).TryGetComponent<FixturesComponent>(out var fixture, _entManager.ComponentFactory);
-
-            if (fixture != null)
-            {
-                var avg = (Profile.Width + Profile.Height) / 2;
-                var weight = FixtureSystem.GetMassData(fixture.Fixtures["fix1"].Shape, fixture.Fixtures["fix1"].Density).Mass * avg;
-                WeightLabel.Text = Loc.GetString("humanoid-profile-editor-weight-label", ("weight", (int) weight));
-            }
-            else // Whelp, the fixture doesn't exist, guesstimate it instead
-                WeightLabel.Text = Loc.GetString("humanoid-profile-editor-weight-label", ("weight", (int) 71));
-
-            // SpriteViewS.InvalidateMeasure();
-            // SpriteViewN.InvalidateMeasure();
-            // SpriteViewE.InvalidateMeasure();
-            // SpriteViewW.InvalidateMeasure();
-            SpriteView.InvalidateMeasure();
-        }
-        // end Goobstation: port EE height/width sliders*/
 
         private void UpdateHairPickers()
         {

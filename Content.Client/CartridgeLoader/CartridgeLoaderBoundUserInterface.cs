@@ -59,11 +59,8 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
         var comp = RetrieveCartridgeComponent(activeUI);
         var control = ui?.GetUIFragmentRoot();
 
-        /* Goobstation Edit - fix-crew-manifest-open-refresh
-		//Prevent the same UI fragment from getting disposed and attached multiple times
-        if (_activeUiFragment?.GetType() == control?.GetType())
-            return;
-		*/
+        
+
 
         if (_activeUiFragment is not null)
             DetachCartridgeUI(_activeUiFragment);

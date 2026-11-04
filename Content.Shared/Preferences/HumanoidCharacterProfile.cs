@@ -403,12 +403,7 @@ namespace Content.Shared.Preferences
         }
 
         // CorvaxGoob-Revert : DB conflicts
-/*        // Goob Station - Barks Start
-        public HumanoidCharacterProfile WithBarkVoice(BarkPrototype barkVoice)
-        {
-            return new(this) { BarkVoice = barkVoice };
-        }
-        // Goob Station - Barks End*/
+
 
         public HumanoidCharacterProfile WithJobPriorities(IEnumerable<KeyValuePair<ProtoId<JobPrototype>, JobPriority>> jobPriorities)
         {

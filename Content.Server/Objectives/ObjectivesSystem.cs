@@ -241,18 +241,9 @@ public sealed class ObjectivesSystem : SharedObjectivesSystem
                         ));
                         completedObjectives++;
 
-                        /* CorvaxGoob-Coins
-                        Easiest place to give people points for completing objectives lol
-                        // if(userid.HasValue)
-                            //_currencyMan.AddCurrency(userid.Value, _goobcoinsPerGreentext * _goobcoinsServerMultiplier);
+                        
 
-                        // Easiest place to give people points for completing objectives lol
-                        if (userid.HasValue)
-                            if (currencyStorage.ContainsKey(userid.Value))
-                                currencyStorage[userid.Value] += reward;
-                            else
-                                currencyStorage.Add(userid.Value, reward);
-                        */
+
                     }
                     else if (progress <= 0.99f && progress >= 0.5f)
                     {

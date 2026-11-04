@@ -126,19 +126,6 @@ public sealed class DevourSystem : EntitySystem
         if (args.Handled || args.Cancelled)
             return;
 
-/* // Orion-Edit: Moved down
-        var ichorInjection = new Solution(ent.Comp.Chemical, ent.Comp.HealRate);
-
-        // Grant ichor if the devoured thing meets the dragon's food preference
-        if (args.Args.Target != null && _whitelistSystem.IsWhitelistPassOrNull(ent.Comp.FoodPreferenceWhitelist, (EntityUid)args.Args.Target))
-        {
-            _bloodstreamSystem.TryAddToBloodstream(ent.Owner, ichorInjection);
-        }
-        // <Goobstation> voring walls is good for iron intake
-        if (args.Args.Target is {} target && _solution.TryGetSolution(target, "food", out _, out var food))
-            _bloodstreamSystem.TryAddToBloodstream(ent.Owner, food);
-        // </Goobstation>
-*/
 
         // Orion-Start
         if (args.Args.Target == null)

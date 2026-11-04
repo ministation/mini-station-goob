@@ -225,15 +225,8 @@ public abstract partial class SharedSurgerySystem : EntitySystem
             args.Cancelled = true;
     }
 
-    /*private void OnLarvaValid(Entity<SurgeryLarvaConditionComponent> ent, ref SurgeryValidEvent args)
-    {
-        if (!TryComp(args.Body, out VictimInfectedComponent? infected))
-            args.Cancelled = true;
+    
 
-        // The larva has fully developed and surgery is now impossible
-        if (infected != null && infected.SpawnedLarva != null)
-            args.Cancelled = true;
-    }*/
 
     // Europa-Start
     private void OnCorticalBorerValid(Entity<SurgeryCorticalBorerConditionComponent> ent, ref SurgeryValidEvent args)

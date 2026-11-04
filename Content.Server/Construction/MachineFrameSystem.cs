@@ -387,10 +387,6 @@ public sealed class MachineFrameSystem : EntitySystem
             {
                 var type = stack.StackTypeId;
 
-/* // Orion-Edit
-                if (!component.MaterialRequirements.ContainsKey(type))
-                    continue;
-*/
 
                 if (!component.MaterialProgress.ContainsKey(type))
                     component.MaterialProgress[type] = stack.Count;

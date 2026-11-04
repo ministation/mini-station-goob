@@ -521,39 +521,8 @@ public abstract partial class SharedStunSystem
         args.SpeedModifier *= entity.Comp.SpeedModifier;
     }
     // EE Interaction Verbs Begin
-    /*
-     // Todo goobstation ngl this whole help thing needs a rework with on-demand crawl
-    private void OnInteractHand(EntityUid uid, KnockedDownComponent knocked, InteractHandEvent args)
-    {
+    
 
-        // This is currently disabled in favor of an interaction verb with the same effect, but more obvious usage.
-        //return; // port note: no.
-        // End
-
-        if (args.Handled || knocked.HelpTimer > 0f)
-            return;
-
-        // TODO: This should be an event.
-        if (HasComp<SleepingComponent>(uid))
-            return;
-
-        if (!_status.TryGetTime(uid, StunId, out var timer))
-            return;
-
-        knocked.HelpTimer = knocked.HelpInterval / 2f;
-
-        var newDuration = timer.EndEffectTime - TimeSpan.FromSeconds(knocked.HelpInterval);
-
-        if (newDuration <= TimeSpan.Zero)
-            _status.TryRemoveStatusEffect(uid, StunId);
-        else
-            _status.TryUpdateStatusEffectDuration(uid, StunId, newDuration);
-
-        _audio.PlayPredicted(knocked.StunAttemptSound, uid, args.User);
-        Dirty(uid, knocked);
-
-        args.Handled = true;
-    }*/
 
     // EE verbs end
 

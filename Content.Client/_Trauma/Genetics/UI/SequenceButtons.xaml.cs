@@ -61,11 +61,9 @@ public sealed partial class SequenceButtons : ScrollContainer
             };
             button.Pressed = i == _selected;
             button.OnPressed += _ => OnSelected?.Invoke(index);
-            /*button.AddChild(new Label()
-            {
-                Text = text,
-                HorizontalAlignment = HAlignment.Center
-            });*/
+            
+
+
             _buttons.Add(button);
             Buttons.AddChild(button);
         }

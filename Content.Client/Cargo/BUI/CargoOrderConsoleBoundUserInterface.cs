@@ -64,12 +64,8 @@ namespace Content.Client.Cargo.BUI
             var description = new FormattedMessage();
 
             // CorvaxGoob-CargoFeatures : Алгоритм генерации имени перенесено вниз
-            /*string orderRequester;
+            
 
-            if (EntMan.EntityExists(localPlayer))
-                orderRequester = Identity.Name(localPlayer.Value, EntMan);
-            else
-                orderRequester = string.Empty;*/
 
             _orderMenu = new CargoConsoleOrderMenu();
 

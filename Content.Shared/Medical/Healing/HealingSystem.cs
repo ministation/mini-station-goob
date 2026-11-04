@@ -330,9 +330,9 @@ public sealed class HealingSystem : EntitySystem
 
         // Goobstation - commented out as it is no longer needed due to newer topical application logic
         // Goobstation start
-        /*if (!IsBodyDamaged((ent, comp), null, healing, targetedWoundable))                          // Check if there is anything to heal on the initial limb target
-            if (TryGetNextDamagedPart(ent, healing, out var limbTemp) && limbTemp is not null)      // If not then get the next limb to heal
-                targetedWoundable = limbTemp.Value;*/
+        
+
+
         // Goobstation end
 
         if (targetedWoundable == EntityUid.Invalid)
