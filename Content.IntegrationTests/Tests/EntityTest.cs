@@ -209,7 +209,8 @@ namespace Content.IntegrationTests.Tests
                 "AshJaunt", // spawns jaunt end animation
                 // </Trauma>
                 "SpawnEffectSparks", // CorvaxGoob
-                "SpawnFloorTrapXenoDrone" // CorvaxGoob
+                "SpawnFloorTrapXenoDrone", // CorvaxGoob
+                "WallStain" // Mini: Funkystation - a stain spreads itself onto nearby walls on startup (a clone + solution remain after the original deletes itself)
             };
 
             Assert.That(server.CfgMan.GetCVar(CVars.NetPVS), Is.False);
