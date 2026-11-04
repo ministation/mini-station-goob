@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Client.Construction;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._White.RadialSelector;
