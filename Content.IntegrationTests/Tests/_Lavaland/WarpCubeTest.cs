@@ -45,8 +45,8 @@ public sealed class WarpCubeTest
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(entMan.TryGetComponent(cube, out WarpCubeComponent? warp), Is.True);
-            Assert.That(warp!.Partner, Is.Not.Null);
+            Assert.That(entMan.TryGetComponent(cube, out WarpCubeComponent warp), Is.True);
+            Assert.That(warp.Partner, Is.Not.Null);
 
             var twin = warp.Partner.Value;
             Assert.That(xform.GetParentUid(cube), Is.EqualTo(user));
@@ -88,8 +88,8 @@ public sealed class WarpCubeTest
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(entMan.TryGetComponent(cube, out WarpCubeComponent? warp), Is.True);
-            Assert.That(warp!.Partner, Is.Not.Null);
+            Assert.That(entMan.TryGetComponent(cube, out WarpCubeComponent warp), Is.True);
+            Assert.That(warp.Partner, Is.Not.Null);
 
             var twin = warp.Partner.Value;
 
