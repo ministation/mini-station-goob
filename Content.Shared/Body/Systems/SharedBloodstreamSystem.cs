@@ -7,6 +7,7 @@ using Content.Shared._Shitmed.Medical.Surgery.Consciousness;
 using Content.Shared._Shitmed.Medical.Surgery.Traumas.Components;
 using Content.Shared._Shitmed.Medical.Surgery.Wounds.Components;
 using Content.Shared._Shitmed.Targeting;
+using System.Collections.Generic;
 using System.Linq;
 using Content.Shared.Alert;
 using Content.Shared.Body.Components;
@@ -50,6 +51,7 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
     [Dependency] private readonly DamageableSystem _damageableSystem = default!;
 
     private float _bloodlossMultiplier = 4f; // Goobstation
+    private readonly List<EntityUid> _dueBloodstreams = new();
 
     public override void Initialize()
     {
@@ -76,9 +78,23 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
         base.Update(frameTime);
 
         var curTime = _timing.CurTime;
+
+        // Snapshot due mobs first: bloodloss damage and blood reactions can gib or delete entities
+        // mid-tick, which mutates component storage and breaks a live query enumeration.
+        _dueBloodstreams.Clear();
         var query = EntityQueryEnumerator<BloodstreamComponent>();
         while (query.MoveNext(out var uid, out var bloodstream))
         {
+            if (curTime >= bloodstream.NextUpdate)
+                _dueBloodstreams.Add(uid);
+        }
+
+        foreach (var uid in _dueBloodstreams)
+        {
+            if (TerminatingOrDeleted(uid)
+                || !TryComp<BloodstreamComponent>(uid, out var bloodstream))
+                continue;
+
             if (curTime < bloodstream.NextUpdate)
                 continue;
 

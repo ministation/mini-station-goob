@@ -308,6 +308,9 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         var query = EntityQueryEnumerator<TypanWarCaptureZoneComponent>();
         while (query.MoveNext(out var uid, out var zone))
         {
+            if (TerminatingOrDeleted(uid))
+                continue;
+
             if (zone.ZoneLabel != "C" || !zone.IsTradePostZone)
                 continue;
 
@@ -745,7 +748,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
 
     private void UpdateFlagVisual(EntityUid uid, TypanWarCaptureZoneComponent zone)
     {
-        if (zone.FlagEntity is not { } flag || !Exists(flag))
+        if (TerminatingOrDeleted(uid) || zone.FlagEntity is not { } flag || !Exists(flag))
             return;
 
         // Keep flag snapped to zone center (trade swap / reparent can desync anchored entities).

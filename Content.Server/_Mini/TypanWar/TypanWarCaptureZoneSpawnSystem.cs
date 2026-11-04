@@ -160,6 +160,10 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
     {
         newDisplayName = null;
 
+        // Зону/флаг могли удалить, пока правило войны держало на них ссылку в списке зон.
+        if (TerminatingOrDeleted(zoneUid) || TerminatingOrDeleted(flagUid))
+            return false;
+
         if (!TryComp<StationDataComponent>(ntStation, out var ntData) ||
             !TryComp<StationDataComponent>(typanStation, out var typanData))
             return false;
@@ -204,6 +208,10 @@ public sealed class TypanWarCaptureZoneSpawnSystem : EntitySystem
 
     private void MoveAnchoredTo(EntityUid uid, EntityCoordinates coords)
     {
+        // Move после QueueDel дает "attempting to move while terminating" и портит состояние.
+        if (TerminatingOrDeleted(uid) || TerminatingOrDeleted(coords.EntityId))
+            return;
+
         if (TryComp(uid, out TransformComponent? xform) && xform.Anchored)
             _transform.Unanchor(uid, xform);
 
