@@ -2,13 +2,6 @@ name: Update Wiki Images
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ master, jsondump ]
-    paths:
-      - '.github/workflows/update-wiki-images.yml'
-      - 'Resources/Prototypes/**'
-      - 'Resources/Textures/**'
-      - 'RobustToolbox/**'
 
 jobs:
   update-wiki-images:

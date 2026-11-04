@@ -3,8 +3,7 @@
 name: Update Contrib and Patreons in credits
 concurrency: commit_action
 on:
-  pull_request_target:
-    types: [closed]
+  workflow_dispatch:
 
 env:
   GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}

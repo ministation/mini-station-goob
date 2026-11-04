@@ -1,11 +1,9 @@
-﻿# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 name: Diff RSIs
 
 on:
-  pull_request_target:
-    paths:
-      - '**.rsi/**.png'
+  workflow_dispatch:
 
 permissions:
   contents: read
