@@ -166,6 +166,8 @@ public sealed partial class LavalandSystem
     /// so MapInit never fires for grid-ruin contents (spawners stay dead, mobs get no AI).
     /// The sync path initializes them together with the planet instead. Raise MapInit
     /// manually for everything that arrived late - same end state as the sync path.
+    /// shortcut: the whole late burst is still one call (~5s on a slow 4-core host, ~3s at
+    /// production seed sizes), give it per-tick batching if it ever grows past ~10s.
     /// </summary>
     private void MapInitLateRuins(Entity<LavalandMapComponent> lavaland)
     {
