@@ -109,10 +109,12 @@ public sealed class TypanWarHudControl : PanelContainer
         row.AddChild(_typanScoreLabel);
         row.AddChild(_timerLabel);
 
+        // Вертикальный контейнер: строка ставок не помещается в 580px целиком,
+        // поэтому подсказка и фишки живут на отдельных строках.
         _betRow = new BoxContainer
         {
-            Orientation = BoxContainer.LayoutOrientation.Horizontal,
-            SeparationOverride = 6,
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 2,
             Visible = false,
         };
         column.AddChild(_betRow);
@@ -139,21 +141,25 @@ public sealed class TypanWarHudControl : PanelContainer
                 _betRowBuiltKey = placedKey;
                 _betRow.RemoveAllChildren();
 
-                _betRow.AddChild(new Label
+                var placedRow = new BoxContainer
+                {
+                    Orientation = BoxContainer.LayoutOrientation.Horizontal,
+                    SeparationOverride = 6,
+                };
+                placedRow.AddChild(new Label
                 {
                     Text = Loc.GetString("typan-war-bet-placed-label"),
                     FontColorOverride = Color.FromHex("#adbac7"),
                     VerticalAlignment = VAlignment.Center,
-                    Margin = new Thickness(0, 0, 8, 0),
                 });
-                _betRow.AddChild(CreateActiveBetChip(mySide.Value, myAmount));
-                _betRow.AddChild(new Label
+                placedRow.AddChild(CreateActiveBetChip(mySide.Value, myAmount));
+                placedRow.AddChild(new Label
                 {
                     Text = Loc.GetString("typan-war-bet-payout-note"),
                     FontColorOverride = Color.FromHex("#F0D890"),
                     VerticalAlignment = VAlignment.Center,
-                    Margin = new Thickness(8, 0, 0, 0),
                 });
+                _betRow.AddChild(placedRow);
             }
 
             return;
@@ -171,17 +177,22 @@ public sealed class TypanWarHudControl : PanelContainer
             Text = Loc.GetString("typan-war-bet-prompt"),
             FontColorOverride = Color.FromHex("#adbac7"),
             VerticalAlignment = VAlignment.Center,
-            Margin = new Thickness(0, 0, 8, 0),
         });
 
-        AddBetGroup(TypanWarSide.Nanotrasen, amounts);
-        _betRow.AddChild(new Control { MinSize = new Vector2(16, 0) });
-        AddBetGroup(TypanWarSide.Typan, amounts);
+        var chipsRow = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+        };
+        AddBetGroup(chipsRow, TypanWarSide.Nanotrasen, amounts);
+        chipsRow.AddChild(new Control { MinSize = new Vector2(16, 0) });
+        AddBetGroup(chipsRow, TypanWarSide.Typan, amounts);
+        _betRow.AddChild(chipsRow);
     }
 
-    private void AddBetGroup(TypanWarSide side, int[] amounts)
+    private void AddBetGroup(BoxContainer row, TypanWarSide side, int[] amounts)
     {
-        _betRow.AddChild(new Label
+        row.AddChild(new Label
         {
             Text = Loc.GetString(side == TypanWarSide.Nanotrasen ? "typan-war-bet-side-nt" : "typan-war-bet-side-typan"),
             FontColorOverride = FactionAccent(side),
@@ -190,7 +201,7 @@ public sealed class TypanWarHudControl : PanelContainer
         });
 
         foreach (var amount in amounts)
-            _betRow.AddChild(CreateBetChip(side, amount));
+            row.AddChild(CreateBetChip(side, amount));
     }
 
     private Button CreateBetChip(TypanWarSide side, int amount)
