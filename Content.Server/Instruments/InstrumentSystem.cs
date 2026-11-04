@@ -18,7 +18,9 @@ using Robust.Shared.Audio.Midi;
 using Robust.Shared.Collections;
 using Robust.Shared.Configuration;
 using Robust.Shared.Console;
+using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
+using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
 namespace Content.Server.Instruments;
@@ -66,6 +68,15 @@ public sealed partial class InstrumentSystem : SharedInstrumentSystem
         SubscribeLocalEvent<InstrumentComponent, ComponentGetState>(OnStrumentGetState);
 
         _conHost.RegisterCommand("addtoband", AddToBandCommand);
+    }
+
+    /// <summary>
+    ///     Mini: при дисконнекте сессия ещё висит в списке, когда канал уже отключён, и рассылка
+    ///     пишет в лог "Tried to send message ... to disconnected channel". Мёртвые каналы отсекаем.
+    /// </summary>
+    private void BroadcastMidiEvent(EntityEventArgs message)
+    {
+        RaiseNetworkEvent(message, Filter.Broadcast().RemoveWhere(session => !session.Channel.IsConnected));
     }
 
     private void OnStrumentGetState(EntityUid uid, InstrumentComponent component, ref ComponentGetState args)
@@ -232,7 +243,7 @@ public sealed partial class InstrumentSystem : SharedInstrumentSystem
         if (msg.Value)
         {
             // Prevent stuck notes when turning off a channel... Shrimple.
-            RaiseNetworkEvent(new InstrumentMidiEventEvent(msg.Uid, new[] { RobustMidiEvent.AllNotesOff((byte) msg.Channel, 0) }));
+            BroadcastMidiEvent(new InstrumentMidiEventEvent(msg.Uid, new[] { RobustMidiEvent.AllNotesOff((byte) msg.Channel, 0) }));
         }
 
         Dirty(uid, instrument);
@@ -321,9 +332,9 @@ public sealed partial class InstrumentSystem : SharedInstrumentSystem
             var netUid = GetNetEntity(uid);
 
             // Reset puppet instruments too.
-            RaiseNetworkEvent(new InstrumentMidiEventEvent(netUid, new[] { RobustMidiEvent.SystemReset(0) }));
+            BroadcastMidiEvent(new InstrumentMidiEventEvent(netUid, new[] { RobustMidiEvent.SystemReset(0) }));
 
-            RaiseNetworkEvent(new InstrumentStopMidiEvent(netUid));
+            BroadcastMidiEvent(new InstrumentStopMidiEvent(netUid));
         }
 
         instrument.Playing = false;
@@ -402,7 +413,7 @@ public sealed partial class InstrumentSystem : SharedInstrumentSystem
 
         if (send || !instrument.RespectMidiLimits)
         {
-            RaiseNetworkEvent(msg);
+            BroadcastMidiEvent(msg);
         }
     }
 
