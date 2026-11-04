@@ -193,9 +193,7 @@ typan-war-event-reinforcement = [color=#C8C4D8]Война станций:[/color
 
 typan-war-ghost-roles-blocked = Ghost-роли недоступны во время войны станций.
 
-typan-war-bet-window-title = Ставка на исход войны
-
-typan-war-bet-button = Ставки
+typan-war-bet-prompt = Ставка на исход войны (выплата ×2, при ничьей вернётся половина):
 
 typan-war-bet-side-nt = NT
 
@@ -204,5 +202,13 @@ typan-war-bet-side-typan = Тайпан
 typan-war-bet-placed-label = Ставка:
 
 typan-war-bet-payout-note = выплата ×2, при ничьей вернётся половина
+
+typan-war-bet-button = Ставка
+
+typan-war-bet-button-placed = Ставка: {$side} · {$amount}
+
+typan-war-bet-window-title = Ставка на исход войны
+
+typan-war-bet-closed = Ставки закрыты
 
 typan-war-round-end-bets = Ставки: Нанотрайзен {$nt}, Тайпан {$typan}. Выплачено победителям {$payout} монет.

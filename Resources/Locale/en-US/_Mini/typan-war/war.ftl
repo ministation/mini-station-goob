@@ -151,9 +151,7 @@ typan-war-event-reinforcement = [color=#C8C4D8]Station war:[/color] HQ dispatche
 
 typan-war-ghost-roles-blocked = Ghost roles are unavailable during the station war.
 
-typan-war-bet-window-title = War Bet
-
-typan-war-bet-button = Bets
+typan-war-bet-prompt = Bet on the war outcome (×2 payout, half back on a draw):
 
 typan-war-bet-side-nt = NT
 
@@ -162,5 +160,13 @@ typan-war-bet-side-typan = Typan
 typan-war-bet-placed-label = Bet:
 
 typan-war-bet-payout-note = ×2 payout, half back on a draw
+
+typan-war-bet-button = Bet
+
+typan-war-bet-button-placed = Bet: {$side} · {$amount}
+
+typan-war-bet-window-title = Bet on the war outcome
+
+typan-war-bet-closed = Betting closed
 
 typan-war-round-end-bets = Bets: NanoTrasen {$nt}, Typan {$typan}. Winners paid {$payout} coins.
