@@ -63,6 +63,9 @@
     description: abductor-lone-ghost-role-desc
     mindRoles:
     - MindRoleLoneAbductor
+  - type: EntitySkills
+    skills:
+    - All
   - type: AbductorScientist
   - type: SurgeryIgnoreClothing
   - type: Sanitized
@@ -82,6 +85,9 @@
     description: abductor-scientist-ghost-role-desc
     mindRoles:
     - MindRoleAbductorScientist
+  - type: EntitySkills
+    skills:
+    - All
   - type: AbductorScientist
   - type: SurgeryIgnoreClothing
   - type: Sanitized
@@ -105,6 +111,9 @@
     nameSegments:
       - AbductorAgentPrefix
       - AbductorNames
+  - type: EntitySkills
+    skills:
+    - All
   - type: AbductorScientist
   - type: SurgeryIgnoreClothing
   - type: Sanitized
