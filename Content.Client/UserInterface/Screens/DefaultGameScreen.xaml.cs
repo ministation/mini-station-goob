@@ -25,7 +25,8 @@ public sealed partial class DefaultGameScreen : InGameScreen
         SetAnchorAndMarginPreset(Chat, LayoutPreset.TopRight, margin: 10);
         SetAnchorAndMarginPreset(Alerts, LayoutPreset.TopRight, margin: 10);
         SetAnchorAndMarginPreset(Targeting, LayoutPreset.BottomRight, margin: 5); // Shitmed Change
-        SetAnchorAndMarginPreset(TypanWarHud, LayoutPreset.CenterBottom, margin: 153);
+        // 205 — как у KatorgaHud/BossHud: ниже кнопки призрака ("Вернуться в тело" и др.) перекрывают панель войны
+        SetAnchorAndMarginPreset(TypanWarHud, LayoutPreset.CenterBottom, margin: 205);
         SetMarginLeft(TypanWarHud, TypanWarHud.GetValue<float>(MarginLeftProperty) - 290);
         SetAnchorAndMarginPreset(KatorgaHud, LayoutPreset.CenterBottom, margin: 205);
         SetMarginLeft(KatorgaHud, KatorgaHud.GetValue<float>(MarginLeftProperty) - 290);
