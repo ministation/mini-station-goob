@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Shared.Contraband;
 using Content.Goobstation.Shared.Slasher.Components;
 using Content.Goobstation.Shared.Slasher;
@@ -13,8 +17,6 @@ using Content.Shared.Interaction;
 using Content.Shared.Light;
 using Content.Shared.Light.Components;
 using Content.Shared.Light.EntitySystems;
-using Content.Shared.Atmos;
-using Content.Shared.Atmos.Components;
 using Content.Shared.Physics;
 using Content.Shared.SurveillanceCamera.Components;
 using Robust.Server.GameObjects;

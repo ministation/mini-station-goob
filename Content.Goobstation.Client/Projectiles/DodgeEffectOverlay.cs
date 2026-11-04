@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Shared.Projectiles;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -6,7 +10,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using System.Numerics;
-using Robust.Client.GameObjects;
 
 namespace Content.Goobstation.Client.Projectiles;
 

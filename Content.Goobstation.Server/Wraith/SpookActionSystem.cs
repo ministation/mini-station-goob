@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Shared.Wraith.Components;
 using Content.Goobstation.Shared.Wraith.Events;
 using Content.Goobstation.Shared.Wraith.Spook;
@@ -23,7 +27,6 @@ using Robust.Shared.Timing;
 using System.Linq;
 using Content.Shared.Atmos.Components;
 using Content.Server.Atmos.EntitySystems;
-using Content.Shared.Atmos.Components;
 using Content.Shared.Humanoid;
 using Content.Shared.Light.Components;
 using Content.Shared.Storage.Components;

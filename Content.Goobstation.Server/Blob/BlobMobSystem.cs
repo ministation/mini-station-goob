@@ -22,7 +22,6 @@ public sealed partial class BlobMobSystem : SharedBlobMobSystem
     [Dependency] private DamageableSystem _damageableSystem = default!;
     [Dependency] private INetManager _netMan = default!;
     [Dependency] private RadioSystem _radioSystem = default!;
-    private EntityQuery<BlobSpeakComponent> _activeBSpeak;
 
     public override void Initialize()
     {

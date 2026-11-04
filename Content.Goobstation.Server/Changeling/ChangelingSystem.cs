@@ -80,7 +80,6 @@ using Content.Shared._CorvaxGoob.TTS;
 using System.Linq;
 using System.Numerics;
 using Content.Goobstation.Common.Grab;
-using Content.Shared.Atmos.Components;
 using Content.Shared.Zombies;
 using Content.Server.Ensnaring;
 
