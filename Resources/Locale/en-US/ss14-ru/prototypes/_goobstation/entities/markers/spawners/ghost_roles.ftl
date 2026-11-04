@@ -1,7 +1,6 @@
 ent-SpawnPointGhostDerelictCyborgSyndicate = { ent-BaseAntagSpawner }
     .desc = { ent-BaseAntagSpawner.desc }
-ent-SpawnPointGhostGreyTide = grey tide antag spawn
-    .desc = { ent-BaseAntagSpawner.desc }
+
 ent-SpawnPointGhostTunnelClown = tunnel clown antag spawn
     .desc = { ent-BaseAntagSpawner.desc }
 ent-SpawnPointGhostSingulothKnight = Singuloth Knights antag spawn

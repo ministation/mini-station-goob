@@ -25,12 +25,3 @@
       access: [["Atmospherics"], ["Engineering"], ["Research"], ["Medical"]]
     - type: Lock
       locked: true
-
-- type: entity
-  parent: GasCanisterBrokenBase
-  id: OxygenAndNitrousOxideCanisterBroken
-  categories: [ HideSpawnMenu ]
-  components:
-    - type: Sprite
-      sprite: "_CorvaxGoob/Structures/Storage/canister.rsi"
-      state: redsur-1

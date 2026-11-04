@@ -1,7 +1,6 @@
 ent-PolymorphAshJauntAnimation = пепельное нечто
     .desc = Я не думаю, что тебе стоит это читать.
-ent-PolymorphAshJauntEndAnimation = { ent-PolymorphAshJauntAnimation }
-    .desc = { ent-PolymorphAshJauntAnimation.desc }
+
 ent-PolymorphAshJaunt = пепельное нечто
     .desc = Я не думаю, что тебе стоит это читать.
 ent-MobHereticFleshAscend = вестник плоти

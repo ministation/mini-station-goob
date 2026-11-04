@@ -16,21 +16,6 @@
     lifetime: 1
 
 - type: entity
-  id: PolymorphAshJauntEndAnimation
-  name: Unknown
-  description: You can't figure out what that is.
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: Sprite
-    layers:
-    - sprite: _Goobstation/Heretic/polymorphs.rsi
-      state: ash_jaunt_end
-      drawdepth: WallMountedItems
-      loop: false
-  - type: TimedDespawn
-    lifetime: 1
-
-- type: entity
   id: PolymorphAshJaunt
   name: Unknown
   description: You can't figure out what that is.

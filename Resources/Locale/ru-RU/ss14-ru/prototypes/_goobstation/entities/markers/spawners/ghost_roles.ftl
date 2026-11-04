@@ -1,5 +1,4 @@
-ent-SpawnPointGhostGreyTide = спавнер грейтайд
-    .desc = { ent-BaseAntagSpawner.desc }
+
 ent-SpawnPointGhostTunnelClown = спавнер тех-клоун
     .desc = { ent-BaseAntagSpawner.desc }
 ent-SpawnPointGhostSingulothKnight = спавнер рыцарь Сингулота

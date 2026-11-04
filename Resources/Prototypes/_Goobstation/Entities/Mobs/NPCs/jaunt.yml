@@ -14,21 +14,6 @@
     lifetime: 1
 
 - type: entity
-  id: PolymorphShadowJauntEndAnimation
-  name: Unknown
-  description: You can't figure out what that is.
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: Sprite
-    layers:
-    - sprite: _Goobstation/Mobs/polymorphs.rsi
-      state: shadow_jaunt_end
-      drawdepth: WallMountedItems
-      loop: false
-  - type: TimedDespawn
-    lifetime: 1
-
-- type: entity
   id: PolymorphShadowJaunt
   name: Unknown
   description: You can't figure out what that is.

@@ -8,8 +8,7 @@ ent-SmokeImplant = smoke implant
     .desc = This implant releases smoke cloud on activation.
 ent-KravMagaImplant = krav maga implant
     .desc = This implant allows the user to perform various Krav Maga moves.
-ent-AutoinjectorImplant = autoinjector implant
-    .desc = This implant allows the user to inject themselves with a chemical on use. Ephedrine by default.
+
 ent-NutrimentPumpImplant = nutriment pump implant
     .desc = This implant allows prevents the user from getting hungry or thirsty.
 ent-SpaceProofImplant = space proofing implant
@@ -20,8 +19,7 @@ ent-BinaryImplant = binary decoder implant
     .desc = This implant allows the user to access Binary and communicate with silicons (use +b).
 ent-ClumsyImplant = clumsy implant
     .desc = This implant makes the user clumsy, allowing them to drive a certain vehicle.
-ent-ShadowmindImplant = shadowmind implant
-    .desc = This implant allows the user to access Shadowmind channel (use +q).
+
 ent-BlinkImplant = blink implant
     .desc = This implant allows the user temporarily blink into a higher dimension.
 ent-VaporizeImplant = vaporize implant

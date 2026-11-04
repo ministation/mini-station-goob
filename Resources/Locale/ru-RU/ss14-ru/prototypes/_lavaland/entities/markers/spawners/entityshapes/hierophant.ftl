@@ -1,11 +1,6 @@
 ent-BaseHierophantShape = спавнер атака Иерофанта
     .desc = { ent-MarkerBase.desc }
-ent-HierophantShapeCrossBishop = спавнер атаки Иерофанта крест слона
-    .desc = { ent-BaseHierophantShape.desc }
-ent-HierophantShapeCrossRook = спавнер атаки Иерофанта крест ладьи
-    .desc = { ent-BaseHierophantShape.desc }
-ent-HierophantShapeCrossQueen = спавнер атаки Иерофанта крест ферзя
-    .desc = { ent-BaseHierophantShape.desc }
+
 ent-HierophantShapeBlink = спавнер атаки Иерофанта скачок
     .desc = { ent-BaseHierophantShape.desc }
 ent-HierophantShapeBlinkSafe = спавнер атаки Иерофанта безопасный скачок
