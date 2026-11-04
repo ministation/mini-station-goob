@@ -118,8 +118,8 @@ public sealed class DailyRewardWindow : DefaultWindow
         // One rewards menu for everything: weekly quests, achievements and (while enabled)
         // the time-based daily rewards.
         Title = Loc.GetString("daily-reward-window-title-menu");
-        MinSize = new Vector2(1080, 760);
-        SetSize = new Vector2(1120, 780);
+        MinSize = new Vector2(960, 680);
+        SetSize = new Vector2(1000, 700);
 
         var root = new BoxContainer
         {
@@ -318,6 +318,7 @@ public sealed class DailyRewardWindow : DefaultWindow
         }
 
         _claimStatusLabel.Text = message;
+        _claimStatusLabel.ToolTip = message;
         _claimStatusLabel.Modulate = color;
         _claimStatusLabel.Visible = true;
         _claimStatusHideAtUtc = DateTime.UtcNow + TimeSpan.FromSeconds(8);

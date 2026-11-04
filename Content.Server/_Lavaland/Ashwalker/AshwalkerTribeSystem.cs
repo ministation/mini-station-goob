@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Linq;
 using Content.Server.Clothing.Systems;
+using Robust.Server.Player;
 using Content.Server.GameTicking;
 using Content.Shared._Lavaland.Ashwalker;
 using Content.Shared._Lavaland.Necropolis;
@@ -20,6 +22,7 @@ namespace Content.Server._Lavaland.Ashwalker;
 public sealed class AshwalkerTribeSystem : EntitySystem
 {
     [Dependency] private readonly SharedMindSystem _mind = default!;
+    [Dependency] private readonly IPlayerManager _players = default!;
     [Dependency] private readonly SharedObjectivesSystem _objectives = default!;
     [Dependency] private readonly OutfitSystem _outfit = default!;
 
@@ -160,16 +163,31 @@ public sealed class AshwalkerTribeSystem : EntitySystem
                 ("sacrifices", tribe.Sacrifices),
                 ("eggs", tribe.EggsCreated)));
 
-            // TG prints the tribe roster at round end, the names make the report useful.
-            var names = new List<string>();
+            // TG prints the tribe roster at round end. The raw mind entity name is "mind (…)",
+            // which spammed the manifest; resolve the real character name and fold duplicates
+            // into "Имя ×N" so a dozen clones read as one entry.
+            var names = new Dictionary<string, int>();
             foreach (var member in tribe.Members)
             {
-                if (!TerminatingOrDeleted(member))
-                    names.Add(Name(member));
+                if (TerminatingOrDeleted(member) || !TryComp<MindComponent>(member, out var mind))
+                    continue;
+
+                var name = mind.CharacterName;
+                if (string.IsNullOrWhiteSpace(name) && mind.UserId is { } userId
+                    && _players.TryGetSessionById(userId, out var session))
+                    name = session.Name;
+
+                name = string.IsNullOrWhiteSpace(name)
+                    ? Loc.GetString("ashwalker-tribe-roundend-unnamed")
+                    : name.Trim();
+                names[name]++;
             }
 
             if (names.Count > 0)
-                args.AddLine(Loc.GetString("ashwalker-tribe-roundend-members", ("members", string.Join(", ", names))));
+            {
+                var roster = string.Join(", ", names.Select(p => p.Value > 1 ? $"{p.Key} ×{p.Value}" : p.Key));
+                args.AddLine(Loc.GetString("ashwalker-tribe-roundend-members", ("members", roster)));
+            }
         }
     }
 }

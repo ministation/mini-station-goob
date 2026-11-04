@@ -329,7 +329,7 @@ public sealed class CoinShopWindow : DefaultWindow
             HorizontalAlignment = HAlignment.Center,
             MaxWidth = 208,
             ClipText = true,
-            ToolTip = Loc.GetString($"coin-shop-rarity-{entry.Rarity.ToString().ToLower()}"),
+            ToolTip = entry.Name,
         });
 
         root.AddChild(BuildPriceRow(entry.Price, center: true));

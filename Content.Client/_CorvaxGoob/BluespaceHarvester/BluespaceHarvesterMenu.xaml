@@ -4,7 +4,7 @@
                       MinSize="480 360">
     <BoxContainer Orientation="Vertical">
         <Label Text="{Loc 'bluespace-harvester-window-lable-input'}"/>
-        <controls:HLine Color="#404040" Thickness="2" Margin="0 5"/>
+        <controls:HLine StyleClasses="LowDivider" Margin="0 5"/>
         <GridContainer Margin="2 0 0 0" Columns="2">
             <Label Text="{Loc 'bluespace-harvester-window-level-input'}" StyleClasses="StatusFieldTitle"/>
             <LineEdit Name="InputLevelBar" PlaceHolder="0" HorizontalExpand="True" Margin ="0 4"/>

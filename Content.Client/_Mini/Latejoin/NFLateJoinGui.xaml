@@ -20,7 +20,7 @@
                 <Label Name="FactionNotice" Visible="False" HorizontalExpand="True" Margin="4 0 4 4" Align="Center" FontColorOverride="{x:Static maths:Color.Gold}"/>
                 <BoxContainer Name="FactionList" Orientation="Vertical" Visible="False" Margin="4 0 4 8"/>
                 <Label Name="BalanceNotice" Visible="False" HorizontalExpand="True" Margin="4 0 4 8"/>
-                <Button Name="CrewManifestButton" Text="Манифест экипажа" HorizontalAlignment="Center" Visible="False"/>
+                <Button Name="CrewManifestButton" Text="{Loc 'ui-lobby-manifest-button'}" HorizontalAlignment="Center" Visible="False"/>
             </BoxContainer>
         </ScrollContainer>
         <!--<cc:VSeparator StyleClasses="LowDivider"/>

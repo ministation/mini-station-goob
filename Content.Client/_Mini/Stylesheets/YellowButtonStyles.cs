@@ -11,10 +11,10 @@ namespace Content.Client.Stylesheets
         // Добавлена прозрачность (alpha = 0.85-0.95) и более светлые оттенки
 
         // Основные жёлтые (светлые, полупрозрачные)
-        public static readonly Color ButtonColorDefaultYellow = Color.FromHex("#F0C415CC"); // 0.80 прозрачности
-        public static readonly Color ButtonColorHoveredYellow = Color.FromHex("#FFD54FCC");
-        public static readonly Color ButtonColorPressedYellow = Color.FromHex("#D4A800CC");
-        public static readonly Color ButtonColorDisabledYellow = Color.FromHex("#6B5A2ACC");
+        public static readonly Color ButtonColorDefaultYellow = new Color(1.52f, 1.32f, 0.16f, 1.03f); // 0.80 прозрачности
+        public static readonly Color ButtonColorHoveredYellow = new Color(1.61f, 1.44f, 0.62f, 1.03f);
+        public static readonly Color ButtonColorPressedYellow = new Color(1.34f, 1.14f, 0.00f, 1.03f);
+        public static readonly Color ButtonColorDisabledYellow = new Color(0.68f, 0.61f, 0.33f, 0.86f);
 
         // Текст - светлый для контраста с тёмным фоном
         public static readonly Color ButtonColorTextYellow = Color.FromHex("#FFFFFF");
@@ -27,22 +27,22 @@ namespace Content.Client.Stylesheets
         public const string StyleClassButtonColorYellowCaution = "ButtonColorYellowCaution";
 
         // Яркие варианты (ещё светлее, почти белые с жёлтым оттенком)
-        public static readonly Color ButtonColorDefaultYellowBright = Color.FromHex("#FFF59DE6"); // ~0.90 прозрачности
-        public static readonly Color ButtonColorHoveredYellowBright = Color.FromHex("#FFF9C4E6");
-        public static readonly Color ButtonColorPressedYellowBright = Color.FromHex("#FFE082E6");
-        public static readonly Color ButtonColorDisabledYellowBright = Color.FromHex("#A09850E6");
+        public static readonly Color ButtonColorDefaultYellowBright = new Color(1.62f, 1.58f, 0.62f, 1.03f); // ~0.90 прозрачности
+        public static readonly Color ButtonColorHoveredYellowBright = new Color(1.70f, 1.68f, 0.81f, 1.03f);
+        public static readonly Color ButtonColorPressedYellowBright = new Color(1.61f, 1.44f, 0.55f, 1.03f);
+        public static readonly Color ButtonColorDisabledYellowBright = new Color(1.09f, 1.04f, 0.35f, 1.03f);
 
         // Тёмные варианты (но всё равно светлее оригинала, с прозрачностью)
-        public static readonly Color ButtonColorDefaultYellowDark = Color.FromHex("#FFB300CC");
-        public static readonly Color ButtonColorHoveredYellowDark = Color.FromHex("#FFCA28CC");
-        public static readonly Color ButtonColorPressedYellowDark = Color.FromHex("#FF8F00CC");
-        public static readonly Color ButtonColorDisabledYellowDark = Color.FromHex("#805E00CC");
+        public static readonly Color ButtonColorDefaultYellowDark = new Color(1.68f, 1.17f, 0.09f, 1.03f);
+        public static readonly Color ButtonColorHoveredYellowDark = new Color(1.72f, 1.28f, 0.20f, 1.03f);
+        public static readonly Color ButtonColorPressedYellowDark = new Color(1.66f, 0.98f, 0.04f, 1.03f);
+        public static readonly Color ButtonColorDisabledYellowDark = new Color(0.84f, 0.65f, 0.02f, 0.86f);
 
         // Предупреждающие варианты (оранжево-жёлтые, яркие)
-        public static readonly Color ButtonColorDefaultYellowCaution = Color.FromHex("#FFAB40E6");
-        public static readonly Color ButtonColorHoveredYellowCaution = Color.FromHex("#FFC107E6");
-        public static readonly Color ButtonColorPressedYellowCaution = Color.FromHex("#FF9800E6");
-        public static readonly Color ButtonColorDisabledYellowCaution = Color.FromHex("#A85A00E6");
+        public static readonly Color ButtonColorDefaultYellowCaution = new Color(1.69f, 1.17f, 0.32f, 1.03f);
+        public static readonly Color ButtonColorHoveredYellowCaution = new Color(1.72f, 1.31f, 0.09f, 1.03f);
+        public static readonly Color ButtonColorPressedYellowCaution = new Color(1.66f, 1.04f, 0.04f, 1.03f);
+        public static readonly Color ButtonColorDisabledYellowCaution = new Color(1.13f, 0.64f, 0.02f, 1.03f);
 
         // Текст для разных вариантов
         public static readonly Color ButtonColorTextYellowBright = Color.FromHex("#1A1A1A"); // тёмный текст для ярких кнопок

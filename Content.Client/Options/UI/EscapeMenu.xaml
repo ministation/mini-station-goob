@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <Button Access="Public" Name="WikiButton" Text="{Loc 'ui-escape-wiki'}" />
         <Button Access="Public" Name="VoiceChatButton" Text="{Loc 'ui-escape-voice-chat'}" /> <!-- Goobstation - Voice chat -->
         <PanelContainer StyleClasses="LowDivider" Margin="0 2.5 0 2.5" />
-        <Button Name="Site" Text="Сайт"/>
-        <Button Name="Discord" Text="Дискорд"/>
-        <Button Name="DailyRewardsButton" Text="Награды"/>
+        <Button Name="Site" Text="{Loc 'ui-lobby-site-button'}"/>
+        <Button Name="Discord" Text="{Loc 'ui-lobby-discord-button'}"/>
+        <Button Name="DailyRewardsButton" Text="{Loc 'ui-lobby-rewards-button'}"/>
         <Button Access="Public" Name="GhostsButton" Text="{Loc 'ui-escape-ghosts'}" />
-        <Button Name="AuthorizationDiscordButton" StyleClasses="ButtonColorYellow" Access="Public" Text="Авторизация"/>
+        <Button Name="AuthorizationDiscordButton" StyleClasses="ButtonColorYellow" Access="Public" Text="{Loc 'ui-lobby-authorization-button'}"/>
         <Button Access="Public" Name="CharacterButton" Text="{Loc 'ui-escape-character'}" /> <!-- Goobstation - Character customization in escape menu -->
         <PanelContainer StyleClasses="LowDivider" Margin="0 2.5 0 2.5" />
         <Button Access="Public" Name="OptionsButton" Text="{Loc 'ui-escape-options'}" />

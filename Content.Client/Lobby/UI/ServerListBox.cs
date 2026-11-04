@@ -1,4 +1,5 @@
-﻿using Robust.Client;
+using Robust.Client;
+using Robust.Shared.Localization;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Utility;
@@ -65,17 +66,17 @@ public sealed class ServerListBox : BoxContainer
         };
 
         actionButtonsContainer.AddChild(CreateActionButton(
-            "Терминал",
+            Loc.GetString("server-list-terminal-button"),
             CoinAnimatedIcon,
             OpenAntagTokens));
 
         actionButtonsContainer.AddChild(CreateActionButton(
-            "Награды",
+            Loc.GetString("server-list-rewards-button"),
             ClockAnimatedIcon,
             OpenDailyRewards));
 
         actionButtonsContainer.AddChild(CreateActionButton(
-            "Призраки",
+            Loc.GetString("server-list-ghosts-button"),
             new SpriteSpecifier.Texture(new ResPath("/Textures/_Mini/Interface/Ghost.png")),
             OpenGhostMenu));
 
@@ -205,7 +206,7 @@ public sealed class ServerListBox : BoxContainer
 
         var connectButton = new Button
         {
-            Text = "Зайти"
+            Text = Loc.GetString("server-list-connect-button")
         };
 
         if (discord != null)
@@ -227,7 +228,7 @@ public sealed class ServerListBox : BoxContainer
 
         connectButton.OnPressed += _ =>
         {
-            _gameController.Redial(serverUrl, "Connecting to another server...");
+            _gameController.Redial(serverUrl, Loc.GetString("server-list-connecting-message"));
 
             foreach (var button in _connectButtons)
             {
