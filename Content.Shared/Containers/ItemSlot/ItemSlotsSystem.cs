@@ -222,74 +222,9 @@ namespace Content.Shared.Containers.ItemSlots
             args.Handled = TryInsertWithConditions(uid, itemSlots, args.User, args.Used); // Lavaland Change
 
             // Lavaland change: ported the code below to a public TryInsertWithConditions method.
-            /*if (!TryComp(args.User, out HandsComponent? hands))
-                return;
+            
 
-            if (itemSlots.Slots.Count == 0)
-                return;
 
-            // If any slot can be inserted into don't show popup.
-            // If any whitelist passes, but slot is locked, then show locked.
-            // If whitelist fails all, show whitelist fail.
-
-            // valid, insertable slots (if any)
-            var slots = new List<ItemSlot>();
-
-            string? whitelistFailPopup = null;
-            string? lockedFailPopup = null;
-            foreach (var slot in itemSlots.Slots.Values)
-            {
-                if (!slot.InsertOnInteract)
-                    continue;
-
-                if (CanInsert(uid, args.Used, args.User, slot, slot.Swap))
-                {
-                    slots.Add(slot);
-                    break; //Goobstation: If an item has multiple ItemSlots, stick with the highest priority and stop looking.
-                }
-                else
-                {
-                    var allowed = CanInsertWhitelist(args.Used, slot);
-                    if (lockedFailPopup == null && slot.LockedFailPopup != null && allowed && slot.Locked)
-                        lockedFailPopup = slot.LockedFailPopup;
-
-                    if (whitelistFailPopup == null && slot.WhitelistFailPopup != null)
-                        whitelistFailPopup = slot.WhitelistFailPopup;
-                }
-            }
-
-            if (slots.Count == 0)
-            {
-                // it's a bit weird that the popupMessage is stored with the item slots themselves, but in practice
-                // the popup messages will just all be the same, so it's probably fine.
-                //
-                // doing a check to make sure that they're all the same or something is probably frivolous
-                if (lockedFailPopup != null)
-                    _popupSystem.PopupClient(Loc.GetString(lockedFailPopup), uid, args.User);
-                else if (whitelistFailPopup != null)
-                    _popupSystem.PopupClient(Loc.GetString(whitelistFailPopup), uid, args.User);
-                return;
-            }
-
-            // Drop the held item onto the floor. Return if the user cannot drop.
-            if (_handsSystem.IsHolding(args.User, args.Used) && !_handsSystem.TryDrop(args.User, args.Used)) // Goobstation - don't try to drop if not holding
-                return;
-
-            slots.Sort(SortEmpty);
-
-            foreach (var slot in slots)
-            {
-                if (slot.Item != null)
-                    _handsSystem.TryPickupAnyHand(args.User, slot.Item.Value, handsComp: hands);
-
-                Insert(uid, slot, args.Used, args.User, excludeUserAudio: true);
-
-                if (slot.InsertSuccessPopup.HasValue)
-                    _popupSystem.PopupClient(Loc.GetString(slot.InsertSuccessPopup), uid, args.User);
-
-                args.Handled = true;
-                return;
-            }*/
             // Lavaland change end
         }
 

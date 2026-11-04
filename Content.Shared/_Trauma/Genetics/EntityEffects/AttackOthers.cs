@@ -40,12 +40,8 @@ public sealed partial class AttackOthersEntityEvent : EntityEffectSystem<CombatM
         if (!_query.TryComp(weapon, out var weaponComp))
             return;
 
-        /* TODO: pick random target from nearby mobs
-        var target = ent.Owner; // stop hitting yourself!
-        var wasOn = ent.Comp.IsInCombatMode;
-        _combatMode.SetInCombatMode(ent, true, ent.Comp); // need to turn on combat mode or it won't attack
-        _melee.AttemptLightAttack(user, weapon, weaponComp, target);
-        _combatMode.SetInCombatMode(ent, wasOn, ent.Comp); // restore it to last setting
-        */
+        
+
+
     }
 }

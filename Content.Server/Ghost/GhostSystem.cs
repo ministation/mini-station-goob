@@ -409,37 +409,8 @@ namespace Content.Server.Ghost
                 _physics.SetLinearVelocity(uid, Vector2.Zero, body: physics);
         }
 
-        /* Mini EDIT - методы переделаны и вынесены в partial класс для гост панели
+        
 
-        private IEnumerable<GhostWarp> GetLocationWarps()
-        {
-            var allQuery = AllEntityQuery<WarpPointComponent>();
-
-            while (allQuery.MoveNext(out var uid, out var warp))
-            {
-                yield return new GhostWarp(GetNetEntity(uid), warp.Location ?? Name(uid), true);
-            }
-        }
-
-        private IEnumerable<GhostWarp> GetPlayerWarps(EntityUid except)
-        {
-            foreach (var player in _player.Sessions)
-            {
-                if (player.AttachedEntity is not {Valid: true} attached)
-                    continue;
-
-                if (attached == except) continue;
-
-                TryComp<MindContainerComponent>(attached, out var mind);
-
-                var jobName = _jobs.MindTryGetJobName(mind?.Mind);
-                var playerInfo = $"{Comp<MetaDataComponent>(attached).EntityName} ({jobName})";
-
-                if (_mobState.IsAlive(attached) || _mobState.IsCritical(attached))
-                    yield return new GhostWarp(GetNetEntity(attached), playerInfo, false);
-            }
-        }
-        */
 
         #endregion
 

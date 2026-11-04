@@ -59,10 +59,9 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
         var query = EntityQueryEnumerator<ActiveSurveillanceCameraMonitorComponent, SurveillanceCameraMonitorComponent>();
         while (query.MoveNext(out var uid, out _, out var monitor))
         {
-            /*if (Paused(uid))
-            {
-                continue;
-            } Goobstation remove */
+            
+
+
             monitor.LastHeartbeatSent += frameTime;
             SendHeartbeat(uid, monitor.ActiveCameraAddress, monitor); // Goobstation
             monitor.LastHeartbeat += frameTime;
@@ -166,10 +165,8 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
     /// Router - [ monitor freq ] -> Monitor
 
     #region Event Handling
-    /*private void OnComponentStartup(EntityUid uid, SurveillanceCameraMonitorComponent component, ComponentStartup args)
-    {
-        RefreshSubnets(uid, component);
-    } Goobstation remove */
+    
+
 
     private void OnPacketReceived(EntityUid uid, SurveillanceCameraMonitorComponent component,
         DeviceNetworkPacketEvent args)

@@ -262,22 +262,8 @@ public sealed partial class CosmicCultRuleSystem : GameRuleSystem<CosmicCultRule
             component.ExtraRiftTimer = _timing.CurTime + TimeSpan.FromSeconds(15);
 
             //don't spooky effects
-            /*
-            var sender = Loc.GetString("cosmiccult-announcement-sender");
-            var mapData = _map.GetMap(_transform.GetMapId(component.MonumentInGame.Owner.ToCoordinates()));
-            _chatSystem.DispatchStationAnnouncement(component.MonumentInGame, Loc.GetString("cosmiccult-announce-tier2-progress"), sender, false, null, Color.FromHex("#4cabb3"));
-            _chatSystem.DispatchStationAnnouncement(component.MonumentInGame, Loc.GetString("cosmiccult-announce-tier2-warning"), null, false, null, Color.FromHex("#cae8e8"));
-            _audio.PlayGlobal(_tier2Sound, Filter.Broadcast(), false, AudioParams.Default);
+            
 
-            var lights = EntityQueryEnumerator<PoweredLightComponent>();
-            while (lights.MoveNext(out var light, out _))
-            {
-                if (!_rand.Prob(0.50f))
-                    continue;
-
-                _ghost.DoGhostBooEvent(light);
-            }
-            */
 
             for (var i = 0; i < Convert.ToInt16(component.TotalCrew / 6); i++) // spawn # malign rifts equal to 16.67% of the playercount
             {
@@ -702,7 +688,6 @@ public sealed partial class CosmicCultRuleSystem : GameRuleSystem<CosmicCultRule
         Dirty(uid);
         _ui.SetUiState(uid.Owner, MonumentKey.Key, new MonumentBuiState(uid.Comp));
     }
-
 
 
     #region De- & Conversion

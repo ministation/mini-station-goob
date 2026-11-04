@@ -136,12 +136,8 @@ public abstract class SharedMaterialReclaimerSystem : EntitySystem
 
         var duration = GetReclaimingDuration(uid, item, component);
 
-        /* Goobstation - Recycle Update - Commented to prevent recycling one item several times
-        if (duration == TimeSpan.Zero)
-        {
-            Reclaim(uid, item, 1, component);
-            return true;
-        }*/
+        
+
 
         var active = EnsureComp<ActiveMaterialReclaimerComponent>(uid);
         active.Duration = duration;
@@ -212,9 +208,8 @@ public abstract class SharedMaterialReclaimerSystem : EntitySystem
     /// </summary>
     public bool CanStart(EntityUid uid, MaterialReclaimerComponent component)
     {
-        /* Goobstation - Recycle Update - Commented to prevent recycling one item several times
-          if (HasComp<ActiveMaterialReclaimerComponent>(uid))
-            return false;*/
+        
+
 
         return component.Powered && component.Enabled && !component.Broken;
     }

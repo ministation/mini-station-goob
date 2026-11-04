@@ -217,11 +217,8 @@ public sealed partial class ActivatableUISystem : EntitySystem
         if (TryComp<GhostComponent>(user, out var ghost) && aui.BlockSpectators && !ghost.CanGhostInteract) // CorvaxGoob-GhostUIViewing
             return false;
 
-        /* if (aui.RequiresComplex) CorvaxGoob-GhostUIViewing : смещено вниз
-        {
-            if (!_blockerSystem.CanComplexInteract(user))
-                return false;
-        } */
+        
+
 
         if (aui.InHandsOnly)
         {

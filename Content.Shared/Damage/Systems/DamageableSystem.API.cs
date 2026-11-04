@@ -327,35 +327,8 @@ public sealed partial class DamageableSystem
         return damageDone;
     }
 
-    /*
-        old broken EvenHealthChnage code. which accounts for scaleTemp.
-        which is currently removed for EvenHealthChange but not HealthChange
+    
 
-        // <Goob>
-        var healing = amount * args.Scale;
-        if (args.Effect.ScaleByTemperature is {} scaleTemp)
-        {
-            if (!TryComp<TemperatureComponent>(entity, out var temp))
-                return; // condition stays the same so this is actually a good return in loop
-
-            healing *= scaleTemp.GetEfficiencyMultiplier(temp.CurrentTemperature, args.Scale, false);
-        }
-        var spec = new DamageSpecifier(); // todo marty unfuck this after damagesystem
-        var groupProto = _proto.Index(group);
-        foreach (var type in groupProto.DamageTypes)
-        {
-            spec.DamageDict[type] = healing / groupProto.DamageTypes.Count;
-        }
-
-        _damageable.ChangeDamage(
-                entity.AsNullable(),
-                spec,
-                ignoreResistances: args.Effect.IgnoreResistances,
-                interruptsDoAfters: false,
-                targetPart: args.Effect.UseTargeting ? args.Effect.TargetPart : null, // Omu, needed for full body healing for cryo chems
-                splitDamage: args.Effect.SplitDamage); // Goob
-        // </Goob>
-    */
 
     /// <summary>
     /// [Woundmed Edited]

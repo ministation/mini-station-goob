@@ -21,18 +21,6 @@ public sealed partial class ResearchSystem
         SubscribeLocalEvent<ResearchPointSourceComponent, ResearchServerGetPointsPerSecondByTypeEvent>(OnGetPointsPerSecondByType); // Orion
     }
 
-/* // Orion-Edit: Use OnGetPointsPerSecondByType
-    private void OnGetPointsPerSecond(Entity<ResearchPointSourceComponent> source, ref ResearchServerGetPointsPerSecondEvent args)
-    {
-        // Orion-Start
-        if (TryComp<ResearchServerControlStatusComponent>(args.Server, out var status) && !status.GenerationEnabled)
-            return;
-        // Orion-End
-
-        if (CanProduce(source))
-            args.Points += source.Comp.PointsPerSecond;
-    }
-*/
 
     private bool CanProduce(Entity<ResearchPointSourceComponent> source) // Orion-Edit: Was public
     {

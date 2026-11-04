@@ -300,36 +300,9 @@ namespace Content.Client.NPC
                 if (nearest != null)
                 {
                     var text = new StringBuilder();
-                    /*
+                    
 
-                    // Sandbox moment
-                    var coords = $"Point coordinates: {nearest.Value.Coordinates.ToString()}";
-                    var gridCoords =
-                        $"Grid coordinates: {_system.GetCoordinate(chunk.Key, nearest.Value.Coordinates).ToString()}";
-                    var layer = $"Layer: {nearest.Value.Data.CollisionLayer.ToString()}";
-                    var mask = $"Mask: {nearest.Value.Data.CollisionMask.ToString()}";
 
-                    text.AppendLine(coords);
-                    text.AppendLine(gridCoords);
-                    text.AppendLine(layer);
-                    text.AppendLine(mask);
-                    text.AppendLine($"Flags:");
-
-                    foreach (var flag in Enum.GetValues<PathfindingBreadcrumbFlag>())
-                    {
-                        if ((flag & nearest.Value.Data.Flags) == 0x0)
-                            continue;
-
-                        var flagStr = $"- {flag.ToString()}";
-                        text.AppendLine(flagStr);
-                    }
-
-                    foreach (var neighbor in )
-
-                    screenHandle.DrawString(_font, mousePos.Position, text.ToString());
-                    found = true;
-                    break;
-                    */
                 }
             }
         }

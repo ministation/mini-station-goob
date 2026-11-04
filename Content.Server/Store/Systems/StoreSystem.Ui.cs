@@ -299,10 +299,9 @@ public sealed partial class StoreSystem
             _sparks.DoSparks(Transform(uid).Coordinates, playSound: false);
 
         // Goob edit start
-            /* if (listing.DisableRefund)
-            {
-                component.RefundAllowed = false;
-            } */
+            
+
+
         if (listing.BlockRefundListings.Count > 0)
         {
             foreach (var listingData in component.FullListingsCatalog.Where(x => listing.BlockRefundListings.Contains(x.ID)))
@@ -405,42 +404,8 @@ public sealed partial class StoreSystem
 
         UpdateRefundUserInterface(uid, component);
 
-        /* if (!IsOnStartingMap(uid, component))
-        {
-            DisableRefund(uid, component);
-            UpdateUserInterface(buyer, uid, component);
-        }
+        
 
-        if (!component.RefundAllowed || component.BoughtEntities.Count == 0)
-            return;
-
-        _admin.Add(LogType.StoreRefund, LogImpact.Low, $"{ToPrettyString(buyer):player} has refunded their purchases from {ToPrettyString(uid):store}");
-
-        for (var i = component.BoughtEntities.Count - 1; i >= 0; i--)
-        {
-            var purchase = component.BoughtEntities[i];
-
-            if (!Exists(purchase))
-                continue;
-
-            component.BoughtEntities.RemoveAt(i);
-
-            _actionContainer.RemoveAction(purchase, logMissing: false);
-
-            Del(purchase);
-        }
-
-        component.BoughtEntities.Clear();
-
-        foreach (var (currency, value) in component.BalanceSpent)
-        {
-            component.Balance[currency] += value;
-        }
-
-        // Reset store back to its original state
-        RefreshAllListings(component);
-        component.BalanceSpent = new();
-        UpdateUserInterface(buyer, uid, component); */
 
         // Goob edit end
     }

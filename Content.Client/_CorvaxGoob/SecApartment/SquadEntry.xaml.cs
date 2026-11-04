@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Linq;
 using System.Numerics;
 using Content.Client._CorvaxGoob.SecApartment.Stylesheets;
@@ -267,11 +271,10 @@ public sealed partial class SquadEntry : PanelContainer
                 else
                     specifier = new SpriteSpecifier.Rsi(new ResPath("Interface/Alerts/human_crew_monitoring.rsi"), "health" + index);
             }
-        }/*
-        else
-        {
-            specifier = new SpriteSpecifier.Rsi(new ResPath("Interface/Misc/health_icons.rsi"), "Critical");
-        }*///всётаки оставлю чуть больше шансов антагам :D
+        }
+
+
+//всётаки оставлю чуть больше шансов антагам :D
 
         var statusIcon = new AnimatedTextureRect
         {
@@ -430,11 +433,10 @@ public sealed partial class SquadEntry : PanelContainer
                                         "health" + index
                                     );
                             }
-                        }/*
-                        else
-                        {
-                            specifier = new SpriteSpecifier.Rsi(new ResPath("Interface/Misc/health_icons.rsi"), "Critical");
-                        }*///всётаки оставлю больше шансов антагам :D
+                        }
+
+
+//всётаки оставлю больше шансов антагам :D
 
                         statusIcon.SetFromSpriteSpecifier(specifier);
                     }

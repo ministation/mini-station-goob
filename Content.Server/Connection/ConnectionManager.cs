@@ -120,26 +120,8 @@ namespace Content.Server.Connection
             }
         }
 
-        /*
-        private async Task<NetApproval> HandleApproval(NetApprovalEventArgs eventArgs)
-        {
-            var ban = await _db.GetServerBanByIpAsync(eventArgs.Connection.RemoteEndPoint.Address);
-            if (ban != null)
-            {
-                var expires = Loc.GetString("ban-banned-permanent");
-                if (ban.ExpirationTime is { } expireTime)
-                {
-                    var duration = expireTime - ban.BanTime;
-                    var utc = expireTime.ToUniversalTime();
-                    expires = Loc.GetString("ban-expires", ("duration", duration.TotalMinutes.ToString("N0")), ("time", utc.ToString("f")));
-                }
-                var reason = Loc.GetString("ban-banned-1") + "\n" + Loc.GetString("ban-banned-2", ("reason", this.Reason)) + "\n" + expires;;
-                return NetApproval.Deny(reason);
-            }
+        
 
-            return NetApproval.Allow();
-        }
-        */
 
         private async Task NetMgrOnConnecting(NetConnectingArgs e)
         {
@@ -471,16 +453,8 @@ namespace Content.Server.Connection
             return assigned;
         }
 
-        /*
-        public async Task<bool> HasPrivilegedJoin(NetUserId userId) // Goobstation - Queue
-        {
-            var isAdmin = await _db.GetAdminDataForAsync(userId) != null;
-            var ticker = IoCManager.Resolve<IEntityManager>().System<GameTicker>();
-            var wasInGame = ticker.PlayerGameStatuses.TryGetValue(userId, out var status) &&
-                            status == PlayerGameStatus.JoinedGame;
-            return isAdmin || wasInGame;
-        }
-        */
+        
+
 
         // CorvaxGoob-Queue-Start: Make these conditions in one place, for checks in the connection and in the queue
         public async Task<bool> HavePrivilegedJoin(NetUserId userId)

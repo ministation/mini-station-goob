@@ -32,29 +32,8 @@ public sealed class SharedSiliconChargeSystem : EntitySystem
     }
 
     // Monolith - IPC Rework
-    /*
-    private void OnItemSlotInsertAttempt(EntityUid uid, SiliconComponent component, ref ItemSlotInsertAttemptEvent args)
-    {
-        if (args.Cancelled
-            || !TryComp<PowerCellSlotComponent>(uid, out var cellSlotComp)
-            || !_itemSlots.TryGetSlot(uid, cellSlotComp.CellSlotId, out var cellSlot)
-            || cellSlot != args.Slot || args.User != uid)
-            return;
+    
 
-        args.Cancelled = true;
-    }
-
-    private void OnItemSlotEjectAttempt(EntityUid uid, SiliconComponent component, ref ItemSlotEjectAttemptEvent args)
-    {
-        if (args.Cancelled
-            || !TryComp<PowerCellSlotComponent>(uid, out var cellSlotComp)
-            || !_itemSlots.TryGetSlot(uid, cellSlotComp.CellSlotId, out var cellSlot)
-            || cellSlot != args.Slot || args.User != uid)
-            return;
-
-        args.Cancelled = true;
-    }
-    */
 
     private void OnSiliconInit(EntityUid uid, SiliconComponent component, ComponentInit args)
     {

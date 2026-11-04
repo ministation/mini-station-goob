@@ -304,23 +304,8 @@ namespace Content.Client.HealthAnalyzer.UI
                 }
             }
 
-            /*foreach (var (woundablePain, pain) in msg.NervePainFeels)
-            {
-                if (pain == 1.0
-                    || !TryGetEntityName(woundablePain, out var woundableName)
-                    || isPart
-                    && woundablePain != msg.SelectedPart)
-                    continue;
+            
 
-                var painString = pain > 1.0 ? "increased" : "decreased";
-                var locString = Loc.GetString($"condition-body-pain-{painString}", ("woundable", woundableName));
-
-                ConditionsListContainer.AddChild(new RichTextLabel
-                {
-                    Text = locString,
-                    Margin = new Thickness(0, 4),
-                });
-            }*/
 
             if (ConditionsListContainer.ChildCount == 0)
             {

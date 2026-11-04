@@ -293,29 +293,8 @@ internal sealed partial class ChatManager : IChatManager
             colorOverride = prefs.AdminOOCColor;
         }
 
-        /* CorvaxGoob-Revert : DB conflicts
-        // RMC - Heavily modified for patreon.
-        if (_netConfigManager.GetClientCVar(player.Channel, CCVars.ShowOocPatronColor) &&
-            _linkAccount.GetPatron(player)?.Tier != null) // Goob
-        {
-            var patronColor = colorOverride?.ToHex() ?? "#aa00ff"; // Goob - admin ooc color overrides patron color
-            if (_linkAccount.GetOocIcon(player.UserId) is { } oocIcon) // Goob
-            {
-                wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message",
-                    ("tierIcon", oocIcon), // Goob
-                    ("patronColor", patronColor), // Goob
-                    ("playerName", player.Name),
-                    ("message", FormattedMessage.EscapeText(message)));
-            }
-            else
-            {
-                wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message-no-icon",
-                    ("patronColor", patronColor), // Goob
-                    ("playerName", player.Name),
-                    ("message", FormattedMessage.EscapeText(message)));
-            }
-        }
-        */
+        
+
 
         // Mini / CorvaxGoob sponsor nickname colors in OOC (same source as AHelp).
         string? patronColorHex = null;

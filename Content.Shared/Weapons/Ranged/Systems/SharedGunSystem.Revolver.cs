@@ -421,12 +421,9 @@ public partial class SharedGunSystem
             }
 
             // Delete the cartridge entity on client
-            /* Trauma - it's predicted now
-            if (_netManager.IsClient)
-            {
-                QueueDel(ammoEnt);
-            }
-            */
+            
+
+
         }
 
         UpdateAmmoCount(ent); // Trauma - do predict it

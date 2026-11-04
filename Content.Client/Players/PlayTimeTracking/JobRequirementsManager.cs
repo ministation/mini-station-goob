@@ -146,11 +146,9 @@ public sealed class JobRequirementsManager : ISharedPlaytimeManager
             _roles[tracker] = time;
         }
 
-        /*var sawmill = Logger.GetSawmill("play_time");
-        foreach (var (tracker, time) in _roles)
-        {
-            sawmill.Info($"{tracker}: {time}");
-        }*/
+        
+
+
         Updated?.Invoke();
     }
 

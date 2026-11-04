@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._Shitmed.Medical.Surgery.Consciousness.Components;
 using Content.Shared._Shitmed.Medical.Surgery.Pain.Components;
@@ -161,25 +161,9 @@ public partial class ConsciousnessSystem
             return;
 
 
-        /* Im not a big fan of how janky the UpdateMobState is for this, so its getting commented out for now.
+        
 
-        var newMobState = consciousness.IsConscious
-            ? MobState.Alive
-            : MobState.Critical;
 
-        if (consciousness.PassedOut)
-            newMobState = MobState.Critical;
-
-        if (consciousness.ForceUnconscious)
-            newMobState = MobState.Critical;
-
-        if (consciousness.Consciousness <= 0 && !consciousness.ForceConscious)
-            newMobState = MobState.Dead;
-
-        if (consciousness.ForceDead)
-            newMobState = MobState.Dead;
-
-        _mobStateSystem.ChangeMobState(target, newMobState, mobState);*/
     }
 
     private void CheckRequiredParts(EntityUid bodyId, ConsciousnessComponent consciousness)

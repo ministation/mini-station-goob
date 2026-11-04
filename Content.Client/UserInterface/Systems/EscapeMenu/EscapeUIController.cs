@@ -111,14 +111,8 @@ public sealed class EscapeUIController : UIController, IOnStateEntered<GameplayS
         //     _changelog.ToggleWindow();
         // };
 
-        /* CorvaxGoob-Coins-start
-        _escapeWindow.PatronPerksButton.Visible = _linkAccount.CanViewPatronPerks(); // RMC - Patreon
-        _escapeWindow.PatronPerksButton.OnPressed += _ => // RMC - Patreon
-        {
-            CloseEscapeWindow();
-            UIManager.GetUIController<LinkAccountUIController>().TogglePatronPerksWindow();
-        };
-        CorvaxGoob-Coins-end */
+        
+
 
         _escapeWindow.RulesButton.OnPressed += _ =>
         {
