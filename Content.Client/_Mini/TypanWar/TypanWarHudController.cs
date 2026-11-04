@@ -23,6 +23,7 @@ public sealed class TypanWarHudController : UIController,
     [UISystemDependency] private readonly TypanWarUiSystem _war = default!;
 
     private TimeSpan? _endedFlashUntil;
+    private TypanWarBetWindow? _betWindow;
 
     public override void Initialize()
     {
@@ -86,12 +87,16 @@ public sealed class TypanWarHudController : UIController,
 
     private void Refresh()
     {
+        RefreshBetWindow();
+
         if (UIManager.ActiveScreen == null)
             return;
 
         var hud = TryFindHud(UIManager.ActiveScreen);
         if (hud == null)
             return;
+
+        hud.BetButtonPressed = OpenBetWindow;
 
         var showEnded = _war.Phase == TypanWarPhase.Ended && _endedFlashUntil != null;
 
@@ -101,11 +106,33 @@ public sealed class TypanWarHudController : UIController,
             _war.NtCapturePoints,
             _war.TypanCapturePoints,
             _war.CapturePointsToWin,
-            _war.TimeRemainingSeconds,
-            _war.BettingOpen,
-            _war.MyBetSide,
-            _war.MyBetAmount,
-            _war.BetAmounts);
+            _war.TimeRemainingSeconds);
+    }
+
+    private void OpenBetWindow()
+    {
+        _war.RequestBetState();
+
+        _betWindow ??= new TypanWarBetWindow();
+        _betWindow.ApplyState(_war.MyBetSide, _war.MyBetAmount, _war.BetAmounts);
+
+        if (!_betWindow.IsOpen)
+            _betWindow.OpenCentered();
+    }
+
+    private void RefreshBetWindow()
+    {
+        if (_betWindow is not { IsOpen: true })
+            return;
+
+        // Ставки принимаются только до начала войны.
+        if (_war.Phase != TypanWarPhase.Pending)
+        {
+            _betWindow.Close();
+            return;
+        }
+
+        _betWindow.ApplyState(_war.MyBetSide, _war.MyBetAmount, _war.BetAmounts);
     }
 
     private static TypanWarHudControl? TryFindHud(Control screen)

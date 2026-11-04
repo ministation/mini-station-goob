@@ -151,7 +151,9 @@ typan-war-event-reinforcement = [color=#C8C4D8]Station war:[/color] HQ dispatche
 
 typan-war-ghost-roles-blocked = Ghost roles are unavailable during the station war.
 
-typan-war-bet-prompt = Bet on the war outcome (×2 payout, half back on a draw):
+typan-war-bet-window-title = War Bet
+
+typan-war-bet-button = Bets
 
 typan-war-bet-side-nt = NT
 

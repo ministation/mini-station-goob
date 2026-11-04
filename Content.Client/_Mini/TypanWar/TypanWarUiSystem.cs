@@ -33,7 +33,6 @@ public sealed class TypanWarUiSystem : EntitySystem
     public int NtJoined { get; private set; }
     public int TypanJoined { get; private set; }
 
-    public bool BettingOpen { get; private set; }
     public TypanWarSide? MyBetSide { get; private set; }
     public int MyBetAmount { get; private set; }
     public int[] BetAmounts { get; private set; } = [5, 10, 25];
@@ -69,7 +68,6 @@ public sealed class TypanWarUiSystem : EntitySystem
 
     private void OnBetState(TypanWarBetStateEvent ev)
     {
-        BettingOpen = ev.BettingOpen;
         MyBetSide = ev.MySide;
         MyBetAmount = ev.MyAmount;
         BetAmounts = ev.Amounts;
@@ -205,7 +203,6 @@ public sealed class TypanWarUiSystem : EntitySystem
 
     private void ResetBetState()
     {
-        BettingOpen = false;
         MyBetSide = null;
         MyBetAmount = 0;
         BetStateUpdated?.Invoke();
