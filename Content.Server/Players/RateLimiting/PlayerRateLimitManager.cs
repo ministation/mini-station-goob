@@ -15,7 +15,6 @@ namespace Content.Server.Players.RateLimiting;
 
 public sealed class PlayerRateLimitManager : SharedPlayerRateLimitManager
 {
-    [Dependency] private readonly IAdminLogManager _adminLog = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;

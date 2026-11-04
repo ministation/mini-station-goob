@@ -8,7 +8,6 @@ namespace Content.Server._Shitmed.Objectives.Systems;
 
 public sealed class RoleplayObjectiveSystem : EntitySystem
 {
-    [Dependency] private readonly SharedMindSystem _mind = default!;
 
     public override void Initialize()
     {

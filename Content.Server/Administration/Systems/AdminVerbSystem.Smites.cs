@@ -5,7 +5,6 @@ using Content.Goobstation.Common.Speech;
 using Content.Server.Administration.Commands;
 using Content.Server.Administration.Components;
 using System.Numerics;
-using System.Threading;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Body.Systems;
 using Content.Server.Clothing.Systems;
@@ -64,15 +63,12 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Spawners;
 using Robust.Shared.Utility;
-using System.Numerics;
-using System.Threading;
 using Content.Shared.Damage.Components;
 using Timer = Robust.Shared.Timing.Timer;
 using Content.Server.Speech.EntitySystems;
 using Content.Shared.Polymorph;
 using Content.Shared.Speech.Components;
 using Content.Shared.Temperature.Components;
-using Robust.Shared.Spawners;
 
 namespace Content.Server.Administration.Systems;
 

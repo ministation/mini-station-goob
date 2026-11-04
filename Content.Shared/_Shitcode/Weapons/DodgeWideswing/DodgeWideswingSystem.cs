@@ -10,9 +10,6 @@ namespace Content.Shared._Goobstation.Weapons.DodgeWideswing;
 
 public sealed class DodgeWideswingSystem : EntitySystem
 {
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedStaminaSystem _stamina = default!;
 
     public override void Initialize()
     {

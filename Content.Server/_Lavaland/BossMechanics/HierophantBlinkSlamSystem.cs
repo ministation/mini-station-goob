@@ -18,7 +18,6 @@ public sealed class HierophantBlinkSlamSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MegafaunaBlinkSystem _blink = default!;
-    [Dependency] private readonly SharedTransformSystem _xform = default!;
 
     public override void Initialize()
     {

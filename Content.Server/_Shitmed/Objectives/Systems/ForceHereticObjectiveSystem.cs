@@ -11,7 +11,6 @@ namespace Content.Server._Shitmed.Objectives.Systems;
 
 public sealed class ForceHereticObjectiveSystem : EntitySystem
 {
-    [Dependency] private readonly SharedMindSystem _mind = default!;
     [Dependency] private readonly AntagSelectionSystem _antag = default!;
     [Dependency] private readonly IAdminLogManager _adminLogManager = default!;
 

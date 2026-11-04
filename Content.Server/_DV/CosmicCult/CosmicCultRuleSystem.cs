@@ -66,7 +66,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using Content.Goobstation.Common.Religion;
 using Content.Server.Station.Systems;
-using Content.Shared.Cuffs.Components;
 using Content.Server.Cuffs;
 using Content.Shared.Light.Components;
 using Content.Shared.Roles.Components;
@@ -113,7 +112,6 @@ public sealed partial class CosmicCultRuleSystem : GameRuleSystem<CosmicCultRule
     [Dependency] private readonly VisibilitySystem _visibility = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly StationSystem _station = default!;
-    [Dependency] private readonly CuffableSystem _cuffable = default!; // goob edit
 
     private ISawmill _sawmill = default!;
     private TimeSpan _t3RevealDelay = default!;

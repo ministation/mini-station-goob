@@ -20,7 +20,6 @@ namespace Content.Server.Power.EntitySystems;
 
 public sealed class BatterySystem : SharedBatterySystem
 {
-    [Dependency] private readonly SharedContainerSystem _containers = default!; // WD EDIT
 
     private EntityQuery<EmpDisabledComponent> _disabledQuery; // Goobstation
 

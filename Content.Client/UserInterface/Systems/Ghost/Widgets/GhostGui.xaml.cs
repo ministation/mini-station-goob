@@ -22,7 +22,6 @@ public sealed partial class GhostGui : UIWidget
     public event Action? ThunderdomePressed; // Goobstation - Thunderdome
     public event Action? ReturnToRoundPressed; // FREAKY EDIT / Mini
     private int _prevImportantRoles;
-    private int _prevNumberRoles;
 
     public GhostGui()
     {

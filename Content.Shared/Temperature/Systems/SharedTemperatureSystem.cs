@@ -4,9 +4,6 @@ using System.Linq;
 using Content.Goobstation.Common.Temperature;
 using Content.Shared._DV.CosmicCult.Components;
 using Content.Shared.Atmos;
-using Content.Goobstation.Common.Temperature; // goob
-using Content.Shared.Atmos;
-using Content.Shared._DV.CosmicCult.Components; // DeltaV
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Temperature.Components;

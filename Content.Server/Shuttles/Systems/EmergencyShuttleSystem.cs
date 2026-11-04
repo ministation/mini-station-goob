@@ -41,7 +41,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-using Content.Shared.DeviceNetwork.Components;
 using Content.Server._CorvaxGoob.Announcer;
 using Robust.Shared.Audio;
 

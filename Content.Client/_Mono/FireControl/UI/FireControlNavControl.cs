@@ -26,7 +26,6 @@ public sealed class FireControlNavControl : BaseShuttleControl
 {
     private readonly SharedShuttleSystem _shuttles;
     private readonly SharedTransformSystem _transform;
-    private readonly IEntitySystemManager _sysManager = default!;
     private readonly RadarBlipsSystem _blips;
     private readonly SharedPhysicsSystem _physics;
 

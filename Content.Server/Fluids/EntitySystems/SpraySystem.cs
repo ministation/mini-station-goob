@@ -45,7 +45,6 @@ public sealed class SpraySystem : SharedSpraySystem
     [Dependency] private readonly InventorySystem _inventory = default!; // Assmos - Extinguisher Nozzle
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!; // Assmos - Extinguisher Nozzle
     [Dependency] private readonly SharedHandsSystem _handsSystem = default!; // Assmos - Extinguisher Nozzle
-    [Dependency] private readonly SprayPushableVehicleSystem _sprayPushSys = default!; // Goobstation - Vehicle Spray Pushback (Office chairs)
 
     private float _gridImpulseMultiplier;
 

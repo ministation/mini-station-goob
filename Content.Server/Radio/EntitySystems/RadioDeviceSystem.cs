@@ -15,9 +15,7 @@ using Content.Shared.Radio.Components;
 using Content.Shared.Radio.EntitySystems;
 using Content.Shared.Speech;
 using Content.Shared.Speech.Components;
-using Content.Shared.Chat;
 using Content.Shared.Power.EntitySystems;
-using Content.Shared.Radio.Components;
 using Robust.Shared.Prototypes;
 using Content.Shared.UserInterface; // Nuclear-14 start
 using Content.Shared._NC.Radio;
@@ -37,10 +35,8 @@ public sealed class RadioDeviceSystem : SharedRadioDeviceSystem
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly InteractionSystem _interaction = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly LanguageSystem _language = default!;
     [Dependency] private readonly SharedPowerReceiverSystem _power = default!; // Goob
     [Dependency] private readonly UserInterfaceSystem _ui = default!; // Nuclear-14
-    [Dependency] private readonly INetManager _netMan = default!; // Nuclear-14
 
     // Used to prevent a shitter from using a bunch of radios to spam chat.
     private HashSet<(string, EntityUid, RadioChannelPrototype)> _recentlySent = new();

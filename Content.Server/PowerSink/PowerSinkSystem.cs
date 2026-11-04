@@ -10,8 +10,6 @@ using Content.Shared.Power.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-using Robust.Shared.Audio.Systems;
-using Content.Server.Power.EntitySystems;
 
 namespace Content.Server.PowerSink
 {

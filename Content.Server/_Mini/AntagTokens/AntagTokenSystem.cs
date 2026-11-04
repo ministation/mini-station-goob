@@ -67,7 +67,6 @@ namespace Content.Server._Mini.AntagTokens;
 
 public sealed class AntagTokenSystem : EntitySystem
 {
-    [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
     [Dependency] private readonly UserDbDataManager _userDb = default!;

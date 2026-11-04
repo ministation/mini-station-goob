@@ -43,7 +43,6 @@ using Content.Client._RMC14.LinkAccount; CorvaxGoob-Coins
 using Content.Client.Stylesheets;
 CorvaxGoob-Coins-end */
 using Content.Client.Stylesheets;
-using Content.Client.Changelog;
 using Content.Client.UserInterface.Systems.EscapeMenu;
 using Content.Client.UserInterface.Systems.Guidebook;
 using Content.Shared.CCVar;

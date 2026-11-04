@@ -26,10 +26,6 @@ namespace Content.Client._Shitcode.UserActions.Tabs;
 [GenerateTypedNameReferences]
 public sealed partial class ConfigTabControl : BaseTabControl
 {
-    [Dependency] private readonly EntityManager _entManager = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly IClientConsoleHost _console = default!;
 
     public ConfigTabControl()

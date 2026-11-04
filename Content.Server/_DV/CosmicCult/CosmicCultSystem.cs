@@ -38,8 +38,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-using Content.Shared.Popups;
-using Content.Shared.Radio;
 using Content.Shared.IdentityManagement.Components;
 using Content.Shared.Radio.Components;
 

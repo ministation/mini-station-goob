@@ -1,6 +1,5 @@
 using Content.Shared.Damage.Systems;
 using Content.Shared.Damage.Components;
-using Content.Shared.Damage.Systems;
 using Content.Shared.SurveillanceCamera.Components;
 using System.Linq;
 using System.Numerics;

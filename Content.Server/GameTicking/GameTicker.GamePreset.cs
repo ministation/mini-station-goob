@@ -16,7 +16,6 @@ namespace Content.Server.GameTicking;
 public sealed partial class GameTicker
 {
     public const float PresetFailedCooldownIncrease = 30f;
-    [Dependency] private readonly GhostReturnToRoundSystem _ghostReturnToRound = default!; // FREAKY EDIT
 
     /// <summary>
     /// The selected preset that will be used at the start of the next round.

@@ -29,7 +29,6 @@ public sealed partial class NinjaCaltropSystem : EntitySystem
     private const string CaltropActionProto = "NinjaCaltropAction";
 
     [Dependency] private readonly NinjaSuitPowerSystem _suitPower = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TurfSystem _turf = default!;
     [Dependency] private readonly NinjaGhostSmokeSystem _ghostSmoke = default!;
     [Dependency] private readonly SharedStationSystem _station = default!;
