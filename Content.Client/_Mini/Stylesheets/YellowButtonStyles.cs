@@ -11,9 +11,9 @@ namespace Content.Client.Stylesheets
         // Добавлена прозрачность (alpha = 0.85-0.95) и более светлые оттенки
 
         // Основные жёлтые (светлые, полупрозрачные)
-        public static readonly Color ButtonColorDefaultYellow = new Color(1.52f, 1.32f, 0.16f, 1.03f); // 0.80 прозрачности
-        public static readonly Color ButtonColorHoveredYellow = new Color(1.61f, 1.44f, 0.62f, 1.03f);
-        public static readonly Color ButtonColorPressedYellow = new Color(1.34f, 1.14f, 0.00f, 1.03f);
+        public static readonly Color ButtonColorDefaultYellow = new Color(1.52f, 1.32f, 0.16f, 0.92f); // 0.80 прозрачности
+        public static readonly Color ButtonColorHoveredYellow = new Color(1.61f, 1.44f, 0.62f, 0.92f);
+        public static readonly Color ButtonColorPressedYellow = new Color(1.34f, 1.14f, 0.00f, 0.92f);
         public static readonly Color ButtonColorDisabledYellow = new Color(0.68f, 0.61f, 0.33f, 0.86f);
 
         // Текст - светлый для контраста с тёмным фоном
