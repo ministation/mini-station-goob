@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Common.BlockTeleport;
 using Content.Goobstation.Common.Grab;
 using Content.Goobstation.Shared.GrabIntent;
@@ -98,6 +102,11 @@ public sealed partial class TeleportSystem : EntitySystem
     /// </summary>
     public bool TeleportSingle(EntityUid uid, EntityCoordinates coords, EntityUid? user = null, bool predicted = true, bool force = false)
     {
+        // The engine treats parenting an entity to itself or to one of its children as fatal and queues the entity
+        // for deletion. A warp cube with its twin in the user's inventory is one way to get such coordinates.
+        if (coords.EntityId == uid || (coords.EntityId.IsValid() && _transform.ContainsEntity(uid, coords.EntityId)))
+            return false;
+
         // let other systems prevent teleporting
         if (!force && !CanTeleport(uid, predicted))
             return false;
