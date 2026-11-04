@@ -14,10 +14,7 @@ using Robust.Shared.Network;
 namespace Content.Shared._Shitmed.BodyEffects;
 public sealed partial class OrganEffectSystem : EntitySystem
 {
-    [Dependency] private readonly IComponentFactory _compFactory = default!;
-    [Dependency] private readonly ISerializationManager _serManager = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly INetManager _net = default!;
     public override void Initialize()
     {
         base.Initialize();

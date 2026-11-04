@@ -18,7 +18,6 @@ namespace Content.Server.Mind.Commands;
 public sealed class MakeSentientCommand : LocalizedEntityCommands
 {
     [Dependency] private readonly MindSystem _mindSystem = default!;
-    [Dependency] private readonly IEntityManager _entManager = default!;
 
     public override string Command => "makesentient";
 

@@ -1,4 +1,4 @@
-﻿using Content.Shared.GameTicking;
+using Content.Shared.GameTicking;
 using Content.Shared._Mini.CharacterBlock;
 using Content.Shared.Preferences;
 using Robust.Server.Player;
@@ -10,7 +10,6 @@ namespace Content.Server._Mini.CharacterBlocker;
 
 public sealed class CharacterBlockSystem : EntitySystem
 {
-    [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly INetManager _netManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
 

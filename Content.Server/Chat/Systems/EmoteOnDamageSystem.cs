@@ -22,7 +22,6 @@ public sealed class EmoteOnDamageSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly ChatSystem _chatSystem = default!;
-    [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
     [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
 
     public override void Initialize()

@@ -31,7 +31,6 @@ namespace Content.Client.Lobby.UI
         [Dependency] private readonly IClientPreferencesManager _preferencesManager = default!;
         [Dependency] private readonly IEntityManager _entManager = default!;
         [Dependency] private readonly IPrototypeManager _protomanager = default!;
-        [Dependency] private readonly IResourceCache _resourceCache = default!;
         [Dependency] private readonly IConfigurationManager _cfg = default!;
         [Dependency] private readonly CharacterBlockManager _characterBlockManager = default!;
 

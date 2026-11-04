@@ -10,7 +10,6 @@ using System.Linq;
 namespace Content.Shared._Shitmed.BodyEffects;
 public sealed partial class BodyPartEffectSystem : EntitySystem
 {
-    [Dependency] private readonly IComponentFactory _compFactory = default!;
     [Dependency] private readonly ISerializationManager _serManager = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     public override void Initialize()

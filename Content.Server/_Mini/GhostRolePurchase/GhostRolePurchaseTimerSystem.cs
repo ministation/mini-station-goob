@@ -11,7 +11,6 @@ namespace Content.Server._Mini.GhostRolePurchase;
 public sealed class GhostRolePurchaseTimerSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly GameTicker _gameTicker = default!;
 
     public override void Initialize()
     {

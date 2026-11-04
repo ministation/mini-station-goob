@@ -16,7 +16,6 @@ using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Medical.Cryogenics;
 using Content.Shared.MedicalScanner;
 using Content.Shared.Temperature.Components;
-using Content.Shared.UserInterface;
 using Content.Shared.Verbs;
 using Content.Shared.Bed.Sleep; // Shitmed Change
 using Robust.Server.GameObjects;

@@ -29,7 +29,6 @@ public sealed class FishForceSystem : EntitySystem
     private const double SoftCapThreshold = 6000;
     private const double SoftCapExponent = 0.86;
 
-    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     public override void Initialize()
     {

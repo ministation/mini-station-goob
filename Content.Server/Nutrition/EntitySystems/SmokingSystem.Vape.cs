@@ -7,7 +7,6 @@ using Content.Server.Nutrition.Components;
 using Content.Server.Popups;
 using Content.Shared.Atmos;
 using Content.Shared.Body.Components;
-using Content.Shared.Atmos;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Emag.Systems;
@@ -15,7 +14,6 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
 using Content.Shared.Nutrition;
 using Content.Shared.Nutrition.EntitySystems;
-using Content.Shared.Atmos;
 
 /// <summary>
 /// System for vapes

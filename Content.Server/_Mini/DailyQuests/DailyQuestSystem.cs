@@ -83,7 +83,6 @@ public sealed class DailyQuestSystem : EntitySystem
     [Dependency] private readonly SharedJobSystem _jobs = default!;
     [Dependency] private readonly SharedRoleSystem _roles = default!;
     [Dependency] private readonly MindSystem _minds = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly MiningPointsSystem _miningPoints = default!;
     [Dependency] private readonly AntagTokenSystem _antagTokens = default!;
     [Dependency] private readonly PopupSystem _popup = default!;

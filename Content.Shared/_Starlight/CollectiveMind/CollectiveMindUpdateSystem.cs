@@ -10,8 +10,6 @@ namespace Content.Shared._Starlight.CollectiveMind;
 public sealed class CollectiveMindUpdateSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IComponentFactory _componentFactory = default!;
-    [Dependency] private readonly TagSystem _tag = default!;
 
     private static Dictionary<string, int> _currentId = new();
 

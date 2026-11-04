@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Content.Server.Mind;
 using Content.Shared.DoAfter;
 using Content.Shared.Humanoid;
@@ -21,7 +21,6 @@ public sealed class RatvarSoulVesselSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfterSystem = default!;
     [Dependency] private readonly MindSystem _mindSystem = default!;
-    [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
     [Dependency] private readonly ActorSystem _actor = default!;
 
     public override void Initialize()

@@ -13,10 +13,7 @@ namespace Content.Client._Mini.CustomGhost;
 
 public sealed class GhostShopSystem : EntitySystem
 {
-    [Dependency] private readonly IClientConsoleHost _console = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IResourceCache _resourceCache = default!;
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
 
     private GhostShopWindow? _window;

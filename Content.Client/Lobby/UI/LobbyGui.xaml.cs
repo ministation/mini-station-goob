@@ -15,7 +15,6 @@ using Robust.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Ghost;
 using Content.Shared.Ghost;
 using Content.Client.Ghost;
-using Content.Client.UserInterface.Systems.Ghost;
 // using Content.Goobstation.Client.Patron;
 
 namespace Content.Client.Lobby.UI
@@ -25,16 +24,12 @@ namespace Content.Client.Lobby.UI
     public sealed partial class LobbyGui : UIScreen
     {
         [Dependency] private readonly IClientConsoleHost _consoleHost = default!;
-        [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
         [Dependency] private readonly IUriOpener _uriOpener = default!;
         [Dependency] private readonly IPlayerManager _playerManager = default!;
         [Dependency] private readonly IConfigurationManager _cfg = default!;
-        [UISystemDependency] private readonly GhostSystem? _system = default;
 
-        [UISystemDependency] private readonly GhostSystem _ghostSystem = default!;
         public event Action? GhostRolesPressed;
 
-        private int _prevNumberRoles;
 
         public GhostTargetWindow TargetWindow { get; private set; } = null!;
 

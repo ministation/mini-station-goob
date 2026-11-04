@@ -15,7 +15,6 @@ public sealed class EntityShapeSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IPrototypeManager _protoMan = default!;
     [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
 
     private EntityQuery<ShapeSpawnerComponent> _spawnerQuery;
     private EntityQuery<ShapeSpawnerCounterComponent> _counterQuery;

@@ -43,15 +43,12 @@ namespace Content.Client.Lobby
         [Dependency] private readonly ServerCurrencySystem _serverCur = default!; // Goobstation - server currency
         [Dependency] private readonly LinkAccountManager _linkAccount = default!; // RMC - Patreon
         CorvaxGoob-Coins-end */
-        [Dependency] private readonly IPrototypeManager _protoMan = default!; // Goobstation - credits
-        [Dependency] private readonly ClientsidePlaytimeTrackingManager _playtimeTracking = default!;
         [Dependency] private readonly CharacterBlockManager _characterBlockManager = default!;
         [Dependency] private readonly KatorgaBanManager _katorgaBans = default!;
         [Dependency] private readonly IClientPreferencesManager _clientPreferences = default!;
 
         private ISawmill _sawmill = default!; // Goobstation
         private ClientGameTicker _gameTicker = default!;
-        private ContentAudioSystem _contentAudioSystem = default!;
         private bool _katorgaLateJoinOpened;
 
         protected override Type? LinkedScreenType => typeof(LobbyGui);

@@ -29,7 +29,6 @@ public sealed partial class FishingSpotCapsuleSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly MapSystem _map = default!;
 
     public override void Initialize()

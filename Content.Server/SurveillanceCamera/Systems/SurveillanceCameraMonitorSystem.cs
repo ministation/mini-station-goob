@@ -13,11 +13,9 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Player;
 
 // Goobstation
-using Content.Goobstation.Common.SurveillanceCamera;
 using Content.Shared.UserInterface;
 using Robust.Server.GameStates;
 using Robust.Shared.Map;
-using System.Runtime.InteropServices;
 
 namespace Content.Server.SurveillanceCamera;
 

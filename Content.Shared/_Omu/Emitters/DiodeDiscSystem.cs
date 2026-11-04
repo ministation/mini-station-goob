@@ -8,7 +8,6 @@ namespace Content.Shared._Omu.DiodeDisc;
 
 public sealed class DiodeDiscSystem : EntitySystem
 {
-    [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
 
     public override void Initialize()

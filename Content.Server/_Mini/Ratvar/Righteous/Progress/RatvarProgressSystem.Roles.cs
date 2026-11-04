@@ -14,7 +14,6 @@ namespace Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress;
 public sealed partial class RatvarProgressSystem
 {
     [Dependency] private readonly EuiManager _euiMan = default!;
-    [Dependency] private readonly RadioSystem _radioSystem = default!;
 
     public void SetupRighteous(EntityUid uid)
     {

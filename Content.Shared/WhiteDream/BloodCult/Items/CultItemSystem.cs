@@ -1,4 +1,4 @@
-﻿using Content.Shared.Blocking;
+using Content.Shared.Blocking;
 using Content.Shared.Ghost;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
@@ -19,7 +19,6 @@ public sealed class CultItemSystem : EntitySystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedStunSystem _stun = default!;
-    [Dependency] private readonly INetManager _net = default!;
 
     public override void Initialize()
     {

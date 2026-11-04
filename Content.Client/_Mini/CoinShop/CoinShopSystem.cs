@@ -16,7 +16,6 @@ public sealed class CoinShopSystem : EntitySystem
 {
     [Dependency] private readonly IResourceCache _resourceCache = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
 
     private CoinShopWindow? _window;
 

@@ -1,4 +1,4 @@
-﻿using Content.Server.Atmos.EntitySystems;
+using Content.Server.Atmos.EntitySystems;
 using Content.Shared._CorvaxGoob.Power.Generation.FissionGenerator;
 using Content.Shared.Atmos;
 using Content.Shared.Damage;
@@ -12,7 +12,6 @@ namespace Content.Server._CorvaxGoob.Power.Generation.FissionGenerator;
 
 public sealed partial class ReactorPartSystem
 {
-    [Dependency] private readonly MetaDataSystem _metaDataSystem = default!;
 
     private void OnAtmosExposed(EntityUid uid, ReactorPartComponent component, ref AtmosExposedUpdateEvent args)
     {
