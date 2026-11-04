@@ -26,8 +26,12 @@ public sealed partial class GameTicker
     [ViewVariables]
     public bool StagedMapPreloadEnabled => _mapPreloadEnabled;
 
-    /// <summary>Lavaland is staged during the lobby countdown only when both preload switches are on.</summary>
-    public bool StagedLavalandPreloadEnabled => _mapPreloadEnabled && _mapPreloadLavaland;
+    /// <summary>
+    /// Lavaland is staged during the lobby countdown on its own switch: it is needed by every
+    /// round anyway, while station/grid staging behind <see cref="StagedMapPreloadEnabled"/> is
+    /// what doubles the preload working set.
+    /// </summary>
+    public bool StagedLavalandPreloadEnabled => _mapPreloadLavaland;
 
     private bool _mapPreloadEnabled;
     private bool _mapPreloadLavaland;
@@ -90,8 +94,8 @@ public sealed partial class GameTicker
     /// </summary>
     public void EnqueueLavalandPlanet(ProtoId<LavalandMapPrototype> planet)
     {
-        // Only staged mode queues planets. Otherwise LavalandSystem loads the planet synchronously
-        // from LoadingMapsEvent, which is the pre-feature round-start path.
+        // Only staged mode queues planets. Otherwise (game.map_preload_lavaland = false)
+        // LavalandSystem loads the planet synchronously from LoadingMapsEvent.
         if (!StagedLavalandPreloadEnabled)
             return;
 
@@ -118,7 +122,7 @@ public sealed partial class GameTicker
 
         _earlyLavalandStarted = true;
 
-        // Without the master switch Lavaland is generated synchronously at T-RoundPreloadTime.
+        // With Lavaland staging disabled it is generated synchronously at T-RoundPreloadTime.
         if (!StagedLavalandPreloadEnabled)
             return;
 
@@ -255,10 +259,28 @@ public sealed partial class GameTicker
             LoadStationMapSynchronously(maps[i], isMain: i == 0);
         }
 
-        _mapLoadQueueBuilt = true;
-        MapsReady = true;
+        CompleteSynchronousMapLoad();
 
         _sawmill.Info($"Synchronous map load complete ({maps.Count} station map(s)).");
+    }
+
+    /// <summary>
+    /// Marks the synchronous map load done. If Lavaland staging still has stages queued (slow
+    /// lobby or a late start), let the per-tick queue drain first: the round must not start on
+    /// a half-generated planet.
+    /// </summary>
+    private void CompleteSynchronousMapLoad()
+    {
+        _mapLoadQueueBuilt = true;
+
+        if (_mapLoadQueue.Count == 0)
+        {
+            MapsReady = true;
+            return;
+        }
+
+        _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.Finalize));
+        _sawmill.Info($"Waiting for {_mapLoadQueue.Count - 1} staged Lavaland stage(s) before round start.");
     }
 
     private void LoadStationMapSynchronously(GameMapPrototype gameMap, bool isMain)
@@ -369,6 +391,14 @@ public sealed partial class GameTicker
             }
             case MapLoadStageKind.Finalize:
             {
+                // Batched stages (Lavaland ruins) re-queue themselves behind Finalize, so the
+                // queue must be empty for the map load to be really done.
+                if (_mapLoadQueue.Count > 0)
+                {
+                    _mapLoadQueue.Enqueue(new MapLoadStage(MapLoadStageKind.Finalize));
+                    break;
+                }
+
                 MapsReady = true;
                 _sawmill.Info("Staged map preload complete.");
                 break;
