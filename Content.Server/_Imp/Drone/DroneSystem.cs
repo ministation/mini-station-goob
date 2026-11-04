@@ -86,7 +86,13 @@ namespace Content.Server._Imp.Drone
                 args.Cancel();
                 if (_gameTiming.CurTime >= component.NextProximityAlert)
                 {
-                    _popupSystem.PopupEntity(Loc.GetString("drone-cant-use-nearby", ("being", component.NearestEnt)), uid, uid);
+                    // Imp: this branch never resolves a nearby being above, so NearestEnt can still be the
+                    // default (EntityUid.Invalid), which the loc formatter cannot name. Only mention a being
+                    // when one is actually in range, otherwise fall back to the generic message.
+                    if (NonDronesInRange(uid, component))
+                        _popupSystem.PopupEntity(Loc.GetString("drone-cant-use-nearby", ("being", component.NearestEnt)), uid, uid);
+                    else
+                        _popupSystem.PopupEntity(Loc.GetString("drone-cant-use"), uid, uid);
                     component.NextProximityAlert = _gameTiming.CurTime + component.ProximityDelay;
                 }
             }
