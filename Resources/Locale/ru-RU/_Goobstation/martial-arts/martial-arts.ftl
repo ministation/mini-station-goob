@@ -114,3 +114,11 @@ alerts-sneak-attack-name = Скрытая атака
 alerts-sneak-attack-desc = Для истинного синоби первая и последняя атака — одно и то же.
 alerts-loss-of-surprise-name = Потеря элемента неожиданности
 alerts-loss-of-surprise-desc = Ваши намерения раскрыты! Потребуется время, чтобы снова скрытно атаковать.
+
+# Кулак Правосудия / бокс ГСБ (Mini)
+hosbox-success-learned = Вы освоили «Кулак Правосудия». Наставление сгорает у вас в руках...
+martial-arts-combo-HosBoxDoubleJab = двойкой в челюсть
+martial-arts-combo-HosBoxLiverHook = хуком в печень
+martial-arts-combo-HosBoxCross = пробивным кроссом
+martial-arts-combo-HosBoxBodyUppercut = апперкотом в корпус
+martial-arts-combo-HosBoxKnockout = нокаутирующим клинч-апперкотом

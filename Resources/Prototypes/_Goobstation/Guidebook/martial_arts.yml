@@ -12,6 +12,7 @@
   - DragonKungFu
   - HellRip
   - Twilight
+  - HosBoxing # mini-station: бокс ГСБ
   - Mimejutsu #CorvaxGoob
 - type: guideEntry
   id: CQC
@@ -62,3 +63,8 @@
   id: Mimejutsu
   name: guide-entry-mimejutsu
   text: "/ServerInfo/_CorvaxGoob/Guidebook/MartialArts/Mimejutsu.xml"
+
+- type: guideEntry # mini-station: бокс ГСБ
+  id: HosBoxing
+  name: guide-entry-hosboxing
+  text: "/ServerInfo/_Mini/Guidebook/MartialArts/HosBoxing.xml"

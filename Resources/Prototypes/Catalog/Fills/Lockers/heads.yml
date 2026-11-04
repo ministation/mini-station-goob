@@ -417,7 +417,7 @@
     - id: ComputerCargoRequestSecurityFlatpack # Goobstation
     - id: WantedListCartridge
     - id: DrinkHosFlask
-    - id: ClothingBeltSheathHeadOfSecurityFilled # Goobstation - security revamp
+    #- id: ClothingBeltSheathHeadOfSecurityFilled # mini-station: DT-2 теперь выдаётся только из терминала арсенала ГСБ (MiniHosArsenalTerminal)
     - id: MaterialSiloFlatpack # Goob
     - id: SecApartmentTablet # CorvaxGoob-SecApartment
     #- id: FoodPacketLollypopTrash # Goob - ...happy halloween?

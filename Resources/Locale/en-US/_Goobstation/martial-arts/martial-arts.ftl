@@ -57,3 +57,11 @@ alerts-sneak-attack-desc = To a true shinobi, the first strike and the last stri
 
 alerts-loss-of-surprise-name = Loss Of Surprise
 alerts-loss-of-surprise-desc = Your intentions are known! It will take you a few moments to sneak attack again.
+
+# Fist of Justice / HoS boxing (Mini)
+hosbox-success-learned = You have mastered the Fist of Justice. The manual incinerates in your hands...
+martial-arts-combo-HosBoxDoubleJab = a double jab
+martial-arts-combo-HosBoxLiverHook = a liver hook
+martial-arts-combo-HosBoxCross = a heavy cross
+martial-arts-combo-HosBoxBodyUppercut = a body uppercut
+martial-arts-combo-HosBoxKnockout = a knockout clinch-uppercut

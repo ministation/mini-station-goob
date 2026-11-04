@@ -1,0 +1,70 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Mini - "Кулак Правосудия": бокс ГСБ. 2 приёма по стамине, 2 по урону, 1 по нокдауну.
+
+- type: martialArt
+  id: HeadOfSecurityBoxing
+  martialArtsForm: HeadOfSecurityBoxing
+  roundstartCombos: HosBoxingMoves
+  baseDamageModifier: 4
+
+- type: comboList
+  id: HosBoxingMoves
+  combos:
+  - HosBoxDoubleJab
+  - HosBoxLiverHook
+  - HosBoxCross
+  - HosBoxBodyUppercut
+  - HosBoxKnockout
+
+# --- стамина ---
+
+- type: combo
+  id: HosBoxDoubleJab
+  name: Double Jab
+  martialArtsForm: HeadOfSecurityBoxing
+  attacks: [Harm, Harm]
+  event: !type:HosBoxDoubleJabPerformedEvent
+  extraDamage: 2
+  staminaDamage: 25
+
+- type: combo
+  id: HosBoxLiverHook
+  name: Liver Hook
+  martialArtsForm: HeadOfSecurityBoxing
+  attacks: [Disarm, Harm]
+  event: !type:HosBoxLiverHookPerformedEvent
+  extraDamage: 4
+  staminaDamage: 30
+
+# --- урон ---
+
+- type: combo
+  id: HosBoxCross
+  name: Heavy Cross
+  martialArtsForm: HeadOfSecurityBoxing
+  attacks: [Harm, Disarm, Harm]
+  event: !type:HosBoxCrossPerformedEvent
+  extraDamage: 18
+  staminaDamage: 8
+
+- type: combo
+  id: HosBoxBodyUppercut
+  name: Body Uppercut
+  martialArtsForm: HeadOfSecurityBoxing
+  attacks: [Disarm, Disarm, Harm]
+  event: !type:HosBoxBodyUppercutPerformedEvent
+  extraDamage: 20
+  staminaDamage: 8
+
+# --- нокдаун ---
+
+- type: combo
+  id: HosBoxKnockout
+  name: Knockout
+  martialArtsForm: HeadOfSecurityBoxing
+  attacks: [Grab, Harm, Harm]
+  event: !type:HosBoxKnockoutPerformedEvent
+  extraDamage: 5
+  paralyzeTime: 3.5
+  staminaDamage: 20

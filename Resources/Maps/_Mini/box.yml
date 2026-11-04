@@ -224606,4 +224606,13 @@ entities:
     - type: Transform
       parent: 2
       pos: -51.5,7.5
+
+# mini-station: терминал арсенала ГСБ
+- proto: MiniHosArsenalTerminal
+  entities:
+  - uid: 99930338
+    components:
+    - type: Transform
+      parent: 2
+      pos: 15.5,43.5
 ...

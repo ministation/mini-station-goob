@@ -248062,4 +248062,13 @@ entities:
       parent: 2
       rot: 1.5707963267948966 rad
       pos: -42.614056,-37.476376
+
+# mini-station: терминал арсенала ГСБ
+- proto: MiniHosArsenalTerminal
+  entities:
+  - uid: 37227
+    components:
+    - type: Transform
+      parent: 2
+      pos: 35.5,21.5
 ...
