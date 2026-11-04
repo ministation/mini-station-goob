@@ -1,4 +1,16 @@
 # Kept for ResearchTest / debug spawn only.
+# Not dead code: Content.IntegrationTests ResearchTest.AllTechPrintableTest finds lathes by scanning
+# Lathe components at runtime, so this prototype intentionally has no YAML references - do not delete.
 # Do NOT add MiniResearchParity to player lathes (Protolathe, CircuitImprinter, etc.) -
 # that pack dumps ~all researched unlocks onto those machines.
 # Recipes in that pack must remain >= 2x destroy/deconstruct yield so hyper 0.5x stays fair.
+- type: entity
+  id: MiniResearchParityLathe
+  parent: BaseLathe
+  name: research parity lathe
+  description: Debug/test lathe that exposes Mini research recipe unlocks for CI parity.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Lathe
+    dynamicPacks:
+    - MiniResearchParity
