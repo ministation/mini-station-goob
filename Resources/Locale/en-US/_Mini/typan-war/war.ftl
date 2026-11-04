@@ -163,4 +163,12 @@ typan-war-bet-placed-label = Bet:
 
 typan-war-bet-payout-note = ×2 payout, half back on a draw
 
+typan-war-bet-button = Bet
+
+typan-war-bet-button-placed = Bet: {$side} · {$amount}
+
+typan-war-bet-window-title = Bet on the war outcome
+
+typan-war-bet-closed = Betting closed
+
 typan-war-round-end-bets = Bets: NanoTrasen {$nt}, Typan {$typan}. Winners paid {$payout} coins.

@@ -205,4 +205,12 @@ typan-war-bet-placed-label = Ставка:
 
 typan-war-bet-payout-note = выплата ×2, при ничьей вернётся половина
 
+typan-war-bet-button = Ставка
+
+typan-war-bet-button-placed = Ставка: {$side} · {$amount}
+
+typan-war-bet-window-title = Ставка на исход войны
+
+typan-war-bet-closed = Ставки закрыты
+
 typan-war-round-end-bets = Ставки: Нанотрайзен {$nt}, Тайпан {$typan}. Выплачено победителям {$payout} монет.

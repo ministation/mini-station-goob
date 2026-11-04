@@ -1,7 +1,3 @@
-// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
-//
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
 // SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -33,12 +29,8 @@ public sealed class TypanWarHudControl : PanelContainer
     private readonly Label _typanScoreLabel;
     private readonly Label _timerLabel;
     private readonly TypanWarApexScoreBarControl _bar;
+    private readonly BoxContainer _betRow;
     private readonly Button _betButton;
-
-    /// <summary>
-    /// Invoked when the bets window button is pressed.
-    /// </summary>
-    public Action? BetButtonPressed { get; set; }
 
     public TypanWarHudControl()
     {
@@ -117,15 +109,23 @@ public sealed class TypanWarHudControl : PanelContainer
         row.AddChild(_typanScoreLabel);
         row.AddChild(_timerLabel);
 
-        // Ставки живут в отдельном окне; кнопка видна только в фазе подготовки, до начала войны.
+        // Ставки живут в отдельном окне (TypanWarBetWindow); на худе — только кнопка вызова.
+        _betRow = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            HorizontalAlignment = HAlignment.Right,
+            Visible = false,
+        };
+        column.AddChild(_betRow);
+
         _betButton = new Button
         {
             Text = Loc.GetString("typan-war-bet-button"),
-            HorizontalAlignment = HAlignment.Center,
-            Visible = false,
+            MinSize = new Vector2(96, 26),
         };
-        _betButton.OnPressed += _ => BetButtonPressed?.Invoke();
-        column.AddChild(_betButton);
+        _betButton.OnPressed += _ =>
+            IoCManager.Resolve<IEntityManager>().System<TypanWarUiSystem>().ToggleBetWindow();
+        _betRow.AddChild(_betButton);
 
         Visible = false;
     }
@@ -136,14 +136,31 @@ public sealed class TypanWarHudControl : PanelContainer
         float ntPoints,
         float typanPoints,
         int pointsToWin,
-        float timeRemainingSeconds)
+        float timeRemainingSeconds,
+        bool bettingOpen = false,
+        TypanWarSide? myBetSide = null,
+        int myBetAmount = 0)
     {
         Visible = phase is TypanWarPhase.Pending or TypanWarPhase.Active or TypanWarPhase.Ended;
         if (!Visible)
             return;
 
-        // Ставки принимаются только до начала войны.
-        _betButton.Visible = phase == TypanWarPhase.Pending;
+        var betVisible = bettingOpen || myBetSide != null;
+        _betRow.Visible = betVisible;
+        if (betVisible)
+        {
+            _betButton.Text = myBetSide != null
+                ? Loc.GetString(
+                    "typan-war-bet-button-placed",
+                    ("side", Loc.GetString(myBetSide == TypanWarSide.Nanotrasen
+                        ? "typan-war-bet-side-nt"
+                        : "typan-war-bet-side-typan")),
+                    ("amount", myBetAmount))
+                : Loc.GetString("typan-war-bet-button");
+            _betButton.ToolTip = bettingOpen
+                ? Loc.GetString("typan-war-bet-payout-note")
+                : null;
+        }
 
         _titleLabel.Text = phase switch
         {

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // SPDX-FileCopyrightText: 2026 Egorik1
 // Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
 
@@ -308,6 +312,9 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
         var query = EntityQueryEnumerator<TypanWarCaptureZoneComponent>();
         while (query.MoveNext(out var uid, out var zone))
         {
+            if (TerminatingOrDeleted(uid))
+                continue;
+
             if (zone.ZoneLabel != "C" || !zone.IsTradePostZone)
                 continue;
 
@@ -745,7 +752,7 @@ public sealed class TypanWarCaptureZoneSystem : SharedTypanWarCaptureZoneSystem
 
     private void UpdateFlagVisual(EntityUid uid, TypanWarCaptureZoneComponent zone)
     {
-        if (zone.FlagEntity is not { } flag || !Exists(flag))
+        if (TerminatingOrDeleted(uid) || zone.FlagEntity is not { } flag || !Exists(flag))
             return;
 
         // Keep flag snapped to zone center (trade swap / reparent can desync anchored entities).

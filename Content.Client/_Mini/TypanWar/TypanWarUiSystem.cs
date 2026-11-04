@@ -41,6 +41,8 @@ public sealed class TypanWarUiSystem : EntitySystem
     public int MyBetAmount { get; private set; }
     public int[] BetAmounts { get; private set; } = [5, 10, 25];
 
+    private TypanWarBetWindow? _betWindow;
+
     public event Action? StatusUpdated;
     public event Action? BalanceUpdated;
     public event Action? BetStateUpdated;
@@ -52,6 +54,63 @@ public sealed class TypanWarUiSystem : EntitySystem
         SubscribeNetworkEvent<TypanWarBalanceStatusEvent>(OnBalanceStatus);
         SubscribeNetworkEvent<TypanWarBetStateEvent>(OnBetState);
         SubscribeNetworkEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        BetStateUpdated += OnBetStateWindowRefresh;
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        BetStateUpdated -= OnBetStateWindowRefresh;
+        DisposeBetWindow();
+    }
+
+    /// <summary>
+    /// Opens/closes the bet window (HUD button). Meaningful only while betting is open or a bet is placed.
+    /// </summary>
+    public void ToggleBetWindow()
+    {
+        if (_betWindow is { IsOpen: true })
+        {
+            CloseBetWindow();
+            return;
+        }
+
+        if (!BettingOpen && MyBetSide == null)
+            return;
+
+        _betWindow ??= new TypanWarBetWindow();
+        _betWindow.Refresh(BettingOpen, MyBetSide, MyBetAmount, BetAmounts);
+        _betWindow.OpenPrepared();
+    }
+
+    private void OnBetStateWindowRefresh()
+    {
+        if (_betWindow is not { IsOpen: true })
+            return;
+
+        if (!BettingOpen && MyBetSide == null)
+        {
+            // Ставки закрылись, ставки нет — окно больше не нужно.
+            CloseBetWindow();
+            return;
+        }
+
+        _betWindow.Refresh(BettingOpen, MyBetSide, MyBetAmount, BetAmounts);
+    }
+
+    private void CloseBetWindow()
+    {
+        _betWindow?.Close();
+    }
+
+    private void DisposeBetWindow()
+    {
+        if (_betWindow == null)
+            return;
+
+        _betWindow.Close();
+        _betWindow.Dispose();
+        _betWindow = null;
     }
 
     public void RequestBetState()
@@ -209,6 +268,7 @@ public sealed class TypanWarUiSystem : EntitySystem
     {
         MyBetSide = null;
         MyBetAmount = 0;
+        DisposeBetWindow();
         BetStateUpdated?.Invoke();
     }
 }
