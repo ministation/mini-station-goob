@@ -42,7 +42,9 @@ public sealed class AshwalkerNestSystem : EntitySystem
     [Dependency] private readonly MetaDataSystem _metaData = default!;
 
     private const string Egg = "LavalandAshwalkerEgg";
-    private const string Ashwalker = "MobAshwalker";
+    // MobAshwalkerPlayable: no ghost role components, so re-attaching the salvaged mind
+    // does not fire the ghost role takeover handler and stack duplicate job roles.
+    private const string Ashwalker = "MobAshwalkerPlayable";
     private const string SalvagePending = "ashwalker-nest-salvage-pending";
     private const string SalvageReturn = "ashwalker-nest-salvage-return";
 
