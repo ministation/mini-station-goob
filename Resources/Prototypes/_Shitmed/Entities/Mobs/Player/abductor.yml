@@ -15,6 +15,9 @@
     damage:
       types:
         Heat: 0.5
+  - type: EntitySkills
+    skills:
+    - All
   - type: CollectiveMind
     defaultChannel: AbductormindAntag
     canUseInCrit: true
@@ -63,6 +66,9 @@
     description: abductor-lone-ghost-role-desc
     mindRoles:
     - MindRoleLoneAbductor
+  - type: EntitySkills
+    skills:
+    - All
   - type: AbductorScientist
   - type: SurgeryIgnoreClothing
   - type: Sanitized
@@ -82,6 +88,9 @@
     description: abductor-scientist-ghost-role-desc
     mindRoles:
     - MindRoleAbductorScientist
+  - type: EntitySkills
+    skills:
+    - All
   - type: AbductorScientist
   - type: SurgeryIgnoreClothing
   - type: Sanitized
@@ -105,6 +114,9 @@
     nameSegments:
       - AbductorAgentPrefix
       - AbductorNames
+  - type: EntitySkills
+    skills:
+    - All
   - type: AbductorScientist
   - type: SurgeryIgnoreClothing
   - type: Sanitized
