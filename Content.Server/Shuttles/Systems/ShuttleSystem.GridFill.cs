@@ -11,11 +11,17 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
+using Timer = Robust.Shared.Timing.Timer;
 
 namespace Content.Server.Shuttles.Systems;
 
 public sealed partial class ShuttleSystem
 {
+    // A grid parked on the station map during preload (cargo shuttle, salvage or trade station)
+    // can cover an escape pod's docking spot, so retry for a while in case it moves away.
+    private const int GridFillDockRetries = 10;
+    private static readonly TimeSpan GridFillDockRetryDelay = TimeSpan.FromSeconds(20);
+
     private void InitializeGridFills()
     {
         SubscribeLocalEvent<GridSpawnComponent, StationPostInitEvent>(OnGridSpawnPostInit);
@@ -242,39 +248,80 @@ public sealed partial class ShuttleSystem
         if (!_cfg.GetCVar(CCVars.GridFill))
             return;
 
+        if (TryFillDock(uid, component) == GridFillDockResult.Blocked)
+            RetryGridFillDock(uid, 0);
+    }
+
+    private void RetryGridFillDock(EntityUid uid, int attempt)
+    {
+        if (attempt >= GridFillDockRetries)
+        {
+            if (TryComp<GridFillComponent>(uid, out var failed))
+                Log.Warning($"Could not dock gridfill shuttle for {ToPrettyString(uid)} / {failed.Path}; the docking spot is occupied.");
+
+            return;
+        }
+
+        Timer.Spawn(GridFillDockRetryDelay, () =>
+        {
+            if (TerminatingOrDeleted(uid) || !TryComp<GridFillComponent>(uid, out var component))
+                return;
+
+            if (TryFillDock(uid, component) == GridFillDockResult.Blocked)
+                RetryGridFillDock(uid, attempt + 1);
+        });
+    }
+
+    /// <summary>
+    /// Loads the configured grid and docks it to the airlock if possible.
+    /// </summary>
+    private GridFillDockResult TryFillDock(EntityUid uid, GridFillComponent component)
+    {
         if (!TryComp<DockingComponent>(uid, out var dock) ||
             !TryComp(uid, out TransformComponent? xform) ||
             xform.GridUid == null)
         {
-            return;
+            return GridFillDockResult.Failed;
         }
 
         // Spawn on a dummy map and try to dock if possible, otherwise dump it.
         _mapSystem.CreateMap(out var mapId);
-        var valid = false;
 
-        if (_loader.TryLoadGrid(mapId, component.Path, out var grid))
+        if (!_loader.TryLoadGrid(mapId, component.Path, out var grid))
         {
-            var escape = GetSingleDock(grid.Value);
+            Log.Error($"Error loading gridfill grid for {ToPrettyString(uid)} / {component.Path}");
+            _mapSystem.DeleteMap(mapId);
+            return GridFillDockResult.Failed;
+        }
 
-            if (escape != null)
+        var result = GridFillDockResult.Blocked;
+        var escape = GetSingleDock(grid.Value);
+
+        if (escape == null)
+        {
+            Log.Error($"Gridfill grid {component.Path} for {ToPrettyString(uid)} has no docking port.");
+            result = GridFillDockResult.Failed;
+        }
+        else
+        {
+            var config = _dockSystem.GetDockingConfig(grid.Value, xform.GridUid.Value, escape.Value.Entity, escape.Value.Component, uid, dock);
+
+            if (config != null)
             {
-                var config = _dockSystem.GetDockingConfig(grid.Value, xform.GridUid.Value, escape.Value.Entity, escape.Value.Component, uid, dock);
+                var shuttleXform = Transform(grid.Value);
+                FTLDock((grid.Value, shuttleXform), config);
 
-                if (config != null)
+                if (TryComp<StationMemberComponent>(xform.GridUid, out var stationMember))
                 {
-                    var shuttleXform = Transform(grid.Value);
-                    FTLDock((grid.Value, shuttleXform), config);
-
-                    if (TryComp<StationMemberComponent>(xform.GridUid, out var stationMember))
-                    {
-                        _station.AddGridToStation(stationMember.Station, grid.Value);
-                    }
-
-                    valid = true;
+                    _station.AddGridToStation(stationMember.Station, grid.Value);
                 }
-            }
 
+                result = GridFillDockResult.Docked;
+            }
+        }
+
+        if (result == GridFillDockResult.Docked)
+        {
             foreach (var compReg in component.AddComponents.Values)
             {
                 var compType = compReg.Component.GetType();
@@ -287,12 +334,21 @@ public sealed partial class ShuttleSystem
             }
         }
 
-        if (!valid)
-        {
-            Log.Error($"Error loading gridfill dock for {ToPrettyString(uid)} / {component.Path}");
-        }
-
         _mapSystem.DeleteMap(mapId);
+        return result;
+    }
+
+    private enum GridFillDockResult : byte
+    {
+        Docked,
+        /// <summary>
+        /// The grid loaded but its docking spot is currently taken, so a later retry may succeed.
+        /// </summary>
+        Blocked,
+        /// <summary>
+        /// The grid or its docking port is missing, which retrying cannot fix.
+        /// </summary>
+        Failed,
     }
 
     private (EntityUid Entity, DockingComponent Component)? GetSingleDock(EntityUid uid)
