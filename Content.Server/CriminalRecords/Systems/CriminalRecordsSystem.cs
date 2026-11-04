@@ -184,10 +184,11 @@ public sealed class CriminalRecordsSystem : SharedCriminalRecordsSystem
 
     private void UpdateReaderUi(Entity<WantedListCartridgeComponent> ent, EntityUid loaderUid)
     {
-        if (_station.GetOwningStation(ent) is not { } station)
+        if (_station.GetOwningStation(ent) is not { } station
+            || !TryComp<StationRecordsComponent>(station, out var stationRecords))
             return;
 
-        var records = _records.GetRecordsOfType<CriminalRecord>(station)
+        var records = _records.GetRecordsOfType<CriminalRecord>(station, stationRecords)
             .Where(cr => cr.Item2.Status is not SecurityStatus.None || cr.Item2.History.Count > 0)
             .Select(cr =>
             {
