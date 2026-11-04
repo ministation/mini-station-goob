@@ -29,8 +29,6 @@ public sealed partial class PlantbotServiceOperator : HTNOperator
     private SharedInteractionSystem _interaction = default!;
     private SharedPopupSystem _popup = default!;
     private PlantHolderSystem _plantHolderSystem = default!;
-    private DamageableSystem _damageableSystem = default!;
-    private TagSystem _tagSystem = default!;
 
     public const float RequiredWaterLevelToService = 80f;
     public const float RequiredWeedsAmountToWeed = 1f;

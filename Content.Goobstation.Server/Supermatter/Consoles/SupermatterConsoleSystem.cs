@@ -23,7 +23,6 @@ public sealed partial class SupermatterConsoleSystem : SharedSupermatterConsoleS
     private const float UpdateTime = 1.0f;
 
     // Note: this data does not need to be saved
-    private float _updateTimer = 1.0f;
 
     public override void Initialize()
     {
