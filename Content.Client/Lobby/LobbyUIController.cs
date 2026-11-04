@@ -93,9 +93,8 @@ using Content.Corvax.Interfaces.Shared;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
 using Content.Shared.GameTicking;
-using Content.Shared.Hands;
+using Content.Client.Hands.Systems;
 using Content.Shared.Hands.Components;
-using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
@@ -132,7 +131,7 @@ public sealed class LobbyUIController : UIController, IOnStateEntered<LobbyState
     [UISystemDependency] private readonly ClientInventorySystem _inventory = default!;
     [UISystemDependency] private readonly StationSpawningSystem _spawn = default!;
     [UISystemDependency] private readonly GuidebookSystem _guide = default!;
-    [UISystemDependency] private readonly SharedHandsSystem _hands = default!;
+    [UISystemDependency] private readonly HandsSystem _hands = default!;
 
     private CharacterSetupGui? _characterSetup;
     private HumanoidProfileEditor? _profileEditor;
