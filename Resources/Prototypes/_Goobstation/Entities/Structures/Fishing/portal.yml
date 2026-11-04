@@ -3,7 +3,7 @@
 
 - type: entity
   id: FishingPortalGenerator
-  parent: BaseMachine
+  parent: ConstructibleMachine
   name: fish-porter 3000
   description: Fishing anywhere, anytime... anyway, what was I talking about?
   components:
@@ -21,13 +21,6 @@
       shader: unshaded
   - type: Machine
     board: FishingPortalMachineCircuitboard
-  # BaseMachine (unlike ConstructibleMachine) does not declare the machine board
-  # containers; without this the entity gains a ContainerContainer on spawn and
-  # fails UninitializedSaveTest.
-  - type: ContainerContainer
-    containers:
-      machine_board: !type:Container
-      machine_parts: !type:Container
   - type: FishingPortal
   - type: ActivatableUI
     key: enum.FishingPortalUiKey.Key

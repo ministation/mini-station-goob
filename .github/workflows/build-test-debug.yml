@@ -104,18 +104,13 @@ jobs:
     timeout-minutes: 30
     strategy:
       fail-fast: false
-      # _Mini (тесты форка) идёт отдельным шардом: 23 теста дают ~230 секунд,
-      # без выделения они растягивают main и общий прогон упирается в них.
+      # Два шарда вместо четырёх: кастомные тестовые деревья форка удалены.
       matrix:
         shard:
           - name: main
-            filter: cat != MapTests && cat != GameRuleTests && cat != PrototypeSweepTests && namespace !~ /_Mini/
-          - name: mini
-            filter: namespace =~ /_Mini/
+            filter: cat != MapTests && cat != GameRuleTests && cat != PrototypeSweepTests
           - name: prototype-sweep
-            filter: cat == PrototypeSweepTests
-          - name: maps-gamerules
-            filter: cat == MapTests || cat == GameRuleTests
+            filter: cat == PrototypeSweepTests || cat == MapTests || cat == GameRuleTests
 
     env:
       DOTNET_gcServer: 1
