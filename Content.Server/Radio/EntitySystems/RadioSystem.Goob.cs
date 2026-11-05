@@ -1,46 +1,22 @@
-using Content.Shared.Access.Components;
-using Content.Shared.Access.Systems;
-using Content.Shared.PDA;
-using Content.Shared.Silicons.Borgs.Components;
-using Content.Shared.Silicons.StationAi;
-using Content.Shared.StatusIcon;
-using Robust.Shared.Prototypes;
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using Content.Goobstation.Common.Radio;
+using Content.Shared._EinsteinEngines.Language;
 
 namespace Content.Server.Radio.EntitySystems;
 
 public sealed partial class RadioSystem
 {
-    /// <summary>
-    /// This handles the radio job icons that are displayed next to a players name when sending a message over radio
-    /// </summary>
-    /// <param name="EntityUID"></param>
-    /// <returns></returns>
-    [Dependency] private readonly AccessReaderSystem _accessReader = default!;
-
-    private (ProtoId<JobIconPrototype>, string?) GetJobIcon(EntityUid ent)
+    private bool LanguageRadioOverride(EntityUid speaker, ref LanguagePrototype language)
     {
-        if (_accessReader.FindAccessItemsInventory(ent, out var items))
-        {
-            foreach (var item in items)
-            {
-                // ID Card
-                if (TryComp<IdCardComponent>(item, out var id))
-                    return (id.JobIcon, id.LocalizedJobTitle);
+        var ev = new LanguageRadioAttemptEvent(language.ID);
+        RaiseLocalEvent(speaker, ref ev);
+        if (!ev.Allowed)
+            return false;
 
-                // PDA
-                if (TryComp<PdaComponent>(item, out var pda)
-                    && pda.ContainedId != null
-                    && TryComp(pda.ContainedId, out id))
-                    return (id.JobIcon, id.LocalizedJobTitle);
-            }
-        }
+        if (ev.TranslateTo != null && _prototype.TryIndex<LanguagePrototype>(ev.TranslateTo, out var translated))
+            language = translated;
 
-        if (HasComp<StationAiHeldComponent>(ent))
-            return ("JobIconStationAi", Loc.GetString("job-name-station-ai"));
-
-        if (HasComp<BorgChassisComponent>(ent) || HasComp<BorgBrainComponent>(ent))
-            return ("JobIconBorg", Loc.GetString("job-name-borg"));
-
-        return ("JobIconNoId", null);
+        return true;
     }
 }

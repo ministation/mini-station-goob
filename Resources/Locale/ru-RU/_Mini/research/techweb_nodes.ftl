@@ -240,3 +240,25 @@ research-technology-mini-lathe-parity-name = Паритет рецептов л�
 research-technology-mini-lathe-parity-desc = Скрытый узел для динамических рецептов лате, не покрытых деревом исследований Mini.
 research-technology-typan-fishing-name = Рыболовство
 research-technology-typan-fishing-desc = Снасти, удочки и аквариум для разведения рыбы на Тайпане.
+
+research-technology-modsuit-equipment = Снаряжение модульных скафандров
+
+research-technology-modsuit-equipment-desc = Универсальные ядра модульных скафандров, модули хранения и вспомогательные модули.
+
+research-technology-modsuit-engineering-desc = Пластины инженерного модульного скафандра и атмосферные модули.
+
+research-technology-modsuit-advanced-engineering-desc = Пластины продвинутого инженерного модульного скафандра и модули реактивного движения.
+
+research-technology-modsuit-supply-desc = Пластины шахтёрского модульного скафандра и модули утилизации.
+
+research-technology-modsuit-security = Модульные скафандры СБ
+
+research-technology-modsuit-security-desc = Пластины модульного скафандра СБ и боевые модули.
+
+research-technology-modsuit-medical = Медицинские модульные скафандры
+
+research-technology-modsuit-medical-desc = Пластины медицинского модульного скафандра и модули жизнеобеспечения.
+
+research-technology-modsuit-service = Сервисные модульные скафандры
+
+research-technology-modsuit-service-desc = Пластины сервисного модульного скафандра и вспомогательные модули.

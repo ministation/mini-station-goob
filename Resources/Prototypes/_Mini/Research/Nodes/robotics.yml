@@ -120,4 +120,194 @@
   - ModsuitGauntlets
   - ModsuitShell
   - ModsuitPlatingExternal
+  - ModsuitCoreStandard
+  - ModsuitModuleStorageCompact
+  - ModsuitModuleStorageCase
+  - ModsuitModuleFlashlight
   position: 19,18
+
+- type: technology
+  id: ModsuitEquipmentTech
+  name: research-technology-modsuit-equipment
+  description: research-technology-modsuit-equipment-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Robotics/mod_modules.rsi
+    state: regulator
+  discipline: Scientific
+  tier: 1
+  pointCosts:
+  - type: General
+    amount: 7500
+  technologyPrerequisites:
+  - ModularSuit
+  recipeUnlocks:
+  - ModsuitCorePlasma
+  - ModsuitModuleStorageLarge
+  - ModsuitModuleWelding
+  - ModsuitModuleThermalRegulator
+  - ModsuitModuleGps
+  - ModsuitModuleVisorDiagnostic
+  - ModsuitModuleReagentScanner
+  - ModsuitModuleJointTorsion
+  - ModsuitModuleGloveTranslator
+  - ModsuitModulePlasmaStabilizer
+  - ModsuitModuleHatStabilizer
+  - ModsuitModuleRecycler
+  - ModsuitModuleDonkRecycler
+  position: 20,17
+
+- type: technology
+  id: ModsuitEngineeringTech
+  name: research-technology-modsuit-engineering
+  description: research-technology-modsuit-engineering-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Robotics/mod_modules.rsi
+    state: magnet
+  discipline: Engineering
+  tier: 2
+  pointCosts:
+  - type: General
+    amount: 10000
+  technologyPrerequisites:
+  - ModularSuit
+  recipeUnlocks:
+  - ModsuitPlatingEngineer
+  - ModsuitModuleMagboots
+  - ModsuitModuleTRay
+  - ModsuitModuleTether
+  - ModsuitModuleMister
+  - ModsuitModuleHeadProtector
+  position: 18,18
+
+- type: technology
+  id: ModsuitAdvancedEngineeringTech
+  name: research-technology-modsuit-advanced-engineering
+  description: research-technology-modsuit-advanced-engineering-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Robotics/mod_modules.rsi
+    state: jetpack
+  discipline: Engineering
+  tier: 3
+  pointCosts:
+  - type: General
+    amount: 15000
+  technologyPrerequisites:
+  - ModsuitEngineeringTech
+  recipeUnlocks:
+  - ModsuitPlatingAtmostech
+  - ModsuitModuleJetpack
+  - ModsuitModuleRadProtection
+  - ModsuitModuleResinMister
+  - ModsuitModuleAntiGravity
+  - ModsuitModuleJetpackAdvanced
+  - ModsuitModuleMagbootsAdvanced
+  - ModsuitModuleJumpJet
+  - ModsuitModuleEmpShieldAdvanced
+  position: 18,19
+
+- type: technology
+  id: ModsuitSupplyTech
+  name: research-technology-modsuit-supply
+  description: research-technology-modsuit-supply-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Robotics/mod_modules.rsi
+    state: drill
+  discipline: Engineering
+  tier: 2
+  pointCosts:
+  - type: General
+    amount: 7500
+  technologyPrerequisites:
+  - ModularSuit
+  recipeUnlocks:
+  - ModsuitPlatingMining
+  - ModsuitModuleDrill
+  - ModsuitModuleCandelaSpool
+  - ModsuitModuleOreBag
+  - ModsuitModuleClamp
+  position: 19,20
+
+- type: technology
+  id: ModsuitSecurityTech
+  name: research-technology-modsuit-security
+  description: research-technology-modsuit-security-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Robotics/mod_modules.rsi
+    state: sechud_visor
+  discipline: Security
+  tier: 2
+  pointCosts:
+  - type: General
+    amount: 10000
+  technologyPrerequisites:
+  - ModularSuit
+  recipeUnlocks:
+  - ModsuitModuleVisorSecurity
+  - ModsuitModuleHolster
+  - ModsuitModuleMegaphone
+  - ModsuitModulePepperShoulders
+  - ModsuitModuleRestraintAssist
+  - ModsuitModuleBulwark
+  - ModsuitModuleEmpShield
+  - ModsuitModuleThermalVisor
+  - ModsuitModuleShockAbsorber
+  - ModsuitModuleCriminalCapture
+  - ModsuitModuleMagneticHarness
+  - ModsuitModuleProjectileDampener
+  - ModsuitModuleShootingAssistant
+  - ModsuitPlatingSecurity
+  - ModsuitPlatingBrigMed
+  position: 21,19
+
+- type: technology
+  id: ModsuitMedicalTech
+  name: research-technology-modsuit-medical
+  description: research-technology-modsuit-medical-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Robotics/mod_modules.rsi
+    state: health
+  discipline: Medical
+  tier: 2
+  pointCosts:
+  - type: General
+    amount: 10000
+  technologyPrerequisites:
+  - ModularSuit
+  recipeUnlocks:
+  - ModsuitPlatingParamedic
+  - ModsuitModuleHealthAnalyzer
+  - ModsuitModuleVisorMedical
+  - ModsuitModuleQuickCarry
+  - ModsuitModuleInjector
+  - ModsuitModuleDefibrillator
+  - ModsuitModulePatientTransport
+  - ModsuitModuleThreadRipper
+  - ModsuitModuleQuickCarryAdvanced
+  - ModsuitModuleNightVisor
+  position: 20,19
+
+- type: technology
+  id: ModsuitServiceTech
+  name: research-technology-modsuit-service
+  description: research-technology-modsuit-service-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Robotics/mod_modules.rsi
+    state: bikehorn
+  discipline: Service
+  tier: 2
+  pointCosts:
+  - type: General
+    amount: 5000
+  technologyPrerequisites:
+  - ModularSuit
+  recipeUnlocks:
+  - ModsuitModuleBikeHorn
+  - ModsuitModuleWaddle
+  - ModsuitModuleJanitorMister
+  - ModsuitModuleMouthhole
+  - ModsuitModuleBurgerDispenser
+  - ModsuitModulePaperDispenser
+  - ModsuitModuleBalloonBlower
+  - ModsuitModuleStamper
+  - ModsuitModuleFishingGlove
+  position: 19,19

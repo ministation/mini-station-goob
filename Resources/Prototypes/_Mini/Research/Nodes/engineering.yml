@@ -146,6 +146,7 @@
   - TurboItemRechargerCircuitboard
   - PowerCellHyper
   - PowerCellMicroreactor
+  - ModsuitCoreStandardMicroreactor
   position: 8,9
 
 - type: technology
