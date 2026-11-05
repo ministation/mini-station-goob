@@ -898,7 +898,7 @@ public sealed class GhostRoleSystem : EntitySystem
             _roleSystem.MindAddJobRole(args.Mind, args.Mind, silent:false,ghostRole.JobProto);
         }
 
-        _skillsSystem.GrantSkill(uid, new HashSet<Content.Shared._CorvaxGoob.Skills.Skills>(ghostRole.Skills), true); // CorvaxGoob-Skills
+        _skillsSystem.GrantSkillOrDefault(uid, ghostRole.Skills, true); // CorvaxGoob-Skills
 
         ghostRole.Taken = true;
         UnregisterGhostRole((uid, ghostRole));
@@ -987,9 +987,7 @@ public sealed class GhostRoleSystem : EntitySystem
 
         GhostRoleInternalCreateMindAndTransfer(args.Player, uid, mob, ghostRole);
         // Spawned mobs never go through the takeover path, so their ghost role skills must be applied here.
-        _skillsSystem.GrantSkill(mob,
-            new HashSet<Content.Shared._CorvaxGoob.Skills.Skills>(ghostRole.Skills),
-            true); // CorvaxGoob-Skills
+        _skillsSystem.GrantSkillOrDefault(mob, ghostRole.Skills, true); // CorvaxGoob-Skills
 
         if (++component.CurrentTakeovers < component.AvailableTakeovers)
         {

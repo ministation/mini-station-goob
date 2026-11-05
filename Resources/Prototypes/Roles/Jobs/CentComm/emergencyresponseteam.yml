@@ -115,6 +115,8 @@
   startingGear: ERTChaplainGear
   icon: "JobIconNanotrasen"
   supervisors: job-supervisors-centcom
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
   accessGroups:
   - AllAccess
@@ -159,20 +161,13 @@
     pocket2: CombatKnife
   storage:
     back:
-    - BoxCandle
-    - BodyBagFolded
-    - BodyBagFolded
-    - ChaplainUndeterminedBible # Goobstation
-    - Nullrod # Goobstation
-    - Cropilo # Mini: crozier
     - BaseUplinkBOBERT # Mini: chaplain holy uplink (not ADT ERT)
     - PinpointerCult # Mini: cult threat pinpointer
     - ExecutiveIDCard # Goobstation - Executive Access!
-    # Mini: NOT in ClothingBeltSecurityWebbing — its whitelist ejects Bible/Lantern/Crowbar/Flippo
-    - Bible
-    - Lantern
+    - ChaplainUndeterminedBible # Goobstation
+    - Nullrod # Goobstation
+    - Cropilo # Mini: crozier
     - CrowbarRed
-    - FlippoEngravedLighter
 
 
 - type: chameleonOutfit
@@ -195,6 +190,8 @@
   startingGear: ERTEngineerGearEVA
   icon: "JobIconNanotrasen"
   supervisors: job-supervisors-centcom
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
   accessGroups:
   - AllAccess
@@ -298,6 +295,8 @@
   startingGear: ERTSecurityGearEVA
   icon: "JobIconNanotrasen"
   supervisors: job-supervisors-centcom
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
   accessGroups:
   - AllAccess
@@ -494,6 +493,8 @@
   startingGear: ERTMedicalGearEVA
   icon: "JobIconNanotrasen"
   supervisors: job-supervisors-centcom
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
   accessGroups:
   - AllAccess
@@ -615,6 +616,8 @@
   startingGear: ERTJanitorGearEVA
   icon: "JobIconNanotrasen"
   supervisors: job-supervisors-centcom
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
   accessGroups:
   - AllAccess

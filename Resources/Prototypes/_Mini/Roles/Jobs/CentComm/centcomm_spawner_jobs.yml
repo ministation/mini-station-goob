@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: job
   id: CentralCommandAdministrator
   name: job-name-centcom-administrator
@@ -7,6 +11,8 @@
   startingGear: CentralCommandAdministratorStartingGear
   icon: JobIconNanotrasen
   supervisors: job-supervisors-centcom
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
 
 - type: startingGear
@@ -28,6 +34,8 @@
   startingGear: CentralCommandOfficerStartingGear
   icon: JobIconNanotrasen
   supervisors: job-supervisors-centcom
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
   requirements:
   - !type:DepartmentTimeRequirement
@@ -53,6 +61,8 @@
   startingGear: CentralCommandOperatorStartingGear
   icon: JobIconNanotrasen
   supervisors: job-supervisors-centcom
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
 
 - type: startingGear

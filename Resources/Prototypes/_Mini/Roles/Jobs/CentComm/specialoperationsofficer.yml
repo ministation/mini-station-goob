@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: job
   id: CentralCommandSpecialOperationsOfficer
   name: job-name-soo
@@ -7,6 +11,8 @@
   startingGear: CentcomSpecialOperationsOfficerGear
   icon: "JobIconNanotrasenRed"
   supervisors: job-supervisors-nobody
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
   accessGroups:
   - AllAccess

@@ -56,9 +56,11 @@ public sealed class CultThreatPinpointerSystem : EntitySystem
 
     private void OnActivate(Entity<CultThreatPinpointerComponent> ent, ref ActivateInWorldEvent args)
     {
-        if (args.Handled || !args.Complex)
+        if (!args.Complex)
             return;
 
+        // PinpointerSystem handles the event before us and marks it handled after toggling,
+        // so ignoring Handled is required to apply targets on the first activation.
         if (!TryComp(ent, out PinpointerComponent? pinpointer) || !pinpointer.IsActive)
             return;
 

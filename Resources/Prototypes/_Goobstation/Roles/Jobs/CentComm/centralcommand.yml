@@ -277,6 +277,8 @@
   startingGear: OuterCommanderGear
   icon: "JobIconNanotrasen"
   supervisors: job-supervisors-commander
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
   requirements:
     - !type:AgeRequirement
