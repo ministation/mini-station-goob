@@ -55,14 +55,7 @@
   components:
   - type: Sprite
     sprite: Structures/Wallmounts/walldispenser.rsi
-    layers:
-    - state: cleanerdispenser
-    - state: fill-1
-      map: [ "enum.SolutionContainerLayers.Fill" ]
-      visible: false
-  - type: SolutionContainerVisuals
-    maxFillLevels: 5
-    fillBaseName: fill-
+    state: cleanerdispenser
   - type: SolutionContainerManager
     solutions:
       tank:
@@ -78,14 +71,8 @@
   description: Wallmount Fuel dispenser.
   components:
   - type: Sprite
-    layers:
-    - state: fueldispenser
-    - state: fill-1
-      map: ["enum.SolutionContainerLayers.Fill"]
-      visible: false
-  - type: SolutionContainerVisuals
-    maxFillLevels: 5
-    fillBaseName: fill-
+    sprite: Structures/Wallmounts/walldispenser.rsi
+    state: fueldispenser
   - type: SolutionContainerManager
     solutions:
       tank:
