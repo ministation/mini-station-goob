@@ -203,7 +203,7 @@
   - ModsuitModuleMagbootsAdvanced
   - ModsuitModuleJumpJet
   - ModsuitModuleEmpShieldAdvanced
-  position: 17,18
+  position: 18,19
 
 - type: technology
   id: ModsuitSupplyTech
@@ -225,7 +225,7 @@
   - ModsuitModuleCandelaSpool
   - ModsuitModuleOreBag
   - ModsuitModuleClamp
-  position: 17,19
+  position: 19,20
 
 - type: technology
   id: ModsuitSecurityTech
