@@ -262,7 +262,8 @@ namespace Content.Server.Bible
                 _transform.SetParent(familiar, uid);
             }
             component.AlreadySummoned = true;
-            _actionsSystem.RemoveAction(user, component.SummonActionEntity);
+            // The action only exists while the bible provides it; summoning via the verb may have none attached.
+            _actionsSystem.RemoveAction(component.SummonActionEntity);
         }
     }
 }
