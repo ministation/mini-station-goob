@@ -61,7 +61,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      1500: Dead
+      1650: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -102,14 +102,14 @@
     selector: !type:NestedMegafaunaSelector
       id: FrostMiner
   - type: Anger
-    totalHp: 1500
+    totalHp: 1650
   - type: AngerPlayerScaling
     angerScale: 1.2
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0: 1
-      375: 2 # TG enrages at 25% health
+      412: 2 # TG enrages at 25% health
   - type: FrostMinerEnrage
   - type: MegafaunaBlink
   - type: MegafaunaRejuvenate

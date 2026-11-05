@@ -64,7 +64,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      700: Dead
+      800: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -99,7 +99,7 @@
     selector: !type:NestedMegafaunaSelector
       id: Legion
   - type: Anger
-    totalHp: 700
+    totalHp: 800
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2

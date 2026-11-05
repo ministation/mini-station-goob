@@ -54,7 +54,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2700: Dead
+      2850: Dead
   - type: Tag
     tags:
     - CannotSuicide
@@ -70,7 +70,7 @@
     - ActionHierophantBlinkSlam
   - type: Fauna
   - type: Anger
-    totalHp: 2700
+    totalHp: 2850
   - type: Aggressive
     forgiveRange: 25
   - type: GPS
@@ -79,8 +79,15 @@
   - type: MobPhases
     phaseThresholds:
       0:    1
-      1350: 2 # below 50% HP: enraged crosses and blink spam
-      2160: 3
+      1425: 2 # below 50% HP: enraged crosses and blink spam
+      2280: 3
+  - type: BossEnrage
+    healthFraction: 0.5
+    speedMultiplier: 1.2
+    attackRateMultiplier: 1.15
+    actionDelay: 0.35
+    sound:
+      path: /Audio/Effects/demon_attack1.ogg
   - type: PreventChasmFalling
     deleteOnUse: false
   - type: MegafaunaStage

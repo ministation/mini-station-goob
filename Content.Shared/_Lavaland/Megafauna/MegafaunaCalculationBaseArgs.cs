@@ -1,4 +1,5 @@
-﻿using Robust.Shared.Prototypes;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Shared._Lavaland.Megafauna;
 
@@ -10,4 +11,4 @@ public record struct MegafaunaCalculationBaseArgs(
     IEntityManager EntityManager,
     IPrototypeManager PrototypeMan,
     ISawmill Logger,
-    System.Random Random);
+    IRobustRandom Random);

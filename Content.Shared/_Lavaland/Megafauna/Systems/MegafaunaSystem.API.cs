@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+using System.Numerics;
+using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Megafauna.Events;
 using Content.Shared.Actions;
@@ -45,10 +46,61 @@ public sealed partial class MegafaunaSystem
         }
 
         var netAction = GetNetEntity(action);
-        var netTarget = HasComp<EntityTargetActionComponent>(action) ? GetNetEntity(targetingComp?.TargetEnt) : null;
-        var netCoords = HasComp<WorldTargetActionComponent>(action) ? GetNetCoordinates(targetingComp?.TargetCoords) : null;
+
+        // A plan can leave the targeting out (component gone, target died between selectors).
+        // Passing null coordinates makes the action silently do nothing, so fall back to the boss
+        // or its nearest aggressor: an attack in the wrong direction is still a working attack.
+        NetEntity? netTarget = null;
+        if (HasComp<EntityTargetActionComponent>(action))
+        {
+            var target = targetingComp?.TargetEnt;
+            if (target is not { } valid || TerminatingOrDeleted(valid))
+                target = FindFallbackTarget(boss);
+            netTarget = GetNetEntity(target);
+        }
+
+        NetCoordinates? netCoords = null;
+        if (HasComp<WorldTargetActionComponent>(action))
+        {
+            var coords = targetingComp?.TargetCoords;
+            if (coords is not { } validCoords || !validCoords.IsValid(EntityManager))
+                coords = Transform(FindFallbackTarget(boss)).Coordinates;
+            netCoords = GetNetCoordinates(coords);
+        }
 
         return new RequestPerformActionEvent(netAction, netTarget, netCoords);
+    }
+
+    /// <summary>
+    /// Nearest living aggressor of the boss, or the boss itself when nobody is fighting it.
+    /// Keeps the AI actions aimed at something valid instead of a null target.
+    /// </summary>
+    private EntityUid FindFallbackTarget(EntityUid boss)
+    {
+        if (!TryComp<AggressiveComponent>(boss, out var aggressive)
+            || !TryComp<TransformComponent>(boss, out var bossXform))
+            return boss;
+
+        var bossPos = _xform.GetWorldPosition(bossXform);
+        var best = boss;
+        var bestDistance = float.MaxValue;
+
+        foreach (var aggressor in aggressive.Aggressors)
+        {
+            if (TerminatingOrDeleted(aggressor)
+                || !TryComp(aggressor, out TransformComponent? xform)
+                || xform.MapID != bossXform.MapID)
+                continue;
+
+            var distance = (_xform.GetWorldPosition(xform) - bossPos).LengthSquared();
+            if (distance >= bestDistance)
+                continue;
+
+            bestDistance = distance;
+            best = aggressor;
+        }
+
+        return best;
     }
 
     public void PickRandomPosition(MegafaunaCalculationBaseArgs args, float radius)

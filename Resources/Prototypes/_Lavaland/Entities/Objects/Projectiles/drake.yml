@@ -10,7 +10,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 20
+        Heat: 22
   - type: FlameProjectile
     fireStacks: 3
   - type: Sprite

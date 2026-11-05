@@ -60,7 +60,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2800: Dead
+      3000: Dead
   # TG butcher results. TG also yields 5 sinew; the repo has no sinew material,
   # so those 5 are folded into the bone stack.
   - type: Butcherable
@@ -110,14 +110,21 @@
     selector: !type:NestedMegafaunaSelector
       id: AshDrake
   - type: Anger
-    totalHp: 2800
+    totalHp: 3000
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0: 1
-      1400: 2 # below half health the drake enrages and unlocks the firestorm
+      1500: 2 # below half health the drake enrages and unlocks the firestorm
+  - type: BossEnrage
+    healthFraction: 0.5
+    speedMultiplier: 1.25
+    attackRateMultiplier: 1.15
+    actionDelay: 0.55
+    sound:
+      path: /Audio/Effects/demon_attack1.ogg
   - type: MegafaunaBlink
     spawnOnTarget: LavalandDrakeSlamBurst
     spawnOnUsed: LavalandDrakeSlamBurst
