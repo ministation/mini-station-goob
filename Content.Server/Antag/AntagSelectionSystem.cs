@@ -406,7 +406,19 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
             // Copy before iterating: MakeAntag may update PreSelectedSessions (UserId rematch).
             foreach (var session in set.ToArray())
             {
-                TryMakeAntag(ent, session, def);
+                // Mini: the pre-selection stores the session object, which goes stale if the player
+                // reconnects before a delayed rule starts. Assign to the live session instead, and
+                // drop the pre-selection if the player did not come back.
+                if (!_playerManager.TryGetSessionById(session.UserId, out var current))
+                {
+                    set.Remove(session);
+                    continue;
+                }
+
+                TryMakeAntag(ent, current, def);
+
+                if (current != session)
+                    set.Remove(session);
             }
         }
 
