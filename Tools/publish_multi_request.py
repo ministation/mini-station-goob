@@ -20,8 +20,10 @@ FORK_ID = os.environ["FORK_ID"].strip()
 
 RELEASE_DIR = "release"
 
-# Аплоад упирается в скорость одного TCP-соединения, а не в CPU раннера.
-UPLOAD_THREADS = 4
+# CDN держит транзакцию SQLite, пока принимает файл, поэтому параллельные
+# заливки ловят "database is locked" и падают с HTTP 500. Льём по одному:
+# медленнее на пару минут, зато без случайных падений паблиша.
+UPLOAD_THREADS = 1
 
 #
 # CONFIGURATION PARAMETERS
