@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Server.Administration.Managers;
 using Content.Server.GameTicking;
 using Content.Server.Shuttles.Systems;
@@ -24,6 +28,7 @@ public sealed class TTStationHandleJobSystem : EntitySystem
 {
     private static readonly EntProtoId TypanStationPrototype = "StandardTypanStation";
     private static readonly EntProtoId CentCommStationPrototype = "NanotrasenCentralCommand";
+    private static readonly EntProtoId LavalandTribeStationPrototype = "LavalandTribeStation";
 
     // Preferred spawn warps for CentComm staff, in order. All roles must spawn in one place.
     private static readonly string[] CentCommSpawnWarpPreference = new[] { "CentCom Office", "CentCom" };
@@ -89,12 +94,15 @@ public sealed class TTStationHandleJobSystem : EntitySystem
         MetaData(station).EntityPrototype?.ID == CentCommStationPrototype.Id;
 
     /// <summary>
-    /// Playable NT station for station war (excludes Typan and CentComm).
+    /// Playable NT station for station war (excludes Typan, CentComm and the Lavaland ash walker tribe).
     /// </summary>
     public bool IsWarNanotrasenStation(EntityUid station) =>
         HasComp<StationDataComponent>(station)
         && !IsTypanFactionStation(station)
-        && !IsCentCommFactionStation(station);
+        && !IsCentCommFactionStation(station)
+        // The tribe station exists only to give the AshWalker job its slots, and its late-join marker
+        // sits at the ash walker den on Lavaland. Anything looking for "the NT station" must not find it.
+        && MetaData(station).EntityPrototype?.ID != LavalandTribeStationPrototype.Id;
 
     /// <summary>
     /// Returns true if the job belongs to a Typan faction station.
