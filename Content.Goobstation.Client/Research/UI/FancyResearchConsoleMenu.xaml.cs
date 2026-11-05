@@ -12,10 +12,10 @@
 using System.Linq;
 using System.Numerics;
 using Content.Client._Mini.Research.UI;
+using Content.Client.Research;
 using Content.Client.UserInterface.Controls;
 using Content.Goobstation.Common.Research;
 using Content.Goobstation.Shared.Research;
-using Content.Goobstation.UIKit.UserInterface.Controls.NodeTree;
 using Content.Shared._Mini.Research;
 using Content.Shared._Mini.Research.Prototypes;
 using Content.Shared.Access.Systems;
@@ -28,6 +28,7 @@ using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
+using Robust.Shared.Input;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -48,108 +49,126 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private ILocalizationManager _loc = default!; // Orion
 
+    private readonly ResearchSystem _research;
     private readonly SpriteSystem _sprite;
     private readonly AccessReaderSystem _accessReader;
 
-    private EntityUid Entity;
-    private ProtoId<TechnologyPrototype>? _currentTech;
+    /// <summary>
+    /// Console entity
+    /// </summary>
+    private EntityUid Entity; // Orion-Edit: Was public
 
-    private readonly Dictionary<string, NodeTreeButton> _nodes = new();
-    private Dictionary<string, ResearchAvailability> _researches = new();
+    /// <summary>
+    /// Currently selected tech
+    /// Exsists for better UI refreshing
+    /// </summary>
+    private ProtoId<TechnologyPrototype>? _currentTech; // Orion-Edit
+
+    /// <summary>
+    /// All technologies and their availablity
+    /// </summary>
+    public Dictionary<string, ResearchAvailability> List = new();
+
+    /// <summary>
+    /// Cached research points
+    /// </summary>
+//    public int Points = 0; // Orion-Edit
+
+    /// <summary>
+    /// Is tech currently being dragged
+    /// </summary>
+    private bool _draggin;
+
+    /// <summary>
+    /// Global position that all tech relates to.
+    /// For dragging mostly
+    /// </summary>
+    private Vector2 _position = new(45, 250);
+    private float _zoom = 1f;
+    private const float MinZoom = 0.45f;
+    private const float MaxZoom = 2.25f;
+    private const float ZoomSpeed = 0.1f;
+    /// <summary>UI pixels between adjacent tech grid cell origins at zoom 1.</summary>
+    private const float CellSize = 56f;
+    private const float NodeBaseSize = 52f;
+    private const float FitPadding = 24f;
+    /// <summary>
+    /// How far past the viewport edge content may travel (fraction of view size).
+    /// 0.5 lets edge nodes reach the viewport center.
+    /// </summary>
+    private const float PanOverscrollFraction = 0.55f;
+    private bool _pendingFit;
+    private Vector2 _contentMin = Vector2.Zero;
+    private Vector2 _contentMax = Vector2.Zero;
 
     public FancyResearchConsoleMenu()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
+        _research = _entity.System<ResearchSystem>();
         _sprite = _entity.System<SpriteSystem>();
         _accessReader = _entity.System<AccessReaderSystem>();
 
         ServerButton.OnPressed += _ => OnServerButtonPressed?.Invoke();
         JournalButton.OnPressed += _ => ToggleJournalWindow(); // Orion
-        RecenterButton.OnPressed += _ => TechTree.Recenter();
+        DragContainer.OnKeyBindDown += OnKeybindDown;
+        DragContainer.OnKeyBindUp += OnKeybindUp;
+        RecenterButton.OnPressed += _ => Recenter();
+
+        UpdatePanels(List);
+        _pendingFit = true;
+        Recenter();
     }
 
     public void SetEntity(EntityUid entity)
-        => Entity = entity;
-
-    public void UpdateState(ResearchConsoleBoundInterfaceState state, bool force = false)
     {
-        if (force || !SameResearches(state.Researches))
-            UpdatePanels(state.Researches, force);
-
-        UpdateInformationPanel(state);
+        Entity = entity;
     }
 
-    private bool SameResearches(Dictionary<string, ResearchAvailability> researches)
+    public void UpdatePanels(Dictionary<string, ResearchAvailability> dict)
     {
-        return _researches.Count == researches.Count
-            && _researches.All(r => researches.TryGetValue(r.Key, out var availability) && availability == r.Value);
-    }
+        DragContainer.RemoveAllChildren();
+        List = dict;
 
-    private void UpdatePanels(Dictionary<string, ResearchAvailability> researches, bool rebuild)
-    {
-        _researches = researches;
-
-        if (rebuild || !_nodes.Keys.ToHashSet().SetEquals(researches.Keys))
-            BuildTree();
-
-        foreach (var (id, availability) in researches)
+        foreach (var tech in List)
         {
-            if (_nodes.TryGetValue(id, out var node))
-                node.State = ToNodeState(availability);
+            var proto = _prototype.Index<TechnologyPrototype>(tech.Key);
+
+            var control = new FancyResearchConsoleItem(proto, _sprite, _prototype, tech.Value); // Orion-Edit: _prototype
+            DragContainer.AddChild(control);
+            control.SetScale(_zoom); // Orion
+
+            // Set position for all tech, relating to _position
+            LayoutContainer.SetPosition(control, _position + proto.Position * CellSize * _zoom);
+            control.SelectAction += SelectTech;
+
+            if (tech.Key == _currentTech) // Orion-Edit
+                SelectTech(proto, tech.Value);
         }
 
-        if (_currentTech is { } current
-            && researches.TryGetValue(current, out var currentAvailability)
-            && _prototype.TryIndex(current, out var currentProto))
-            SelectTech(currentProto, currentAvailability);
+        // Mini-start: do NOT call FitVisibleTechnologies() here on every UpdatePanels.
+        // Upstream/Goob "refit on visible set change" resets zoom/pan after each unlock.
+        // Fit only on open (_pendingFit) / Recenter button / first Resized.
+        var items = DragContainer.Children.OfType<FancyResearchConsoleItem>().ToList();
+        if (items.Count > 0)
+            CacheContentBounds(items);
+        ClampPan();
+        ApplyLayoutPositions();
+        // Mini-end
     }
 
-    private void BuildTree()
+    // Orion-Start
+    private bool ShouldShowDisciplineProgress(ResearchConsoleBoundInterfaceState state, TechDisciplinePrototype discipline)
     {
-        TechTree.Clear();
-        _nodes.Clear();
-
-        foreach (var id in _researches.Keys)
-        {
-            if (!_prototype.TryIndex<TechnologyPrototype>(id, out var proto))
-                continue;
-
-            var node = new NodeTreeButton();
-            node.Icon.Texture = _sprite.Frame0(proto.Icon);
-            node.OnPressed += _ => SelectTech(proto, _researches.GetValueOrDefault(proto.ID, ResearchAvailability.Unavailable));
-            TechTree.AddNode(node, (Vector2) proto.Position);
-            _nodes[id] = node;
-        }
-
-        foreach (var id in _researches.Keys)
-        {
-            if (!_nodes.TryGetValue(id, out var node) || !_prototype.TryIndex<TechnologyPrototype>(id, out var proto))
-                continue;
-
-            foreach (var prereq in proto.TechnologyPrerequisites)
-            {
-                if (_nodes.TryGetValue(prereq, out var prereqNode))
-                    TechTree.AddEdge(prereqNode, node);
-            }
-        }
-
-        TechTree.Recenter();
+        return state.VisibleTechnologies.Any(technologyId => _prototype.Index(technologyId).Discipline == discipline.ID) ||
+               state.AvailableTechnologies.Any(technologyId => _prototype.Index(technologyId).Discipline == discipline.ID) ||
+               state.ResearchedTechnologies.Any(technologyId => _prototype.Index(technologyId).Discipline == discipline.ID);
     }
+    // Orion-End
 
-    private static NodeTreeState ToNodeState(ResearchAvailability availability)
+    public void UpdateInformationPanel(ResearchConsoleBoundInterfaceState state) // Orion-Edit
     {
-        return availability switch
-        {
-            ResearchAvailability.Researched => NodeTreeState.Unlocked,
-            ResearchAvailability.Available => NodeTreeState.Available,
-            ResearchAvailability.PrereqsMet => NodeTreeState.Unaffordable,
-            _ => NodeTreeState.Locked,
-        };
-    }
-
-    private void UpdateInformationPanel(ResearchConsoleBoundInterfaceState state)
-    {
+//        Points = points; // Orion-Edit
         _lastState = state; // Orion
 
         var amountMsg = new FormattedMessage();
@@ -172,49 +191,48 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
 
         UpdateJournalWindow(state); // Orion
 
-        TierDisplayContainer.RemoveAllChildren();
         if (!_entity.TryGetComponent(Entity, out TechnologyDatabaseComponent? database))
             return;
 
+        TierDisplayContainer.RemoveAllChildren();
         foreach (var disciplineId in database.SupportedDisciplines)
         {
-            var discipline = _prototype.Index(disciplineId);
+            var discipline = _prototype.Index(disciplineId); // Orion-Edit
 
             // Orion-Start
             if (!ShouldShowDisciplineProgress(state, discipline))
                 continue;
             // Orion-End
 
-            var tier = SharedResearchSystemExtensions.GetTierCompletionPercentage(database, discipline, _prototype);
+            var tier = SharedResearchSystemExtensions.GetTierCompletionPercentage(database, discipline, _prototype); // Orion-Edit
 
+            // i'm building the small-ass control here to spare me some mild annoyance in making a new file
+            var texture = new TextureRect
+            {
+                TextureScale = new Vector2(2, 2),
+                VerticalAlignment = VAlignment.Center,
+            };
             var label = new RichTextLabel();
+            texture.Texture = _sprite.Frame0(discipline.Icon);
             label.SetMessage(Loc.GetString("research-console-tier-percentage", ("perc", tier)));
 
-            TierDisplayContainer.AddChild(new BoxContainer
+            var control = new BoxContainer
             {
                 Children =
                 {
-                    new TextureRect
-                    {
-                        Texture = _sprite.Frame0(discipline.Icon),
-                        TextureScale = new Vector2(2, 2),
-                        VerticalAlignment = VAlignment.Center,
-                    },
+                    texture,
                     label,
-                    new Control { MinWidth = 10 },
+                    new Control
+                    {
+                        MinWidth = 10,
+                    },
                 },
-            });
+            };
+            TierDisplayContainer.AddChild(control);
         }
     }
 
     // Orion-Start
-    private bool ShouldShowDisciplineProgress(ResearchConsoleBoundInterfaceState state, TechDisciplinePrototype discipline)
-    {
-        return state.VisibleTechnologies.Any(technologyId => _prototype.Index(technologyId).Discipline == discipline.ID) ||
-               state.AvailableTechnologies.Any(technologyId => _prototype.Index(technologyId).Discipline == discipline.ID) ||
-               state.ResearchedTechnologies.Any(technologyId => _prototype.Index(technologyId).Discipline == discipline.ID);
-    }
-
     private string GetLocalizedPointType(string type)
     {
         var key = $"research-point-type-{type.ToLowerInvariant()}";
@@ -437,38 +455,240 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
     }
     // Orion-End
 
-    private void SelectTech(TechnologyPrototype proto, ResearchAvailability availability)
+    #region Drag handle
+    protected override void MouseMove(GUIMouseMoveEventArgs args)
     {
-        InfoContainer.RemoveAllChildren();
-        if (_player.LocalEntity is not { } user)
+        base.MouseMove(args);
+
+        if (!_draggin)
             return;
 
-        if (_currentTech is { } previous && _nodes.TryGetValue(previous, out var previousNode))
-            previousNode.Selected = false;
+        _position += args.Relative;
+        ClampPan();
+        ApplyLayoutPositions();
+    }
 
+    protected override void MouseWheel(GUIMouseWheelEventArgs args)
+    {
+        base.MouseWheel(args);
+
+        var oldZoom = _zoom;
+
+        if (args.Delta.Y > 0)
+            _zoom += ZoomSpeed;
+        else
+            _zoom -= ZoomSpeed;
+
+        _zoom = Math.Clamp(_zoom, MinZoom, MaxZoom);
+
+        if (MathHelper.CloseTo(oldZoom, _zoom))
+            return;
+
+        ClampPan();
+        ApplyLayoutPositions();
+        args.Handle();
+    }
+
+    /// <summary>
+    /// Raised when LMB is pressed at <see cref="DragContainer"/>
+    /// </summary>
+    private void OnKeybindDown(GUIBoundKeyEventArgs args)
+    {
+        if (args.Function == EngineKeyFunctions.Use)
+            _draggin = true;
+    }
+
+    /// <summary>
+    /// Raised when LMB is unpressed at <see cref="DragContainer"/>
+    /// </summary>
+    private void OnKeybindUp(GUIBoundKeyEventArgs args)
+    {
+        if (args.Function == EngineKeyFunctions.Use)
+            _draggin = false;
+    }
+
+    protected override DragMode GetDragModeFor(Vector2 relativeMousePos)
+    {
+        return _draggin ? DragMode.None : base.GetDragModeFor(relativeMousePos);
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Selects a tech prototype and opens info panel
+    /// </summary>
+    /// <param name="proto">Tech proto</param>
+    /// <param name="availability">Tech availablity</param>
+    private void SelectTech(TechnologyPrototype proto, ResearchAvailability availability) // Orion-Edit: Was public
+    {
+        InfoContainer.RemoveAllChildren();
+        if (!_player.LocalEntity.HasValue)
+            return;
+
+        // Orion-Edit-Start
         _currentTech = proto.ID;
-        if (_nodes.TryGetValue(proto.ID, out var node))
-            node.Selected = true;
-
-        // Orion-Start
+        var lockReason = GetLockReason(proto);
         _entity.TryGetComponent(Entity, out TechnologyDatabaseComponent? database);
-        var lockReason = database == null
-            ? ResearchTechnologyLockReason.None
-            : Content.Shared.Research.Systems.SharedResearchSystem.GetTechnologyLockReason(database, proto);
-        var control = new FancyTechnologyInfoPanel(proto, _accessReader.IsAllowed(user, Entity), availability, lockReason, _sprite, _prototype, database);
-        // Orion-End
+        var control = new FancyTechnologyInfoPanel(proto, _accessReader.IsAllowed(_player.LocalEntity.Value, Entity), availability, lockReason, _sprite, _prototype, database);
+        // Orion-Edit-End
         control.BuyAction += args => OnTechnologyCardPressed?.Invoke(args.ID);
         InfoContainer.AddChild(control);
+    }
+
+    // Orion-Start
+    private ResearchTechnologyLockReason GetLockReason(TechnologyPrototype proto)
+    {
+        return !_entity.TryGetComponent(Entity, out TechnologyDatabaseComponent? database)
+            ? ResearchTechnologyLockReason.None
+            : Content.Shared.Research.Systems.SharedResearchSystem.GetTechnologyLockReason(database, proto);
+    }
+    // Orion-End
+
+    /// <summary>
+    /// Centers and zooms so all currently visible technologies fit in the drag viewport.
+    /// </summary>
+    private void FitVisibleTechnologies()
+    {
+        var items = DragContainer.Children.OfType<FancyResearchConsoleItem>().ToList();
+        if (items.Count == 0)
+            return;
+
+        CacheContentBounds(items);
+
+        var viewSize = DragContainer.PixelSize;
+        if (viewSize.X <= 1 || viewSize.Y <= 1)
+        {
+            _pendingFit = true;
+            return;
+        }
+
+        var contentSize = (_contentMax - _contentMin) * CellSize + new Vector2(NodeBaseSize, NodeBaseSize);
+        var avail = viewSize - new Vector2(FitPadding * 2f, FitPadding * 2f);
+        if (avail.X <= 1 || avail.Y <= 1)
+        {
+            _pendingFit = true;
+            return;
+        }
+
+        var zoomX = contentSize.X > 0 ? avail.X / contentSize.X : MaxZoom;
+        var zoomY = contentSize.Y > 0 ? avail.Y / contentSize.Y : MaxZoom;
+        _zoom = Math.Clamp(MathF.Min(zoomX, zoomY), MinZoom, MaxZoom);
+
+        var contentCenter = (_contentMin + _contentMax) * 0.5f * CellSize * _zoom;
+        _position = viewSize * 0.5f - contentCenter - new Vector2(NodeBaseSize, NodeBaseSize) * 0.5f * _zoom;
+        ClampPan();
+        ApplyLayoutPositions();
+        _pendingFit = false;
+    }
+
+    private void CacheContentBounds(IReadOnlyList<FancyResearchConsoleItem> items)
+    {
+        var min = new Vector2(float.MaxValue, float.MaxValue);
+        var max = new Vector2(float.MinValue, float.MinValue);
+        foreach (var item in items)
+        {
+            var p = item.Prototype.Position;
+            min = Vector2.Min(min, p);
+            max = Vector2.Max(max, p);
+        }
+
+        _contentMin = min;
+        _contentMax = max;
+    }
+
+    private void ApplyLayoutPositions()
+    {
+        foreach (var child in DragContainer.Children)
+        {
+            if (child is not FancyResearchConsoleItem research)
+                continue;
+
+            LayoutContainer.SetPosition(child, _position + research.Prototype.Position * CellSize * _zoom);
+            research.SetScale(_zoom);
+        }
+    }
+
+    /// <summary>
+    /// Keeps the techweb from being panned past its content edges.
+    /// Always allows free pan (with overscroll); centering is only done by Fit/Recenter.
+    /// </summary>
+    private void ClampPan()
+    {
+        var viewSize = DragContainer.PixelSize;
+        if (viewSize.X <= 1 || viewSize.Y <= 1)
+            return;
+
+        if (_contentMax.X < _contentMin.X || _contentMax.Y < _contentMin.Y)
+        {
+            var items = DragContainer.Children.OfType<FancyResearchConsoleItem>().ToList();
+            if (items.Count == 0)
+                return;
+            CacheContentBounds(items);
+        }
+
+        var node = new Vector2(NodeBaseSize, NodeBaseSize) * _zoom;
+        // Overscroll so edge nodes can reach toward the viewport center even when zoomed out.
+        var pad = viewSize * PanOverscrollFraction;
+
+        var contentMinPx = _position + _contentMin * CellSize * _zoom;
+        var contentMaxPx = _position + _contentMax * CellSize * _zoom + node;
+
+        if (contentMinPx.X > pad.X)
+            _position.X += pad.X - contentMinPx.X;
+        else if (contentMaxPx.X < viewSize.X - pad.X)
+            _position.X += viewSize.X - pad.X - contentMaxPx.X;
+
+        contentMinPx = _position + _contentMin * CellSize * _zoom;
+        contentMaxPx = _position + _contentMax * CellSize * _zoom + node;
+
+        if (contentMinPx.Y > pad.Y)
+            _position.Y += pad.Y - contentMinPx.Y;
+        else if (contentMaxPx.Y < viewSize.Y - pad.Y)
+            _position.Y += viewSize.Y - pad.Y - contentMaxPx.Y;
+    }
+
+    /// <summary>
+    /// Fits the visible techweb into the viewport (also bound to Recenter button).
+    /// </summary>
+    private void Recenter()
+    {
+        FitVisibleTechnologies();
+        if (_pendingFit)
+            _position = new Vector2(45, 250);
+    }
+
+    protected override void Resized()
+    {
+        base.Resized();
+        // Mini-start: only auto-fit while pending initial layout; never reset zoom on every resize.
+        if (_pendingFit)
+        {
+            FitVisibleTechnologies();
+            return;
+        }
+
+        if (DragContainer.ChildCount > 0)
+        {
+            ClampPan();
+            ApplyLayoutPositions();
+        }
+        // Mini-end
     }
 
     public override void Close()
     {
         base.Close();
 
+        DragContainer.RemoveAllChildren();
         InfoContainer.RemoveAllChildren();
         // Orion-Start
         _journalWindow?.Close();
         _journalWindow = null;
         // Orion-End
+    }
+
+    private sealed partial class DisciplineButton(TechDisciplinePrototype proto) : Button
+    {
+        public TechDisciplinePrototype Proto = proto;
     }
 }

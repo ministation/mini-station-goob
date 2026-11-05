@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <controls:FancyWindow xmlns="https://spacestation14.io"
                       xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls;assembly=Content.Client"
-                      xmlns:nodeTree="clr-namespace:Content.Goobstation.UIKit.UserInterface.Controls.NodeTree;assembly=Content.Goobstation.UIKit"
+                      xmlns:goob="clr-namespace:Content.Goobstation.Client.Research.UI"
                       Title="{Loc 'research-console-menu-title'}"
                       SetSize="1024 640"
                       MinSize="800 500">
@@ -63,9 +63,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 <PanelContainer.PanelOverride>
                     <gfx:StyleBoxFlat BackgroundColor="#14181F" BorderThickness="1" BorderColor="#2A3340"/>
                 </PanelContainer.PanelOverride>
-                <nodeTree:NodeTreeView Name="TechTree"
-                                       HorizontalExpand="True"
-                                       VerticalExpand="True"/>
+                <goob:ResearchesContainerPanel
+                    HorizontalExpand="True"
+                    VerticalExpand="True"
+                    Name="DragContainer"
+                    MouseFilter="Pass"
+                    RectClipContent="True"/>
             </PanelContainer>
 
             <PanelContainer SizeFlagsStretchRatio="1"
