@@ -3,14 +3,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: entity
-  # Mini: FloorWaterEntity теперь вешает угловое сглаживание под новый спрайт, аквамариновой воде оно не подходит.
-  parent: BaseFloorWaterEntity
+  # Mini: лазурная вода теперь на базе обычной (FloorWaterEntity) — тот же набор corner-стейтов
+  # и сглаживание, только спрайт перекрашен в лазурный. RSI собирается скриптом
+  # Tools/generate_azure_water_rsi.py из Tiles/TileEntities/liquid-water.rsi.
+  parent: FloorWaterEntity
   id: FloorAzureWaterEntity
   name: azure water
   description: A real thirst quencher. Corals are not included!
   components:
   - type: Sprite
-    sprite: _CorvaxGoob/Tiles/Planet/azure_water.rsi
-    drawdepth: BelowFloor
-    layers:
-      - state: shoreline_azure_water
+    sprite: _Mini/Tiles/TileEntities/liquid-azure-water.rsi
+  - type: IconSmooth
+    key: azure_water

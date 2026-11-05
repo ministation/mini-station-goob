@@ -84,7 +84,8 @@
     convertTo: FloorCosmicDecay
 
 # Mini: спрайт и угловое сглаживание из апстрима SS14 (CC-BY-SA-4.0, vladimir.s).
-# Сглаживание живёт здесь, а не в BaseFloorWaterEntity, потому что у FloorAzureWaterEntity (Corvax) своя RSI без угловых состояний.
+# Лазурная вода (FloorAzureWaterEntity) наследует это сглаживание: у неё тот же набор corner-стейтов,
+# только спрайт перекрашен — _Mini/Tiles/TileEntities/liquid-azure-water.rsi (Tools/generate_azure_water_rsi.py).
 # ВАЖНО: стейты water1<->water4 и water3<->water6 в liquid-water.rsi переставлены относительно апстрима master —
 # они приведены к дорефакторной нумерации под наш (старый) IconSmooth. Подробности: docs/_Mini/liquid-smoothing-port.md
 - type: entity
