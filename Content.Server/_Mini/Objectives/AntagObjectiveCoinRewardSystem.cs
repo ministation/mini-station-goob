@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Server._Mini.AntagTokens;
 using Content.Server.Popups;
 using Content.Server.Roles;
@@ -26,6 +30,13 @@ public sealed class AntagObjectiveCoinRewardSystem : EntitySystem
 
     private float _accumulator;
 
+    /// <summary>
+    /// Minds whose objective set was already seen in progress. A set that is complete on the
+    /// first look (for example the ash walker nest protection) was never completed by the
+    /// player, so it must not pay out.
+    /// </summary>
+    private readonly HashSet<EntityUid> _seenIncomplete = new();
+
     public override void Initialize()
     {
         base.Initialize();
@@ -36,6 +47,7 @@ public sealed class AntagObjectiveCoinRewardSystem : EntitySystem
     private void OnRoundRestart(RoundRestartCleanupEvent _)
     {
         _accumulator = 0f;
+        _seenIncomplete.Clear();
     }
 
     public override void Update(float frameTime)
@@ -61,6 +73,12 @@ public sealed class AntagObjectiveCoinRewardSystem : EntitySystem
                 continue;
 
             if (!AllObjectivesComplete(mindId, mind))
+            {
+                _seenIncomplete.Add(mindId);
+                continue;
+            }
+
+            if (!_seenIncomplete.Contains(mindId))
                 continue;
 
             TryGrantReward(mindId, mind);

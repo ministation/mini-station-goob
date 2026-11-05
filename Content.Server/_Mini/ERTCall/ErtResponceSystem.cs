@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 
+using Content.Server.Administration.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.Humanoid.Components;
 using Content.Server.Humanoid.Systems;
@@ -24,8 +25,10 @@ using Content.Shared.Mind.Components;
 using Content.Shared.GameTicking;
 using Content.Server.Chat.Managers;
 using Content.Server.AlertLevel;
+using Content.Shared.Administration;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
+using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using Content.Shared.Pinpointer;
 using Content.Server._Mini.Pinpointer.Systems;
@@ -61,6 +64,7 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
     [Dependency] private readonly MapSystem _mapSystem = default!;
     [Dependency] private readonly MapLoaderSystem _mapLoaderSystem = default!;
     [Dependency] private readonly AlertLevelSystem _alertLevelSystem = default!;
+    [Dependency] private readonly IAdminManager _adminManager = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedPinpointerSystem _pinpointerSystem = default!;
@@ -103,8 +107,20 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
+    /// <summary>
+    /// Панель ertui общается обычными сетевыми событиями, поэтому клиенту доверять нельзя:
+    /// каждый обработчик проверяет тот же флаг, что и команда ertui.
+    /// </summary>
+    private bool IsErtAdmin(ICommonSession session)
+    {
+        return _adminManager.HasAdminFlag(session, AdminFlags.Mapping);
+    }
+
     private void OnRequestErtAdminState(RequestErtAdminStateMessage msg, EntitySessionEventArgs args)
     {
+        if (!IsErtAdmin(args.SenderSession))
+            return;
+
         var entries = new List<ErtAdminEntry>();
 
         foreach (var (teamId, data) in _expectedTeams)
@@ -129,6 +145,9 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
 
     private void OnAdminModifyErtEntry(AdminModifyErtEntryMessage msg, EntitySessionEventArgs args)
     {
+        if (!IsErtAdmin(args.SenderSession))
+            return;
+
         var key = new ProtoId<ErtTeamPrototype>(msg.ProtoId);
 
         if (!_expectedTeams.TryGetValue(key, out var data))
@@ -149,6 +168,9 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
 
     private void OnAdminSetPoints(AdminSetPointsMessage msg, EntitySessionEventArgs args)
     {
+        if (!IsErtAdmin(args.SenderSession))
+            return;
+
         _points = msg.Points;
 
         _adminLogger.Add(LogType.Action, LogImpact.Medium, $"Admin {args.SenderSession.Name} set ERT points to {_points}");
@@ -160,6 +182,9 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
 
     private void OnDeleteErt(AdminDeleteErtMessage msg, EntitySessionEventArgs args)
     {
+        if (!IsErtAdmin(args.SenderSession))
+            return;
+
         var key = new ProtoId<ErtTeamPrototype>(msg.ProtoId);
 
         _expectedTeams.Remove(key);
@@ -172,6 +197,9 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
 
     private void OnAdminSetCooldown(AdminSetCooldownMessage msg, EntitySessionEventArgs args)
     {
+        if (!IsErtAdmin(args.SenderSession))
+            return;
+
         // create a fixed cooldown window of given seconds
         var window = new TimedWindow(TimeSpan.FromSeconds(msg.Seconds), TimeSpan.FromSeconds(msg.Seconds));
         _timedWindowSystem.Reset(window);
@@ -186,6 +214,9 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
 
     private void OnAdminSetReason(AdminSetErtReasonMessage msg, EntitySessionEventArgs args)
     {
+        if (!IsErtAdmin(args.SenderSession))
+            return;
+
         var key = new ProtoId<ErtTeamPrototype>(msg.ProtoId);
 
         if (!_expectedTeams.TryGetValue(key, out var data))
@@ -205,6 +236,9 @@ public sealed class ErtResponceSystem : SharedErtResponceSystem
 
     private void OnAdminCallErt(AdminCallErtMessage msg, EntitySessionEventArgs args)
     {
+        if (!IsErtAdmin(args.SenderSession))
+            return;
+
         var key = new ProtoId<ErtTeamPrototype>(msg.ProtoId);
 
         TryCallErt(key,
