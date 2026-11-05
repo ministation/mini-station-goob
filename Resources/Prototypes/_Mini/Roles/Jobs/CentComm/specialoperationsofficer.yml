@@ -7,6 +7,8 @@
   startingGear: CentcomSpecialOperationsOfficerGear
   icon: "JobIconNanotrasenRed"
   supervisors: job-supervisors-nobody
+  skills: # CorvaxGoob-Skills
+  - All
   canBeAntag: false
   accessGroups:
   - AllAccess

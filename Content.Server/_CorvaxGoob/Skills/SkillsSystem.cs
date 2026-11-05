@@ -116,6 +116,13 @@ public sealed partial class SkillsSystem : SharedSkillsSystem
 
     public void GrantAllSkills(EntityUid entity) => GrantSkill(entity, SkillTypes.All);
 
+    /// <summary>
+    /// Grants the given skills, falling back to all skills when the list is empty.
+    /// Antagonists and ghost roles without an explicit list must get all skills.
+    /// </summary>
+    public void GrantSkillOrDefault(EntityUid entity, HashSet<SkillTypes>? skills, bool clearSkills = false)
+        => GrantSkill(entity, skills is { Count: > 0 } ? skills : new HashSet<SkillTypes> { SkillTypes.All }, clearSkills);
+
     public void GrantSkill(EntityUid entity, HashSet<SkillTypes> skills, bool clearSkills = false)
     {
         var comp = EnsureSkills(entity);

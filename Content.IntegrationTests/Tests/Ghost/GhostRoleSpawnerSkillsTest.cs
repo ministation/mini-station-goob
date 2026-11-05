@@ -12,12 +12,15 @@ namespace Content.IntegrationTests.Tests.Ghost;
 /// <summary>
 /// Reinforcement dolls are spawned by a <see cref="GhostRoleMobSpawnerComponent"/> instead of a
 /// takeover ghost role, so the skills declared on the radio ghost role must be granted here too.
+/// Ghost roles without a declared list default to all skills.
 /// </summary>
 [TestFixture]
 public sealed class GhostRoleSpawnerSkillsTest
 {
     private const string SpawnerProtoId = "GhostRoleSkillsSpawnerTest";
     private const string MobProtoId = "GhostRoleSkillsMobTest";
+    private const string DefaultSpawnerProtoId = "GhostRoleDefaultSkillsSpawnerTest";
+    private const string DefaultMobProtoId = "GhostRoleDefaultSkillsMobTest";
 
     [TestPrototypes]
     private const string Prototypes = $"""
@@ -38,10 +41,37 @@ public sealed class GhostRoleSpawnerSkillsTest
             - All
           - type: GhostRoleMobSpawner
             prototype: {MobProtoId}
+
+        - type: entity
+          id: {DefaultMobProtoId}
+          components:
+          - type: MobState
+          - type: MobThresholds
+            thresholds:
+              0: Alive
+
+        - type: entity
+          id: {DefaultSpawnerProtoId}
+          components:
+          - type: GhostRole
+            makeSentient: false
+          - type: GhostRoleMobSpawner
+            prototype: {DefaultMobProtoId}
         """;
 
     [Test]
     public async Task SpawnedGhostRoleGetsDeclaredSkills()
+    {
+        await AssertSpawnerGrantsAllSkills(SpawnerProtoId);
+    }
+
+    [Test]
+    public async Task SpawnedGhostRoleWithoutDeclaredSkillsGetsAllSkills()
+    {
+        await AssertSpawnerGrantsAllSkills(DefaultSpawnerProtoId);
+    }
+
+    private static async Task AssertSpawnerGrantsAllSkills(string spawnerProtoId)
     {
         await using var pair = await PoolManager.GetServerClient(new PoolSettings
         {
@@ -58,7 +88,7 @@ public sealed class GhostRoleSpawnerSkillsTest
         EntityUid mob = default;
         await server.WaitPost(() =>
         {
-            var spawner = entMan.SpawnEntity(SpawnerProtoId, mapData.GridCoords);
+            var spawner = entMan.SpawnEntity(spawnerProtoId, mapData.GridCoords);
             var ev = new TakeGhostRoleEvent(session);
             entMan.EventBus.RaiseLocalEvent(spawner, ref ev);
 
