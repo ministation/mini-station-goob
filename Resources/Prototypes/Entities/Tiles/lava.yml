@@ -42,6 +42,8 @@
   - type: SyncSprite
   - type: Clickable
   # Mini: upstream SS14 liquid lava sprites (CC-BY-SA-4.0, vladimir.s) with corner smoothing.
+  # ВАЖНО: стейты water1<->water4 и water3<->water6 в liquid-lava.rsi переставлены относительно апстрима master —
+  # они приведены к дорефакторной нумерации под наш (старый) IconSmooth. Подробности: docs/_Mini/liquid-smoothing-port.md
   - type: Sprite
     sprite: Tiles/TileEntities/liquid-lava.rsi
     drawdepth: BelowFloor
@@ -52,7 +54,7 @@
     key: floor
     additionalKeys:
     - walls
-    base: water # liquid-lava.rsi state names are water0..7, same as upstream
+    base: water # liquid-lava.rsi state names are water0..7 (pre-refactor order, see docs/_Mini/liquid-smoothing-port.md)
     shader: unshaded
   - type: Physics
     bodyType: Static
