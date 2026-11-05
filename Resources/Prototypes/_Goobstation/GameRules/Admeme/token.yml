@@ -213,6 +213,7 @@
       - RoleSurvivalEVA
       components:
       - type: Wizard
+      - type: CanEnchant
       - type: RandomMetadata
         nameSegments:
         - WizardFirst
