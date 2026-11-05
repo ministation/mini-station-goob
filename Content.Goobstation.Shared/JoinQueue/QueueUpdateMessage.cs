@@ -1,3 +1,4 @@
+using Content.Shared.Network;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -45,7 +46,7 @@ public sealed class QueueUpdateMessage : NetMessage
         RoundDurationMinutes = buffer.ReadInt32();
 
         YourName = buffer.ReadString();
-        var count = buffer.ReadInt32();
+        var count = buffer.ReadBoundedLength32();
         PlayerNames = new List<string>(count);
         for (var i = 0; i < count; i++)
         {

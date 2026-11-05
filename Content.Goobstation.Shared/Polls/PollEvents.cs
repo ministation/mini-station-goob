@@ -1,3 +1,4 @@
+using Content.Shared.Network;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -19,12 +20,12 @@ public sealed class MsgActivePollsResponse : NetMessage
 
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
-        var count = buffer.ReadVariableInt32();
+        var count = buffer.ReadBoundedLength();
         Polls = new List<PollData>(count);
         for (var i = 0; i < count; i++)
             Polls.Add(ReadPollData(buffer));
 
-        var seenCount = buffer.ReadVariableInt32();
+        var seenCount = buffer.ReadBoundedLength();
         SeenPollIds = new List<int>(seenCount);
         for (var i = 0; i < seenCount; i++)
             SeenPollIds.Add(buffer.ReadVariableInt32());
@@ -65,7 +66,7 @@ public sealed class MsgActivePollsResponse : NetMessage
         if (hasCreator)
             poll.CreatedByName = buffer.ReadString();
 
-        var optionCount = buffer.ReadVariableInt32();
+        var optionCount = buffer.ReadBoundedLength();
         poll.Options = new List<PollOptionData>(optionCount);
         for (var i = 0; i < optionCount; i++)
         {
@@ -143,7 +144,7 @@ public sealed class MsgPollDetailsResponse : NetMessage
         if (hasPoll)
             Poll = MsgActivePollsResponse.ReadPollData(buffer);
 
-        var voteCount = buffer.ReadVariableInt32();
+        var voteCount = buffer.ReadBoundedLength();
         PlayerVotes = new List<PollVoteData>(voteCount);
 
         for (var i = 0; i < voteCount; i++)
