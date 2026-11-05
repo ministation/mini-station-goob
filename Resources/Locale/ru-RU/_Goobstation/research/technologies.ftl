@@ -51,3 +51,17 @@ research-technology-xeno-compatibility = Ксеносовместимость
 research-technology-service-energy-chem = Органический электросинтез
 
 research-technology-security-cyborg = Технология киборга СБ
+
+research-technology-modsuit-equipment = Снаряжение для МОД-костюмов
+
+research-technology-modsuit-medical = Медицинские МОД-костюмы
+
+research-technology-modsuit-engineering = Инженерные МОД-костюмы
+
+research-technology-modsuit-advanced-engineering = Продвинутые инженерные МОД-костюмы
+
+research-technology-modsuit-security = МОД-костюмы СБ
+
+research-technology-modsuit-supply = Снаряжение для МОД-костюмов снабжения
+
+research-technology-modsuit-service = Снаряжение для сервисных МОД-костюмов
