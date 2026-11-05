@@ -1,4 +1,9 @@
-﻿using Robust.Shared.Prototypes;
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Shared._Lavaland.Megafauna;
 
@@ -10,4 +15,4 @@ public record struct MegafaunaCalculationBaseArgs(
     IEntityManager EntityManager,
     IPrototypeManager PrototypeMan,
     ISawmill Logger,
-    System.Random Random);
+    IRobustRandom Random);

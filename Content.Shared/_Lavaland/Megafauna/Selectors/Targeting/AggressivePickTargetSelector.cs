@@ -1,4 +1,8 @@
-﻿using Content.Shared._Lavaland.Aggression;
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Megafauna.Conditions.Targeting;
 using Content.Shared.Random.Helpers;
@@ -59,7 +63,7 @@ public sealed partial class AggressivePickTargetSelector : MegafaunaSelector
 
         EntityUid? picked = null;
         if (WeightedRandom)
-            picked = SharedRandomExtensions.Pick(results, args.Random);
+            picked = args.Random.Pick(results);
         else
         {
             var maxWeight = float.MinValue;

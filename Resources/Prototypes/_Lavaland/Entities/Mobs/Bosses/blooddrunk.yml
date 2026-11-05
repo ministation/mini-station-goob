@@ -49,7 +49,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      1300: Dead
+      1400: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -101,7 +101,7 @@
     selector: !type:NestedMegafaunaSelector
       id: BloodDrunk
   - type: Anger
-    totalHp: 1300
+    totalHp: 1400
   - type: AngerPlayerScaling
     angerScale: 1.2
     hpScale: 1.2

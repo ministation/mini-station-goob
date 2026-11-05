@@ -9,6 +9,7 @@ using Content.Shared.Mobs.Systems;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Shared._Lavaland.Megafauna.Systems;
@@ -18,6 +19,7 @@ public sealed partial class MegafaunaSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly IPrototypeManager _protoMan = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
 
@@ -59,22 +61,21 @@ public sealed partial class MegafaunaSystem : EntitySystem
                 if (time > _timing.CurTime)
                     continue;
 
-                var args = new MegafaunaCalculationBaseArgs(uid, EntityManager, _protoMan, Log, GetRandom());
+                var args = new MegafaunaCalculationBaseArgs(uid, EntityManager, _protoMan, Log, _random);
                 var actionTime = action.Invoke(args);
                 ai.Schedule.Remove(time);
 
-                // Add next action to this thread
+                // Add next action to this thread. Two selectors due on the same tick can compute
+                // the same next time; nudge one by a tick so both branches keep attacking instead
+                // of one being dropped (or Add throwing) and the boss going quiet.
                 actionTime = Math.Max(Math.Abs(actionTime), 0.02f);
                 var delayTime = ai.ActionDelaySelector.Get(args);
                 var nextAction = _timing.CurTime + TimeSpan.FromSeconds(actionTime + delayTime);
-                ai.Schedule.Add(nextAction, ai.Selector);
+                while (!ai.Schedule.TryAdd(nextAction, ai.Selector))
+                {
+                    nextAction += TimeSpan.FromMilliseconds(1);
+                }
             }
         }
-    }
-
-    // TODO replace this with shared random
-    private System.Random GetRandom()
-    {
-        return new System.Random((int) (_timing.CurTick.Value * 6.7f));
     }
 }

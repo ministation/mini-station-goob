@@ -13,7 +13,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 20
+        Heat: 22
     ignoreResistances: true
   - type: RockBreakingProjectile
   # TG: the orb bursts into a ring of ice blasts after two seconds instead of hitting.

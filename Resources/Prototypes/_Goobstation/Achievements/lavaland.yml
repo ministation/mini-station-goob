@@ -10,7 +10,7 @@
   rarity: Mythic
   icon: { entity: Pickaxe }
   condition: !type:AchievementCountCondition
-    count: 5
+    count: 7
     category: LavalandBosses
 
 - type: achievement
@@ -67,6 +67,28 @@
   condition: !type:BossKillCondition
     prototypes:
     - LavalandBossMegaLegion
+
+- type: achievement
+  id: WendigoKiller
+  name: achievement-wendigo-killer-name
+  description: achievement-wendigo-killer-desc
+  category: LavalandBosses
+  rarity: Mythic
+  icon: { entity: LavalandBossWendigo }
+  condition: !type:BossKillCondition
+    prototypes:
+    - LavalandBossWendigo
+
+- type: achievement
+  id: FrostMinerKiller
+  name: achievement-frost-miner-killer-name
+  description: achievement-frost-miner-killer-desc
+  category: LavalandBosses
+  rarity: Mythic
+  icon: { entity: LavalandBossDemonicFrostMiner }
+  condition: !type:BossKillCondition
+    prototypes:
+    - LavalandBossDemonicFrostMiner
 
 - type: achievement
   id: LegendaryMiner

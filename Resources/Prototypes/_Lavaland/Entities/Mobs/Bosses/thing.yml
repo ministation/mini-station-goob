@@ -51,10 +51,10 @@
         dead:
           base: { state: dead }
   - type: ThingBoss
-    phaseHealth: 600
+    phaseHealth: 700
     maxPhases: 3
     phaseInvulnerabilityTime: 10
-    recoverHeal: 300
+    recoverHeal: 350
     depletedSound: /Audio/Effects/explosion_small3.ogg
     overloadSound: /Audio/_Lavaland/Mobs/Bosses/hiero_blast.ogg
     recoveredSound: /Audio/Effects/pop_high.ogg
@@ -77,7 +77,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      1800: Dead
+      2100: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -114,15 +114,15 @@
     selector: !type:NestedMegafaunaSelector
       id: Thing
   - type: Anger
-    totalHp: 1800
+    totalHp: 2100
   # Phases follow the damage budget. The accelerator overload advances the real phase in
   # ThingBoss while this component only gates which attacks the AI may pick.
   - type: MobPhases
     canSwitchBack: true
     phaseThresholds:
       0: 1
-      600: 2
-      1200: 3
+      700: 2
+      1400: 3
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:

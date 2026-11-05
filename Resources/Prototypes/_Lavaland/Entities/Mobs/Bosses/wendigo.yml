@@ -60,7 +60,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2500: Dead
+      2750: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -103,18 +103,19 @@
     selector: !type:NestedMegafaunaSelector
       id: Wendigo
   - type: Anger
-    totalHp: 2500
+    totalHp: 2750
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0: 1
-      1250: 2 # below half health the wendigo enrages, like TG's WENDIGO_ENRAGED
+      1375: 2 # below half health the wendigo enrages, like TG's WENDIGO_ENRAGED
   - type: BossEnrage
     healthFraction: 0.5
     speedMultiplier: 1.5 # TG drops its move delay from 6 to 4
     attackRateMultiplier: 1
+    actionDelay: 0.55 # base AI delay is 0.7
     sound:
       path: /Audio/Effects/demon_dies.ogg
   - type: MegafaunaRejuvenate

@@ -14,7 +14,7 @@ namespace Content.Server._Lavaland.Bubblegum;
 public sealed partial class BubblegumComponent : Component
 {
     [DataField]
-    public TimeSpan RangedCooldown = TimeSpan.FromSeconds(3.1);
+    public TimeSpan RangedCooldown = TimeSpan.FromSeconds(2.6);
 
     [DataField]
     public TimeSpan ForcePressureAfter = TimeSpan.FromSeconds(5.5);
@@ -198,7 +198,7 @@ public sealed partial class BubblegumComponent : Component
     {
         DamageDict = new()
         {
-            { "Slash", FixedPoint2.New(25) },
+            { "Slash", FixedPoint2.New(30) },
         },
     };
 

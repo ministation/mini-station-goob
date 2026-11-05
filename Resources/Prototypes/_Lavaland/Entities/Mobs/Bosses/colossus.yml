@@ -51,7 +51,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2500: Dead
+      2750: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -104,15 +104,22 @@
     selector: !type:NestedMegafaunaSelector
       id: Colossus
   - type: Anger
-    totalHp: 2500
+    totalHp: 2750
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0:    1
-      1650: 2 # below 33% HP: double counter-spiral
-      2250: 3 # below 10% HP: final judgement
+      1815: 2 # below 33% HP: double counter-spiral
+      2475: 3 # below 10% HP: final judgement
+  - type: BossEnrage
+    healthFraction: 0.33
+    speedMultiplier: 1.25
+    attackRateMultiplier: 1.2
+    actionDelay: 0.6
+    sound:
+      path: /Audio/Effects/demon_attack1.ogg
   - type: MegafaunaAnchor
   - type: MegafaunaGodmode
   - type: MegafaunaRejuvenate

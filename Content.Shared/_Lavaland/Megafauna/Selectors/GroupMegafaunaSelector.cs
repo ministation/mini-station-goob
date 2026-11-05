@@ -1,4 +1,8 @@
-﻿using Content.Shared.Random.Helpers;
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using Content.Shared.Random.Helpers;
 
 namespace Content.Shared._Lavaland.Megafauna.Selectors;
 
@@ -25,7 +29,7 @@ public sealed partial class GroupMegafaunaSelector : MegafaunaSelector
         if (children.Count == 0)
             return FailDelay;
 
-        var pick = SharedRandomExtensions.Pick(children, args.Random);
+        var pick = args.Random.Pick(children);
         return pick.Invoke(args);
     }
 }

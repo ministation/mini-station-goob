@@ -44,7 +44,11 @@ public sealed class MobPhasesSystem : EntitySystem
                 && !ai.CanSwitchBack)
                 continue;
 
+            if (ent.Comp1.CurrentPhase == phase)
+                break;
+
             ent.Comp1.CurrentPhase = phase;
+            Dirty(ent.Owner, ent.Comp1);
             break;
         }
     }
