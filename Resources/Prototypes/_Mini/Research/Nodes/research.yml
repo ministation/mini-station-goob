@@ -190,7 +190,10 @@
   - ClothingBackpackMessengerHolding
   - ClothingBackpackHolding
   - ClothingBackpackSatchelHolding
+  - ModsuitModuleStorageBluespace
+  - ModsuitModuleStorageHolding
   - WeaponTetherGun
+  - ModsuitModuleKinesis
 #  - PolymorphBelt # TODO
   - VehicleHoverchairSci
   - WeaponParticleDecelerator

@@ -173,10 +173,9 @@
   id: FillAtmosphericsHardsuit
   table: !type:AllSelector
     children:
-    #- id: ClothingOuterHardsuitAtmos # Goob
+    - id: ClothingOuterHardsuitAtmos
     - id: OxygenTankFilled
     - id: ClothingMaskBreath
-    - id: ClothingModsuitAtmostechPowerCell # Goob edit
 
 - type: entity
   id: LockerEngineerFilledHardsuit
@@ -217,8 +216,7 @@
   id: FillEngineerHardsuit
   table: !type:AllSelector
     children:
-    #- id: ClothingOuterHardsuitEngineering
-    - id: UndeterminedVoidsuitEngineer # Goob edit
+    - id: ClothingOuterHardsuitEngineering
     - id: OxygenTankFilled
     - id: ClothingShoesBootsMag
     - id: ClothingMaskBreath

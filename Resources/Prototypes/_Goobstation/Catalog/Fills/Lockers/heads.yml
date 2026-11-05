@@ -47,7 +47,8 @@
     - id: OmnimedTool
     - id: HandheldCrewMonitorBSO
     - id: BlueshieldUndeterminedWeapon
-    - id: BlueshieldUndeterminedHardsuit
+    - id: ClothingOuterHardsuitBlueshieldLight
+    - id: ModsuitPlatingPraetorian
     - id: FlashlightSeclite
     - id: EpinephrineChemistryBottle
     - id: EphedrineChemistryBottle
