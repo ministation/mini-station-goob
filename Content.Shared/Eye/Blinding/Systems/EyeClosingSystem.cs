@@ -37,7 +37,9 @@ public sealed class EyeClosingSystem : EntitySystem
 
     private void OnShutdown(Entity<EyeClosingComponent> eyelids, ref ComponentShutdown args)
     {
-        _actionsSystem.RemoveAction(eyelids.Owner, eyelids.Comp.EyeToggleActionEntity);
+        // The action can already be detached from this entity when the component shuts down;
+        // remove it from wherever it is attached instead of passing a stale performer.
+        _actionsSystem.RemoveAction(eyelids.Comp.EyeToggleActionEntity);
 
         SetEyelids((eyelids.Owner, eyelids.Comp), false);
     }

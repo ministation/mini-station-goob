@@ -13,6 +13,7 @@ using Content.Server.Station.Systems;
 using Content.Server._Mini.Networking;
 using Robust.Shared.Containers;
 using Content.Shared._Mini.TypanWar;
+using Content.Shared.Actions.Components;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Ghost;
@@ -800,7 +801,15 @@ public sealed class TypanWarRespawnSystem : EntitySystem
         if (TryComp<ContainerManagerComponent>(corpse, out var containerManager))
         {
             foreach (var container in _containers.GetAllContainers(corpse.Value, containerManager))
+            {
+                // Actions are internal bookkeeping of the body and are removed with it. Emptying their
+                // container drops detached action entities on the map and makes the body's components
+                // fail to remove their already detached actions.
+                if (container.ID == ActionsContainerComponent.ContainerId)
+                    continue;
+
                 _containers.EmptyContainer(container, force: true, destination: coords, reparent: true);
+            }
         }
 
         QueueDel(corpse.Value);
