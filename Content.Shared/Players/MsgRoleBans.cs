@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 
+using Content.Shared.Network;
 using Content.Shared.Roles;
 using Lidgren.Network;
 using Robust.Shared.Network;
@@ -20,7 +21,7 @@ public sealed class MsgRoleBans : NetMessage
 
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
-        var jobCount = buffer.ReadVariableInt32();
+        var jobCount = buffer.ReadBoundedLength();
         JobBans.EnsureCapacity(jobCount);
 
         for (var i = 0; i < jobCount; i++)
@@ -28,7 +29,7 @@ public sealed class MsgRoleBans : NetMessage
             JobBans.Add(buffer.ReadString());
         }
 
-        var antagCount = buffer.ReadVariableInt32();
+        var antagCount = buffer.ReadBoundedLength();
         AntagBans.EnsureCapacity(antagCount);
 
         for (var i = 0; i < antagCount; i++)

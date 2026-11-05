@@ -193,10 +193,6 @@ typan-war-event-reinforcement = [color=#C8C4D8]Война станций:[/color
 
 typan-war-ghost-roles-blocked = Ghost-роли недоступны во время войны станций.
 
-typan-war-bet-window-title = Ставка на исход войны
-
-typan-war-bet-button = Ставки
-
 typan-war-bet-side-nt = NT
 
 typan-war-bet-side-typan = Тайпан

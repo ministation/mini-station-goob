@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Shared.Network;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -14,7 +15,7 @@ public sealed class MsgJobWhitelist : NetMessage
 
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
-        var count = buffer.ReadVariableInt32();
+        var count = buffer.ReadBoundedLength();
         Whitelist.EnsureCapacity(count);
 
         for (var i = 0; i < count; i++)

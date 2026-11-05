@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 
+using Content.Shared.Network;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -17,7 +18,7 @@ public sealed class MsgDeleteChatMessagesBy : NetMessage
     {
         Key = buffer.ReadInt32();
 
-        var entities = buffer.ReadInt32();
+        var entities = buffer.ReadBoundedLength32();
         Entities = new HashSet<NetEntity>(entities);
 
         for (var i = 0; i < entities; i++)

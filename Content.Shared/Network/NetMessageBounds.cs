@@ -22,7 +22,19 @@ public static class NetMessageBounds
     /// </summary>
     public static int ReadBoundedLength(this NetIncomingMessage buffer)
     {
-        var length = buffer.ReadVariableInt32();
+        return CheckBounded(buffer, buffer.ReadVariableInt32());
+    }
+
+    /// <summary>
+    ///     То же для длины, записанной фиксированным int32.
+    /// </summary>
+    public static int ReadBoundedLength32(this NetIncomingMessage buffer)
+    {
+        return CheckBounded(buffer, buffer.ReadInt32());
+    }
+
+    private static int CheckBounded(NetIncomingMessage buffer, int length)
+    {
         if (length < 0 || length > buffer.LengthBytes)
             throw new InvalidOperationException($"Invalid net message length: {length}");
 

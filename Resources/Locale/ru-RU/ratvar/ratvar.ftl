@@ -198,12 +198,9 @@ enchantment-table-name-ratvar-shard = Зачарования осколка
 enchantment-table-name-ratvar-hammer = Зачарования молота
 
 # Workshop
-ratvar-workshop-title = Мастерская Ратвара
 ratvar-workshop-resources-title = Ресурсы
 ratvar-workshop-brass-label = Латунь:
-ratvar-workshop-brass = латуни
 ratvar-workshop-power-label = Энергия:
-ratvar-workshop-power = энергии
 ratvar-workshop-status-label = Статус:
 ratvar-workshop-status-ready = Готово к работе
 ratvar-workshop-status-busy = Идёт создание...

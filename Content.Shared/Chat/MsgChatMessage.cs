@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.IO;
+using Content.Shared.Network;
 using JetBrains.Annotations;
 using Lidgren.Network;
 using Robust.Shared.Network;
@@ -72,7 +73,7 @@ namespace Content.Shared.Chat
 
         public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
         {
-            var length = buffer.ReadVariableInt32();
+            var length = buffer.ReadBoundedLength();
             using var stream = new MemoryStream(length);
             buffer.ReadAlignedMemory(stream, length);
             serializer.DeserializeDirect(stream, out Message);

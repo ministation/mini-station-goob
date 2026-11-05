@@ -180,7 +180,7 @@ public sealed class AshwalkerTribeSystem : EntitySystem
                 name = string.IsNullOrWhiteSpace(name)
                     ? Loc.GetString("ashwalker-tribe-roundend-unnamed")
                     : name.Trim();
-                names[name]++;
+                names[name] = names.GetValueOrDefault(name) + 1;
             }
 
             if (names.Count > 0)
