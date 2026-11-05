@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 
+using Content.Shared.Network;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -15,7 +16,7 @@ namespace Content.Shared.Administration
 
         public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
         {
-            var count = buffer.ReadVariableInt32();
+            var count = buffer.ReadBoundedLength();
 
             AvailableCommands = new string[count];
 

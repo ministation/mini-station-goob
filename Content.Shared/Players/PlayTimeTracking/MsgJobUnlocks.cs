@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Leon Friedrich <60421075+ElectroJr@users.noreply.github.com>
 // SPDX-License-Identifier: MIT
 
+using Content.Shared.Network;
 using Content.Shared.Roles;
 using Lidgren.Network;
 using Robust.Shared.Network;
@@ -20,7 +21,7 @@ public sealed class MsgJobUnlocks : NetMessage
 
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
-        var count = buffer.ReadVariableInt32();
+        var count = buffer.ReadBoundedLength();
         UnlockedJobs = new HashSet<ProtoId<JobPrototype>>(count);
 
         for (var i = 0; i < count; i++)

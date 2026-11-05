@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+using Content.Shared.Network;
+using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
 
@@ -13,7 +14,7 @@ public class UpdateBlockerCharactersMessage : NetMessage
 
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
-        var count = buffer.ReadVariableInt32();
+        var count = buffer.ReadBoundedLength();
         BlockedCharactersHashes.EnsureCapacity(count);
 
         for (var i = 0; i < count; i++)

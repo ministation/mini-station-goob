@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System;
 using System.IO;
+using Content.Shared.Network;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -21,7 +23,12 @@ public sealed class MappingMapDataMessage : NetMessage
         MsgSize = buffer.LengthBytes;
 
         var uncompressedLength = buffer.ReadVariableInt32();
-        var compressedLength = buffer.ReadVariableInt32();
+        var compressedLength = buffer.ReadBoundedLength();
+
+        // Клиент присылает обе длины сам: потолок по сжатым данным не даёт подделанному
+        // пакету заставить сервер выделить поток на гигабайты до проверки прав.
+        if (uncompressedLength <= 0 || uncompressedLength > compressedLength * 100)
+            throw new InvalidOperationException($"Invalid map payload: {uncompressedLength} of {compressedLength}");
         var stream = new MemoryStream(compressedLength);
         buffer.ReadAlignedMemory(stream, compressedLength);
         using var decompress = new ZStdDecompressStream(stream);

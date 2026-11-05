@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Casha
 // SPDX-License-Identifier: MIT
 
+using Content.Shared.Network;
 using Content.Shared.Roles;
 using Lidgren.Network;
 using Robust.Shared.Network;
@@ -20,7 +21,7 @@ public sealed class MsgAntagUnlocks : NetMessage
 
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
-        var count = buffer.ReadVariableInt32();
+        var count = buffer.ReadBoundedLength();
         UnlockedAntags = new HashSet<ProtoId<AntagPrototype>>(count);
 
         for (var i = 0; i < count; i++)

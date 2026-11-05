@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 using System.IO;
+using Content.Shared.Network;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -19,7 +20,7 @@ namespace Content.Shared.Eui
         {
             Id = buffer.ReadUInt32();
 
-            var length = buffer.ReadVariableInt32();
+            var length = buffer.ReadBoundedLength();
             using var stream = new MemoryStream(length);
             buffer.ReadAlignedMemory(stream, length);
             State = ser.Deserialize<EuiStateBase>(stream);
