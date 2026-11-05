@@ -442,6 +442,20 @@ public sealed partial class GameTicker
             value => _mapPreloadMaxStations = Math.Max(1, value), true);
     }
 
+    /// <summary>
+    /// Frees the round that just ended before the next lobby preload allocates its maps.
+    /// Deleting entities only makes them garbage; without a full collection the previous and
+    /// the next working sets overlap in RSS and the host ends up in swap.
+    /// </summary>
+    private void CollectRoundGarbage()
+    {
+        SlowOpLog.Run(_sawmill, "Memory: GC after round cleanup", () =>
+        {
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, blocking: true, compacting: true);
+            GC.WaitForPendingFinalizers();
+        });
+    }
+
     private void ResetMapPreloadState()
     {
         MapsReady = false;
