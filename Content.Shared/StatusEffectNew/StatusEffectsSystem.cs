@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Rejuvenate;
 using Content.Shared.StatusEffectNew.Components;
@@ -209,6 +213,11 @@ public sealed partial class StatusEffectsSystem : EntitySystem
         statusEffect = null;
 
         if (duration <= TimeSpan.Zero)
+            return false;
+
+        // A terminating entity cannot receive effects: inserting into its container is refused by the engine
+        // and logs an error for every shutdown handler that stuns its owner during round cleanup.
+        if (TerminatingOrDeleted(target))
             return false;
 
         if (!CanAddStatusEffect(target, effectProto))
