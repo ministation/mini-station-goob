@@ -211,6 +211,11 @@ public sealed partial class StatusEffectsSystem : EntitySystem
         if (duration <= TimeSpan.Zero)
             return false;
 
+        // A terminating entity cannot receive effects: inserting into its container is refused by the engine
+        // and logs an error for every shutdown handler that stuns its owner during round cleanup.
+        if (TerminatingOrDeleted(target))
+            return false;
+
         if (!CanAddStatusEffect(target, effectProto))
             return false;
 
