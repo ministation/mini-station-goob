@@ -1,7 +1,3 @@
-# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
-#
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 Name: Mini
 Order: -2
 Entries:
@@ -1907,3 +1903,9 @@ Entries:
       message: зоны и флаги войны больше не двигаются после удаления
   id: 184
   time: '2026-11-04T21:48:51.0000000+00:00'
+- author: Mini Station
+  changes:
+    - type: Fix
+      message: маги, выданные через магазин антагов, снова могут зачаровывать предметы на алтаре
+  id: 185
+  time: '2026-11-05T01:45:38.0000000+00:00'
