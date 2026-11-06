@@ -33,7 +33,7 @@ public sealed partial class AchievementPrototype : IPrototype
     /// <summary>
     /// Reward tier. Uses the same rarities as weekly quests, so the reward scale matches.
     /// When omitted, the tier is derived from <see cref="AchievementCondition.Count"/>:
-    /// one-off feats stay Rare (1 coin) and grindy ones scale up to Legendary.
+    /// one-off feats stay Rare (1 coin) and grindy ones scale up, but the coin payout itself is capped.
     /// </summary>
     [DataField]
     public DailyQuestRarity? Rarity;
@@ -54,8 +54,11 @@ public sealed partial class AchievementPrototype : IPrototype
         };
     }
 
+    /// <summary>Hard ceiling for the coin payout, even for the hardest achievement.</summary>
+    public const int MaxCoinReward = 2;
+
     /// <summary>Coins granted once when the achievement is unlocked.</summary>
-    public int GetCoinReward() => GetRarity().GetDefaultReward();
+    public int GetCoinReward() => Math.Min(GetRarity().GetDefaultReward(), MaxCoinReward);
 
     /// <summary>
     /// Идентификатор прототипа customGhost, выдаваемого вместо монет, когда достижение открыто.

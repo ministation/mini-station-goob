@@ -3,8 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server._Mini.AntagTokens;
+using Content.Server.Objectives.Components;
 using Content.Server.Popups;
 using Content.Server.Roles;
+using Content.Server._Shitmed.Objectives.Components;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Objectives.Systems;
@@ -69,6 +71,9 @@ public sealed class AntagObjectiveCoinRewardSystem : EntitySystem
             if (HasComp<AntagObjectiveCoinRewardComponent>(mindId))
                 continue;
 
+            if (!HasCompletableObjective(mind))
+                continue;
+
             if (!_roles.MindIsAntagonist(mindId))
                 continue;
 
@@ -96,6 +101,22 @@ public sealed class AntagObjectiveCoinRewardSystem : EntitySystem
             return false;
 
         return AllObjectivesComplete(mindId, mind);
+    }
+
+    /// <summary>
+    /// True when the set has at least one objective the player can actually complete. Free and
+    /// roleplay objectives are marked complete on issue, so a set made only of them was never
+    /// completed by the player and must not pay out.
+    /// </summary>
+    private bool HasCompletableObjective(MindComponent mind)
+    {
+        foreach (var objective in mind.Objectives)
+        {
+            if (!HasComp<FreeObjectiveComponent>(objective) && !HasComp<RoleplayObjectiveComponent>(objective))
+                return true;
+        }
+
+        return false;
     }
 
     private bool AllObjectivesComplete(EntityUid mindId, MindComponent mind)
