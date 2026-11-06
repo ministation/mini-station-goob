@@ -15,6 +15,9 @@
     - state: portal_on
       map: [ "active" ]
       visible: false
+    - state: portal_aquarium
+      map: [ "overlay" ]
+      visible: false
     - state: portal_emissive
       map: [ "emissive" ]
       visible: false

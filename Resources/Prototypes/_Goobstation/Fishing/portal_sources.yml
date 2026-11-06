@@ -34,6 +34,7 @@
   portalDestination: true
   requiredExperiment: ScanningFish
   radialState: palm_beach
+  overlayState: portal_beach
   radialName: fishing-portal-source-beach
   catalogDescription: fishing-source-portal-beach
   table: !type:GroupSelector
@@ -61,6 +62,7 @@
   portalDestination: true
   requiredExperiment: ScanningFishThird
   radialState: ground_hole
+  overlayState: portal_chasm
   radialName: fishing-portal-source-chasm
   catalogDescription: fishing-source-portal-chasm
   background: background_chasm
@@ -81,6 +83,7 @@
   portalDestination: true
   requiredExperiment: ScanningFishSecond
   radialState: seaboat
+  overlayState: portal_ocean
   radialName: fishing-portal-source-ocean
   catalogDescription: fishing-source-portal-ocean
   difficulty: 35
@@ -120,6 +123,7 @@
   portalDestination: true
   requiredExperiment: ScanningFishFourth
   radialState: space_rocket
+  overlayState: portal_hyperspace
   radialName: fishing-portal-source-hyperspace
   catalogDescription: fishing-source-portal-hyperspace
   background: background_space
@@ -140,6 +144,7 @@
   portalDestination: true
   requiresEmag: true
   radialState: syndi_snake
+  overlayState: portal_syndicate
   radialName: fishing-portal-source-syndicate
   catalogDescription: fishing-source-portal-syndicate
   background: background_lavaland
@@ -172,6 +177,7 @@
 - type: fishingSource
   id: FishingSourcePortalRandom
   radialState: misaligned_question_mark
+  overlayState: portal_randomizer
   radialName: fishing-portal-source-random
   table: !type:GroupSelector
     children:

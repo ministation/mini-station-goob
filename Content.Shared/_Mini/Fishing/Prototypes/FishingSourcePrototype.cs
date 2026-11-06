@@ -104,4 +104,11 @@ public sealed partial class FishingSourcePrototype : IPrototype
     /// </summary>
     [DataField]
     public string RadialState = "default";
+
+    /// <summary>
+    /// Animated overlay state from the fishing equipment RSI, shown on the fish-porter
+    /// machine while this source is selected. Its color tells the dimensions apart.
+    /// </summary>
+    [DataField]
+    public string OverlayState = "portal_aquarium";
 }

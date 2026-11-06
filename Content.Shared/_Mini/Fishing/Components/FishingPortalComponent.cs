@@ -27,4 +27,10 @@ public sealed partial class FishingPortalComponent : Component
     /// </summary>
     [DataField]
     public string ActiveLayer = "active";
+
+    /// <summary>
+    /// Sprite layer with the destination-colored portal, shown while a source is connected.
+    /// </summary>
+    [DataField]
+    public string OverlayLayer = "overlay";
 }
