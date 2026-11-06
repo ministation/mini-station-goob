@@ -2,7 +2,9 @@
 // Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
 
 using Content.Shared._Mini.Fishing.Components;
+using Content.Shared._Mini.Fishing.Prototypes;
 using Robust.Client.GameObjects;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client._Mini.Fishing.Portal;
 
@@ -12,6 +14,7 @@ namespace Content.Client._Mini.Fishing.Portal;
 public sealed partial class FishingPortalVisualsSystem : EntitySystem
 {
     [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
 
     public override void Initialize()
     {
@@ -33,8 +36,16 @@ public sealed partial class FishingPortalVisualsSystem : EntitySystem
 
     private void Update(Entity<FishingPortalComponent> ent)
     {
-        var active = ent.Comp.ActiveSource != null;
+        FishingSourcePrototype? source = null;
+        if (ent.Comp.ActiveSource is { } id)
+            _proto.TryIndex(id, out source);
+
+        var active = source != null;
         _sprite.LayerSetVisible(ent.Owner, ent.Comp.ActiveLayer, active);
+        _sprite.LayerSetVisible(ent.Owner, ent.Comp.OverlayLayer, active);
         _sprite.LayerSetVisible(ent.Owner, "emissive", active);
+
+        if (source != null)
+            _sprite.LayerSetRsiState(ent.Owner, ent.Comp.OverlayLayer, source.OverlayState);
     }
 }
