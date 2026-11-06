@@ -87,9 +87,10 @@ public abstract class SharedDeviceLinkSystem : EntitySystem
         var query = GetEntityQuery<DeviceLinkSinkComponent>();
         foreach (var sinkUid in source.Comp.LinkedPorts.Keys)
         {
+            // A sink that is already gone needs no unlink; only report a live entity that lost its sink component.
             if (query.TryGetComponent(sinkUid, out var sink))
                 RemoveSinkFromSourceInternal(source, sinkUid, source, sink);
-            else
+            else if (!TerminatingOrDeleted(sinkUid))
                 Log.Error($"Device source {ToPrettyString(source)} links to invalid entity: {ToPrettyString(sinkUid)}");
         }
     }
