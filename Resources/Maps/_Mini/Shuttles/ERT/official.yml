@@ -1753,7 +1753,7 @@ entities:
       pos: 4.5,12.5
       parent: 1
     - type: FaxMachine
-      name: Шаттл ПЦК
+      name: Шаттл ОЦК
 - proto: filingCabinetDrawerRandom
   entities:
   - uid: 218

@@ -17,7 +17,7 @@
   - CentralCommandOfficial
   - Writing
   - SOPCentcomm
-  weight: 40 # Top of CentComm prefs list (ПЦК)
+  weight: 40 # Top of CentComm prefs list (ОЦК)
 
   requirements:
   - !type:AgeRequirement

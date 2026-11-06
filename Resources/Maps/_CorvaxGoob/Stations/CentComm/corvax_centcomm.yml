@@ -35965,7 +35965,7 @@ entities:
       pos: 70.5,101.5
       parent: 1
     - type: NavMapBeacon
-      text: Стыковка ПЦК
+      text: Стыковка ОЦК
     missingComponents:
     - WarpPoint
   - uid: 4315

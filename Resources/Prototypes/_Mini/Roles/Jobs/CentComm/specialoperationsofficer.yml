@@ -7,13 +7,26 @@
   name: job-name-soo
   description: job-description-soo
   playTimeTracker: JobCentralCommandSpecialOperationsOfficer
-  setPreference: false
+  setPreference: true
+  whitelisted: true # like ОЦК/стажёр — Центком under job whitelist
   startingGear: CentcomSpecialOperationsOfficerGear
   icon: "JobIconNanotrasenRed"
   supervisors: job-supervisors-nobody
   skills: # CorvaxGoob-Skills
   - All
   canBeAntag: false
+  weight: 25 # Right below ОЦК in prefs list
+  requirements:
+  - !type:AgeRequirement
+    requiredAge: 21
+  - !type:SpeciesRequirement # Mini - None Felinid on CentComm
+    inverted: true
+    species:
+    - Felinid
+  - !type:SpeciesRequirement # Mini - None Abductor on CentComm
+    inverted: true
+    species:
+    - Abductor
   accessGroups:
   - AllAccess
   access:

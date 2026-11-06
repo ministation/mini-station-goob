@@ -162,21 +162,21 @@
 
 - type: ertTeam
   id: CentralCommandOfficial
-  name: Представитель ЦК
+  name: Офицер ЦК
   startAnnouncement: station-event-centcomm-official-arrival
   startAudio:
     path: /Audio/_Mini/Announcements/ERT/spawn.ogg
   description:
-    Представитель Центрального Командования NanoTrasen, прибывающий на станцию
+    Офицер Центрального Командования NanoTrasen, прибывающий на станцию
     для решения возникших проблем, которые не могут быть решены обычным способом.
-    Представитель Центрального Командования и 2 офицера ОБР прибывают
+    Офицер Центрального Командования и 2 офицера ОБР прибывают
     на шаттле, который оснащён всем необходимым оборудованием
     для выполнения их миссии.
     Время прибытия от 5 до 7 минут.
   notification: ert-responce-caused-messager-official
   rule: SpawnCentCommOfficialShuttle
   cancelMessage:
-    Представитель Центрального Командования NanoTrasen не смог прибыть на станцию
+    Офицер Центрального Командования NanoTrasen не смог прибыть на станцию
     из-за непредвиденных обстоятельств. Мы приносим извинения за возможные неудобства.
   cooldown:
     min: 7m

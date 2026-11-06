@@ -53,6 +53,7 @@ job-name-hop = Head of Personnel
 job-name-captain = Captain
 job-name-serviceworker = Service Worker
 job-name-centcomoff = CentComm Official
+job-name-soo = Special Operations Officer
 job-name-centcom-assistant = CentComm Intern
 job-name-cburn = Centcomm Quarantine Officer
 job-name-cburn-agent = CBURN Agent

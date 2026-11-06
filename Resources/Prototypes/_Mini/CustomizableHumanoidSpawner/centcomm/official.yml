@@ -1,7 +1,7 @@
 - type: entity
   id: RandomHumanoidSpawnerCentralCommandOfficial
-  name: Представитель ЦК
-  suffix: ПЦК, Кастомизируемый персонаж
+  name: Офицер ЦК
+  suffix: ОЦК, Кастомизируемый персонаж
   components:
     - type: Sprite
       layers:
