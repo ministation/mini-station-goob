@@ -1,4 +1,9 @@
-﻿using System.Linq;
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using System.Linq;
+using Content.Server.Mind;
 using Content.Server.Roles.Jobs;
 using Content.Server.WhiteDream.BloodCult.Gamerule;
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
@@ -13,6 +18,7 @@ public sealed class KillTargetCultSystem : EntitySystem
     [Dependency] private readonly BloodCultRuleSystem _cultRule = default!;
     [Dependency] private readonly JobSystem _job = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
+    [Dependency] private readonly MindSystem _mind = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
 
     public override void Initialize()
@@ -68,7 +74,13 @@ public sealed class KillTargetCultSystem : EntitySystem
     private string GetTitle(EntityUid target, string title)
     {
         var targetName = MetaData(target).EntityName;
-        var jobName = _job.MindTryGetJobName(target);
+
+        // The sacrifice target is the body, but the job lives on its mind. Passing the body to the
+        // job API used to log "system.role: Can't resolve MindComponent" on every cult objective.
+        var jobName = _mind.TryGetMind(target, out var mindId, out _)
+            ? _job.MindTryGetJobName(mindId)
+            : Loc.GetString("generic-unknown-title");
+
         return Loc.GetString(title, ("targetName", targetName), ("job", jobName));
     }
 }
