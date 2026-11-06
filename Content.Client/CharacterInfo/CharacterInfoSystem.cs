@@ -41,9 +41,9 @@ public sealed class CharacterInfoSystem : EntitySystem
             msg.JobProto, // CorvaxGoob
             msg.Objectives,
             msg.Briefing,
-            Name(entity),
-            msg.AntagAllObjectivesComplete,
-            msg.AntagObjectiveCoinRewardGranted);        OnCharacterUpdate?.Invoke(data);
+            Name(entity));
+
+        OnCharacterUpdate?.Invoke(data);
     }
 
     public List<Control> GetCharacterInfoControls(EntityUid uid)
@@ -58,9 +58,7 @@ public sealed class CharacterInfoSystem : EntitySystem
         ProtoId<JobPrototype>? JobProto, // CorvaxGoob
         Dictionary<string, List<ObjectiveInfo>> Objectives,
         string? Briefing,
-        string EntityName,
-        bool AntagAllObjectivesComplete,
-        bool AntagObjectiveCoinRewardGranted
+        string EntityName
     );
 
     /// <summary>

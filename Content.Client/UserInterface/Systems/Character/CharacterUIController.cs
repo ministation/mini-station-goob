@@ -83,11 +83,8 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
     private readonly List<PanelContainer> _objectiveSlots = new();
     private readonly List<AntagObjectiveCardControl> _objectiveCards = new();
     private readonly List<ObjectiveInfo> _objectiveLayoutCache = new();
-    private AntagObjectiveCardControl? _rewardCard;
     private AntagObjectiveCardControl? _briefingCard;
     private string? _briefingCache;
-    private bool _rewardAllCompleteCache;
-    private bool _rewardGrantedCache;
     private readonly List<Control> _characterInfoControls = new();
     private EntityUid _characterInfoEntity;
     private int _characterInfoControlCount = -1;
@@ -206,7 +203,7 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
             return;
         }
 
-        var (entity, job, objectives, briefing, entityName, antagAllComplete, antagCoinGranted) = data;
+        var (entity, job, objectives, briefing, entityName) = data;
 
         _window.SpriteView.SetEntity(entity);
         UpdateRoleType();
@@ -219,7 +216,7 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
 
         _window.ObjectivesLabel.Visible = objectives.Any();
 
-        RefreshAntagObjectives(objectives, antagAllComplete, antagCoinGranted, briefing);
+        RefreshAntagObjectives(objectives, briefing);
         RefreshCharacterInfoControls(entity);
 
         _window.RolePlaceholder.Visible = briefing == null
@@ -242,15 +239,6 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
         for (var i = 0; i < flatObjectives.Count && i < _objectiveCards.Count; i++)
             _objectiveCards[i].UpdateObjectiveProgress(flatObjectives[i]);
 
-        if (_rewardCard != null
-            && (_rewardAllCompleteCache != data.AntagAllObjectivesComplete
-                || _rewardGrantedCache != data.AntagObjectiveCoinRewardGranted))
-        {
-            _rewardCard.UpdateRewardFooter(data.AntagAllObjectivesComplete, data.AntagObjectiveCoinRewardGranted);
-            _rewardAllCompleteCache = data.AntagAllObjectivesComplete;
-            _rewardGrantedCache = data.AntagObjectiveCoinRewardGranted;
-        }
-
         for (var i = 0; i < flatObjectives.Count; i++)
         {
             if (i < _objectiveLayoutCache.Count)
@@ -260,8 +248,8 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
 
     private static bool IsProgressOnlyUpdate(CharacterData prev, CharacterData next)
     {
-        var (_, prevJob, _, _, _, _, _) = prev;
-        var (_, nextJob, _, _, _, _, _) = next;
+        var (_, prevJob, _, _, _) = prev;
+        var (_, nextJob, _, _, _) = next;
 
         if (prev.Entity != next.Entity)
             return false;
@@ -332,8 +320,6 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
 
     private void RefreshAntagObjectives(
         Dictionary<string, List<ObjectiveInfo>> objectives,
-        bool antagAllComplete,
-        bool antagCoinGranted,
         string? briefing)
     {
         if (_window == null)
@@ -349,7 +335,6 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
             _objectiveCards.Clear();
             _objectiveLayoutCache.Clear();
             _characterInfoControls.Clear();
-            _rewardCard = null;
             _briefingCard = null;
             _briefingCache = null;
 
@@ -389,19 +374,6 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
                 groupIndex++;
             }
 
-            if (flatObjectives.Count > 0)
-            {
-                var rewardSlot = CreateObjectiveSlot();
-                _rewardCard = new AntagObjectiveCardControl
-                {
-                    HorizontalExpand = true,
-                    VerticalExpand = false,
-                };
-                _rewardCard.SetRewardFooter(antagAllComplete, antagCoinGranted);
-                rewardSlot.AddChild(_rewardCard);
-                _window.Objectives.AddChild(rewardSlot);
-            }
-
             if (briefing != null)
             {
                 var briefingSlot = CreateObjectiveSlot();
@@ -418,8 +390,6 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
             _objectiveLayoutCache.Clear();
             _objectiveLayoutCache.AddRange(flatObjectives);
             _briefingCache = briefing;
-            _rewardAllCompleteCache = antagAllComplete;
-            _rewardGrantedCache = antagCoinGranted;
             return;
         }
 
@@ -428,14 +398,6 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
         {
             _objectiveCards[cardIndex].UpdateObjectiveProgress(condition);
             cardIndex++;
-        }
-
-        if (_rewardCard != null
-            && (_rewardAllCompleteCache != antagAllComplete || _rewardGrantedCache != antagCoinGranted))
-        {
-            _rewardCard.UpdateRewardFooter(antagAllComplete, antagCoinGranted);
-            _rewardAllCompleteCache = antagAllComplete;
-            _rewardGrantedCache = antagCoinGranted;
         }
 
         for (var i = 0; i < flatObjectives.Count; i++)

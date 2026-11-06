@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using Content.Server._Mini.Objectives;
 using Content.Server.Antag.Components;
 using Content.Server.Mind;
 using Content.Server.Roles;
@@ -23,7 +22,6 @@ public sealed class CharacterInfoSystem : EntitySystem
     [Dependency] private readonly MindSystem _minds = default!;
     [Dependency] private readonly RoleSystem _roles = default!;
     [Dependency] private readonly SharedObjectivesSystem _objectives = default!;
-    [Dependency] private readonly AntagObjectiveCoinRewardSystem _antagObjectiveRewards = default!;
 
     public override void Initialize()
     {
@@ -43,8 +41,6 @@ public sealed class CharacterInfoSystem : EntitySystem
         var objectives = new Dictionary<string, List<ObjectiveInfo>>();
         ProtoId<JobPrototype>? jobId = null; // CorvaxGoob
         string? briefing = null;
-        var antagAllComplete = false;
-        var antagCoinGranted = false;
 
         if (TryResolveCharacterMind(args.SenderSession, entity, out var mindId, out var mind))
         {
@@ -64,17 +60,13 @@ public sealed class CharacterInfoSystem : EntitySystem
                 jobId = job;
 
             briefing = _roles.MindGetBriefing(mindId);
-            antagAllComplete = _antagObjectiveRewards.AreAllObjectivesComplete(mindId, mind);
-            antagCoinGranted = _antagObjectiveRewards.IsRewardGranted(mindId);
         }
 
         RaiseNetworkEvent(new CharacterInfoEvent(
             GetNetEntity(entity),
             jobId,
             objectives,
-            briefing,
-            antagAllComplete,
-            antagCoinGranted), args.SenderSession); // CorvaxGoob
+            briefing), args.SenderSession); // CorvaxGoob
     }
 
     /// <summary>
