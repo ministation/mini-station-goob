@@ -121,7 +121,12 @@ public sealed class SharedKitchenSpikeSystem : EntitySystem
             return;
 
         RemComp<KitchenSpikeHookedComponent>(args.Entity);
-        _damageableSystem.TryChangeDamage(args.Entity, ent.Comp.SpikeDamage, true);
+
+        // A victim being deleted is detached from the spike while it is already terminating. Damaging it here
+        // can change its mob state, and then MobStateActionsSystem tries to delete crit actions that the
+        // deletion has already flagged for removal: "Called Delete on an entity already being deleted".
+        if (!TerminatingOrDeleted(args.Entity))
+            _damageableSystem.TryChangeDamage(args.Entity, ent.Comp.SpikeDamage, true);
 
         _appearanceSystem.SetData(ent.Owner, KitchenSpikeVisuals.Status, KitchenSpikeStatus.Empty);
     }
