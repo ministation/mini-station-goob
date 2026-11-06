@@ -37,9 +37,22 @@ jobs:
       id: engine
       uses: space-wizards/submodule-dependency@v0.1.5
 
+    # Rust-инструменты (Tools/mini-rs) заменяют питоновские check_crlf и validate_rsis.
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Cache Rust build
+      uses: Swatinem/rust-cache@v2
+      with:
+        workspaces: Tools/mini-rs
+
+    - name: Build Rust tools
+      run: cargo build --release --workspace
+      working-directory: Tools/mini-rs
+
     - name: Check for CRLF
       if: ${{ !cancelled() && steps.engine.outcome == 'success' && github.event_name == 'pull_request' && github.event.pull_request.draft == false }}
-      run: Tools/check_crlf.py
+      run: Tools/mini-rs/target/release/mini-check-crlf
 
     # Схемная проверка всех карт идёт ~7 минут и нужна только если PR трогает карты.
     # Сломанную карту всё равно поймают тесты загрузки карт (MapTests).
@@ -63,6 +76,4 @@ jobs:
 
     - name: Validate RSIs
       if: ${{ !cancelled() && steps.engine.outcome == 'success' }}
-      run: |
-        pip3 install --ignore-installed --user pillow jsonschema
-        python3 RobustToolbox/Schemas/validate_rsis.py Resources/
+      run: Tools/mini-rs/target/release/mini-validate-rsi --schema RobustToolbox/Schemas/rsi.json Resources/

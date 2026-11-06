@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2026 Mini Station contributors
+# SPDX-License-Identifier: MIT
+
+[package]
+name = "mini-check-crlf"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[dependencies]
