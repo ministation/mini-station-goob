@@ -6,9 +6,9 @@
   components:
   - type: Sprite
     sprite: _CorvaxGoob/Objects/Storages/evidencebag.rsi
-    layers:
-    - map: ["slot"]
+    layers: # Mini: icon first so the item has a valid sprite (slot layer alone leaves Icon empty)
     - state: icon
+    - map: ["slot"]
     - state: icon_paper
       visible: false
       map: ["enum.PaperLabelVisuals.Layer"]
