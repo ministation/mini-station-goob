@@ -614,6 +614,7 @@
     contents:
     - id: VehicleClowncarTrainee
     - id: ClownMegaphone # goob - loudspeakers
+    - id: PinkPaperBox # CorvaxGoob
     - id: PaintingFrameClown # Goobstation
 
 # Mime

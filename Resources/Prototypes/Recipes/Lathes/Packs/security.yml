@@ -11,6 +11,7 @@
   - TargetHuman
   - TargetSyndicate
   - Zipties
+  - EvidenceBag # CorvaxGoob
 
 # Practice ammo/mags and practice weapons
 - type: latheRecipePack
@@ -93,6 +94,7 @@
   - TelescopicShield
   - ClothingBackpackHarmpack
   - EnergyDomeTurtle # Orion Energy Barriers
+  - ClothingShoesBootsMagSec # CorvaxGoob
 
 - type: latheRecipePack
   id: SecurityBoards

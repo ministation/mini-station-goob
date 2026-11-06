@@ -21,6 +21,7 @@ using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Content.Shared._CorvaxGoob.OverTemperature;
 
 namespace Content.Shared.VendingMachines;
 
@@ -496,6 +497,9 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     {
         vendComponent.Broken = true;
         Dirty(uid, vendComponent);
+
+        RaiseLocalEvent(uid, new VendingMachineStateChangeEvent(true)); // CorvaxGoob
+
         TryUpdateVisualState((uid, vendComponent));
 
         UISystem.CloseUi(uid, VendingMachineUiKey.Key);

@@ -202,7 +202,8 @@ public sealed partial class DamageableSystem
                 _prototypeManager.Resolve(ent.Comp.DamageModifierSetId, out var modifierSet)
             )
                 damage = DamageSpecifier.ApplyModifierSet(damage,
-                    DamageSpecifier.PenetrateArmor(modifierSet, damage.ArmorPenetration)); // Goob edit
+                    DamageSpecifier.PenetrateArmor(modifierSet, damage.ArmorPenetration),
+                    damage.BypassFlatReductions); // Goob edit // CorvaxGoob - bypassFlatReductions
 
 
             // <Woundmed>
