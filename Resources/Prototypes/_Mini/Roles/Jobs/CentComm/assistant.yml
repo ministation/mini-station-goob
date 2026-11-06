@@ -17,7 +17,7 @@
   - CentralCommandAssistant
   - Writing
   - SOPCentcomm
-  weight: 15 # Below ПЦК in prefs list
+  weight: 15 # Below ОЦК/ОСО in prefs list
 
   requirements:
   - !type:AgeRequirement

@@ -16,24 +16,24 @@
   <FTLTextpart Key="guidebook-SOP-centcomm-general-prohibited"/>
 
   # Должностные СРП
-  ## СРП ПЦК
-  ### ПЦК обязан
-  <FTLTextpart Key="guidebook-SOP-CentralCommandOfficial-must"/>
-
-  ### ПЦК имеет право
-  <FTLTextpart Key="guidebook-SOP-CentralCommandOfficial-right"/>
-
-  ### ПЦК запрещено
-  <FTLTextpart Key="guidebook-SOP-CentralCommandOfficial-prohibited"/>
-
   ## СРП ОЦК
   ### ОЦК обязан
-  <FTLTextpart Key="guidebook-SOP-CentralCommandOperator-must"/>
+  <FTLTextpart Key="guidebook-SOP-CentralCommandOfficial-must"/>
 
   ### ОЦК имеет право
-  <FTLTextpart Key="guidebook-SOP-CentralCommandOperator-right"/>
+  <FTLTextpart Key="guidebook-SOP-CentralCommandOfficial-right"/>
 
   ### ОЦК запрещено
+  <FTLTextpart Key="guidebook-SOP-CentralCommandOfficial-prohibited"/>
+
+  ## СРП Офицера безопасности ЦК
+  ### Офицер безопасности ЦК обязан
+  <FTLTextpart Key="guidebook-SOP-CentralCommandOperator-must"/>
+
+  ### Офицер безопасности ЦК имеет право
+  <FTLTextpart Key="guidebook-SOP-CentralCommandOperator-right"/>
+
+  ### Офицеру безопасности ЦК запрещено
   <FTLTextpart Key="guidebook-SOP-CentralCommandOperator-prohibited"/>
 
   ## СРП НШЦК

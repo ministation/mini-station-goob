@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: department
   id: Typan
   name: department-Typan
@@ -25,7 +29,7 @@
   roles:
   - TypanBorg
 
-# Visible CentComm department for character job priorities (ОСЩ, ПНТ, ПЦК, помощник).
+# Visible CentComm department for character job priorities (ОЦК, ОСО, ОСЩ, ПНТ, помощник).
 - type: department
   id: CentComm
   name: department-CentComm
@@ -35,6 +39,7 @@
   antagObjectiveImmune: true # Mini - CentComm staff must not be antag objective targets
   roles:
   - CentralCommandOfficial
+  - CentralCommandSpecialOperationsOfficer
   - CentralCommandAssistant
   - BlueshieldOfficer
   - NanotrasenRepresentative

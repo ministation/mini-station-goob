@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 meta:
   format: 7
   category: Grid
@@ -35965,7 +35969,7 @@ entities:
       pos: 70.5,101.5
       parent: 1
     - type: NavMapBeacon
-      text: Стыковка ПЦК
+      text: Стыковка ОЦК
     missingComponents:
     - WarpPoint
   - uid: 4315

@@ -1,11 +1,11 @@
 <Document>
-# Представитель Центрального Командования
-Вы — [color=#1b67a5]представитель ЦК (ПЦК)[/color]: голос NanoTrasen на станции и на объекте Центрального Командования. Ваша задача — контролировать ситуацию в секторе, отвечать на обращения станции и при необходимости лично вмешиваться.
+# Офицер Центрального Командования
+Вы — [color=#1b67a5]офицер ЦК (ОЦК)[/color]: голос NanoTrasen на станции и на объекте Центрального Командования. Ваша задача — контролировать ситуацию в секторе, отвечать на обращения станции и при необходимости лично вмешиваться.
 
 Подробные СРП смотрите в разделе [textlink="Центральное Командование (СРП)" link="SOPCentcomm"].
 
   <Box>
-    <GuideEntityEmbed Entity="CentcomPDA" Caption="КПК ПЦК"/>
+    <GuideEntityEmbed Entity="CentcomPDA" Caption="КПК ОЦК"/>
     <GuideEntityEmbed Entity="ClothingHeadsetAltCentCom" Caption="гарнитура ЦК"/>
     <GuideEntityEmbed Entity="ClothingOuterArmorCentcommCarapace" Caption="карапас"/>
   </Box>

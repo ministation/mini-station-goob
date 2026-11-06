@@ -37,4 +37,4 @@
     - state: green
   - type: SpawnPoint
     spawn_type: LateJoin
-    # Null job_id: any CentComm handled job (ПЦК / стажер) may latejoin here.
+    # Null job_id: any CentComm handled job (ОЦК / ОСО / стажер) may latejoin here.

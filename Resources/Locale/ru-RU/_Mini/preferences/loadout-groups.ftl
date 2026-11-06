@@ -1,9 +1,9 @@
 # CentComm roundstart
-loadout-group-centcomm-official-jumpsuit = ПЦК, комбинезон
-loadout-group-centcomm-official-head = ПЦК, головной убор
-loadout-group-centcomm-official-shoes = ПЦК, обувь
-loadout-group-centcomm-official-gloves = ПЦК, перчатки
-loadout-group-centcomm-official-backpack = ПЦК, рюкзак
+loadout-group-centcomm-official-jumpsuit = ОЦК, комбинезон
+loadout-group-centcomm-official-head = ОЦК, головной убор
+loadout-group-centcomm-official-shoes = ОЦК, обувь
+loadout-group-centcomm-official-gloves = ОЦК, перчатки
+loadout-group-centcomm-official-backpack = ОЦК, рюкзак
 loadout-group-centcomm-assistant-jumpsuit = Стажер ЦК, комбинезон
 loadout-group-centcomm-assistant-head = Стажер ЦК, головной убор
 loadout-group-centcomm-assistant-outerclothing = Стажер ЦК, верхняя одежда
