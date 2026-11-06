@@ -405,7 +405,11 @@ public abstract partial class SharedActionsSystem : EntitySystem
             _rotateToFace.TryFaceCoordinates(user, targetWorldPos);
 
         if (!ValidateEntityTarget(user, target, ent))
+        {
+            // Without this the action is performed with the event's unset (invalid) target.
+            args.Invalid = true;
             return;
+        }
 
         _adminLogger.Add(LogType.Action,
             $"{ToPrettyString(user):user} is performing the {Name(ent):action} action (provided by {ToPrettyString(args.Provider):provider}) targeted at {ToPrettyString(target):target}.");
