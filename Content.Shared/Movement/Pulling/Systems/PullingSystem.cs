@@ -36,6 +36,7 @@ using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Robust.Shared.Containers;
 using Robust.Shared.Input.Binding;
+using Robust.Shared.Map;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Events;
@@ -482,6 +483,14 @@ public sealed class PullingSystem : EntitySystem
         }
 
         if (puller == pullableUid)
+        {
+            return false;
+        }
+
+        // The pull joint cannot connect bodies on different maps (a polymorph jaunt or cryostorage moves a body
+        // to a paused map), and the engine logs an error for such a joint.
+        var pullerXform = Transform(puller);
+        if (pullerXform.MapID == MapId.Nullspace || pullerXform.MapID != Transform(pullableUid).MapID)
         {
             return false;
         }
