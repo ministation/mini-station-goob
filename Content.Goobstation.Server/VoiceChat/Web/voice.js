@@ -300,6 +300,7 @@ function pushConfig() {
         threshold: settings.threshold,
         gain: settings.gain,
         muted: settings.muted,
+        noiseGate: settings.noiseSuppression,
     });
 }
 

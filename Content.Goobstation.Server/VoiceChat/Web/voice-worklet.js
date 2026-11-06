@@ -6,6 +6,29 @@ const VAD_HANGOVER_FRAMES = 20;
 const LEVEL_REPORT_FRAMES = 3;
 const FLAG_TRANSMISSION_START = 1;
 
+const FRAME_SECONDS = FRAME_SAMPLES / OUTPUT_RATE;
+const HIGH_PASS_HZ = 90;
+const LIMITER_CEILING = 0.89;
+const LIMITER_RELEASE_SECONDS = 0.15;
+const PRE_EMPHASIS = 0.9;
+const GATE_CLOSED_GAIN = 0.03;
+const GATE_ATTACK_SECONDS = 0.003;
+const GATE_RELEASE_SECONDS = 0.12;
+const GATE_HOLD_FRAMES = 15;
+const GATE_OPEN_MARGIN_DB = 9;
+const GATE_KEEP_MARGIN_DB = 5;
+const GATE_BLOCK_SAMPLES = 64;
+const GATE_BLOCKS = FRAME_SAMPLES / GATE_BLOCK_SAMPLES;
+const GATE_SUSTAINED_BLOCKS = 3;
+const GATE_ALWAYS_OPEN_DB = -26;
+const FLOOR_MIN_DB = -85;
+const FLOOR_MAX_DB = -38;
+const FLOOR_FALL = 0.25;
+const FLOOR_RISE_DB_PER_SECOND = 0.5;
+const FLOOR_STEADY_RISE_DB_PER_SECOND = 8;
+const STEADY_RANGE_DB = 3;
+const STEADY_FRAMES = 25;
+
 const INDEX_TABLE = [-1, -1, -1, -1, 2, 4, 6, 8, -1, -1, -1, -1, 2, 4, 6, 8];
 const STEP_TABLE = [
     7, 8, 9, 10, 11, 12, 13, 14, 16, 17,
@@ -95,6 +118,113 @@ class Resampler {
     }
 }
 
+// Срез гула и низкочастотного шума: Баттерворт 2-го порядка.
+class HighPassFilter {
+    constructor(cutoff, rate) {
+        const w = 2 * Math.PI * cutoff / rate;
+        const alpha = Math.sin(w) / Math.SQRT2;
+        const norm = 1 + alpha;
+        this.b0 = (1 + Math.cos(w)) / 2 / norm;
+        this.b1 = -2 * this.b0;
+        this.a1 = -2 * Math.cos(w) / norm;
+        this.a2 = (1 - alpha) / norm;
+        this.z1 = 0;
+        this.z2 = 0;
+    }
+
+    process(sample) {
+        const output = this.b0 * sample + this.z1;
+        this.z1 = this.b1 * sample - this.a1 * output + this.z2;
+        this.z2 = this.b0 * sample - this.a2 * output;
+        return output;
+    }
+}
+
+// Плавно убирает громкость на пиках вместо жёсткого среза, из-за которого голос хрипел.
+class Limiter {
+    constructor(rate) {
+        this.gain = 1;
+        this.release = 1 - Math.exp(-1 / (LIMITER_RELEASE_SECONDS * rate));
+    }
+
+    process(sample) {
+        const magnitude = Math.abs(sample);
+        const target = magnitude > LIMITER_CEILING ? LIMITER_CEILING / magnitude : 1;
+        this.gain = Math.min(target, this.gain + (1 - this.gain) * this.release);
+        return sample * this.gain;
+    }
+}
+
+// Следит за уровнем фонового шума и глушит всё, что заметно не громче него.
+// Короткий всплеск (щелчок клавиши) голосом не считается: звук должен занимать
+// большую часть кадра и держаться два кадра подряд.
+class NoiseGate {
+    constructor(rate) {
+        this.floor = null;
+        this.average = 0;
+        this.steady = 0;
+        this.loud = false;
+        this.hold = 0;
+        this.gain = 1;
+        this.attack = 1 - Math.exp(-1 / (GATE_ATTACK_SECONDS * rate));
+        this.release = 1 - Math.exp(-1 / (GATE_RELEASE_SECONDS * rate));
+    }
+
+    get open() {
+        return this.hold > 0;
+    }
+
+    update(db, levelDb, blocks) {
+        this.trackFloor(db);
+
+        const keepDb = this.floor + GATE_KEEP_MARGIN_DB;
+        const blockLimit = Math.pow(10, keepDb / 10) * GATE_BLOCK_SAMPLES;
+        let active = 0;
+        for (let i = 0; i < GATE_BLOCKS; i++) {
+            if (blocks[i] >= blockLimit)
+                active++;
+        }
+
+        const certain = levelDb >= GATE_ALWAYS_OPEN_DB;
+        const sustained = active >= GATE_SUSTAINED_BLOCKS;
+        const wasLoud = this.loud;
+        this.loud = certain || sustained && db >= this.floor + GATE_OPEN_MARGIN_DB;
+        if (this.loud && wasLoud || this.open && (certain || sustained && db >= keepDb))
+            this.hold = GATE_HOLD_FRAMES;
+        else if (this.hold > 0)
+            this.hold--;
+    }
+
+    trackFloor(db) {
+        const level = Math.max(db, FLOOR_MIN_DB);
+        if (this.floor === null) {
+            this.floor = Math.min(level, FLOOR_MAX_DB);
+            this.average = level;
+            return;
+        }
+
+        this.steady = Math.abs(level - this.average) < STEADY_RANGE_DB ? this.steady + 1 : 0;
+        this.average += (level - this.average) * 0.2;
+
+        if (level < this.floor) {
+            this.floor += (level - this.floor) * FLOOR_FALL;
+            return;
+        }
+
+        const rise = (this.steady >= STEADY_FRAMES ? FLOOR_STEADY_RISE_DB_PER_SECOND : FLOOR_RISE_DB_PER_SECOND) * FRAME_SECONDS;
+        this.floor = Math.min(this.floor + rise, level, FLOOR_MAX_DB);
+    }
+
+    apply(samples, enabled) {
+        const target = !enabled || this.open ? 1 : GATE_CLOSED_GAIN;
+        const coefficient = target > this.gain ? this.attack : this.release;
+        for (let i = 0; i < samples.length; i++) {
+            this.gain += (target - this.gain) * coefficient;
+            samples[i] *= this.gain;
+        }
+    }
+}
+
 class AdpcmEncoder {
     constructor() {
         this.predictor = 0;
@@ -159,11 +289,19 @@ class VoiceCaptureProcessor extends AudioWorkletProcessor {
         super();
         this.resampler = new Resampler(sampleRate, OUTPUT_RATE);
         this.encoder = new AdpcmEncoder();
+        this.highPass = new HighPassFilter(HIGH_PASS_HZ, OUTPUT_RATE);
+        this.limiter = new Limiter(OUTPUT_RATE);
+        this.gate = new NoiseGate(OUTPUT_RATE);
+        this.lastValue = 0;
+        this.blocks = new Float64Array(GATE_BLOCKS);
         this.frame = new Float32Array(FRAME_SAMPLES);
+        this.current = new Float32Array(FRAME_SAMPLES);
+        this.delayed = new Float32Array(FRAME_SAMPLES);
         this.pcm = new Int16Array(FRAME_SAMPLES);
         this.frameLength = 0;
         this.preroll = [];
         this.transmitting = false;
+        this.wasWanted = false;
         this.vadOpen = false;
         this.vadHang = 0;
         this.levelCounter = 0;
@@ -172,6 +310,7 @@ class VoiceCaptureProcessor extends AudioWorkletProcessor {
         this.threshold = -45;
         this.gain = 1;
         this.muted = false;
+        this.noiseGate = true;
         this.allowed = false;
         this.pushToTalk = false;
         this.net = null;
@@ -189,7 +328,7 @@ class VoiceCaptureProcessor extends AudioWorkletProcessor {
         if (message.type !== "config")
             return;
 
-        for (const key of ["mode", "threshold", "gain", "muted", "allowed", "pushToTalk"]) {
+        for (const key of ["mode", "threshold", "gain", "muted", "noiseGate", "allowed", "pushToTalk"]) {
             if (key in message)
                 this[key] = message[key];
         }
@@ -205,22 +344,35 @@ class VoiceCaptureProcessor extends AudioWorkletProcessor {
 
     processFrame() {
         let energy = 0;
+        let tilted = 0;
+        this.blocks.fill(0);
         for (let i = 0; i < FRAME_SAMPLES; i++) {
-            let value = this.frame[i] * this.gain;
-            if (value > 1)
-                value = 1;
-            else if (value < -1)
-                value = -1;
+            const value = this.limiter.process(this.highPass.process(this.frame[i] * this.gain));
+            const difference = value - PRE_EMPHASIS * this.lastValue;
+            this.lastValue = value;
 
             energy += value * value;
-            this.pcm[i] = Math.round(value * 32767);
+            tilted += difference * difference;
+            this.blocks[(i / GATE_BLOCK_SAMPLES) | 0] += difference * difference;
+            this.current[i] = value;
         }
 
-        const rms = Math.sqrt(energy / FRAME_SAMPLES);
-        const db = rms > 0 ? 20 * Math.log10(rms) : -100;
+        const db = this.toDb(energy);
         this.peakDb = Math.max(this.peakDb, db);
+        this.gate.update(this.toDb(tilted), db, this.blocks);
 
-        if (db >= this.threshold) {
+        // В эфир уходит предыдущий кадр: так шумодав знает, что будет дальше,
+        // и не съедает начало слова.
+        this.gate.apply(this.delayed, this.noiseGate);
+        for (let i = 0; i < FRAME_SAMPLES; i++) {
+            this.pcm[i] = Math.round(this.delayed[i] * 32767);
+        }
+
+        const buffer = this.delayed;
+        this.delayed = this.current;
+        this.current = buffer;
+
+        if (db >= this.threshold && (!this.noiseGate || this.gate.open)) {
             this.vadOpen = true;
             this.vadHang = VAD_HANGOVER_FRAMES;
         } else if (this.vadHang > 0) {
@@ -231,7 +383,8 @@ class VoiceCaptureProcessor extends AudioWorkletProcessor {
 
         const encoded = this.encoder.encode(this.pcm);
         const wanted = this.mode === "vad" ? this.vadOpen : this.pushToTalk;
-        const transmitting = wanted && this.allowed && !this.muted;
+        const transmitting = (wanted || this.wasWanted) && this.allowed && !this.muted;
+        this.wasWanted = wanted;
 
         if (transmitting) {
             if (!this.transmitting) {
@@ -258,6 +411,11 @@ class VoiceCaptureProcessor extends AudioWorkletProcessor {
 
         if (++this.levelCounter >= LEVEL_REPORT_FRAMES)
             this.reportLevel();
+    }
+
+    toDb(energy) {
+        const rms = Math.sqrt(energy / FRAME_SAMPLES);
+        return rms > 0 ? 20 * Math.log10(rms) : -100;
     }
 
     reportLevel() {

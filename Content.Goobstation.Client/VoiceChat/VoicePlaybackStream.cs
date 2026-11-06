@@ -28,12 +28,15 @@ public sealed class VoicePlaybackStream : IDisposable
     private const int OverlapSamples = HoldSamples + RampSamples;
     private const int LinkableSamples = OverlapSamples + RampSamples;
     private const int GapFadeSamples = 64;
-    private const int StartSamples = SampleRate * 80 / 1000;
-    private const int TargetSamples = SampleRate * 120 / 1000;
-    private const int MaxLatencySamples = SampleRate * 250 / 1000;
+    private const int StartSamples = SampleRate * 100 / 1000;
+    private const int TargetSamples = SampleRate * 140 / 1000;
+    private const int MaxLatencySamples = SampleRate * 280 / 1000;
     private const int MaxBufferedSamples = SampleRate * 5;
     private const int ConcealAfterFrames = 3;
     private const int MaxSequenceJump = 50;
+
+    private const float LimiterCeiling = 0.89f * short.MaxValue;
+    private const float LimiterRelease = 1f / (SampleRate * 0.15f);
 
     private const float ActivityRelease = 0.3f;
     private const float OpenCutoff = 7000f;
@@ -68,6 +71,7 @@ public sealed class VoicePlaybackStream : IDisposable
     private float _muffle;
     private float _lowFirst;
     private float _lowSecond;
+    private float _limiterGain = 1f;
 
     public ushort Speaker;
     public NetEntity Source;
@@ -220,7 +224,7 @@ public sealed class VoicePlaybackStream : IDisposable
         if (!_current.Linkable || PcmEnd - _current.End < FrameSamples)
             return;
 
-        var position = _current.Start + (long) MathF.Round(_current.Source.PlaybackPosition * SampleRate);
+        var position = MixedPosition(_current);
         var contentStart = _current.End - OverlapSamples;
         var offset = position - contentStart;
         if (offset is < 0 or >= HoldSamples)
@@ -233,7 +237,16 @@ public sealed class VoicePlaybackStream : IDisposable
         if (chunk == null)
             return;
 
-        Play(chunk, offset);
+        Prepare(chunk);
+
+        // Mini: сборка куска занимает время, за которое микшер OpenAL успевает уйти вперед.
+        // По старой позиции новый кусок стартует со сдвигом, и стык слышен как щелчок или провал.
+        Play(chunk, Math.Max(MixedPosition(_current), position) - contentStart);
+    }
+
+    private static long MixedPosition(Chunk chunk)
+    {
+        return chunk.Start + (long) MathF.Round(chunk.Source.PlaybackPosition * SampleRate);
     }
 
     private void StartFresh(TimeSpan now)
@@ -255,8 +268,11 @@ public sealed class VoicePlaybackStream : IDisposable
         }
 
         var chunk = CreateChunk(start, PcmEnd, false);
-        if (chunk != null)
-            Play(chunk, 0);
+        if (chunk == null)
+            return;
+
+        Prepare(chunk);
+        Play(chunk, 0);
     }
 
     private void DropBacklog(long keepFrom)
@@ -271,13 +287,16 @@ public sealed class VoicePlaybackStream : IDisposable
         _pcmStart = keepFrom;
     }
 
-    private void Play(Chunk chunk, long offsetSamples)
+    private void Prepare(Chunk chunk)
     {
         Apply(chunk.Source);
         chunk.Source.RolloffFactor = 1f;
         chunk.Source.ReferenceDistance = _params.ReferenceDistance;
         chunk.Source.MaxDistance = _params.MaxDistance;
+    }
 
+    private void Play(Chunk chunk, long offsetSamples)
+    {
         if (offsetSamples > 0)
             chunk.Source.PlaybackPosition = offsetSamples / (float) SampleRate;
 
@@ -297,12 +316,10 @@ public sealed class VoicePlaybackStream : IDisposable
         if (_chunkBuffer.Length < length)
             _chunkBuffer = new short[Math.Max(length, _chunkBuffer.Length * 2)];
 
-        var boost = _params.Boost;
         var offset = (int) (start - _pcmStart);
         for (var i = 0; i < length; i++)
         {
-            var gain = HeadGain(i, holdHead) * TailGain(i, length) * boost;
-            var value = _pcm[offset + i] * gain;
+            var value = _pcm[offset + i] * HeadGain(i, holdHead) * TailGain(i, length);
             _chunkBuffer[i] = (short) Math.Clamp(value, short.MinValue, short.MaxValue);
         }
 
@@ -410,6 +427,7 @@ public sealed class VoicePlaybackStream : IDisposable
         }
 
         _meter.Analyze(_pcm, _pcmLength, FrameSamples, PcmEnd);
+        ApplyBoost(_pcmLength);
         _pcmLength += FrameSamples;
         _lastFrame = frame;
     }
@@ -429,6 +447,29 @@ public sealed class VoicePlaybackStream : IDisposable
             _lowFirst += (_pcm[i] - _lowFirst) * coefficient;
             _lowSecond += (_lowFirst - _lowSecond) * coefficient;
             _pcm[i] = (short) Math.Clamp(_lowSecond, short.MinValue, short.MaxValue);
+        }
+    }
+
+    /// <summary>
+    /// Mini: громкость выше 100% раньше упиралась в жесткий клип, и голос хрипел. Лимитер убирает
+    /// усиление только на пиках, а считается один раз на кадр, чтобы стыки кусков всегда сходились.
+    /// </summary>
+    private void ApplyBoost(int start)
+    {
+        var boost = _params.Boost;
+        if (boost <= 1f)
+        {
+            _limiterGain = 1f;
+            return;
+        }
+
+        for (var i = start; i < start + FrameSamples; i++)
+        {
+            var sample = _pcm[i] * boost;
+            var magnitude = MathF.Abs(sample);
+            var target = magnitude > LimiterCeiling ? LimiterCeiling / magnitude : 1f;
+            _limiterGain = MathF.Min(target, _limiterGain + (1f - _limiterGain) * LimiterRelease);
+            _pcm[i] = (short) (sample * _limiterGain);
         }
     }
 
