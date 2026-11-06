@@ -25,21 +25,16 @@ public sealed class CharacterInfoEvent : EntityEventArgs
     public readonly ProtoId<JobPrototype>? JobProto; // CorvaxGoob
     public readonly Dictionary<string, List<ObjectiveInfo>> Objectives;
     public readonly string? Briefing;
-    public readonly bool AntagAllObjectivesComplete;
-    public readonly bool AntagObjectiveCoinRewardGranted;
 
     public CharacterInfoEvent(
         NetEntity netEntity,
         ProtoId<JobPrototype>? jobProto, // CorvaxGoob
         Dictionary<string, List<ObjectiveInfo>> objectives,
-        string? briefing,
-        bool antagAllObjectivesComplete = false,
-        bool antagObjectiveCoinRewardGranted = false)    {
+        string? briefing)
+    {
         NetEntity = netEntity;
         JobProto = jobProto; // CorvaxGoob
         Objectives = objectives;
         Briefing = briefing;
-        AntagAllObjectivesComplete = antagAllObjectivesComplete;
-        AntagObjectiveCoinRewardGranted = antagObjectiveCoinRewardGranted;
     }
 }
