@@ -186,14 +186,6 @@
     Plastic: 300
 
 - type: latheRecipe
-  parent: BaseToolRecipe
-  id: ClothingShoesBootsMag
-  result: ClothingShoesBootsMag
-  materials:
-    Steel: 850
-    Plastic: 250
-
-- type: latheRecipe
   id: CommsComputerCircuitboard
   result: CommsComputerCircuitboard
   categories:

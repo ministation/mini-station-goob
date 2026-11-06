@@ -1,4 +1,8 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
+    // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Linq;
 using System.Numerics;
@@ -86,6 +90,9 @@ namespace Content.Server.VendingMachines
             if (!args.DamageIncreased && component.Broken)
             {
                 component.Broken = false;
+
+                RaiseLocalEvent(uid, new VendingMachineStateChangeEvent(false)); // CorvaxGoob-Start
+
                 Dirty(uid, component);
                 TryUpdateVisualState((uid, component));
                 return;

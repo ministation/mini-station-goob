@@ -22,16 +22,16 @@
 
   4. Once you reach 15 souls, an announcement warns the crew of your ascendance.
 
-  ## Страх
+  ## Fear
 
-Страх — это шкала силы Мясника, отображаемая в оповещении [bold]Страх[/bold].
+Fear is the Slashers power meter, shown by the [bold]Fear[/bold] alert.
 
-  - [bold]Накопление.[/bold] Ваш страх растёт, пока живые смотрят на вас, и резко повышается каждый раз, когда вы пугаете новую жертву. Он медленно спадает, если никто не видел вас какое-то время.
-  - [bold]Скорость.[/bold] При полном страхе вы двигаетесь быстрее — растущая паника делает вас сложнее упустить.
-  - [bold]Присутствие.[/bold] Когда вы накапливаете страх, начинает играть ваша тема, а в определённый момент за вами начинает тянуться кровавый след. Нажмите на оповещение [bold]Страх[/bold], чтобы выключить или снова включить тему для себя; жертвы всё равно её слышат.
-  - [bold]Ужас.[/bold] У каждого, на кого вы активно охотитесь, накапливается собственный страх. При высоком страхе они (45)замедляются и начинают получать (90)урон.
+  - [bold]Building it.[/bold] Your fear rises while the living have you in sight, and jumps each time you jumpscare a fresh victim. It slowly decays once no one has seen you for a while.
+  - [bold]Speed.[/bold] At full fear you move faster. a rising panic that makes you harder to escape.
+  - [bold]Presence.[/bold] When you build up your fear your theme song starts playing, and at a certain point, you start trailing blood. Click the [bold]Fear[/bold] alert to turn the theme off or back on for yourself; your victims still hear it.
+  - [bold]Dread.[/bold] Anyone you are actively hunting builds up fear of their own. At high fear they are (45)slowed and begin to take (90)damage.
 
-Оставайтесь на виду, чтобы наращивать силу и ужас.
+Stay seen to build your power and terror.
 
   ## Способности
 
@@ -42,6 +42,8 @@
   [bold]Резня[/bold] – Невероятно мощная способность, привязанная к вашему особому мачете. При первом ударе вы наносите гораздо меньше урона, но чем больше попаданий совершаете, тем сильнее они становятся. С определённого удара вы начнёте отрубать конечности жертвы, а на 13-й удар — обезглавите её. Промах сбрасывает комбо.
 
   [bold]Регенерация/Маньякиум[/bold] – Невероятно мощный источник исцеления. Он восстанавливает ваши силы и снимает любые ограничители. Платой за это служит очень долгая перезарядка.
+
+  [bold]Кровавый след[/bold] – Оставляйте за собой тянущийся след крови. Также во время действия играет музыка. Жуть!
 
   [bold]Нематериальность / Материализация[/bold] – Исчезайте и вновь появляйтесь в материальном мире. Это ваш основной способ перемещения. Способность нельзя использовать, пока вы на виду. Она крайне ограничена, но очень сильна. Пока вы не материальны, перезарядка других способностей приостанавливается.
 
@@ -187,27 +189,22 @@ Toggleable night vision that allows you to see perfectly in darkness with a red 
   </Box>
 </Box>
 
-  ## Наборы и варианты
+  ## Kits and Variants
 
-Когда вы впервые появляетесь, вы выбираете [bold]набор[/bold]. Каждый набор включает уникальную музыкальную тему и уникальный внешний вид. Большинство наборов чисто косметические и играются как описанный выше Мясник.
+When you first spawn you choose a [bold]kit[/bold]. Each comes with a unique outfit, theme song, and weapon skin. Most kits are purely cosmetic and play exactly like the Slasher described above.
 
-Некоторые наборы меняют геймплей. Они помечены кнопкой [bold]?[/bold] в меню выбора набора, которая ведёт на их страницу справочника:
+A few kits change how you play. Those are marked with a [bold]?[/bold] button in the kit-select menu that jumps straight to their guidebook page:
 
-  - [bold]Бугимен[/bold] - отказывается от бестелесного полёта и спринта в обмен на более быструю ходьбу, невидимость в тенях и ауру страха, не дающую остальным бежать спринтом. [textlink="Бугимен" link="SlasherBoogeyman"]
+  - [bold]Boogeyman[/bold] - gives up the incorporeal jaunt and sprinting for a faster walkspeed, invisibility in shadows, and a fear aura that prevents others from sprinting. [textlink="Boogeyman" link="SlasherBoogeyman"]
 
   ## Советы для экипажа
   [bold]Не гуляйте в одиночку[/bold].
   - Мясник относительно слаб, когда впервые появляется на станции.
   - С каждой украденной душой он становятся всё более живучим, а его удары - смертоноснее.
   - Если вам удалось застать Мясника врасплох, не выпускайте его из виду - пока вы на него смотрите, он не может сбежать.
-  - Камеры мешают ему выйти из бестелесной формы.
-  - В бестелесной форме его перезарядки замирают.
   - Маньяк уязвим к святому урону. Если ваши силы на исходе, зовите на помощь священника.
   - Шапочки из фольги и имплант "Щит разума" предотвращают вселение!
   - Как только будет похищено 15 душ, прозвучит объявление, предупреждающее экипаж.
-  - Держитесь вместе: Мясник силён против одиночек.
-  - Если он сделал крепкий захват и тащит вас к мясному шипу, оттолкните его толчком, чтобы отменить это.
-  - Он не может использовать оружие.
   - У него нет критического состояния. Он либо жив, либо мёртв.
 
   [color=red][bold]Вы - воплощение легенды о полночной резне. Соответствуйте своему имени.[/bold][/color]

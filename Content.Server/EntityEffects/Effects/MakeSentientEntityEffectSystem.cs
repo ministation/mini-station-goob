@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared.Damage.Systems;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Speech.Components;
@@ -7,6 +11,7 @@ using Content.Shared.Mind.Components;
 // CorvaxGoob-start
 using Content.Shared.Humanoid;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems; // CorvaxGoob
 // CorvaxGoob-end
 
 namespace Content.Server.EntityEffects.Effects;

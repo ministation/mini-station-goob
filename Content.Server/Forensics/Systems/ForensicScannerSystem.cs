@@ -16,9 +16,11 @@ using Robust.Shared.Audio.Systems;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Timing;
-using Content.Server.Chemistry.Containers.EntitySystems;
 using Content.Shared.Forensics.Components;
 using Robust.Shared.Prototypes;
+using Content.Shared.Containers.ItemSlots;
+using Content.Shared._CorvaxGoob.EvidenceBag;
+using Content.Server.GameTicking;
 // todo: remove this stinky LINQy
 
 namespace Content.Server.Forensics
@@ -35,6 +37,8 @@ namespace Content.Server.Forensics
         [Dependency] private readonly MetaDataSystem _metaData = default!;
         [Dependency] private readonly ForensicsSystem _forensicsSystem = default!;
         [Dependency] private readonly TagSystem _tag = default!;
+        [Dependency] private readonly ItemSlotsSystem _itemSlots = default!; // CorvaxGoob
+        [Dependency] private readonly GameTicker _ticker = default!; // CorvaxGoob
 
         private static readonly ProtoId<TagPrototype> DNASolutionScannableTag = "DNASolutionScannable";
 
@@ -61,7 +65,8 @@ namespace Content.Server.Forensics
                 component.Residues,
                 component.LastScannedName,
                 component.PrintCooldown,
-                component.PrintReadyAt);
+                component.PrintReadyAt,
+                component.ScanTime); // CorvaxGoob
 
             _uiSystem.SetUiState(uid, ForensicScannerUiKey.Key, state);
         }
@@ -76,7 +81,13 @@ namespace Content.Server.Forensics
 
             if (args.Args.Target != null)
             {
-                if (!TryComp<ForensicsComponent>(args.Args.Target, out var forensics))
+                // CorvaxGoob-Start
+                var target = args.Args.Target;
+
+                if (TryComp<EvidenceBagComponent>(target, out var evidenceBag) && _itemSlots.GetItemOrNull(target.Value, evidenceBag.Slot) is { } evidenceItem)
+                    target = evidenceItem;
+
+                if (!TryComp<ForensicsComponent>(target, out var forensics)) // CorvaxGoob-End
                 {
                     scanner.Fingerprints = new();
                     scanner.Fibers = new();
@@ -91,15 +102,16 @@ namespace Content.Server.Forensics
                     scanner.Residues = forensics.Residues.ToList();
                 }
 
-                if (_tag.HasTag(args.Args.Target.Value, DNASolutionScannableTag))
+                if (_tag.HasTag(target.Value, DNASolutionScannableTag)) // CorvaxGoob
                 {
-                    scanner.SolutionDNAs = _forensicsSystem.GetSolutionsDNA(args.Args.Target.Value);
+                    scanner.SolutionDNAs = _forensicsSystem.GetSolutionsDNA(target.Value);
                 } else
                 {
                     scanner.SolutionDNAs = new();
                 }
 
-                scanner.LastScannedName = MetaData(args.Args.Target.Value).EntityName;
+                scanner.ScanTime = _gameTiming.CurTime.Subtract(_ticker.RoundStartTimeSpan); // CorvaxGoob
+                scanner.LastScannedName = MetaData(target.Value).EntityName;
             }
 
             OpenUserInterface(args.Args.User, (uid, scanner));
@@ -219,6 +231,7 @@ namespace Content.Server.Forensics
 
             var text = new StringBuilder();
 
+            text.AppendLine(Loc.GetString("forensic-scanner-interface-scan-time", ("time", component.ScanTime.ToString("hh\\:mm\\:ss")))); // CorvaxGoob
             text.AppendLine(Loc.GetString("forensic-scanner-interface-fingerprints"));
             foreach (var fingerprint in component.Fingerprints)
             {

@@ -10,13 +10,13 @@ public sealed partial class ObjectiveCondition : ListingCondition
     /// A whitelist of objectives that can allow purchase this listing. Only one needs to be found.
     /// </summary>
     [DataField("whitelist")]
-    public HashSet<string>? Whitelist;
+    public HashSet<EntProtoId>? Whitelist;
 
     /// <summary>
     /// A blacklist of objectives that can block purchase this listing. Only one needs to be found.
     /// </summary>
     [DataField("blacklist")]
-    public HashSet<string>? Blacklist;
+    public HashSet<EntProtoId>? Blacklist;
 
     public override bool Condition(ListingConditionArgs args)
     {

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Common.Temperature;
 using Content.Goobstation.Common.Temperature.Components;
 using Content.Goobstation.Shared.Temperature;
@@ -82,6 +86,13 @@ public sealed partial class TemperatureSystem
             if (entity.Comp.TakingDamage && deltaTime < entity.Comp.UpdateInterval)
                 continue;
 
+            // CorvaxGoob-Start
+            entity.Comp.LastUpdate = _gameTiming.CurTime;
+
+            if (!entity.Comp.Enabled)
+                continue;
+            // CorvaxGoob-End
+
             ChangeDamage(entity, deltaTime);
         }
 
@@ -90,7 +101,6 @@ public sealed partial class TemperatureSystem
 
     private void ChangeDamage(Entity<TemperatureDamageComponent> entity, TimeSpan deltaTime)
     {
-        entity.Comp.LastUpdate = _gameTiming.CurTime;
 
         if (!HasComp<DamageableComponent>(entity) || !TemperatureQuery.TryComp(entity, out var temperature))
             return;
