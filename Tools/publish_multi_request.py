@@ -64,6 +64,12 @@ def main():
         "Content-Type": "application/json"
     }
     resp = session.post(f"{ROBUST_CDN_URL}fork/{fork_id}/publish/start", json=data, headers=headers)
+    # CDN отвечает 409, когда этот коммит уже полностью опубликован. Повторная
+    # заливка того же SHA ничего не добавляет, поэтому это не падение, а нет-op.
+    # Незавершённые паблиши CDN перезапускает сам, для них 409 не приходит.
+    if resp.status_code == 409 and "Version already exists" in (resp.text or ""):
+        print(f"Version {VERSION} is already published, nothing to do.")
+        return
     _check(resp, "publish/start")
     print("Publish successfully started, adding files...")
 
