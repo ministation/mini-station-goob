@@ -119,10 +119,18 @@ public sealed partial class SharedSpiritCandleSystem : EntitySystem
         if (ent.Comp.AreaUid is {} areaUid)
             QueueDel(areaUid);
 
+        ent.Comp.AreaUid = null;
+        ent.Comp.Holder = null;
+
+        // Deleting a candle in a container detaches it before shutdown, so the container removal event also fires
+        // while the candle itself is already terminating. Do not spawn an area for it: the engine refuses to attach
+        // it to the terminating candle and logs an error.
+        if (TerminatingOrDeleted(args.Entity))
+            return;
+
         var spawn = SpawnAttachedTo(ent.Comp.SpiritArea, Transform(args.Entity).Coordinates);
         _transform.SetParent(spawn, args.Entity);
         ent.Comp.AreaUid = spawn;
-        ent.Comp.Holder = null;
     }
 
     private void OnUseInHand(Entity<SpiritCandleComponent> ent, ref UseInHandEvent args)
