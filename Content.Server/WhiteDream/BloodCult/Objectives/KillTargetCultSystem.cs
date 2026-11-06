@@ -1,4 +1,8 @@
-﻿using System.Linq;
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using System.Linq;
 using Content.Server.Mind;
 using Content.Server.Roles.Jobs;
 using Content.Server.WhiteDream.BloodCult.Gamerule;
