@@ -154,6 +154,11 @@ public sealed partial class GhostSystem
             if (!TryComp<MindContainerComponent>(uid, out var mindContainer) || !mindContainer.HasMind)
                 continue;
 
+            // Mini: мёртвого антагониста не показываем, как и мёртвых в разделе «Живые»:
+            // труп с ещё не вышедшим игроком выглядел живым и телепортировал к мертвецу.
+            if (_mobState.IsDead(uid))
+                continue;
+
             // Mini: антагонист в криосторедже тоже не цель для телепорта.
             if (HasComp<CryostorageContainedComponent>(uid))
                 continue;
