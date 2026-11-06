@@ -464,7 +464,9 @@ namespace Content.Server.Decals
 
                 foreach (var session in _playerManager.Sessions)
                 {
-                    if (session.Status != SessionStatus.InGame)
+                    // Mini: при дисконнекте сессия ещё висит в списке игроков, а канал уже отключён, поэтому
+                    // отправка DecalChunkUpdateEvent писала в лог "Tried to send message ... to disconnected channel".
+                    if (session.Status != SessionStatus.InGame || !session.Channel.IsConnected)
                         continue;
 
                     _sessions.Add(session);
