@@ -10,7 +10,7 @@
   setPreference: true
   whitelisted: true # like ОЦК/стажёр — Центком under job whitelist
   startingGear: CentcomSpecialOperationsOfficerGear
-  icon: "JobIconNanotrasenRed"
+  icon: "JobIconSpecialOperationsOfficer"
   supervisors: job-supervisors-nobody
   skills: # CorvaxGoob-Skills
   - All

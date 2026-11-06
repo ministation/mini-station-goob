@@ -112,6 +112,14 @@
 
 - type: jobIcon
   parent: JobIcon
+  id: JobIconSpecialOperationsOfficer
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: special_operations_officer
+  jobName: job-name-soo
+
+- type: jobIcon
+  parent: JobIcon
   id: JobIconTypanTechnicalOperationsSupervisor
   icon:
     sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi

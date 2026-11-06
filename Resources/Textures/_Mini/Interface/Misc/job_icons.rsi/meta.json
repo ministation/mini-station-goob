@@ -1,7 +1,7 @@
 {
     "version": 1,
     "license": "CC-BY-SA-3.0",
-    "copyright": "Taken from https://github.com/vgstation-coders/vgstation13/blob/e71d6c4fba5a51f99b81c295dcaec4fc2f58fb19/icons/mob/screen1.dmi | red resprite for Space Station 14 server Мёртвый Космос by hq._.dishka (discord)",
+    "copyright": "Taken from https://github.com/vgstation-coders/vgstation13/blob/e71d6c4fba5a51f99b81c295dcaec4fc2f58fb19/icons/mob/screen1.dmi | red resprite for Space Station 14 server Мёртвый Космос by hq._.dishka (discord) | special_operations_officer drawn by ministation",
 
     "size": {
         "x": 8,
@@ -49,6 +49,9 @@
         },
         {
             "name": "commander"
+        },
+        {
+            "name": "special_operations_officer"
         }
     ]
 }
