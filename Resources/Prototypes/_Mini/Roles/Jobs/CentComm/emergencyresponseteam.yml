@@ -9,7 +9,7 @@
   playTimeTracker: JobERTLeaderAmber
   setPreference: false
   startingGear: ERTLeaderGearBlue
-  icon: "JobIconERTLeader"
+  icon: "JobIconERTLeaderAmber"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -64,7 +64,7 @@
   playTimeTracker: JobERTLeaderRed
   setPreference: false
   startingGear: ERTLeaderGearRedLean
-  icon: "JobIconERTLeader"
+  icon: "JobIconERTLeaderRed"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -119,7 +119,7 @@
   playTimeTracker: JobERTLeaderGamma
   setPreference: false
   startingGear: ERTLeaderGearGammaLean
-  icon: "JobIconERTLeader"
+  icon: "JobIconERTLeaderGamma"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -180,7 +180,7 @@
   playTimeTracker: JobERTSecurityAmber
   setPreference: false
   startingGear: ERTSecurityGearBlue
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerAmber"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -235,7 +235,7 @@
   playTimeTracker: JobERTSecurityRed
   setPreference: false
   startingGear: ERTSecurityGearRedLean
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerRed"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -286,7 +286,7 @@
   playTimeTracker: JobERTSecurityGamma
   setPreference: false
   startingGear: ERTSecurityGearGammaLean
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerGamma"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -340,7 +340,7 @@
   playTimeTracker: JobERTMedicalAmber
   setPreference: false
   startingGear: ERTMedicalGearBlue
-  icon: "JobIconERT"
+  icon: "JobIconERTMedicAmber"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -394,7 +394,7 @@
   playTimeTracker: JobERTMedicalRed
   setPreference: false
   startingGear: ERTMedicalGearRedLean
-  icon: "JobIconERT"
+  icon: "JobIconERTMedicRed"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -453,7 +453,7 @@
   playTimeTracker: JobERTMedicalGamma
   setPreference: false
   startingGear: ERTMedicalGearGammaLean
-  icon: "JobIconERT"
+  icon: "JobIconERTMedicGamma"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -516,7 +516,7 @@
   playTimeTracker: JobERTEngineerAmber
   setPreference: false
   startingGear: ERTEngineerGear
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerAmber"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -566,7 +566,7 @@
   playTimeTracker: JobERTEngineerRed
   setPreference: false
   startingGear: ERTEngineerGearEVA
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerRed"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -620,7 +620,7 @@
   playTimeTracker: JobERTEngineerGamma
   setPreference: false
   startingGear: ERTEngineerGearEVA
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerGamma"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -680,7 +680,7 @@
   playTimeTracker: JobERTJanitorAmber
   setPreference: false
   startingGear: ERTJanitorGear
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerAmber"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -731,7 +731,7 @@
   playTimeTracker: JobERTJanitorRed
   setPreference: false
   startingGear: ERTJanitorGearEVA
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerRed"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -783,7 +783,7 @@
   playTimeTracker: JobERTJanitorGamma
   setPreference: false
   startingGear: ERTJanitorGearEVA
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerGamma"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:
@@ -838,7 +838,7 @@
   playTimeTracker: JobERTJuggernautGamma
   setPreference: false
   startingGear: ERTJuggernautGearGamma
-  icon: "JobIconERT"
+  icon: "JobIconERTOfficerGamma"
   supervisors: job-supervisors-centcom
   canBeAntag: false
   requirements:

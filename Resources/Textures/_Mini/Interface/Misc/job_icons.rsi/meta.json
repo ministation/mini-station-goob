@@ -1,7 +1,7 @@
 {
     "version": 1,
     "license": "CC-BY-SA-3.0",
-    "copyright": "Taken from https://github.com/vgstation-coders/vgstation13/blob/e71d6c4fba5a51f99b81c295dcaec4fc2f58fb19/icons/mob/screen1.dmi | red resprite for Space Station 14 server Мёртвый Космос by hq._.dishka (discord) | special_operations_officer drawn by ministation",
+    "copyright": "Taken from https://github.com/vgstation-coders/vgstation13/blob/e71d6c4fba5a51f99b81c295dcaec4fc2f58fb19/icons/mob/screen1.dmi | red resprite for Space Station 14 server Мёртвый Космос by hq._.dishka (discord) | special_operations_officer, ert_leader_amber, ert_leader_red, ert_leader_gamma, ert_officer_amber, ert_officer_red, ert_officer_gamma, ert_medic_amber, ert_medic_red, ert_medic_gamma, ert_chaplain drawn by ministation",
 
     "size": {
         "x": 8,
@@ -52,6 +52,36 @@
         },
         {
             "name": "special_operations_officer"
+        },
+        {
+            "name": "ert_leader_amber"
+        },
+        {
+            "name": "ert_leader_red"
+        },
+        {
+            "name": "ert_leader_gamma"
+        },
+        {
+            "name": "ert_officer_amber"
+        },
+        {
+            "name": "ert_officer_red"
+        },
+        {
+            "name": "ert_officer_gamma"
+        },
+        {
+            "name": "ert_medic_amber"
+        },
+        {
+            "name": "ert_medic_red"
+        },
+        {
+            "name": "ert_medic_gamma"
+        },
+        {
+            "name": "ert_chaplain"
         }
     ]
 }

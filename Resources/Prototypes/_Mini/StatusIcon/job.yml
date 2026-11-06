@@ -124,6 +124,86 @@
 
 - type: jobIcon
   parent: JobIcon
+  id: JobIconERTLeaderAmber
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_leader_amber
+  jobName: job-name-ertleader-amber
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconERTLeaderRed
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_leader_red
+  jobName: job-name-ertleader-red
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconERTLeaderGamma
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_leader_gamma
+  jobName: job-name-ertleader-gamma
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconERTOfficerAmber
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_officer_amber
+  jobName: job-name-ertsecurity-amber
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconERTOfficerRed
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_officer_red
+  jobName: job-name-ertsecurity-red
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconERTOfficerGamma
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_officer_gamma
+  jobName: job-name-ertsecurity-gamma
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconERTMedicAmber
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_medic_amber
+  jobName: job-name-ertmedic-amber
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconERTMedicRed
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_medic_red
+  jobName: job-name-ertmedic-red
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconERTMedicGamma
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_medic_gamma
+  jobName: job-name-ertmedic-gamma
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconERTChaplain
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ert_chaplain
+  jobName: job-name-ertchaplain
+
+- type: jobIcon
+  parent: JobIcon
   id: JobIconTypanTechnicalOperationsSupervisor
   icon:
     sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
