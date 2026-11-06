@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Numerics;
 using Content.Shared.Guidebook;
@@ -17,7 +18,8 @@ internal readonly record struct GuidebookPageState(
 
 internal static class GuidebookPageStateStorage
 {
-    internal static readonly Dictionary<ProtoId<GuideEntryPrototype>, GuidebookPageState> States = new();
+    // Parallel integration tests can run several clients in one process, so writes can race.
+    internal static readonly ConcurrentDictionary<ProtoId<GuideEntryPrototype>, GuidebookPageState> States = new();
 
     internal static readonly GuidebookPageState Empty = new(default, string.Empty, [], []);
 }
