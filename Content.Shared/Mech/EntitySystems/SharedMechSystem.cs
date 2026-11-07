@@ -562,6 +562,11 @@ public abstract partial class SharedMechSystem : EntitySystem
 
         args.Handled = true;
 
+        // Goobstation - the dragged entity must be a valid pilot that can run the entry do-after,
+        // otherwise it is ignored (a dropped item would otherwise log "invalid user" from DoAfter).
+        if (!CanInsert(uid, args.Dragged, component) || !HasComp<DoAfterComponent>(args.Dragged))
+            return;
+
         var doAfterEventArgs = new DoAfterArgs(EntityManager, args.Dragged, component.EntryDelay, new MechEntryEvent(), uid, target: uid)
         {
             BreakOnMove = true,
