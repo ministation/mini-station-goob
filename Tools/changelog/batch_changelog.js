@@ -10,6 +10,16 @@ const HeaderRegex = /^\s*(?::cl:|🆑) *([a-z0-9_\- ,]+)?\s+/im;
 const EntryRegex = /^ *[*-]? *(add|remove|tweak|fix): *([^\n\r]+)\r?$/img;
 const CommentRegex = /<!--.*?-->/gs;
 
+function stripHtmlComments(input) {
+    let previous;
+    let current = input;
+    do {
+        previous = current;
+        current = current.replace(CommentRegex, '');
+    } while (current !== previous);
+    return current;
+}
+
 async function main() {
     if (!process.env.GITHUB_REPOSITORY) {
         console.error("GITHUB_REPOSITORY env var is required (e.g. owner/repo)");
@@ -92,7 +102,7 @@ function buildEntry(pr, id) {
         return null;
     }
 
-    const commentlessBody = body.replace(CommentRegex, '');
+    const commentlessBody = stripHtmlComments(body);
 
     const headerMatch = HeaderRegex.exec(commentlessBody);
     if (!headerMatch) {
