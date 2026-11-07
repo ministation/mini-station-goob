@@ -9,6 +9,14 @@ on:
   pull_request:
     types: [ opened, reopened, synchronize, ready_for_review ]
     branches: [ master, staging, stable ]
+    # Рендер зависит от карт, их прототипов и кода рендерера; на прочие
+    # правки он ничего не проверяет.
+    paths:
+      - 'Resources/Maps/**'
+      - 'Resources/Prototypes/Maps/**'
+      - 'Content.MapRenderer/**'
+      - 'RobustToolbox/**'
+      - '**.csproj'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

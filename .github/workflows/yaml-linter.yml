@@ -6,6 +6,15 @@ on:
   merge_group:
   pull_request:
     types: [ opened, reopened, synchronize, ready_for_review ]
+    # Линтер проверяет прототипы и локали: чисто-C# PR пропускает его зря.
+    paths:
+      - 'Resources/**'
+      - '**.ftl'
+      - '**.yml'
+      - '**.yaml'
+      - 'Content.YAMLLinter/**'
+      - 'RobustToolbox/**'
+      - '.github/workflows/yaml-linter.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,11 +40,27 @@ jobs:
         uses: actions/setup-dotnet@v6.0.0
         with:
           dotnet-version: 10.0.403
+      - name: Detect engine revision
+        id: rtsha
+        run: echo "sha=$(git rev-parse HEAD:RobustToolbox)" >> "$GITHUB_OUTPUT"
+      - name: Cache RobustToolbox build
+        uses: actions/cache@v4
+        with:
+          path: |
+            RobustToolbox/bin
+            RobustToolbox/*/obj
+          key: rt-build-ubuntu-Release-${{ steps.rtsha.outputs.sha }}-${{ hashFiles('**/nuget.config', '**/*.props') }}
+          restore-keys: |
+            rt-build-ubuntu-Release-${{ steps.rtsha.outputs.sha }}-
+            rt-build-ubuntu-Release-
       # Собираем только линтер, а не весь solution: так шаг короче и не тянет
       # Content.MapRenderer, который в CI больше не нужен.
       # Карты рендерил MapRenderer, но их загрузку и так проверяют тесты (MapTests).
       - name: Install dependencies
         run: dotnet restore Content.YAMLLinter/Content.YAMLLinter.csproj
+      - name: Touch cached engine outputs
+        run: |
+          find RobustToolbox/bin RobustToolbox/*/obj -type f -exec touch {} + 2>/dev/null || true
       - name: Build
         run: dotnet build Content.YAMLLinter/Content.YAMLLinter.csproj --configuration Release --no-restore /p:WarningsAsErrors= /m
       - name: Run Linter

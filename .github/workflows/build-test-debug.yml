@@ -63,8 +63,32 @@ jobs:
         restore-keys: |
           nuget-ubuntu-
 
+    # Кэш сборки движка: сабмодуль меняется редко, а пересобирается каждым PR.
+    # Ключ по точному SHA гитлинка — content-addressed, протухание исключено.
+    - name: Detect engine revision
+      id: rtsha
+      run: echo "sha=$(git rev-parse HEAD:RobustToolbox)" >> "$GITHUB_OUTPUT"
+
+    - &rt_build_cache
+      name: Cache RobustToolbox build
+      uses: actions/cache@v4
+      with:
+        path: |
+          RobustToolbox/bin
+          RobustToolbox/*/obj
+        key: rt-build-ubuntu-DebugOpt-${{ steps.rtsha.outputs.sha }}-${{ hashFiles('**/nuget.config', '**/*.props') }}
+        restore-keys: |
+          rt-build-ubuntu-DebugOpt-${{ steps.rtsha.outputs.sha }}-
+          rt-build-ubuntu-DebugOpt-
+
     - name: Install dependencies
       run: dotnet restore Content.IntegrationTests/Content.IntegrationTests.csproj
+
+    # Свежий checkout пишет исходники с новым mtime; выровняем метки кэша,
+    # иначе up-to-date проверки MSBuild пересоберут движок целиком.
+    - name: Touch cached engine outputs
+      run: |
+        find RobustToolbox/bin RobustToolbox/*/obj -type f -exec touch {} + 2>/dev/null || true
 
     - name: Build Project
       run: dotnet build Content.IntegrationTests/Content.IntegrationTests.csproj --configuration DebugOpt --no-restore /m -clp:ErrorsOnly

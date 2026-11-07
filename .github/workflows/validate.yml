@@ -44,6 +44,12 @@ jobs:
     - name: Validate RSIs
       run: Tools/mini-rs/target/release/mini-validate-rsi --schema RobustToolbox/Schemas/rsi.json Resources/
 
+    # Контракт прежней джобы Localization сохранён: последняя строка stdout —
+    # "ИТОГ ЛОКАЛИЗАЦИИ: ok=... missing=...". Воркфлоу localization.yml удалён:
+    # здесь проверка идёт всегда и стоит ~2с вместо отдельной джобы с python.
+    - name: Check ru-RU key parity
+      run: Tools/mini-rs/target/release/mini-ru-sync --check
+
   # Схемные проверки карт и attributions: Rust-валидатор yamale-схем
   # (Tools/mini-rs/crates/validate-yamale) вместо PaulRitter/yaml-schema-validator.
   # Валидируются только изменённые файлы: 360 МБ всех карт pyyaml шёл ~8 минут,

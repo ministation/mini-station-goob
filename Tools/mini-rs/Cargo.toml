@@ -11,6 +11,7 @@ members = [
     "crates/check-crlf",
     "crates/validate-rsi",
     "crates/validate-yamale",
+    "crates/ru-sync",
 ]
 
 [workspace.package]
