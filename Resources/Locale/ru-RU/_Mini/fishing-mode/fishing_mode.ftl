@@ -8,13 +8,14 @@ fishing-mode-new-leader = Новый лидер по рыбалке: { $name }
 fishing-mode-hud-title = Рыбалка
 fishing-mode-hud-no-fishers = Пока никто ничего не поймал
 fishing-mode-hud-rank = { $rank }.
+fishing-mode-hud-score = { $score } очк.
 fishing-mode-hud-fish = { $count } рыб
 
 fishing-mode-hud-collapse = Свернуть топ рыбалки
 fishing-mode-hud-expand = Развернуть топ рыбалки
 fishing-mode-round-end-title = Топ рыбаков
-fishing-mode-round-end-line = { $place }. { $name }: { $fish } рыб
-fishing-mode-round-end-line-reward = { $place }. { $name }: { $fish } рыб, +{ $reward } монет
+fishing-mode-round-end-line = { $place }. { $name }: { $score } очк. ({ $fish } рыб)
+fishing-mode-round-end-line-reward = { $place }. { $name }: { $score } очк. ({ $fish } рыб), +{ $reward } монет
 fishing-mode-reward-message = Награда за рыбалку: { $amount } { $amount ->
     [one] монетка
     [few] монетки
