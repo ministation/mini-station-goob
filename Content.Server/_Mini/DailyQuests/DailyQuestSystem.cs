@@ -449,6 +449,8 @@ public sealed class DailyQuestSystem : EntitySystem
 
         if (!string.IsNullOrEmpty(ev.JobId))
             state.Round.PlayedJobs.Add(ev.JobId);
+
+        state.Round.ActiveJob = ev.JobId;
     }
 
     private void OnRoundEnd(RoundEndMessageEvent ev)
@@ -798,7 +800,7 @@ public sealed class DailyQuestSystem : EntitySystem
             if (!JobMatches(session, state, proto.RequiredJob))
                 continue;
 
-            if (state.Round.ActivePlaytime < proto.MinRoundPlaytime)
+            if (GetQuestPlaytime(state, proto) < proto.MinRoundPlaytime)
                 continue;
 
             switch (proto.QuestType)
@@ -812,7 +814,7 @@ public sealed class DailyQuestSystem : EntitySystem
                         CompleteSlot(session, slot, proto);
                     break;
                 case DailyQuestType.SurviveRound:
-                    if (state.Round.WasActivePlayer && state.Round.ActivePlaytime >= proto.MinRoundPlaytime)
+                    if (state.Round.WasActivePlayer && GetQuestPlaytime(state, proto) >= proto.MinRoundPlaytime)
                         CompleteSlot(session, slot, proto);
                     break;
                 case DailyQuestType.EarnMiningPoints:
@@ -937,7 +939,10 @@ public sealed class DailyQuestSystem : EntitySystem
     {
         if (IsTimeBasedQuest(proto))
         {
-            var current = (int)Math.Min(GetLivePlaytimeSeconds(state), proto.MinRoundPlaytime.TotalSeconds);
+            var seconds = proto.RequiredJob is { } job
+                ? GetLiveJobPlaytimeSeconds(state, job)
+                : GetLivePlaytimeSeconds(state);
+            var current = (int)Math.Min(seconds, proto.MinRoundPlaytime.TotalSeconds);
             var target = Math.Max(1, (int)proto.MinRoundPlaytime.TotalSeconds);
             return (current, target);
         }
@@ -974,7 +979,7 @@ public sealed class DailyQuestSystem : EntitySystem
 
             if (proto.QuestType == DailyQuestType.SurviveRound
                 && state.Round.WasActivePlayer
-                && state.Round.ActivePlaytime >= proto.MinRoundPlaytime)
+                && GetQuestPlaytime(state, proto) >= proto.MinRoundPlaytime)
             {
                 CompleteSlot(session, slot, proto);
                 changed = true;
@@ -985,7 +990,7 @@ public sealed class DailyQuestSystem : EntitySystem
             if (proto.QuestType == DailyQuestType.NoMeleeHits
                 && state.Round.WasActivePlayer
                 && !state.Round.FailedNoMelee
-                && state.Round.ActivePlaytime >= proto.MinRoundPlaytime)
+                && GetQuestPlaytime(state, proto) >= proto.MinRoundPlaytime)
             {
                 CompleteSlot(session, slot, proto);
                 changed = true;
@@ -995,7 +1000,7 @@ public sealed class DailyQuestSystem : EntitySystem
             if (proto.QuestType == DailyQuestType.NoDamageTaken
                 && state.Round.WasActivePlayer
                 && !state.Round.FailedNoDamage
-                && state.Round.ActivePlaytime >= proto.MinRoundPlaytime)
+                && GetQuestPlaytime(state, proto) >= proto.MinRoundPlaytime)
             {
                 CompleteSlot(session, slot, proto);
                 changed = true;
@@ -1088,9 +1093,32 @@ public sealed class DailyQuestSystem : EntitySystem
         if (!state.Round.WasActivePlayer || state.Round.TrackingSince == null)
             return;
 
-        state.Round.ActivePlaytime += _timing.CurTime - state.Round.TrackingSince.Value;
+        var elapsed = _timing.CurTime - state.Round.TrackingSince.Value;
+        state.Round.ActivePlaytime += elapsed;
+
+        // Job-gated quests need playtime in the required job, not any role.
+        if (state.Round.ActiveJob is { } job)
+            state.Round.JobPlaytime[job] = GetJobPlaytime(state, job) + elapsed;
+
         state.Round.TrackingSince = _timing.CurTime;
     }
+
+    private static TimeSpan GetJobPlaytime(PlayerDailyQuestState state, ProtoId<JobPrototype> job)
+        => state.Round.JobPlaytime.TryGetValue(job, out var time) ? time : TimeSpan.Zero;
+
+    private double GetLiveJobPlaytimeSeconds(PlayerDailyQuestState state, ProtoId<JobPrototype> job)
+    {
+        var seconds = GetJobPlaytime(state, job).TotalSeconds;
+        if (state.Round.ActiveJob == job && state.Round.WasActivePlayer && state.Round.TrackingSince is { } since)
+            seconds += (_timing.CurTime - since).TotalSeconds;
+        return seconds;
+    }
+
+    /// <summary>
+    /// Round playtime that counts toward a time-based quest: the required job's time when the quest names a job.
+    /// </summary>
+    private TimeSpan GetQuestPlaytime(PlayerDailyQuestState state, DailyQuestPrototype proto)
+        => proto.RequiredJob is { } job ? GetJobPlaytime(state, job) : state.Round.ActivePlaytime;
 
     private void RestoreRoundTracker(NetUserId userId, PlayerDailyQuestState state, bool onlyIfEmpty = false)
     {
@@ -1134,6 +1162,8 @@ public sealed class DailyQuestSystem : EntitySystem
             ActiveEntity = persistEntityReference ? source.ActiveEntity : null,
             ActivePlaytime = source.ActivePlaytime,
             TrackingSince = source.TrackingSince,
+            ActiveJob = source.ActiveJob,
+            JobPlaytime = new Dictionary<ProtoId<JobPrototype>, TimeSpan>(source.JobPlaytime),
             FailedNoMelee = source.FailedNoMelee,
             FailedNoDamage = source.FailedNoDamage,
             MiningPointsLastSeen = source.MiningPointsLastSeen,
@@ -1472,6 +1502,8 @@ public sealed class DailyQuestSystem : EntitySystem
         public EntityUid? ActiveEntity;
         public TimeSpan ActivePlaytime;
         public TimeSpan? TrackingSince;
+        public ProtoId<JobPrototype>? ActiveJob;
+        public Dictionary<ProtoId<JobPrototype>, TimeSpan> JobPlaytime = new();
         public bool FailedNoMelee;
         public bool FailedNoDamage;
         public uint? MiningPointsLastSeen;
@@ -1485,6 +1517,8 @@ public sealed class DailyQuestSystem : EntitySystem
             ActiveEntity = null;
             ActivePlaytime = TimeSpan.Zero;
             TrackingSince = null;
+            ActiveJob = null;
+            JobPlaytime.Clear();
             FailedNoMelee = false;
             FailedNoDamage = false;
             MiningPointsLastSeen = null;
