@@ -67,6 +67,13 @@
       collection: FootstepWater
       params:
         volume: 8
+  # Mini: вода звучит там, где она есть. Range меньше, чем у одиночных объектов
+  # (hydro_tray: -9/5), потому что тайлов в озере много и звуки складываются.
+  - type: AmbientSound
+    volume: -10
+    range: 3
+    sound:
+      path: /Audio/Ambience/Objects/flowing_water_open.ogg
   - type: StepTrigger
     requiredTriggeredSpeed: 0
     intersectRatio: 0.1

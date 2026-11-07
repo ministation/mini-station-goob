@@ -11,6 +11,13 @@
   components:
   - type: TileEmission
     color: "#FF4500"
+  # Mini: лава гудит и потрескивает. Fireplace - тот же луп, что у костров/каминов,
+  # но тише и с меньшим радиусом: на лавовом озере тайлов много и звуки складываются.
+  - type: AmbientSound
+    volume: -14
+    range: 3
+    sound:
+      path: /Audio/Ambience/Objects/fireplace.ogg
   - type: StepTrigger
     requiredTriggeredSpeed: 0
     intersectRatio: 0.1
