@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Net;
 using System.Net.Sockets;
 using Content.Goobstation.Common.CCVar;
@@ -67,7 +71,6 @@ public sealed partial class VoiceChatManager
         _net.RegisterNetMessage<MsgVoiceChatOptIn>(); // Mini: voice chat is opt-in
 
         _net.Connected += OnConnected;
-        _cfg.OnValueChanged(GoobCVars.VoiceChatHearSelf, OnHearSelfChanged);
         _cfg.OnValueChanged(GoobCVars.VoiceChatVolume, OnVolumeChanged);
         _cfg.OnValueChanged(GoobCVars.VoiceChatRadioMuted, OnRadioMutedChanged);
     }
@@ -75,7 +78,6 @@ public sealed partial class VoiceChatManager
     public void Shutdown()
     {
         _net.Connected -= OnConnected;
-        _cfg.UnsubValueChanged(GoobCVars.VoiceChatHearSelf, OnHearSelfChanged);
         _cfg.UnsubValueChanged(GoobCVars.VoiceChatVolume, OnVolumeChanged);
         _cfg.UnsubValueChanged(GoobCVars.VoiceChatRadioMuted, OnRadioMutedChanged);
     }
@@ -192,11 +194,6 @@ public sealed partial class VoiceChatManager
         WebConnectedChanged?.Invoke(connected);
     }
 
-    private void OnHearSelfChanged(bool hearSelf)
-    {
-        SendSettings();
-    }
-
     private void OnRadioMutedChanged(string muted)
     {
         SendSettings();
@@ -216,7 +213,6 @@ public sealed partial class VoiceChatManager
         _receiveDisabled = _cfg.GetCVar(GoobCVars.VoiceChatVolume) <= 0f;
         _net.ClientSendMessage(new MsgVoiceSettings
         {
-            HearSelf = _cfg.GetCVar(GoobCVars.VoiceChatHearSelf),
             Receive = !_receiveDisabled && !Deafened,
             MutedChannels = new List<string>(ParseMutedChannels(_cfg.GetCVar(GoobCVars.VoiceChatRadioMuted))),
             MutedSpeakers = new List<ushort>(_mutedSpeakers),

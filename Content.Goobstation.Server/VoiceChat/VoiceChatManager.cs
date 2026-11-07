@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
@@ -38,7 +42,6 @@ public sealed partial class VoiceChatManager
 
     private readonly ConcurrentDictionary<string, NetUserId> _tokens = new();
     private readonly Dictionary<NetUserId, string> _userTokens = new();
-    private readonly HashSet<NetUserId> _hearSelf = new();
     private readonly HashSet<NetUserId> _notReceiving = new();
     private readonly Dictionary<NetUserId, HashSet<string>> _mutedChannels = new();
     private readonly Dictionary<NetUserId, HashSet<ushort>> _mutedSpeakers = new();
@@ -103,11 +106,6 @@ public sealed partial class VoiceChatManager
     public bool IsWebConnected(NetUserId user)
     {
         return _server?.IsConnected(user) ?? false;
-    }
-
-    public bool HearsSelf(NetUserId user)
-    {
-        return _hearSelf.Contains(user);
     }
 
     public bool Receives(NetUserId user)
@@ -313,11 +311,6 @@ public sealed partial class VoiceChatManager
     {
         var user = message.MsgChannel.UserId;
 
-        if (message.HearSelf)
-            _hearSelf.Add(user);
-        else
-            _hearSelf.Remove(user);
-
         if (message.Receive)
             _notReceiving.Remove(user);
         else
@@ -350,7 +343,6 @@ public sealed partial class VoiceChatManager
 
         _server?.Disconnect(args.Channel.UserId);
 
-        _hearSelf.Remove(args.Channel.UserId);
         _notReceiving.Remove(args.Channel.UserId);
         _mutedChannels.Remove(args.Channel.UserId);
         _mutedSpeakers.Remove(args.Channel.UserId);
