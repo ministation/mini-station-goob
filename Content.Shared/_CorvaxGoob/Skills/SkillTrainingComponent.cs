@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared._CorvaxGoob.Skills;
 using Content.Shared.DoAfter;
 using Robust.Shared.GameStates;
@@ -12,7 +16,7 @@ public sealed partial class SkillBookComponent : Component
     public Skills Skill;
 }
 
-[RegisterComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class SkillTrainingStudentComponent : Component
 {
     [DataField, AutoNetworkedField]
