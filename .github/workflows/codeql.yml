@@ -1,10 +1,8 @@
-# CodeQL на master и по расписанию, без PR.
+# CodeQL по расписанию (раз в неделю) и вручную из Actions; на пуши и PR не реагирует.
 # Раньше был default setup: он запускал 6 анализов на каждый PR и каждый пуш в PR.
 name: "CodeQL"
 
 on:
-  push:
-    branches: [ master ]
   schedule:
     - cron: '0 4 * * 1'
   workflow_dispatch:
