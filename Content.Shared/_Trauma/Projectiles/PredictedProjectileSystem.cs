@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Common.Projectiles;
 using Content.Shared._ES.Camera;
 using Content.Goobstation.Common.Weapons.Penetration;
@@ -240,6 +244,9 @@ public sealed class PredictedProjectileSystem : EntitySystem
                 var filter = Filter.Pvs(xform.Coordinates, entityMan: EntityManager);
                 if (predictingUser != null)
                     filter.RemovePlayerByAttachedEntity(predictingUser.Value);
+                // Mini: при дисконнекте сессия ещё висит в списке игроков, а канал уже отключён, поэтому
+                // отправка ImpactEffectEvent писала в лог "Tried to send message ... to disconnected channel".
+                filter.RemoveWhere(session => !session.Channel.IsConnected);
                 RaiseNetworkEvent(effectEv, filter);
             }
             else if (_timing.IsFirstTimePredicted)
