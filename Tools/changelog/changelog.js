@@ -31,6 +31,18 @@ const HeaderRegex = /^\s*(?::cl:|🆑) *([a-z0-9_\- ,]+)?\s+/im; // :cl: or 🆑
 const EntryRegex = /^ *[*-]? *(add|remove|tweak|fix): *([^\n\r]+)\r?$/img; // * or - followed by change type [0] and change message [1]
 const CommentRegex = /<!--.*?-->/gs; // HTML comments
 
+// Повторяем замену, пока она что-то меняет: одиночный replace может
+// собрать <!-- заново из соседних кусков и оставить инъекцию.
+function stripHtmlComments(input) {
+    let previous;
+    let current = input;
+    do {
+        previous = current;
+        current = current.replace(CommentRegex, "");
+    } while (current !== previous);
+    return current;
+}
+
 // Main function
 async function main() {
     const repository = process.env.GITHUB_REPOSITORY;
@@ -59,7 +71,7 @@ async function main() {
     const { merged_at, body, user } = pr.data;
 
     // Body can be null or empty: тогда :cl: просто нет, это не ошибка.
-    const commentlessBody = (body || "").replace(CommentRegex, "");
+    const commentlessBody = stripHtmlComments(body || "");
     if (!commentlessBody.trim()) {
         console.log("Описание PR пустое, чейнджлог не обновляем");
         return;
