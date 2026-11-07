@@ -12,7 +12,7 @@ public sealed partial class SkillBookComponent : Component
     public Skills Skill;
 }
 
-[RegisterComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class SkillTrainingStudentComponent : Component
 {
     [DataField, AutoNetworkedField]
