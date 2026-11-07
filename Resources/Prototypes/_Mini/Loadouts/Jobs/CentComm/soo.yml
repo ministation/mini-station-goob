@@ -1,0 +1,98 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Personalization loadouts for roundstart ОСО.
+# Clothes live here; unique kit stays in CentcomSpecialOperationsOfficerGear startingGear (avoid double-equip drops).
+
+- type: loadout
+  id: CentCommSooJumpsuitBlack
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficerBlack
+
+- type: loadout
+  id: CentCommSooJumpsuitFormal
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomFormal
+
+- type: loadout
+  id: CentCommSooHeadCap
+  equipment:
+    head: ClothingHeadCapCentcomBlack
+
+- type: loadout
+  id: CentCommSooHeadHat
+  equipment:
+    head: ClothingHeadHatCentcom
+
+- type: loadout
+  id: CentCommSooShoesBlack
+  equipment:
+    shoes: ClothingShoesCentcomBlack
+
+- type: loadout
+  id: CentCommSooShoesCombat
+  equipment:
+    shoes: ClothingShoesBootsCombatFilled
+
+- type: loadout
+  id: CentCommSooGlovesCombat
+  equipment:
+    gloves: ClothingHandsGlovesCombat
+
+- type: loadout
+  id: CentCommSooGlovesBlack
+  equipment:
+    gloves: ClothingHandsGlovesColorBlack
+
+- type: loadout
+  id: CentCommSooBackpackFilled
+  equipment:
+    back: ClothingBackpackERTLeaderFilledSOO
+
+- type: loadoutGroup
+  id: CentCommSooJumpsuit
+  name: loadout-group-centcomm-soo-jumpsuit
+  loadouts:
+  - CentCommSooJumpsuitBlack
+  - CentCommSooJumpsuitFormal
+
+- type: loadoutGroup
+  id: CentCommSooHead
+  name: loadout-group-centcomm-soo-head
+  minLimit: 0
+  loadouts:
+  - CentCommSooHeadCap
+  - CentCommSooHeadHat
+
+- type: loadoutGroup
+  id: CentCommSooShoes
+  name: loadout-group-centcomm-soo-shoes
+  loadouts:
+  - CentCommSooShoesBlack
+  - CentCommSooShoesCombat
+
+- type: loadoutGroup
+  id: CentCommSooGloves
+  name: loadout-group-centcomm-soo-gloves
+  loadouts:
+  - CentCommSooGlovesCombat
+  - CentCommSooGlovesBlack
+
+- type: loadoutGroup
+  id: CentCommSooBackpack
+  name: loadout-group-centcomm-soo-backpack
+  loadouts:
+  - CentCommSooBackpackFilled
+
+- type: roleLoadout
+  id: JobCentralCommandSpecialOperationsOfficer
+  groups:
+  - Inventory
+  - GroupTankHarness
+  - CentCommSooHead
+  - CentCommSooJumpsuit
+  - CentCommSooBackpack
+  - CentCommSooShoes
+  - CentCommSooGloves
+  - Trinkets
+  - GroupSpeciesBreathTool
+  - Survival
+

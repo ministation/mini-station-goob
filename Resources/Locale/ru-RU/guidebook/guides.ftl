@@ -93,7 +93,7 @@ guide-entry-forensics = Криминалистика
 guide-entry-defusal = Обезвреживание крупной бомбы
 guide-entry-criminal-records = Криминальные записи
 guide-entry-command = Командование
-guide-entry-centcomm-official = Офицер ЦК
+guide-entry-centcomm-official = Оператор ЦК
 guide-entry-centcomm-assistant = Стажёр ЦК
 guide-entry-service = Сервис
 

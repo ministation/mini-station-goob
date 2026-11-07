@@ -13,6 +13,12 @@ loadout-group-centcomm-assistant-backpack = Стажер ЦК, рюкзак
 loadout-group-centcomm-assistant-neck = Стажер ЦК, шея
 loadout-group-centcomm-assistant-eyes = Стажер ЦК, глаза
 
+loadout-group-centcomm-soo-jumpsuit = ОСО, комбинезон
+loadout-group-centcomm-soo-head = ОСО, головной убор
+loadout-group-centcomm-soo-shoes = ОСО, обувь
+loadout-group-centcomm-soo-gloves = ОСО, перчатки
+loadout-group-centcomm-soo-backpack = ОСО, рюкзак
+
 # Typan
 # Atmospherics Engineer
 loadout-group-typan-atmospherics-engineer-uniform = Атмосферный техник, комбинезон

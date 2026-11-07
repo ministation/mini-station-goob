@@ -7,7 +7,6 @@ loadout-group-centcomm-officer-underwear = CentCom officer underwear
 loadout-group-blueshield-officer-underwear = Blueshield officer underwear
 spawner-loadout-centcomm-officer = CentCom officer loadout
 spawner-loadout-centcomm-operator = CentCom operator loadout
-spawner-loadout-centcomm-soo = Special operations officer loadout
 spawner-loadout-centcomm-official = CentCom official loadout
 loadout-group-centcom-assistant = CentComm intern loadout
 spawner-loadout-centcomm-administrator = CentCom administrator loadout

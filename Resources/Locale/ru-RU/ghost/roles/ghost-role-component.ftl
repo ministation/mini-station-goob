@@ -143,7 +143,7 @@ ghost-role-information-ert-juggernaut-name = ОБР Джаггернаут
 ghost-role-information-ert-juggernaut-description = Тяжёлый боец гамма-отряда в скафандре джаггернаута. Защищайте станцию и выполняйте приказы лидера.
 ghost-role-information-cburn-agent-name = РХБЗЗ Оперативник
 ghost-role-information-cburn-agent-description = Высококвалифицированный агент ЦК, способный справиться с любыми угрозами.
-ghost-role-information-centcom-official-name = Офицер ЦК
+ghost-role-information-centcom-official-name = Оператор ЦК
 ghost-role-information-centcom-official-description = Выполняйте обязанности, связанные с Центральным Командованием, такие как инспекция станций, составление служебных характеристик на руководителей и работа с факсом.
 ghost-role-information-nukeop-rules = Вы [color={ role-type-team-antagonist-color }][bold]{ role-type-team-antagonist-name }[/bold][/color], в команде с другими Ядерными оперативниками. Помощь агентов на станции не гарантируется.
 ghost-role-information-loneop-name = Одинокий оперативник
