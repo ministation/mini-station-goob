@@ -13,6 +13,12 @@ loadout-group-centcomm-assistant-backpack = CentComm Intern backpack
 loadout-group-centcomm-assistant-neck = CentComm Intern neck
 loadout-group-centcomm-assistant-eyes = CentComm Intern eyes
 
+loadout-group-centcomm-soo-jumpsuit = SOO Jumpsuit
+loadout-group-centcomm-soo-head = SOO Headwear
+loadout-group-centcomm-soo-shoes = SOO Shoes
+loadout-group-centcomm-soo-gloves = SOO Gloves
+loadout-group-centcomm-soo-backpack = SOO Backpack
+
 # Typan
 # Atmospherics Engineer
 loadout-group-typan-atmospherics-engineer-uniform = Atmos. Tech Uniform

@@ -13,23 +13,3 @@
     jobPrototype: CentralCommandSpecialOperationsOfficer
     allowedSpecies:
     - Human
-
-- type: roleLoadout
-  id: JobCentralCommandSpecialOperationsOfficer
-  groups:
-  # - GroupTankHarness # outerClothing slot occupied by startingGear
-  - CentralCommandSpecialOperationsOfficerLoadout
-  - Survival
-  - GroupSpeciesBreathTool
-
-- type: loadoutGroup
-  id: CentralCommandSpecialOperationsOfficerLoadout
-  name: spawner-loadout-centcomm-soo
-  hidden: true
-  loadouts:
-  - CentralCommandSpecialOperationsOfficerLoadout
-
-- type: loadout
-  id: CentralCommandSpecialOperationsOfficerLoadout
-  equipment:
-    back: ClothingBackpackERTLeaderFilledSOO

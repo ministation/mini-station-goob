@@ -4,7 +4,7 @@
 
 - type: entity
   id: RandomHumanoidSpawnerCentralCommandOfficial
-  name: Офицер ЦК
+  name: Оператор ЦК
   suffix: ОЦК, Кастомизируемый персонаж
   components:
     - type: Sprite

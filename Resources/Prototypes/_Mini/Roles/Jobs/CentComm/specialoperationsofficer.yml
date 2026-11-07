@@ -42,15 +42,11 @@
       factions:
       - CentralCommand
 
+# Unique kit only, clothes come from JobCentralCommandSpecialOperationsOfficer roleLoadout groups.
 - type: startingGear
   id: CentcomSpecialOperationsOfficerGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitCentcomOfficerBlack
-    # back: ClothingBackpackERTLeaderFilledSOO
-    shoes: ClothingShoesCentcomBlack
-    head: ClothingHeadCapCentcomBlack
     eyes: ClothingEyesGlassesSecurity
-    gloves: ClothingHandsGlovesCombat
     outerClothing: ClothingOuterVestWeb
     neck: ClothingNeckCloakCentcomBlack
     id: CentcomPDA

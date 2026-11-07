@@ -54,6 +54,7 @@
       jobs:
       - CentralCommandOfficial
       - CentralCommandAssistant
+      - CentralCommandSpecialOperationsOfficer
 
 - type: entity
   id: StandardStationArena
