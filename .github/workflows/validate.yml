@@ -44,7 +44,11 @@ jobs:
     - name: Validate RSIs
       run: Tools/mini-rs/target/release/mini-validate-rsi --schema RobustToolbox/Schemas/rsi.json Resources/
 
-  # Схемные проверки карт и attributions: схемы и валидаторы живут в движке.
+  # Схемные проверки карт и attributions: Rust-валидатор yamale-схем
+  # (Tools/mini-rs/crates/validate-yamale) вместо PaulRitter/yaml-schema-validator.
+  # Валидируются только изменённые файлы: 360 МБ всех карт pyyaml шёл ~8 минут,
+  # Rust-порт проверяет диф за секунды. Структурные поломки карт всё равно
+  # ловит загрузка карт в MapTests.
   validate-schemas:
     name: Validate (schemas)
     runs-on: ubuntu-latest
@@ -54,41 +58,35 @@ jobs:
         # Нужны обе стороны merge-коммита PR, чтобы посчитать изменённые файлы.
         fetch-depth: 2
 
-    - name: Detect changed paths
+    - name: Detect changed files
       id: changes
-      if: ${{ github.event_name == 'pull_request' }}
       run: |
-        git diff --name-only HEAD^1 HEAD > "$RUNNER_TEMP/changed.txt"
-        if grep -qE '^(Resources/Maps/|Resources/Prototypes/Maps/)' "$RUNNER_TEMP/changed.txt"; then
-          echo "maps=true" >> "$GITHUB_OUTPUT"
-        fi
-        if grep -qE 'attributions\.ya?ml$' "$RUNNER_TEMP/changed.txt"; then
-          echo "attributions=true" >> "$GITHUB_OUTPUT"
-        fi
+        git diff --name-only HEAD^1 HEAD > "$RUNNER_TEMP/changed.txt" || true
+        grep -E '^Resources/Maps/.*\.yml$' "$RUNNER_TEMP/changed.txt" > "$RUNNER_TEMP/maps.txt" || true
+        grep -E 'attributions\.ya?ml$' "$RUNNER_TEMP/changed.txt" > "$RUNNER_TEMP/attributions.txt" || true
+        echo "maps=$(wc -l < "$RUNNER_TEMP/maps.txt" | tr -d ' ')" >> "$GITHUB_OUTPUT"
+        echo "attributions=$(wc -l < "$RUNNER_TEMP/attributions.txt" | tr -d ' ')" >> "$GITHUB_OUTPUT"
 
     - name: Setup Submodule
+      # Схемы mapfile.yml и rga.yml живут в движке (RobustToolbox/Schemas).
       run: git submodule update --init
 
-    - name: Pull engine updates
-      id: engine
-      uses: space-wizards/submodule-dependency@v0.1.5
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
 
-    # Схемная проверка всех карт идёт ~7 минут и нужна только если PR трогает карты.
-    # Сломанную карту всё равно поймают тесты загрузки карт (MapTests).
-    - name: Validate map files
-      if: ${{ !cancelled() && steps.engine.outcome == 'success' && github.event.pull_request.draft == false && steps.changes.outputs.maps == 'true' }}
-      uses: PaulRitter/yaml-schema-validator@v1
+    - name: Cache Rust build
+      uses: Swatinem/rust-cache@v2
       with:
-        schema: RobustToolbox/Schemas/mapfile.yml
-        path_pattern: .*Resources/Maps/.*
-        validators_path: RobustToolbox/Schemas/mapfile_validators.py
-        validators_requirements: .github/Schemas/mapfile_requirements.txt
+        workspaces: Tools/mini-rs
 
-    - name: Validate RGAs
-      if: ${{ !cancelled() && steps.engine.outcome == 'success' && github.event.pull_request.draft == false && (github.event_name != 'pull_request' || steps.changes.outputs.attributions == 'true') }}
-      uses: PaulRitter/yaml-schema-validator@v1
-      with:
-        schema: .github/Schemas/rga.yml
-        path_pattern: .*attributions.ya?ml$
-        validators_path: RobustToolbox/Schemas/rga_validators.py
-        validators_requirements: .github/Schemas/rga_requirements.txt
+    - name: Build Rust tools
+      run: cargo build --release --workspace
+      working-directory: Tools/mini-rs
+
+    - name: Validate changed map files
+      if: ${{ steps.changes.outputs.maps != '0' }}
+      run: xargs -a "$RUNNER_TEMP/maps.txt" Tools/mini-rs/target/release/mini-validate-yamale --schema RobustToolbox/Schemas/mapfile.yml
+
+    - name: Validate changed attributions
+      if: ${{ steps.changes.outputs.attributions != '0' }}
+      run: xargs -a "$RUNNER_TEMP/attributions.txt" Tools/mini-rs/target/release/mini-validate-yamale --schema RobustToolbox/Schemas/rga.yml
