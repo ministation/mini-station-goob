@@ -79,6 +79,12 @@ public sealed partial class ResonanceFieldComponent : Component
     [ViewVariables]
     public EntityUid? Resonator;
 
+    /// <summary>
+    /// When this field was created; used to gate early detonation by clicks.
+    /// </summary>
+    [ViewVariables]
+    public TimeSpan CreatedAt;
+
     [ViewVariables]
     public TimeSpan BurstAt;
 

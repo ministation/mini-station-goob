@@ -30,9 +30,11 @@
         - LargeMobMask
         layer:
         - LargeMobLayer
+  # Mini: фракция Lavafauna, как у его же черепов и часовых (MobLegionSkull / MobLegion),
+  # иначе SimpleHostile враждебен Lavafauna и адды босса бьют его самого.
   - type: NpcFactionMember
     factions:
-    - SimpleHostile
+    - Lavafauna
   - type: PreventChasmFalling
     deleteOnUse: false
   - type: MegafaunaStage
@@ -153,7 +155,7 @@
         - LargeMobLayer
   - type: NpcFactionMember
     factions:
-    - SimpleHostile
+    - Lavafauna
   - type: HTN
     rootTask:
       task: SimpleHostileCompound
@@ -260,7 +262,7 @@
         - LargeMobLayer
   - type: NpcFactionMember
     factions:
-    - SimpleHostile
+    - Lavafauna
   - type: HTN
     rootTask:
       task: SimpleHostileCompound
