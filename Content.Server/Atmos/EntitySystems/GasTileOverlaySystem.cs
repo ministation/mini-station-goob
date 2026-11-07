@@ -335,7 +335,9 @@ namespace Content.Server.Atmos.EntitySystems
 
             foreach (var player in _playerManager.Sessions)
             {
-                if (player.Status != SessionStatus.InGame)
+                // Mini: при дисконнекте сессия ещё висит в списке игроков, а канал уже отключён, поэтому
+                // отправка GasOverlayUpdateEvent писала в лог "Tried to send message ... to disconnected channel".
+                if (player.Status != SessionStatus.InGame || !player.Channel.IsConnected)
                     continue;
 
                 _sessions.Add(player);
