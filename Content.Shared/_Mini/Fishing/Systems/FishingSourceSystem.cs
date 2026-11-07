@@ -703,10 +703,54 @@ public sealed partial class FishingSourceSystem : EntitySystem
                 continue;
 
             if (_random.NextFloat() * scale < weight)
-                return picked;
+                return ApplyRodEfficiency(picked, rod, source, lootEv, counts);
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// A rod stronger than 100% sometimes replaces the rolled catch with a rarer fish,
+    /// a weaker rod sometimes with a more common one. Lower <see cref="FishPrototype.Rarity"/> is rarer.
+    /// </summary>
+    private EntProtoId ApplyRodEfficiency(
+        EntProtoId picked,
+        EntityUid rod,
+        FishingSourcePrototype source,
+        FishLootModifiersEvent lootEv,
+        Dictionary<EntProtoId, int> counts)
+    {
+        if (!TryComp<FishingRodComponent>(rod, out var rodComp) ||
+            !TryGetCaughtFish(picked, out var currentFish))
+            return picked;
+
+        var chance = rodComp.Efficiency > 1f
+            ? rodComp.Efficiency - 1f
+            : 1f - rodComp.Efficiency;
+
+        if (chance <= 0f || _random.NextFloat() >= chance)
+            return picked;
+
+        var upgrade = rodComp.Efficiency > 1f;
+        var candidates = new Dictionary<EntProtoId, float>();
+
+        foreach (var spawn in RollTable(source, lootEv, counts))
+        {
+            if (!TryGetCaughtFish(spawn, out var fish))
+                continue;
+
+            if (upgrade ? fish.Rarity >= currentFish.Rarity : fish.Rarity <= currentFish.Rarity)
+                continue;
+
+            candidates[spawn] = fish.Rarity;
+        }
+
+        if (candidates.Count == 0)
+            return picked;
+
+        // shortcut: the reroll ignores bait and lure weights and uses Rarity as the pick weight,
+        // revisit if fish tables get per-trait weights.
+        return WeightedPick(candidates);
     }
 
     /// <summary>

@@ -95,4 +95,61 @@
   id: FishingPortalMachineCircuitboard
   icon: { sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi, state: portal }
   result: FishingPortalMachineCircuitboard
+
+# Rescue rod and advanced tackle, unlocked by the fishing research chain.
+- type: latheRecipe
+  id: FishingRodRescue
+  result: FishingRodRescue
+  categories:
+  - Tools
+  completetime: 8
+  materials:
+    Steel: 700
+    Plastic: 300
+    Glass: 200
+    Plasteel: 200
+
+- type: latheRecipe
+  id: FishingRodMaster
+  result: FishingRodMaster
+  categories:
+  - Tools
+  completetime: 12
+  materials:
+    Steel: 1200
+    Plastic: 500
+    Plasteel: 500
+    Diamond: 200
+    Gold: 200
+
+- type: latheRecipe
+  id: FishingLineBouncy
+  result: FishingLineBouncy
+  categories:
+  - Tools
+  completetime: 3
+  materials:
+    Steel: 100
+    Plastic: 200
+
+- type: latheRecipe
+  id: FishingHookWeighted
+  result: FishingHookWeighted
+  categories:
+  - Tools
+  completetime: 3
+  materials:
+    Steel: 200
+    Gold: 150
+
+- type: latheRecipe
+  id: BaitCanSuper
+  result: BaitCanSuper
+  categories:
+  - Tools
+  completetime: 6
+  materials:
+    Steel: 300
+    Plastic: 300
+    Gold: 100
 # Mini-end

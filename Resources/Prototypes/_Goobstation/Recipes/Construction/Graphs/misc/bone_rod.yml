@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: constructionGraph
+  id: FishingRodBone
+  graph:
+    - node: start
+      edges:
+        - to: boneRod
+          steps:
+            - material: Bones
+              amount: 4
+              doAfter: 2
+            - material: Cloth
+              amount: 2
+              doAfter: 2
+    - node: boneRod
+      entity: FishingRodBone

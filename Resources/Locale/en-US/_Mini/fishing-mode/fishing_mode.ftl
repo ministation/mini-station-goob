@@ -8,13 +8,14 @@ fishing-mode-new-leader = New fishing leader: { $name }
 fishing-mode-hud-title = Fishing
 fishing-mode-hud-no-fishers = Nobody has caught anything yet
 fishing-mode-hud-rank = { $rank }.
+fishing-mode-hud-score = { $score } pts
 fishing-mode-hud-fish = { $count } fish
 
 fishing-mode-hud-collapse = Collapse the fishing leaderboard
 fishing-mode-hud-expand = Expand the fishing leaderboard
 fishing-mode-round-end-title = Top fishers
-fishing-mode-round-end-line = { $place }. { $name }: { $fish } fish
-fishing-mode-round-end-line-reward = { $place }. { $name }: { $fish } fish, +{ $reward } coins
+fishing-mode-round-end-line = { $place }. { $name }: { $score } pts ({ $fish } fish)
+fishing-mode-round-end-line-reward = { $place }. { $name }: { $score } pts ({ $fish } fish), +{ $reward } coins
 fishing-mode-reward-message = Fishing reward: { $amount } { $amount ->
     [one] coin
     *[other] coins

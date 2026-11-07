@@ -15,7 +15,8 @@ public sealed partial class FishingRodComponent : Component
     // Legacy Goob fields, kept while the old action based fishing is being replaced.
 
     /// <summary>
-    /// Higher value will make every interact more productive.
+    /// Catch rarity multiplier. 1 is neutral, below 1 rerolls the catch towards more common
+    /// fish, above 1 towards rarer fish.
     /// </summary>
     [DataField]
     public float Efficiency = 1f;

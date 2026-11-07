@@ -401,3 +401,25 @@
   technologyPrerequisites:
   - TypanHydroponics
   # Goobstation R&D Console rework end
+
+- type: technology
+  id: TypanFishingAdvanced
+  name: research-technology-typan-fishing-advanced-name
+  description: research-technology-typan-fishing-advanced-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: fishing_rod_science
+  discipline: TypanLifeSupport
+  tier: 2
+  pointCosts:
+  - type: General
+    amount: 15000
+  recipeUnlocks:
+  - FishingRodScience
+  - FishingRodRescue
+  - FishingLineBouncy
+  # Goobstation R&D Console rework start
+  position: 12,31
+  technologyPrerequisites:
+  - TypanFishing
+  # Goobstation R&D Console rework end

@@ -15,6 +15,7 @@ using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Mind;
+using Content.Server.Shuttles.Components;
 using Content.Shared._Mini.Fishing;
 using Content.Shared._Mini.Fishing.Components;
 using Content.Shared._Mini.Fishing.Events;
@@ -212,9 +213,9 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
             var leader = leaders[i];
             args.AddLine(leader.Reward > 0
                 ? Loc.GetString("fishing-mode-round-end-line-reward",
-                    ("place", i + 1), ("name", leader.Name), ("fish", leader.Fish), ("reward", leader.Reward))
+                    ("place", i + 1), ("name", leader.Name), ("fish", leader.Fish), ("score", leader.Score), ("reward", leader.Reward))
                 : Loc.GetString("fishing-mode-round-end-line",
-                    ("place", i + 1), ("name", leader.Name), ("fish", leader.Fish)));
+                    ("place", i + 1), ("name", leader.Name), ("fish", leader.Fish), ("score", leader.Score)));
         }
     }
 
@@ -325,15 +326,49 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
     }
 
     /// <summary>
-    /// Places a water tile and a suspicious waves spot on plating, which is what maintenance tunnels are made of.
+    /// Places water tiles and suspicious waves spots on the station grid with the most free plating,
+    /// which is what maintenance tunnels are made of.
     /// shortcut: maintenance is detected by the plating tile, upgrade to map areas when they are available on the server.
     /// </summary>
     private void SpawnWater(FishingModeRuleComponent component)
     {
         var gridQuery = EntityQueryEnumerator<StationMemberComponent, MapGridComponent>();
-        if (!gridQuery.MoveNext(out var gridUid, out _, out var grid))
+
+        // A station spans several grids and shuttles are station members too. The first grid we get
+        // can have no free plating at all, so pick the grid with the most candidates (the main one).
+        EntityUid? waterGridUid = null;
+        MapGridComponent? waterGrid = null;
+        List<Vector2i>? waterCandidates = null;
+
+        while (gridQuery.MoveNext(out var gridUid, out _, out var grid))
+        {
+            if (HasComp<ShuttleComponent>(gridUid))
+                continue;
+
+            var candidates = CollectWaterCandidates(gridUid, grid);
+            if (candidates.Count == 0 || (waterCandidates != null && candidates.Count <= waterCandidates.Count))
+                continue;
+
+            waterGridUid = gridUid;
+            waterGrid = grid;
+            waterCandidates = candidates;
+        }
+
+        if (waterGridUid == null || waterGrid == null || waterCandidates == null)
             return;
 
+        RobustRandom.Shuffle(waterCandidates);
+        var amount = Math.Min(component.WaterPools, waterCandidates.Count);
+        for (var i = 0; i < amount; i++)
+        {
+            var coords = _map.GridTileToLocal(waterGridUid.Value, waterGrid, waterCandidates[i]);
+            Spawn(WaterEntity, coords);
+            Spawn(SuspiciousWavesEntity, coords);
+        }
+    }
+
+    private List<Vector2i> CollectWaterCandidates(EntityUid gridUid, MapGridComponent grid)
+    {
         var candidates = new List<Vector2i>();
         var tiles = _map.GetAllTiles(gridUid, grid);
         while (tiles.MoveNext(out var tileRef))
@@ -350,17 +385,7 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
             candidates.Add(tile.GridIndices);
         }
 
-        if (candidates.Count == 0)
-            return;
-
-        RobustRandom.Shuffle(candidates);
-        var amount = Math.Min(component.WaterPools, candidates.Count);
-        for (var i = 0; i < amount; i++)
-        {
-            var coords = _map.GridTileToLocal(gridUid, grid, candidates[i]);
-            Spawn(WaterEntity, coords);
-            Spawn(SuspiciousWavesEntity, coords);
-        }
+        return candidates;
     }
 
     private bool HasAnchoredEntity(EntityUid gridUid, MapGridComponent grid, Vector2i indices)
