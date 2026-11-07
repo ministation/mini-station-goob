@@ -14,6 +14,7 @@ skill-training-ui-hint = Choose a skill. The list shows only skills you have (li
     Librarians can teach without a book, but it takes longer.
 skill-training-fail-range = You are too far from the target.
 skill-training-fail-hands = You need free hands.
+skill-training-fail-cannot-do-after = You cannot perform this action.
 skill-training-fail-nothing-to-teach = There is nothing you can teach this player.
 skill-training-fail-need-book = Hold the textbook for this skill in your hand.
 
