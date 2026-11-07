@@ -45,11 +45,10 @@
   - type: Damageable
     damageContainer: Inorganic
   - type: UseDelay
-    delay: 60
+    delay: 300
   - type: EmitSoundOnTrigger
     sound:
       collection: RadiationPulse
-  - type: DeleteOnTrigger # Mini: modular core charges are single use
   - type: Destructible
     thresholds:
     - trigger:
@@ -101,7 +100,7 @@
   - type: SpawnOnTrigger
     proto: EffectWhitehole
   - type: UseDelay
-    delay: 450
+    delay: 300
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -124,7 +123,7 @@
     duration: 10
     spreadAmount: 30
   - type: UseDelay
-    delay: 80
+    delay: 300
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -152,7 +151,7 @@
       spawns:
       - KudzuFlowerFriendly
   - type: UseDelay
-    delay: 80
+    delay: 300
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -202,7 +201,7 @@
       - WallSpawnAsteroidCoal
       - WallSpawnAsteroidCoalCrab
   - type: UseDelay
-    delay: 160
+    delay: 300
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -249,7 +248,7 @@
       - RandomFoodSingle
       - RandomFoodMeal
   - type: UseDelay
-    delay: 120
+    delay: 300
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -270,7 +269,7 @@
       color: "#003ec4"
   - type: BluespaceTeleportOnTrigger
   - type: UseDelay
-    delay: 120
+    delay: 300
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -309,7 +308,7 @@
       spawns:
       - PresentRandomInsane
   - type: UseDelay
-    delay: 200
+    delay: 300
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -333,7 +332,7 @@
       Frezon: 75
     temp: 283
   - type: UseDelay
-    delay: 30
+    delay: 300
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -357,7 +356,7 @@
       Tritium: 50
     temp: 293.15
   - type: UseDelay
-    delay: 120
+    delay: 300
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -414,7 +413,7 @@
       spawns:
       - ReagentSlimeSpawner
   - type: UseDelay
-    delay: 220 # OH SHIT CURSE OF SS220
+    delay: 300 # OH SHIT CURSE OF SS220
 
 - type: entity
   parent: BaseAnomalyPayload
@@ -467,4 +466,4 @@
       - MobButterfly
       - MobBasilisk
   - type: UseDelay
-    delay: 120
+    delay: 300

@@ -6,6 +6,7 @@ using Content.Shared.Database;
 using Content.Shared.Examine;
 using Content.Shared.Payload.Components;
 using Content.Shared.Tag;
+using Content.Shared.Timing;
 using Content.Shared.Trigger;
 using Content.Shared.Chemistry.EntitySystems;
 using Robust.Shared.Containers;
@@ -25,6 +26,7 @@ public sealed class PayloadSystem : EntitySystem
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private readonly TagSystem _tagSystem = default!;
     [Dependency] private readonly TransformSystem _transform = default!;
+    [Dependency] private readonly UseDelaySystem _useDelay = default!;
 
     private static readonly ProtoId<TagPrototype> PayloadTag = "Payload";
 
@@ -64,6 +66,14 @@ public sealed class PayloadSystem : EntitySystem
         foreach (var ent in GetAllPayloads(uid))
         {
             RaiseLocalEvent(ent, ref args, false);
+
+            // Mini: a payload that can be reused defines its recharge with its own use delay.
+            if (!TryComp(ent, out UseDelayComponent? payloadDelay))
+                continue;
+
+            var caseDelay = EnsureComp<UseDelayComponent>(uid);
+            _useDelay.SetLength((uid, caseDelay), payloadDelay.Delay);
+            _useDelay.TryResetDelay((uid, caseDelay));
         }
     }
 
