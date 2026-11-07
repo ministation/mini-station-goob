@@ -778,15 +778,24 @@ public sealed class KatorgaSystem : EntitySystem
         if (!TryComp<MobStateComponent>(mob, out var mobState) || mobState.CurrentState != MobState.Dead)
             return;
 
-        // Вещи снимаем на землю до удаления тела, иначе они удалятся вместе с ним.
-        DropAllItems(mob);
-
-        if (!_playerManager.TryGetSessionByEntity(mob, out var session) ||
-            !_mind.TryGetMind(mob, out var mindId, out var mind))
+        if (!_mind.TryGetMind(mob, out var mindId, out var mind))
         {
             QueueDel(mob);
             return;
         }
+
+        // Сессии нет: игрок перезашёл сразу после смерти. Ум остаётся в теле, поэтому
+        // сохраняем тело и откладываем спавн до переподключения. Удалить тело нельзя:
+        // без сущности GameTicker отдаст перезашедшего в призраки, и тот застрянет
+        // без тела и без респавна.
+        if (!_playerManager.TryGetSessionByEntity(mob, out var session))
+        {
+            _pendingRespawns[mob] = _timing.CurTime + RespawnDelay;
+            return;
+        }
+
+        // Вещи снимаем на землю до удаления тела, иначе они удалятся вместе с ним.
+        DropAllItems(mob);
 
         var faction = _factionSystem.GetFaction(session.UserId) ?? _factionSystem.AssignFaction(session);
         var profile = _preferences.GetPreferences(session.UserId).SelectedCharacter as HumanoidCharacterProfile;
@@ -1161,6 +1170,15 @@ public sealed class KatorgaSystem : EntitySystem
             !HasComp<GhostComponent>(attached))
         {
             SendToKatorga(player, binding);
+        }
+        else if (player.AttachedEntity is { } ghost && !TerminatingOrDeleted(ghost) &&
+                 !_adminManager.IsAdmin(player))
+        {
+            // Перезашедший в призрака заключённый: его тело с умом было удалено, пока он был
+            // не в сети. Выдаём тело на каторге, как в OnPlayerAttached, — иначе он остаётся
+            // призраком без респавна: заключённым гостоваться нельзя, так что это бажное состояние.
+            var ghostFaction = _factionSystem.GetFaction(player.UserId) ?? _factionSystem.AssignFaction(player);
+            SpawnKatorgaPlayer(player, ghostFaction);
         }
         else
         {
