@@ -8,6 +8,13 @@
   objectType: Item
 
 - type: construction
+  id: FishingRodBone
+  graph: FishingRodBone
+  targetNode: boneRod
+  category: construction-category-misc
+  objectType: Item
+
+- type: construction
   id: FishingLineSinew
   graph: FishingLineSinew
   targetNode: sinewLine

@@ -86,6 +86,10 @@ research-technology-fishing-equip-name = Рыболовное снаряжени
 research-technology-fishing-equip-desc = Базовые рыболовные снасти, специально разработанные для условий космической станции и идеально подходящие для внеземных водных занятий.
 research-technology-fishing-equip-adv-name = Продвинутые рыболовные инструменты
 research-technology-fishing-equip-adv-desc = Продолжающееся развитие рыболовных технологий с использованием новейших технологий в операциях космического рыболовства. Только не пытайтесь повторить это на космических карпах...
+research-technology-fishing-tackle-name = Специальные рыболовные снасти
+research-technology-fishing-tackle-desc = Усиленные лески и крючки, а также спасательная удочка, чтобы вытащить из воды не только рыбу.
+research-technology-fishing-master-name = Мастерское рыболовство
+research-technology-fishing-master-desc = Улучшенные материалы и точная настройка снасти позволяют собрать удочку мастера, лучшую на станции.
 research-technology-fishing-portal-name = Рыбопорт 3000
 research-technology-fishing-portal-desc = Блюспейс-машина, открывающая рыболовное место из другого измерения, чтобы рыбачить где угодно, не покидая станцию.
 research-technology-food-processing-name = Пищевая промышленность
@@ -240,6 +244,8 @@ research-technology-mini-lathe-parity-name = Паритет рецептов л�
 research-technology-mini-lathe-parity-desc = Скрытый узел для динамических рецептов лате, не покрытых деревом исследований Mini.
 research-technology-typan-fishing-name = Рыболовство
 research-technology-typan-fishing-desc = Снасти, удочки и аквариум для разведения рыбы на Тайпане.
+research-technology-typan-fishing-advanced-name = Продвинутое рыболовство
+research-technology-typan-fishing-advanced-desc = Научные удочки и усиленные снасти для рыбалки в самых суровых условиях Тайпана.
 
 research-technology-modsuit-equipment-desc = Универсальные ядра модульных скафандров, модули хранения и вспомогательные модули.
 

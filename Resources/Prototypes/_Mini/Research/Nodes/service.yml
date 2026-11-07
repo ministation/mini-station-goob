@@ -267,6 +267,45 @@
   position: 5,12
 
 - type: technology
+  id: FishingTackle
+  name: research-technology-fishing-tackle-name
+  description: research-technology-fishing-tackle-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: reel_red
+  discipline: Service
+  tier: 2
+  pointCosts:
+  - type: General
+    amount: 5000
+  technologyPrerequisites:
+  - FishingEquip
+  recipeUnlocks:
+  - FishingRodRescue
+  - FishingLineBouncy
+  - FishingHookWeighted
+  position: 4,12
+
+- type: technology
+  id: FishingEquipMaster
+  name: research-technology-fishing-master-name
+  description: research-technology-fishing-master-desc
+  icon:
+    sprite: _Goobstation/Objects/Specific/Fishing/fishing_equipment.rsi
+    state: fishing_rod_master
+  discipline: Service
+  tier: 3
+  pointCosts:
+  - type: General
+    amount: 10000
+  technologyPrerequisites:
+  - FishingTackle
+  recipeUnlocks:
+  - FishingRodMaster
+  - BaitCanSuper
+  position: 4,13
+
+- type: technology
   id: MarineUtility
   name: research-technology-marine-utility-name
   description: research-technology-marine-utility-desc
