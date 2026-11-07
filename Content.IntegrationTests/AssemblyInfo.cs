@@ -7,7 +7,7 @@
 // https://github.com/dotnet/runtime/issues/107197
 // So we can't really parallelize integration tests harder either until the runtime fixes that,
 // *or* we fix serv3 to not spam expression trees.
-// Mini: 3 полосы вместо 2 — main-шард 346с -> ожидаемо ~170-200с.
-// Полный съём капа ловит баг рантайма выше; если 3 полосы тоже начнут
-// ронять прогон — откатить сюда 2 и вместо этого резать шарды.
-[assembly: LevelOfParallelism(3)]
+// Mini: 3 полосы проверены (PR #725) и ВРЕДНЫ: main-шард 408с против 346с
+// при двух (6 процессов на 4 ядрах раннера, контеншн). Ускорение сделано
+// ребалансом шардов (main-heavy), лимит оставлен на 2.
+[assembly: LevelOfParallelism(2)]
