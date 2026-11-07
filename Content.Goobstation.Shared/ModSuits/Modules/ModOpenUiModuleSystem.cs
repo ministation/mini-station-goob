@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Shared.ModSuits.Components;
 using Content.Goobstation.Shared.ModSuits.Systems;
 using Robust.Shared.Network;
@@ -20,7 +24,15 @@ public sealed partial class ModOpenUiModuleSystem : EntitySystem
         if (target is not { } uid || !_ui.HasUi(uid, ent.Comp.Key))
             return;
 
-        _ui.OpenUi(uid, ent.Comp.Key, args.User, _net.IsClient);
         args.Handled = true;
+
+        // Module use is predicted on the client, so a predicted open here would send a second
+        // OpenBoundInterfaceMessage on top of the server's own open. The duplicate entry in
+        // UserInterfaceUserComponent.OpenInterfaces then survives closing or deleting the suit,
+        // and PVS reports it every tick.
+        if (_net.IsClient)
+            return;
+
+        _ui.OpenUi(uid, ent.Comp.Key, args.User);
     }
 }
