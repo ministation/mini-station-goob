@@ -15,6 +15,7 @@ use std::process::ExitCode;
 use std::time::Duration;
 
 use serde_json::json;
+use ureq::OrAnyStatus;
 
 const RELEASE_DIR: &str = "release";
 const UPLOAD_TIMEOUT: Duration = Duration::from_secs(300);
@@ -77,14 +78,19 @@ fn run() -> Result<(), String> {
         .set("Authorization", &format!("Bearer {}", cdn.token))
         .set("Content-Type", "application/json")
         .send_json(start)
-        .map_err(|e| http_error(e, "publish/start"))?;
+        // По умолчанию ureq отдаёт не-2xx как Err, а для проверки 409 ниже нужен статус.
+        .or_any_status()
+        .map_err(|e| format!("publish/start failed: {e}"))?;
     let status = response.status();
-    // CDN отвечает 409, когда этот коммит уже полностью опубликован: no-op.
-    if status == 409 && response.into_string().unwrap_or_default().contains("Version already exists") {
-        println!("Version {version} is already published, nothing to do.");
-        return Ok(());
+    if !(200..300).contains(&status) {
+        let body = response.into_string().unwrap_or_default();
+        // CDN отвечает 409, когда этот коммит уже полностью опубликован: это no-op.
+        if status == 409 && body.contains("Version already exists") {
+            println!("Version {version} is already published, nothing to do.");
+            return Ok(());
+        }
+        return Err(format!("publish/start failed: HTTP {status}\nBody: {body}"));
     }
-    check_status(status, "publish/start")?;
     println!("Publish successfully started, adding files...");
 
     // publish/file — по одному, отсортировано по размеру по убыванию.
