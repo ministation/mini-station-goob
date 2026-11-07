@@ -16,6 +16,9 @@ on:
       - 'RobustToolbox/**'
       - '.github/workflows/yaml-linter.yml'
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

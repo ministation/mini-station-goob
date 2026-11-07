@@ -12,6 +12,8 @@ on:
   pull_request_review:
     types: [submitted, edited, dismissed]
 
+permissions: {}
+
 jobs:
   noop:
     runs-on: ubuntu-latest

@@ -7,6 +7,9 @@ on:
   schedule:
   - cron: '0 2 * * *'
 
+permissions:
+  contents: read
+
 concurrency:
   group: publish
   cancel-in-progress: true
