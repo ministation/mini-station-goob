@@ -351,16 +351,6 @@ fn ru_rel_to_en(ru_rel: &str) -> String {
     }
 }
 
-fn en_rel_to_ru(en_rel: &str) -> String {
-    if en_rel == EN_LOCALE_REL {
-        return RU_LOCALE_REL.into();
-    }
-    match en_rel.strip_prefix(EN_LOCALE_REL) {
-        Some(rest) => format!("{RU_LOCALE_REL}{rest}"),
-        None => en_rel.to_string(),
-    }
-}
-
 // ------------------------------------------------------------ типы символов
 
 /// Вырезает спаны как regex `\{[^{}]*\}`: без вложенности — спан от открывающей

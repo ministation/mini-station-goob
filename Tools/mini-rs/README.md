@@ -12,6 +12,7 @@ CLI-инструменты CI мини-станции на Rust — порты �
 | `mini-validate-rsi` | `RobustToolbox/Schemas/validate_rsis.py` | проверяет целостность RSI (meta.json по схеме, PNG против метаданных) |
 | `mini-validate-yamale` | `PaulRitter/yaml-schema-validator` (+ `*_validators.py`) | валидатор схем yamale: mapfile.yml для карт и rga.yml для attributions; в CI гоняется только по изменённым файлам |
 | `mini-ru-sync` | `ru_sync.py --check` | сверка ключей en-US/ru-RU (контрактная строка «ИТОГ ЛОКАЛИЗАЦИИ» сохранена байт-в-байт); `--translate` остаётся в python-скрипте |
+| `mini-publish` | `Tools/publish_multi_request.py` | публикация пакетов в Robust.CDN (publish/start → file → finish); заливка строго последовательная, как в оригинале (SQLite-локи CDN) |
 
 Запуск локально:
 

@@ -12,6 +12,7 @@ members = [
     "crates/validate-rsi",
     "crates/validate-yamale",
     "crates/ru-sync",
+    "crates/publish",
 ]
 
 [workspace.package]
