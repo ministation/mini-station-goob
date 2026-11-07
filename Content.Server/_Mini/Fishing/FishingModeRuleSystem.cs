@@ -213,9 +213,9 @@ public sealed class FishingModeRuleSystem : GameRuleSystem<FishingModeRuleCompon
             var leader = leaders[i];
             args.AddLine(leader.Reward > 0
                 ? Loc.GetString("fishing-mode-round-end-line-reward",
-                    ("place", i + 1), ("name", leader.Name), ("fish", leader.Fish), ("score", leader.Score), ("reward", leader.Reward))
+                    ("place", i + 1), ("name", leader.Name), ("score", leader.Score), ("reward", leader.Reward))
                 : Loc.GetString("fishing-mode-round-end-line",
-                    ("place", i + 1), ("name", leader.Name), ("fish", leader.Fish), ("score", leader.Score)));
+                    ("place", i + 1), ("name", leader.Name), ("score", leader.Score)));
         }
     }
 
