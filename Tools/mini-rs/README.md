@@ -10,6 +10,7 @@ CLI-инструменты CI мини-станции на Rust — порты �
 |---|---|---|
 | `mini-check-crlf` | `Tools/check_crlf.py` | падает, если в git-индексе есть текстовые файлы с CRLF |
 | `mini-validate-rsi` | `RobustToolbox/Schemas/validate_rsis.py` | проверяет целостность RSI (meta.json по схеме, PNG против метаданных) |
+| `mini-validate-yamale` | `PaulRitter/yaml-schema-validator` (+ `*_validators.py`) | валидатор схем yamale: mapfile.yml для карт и rga.yml для attributions; в CI гоняется только по изменённым файлам |
 
 Запуск локально:
 

@@ -10,6 +10,7 @@ resolver = "2"
 members = [
     "crates/check-crlf",
     "crates/validate-rsi",
+    "crates/validate-yamale",
 ]
 
 [workspace.package]
