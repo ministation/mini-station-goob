@@ -75,6 +75,11 @@ public sealed partial class VoiceChatSystem : EntitySystem
 
     private static readonly TimeSpan TransmissionGap = TimeSpan.FromMilliseconds(500);
     private static readonly TimeSpan PermissionRecheck = TimeSpan.FromSeconds(2);
+    // Mini: полудуплекс. Микрофон игрока в колонках снимает голос из игры и заворачивает
+    // эхо к источнику через чужую передачу (браузерное эхоподавление не видит звук клиента).
+    // Пока игрок сам говорит (и 0.3с после), чужой звук ему не доставляется: у передатчика
+    // колонки молчат, микрофон снимает тишину, петля рвётся.
+    private static readonly TimeSpan DuplexTail = TimeSpan.FromMilliseconds(300);
     private static readonly TimeSpan RefusalDisplay = TimeSpan.FromSeconds(3);
     private static readonly TimeSpan StateRefreshInterval = TimeSpan.FromMilliseconds(500);
     private const float ListenerMargin = 2f;
@@ -301,7 +306,7 @@ public sealed partial class VoiceChatSystem : EntitySystem
 
         if (!_routes.TryGetValue(frame.User, out var route))
         {
-            route = BuildRoute(session, uid, speaker, directRange);
+            route = BuildRoute(session, uid, speaker, directRange, now);
             _routes[frame.User] = route;
             UpdateEffect(frame.User);
             SendSpeakerInfo(speaker, uid, route, session.Channel);
@@ -436,6 +441,10 @@ public sealed partial class VoiceChatSystem : EntitySystem
             {
                 continue;
             }
+
+            // Полудуплекс: говорящий в лобби не слышит остальных (та же борьба с эхом).
+            if (listener != session && IsTalking(listener, now))
+                continue;
 
             _lobbyChannels.Add(listener.Channel);
         }
@@ -594,7 +603,14 @@ public sealed partial class VoiceChatSystem : EntitySystem
         };
     }
 
-    private Route BuildRoute(ICommonSession speakerSession, EntityUid speakerUid, Speaker speaker, float directRange)
+    // Полудуплекс: сессия сама передаёт голос (или говорила доли секунды назад).
+    private bool IsTalking(ICommonSession session, TimeSpan now)
+    {
+        return _speakers.TryGetValue(session.UserId, out var speaker) &&
+               now - speaker.LastAttempt <= DuplexTail;
+    }
+
+    private Route BuildRoute(ICommonSession speakerSession, EntityUid speakerUid, Speaker speaker, float directRange, TimeSpan now)
     {
         var route = new Route();
         var ghostSpeaker = _ghostQuery.HasComp(speakerUid);
@@ -639,6 +655,12 @@ public sealed partial class VoiceChatSystem : EntitySystem
             }
 
             if (session == speakerSession && !_voice.HearsSelf(session.UserId))
+                continue;
+
+            // Полудуплекс: говорящий слушает сам себя в колонках, его микрофон вернёт
+            // чужой голос источнику как эхо. Не доставляем ему звук, пока он говорит.
+            // (Сам говорящий с включённым hear_self исключение - он и слушает себя.)
+            if (session != speakerSession && IsTalking(session, now))
                 continue;
 
             if (ghostSpeaker && !_ghostQuery.HasComp(listener) ||

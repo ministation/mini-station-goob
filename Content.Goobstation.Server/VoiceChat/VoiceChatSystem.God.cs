@@ -120,7 +120,7 @@ public sealed partial class VoiceChatSystem
         if (!_godVoices.TryGetValue(frame.User, out var god))
             return false;
 
-        if (!_adminManager.HasAdminFlag(session, AdminFlags.Admin) || !CollectGodRecipients(session, god))
+        if (!_adminManager.HasAdminFlag(session, AdminFlags.Admin) || !CollectGodRecipients(session, god, now))
         {
             StopGodVoice(session);
             return false;
@@ -141,7 +141,7 @@ public sealed partial class VoiceChatSystem
         return true;
     }
 
-    private bool CollectGodRecipients(ICommonSession admin, GodVoice god)
+    private bool CollectGodRecipients(ICommonSession admin, GodVoice god, TimeSpan now)
     {
         god.Recipients.Clear();
 
@@ -156,7 +156,8 @@ public sealed partial class VoiceChatSystem
                 return false;
             }
 
-            if (!god.Recipients.Contains(target))
+            // Полудуплекс: говорящая цель пока не слышит голос бога.
+            if (!god.Recipients.Contains(target) && !IsTalking(target, now))
                 god.Recipients.Add(target);
 
             return true;
@@ -187,7 +188,7 @@ public sealed partial class VoiceChatSystem
                 _ => true,
             };
 
-            if (include)
+            if (include && !IsTalking(session, now))
                 god.Recipients.Add(session);
         }
 
