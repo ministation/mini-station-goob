@@ -17,7 +17,7 @@ using Robust.Shared.Maths;
 namespace Content.Client._Mini.Fishing;
 
 /// <summary>
-/// Fishing mode HUD: the three leaders with their fish score bars, in the same
+/// Fishing mode HUD: the three leaders with their score bars, in the same
 /// pixel-art bar style as the vote timer and the war HUD. Sits at the top of the
 /// screen below the top menu bar and can be collapsed to just the header.
 /// </summary>
@@ -77,7 +77,7 @@ public sealed class FishingModeHudControl : PanelContainer
         };
         AddChild(column);
 
-        // Шапка: заголовок и кнопка свернуть/развернуть — сворачивается только тело.
+        // Шапка: заголовок и кнопка свернуть/развернуть, сворачивается только тело.
         var header = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
@@ -178,8 +178,8 @@ public sealed class FishingModeHudControl : PanelContainer
         var count = new Label
         {
             FontColorOverride = RankColors[index],
-            MinWidth = 64,
-            MaxWidth = 64,
+            MinWidth = 76,
+            MaxWidth = 76,
             Align = Label.AlignMode.Right,
         };
         row.AddChild(count);
@@ -201,9 +201,9 @@ public sealed class FishingModeHudControl : PanelContainer
 
         _emptyLabel.Visible = leaders.Length == 0;
 
-        // Полоска показывает количество рыб из подписи строки, а не скрытые очки:
-        // при равном числе рыб полоски равные, даже если очки за редкость различаются.
-        var leaderFish = leaders.Length > 0 ? Math.Max(1, leaders[0].Fish) : 1;
+        // Главная цифра и полоска идут по очкам: в них уже взвешена редкость рыбы.
+        // Число рыб остаётся подсказкой к строке.
+        var leaderScore = leaders.Length > 0 ? Math.Max(1, leaders[0].Score) : 1;
 
         for (var i = 0; i < LeaderCount; i++)
         {
@@ -217,8 +217,9 @@ public sealed class FishingModeHudControl : PanelContainer
             var leader = leaders[i];
             row.Container.Visible = true;
             row.Name.Text = leader.Name;
-            row.Count.Text = Loc.GetString("fishing-mode-hud-fish", ("count", leader.Fish));
-            row.Bar.Value = Math.Clamp(leader.Fish / (float) leaderFish, 0f, 1f);
+            row.Count.Text = Loc.GetString("fishing-mode-hud-score", ("score", leader.Score));
+            row.Count.ToolTip = Loc.GetString("fishing-mode-hud-fish", ("count", leader.Fish));
+            row.Bar.Value = Math.Clamp(leader.Score / (float) leaderScore, 0f, 1f);
         }
     }
 }

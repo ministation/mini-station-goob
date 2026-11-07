@@ -47,8 +47,13 @@ public sealed partial class FishingPortalRadialMenu : RadialMenu
 
     private void AddOption(RadialContainer main, SpriteSpecifier icon, string name, string? sourceId)
     {
-        var button = new RadialMenuButton
+        // Sector buttons and the RadialMenuButton style class are what the construction
+        // radial menus use, so the portal gets the same look and hover highlight.
+        var button = new RadialMenuButtonWithSector
         {
+            StyleClasses = { "RadialMenuButton" },
+            DrawBorder = true,
+            DrawBackground = true,
             SetSize = new Vector2(64, 64),
             ToolTip = name,
         };
@@ -61,7 +66,7 @@ public sealed partial class FishingPortalRadialMenu : RadialMenu
             TextureScale = new Vector2(2f, 2f),
         });
 
-        button.OnButtonUp += _ => OnSelected?.Invoke(sourceId);
+        button.OnPressed += _ => OnSelected?.Invoke(sourceId);
         main.AddChild(button);
     }
 }
