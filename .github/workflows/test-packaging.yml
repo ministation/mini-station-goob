@@ -47,7 +47,7 @@ jobs:
       matrix:
         target:
           - name: linux
-            args: server --platform linux-x64 --platform linux-arm64
+            args: server --platform linux-x64
           - name: client
             args: client
 

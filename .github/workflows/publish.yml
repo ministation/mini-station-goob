@@ -19,11 +19,11 @@ jobs:
       matrix:
         target:
           - name: windows
-            args: server --platform win-x64 --platform win-arm64
+            args: server --platform win-x64
           - name: linux
-            args: server --platform linux-x64 --platform linux-arm64
+            args: server --platform linux-x64
           - name: macos
-            args: server --platform osx-x64 --platform osx-arm64
+            args: server --platform osx-x64
           - name: client
             args: client
 
