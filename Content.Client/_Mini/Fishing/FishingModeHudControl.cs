@@ -202,7 +202,6 @@ public sealed class FishingModeHudControl : PanelContainer
         _emptyLabel.Visible = leaders.Length == 0;
 
         // Главная цифра и полоска идут по очкам: в них уже взвешена редкость рыбы.
-        // Число рыб остаётся подсказкой к строке.
         var leaderScore = leaders.Length > 0 ? Math.Max(1, leaders[0].Score) : 1;
 
         for (var i = 0; i < LeaderCount; i++)
@@ -218,7 +217,6 @@ public sealed class FishingModeHudControl : PanelContainer
             row.Container.Visible = true;
             row.Name.Text = leader.Name;
             row.Count.Text = Loc.GetString("fishing-mode-hud-score", ("score", leader.Score));
-            row.Count.ToolTip = Loc.GetString("fishing-mode-hud-fish", ("count", leader.Fish));
             row.Bar.Value = Math.Clamp(leader.Score / (float) leaderScore, 0f, 1f);
         }
     }
