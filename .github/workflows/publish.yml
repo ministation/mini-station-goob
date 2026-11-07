@@ -70,8 +70,27 @@ jobs:
     - name: Check .NET installation
       run: dotnet --info
 
+    - name: Detect engine revision
+      id: rtsha
+      run: echo "sha=$(git rev-parse HEAD:RobustToolbox)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache RobustToolbox build
+      uses: actions/cache@v4
+      with:
+        path: |
+          RobustToolbox/bin
+          RobustToolbox/*/obj
+        key: rt-build-ubuntu-Release-${{ steps.rtsha.outputs.sha }}-${{ hashFiles('**/nuget.config', '**/*.props') }}
+        restore-keys: |
+          rt-build-ubuntu-Release-${{ steps.rtsha.outputs.sha }}-
+          rt-build-ubuntu-Release-
+
     - name: Install dependencies
       run: dotnet restore
+
+    - name: Touch cached engine outputs
+      run: |
+        find RobustToolbox/bin RobustToolbox/*/obj -type f -exec touch {} + 2>/dev/null || true
 
     - name: Build Packaging
       run: dotnet build Content.Packaging --configuration Release --no-restore /m
@@ -101,10 +120,17 @@ jobs:
     - name: Setup engine submodule
       run: git submodule update --init RobustToolbox
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-paramiko python3-lxml python3-requests python3-yaml
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Cache Rust build
+      uses: Swatinem/rust-cache@v2
+      with:
+        workspaces: Tools/mini-rs
+
+    - name: Build Rust tools
+      run: cargo build --release --workspace
+      working-directory: Tools/mini-rs
 
     - name: Download packages
       uses: actions/download-artifact@v4
@@ -114,7 +140,7 @@ jobs:
         merge-multiple: true
 
     - name: Publish version
-      run: Tools/publish_multi_request.py
+      run: Tools/mini-rs/target/release/mini-publish
       env:
         PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
         GITHUB_REPOSITORY: ${{ vars.GITHUB_REPOSITORY }}
