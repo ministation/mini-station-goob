@@ -11,6 +11,7 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
@@ -32,10 +33,17 @@ public sealed class ResonatorSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
 
     private const string FieldPrototype = "LavalandResonanceField";
     private const string BurstEffect = "BulletImpactEffectKinetic";
+
+    /// <summary>
+    /// How long a field must exist before clicking it detonates it early, so rapid clicks
+    /// cannot turn the resonator into a burst cannon against fauna.
+    /// </summary>
+    private const float QuickBurstMinAge = 0.5f;
 
     public override void Initialize()
     {
@@ -87,6 +95,11 @@ public sealed class ResonatorSystem : EntitySystem
             if (field.Bursting)
                 continue;
 
+            // A field that was just placed cannot be detonated on demand yet, otherwise
+            // alternating create/burst clicks deal burst damage once per click.
+            if (_timing.CurTime - field.CreatedAt < TimeSpan.FromSeconds(QuickBurstMinAge))
+                return;
+
             field.DamageMultiplier = ent.Comp.QuickBurstMod;
             Burst((fieldUid, field));
             return;
@@ -130,6 +143,7 @@ public sealed class ResonatorSystem : EntitySystem
 
         comp.Creator = creator;
         comp.Resonator = resonator;
+        comp.CreatedAt = _timing.CurTime;
         comp.DamageMultiplier = damageMultiplier;
         comp.FailureProb = failure;
         comp.Matrix = mode == ResonatorMode.Matrix;
@@ -168,7 +182,7 @@ public sealed class ResonatorSystem : EntitySystem
                 continue;
 
             if (field.Matrix
-                && _lookup.GetEntitiesInRange<MobStateComponent>(Transform(uid).Coordinates, 0.5f).Count > 0)
+                && HasAliveMob(Transform(uid).Coordinates, 0.5f))
             {
                 (due ??= new()).Add((uid, field));
                 continue;
@@ -189,6 +203,17 @@ public sealed class ResonatorSystem : EntitySystem
 
             Burst(field);
         }
+    }
+
+    private bool HasAliveMob(EntityCoordinates coords, float range)
+    {
+        foreach (var (mob, _) in _lookup.GetEntitiesInRange<MobStateComponent>(coords, range))
+        {
+            if (_mobState.IsAlive(mob))
+                return true;
+        }
+
+        return false;
     }
 
     public void Burst(Entity<ResonanceFieldComponent> ent)
@@ -222,14 +247,18 @@ public sealed class ResonatorSystem : EntitySystem
                 _gatherable.Gather(uid, creator);
         }
 
-        // Damage everything living on the tile.
-        var mobs = _lookup.GetEntitiesInRange<MobStateComponent>(coords, 0.5f);
-        foreach (var (mob, _) in mobs)
+        // Matrix traps are the only fields that hurt mobs: regular auto/manual fields
+        // are purely a mining tool, otherwise fauna near rock gets shredded in seconds.
+        if (ent.Comp.Matrix)
         {
-            if (mob == ent.Owner || TerminatingOrDeleted(mob))
-                continue;
+            var mobs = _lookup.GetEntitiesInRange<MobStateComponent>(coords, 0.5f);
+            foreach (var (mob, _) in mobs)
+            {
+                if (mob == ent.Owner || TerminatingOrDeleted(mob) || !_mobState.IsAlive(mob))
+                    continue;
 
-            _damage.TryChangeDamage(mob, damage, origin: creator);
+                _damage.TryChangeDamage(mob, damage, origin: creator);
+            }
         }
 
         // Chain into other fields.
