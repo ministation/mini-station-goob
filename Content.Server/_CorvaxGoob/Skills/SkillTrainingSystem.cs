@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Linq;
 
 using Content.Shared._CorvaxGoob.Skills;
@@ -803,6 +807,14 @@ public sealed class SkillTrainingSystem : EntitySystem
     private bool CanStartTrainingSession(EntityUid teacher, EntityUid sessionEntity, out string failLocale)
     {
         failLocale = "skill-training-fail-busy";
+
+        // Mobs without a DoAfterComponent (e.g. guardians) cannot run a training do-after; it would only log an invalid user error.
+        if (!HasComp<DoAfterComponent>(teacher))
+        {
+            failLocale = "skill-training-fail-cannot-do-after";
+            return false;
+        }
+
         var comp = EnsureComp<SkillTrainingTeacherComponent>(teacher);
 
         if (_timing.CurTime < comp.CooldownUntil)

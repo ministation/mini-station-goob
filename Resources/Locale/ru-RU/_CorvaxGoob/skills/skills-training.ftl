@@ -13,6 +13,7 @@ skill-training-ui-hint = Выберите навык.
     С учебником в активной руке обучение быстрее всего.
 skill-training-fail-range = Слишком далеко от цели.
 skill-training-fail-hands = Нужны свободные руки.
+skill-training-fail-cannot-do-after = Вы не можете выполнить это действие.
 skill-training-fail-nothing-to-teach = Этому игроку нечему вас научить.
 skill-training-fail-need-book = Возьмите в руку учебник по этому навыку.
 
