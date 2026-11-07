@@ -40,8 +40,14 @@ namespace Content.Server.GameTicking
 
         public void UpdateInfoText()
         {
-            RaiseNetworkEvent(GetInfoMsg(), Filter.Empty().AddPlayers(_playerManager.NetworkedSessions));
-            RaiseNetworkEvent(GetInGameInfoMsg(), Filter.Empty().AddPlayers(_playerManager.NetworkedSessions));
+            // Mini: при дисконнекте сессия ещё висит в списке игроков, а канал уже отключён, поэтому
+            // отправка TickerInGameInfoEvent писала в лог "Tried to send message ... to disconnected channel".
+            var filter = Filter.Empty()
+                .AddPlayers(_playerManager.NetworkedSessions)
+                .RemoveWhere(session => !session.Channel.IsConnected);
+
+            RaiseNetworkEvent(GetInfoMsg(), filter);
+            RaiseNetworkEvent(GetInGameInfoMsg(), filter);
         }
 
         private string GetInfoText(bool isInGameInfo = false)
