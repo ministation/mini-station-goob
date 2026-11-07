@@ -2443,8 +2443,11 @@ public sealed partial class NeuroPlayerSystem : EntitySystem
         // (the attack rate is a hit per second) cancelled the path it was walking, so it stuttered in
         // place and the reaction looked like nothing happened at all. Only a threat that moved
         // somewhere else entirely sends it down a new route.
+        // The stored point can name an entity deleted since it was written; converting such
+        // coordinates logs "invalid entity" from the transform system, so treat it as no route.
         if (comp.DangerUntil != null &&
             htn.Blackboard.TryGetValue<EntityCoordinates>("NeuroPoint", out var current, EntityManager) &&
+            current.IsValid(EntityManager) &&
             (_transform.ToWorldPosition(current) - _transform.ToWorldPosition(fleePoint)).Length() <= RerouteDistance)
         {
             comp.DangerUntil = _timing.CurTime + TimeSpan.FromSeconds(seconds);
