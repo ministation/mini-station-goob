@@ -436,14 +436,14 @@ public sealed partial class VoiceChatSystem : EntitySystem
         _lobbyChannels.Clear();
         foreach (var listener in _lobbySessions)
         {
-            if (listener == session && !_voice.HearsSelf(listener.UserId) ||
+            if (listener == session ||
                 _voice.IsSpeakerMuted(listener.UserId, speaker.Id))
             {
                 continue;
             }
 
             // Полудуплекс: говорящий в лобби не слышит остальных (та же борьба с эхом).
-            if (listener != session && IsTalking(listener, now))
+            if (IsTalking(listener, now))
                 continue;
 
             _lobbyChannels.Add(listener.Channel);
@@ -654,13 +654,12 @@ public sealed partial class VoiceChatSystem : EntitySystem
                 continue;
             }
 
-            if (session == speakerSession && !_voice.HearsSelf(session.UserId))
+            if (session == speakerSession)
                 continue;
 
             // Полудуплекс: говорящий слушает сам себя в колонках, его микрофон вернёт
             // чужой голос источнику как эхо. Не доставляем ему звук, пока он говорит.
-            // (Сам говорящий с включённым hear_self исключение - он и слушает себя.)
-            if (session != speakerSession && IsTalking(session, now))
+            if (IsTalking(session, now))
                 continue;
 
             if (ghostSpeaker && !_ghostQuery.HasComp(listener) ||

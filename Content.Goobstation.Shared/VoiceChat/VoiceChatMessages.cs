@@ -131,14 +131,12 @@ public sealed class MsgVoiceSettings : NetMessage
     public const int MaxMutedChannels = 64;
     public const int MaxMutedSpeakers = 256;
 
-    public bool HearSelf;
     public bool Receive = true;
     public List<string> MutedChannels = new();
     public List<ushort> MutedSpeakers = new();
 
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
-        HearSelf = buffer.ReadBoolean();
         Receive = buffer.ReadBoolean();
 
         var count = Math.Min(buffer.ReadVariableInt32(), MaxMutedChannels);
@@ -158,7 +156,6 @@ public sealed class MsgVoiceSettings : NetMessage
 
     public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
     {
-        buffer.Write(HearSelf);
         buffer.Write(Receive);
 
         var count = Math.Min(MutedChannels.Count, MaxMutedChannels);
