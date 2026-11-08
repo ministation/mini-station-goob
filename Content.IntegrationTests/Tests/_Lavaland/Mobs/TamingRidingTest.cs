@@ -112,31 +112,17 @@ public sealed class TamingRidingTest
                 Is.EqualTo(4.5f).Within(0.01f), "a ridden goliath must run at riding speed");
         });
 
-        // Let the unbuckle cooldown expire, then dismount and check that the mob is restored.
+        // Let the unbuckle cooldown expire, then dismount and check that the mob is restored in the
+        // same tick. The UnstrappedEvent handler restores the mob synchronously, while a sample from
+        // a later tick races NpcSleepSystem: it parks the HTN of every NPC without a player in range
+        // every second, and this test map has no actor, so it can clear Enabled right after the
+        // handler sets it, which made this test flake in CI.
         await server.WaitRunTicks(15);
 
         await server.WaitAssertion(() =>
         {
             Assert.That(buckleSystem.TryUnbuckle(tamer, tamer), Is.True);
-        });
 
-        await server.WaitRunTicks(5);
-
-        // The dismount can settle a tick later than the unbuckle call, so wait for the restored
-        // state instead of sampling it once: a fixed sample made this test flake in CI.
-        var restored = false;
-        for (var i = 0; i < 60 && !restored; i++)
-        {
-            await server.WaitRunTicks(1);
-            await server.WaitAssertion(() =>
-            {
-                restored = entMan.GetComponent<VehicleComponent>(goliath).Driver == null
-                    && entMan.GetComponent<HTNComponent>(goliath).Enabled;
-            });
-        }
-
-        await server.WaitAssertion(() =>
-        {
             Assert.That(entMan.GetComponent<VehicleComponent>(goliath).Driver, Is.Null);
             Assert.That(entMan.GetComponent<HTNComponent>(goliath).Enabled, Is.True,
                 "the AI must come back after the rider dismounts");
