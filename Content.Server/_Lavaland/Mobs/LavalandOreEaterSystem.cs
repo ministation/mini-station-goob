@@ -7,6 +7,7 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
 using Content.Shared.Stacks;
 using Content.Shared.Tag;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Lavaland.Mobs;
@@ -93,6 +94,10 @@ public sealed class LavalandOreEaterSystem : EntitySystem
             foreach (var ore in _lookup.GetEntitiesInRange<TagComponent>(coords, eater.Range))
             {
                 if (!_tags.HasTag(ore.Owner, OreTag))
+                    continue;
+
+                // Ore in a backpack or pocket reports the wearer's position; only eat what's on the ground.
+                if (!HasComp<MapGridComponent>(Transform(ore.Owner).ParentUid))
                     continue;
 
                 var heal = eater.DefaultHeal;
