@@ -1,50 +1,55 @@
 // SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
-using System.Numerics;
+using Robust.Shared.Map;
 
 namespace Content.Server._Lavaland.Ruins;
 
 /// <summary>
-/// Builds the TG lavaland sliding puzzle room: a 3x3 patch of necropolis
-/// stone with eight puzzle pillars and the puzzling chest in the free slot.
-/// The sliding minigame itself is not ported, so the chest is offered at once.
+/// State of the lavaland sliding puzzle room. The room layout and the sliding
+/// minigame live in <see cref="SlidingPuzzleSystem"/>.
 /// </summary>
-public sealed class PuzzleRoomSystem : EntitySystem
-{
-    private const string Floor = "LavalandStoneTileBurnt";
-    private const string Pillar = "LavalandPuzzlePillar";
-    private const string Chest = "LavalandPuzzleCrate";
-
-    public override void Initialize()
-    {
-        base.Initialize();
-
-        SubscribeLocalEvent<PuzzleRoomSpawnerComponent, MapInitEvent>(OnSpawnerMapInit);
-    }
-
-    private void OnSpawnerMapInit(Entity<PuzzleRoomSpawnerComponent> ent, ref MapInitEvent args)
-    {
-        // No self-delete: the prototype sweep requires every entity to stay deletable.
-        var baseCoords = Transform(ent).Coordinates;
-
-        for (var x = -1; x <= 1; x++)
-        {
-            for (var y = -1; y <= 1; y++)
-            {
-                var cell = baseCoords.Offset(new Vector2(x, y));
-                Spawn(Floor, cell);
-
-                if (x == 0 && y == 0)
-                {
-                    Spawn(Chest, cell);
-                    continue;
-                }
-
-                Spawn(Pillar, cell);
-            }
-        }
-    }
-}
-
 [RegisterComponent]
-public sealed partial class PuzzleRoomSpawnerComponent : Component;
+public sealed partial class PuzzleRoomSpawnerComponent : Component
+{
+    /// <summary>
+    /// Which of the nine slots starts free. TG: one random tile is removed.
+    /// </summary>
+    [DataField]
+    public int EmptySlot = 8;
+
+    /// <summary>
+    /// Entities spawned per slot; a missing key is the free slot.
+    /// </summary>
+    [ViewVariables]
+    public Dictionary<int, EntityUid> Placement = new();
+
+    /// <summary>
+    /// True once every fragment sits on its slot and the chest has spawned.
+    /// </summary>
+    [ViewVariables]
+    public bool Solved;
+
+    /// <summary>
+    /// True once a pillar has been destroyed: the reward is voided, TG parity.
+    /// </summary>
+    [ViewVariables]
+    public bool Broken;
+
+    [ViewVariables]
+    public EntityUid Puzzle;
+
+    [ViewVariables]
+    public EntityCoordinates BaseCoords;
+
+    [DataField]
+    public string FloorPrototype = "LavalandStoneTileBurnt";
+
+    /// <summary>
+    /// Prefix of the nine fragment prototypes LavalandPuzzlePillar0..8.
+    /// </summary>
+    [DataField]
+    public string PillarPrototype = "LavalandPuzzlePillar";
+
+    [DataField]
+    public string ChestPrototype = "LavalandPuzzleCrate";
+}

@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 5ee81d694bd1f15bb4f39e3da49918ead35de4ca.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "puzzle_0",
+      "directions": 1
+    },
+    {
+      "name": "puzzle_1",
+      "directions": 1
+    },
+    {
+      "name": "puzzle_2",
+      "directions": 1
+    },
+    {
+      "name": "puzzle_3",
+      "directions": 1
+    },
+    {
+      "name": "puzzle_4",
+      "directions": 1
+    },
+    {
+      "name": "puzzle_5",
+      "directions": 1
+    },
+    {
+      "name": "puzzle_6",
+      "directions": 1
+    },
+    {
+      "name": "puzzle_7",
+      "directions": 1
+    },
+    {
+      "name": "puzzle_8",
+      "directions": 1
+    }
+  ]
+}
