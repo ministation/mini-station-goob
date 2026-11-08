@@ -62,3 +62,15 @@ wisp-lantern-released = Из фонаря выплывает огонёк и н�
 wisp-lantern-returned = Огонёк скользит обратно в фонарь.
 warp-cube-unlinked = Куб тускл и безмолвен. Его близнец пропал.
 warp-cube-teleported = Блюспейс рывком переносит вас через весь мир.
+
+ent-ActionBerserkMode = Режим берсерка
+    .desc = Высвободите ярость, запечатанную в шлеме. Удары в 4 раза быстрее, дробящий урон вдвое слабее, снаряды отражаются - но огнестрел бесполезен, а заряд тает стремительно.
+berserker-charged = Режим берсерка заряжен полностью.
+berserker-not-worn = Сначала наденьте шлем берсерка.
+berserker-not-charged = Берсерк заряжен лишь на {$charge}%.
+berserker-mode-entered = Вы впадаете в ярость.
+berserker-mode-exited = Ярость отступает.
+berserker-locked = Шлем не желает сниматься.
+berserker-no-guns = Ярости нет дела до огнестрела.
+berserker-empowered = Шкура обращается в пепел, а броня пылает жарче.
+berserker-empowered-already = Эта деталь уже впитала силу шкуры.
