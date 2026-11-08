@@ -19,6 +19,7 @@
       shader: unshaded
 
 # Spiral variant deals less damage, TG gives it its own projectile.
+# TG parity: shockwaves bend in flight while they move.
 - type: entity
   id: LavalandWendigoSpiralShockwave
   parent: LavalandWendigoShockwave
@@ -29,3 +30,5 @@
       types:
         Blunt: 15
     ignoreResistances: true
+  - type: WendigoShockwaveCurve
+    turnDegrees: 8
