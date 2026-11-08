@@ -141,3 +141,19 @@
   - type: FaunaCrusherTrophy
     detonationProjectile: LavalandBilewormAcid
     projectileSpeed: 20
+
+# TG raptor feather: crusher shots fly through allies.
+- type: entity
+  id: LavalandCrusherTrophyRaptorFeather
+  parent: BaseLavalandCrusherTrophy
+  name: raptor feather
+  description: A feather of an innocent raptor. You'd go to hell for this one, if you weren't already mining in it.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: raptor_feather
+  - type: ItemUpgrade
+    name: crusher-trophy-raptor-feather-name
+    uniqueGroup: crusherTrophy
+  - type: FaunaCrusherTrophy
+    passThroughAllies: true

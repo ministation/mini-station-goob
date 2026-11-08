@@ -35,3 +35,6 @@ ent-LavalandCrusherTrophyBrimdemonFang = brimdemon's fang
     .desc = A fang from a brimdemon's corpse. Suitable as a trophy for a kinetic crusher.
 ent-LavalandCrusherTrophyBilewormSpewlet = bileworm spewlet
     .desc = A baby bileworm. Suitable as a trophy for a kinetic crusher.
+ent-LavalandCrusherTrophyRaptorFeather = raptor feather
+    .desc = A feather of an innocent raptor. You'd go to hell for this one, if you weren't already mining in it.
+crusher-trophy-raptor-feather-name = raptor feather

@@ -35,3 +35,6 @@ ent-LavalandCrusherTrophyBrimdemonFang = клык бримдемона
     .desc = Клык с трупа бримдемона. Подходит как трофей для кинетического крушителя.
 ent-LavalandCrusherTrophyBilewormSpewlet = детёныш желчечервя
     .desc = Малыш желчечервя. Подходит как трофей для кинетического крушителя.
+ent-LavalandCrusherTrophyRaptorFeather = перо раптора
+    .desc = Перо невинного раптора. За такое и в ад попасть недолго, хотя вы и так копаетесь в его аду.
+crusher-trophy-raptor-feather-name = перо раптора

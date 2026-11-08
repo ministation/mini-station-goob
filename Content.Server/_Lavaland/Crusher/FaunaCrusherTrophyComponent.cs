@@ -47,6 +47,13 @@ public sealed partial class FaunaCrusherTrophyComponent : Component
     public TimeSpan RebukeDuration;
 
     /// <summary>
+    /// TG parity for the raptor feather: shots fired from the crusher pass through
+    /// the shooter's allies instead of hitting them.
+    /// </summary>
+    [DataField]
+    public bool PassThroughAllies;
+
+    /// <summary>
     /// Detonate the marker when the marked target attacks someone instead of when it is hit.
     /// Used by the magmawing watcher wing.
     /// </summary>
