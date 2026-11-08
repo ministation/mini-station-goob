@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server._Lavaland.Mobs;
+using Content.Server.Atmos.EntitySystems;
 using Content.Shared._Lavaland.Mobs;
+using Content.Shared.Atmos;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
@@ -35,6 +37,7 @@ public sealed class LegionInfestTest
         var mobState = server.System<MobStateSystem>();
         var damageable = server.System<DamageableSystem>();
         var containerSys = server.System<SharedContainerSystem>();
+        var atmos = server.System<AtmosphereSystem>();
 
         EntityUid legion = default;
         EntityUid victim = default;
@@ -42,8 +45,15 @@ public sealed class LegionInfestTest
         // Bring the victim to critical (unconscious, alive) like a real fight would.
         await server.WaitPost(() =>
         {
-            mapSys.CreateMap(out var map);
+            var mapUid = mapSys.CreateMap(out var map);
             var coords = new MapCoordinates(0, 0, map);
+
+            // Lavaland has air. In vacuum the swallowed body takes barotrauma damage, which
+            // re-runs the mob thresholds and revives the forced-dead body inside the shell.
+            var moles = new float[Atmospherics.AdjustedNumberOfGases];
+            moles[(int) Gas.Oxygen] = 21.824779f;
+            moles[(int) Gas.Nitrogen] = 82.10312f;
+            atmos.SetMapAtmosphere(mapUid, false, new GasMixture(moles, Atmospherics.T20C));
 
             legion = entMan.SpawnEntity(null, coords);
             entMan.AddComponent<LegionInfestComponent>(legion);
