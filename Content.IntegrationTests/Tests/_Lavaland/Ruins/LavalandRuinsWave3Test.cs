@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Collections.Generic;
+using Content.Shared.Maps;
+using Content.Shared.Mining;
 using Content.Shared.Mining.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Lavaland.Ruins;
 
@@ -30,6 +34,17 @@ public sealed class LavalandRuinsWave3Test
         {
             mapSys.CreateMap(out mapId);
             var grid = mapSys.CreateGridEntity(mapId);
+
+            // The ruins are built by MapInit on the marker's grid tile; a fresh grid has
+            // no tiles, so the marker would not even attach to it. Lay a floor patch
+            // first, like the planet tile the marker sits on in a real round.
+            var tileId = server.ResolveDependency<ITileDefinitionManager>()["FloorSteel"].TileId;
+            for (var x = -5; x <= 5; x++)
+            {
+                for (var y = -5; y <= 5; y++)
+                    mapSys.SetTile(grid, new Vector2i(x, y), new Tile(tileId));
+            }
+
             marker = entMan.SpawnEntity(markerProto, new EntityCoordinates(grid.Owner, 0f, 0f));
         });
 
