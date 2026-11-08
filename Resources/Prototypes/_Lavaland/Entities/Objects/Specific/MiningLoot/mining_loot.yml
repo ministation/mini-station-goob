@@ -230,6 +230,7 @@
       types:
         Slash: 26
         Structural: 10
+  - type: CursedKatana # TG: LLR/RLL/LRR/RRL/LRLR/RLRL combos
   - type: StaticPrice
     price: 4000
 
