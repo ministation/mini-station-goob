@@ -85,6 +85,24 @@
         weight: 25
       - id: LavalandMobRaptorYoungBlack
         weight: 1
+    # TG spawners include the same raptor weights for babies; same deal here.
+    - !type:GroupSelector
+      weight: 2
+      children:
+      - id: LavalandMobRaptorBabyRed
+        weight: 25
+      - id: LavalandMobRaptorBabyWhite
+        weight: 25
+      - id: LavalandMobRaptorBabyPurple
+        weight: 25
+      - id: LavalandMobRaptorBabyGreen
+        weight: 25
+      - id: LavalandMobRaptorBabyYellow
+        weight: 25
+      - id: LavalandMobRaptorBabyBlue
+        weight: 25
+      - id: LavalandMobRaptorBabyBlack
+        weight: 1
 
 - type: entity
   name: lavaland heavy mob spawner

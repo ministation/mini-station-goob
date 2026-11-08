@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "baby_yellow",
+      "directions": 4
+    },
+    {
+      "name": "baby_black",
+      "directions": 4
+    },
+    {
+      "name": "baby_white",
+      "directions": 4
+    },
+    {
+      "name": "baby_purple",
+      "directions": 4
+    },
+    {
+      "name": "baby_red",
+      "directions": 4
+    },
+    {
+      "name": "baby_green",
+      "directions": 4
+    },
+    {
+      "name": "baby_blue",
+      "directions": 4
+    },
+    {
+      "name": "raptor_egg",
+      "directions": 1
+    }
+  ]
+}

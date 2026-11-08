@@ -34,6 +34,24 @@ ent-LavalandMobRaptorYoungBlue = blue raptor youngling
     .desc = A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
 ent-LavalandMobRaptorYoungBlack = black raptor youngling
     .desc = A young raptor that can grow into a robust, trusty steed. Even at this age it looks dangerous.
+ent-LavalandMobRaptorBabyBase = raptor hatchling
+    .desc = A freshly hatched raptor. Tiny, loud, and already convinced it is a fearsome predator.
+ent-LavalandMobRaptorBabyRed = red raptor hatchling
+    .desc = A freshly hatched red raptor. Give it a few days and it will be a battle-tested steed.
+ent-LavalandMobRaptorBabyWhite = white raptor hatchling
+    .desc = A freshly hatched white raptor. One day it will care for its kin just like its mother.
+ent-LavalandMobRaptorBabyPurple = purple raptor hatchling
+    .desc = A freshly hatched purple raptor. Small now, but nimble blood runs in its veins.
+ent-LavalandMobRaptorBabyGreen = green raptor hatchling
+    .desc = A freshly hatched green raptor. It is already sturdier than most of its clutchmates.
+ent-LavalandMobRaptorBabyYellow = yellow raptor hatchling
+    .desc = A freshly hatched yellow raptor. It never stops scampering around.
+ent-LavalandMobRaptorBabyBlue = blue raptor hatchling
+    .desc = A freshly hatched blue raptor. The lava resistant feathers will come in with age.
+ent-LavalandMobRaptorBabyBlack = black raptor hatchling
+    .desc = A freshly hatched black raptor. An incredibly rare sight, and its mother knows it.
+ent-LavalandRaptorEgg = raptor egg
+    .desc = A large speckled egg. It is warm, and something inside occasionally kicks.
 
 # Taming, saddling and riding of lavaland fauna (LavalandTamingSystem)
 lavaland-tame-eats = The { $target } eats from your hand.

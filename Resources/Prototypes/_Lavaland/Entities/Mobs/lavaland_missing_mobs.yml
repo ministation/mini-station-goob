@@ -193,6 +193,9 @@
   abstract: true
   description: A trusty, powerful steed. Taming it might prove difficult.
   components:
+  - type: TroughFeeder # TG: raptors eat ore straight out of food troughs
+  - type: MountableMob # TG: tamed raptors are direct mounts, no saddle needed
+    rideSpeed: 4.5
   - type: Fauna # Lavaland change
   - type: Physics
     bodyType: KinematicController
@@ -274,6 +277,8 @@
   abstract: true
   description: A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
   components:
+  - type: Raptor # Mini: younglings do not breed yet (TG grows them up first)
+    canBreed: false
   - type: Fixtures
     fixtures:
       fix1:
@@ -327,6 +332,8 @@
   parent: LavalandMobRaptorAdultBase
   description: A resilient breed of raptor, battle-tested and bred to humble its foes in combat.
   components:
+  - type: Raptor
+    babyProto: LavalandMobRaptorBabyRed
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -357,6 +364,8 @@
   parent: LavalandMobRaptorAdultBase
   description: A caring breed of raptor, always ready to help its kin.
   components:
+  - type: Raptor
+    babyProto: LavalandMobRaptorBabyWhite
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -374,6 +383,8 @@
   parent: LavalandMobRaptorAdultBase
   description: A small, nimble breed of raptor, more of a travel companion than a mount.
   components:
+  - type: Raptor
+    babyProto: LavalandMobRaptorBabyPurple
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -398,6 +409,8 @@
   parent: LavalandMobRaptorAdultBase
   description: A tough breed of raptor, made to withstand the harshest punishment.
   components:
+  - type: Raptor
+    babyProto: LavalandMobRaptorBabyGreen
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -422,6 +435,8 @@
   parent: LavalandMobRaptorAdultBase
   description: This breed possesses greasy fast speed, making light work of long pilgrimages.
   components:
+  - type: Raptor
+    babyProto: LavalandMobRaptorBabyYellow
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -442,6 +457,8 @@
   parent: LavalandMobRaptorAdultBase
   description: Covered in tough, lava resistant feathers with thick insulated fur underneath, this breed can march through lava and fire alike.
   components:
+  - type: Raptor
+    babyProto: LavalandMobRaptorBabyBlue
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -463,6 +480,8 @@
   parent: LavalandMobRaptorAdultBase
   description: An ultra rare breed. Due to its sparse nature, not much is known about this sort, but it is said to possess many of its peers abilities.
   components:
+  - type: Raptor
+    babyProto: LavalandMobRaptorBabyBlack
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -496,6 +515,10 @@
   parent: LavalandMobRaptorYoungBase
   description: A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
   components:
+  - type: FaunaGrowth
+    growthTime: 150
+    growInto:
+    - LavalandMobRaptorRed
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -526,6 +549,10 @@
   parent: LavalandMobRaptorYoungBase
   description: A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
   components:
+  - type: FaunaGrowth
+    growthTime: 150
+    growInto:
+    - LavalandMobRaptorWhite
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -543,6 +570,10 @@
   parent: LavalandMobRaptorYoungBase
   description: A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
   components:
+  - type: FaunaGrowth
+    growthTime: 150
+    growInto:
+    - LavalandMobRaptorPurple
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -567,6 +598,10 @@
   parent: LavalandMobRaptorYoungBase
   description: A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
   components:
+  - type: FaunaGrowth
+    growthTime: 150
+    growInto:
+    - LavalandMobRaptorGreen
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -591,6 +626,10 @@
   parent: LavalandMobRaptorYoungBase
   description: A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
   components:
+  - type: FaunaGrowth
+    growthTime: 150
+    growInto:
+    - LavalandMobRaptorYellow
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -611,6 +650,10 @@
   parent: LavalandMobRaptorYoungBase
   description: A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
   components:
+  - type: FaunaGrowth
+    growthTime: 150
+    growInto:
+    - LavalandMobRaptorBlue
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -630,8 +673,12 @@
   name: black raptor youngling
   id: LavalandMobRaptorYoungBlack
   parent: LavalandMobRaptorYoungBase
-  description: A young raptor that can grow into a robust, trusty steed. Even at this age it looks dangerous.
+  description: A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
   components:
+  - type: FaunaGrowth
+    growthTime: 150
+    growInto:
+    - LavalandMobRaptorBlack
   - type: Sprite
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
@@ -668,3 +715,201 @@
   - type: MovementModStatusEffect
     walkSpeedModifier: 0.6
     sprintSpeedModifier: 0.6
+
+# Baby raptors hatch from raptor eggs and grow into younglings. TG: HP/8,
+# melee/3, tameable with snacks (25% + 15% per failure).
+- type: entity
+  name: raptor hatchling
+  id: LavalandMobRaptorBabyBase
+  parent: LavalandMobRaptorYoungBase
+  abstract: true
+  description: A freshly hatched raptor. Tiny, loud, and already convinced it is a fearsome predator.
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.25
+        density: 100
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Sprite
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: baby_red
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: baby_red
+      Dead:
+        Base: baby_red
+  - type: MeleeWeapon
+    altDisarm: false
+    angle: 0
+    soundHit:
+      collection: AlienClaw
+    animation: WeaponArcClaw
+    damage:
+      types:
+        Slash: 4
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.2
+    baseSprintSpeed: 2.2
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      30: Dead
+  - type: CombatPower # Goobstation
+    factor: 1
+  - type: Raptor
+    canBreed: false
+
+- type: entity
+  name: red raptor hatchling
+  id: LavalandMobRaptorBabyRed
+  parent: LavalandMobRaptorBabyBase
+  description: A freshly hatched red raptor. Give it a few days and it will be a battle-tested steed.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: baby_red
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: baby_red
+      Dead:
+        Base: baby_red
+  - type: FaunaGrowth
+    growthTime: 120
+    growInto:
+    - LavalandMobRaptorYoungRed
+
+- type: entity
+  name: white raptor hatchling
+  id: LavalandMobRaptorBabyWhite
+  parent: LavalandMobRaptorBabyBase
+  description: A freshly hatched white raptor. One day it will care for its kin just like its mother.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: baby_white
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: baby_white
+      Dead:
+        Base: baby_white
+  - type: FaunaGrowth
+    growthTime: 120
+    growInto:
+    - LavalandMobRaptorYoungWhite
+
+- type: entity
+  name: purple raptor hatchling
+  id: LavalandMobRaptorBabyPurple
+  parent: LavalandMobRaptorBabyBase
+  description: A freshly hatched purple raptor. Small now, but nimble blood runs in its veins.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: baby_purple
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: baby_purple
+      Dead:
+        Base: baby_purple
+  - type: FaunaGrowth
+    growthTime: 120
+    growInto:
+    - LavalandMobRaptorYoungPurple
+
+- type: entity
+  name: green raptor hatchling
+  id: LavalandMobRaptorBabyGreen
+  parent: LavalandMobRaptorBabyBase
+  description: A freshly hatched green raptor. It is already sturdier than most of its clutchmates.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: baby_green
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: baby_green
+      Dead:
+        Base: baby_green
+  - type: FaunaGrowth
+    growthTime: 120
+    growInto:
+    - LavalandMobRaptorYoungGreen
+
+- type: entity
+  name: yellow raptor hatchling
+  id: LavalandMobRaptorBabyYellow
+  parent: LavalandMobRaptorBabyBase
+  description: A freshly hatched yellow raptor. It never stops scampering around.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: baby_yellow
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: baby_yellow
+      Dead:
+        Base: baby_yellow
+  - type: FaunaGrowth
+    growthTime: 120
+    growInto:
+    - LavalandMobRaptorYoungYellow
+
+- type: entity
+  name: blue raptor hatchling
+  id: LavalandMobRaptorBabyBlue
+  parent: LavalandMobRaptorBabyBase
+  description: A freshly hatched blue raptor. The lava resistant feathers will come in with age.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: baby_blue
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: baby_blue
+      Dead:
+        Base: baby_blue
+  - type: FaunaGrowth
+    growthTime: 120
+    growInto:
+    - LavalandMobRaptorYoungBlue
+
+- type: entity
+  name: black raptor hatchling
+  id: LavalandMobRaptorBabyBlack
+  parent: LavalandMobRaptorBabyBase
+  description: A freshly hatched black raptor. An incredibly rare sight, and its mother knows it.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: baby_black
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: baby_black
+      Dead:
+        Base: baby_black
+  - type: FaunaGrowth
+    growthTime: 120
+    growInto:
+    - LavalandMobRaptorYoungBlack
