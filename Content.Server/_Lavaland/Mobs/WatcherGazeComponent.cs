@@ -21,6 +21,7 @@ public enum WatcherGazeType : byte
 [RegisterComponent]
 public sealed partial class WatcherGazeComponent : Component
 {
-    [DataField]
-    public WatcherGazeType Type = WatcherGazeType.Normal;
+    // Not called "Type": inside a component mapping that key is the component discriminator itself.
+    [DataField("gazeType")]
+    public WatcherGazeType GazeType = WatcherGazeType.Normal;
 }

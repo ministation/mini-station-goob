@@ -142,7 +142,7 @@
     proto: WatcherBoltIcewing
     fireCost: 50
   - type: WatcherGaze
-    type: Ice
+    gazeType: Ice
   - type: Butcherable # Lavaland Change
     spawned:
     - id: DiamondOre1 # not unprocessed
@@ -178,7 +178,7 @@
     proto: WatcherBoltMagmawing
     fireCost: 50
   - type: WatcherGaze
-    type: Fire
+    gazeType: Fire
   - type: Butcherable # Lavaland Change
     spawned:
     - id: DiamondOre1 # not unprocessed

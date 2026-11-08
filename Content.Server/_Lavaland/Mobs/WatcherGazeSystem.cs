@@ -88,7 +88,7 @@ public sealed class WatcherGazeSystem : EntitySystem
                 || !_examine.InRangeUnOccluded(watcher, viewer, GazeRadius))
                 continue;
 
-            ApplyEffect(viewer, watcher, mapPos.Position, gaze.Type);
+            ApplyEffect(viewer, watcher, mapPos.Position, gaze.GazeType);
         }
 
         // tg stuns the watcher itself for a moment after the gaze lands, that is the window to punish it.
