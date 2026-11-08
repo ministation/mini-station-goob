@@ -79,11 +79,10 @@ public sealed class AshwalkerEggSystem : EntitySystem
         if (!TryComp<GhostRoleComponent>(ent.Owner, out var role) || role.Taken || MetaData(ent.Owner).EntityPaused)
             return;
 
-        // TG: an egg without a tribe cannot hatch.
-        if (!TryComp<AshwalkerTribeComponent>(ent.Comp.Nest, out var tribe))
-            return;
+        // The nest can die before its eggs, and then there is no spawn limit left to enforce.
+        TryComp<AshwalkerTribeComponent>(ent.Comp.Nest, out var tribe);
 
-        if (tribe.SpawnedCkeys.Contains(args.Player.UserId))
+        if (tribe != null && tribe.SpawnedCkeys.Contains(args.Player.UserId))
         {
             _popup.PopupEntity(Loc.GetString("ashwalker-exhausted"), ent.Owner, args.Player);
             return;
@@ -102,7 +101,7 @@ public sealed class AshwalkerEggSystem : EntitySystem
         _skills.GrantSkillOrDefault(mob, role.Skills, true);
         _ghostRoles.SetTaken(role, true);
 
-        tribe.SpawnedCkeys.Add(args.Player.UserId);
+        tribe?.SpawnedCkeys.Add(args.Player.UserId);
         QueueDel(ent.Owner);
         args.TookRole = true;
     }
