@@ -294,9 +294,3 @@
 #   id: service_rich
 #   spritePath: _Goobstation/Mobs/Silicon/Service/rich.rsi
 #   dummyPrototype: BorgChassisServiceRich
-
-- type: borgSubtype
-  parentBorgType: generic
-  id: generic_claptrap
-  spritePath: _Goobstation/Mobs/Silicon/steward.rsi
-  dummyPrototype: BorgChassisGenericClaptrap
