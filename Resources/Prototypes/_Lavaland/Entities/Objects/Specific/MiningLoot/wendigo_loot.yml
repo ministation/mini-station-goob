@@ -55,5 +55,8 @@
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/artefacts.rsi
     state: wendigo_skull
+  - type: Tag
+    tags:
+    - GodslayerWendigoSkull
   - type: StaticPrice
     price: 2000

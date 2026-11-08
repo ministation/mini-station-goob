@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG crafting_recipe/godslayer: ice energy crystal, wendigo skull and clockwork alloy.
+
+- type: constructionGraph
+  id: LavalandGodslayerArmor
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: armour
+      steps:
+      - tag: GodslayerIceCrystal
+        name: construction-graph-tag-godslayer-ice-crystal
+        icon:
+          sprite: _Lavaland/Objects/Specific/artefacts.rsi
+          state: ice_crystal
+        doAfter: 6
+      - tag: GodslayerWendigoSkull
+        name: construction-graph-tag-godslayer-wendigo-skull
+        icon:
+          sprite: _Lavaland/Objects/Specific/artefacts.rsi
+          state: wendigo_skull
+        doAfter: 6
+      - tag: GodslayerClockworkAlloy
+        name: construction-graph-tag-godslayer-clockwork-alloy
+        icon:
+          sprite: _Lavaland/Objects/Specific/artefacts.rsi
+          state: clockwork_alloy
+        doAfter: 6
+  - node: armour
+    entity: LavalandGodslayerArmor
+
+- type: construction
+  id: LavalandGodslayerArmor
+  graph: LavalandGodslayerArmor
+  startNode: start
+  targetNode: armour
+  category: construction-category-clothing
+  objectType: Item

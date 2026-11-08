@@ -37,6 +37,9 @@
     color: "#5FD9F7"
     radius: 2
     energy: 2
+  - type: Tag
+    tags:
+    - GodslayerIceCrystal
 
 # Crusher trophy: mark detonation freezes the target in an ice cube for four seconds.
 - type: entity

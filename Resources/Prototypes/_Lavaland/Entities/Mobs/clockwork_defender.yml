@@ -60,7 +60,7 @@
     table: !type:AllSelector
       children:
       - id: SheetBrass1
-      - id: SheetBrass1
+      - id: LavalandClockworkAlloy
     deleteOnDeath: true
 
 - type: entity
