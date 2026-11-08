@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 # Root selector
 - type: megafaunaSelector
   id: Hierophant
@@ -30,6 +34,7 @@
     - id: ActionHierophantBox
     - id: ActionHierophantCrosses
     - id: ActionHierophantChasers
+    - id: ActionHierophantChaserSwarm
     - id: ActionHierophantBlink
     - id: ActionHierophantCrossesEnraged
     - id: ActionHierophantBlinkSpam
@@ -69,6 +74,17 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionHierophantChasers
+
+- type: megafaunaSelector
+  id: ActionHierophantChaserSwarm
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 4.0,10.0
+      inverse: true
+    actionId: ActionHierophantChaserSwarm
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionHierophantChaserSwarm
 
 - type: megafaunaSelector
   id: ActionHierophantBlink

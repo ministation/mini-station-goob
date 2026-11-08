@@ -24,6 +24,12 @@ public sealed partial class SpawnEntityActionEvent : WorldTargetActionEvent
     /// </summary>
     [DataField]
     public bool SpawnAtUser;
+
+    /// <summary>
+    /// How many entities to spawn. TG chaser swarm releases four chasers at once.
+    /// </summary>
+    [DataField]
+    public int Amount = 1;
 }
 
 /// <summary>

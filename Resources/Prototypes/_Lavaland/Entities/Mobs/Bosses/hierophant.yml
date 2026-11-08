@@ -60,11 +60,19 @@
     tags:
     - CannotSuicide
   # Actual boss from here
+  - type: MeleeWeapon # TG: melee 15 brute, every hit is followed by a burst
+    altDisarm: false
+    angle: 0
+    animation: WeaponArcThrust
+    damage:
+      types:
+        Blunt: 15
   - type: ActionGrant
     actions:
     - ActionHierophantBox
     - ActionHierophantCrosses
     - ActionHierophantChasers
+    - ActionHierophantChaserSwarm
     - ActionHierophantBlink
     - ActionHierophantCrossesEnraged
     - ActionHierophantBlinkSpam
@@ -126,8 +134,11 @@
       size: 11 # Radius of the arena
   - type: MegafaunaAnchor
   - type: MegafaunaBlink
-    spawnOnTarget: HierophantShapeBlink
-    spawnOnUsed: HierophantShapeBlink
+    spawnOnTarget: HierophantShapeBlinkStrong
+    spawnOnUsed: HierophantShapeBlinkStrong
+  # TG parity: every melee hit releases a burst, death releases a huge one.
+  - type: HierophantMeleeBurst
+  - type: HierophantDeathBurst
   # The blink slam action lands on a random tile near the target and blasts it on arrival.
   - type: HierophantBlinkSlam
     slam: HierophantShapeBlinkSlam
