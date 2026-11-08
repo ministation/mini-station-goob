@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG brimdemon loot. The fork has no monster organ framework, so both items are simple butcher
+# loot: they carry the TG flavor and value, the botanical and explosive uses are not ported.
+- type: entity
+  id: LavalandBrimdust
+  parent: BaseItem
+  name: brimdust
+  description: Dust from a brimdemon. It is considered valuable for its botanical abilities.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/brimdemon_loot.rsi
+    state: brimdust
+  - type: Item
+    size: Tiny
+  - type: StaticPrice
+    price: 1500
+
+- type: entity
+  id: LavalandBrimdustSac
+  parent: BaseItem
+  name: brimdust sac
+  description: A strange organ from a brimdemon. Still full of explosive powder.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/brimdemon_loot.rsi
+    state: brim_sac
+  - type: Item
+    size: Small
+  - type: StaticPrice
+    price: 4000

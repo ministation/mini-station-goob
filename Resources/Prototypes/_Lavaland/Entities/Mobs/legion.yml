@@ -63,6 +63,7 @@
       - id: MaterialBones1
         rolls: 2, 5
       - id: MaterialLegionSkull1
+      - id: FoodHivelordRemains # TG: legion death drop, our equivalent of the regenerative core
     # Mini: crusher trophy, TG gates it on the killing blow being a crusher hit.
     specialTable: !type:AllSelector
       children:
