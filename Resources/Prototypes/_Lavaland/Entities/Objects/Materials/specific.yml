@@ -2,7 +2,7 @@
   parent: BaseItem
   id: MaterialWatcherWing
   name: watcher's wing
-  description: They are tough and yet easily merge together, it should be a great material for new tools.
+  description: A sturdy wing cut from a lavaland watcher. Butchering its former owner yields 1-2 wings, and five of them can be crafted into a sharpness blade upgrade (+7 slashing damage for crushers).
   components:
   - type: Sprite
     sprite: _Lavaland/Objects/Materials/watcher.rsi
@@ -42,7 +42,7 @@
   parent: BaseItem
   id: MaterialWatcherMagmaWing
   name: watcher's magma wing
-  description: A wing with magma flowing inside. They are tough and yet easily merge together, it should be a great material for new tools.
+  description: A wing cut from a magmawing watcher, still hot to the touch. Butchering its former owner yields 1-2 wings, and five of them can be crafted into a lava aspect blade upgrade (+5 heat damage and ignites targets).
   components:
   - type: Sprite
     sprite: _Lavaland/Objects/Materials/watcher.rsi
@@ -83,7 +83,7 @@
   parent: BaseItem
   id: MaterialWatcherIceWing
   name: watcher's ice wing
-  description: A wing that is made out of ice, but it somehow refuses to melt. They are tough and yet easily merge together, it should be a great material for new tools.
+  description: A wing cut from an icewing watcher that somehow refuses to melt. Butchering its former owner yields 1-2 wings, and five of them can be crafted into an ice frost blade upgrade (+4 cold damage that armor barely resists, chills and slows targets).
   components:
   - type: Sprite
     sprite: _Lavaland/Objects/Materials/watcher.rsi
@@ -124,7 +124,7 @@
   parent: BaseItem
   id: MaterialLegionSkull
   name: legion skull
-  description: A grey deformed skull of a long gone humanoid. Just for a brief moment, you felt like it is staring right at your soul.
+  description: A grey deformed skull of a creature consumed by the legion. Drops from butchering legions and turns up in necropolis chests. Two skulls are needed to craft a bone axe; each one also appraises for 300 spesos.
   components:
   - type: Sprite
     sprite: _Lavaland/Objects/Materials/legion.rsi

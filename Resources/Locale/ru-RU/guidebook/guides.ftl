@@ -61,6 +61,7 @@ guide-entry-jobs = Должности
 guide-entry-cargo = Отдел снабжения
 guide-entry-cargo-bounties = Запросы отдела снабжения
 guide-entry-salvage = Утилизация обломков
+guide-entry-crusher = Крушитель и улучшения
 guide-entry-survival = Выживание
 guide-entry-janitorial = Уборка станции
 guide-entry-bartender = Бармен

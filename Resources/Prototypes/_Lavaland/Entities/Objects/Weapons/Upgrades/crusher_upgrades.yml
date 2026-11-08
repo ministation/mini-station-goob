@@ -11,7 +11,7 @@
   id: BaseCrusherUpgradeMain
   parent: [BaseItem, BaseSecurityCargoContraband]
   name: crusher upgrade capsule
-  description: A modkit for crusher weapons.
+  description: A modkit for the main slot of a crusher weapon. Insert it while holding the upgrade in hand. The slot is unique - a second main modkit will not fit.
   abstract: true
   components:
   - type: Sprite
@@ -29,7 +29,7 @@
   id: CrusherUpgradeMainMarker
   parent: BaseCrusherUpgradeMain
   name: crusher upgrade capsule (kinetic marker)
-  description: Compact generator of a bluespace field that can be shot on a living target to make it more vulnerable to crusher attacks. Its projectile also can destroy some types of rocks.
+  description: A legacy modkit - the kinetic marker is now built into every crusher, so this capsule grants nothing anymore. It is only kept around for old maps and loot tables.
   components:
   - type: Sprite
     layers:
@@ -51,7 +51,7 @@
   id: CrusherUpgradeMainRudeBuster
   parent: BaseCrusherUpgradeMain
   name: crusher upgrade capsule (rude buster)
-  description: Focuses determination of the user in itself and emits it as a half-magical projectile. You can see something constantly bouncing off inside it.
+  description: Main slot modkit. Replaces the built-in kinetic marker shot with a half-magical projectile (8 sec recharge) - fire pure determination straight at the enemy. Ejecting the capsule brings the marker back.
   components:
   - type: Sprite
     layers:
@@ -89,7 +89,7 @@
   id: BaseCrusherUpgradeBlade
   parent: [BaseItem, BaseSecurityCargoContraband]
   name: crusher blade upgrade
-  description: A modkit for crusher weapons.
+  description: A modkit for the blade slot of a crusher weapon. Blades add damage and on-hit effects - sharpness (+7 slashing), lava aspect (+5 heat and ignition) or ice frost (+4 cold and a chill). Crafted from five watcher wings.
   abstract: true
   components:
   - type: Sprite
@@ -107,7 +107,7 @@
   id: CrusherUpgradeBladeLavaAspect
   parent: BaseCrusherUpgradeBlade
   name: crusher blade upgrade (lava aspect)
-  description: A crystal made out of uncooling lava, making it constantly hot and highly flammable.
+  description: Blade slot modkit. Adds +5 heat damage, and every hit ignites and heats the target. Crafted from 5 magmawing watcher wings.
   components:
   - type: Sprite
     state: lava-shard
@@ -137,7 +137,7 @@
   id: CrusherUpgradeBladeIceFrost
   parent: BaseCrusherUpgradeBlade
   name: crusher blade upgrade (ice frost)
-  description: A crystal that emits coldness, probably by violating laws of thermodynamics.
+  description: Blade slot modkit. Adds +4 cold damage that almost no armor resists, and enough hits freeze and slow the target. Crafted from 5 icewing watcher wings.
   components:
   - type: Sprite
     state: ice-shard
@@ -163,7 +163,7 @@
   id: CrusherUpgradeBladeSharpness
   parent: BaseCrusherUpgradeBlade
   name: crusher blade upgrade (sharpness)
-  description: A simple grindstone that improves the damage of a crusher.
+  description: Blade slot modkit. A simple grindstone that adds +7 slashing damage to every hit. Crafted from 5 watcher wings.
   components:
   - type: Sprite
     state: black-shard
@@ -186,7 +186,7 @@
   id: BaseCrusherUpgradeHandle
   parent: [BaseItem, BaseSecurityCargoContraband]
   name: crusher handle upgrade
-  description: A modkit for crusher weapons.
+  description: A modkit for the handle slot of a crusher weapon. Changes your fighting style - weights knock enemies back, lightweight speeds up attacks by 30%, range extends your reach by 20%. Not craftable - look for one in loot.
   abstract: true
   components:
   - type: Sprite
@@ -204,7 +204,7 @@
   id: CrusherUpgradeHandleWeights
   parent: BaseCrusherUpgradeHandle
   name: crusher handle upgrade (weights)
-  description: A set of weighed loads that can be attached to a handle to make a weapon deal knockback to enemies.
+  description: Handle slot modkit. Weighed loads on the handle - every hit throws the target back 3 tiles.
   components:
   - type: Sprite
     state: handle-weights
@@ -225,7 +225,7 @@
   id: CrusherUpgradeHandleLight
   parent: BaseCrusherUpgradeHandle
   name: crusher handle upgrade (lightweight)
-  description: A lightweight handle replacement that allows you to make attacks more frequently.
+  description: Handle slot modkit. A lightweight handle that speeds up your attacks by 30%. Not craftable - look for one in loot.
   components:
   - type: Sprite
     state: handle-lightweight
@@ -242,7 +242,7 @@
   id: CrusherUpgradeHandleRange
   parent: BaseCrusherUpgradeHandle
   name: crusher handle upgrade (range)
-  description: A long handle replacement that allows you to make attacks more frequently.
+  description: Handle slot modkit. An extended handle that increases your attack reach by 20%. Not craftable - look for one in loot.
   components:
   - type: Sprite
     state: handle-spikes # Why spikes improve range? Cuz they're badass.
