@@ -6,6 +6,7 @@
   description: A massive metal club that hangs in the air as though waiting. It'll make you dance to its beat.
   components:
   # Basic stuff
+  - type: MegafaunaDevour
   - type: Physics
     bodyType: KinematicController
   - type: Fixtures

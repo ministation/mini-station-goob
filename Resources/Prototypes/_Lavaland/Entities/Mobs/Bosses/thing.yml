@@ -8,6 +8,7 @@
   parent: LavalandMobBase
   description: A shifting mass of flesh and tendrils. It should not be here.
   components:
+  - type: MegafaunaDevour
   - type: Physics
     bodyType: KinematicController
   - type: Clickable

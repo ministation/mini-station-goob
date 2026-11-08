@@ -8,6 +8,7 @@
   parent: LavalandMobBase
   description: Guardian of the Necropolis.
   components:
+  - type: MegafaunaDevour
   - type: Physics
     bodyType: KinematicController
   - type: Clickable

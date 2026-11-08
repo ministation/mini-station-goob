@@ -9,6 +9,7 @@
   parent: LavalandMobBase
   description: One of many. For now.
   components:
+  - type: MegafaunaDevour
   - type: EmitSoundOnSpawn
     sound:
       path: /Audio/_Lavaland/Mobs/legion_spawn.ogg

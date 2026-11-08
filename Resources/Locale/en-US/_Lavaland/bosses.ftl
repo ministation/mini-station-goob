@@ -10,3 +10,5 @@ ent-LavalandBossLegionMediumEye = Legion
     .desc = One of many.
 ent-LavalandBossLegionSmall = Legion
     .desc = One of many. The last one, probably.
+
+megafauna-devour = { CAPITALIZE($boss) } disembowels { CAPITALIZE($victim) }!
