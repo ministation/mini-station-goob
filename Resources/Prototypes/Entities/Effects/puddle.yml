@@ -168,8 +168,8 @@
   - type: Sprite
     drawdepth: Puddles
     layers:
-    - sprite: _ES/Effects/puddle.rsi # Goob
-      state: large-2 # Goob
+    - sprite: Fluids/puddle.rsi # Mini: классический спрайт луж
+      state: splat0
   - type: Physics
     bodyType: Static
   - type: Fixtures
