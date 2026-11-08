@@ -362,3 +362,8 @@ uplink-jetpack-contractor-desc = This Jetpack was made specifically for The Guil
 
 uplink-cuffs-contractor-name = Handcuffs
 uplink-cuffs-contractor-desc = Used to detain criminals and other assholes.
+
+uplink-lube-grenade-name = Lube grenade
+uplink-lube-grenade-desc = Make the floor slippery!
+uplink-glue-grenade-name = Glue grenade
+uplink-glue-grenade-desc = Make the floor hard to walk in!
