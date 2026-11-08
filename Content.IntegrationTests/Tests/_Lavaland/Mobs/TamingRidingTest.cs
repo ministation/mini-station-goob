@@ -122,6 +122,19 @@ public sealed class TamingRidingTest
 
         await server.WaitRunTicks(5);
 
+        // The dismount can settle a tick later than the unbuckle call, so wait for the restored
+        // state instead of sampling it once: a fixed sample made this test flake in CI.
+        var restored = false;
+        for (var i = 0; i < 60 && !restored; i++)
+        {
+            await server.WaitRunTicks(1);
+            await server.WaitAssertion(() =>
+            {
+                restored = entMan.GetComponent<VehicleComponent>(goliath).Driver == null
+                    && entMan.GetComponent<HTNComponent>(goliath).Enabled;
+            });
+        }
+
         await server.WaitAssertion(() =>
         {
             Assert.That(entMan.GetComponent<VehicleComponent>(goliath).Driver, Is.Null);
