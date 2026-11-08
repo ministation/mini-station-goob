@@ -30,6 +30,12 @@ public sealed class ExtraHandsEquipmentSystem : EntitySystem
 
     private void OnUnequipped(Entity<ExtraHandsEquipmentComponent> ent, ref GotUnequippedEvent args)
     {
+        // Mini: the pack is also unequipped while its wearer is deleted (round-end cleanup). The wearer's
+        // hands and their contents are already terminating then; removing them here makes the engine log
+        // "Attempting to remove an entity from a container while it is terminating" and a double delete.
+        if (TerminatingOrDeleted(args.Equipee))
+            return;
+
         if (!TryComp<HandsComponent>(args.Equipee, out var handsComp))
             return;
 
