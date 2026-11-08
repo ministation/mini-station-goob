@@ -7,7 +7,7 @@ namespace Content.Server._Lavaland.Ruins;
 
 /// <summary>
 /// Builds the TG mook village landmark: two ashwood huts, a bonfire, the
-/// village totems and the harmless mooks that live around them.
+/// village totems and the mook tribe that lives around them.
 /// </summary>
 public sealed class MookVillageSystem : EntitySystem
 {
@@ -36,8 +36,10 @@ public sealed class MookVillageSystem : EntitySystem
     private const string Hatchet = "HydroponicsToolHatchet";
     private const string ChampionBelt = "ClothingBeltChampion";
 
-    // The repo has no mook prototype yet, so the harmless lavaland gutlunch stands in.
-    private const string Mook = "MobLavalandGutlunch";
+    private const string Mook = "MobLavalandMook";
+    private const string MookWorker = "MobLavalandMookWorker";
+    private const string MookBard = "MobLavalandMookBard";
+    private const string MookChief = "MobLavalandMookChief";
 
     /// <summary>
     /// Half size of the 20x20 TG grid. The marker itself sits at the village center.
@@ -146,7 +148,7 @@ public sealed class MookVillageSystem : EntitySystem
                 break;
             case 'n':
                 Spawn(FireBlossom, cell);
-                Spawn(Mook, cell);
+                Spawn(MookWorker, cell);
                 break;
             case 'o':
                 Spawn(RailingCorner, cell);
@@ -182,7 +184,7 @@ public sealed class MookVillageSystem : EntitySystem
                 Spawn(Table, cell);
                 break;
             case 'z':
-                Spawn(Mook, cell);
+                Spawn(MookChief, cell);
                 break;
             case 'E':
                 Spawn(Glowgrowth, cell);
@@ -195,8 +197,10 @@ public sealed class MookVillageSystem : EntitySystem
                 SpawnRotated(RailingCorner, cell, 180f);
                 break;
             case 'I':
+                Spawn(MookBard, cell);
+                break;
             case 'P':
-                Spawn(Mook, cell);
+                Spawn(MookWorker, cell);
                 break;
             case 'J':
                 SpawnRotated(Railing, cell, 270f);
