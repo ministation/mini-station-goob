@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Numerics;
 using Content.Server._Lavaland.Mobs;
+using Content.Server.Gravity;
+using Content.Shared.Gravity;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Stunnable;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Maths;
 
 namespace Content.IntegrationTests.Tests._Lavaland.Mobs;
 
@@ -21,14 +25,21 @@ public sealed class LavalandMobBehaviorsTest
         var server = pair.Server;
         var entMan = server.ResolveDependency<IEntityManager>();
         var mapSys = server.System<SharedMapSystem>();
+        var testMap = await pair.CreateTestMap();
 
         EntityUid victim = default;
 
         await server.WaitPost(() =>
         {
-            mapSys.CreateMap(out var map);
-            entMan.SpawnEntity("MobLavalandLobstrosity", new MapCoordinates(0, 0, map));
-            victim = entMan.SpawnEntity("MobMonkey", new MapCoordinates(5, 0, map));
+            // A single-tile test grid would drop the victim into space, where knockdown is ignored.
+            for (var x = 1; x <= 5; x++)
+                mapSys.SetTile(testMap.Grid, new Vector2i(x, 0), testMap.Tile.Tile);
+
+            entMan.SpawnEntity("MobLavalandLobstrosity", testMap.GridCoords);
+            victim = entMan.SpawnEntity("MobMonkey", testMap.GridCoords.Offset(new Vector2(5, 0)));
+
+            var gravity = entMan.EnsureComponent<GravityComponent>(testMap.Grid);
+            server.System<GravitySystem>().EnableGravity(testMap.Grid, gravity);
         });
 
         await server.WaitRunTicks(3);
@@ -90,7 +101,8 @@ public sealed class LavalandMobBehaviorsTest
             ore = entMan.SpawnEntity("GoldOre1", new MapCoordinates(0.5f, 0, map));
         });
 
-        await server.WaitRunTicks(10);
+        // The grub eats once a second, which is 30 ticks in the debug test preset.
+        await server.WaitRunTicks(70);
 
         await server.WaitAssertion(() =>
         {
