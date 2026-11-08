@@ -3,7 +3,9 @@
 #nullable enable annotations
 
 using System.Numerics;
+using Content.Server.Atmos.EntitySystems;
 using Content.Shared._Lavaland.Mobs;
+using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Flash.Components;
 using Content.Shared.StatusEffectNew;
@@ -104,6 +106,13 @@ public sealed class WatcherGazeTest
                 for (var y = -4; y <= 4; y++)
                     mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
             }
+
+            // FlammableSystem extinguishes fires in vacuum, so give the map a station-like atmosphere.
+            var atmos = server.System<AtmosphereSystem>();
+            var moles = new float[Atmospherics.AdjustedNumberOfGases];
+            moles[(int)Gas.Oxygen] = 21.824779f;
+            moles[(int)Gas.Nitrogen] = 82.10312f;
+            atmos.SetMapAtmosphere(testMap.MapUid, false, new GasMixture(moles, Atmospherics.T20C));
 
             watcher = entMan.SpawnEntity("MobWatcherMagmawing", testMap.GridCoords);
             victim = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(2f, 0f)));
