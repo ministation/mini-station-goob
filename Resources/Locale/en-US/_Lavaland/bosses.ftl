@@ -12,3 +12,7 @@ ent-LavalandBossLegionSmall = Legion
     .desc = One of many. The last one, probably.
 
 megafauna-devour = { CAPITALIZE($boss) } disembowels { CAPITALIZE($victim) }!
+drake-arena-start = { CAPITALIZE($boss) } swoops up and encases its target in a ring of fire!
+drake-arena-escape = { CAPITALIZE($boss) } burns with rage, its wounds close up!
+ent-WallDrakeArenaTemporary = wall of fire
+    .desc = The ash drake's true flame.

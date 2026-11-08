@@ -20,6 +20,7 @@
     - id: ActionDrakeMassFire
     - id: ActionDrakeEruption
     - id: ActionDrakeFirestorm
+    - id: ActionDrakeLavaArena
 
 - type: megafaunaSelector
   id: ActionDrakeFireCone
@@ -98,6 +99,21 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionDrakeFirestorm
+    - !type:PhaseMegafaunaCondition
+      phases:
+      - 2
+
+# Lava arena only in phase 2 (enraged), like TG's enraged lava swoop.
+- type: megafaunaSelector
+  id: ActionDrakeLavaArena
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 10.0,16.0
+      inverse: true
+    actionId: ActionDrakeLavaArena
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionDrakeLavaArena
     - !type:PhaseMegafaunaCondition
       phases:
       - 2

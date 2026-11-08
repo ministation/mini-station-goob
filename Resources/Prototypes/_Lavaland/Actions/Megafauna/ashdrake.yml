@@ -307,3 +307,22 @@
     damageWhitelist:
       components:
       - MobState
+
+# Lava arena: the enraged drake encases its target in a ring of fire walls
+# flooded with lava waves. Escaping enrages the drake (TG lava swoop arena).
+- type: entity
+  id: ActionDrakeLavaArena
+  parent: BaseAction
+  name: Lava Arena
+  description: Encases the target in an arena of fire.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaLavaArenaActionEvent

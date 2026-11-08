@@ -1,4 +1,8 @@
-﻿using Content.Shared.Actions;
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using Content.Shared.Actions;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Lavaland.Megafauna.Events;
@@ -31,3 +35,9 @@ public readonly record struct SpawnedByActionEvent(EntityUid User, EntityUid? Ta
 public sealed partial class MegafaunaBlinkActionEvent : WorldTargetActionEvent;
 
 public sealed partial class ToggleTileMovementActionEvent : EntityTargetActionEvent;
+
+/// <summary>
+///     Fired by the ash drake's lava arena action: encases the target in a fire arena
+///     flooded with lava waves (TG enraged lava swoop).
+/// </summary>
+public sealed partial class MegafaunaLavaArenaActionEvent : WorldTargetActionEvent;
