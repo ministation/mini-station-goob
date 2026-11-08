@@ -31,6 +31,10 @@ public sealed class LavalandFactionHealerSystem : EntitySystem
 
             healer.Accumulator -= healer.Interval;
 
+            // A dead healer's body must not keep mending the pack.
+            if (!_mobState.IsAlive(uid))
+                continue;
+
             var coords = _transform.GetMapCoordinates(uid);
             foreach (var friend in _lookup.GetEntitiesInRange<NpcFactionMemberComponent>(coords, healer.Range))
             {
