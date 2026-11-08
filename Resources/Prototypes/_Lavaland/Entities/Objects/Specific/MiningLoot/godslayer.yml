@@ -1,0 +1,92 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG godslayer armour, crafted from the demonic frost miner's ice crystal, a wendigo
+# skull and clockwork alloy. TG also revives the wearer once per ten minutes; that
+# effect is not ported, see the PR.
+
+- type: entity
+  id: LavalandGodslayerArmor
+  parent: ClothingOuterArmorBase
+  name: godslayer armour
+  description: A suit of armour fashioned from the remnants of a knight's armor, and parts of a wendigo.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Clothing/OuterClothing/Armor/godslayer.rsi
+  - type: Clothing
+    sprite: _Lavaland/Clothing/OuterClothing/Armor/godslayer.rsi
+  - type: Armor
+    coverage:
+    - Chest
+    - Groin
+    - Arm
+    - Leg
+    modifiers:
+      coefficients:
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.3
+        Heat: 0
+        Cold: 0
+        Caustic: 0
+  - type: ExplosionResistance
+    damageCoefficient: 0.5
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: LavalandGodslayerHelm
+  - type: UserInterface
+    interfaces:
+      enum.ToggleClothingUiKey.Key:
+        type: ToggleableClothingBoundUserInterface
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:Container {}
+  - type: Construction
+    graph: LavalandGodslayerArmor
+    node: armour
+  - type: StaticPrice
+    price: 6000
+
+- type: entity
+  id: LavalandGodslayerHelm
+  parent: ClothingHeadHelmetArmoredBase
+  name: godslayer helm
+  description: The horns and skull of a wendigo, held together by the remaining icy energy of a demonic miner.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Clothing/Head/Helmets/godslayer.rsi
+  - type: Clothing
+    sprite: _Lavaland/Clothing/Head/Helmets/godslayer.rsi
+  - type: Armor
+    coverage:
+    - Head
+    modifiers:
+      coefficients:
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.3
+        Heat: 0
+        Cold: 0
+        Caustic: 0
+  - type: ExplosionResistance
+    damageCoefficient: 0.5
+  - type: StaticPrice
+    price: 3000
+
+# TG clockwork alloy. In TG it comes from clockwork ruins; here the clockwork
+# defenders of the dead god ruin drop it, and the godslayer recipe eats it.
+- type: entity
+  id: LavalandClockworkAlloy
+  parent: BaseItem
+  name: clockwork alloy
+  description: A bar of brass-like alloy, warm to the touch and faintly ticking.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: clockwork_alloy
+  - type: Item
+    size: Small
+  - type: Tag
+    tags:
+    - GodslayerClockworkAlloy
+  - type: StaticPrice
+    price: 1500

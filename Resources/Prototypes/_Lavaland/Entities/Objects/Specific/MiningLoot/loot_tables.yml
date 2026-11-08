@@ -17,7 +17,7 @@
     - id: PKAUpgradeSpace
 
 # Rare PKA modkits from the TG necropolis roll: mining explosion, repeater,
-# resonator blast and lifesteal. TG also rolls a bounty modkit, which we lack.
+# resonator blast, death syphon (TG bounty) and lifesteal.
 - type: entityTable
   id: LavalandLootRarePkaMods
   table: !type:GroupSelector
@@ -25,6 +25,7 @@
     - id: PKAUpgradeMiningExplosion
     - id: PKAUpgradeRepeater
     - id: PKAUpgradeResonatorBlast
+    - id: PKAUpgradeDeathSyphon
     - id: PKAUpgradeLifesteal
 
 # Demonic chest contents.
@@ -33,6 +34,7 @@
   table: !type:GroupSelector
     children:
     - id: LavalandParadoxBag
+    - id: LavalandWolfCoat
     - id: LavalandMiningSoulstone
     - id: LavalandEyeOfGod
     - id: LavalandStrangeElixir

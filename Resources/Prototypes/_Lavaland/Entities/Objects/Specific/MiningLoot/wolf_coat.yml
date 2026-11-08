@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG wolf pelt cloak from the demonic mining loot list. In TG its hood grants a wolf
+# shapeshift; this fork has no wolf form, so the cloak is cosmetic, see the PR.
+
+- type: entity
+  id: LavalandWolfCoat
+  parent: ClothingNeckBase
+  name: wolf pelt cloak
+  description: A cloak made of very lively wolf fur, feels warm to touch.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Clothing/Neck/wolf_coat.rsi
+  - type: Clothing
+    sprite: _Lavaland/Clothing/Neck/wolf_coat.rsi
+  - type: ToggleableClothing
+    requiredSlot:
+    - neck
+    clothingPrototypes:
+      head: LavalandWolfCoatHood
+  - type: UserInterface
+    interfaces:
+      enum.ToggleClothingUiKey.Key:
+        type: ToggleableClothingBoundUserInterface
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:Container {}
+  - type: StaticPrice
+    price: 4000
+
+- type: entity
+  id: LavalandWolfCoatHood
+  parent: ClothingHeadBase
+  name: wolf pelt hood
+  description: A hood made of wolf fur.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Clothing/Head/Hoods/wolf_coat_hood.rsi
+  - type: Clothing
+    sprite: _Lavaland/Clothing/Head/Hoods/wolf_coat_hood.rsi

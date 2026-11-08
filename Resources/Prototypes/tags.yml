@@ -648,6 +648,15 @@
   id: GlassShard # ConstructionGraph: BladedFlatcapBrown, BladedFlatcapGrey, ImprovisedArrow, ImprovisedShotgunShellGraph, Shiv, Spear
 
 - type: Tag
+  id: GodslayerIceCrystal # ConstructionGraph: LavalandGodslayerArmor
+
+- type: Tag
+  id: GodslayerWendigoSkull # ConstructionGraph: LavalandGodslayerArmor
+
+- type: Tag
+  id: GodslayerClockworkAlloy # ConstructionGraph: LavalandGodslayerArmor. Also the clockwork defender drop.
+
+- type: Tag
   id: Goat # Reproductive partner key
 
 - type: Tag
