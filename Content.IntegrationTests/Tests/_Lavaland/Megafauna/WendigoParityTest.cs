@@ -133,8 +133,7 @@ public sealed class WendigoParityTest
             bolt = entMan.SpawnEntity("LavalandWendigoSpiralShockwave", testMap.GridCoords);
 
             // A projectile only bends if it is actually moving: give it flight speed first.
-            var body = entMan.GetComponent<PhysicsComponent>(bolt);
-            physics.SetLinearVelocity(bolt, straight, body);
+            physics.SetLinearVelocity(bolt, straight);
         });
 
         await server.WaitRunTicks(4);
