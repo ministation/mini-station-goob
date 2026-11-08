@@ -102,9 +102,10 @@ public abstract class SharedDeviceLinkSystem : EntitySystem
     {
         foreach (var sourceUid in sink.Comp.LinkedSources)
         {
+            // A source that is already gone needs no unlink; only report a live entity that lost its source component.
             if (TryComp(sourceUid, out DeviceLinkSourceComponent? source))
                 RemoveSinkFromSourceInternal(sourceUid, sink, source, sink);
-            else
+            else if (!TerminatingOrDeleted(sourceUid))
                 Log.Error($"Device sink {ToPrettyString(sink)} source list contains invalid entity: {ToPrettyString(sourceUid)}");
         }
     }
