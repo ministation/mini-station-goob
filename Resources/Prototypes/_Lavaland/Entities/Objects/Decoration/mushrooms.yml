@@ -29,7 +29,7 @@
   - type: InteractionOutline
   - type: Harvestable
     delay: 3.5
-    loot: FoodSpaceshroom # TODO: make lavashroom food
+    loot: FoodAshMushroomShavings
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: Wood
