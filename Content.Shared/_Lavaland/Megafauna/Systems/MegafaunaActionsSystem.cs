@@ -49,26 +49,30 @@ public sealed class MegafaunaActionsSystem : EntitySystem
             attach = true;
         }
 
-        EntityUid spawned;
-        if (args.AttachToTarget && attach)
-            spawned = EntityManager.CreateEntityUninitialized(args.Spawn, new EntityCoordinates(attachTarget, Vector2.Zero));
-        else if (args.SpawnAtUser)
-            spawned = EntityManager.CreateEntityUninitialized(args.Spawn, Transform(args.Performer).Coordinates);
-        else
-            spawned = EntityManager.CreateEntityUninitialized(args.Spawn, target);
+        var amount = Math.Max(1, args.Amount);
+        for (var i = 0; i < amount; i++)
+        {
+            EntityUid spawned;
+            if (args.AttachToTarget && attach)
+                spawned = EntityManager.CreateEntityUninitialized(args.Spawn, new EntityCoordinates(attachTarget, Vector2.Zero));
+            else if (args.SpawnAtUser)
+                spawned = EntityManager.CreateEntityUninitialized(args.Spawn, Transform(args.Performer).Coordinates);
+            else
+                spawned = EntityManager.CreateEntityUninitialized(args.Spawn, target);
 
-        var ev = new SpawnedByActionEvent(ent.Owner, args.Entity);
-        RaiseLocalEvent(spawned, ref ev);
+            var ev = new SpawnedByActionEvent(ent.Owner, args.Entity);
+            RaiseLocalEvent(spawned, ref ev);
 
-        // We run MapInitEvent only after SpawnedByActionEvent so all values are already set properly.
-        EntityManager.InitializeEntity(spawned);
-        // InitializeEntity doesn't start components: without this no ComponentStartup fires,
-        // and spawned mobs get no NPC owner blackboard and no faction caches.
-        EntityManager.StartEntity(spawned);
-        EntityManager.RunMapInit(spawned, MetaData(spawned)); // InitializeEntity doesn't trigger MapInit event by itself....
+            // We run MapInitEvent only after SpawnedByActionEvent so all values are already set properly.
+            EntityManager.InitializeEntity(spawned);
+            // InitializeEntity doesn't start components: without this no ComponentStartup fires,
+            // and spawned mobs get no NPC owner blackboard and no faction caches.
+            EntityManager.StartEntity(spawned);
+            EntityManager.RunMapInit(spawned, MetaData(spawned)); // InitializeEntity doesn't trigger MapInit event by itself....
 
-        if (args.AttachToTarget && attach)
-            _xform.SetParent(spawned, attachTarget); // It doesn't work without that for whatever reason??
+            if (args.AttachToTarget && attach)
+                _xform.SetParent(spawned, attachTarget); // It doesn't work without that for whatever reason??
+        }
 
         args.Handled = true;
     }

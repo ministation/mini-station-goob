@@ -63,6 +63,25 @@
       spawn: LavalandHierophantChaser
       spawnAtUser: true
 
+# TG chaser swarm: four chasers released at once when the swarm attack rolls.
+- type: entity
+  id: ActionHierophantChaserSwarm
+  parent: ActionHierophantChasers
+  name: Chaser Swarm
+  description: Releases four hierophant tile chasers at once.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: AngerDelayAction
+    minDelay: 12.0
+    maxDelay: 25.0
+    inverse: true
+  - type: EntityTargetAction # Without a target it's pretty much useless?
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandHierophantChaser
+      spawnAtUser: true
+      amount: 4
+
 - type: entity
   id: ActionHierophantBlink
   parent: ActionBaseHierophant
