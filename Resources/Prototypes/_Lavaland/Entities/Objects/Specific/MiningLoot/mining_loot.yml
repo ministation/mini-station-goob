@@ -150,6 +150,7 @@
   components:
   - type: Sprite
     sprite: _Lavaland/Clothing/OuterClothing/Armor/berserker.rsi
+  - type: LavalandBerserkerGear
   - type: Clothing
     sprite: _Lavaland/Clothing/OuterClothing/Armor/berserker.rsi
   - type: Armor
@@ -177,8 +178,16 @@
   components:
   - type: Sprite
     sprite: _Lavaland/Clothing/Head/Helmets/berserker.rsi
+  - type: LavalandBerserkerGear
+  - type: LavalandBerserker
   - type: Clothing
     sprite: _Lavaland/Clothing/Head/Helmets/berserker.rsi
+  - type: ActionGrant
+    actions:
+    - ActionBerserkMode
+  - type: ItemActionGrant
+    actions:
+    - ActionBerserkMode
   - type: Armor
     coverage:
     - Head
@@ -191,6 +200,20 @@
         Cold: 0
   - type: StaticPrice
     price: 4000
+
+- type: entity
+  id: ActionBerserkMode
+  parent: BaseAction
+  name: Berserk mode
+  description: Unleash the rage sealed in the helmet. Swings come 4x faster, brute damage is halved, incoming fire is reflected - but guns are useless and the charge drains fast.
+  components:
+  - type: Action
+    icon:
+      sprite: _Lavaland/Clothing/Head/Helmets/berserker.rsi
+      state: icon
+    useDelay: 3
+  - type: InstantAction
+    event: !type:BerserkModeActionEvent
 
 # Dark shard: use it to draw out the cursed katana.
 - type: entity

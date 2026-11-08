@@ -62,3 +62,15 @@ wisp-lantern-released = A wisp drifts out of the lantern and circles you.
 wisp-lantern-returned = The wisp slips back into the lantern.
 warp-cube-unlinked = The cube is dull and silent. Its twin is gone.
 warp-cube-teleported = Bluespace yanks you across the world.
+
+ent-ActionBerserkMode = Berserk mode
+    .desc = Unleash the rage sealed in the helmet. Swings come 4x faster, brute damage is halved, incoming fire is reflected - but guns are useless and the charge drains fast.
+berserker-charged = Berserk mode is fully charged.
+berserker-not-worn = You must be wearing the berserker helmet.
+berserker-not-charged = The berserk is only {$charge}% charged.
+berserker-mode-entered = You enter berserk mode.
+berserker-mode-exited = You exit berserk mode.
+berserker-locked = The helmet refuses to come off.
+berserker-no-guns = Your rage has no patience for guns.
+berserker-empowered = The hide crumbles to ash, and the armor burns hotter.
+berserker-empowered-already = This piece is already empowered.
