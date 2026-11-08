@@ -2,6 +2,7 @@
 
 using System.Numerics;
 using Content.Server.Atmos.EntitySystems;
+using Content.Shared.Atmos.Components;
 using Content.Shared._Lavaland.Mobs;
 using Content.Shared.Examine;
 using Content.Shared.Flash;

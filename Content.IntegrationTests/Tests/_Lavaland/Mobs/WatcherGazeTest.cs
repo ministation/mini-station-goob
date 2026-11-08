@@ -7,6 +7,9 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Shared._Lavaland.Mobs;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Atmos;
+using Content.Server.Atmos.Components;
+using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Flash.Components;
 using Content.Shared.StatusEffectNew;
 using Robust.Shared.GameObjects;
@@ -23,8 +26,10 @@ namespace Content.IntegrationTests.Tests._Lavaland.Mobs;
 [TestFixture]
 public sealed class WatcherGazeTest
 {
-    // 1.6 s warning delay plus a few ticks of margin at 30 tps.
-    private const int Ticks = 90;
+    // The gaze lands 1.6 s of REAL time after the warning (Timer.Spawn), and the flash
+    // plus burning stacks expire seconds later. The window is tight: past ~120 ticks the
+    // effects burn out before the assertion, but 90 ticks can miss the timer itself.
+    private const int Ticks = 120;
 
     [Test]
     public async Task GazeOnlyFlashesEntitiesLookingAtTheWatcher()
@@ -100,6 +105,12 @@ public sealed class WatcherGazeTest
 
         await server.WaitPost(() =>
         {
+            // Burning needs oxygen: give the map a breathable atmosphere, space does not burn.
+            var air = new GasMixture(2500f);
+            air.AdjustMoles(Content.Shared.Atmos.Gas.Oxygen, 21.2f);
+            air.AdjustMoles(Content.Shared.Atmos.Gas.Nitrogen, 79f);
+            server.System<AtmosphereSystem>().SetMapAtmosphere(testMap.MapUid, false, air);
+
             var tile = testMap.Tile.Tile;
             for (var x = -4; x <= 4; x++)
             {
