@@ -49,6 +49,15 @@ public sealed class DrakeArenaSystem : EntitySystem
         var query = EntityQueryEnumerator<DrakeArenaComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var comp, out _))
         {
+            // TG: the swoop ends with the drake; a dead boss must not keep flooding waves.
+            if (comp.Active && _mobState.IsDead(uid))
+            {
+                comp.Active = false;
+                comp.WavesLeft = 0;
+                comp.Victims.Clear();
+                continue;
+            }
+
             // Escape punishment: restore speed, then answer with a mass fire burst.
             if (comp.PunishPending)
             {
