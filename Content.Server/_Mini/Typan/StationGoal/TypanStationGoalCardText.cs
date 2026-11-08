@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Server._CorvaxGoob.StationGoal;
 using System.Linq;
 using System.Text.RegularExpressions;

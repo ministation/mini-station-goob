@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Shared._Lavaland.Anger.Systems;
 using Content.Shared._Lavaland.EntityShapes.Components;
 using Content.Shared._Lavaland.EntityShapes.Shapes;

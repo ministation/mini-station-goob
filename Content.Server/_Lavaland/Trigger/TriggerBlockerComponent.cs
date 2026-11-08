@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Shared.Whitelist;
 
 namespace Content.Server._Lavaland.Trigger;

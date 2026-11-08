@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using System;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress.Events;
 using Content.Shared.Destructible;

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Robust.Shared.Audio;
 
 namespace Content.Shared._Mini.Research.Components;

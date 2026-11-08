@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared._Mini.Construction.Components;
 using Content.Shared._Mini.Construction.Prototypes;

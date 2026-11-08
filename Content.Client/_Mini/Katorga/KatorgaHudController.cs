@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Client.Gameplay;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Shared._Mini.Katorga.Components;

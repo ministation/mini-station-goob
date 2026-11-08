@@ -1,6 +1,6 @@
 using Content.Shared.Destructible;
 // SPDX-FileCopyrightText: 2026 Egorik1
-// Мини-станция, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;

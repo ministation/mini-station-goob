@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using System.Numerics;
 using Content.Shared.RPSX.DarkForces.Ratvar.Righteous.Roles;
 using Content.Shared.StatusIcon.Components;

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Shared._vg.TileMovement;
 using Content.Shared.Alert;
 using Content.Shared.Movement.Systems;

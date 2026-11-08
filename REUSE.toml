@@ -14,3 +14,20 @@ path = ["**.txt", "**.json"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "None"
 SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = [
+  "Resources/ConfigPresets/_Mini/**",
+  "Resources/Locale/en-US/_Lavaland/**",
+  "Resources/Locale/en-US/_Mini/**",
+  "Resources/Locale/ru-RU/_Lavaland/**",
+  "Resources/Locale/ru-RU/_Mini/**",
+  "Resources/Maps/_Lavaland/**",
+  "Resources/Maps/_Mini/**",
+  "Resources/Prototypes/_Lavaland/**",
+  "Resources/Prototypes/_Mini/**",
+  "Resources/ServerInfo/_Mini/**",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Мини-станция"
+SPDX-License-Identifier = "LicenseRef-MiniStation-1.0"

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Shared._Lavaland.EntityShapes.Shapes;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;

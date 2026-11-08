@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Shared._Lavaland.ItemUpgrades.Events;
 using Content.Shared._Lavaland.MapRestricted.Components;
 using Content.Shared.Emag.Components;

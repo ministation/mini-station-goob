@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Shared._Mini.Pinpointer;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Shared._Mini.Research.Components;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;

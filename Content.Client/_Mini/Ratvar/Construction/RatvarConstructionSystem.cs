@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Client.Construction;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.RPSX.DarkForces.Ratvar.Construction;

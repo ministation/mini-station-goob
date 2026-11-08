@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Client.UserInterface.Systems.Chat;
 using Content.Shared._Mini.MiniCCVars;
 using Robust.Client.UserInterface;

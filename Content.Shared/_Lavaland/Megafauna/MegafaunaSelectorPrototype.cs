@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Shared._Lavaland.Megafauna.Selectors;
 using Robust.Shared.Prototypes;
 
