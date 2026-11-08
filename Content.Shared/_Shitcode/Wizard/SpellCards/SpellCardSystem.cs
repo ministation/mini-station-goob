@@ -126,7 +126,12 @@ public sealed class SpellCardSystem : EntitySystem
 
             if (!Exists(card.Target) || TerminatingOrDeleted(card.Target))
             {
-                _tileFriction.SetModifier(uid, 0f);
+                // Only real spell card projectiles have a friction modifier. Admin-added
+                // SpellCard components (addcomp on a mob) do not, and SetModifier would
+                // log "Can't resolve TileFrictionModifierComponent" every tick.
+                if (TryComp<TileFrictionModifierComponent>(uid, out var friction))
+                    _tileFriction.SetModifier(uid, 0f, friction);
+
                 _physics.SetLinearDamping(uid, physics, 0f, false);
                 _physics.SetLinearVelocity(uid,
                     physics.LinearVelocity.Normalized() * card.TargetedSpeed,
