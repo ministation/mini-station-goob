@@ -144,6 +144,8 @@ public sealed class LavalandTamingSystem : EntitySystem
         // Strap from the prototype relays their movement to it and is drawn above it.
         var vehicle = EnsureComp<VehicleComponent>(ent);
         vehicle.EngineRunning = true;
+        // TG riders keep their hands free, so no virtual reins item like cars get.
+        vehicle.RequiredHands = 0;
         Dirty(ent, vehicle);
 
         _popup.PopupEntity(Loc.GetString("lavaland-saddle-ready", ("target", ent)), ent);
