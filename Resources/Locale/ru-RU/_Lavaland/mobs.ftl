@@ -34,3 +34,12 @@ ent-LavalandMobRaptorYoungBlue = молодой синий раптор
     .desc = Молодой раптор, из которого может вырасти крепкий и надёжный скакун. Довольно наивен в таком возрасте.
 ent-LavalandMobRaptorYoungBlack = молодой чёрный раптор
     .desc = Молодой раптор, из которого может вырасти крепкий и надёжный скакун. Даже в этом возрасте выглядит опасно.
+
+# Приручение, седло и езда на фауне Лавалэнда (LavalandTamingSystem)
+lavaland-tame-eats = { $target } ест с вашей руки.
+lavaland-tame-success = Вы приручили { $target }!
+lavaland-saddle-untamed = { $target } ещё не приручен.
+lavaland-saddle-affixing = Вы начинаете закреплять седло на { $target }...
+lavaland-saddle-ready = Седло закреплено. На { $target } можно ехать.
+ent-LavalandGoliathSaddle = седло голиафа
+    .desc = Грубое седло, которое даст вам сносное место на голиафе! Если удастся заставить его стоять на месте.lavaland-saddle-required = Сначала { $target } нужно оседлать.

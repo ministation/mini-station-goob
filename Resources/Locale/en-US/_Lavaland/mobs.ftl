@@ -34,3 +34,12 @@ ent-LavalandMobRaptorYoungBlue = blue raptor youngling
     .desc = A young raptor that can grow into a robust, trusty steed. Rather naive at such an age.
 ent-LavalandMobRaptorYoungBlack = black raptor youngling
     .desc = A young raptor that can grow into a robust, trusty steed. Even at this age it looks dangerous.
+
+# Taming, saddling and riding of lavaland fauna (LavalandTamingSystem)
+lavaland-tame-eats = The { $target } eats from your hand.
+lavaland-tame-success = You have tamed the { $target }!
+lavaland-saddle-untamed = The { $target } is not tamed yet.
+lavaland-saddle-affixing = You start affixing the saddle to the { $target }...
+lavaland-saddle-ready = The saddle is secure. The { $target } is ready to ride.
+ent-LavalandGoliathSaddle = goliath saddle
+    .desc = This rough saddle will give you a serviceable seat upon a goliath! Provided you can get one to stand still.lavaland-saddle-required = The { $target } needs a saddle first.
