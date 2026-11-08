@@ -52,3 +52,11 @@ lavaland-ruin-crystal = Лававый кристал
 lavaland-ruin-jadnost = Руины Жадности
 
 lavaland-ruin-reclaimer = NT-Reclaimer
+lavaland-ruin-envy = Хранилище Зависти
+lavaland-ruin-gluttony = Хранилище Чревоугодия
+lavaland-ruin-greed = Хранилище Жадности
+lavaland-ruin-pride = Хранилище Гордыни
+lavaland-ruin-wrath = Хранилище Гнева
+lavaland-ruin-sloth = Хранилище Лени
+lavaland-ruin-pizza = Вечеринка с пиццей
+lavaland-ruin-ripley = Обломки Рипли

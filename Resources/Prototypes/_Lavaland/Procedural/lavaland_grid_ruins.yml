@@ -189,3 +189,53 @@
   path: /Maps/_Lavaland/Lavaland/reclaimer_shuttle_ruin.yml
   priority: -1 # highest priority
   patchToPlanet: false
+
+#Sin vaults and misc TG ruins (maps existed but were not wired into the pool)
+
+- type: lavalandGridRuin
+  id: Envy
+  name: lavaland-ruin-envy
+  path: /Maps/Lavaland/Envy.yml
+  priority: 10
+
+- type: lavalandGridRuin
+  id: Gluttony
+  name: lavaland-ruin-gluttony
+  path: /Maps/Lavaland/Gluttony.yml
+  priority: 11
+
+- type: lavalandGridRuin
+  id: Greed
+  name: lavaland-ruin-greed
+  path: /Maps/Lavaland/Greed.yml
+  priority: 12
+
+- type: lavalandGridRuin
+  id: Pride
+  name: lavaland-ruin-pride
+  path: /Maps/Lavaland/Pride.yml
+  priority: 13
+
+- type: lavalandGridRuin
+  id: Wrath
+  name: lavaland-ruin-wrath
+  path: /Maps/Lavaland/Wrath.yml
+  priority: 14
+
+- type: lavalandGridRuin
+  id: Sloth
+  name: lavaland-ruin-sloth
+  path: /Maps/Lavaland/sloth.yml
+  priority: 15
+
+- type: lavalandGridRuin
+  id: PizzaParty
+  name: lavaland-ruin-pizza
+  path: /Maps/Lavaland/pizza_party.yml
+  priority: 16
+
+- type: lavalandGridRuin
+  id: Ripley
+  name: lavaland-ruin-ripley
+  path: /Maps/Lavaland/ripley.yml
+  priority: 17
