@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Server._CorvaxGoob.StationGoal;
 using Content.Server._Mini.Typan.StationGoal;
 using Content.Server._TT.StationHandleJob;

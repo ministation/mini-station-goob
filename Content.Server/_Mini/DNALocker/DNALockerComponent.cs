@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using System.Threading;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;

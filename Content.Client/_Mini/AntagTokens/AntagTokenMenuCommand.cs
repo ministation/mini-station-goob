@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Casha
-// Мини-станция/Freaky-station, Licensed under custom terms with restrictions on public hosting and commercial use, full text: https://raw.githubusercontent.com/ministation/mini-station-goob/master/LICENSE.TXT
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 using Robust.Shared.GameObjects;

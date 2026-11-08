@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using System;
 using Content.Shared.RPSX.DarkForces.Ratvar.UI;
 using Robust.Client.Graphics;

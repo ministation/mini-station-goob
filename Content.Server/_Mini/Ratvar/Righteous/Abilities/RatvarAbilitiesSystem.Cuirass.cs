@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Shared.Damage.Systems;
 using System;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Abilities.Enchantment.Armor;

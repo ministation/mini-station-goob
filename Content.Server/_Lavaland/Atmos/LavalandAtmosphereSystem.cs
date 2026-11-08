@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Server.Atmos.EntitySystems;
 using Content.Shared._Lavaland.Atmos;
 using Content.Shared.Atmos;

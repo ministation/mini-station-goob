@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 
 using Content.Client.Administration.UI.Tabs.AdminTab;
 using Content.Client.Eui;

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Shared.EntityTable.EntitySelectors;
 using Robust.Shared.GameStates;
 

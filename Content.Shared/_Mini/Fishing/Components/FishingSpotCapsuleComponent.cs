@@ -1,6 +1,6 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 // Ported from tgstation/tgstation (code/modules/fishing/fishing_equipment.dm,
-// code/modules/mining/shelters.dm, AGPL-3.0-or-later).
+// code/modules/mining/shelters.dm).
 
 using Content.Shared._Mini.Fishing.Prototypes;
 using Robust.Shared.Audio;

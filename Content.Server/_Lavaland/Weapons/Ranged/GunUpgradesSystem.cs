@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Server._Lavaland.Pressure;
 using Content.Shared._Lavaland.Weapons.Ranged;
 using Content.Shared._Lavaland.Weapons.Ranged.Components;

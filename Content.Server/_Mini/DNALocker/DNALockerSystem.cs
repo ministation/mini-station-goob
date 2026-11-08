@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using System.Threading;
 using Content.Server.Administration.Logs;
 using Content.Server.Body.Systems;

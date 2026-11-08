@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Server.Power.EntitySystems;
 using Content.Server.Stack;
 using Content.Shared._Mini.Converter;

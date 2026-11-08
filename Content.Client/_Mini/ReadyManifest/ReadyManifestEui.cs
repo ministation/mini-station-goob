@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Client.Eui;
 using Content.Shared._Mini.ReadyManifest;
 using Content.Shared.Eui;

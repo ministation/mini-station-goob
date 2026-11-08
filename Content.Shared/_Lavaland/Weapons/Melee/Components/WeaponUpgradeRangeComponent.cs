@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Robust.Shared.GameStates;
 
 namespace Content.Shared._Lavaland.Weapons.Melee.Components;

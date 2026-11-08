@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Shared.Containers.ItemSlots;
 
 namespace Content.Server.RPSX.DarkForces.Ratvar.Righteous.Gear;

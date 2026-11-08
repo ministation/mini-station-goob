@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 namespace Content.Server._Mini.Katorga.Components;
 
 /// <summary>

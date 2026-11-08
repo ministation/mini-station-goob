@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
-// Ported from tgstation/tgstation (code/modules/fishing, AGPL-3.0-or-later).
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+// Mechanics reference: tgstation/tgstation (code/modules/fishing).
 
 using Robust.Shared.Prototypes;
 

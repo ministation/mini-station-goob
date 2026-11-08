@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using System.Linq;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Progress.Objectives.Summon;
 using Content.Server.RPSX.DarkForces.Ratvar.Righteous.Structures.Portal;

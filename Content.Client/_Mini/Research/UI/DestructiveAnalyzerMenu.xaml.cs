@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Mini.Research.Components;
 using Content.Shared.Research.Prototypes;

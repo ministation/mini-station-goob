@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using System.Numerics;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;

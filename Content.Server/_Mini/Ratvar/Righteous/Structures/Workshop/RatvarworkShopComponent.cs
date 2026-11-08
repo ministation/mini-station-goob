@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Shared.Materials;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization.Manager.Attributes;

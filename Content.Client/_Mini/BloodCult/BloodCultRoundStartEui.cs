@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Content.Client.Eui;
 
 namespace Content.Client._Mini.BloodCult;

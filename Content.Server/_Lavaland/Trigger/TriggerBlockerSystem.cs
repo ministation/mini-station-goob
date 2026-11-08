@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Server.Explosion.EntitySystems;
 using Content.Shared.Trigger;
 using Content.Shared.Whitelist;

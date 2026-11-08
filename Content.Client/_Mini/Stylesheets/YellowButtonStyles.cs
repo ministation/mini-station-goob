@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2024 Your Name <you@example.com>
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
 using Robust.Shared.Maths;
 

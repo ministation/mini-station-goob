@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using Robust.Shared.Configuration;
 using Content.Server.Voting.Managers;
 using Content.Shared.GameTicking;

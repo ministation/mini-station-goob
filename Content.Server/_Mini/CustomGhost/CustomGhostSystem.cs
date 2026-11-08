@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 using System.Linq;
 using System.Threading.Tasks;
 using Content.Server._Mini.AntagTokens;

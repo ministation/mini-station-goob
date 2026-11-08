@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
 ﻿using Content.Goobstation.Common.Weapons;
 using Content.Shared._Goobstation.Weapons.Ranged;
 using Content.Shared._Lavaland.ItemUpgrades.Components;

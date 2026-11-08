@@ -17,7 +17,7 @@
 // SPDX-FileCopyrightText: 2025 username <113782077+whateverusername0@users.noreply.github.com>
 // SPDX-FileCopyrightText: 2025 whateverusername0 <whateveremail>
 //
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
