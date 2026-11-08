@@ -493,6 +493,10 @@ public sealed class DailyQuestCardControl : BoxContainer
         if (!quest.IsTimeBased || quest.IsCompleted || quest.IsClaimed)
             return quest.CurrentProgress;
 
+        // Job mismatch: the server froze job playtime, so don't fake local progress.
+        if (!quest.RoleMatches)
+            return quest.CurrentProgress;
+
         return Math.Min(quest.CurrentProgress + smoothTimeExtra, quest.TargetProgress);
     }
 

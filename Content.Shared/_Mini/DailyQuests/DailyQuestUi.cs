@@ -21,6 +21,8 @@ public sealed class DailyQuestEntry
     public string? IconSprite { get; set; }
     public string? IconState { get; set; }
     public bool IsTimeBased { get; set; }
+    /// <summary>Does the player's current job satisfy the quest's RequiredJob? False means the server has frozen progress.</summary>
+    public bool RoleMatches { get; set; } = true;
     public bool CanReplace { get; set; }
     /// <summary>Coin cost of the replacement while the weekly free one is used up. 0 means free.</summary>
     public int ReplaceCostCoins { get; set; }
@@ -49,7 +51,8 @@ public sealed class DailyQuestEntry
         bool canReplace,
         DailyQuestRarity rarity = DailyQuestRarity.Rare,
         DateTime? nextQuestResetUtc = null,
-        int replaceCostCoins = 0)
+        int replaceCostCoins = 0,
+        bool roleMatches = true)
     {
         QuestId = questId;
         Title = title;
@@ -64,6 +67,7 @@ public sealed class DailyQuestEntry
         IconSprite = iconSprite;
         IconState = iconState;
         IsTimeBased = isTimeBased;
+        RoleMatches = roleMatches;
         CanReplace = canReplace;
         ReplaceCostCoins = replaceCostCoins;
         Rarity = rarity;

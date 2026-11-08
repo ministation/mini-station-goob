@@ -228,6 +228,7 @@ public sealed class DailyQuestSystem : EntitySystem
 
         ResolveQuestIcon(proto, out var iconId, out var iconSprite, out var iconState);
         var isTimeBased = IsTimeBasedQuest(proto);
+        var roleMatches = preview || proto.RequiredJob == null || JobMatches(session, state, proto.RequiredJob);
         var (currentProgress, targetProgress) = preview
             ? (0, IsTimeBasedQuest(proto)
                 ? Math.Max(1, (int)proto.MinRoundPlaytime.TotalSeconds)
@@ -266,7 +267,8 @@ public sealed class DailyQuestSystem : EntitySystem
             canReplace,
             proto.Rarity,
             nextQuestResetUtc,
-            replaceCostCoins);
+            replaceCostCoins,
+            roleMatches);
     }
 
     public void TryReplaceQuest(ICommonSession session, string questId, int slotIndex = -1)

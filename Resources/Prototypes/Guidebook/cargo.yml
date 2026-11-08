@@ -17,3 +17,10 @@
   id: Salvage
   name: guide-entry-salvage
   text: "/ServerInfo/Guidebook/Cargo/Salvage.xml"
+  children:
+  - Crusher
+
+- type: guideEntry
+  id: Crusher
+  name: guide-entry-crusher
+  text: "/ServerInfo/Guidebook/Cargo/Crusher.xml"
