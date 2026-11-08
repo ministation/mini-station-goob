@@ -263,3 +263,5 @@
     spawned:
     - id: FoodMeatLobster
       maxAmount: 2
+  # Mini: TG lobster rush, a dash that knocks the victim down and leaves the lobster tired.
+  - type: LavalandRush

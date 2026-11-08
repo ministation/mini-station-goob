@@ -102,6 +102,7 @@
     - SemiAuto
     soundGunshot: /Audio/Weapons/Guns/Gunshots/taser2.ogg
   - type: CombatMode
+  - type: LavalandBurrow
   - type: Butcherable
     spawned:
     - id: FoodMeatSpider
@@ -171,6 +172,9 @@
       amount: 1
     - id: DiamondOre
       amount: 1
+  - type: LavalandOreEater
+  - type: LavalandBurrowEscape
+  - type: LavalandProjectileBlocker
 
 # Common parts of every adult raptor. Colors override sprite, health, speed and damage.
 - type: entity
@@ -630,3 +634,13 @@
     thresholds:
       0: Alive
       200: Dead
+
+# Tired after a lobster rush, TG tired_post_charge/lesser.
+- type: entity
+  parent: StatusEffectSlowdown
+  id: LavalandStatusEffectTired
+  name: tired
+  components:
+  - type: MovementModStatusEffect
+    walkSpeedModifier: 0.6
+    sprintSpeedModifier: 0.6
