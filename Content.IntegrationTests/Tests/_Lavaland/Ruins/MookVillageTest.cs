@@ -7,6 +7,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests._Lavaland.Ruins;
 
@@ -63,6 +64,7 @@ public sealed class MookVillageTest
         var entMan = server.ResolveDependency<IEntityManager>();
         var mapSys = server.System<SharedMapSystem>();
         var damageableSys = server.System<DamageableSystem>();
+        var timing = server.ResolveDependency<IGameTiming>();
 
         var patient = EntityUid.Invalid;
 
@@ -84,7 +86,9 @@ public sealed class MookVillageTest
                 "the worker must take damage before healing starts");
         });
 
-        await server.WaitRunTicks(180);
+        // 8 Brute per second is split evenly between the three brute types, so a
+        // blunt-only wound heals at 8/3 per second and 30 damage needs ~12 seconds.
+        await server.WaitRunTicks((int) (20 * timing.TickRate));
 
         await server.WaitAssertion(() =>
         {
