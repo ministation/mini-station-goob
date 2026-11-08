@@ -131,15 +131,26 @@ public sealed class DrakeArenaSystem : EntitySystem
         var comp = ent.Comp;
         var gridUid = comp.Center.GetGridUid(EntityManager);
         if (gridUid == null || !TryComp<MapGridComponent>(gridUid, out var grid))
+        {
+            // The grid under the arena is gone; end instead of stalling Active forever.
+            comp.Active = false;
+            comp.WavesLeft = 0;
+            comp.Victims.Clear();
             return;
+        }
 
         var center = _map.TileIndicesFor(gridUid.Value, grid, comp.Center);
 
         // Player-controlled victims inside the arena: they are the ones worth punishing.
+        // Filter by tile: a point-radius lookup misses the corner tiles of the square interior.
         var interiorMobs = new List<EntityUid>();
-        foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(comp.Center, comp.InteriorRange + 0.5f))
+        foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(comp.Center, (comp.InteriorRange + 1f) * 1.5f))
         {
             if (!HasComp<ActorComponent>(mob.Owner))
+                continue;
+
+            var mobTile = _map.LocalToTile(gridUid.Value, grid, Transform(mob.Owner).Coordinates);
+            if (Math.Max(Math.Abs(mobTile.X - center.X), Math.Abs(mobTile.Y - center.Y)) > comp.InteriorRange)
                 continue;
 
             interiorMobs.Add(mob.Owner);

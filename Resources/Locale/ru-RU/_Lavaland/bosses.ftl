@@ -14,3 +14,5 @@ ent-LavalandBossLegionSmall = Легион
 megafauna-devour = { CAPITALIZE($boss) } вспарывает { CAPITALIZE($victim) }!
 drake-arena-start = { CAPITALIZE($boss) } взмывает ввысь и окружает цель кольцом огня!
 drake-arena-escape = { CAPITALIZE($boss) } пылает от ярости, его раны затягиваются!
+ent-WallDrakeArenaTemporary = стена огня
+    .desc = Истинное пламя пепельного дракона.
