@@ -56,6 +56,21 @@ public sealed partial class FoodTroughComponent : Component
     [DataField]
     public int MaxOffspringPop = 20;
 
+    /// <summary>
+    /// Cooldown between raptor breedings at one trough. TG: breed timer 3 minutes.
+    /// </summary>
+    [DataField]
+    public TimeSpan RaptorBreedCooldown = TimeSpan.FromMinutes(3);
+
+    /// <summary>
+    /// Maximum live raptors allowed in the world. TG: MAX_RAPTOR_POP 64.
+    /// </summary>
+    [DataField]
+    public int MaxRaptorPop = 64;
+
     [ViewVariables]
     public TimeSpan NextBreed;
+
+    [ViewVariables]
+    public TimeSpan NextRaptorBreed;
 }

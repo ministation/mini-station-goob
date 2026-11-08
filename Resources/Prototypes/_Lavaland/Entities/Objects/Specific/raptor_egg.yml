@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG raptor egg: laid by bred raptors, hatches into a hatchling after
+# incubation (x1.5 progress on lava, never hatches while sitting on lava).
+- type: entity
+  parent: FoodEggBase
+  id: LavalandRaptorEgg
+  name: raptor egg
+  description: A large speckled egg. It is warm, and something inside occasionally kicks.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Mobs/RaptorBaby.rsi
+    state: raptor_egg
+  - type: RaptorEgg
