@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG lavaland wave 3 ruins: the strong stone and the props that need a lavaland variant.
+
+# TG strong rock. A master miner was needed to crack it; our repo has no mining
+# skill, so it just takes far more damage than ordinary basalt.
+- type: entity
+  parent: WallRockBasalt
+  id: LavalandStrongRock
+  name: very strong rock
+  description: Seems to be stronger than the other rocks in the area. Only a master of mining techniques could destroy this.
+  suffix: Lavaland
+  components:
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: OreLavalandStrongRock
+
+# TG drops five sheets of adamantine or mythril. Neither material exists here, so the
+# rock yields the closest endgame ore in five chunks.
+- type: ore
+  id: OreLavalandStrongRock
+  oreEntity: DiamondOre1Unprocessed
+  minOreYield: 5
+  maxOreYield: 5
+  oreSprite:
+    sprite: _Mini/Structures/Walls/asteroid_rock.rsi
+    state: rock_diamond

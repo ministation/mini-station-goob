@@ -187,3 +187,31 @@
   spawnAttempts: 8
   guaranteed: false
   minDistance: 75
+
+# TG wave 3 ruins rebuilt by hand in Content.Server/_Lavaland/Ruins.
+- type: lavalandMarkerRuin
+  id: LavaPhonebooth
+  boundary: 3,5
+  spawnedMarker: LavalandLavaPhoneboothSpawner
+  priority: 0
+  spawnAttempts: 8
+  guaranteed: false
+  minDistance: 80
+
+- type: lavalandMarkerRuin
+  id: CultAltar
+  boundary: 15,15
+  spawnedMarker: LavalandCultAltarSpawner
+  priority: 0
+  spawnAttempts: 8
+  guaranteed: false
+  minDistance: 90
+
+- type: lavalandMarkerRuin
+  id: StrongStone
+  boundary: 3,3
+  spawnedMarker: LavalandStrongStoneSpawner
+  priority: 0
+  spawnAttempts: 6
+  guaranteed: false
+  minDistance: 80

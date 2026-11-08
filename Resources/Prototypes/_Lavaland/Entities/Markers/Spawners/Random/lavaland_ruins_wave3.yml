@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG lavaland wave 3 ruin markers. The builders live in
+# Content.Server/_Lavaland/Ruins and run on MapInit of these markers.
+
+- type: entity
+  id: LavalandLavaPhoneboothSpawner
+  parent: MarkerBase
+  name: phone booth spawner
+  suffix: Lavaland
+  categories: [ Spawner ]
+  components:
+  - type: LavaPhoneboothSpawner
+
+- type: entity
+  id: LavalandCultAltarSpawner
+  parent: MarkerBase
+  name: cult altar spawner
+  suffix: Lavaland
+  categories: [ Spawner ]
+  components:
+  - type: CultAltarSpawner
+
+- type: entity
+  id: LavalandStrongStoneSpawner
+  parent: MarkerBase
+  name: strong stone spawner
+  suffix: Lavaland
+  categories: [ Spawner ]
+  components:
+  - type: StrongStoneSpawner
