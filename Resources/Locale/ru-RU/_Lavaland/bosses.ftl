@@ -10,3 +10,5 @@ ent-LavalandBossLegionMediumEye = Легион
     .desc = Один из многих.
 ent-LavalandBossLegionSmall = Легион
     .desc = Один из многих. Наверное, последний.
+
+megafauna-devour = { CAPITALIZE($boss) } вспарывает { CAPITALIZE($victim) }!

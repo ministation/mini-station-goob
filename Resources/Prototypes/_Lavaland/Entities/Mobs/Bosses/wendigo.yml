@@ -9,6 +9,7 @@
   parent: LavalandMobBase
   description: A mythological man-eating beast, its empty eye sockets track you with unsatiated hunger.
   components:
+  - type: MegafaunaDevour
   - type: Physics
     bodyType: KinematicController
   - type: Clickable

@@ -8,6 +8,7 @@
   parent: LavalandMobBase
   description: A very crazed miner. He's able to do more damage the more he hurts.
   components:
+  - type: MegafaunaDevour
   - type: Physics
     bodyType: KinematicController
   - type: Clickable
@@ -129,6 +130,7 @@
   id: LavalandBossBloodDrunkGuidance
   suffix: Guidance
   components:
+  - type: MegafaunaDevour
   - type: VampiricMelee
     healFraction: 0.5
 
@@ -138,6 +140,7 @@
   id: LavalandBossBloodDrunkHunter
   suffix: Hunter
   components:
+  - type: MegafaunaDevour
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 0.5

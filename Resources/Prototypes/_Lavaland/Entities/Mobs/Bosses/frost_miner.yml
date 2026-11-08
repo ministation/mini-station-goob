@@ -9,6 +9,7 @@
   parent: LavalandMobBase
   description: A miner possessed by a demon of ice, wielding a frozen mining rig.
   components:
+  - type: MegafaunaDevour
   - type: Physics
     bodyType: KinematicController
   - type: Clickable
