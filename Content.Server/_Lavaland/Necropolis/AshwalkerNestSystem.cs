@@ -14,6 +14,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Destructible;
 using Content.Shared.Destructible.Thresholds.Triggers;
+using Content.Shared.Forensics.Components;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -47,6 +48,21 @@ public sealed class AshwalkerNestSystem : EntitySystem
     private const string Ashwalker = "MobAshwalkerPlayable";
     private const string SalvagePending = "ashwalker-nest-salvage-pending";
     private const string SalvageReturn = "ashwalker-nest-salvage-return";
+
+    /// <summary>
+    /// TG: each sacrifice has a 40% chance to let its deliverer hatch from an egg again.
+    /// </summary>
+    private const float RespawnUnlockChance = 0.4f;
+
+    /// <summary>
+    /// Radius in which the tribe witnesses a sacrifice, matching TG's view(5).
+    /// </summary>
+    private const float SacrificeRadius = 5f;
+
+    /// <summary>
+    /// A walker this close to a corpse without matching fingerprints still counts as its deliverer.
+    /// </summary>
+    private const float DelivererFallbackRadius = 3f;
 
     /// <summary>
     /// TG drops a live anomaly core when the nest dies; the inert versions are the sane SS14 stand-in.
@@ -146,6 +162,8 @@ public sealed class AshwalkerNestSystem : EntitySystem
 
                 nest.Meat += HasComp<MegafaunaAiComponent>(mob.Owner) ? nest.MeatPerMegafauna : nest.MeatPerCorpse;
                 _tribe.RegisterSacrifice(uid);
+                RewardDeliverer(uid, mob.Owner);
+                CelebrateSacrifice(uid);
 
                 // TG gibs with remains instead of silently deleting the body.
                 _body.GibBody(mob.Owner, true);
@@ -160,7 +178,8 @@ public sealed class AshwalkerNestSystem : EntitySystem
                 nest.Meat -= nest.MeatPerEgg;
                 nest.Eggs++;
                 _tribe.RegisterEgg(uid);
-                Spawn(Egg, nestXform.Coordinates.Offset(_random.NextVector2Box(-1.5f, -1.5f, 1.5f, 1.5f)));
+                var egg = Spawn(Egg, nestXform.Coordinates.Offset(_random.NextVector2Box(-1.5f, -1.5f, 1.5f, 1.5f)));
+                AddComp<AshwalkerEggComponent>(egg).Nest = uid;
             }
         }
     }
@@ -203,6 +222,79 @@ public sealed class AshwalkerNestSystem : EntitySystem
 
         foreach (var corpse in finished)
             _pendingSalvage.Remove(corpse);
+    }
+
+    /// <summary>
+    /// TG: a sacrificed corpse was usually dragged in by one of the tribe, and there is a 40%
+    /// chance that the Necropolis repays the walker by clearing their one-spawn-per-ckey limit.
+    /// </summary>
+    private void RewardDeliverer(EntityUid nest, EntityUid corpse)
+    {
+        if (!TryComp<AshwalkerTribeComponent>(nest, out var tribe) || tribe.SpawnedCkeys.Count == 0)
+            return;
+
+        if (FindDeliverer(corpse) is not { } deliverer
+            || !_mind.TryGetMind(deliverer, out _, out var mind)
+            || mind.UserId is not { } ckey
+            || !tribe.SpawnedCkeys.Contains(ckey)
+            || !_random.Prob(RespawnUnlockChance))
+            return;
+
+        tribe.SpawnedCkeys.Remove(ckey);
+        _popup.PopupEntity(Loc.GetString("ashwalker-sacrifice-respawn"), deliverer, deliverer);
+    }
+
+    /// <summary>
+    /// The walker who brought the corpse in. TG reads the corpse's last fingerprints; the fork has
+    /// no last-touch marker, so prefer a walker whose fingerprint is on the corpse, else the closest.
+    /// shortcut: fingerprint evidence can be missing (gloves, throwing), then the nearest walker wins.
+    /// </summary>
+    private EntityUid? FindDeliverer(EntityUid corpse)
+    {
+        var corpseXform = Transform(corpse);
+        var corpsePosition = corpseXform.WorldPosition;
+        HashSet<string>? fingerprints = TryComp<ForensicsComponent>(corpse, out var forensics)
+            ? forensics.Fingerprints
+            : null;
+
+        EntityUid? printed = null;
+        EntityUid? nearest = null;
+        var printedDistance = float.MaxValue;
+        var nearestDistance = DelivererFallbackRadius * DelivererFallbackRadius;
+
+        foreach (var member in _lookup.GetEntitiesInRange<AshwalkerTribeMemberComponent>(corpseXform.Coordinates, SacrificeRadius))
+        {
+            var distance = (Transform(member.Owner).WorldPosition - corpsePosition).LengthSquared();
+
+            if (distance < printedDistance
+                && fingerprints is { Count: > 0 }
+                && TryComp<FingerprintComponent>(member.Owner, out var fingerprint)
+                && fingerprint.Fingerprint is { } print
+                && fingerprints.Contains(print))
+            {
+                printed = member.Owner;
+                printedDistance = distance;
+            }
+
+            if (distance < nearestDistance)
+            {
+                nearest = member.Owner;
+                nearestDistance = distance;
+            }
+        }
+
+        return printed ?? nearest;
+    }
+
+    /// <summary>
+    /// TG gives every walker in view a mood buff for each sacrifice. The fork has no mood system,
+    /// so the same flavor line is shown as a popup instead.
+    /// </summary>
+    private void CelebrateSacrifice(EntityUid nest)
+    {
+        var message = Loc.GetString("ashwalker-sacrifice-good");
+        foreach (var member in _lookup.GetEntitiesInRange<AshwalkerTribeMemberComponent>(Transform(nest).Coordinates, SacrificeRadius))
+            _popup.PopupEntity(message, member.Owner, member.Owner);
     }
 
     private void HealNest(EntityUid uid, AshwalkerNestComponent nest)

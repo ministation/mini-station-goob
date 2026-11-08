@@ -2,6 +2,7 @@
 
 using Content.Shared._Lavaland.Ashwalker;
 using Content.Shared.Body.Part;
+using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Robust.Shared.Containers;
 
@@ -23,6 +24,16 @@ public sealed class HeadPikeSystem : EntitySystem
         SubscribeLocalEvent<HeadPikeComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<HeadPikeComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<HeadPikeComponent, InteractHandEvent>(OnInteractHand);
+        SubscribeLocalEvent<HeadPikeComponent, ExaminedEvent>(OnExamined);
+    }
+
+    private void OnExamined(Entity<HeadPikeComponent> ent, ref ExaminedEvent args)
+    {
+        if (!HasComp<AshwalkerTribeMemberComponent>(args.Examiner))
+            return;
+
+        // TG gives an ash walker a mood buff for this; the fork has no mood system, so show the line.
+        args.PushMarkup(Loc.GetString("ashwalker-sacrifice-good"));
     }
 
     private void OnMapInit(Entity<HeadPikeComponent> ent, ref MapInitEvent args)

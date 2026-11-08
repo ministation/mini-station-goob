@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Robust.Shared.Player;
+
 namespace Content.Server._Lavaland.Ashwalker;
 
 /// <summary>
@@ -31,4 +33,11 @@ public sealed partial class AshwalkerTribeComponent : Component
     /// </summary>
     [ViewVariables]
     public int EggsCreated;
+
+    /// <summary>
+    /// Ckeys that already hatched from this tribe's eggs. TG's team players_spawned:
+    /// one ash walker per person until a sacrifice clears the entry.
+    /// </summary>
+    [ViewVariables]
+    public readonly HashSet<NetUserId> SpawnedCkeys = new();
 }

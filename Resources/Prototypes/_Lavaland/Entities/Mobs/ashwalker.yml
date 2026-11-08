@@ -31,6 +31,12 @@
       types:
       - Lava
   - type: AshwalkerTribeMember # joins the tribe of the nearest nest when it gets a mind
+  # TG remove_language(common): ash walkers understand and speak only Draconic.
+  - type: LanguageKnowledge
+    speaks:
+    - Draconic
+    understands:
+    - Draconic
   - type: MeleeWeapon
     altDisarm: false
     angle: 0
@@ -94,8 +100,7 @@
     raffle:
       settings: default
     job: AshWalker
-  - type: GhostRoleMobSpawner
-    prototype: MobAshwalker
+  - type: AshwalkerEgg # one hatch per ckey, yolk when broken
   - type: Damageable
     damageContainer: Biological
     damageModifierSet: LavalandAshwalkerStructure
@@ -107,11 +112,7 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          MaterialBones1:
-            min: 1
-            max: 2
+      # TG: the broken egg leaves a gibbed half-formed walker, spawned by AshwalkerEggSystem.
 
 # The nest: consumes corpses, hatches eggs.
 - type: entity
