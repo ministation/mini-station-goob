@@ -1284,6 +1284,11 @@ public sealed partial class ChatSystem : SharedChatSystem
 
         foreach (var player in _playerManager.Sessions)
         {
+            // Mini: при переподключении старый канал уже закрыт, а сессия ещё висит в списке игроков, поэтому
+            // отправка ChatMessageToOne писала в лог "Tried to send message ... to disconnected channel".
+            if (!player.Channel.IsConnected)
+                continue;
+
             if (player.AttachedEntity is not { Valid: true } playerEntity)
                 continue;
 
