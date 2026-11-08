@@ -56,7 +56,18 @@ public sealed class MegafaunaActionsSystem : EntitySystem
             if (args.AttachToTarget && attach)
                 spawned = EntityManager.CreateEntityUninitialized(args.Spawn, new EntityCoordinates(attachTarget, Vector2.Zero));
             else if (args.SpawnAtUser)
-                spawned = EntityManager.CreateEntityUninitialized(args.Spawn, Transform(args.Performer).Coordinates);
+            {
+                var spawnCoords = Transform(args.Performer).Coordinates;
+                if (amount > 1)
+                {
+                    // Spread multi-spawns over the four diagonal neighbours, otherwise chasers start
+                    // on one tile and walk the exact same path in lockstep.
+                    var offset = new Vector2(i % 2 == 0 ? 1f : -1f, i / 2 % 2 == 0 ? 1f : -1f);
+                    spawnCoords = spawnCoords.Offset(offset);
+                }
+
+                spawned = EntityManager.CreateEntityUninitialized(args.Spawn, spawnCoords);
+            }
             else
                 spawned = EntityManager.CreateEntityUninitialized(args.Spawn, target);
 

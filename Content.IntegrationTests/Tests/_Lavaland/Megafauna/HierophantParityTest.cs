@@ -98,13 +98,14 @@ public sealed class HierophantParityTest
             entMan.EventBus.RaiseLocalEvent(boss, hit);
         });
 
-        await server.WaitRunTicks(3);
+        // The burst must grow: the expanding spawner releases several rings, not one static ring.
+        await server.WaitRunTicks(25);
 
         await server.WaitAssertion(() =>
         {
             var bossPos = entMan.GetComponent<TransformComponent>(boss).Coordinates.Position;
-            Assert.That(CountSquaresNear(entMan, bossPos, 4f), Is.GreaterThan(0),
-                "the hierophant melee hit released no blast squares");
+            Assert.That(CountSquaresNear(entMan, bossPos, 6f), Is.GreaterThan(8),
+                "the hierophant melee hit released one static ring instead of an expanding burst");
         });
 
         await pair.CleanReturnAsync();
@@ -148,12 +149,24 @@ public sealed class HierophantParityTest
             entMan.EventBus.RaiseLocalEvent(boss, ev, broadcast: true);
         });
 
-        await server.WaitRunTicks(2);
+        await server.WaitRunTicks(1);
 
         await server.WaitAssertion(() =>
         {
             Assert.That(CountSquares(entMan, "LavalandHierophantChaser"), Is.EqualTo(4),
                 "the chaser swarm must release four chasers, got " + CountSquares(entMan, "LavalandHierophantChaser"));
+
+            // Four chasers on the same tile would walk the same path and stack their squares.
+            var tiles = new HashSet<Vector2i>();
+            var query = entMan.EntityQueryEnumerator<TransformComponent, MetaDataComponent>();
+            while (query.MoveNext(out var xform, out var meta))
+            {
+                if (meta.EntityPrototype?.ID == "LavalandHierophantChaser")
+                    tiles.Add(new Vector2i((int) MathF.Round(xform.Coordinates.Position.X), (int) MathF.Round(xform.Coordinates.Position.Y)));
+            }
+
+            Assert.That(tiles.Count, Is.EqualTo(4),
+                "the chaser swarm all spawned on the same tile, got " + tiles.Count + " distinct tiles");
         });
 
         await pair.CleanReturnAsync();
@@ -174,6 +187,7 @@ public sealed class HierophantParityTest
 
         var testMap = await pair.CreateTestMap();
         EntityUid boss = default;
+        var deathSpot = Vector2.Zero;
 
         await server.WaitPost(() =>
         {
@@ -185,6 +199,7 @@ public sealed class HierophantParityTest
             }
 
             boss = entMan.SpawnEntity("MobHierophant", testMap.GridCoords);
+            deathSpot = entMan.GetComponent<TransformComponent>(boss).Coordinates.Position;
             var aggressive = entMan.GetComponent<AggressiveComponent>(boss);
             entMan.System<AggressorsSystem>().AddAggressor(
                 (boss, aggressive), entMan.SpawnEntity("MobCow", testMap.GridCoords.Offset(new Vector2(2f, 0f))));
@@ -196,9 +211,16 @@ public sealed class HierophantParityTest
             damage.TryChangeDamage(boss, lethal, ignoreResistances: true);
         });
 
-        // The TG burst expands for a few seconds; check while the outer rings are still alive
-        // (blast squares despawn after one second).
-        await server.WaitRunTicks(90);
+        // The TG burst expands for a few seconds; blast squares despawn after one second, so
+        // sample the radius twice and require it to grow.
+        await server.WaitRunTicks(30);
+        var nearRadius = 0f;
+        await server.WaitAssertion(() =>
+        {
+            nearRadius = MaxSquareDistance(entMan, deathSpot);
+        });
+
+        await server.WaitRunTicks(60);
 
         await server.WaitAssertion(() =>
         {
@@ -209,6 +231,9 @@ public sealed class HierophantParityTest
 
             Assert.That(CountSquares(entMan, "LavalandHierophantSquare"), Is.GreaterThan(20),
                 "the death burst released no expanding blast squares, got " + CountSquares(entMan, "LavalandHierophantSquare"));
+
+            Assert.That(MaxSquareDistance(entMan, deathSpot), Is.GreaterThan(nearRadius),
+                "the death burst rings never grew outwards");
         });
 
         await pair.CleanReturnAsync();
@@ -228,6 +253,22 @@ public sealed class HierophantParityTest
         }
 
         return squares;
+    }
+
+    private static float MaxSquareDistance(IEntityManager entMan, Vector2 center)
+    {
+        var max = 0f;
+        var query = entMan.EntityQueryEnumerator<TransformComponent, MetaDataComponent>();
+        while (query.MoveNext(out var xform, out var meta))
+        {
+            if (meta.EntityPrototype?.ID != "LavalandHierophantSquare")
+                continue;
+            var distance = (xform.Coordinates.Position - center).Length();
+            if (distance > max)
+                max = distance;
+        }
+
+        return max;
     }
 
     private static int CountSquares(IEntityManager entMan, string prototype)

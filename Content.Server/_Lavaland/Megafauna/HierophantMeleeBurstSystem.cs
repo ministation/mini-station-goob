@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Shared._Lavaland.Megafauna.Events;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -39,6 +40,13 @@ public sealed class HierophantMeleeBurstSystem : EntitySystem
         if (!hitLiving)
             return;
 
-        Spawn(ent.Comp.Shape, _xform.GetMapCoordinates(ent));
+        // Spawn through the action event so AngerShapeSpawner can set the ring counter and
+        // period: a plain Spawn() leaves MaxCounter at 1, i.e. a single static ring.
+        var spawned = EntityManager.CreateEntityUninitialized(ent.Comp.Shape, _xform.GetMapCoordinates(ent));
+        var ev = new SpawnedByActionEvent(ent.Owner, null);
+        RaiseLocalEvent(spawned, ref ev);
+        EntityManager.InitializeEntity(spawned);
+        EntityManager.StartEntity(spawned);
+        EntityManager.RunMapInit(spawned, MetaData(spawned));
     }
 }
