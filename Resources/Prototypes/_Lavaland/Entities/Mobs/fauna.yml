@@ -195,6 +195,14 @@
     soundGunshot: /Audio/Weapons/Guns/Gunshots/taser2.ogg
   - type: CombatMode
   - type: LaserAbsorb # Lavaland: shooting it with lasers just chills it further
+  - type: BasiliskOverheat # Mini: TG parity, touching something hot turns it into a fast, hot-shooting form
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.BasiliskOverheatVisuals.Overheated:
+        enum.DamageStateVisualLayers.Base:
+          True: { state: basilisk_alert }
+          False: { state: basilisk }
   - type: Butcherable
     spawned:
     - id: MaterialBones1

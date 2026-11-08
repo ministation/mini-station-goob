@@ -17,3 +17,12 @@ ent-FoodMeatGutshank = gutshank
 ent-FoodMeatLobster = lobster meat
     .desc = Rich meat from a monstrous lobster. The lava gave it a spicy aftertaste.
 petting-success-gutlunch = The gutlunch clucks happily at you.
+
+ent-ActionWatcherGaze = Disorienting Gaze
+    .desc = After a short delay, blind and disorient everyone looking at you.
+
+watcher-gaze-warning = The watcher's eye glows ominously!
+
+# Basilisk overheat, TG parity
+basilisk-overheat-start = The basilisk hisses and its shell surges with heat!
+basilisk-overheat-end = The basilisk seems to have cooled down.

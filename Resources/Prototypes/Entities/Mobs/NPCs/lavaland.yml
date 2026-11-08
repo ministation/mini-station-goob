@@ -78,6 +78,10 @@
     interactSuccessSound:
       path: /Audio/Animals/lizard_happy.ogg
   - type: Fauna # Lavaland Change
+  # Mini: TG watcher gaze, used through the same NPC action hook as the goliath tentacle.
+  - type: NPCUseActionOnTarget
+    actionId: ActionWatcherGaze
+  - type: WatcherGaze
 
 - type: entity
   id: MobWatcherLavaland
@@ -137,6 +141,8 @@
   - type: BatteryAmmoProvider
     proto: WatcherBoltIcewing
     fireCost: 50
+  - type: WatcherGaze
+    type: Ice
   - type: Butcherable # Lavaland Change
     spawned:
     - id: DiamondOre1 # not unprocessed
@@ -171,6 +177,8 @@
   - type: BatteryAmmoProvider
     proto: WatcherBoltMagmawing
     fireCost: 50
+  - type: WatcherGaze
+    type: Fire
   - type: Butcherable # Lavaland Change
     spawned:
     - id: DiamondOre1 # not unprocessed
@@ -196,3 +204,20 @@
     energy: 3
   - type: RgbLightController
     layers: [ 1 ]
+
+- type: entity
+  parent: BaseAction
+  id: ActionWatcherGaze
+  name: Disorienting Gaze
+  description: After a short delay, blind and disorient everyone looking at you.
+  components:
+  - type: Action
+    raiseOnUser: true
+    icon:
+      sprite: Mobs/Aliens/Lavaland/watcher.rsi
+      state: base
+    useDelay: 20
+  - type: TargetAction
+    range: 7
+  - type: EntityTargetAction
+    event: !type:WatcherGazeActionEvent

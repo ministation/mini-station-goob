@@ -14,3 +14,42 @@
         Cold: 15
   - type: ChangeTemperatureOnCollide
     heat: -60000
+# TG parity: an overheated basilisk fires this energy blast (TG: 40 BRUTE) instead of its chilling gaze.
+- type: entity
+  name: energy blast
+  id: BasiliskOverheatBolt
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: FlyBySound
+    sound:
+      collection: EnergyMiss
+      params:
+        volume: 5
+  - type: Sprite
+    # TG uses the chronobolt state, the same one the disabled BulletKinetic prototype used.
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: chronobolt
+      shader: unshaded
+  - type: Ammo
+    muzzleFlash: MuzzleFlashEffectHeavyLaser
+  - type: Physics
+  - type: Fixtures
+    fixtures:
+      projectile:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.15,-0.15,0.15,0.15"
+        hard: false
+        mask:
+        - Opaque
+        - Impassable
+        - BulletImpassable
+  - type: Projectile
+    impactEffect: BulletImpactEffectKinetic
+    damage:
+      types:
+        Piercing: 40 # TG: 40 BRUTE, pierce is the closest SS14 brute analogue
+  - type: TimedDespawn
+    lifetime: 3
