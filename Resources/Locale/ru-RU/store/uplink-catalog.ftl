@@ -349,3 +349,6 @@ uplink-smuggler-satchel-desc = Удобная, подозрительная на
 # Mini: недостающие позиции аплинка
 uplink-magazine-bulldog-pellet-name = Барабанный магазин (.50 дробь)
 uplink-magazine-bulldog-pellet-desc = Магазин для дробовика на 8 патронов с картечью. Совместим с «Бульдогом».
+
+uplink-saw-advanced-name = Продвинутая циркулярная пила
+uplink-saw-advanced-desc = Вы уверены, что ей можно разрезать что угодно.
