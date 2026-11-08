@@ -163,31 +163,39 @@ public sealed class LavalandTamingSystem : EntitySystem
 
     private void OnRiderStrapped(Entity<MountableMobComponent> ent, ref StrappedEvent args)
     {
-        ent.Comp.Riding = true;
-
         // The AI would fight the rider's input over the same mover, so park it while mounted.
         if (TryComp<HTNComponent>(ent, out var htn))
             _htn.SetHTNEnabled((ent.Owner, htn), false, 1f);
 
-        // The ridden mob moves exactly at RideSpeed: an override of the base speeds,
-        // because a ModifySpeed factor would multiply on top of unrelated modifiers.
+        // The fork caps WalkSpeedModifier at movement.max_speed, so the ride speed is applied as the
+        // base speed, the same way vehicles get their absolute speed.
         if (TryComp<MovementSpeedModifierComponent>(ent, out var move))
         {
-            ent.Comp.SavedWalkSpeed = move.BaseWalkSpeed;
-            ent.Comp.SavedSprintSpeed = move.BaseSprintSpeed;
-            _movementSpeed.ChangeBaseSpeed(ent.Owner, ent.Comp.RideSpeed, ent.Comp.RideSpeed, move.Acceleration);
+            ent.Comp.DefaultWalkSpeed ??= move.BaseWalkSpeed;
+            ent.Comp.DefaultSprintSpeed ??= move.BaseSprintSpeed;
+            _movementSpeed.ChangeBaseSpeed(ent, ent.Comp.RideSpeed, ent.Comp.RideSpeed, move.Acceleration);
         }
+
+        _movementSpeed.RefreshMovementSpeedModifiers(ent);
     }
 
     private void OnRiderUnstrapped(Entity<MountableMobComponent> ent, ref UnstrappedEvent args)
     {
-        ent.Comp.Riding = false;
-
         if (TryComp<HTNComponent>(ent, out var htn))
             _htn.SetHTNEnabled((ent.Owner, htn), true, 1f);
 
-        if (TryComp<MovementSpeedModifierComponent>(ent, out var move))
-            _movementSpeed.ChangeBaseSpeed(ent.Owner, ent.Comp.SavedWalkSpeed, ent.Comp.SavedSprintSpeed, move.Acceleration);
+        if (TryComp<MovementSpeedModifierComponent>(ent, out var move)
+            && ent.Comp.DefaultWalkSpeed is { } defaultWalkSpeed)
+        {
+            _movementSpeed.ChangeBaseSpeed(ent,
+                defaultWalkSpeed,
+                ent.Comp.DefaultSprintSpeed ?? defaultWalkSpeed,
+                move.Acceleration);
+            ent.Comp.DefaultWalkSpeed = null;
+            ent.Comp.DefaultSprintSpeed = null;
+        }
+
+        _movementSpeed.RefreshMovementSpeedModifiers(ent);
     }
 
     private bool IsTameFood(TameableMobComponent comp, EntityUid food)

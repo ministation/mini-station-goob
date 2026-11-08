@@ -40,17 +40,14 @@ public sealed class TamingRidingTest
         EntityUid goliath = default;
         EntityUid tamer = default;
 
+        // Feed it in the tick it spawns: a hostile goliath that gets a tick to plan attacks the tamer,
+        // which interrupts the saddle do-after below.
         await server.WaitPost(() =>
         {
             tamer = entMan.SpawnEntity("MobHuman", coords);
             goliath = entMan.SpawnEntity("MobLavalandGoliath", coords.Offset(new Vector2(1f, 0f)));
-        });
 
-        await server.WaitRunTicks(5);
-
-        // Feed it once with a guaranteed roll: the goliath should become tamed and friendly.
-        await server.WaitPost(() =>
-        {
+            // Feed it once with a guaranteed roll: the goliath should become tamed and friendly.
             var tame = entMan.GetComponent<TameableMobComponent>(goliath);
             tame.CurrentChance = 100f;
 
@@ -59,6 +56,11 @@ public sealed class TamingRidingTest
 
             entMan.EventBus.RaiseLocalEvent(goliath, new InteractUsingEvent(tamer, food, goliath, coords));
         });
+
+        // The eaten food is deleted at the end of its tick. Do not pick up the saddle before that:
+        // while the food still stands in the active hand it becomes the saddle do-after's initial
+        // item, and its deletion then breaks the do-after.
+        await server.WaitRunTicks(1);
 
         await server.WaitAssertion(() =>
         {
@@ -71,7 +73,7 @@ public sealed class TamingRidingTest
         await server.WaitPost(() =>
         {
             var mount = entMan.GetComponent<MountableMobComponent>(goliath);
-            mount.SaddleDelay = TimeSpan.Zero; // a real delay races physics settle: the do-after gets break-on-move cancelled
+            mount.SaddleDelay = TimeSpan.FromMilliseconds(100);
 
             var saddle = entMan.SpawnEntity("LavalandGoliathSaddle", coords);
             Assert.That(hands.TryPickupAnyHand(tamer, saddle), Is.True);

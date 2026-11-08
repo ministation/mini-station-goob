@@ -31,21 +31,20 @@ public sealed partial class MountableMobComponent : Component
     public float RideSpeed = 4.5f;
 
     /// <summary>
-    ///     Walk/sprint speeds saved while a rider is driving the mob.
-    /// </summary>
-    public float SavedWalkSpeed;
-
-    public float SavedSprintSpeed;
-
-    /// <summary>
     /// Whether a saddle is attached and the mob can be buckled to.
     /// </summary>
     [ViewVariables]
     public bool Saddled;
 
     /// <summary>
-    /// True while a rider is buckled to the mob, drives the riding speed boost.
+    /// Base walk speed captured on the first ride and restored when the rider dismounts.
     /// </summary>
     [ViewVariables]
-    public bool Riding;
+    public float? DefaultWalkSpeed;
+
+    /// <summary>
+    /// Base sprint speed captured on the first ride and restored when the rider dismounts.
+    /// </summary>
+    [ViewVariables]
+    public float? DefaultSprintSpeed;
 }
