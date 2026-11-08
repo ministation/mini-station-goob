@@ -65,7 +65,7 @@ public sealed class WatcherGazeTest
                 Performer = watcher,
                 Target = looking,
             };
-            entMan.EventBus.RaiseLocalEvent(watcher, ev);
+            entMan.EventBus.RaiseLocalEvent(watcher, ev, broadcast: true);
         });
 
         await server.WaitRunTicks(Ticks);
@@ -118,7 +118,7 @@ public sealed class WatcherGazeTest
                 Performer = watcher,
                 Target = victim,
             };
-            entMan.EventBus.RaiseLocalEvent(watcher, ev);
+            entMan.EventBus.RaiseLocalEvent(watcher, ev, broadcast: true);
         });
 
         await server.WaitRunTicks(Ticks);
@@ -171,7 +171,7 @@ public sealed class WatcherGazeTest
                 Performer = watcher,
                 Target = victim,
             };
-            entMan.EventBus.RaiseLocalEvent(watcher, ev);
+            entMan.EventBus.RaiseLocalEvent(watcher, ev, broadcast: true);
         });
 
         await server.WaitRunTicks(Ticks);
