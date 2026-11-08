@@ -48,6 +48,14 @@
   - type: RustRequiresPathStage
     pathStage: 11 # Can't rust
 
+# TG parity: the re-trap walls dissolve after ten seconds, unlike the arena ring.
+- type: entity
+  parent: WallHierophantArenaTemporary
+  id: WallHierophantArenaTrap
+  components:
+  - type: TimedDespawn
+    lifetime: 10
+
 - type: entity
   parent: BaseWall
   id: WallNecropolisIndestructible

@@ -72,3 +72,21 @@
   - type: WorldTargetAction
     event: !type:SpawnEntityActionEvent
       spawn: HierophantClubShapeRandomCross
+
+# TG parity: deploy the beacon at your feet, then channel everyone near you to it.
+- type: entity
+  id: ActionHierophantClubBeacon
+  parent: BaseAction
+  name: Hierophant Beacon
+  description: Detaches the beacon at your feet. With a beacon placed, channels everyone near you to it.
+  components:
+  - type: Action
+    raiseOnUser: true
+    priority: -24
+    useDelay: 5
+    icon:
+      sprite: _Lavaland/Objects/Specific/artefacts.rsi
+      state: hierophant_beacon
+    itemIconStyle: NoItem
+  - type: InstantAction
+    event: !type:HierophantClubBeaconActionEvent

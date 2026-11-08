@@ -10,3 +10,5 @@ ent-ActionHierophantSpawnCross = action-hierophant-spawn-cross
     .desc = action-hierophant-spawn-cross-desc
 ent-ActionHierophantTileMovement = action-hierophant-tile-movement
     .desc = action-hierophant-tile-movement-desc
+ent-ActionHierophantClubBeacon = Бикон иерофанта
+    .desc = Отсоединяет бикон у ваших ног. Если бикон установлен, переносит всех рядом с вами к нему.

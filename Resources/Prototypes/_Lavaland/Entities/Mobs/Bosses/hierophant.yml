@@ -139,6 +139,8 @@
   # TG parity: every melee hit releases a burst, death releases a huge one.
   - type: HierophantMeleeBurst
   - type: HierophantDeathBurst
+  # TG parity: every twenty seconds the arena is recreated around the fleeing target.
+  - type: HierophantArenaTrap
   # The blink slam action lands on a random tile near the target and blasts it on arrival.
   - type: HierophantBlinkSlam
     slam: HierophantShapeBlinkSlam
