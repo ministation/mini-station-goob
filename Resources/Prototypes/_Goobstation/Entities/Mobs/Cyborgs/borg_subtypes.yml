@@ -277,6 +277,12 @@
 #   spritePath: _Goobstation/Mobs/Silicon/Service/kent.rsi
 #   dummyPrototype: BorgChassisServiceKent
 
+- type: borgSubtype
+  parentBorgType: service
+  id: service_rover
+  spritePath: _Goobstation/Mobs/Silicon/Service/rover.rsi
+  dummyPrototype: BorgChassisServiceRover
+
 # - type: borgSubtype
 #   parentBorgType: service
 #   id: service_noble
@@ -288,12 +294,6 @@
 #   id: service_rich
 #   spritePath: _Goobstation/Mobs/Silicon/Service/rich.rsi
 #   dummyPrototype: BorgChassisServiceRich
-
-# - type: borgSubtype
-#   parentBorgType: service
-#   id: service_rover
-#   spritePath: _Goobstation/Mobs/Silicon/Service/rover.rsi
-#   dummyPrototype: BorgChassisServiceRover
 
 - type: borgSubtype
   parentBorgType: generic
