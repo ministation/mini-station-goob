@@ -13,6 +13,9 @@
         weight: 1
     - id: MobLavalandLobstrosity
       weight: 5
+    # TG juvenile lobstrosities are rare; the rest grow up from them.
+    - id: MobLavalandLobstrosityJuvenile
+      weight: 1
     - id: MobLavalandHivelord
       weight: 5
     - id: LavalandMobBrimdemon
@@ -53,8 +56,16 @@
       - id: MobWatcherIcewing
     - id: MobLavalandBasilisk
       weight: 2
-    - id: MobLavalandGutlunch
+    # TG gutlunch herds are mostly hens (gubbucks) with a few warriors.
+    - !type:GroupSelector
       weight: 2
+      children:
+      - id: MobLavalandGutlunch
+        weight: 50
+      - id: MobLavalandGutlunchMilk
+        weight: 25
+      - id: MobLavalandGutlunchWarrior
+        weight: 25
     # TG young raptors are spawned by breeding, not by the biome spawner.
     # Keep a small chance so the young variants are reachable in the world.
     - !type:GroupSelector

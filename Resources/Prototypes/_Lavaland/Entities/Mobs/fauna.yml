@@ -137,9 +137,122 @@
     interactFailureString: petting-failure-generic
     interactSuccessSound:
       path: /Audio/Animals/lizard_happy.ogg
+  - type: TroughFeeder # TG: gutlunches eat raw ore straight out of food troughs
+  - type: Gutlunch
   - type: Butcherable
     spawned:
     - id: FoodMeatGutshank
+
+# Milk gutlunch. TG: gubbuck — a pink hen whose udder turns eaten ore into
+# miner's salve; milk it with any cup.
+- type: entity
+  name: gubbuck
+  id: MobLavalandGutlunchMilk
+  parent: MobLavalandGutlunch
+  suffix: Lavaland
+  description: A plump pink gutlunch. Fill a trough with ore nearby and its udder will slowly fill with miner's salve.
+  components:
+  - type: Sprite
+    color: "#ff9ec2"
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/gutlunch.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: gutlunch
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      20: Dead
+  - type: Gutlunch
+    isMother: true
+  # TG: /datum/component/udder, mine salve. Mini: the wizden cow udder system
+  # stands in for TG's ore-gated udder (5 units / 50s matches TG's average
+  # 5% per 2s tick production rate); the trough still matters for breeding.
+  - type: Udder
+    reagentId: MinersSalve
+    quantityPerUpdate: 5
+    growthDelay: 50
+  - type: SolutionContainerManager
+    solutions:
+      udder:
+        maxVol: 50
+
+# Warrior gutlunch. TG: gunther — a bold grey hunter that hangs around troughs.
+- type: entity
+  name: gunther
+  id: MobLavalandGutlunchWarrior
+  parent: MobLavalandGutlunch
+  suffix: Lavaland
+  description: A warrior gutlunch with a taste for pepper. Fearless enough to pick fights it cannot win.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    blackboard:
+      VisionRadius: !type:Single
+        9
+      AggroVisionRadius: !type:Single
+        10
+    rootTask:
+      task: SimpleHostileCompound
+  - type: CombatMode
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      70: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.6
+    baseSprintSpeed: 2.9
+  - type: MeleeWeapon
+    soundHit:
+      collection: AlienClaw
+    animation: WeaponArcBite
+    angle: 0
+    damage:
+      types:
+        Slash: 8
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatGutshank
+      amount: 2
+
+# Baby gutlunch. TG: grublunch — grows into a warrior or a milk gubbuck after
+# three minutes.
+- type: entity
+  name: grublunch
+  id: MobLavalandGutlunchGrub
+  parent: MobLavalandGutlunch
+  suffix: Lavaland
+  description: A freshly hatched gutlunch. It will grow into a gunther or a gubbuck before long.
+  components:
+  - type: Sprite
+    scale: 0.6, 0.6
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/gutlunch.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: gutlunch
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.25
+        density: 100
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      10: Dead
+  - type: FaunaGrowth
+    growthTime: 180
+    growInto:
+    - MobLavalandGutlunchWarrior
+    - MobLavalandGutlunchMilk
 
 # Ranged floater whose petrifying stare chills its prey to the bone.
 - type: entity
@@ -290,3 +403,85 @@
     bonusTameChance: 20
     foodTags:
     - Meat
+
+# Juvenile lobstrosity. TG: a 65 HP swarm lobster that grows into a full adult
+# after roughly seven minutes.
+- type: entity
+  name: juvenile lobstrosity
+  id: MobLavalandLobstrosityJuvenile
+  parent: LavalandMobBase
+  suffix: Lavaland
+  description: A young lobstrosity, not yet grown into its full armored menace. It has the same bad attitude, though.
+  components:
+  - type: Fauna # Lavaland change
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    blackboard:
+      VisionRadius: !type:Single
+        8
+      AggroVisionRadius: !type:Single
+        9
+      NavSmash: !type:Bool
+        true
+    rootTask:
+      task: SimpleHostileCompound
+  - type: Sprite
+    scale: 0.65, 0.65
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/lobstrosity.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: lobstrosity
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: lobstrosity
+      Dead:
+        Base: lobstrosity_dead
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+        density: 150
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      65: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.6
+    baseSprintSpeed: 3.0
+  - type: MeleeWeapon
+    soundHit:
+      collection: AlienClaw
+    animation: WeaponArcClaw
+    angle: 0
+    damage:
+      types:
+        Slash: 7
+  - type: CombatMode
+  - type: LavalandRush # Mini: weaker TG shrimp rush for the juvenile
+    range: 4
+    knockdownSeconds: 1.8
+    rushDamage:
+      types:
+        Slash: 10
+  - type: TameableMob # TG juvenile lobstrosity: tame_chance 35, bonus 20
+    tameChance: 35
+    bonusTameChance: 20
+    foodTags:
+    - Meat
+  - type: FaunaGrowth
+    growthTime: 420
+    growInto:
+    - MobLavalandLobstrosity
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatLobster
