@@ -8,6 +8,9 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Inventory;
 using Content.Shared.Mobs.Components;
+using Content.Shared.NPC.Components;
+using Content.Shared.NPC.Systems;
+using Content.Shared._Lavaland.Projectiles;
 using Content.Shared._Mini.TypanWar;
 using Content.Shared.Tag;
 using Content.Shared.Throwing;
@@ -33,6 +36,7 @@ public abstract partial class SharedProjectileSystem : EntitySystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly NpcFactionSystem _factions = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TagSystem _tag = default!;
@@ -261,6 +265,15 @@ public abstract partial class SharedProjectileSystem : EntitySystem
         }
 
         if (component.Shooter is { } shooter && _typanWarFf.ShouldPassThrough(shooter, args.OtherEntity))
+        {
+            args.Cancelled = true;
+            return;
+        }
+
+        // Lavaland: the raptor feather trophy makes crusher shots fly through allies.
+        if (HasComp<ProjectileIgnoreAlliesComponent>(uid)
+            && component.Shooter is { } alliedShooter
+            && _factions.IsEntityFriendly(alliedShooter, args.OtherEntity))
         {
             args.Cancelled = true;
             return;

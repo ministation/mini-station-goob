@@ -212,6 +212,14 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+  # TG parity: a crusher kill plucks the raptor feather.
+  - type: SpawnLootOnDeath
+    specialTable: !type:AllSelector
+      children:
+      - id: LavalandCrusherTrophyRaptorFeather
+    weaponWhitelist:
+      components:
+      - MegafaunaWeaponLooter
   - type: HTN
     blackboard:
       VisionRadius: !type:Single
