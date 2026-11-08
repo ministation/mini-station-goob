@@ -333,6 +333,11 @@ public sealed class BubblegumSystem : EntitySystem
     /// </summary>
     private void OnBloodWalkMoved(Entity<BubblegumComponent> ent, ref MoveEvent args)
     {
+        // Deletion detaches the boss to nullspace and raises MoveEvent; spilling blood there
+        // would spawn a puddle parented to the terminating grid.
+        if (TerminatingOrDeleted(ent.Owner))
+            return;
+
         var bubblegum = ent.Comp;
         var now = _timing.CurTime;
         if (now < bubblegum.BloodWalkCooldownUntil || args.OldPosition == args.NewPosition)
