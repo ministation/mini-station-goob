@@ -264,19 +264,6 @@
         - id: LavalandStarCactusSeeds
           prob: 0.1
   - type: LavalandFloraRegrow
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeCircle
-          radius: 0.2
-        hard: false
-        layer:
-        - SlipLayer
-  - type: StepTrigger
-    requiredTriggeredSpeed: 0
-    intersectRatio: 0.1
-  - type: LavalandFloraCaltrop
 
 - type: entity
   name: large mushrooms
@@ -337,7 +324,7 @@
         children:
         - id: FoodAshMushroomLeaf
           amount: !type:RangeNumberSelector
-            range: 1, 3
+            range: 1, 4
         - id: LavalandPorciniMycelium
           prob: 0.1
   - type: LavalandFloraRegrow

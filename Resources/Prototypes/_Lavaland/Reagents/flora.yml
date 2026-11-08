@@ -1,0 +1,104 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Reagents that the TG ash flora produces carry (code/modules/mining/lavaland/ash_flora.dm).
+# Names, groups, flavours, colours and descriptions follow TG. The effects are ported with
+# the existing SS14 entity effects: the TG status effects for glow and hallucination do not
+# exist here, so Glow, Jitter and SeeingRainbow are used as the closest equivalents.
+
+- type: reagent
+  id: Entpoly
+  name: reagent-name-entpoly
+  group: Foods
+  desc: reagent-desc-entpoly
+  physicalDesc: reagent-physical-desc-inky
+  flavor: bitter
+  color: "#1d043d"
+  metabolisms:
+    Food:
+      metabolismRate: 0.01
+      effects:
+      - !type:HealthChange
+        damage:
+          groups:
+            Toxin: 1.5
+      - !type:ModifyParalysis
+        type: Add
+        time: 4
+        probability: 0.1
+
+- type: reagent
+  id: MushroomHallucinogen
+  name: reagent-name-mushroom-hallucinogen
+  group: Narcotics
+  desc: reagent-desc-mushroom-hallucinogen
+  physicalDesc: reagent-physical-desc-glowing
+  flavor: strange
+  color: "#E700E7"
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.01
+      effects:
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectSeeingRainbow
+        type: Add
+        time: 10
+      - !type:Jitter
+        time: 5
+
+- type: reagent
+  id: Tinlux
+  name: reagent-name-tinlux
+  group: Foods
+  desc: reagent-desc-tinlux
+  physicalDesc: reagent-physical-desc-glowing
+  flavor: tingly
+  color: "#b5a213"
+  metabolisms:
+    Food:
+      effects:
+      - !type:Glow
+        radius: 2
+        color: "#b5a213"
+
+- type: reagent
+  id: Berserker
+  name: reagent-name-berserker
+  group: Toxins
+  desc: reagent-desc-berserker
+  physicalDesc: reagent-physical-desc-bubbling
+  flavor: anger
+  color: "#ad378d"
+  metabolisms:
+    Poison:
+      effects:
+      - !type:HealthChange
+        damage:
+          groups:
+            Toxin: 0.2
+      - !type:Jitter
+        time: 5
+
+- type: reagent
+  id: LiquidGibs
+  name: reagent-name-liquid-gibs
+  group: Foods
+  desc: reagent-desc-liquid-gibs
+  physicalDesc: reagent-physical-desc-gloopy
+  flavor: metallic
+  color: "#CC4633"
+  metabolisms:
+    Food:
+      effects:
+      - !type:SatiateHunger
+        factor: 2
+      - !type:ModifyBloodLevel
+        amount: 1
+
+- type: reagent
+  id: Mouthwash
+  parent: BaseAlcohol
+  name: reagent-name-mouthwash
+  desc: reagent-desc-mouthwash
+  physicalDesc: reagent-physical-desc-refreshing
+  flavor: minty
+  color: "#10b486"
