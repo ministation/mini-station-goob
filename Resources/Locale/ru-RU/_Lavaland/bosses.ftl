@@ -12,3 +12,5 @@ ent-LavalandBossLegionSmall = Легион
     .desc = Один из многих. Наверное, последний.
 
 megafauna-devour = { CAPITALIZE($boss) } вспарывает { CAPITALIZE($victim) }!
+drake-arena-start = { CAPITALIZE($boss) } взмывает ввысь и окружает цель кольцом огня!
+drake-arena-escape = { CAPITALIZE($boss) } пылает от ярости, его раны затягиваются!

@@ -9,6 +9,7 @@
   description: Guardian of the Necropolis.
   components:
   - type: MegafaunaDevour
+  - type: DrakeArena
   - type: Physics
     bodyType: KinematicController
   - type: Clickable
@@ -95,6 +96,7 @@
     - ActionDrakeMassFire
     - ActionDrakeEruption
     - ActionDrakeFirestorm
+    - ActionDrakeLavaArena
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0

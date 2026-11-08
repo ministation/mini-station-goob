@@ -31,3 +31,9 @@ public readonly record struct SpawnedByActionEvent(EntityUid User, EntityUid? Ta
 public sealed partial class MegafaunaBlinkActionEvent : WorldTargetActionEvent;
 
 public sealed partial class ToggleTileMovementActionEvent : EntityTargetActionEvent;
+
+/// <summary>
+///     Fired by the ash drake's lava arena action: encases the target in a fire arena
+///     flooded with lava waves (TG enraged lava swoop).
+/// </summary>
+public sealed partial class MegafaunaLavaArenaActionEvent : WorldTargetActionEvent;

@@ -64,3 +64,23 @@
   - type: Destructible
   - type: RustRequiresPathStage
     pathStage: 11 # Can't rust
+
+# Temporary wall of the ash drake's lava arena (TG drakewall).
+- type: entity
+  parent: BaseWall
+  id: WallDrakeArenaTemporary
+  name: стена огня
+  description: Истинное пламя пепельного дракона.
+  components:
+  - type: Sprite
+    sprite: /Textures/Effects/fire.rsi
+    state: fire
+    drawdepth: SmallMobs
+  - type: Icon
+    sprite: /Textures/Effects/fire.rsi
+  - type: TimedDespawn
+    lifetime: 9
+  - type: PointLight
+    color: "#FF6B2B"
+    radius: 2
+    energy: 3
