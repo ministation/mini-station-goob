@@ -2,7 +2,6 @@
 
 using Content.Server.Access.Systems;
 using Content.Server.Ghost.Roles.Components;
-using Content.Shared.Ghost.Roles.Components;
 using Content.Shared.Mind.Components;
 using Content.Shared.Roles;
 using Content.Shared.StatusIcon;
@@ -25,13 +24,13 @@ public sealed class GhostRoleJobCardSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<GhostTakeoverAvailableComponent, MindAddedMessage>(OnMindAdded);
+        // GhostTakeoverAvailableComponent уже занят GhostRoleSystem, второй обработчик того же события не зарегистрировать.
+        SubscribeLocalEvent<GhostRoleComponent, MindAddedMessage>(OnMindAdded);
     }
 
-    private void OnMindAdded(EntityUid uid, GhostTakeoverAvailableComponent component, MindAddedMessage args)
+    private void OnMindAdded(EntityUid uid, GhostRoleComponent role, MindAddedMessage args)
     {
-        if (!TryComp<GhostRoleComponent>(uid, out var role)
-            || role.JobProto is not { } jobId
+        if (role.JobProto is not { } jobId
             || !_prototypes.TryIndex(jobId, out JobPrototype? job)
             || !_idCard.TryFindIdCard(uid, out var card))
             return;
