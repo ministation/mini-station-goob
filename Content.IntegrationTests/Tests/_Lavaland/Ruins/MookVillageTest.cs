@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using Content.Server._Lavaland.Ruins;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -79,7 +80,7 @@ public sealed class MookVillageTest
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(entMan.GetComponent<DamageableComponent>(patient).TotalDamage, Is.GreaterThan(FixedPoint2.Zero),
+            Assert.That(entMan.GetComponent<DamageableComponent>(patient).TotalDamage.Float(), Is.GreaterThan(0f),
                 "the worker must take damage before healing starts");
         });
 
@@ -87,7 +88,7 @@ public sealed class MookVillageTest
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(entMan.GetComponent<DamageableComponent>(patient).TotalDamage, Is.EqualTo(FixedPoint2.Zero),
+            Assert.That(entMan.GetComponent<DamageableComponent>(patient).TotalDamage.Float(), Is.EqualTo(0f),
                 "the mook healer must heal an injured mob of its faction");
         });
 
