@@ -3,6 +3,7 @@
 #nullable enable annotations
 
 using System.Numerics;
+using Content.Goobstation.Common.Gibbing;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared._Lavaland.Aggression;
 using Content.Shared.Damage.Components;
@@ -74,6 +75,10 @@ public sealed class BossAttackDamageTest
                 var thresholds = entMan.GetComponent<MobThresholdsComponent>(dummy);
                 thresholdsSys.SetMobStateThreshold(dummy, FixedPoint2.Zero, MobState.Alive, thresholds);
                 thresholdsSys.SetMobStateThreshold(dummy, FixedPoint2.New(DummyHealth), MobState.Dead, thresholds);
+
+                // The health boost does not cover the mob's Destructible gib threshold (Blunt 400),
+                // so a Blunt-heavy boss like the wendigo would gib the dummy mid-fight.
+                entMan.EnsureComponent<DamageGibImmuneComponent>(dummy);
 
                 var aggressive = entMan.GetComponent<AggressiveComponent>(boss);
                 entMan.System<AggressorsSystem>().AddAggressor((boss, aggressive), dummy);

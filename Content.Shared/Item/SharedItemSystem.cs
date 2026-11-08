@@ -24,6 +24,7 @@ public abstract class SharedItemSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private   readonly SharedHandsSystem _handsSystem = default!;
     [Dependency] protected readonly SharedContainerSystem Container = default!;
+    [Dependency] private readonly IComponentFactory _compFactory = default!;
 
     public override void Initialize()
     {
@@ -333,5 +334,26 @@ public abstract class SharedItemSystem : EntitySystem
         }
 
         Dirty(uid, item);
+    }
+
+    /// <summary>
+    /// Sorts two protos by <see cref="ItemComponent"/> size, from smallest to largest.
+    /// </summary>
+    /// <param name="a">The first proto.</param>
+    /// <param name="b">The second proto.</param>
+    /// <returns> Less than 0 if a is smaller, greater than 0 if a is larger,
+    /// 0 if they are the same or either proto doesn't have an <see cref="ItemComponent"/>.</returns>
+    [PublicAPI]
+    public int CompareSize(EntProtoId a, EntProtoId b)
+    {
+        var protoA = _prototype.Index(a);
+        var protoB = _prototype.Index(b);
+        if (!protoA.TryGetComponent<ItemComponent>(out var compA, _compFactory) ||
+            !protoB.TryGetComponent<ItemComponent>(out var compB, _compFactory))
+        {
+            return 0;
+        }
+
+        return _prototype.Index(compA.Size).CompareTo(_prototype.Index(compB.Size));
     }
 }

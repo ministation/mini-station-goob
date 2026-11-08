@@ -43,11 +43,13 @@
   description: Is everyone free to use this thing?
   suffix: Lavaland
 
-# One piece of the sliding puzzle. The TG artwork is not ported, so every piece
-# uses the shared puzzle pillar sprite.
+# One piece of the sliding puzzle. The nine concrete pillars carry fragments
+# of the TG puzzle picture (puzzle_0..8); SlidingPuzzleSystem spawns the right
+# one per slot.
 - type: entity
   parent: BaseStructure
   id: LavalandPuzzlePillar
+  abstract: true
   name: puzzle pillar
   description: A stone pillar with a carved picture on it. It could slide, with some effort.
   suffix: Lavaland
@@ -58,8 +60,92 @@
   - type: Sprite
     noRot: true
     drawdepth: Mobs
-    sprite: _Lavaland/Objects/Specific/artefacts.rsi
-    state: puzzle_pillar
+    sprite: _Lavaland/Structures/Specific/puzzle.rsi
+    state: puzzle_0
+  - type: InteractionOutline
+  # TG: breaking a pillar voids the puzzle reward.
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 120
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: LavalandPuzzlePillar
+  id: LavalandPuzzlePillar0
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: puzzle_0
+
+- type: entity
+  parent: LavalandPuzzlePillar
+  id: LavalandPuzzlePillar1
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: puzzle_1
+
+- type: entity
+  parent: LavalandPuzzlePillar
+  id: LavalandPuzzlePillar2
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: puzzle_2
+
+- type: entity
+  parent: LavalandPuzzlePillar
+  id: LavalandPuzzlePillar3
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: puzzle_3
+
+- type: entity
+  parent: LavalandPuzzlePillar
+  id: LavalandPuzzlePillar4
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: puzzle_4
+
+- type: entity
+  parent: LavalandPuzzlePillar
+  id: LavalandPuzzlePillar5
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: puzzle_5
+
+- type: entity
+  parent: LavalandPuzzlePillar
+  id: LavalandPuzzlePillar6
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: puzzle_6
+
+- type: entity
+  parent: LavalandPuzzlePillar
+  id: LavalandPuzzlePillar7
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: puzzle_7
+
+- type: entity
+  parent: LavalandPuzzlePillar
+  id: LavalandPuzzlePillar8
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: puzzle_8
 
 # TG puzzling chest: the reward of the sliding puzzle.
 - type: entity
