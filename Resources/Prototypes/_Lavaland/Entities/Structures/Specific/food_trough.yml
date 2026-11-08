@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Feeding trough for lavaland fauna. TG parity:
+# /obj/structure/ore_container/food_trough (gutlunchers + raptors).
+- type: entity
+  name: feeding trough
+  id: LavalandFoodTrough
+  parent: BaseStructure
+  description: A wooden trough. Toss some ore in and the local gutlunches will gather to eat it.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    drawdepth: SmallObjects
+    sprite: _Lavaland/Structures/Specific/food_trough.rsi
+    state: gutlunch_trough
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.3,0.4,0.3"
+        density: 500
+        mask:
+        - TableMask
+        layer:
+        - TableLayer
+  - type: FoodTrough
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: Tag
+    tags:
+    - Structure

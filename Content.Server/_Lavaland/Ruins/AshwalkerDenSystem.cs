@@ -17,6 +17,10 @@ public sealed class AshwalkerDenSystem : EntitySystem
     private const string SeedVaultKeeperPod = "LavalandSeedVaultKeeperPod";
     private const string JobSpawnPoint = "SpawnPointJobAshWalker";
     private const string LateJoinSpawnPoint = "SpawnPointLatejoin";
+    private const string FoodTrough = "LavalandFoodTrough";
+    private const string Gutlunch = "MobLavalandGutlunch";
+    private const string Gubbuck = "MobLavalandGutlunchMilk";
+    private const string Gunther = "MobLavalandGutlunchWarrior";
 
     public override void Initialize()
     {
@@ -53,6 +57,15 @@ public sealed class AshwalkerDenSystem : EntitySystem
         // once LavalandTribeStationSystem attaches this grid to the tribe station at round start.
         Spawn(JobSpawnPoint, nestCoords.Offset(new Vector2(0, -2)));
         Spawn(LateJoinSpawnPoint, nestCoords.Offset(new Vector2(-2, 0)));
+
+        // TG ash walker nest ruin: a food trough with a small gutlunch herd around it
+        // (gutlunches befriend ashwalkers, the gubbuck's ore-fed udder makes mine salve).
+        var troughCoords = baseCoords.Offset(new Vector2(-3, -2));
+        Spawn(FoodTrough, troughCoords);
+        Spawn(Gubbuck, troughCoords.Offset(new Vector2(-1, 1)));
+        Spawn(Gubbuck, troughCoords.Offset(new Vector2(1, 0)));
+        Spawn(Gunther, troughCoords.Offset(new Vector2(-1, -1)));
+        Spawn(Gutlunch, troughCoords.Offset(new Vector2(1, -2)));
     }
 }
 
