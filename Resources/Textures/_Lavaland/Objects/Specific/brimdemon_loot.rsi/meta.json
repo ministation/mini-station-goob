@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 7f8b5807.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "brimdust",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "brim_sac",
+      "delays": [
+        [
+          4,
+          1,
+          1,
+          1,
+          2
+        ]
+      ]
+    }
+  ]
+}
