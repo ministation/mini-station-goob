@@ -123,6 +123,8 @@
   # Stomp shockwave spawned every tile of movement.
   - type: WendigoBoss
     stompBurst: LavalandWendigoStompBurst
+  # TG parity: dying leaves a one-way exit portal at the arena spawn point.
+  - type: WendigoExitPortal
   - type: Butcherable
     spawned:
     - id: LavalandWendigoBlood
