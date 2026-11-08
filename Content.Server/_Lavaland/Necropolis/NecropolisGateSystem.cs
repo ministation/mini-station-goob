@@ -4,6 +4,9 @@ using Content.Server.Chat.Managers;
 using System.Numerics;
 using System.Threading;
 using Content.Shared._Lavaland.Necropolis;
+using Content.Goobstation.Maths.FixedPoint;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Chat;
 using Content.Shared.Flash;
 using Content.Shared.Interaction;
@@ -64,6 +67,25 @@ public sealed class NecropolisGateSystem : EntitySystem
 
         SubscribeLocalEvent<NecropolisGateSpawnerComponent, MapInitEvent>(OnSpawnerMapInit);
         SubscribeLocalEvent<NecropolisGateComponent, InteractHandEvent>(OnGateInteract);
+        SubscribeLocalEvent<NecropolisGateOpenOnDamageComponent, DamageChangedEvent>(OnLegionDamaged);
+    }
+
+    // TG megafauna legion: taking damage forces the necropolis gate open, so the
+    // boss cannot be walled off. The forced opening does not summon another legion.
+    private void OnLegionDamaged(Entity<NecropolisGateOpenOnDamageComponent> ent, ref DamageChangedEvent args)
+    {
+        if ((args.DamageDelta?.GetTotal() ?? FixedPoint2.Zero) <= 0)
+            return;
+
+        var mapId = Transform(ent.Owner).MapID;
+        var query = EntityQueryEnumerator<NecropolisGateComponent>();
+        while (query.MoveNext(out var uid, out var gate))
+        {
+            if (gate.Open || Transform(uid).MapID != mapId)
+                continue;
+
+            OpenGate((uid, gate), spawn: false);
+        }
     }
 
     private void OnSpawnerMapInit(Entity<NecropolisGateSpawnerComponent> ent, ref MapInitEvent args)
@@ -180,7 +202,7 @@ public sealed class NecropolisGateSystem : EntitySystem
             OpenGate(ent);
     }
 
-    private void OpenGate(Entity<NecropolisGateComponent> ent)
+    private void OpenGate(Entity<NecropolisGateComponent> ent, bool spawn = true)
     {
         ent.Comp.Open = true;
         _appearance.SetData(ent, NecropolisGateVisuals.State, NecropolisGateVisualState.Opening);
@@ -188,10 +210,10 @@ public sealed class NecropolisGateSystem : EntitySystem
         _audio.PlayPvs(OpenSound, ent);
         _popup.PopupEntity(Loc.GetString("necropolis-gate-opening"), ent);
 
-        Robust.Shared.Timing.Timer.Spawn(TimeSpan.FromSeconds(3.1f), () => FinishOpening(ent), CancellationToken.None);
+        Robust.Shared.Timing.Timer.Spawn(TimeSpan.FromSeconds(3.1f), () => FinishOpening(ent, spawn), CancellationToken.None);
     }
 
-    private void FinishOpening(Entity<NecropolisGateComponent> ent)
+    private void FinishOpening(Entity<NecropolisGateComponent> ent, bool spawn = true)
     {
         if (TerminatingOrDeleted(ent))
             return;
@@ -199,8 +221,11 @@ public sealed class NecropolisGateSystem : EntitySystem
         _appearance.SetData(ent, NecropolisGateVisuals.State, NecropolisGateVisualState.Open);
         _physics.SetCanCollide(ent, false);
 
-        var coords = Transform(ent).Coordinates.Offset(new Vector2(0, -1));
-        Spawn(ent.Comp.SpawnOnOpen, coords);
+        if (spawn)
+        {
+            var coords = Transform(ent).Coordinates.Offset(new Vector2(0, -1));
+            Spawn(ent.Comp.SpawnOnOpen, coords);
+        }
 
         _popup.PopupEntity(Loc.GetString("necropolis-gate-released"), ent);
         AnnounceRelease(ent);

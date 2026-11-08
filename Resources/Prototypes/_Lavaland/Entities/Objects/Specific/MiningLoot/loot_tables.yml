@@ -90,7 +90,24 @@
       - id: LavalandCainDagger
       - id: LavalandAbelDagger
     - id: LavalandVocalCords
+    # TG rolls a random anomalous crystal from all subtypes; our nearest analogues
+    # are the anomaly cores, the fork's renewal crystal among them.
+    - !type:NestedSelector
+      tableId: LavalandLootColossusCrystal
+
+- type: entityTable
+  id: LavalandLootColossusCrystal
+  table: !type:GroupSelector
+    children:
     - id: LavalandRenewalCrystal
+    - id: AnomalyCoreBluespace
+    - id: AnomalyCorePyroclastic
+    - id: AnomalyCoreGravity
+    - id: AnomalyCoreIce
+    - id: AnomalyCoreElectricity
+    - id: AnomalyCoreFlesh
+    - id: AnomalyCoreFlora
+    - id: AnomalyCoreShadow
 
 # Tendril chest: TG generic mining loot plus the items this fork already had.
 - type: entityTable
