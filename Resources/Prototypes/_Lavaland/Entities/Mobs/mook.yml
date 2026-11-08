@@ -1,0 +1,162 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# TG mooks: a primitive tribe that lives around the village bonfire.
+# TG gives them FACTION_MINING + FACTION_NEUTRAL: they retaliate when attacked,
+# heal their own and never start a fight. The fork has no ashwalker npc faction,
+# so the existing neutral one is used instead of inventing a duplicate.
+
+- type: entity
+  abstract: true
+  name: mook
+  id: MobLavalandMookBase
+  parent: LavalandMobBase
+  description: This unhealthy looking primitive seems to be talented at administering health care.
+  components:
+  - type: Fauna # Lavaland change
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+  - type: NPCRetaliation
+  - type: FactionException
+  - type: HTN
+    blackboard:
+      VisionRadius: !type:Single
+        9
+      AggroVisionRadius: !type:Single
+        10
+    rootTask:
+      task: SimpleHostileCompound
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/Mook.rsi
+    offset: 0, 0.5
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: mook
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: mook
+      Dead:
+        Base: mook_dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      150: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.0
+    baseSprintSpeed: 2.0
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcSlash
+    soundHit:
+      collection: AlienClaw
+    damage:
+      types:
+        Slash: 8
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+        density: 300
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Butcherable
+    spawned:
+    - id: FoodMeat
+
+# TG wanderer: the healer of the village.
+- type: entity
+  name: mook wanderer
+  id: MobLavalandMook
+  parent: MobLavalandMookBase
+  suffix: Lavaland
+  components:
+  - type: LavalandFactionHealer
+    range: 5
+    interval: 1
+    heal:
+      groups:
+        Brute: -8
+        Burn: -8
+
+# Axe wielding warrior, the bulk of the tribe.
+- type: entity
+  name: mook worker
+  id: MobLavalandMookWorker
+  parent: MobLavalandMookBase
+  suffix: Lavaland
+  description: This one is wielding a rudimentary hatchet, swinging it with wild abandon.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/Mook.rsi
+    offset: 0, 0.5
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: mook
+    - map: [ "overlay" ]
+      state: mook_axe_overlay
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcSlash
+    soundHit:
+      collection: AlienClaw
+    damage:
+      types:
+        Slash: 15
+
+# Plays the guitar for the village.
+- type: entity
+  name: mook bard
+  id: MobLavalandMookBard
+  parent: MobLavalandMookWorker
+  suffix: Lavaland
+  description: It's holding a guitar.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/Mook.rsi
+    offset: 0, 0.5
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: mook
+    - map: [ "overlay" ]
+      state: bard_overlay
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcSlash
+    soundHit:
+      collection: AlienClaw
+    damage:
+      types:
+        Slash: 10
+
+# Commander of the tribe.
+- type: entity
+  name: mook tribal chief
+  id: MobLavalandMookChief
+  parent: MobLavalandMookWorker
+  suffix: Lavaland
+  description: Acknowledge him.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Lavaland/Mobs/Mook.rsi
+    offset: 0, 0.5
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: mook
+    - map: [ "overlay" ]
+      state: mook_chief
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcSlash
+    soundHit:
+      collection: AlienClaw
+    damage:
+      types:
+        Slash: 20
