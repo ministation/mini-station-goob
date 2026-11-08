@@ -16,6 +16,8 @@
     factions:
     - SimpleNeutral
   - type: NPCRetaliation
+    # Remember attackers so the leap ability can pounce back at them.
+    attackMemoryLength: 30
   - type: FactionException
   - type: HTN
     blackboard:
@@ -53,6 +55,14 @@
     damage:
       types:
         Slash: 8
+  - type: Appearance
+  - type: GenericVisualizer # TG leap poses; the chief overrides its own state
+    visuals:
+      enum.MookVisuals.Leaping:
+        enum.DamageStateVisualLayers.Base:
+          True: { state: mook_leap }
+          False: { state: mook }
+  - type: MookJump # TG: village mooks hop back home when they stray too far
   - type: Fixtures
     fixtures:
       fix1:
@@ -108,6 +118,7 @@
     damage:
       types:
         Slash: 15
+  - type: MookLeap # TG: workers pounce with a 2s wind-up and a 4-hit combo
 
 # Plays the guitar for the village.
 - type: entity
@@ -160,3 +171,9 @@
     damage:
       types:
         Slash: 20
+  - type: GenericVisualizer
+    visuals:
+      enum.MookVisuals.Leaping:
+        enum.DamageStateVisualLayers.Base:
+          True: { state: mook_chief_leap }
+          False: { state: mook }

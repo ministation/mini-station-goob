@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 7f8b5807025f73060d247730ef0faed4e0a4ea22.",
+  "copyright": "Taken from tgstation.",
   "size": {
     "x": 64,
     "y": 64
@@ -9,83 +9,67 @@
   "states": [
     {
       "name": "mook",
-      "delays": [
-        [
-          0.1
-        ],
-        [
-          0.1
-        ],
-        [
-          0.1
-        ],
-        [
-          0.1
-        ]
-      ],
       "directions": 4
     },
     {
+      "name": "mook_warmup",
+      "directions": 1
+    },
+    {
+      "name": "mook_strike",
+      "directions": 1
+    },
+    {
+      "name": "mook_leap",
+      "directions": 1
+    },
+    {
       "name": "mook_dead",
-      "delays": [
-        [
-          0.1
-        ]
-      ]
+      "directions": 1
+    },
+    {
+      "name": "mook_leap_cloud",
+      "directions": 1
+    },
+    {
+      "name": "mook_slash_combo",
+      "directions": 4
+    },
+    {
+      "name": "mook_ore_overlay",
+      "directions": 4
     },
     {
       "name": "mook_axe_overlay",
-      "delays": [
-        [
-          0.1
-        ],
-        [
-          0.1
-        ],
-        [
-          0.1
-        ],
-        [
-          0.1
-        ]
-      ],
       "directions": 4
     },
     {
       "name": "bard_overlay",
-      "delays": [
-        [
-          0.1
-        ],
-        [
-          0.1
-        ],
-        [
-          0.1
-        ],
-        [
-          0.1
-        ]
-      ],
       "directions": 4
     },
     {
+      "name": "bard_strike",
+      "directions": 1
+    },
+    {
+      "name": "axe_strike_overlay",
+      "directions": 1
+    },
+    {
       "name": "mook_chief",
-      "delays": [
-        [
-          0.1
-        ],
-        [
-          0.1
-        ],
-        [
-          0.1
-        ],
-        [
-          0.1
-        ]
-      ],
       "directions": 4
+    },
+    {
+      "name": "mook_chief_warmup",
+      "directions": 1
+    },
+    {
+      "name": "mook_chief_strike",
+      "directions": 1
+    },
+    {
+      "name": "mook_chief_leap",
+      "directions": 1
     }
   ]
 }
