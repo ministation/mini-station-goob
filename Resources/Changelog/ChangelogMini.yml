@@ -2307,3 +2307,15 @@ Entries:
       message: leafy mushrooms дают 1-4 листа вместо 1-3
   id: 239
   time: '2026-11-08T04:41:52.0000000+00:00'
+- author: Mini Station
+  changes:
+    - type: Add
+      message: godslayer armour и godslayer helm с рецептом из кристалла ледяной энергии, черепа вендиго и заводного сплава
+    - type: Add
+      message: заводной сплав в дроп clockwork defender
+    - type: Add
+      message: волчья накидка в демонический лут лавалэнда
+    - type: Add
+      message: модкит "сифон смерти" в редкий лут модкитов PKA
+  id: 240
+  time: '2026-11-08T04:41:55.0000000+00:00'
