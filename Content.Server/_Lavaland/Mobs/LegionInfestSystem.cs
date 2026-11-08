@@ -89,13 +89,15 @@ public sealed class LegionInfestSystem : EntitySystem
 
     private void Infest(EntityUid legion, EntityUid victim)
     {
-        _mobState.ChangeMobState(victim, MobState.Dead);
-
-        var shell = EnsureComp<LegionShellComponent>(legion);
+        // One body per shell: swallow first, kill only on success, else a second crit
+        // victim dies for nothing and the shell keeps an empty component.
         var container = _container.EnsureContainer<ContainerSlot>(legion, ShellContainerId);
         if (!_container.Insert(victim, container))
             return;
 
+        _mobState.ChangeMobState(victim, MobState.Dead);
+
+        var shell = EnsureComp<LegionShellComponent>(legion);
         shell.StoredBody = victim;
         _popup.PopupEntity(Loc.GetString("legion-infest", ("legion", legion), ("victim", victim)), legion, PopupType.MediumCaution);
     }
