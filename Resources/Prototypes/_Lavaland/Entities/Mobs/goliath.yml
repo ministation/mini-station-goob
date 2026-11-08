@@ -30,6 +30,31 @@
         9
       NavSmash: !type:Bool
         true
+  # TG goliath.dm: tame_chance 10, bonus_tame_chance 5, food = ash flora grown produce.
+  - type: TameableMob
+    foods:
+    - FoodAshFireBlossom
+    - FoodAshGlowgrowthSheet
+    - FoodAshInozhakustMash
+    - FoodAshPlasmaFlower
+    - FoodAshPodsneyzkaBunch
+    - FoodAshVahrezjiaStalks
+    - FoodAshDrakeBeet
+    - FoodAshStarCactus
+    - FoodAshMushroomShavings
+    - FoodAshMushroomLeaf
+    - FoodAshMushroomCap
+    - FoodAshMushroomStem
+    - FoodAshSerakaCap
+    - FoodAshFonarstolbe
+  # TG goliath.dm: /obj/item/goliath_saddle, 5.5 s to affix. Riding uses the fork's Vehicle.
+  - type: MountableMob
+    saddleItems:
+    - LavalandGoliathSaddle
+  # Buckling is gated by LavalandTamingSystem until the mob is saddled.
+  - type: Strap
+    position: Stand
+    blockMovement: false
 
 - type: entity
   id: MobLavalandGoliathAncient

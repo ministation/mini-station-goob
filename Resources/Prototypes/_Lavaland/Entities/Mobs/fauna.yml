@@ -283,3 +283,10 @@
       maxAmount: 2
   # Mini: TG lobster rush, a dash that knocks the victim down and leaves the lobster tired.
   - type: LavalandRush
+  # TG juvenile lobstrosity: tame_chance 35, bonus_tame_chance 20, eats meat from your hand.
+  # The adult is not tameable in TG, we map the juvenile numbers onto our only lobstrosity.
+  - type: TameableMob
+    tameChance: 35
+    bonusTameChance: 20
+    foodTags:
+    - Meat

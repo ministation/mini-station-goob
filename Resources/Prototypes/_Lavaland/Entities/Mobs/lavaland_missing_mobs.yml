@@ -175,6 +175,15 @@
   - type: LavalandOreEater
   - type: LavalandBurrowEscape
   - type: LavalandProjectileBlocker
+  # TG goldgrub.dm: tame_chance 25, bonus_tame_chance 5, eats ores. A tamed grub is rideable
+  # without a saddle and TG's mount modifier makes it raptor-fast (our raptors run at 3.5).
+  - type: TameableMob
+    tameChance: 25
+    bonusTameChance: 5
+    foodTags:
+    - Ore
+  - type: MountableMob
+    rideSpeed: 3.5
 
 # Common parts of every adult raptor. Colors override sprite, health, speed and damage.
 - type: entity
@@ -296,6 +305,13 @@
       110: Dead
   - type: CombatPower # Goobstation
     factor: 2
+  # TG raptor: younglings are tamed with snacks (25% + 15% per failure), adults only with skill.
+  - type: TameableMob
+    tameChance: 25
+    bonusTameChance: 15
+    foodTags:
+    - Meat
+    - Ore
 
 - type: entity
   name: red raptor

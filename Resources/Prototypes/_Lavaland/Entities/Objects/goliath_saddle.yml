@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG: /obj/item/goliath_saddle in goliath.dm. Affixing it to a tamed goliath takes 5.5 s,
+# see MountableMob and LavalandTamingSystem.
+- type: entity
+  name: goliath saddle
+  parent: BaseItem
+  id: LavalandGoliathSaddle
+  description: This rough saddle will give you a serviceable seat upon a goliath! Provided you can get one to stand still.
+  components:
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/Mining/goliath_saddle.rsi
+    state: goliath_saddle
+  - type: Item
+    size: Normal

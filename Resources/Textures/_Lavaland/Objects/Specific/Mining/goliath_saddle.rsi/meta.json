@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation (https://github.com/tgstation/tgstation) at commit 7f8b5807 (icons/obj/mining.dmi, goliath_saddle state).",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "goliath_saddle",
+      "delays": [
+        [
+          0.1
+        ]
+      ]
+    }
+  ]
+}
