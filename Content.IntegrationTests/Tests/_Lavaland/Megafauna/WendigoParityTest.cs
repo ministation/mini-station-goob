@@ -16,6 +16,8 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
+using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Lavaland.Megafauna;
@@ -115,7 +117,9 @@ public sealed class WendigoParityTest
         var mapSys = entMan.System<SharedMapSystem>();
 
         var testMap = await pair.CreateTestMap();
+        var physics = server.System<SharedPhysicsSystem>();
         EntityUid bolt = default;
+        var straight = new Vector2(10f, 0f);
 
         await server.WaitPost(() =>
         {
@@ -127,6 +131,10 @@ public sealed class WendigoParityTest
             }
 
             bolt = entMan.SpawnEntity("LavalandWendigoSpiralShockwave", testMap.GridCoords);
+
+            // A projectile only bends if it is actually moving: give it flight speed first.
+            var body = entMan.GetComponent<PhysicsComponent>(bolt);
+            physics.SetLinearVelocity(bolt, straight, body);
         });
 
         await server.WaitRunTicks(4);
@@ -137,6 +145,13 @@ public sealed class WendigoParityTest
             var angle = entMan.GetComponent<ProjectileComponent>(bolt).Angle;
             Assert.That(Math.Abs(angle.Theta), Is.GreaterThan(0.1),
                 "the spiral shockwave flew straight, its flight must bend");
+
+            // The cosmetic angle alone proves nothing: the velocity itself has to turn.
+            var velocity = entMan.GetComponent<PhysicsComponent>(bolt).LinearVelocity;
+            Assert.That(velocity.Length(), Is.GreaterThan(1f), "the shockwave lost its flight speed");
+            var cos = Vector2.Dot(Vector2.Normalize(straight), Vector2.Normalize(velocity));
+            var turned = MathF.Acos(Math.Clamp(cos, -1f, 1f));
+            Assert.That(turned, Is.GreaterThan(0.05f), "the shockwave velocity still points straight, it did not curve");
         });
 
         await pair.CleanReturnAsync();
