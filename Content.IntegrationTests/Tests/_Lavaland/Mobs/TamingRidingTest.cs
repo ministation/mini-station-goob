@@ -71,7 +71,7 @@ public sealed class TamingRidingTest
         await server.WaitPost(() =>
         {
             var mount = entMan.GetComponent<MountableMobComponent>(goliath);
-            mount.SaddleDelay = TimeSpan.FromMilliseconds(100);
+            mount.SaddleDelay = TimeSpan.Zero; // a real delay races physics settle: the do-after gets break-on-move cancelled
 
             var saddle = entMan.SpawnEntity("LavalandGoliathSaddle", coords);
             Assert.That(hands.TryPickupAnyHand(tamer, saddle), Is.True);

@@ -45,7 +45,6 @@ public sealed class LavalandTamingSystem : EntitySystem
         SubscribeLocalEvent<MountableMobComponent, StrapAttemptEvent>(OnStrapAttempt);
         SubscribeLocalEvent<MountableMobComponent, StrappedEvent>(OnRiderStrapped);
         SubscribeLocalEvent<MountableMobComponent, UnstrappedEvent>(OnRiderUnstrapped);
-        SubscribeLocalEvent<MountableMobComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshSpeed);
     }
 
     private void OnFeed(Entity<TameableMobComponent> ent, ref InteractUsingEvent args)
@@ -170,7 +169,14 @@ public sealed class LavalandTamingSystem : EntitySystem
         if (TryComp<HTNComponent>(ent, out var htn))
             _htn.SetHTNEnabled((ent.Owner, htn), false, 1f);
 
-        _movementSpeed.RefreshMovementSpeedModifiers(ent);
+        // The ridden mob moves exactly at RideSpeed: an override of the base speeds,
+        // because a ModifySpeed factor would multiply on top of unrelated modifiers.
+        if (TryComp<MovementSpeedModifierComponent>(ent, out var move))
+        {
+            ent.Comp.SavedWalkSpeed = move.BaseWalkSpeed;
+            ent.Comp.SavedSprintSpeed = move.BaseSprintSpeed;
+            _movementSpeed.ChangeBaseSpeed(ent.Owner, ent.Comp.RideSpeed, ent.Comp.RideSpeed, move.Acceleration);
+        }
     }
 
     private void OnRiderUnstrapped(Entity<MountableMobComponent> ent, ref UnstrappedEvent args)
@@ -180,18 +186,8 @@ public sealed class LavalandTamingSystem : EntitySystem
         if (TryComp<HTNComponent>(ent, out var htn))
             _htn.SetHTNEnabled((ent.Owner, htn), true, 1f);
 
-        _movementSpeed.RefreshMovementSpeedModifiers(ent);
-    }
-
-    private void OnRefreshSpeed(Entity<MountableMobComponent> ent, ref RefreshMovementSpeedModifiersEvent args)
-    {
-        if (!ent.Comp.Riding
-            || !TryComp<MovementSpeedModifierComponent>(ent, out var move)
-            || move.BaseWalkSpeed <= 0f)
-            return;
-
-        var factor = ent.Comp.RideSpeed / move.BaseWalkSpeed;
-        args.ModifySpeed(factor, factor);
+        if (TryComp<MovementSpeedModifierComponent>(ent, out var move))
+            _movementSpeed.ChangeBaseSpeed(ent.Owner, ent.Comp.SavedWalkSpeed, ent.Comp.SavedSprintSpeed, move.Acceleration);
     }
 
     private bool IsTameFood(TameableMobComponent comp, EntityUid food)
