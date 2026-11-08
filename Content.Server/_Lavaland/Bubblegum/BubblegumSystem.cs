@@ -16,8 +16,10 @@ using Content.Shared.Fluids.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Random.Helpers;
+using Content.Shared.Sprite;
 using Content.Shared.StepTrigger.Systems;
 using Content.Shared.Throwing;
 using Content.Goobstation.Maths.FixedPoint;
@@ -78,6 +80,7 @@ public sealed class BubblegumSystem : EntitySystem
         SubscribeLocalEvent<BubblegumComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<BubblegumComponent, MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<BubblegumComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovementSpeed);
+        SubscribeLocalEvent<BubblegumComponent, MoveEvent>(OnBloodWalkMoved);
         SubscribeLocalEvent<PuddleComponent, StepTriggeredOnEvent>(OnBloodPuddleStepped);
         SubscribeLocalEvent<BubblegumEnrageCloudComponent, StepTriggeredOnEvent>(OnEnrageCloudStepped);
     }
@@ -273,12 +276,32 @@ public sealed class BubblegumSystem : EntitySystem
         Vector2i to)
     {
         var now = _timing.CurTime;
+        if (bubblegum.Enraged || now < bubblegum.EnrageCooldownUntil)
+            return; // TG: no re-enrage until the cooldown after the previous one has passed.
+
+        var duration = bubblegum.EnrageDuration;
+        if (TryComp<DamageableComponent>(boss, out var damageable)
+            && _mobThreshold.TryGetThresholdForState(boss, MobState.Dead, out var maxHealth)
+            && maxHealth != null)
+        {
+            // TG enrage_time: scales from 3.5 to 7 seconds as the boss loses health.
+            var missing = (float) maxHealth.Value - (float) damageable.TotalDamage;
+            var fraction = Math.Clamp(missing / 60f, 0f, 20f) / 20f;
+            duration = TimeSpan.FromSeconds(3.5f + 3.5f * fraction);
+        }
+
         bubblegum.Enraged = true;
-        bubblegum.EnrageUntil = now + bubblegum.EnrageDuration;
+        bubblegum.EnrageUntil = now + duration;
+        bubblegum.EnrageCooldownUntil = now + duration + bubblegum.EnrageCooldown;
 
         var immunity = EnsureComp<ProjectileImmunityComponent>(boss);
         immunity.ExpireTime = bubblegum.EnrageUntil;
         Dirty(boss, immunity);
+
+        // TG parity: Bubblegum turns red while enraged.
+        var tint = EnsureComp<RandomSpriteComponent>(boss);
+        tint.Selected[bubblegum.EnrageTintLayer] = (bubblegum.EnrageTintState, bubblegum.EnrageTint);
+        Dirty(boss, tint);
 
         _movement.RefreshMovementSpeedModifiers(boss);
 
@@ -295,12 +318,35 @@ public sealed class BubblegumSystem : EntitySystem
 
         bubblegum.Enraged = false;
         bubblegum.EnrageUntil = TimeSpan.Zero;
+        bubblegum.EnrageCooldownUntil = now + bubblegum.EnrageCooldown;
+        RemComp<RandomSpriteComponent>(boss);
         _movement.RefreshMovementSpeedModifiers(boss);
     }
 
     private void SpawnEnrageCloud(BubblegumComponent bubblegum, EntityUid gridUid, MapGridComponent grid, Vector2i tile)
     {
         Spawn(bubblegum.EnrageCloudPrototype, _map.GridTileToLocal(gridUid, grid, tile));
+    }
+
+    /// <summary>
+    /// TG blood walk: Bubblegum leaves a blood puddle under every step it takes.
+    /// </summary>
+    private void OnBloodWalkMoved(Entity<BubblegumComponent> ent, ref MoveEvent args)
+    {
+        var bubblegum = ent.Comp;
+        var now = _timing.CurTime;
+        if (now < bubblegum.BloodWalkCooldownUntil || args.OldPosition == args.NewPosition)
+            return;
+
+        if (_transform.GetGrid(args.OldPosition) is not { } gridUid
+            || !TryComp<MapGridComponent>(gridUid, out var grid))
+        {
+            return;
+        }
+
+        var tile = _map.LocalToTile(gridUid, grid, args.OldPosition);
+        if (TrySpillBlood(bubblegum, gridUid, grid, tile))
+            bubblegum.BloodWalkCooldownUntil = now + bubblegum.BloodWalkDelay;
     }
 
     private void OnEnrageCloudStepped(Entity<BubblegumEnrageCloudComponent> ent, ref StepTriggeredOnEvent args)
@@ -1145,7 +1191,7 @@ public sealed class BubblegumSystem : EntitySystem
         if (!ShouldUseClones(boss, bubblegum))
             return;
 
-        PickCloneTiles(bubblegum, sourceTile, GetCloneCount(boss, bubblegum), _cloneTiles);
+        GenerateSurroundTiles(bubblegum, targetTile, GetCloneCount(boss, bubblegum), _cloneTiles);
         var chargeDuration = bubblegum.ChargeWindup +
                              TimeSpan.FromSeconds(bubblegum.ChargeStepDelay.TotalSeconds * Math.Max(1, steps)) +
                              bubblegum.CloneLinger + TimeSpan.FromSeconds(0.5);
@@ -1317,6 +1363,28 @@ public sealed class BubblegumSystem : EntitySystem
 
         if (Exists(clone))
             QueueDel(clone);
+    }
+
+    /// <summary>
+    /// TG hallucination surround: clone tiles are spread evenly on a circle of
+    /// radius 6-8 around the target instead of scattered near the boss.
+    /// </summary>
+    private void GenerateSurroundTiles(
+        BubblegumComponent bubblegum,
+        Vector2i targetTile,
+        int count,
+        List<Vector2i> output)
+    {
+        output.Clear();
+        var radius = _random.Next(bubblegum.CloneSurroundMinRadius, bubblegum.CloneSurroundMaxRadius + 1);
+        for (var i = 0; i < count; i++)
+        {
+            var angle = MathF.Tau * i / Math.Max(1, count);
+            var offset = new Vector2i(
+                (int) MathF.Round(MathF.Cos(angle) * radius),
+                (int) MathF.Round(MathF.Sin(angle) * radius));
+            output.Add(ClampToCombatArea(bubblegum, targetTile + offset));
+        }
     }
 
     private void PickCloneTiles(
@@ -1714,6 +1782,7 @@ public sealed class BubblegumSystem : EntitySystem
         bubblegum.CloneCharges.Clear();
         bubblegum.NextCloneSwap = TimeSpan.Zero;
         bubblegum.LastMovementAt = TimeSpan.Zero;
+        RemComp<RandomSpriteComponent>(uid);
         bubblegum.Enraged = false;
         bubblegum.EnrageUntil = TimeSpan.Zero;
 

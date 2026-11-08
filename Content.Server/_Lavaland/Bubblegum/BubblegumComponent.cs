@@ -41,13 +41,54 @@ public sealed partial class BubblegumComponent : Component
     public TimeSpan BloodReactionCooldown = TimeSpan.FromSeconds(1.85);
 
     /// <summary>
-    /// How long Bubblegum stays enraged after a blood warp.
+    /// How long Bubblegum stays enraged after a blood warp. TG scales this from
+    /// 3.5 seconds up to 7 seconds as the fight drags on, so this is only a cap.
     /// </summary>
     [DataField]
     public TimeSpan EnrageDuration = TimeSpan.FromSeconds(7);
 
+    /// <summary>
+    /// TG parity: after an enrage ends, Bubblegum cannot enrage again for twice
+    /// the enrage duration.
+    /// </summary>
+    [DataField]
+    public TimeSpan EnrageCooldown = TimeSpan.FromSeconds(14);
+
+    [ViewVariables]
+    public TimeSpan EnrageCooldownUntil;
+
+    /// <summary>
+    /// Sprite layer and state the red enrage tint is applied to.
+    /// </summary>
+    [DataField]
+    public string EnrageTintLayer = "enum.DamageStateVisualLayers.Base";
+
+    [DataField]
+    public string EnrageTintState = "bubblegum";
+
+    [DataField]
+    public Color EnrageTint = Color.FromHex("#ff4444");
+
     [DataField]
     public float EnrageSpeedMultiplier = 1.5f;
+
+    /// <summary>
+    /// TG blood walk: blood left behind under every step, throttled per tile.
+    /// </summary>
+    [DataField]
+    public TimeSpan BloodWalkDelay = TimeSpan.FromSeconds(0.5);
+
+    [ViewVariables]
+    public TimeSpan BloodWalkCooldownUntil;
+
+    /// <summary>
+    /// TG hallucination surround: clones spawn on a circle of radius 6-8 around the target.
+    /// </summary>
+    [DataField]
+    public int CloneSurroundMinRadius = 6;
+
+    [DataField]
+    public int CloneSurroundMaxRadius = 8;
 
     [DataField]
     public EntProtoId EnrageCloudPrototype = "LavalandBubblegumEnrageCloud";
