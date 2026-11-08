@@ -45,7 +45,9 @@ public sealed class TamingRidingTest
         await server.WaitPost(() =>
         {
             tamer = entMan.SpawnEntity("MobHuman", coords);
-            goliath = entMan.SpawnEntity("MobLavalandGoliath", coords.Offset(new Vector2(1f, 0f)));
+            // 1.5 m keeps the mobs out of collision range so physics cannot jitter the
+            // saddle do-after past its 0.3 m break-on-move threshold.
+            goliath = entMan.SpawnEntity("MobLavalandGoliath", coords.Offset(new Vector2(1.5f, 0f)));
 
             // Feed it once with a guaranteed roll: the goliath should become tamed and friendly.
             var tame = entMan.GetComponent<TameableMobComponent>(goliath);
@@ -72,6 +74,9 @@ public sealed class TamingRidingTest
         // Affix the saddle. TG wants 5.5 s, the test shortens it to keep the run fast.
         await server.WaitPost(() =>
         {
+            // Park the AI so a wandering goliath cannot outrun the saddle do-after.
+            server.System<HTNSystem>().SetHTNEnabled(goliath, false);
+
             var mount = entMan.GetComponent<MountableMobComponent>(goliath);
             mount.SaddleDelay = TimeSpan.FromMilliseconds(100);
 
