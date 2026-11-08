@@ -150,7 +150,7 @@
     laws: SECborgLawset
   - type: ActionGrant
     actions:
-    - ActionSECBorgSelfDestruct
+    - ActionHailer
   - type: ContainerFill
     containers:
       borg_brain:
@@ -164,7 +164,19 @@
       cell_slot:
         name: power-cell-slot-component-slot-name-default
         startingItem: PowerCellHigh
-  - type: SecurityCyborg
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - Binary
+    - Common
+    - Science
+    - Security
+  - type: ActiveRadio
+    channels:
+    - Binary
+    - Common
+    - Science
+    - Security
+  - type: Hailer
   # Mini: боевой борг — чуть прочнее обычного
   - type: Damageable
     damageContainer: Silicon
@@ -500,20 +512,11 @@
 #   - type: BorgSwitchableSubtype
 #     borgSubtype: service_rich
 
-# - type: entity
-#   id: BorgChassisServiceRover
-#   parent: BorgChassisService
-#   name: rover service cyborg
-#   categories: [ HideSpawnMenu ]
-#   components:
-#   - type: BorgSwitchableSubtype
-#     borgSubtype: service_rover
-
 - type: entity
-  id: BorgChassisGenericClaptrap
-  parent: BorgChassisGeneric
-  name: steward cyborg
+  id: BorgChassisServiceRover
+  parent: BorgChassisService
+  name: rover service cyborg
   categories: [ HideSpawnMenu ]
   components:
   - type: BorgSwitchableSubtype
-    borgSubtype: generic_claptrap
+    borgSubtype: service_rover

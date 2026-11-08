@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Numerics;
 using Content.Client.Eye;
 using Content.Shared.Administration;
@@ -97,5 +101,7 @@ public sealed partial class AdminCameraControl : Control
 
         if (_entManager.TryGetComponent<EyeComponent>(CurrentCamera, out var eye))
             CameraView.Eye = eye.Eye ?? _defaultEye;
+
+        UpdateCustomView(); // Goob
     }
 }

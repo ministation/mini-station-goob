@@ -51,6 +51,10 @@
     maxDestructionBudget: 4
     destructionRegenPerMinute: 0.15
     repeatWindow: 15m
+    antaglessChance: 0.5
+    antaglessStories:
+    - Siege
+    - MajorCombat
     stories:
       - MajorCombat
       - Siege
@@ -295,8 +299,8 @@
     Atmos: 40
     Fire: 0
     Power: 30
-    Infestation: 20
-    Medical: 60
+    Infestation: 40
+    Medical: 80
     Hunger: 50
     Thirst: 50
   minSecs: 600
@@ -314,7 +318,7 @@
   goal:
     Atmos: 250
     Power: 200
-    Medical: 100
+    Medical: 120
   endIfAnyWorse:
     Atmos: 600
     Power: 600
@@ -334,7 +338,7 @@
   description: Electrical trouble without breaking the station
   goal:
     Power: 150
-    Medical: 60
+    Medical: 80
   endIfAnyWorse:
     Power: 500
   onWorse: RepairStation
@@ -352,8 +356,8 @@
   goal:
     Anomaly: 100
     Power: 50
-    Atmos: 50
-    Medical: 80
+    Atmos: 150
+    Medical: 100
   endIfAnyWorse:
     Anomaly: 300
     Power: 300
@@ -374,7 +378,7 @@
   description: Pests and overgrowth spread through the station
   goal:
     Infestation: 120
-    Medical: 60
+    Medical: 80
   endIfAnyWorse:
     Infestation: 400
     Medical: 300
@@ -471,7 +475,7 @@
     Atmos: 0
     Fire: 0
     Power: 0
-    Medical: 0
+    Medical: 80
   minSecs: 0
   maxSecs: 7200
   eventDelayMin: 240
