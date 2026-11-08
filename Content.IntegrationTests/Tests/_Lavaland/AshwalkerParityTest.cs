@@ -4,22 +4,37 @@ using System.Linq;
 using System.Numerics;
 using Content.Server._EinsteinEngines.Language;
 using Content.Server._Lavaland.Ashwalker;
+using Content.Server.Ghost.Roles;
 using Content.Server.Ghost.Roles.Components;
 using Content.Shared._EinsteinEngines.Language.Components;
 using Content.Shared._Lavaland.Ashwalker;
+using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
+using Content.Shared.Players;
 using Robust.Server.Player;
+using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 
 namespace Content.IntegrationTests.Tests._Lavaland;
 
 /// <summary>
-/// TG ash walker parity: a player may hatch from the tribe's eggs only once (a sacrifice can
-/// clear that), and ash walkers lose the common language.
+/// TG ash walker parity: an egg hatches a walker for a ckey only once until a sacrifice clears
+/// the limit, and ash walkers lose the common language.
 /// </summary>
 [TestFixture]
 public sealed class AshwalkerParityTest
 {
+    private const string TestMobProtoId = "AshwalkerParityTestMob";
+
+    [TestPrototypes]
+    private const string Prototypes = $"""
+        - type: entity
+          id: {TestMobProtoId}
+          components:
+          - type: MobState
+        """;
+
     [Test]
     public async Task AshwalkerSpeaksOnlyDraconic()
     {
@@ -48,64 +63,94 @@ public sealed class AshwalkerParityTest
     }
 
     [Test]
-    public async Task EggHatchIsLimitedToOnePerCkey()
+    public async Task EggHatchesOneAshwalkerPerCkey()
     {
         await using var pair = await PoolManager.GetServerClient(new PoolSettings
         {
-            Connected = true,
+            Dirty = true,
             DummyTicker = false,
-            Dirty = true
+            Connected = true
         });
         var server = pair.Server;
+        var client = pair.Client;
         var entMan = server.ResolveDependency<IEntityManager>();
         var playerMan = server.ResolveDependency<IPlayerManager>();
-        var tribeSystem = server.System<AshwalkerTribeSystem>();
+        var conHost = client.ResolveDependency<IConsoleHost>();
+        var mindSystem = entMan.System<SharedMindSystem>();
+        var ghostRoles = entMan.System<GhostRoleSystem>();
+        var tribeSystem = entMan.System<AshwalkerTribeSystem>();
         var mapData = await pair.CreateTestMap();
         var session = playerMan.Sessions.Single();
+
+        // Give the player a body and ghost out, like GhostRoleTests does.
+        await server.WaitPost(() =>
+        {
+            var body = entMan.SpawnEntity(TestMobProtoId, mapData.GridCoords);
+            mindSystem.TransferTo(session.ContentData()!.Mind!.Value, body, true);
+        });
+        await pair.RunTicksSync(5);
+        conHost.ExecuteCommand("ghost");
+        await pair.RunTicksSync(5);
 
         EntityUid nest = default;
         EntityUid egg = default;
         await server.WaitPost(() =>
         {
             nest = entMan.SpawnEntity("LavalandAshwalkerNest", mapData.GridCoords);
-            tribeSystem.EnsureTribe(nest).SpawnedCkeys.Add(session.UserId);
+            tribeSystem.EnsureTribe(nest);
             egg = entMan.SpawnEntity("LavalandAshwalkerEgg", mapData.GridCoords.Offset(new Vector2(1f, 0f)));
         });
-        await server.WaitRunTicks(2);
+        await pair.RunTicksSync(3);
+
+        var tribe = entMan.GetComponent<AshwalkerTribeComponent>(nest);
+
+        // First hatch goes through the real ghost role path.
+        await server.WaitPost(() => ghostRoles.Takeover(session, entMan.GetComponent<GhostRoleComponent>(egg).Identifier));
+        await pair.RunTicksSync(5);
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(entMan.GetComponent<AshwalkerEggComponent>(egg).Nest, Is.EqualTo(nest),
-                "the egg must join the closest nest");
-        });
-
-        // The ckey already hatched once: the request is refused and the egg stays for others.
-        await server.WaitPost(() =>
-        {
-            var ev = new TakeGhostRoleEvent(session);
-            entMan.EventBus.RaiseLocalEvent(egg, ref ev);
-            Assert.That(ev.TookRole, Is.False, "a ckey that already hatched must not take another egg");
-            Assert.That(entMan.Deleted(egg), Is.False);
-        });
-
-        // Clearing the entry is what the 40% sacrifice roll does; now the same player may hatch.
-        await server.WaitPost(() => tribeSystem.EnsureTribe(nest).SpawnedCkeys.Clear());
-        await server.WaitPost(() =>
-        {
-            var ev = new TakeGhostRoleEvent(session);
-            entMan.EventBus.RaiseLocalEvent(egg, ref ev);
-            Assert.That(ev.TookRole, Is.True, "a cleared ckey should be able to hatch");
-        });
-
-        await server.WaitRunTicks(3);
-
-        await server.WaitAssertion(() =>
-        {
-            Assert.That(entMan.Deleted(egg), Is.True);
+            Assert.That(entMan.Deleted(egg), Is.True, "the egg must be consumed by the hatch");
             Assert.That(session.AttachedEntity, Is.Not.Null);
-            Assert.That(entMan.HasComponent<AshwalkerTribeMemberComponent>(session.AttachedEntity!.Value), Is.True,
-                "the player must end up in an ash walker body");
-            Assert.That(tribeSystem.EnsureTribe(nest).SpawnedCkeys, Does.Contain(session.UserId));
+            var born = session.AttachedEntity!.Value;
+            Assert.That(entMan.GetComponent<MetaDataComponent>(born).EntityPrototype?.ID, Is.EqualTo("MobAshwalker"),
+                "the egg must hatch the ghost role ash walker body");
+            Assert.That(entMan.HasComponent<AshwalkerTribeMemberComponent>(born), Is.True);
+            Assert.That(entMan.HasComponent<MindContainerComponent>(born), Is.True);
+            Assert.That(tribe.SpawnedCkeys, Does.Contain(session.UserId),
+                "the hatched ckey must be recorded by the tribe");
+        });
+
+        // Ghost out and offer a second egg to the same ckey: it must be refused and left intact.
+        conHost.ExecuteCommand("ghost");
+        await pair.RunTicksSync(5);
+
+        EntityUid secondEgg = default;
+        await server.WaitPost(() =>
+            secondEgg = entMan.SpawnEntity("LavalandAshwalkerEgg", mapData.GridCoords.Offset(new Vector2(1f, 0f))));
+        await pair.RunTicksSync(3);
+
+        await server.WaitPost(() => ghostRoles.Takeover(session, entMan.GetComponent<GhostRoleComponent>(secondEgg).Identifier));
+        await pair.RunTicksSync(3);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.Deleted(secondEgg), Is.False, "a ckey that already hatched must not consume the egg");
+            Assert.That(tribe.SpawnedCkeys.Count, Is.EqualTo(1));
+        });
+
+        // Clearing the entry is what the 40% sacrifice roll does: the same ckey may hatch again.
+        await server.WaitPost(() => tribe.SpawnedCkeys.Clear());
+        await server.WaitPost(() => ghostRoles.Takeover(session, entMan.GetComponent<GhostRoleComponent>(secondEgg).Identifier));
+        await pair.RunTicksSync(5);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.Deleted(secondEgg), Is.True);
+            Assert.That(session.AttachedEntity, Is.Not.Null);
+            Assert.That(entMan.GetComponent<MetaDataComponent>(session.AttachedEntity!.Value).EntityPrototype?.ID,
+                Is.EqualTo("MobAshwalker"));
+            Assert.That(tribe.SpawnedCkeys, Does.Contain(session.UserId));
         });
 
         await pair.CleanReturnAsync();

@@ -89,8 +89,6 @@ public sealed class AshwalkerEggSystem : EntitySystem
             return;
         }
 
-        _ghostRoles.SetTaken(role, true);
-
         var mob = Spawn(Ashwalker, Transform(ent.Owner).Coordinates);
         _transform.AttachToGridOrMap(mob);
         RaiseLocalEvent(mob, new GhostRoleSpawnerUsedEvent(ent.Owner, mob), true);
@@ -102,6 +100,7 @@ public sealed class AshwalkerEggSystem : EntitySystem
         _ghostRoles.GhostRoleInternalCreateMindAndTransfer(args.Player, ent.Owner, mob, role);
         // The egg replaces the ghost role mob spawner, so its declared skills must be applied here.
         _skills.GrantSkillOrDefault(mob, role.Skills, true);
+        _ghostRoles.SetTaken(role, true);
 
         tribe.SpawnedCkeys.Add(args.Player.UserId);
         QueueDel(ent.Owner);
