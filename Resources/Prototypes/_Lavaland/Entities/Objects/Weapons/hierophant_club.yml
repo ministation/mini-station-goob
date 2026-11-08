@@ -32,12 +32,16 @@
     - ActionHierophantClubBlink
     - ActionHierophantClubBox
     - ActionHierophantClubCrosses
+    - ActionHierophantClubBeacon
   - type: ItemActionGrant
     actions:
     - ActionHierophantClubTileMovement
     - ActionHierophantClubBlink
     - ActionHierophantClubBox
     - ActionHierophantClubCrosses
+    - ActionHierophantClubBeacon
+  # TG parity: detach the beacon at your feet, then channel everyone near you to it.
+  - type: HierophantClubBeacon
   - type: HeldGrantComponent
     components:
     - type: MegafaunaBlink
@@ -81,3 +85,33 @@
     energy: 1.5
     softness: 1
     castShadows: false
+
+# TG parity: the hierophant club beacon, placed by the club's beacon action.
+- type: entity
+  id: LavalandHierophantBeacon
+  name: hierophant beacon
+  description: A strange machine, allowing mass teleportation for those able to use it.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        hard: false
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/artefacts.rsi
+    state: hierophant_tele_off
+  - type: PointLight
+    color: "#cc6666"
+    radius: 3
+    energy: 1.5
+  - type: HierophantBeacon
