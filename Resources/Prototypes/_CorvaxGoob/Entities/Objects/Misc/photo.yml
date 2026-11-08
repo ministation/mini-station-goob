@@ -86,6 +86,7 @@
     - Document
     - Paper
     - Photo
+  - type: Appearance
   - type: Flammable
     fireSpread: true
     alwaysCombustible: true
