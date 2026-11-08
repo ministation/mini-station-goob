@@ -84,8 +84,12 @@
     - ActionTendrilChasers
     - ActionTendrilLash
   # TG parity: melee retaliation and infection of the surrounding rock on death.
-  # The heartbeat (regen after death) and mob respawn blocking are not ported yet.
+  # The mob respawn blocking (TG block_mining_mob_respawns) is not ported yet,
+  # the fork has no global mining mob respawn loop to block.
   - type: NecropolisTendril
+  - type: Regenerator # TG: 20 brute per second after 30 seconds without damage
+    regenerationDelay: 30
+    brutePerSecond: 20
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
       value: 1.0

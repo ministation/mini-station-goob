@@ -53,11 +53,15 @@
     animation: WeaponArcBite
     damage:
       types:
-        Slash: 15
+        Slash: 0 # TG: the hivelord only weakly tackles, it has no melee damage
   - type: LegionSplit # Lavaland: hivelord death spawns a swarm of broods
     spawnOnDeath: MobLavalandHivelordBrood
     spawnCount: 3
     splitsRemaining: 1
+  - type: SpawnLootOnDeath # TG: regenerative core death drop, FoodHivelordRemains is our equivalent
+    table: !type:AllSelector
+      children:
+      - id: FoodHivelordRemains
 
 # Weak fast offspring of a dead hivelord.
 - type: entity
@@ -82,7 +86,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      25: Dead
+      1: Dead # TG: a brood dies to a single hit
   - type: MovementSpeedModifier
     baseWalkSpeed: 1.0
     baseSprintSpeed: 1.0
@@ -91,7 +95,13 @@
     animation: WeaponArcBite
     damage:
       types:
-        Slash: 8
+        Slash: 2 # TG brood melee damage
+  - type: TimedDespawn # TG: broods live for ten seconds
+    lifetime: 10
+  - type: LegionSplit # TG: broods do not split again
+    splitsRemaining: 0
+  - type: SpawnLootOnDeath # no core from a brood, override the hivelord drop
+    table: null
 
 # Harmless scavenger bird, a snack for a hungry miner.
 - type: entity
