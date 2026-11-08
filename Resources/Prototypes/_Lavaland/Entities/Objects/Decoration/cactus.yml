@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   name: fruiting cacti
   parent: BaseStructure
   id: FruitCactus
@@ -26,6 +26,14 @@
         shape:
           !type:PhysShapeCircle
           radius: 0.2
+        hard: false
+        layer:
+        - SlipLayer
+  - type: StepTrigger
+    requiredTriggeredSpeed: 0
+    intersectRatio: 0.1
+  # TG gives fruiting cacti a caltrop component; star cacti are only a hydroponics plant there.
+  - type: LavalandFloraCaltrop
   - type: InteractionOutline
   - type: Harvestable
     delay: 2.5

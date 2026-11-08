@@ -126,6 +126,20 @@
       Min: 1
       Max: 10
       PotencyDivisor: 20
+    # TG reagents_add multipliers: mindbreaker 0.04, entpoly 0.08, mushroom hallucinogen 0.04.
+    # PotencyDivisor is 1 / multiplier, so the amount matches TG max(round(potency * multiplier), 1).
+    MindbreakerToxin:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 25
+    Entpoly:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 12
+    MushroomHallucinogen:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 25
 
 - type: seed
   id: lavalandEmber
@@ -149,6 +163,15 @@
       Min: 1
       Max: 10
       PotencyDivisor: 20
+    # TG reagents_add multipliers: tinlux 0.04, space drugs 0.02.
+    Tinlux:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 25
+    SpaceDrugs:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 50
 
 - type: seed
   id: lavalandSeraka
@@ -253,6 +276,11 @@
       Min: 1
       Max: 5
       PotencyDivisor: 20
+    # TG reagents_add multiplier for berserker is 0.06.
+    Berserker:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 17
 
 - type: seed
   id: lavalandPodsneyzka
@@ -280,6 +308,15 @@
       Min: 1
       Max: 5
       PotencyDivisor: 20
+    # TG reagents_add multipliers: cryostylane 0.02, liquid gibs 0.02.
+    Cryostylane:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 50
+    LiquidGibs:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 50
 
 - type: seed
   id: lavalandInozhakust

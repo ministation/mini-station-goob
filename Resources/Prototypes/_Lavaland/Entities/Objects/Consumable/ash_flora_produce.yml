@@ -123,6 +123,10 @@
           Quantity: 3
         - ReagentId: Vitamin
           Quantity: 1
+        - ReagentId: Cryostylane
+          Quantity: 1
+        - ReagentId: LiquidGibs
+          Quantity: 1
 
 - type: entity
   name: vahrezjia stalks
@@ -147,6 +151,8 @@
           Quantity: 2
         - ReagentId: Water
           Quantity: 2
+        - ReagentId: Berserker
+          Quantity: 1
 
 - type: entity
   name: drake beet
@@ -268,6 +274,12 @@
         reagents:
         - ReagentId: Nutriment
           Quantity: 2
+        - ReagentId: MindbreakerToxin
+          Quantity: 1
+        - ReagentId: Entpoly
+          Quantity: 1
+        - ReagentId: MushroomHallucinogen
+          Quantity: 1
 
 - type: entity
   name: mushroom stem
@@ -291,6 +303,10 @@
         - ReagentId: Nutriment
           Quantity: 2
         - ReagentId: Vitamin
+          Quantity: 1
+        - ReagentId: Tinlux
+          Quantity: 1
+        - ReagentId: SpaceDrugs
           Quantity: 1
 
 - type: entity
