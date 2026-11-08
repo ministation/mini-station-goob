@@ -13,6 +13,7 @@ using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
 using Content.Shared.StepTrigger.Components;
 using Content.Shared.StepTrigger.Prototypes;
+using Content.Shared.Tools.Components;
 using Content.Shared.Tools.Systems;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.Prototypes;
@@ -118,6 +119,11 @@ public sealed class BasiliskOverheatSystem : EntitySystem
         if (args.Handled || !_tool.HasQuality(args.Used, WeldingQuality))
             return;
 
+        // Only a lit welder heats the basilisk up, and the interaction ends here.
+        if (!TryComp<WelderComponent>(args.Used, out var welder) || !welder.Enabled)
+            return;
+
+        args.Handled = true;
         HeatUp(ent);
     }
 

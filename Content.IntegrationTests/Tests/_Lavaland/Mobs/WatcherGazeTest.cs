@@ -147,7 +147,7 @@ public sealed class WatcherGazeTest
         {
             Assert.That(entMan.TryGetComponent<FlammableComponent>(victim, out var flammable), Is.True,
                 "the fire gaze victim has no FlammableComponent");
-            Assert.That(flammable!.FireStacks, Is.GreaterThan(0f),
+            Assert.That(flammable!.FireStacks.Float(), Is.GreaterThan(0f),
                 "the fire gaze did not set the victim on fire");
         });
 
