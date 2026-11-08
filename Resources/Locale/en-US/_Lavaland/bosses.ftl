@@ -16,3 +16,4 @@ drake-arena-start = { CAPITALIZE($boss) } swoops up and encases its target in a 
 drake-arena-escape = { CAPITALIZE($boss) } burns with rage, its wounds close up!
 ent-WallDrakeArenaTemporary = wall of fire
     .desc = The ash drake's true flame.
+legion-infest = { CAPITALIZE($legion) } burrows into the flesh of { CAPITALIZE($victim) }!

@@ -16,3 +16,4 @@ drake-arena-start = { CAPITALIZE($boss) } взмывает ввысь и окр�
 drake-arena-escape = { CAPITALIZE($boss) } пылает от ярости, его раны затягиваются!
 ent-WallDrakeArenaTemporary = стена огня
     .desc = Истинное пламя пепельного дракона.
+legion-infest = { CAPITALIZE($legion) } вгрызается в тело { CAPITALIZE($victim) }!

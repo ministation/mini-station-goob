@@ -4,6 +4,8 @@ using Content.Shared._Lavaland.Mobs;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
+using Robust.Shared.Map;
 
 namespace Content.Server._Lavaland.Mobs;
 
@@ -15,8 +17,10 @@ namespace Content.Server._Lavaland.Mobs;
 public sealed class LegionLootSystem : EntitySystem
 {
     [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
 
     private static readonly EntProtoId StaffOfStorms = "LavalandStaffOfStorms";
+    private const float TendrilCrateChance = 0.2f;
 
     public override void Initialize()
     {
@@ -35,7 +39,10 @@ public sealed class LegionLootSystem : EntitySystem
 
         // Split still has to spawn the next tier, so the fight is not over yet.
         if (TryComp<LegionSplitComponent>(ent.Owner, out var split) && split.SplitsRemaining > 0)
+        {
+            RollTendrilCrate(coords);
             return;
+        }
 
         // Any other living legion means this one was not the last. Dead ones are deleted with
         // their corpse, so the living marker set is empty exactly when the fight is over.
@@ -43,9 +50,19 @@ public sealed class LegionLootSystem : EntitySystem
         while (query.MoveNext(out var uid, out _))
         {
             if (uid != ent.Owner && _mobState.IsAlive(uid))
+            {
+                RollTendrilCrate(coords);
                 return;
+            }
         }
 
         Spawn(StaffOfStorms, coords);
+    }
+
+    // TG: a non-last legion death has a 20% chance for a tendril crate ("sick lootz").
+    private void RollTendrilCrate(EntityCoordinates coords)
+    {
+        if (_random.Prob(TendrilCrateChance))
+            Spawn("LavalandCrateNecropolisFilled", coords);
     }
 }

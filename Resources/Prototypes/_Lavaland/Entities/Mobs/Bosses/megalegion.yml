@@ -10,6 +10,8 @@
   description: One of many. For now.
   components:
   - type: MegafaunaDevour
+  - type: NecropolisGateOpenOnDamage
+  - type: LegionInfest
   - type: EmitSoundOnSpawn
     sound:
       path: /Audio/_Lavaland/Mobs/legion_spawn.ogg
@@ -133,6 +135,7 @@
   parent: LavalandMobBase
   description: One of many.
   components:
+  - type: LegionInfest
   - type: EmitSoundOnSpawn
     sound:
       path: /Audio/_Lavaland/Mobs/legion_spawn.ogg
@@ -215,6 +218,7 @@
   id: LavalandBossLegionMediumRight
   parent: LavalandBossLegionMedium
   components:
+  - type: LegionInfest
   - type: Sprite
     sprite: _Lavaland/Mobs/Bosses/64x64.rsi
     layers:
@@ -227,6 +231,7 @@
   id: LavalandBossLegionMediumEye
   parent: LavalandBossLegionMedium
   components:
+  - type: LegionInfest
   - type: Sprite
     sprite: _Lavaland/Mobs/Bosses/64x64.rsi
     layers:
@@ -240,6 +245,7 @@
   parent: LavalandMobBase
   description: One of many. The last one, probably.
   components:
+  - type: LegionInfest
   - type: EmitSoundOnSpawn
     sound:
       path: /Audio/_Lavaland/Mobs/legion_spawn.ogg
