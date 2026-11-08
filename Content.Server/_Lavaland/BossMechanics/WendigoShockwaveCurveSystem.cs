@@ -39,7 +39,7 @@ public sealed class WendigoShockwaveCurveSystem : EntitySystem
                 velocity.X * cos - velocity.Y * sin,
                 velocity.X * sin + velocity.Y * cos);
 
-            _physics.SetLinearVelocity(uid, turned, body);
+            _physics.SetLinearVelocity(uid, turned);
         }
     }
 }
