@@ -161,6 +161,8 @@
     spawned:
     - id: FoodMeat
       amount: 2
+    - id: LavalandBrimdust # TG: brimdust pool
+    - id: LavalandBrimdustSac # TG: brimdust_sac organ
   - type: DeathExplosion # TG: dying brimdemon bursts for 20 burn damage in a 1 tile radius
     radius: 1
     damage:
