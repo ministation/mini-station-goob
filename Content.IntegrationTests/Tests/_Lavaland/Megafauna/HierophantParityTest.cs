@@ -149,24 +149,27 @@ public sealed class HierophantParityTest
             entMan.EventBus.RaiseLocalEvent(boss, ev, broadcast: true);
         });
 
+        // Check the spawn tiles before any chaser crawls: four chasers on one tile would walk
+        // the same path and stack their squares on the same tiles.
+        var spawnTiles = new HashSet<Vector2i>();
+        await server.WaitAssertion(() =>
+        {
+            var query = entMan.EntityQueryEnumerator<TransformComponent, MetaDataComponent>();
+            while (query.MoveNext(out var xform, out var meta))
+            {
+                if (meta.EntityPrototype?.ID == "LavalandHierophantChaser")
+                    spawnTiles.Add(new Vector2i((int) MathF.Round(xform.Coordinates.Position.X), (int) MathF.Round(xform.Coordinates.Position.Y)));
+            }
+        });
+
         await server.WaitRunTicks(1);
 
         await server.WaitAssertion(() =>
         {
             Assert.That(CountSquares(entMan, "LavalandHierophantChaser"), Is.EqualTo(4),
                 "the chaser swarm must release four chasers, got " + CountSquares(entMan, "LavalandHierophantChaser"));
-
-            // Four chasers on the same tile would walk the same path and stack their squares.
-            var tiles = new HashSet<Vector2i>();
-            var query = entMan.EntityQueryEnumerator<TransformComponent, MetaDataComponent>();
-            while (query.MoveNext(out var xform, out var meta))
-            {
-                if (meta.EntityPrototype?.ID == "LavalandHierophantChaser")
-                    tiles.Add(new Vector2i((int) MathF.Round(xform.Coordinates.Position.X), (int) MathF.Round(xform.Coordinates.Position.Y)));
-            }
-
-            Assert.That(tiles.Count, Is.EqualTo(4),
-                "the chaser swarm all spawned on the same tile, got " + tiles.Count + " distinct tiles");
+            Assert.That(spawnTiles.Count, Is.EqualTo(4),
+                "the chaser swarm spawned on " + spawnTiles.Count + " distinct tiles instead of four");
         });
 
         await pair.CleanReturnAsync();
