@@ -179,7 +179,8 @@ public sealed class AshwalkerNestSystem : EntitySystem
                 nest.Eggs++;
                 _tribe.RegisterEgg(uid);
                 var egg = Spawn(Egg, nestXform.Coordinates.Offset(_random.NextVector2Box(-1.5f, -1.5f, 1.5f, 1.5f)));
-                AddComp<AshwalkerEggComponent>(egg).Nest = uid;
+                // The egg prototype already has AshwalkerEggComponent; just bind it to this nest.
+                Comp<AshwalkerEggComponent>(egg).Nest = uid;
             }
         }
     }
