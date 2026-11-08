@@ -88,5 +88,5 @@
       sprite: _Lavaland/Objects/Specific/artefacts.rsi
       state: hierophant_beacon
     itemIconStyle: NoItem
-    event: !type:HierophantClubBeaconActionEvent
   - type: InstantAction
+    event: !type:HierophantClubBeaconActionEvent
