@@ -114,6 +114,10 @@
   - type: FrostMinerEnrage
   - type: MegafaunaBlink
   - type: MegafaunaRejuvenate
+  # TG parity: the miner knocks back whoever it hits (knockback 7).
+  - type: MeleeThrowOnHit
+    speed: 8
+    distance: 7
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:

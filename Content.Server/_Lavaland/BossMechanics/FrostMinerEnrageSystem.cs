@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
@@ -35,10 +37,11 @@ public sealed partial class FrostMinerEnrageComponent : Component
     public string Layer = "enum.DamageStateVisualLayers.Base";
 
     /// <summary>
-    /// How long the boss is stunned while enraging.
+    /// How long the boss is stunned while enraging. TG: about 7.5 seconds of
+    /// full immobilization with abilities blocked.
     /// </summary>
     [DataField]
-    public TimeSpan LockDuration = TimeSpan.FromSeconds(1);
+    public TimeSpan LockDuration = TimeSpan.FromSeconds(7.5);
 
     [DataField]
     public SoundSpecifier? Sound = new SoundPathSpecifier("/Audio/Effects/explosion3.ogg");
@@ -56,12 +59,14 @@ public sealed class FrostMinerEnrageSystem : EntitySystem
     [Dependency] private readonly MobThresholdSystem _threshold = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedStunSystem _stun = default!;
+    [Dependency] private readonly SharedActionsSystem _actions = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<FrostMinerEnrageComponent, DamageChangedEvent>(OnDamageChanged);
+        SubscribeLocalEvent<FrostMinerEnrageComponent, MobStateChangedEvent>(OnMobStateChanged);
     }
 
     private void OnDamageChanged(Entity<FrostMinerEnrageComponent> ent, ref DamageChangedEvent args)
@@ -79,6 +84,15 @@ public sealed class FrostMinerEnrageSystem : EntitySystem
         Enrage(ent);
     }
 
+    private void OnMobStateChanged(Entity<FrostMinerEnrageComponent> ent, ref MobStateChangedEvent args)
+    {
+        if (args.NewMobState == MobState.Dead)
+        {
+            var ev = new FrostMinerDiedEvent(ent.Owner, args.NewMobState);
+            RaiseLocalEvent(ref ev);
+        }
+    }
+
     private void Enrage(Entity<FrostMinerEnrageComponent> ent)
     {
         var comp = ent.Comp;
@@ -88,6 +102,8 @@ public sealed class FrostMinerEnrageSystem : EntitySystem
 
         _stun.TryAddStunDuration(ent.Owner, comp.LockDuration);
         _audio.PlayPvs(comp.Sound, ent.Owner);
+        var enraged = new FrostMinerEnragedEvent();
+        RaiseLocalEvent(ref enraged);
 
         // shortcut: server-side sprite state swap via RandomSprite, until megafauna get a visualizer
         var sprite = EnsureComp<RandomSpriteComponent>(ent);
@@ -96,8 +112,17 @@ public sealed class FrostMinerEnrageSystem : EntitySystem
 
         Timer.Spawn(comp.LockDuration, () =>
         {
-            if (!TerminatingOrDeleted(ent.Owner))
-                _audio.PlayPvs(comp.SecondSound, ent.Owner);
+            if (TerminatingOrDeleted(ent.Owner))
+                return;
+
+            _audio.PlayPvs(comp.SecondSound, ent.Owner);
+
+            // TG parity: once the enrage lock ends, every ability is ready again.
+            if (TryComp<ActionsComponent>(ent.Owner, out var actions))
+            {
+                foreach (var action in actions.Actions)
+                    _actions.SetCooldown(action, TimeSpan.Zero);
+            }
         });
     }
 }
