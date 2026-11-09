@@ -89,6 +89,10 @@ public sealed class MegafaunaDevourSystem : EntitySystem
 
     private void RemoveOrgans<T>(EntityUid victim) where T : IComponent
     {
+        // Simple mobs (raptor hatchlings, lobstrosities) have no body and no organs.
+        if (!HasComp<BodyComponent>(victim))
+            return;
+
         if (_body.TryGetBodyOrganEntityComps<T>(victim, out var organs))
         {
             foreach (var organ in organs)
