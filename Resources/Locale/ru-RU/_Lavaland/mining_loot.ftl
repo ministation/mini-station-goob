@@ -60,6 +60,8 @@ strange-elixir-drunk = Варевом шипит в груди. Ноги отр�
 book-of-babel-read = Слова сами распутываются у вас в голове.
 wisp-lantern-released = Из фонаря выплывает огонёк и начинает кружить вокруг вас.
 wisp-lantern-returned = Огонёк скользит обратно в фонарь.
+paradox-bag-linked = Сумки складываются друг в друга и становятся парой.
+paradox-bag-already-linked = Одна из сумок уже сложена в пару.
 warp-cube-unlinked = Куб тускл и безмолвен. Его близнец пропал.
 warp-cube-teleported = Блюспейс рывком переносит вас через весь мир.
 

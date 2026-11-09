@@ -60,6 +60,8 @@ strange-elixir-drunk = The brew fizzes in your chest. Your feet leave the ground
 book-of-babel-read = The words untangle themselves in your head.
 wisp-lantern-released = A wisp drifts out of the lantern and circles you.
 wisp-lantern-returned = The wisp slips back into the lantern.
+paradox-bag-linked = The bags fold into each other and become a pair.
+paradox-bag-already-linked = One of the bags is already folded into a pair.
 warp-cube-unlinked = The cube is dull and silent. Its twin is gone.
 warp-cube-teleported = Bluespace yanks you across the world.
 
