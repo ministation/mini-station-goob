@@ -17,6 +17,8 @@
   - Chapel
   - Maintenance
   special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant ]
   - !type:AddComponentSpecial
     components:
     - type: BibleUser #Lets them heal with bibles
