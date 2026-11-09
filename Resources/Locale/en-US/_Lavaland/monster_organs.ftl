@@ -8,3 +8,6 @@ ent-LavalandRegenerativeCoreLegion = legion core
     .desc = A strange rock that crackles with power. Apply it to yourself to mend your wounds, but the core is spent in the process.
 ent-LavalandRushGland = rush gland
     .desc = A lobstrosity's engorged adrenal gland. Squeeze it for a burst of speed, but the gland is spent in the process.
+ent-LavalandBrimdustSac = brimdust sac
+    .desc = A strange organ from a brimdemon. Still full of explosive powder.
+brimdust-coating-applied = Explosive brimdust coats you. Stacks: {$stacks}.

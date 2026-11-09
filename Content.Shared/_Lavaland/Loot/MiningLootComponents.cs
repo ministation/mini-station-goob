@@ -98,3 +98,26 @@ public sealed partial class WarpCubeComponent : Component
     [ViewVariables]
     public bool SpawnedPartner;
 }
+
+/// <summary>
+/// Brimdust sac: coats its user in explosive brimdust when used.
+/// </summary>
+[RegisterComponent, NetworkedComponent]
+public sealed partial class BrimdustSacComponent : Component
+{
+    /// <summary>
+    /// How many coating stacks one use applies.
+    /// </summary>
+    [DataField]
+    public int Stacks = 3;
+}
+
+/// <summary>
+/// Brimdust coating, tracked by the BrimdustCoating status effect.
+/// </summary>
+[RegisterComponent]
+public sealed partial class BrimdustCoatingComponent : Component
+{
+    public int Stacks;
+}
+

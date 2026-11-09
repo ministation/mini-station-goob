@@ -29,9 +29,8 @@
 - type: entity
   id: LavalandBrimdustSac
   parent: BaseItem
-  name: brimdust sac
-  description: A strange organ from a brimdemon. Still full of explosive powder.
   components:
+  - type: BrimdustSac
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/brimdemon_loot.rsi
     state: brim_sac
