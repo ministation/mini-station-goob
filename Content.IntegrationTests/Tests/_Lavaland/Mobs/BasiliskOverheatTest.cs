@@ -2,8 +2,11 @@
 
 #nullable enable annotations
 
+using System.Collections.Generic;
+using System.IO;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Server._Lavaland.Mobs;
+using Content.Shared._Lavaland.Mobs;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
@@ -12,6 +15,7 @@ using Content.Shared.Movement.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization;
 
 namespace Content.IntegrationTests.Tests._Lavaland.Mobs;
 
@@ -78,6 +82,36 @@ public sealed class BasiliskOverheatTest
                 Assert.That(entMan.GetComponent<MovementSpeedModifierComponent>(basilisk).BaseWalkSpeed,
                     Is.EqualTo(1.65f).Within(0.001f), "cooling did not restore the speed");
             });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Appearance state is sent to clients as a dictionary keyed by enum, so every key type must be
+    /// registered in the serializer. Without [NetSerializable] on the key enum the server logged
+    /// "Type not found ... BasiliskOverheatVisuals" while serializing each PVS state.
+    /// </summary>
+    [Test]
+    public async Task OverheatAppearanceKeyRoundTripsThroughSerializer()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var serializer = server.ResolveDependency<IRobustSerializer>();
+
+        await server.WaitAssertion(() =>
+        {
+            var state = new AppearanceComponentState(new Dictionary<Enum, object>
+            {
+                { BasiliskOverheatVisuals.Overheated, true },
+            });
+
+            using var stream = new MemoryStream();
+            serializer.Serialize(stream, state);
+            stream.Position = 0;
+            var roundTripped = (AppearanceComponentState) serializer.Deserialize(stream);
+
+            Assert.That(roundTripped.Data[BasiliskOverheatVisuals.Overheated], Is.EqualTo(true));
         });
 
         await pair.CleanReturnAsync();
