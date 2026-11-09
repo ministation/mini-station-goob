@@ -121,3 +121,12 @@ public sealed partial class BrimdustCoatingComponent : Component
     public int Stacks;
 }
 
+/// <summary>
+/// Paradox bag: two bags linked into a pair pass inserted items to each other.
+/// </summary>
+[RegisterComponent]
+public sealed partial class ParadoxBagComponent : Component
+{
+    [ViewVariables]
+    public EntityUid? Partner;
+}

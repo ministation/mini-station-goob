@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
 using System;
+using Robust.Shared.Containers;
+using Content.Shared.Storage.EntitySystems;
+using Content.Shared.Storage;
+using Content.Shared.Interaction;
+using System.Collections.Generic;
 using Content.Goobstation.Shared.Overlays;
 using Content.Goobstation.Shared.Teleportation.Systems;
 using Content.Server.Body.Systems;
@@ -468,3 +473,110 @@ public sealed class BrimdustCoatingSystem : EntitySystem
     }
 }
 
+/// <summary>
+/// Paradox bag: an item put into one bag of a linked pair moves to the other bag if it fits.
+/// </summary>
+public sealed class ParadoxBagSystem : EntitySystem
+{
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly SharedStorageSystem _storage = default!;
+
+    // Transfers are deferred one tick so that storage bookkeeping for the source bag is finished first.
+    private readonly List<(EntityUid Bag, EntityUid Item)> _pending = new();
+    private bool _moving;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<ParadoxBagComponent, AfterInteractEvent>(OnAfterInteract);
+        SubscribeLocalEvent<ParadoxBagComponent, EntInsertedIntoContainerMessage>(OnInserted);
+        SubscribeLocalEvent<ParadoxBagComponent, EntityTerminatingEvent>(OnTerminating);
+    }
+
+    private void OnAfterInteract(Entity<ParadoxBagComponent> ent, ref AfterInteractEvent args)
+    {
+        if (args.Handled || !args.CanReach || args.Target is not { } target || target == ent.Owner)
+            return;
+
+        if (!TryComp<ParadoxBagComponent>(target, out var targetComp))
+            return;
+
+        args.Handled = true;
+
+        if (ent.Comp.Partner != null || targetComp.Partner != null)
+        {
+            _popup.PopupEntity(Loc.GetString("paradox-bag-already-linked"), args.User, args.User);
+            return;
+        }
+
+        ent.Comp.Partner = target;
+        targetComp.Partner = ent;
+        _popup.PopupEntity(Loc.GetString("paradox-bag-linked"), args.User, args.User);
+    }
+
+    private void OnInserted(Entity<ParadoxBagComponent> ent, ref EntInsertedIntoContainerMessage args)
+    {
+        if (_moving)
+            return;
+
+        if (!TryComp(ent, out StorageComponent? storage) || args.Container != storage.Container)
+            return;
+
+        // Never move bags: a bag inside its own pair would bounce forever.
+        if (HasComp<ParadoxBagComponent>(args.Entity))
+            return;
+
+        _pending.Add((ent, args.Entity));
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_pending.Count == 0)
+            return;
+
+        var pending = _pending.ToArray();
+        _pending.Clear();
+
+        foreach (var (bag, item) in pending)
+        {
+            TryTransfer(bag, item);
+        }
+    }
+
+    private void TryTransfer(EntityUid bag, EntityUid item)
+    {
+        if (_moving || TerminatingOrDeleted(bag) || TerminatingOrDeleted(item))
+            return;
+
+        if (!TryComp<ParadoxBagComponent>(bag, out var comp) || comp.Partner is not { } partner)
+            return;
+
+        if (!TryComp(bag, out StorageComponent? storage) || !storage.Container.Contains(item))
+            return;
+
+        if (!TryComp(partner, out StorageComponent? partnerStorage) || !_storage.CanInsert(partner, item, out _, partnerStorage))
+            return;
+
+        _moving = true;
+        try
+        {
+            _storage.Insert(partner, item, out _, storageComp: partnerStorage, playSound: false);
+        }
+        finally
+        {
+            _moving = false;
+        }
+    }
+
+    private void OnTerminating(Entity<ParadoxBagComponent> ent, ref EntityTerminatingEvent args)
+    {
+        if (ent.Comp.Partner is not { } partner || TerminatingOrDeleted(partner))
+            return;
+
+        if (TryComp<ParadoxBagComponent>(partner, out var partnerComp))
+            partnerComp.Partner = null;
+    }
+}
