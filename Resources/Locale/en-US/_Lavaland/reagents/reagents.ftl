@@ -27,3 +27,6 @@ reagent-desc-liquid-gibs = You don't even want to think about what's in here.
 
 reagent-name-mouthwash = mouthwash
 reagent-desc-mouthwash = A minty, slightly foamy liquid. It seems to be more sugar than alcohol in content, and smells kind of like ice drake's breath.
+
+reagent-name-brimdust = brimdust
+reagent-desc-brimdust = A brimdemon's dust. Consumption is not recommended, although plants like it.

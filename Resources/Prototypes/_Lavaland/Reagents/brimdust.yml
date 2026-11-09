@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG brimdemon dust (code/modules/reagents/chemistry/reagents/other_reagents.dm).
+# Plants like it and everyone else takes burn damage. Hydroponics amounts are per unit,
+# so a whole 15 unit dose gives the same health and potency as the TG effect for one pool.
+- type: reagent
+  id: Brimdust
+  name: reagent-name-brimdust
+  group: Botanical
+  desc: reagent-desc-brimdust
+  physicalDesc: reagent-physical-desc-powdery
+  flavor: spicy
+  color: "#522546"
+  plantMetabolism:
+  - !type:PlantAdjustWeeds
+    amount: -1
+  - !type:PlantAdjustPests
+    amount: -1
+  - !type:PlantAdjustHealth
+    amount: 1
+  - !type:PlantAdjustPotency
+    amount: 0.5
+  metabolisms:
+    Poison:
+      effects:
+      - !type:HealthChange
+        damage:
+          types:
+            Heat: 1
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [Plant]
+          inverted: true
+      - !type:HealthChange
+        damage:
+          types:
+            Heat: -1
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [Plant]
