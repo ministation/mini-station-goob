@@ -8,6 +8,9 @@
   description: A monstrous creature protected by heavy shielding.
   components:
   - type: MegafaunaDevour
+  - type: ExplosionResistance
+    worn: false
+    damageCoefficient: 0.1
   - type: Physics
     bodyType: KinematicController
   - type: Clickable

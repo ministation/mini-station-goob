@@ -9,6 +9,9 @@
   description: A very crazed miner. He's able to do more damage the more he hurts.
   components:
   - type: MegafaunaDevour
+  - type: ExplosionResistance
+    worn: false
+    damageCoefficient: 0.1
   - type: Physics
     bodyType: KinematicController
   - type: Clickable

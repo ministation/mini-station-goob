@@ -9,6 +9,9 @@
   description: A shifting mass of flesh and tendrils. It should not be here.
   components:
   - type: MegafaunaDevour
+  - type: ExplosionResistance
+    worn: false
+    damageCoefficient: 0.1
   - type: Physics
     bodyType: KinematicController
   - type: Clickable

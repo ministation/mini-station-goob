@@ -26,6 +26,7 @@
       interval: 1
       randomSpread: 180
       speed: 3.5
+      homing: true
 
 - type: entity
   id: ActionFrostMinerFrostOrbsStrong
@@ -40,6 +41,7 @@
       interval: 0.5
       randomSpread: 180
       speed: 3.5
+      homing: true
 
 - type: entity
   id: ActionFrostMinerFrostOrbsEnraged
@@ -54,6 +56,7 @@
       interval: 1
       randomSpread: 180
       speed: 7
+      homing: true
 
 # Snowball machine gun: a long spray of weak snowballs.
 - type: entity

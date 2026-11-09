@@ -3,6 +3,7 @@
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Megafauna.Events;
 using Content.Shared._Lavaland.Megafauna.Systems;
+using Content.Shared._Goobstation.Wizard.Projectiles;
 using Content.Shared.Projectiles;
 using Robust.Shared.Audio;
 using Robust.Shared.Map;
@@ -81,6 +82,8 @@ public sealed class MegafaunaVolleySystem : EntitySystem
         comp.Projectile = args.Projectile;
         comp.Speed = args.Speed;
         comp.RandomSpread = args.RandomSpread;
+        comp.Homing = args.Homing;
+        comp.HomingSpeed = args.HomingSpeed;
         comp.Patterns = args.Patterns;
         comp.VolleyIndex = 0;
         comp.Volleys = Math.Max(1, args.Volleys);
@@ -108,18 +111,18 @@ public sealed class MegafaunaVolleySystem : EntitySystem
         if (comp.Patterns.Count == 0)
         {
             var angle = comp.BaseAngle + Angle.FromDegrees(_random.NextFloat(-comp.RandomSpread, comp.RandomSpread));
-            FireProjectile(performer, comp.Projectile, angle, comp.Speed);
+            FireProjectile(performer, comp, angle);
             return;
         }
 
         var pattern = comp.Patterns[comp.VolleyIndex % comp.Patterns.Count];
         foreach (var offset in pattern)
-            FireProjectile(performer, comp.Projectile, comp.BaseAngle + Angle.FromDegrees(offset), comp.Speed);
+            FireProjectile(performer, comp, comp.BaseAngle + Angle.FromDegrees(offset));
     }
 
-    private void FireProjectile(EntityUid shooter, EntProtoId proto, Angle angle, float speed)
+    private void FireProjectile(EntityUid shooter, MegafaunaVolleyComponent comp, Angle angle)
     {
-        var projectile = Spawn(proto, Transform(shooter).Coordinates);
+        var projectile = Spawn(comp.Projectile, Transform(shooter).Coordinates);
         _xform.SetLocalRotation(projectile, angle);
 
         if (TryComp<ProjectileComponent>(projectile, out var projectileComp))
@@ -128,6 +131,13 @@ public sealed class MegafaunaVolleySystem : EntitySystem
             projectileComp.Weapon = shooter;
         }
 
-        _physics.SetLinearVelocity(projectile, angle.ToWorldVec() * speed);
+        _physics.SetLinearVelocity(projectile, angle.ToWorldVec() * comp.Speed);
+
+        if (!comp.Homing)
+            return;
+
+        var homing = EnsureComp<HomingProjectileComponent>(projectile);
+        homing.Target = comp.Target;
+        homing.HomingSpeed = comp.HomingSpeed;
     }
 }

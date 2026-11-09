@@ -9,6 +9,9 @@
   description: Guardian of the Necropolis.
   components:
   - type: MegafaunaDevour
+  - type: ExplosionResistance
+    worn: false
+    damageCoefficient: 0.05
   - type: DrakeArena
   - type: Physics
     bodyType: KinematicController

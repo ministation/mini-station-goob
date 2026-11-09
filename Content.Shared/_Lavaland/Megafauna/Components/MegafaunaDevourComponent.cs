@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
 using Robust.Shared.GameObjects;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Lavaland.Megafauna.Components;
 
@@ -23,4 +24,10 @@ public sealed partial class MegafaunaDevourComponent : Component
     /// </summary>
     [DataField]
     public float Range = 2.2f;
+
+    /// <summary>
+    ///     Entity spawned on the megafauna after a corpse is devoured (TG bubblegum drops a gum).
+    /// </summary>
+    [DataField]
+    public EntProtoId? SpawnOnDevour;
 }

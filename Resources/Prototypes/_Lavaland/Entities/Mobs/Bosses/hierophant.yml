@@ -7,6 +7,9 @@
   components:
   # Basic stuff
   - type: MegafaunaDevour
+  - type: ExplosionResistance
+    worn: false
+    damageCoefficient: 0.1
   - type: Physics
     bodyType: KinematicController
   - type: Fixtures

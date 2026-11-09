@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG parity: bubblegum drops this after devouring a corpse.
+- type: entity
+  parent: FoodSnackBase
+  id: FoodBubblegum
+  name: bubblegum
+  description: Chewy and pink. Tastes like corpses and bad decisions.
+  components:
+  - type: Sprite
+    sprite: Objects/Consumable/Food/candy.rsi
+    state: bubblegum
+  - type: Item
+    sprite: Objects/Consumable/Food/candy.rsi
+    size: Tiny
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: Sugar
+          Quantity: 5
+        - ReagentId: JunkFood
+          Quantity: 1
+  - type: FlavorProfile
+    flavors:
+    - sweet

@@ -10,6 +10,10 @@
   description: A miner possessed by a demon of ice, wielding a frozen mining rig.
   components:
   - type: MegafaunaDevour
+  - type: ExplosionResistance
+    worn: false
+    damageCoefficient: 0.0
+    # TG heals from explosions instead, this fork has no explosion damage hook, so it just ignores them.
   - type: Physics
     bodyType: KinematicController
   - type: Clickable

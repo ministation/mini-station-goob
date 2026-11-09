@@ -10,6 +10,9 @@
   description: A mythological man-eating beast, its empty eye sockets track you with unsatiated hunger.
   components:
   - type: MegafaunaDevour
+  - type: ExplosionResistance
+    worn: false
+    damageCoefficient: 0.1
   - type: Physics
     bodyType: KinematicController
   - type: Clickable

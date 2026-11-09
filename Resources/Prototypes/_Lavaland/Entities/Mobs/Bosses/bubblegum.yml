@@ -9,6 +9,10 @@
   description: In what passes for a hierarchy among slaughter demons, this one is king.
   components:
   - type: MegafaunaDevour
+    spawnOnDevour: FoodBubblegum
+  - type: ExplosionResistance
+    worn: false
+    damageCoefficient: 0.05
   - type: Physics
     bodyType: KinematicController
   - type: Clickable
