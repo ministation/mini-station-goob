@@ -162,6 +162,20 @@
         whitelist:
           tags:
           - CrusherUpgradeHandleRange
+  - type: CrusherSkin
+    skins:
+    - sprite: _Lavaland/Objects/Weapons/Crushers/crusher.rsi
+      inhand: _Lavaland/Objects/Weapons/Crushers/crusher-inhands.rsi
+      name: crusher-skin-default
+    - sprite: _Lavaland/Objects/Weapons/Crushers/crusher_glaive.rsi
+      inhand: _Lavaland/Objects/Weapons/Crushers/crusher_glaive-inhands.rsi
+      name: crusher-skin-glaive
+    - sprite: _Lavaland/Objects/Weapons/Crushers/crusher_halberd.rsi
+      inhand: _Lavaland/Objects/Weapons/Crushers/crusher_halberd-inhands.rsi
+      name: crusher-skin-halberd
+    - sprite: _Lavaland/Objects/Weapons/Crushers/crusher_hammer.rsi
+      inhand: _Lavaland/Objects/Weapons/Crushers/crusher_hammer-inhands.rsi
+      name: crusher-skin-hammer
   - type: Tag
     tags:
     - Pickaxe
@@ -203,6 +217,8 @@
   - type: Sprite
     sprite: _Lavaland/Objects/Weapons/Crushers/crusher_glaive.rsi
     state: icon
+  - type: CrusherSkin
+    index: 1
   - type: Item
     sprite: _Lavaland/Objects/Weapons/Crushers/crusher_glaive-inhands.rsi
   - type: Clothing
@@ -237,6 +253,8 @@
   - type: Sprite
     sprite: _Lavaland/Objects/Weapons/Crushers/crusher_hammer.rsi
     state: icon
+  - type: CrusherSkin
+    index: 3
   - type: MeleeWeapon # Slower attack speed but higher damage makes it more risky and rewarding to use
     attackRate: 0.6
     damage:
@@ -266,6 +284,8 @@
   - type: Sprite
     sprite: _Lavaland/Objects/Weapons/Crushers/crusher_halberd.rsi
     state: icon
+  - type: CrusherSkin
+    index: 2
   - type: Item
     size: Ginormous
     sprite: _Lavaland/Objects/Weapons/Crushers/crusher_halberd-inhands.rsi
