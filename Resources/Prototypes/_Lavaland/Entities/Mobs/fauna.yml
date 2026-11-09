@@ -58,10 +58,10 @@
     spawnOnDeath: MobLavalandHivelordBrood
     spawnCount: 3
     splitsRemaining: 1
-  - type: SpawnLootOnDeath # TG: regenerative core death drop, FoodHivelordRemains is our equivalent
+  - type: SpawnLootOnDeath # TG: regenerative core death drop
     table: !type:AllSelector
       children:
-      - id: FoodHivelordRemains
+      - id: LavalandRegenerativeCore
 
 # Weak fast offspring of a dead hivelord.
 - type: entity
@@ -394,6 +394,7 @@
     spawned:
     - id: FoodMeatLobster
       maxAmount: 2
+    - id: LavalandRushGland # TG: rush gland butcher drop
   # Mini: TG lobster rush, a dash that knocks the victim down and leaves the lobster tired.
   - type: LavalandRush
   # TG juvenile lobstrosity: tame_chance 35, bonus_tame_chance 20, eats meat from your hand.
@@ -485,3 +486,4 @@
   - type: Butcherable
     spawned:
     - id: FoodMeatLobster
+    - id: LavalandRushGland # TG: rush gland butcher drop

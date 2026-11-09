@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG monster core organs (code/modules/mining/equipment/monster_organs).
+# Mini: the fork has no organ framework, so each core is a single-use consumable.
+# TG also lets you implant them; that part stays unported.
+# TODO: TG's brimdust sac (LavalandBrimdustSac, brimdemon_loot.yml) coats the user in
+# brimdust on use. The fork has no brimdust reagent yet, so the sac stays plain butcher loot.
+
+- type: entity
+  id: LavalandRegenerativeCore
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Consumable/Food/rorocore.rsi
+    state: boiled
+  - type: TriggerOnUse
+  - type: EntityEffectOnTrigger
+    targetUser: true
+    effects:
+    - !type:HealthChange
+      damage:
+        groups:
+          Brute: -25
+          Burn: -25
+  - type: DeleteOnTrigger
+
+- type: entity
+  id: LavalandRegenerativeCoreLegion
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: ADT/Objects/Specific/Lavaland/loot.rsi
+    state: legion_core
+  - type: TriggerOnUse
+  - type: EntityEffectOnTrigger
+    targetUser: true
+    effects:
+    - !type:HealthChange
+      damage:
+        groups:
+          Brute: -25
+          Burn: -25
+  - type: DeleteOnTrigger
+
+- type: entity
+  id: LavalandRushGland
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Mobs/Species/Human/organs.rsi
+    state: muscle
+  - type: TriggerOnUse
+  - type: EntityEffectOnTrigger
+    targetUser: true
+    effects:
+    - !type:MovementSpeedModifier
+      walkSpeedModifier: 1.5
+      sprintSpeedModifier: 1.5
+      time: 30
+  - type: DeleteOnTrigger
