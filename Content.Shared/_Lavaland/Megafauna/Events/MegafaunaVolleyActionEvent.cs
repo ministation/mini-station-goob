@@ -47,6 +47,18 @@ public sealed partial class MegafaunaVolleyActionEvent : WorldTargetActionEvent
     /// </summary>
     [DataField]
     public float BlinkDelay;
+
+    /// <summary>
+    /// Projectiles turn towards the target instead of flying straight (TG homing_turn_speed).
+    /// </summary>
+    [DataField]
+    public bool Homing;
+
+    /// <summary>
+    /// Turn rate of homing projectiles, in degrees per second.
+    /// </summary>
+    [DataField]
+    public float HomingSpeed = 60f;
 }
 
 /// <summary>
@@ -58,6 +70,8 @@ public sealed partial class MegafaunaVolleyComponent : Component
     public EntProtoId Projectile = default!;
     public float Speed;
     public float RandomSpread;
+    public bool Homing;
+    public float HomingSpeed;
     public List<List<float>> Patterns = new();
 
     /// <summary>

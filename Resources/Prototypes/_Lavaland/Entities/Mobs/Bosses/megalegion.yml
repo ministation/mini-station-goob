@@ -10,6 +10,9 @@
   description: One of many. For now.
   components:
   - type: MegafaunaDevour
+  - type: ExplosionResistance
+    worn: false
+    damageCoefficient: 0.1
   - type: NecropolisGateOpenOnDamage
   - type: LegionInfest
   - type: EmitSoundOnSpawn

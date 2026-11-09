@@ -82,6 +82,9 @@ public sealed class MegafaunaDevourSystem : EntitySystem
             Loc.GetString("megafauna-devour", ("boss", ent.Owner), ("victim", victim)),
             ent.Owner,
             PopupType.MediumCaution);
+
+        if (ent.Comp.SpawnOnDevour is { } spawn)
+            Spawn(spawn, Transform(ent.Owner).Coordinates);
     }
 
     private void RemoveOrgans<T>(EntityUid victim) where T : IComponent
