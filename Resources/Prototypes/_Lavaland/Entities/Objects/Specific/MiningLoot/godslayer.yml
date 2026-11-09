@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # TG godslayer armour, crafted from the demonic frost miner's ice crystal, a wendigo
-# skull and clockwork alloy. TG also revives the wearer once per ten minutes; that
-# effect is not ported, see the PR.
+# skull and clockwork alloy. Both pieces also revive the wearer once per ten minutes.
 
 - type: entity
   id: LavalandGodslayerArmor
@@ -14,6 +13,7 @@
     sprite: _Lavaland/Clothing/OuterClothing/Armor/godslayer.rsi
   - type: Clothing
     sprite: _Lavaland/Clothing/OuterClothing/Armor/godslayer.rsi
+  - type: GodslayerRevive
   - type: Armor
     coverage:
     - Chest
@@ -56,6 +56,7 @@
     sprite: _Lavaland/Clothing/Head/Helmets/godslayer.rsi
   - type: Clothing
     sprite: _Lavaland/Clothing/Head/Helmets/godslayer.rsi
+  - type: GodslayerRevive
   - type: Armor
     coverage:
     - Head
