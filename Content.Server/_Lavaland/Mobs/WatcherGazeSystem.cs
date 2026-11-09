@@ -113,7 +113,11 @@ public sealed class WatcherGazeSystem : EntitySystem
         {
             case WatcherGazeType.Fire:
                 _stun.TryAddParalyzeDuration(viewer, FireParalyzeDuration);
-                _flammable.AdjustFireStacks(viewer, FireStacks, ignite: true);
+
+                // Most simple mobs are not flammable; AdjustFireStacks would log a resolve error for them.
+                if (HasComp<FlammableComponent>(viewer))
+                    _flammable.AdjustFireStacks(viewer, FireStacks, ignite: true);
+
                 return;
             case WatcherGazeType.Ice:
                 // SS14 has no freon (immobilize only) status, a short paralyze is the closest equivalent.
