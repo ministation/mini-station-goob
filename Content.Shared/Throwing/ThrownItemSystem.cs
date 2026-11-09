@@ -88,7 +88,7 @@ namespace Content.Shared.Throwing
 
         private void OnSleep(EntityUid uid, ThrownItemComponent thrownItem, ref PhysicsSleepEvent @event)
         {
-            StopThrow(uid, thrownItem);
+            DeferSleepStop(uid, thrownItem); // Goob - stopping a throw inside the sleep event corrupts the awake state
         }
 
         private void HandlePullStarted(PullStartedMessage message)
@@ -211,6 +211,7 @@ namespace Content.Shared.Throwing
             base.Update(frameTime);
 
             ProcessDeferredCollisions(); // Goob
+            ProcessDeferredSleepStops(); // Goob
 
             var query = EntityQueryEnumerator<ThrownItemComponent, PhysicsComponent>();
             var frozenQuery = GetEntityQuery<FrozenComponent>(); // Goobstation
