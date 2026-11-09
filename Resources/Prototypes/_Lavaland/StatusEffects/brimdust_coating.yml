@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Mini: stacks are managed by BrimdustCoatingSystem. TG status_effect/stacking/brimdust_coating.
+- type: statusEffect
+  id: BrimdustCoating
+  alwaysAllowed: true

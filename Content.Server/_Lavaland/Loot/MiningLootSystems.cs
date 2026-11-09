@@ -4,22 +4,27 @@ using System;
 using Content.Goobstation.Shared.Overlays;
 using Content.Goobstation.Shared.Teleportation.Systems;
 using Content.Server.Body.Systems;
+using Content.Server.Explosion.EntitySystems;
 using Content.Shared._EinsteinEngines.Flight;
 using Content.Shared._EinsteinEngines.Language;
 using Content.Shared._Lavaland.Loot;
 using Content.Server._EinsteinEngines.Language;
 using Content.Shared.Actions;
 using Content.Shared.Administration.Systems;
+using Content.Shared.Atmos;
 using Content.Shared.Body.Components;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
+using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Follower;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
+using Content.Shared.StatusEffect;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
@@ -399,3 +404,67 @@ public sealed class WarpCubeSystem : EntitySystem
             partnerComp.Partner = null;
     }
 }
+
+/// <summary>
+/// Brimdust sac: coats the user in explosive brimdust for a minute. Taking brute damage sets
+/// off a small blast and burns one stack.
+/// TODO: TG also washes the coating off with water, the fork has no clean wet event for that.
+/// </summary>
+public sealed class BrimdustCoatingSystem : EntitySystem
+{
+    private const string CoatingStatusEffect = "BrimdustCoating";
+    private const string CoatingExplosion = "LavalandBrimstone";
+    private const int MaxStacks = 3;
+
+    private static readonly TimeSpan CoatingDuration = TimeSpan.FromSeconds(60);
+
+    [Dependency] private readonly IPrototypeManager _protoMan = default!;
+    [Dependency] private readonly StatusEffectsSystem _status = default!;
+    [Dependency] private readonly ExplosionSystem _explosion = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<BrimdustSacComponent, UseInHandEvent>(OnSacUsed);
+        SubscribeLocalEvent<BrimdustCoatingComponent, DamageChangedEvent>(OnCoatingDamaged);
+    }
+
+    private void OnSacUsed(Entity<BrimdustSacComponent> ent, ref UseInHandEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        args.Handled = true;
+
+        var user = args.User;
+        if (_status.TryAddStatusEffect<BrimdustCoatingComponent>(user, CoatingStatusEffect, CoatingDuration, true)
+            && TryComp<BrimdustCoatingComponent>(user, out var coating))
+        {
+            coating.Stacks = Math.Min(coating.Stacks + ent.Comp.Stacks, MaxStacks);
+            _popup.PopupEntity(Loc.GetString("brimdust-coating-applied", ("stacks", coating.Stacks)), user, user);
+        }
+
+        QueueDel(ent);
+    }
+
+    private void OnCoatingDamaged(Entity<BrimdustCoatingComponent> ent, ref DamageChangedEvent args)
+    {
+        if (!args.DamageIncreased || args.DamageDelta is null)
+            return;
+
+        if (!args.DamageDelta.TryGetDamageInGroup(_protoMan.Index<DamageGroupPrototype>("Brute"), out var brute)
+            || brute <= FixedPoint2.Zero)
+            return;
+
+        Spawn("ExplosionEffectGrenade", Transform(ent).Coordinates);
+        _explosion.QueueExplosion(Transform(ent).MapPosition, CoatingExplosion, 6f, 3f, 2f, cause: ent.Owner, canCreateVacuum: false, addLog: false);
+
+        if (--ent.Comp.Stacks > 0)
+            return;
+
+        _status.TryRemoveStatusEffect(ent.Owner, CoatingStatusEffect);
+    }
+}
+

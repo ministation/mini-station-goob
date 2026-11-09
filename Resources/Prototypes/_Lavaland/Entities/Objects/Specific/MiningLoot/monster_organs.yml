@@ -3,8 +3,7 @@
 # TG monster core organs (code/modules/mining/equipment/monster_organs).
 # Mini: the fork has no organ framework, so each core is a single-use consumable.
 # TG also lets you implant them; that part stays unported.
-# TODO: TG's brimdust sac (LavalandBrimdustSac, brimdemon_loot.yml) coats the user in
-# brimdust on use. The fork has no brimdust reagent yet, so the sac stays plain butcher loot.
+# TG's brimdust sac (LavalandBrimdustSac, brimdemon_loot.yml) is handled by BrimdustCoatingSystem.
 
 - type: entity
   id: LavalandRegenerativeCore
