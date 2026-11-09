@@ -20,20 +20,6 @@ public sealed class ItemMapperSystem : SharedItemMapperSystem
         SubscribeLocalEvent<ItemMapperComponent, AppearanceChangeEvent>(OnAppearance);
     }
 
-    /// <summary>
-    ///     Points the mapped layers at another RSI, for skins that swap the item sprite at runtime.
-    /// </summary>
-    public void SetRsiPath(Entity<ItemMapperComponent> ent, ResPath path)
-    {
-        ent.Comp.RSIPath = path;
-
-        if (!TryComp(ent.Owner, out SpriteComponent? sprite))
-            return;
-
-        foreach (var layer in ent.Comp.SpriteLayers)
-            _sprite.LayerSetSprite((ent.Owner, sprite), layer, new SpriteSpecifier.Rsi(path, layer));
-    }
-
     private void OnStartup(EntityUid uid, ItemMapperComponent component, ComponentStartup args)
     {
         if (TryComp<SpriteComponent>(uid, out var sprite))
