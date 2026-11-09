@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
 using Content.Client.Items.Systems;
+using Content.Client.Storage.Systems;
 using Content.Shared._Lavaland.Weapons.CrusherSkin;
 using Content.Shared.Hands;
 using Content.Shared.Item;
@@ -22,6 +23,7 @@ public sealed class CrusherSkinSystem : EntitySystem
     [Dependency] private readonly IResourceCache _cache = default!;
     [Dependency] private readonly SharedItemSystem _item = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private readonly ItemMapperSystem _itemMapper = default!;
 
     public override void Initialize()
     {
@@ -44,16 +46,12 @@ public sealed class CrusherSkinSystem : EntitySystem
 
         // Upgrade overlays carry their own RSI, so they have to be pointed at the new set as well.
         if (TryComp<ItemMapperComponent>(ent.Owner, out var mapper))
-        {
-            mapper.RSIPath = rsiPath;
-            foreach (var layer in mapper.SpriteLayers)
-                _sprite.LayerSetSprite((ent.Owner, sprite), layer, new SpriteSpecifier.Rsi(rsiPath, layer));
-        }
+            _itemMapper.SetRsiPath((ent.Owner, mapper), rsiPath);
 
         _item.VisualsChanged(ent.Owner);
     }
 
-    private void OnGetInhand(Entity<CrusherSkinComponent> ent, GetInhandVisualsEvent args)
+    private void OnGetInhand(Entity<CrusherSkinComponent> ent, ref GetInhandVisualsEvent args)
     {
         if (ent.Comp.Index < 0 || ent.Comp.Index >= ent.Comp.Skins.Count)
             return;
