@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 08/14/2025 08:02:51
-  entityCount: 544
+  entityCount: 543
 maps:
 - 1
 grids:
@@ -414,13 +414,6 @@ entities:
     components:
     - type: Transform
       pos: 3.5,19.5
-      parent: 1
-- proto: FloorTileItemWood
-  entities:
-  - uid: 47
-    components:
-    - type: Transform
-      pos: 15.522865,19.535995
       parent: 1
 - proto: FoodBanana
   entities:
