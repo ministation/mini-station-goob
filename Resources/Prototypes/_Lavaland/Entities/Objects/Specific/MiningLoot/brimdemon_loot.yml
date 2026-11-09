@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# TG brimdemon loot. The fork has no monster organ framework, so both items are simple butcher
-# loot: they carry the TG flavor and value, the botanical and explosive uses are not ported.
+# TG brimdemon loot. The fork has no monster organ framework, so the sac is just butcher loot
+# and its organ ability is not ported. Brimdust carries TG reagent and can be composted into
+# a hydroponics tray, which is its botanical use.
 - type: entity
   id: LavalandBrimdust
   parent: BaseItem
@@ -15,6 +16,15 @@
     size: Tiny
   - type: StaticPrice
     price: 1500
+  - type: Produce
+  - type: Extractable
+    grindableSolutionName: food
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        reagents:
+        - ReagentId: Brimdust
+          Quantity: 15
 
 - type: entity
   id: LavalandBrimdustSac
