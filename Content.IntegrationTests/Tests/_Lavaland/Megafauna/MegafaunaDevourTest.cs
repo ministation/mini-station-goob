@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
+using System.Collections.Generic;
+using System.Linq;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Shitmed.Body.Organ;
 using Content.Shared.Body.Components;
@@ -12,7 +14,9 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Log;
 using Robust.Shared.Map;
+using Serilog.Events;
 
 namespace Content.IntegrationTests.Tests._Lavaland.Megafauna;
 
@@ -112,6 +116,62 @@ public sealed class MegafaunaDevourTest
         await pair.CleanReturnAsync();
     }
 
+    [Test]
+    public async Task BodylessCorpseIsDevouredWithoutResolveError()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var logMan = server.ResolveDependency<ILogManager>();
+        var mapSys = server.System<SharedMapSystem>();
+        var mobState = server.System<MobStateSystem>();
+
+        EntityUid eater = default;
+        EntityUid corpse = default;
+
+        var errors = new ErrorLogCapture();
+        logMan.RootSawmill.AddHandler(errors);
+
+        try
+        {
+            await server.WaitPost(() =>
+            {
+                mapSys.CreateMap(out var map);
+
+                eater = entMan.SpawnEntity("MobHuman", new MapCoordinates(0, 0, map));
+                entMan.AddComponent<MegafaunaDevourComponent>(eater);
+
+                // A simple mob: devourable because it is dead and has mob thresholds, but it has
+                // no BodyComponent, so it has no organs to remove.
+                corpse = entMan.SpawnEntity("LavalandMobRaptorBabyGreen", new MapCoordinates(0.5f, 0, map));
+                Assert.That(entMan.HasComponent<BodyComponent>(corpse), Is.False,
+                    "the raptor hatchling must have no BodyComponent for this test to reproduce the bug");
+                Kill(mobState, corpse);
+            });
+
+            await server.WaitRunTicks(5);
+
+            await server.WaitAssertion(() =>
+            {
+                Assert.That(mobState.IsDead(corpse), Is.True, "victim should be dead");
+                Assert.That(entMan.HasComponent<MegafaunaGuttedComponent>(corpse), Is.True,
+                    "bodyless corpse should be marked gutted");
+
+                var resolveErrors = errors.Snapshot()
+                    .Where(message => message.Contains(nameof(BodyComponent)))
+                    .ToArray();
+                Assert.That(resolveErrors, Is.Empty,
+                    $"the devour tried to get organs from a bodyless mob: {string.Join('\n', resolveErrors)}");
+            });
+        }
+        finally
+        {
+            logMan.RootSawmill.RemoveHandler(errors);
+        }
+
+        await pair.CleanReturnAsync();
+    }
+
     /// <summary>
     /// Kills the victim directly: damage application caps at the Critical threshold
     /// in this fork, so the state is changed the way the game does it on lethal hits.
@@ -119,5 +179,25 @@ public sealed class MegafaunaDevourTest
     private static void Kill(MobStateSystem mobState, EntityUid victim)
     {
         mobState.ChangeMobState(victim, Content.Shared.Mobs.MobState.Dead);
+    }
+
+    private sealed class ErrorLogCapture : ILogHandler
+    {
+        public readonly List<string> Messages = [];
+
+        public void Log(string sawmillName, LogEvent message)
+        {
+            if (message.Level < LogEventLevel.Error)
+                return;
+
+            lock (Messages)
+                Messages.Add(message.RenderMessage());
+        }
+
+        public string[] Snapshot()
+        {
+            lock (Messages)
+                return Messages.ToArray();
+        }
     }
 }
