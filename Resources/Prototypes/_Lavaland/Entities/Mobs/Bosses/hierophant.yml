@@ -107,7 +107,7 @@
   - type: MegafaunaDodge
   - type: BossMusic
     soundId: Hierophant
-  - type: TileMovement
+  # Smooth movement, like the drake (no TileMovement): grid steps on a 10 ton boss lag the arena.
   - type: DamageSquareImmunity
   - type: SpawnLootOnDeath
     table: !type:AllSelector
@@ -139,9 +139,8 @@
   - type: MegafaunaBlink
     spawnOnTarget: HierophantShapeBlinkStrong
     spawnOnUsed: HierophantShapeBlinkStrong
-  # TG parity: every melee hit releases a burst, death releases a huge one.
+  # TG parity: every melee hit releases a burst.
   - type: HierophantMeleeBurst
-  - type: HierophantDeathBurst
   # TG parity: every twenty seconds the arena is recreated around the fleeing target.
   - type: HierophantArenaTrap
   # The blink slam action lands on a random tile near the target and blasts it on arrival.

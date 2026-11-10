@@ -21,7 +21,7 @@
     spawn: MobLegionSkull
     shape: !type:NestedEntityShape
       id: RookCross
-      size: 3
+      size: 2
 
 - type: entity
   parent: BaseLegionShape
