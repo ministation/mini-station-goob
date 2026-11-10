@@ -24,8 +24,8 @@ using Robust.Shared.Prototypes;
 namespace Content.IntegrationTests.Tests._Lavaland.Megafauna;
 
 /// <summary>
-/// TG parity checks for the hierophant: strong blink blasts, the melee burst,
-/// the four-chaser swarm and the death burst.
+/// TG parity checks for the hierophant: strong blink blasts, the melee burst
+/// and the four-chaser swarm. The TG death burst is gone on purpose.
 /// </summary>
 [TestFixture]
 public sealed class HierophantParityTest
@@ -176,10 +176,11 @@ public sealed class HierophantParityTest
     }
 
     /// <summary>
-    /// Death must release a huge expanding burst (TG radius 10) before the body is deleted.
+    /// Death must not release the old TG expanding burst: it kept blasting the arena for
+    /// seconds after the boss died, so the feedback fix removed it.
     /// </summary>
     [Test]
-    public async Task DeathReleasesExpandingBurst()
+    public async Task DeathReleasesNoBlastSquares()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -190,7 +191,6 @@ public sealed class HierophantParityTest
 
         var testMap = await pair.CreateTestMap();
         EntityUid boss = default;
-        var deathSpot = Vector2.Zero;
 
         await server.WaitPost(() =>
         {
@@ -202,7 +202,6 @@ public sealed class HierophantParityTest
             }
 
             boss = entMan.SpawnEntity("MobHierophant", testMap.GridCoords);
-            deathSpot = entMan.GetComponent<TransformComponent>(boss).Coordinates.Position;
             var aggressive = entMan.GetComponent<AggressiveComponent>(boss);
             entMan.System<AggressorsSystem>().AddAggressor(
                 (boss, aggressive), entMan.SpawnEntity("MobCow", testMap.GridCoords.Offset(new Vector2(2f, 0f))));
@@ -214,16 +213,9 @@ public sealed class HierophantParityTest
             damage.TryChangeDamage(boss, lethal, ignoreResistances: true);
         });
 
-        // The TG burst expands for a few seconds; blast squares despawn after one second, so
-        // sample the radius twice and require it to grow.
-        await server.WaitRunTicks(30);
-        var nearRadius = 0f;
-        await server.WaitAssertion(() =>
-        {
-            nearRadius = MaxSquareDistance(entMan, deathSpot);
-        });
-
-        await server.WaitRunTicks(60);
+        // The removed burst used to spawn rings for four seconds after death; watch long enough
+        // that any leftover post-death attack would show up.
+        await server.WaitRunTicks(90);
 
         await server.WaitAssertion(() =>
         {
@@ -232,11 +224,8 @@ public sealed class HierophantParityTest
             Assert.That(deleted, Is.True,
                 "the hierophant must still delete itself on death");
 
-            Assert.That(CountSquares(entMan, "LavalandHierophantSquare"), Is.GreaterThan(20),
-                "the death burst released no expanding blast squares, got " + CountSquares(entMan, "LavalandHierophantSquare"));
-
-            Assert.That(MaxSquareDistance(entMan, deathSpot), Is.GreaterThan(nearRadius),
-                "the death burst rings never grew outwards");
+            Assert.That(CountSquares(entMan, "LavalandHierophantSquare"), Is.Zero,
+                "the dead hierophant still released blast squares, got " + CountSquares(entMan, "LavalandHierophantSquare"));
         });
 
         await pair.CleanReturnAsync();
@@ -256,22 +245,6 @@ public sealed class HierophantParityTest
         }
 
         return squares;
-    }
-
-    private static float MaxSquareDistance(IEntityManager entMan, Vector2 center)
-    {
-        var max = 0f;
-        var query = entMan.EntityQueryEnumerator<TransformComponent, MetaDataComponent>();
-        while (query.MoveNext(out var xform, out var meta))
-        {
-            if (meta.EntityPrototype?.ID != "LavalandHierophantSquare")
-                continue;
-            var distance = (xform.Coordinates.Position - center).Length();
-            if (distance > max)
-                max = distance;
-        }
-
-        return max;
     }
 
     private static int CountSquares(IEntityManager entMan, string prototype)
