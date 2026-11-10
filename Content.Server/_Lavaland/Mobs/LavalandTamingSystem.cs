@@ -73,20 +73,37 @@ public sealed class LavalandTamingSystem : EntitySystem
 
     private void Tame(Entity<TameableMobComponent> ent, EntityUid tamer)
     {
-        RemComp<TameableMobComponent>(ent);
-
-        var tamed = AddComp<TamedMobComponent>(ent);
-        tamed.Tamer = tamer;
-
-        // TG: tamed mobs befriend the tamer and stop treating them as prey.
-        _factions.IgnoreEntity(ent.Owner, tamer);
+        MakeTamed(ent.Owner, tamer);
 
         Spawn("EffectHearts", Transform(ent).Coordinates);
         _popup.PopupEntity(Loc.GetString("lavaland-tame-success", ("target", ent)), ent, tamer);
+    }
 
-        // Goldgrubs are rideable as soon as they trust you, no saddle required.
-        if (TryComp<MountableMobComponent>(ent, out var mountable) && mountable.SaddleItems.Count == 0)
-            MakeRideable((ent.Owner, mountable));
+    /// <summary>
+    /// Moves the taming of a mob onto the entity that replaces it when it grows up.
+    /// </summary>
+    public void TransferTaming(EntityUid from, EntityUid to)
+    {
+        if (!TryComp<TamedMobComponent>(from, out var tamed))
+            return;
+
+        MakeTamed(to, tamed.Tamer);
+    }
+
+    private void MakeTamed(EntityUid uid, EntityUid? tamer)
+    {
+        RemComp<TameableMobComponent>(uid);
+
+        var tamed = EnsureComp<TamedMobComponent>(uid);
+        tamed.Tamer = tamer;
+
+        // TG: tamed mobs befriend the tamer and stop treating them as prey.
+        if (tamer is { } owner && !TerminatingOrDeleted(owner))
+            _factions.IgnoreEntity(uid, owner);
+
+        // Goldgrubs and raptors are rideable as soon as they trust you, no saddle required.
+        if (TryComp<MountableMobComponent>(uid, out var mountable) && mountable.SaddleItems.Count == 0)
+            MakeRideable((uid, mountable));
     }
 
     private void OnSaddleUsed(Entity<MountableMobComponent> ent, ref InteractUsingEvent args)
@@ -130,6 +147,7 @@ public sealed class LavalandTamingSystem : EntitySystem
             QueueDel(saddle);
 
         MakeRideable(ent);
+        _popup.PopupEntity(Loc.GetString("lavaland-saddle-ready", ("target", ent)), ent);
     }
 
     private void MakeRideable(Entity<MountableMobComponent> ent)
@@ -146,8 +164,6 @@ public sealed class LavalandTamingSystem : EntitySystem
         // TG riders keep their hands free, so no virtual reins item like cars get.
         vehicle.RequiredHands = 0;
         Dirty(ent, vehicle);
-
-        _popup.PopupEntity(Loc.GetString("lavaland-saddle-ready", ("target", ent)), ent);
     }
 
     private void OnStrapAttempt(Entity<MountableMobComponent> ent, ref StrapAttemptEvent args)
