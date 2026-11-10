@@ -65,9 +65,29 @@ public sealed class SmartFridgeSerializationTest
 
             var userData = server.ResolveDependency<IResourceManager>().UserData;
             Assert.That(userData.Exists(path));
-            using var reader = userData.OpenText(path);
-            Assert.That(reader.ReadToEnd(), Does.Contain("SmartFridge"),
-                "The fridge should be part of the saved grid");
+            using (var reader = userData.OpenText(path))
+            {
+                Assert.That(reader.ReadToEnd(), Does.Contain("SmartFridge"),
+                    "The fridge should be part of the saved grid");
+            }
+
+            // Round-trip: the saved grid must load back, which also exercises the new entry reader.
+            mapSystem.CreateMap(out var loadMapId);
+            Assert.That(mapLoader.TryLoadGrid(loadMapId, path, out _), "The saved grid must load back");
+
+            var loadedFridge = false;
+            var query = entMan.EntityQueryEnumerator<SmartFridgeComponent>();
+            while (query.MoveNext(out var uid, out var loadedComp))
+            {
+                if (entMan.GetComponent<TransformComponent>(uid).MapID != loadMapId)
+                    continue;
+
+                loadedFridge = true;
+                Assert.That(loadedComp.ContainedEntries, Is.Not.Empty,
+                    "The loaded fridge should still know about its contents");
+            }
+
+            Assert.That(loadedFridge, "The loaded grid should contain the fridge");
         });
 
         await pair.CleanReturnAsync();
