@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Server._Lavaland.Mobs;
 using Content.Shared._Lavaland.Fauna;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -20,6 +21,7 @@ public sealed class FaunaGrowthSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly LavalandTamingSystem _taming = default!;
 
     public override void Initialize()
     {
@@ -64,7 +66,8 @@ public sealed class FaunaGrowthSystem : EntitySystem
                 continue;
 
             var xform = Transform(uid);
-            Spawn(pick, xform.Coordinates);
+            var grown = Spawn(pick, xform.Coordinates);
+            _taming.TransferTaming(uid, grown);
             QueueDel(uid);
         }
     }

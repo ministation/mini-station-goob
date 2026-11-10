@@ -3,6 +3,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Server._Lavaland.Fauna;
+using Content.Server._Lavaland.Mobs;
 using Content.Shared._Lavaland.Fauna;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -99,6 +100,56 @@ public sealed class RaptorParityTest
         }
 
         Assert.That(grown, Is.EqualTo(1), "exactly one youngling should replace the hatchling");
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task TamingSurvivesGrowth()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = server.System<SharedMapSystem>();
+        var timing = server.ResolveDependency<IGameTiming>();
+
+        EntityUid baby = default;
+        EntityUid tamer = default;
+        MapId mapId = default;
+
+        await server.WaitPost(() =>
+        {
+            mapSys.CreateMap(out mapId);
+            var coords = new MapCoordinates(0, 0, mapId);
+            tamer = entMan.SpawnEntity("MobHuman", coords);
+            baby = entMan.SpawnEntity("LavalandMobRaptorBabyRed", coords.Offset(new Vector2(1.5f, 0)));
+
+            entMan.AddComponent<TamedMobComponent>(baby).Tamer = tamer;
+            entMan.GetComponent<FaunaGrowthComponent>(baby).NextGrowthTime = timing.CurTime;
+        });
+
+        await server.WaitRunTicks(5);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.EntityExists(baby), Is.False, "the tamed hatchling should grow into a youngling");
+
+            var grown = EntityUid.Invalid;
+            var query = entMan.EntityQueryEnumerator<RaptorComponent, TransformComponent>();
+            while (query.MoveNext(out var uid, out _, out var xform))
+            {
+                if (xform.MapID == mapId)
+                    grown = uid;
+            }
+
+            Assert.That(grown, Is.Not.EqualTo(EntityUid.Invalid), "growth should spawn one youngling");
+            Assert.That(entMan.GetComponent<TamedMobComponent>(grown).Tamer, Is.EqualTo(tamer),
+                "growing up must keep the raptor tamed by the same player");
+            Assert.That(entMan.HasComponent<TameableMobComponent>(grown), Is.False,
+                "a grown tamed raptor must not be tameable with food again");
+            Assert.That(entMan.GetComponent<MountableMobComponent>(grown).Saddled, Is.True,
+                "a tamed raptor must stay rideable without a saddle after growing");
+        });
+
         await pair.CleanReturnAsync();
     }
 
