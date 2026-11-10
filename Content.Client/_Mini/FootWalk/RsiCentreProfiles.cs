@@ -150,8 +150,10 @@ public sealed class RsiCentreProfiles
     }
 
     /// <summary>
-    /// True if the lower band of the frame has any opaque pixel. The band is the same strip the walk
-    /// cut removes and moves with the leg, so an opaque strip means the garment paints over the feet.
+    /// True if the garment paints the whole lower band of the frame: every row of the strip the walk
+    /// cut removes and moves with the leg has an opaque pixel. A hem that only dips into the top of the
+    /// band (a chest piece or armour vest, e.g. the H.E.C.K. suit) leaves the feet themselves bare, so
+    /// hiding the bare feet under it removed them and showed the joint patch instead.
     /// </summary>
     public static bool FrameCoversFootBand(Image<Rgba32> frame, float cut)
     {
@@ -161,14 +163,15 @@ public sealed class RsiCentreProfiles
         for (var y = frame.Height - bandHeight; y < frame.Height; y++)
         {
             var row = y * frame.Width;
-            for (var x = 0; x < frame.Width; x++)
-            {
-                if (pixels[row + x].A > AlphaThreshold)
-                    return true;
-            }
+            var painted = false;
+            for (var x = 0; x < frame.Width && !painted; x++)
+                painted = pixels[row + x].A > AlphaThreshold;
+
+            if (!painted)
+                return false;
         }
 
-        return false;
+        return true;
     }
 
     private Image<Rgba32>? GetFrame(RSI rsi, RSI.StateId stateId, RsiDirection dir)

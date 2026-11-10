@@ -154,6 +154,31 @@ public sealed class RsicFrameExtractionTest
             "A hardsuit boot band in the bottom strip must cover the feet");
     }
 
+    [Test]
+    public void ChestPieceHemDoesNotCoverTheFeet()
+    {
+        // H.E.C.K. suit: torso armour whose hem ends five rows above the sprite bottom. Counting only
+        // "any opaque pixel in the band" made that hem a boot band, so walking hid the bare feet and
+        // the joint patch showed skin where the jumpsuit's pant legs should be.
+        using var chestPiece = new Image<Rgba32>(8, 8);
+        for (var x = 2; x < 6; x++)
+            chestPiece[x, 4] = new Rgba32(255, 255, 255, 255);
+        Assert.That(RsiCentreProfiles.FrameCoversFootBand(chestPiece, 0.5f), Is.False,
+            "A chest piece whose hem only reaches the top of the band must not hide bare feet");
+
+        using var boots = new Image<Rgba32>(8, 8);
+        for (var y = 4; y < 8; y++)
+            boots[2, y] = new Rgba32(255, 255, 255, 255);
+        Assert.That(RsiCentreProfiles.FrameCoversFootBand(boots, 0.5f), Is.True,
+            "Art that paints every row of the band still covers the feet");
+
+        using var holedBoots = new Image<Rgba32>(8, 8);
+        for (var y = 4; y < 7; y++)
+            holedBoots[2, y] = new Rgba32(255, 255, 255, 255);
+        Assert.That(RsiCentreProfiles.FrameCoversFootBand(holedBoots, 0.5f), Is.False,
+            "An unpainted row leaves part of the foot bare");
+    }
+
     private static void AssertFrame(Image<Rgba32> frame, int expectedFrameIndex)
     {
         Assert.That(frame, Is.Not.Null);
