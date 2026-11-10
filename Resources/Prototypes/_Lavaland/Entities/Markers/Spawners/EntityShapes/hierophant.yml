@@ -49,25 +49,6 @@
       id: BoxFilled
       size: 3
 
-# TG death: an expanding vortex burst up to radius 10 at the death spot.
-- type: entity
-  parent: BaseHierophantShape
-  id: HierophantShapeDeathBurst
-  name: hierophant death burst spawner
-  categories: [ HideSpawnMenu, Spawner ]
-  components:
-  - type: ShapeSpawner
-    spawn: LavalandHierophantSquare
-    shape: !type:NestedEntityShape
-      id: BoxHollow
-  - type: ShapeSpawnerCounter
-    spawnPeriod: 0.4
-    maxCounter: 10
-  - type: ExpandingShapeSpawner
-    counterSize: 1
-  - type: TimedDespawn
-    lifetime: 8
-
 # Expanding box
 - type: entity
   parent: MarkerBase

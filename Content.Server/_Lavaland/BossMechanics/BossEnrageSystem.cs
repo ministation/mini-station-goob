@@ -39,7 +39,9 @@ public sealed class BossEnrageSystem : EntitySystem
             return;
 
         var fraction = 1f - Math.Clamp(damageable.TotalDamage.Float() / maxHealth.Float(), 0f, 1f);
-        if (fraction > ent.Comp.HealthFraction)
+
+        // The killing blow must not enrage a corpse: no speed, melee and action buffs, no attack sound.
+        if (fraction <= 0f || fraction > ent.Comp.HealthFraction)
             return;
 
         Enrage(ent);

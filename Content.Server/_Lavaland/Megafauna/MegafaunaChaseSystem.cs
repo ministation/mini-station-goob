@@ -47,7 +47,8 @@ public sealed class MegafaunaChaseSystem : EntitySystem
         var query = EntityQueryEnumerator<MegafaunaAiComponent, AggressiveComponent, MovementSpeedModifierComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var ai, out var aggressive, out var speed, out var xform))
         {
-            if (!ai.Active || xform.Anchored || !TryComp<PhysicsComponent>(uid, out var body))
+            // A dead boss must not keep walking and biting while its body is still around.
+            if (!ai.Active || _mobState.IsDead(uid) || xform.Anchored || !TryComp<PhysicsComponent>(uid, out var body))
                 continue;
 
             if (!TryPickTarget(uid, aggressive, xform, out var target, out var targetXform))

@@ -76,7 +76,9 @@ public sealed class HierophantArenaTrapSystem : EntitySystem
                 continue;
 
             trap.NextCheck = now + TimeSpan.FromSeconds(0.5);
-            if (now < trap.NextTrap)
+
+            // A dead hierophant must not keep walling the arena and blasting it.
+            if (_mobState.IsDead(uid) || now < trap.NextTrap)
                 continue;
 
             var target = ClosestLivingAggressor(uid, aggressive, xform);
