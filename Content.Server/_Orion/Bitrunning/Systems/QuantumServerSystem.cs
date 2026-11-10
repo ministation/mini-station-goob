@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared.Damage.Systems;
 using Content.Shared.Damage.Components;
 using Content.Shared.SurveillanceCamera.Components;
@@ -382,8 +386,9 @@ public sealed class QuantumServerSystem : EntitySystem
             DisconnectAvatar(connection, false);
         }
 
-        if (serverEnt.Comp.DomainMapUid is { } mapUid)
-            _map.DeleteMap(Comp<MapComponent>(mapUid).MapId);
+        // The domain map may already be deleted when the server itself is terminated during a round restart.
+        if (serverEnt.Comp.DomainMapUid is { } mapUid && TryComp<MapComponent>(mapUid, out var mapComp))
+            _map.DeleteMap(mapComp.MapId);
 
         serverEnt.Comp.DomainMapUid = null;
         serverEnt.Comp.DomainGridUid = null;
