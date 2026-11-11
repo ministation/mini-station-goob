@@ -337,8 +337,15 @@ public sealed partial class CloneProjectorSystem : SharedCloneProjectorSystem
         var cloneRetrievedPopup = Loc.GetString(projector.Comp.CloneRetrievedMessage, ("target", Name(clone)));
         _popup.PopupCoordinates(cloneRetrievedPopup, Transform(clone).Coordinates, PopupType.Medium);
 
-        if (TerminatingOrDeleted(projector)
-            || !_container.Insert(clone, projector.Comp.CloneContainer))
+        // Mini: проектор удаляется вместе с владельцем (например, при очистке к концу раунда).
+        // Вставлять клона в удаляемый контейнер некуда, это не ошибка: клон просто уходит вместе с проектором.
+        if (TerminatingOrDeleted(projector))
+        {
+            QueueDel(clone);
+            return false;
+        }
+
+        if (!_container.Insert(clone, projector.Comp.CloneContainer))
         {
             _sawmill.Error($"Failed to insert clone entity: {ToPrettyString(clone)} into {ToPrettyString(projector)}");
 
