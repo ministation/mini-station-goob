@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Shared.Whitelist;
 using Robust.Shared.Analyzers;
 using Robust.Shared.Audio;
@@ -79,7 +83,11 @@ public sealed partial class SmartFridgeComponent : Component
 /// A single entry in the smart fridge UI.
 /// May contain multiple items of the same type.
 /// </summary>
-[Serializable, NetSerializable, DataRecord]
+/// <remarks>
+/// Used as a YAML dictionary key, so it cannot be a <c>DataRecord</c> that serializes as a mapping.
+/// See <see cref="SmartFridgeEntrySerializer"/>.
+/// </remarks>
+[Serializable, NetSerializable]
 public partial record struct SmartFridgeEntry
 {
     public string Name;
