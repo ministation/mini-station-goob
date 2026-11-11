@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using Content.Shared.Chat;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
+using Content.Shared.DoAfter;
 using Content.Shared.Execution;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Ghost;
@@ -18,7 +22,9 @@ using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
+using Serilog.Events;
 using Content.Shared._Shitmed.Medical.Surgery.Consciousness.Components; // Shitmed Change
 
 namespace Content.IntegrationTests.Tests.Commands;
@@ -56,7 +62,22 @@ public sealed class SuicideCommandTests
   id: TestMaterialReclaimer
   name: test version of the material reclaimer
   components:
-  - type: MaterialReclaimer";
+  - type: MaterialReclaimer
+
+- type: entity
+  id: TestHitscanAmmo
+  name: test hitscan ammo
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: HitscanAmmo
+
+- type: entity
+  id: TestHitscanExecutionGun
+  name: test hitscan execution gun
+  components:
+  - type: Gun
+  - type: BasicEntityAmmoProvider
+    proto: TestHitscanAmmo";
     private static readonly ProtoId<TagPrototype> CannotSuicideTag = "CannotSuicide";
     private static readonly ProtoId<DamageTypePrototype> DamageType = "Slash";
 
@@ -377,5 +398,82 @@ public sealed class SuicideCommandTests
         });
 
         await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Self-execution with a hitscan gun whose ammo has no damage type used to leave the damage type
+    /// empty, so SharedSuicideSystem logged "could not find the damage type prototype associated with .".
+    /// The gun execution path must fill in the fallback instead.
+    /// </summary>
+    [Test]
+    public async Task TestSuicideByHitscanGunWithoutDamageType()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            Connected = true,
+            Dirty = true,
+            DummyTicker = false
+        });
+        var server = pair.Server;
+        var entManager = server.ResolveDependency<IEntityManager>();
+        var playerMan = server.ResolveDependency<IPlayerManager>();
+        var logMan = server.ResolveDependency<ILogManager>();
+        var mobStateSystem = entManager.System<MobStateSystem>();
+        var transformSystem = entManager.System<TransformSystem>();
+
+        var errorLogs = new ErrorLogCapture();
+        logMan.RootSawmill.AddHandler(errorLogs);
+
+        var player = playerMan.Sessions.First().AttachedEntity!.Value;
+        var mobStateComp = entManager.GetComponent<MobStateComponent>(player);
+
+        try
+        {
+            // Reproduce the production path: a finished gun self-execution with ammo that carries no damage type.
+            await server.WaitPost(() =>
+            {
+                var gun = entManager.SpawnEntity("TestHitscanExecutionGun", transformSystem.GetMapCoordinates(player));
+                var ev = new ExecutionDoAfterEvent();
+                var args = new DoAfterArgs(entManager, player, 0f, ev, gun, target: player, used: gun);
+                ev.DoAfter = new Content.Shared.DoAfter.DoAfter(0, args, TimeSpan.Zero);
+                entManager.EventBus.RaiseLocalEvent(gun, ev);
+            });
+
+            await server.WaitAssertion(() =>
+            {
+                Assert.That(mobStateSystem.IsDead(player, mobStateComp), "gun self-execution must kill the player");
+                var damageTypeErrors = errorLogs.Snapshot()
+                    .Where(message => message.Contains(nameof(SharedSuicideSystem)))
+                    .ToArray();
+                Assert.That(damageTypeErrors, Is.Empty,
+                    $"gun execution must not leave the suicide damage type empty: {string.Join('\n', damageTypeErrors)}");
+            });
+        }
+        finally
+        {
+            logMan.RootSawmill.RemoveHandler(errorLogs);
+        }
+
+        await pair.CleanReturnAsync();
+    }
+
+    private sealed class ErrorLogCapture : ILogHandler
+    {
+        private readonly List<string> _messages = new();
+
+        public void Log(string sawmillName, LogEvent message)
+        {
+            if (message.Level < LogEventLevel.Error)
+                return;
+
+            lock (_messages)
+                _messages.Add(message.RenderMessage());
+        }
+
+        public string[] Snapshot()
+        {
+            lock (_messages)
+                return _messages.ToArray();
+        }
     }
 }
