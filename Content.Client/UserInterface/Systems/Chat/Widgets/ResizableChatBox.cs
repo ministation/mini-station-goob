@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 
+using System;
 using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
@@ -14,6 +15,12 @@ public sealed class ResizableChatBox : ChatBox
         public ResizableChatBox()
         {
             IoCManager.InjectDependencies(this);
+
+            // Mobile HUD: the touch pad takes the bottom of the screen and the chat
+            // shares the top right corner with it. 30% less width, 25% less height
+            // than the desktop 465x225 keeps messages readable and frees the corner.
+            if (OperatingSystem.IsAndroid())
+                MinSize = new Vector2(325f, 169f);
         }
 // TODO: Revisit the resizing stuff after https://github.com/space-wizards/RobustToolbox/issues/1392 is done,
         // Probably not "supposed" to inject IClyde, but I give up.
