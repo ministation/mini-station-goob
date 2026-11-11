@@ -81,6 +81,14 @@ public sealed class SmokeSystem : EntitySystem
             if (curTime < smoke.NextSecond)
                 continue;
 
+            // Mini: the smoke can despawn before the collision ends, leaving a reference to a deleted entity.
+            // Resolving it would log "Can't resolve SmokeComponent" every tick, so drop the stale component.
+            if (TerminatingOrDeleted(smoke.SmokeEntity))
+            {
+                RemCompDeferred<SmokeAffectedComponent>(uid);
+                continue;
+            }
+
             smoke.NextSecond += TimeSpan.FromSeconds(1.33f); // goob edit - increased metabolize delay
             SmokeReact(uid, smoke.SmokeEntity);
         }
