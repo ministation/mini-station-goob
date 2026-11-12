@@ -59,9 +59,9 @@
     makeSentient: true
     name: ghost-role-information-ashwalker-name
     description: ghost-role-information-ashwalker-description
-    rules: ghost-role-information-antagonist-rules
+    rules: ghost-role-information-ashwalker-rules
     mindRoles:
-    - MindRoleGhostRoleTeamAntagonist
+    - MindRoleGhostRoleNeutral
     raffle:
       settings: default
     job: AshWalker
@@ -94,9 +94,9 @@
     makeSentient: true
     name: ghost-role-information-ashwalker-name
     description: ghost-role-information-ashwalker-description
-    rules: ghost-role-information-antagonist-rules
+    rules: ghost-role-information-ashwalker-rules
     mindRoles:
-    - MindRoleGhostRoleTeamAntagonist
+    - MindRoleGhostRoleNeutral
     raffle:
       settings: default
     job: AshWalker
