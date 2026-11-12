@@ -135,9 +135,13 @@ public sealed partial class PossessionSystem : EntitySystem
         }
 
         // Return the possessors mind to their body, and the target to theirs.
-        if (!TerminatingOrDeleted(possessed.Comp.PossessorMindId))
+        // Mini: при очистке к концу раунда тело носителя может быть уже удалено, а разум ещё жив.
+        // TransferTo в несуществующее тело бросает исключение, поэтому проверяем обе сущности.
+        if (!TerminatingOrDeleted(possessed.Comp.PossessorMindId)
+            && !TerminatingOrDeleted(possessed.Comp.PossessorOriginalEntity))
             _mind.TransferTo(possessed.Comp.PossessorMindId, possessed.Comp.PossessorOriginalEntity);
-        if (!TerminatingOrDeleted(possessed.Comp.OriginalMindId))
+        if (!TerminatingOrDeleted(possessed.Comp.OriginalMindId)
+            && !TerminatingOrDeleted(possessed.Comp.OriginalEntity))
             _mind.TransferTo(possessed.Comp.OriginalMindId, possessed.Comp.OriginalEntity);
 
         if (!TerminatingOrDeleted(possessed.Comp.OriginalEntity))
