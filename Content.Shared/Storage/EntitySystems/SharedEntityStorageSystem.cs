@@ -224,6 +224,10 @@ public abstract class SharedEntityStorageSystem : EntitySystem
         var containedArr = component.Contents.ContainedEntities.ToArray();
         foreach (var contained in containedArr)
         {
+            // Saved grids can reference a missing entity in a container (uid 0); skip it instead of resolving it.
+            if (!Exists(contained))
+                continue;
+
             Remove(contained, uid, component, uidXform);
         }
     }
