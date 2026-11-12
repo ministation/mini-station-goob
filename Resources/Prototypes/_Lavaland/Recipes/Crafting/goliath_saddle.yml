@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG crafting_recipe: 5 leather sheets make a goliath saddle. This port has no
+# leather, so the saddle uses the goliath hide plates the goliath itself drops.
+
+- type: constructionGraph
+  id: LavalandGoliathSaddle
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: saddle
+      steps:
+      - material: GoliathHide
+        amount: 5
+        doAfter: 2
+  - node: saddle
+    entity: LavalandGoliathSaddle
+
+- type: construction
+  id: LavalandGoliathSaddle
+  graph: LavalandGoliathSaddle
+  category: construction-category-misc
+  targetNode: saddle
+  objectType: Item
