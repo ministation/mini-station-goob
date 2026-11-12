@@ -4,6 +4,7 @@ using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Configuration;
 using Robust.Shared.Input;
 using Robust.Shared.Timing;
 
@@ -14,6 +15,15 @@ public sealed class ResizableChatBox : ChatBox
         public ResizableChatBox()
         {
             IoCManager.InjectDependencies(this);
+
+            // Mobile HUD: the touch pad takes the bottom of the screen and the chat
+            // shares the top right corner with it. 30% less width, 25% less height
+            // than the desktop 465x225 keeps messages readable and frees the corner.
+            // The Robust engine sandbox rejects System.OperatingSystem in content, so
+            // the Android engine is detected by its mobile.* CVars instead; the
+            // official desktop engine registers none of them.
+            if (_cfg.IsCVarRegistered("mobile.view_width"))
+                MinSize = new Vector2(325f, 169f);
         }
 // TODO: Revisit the resizing stuff after https://github.com/space-wizards/RobustToolbox/issues/1392 is done,
         // Probably not "supposed" to inject IClyde, but I give up.
@@ -24,6 +34,7 @@ public sealed class ResizableChatBox : ChatBox
         // within some bounds so that it doesn't overlap other UI elements, while still
         // being freely resizable within those bounds.
         [Dependency] private readonly IClyde _clyde = default!;
+        [Dependency] private readonly IConfigurationManager _cfg = default!;
 
         private const int DragMarginSize = 7;
         private const int MinDistanceFromBottom = 255;
