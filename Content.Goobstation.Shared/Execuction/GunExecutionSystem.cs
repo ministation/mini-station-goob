@@ -237,6 +237,9 @@ public sealed partial class SharedGunExecutionSystem : EntitySystem
         if (HasComp<BatteryAmmoProviderComponent>(weapon)) // Almost all hitscans are heat so this should work fine
             mainDamageType = "Heat";
 
+        // Hitscan ammo isn't inspected above, so fall back to the same default GetDamage uses
+        mainDamageType ??= "Blunt";
+
         var prev = _combat.IsInCombatMode(attacker);
         _combat.SetInCombatMode(attacker, true);
 

@@ -98,7 +98,9 @@ public sealed class SharedSuicideSystem : EntitySystem
         // We don't want structural damage for the same reasons listed above
         if (!_prototypeManager.TryIndex(damageType, out var damagePrototype) || damagePrototype.ID == "Structural")
         {
-            Log.Error($"{nameof(SharedSuicideSystem)} could not find the damage type prototype associated with {damageType}. Falling back to {FallbackDamageType}");
+            // An unspecified damage type is a normal fallback request, not an error
+            if (damageType != null)
+                Log.Error($"{nameof(SharedSuicideSystem)} could not find the damage type prototype associated with {damageType}. Falling back to {FallbackDamageType}");
             damagePrototype = _prototypeManager.Index(FallbackDamageType);
         }
 
