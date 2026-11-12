@@ -82,6 +82,7 @@ public sealed partial class FishingSystem : EntitySystem
     [Dependency] private INetManager _net = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedEnsnareableSystem _ensnare = default!;
+    [Dependency] private SharedInteractionSystem _interaction = default!;
 
     public override void Initialize()
     {
@@ -175,8 +176,12 @@ public sealed partial class FishingSystem : EntitySystem
         }
 
         // There is no fishing source there, so the hook grabs an item or a creature instead.
+        // The bluespace line may fish through walls, but snagging stays limited by line of sight.
         if (args.Target is { } hooked && CanHook(hooked, hook))
         {
+            if (!_interaction.InRangeUnobstructed((user, null), (hooked, null), range: -1f))
+                return;
+
             HookAtom(user, ent, hooked, hook);
             args.Handled = true;
         }
@@ -309,6 +314,12 @@ public sealed partial class FishingSystem : EntitySystem
         {
             ClearLure(ent);
             _popup.PopupEntity(Loc.GetString("fishing-snag-slipped"), user, user);
+            return;
+        }
+
+        if (!_interaction.InRangeUnobstructed((user, null), (hooked, null), range: -1f))
+        {
+            _popup.PopupEntity(Loc.GetString("fishing-snag-blocked", ("target", Name(hooked))), user, user);
             return;
         }
 

@@ -20,6 +20,7 @@ fishing-snag-hooked = Ты зацепил: { $target }. Используй уд�
 fishing-snag-pulled = Ты подтягиваешь: { $target }.
 fishing-snag-stuck = { $target } не поддаётся!
 fishing-snag-slipped = Леска соскальзывает.
+fishing-snag-blocked = { $target } не подтянуть: мешает препятствие.
 fishing-hook-no-fishing = Этот крючок не для обычной рыбалки.
 fishing-rod-extend-first = Сначала нужно выдвинуть удочку.
 fishing-rod-reel-first = Сначала смотай леску.

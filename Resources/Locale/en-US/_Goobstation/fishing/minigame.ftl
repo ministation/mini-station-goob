@@ -20,6 +20,7 @@ fishing-snag-hooked = You hook { $target }. Use the rod in hand to reel it in.
 fishing-snag-pulled = You reel in { $target }.
 fishing-snag-stuck = { $target } won't budge!
 fishing-snag-slipped = The line slips free.
+fishing-snag-blocked = { $target } is stuck behind an obstacle.
 fishing-hook-no-fishing = This hook was not meant for traditional fishing.
 fishing-rod-extend-first = You need to extend the rod first.
 fishing-rod-reel-first = Reel the line in first.
