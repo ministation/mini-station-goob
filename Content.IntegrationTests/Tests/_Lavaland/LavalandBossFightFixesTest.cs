@@ -47,19 +47,17 @@ public sealed class LavalandBossFightFixesTest
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
+        var testMap = await pair.CreateTestMap();
         var entMan = server.ResolveDependency<IEntityManager>();
 
         await server.WaitPost(() =>
         {
-            var mapSys = server.System<SharedMapSystem>();
-            mapSys.CreateMap(out var map);
-
-            var prone = entMan.SpawnEntity("MobHuman", new MapCoordinates(Vector2.Zero, map));
+            var prone = entMan.SpawnEntity("MobHuman", testMap.MapCoords);
             entMan.EventBus.RaiseLocalEvent(prone, new DownedEvent());
 
-            var player = entMan.SpawnEntity("MobHuman", new MapCoordinates(new Vector2(2, 0), map));
-            var boss = entMan.SpawnEntity("LavalandBossColossus", new MapCoordinates(new Vector2(4, 0), map));
-            var bolt = entMan.SpawnEntity("LavalandColossusBolt", new MapCoordinates(new Vector2(1, 0), map));
+            var player = entMan.SpawnEntity("MobHuman", new MapCoordinates(new Vector2(2, 0), testMap.MapId));
+            var boss = entMan.SpawnEntity("LavalandBossColossus", new MapCoordinates(new Vector2(4, 0), testMap.MapId));
+            var bolt = entMan.SpawnEntity("LavalandColossusBolt", new MapCoordinates(new Vector2(1, 0), testMap.MapId));
 
             var projectile = entMan.GetComponent<ProjectileComponent>(bolt);
             projectile.TargetCoordinates = new Vector2(50, 50);
@@ -86,19 +84,17 @@ public sealed class LavalandBossFightFixesTest
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
+        var testMap = await pair.CreateTestMap();
         var entMan = server.ResolveDependency<IEntityManager>();
         var stamina = server.System<SharedStaminaSystem>();
 
         await server.WaitPost(() =>
         {
-            var mapSys = server.System<SharedMapSystem>();
-            mapSys.CreateMap(out var map);
-
-            var puller = entMan.SpawnEntity("MobHuman", new MapCoordinates(Vector2.Zero, map));
+            var puller = entMan.SpawnEntity("MobHuman", testMap.MapCoords);
 
             foreach (var bossProto in Bosses)
             {
-                var boss = entMan.SpawnEntity(bossProto, new MapCoordinates(new Vector2(2, 0), map));
+                var boss = entMan.SpawnEntity(bossProto, new MapCoordinates(new Vector2(2, 0), testMap.MapId));
 
                 Assert.That(entMan.HasComponent<AggressiveComponent>(boss), Is.True, bossProto);
 
@@ -124,13 +120,12 @@ public sealed class LavalandBossFightFixesTest
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
+        var testMap = await pair.CreateTestMap();
         var entMan = server.ResolveDependency<IEntityManager>();
 
         await server.WaitPost(() =>
         {
-            var mapSys = server.System<SharedMapSystem>();
-            mapSys.CreateMap(out var map);
-            var coords = new MapCoordinates(Vector2.Zero, map);
+            var coords = testMap.MapCoords;
 
             // Berserker armor keeps its helmet attached, like a hardsuit.
             var containers = server.System<SharedContainerSystem>();
