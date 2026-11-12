@@ -13,3 +13,6 @@
     state: goliath_saddle
   - type: Item
     size: Normal
+  - type: Construction
+    graph: LavalandGoliathSaddle
+    node: saddle
