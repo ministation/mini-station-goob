@@ -184,6 +184,10 @@
     - Ore
   - type: MountableMob
     rideSpeed: 3.5
+  # Buckling is gated by LavalandTamingSystem until the mob is tamed.
+  - type: Strap
+    position: Stand
+    blockMovement: false
 
 # Common parts of every adult raptor. Colors override sprite, health, speed and damage.
 - type: entity
@@ -196,6 +200,10 @@
   - type: TroughFeeder # TG: raptors eat ore straight out of food troughs
   - type: MountableMob # TG: tamed raptors are direct mounts, no saddle needed
     rideSpeed: 4.5
+  # Buckling is gated by LavalandTamingSystem until the mob is tamed.
+  - type: Strap
+    position: Stand
+    blockMovement: false
   - type: Fauna # Lavaland change
   - type: Physics
     bodyType: KinematicController

@@ -3,6 +3,7 @@
 using System.Numerics;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC.Components;
@@ -61,8 +62,23 @@ public sealed partial class LavalandRushComponent : Component
     [DataField]
     public float TiredSeconds = 4f;
 
+    /// <summary>
+    /// Dash speed in tiles per second.
+    /// </summary>
+    [DataField]
+    public float DashSpeed = 20f;
+
+    /// <summary>
+    /// How close the dash has to get to the target to hit it.
+    /// </summary>
+    [DataField]
+    public float HitRange = 0.75f;
+
     [ViewVariables]
     public TimeSpan NextRush;
+
+    [ViewVariables]
+    public EntityUid? DashTarget;
 }
 
 public sealed class LavalandRushSystem : EntitySystem
@@ -74,6 +90,7 @@ public sealed class LavalandRushSystem : EntitySystem
     [Dependency] private readonly SharedStunSystem _stun = default!;
     [Dependency] private readonly StatusEffectsSystem _status = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly SharedInteractionSystem _interaction = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     public override void Update(float frameTime)
@@ -83,26 +100,58 @@ public sealed class LavalandRushSystem : EntitySystem
         var query = EntityQueryEnumerator<LavalandRushComponent, MobStateComponent, NpcFactionMemberComponent>();
         while (query.MoveNext(out var uid, out var rush, out _, out _))
         {
-            if (!_mobState.IsAlive(uid) || _timing.CurTime < rush.NextRush)
+            if (!_mobState.IsAlive(uid))
+            {
+                rush.DashTarget = null;
                 continue;
+            }
 
-            if (!TryFindTarget(uid, rush.Range, out var target))
+            if (rush.DashTarget is { } target)
+            {
+                UpdateDash(uid, rush, target, frameTime);
+                continue;
+            }
+
+            if (_timing.CurTime < rush.NextRush || !TryFindTarget(uid, rush.Range, out target))
                 continue;
 
             rush.NextRush = _timing.CurTime + TimeSpan.FromSeconds(rush.Cooldown);
+            rush.DashTarget = target;
+        }
+    }
 
-            var self = _transform.GetMapCoordinates(uid);
-            var victim = _transform.GetMapCoordinates(target);
-            var delta = self.Position - victim.Position;
-            delta = delta.LengthSquared() > 0.001f ? Vector2.Normalize(delta) : new Vector2(0f, 1f);
+    private void UpdateDash(EntityUid uid, LavalandRushComponent rush, EntityUid target, float frameTime)
+    {
+        // The rush cannot cross obstructions, and the target can duck behind cover mid dash.
+        if (!Exists(target)
+            || !_mobState.IsAlive(target)
+            || !_interaction.InRangeUnobstructed((uid, null), (target, null), range: -1f))
+        {
+            FinishRush(uid, rush);
+            return;
+        }
 
-            // Jump right next to the victim, that is the dash.
-            _transform.SetMapCoordinates(uid, new MapCoordinates(victim.Position + delta * 0.5f, victim.MapId));
+        var self = _transform.GetMapCoordinates(uid);
+        var victim = _transform.GetMapCoordinates(target);
+        var delta = victim.Position - self.Position;
+        var distance = delta.Length();
 
+        if (distance <= rush.HitRange)
+        {
             _stun.TryKnockdown(target, TimeSpan.FromSeconds(rush.KnockdownSeconds), true);
             _damageable.TryChangeDamage(target, rush.RushDamage, origin: uid);
-            _status.TryAddStatusEffectDuration(uid, rush.TiredStatus, TimeSpan.FromSeconds(rush.TiredSeconds));
+            FinishRush(uid, rush);
+            return;
         }
+
+        var step = MathF.Min(rush.DashSpeed * frameTime, distance - rush.HitRange);
+        _transform.SetMapCoordinates(uid, new MapCoordinates(self.Position + delta / distance * step, self.MapId));
+    }
+
+    private void FinishRush(EntityUid uid, LavalandRushComponent rush)
+    {
+        rush.DashTarget = null;
+        _status.TryAddStatusEffectDuration(uid, rush.TiredStatus, TimeSpan.FromSeconds(rush.TiredSeconds));
     }
 
     private bool TryFindTarget(EntityUid uid, float range, out EntityUid target)
@@ -115,7 +164,8 @@ public sealed class LavalandRushSystem : EntitySystem
         {
             if (other.Owner == uid
                 || !_mobState.IsAlive(other.Owner)
-                || _npcFaction.IsEntityFriendly(uid, other.Owner))
+                || _npcFaction.IsEntityFriendly(uid, other.Owner)
+                || !_interaction.InRangeUnobstructed((uid, null), (other.Owner, null), range: -1f))
             {
                 continue;
             }

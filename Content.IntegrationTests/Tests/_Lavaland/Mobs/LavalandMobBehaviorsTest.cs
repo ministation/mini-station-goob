@@ -3,8 +3,13 @@
 using System.Numerics;
 using Content.Server._Lavaland.Mobs;
 using Content.Server.Gravity;
+using Content.Shared.Buckle;
+using Content.Shared.Buckle.Components;
 using Content.Shared.Gravity;
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
+using Content.Shared.NPC.Systems;
 using Content.Shared.Stunnable;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -45,8 +50,91 @@ public sealed class LavalandMobBehaviorsTest
         await server.WaitRunTicks(3);
 
         await server.WaitAssertion(() =>
+            Assert.That(entMan.HasComponent<KnockedDownComponent>(victim), Is.False,
+                "the lobster must dash to the victim instead of teleporting onto it"));
+
+        await server.WaitRunTicks(20);
+
+        await server.WaitAssertion(() =>
             Assert.That(entMan.HasComponent<KnockedDownComponent>(victim), Is.True,
-                "the lobster rush must knock the victim down"));
+                "the lobster dash must knock the victim down"));
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task TamedGoldgrubAcceptsRider()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var hands = server.System<SharedHandsSystem>();
+        var buckle = server.System<SharedBuckleSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid grub = default;
+        EntityUid tamer = default;
+
+        await server.WaitPost(() =>
+        {
+            tamer = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
+            grub = entMan.SpawnEntity("LavalandMobGoldgrub", testMap.GridCoords.Offset(new Vector2(1.5f, 0)));
+
+            var tame = entMan.GetComponent<TameableMobComponent>(grub);
+            tame.CurrentChance = 100f;
+
+            var ore = entMan.SpawnEntity("GoldOre1", testMap.GridCoords);
+            Assert.That(hands.TryPickupAnyHand(tamer, ore), Is.True);
+            entMan.EventBus.RaiseLocalEvent(grub, new InteractUsingEvent(tamer, ore, grub, testMap.GridCoords));
+        });
+
+        await server.WaitRunTicks(1);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.HasComponent<TamedMobComponent>(grub), Is.True, "ore must tame the goldgrub");
+            Assert.That(entMan.GetComponent<MountableMobComponent>(grub).Saddled, Is.True,
+                "a tamed goldgrub must become rideable without a saddle");
+            Assert.That(entMan.HasComponent<StrapComponent>(grub), Is.True,
+                "a tamed goldgrub must have a strap for the rider");
+
+            var rider = entMan.GetComponent<BuckleComponent>(tamer);
+            Assert.That(buckle.TryBuckle(tamer, tamer, grub, rider), Is.True,
+                "a tamed goldgrub must accept a rider");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task GuntherLeavesAshwalkersAlone()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var factions = server.System<NpcFactionSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid gunther = default;
+        EntityUid ashwalker = default;
+        EntityUid human = default;
+
+        await server.WaitPost(() =>
+        {
+            gunther = entMan.SpawnEntity("MobLavalandGutlunchWarrior", testMap.GridCoords);
+            ashwalker = entMan.SpawnEntity("MobAshwalkerPlayable", testMap.GridCoords.Offset(new Vector2(1f, 0)));
+            human = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(-1f, 0)));
+        });
+
+        await server.WaitRunTicks(1);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(factions.IsEntityFriendly(gunther, ashwalker), Is.True,
+                "gunther must treat ashwalkers as friendly");
+            Assert.That(factions.IsEntityFriendly(gunther, human), Is.False,
+                "gunther must stay hostile to everyone else");
+        });
 
         await pair.CleanReturnAsync();
     }

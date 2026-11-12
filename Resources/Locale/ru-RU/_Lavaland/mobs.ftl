@@ -60,4 +60,5 @@ lavaland-saddle-untamed = { $target } ещё не приручен.
 lavaland-saddle-affixing = Вы начинаете закреплять седло на { $target }...
 lavaland-saddle-ready = Седло закреплено. На { $target } можно ехать.
 ent-LavalandGoliathSaddle = седло голиафа
-    .desc = Грубое седло, которое даст вам сносное место на голиафе! Если удастся заставить его стоять на месте.lavaland-saddle-required = Сначала { $target } нужно оседлать.
+    .desc = Грубое седло, которое даст вам сносное место на голиафе! Если удастся заставить его стоять на месте.
+lavaland-saddle-required = Сначала { $target } нужно оседлать.

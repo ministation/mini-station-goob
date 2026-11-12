@@ -174,7 +174,11 @@ public sealed class LavalandTamingSystem : EntitySystem
         args.Cancelled = true;
 
         if (args.User is { } user)
-            _popup.PopupEntity(Loc.GetString("lavaland-saddle-required", ("target", ent)), ent, user);
+        {
+            // Goldgrubs and raptors only need taming, so do not ask for a saddle that does not exist.
+            var message = ent.Comp.SaddleItems.Count == 0 ? "lavaland-saddle-untamed" : "lavaland-saddle-required";
+            _popup.PopupEntity(Loc.GetString(message, ("target", ent)), ent, user);
+        }
     }
 
     private void OnRiderStrapped(Entity<MountableMobComponent> ent, ref StrappedEvent args)

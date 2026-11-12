@@ -60,4 +60,5 @@ lavaland-saddle-untamed = The { $target } is not tamed yet.
 lavaland-saddle-affixing = You start affixing the saddle to the { $target }...
 lavaland-saddle-ready = The saddle is secure. The { $target } is ready to ride.
 ent-LavalandGoliathSaddle = goliath saddle
-    .desc = This rough saddle will give you a serviceable seat upon a goliath! Provided you can get one to stand still.lavaland-saddle-required = The { $target } needs a saddle first.
+    .desc = This rough saddle will give you a serviceable seat upon a goliath! Provided you can get one to stand still.
+lavaland-saddle-required = The { $target } needs a saddle first.
