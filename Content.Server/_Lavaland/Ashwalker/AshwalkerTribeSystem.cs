@@ -16,7 +16,7 @@ using Robust.Shared.Timing;
 namespace Content.Server._Lavaland.Ashwalker;
 
 /// <summary>
-/// Ash walker tribe from TG: a team antagonist that protects its necropolis nest.
+/// Ash walker tribe from TG: a Lavaland guardian tribe that protects its necropolis nest.
 /// Keeps the member list, the sacrifice tally and the round end report.
 /// </summary>
 public sealed class AshwalkerTribeSystem : EntitySystem
