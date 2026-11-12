@@ -31,6 +31,11 @@
       types:
       - Lava
   - type: AshwalkerTribeMember # joins the tribe of the nearest nest when it gets a mind
+  # NanoTrasen keeps station logic treating them as crew; Ashwalker lets the local fauna know them.
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
+    - Ashwalker
   # TG remove_language(common): ash walkers understand and speak only Draconic.
   - type: LanguageKnowledge
     speaks:

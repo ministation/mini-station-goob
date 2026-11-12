@@ -60,4 +60,10 @@ lavaland-saddle-untamed = { $target } ещё не приручен.
 lavaland-saddle-affixing = Вы начинаете закреплять седло на { $target }...
 lavaland-saddle-ready = Седло закреплено. На { $target } можно ехать.
 ent-LavalandGoliathSaddle = седло голиафа
-    .desc = Грубое седло, которое даст вам сносное место на голиафе! Если удастся заставить его стоять на месте.lavaland-saddle-required = Сначала { $target } нужно оседлать.
+    .desc = Грубое седло, которое даст вам сносное место на голиафе! Если удастся заставить его стоять на месте.
+lavaland-saddle-required = Сначала { $target } нужно оседлать.
+
+# Голдграб ест руду и зарывается (LavalandOreEaterSystem, LavalandBurrowSystem)
+lavaland-goldgrub-eats = { $grub } пожирает { $ore }.
+lavaland-goldgrub-burrow-start = { $grub } зарывается в землю!
+lavaland-goldgrub-burrow-end = { $grub } выныривает из-под земли!

@@ -188,6 +188,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+    addFriendlyFactions:
+    - Ashwalker
   - type: HTN
     blackboard:
       VisionRadius: !type:Single

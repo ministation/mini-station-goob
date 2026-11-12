@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Lavaland tribe faction: mobs that consider ashwalkers friendly add it to their
+# own friendly factions instead of making the whole SimpleHostile faction friendly.
+- type: npcFaction
+  id: Ashwalker

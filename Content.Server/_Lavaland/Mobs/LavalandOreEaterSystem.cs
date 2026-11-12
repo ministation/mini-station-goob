@@ -5,8 +5,11 @@ using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
+using Content.Shared.Popups;
 using Content.Shared.Stacks;
 using Content.Shared.Tag;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
 
@@ -50,6 +53,12 @@ public sealed partial class LavalandOreEaterComponent : Component
     [DataField]
     public float DefaultHeal;
 
+    /// <summary>
+    /// Played every time it swallows a piece of ore.
+    /// </summary>
+    [DataField]
+    public SoundSpecifier EatSound = new SoundPathSpecifier("/Audio/_Goobstation/Heretic/eatfood.ogg");
+
     [ViewVariables]
     public float Accumulator;
 
@@ -63,8 +72,10 @@ public sealed partial class LavalandOreEaterComponent : Component
 public sealed class LavalandOreEaterSystem : EntitySystem
 {
     [Dependency] private readonly DamageableSystem _damageable = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedStackSystem _stack = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TagSystem _tags = default!;
@@ -122,6 +133,11 @@ public sealed class LavalandOreEaterSystem : EntitySystem
                 }
 
                 Heal(uid, damageable, heal);
+
+                // TG shows a visible message and plays the eating sound for every bite.
+                _audio.PlayPvs(eater.EatSound, uid);
+                _popup.PopupEntity(Loc.GetString("lavaland-goldgrub-eats",
+                    ("grub", uid), ("ore", ore.Owner)), uid, PopupType.Small);
                 break;
             }
         }
