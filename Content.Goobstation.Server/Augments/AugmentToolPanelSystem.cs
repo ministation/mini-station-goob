@@ -93,6 +93,8 @@ public sealed partial class AugmentToolPanelSystem : SharedAugmentToolPanelSyste
             // if we have a tool that's currently out, deposit it back into the storage
             if (RemComp<AugmentToolPanelActiveItemComponent>(item))
             {
+                // toggleable tools can change size while active (a lit welder is Large) and stop fitting
+                _toggle.TryDeactivate(item, user: body);
                 if (!_storage.PlayerInsertEntityInWorld(augment.Owner, body, item))
                 {
                     Log.Error($"Inserting tool {ToPrettyString(item)} back into {ToPrettyString(augment)} failed");
