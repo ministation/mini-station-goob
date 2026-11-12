@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# TG goldgrub behaviour: its find_ore behaviour looks 9 tiles around for loose ore
+# and basic_eating eats it. The walking is a utility query here, the eating itself
+# is LavalandOreEaterSystem.
+
+- type: utilityQuery
+  id: NearbyLooseOre
+  query:
+    - !type:NearbyLooseOreQuery
+  considerations:
+    - !type:TargetDistanceCon
+      curve: !type:PresetCurve
+        preset: TargetDistance
+    - !type:TargetAccessibleCon
+      curve: !type:BoolCurve
+    - !type:TargetInLOSOrCurrentCon
+      curve: !type:BoolCurve
+
+- type: htnCompound
+  id: GoldgrubCompound
+  branches:
+    # Walk to a pile of loose ore; the ore eater takes it from here once in range.
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:UtilityOperator
+            proto: NearbyLooseOre
+        - !type:HTNPrimitiveTask
+          operator: !type:MoveToOperator
+            pathfindInPlanning: false
+            removeKeyOnFinish: false
+            targetKey: TargetCoordinates
+            rangeKey: MeleeRange
+    # Nothing to eat, idly crawl around.
+    - tasks:
+        - !type:HTNCompoundTask
+          task: IdleCompound

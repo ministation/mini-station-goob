@@ -17,6 +17,7 @@ using Content.Shared.Nutrition.Components;
 using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Storage.Components;
 using Content.Shared.Stunnable;
+using Content.Shared.Tag;
 using Content.Shared.Tools.Systems;
 using Content.Shared.Turrets;
 using Content.Shared.Weapons.Melee;
@@ -66,6 +67,7 @@ public sealed class NPCUtilitySystem : EntitySystem
     [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
     [Dependency] private readonly PuddleSystem _puddle = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly TagSystem _tags = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private readonly WeldableSystem _weldable = default!;
     [Dependency] private readonly ExamineSystemShared _examine = default!;
@@ -547,6 +549,27 @@ public sealed class NPCUtilitySystem : EntitySystem
                 foreach (var ent in _npcFaction.GetNearbyHostiles(owner, vision))
                 {
                     entities.Add(ent);
+                }
+
+                break;
+            }
+            case NearbyLooseOreQuery oreQuery:
+            {
+                var mapPos = _transform.GetMapCoordinates(owner, xform: _xformQuery.GetComponent(owner));
+
+                _entitySet.Clear();
+                _lookup.GetEntitiesInRange(typeof(TagComponent), mapPos, vision, _entitySet);
+
+                foreach (var comp in _entitySet)
+                {
+                    // Ore carried in a backpack or pocket reports the carrier's position, only eat what's loose.
+                    if (_container.IsEntityInContainer(comp.Owner))
+                        continue;
+
+                    if (!_tags.HasTag(comp.Owner, oreQuery.Tag))
+                        continue;
+
+                    entities.Add(comp.Owner);
                 }
 
                 break;

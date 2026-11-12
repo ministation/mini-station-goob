@@ -7,6 +7,11 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Systems;
+using Content.Shared.Popups;
+using Content.Shared.Stealth;
+using Content.Shared.Stealth.Components;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -58,7 +63,9 @@ public sealed partial class LavalandBurrowComponent : Component
 }
 
 /// <summary>
-/// TG goldgrub burrow escape: when hurt, it digs away from the attacker.
+/// TG goldgrub burrow escape: when hurt, it digs itself into the ground and comes
+/// back up some distance away, hidden while it is under. The dig is telegraphed
+/// with the same message and stone-breaking sound as TG.
 /// </summary>
 [RegisterComponent]
 public sealed partial class LavalandBurrowEscapeComponent : Component
@@ -75,8 +82,44 @@ public sealed partial class LavalandBurrowEscapeComponent : Component
     [DataField]
     public float Cooldown = 8f;
 
+    /// <summary>
+    /// Seconds it spends digging down before it vanishes underground.
+    /// </summary>
+    [DataField]
+    public float DigTime = 2.5f;
+
+    /// <summary>
+    /// Seconds it stays underground before coming back up.
+    /// </summary>
+    [DataField]
+    public float UndergroundTime = 0.75f;
+
+    /// <summary>
+    /// Played when it goes under and when it comes back up.
+    /// </summary>
+    [DataField]
+    public SoundSpecifier DigSound = new SoundPathSpecifier("/Audio/Effects/break_stone.ogg");
+
     [ViewVariables]
     public TimeSpan NextEscape;
+
+    /// <summary>
+    /// When the current dig started, <see cref="TimeSpan.Zero"/> when it is not digging.
+    /// </summary>
+    [ViewVariables]
+    public TimeSpan DigStart;
+
+    [ViewVariables]
+    public TimeSpan EmergeAt;
+
+    [ViewVariables]
+    public bool Underground;
+
+    /// <summary>
+    /// True when the system added <see cref="StealthComponent"/> and has to remove it again.
+    /// </summary>
+    [ViewVariables]
+    public bool Hid;
 }
 
 public sealed class LavalandBurrowSystem : EntitySystem
@@ -86,6 +129,9 @@ public sealed class LavalandBurrowSystem : EntitySystem
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly SharedStealthSystem _stealth = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 
@@ -98,19 +144,26 @@ public sealed class LavalandBurrowSystem : EntitySystem
 
     private void OnEscapeDamage(Entity<LavalandBurrowEscapeComponent> ent, ref DamageChangedEvent args)
     {
-        if (!args.DamageIncreased || args.Origin == null || _timing.CurTime < ent.Comp.NextEscape)
+        if (!args.DamageIncreased
+            || args.Origin == null
+            || _timing.CurTime < ent.Comp.NextEscape
+            || ent.Comp.DigStart != TimeSpan.Zero)
+        {
             return;
+        }
 
         ent.Comp.NextEscape = _timing.CurTime + TimeSpan.FromSeconds(ent.Comp.Cooldown);
+        ent.Comp.DigStart = _timing.CurTime;
 
-        var coords = _transform.GetMapCoordinates(ent);
-        var offset = _random.NextAngle().ToVec() * _random.NextFloat(1f, ent.Comp.Distance);
-        _transform.SetMapCoordinates(ent, new MapCoordinates(coords.Position + offset, coords.MapId));
+        _popup.PopupEntity(Loc.GetString("lavaland-goldgrub-burrow-start", ("grub", ent.Owner)),
+            ent.Owner, PopupType.Medium);
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        var now = _timing.CurTime;
 
         var query = EntityQueryEnumerator<LavalandBurrowComponent, MobStateComponent, NpcFactionMemberComponent>();
         while (query.MoveNext(out var uid, out var burrow, out _, out _))
@@ -118,13 +171,13 @@ public sealed class LavalandBurrowSystem : EntitySystem
             if (!_mobState.IsAlive(uid))
                 continue;
 
-            if (_timing.CurTime >= burrow.NextDevour && TryDevour(uid, burrow))
+            if (now >= burrow.NextDevour && TryDevour(uid, burrow))
                 continue;
 
-            if (_timing.CurTime < burrow.NextResurface || !TryFindTarget(uid, burrow.SearchRange, out var target))
+            if (now < burrow.NextResurface || !TryFindTarget(uid, burrow.SearchRange, out var target))
                 continue;
 
-            burrow.NextResurface = _timing.CurTime + TimeSpan.FromSeconds(burrow.ResurfaceCooldown);
+            burrow.NextResurface = now + TimeSpan.FromSeconds(burrow.ResurfaceCooldown);
 
             var victim = _transform.GetMapCoordinates(target);
             // Shortcut: no passability check, the mob is rooted anyway and only needs to
@@ -132,6 +185,71 @@ public sealed class LavalandBurrowSystem : EntitySystem
             var offset = _random.NextAngle().ToVec() * _random.NextFloat(1f, burrow.ResurfaceRange);
             _transform.SetMapCoordinates(uid, new MapCoordinates(victim.Position + offset, victim.MapId));
         }
+
+        UpdateEscapes(now);
+    }
+
+    private void UpdateEscapes(TimeSpan now)
+    {
+        var query = EntityQueryEnumerator<LavalandBurrowEscapeComponent, MobStateComponent>();
+        while (query.MoveNext(out var uid, out var escape, out _))
+        {
+            if (escape.DigStart == TimeSpan.Zero)
+                continue;
+
+            if (!_mobState.IsAlive(uid))
+            {
+                StopEscape(uid, escape);
+                continue;
+            }
+
+            if (!escape.Underground)
+            {
+                if (now < escape.DigStart + TimeSpan.FromSeconds(escape.DigTime))
+                    continue;
+
+                escape.Underground = true;
+                escape.EmergeAt = now + TimeSpan.FromSeconds(escape.UndergroundTime);
+
+                // Out of sight while under the ground, like TG's phased mob. Do not let
+                // a stray hit pop it back into view before it is supposed to resurface.
+                if (!HasComp<StealthComponent>(uid))
+                {
+                    var stealth = EnsureComp<StealthComponent>(uid);
+                    _stealth.SetRevealOnDamage((uid, stealth), false);
+                    _stealth.SetRevealOnAttack((uid, stealth), false);
+                    escape.Hid = true;
+                }
+
+                _stealth.SetVisibility(uid, -1.5f);
+
+                var coords = _transform.GetMapCoordinates(uid);
+                var offset = _random.NextAngle().ToVec() * _random.NextFloat(1f, escape.Distance);
+                _transform.SetMapCoordinates(uid, new MapCoordinates(coords.Position + offset, coords.MapId));
+
+                _audio.PlayPvs(escape.DigSound, uid);
+                continue;
+            }
+
+            if (now < escape.EmergeAt)
+                continue;
+
+            _audio.PlayPvs(escape.DigSound, uid);
+            _popup.PopupEntity(Loc.GetString("lavaland-goldgrub-burrow-end", ("grub", uid)),
+                uid, PopupType.Medium);
+
+            StopEscape(uid, escape);
+        }
+    }
+
+    private void StopEscape(EntityUid uid, LavalandBurrowEscapeComponent escape)
+    {
+        if (escape.Hid && HasComp<StealthComponent>(uid))
+            RemComp<StealthComponent>(uid);
+
+        escape.DigStart = TimeSpan.Zero;
+        escape.Underground = false;
+        escape.Hid = false;
     }
 
     private bool TryDevour(EntityUid uid, LavalandBurrowComponent burrow)

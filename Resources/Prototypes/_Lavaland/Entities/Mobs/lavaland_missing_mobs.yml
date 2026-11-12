@@ -140,7 +140,10 @@
     - Passive
   - type: HTN
     rootTask:
-      task: IdleCompound
+      task: GoldgrubCompound
+    blackboard:
+      VisionRadius: !type:Single # TG find_ore looks 9 tiles around
+        9
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Goldgrub.rsi

@@ -62,3 +62,8 @@ lavaland-saddle-ready = The saddle is secure. The { $target } is ready to ride.
 ent-LavalandGoliathSaddle = goliath saddle
     .desc = This rough saddle will give you a serviceable seat upon a goliath! Provided you can get one to stand still.
 lavaland-saddle-required = The { $target } needs a saddle first.
+
+# Goldgrub eating and burrowing (LavalandOreEaterSystem, LavalandBurrowSystem)
+lavaland-goldgrub-eats = The { $grub } devours the { $ore }.
+lavaland-goldgrub-burrow-start = The { $grub } starts burrowing into the ground!
+lavaland-goldgrub-burrow-end = The { $grub } bursts out of the ground!
