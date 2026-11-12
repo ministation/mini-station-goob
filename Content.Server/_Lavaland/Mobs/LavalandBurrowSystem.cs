@@ -13,6 +13,7 @@ using Content.Shared.Stealth.Components;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Player;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -257,8 +258,12 @@ public sealed class LavalandBurrowSystem : EntitySystem
         var coords = _transform.GetMapCoordinates(uid);
         foreach (var other in _lookup.GetEntitiesInRange<MobStateComponent>(coords, burrow.DevourRange))
         {
+            // Shortcut: TG keeps the devoured victim inside the worm and barfs it out on death.
+            // Without that container we must not delete player bodies, so player-controlled
+            // crit mobs are skipped. Upgrade together with a devour container.
             if (other.Owner == uid
                 || !_mobState.IsCritical(other.Owner)
+                || HasComp<ActorComponent>(other.Owner)
                 || _npcFaction.IsEntityFriendly(uid, other.Owner))
             {
                 continue;

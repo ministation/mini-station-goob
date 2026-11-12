@@ -23,7 +23,7 @@ ent-LavalandDragonsBlood = бутыль крови дракона
 
 staff-of-lava-summoned = Вокруг вас извергается лава!
 staff-of-lava-removed = Ближайшие лавовые лужи остывают и исчезают.
-dragons-blood-firebreath = Кровь жжёт ваши вены! Вы учитесь дышать огнём.
+dragons-blood-dragon = Кровь жжёт ваши вены! Вы учитесь обращаться в пепельного дракона.
 dragons-blood-immunity = Ваша кожа обращается в живой камень. Огонь больше вам не страшен.
 dragons-blood-skeleton = Кровь берёт свою цену. Ваша плоть осыпается...
 dragons-blood-drunk-others = {$user} выпивает бутыль крови дракона...

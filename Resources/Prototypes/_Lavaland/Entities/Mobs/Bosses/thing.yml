@@ -8,6 +8,10 @@
   parent: LavalandMobBase
   description: A shifting mass of flesh and tendrils. It should not be here.
   components:
+  - type: StaminaResistance
+    worn: false
+    meleeResistance: true
+    damageCoefficient: 0 # megafauna cannot be put into stamina crit
   - type: MegafaunaDevour
   - type: ExplosionResistance
     worn: false

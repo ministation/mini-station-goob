@@ -21,8 +21,6 @@ public sealed class DragonsBloodSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
 
-    private readonly EntProtoId FireBreathAction = "ActionFireball";
-
     public override void Initialize()
     {
         base.Initialize();
@@ -43,9 +41,9 @@ public sealed class DragonsBloodSystem : EntitySystem
         {
             case 0:
             {
-                // Fire breath: learn the fireball spell.
-                _actions.AddAction(user, FireBreathAction);
-                _popup.PopupEntity(Loc.GetString("dragons-blood-firebreath"), user, user, PopupType.LargeCaution);
+                // Draconic form: an action that turns you into an ash drake for a while.
+                _actions.AddAction(user, ent.Comp.DragonFormAction);
+                _popup.PopupEntity(Loc.GetString("dragons-blood-dragon"), user, user, PopupType.LargeCaution);
                 break;
             }
             case 1:

@@ -79,6 +79,10 @@
   - type: CombatPower # Goobstation
     factor: 8 # times more dangerous than a crew-member
   - type: LavalandElite
+  - type: StaminaResistance
+    worn: false
+    meleeResistance: true
+    damageCoefficient: 0 # elites cannot be put into stamina crit either
   # Bosses get the HUD from MegafaunaStage, elites are not staged so they declare it here.
   - type: BossHud
 

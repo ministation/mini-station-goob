@@ -5,6 +5,10 @@
   name: hierophant
   description: A massive metal club that hangs in the air as though waiting. It'll make you dance to its beat.
   components:
+  - type: StaminaResistance
+    worn: false
+    meleeResistance: true
+    damageCoefficient: 0 # megafauna cannot be put into stamina crit
   # Basic stuff
   - type: MegafaunaDevour
   - type: ExplosionResistance

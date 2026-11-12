@@ -6,6 +6,7 @@ using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Megafauna.Selectors;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Movement.Pulling.Events;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -32,6 +33,8 @@ public sealed partial class MegafaunaSystem : EntitySystem
         base.Initialize();
 
         InitializeHandle();
+
+        SubscribeLocalEvent<AggressiveComponent, PullAttemptEvent>(OnPullAttempt);
 
         _aggressiveQuery = GetEntityQuery<AggressiveComponent>();
     }
@@ -77,5 +80,11 @@ public sealed partial class MegafaunaSystem : EntitySystem
                 }
             }
         }
+    }
+
+    private void OnPullAttempt(Entity<AggressiveComponent> ent, ref PullAttemptEvent args)
+    {
+        // A boss or elite cannot be dragged off its arena and onto the station.
+        args.Cancelled = true;
     }
 }

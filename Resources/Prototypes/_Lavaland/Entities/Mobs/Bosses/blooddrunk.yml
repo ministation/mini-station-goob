@@ -8,6 +8,10 @@
   parent: LavalandMobBase
   description: A very crazed miner. He's able to do more damage the more he hurts.
   components:
+  - type: StaminaResistance
+    worn: false
+    meleeResistance: true
+    damageCoefficient: 0 # megafauna cannot be put into stamina crit
   - type: MegafaunaDevour
   - type: ExplosionResistance
     worn: false

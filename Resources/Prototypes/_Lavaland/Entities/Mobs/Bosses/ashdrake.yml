@@ -8,6 +8,10 @@
   parent: LavalandMobBase
   description: Guardian of the Necropolis.
   components:
+  - type: StaminaResistance
+    worn: false
+    meleeResistance: true
+    damageCoefficient: 0 # megafauna cannot be put into stamina crit
   - type: MegafaunaDevour
   - type: ExplosionResistance
     worn: false

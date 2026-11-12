@@ -4,6 +4,7 @@ using System.Numerics;
 using Content.Goobstation.Common.CCVar; //Goobstation - Crawling
 using Content.Goobstation.Common.Projectiles;
 using Content.Shared._DV.Abilities;
+using Content.Shared._Lavaland.Aggression;
 using Content.Shared.Damage.Components;
 using Content.Shared.Projectiles;
 using Content.Shared.Standing;
@@ -114,6 +115,11 @@ public sealed class RequireProjectileTargetSystem : EntitySystem
             // ProjectileGrenades delete the entity that's shooting the projectile,
             // so it's impossible to check if the entity is in a container
             if (TerminatingOrDeleted(shooter.Value))
+                return;
+
+            // Lavaland bosses and elites: their attacks are not aimed player shots, so lying down
+            // must not make a target immune to the projectile.
+            if (HasComp<AggressiveComponent>(shooter.Value))
                 return;
 
             if (IsWithinCrawlHitzone(ent, projectile.TargetCoordinates)) //Goobstation
