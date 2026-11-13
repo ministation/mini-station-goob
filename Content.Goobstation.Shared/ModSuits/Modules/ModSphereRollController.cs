@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Numerics;
 using Content.Goobstation.Shared.ModSuits.Systems;
 using Content.Shared.Damage.Systems;
@@ -34,6 +38,7 @@ public sealed partial class ModSphereRollController : VirtualController
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedGravitySystem _gravity = default!;
     [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private SharedStaminaSystem _stamina = default!;
     [Dependency] private SharedStunSystem _stun = default!;
     [Dependency] private StandingStateSystem _standing = default!;
     [Dependency] private EntityQuery<MapGridComponent> _gridQuery = default!;
@@ -258,6 +263,7 @@ public sealed partial class ModSphereRollController : VirtualController
             _stun.TryKnockdown(mob.Owner, module.KnockdownTime, drop: false);
             _audio.PlayPredicted(module.KnockdownSound, mob, ent);
             velocity *= module.KnockdownSpeedMultiplier;
+            _stamina.TakeStaminaDamage(ent, module.KnockdownStaminaDamage, source: mob, immediate: false);
         }
 
         return hit;

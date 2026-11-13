@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Shared.ModSuits.Components;
 using Content.Shared.Inventory.Events;
 
@@ -144,6 +148,13 @@ public sealed partial class ModSuitSystem
             return false;
         }
 
+        if (!CanFitWearer(ent, wearer))
+        {
+            if (!silent)
+                PopupFail(ent, user, "modsuit-wearer-incompatible");
+            return false;
+        }
+
         var suitStorage = StashSuitStorage(wearer, slot);
         if (_inventory.TryGetSlotEntity(wearer, slot, out var current))
         {
@@ -171,6 +182,21 @@ public sealed partial class ModSuitSystem
 
         RestoreSuitStorage(wearer, suitStorage);
         Dirty(ent);
+        return true;
+    }
+
+    public bool CanFitWearer(Entity<ModSuitComponent> ent, EntityUid wearer)
+    {
+        foreach (var (slot, part) in ent.Comp.PartEntities)
+        {
+            if (!_inventory.TryGetSlot(wearer, slot, out var slotDef))
+                return false;
+
+            if (slotDef.StrictWhitelist
+                && (_whitelist.IsWhitelistFail(slotDef.Whitelist, part) || _whitelist.IsWhitelistPass(slotDef.Blacklist, part)))
+                return false;
+        }
+
         return true;
     }
 

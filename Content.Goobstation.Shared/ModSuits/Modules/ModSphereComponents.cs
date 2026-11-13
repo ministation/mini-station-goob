@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Numerics;
 using Content.Shared.Actions;
 using Content.Shared.Atmos;
@@ -64,6 +68,9 @@ public sealed partial class ModSphereTransformModuleComponent : Component
 
     [DataField]
     public float KnockdownSpeedMultiplier = 0.8f;
+
+    [DataField]
+    public float KnockdownStaminaDamage = 35f;
 
     [DataField]
     public float ExplosionCoefficient = 0.8f;
