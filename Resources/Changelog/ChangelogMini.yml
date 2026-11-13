@@ -2797,3 +2797,11 @@ Entries:
       message: Билеворм больше не удаляет игроков в крите.
   id: 297
   time: '2026-11-13T06:08:44.0000000+00:00'
+- author: Mini Station
+  changes:
+    - type: Add
+      message: контент и механики апстрима Goob-Station от 13.11.2026
+    - type: Fix
+      message: русская локализация
+  id: 298
+  time: '2026-11-13T12:45:21.0000000+00:00'
