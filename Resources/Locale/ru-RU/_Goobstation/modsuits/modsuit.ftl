@@ -265,3 +265,7 @@ modsuit-shooting-mode-off = Помощник стрельбы выключен.
 modsuit-shooting-mode-stormtrooper = Режим штурмовика включён.
 
 modsuit-shooting-mode-sharpshooter = Режим меткого стрелка включён.
+
+modsuit-wearer-incompatible = МОД вам не по размеру!
+
+modsuit-sphere-ensnared = Вы не можете свернуться, пока опутаны!
