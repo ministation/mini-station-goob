@@ -714,7 +714,7 @@ namespace Content.Shared.Interaction
             if (!Resolve(other, ref other.Comp))
                 return false;
 
-            var ev = new InRangeOverrideEvent(origin, other);
+            var ev = new InRangeOverrideEvent(origin, other, range);
             RaiseLocalEvent(origin, ref ev);
 
             if (ev.Handled)
@@ -726,7 +726,7 @@ namespace Content.Shared.Interaction
                 other,
                 other.Comp.Coordinates,
                 other.Comp.LocalRotation,
-                range,
+                ev.Range, // extra reach and the like can change the range
                 collisionMask,
                 predicate,
                 popup,
@@ -1573,10 +1573,15 @@ namespace Content.Shared.Interaction
     /// Override event raised directed on a user to check InRangeUnoccluded AND InRangeUnobstructed to the target if you require custom logic.
     /// </summary>
     [ByRefEvent]
-    public record struct InRangeOverrideEvent(EntityUid User, EntityUid Target)
+    public record struct InRangeOverrideEvent(EntityUid User, EntityUid Target, float Range)
     {
         public readonly EntityUid User = User;
         public readonly EntityUid Target = Target;
+
+        /// <summary>
+        /// Interaction range the check is using. Subscribers may modify it, e.g. to increase reach.
+        /// </summary>
+        public float Range = Range;
 
         public bool Handled;
         public bool InRange = false;

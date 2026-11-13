@@ -262,7 +262,7 @@
     instability: 5
     difficulty: 16
   - type: MetabolismSpeedMutation # this isn't parity but it does nothing otherwise
-    bonus: 0.25
+    bonus: -0.25 # UpdateIntervalMultiplier is an interval, lower means faster metabolism
   # TODO: exercise modifier if that ever gets added
 
 - type: entity

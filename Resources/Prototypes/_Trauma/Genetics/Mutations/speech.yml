@@ -30,7 +30,7 @@
     removes:
     - MutationStoner
   - type: ReplacementAccent
-    accent: liar
+    accent: Heckacious
 
 - type: entity
   parent: BaseMutation
@@ -89,7 +89,7 @@
   description: "A terrifying mutation named after its 'patient-zero'."
   components:
   - type: ReplacementAccent
-    accent: cowboy
+    accent: Elvis
   - type: RandomTrigger
     prob: 0.075 # 7.5%
   - type: EntityEffectOnTrigger

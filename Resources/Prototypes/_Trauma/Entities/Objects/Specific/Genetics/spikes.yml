@@ -18,6 +18,10 @@
       types:
         Piercing: 12
         Slash: 4
+  - type: TriggerOnLand
+  - type: EntityEffectOnTrigger
+    effects:
+    - !type:RevertPolymorph
   - type: LandAtCursor
   - type: Fixtures
     fixtures:
@@ -39,4 +43,6 @@
   - type: Sprite
     sprite: _Trauma/Actions/mutations.rsi
     state: chemspike
+  - type: EntityEffectOnTrigger
+    effects: [] # the chem spike has to stay embedded until the chemicals are transferred
   - type: ChemTransferProjectile

@@ -38,7 +38,8 @@ public sealed partial class ShootOrganActionSystem : EntitySystem
         projComp.Container = args.Action.Comp.Container;
         Dirty(projectile, projComp);
 
-        _throwing.TryThrow(projectile, args.Target, user: user);
+        // polymorph isn't predicted, so neither is the throw
+        _throwing.TryThrow(projectile, args.Target, user: user, predicted: false);
     }
 
     private EntityUid? RemoveOrgan(Entity<ShootOrganActionComponent> ent, EntityUid user)
