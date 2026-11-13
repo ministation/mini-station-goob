@@ -23,7 +23,7 @@ ent-LavalandDragonsBlood = bottle of dragon's blood
 
 staff-of-lava-summoned = Lava erupts around you!
 staff-of-lava-removed = The nearby lava pools wither away.
-dragons-blood-firebreath = The blood burns in your veins! You learn to breathe fire.
+dragons-blood-dragon = The blood burns in your veins! You learn to take the form of an ash drake.
 dragons-blood-immunity = Your skin turns to living stone. The fire no longer touches you.
 dragons-blood-skeleton = The blood takes its price. Your flesh falls away...
 dragons-blood-drunk-others = {$user} drinks a bottle of dragon's blood...

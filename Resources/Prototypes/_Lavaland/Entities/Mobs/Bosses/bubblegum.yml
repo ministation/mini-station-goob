@@ -8,6 +8,10 @@
   parent: LavalandMobBase
   description: In what passes for a hierarchy among slaughter demons, this one is king.
   components:
+  - type: StaminaResistance
+    worn: false
+    meleeResistance: true
+    damageCoefficient: 0 # megafauna cannot be put into stamina crit
   - type: MegafaunaDevour
     spawnOnDevour: FoodBubblegum
   - type: ExplosionResistance

@@ -144,13 +144,16 @@
 # Berserker armor and helmet.
 - type: entity
   id: LavalandBerserkerArmor
-  parent: ClothingOuterArmorBase
+  parent: [ ClothingOuterArmorBase, ClothingOuterBaseToggleable ]
   name: berserker armor
   description: Armor made from the cracked hide of a fire giant. It burns with the rage of its maker.
   components:
   - type: Sprite
     sprite: _Lavaland/Clothing/OuterClothing/Armor/berserker.rsi
   - type: LavalandBerserkerGear
+  - type: ToggleableClothing
+    clothingPrototypes:
+      head: LavalandBerserkerHelmet
   - type: Clothing
     sprite: _Lavaland/Clothing/OuterClothing/Armor/berserker.rsi
   - type: Armor

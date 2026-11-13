@@ -9,6 +9,10 @@
   parent: LavalandMobBase
   description: A mythological man-eating beast, its empty eye sockets track you with unsatiated hunger.
   components:
+  - type: StaminaResistance
+    worn: false
+    meleeResistance: true
+    damageCoefficient: 0 # megafauna cannot be put into stamina crit
   - type: MegafaunaDevour
   - type: ExplosionResistance
     worn: false

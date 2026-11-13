@@ -81,8 +81,41 @@
     state: potionflask
   - type: DragonsBlood
 
+# Skeleton curse is permanent: the body stays a skeleton and keeps its gear.
 - type: polymorph
   id: DragonsBloodSkeleton
   configuration:
     entity: MobSkeletonPerson
     forced: true
+    inventory: Transfer
+    revertOnCrit: false
+    revertOnDeath: false
+    revertOnDelete: false
+
+# Ash drake shapeshift granted by the blood. Reverts on crit/death like the wendigo bear.
+- type: polymorph
+  id: DragonsBloodDragon
+  configuration:
+    entity: LavalandBossAshDrake
+    forced: false
+    inventory: None
+    transferName: true
+    transferDamage: true
+    revertOnCrit: true
+    revertOnDeath: true
+    allowRepeatedMorphs: false
+
+- type: entity
+  parent: BaseActionPolymorph
+  id: ActionDragonsBloodDragonForm
+  name: Dragon Form
+  description: Take on the form of an ash drake.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Lavaland/Mobs/Bosses/96x96.rsi
+      state: dragon
+  - type: InstantAction
+    event: !type:PolymorphActionEvent
+      protoId: DragonsBloodDragon
