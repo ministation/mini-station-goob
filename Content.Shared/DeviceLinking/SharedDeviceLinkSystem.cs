@@ -463,9 +463,9 @@ public abstract class SharedDeviceLinkSystem : EntitySystem
             return false;
 
         var outputs = sourceComponent.Outputs.GetOrNew(source);
-        var linkedPorts = sourceComponent.LinkedPorts.GetOrNew(sinkUid);
+        sourceComponent.LinkedPorts.TryGetValue(sinkUid, out var linkedPorts);
 
-        if (linkedPorts.Contains((source, sink)))
+        if (linkedPorts != null && linkedPorts.Contains((source, sink)))
         {
             if (userId != null)
                 _adminLogger.Add(LogType.DeviceLinking, LogImpact.Low, $"{ToPrettyString(userId.Value):actor} unlinked {ToPrettyString(sourceUid):source} {source} and {ToPrettyString(sinkUid):sink} {sink}");
@@ -494,7 +494,10 @@ public abstract class SharedDeviceLinkSystem : EntitySystem
                 return false;
 
             outputs.Add(sinkUid);
-            linkedPorts.Add((source, sink));
+            // Only register the sink once the link is actually accepted. Registering it up-front left an empty
+            // LinkedPorts entry behind when the link attempt failed, and if the sink was later deleted the source
+            // serialized a reference to a dead entity (savegrid / map save errors).
+            sourceComponent.LinkedPorts.GetOrNew(sinkUid).Add((source, sink));
             sinkComponent.LinkedSources.Add(sourceUid);
 
             SendNewLinkEvent(userId, sourceUid, source, sinkUid, sink);
