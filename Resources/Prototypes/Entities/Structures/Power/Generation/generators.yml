@@ -239,6 +239,12 @@
     - Power
   - type: Machine
     board: GeneratorRTGMachineCircuitboard
+  - type: Construction
+    graph: Machine
+    node: machine
+    containers:
+    - machine_parts
+    - machine_board
   - type: ContainerContainer
     containers:
       machine_board: !type:Container

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Content.Server.Construction.Components;
 using Content.Shared.Construction.Components;
+using Content.Shared.Construction.Prototypes;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 
@@ -59,6 +60,17 @@ public sealed class MachineBoardTest
                         $"Machine board {p.ID}'s corresponding machine {mId} does not have MachineComponent");
                     Assert.That(mComp.Board, Is.EqualTo(p.ID),
                         $"Machine {mId}'s BoardPrototype is not equal to it's corresponding machine board, {p.ID}");
+                    // A machine without a valid construction state NREs in ConstructionSystem.ChangeEntity
+                    // when a machine frame is completed with this board, deleting the frame and its contents.
+                    Assert.That(mProto.TryGetComponent<ConstructionComponent>(out var construction, compFact),
+                        $"Machine board {p.ID}'s corresponding machine {mId} does not have ConstructionComponent");
+                    if (construction != null)
+                    {
+                        Assert.That(protoMan.TryIndex<ConstructionGraphPrototype>(construction.Graph, out var graph),
+                            $"Machine {mId}'s construction graph {construction.Graph} does not exist");
+                        Assert.That(graph?.Nodes.ContainsKey(construction.Node), Is.True,
+                            $"Machine {mId}'s construction node {construction.Node} does not exist in graph {construction.Graph}");
+                    }
                 });
             }
         });

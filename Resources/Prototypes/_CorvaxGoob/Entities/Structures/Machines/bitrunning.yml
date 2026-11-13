@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 - type: entity
   parent: BaseMachinePowered
   id: QuantumServer
@@ -34,6 +38,12 @@
   - type: QuantumServer
   - type: Machine
     board: QuantumServerMachineCircuitboard
+  - type: Construction
+    graph: Machine
+    node: machine
+    containers:
+    - machine_parts
+    - machine_board
   - type: DeviceLinkSource
     ports:
     - BitrunningServerSource
@@ -122,6 +132,12 @@
         type: NetpodBoundUserInterface
   - type: Machine
     board: NetpodMachineCircuitboard
+  - type: Construction
+    graph: Machine
+    node: machine
+    containers:
+    - machine_parts
+    - machine_board
   - type: DeviceLinkSink
     ports:
     - BitrunningNetpodSink
@@ -210,6 +226,12 @@
   - type: Byteforge
   - type: Machine
     board: ByteforgeMachineCircuitboard
+  - type: Construction
+    graph: Machine
+    node: machine
+    containers:
+    - machine_parts
+    - machine_board
   - type: DeviceLinkSink
     ports:
     - BitrunningByteforgeSink
