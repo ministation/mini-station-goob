@@ -18,13 +18,13 @@ public sealed partial class TagMutationSystem : EntitySystem
 
     private void OnAdded(Entity<TagMutationComponent> ent, ref MutationAddedEvent args)
     {
-        _tag.AddTags(ent, ent.Comp.Added);
-        _tag.RemoveTags(ent, ent.Comp.Removed);
+        _tag.AddTags(args.Target, ent.Comp.Added);
+        _tag.RemoveTags(args.Target, ent.Comp.Removed);
     }
 
     private void OnRemoved(Entity<TagMutationComponent> ent, ref MutationRemovedEvent args)
     {
-        _tag.AddTags(ent, ent.Comp.Removed);
-        _tag.RemoveTags(ent, ent.Comp.Added);
+        _tag.AddTags(args.Target, ent.Comp.Removed);
+        _tag.RemoveTags(args.Target, ent.Comp.Added);
     }
 }

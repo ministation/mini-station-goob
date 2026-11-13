@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Server.Polymorph.Systems;
 using Content.Shared.Body.Organ;
 using Content.Shared.Body.Systems;
@@ -38,7 +42,8 @@ public sealed partial class ShootOrganActionSystem : EntitySystem
         projComp.Container = args.Action.Comp.Container;
         Dirty(projectile, projComp);
 
-        _throwing.TryThrow(projectile, args.Target, user: user);
+        // polymorph isn't predicted, so neither is the throw
+        _throwing.TryThrow(projectile, args.Target, user: user, predicted: false);
     }
 
     private EntityUid? RemoveOrgan(Entity<ShootOrganActionComponent> ent, EntityUid user)

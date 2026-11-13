@@ -143,6 +143,13 @@ public abstract partial class SharedTetherGunSystem : EntitySystem
         gunUid = null;
         gun = null;
 
+        // check the user itself for the case of telekinesis, also lets sentient tether guns work
+        if (TryComp(user, out gun))
+        {
+            gunUid = user;
+            return true;
+        }
+
         if (!_hands.TryGetActiveItem(user, out var activeItem) ||
             !TryComp(activeItem, out gun) ||
             _container.IsEntityInContainer(user))
@@ -248,7 +255,8 @@ public abstract partial class SharedTetherGunSystem : EntitySystem
         Dirty(gunUid, component);
     }
 
-    protected virtual void StopTether(EntityUid gunUid, BaseForceGunComponent component, bool land = true, bool transfer = false)
+    // made public for telekinesis
+    public virtual void StopTether(EntityUid gunUid, BaseForceGunComponent component, bool land = true, bool transfer = false)
     {
         if (component.Tethered == null)
             return;
