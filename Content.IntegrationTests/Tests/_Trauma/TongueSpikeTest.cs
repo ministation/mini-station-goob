@@ -48,6 +48,7 @@ public sealed class TongueSpikeTest
         await pair.RunTicksSync(10);
 
         EntityUid actionEnt = default;
+        EntityUid tongue = default;
         await server.WaitAssertion(() =>
         {
             var mutation = server.System<MutationSystem>();
@@ -65,7 +66,9 @@ public sealed class TongueSpikeTest
 
             Assert.That(actionEnt, Is.Not.EqualTo(default(EntityUid)), "Tongue spike action was not granted");
             Assert.That(entMan.HasComponent<ShootOrganActionComponent>(actionEnt), "Action has no ShootOrganActionComponent");
-            Assert.That(body.GetBodyOrgans(human).Any(o => o.Component.SlotId == "tongue"), "Human has no tongue before shooting");
+            // remember the tongue: it is the same entity that comes back after the polymorph
+            tongue = body.GetBodyOrgans(human).FirstOrDefault(o => o.Component.SlotId == "tongue").Id;
+            Assert.That(tongue, Is.Not.EqualTo(default(EntityUid)), "Human has no tongue before shooting");
         });
 
         EntityUid spike = default;
@@ -85,8 +88,11 @@ public sealed class TongueSpikeTest
                 "Tongue is still in the body after shooting");
 
             var query = entMan.AllEntityQueryEnumerator<PolymorphedEntityComponent>();
-            while (query.MoveNext(out var uid, out _))
-                spike = uid;
+            while (query.MoveNext(out var uid, out var poly))
+            {
+                if (poly.Parent == tongue)
+                    spike = uid;
+            }
 
             Assert.That(spike, Is.Not.EqualTo(default(EntityUid)), "No tongue spike projectile was created");
             Assert.That(entMan.GetComponent<MetaDataComponent>(spike).EntityPrototype?.ID, Is.EqualTo("TongueSpike"),
@@ -100,20 +106,10 @@ public sealed class TongueSpikeTest
         {
             Assert.That(entMan.EntityExists(spike), Is.False, "Tongue spike was not reverted after landing");
 
-            EntityUid tongue = default;
-            var query = entMan.AllEntityQueryEnumerator<OrganComponent>();
-            while (query.MoveNext(out var uid, out var organ))
-            {
-                if (organ.SlotId != "tongue")
-                    continue;
-
-                tongue = uid;
-                break;
-            }
-
-            Assert.That(tongue, Is.Not.EqualTo(default(EntityUid)), "Tongue was not returned after the spike landed");
+            // the pair is pooled and reused, so unrelated organs from other tests can exist
+            Assert.That(entMan.EntityExists(tongue), "Tongue was not returned after the spike landed");
             Assert.That(server.Transform(tongue).MapID, Is.EqualTo(map.MapId), "Returned tongue is not on the test map");
-            Assert.That(body.GetBodyOrgans(human).Any(o => o.Component.SlotId == "tongue"),
+            Assert.That(body.GetBodyOrgans(human).Any(o => o.Id == tongue),
                 "Tongue was not put back into its body");
         });
 
