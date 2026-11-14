@@ -36,6 +36,15 @@ public sealed class EntryPoint : GameServer
         // _curr = IoCManager.Resolve<ICommonCurrencyManager>(); // deleted by CorvaxGoob
     }
 
+#if MINI_RELEASE_BUILD
+    public override void PostInit()
+    {
+        base.PostInit();
+        // Мини: урезанный режим релизной сборки без валидной активации.
+        Activation.ActivationGate.Install();
+    }
+#endif
+
     public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
     {
         base.Update(level, frameEventArgs);

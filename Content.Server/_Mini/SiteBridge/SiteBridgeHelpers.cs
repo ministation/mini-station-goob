@@ -19,6 +19,8 @@ public static class SiteBridgeHelpers
 
     public const string KindConsole = "console";
     public const string KindShell = "shell";
+    /// <summary>Выключение сервера с сайта: пишет файл блокировки и останавливает движок.</summary>
+    public const string KindShutdown = "shutdown";
 
     /// <summary>
     /// Привести базовый адрес сайта к виду с завершающим слэшем, чтобы относительные

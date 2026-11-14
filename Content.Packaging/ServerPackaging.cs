@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO.Compression;
 using Robust.Packaging;
@@ -11,6 +12,11 @@ namespace Content.Packaging;
 public static class ServerPackaging
 {
     private static readonly bool UseSecrets = File.Exists(Path.Combine("Secrets", "CorvaxSecrets.sln")); // CorvaxGoob-Secret
+
+    // Мини: в GitHub Actions упаковка собирает релиз с проверкой активации.
+    // Признак берём из окружения CI, чтобы не править publish.yml.
+    private static readonly bool MiniReleaseBuild =
+        Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true";
 
     private static readonly List<PlatformReg> Platforms = new()
     {
@@ -114,6 +120,8 @@ public static class ServerPackaging
                         "/m"
                     }
                 };
+                if (MiniReleaseBuild)
+                    startInfo.ArgumentList.Add("/p:MiniReleaseBuild=true");
                 // CorvaxGoob-Secret-Start
                 if (UseSecrets)
                 {
