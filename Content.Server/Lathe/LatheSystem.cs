@@ -251,18 +251,7 @@ namespace Content.Server.Lathe
             UpdateUserInterfaceState(uid, component);
 
             if (time == TimeSpan.Zero)
-            {
-                // Goobstation: 0-time + OutputToStorage batches (avoids stack overflow).
-                // ManyStorage already finishes/clears/starts next — do not call FinishProducing after.
-                if (component.OutputToStorage)
-                {
-                    FinishProducingManyStorage((uid, component, lathe));
-                    return true;
-                }
-
-                FinishProducing(uid, component, lathe,
-                    component.OutputToStorage); // Goobstation edit start: handle special case with lots of 0-time recipes that insert into storage
-            }
+                FinishProducing(uid, component, lathe, component.OutputToStorage); // Goobstation: 0-time recipes that print into storage finish in bulk
             return true;
         }
 
