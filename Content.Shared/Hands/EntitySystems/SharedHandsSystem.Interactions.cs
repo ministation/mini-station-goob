@@ -216,7 +216,8 @@ public abstract partial class SharedHandsSystem : EntitySystem
     /// </summary>
     public bool TryMoveHeldEntityToActiveHand(EntityUid uid, string handName, bool checkActionBlocker = true, HandsComponent? handsComp = null)
     {
-        if (!Resolve(uid, ref handsComp))
+        // A client hand request can arrive for an attached entity without hands (e.g. a sentient mouse).
+        if (!Resolve(uid, ref handsComp, false))
             return false;
 
         if (handsComp.ActiveHandId == null || !HandIsEmpty((uid, handsComp), handsComp.ActiveHandId))
