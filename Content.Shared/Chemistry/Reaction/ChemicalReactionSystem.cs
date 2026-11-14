@@ -162,7 +162,23 @@ namespace Content.Shared.Chemistry.Reaction
             if (reaction.Quantized)
                 lowestUnitReactions = (int) lowestUnitReactions;
 
-            return lowestUnitReactions > 0;
+            if (lowestUnitReactions <= FixedPoint2.Zero)
+                return false;
+
+            // A reaction with a fractional reactant amount (e.g. 0.9u) can round the removed amount down to
+            // zero at the smallest unit reaction. The reactant would then never be consumed, the reaction
+            // would stay applicable forever and the solution would keep hitting the iteration limit. A
+            // reaction that cannot consume every non-catalyst reactant must not run at all.
+            foreach (var reactantData in reaction.Reactants)
+            {
+                if (!reactantData.Value.Catalyst
+                    && lowestUnitReactions * reactantData.Value.Amount == FixedPoint2.Zero)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
