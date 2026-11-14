@@ -47,11 +47,13 @@ public sealed class PAISystem : EntitySystem
 
     private void OnMindAdded(EntityUid uid, PAIComponent component, MindAddedMessage args)
     {
-        if (component.LastUser == null)
+        // Mini: the last user may have been deleted since the PAI was activated in hand,
+        // and resolving a deleted entity while formatting the name throws KeyNotFoundException.
+        if (component.LastUser is not { } lastUser || !Exists(lastUser))
             return;
 
         // Ownership tag
-        var val = Loc.GetString("pai-system-pai-name", ("owner", component.LastUser));
+        var val = Loc.GetString("pai-system-pai-name", ("owner", lastUser));
 
         // TODO Identity? People shouldn't dox-themselves by carrying around a PAI.
         // But having the pda's name permanently be "old lady's PAI" is weird.
