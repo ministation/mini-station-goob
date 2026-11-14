@@ -292,8 +292,9 @@ public abstract partial class SharedMechSystem : EntitySystem
 
         // When forced, we also want to handle the possibility that the "equipment" isn't actually equipment.
         // This /shouldn't/ be possible thanks to OnEntityStorageDump, but there's been quite a few regressions
-        // with entities being hardlock stuck inside mechs.
-        if (!Resolve(toRemove, ref equipmentComponent) && !forced)
+        // with entities being hardlock stuck inside mechs. A missing component is not an error here, so it must
+        // not be logged (a removal request can name any entity contained in the equipment container).
+        if (!Resolve(toRemove, ref equipmentComponent, false) && !forced)
             return;
 
         if (!forced)
