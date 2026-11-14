@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using Content.Goobstation.Server.Achievements;
 using Content.Goobstation.Server.VoiceChat;
 using Robust.Shared.ContentPack;
@@ -35,6 +39,15 @@ public sealed class EntryPoint : GameServer
         // _joinQueue = IoCManager.Resolve<IJoinQueueManager>(); // deleted by CorvaxGoob
         // _curr = IoCManager.Resolve<ICommonCurrencyManager>(); // deleted by CorvaxGoob
     }
+
+#if MINI_RELEASE_BUILD
+    public override void PostInit()
+    {
+        base.PostInit();
+        // Мини: урезанный режим релизной сборки без валидной активации.
+        Activation.ActivationGate.Install();
+    }
+#endif
 
     public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
     {

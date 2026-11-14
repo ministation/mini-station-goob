@@ -9,4 +9,13 @@
     <IsPackable Condition="'$(IsPackable)' == ''">false</IsPackable>
     <Nullable Condition="'$(Nullable)' == ''">enable</Nullable>
   </PropertyGroup>
+
+  <!--
+  Mini: признак релизной сборки. Включается переменной окружения MINI_RELEASE_BUILD=1
+  (ручная сборка релиза) или свойством MiniReleaseBuild=true, которое выставляет
+  Content.Packaging в GitHub Actions. Любая локальная сборка константу не получает.
+  -->
+  <PropertyGroup Condition="'$(MINI_RELEASE_BUILD)' == '1' Or '$(MiniReleaseBuild)' == 'true'">
+    <DefineConstants>$(DefineConstants);MINI_RELEASE_BUILD</DefineConstants>
+  </PropertyGroup>
 </Project>
