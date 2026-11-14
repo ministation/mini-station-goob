@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Collections.Generic;
 using System.Linq;
 using Content.Server.Storage.EntitySystems;
 using Content.Shared.Hands.Components;
@@ -8,6 +9,8 @@ using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Log;
+using Serilog.Events;
 
 namespace Content.IntegrationTests.Tests.Hands;
 
@@ -136,6 +139,68 @@ public sealed class HandTests
         Assert.That(containerSystem.IsInSameOrNoContainer((player, xform), (item, itemXform)));
 
         await server.WaitPost(() => mapSystem.DeleteMap(map.MapId));
+        await pair.CleanReturnAsync();
+    }
+
+    private sealed class ErrorLogCapture : ILogHandler
+    {
+        private readonly List<string> _messages = [];
+
+        public void Log(string sawmillName, LogEvent message)
+        {
+            if (message.Level < LogEventLevel.Error)
+                return;
+
+            lock (_messages)
+                _messages.Add(message.RenderMessage());
+        }
+
+        public string[] Snapshot()
+        {
+            lock (_messages)
+                return _messages.ToArray();
+        }
+    }
+
+    /// <summary>
+    /// A client can request a hand item move while attached to an entity without hands, like the sentient
+    /// mouse from the production log. That request must be ignored quietly instead of logging a missing
+    /// <see cref="HandsComponent"/>.
+    /// </summary>
+    [Test]
+    public async Task TestMoveHeldEntityToActiveHandWithoutHands()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Dirty = true });
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var logMan = server.ResolveDependency<ILogManager>();
+        var map = await pair.CreateTestMap();
+
+        var errors = new ErrorLogCapture();
+        logMan.RootSawmill.AddHandler(errors);
+
+        try
+        {
+            await server.WaitAssertion(() =>
+            {
+                var sys = entMan.System<SharedHandsSystem>();
+                var mob = entMan.SpawnEntity("MobMouseSentient", map.GridCoords);
+
+                Assert.That(entMan.HasComponent<HandsComponent>(mob), Is.False);
+                Assert.That(sys.TryMoveHeldEntityToActiveHand(mob, "left"), Is.False);
+
+                var resolveErrors = errors.Snapshot()
+                    .Where(message => message.Contains("Can't resolve") && message.Contains(nameof(HandsComponent)))
+                    .ToArray();
+                Assert.That(resolveErrors, Is.Empty,
+                    $"a hand request without hands must not resolve a missing component: {string.Join('\n', resolveErrors)}");
+            });
+        }
+        finally
+        {
+            logMan.RootSawmill.RemoveHandler(errors);
+        }
+
         await pair.CleanReturnAsync();
     }
 }
