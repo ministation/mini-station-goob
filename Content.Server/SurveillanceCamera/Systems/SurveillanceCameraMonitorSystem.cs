@@ -217,8 +217,9 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
                         {
                             component.KnownMobileCameras.Add(address, (name, netEntity.Value));
                             foreach (var player in component.Viewers)
-                                if (TryComp<ActorComponent>(player, out var actor))
-                                    _pvsOverrideSystem.AddSessionOverride(_entityManager.GetEntity(netEntity.Value.Item2.NetEntity), actor.PlayerSession);
+                                if (TryComp<ActorComponent>(player, out var actor)
+                                    && TryGetMobileCameraEntity(netEntity.Value.Item2.NetEntity, out var cameraUid))
+                                    _pvsOverrideSystem.AddSessionOverride(cameraUid, actor.PlayerSession);
                         }
                     }
                     else if (!component.KnownCameras.ContainsKey(address))
@@ -471,7 +472,8 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
         // Goobstation start
         if (TryComp<ActorComponent>(player, out var actor))
             foreach (var camera in monitor.KnownMobileCameras)
-                _pvsOverrideSystem.AddSessionOverride(_entityManager.GetEntity(camera.Value.Item2.Item2.NetEntity), actor.PlayerSession);
+                if (TryGetMobileCameraEntity(camera.Value.Item2.Item2.NetEntity, out var cameraUid))
+                    _pvsOverrideSystem.AddSessionOverride(cameraUid, actor.PlayerSession);
         // Goobstation end
 
         if (monitor.ActiveCamera != null)
@@ -502,6 +504,15 @@ public sealed class SurveillanceCameraMonitorSystem : EntitySystem
         {
             _surveillanceCameras.RemoveActiveViewer(monitor.ActiveCamera.Value, player);
         }
+    }
+
+    // Mini: deleted mobile cameras keep a stale NetEntity in KnownMobileCameras until the next
+    // heartbeat cleanup. Resolving it yields EntityUid.Invalid, and a PVS override for entity 0
+    // makes system.pvs log "Attempted to add non-existent entity 0" on every tick.
+    private bool TryGetMobileCameraEntity(NetEntity netEntity, out EntityUid cameraUid)
+    {
+        cameraUid = _entityManager.GetEntity(netEntity);
+        return cameraUid.IsValid();
     }
 
     // Sets the camera. If the camera is not null, this will return.
