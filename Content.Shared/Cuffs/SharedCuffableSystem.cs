@@ -645,6 +645,10 @@ namespace Content.Shared.Cuffs
             if (!Resolve(target, ref target.Comp) || !Resolve(cuff, ref cuff.Comp))
                 return;
 
+            // Users without a DoAfterComponent (e.g. constructs) cannot run the uncuff do-after; starting it would only log an invalid user error.
+            if (!HasComp<DoAfterComponent>(user))
+                return;
+
             var isOwner = user == target.Owner;
 
             if (!target.Comp.Container.ContainedEntities.Contains(cuff))
