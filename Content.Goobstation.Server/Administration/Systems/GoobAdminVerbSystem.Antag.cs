@@ -2,6 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Content.Goobstation.Common.Blob;
+using Content.Goobstation.Server.BloodBrother;
 using Content.Goobstation.Server.Changeling.GameTicking.Rules;
 using Content.Goobstation.Server.Devil.GameTicking.Rules;
 using Content.Goobstation.Shared.Gangwars.Components;
@@ -144,7 +145,24 @@ public sealed partial class GoobAdminVerbSystem
             Impact = LogImpact.High,
             Message = Loc.GetString("admin-verb-make-gang-leader"),
         };
-        args.Verbs.Add(gangLeader);    }
+        args.Verbs.Add(gangLeader);
+
+        // Blood Brothers
+        var bloodBrotherName = Loc.GetString("admin-verb-text-make-blood-brother");
+        Verb bloodBrother = new()
+        {
+            Text = bloodBrotherName,
+            Category = VerbCategory.Antag,
+            Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/_Goobstation/Interface/Misc/blood_brother_icons.rsi"), "heart"),
+            Act = () =>
+            {
+                _antag.ForceMakeAntag<BloodBrotherRuleComponent>(targetPlayer, "BloodBrothers");
+            },
+            Impact = LogImpact.High,
+            Message = string.Join(": ", bloodBrotherName, Loc.GetString("admin-verb-make-blood-brother")),
+        };
+        args.Verbs.Add(bloodBrother);
+    }
 
     public bool AntagVerbAllowed(GetVerbsEvent<Verb> args, [NotNullWhen(true)] out ICommonSession? target)
     {

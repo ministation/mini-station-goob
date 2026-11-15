@@ -952,6 +952,10 @@ namespace Content.Client.Lobby.UI
                 {
                     iconTexture = textureResource.Texture;
                 }
+                else if (AntagLobbyIcons.TryResolvePrototypeIcon(antag, out var prototypeIcon))
+                {
+                    iconTexture = _sprite.Frame0(prototypeIcon);
+                }
                 else if (AntagLobbyIcons.TryResolveFallbackSprite(antag, out var sprite))
                 {
                     iconTexture = _sprite.Frame0(sprite);

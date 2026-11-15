@@ -33,3 +33,4 @@ role-subtype-wizard = Волшебник
 role-subtype-blood-cultist = Культист крови
 role-subtype-xenoborg = Ксеноборг
 role-subtype-xenoborg-core = Ядро ксеноборгов
+role-subtype-blood-brother = Кровный брат

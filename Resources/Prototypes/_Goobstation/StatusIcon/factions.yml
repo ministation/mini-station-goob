@@ -8,3 +8,11 @@
     components:
     - Fauna # :trolled:
     - ShowAntagIcons
+
+- type: factionIcon
+  id: BloodBrotherFaction
+  priority: 11
+  locationPreference: left
+  icon:
+    sprite: /Textures/_Goobstation/Interface/Misc/blood_brother_icons.rsi
+    state: heart

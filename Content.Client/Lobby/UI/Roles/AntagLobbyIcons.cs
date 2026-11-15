@@ -1,5 +1,6 @@
 using Content.Shared._Mini.AntagTokens;
 using Content.Shared.Roles;
+using Content.Shared.StatusIcon;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Prototypes;
@@ -43,6 +44,25 @@ public static class AntagLobbyIcons
 
         path = string.Empty;
         return false;
+    }
+
+    /// <summary>
+    /// Resolves the icon configured on the antag prototype itself (a jobIcon prototype).
+    /// Blood Brother and other antags without an antag-token listing use this path.
+    /// </summary>
+    public static bool TryResolvePrototypeIcon(AntagPrototype antag, out SpriteSpecifier sprite)
+    {
+        sprite = default!;
+
+        if (antag.Icon.Id == "JobIconUnknown")
+            return false;
+
+        var prototypes = IoCManager.Resolve<IPrototypeManager>();
+        if (!prototypes.TryIndex(antag.Icon, out JobIconPrototype? jobIcon))
+            return false;
+
+        sprite = jobIcon.Icon;
+        return true;
     }
 
     public static bool TryResolveFallbackSprite(AntagPrototype antag, out SpriteSpecifier sprite)
