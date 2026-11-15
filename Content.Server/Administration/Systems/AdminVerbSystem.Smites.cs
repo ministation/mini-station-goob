@@ -1112,7 +1112,9 @@ public sealed partial class AdminVerbSystem
         var rod = Spawn(proto, spawnCoords);
         // Here we abuse the ChasingWalkComp by making it skip targetting logic and dialling its frequency up
         EnsureComp<ChasingWalkComponent>(rod, out var chasingComp);
-        chasingComp.NextChangeVectorTime = TimeSpan.MaxValue; // we just want it to never change
+        // we just want it to never change within the rod's lifetime;
+        // TimeSpan.MaxValue is not an option, because the field is auto-paused and MaxValue + pause duration throws
+        chasingComp.NextChangeVectorTime = _gameTiming.CurTime + TimeSpan.FromDays(1);
         chasingComp.ChasingEntity = target;
         chasingComp.ImpulseInterval = .1f; // skrrt skrrrrrrt skrrrt
         chasingComp.RotateWithImpulse = true;
