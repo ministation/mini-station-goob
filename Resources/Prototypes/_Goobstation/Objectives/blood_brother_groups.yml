@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: weightedRandom
+  id: BloodBrotherObjectiveGroups
+  weights:
+    TraitorObjectiveGroupSteal: 1
+    TraitorObjectiveGroupKill: 1

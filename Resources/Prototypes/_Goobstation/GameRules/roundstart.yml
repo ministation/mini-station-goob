@@ -52,6 +52,34 @@
       - RoundstartAntag
 
 - type: entity
+  parent: BaseGameRule
+  id: BloodBrothers
+  components:
+  - type: BloodBrotherRule
+  - type: GameRule
+    minPlayers: 15
+  - type: AntagSelection
+    selectionTime: IntraPlayerSpawn
+    agentName: blood-brother-roundend-name
+    definitions:
+    - prefRoles: [ BloodBrother ]
+      min: 2
+      max: 8
+      playerRatio: 15
+      chaosScore: 100
+      useAntagCountScale: false
+      mindRoles:
+      - MindRoleBloodBrother
+      startingGear: BloodBrotherGear
+      briefing:
+        text: blood-brother-role-greeting
+        color: Crimson
+        sound: /Audio/Ambience/Antag/traitor_start.ogg
+  - type: Tag
+    tags:
+      - RoundstartAntag
+
+- type: entity
   parent: BaseTraitorRule
   id: CorporateAgent
   components:

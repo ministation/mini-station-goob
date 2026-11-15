@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: BaseObjective
+  id: BloodBrotherConvertObjective
+  name: Convert a brother
+  description: Flash a brainwashable person directly with a handheld flash to recruit them into your conspiracy.
+  components:
+  - type: Objective
+    difficulty: 0
+    issuer: objective-issuer-syndicate
+    unique: true
+    serverCurrency: 0
+    icon:
+      sprite: /Textures/_Goobstation/Interface/Misc/blood_brother_icons.rsi
+      state: heart
+  - type: RoleRequirement
+    roles:
+    - BloodBrotherRole
+  - type: BloodBrotherConvertCondition
+
+- type: entity
+  parent: [ BaseTraitorObjective, BaseLivingObjective ]
+  id: BloodBrotherEscapeObjective
+  name: Escape with your blood brothers
+  description: You and your brothers must all escape on the emergency shuttle alive and unrestrained. Escaping alone is not enough.
+  components:
+  - type: Objective
+    difficulty: 1.5
+    icon:
+      sprite: Structures/Furniture/chairs.rsi
+      state: shuttle
+  - type: BloodBrotherEscapeCondition
