@@ -15,6 +15,7 @@
     Shadowling: 0.01
     Ratvar: 0.05
     BloodCult: 0.02
+    BloodBrothers: 0.06
 
 - type: weightedRandom
   id: GameDirectorWatcher
@@ -155,3 +156,18 @@
   - Changeling
   - Wizard
   - Ratvar
+
+- type: incompatibleModes
+  id: BloodBrothers
+  modes:
+  - Nukeops
+  - Honkops
+  - Zombie
+  - Revolutionary
+  - BlobGameMode
+  - CosmicCult
+  - Heretic
+  - Changeling
+  - Wizard
+  - Ratvar
+  - BloodCult
