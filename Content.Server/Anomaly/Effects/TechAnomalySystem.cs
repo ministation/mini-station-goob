@@ -46,7 +46,11 @@ public sealed class TechAnomalySystem : EntitySystem
 
             tech.NextTimer += TimeSpan.FromSeconds(tech.TimerFrequency);
 
-            _signal.InvokePort(uid, tech.TimerPort);
+            // OnSupercritical removes the source, but the anomaly can still update before it is deleted.
+            if (!TryComp<DeviceLinkSourceComponent>(uid, out var source))
+                continue;
+
+            _signal.InvokePort(uid, tech.TimerPort, null, source);
         }
     }
 
@@ -130,6 +134,9 @@ public sealed class TechAnomalySystem : EntitySystem
 
     private void OnPulse(Entity<TechAnomalyComponent> tech, ref AnomalyPulseEvent args)
     {
-        _signal.InvokePort(tech, tech.Comp.PulsePort);
+        if (!TryComp<DeviceLinkSourceComponent>(tech, out var source))
+            return;
+
+        _signal.InvokePort(tech, tech.Comp.PulsePort, null, source);
     }
 }
