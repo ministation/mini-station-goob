@@ -136,6 +136,15 @@ public sealed class PullController : VirtualController
         if (_container.IsEntityInContainer(player))
             return false;
 
+        // Client input can reference a deleted entity or an entity on another map (for example, when the player
+        // changed maps before the command was handled). Converting such coordinates logs engine errors and turns
+        // the offset into NaN, so drop the request.
+        if (!coords.IsValid(EntityManager) ||
+            _xformQuery.GetComponent(coords.EntityId).MapID != _xformQuery.GetComponent(player).MapID)
+        {
+            return false;
+        }
+
         pullerComp.NextThrow = _timing.CurTime + pullerComp.ThrowCooldown;
 
         // Cap the distance
