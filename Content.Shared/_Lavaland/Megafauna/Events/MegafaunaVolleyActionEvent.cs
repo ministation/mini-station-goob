@@ -67,6 +67,63 @@ public sealed partial class MegafaunaVolleyActionEvent : WorldTargetActionEvent
     /// </summary>
     [DataField]
     public float HomingSpeed = 60f;
+
+    /// <summary>
+    /// Scripted barrage: when set, these steps are played in order instead of
+    /// <see cref="Volleys"/>, <see cref="Interval"/> and <see cref="Patterns"/>.
+    /// </summary>
+    [DataField]
+    public List<MegafaunaVolleyStep> Steps = new();
+
+    /// <summary>
+    /// Line the performer says in game chat when the barrage starts (TG colossus "Perish.").
+    /// </summary>
+    [DataField]
+    public string? Announce;
+
+    /// <summary>
+    /// Freeze the performer's megafauna AI while the barrage is firing and restore it afterwards,
+    /// so a long scripted barrage is not mixed with the regular attack schedule (TG stops the AI).
+    /// </summary>
+    [DataField]
+    public bool PauseAi;
+}
+
+/// <summary>
+/// One wave of a scripted <see cref="MegafaunaVolleyActionEvent"/> barrage.
+/// </summary>
+[DataDefinition]
+public sealed partial class MegafaunaVolleyStep
+{
+    /// <summary>
+    /// Pause before this wave, in seconds. TG colossus sleeps finale_counter + 1 deciseconds between waves.
+    /// </summary>
+    [DataField]
+    public float Interval = 0.1f;
+
+    /// <summary>
+    /// Angle offsets from the target direction, in degrees. Empty means the wave has no aimed bolts.
+    /// </summary>
+    [DataField]
+    public List<float> Pattern = new();
+
+    /// <summary>
+    /// Bolts fired in random directions, spread by <see cref="RandomSpread"/>.
+    /// </summary>
+    [DataField]
+    public int RandomCount;
+
+    [DataField]
+    public float RandomSpread = 180f;
+
+    /// <summary>
+    /// Bolts fired at random tiles within <see cref="ScatterRadius"/> tiles of the performer.
+    /// </summary>
+    [DataField]
+    public int ScatterCount;
+
+    [DataField]
+    public int ScatterRadius = 12;
 }
 
 /// <summary>
@@ -92,4 +149,8 @@ public sealed partial class MegafaunaVolleyComponent : Component
     public int Volleys;
     public TimeSpan Interval;
     public TimeSpan NextVolley;
+    public List<MegafaunaVolleyStep> Steps = new();
+    public int StepIndex;
+    public bool PauseAi;
+    public bool AiWasActive;
 }

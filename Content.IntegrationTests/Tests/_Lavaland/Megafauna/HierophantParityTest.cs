@@ -110,7 +110,9 @@ public sealed class HierophantParityTest
         });
 
         // The burst must grow: the expanding spawner releases several rings, not one static ring.
-        await server.WaitRunTicks(25);
+        // inversePeriod makes the rings come every 0.2..0.7 s and the hierophant is at zero anger here,
+        // so the second ring lands at 0.7 s: wait past it but before the 1 s blast tile lifetime.
+        await server.WaitRunTicks(50);
 
         await server.WaitAssertion(() =>
         {
@@ -571,6 +573,264 @@ public sealed class HierophantParityTest
         return squares;
     }
 
+    /// <summary>
+    /// TG anger counters: the expanding burst caps at burst_range 7 and the cross spam fires up to
+    /// cross_counter 7 crosses, starting at 3 and 1. The 5..11 anger sized beams stay untouched.
+    /// </summary>
+    [Test]
+    public async Task BurstAndCrossCountersMatchTg()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var proto = server.ResolveDependency<IPrototypeManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid boss = default;
+        EntityUid boxMax = default;
+        EntityUid crossMax = default;
+        EntityUid boxMin = default;
+        EntityUid crossMin = default;
+
+        await server.WaitAssertion(() =>
+        {
+            AssertCounterRange(proto, entMan, "HierophantShapeBoxExpanding", 3, 7);
+            AssertCounterRange(proto, entMan, "HierophantShapeCrossSequence", 1, 7);
+            AssertCounterRange(proto, entMan, "HierophantShapeCrossSequenceEnraged", 1, 1);
+            AssertBeamSizeRange(proto, entMan, "HierophantShapeCrossSequence", 5, 11);
+            AssertBeamSizeRange(proto, entMan, "HierophantShapeCrossSequenceEnraged", 5, 11);
+        });
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -14; x <= 14; x++)
+            {
+                for (var y = -14; y <= 14; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity("MobHierophant", testMap.GridCoords.Offset(new Vector2(-7f, 0f)));
+            var anger = entMan.GetComponent<AngerComponent>(boss);
+            anger.MaxAnger = 1f;
+            anger.CurrentAnger = 1f;
+
+            boxMax = SpawnAngerShape(entMan, "HierophantShapeBoxExpanding", testMap.GridCoords, boss);
+            crossMax = SpawnAngerShape(entMan, "HierophantShapeCrossSequence", testMap.GridCoords, boss);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<ShapeSpawnerCounterComponent>(boxMax).MaxCounter, Is.EqualTo(7),
+                "at max anger the box must stop at the TG burst_range 7");
+            Assert.That(entMan.GetComponent<ShapeSpawnerCounterComponent>(crossMax).MaxCounter, Is.EqualTo(7),
+                "at max anger the cross spam must fire the TG cross_counter 7 crosses");
+        });
+
+        await server.WaitPost(() =>
+        {
+            entMan.GetComponent<AngerComponent>(boss).CurrentAnger = 0f;
+            boxMin = SpawnAngerShape(entMan, "HierophantShapeBoxExpanding", testMap.GridCoords.Offset(new Vector2(5f, 0f)), boss);
+            crossMin = SpawnAngerShape(entMan, "HierophantShapeCrossSequence", testMap.GridCoords.Offset(new Vector2(-5f, 0f)), boss);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<ShapeSpawnerCounterComponent>(boxMin).MaxCounter, Is.EqualTo(3),
+                "at zero anger the box must start at the TG burst_range 3");
+            Assert.That(entMan.GetComponent<ShapeSpawnerCounterComponent>(crossMin).MaxCounter, Is.EqualTo(1),
+                "at zero anger the cross spam must fire a single TG cross_counter cross");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// inversePeriod must actually invert: the counter period falls as anger rises, so the burst and
+    /// the cross series speed up at max anger (0.2 s and 0.7 s) and slow down at zero anger (0.7 s
+    /// and 1.2 s). Before the fix EntityShapeSystem read InverseCounter here and the field was dead.
+    /// </summary>
+    [Test]
+    public async Task AngerPeriodsMatchTg()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var proto = server.ResolveDependency<IPrototypeManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid boss = default;
+        EntityUid boxMax = default;
+        EntityUid crossMax = default;
+        EntityUid boxMin = default;
+        EntityUid crossMin = default;
+
+        await server.WaitAssertion(() =>
+        {
+            AssertPeriodInverse(proto, entMan, "HierophantShapeBoxExpanding", 0.2f, 0.7f);
+            AssertPeriodInverse(proto, entMan, "HierophantShapeCrossSequence", 0.7f, 1.2f);
+        });
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -14; x <= 14; x++)
+            {
+                for (var y = -14; y <= 14; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity("MobHierophant", testMap.GridCoords.Offset(new Vector2(-7f, 0f)));
+            var anger = entMan.GetComponent<AngerComponent>(boss);
+            anger.MaxAnger = 1f;
+            anger.CurrentAnger = 1f;
+
+            boxMax = SpawnAngerShape(entMan, "HierophantShapeBoxExpanding", testMap.GridCoords, boss);
+            crossMax = SpawnAngerShape(entMan, "HierophantShapeCrossSequence", testMap.GridCoords, boss);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(PeriodOf(entMan, boxMax).TotalSeconds, Is.EqualTo(0.2).Within(0.001),
+                "at max anger the box rings must come every 0.2 s");
+            Assert.That(PeriodOf(entMan, crossMax).TotalSeconds, Is.EqualTo(0.7).Within(0.001),
+                "at max anger the crosses must come every 0.7 s");
+        });
+
+        await server.WaitPost(() =>
+        {
+            entMan.GetComponent<AngerComponent>(boss).CurrentAnger = 0f;
+            boxMin = SpawnAngerShape(entMan, "HierophantShapeBoxExpanding", testMap.GridCoords.Offset(new Vector2(5f, 0f)), boss);
+            crossMin = SpawnAngerShape(entMan, "HierophantShapeCrossSequence", testMap.GridCoords.Offset(new Vector2(-5f, 0f)), boss);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(PeriodOf(entMan, boxMin).TotalSeconds, Is.EqualTo(0.7).Within(0.001),
+                "at zero anger the box rings must come every 0.7 s");
+            Assert.That(PeriodOf(entMan, crossMin).TotalSeconds, Is.EqualTo(1.2).Within(0.001),
+                "at zero anger the crosses must come every 1.2 s");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// While a cross series runs the hierophant AI must be paused, like TG sets blinking = TRUE, and
+    /// must come back once the series is over.
+    /// </summary>
+    [Test]
+    public async Task CrossSequencePausesAi()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid boss = default;
+        EntityUid cow = default;
+        EntityUid series = default;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -12; x <= 12; x++)
+            {
+                for (var y = -12; y <= 12; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity("MobHierophant", testMap.GridCoords.Offset(new Vector2(-8f, 0f)));
+            var anger = entMan.GetComponent<AngerComponent>(boss);
+            anger.MaxAnger = 1f;
+            anger.CurrentAnger = 0f;
+            // A test has no player to draw aggro, so turn the AI on by hand and keep one aggressor:
+            // the resume path only wakes the AI back up while the boss still has a target.
+            cow = entMan.SpawnEntity("MobCow", testMap.GridCoords.Offset(new Vector2(0f, 6f)));
+            entMan.GetComponent<AggressiveComponent>(boss).Aggressors.Add(cow);
+            entMan.GetComponent<MegafaunaAiComponent>(boss).Active = true;
+
+            series = SpawnAngerShape(entMan, "HierophantShapeCrossSequence", testMap.GridCoords, boss);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<MegafaunaAiComponent>(boss).Active, Is.False,
+                "the cross series must pause the hierophant AI like TG blinking = TRUE");
+        });
+
+        // At zero anger the series is one cross with a 1.2 s period, then the spawner retires.
+        await server.WaitRunTicks(90);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.Deleted(series), Is.True, "the single cross series must have retired");
+            Assert.That(entMan.GetComponent<MegafaunaAiComponent>(boss).Active, Is.True,
+                "the hierophant AI must come back after the cross series ends");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// The enraged all-directions blast is a single wave: TG fires one blasts(target, alldirs) call
+    /// per attack and cross_counter does not apply to it.
+    /// </summary>
+    [Test]
+    public async Task EnragedCrossSpawnsSingleWave()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var proto = server.ResolveDependency<IPrototypeManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid boss = default;
+        EntityUid series = default;
+
+        await server.WaitAssertion(() => AssertCounterRange(proto, entMan, "HierophantShapeCrossSequenceEnraged", 1, 1));
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -14; x <= 14; x++)
+            {
+                for (var y = -14; y <= 14; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity("MobHierophant", testMap.GridCoords.Offset(new Vector2(-13f, 0f)));
+            var anger = entMan.GetComponent<AngerComponent>(boss);
+            anger.MaxAnger = 1f;
+            anger.CurrentAnger = 1f;
+
+            series = SpawnAngerShape(entMan, "HierophantShapeCrossSequenceEnraged", testMap.GridCoords, boss);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<ShapeSpawnerCounterComponent>(series).MaxCounter, Is.EqualTo(1),
+                "the enraged all-directions blast must be a single wave");
+            var squares = CountSquaresNear(entMan, Vector2.Zero, 15f);
+            Assert.That(squares, Is.EqualTo(81),
+                "one enraged wave at max anger must be a single 81 tile all-directions cross, got " + squares);
+        });
+
+        // Past the 0.7 s max anger period the single wave spawner must be gone.
+        await server.WaitRunTicks(50);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.Deleted(series), Is.True, "the enraged wave spawner must retire after one wave");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
     private static EntityUid SpawnAngerShape(IEntityManager entMan, string prototype, EntityCoordinates coords, EntityUid user)
     {
         // The action raises SpawnedByActionEvent before MapInit, that is what carries the anger.
@@ -615,5 +875,39 @@ public sealed class HierophantParityTest
         var square = entMan.SpawnEntity("LavalandHierophantSquare", coords);
         // Skip the 0.7 second telegraph, the test does not wait for it.
         entMan.GetComponent<DamageSquareComponent>(square).DamageTime = TimeSpan.Zero;
+    }
+
+    private static void AssertCounterRange(IPrototypeManager proto, IEntityManager entMan, string id, int min, int max)
+    {
+        var spawnerProto = proto.Index<EntityPrototype>(id);
+        Assert.That(spawnerProto.TryGetComponent<AngerShapeSpawnerComponent>(out var angerSpawner, entMan.ComponentFactory), Is.True,
+            id + " lost its AngerShapeSpawnerComponent");
+        Assert.That(angerSpawner!.MaxCounterRange, Is.Not.Null, id + " has no counterRange");
+        Assert.That(angerSpawner.MaxCounterRange!.Value.X, Is.EqualTo(min), id + " counterRange min");
+        Assert.That(angerSpawner.MaxCounterRange!.Value.Y, Is.EqualTo(max), id + " counterRange max");
+    }
+
+    private static TimeSpan PeriodOf(IEntityManager entMan, EntityUid uid)
+        => entMan.GetComponent<ShapeSpawnerCounterComponent>(uid).SpawnPeriod;
+
+    private static void AssertPeriodInverse(IPrototypeManager proto, IEntityManager entMan, string id, float min, float max)
+    {
+        var spawnerProto = proto.Index<EntityPrototype>(id);
+        Assert.That(spawnerProto.TryGetComponent<AngerShapeSpawnerComponent>(out var angerSpawner, entMan.ComponentFactory), Is.True,
+            id + " lost its AngerShapeSpawnerComponent");
+        Assert.That(angerSpawner!.InverseSpawnPeriod, Is.True, id + " must invert its spawn period with anger");
+        Assert.That(angerSpawner.SpawnPeriodRange, Is.Not.Null, id + " has no periodRange");
+        Assert.That(angerSpawner.SpawnPeriodRange!.Value.X, Is.EqualTo(min).Within(0.0001f), id + " period min");
+        Assert.That(angerSpawner.SpawnPeriodRange!.Value.Y, Is.EqualTo(max).Within(0.0001f), id + " period max");
+    }
+
+    private static void AssertBeamSizeRange(IPrototypeManager proto, IEntityManager entMan, string id, int min, int max)
+    {
+        var spawnerProto = proto.Index<EntityPrototype>(id);
+        Assert.That(spawnerProto.TryGetComponent<ShapeSpawnerComponent>(out var spawner, entMan.ComponentFactory), Is.True,
+            id + " lost its ShapeSpawnerComponent");
+        Assert.That(spawner!.AngerSizeRange, Is.Not.Null, id + " has no angerSizeRange");
+        Assert.That(spawner.AngerSizeRange!.Value.X, Is.EqualTo(min), id + " beam size min");
+        Assert.That(spawner.AngerSizeRange!.Value.Y, Is.EqualTo(max), id + " beam size max");
     }
 }

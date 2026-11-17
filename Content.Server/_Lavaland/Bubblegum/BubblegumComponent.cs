@@ -235,10 +235,11 @@ public sealed partial class BubblegumComponent : Component
     public int CloneCount = 6;
 
     /// <summary>
-    /// TG enraged hallucination burst: 3 rings of 4, at most 12 positions including the boss.
+    /// TG enraged hallucination burst: 3 rings of 4 positions, the boss itself takes 3 of them,
+    /// so there are 9 hallucinations. Our clones are not tied to boss positions, hence 9.
     /// </summary>
     [DataField]
-    public int CloneCriticalCount = 12;
+    public int CloneCriticalCount = 9;
 
     [DataField]
     public int CloneMinOffset = 2;

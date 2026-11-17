@@ -238,4 +238,72 @@ public sealed class BubblegumParityTest
 
         await pair.CleanReturnAsync();
     }
+
+    [Test]
+    public async Task NearDeathCloneBurstSpawnsNineClones()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var timing = server.ResolveDependency<IGameTiming>();
+        var sys = server.System<BubblegumSystem>();
+
+        var testMap = await pair.CreateTestMap();
+        EntityUid boss = default;
+        EntityUid grid = default;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -14; x <= 14; x++)
+            {
+                for (var y = -14; y <= 14; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity(BossProto, testMap.GridCoords);
+            grid = testMap.Grid;
+        });
+
+        await server.WaitRunTicks(2);
+
+        var normalClones = 0;
+        var criticalClones = 0;
+
+        await server.WaitPost(() =>
+        {
+            var bubblegum = entMan.GetComponent<BubblegumComponent>(boss);
+            bubblegum.CloneHealthThreshold = 1f;
+
+            var gridComp = entMan.GetComponent<MapGridComponent>(grid);
+            var bossTile = mapSys.TileIndicesFor(grid, gridComp, entMan.GetComponent<TransformComponent>(boss).Coordinates);
+            var targetTile = bossTile + new Vector2i(5, 0);
+            var now = timing.CurTime;
+
+            // Healthy boss: the surround burst uses CloneCount 6.
+            bubblegum.CloneCriticalHealthThreshold = 0f;
+            var before = bubblegum.ActiveClones.Count;
+            sys.QueueCloneBloodSprays(boss, bubblegum, grid, gridComp, bossTile, targetTile, 0f, now);
+            normalClones = bubblegum.ActiveClones.Count - before;
+
+            // Near death: the same burst uses CloneCriticalCount 9, TG's 3 rings of 4 minus the boss.
+            bubblegum.CloneCriticalHealthThreshold = 1f;
+            before = bubblegum.ActiveClones.Count;
+            sys.QueueCloneBloodSprays(boss, bubblegum, grid, gridComp, bossTile, targetTile, 0f, now);
+            criticalClones = bubblegum.ActiveClones.Count - before;
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var bubblegum = entMan.GetComponent<BubblegumComponent>(boss);
+            Assert.That(normalClones, Is.EqualTo(6), "the surround burst must spawn 6 hallucinations");
+            Assert.That(criticalClones, Is.EqualTo(9),
+                "the near-death burst must spawn 9 hallucinations (TG has 12 positions, the boss takes 3)");
+            Assert.That(bubblegum.PendingBloodTiles.Count, Is.GreaterThan(0),
+                "the clones queued no fake blood sprays");
+        });
+
+        await pair.CleanReturnAsync();
+    }
 }
