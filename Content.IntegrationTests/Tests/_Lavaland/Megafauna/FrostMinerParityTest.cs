@@ -9,6 +9,7 @@ using Content.Server._Lavaland.Ruins;
 using Content.Shared._Lavaland.Aggression;
 using Content.Server._Lavaland.BossMechanics;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Sprite;
@@ -17,6 +18,7 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Lavaland.Megafauna;
@@ -150,6 +152,61 @@ public sealed class FrostMinerParityTest
                 "the frost miner lost its melee knockback");
             Assert.That(throwHit!.Distance, Is.EqualTo(7f),
                 "the frost miner melee knockback must be 7 tiles like the TG knockback element");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// TG parity: the frost orb and its ice blasts run EX_ACT(EXPLODE_HEAVY) when they hit a turf
+    /// or an object, so a missed orb splashes on the wall instead of silently disappearing.
+    /// </summary>
+    [Test]
+    public async Task OrbExplodesOnWallImpact()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var physics = server.System<SharedPhysicsSystem>();
+
+        var testMap = await pair.CreateTestMap();
+        EntityUid orb = default;
+        EntityUid target = default;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -14; x <= 14; x++)
+            {
+                for (var y = -14; y <= 14; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            // Tile centers: the orb flies along the wall row, the dummy stands on the tile right
+            // behind the impact point, so only the impact explosion can hurt it.
+            var center = testMap.GridCoords.Offset(new Vector2(0.5f, 0.5f));
+            entMan.SpawnEntity("WallSolid", center.Offset(new Vector2(5f, 0f)));
+            target = entMan.SpawnEntity("MobCow", center.Offset(new Vector2(4f, 1f)));
+
+            orb = entMan.SpawnEntity("LavalandFrostOrb", center);
+            physics.SetLinearVelocity(orb, new Vector2(10f, 0f));
+        });
+
+        await server.WaitRunTicks(60);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.EntityExists(orb), Is.False,
+                "the frost orb flew through the wall instead of stopping on it");
+
+            Assert.That(entMan.TryGetComponent<DamageableComponent>(target, out var damageable), Is.True,
+                "the dummy lost its DamageableComponent");
+            // The orb never touched the dummy: cold damage can only come from the Cryo splash.
+            Assert.That(damageable!.Damage.DamageDict.TryGetValue("Cold", out var cold), Is.True,
+                "the dummy took no cold damage, the wall impact explosion never happened");
+            Assert.That(cold.Float(), Is.GreaterThan(0f),
+                "the dummy took no cold damage, the wall impact explosion never happened");
         });
 
         await pair.CleanReturnAsync();

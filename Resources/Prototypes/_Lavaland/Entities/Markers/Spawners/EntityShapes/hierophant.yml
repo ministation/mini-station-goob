@@ -84,14 +84,14 @@
   - type: ShapeSpawner
     spawn: LavalandHierophantSquare
     shape: !type:GroupEntityShape
+      size: 11
       children:
       - id: BishopCross
-        size: 11
       - id: RookCross
-        size: 11
 #      - id: QueenCross # TODO expand MobPhases for actions, so it can be "upgraded" to also have a chance to spawn a queen cross.
-#        size: 11
 #        weight: 0.3
+    # TG beam_range: 5 tiles at zero anger, 11 at max anger.
+    angerSizeRange: 5,11
   - type: ShapeSpawnerCounter
   - type: AngerShapeSpawner
     counterRange: 2,4

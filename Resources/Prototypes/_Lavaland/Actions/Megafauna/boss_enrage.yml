@@ -2,12 +2,12 @@
 
 # Enrage moves for the colossus and the hierophant, unlocked by MobPhases.
 
-# Colossus below 10% HP: one final lance of death bolts.
+# Colossus below 10% HP: TG's Titan's Finale, a one-shot barrage of death bolts.
 - type: entity
   id: ActionColossusFinale
   parent: BaseAction
   name: Final Judgement
-  description: Fires a lance of death bolts in a straight line.
+  description: Unleashes a barrage of shotgun blasts, random bolts and rings of death bolts.
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -18,12 +18,42 @@
     checkCanAccess: false
     range: 30
   - type: WorldTargetAction
-    event: !type:MegafaunaShotActionEvent
+    event: !type:MegafaunaVolleyActionEvent
       projectile: LavalandColossusBolt
-      count: 3
-      spread: 15
-      speed: 30
-      pattern: Cone
+      speed: 14
+      volleys: 24
+      interval: 1.5
+      randomSpread: 180
+      countPerAngle: 10
+      patterns:
+      # Six shotgun waves of six bolts.
+      - [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+      - [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+      - [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+      - [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+      - [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+      - [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+      # Twelve waves of random bolts all over the arena.
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      - []
+      # Three random_aoe rings: 32 bolts in every direction.
+      - [0, 11.25, 22.5, 33.75, 45, 56.25, 67.5, 78.75, 90, 101.25, 112.5, 123.75, 135, 146.25, 157.5, 168.75, 180, 191.25, 202.5, 213.75, 225, 236.25, 247.5, 258.75, 270, 281.25, 292.5, 303.75, 315, 326.25, 337.5, 348.75]
+      - [0, 11.25, 22.5, 33.75, 45, 56.25, 67.5, 78.75, 90, 101.25, 112.5, 123.75, 135, 146.25, 157.5, 168.75, 180, 191.25, 202.5, 213.75, 225, 236.25, 247.5, 258.75, 270, 281.25, 292.5, 303.75, 315, 326.25, 337.5, 348.75]
+      - [0, 11.25, 22.5, 33.75, 45, 56.25, 67.5, 78.75, 90, 101.25, 112.5, 123.75, 135, 146.25, 157.5, 168.75, 180, 191.25, 202.5, 213.75, 225, 236.25, 247.5, 258.75, 270, 281.25, 292.5, 303.75, 315, 326.25, 337.5, 348.75]
+      # Three dir_shots waves: one bolt along each of the eight directions.
+      - [0, 45, 90, 135, 180, -135, -90, -45]
+      - [0, 45, 90, 135, 180, -135, -90, -45]
+      - [0, 45, 90, 135, 180, -135, -90, -45]
 
 # Hierophant below 50% HP: cross blasts in all directions.
 - type: entity

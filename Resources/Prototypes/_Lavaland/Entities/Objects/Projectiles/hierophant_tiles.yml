@@ -26,6 +26,10 @@
     damageWhitelist:
       components:
       - MobState
+    # TG monster_damage_boost: extra brute damage to megafauna and asteroid fauna, never to players.
+    monsterBonusDamage:
+      types:
+        Blunt: 10
     sound:
       path: /Audio/_Lavaland/Mobs/Bosses/hiero_blast.ogg
 
@@ -61,7 +65,7 @@
   - type: TileChaser
     spawn: LavalandHierophantSquare
   - type: AngerTileChaser
-    speedRange: 3,5
+    speedRange: 3.33,10 # TG step 0.3s at zero anger, 0.1s at max anger
     stepsRange: 15,40
 
 - type: entity
@@ -70,6 +74,8 @@
   suffix: Safe
   components:
   - type: DamageSquare
+    # The hierophant club blink is a player attack, so it gets no TG monster boost.
+    monsterBonusDamage: {}
     damageWhitelist:
       requireAll: true
       components:

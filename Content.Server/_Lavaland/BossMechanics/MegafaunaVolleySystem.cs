@@ -72,6 +72,15 @@ public sealed class MegafaunaVolleySystem : EntitySystem
         if (args.Handled || TerminatingOrDeleted(args.Performer))
             return;
 
+        // One volley at a time: a boss in the middle of a long barrage (the colossus finale) must not
+        // have its remaining waves cut off because another volley attack fired over it.
+        if (TryComp<MegafaunaVolleyComponent>(args.Performer, out var active)
+            && active.VolleyIndex < active.Volleys)
+        {
+            args.Handled = true;
+            return;
+        }
+
         args.Handled = true;
 
         var performer = args.Performer;
@@ -85,6 +94,7 @@ public sealed class MegafaunaVolleySystem : EntitySystem
         comp.Homing = args.Homing;
         comp.HomingSpeed = args.HomingSpeed;
         comp.Patterns = args.Patterns;
+        comp.CountPerAngle = Math.Max(1, args.CountPerAngle);
         comp.VolleyIndex = 0;
         comp.Volleys = Math.Max(1, args.Volleys);
         comp.Interval = TimeSpan.FromSeconds(Math.Max(0.01f, args.Interval));
@@ -110,14 +120,30 @@ public sealed class MegafaunaVolleySystem : EntitySystem
     {
         if (comp.Patterns.Count == 0)
         {
-            var angle = comp.BaseAngle + Angle.FromDegrees(_random.NextFloat(-comp.RandomSpread, comp.RandomSpread));
-            FireProjectile(performer, comp, angle);
+            FireRandomVolley(performer, comp);
             return;
         }
 
         var pattern = comp.Patterns[comp.VolleyIndex % comp.Patterns.Count];
+
+        // An empty pattern is a wave of random bolts, the same as having no patterns at all.
+        if (pattern.Count == 0)
+        {
+            FireRandomVolley(performer, comp);
+            return;
+        }
+
         foreach (var offset in pattern)
             FireProjectile(performer, comp, comp.BaseAngle + Angle.FromDegrees(offset));
+    }
+
+    private void FireRandomVolley(EntityUid performer, MegafaunaVolleyComponent comp)
+    {
+        for (var i = 0; i < comp.CountPerAngle; i++)
+        {
+            var angle = comp.BaseAngle + Angle.FromDegrees(_random.NextFloat(-comp.RandomSpread, comp.RandomSpread));
+            FireProjectile(performer, comp, angle);
+        }
     }
 
     private void FireProjectile(EntityUid shooter, MegafaunaVolleyComponent comp, Angle angle)

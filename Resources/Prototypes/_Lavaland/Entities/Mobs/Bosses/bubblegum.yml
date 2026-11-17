@@ -61,6 +61,10 @@
     - CannotSuicide
     - FootstepSound
   - type: CombatMode
+    # Boss melee goes through AttemptLightAttack, which needs combat mode; the shared megafauna
+    # chase system turns it on, this keeps the burst working if the boss is ever driven otherwise.
+    isInCombatMode: true
+  - type: RapidMelee
   - type: MovementSpeedModifier
     baseWalkSpeed: 2
     baseSprintSpeed: 3
