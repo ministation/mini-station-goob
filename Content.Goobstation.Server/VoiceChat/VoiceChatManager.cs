@@ -149,6 +149,11 @@ public sealed partial class VoiceChatManager
 
     private void SendStatus(INetChannel channel)
     {
+        // Mini: канал может отключиться в том же кадре, когда пришло MsgVoiceSettings, движок
+        // отбрасывает отправку и пишет ERRO "Tried to send message ... to disconnected channel".
+        if (!channel.IsConnected)
+            return;
+
         _net.ServerSendMessage(new MsgVoiceStatus { Connected = IsWebConnected(channel.UserId) }, channel);
     }
 

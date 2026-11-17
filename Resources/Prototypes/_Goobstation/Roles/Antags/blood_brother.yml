@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: antag
+  id: BloodBrother
+  name: roles-antag-blood-brother-name
+  antagonist: true
+  setPreference: true
+  objective: roles-antag-blood-brother-objective
+  guides: [ Antagonists ]
+  icon: JobIconBloodBrother
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 5h
+  - !type:SpeciesRequirement # CorvaxGoob-Species
+    inverted: true
+    species:
+    - Abductor
+
+- type: startingGear
+  id: BloodBrotherGear
+  inhand:
+  - Flash

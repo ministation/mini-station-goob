@@ -22,6 +22,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Console;
 using Robust.Server.Player;
 using Robust.Shared.Network;
+using Robust.Server;
 
 namespace Content.Server._Mini.SiteBridge;
 
@@ -48,6 +49,7 @@ public sealed class SiteBridgeSystem : EntitySystem
     [Dependency] private readonly ITaskManager _taskManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IGameMapManager _mapManager = default!;
+    [Dependency] private readonly IBaseServer _server = default!;
 
     private ISawmill _sawmill = default!;
     private readonly SemaphoreSlim _shellSlots = new(2);
@@ -77,12 +79,8 @@ public sealed class SiteBridgeSystem : EntitySystem
         if (!_cfg.GetCVar(SiteBridgeCCVars.Enabled))
             return;
 
+        // Секрет не обязателен (контракт v2): пустой значит "заголовок не шлём".
         _secret = _cfg.GetCVar(SiteBridgeCCVars.Secret);
-        if (string.IsNullOrWhiteSpace(_secret))
-        {
-            _sawmill.Warning("site_bridge.secret пуст, мост с сайтом не запущен");
-            return;
-        }
 
         if (!SiteBridgeHelpers.TryNormalizeBaseUrl(_cfg.GetCVar(SiteBridgeCCVars.Url), out var baseUrl))
         {
@@ -268,7 +266,9 @@ public sealed class SiteBridgeSystem : EntitySystem
         };
 
         using var request = new HttpRequestMessage(HttpMethod.Post, new Uri(_baseUrl, BridgePath + "hello"));
-        request.Headers.TryAddWithoutValidation("X-Bridge-Secret", _secret);
+        // Секрет шлём только если он задан; сайт v2 умеет принимать hello без него.
+        if (!string.IsNullOrWhiteSpace(_secret))
+            request.Headers.TryAddWithoutValidation("X-Bridge-Secret", _secret);
         request.Content = JsonBody(payload);
 
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancel);
@@ -391,9 +391,22 @@ public sealed class SiteBridgeSystem : EntitySystem
 
     private async Task ExecuteCommandAsync(BridgeCommand command)
     {
-        if (command.Id <= 0 || string.IsNullOrEmpty(command.Command))
+        if (command.Id <= 0)
         {
             _sawmill.Warning("мост сайта: сайт прислал некорректную команду, пропускаю");
+            return;
+        }
+
+        // Выключение приходит без текста команды: причина необязательна.
+        if (command.Kind == SiteBridgeHelpers.KindShutdown)
+        {
+            await ShutdownAsync(command);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(command.Command))
+        {
+            _sawmill.Warning("мост сайта: сайт прислал пустую команду, пропускаю");
             return;
         }
 
@@ -440,6 +453,38 @@ public sealed class SiteBridgeSystem : EntitySystem
 
         var (ok, output) = await RunShellAsync(command.Command, timeoutSec);
         await SendResultAsync(command.Id, ok, output);
+    }
+
+    /// <summary>
+    /// Выключение с сайта: пишем файл блокировки рядом с активацией (или в cwd),
+    /// чтобы сервер не поднялся снова после перезапуска, отдаём результат и
+    /// останавливаем движок. Файл удаляется только владельцем машины, в том
+    /// числе через shell-команду моста.
+    /// </summary>
+    private async Task ShutdownAsync(BridgeCommand command)
+    {
+        var reason = string.IsNullOrWhiteSpace(command.Command)
+            ? "Выключен с сайта Mini Station"
+            : SiteBridgeHelpers.TruncateUtf8(command.Command.Trim(), 200);
+        var marker = MiniActivation.RuntimeBlockPath
+                     ?? MiniActivation.BlockPath(null, Directory.GetCurrentDirectory());
+        try
+        {
+            File.WriteAllText(marker, $"{DateTimeOffset.UtcNow:O} {reason}\n");
+            _sawmill.Warning($"мост сайта: сервер выключен с сайта ({reason}), файл блокировки {marker}");
+        }
+        catch (Exception e)
+        {
+            // Без файла блокировки сервер выключится, но супервизор вернёт его
+            // при следующем перезапуске, поэтому это WARN, а не отказ.
+            _sawmill.Warning($"мост сайта: не удалось записать файл блокировки {marker}: {e.Message}");
+        }
+
+        await SendResultAsync(command.Id, true, $"сервер выключен, файл блокировки: {marker}");
+
+        // Даём результату уйти на сайт до остановки процесса.
+        await Task.Delay(TimeSpan.FromSeconds(1));
+        _taskManager.RunOnMainThread(() => _server.Shutdown(reason));
     }
 
     private async Task<(bool Ok, string Output)> RunShellAsync(string commandLine, int timeoutSec)

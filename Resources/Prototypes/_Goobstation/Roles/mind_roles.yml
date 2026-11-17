@@ -224,3 +224,15 @@
     roleType: SoloAntagonist
     sortWeight: 50
 
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleBloodBrother
+  name: Blood Brother Role
+  components:
+  - type: MindRole
+    antagPrototype: BloodBrother
+    exclusiveAntag: true
+    roleType: TeamAntagonist
+    subtype: role-subtype-blood-brother
+  - type: BloodBrotherRole
+

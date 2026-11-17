@@ -10,6 +10,7 @@
   - type: RoleRequirement
     roles:
     - TraitorRole
+    - BloodBrotherRole
 
 - type: entity
   abstract: true
