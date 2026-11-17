@@ -98,9 +98,9 @@ public sealed class ThingBossTest
                 Assert.That(granted, Does.Contain(action), $"the Thing was never granted {action}");
         });
 
-        // 800 damage is past the 700 point phase budget, the excess has to be eaten.
+        // 900 damage is past the 800 point phase budget, the excess has to be eaten.
         await server.WaitPost(() => damageable.TryChangeDamage(boss,
-            new DamageSpecifier { DamageDict = { { "Blunt", 800f } } }, true));
+            new DamageSpecifier { DamageDict = { { "Blunt", 900f } } }, true));
         await server.WaitRunTicks(3);
 
         await server.WaitAssertion(() =>
@@ -109,7 +109,7 @@ public sealed class ThingBossTest
             Assert.That(thing.Invulnerable, Is.True, "running out of phase health must make the boss invulnerable");
 
             var health = entMan.GetComponent<DamageableComponent>(boss);
-            Assert.That(health.TotalDamage.Float(), Is.EqualTo(700f).Within(1f),
+            Assert.That(health.TotalDamage.Float(), Is.EqualTo(800f).Within(1f),
                 "damage must be capped at the phase budget");
 
             foreach (var accel in accelerators)
@@ -145,9 +145,9 @@ public sealed class ThingBossTest
             Assert.That(state, Is.EqualTo("p2"), "the sprite follows the phase");
         });
 
-        // Second phase: another 700 damage, another accelerator.
+        // Second phase: another 800 damage, another accelerator.
         await server.WaitPost(() => damageable.TryChangeDamage(boss,
-            new DamageSpecifier { DamageDict = { { "Blunt", 800f } } }, true));
+            new DamageSpecifier { DamageDict = { { "Blunt", 900f } } }, true));
         await server.WaitRunTicks(3);
 
         await server.WaitPost(() =>

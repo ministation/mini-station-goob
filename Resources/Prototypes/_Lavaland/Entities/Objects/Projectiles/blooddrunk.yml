@@ -10,7 +10,7 @@
   - type: Projectile
     damage:
       types:
-        Slash: 12
+        Slash: 15
   - type: Sprite
     sprite: _Lavaland/Objects/Specific/artefacts.rsi
     layers:
@@ -49,7 +49,7 @@
     damageDelay: 0.2
     damage:
       types:
-        Slash: 14
+        Slash: 17
     damageWhitelist:
       components:
       - MobState

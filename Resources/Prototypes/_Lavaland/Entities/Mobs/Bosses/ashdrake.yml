@@ -17,6 +17,10 @@
     worn: false
     damageCoefficient: 0.05
   - type: DrakeArena
+    # Timings x0.75 against TG: walls up after 1s, a wave every 2.4s, the escape answer 5s later.
+    startDelay: 0.75
+    waveDelay: 1.8
+    punishDuration: 3.75
   - type: Physics
     bodyType: KinematicController
   - type: Clickable
@@ -54,11 +58,12 @@
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
+    attackRate: 1.1
     damage:
       types:
-        Slash: 50
-        Heat: 15
-      armorPenetration: 0.35 # TG's drake has 40% melee armor piercing, 35% here
+        Slash: 58
+        Heat: 18
+      armorPenetration: 0.4 # TG's drake has 40% melee armor piercing
   - type: Tag
     tags:
     - CannotSuicide
@@ -69,7 +74,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      3000: Dead
+      3450: Dead
   # TG butcher results. TG also yields 5 sinew; the repo has no sinew material,
   # so those 5 are folded into the bone stack.
   - type: Butcherable
@@ -116,23 +121,23 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.7
+      value: 0.5
     selector: !type:NestedMegafaunaSelector
       id: AshDrake
   - type: Anger
-    totalHp: 3000
+    totalHp: 3450
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0: 1
-      1500: 2 # below half health the drake enrages and unlocks the firestorm
+      1725: 2 # below half health the drake enrages and unlocks the firestorm
   - type: BossEnrage
     healthFraction: 0.5
     speedMultiplier: 1.25
     attackRateMultiplier: 1.15
-    actionDelay: 0.55
+    actionDelay: 0.4
     sound:
       path: /Audio/Effects/demon_attack1.ogg
   - type: MegafaunaBlink

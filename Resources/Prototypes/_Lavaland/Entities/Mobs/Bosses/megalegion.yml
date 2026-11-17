@@ -64,8 +64,10 @@
     animation: WeaponArcBite
     damage:
         types:
-          Blunt: 25
-          Structural: 200
+          Blunt: 29
+          Structural: 230
+        armorPenetration: 0.5 # TG legion melee has 50 AP
+    attackRate: 1.1
   - type: Tag
     tags:
     - CannotSuicide
@@ -76,7 +78,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      800: Dead
+      900: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -107,11 +109,11 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.8
+      value: 0.6
     selector: !type:NestedMegafaunaSelector
       id: Legion
   - type: Anger
-    totalHp: 800
+    totalHp: 900
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2

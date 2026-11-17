@@ -9,7 +9,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 2
+    useDelay: 1.15
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -26,7 +26,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 2
+    useDelay: 1.15
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false

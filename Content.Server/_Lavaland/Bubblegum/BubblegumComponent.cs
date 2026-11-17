@@ -14,31 +14,31 @@ namespace Content.Server._Lavaland.Bubblegum;
 public sealed partial class BubblegumComponent : Component
 {
     [DataField]
-    public TimeSpan RangedCooldown = TimeSpan.FromSeconds(2.6);
+    public TimeSpan RangedCooldown = TimeSpan.FromSeconds(1.95);
 
     [DataField]
-    public TimeSpan ForcePressureAfter = TimeSpan.FromSeconds(5.5);
+    public TimeSpan ForcePressureAfter = TimeSpan.FromSeconds(4.15);
 
     [DataField]
-    public TimeSpan TargetSwitchCooldown = TimeSpan.FromSeconds(3.5);
+    public TimeSpan TargetSwitchCooldown = TimeSpan.FromSeconds(2.65);
 
     [DataField]
-    public TimeSpan TargetPressureMemory = TimeSpan.FromSeconds(30);
+    public TimeSpan TargetPressureMemory = TimeSpan.FromSeconds(22.5);
 
     [DataField]
-    public TimeSpan BloodSmackDelay = TimeSpan.FromSeconds(0.35);
+    public TimeSpan BloodSmackDelay = TimeSpan.FromSeconds(0.3);
 
     [DataField]
-    public TimeSpan BloodGrabDelay = TimeSpan.FromSeconds(0.65);
+    public TimeSpan BloodGrabDelay = TimeSpan.FromSeconds(0.45);
 
     [DataField]
-    public TimeSpan BloodWarpDelay = TimeSpan.FromSeconds(0.35);
+    public TimeSpan BloodWarpDelay = TimeSpan.FromSeconds(0.3);
 
     [DataField]
-    public TimeSpan BloodHandRecover = TimeSpan.FromSeconds(0.45);
+    public TimeSpan BloodHandRecover = TimeSpan.FromSeconds(0.35);
 
     [DataField]
-    public TimeSpan BloodReactionCooldown = TimeSpan.FromSeconds(1.85);
+    public TimeSpan BloodReactionCooldown = TimeSpan.FromSeconds(1.4);
 
     /// <summary>
     /// How long Bubblegum stays enraged after a blood warp. TG scales this from
@@ -48,11 +48,11 @@ public sealed partial class BubblegumComponent : Component
     public TimeSpan EnrageDuration = TimeSpan.FromSeconds(7);
 
     /// <summary>
-    /// TG parity: after an enrage ends, Bubblegum cannot enrage again for twice
-    /// the enrage duration.
+    /// TG parity gate before the next enrage: twice the enrage duration, with the
+    /// balance buff applied (0.75 of the 14 s cap).
     /// </summary>
     [DataField]
-    public TimeSpan EnrageCooldown = TimeSpan.FromSeconds(14);
+    public TimeSpan EnrageCooldown = TimeSpan.FromSeconds(10.5);
 
     [ViewVariables]
     public TimeSpan EnrageCooldownUntil;
@@ -97,25 +97,25 @@ public sealed partial class BubblegumComponent : Component
     public TimeSpan BloodSprayStepDelay = TimeSpan.FromSeconds(0.055);
 
     [DataField]
-    public TimeSpan ChargeWindup = TimeSpan.FromSeconds(0.45);
+    public TimeSpan ChargeWindup = TimeSpan.FromSeconds(0.35);
 
     [DataField]
     public TimeSpan ChargeStepDelay = TimeSpan.FromSeconds(0.05);
 
     [DataField]
-    public TimeSpan ChargeRecover = TimeSpan.FromSeconds(0.4);
+    public TimeSpan ChargeRecover = TimeSpan.FromSeconds(0.3);
 
     [DataField]
     public TimeSpan ChainedChargeDelay = TimeSpan.FromSeconds(0.3);
 
     [DataField]
-    public TimeSpan SummonCooldown = TimeSpan.FromSeconds(10);
+    public TimeSpan SummonCooldown = TimeSpan.FromSeconds(7.5);
 
     [DataField]
-    public TimeSpan MovementCooldown = TimeSpan.FromSeconds(4.5);
+    public TimeSpan MovementCooldown = TimeSpan.FromSeconds(3.4);
 
     [DataField]
-    public TimeSpan MovementCriticalCooldown = TimeSpan.FromSeconds(3.25);
+    public TimeSpan MovementCriticalCooldown = TimeSpan.FromSeconds(2.45);
 
     [DataField]
     public int MovementDistance = 5;
@@ -232,14 +232,15 @@ public sealed partial class BubblegumComponent : Component
     public float CloneSwapCriticalChance = 0.4f;
 
     [DataField]
-    public TimeSpan CloneSwapCooldown = TimeSpan.FromSeconds(1.25);
+    public TimeSpan CloneSwapCooldown = TimeSpan.FromSeconds(0.95);
 
     [DataField]
     public DamageSpecifier SmackDamage = new()
     {
+        ArmorPenetration = 0.4f,
         DamageDict = new()
         {
-            { "Slash", FixedPoint2.New(30) },
+            { "Slash", FixedPoint2.New(36) },
         },
     };
 
@@ -248,7 +249,7 @@ public sealed partial class BubblegumComponent : Component
     {
         DamageDict = new()
         {
-            { "Slash", FixedPoint2.New(15) },
+            { "Slash", FixedPoint2.New(18) },
         },
     };
 
@@ -257,7 +258,19 @@ public sealed partial class BubblegumComponent : Component
     {
         DamageDict = new()
         {
-            { "Blunt", FixedPoint2.New(40) },
+            { "Blunt", FixedPoint2.New(48) },
+        },
+    };
+
+    /// <summary>
+    /// TG hallucination charge: the clones spawned while enraged also hit on their charge.
+    /// </summary>
+    [DataField]
+    public DamageSpecifier CloneChargeDamage = new()
+    {
+        DamageDict = new()
+        {
+            { "Blunt", FixedPoint2.New(18) },
         },
     };
 
@@ -390,4 +403,5 @@ public sealed class BubblegumCloneCharge
     public Vector2i TargetTile;
     public int RemainingSteps;
     public TimeSpan NextStep;
+    public readonly HashSet<EntityUid> HitEntities = new();
 }

@@ -59,10 +59,10 @@
         dead:
           base: { state: dead }
   - type: ThingBoss
-    phaseHealth: 700
+    phaseHealth: 800
     maxPhases: 3
     phaseInvulnerabilityTime: 10
-    recoverHeal: 350
+    recoverHeal: 400
     depletedSound: /Audio/Effects/explosion_small3.ogg
     overloadSound: /Audio/_Lavaland/Mobs/Bosses/hiero_blast.ogg
     recoveredSound: /Audio/Effects/pop_high.ogg
@@ -73,8 +73,9 @@
     animation: WeaponArcBite
     damage:
       types:
-        Slash: 30
+        Slash: 35
       armorPenetration: 0.4 # TG's Thing has 40 armor piercing on melee
+    attackRate: 1.1
   - type: Tag
     tags:
     - CannotSuicide
@@ -85,7 +86,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2100: Dead
+      2400: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -118,19 +119,19 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.8
+      value: 0.6
     selector: !type:NestedMegafaunaSelector
       id: Thing
   - type: Anger
-    totalHp: 2100
+    totalHp: 2400
   # Phases follow the damage budget. The accelerator overload advances the real phase in
   # ThingBoss while this component only gates which attacks the AI may pick.
   - type: MobPhases
     canSwitchBack: true
     phaseThresholds:
       0: 1
-      700: 2
-      1400: 3
+      800: 2
+      1600: 3
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:

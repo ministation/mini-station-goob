@@ -105,7 +105,7 @@ public sealed class BubblegumSystem : EntitySystem
             PruneTracked(bubblegum);
             ProcessEnrage(uid, bubblegum, now);
             ProcessActiveClones(bubblegum, now);
-            ProcessCloneCharges(bubblegum, gridUid, grid, now);
+            ProcessCloneCharges(uid, bubblegum, gridUid, grid, now);
             ProcessPendingBloodTiles(bubblegum, gridUid, grid, now);
             ProcessPendingHandAttacks(uid, bubblegum, gridUid, grid, now);
 
@@ -285,8 +285,7 @@ public sealed class BubblegumSystem : EntitySystem
             && maxHealth != null)
         {
             // TG enrage_time: scales from 3.5 to 7 seconds as the boss loses health.
-            var missing = (float) maxHealth.Value - (float) damageable.TotalDamage;
-            var fraction = Math.Clamp(missing / 60f, 0f, 20f) / 20f;
+            var fraction = Math.Clamp(damageable.TotalDamage.Float() / 60f, 0f, 20f) / 20f;
             duration = TimeSpan.FromSeconds(3.5f + 3.5f * fraction);
         }
 
@@ -1071,6 +1070,7 @@ public sealed class BubblegumSystem : EntitySystem
     }
 
     private void ProcessCloneCharges(
+        EntityUid boss,
         BubblegumComponent bubblegum,
         EntityUid gridUid,
         MapGridComponent grid,
@@ -1111,9 +1111,41 @@ public sealed class BubblegumSystem : EntitySystem
 
             SpawnAnchored(bubblegum.BloodSplatterPrototype, gridUid, grid, nextTile);
             _transform.SetCoordinates(charge.Entity, _map.GridTileToLocal(gridUid, grid, nextTile));
+            DamageCloneChargeTile(boss, bubblegum, charge, gridUid, grid, nextTile);
 
             charge.RemainingSteps--;
             charge.NextStep = now + bubblegum.ChargeStepDelay;
+        }
+    }
+
+    /// <summary>
+    /// TG hallucination charge: a clone passing through a target deals its own hit damage.
+    /// </summary>
+    private void DamageCloneChargeTile(
+        EntityUid boss,
+        BubblegumComponent bubblegum,
+        BubblegumCloneCharge charge,
+        EntityUid gridUid,
+        MapGridComponent grid,
+        Vector2i tile)
+    {
+        if (bubblegum.CloneChargeDamage.GetTotal() <= FixedPoint2.Zero)
+            return;
+
+        var query = EntityQueryEnumerator<DamageableComponent, MobStateComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out _, out var mobState, out var xform))
+        {
+            if (uid == boss ||
+                bubblegum.Slaughterlings.Contains(uid) ||
+                mobState.CurrentState == MobState.Dead ||
+                xform.GridUid != gridUid ||
+                _map.LocalToTile(gridUid, grid, xform.Coordinates) != tile ||
+                !charge.HitEntities.Add(uid))
+            {
+                continue;
+            }
+
+            _damageable.TryChangeDamage(uid, bubblegum.CloneChargeDamage, origin: boss);
         }
     }
 

@@ -3,7 +3,7 @@
 # Wendigo AI selector tree, a port of TG's OpenFire branch.
 # TG picks one of three attacks: a ground slam, a teleport (plus an enraged
 # shotgun follow up) or a shockwave fired from the arena center. The scream
-# cooldown gates the shockwave branch, which the 10 second action delays mirror.
+# cooldown gates the shockwave branch, which the action delays mirror.
 
 - type: megafaunaSelector
   id: Wendigo
@@ -32,9 +32,9 @@
   id: WendigoSlamPlan
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 4.0,9.0
+      range: 3.0,6.75
       inverse: true
-    failDelay: 0.5
+    failDelay: 0.4
     actionId: ActionWendigoGroundSlam
     conditions:
     - !type:ActionAvailableCondition
@@ -44,9 +44,9 @@
   id: WendigoTeleportPlan
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 4.0,9.0
+      range: 3.0,6.75
       inverse: true
-    failDelay: 0.5
+    failDelay: 0.4
     actionId: ActionWendigoTeleport
     conditions:
     - !type:ActionAvailableCondition
@@ -56,8 +56,8 @@
   id: WendigoCirclePlan
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 8
-    failDelay: 0.5
+      value: 6
+    failDelay: 0.4
     actionId: ActionWendigoCircle
     conditions:
     - !type:ActionAvailableCondition
@@ -70,8 +70,8 @@
   id: WendigoCircleEnragedPlan
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 6.5
-    failDelay: 0.5
+      value: 4.9
+    failDelay: 0.4
     actionId: ActionWendigoCircleEnraged
     conditions:
     - !type:ActionAvailableCondition
@@ -84,8 +84,8 @@
   id: WendigoSpiralPlan
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 7
-    failDelay: 0.5
+      value: 5.25
+    failDelay: 0.4
     actionId: ActionWendigoSpiral
     conditions:
     - !type:ActionAvailableCondition
@@ -98,8 +98,8 @@
   id: WendigoSpiralEnragedPlan
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 7
-    failDelay: 0.5
+      value: 5.25
+    failDelay: 0.4
     actionId: ActionWendigoSpiralEnraged
     conditions:
     - !type:ActionAvailableCondition
@@ -112,8 +112,8 @@
   id: WendigoWavePlan
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 10
-    failDelay: 0.5
+      value: 7.5
+    failDelay: 0.4
     actionId: ActionWendigoWave
     conditions:
     - !type:ActionAvailableCondition
