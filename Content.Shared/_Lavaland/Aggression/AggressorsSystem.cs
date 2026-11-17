@@ -3,6 +3,7 @@
 using System.Linq;
 using Content.Shared._Lavaland.Audio;
 using Content.Shared.Damage;
+using Content.Shared.Ghost;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
@@ -48,6 +49,8 @@ public sealed class AggressorsSystem : EntitySystem
         var query = EntityQueryEnumerator<AggressiveComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var aggressive, out var xform))
         {
+            TryAggroOnProximity(uid, aggressive, xform, curTime);
+
             if (aggressive.ForgiveRange == null
                 || aggressive.NextUpdate > curTime)
                 continue;
@@ -74,6 +77,48 @@ public sealed class AggressorsSystem : EntitySystem
                 RemoveAggressor((uid, aggressive), remove);
             }
         }
+    }
+
+    /// <summary>
+    /// TG hostile mobs look around and chase a player they notice, so nobody stands inert until hit.
+    /// Runs for every <see cref="AggressiveComponent"/> mob once per half second; setting
+    /// <see cref="AggressiveComponent.ProximityAggroRange"/> to zero turns it off.
+    /// Losing the target stays on the ForgiveRange path below.
+    /// </summary>
+    private void TryAggroOnProximity(EntityUid uid, AggressiveComponent aggressive, TransformComponent xform, TimeSpan curTime)
+    {
+        if (aggressive.ProximityAggroRange <= 0f
+            || aggressive.Aggressors.Count > 0
+            || aggressive.NextProximityScan > curTime
+            || HasComp<ActorComponent>(uid)
+            || _mobState.IsDead(uid))
+            return;
+
+        aggressive.NextProximityScan = curTime + TimeSpan.FromSeconds(0.5f);
+
+        var selfPos = _xform.GetWorldPosition(xform);
+        var bestDistance = aggressive.ProximityAggroRange;
+        EntityUid? target = null;
+
+        var actors = EntityQueryEnumerator<ActorComponent, TransformComponent>();
+        while (actors.MoveNext(out var actor, out _, out var actorXform))
+        {
+            // Ghosts are actors too, and a corpse stops being a threat.
+            if (actorXform.MapID != xform.MapID
+                || HasComp<GhostComponent>(actor)
+                || _mobState.IsDead(actor))
+                continue;
+
+            var distance = (_xform.GetWorldPosition(actorXform) - selfPos).Length();
+            if (distance > bestDistance)
+                continue;
+
+            bestDistance = distance;
+            target = actor;
+        }
+
+        if (target is { } found)
+            AddAggressor((uid, aggressive), found);
     }
 
     #region Event Handling

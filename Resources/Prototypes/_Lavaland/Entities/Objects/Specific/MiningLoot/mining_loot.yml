@@ -78,7 +78,8 @@
   - type: StaticPrice
     price: 4000
 
-# Jacob's ladder: there are no z-levels in this fork, so it is a collectible.
+# Jacob's ladder: the fork has a single z level, so instead of the TG chain of ladders across z levels
+# the item unfolds one unbreakable ladder under the user.
 - type: entity
   id: LavalandJacobsLadder
   parent: BaseItem
@@ -91,8 +92,27 @@
   - type: Item
     size: Normal
     sprite: _Lavaland/Objects/Specific/lavaland_loot.rsi
+  - type: JacobsLadder
   - type: StaticPrice
     price: 4000
+
+# The unfolded ladder. No Damageable or Destructible: the TG jacob ladders are unbreakable.
+- type: entity
+  id: LavalandJacobsLadderStructure
+  name: jacob's ladder
+  description: An indestructible celestial ladder that violates the laws of physics.
+  categories: [ HideSpawnMenu ]
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: Sprite
+    sprite: _Lavaland/Objects/Specific/lavaland_loot.rsi
+    state: ladder00
+    drawdepth: FloorObjects
+  - type: Climbable
 
 # Memento mori: your life is tied to the pendant.
 - type: entity

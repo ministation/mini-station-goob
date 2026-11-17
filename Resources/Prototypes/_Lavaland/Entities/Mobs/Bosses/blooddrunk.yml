@@ -34,6 +34,7 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+    - Lavafauna
   - type: Sprite
     drawdepth: Mobs
     sprite: _Lavaland/Mobs/Bosses/blood_drunk.rsi

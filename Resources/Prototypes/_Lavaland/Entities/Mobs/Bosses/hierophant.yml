@@ -11,6 +11,11 @@
     damageCoefficient: 0 # megafauna cannot be put into stamina crit
   # Basic stuff
   - type: MegafaunaDevour
+  # Both lavaland mining factions: ported fauna is SimpleHostile, upstream fauna and legions are Lavafauna.
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+    - Lavafauna
   - type: ExplosionResistance
     worn: false
     damageCoefficient: 0.1

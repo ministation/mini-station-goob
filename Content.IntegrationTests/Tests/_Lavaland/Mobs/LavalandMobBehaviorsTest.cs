@@ -10,13 +10,16 @@ using Content.Shared._Mini.MiniCCVars;
 using Content.Shared.Buckle;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Gravity;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC.Systems;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.Stealth.Components;
 using Content.Shared.Stunnable;
 using Robust.Shared.GameObjects;
@@ -24,6 +27,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests._Lavaland.Mobs;
 
@@ -34,7 +38,62 @@ namespace Content.IntegrationTests.Tests._Lavaland.Mobs;
 public sealed class LavalandMobBehaviorsTest
 {
     [Test]
-    public async Task LobstrosityRushKnocksTheVictimDown()
+    public async Task LobstrosityRushTelegraphsBeforeItHits()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = server.System<SharedMapSystem>();
+        var xformSys = server.System<SharedTransformSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid mob = default;
+        EntityUid victim = default;
+        var start = Vector2.Zero;
+
+        await server.WaitPost(() =>
+        {
+            // The default test map is a single tile, the rush needs room to charge over.
+            for (var x = 0; x <= 8; x++)
+                mapSys.SetTile(testMap.Grid, new Vector2i(x, 0), testMap.Tile.Tile);
+
+            mob = entMan.SpawnEntity("MobLavalandLobstrosity", testMap.GridCoords.Offset(new Vector2(0.5f, 0.5f)));
+            victim = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(5.5f, 0.5f)));
+
+            // A tileless victim would be in space, where knockdown is ignored.
+            var gravity = entMan.EnsureComponent<GravityComponent>(testMap.Grid);
+            server.System<GravitySystem>().EnableGravity(testMap.Grid, gravity);
+
+            start = xformSys.GetWorldPosition(mob);
+        });
+
+        // TG charge_delay is 1.5 seconds: the mob stands still and shakes before it charges.
+        await server.WaitRunTicks(pair.SecondsToTicks(1f));
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.HasComponent<KnockedDownComponent>(victim), Is.False,
+                "the rush must telegraph before it can hit");
+            Assert.That((xformSys.GetWorldPosition(mob) - start).Length(), Is.LessThan(0.5f),
+                "the lobster must not close the distance while it winds up");
+        });
+
+        // 1.5s windup plus 5 tiles at the TG charge_speed of 2 tiles per second.
+        await server.WaitRunTicks(pair.SecondsToTicks(3.5f));
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.HasComponent<KnockedDownComponent>(victim), Is.True,
+                "the lobster rush must knock the victim down");
+            Assert.That((xformSys.GetWorldPosition(mob) - xformSys.GetWorldPosition(victim)).Length(), Is.LessThan(1.5f),
+                "the lobster must charge into the victim instead of stopping short");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task LobstrosityRushIgnoresTargetsOutsideChargeDistance()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -42,32 +101,183 @@ public sealed class LavalandMobBehaviorsTest
         var mapSys = server.System<SharedMapSystem>();
         var testMap = await pair.CreateTestMap();
 
+        EntityUid mob = default;
         EntityUid victim = default;
 
         await server.WaitPost(() =>
         {
-            // A single-tile test grid would drop the victim into space, where knockdown is ignored.
-            for (var x = 1; x <= 5; x++)
+            for (var x = 0; x <= 11; x++)
                 mapSys.SetTile(testMap.Grid, new Vector2i(x, 0), testMap.Tile.Tile);
 
-            entMan.SpawnEntity("MobLavalandLobstrosity", testMap.GridCoords);
-            victim = entMan.SpawnEntity("MobMonkey", testMap.GridCoords.Offset(new Vector2(5, 0)));
+            mob = entMan.SpawnEntity("MobLavalandLobstrosity", testMap.GridCoords.Offset(new Vector2(0.5f, 0.5f)));
+            victim = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(10.5f, 0.5f)));
 
-            var gravity = entMan.EnsureComponent<GravityComponent>(testMap.Grid);
-            server.System<GravitySystem>().EnableGravity(testMap.Grid, gravity);
+            // Without its AI the lobster cannot walk into range by itself.
+            entMan.RemoveComponent<HTNComponent>(mob);
         });
 
-        await server.WaitRunTicks(3);
+        await server.WaitRunTicks(pair.SecondsToTicks(3f));
 
         await server.WaitAssertion(() =>
-            Assert.That(entMan.HasComponent<KnockedDownComponent>(victim), Is.False,
-                "the lobster must dash to the victim instead of teleporting onto it"));
+        {
+            var rush = entMan.GetComponent<LavalandRushComponent>(mob);
+            Assert.That(rush.NextRush, Is.EqualTo(TimeSpan.Zero),
+                "TG charge_distance is 8 tiles, the rush must not start from 10 tiles away");
+            Assert.That(rush.DashTarget, Is.Null, "no rush may be in progress");
+            Assert.That(entMan.HasComponent<KnockedDownComponent>(victim), Is.False);
+        });
 
-        await server.WaitRunTicks(20);
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task LobstrosityRushDoesNotOneShotAFullHealthVictim()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = server.System<SharedMapSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid mob = default;
+        EntityUid victim = default;
+
+        await server.WaitPost(() =>
+        {
+            for (var x = 0; x <= 6; x++)
+                mapSys.SetTile(testMap.Grid, new Vector2i(x, 0), testMap.Tile.Tile);
+
+            mob = entMan.SpawnEntity("MobLavalandLobstrosity", testMap.GridCoords.Offset(new Vector2(0.5f, 0.5f)));
+            victim = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(4.5f, 0.5f)));
+
+            // Knockdown is ignored in space.
+            var gravity = entMan.EnsureComponent<GravityComponent>(testMap.Grid);
+            server.System<GravitySystem>().EnableGravity(testMap.Grid, gravity);
+
+            // No AI: the victim only has to survive the rush itself, not the follow up melee.
+            entMan.RemoveComponent<HTNComponent>(mob);
+        });
+
+        // 1.5s windup plus 4 tiles at 2 tiles per second.
+        await server.WaitRunTicks(pair.SecondsToTicks(4f));
 
         await server.WaitAssertion(() =>
+        {
             Assert.That(entMan.HasComponent<KnockedDownComponent>(victim), Is.True,
-                "the lobster dash must knock the victim down"));
+                "the rush must have hit the victim");
+            var damage = entMan.GetComponent<DamageableComponent>(victim).TotalDamage.Float();
+            Assert.That(damage, Is.GreaterThan(0f), "the rush must damage the victim");
+            Assert.That(server.System<MobStateSystem>().IsAlive(victim), Is.True,
+                "one lobster rush must not kill a full health player");
+            Assert.That(damage, Is.LessThan(100f), "the rush must stay below the 100 hp of a player");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task LobstrosityRushGoesOnCooldownAndLeavesTheMobTired()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = server.System<SharedMapSystem>();
+        var timing = server.ResolveDependency<IGameTiming>();
+        var status = server.System<StatusEffectsSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid mob = default;
+
+        await server.WaitPost(() =>
+        {
+            for (var x = 0; x <= 6; x++)
+                mapSys.SetTile(testMap.Grid, new Vector2i(x, 0), testMap.Tile.Tile);
+
+            mob = entMan.SpawnEntity("MobLavalandLobstrosity", testMap.GridCoords.Offset(new Vector2(0.5f, 0.5f)));
+            entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(4.5f, 0.5f)));
+            entMan.RemoveComponent<HTNComponent>(mob);
+        });
+
+        await server.WaitRunTicks(pair.SecondsToTicks(0.5f));
+
+        await server.WaitAssertion(() =>
+        {
+            var rush = entMan.GetComponent<LavalandRushComponent>(mob);
+            Assert.That(rush.DashTarget, Is.Not.Null, "the rush must have started");
+            Assert.That((rush.NextRush - timing.CurTime).TotalSeconds, Is.InRange(5.3, 6.0),
+                "TG cooldown_time is 6 seconds and it is counted from the start of the windup");
+        });
+
+        // 1.5s windup plus 4 tiles at 2 tiles per second, then the mob pays the tired cost.
+        await server.WaitRunTicks(pair.SecondsToTicks(3.5f));
+
+        await server.WaitAssertion(() =>
+        {
+            var rush = entMan.GetComponent<LavalandRushComponent>(mob);
+            Assert.That(rush.DashTarget, Is.Null, "the rush must be over");
+            Assert.That(status.HasStatusEffect(mob, "LavalandStatusEffectTired"), Is.True,
+                "TG tired_post_charge must slow the lobster after the rush");
+            Assert.That(timing.CurTime, Is.LessThan(rush.NextRush), "the cooldown must block the next rush");
+        });
+
+        // TG tired_post_charge lasts a second, the cooldown blocks the rush for six.
+        await server.WaitRunTicks(pair.SecondsToTicks(1.2f));
+
+        await server.WaitAssertion(() =>
+        {
+            var rush = entMan.GetComponent<LavalandRushComponent>(mob);
+            Assert.That(status.HasStatusEffect(mob, "LavalandStatusEffectTired"), Is.False,
+                "TG tired_post_charge lasts one second");
+            Assert.That(rush.DashTarget, Is.Null, "a second rush has to wait for the cooldown");
+            Assert.That(timing.CurTime, Is.LessThan(rush.NextRush), "the cooldown still has to be running");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task LobstrosityRushStopsAtWalls()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = server.System<SharedMapSystem>();
+        var xformSys = server.System<SharedTransformSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid mob = default;
+        EntityUid victim = default;
+
+        await server.WaitPost(() =>
+        {
+            for (var x = 0; x <= 8; x++)
+                mapSys.SetTile(testMap.Grid, new Vector2i(x, 0), testMap.Tile.Tile);
+
+            mob = entMan.SpawnEntity("MobLavalandLobstrosity", testMap.GridCoords.Offset(new Vector2(0.5f, 0.5f)));
+            victim = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(5.5f, 0.5f)));
+
+            // Knockdown is ignored in space, this test needs it to be a real hit.
+            var gravity = entMan.EnsureComponent<GravityComponent>(testMap.Grid);
+            server.System<GravitySystem>().EnableGravity(testMap.Grid, gravity);
+
+            entMan.RemoveComponent<HTNComponent>(mob);
+        });
+
+        // Let the windup end and the dash start, then raise a wall in its path.
+        await server.WaitRunTicks(pair.SecondsToTicks(1.6f));
+        await server.WaitPost(() => entMan.SpawnEntity("WallSolid", testMap.GridCoords.Offset(new Vector2(2.5f, 0.5f))));
+
+        await server.WaitRunTicks(pair.SecondsToTicks(3f));
+
+        await server.WaitAssertion(() =>
+        {
+            var rush = entMan.GetComponent<LavalandRushComponent>(mob);
+            Assert.That(entMan.HasComponent<KnockedDownComponent>(victim), Is.False,
+                "the rush must stop at a wall");
+            Assert.That(rush.DashTarget, Is.Null, "the wall must abort the rush");
+            Assert.That(xformSys.GetWorldPosition(mob).X, Is.LessThan(2.4f),
+                "the lobster must stay on its own side of the wall");
+        });
 
         await pair.CleanReturnAsync();
     }
