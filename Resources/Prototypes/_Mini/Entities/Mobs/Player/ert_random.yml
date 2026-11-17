@@ -688,7 +688,7 @@
     prototypes: [ ERTJuggernautGearGamma ]
     roleLoadout: [ RoleSurvivalMilitaryDouble ]
   - type: AutoImplant
-    implants: [ FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
+    implants: [ FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm, MindShieldImplant ]
 
 - type: entity
   id: RandomHumanoidSpawnerERTJuggernautGamma
