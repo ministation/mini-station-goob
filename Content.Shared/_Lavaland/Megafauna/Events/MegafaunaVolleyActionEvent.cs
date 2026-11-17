@@ -29,6 +29,14 @@ public sealed partial class MegafaunaVolleyActionEvent : WorldTargetActionEvent
     public float Interval = 0.1f;
 
     /// <summary>
+    /// Projectiles fired per angle on every volley. A volley without a pattern (an empty entry in
+    /// <see cref="Patterns"/>, or the whole field left out) fires this many bolts in random directions
+    /// instead, which is how a wave of random bolts is made.
+    /// </summary>
+    [DataField]
+    public int CountPerAngle = 1;
+
+    /// <summary>
     /// Max random radial offset of each projectile, in degrees. Ignored when <see cref="Patterns"/> is set.
     /// A value of 180 fires every projectile in a random direction.
     /// </summary>
@@ -73,6 +81,7 @@ public sealed partial class MegafaunaVolleyComponent : Component
     public bool Homing;
     public float HomingSpeed;
     public List<List<float>> Patterns = new();
+    public int CountPerAngle = 1;
 
     /// <summary>
     /// Entity to keep aiming at, so the volley follows a moving target.

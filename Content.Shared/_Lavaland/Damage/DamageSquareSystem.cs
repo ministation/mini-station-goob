@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
 using Content.Shared._Lavaland.Damage.Components;
+using Content.Shared._Lavaland.Mobs;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Player;
 using Robust.Shared.Network;
 using Robust.Shared.Timing;
 
@@ -94,6 +96,19 @@ public sealed class DamageSquareSystem : EntitySystem
                     field.Comp.Damage,
                     origin: field.Owner,
                     targetPart: TargetBodyPart.All);
+
+                // TG parity: hierophant blasts deal extra brute damage to megafauna and asteroid fauna,
+                // but never to player controlled mobs.
+                if (field.Comp.MonsterBonusDamage is { } monsterBonus
+                    && monsterBonus.AnyPositive()
+                    && HasComp<FaunaComponent>(target)
+                    && !HasComp<ActorComponent>(target))
+                {
+                    _damage.TryChangeDamage(target,
+                        monsterBonus,
+                        origin: field.Owner,
+                        targetPart: TargetBodyPart.All);
+                }
             }
 
             EnsureComp<DamageSquareImmunityComponent>(target).ImmunityEndTime =

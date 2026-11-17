@@ -2,6 +2,7 @@
 
 using System.Numerics;
 using Content.Shared._Lavaland.Aggression;
+using Content.Shared.CombatMode;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -22,6 +23,7 @@ public sealed class MegafaunaChaseSystem : EntitySystem
     [Dependency] private readonly IEntityManager _entMan = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly SharedMeleeWeaponSystem _melee = default!;
+    [Dependency] private readonly SharedCombatModeSystem _combatMode = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
 
@@ -77,6 +79,11 @@ public sealed class MegafaunaChaseSystem : EntitySystem
             }
 
             _physics.SetLinearVelocity(uid, Vector2.Zero, body: body);
+
+            // AttemptLightAttack refuses to swing outside combat mode, and data driven megafauna
+            // never toggle it, so the bite used to be a no-op for every boss.
+            if (TryComp<CombatModeComponent>(uid, out var combatMode) && !combatMode.IsInCombatMode)
+                _combatMode.SetInCombatMode(uid, true, combatMode);
 
             if (TryComp<MeleeWeaponComponent>(uid, out var weapon))
                 _melee.AttemptLightAttack(uid, uid, weapon, target);

@@ -15,6 +15,7 @@ using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Megafauna.Events;
 using Content.Shared._Lavaland.Megafauna.NumberSelectors;
 using Content.Shared._Lavaland.Megafauna.Selectors;
+using Content.Shared._Lavaland.Mobs;
 using Content.Shared._Lavaland.TileChaser;
 using Content.Shared.Actions.Components;
 using Content.Shared.Damage;
@@ -383,6 +384,135 @@ public sealed class HierophantParityTest
         await pair.CleanReturnAsync();
     }
 
+    /// <summary>
+    /// TG beam_range grows from 5 tiles at zero anger to 11 at max anger. The cross spawner must
+    /// build an anger sized cross instead of a fixed one.
+    /// </summary>
+    [Test]
+    public async Task BeamRadiusScalesWithAnger()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid boss = default;
+        EntityUid bigSpawner = default;
+        EntityUid smallSpawner = default;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -12; x <= 12; x++)
+            {
+                for (var y = -12; y <= 12; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity("MobHierophant", testMap.GridCoords.Offset(new Vector2(-6f, 0f)));
+            var anger = entMan.GetComponent<AngerComponent>(boss);
+            anger.MaxAnger = 1f;
+            anger.CurrentAnger = 1f;
+            bigSpawner = SpawnAngerShape(entMan, "HierophantShapeCrossSequence", testMap.GridCoords, boss);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<ShapeSpawnerComponent>(bigSpawner).Shape.DefaultSize, Is.EqualTo(11),
+                "max anger must resize the cross to the TG beam_range 11");
+            Assert.That(CountSquaresNear(entMan, Vector2.Zero, 15f), Is.EqualTo(41),
+                "the max anger cross must spawn 41 blast tiles, got " + CountSquaresNear(entMan, Vector2.Zero, 15f));
+
+            DeleteSquares(entMan);
+            entMan.DeleteEntity(bigSpawner);
+        });
+
+        await server.WaitPost(() =>
+        {
+            var anger = entMan.GetComponent<AngerComponent>(boss);
+            anger.CurrentAnger = 0f;
+            smallSpawner = SpawnAngerShape(entMan, "HierophantShapeCrossSequence", testMap.GridCoords, boss);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<ShapeSpawnerComponent>(smallSpawner).Shape.DefaultSize, Is.EqualTo(5),
+                "zero anger must resize the cross to the TG beam_range 5");
+            Assert.That(CountSquaresNear(entMan, Vector2.Zero, 15f), Is.EqualTo(17),
+                "the zero anger cross must spawn 17 blast tiles, got " + CountSquaresNear(entMan, Vector2.Zero, 15f));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// TG chaser steps every 0.3 seconds at zero anger and every 0.1 seconds at max anger; our speed
+    /// is steps per second, so 3.33 to 10. TG blasts also add brute damage against fauna only.
+    /// </summary>
+    [Test]
+    public async Task ChaserSpeedAndMonsterBoostMatchTg()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var proto = server.ResolveDependency<IPrototypeManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid fauna = default;
+        EntityUid plain = default;
+
+        await server.WaitAssertion(() =>
+        {
+            var chaser = proto.Index<EntityPrototype>("LavalandHierophantChaser");
+            Assert.That(chaser.TryGetComponent<AngerTileChaserComponent>(out var chaserComp, entMan.ComponentFactory), Is.True,
+                "the hierophant chaser lost its AngerTileChaserComponent");
+            Assert.That(chaserComp!.SpeedRange.X, Is.EqualTo(3.33f).Within(0.0001f),
+                "the zero anger chaser must step every 0.3 seconds like TG");
+            Assert.That(chaserComp.SpeedRange.Y, Is.EqualTo(10f).Within(0.0001f),
+                "the max anger chaser must step every 0.1 seconds like TG");
+            Assert.That(chaserComp.StepsRange, Is.EqualTo(new Vector2i(15, 40)),
+                "the chaser step count must stay untouched");
+
+            AssertMonsterBoost(proto, entMan, "LavalandHierophantSquare", 10);
+            AssertMonsterBoost(proto, entMan, "LavalandHierophantBlinkSquare", 10);
+            AssertMonsterBoost(proto, entMan, "LavalandHierophantBlinkSlamSquare", 10);
+            AssertMonsterBoost(proto, entMan, "LavalandHierophantSquareSafe", 0);
+            AssertMonsterBoost(proto, entMan, "LavalandLegionSkullBlast", 0);
+            AssertMonsterBoost(proto, entMan, "LavalandDrakeMeteorDamage", 0);
+        });
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -1; x <= 4; x++)
+            {
+                for (var y = -1; y <= 1; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            fauna = entMan.SpawnEntity("MobCow", testMap.GridCoords);
+            plain = entMan.SpawnEntity("MobCow", testMap.GridCoords.Offset(new Vector2(3f, 0f)));
+            entMan.EnsureComponent<FaunaComponent>(fauna);
+
+            SpawnSquareOn(entMan, fauna);
+            SpawnSquareOn(entMan, plain);
+        });
+
+        await server.WaitRunTicks(3);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<DamageableComponent>(plain).TotalDamage, Is.EqualTo(FixedPoint2.New(24)),
+                "a non fauna mob must take the plain 24 blast damage");
+            Assert.That(entMan.GetComponent<DamageableComponent>(fauna).TotalDamage, Is.EqualTo(FixedPoint2.New(34)),
+                "fauna must take the 24 blast damage plus the TG 10 brute monster boost");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
     private static void AssertSquareDamage(IPrototypeManager proto, IEntityManager entMan, string id, string type, int value)
     {
         var squareProto = proto.Index<EntityPrototype>(id);
@@ -439,5 +569,51 @@ public sealed class HierophantParityTest
         }
 
         return squares;
+    }
+
+    private static EntityUid SpawnAngerShape(IEntityManager entMan, string prototype, EntityCoordinates coords, EntityUid user)
+    {
+        // The action raises SpawnedByActionEvent before MapInit, that is what carries the anger.
+        var spawned = entMan.CreateEntityUninitialized(prototype, coords);
+        var ev = new SpawnedByActionEvent(user, null);
+        entMan.EventBus.RaiseLocalEvent(spawned, ref ev);
+        entMan.InitializeEntity(spawned);
+        entMan.StartEntity(spawned);
+        entMan.RunMapInit(spawned, entMan.GetComponent<MetaDataComponent>(spawned));
+        return spawned;
+    }
+
+    private static void DeleteSquares(IEntityManager entMan)
+    {
+        var toDelete = new List<EntityUid>();
+        var query = entMan.EntityQueryEnumerator<MetaDataComponent>();
+        while (query.MoveNext(out var uid, out var meta))
+        {
+            if (meta.EntityPrototype?.ID == "LavalandHierophantSquare")
+                toDelete.Add(uid);
+        }
+
+        foreach (var uid in toDelete)
+            entMan.DeleteEntity(uid);
+    }
+
+    private static void AssertMonsterBoost(IPrototypeManager proto, IEntityManager entMan, string id, int blunt)
+    {
+        var squareProto = proto.Index<EntityPrototype>(id);
+        Assert.That(squareProto.TryGetComponent<DamageSquareComponent>(out var square, entMan.ComponentFactory), Is.True,
+            id + " lost its DamageSquareComponent");
+        var bonus = square!.MonsterBonusDamage != null
+            && square.MonsterBonusDamage.DamageDict.TryGetValue("Blunt", out var value)
+                ? value
+                : FixedPoint2.Zero;
+        Assert.That(bonus, Is.EqualTo(FixedPoint2.New(blunt)), id + " monster bonus Blunt damage must be " + blunt);
+    }
+
+    private static void SpawnSquareOn(IEntityManager entMan, EntityUid target)
+    {
+        var coords = entMan.GetComponent<TransformComponent>(target).Coordinates;
+        var square = entMan.SpawnEntity("LavalandHierophantSquare", coords);
+        // Skip the 0.7 second telegraph, the test does not wait for it.
+        entMan.GetComponent<DamageSquareComponent>(square).DamageTime = TimeSpan.Zero;
     }
 }

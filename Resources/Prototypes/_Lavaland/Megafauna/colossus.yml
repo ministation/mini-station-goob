@@ -15,6 +15,7 @@
     children:
     - id: ActionColossusBoltsSpread
     - id: ActionColossusBoltsRing
+    - id: ActionColossusBoltsDirShots
     - id: ActionColossusBoltsSpiral
     - id: ActionColossusCounterSpiral
     - id: ActionColossusFinale
@@ -42,6 +43,18 @@
     conditions:
     - !type:ActionAvailableCondition
       actionId: ActionColossusBoltsRing
+
+# TG's alternating cardinal and diagonal volleys, a basic attack from the start of the fight.
+- type: megafaunaSelector
+  id: ActionColossusBoltsDirShots
+  selector: !type:PerformActionSelector
+    delay: !type:AngerNumberSelector
+      range: 3.0,6.0
+      inverse: true
+    actionId: ActionColossusBoltsDirShots
+    conditions:
+    - !type:ActionAvailableCondition
+      actionId: ActionColossusBoltsDirShots
 
 - type: megafaunaSelector
   id: ActionColossusBoltsSpiral

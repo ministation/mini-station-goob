@@ -44,6 +44,30 @@
       pattern: Ring
 
 - type: entity
+  id: ActionColossusBoltsDirShots
+  parent: BaseAction
+  name: Alternating Shots
+  description: Fires alternating waves of death bolts along the diagonals and the cardinals.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 3
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:MegafaunaVolleyActionEvent
+      projectile: LavalandColossusBolt
+      speed: 14
+      volleys: 4
+      interval: 1
+      patterns:
+      - [45, -45, 135, -135] # diagonals
+      - [0, 90, 180, -90] # cardinals
+
+- type: entity
   id: ActionColossusBoltsSpiral
   parent: BaseAction
   name: Bolt Spiral

@@ -15,6 +15,8 @@
     shape: !type:NestedEntityShape
       id: QueenCross
       size: 11
+    # TG beam_range: 5 tiles at zero anger, 11 at max anger.
+    angerSizeRange: 5,11
   - type: ShapeSpawnerCounter
   - type: AngerShapeSpawner
     counterRange: 2,4

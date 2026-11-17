@@ -140,9 +140,11 @@
     actionDelay: 0.4
     sound:
       path: /Audio/Effects/demon_attack1.ogg
+  # TG lava swoop: invulnerable while flying to the target, then a slam on the landing tile.
+  - type: MegafaunaSwoop
+    slam: LavalandDrakeSlamBurst
   - type: MegafaunaBlink
-    spawnOnTarget: LavalandDrakeSlamBurst
-    spawnOnUsed: LavalandDrakeSlamBurst
+    delay: 1.5 # Also the swoop flight time: the swoop system reads this delay, TG spends about 2s in the air.
   # Every swoop dash leaves burning ground along the path it crossed.
   - type: MegafaunaFireTrail
     trail: LavalandDrakeFireTrail

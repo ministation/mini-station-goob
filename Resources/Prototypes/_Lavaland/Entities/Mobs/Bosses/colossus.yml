@@ -93,6 +93,7 @@
     actions:
     - ActionColossusBoltsSpread
     - ActionColossusBoltsRing
+    - ActionColossusBoltsDirShots
     - ActionColossusBoltsSpiral
     - ActionColossusCounterSpiral
     - ActionColossusFinale

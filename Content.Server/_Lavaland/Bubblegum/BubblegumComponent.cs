@@ -34,6 +34,24 @@ public sealed partial class BubblegumComponent : Component
     [DataField]
     public TimeSpan BloodWarpDelay = TimeSpan.FromSeconds(0.3);
 
+    /// <summary>
+    /// TG blood_warp pick_range: the jaunt destination is a blood pool on this ring around the target.
+    /// </summary>
+    [DataField]
+    public int BloodWarpPickRange = 5;
+
+    /// <summary>
+    /// Pools closer than this to the target are skipped, so the boss lands at pick_range instead of on top of the target.
+    /// </summary>
+    [DataField]
+    public int BloodWarpInnerRange = 4;
+
+    /// <summary>
+    /// TG requires a blood pool under or next to the boss before it can sink into the blood.
+    /// </summary>
+    [DataField]
+    public int BloodWarpBossPoolRange = 1;
+
     [DataField]
     public TimeSpan BloodHandRecover = TimeSpan.FromSeconds(0.35);
 
@@ -210,11 +228,17 @@ public sealed partial class BubblegumComponent : Component
     [DataField]
     public float CloneCriticalHealthThreshold = 0.25f;
 
+    /// <summary>
+    /// TG hallucination_surround: up to 6 hallucinations around the target.
+    /// </summary>
     [DataField]
-    public int CloneCount = 2;
+    public int CloneCount = 6;
 
+    /// <summary>
+    /// TG enraged hallucination burst: 3 rings of 4, at most 12 positions including the boss.
+    /// </summary>
     [DataField]
-    public int CloneCriticalCount = 3;
+    public int CloneCriticalCount = 12;
 
     [DataField]
     public int CloneMinOffset = 2;

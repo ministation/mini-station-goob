@@ -794,14 +794,14 @@ public sealed class BubblegumSystem : EntitySystem
             return false;
         }
 
-        GetPoolsAround(gridUid, grid, bossTile.Value, 1, _poolTiles);
+        GetPoolsAround(gridUid, grid, bossTile.Value, bubblegum.BloodWarpBossPoolRange, _poolTiles);
         if (_poolTiles.Count == 0)
             return false;
 
-        GetPoolsAround(gridUid, grid, targetTile.Value, 2, _poolTiles);
+        GetPoolsAround(gridUid, grid, targetTile.Value, bubblegum.BloodWarpPickRange, _poolTiles);
         for (var i = _poolTiles.Count - 1; i >= 0; i--)
         {
-            if (ChebyshevDistance(_poolTiles[i], targetTile.Value) <= 1)
+            if (ChebyshevDistance(_poolTiles[i], targetTile.Value) <= bubblegum.BloodWarpInnerRange)
                 _poolTiles.RemoveAt(i);
         }
 

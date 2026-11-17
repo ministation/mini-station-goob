@@ -26,6 +26,7 @@ public sealed class EntityShapeSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<ShapeSpawnerComponent, MapInitEvent>(OnSpawnerInit);
+        SubscribeLocalEvent<ShapeSpawnerComponent, SpawnedByActionEvent>(OnSpawnerAngerSize);
         SubscribeLocalEvent<ShapeSpawnerCounterComponent, MapInitEvent>(OnCounterInit);
         SubscribeLocalEvent<AngerShapeSpawnerComponent, SpawnedByActionEvent>(OnActionSpawned);
         SubscribeLocalEvent<ExpandingShapeSpawnerComponent, SpawnCounterEntityShapeEvent>(OnExpandingShapeTrigger);
@@ -97,6 +98,18 @@ public sealed class EntityShapeSystem : EntitySystem
 
     private void OnSpawnerInit(Entity<ShapeSpawnerComponent> ent, ref MapInitEvent args)
         => SpawnEntityShape(ent.Comp.Shape, ent.Owner, ent.Comp.Spawn, out _, ent.Comp.AlignCoords);
+
+    /// <summary>
+    /// TG grows the hierophant blast and beam radii with anger. The action raises this event before
+    /// MapInit, so the size is already set when <see cref="OnSpawnerInit"/> spawns the first shape.
+    /// </summary>
+    private void OnSpawnerAngerSize(Entity<ShapeSpawnerComponent> ent, ref SpawnedByActionEvent args)
+    {
+        if (ent.Comp.AngerSizeRange is not { } range)
+            return;
+
+        ent.Comp.Shape.DefaultSize = _anger.GetAngerScale(args.User, range.X, range.Y);
+    }
 
     private void OnCounterInit(Entity<ShapeSpawnerCounterComponent> ent, ref MapInitEvent args)
         => ent.Comp.NextSpawn = _timing.CurTime + ent.Comp.SpawnPeriod; // First shape is spawned by an event right above this one, so delay it
