@@ -662,7 +662,9 @@ public abstract partial class SharedGunSystem : EntitySystem
 
     public void RefreshModifiers(Entity<GunComponent?> gun, EntityUid? User = null) // GoobStation change - User for NoWieldNeeded
     {
-        if (!Resolve(gun, ref gun.Comp))
+        // A broken weapon can keep its GunWieldBonusComponent while the GunComponent is gone, and wielding
+        // it reaches this method. That state is expected, so it must not be logged as a resolve error.
+        if (!Resolve(gun, ref gun.Comp, logMissing: false))
             return;
 
         var comp = gun.Comp;
