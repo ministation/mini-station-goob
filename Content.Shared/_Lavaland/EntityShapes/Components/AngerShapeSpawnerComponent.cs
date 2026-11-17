@@ -23,4 +23,12 @@ public sealed partial class AngerShapeSpawnerComponent : Component
 
     [DataField("inversePeriod"), AutoNetworkedField]
     public bool InverseSpawnPeriod;
+
+    /// <summary>
+    /// TG parity: while the spawned counter series is running the user's megafauna AI is paused,
+    /// like TG sets blinking = TRUE for the whole cross_blast_spam. The AI is restored when the
+    /// series ends.
+    /// </summary>
+    [DataField("pauseAi"), AutoNetworkedField]
+    public bool PauseAi;
 }

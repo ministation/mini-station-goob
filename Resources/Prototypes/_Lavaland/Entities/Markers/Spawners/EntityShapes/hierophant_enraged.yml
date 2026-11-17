@@ -19,7 +19,10 @@
     angerSizeRange: 5,11
   - type: ShapeSpawnerCounter
   - type: AngerShapeSpawner
-    counterRange: 2,4
+    # TG enraged all-directions blast is a single blasts(target, alldirs) call, cross_counter does not apply.
+    counterRange: 1,1
     periodRange: 0.7,1.2
     inversePeriod: true
+    # The single wave still locks the boss like the non-enraged cross series.
+    pauseAi: true
   - type: ExpandingShapeSpawner

@@ -157,9 +157,18 @@ public sealed class FrostMinerParityTest
         await pair.CleanReturnAsync();
     }
 
+    private static string DumpDamage(DamageableComponent damageable)
+    {
+        var text = "";
+        foreach (var (type, amount) in damageable.Damage.DamageDict)
+            text += type + "=" + amount.Float() + " ";
+        return text.Length == 0 ? "none" : text;
+    }
+
     /// <summary>
-    /// TG parity: the frost orb and its ice blasts run EX_ACT(EXPLODE_HEAVY) when they hit a turf
-    /// or an object, so a missed orb splashes on the wall instead of silently disappearing.
+    /// TG parity: a turf or object impact is an EX_ACT(EXPLODE_HEAVY), which in TG only hits the
+    /// struck atom. The YAML blast is a point explosion centered on that atom: the struck tile takes
+    /// it, neighbors stay clean.
     /// </summary>
     [Test]
     public async Task OrbExplodesOnWallImpact()
@@ -172,7 +181,8 @@ public sealed class FrostMinerParityTest
 
         var testMap = await pair.CreateTestMap();
         EntityUid orb = default;
-        EntityUid target = default;
+        EntityUid wall = default;
+        EntityUid neighbor = default;
 
         await server.WaitPost(() =>
         {
@@ -183,11 +193,12 @@ public sealed class FrostMinerParityTest
                     mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
             }
 
-            // Tile centers: the orb flies along the wall row, the dummy stands on the tile right
-            // behind the impact point, so only the impact explosion can hurt it.
+            // The orb flies along the wall row and bursts on the struck atom, so the blast lands on
+            // the wall's tile. The dummy stands on the neighboring tile.
             var center = testMap.GridCoords.Offset(new Vector2(0.5f, 0.5f));
-            entMan.SpawnEntity("WallSolid", center.Offset(new Vector2(5f, 0f)));
-            target = entMan.SpawnEntity("MobCow", center.Offset(new Vector2(4f, 1f)));
+            wall = entMan.SpawnEntity("WallReinforced", center.Offset(new Vector2(5f, 0f)));
+            entMan.System<SharedTransformSystem>().AnchorEntity(wall);
+            neighbor = entMan.SpawnEntity("MobCow", center.Offset(new Vector2(4f, 1f)));
 
             orb = entMan.SpawnEntity("LavalandFrostOrb", center);
             physics.SetLinearVelocity(orb, new Vector2(10f, 0f));
@@ -200,13 +211,33 @@ public sealed class FrostMinerParityTest
             Assert.That(entMan.EntityExists(orb), Is.False,
                 "the frost orb flew through the wall instead of stopping on it");
 
-            Assert.That(entMan.TryGetComponent<DamageableComponent>(target, out var damageable), Is.True,
+            Assert.That(entMan.TryGetComponent<DamageableComponent>(wall, out var wallDamage), Is.True,
+                "the wall did not survive the impact, the blast is far stronger than EXPLODE_HEAVY");
+            Assert.That(entMan.TryGetComponent<DamageableComponent>(neighbor, out var neighborDamage), Is.True,
                 "the dummy lost its DamageableComponent");
-            // The orb never touched the dummy: cold damage can only come from the Cryo splash.
-            Assert.That(damageable!.Damage.DamageDict.TryGetValue("Cold", out var cold), Is.True,
-                "the dummy took no cold damage, the wall impact explosion never happened");
-            Assert.That(cold.Float(), Is.GreaterThan(0f),
-                "the dummy took no cold damage, the wall impact explosion never happened");
+
+            TestContext.Out.WriteLine("struck tile: wall " + DumpDamage(wallDamage!)
+                + "| neighbor tile: dummy " + DumpDamage(neighborDamage!));
+
+            // The projectile only deals Heat, so Structural on the wall comes from the Cryo blast alone.
+            // ExplosionSystem damages anchored entities on the epicenter tile twice (the broadphase
+            // tile pass plus the anchored entity list), so the struck wall sees two EXPLODE_HEAVY
+            // passes: 2 x Structural (20 * 5) = 200. One pass is the TG heavy value.
+            Assert.That(wallDamage!.Damage.DamageDict.TryGetValue("Structural", out var structural), Is.True,
+                "the wall took no Structural damage, the point blast never landed on the struck tile");
+            Assert.That(structural.Float(), Is.EqualTo(200f),
+                "the struck wall did not take two EXPLODE_HEAVY structural passes");
+            Assert.That(wallDamage.TotalDamage.Float(), Is.LessThan(300f),
+                "the impact blast is far past EXPLODE_HEAVY scale, the intensity is too high");
+
+            // The Cryo blast is the only cold source in this test and it also deals heavy blunt,
+            // so cold or heavy damage on the neighbor tile would mean the blast spilled over.
+            Assert.That(neighborDamage!.Damage.DamageDict.TryGetValue("Cold", out var neighborCold), Is.True,
+                "the dummy has no Cold entry, its damage container changed");
+            Assert.That(neighborCold.Float(), Is.EqualTo(0f),
+                "the point blast reached the neighboring tile, it is still an AoE");
+            Assert.That(neighborDamage.TotalDamage.Float(), Is.LessThan(5f),
+                "the neighboring dummy took heavy damage, the blast spilled out of the impact tile");
         });
 
         await pair.CleanReturnAsync();

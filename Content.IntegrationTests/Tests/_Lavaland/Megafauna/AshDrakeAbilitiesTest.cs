@@ -11,6 +11,7 @@ using Content.Shared._Lavaland.Megafauna.Conditions;
 using Content.Shared._Lavaland.Megafauna.Events;
 using Content.Shared._Lavaland.Megafauna.Selectors;
 using Content.Shared._Lavaland.MobPhases;
+using Content.Server._Lavaland.BossMechanics;
 using Content.Shared.Actions.Components;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
@@ -18,6 +19,7 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Sprite;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
@@ -240,6 +242,121 @@ public sealed class AshDrakeAbilitiesTest
             damageableSys.TryChangeDamage(drake, new DamageSpecifier { DamageDict = { ["Heat"] = 10 } }, ignoreResistances: true);
             Assert.That(entMan.GetComponent<DamageableComponent>(drake).TotalDamage.Float(), Is.GreaterThan(0f),
                 "the drake has to take damage after the swoop ends");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// TG's swoop chases the target instead of teleporting: the red landing marker follows the
+    /// running cow, the boss is lifted and cannot cast while it flies, and the victim is thrown
+    /// clear of the impact.
+    /// </summary>
+    [Test]
+    public async Task SwoopTracksTheTargetAndThrowsVictims()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = server.System<SharedMapSystem>();
+        var xformSys = server.System<SharedTransformSystem>();
+        var testMap = await pair.CreateTestMap();
+
+        EntityUid drake = default;
+        EntityUid cow = default;
+        EntityUid marker = default;
+        EntityUid shadow = default;
+        EntityCoordinates landing = default;
+        var aiWasActive = false;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -6; x <= 6; x++)
+            {
+                for (var y = -6; y <= 6; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            drake = entMan.SpawnEntity(DrakeProto, testMap.GridCoords.Offset(new Vector2(0.5f, 0.5f)));
+            cow = entMan.SpawnEntity("MobCow", testMap.GridCoords.Offset(new Vector2(3.5f, 0.5f)));
+
+            entMan.EnsureComponent<MegafaunaAiTargetingComponent>(drake).TargetEnt = cow;
+            landing = testMap.GridCoords.Offset(new Vector2(3.5f, 0.5f));
+        });
+
+        await server.WaitRunTicks(5);
+
+        await server.WaitPost(() =>
+        {
+            entMan.EventBus.RaiseLocalEvent(drake, new MegafaunaBlinkActionEvent
+            {
+                Performer = drake,
+                Target = landing,
+            });
+        });
+
+        await server.WaitRunTicks(2);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.TryGetComponent<MegafaunaSwoopComponent>(drake, out var swoop), Is.True);
+            Assert.That(swoop!.LandAt, Is.Not.Null, "the swoop has to start its flight");
+
+            marker = swoop.LandingMarkerEnt!.Value;
+            shadow = swoop.ShadowEnt!.Value;
+            aiWasActive = entMan.GetComponent<MegafaunaAiComponent>(drake).Active;
+
+            Assert.That(entMan.HasComponent<RandomSpriteComponent>(drake), Is.True,
+                "the drake has to switch to the flying sprite while it is in the air");
+            Assert.That(entMan.HasComponent<ScaleVisualsComponent>(drake), Is.True,
+                "the flying drake has to be lifted, which is a smaller sprite");
+            Assert.That(entMan.GetComponent<MegafaunaAiComponent>(drake).Active, Is.False,
+                "the swooping drake cannot cast its other abilities");
+
+            var markerPos = xformSys.GetWorldPosition(entMan.GetComponent<TransformComponent>(marker));
+            var landingPos = xformSys.ToMapCoordinates(landing).Position;
+            Assert.That((markerPos - landingPos).Length(), Is.LessThan(0.6f),
+                "TG marks the landing tile before the drake hits the ground");
+            Assert.That(entMan.EntityExists(shadow), Is.True, "the swoop has to leave a shadow on the ground");
+        });
+
+        // The cow runs away, the swoop has to keep aiming at it.
+        var moved = testMap.GridCoords.Offset(new Vector2(5.5f, 2.5f));
+        await server.WaitPost(() => xformSys.SetCoordinates(cow, moved));
+        await server.WaitRunTicks(5);
+
+        await server.WaitAssertion(() =>
+        {
+            var markerPos = xformSys.GetWorldPosition(entMan.GetComponent<TransformComponent>(marker));
+            var cowPos = xformSys.GetWorldPosition(entMan.GetComponent<TransformComponent>(cow));
+            Assert.That((markerPos - cowPos).Length(), Is.LessThan(0.6f),
+                "the landing marker has to follow the running target");
+        });
+
+        // Let the flight finish and the slam resolve.
+        await server.WaitRunTicks(60);
+
+        await server.WaitAssertion(() =>
+        {
+            var swoop = entMan.GetComponent<MegafaunaSwoopComponent>(drake);
+            Assert.That(swoop.LandAt, Is.Null, "the swoop has to end on the landing tile");
+            Assert.That(entMan.GetComponent<RandomSpriteComponent>(drake).Selected[
+                    "enum.DamageStateVisualLayers.Base"].State, Is.EqualTo("dragon"),
+                "the drake has to look normal again after the landing");
+            Assert.That(entMan.HasComponent<ScaleVisualsComponent>(drake), Is.False,
+                "the drake has to be back on the ground");
+            Assert.That(entMan.GetComponent<MegafaunaAiComponent>(drake).Active, Is.EqualTo(aiWasActive),
+                "the AI has to resume after the landing");
+            Assert.That(entMan.EntityExists(marker), Is.False, "the landing marker has to be cleaned up");
+            Assert.That(entMan.EntityExists(shadow), Is.False, "the shadow has to be cleaned up");
+
+            // TG throws everyone hit by the swoop three tiles away from the drake.
+            var drakePos = xformSys.GetWorldPosition(entMan.GetComponent<TransformComponent>(drake));
+            var thrownPos = xformSys.GetWorldPosition(entMan.GetComponent<TransformComponent>(cow));
+            Assert.That((thrownPos - drakePos).Length(), Is.GreaterThan(1.5f),
+                "the victim has to be thrown clear of the landing drake");
         });
 
         await pair.CleanReturnAsync();

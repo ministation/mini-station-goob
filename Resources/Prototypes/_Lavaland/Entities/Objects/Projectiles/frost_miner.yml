@@ -27,8 +27,9 @@
   - type: ExplodeOnHit
   - type: Explosive
     explosionType: Cryo
-    totalIntensity: 40
-    intensitySlope: 2
+    # TG EX_ACT(EXPLODE_HEAVY) is a point effect: slope 100 keeps the blast on the impact tile.
+    totalIntensity: 5
+    intensitySlope: 100
     maxIntensity: 5
     maxTileBreak: 0
   - type: Sprite
@@ -57,8 +58,9 @@
   - type: ExplodeOnHit
   - type: Explosive
     explosionType: Cryo
-    totalIntensity: 40
-    intensitySlope: 2
+    # TG EX_ACT(EXPLODE_HEAVY) is a point effect: slope 100 keeps the blast on the impact tile.
+    totalIntensity: 5
+    intensitySlope: 100
     maxIntensity: 5
     maxTileBreak: 0
   - type: Sprite

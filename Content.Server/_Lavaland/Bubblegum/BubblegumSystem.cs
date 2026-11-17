@@ -1182,7 +1182,7 @@ public sealed class BubblegumSystem : EntitySystem
         }
     }
 
-    private void QueueCloneBloodSprays(
+    internal void QueueCloneBloodSprays(
         EntityUid boss,
         BubblegumComponent bubblegum,
         EntityUid gridUid,

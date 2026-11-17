@@ -21,4 +21,16 @@ public sealed partial class ShapeSpawnerCounterComponent : Component
 
     [ViewVariables, AutoNetworkedField]
     public int Counter = 1; // We spawn 1 shape not in a loop, so we have to start from 1.
+
+    /// <summary>
+    /// Megafauna whose AI this series paused, null when the series does not pause AI.
+    /// </summary>
+    [ViewVariables]
+    public EntityUid? PausedAiUser;
+
+    /// <summary>
+    /// True while <see cref="PausedAiUser"/> is waiting for this series to finish.
+    /// </summary>
+    [ViewVariables]
+    public bool PausedAi;
 }
