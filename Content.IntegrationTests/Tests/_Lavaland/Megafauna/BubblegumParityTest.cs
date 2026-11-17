@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Content.Goobstation.Common.Gibbing;
+using Content.Shared._Lavaland.Aggression;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Goobstation.Shared.Projectiles;
 using Content.Server._Lavaland.BossMechanics;
@@ -302,6 +303,88 @@ public sealed class BubblegumParityTest
                 "the near-death burst must spawn 9 hallucinations (TG has 12 positions, the boss takes 3)");
             Assert.That(bubblegum.PendingBloodTiles.Count, Is.GreaterThan(0),
                 "the clones queued no fake blood sprays");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Bubblegum has no megafauna AI, its own system is the brain, so it has to find targets
+    /// through the opt-in proximity aggro of <see cref="AggressorsSystem"/> instead of waiting
+    /// for a hit. Six tiles away and untouched: the boss must aggro, start the fight and drop
+    /// the target once the player is dead.
+    /// </summary>
+    [Test]
+    public async Task ProximityAggroStartsTheFightWithoutDamage()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var mobState = entMan.System<MobStateSystem>();
+
+        var testMap = await pair.CreateTestMap();
+        EntityUid boss = default;
+        EntityUid player = default;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -14; x <= 14; x++)
+            {
+                for (var y = -14; y <= 14; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity(BossProto, testMap.GridCoords);
+            player = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(6f, 0f)));
+            // A real session matters: mob threshold updates send network events to the actor.
+            server.PlayerMan.SetAttachedEntity(pair.Player, player, true);
+        });
+
+        await server.WaitRunTicks(2);
+
+        // Within one 0.5 s proximity scan the boss must notice the player on its own.
+        await server.WaitRunTicks(30);
+        await server.WaitAssertion(() =>
+        {
+            var aggressive = entMan.GetComponent<AggressiveComponent>(boss);
+            Assert.That(aggressive.Aggressors, Does.Contain(player),
+                "the boss must notice a nearby player even if nobody damaged it");
+        });
+
+        // Aggro alone is not enough: the fight has to start from it.
+        await server.WaitRunTicks(90);
+        await server.WaitAssertion(() =>
+        {
+            var bubblegum = entMan.GetComponent<BubblegumComponent>(boss);
+            Assert.That(bubblegum.CurrentPrimaryTarget == player || bubblegum.LastAttackKind != string.Empty, Is.True,
+                "proximity aggro must start the fight");
+        });
+
+        // A corpse is not a threat any more: the aggressor must be dropped and the boss must go idle.
+        await server.WaitPost(() => mobState.ChangeMobState(player, MobState.Dead));
+
+        var dropped = false;
+        for (var i = 0; i < 12 && !dropped; i++)
+        {
+            await server.WaitRunTicks(10);
+            await server.WaitAssertion(() =>
+            {
+                var aggressive = entMan.GetComponent<AggressiveComponent>(boss);
+                var bubblegum = entMan.GetComponent<BubblegumComponent>(boss);
+                dropped = aggressive.Aggressors.Count == 0
+                          && bubblegum.CurrentPrimaryTarget == null
+                          && !bubblegum.Charging;
+            });
+        }
+
+        Assert.That(dropped, Is.True, "the boss must drop a dead player and go idle");
+
+        await server.WaitPost(() =>
+        {
+            if (!entMan.Deleted(player))
+                entMan.DeleteEntity(player);
         });
 
         await pair.CleanReturnAsync();

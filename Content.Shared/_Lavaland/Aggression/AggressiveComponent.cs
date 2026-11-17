@@ -34,4 +34,14 @@ public sealed partial class AggressiveComponent : Component
     /// </summary>
     [DataField]
     public bool AutoAddOnDamage = true;
+
+    /// <summary>
+    /// Range in tiles at which this mob notices a nearby player and fights it without waiting to be hit,
+    /// like TG hostile mobs finding targets inside their vision range. Zero disables proximity aggro.
+    /// </summary>
+    [DataField]
+    public float ProximityAggroRange = 9f;
+
+    [ViewVariables]
+    public TimeSpan NextProximityScan;
 }

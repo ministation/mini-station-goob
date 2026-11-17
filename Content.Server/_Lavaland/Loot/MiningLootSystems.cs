@@ -32,6 +32,8 @@ using Content.Shared.Popups;
 using Content.Shared.StatusEffect;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Lavaland.Loot;
@@ -578,5 +580,40 @@ public sealed class ParadoxBagSystem : EntitySystem
 
         if (TryComp<ParadoxBagComponent>(partner, out var partnerComp))
             partnerComp.Partner = null;
+    }
+}
+
+/// <summary>
+/// Jacob's ladder: using the item unfolds an unbreakable ladder under the user and consumes the item.
+/// TG unfolds a chain of ladders linked up and down across every z level; this fork has no z levels and no
+/// ladder structure, so the closest analog is one anchored climbable ladder on the user's tile.
+/// </summary>
+public sealed class JacobsLadderSystem : EntitySystem
+{
+    [Dependency] private readonly SharedMapSystem _map = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<JacobsLadderComponent, UseInHandEvent>(OnUseInHand);
+    }
+
+    private void OnUseInHand(Entity<JacobsLadderComponent> ent, ref UseInHandEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        args.Handled = true;
+
+        var userXform = Transform(args.User);
+        if (userXform.GridUid is not { } gridUid || !TryComp<MapGridComponent>(gridUid, out var grid))
+            return;
+
+        var tile = _map.LocalToTile(gridUid, grid, userXform.Coordinates);
+        Spawn(ent.Comp.LadderProto, _map.GridTileToLocal(gridUid, grid, tile));
+        _popup.PopupEntity(Loc.GetString("jacobs-ladder-unfolded"), args.User, args.User);
+        QueueDel(ent);
     }
 }

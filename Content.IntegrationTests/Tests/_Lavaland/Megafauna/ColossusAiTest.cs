@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.Anger.Components;
@@ -23,6 +24,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Projectiles;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Log;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -87,6 +89,93 @@ public sealed class ColossusAiTest
             {
                 Assert.That(ai.Active, Is.True, "absorbed damage must still start the boss AI");
                 Assert.That(ai.Schedule, Is.Not.Empty, "the fight must be scheduled");
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ColossusAggrosOnSightWithoutDamage()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+
+        var server = pair.Server;
+        var testMap = await pair.CreateTestMap();
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var xformSys = entMan.System<SharedTransformSystem>();
+
+        EntityUid colossus = default;
+        EntityUid player = default;
+
+        await server.WaitPost(() =>
+        {
+            colossus = entMan.SpawnAtPosition("LavalandBossColossus", testMap.GridCoords);
+            player = entMan.SpawnAtPosition("Wrench", testMap.GridCoords.Offset(new Vector2(12f, 0f)));
+            entMan.EnsureComponent<ActorComponent>(player);
+        });
+
+        await server.WaitRunTicks(2);
+
+        await server.WaitAssertion(() =>
+        {
+            var aggressive = entMan.GetComponent<AggressiveComponent>(colossus);
+            var ai = entMan.GetComponent<MegafaunaAiComponent>(colossus);
+            Assert.Multiple(() =>
+            {
+                Assert.That(aggressive.Aggressors, Is.Empty,
+                    "a player twelve tiles away is outside the nine tile TG vision range");
+                Assert.That(ai.Active, Is.False, "the boss must stay idle while nobody is in range");
+            });
+        });
+
+        // The player walks up next to the boss and does not attack it.
+        await server.WaitPost(() => xformSys.SetCoordinates(player, testMap.GridCoords.Offset(new Vector2(3f, 0f))));
+
+        await server.WaitRunTicks(20);
+
+        await server.WaitAssertion(() =>
+        {
+            var aggressive = entMan.GetComponent<AggressiveComponent>(colossus);
+            var ai = entMan.GetComponent<MegafaunaAiComponent>(colossus);
+            Assert.Multiple(() =>
+            {
+                Assert.That(aggressive.Aggressors, Does.Contain(player),
+                    "a nearby player must become an aggressor without taking or dealing damage");
+                Assert.That(ai.Active, Is.True, "proximity must start the boss AI");
+                Assert.That(ai.Schedule, Is.Not.Empty, "the fight must be scheduled");
+            });
+        });
+
+        await server.WaitRunTicks(3);
+
+        await server.WaitAssertion(() =>
+        {
+            var body = entMan.GetComponent<PhysicsComponent>(colossus);
+            Assert.That(body.LinearVelocity.Length(), Is.GreaterThan(0.1f),
+                "the boss must walk at the player it noticed");
+        });
+
+        // The player runs away past the twenty tile forgive range: the boss must give up on its own.
+        // Queued attacks are dropped so this wait only exercises the aggressor removal, not attacks at
+        // a target that is already outside the action range.
+        await server.WaitPost(() =>
+        {
+            xformSys.SetCoordinates(player, testMap.GridCoords.Offset(new Vector2(40f, 0f)));
+            entMan.GetComponent<MegafaunaAiComponent>(colossus).Schedule.Clear();
+        });
+
+        await server.WaitRunTicks(340);
+
+        await server.WaitAssertion(() =>
+        {
+            var aggressive = entMan.GetComponent<AggressiveComponent>(colossus);
+            var ai = entMan.GetComponent<MegafaunaAiComponent>(colossus);
+            Assert.Multiple(() =>
+            {
+                Assert.That(aggressive.Aggressors, Is.Empty,
+                    "a player beyond the forgive range must be dropped");
+                Assert.That(ai.Active, Is.False, "the boss must go idle after losing its last aggressor");
             });
         });
 

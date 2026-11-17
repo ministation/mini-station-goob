@@ -4,3 +4,7 @@
 # own friendly factions instead of making the whole SimpleHostile faction friendly.
 - type: npcFaction
   id: Ashwalker
+
+# Lavaland mining factions: the ported TG fauna (fauna.yml and friends) and the
+# fork's bosses use SimpleHostile, while upstream watchers/goliaths and the legion
+# family use Lavafauna. Bosses and elites list both so neither group targets them.

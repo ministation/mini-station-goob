@@ -33,6 +33,7 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+    - Lavafauna
   - type: PreventChasmFalling
     deleteOnUse: false
   - type: MegafaunaStage
