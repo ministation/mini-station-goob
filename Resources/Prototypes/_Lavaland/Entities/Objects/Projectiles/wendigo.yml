@@ -10,7 +10,7 @@
   - type: Projectile
     damage:
       types:
-        Blunt: 25
+        Blunt: 30
     ignoreResistances: true
   - type: Sprite
     sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
@@ -28,7 +28,7 @@
   - type: Projectile
     damage:
       types:
-        Blunt: 15
+        Blunt: 18
     ignoreResistances: true
   - type: WendigoShockwaveCurve
     turnDegrees: 8

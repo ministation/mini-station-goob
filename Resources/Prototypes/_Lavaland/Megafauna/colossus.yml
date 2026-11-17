@@ -25,7 +25,7 @@
   id: ActionColossusBoltsSpread
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 1.5,4.0
+      range: 1.15,3.0
       inverse: true
     actionId: ActionColossusBoltsSpread
     conditions:
@@ -36,7 +36,7 @@
   id: ActionColossusBoltsRing
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 3.0,6.0
+      range: 2.25,4.5
       inverse: true
     actionId: ActionColossusBoltsRing
     conditions:
@@ -47,7 +47,7 @@
   id: ActionColossusBoltsSpiral
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 5.0,9.0
+      range: 3.75,6.75
       inverse: true
     actionId: ActionColossusBoltsSpiral
     conditions:
@@ -58,7 +58,7 @@
   id: ActionColossusBoltRain
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 4.0,7.0
+      range: 3.0,5.25
       inverse: true
     actionId: ActionColossusBoltRain
     conditions:
@@ -69,7 +69,7 @@
   id: ActionColossusBoulderToss
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 3.5,6.5
+      range: 2.65,4.9
       inverse: true
     actionId: ActionColossusBoulderToss
     conditions:
@@ -81,7 +81,7 @@
   id: ActionColossusFinale
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 2.0,5.0
+      range: 1.5,3.75
       inverse: true
     actionId: ActionColossusFinale
     conditions:
@@ -96,7 +96,7 @@
   id: ActionColossusCounterSpiral
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 4.0,8.0
+      range: 3.0,6.0
       inverse: true
     actionId: ActionColossusCounterSpiral
     conditions:

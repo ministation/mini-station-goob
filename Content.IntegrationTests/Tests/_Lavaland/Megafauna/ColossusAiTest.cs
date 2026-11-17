@@ -3,14 +3,18 @@
 using System.Linq;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared._Lavaland.Aggression;
+using Content.Shared._Lavaland.Anger.Components;
 using Content.Shared._Lavaland.Megafauna;
 using Content.Shared._Lavaland.Megafauna.Components;
 using Content.Shared._Lavaland.Megafauna.Selectors;
 using Content.Shared._Lavaland.Megafauna.Systems;
+using Content.Shared._Lavaland.MobPhases;
 using Content.Shared.Actions.Components;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -113,6 +117,42 @@ public sealed class ColossusAiTest
                 Assert.That(protoMan.HasIndex<EntityPrototype>("LavalandColossusBoulder"), Is.True,
                     "the boulder projectile prototype must exist");
             });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ColossusHealthTableIsConsistent()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+
+        var server = pair.Server;
+        var testMap = await pair.CreateTestMap();
+        var entMan = server.ResolveDependency<IEntityManager>();
+
+        EntityUid colossus = default;
+
+        await server.WaitPost(() => colossus = entMan.SpawnAtPosition("LavalandBossColossus", testMap.GridCoords));
+
+        await server.WaitRunTicks(2);
+
+        await server.WaitAssertion(() =>
+        {
+            // Anger overwrites the death threshold from totalHp, so the two must not drift apart.
+            var anger = entMan.GetComponent<AngerComponent>(colossus);
+            var thresholds = entMan.GetComponent<MobThresholdsComponent>(colossus).Thresholds;
+            var dead = thresholds.Last(entry => entry.Value == MobState.Dead).Key;
+            Assert.That(anger.TotalHp, Is.EqualTo(dead), "Anger totalHp has to match the death threshold");
+
+            // Phase gates are damage numbers: below 33% and below 10% of the health pool.
+            var phases = entMan.GetComponent<MobPhasesComponent>(colossus);
+            var gates = phases.PhaseThresholds.Keys.OrderBy(key => key.Float()).Select(key => key.Float()).ToArray();
+            Assert.That(gates.Length, Is.EqualTo(3), "the colossus has a start gate and two attack phases");
+            Assert.That(gates[1], Is.EqualTo(dead.Float() * 0.66f).Within(1f),
+                "the counter-spiral phase must stay at 33% HP");
+            Assert.That(gates[2], Is.EqualTo(dead.Float() * 0.9f).Within(1f),
+                "the finale phase must stay at 10% HP");
         });
 
         await pair.CleanReturnAsync();

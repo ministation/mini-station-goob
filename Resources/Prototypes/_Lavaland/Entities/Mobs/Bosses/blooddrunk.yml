@@ -45,8 +45,9 @@
       path: /Audio/Weapons/bladeslice.ogg
     damage:
       types:
-        Slash: 15
-        Structural: 40
+        Slash: 18
+        Structural: 46
+    attackRate: 1.1
   - type: Tag
     tags:
     - CannotSuicide
@@ -57,7 +58,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      1400: Dead
+      1600: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -105,11 +106,11 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.5
+      value: 0.4
     selector: !type:NestedMegafaunaSelector
       id: BloodDrunk
   - type: Anger
-    totalHp: 1400
+    totalHp: 1600
   - type: AngerPlayerScaling
     angerScale: 1.2
     hpScale: 1.2
@@ -150,7 +151,7 @@
   - type: MegafaunaDevour
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.5
+      value: 0.4
     selector: !type:NestedMegafaunaSelector
       id: BloodDrunkHunter
   # Parent ActionGrant is inherited and its actions list is appended to this one.

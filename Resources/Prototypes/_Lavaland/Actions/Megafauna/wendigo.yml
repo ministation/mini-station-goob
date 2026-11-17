@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# Wendigo abilities. Use delays follow TG's 10 second mob cooldowns, so the AI
-# cannot chain the same attack and the shockwave patterns share the scream cooldown.
+# Wendigo abilities. Use delays follow TG's 10 second mob cooldowns, shortened to 7.5
+# by the fork's boss difficulty pass, so the AI cannot chain the same attack and the
+# shockwave patterns share the scream cooldown.
 
 - type: entity
   id: ActionWendigoGroundSlam
@@ -12,7 +13,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 10
+    useDelay: 7.5
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -31,7 +32,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 10
+    useDelay: 7.5
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -54,7 +55,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 10
+    useDelay: 7.5
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -65,7 +66,7 @@
       pattern: Alternating
       count: 24
       repeats: 8
-      interval: 0.6
+      interval: 0.45
       speed: 9.2
 
 - type: entity
@@ -77,7 +78,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 10
+    useDelay: 7.5
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -88,7 +89,7 @@
       pattern: Alternating
       count: 24
       repeats: 8
-      interval: 0.4
+      interval: 0.3
       speed: 14
 
 - type: entity
@@ -100,7 +101,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 10
+    useDelay: 7.5
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -124,7 +125,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 10
+    useDelay: 7.5
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -149,7 +150,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 10
+    useDelay: 7.5
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -160,7 +161,7 @@
       pattern: Wave
       count: 6
       repeats: 12
-      interval: 0.6
+      interval: 0.45
       speed: 3.5
       step: 5
 
@@ -193,7 +194,7 @@
     anchorUser: true
     damage:
       types:
-        Blunt: 20
+        Blunt: 24
 
 - type: entity
   parent: MarkerBase
@@ -206,4 +207,4 @@
     delay: 0.1
     damage:
       types:
-        Blunt: 20
+        Blunt: 24

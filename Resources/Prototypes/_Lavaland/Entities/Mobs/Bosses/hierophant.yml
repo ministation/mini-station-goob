@@ -62,7 +62,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2850: Dead
+      3275: Dead
   - type: Tag
     tags:
     - CannotSuicide
@@ -71,9 +71,11 @@
     altDisarm: false
     angle: 0
     animation: WeaponArcThrust
+    attackRate: 1.1 # fork buff on top of TG attack rate
     damage:
       types:
-        Blunt: 15
+        Blunt: 18 # TG 15 brute, fork x1.15
+      armorPenetration: 0.5 # TG armour_penetration 50
   - type: ActionGrant
     actions:
     - ActionHierophantBox
@@ -86,7 +88,7 @@
     - ActionHierophantBlinkSlam
   - type: Fauna
   - type: Anger
-    totalHp: 2850
+    totalHp: 3275
   - type: Aggressive
     forgiveRange: 25
   - type: GPS
@@ -95,13 +97,13 @@
   - type: MobPhases
     phaseThresholds:
       0:    1
-      1425: 2 # below 50% HP: enraged crosses and blink spam
-      2280: 3
+      1637: 2 # below 50% HP: enraged crosses and blink spam
+      2620: 3
   - type: BossEnrage
     healthFraction: 0.5
     speedMultiplier: 1.2
     attackRateMultiplier: 1.15
-    actionDelay: 0.35
+    actionDelay: 0.3
     sound:
       path: /Audio/Effects/demon_attack1.ogg
   - type: PreventChasmFalling
@@ -128,7 +130,7 @@
     deleteOnDeath: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.5
+      value: 0.4
     selector: !type:NestedMegafaunaSelector
       id: Hierophant
   - type: AngerPlayerScaling
@@ -151,7 +153,7 @@
   - type: HierophantBlinkSlam
     slam: HierophantShapeBlinkSlam
     radius: 2.5
-    slamDelay: 0.9
+    slamDelay: 0.7
   - type: MegafaunaBlinkInactive
   - type: MegafaunaGodmode
   - type: MegafaunaRejuvenate

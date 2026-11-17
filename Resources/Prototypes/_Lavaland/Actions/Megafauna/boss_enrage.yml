@@ -33,8 +33,8 @@
   description: Spawns cross blasts in all eight directions on the target position.
   components:
   - type: AngerDelayAction
-    minDelay: 0.5
-    maxDelay: 1.5
+    minDelay: 0.4
+    maxDelay: 1.15
     inverse: true
   - type: WorldTargetAction
     event: !type:SpawnEntityActionEvent
@@ -49,10 +49,10 @@
   description: Teleports you to the target position with almost no delay.
   components:
   - type: Action
-    useDelay: 1
+    useDelay: 0.75
   - type: AngerDelayAction
-    minDelay: 0.5
-    maxDelay: 2.0
+    minDelay: 0.4
+    maxDelay: 1.5
     inverse: true
   - type: WorldTargetAction
     event: !type:MegafaunaBlinkActionEvent

@@ -28,7 +28,7 @@ public sealed partial class HierophantBlinkSlamComponent : Component
     /// Delay between the blink and the slam, in seconds.
     /// </summary>
     [DataField]
-    public float SlamDelay = 0.9f;
+    public float SlamDelay = 0.7f;
 
     /// <summary>
     /// Slams that were scheduled but not spawned yet.
