@@ -9,6 +9,7 @@ using Content.Server.Popups;
 using Content.Shared.Database;
 using Content.Shared.Popups;
 using Content.Shared.Chat;
+using Content.Shared.Ghost;
 using Content.Shared.Prayer;
 using Content.Shared.Verbs;
 using Robust.Shared.Player;
@@ -47,12 +48,21 @@ public sealed class PrayerSystem : EntitySystem
         if (!args.CanInteract)
             return;
 
+        // Goobstation - Ghosts can open UIs of entities with ActivatableUI (e.g. the red phone is also an instrument),
+        // which makes CanInteract above return true for them. Explicitly block ghosts from sending prayers.
+        if (TryComp<GhostComponent>(args.User, out var ghost) && !ghost.CanGhostInteract)
+            return;
+
         var prayerVerb = new ActivationVerb
         {
             Text = Loc.GetString(comp.Verb),
             Icon = comp.VerbImage,
             Act = () =>
             {
+                // Goobstation - Re-check in case the player became a ghost after the verb was requested.
+                if (TryComp<GhostComponent>(args.User, out var ghostCheck) && !ghostCheck.CanGhostInteract)
+                    return;
+
                 if (comp.BibleUserOnly && !TryComp<BibleUserComponent>(args.User, out var bibleUser))
                 {
                     _popupSystem.PopupEntity(Loc.GetString("prayer-popup-notify-pray-locked"), uid, actor.PlayerSession, PopupType.Large);
