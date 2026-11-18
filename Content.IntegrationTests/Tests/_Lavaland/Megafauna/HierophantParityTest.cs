@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Server._Lavaland.BossMechanics;
+using Content.Server.Atmos.Components;
 using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.Anger.Components;
 using Content.Shared._Lavaland.Damage.Components;
@@ -497,6 +498,12 @@ public sealed class HierophantParityTest
             fauna = entMan.SpawnEntity("MobCow", testMap.GridCoords);
             plain = entMan.SpawnEntity("MobCow", testMap.GridCoords.Offset(new Vector2(3f, 0f)));
             entMan.EnsureComponent<FaunaComponent>(fauna);
+
+            // The empty test map is vacuum, so barotrauma adds its own 0.6 blunt damage
+            // (0.15 * LowPressureDamage 4) whenever its one-second tick lands inside the test window.
+            // That made the exact damage check depend on the pooled pair's barotrauma timer phase.
+            entMan.RemoveComponent<BarotraumaComponent>(fauna);
+            entMan.RemoveComponent<BarotraumaComponent>(plain);
 
             SpawnSquareOn(entMan, fauna);
             SpawnSquareOn(entMan, plain);
