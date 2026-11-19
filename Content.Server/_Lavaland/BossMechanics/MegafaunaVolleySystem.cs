@@ -123,7 +123,9 @@ public sealed class MegafaunaVolleySystem : EntitySystem
 
     private void OnVolleyAction(MegafaunaVolleyActionEvent args)
     {
-        if (args.Handled || TerminatingOrDeleted(args.Performer))
+        // A world target that failed validation is still performed with the event's unset
+        // (invalid) coordinates, so guard them like the other boss systems do.
+        if (args.Handled || TerminatingOrDeleted(args.Performer) || !args.Target.IsValid(EntityManager))
             return;
 
         // One volley at a time: a boss in the middle of a long barrage (the colossus finale) must not
