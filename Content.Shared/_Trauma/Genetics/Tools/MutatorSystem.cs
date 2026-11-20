@@ -9,6 +9,8 @@ using Content.Shared.Popups;
 using Content.Shared.Tag;
 using Content.Shared._Trauma.Genetics.Console;
 using Content.Shared._Trauma.Genetics.Mutations;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Shared._Trauma.Genetics.Tools;
@@ -16,6 +18,8 @@ namespace Content.Shared._Trauma.Genetics.Tools;
 public sealed partial class MutatorSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private IRobustRandom _random = default!;
     [Dependency] private MutationSystem _mutation = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
@@ -39,9 +43,9 @@ public sealed partial class MutatorSystem : EntitySystem
         if (!args.IsInDetailsRange)
             return;
 
-        var msg = ent.Comp.Mutations.Count > 0
-            ? "mutator-examine-loaded"
-            : "mutator-examine-spent";
+        var msg = IsSpent(ent.Comp)
+            ? "mutator-examine-spent"
+            : "mutator-examine-loaded";
         args.PushMarkup(Loc.GetString(msg));
     }
 
@@ -65,7 +69,7 @@ public sealed partial class MutatorSystem : EntitySystem
 
     public void StartInject(Entity<MutatorComponent> ent, EntityUid target, EntityUid user)
     {
-        if (ent.Comp.Mutations.Count == 0)
+        if (IsSpent(ent.Comp))
         {
             _popup.PopupEntity(Loc.GetString("mutator-depleted"), user, user);
             return;
@@ -108,7 +112,7 @@ public sealed partial class MutatorSystem : EntitySystem
             return;
 
         // prevent TOCTOU
-        if (ent.Comp.Mutations.Count == 0 || _mutation.GetMutatable(target) is not {} mutatable)
+        if (IsSpent(ent.Comp) || _mutation.GetMutatable(target) is not {} mutatable)
             return;
 
         args.Handled = true;
@@ -123,12 +127,22 @@ public sealed partial class MutatorSystem : EntitySystem
         {
             _mutation.ActivateMutations(mutatable, ent.Comp.Mutations, user: args.User, predicted: true);
         }
+        else if (ent.Comp.InjectRandomMutation)
+        {
+            // The roll has to touch every mutation prototype and cannot be predicted,
+            // so only the server does it and replicates the resulting mutation entity.
+            if (_net.IsClient)
+                return;
+
+            TryAddRandomMutation(body, args.User);
+        }
         else
         {
             _mutation.AddMutations(body, ent.Comp.Mutations, user: args.User, predicted: true);
         }
 
         // prevent reuse
+        ent.Comp.Spent = true;
         ent.Comp.Mutations.Clear();
         Dirty(ent);
         UpdateAppearance(ent);
@@ -136,9 +150,31 @@ public sealed partial class MutatorSystem : EntitySystem
         _tag.AddTag(ent, TrashTag);
     }
 
+    private bool TryAddRandomMutation(Entity<MutatableComponent?> target, EntityUid? user)
+    {
+        var candidates = _mutation.GetRandomMutations();
+
+        // Requirements and conflicts can make an individual mutation fail, so keep
+        // rolling until one sticks instead of wasting the injector.
+        while (candidates.Count > 0)
+        {
+            var index = _random.Next(candidates.Count);
+            var id = candidates[index];
+            candidates.RemoveAt(index);
+
+            if (_mutation.AddMutation(target, id, user: user, predicted: false))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsSpent(MutatorComponent component)
+        => component.Spent || (!component.InjectRandomMutation && component.Mutations.Count == 0);
+
     private void UpdateAppearance(Entity<MutatorComponent> ent)
     {
-        _appearance.SetData(ent, MutatorVisuals.Spent, ent.Comp.Mutations.Count == 0);
+        _appearance.SetData(ent, MutatorVisuals.Spent, IsSpent(ent.Comp));
     }
 
     #region Public API
@@ -149,6 +185,7 @@ public sealed partial class MutatorSystem : EntitySystem
             return;
 
         ent.Comp.Mutations.Add(id);
+        ent.Comp.Spent = false;
         Dirty(ent, ent.Comp);
         UpdateAppearance((ent, ent.Comp));
     }

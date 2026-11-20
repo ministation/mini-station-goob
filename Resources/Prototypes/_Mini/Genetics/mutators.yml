@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
+# Trauma genetics mutator used as Deca-Code loot.
+# InjectRandomMutation makes the injector roll any unlocked, non-abstract
+# mutation in the game, so the crate is a full genetic roulette.
+
+- type: entity
+  parent: GeneticsMutator
+  id: DecaCodeMutatorChaos
+  suffix: Chaos
+  components:
+  - type: Mutator
+    injectRandomMutation: true

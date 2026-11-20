@@ -1,0 +1,151 @@
+# SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
+- type: entity
+  parent: CrateSecure
+  id: CrateDecaCode
+  name: deca-code crate
+  description: A reinforced crate protected by a four-digit deca-code lock. Tampering is discouraged by an anti-tamper bomb.
+  components:
+  - type: DecaCodeLock
+    maxAttempts: 10
+    bombArmed: true
+  # Native lock so the client never predicts the lid opening and the lock overlay is shown.
+  # Every other way in is disabled on purpose: the code is the only key.
+  - type: Lock
+    locked: true
+    unlockOnClick: false
+    showLockVerbs: false
+    breakOnAccessBreaker: false
+  - type: AccessReader
+    enabled: false
+    breakOnAccessBreaker: false
+  - type: UserInterface
+    interfaces:
+      enum.DecaCodeLockUiKey.Key:
+        type: DecaCodeLockBoundUserInterface
+  # Weighted loot. The contents spawn inside the crate on map init,
+  # so they are only reachable after the code is entered.
+  - type: EntityTableContainerFill
+    sort: true
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: DecaCodeLootTable
+
+# Balloons roll as a single random balloon, never the whole set.
+# NOTE: BalloonSyndicate does not exist in this build, BalloonSyn is the syndicate balloon.
+- type: entityTable
+  id: BalloonTable
+  table: !type:GroupSelector
+    children:
+    - id: BalloonCorgi
+    - id: BalloonSyn
+    - id: BalloonNT
+
+# Total weight: 100.
+# Harmless things (food, toys, clothing, seeds) are common, weapons and valuables are rare.
+- type: entityTable
+  id: DecaCodeLootTable
+  table: !type:GroupSelector
+    children:
+    # 1. Random balloons, weight 5.
+    - !type:NestedSelector
+      tableId: BalloonTable
+      weight: 5
+
+    # 2. Toys and fun, weight 15 (5 plushies / 5 horn / 5 clown car).
+    - !type:GroupSelector
+      weight: 15
+      children:
+      - !type:NestedSelector
+        tableId: AllPlushiesTable
+        weight: 5
+      - id: BikeHorn # AirHorn does not exist in this build.
+        weight: 5
+      - id: VehicleClowncarTrainee # ClownCar
+        weight: 5
+
+    # 3. Food, drinks and seeds, weight 25 (10 seeds / 10 drinks / 5 snacks).
+    - !type:GroupSelector
+      weight: 25
+      children:
+      - !type:GroupSelector
+        weight: 10
+        children:
+        - id: WheatSeeds
+        - id: TomatoSeeds
+        - id: CarrotSeeds
+        - id: CornSeeds
+        - id: PotatoSeeds
+        - id: ChiliSeeds
+        - id: BananaSeeds
+        - id: OatSeeds
+      - !type:NestedSelector
+        tableId: RandomAllAlcoholTable
+        weight: 10
+      - !type:NestedSelector
+        tableId: RandomSnackTable
+        weight: 5
+
+    # 4. Clothing, weight 15 (4 + 4 + 3 + 2 + 2).
+    - !type:GroupSelector
+      weight: 15
+      children:
+      - id: ClothingOuterCoatExpensive # expensive coat
+        weight: 4
+      - id: ClothingShoesBootsSalvage
+        weight: 4
+      - id: ClothingUniformJumpsuitKimono
+        weight: 3
+      - id: ClothingBackpackChameleon
+        weight: 2
+      - id: ClothingOuterHardsuitSalvage
+        weight: 2
+
+    # 5. Tools, materials and medicine, weight 20 (5 + 5 + 3 + 2 + 2 + 2 + 1).
+    - !type:GroupSelector
+      weight: 20
+      children:
+      - id: PassengerPDA
+        weight: 5
+      - id: MaterialDiamond
+        weight: 5
+      - id: MaterialBananium
+        weight: 3
+      - id: BluespaceBeaker # MaterialBluespace does not exist.
+        weight: 2
+      - id: DefibrillatorCompact
+        weight: 2
+      - id: CombatMedipen
+        weight: 2
+      # Trauma genetics mutator. InjectRandomMutation rolls a random unlocked
+      # mutation (Hulk, defects, the works), so this is a full genetic roulette.
+      - id: DecaCodeMutatorChaos
+        weight: 1
+
+    # 6. Pet mobs, weight 10.
+    - !type:GroupSelector
+      weight: 10
+      children:
+      - id: MobGondola
+        weight: 5
+      - id: MobHonkBot
+        weight: 5
+
+    # 7. Weapons and dangerous items, weight 10 (3 + 2 + 2 + 1 + 1 + 0.5 + 0.5).
+    - !type:GroupSelector
+      weight: 10
+      children:
+      - id: SpearGreyTide # spear
+        weight: 3
+      - id: Katana # WeaponMeleeKatana does not exist.
+        weight: 2
+      - id: RealBananiumSword # WeaponMeleeEnergySwordBananium does not exist.
+        weight: 2
+      - id: ClothingHandsGlovesBoxingRigged
+        weight: 1
+      - id: Stunbaton # WeaponMeleeStunbaton does not exist.
+        weight: 1
+      - id: MobMimic
+        weight: 0.5
+      - id: C4 # real explosive charge instead of the inert ExplosivePayload.
+        weight: 0.5
