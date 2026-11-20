@@ -1530,4 +1530,11 @@ entities:
     - type: Transform
       pos: 0.5,-2.5
       parent: 222
+- proto: SalvageDecaCrateSpawner
+  entities:
+  - uid: 223
+    components:
+    - type: Transform
+      pos: -4.5,4.5
+      parent: 222
 ...

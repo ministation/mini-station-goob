@@ -14,9 +14,24 @@ public sealed partial class MutatorComponent : Component
     /// <summary>
     /// The set of mutations to try add to a target.
     /// If this is empty the mutator is spent and cannot be reused.
+    /// Ignored when <see cref="InjectRandomMutation"/> is true.
     /// </summary>
     [DataField, AutoNetworkedField]
     public List<EntProtoId<MutationComponent>> Mutations = new();
+
+    /// <summary>
+    /// If true, <see cref="Mutations"/> is ignored and a random unlocked mutation
+    /// is picked from every mutation prototype in the game when the injector is used.
+    /// </summary>
+    [DataField]
+    public bool InjectRandomMutation;
+
+    /// <summary>
+    /// Whether this mutator has already been used.
+    /// Needed for <see cref="InjectRandomMutation"/> mutators, which have no loaded list.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool Spent;
 
     /// <summary>
     /// Uses ActivateMutation instead of AddMutation, so it'll only do anything for Dormant mutations.
