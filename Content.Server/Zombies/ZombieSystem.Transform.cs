@@ -299,9 +299,13 @@ public sealed partial class ZombieSystem
 
         //This makes it so the zombie doesn't take bloodloss damage.
         //NOTE: they are supposed to bleed, just not take damage
-        _bloodstream.SetBloodLossThreshold(target, 0f);
-        //Give them zombie blood
-        _bloodstream.ChangeBloodReagents(target, zombiecomp.NewBloodReagents);
+        //Some simple mobs (e.g. MobClockworkDefender) have no bloodstream at all, so skip the blood tweaks.
+        if (TryComp<BloodstreamComponent>(target, out var bloodstream))
+        {
+            _bloodstream.SetBloodLossThreshold((target, bloodstream), 0f);
+            //Give them zombie blood
+            _bloodstream.ChangeBloodReagents((target, bloodstream), zombiecomp.NewBloodReagents);
+        }
 
         //popup
         _popup.PopupEntity(Loc.GetString("zombie-transform", ("target", target)), target, PopupType.LargeCaution);
