@@ -174,6 +174,9 @@ namespace Content.Server.GameTicking
                     throw new Exception($"Failed to load game-map grid {ev.GameMap.ID}");
                 }
 
+                if (!ev.Options.InitializeMaps)
+                    PausePreInitMapEntities(mapId);
+
                 _metaData.SetEntityName(mapUid, proto.MapName);
                 var g = new List<EntityUid> { grid.Value.Owner };
                 RaiseLocalEvent(new PostGameMapLoad(proto, mapId, g, stationName));
@@ -191,6 +194,10 @@ namespace Content.Server.GameTicking
             }
 
             mapId = map.Value.Comp.MapId;
+
+            if (!ev.Options.InitializeMaps)
+                PausePreInitMapEntities(mapId);
+
             _metaData.SetEntityName(map.Value.Owner, proto.MapName);
             var gridUids = grids.Select(x => x.Owner).ToList();
             RaiseLocalEvent(new PostGameMapLoad(proto, mapId, gridUids, stationName));
