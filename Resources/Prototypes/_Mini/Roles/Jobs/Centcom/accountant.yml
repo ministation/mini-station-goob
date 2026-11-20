@@ -1,0 +1,31 @@
+- type: job
+  id: Accountant
+  name: stories-job-name-accountant
+  description: stories-job-description-accountant
+  playTimeTracker: JobAccountant
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: Command
+  #   time: 25h
+  # - !type:RoleTimeRequirement
+  #   role: JobHeadOfPersonnel
+  #   time: 10h
+  startingGear: AccountantGear
+  icon: "JobIconAccountant"
+  supervisors: stories-job-supervisors-chief-centcom
+  access:
+  - Maintenance
+  - External
+  - Command
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+
+- type: startingGear
+  id: AccountantGear
+  equipment:
+    head: ClothingHeadHatBeret
+    jumpsuit: ClothingUniformJumpsuitCentcomAgent
+    id: AccountantPDA

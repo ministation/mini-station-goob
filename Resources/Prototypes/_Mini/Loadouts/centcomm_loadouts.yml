@@ -1,0 +1,422 @@
+- type: roleLoadout
+  id: JobChiefCentcom
+  groups:
+  - CentCommHeadCommandBack
+  - CentCommOfficerEyes
+  - CentCommOfficerEars
+  - CentCommOfficerShoes
+  - CentCommOfficerOuterClothing
+  - SurvivalExtended
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobSpecialOfficer
+  groups:
+  - CentCommHeadCommandBack
+  - CentCommOfficerEyes
+  - CentCommOfficerEars
+  - SecurityBelt
+  - SurvivalExtended
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobHeadOfSecurityCentcom
+  groups:
+  - CentCommOfficerHead
+  - CentCommOfficerJumpsuit
+  - CentCommOfficerBack
+  - CentCommOfficerEyes
+  - CentCommOfficerEars
+  - CentCommOfficerGloves
+  - CentCommOfficerShoes
+  - CentCommOfficerOuterClothing
+  - CentCommHeadOfSecurityNeck
+  - SurvivalSecurity
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobOperatorCentcom
+  groups:
+  - CentCommOfficerHead
+  - CentCommOfficerJumpsuit
+  - CentCommOfficerBack
+  - CentCommOfficerEyes
+  - CentCommOfficerEars
+  - CentCommOfficerGloves
+  - CentCommOfficerShoes
+  - CentCommOfficerOuterClothing
+  - CentCommOperatorNeck
+  - Survival
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobRepresentativeCentcom
+  groups:
+  - CentCommOfficerHead
+  - CentCommOfficerJumpsuit
+  - CentCommOfficerBack
+  - CentCommOfficerEyes
+  - CentCommOfficerEars
+  - CentCommOfficerGloves
+  - CentCommOfficerShoes
+  - CentCommOfficerOuterClothing
+  - CentCommRepresentativeNeck
+  - Survival
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobEngineerCentcom
+  groups:
+  - StationEngineerHead
+  - StationEngineerBackpack
+  - StationEngineerOuterClothing
+  - StationEngineerShoes
+  - SurvivalExtended
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobMedicCentcom
+  groups:
+  - MedicalDoctorHead
+  - MedicalMask
+  - MedicalBackpack
+  - MedicalDoctorOuterClothing
+  - MedicalShoes
+  - Survival
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobSecurityOfficerCentcom
+  groups:
+  - SecurityHead
+  - SecurityBackpack
+  - SecurityOuterClothing
+  - SecurityShoes
+  - SecurityBelt
+  - SurvivalSecurity
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobWorkerCentcom
+  groups:
+  - BotanistHead
+  - ChefMask
+  - BotanistBackpack
+  - BotanistOuterClothing
+  - BartenderJobTrinkets
+  - Survival
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobOfficerSpecialAssignments
+  groups:
+  - CentCommOfficerBack
+  - CentCommOfficerEyes
+  - CentCommOfficerEars
+  - CentCommOfficerGloves
+  - Survival
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobLogist
+  groups:
+  - CargoTechnicianHead
+  - SalvageSpecialistBackpack
+  - SalvageSpecialistOuterClothing
+  - SalvageSpecialistShoes
+  - Survival
+  - GroupSpeciesBreathTool
+
+- type: roleLoadout
+  id: JobAccountant
+  groups:
+  - CentCommOfficerBack
+  - CentCommOfficerEyes
+  - CentCommOfficerEars
+  - CentCommOfficerGloves
+  - CentCommOfficerShoes
+  - CentCommOfficerOuterClothing
+  - Survival
+  - GroupSpeciesBreathTool
+
+- type: loadoutGroup
+  id: CentCommHeadCommandBack
+  name: stories-loadout-group-centcomm-head-command-back
+  minLimit: 1
+  loadouts:
+  - CentCommHeadCommandBackBackpackSatchelHolding
+  - CentCommHeadCommandBackBackpackHolding
+  - CentCommHeadCommandBackBackpackDuffelHolding
+
+- type: loadout
+  id: CentCommHeadCommandBackBackpackSatchelHolding
+  equipment:
+    back: ClothingBackpackSatchelHolding
+
+- type: loadout
+  id: CentCommHeadCommandBackBackpackHolding
+  equipment:
+    back: ClothingBackpackHolding
+
+- type: loadout
+  id: CentCommHeadCommandBackBackpackDuffelHolding
+  equipment:
+    back: ClothingBackpackDuffelHolding
+
+- type: loadoutGroup
+  id: CentCommOfficerHead
+  name: stories-loadout-group-centcomm-officer-head
+  minLimit: 1
+  loadouts:
+  - CentCommOfficerHeadCap
+  - CentCommOfficerHeadHat
+  - CentCommOfficerHeadBeret
+
+- type: loadout
+  id: CentCommOfficerHeadCap
+  equipment:
+    head: ClothingHeadHatCentcomcap
+
+- type: loadout
+  id: CentCommOfficerHeadHat
+  equipment:
+    head: ClothingHeadHatCentcom
+
+- type: loadout
+  id: CentCommOfficerHeadBeret
+  equipment:
+    head: ClothingHeadHatCentcomBeret
+
+- type: loadoutGroup
+  id: CentCommOfficerJumpsuit
+  name: stories-loadout-group-centcomm-officer-jumpsuit
+  minLimit: 1
+  loadouts:
+  - CentCommOfficerJumpsuitOfficial
+  - CentCommOfficerJumpsuitTurtle
+  - CentCommOfficerJumpsuitFormal
+  - CentCommOfficerJumpsuitFormalDress
+  - CentCommOfficerJumpsuitAgent
+
+- type: loadout
+  id: CentCommOfficerJumpsuitOfficial
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficial
+
+- type: loadout
+  id: CentCommOfficerJumpsuitTurtle
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficer
+
+- type: loadout
+  id: CentCommOfficerJumpsuitFormal
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomFormal
+
+- type: loadout
+  id: CentCommOfficerJumpsuitFormalDress
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCentcomFormalDress
+
+- type: loadout
+  id: CentCommOfficerJumpsuitAgent
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomAgent
+
+- type: loadoutGroup
+  id: CentCommOfficerBack
+  name: stories-loadout-group-centcomm-officer-back
+  minLimit: 1
+  loadouts:
+  - CentCommOfficerBackBackpackSatchelLeather
+  - CentCommOfficerBackBackpackSatchel
+  - CentCommOfficerBackBackpack
+  - CentCommOfficerBackBackpackDuffel
+
+- type: loadout
+  id: CentCommOfficerBackBackpackSatchelLeather
+  equipment:
+    back: ClothingBackpackSatchelLeather
+
+- type: loadout
+  id: CentCommOfficerBackBackpackSatchel
+  equipment:
+    back: ClothingBackpackSatchel
+
+- type: loadout
+  id: CentCommOfficerBackBackpack
+  equipment:
+    back: ClothingBackpack
+
+- type: loadout
+  id: CentCommOfficerBackBackpackDuffel
+  equipment:
+    back: ClothingBackpackDuffel
+
+- type: loadoutGroup
+  id: CentCommOfficerEyes
+  name: stories-loadout-group-centcomm-officer-eyes
+  minLimit: 1
+  loadouts:
+  - CentCommOfficerEyesGlassesCentcom
+  - CentCommOfficerEyesGlassesSecurity
+  - CentCommOfficerEyesGlassesCommand
+  - CentCommOfficerEyesGlassesSunglasses
+  - CentCommOfficerEyesGlasses
+
+- type: loadout
+  id: CentCommOfficerEyesGlassesCentcom
+  equipment:
+    eyes: ClothingEyesGlassesCentcom
+
+- type: loadout
+  id: CentCommOfficerEyesGlassesSecurity
+  equipment:
+    eyes: ClothingEyesGlassesSecurity
+
+- type: loadout
+  id: CentCommOfficerEyesGlassesCommand
+  equipment:
+    eyes: ClothingEyesGlassesCommand
+
+- type: loadout
+  id: CentCommOfficerEyesGlassesSunglasses
+  equipment:
+    eyes: ClothingEyesGlassesSunglasses
+
+- type: loadout
+  id: CentCommOfficerEyesGlasses
+  equipment:
+    eyes: ClothingEyesGlasses
+
+- type: loadoutGroup
+  id: CentCommOfficerEars
+  name: stories-loadout-group-centcomm-officer-ears
+  minLimit: 1
+  loadouts:
+  - CentCommOfficerEarsHeadsetAltCentCom
+  - CentCommOfficerEarsHeadsetCentCom
+
+- type: loadout
+  id: CentCommOfficerEarsHeadsetAltCentCom
+  equipment:
+    ears: ClothingHeadsetAltCentCom
+
+- type: loadout
+  id: CentCommOfficerEarsHeadsetCentCom
+  equipment:
+    ears: ClothingHeadsetCentCom
+
+- type: loadoutGroup
+  id: CentCommOfficerGloves
+  name: stories-loadout-group-centcomm-officer-gloves
+  minLimit: 1
+  loadouts:
+  - CentCommOfficerGlovesBlackCombat
+  - CentCommOfficerGlovesBlack
+  - CentCommOfficerGlovesWhiteCombat
+  - CentCommOfficerGlovesWhite
+
+- type: loadout
+  id: CentCommOfficerGlovesBlackCombat
+  equipment:
+    gloves: ClothingHandsGlovesCombat
+
+- type: loadout
+  id: CentCommOfficerGlovesBlack
+  equipment:
+    gloves: ClothingHandsGlovesColorBlack
+
+- type: loadout
+  id: CentCommOfficerGlovesWhiteCombat
+  equipment:
+    gloves: ClothingHandsGlovesCombatWhite
+
+- type: loadout
+  id: CentCommOfficerGlovesWhite
+  equipment:
+    gloves: ClothingHandsGlovesColorWhite
+
+- type: loadoutGroup
+  id: CentCommOfficerShoes
+  name: stories-loadout-group-centcomm-officer-shoes
+  minLimit: 1
+  loadouts:
+  - CentCommOfficerShoesLaceup
+  - CentCommOfficerShoesJack
+  - CentCommOfficerShoesBlack
+  - CentCommOfficerShoesWhite
+
+- type: loadout
+  id: CentCommOfficerShoesLaceup
+  equipment:
+    shoes: ClothingShoesBootsLaceup
+
+- type: loadout
+  id: CentCommOfficerShoesJack
+  equipment:
+    shoes: ClothingShoesBootsJack
+
+- type: loadout
+  id: CentCommOfficerShoesBlack
+  equipment:
+    shoes: ClothingShoesColorBlack
+
+- type: loadout
+  id: CentCommOfficerShoesWhite
+  equipment:
+    shoes: ClothingShoesColorWhite
+
+- type: loadoutGroup
+  id: CentCommOfficerOuterClothing
+  name: stories-loadout-group-centcomm-officer-outer-clothing
+  minLimit: 0
+  loadouts:
+  - CentCommOfficerOuterClothingCarapace
+  - CentCommOfficerOuterClothingWinter
+
+- type: loadout
+  id: CentCommOfficerOuterClothingCarapace
+  equipment:
+    outerClothing: ClothingOuterArmorCentcommCarapace
+
+- type: loadout
+  id: CentCommOfficerOuterClothingWinter
+  equipment:
+    outerClothing: ClothingOuterWinterCentcom
+
+- type: loadoutGroup
+  id: CentCommHeadOfSecurityNeck
+  name: stories-loadout-group-centcomm-head-of-security-neck
+  minLimit: 1
+  loadouts:
+  - CentCommNeckHeadOfSecurityCloak
+
+- type: loadout
+  id: CentCommNeckHeadOfSecurityCloak
+  equipment:
+    neck: ClothingNeckCloakHeadOfSecurityCentcom
+
+- type: loadoutGroup
+  id: CentCommOperatorNeck
+  name: stories-loadout-group-centcomm-operator-neck
+  minLimit: 1
+  loadouts:
+  - CentCommNeckOperatorCloak
+
+- type: loadout
+  id: CentCommNeckOperatorCloak
+  equipment:
+    neck: ClothingNeckCloakOperatorCentcom
+
+- type: loadoutGroup
+  id: CentCommRepresentativeNeck
+  name: stories-loadout-group-centcomm-representative-neck
+  minLimit: 1
+  loadouts:
+  - CentCommNeckRepresentativeCloak
+
+- type: loadout
+  id: CentCommNeckRepresentativeCloak
+  equipment:
+    neck: ClothingNeckCloakCentcom

@@ -1,0 +1,139 @@
+- type: loadout
+  id: ClothingBackpackAdidos
+  equipment:
+    back: ClothingBackpackAdidos
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackBluesky
+  equipment:
+    back: ClothingBackpackBluesky
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackDuffelAdidos
+  equipment:
+    back: ClothingBackpackDuffelAdidos
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackDuffelBluesky
+  equipment:
+    back: ClothingBackpackDuffelBluesky
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackDuffelEight
+  equipment:
+    back: ClothingBackpackDuffelEight
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackDuffelGachi
+  equipment:
+    back: ClothingBackpackDuffelGachi
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackDuffelRl
+  equipment:
+    back: ClothingBackpackDuffelRl
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackEight
+  equipment:
+    back: ClothingBackpackEight
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackGachi
+  equipment:
+    back: ClothingBackpackGachi
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackHandbagAdidos
+  equipment:
+    back: ClothingBackpackHandbagAdidos
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackHandbagBluesky
+  equipment:
+    back: ClothingBackpackHandbagBluesky
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackHandbagEight
+  equipment:
+    back: ClothingBackpackHandbagEight
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackHandbagGachi
+  equipment:
+    back: ClothingBackpackHandbagGachi
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackHandbagRl
+  equipment:
+    back: ClothingBackpackHandbagRl
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackRl
+  equipment:
+    back: ClothingBackpackRl
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackSatchelAdidos
+  equipment:
+    back: ClothingBackpackSatchelAdidos
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackSatchelBluesky
+  equipment:
+    back: ClothingBackpackSatchelBluesky
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackSatchelEight
+  equipment:
+    back: ClothingBackpackSatchelEight
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackSatchelGachi
+  equipment:
+    back: ClothingBackpackSatchelGachi
+  effects:
+  - !type:SponsorLoadoutEffect
+
+- type: loadout
+  id: ClothingBackpackSatchelRl
+  equipment:
+    back: ClothingBackpackSatchelRl
+  effects:
+  - !type:SponsorLoadoutEffect

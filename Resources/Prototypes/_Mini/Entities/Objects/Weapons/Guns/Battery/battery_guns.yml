@@ -107,3 +107,67 @@
   - type: BatterySelfRecharger
     autoRechargeRate: 20
   - type: AmmoCounter
+
+- type: entity
+  id: WeaponDerozer
+  parent: [BaseWeaponBatterySmall, BaseCentcommContraband]
+  name: derozer
+  description: "A versatile submachine gun with four firing modes. The craftsmanship is of the highest quality. It features depictions of the OSO and the Syndicate: the Syndicate lies dead, while an OSO member strikes a heroic pose."
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Weapons/Guns/Battery/derozer.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-unshaded-4
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: Clothing
+    sprite: _Mini/Objects/Weapons/Guns/Battery/derozer.rsi
+  - type: Gun
+    availableModes:
+    - Burst
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
+  - type: BatteryAmmoProvider
+    proto: BulletDisablerDerozer
+    fireCost: 50
+  - type: BatteryWeaponFireModes
+    fireModes:
+    - proto: BulletDisablerDerozer
+      fireCost: 62.5
+    - proto: BulletLetalDerozer
+      fireCost: 125
+    - proto: XrayHitscanDerozer
+      fireCost: 125
+    - proto: BulletTaserDerozer
+      fireCost: 250
+  - type: BatterySelfRecharger
+    autoRechargeRate: 40
+  - type: MagazineVisuals
+    magState: mag
+    steps: 5
+    zeroVisible: true
+  - type: Appearance
+  - type: BioCode
+    autoRecordDNA: true
+    delay: 1
+    itemBioCode: true
+  - type: TimerTrigger
+    delay: 1
+  - type: ExplodeOnTrigger
+    keysIn:
+    - timer
+  - type: Explosive
+    deleteAfterExplosion: false
+    explosionType: PowerSink
+    maxIntensity: 8
+    intensitySlope: 5
+    totalIntensity: 5
+    canCreateVacuum: false
+    repeatable: true
+  - type: Tag
+    tags:
+    - HighRiskItem
+    - Sidearm

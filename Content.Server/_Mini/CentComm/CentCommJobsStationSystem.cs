@@ -25,8 +25,6 @@ public sealed class CentCommJobsStationSystem : EntitySystem
     private const string CentCommGameMapId = "CentComm";
     private const string CentCommStationId = "centcomm";
 
-    private static readonly EntProtoId OfficialSpawnPoint = "SpawnPointCentralCommandOfficial";
-    private static readonly EntProtoId AssistantSpawnPoint = "SpawnPointCentralCommandAssistant";
     private static readonly EntProtoId LateJoinSpawnPoint = "SpawnPointLateJoinCentComm";
 
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
@@ -64,13 +62,12 @@ public sealed class CentCommJobsStationSystem : EntitySystem
     }
 
     /// <summary>
-    /// Map markers can be missing or fail to load; ensure ПЦК / стажер spawners exist on the CentComm grid
+    /// Map markers can be missing or fail to load; ensure a latejoin spawner exists on the CentComm grid
     /// at the CentCom Office warp (never grid origin - that is empty space).
+    /// Role spawn points are placed by the map itself.
     /// </summary>
     private void EnsureCentCommSpawnPoints(EntityUid centcommGrid)
     {
-        var hasOfficial = false;
-        var hasAssistant = false;
         var hasLateJoin = false;
 
         var query = EntityQueryEnumerator<SpawnPointComponent, TransformComponent>();
@@ -79,15 +76,11 @@ public sealed class CentCommJobsStationSystem : EntitySystem
             if (xform.GridUid != centcommGrid && xform.ParentUid != centcommGrid)
                 continue;
 
-            if (spawn.Job == "CentralCommandOfficial")
-                hasOfficial = true;
-            else if (spawn.Job == "CentralCommandAssistant")
-                hasAssistant = true;
-            else if (spawn.SpawnType == SpawnPointType.LateJoin && spawn.Job == null)
+            if (spawn.SpawnType == SpawnPointType.LateJoin && spawn.Job == null)
                 hasLateJoin = true;
         }
 
-        if (hasOfficial && hasAssistant && hasLateJoin)
+        if (hasLateJoin)
             return;
 
         if (!TryGetCentCommInteriorCoords(centcommGrid, out var origin))
@@ -96,15 +89,9 @@ public sealed class CentCommJobsStationSystem : EntitySystem
             return;
         }
 
-        Log.Warning(
-            $"CentComm spawn markers incomplete (official={hasOfficial}, assistant={hasAssistant}, latejoin={hasLateJoin}); spawning missing markers at {origin}.");
+        Log.Warning($"CentComm latejoin spawn marker missing; spawning one at {origin}.");
 
-        if (!hasOfficial)
-            SpawnAt(OfficialSpawnPoint, origin);
-        if (!hasAssistant)
-            SpawnAt(AssistantSpawnPoint, origin);
-        if (!hasLateJoin)
-            SpawnAt(LateJoinSpawnPoint, origin);
+        SpawnAt(LateJoinSpawnPoint, origin);
     }
 
     private bool TryGetCentCommInteriorCoords(EntityUid centcommGrid, out EntityCoordinates coords)

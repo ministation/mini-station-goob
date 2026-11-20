@@ -1,0 +1,51 @@
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: ClothingBeltGuardian
+  name: jedi belt
+  description: Hang your sword on it.
+  components:
+    - type: Tag
+      tags:
+        - ForceRecallEquipment
+    - type: Sprite
+      sprite: _Mini/Clothing/Belt/guardian_belt.rsi
+      state: icon
+    - type: Clothing
+      sprite: _Mini/Clothing/Belt/guardian_belt.rsi
+    - type: Storage
+      whitelist:
+        tags:
+          - CigPack
+          - Radio
+        components:
+          - FlashOnTrigger
+          - Flash
+          - Welder
+          - Flash
+          - Handcuff
+          - EnergySword
+
+- type: entity
+  parent: ClothingBeltSheath
+  id: ClothingBeltSheathExe
+  name: sheath for energy rapier
+  description: An ornate sheath designed to hold a blade.
+  components:
+    - type: Sprite
+      sprite: _Mini/Clothing/Belt/e_rapier_sheath.rsi
+      state: sheath
+    - type: Clothing
+      sprite: _Mini/Clothing/Belt/e_rapier_sheath.rsi
+    - type: ItemSlots
+      slots:
+        item:
+          name: Sabre
+          insertVerbText: sheath-insert-verb
+          ejectVerbText: sheath-eject-verb
+          whitelist:
+            components:
+    - type: ItemMapper
+      mapLayers:
+        sheath-sabre:
+          whitelist:
+            components:

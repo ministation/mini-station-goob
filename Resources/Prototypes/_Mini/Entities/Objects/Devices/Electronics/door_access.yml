@@ -1,0 +1,71 @@
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsCentcommCommand
+  suffix: CentralCommand, Command, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Command"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsCentcommSecurity
+  suffix: CentralCommand, Security, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Security"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsCentcommEngineering
+  suffix: CentralCommand, Engineering, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Engineering"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsCentcommMedical
+  suffix: CentralCommand, Medical, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Medical"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsCentcommService
+  suffix: CentralCommand, Service, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Service"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsCentcommCargo
+  suffix: CentralCommand, Cargo, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Cargo"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsCentcommHighCommand
+  suffix: CentralCommand, High Command, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "DSO"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsCentcommArmory
+  suffix: CentralCommand, Armory, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Armory"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: DoorElectronicsDepartmentSpecialOperations
+  suffix: DSO, Locked
+  components:
+  - type: AccessReader
+    access: [["DSO"]]

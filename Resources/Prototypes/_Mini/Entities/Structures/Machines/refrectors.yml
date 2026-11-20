@@ -1,0 +1,44 @@
+- type: entity
+  id: ReflectorBox
+  parent: BaseReflector
+  name: Reflector, type "Box"
+  description: This device is capable of deflecting projectiles hitting it in the specified direction.
+  components:
+  - type: Sprite
+    state: reflector_circle
+  - type: Machine
+    board: ReflectorBoxMachineCircuitboard
+  - type: Rotatable
+    rotateWhileAnchored: true
+
+- type: entity
+  categories: [ HideSpawnMenu ]
+  id: BaseReflector
+  parent: [ BaseMachine, ConstructibleMachine ]
+  components:
+  - type: Transform
+    noRot: false
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/reflectors.rsi
+  - type: Gun
+    projectileSpeed: 5
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/taser2.ogg
+  - type: Rotatable
+    rotateWhileAnchored: true
+  - type: Lock
+    locked: false
+  - type: LockedAnchorable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: machineFrame
+      - !type:DoActsBehavior
+        acts: ["Destruction"]

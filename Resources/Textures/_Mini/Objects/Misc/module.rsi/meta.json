@@ -15,6 +15,15 @@
     },
     {
       "name": "door_electronics_syndicate"
+    },
+    {
+      "name": "reflectorbox_circuitboard"
+    },
+    {
+      "name": "reflectorcorner_circuitboard"
+    },
+    {
+      "name": "reflectortsidecorner_circuitboard"
     }
   ]
 }

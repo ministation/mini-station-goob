@@ -1,0 +1,9 @@
+- type: roleLoadout
+  id: JobIAA
+  groups:
+  - LawyerNeck
+  - GroupTankHarness
+  - CommonBackpack
+  - Survival
+  - Trinkets
+  - GroupSpeciesBreathTool

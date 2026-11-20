@@ -1,0 +1,124 @@
+- type: entity
+  parent: FaxMachineBase
+  id: FaxMachineCommands
+  suffix: Bridge
+  components:
+    - type: Sprite
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_captain.rsi
+    - type: Icon
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_captain.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Мостик"
+      receiveNukeCodes: false
+      receiveStationGoal: false
+
+- type: entity
+  parent: FaxMachineBase
+  id: FaxMachineQM
+  suffix: Quartermaster
+  components:
+    - type: Sprite
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_cargo.rsi
+    - type: Icon
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_cargo.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Квартирмейстера"
+
+- type: entity
+  parent: FaxMachineBase
+  id: FaxMachineCE
+  suffix: Chief Engineer
+  components:
+    - type: Sprite
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_engeneering.rsi
+    - type: Icon
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_engeneering.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Старшего Инженера"
+
+- type: entity
+  parent: FaxMachineBase
+  id: FaxMachineRD
+  suffix: Research Director
+  components:
+    - type: Sprite
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_scientist.rsi
+    - type: Icon
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_scientist.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Научного Руководителя"
+
+- type: entity
+  parent: FaxMachineBase
+  id: FaxMachineHOS
+  suffix: Head Of Security
+  components:
+    - type: Sprite
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_security.rsi
+    - type: Icon
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_security.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Главы Службы Безопасности"
+
+- type: entity
+  parent: FaxMachineBase
+  id: FaxMachineCMO
+  suffix: Chief Medical Officer
+  components:
+    - type: Sprite
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_medical.rsi
+    - type: Icon
+      sprite: _Mini/Structures/Machines/fax_machine/fax_machine_medical.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Главного Врача"
+
+- type: entity
+  parent: FaxMachineBase
+  id: FaxMachineChiefCentcomm
+  description: A fax machine made of high-end plastic, featuring a gold handle. It likely belongs to someone very important.
+  name: chief Centcomm long range fax machine
+  suffix: Chief Centcomm
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/fax_machine/fax_machine_cos.rsi
+  - type: Icon
+    sprite: _Mini/Structures/Machines/fax_machine/fax_machine_cos.rsi
+    state: icon
+  - type: FaxMachine
+    name: "Начальник Штаба ЦентКом"
+
+- type: entity
+  parent: FaxMachineBase
+  id: FaxMachineSpecialOfficer
+  description: A fax machine made of high-end plastic, featuring a gold handle. It likely belongs to someone very important.
+  name: special officer long range fax machine
+  suffix: Special Officer
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/fax_machine/fax_machine_oso.rsi
+  - type: Icon
+    sprite: _Mini/Structures/Machines/fax_machine/fax_machine_oso.rsi
+    state: icon
+  - type: FaxMachine
+    name: "Офицер СпецОпераций"
+
+- type: entity
+  parent: FaxMachineBase
+  id: FaxMachineMagistrate
+  description: A fax machine made of high-end plastic, featuring a gold handle. It likely belongs to someone very important.
+  name: magistrate long range fax machine
+  suffix: Magistrate
+  components:
+  - type: Sprite
+    sprite: _Mini/Structures/Machines/fax_machine/fax_machine_magistrate.rsi
+  - type: Icon
+    sprite: _Mini/Structures/Machines/fax_machine/fax_machine_magistrate.rsi
+    state: icon
+  - type: FaxMachine
+    name: "Магистрат"

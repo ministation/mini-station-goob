@@ -376,3 +376,22 @@
     stackRequirements:
       Glass: 5
       Cable: 5
+
+- type: entity
+  id: ReflectorBoxMachineCircuitboard
+  parent: BaseMachineCircuitboard
+  name: Reflector, type "Box"
+  description: Reflector machine board, type "Box"
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/module.rsi
+    state: reflectorbox_circuitboard
+  - type: MachineBoard
+    prototype: ReflectorBox
+    stackRequirements:
+      Manipulator: 3
+      CableHV: 10
+    componentRequirements:
+      PowerCell:
+        amount: 1
+        defaultPrototype: PowerCellMedium

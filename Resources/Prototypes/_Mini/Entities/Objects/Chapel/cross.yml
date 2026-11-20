@@ -1,0 +1,35 @@
+- type: entity
+  parent: BaseCross
+  id: SilverCross
+  name: silver cross
+  description: Silver 960 assay value.
+  components:
+  - type: Clothing
+    quickEquip: true
+    sprite: _Mini/Objects/Chapel/silvercross.rsi
+    slots:
+    - neck
+  - type: Sprite
+    sprite: _Mini/Objects/Chapel/silvercross.rsi
+    state: icon
+- type: entity
+  parent: BaseItem
+  id: BaseCross
+  abstract: true
+  components:
+  - type: GuideHelp
+    guides:
+    - Chaplain
+  - type: Reactive
+    groups:
+      Extinguish: [ Touch ]
+  - type: Damageable
+  - type: Item
+    size: Tiny
+  - type: UseDelay
+    delays:
+      Holy:
+        length: 3.0
+  - type: StatusEffects
+    allowed:
+    - Holy

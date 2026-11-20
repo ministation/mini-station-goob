@@ -1,0 +1,42 @@
+- type: job
+  id: InternalInspector
+  name: stories-job-name-internal-inspector
+  description: stories-job-description-internal-inspector
+  playTimeTracker: JobInternalInspector
+  # requirements:
+  # - !type:RoleTimeRequirement
+  #   role: JobChiefCentcom
+  #   time: 10h
+  # - !type:RoleTimeRequirement
+  #   role: JobSpecialOfficer
+  #   time: 10h
+  # - !type:RoleTimeRequirement
+  #   role: JobMagistrate
+  #   time: 10h
+  setPreference: false
+  startingGear: InternalInspectorGear
+  icon: "JobIconInternalInspector"
+  supervisors: stories-job-supervisors-quadrant-management
+  accessGroups:
+  - AllAccess
+  - PrisonAllAccess
+  access:
+  - CentralCommand
+  - DSO
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, AdrenocorImplant, DeathRattleImplantCentcomm, DeathRattleImplantDSO, RadioImplantCentcomm, RadioImplantDSO ]
+  whitelisted: true
+
+- type: startingGear
+  id: InternalInspectorGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitInternalInspector
+    back: ClothingBackpackSatchelHolding
+    eyes: ClothingEyesGlassesCentcom
+    ears: ClothingHeadsetAltCentCom
+    gloves: ClothingHandsGlovesColorWhite
+    shoes: ClothingShoesBootsLaceup
+    id: InternalInspectorPDA
+    pocket1: RubberStampInternalInspector
+    belt: BoxFolderCentComThreePapers

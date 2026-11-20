@@ -1,0 +1,56 @@
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackSatchelAdidos
+  name: satchel
+  description: A fashionable bag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Satchels/satchel_adidos.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackSatchelBluesky
+  name: satchel
+  description: A fashionable bag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Satchels/satchel_bluesky.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackSatchelEight
+  name: satchel
+  description: A fashionable bag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Satchels/satchel_eight.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackSatchelGachi
+  name: satchel
+  description: A fashionable bag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Satchels/satchel_gachi.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackSatchelGuardianNt
+  name: blade guardian's satchel
+  description: Where is my fudge?
+  components:
+  - type: Tag
+    tags:
+      - ForceRecallEquipment
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Satchels/satchel_guardiannt.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackSatchelRl
+  name: satchel
+  description: A fashionable bag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Satchels/satchel_rl.rsi

@@ -1,0 +1,30 @@
+- type: job
+  id: HeadOfSecurityCentcom
+  name: stories-job-name-head-of-security-centcom
+  description: stories-job-description-head-of-security-centcom
+  playTimeTracker: JobHeadOfSecurityCentcom
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: JobHeadOfSecurity
+  #   time: 10h
+  startingGear: HeadOfSecurityCentcomGear
+  icon: "JobIconCentcom"
+  supervisors: stories-job-supervisors-chief-centcom
+  accessGroups:
+  - AllAccess
+  - PrisonAllAccess
+  access:
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+
+- type: startingGear
+  id: HeadOfSecurityCentcomGear
+  equipment:
+    id: HeadOfSecurityCentcomPDA
+    belt: ClothingBeltSecurityFilled

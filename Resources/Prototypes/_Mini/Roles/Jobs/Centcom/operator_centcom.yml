@@ -1,0 +1,30 @@
+- type: job
+  id: OperatorCentcom
+  name: stories-job-name-operator-centcom
+  description: stories-job-description-operator-centcom
+  playTimeTracker: JobOperatorCentcom
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: JobCaptain
+  #   time: 10h
+  startingGear: OperatorCentcomGear
+  icon: "JobIconCentcom"
+  supervisors: stories-job-supervisors-chief-centcom
+  accessGroups:
+  - AllAccess
+  - PrisonAllAccess
+  access:
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+
+- type: startingGear
+  id: OperatorCentcomGear
+  equipment:
+    id: OperatorCentcomPDA
+    belt: BoxFolderCentComClipboard

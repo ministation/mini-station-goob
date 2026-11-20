@@ -1,0 +1,7 @@
+- type: accessGroup
+  id: PrisonAllAccess
+  tags:
+  - Security
+  - Brig
+  - Medical
+  - Engineering

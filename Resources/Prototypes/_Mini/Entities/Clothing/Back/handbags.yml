@@ -1,0 +1,44 @@
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackHandbagAdidos
+  name: waist bag
+  description: A fashionable bag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Handbags/handbag_adidos.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackHandbagBluesky
+  name: handbag
+  description: A fashionable handbag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Handbags/handbag_bluesky.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackHandbagEight
+  name: waist bag
+  description: A fashionable bag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Handbags/handbag_eight.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackHandbagGachi
+  name: waist bag
+  description: A fashionable bag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Handbags/handbag_gachi.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackHandbagRl
+  name: handbag
+  description: A fashionable handbag.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Handbags/handbag_rl.rsi

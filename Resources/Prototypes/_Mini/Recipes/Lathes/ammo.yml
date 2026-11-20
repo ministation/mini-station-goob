@@ -1,0 +1,7 @@
+- type: latheRecipe
+  parent: BaseAmmoRecipe
+  id: MagazineRifleSilver
+  result: MagazineRifleSilver
+  materials:
+    Steel: 25
+    Silver: 450

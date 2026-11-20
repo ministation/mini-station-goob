@@ -449,3 +449,307 @@
     radius: 1.5
     energy: 1.6
     color: "#c94242"
+
+- type: entity
+  parent: CentcommComputerComms
+  id: DSOComputerComms
+  name: Department of Special Operations communications console
+  description: A computer used to make world wide announcements via keyboard. The superior cousin of the regular communications computer.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      sprite: _Mini/Structures/Machines/computers.rsi
+      state: comm_DSO
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: AccessReader
+    access: [[ "DSO" ]]
+  - type: CommunicationsConsole
+    title: stories-comms-console-announcement-title-DSO
+    color: "#1d8bad"
+    sound:
+      path: /Audio/_Mini/Announcements/DSO_announce.ogg
+      params:
+        volume: -4
+  - type: Computer
+    board: CentcommCommsComputerCircuitboard
+  - type: PointLight
+    radius: 1.5
+    energy: 4.0
+    color: "#00FF00"
+
+- type: entity
+  parent: ComputerId
+  id: CentcomComputerId
+  name: ID card computers
+  description: Terminal for programming Nanotrasen employee ID cards to access parts of the centcom.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      sprite: _Mini/Structures/Machines/computers.rsi
+      state: id_centcomm
+    - map: ["computerLayerKeys"]
+      state: id_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: IdCardConsole
+    accessLevels:
+    - Armory
+    - Atmospherics
+    - Bar
+    - Brig
+    - Detective
+    - Captain
+    - Cargo
+    - Chapel
+    - Chemistry
+    - ChiefEngineer
+    - ChiefMedicalOfficer
+    - Command
+    - Cryogenics
+    - Engineering
+    - External
+    - GenpopEnter
+    - GenpopLeave
+    - HeadOfPersonnel
+    - HeadOfSecurity
+    - Hydroponics
+    - Janitor
+    - Kitchen
+    - Lawyer
+    - Maintenance
+    - Medical
+    - Quartermaster
+    - Research
+    - ResearchDirector
+    - Salvage
+    - Security
+    - Service
+    - Theatre
+    - CentralCommand
+    - DSO
+  - type: Computer
+    board: ComputerIdCircuitboardCentcom
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  parent: ComputerCargoOrders
+  id: ComputerCargoOrdersCentComm
+  name: centcomm request computer
+  description: Used by the Centcomm department to order supplies.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: request-med
+      color: "#0f8551"
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: CargoOrderConsole
+    account: CentComm
+    announcementChannel: CentCom
+    removeLimitAccess: [ "Quartermaster" ]
+  - type: ActiveRadio
+    channels:
+    - CentCom
+  - type: PointLight
+    color: "#0f8551"
+  - type: AccessReader
+    access: [["CentralCommand", "Cargo"]]
+
+- type: entity
+  parent: BaseComputerAiAccess
+  id: CentcomComputerStationsControl
+  name: centcomm asset control computer
+  description: Allows for the control of any corporate asset.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      sprite: _Mini/Structures/Machines/computers.rsi
+      state: stations_control_centcomm
+    - map: ["computerLayerKeys"]
+      state: id_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: UserInterface
+    interfaces:
+      enum.StationsControlConsoleUiKey.Key:
+        type: StationsControlConsoleBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StationsControlConsoleUiKey.Key
+  - type: StationsControlConsole
+    allowedAlertLevels:
+    - green
+    - blue
+    - violet
+    - yellow
+    - red
+    - gamma
+    - delta
+    - epsilon
+    - omicron
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  parent: BaseComputerAiAccess
+  id: DSOComputerStationsControl
+  name: Department of Special Operations asset control computer
+  description: Allows for the control of any corporate asset.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      sprite: _Mini/Structures/Machines/computers.rsi
+      state: stations_control_DSO
+    - map: ["computerLayerKeys"]
+      state: id_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: UserInterface
+    interfaces:
+      enum.StationsControlConsoleUiKey.Key:
+        type: StationsControlConsoleBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StationsControlConsoleUiKey.Key
+  - type: StationsControlConsole
+    allowedAlertLevels:
+    - delta
+    - gamma
+  - type: AccessReader
+    access: [["DSO"]]
+
+- type: entity
+  parent: BaseComputerAiAccess
+  id: DSOComputerERTSpawn
+  name: emergency response team call computer
+  description: Used for the remote awakening of ERT operatives aboard pre-staged shuttles.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      sprite: _Mini/Structures/Machines/computers.rsi
+      state: ert_call_DSO
+    - map: ["computerLayerKeys"]
+      state: id_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: UserInterface
+    interfaces:
+      enum.ERTSpawnConsoleUiKey.Key:
+        type: ERTSpawnConsoleBoundUserInterface
+  - type: ActivatableUI
+    key: enum.ERTSpawnConsoleUiKey.Key
+  - type: ERTSpawnConsole
+    titleName: stories-ert-console-title
+    delay: 300
+    balanceName: stories-ert-spawn-balance-name
+    balance: 20
+    options:
+    - name: stories-ert-spawn-scout-name
+      desc: stories-ert-spawn-scout-desc
+      rule: ERTSpawnScout
+      price: 5
+    - name: stories-ert-spawn-medium-name
+      desc: stories-ert-spawn-medium-desc
+      rule: ERTSpawnMedium
+      price: 10
+    - name: stories-ert-spawn-high-name
+      desc: stories-ert-spawn-high-desc
+      rule: ERTSpawnHigh
+      price: 15
+    - name: stories-ert-spawn-holy-medium-name
+      desc: stories-ert-spawn-holy-medium-desc
+      rule: ERTSpawnHolyMedium
+      price: 10
+    - name: stories-ert-spawn-medical-name
+      desc: stories-ert-spawn-medical-desc
+      rule: ERTSpawnMedical
+      price: 10
+  - type: ActivatableUIRequiresAccess
+  - type: AccessReader
+    access: [["DSO"]]
+
+- type: entity
+  parent: BaseComputerAiAccess
+  id: ComputerBankCentcom
+  name: central command economic console
+  description: A highly advanced terminal used by Central Command to fully manage and manipulate station economies.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm_logs
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: AccessReader
+    access: [["CentralCommand"]]
+  - type: ActivatableUIRequiresAccess
+  - type: UserInterface
+    interfaces:
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+
+- type: entity
+  parent: BaseComputerAiAccess
+  id: ComputerBankSecurity
+  name: security financial console
+  description: Used by security to issue fines to specific personnel.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: id
+    - map: ["computerLayerKeys"]
+      state: security_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: AccessReader
+    access: [["Security"]]
+  - type: ActivatableUIRequiresAccess
+  - type: UserInterface
+    interfaces:
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface

@@ -1,0 +1,44 @@
+- type: playTimeTracker
+  id: JobSpecialOfficer
+
+- type: playTimeTracker
+  id: JobCBURNCommander
+
+- type: playTimeTracker
+  id: JobChiefCentcom
+
+- type: playTimeTracker
+  id: JobOperatorCentcom
+
+- type: playTimeTracker
+  id: JobRepresentativeCentcom
+
+- type: playTimeTracker
+  id: JobHeadOfSecurityCentcom
+
+- type: playTimeTracker
+  id: JobGuardianNt
+
+- type: playTimeTracker
+  id: JobSecurityOfficerCentcom
+
+- type: playTimeTracker
+  id: JobMedicCentcom
+
+- type: playTimeTracker
+  id: JobEngineerCentcom
+
+- type: playTimeTracker
+  id: JobWorkerCentcom
+
+- type: playTimeTracker
+  id: JobSpecialAssignments
+
+- type: playTimeTracker
+  id: JobLogist
+
+- type: playTimeTracker
+  id: JobAccountant
+
+- type: playTimeTracker
+  id: JobInternalInspector
