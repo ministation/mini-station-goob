@@ -42,3 +42,9 @@
     id: ChiefCentcomPDA
     neck: ClothingNeckCloakChiefCentcom
     belt: ClothingBeltSheathFilled
+
+- type: chameleonOutfit
+  id: ChiefCentcomChameleonOutfit
+  job: ChiefCentcom
+  startingGear: ChiefCentcomGear
+  hasMindShield: true

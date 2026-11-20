@@ -29,7 +29,7 @@
     accentVColor: "#20b2aa"
   - type: EntityTableContainerFill
     containers:
-      preinstalled-program-container: !type:AllSelector
+      program-container: !type:AllSelector
         children:
         - id: CrewManifestCartridge
         - id: NotekeeperCartridge

@@ -28,3 +28,9 @@
   equipment:
     id: HeadOfSecurityCentcomPDA
     belt: ClothingBeltSecurityFilled
+
+- type: chameleonOutfit
+  id: HeadOfSecurityCentcomChameleonOutfit
+  job: HeadOfSecurityCentcom
+  startingGear: HeadOfSecurityCentcomGear
+  hasMindShield: true

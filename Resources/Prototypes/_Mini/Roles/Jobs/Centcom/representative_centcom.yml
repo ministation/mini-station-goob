@@ -28,3 +28,9 @@
   equipment:
     id: RepresentativeCentcomPDA
     belt: BoxFolderCentComClipboard
+
+- type: chameleonOutfit
+  id: RepresentativeCentcomChameleonOutfit
+  job: RepresentativeCentcom
+  startingGear: RepresentativeCentcomGear
+  hasMindShield: true

@@ -6,8 +6,3 @@ ent-XrayHitscanDerozer = рентгеновский лазер дерозера
     .desc = { ent-BaseBullet.desc }
 ent-BulletTaserDerozer = тазерный заряд дерозера
     .desc = { ent-BaseBullet.desc }
-
-    .desc = { ent-BaseBullet.desc }
-    .desc = { ent-BaseBullet.desc }
-    .desc = { ent-BaseBullet.desc }
-    .desc = { ent-BaseBullet.desc }

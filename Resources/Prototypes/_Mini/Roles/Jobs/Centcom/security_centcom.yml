@@ -39,3 +39,9 @@
     ears: ClothingHeadsetSecurity
     gloves: ClothingHandsGlovesCombat
     id: SecurityOfficerCentcomPDA
+
+- type: chameleonOutfit
+  id: SecurityOfficerCentcomChameleonOutfit
+  job: SecurityOfficerCentcom
+  startingGear: SecurityOfficerCentcomGear
+  hasMindShield: true

@@ -1,6 +1,3 @@
-    .desc = { ent-IDCardStandard.desc }
-
-
 ent-IAAIDCard = ID-карта агента внутренних дел
 ent-JudgeIDCard = ID-карта судьи
 
@@ -33,24 +30,4 @@ ent-InternalInspectorIDCard = ID-карта внутреннего инспек�
 ent-SpecialOfficerIDCard = ID-карта офицера спецопераций
     .desc = { ent-IDCardStandard.desc }
 ent-CBURNCommanderIDcard = ID-карта командира РХБЗЗ
-    .desc = { ent-IDCardStandard.desc }
-
-    .desc = { ent-IDCardStandard.desc }
-
-
-
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-    .desc = { ent-IDCardStandard.desc }
-
-    .desc = { ent-IDCardStandard.desc }
     .desc = { ent-IDCardStandard.desc }

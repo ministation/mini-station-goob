@@ -20,5 +20,3 @@ ent-STDoorElectronicsCentcomCommand = { ent-DoorElectronics }
 ent-STDoorElectronicsCentcomSecurity = { ent-DoorElectronics }
     .desc = { ent-DoorElectronics.desc }
     .suffix = Центком СБ, Закрыт
-    .desc = { ent-DoorElectronics.desc }
-    .suffix = ДСО, Закрыт

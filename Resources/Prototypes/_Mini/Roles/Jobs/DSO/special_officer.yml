@@ -38,3 +38,9 @@
     id: SpecialOfficerPDA
     outerClothing: ClothingOuterArmorBulletproof
     neck: ClothingNeckCloakSpecialOfficer
+
+- type: chameleonOutfit
+  id: SpecialOfficerChameleonOutfit
+  job: SpecialOfficer
+  startingGear: SpecialOfficerGear
+  hasMindShield: true

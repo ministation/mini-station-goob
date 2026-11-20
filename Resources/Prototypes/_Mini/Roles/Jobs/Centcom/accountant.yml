@@ -29,3 +29,9 @@
     head: ClothingHeadHatBeret
     jumpsuit: ClothingUniformJumpsuitCentcomAgent
     id: AccountantPDA
+
+- type: chameleonOutfit
+  id: AccountantChameleonOutfit
+  job: Accountant
+  startingGear: AccountantGear
+  hasMindShield: true

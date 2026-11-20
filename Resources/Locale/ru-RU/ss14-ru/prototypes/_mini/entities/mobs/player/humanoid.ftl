@@ -32,27 +32,3 @@ ent-RandomHumanoidSpawnerSpecialOfficer = Офицер Спецопераций
 ent-RandomHumanoidSpawnerCBURNCommander = Командир РХБЗЗ
     .suffix = Командир РХБЗЗ
     .desc = { "" }
-
-    .suffix = НШцк
-    .desc = { "" }
-    .suffix = Оцк
-    .desc = { "" }
-    .suffix = Пцк
-    .desc = { "" }
-    .suffix = ГБцк
-    .desc = { "" }
-    .suffix = Роль Юр.Деп
-    .desc = { "" }
-    .suffix = ОБцк
-    .desc = { "" }
-    .suffix = Мцк
-    .desc = { "" }
-    .suffix = Ицк
-    .desc = { "" }
-    .suffix = Рцк
-    .desc = { "" }
-
-    .suffix = ОСО
-    .desc = { "" }
-    .suffix = Командир РХБЗЗ
-    .desc = { "" }

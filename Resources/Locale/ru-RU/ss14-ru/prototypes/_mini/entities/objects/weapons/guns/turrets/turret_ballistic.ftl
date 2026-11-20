@@ -4,8 +4,3 @@ ent-WeaponTurretCentComm = { ent-BaseWeaponBallisticTurret }
 ent-WeaponTurretDepartmentSpecialOperations = { ent-BaseWeaponBallisticTurret }
     .desc = { ent-BaseWeaponBallisticTurret.desc }
     .suffix = ДСО
-
-    .desc = { ent-BaseWeaponBallisticTurret.desc }
-    .suffix = Центком
-    .desc = { ent-BaseWeaponBallisticTurret.desc }
-    .suffix = ДСО

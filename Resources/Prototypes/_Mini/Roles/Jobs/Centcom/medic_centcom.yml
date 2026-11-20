@@ -31,3 +31,9 @@
     gloves: ClothingHandsGlovesNitrile
     id: MedicCentcomPDA
     belt: ClothingBeltMedicalFilled
+
+- type: chameleonOutfit
+  id: MedicCentcomChameleonOutfit
+  job: MedicCentcom
+  startingGear: MedicCentcomGear
+  hasMindShield: true

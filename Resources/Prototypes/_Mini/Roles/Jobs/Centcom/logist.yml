@@ -34,3 +34,9 @@
     ears: ClothingHeadsetCargo
     gloves: ClothingHandsGlovesFingerless
     id: LogistPDA
+
+- type: chameleonOutfit
+  id: LogistChameleonOutfit
+  job: Logist
+  startingGear: LogistGear
+  hasMindShield: true

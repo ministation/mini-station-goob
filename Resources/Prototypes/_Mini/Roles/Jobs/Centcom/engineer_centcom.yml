@@ -32,3 +32,9 @@
     gloves: ClothingHandsGlovesColorYellow
     id: EngineerCentcomPDA
     belt: ClothingBeltUtilityEngineering
+
+- type: chameleonOutfit
+  id: EngineerCentcomChameleonOutfit
+  job: EngineerCentcom
+  startingGear: EngineerCentcomGear
+  hasMindShield: true

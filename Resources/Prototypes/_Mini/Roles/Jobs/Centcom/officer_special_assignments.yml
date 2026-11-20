@@ -38,3 +38,9 @@
     jumpsuit: ClothingUniformJumpsuitSpecialAssignments
     shoes: ClothingShoesBootsJackFilled
     id: SpecialAssignmentsPDA
+
+- type: chameleonOutfit
+  id: OfficerSpecialAssignmentsChameleonOutfit
+  job: OfficerSpecialAssignments
+  startingGear: SpecialAssignmentsGear
+  hasMindShield: true

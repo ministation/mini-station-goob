@@ -5,10 +5,6 @@ ent-RubberStampChiefCentcom = печать начальника штаба Це�
 ent-RubberStampSpecialOfficer = печать Офицера Специальных Операций
     .desc = { ent-RubberStampChiefCentcom.desc }
     .suffix = НЕ МАППИТЬ
-    .desc = { ent-RubberStampChiefCentcom.desc }
-    .suffix = НЕ МАППИТЬ
-
-
 
 ent-RubberStampAdmirality = печать адмиралтейства NanoTrasen
     .desc = Печать из дорого пластика с основой из чистого золота. После каждого использования основа немного стирается из-за мягкости металла, оставляя золотой след на бумаге. Супер элитно.
@@ -26,28 +22,5 @@ ent-RubberStampJusticeDepartment = печать юридического деп�
     .desc = { ent-RubberStampChiefCentcom.desc }
     .suffix = НЕ МАППИТЬ
 ent-RubberStampInternalInspector = печать внутреннего инспектора
-    .desc = { ent-RubberStampChiefCentcom.desc }
-    .suffix = НЕ МАППИТЬ
-
-
-    .desc = Печать из дорого пластика с основой из чистого золота. После каждого использования основа немного стирается из-за мягкости металла, оставляя золотой след на бумаге. Супер элитно.
-    .suffix = НЕ МАППИТЬ
-    .desc = { ent-RubberStampChiefCentcom.desc }
-    .suffix = НЕ МАППИТЬ
-    .desc = { ent-RubberStampChiefCentcom.desc }
-    .suffix = НЕ МАППИТЬ
-
-
-
-    .desc = Печать из дорого пластика с основой из чистого золота. После каждого использования основа немного стирается из-за мягкости металла, оставляя золотой след на бумаге. Супер элитно.
-    .suffix = НЕ МАППИТЬ
-    .desc = { ent-RubberStampBase.desc }
-    .suffix = НЕ МАППИТЬ
-    .desc = { ent-RubberStampChiefCentcom.desc }
-    .suffix = НЕ МАППИТЬ
-    .desc = Печать из дорого пластика с основой из чистого золота. После каждого использования основа немного стирается из-за мягкости металла, оставляя золотой след на бумаге. Супер элитно.
-    .suffix = НЕ МАППИТЬ
-    .desc = { ent-RubberStampChiefCentcom.desc }
-    .suffix = НЕ МАППИТЬ
     .desc = { ent-RubberStampChiefCentcom.desc }
     .suffix = НЕ МАППИТЬ

@@ -39,3 +39,9 @@
     id: WorkerCentcomPDA
     outerClothing: ClothingOuterArmorBasicSlim
     belt: ClothingBeltChefFilled
+
+- type: chameleonOutfit
+  id: WorkerCentcomChameleonOutfit
+  job: WorkerCentcom
+  startingGear: WorkerCentcomGear
+  hasMindShield: true

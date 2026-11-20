@@ -49,6 +49,7 @@
   name: stories-department-DSO
   description: stories-department-DSO-description
   color: "#0a5fad"
+  primary: false
   roles:
   - SpecialOfficer
   - CBURN

@@ -1,8 +1,4 @@
 
-
-    .desc = У командования есть свой собственный штат уборщиков?  Это многое говорит об обществе...
-
-    .desc = { ent-CentcomPDA.desc }
 ent-IAAPDA = КПК агента внутрених дел
     .desc = Корпорация и прибыль — лучшие друзья.
 ent-JudgePDA = КПК судьи
@@ -47,50 +43,9 @@ ent-InternalInspectorPDA = КПК внутреннего инспектора
     .desc = { ent-CentcomPDA.desc }
     .suffix = Внутренний инспектор
 
-
 ent-SpecialOfficerPDA = КПК офицера спецопераций
     .desc = Он хранит страшную тайну и крайне опасную.
     .suffix = ОСО
 ent-CBURNCommanderPDA = КПК командира РХБЗЗ
-    .desc = Пахнет очень гнилой плотью.
-    .suffix = Командир РХБЗЗ
-
-
-
-    .desc = У командования есть свой собственный штат уборщиков?  Это многое говорит об обществе...
-
-    .desc = { ent-CentcomPDA.desc }
-    .desc = Корпорация и прибыль — лучшие друзья.
-    .desc = Справедливость и выгода - лучшие друзья.
-
-    .desc = { ent-CentcomPDA.desc }
-    .suffix = НШцк
-    .desc = { ent-CentcomPDA.desc }
-    .suffix = Оцк
-    .desc = { ent-CentcomPDA.desc }
-    .suffix = Пцк
-    .desc = Тот, кто владеет этим КПК, является законом.
-    .suffix = ГБцк
-    .desc = Тот, кто владеет этим КПК, является законом.
-    .suffix = ОБцк
-    .desc = Блестящий и стерильный.
-    .suffix = Мцк
-    .desc = Похоже, что его несколько раз разбирали и собирали.
-    .suffix = Ицк
-    .desc = Серого не существует.
-    .suffix = Рцк
-    .desc = Красный значит мощный. На нём имеются царапины от светового меча.
-    .desc = { ent-CentcomPDA.desc }
-    .suffix = Офицер спецзаказов
-    .desc = { ent-CentcomPDA.desc }
-    .suffix = Логист
-    .desc = { ent-CentcomPDA.desc }
-    .suffix = Бухгалтер
-    .desc = { ent-CentcomPDA.desc }
-    .suffix = Внутренний инспектор
-
-
-    .desc = Он хранит страшную тайну и крайне опасную.
-    .suffix = ОСО
     .desc = Пахнет очень гнилой плотью.
     .suffix = Командир РХБЗЗ
