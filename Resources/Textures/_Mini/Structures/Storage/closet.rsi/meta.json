@@ -284,6 +284,210 @@
     },
     {
       "name": "typanmed_open"
+    },
+    {
+      "name": "sparmory"
+    },
+    {
+      "name": "sparmory_door"
+    },
+    {
+      "name": "sparmory_open"
+    },
+    {
+      "name": "hosofsp"
+    },
+    {
+      "name": "hosofsp_door"
+    },
+    {
+      "name": "hosofsp_open"
+    },
+    {
+      "name": "sp"
+    },
+    {
+      "name": "sp_door"
+    },
+    {
+      "name": "sp_open"
+    },
+    {
+      "name": "guardian"
+    },
+    {
+      "name": "guardian_door"
+    },
+    {
+      "name": "guardian_open"
+    },
+    {
+      "name": "bs"
+    },
+    {
+      "name": "bs_door"
+    },
+    {
+      "name": "bs_open"
+    },
+    {
+      "name": "centcomm"
+    },
+    {
+      "name": "centcomm_door"
+    },
+    {
+      "name": "centcomm_open"
+    },
+    {
+      "name": "operator_door"
+    },
+    {
+      "name": "representative_door"
+    },
+    {
+      "name": "OSA"
+    },
+    {
+      "name": "OSA_door"
+    },
+    {
+      "name": "logist"
+    },
+    {
+      "name": "logist_door"
+    },
+    {
+      "name": "accountant"
+    },
+    {
+      "name": "accountant_door"
+    },
+    {
+      "name": "mediccentcom"
+    },
+    {
+      "name": "mediccentcom_door"
+    },
+    {
+      "name": "engineercentcomm"
+    },
+    {
+      "name": "engineercentcomm_door"
+    },
+    {
+      "name": "workercentcomm"
+    },
+    {
+      "name": "workercentcomm_door"
+    },
+    {
+      "name": "securitycentcomm"
+    },
+    {
+      "name": "securitycentcomm_door"
+    },
+    {
+      "name": "headsecuritycentcomm_door"
+    },
+    {
+      "name": "cos"
+    },
+    {
+      "name": "cos_door"
+    },
+    {
+      "name": "cos_open"
+    },
+    {
+      "name": "emergencyresponseunit"
+    },
+    {
+      "name": "emergencyresponseunit_door"
+    },
+    {
+      "name": "emergencyresponseunit_open"
+    },
+    {
+      "name": "ERTchaplain"
+    },
+    {
+      "name": "ERTchaplain_door"
+    },
+    {
+      "name": "ERTengineer"
+    },
+    {
+      "name": "ERTengineer_door"
+    },
+    {
+      "name": "ERTjanitor"
+    },
+    {
+      "name": "ERTjanitor_door"
+    },
+    {
+      "name": "ERTleader"
+    },
+    {
+      "name": "ERTleader_door"
+    },
+    {
+      "name": "ERTmedic"
+    },
+    {
+      "name": "ERTmedic_door"
+    },
+    {
+      "name": "ERTsecurity"
+    },
+    {
+      "name": "ERTsecurity_door"
+    },
+    {
+      "name": "quarantineservice"
+    },
+    {
+      "name": "quarantineservice_door"
+    },
+    {
+      "name": "quarantineservice_open"
+    },
+    {
+      "name": "quarantineservicecommander"
+    },
+    {
+      "name": "quarantineservicecommander_door"
+    },
+    {
+      "name": "DSO"
+    },
+    {
+      "name": "DSO_door"
+    },
+    {
+      "name": "DSO_open"
+    },
+    {
+      "name": "specialofficer_door"
+    },
+    {
+      "name": "magistrate"
+    },
+    {
+      "name": "magistrate_door"
+    },
+    {
+      "name": "magistrate_open"
+    },
+    {
+      "name": "quadrantmanagement"
+    },
+    {
+      "name": "quadrantmanagement_door"
+    },
+    {
+      "name": "quadrantmanagement_open"
     }
   ]
 }

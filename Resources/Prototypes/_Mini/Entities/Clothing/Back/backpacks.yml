@@ -42,3 +42,61 @@
 #       - id: MiningVoucher
 #   - type: ExplosionResistance
 #     damageCoefficient: 0.6
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackGuardianNt
+  name: blade guardian's backpack
+  description: It seems like you've already seen this somewhere.
+  components:
+  - type: Tag
+    tags:
+      - ForceRecallEquipment
+      - WhitelistChameleon
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Backpacks/guardian_nt.rsi
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackAdidos
+  name: backpack
+  description: You wear this on your back and put items in it.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Backpacks/backpacks_adidos.rsi
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackBluesky
+  name: backpack
+  description: You wear this on your back and put items in it.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Backpacks/backpacks_bluesky.rsi
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackEight
+  name: backpack
+  description: You wear this on your back and put items in it.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Backpacks/backpacks_eight.rsi
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackGachi
+  name: backpack
+  description: You wear this on your back and put items in it.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Backpacks/backpacks_gachi.rsi
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackRl
+  name: backpack
+  description: You wear this on your back and put items in it.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Backpacks/backpacks_rl.rsi

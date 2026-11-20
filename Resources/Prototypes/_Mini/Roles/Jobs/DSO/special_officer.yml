@@ -1,0 +1,46 @@
+- type: job
+  id: SpecialOfficer
+  name: stories-job-name-special-officer
+  description: stories-job-description-special-officer
+  playTimeTracker: JobSpecialOfficer
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: DSO
+  #   time: 40h
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: JobHeadOfSecurity
+  #   time: 20h
+  startingGear: SpecialOfficerGear
+  icon: "JobIconSpecialOfficer"
+  supervisors: stories-job-supervisors-admiralty
+  accessGroups:
+  - AllAccess
+  - PrisonAllAccess # Stories
+  access:
+  - CentralCommand
+  - DSO
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, AdrenocorImplant, DeathRattleImplantDSO, RadioImplantCentcomm, RadioImplantDSO ]
+  whitelisted: true
+
+- type: startingGear
+  id: SpecialOfficerGear
+  equipment:
+    head: ClothingHeadHatSpecialOfficer
+    jumpsuit: ClothingUniformJumpsuitSpecialOfficer
+    mask: ClothingMaskNeckGaiter
+    gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsSpecialOfficer
+    id: SpecialOfficerPDA
+    outerClothing: ClothingOuterArmorBulletproof
+    neck: ClothingNeckCloakSpecialOfficer
+
+- type: chameleonOutfit
+  id: SpecialOfficerChameleonOutfit
+  job: SpecialOfficer
+  startingGear: SpecialOfficerGear
+  hasMindShield: true

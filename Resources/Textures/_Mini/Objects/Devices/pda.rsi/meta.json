@@ -36,6 +36,57 @@
     },
     {
       "name": "pda-surgeon"
+    },
+    {
+      "name": "equipped-BELT",
+      "directions": 4
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "pda-spofficer"
+    },
+    {
+      "name": "pda-spengineer"
+    },
+    {
+      "name": "pda-spmedic"
+    },
+    {
+      "name": "pda-hosp"
+    },
+    {
+      "name": "pda-judge"
+    },
+    {
+      "name": "pda-prosecutor"
+    },
+    {
+      "name": "pda-chief-centcom"
+    },
+    {
+      "name": "pda-centcom"
+    },
+    {
+      "name": "pda-centcom-security"
+    },
+    {
+      "name": "pda-centcom-engineer"
+    },
+    {
+      "name": "pda-centcom-medical"
+    },
+    {
+      "name": "pda-centcom-worker"
+    },
+    {
+      "name": "pda-blueshield"
     }
   ]
 }

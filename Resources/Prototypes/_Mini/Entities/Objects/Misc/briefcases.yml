@@ -1,0 +1,11 @@
+- type: entity
+  parent: BriefcaseBase
+  id: BriefcaseSteel
+  name: steel briefcase
+  description: Useful for carrying a million credits in your hands.
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Storage/Briefcases/briefcase_steel.rsi
+    state: icon
+  - type: Item
+    sprite: _Mini/Objects/Storage/Briefcases/briefcase_steel.rsi

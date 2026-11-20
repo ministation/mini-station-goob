@@ -1,0 +1,147 @@
+- type: entity
+  parent: AirlockCentralCommand
+  id: AirlockCentcommCommandLocked
+  suffix: Centcom, Command, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommCommand ]
+
+- type: entity
+  parent: AirlockCentralCommand
+  id: AirlockCentcommSecurityLocked
+  suffix: Centcom, Security, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommSecurity ]
+
+- type: entity
+  parent: AirlockCentralCommand
+  id: AirlockCentcommEngineeringLocked
+  suffix: Centcom, Engineering, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommEngineering ]
+
+- type: entity
+  parent: AirlockCentralCommand
+  id: AirlockCentcommMedicalLocked
+  suffix: Centcom, Medical, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommMedical ]
+
+- type: entity
+  parent: AirlockCentralCommand
+  id: AirlockCentcommServiceLocked
+  suffix: Centcom, Service, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommService ]
+
+- type: entity
+  parent: AirlockCentralCommand
+  id: AirlockCentcommCargoLocked
+  suffix: Centcom, Cargo, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommCargo ]
+
+- type: entity
+  parent: AirlockCentralCommand
+  id: AirlockCentcommoHighCommandLocked
+  suffix: Centcom, High Command, Locked
+  components:
+  - type: ContainerFill 
+    containers:
+      board: [ DoorElectronicsCentcommHighCommand ]
+
+# Glass Airlocks
+
+- type: entity
+  parent: AirlockCentralCommandGlass
+  id: AirlockCentcommCommandGlassLocked
+  suffix: Centcom, Command, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommCommand ]
+
+- type: entity
+  parent: AirlockCentralCommandGlass
+  id: AirlockCentcommSecurityGlassLocked
+  suffix: Centcom, Security, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommSecurity ]
+
+- type: entity
+  parent: AirlockCentralCommandGlass
+  id: AirlockCentcommEngineeringGlassLocked
+  suffix: Centcom, Engineering, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommEngineering ]
+
+- type: entity
+  parent: AirlockCentralCommandGlass
+  id: AirlockCentcommMedicalGlassLocked
+  suffix: Centcom, Medical, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommMedical ]
+
+- type: entity
+  parent: AirlockCentralCommandGlass
+  id: AirlockCentcommServiceGlassLocked
+  suffix: Centcom, Service, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommService ]
+
+- type: entity
+  parent: AirlockCentralCommandGlass
+  id: AirlockCentcommCargoGlassLocked
+  suffix: Centcom, Cargo, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommCargo ]
+
+- type: entity
+  parent: AirlockCentralCommandGlass
+  id: AirlockCentcommoHighCommandGlassLocked
+  suffix: Centcom, High Command, Locked
+  components:
+  - type: ContainerFill 
+    containers:
+      board: [ DoorElectronicsCentcommHighCommand ]
+
+# HighSecDoors
+
+- type: entity
+  parent: HighSecDoor
+  id: HighSecCentcommArmoryLocked
+  suffix: Centcom, Armory, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsCentcommArmory ]
+
+- type: entity
+  parent: HighSecDoor
+  id: HighSecDepartmentSpecialOperationsLocked
+  suffix: DSO, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsDepartmentSpecialOperations ]

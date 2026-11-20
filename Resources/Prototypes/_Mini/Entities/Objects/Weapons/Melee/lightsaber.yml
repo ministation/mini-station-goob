@@ -1,0 +1,178 @@
+- type: entity
+  name: blue lightsaber
+  parent: BaseLightsaber
+  id: LightsaberBlue
+  suffix: Blue
+  components:
+  - type: EnergySword
+    colorOptions:
+    - DodgerBlue
+
+- type: entity
+  name: lightsaber with side blades
+  parent: BaseLightsaber
+  id: LightsaberCrossguard
+  suffix: Random color
+  components:
+  - type: Item
+    size: Small
+    sprite: _Mini/Objects/Weapons/Melee/e_sword_kylo_inhand.rsi
+  - type: Sprite
+    sprite: _Mini/Objects/Weapons/Melee/e_sword_kylo.rsi
+    layers:
+      - state: e_sword
+      - state: e_sword_blade
+        color: "#FFFFFF"
+        visible: false
+        shader: unshaded
+        map: [ "blade" ]
+
+- type: entity
+  name: double-bladed lightsaber
+  parent: BaseLightsaber
+  id: LightsaberDouble
+  suffix: Random color
+  description: A lightsaber variant, that feature is blades, emitted from both sides of the hilt.
+  components:
+  - type: ItemToggleActiveSound
+    activeSound:
+      path: /Audio/Weapons/ebladehum.ogg
+      params:
+        volume: 3
+  - type: Item
+    size: Small
+    sprite: _Mini/Objects/Weapons/Melee/e_sword_double-inhands.rsi
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/e_sword_double.rsi
+    layers:
+      - state: e_sword_double
+      - state: e_sword_double_blade
+        color: "#FFFFFF"
+        visible: false
+        shader: unshaded
+        map: [ "blade" ]
+
+- type: entity
+  name: green lightsaber
+  parent: BaseLightsaber
+  id: LightsaberGreen
+  suffix: Green
+  components:
+  - type: EnergySword
+    colorOptions:
+    - MediumSpringGreen
+
+- type: entity
+  name: purple lightsaber
+  parent: BaseLightsaber
+  id: LightsaberPurple
+  suffix: Purple
+  components:
+  - type: EnergySword
+    colorOptions:
+    - MediumOrchid
+
+- type: entity
+  name: lightrapier
+  parent: BaseLightsaber
+  id: LightsaberRapier
+  components:
+  - type: EnergySword
+    colorOptions:
+    - "#04ecfc"
+  - type: Item
+    size: Small
+    sprite: _Mini/Objects/Weapons/Melee/e_rapier.rsi
+  - type: Sprite
+    sprite: _Mini/Objects/Weapons/Melee/e_rapier.rsi
+    layers:
+      - state: e_rapier
+      - state: e_rapier_blade
+        visible: false
+        shader: unshaded
+        map: [ "blade" ]
+
+- type: entity
+  name: short lightsaber
+  parent: BaseLightsaber
+  id: LightsaberShort
+  suffix: Random color
+  components:
+  - type: Item
+    size: Small
+    sprite: _Mini/Objects/Weapons/Melee/e_sword_nomad.rsi
+  - type: Sprite
+    sprite: _Mini/Objects/Weapons/Melee/e_sword_nomad.rsi
+    layers:
+      - state: e_sword
+      - state: e_sword_blade
+        color: "#FFFFFF"
+        visible: false
+        shader: unshaded
+        map: [ "blade" ]
+
+- type: entity
+  name: white lightsaber
+  parent: BaseLightsaber
+  id: LightsaberWhite
+  suffix: White
+  components:
+  - type: EnergySword
+    colorOptions:
+    - White
+
+- type: entity
+  name: yellow lightsaber
+  parent: BaseLightsaber
+  id: LightsaberYellow
+  suffix: Yellow
+  components:
+  - type: EnergySword
+    colorOptions:
+    - Yellow
+
+- type: entity
+  name: lightsaber
+  parent: EnergySword
+  abstract: true
+  id: BaseLightsaber
+  description: A special weapon designed for elegant combat as well as for ceremonies, its work is connected with the kyber-crystal inside.
+  components:
+  - type: EmitSoundOnThrow
+    sound:
+      path: /Audio/Weapons/eblademiss.ogg
+      params:
+        variation: 0.125
+  - type: EnergySword
+    colorOptions:
+      - DodgerBlue
+      - Aqua
+      - MediumSpringGreen
+      - MediumOrchid
+  - type: Reflect
+    reflectProb: 0.50
+    spread: 90
+    reflects:
+      - Energy
+  - type: Damageable
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.3
+        density: 20
+        mask:
+        - ItemMask
+        layer:
+        - FlyingMobLayer
+        restitution: 0.3
+        friction: 0.2
+  - type: DamageOtherOnHit
+    damage:
+      types:
+        Blunt: 0
+  - type: DamageContacts
+    damage:
+      types:
+        Structural: 0

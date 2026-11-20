@@ -1,0 +1,47 @@
+- type: job
+  id: GuardianNt
+  name: stories-job-name-guardian-nt
+  description: stories-job-description-guardian-nt
+  playTimeTracker: JobGuardianNt
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Security
+    time: 15h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
+  - !type:DepartmentTimeRequirement
+    department: CentralCommand
+    time: 5h
+  startingGear: GuardianNtGear
+  icon: "JobIconGuardianNt"
+  supervisors: job-supervisors-centcom
+  accessGroups:
+  - AllAccess
+  access:
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  - !type:AddComponentSpecial
+
+- type: startingGear
+  id: GuardianNtGear
+  equipment:
+    id: GuardianNtPDA
+    ears: ClothingHeadsetGuardianNtAlt
+    gloves: ClothingHandsGlovesCombat
+    eyes: ClothingEyesGlassesCentcom
+
+- type: chameleonOutfit
+  id: GuardianNtChameleonOutfit
+  job: GuardianNt
+  hasMindShield: true
+  equipment:
+    head: ClothingHeadHatExe
+    mask: ClothingMaskGasExe
+    neck: ClothingNeckMantleGuardianNt
+    outerClothing: ClothingOuterVestGuardianNt
+    jumpsuit: ClothingUniformJumpsuitGuardianNt
+    back: ClothingBackpackGuardianNt
+    shoes: ClothingShoesBootsJackGuardianNt

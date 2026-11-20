@@ -232,3 +232,220 @@
   suffix: Тайпан, ЕМАГ, Ограниченный
   name: криптографический секвенсор
   description: Универсальное устройство для взлома. Специализированная версия для важных сотрудников Синдиката.
+
+- type: entity
+  parent: IDCardStandard
+  id: ChiefCentcomIDCard
+  name: ID card of the head of Centcom
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idchiefcentcom
+  - type: PresetIdCard
+    job: ChiefCentcom
+
+- type: entity
+  parent: IDCardStandard
+  id: OperatorCentcomIDCard
+  name: ID card operator Centcom
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idcentcom
+  - type: PresetIdCard
+    job: OperatorCentcom
+
+- type: entity
+  parent: IDCardStandard
+  id: RepresentativeCentcomIDCard
+  name: ID card of the representative of Centcom
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idcentcom
+  - type: PresetIdCard
+    job: RepresentativeCentcom
+
+- type: entity
+  parent: IDCardStandard
+  id: HeadOfSecurityCentcomIDCard
+  name: ID card of the head of security of Centcom
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idcentcom
+  - type: PresetIdCard
+    job: HeadOfSecurityCentcom
+
+- type: entity
+  parent: IDCardStandard
+  id: SecurityOfficerCentcomIDCard
+  name: ID card of the security officer of Centcom
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idcentrcomsecurity
+  - type: PresetIdCard
+    job: SecurityOfficerCentcom
+
+- type: entity
+  parent: IDCardStandard
+  id: MedicCentcomIDCard
+  name: Centcom physician ID card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idcentrcommedic
+  - type: PresetIdCard
+    job: MedicCentcom
+
+- type: entity
+  parent: IDCardStandard
+  id: EngineerCentcomIDCard
+  name: Centcom Engineer ID Card
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idcentrcomengineer
+  - type: PresetIdCard
+    job: EngineerCentcom
+
+- type: entity
+  parent: IDCardStandard
+  id: WorkerCentcomIDCard
+  name: ID card of Centcom employee
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idcentcomservise
+  - type: PresetIdCard
+    job: WorkerCentcom
+
+- type: entity
+  parent: IDCardStandard
+  id: SpecialAssignmentsIDCard
+  name: ID card of the officer of special assignment
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idOSA
+  - type: PresetIdCard
+    job: OfficerSpecialAssignments
+
+- type: entity
+  parent: IDCardStandard
+  id: LogistIDCard
+  name: ID card of the logist
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idlogist
+  - type: PresetIdCard
+    job: Logist
+
+- type: entity
+  parent: IDCardStandard
+  id: AccountantIDCard
+  name: ID card of the accountant
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idaccountant
+  - type: PresetIdCard
+    job: Accountant
+
+- type: entity
+  parent: IDCardStandard
+  id: InternalInspectorIDCard
+  name: ID card of the internal inspector
+  components:
+  - type: Sprite
+    sprite: _Mini/Objects/Misc/id_cards.rsi
+    layers:
+      - state: default_centcom
+      - state: idseniorinspector
+  - type: PresetIdCard
+    job: InternalInspector
+
+# DSO-Jobs
+
+- type: entity
+  parent: IDCardStandard
+  id: SpecialOfficerIDCard
+  name: Special Officer ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: centcom
+    - state: stripe_top
+      color: "#134975"
+    - state: stripe_bottom
+      color: "#0d304d"
+    - sprite: _Mini/Objects/Misc/id_cards.rsi
+      state: idOSO
+  - type: Item
+    heldPrefix: blue
+  - type: PresetIdCard
+    job: SpecialOfficer
+
+- type: entity
+  parent: IDCardStandard
+  id: CBURNCommanderIDcard
+  name: CBURN Commander ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: centcom
+    - state: stripe_top
+      color: "#134975"
+    - state: stripe_bottom
+      color: "#0d304d"
+    - sprite: _Mini/Objects/Misc/id_cards.rsi
+      state: idertleader
+  - type: Item
+    heldPrefix: blue
+  - type: PresetIdCard
+    job: CBURNCommander
+
+- type: entity
+  parent: IDCardStandard
+  id: GuardianNtIDCard
+  name: Bladeguard ID card
+  description: A card required to access various areas of the station.
+  components:
+  - type: Sprite
+    layers:
+    - state: centcom
+    - state: stripe_top
+      color: "#006600"
+    - state: stripe_bottom
+      color: "#003300"
+    - sprite: _Mini/Interface/Misc/job_icons.rsi
+      offset: -0.09375, 0.0625
+      state: GuardianNtSecurity
+  - type: Item
+    heldPrefix: blue
+  - type: PresetIdCard
+    job: GuardianNt

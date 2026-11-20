@@ -17,6 +17,12 @@
             "name": "black"
         },
         {
+            "name": "stripe_bottom"
+        },
+        {
+            "name": "stripe_top"
+        },
+        {
             "name": "admin"
         },
         {

@@ -43,3 +43,22 @@
   - CentralCommandAssistant
   - BlueshieldOfficer
   - NanotrasenRepresentative
+
+- type: department
+  id: DSO
+  name: stories-department-DSO
+  description: stories-department-DSO-description
+  color: "#0a5fad"
+  primary: false
+  roles:
+  - SpecialOfficer
+  - CBURN
+  - ERTLeader
+  - ERTChaplain
+  - ERTJanitor
+  - ERTMedical
+  - ERTSecurity
+  - ERTEngineer
+  - DeathSquad
+  editorHidden: true
+  weight: 130

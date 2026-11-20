@@ -1,0 +1,550 @@
+- type: entity
+  id: RandomHumanoidSpawnerChiefCentcom
+  name: Chief of Staff of the Central Command
+  suffix: CSCC
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: chief_centcom
+    - type: RandomHumanoidSpawner
+      settings: ChiefCentcom
+
+- type: randomHumanoidSettings
+  id: ChiefCentcom
+  parent: EventHumanoidMindShielded
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - DeathRattleImplantCentcomm
+      - RadioImplantDSO
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-chief-centcom
+      description: stories-job-description-chief-centcom
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: ChiefCentcom
+    - type: Loadout
+      prototypes: [ ChiefCentcomGear ]
+      roleLoadout: [ JobChiefCentcom ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+- type: entity
+  id: RandomHumanoidSpawnerOperatorCentcom
+  name: Centcom operator
+  suffix: Occ
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: centcom
+    - type: RandomHumanoidSpawner
+      settings: OperatorCentcom
+
+- type: randomHumanoidSettings
+  id: OperatorCentcom
+  parent: EventHumanoidMindShielded
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - DeathRattleImplantCentcomm
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-operator-centcom
+      description: stories-job-description-operator-centcom
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: OperatorCentcom
+    - type: Loadout
+      prototypes: [ OperatorCentcomGear ]
+      roleLoadout: [ JobOperatorCentcom ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+- type: entity
+  id: RandomHumanoidSpawnerRepresentativeCentcom
+  name: Centcom representative
+  suffix: Rcc
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: centcom
+    - type: RandomHumanoidSpawner
+      settings: RepresentativeCentcom
+
+- type: randomHumanoidSettings
+  id: RepresentativeCentcom
+  parent: EventHumanoidMindShielded
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - DeathRattleImplantCentcomm
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-representative-centcom
+      description: stories-job-description-representative-centcom
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: RepresentativeCentcom
+    - type: Loadout
+      prototypes: [ RepresentativeCentcomGear ]
+      roleLoadout: [ JobRepresentativeCentcom ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+- type: entity
+  id: RandomHumanoidSpawnerHeadOfSecurityCentcom
+  name: head of security of the Central Command
+  suffix: HScc
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: centcom
+    - type: RandomHumanoidSpawner
+      settings: HeadOfSecurityCentcom
+
+- type: randomHumanoidSettings
+  id: HeadOfSecurityCentcom
+  parent: EventHumanoidMindShielded
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - DeathRattleImplantCentcomm
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-head-of-security-centcom 
+      description: stories-job-description-head-of-security-centcom 
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: HeadOfSecurityCentcom
+    - type: Loadout
+      prototypes: [ HeadOfSecurityCentcomGear ]
+      roleLoadout: [ JobHeadOfSecurityCentcom ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+- type: entity
+  id: RandomHumanoidSpawnerSecurityOfficerCentcom
+  name: Central Command security officer
+  suffix: SOcc
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: security_centcom
+    - type: RandomHumanoidSpawner
+      settings: SecurityOfficerCentcom
+
+- type: randomHumanoidSettings
+  id: SecurityOfficerCentcom
+  parent: EventHumanoidMindShielded
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-officer-security-centcom
+      description: stories-job-description-officer-security-centcom
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: SecurityOfficerCentcom
+    - type: Loadout
+      prototypes: [ SecurityOfficerCentcomGear ]
+      roleLoadout: [ JobSecurityOfficerCentcom ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+- type: entity
+  id: RandomHumanoidSpawnerMedicCentcom
+  name: medic centcom
+  suffix: Mcc
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: doctor_centcom
+    - type: RandomHumanoidSpawner
+      settings: MedicCentcom
+
+- type: randomHumanoidSettings
+  id: MedicCentcom
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-medic-centcom
+      description: stories-job-description-medic-centcom
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: MedicCentcom
+    - type: Loadout
+      prototypes: [ MedicCentcomGear ]
+      roleLoadout: [ JobMedicCentcom ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+- type: entity
+  id: RandomHumanoidSpawnerEngineerCentcom
+  name: engineer centcom
+  suffix: Ecc
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: engineer_centcom
+    - type: RandomHumanoidSpawner
+      settings: EngineerCentcom
+
+- type: randomHumanoidSettings
+  id: EngineerCentcom
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-engineer-centcom
+      description: stories-job-description-engineer-centcom
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: EngineerCentcom
+    - type: Loadout
+      prototypes: [ EngineerCentcomGear ]
+      roleLoadout: [ JobEngineerCentcom ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+- type: entity
+  id: RandomHumanoidSpawnerWorkerCentcom
+  name: worker centcom
+  suffix: Wcc
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: worker_centcom
+    - type: RandomHumanoidSpawner
+      settings: WorkerCentcom
+
+- type: randomHumanoidSettings
+  id: WorkerCentcom
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-worker-centcom
+      description: stories-job-description-worker-centcom
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: WorkerCentcom
+    - type: Loadout
+      prototypes: [ WorkerCentcomGear ]
+      roleLoadout: [ JobWorkerCentcom ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+# Juridical-Jobs
+
+- type: entity
+  id: RandomHumanoidSpawnerMagistrate
+  name: Magistrate
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: magistrate
+    - type: RandomHumanoidSpawner
+      settings: Magistrate
+
+- type: randomHumanoidSettings
+  id: Magistrate
+  parent: EventHumanoidMindShielded
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - DeathRattleImplantCentcomm
+      - RadioImplantDSO
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-magistrate
+      description: stories-job-description-magistrate
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: Magistrate
+    - type: Loadout
+      prototypes: [ MagistrateGear ]
+      roleLoadout: [ JobMagistrate ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+# SO-Jobs
+
+- type: entity
+  id: RandomHumanoidSpawnerSpecialOfficer
+  name: Special Officer
+  suffix: SOO
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: special_officer
+    - type: RandomHumanoidSpawner
+      settings: SpecialOfficer
+
+- type: randomHumanoidSettings
+  id: SpecialOfficer
+  parent: EventHumanoidMindShielded
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - TrackingImplant
+      - AdrenocorImplant
+      - DeathRattleImplantCentcomm
+      - DeathRattleImplantDSO
+      - RadioImplantDSO
+      - RadioImplantCentcomm
+    - type: GhostRole
+      name: stories-job-name-special-officer
+      description: stories-job-description-special-officer
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: SpecialOfficer
+    - type: Loadout
+      prototypes: [ SpecialOfficerGear ]
+      roleLoadout: [ JobSpecialOfficer ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirst
+      - NamesLast
+      nameFormat: name-format-standard
+
+- type: entity
+  id: RandomHumanoidSpawnerCBURNCommander
+  name: CBURN Commander
+  suffix: CBURN Commander
+  components:
+    - type: Sprite
+      sprite: _Mini/Markers/jobs.rsi
+      state: cdurncommander
+    - type: RandomHumanoidSpawner
+      settings: CBURNCommander
+
+- type: randomHumanoidSettings
+  id: CBURNCommander
+  parent: EventHumanoidMindShielded
+  components:
+    - type: AutoImplant
+      implants:
+      - MindShieldImplant
+      - AdrenocorImplant
+      - DeathRattleImplantDSO
+      - RadioImplantDSO
+    - type: GhostRole
+      name: stories-ghost-role-information-cburn-commander-name
+      description: stories-ghost-role-information-cburn-commander-description
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: CBURNCommander
+    - type: Loadout
+      prototypes: [ CBURNCommanderGear ]
+      roleLoadout: [ RoleSurvivalMilitaryDouble ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryLast
+      nameFormat: name-format-ert-leader
+
+- type: randomHumanoidSettings
+  id: ERTSecurityEmpty
+  parent: ERTSecurity
+  components:
+    - type: Loadout
+      prototypes: [ ERTSecurityEmpty ]
+
+- type: startingGear
+  id: ERTSecurityEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTSecurity
+    back: ClothingBackpackERTSecurity
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesHudSecurity
+    gloves: ClothingHandsGlovesCombat
+    id: ERTSecurityPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: ERTChaplainEmpty
+  parent: ERTChaplain
+  components:
+    - type: Loadout
+      prototypes: [ ERTChaplainEmpty ]
+
+- type: startingGear
+  id: ERTChaplainEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTChaplain
+    back: ClothingBackpackERTChaplain
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesHudMedSec
+    gloves: ClothingHandsGlovesCombat
+    id: ERTChaplainPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: ERTEngineerEmpty
+  parent: ERTEngineer
+  components:
+    - type: Loadout
+      prototypes: [ ERTEngineerEmpty ]
+
+- type: startingGear
+  id: ERTEngineerEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTEngineer
+    back: ClothingBackpackERTEngineer
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesHudDiagnostic
+    gloves: ClothingHandsGlovesCombat
+    id: ERTEngineerPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: ERTMedicalEmpty
+  parent: ERTMedical
+  components:
+    - type: Loadout
+      prototypes: [ ERTMedicalEmpty ]
+
+- type: startingGear
+  id: ERTMedicalEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTMedic
+    back: ClothingBackpackERTMedical
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesHudMedical
+    gloves: ClothingHandsGlovesCombat
+    id: ERTMedicPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: ERTJanitorEmpty
+  parent: ERTJanitor
+  components:
+    - type: Loadout
+      prototypes: [ ERTJanitorEmpty ]
+
+- type: startingGear
+  id: ERTJanitorEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTJanitor
+    back: ClothingBackpackERTJanitor
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesGlassesChemical
+    gloves: ClothingHandsGlovesCombat
+    id: ERTJanitorPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: CBURNAgentEmpty
+  parent: CBURNAgent
+  components:
+    - type: Loadout
+      prototypes: [ CBURNAgentEmpty ]
+
+- type: startingGear
+  id: CBURNAgentEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
+    shoes: ClothingShoesBootsCombatFilled
+    eyes: ClothingEyesGlassesSecurity
+    gloves: ClothingHandsGlovesCombat
+    id: CBURNPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: ERTLeaderEmpty
+  parent: ERTLeader
+  components:
+    - type: Loadout
+      prototypes: [ ERTLeaderEmpty ]
+
+- type: startingGear
+  id: ERTLeaderEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTLeader
+    back: ClothingBackpackERTLeader
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesGlassesCentcom
+    gloves: ClothingHandsGlovesCombat
+    id: ERTLeaderPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: CBURNCommanderEmpty
+  parent: CBURNCommander
+  components:
+    - type: Loadout
+      prototypes: [ CBURNCommanderEmpty ]
+
+- type: startingGear
+  id: CBURNCommanderEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesGlassesCentcom
+    gloves: ClothingHandsGlovesCombat
+    id: CBURNCommanderPDA
+    ears: ClothingHeadsetAltCentCom

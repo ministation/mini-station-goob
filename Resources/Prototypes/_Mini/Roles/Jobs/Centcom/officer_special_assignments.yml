@@ -1,0 +1,46 @@
+- type: job
+  id: OfficerSpecialAssignments
+  name: stories-job-name-officer-special-assignments
+  description: stories-job-description-officer-special-assignments
+  playTimeTracker: JobSpecialAssignments
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: Cargo
+  #   time: 40h
+  # - !type:RoleTimeRequirement
+  #   role: JobQuartermaster
+  #   time: 15h
+  # - !type:RoleTimeRequirement
+  #   role: JobLogist
+  #   time: 15h
+  startingGear: SpecialAssignmentsGear
+  icon: "JobIconSpecialAssignments"
+  supervisors: stories-job-supervisors-quadrant-management
+  access:
+  - Cargo
+  - Salvage
+  - Quartermaster
+  - Maintenance
+  - External
+  - Command
+  - Brig
+  - Cryogenics
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+
+- type: startingGear
+  id: SpecialAssignmentsGear
+  equipment:
+    head: ClothingHeadHatSpecialAssignments
+    jumpsuit: ClothingUniformJumpsuitSpecialAssignments
+    shoes: ClothingShoesBootsJackFilled
+    id: SpecialAssignmentsPDA
+
+- type: chameleonOutfit
+  id: OfficerSpecialAssignmentsChameleonOutfit
+  job: OfficerSpecialAssignments
+  startingGear: SpecialAssignmentsGear
+  hasMindShield: true

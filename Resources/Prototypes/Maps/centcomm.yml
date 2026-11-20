@@ -1,22 +1,36 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 - type: gameMap
   id: CentComm
-  isGrid: true # Did you know that centcomm is the only "game map" that isn't actually a map? Send help.
-  mapName: 'NTTG ЦентКом'
-  mapPath: /Maps/centcomm.yml
-  minPlayers: 10
+  isGrid: true
+  mapName: 'Центральное Командование'
+  mapPath: /Maps/_Mini/centcomm.yml
+  minPlayers: 10 # Minimum player to create CentComm station
   stations:
     centcomm:
-      stationProto: NanotrasenCentralCommand
+      stationProto: CentralCommandStation
       components:
-        - type: StationNameSetup
-          mapNameTemplate: '{0} ЦентКом {1}'
-          nameGenerator:
-            !type:NanotrasenNameGenerator
-            prefixCreator: 'TG'
-        - type: StationJobs
-          availableJobs:
-            CentralCommandOfficial: [ 1, 1 ]
-            CentralCommandAssistant: [ 1, 1 ]
-            CentralCommandSpecialOperationsOfficer: [ 1, 1 ]
+      - type: StationNameSetup
+        mapNameTemplate: '{0} Центральное Командование'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: 'NT'
+      - type: StationJobs
+        availableJobs:
+          # Head Command (3)
+          ChiefCentcom: [ 1, 1 ]
+          SpecialOfficer: [ 1, 1 ]
+          Magistrate: [ 1, 1 ]
+          # Centcomm Officers (3)
+          HeadOfSecurityCentcom: [ 1, 1 ]
+          OperatorCentcom: [ 1, 1 ]
+          RepresentativeCentcom: [ 1, 1 ]
+          # Centcomm Personnel (13)
+          EngineerCentcom: [ 3, 3 ]
+          MedicCentcom: [ 3, 3 ]
+          SecurityOfficerCentcom: [ 3, 3 ]
+          WorkerCentcom: [ 3, 3 ]
+          GuardianNt: [ 1, 1 ]
+          # Non-Centcomm Personnel (5)
+          OfficerSpecialAssignments: [ 1, 1 ]
+          Logist: [ 3, 3 ]
+          Accountant: [ 1, 1 ]
+          # Total: 27 roles

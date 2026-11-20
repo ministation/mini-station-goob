@@ -1,0 +1,15 @@
+- type: accessLevel
+  id: HeadOfPrison
+  name: stories-id-card-access-level-head-of-prison
+
+- type: accessLevel
+  id: PrisonBrig
+  name: stories-id-card-access-level-space-prison-brig
+
+- type: accessLevel
+  id: PrisonEng
+  name: stories-id-card-access-level-space-prison-engineering
+
+- type: accessLevel
+  id: PrisonMed
+  name: stories-id-card-access-level-space-prison-medical

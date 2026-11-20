@@ -147,3 +147,14 @@
     state: cpu_science
   - type: ComputerBoard
     prototype: ComputerResearchServerControl
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: ComputerIdCircuitboardCentcom
+  name: centcom computer id board
+  description: A computer printed circuit board for an centcom computer id.
+  components:
+    - type: Sprite
+      state: cpuboard
+    - type: ComputerBoard
+      prototype: CentcomComputerId

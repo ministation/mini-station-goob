@@ -209,3 +209,32 @@
     sprite: _Mini/Clothing/OuterClothing/Coats/senior_officer_leather.rsi
   - type: Clothing
     sprite: _Mini/Clothing/OuterClothing/Coats/senior_officer_leather.rsi
+
+- type: entity
+  parent: ClothingOuterBaseToggleable
+  id: ClothingOuterCoatGuardian
+  name: jedi cloak
+  description: A long type of clothing that sits loosely on the shoulders, covering the neck.
+  components:
+  - type: Tag
+    tags:
+      - ForceRecallEquipment
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHatHoodGuardianhood
+  - type: TemperatureProtection
+  - type: AllowSuitStorage
+  - type: Sprite
+    sprite: _Mini/Clothing/OuterClothing/Coats/guardian.rsi
+  - type: Clothing
+    sprite: _Mini/Clothing/OuterClothing/Coats/guardian.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.75
+        Heat: 0.70
+  - type: ExplosionResistance
+    damageCoefficient: 0.90
+  - type: StaminaResistance
+    damageCoefficient: 0.70

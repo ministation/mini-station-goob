@@ -1,0 +1,50 @@
+- type: job
+  id: ChiefCentcom
+  name: stories-job-name-chief-centcom
+  description: stories-job-description-chief-centcom
+  playTimeTracker: JobChiefCentcom
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 40h
+  # - !type:RoleTimeRequirement
+  #   role: JobOperatorCentcom
+  #   time: 10h
+  # - !type:RoleTimeRequirement
+  #   role: JobRepresentativeCentcom
+  #   time: 10h
+  # - !type:RoleTimeRequirement
+  #   role: JobHeadOfSecurityCentcom
+  #   time: 10h
+  # - !type:RoleTimeRequirement
+  #   role: JobCaptain
+  #   time: 20h
+  startingGear: ChiefCentcomGear
+  icon: "JobIconChiefCentcom"
+  supervisors: stories-job-supervisors-quadrant-management
+  accessGroups:
+  - AllAccess
+  - PrisonAllAccess
+  access:
+  - CentralCommand
+  - DSO
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm, RadioImplantDSO ]
+  whitelisted: true
+
+- type: startingGear
+  id: ChiefCentcomGear
+  equipment:
+    head: ClothingHeadHatChiefCentcom
+    jumpsuit: ClothingUniformJumpsuitChiefCentcom
+    gloves: ClothingHandsGlovesChiefCentcom
+    id: ChiefCentcomPDA
+    neck: ClothingNeckCloakChiefCentcom
+    belt: ClothingBeltSheathFilled
+
+- type: chameleonOutfit
+  id: ChiefCentcomChameleonOutfit
+  job: ChiefCentcom
+  startingGear: ChiefCentcomGear
+  hasMindShield: true

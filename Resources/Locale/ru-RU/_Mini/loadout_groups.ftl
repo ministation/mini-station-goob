@@ -1,0 +1,9 @@
+loadout-group-Guardian-backpack = Рюкзак
+loadout-group-Guardian-belt = Пояс
+loadout-group-Guardian-head = Голова
+loadout-group-Guardian-jumpsuits = Комбинезон
+loadout-group-Guardian-lightsaber = Сабля
+loadout-group-Guardian-mask = Маска
+loadout-group-Guardian-neck = Шея
+loadout-group-Guardian-outer-clothing = Верхняя одежда
+loadout-group-Guardian-shoes = Обувь
