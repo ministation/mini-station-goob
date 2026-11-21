@@ -7,6 +7,7 @@ using Content.Shared.Destructible;
 using Content.Shared.Foldable;
 using Content.Shared.Storage;
 using Robust.Shared.Containers;
+using Robust.Shared.Map.Events;
 
 namespace Content.Shared.Buckle;
 
@@ -25,6 +26,8 @@ public abstract partial class SharedBuckleSystem
 
         SubscribeLocalEvent<StrapComponent, FoldAttemptEvent>(OnAttemptFold);
         SubscribeLocalEvent<StrapComponent, MachineDeconstructedEvent>((e, c, _) => StrapRemoveAll(e, c));
+
+        SubscribeLocalEvent<BeforeSerializationEvent>(OnBeforeSerialization);
     }
 
     private void OnStrapStartup(EntityUid uid, StrapComponent component, ComponentStartup args)
@@ -67,6 +70,53 @@ public abstract partial class SharedBuckleSystem
         {
             Unbuckle(entity, entity);
         }
+    }
+
+    /// <summary>
+    /// Unbuckles entities that will not be part of the save before the strap references are serialized.
+    /// Non-savable entities (player mobs use "save: false") and dangling references would otherwise be
+    /// written as invalid and make entity_serializer log "Encountered a reference to a missing entity".
+    /// FollowerSystem drops non-savable followers on save the same way.
+    /// </summary>
+    private void OnBeforeSerialization(BeforeSerializationEvent ev)
+    {
+        var query = AllEntityQuery<StrapComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var strap, out _))
+        {
+            if (strap.BuckledEntities.Count == 0 || !IsSaved(uid, ev.Entities))
+                continue;
+
+            foreach (var buckled in strap.BuckledEntities.ToArray())
+            {
+                if (IsSaved(buckled, ev.Entities) && TryComp(buckled, out MetaDataComponent? meta) && meta.EntityPrototype?.MapSavable != false)
+                    continue;
+
+                if (!TerminatingOrDeleted(buckled))
+                    Unbuckle(buckled, null);
+
+                if (strap.BuckledEntities.Remove(buckled))
+                    Dirty(uid, strap);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Whether the entity is one of the roots of the save or one of their transform children.
+    /// </summary>
+    private bool IsSaved(EntityUid uid, HashSet<EntityUid> roots)
+    {
+        while (uid.IsValid())
+        {
+            if (roots.Contains(uid))
+                return true;
+
+            if (!TryComp(uid, out TransformComponent? xform))
+                return false;
+
+            uid = xform.ParentUid;
+        }
+
+        return false;
     }
 
     private bool StrapHasSpace(EntityUid strapUid, BuckleComponent buckleComp, StrapComponent? strapComp = null)
