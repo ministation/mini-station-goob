@@ -10,22 +10,22 @@
   - type: ActivatableUI
     key: enum.ERTCryostorageUiKey.Key
   - type: ERTCryostorage
-    titleName: stories-ert-cryostorage-ert-title
+    titleName: ert-cryostorage-ert-title
     containerId: storage
     options:
-    - name: stories-ert-cryostorage-ert-security
+    - name: ert-cryostorage-ert-security
       sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTSecurity }
       settings: ERTSecurityEmpty
-    - name: stories-ert-cryostorage-ert-medical
+    - name: ert-cryostorage-ert-medical
       sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTMedical }
       settings: ERTMedicalEmpty
-    - name: stories-ert-cryostorage-ert-chaplain
+    - name: ert-cryostorage-ert-chaplain
       sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTChaplain }
       settings: ERTChaplainEmpty
-    - name: stories-ert-cryostorage-ert-engineer
+    - name: ert-cryostorage-ert-engineer
       sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTEngineer }
       settings: ERTEngineerEmpty
-    - name: stories-ert-cryostorage-ert-janitor
+    - name: ert-cryostorage-ert-janitor
       sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTJanitor }
       settings: ERTJanitorEmpty
   - type: Cryostorage
@@ -40,10 +40,10 @@
   name: CBURN cryostorage
   components:
   - type: ERTCryostorage
-    titleName: stories-ert-cryostorage-cburn-title
+    titleName: ert-cryostorage-cburn-title
     containerId: storage
     options:
-    - name: stories-ert-cryostorage-cburn-agent
+    - name: ert-cryostorage-cburn-agent
       sprite: { sprite: Interface/Misc/job_icons.rsi, state: CBURN }
       settings: CBURNAgentEmpty
 
@@ -53,11 +53,11 @@
   name: ERT leader cryostorage
   components:
   - type: ERTCryostorage
-    titleName: stories-ert-cryostorage-officer-title
+    titleName: ert-cryostorage-officer-title
     containerId: storage
     useOnce: false
     options:
-    - name: stories-ert-cryostorage-ert-leader
+    - name: ert-cryostorage-ert-leader
       sprite: { sprite: _Mini/Interface/Misc/job_icons.rsi, state: ERTLeader }
       settings: ERTLeaderEmpty
       requiresAdminAllow: true
@@ -68,11 +68,11 @@
   name: CBURN commander cryostorage
   components:
   - type: ERTCryostorage
-    titleName: stories-ert-cryostorage-officer-title
+    titleName: ert-cryostorage-officer-title
     containerId: storage
     useOnce: false
     options:
-    - name: stories-ert-cryostorage-cburn-commander
+    - name: ert-cryostorage-cburn-commander
       sprite: { sprite: _Mini/Interface/Misc/job_icons.rsi, state: ERTLeader }
       settings: CBURNCommanderEmpty
       requiresAdminAllow: true

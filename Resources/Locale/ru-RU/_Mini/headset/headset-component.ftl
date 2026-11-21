@@ -1,1 +1,1 @@
-stories-chat-radio-DCO = ДСО
+chat-radio-DCO = ДСО

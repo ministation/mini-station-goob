@@ -130,7 +130,7 @@ public sealed partial class StationsControlConsoleWindow : FancyWindow
     {
         if (_state == null || index < 0 || index >= _state.CurrentAlertLevels.Count)
         {
-            CurrentAlertLevelLabel.Text = Loc.GetString("stories-stations-control-alert-level-unknown");
+            CurrentAlertLevelLabel.Text = Loc.GetString("stations-control-alert-level-unknown");
             return;
         }
 

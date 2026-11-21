@@ -1,21 +1,14 @@
 - type: job
   id: OfficerSpecialAssignments
-  name: stories-job-name-officer-special-assignments
-  description: stories-job-description-officer-special-assignments
+  name: job-name-officer-special-assignments
+  description: job-description-officer-special-assignments
   playTimeTracker: JobSpecialAssignments
-  # requirements:
-  # - !type:DepartmentTimeRequirement
-  #   department: Cargo
-  #   time: 40h
-  # - !type:RoleTimeRequirement
-  #   role: JobQuartermaster
-  #   time: 15h
-  # - !type:RoleTimeRequirement
-  #   role: JobLogist
-  #   time: 15h
+  canBeAntag: false
+  skills:
+  - All
   startingGear: SpecialAssignmentsGear
   icon: "JobIconSpecialAssignments"
-  supervisors: stories-job-supervisors-quadrant-management
+  supervisors: job-supervisors-quadrant-management
   access:
   - Cargo
   - Salvage

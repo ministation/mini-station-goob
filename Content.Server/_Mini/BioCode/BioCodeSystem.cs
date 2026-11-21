@@ -44,7 +44,7 @@ public sealed partial class BioCodeSystem : EntitySystem
         {
             _damageable.TryChangeDamage(args.Equipee, comp.DamagePerRecord, true, true);
             comp.RecordedDNA = dnaComp.DNA;
-            _popup.PopupEntity(Loc.GetString("stories-biocode-successful-recording"), uid);
+            _popup.PopupEntity(Loc.GetString("biocode-successful-recording"), uid);
             return;
         }
 
@@ -54,14 +54,14 @@ public sealed partial class BioCodeSystem : EntitySystem
         if (comp.HardDefense)
         {
             EnsureComp<UnremoveableComponent>(uid);
-            _popup.PopupEntity(Loc.GetString("stories-biocode-hard-defense"),
+            _popup.PopupEntity(Loc.GetString("biocode-hard-defense"),
                 args.Equipee,
                 args.Equipee,
                 PopupType.LargeCaution);
         }
         else
         {
-            _popup.PopupEntity(Loc.GetString("stories-biocode-dna-not-match"),
+            _popup.PopupEntity(Loc.GetString("biocode-dna-not-match"),
                 args.Equipee,
                 args.Equipee,
                 PopupType.LargeCaution);
@@ -99,7 +99,7 @@ public sealed partial class BioCodeSystem : EntitySystem
         {
             _damageable.TryChangeDamage(args.User, comp.DamagePerRecord, true, true);
             comp.RecordedDNA = dnaComp.DNA;
-            _popup.PopupEntity(Loc.GetString("stories-biocode-successful-recording"), uid);
+            _popup.PopupEntity(Loc.GetString("biocode-successful-recording"), uid);
             return;
         }
 
@@ -109,14 +109,14 @@ public sealed partial class BioCodeSystem : EntitySystem
         if (comp.HardDefense)
         {
             EnsureComp<UnremoveableComponent>(uid);
-            _popup.PopupEntity(Loc.GetString("stories-biocode-hard-defense"),
+            _popup.PopupEntity(Loc.GetString("biocode-hard-defense"),
                 args.User,
                 args.User,
                 PopupType.LargeCaution);
         }
         else
         {
-            _popup.PopupEntity(Loc.GetString("stories-biocode-dna-not-match"),
+            _popup.PopupEntity(Loc.GetString("biocode-dna-not-match"),
                 args.User,
                 args.User,
                 PopupType.LargeCaution);
@@ -161,10 +161,10 @@ public sealed partial class BioCodeSystem : EntitySystem
         {
             var deleteDnaVerb = new Verb
             {
-                Text = Loc.GetString("stories-biocode-delete-dna-verb"),
+                Text = Loc.GetString("biocode-delete-dna-verb"),
                 Act = () => {
                     comp.RecordedDNA = null;
-                    _popup.PopupEntity(Loc.GetString("stories-biocode-successful-deletion"), uid);
+                    _popup.PopupEntity(Loc.GetString("biocode-successful-deletion"), uid);
                 }
             };
 
@@ -173,17 +173,17 @@ public sealed partial class BioCodeSystem : EntitySystem
 
         var recordDnaVerb = new Verb
         {
-            Text = Loc.GetString("stories-biocode-record-dna-verb"),
+            Text = Loc.GetString("biocode-record-dna-verb"),
             Act = () => {
                 if (!TryComp<DnaComponent>(args.User, out var dnaComp) || dnaComp.DNA == null)
                 {
-                    _popup.PopupEntity(Loc.GetString("stories-biocode-dna-not-found"), uid);
+                    _popup.PopupEntity(Loc.GetString("biocode-dna-not-found"), uid);
                     return;
                 }
 
                 _damageable.TryChangeDamage(args.User, comp.DamagePerRecord, true, true);
                 comp.RecordedDNA = dnaComp.DNA;
-                _popup.PopupEntity(Loc.GetString("stories-biocode-successful-recording"), uid);
+                _popup.PopupEntity(Loc.GetString("biocode-successful-recording"), uid);
             },
         };
         args.Verbs.Add(recordDnaVerb);
@@ -191,7 +191,7 @@ public sealed partial class BioCodeSystem : EntitySystem
 
     private void OnEmagged(EntityUid uid, BioCodeComponent comp, ref GotEmaggedEvent args)
     {
-        _popup.PopupEntity(Loc.GetString("stories-biocode-defense-emagged"), uid);
+        _popup.PopupEntity(Loc.GetString("biocode-defense-emagged"), uid);
         RemComp<BioCodeComponent>(uid);
         args.Handled = true;
     }

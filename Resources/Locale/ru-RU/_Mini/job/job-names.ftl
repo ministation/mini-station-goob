@@ -22,29 +22,28 @@ JobTypanTechnicalOperationsSupervisor = руководитель техобес�
 
 # Juridical-Jobs
 
-stories-job-name-magistrate = магистрат
-stories-job-name-judge = судья
+job-name-judge = судья
 
 # Centcom-Jobs
 
-stories-job-name-chief-centcom = начальник штаба Центком
-stories-job-name-operator-centcom = оператор Центком
-stories-job-name-representative-centcom = представитель Центком
-stories-job-name-head-of-security-centcom = глава безопасности Центком
-stories-job-name-officer-security-centcom = офицер безопасности Центком
-stories-job-name-medic-centcom = медик Центком
-stories-job-name-engineer-centcom = инженер Центком
-stories-job-name-worker-centcom = работник Центком
+job-name-chief-centcom = начальник штаба Центком
+job-name-operator-centcom = оператор Центком
+job-name-representative-centcom = представитель Центком
+job-name-head-of-security-centcom = глава безопасности Центком
+job-name-officer-security-centcom = офицер безопасности Центком
+job-name-medic-centcom = медик Центком
+job-name-engineer-centcom = инженер Центком
+job-name-worker-centcom = работник Центком
 
-stories-job-name-officer-special-assignments = офицер спецзаказов
-stories-job-name-logist = логист
-stories-job-name-accountant = бухгалтер
-stories-job-name-internal-inspector = внутренний инспектор
+job-name-officer-special-assignments = офицер спецзаказов
+job-name-logist = логист
+job-name-accountant = бухгалтер
+job-name-internal-inspector = внутренний инспектор
 
 # DSO-Jobs
 
-stories-job-name-special-officer = офицер спецопераций
-stories-job-name-cburn-commander = командир карантинной службы
+job-name-special-officer = офицер спецопераций
+job-name-cburn-commander = командир карантинной службы
 
 # Prison-Jobs
 

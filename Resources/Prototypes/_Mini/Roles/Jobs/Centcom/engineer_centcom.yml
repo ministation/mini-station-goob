@@ -1,8 +1,11 @@
 - type: job
   id: EngineerCentcom
-  name: stories-job-name-engineer-centcom
-  description: stories-job-description-engineer-centcom
+  name: job-name-engineer-centcom
+  description: job-description-engineer-centcom
   playTimeTracker: JobEngineerCentcom
+  canBeAntag: false
+  skills:
+  - All
   requirements:
   - !type:DepartmentTimeRequirement
     department: Engineering

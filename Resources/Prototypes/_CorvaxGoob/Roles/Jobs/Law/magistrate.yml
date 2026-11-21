@@ -17,15 +17,15 @@
     - Abductor
   startingGear: MagistrateGear
   icon: "JobIconMagistrate"
-  supervisors: job-supervisors-centcom
+  supervisors: job-supervisors-management-juridical-department # Mini-Magistrate-CentComm
   canBeAntag: false
-  access:
-  - Command
-  - Brig
-  - Maintenance
-  - External
-  - Security
-  - Lawyer
+  skills: # Mini-Magistrate-CentComm
+  - All
+  accessGroups: # Mini-Magistrate-CentComm
+  - AllAccess
+  access: # Mini-Magistrate-CentComm
+  - CentralCommand
+  - DSO
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]

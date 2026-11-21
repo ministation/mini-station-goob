@@ -6,7 +6,7 @@
   suffix: DO NOT MAP
   components:
   - type: Stamp
-    stampedName: stories-stamp-component-stamped-name-centcom-chief
+    stampedName: stamp-component-stamped-name-centcom-chief
     stampedColor: "#20B2AA"
     stampState: "paper_stamp-chief-centcom"
   - type: Sprite
@@ -30,7 +30,7 @@
   suffix: DO NOT MAP
   components:
   - type: Stamp
-    stampedName: stories-stamp-component-stamped-name-special-officer
+    stampedName: stamp-component-stamped-name-special-officer
     stampedColor: "#1F3A3D"
     stampState: "paper_stamp-special-officer"
   - type: Sprite
@@ -54,7 +54,7 @@
   suffix: DO NOT MAP
   components:
   - type: Stamp
-    stampedName: stories-stamp-component-stamped-name-admirality
+    stampedName: stamp-component-stamped-name-admirality
     stampedColor: "#000000"
     stampState: "paper_stamp-admirality"
   - type: Sprite
@@ -78,7 +78,7 @@
   suffix: DO NOT MAP
   components:
   - type: Stamp
-    stampedName: stories-stamp-component-stamped-name-OSA
+    stampedName: stamp-component-stamped-name-OSA
     stampedColor: "#1E453A"
     stampState: "paper_stamp-OSA"
   - type: Sprite
@@ -102,7 +102,7 @@
   suffix: DO NOT MAP
   components:
   - type: Stamp
-    stampedName: stories-stamp-component-stamped-name-quadrant-management
+    stampedName: stamp-component-stamped-name-quadrant-management
     stampedColor: "#136863"
     stampState: "paper_stamp-quadrant-management"
   - type: Sprite
@@ -126,7 +126,7 @@
   suffix: DO NOT MAP
   components:
   - type: Stamp
-    stampedName: stories-stamp-component-stamped-name-special-operations-department
+    stampedName: stamp-component-stamped-name-special-operations-department
 
 - type: entity
   parent: RubberStampMagistrate
@@ -136,7 +136,7 @@
   suffix: DO NOT MAP
   components:
   - type: Stamp
-    stampedName: stories-stamp-component-stamped-name-justice-department
+    stampedName: stamp-component-stamped-name-justice-department
 
 - type: entity
   parent: RubberStampQuadrantManagement
@@ -146,4 +146,4 @@
   suffix: DO NOT MAP
   components:
   - type: Stamp
-    stampedName: stories-stamp-component-stamped-name-internal-inspector
+    stampedName: stamp-component-stamped-name-internal-inspector

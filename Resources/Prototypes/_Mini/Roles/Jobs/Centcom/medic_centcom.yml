@@ -1,8 +1,11 @@
 - type: job
   id: MedicCentcom
-  name: stories-job-name-medic-centcom
-  description: stories-job-description-medic-centcom
+  name: job-name-medic-centcom
+  description: job-description-medic-centcom
   playTimeTracker: JobMedicCentcom
+  canBeAntag: false
+  skills:
+  - All
   requirements:
   - !type:DepartmentTimeRequirement
     department: Medical

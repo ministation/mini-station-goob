@@ -472,7 +472,7 @@
   - type: AccessReader
     access: [[ "DSO" ]]
   - type: CommunicationsConsole
-    title: stories-comms-console-announcement-title-DSO
+    title: comms-console-announcement-title-DSO
     color: "#1d8bad"
     sound:
       path: /Audio/_Mini/Announcements/DSO_announce.ogg
@@ -610,8 +610,6 @@
     - red
     - gamma
     - delta
-    - epsilon
-    - omicron
   - type: AccessReader
     access: [["CentralCommand"]]
 
@@ -673,29 +671,29 @@
   - type: ActivatableUI
     key: enum.ERTSpawnConsoleUiKey.Key
   - type: ERTSpawnConsole
-    titleName: stories-ert-console-title
+    titleName: ert-console-title
     delay: 300
-    balanceName: stories-ert-spawn-balance-name
+    balanceName: ert-spawn-balance-name
     balance: 20
     options:
-    - name: stories-ert-spawn-scout-name
-      desc: stories-ert-spawn-scout-desc
+    - name: ert-spawn-scout-name
+      desc: ert-spawn-scout-desc
       rule: ERTSpawnScout
       price: 5
-    - name: stories-ert-spawn-medium-name
-      desc: stories-ert-spawn-medium-desc
+    - name: ert-spawn-medium-name
+      desc: ert-spawn-medium-desc
       rule: ERTSpawnMedium
       price: 10
-    - name: stories-ert-spawn-high-name
-      desc: stories-ert-spawn-high-desc
+    - name: ert-spawn-high-name
+      desc: ert-spawn-high-desc
       rule: ERTSpawnHigh
       price: 15
-    - name: stories-ert-spawn-holy-medium-name
-      desc: stories-ert-spawn-holy-medium-desc
+    - name: ert-spawn-holy-medium-name
+      desc: ert-spawn-holy-medium-desc
       rule: ERTSpawnHolyMedium
       price: 10
-    - name: stories-ert-spawn-medical-name
-      desc: stories-ert-spawn-medical-desc
+    - name: ert-spawn-medical-name
+      desc: ert-spawn-medical-desc
       rule: ERTSpawnMedical
       price: 10
   - type: ActivatableUIRequiresAccess

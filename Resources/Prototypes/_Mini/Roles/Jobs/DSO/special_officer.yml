@@ -1,31 +1,23 @@
 - type: job
   id: SpecialOfficer
-  name: stories-job-name-special-officer
-  description: stories-job-description-special-officer
+  name: job-name-special-officer
+  description: job-description-special-officer
   playTimeTracker: JobSpecialOfficer
-  # requirements:
-  # - !type:DepartmentTimeRequirement
-  #   department: DSO
-  #   time: 40h
-  # - !type:DepartmentTimeRequirement
-  #   department: CentralCommand
-  #   time: 20h
-  # - !type:RoleTimeRequirement
-  #   role: JobHeadOfSecurity
-  #   time: 20h
+  whitelisted: true
   startingGear: SpecialOfficerGear
   icon: "JobIconSpecialOfficer"
-  supervisors: stories-job-supervisors-admiralty
+  supervisors: job-supervisors-admiralty
+  canBeAntag: false
+  skills:
+  - All
   accessGroups:
   - AllAccess
-  - PrisonAllAccess # Stories
   access:
   - CentralCommand
   - DSO
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant, TrackingImplant, AdrenocorImplant, DeathRattleImplantDSO, RadioImplantCentcomm, RadioImplantDSO ]
-  whitelisted: true
 
 - type: startingGear
   id: SpecialOfficerGear

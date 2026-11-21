@@ -800,19 +800,3 @@
     stateDoorClosed: quadrantmanagement_door
   - type: AccessReader
     access: [["CentralCommand", "DSO"]]
-
-- type: entity
-  id: LockerGuardianNt
-  parent: LockerBase
-  name: blade guardian's locker
-  description: Each bladeguard's fashion arsenal.
-  components:
-    - type: Sprite
-      sprite: _Mini/Structures/Storage/closet.rsi
-    - type: Appearance
-    - type: EntityStorageVisuals
-      stateBaseClosed: guardian
-      stateDoorOpen: guardian_open
-      stateDoorClosed: guardian_door
-    - type: AccessReader
-      access: [["Security"]]

@@ -1,21 +1,16 @@
 - type: job
   id: RepresentativeCentcom
-  name: stories-job-name-representative-centcom
-  description: stories-job-description-representative-centcom
+  name: job-name-representative-centcom
+  description: job-description-representative-centcom
   playTimeTracker: JobRepresentativeCentcom
-  # requirements:
-  # - !type:DepartmentTimeRequirement
-  #   department: CentralCommand
-  #   time: 20h
-  # - !type:RoleTimeRequirement
-  #   role: JobCaptain
-  #   time: 10h
+  canBeAntag: false
+  skills:
+  - All
   startingGear: RepresentativeCentcomGear
   icon: "JobIconCentcom"
-  supervisors: stories-job-supervisors-chief-centcom
+  supervisors: job-supervisors-chief-centcom
   accessGroups:
   - AllAccess
-  - PrisonAllAccess
   access:
   - CentralCommand
   special:

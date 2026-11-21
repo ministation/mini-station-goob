@@ -21,8 +21,8 @@
       - RadioImplantDSO
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-chief-centcom
-      description: stories-job-description-chief-centcom
+      name: job-name-chief-centcom
+      description: job-description-chief-centcom
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -58,8 +58,8 @@
       - DeathRattleImplantCentcomm
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-operator-centcom
-      description: stories-job-description-operator-centcom
+      name: job-name-operator-centcom
+      description: job-description-operator-centcom
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -95,8 +95,8 @@
       - DeathRattleImplantCentcomm
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-representative-centcom
-      description: stories-job-description-representative-centcom
+      name: job-name-representative-centcom
+      description: job-description-representative-centcom
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -132,8 +132,8 @@
       - DeathRattleImplantCentcomm
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-head-of-security-centcom 
-      description: stories-job-description-head-of-security-centcom 
+      name: job-name-head-of-security-centcom
+      description: job-description-head-of-security-centcom
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -168,8 +168,8 @@
       - TrackingImplant
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-officer-security-centcom
-      description: stories-job-description-officer-security-centcom
+      name: job-name-officer-security-centcom
+      description: job-description-officer-security-centcom
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -203,8 +203,8 @@
       - TrackingImplant
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-medic-centcom
-      description: stories-job-description-medic-centcom
+      name: job-name-medic-centcom
+      description: job-description-medic-centcom
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -238,8 +238,8 @@
       - TrackingImplant
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-engineer-centcom
-      description: stories-job-description-engineer-centcom
+      name: job-name-engineer-centcom
+      description: job-description-engineer-centcom
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -273,8 +273,8 @@
       - TrackingImplant
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-worker-centcom
-      description: stories-job-description-worker-centcom
+      name: job-name-worker-centcom
+      description: job-description-worker-centcom
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -312,8 +312,8 @@
       - RadioImplantDSO
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-magistrate
-      description: stories-job-description-magistrate
+      name: job-name-magistrate
+      description: job-description-magistrate
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -354,8 +354,8 @@
       - RadioImplantDSO
       - RadioImplantCentcomm
     - type: GhostRole
-      name: stories-job-name-special-officer
-      description: stories-job-description-special-officer
+      name: job-name-special-officer
+      description: job-description-special-officer
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -391,8 +391,8 @@
       - DeathRattleImplantDSO
       - RadioImplantDSO
     - type: GhostRole
-      name: stories-ghost-role-information-cburn-commander-name
-      description: stories-ghost-role-information-cburn-commander-description
+      name: ghost-role-information-cburn-commander-name
+      description: ghost-role-information-cburn-commander-description
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short

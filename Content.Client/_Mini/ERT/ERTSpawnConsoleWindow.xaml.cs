@@ -91,20 +91,20 @@ public sealed partial class ERTSpawnConsoleWindow : FancyWindow
             innerBox.AddChild(new Label { Text = $"Стоимость: {option.Price}" });
             if (option.RequiresAdminAllow && !hasAdminAccess)
             {
-                innerBox.AddChild(new Label { Text = _loc.GetString("stories-ert-spawn-requires-admin-allow"), FontColorOverride = Color.OrangeRed, });
+                innerBox.AddChild(new Label { Text = _loc.GetString("ert-spawn-requires-admin-allow"), FontColorOverride = Color.OrangeRed, });
             }
             else if (option.Price > balance)
             {
-                innerBox.AddChild(new Label { Text = _loc.GetString("stories-ert-spawn-low-balance"), FontColorOverride = Color.OrangeRed, });
+                innerBox.AddChild(new Label { Text = _loc.GetString("ert-spawn-low-balance"), FontColorOverride = Color.OrangeRed, });
             }
             else if (option.RequiresAdminAllow && hasAdminAccess)
             {
-                innerBox.AddChild(new Label { Text = _loc.GetString("stories-ert-spawn-has-admin-access"), FontColorOverride = Color.Green, });
+                innerBox.AddChild(new Label { Text = _loc.GetString("ert-spawn-has-admin-access"), FontColorOverride = Color.Green, });
             }
 
             var callButton = new Button
             {
-                Text = _loc.GetString("stories-ert-spawn-call-button"),
+                Text = _loc.GetString("ert-spawn-call-button"),
                 Margin = new Thickness(0, 4, 0, 0),
                 Disabled = isOnCooldown || !canCall[index],
             };

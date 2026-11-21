@@ -1,8 +1,11 @@
 - type: job
   id: WorkerCentcom
-  name: stories-job-name-worker-centcom
-  description: stories-job-description-worker-centcom
+  name: job-name-worker-centcom
+  description: job-description-worker-centcom
   playTimeTracker: JobWorkerCentcom
+  canBeAntag: false
+  skills:
+  - All
   requirements:
   - !type:DepartmentTimeRequirement
     department: Civilian

@@ -45,19 +45,6 @@
 
 - type: entity
   parent: ClothingBackpack
-  id: ClothingBackpackGuardianNt
-  name: blade guardian's backpack
-  description: It seems like you've already seen this somewhere.
-  components:
-  - type: Tag
-    tags:
-      - ForceRecallEquipment
-      - WhitelistChameleon
-  - type: Sprite
-    sprite: _Mini/Clothing/Back/Backpacks/guardian_nt.rsi
-
-- type: entity
-  parent: ClothingBackpack
   id: ClothingBackpackAdidos
   name: backpack
   description: You wear this on your back and put items in it.

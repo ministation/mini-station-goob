@@ -1,8 +1,11 @@
 - type: job
   id: Logist
-  name: stories-job-name-logist
-  description: stories-job-description-logist
+  name: job-name-logist
+  description: job-description-logist
   playTimeTracker: JobLogist
+  canBeAntag: false
+  skills:
+  - All
   requirements:
   - !type:DepartmentTimeRequirement
     department: Cargo
@@ -15,7 +18,7 @@
     time: 10h
   startingGear: LogistGear
   icon: "JobIconLogist"
-  supervisors: stories-job-supervisors-special-assignments
+  supervisors: job-supervisors-special-assignments
   access:
   - Cargo
   - Salvage
