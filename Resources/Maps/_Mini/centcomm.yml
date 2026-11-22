@@ -4,8 +4,8 @@ meta:
   engineVersion: 295.0.2
   forkId: ministation
   forkVersion: ""
-  time: 11/21/2026 11:52:47
-  entityCount: 20378
+  time: 11/22/2026 05:44:11
+  entityCount: 20364
 maps: []
 grids:
 - 1
@@ -26220,7 +26220,7 @@ entities:
       pos: -66.5,8.5
     - type: Door
       state: Opening
-      secondsUntilStateChange: -29702.244
+      secondsUntilStateChange: -30127.934
     - type: DeviceLinkSource
       lastSignals:
         DoorStatus: True
@@ -31314,11 +31314,6 @@ entities:
       pos: -65.5,19.5
 - proto: BlastDoorOpen
   entities:
-  - uid: 2338
-    components:
-    - type: Transform
-      parent: 1
-      pos: -5.5,21.5
   - uid: 2453
     components:
     - type: Transform
@@ -31355,38 +31350,6 @@ entities:
     - type: Transform
       parent: 1
       pos: 1.5,-46.5
-  - uid: 17154
-    components:
-    - type: Transform
-      parent: 1
-      pos: 42.5,25.5
-  - uid: 19031
-    components:
-    - type: Transform
-      parent: 1
-      pos: 6.5,21.5
-  - uid: 19032
-    components:
-    - type: MetaData
-      name: гермозатвор
-    - type: Transform
-      parent: 1
-      pos: -5.5,11.5
-  - uid: 19033
-    components:
-    - type: Transform
-      parent: 1
-      pos: 6.5,11.5
-  - uid: 19034
-    components:
-    - type: Transform
-      parent: 1
-      pos: -4.5,16.5
-  - uid: 19035
-    components:
-    - type: Transform
-      parent: 1
-      pos: 5.5,16.5
   - uid: 19036
     components:
     - type: Transform
@@ -31397,11 +31360,6 @@ entities:
     - type: Transform
       parent: 1
       pos: -13.5,7.5
-  - uid: 19038
-    components:
-    - type: Transform
-      parent: 1
-      pos: 14.5,7.5
 - proto: BlockGameArcade
   entities:
   - uid: 7105
@@ -31661,11 +31619,6 @@ entities:
     - type: Transform
       parent: 1
       pos: -12.436536,19.529419
-  - uid: 16580
-    components:
-    - type: Transform
-      parent: 1
-      pos: -2.479723,11.663683
 - proto: BoxFolderBlue
   entities:
   - uid: 16657
@@ -63737,11 +63690,6 @@ entities:
     - type: Transform
       parent: 1
       pos: 8.0836315,17.528954
-  - uid: 16609
-    components:
-    - type: Transform
-      parent: 1
-      pos: 3.3157315,11.42532
   - uid: 16623
     components:
     - type: Transform
@@ -65485,6 +65433,13 @@ entities:
     - type: Transform
       parent: 1
       pos: 50.5,20.5
+- proto: DefaultStationBeaconCentComm
+  entities:
+  - uid: 38
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,0.5
 - proto: DefaultStationBeaconChemistry
   entities:
   - uid: 15397
@@ -70427,11 +70382,6 @@ entities:
     - type: Transform
       parent: 1
       pos: -9.343122,7.669236
-  - uid: 16716
-    components:
-    - type: Transform
-      parent: 1
-      pos: 79.26563,-17.309273
 - proto: DrinkMugBlue
   entities:
   - uid: 7027
@@ -109625,6 +109575,13 @@ entities:
     - type: Transform
       parent: 1
       pos: 22.376665,-12.364361
+- proto: KvassTankFull
+  entities:
+  - uid: 2338
+    components:
+    - type: Transform
+      parent: 1
+      pos: 18.5,-10.5
 - proto: Lamp
   entities:
   - uid: 7375
@@ -110621,81 +110578,6 @@ entities:
           - Toggle
     - type: Fixtures
       fixtures: {}
-  - uid: 17157
-    components:
-    - type: MetaData
-      name: гермозатвор турели
-    - type: Transform
-      parent: 1
-      rot: 3.141592653589793 rad
-      pos: 41.5,17.5
-    - type: DeviceLinkSource
-      linkedPorts:
-        17154:
-        - - Pressed
-          - Toggle
-    - type: Fixtures
-      fixtures: {}
-  - uid: 19039
-    components:
-    - type: MetaData
-      name: турель
-    - type: Transform
-      parent: 1
-      rot: 1.5707963267948966 rad
-      pos: -6.5,8.5
-    - type: DeviceLinkSource
-      linkedPorts:
-        19032:
-        - - Pressed
-          - Toggle
-    - type: Fixtures
-      fixtures: {}
-  - uid: 19040
-    components:
-    - type: MetaData
-      name: турель
-    - type: Transform
-      parent: 1
-      rot: -1.5707963267948966 rad
-      pos: 7.5,8.5
-    - type: DeviceLinkSource
-      linkedPorts:
-        19033:
-        - - Pressed
-          - Toggle
-    - type: Fixtures
-      fixtures: {}
-  - uid: 19041
-    components:
-    - type: MetaData
-      name: турель
-    - type: Transform
-      parent: 1
-      rot: -1.5707963267948966 rad
-      pos: -11.5,7.5
-    - type: DeviceLinkSource
-      linkedPorts:
-        19037:
-        - - Pressed
-          - Toggle
-    - type: Fixtures
-      fixtures: {}
-  - uid: 19042
-    components:
-    - type: MetaData
-      name: турель
-    - type: Transform
-      parent: 1
-      rot: 1.5707963267948966 rad
-      pos: 9.5,7.5
-    - type: DeviceLinkSource
-      linkedPorts:
-        19038:
-        - - Pressed
-          - Toggle
-    - type: Fixtures
-      fixtures: {}
   - uid: 19043
     components:
     - type: MetaData
@@ -110704,14 +110586,6 @@ entities:
       parent: 1
       rot: 3.141592653589793 rad
       pos: -3.5,12.5
-    - type: DeviceLinkSource
-      linkedPorts:
-        19034:
-        - - Pressed
-          - Toggle
-        19035:
-        - - Pressed
-          - Toggle
     - type: Fixtures
       fixtures: {}
   - uid: 19044
@@ -110722,14 +110596,6 @@ entities:
       parent: 1
       rot: 3.141592653589793 rad
       pos: -0.7944921,24.5
-    - type: DeviceLinkSource
-      linkedPorts:
-        2338:
-        - - Pressed
-          - Toggle
-        19031:
-        - - Pressed
-          - Toggle
     - type: Fixtures
       fixtures: {}
 - proto: LockableButtonEngineering
@@ -112551,7 +112417,7 @@ entities:
       stampedBy:
       - stampLargeIcon: null
         stampFont: null
-        stampedName: stamp-component-stamped-name-quadrant-management
+        stampedName: stories-stamp-component-stamped-name-quadrant-management
         stampedColor: '#136863FF'
         hasIcon: True
       editingDisabled: True
@@ -112658,7 +112524,7 @@ entities:
       stampedBy:
       - stampLargeIcon: null
         stampFont: null
-        stampedName: stamp-component-stamped-name-admirality
+        stampedName: stories-stamp-component-stamped-name-admirality
         stampedColor: '#000000FF'
         hasIcon: True
       editingDisabled: True
@@ -113036,7 +112902,7 @@ entities:
       stampedBy:
       - stampLargeIcon: null
         stampFont: null
-        stampedName: stamp-component-stamped-name-quadrant-management
+        stampedName: stories-stamp-component-stamped-name-quadrant-management
         stampedColor: '#136863FF'
         hasIcon: True
       editingDisabled: True
@@ -113306,16 +113172,6 @@ entities:
     - type: Transform
       parent: 1
       pos: 14.672489,18.52514
-  - uid: 16579
-    components:
-    - type: Transform
-      parent: 1
-      pos: -2.6286592,11.493471
-  - uid: 16581
-    components:
-    - type: Transform
-      parent: 1
-      pos: -2.4158936,11.408363
   - uid: 16584
     components:
     - type: Transform
@@ -113580,11 +113436,6 @@ entities:
 
 
         [печать]
-  - uid: 16714
-    components:
-    - type: Transform
-      parent: 1
-      pos: 79.705345,-17.394379
   - uid: 16720
     components:
     - type: Transform
@@ -115324,6 +115175,13 @@ entities:
       canCollide: False
     - type: InsideEntityStorage
       storage: 5012
+- proto: PortableScreenTimer
+  entities:
+  - uid: 7028
+    components:
+    - type: Transform
+      parent: 1
+      pos: -2.4963043,11.405073
 - proto: PortableScrubber
   entities:
   - uid: 1956
@@ -133586,6 +133444,23 @@ entities:
     - type: Transform
       parent: 1
       pos: -40.5,-9.5
+- proto: TelephoneCentComm
+  entities:
+  - uid: 7029
+    components:
+    - type: Transform
+      parent: 1
+      pos: -3.333268,26.63258
+  - uid: 7030
+    components:
+    - type: Transform
+      parent: 1
+      pos: 79.48681,-17.33237
+  - uid: 7031
+    components:
+    - type: Transform
+      parent: 1
+      pos: -2.7305877,11.915712
 - proto: TeslaCoil
   entities:
   - uid: 17827
@@ -145702,15 +145577,6 @@ entities:
     - type: Transform
       parent: 1
       pos: 21.5,16.5
-- proto: WarpPoint
-  entities:
-  - uid: 38
-    components:
-    - type: MetaData
-      name: '! Центральное Командование'
-    - type: Transform
-      parent: 1
-      pos: 0.5,0.5
 - proto: WaterCooler
   entities:
   - uid: 3892
