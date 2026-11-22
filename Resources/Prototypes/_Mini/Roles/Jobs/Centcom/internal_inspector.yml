@@ -1,7 +1,7 @@
 - type: job
   id: InternalInspector
-  name: stories-job-name-internal-inspector
-  description: stories-job-description-internal-inspector
+  name: job-name-internal-inspector
+  description: job-description-internal-inspector
   playTimeTracker: JobInternalInspector
   # requirements:
   # - !type:RoleTimeRequirement
@@ -16,10 +16,9 @@
   setPreference: false
   startingGear: InternalInspectorGear
   icon: "JobIconInternalInspector"
-  supervisors: stories-job-supervisors-quadrant-management
+  supervisors: job-supervisors-quadrant-management
   accessGroups:
   - AllAccess
-  - PrisonAllAccess
   access:
   - CentralCommand
   - DSO

@@ -150,23 +150,6 @@
     steps: 5
     zeroVisible: true
   - type: Appearance
-  - type: BioCode
-    autoRecordDNA: true
-    delay: 1
-    itemBioCode: true
-  - type: TimerTrigger
-    delay: 1
-  - type: ExplodeOnTrigger
-    keysIn:
-    - timer
-  - type: Explosive
-    deleteAfterExplosion: false
-    explosionType: PowerSink
-    maxIntensity: 8
-    intensitySlope: 5
-    totalIntensity: 5
-    canCreateVacuum: false
-    repeatable: true
   - type: Tag
     tags:
     - HighRiskItem

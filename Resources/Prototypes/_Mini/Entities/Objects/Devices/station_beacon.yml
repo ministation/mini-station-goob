@@ -4,4 +4,4 @@
   suffix: Guardian
   components:
   - type: NavMapBeacon
-    defaultText: stories-station-beacon-guardian
+    defaultText: station-beacon-guardian

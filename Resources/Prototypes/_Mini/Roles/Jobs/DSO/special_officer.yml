@@ -1,7 +1,7 @@
 - type: job
   id: SpecialOfficer
-  name: stories-job-name-special-officer
-  description: stories-job-description-special-officer
+  name: job-name-special-officer
+  description: job-description-special-officer
   playTimeTracker: JobSpecialOfficer
   # requirements:
   # - !type:DepartmentTimeRequirement
@@ -15,10 +15,9 @@
   #   time: 20h
   startingGear: SpecialOfficerGear
   icon: "JobIconSpecialOfficer"
-  supervisors: stories-job-supervisors-admiralty
+  supervisors: job-supervisors-admiralty
   accessGroups:
   - AllAccess
-  - PrisonAllAccess # Stories
   access:
   - CentralCommand
   - DSO

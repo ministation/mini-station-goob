@@ -1,7 +1,7 @@
 - type: job
   id: SecurityOfficerCentcom
-  name: stories-job-name-officer-security-centcom
-  description: stories-job-description-officer-security-centcom
+  name: job-name-officer-security-centcom
+  description: job-description-officer-security-centcom
   playTimeTracker: JobSecurityOfficerCentcom
   requirements:
   - !type:DepartmentTimeRequirement

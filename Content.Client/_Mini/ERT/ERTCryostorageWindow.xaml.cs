@@ -91,11 +91,11 @@ public sealed partial class ERTCryostorageWindow : FancyWindow
 
             if (option.RequiresAdminAllow && !hasAdminAccess)
             {
-                innerBox.AddChild(new Label { Text = _loc.GetString("stories-ert-cryostorage-requires-admin-allow"), FontColorOverride = Color.OrangeRed, });
+                innerBox.AddChild(new Label { Text = _loc.GetString("ert-cryostorage-requires-admin-allow"), FontColorOverride = Color.OrangeRed, });
             }
             else if (option.RequiresAdminAllow)
             {
-                innerBox.AddChild(new Label { Text = _loc.GetString("stories-ert-cryostorage-has-admin-access"), FontColorOverride = Color.Green, });
+                innerBox.AddChild(new Label { Text = _loc.GetString("ert-cryostorage-has-admin-access"), FontColorOverride = Color.Green, });
             }
 
             var canPress = true;
@@ -106,7 +106,7 @@ public sealed partial class ERTCryostorageWindow : FancyWindow
 
             var wakeButton = new Button
             {
-                Text = _loc.GetString("stories-ert-cryostorage-wake-button"),
+                Text = _loc.GetString("ert-cryostorage-wake-button"),
                 Margin = new Thickness(0, 4, 0, 0),
                 Disabled = !canPress, 
             };

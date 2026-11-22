@@ -8,7 +8,7 @@
 
 - type: radioChannel
   id: DSO
-  name: stories-chat-radio-DCO
+  name: chat-radio-DCO
   keycode: 'в'
   frequency: 1311
   color: "#0a5fad"

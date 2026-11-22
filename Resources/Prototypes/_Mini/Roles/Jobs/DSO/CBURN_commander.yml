@@ -1,15 +1,14 @@
 - type: job
   id: CBURNCommander
-  name: stories-job-name-cburn-commander
-  description: stories-job-description-cburn-commander
+  name: job-name-cburn-commander
+  description: job-description-cburn-commander
   playTimeTracker: JobCBURNCommander
   setPreference: false
   startingGear: CBURNCommanderGear
   icon: "JobIconCBURNCommander"
-  supervisors: stories-job-supervisors-special-officer
+  supervisors: job-supervisors-special-officer
   accessGroups:
   - AllAccess
-  - PrisonAllAccess
   access:
   - CentralCommand
   - DSO

@@ -88226,7 +88226,7 @@ entities:
     - type: Paper
       stampState: paper_stamp-quadrant-management
       stampedBy:
-      - stampedName: stories-stamp-component-stamped-name-quadrant-management
+      - stampedName: stamp-component-stamped-name-quadrant-management
         stampedColor: '#136863FF'
       editingDisabled: True
       content: >-
@@ -88330,7 +88330,7 @@ entities:
     - type: Paper
       stampState: paper_stamp-admirality
       stampedBy:
-      - stampedName: stories-stamp-component-stamped-name-admirality
+      - stampedName: stamp-component-stamped-name-admirality
         stampedColor: '#000000FF'
       editingDisabled: True
       content: >-
@@ -88695,7 +88695,7 @@ entities:
     - type: Paper
       stampState: paper_stamp-quadrant-management
       stampedBy:
-      - stampedName: stories-stamp-component-stamped-name-quadrant-management
+      - stampedName: stamp-component-stamped-name-quadrant-management
         stampedColor: '#136863FF'
       editingDisabled: True
       content: >-

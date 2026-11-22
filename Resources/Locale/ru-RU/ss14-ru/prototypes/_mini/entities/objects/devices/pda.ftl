@@ -1,9 +1,3 @@
-
-ent-IAAPDA = КПК агента внутрених дел
-    .desc = Корпорация и прибыль — лучшие друзья.
-ent-JudgePDA = КПК судьи
-    .desc = Справедливость и выгода - лучшие друзья.
-
 ent-ChiefCentcomPDA = КПК начальника штаба Центком
     .desc = { ent-CentcomPDA.desc }
     .suffix = НШцк

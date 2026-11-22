@@ -48,8 +48,8 @@
   - type: StealTarget
     stealGroup: HeadCloak
   - type: Foldable
-    unfoldVerbText: stories-fold-throw-on-shoulders-verb
-    foldVerbText: stories-fold-throw-on-shoulder-verb
+    unfoldVerbText: fold-throw-on-shoulders-verb
+    foldVerbText: fold-throw-on-shoulder-verb
 
 - type: entity
   parent: [ ClothingNeckBase, ClothingUniformFoldableBase, BaseFoldable, BaseCentcommContraband ]
@@ -68,8 +68,8 @@
   - type: StealTarget
     stealGroup: HeadCloak
   - type: Foldable
-    unfoldVerbText: stories-fold-throw-on-shoulders-verb
-    foldVerbText: stories-fold-throw-on-shoulder-verb
+    unfoldVerbText: fold-throw-on-shoulders-verb
+    foldVerbText: fold-throw-on-shoulder-verb
 
 - type: entity
   parent: ClothingNeckBase

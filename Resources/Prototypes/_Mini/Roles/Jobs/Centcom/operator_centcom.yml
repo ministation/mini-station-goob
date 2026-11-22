@@ -1,7 +1,7 @@
 - type: job
   id: OperatorCentcom
-  name: stories-job-name-operator-centcom
-  description: stories-job-description-operator-centcom
+  name: job-name-operator-centcom
+  description: job-description-operator-centcom
   playTimeTracker: JobOperatorCentcom
   # requirements:
   # - !type:DepartmentTimeRequirement
@@ -12,10 +12,9 @@
   #   time: 10h
   startingGear: OperatorCentcomGear
   icon: "JobIconCentcom"
-  supervisors: stories-job-supervisors-chief-centcom
+  supervisors: job-supervisors-chief-centcom
   accessGroups:
   - AllAccess
-  - PrisonAllAccess
   access:
   - CentralCommand
   special:

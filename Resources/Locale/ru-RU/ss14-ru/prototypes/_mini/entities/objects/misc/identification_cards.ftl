@@ -1,6 +1,3 @@
-ent-IAAIDCard = ID-карта агента внутренних дел
-ent-JudgeIDCard = ID-карта судьи
-
 ent-ChiefCentcomIDCard = ID-карта начальника штаба Центком
     .desc = { ent-IDCardStandard.desc }
 ent-RepresentativeCentcomIDCard = ID-карта представителя Центком

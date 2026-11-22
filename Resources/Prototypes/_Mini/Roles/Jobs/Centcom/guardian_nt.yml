@@ -1,7 +1,7 @@
 - type: job
   id: GuardianNt
-  name: stories-job-name-guardian-nt
-  description: stories-job-description-guardian-nt
+  name: job-name-guardian-nt
+  description: job-description-guardian-nt
   playTimeTracker: JobGuardianNt
   requirements:
   - !type:DepartmentTimeRequirement

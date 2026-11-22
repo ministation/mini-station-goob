@@ -141,7 +141,7 @@
 
 - type: loadoutGroup
   id: CentCommHeadCommandBack
-  name: stories-loadout-group-centcomm-head-command-back
+  name: loadout-group-centcomm-head-command-back
   minLimit: 1
   loadouts:
   - CentCommHeadCommandBackBackpackSatchelHolding
@@ -165,7 +165,7 @@
 
 - type: loadoutGroup
   id: CentCommOfficerHead
-  name: stories-loadout-group-centcomm-officer-head
+  name: loadout-group-centcomm-officer-head
   minLimit: 1
   loadouts:
   - CentCommOfficerHeadCap
@@ -189,7 +189,7 @@
 
 - type: loadoutGroup
   id: CentCommOfficerJumpsuit
-  name: stories-loadout-group-centcomm-officer-jumpsuit
+  name: loadout-group-centcomm-officer-jumpsuit
   minLimit: 1
   loadouts:
   - CentCommOfficerJumpsuitOfficial
@@ -225,7 +225,7 @@
 
 - type: loadoutGroup
   id: CentCommOfficerBack
-  name: stories-loadout-group-centcomm-officer-back
+  name: loadout-group-centcomm-officer-back
   minLimit: 1
   loadouts:
   - CentCommOfficerBackBackpackSatchelLeather
@@ -255,7 +255,7 @@
 
 - type: loadoutGroup
   id: CentCommOfficerEyes
-  name: stories-loadout-group-centcomm-officer-eyes
+  name: loadout-group-centcomm-officer-eyes
   minLimit: 1
   loadouts:
   - CentCommOfficerEyesGlassesCentcom
@@ -291,7 +291,7 @@
 
 - type: loadoutGroup
   id: CentCommOfficerEars
-  name: stories-loadout-group-centcomm-officer-ears
+  name: loadout-group-centcomm-officer-ears
   minLimit: 1
   loadouts:
   - CentCommOfficerEarsHeadsetAltCentCom
@@ -309,7 +309,7 @@
 
 - type: loadoutGroup
   id: CentCommOfficerGloves
-  name: stories-loadout-group-centcomm-officer-gloves
+  name: loadout-group-centcomm-officer-gloves
   minLimit: 1
   loadouts:
   - CentCommOfficerGlovesBlackCombat
@@ -339,7 +339,7 @@
 
 - type: loadoutGroup
   id: CentCommOfficerShoes
-  name: stories-loadout-group-centcomm-officer-shoes
+  name: loadout-group-centcomm-officer-shoes
   minLimit: 1
   loadouts:
   - CentCommOfficerShoesLaceup
@@ -369,7 +369,7 @@
 
 - type: loadoutGroup
   id: CentCommOfficerOuterClothing
-  name: stories-loadout-group-centcomm-officer-outer-clothing
+  name: loadout-group-centcomm-officer-outer-clothing
   minLimit: 0
   loadouts:
   - CentCommOfficerOuterClothingCarapace
@@ -387,7 +387,7 @@
 
 - type: loadoutGroup
   id: CentCommHeadOfSecurityNeck
-  name: stories-loadout-group-centcomm-head-of-security-neck
+  name: loadout-group-centcomm-head-of-security-neck
   minLimit: 1
   loadouts:
   - CentCommNeckHeadOfSecurityCloak
@@ -399,7 +399,7 @@
 
 - type: loadoutGroup
   id: CentCommOperatorNeck
-  name: stories-loadout-group-centcomm-operator-neck
+  name: loadout-group-centcomm-operator-neck
   minLimit: 1
   loadouts:
   - CentCommNeckOperatorCloak
@@ -411,7 +411,7 @@
 
 - type: loadoutGroup
   id: CentCommRepresentativeNeck
-  name: stories-loadout-group-centcomm-representative-neck
+  name: loadout-group-centcomm-representative-neck
   minLimit: 1
   loadouts:
   - CentCommNeckRepresentativeCloak

@@ -46,8 +46,8 @@
 
 - type: department
   id: DSO
-  name: stories-department-DSO
-  description: stories-department-DSO-description
+  name: department-DSO
+  description: department-DSO-description
   color: "#0a5fad"
   primary: false
   roles:

@@ -1,7 +1,7 @@
 - type: job
   id: ChiefCentcom
-  name: stories-job-name-chief-centcom
-  description: stories-job-description-chief-centcom
+  name: job-name-chief-centcom
+  description: job-description-chief-centcom
   playTimeTracker: JobChiefCentcom
   # requirements:
   # - !type:DepartmentTimeRequirement
@@ -21,10 +21,9 @@
   #   time: 20h
   startingGear: ChiefCentcomGear
   icon: "JobIconChiefCentcom"
-  supervisors: stories-job-supervisors-quadrant-management
+  supervisors: job-supervisors-quadrant-management
   accessGroups:
   - AllAccess
-  - PrisonAllAccess
   access:
   - CentralCommand
   - DSO

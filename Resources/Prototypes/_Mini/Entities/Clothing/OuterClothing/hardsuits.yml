@@ -362,18 +362,7 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitCentcomSecurity
-  - type: BioCode
-  - type: TimerTrigger
-    delay: 3
-  - type: ExplodeOnTrigger
-    keysIn:
-    - timer
-  - type: Explosive
-    explosionType: PowerSink
-    maxIntensity: 8
-    intensitySlope: 5
-    totalIntensity: 5
-    canCreateVacuum: false
+  - type: DNALocker
 
 - type: entity
   parent: [ClothingOuterHardsuitBase, BaseCentcommContraband]
@@ -405,18 +394,7 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitCentcomPersonnel
-  - type: BioCode
-  - type: TimerTrigger
-    delay: 3
-  - type: ExplodeOnTrigger
-    keysIn:
-    - timer
-  - type: Explosive
-    explosionType: PowerSink
-    maxIntensity: 8
-    intensitySlope: 5
-    totalIntensity: 5
-    canCreateVacuum: false
+  - type: DNALocker
 
 - type: entity
   parent: [ClothingOuterHardsuitBase, BaseCentcommContraband]
@@ -454,20 +432,7 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitChiefCentcom
-  - type: BioCode
-    autoRecordDNA: true
-    hardDefense: true
-  - type: TimerTrigger
-    delay: 3
-  - type: ExplodeOnTrigger
-    keysIn:
-    - timer
-  - type: Explosive
-    explosionType: PowerSink
-    maxIntensity: 8
-    intensitySlope: 5
-    totalIntensity: 5
-    canCreateVacuum: false
+  - type: DNALocker
 
 - type: entity
   parent: [ClothingOuterHardsuitBase, BaseCentcommContraband]
@@ -505,20 +470,7 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitSpecialOfficer
-  - type: BioCode
-    autoRecordDNA: true
-    hardDefense: true
-  - type: TimerTrigger
-    delay: 3
-  - type: ExplodeOnTrigger
-    keysIn:
-    - timer
-  - type: Explosive
-    explosionType: PowerSink
-    maxIntensity: 8
-    intensitySlope: 5
-    totalIntensity: 5
-    canCreateVacuum: false
+  - type: DNALocker
 
 - type: entity
   parent: [ BaseCentcommContraband, ClothingOuterHardsuitBase ]
@@ -556,16 +508,4 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetCBURNCommander
-  - type: BioCode
-    hardDefense: true
-  - type: TimerTrigger
-    delay: 3
-  - type: ExplodeOnTrigger
-    keysIn:
-    - timer
-  - type: Explosive
-    explosionType: PowerSink
-    maxIntensity: 8
-    intensitySlope: 5
-    totalIntensity: 5
-    canCreateVacuum: false
+  - type: DNALocker

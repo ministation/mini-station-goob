@@ -1,7 +1,3 @@
-ent-PRISONComputerShuttle = консоль управления шаттлом тюрьмы
-    .desc = Используется для пилотирования корабля или побега с тюрьмы.
-ent-PRISONComputerId = консоль ID-карт тюрьмы
-    .desc = Компьютер для программирования ID-карт сотрудников Nanotrasen, для доступа к разным частям тюрьмы.
 ent-DSOComputerComms = консоль связи Департамента спецопераций
     .desc = { ent-ComputerComms.desc }
 ent-CentcomComputerId = консоль ID-карт центком

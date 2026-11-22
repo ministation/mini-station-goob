@@ -1,7 +1,7 @@
 - type: job
   id: Accountant
-  name: stories-job-name-accountant
-  description: stories-job-description-accountant
+  name: job-name-accountant
+  description: job-description-accountant
   playTimeTracker: JobAccountant
   # requirements:
   # - !type:DepartmentTimeRequirement
@@ -12,7 +12,7 @@
   #   time: 10h
   startingGear: AccountantGear
   icon: "JobIconAccountant"
-  supervisors: stories-job-supervisors-chief-centcom
+  supervisors: job-supervisors-chief-centcom
   access:
   - Maintenance
   - External

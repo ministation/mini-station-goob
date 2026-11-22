@@ -1,9 +1,0 @@
-loadout-group-Guardian-backpack = Backpack
-loadout-group-Guardian-belt = Belt
-loadout-group-Guardian-head = Head
-loadout-group-Guardian-jumpsuits = Jumpsuits
-loadout-group-Guardian-lightsaber = Lightsaber
-loadout-group-Guardian-mask = Mask
-loadout-group-Guardian-neck = Neck
-loadout-group-Guardian-outer-clothing = Clothing
-loadout-group-Guardian-shoes = Shoes

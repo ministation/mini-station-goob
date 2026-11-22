@@ -9,46 +9,27 @@ job-description-typan-patrol = Обеспечивает «порядок» и б
 job-description-typan-command = Офицер связи и координатор Синдиката. Обеспечивает скрытную коммуникацию между агентами и Центром, управляет операцией из тени.
 job-description-typan-technical-supervisor = Координируйте работу технических служб станции. Обеспечивайте бесперебойное функционирование систем жизнеобеспечения, энергоснабжения и логистики.
 
-
-# Juridical-Jobs
-
-stories-job-description-judge = Следите за порядком в зале, взвешивайте доводы сторон и принимайте окончательное решение, от которого зависит судьба каждого участника дела.
-stories-job-description-magistrate = Несите справедливость и не позволяйте никому нарушать ОПРС.
-
 # Centcom-Jobs
 
-stories-job-description-chief-centcom = Управляйте станцией Центрального командования и действуйте исключительно в интересах компании Nanotrasen.
-stories-job-description-operator-centcom = Вы мозг станции Центрального командования, сортируйте и берегите документы.
-stories-job-description-representative-centcom = Вы олицетворение воли станции Центрального командования, не ударите в грязь лицом перед скользкой лужей.
-stories-job-description-head-of-security-centcom = Возглавьте безопасность станции Центрального командования для устранения угрозы активам компании Nanotrasen.
-stories-job-description-officer-security-centcom = Вы живой щит станции Центрального командования, не смейте умирать.
-stories-job-description-medic-centcom = Убедитесь, что экипаж станции Центрального командования, жив и здоров.
-stories-job-description-engineer-centcom = Поддерживайте целостность и работу жизненно важных систем станции Центрального командования.
-stories-job-description-worker-centcom = Выполняйте любую порученную вам работу, вы элитный уборщик.
+job-description-chief-centcom = Управляйте станцией Центрального командования и действуйте исключительно в интересах компании Nanotrasen.
+job-description-operator-centcom = Вы мозг станции Центрального командования, сортируйте и берегите документы.
+job-description-representative-centcom = Вы олицетворение воли станции Центрального командования, не ударите в грязь лицом перед скользкой лужей.
+job-description-head-of-security-centcom = Возглавьте безопасность станции Центрального командования для устранения угрозы активам компании Nanotrasen.
+job-description-officer-security-centcom = Вы живой щит станции Центрального командования, не смейте умирать.
+job-description-medic-centcom = Убедитесь, что экипаж станции Центрального командования, жив и здоров.
+job-description-engineer-centcom = Поддерживайте целостность и работу жизненно важных систем станции Центрального командования.
+job-description-worker-centcom = Выполняйте любую порученную вам работу, вы элитный уборщик.
 
-stories-job-description-officer-special-assignments = Вы отвечаете за все поставки на станции Центрального командования и поставки "особых" товаров на простые станции NT.
-stories-job-description-logist = Грузчик ЦК, но круче, Вы - логист!
-stories-job-description-accountant = Определяйте заработную плату за смену для экипажа станции и станции ЦК.
-stories-job-description-internal-inspector = Проверьте, действительно ли на станции Центрального командования всё хорошо, как это было сказано в отчёте от НШЦК. Увольте его при необходимости.
+job-description-officer-special-assignments = Вы отвечаете за все поставки на станции Центрального командования и поставки "особых" товаров на простые станции NT.
+job-description-logist = Грузчик ЦК, но круче, Вы - логист!
+job-description-accountant = Определяйте заработную плату за смену для экипажа станции и станции ЦК.
+job-description-internal-inspector = Проверьте, действительно ли на станции Центрального командования всё хорошо, как это было сказано в отчёте от НШЦК. Увольте его при необходимости.
 
 # DSO-Jobs
 
-stories-job-description-special-officer = Руководите силами департамента спецопераций.
-stories-job-description-cburn-commander = Руководите агентами карантинной службы ДСО
+job-description-special-officer = Руководите силами департамента спецопераций.
+job-description-cburn-commander = Руководите агентами карантинной службы ДСО
 
-# Prison-Jobs
+# Guardian
 
-
-
-# Juridical-Jobs
-
-
-# Centcom-Jobs
-
-
-
-# DSO-Jobs
-
-
-# Prison-Jobs
-
+job-description-guardian-nt = Встань на защиту командования станции со своим крутым мечом и способностями!
