@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: LicenseRef-MiniStation-1.0
+
+# Salvage wreck marker. Rolled once per placed marker, so roughly one wreck in
+# three carries a Deca-Code crate and the rest of the time this spot stays empty.
+- type: entity
+  parent: MarkerBase
+  id: SalvageDecaCrateSpawner
+  name: Deca-Code crate spawner
+  suffix: 33%
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: Structures/Storage/Crates/secure.rsi
+      state: icon
+  - type: EntityTableSpawner
+    table: !type:EntSelector
+      id: CrateDecaCode
+      prob: 0.33

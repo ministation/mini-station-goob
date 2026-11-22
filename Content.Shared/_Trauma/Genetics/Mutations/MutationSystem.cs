@@ -308,6 +308,27 @@ public sealed partial class MutationSystem : CommonMutationSystem
         => AllMutations[id].Rarity;
 
     /// <summary>
+    /// Gets every mutation which can be rolled randomly: unlocked, non-abstract prototypes.
+    /// Used by random-mutation mutators.
+    /// </summary>
+    public List<EntProtoId<MutationComponent>> GetRandomMutations()
+    {
+        var result = new List<EntProtoId<MutationComponent>>(AllMutations.Count);
+        foreach (var (id, mutation) in AllMutations)
+        {
+            if (mutation.Locked)
+                continue;
+
+            if (!ProtoMan.TryIndex(id.Id, out EntityPrototype? proto) || proto.Abstract)
+                continue;
+
+            result.Add(id);
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Gets the ID of a mutation, or throws if it isn't valid.
     /// </summary>
     public EntProtoId<MutationComponent> GetID(EntityUid mutation)
