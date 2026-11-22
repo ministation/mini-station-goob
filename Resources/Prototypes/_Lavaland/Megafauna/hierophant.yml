@@ -46,7 +46,7 @@
   id: ActionHierophantBox
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 0.75,3.0
+      range: 1.0,4.0
       inverse: true
     actionId: ActionHierophantBox
     conditions:
@@ -57,7 +57,7 @@
   id: ActionHierophantCrosses
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 0.75,2.25
+      range: 1.0,3.0
       inverse: true
     actionId: ActionHierophantCrosses
     conditions:
@@ -68,7 +68,7 @@
   id: ActionHierophantChasers
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 0.1,0.4
+      range: 0.1,0.5
       inverse: true
     actionId: ActionHierophantChasers
     conditions:
@@ -79,7 +79,7 @@
   id: ActionHierophantChaserSwarm
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 3.0,7.5
+      range: 4.0,10.0
       inverse: true
     actionId: ActionHierophantChaserSwarm
     conditions:
@@ -90,7 +90,7 @@
   id: ActionHierophantBlink
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 0.2,0.75
+      range: 0.2,1.0
       inverse: true
     actionId: ActionHierophantBlink
     conditions:
@@ -101,7 +101,7 @@
   id: ActionHierophantBlinkSlam
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 0.75,2.25
+      range: 1.0,3.0
       inverse: true
     actionId: ActionHierophantBlinkSlam
     conditions:
@@ -113,7 +113,7 @@
   id: ActionHierophantCrossesEnraged
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 0.4,1.15
+      range: 0.5,1.5
       inverse: true
     actionId: ActionHierophantCrossesEnraged
     conditions:
@@ -128,7 +128,7 @@
   id: ActionHierophantBlinkSpam
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 0.2,0.75
+      range: 0.2,1.0
       inverse: true
     actionId: ActionHierophantBlinkSpam
     conditions:

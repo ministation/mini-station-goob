@@ -51,12 +51,11 @@
     soundHit:
       path: /Audio/_Lavaland/Mobs/Bosses/Bubblegum/demon_attack1.ogg
     animation: WeaponArcBite
-    attackRate: 1.1
+    attackRate: 1.0
     damage:
       types:
-        Slash: 52
-        Structural: 52
-      armorPenetration: 0.4
+        Slash: 40
+        Structural: 40
   - type: Tag
     tags:
     - CannotSuicide
@@ -72,7 +71,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      3450: Dead
+      2500: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -99,9 +98,11 @@
     soundId: Bubblegum
   - type: Aggressive
     autoAddOnDamage: false
-    forgiveRange: 40.0
+    forgiveRange: 12.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: Anger
-    totalHp: 3450
+    totalHp: 2500
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2

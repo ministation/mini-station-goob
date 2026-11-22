@@ -9,7 +9,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -33,7 +33,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -57,7 +57,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -76,7 +76,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -94,7 +94,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -113,7 +113,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -132,7 +132,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -183,7 +183,6 @@
     lifetime: 1
 
 # Meteor impact: TG's meteors deal fire loss, unlike the swoop slam.
-# Capped at 50 by the area fire rule; the 1.2 buff would give 66.
 - type: entity
   id: LavalandDrakeMeteorDamage
   categories: [ DoNotMap ]
@@ -201,7 +200,7 @@
     damageDelay: 0.2
     damage:
       types:
-        Heat: 50
+        Heat: 55
     damageWhitelist:
       components:
       - MobState
@@ -273,7 +272,7 @@
     damageDelay: 0.3
     damage:
       types:
-        Heat: 42
+        Heat: 35
     damageWhitelist:
       components:
       - MobState
@@ -304,7 +303,7 @@
     damageDelay: 0.3
     damage:
       types:
-        Heat: 24
+        Heat: 20
     damageWhitelist:
       components:
       - MobState
@@ -320,7 +319,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false

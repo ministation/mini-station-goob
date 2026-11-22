@@ -13,7 +13,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 27
+        Heat: 22
     ignoreResistances: true
   - type: RockBreakingProjectile
   # TG: the orb bursts into a ring of ice blasts after two seconds instead of hitting.
@@ -51,7 +51,7 @@
   - type: Projectile
     damage:
       types:
-        Blunt: 18
+        Blunt: 15
     ignoreResistances: true
   - type: RockBreakingProjectile
   # TG: a turf or object impact is EX_ACT(EXPLODE_HEAVY), the blast splashes on the wall.
@@ -82,7 +82,7 @@
   - type: Projectile
     damage:
       types:
-        Blunt: 6
+        Blunt: 5
     ignoreResistances: true
   - type: Sprite
     sprite: _Lavaland/Objects/Projectiles/frost_miner.rsi
@@ -104,7 +104,7 @@
   - type: Projectile
     damage:
       types:
-        Blunt: 22
+        Blunt: 18
   - type: RockBreakingProjectile
   - type: Sprite
     sprite: _Lavaland/Objects/Projectiles/frost_miner.rsi

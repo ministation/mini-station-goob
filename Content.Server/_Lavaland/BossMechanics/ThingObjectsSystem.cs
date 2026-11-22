@@ -109,7 +109,7 @@ public sealed class ThingObjectsSystem : EntitySystem
 
     private bool TryBurn(EntityUid acid, EntityCoordinates coords)
     {
-        var damage = new DamageSpecifier { DamageDict = { { "Burn", 30f } } };
+        var damage = new DamageSpecifier { DamageDict = { { "Burn", 25f } } };
 
         foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(coords, 0.4f))
         {

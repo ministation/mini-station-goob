@@ -65,10 +65,8 @@
     animation: WeaponArcBite
     damage:
         types:
-          Blunt: 29
-          Structural: 230
-        armorPenetration: 0.5 # TG legion melee has 50 AP
-    attackRate: 1.1
+          Blunt: 25
+          Structural: 200
   - type: Tag
     tags:
     - CannotSuicide
@@ -79,14 +77,16 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      900: Dead
+      700: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
   - type: BossMusic
     soundId: Miniboss
   - type: Aggressive # also required component for aggro checking
-    forgiveRange: 20.0
+    forgiveRange: 12.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: CombatPower # Goobstation
     factor: 25 # times more dangerous than a crew-member
   # Megafauna AI wiring, same driver as Hierophant
@@ -110,11 +110,11 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.6
+      value: 0.8
     selector: !type:NestedMegafaunaSelector
       id: Legion
   - type: Anger
-    totalHp: 900
+    totalHp: 700
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
@@ -213,7 +213,9 @@
     damageModifierSet: Hierophant
   - type: TileMovement
   - type: Aggressive
-    forgiveRange: 20.0
+    forgiveRange: 10.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: CombatPower
     factor: 15
   - type: LegionBossLoot

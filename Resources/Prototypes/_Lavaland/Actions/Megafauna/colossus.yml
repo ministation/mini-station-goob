@@ -9,7 +9,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -31,7 +31,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -76,7 +76,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -99,7 +99,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -123,7 +123,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 2.25
+    useDelay: 3
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -144,7 +144,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 3.4
+    useDelay: 4.5
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false

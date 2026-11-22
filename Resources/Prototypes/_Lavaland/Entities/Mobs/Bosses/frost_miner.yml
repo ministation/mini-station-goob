@@ -54,10 +54,10 @@
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
-    attackRate: 2.2 # TG rapid_melee 4, roughly one hit every half second
+    attackRate: 2 # TG rapid_melee 4, one hit every half second
     damage:
       types:
-        Blunt: 12
+        Blunt: 10
       armorPenetration: 1 # TG armour_penetration 100
   - type: VampiricMelee
     healFraction: 0.5 # TG lifesteal 50
@@ -71,7 +71,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      1875: Dead
+      1500: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -79,7 +79,9 @@
     # TG uses bdm_boss.ogg, this fork does not ship it; the shared miniboss track is the stand-in.
     soundId: Miniboss
   - type: Aggressive
-    forgiveRange: 20.0
+    forgiveRange: 10.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: CombatPower
     factor: 30
   - type: MobMover
@@ -108,18 +110,18 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
+      value: 0.5
     selector: !type:NestedMegafaunaSelector
       id: FrostMiner
   - type: Anger
-    totalHp: 1875
+    totalHp: 1500
   - type: AngerPlayerScaling
     angerScale: 1.2
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0: 1
-      468: 2 # TG enrages at 25% health
+      375: 2 # TG enrages at 25% health
   - type: FrostMinerEnrage
   - type: MegafaunaBlink
   - type: MegafaunaRejuvenate

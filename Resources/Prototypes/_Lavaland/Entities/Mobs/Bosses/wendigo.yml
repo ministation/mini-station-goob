@@ -55,10 +55,9 @@
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Effects/demon_attack1.ogg
-    attackRate: 1.1
     damage:
       types:
-        Slash: 46
+        Slash: 40
       armorPenetration: 0.4 # TG's wendigo has 40% melee armor piercing
   - type: Tag
     tags:
@@ -70,7 +69,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      3150: Dead
+      2500: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -83,7 +82,9 @@
   - type: CombatPower # Goobstation
     factor: 25 # times more dangerous than a crew-member
   - type: Aggressive # also required component for aggro checking
-    forgiveRange: 20.0
+    forgiveRange: 10.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   # Megafauna AI wiring, same driver as the other lavaland bosses.
   - type: MobMover
   - type: LagCompensation
@@ -109,23 +110,23 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.55
+      value: 0.7
     selector: !type:NestedMegafaunaSelector
       id: Wendigo
   - type: Anger
-    totalHp: 3150
+    totalHp: 2500
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0: 1
-      1575: 2 # below half health the wendigo enrages, like TG's WENDIGO_ENRAGED
+      1250: 2 # below half health the wendigo enrages, like TG's WENDIGO_ENRAGED
   - type: BossEnrage
     healthFraction: 0.5
     speedMultiplier: 1.5 # TG drops its move delay from 6 to 4
     attackRateMultiplier: 1
-    actionDelay: 0.4 # base AI delay is 0.55
+    actionDelay: 0.55 # base AI delay is 0.7
     sound:
       path: /Audio/Effects/demon_dies.ogg
   - type: MegafaunaRejuvenate

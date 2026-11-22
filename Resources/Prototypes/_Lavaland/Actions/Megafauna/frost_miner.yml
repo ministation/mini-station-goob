@@ -3,7 +3,6 @@
 # Demonic frost miner attacks, ported from TG's demonic_frost_miner.dm.
 # TG picks one of three attacks and, with 80% chance (60% while enraged), uses its easy form.
 # The enraged easy forms only double projectile speed, TG's hard forms keep their base speed.
-# Use delays and volley intervals follow TG, shortened by the fork's boss difficulty pass.
 
 # Frost orbs: slow homing-ish orbs that burst into shrapnel after two seconds.
 - type: entity
@@ -15,7 +14,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 4.5
+    useDelay: 6
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -24,7 +23,7 @@
     event: !type:MegafaunaVolleyActionEvent
       projectile: LavalandFrostOrb
       volleys: 8
-      interval: 0.75
+      interval: 1
       randomSpread: 180
       speed: 3.5
       homing: true
@@ -39,7 +38,7 @@
     event: !type:MegafaunaVolleyActionEvent
       projectile: LavalandFrostOrb
       volleys: 16
-      interval: 0.4
+      interval: 0.5
       randomSpread: 180
       speed: 3.5
       homing: true
@@ -54,7 +53,7 @@
     event: !type:MegafaunaVolleyActionEvent
       projectile: LavalandFrostOrb
       volleys: 8
-      interval: 0.75
+      interval: 1
       randomSpread: 180
       speed: 7
       homing: true
@@ -69,7 +68,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.15
+    useDelay: 1.5
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -106,7 +105,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 9
+    useDelay: 12
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -115,9 +114,9 @@
     event: !type:MegafaunaVolleyActionEvent
       projectile: LavalandFrostMinerKineticBolt
       volleys: 1
-      interval: 0.75
+      interval: 1
       speed: 18
-      blinkDelay: 0.7
+      blinkDelay: 0.9
 
 # Ice shotguns: alternating spread patterns, five volleys each.
 - type: entity
@@ -129,7 +128,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     itemIconStyle: NoItem
   - type: TargetAction
     checkCanAccess: false
@@ -138,7 +137,7 @@
     event: !type:MegafaunaVolleyActionEvent
       projectile: LavalandIceBlast
       volleys: 5
-      interval: 0.6
+      interval: 0.8
       speed: 10.5
       patterns: [[-30, -10, 10, 30], [-40, -20, 0, 20, 40]]
 
@@ -152,7 +151,7 @@
     event: !type:MegafaunaVolleyActionEvent
       projectile: LavalandIceBlast
       volleys: 5
-      interval: 0.6
+      interval: 0.8
       speed: 21
       patterns: [[-30, -10, 10, 30], [-40, -20, 0, 20, 40]]
 
@@ -166,6 +165,6 @@
     event: !type:MegafaunaVolleyActionEvent
       projectile: LavalandIceBlast
       volleys: 5
-      interval: 0.6
+      interval: 0.8
       speed: 10.5
       patterns: [[-30, -15, 0, 15, 30], [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]]

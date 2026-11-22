@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Content.Server._Lavaland.Bubblegum;
 using Content.Server.Damage.Systems;
 using Content.Shared._Lavaland.Aggression;
 using Content.Shared._Lavaland.Megafauna.Components;
@@ -43,8 +44,8 @@ public sealed class MegafaunaAggroTest
         "LavalandBossBubblegum",
     };
 
-    /// <summary>Inside the TG vision range, which is nine tiles.</summary>
-    private const float AggroDistance = 6f;
+    /// <summary>Inside the boss four tile noticing range, so it stays in its arena otherwise.</summary>
+    private const float AggroDistance = 3f;
 
     /// <summary>Proximity scans happen once per 0.5 s, 90 ticks is three scans.</summary>
     private const int AggroTickLimit = 90;
@@ -118,6 +119,11 @@ public sealed class MegafaunaAggroTest
                 {
                     return true;
                 }
+
+                // Bubblegum picks its attacks in its own system, with no MegafaunaAi schedule to watch.
+                if (entMan.TryGetComponent<BubblegumComponent>(boss, out var bubblegum)
+                    && (bubblegum.LastAttackKind != string.Empty || bubblegum.Charging))
+                    return true;
 
                 var bossXform = entMan.GetComponent<TransformComponent>(boss);
                 return (xformSys.GetWorldPosition(bossXform) - startPos).Length() > 0.25f;

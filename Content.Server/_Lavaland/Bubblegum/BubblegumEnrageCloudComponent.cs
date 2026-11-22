@@ -17,7 +17,7 @@ public sealed partial class BubblegumEnrageCloudComponent : Component
     {
         DamageDict = new()
         {
-            { "Blunt", FixedPoint2.New(18) },
+            { "Blunt", FixedPoint2.New(15) },
         },
     };
 

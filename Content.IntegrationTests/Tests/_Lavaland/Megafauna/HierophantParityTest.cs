@@ -43,10 +43,10 @@ namespace Content.IntegrationTests.Tests._Lavaland.Megafauna;
 public sealed class HierophantParityTest
 {
     /// <summary>
-    /// Blink blasts go from the TG 30 burn to 36 with the fork damage buff.
+    /// Blink blasts use the TG 30 burn.
     /// </summary>
     [Test]
-    public async Task BlinkBlastIsThirtySixBurn()
+    public async Task BlinkBlastIsThirtyBurn()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -60,14 +60,14 @@ public sealed class HierophantParityTest
                 "the blink square lost its DamageSquareComponent");
             Assert.That(square!.Damage.DamageDict.TryGetValue("Heat", out var heat), Is.True,
                 "the blink square deals no heat damage");
-            Assert.That(heat, Is.EqualTo(FixedPoint2.New(36)),
-                "the blink square must deal 36 heat: TG 30 times the fork 1.2");
+            Assert.That(heat, Is.EqualTo(FixedPoint2.New(30)),
+                "the blink square must deal the TG 30 heat");
 
             var strongShape = proto.Index<EntityPrototype>("HierophantShapeBlinkStrong");
             Assert.That(strongShape.TryGetComponent<ShapeSpawnerComponent>(out var spawner, entMan.ComponentFactory), Is.True,
                 "the strong blink shape lost its ShapeSpawnerComponent");
             Assert.That(spawner!.Spawn, Is.EqualTo(new EntProtoId("LavalandHierophantBlinkSquare")),
-                "the strong blink shape must spawn the 36 heat squares");
+                "the strong blink shape must spawn the 30 heat squares");
         });
 
         await pair.CleanReturnAsync();
@@ -246,11 +246,10 @@ public sealed class HierophantParityTest
     }
 
     /// <summary>
-    /// Boss stats follow the difficulty policy: the stronger of the TG value and our old one,
-    /// then the fork multipliers on top.
+    /// Boss stats follow the rebalance: TG values without the fork multipliers.
     /// </summary>
     [Test]
-    public async Task BossStatsMatchDifficultyPolicy()
+    public async Task BossStatsMatchRebalance()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -267,56 +266,56 @@ public sealed class HierophantParityTest
             Assert.That(thresholdSys.TryGetThresholdForState(boss, MobState.Dead, out var deathHp), Is.True,
                 "the hierophant lost its death threshold");
             Assert.That(deathHp, Is.Not.Null);
-            Assert.That(deathHp!.Value, Is.EqualTo(FixedPoint2.New(3275)),
-                "the hierophant must die at 3275 HP instead of 2850");
+            Assert.That(deathHp!.Value, Is.EqualTo(FixedPoint2.New(2500)),
+                "the hierophant must die at the TG 2500 HP");
 
             var protoBoss = proto.Index<EntityPrototype>("MobHierophant");
 
             Assert.That(protoBoss.TryGetComponent<AngerComponent>(out var anger, entMan.ComponentFactory), Is.True,
                 "the hierophant lost its AngerComponent");
-            Assert.That(anger!.TotalHp, Is.EqualTo(FixedPoint2.New(3275)),
-                "Anger totalHp must follow the new death threshold");
+            Assert.That(anger!.TotalHp, Is.EqualTo(FixedPoint2.New(2500)),
+                "Anger totalHp must follow the death threshold");
 
             Assert.That(protoBoss.TryGetComponent<MeleeWeaponComponent>(out var melee, entMan.ComponentFactory), Is.True,
                 "the hierophant lost its MeleeWeaponComponent");
-            Assert.That(melee!.Damage.DamageDict["Blunt"], Is.EqualTo(FixedPoint2.New(18)),
-                "melee must go from the TG 15 to 18");
+            Assert.That(melee!.Damage.DamageDict["Blunt"], Is.EqualTo(FixedPoint2.New(15)),
+                "melee must stay at the TG 15");
             Assert.That(melee.Damage.ArmorPenetration, Is.EqualTo(0.5f).Within(0.0001f),
                 "melee armour penetration must not fall under the TG 50");
-            Assert.That(melee.AttackRate, Is.EqualTo(1.1f).Within(0.0001f),
-                "melee attack rate must be 1.1");
+            Assert.That(melee.AttackRate, Is.EqualTo(1f).Within(0.0001f),
+                "melee attack rate must be the default 1");
 
             Assert.That(protoBoss.TryGetComponent<MegafaunaAiComponent>(out var ai, entMan.ComponentFactory), Is.True,
                 "the hierophant lost its MegafaunaAiComponent");
             var aiDelay = (MegafaunaConstantNumberSelector) ai!.ActionDelaySelector;
-            Assert.That(aiDelay.Value, Is.EqualTo(0.4f).Within(0.0001f),
-                "AI actionDelay must drop from 0.5 to 0.4");
+            Assert.That(aiDelay.Value, Is.EqualTo(0.5f).Within(0.0001f),
+                "AI actionDelay must stay at 0.5");
 
             Assert.That(protoBoss.TryGetComponent<BossEnrageComponent>(out var enrage, entMan.ComponentFactory), Is.True,
                 "the hierophant lost its BossEnrageComponent");
             Assert.That(enrage!.ActionDelay, Is.Not.Null);
-            Assert.That(enrage.ActionDelay!.Value, Is.EqualTo(0.3f).Within(0.0001f),
-                "enrage actionDelay must not fall under the 0.3 floor");
+            Assert.That(enrage.ActionDelay!.Value, Is.EqualTo(0.35f).Within(0.0001f),
+                "enrage actionDelay must stay at 0.35");
 
             Assert.That(protoBoss.TryGetComponent<HierophantBlinkSlamComponent>(out var slam, entMan.ComponentFactory), Is.True,
                 "the hierophant lost its HierophantBlinkSlamComponent");
-            Assert.That(slam!.SlamDelay, Is.EqualTo(0.7f).Within(0.0001f),
-                "the blink slam delay must drop from 0.9");
+            Assert.That(slam!.SlamDelay, Is.EqualTo(0.9f).Within(0.0001f),
+                "the blink slam delay must stay at the TG 0.9");
 
             Assert.That(protoBoss.TryGetComponent<HierophantArenaTrapComponent>(out var trap, entMan.ComponentFactory), Is.True,
                 "the hierophant lost its HierophantArenaTrapComponent");
-            Assert.That(trap!.Cooldown, Is.EqualTo(TimeSpan.FromSeconds(15)),
-                "the arena trap cooldown must drop from the TG 20 seconds");
+            Assert.That(trap!.Cooldown, Is.EqualTo(TimeSpan.FromSeconds(20)),
+                "the arena trap cooldown must stay at the TG 20 seconds");
         });
 
         await pair.CleanReturnAsync();
     }
 
     /// <summary>
-    /// Damage of every hierophant blast follows ceil(max(now, TG) * 1.2) and stays under the 50 per hit cap.
+    /// Damage of every hierophant blast uses the TG values.
     /// </summary>
     [Test]
-    public async Task AbilityDamageMatchesPolicy()
+    public async Task AbilityDamageMatchesTg()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -325,11 +324,11 @@ public sealed class HierophantParityTest
 
         await server.WaitAssertion(() =>
         {
-            AssertSquareDamage(proto, entMan, "LavalandHierophantSquare", "Blunt", 12);
-            AssertSquareDamage(proto, entMan, "LavalandHierophantSquare", "Heat", 12);
-            AssertSquareDamage(proto, entMan, "LavalandHierophantBlinkSquare", "Heat", 36);
-            AssertSquareDamage(proto, entMan, "LavalandHierophantBlinkSlamSquare", "Blunt", 18);
-            AssertSquareDamage(proto, entMan, "LavalandHierophantBlinkSlamSquare", "Heat", 18);
+            AssertSquareDamage(proto, entMan, "LavalandHierophantSquare", "Blunt", 10);
+            AssertSquareDamage(proto, entMan, "LavalandHierophantSquare", "Heat", 10);
+            AssertSquareDamage(proto, entMan, "LavalandHierophantBlinkSquare", "Heat", 30);
+            AssertSquareDamage(proto, entMan, "LavalandHierophantBlinkSlamSquare", "Blunt", 15);
+            AssertSquareDamage(proto, entMan, "LavalandHierophantBlinkSlamSquare", "Heat", 15);
 
             var chaser = proto.Index<EntityPrototype>("LavalandHierophantChaser");
             Assert.That(chaser.TryGetComponent<TileChaserComponent>(out var tile, entMan.ComponentFactory), Is.True,
@@ -351,10 +350,10 @@ public sealed class HierophantParityTest
     }
 
     /// <summary>
-    /// Action cooldowns and the AI feedback delays take the TG value where it is shorter, then x0.75.
+    /// Action cooldowns and AI feedback delays use the TG values.
     /// </summary>
     [Test]
-    public async Task ActionCooldownsMatchPolicy()
+    public async Task ActionCooldownsMatchTg()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -367,21 +366,21 @@ public sealed class HierophantParityTest
             Assert.That(baseAction.TryGetComponent<ActionComponent>(out var action, entMan.ComponentFactory), Is.True,
                 "the box action lost its ActionComponent");
             Assert.That(action!.UseDelay, Is.Not.Null);
-            Assert.That(action.UseDelay!.Value.TotalSeconds, Is.EqualTo(1.5).Within(0.0001),
-                "the shared hierophant action useDelay must drop from 2 to 1.5");
+            Assert.That(action.UseDelay!.Value.TotalSeconds, Is.EqualTo(2).Within(0.0001),
+                "the shared hierophant action useDelay must stay at 2");
 
-            AssertActionCooldown(proto, entMan, "ActionHierophantBox", 1.15, 3.0);
-            AssertActionCooldown(proto, entMan, "ActionHierophantCrosses", 1.15, 3.0);
-            AssertActionCooldown(proto, entMan, "ActionHierophantChasers", 5.25, 7.6);
-            AssertActionCooldown(proto, entMan, "ActionHierophantChaserSwarm", 7.6, 7.6);
-            AssertActionCooldown(proto, entMan, "ActionHierophantBlink", 2.25, 3.0);
-            AssertActionCooldown(proto, entMan, "ActionHierophantBlinkSlam", 3.0, 6.75);
+            AssertActionCooldown(proto, entMan, "ActionHierophantBox", 1.5, 4.0);
+            AssertActionCooldown(proto, entMan, "ActionHierophantCrosses", 1.5, 4.0);
+            AssertActionCooldown(proto, entMan, "ActionHierophantChasers", 7.0, 20.0);
+            AssertActionCooldown(proto, entMan, "ActionHierophantChaserSwarm", 12.0, 25.0);
+            AssertActionCooldown(proto, entMan, "ActionHierophantBlink", 3.0, 10.0);
+            AssertActionCooldown(proto, entMan, "ActionHierophantBlinkSlam", 4.0, 9.0);
 
-            AssertSelectorDelay(proto, "ActionHierophantBox", 0.75f, 3.0f);
-            AssertSelectorDelay(proto, "ActionHierophantChasers", 0.1f, 0.4f);
-            AssertSelectorDelay(proto, "ActionHierophantChaserSwarm", 3.0f, 7.5f);
-            AssertSelectorDelay(proto, "ActionHierophantBlink", 0.2f, 0.75f);
-            AssertSelectorDelay(proto, "ActionHierophantCrossesEnraged", 0.4f, 1.15f);
+            AssertSelectorDelay(proto, "ActionHierophantBox", 1.0f, 4.0f);
+            AssertSelectorDelay(proto, "ActionHierophantChasers", 0.1f, 0.5f);
+            AssertSelectorDelay(proto, "ActionHierophantChaserSwarm", 4.0f, 10.0f);
+            AssertSelectorDelay(proto, "ActionHierophantBlink", 0.2f, 1.0f);
+            AssertSelectorDelay(proto, "ActionHierophantCrossesEnraged", 0.5f, 1.5f);
         });
 
         await pair.CleanReturnAsync();
@@ -513,10 +512,10 @@ public sealed class HierophantParityTest
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(entMan.GetComponent<DamageableComponent>(plain).TotalDamage, Is.EqualTo(FixedPoint2.New(24)),
-                "a non fauna mob must take the plain 24 blast damage");
-            Assert.That(entMan.GetComponent<DamageableComponent>(fauna).TotalDamage, Is.EqualTo(FixedPoint2.New(34)),
-                "fauna must take the 24 blast damage plus the TG 10 brute monster boost");
+            Assert.That(entMan.GetComponent<DamageableComponent>(plain).TotalDamage, Is.EqualTo(FixedPoint2.New(20)),
+                "a non fauna mob must take the plain 20 blast damage");
+            Assert.That(entMan.GetComponent<DamageableComponent>(fauna).TotalDamage, Is.EqualTo(FixedPoint2.New(30)),
+                "fauna must take the 20 blast damage plus the TG 10 brute monster boost");
         });
 
         await pair.CleanReturnAsync();
