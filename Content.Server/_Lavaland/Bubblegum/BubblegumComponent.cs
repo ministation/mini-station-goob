@@ -14,25 +14,25 @@ namespace Content.Server._Lavaland.Bubblegum;
 public sealed partial class BubblegumComponent : Component
 {
     [DataField]
-    public TimeSpan RangedCooldown = TimeSpan.FromSeconds(1.95);
+    public TimeSpan RangedCooldown = TimeSpan.FromSeconds(2.6);
 
     [DataField]
-    public TimeSpan ForcePressureAfter = TimeSpan.FromSeconds(4.15);
+    public TimeSpan ForcePressureAfter = TimeSpan.FromSeconds(5.5);
 
     [DataField]
-    public TimeSpan TargetSwitchCooldown = TimeSpan.FromSeconds(2.65);
+    public TimeSpan TargetSwitchCooldown = TimeSpan.FromSeconds(3.5);
 
     [DataField]
-    public TimeSpan TargetPressureMemory = TimeSpan.FromSeconds(22.5);
+    public TimeSpan TargetPressureMemory = TimeSpan.FromSeconds(30);
 
     [DataField]
-    public TimeSpan BloodSmackDelay = TimeSpan.FromSeconds(0.3);
+    public TimeSpan BloodSmackDelay = TimeSpan.FromSeconds(0.35);
 
     [DataField]
-    public TimeSpan BloodGrabDelay = TimeSpan.FromSeconds(0.45);
+    public TimeSpan BloodGrabDelay = TimeSpan.FromSeconds(0.65);
 
     [DataField]
-    public TimeSpan BloodWarpDelay = TimeSpan.FromSeconds(0.3);
+    public TimeSpan BloodWarpDelay = TimeSpan.FromSeconds(0.35);
 
     /// <summary>
     /// TG blood_warp pick_range: the jaunt destination is a blood pool on this ring around the target.
@@ -53,10 +53,10 @@ public sealed partial class BubblegumComponent : Component
     public int BloodWarpBossPoolRange = 1;
 
     [DataField]
-    public TimeSpan BloodHandRecover = TimeSpan.FromSeconds(0.35);
+    public TimeSpan BloodHandRecover = TimeSpan.FromSeconds(0.45);
 
     [DataField]
-    public TimeSpan BloodReactionCooldown = TimeSpan.FromSeconds(1.4);
+    public TimeSpan BloodReactionCooldown = TimeSpan.FromSeconds(1.85);
 
     /// <summary>
     /// How long Bubblegum stays enraged after a blood warp. TG scales this from
@@ -70,7 +70,7 @@ public sealed partial class BubblegumComponent : Component
     /// balance buff applied (0.75 of the 14 s cap).
     /// </summary>
     [DataField]
-    public TimeSpan EnrageCooldown = TimeSpan.FromSeconds(10.5);
+    public TimeSpan EnrageCooldown = TimeSpan.FromSeconds(14);
 
     [ViewVariables]
     public TimeSpan EnrageCooldownUntil;
@@ -115,25 +115,25 @@ public sealed partial class BubblegumComponent : Component
     public TimeSpan BloodSprayStepDelay = TimeSpan.FromSeconds(0.055);
 
     [DataField]
-    public TimeSpan ChargeWindup = TimeSpan.FromSeconds(0.35);
+    public TimeSpan ChargeWindup = TimeSpan.FromSeconds(0.45);
 
     [DataField]
     public TimeSpan ChargeStepDelay = TimeSpan.FromSeconds(0.05);
 
     [DataField]
-    public TimeSpan ChargeRecover = TimeSpan.FromSeconds(0.3);
+    public TimeSpan ChargeRecover = TimeSpan.FromSeconds(0.4);
 
     [DataField]
     public TimeSpan ChainedChargeDelay = TimeSpan.FromSeconds(0.3);
 
     [DataField]
-    public TimeSpan SummonCooldown = TimeSpan.FromSeconds(7.5);
+    public TimeSpan SummonCooldown = TimeSpan.FromSeconds(10);
 
     [DataField]
-    public TimeSpan MovementCooldown = TimeSpan.FromSeconds(3.4);
+    public TimeSpan MovementCooldown = TimeSpan.FromSeconds(4.5);
 
     [DataField]
-    public TimeSpan MovementCriticalCooldown = TimeSpan.FromSeconds(2.45);
+    public TimeSpan MovementCriticalCooldown = TimeSpan.FromSeconds(3.25);
 
     [DataField]
     public int MovementDistance = 5;
@@ -257,15 +257,14 @@ public sealed partial class BubblegumComponent : Component
     public float CloneSwapCriticalChance = 0.4f;
 
     [DataField]
-    public TimeSpan CloneSwapCooldown = TimeSpan.FromSeconds(0.95);
+    public TimeSpan CloneSwapCooldown = TimeSpan.FromSeconds(1.25);
 
     [DataField]
     public DamageSpecifier SmackDamage = new()
     {
-        ArmorPenetration = 0.4f,
         DamageDict = new()
         {
-            { "Slash", FixedPoint2.New(36) },
+            { "Slash", FixedPoint2.New(30) },
         },
     };
 
@@ -274,7 +273,7 @@ public sealed partial class BubblegumComponent : Component
     {
         DamageDict = new()
         {
-            { "Slash", FixedPoint2.New(18) },
+            { "Slash", FixedPoint2.New(15) },
         },
     };
 
@@ -283,7 +282,7 @@ public sealed partial class BubblegumComponent : Component
     {
         DamageDict = new()
         {
-            { "Blunt", FixedPoint2.New(48) },
+            { "Blunt", FixedPoint2.New(40) },
         },
     };
 

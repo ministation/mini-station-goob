@@ -60,10 +60,10 @@
         dead:
           base: { state: dead }
   - type: ThingBoss
-    phaseHealth: 800
+    phaseHealth: 600
     maxPhases: 3
     phaseInvulnerabilityTime: 10
-    recoverHeal: 400
+    recoverHeal: 350
     depletedSound: /Audio/Effects/explosion_small3.ogg
     overloadSound: /Audio/_Lavaland/Mobs/Bosses/hiero_blast.ogg
     recoveredSound: /Audio/Effects/pop_high.ogg
@@ -74,9 +74,8 @@
     animation: WeaponArcBite
     damage:
       types:
-        Slash: 35
+        Slash: 30
       armorPenetration: 0.4 # TG's Thing has 40 armor piercing on melee
-    attackRate: 1.1
   - type: Tag
     tags:
     - CannotSuicide
@@ -87,14 +86,16 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2400: Dead
+      1800: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
   - type: BossMusic
     soundId: Miniboss
   - type: Aggressive # also required component for aggro checking
-    forgiveRange: 20.0
+    forgiveRange: 10.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: CombatPower # Goobstation
     factor: 25 # times more dangerous than a crew-member
   # Megafauna AI wiring, same driver as the other Lavaland bosses.
@@ -120,19 +121,19 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.6
+      value: 0.8
     selector: !type:NestedMegafaunaSelector
       id: Thing
   - type: Anger
-    totalHp: 2400
+    totalHp: 1800
   # Phases follow the damage budget. The accelerator overload advances the real phase in
   # ThingBoss while this component only gates which attacks the AI may pick.
   - type: MobPhases
     canSwitchBack: true
     phaseThresholds:
       0: 1
-      800: 2
-      1600: 3
+      600: 2
+      1200: 3
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:

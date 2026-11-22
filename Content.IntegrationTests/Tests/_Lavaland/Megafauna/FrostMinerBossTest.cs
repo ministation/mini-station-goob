@@ -126,12 +126,12 @@ public sealed class FrostMinerBossTest
 
         await server.WaitRunTicks(5);
 
-        // 1410 of 1875 health is past the 25% enrage threshold.
+        // 1125 of 1500 health is past the 25% enrage threshold.
         await server.WaitPost(() =>
         {
             entMan.System<DamageableSystem>().TryChangeDamage(
                 boss,
-                new DamageSpecifier { DamageDict = { { "Blunt", 1410f } } },
+                new DamageSpecifier { DamageDict = { { "Blunt", 1125f } } },
                 true);
         });
 

@@ -124,7 +124,7 @@ public sealed class ColossusAiTest
             Assert.Multiple(() =>
             {
                 Assert.That(aggressive.Aggressors, Is.Empty,
-                    "a player twelve tiles away is outside the nine tile TG vision range");
+                    "a player twelve tiles away is outside the four tile noticing range");
                 Assert.That(ai.Active, Is.False, "the boss must stay idle while nobody is in range");
             });
         });
@@ -327,13 +327,13 @@ public sealed class ColossusAiTest
                 "four alternating waves must fire four bolts each, diagonals and cardinals"));
 
         // The colossus is invulnerable to damage without an actor origin, so a dummy hits it once.
-        // Resistances are off, so all 3000 lands: past the 2835 phase 3 gate, below the 3150 death one.
+        // Resistances are off, so all 2300 lands: past the 2250 phase 3 gate, below the 2500 death one.
         await server.WaitPost(() =>
         {
             attacker = entMan.SpawnAtPosition("Wrench", testMap.GridCoords);
             entMan.EnsureComponent<ActorComponent>(attacker);
             damageable.TryChangeDamage(colossus,
-                new DamageSpecifier { DamageDict = { { "Blunt", 3000f } } }, true, origin: attacker);
+                new DamageSpecifier { DamageDict = { { "Blunt", 2300f } } }, true, origin: attacker);
         });
 
         await server.WaitRunTicks(2);
@@ -490,7 +490,7 @@ public sealed class ColossusAiTest
 
         // Start the AI for real and bring the boss into phase 3, keeping the aggressor alive.
         await server.WaitPost(() => damageable.TryChangeDamage(colossus,
-            new DamageSpecifier { DamageDict = { { "Blunt", 3000f } } }, true, origin: attacker));
+            new DamageSpecifier { DamageDict = { { "Blunt", 2300f } } }, true, origin: attacker));
 
         await server.WaitRunTicks(3);
 

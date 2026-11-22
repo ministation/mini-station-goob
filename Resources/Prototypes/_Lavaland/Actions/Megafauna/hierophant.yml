@@ -11,7 +11,7 @@
   components:
   - type: Action
     priority: -21
-    useDelay: 1.5
+    useDelay: 2
     icon:
       sprite: _Lavaland/Objects/Weapons/hierophant_club.rsi
       state: icon
@@ -28,8 +28,8 @@
   description: Spawns an expanding box on the target position.
   components:
   - type: AngerDelayAction
-    minDelay: 1.15
-    maxDelay: 3.0
+    minDelay: 1.5
+    maxDelay: 4.0
     inverse: true
   - type: WorldTargetAction
     event: !type:SpawnEntityActionEvent
@@ -42,8 +42,8 @@
   description: Spawns a sequence of crosses on the target position.
   components:
   - type: AngerDelayAction
-    minDelay: 1.15
-    maxDelay: 3.0
+    minDelay: 1.5
+    maxDelay: 4.0
     inverse: true
   - type: WorldTargetAction
     event: !type:SpawnEntityActionEvent
@@ -58,8 +58,8 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: AngerDelayAction
-    minDelay: 5.25
-    maxDelay: 7.6
+    minDelay: 7.0
+    maxDelay: 20.0
     inverse: true
   - type: EntityTargetAction # Without a target it's pretty much useless?
   - type: WorldTargetAction
@@ -76,8 +76,8 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: AngerDelayAction
-    minDelay: 7.6
-    maxDelay: 7.6
+    minDelay: 12.0
+    maxDelay: 25.0
     inverse: true
   - type: EntityTargetAction # Without a target it's pretty much useless?
   - type: WorldTargetAction
@@ -93,8 +93,8 @@
   description: Teleports you to the target position.
   components:
   - type: AngerDelayAction
-    minDelay: 2.25
-    maxDelay: 3.0
+    minDelay: 3.0
+    maxDelay: 10.0
     inverse: true
   - type: WorldTargetAction
     event: !type:MegafaunaBlinkActionEvent
@@ -107,8 +107,8 @@
   description: Blinks to a spot near the target and slams the area on arrival.
   components:
   - type: AngerDelayAction
-    minDelay: 3.0
-    maxDelay: 6.75
+    minDelay: 4.0
+    maxDelay: 9.0
     inverse: true
   - type: WorldTargetAction
     event: !type:MegafaunaBlinkActionEvent
@@ -150,8 +150,8 @@
     damageDelay: 0.4
     damage:
       types:
-        Blunt: 18
-        Heat: 18
+        Blunt: 15
+        Heat: 15
     damageWhitelist:
       components:
       - MobState

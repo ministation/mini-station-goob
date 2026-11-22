@@ -21,8 +21,8 @@
     damageDelay: 0.7
     damage:
       types:
-        Blunt: 12 # TG 10 burn, fork x1.2 from our 10+10
-        Heat: 12
+        Blunt: 10
+        Heat: 10
     damageWhitelist:
       components:
       - MobState
@@ -33,7 +33,7 @@
     sound:
       path: /Audio/_Lavaland/Mobs/Bosses/hiero_blast.ogg
 
-# TG blink blasts hit for 30 burn instead of the usual 10, 36 here with the fork buff.
+# TG blink blasts hit for 30 burn instead of the usual 10.
 - type: entity
   parent: LavalandHierophantSquare
   id: LavalandHierophantBlinkSquare
@@ -43,7 +43,7 @@
     damageDelay: 0.7
     damage:
       types:
-        Heat: 36
+        Heat: 30
     damageWhitelist:
       components:
       - MobState

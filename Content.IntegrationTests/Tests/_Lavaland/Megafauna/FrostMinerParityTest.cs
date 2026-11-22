@@ -80,8 +80,8 @@ public sealed class FrostMinerParityTest
             entMan.System<AggressorsSystem>().AddAggressor(
                 (boss, aggressive), entMan.SpawnEntity("MobCow", testMap.GridCoords.Offset(new Vector2(3f, 0f))));
 
-            // 1410 of 1875 is past the 25% enrage threshold, same value FrostMinerBossTest uses.
-            var enrage = new DamageSpecifier(proto.Index<DamageTypePrototype>("Blunt"), 1410);
+            // 1125 of 1500 is past the 25% enrage threshold, same value FrostMinerBossTest uses.
+            var enrage = new DamageSpecifier(proto.Index<DamageTypePrototype>("Blunt"), 1125);
             damage.TryChangeDamage(boss, enrage, ignoreResistances: true);
         });
 

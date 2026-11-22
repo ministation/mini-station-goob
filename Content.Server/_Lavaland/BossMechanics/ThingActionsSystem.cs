@@ -140,7 +140,7 @@ public sealed class ThingActionsSystem : EntitySystem
         _xform.SetCoordinates(boss, target);
         _audio.PlayPvs(ChargeSound, boss);
 
-        var damage = new DamageSpecifier { DamageDict = { { "Slash", 42f } } };
+        var damage = new DamageSpecifier { DamageDict = { { "Slash", 35f } } };
         foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(target, 0.6f))
         {
             if (mob.Owner == boss)
@@ -299,7 +299,7 @@ public sealed class ThingActionsSystem : EntitySystem
         Spawn(SpikeProto, coords);
 
         // The spike itself is just a sprite with a collider, the hit happens right here.
-        var damage = new DamageSpecifier { DamageDict = { { "Slash", 48f } } };
+        var damage = new DamageSpecifier { DamageDict = { { "Slash", 40f } } };
         foreach (var mob in _lookup.GetEntitiesInRange<MobStateComponent>(coords, 0.4f))
         {
             if (mob.Owner == boss || HasComp<MegafaunaAiComponent>(mob.Owner))

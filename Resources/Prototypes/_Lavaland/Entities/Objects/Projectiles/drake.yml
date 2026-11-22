@@ -10,7 +10,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 27
+        Heat: 22
   - type: FlameProjectile
     fireStacks: 3
   - type: Sprite
@@ -49,7 +49,7 @@
     damageDelay: 0.5
     damage:
       types:
-        Heat: 24
+        Heat: 20
     damageWhitelist:
       components:
       - MobState
@@ -102,8 +102,8 @@
     damageDelay: 0.2
     damage:
       types:
-        Blunt: 72
-        Heat: 18
+        Blunt: 60
+        Heat: 15
     damageWhitelist:
       components:
       - MobState

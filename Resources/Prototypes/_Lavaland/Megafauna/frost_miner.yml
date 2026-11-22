@@ -47,8 +47,8 @@
   id: ActionFrostMinerFrostOrbs
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerFrostOrbs
     conditions:
     - !type:ActionAvailableCondition
@@ -61,8 +61,8 @@
   id: ActionFrostMinerSnowballGun
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerSnowballGun
     conditions:
     - !type:ActionAvailableCondition
@@ -75,8 +75,8 @@
   id: ActionFrostMinerIceShotgun
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerIceShotgun
     conditions:
     - !type:ActionAvailableCondition
@@ -89,8 +89,8 @@
   id: ActionFrostMinerFrostOrbsStrong
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerFrostOrbsStrong
     conditions:
     - !type:ActionAvailableCondition
@@ -103,8 +103,8 @@
   id: ActionFrostMinerHardSnowball
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerHardSnowball
     conditions:
     - !type:ActionAvailableCondition
@@ -117,8 +117,8 @@
   id: ActionFrostMinerIceShotgunHard
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerIceShotgunHard
     conditions:
     - !type:ActionAvailableCondition
@@ -131,8 +131,8 @@
   id: ActionFrostMinerFrostOrbsEnraged
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerFrostOrbsEnraged
     conditions:
     - !type:ActionAvailableCondition
@@ -145,8 +145,8 @@
   id: ActionFrostMinerSnowballGunEnraged
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerSnowballGunEnraged
     conditions:
     - !type:ActionAvailableCondition
@@ -159,8 +159,8 @@
   id: ActionFrostMinerIceShotgunEnraged
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerIceShotgunEnraged
     conditions:
     - !type:ActionAvailableCondition
@@ -173,8 +173,8 @@
   id: ActionFrostMinerFrostOrbsStrongPhase2
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerFrostOrbsStrong
     conditions:
     - !type:ActionAvailableCondition
@@ -187,8 +187,8 @@
   id: ActionFrostMinerHardSnowballPhase2
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerHardSnowball
     conditions:
     - !type:ActionAvailableCondition
@@ -201,8 +201,8 @@
   id: ActionFrostMinerIceShotgunHardPhase2
   selector: !type:PerformActionSelector
     delay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    failDelay: 0.4
+      value: 0.5
+    failDelay: 0.5
     actionId: ActionFrostMinerIceShotgunHard
     conditions:
     - !type:ActionAvailableCondition

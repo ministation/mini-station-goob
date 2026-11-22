@@ -46,9 +46,8 @@
       path: /Audio/Weapons/bladeslice.ogg
     damage:
       types:
-        Slash: 18
-        Structural: 46
-    attackRate: 1.1
+        Slash: 15
+        Structural: 40
   - type: Tag
     tags:
     - CannotSuicide
@@ -59,14 +58,16 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      1600: Dead
+      1300: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
   - type: BossMusic
     soundId: Miniboss
   - type: Aggressive
-    forgiveRange: 30.0
+    forgiveRange: 10.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: CombatPower
     factor: 15
   # The boss HUD attaches to this component. The second stage is the low health enrage.
@@ -93,8 +94,7 @@
   - type: Actions
   - type: ActionGrant
     actions:
-    - ActionBdhDash
-    - ActionBdhSawBarrage
+    - ActionBdhKineticBurst
   - type: Appearance
   - type: RotationVisuals
     defaultRotation: 0
@@ -107,18 +107,14 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
+      value: 0.5
     selector: !type:NestedMegafaunaSelector
       id: BloodDrunk
   - type: Anger
-    totalHp: 1600
+    totalHp: 1300
   - type: AngerPlayerScaling
     angerScale: 1.2
     hpScale: 1.2
-  - type: MegafaunaBlink
-    spawnOnTarget: LavalandBdhDashBurst
-    spawnOnUsed: LavalandBdhDashBurst
-  - type: MegafaunaRejuvenate
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:
@@ -143,19 +139,13 @@
   - type: VampiricMelee
     healFraction: 0.5
 
-# Hunter variant: chains dashes after strikes.
+# Hunter variant: the saw chains a few extra hits on its target.
 - type: entity
   parent: LavalandBossBloodDrunk
   id: LavalandBossBloodDrunkHunter
   suffix: Hunter
   components:
   - type: MegafaunaDevour
-  - type: MegafaunaAi
-    actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.4
-    selector: !type:NestedMegafaunaSelector
-      id: BloodDrunkHunter
-  # Parent ActionGrant is inherited and its actions list is appended to this one.
-  - type: ActionGrant
-    actions:
-    - ActionBdhDashChain
+  - type: RapidMelee
+    hits: 3
+    delay: 0.3

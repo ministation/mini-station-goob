@@ -25,10 +25,10 @@ public sealed partial class HierophantArenaTrapComponent : Component
     public int TrapRadius = 11;
 
     /// <summary>
-    /// Time between traps. TG arena_cooldown_time is 20 seconds, the fork shortens it by a quarter.
+    /// Time between traps. TG arena_cooldown_time is 20 seconds.
     /// </summary>
     [DataField]
-    public TimeSpan Cooldown = TimeSpan.FromSeconds(15);
+    public TimeSpan Cooldown = TimeSpan.FromSeconds(20);
 
     /// <summary>
     /// How long the trap walls stand. TG wall duration is 10 seconds.

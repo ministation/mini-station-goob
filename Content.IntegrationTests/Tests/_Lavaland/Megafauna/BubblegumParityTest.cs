@@ -311,7 +311,7 @@ public sealed class BubblegumParityTest
     /// <summary>
     /// Bubblegum has no megafauna AI, its own system is the brain, so it has to find targets
     /// through the opt-in proximity aggro of <see cref="AggressorsSystem"/> instead of waiting
-    /// for a hit. Six tiles away and untouched: the boss must aggro, start the fight and drop
+    /// for a hit. Three tiles away and untouched: the boss must aggro, start the fight and drop
     /// the target once the player is dead.
     /// </summary>
     [Test]
@@ -337,7 +337,7 @@ public sealed class BubblegumParityTest
             }
 
             boss = entMan.SpawnEntity(BossProto, testMap.GridCoords);
-            player = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(6f, 0f)));
+            player = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(3f, 0f)));
             // A real session matters: mob threshold updates send network events to the actor.
             server.PlayerMan.SetAttachedEntity(pair.Player, player, true);
         });

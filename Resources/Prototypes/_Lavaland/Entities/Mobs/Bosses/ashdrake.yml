@@ -17,10 +17,6 @@
     worn: false
     damageCoefficient: 0.05
   - type: DrakeArena
-    # Timings x0.75 against TG: walls up after 1s, a wave every 2.4s, the escape answer 5s later.
-    startDelay: 0.75
-    waveDelay: 1.8
-    punishDuration: 3.75
   - type: Physics
     bodyType: KinematicController
   - type: Clickable
@@ -59,11 +55,10 @@
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
-    attackRate: 1.1
     damage:
       types:
-        Slash: 58
-        Heat: 18
+        Slash: 45
+        Heat: 10
       armorPenetration: 0.4 # TG's drake has 40% melee armor piercing
   - type: Tag
     tags:
@@ -75,7 +70,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      3450: Dead
+      2500: Dead
   # TG butcher results. TG also yields 5 sinew; the repo has no sinew material,
   # so those 5 are folded into the bone stack.
   - type: Butcherable
@@ -92,7 +87,9 @@
   - type: BossMusic
     soundId: AshDrake
   - type: Aggressive # also required component for aggro checking
-    forgiveRange: 20.0
+    forgiveRange: 10.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: CombatPower # Goobstation
     factor: 25 # times more dangerous than a crew-member
   # Megafauna AI wiring, same driver as Hierophant. Normal movement keeps the
@@ -122,23 +119,23 @@
     enabled: true
   - type: MegafaunaAi
     actionDelay: !type:MegafaunaConstantNumberSelector
-      value: 0.5
+      value: 0.7
     selector: !type:NestedMegafaunaSelector
       id: AshDrake
   - type: Anger
-    totalHp: 3450
+    totalHp: 2500
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0: 1
-      1725: 2 # below half health the drake enrages and unlocks the firestorm
+      1250: 2 # below half health the drake enrages and unlocks the firestorm
   - type: BossEnrage
     healthFraction: 0.5
     speedMultiplier: 1.25
     attackRateMultiplier: 1.15
-    actionDelay: 0.4
+    actionDelay: 0.55
     sound:
       path: /Audio/Effects/demon_attack1.ogg
   # TG lava swoop: invulnerable while flying to the target, then a slam on the landing tile.
@@ -150,7 +147,6 @@
   - type: MegafaunaFireTrail
     trail: LavalandDrakeFireTrail
     step: 1
-  - type: MegafaunaRejuvenate
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:

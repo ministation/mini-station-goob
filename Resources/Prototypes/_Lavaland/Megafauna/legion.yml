@@ -21,7 +21,7 @@
   id: ActionLegionSkulls
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 1.5,4.5
+      range: 2.0,6.0
       inverse: true
     actionId: ActionLegionSkulls
     conditions:
@@ -32,7 +32,7 @@
   id: ActionLegionCharge
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 1.5,3.75
+      range: 2.0,5.0
       inverse: true
     actionId: ActionLegionCharge
     conditions:
@@ -43,7 +43,7 @@
   id: ActionLegionSentinel
   selector: !type:PerformActionSelector
     delay: !type:AngerNumberSelector
-      range: 7.5,15.0
+      range: 10.0,20.0
       inverse: true
     actionId: ActionLegionSentinel
     conditions:
