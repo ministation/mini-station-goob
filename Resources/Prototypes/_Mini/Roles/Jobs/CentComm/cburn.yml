@@ -5,7 +5,7 @@
 - type: job
   id: CBURNLeader
   name: job-name-cburn-leader
-  description: job-description-cburnleader
+  description: job-description-cburn-leader
   skills: # CorvaxGoob-Skills
   - All
   playTimeTracker: JobCBURNLeader
@@ -57,7 +57,7 @@
 - type: job
   id: CBURNAgent
   name: job-name-cburn-agent
-  description: job-description-cburnagent
+  description: job-description-cburn-agent
   playTimeTracker: JobCBURNAgent
   setPreference: false
   startingGear: CBURNAgentGear

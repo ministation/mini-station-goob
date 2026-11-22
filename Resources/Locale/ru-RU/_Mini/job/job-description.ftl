@@ -29,6 +29,7 @@ job-description-internal-inspector = Проверьте, действитель�
 
 job-description-special-officer = Руководите силами департамента спецопераций.
 job-description-cburn-commander = Руководите агентами карантинной службы ДСО
+job-description-cburn-agent = Высококвалифицированный агент ЦК, специализирующийся на биологических угрозах.
 
 # Guardian
 
