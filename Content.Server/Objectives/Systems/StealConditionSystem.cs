@@ -100,9 +100,6 @@ public sealed class StealConditionSystem : EntitySystem
 
     private float GetProgress(Entity<MindComponent> mind, StealConditionComponent condition)
     {
-        if (!_containerQuery.TryGetComponent(mind.Comp.OwnedEntity, out var currentManager))
-            return 0;
-
         var containerStack = new Stack<ContainerManagerComponent>();
         var count = 0;
 
@@ -129,19 +126,30 @@ public sealed class StealConditionSystem : EntitySystem
             }
         }
 
-        //check pulling object
-        if (TryComp<PullerComponent>(mind.Comp.OwnedEntity, out var pull)) //TO DO: to make the code prettier? don't like the repetition
+        // Bodies whose possessions count for this objective.
+        // Shared objectives can add their other owners here, so a team completes
+        // the objective no matter which member is physically holding the item.
+        var holders = new List<EntityUid>();
+        if (mind.Comp.OwnedEntity is { } owned)
+            holders.Add(owned);
+
+        var holdersEv = new StealConditionHoldersEvent(mind.Owner, mind.Comp);
+        RaiseLocalEvent(condition.Owner, ref holdersEv);
+        holders.AddRange(holdersEv.Holders);
+
+        foreach (var holder in holders)
         {
-            var pulledEntity = pull.Pulling;
-            if (pulledEntity != null)
-            {
-                CheckEntity(pulledEntity.Value, condition, ref containerStack, ref count);
-            }
+            //check pulling object
+            if (TryComp<PullerComponent>(holder, out var pull) && pull.Pulling is { } pulled)
+                CheckEntity(pulled, condition, ref containerStack, ref count);
+
+            // queue the inventory, bag, implants, etc. of this body
+            if (_containerQuery.TryGetComponent(holder, out var manager))
+                containerStack.Push(manager);
         }
 
-        // recursively check each container for the item
-        // checks inventory, bag, implants, etc.
-        do
+        // recursively check each queued container for the item
+        while (containerStack.TryPop(out var currentManager))
         {
             foreach (var container in currentManager.Containers.Values)
             {
@@ -155,7 +163,7 @@ public sealed class StealConditionSystem : EntitySystem
                         containerStack.Push(containerManager);
                 }
             }
-        } while (containerStack.TryPop(out currentManager));
+        }
 
         var result = count / (float)condition.CollectionSize;
         result = Math.Clamp(result, 0, 1);
