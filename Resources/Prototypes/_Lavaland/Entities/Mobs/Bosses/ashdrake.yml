@@ -147,7 +147,6 @@
   - type: MegafaunaFireTrail
     trail: LavalandDrakeFireTrail
     step: 1
-  - type: MegafaunaRejuvenate
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:

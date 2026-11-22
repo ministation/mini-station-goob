@@ -129,7 +129,6 @@
     actionDelay: 0.55 # base AI delay is 0.7
     sound:
       path: /Audio/Effects/demon_dies.ogg
-  - type: MegafaunaRejuvenate
   # Stomp shockwave spawned every tile of movement.
   - type: WendigoBoss
     stompBurst: LavalandWendigoStompBurst

@@ -124,7 +124,6 @@
       375: 2 # TG enrages at 25% health
   - type: FrostMinerEnrage
   - type: MegafaunaBlink
-  - type: MegafaunaRejuvenate
   # TG parity: the miner knocks back whoever it hits (knockback 7).
   - type: MeleeThrowOnHit
     speed: 8

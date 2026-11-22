@@ -134,7 +134,6 @@
       path: /Audio/Effects/demon_attack1.ogg
   - type: MegafaunaAnchor
   - type: MegafaunaGodmode
-  - type: MegafaunaRejuvenate
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:

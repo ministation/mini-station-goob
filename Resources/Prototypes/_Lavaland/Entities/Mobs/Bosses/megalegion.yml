@@ -121,7 +121,6 @@
   - type: MegafaunaBlink
     spawnOnTarget: LavalandLegionChargeBurst
     spawnOnUsed: LavalandLegionChargeBurst
-  - type: MegafaunaRejuvenate
   # Death split chain: boss -> medium left/eye/right -> small x3 each
   - type: LegionSplit
     spawnOnDeathList:
