@@ -482,3 +482,19 @@
     - id: WeaponPulsePistol
     - id: WeaponSubMachineGunAtreides
     - id: WeaponTaser
+
+- type: entity
+  id: LockerGuardianNtFilled
+  suffix: Filled
+  parent: LockerGuardianNt
+  components:
+  - type: StorageFill
+    contents:
+      - id: ClothingUniformJumpsuitGuardianNt
+      - id: ClothingHandsGlovesCombat
+      - id: ClothingHeadsetGuardianNtAlt
+      - id: ClothingBeltSecurityFilled
+      - id: ClothingEyesGlassesCentcom
+      - id: ClothingOuterVestGuardianNt
+      - id: ClothingHeadHatBeretGuardianNt
+      - id: ClothingHeadHelmetGuardianNt
