@@ -404,7 +404,8 @@
     sprintModifier: 0.90
   - type: HeldSpeedModifier
   - type: ToggleableClothing
-    clothingPrototype: ClothingHeadHelmetHardsuitCentcomPersonnel
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitCentcomPersonnel
   - type: BioCode
   - type: TimerTrigger
     delay: 3

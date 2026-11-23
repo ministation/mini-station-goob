@@ -15,7 +15,16 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
+    - RadioImplantDSO
   whitelisted: true
 
 - type: startingGear
@@ -23,6 +32,11 @@
   equipment:
     id: RepresentativeCentcomPDA
     belt: BoxFolderCentComClipboard
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm
 
 - type: chameleonOutfit
   id: RepresentativeCentcomChameleonOutfit

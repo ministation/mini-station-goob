@@ -16,7 +16,16 @@
   - DSO
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm, RadioImplantDSO ]
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
+    - RadioImplantDSO
   whitelisted: true
 
 - type: startingGear
@@ -28,6 +37,11 @@
     id: ChiefCentcomPDA
     neck: ClothingNeckCloakChiefCentcom
     belt: ClothingBeltSheathFilled
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm
 
 - type: chameleonOutfit
   id: ChiefCentcomChameleonOutfit

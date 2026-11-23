@@ -17,7 +17,17 @@
   - DSO
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, AdrenocorImplant, DeathRattleImplantDSO, RadioImplantCentcomm, RadioImplantDSO ]
+    implants: 
+    - MindShieldImplant
+    - TrackingImplant
+    - AdrenocorImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantDSO
+    - RadioImplantCentcomm
+    - RadioImplantDSO
 
 - type: startingGear
   id: SpecialOfficerGear

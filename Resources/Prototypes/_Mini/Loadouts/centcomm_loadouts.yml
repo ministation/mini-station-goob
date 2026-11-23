@@ -229,9 +229,9 @@
   minLimit: 1
   loadouts:
   - CentCommOfficerBackBackpackSatchelLeather
-  - CentCommOfficerBackBackpackSatchel
-  - CentCommOfficerBackBackpack
-  - CentCommOfficerBackBackpackDuffel
+  - ClothingBackpackSatchelCentcomm
+  - ClothingBackpackCentcomm
+  - ClothingBackpackDuffelNanotrasen
 
 - type: loadout
   id: CentCommOfficerBackBackpackSatchelLeather
@@ -267,7 +267,7 @@
 - type: loadout
   id: CentCommOfficerEyesGlassesCentcom
   equipment:
-    eyes: ClothingEyesGlassesCentcom
+    eyes: ClothingEyesGlassesCentComm
 
 - type: loadout
   id: CentCommOfficerEyesGlassesSecurity

@@ -209,6 +209,11 @@
     sprite: _Mini/Clothing/Head/Hardsuits/centcom_personnel.rsi
   - type: Clothing
     sprite: _Mini/Clothing/Head/Hardsuits/centcom_personnel.rsi
+    clothingVisuals:
+      head:
+      - state: equipped-head
+      - state: equipped-head-unshaded
+        shader: unshaded
   - type: PointLight
     color: "#c4ff99"
   - type: PressureProtection

@@ -29,7 +29,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+    implants: [ MindShieldImplant, RadioImplantCentcomm ]
 
 - type: startingGear
   id: WorkerCentcomGear

@@ -23,8 +23,8 @@
           HeadOfSecurityCentcom: [ 1, 1 ]
           OperatorCentcom: [ 1, 1 ]
           RepresentativeCentcom: [ 1, 1 ]
-          CentralCommandAssistant: [ 1, 1 ]
           # Centcomm Personnel (13)
+          CentralCommandAssistant: [ 1, 1 ]
           EngineerCentcom: [ 3, 3 ]
           MedicCentcom: [ 3, 3 ]
           SecurityOfficerCentcom: [ 3, 3 ]

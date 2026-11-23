@@ -12,8 +12,8 @@
     - id: RubberStampApproved
     - id: RubberStampDenied
     - id: BoxPrinter
-    - id: ClothingEyesGlassesCentcom
-    - id: ClothingOuterHardsuitCentcomPersonnel
+    - id: ClothingEyesGlassesCentComm
+    - id: ClothingOuterHardsuitExperimentalNanorep
     - id: ClothingShoesBootsMagCentcomm
     - id: RubberStampSpecialOfficer
     - id: WeaponDisabler
@@ -48,7 +48,7 @@
     - id: OxygenTankFilled
     - id: SpaceCash1000000
     - id: BoxPrinter
-    - id: ClothingOuterHardsuitCentcomPersonnel
+    - id: ClothingOuterHardsuitExperimentalNanorep
     - id: WeaponDisabler
 
 - type: entity
@@ -64,7 +64,7 @@
     - id: ClothingEyesHudMedical
     - id: ClothingHeadsetMedical
     - id: OxygenTankFilled
-    - id: ClothingOuterHardsuitCentcomPersonnel
+    - id: ClothingOuterHardsuitMedical
 
 - type: entity
   id: LockerEngineerCentcommFilled
@@ -80,7 +80,7 @@
     - id: OxygenTankFilled
     - id: RCD
     - id: RCDAmmo
-    - id: ClothingOuterHardsuitCentcomPersonnel
+    - id: ClothingOuterHardsuitEngineeringWhite
     - id: ClothingShoesBootsMagCentcomm
     - id: trayScanner
 
@@ -145,11 +145,10 @@
     - id: HoloprojectorSecurity
     - id: OxygenTankFilled
     - id: RubberStampCentcom
-    - id: ClothingEyesGlassesCentcom
+    - id: ClothingEyesGlassesCentComm
     - id: ClothingHeadHatCentcomBeret
     - id: ClothingNeckCloakHeadOfSecurityCentcom
-    - id: ClothingOuterHardsuitCentcomSecutiry
-    - id: ClothingOuterHardsuitCentcomPersonnel
+    - id: ClothingOuterHardsuitSecurityRed
     - id: ClothingShoesBootsMagCentcomm
     - id: ClothingShoesBootsMagSec
     - id: WeaponEnergyMagnum
@@ -171,9 +170,9 @@
     - id: RubberStampCentcom
     - id: RubberStampDenied
     - id: BoxPrinter
-    - id: ClothingEyesGlassesCentcom
+    - id: ClothingEyesGlassesCentComm
     - id: ClothingNeckCloakOperatorCentcom
-    - id: ClothingOuterHardsuitCentcomPersonnel
+    - id: ClothingOuterHardsuitExperimentalNanorep
     - id: ClothingShoesBootsMagCentcomm
     - id: WeaponDisabler
     - id: WeaponPistolN1984
@@ -196,8 +195,8 @@
     - id: RubberStampDenied
     - id: BoxPrinter
     - id: BriefcaseSteel
-    - id: ClothingEyesGlassesCentcom
-    - id: ClothingOuterHardsuitCentcomPersonnel
+    - id: ClothingEyesGlassesCentComm
+    - id: ClothingOuterHardsuitExperimentalNanorep
     - id: ClothingShoesBootsMagCentcomm
     - id: WeaponDisabler
     - id: WeaponPistolN1984
@@ -223,7 +222,7 @@
     - id: RubberStampCentcom
     - id: RubberStampDenied
     - id: BoxPrinter
-    - id: ClothingEyesGlassesCentcom
+    - id: ClothingEyesGlassesCentComm
     - id: ClothingHandsGlovesChiefCentcom
     - id: ClothingNeckCloakChiefCentcom
     - id: ClothingOuterHardsuitChiefCentcom
@@ -312,7 +311,7 @@
     - id: CombatKnife
     - id: CrowbarRed
     - id: MagazinePistol
-    - id: ClothingEyesGlassesCentcom
+    - id: ClothingEyesGlassesCentComm
     - id: RadioHandheldDSO
     - id: WeaponPistolMk58
 
@@ -395,7 +394,7 @@
     - id: ClothingShoesBootsMagERT
     - id: PillAmbuzolPlus
     - id: PillAmbuzol
-    - id: ClothingEyesGlassesCentcom
+    - id: ClothingEyesGlassesCentComm
     - id: ClothingOuterHardsuitCBURNCommander
     - id: RadioHandheldDSO
     - id: WeaponAdvancedLaser
@@ -418,7 +417,7 @@
     - id: RubberStampDenied
     - id: SpeedLoaderMagnumAP
     - id: BoxPrinter
-    - id: ClothingEyesGlassesCentcom
+    - id: ClothingEyesGlassesCentComm
     - id: ClothingNeckCloakSpecialOfficer
     - id: ClothingOuterHardsuitSpecialOfficer
     - id: RubberStampSpecialOfficer
@@ -443,11 +442,11 @@
     - id: RubberStampApproved
     - id: RubberStampDenied
     - id: BoxPrinter
-    - id: ClothingEyesGlassesCentcom
+    - id: ClothingEyesGlassesCentComm
     - id: ClothingHandsGlovesMagistrate
     - id: ClothingHeadHatMagistrate
     - id: ClothingNeckCloakMagistrate
-    - id: ClothingOuterHardsuitCentcomPersonnel
+    - id: ClothingModsuitCorporateFilled
     - id: ClothingOuterRobesMagistrate
     - id: ClothingUniformJumpsuitMagistrate
     - id: Gavel
@@ -475,7 +474,7 @@
     - id: RubberStampApproved
     - id: RubberStampDenied
     - id: BoxPrinter
-    - id: ClothingEyesGlassesCentcom
+    - id: ClothingEyesGlassesCentComm
     - id: ClothingOuterHardsuitChiefCentcom
     - id: ClothingUniformJumpsuitInternalInspector
     - id: RubberStampInternalInspector
