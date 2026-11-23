@@ -15,21 +15,6 @@
   - BaseStationSiliconLawCrewsimov
   categories: [ HideSpawnMenu ]
   components:
-  - type: TTStationHandleJob
-    jobs:
-    - ChiefCentcom
-    - SpecialOfficer
-    - Magistrate
-    - HeadOfSecurityCentcom
-    - OperatorCentcom
-    - RepresentativeCentcom
-    - EngineerCentcom
-    - MedicCentcom
-    - SecurityOfficerCentcom
-    - WorkerCentcom
-    - OfficerSpecialAssignments
-    - Logist
-    - Accountant
   - type: Transform
   - type: StationBankAccount
     accounts:

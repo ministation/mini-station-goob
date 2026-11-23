@@ -229,9 +229,9 @@
   minLimit: 1
   loadouts:
   - CentCommOfficerBackBackpackSatchelLeather
-  - ClothingBackpackSatchelCentcomm
-  - ClothingBackpackCentcomm
-  - ClothingBackpackDuffelNanotrasen
+  - CentCommOfficerClothingBackpackSatchelCentcomm
+  - CentCommOfficerClothingBackpackCentcomm
+  - CentCommOfficerClothingBackpackDuffelNanotrasen
 
 - type: loadout
   id: CentCommOfficerBackBackpackSatchelLeather
@@ -239,19 +239,19 @@
     back: ClothingBackpackSatchelLeather
 
 - type: loadout
-  id: CentCommOfficerBackBackpackSatchel
+  id: CentCommOfficerClothingBackpackSatchelCentcomm
   equipment:
-    back: ClothingBackpackSatchel
+    back: ClothingBackpackSatchelCentcomm
 
 - type: loadout
-  id: CentCommOfficerBackBackpack
+  id: CentCommOfficerClothingBackpackCentcomm
   equipment:
-    back: ClothingBackpack
+    back: ClothingBackpackCentcomm
 
 - type: loadout
-  id: CentCommOfficerBackBackpackDuffel
+  id: CentCommOfficerClothingBackpackDuffelNanotrasen
   equipment:
-    back: ClothingBackpackDuffel
+    back: ClothingBackpackDuffelNanotrasen
 
 - type: loadoutGroup
   id: CentCommOfficerEyes

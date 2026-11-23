@@ -4,8 +4,8 @@ meta:
   engineVersion: 295.0.2
   forkId: ministation
   forkVersion: ""
-  time: 11/22/2026 05:44:11
-  entityCount: 20364
+  time: 11/23/2026 09:48:47
+  entityCount: 20347
 maps: []
 grids:
 - 1
@@ -26220,7 +26220,7 @@ entities:
       pos: -66.5,8.5
     - type: Door
       state: Opening
-      secondsUntilStateChange: -30127.934
+      secondsUntilStateChange: -30572.082
     - type: DeviceLinkSource
       lastSignals:
         DoorStatus: True
@@ -65384,55 +65384,6 @@ entities:
     - type: Transform
       parent: 1
       pos: -7.5,-50.5
-- proto: DefaultStationBeaconAnchor
-  entities:
-  - uid: 15994
-    components:
-    - type: Transform
-      parent: 1
-      pos: -28.5,-9.5
-- proto: DefaultStationBeaconArmory
-  entities:
-  - uid: 15993
-    components:
-    - type: Transform
-      parent: 1
-      pos: 42.5,24.5
-- proto: DefaultStationBeaconArrivals
-  entities:
-  - uid: 15400
-    components:
-    - type: Transform
-      parent: 1
-      pos: 0.5,-62.5
-- proto: DefaultStationBeaconBar
-  entities:
-  - uid: 19988
-    components:
-    - type: Transform
-      parent: 1
-      pos: 44.5,-23.5
-- proto: DefaultStationBeaconBotany
-  entities:
-  - uid: 19990
-    components:
-    - type: Transform
-      parent: 1
-      pos: 23.5,-28.5
-- proto: DefaultStationBeaconBrig
-  entities:
-  - uid: 16024
-    components:
-    - type: Transform
-      parent: 1
-      pos: 32.5,15.5
-- proto: DefaultStationBeaconBrigMed
-  entities:
-  - uid: 15402
-    components:
-    - type: Transform
-      parent: 1
-      pos: 50.5,20.5
 - proto: DefaultStationBeaconCentComm
   entities:
   - uid: 38
@@ -65440,97 +65391,6 @@ entities:
     - type: Transform
       parent: 1
       pos: 0.5,0.5
-- proto: DefaultStationBeaconChemistry
-  entities:
-  - uid: 15397
-    components:
-    - type: Transform
-      parent: 1
-      pos: -35.5,-31.5
-- proto: DefaultStationBeaconCourtroom
-  entities:
-  - uid: 15399
-    components:
-    - type: Transform
-      parent: 1
-      pos: -37.5,14.5
-- proto: DefaultStationBeaconCryonics
-  entities:
-  - uid: 14907
-    components:
-    - type: Transform
-      parent: 1
-      pos: -47.5,-16.5
-- proto: DefaultStationBeaconDorms
-  entities:
-  - uid: 15991
-    components:
-    - type: Transform
-      parent: 1
-      pos: 70.5,-32.5
-- proto: DefaultStationBeaconEngineering
-  entities:
-  - uid: 15403
-    components:
-    - type: Transform
-      parent: 1
-      pos: -57.5,9.5
-- proto: DefaultStationBeaconGateway
-  entities:
-  - uid: 18820
-    components:
-    - type: Transform
-      parent: 1
-      pos: -17.5,21.5
-- proto: DefaultStationBeaconGravGen
-  entities:
-  - uid: 15992
-    components:
-    - type: Transform
-      parent: 1
-      pos: -28.5,-4.5
-- proto: DefaultStationBeaconJanitorsCloset
-  entities:
-  - uid: 15401
-    components:
-    - type: Transform
-      parent: 1
-      pos: -16.5,3.5
-- proto: DefaultStationBeaconKitchen
-  entities:
-  - uid: 19989
-    components:
-    - type: Transform
-      parent: 1
-      pos: 23.5,-17.5
-- proto: DefaultStationBeaconMedical
-  entities:
-  - uid: 15990
-    components:
-    - type: Transform
-      parent: 1
-      pos: -35.5,-23.5
-- proto: DefaultStationBeaconMorgue
-  entities:
-  - uid: 15398
-    components:
-    - type: Transform
-      parent: 1
-      pos: -53.5,-30.5
-- proto: DefaultStationBeaconPsychology
-  entities:
-  - uid: 14906
-    components:
-    - type: Transform
-      parent: 1
-      pos: -41.5,-15.5
-- proto: DefaultStationBeaconSurgery
-  entities:
-  - uid: 15989
-    components:
-    - type: Transform
-      parent: 1
-      pos: -53.5,-16.5
 - proto: DefibrillatorCompact
   entities:
   - uid: 6939
@@ -109575,13 +109435,6 @@ entities:
     - type: Transform
       parent: 1
       pos: 22.376665,-12.364361
-- proto: KvassTankFull
-  entities:
-  - uid: 2338
-    components:
-    - type: Transform
-      parent: 1
-      pos: 18.5,-10.5
 - proto: Lamp
   entities:
   - uid: 7375
@@ -128651,6 +128504,23 @@ entities:
     - type: Transform
       parent: 1
       pos: -49.5,19.5
+- proto: SpawnPointMedicCentcom
+  entities:
+  - uid: 7478
+    components:
+    - type: Transform
+      parent: 1
+      pos: -24.5,-11.5
+  - uid: 7600
+    components:
+    - type: Transform
+      parent: 1
+      pos: -23.5,-11.5
+  - uid: 7679
+    components:
+    - type: Transform
+      parent: 1
+      pos: -22.5,-11.5
 - proto: SpawnPointOfficerSpecialAssignments
   entities:
   - uid: 7686
@@ -133463,16 +133333,16 @@ entities:
       pos: -2.7305877,11.915712
 - proto: TeslaCoil
   entities:
-  - uid: 17827
+  - uid: 7680
     components:
     - type: Transform
       parent: 1
-      pos: -72.5,20.5
-  - uid: 17828
+      pos: -64.5,18.5
+  - uid: 7681
     components:
     - type: Transform
       parent: 1
-      pos: -66.5,20.5
+      pos: -74.5,22.5
   - uid: 18739
     components:
     - type: Transform
@@ -133487,24 +133357,22 @@ entities:
       pos: -76.5,7.5
 - proto: TeslaGroundingRod
   entities:
-  - uid: 11751
+  - uid: 7682
     components:
     - type: Transform
       parent: 1
-      rot: 1.5707963267948966 rad
-      pos: -74.5,22.5
+      pos: -66.5,20.5
+  - uid: 7683
+    components:
+    - type: Transform
+      parent: 1
+      pos: -72.5,20.5
   - uid: 18282
     components:
     - type: Transform
       parent: 1
       rot: 1.5707963267948966 rad
       pos: -64.5,22.5
-  - uid: 18666
-    components:
-    - type: Transform
-      parent: 1
-      rot: 1.5707963267948966 rad
-      pos: -64.5,18.5
   - uid: 18667
     components:
     - type: Transform
@@ -145577,6 +145445,15 @@ entities:
     - type: Transform
       parent: 1
       pos: 21.5,16.5
+- proto: WarpPoint
+  entities:
+  - uid: 2338
+    components:
+    - type: MetaData
+      name: Центральное Командование
+    - type: Transform
+      parent: 1
+      pos: 0.5,0.5
 - proto: WaterCooler
   entities:
   - uid: 3892
