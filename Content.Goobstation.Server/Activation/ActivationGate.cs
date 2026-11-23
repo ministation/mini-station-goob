@@ -91,6 +91,11 @@ internal static class ActivationGate
     /// </summary>
     public static void Install()
     {
+        // Релизный пакет стартует из Robust.Server: Program.Main контента (единственный
+        // вызов Prepare) не выполняется, поэтому проверяем активацию здесь.
+        if (!Valid && !_blocked && _problem.Length == 0)
+            Prepare(Environment.GetCommandLineArgs());
+
         var sawmill = IoCManager.Resolve<ILogManager>().GetSawmill("mini.activation");
         if (Valid)
         {

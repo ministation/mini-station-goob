@@ -65,7 +65,7 @@
       id: BoxHollow
   - type: ShapeSpawnerCounter
   - type: AngerShapeSpawner
-    counterRange: 3,8
+    counterRange: 3,7 # TG burst_range: 3 + round(anger * 0.08)
     periodRange: 0.2,0.7
     inversePeriod: true
   - type: ExpandingShapeSpawner
@@ -84,17 +84,19 @@
   - type: ShapeSpawner
     spawn: LavalandHierophantSquare
     shape: !type:GroupEntityShape
+      size: 11
       children:
       - id: BishopCross
-        size: 11
       - id: RookCross
-        size: 11
 #      - id: QueenCross # TODO expand MobPhases for actions, so it can be "upgraded" to also have a chance to spawn a queen cross.
-#        size: 11
 #        weight: 0.3
+    # TG beam_range: 5 tiles at zero anger, 11 at max anger.
+    angerSizeRange: 5,11
   - type: ShapeSpawnerCounter
   - type: AngerShapeSpawner
-    counterRange: 2,4
+    counterRange: 1,7 # TG cross_counter: 1 + round(anger * 0.12)
     periodRange: 0.7,1.2
     inversePeriod: true
+    # TG cross_blast_spam holds blinking = TRUE for the whole series, so the boss cannot attack meanwhile.
+    pauseAi: true
   - type: ExpandingShapeSpawner

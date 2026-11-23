@@ -4,13 +4,22 @@
 
 using System.Collections.Generic;
 using System.Numerics;
+using Content.Goobstation.Common.Gibbing;
+using Content.Shared._Lavaland.Aggression;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Goobstation.Shared.Projectiles;
+using Content.Server._Lavaland.BossMechanics;
 using Content.Server._Lavaland.Bubblegum;
 using Content.Server.Fluids.EntitySystems;
 using Content.Shared.Chemistry.Components;
+using Content.Shared.CombatMode;
+using Content.Shared.Damage.Components;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Random.Helpers;
 using Content.Shared.Sprite;
+using Content.Shared.Weapons.Melee;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -74,7 +83,8 @@ public sealed class BubblegumParityTest
             var bossPos = entMan.GetComponent<TransformComponent>(boss).Coordinates;
             var cowPos = entMan.GetComponent<TransformComponent>(cow).Coordinates;
             var bossTile = mapSys.TileIndicesFor(grid, gridComp, bossPos);
-            var cowAnchor = mapSys.TileIndicesFor(grid, gridComp, cowPos) + new Vector2i(2, 0);
+            // TG pick_range 5: the destination pool is on the ring around the target.
+            var cowAnchor = mapSys.TileIndicesFor(grid, gridComp, cowPos) + new Vector2i(5, 0);
             puddles.TrySpillAt(mapSys.GetTileRef(grid, gridComp, bossTile), FreshBlood(), out _, sound: false);
             puddles.TrySpillAt(mapSys.GetTileRef(grid, gridComp, cowAnchor), FreshBlood(), out _, sound: false);
 
@@ -149,6 +159,232 @@ public sealed class BubblegumParityTest
                 Assert.That(bubblegum.EnrageCooldownUntil, Is.EqualTo(before),
                     "a warp during the cooldown changed the cooldown window");
             }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task RapidMeleeBurstHitsMoreThanOncePerSwing()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var meleeSys = entMan.System<SharedMeleeWeaponSystem>();
+        var combatMode = entMan.System<SharedCombatModeSystem>();
+        var thresholdsSys = entMan.System<MobThresholdSystem>();
+
+        var testMap = await pair.CreateTestMap();
+        EntityUid boss = default;
+        EntityUid dummy = default;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -6; x <= 6; x++)
+            {
+                for (var y = -6; y <= 6; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity(BossProto, testMap.GridCoords);
+            dummy = entMan.SpawnEntity("MobCow", testMap.GridCoords.Offset(new Vector2(1f, 0f)));
+
+            // The dummy has to survive the whole burst, so raise its health and skip gibbing.
+            var thresholds = entMan.GetComponent<MobThresholdsComponent>(dummy);
+            thresholdsSys.SetMobStateThreshold(dummy, FixedPoint2.Zero, MobState.Alive, thresholds);
+            thresholdsSys.SetMobStateThreshold(dummy, FixedPoint2.New(100000), MobState.Dead, thresholds);
+            entMan.EnsureComponent<DamageGibImmuneComponent>(dummy);
+        });
+
+        await server.WaitRunTicks(2);
+
+        var landed = false;
+        var firstHit = 0f;
+        var burstStarted = false;
+
+        await server.WaitPost(() =>
+        {
+            combatMode.SetInCombatMode(boss, true);
+            var weapon = entMan.GetComponent<MeleeWeaponComponent>(boss);
+            weapon.NextAttack = TimeSpan.Zero;
+            landed = meleeSys.AttemptLightAttack(boss, boss, weapon, dummy);
+            firstHit = entMan.GetComponent<DamageableComponent>(dummy).TotalDamage.Float();
+            burstStarted = entMan.GetComponent<RapidMeleeComponent>(boss).HitsLeft > 0;
+
+            // Only now hand the cow to the boss: the burst is measured before its own attacks start,
+            // and the chase keeps the dummy from wandering out of melee range.
+            var aggressive = entMan.GetComponent<Content.Shared._Lavaland.Aggression.AggressiveComponent>(boss);
+            entMan.System<Content.Shared._Lavaland.Aggression.AggressorsSystem>().AddAggressor((boss, aggressive), dummy);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(landed, Is.True, "the direct melee attack did not land");
+            Assert.That(firstHit, Is.GreaterThan(0f), "the melee hit dealt no damage");
+            Assert.That(burstStarted, Is.True, "the melee hit did not start a rapid melee burst");
+        });
+
+        // A full burst is 8 hits at 0.25 s, so half a second must contain a couple of them.
+        // The window stays below the boss's one second initial attack delay to keep abilities out.
+        await server.WaitRunTicks(45);
+
+        await server.WaitAssertion(() =>
+        {
+            var total = entMan.GetComponent<DamageableComponent>(dummy).TotalDamage.Float();
+            Assert.That(total, Is.GreaterThan(firstHit * 1.5f),
+                "the rapid melee burst landed only one hit, total " + total + " vs first hit " + firstHit);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task NearDeathCloneBurstSpawnsNineClones()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var timing = server.ResolveDependency<IGameTiming>();
+        var sys = server.System<BubblegumSystem>();
+
+        var testMap = await pair.CreateTestMap();
+        EntityUid boss = default;
+        EntityUid grid = default;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -14; x <= 14; x++)
+            {
+                for (var y = -14; y <= 14; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity(BossProto, testMap.GridCoords);
+            grid = testMap.Grid;
+        });
+
+        await server.WaitRunTicks(2);
+
+        var normalClones = 0;
+        var criticalClones = 0;
+
+        await server.WaitPost(() =>
+        {
+            var bubblegum = entMan.GetComponent<BubblegumComponent>(boss);
+            bubblegum.CloneHealthThreshold = 1f;
+
+            var gridComp = entMan.GetComponent<MapGridComponent>(grid);
+            var bossTile = mapSys.TileIndicesFor(grid, gridComp, entMan.GetComponent<TransformComponent>(boss).Coordinates);
+            var targetTile = bossTile + new Vector2i(5, 0);
+            var now = timing.CurTime;
+
+            // Healthy boss: the surround burst uses CloneCount 6.
+            bubblegum.CloneCriticalHealthThreshold = 0f;
+            var before = bubblegum.ActiveClones.Count;
+            sys.QueueCloneBloodSprays(boss, bubblegum, grid, gridComp, bossTile, targetTile, 0f, now);
+            normalClones = bubblegum.ActiveClones.Count - before;
+
+            // Near death: the same burst uses CloneCriticalCount 9, TG's 3 rings of 4 minus the boss.
+            bubblegum.CloneCriticalHealthThreshold = 1f;
+            before = bubblegum.ActiveClones.Count;
+            sys.QueueCloneBloodSprays(boss, bubblegum, grid, gridComp, bossTile, targetTile, 0f, now);
+            criticalClones = bubblegum.ActiveClones.Count - before;
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var bubblegum = entMan.GetComponent<BubblegumComponent>(boss);
+            Assert.That(normalClones, Is.EqualTo(6), "the surround burst must spawn 6 hallucinations");
+            Assert.That(criticalClones, Is.EqualTo(9),
+                "the near-death burst must spawn 9 hallucinations (TG has 12 positions, the boss takes 3)");
+            Assert.That(bubblegum.PendingBloodTiles.Count, Is.GreaterThan(0),
+                "the clones queued no fake blood sprays");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// Bubblegum has no megafauna AI, its own system is the brain, so it has to find targets
+    /// through the opt-in proximity aggro of <see cref="AggressorsSystem"/> instead of waiting
+    /// for a hit. Three tiles away and untouched: the boss must aggro, start the fight and drop
+    /// the target once the player is dead.
+    /// </summary>
+    [Test]
+    public async Task ProximityAggroStartsTheFightWithoutDamage()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = entMan.System<SharedMapSystem>();
+        var mobState = entMan.System<MobStateSystem>();
+
+        var testMap = await pair.CreateTestMap();
+        EntityUid boss = default;
+        EntityUid player = default;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -14; x <= 14; x++)
+            {
+                for (var y = -14; y <= 14; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            boss = entMan.SpawnEntity(BossProto, testMap.GridCoords);
+            player = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(3f, 0f)));
+            // A real session matters: mob threshold updates send network events to the actor.
+            server.PlayerMan.SetAttachedEntity(pair.Player, player, true);
+        });
+
+        await server.WaitRunTicks(2);
+
+        // Within one 0.5 s proximity scan the boss must notice the player on its own.
+        await server.WaitRunTicks(30);
+        await server.WaitAssertion(() =>
+        {
+            var aggressive = entMan.GetComponent<AggressiveComponent>(boss);
+            Assert.That(aggressive.Aggressors, Does.Contain(player),
+                "the boss must notice a nearby player even if nobody damaged it");
+        });
+
+        // Aggro alone is not enough: the fight has to start from it.
+        await server.WaitRunTicks(90);
+        await server.WaitAssertion(() =>
+        {
+            var bubblegum = entMan.GetComponent<BubblegumComponent>(boss);
+            Assert.That(bubblegum.CurrentPrimaryTarget == player || bubblegum.LastAttackKind != string.Empty, Is.True,
+                "proximity aggro must start the fight");
+        });
+
+        // A corpse is not a threat any more: the aggressor must be dropped and the boss must go idle.
+        await server.WaitPost(() => mobState.ChangeMobState(player, MobState.Dead));
+
+        var dropped = false;
+        for (var i = 0; i < 12 && !dropped; i++)
+        {
+            await server.WaitRunTicks(10);
+            await server.WaitAssertion(() =>
+            {
+                var aggressive = entMan.GetComponent<AggressiveComponent>(boss);
+                var bubblegum = entMan.GetComponent<BubblegumComponent>(boss);
+                dropped = aggressive.Aggressors.Count == 0
+                          && bubblegum.CurrentPrimaryTarget == null
+                          && !bubblegum.Charging;
+            });
+        }
+
+        Assert.That(dropped, Is.True, "the boss must drop a dead player and go idle");
+
+        await server.WaitPost(() =>
+        {
+            if (!entMan.Deleted(player))
+                entMan.DeleteEntity(player);
         });
 
         await pair.CleanReturnAsync();

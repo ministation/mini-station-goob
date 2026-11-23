@@ -296,6 +296,27 @@ public sealed partial class GameTicker
             DefaultMap = mapId;
     }
 
+    /// <summary>
+    /// Force-pauses entities of a map that is loaded without map init. Pre-mapinit entities are
+    /// assumed to be paused, but the engine only sets that when the map itself is not already
+    /// flagged as paused, so a map saved with "paused: false" entities would tick during the lobby.
+    /// </summary>
+    private void PausePreInitMapEntities(MapId mapId)
+    {
+        var query = AllEntityQuery<TransformComponent, MetaDataComponent>();
+        while (query.MoveNext(out var uid, out var xform, out var meta))
+        {
+            if (xform.MapID != mapId
+                || meta.EntityLifeStage >= EntityLifeStage.MapInitialized
+                || meta.EntityPaused)
+            {
+                continue;
+            }
+
+            _metaData.SetEntityPaused(uid, true, meta);
+        }
+    }
+
     private void RequestStartRound(bool force = false)
     {
         _pendingStartRound = true;

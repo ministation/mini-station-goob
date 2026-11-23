@@ -23,6 +23,15 @@
     spread: 60
     speed: 10.5
     delay: 2
+  # TG: a turf or object impact is EX_ACT(EXPLODE_HEAVY), the orb splashes on the wall.
+  - type: ExplodeOnHit
+  - type: Explosive
+    explosionType: Cryo
+    # TG EX_ACT(EXPLODE_HEAVY) is a point effect: slope 100 keeps the blast on the impact tile.
+    totalIntensity: 5
+    intensitySlope: 100
+    maxIntensity: 5
+    maxTileBreak: 0
   - type: Sprite
     sprite: _Lavaland/Objects/Projectiles/frost_miner.rsi
     layers:
@@ -45,6 +54,15 @@
         Blunt: 15
     ignoreResistances: true
   - type: RockBreakingProjectile
+  # TG: a turf or object impact is EX_ACT(EXPLODE_HEAVY), the blast splashes on the wall.
+  - type: ExplodeOnHit
+  - type: Explosive
+    explosionType: Cryo
+    # TG EX_ACT(EXPLODE_HEAVY) is a point effect: slope 100 keeps the blast on the impact tile.
+    totalIntensity: 5
+    intensitySlope: 100
+    maxIntensity: 5
+    maxTileBreak: 0
   - type: Sprite
     sprite: _Lavaland/Objects/Projectiles/frost_miner.rsi
     layers:

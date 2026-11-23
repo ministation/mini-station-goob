@@ -35,6 +35,7 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+    - Lavafauna
   - type: HTN
     rootTask:
       task: IdleCompound
@@ -53,20 +54,24 @@
     attackRate: 1.0
     damage:
       types:
-        Slash: 45
-        Structural: 45
+        Slash: 40
+        Structural: 40
   - type: Tag
     tags:
     - CannotSuicide
     - FootstepSound
   - type: CombatMode
+    # Boss melee goes through AttemptLightAttack, which needs combat mode; the shared megafauna
+    # chase system turns it on, this keeps the burst working if the boss is ever driven otherwise.
+    isInCombatMode: true
+  - type: RapidMelee
   - type: MovementSpeedModifier
     baseWalkSpeed: 2
     baseSprintSpeed: 3
   - type: MobThresholds
     thresholds:
       0: Alive
-      3000: Dead
+      2500: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -93,9 +98,11 @@
     soundId: Bubblegum
   - type: Aggressive
     autoAddOnDamage: false
-    forgiveRange: 40.0
+    forgiveRange: 12.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: Anger
-    totalHp: 3000
+    totalHp: 2500
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2

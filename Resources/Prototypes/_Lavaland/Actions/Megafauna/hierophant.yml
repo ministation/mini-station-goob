@@ -155,3 +155,7 @@
     damageWhitelist:
       components:
       - MobState
+    # TG monster_damage_boost, same as the regular hierophant blast.
+    monsterBonusDamage:
+      types:
+        Blunt: 10

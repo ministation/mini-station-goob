@@ -27,6 +27,7 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+    - Lavafauna
   # Megafauna AI wiring (works for NPC control; a ghost takeover pauses it)
   - type: InputMover
   - type: Input
@@ -185,6 +186,10 @@
   description: A large magic box with similar power and design to the Hierophant. Once it opens, it's not easy to close it.
   components:
   # Basic stuff
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+    - Lavafauna
   - type: Physics
     bodyType: KinematicController
   - type: Fixtures

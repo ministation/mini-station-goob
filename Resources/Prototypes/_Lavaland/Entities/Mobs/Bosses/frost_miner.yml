@@ -36,6 +36,7 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+    - Lavafauna
   - type: PreventChasmFalling
     deleteOnUse: false
   - type: MegafaunaStage
@@ -70,7 +71,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      1650: Dead
+      1500: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -78,7 +79,9 @@
     # TG uses bdm_boss.ogg, this fork does not ship it; the shared miniboss track is the stand-in.
     soundId: Miniboss
   - type: Aggressive
-    forgiveRange: 20.0
+    forgiveRange: 10.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: CombatPower
     factor: 30
   - type: MobMover
@@ -111,17 +114,16 @@
     selector: !type:NestedMegafaunaSelector
       id: FrostMiner
   - type: Anger
-    totalHp: 1650
+    totalHp: 1500
   - type: AngerPlayerScaling
     angerScale: 1.2
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0: 1
-      412: 2 # TG enrages at 25% health
+      375: 2 # TG enrages at 25% health
   - type: FrostMinerEnrage
   - type: MegafaunaBlink
-  - type: MegafaunaRejuvenate
   # TG parity: the miner knocks back whoever it hits (knockback 7).
   - type: MeleeThrowOnHit
     speed: 8

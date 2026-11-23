@@ -17,59 +17,66 @@ using Robust.Shared.Timing;
 namespace Content.Server._Lavaland.Mobs;
 
 /// <summary>
-/// TG lobster rush: the mob dashes at a nearby target, knocks it down, hits it and
-/// then gets tired for a while.
+/// TG lobster rush: the mob telegraphs the charge, dashes in a straight line at the spot the
+/// victim stood on, knocks it down and is tired afterwards. The dash is not homing, so the victim
+/// can step aside or hide behind cover while the mob winds up.
 /// </summary>
 [RegisterComponent]
 public sealed partial class LavalandRushComponent : Component
 {
     /// <summary>
-    /// How far the mob looks for a target to rush.
+    /// TG charge_distance: how far away the mob looks for a victim, and how far the dash can go.
     /// </summary>
     [DataField]
     public float Range = 8f;
 
     /// <summary>
-    /// Seconds between rushes.
+    /// TG charge_delay: the mob stands still and telegraphs the rush for this long.
     /// </summary>
     [DataField]
-    public float Cooldown = 8f;
+    public float WindupSeconds = 1.5f;
 
     /// <summary>
-    /// Seconds the victim stays knocked down.
+    /// TG charge_speed is 0.5 seconds per tile, which is 2 tiles per second.
+    /// </summary>
+    [DataField]
+    public float ChargeSpeed = 2f;
+
+    /// <summary>
+    /// Seconds between rushes, counted from the start of the windup. TG cooldown_time is 6.
+    /// </summary>
+    [DataField]
+    public float Cooldown = 6f;
+
+    /// <summary>
+    /// TG knockdown_duration.
     /// </summary>
     [DataField]
     public float KnockdownSeconds = 2.5f;
 
     /// <summary>
-    /// Damage dealt by the rush itself, before the regular melee attack.
+    /// TG charge_damage, 30 brute.
     /// </summary>
     [DataField]
     public DamageSpecifier RushDamage = new()
     {
-        DamageDict = { { "Slash", 17f } },
+        DamageDict = { { "Slash", 30f } },
     };
 
     /// <summary>
-    /// Status effect applied to the rusher after the dash.
+    /// Status effect applied to the rusher after the dash, TG tired_post_charge.
     /// </summary>
     [DataField]
     public EntProtoId TiredStatus = "LavalandStatusEffectTired";
 
     /// <summary>
-    /// Seconds the tired status effect lasts.
+    /// TG tired_post_charge lasts one second.
     /// </summary>
     [DataField]
-    public float TiredSeconds = 4f;
+    public float TiredSeconds = 1f;
 
     /// <summary>
-    /// Dash speed in tiles per second.
-    /// </summary>
-    [DataField]
-    public float DashSpeed = 20f;
-
-    /// <summary>
-    /// How close the dash has to get to the target to hit it.
+    /// How close the dash has to get to a living victim to hit it.
     /// </summary>
     [DataField]
     public float HitRange = 0.75f;
@@ -78,7 +85,25 @@ public sealed partial class LavalandRushComponent : Component
     public TimeSpan NextRush;
 
     [ViewVariables]
+    public TimeSpan DashStartsAt;
+
+    /// <summary>
+    /// Where the mob stood when the rush started, it is held there until the windup ends.
+    /// </summary>
+    [ViewVariables]
+    public Vector2 Origin;
+
+    /// <summary>
+    /// The spot the victim stood on when the rush started. The dash is committed to it.
+    /// </summary>
+    [ViewVariables]
+    public Vector2 Destination;
+
+    [ViewVariables]
     public EntityUid? DashTarget;
+
+    [ViewVariables]
+    public bool DashHit;
 }
 
 public sealed class LavalandRushSystem : EntitySystem
@@ -106,51 +131,64 @@ public sealed class LavalandRushSystem : EntitySystem
                 continue;
             }
 
-            if (rush.DashTarget is { } target)
+            if (rush.DashTarget != null)
             {
-                UpdateDash(uid, rush, target, frameTime);
+                if (_timing.CurTime < rush.DashStartsAt)
+                    _transform.SetWorldPosition(uid, rush.Origin); // TG does not move while it telegraphs the charge.
+                else
+                    UpdateDash(uid, rush, frameTime);
+
                 continue;
             }
 
-            if (_timing.CurTime < rush.NextRush || !TryFindTarget(uid, rush.Range, out target))
+            if (_timing.CurTime < rush.NextRush || !TryFindTarget(uid, rush.Range, out var target))
                 continue;
 
+            // TG starts the cooldown when the charge is activated and only then waits out charge_delay.
             rush.NextRush = _timing.CurTime + TimeSpan.FromSeconds(rush.Cooldown);
+            rush.DashStartsAt = _timing.CurTime + TimeSpan.FromSeconds(rush.WindupSeconds);
+            rush.Origin = _transform.GetWorldPosition(uid);
+            rush.Destination = _transform.GetWorldPosition(target);
             rush.DashTarget = target;
+            rush.DashHit = false;
         }
     }
 
-    private void UpdateDash(EntityUid uid, LavalandRushComponent rush, EntityUid target, float frameTime)
+    private void UpdateDash(EntityUid uid, LavalandRushComponent rush, float frameTime)
     {
-        // The rush cannot cross obstructions, and the target can duck behind cover mid dash.
-        if (!Exists(target)
-            || !_mobState.IsAlive(target)
-            || !_interaction.InRangeUnobstructed((uid, null), (target, null), range: -1f))
-        {
-            FinishRush(uid, rush);
-            return;
-        }
+        var self = _transform.GetWorldPosition(uid);
 
-        var self = _transform.GetMapCoordinates(uid);
-        var victim = _transform.GetMapCoordinates(target);
-        var delta = victim.Position - self.Position;
-        var distance = delta.Length();
-
-        if (distance <= rush.HitRange)
+        // TG hurts whatever the charge runs into, so a victim that stepped aside is not hit.
+        if (!rush.DashHit
+            && rush.DashTarget is { } target
+            && Exists(target)
+            && _mobState.IsAlive(target)
+            && (self - _transform.GetWorldPosition(target)).Length() <= rush.HitRange)
         {
+            rush.DashHit = true;
             _stun.TryKnockdown(target, TimeSpan.FromSeconds(rush.KnockdownSeconds), true);
             _damageable.TryChangeDamage(target, rush.RushDamage, origin: uid);
+        }
+
+        var delta = rush.Destination - self;
+        var remaining = delta.Length();
+        var destination = new MapCoordinates(rush.Destination, Transform(uid).MapID);
+
+        // Cover stops the rush instead of being dashed through.
+        if (remaining <= 0.01f || !_interaction.InRangeUnobstructed(uid, destination, range: -1f))
+        {
             FinishRush(uid, rush);
             return;
         }
 
-        var step = MathF.Min(rush.DashSpeed * frameTime, distance - rush.HitRange);
-        _transform.SetMapCoordinates(uid, new MapCoordinates(self.Position + delta / distance * step, self.MapId));
+        var step = MathF.Min(rush.ChargeSpeed * frameTime, remaining);
+        _transform.SetWorldPosition(uid, self + delta / remaining * step);
     }
 
     private void FinishRush(EntityUid uid, LavalandRushComponent rush)
     {
         rush.DashTarget = null;
+        rush.DashHit = false;
         _status.TryAddStatusEffectDuration(uid, rush.TiredStatus, TimeSpan.FromSeconds(rush.TiredSeconds));
     }
 

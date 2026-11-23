@@ -2,12 +2,12 @@
 
 # Enrage moves for the colossus and the hierophant, unlocked by MobPhases.
 
-# Colossus below 10% HP: one final lance of death bolts.
+# Colossus below 10% HP: TG's Titan's Finale, a one-shot barrage of death bolts.
 - type: entity
   id: ActionColossusFinale
   parent: BaseAction
   name: Final Judgement
-  description: Fires a lance of death bolts in a straight line.
+  description: Unleashes a barrage of shotgun blasts, random bolts and waves of death bolts.
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -18,12 +18,74 @@
     checkCanAccess: false
     range: 30
   - type: WorldTargetAction
-    event: !type:MegafaunaShotActionEvent
+    event: !type:MegafaunaVolleyActionEvent
       projectile: LavalandColossusBolt
-      count: 3
-      spread: 15
-      speed: 30
-      pattern: Cone
+      speed: 14
+      announce: Perish.
+      pauseAi: true
+      steps:
+      # TG Titan's Finale: 20 waves of the main loop, sleep(finale_counter + 1) deciseconds apart.
+      # Six shotgun waves, three scatter-only waves while the counter runs down, then eleven slow scatter waves.
+      - interval: 1.1
+        pattern: [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+        scatterCount: 12
+      - interval: 1.0
+        pattern: [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+        scatterCount: 12
+      - interval: 0.9
+        pattern: [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+        scatterCount: 12
+      - interval: 0.8
+        pattern: [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+        scatterCount: 12
+      - interval: 0.7
+        pattern: [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+        scatterCount: 12
+      - interval: 0.6
+        pattern: [12.5, 7.5, 2.5, -2.5, -7.5, -12.5]
+        scatterCount: 12
+      - interval: 0.5
+        scatterCount: 12
+      - interval: 0.4
+        scatterCount: 12
+      - interval: 0.3
+        scatterCount: 12
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      - interval: 0.2
+        scatterCount: 3
+      # random_shots: three waves of 32 bolts in random directions, TG interpolates 0.7, 1.3, 1.9 s.
+      - interval: 0.7
+        randomCount: 32
+      - interval: 1.3
+        randomCount: 32
+      - interval: 1.9
+        randomCount: 32
+      # dir_shots: three waves along the eight directions.
+      - interval: 1.0
+        pattern: [0, 45, 90, 135, 180, -135, -90, -45]
+      - interval: 1.0
+        pattern: [0, 45, 90, 135, 180, -135, -90, -45]
+      - interval: 1.0
+        pattern: [0, 45, 90, 135, 180, -135, -90, -45]
 
 # Hierophant below 50% HP: cross blasts in all directions.
 - type: entity

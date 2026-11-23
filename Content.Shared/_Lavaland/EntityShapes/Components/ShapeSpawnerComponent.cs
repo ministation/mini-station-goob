@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-MiniStation-1.0
 
-﻿using Content.Shared._Lavaland.EntityShapes.Shapes;
+﻿using System.Numerics;
+using Content.Shared._Lavaland.EntityShapes.Shapes;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
@@ -25,4 +26,12 @@ public sealed partial class ShapeSpawnerComponent : Component
     /// </summary>
     [DataField]
     public bool AlignCoords;
+
+    /// <summary>
+    /// If set, overrides <see cref="EntityShape.DefaultSize"/> with a size scaled by the anger of the user
+    /// that spawned this shape, from X (no anger) to Y (max anger). Used by TG parity to grow the
+    /// hierophant blast and beam radii. Other shapes leave the field empty and keep their YAML size.
+    /// </summary>
+    [DataField]
+    public Vector2i? AngerSizeRange;
 }

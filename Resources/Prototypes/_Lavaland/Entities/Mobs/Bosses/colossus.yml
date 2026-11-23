@@ -33,6 +33,7 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+    - Lavafauna
   - type: PreventChasmFalling
     deleteOnUse: false
   - type: MegafaunaStage
@@ -59,7 +60,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2750: Dead
+      2500: Dead
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Hierophant
@@ -82,7 +83,9 @@
   - type: CombatPower # Goobstation
     factor: 25 # times more dangerous than a crew-member
   - type: Aggressive # also required component for aggro checking
-    forgiveRange: 20.0
+    forgiveRange: 10.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   # Megafauna AI wiring, same driver as Hierophant
   - type: MobMover
   - type: LagCompensation
@@ -91,6 +94,7 @@
     actions:
     - ActionColossusBoltsSpread
     - ActionColossusBoltsRing
+    - ActionColossusBoltsDirShots
     - ActionColossusBoltsSpiral
     - ActionColossusCounterSpiral
     - ActionColossusFinale
@@ -112,15 +116,15 @@
     selector: !type:NestedMegafaunaSelector
       id: Colossus
   - type: Anger
-    totalHp: 2750
+    totalHp: 2500
   - type: AngerPlayerScaling
     angerScale: 1.1
     hpScale: 1.2
   - type: MobPhases
     phaseThresholds:
       0:    1
-      1815: 2 # below 33% HP: double counter-spiral
-      2475: 3 # below 10% HP: final judgement
+      1650: 2 # below 33% HP: double counter-spiral
+      2250: 3 # below 10% HP: final judgement
   - type: BossEnrage
     healthFraction: 0.33
     speedMultiplier: 1.25
@@ -130,7 +134,6 @@
       path: /Audio/Effects/demon_attack1.ogg
   - type: MegafaunaAnchor
   - type: MegafaunaGodmode
-  - type: MegafaunaRejuvenate
   - type: SpawnLootOnDeath
     table: !type:AllSelector
       children:

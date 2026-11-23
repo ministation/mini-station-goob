@@ -326,3 +326,35 @@
     range: 30
   - type: WorldTargetAction
     event: !type:MegafaunaLavaArenaActionEvent
+
+# TG's red "certain death" marker on the tile the swooping drake is going to hit.
+- type: entity
+  id: LavalandDrakeSwoopLanding
+  name: certain death
+  description: Don't just stand there, move!
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    noRot: true
+    drawdepth: BelowMobs
+    sprite: _Lavaland/Mobs/Bosses/96x96.rsi
+    color: "#FF2A2A"
+    layers:
+    - state: dragon_swoop
+  - type: TimedDespawn
+    lifetime: 2
+
+# Shadow left on the ground under the flying drake, so the swoop reads as a jump.
+- type: entity
+  id: LavalandDrakeSwoopShadow
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorEffects
+    sprite: _Lavaland/Mobs/Bosses/96x96.rsi
+    color: "#FFFFFF66"
+    layers:
+    - state: dragon_shadow
+  - type: TimedDespawn
+    lifetime: 2

@@ -11,6 +11,11 @@
     damageCoefficient: 0 # megafauna cannot be put into stamina crit
   # Basic stuff
   - type: MegafaunaDevour
+  # Both lavaland mining factions: ported fauna is SimpleHostile, upstream fauna and legions are Lavafauna.
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+    - Lavafauna
   - type: ExplosionResistance
     worn: false
     damageCoefficient: 0.1
@@ -62,7 +67,7 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      2850: Dead
+      2500: Dead
   - type: Tag
     tags:
     - CannotSuicide
@@ -74,6 +79,7 @@
     damage:
       types:
         Blunt: 15
+      armorPenetration: 0.5 # TG armour_penetration 50
   - type: ActionGrant
     actions:
     - ActionHierophantBox
@@ -86,17 +92,19 @@
     - ActionHierophantBlinkSlam
   - type: Fauna
   - type: Anger
-    totalHp: 2850
+    totalHp: 2500
   - type: Aggressive
-    forgiveRange: 25
+    forgiveRange: 14.0
+    proximityAggroRange: 4.0
+    updateDelay: 2
   - type: GPS
     gpsName: Zealous Signal
     enabled: true
   - type: MobPhases
     phaseThresholds:
       0:    1
-      1425: 2 # below 50% HP: enraged crosses and blink spam
-      2280: 3
+      1250: 2 # below 50% HP: enraged crosses and blink spam
+      2000: 3
   - type: BossEnrage
     healthFraction: 0.5
     speedMultiplier: 1.2
@@ -154,4 +162,3 @@
     slamDelay: 0.9
   - type: MegafaunaBlinkInactive
   - type: MegafaunaGodmode
-  - type: MegafaunaRejuvenate

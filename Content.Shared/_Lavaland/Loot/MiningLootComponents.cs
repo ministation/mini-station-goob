@@ -130,3 +130,14 @@ public sealed partial class ParadoxBagComponent : Component
     [ViewVariables]
     public EntityUid? Partner;
 }
+
+/// <summary>
+/// Jacob's ladder: using the item unfolds an unbreakable ladder under the user.
+/// This fork has a single z level, so the TG chain of ladders across z levels cannot be built.
+/// </summary>
+[RegisterComponent]
+public sealed partial class JacobsLadderComponent : Component
+{
+    [DataField]
+    public EntProtoId LadderProto = "LavalandJacobsLadderStructure";
+}

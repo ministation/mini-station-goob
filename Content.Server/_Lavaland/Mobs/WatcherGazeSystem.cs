@@ -25,7 +25,11 @@ public sealed class WatcherGazeSystem : EntitySystem
 {
     // Numbers from tgstation watcher_gaze.dm.
     private const float GazeRadius = 7f;
-    private const float FireStacks = 10f;
+
+    // tg sets 10 fire stacks. A stack here burns twice as hard (the damage is applied with
+    // partMultiplier 2) and fades ten times slower, so the tg count burned a full health mob down.
+    // 2 stacks give roughly the tg glance: a painful hit plus the paralyze, not a death sentence.
+    private const float FireStacks = 2f;
     private const float IceThrowSpeed = 10f;
 
     private static readonly TimeSpan WarningDelay = TimeSpan.FromSeconds(1.6);

@@ -483,7 +483,7 @@
     impactEffect: BulletImpactEffectOrangeDisabler
     damage:
       types:
-        Heat: 30 # goob - to account for lower firerate and projectile speed. also so you can't just stand there and tank
+        Heat: 5 # tg watcher/magma_wing damage, the watcher shoots slowly enough for it
   - type: ChangeTemperatureOnCollide
     heat: 20000 # Lavaland Change
 

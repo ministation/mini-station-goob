@@ -391,13 +391,14 @@
     angle: 0
     damage:
       types:
-        Slash: 20
+        Slash: 18 # TG melee_damage_lower 15, upper 19
   - type: Butcherable
     spawned:
     - id: FoodMeatLobster
       maxAmount: 2
     - id: LavalandRushGland # TG: rush gland butcher drop
-  # Mini: TG lobster rush, a dash that knocks the victim down and leaves the lobster tired.
+  # Mini: TG lobster rush. Charge distance 8, 1.5s windup, 2 tiles per second, 6s cooldown,
+  # 30 brute on hit, 2.5s knockdown and a second of tired slowness afterwards.
   - type: LavalandRush
   # TG juvenile lobstrosity: tame_chance 35, bonus_tame_chance 20, eats meat from your hand.
   # The adult is not tameable in TG, we map the juvenile numbers onto our only lobstrosity.
@@ -472,10 +473,11 @@
   - type: CombatMode
   - type: LavalandRush # Mini: weaker TG shrimp rush for the juvenile
     range: 4
+    windupSeconds: 0.2 # TG shrimp charge_delay
     knockdownSeconds: 1.8
     rushDamage:
       types:
-        Slash: 10
+        Slash: 13 # TG shrimp charge_damage
   - type: TameableMob # TG juvenile lobstrosity: tame_chance 35, bonus 20
     tameChance: 35
     bonusTameChance: 20

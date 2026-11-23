@@ -34,6 +34,24 @@ public sealed partial class BubblegumComponent : Component
     [DataField]
     public TimeSpan BloodWarpDelay = TimeSpan.FromSeconds(0.35);
 
+    /// <summary>
+    /// TG blood_warp pick_range: the jaunt destination is a blood pool on this ring around the target.
+    /// </summary>
+    [DataField]
+    public int BloodWarpPickRange = 5;
+
+    /// <summary>
+    /// Pools closer than this to the target are skipped, so the boss lands at pick_range instead of on top of the target.
+    /// </summary>
+    [DataField]
+    public int BloodWarpInnerRange = 4;
+
+    /// <summary>
+    /// TG requires a blood pool under or next to the boss before it can sink into the blood.
+    /// </summary>
+    [DataField]
+    public int BloodWarpBossPoolRange = 1;
+
     [DataField]
     public TimeSpan BloodHandRecover = TimeSpan.FromSeconds(0.45);
 
@@ -48,8 +66,8 @@ public sealed partial class BubblegumComponent : Component
     public TimeSpan EnrageDuration = TimeSpan.FromSeconds(7);
 
     /// <summary>
-    /// TG parity: after an enrage ends, Bubblegum cannot enrage again for twice
-    /// the enrage duration.
+    /// TG parity gate before the next enrage: twice the enrage duration, with the
+    /// balance buff applied (0.75 of the 14 s cap).
     /// </summary>
     [DataField]
     public TimeSpan EnrageCooldown = TimeSpan.FromSeconds(14);
@@ -210,11 +228,18 @@ public sealed partial class BubblegumComponent : Component
     [DataField]
     public float CloneCriticalHealthThreshold = 0.25f;
 
+    /// <summary>
+    /// TG hallucination_surround: up to 6 hallucinations around the target.
+    /// </summary>
     [DataField]
-    public int CloneCount = 2;
+    public int CloneCount = 6;
 
+    /// <summary>
+    /// TG enraged hallucination burst: 3 rings of 4 positions, the boss itself takes 3 of them,
+    /// so there are 9 hallucinations. Our clones are not tied to boss positions, hence 9.
+    /// </summary>
     [DataField]
-    public int CloneCriticalCount = 3;
+    public int CloneCriticalCount = 9;
 
     [DataField]
     public int CloneMinOffset = 2;
@@ -258,6 +283,18 @@ public sealed partial class BubblegumComponent : Component
         DamageDict = new()
         {
             { "Blunt", FixedPoint2.New(40) },
+        },
+    };
+
+    /// <summary>
+    /// TG hallucination charge: the clones spawned while enraged also hit on their charge.
+    /// </summary>
+    [DataField]
+    public DamageSpecifier CloneChargeDamage = new()
+    {
+        DamageDict = new()
+        {
+            { "Blunt", FixedPoint2.New(18) },
         },
     };
 
@@ -390,4 +427,5 @@ public sealed class BubblegumCloneCharge
     public Vector2i TargetTile;
     public int RemainingSteps;
     public TimeSpan NextStep;
+    public readonly HashSet<EntityUid> HitEntities = new();
 }

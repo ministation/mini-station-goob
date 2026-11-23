@@ -6,13 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.Server.Atmos.EntitySystems;
+using Content.Server.NPC.HTN;
 using Content.Shared._Lavaland.Mobs;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
-using Content.Shared.Atmos;
-using Content.Server.Atmos.Components;
-using Content.Server.Atmos.EntitySystems;
+using Content.Shared.Damage.Components;
 using Content.Shared.Flash.Components;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Projectiles;
 using Content.Shared.StatusEffectNew;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Log;
@@ -273,6 +275,115 @@ public sealed class WatcherGazeTest
         {
             logMan.RootSawmill.RemoveHandler(errors);
         }
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task MagmawingGazeDoesNotBurnFullHpInOneLook()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var mapSys = server.System<SharedMapSystem>();
+        var status = server.System<StatusEffectsSystem>();
+        var transform = server.System<SharedTransformSystem>();
+
+        var testMap = await pair.CreateTestMap();
+        EntityUid watcher = default;
+        EntityUid victim = default;
+
+        await server.WaitPost(() =>
+        {
+            var tile = testMap.Tile.Tile;
+            for (var x = -6; x <= 6; x++)
+            {
+                for (var y = -6; y <= 6; y++)
+                    mapSys.SetTile(testMap.Grid, new Vector2i(x, y), tile);
+            }
+
+            // Burning needs oxygen, a fire in vacuum is put out immediately.
+            var atmos = server.System<AtmosphereSystem>();
+            var moles = new float[Atmospherics.AdjustedNumberOfGases];
+            moles[(int)Gas.Oxygen] = 21.824779f;
+            moles[(int)Gas.Nitrogen] = 82.10312f;
+            atmos.SetMapAtmosphere(testMap.MapUid, false, new GasMixture(moles, Atmospherics.T20C));
+
+            watcher = entMan.SpawnEntity("MobWatcherMagmawing", testMap.GridCoords);
+
+            // The watcher never shoots here: removing the HTN leaves only the gaze to be measured.
+            entMan.RemoveComponent<HTNComponent>(watcher);
+
+            victim = entMan.SpawnEntity("MobHuman", testMap.GridCoords.Offset(new Vector2(2f, 0f)));
+            transform.SetWorldRotation(victim, Angle.FromDegrees(180));
+        });
+
+        await server.WaitRunTicks(1);
+        await server.WaitPost(() =>
+        {
+            var ev = new WatcherGazeActionEvent
+            {
+                Performer = watcher,
+                Target = victim,
+            };
+            entMan.EventBus.RaiseLocalEvent(watcher, ev, broadcast: true);
+        });
+
+        // 1.6 s warning, then the gaze lands.
+        await server.WaitRunTicks(52);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.TryGetComponent<FlammableComponent>(victim, out var flammable), Is.True,
+                "the fire gaze victim has no FlammableComponent");
+            Assert.That(flammable!.OnFire, Is.True,
+                "the searing glare did not ignite the viewer");
+            Assert.That(flammable.FireStacks, Is.EqualTo(2f).Within(0.25f),
+                "the glare fire stacks drifted away from the tuned value");
+            Assert.That(status.HasStatusEffect(victim, "StatusEffectStunned"), Is.True,
+                "the searing glare did not paralyze the viewer");
+        });
+
+        // The burn is the slow part. A full health mob has to survive a single glare, so ten
+        // seconds of burning must stay under one health bar.
+        await server.WaitRunTicks(300);
+
+        await server.WaitAssertion(() =>
+        {
+            var damageable = entMan.GetComponent<DamageableComponent>(victim);
+            var mobState = entMan.GetComponent<MobStateComponent>(victim);
+            Assert.That(mobState.CurrentState, Is.EqualTo(MobState.Alive),
+                "one searing glare killed a full health mob");
+            Assert.That(damageable.TotalDamage.Float(), Is.LessThan(100f),
+                "one searing glare burned a whole health bar");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task MagmawingBoltDamageMatchesTg()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+
+        var testMap = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var bolt = entMan.SpawnEntity("WatcherBoltMagmawing", testMap.GridCoords);
+            Assert.That(entMan.TryGetComponent<ProjectileComponent>(bolt, out var projectile), Is.True,
+                "the magmawing bolt has no ProjectileComponent");
+
+            // tg watcher/magma_wing: 5 burn, the only damage type on the bolt.
+            Assert.That(projectile!.Damage.GetTotal().Float(), Is.EqualTo(5f),
+                "the magmawing bolt damage drifted away from tg");
+            Assert.That(projectile.Damage.DamageDict.TryGetValue("Heat", out var heat), Is.True,
+                "the magmawing bolt lost its Heat damage type");
+            Assert.That(heat.Float(), Is.EqualTo(5f),
+                "the magmawing bolt Heat damage drifted away from tg");
+        });
 
         await pair.CleanReturnAsync();
     }

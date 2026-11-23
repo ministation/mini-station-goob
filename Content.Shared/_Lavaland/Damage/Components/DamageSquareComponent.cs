@@ -19,6 +19,14 @@ public sealed partial class DamageSquareComponent : Component
     [DataField, AutoNetworkedField]
     public EntityWhitelist? DamageBlacklist;
 
+    /// <summary>
+    /// Extra damage applied on top of <see cref="Damage"/> to lavaland fauna that is not player controlled.
+    /// TG parity: hierophant blasts hit megafauna and asteroid fauna for extra brute damage.
+    /// Empty by default, so drake, colossus and legion tiles are unchanged.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public DamageSpecifier? MonsterBonusDamage;
+
     [DataField, AutoNetworkedField]
     public SoundPathSpecifier? Sound;
 

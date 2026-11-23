@@ -15,6 +15,7 @@
   - type: NpcFactionMember
     factions:
     - SimpleHostile
+    - Lavafauna
   - type: LegionTurret
     projectile: LavalandHeraldBolt
     fireRate: 1.2
