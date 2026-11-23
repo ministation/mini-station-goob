@@ -4,6 +4,6 @@
   description: department-Legal-description
   color: "#0c344d"
   roles:
-  - Magistrate
+  #- Magistrate # Mini-Magistrate-CentComm: primary department is CentComm
   - Lawyer
   weight: 90
