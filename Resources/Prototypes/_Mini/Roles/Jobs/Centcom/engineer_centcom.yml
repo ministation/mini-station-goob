@@ -3,6 +3,9 @@
   name: job-name-engineer-centcom
   description: job-description-engineer-centcom
   playTimeTracker: JobEngineerCentcom
+  canBeAntag: false
+  skills:
+  - All
   requirements:
   - !type:DepartmentTimeRequirement
     department: Engineering
@@ -21,7 +24,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+    implants: [ MindShieldImplant, RadioImplantCentcomm ]
 
 - type: startingGear
   id: EngineerCentcomGear

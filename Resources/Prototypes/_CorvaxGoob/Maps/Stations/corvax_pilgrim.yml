@@ -57,7 +57,7 @@
             Brigmedic: [ 1, 1 ]
             # court
             Lawyer: [ 1, 1 ]
-            Magistrate: [ 1, 1 ]
+            # Magistrate: [ 1, 1 ] # Mini-Magistrate-CentComm
             # service
             HeadOfPersonnel: [ 1, 1 ]
             Bartender: [ 1, 1 ]

@@ -14,7 +14,6 @@ ent-EngineerCentcomIDCard = ID-карта инженера Центком
     .desc = { ent-IDCardStandard.desc }
 ent-WorkerCentcomIDCard = ID-карта работника Центком
     .desc = { ent-IDCardStandard.desc }
-ent-GuardianNtIDCard = ID-карта стража клинка
 ent-SpecialAssignmentsIDCard = ID-карта офицера спецзаказов
     .desc = { ent-IDCardStandard.desc }
 ent-LogistIDCard = ID-карта логиста

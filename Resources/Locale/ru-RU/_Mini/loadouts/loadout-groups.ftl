@@ -1,3 +1,4 @@
+
 # Центральное Командование
 loadout-group-centcomm-head-command-back = Верховное командование, рюкзак
 loadout-group-centcomm-officer-head = Офицер Центком, голова
@@ -11,3 +12,6 @@ loadout-group-centcomm-officer-outer-clothing = Офицер Центком, в�
 loadout-group-centcomm-head-of-security-neck = ГБЦК, шея
 loadout-group-centcomm-operator-neck = ОЦК, шея
 loadout-group-centcomm-representative-neck = ПЦК, шея
+
+
+# Центральное Командование

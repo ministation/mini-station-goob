@@ -17,9 +17,6 @@
   id: JobHeadOfSecurityCentcom
 
 - type: playTimeTracker
-  id: JobGuardianNt
-
-- type: playTimeTracker
   id: JobSecurityOfficerCentcom
 
 - type: playTimeTracker

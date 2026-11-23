@@ -254,28 +254,3 @@
     borderColor: "#A32D26"
     accentHColor: "#447987"
     accentVColor: "#447987"
-
-- type: entity
-  parent: BaseSecurityPDA
-  id: GuardianNtPDA
-  name: Bladeguard PDA
-  description: Red means powerful. It has scratches from a lightsaber on it.
-  components:
-  - type: Tag
-    tags:
-      - ForceRecallEquipment
-      - WhitelistChameleon
-      - WhitelistChameleonPDA
-  - type: Pda
-    id: GuardianNtIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-ert
-  - type: PdaBorderColor
-    borderColor: "#A32D26"
-    accentHColor: "#447987"
-    accentVColor: "#447987"
-  - type: Icon
-    state: pda-ert

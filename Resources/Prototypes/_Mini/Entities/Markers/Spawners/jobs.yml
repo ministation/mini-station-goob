@@ -146,18 +146,6 @@
     - state: green
     - state: accountant
 
-- type: entity
-  id: SpawnPointGuardianNt
-  parent: SpawnPointJobBaseStories
-  name: guardiannt
-  components:
-  - type: SpawnPoint
-    job_id: GuardianNt
-  - type: Sprite
-    layers:
-    - state: green
-    - state: guardiannt
-
 # Juridical
 
 - type: entity
@@ -170,5 +158,3 @@
     spawn_type: Job
   - type: Sprite
     sprite: _Mini/Markers/jobs.rsi
-
-# GuardianNt

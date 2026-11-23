@@ -3,6 +3,9 @@
   name: job-name-medic-centcom
   description: job-description-medic-centcom
   playTimeTracker: JobMedicCentcom
+  canBeAntag: false
+  skills:
+  - All
   requirements:
   - !type:DepartmentTimeRequirement
     department: Medical
@@ -20,7 +23,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+    implants: [ MindShieldImplant, RadioImplantCentcomm ]
 
 - type: startingGear
   id: MedicCentcomGear

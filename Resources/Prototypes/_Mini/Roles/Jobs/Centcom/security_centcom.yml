@@ -3,6 +3,9 @@
   name: job-name-officer-security-centcom
   description: job-description-officer-security-centcom
   playTimeTracker: JobSecurityOfficerCentcom
+  canBeAntag: false
+  skills:
+  - All
   requirements:
   - !type:DepartmentTimeRequirement
     department: Security

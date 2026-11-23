@@ -320,10 +320,3 @@
     sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
     state: Senior_Inspector
   jobName: job-name-internal-inspector
-
-- type: jobIcon
-  parent: JobIcon
-  id: JobIconGuardianNt
-  icon:
-    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
-    state: GuardianNtSecurity

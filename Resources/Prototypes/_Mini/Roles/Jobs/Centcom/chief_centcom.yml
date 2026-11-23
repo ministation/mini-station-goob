@@ -3,22 +3,9 @@
   name: job-name-chief-centcom
   description: job-description-chief-centcom
   playTimeTracker: JobChiefCentcom
-  # requirements:
-  # - !type:DepartmentTimeRequirement
-  #   department: CentralCommand
-  #   time: 40h
-  # - !type:RoleTimeRequirement
-  #   role: JobOperatorCentcom
-  #   time: 10h
-  # - !type:RoleTimeRequirement
-  #   role: JobRepresentativeCentcom
-  #   time: 10h
-  # - !type:RoleTimeRequirement
-  #   role: JobHeadOfSecurityCentcom
-  #   time: 10h
-  # - !type:RoleTimeRequirement
-  #   role: JobCaptain
-  #   time: 20h
+  canBeAntag: false
+  skills:
+  - All
   startingGear: ChiefCentcomGear
   icon: "JobIconChiefCentcom"
   supervisors: job-supervisors-quadrant-management
@@ -29,7 +16,16 @@
   - DSO
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm, RadioImplantDSO ]
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
+    - RadioImplantDSO
   whitelisted: true
 
 - type: startingGear
@@ -41,6 +37,11 @@
     id: ChiefCentcomPDA
     neck: ClothingNeckCloakChiefCentcom
     belt: ClothingBeltSheathFilled
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm
 
 - type: chameleonOutfit
   id: ChiefCentcomChameleonOutfit

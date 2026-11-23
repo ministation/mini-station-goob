@@ -3,13 +3,9 @@
   name: job-name-head-of-security-centcom
   description: job-description-head-of-security-centcom
   playTimeTracker: JobHeadOfSecurityCentcom
-  # requirements:
-  # - !type:DepartmentTimeRequirement
-  #   department: CentralCommand
-  #   time: 20h
-  # - !type:RoleTimeRequirement
-  #   role: JobHeadOfSecurity
-  #   time: 10h
+  canBeAntag: false
+  skills:
+  - All
   startingGear: HeadOfSecurityCentcomGear
   icon: "JobIconCentcom"
   supervisors: job-supervisors-chief-centcom
@@ -19,7 +15,15 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+    implants: 
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
   whitelisted: true
 
 - type: startingGear
@@ -27,6 +31,11 @@
   equipment:
     id: HeadOfSecurityCentcomPDA
     belt: ClothingBeltSecurityFilled
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm
 
 - type: chameleonOutfit
   id: HeadOfSecurityCentcomChameleonOutfit

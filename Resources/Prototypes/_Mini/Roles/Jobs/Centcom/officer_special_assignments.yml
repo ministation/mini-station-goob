@@ -3,16 +3,9 @@
   name: job-name-officer-special-assignments
   description: job-description-officer-special-assignments
   playTimeTracker: JobSpecialAssignments
-  # requirements:
-  # - !type:DepartmentTimeRequirement
-  #   department: Cargo
-  #   time: 40h
-  # - !type:RoleTimeRequirement
-  #   role: JobQuartermaster
-  #   time: 15h
-  # - !type:RoleTimeRequirement
-  #   role: JobLogist
-  #   time: 15h
+  canBeAntag: false
+  skills:
+  - All
   startingGear: SpecialAssignmentsGear
   icon: "JobIconSpecialAssignments"
   supervisors: job-supervisors-quadrant-management
@@ -28,7 +21,15 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
   whitelisted: true
 
 - type: startingGear
@@ -38,6 +39,11 @@
     jumpsuit: ClothingUniformJumpsuitSpecialAssignments
     shoes: ClothingShoesBootsJackFilled
     id: SpecialAssignmentsPDA
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm
 
 - type: chameleonOutfit
   id: OfficerSpecialAssignmentsChameleonOutfit

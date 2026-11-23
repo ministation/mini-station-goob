@@ -3,6 +3,9 @@
   name: job-name-worker-centcom
   description: job-description-worker-centcom
   playTimeTracker: JobWorkerCentcom
+  canBeAntag: false
+  skills:
+  - All
   requirements:
   - !type:DepartmentTimeRequirement
     department: Civilian
@@ -26,7 +29,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+    implants: [ MindShieldImplant, RadioImplantCentcomm ]
 
 - type: startingGear
   id: WorkerCentcomGear

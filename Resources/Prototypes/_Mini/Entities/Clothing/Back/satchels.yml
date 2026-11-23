@@ -36,18 +36,6 @@
 
 - type: entity
   parent: ClothingBackpackSatchel
-  id: ClothingBackpackSatchelGuardianNt
-  name: blade guardian's satchel
-  description: Where is my fudge?
-  components:
-  - type: Tag
-    tags:
-      - ForceRecallEquipment
-  - type: Sprite
-    sprite: _Mini/Clothing/Back/Satchels/satchel_guardiannt.rsi
-
-- type: entity
-  parent: ClothingBackpackSatchel
   id: ClothingBackpackSatchelRl
   name: satchel
   description: A fashionable bag.

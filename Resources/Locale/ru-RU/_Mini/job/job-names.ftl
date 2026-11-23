@@ -20,6 +20,10 @@ JobTypanPatrol = патрульный Синдиката
 JobTypanCommand = офицер телекоммуникаций
 JobTypanTechnicalOperationsSupervisor = руководитель техобеспечения
 
+# Juridical-Jobs
+
+job-name-judge = судья
+
 # Centcom-Jobs
 
 job-name-chief-centcom = начальник штаба Центком
@@ -41,6 +45,18 @@ job-name-internal-inspector = внутренний инспектор
 job-name-special-officer = офицер спецопераций
 job-name-cburn-commander = командир карантинной службы
 
-# Guardian
+# Prison-Jobs
 
-job-name-guardian-nt = страж клинка
+
+# Juridical-Jobs
+
+
+# Centcom-Jobs
+
+
+
+# DSO-Jobs
+
+
+# Prison-Jobs
+

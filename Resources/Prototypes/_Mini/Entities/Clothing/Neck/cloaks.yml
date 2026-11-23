@@ -70,15 +70,3 @@
   - type: Foldable
     unfoldVerbText: fold-throw-on-shoulders-verb
     foldVerbText: fold-throw-on-shoulder-verb
-
-- type: entity
-  parent: ClothingNeckBase
-  id: ClothingNeckCloakExe
-  name: guardian's cloak
-  description: It looks like is engraved here. What could this mean?
-  components:
-  - type: Tag
-    tags:
-      - ForceRecallEquipment
-  - type: Sprite
-    sprite: _Mini/Clothing/Neck/Cloaks/exe_cloak.rsi

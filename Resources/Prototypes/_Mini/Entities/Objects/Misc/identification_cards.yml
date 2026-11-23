@@ -428,24 +428,3 @@
     heldPrefix: blue
   - type: PresetIdCard
     job: CBURNCommander
-
-- type: entity
-  parent: IDCardStandard
-  id: GuardianNtIDCard
-  name: Bladeguard ID card
-  description: A card required to access various areas of the station.
-  components:
-  - type: Sprite
-    layers:
-    - state: centcom
-    - state: stripe_top
-      color: "#006600"
-    - state: stripe_bottom
-      color: "#003300"
-    - sprite: _Mini/Interface/Misc/job_icons.rsi
-      offset: -0.09375, 0.0625
-      state: GuardianNtSecurity
-  - type: Item
-    heldPrefix: blue
-  - type: PresetIdCard
-    job: GuardianNt

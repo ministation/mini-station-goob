@@ -75,14 +75,3 @@ loadout-group-typan-technical-supervisor-shoes = Tech. Supervisor Shoes
 loadout-group-typan-technical-supervisor-outerclothing = Tech. Supervisor Outer Clothing
 loadout-group-typan-technical-supervisor-gloves = Tech. Supervisor Gloves
 loadout-group-typan-technical-supervisor-neck = Tech. Supervisor Neck
-
-# Guardian
-loadout-group-Guardian-backpack = Backpack
-loadout-group-Guardian-belt = Belt
-loadout-group-Guardian-head = Head
-loadout-group-Guardian-jumpsuits = Jumpsuits
-loadout-group-Guardian-lightsaber = Lightsaber
-loadout-group-Guardian-mask = Mask
-loadout-group-Guardian-neck = Neck
-loadout-group-Guardian-outer-clothing = Clothing
-loadout-group-Guardian-shoes = Shoes

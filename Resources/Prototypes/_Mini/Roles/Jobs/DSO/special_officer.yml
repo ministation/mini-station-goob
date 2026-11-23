@@ -3,19 +3,13 @@
   name: job-name-special-officer
   description: job-description-special-officer
   playTimeTracker: JobSpecialOfficer
-  # requirements:
-  # - !type:DepartmentTimeRequirement
-  #   department: DSO
-  #   time: 40h
-  # - !type:DepartmentTimeRequirement
-  #   department: CentralCommand
-  #   time: 20h
-  # - !type:RoleTimeRequirement
-  #   role: JobHeadOfSecurity
-  #   time: 20h
+  whitelisted: true
   startingGear: SpecialOfficerGear
   icon: "JobIconSpecialOfficer"
   supervisors: job-supervisors-admiralty
+  canBeAntag: false
+  skills:
+  - All
   accessGroups:
   - AllAccess
   access:
@@ -23,8 +17,17 @@
   - DSO
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, AdrenocorImplant, DeathRattleImplantDSO, RadioImplantCentcomm, RadioImplantDSO ]
-  whitelisted: true
+    implants: 
+    - MindShieldImplant
+    - TrackingImplant
+    - AdrenocorImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantDSO
+    - RadioImplantCentcomm
+    - RadioImplantDSO
 
 - type: startingGear
   id: SpecialOfficerGear

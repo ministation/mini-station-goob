@@ -12,7 +12,7 @@
         mapNameTemplate: '{0} Центральное Командование'
         nameGenerator:
           !type:NanotrasenNameGenerator
-          prefixCreator: 'NT'
+          prefixCreator: 'CC'
       - type: StationJobs
         availableJobs:
           # Head Command (3)
@@ -24,11 +24,12 @@
           OperatorCentcom: [ 1, 1 ]
           RepresentativeCentcom: [ 1, 1 ]
           # Centcomm Personnel (13)
+          CentralCommandAssistant: [ 1, 1 ]
           EngineerCentcom: [ 3, 3 ]
           MedicCentcom: [ 3, 3 ]
           SecurityOfficerCentcom: [ 3, 3 ]
           WorkerCentcom: [ 3, 3 ]
-          GuardianNt: [ 1, 1 ]
+          BlueshieldOfficer: [ 3, 3 ]
           # Non-Centcomm Personnel (5)
           OfficerSpecialAssignments: [ 1, 1 ]
           Logist: [ 3, 3 ]

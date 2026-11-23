@@ -17,9 +17,13 @@
       implants:
       - MindShieldImplant
       - TrackingImplant
+      - FreedomImplant
+      - BluespaceLifelineImplant
+      - RadioImplantCentcomm
+      - NutrimentPumpImplant
+      - StypticStimulatorImplant
       - DeathRattleImplantCentcomm
       - RadioImplantDSO
-      - RadioImplantCentcomm
     - type: GhostRole
       name: job-name-chief-centcom
       description: job-description-chief-centcom
@@ -55,8 +59,12 @@
       implants:
       - MindShieldImplant
       - TrackingImplant
-      - DeathRattleImplantCentcomm
+      - FreedomImplant
+      - BluespaceLifelineImplant
       - RadioImplantCentcomm
+      - NutrimentPumpImplant
+      - StypticStimulatorImplant
+      - DeathRattleImplantCentcomm
     - type: GhostRole
       name: job-name-operator-centcom
       description: job-description-operator-centcom
@@ -92,8 +100,12 @@
       implants:
       - MindShieldImplant
       - TrackingImplant
-      - DeathRattleImplantCentcomm
+      - FreedomImplant
+      - BluespaceLifelineImplant
       - RadioImplantCentcomm
+      - NutrimentPumpImplant
+      - StypticStimulatorImplant
+      - DeathRattleImplantCentcomm
     - type: GhostRole
       name: job-name-representative-centcom
       description: job-description-representative-centcom
@@ -129,11 +141,15 @@
       implants:
       - MindShieldImplant
       - TrackingImplant
-      - DeathRattleImplantCentcomm
+      - FreedomImplant
+      - BluespaceLifelineImplant
       - RadioImplantCentcomm
+      - NutrimentPumpImplant
+      - StypticStimulatorImplant
+      - DeathRattleImplantCentcomm
     - type: GhostRole
-      name: job-name-head-of-security-centcom 
-      description: job-description-head-of-security-centcom 
+      name: job-name-head-of-security-centcom
+      description: job-description-head-of-security-centcom
       rules: ghost-role-information-nonantagonist-rules
       raffle:
         settings: short
@@ -200,7 +216,6 @@
     - type: AutoImplant
       implants:
       - MindShieldImplant
-      - TrackingImplant
       - RadioImplantCentcomm
     - type: GhostRole
       name: job-name-medic-centcom
@@ -235,7 +250,6 @@
     - type: AutoImplant
       implants:
       - MindShieldImplant
-      - TrackingImplant
       - RadioImplantCentcomm
     - type: GhostRole
       name: job-name-engineer-centcom
@@ -270,7 +284,6 @@
     - type: AutoImplant
       implants:
       - MindShieldImplant
-      - TrackingImplant
       - RadioImplantCentcomm
     - type: GhostRole
       name: job-name-worker-centcom
@@ -308,9 +321,13 @@
       implants:
       - MindShieldImplant
       - TrackingImplant
+      - FreedomImplant
+      - BluespaceLifelineImplant
+      - RadioImplantCentcomm
+      - NutrimentPumpImplant
+      - StypticStimulatorImplant
       - DeathRattleImplantCentcomm
       - RadioImplantDSO
-      - RadioImplantCentcomm
     - type: GhostRole
       name: job-name-magistrate
       description: job-description-magistrate
@@ -349,10 +366,13 @@
       - MindShieldImplant
       - TrackingImplant
       - AdrenocorImplant
-      - DeathRattleImplantCentcomm
+      - FreedomImplant
+      - BluespaceLifelineImplant
+      - NutrimentPumpImplant
+      - StypticStimulatorImplant
       - DeathRattleImplantDSO
-      - RadioImplantDSO
       - RadioImplantCentcomm
+      - RadioImplantDSO
     - type: GhostRole
       name: job-name-special-officer
       description: job-description-special-officer
@@ -390,6 +410,7 @@
       - AdrenocorImplant
       - DeathRattleImplantDSO
       - RadioImplantDSO
+      - BluespaceLifelineImplant
     - type: GhostRole
       name: ghost-role-information-cburn-commander-name
       description: ghost-role-information-cburn-commander-description
@@ -526,7 +547,7 @@
     jumpsuit: ClothingUniformJumpsuitERTLeader
     back: ClothingBackpackERTLeader
     shoes: ClothingShoesBootsJackFilled
-    eyes: ClothingEyesGlassesCentcom
+    eyes: ClothingEyesGlassesCentComm
     gloves: ClothingHandsGlovesCombat
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltCentCom
@@ -544,7 +565,7 @@
     jumpsuit: ClothingUniformJumpsuitColorBrown
     back: ClothingBackpackDuffelCBURN
     shoes: ClothingShoesBootsJackFilled
-    eyes: ClothingEyesGlassesCentcom
+    eyes: ClothingEyesGlassesCentComm
     gloves: ClothingHandsGlovesCombat
     id: CBURNCommanderPDA
     ears: ClothingHeadsetAltCentCom

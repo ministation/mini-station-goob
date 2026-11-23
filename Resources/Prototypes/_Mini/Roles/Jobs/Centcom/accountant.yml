@@ -3,13 +3,9 @@
   name: job-name-accountant
   description: job-description-accountant
   playTimeTracker: JobAccountant
-  # requirements:
-  # - !type:DepartmentTimeRequirement
-  #   department: Command
-  #   time: 25h
-  # - !type:RoleTimeRequirement
-  #   role: JobHeadOfPersonnel
-  #   time: 10h
+  canBeAntag: false
+  skills:
+  - All
   startingGear: AccountantGear
   icon: "JobIconAccountant"
   supervisors: job-supervisors-chief-centcom
@@ -20,7 +16,15 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
   whitelisted: true
 
 - type: startingGear

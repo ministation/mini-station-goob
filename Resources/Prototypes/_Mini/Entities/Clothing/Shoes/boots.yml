@@ -1,56 +1,11 @@
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingShoesBootsJackGuardianNt ]
+  parent: [ BaseCentcommContraband, ClothingShoesBootsJack ]
   id: ClothingShoesBootsSpecialOfficer
   name: Special Operations Officer's jackboots
   description: A pair of gold-plated boots for a senior representative of the Special Operations Department. They prevent slipping and look stylish.
   components:
+    - type: NoSlip
     - type: Sprite
       sprite: _Mini/Clothing/Shoes/Boots/OSO.rsi
     - type: Clothing
       sprite: _Mini/Clothing/Shoes/Boots/OSO.rsi
-
-- type: entity
-  parent: ClothingShoesBootsJack
-  id: ClothingShoesBootsJackGuardianNt
-  name: blade guardian jackboots
-  description: They were planned to be more comfortable than standard ones.
-  components:
-    - type: Tag
-      tags:
-        - ForceRecallEquipment
-        - WhitelistChameleon
-    - type: NoSlip
-    - type: Sprite
-      sprite: _Mini/Clothing/Shoes/Boots/guardian_nt.rsi
-    - type: Clothing
-      sprite: _Mini/Clothing/Shoes/Boots/guardian_nt.rsi
-
-- type: entity
-  parent: ClothingShoesBootsJack
-  id: ClothingShoesBootsExe
-  name: guardian's boots
-  description: Advanced footwear ensuring wearer comfort and perfect grip on any surface.
-  components:
-  - type: Tag
-    tags:
-    - ForceRecallEquipment
-  - type: NoSlip
-  - type: Sprite
-    sprite: _Mini/Clothing/Shoes/Boots/exe_boots.rsi
-  - type: Clothing
-    sprite: _Mini/Clothing/Shoes/Boots/exe_boots.rsi
-
-- type: entity
-  parent: ClothingShoesBootsJack
-  id: ClothingShoesBootsJackGuardianNomad
-  name: traveler's boots
-  description: They were planned to be more comfortable than standard ones.
-  components:
-    - type: Tag
-      tags:
-        - ForceRecallEquipment
-    - type: NoSlip
-    - type: Sprite
-      sprite: _Mini/Clothing/Shoes/Boots/guardian_nomad.rsi
-    - type: Clothing
-      sprite: _Mini/Clothing/Shoes/Boots/guardian_nomad.rsi

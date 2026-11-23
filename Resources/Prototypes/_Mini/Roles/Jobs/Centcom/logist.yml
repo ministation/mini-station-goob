@@ -3,6 +3,9 @@
   name: job-name-logist
   description: job-description-logist
   playTimeTracker: JobLogist
+  canBeAntag: false
+  skills:
+  - All
   requirements:
   - !type:DepartmentTimeRequirement
     department: Cargo
@@ -24,7 +27,7 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+    implants: [ MindShieldImplant, RadioImplantCentcomm ]
 
 - type: startingGear
   id: LogistGear
