@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Server.Objectives.Systems;
+using Content.Shared.Mind;
 using Content.Shared.Objectives;
 using Robust.Shared.Prototypes;
 
@@ -70,4 +71,18 @@ public sealed partial class StealConditionComponent : Component
     public LocId DescriptionText;
     [DataField(required: true)]
     public LocId DescriptionMultiplyText;
+}
+
+/// <summary>
+/// Raised on a steal objective while its progress is calculated.
+/// Handlers can add other bodies whose inventories should also count as the owner's
+/// possession, for example the teammates of a shared team objective.
+/// </summary>
+[ByRefEvent]
+public record struct StealConditionHoldersEvent(EntityUid MindId, MindComponent Mind)
+{
+    /// <summary>
+    /// Extra bodies to search. The body of <see cref="Mind"/> is always searched by the system itself.
+    /// </summary>
+    public readonly List<EntityUid> Holders = new();
 }

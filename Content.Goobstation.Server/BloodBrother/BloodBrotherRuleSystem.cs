@@ -56,6 +56,7 @@ public sealed partial class BloodBrotherRuleSystem : GameRuleSystem<BloodBrother
 
         SubscribeLocalEvent<BloodBrotherRuleComponent, AfterAntagEntitySelectedEvent>(OnAntagSelected);
         SubscribeLocalEvent<BloodBrotherComponent, AfterFlashedEvent>(OnBrotherFlashed);
+        SubscribeLocalEvent<BloodBrotherTeamObjectiveComponent, StealConditionHoldersEvent>(OnTeamObjectiveHolders);
     }
 
     private void OnAntagSelected(Entity<BloodBrotherRuleComponent> ent, ref AfterAntagEntitySelectedEvent args)
@@ -242,6 +243,26 @@ public sealed partial class BloodBrotherRuleSystem : GameRuleSystem<BloodBrother
         AddComp(objective.Value, new BloodBrotherTeamObjectiveComponent { Team = team });
         AddObjectiveToTeam(team, objective.Value);
         return objective.Value;
+    }
+
+    /// <summary>
+    /// Brothers share a single objective entity, so an item held by any of them
+    /// counts for the whole conspiracy. The steal condition asks the objective for
+    /// extra bodies to search, and this handler supplies the other brothers.
+    /// </summary>
+    private void OnTeamObjectiveHolders(Entity<BloodBrotherTeamObjectiveComponent> ent, ref StealConditionHoldersEvent args)
+    {
+        if (ent.Comp.Team is not { } team)
+            return;
+
+        foreach (var mindId in team.Minds)
+        {
+            if (mindId == args.MindId)
+                continue;
+
+            if (TryComp<MindComponent>(mindId, out var mind) && mind.OwnedEntity is { } body)
+                args.Holders.Add(body);
+        }
     }
 
     private bool IsObjectiveTarget(BloodBrotherTeam team, EntityUid mindId)

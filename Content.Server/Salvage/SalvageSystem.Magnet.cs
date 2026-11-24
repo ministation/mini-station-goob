@@ -284,15 +284,15 @@ public sealed partial class SalvageSystem
         }
     }
 
-    private async Task TakeMagnetOffer(Entity<SalvageMagnetDataComponent> data, int index, Entity<SalvageMagnetComponent> magnet, EntityUid user) // DeltaV: add user param
+    private async Task TakeMagnetOffer(Entity<SalvageMagnetDataComponent> data, int index, Entity<SalvageMagnetComponent> magnet, EntityUid user)
     {
         var seed = data.Comp.Offered[index];
 
+        // Mini: pulling salvage is always free. The old DeltaV charge was:
+        // if (offering.Cost > 0 && !(_points.TryFindIdCard(user) is {} idCard && _points.RemovePoints(idCard, offering.Cost)))
+        //     return;
         var offering = GetSalvageOffering(seed);
-        // Begin DeltaV Addition: make wrecks cost mining points to pull
-        if (offering.Cost > 0 && !(_points.TryFindIdCard(user) is {} idCard && _points.RemovePoints(idCard, offering.Cost)))
-            return;
-        // End DeltaV Addition
+
         var salvMap = _mapSystem.CreateMap();
         var salvMapXform = Transform(salvMap);
 

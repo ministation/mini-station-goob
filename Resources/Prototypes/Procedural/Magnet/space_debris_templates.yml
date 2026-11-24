@@ -108,3 +108,17 @@
       frequency: 1
     entities:
     - SalvageSpawnerMobMagnet75
+  # Deca-Code crate. Deliberately the last layer and with a much higher threshold,
+  # so it only gets tiles that no other layer (including the decal pass) claimed.
+  # The marker itself rolls a crate only 33% of the time, so this stays the rarest
+  # find in a debris field. Raise/lower the threshold to tune the frequency.
+  - !type:BiomeEntityLayer
+    allowedTiles:
+    - FloorSteel
+    - Plating
+    threshold: 0.95
+    noise:
+      seed: 2
+      frequency: 1
+    entities:
+    - SalvageDecaCrateSpawner
