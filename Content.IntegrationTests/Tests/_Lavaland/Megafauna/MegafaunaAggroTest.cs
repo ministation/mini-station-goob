@@ -231,6 +231,12 @@ public sealed class MegafaunaAggroTest
                 if (uid == keep || uid == testMap.Grid.Owner || uid == testMap.MapUid)
                     continue;
 
+                // Body parts are separate entities parented to the kept mob. Deleting them detaches
+                // parts of a living body and leaves stale references (BodyComponent.LegEntities),
+                // which then fail PVS serialization with "Can't resolve MetaDataComponent".
+                if (IsDescendant(uid, keep, entMan))
+                    continue;
+
                 if (xform.MapID != testMap.MapId)
                     continue;
 
@@ -243,6 +249,20 @@ public sealed class MegafaunaAggroTest
                     entMan.DeleteEntity(uid);
             }
         });
+    }
+
+    private static bool IsDescendant(EntityUid descendant, EntityUid parent, IEntityManager entMan)
+    {
+        var xforms = entMan.GetEntityQuery<TransformComponent>();
+        for (var ancestor = xforms.GetComponent(descendant).ParentUid;
+             ancestor.IsValid();
+             ancestor = xforms.GetComponent(ancestor).ParentUid)
+        {
+            if (ancestor == parent)
+                return true;
+        }
+
+        return false;
     }
 
     private static async Task<bool> WaitUntil(RobustIntegrationTest.ServerIntegrationInstance server, int limit, Func<bool> condition)
