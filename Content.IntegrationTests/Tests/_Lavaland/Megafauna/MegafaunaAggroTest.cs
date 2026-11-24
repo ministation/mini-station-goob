@@ -234,6 +234,16 @@ public sealed class MegafaunaAggroTest
                 if (xform.MapID != testMap.MapId)
                     continue;
 
+                // Only delete top-level entities: deleting a container removes its contents too.
+                // If the kept player's body parts were deleted one by one, its BodyComponent would
+                // keep pointing at dead entities and PVS would log "Can't resolve MetaDataComponent".
+                if (xform.ParentUid.IsValid()
+                    && xform.ParentUid != testMap.Grid.Owner
+                    && xform.ParentUid != testMap.MapUid)
+                {
+                    continue;
+                }
+
                 toDelete.Add(uid);
             }
 
