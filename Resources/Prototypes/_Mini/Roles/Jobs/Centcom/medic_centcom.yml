@@ -1,0 +1,42 @@
+- type: job
+  id: MedicCentcom
+  name: job-name-medic-centcom
+  description: job-description-medic-centcom
+  playTimeTracker: JobMedicCentcom
+  canBeAntag: false
+  skills:
+  - All
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Medical
+    time: 20h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
+  startingGear: MedicCentcomGear
+  icon: "JobIconMedicCentcom"
+  supervisors: job-supervisors-centcom
+  access:
+  - Chemistry
+  - Medical
+  - Maintenance
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, RadioImplantCentcomm ]
+
+- type: startingGear
+  id: MedicCentcomGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitMedicCentcom
+    eyes: ClothingEyesHudMedical
+    ears: ClothingHeadsetMedical
+    gloves: ClothingHandsGlovesNitrile
+    id: MedicCentcomPDA
+    belt: ClothingBeltMedicalFilled
+
+- type: chameleonOutfit
+  id: MedicCentcomChameleonOutfit
+  job: MedicCentcom
+  startingGear: MedicCentcomGear
+  hasMindShield: true

@@ -240,9 +240,54 @@
     {
       "name": "paper_stamp-wizard"
     },
-      {
-          "name": "paper_stamp-hamster"
-      }
-
+    {
+      "name": "paper_stamp-hamster"
+    },
+    {
+      "name": "envelope-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "envelope-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "paper_stamp-blueshield"
+    },
+    {
+      "name": "paper_stamp-hosp"
+    },
+    {
+      "name": "paper_stamp-judge"
+    },
+    {
+      "name": "paper_stamp-chief-centcom"
+    },
+    {
+      "name": "paper_stamp-special-officer"
+    },
+    {
+      "name": "paper_stamp-magistrate"
+    },
+    {
+      "name": "paper_stamp-prosecutor"
+    },
+    {
+      "name": "paper_stamp-admirality"
+    },
+    {
+      "name": "paper_stamp-OSA"
+    },
+    {
+      "name": "paper_stamp-quadrant-management"
+    },
+    {
+      "name": "paper-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "paper-inhand-left",
+      "directions": 4
+    }
   ]
 }

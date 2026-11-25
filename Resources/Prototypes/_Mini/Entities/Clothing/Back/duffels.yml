@@ -1,0 +1,44 @@
+- type: entity
+  parent: ClothingBackpackDuffel
+  id: ClothingBackpackDuffelAdidos
+  name: duffel bag
+  description: A large duffel bag for storing additional items.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Duffels/duffels_adidos.rsi
+
+- type: entity
+  parent: ClothingBackpackDuffel
+  id: ClothingBackpackDuffelBluesky
+  name: duffel bag
+  description: A large duffel bag for storing additional items.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Duffels/duffels_bluesky.rsi
+
+- type: entity
+  parent: ClothingBackpackDuffel
+  id: ClothingBackpackDuffelEight
+  name: duffel bag
+  description: A large duffel bag for storing additional items.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Duffels/duffels_eight.rsi
+
+- type: entity
+  parent: ClothingBackpackDuffel
+  id: ClothingBackpackDuffelGachi
+  name: duffel bag
+  description: A large duffel bag for storing additional items.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Duffels/duffels_gachi.rsi
+
+- type: entity
+  parent: ClothingBackpackDuffel
+  id: ClothingBackpackDuffelRl
+  name: duffel bag
+  description: A large duffel bag for storing additional items.
+  components:
+  - type: Sprite
+    sprite: _Mini/Clothing/Back/Duffels/duffels_rl.rsi

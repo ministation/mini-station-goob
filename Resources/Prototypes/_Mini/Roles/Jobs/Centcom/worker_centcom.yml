@@ -1,0 +1,50 @@
+- type: job
+  id: WorkerCentcom
+  name: job-name-worker-centcom
+  description: job-description-worker-centcom
+  playTimeTracker: JobWorkerCentcom
+  canBeAntag: false
+  skills:
+  - All
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Civilian
+    time: 20h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
+  startingGear: WorkerCentcomGear
+  icon: "JobIconWorkerCentcom"
+  supervisors: job-supervisors-centcom
+  access:
+  - Theatre
+  - Cargo
+  - Janitor
+  - Chapel
+  - Service
+  - Bar
+  - Kitchen
+  - Hydroponics
+  - Maintenance
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, RadioImplantCentcomm ]
+
+- type: startingGear
+  id: WorkerCentcomGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficer
+    eyes: ClothingEyesHudBeer
+    ears: ClothingHeadsetService
+    gloves: ClothingHandsGlovesHop
+    shoes: ClothingShoesColorBlack
+    id: WorkerCentcomPDA
+    outerClothing: ClothingOuterArmorBasicSlim
+    belt: ClothingBeltChefFilled
+
+- type: chameleonOutfit
+  id: WorkerCentcomChameleonOutfit
+  job: WorkerCentcom
+  startingGear: WorkerCentcomGear
+  hasMindShield: true

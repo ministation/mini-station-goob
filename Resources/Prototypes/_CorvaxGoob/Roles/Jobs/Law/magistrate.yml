@@ -17,18 +17,27 @@
     - Abductor
   startingGear: MagistrateGear
   icon: "JobIconMagistrate"
-  supervisors: job-supervisors-centcom
+  supervisors: job-supervisors-management-juridical-department # Mini-Magistrate-CentComm
   canBeAntag: false
-  access:
-  - Command
-  - Brig
-  - Maintenance
-  - External
-  - Security
-  - Lawyer
+  skills: # Mini-Magistrate-CentComm
+  - All
+  accessGroups: # Mini-Magistrate-CentComm
+  - AllAccess
+  access: # Mini-Magistrate-CentComm
+  - CentralCommand
+  - DSO
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant ]
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
+    - RadioImplantDSO
   - !type:AddComponentSpecial
     components:
     - type: CommandStaff
@@ -39,12 +48,12 @@
   id: MagistrateGear
   equipment:
     shoes: ClothingShoesBootsLaceup
-    neck: ClothingNeckLawyerbadge
+    neck: ClothingNeckCloakMagistrate # Mini-Magistrate-CentComm
     id: MagistratePDA
-    eyes: ClothingEyesGlassesCommand
-    gloves: ClothingHandsGlovesColorWhite
-    ears: ClothingHeadsetMagistrate
-    pocket1: BoxFolderBlack
+    eyes: ClothingEyesGlassesCentComm # Mini-Magistrate-CentComm
+    gloves: ClothingHandsGlovesMagistrate # Mini-Magistrate-CentComm
+    ears: ClothingHeadsetAltCentCom # Mini-Magistrate-CentComm
+    pocket1: BoxFolderCentComThreePapers # Mini-Magistrate-CentComm
   storage:
     back:
     - Flash

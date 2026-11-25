@@ -1,0 +1,45 @@
+- type: job
+  id: RepresentativeCentcom
+  name: job-name-representative-centcom
+  description: job-description-representative-centcom
+  playTimeTracker: JobRepresentativeCentcom
+  canBeAntag: false
+  skills:
+  - All
+  startingGear: RepresentativeCentcomGear
+  icon: "JobIconCentcom"
+  supervisors: job-supervisors-chief-centcom
+  accessGroups:
+  - AllAccess
+  access:
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
+    - RadioImplantDSO
+  whitelisted: true
+
+- type: startingGear
+  id: RepresentativeCentcomGear
+  equipment:
+    id: RepresentativeCentcomPDA
+    belt: BoxFolderCentComClipboard
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm
+
+- type: chameleonOutfit
+  id: RepresentativeCentcomChameleonOutfit
+  job: RepresentativeCentcom
+  startingGear: RepresentativeCentcomGear
+  hasMindShield: true

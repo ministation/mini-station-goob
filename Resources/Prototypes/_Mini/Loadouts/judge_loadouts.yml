@@ -1,0 +1,8 @@
+- type: roleLoadout
+  id: JobJudge
+  groups:
+  - GroupTankHarness
+  - CommonBackpack
+  - Survival
+  - Trinkets
+  - GroupSpeciesBreathTool

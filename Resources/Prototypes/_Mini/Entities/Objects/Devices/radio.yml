@@ -1,0 +1,17 @@
+- type: entity
+  name: DSO radio
+  description: A handy security radio.
+  parent: [ RadioHandheld, BaseCentcommContraband ]
+  id: RadioHandheldDSO
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: DSO
+    listenRange: 1
+  - type: RadioSpeaker
+    channels:
+    - DSO
+  - type: Sprite
+    sprite: _Mini/Objects/Devices/dso_handy.rsi
+  - type: Item
+    sprite: _Mini/Objects/Devices/dso_handy.rsi
+    heldPrefix: walkietalkie

@@ -38,8 +38,40 @@
   weight: 110
   antagObjectiveImmune: true # Mini - CentComm staff must not be antag objective targets
   roles:
-  - CentralCommandOfficial
-  - CentralCommandSpecialOperationsOfficer
-  - CentralCommandAssistant
+  #- CentralCommandOfficial
+  #- CentralCommandSpecialOperationsOfficer
   - BlueshieldOfficer
   - NanotrasenRepresentative
+  - ChiefCentcom
+  - Magistrate
+  - SpecialOfficer
+  - HeadOfSecurityCentcom
+  - OperatorCentcom
+  - RepresentativeCentcom
+  - CentralCommandAssistant
+  - EngineerCentcom
+  - MedicCentcom
+  - SecurityOfficerCentcom
+  - WorkerCentcom
+  - OfficerSpecialAssignments
+  - Logist
+  - Accountant
+
+- type: department
+  id: DSO
+  name: department-DSO
+  description: department-DSO-description
+  color: "#0a5fad"
+  primary: false
+  roles:
+  - SpecialOfficer
+  - CBURN
+  - ERTLeader
+  - ERTChaplain
+  - ERTJanitor
+  - ERTMedical
+  - ERTSecurity
+  - ERTEngineer
+  - DeathSquad
+  editorHidden: true
+  weight: 130

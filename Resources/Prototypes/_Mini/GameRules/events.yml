@@ -1,0 +1,48 @@
+- type: entity
+  parent: BaseGameRule
+  id: BaseERTSpawn
+  abstract: true
+  components:
+  - type: LoadMapRule
+  - type: RuleGrids
+  - type: AnnounceOnSpawn
+    message: event-ert-spawn-announcement
+    sender: comms-console-announcement-title-DSO
+    sound:
+      path: /Audio/_Mini/Announcements/DSO_announce.ogg
+    color: "#1D8BAD"
+
+- type: entity
+  parent: BaseERTSpawn
+  id: ERTSpawnScout
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Mini/Shuttles/ERT-Spawn/ert-spawn_scout.yml
+
+- type: entity
+  parent: BaseERTSpawn
+  id: ERTSpawnMedium
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Mini/Shuttles/ERT-Spawn/ert-spawn_medium.yml
+
+- type: entity
+  parent: BaseERTSpawn
+  id: ERTSpawnHigh
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Mini/Shuttles/ERT-Spawn/ert-spawn_high.yml
+
+- type: entity
+  parent: BaseERTSpawn
+  id: ERTSpawnHolyMedium
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Mini/Shuttles/ERT-Spawn/ert-spawn_holy-medium.yml
+
+- type: entity
+  parent: BaseERTSpawn
+  id: ERTSpawnMedical
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Mini/Shuttles/ERT-Spawn/ert-spawn_medical.yml

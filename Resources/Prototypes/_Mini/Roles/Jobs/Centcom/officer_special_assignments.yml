@@ -1,0 +1,52 @@
+- type: job
+  id: OfficerSpecialAssignments
+  name: job-name-officer-special-assignments
+  description: job-description-officer-special-assignments
+  playTimeTracker: JobSpecialAssignments
+  canBeAntag: false
+  skills:
+  - All
+  startingGear: SpecialAssignmentsGear
+  icon: "JobIconSpecialAssignments"
+  supervisors: job-supervisors-quadrant-management
+  access:
+  - Cargo
+  - Salvage
+  - Quartermaster
+  - Maintenance
+  - External
+  - Command
+  - Brig
+  - Cryogenics
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
+  whitelisted: true
+
+- type: startingGear
+  id: SpecialAssignmentsGear
+  equipment:
+    head: ClothingHeadHatSpecialAssignments
+    jumpsuit: ClothingUniformJumpsuitSpecialAssignments
+    shoes: ClothingShoesBootsJackFilled
+    id: SpecialAssignmentsPDA
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm
+
+- type: chameleonOutfit
+  id: OfficerSpecialAssignmentsChameleonOutfit
+  job: OfficerSpecialAssignments
+  startingGear: SpecialAssignmentsGear
+  hasMindShield: true

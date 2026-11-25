@@ -225,3 +225,98 @@
     sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
     state: Nanotrasen
   jobName: job-name-centcom-assistant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconChiefCentcom
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ChiefCentcom
+  jobName: job-name-chief-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCentcom
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: Centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSecurityOfficerCentcom
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: CentcomSecurity
+  jobName: job-name-officer-security-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMedicCentcom
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: CentcomMedic
+  jobName: job-name-medic-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconEngineerCentcom
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: CentcomEngineer
+  jobName: job-name-engineer-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconWorkerCentcom
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: CentcomService
+  jobName: job-name-worker-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSpecialOfficer
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: OSO
+  jobName: job-name-special-officer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCBURNCommander
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: ERTLeader
+  jobName: job-name-cburn-commander
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSpecialAssignments
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: OSA
+  jobName: job-name-officer-special-assignments
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconLogist
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: Logist
+  jobName: job-name-logist
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconAccountant
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: Accountant
+  jobName: job-name-accountant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconInternalInspector
+  icon:
+    sprite: /Textures/_Mini/Interface/Misc/job_icons.rsi
+    state: Senior_Inspector
+  jobName: job-name-internal-inspector

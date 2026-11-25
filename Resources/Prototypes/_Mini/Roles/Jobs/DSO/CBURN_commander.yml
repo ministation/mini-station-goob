@@ -1,0 +1,42 @@
+- type: job
+  id: CBURNCommander
+  name: job-name-cburn-commander
+  description: job-description-cburn-commander
+  playTimeTracker: JobCBURNCommander
+  setPreference: false
+  startingGear: CBURNCommanderGear
+  icon: "JobIconCBURNCommander"
+  supervisors: job-supervisors-special-officer
+  accessGroups:
+  - AllAccess
+  access:
+  - CentralCommand
+  - DSO
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, AdrenocorImplant, DeathRattleImplantDSO, RadioImplantDSO]
+
+- type: startingGear
+  id: CBURNCommanderGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesGlassesSecurity
+    ears: ClothingHeadsetAltCentCom
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: ClothingOuterHardsuitCBURNCommander
+    shoes: ClothingShoesBootsMagERT
+    id: CBURNCommanderPDA
+    pocket2: WeaponAdvancedLaser
+    belt: ClothingBeltBandolier
+  storage:
+    back:
+    - WeaponShotgunEnforcer
+    - BoxShotgunIncendiary
+    - BoxShotgunIncendiary
+    - GrenadeFlashBang
+    - PillAmbuzol
+    - PillAmbuzol
+    - PillAmbuzol
+    - PillAmbuzolPlus

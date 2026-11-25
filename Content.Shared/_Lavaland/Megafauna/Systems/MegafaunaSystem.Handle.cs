@@ -45,9 +45,14 @@ public sealed partial class MegafaunaSystem
 
     private void OnAggressorRemoved(Entity<MegafaunaAiComponent> ent, ref AggressorRemovedEvent args)
     {
-        if (!ent.Comp.Active
-            || !TryComp<AggressiveComponent>(ent, out var aggressive)
+        if (!TryComp<AggressiveComponent>(ent, out var aggressive)
             || aggressive.Aggressors.Count != 0)
+            return;
+
+        // A swoop or volley pauses the AI (Active = false) but keeps its schedule. A boss that
+        // loses its last aggressor while paused must still shut down, otherwise the pause resume
+        // wakes it up with an empty aggressor list and the target selector hits its debug assert.
+        if (!ent.Comp.Active && ent.Comp.Schedule.Count == 0)
             return;
 
         ShutdownMegafauna(ent);

@@ -1,0 +1,48 @@
+- type: job
+  id: SpecialOfficer
+  name: job-name-special-officer
+  description: job-description-special-officer
+  playTimeTracker: JobSpecialOfficer
+  whitelisted: true
+  startingGear: SpecialOfficerGear
+  icon: "JobIconSpecialOfficer"
+  supervisors: job-supervisors-admiralty
+  canBeAntag: false
+  skills:
+  - All
+  accessGroups:
+  - AllAccess
+  access:
+  - CentralCommand
+  - DSO
+  special:
+  - !type:AddImplantSpecial
+    implants: 
+    - MindShieldImplant
+    - TrackingImplant
+    - AdrenocorImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantDSO
+    - RadioImplantCentcomm
+    - RadioImplantDSO
+
+- type: startingGear
+  id: SpecialOfficerGear
+  equipment:
+    head: ClothingHeadHatSpecialOfficer
+    jumpsuit: ClothingUniformJumpsuitSpecialOfficer
+    mask: ClothingMaskNeckGaiter
+    gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsSpecialOfficer
+    id: SpecialOfficerPDA
+    outerClothing: ClothingOuterArmorBulletproof
+    neck: ClothingNeckCloakSpecialOfficer
+
+- type: chameleonOutfit
+  id: SpecialOfficerChameleonOutfit
+  job: SpecialOfficer
+  startingGear: SpecialOfficerGear
+  hasMindShield: true

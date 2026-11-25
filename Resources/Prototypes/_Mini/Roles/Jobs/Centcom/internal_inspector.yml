@@ -1,0 +1,50 @@
+- type: job
+  id: InternalInspector
+  name: job-name-internal-inspector
+  description: job-description-internal-inspector
+  playTimeTracker: JobInternalInspector
+  canBeAntag: false
+  skills:
+  - All
+  setPreference: false
+  startingGear: InternalInspectorGear
+  icon: "JobIconInternalInspector"
+  supervisors: job-supervisors-quadrant-management
+  accessGroups:
+  - AllAccess
+  access:
+  - CentralCommand
+  - DSO
+  special:
+  - !type:AddImplantSpecial
+    implants:
+    - MindShieldImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - TrackingImplant
+    - AdrenocorImplant
+    - DeathRattleImplantCentcomm
+    - DeathRattleImplantDSO
+    - RadioImplantCentcomm
+    - RadioImplantDSO
+    - StypticStimulatorImplant
+    - NutrimentPumpImplant
+  whitelisted: true
+
+- type: startingGear
+  id: InternalInspectorGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitInternalInspector
+    back: ClothingBackpackSatchelHolding
+    eyes: ClothingEyesGlassesCentComm
+    ears: ClothingHeadsetAltCentCom
+    gloves: ClothingHandsGlovesColorWhite
+    shoes: ClothingShoesBootsLaceup
+    id: InternalInspectorPDA
+    pocket1: RubberStampInternalInspector
+    belt: BoxFolderCentComThreePapers
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm

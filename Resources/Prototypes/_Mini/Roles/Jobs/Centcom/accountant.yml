@@ -1,0 +1,41 @@
+- type: job
+  id: Accountant
+  name: job-name-accountant
+  description: job-description-accountant
+  playTimeTracker: JobAccountant
+  canBeAntag: false
+  skills:
+  - All
+  startingGear: AccountantGear
+  icon: "JobIconAccountant"
+  supervisors: job-supervisors-chief-centcom
+  access:
+  - Maintenance
+  - External
+  - Command
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
+  whitelisted: true
+
+- type: startingGear
+  id: AccountantGear
+  equipment:
+    head: ClothingHeadHatBeret
+    jumpsuit: ClothingUniformJumpsuitCentcomAgent
+    id: AccountantPDA
+
+- type: chameleonOutfit
+  id: AccountantChameleonOutfit
+  job: Accountant
+  startingGear: AccountantGear
+  hasMindShield: true

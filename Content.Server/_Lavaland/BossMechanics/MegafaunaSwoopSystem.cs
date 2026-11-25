@@ -241,7 +241,9 @@ public sealed class MegafaunaSwoopSystem : EntitySystem
         {
             if (TryComp<MegafaunaAiComponent>(ent.Owner, out var ai))
             {
-                ai.Active = comp.AiWasActive;
+                // The last aggressor can leave during the flight and shut the AI down: its schedule
+                // is cleared, so do not wake it back up (the volley pause already guards this way).
+                ai.Active = comp.AiWasActive && ai.Schedule.Count > 0;
                 Dirty(ent.Owner, ai);
             }
         }

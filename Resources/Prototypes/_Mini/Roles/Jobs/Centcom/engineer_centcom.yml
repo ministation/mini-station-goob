@@ -1,0 +1,43 @@
+- type: job
+  id: EngineerCentcom
+  name: job-name-engineer-centcom
+  description: job-description-engineer-centcom
+  playTimeTracker: JobEngineerCentcom
+  canBeAntag: false
+  skills:
+  - All
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Engineering
+    time: 20h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
+  startingGear: EngineerCentcomGear
+  icon: "JobIconEngineerCentcom"
+  supervisors: job-supervisors-centcom
+  access:
+  - Atmospherics
+  - Engineering
+  - External
+  - Maintenance
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, RadioImplantCentcomm ]
+
+- type: startingGear
+  id: EngineerCentcomGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitEngineerCentcom
+    eyes: ClothingEyesGlassesMeson
+    ears: ClothingHeadsetEngineering
+    gloves: ClothingHandsGlovesColorYellow
+    id: EngineerCentcomPDA
+    belt: ClothingBeltUtilityEngineering
+
+- type: chameleonOutfit
+  id: EngineerCentcomChameleonOutfit
+  job: EngineerCentcom
+  startingGear: EngineerCentcomGear
+  hasMindShield: true

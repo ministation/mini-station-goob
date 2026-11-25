@@ -1,0 +1,45 @@
+- type: job
+  id: Logist
+  name: job-name-logist
+  description: job-description-logist
+  playTimeTracker: JobLogist
+  canBeAntag: false
+  skills:
+  - All
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Cargo
+    time: 25h
+  - !type:RoleTimeRequirement
+    role: JobSalvageSpecialist
+    time: 10h
+  - !type:RoleTimeRequirement
+    role: JobCargoTechnician
+    time: 10h
+  startingGear: LogistGear
+  icon: "JobIconLogist"
+  supervisors: job-supervisors-special-assignments
+  access:
+  - Cargo
+  - Salvage
+  - Maintenance
+  - External
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, RadioImplantCentcomm ]
+
+- type: startingGear
+  id: LogistGear
+  equipment:
+    jumpsuit: ClothingUniformOveralls
+    eyes: ClothingEyesHudCommand
+    ears: ClothingHeadsetCargo
+    gloves: ClothingHandsGlovesFingerless
+    id: LogistPDA
+
+- type: chameleonOutfit
+  id: LogistChameleonOutfit
+  job: Logist
+  startingGear: LogistGear
+  hasMindShield: true

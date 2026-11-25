@@ -1,0 +1,50 @@
+- type: job
+  id: ChiefCentcom
+  name: job-name-chief-centcom
+  description: job-description-chief-centcom
+  playTimeTracker: JobChiefCentcom
+  canBeAntag: false
+  skills:
+  - All
+  startingGear: ChiefCentcomGear
+  icon: "JobIconChiefCentcom"
+  supervisors: job-supervisors-quadrant-management
+  accessGroups:
+  - AllAccess
+  access:
+  - CentralCommand
+  - DSO
+  special:
+  - !type:AddImplantSpecial
+    implants:
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
+    - RadioImplantDSO
+  whitelisted: true
+
+- type: startingGear
+  id: ChiefCentcomGear
+  equipment:
+    head: ClothingHeadHatChiefCentcom
+    jumpsuit: ClothingUniformJumpsuitChiefCentcom
+    gloves: ClothingHandsGlovesChiefCentcom
+    id: ChiefCentcomPDA
+    neck: ClothingNeckCloakChiefCentcom
+    belt: ClothingBeltSheathFilled
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm
+
+- type: chameleonOutfit
+  id: ChiefCentcomChameleonOutfit
+  job: ChiefCentcom
+  startingGear: ChiefCentcomGear
+  hasMindShield: true

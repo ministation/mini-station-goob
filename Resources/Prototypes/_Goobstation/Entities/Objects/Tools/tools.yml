@@ -208,7 +208,7 @@
   suffix: CentComm Official
   components:
   - type: FaxMachine
-    name: "CentComm Official"
+    name: "NanoTrasen Representative" # Mini-HandheldFaxNTR-Name
   - type: Item
     size: Normal
     sprite: _Goobstation/Objects/Tools/official_fax.rsi

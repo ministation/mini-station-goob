@@ -1,0 +1,13 @@
+stations-control-title = Управление Активами
+stations-control-alert-level-management = УПРАВЛЕНИЕ КОДАМИ:
+stations-control-station = Станция:
+stations-control-current-alert-level = Текущий код:
+stations-control-alert-level-unknown = Неизвестно
+stations-control-alert-level = Код:
+stations-control-set-alert-level-button = Установить код
+stations-control-evacuation-management = УПРАВЛЕНИЕ ЭВАКУАЦИЕЙ:
+stations-control-evacuation-time-input = Время (не менее 2-х и не более 30-и минут):
+stations-control-evacuation-time-input-place-holder = Мин:Сек, например, 4:00
+stations-control-evacuation-call = Начать эвакуацию
+stations-control-evacuation-recall = Прервать эвакуацию
+stations-control-evacuation-countdown = Время прибытия:

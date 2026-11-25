@@ -58,7 +58,7 @@
             Lawyer: [ 1, 1 ]
             Pilot: [ 1, 1 ]
             Brigmedic: [ 1, 1 ]
-            Magistrate: [ 1, 1 ]
+            # Magistrate: [ 1, 1 ] # Mini-Magistrate-CentComm
             # service
             HeadOfPersonnel: [ 1, 1 ]
             Bartender: [ 2, 2 ]

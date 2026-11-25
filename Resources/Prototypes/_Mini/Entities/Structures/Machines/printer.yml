@@ -1,0 +1,20 @@
+- type: entity
+  parent: PrinterDoc
+  id: PrinterDocSyndie
+  name: syndicate paper printer
+  components:
+  - type: Lathe
+    producingSound: /Audio/Machines/scanning.ogg
+    idleState: icon
+    runningState: building
+    staticPacks:
+    - PrinterDocSyndieStatic
+
+- type: latheRecipePack
+  id: PrinterDocSyndieStatic
+  recipes:
+  - PrintedDocumentErrorLoadingFormHeaderRecipe
+  - PrintedDocumentNoticeOfLiquidationRecipe
+  - PrintedDocumentBusinessDealRecipe
+  - PrintedDocumentNoteBeginningMilitaryActionsRecipe
+  - PrintedDocumentReportAccomplishmentGoalsRecipe

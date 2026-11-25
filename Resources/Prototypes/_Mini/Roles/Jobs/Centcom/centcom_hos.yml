@@ -1,0 +1,44 @@
+- type: job
+  id: HeadOfSecurityCentcom
+  name: job-name-head-of-security-centcom
+  description: job-description-head-of-security-centcom
+  playTimeTracker: JobHeadOfSecurityCentcom
+  canBeAntag: false
+  skills:
+  - All
+  startingGear: HeadOfSecurityCentcomGear
+  icon: "JobIconCentcom"
+  supervisors: job-supervisors-chief-centcom
+  accessGroups:
+  - AllAccess
+  access:
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: 
+    - MindShieldImplant
+    - TrackingImplant
+    - FreedomImplant
+    - BluespaceLifelineImplant
+    - RadioImplantCentcomm
+    - NutrimentPumpImplant
+    - StypticStimulatorImplant
+    - DeathRattleImplantCentcomm
+  whitelisted: true
+
+- type: startingGear
+  id: HeadOfSecurityCentcomGear
+  equipment:
+    id: HeadOfSecurityCentcomPDA
+    belt: ClothingBeltSecurityFilled
+  storage:
+    back:
+    - BoxFolderCentComThreePapers
+    - Flash
+    - TelephoneCentComm
+
+- type: chameleonOutfit
+  id: HeadOfSecurityCentcomChameleonOutfit
+  job: HeadOfSecurityCentcom
+  startingGear: HeadOfSecurityCentcomGear
+  hasMindShield: true

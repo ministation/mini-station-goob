@@ -5,3 +5,11 @@
   frequency: 1212
   color: "#c45eb8"
   longRange: true
+
+- type: radioChannel
+  id: DSO
+  name: chat-radio-DCO
+  keycode: 'в'
+  frequency: 1311
+  color: "#0a5fad"
+  longRange: true

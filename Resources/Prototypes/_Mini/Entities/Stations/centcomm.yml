@@ -1,0 +1,35 @@
+- type: entity
+  id: CentralCommandStation
+  parent:
+  - BaseStation
+  - BaseStationNanotrasen
+  - BaseStationAlertLevels
+  - BaseStationCargo
+  - BaseStationNews
+  - BaseStationJobsSpawning
+  - BaseStationRecords
+  - BaseStationMagnet
+  - BaseStationExpeditions
+  - BaseStationSalvageJobs
+  - BaseStationDeliveries
+  - BaseStationSiliconLawCrewsimov
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+  - type: StationBankAccount
+    accounts:
+      CentComm: 200000
+    primaryAccount: CentComm
+    primaryCut: 1
+    lockboxCut: 0
+    revenueDistribution:
+      CentComm: 1.00
+  - type: StationCargoOrderDatabase
+    orders:
+      CentComm: [ ]
+      Cargo: [ ]
+    markets:
+    - market
+    - SalvageJobReward2
+    - SalvageJobReward3
+    - SalvageJobRewardMAX

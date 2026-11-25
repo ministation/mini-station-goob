@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- files: ["DSO_announce.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "The initial signal taken from tgstation (link); the rest was created by JustGiveMeALaserSword"
+  source: "https://github.com/tgstation/tgstation/blob/40d89d11ea4a5cb81d61dc1018b46f4e7d32c62a/sound/ai/default/shuttlerecalled.ogg"
