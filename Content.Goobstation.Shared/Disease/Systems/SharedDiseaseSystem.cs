@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Goob Station Contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
@@ -281,9 +285,14 @@ public abstract partial class SharedDiseaseSystem : EntitySystem
         if (!Resolve(ent, ref ent.Comp, false))
             return false;
 
+        // Mini: the disease EntityUid is stored by content (swabs and live injectors keep one) and can
+        // outlive the disease entity; infecting with an already deleted disease is a normal failure.
+        if (TerminatingOrDeleted(disease))
+            return false;
+
         if (!TryComp<DiseaseComponent>(disease, out var diseaseComp))
         {
-            Log.Error($"Attempted to infect {ToPrettyString(ent)} with disease ToPrettyString{disease}, but it had no DiseaseComponent");
+            Log.Error($"Attempted to infect {ToPrettyString(ent)} with disease {ToPrettyString(disease)}, but it had no DiseaseComponent");
             return false;
         }
 
